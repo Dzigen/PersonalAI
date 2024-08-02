@@ -102,6 +102,38 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         res = self.execute_query(query, db=db)
         return res
 
+    def bfs(self, seed_entity, depth=1, db=None):
+        triplets = []
+        used_entities = set()
+        entities = [seed_entity]
+        for _ in range(depth):
+            new_entities = set()
+            for entity in entities:
+                if entity not in used_entities:
+                    query = self.extract_triplets_name1_template.format(name1=entity)
+                    print("query", query)
+                    try:
+                        res = self.execute_query(query, db=db)
+                        for element in res:
+                            triplets.append([element["a"]["name"], element["r"].type, element["b"]["name"]])
+                            new_entities.add(element["a"]["name"])
+                            new_entities.add(element["b"]["name"])
+                    except Exception as e:
+                        print("error in query execution: {e}")
+                    query = self.extract_triplets_name2_template.format(name2=entity)
+                    print("query", query)
+                    try:
+                        res = self.execute_query(query, db=db)
+                        for element in res:
+                            triplets.append([element["a"]["name"], element["r"].type, element["b"]["name"]])
+                            new_entities.add(element["a"]["name"])
+                            new_entities.add(element["b"]["name"])
+                    except Exception as e:
+                        print("error in query execution: {e}")
+                    used_entities.add(entity)
+            entities += list(new_entities)
+        return triplets
+
 
 if __name__ == "__main__":
     conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
