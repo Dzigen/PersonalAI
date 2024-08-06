@@ -26,6 +26,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         self.extract_triplets_name1_rel_template = 'MATCH (a)-[r:{rel}]-(b) WHERE a.name="{name1}" RETURN a, r, b'
         self.extract_triplets_name2_rel_template = 'MATCH (a)-[r:{rel}]-(b) WHERE b.name="{name2}" RETURN a, r, b'
         self.extract_triplets_rel_template = 'MATCH (a)-[r:{rel}]-(b) RETURN a, r, b'
+        self.extract_triplets_rel_prop_template = 'MATCH (a)-[r]-(b) WHERE r.{prop_name}="{prop_value}" RETURN a, r, b'
 
     def close(self):
         if self.driver is not None:
@@ -102,35 +103,46 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         res = self.execute_query(query, db=db)
         return res
 
-    def bfs(self, seed_entity, depth=1, db=None):
+    def parse_triplet_output(self, query, subj_labels=None, obj_labels=None, db=None):
+        triplets = []
+        new_entities = set()
+        try:
+            res = self.execute_query(query, db=db)
+            for element in res:
+                rel_props = dict(element["r"])
+                rel_props_str = ", ".join([f"{key}: {value}" for key, value in rel_props.items()])
+                if (subj_labels is None or set(element["a"].labels).intersection(set(subj_labels))) \
+                        and (obj_labels is None or set(element["b"].labels).intersection(set(obj_labels))):
+                    triplets.append([element["a"]["name"], element["r"].type, rel_props_str, element["b"]["name"]])
+                    new_entities.add((element["a"]["name"], "", "node"))
+                    new_entities.add((element["b"]["name"], "", "node"))
+        except Exception as e:
+            print("error in query execution: {e}")
+        return triplets, new_entities
+
+    def bfs(self, seed_entity, prop_name="", entity_type="node", depth=1, subj_labels=None, obj_labels=None, db=None):
         triplets = []
         used_entities = set()
-        entities = [seed_entity]
+        entities = [(seed_entity, prop_name, entity_type)]
         for _ in range(depth):
             new_entities = set()
-            for entity in entities:
+            for entity, prop_name, tp in entities:
                 if entity not in used_entities:
-                    query = self.extract_triplets_name1_template.format(name1=entity)
-                    print("query", query)
-                    try:
-                        res = self.execute_query(query, db=db)
-                        for element in res:
-                            triplets.append([element["a"]["name"], element["r"].type, element["b"]["name"]])
-                            new_entities.add(element["a"]["name"])
-                            new_entities.add(element["b"]["name"])
-                    except Exception as e:
-                        print("error in query execution: {e}")
-                    query = self.extract_triplets_name2_template.format(name2=entity)
-                    print("query", query)
-                    try:
-                        res = self.execute_query(query, db=db)
-                        for element in res:
-                            triplets.append([element["a"]["name"], element["r"].type, element["b"]["name"]])
-                            new_entities.add(element["a"]["name"])
-                            new_entities.add(element["b"]["name"])
-                    except Exception as e:
-                        print("error in query execution: {e}")
-                    used_entities.add(entity)
+                    if tp == "node":
+                        query = self.extract_triplets_name1_template.format(name1=entity)
+                        new_triplets, cur_entities = self.parse_triplet_output(query, subj_labels, obj_labels, db)
+                        triplets += new_triplets
+                        new_entities = new_entities.union(cur_entities)
+                        query = self.extract_triplets_name2_template.format(name2=entity)
+                        new_triplets, cur_entities = self.parse_triplet_output(query, subj_labels, obj_labels, db)
+                        triplets += new_triplets
+                        new_entities = new_entities.union(cur_entities)
+                        used_entities.add(entity)
+                    elif tp == "rel_prop":
+                        query = self.extract_triplets_rel_prop_template.format(prop_name=prop_name, prop_value=entity)
+                        new_triplets, cur_entities = self.parse_triplet_output(query, subj_labels, obj_labels, db)
+                        triplets += new_triplets
+                        new_entities = new_entities.union(cur_entities)
             entities += list(new_entities)
         return triplets
 
