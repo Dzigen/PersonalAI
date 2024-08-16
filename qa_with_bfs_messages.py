@@ -15,44 +15,52 @@ pipeline = transformers.pipeline(
     max_new_tokens=200
 )
 
-prompt_extract_template = """Extract entities (names and surnames, device names, company names) from the question and define the types of entities ("person", "device", "manufacturer").
-Question example 1: Kayla has positive, negative or neutral opinion about video of Xiaomi 10Pro?
-Entities example 1: {{"Kayla": "person", "Xiaomi 10Pro": "device"}}
-Question example 2: Which device is better in battery life: Apple or k30u?"},
-Entities example 2: {{"Apple": "device", "k30u": "device"}}
-Question example 3: The majority of speakers have positive, neutral or negative sentiment about screen of Samsung?
-Entities example 3: {{"Samsung": "device"}}
-Question: {question}"""
+terminators = [
+    pipeline.tokenizer.eos_token_id,
+    pipeline.tokenizer.convert_tokens_to_ids("<|eot_id|>")
+]
 
-prompt_answer_template = """Answer the question, based on provided info by analogy with examples given. Generate chain of thought and then give the final answer in the following format:
+messages_extract = [
+    {"role": "system", "content": """Extract entities (names and surnames, device names, company names) from the question and define the types of entities ("person", "device", "manufacturer")."""},
+    {"role": "user", "content": "Question: Kayla has positive, negative or neutral opinion about video of Xiaomi 10Pro?"},
+    {"role": "assistant", "content": """Entities: {"Kayla": "person", "Xiaomi 10Pro": "device"}"""},
+    {"role": "user", "content": "Question: Which device is better in battery life: Apple or k30u?"},
+    {"role": "assistant", "content": """Entities: {"Apple": "device", "k30u": "device"}"""},
+    {"role": "user", "content": "Question: The majority of speakers have positive, neutral or negative sentiment about screen of Samsung?"},
+    {"role": "assistant", "content": """Entities: {"Samsung": "device"}"""},
+    {"role": "user", "content": "Question: {question}"}
+]
+
+messages_answer = [
+    {"role": "system", "content": """Answer the question, based on provided info. Generate chain of thought and then give the final answer in the following format:
 ### Answer
-Chain of thought: ... Final answer: ...
-Question example 1: Whose opinions from Anthony and Grace about devices are most similar to Faith's?
-Info example 1: person: Anthony, device: Xiaomi, opinion: hard, feature: maintenance point
+Chain of thought: ... Final answer: ..."""},
+    {"role": "user", "content": """Question: Whose opinions from Anthony and Grace about devices are most similar to Faith's?
+Info: person: Anthony, device: Xiaomi, opinion: hard, feature: maintenance point
 person: Anthony, device: mate30pro, opinion: not as good as, feature: signal
 person: Anthony, device: iPhone, opinion: not as good as, feature: signal
 person: Grace, device: Xiaomi 12, opinion: beat, feature: charging speed
 person: Faith, device: Xiaomi, opinion: problem, feature: product control
 person: Faith, device: k30s, opinion: not as good, feature: film effect
-person: Faith, device: red rice, opinion: not as good, feature: film effect
-### Answer example 1
-Chain of thought example 1: The task is to compare Anthony's and Grace's opinions to Faith's opinions about devices. Faith has two types of opinions: "problem" with the Xiaomi device and "not as good" with both k30s and red rice devices. We will look for similar expressions of dissatisfaction from Anthony and Grace. Grace's opinion about Xiaomi 12 is "beat," which is not similar to any of Faith's negative opinions. Anthony's opinions include "hard" for Xiaomi and "not as good as" for mate30pro and iPhone with respect to the signal feature. "Not as good as" matches Faith's "not as good."
-Final answer example 1: Anthony
-Question example 2: The majority of speakers have positive, neutral or negative sentiment about signal of Apple?
-Info example 2: person: Alejandro, time: 15.11.2020, opinion: beats, device: Apple, feature: battery life
+person: Faith, device: red rice, opinion: not as good, feature: film effect"""},
+    {"role": "assistant", "content": """### Answer
+Chain of thought: The task is to compare Anthony's and Grace's opinions to Faith's opinions about devices. Faith has two types of opinions: "problem" with the Xiaomi device and "not as good" with both k30s and red rice devices. We will look for similar expressions of dissatisfaction from Anthony and Grace. Grace's opinion about Xiaomi 12 is "beat," which is not similar to any of Faith's negative opinions. Anthony's opinions include "hard" for Xiaomi and "not as good as" for mate30pro and iPhone with respect to the signal feature. "Not as good as" matches Faith's "not as good."
+Final answer: Anthony"""},
+    {"role": "user", "content": """Question: The majority of speakers have positive, neutral or negative sentiment about signal of Apple?
+Info: person: Alejandro, time: 15.11.2020, opinion: beats, device: Apple, feature: battery life
 person: Jacqueline, time: 30.12.2020, opinion: Nice pictures taken, device: Apple, feature: taking pictures
 person: Diego, time: 30.12.2020, opinion: Doesnt overheat, device: Apple, feature: heat radiation
 person: Lily, time: 30.12.2020, opinion: Not bad, device: Apple, feature: configuration of other processors
 person: Margaret, time: 25.11.2020, opinion: Pictures turn blurry, device: Apple, feature: taking pictures
 person: Amber, time: 25.11.2020, opinion: Really unhelpful, device: Apple, feature: sales
 person: Jessica, time: 25.11.2020, opinion: Always been strong, device: Apple, feature: signal
-person: Bernard, time: 25.11.2020, opinion: No lag, device: Apple, feature: play games
-### Answer example 2
-Chain of thought example 2: To determine the sentiment about the signal of Apple, we need to find the opinions specifically related to the "signal" feature of Apple. From the provided info, only Jessica's opinion mentions the signal: "Always been strong." This is a positive sentiment. Since there's only one opinion regarding the signal, the majority sentiment is positive.
-Final answer example 2: Positive
-Question: {question}
-Info: {info}
-### Answer """
+person: Bernard, time: 25.11.2020, opinion: No lag, device: Apple, feature: play games"""},
+    {"role": "assistant", "content": """### Answer
+Chain of thought: To determine the sentiment about the signal of Apple, we need to find the opinions specifically related to the "signal" feature of Apple. From the provided info, only Jessica's opinion mentions the signal: "Always been strong." This is a positive sentiment. Since there's only one opinion regarding the signal, the majority sentiment is positive.
+Final answer: Positive"""},
+    {"role": "user", "content": """Question: {question}
+Info: {info}"""}
+]
 
 def generate(messages):
     prompt = pipeline.tokenizer.apply_chat_template(

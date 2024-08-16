@@ -8,12 +8,18 @@ class Neo4jConnection:
         except Exception as e:
             print("Failed to create the driver:", e)
         self.create_node_template = 'CREATE (n:{type} {{ name: "{name}"}})'
+        self.create_rel_template0 = """MATCH (a:{type1}), (b:{type2})
+WHERE a.name="{name1}" and b.name ="{name2}"
+CREATE (a)-[r:{rel_name}]->(b)"""
         self.create_rel_template1 = """MATCH (a:{type1}), (b:{type2})
 WHERE a.name="{name1}" and b.name ="{name2}"
 CREATE (a)-[r:{rel_name} {{{rel_prop_name}: "{rel_prop_value}"}}]->(b)"""
         self.create_rel_template2 = """MATCH (a:{type1}), (b:{type2})
 WHERE a.name="{name1}" and b.name ="{name2}"
 CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name2}: "{rel_prop_value2}"}}]->(b)"""
+        self.create_rel_template5 = """MATCH (a:{type1}), (b:{type2})
+WHERE a.name="{name1}" and b.name ="{name2}"
+CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name2}: "{rel_prop_value2}", {rel_prop_name3}: "{rel_prop_value3}", {rel_prop_name4}: "{rel_prop_value4}", {rel_prop_name5}: "{rel_prop_value5}"}}]->(b)"""
 
         self.extract_node_type_template = 'MATCH (a:{type}) RETURN a'
         self.extract_node_name_template = 'MATCH (a) WHERE a.name="{name}" RETURN a'
@@ -50,6 +56,16 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         query = self.create_node_template.format(type=node_type, name=node_name)
         self.execute_query(query, db=db)
 
+    def create_relationship_no_props(self, type1, type2, name1, name2, rel_name, db=None):
+        query = self.create_rel_template0.format(
+            type1=type1,
+            type2=type2,
+            name1=name1,
+            name2=name2,
+            rel_name=rel_name
+        )
+        self.execute_query(query, db=db)
+
     def create_relationship(self, type1, type2, name1, name2, rel_name, rel_prop_name, rel_prop_value, db=None):
         query = self.create_rel_template1.format(
             type1=type1,
@@ -74,6 +90,31 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             rel_prop_value1=rel_prop_value1,
             rel_prop_name2=rel_prop_name2,
             rel_prop_value2=rel_prop_value2
+        )
+        self.execute_query(query, db=db)
+
+    def create_relationship_5props(self, type1, type2, name1, name2, rel_name,
+                                   rel_prop_name1, rel_prop_value1,
+                                   rel_prop_name2, rel_prop_value2,
+                                   rel_prop_name3, rel_prop_value3,
+                                   rel_prop_name4, rel_prop_value4,
+                                   rel_prop_name5, rel_prop_value5, db=None):
+        query = self.create_rel_template5.format(
+            type1=type1,
+            type2=type2,
+            name1=name1,
+            name2=name2,
+            rel_name=rel_name,
+            rel_prop_name1=rel_prop_name1,
+            rel_prop_value1=rel_prop_value1,
+            rel_prop_name2=rel_prop_name2,
+            rel_prop_value2=rel_prop_value2,
+            rel_prop_name3=rel_prop_name3,
+            rel_prop_value3=rel_prop_value3,
+            rel_prop_name4=rel_prop_name4,
+            rel_prop_value4=rel_prop_value4,
+            rel_prop_name5=rel_prop_name5,
+            rel_prop_value5=rel_prop_value5
         )
         self.execute_query(query, db=db)
 
@@ -110,10 +151,13 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             res = self.execute_query(query, db=db)
             for element in res:
                 rel_props = dict(element["r"])
-                rel_props_str = ", ".join([f"{key}: {value}" for key, value in rel_props.items()])
+                rel_props = {key: value for key, value in rel_props.items() if key not in ["raw_time", "sentiment"]}
                 if (subj_labels is None or set(element["a"].labels).intersection(set(subj_labels))) \
                         and (obj_labels is None or set(element["b"].labels).intersection(set(obj_labels))):
-                    triplets.append([element["a"]["name"], element["r"].type, rel_props_str, element["b"]["name"]])
+                    triplets.append([{list(element["a"].labels)[0]: element["a"]["name"]},
+                                     element["r"].type,
+                                     rel_props,
+                                     {list(element["b"].labels)[0]: element["b"]["name"]}])
                     new_entities.add((element["a"]["name"], "", "node"))
                     new_entities.add((element["b"]["name"], "", "node"))
         except Exception as e:
@@ -121,30 +165,44 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         return triplets, new_entities
 
     def bfs(self, seed_entity, prop_name="", entity_type="node", depth=1, subj_labels=None, obj_labels=None, db=None):
-        triplets = []
+        seed_entity = seed_entity.replace(" ", "_")
+        triplets_dict = {}
         used_entities = set()
         entities = [(seed_entity, prop_name, entity_type)]
-        for _ in range(depth):
+        for step in range(depth):
             new_entities = set()
             for entity, prop_name, tp in entities:
-                if entity not in used_entities:
+                if (entity, prop_name, tp) not in used_entities:
                     if tp == "node":
                         query = self.extract_triplets_name1_template.format(name1=entity)
                         new_triplets, cur_entities = self.parse_triplet_output(query, subj_labels, obj_labels, db)
-                        triplets += new_triplets
+                        for triplet in new_triplets:
+                            if (step, "forw", triplet[1]) not in triplets_dict:
+                                triplets_dict[(step, "forw", triplet[1])] = []
+                            if triplet not in triplets_dict[(step, "forw", triplet[1])]:
+                                triplets_dict[(step, "forw", triplet[1])].append(triplet)
                         new_entities = new_entities.union(cur_entities)
                         query = self.extract_triplets_name2_template.format(name2=entity)
                         new_triplets, cur_entities = self.parse_triplet_output(query, subj_labels, obj_labels, db)
-                        triplets += new_triplets
+                        for triplet in new_triplets:
+                            if (step, "backw", triplet[1]) not in triplets_dict:
+                                triplets_dict[(step, "backw", triplet[1])] = []
+                            if triplet not in triplets_dict[(step, "backw", triplet[1])]:
+                                triplets_dict[(step, "backw", triplet[1])].append(triplet)
                         new_entities = new_entities.union(cur_entities)
-                        used_entities.add(entity)
+                        used_entities.add((entity, prop_name, tp))
                     elif tp == "rel_prop":
                         query = self.extract_triplets_rel_prop_template.format(prop_name=prop_name, prop_value=entity)
                         new_triplets, cur_entities = self.parse_triplet_output(query, subj_labels, obj_labels, db)
-                        triplets += new_triplets
+                        for triplet in new_triplets:
+                            if (step, "forw", triplet[1]) not in triplets_dict:
+                                triplets_dict[(step, "forw", triplet[1])] = []
+                            if triplet not in triplets_dict[(step, "forw", triplet[1])]:
+                                triplets_dict[(step, "forw", triplet[1])].append(triplet)
                         new_entities = new_entities.union(cur_entities)
+                        used_entities.add((entity, prop_name, tp))
             entities += list(new_entities)
-        return triplets
+        return triplets_dict
 
 
 if __name__ == "__main__":
