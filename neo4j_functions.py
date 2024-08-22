@@ -164,7 +164,8 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                     new_chain = copy.deepcopy(chain)
                     if triplet not in new_chain \
                             and (list(triplet[0].values())[0].replace("_", " ") in another_entities \
-                                    or list(triplet[-1].values())[0].replace("_", " ") in another_entities):
+                                    or list(triplet[-1].values())[0].replace("_", " ") in another_entities) \
+                                    or any([prop_value in another_entities for prop_value in triplet[2].values()]):
                         new_chain.append(triplet)
                         inters_chains.append(new_chain)
                     else:
@@ -193,11 +194,11 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                         if tp == "node":
                             query = self.extract_triplets_name1_template.format(name1=entity)
                             new_triplets, cur_entities, cur_inters_chains = self.parse_triplet_output(
-                                query, chain, another_entities, subj_labels, obj_labels, db
+                                query, another_entities, chain, subj_labels, obj_labels, db
                             )
-                            for chain in cur_inters_chains:
-                                if chain not in inters_chains:
-                                    inters_chains.append(chain)
+                            for ch in cur_inters_chains:
+                                if ch not in inters_chains:
+                                    inters_chains.append(ch)
                             for triplet in new_triplets:
                                 if (step, "forw", triplet[1]) not in triplets_dict:
                                     triplets_dict[(step, "forw", triplet[1])] = []
@@ -210,9 +211,9 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                             new_triplets, cur_entities, cur_inters_chains = self.parse_triplet_output(
                                 query, another_entities, chain, subj_labels, obj_labels, db
                             )
-                            for chain in cur_inters_chains:
-                                if chain not in inters_chains:
-                                    inters_chains.append(chain)
+                            for ch in cur_inters_chains:
+                                if ch not in inters_chains:
+                                    inters_chains.append(ch)
                             for triplet in new_triplets:
                                 if (step, "backw", triplet[1]) not in triplets_dict:
                                     triplets_dict[(step, "backw", triplet[1])] = []
@@ -227,9 +228,9 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                             new_triplets, cur_entities, cur_inters_chains = self.parse_triplet_output(
                                 query, another_entities, chain, subj_labels, obj_labels, db
                             )
-                            for chain in cur_inters_chains:
-                                if chain not in inters_chains:
-                                    inters_chains.append(chain)
+                            for ch in cur_inters_chains:
+                                if ch not in inters_chains:
+                                    inters_chains.append(ch)
                             for triplet in new_triplets:
                                 if (step, "forw", triplet[1]) not in triplets_dict:
                                     triplets_dict[(step, "forw", triplet[1])] = []
