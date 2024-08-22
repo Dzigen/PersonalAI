@@ -17,6 +17,8 @@ insert = False
 total_triplets = []
 good_samples = []
 good_dialogs = 0
+person_triplets = set()
+entities = set()
 for n, sample in list(enumerate(samples)):
     triplets = sample["clean_triplets"]
     sentences = sample["sentences"]
@@ -73,7 +75,10 @@ for n, sample in list(enumerate(samples)):
             obj = obj.replace(" ", "_")
             if len(subj) > 1 and len(rel) > 1 and len(rel.split("_")) < 5:
                 total_triplets.append([subj, obj, rel_data])
+                entities.add((subj, "device"))
+                entities.add((obj, "feature"))
                 if insert:
+                    person_triplets.add((subj, "has_device", speaker))
                     print(n, subj, rel, obj, sentiment, speaker)
                     res1 = conn.extract_node(node_type="device", node_name=subj, db="testdb")
                     if not res1:
@@ -82,45 +87,67 @@ for n, sample in list(enumerate(samples)):
                     if not res2:
                         conn.create_node(node_type="feature", node_name=obj, db="testdb")
                     all_devices.add(subj)
-                    conn.create_relationship_4props(
+                    conn.create_relationship_5props(
                         type1="device",
                         type2="feature",
                         name1=subj,
                         name2=obj,
-                        rel_name=rel,
-                        rel_prop_name1="person",
-                        rel_prop_value1=speaker,
-                        rel_prop_name2="sentiment",
-                        rel_prop_value2=sentiment,
-                        rel_prop_name3="time",
-                        rel_prop_value3=time,
-                        rel_prop_name4="raw_time",
-                        rel_prop_value4=raw_time,
+                        rel_name="opinion",
+                        rel_prop_name1="opinion",
+                        rel_prop_value1=rel,
+                        rel_prop_name2="person",
+                        rel_prop_value2=speaker,
+                        rel_prop_name3="sentiment",
+                        rel_prop_value3=sentiment,
+                        rel_prop_name4="time",
+                        rel_prop_value4=time,
+                        rel_prop_name5="raw_time",
+                        rel_prop_value5=raw_time,
                         db="testdb"
                     )
+
+for subj, rel, person in person_triplets:
+    print(subj, rel, person)
+    entities.add((person, "person"))
+    if insert:
+        res1 = conn.extract_node(node_type="person", node_name=person, db="testdb")
+        if not res1:
+            conn.create_node(node_type="person", node_name=person, db="testdb")
+        conn.create_relationship_no_props(
+            type1="person",
+            type2="device",
+            name1=person,
+            name2=subj,
+            rel_name=rel,
+            db="testdb"
+        )
 
 manf_dict = {"Xiaomi": "Xiaomi", "Apple": "Apple", "OnePlus": "OnePlus", "Vivo": "Vivo", "Honor": "Honor",
              "Huawei": "Huawei", "Samsung": "Samsung", "Redmi": "Xiaomi", "Iphone": "Apple", "One Plus": "OnePlus"}
 
 for manf in manf_dict.values():
-    conn.create_node(node_type="manufacturer", node_name=manf, db="testdb")
+    entities.add((manf, "manufacturer"))
 
-for device in all_devices:
-    found_manf = ""
-    for manf in manf_dict:
-        if device.lower() == manf.lower():
-            found_manf = manf_dict[manf]
-        elif any([tok == manf.lower() for tok in device.lower().split()]):
-            found_manf = manf_dict[manf]
-    if found_manf:
-        conn.create_relationship_no_props(
-            type1="device",
-            type2="manufacturer",
-            name1=device,
-            name2=found_manf,
-            rel_name="manufacturer",
-            db="testdb"
-        )
+if insert:
+    for manf in manf_dict.values():
+        conn.create_node(node_type="manufacturer", node_name=manf, db="testdb")
+
+    for device in all_devices:
+        found_manf = ""
+        for manf in manf_dict:
+            if device.lower() == manf.lower():
+                found_manf = manf_dict[manf]
+            elif any([tok == manf.lower() for tok in device.lower().split()]):
+                found_manf = manf_dict[manf]
+        if found_manf:
+            conn.create_relationship_no_props(
+                type1="device",
+                type2="manufacturer",
+                name1=device,
+                name2=found_manf,
+                rel_name="manufacturer",
+                db="testdb"
+            )
 
 mult_rels, mult_subj = 0, 0
 stats1, stats2 = {}, {}
@@ -171,8 +198,13 @@ with open("utterances_for_test.json", 'w', encoding="utf8") as out:
     json.dump(utterances, out, indent=2, ensure_ascii=False)
 
 with open("questions/device_sentiment.json", 'w', encoding="utf8") as out:
-    json.dump(questions, out, indent=2, ensure_ascii=False)
+    json.dump(questions[:200], out, indent=2, ensure_ascii=False)
 
 print("good dialogs", good_dialogs)
 print("utterances", len(utterances))
 print("questions", len(questions))
+
+entities = [list(entity) for entity in entities]
+
+with open("entities.json", 'w') as out:
+    json.dump(entities, out, indent=2)
