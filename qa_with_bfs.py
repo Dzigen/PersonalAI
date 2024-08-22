@@ -1,9 +1,33 @@
 import json
 import transformers
 import torch
+from retrieve.retriever import Retriever
 from neo4j_functions import Neo4jConnection
 
 conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
+
+use_embs = True
+if use_embs:
+    retriever = Retriever(device="cuda")
+    with open("entities.json", 'r') as inp:
+        entities_vocab = json.load(inp)
+
+    entities_dict = {}
+    for entity, e_type in entities_vocab:
+        if e_type not in entities_dict:
+            entities_dict[e_type] = []
+        entities_dict[e_type].append(entity.replace("_", " "))
+
+    emb_dict = {}
+    for e_type, entities in entities_dict.items():
+        print(e_type, f"number of entities: {len(entities)}", entities[:5])
+        embs = retriever.embed(entities)
+        emb_dict[e_type] = embs
+
+    query = ["take photos"]
+    query_embs = retriever.embed(query)
+    result = retriever.search_in_embeds(emb_dict["feature"], query_embs, 5)
+    print("result", result)
 
 model_name = "Undi95/Meta-Llama-3-8B-Instruct-hf"
 
@@ -15,13 +39,13 @@ pipeline = transformers.pipeline(
     max_new_tokens=200
 )
 
-prompt_extract_template = """Extract entities (names and surnames, device names, company names) from the question and define the types of entities ("person", "device", "manufacturer").
+prompt_extract_template = """Extract entities (names and surnames, device names, features, company names) from the question and define the types of entities ("person", "device", "manufacturer").
 Question 1: Kayla has positive, negative or neutral opinion about video of Xiaomi 10Pro?
-Entities 1: {{"Kayla": "person", "Xiaomi 10Pro": "device"}}
+Entities 1: {{"Kayla": "person", "video": "feature", "Xiaomi 10Pro": "device"}}
 Question 2: Which device is better in battery life: Apple or k30u?
-Entities 2: {{"Apple": "device", "k30u": "device"}}
+Entities 2: {{"battery life": "feature", "Apple": "device", "k30u": "device"}}
 Question 3: The majority of speakers have positive, neutral or negative sentiment about screen of Samsung?
-Entities 3: {{"Samsung": "device"}}
+Entities 3: {{"screen": "feature", "Samsung": "device"}}
 Question 4: {question}
 Entities 4: """
 
@@ -55,39 +79,27 @@ Question 3: {question}
 Info 3: {info}
 ### Answer 3 """
 
-def generate(messages):
-    prompt = pipeline.tokenizer.apply_chat_template(
-        messages, 
-        tokenize=False, 
-        add_generation_prompt=True
-    )
-    outputs = pipeline(
-        prompt,
-        max_new_tokens=256,
-        eos_token_id=terminators,
-        do_sample=True,
-        temperature=0.6,
-        top_p=0.9,
-    )
-    return outputs[0]["generated_text"][len(prompt):]
-
 
 for flname, depth in [
         ["compare_questions.json", 1],
         ["compare_sentiment.json", 1],
+        ["compare_sentiment_synonims.json", 1],
         ["device_sentiment.json", 1],
         ["same_devices.json", 1],
         ["same_manufacturer.json", 2],
         ["similar_device_opinions.json", 1],
         ["similar_manf_opinions.json", 2],
-        ["which_people_about_device.json", 1]
+        ["which_people_about_device.json", 1],
+        ["which_people_about_device_synonims.json", 1]
     ]:
     with open(f"questions/{flname}", 'r') as inp:
         dataset = json.load(inp)
     if depth == 1:
-        thres = 8
+        thres1 = 8
+        thres2 = 4
     elif depth > 1:
-        thres = 6
+        thres1 = 6
+        thres2 = 3
     results = []
     for element in dataset[:10]:
         question = element["question"]
@@ -107,23 +119,54 @@ for flname, depth in [
             out.write(f"answer: {answer}"+'\n')
             out.write(f"entities: {entities}"+'\n')
         triplets_formatted = []
+        entities_input = []
         for entity, tp in entities.items():
-            if tp == "person":
-                triplets_dict = conn.bfs(entity, prop_name="person", entity_type="rel_prop", subj_labels=["device"], db="testdb")
+            cur_entities_input = [(entity, "", "node")]
+            if use_embs:
+                query = [entity]
+                query_embs = retriever.embed(query)
+                result = retriever.search_in_embeds(emb_dict[tp], query_embs, 5)
+                idx = result["idx"][0]
+                retr_entities = [entities_dict[tp][ind] for ind in idx]
+                if retr_entities[0].lower() != entity.lower():
+                    cur_entities_input.append((retr_entities[0], "", "node"))
+            entities_input.append(cur_entities_input)
+            print("input_entities", cur_entities_input)
+
+        triplets_dict, inters_chains = conn.bfs(entities_input, db="testdb")
+        chain_triplets = []
+        for chain in inters_chains:
+            for triplet in chain:
+                if triplet not in chain_triplets:
+                    chain_triplets.append(triplet)
+
+        def format_triplet(triplet):
+            formatted_triplet = ""
+            subj, rel, rel_props, obj = triplet
+            subj = {key.replace("_", " "): value.replace("_", " ") for key, value in subj.items()}
+            obj = {key.replace("_", " "): value.replace("_", " ") for key, value in obj.items()}
+            rel_props = {key.replace("_", " "): value.replace("_", " ") for key, value in rel_props.items()}
+            subj_str = ", ".join([f"{key}: {value}" for key, value in subj.items()])
+            obj_str = ", ".join([f"{key}: {value}" for key, value in obj.items()])
+            if rel_props:
+                rel_props_str = ", ".join([f"{key}: {value}" for key, value in rel_props.items()])
+                formatted_triplet = f"{rel_props_str}, {subj_str}, {obj_str}"
             else:
-                triplets_dict = conn.bfs(entity, subj_labels=["device"], db="testdb")
-            for (step, direction, rel), triplets in triplets_dict.items():
-                for subj, rel, rel_props, obj in triplets[:thres]:
-                    subj = {key.replace("_", " "): value.replace("_", " ") for key, value in subj.items()}
-                    obj = {key.replace("_", " "): value.replace("_", " ") for key, value in obj.items()}
-                    rel_props = {key.replace("_", " "): value.replace("_", " ") for key, value in rel_props.items()}
-                    subj_str = ", ".join([f"{key}: {value}" for key, value in subj.items()])
-                    obj_str = ", ".join([f"{key}: {value}" for key, value in obj.items()])
-                    if rel_props:
-                        rel_props_str = ", ".join([f"{key}: {value}" for key, value in rel_props.items()])
-                        triplets_formatted.append(f"{rel_props_str}, {subj_str}, {obj_str}")
-                    else:
-                        triplets_formatted.append(f"{subj_str} {rel} {obj_str}")
+                formatted_triplet = f"{subj_str} {rel} {obj_str}"
+            return formatted_triplet
+
+        for triplet in chain_triplets[:12]:
+            formatted_triplet = format_triplet(triplet)
+            triplets_formatted.append(formatted_triplet)
+
+        if chain_triplets:
+            thres = thres2
+        else:
+            thres = thres1
+        for (step, direction, rel), triplets in triplets_dict.items():
+            for triplet in triplets[:thres]:
+                formatted_triplet = format_triplet(triplet)
+                triplets_formatted.append(formatted_triplet)
 
         triplets_str = "\n".join(triplets_formatted)
         with open("qa_bfs_log.txt", 'a') as out:
@@ -140,13 +183,15 @@ for flname, depth in [
                 break
         if found_line:
             pred_answer = found_line.split("Final answer 3: ")[-1]
-        else:
+        elif len(res.split("\n")) > 1:
             pred_answer = res.split("\n")[1]
+        else:
+            pred_answer = ""
         with open("qa_bfs_log.txt", 'a') as out:
             out.write(f"pred_answer: {res}"+'\n')
             out.write("_"*70+'\n\n')
 
         print("pred_answer", pred_answer)
         results.append({"question": question, "triplets": triplets_formatted, "gold_answer": answer, "pred_answer": pred_answer})
-        with open(f"answers/{flname.replace('.json', '')}_bfs.json", 'w') as out:
+        with open(f"answers/{flname.replace('.json', '')}_bfs2.json", 'w') as out:
             json.dump(results, out, indent=2)
