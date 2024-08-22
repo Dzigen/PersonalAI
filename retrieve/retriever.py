@@ -14,28 +14,20 @@ from retrieve.contriever import Contriever
 
 
 class Retriever:
+    def __init__(self, model_name="facebook/mcontriever", device="cpu"):
+        self.embedder = Contriever.from_pretrained(model_name).to(device)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
 
-    @staticmethod
-    def load_embedder_and_tokenizer(device="cpu"):
-        embedder = Contriever.from_pretrained("facebook/mcontriever").to(device)
-        tokenizer = AutoTokenizer.from_pretrained("facebook/mcontriever")
-        return embedder, tokenizer
-
-    @staticmethod
     @torch.no_grad()
-    def get_embeddings(list_of_strings, embedder, tokenizer):
-        inputs = tokenizer(list_of_strings, padding=True, truncation=True, return_tensors="pt").to(embedder.device)
-        embeds = embedder(**inputs)
+    def get_embeddings(self, list_of_strings):
+        inputs = self.tokenizer(list_of_strings, padding=True, truncation=True, return_tensors="pt").to(self.embedder.device)
+        embeds = self.embedder(**inputs)
         return embeds
-
-    def __init__(self, device="cpu"):
-        super().__init__()
-        self.embedder, self.tokenizer = self.load_embedder_and_tokenizer(device)
 
     @torch.no_grad()
     def embed(self, list_of_str):
         """Returns embeddings of the input strings"""
-        return self.get_embeddings(list_of_str, self.embedder, self.tokenizer)
+        return self.get_embeddings(list_of_str)
 
     def search(
             self,
