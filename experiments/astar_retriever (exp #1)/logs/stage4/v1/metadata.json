@@ -1,0 +1,9 @@
+{
+ "LOAD_TRIPLETS_VERSION": "v1",
+ "SAVE_GEN_ANSWERS_VERSION": "v1",
+ "ANSWER_PROMPT_TEMPLATE": "You are an expert system that can answer a question based on a given list of information below. Answer in a straight, direct format, without discriptive information and dont add additional information that is not related to given question.\n\nList of information:\n{c}\n\n\nQuestion: {q}\nAnswer: ",
+ "TRPLETE_PROMPT_TEMPLATES": {
+  "manufacturer": "- Manufacturer of {d} device is {c} company",
+  "opinion": "- {p} had '{o}'-opinion with {s} sentiment in {t} about {f} feature of {d} device."
+ }
+}

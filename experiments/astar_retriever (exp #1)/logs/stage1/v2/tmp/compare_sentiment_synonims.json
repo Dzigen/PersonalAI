@@ -1,0 +1,648 @@
+[
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "connection",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator life",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "OS",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "connection",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "OS",
+   "vivo"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator life",
+   "13pm"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "OS",
+   "Android"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "OnePlus"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "OS",
+   "realme"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "connection",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "hand feel",
+   "civi"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator life",
+   "mini"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "hand feel",
+   "OnePlus"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator life",
+   "max"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "gaming",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "OS",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "configuration",
+   "vivo X80"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator life",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator life",
+   "11pro",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator",
+   "10u",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "m10"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "rapid charging",
+   "10u",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "energy consumption",
+   "m10"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "OS",
+   "Nubia"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "connection",
+   "Android"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator life",
+   "13mini",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "Mi 10"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "12x"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator life",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "hand feel",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "rapid charging",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "x3"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "hand feel",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "10ultra"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "hand",
+   "k40",
+   "enhanced version"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "Find"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "K40"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator life",
+   "PM"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator life",
+   "13promax",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "10s"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "10u"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator life",
+   "Mate40Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "hand feel",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "refrigeration",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "hand feel",
+   "Mi 12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator life",
+   "Mi 9"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator life",
+   "Xiaomi 11"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "OS",
+   "GT"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "OS",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "displays",
+   "Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator life",
+   "xr"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "frontal camera",
+   "civi"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "k40"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "hand feel",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "hand feel",
+   "Xiaomi Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "OS",
+   "one plus"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator life",
+   "pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "hand feel",
+   "m10"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "update rate",
+   "MIUI"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator",
+   "12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "connection",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "Xiaomi 11Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "hand feel",
+   "Mi 10"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "folding display",
+   "mix"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "10Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "connection",
+   "Xm"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "OSs",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "accumulator life",
+   "m40p"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "OS",
+   "iQOO"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "display",
+   "iPhonex"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "hand feel",
+   "Meizu 18"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "connection",
+   "Meizu"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "cost",
+   "master exploration"
+  ]
+ },
+ {
+  "question_entities": [
+   "speakers",
+   "sentiment",
+   "update rate",
+   "realm"
+  ]
+ }
+]
