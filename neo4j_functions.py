@@ -1,3 +1,4 @@
+import copy
 from neo4j import GraphDatabase
 
 class Neo4jConnection:
@@ -144,9 +145,10 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         res = self.execute_query(query, db=db)
         return res
 
-    def parse_triplet_output(self, query, subj_labels=None, obj_labels=None, db=None):
+    def parse_triplet_output(self, query, another_entities, chain, subj_labels=None, obj_labels=None, db=None):
         triplets = []
-        new_entities = set()
+        inters_chains = []
+        new_entities = []
         try:
             res = self.execute_query(query, db=db)
             for element in res:
@@ -154,55 +156,91 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                 rel_props = {key: value for key, value in rel_props.items() if key not in ["raw_time", "sentiment"]}
                 if (subj_labels is None or set(element["a"].labels).intersection(set(subj_labels))) \
                         and (obj_labels is None or set(element["b"].labels).intersection(set(obj_labels))):
-                    triplets.append([{list(element["a"].labels)[0]: element["a"]["name"]},
-                                     element["r"].type,
-                                     rel_props,
-                                     {list(element["b"].labels)[0]: element["b"]["name"]}])
-                    new_entities.add((element["a"]["name"], "", "node"))
-                    new_entities.add((element["b"]["name"], "", "node"))
+                    triplet = [{list(element["a"].labels)[0]: element["a"]["name"]},
+                                element["r"].type,
+                                rel_props,
+                                {list(element["b"].labels)[0]: element["b"]["name"]}]
+                    triplets.append(triplet)
+                    new_chain = copy.deepcopy(chain)
+                    if triplet not in new_chain \
+                            and (list(triplet[0].values())[0].replace("_", " ") in another_entities \
+                                    or list(triplet[-1].values())[0].replace("_", " ") in another_entities):
+                        new_chain.append(triplet)
+                        inters_chains.append(new_chain)
+                    else:
+                        new_chain.append(triplet)
+                    if (element["a"]["name"], "", "node", new_chain) not in new_entities:
+                        new_entities.append((element["a"]["name"], "", "node", new_chain))
+                    if (element["b"]["name"], "", "node", new_chain) not in new_entities:
+                        new_entities.append((element["b"]["name"], "", "node", new_chain))
         except Exception as e:
-            print("error in query execution: {e}")
-        return triplets, new_entities
+            print(f"error in query execution: {e}")
+        return triplets, new_entities, inters_chains
 
-    def bfs(self, seed_entity, prop_name="", entity_type="node", depth=1, subj_labels=None, obj_labels=None, db=None):
-        seed_entity = seed_entity.replace(" ", "_")
+    def bfs(self, seed_entities, depth=1, subj_labels=None, obj_labels=None, db=None):
         triplets_dict = {}
-        used_entities = set()
-        entities = [(seed_entity, prop_name, entity_type)]
-        for step in range(depth):
-            new_entities = set()
-            for entity, prop_name, tp in entities:
-                if (entity, prop_name, tp) not in used_entities:
-                    if tp == "node":
-                        query = self.extract_triplets_name1_template.format(name1=entity)
-                        new_triplets, cur_entities = self.parse_triplet_output(query, subj_labels, obj_labels, db)
-                        for triplet in new_triplets:
-                            if (step, "forw", triplet[1]) not in triplets_dict:
-                                triplets_dict[(step, "forw", triplet[1])] = []
-                            if triplet not in triplets_dict[(step, "forw", triplet[1])]:
-                                triplets_dict[(step, "forw", triplet[1])].append(triplet)
-                        new_entities = new_entities.union(cur_entities)
-                        query = self.extract_triplets_name2_template.format(name2=entity)
-                        new_triplets, cur_entities = self.parse_triplet_output(query, subj_labels, obj_labels, db)
-                        for triplet in new_triplets:
-                            if (step, "backw", triplet[1]) not in triplets_dict:
-                                triplets_dict[(step, "backw", triplet[1])] = []
-                            if triplet not in triplets_dict[(step, "backw", triplet[1])]:
-                                triplets_dict[(step, "backw", triplet[1])].append(triplet)
-                        new_entities = new_entities.union(cur_entities)
-                        used_entities.add((entity, prop_name, tp))
-                    elif tp == "rel_prop":
-                        query = self.extract_triplets_rel_prop_template.format(prop_name=prop_name, prop_value=entity)
-                        new_triplets, cur_entities = self.parse_triplet_output(query, subj_labels, obj_labels, db)
-                        for triplet in new_triplets:
-                            if (step, "forw", triplet[1]) not in triplets_dict:
-                                triplets_dict[(step, "forw", triplet[1])] = []
-                            if triplet not in triplets_dict[(step, "forw", triplet[1])]:
-                                triplets_dict[(step, "forw", triplet[1])].append(triplet)
-                        new_entities = new_entities.union(cur_entities)
-                        used_entities.add((entity, prop_name, tp))
-            entities += list(new_entities)
-        return triplets_dict
+        inters_chains = []
+        # seed_entity, prop_name="", entity_type="node"
+        for seed_entity, prop_name, entity_type in seed_entities:
+            another_entities = [seed_entity2 for seed_entity2, *_ in seed_entities if seed_entity2 != seed_entity]
+            seed_entity = seed_entity.replace(" ", "_")
+            used_entities = set()
+            entities = [(seed_entity, prop_name, entity_type, [])]
+            for step in range(depth):
+                new_entities = []
+                for entity, prop_name, tp, chain in entities:
+                    if (entity, prop_name, tp) not in used_entities:
+                        if tp == "node":
+                            query = self.extract_triplets_name1_template.format(name1=entity)
+                            new_triplets, cur_entities, cur_inters_chains = self.parse_triplet_output(
+                                query, chain, another_entities, subj_labels, obj_labels, db
+                            )
+                            for chain in cur_inters_chains:
+                                if chain not in inters_chains:
+                                    inters_chains.append(chain)
+                            for triplet in new_triplets:
+                                if (step, "forw", triplet[1]) not in triplets_dict:
+                                    triplets_dict[(step, "forw", triplet[1])] = []
+                                if triplet not in triplets_dict[(step, "forw", triplet[1])]:
+                                    triplets_dict[(step, "forw", triplet[1])].append(triplet)
+                            for ent in cur_entities:
+                                if ent not in new_entities:
+                                    new_entities.append(ent)
+                            query = self.extract_triplets_name2_template.format(name2=entity)
+                            new_triplets, cur_entities, cur_inters_chains = self.parse_triplet_output(
+                                query, another_entities, chain, subj_labels, obj_labels, db
+                            )
+                            for chain in cur_inters_chains:
+                                if chain not in inters_chains:
+                                    inters_chains.append(chain)
+                            for triplet in new_triplets:
+                                if (step, "backw", triplet[1]) not in triplets_dict:
+                                    triplets_dict[(step, "backw", triplet[1])] = []
+                                if triplet not in triplets_dict[(step, "backw", triplet[1])]:
+                                    triplets_dict[(step, "backw", triplet[1])].append(triplet)
+                            for ent in cur_entities:
+                                if ent not in new_entities:
+                                    new_entities.append(ent)
+                            used_entities.add((entity, prop_name, tp))
+                        elif tp == "rel_prop":
+                            query = self.extract_triplets_rel_prop_template.format(prop_name=prop_name, prop_value=entity)
+                            new_triplets, cur_entities, cur_inters_chains = self.parse_triplet_output(
+                                query, another_entities, chain, subj_labels, obj_labels, db
+                            )
+                            for chain in cur_inters_chains:
+                                if chain not in inters_chains:
+                                    inters_chains.append(chain)
+                            for triplet in new_triplets:
+                                if (step, "forw", triplet[1]) not in triplets_dict:
+                                    triplets_dict[(step, "forw", triplet[1])] = []
+                                if triplet not in triplets_dict[(step, "forw", triplet[1])]:
+                                    triplets_dict[(step, "forw", triplet[1])].append(triplet)
+                            for ent in cur_entities:
+                                if ent not in new_entities:
+                                    new_entities.append(ent)
+                            used_entities.add((entity, prop_name, tp))
+                entities += new_entities
+        return triplets_dict, inters_chains
 
 
 if __name__ == "__main__":
