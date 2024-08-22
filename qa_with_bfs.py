@@ -49,7 +49,7 @@ Entities 3: {{"screen": "feature", "Samsung": "device"}}
 Question 4: {question}
 Entities 4: """
 
-prompt_answer_template = """Answer the question, based on provided info by analogy with examples given. Generate chain of thought and then give the final answer in the following format:
+prompt_answer_template = """Answer the question, based on provided info by analogy with examples given. Avoid giving None final answer, if you are not sure, give a guess answer. None answers are strictly prohibited. Generate chain of thought and then give the final answer in the following format:
 ### Answer
 Chain of thought: ... Final answer: ...
 Question 1: Whose opinions from Anthony and Grace about devices are most similar to Faith's?
@@ -75,9 +75,23 @@ person: Bernard, time: 25.11.2020, opinion: No lag, device: Apple, feature: play
 ### Answer 2
 Chain of thought 2: To determine the sentiment about the signal of Apple, we need to find the opinions specifically related to the "signal" feature of Apple. From the provided info, only Jessica's opinion mentions the signal: "Always been strong." This is a positive sentiment. Since there's only one opinion regarding the signal, the majority sentiment is positive.
 Final answer 2: Positive
-Question 3: {question}
-Info 3: {info}
-### Answer 3 """
+Question 3: Whose opinions from Rita and Bruce about devices are most similar to Danielle's?
+Info 3: person: Danielle, time: 15.11.2020, opinion: nice, device: Apple, feature: battery life
+person: Rita, time: 30.12.2020, opinion: good, device: Apple, feature: battery life
+person: Bruce, time: 30.12.2020, opinion: bad, device: Apple, feature: battery life
+### Answer 3
+Chain of thought 3: Danielle and Rita both have positive opinions about the battery life feature of Apple devices, while Bruce has a negative opinion.
+Final answer 3: Rita
+Question 4: Whose opinions from Zachary and Hannah about devices are most similar to Oswald's?
+Info 3: person: Oswald, time: 15.11.2020, opinion: nice, device: Xiaomi, feature: battery life
+person: Zachary, time: 30.12.2020, opinion: good, device: Nokia, feature: battery life
+person: Hannah, time: 30.12.2020, opinion: bad, device: Apple, feature: battery life
+### Answer 4
+Chain of thought 4: Zachary, Hannah and Oswald do not have common devices, but I can guess that Zachary's opinion can be more similar to Oswald's.
+Final answer 4: Zachary
+Question 5: {question}
+Info 5: {info}
+### Answer 5 """
 
 
 for flname, depth in [
@@ -87,7 +101,7 @@ for flname, depth in [
         ["device_sentiment.json", 1],
         ["same_devices.json", 1],
         ["same_manufacturer.json", 2],
-        ["similar_device_opinions.json", 1],
+        ["similar_device_opinions.json", 2],
         ["similar_manf_opinions.json", 2],
         ["which_people_about_device.json", 1],
         ["which_people_about_device_synonims.json", 1]
@@ -122,7 +136,7 @@ for flname, depth in [
         entities_input = []
         for entity, tp in entities.items():
             cur_entities_input = [(entity, "", "node")]
-            if use_embs:
+            if use_embs and tp in emb_dict:
                 query = [entity]
                 query_embs = retriever.embed(query)
                 result = retriever.search_in_embeds(emb_dict[tp], query_embs, 5)
@@ -133,11 +147,12 @@ for flname, depth in [
             entities_input.append(cur_entities_input)
             print("input_entities", cur_entities_input)
 
-        triplets_dict, inters_chains = conn.bfs(entities_input, db="testdb")
+        triplets_dict, inters_chains = conn.bfs(entities_input, depth, db="testdb")
         chain_triplets = []
         for chain in inters_chains:
             for triplet in chain:
-                if triplet not in chain_triplets:
+                reverse_triplet = [triplet[-1]] + triplet[1:-1] + [triplet[0]]
+                if triplet not in chain_triplets and reverse_triplet not in chain_triplets:
                     chain_triplets.append(triplet)
 
         def format_triplet(triplet):
@@ -163,8 +178,16 @@ for flname, depth in [
             thres = thres2
         else:
             thres = thres1
-        for (step, direction, rel), triplets in triplets_dict.items():
-            for triplet in triplets[:thres]:
+
+        total_f_triplets = []
+        for (step, direction, seed_entity, rel), triplets in triplets_dict.items():
+            f_triplets = []
+            for triplet in triplets:
+                reverse_triplet = [triplet[-1]] + triplet[1:-1] + [triplet[0]]
+                if triplet not in total_f_triplets and reverse_triplet not in total_f_triplets:
+                    f_triplets.append(triplet)
+                    total_f_triplets.append(triplet)
+            for triplet in f_triplets[:thres]:
                 formatted_triplet = format_triplet(triplet)
                 triplets_formatted.append(formatted_triplet)
 
@@ -178,20 +201,28 @@ for flname, depth in [
         pred_answer = ""
         found_line = ""
         for line in res.split("\n"):
-            if "Final answer 3" in line:
+            if "Final answer 5" in line:
                 found_line = line
                 break
+        if not found_line and "Final answer 5" in res:
+            fnd = res.find("Final answer 5")
+            found_line = res[fnd:]
+
+        with open("qa_bfs_log.txt", 'a') as out:
+            out.write(f"found_line: {found_line}"+'\n\n')
+
         if found_line:
-            pred_answer = found_line.split("Final answer 3: ")[-1]
+            pred_answer = found_line.split("Final answer 5: ")[-1]
         elif len(res.split("\n")) > 1:
             pred_answer = res.split("\n")[1]
         else:
             pred_answer = ""
         with open("qa_bfs_log.txt", 'a') as out:
-            out.write(f"pred_answer: {res}"+'\n')
+            out.write(f"pred_answer: {pred_answer}"+'\n')
+            out.write(f"res_answer: {res}"+'\n')
             out.write("_"*70+'\n\n')
 
         print("pred_answer", pred_answer)
         results.append({"question": question, "triplets": triplets_formatted, "gold_answer": answer, "pred_answer": pred_answer})
-        with open(f"answers/{flname.replace('.json', '')}_bfs2.json", 'w') as out:
+        with open(f"answers/{flname.replace('.json', '')}_bfs_emb.json", 'w') as out:
             json.dump(results, out, indent=2)

@@ -207,9 +207,9 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                                         inters_chains.append(ch)
                                 for triplet in new_triplets:
                                     if (step, "forw", triplet[1]) not in triplets_dict:
-                                        triplets_dict[(step, "forw", triplet[1])] = []
-                                    if triplet not in triplets_dict[(step, "forw", triplet[1])]:
-                                        triplets_dict[(step, "forw", triplet[1])].append(triplet)
+                                        triplets_dict[(step, "forw", seed_entity, triplet[1])] = []
+                                    if triplet not in triplets_dict[(step, "forw", seed_entity, triplet[1])]:
+                                        triplets_dict[(step, "forw", seed_entity, triplet[1])].append(triplet)
                                 for ent in cur_entities:
                                     if ent not in new_entities:
                                         new_entities.append(ent)
@@ -222,9 +222,9 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                                         inters_chains.append(ch)
                                 for triplet in new_triplets:
                                     if (step, "backw", triplet[1]) not in triplets_dict:
-                                        triplets_dict[(step, "backw", triplet[1])] = []
-                                    if triplet not in triplets_dict[(step, "backw", triplet[1])]:
-                                        triplets_dict[(step, "backw", triplet[1])].append(triplet)
+                                        triplets_dict[(step, "backw", seed_entity, triplet[1])] = []
+                                    if triplet not in triplets_dict[(step, "backw", seed_entity, triplet[1])]:
+                                        triplets_dict[(step, "backw", seed_entity, triplet[1])].append(triplet)
                                 for ent in cur_entities:
                                     if ent not in new_entities:
                                         new_entities.append(ent)
@@ -238,10 +238,10 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                                     if ch not in inters_chains:
                                         inters_chains.append(ch)
                                 for triplet in new_triplets:
-                                    if (step, "forw", triplet[1]) not in triplets_dict:
-                                        triplets_dict[(step, "forw", triplet[1])] = []
-                                    if triplet not in triplets_dict[(step, "forw", triplet[1])]:
-                                        triplets_dict[(step, "forw", triplet[1])].append(triplet)
+                                    if (step, "forw", seed_entity, triplet[1]) not in triplets_dict:
+                                        triplets_dict[(step, "forw", seed_entity, triplet[1])] = []
+                                    if triplet not in triplets_dict[(step, "forw", seed_entity, triplet[1])]:
+                                        triplets_dict[(step, "forw", seed_entity, triplet[1])].append(triplet)
                                 for ent in cur_entities:
                                     if ent not in new_entities:
                                         new_entities.append(ent)
