@@ -45,5 +45,5 @@ class ReaderMetrics:
         
     def exact_match(self, predicted: List[str], targets: List[str]) -> List[float]:
         return [self.em_obj.compute(
-            predictions=[predicted[i]], references=[targets[i]])["exact_match"]
+            predictions=[predicted[i]], references=[targets[i]], ignore_case=True)["exact_match"]
                 for i in range(len(targets))]

@@ -11,7 +11,7 @@
     },
     {
      "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1197",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1198",
      "raw_time": "15175",
      "sentiment": "pos",
      "person": "Belinda",
@@ -19,129 +19,54 @@
      "opinion": "very_good"
     },
     {
-     "name": "wireless_charging",
+     "name": "telephoto",
      "labels": [
       "feature"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:781"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:170"
     }
    ],
    [
     {
-     "name": "wireless_charging",
+     "name": "telephoto",
      "labels": [
       "feature"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:781"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:170"
     },
     {
      "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3670",
-     "raw_time": "15744",
-     "sentiment": "neg",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:553",
+     "raw_time": "10992",
+     "sentiment": "pos",
      "person": "Brandon",
-     "time": "19.10.2019",
-     "opinion": "Slow_and_unreliable"
+     "time": "4.4.2019",
+     "opinion": "leading"
     },
     {
-     "name": "Xiaomi",
+     "name": "12u",
      "labels": [
       "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:263"
     }
    ],
    [
     {
-     "name": "wireless_charging",
+     "name": "12u",
      "labels": [
-      "feature"
+      "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:781"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:263"
     },
     {
      "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3244",
-     "raw_time": "18406",
-     "sentiment": "neu",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:552",
+     "raw_time": "10992",
+     "sentiment": "pos",
      "person": "Brandon",
-     "time": "6.2.2020",
-     "opinion": "Not_a_dealbreaker"
-    },
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4654",
-     "raw_time": "25512",
-     "sentiment": "neu",
-     "person": "Clifford",
-     "time": "30.11.2020",
-     "opinion": "Its_okay"
-    },
-    {
-     "name": "video",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1"
-    }
-   ],
-   [
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3940",
-     "raw_time": "25660",
-     "sentiment": "neu",
-     "person": "Alexander",
-     "time": "6.12.2020",
-     "opinion": "Its_decent"
-    },
-    {
-     "name": "video",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1"
-    }
-   ],
-   [
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3718",
-     "raw_time": "25070",
-     "sentiment": "neg",
-     "person": "Alexander",
-     "time": "11.11.2020",
-     "opinion": "Always_shaky"
+     "time": "4.4.2019",
+     "opinion": "leading"
     },
     {
      "name": "video",
@@ -19497,11 +19422,31 @@
   "retrieved_tripletes": [
    [
     {
-     "name": "signal",
+     "name": "Apple",
      "labels": [
-      "feature"
+      "manufacturer"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1602"
+    },
+    {
+     "type": "manufacturer",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10372"
+    },
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19513,20 +19458,20 @@
      "opinion": "Always_been_strong"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19538,20 +19483,20 @@
      "opinion": "No_signal_problem"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19563,20 +19508,20 @@
      "opinion": "Dropping_calls_always"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19588,20 +19533,20 @@
      "opinion": "Always_been_great"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19613,20 +19558,20 @@
      "opinion": "Always_spotty"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19638,20 +19583,20 @@
      "opinion": "Always_been_decent"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19663,20 +19608,20 @@
      "opinion": "Always_been_strong"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19688,20 +19633,20 @@
      "opinion": "Always_been_strong"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19713,20 +19658,20 @@
      "opinion": "Always_strong_signal"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19738,20 +19683,20 @@
      "opinion": "Its_decent_I"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19763,20 +19708,20 @@
      "opinion": "Had_same_issue"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19788,20 +19733,20 @@
      "opinion": "No_signal_always"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19813,20 +19758,20 @@
      "opinion": "Always_been_reliable"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19838,20 +19783,20 @@
      "opinion": "Its_just_average"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19863,20 +19808,20 @@
      "opinion": "Always_weak"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19888,20 +19833,20 @@
      "opinion": "Decent_I_guess"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19913,20 +19858,20 @@
      "opinion": "Terrible_always_dropping"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19938,20 +19883,20 @@
      "opinion": "Always_strong_signal"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19963,20 +19908,20 @@
      "opinion": "No_signal_issues"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -19988,20 +19933,20 @@
      "opinion": "Dropping_calls"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20013,20 +19958,20 @@
      "opinion": "Always_been_strong"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20038,20 +19983,20 @@
      "opinion": "Always_been_decent"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20063,20 +20008,20 @@
      "opinion": "Its_just_there"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20088,20 +20033,20 @@
      "opinion": "Really_good_signal"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20113,20 +20058,20 @@
      "opinion": "Dropping_calls_always"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20138,20 +20083,20 @@
      "opinion": "Signal_dropping_always"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20163,20 +20108,20 @@
      "opinion": "Always_strong"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20188,20 +20133,20 @@
      "opinion": "Pretty_decent_signal"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20213,20 +20158,20 @@
      "opinion": "Always_been_strong"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20238,20 +20183,20 @@
      "opinion": "No_signal_issues"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20263,20 +20208,20 @@
      "opinion": "Always_dropping"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20288,20 +20233,20 @@
      "opinion": "Nothing_but_problems"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20313,20 +20258,20 @@
      "opinion": "Its_decent"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20338,20 +20283,20 @@
      "opinion": "Sometimes_its_bad"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20363,20 +20308,20 @@
      "opinion": "No_signal_always"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20388,20 +20333,20 @@
      "opinion": "Its_not_always"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20413,20 +20358,20 @@
      "opinion": "Always_been_strong"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20438,20 +20383,20 @@
      "opinion": "Its_decent_I"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20463,20 +20408,20 @@
      "opinion": "Never_had_problem"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20488,20 +20433,20 @@
      "opinion": "Always_strong_signal"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20513,20 +20458,20 @@
      "opinion": "Always_strong_signal"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20538,20 +20483,20 @@
      "opinion": "Its_just_okay"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20563,20 +20508,20 @@
      "opinion": "Always_struggling"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20588,20 +20533,20 @@
      "opinion": "Dropping_calls_always"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20613,20 +20558,20 @@
      "opinion": "Its_not_bad"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20638,20 +20583,20 @@
      "opinion": "Decent_not_best"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20663,20 +20608,20 @@
      "opinion": "Not_great"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20688,20 +20633,20 @@
      "opinion": "No_issues_ever"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20713,20 +20658,20 @@
      "opinion": "Not_always_bad"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20738,20 +20683,20 @@
      "opinion": "No_signal_daily"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20763,20 +20708,20 @@
      "opinion": "Lose_signal_often"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20788,20 +20733,20 @@
      "opinion": "Decent_not_bad"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20813,20 +20758,20 @@
      "opinion": "Really_good_signal"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20838,20 +20783,20 @@
      "opinion": "Always_strong_signal"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20863,20 +20808,20 @@
      "opinion": "Had_some_issues"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20888,20 +20833,20 @@
      "opinion": "Always_stable_fast"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20913,20 +20858,20 @@
      "opinion": "Poor_signal"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20938,20 +20883,20 @@
      "opinion": "Always_been_great"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20963,20 +20908,20 @@
      "opinion": "Always_dropping"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -20988,20 +20933,20 @@
      "opinion": "Signal_is_strong"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -21013,20 +20958,20 @@
      "opinion": "Dropping_calls_always"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -21038,20 +20983,20 @@
      "opinion": "same"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -21063,20 +21008,20 @@
      "opinion": "too_worried"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -21088,20 +21033,20 @@
      "opinion": "bad"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -21113,245 +21058,20 @@
      "opinion": "no"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "signal",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:271",
-     "raw_time": "1613",
-     "sentiment": "neg",
-     "person": "Gerld",
-     "time": "9.3.2018",
-     "opinion": "worst"
-    },
+    }
+   ],
+   [
     {
      "name": "Apple",
      "labels": [
       "device"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "signal",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:272",
-     "raw_time": "1613",
-     "sentiment": "neg",
-     "person": "Dennis",
-     "time": "9.3.2018",
-     "opinion": "definitely_the_worst"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "signal",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:403",
-     "raw_time": "5571",
-     "sentiment": "neu",
-     "person": "Leah",
-     "time": "21.8.2018",
-     "opinion": "similar"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "signal",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:455",
-     "raw_time": "15964",
-     "sentiment": "neg",
-     "person": "Christine",
-     "time": "28.10.2019",
-     "opinion": "poor"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "signal",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:621",
-     "raw_time": "9691",
-     "sentiment": "neg",
-     "person": "Sara",
-     "time": "8.2.2019",
-     "opinion": "not_very_good"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "signal",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:864",
-     "raw_time": "22196",
-     "sentiment": "neg",
-     "person": "Chloe",
-     "time": "14.7.2020",
-     "opinion": "poor"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "signal",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1151",
-     "raw_time": "2629",
-     "sentiment": "neg",
-     "person": "Christopher",
-     "time": "20.4.2018",
-     "opinion": "poor"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "signal",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1154",
-     "raw_time": "2629",
-     "sentiment": "neu",
-     "person": "Geoffrey",
-     "time": "20.4.2018",
-     "opinion": "same"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "signal",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1331",
-     "raw_time": "16873",
-     "sentiment": "neg",
-     "person": "Gabriel",
-     "time": "5.12.2019",
-     "opinion": "not_good"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "signal",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
     },
     {
      "type": "opinion",
@@ -21363,6 +21083,255 @@
      "opinion": "not_good"
     },
     {
+     "name": "signal",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1331",
+     "raw_time": "16873",
+     "sentiment": "neg",
+     "person": "Gabriel",
+     "time": "5.12.2019",
+     "opinion": "not_good"
+    },
+    {
+     "name": "signal",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1154",
+     "raw_time": "2629",
+     "sentiment": "neu",
+     "person": "Geoffrey",
+     "time": "20.4.2018",
+     "opinion": "same"
+    },
+    {
+     "name": "signal",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1151",
+     "raw_time": "2629",
+     "sentiment": "neg",
+     "person": "Christopher",
+     "time": "20.4.2018",
+     "opinion": "poor"
+    },
+    {
+     "name": "signal",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:864",
+     "raw_time": "22196",
+     "sentiment": "neg",
+     "person": "Chloe",
+     "time": "14.7.2020",
+     "opinion": "poor"
+    },
+    {
+     "name": "signal",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:271",
+     "raw_time": "1613",
+     "sentiment": "neg",
+     "person": "Gerld",
+     "time": "9.3.2018",
+     "opinion": "worst"
+    },
+    {
+     "name": "signal",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:272",
+     "raw_time": "1613",
+     "sentiment": "neg",
+     "person": "Dennis",
+     "time": "9.3.2018",
+     "opinion": "definitely_the_worst"
+    },
+    {
+     "name": "signal",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:403",
+     "raw_time": "5571",
+     "sentiment": "neu",
+     "person": "Leah",
+     "time": "21.8.2018",
+     "opinion": "similar"
+    },
+    {
+     "name": "signal",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:455",
+     "raw_time": "15964",
+     "sentiment": "neg",
+     "person": "Christine",
+     "time": "28.10.2019",
+     "opinion": "poor"
+    },
+    {
+     "name": "signal",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:621",
+     "raw_time": "9691",
+     "sentiment": "neg",
+     "person": "Sara",
+     "time": "8.2.2019",
+     "opinion": "not_very_good"
+    },
+    {
+     "name": "signal",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:5"
+    }
+   ]
+  ]
+ },
+ {
+  "retrieved_tripletes": [
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "manufacturer"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1602"
+    },
+    {
+     "type": "manufacturer",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10372"
+    },
+    {
      "name": "Apple",
      "labels": [
       "device"
@@ -21377,30 +21346,6 @@
       "device"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    },
-    {
-     "type": "manufacturer",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10372"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "manufacturer"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1602"
-    }
-   ]
-  ]
- },
- {
-  "retrieved_tripletes": [
-   [
-    {
-     "name": "electricity",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1265"
     },
     {
      "type": "opinion",
@@ -21412,20 +21357,20 @@
      "opinion": "Drains_so_fast"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "electricity",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1265"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -21437,31 +21382,11 @@
      "opinion": "Really_impressive"
     },
     {
-     "name": "Apple",
+     "name": "electricity",
      "labels": [
-      "device"
+      "feature"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    },
-    {
-     "type": "manufacturer",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10372"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "manufacturer"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1602"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1265"
     }
    ]
   ]
@@ -21470,11 +21395,31 @@
   "retrieved_tripletes": [
    [
     {
-     "name": "power",
+     "name": "Xiaomi",
      "labels": [
-      "feature"
+      "manufacturer"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:10"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1601"
+    },
+    {
+     "type": "manufacturer",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10348"
+    },
+    {
+     "name": "XiaoMi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:9"
+    }
+   ],
+   [
+    {
+     "name": "XiaoMi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:9"
     },
     {
      "type": "opinion",
@@ -21486,20 +21431,20 @@
      "opinion": "Just_okay"
     },
     {
-     "name": "XiaoMi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:9"
-    }
-   ],
-   [
-    {
      "name": "power",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:10"
+    }
+   ],
+   [
+    {
+     "name": "XiaoMi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:9"
     },
     {
      "type": "opinion",
@@ -21511,20 +21456,20 @@
      "opinion": "Lasts_all_day"
     },
     {
-     "name": "XiaoMi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:9"
-    }
-   ],
-   [
-    {
      "name": "power",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:10"
+    }
+   ],
+   [
+    {
+     "name": "XiaoMi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:9"
     },
     {
      "type": "opinion",
@@ -21536,31 +21481,11 @@
      "opinion": "draining_fast"
     },
     {
-     "name": "XiaoMi",
+     "name": "power",
      "labels": [
-      "device"
+      "feature"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:9"
-    }
-   ],
-   [
-    {
-     "name": "XiaoMi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:9"
-    },
-    {
-     "type": "manufacturer",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10348"
-    },
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "manufacturer"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1601"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:10"
     }
    ]
   ]
@@ -21569,486 +21494,11 @@
   "retrieved_tripletes": [
    [
     {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6844",
-     "raw_time": "26188",
-     "sentiment": "neg",
-     "person": "James",
-     "time": "28.12.2020",
-     "opinion": "Always_running_out"
-    },
-    {
      "name": "Apple",
      "labels": [
-      "device"
+      "manufacturer"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6788",
-     "raw_time": "24112",
-     "sentiment": "neg",
-     "person": "Bailey",
-     "time": "2.10.2020",
-     "opinion": "Terrible_battery_life"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6786",
-     "raw_time": "24112",
-     "sentiment": "neu",
-     "person": "Adrian",
-     "time": "2.10.2020",
-     "opinion": "Its_just_okay"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6183",
-     "raw_time": "24932",
-     "sentiment": "pos",
-     "person": "Aidan",
-     "time": "5.11.2020",
-     "opinion": "Lasts_all_day"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6055",
-     "raw_time": "17583",
-     "sentiment": "pos",
-     "person": "Adrian",
-     "time": "3.1.2020",
-     "opinion": "amazing_battery_life"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5975",
-     "raw_time": "16483",
-     "sentiment": "neg",
-     "person": "Leah",
-     "time": "18.11.2019",
-     "opinion": "Drains_so_fast"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5169",
-     "raw_time": "26164",
-     "sentiment": "neu",
-     "person": "Bailey",
-     "time": "27.12.2020",
-     "opinion": "Decent_battery_life"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4699",
-     "raw_time": "25022",
-     "sentiment": "neg",
-     "person": "Christian",
-     "time": "9.11.2020",
-     "opinion": "Its_awful"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4584",
-     "raw_time": "26022",
-     "sentiment": "neu",
-     "person": "Linda",
-     "time": "21.12.2020",
-     "opinion": "Its_just_okay"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4355",
-     "raw_time": "25732",
-     "sentiment": "neu",
-     "person": "Wyatt",
-     "time": "9.12.2020",
-     "opinion": "battery_life_decent"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3550",
-     "raw_time": "26040",
-     "sentiment": "pos",
-     "person": "Adrian",
-     "time": "22.12.2020",
-     "opinion": "Lasts_whole_day"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3159",
-     "raw_time": "21669",
-     "sentiment": "neg",
-     "person": "Christine",
-     "time": "22.6.2020",
-     "opinion": "Always_dying"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3043",
-     "raw_time": "26046",
-     "sentiment": "neu",
-     "person": "Linda",
-     "time": "22.12.2020",
-     "opinion": "Its_okay"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2345",
-     "raw_time": "25818",
-     "sentiment": "pos",
-     "person": "Linda",
-     "time": "12.12.2020",
-     "opinion": "Lasts_all_day"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1852",
-     "raw_time": "15950",
-     "sentiment": "neg",
-     "person": "Leslie",
-     "time": "27.10.2019",
-     "opinion": "not_too_big"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7",
-     "raw_time": "6173",
-     "sentiment": "pos",
-     "person": "Hugh",
-     "time": "15.9.2018",
-     "opinion": "not_the_weakness"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:456",
-     "raw_time": "15964",
-     "sentiment": "neg",
-     "person": "Christine",
-     "time": "28.10.2019",
-     "opinion": "small"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1057",
-     "raw_time": "15641",
-     "sentiment": "neg",
-     "person": "Wyatt",
-     "time": "14.10.2019",
-     "opinion": "much_cheaper"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1330",
-     "raw_time": "16873",
-     "sentiment": "neg",
-     "person": "Gabriel",
-     "time": "5.12.2019",
-     "opinion": "not_good"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1602"
     },
     {
      "type": "manufacturer",
@@ -22057,22 +21507,18 @@
     {
      "name": "Apple",
      "labels": [
-      "manufacturer"
+      "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1602"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     }
-   ]
-  ]
- },
- {
-  "retrieved_tripletes": [
+   ],
    [
     {
-     "name": "battery",
+     "name": "Apple",
      "labels": [
-      "feature"
+      "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -22084,20 +21530,20 @@
      "opinion": "Always_running_out"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "battery",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -22109,20 +21555,20 @@
      "opinion": "Terrible_battery_life"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "battery",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -22134,20 +21580,20 @@
      "opinion": "Its_just_okay"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "battery",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -22159,20 +21605,20 @@
      "opinion": "Lasts_all_day"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "battery",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -22184,20 +21630,20 @@
      "opinion": "amazing_battery_life"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "battery",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -22209,20 +21655,20 @@
      "opinion": "Drains_so_fast"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "battery",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -22234,20 +21680,20 @@
      "opinion": "Decent_battery_life"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "battery",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -22259,20 +21705,20 @@
      "opinion": "Its_awful"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "battery",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -22284,20 +21730,20 @@
      "opinion": "Its_just_okay"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "battery",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -22309,20 +21755,20 @@
      "opinion": "battery_life_decent"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "battery",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -22334,20 +21780,20 @@
      "opinion": "Lasts_whole_day"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "battery",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -22359,20 +21805,20 @@
      "opinion": "Always_dying"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "battery",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -22384,20 +21830,20 @@
      "opinion": "Its_okay"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "battery",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -22409,20 +21855,20 @@
      "opinion": "Lasts_all_day"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "battery",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
@@ -22434,95 +21880,20 @@
      "opinion": "not_too_big"
     },
     {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
      "name": "battery",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7",
-     "raw_time": "6173",
-     "sentiment": "pos",
-     "person": "Hugh",
-     "time": "15.9.2018",
-     "opinion": "not_the_weakness"
-    },
+    }
+   ],
+   [
     {
      "name": "Apple",
      "labels": [
       "device"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:456",
-     "raw_time": "15964",
-     "sentiment": "neg",
-     "person": "Christine",
-     "time": "28.10.2019",
-     "opinion": "small"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1057",
-     "raw_time": "15641",
-     "sentiment": "neg",
-     "person": "Wyatt",
-     "time": "14.10.2019",
-     "opinion": "much_cheaper"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
     },
     {
      "type": "opinion",
@@ -22534,11 +21905,11 @@
      "opinion": "not_good"
     },
     {
-     "name": "Apple",
+     "name": "battery",
      "labels": [
-      "device"
+      "feature"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
     }
    ],
    [
@@ -22548,6 +21919,105 @@
       "device"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1057",
+     "raw_time": "15641",
+     "sentiment": "neg",
+     "person": "Wyatt",
+     "time": "14.10.2019",
+     "opinion": "much_cheaper"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7",
+     "raw_time": "6173",
+     "sentiment": "pos",
+     "person": "Hugh",
+     "time": "15.9.2018",
+     "opinion": "not_the_weakness"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:456",
+     "raw_time": "15964",
+     "sentiment": "neg",
+     "person": "Christine",
+     "time": "28.10.2019",
+     "opinion": "small"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ]
+  ]
+ },
+ {
+  "retrieved_tripletes": [
+   [
+    {
+     "name": "iPhone",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:96"
+    },
+    {
+     "type": "manufacturer",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10368"
+    },
+    {
+     "name": "Apple",
+     "labels": [
+      "manufacturer"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1595"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "manufacturer"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1595"
     },
     {
      "type": "manufacturer",
@@ -22556,29 +22026,484 @@
     {
      "name": "Apple",
      "labels": [
-      "manufacturer"
+      "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1595"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     }
    ],
    [
     {
      "name": "Apple",
      "labels": [
-      "manufacturer"
+      "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1595"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
-     "type": "manufacturer",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10368"
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6844",
+     "raw_time": "26188",
+     "sentiment": "neg",
+     "person": "James",
+     "time": "28.12.2020",
+     "opinion": "Always_running_out"
     },
     {
-     "name": "iPhone",
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
      "labels": [
       "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:96"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6788",
+     "raw_time": "24112",
+     "sentiment": "neg",
+     "person": "Bailey",
+     "time": "2.10.2020",
+     "opinion": "Terrible_battery_life"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6786",
+     "raw_time": "24112",
+     "sentiment": "neu",
+     "person": "Adrian",
+     "time": "2.10.2020",
+     "opinion": "Its_just_okay"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6183",
+     "raw_time": "24932",
+     "sentiment": "pos",
+     "person": "Aidan",
+     "time": "5.11.2020",
+     "opinion": "Lasts_all_day"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6055",
+     "raw_time": "17583",
+     "sentiment": "pos",
+     "person": "Adrian",
+     "time": "3.1.2020",
+     "opinion": "amazing_battery_life"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5975",
+     "raw_time": "16483",
+     "sentiment": "neg",
+     "person": "Leah",
+     "time": "18.11.2019",
+     "opinion": "Drains_so_fast"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5169",
+     "raw_time": "26164",
+     "sentiment": "neu",
+     "person": "Bailey",
+     "time": "27.12.2020",
+     "opinion": "Decent_battery_life"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4699",
+     "raw_time": "25022",
+     "sentiment": "neg",
+     "person": "Christian",
+     "time": "9.11.2020",
+     "opinion": "Its_awful"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4584",
+     "raw_time": "26022",
+     "sentiment": "neu",
+     "person": "Linda",
+     "time": "21.12.2020",
+     "opinion": "Its_just_okay"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4355",
+     "raw_time": "25732",
+     "sentiment": "neu",
+     "person": "Wyatt",
+     "time": "9.12.2020",
+     "opinion": "battery_life_decent"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3550",
+     "raw_time": "26040",
+     "sentiment": "pos",
+     "person": "Adrian",
+     "time": "22.12.2020",
+     "opinion": "Lasts_whole_day"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3159",
+     "raw_time": "21669",
+     "sentiment": "neg",
+     "person": "Christine",
+     "time": "22.6.2020",
+     "opinion": "Always_dying"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3043",
+     "raw_time": "26046",
+     "sentiment": "neu",
+     "person": "Linda",
+     "time": "22.12.2020",
+     "opinion": "Its_okay"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2345",
+     "raw_time": "25818",
+     "sentiment": "pos",
+     "person": "Linda",
+     "time": "12.12.2020",
+     "opinion": "Lasts_all_day"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1852",
+     "raw_time": "15950",
+     "sentiment": "neg",
+     "person": "Leslie",
+     "time": "27.10.2019",
+     "opinion": "not_too_big"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1330",
+     "raw_time": "16873",
+     "sentiment": "neg",
+     "person": "Gabriel",
+     "time": "5.12.2019",
+     "opinion": "not_good"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1057",
+     "raw_time": "15641",
+     "sentiment": "neg",
+     "person": "Wyatt",
+     "time": "14.10.2019",
+     "opinion": "much_cheaper"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7",
+     "raw_time": "6173",
+     "sentiment": "pos",
+     "person": "Hugh",
+     "time": "15.9.2018",
+     "opinion": "not_the_weakness"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:456",
+     "raw_time": "15964",
+     "sentiment": "neg",
+     "person": "Christine",
+     "time": "28.10.2019",
+     "opinion": "small"
+    },
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
     }
    ]
   ]
@@ -22674,1062 +22599,152 @@
     },
     {
      "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5731",
-     "raw_time": "21692",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6092",
+     "raw_time": "25859",
      "sentiment": "neg",
-     "person": "Violet",
-     "time": "23.6.2020",
-     "opinion": "Drains_so_fast"
-    },
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3583",
-     "raw_time": "23431",
-     "sentiment": "neg",
-     "person": "Alfred",
-     "time": "4.9.2020",
-     "opinion": "Drains_so_fast"
-    },
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2262",
-     "raw_time": "26015",
-     "sentiment": "neu",
-     "person": "Joyce",
-     "time": "20.12.2020",
-     "opinion": "Decent_battery_life"
-    },
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    }
-   ],
-   [
-    {
-     "name": "battery",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1271",
-     "raw_time": "3905",
-     "sentiment": "pos",
-     "person": "Alfred",
-     "time": "12.6.2018",
-     "opinion": "large"
-    },
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7157",
-     "raw_time": "24353",
-     "sentiment": "pos",
-     "person": "Adam",
-     "time": "12.10.2020",
-     "opinion": "amazing_battery_life"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7004",
-     "raw_time": "26064",
-     "sentiment": "neu",
-     "person": "Katherine",
-     "time": "23.12.2020",
-     "opinion": "Its_okay"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6530",
-     "raw_time": "24770",
-     "sentiment": "neg",
-     "person": "Adam",
-     "time": "30.10.2020",
-     "opinion": "Drains_so_fast"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6448",
-     "raw_time": "22614",
-     "sentiment": "pos",
-     "person": "Donald",
-     "time": "1.8.2020",
-     "opinion": "amazing_battery_life"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6380",
-     "raw_time": "24196",
-     "sentiment": "neu",
-     "person": "Donald",
-     "time": "6.10.2020",
-     "opinion": "Just_average"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6379",
-     "raw_time": "24196",
-     "sentiment": "neu",
-     "person": "Ella",
-     "time": "6.10.2020",
-     "opinion": "Not_too_bad"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5981",
-     "raw_time": "25516",
-     "sentiment": "pos",
-     "person": "Daniel",
-     "time": "30.11.2020",
-     "opinion": "amazing_battery_life"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5913",
-     "raw_time": "18816",
-     "sentiment": "neu",
-     "person": "Jose",
-     "time": "24.2.2020",
-     "opinion": "Lasts_a_day"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5652",
-     "raw_time": "23246",
-     "sentiment": "neg",
-     "person": "Daniel",
-     "time": "27.8.2020",
-     "opinion": "Terrible_battery_life"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5585",
-     "raw_time": "22479",
-     "sentiment": "neu",
-     "person": "Anthony",
-     "time": "26.7.2020",
-     "opinion": "It_gets_done"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5583",
-     "raw_time": "22479",
-     "sentiment": "pos",
-     "person": "Kylie",
-     "time": "26.7.2020",
-     "opinion": "Lasts_all_day"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5574",
-     "raw_time": "21905",
-     "sentiment": "neu",
-     "person": "Mackenzie",
-     "time": "2.7.2020",
-     "opinion": "Its_decent_I"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5117",
-     "raw_time": "20168",
-     "sentiment": "neu",
-     "person": "Celia",
-     "time": "21.4.2020",
-     "opinion": "Sometimes_it_doesnt"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5048",
-     "raw_time": "19637",
-     "sentiment": "pos",
-     "person": "Kevin",
-     "time": "30.3.2020",
-     "opinion": "amazing_battery_life"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4930",
-     "raw_time": "23604",
-     "sentiment": "neu",
-     "person": "Kylie",
-     "time": "11.9.2020",
-     "opinion": "Its_decent"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4929",
-     "raw_time": "23604",
-     "sentiment": "pos",
-     "person": "Louis",
-     "time": "11.9.2020",
-     "opinion": "amazing_battery_life"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4365",
-     "raw_time": "26009",
-     "sentiment": "neg",
-     "person": "Kylie",
-     "time": "20.12.2020",
-     "opinion": "Always_running_out"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4290",
-     "raw_time": "26195",
-     "sentiment": "neu",
-     "person": "Ella",
-     "time": "28.12.2020",
-     "opinion": "Its_decent"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4197",
-     "raw_time": "26170",
-     "sentiment": "pos",
-     "person": "Lauren",
-     "time": "27.12.2020",
-     "opinion": "Incredible_battery_life"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3743",
-     "raw_time": "26185",
-     "sentiment": "neg",
-     "person": "Ella",
-     "time": "28.12.2020",
-     "opinion": "Drains_so_fast"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3697",
-     "raw_time": "24108",
-     "sentiment": "neg",
-     "person": "Isabella",
-     "time": "2.10.2020",
-     "opinion": "Terrible_battery"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3631",
-     "raw_time": "23805",
-     "sentiment": "neu",
-     "person": "Isabella",
-     "time": "19.9.2020",
-     "opinion": "Its_not_amazing"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3218",
-     "raw_time": "25577",
-     "sentiment": "pos",
-     "person": "Daniel",
-     "time": "2.12.2020",
-     "opinion": "Incredible_battery_life"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2838",
-     "raw_time": "26190",
-     "sentiment": "neg",
-     "person": "Daniel",
-     "time": "28.12.2020",
+     "person": "William",
+     "time": "14.12.2020",
      "opinion": "Really_disappointing"
     },
     {
-     "name": "battery_life",
+     "name": "Samsung",
      "labels": [
-      "feature"
+      "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
     }
    ],
    [
     {
-     "name": "Huawei",
+     "name": "battery",
      "labels": [
-      "device"
+      "feature"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
     },
     {
      "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2822",
-     "raw_time": "26099",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4717",
+     "raw_time": "19596",
+     "sentiment": "pos",
+     "person": "Aidan",
+     "time": "28.3.2020",
+     "opinion": "Lasts_all_day"
+    },
+    {
+     "name": "Samsung",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
+    }
+   ],
+   [
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4626",
+     "raw_time": "24320",
+     "sentiment": "neu",
+     "person": "William",
+     "time": "11.10.2020",
+     "opinion": "Decent_gets_done"
+    },
+    {
+     "name": "Samsung",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
+    }
+   ],
+   [
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2741",
+     "raw_time": "20719",
+     "sentiment": "pos",
+     "person": "Aidan",
+     "time": "14.5.2020",
+     "opinion": "Never_disappoint"
+    },
+    {
+     "name": "Samsung",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
+    }
+   ],
+   [
+    {
+     "name": "battery",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:12"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1072",
+     "raw_time": "2982",
      "sentiment": "neg",
-     "person": "Gabriel",
-     "time": "24.12.2020",
-     "opinion": "Always_dying"
+     "person": "Jane",
+     "time": "5.5.2018",
+     "opinion": "better"
     },
     {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
+     "name": "Samsung",
      "labels": [
       "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2159",
-     "raw_time": "24217",
-     "sentiment": "neu",
-     "person": "Gabriel",
-     "time": "7.10.2020",
-     "opinion": "Could_be"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
     }
    ],
    [
     {
-     "name": "Huawei",
+     "name": "Samsung",
      "labels": [
       "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
     },
     {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2156",
-     "raw_time": "24217",
-     "sentiment": "pos",
-     "person": "Cecilia",
-     "time": "7.10.2020",
-     "opinion": "All_day"
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9468"
     },
     {
-     "name": "battery_life",
+     "name": "Rita",
      "labels": [
-      "feature"
+      "person"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1413"
     }
    ],
    [
     {
-     "name": "Huawei",
+     "name": "Rita",
      "labels": [
-      "device"
+      "person"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1413"
     },
     {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2088",
-     "raw_time": "24957",
-     "sentiment": "neu",
-     "person": "Patricia",
-     "time": "6.11.2020",
-     "opinion": "Not_great"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2043",
-     "raw_time": "25474",
-     "sentiment": "neu",
-     "person": "Kylie",
-     "time": "28.11.2020",
-     "opinion": "It_gets_done"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2018",
-     "raw_time": "20849",
-     "sentiment": "neu",
-     "person": "Gabriel",
-     "time": "19.5.2020",
-     "opinion": "not_very_good"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2017",
-     "raw_time": "20849",
-     "sentiment": "neg",
-     "person": "Mackenzie",
-     "time": "19.5.2020",
-     "opinion": "not_good"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1568",
-     "raw_time": "13277",
-     "sentiment": "pos",
-     "person": "Patricia",
-     "time": "8.7.2019",
-     "opinion": "good"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1007",
-     "raw_time": "22436",
-     "sentiment": "neg",
-     "person": "Isabella",
-     "time": "24.7.2020",
-     "opinion": "collapse"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1127",
-     "raw_time": "16119",
-     "sentiment": "neg",
-     "person": "Ella",
-     "time": "3.11.2019",
-     "opinion": "such_a_poor"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1143",
-     "raw_time": "23045",
-     "sentiment": "pos",
-     "person": "James",
-     "time": "19.8.2020",
-     "opinion": "very_good"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1148",
-     "raw_time": "23045",
-     "sentiment": "pos",
-     "person": "Adam",
-     "time": "19.8.2020",
-     "opinion": "very_stable"
-    },
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    }
-   ],
-   [
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3881",
-     "raw_time": "24685",
-     "sentiment": "neu",
-     "person": "Dennis",
-     "time": "26.10.2020",
-     "opinion": "Decent_battery_life"
-    },
-    {
-     "name": "iPhone11_Pro_Max",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:16"
-    }
-   ],
-   [
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2994",
-     "raw_time": "25884",
-     "sentiment": "pos",
-     "person": "Rita",
-     "time": "15.12.2020",
-     "opinion": "Last_a_day"
-    },
-    {
-     "name": "iPhone11_Pro_Max",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:16"
-    }
-   ],
-   [
-    {
-     "name": "battery_life",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:17"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10",
-     "raw_time": "6173",
-     "sentiment": "pos",
-     "person": "Dennis",
-     "time": "15.9.2018",
-     "opinion": "first_ladder"
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8387"
     },
     {
      "name": "iPhone11_Pro_Max",
@@ -24244,11 +23259,11 @@
   "retrieved_tripletes": [
    [
     {
-     "name": "photography_camera_module",
+     "name": "MIX4",
      "labels": [
-      "feature"
+      "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:20"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:19"
     },
     {
      "type": "opinion",
@@ -24260,11 +23275,11 @@
      "opinion": "various"
     },
     {
-     "name": "MIX4",
+     "name": "photography_camera_module",
      "labels": [
-      "device"
+      "feature"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:19"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:20"
     }
    ]
   ]
@@ -24606,11 +23621,31 @@
   "retrieved_tripletes": [
    [
     {
-     "name": "fast_charging",
+     "name": "Xiaomi",
      "labels": [
-      "feature"
+      "manufacturer"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1601"
+    },
+    {
+     "type": "manufacturer",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10350"
+    },
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
+    }
+   ],
+   [
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
     },
     {
      "type": "opinion",
@@ -24622,20 +23657,20 @@
      "opinion": "Its_so_convenient"
     },
     {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
      "name": "fast_charging",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
+    }
+   ],
+   [
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
     },
     {
      "type": "opinion",
@@ -24647,20 +23682,20 @@
      "opinion": "Really_slow"
     },
     {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
      "name": "fast_charging",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
+    }
+   ],
+   [
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
     },
     {
      "type": "opinion",
@@ -24672,20 +23707,20 @@
      "opinion": "Takes_forever"
     },
     {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
      "name": "fast_charging",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
+    }
+   ],
+   [
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
     },
     {
      "type": "opinion",
@@ -24697,20 +23732,20 @@
      "opinion": "so_convenient"
     },
     {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
      "name": "fast_charging",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
+    }
+   ],
+   [
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
     },
     {
      "type": "opinion",
@@ -24722,20 +23757,20 @@
      "opinion": "Decent_but_slow"
     },
     {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
      "name": "fast_charging",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
+    }
+   ],
+   [
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
     },
     {
      "type": "opinion",
@@ -24747,20 +23782,20 @@
      "opinion": "Fast_charging_lifesaver"
     },
     {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
      "name": "fast_charging",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
+    }
+   ],
+   [
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
     },
     {
      "type": "opinion",
@@ -24772,20 +23807,20 @@
      "opinion": "Its_just_okay"
     },
     {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
      "name": "fast_charging",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
+    }
+   ],
+   [
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
     },
     {
      "type": "opinion",
@@ -24797,20 +23832,20 @@
      "opinion": "beaten"
     },
     {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
      "name": "fast_charging",
      "labels": [
       "feature"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
+    }
+   ],
+   [
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
     },
     {
      "type": "opinion",
@@ -24822,31 +23857,11 @@
      "opinion": "inferior_to"
     },
     {
-     "name": "Xiaomi",
+     "name": "fast_charging",
      "labels": [
-      "device"
+      "feature"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    },
-    {
-     "type": "manufacturer",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10350"
-    },
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "manufacturer"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1601"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
     }
    ]
   ]

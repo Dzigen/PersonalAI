@@ -30,348 +30,133 @@
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
-     "type": "manufacturer",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10372"
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6728",
+     "raw_time": "24386",
+     "sentiment": "pos",
+     "person": "Ethan",
+     "time": "14.10.2020",
+     "opinion": "Fixing_bugs_reliably"
     },
+    {
+     "name": "bugs_than",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1158"
+    }
+   ],
+   [
     {
      "name": "Apple",
      "labels": [
-      "manufacturer"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1602"
-    }
-   ],
-   [
-    {
-     "name": "Apple",
-     "labels": [
-      "manufacturer"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1602"
-    },
-    {
-     "type": "manufacturer",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10358"
-    },
-    {
-     "name": "apple",
-     "labels": [
       "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:180"
-    }
-   ],
-   [
-    {
-     "name": "apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:180"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:172",
-     "raw_time": "1359",
-     "sentiment": "neg",
-     "person": "Ella",
-     "time": "26.2.2018",
-     "opinion": "not_fragrant"
-    },
-    {
-     "name": "texture",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:181"
-    }
-   ],
-   [
-    {
-     "name": "texture",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:181"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6918",
-     "raw_time": "25362",
-     "sentiment": "neu",
-     "person": "Hunter",
-     "time": "23.11.2020",
-     "opinion": "Pretty_average"
-    },
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
-     "name": "texture",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:181"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6434",
-     "raw_time": "25302",
-     "sentiment": "neg",
-     "person": "Delia",
-     "time": "21.11.2020",
-     "opinion": "Its_so_slippery"
-    },
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
-     "name": "texture",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:181"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6076",
-     "raw_time": "24902",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3017",
+     "raw_time": "25466",
      "sentiment": "pos",
-     "person": "Juan",
-     "time": "4.11.2020",
-     "opinion": "even_better"
+     "person": "Lynn",
+     "time": "28.11.2020",
+     "opinion": "Been_solid"
     },
     {
-     "name": "Xiaomi",
+     "name": "bugs_than",
      "labels": [
-      "device"
+      "feature"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1158"
     }
    ],
    [
     {
-     "name": "texture",
+     "name": "bugs_than",
      "labels": [
       "feature"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:181"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1158"
     },
     {
      "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5897",
-     "raw_time": "26157",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6030",
+     "raw_time": "19428",
      "sentiment": "pos",
-     "person": "Delia",
-     "time": "26.12.2020",
-     "opinion": "Feels_so_premium"
+     "person": "Lynn",
+     "time": "21.3.2020",
+     "opinion": "bug_fixes"
     },
     {
-     "name": "Xiaomi",
+     "name": "Android",
      "labels": [
       "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:280"
     }
    ],
    [
     {
-     "name": "texture",
+     "name": "bugs_than",
      "labels": [
       "feature"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:181"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1158"
     },
     {
      "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4393",
-     "raw_time": "21104",
-     "sentiment": "neg",
-     "person": "Grace",
-     "time": "30.5.2020",
-     "opinion": "So_cheap"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5215",
+     "raw_time": "26218",
+     "sentiment": "pos",
+     "person": "Lynn",
+     "time": "29.12.2020",
+     "opinion": "Always_on_point"
     },
     {
-     "name": "Xiaomi",
+     "name": "Android",
      "labels": [
       "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:280"
     }
    ],
    [
     {
-     "name": "texture",
+     "name": "bugs_than",
      "labels": [
       "feature"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:181"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1158"
     },
     {
      "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3790",
-     "raw_time": "26050",
-     "sentiment": "neu",
-     "person": "Ethan",
-     "time": "22.12.2020",
-     "opinion": "Not_a_dealbreaker"
-    },
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
-     "name": "texture",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:181"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3393",
-     "raw_time": "26202",
-     "sentiment": "neu",
-     "person": "Ethan",
-     "time": "28.12.2020",
-     "opinion": "Its_not_bad"
-    },
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
-     "name": "texture",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:181"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:996",
-     "raw_time": "10538",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3183",
+     "raw_time": "16630",
      "sentiment": "pos",
      "person": "Ethan",
-     "time": "16.3.2019",
-     "opinion": "good"
+     "time": "24.11.2019",
+     "opinion": "Really_reliable"
     },
     {
-     "name": "Xiaomi",
+     "name": "Android",
      "labels": [
       "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:280"
     }
    ],
    [
     {
-     "name": "texture",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:181"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1304",
-     "raw_time": "6240",
-     "sentiment": "amb",
-     "person": "Hunter",
-     "time": "18.9.2018",
-     "opinion": "compare"
-    },
-    {
-     "name": "Xiaomi",
+     "name": "Android",
      "labels": [
       "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
-     "name": "texture",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:181"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1807",
-     "raw_time": "18622",
-     "sentiment": "neg",
-     "person": "Grace",
-     "time": "15.2.2020",
-     "opinion": "not_very_good"
-    },
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
-     "name": "texture",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:181"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2864",
-     "raw_time": "23602",
-     "sentiment": "pos",
-     "person": "Ethan",
-     "time": "11.9.2020",
-     "opinion": "Feels_so_premium"
-    },
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:280"
     },
     {
      "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7932"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8002"
     },
     {
      "name": "Tyler",
@@ -387,461 +172,17 @@
   "retrieved_tripletes": [
    [
     {
-     "name": "Dylan",
+     "name": "Miguel",
      "labels": [
       "person"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1453"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10212"
-    },
-    {
-     "name": "Snapdragon_8",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:920"
-    }
-   ],
-   [
-    {
-     "name": "Snapdragon_8",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:920"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1522",
-     "raw_time": "14738",
-     "sentiment": "neg",
-     "person": "Dylan",
-     "time": "7.9.2019",
-     "opinion": "frustrating"
-    },
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7176",
-     "raw_time": "25397",
-     "sentiment": "pos",
-     "person": "Bernard",
-     "time": "25.11.2020",
-     "opinion": "No_lag"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7009",
-     "raw_time": "22788",
-     "sentiment": "neg",
-     "person": "Bernard",
-     "time": "8.8.2020",
-     "opinion": "Not_good_enough"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6724",
-     "raw_time": "25478",
-     "sentiment": "neg",
-     "person": "Jeffery",
-     "time": "28.11.2020",
-     "opinion": "Bad_for_gaming"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5806",
-     "raw_time": "24517",
-     "sentiment": "pos",
-     "person": "Roger",
-     "time": "19.10.2020",
-     "opinion": "Topnotch_gaming"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5804",
-     "raw_time": "24517",
-     "sentiment": "neg",
-     "person": "Marjorie",
-     "time": "19.10.2020",
-     "opinion": "Always_lagging"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5705",
-     "raw_time": "24126",
-     "sentiment": "pos",
-     "person": "Roger",
-     "time": "3.10.2020",
-     "opinion": "so_smooth"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5172",
-     "raw_time": "26164",
-     "sentiment": "pos",
-     "person": "Kathryn",
-     "time": "27.12.2020",
-     "opinion": "Smooth_and_fast"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3708",
-     "raw_time": "25966",
-     "sentiment": "neu",
-     "person": "Bernard",
-     "time": "18.12.2020",
-     "opinion": "Its_not_bad"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3380",
-     "raw_time": "26117",
-     "sentiment": "pos",
-     "person": "Jose",
-     "time": "25.12.2020",
-     "opinion": "Perfect_for_gaming"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3016",
-     "raw_time": "25466",
-     "sentiment": "neu",
-     "person": "Kathryn",
-     "time": "28.11.2020",
-     "opinion": "Its_been_okay"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2950",
-     "raw_time": "23027",
-     "sentiment": "neu",
-     "person": "Austin",
-     "time": "18.8.2020",
-     "opinion": "Not_the_best"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2308",
-     "raw_time": "26161",
-     "sentiment": "neu",
-     "person": "Jeffery",
-     "time": "27.12.2020",
-     "opinion": "Its_okay_guess"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2274",
-     "raw_time": "23647",
-     "sentiment": "neg",
-     "person": "Wallace",
-     "time": "13.9.2020",
-     "opinion": "Not_as_good"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:771",
-     "raw_time": "5527",
-     "sentiment": "neg",
-     "person": "Marjorie",
-     "time": "19.8.2018",
-     "opinion": "stuck_out"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:101",
-     "raw_time": "22335",
-     "sentiment": "pos",
-     "person": "Jose",
-     "time": "20.7.2020",
-     "opinion": "comfortable"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1357"
     },
     {
      "type": "has_device",
      "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9112"
     },
     {
-     "name": "Miguel",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1357"
-    }
-   ]
-  ]
- },
- {
-  "retrieved_tripletes": [
-   [
-    {
-     "name": "Kathryn",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1374"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9135"
-    },
-    {
      "name": "Apple",
      "labels": [
       "device"
@@ -859,296 +200,54 @@
     },
     {
      "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8795"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9150"
     },
     {
-     "name": "Aaliyah",
+     "name": "Makayla",
      "labels": [
       "person"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1425"
-    }
-   ]
-  ]
- },
- {
-  "retrieved_tripletes": [
-   [
-    {
-     "name": "Joshua",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1372"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7272"
-    },
-    {
-     "name": "x2",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:688"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1380"
     }
    ],
    [
     {
-     "name": "x2",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:688"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7265"
-    },
-    {
-     "name": "Herbert",
+     "name": "Makayla",
      "labels": [
       "person"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1367"
-    }
-   ]
-  ]
- },
- {
-  "retrieved_tripletes": [
-   [
-    {
-     "name": "Jake",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1579"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1380"
     },
     {
      "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9463"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8862"
     },
     {
-     "name": "Apple",
+     "name": "11u",
      "labels": [
       "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:43"
     }
    ],
    [
     {
-     "name": "Apple",
+     "name": "11u",
      "labels": [
       "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:43"
     },
     {
      "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9135"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9075"
     },
-    {
-     "name": "Kathryn",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1374"
-    }
-   ]
-  ]
- },
- {
-  "retrieved_tripletes": [
-   [
     {
      "name": "Dylan",
      "labels": [
       "person"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1453"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10212"
-    },
-    {
-     "name": "Snapdragon_8",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:920"
-    }
-   ],
-   [
-    {
-     "name": "Snapdragon_8",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:920"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1522",
-     "raw_time": "14738",
-     "sentiment": "neg",
-     "person": "Dylan",
-     "time": "7.9.2019",
-     "opinion": "frustrating"
-    },
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6965",
-     "raw_time": "23524",
-     "sentiment": "neu",
-     "person": "Kaylee",
-     "time": "8.9.2020",
-     "opinion": "Its_just_okay"
-    },
-    {
-     "name": "Samsung",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5807",
-     "raw_time": "24517",
-     "sentiment": "neg",
-     "person": "Kaylee",
-     "time": "19.10.2020",
-     "opinion": "So_slow"
-    },
-    {
-     "name": "Samsung",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5604",
-     "raw_time": "25400",
-     "sentiment": "pos",
-     "person": "Patricia",
-     "time": "25.11.2020",
-     "opinion": "Its_so_smooth"
-    },
-    {
-     "name": "Samsung",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3973",
-     "raw_time": "23508",
-     "sentiment": "pos",
-     "person": "Kaylee",
-     "time": "7.9.2020",
-     "opinion": "Play_games_hours"
-    },
-    {
-     "name": "Samsung",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
-    }
-   ],
-   [
-    {
-     "name": "play_games",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:112"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2120",
-     "raw_time": "24514",
-     "sentiment": "pos",
-     "person": "Kaylee",
-     "time": "19.10.2020",
-     "opinion": "Graphics_are_insane"
-    },
-    {
-     "name": "Samsung",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
-    }
-   ],
-   [
-    {
-     "name": "Samsung",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8569"
-    },
-    {
-     "name": "Jenna",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1392"
     }
    ]
   ]
@@ -1157,35 +256,222 @@
   "retrieved_tripletes": [
    [
     {
-     "name": "Chase",
+     "name": "Aaliyah",
      "labels": [
       "person"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1590"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1425"
     },
     {
      "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9948"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8795"
     },
     {
-     "name": "a15",
+     "name": "Apple",
      "labels": [
       "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1201"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     }
    ],
    [
     {
-     "name": "Chase",
+     "name": "Apple",
      "labels": [
-      "person"
+      "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1590"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
      "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9800"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9135"
+    },
+    {
+     "name": "Kathryn",
+     "labels": [
+      "person"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1374"
+    }
+   ]
+  ]
+ },
+ {
+  "retrieved_tripletes": [
+   [
+    {
+     "name": "Herbert",
+     "labels": [
+      "person"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1367"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7265"
+    },
+    {
+     "name": "x2",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:688"
+    }
+   ],
+   [
+    {
+     "name": "x2",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:688"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7272"
+    },
+    {
+     "name": "Joshua",
+     "labels": [
+      "person"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1372"
+    }
+   ]
+  ]
+ },
+ {
+  "retrieved_tripletes": [
+   [
+    {
+     "name": "Kathryn",
+     "labels": [
+      "person"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1374"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9135"
+    },
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9463"
+    },
+    {
+     "name": "Jake",
+     "labels": [
+      "person"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1579"
+    }
+   ]
+  ]
+ },
+ {
+  "retrieved_tripletes": [
+   [
+    {
+     "name": "Jenna",
+     "labels": [
+      "person"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1392"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8569"
+    },
+    {
+     "name": "Samsung",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
+    }
+   ],
+   [
+    {
+     "name": "Samsung",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7204",
+     "raw_time": "19583",
+     "sentiment": "pos",
+     "person": "Alexa",
+     "time": "27.3.2020",
+     "opinion": "makes_up_for"
+    },
+    {
+     "name": "fast_charging",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
+    }
+   ],
+   [
+    {
+     "name": "Samsung",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3685",
+     "raw_time": "26258",
+     "sentiment": "pos",
+     "person": "Curtis",
+     "time": "31.12.2020",
+     "opinion": "Its_so_convenient"
+    },
+    {
+     "name": "fast_charging",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
+    }
+   ],
+   [
+    {
+     "name": "fast_charging",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5829",
+     "raw_time": "25402",
+     "sentiment": "pos",
+     "person": "Abraham",
+     "time": "25.11.2020",
+     "opinion": "Its_so_convenient"
     },
     {
      "name": "Xiaomi",
@@ -1197,106 +483,269 @@
    ],
    [
     {
-     "name": "Chase",
+     "name": "fast_charging",
      "labels": [
-      "person"
+      "feature"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1590"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
     },
     {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9462"
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5817",
+     "raw_time": "20358",
+     "sentiment": "neg",
+     "person": "Lillian",
+     "time": "29.4.2020",
+     "opinion": "Really_slow"
     },
     {
-     "name": "vivo",
+     "name": "Xiaomi",
      "labels": [
       "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:57"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
     }
    ],
    [
     {
-     "name": "Chase",
+     "name": "fast_charging",
      "labels": [
-      "person"
+      "feature"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1590"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
     },
     {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8491"
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5526",
+     "raw_time": "24874",
+     "sentiment": "neg",
+     "person": "Abraham",
+     "time": "3.11.2020",
+     "opinion": "Takes_forever"
     },
     {
-     "name": "blue_factory",
+     "name": "Xiaomi",
      "labels": [
       "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:402"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
     }
    ],
    [
     {
-     "name": "Chase",
+     "name": "fast_charging",
      "labels": [
-      "person"
+      "feature"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1590"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
     },
     {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8131"
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4543",
+     "raw_time": "25005",
+     "sentiment": "pos",
+     "person": "Alfred",
+     "time": "8.11.2020",
+     "opinion": "so_convenient"
     },
     {
-     "name": "10u",
+     "name": "Xiaomi",
      "labels": [
       "device"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:163"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
+    }
+   ],
+   [
+    {
+     "name": "fast_charging",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3649",
+     "raw_time": "25628",
+     "sentiment": "neu",
+     "person": "Howard",
+     "time": "4.12.2020",
+     "opinion": "Decent_but_slow"
+    },
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
+    }
+   ],
+   [
+    {
+     "name": "fast_charging",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3398",
+     "raw_time": "26202",
+     "sentiment": "pos",
+     "person": "Isaiah",
+     "time": "28.12.2020",
+     "opinion": "Fast_charging_lifesaver"
+    },
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
+    }
+   ],
+   [
+    {
+     "name": "fast_charging",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2863",
+     "raw_time": "23602",
+     "sentiment": "neu",
+     "person": "Lillian",
+     "time": "11.9.2020",
+     "opinion": "Its_just_okay"
+    },
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
+    }
+   ],
+   [
+    {
+     "name": "fast_charging",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1777",
+     "raw_time": "746",
+     "sentiment": "pos",
+     "person": "Lillian",
+     "time": "1.2.2018",
+     "opinion": "beaten"
+    },
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
+    }
+   ],
+   [
+    {
+     "name": "fast_charging",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:26"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:15",
+     "raw_time": "22576",
+     "sentiment": "pos",
+     "person": "Abraham",
+     "time": "30.7.2020",
+     "opinion": "inferior_to"
+    },
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
+    }
+   ],
+   [
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8417"
+    },
+    {
+     "name": "Dylan",
+     "labels": [
+      "person"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1453"
     }
    ]
   ]
  },
  {
+  "retrieved_tripletes": []
+ },
+ {
   "retrieved_tripletes": [
    [
-    {
-     "name": "Winifred",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1538"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7726"
-    },
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    }
-   ],
-   [
-    {
-     "name": "Huawei",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8166"
-    },
     {
      "name": "Landon",
      "labels": [
       "person"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1570"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8166"
+    },
+    {
+     "name": "Huawei",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
+    }
+   ],
+   [
+    {
+     "name": "Huawei",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7726"
+    },
+    {
+     "name": "Winifred",
+     "labels": [
+      "person"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1538"
     }
    ]
   ]
@@ -1305,15 +754,15 @@
   "retrieved_tripletes": [
    [
     {
-     "name": "Katherine",
+     "name": "Anita",
      "labels": [
       "person"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1546"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1360"
     },
     {
      "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8553"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10328"
     },
     {
      "name": "Apple",
@@ -1333,14 +782,14 @@
     },
     {
      "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10328"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8553"
     },
     {
-     "name": "Anita",
+     "name": "Katherine",
      "labels": [
       "person"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1360"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1546"
     }
    ]
   ]
@@ -1376,108 +825,28 @@
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
     },
     {
-     "type": "manufacturer",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10349"
-    },
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "manufacturer"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1594"
-    }
-   ],
-   [
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "manufacturer"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1594"
-    },
-    {
-     "type": "manufacturer",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10347"
-    },
-    {
-     "name": "XiaoMi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:9"
-    }
-   ],
-   [
-    {
-     "name": "XiaoMi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:9"
-    },
-    {
      "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9505"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8233"
     },
     {
-     "name": "Lily",
+     "name": "Makayla",
      "labels": [
       "person"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1394"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1380"
     }
    ],
    [
     {
-     "name": "Lily",
+     "name": "Makayla",
      "labels": [
       "person"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1394"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1380"
     },
     {
      "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8414"
-    },
-    {
-     "name": "iphone",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:343"
-    }
-   ],
-   [
-    {
-     "name": "iphone",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:343"
-    },
-    {
-     "type": "manufacturer",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10354"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "manufacturer"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1602"
-    }
-   ],
-   [
-    {
-     "name": "Apple",
-     "labels": [
-      "manufacturer"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1602"
-    },
-    {
-     "type": "manufacturer",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10372"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9150"
     },
     {
      "name": "Apple",
@@ -1513,82 +882,117 @@
   "retrieved_tripletes": [
    [
     {
-     "name": "Jesse",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1561"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8330"
-    },
-    {
-     "name": "Samsung_standard_version",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1071"
-    }
-   ],
-   [
-    {
-     "name": "Samsung_standard_version",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1071"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9839"
-    },
-    {
-     "name": "Francis",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1548"
-    }
-   ],
-   [
-    {
-     "name": "Francis",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1548"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9940"
-    },
-    {
-     "name": "11u",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:43"
-    }
-   ],
-   [
-    {
-     "name": "11u",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:43"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8045"
-    },
-    {
      "name": "Cecilia",
      "labels": [
       "person"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1417"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8429"
+    },
+    {
+     "name": "Huawei",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
+    }
+   ],
+   [
+    {
+     "name": "Huawei",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2424",
+     "raw_time": "26136",
+     "sentiment": "neu",
+     "person": "Ronald",
+     "time": "26.12.2020",
+     "opinion": "Ive_never_tried"
+    },
+    {
+     "name": "take_pictures",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:241"
+    }
+   ],
+   [
+    {
+     "name": "Huawei",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:732",
+     "raw_time": "15235",
+     "sentiment": "pos",
+     "person": "Lauren",
+     "time": "27.9.2019",
+     "opinion": "very_comfortable"
+    },
+    {
+     "name": "take_pictures",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:241"
+    }
+   ],
+   [
+    {
+     "name": "take_pictures",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:241"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1210",
+     "raw_time": "10622",
+     "sentiment": "pos",
+     "person": "Antonio",
+     "time": "19.3.2019",
+     "opinion": "compare"
+    },
+    {
+     "name": "Samsung",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
+    }
+   ],
+   [
+    {
+     "name": "Samsung",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8465"
+    },
+    {
+     "name": "Jesse",
+     "labels": [
+      "person"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1561"
     }
    ]
   ]
@@ -1596,60 +1000,16 @@
  {
   "retrieved_tripletes": [
    [
-    {
-     "name": "Austin",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1371"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8157"
-    },
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    }
-   ],
-   [
-    {
-     "name": "Apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9754"
-    },
     {
      "name": "Virginia",
      "labels": [
       "person"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1588"
-    }
-   ]
-  ]
- },
- {
-  "retrieved_tripletes": [
-   [
-    {
-     "name": "Melanie",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1503"
     },
     {
      "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10162"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9754"
     },
     {
      "name": "Apple",
@@ -1669,31 +1029,31 @@
     },
     {
      "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9577"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8157"
     },
+    {
+     "name": "Austin",
+     "labels": [
+      "person"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1371"
+    }
+   ]
+  ]
+ },
+ {
+  "retrieved_tripletes": [
+   [
     {
      "name": "Leslie",
      "labels": [
       "person"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1435"
-    }
-   ]
-  ]
- },
- {
-  "retrieved_tripletes": [
-   [
-    {
-     "name": "Trinity",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1436"
     },
     {
      "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8557"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9577"
     },
     {
      "name": "Apple",
@@ -1713,14 +1073,58 @@
     },
     {
      "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7981"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10162"
     },
+    {
+     "name": "Melanie",
+     "labels": [
+      "person"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1503"
+    }
+   ]
+  ]
+ },
+ {
+  "retrieved_tripletes": [
+   [
     {
      "name": "Emily",
      "labels": [
       "person"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1472"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7981"
+    },
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8557"
+    },
+    {
+     "name": "Trinity",
+     "labels": [
+      "person"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1436"
     }
    ]
   ]
@@ -1728,83 +1132,168 @@
  {
   "retrieved_tripletes": [
    [
-    {
-     "name": "Kyle",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1349"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9873"
-    },
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    }
-   ],
-   [
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
-    },
-    {
-     "type": "manufacturer",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10350"
-    },
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "manufacturer"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1601"
-    }
-   ],
-   [
-    {
-     "name": "Xiaomi",
-     "labels": [
-      "manufacturer"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1601"
-    },
-    {
-     "type": "manufacturer",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10356"
-    },
-    {
-     "name": "Redmi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:171"
-    }
-   ],
-   [
-    {
-     "name": "Redmi",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:171"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8899"
-    },
     {
      "name": "Aaliyah",
      "labels": [
       "person"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1425"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8795"
+    },
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6728",
+     "raw_time": "24386",
+     "sentiment": "pos",
+     "person": "Ethan",
+     "time": "14.10.2020",
+     "opinion": "Fixing_bugs_reliably"
+    },
+    {
+     "name": "bugs_than",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1158"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3017",
+     "raw_time": "25466",
+     "sentiment": "pos",
+     "person": "Lynn",
+     "time": "28.11.2020",
+     "opinion": "Been_solid"
+    },
+    {
+     "name": "bugs_than",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1158"
+    }
+   ],
+   [
+    {
+     "name": "bugs_than",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1158"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6030",
+     "raw_time": "19428",
+     "sentiment": "pos",
+     "person": "Lynn",
+     "time": "21.3.2020",
+     "opinion": "bug_fixes"
+    },
+    {
+     "name": "Android",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:280"
+    }
+   ],
+   [
+    {
+     "name": "bugs_than",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1158"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5215",
+     "raw_time": "26218",
+     "sentiment": "pos",
+     "person": "Lynn",
+     "time": "29.12.2020",
+     "opinion": "Always_on_point"
+    },
+    {
+     "name": "Android",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:280"
+    }
+   ],
+   [
+    {
+     "name": "bugs_than",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1158"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3183",
+     "raw_time": "16630",
+     "sentiment": "pos",
+     "person": "Ethan",
+     "time": "24.11.2019",
+     "opinion": "Really_reliable"
+    },
+    {
+     "name": "Android",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:280"
+    }
+   ],
+   [
+    {
+     "name": "Android",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:280"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9929"
+    },
+    {
+     "name": "Kyle",
+     "labels": [
+      "person"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1349"
     }
    ]
   ]
@@ -1812,83 +1301,318 @@
  {
   "retrieved_tripletes": [
    [
-    {
-     "name": "Andrew",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1521"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7564"
-    },
-    {
-     "name": "iPhone_12_Pro_Max",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:213"
-    }
-   ],
-   [
-    {
-     "name": "iPhone_12_Pro_Max",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:213"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10281"
-    },
-    {
-     "name": "Keith",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1541"
-    }
-   ],
-   [
-    {
-     "name": "Keith",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1541"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10117"
-    },
-    {
-     "name": "Samsung",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
-    }
-   ],
-   [
-    {
-     "name": "Samsung",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:61"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7353"
-    },
     {
      "name": "Gavin",
      "labels": [
       "person"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1432"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7568"
+    },
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:3356",
+     "raw_time": "25908",
+     "sentiment": "pos",
+     "person": "John",
+     "time": "16.12.2020",
+     "opinion": "Just_great"
+    },
+    {
+     "name": "actual_experience",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:83"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2776",
+     "raw_time": "25469",
+     "sentiment": "neg",
+     "person": "John",
+     "time": "28.11.2020",
+     "opinion": "Really_frustrating_time"
+    },
+    {
+     "name": "actual_experience",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:83"
+    }
+   ],
+   [
+    {
+     "name": "Apple",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1108",
+     "raw_time": "11664",
+     "sentiment": "pos",
+     "person": "John",
+     "time": "2.5.2019",
+     "opinion": "much_better"
+    },
+    {
+     "name": "actual_experience",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:83"
+    }
+   ],
+   [
+    {
+     "name": "actual_experience",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:83"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7073",
+     "raw_time": "26248",
+     "sentiment": "neg",
+     "person": "Freda",
+     "time": "30.12.2020",
+     "opinion": "Had_terrible_experience"
+    },
+    {
+     "name": "Huawei",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
+    }
+   ],
+   [
+    {
+     "name": "actual_experience",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:83"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5056",
+     "raw_time": "23785",
+     "sentiment": "neu",
+     "person": "Josephine",
+     "time": "19.9.2020",
+     "opinion": "Its_been_fine"
+    },
+    {
+     "name": "Huawei",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
+    }
+   ],
+   [
+    {
+     "name": "actual_experience",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:83"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4927",
+     "raw_time": "23604",
+     "sentiment": "neg",
+     "person": "Miles",
+     "time": "11.9.2020",
+     "opinion": "Been_a_hassle"
+    },
+    {
+     "name": "Huawei",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
+    }
+   ],
+   [
+    {
+     "name": "actual_experience",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:83"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4914",
+     "raw_time": "26261",
+     "sentiment": "neu",
+     "person": "Freda",
+     "time": "31.12.2020",
+     "opinion": "Ive_tried_before"
+    },
+    {
+     "name": "Huawei",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
+    }
+   ],
+   [
+    {
+     "name": "actual_experience",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:83"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:4291",
+     "raw_time": "26195",
+     "sentiment": "pos",
+     "person": "Freda",
+     "time": "28.12.2020",
+     "opinion": "Great_overall_experience"
+    },
+    {
+     "name": "Huawei",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
+    }
+   ],
+   [
+    {
+     "name": "actual_experience",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:83"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:2216",
+     "raw_time": "26220",
+     "sentiment": "pos",
+     "person": "Josephine",
+     "time": "29.12.2020",
+     "opinion": "Its_been_great"
+    },
+    {
+     "name": "Huawei",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
+    }
+   ],
+   [
+    {
+     "name": "actual_experience",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:83"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:691",
+     "raw_time": "3736",
+     "sentiment": "pos",
+     "person": "Josephine",
+     "time": "5.6.2018",
+     "opinion": "not_good"
+    },
+    {
+     "name": "Huawei",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
+    }
+   ],
+   [
+    {
+     "name": "actual_experience",
+     "labels": [
+      "feature"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:83"
+    },
+    {
+     "type": "opinion",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:71",
+     "raw_time": "1530",
+     "sentiment": "pos",
+     "person": "Agatha",
+     "time": "5.3.2018",
+     "opinion": "not_higher"
+    },
+    {
+     "name": "Huawei",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
+    }
+   ],
+   [
+    {
+     "name": "Huawei",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:82"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8817"
+    },
+    {
+     "name": "Andrew",
+     "labels": [
+      "person"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1521"
     }
    ]
   ]
@@ -1897,42 +1621,42 @@
   "retrieved_tripletes": [
    [
     {
-     "name": "Donald",
-     "labels": [
-      "person"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1338"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8338"
-    },
-    {
-     "name": "Meizu_16",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:893"
-    }
-   ],
-   [
-    {
-     "name": "Meizu_16",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:893"
-    },
-    {
-     "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9325"
-    },
-    {
      "name": "Charles",
      "labels": [
       "person"
      ],
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1397"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7845"
+    },
+    {
+     "name": "Mi_12",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:291"
+    }
+   ],
+   [
+    {
+     "name": "Mi_12",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:291"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9270"
+    },
+    {
+     "name": "Ronald",
+     "labels": [
+      "person"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1375"
     }
    ]
   ]
@@ -1968,173 +1692,48 @@
      "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:11"
     },
     {
-     "type": "manufacturer",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10372"
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9150"
     },
     {
-     "name": "Apple",
+     "name": "Makayla",
      "labels": [
-      "manufacturer"
+      "person"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1602"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1380"
     }
    ],
    [
     {
-     "name": "Apple",
+     "name": "Makayla",
      "labels": [
-      "manufacturer"
+      "person"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1602"
-    },
-    {
-     "type": "manufacturer",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:10358"
-    },
-    {
-     "name": "apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:180"
-    }
-   ],
-   [
-    {
-     "name": "apple",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:180"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:176",
-     "raw_time": "1359",
-     "sentiment": "neg",
-     "person": "Ella",
-     "time": "26.2.2018",
-     "opinion": "not_fragrant"
-    },
-    {
-     "name": "system",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:102"
-    }
-   ],
-   [
-    {
-     "name": "system",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:102"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6191",
-     "raw_time": "25015",
-     "sentiment": "neg",
-     "person": "Howard",
-     "time": "9.11.2020",
-     "opinion": "Always_lagging"
-    },
-    {
-     "name": "K40",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:327"
-    }
-   ],
-   [
-    {
-     "name": "system",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:102"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:6107",
-     "raw_time": "24297",
-     "sentiment": "pos",
-     "person": "Ethan",
-     "time": "10.10.2020",
-     "opinion": "Really_smooth"
-    },
-    {
-     "name": "K40",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:327"
-    }
-   ],
-   [
-    {
-     "name": "system",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:102"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:5641",
-     "raw_time": "26279",
-     "sentiment": "neu",
-     "person": "Howard",
-     "time": "31.12.2020",
-     "opinion": "still_getting_used"
-    },
-    {
-     "name": "K40",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:327"
-    }
-   ],
-   [
-    {
-     "name": "system",
-     "labels": [
-      "feature"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:102"
-    },
-    {
-     "type": "opinion",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:1888",
-     "raw_time": "10529",
-     "sentiment": "neg",
-     "person": "Ethan",
-     "time": "15.3.2019",
-     "opinion": "not_easy_to_use"
-    },
-    {
-     "name": "K40",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:327"
-    }
-   ],
-   [
-    {
-     "name": "K40",
-     "labels": [
-      "device"
-     ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:327"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1380"
     },
     {
      "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9377"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:8233"
+    },
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
+    }
+   ],
+   [
+    {
+     "name": "Xiaomi",
+     "labels": [
+      "device"
+     ],
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:25"
+    },
+    {
+     "type": "has_device",
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9851"
     },
     {
      "name": "Jocelyn",
@@ -2150,15 +1749,15 @@
   "retrieved_tripletes": [
    [
     {
-     "name": "Lynn",
+     "name": "Jason",
      "labels": [
       "person"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1542"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1419"
     },
     {
      "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9035"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7787"
     },
     {
      "name": "Apple",
@@ -2178,14 +1777,14 @@
     },
     {
      "type": "has_device",
-     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:7787"
+     "element_id": "5:2cfac773-22f5-441f-83ff-21945426e27f:9035"
     },
     {
-     "name": "Jason",
+     "name": "Lynn",
      "labels": [
       "person"
      ],
-     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1419"
+     "element_id": "4:2cfac773-22f5-441f-83ff-21945426e27f:1542"
     }
    ]
   ]

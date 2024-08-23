@@ -1,0 +1,1050 @@
+[
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "Mi 10pro",
+   "22.12.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "connection",
+   "Mi 10pro",
+   "22.12.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "connection",
+   "Apple",
+   "22.12.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator",
+   "Apple",
+   "15.9.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator",
+   "Apple phone",
+   "15.9.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator life",
+   "iPhone11 Pro Max",
+   "15.9.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator life",
+   "13 series",
+   "15.9.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "rapid charging",
+   "Xiaomi",
+   "30.7.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "rapid charging",
+   "iqoo",
+   "30.7.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "rapid charging",
+   "Oneplus",
+   "30.7.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "hand feels",
+   "P40P",
+   "17.4.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "hand feels",
+   "Reno7",
+   "17.4.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "hand",
+   "Xiaomi 11Pro",
+   "30.12.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "Xiaomi",
+   "3.5.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator life",
+   "Mi 9",
+   "11.11.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "Samsung",
+   "26.2.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "outer display",
+   "Samsung",
+   "26.2.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator life",
+   "Xiaomi 11",
+   "7.4.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator",
+   "Mi 9",
+   "11.8.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator",
+   "Pro",
+   "27.7.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator",
+   "12p",
+   "27.7.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "12p",
+   "27.7.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "cost",
+   "Huawei",
+   "5.3.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "connection",
+   "mate9",
+   "5.3.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "cost",
+   "fruit",
+   "3.12.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator life",
+   "Apple",
+   "26.2.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "OS",
+   "GT",
+   "18.11.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator life",
+   "iPhone",
+   "5.9.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "connection",
+   "iPhone",
+   "5.9.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "original cost",
+   "Samsung",
+   "14.12.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator life",
+   "one plus 6",
+   "20.7.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator life",
+   "12promax",
+   "20.7.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator lifetime",
+   "Apple",
+   "20.7.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "gaming",
+   "Apple",
+   "20.7.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "hand feel",
+   "12x",
+   "1.4.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator",
+   "10s",
+   "1.4.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator",
+   "12X",
+   "1.4.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator",
+   "10S",
+   "1.4.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "hand feel",
+   "S20",
+   "27.7.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "Samsung",
+   "display",
+   "10Pro",
+   "7.6.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "OS",
+   "Meizu",
+   "4.6.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "OS",
+   "real gt",
+   "28.9.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "connection",
+   "XR",
+   "20.6.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "OS",
+   "Android",
+   "machine"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "5C",
+   "6.6.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "OS",
+   "10u",
+   "5.4.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "OS",
+   "10U",
+   "5.4.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator",
+   "10u",
+   "5.4.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "cost",
+   "11u",
+   "5.4.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "rapid charging",
+   "OPPO",
+   "17.1.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "connection",
+   "13pm",
+   "19.2.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator life",
+   "Xiaomi",
+   "7.8.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator",
+   "Meizu 18",
+   "8.5.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator",
+   "12pro",
+   "11.7.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator",
+   "12PRO",
+   "11.7.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "OS",
+   "apple",
+   "26.2.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "OS",
+   "vivo",
+   "7.2.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator",
+   "13 Pro Max",
+   "11.6.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator life",
+   "Apple",
+   "11.6.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "connection",
+   "iPhone X",
+   "20.1.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator life",
+   "XR",
+   "20.1.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "connection",
+   "8PRO",
+   "9.4.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "8PRO",
+   "9.4.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "OS",
+   "Xiaomi",
+   "7.7.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "cost",
+   "Pro version",
+   "7.7.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator",
+   "Xiaomi Mi 12 series",
+   "16.11.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator life",
+   "9P",
+   "29.1.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "connection",
+   "S21U",
+   "16.3.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "connection",
+   "Samsung",
+   "16.3.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "connection",
+   "Apple",
+   "16.3.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator",
+   "Xiaomi Mi 9",
+   "12.5.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "connection",
+   "Apple",
+   "9.3.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "hand feel",
+   "Xiaomi 12 series",
+   "6.10.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "image OS",
+   "Xiaomi 11U",
+   "5.5.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "hand feel",
+   "Xiaomi 12",
+   "26.7.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "hand feel",
+   "Redmi Note10pro",
+   "4.8.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "cost",
+   "12u",
+   "11.6.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "OS functionality",
+   "Redmi",
+   "22.12.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "OS functionality",
+   "realme",
+   "22.12.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "IQOO",
+   "14.9.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "m10",
+   "14.9.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator life",
+   "IQOO",
+   "14.9.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "Note 10 Pro",
+   "26.1.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "LCD display",
+   "NEO5",
+   "vitality version",
+   "26.1.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "OS",
+   "Apple",
+   "23.6.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "OS",
+   "Apple 6s",
+   "23.6.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "OS",
+   "Android",
+   "23.6.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "Find",
+   "28.3.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "Xiaomi 11 series",
+   "10.3.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "Xiaomi 11Pro",
+   "10.3.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "vivo E5",
+   "10.3.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "Xiaomi 11",
+   "10.3.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "NEO5",
+   "10.3.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "displays",
+   "Mi 12",
+   "18.2.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "OS",
+   "Mi 12",
+   "18.2.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "hand feels",
+   "S21",
+   "23.2.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "Nova8s",
+   "29.4.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "K40",
+   "27.8.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator life",
+   "Samsung",
+   "16.3.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "connection",
+   "iPhone13Pro",
+   "17.4.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "OS",
+   "realme",
+   "25.5.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "OS",
+   "OPPO",
+   "25.5.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "accumulator life",
+   "GT2PRO",
+   "5.7.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "displays",
+   "IQOO",
+   "28.11.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "image OSs",
+   "IQOO",
+   "28.11.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "camera",
+   "MIX4",
+   "30.8.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "hand feels",
+   "MIX4",
+   "30.8.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "hand feels",
+   "MIX4",
+   "users",
+   "30.8.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "cost",
+   "Xiaomi",
+   "25.10.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "hand feels",
+   "Xiaomi 5",
+   "26.11.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "connection",
+   "iPhone",
+   "21.8.2018"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "hand feel",
+   "Mi 10",
+   "16.1.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "hand feels",
+   "10s",
+   "16.1.2019"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "hand feel",
+   "Mi 12",
+   "9.11.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "Mi 12",
+   "9.11.2020"
+  ]
+ },
+ {
+  "question_entities": [
+   "people",
+   "opinion",
+   "display",
+   "x3",
+   "9.11.2020"
+  ]
+ }
+]
