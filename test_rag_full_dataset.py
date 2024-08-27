@@ -36,7 +36,7 @@ You are provided with relevant memories about dialogs: {retrieved}
 Question: {question} This is a closed question, the answer choices are listed in its text. 
 You must respond with one of these options and nothing else.
 Answer: '''
-        answer = agent.generate(prompt)[0].lower()
+        answer = agent.generate(prompt).lower()
         log("MODEL ANSWER: " + str(answer))
         results.append(task["answer"].strip('''"' .,:-''').lower() in answer)
         log("CURRENT ACCURACY: " + str(np.mean(results)))

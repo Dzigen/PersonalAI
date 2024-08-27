@@ -38,6 +38,25 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
     def close(self):
         if self.driver is not None:
             self.driver.close()
+    
+    def extract_triplets_by_query(self, query, max_triplets):
+        # TODO - execute query and return triplets in given format or
+        # None if query is incorrect or returned triplets list is emtpy
+        pass
+    
+    def create_triplets(self, triplets):
+        # TODO - add nodes and edges which presented in triplets list
+        # Check to unique node name
+        # Pay attention to the format of triplets
+        pass
+    
+    def delete_triplets(self, triplets):
+        # TODO - delete edges which presented in triplets list
+        # Pay attention to the format of triplets and check if triplets indeed are in graph
+        # If some node loss its last edge, it must be deleted too
+        # This method return list of deleted nodes in format which appears in triplets 
+        # (only if this nodes haven't type "thesis" or "episodic")
+        return []
 
     def execute_query(self, query, db=None):
         assert self.driver is not None, "Driver not initialized!"

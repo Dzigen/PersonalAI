@@ -45,23 +45,23 @@ class LLaMAagent(GPTagent):
             top_p=0.9,
         )
         
-        return outputs[0]["generated_text"][len(prompt):], 0
+        return outputs[0]["generated_text"][len(prompt):]
     
 
-class LLaMAagentLocal:
-    def __init__(self, system_prompt):
-        self.system_prompt = system_prompt
+# class LLaMAagentLocal:
+#     def __init__(self, system_prompt):
+#         self.system_prompt = system_prompt
 
-    def generate(self, prompt):
-        # response = requests.post(
-        #     f"http://{VPS_IP}:{port}/generate",
-        #     json={"system_prompt": self.system_prompt, "prompt": prompt}
-        # ).json()
-        # return response["response"], response["cost"]
-        response = requests.post(
-            f"https://5b97-178-57-73-146.ngrok-free.app/LM_response",
-            json={"prompt": prompt, "system_prompt": self.system_prompt}
-        ).json()
-        breakpoint()
-        return response["Response"], 0
+#     def generate(self, prompt):
+#         # response = requests.post(
+#         #     f"http://{VPS_IP}:{port}/generate",
+#         #     json={"system_prompt": self.system_prompt, "prompt": prompt}
+#         # ).json()
+#         # return response["response"], response["cost"]
+#         response = requests.post(
+#             f"https://5b97-178-57-73-146.ngrok-free.app/LM_response",
+#             json={"prompt": prompt, "system_prompt": self.system_prompt}
+#         ).json()
+#         breakpoint()
+#         return response["Response"], 0
         
