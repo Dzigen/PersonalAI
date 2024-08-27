@@ -1,0 +1,350 @@
+[
+ {
+  "generated_answer": "Delia, Wallace, Jacqueline, and Taylor"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Jake"
+ },
+ {
+  "generated_answer": "Rita, Dennis"
+ },
+ {
+  "generated_answer": "Bailey, Dylan"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Ashton"
+ },
+ {
+  "generated_answer": "Lewis"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Not enough information to determine"
+ },
+ {
+  "generated_answer": "Agatha, Nicole, Geoffrey, and Zoe"
+ },
+ {
+  "generated_answer": "There is no answer, as there is no information about the accumulator life of Mi 9 or any other device on 11.11.2019."
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Gordon"
+ },
+ {
+  "generated_answer": "No answer can be provided as there is no relevant information."
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Sandra, Jada, and Adelina"
+ },
+ {
+  "generated_answer": "Anita, Adrian, Blake, Ann, Natalie"
+ },
+ {
+  "generated_answer": "Unable to determine"
+ },
+ {
+  "generated_answer": "Molly and Ethan"
+ },
+ {
+  "generated_answer": "Martin"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Andrew, Hailey, and Megan"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Harry"
+ },
+ {
+  "generated_answer": "Amber, Mackenzie"
+ },
+ {
+  "generated_answer": "Aaron"
+ },
+ {
+  "generated_answer": "Dorothy"
+ },
+ {
+  "generated_answer": "There is not enough information to answer this question."
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Lynn"
+ },
+ {
+  "generated_answer": "Gregory, Emma, and Colin"
+ },
+ {
+  "generated_answer": "Jessica"
+ },
+ {
+  "generated_answer": "Gregory, Emma, and Colin"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Chain of thought 3: To find the people who have a negative opinion about the OS of Meizu on 4.6.2018, we need to look for opinions that express dissatisfaction or criticism. We can identify negative opinions by words like \"weak\", \"always freezing\", \"slow\", \"failure\", \"poor\", \"worries\", \"least worry\", \"bleak\", \"drains\", \"always lagging\", \"awful\", \"tiny\", \"loses signal\", \"terrible\", \"soso\", \"not bad\", \"not great\", \"not perfect\", \"forget about it\", \"never works\", \"it gets done\", \"it never works\", \"it's fine\", \"it's alright\", \"it's meh\", \"it's a nightmare\", \"it's a problem\", \"it's a struggle\", \"it's a failure\", \"it's a disaster\", \"it's a shame\", \"it's a pity\", \"it's a waste\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \"it's a waste of time\", \"it's a waste of money\", \"it's a waste of resources\", \"it's a waste of effort\", \"it's a waste of energy\", \""
+ },
+ {
+  "generated_answer": "Isabel, Justin"
+ },
+ {
+  "generated_answer": "Howard and Cameron"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Harry"
+ },
+ {
+  "generated_answer": "Charles, Justin, Brian, Avery, Brooke"
+ },
+ {
+  "generated_answer": "Jason, Allison"
+ },
+ {
+  "generated_answer": "Jason, Melissa, Allison"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Abraham"
+ },
+ {
+  "generated_answer": "Yvonne, David, Jocelyn"
+ },
+ {
+  "generated_answer": "Lily"
+ },
+ {
+  "generated_answer": "Sierra, Evan, Roger, Kimberly, Aidan, and Emma"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Beatrice, Christopher"
+ },
+ {
+  "generated_answer": "Chase, Barbara, Lewis, Abigail, and Bernard"
+ },
+ {
+  "generated_answer": "Amanda"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Jose"
+ },
+ {
+  "generated_answer": "Jose, Albert"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Carlos"
+ },
+ {
+  "generated_answer": "Alexa"
+ },
+ {
+  "generated_answer": "Melissa"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Neil"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Lynn"
+ },
+ {
+  "generated_answer": "Anthony"
+ },
+ {
+  "generated_answer": "Lynn"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Bailey"
+ },
+ {
+  "generated_answer": "Juan, Hunter"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Jocelyn"
+ },
+ {
+  "generated_answer": "Sophia"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Jada, Aaliyah"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Unable to determine"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Luccile, Margaret, Noah, Kathryn, Edward, Amber, Natalie, Agatha, Virginia, Clifford, Melanie, Florence, Kathryn, Fred, Trinity"
+ },
+ {
+  "generated_answer": "Celia and Amanda"
+ },
+ {
+  "generated_answer": "Sofia, John, Kimberly, and Walter"
+ },
+ {
+  "generated_answer": "Alexa"
+ },
+ {
+  "generated_answer": "Carter"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Harold"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Joseph"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Bridjet, Jordan, Delia, Agatha, Louis, and Albert"
+ },
+ {
+  "generated_answer": "Anthony, Chloe, Melanie"
+ },
+ {
+  "generated_answer": "Leah and Nicole"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Kaylee and Charles"
+ },
+ {
+  "generated_answer": "Hailey"
+ },
+ {
+  "generated_answer": "Hailey"
+ },
+ {
+  "generated_answer": "Hailey"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Unable to determine"
+ },
+ {
+  "generated_answer": "None"
+ },
+ {
+  "generated_answer": "Harry"
+ },
+ {
+  "generated_answer": "Lynn"
+ },
+ {
+  "generated_answer": "Grace"
+ },
+ {
+  "generated_answer": "Walter"
+ }
+]

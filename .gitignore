@@ -1,3 +1,10 @@
+<<<<<<< HEAD
 *.sh
 *.txt
 *.json
+=======
+models/
+data/
+__pycache__
+create_local_db/
+>>>>>>> f4d9f90c440038485586df8bc4b0e561705e7b4e

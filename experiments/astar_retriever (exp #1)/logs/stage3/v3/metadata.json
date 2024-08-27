@@ -1,0 +1,96 @@
+{
+ "LOAD_CONN_NODES_VERSION": "v4",
+ "LOAD_NODES_DB_VERSION": "v3",
+ "SAVE_TRIPLETS_VERSION": "v3",
+ "MAX_DEPTH": 30,
+ "MAX_WIDTH": -1,
+ "SAMPLE_MAX_SIZE": 20,
+ "TRIPLETES_PER_QUESTION": {
+  "which_people_about_device.json": {
+   "mean": 48.0,
+   "median": 5.5,
+   "std": 116.86102857668163,
+   "min": 1,
+   "max": 482
+  },
+  "compare_questions.json": {
+   "mean": 22.1,
+   "median": 22.0,
+   "std": 7.40202674947882,
+   "min": 7,
+   "max": 34
+  },
+  "same_manufacturer.json": {
+   "mean": 3.95,
+   "median": 2.0,
+   "std": 3.470950878361721,
+   "min": 0,
+   "max": 13
+  },
+  "similar_device_opinions.json": {
+   "mean": 5.75,
+   "median": 6.0,
+   "std": 2.426417111710186,
+   "min": 2,
+   "max": 10
+  },
+  "compare_sentiment_synonims.json": {
+   "mean": 21.6,
+   "median": 9.0,
+   "std": 23.88388578100306,
+   "min": 2,
+   "max": 78
+  },
+  "similar_manf_opinions.json": {
+   "mean": 8.416666666666666,
+   "median": 6.0,
+   "std": 5.950606878480734,
+   "min": 2,
+   "max": 19
+  },
+  "last_opinion.json": {
+   "mean": 20.6,
+   "median": 13.0,
+   "std": 24.21445849074474,
+   "min": 2,
+   "max": 100
+  },
+  "compare_sentiment.json": {
+   "mean": 43.85,
+   "median": 41.5,
+   "std": 25.75708640355116,
+   "min": 7,
+   "max": 100
+  },
+  "which_people_about_device_synonims.json": {
+   "mean": 83.25,
+   "median": 5.0,
+   "std": 172.3464171371137,
+   "min": 0,
+   "max": 615
+  },
+  "same_devices.json": {
+   "mean": 7.7,
+   "median": 4.0,
+   "std": 12.215154522149934,
+   "min": 2,
+   "max": 58
+  },
+  "dominant_opinion.json": {
+   "mean": 20.6,
+   "median": 14.5,
+   "std": 22.544178849538962,
+   "min": 1,
+   "max": 100
+  },
+  "device_sentiment.json": {
+   "mean": 18.3,
+   "median": 9.0,
+   "std": 23.54166519174037,
+   "min": 1,
+   "max": 100
+  }
+ },
+ "D_METRIC": "constant",
+ "H_METRIC": "l2"
+}

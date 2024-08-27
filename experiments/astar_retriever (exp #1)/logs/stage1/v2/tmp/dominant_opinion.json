@@ -1,0 +1,7330 @@
+[
+ {
+  "question_entities": [
+   "Jessica",
+   "opinion",
+   "signal",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lily",
+   "opinion",
+   "power",
+   "XiaoMi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Bailey",
+   "opinion",
+   "battery",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Abraham",
+   "opinion",
+   "fast charging",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jayden",
+   "opinion",
+   "breathing light",
+   "Reno7"
+  ]
+ },
+ {
+  "question_entities": [
+   "Xavier",
+   "opinion",
+   "screen",
+   "sell"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jayden",
+   "opinion",
+   "process",
+   "back cover",
+   "Reno7"
+  ]
+ },
+ {
+  "question_entities": [
+   "Chloe",
+   "opinion",
+   "night shots",
+   "Reno7",
+   "Reno7"
+  ]
+ },
+ {
+  "question_entities": [
+   "Autumn",
+   "opinion",
+   "performances",
+   "Reno7",
+   "Reno7"
+  ]
+ },
+ {
+  "question_entities": [
+   "Carl",
+   "opinion",
+   "feels",
+   "Reno7"
+  ]
+ },
+ {
+  "question_entities": [
+   "Carl",
+   "opinion",
+   "night shots",
+   "Reno7"
+  ]
+ },
+ {
+  "question_entities": [
+   "Howard",
+   "opinion",
+   "sell",
+   "curved screen",
+   "screen"
+  ]
+ },
+ {
+  "question_entities": [
+   "Catherine",
+   "opinion",
+   "camera",
+   "MIX"
+  ]
+ },
+ {
+  "question_entities": [
+   "Austin",
+   "opinion",
+   "camera",
+   "MIX"
+  ]
+ },
+ {
+  "question_entities": [
+   "Virginia",
+   "opinion",
+   "photo",
+   "Meizu"
+  ]
+ },
+ {
+  "question_entities": [
+   "Melissa",
+   "opinion",
+   "ISP",
+   "Kirin"
+  ]
+ },
+ {
+  "question_entities": [
+   "Matthew",
+   "opinion",
+   "resolution",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Matthew",
+   "opinion",
+   "night scenes",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Noah",
+   "opinion",
+   "photo",
+   "pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alise",
+   "opinion",
+   "value preservation rate",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Angelina",
+   "opinion",
+   "screen",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Angelina",
+   "opinion",
+   "screen",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gordon",
+   "opinion",
+   "screen",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Christine",
+   "opinion",
+   "configuration",
+   "big detective"
+  ]
+ },
+ {
+  "question_entities": [
+   "Elizabeth",
+   "opinion",
+   "battery life",
+   "Xiaomi 11"
+  ]
+ },
+ {
+  "question_entities": [
+   "Helen",
+   "opinion",
+   "updating",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Simon",
+   "opinion",
+   "workmanship",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Megan",
+   "opinion",
+   "pictures",
+   "12p"
+  ]
+ },
+ {
+  "question_entities": [
+   "Juan",
+   "opinion",
+   "battery life",
+   "Mi 9",
+   "Mi 9"
+  ]
+ },
+ {
+  "question_entities": [
+   "Catherine",
+   "opinion",
+   "pictures",
+   "11ultra"
+  ]
+ },
+ {
+  "question_entities": [
+   "Miles",
+   "opinion",
+   "quality",
+   "MIX"
+  ]
+ },
+ {
+  "question_entities": [
+   "Donald",
+   "opinion",
+   "quality",
+   "red rice"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kevin",
+   "opinion",
+   "battery",
+   "Mi 8"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jaden",
+   "opinion",
+   "system",
+   "Oppo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jordan",
+   "opinion",
+   "system",
+   "realme"
+  ]
+ },
+ {
+  "question_entities": [
+   "Miguel",
+   "opinion",
+   "system",
+   "Oppo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Megan",
+   "opinion",
+   "system",
+   "GT"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ian",
+   "opinion",
+   "performance",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Madison",
+   "opinion",
+   "parameters",
+   "ZTE"
+  ]
+ },
+ {
+  "question_entities": [
+   "Luccile",
+   "opinion",
+   "system",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alexandra",
+   "opinion",
+   "program",
+   "x3"
+  ]
+ },
+ {
+  "question_entities": [
+   "Amber",
+   "opinion",
+   "price",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Simon",
+   "opinion",
+   "workmanship",
+   "OPPO"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jose",
+   "opinion",
+   "battery lifetime",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Julian",
+   "opinion",
+   "battery life",
+   "p40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Harry",
+   "opinion",
+   "feel",
+   "12x"
+  ]
+ },
+ {
+  "question_entities": [
+   "Carter",
+   "opinion",
+   "color",
+   "Huaxing"
+  ]
+ },
+ {
+  "question_entities": [
+   "Carter",
+   "opinion",
+   "quasi",
+   "Samsung E4",
+   "Samsung E4"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lily",
+   "opinion",
+   "Charging",
+   "12x"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lily",
+   "opinion",
+   "camera",
+   "12x"
+  ]
+ },
+ {
+  "question_entities": [
+   "Brandon",
+   "opinion",
+   "quasi",
+   "Huaxing"
+  ]
+ },
+ {
+  "question_entities": [
+   "Freda",
+   "opinion",
+   "feel",
+   "S20"
+  ]
+ },
+ {
+  "question_entities": [
+   "Bailey",
+   "opinion",
+   "dual speakers",
+   "10Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Bruce",
+   "opinion",
+   "dual speakers",
+   "10Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Bruce",
+   "opinion",
+   "Samsung",
+   "screen",
+   "10Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gordon",
+   "opinion",
+   "system",
+   "Meizu"
+  ]
+ },
+ {
+  "question_entities": [
+   "Maria",
+   "opinion",
+   "film effect",
+   "red rice"
+  ]
+ },
+ {
+  "question_entities": [
+   "Natalie",
+   "opinion",
+   "phone",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Diego",
+   "opinion",
+   "pictures",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Aaron",
+   "opinion",
+   "pricing",
+   "ois"
+  ]
+ },
+ {
+  "question_entities": [
+   "Isaiah",
+   "opinion",
+   "feel",
+   "R15"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kaylee",
+   "opinion",
+   "games",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Dominic",
+   "opinion",
+   "sales volume",
+   "magic3 series"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gabriel",
+   "opinion",
+   "sales volume",
+   "magic3 series"
+  ]
+ },
+ {
+  "question_entities": [
+   "Leah",
+   "opinion",
+   "signal",
+   "XR"
+  ]
+ },
+ {
+  "question_entities": [
+   "Joseph",
+   "opinion",
+   "system",
+   "Xiaomi 9se"
+  ]
+ },
+ {
+  "question_entities": [
+   "Christian",
+   "opinion",
+   "fluency",
+   "miui"
+  ]
+ },
+ {
+  "question_entities": [
+   "Mackenzie",
+   "opinion",
+   "signal",
+   "13pm"
+  ]
+ },
+ {
+  "question_entities": [
+   "Stanley",
+   "opinion",
+   "signal",
+   "13pm"
+  ]
+ },
+ {
+  "question_entities": [
+   "Amber",
+   "opinion",
+   "game performance",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Fiona",
+   "opinion",
+   "battery life",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Linda",
+   "opinion",
+   "battery",
+   "Meizu 18"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lauren",
+   "opinion",
+   "camera",
+   "Meizu 18"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jesse",
+   "opinion",
+   "white balance",
+   "12Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Chloe",
+   "opinion",
+   "camera",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Delia",
+   "opinion",
+   "camera",
+   "K30s"
+  ]
+ },
+ {
+  "question_entities": [
+   "Diego",
+   "opinion",
+   "heat radiation",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Caroline",
+   "opinion",
+   "picture",
+   "NEO5"
+  ]
+ },
+ {
+  "question_entities": [
+   "Caroline",
+   "opinion",
+   "algorithm",
+   "NEO5"
+  ]
+ },
+ {
+  "question_entities": [
+   "Caroline",
+   "opinion",
+   "picture effect",
+   "NEO5"
+  ]
+ },
+ {
+  "question_entities": [
+   "Autumn",
+   "opinion",
+   "picture effect",
+   "NEO5"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kimberly",
+   "opinion",
+   "battery life",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Amelia",
+   "opinion",
+   "software updates",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Hugh",
+   "opinion",
+   "heat dissipation",
+   "XR"
+  ]
+ },
+ {
+  "question_entities": [
+   "Rodrigo",
+   "opinion",
+   "fluency",
+   "ios15"
+  ]
+ },
+ {
+  "question_entities": [
+   "Freda",
+   "opinion",
+   "software",
+   "Oneplus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Albert",
+   "opinion",
+   "power drop",
+   "8PRO"
+  ]
+ },
+ {
+  "question_entities": [
+   "Albert",
+   "opinion",
+   "signal",
+   "8PRO"
+  ]
+ },
+ {
+  "question_entities": [
+   "Albert",
+   "opinion",
+   "screen",
+   "8PRO"
+  ]
+ },
+ {
+  "question_entities": [
+   "Albert",
+   "opinion",
+   "power",
+   "8Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kaitlyn",
+   "opinion",
+   "system",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Graham",
+   "opinion",
+   "parameters",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Bruce",
+   "opinion",
+   "Photography",
+   "P50",
+   "P50"
+  ]
+ },
+ {
+  "question_entities": [
+   "Agatha",
+   "opinion",
+   "others",
+   "P50"
+  ]
+ },
+ {
+  "question_entities": [
+   "Curtis",
+   "opinion",
+   "system",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Curtis",
+   "opinion",
+   "system",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Carlos",
+   "opinion",
+   "texture",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Daniel",
+   "opinion",
+   "camera",
+   "NEX"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kevin",
+   "opinion",
+   "camera",
+   "NEX"
+  ]
+ },
+ {
+  "question_entities": [
+   "Helen",
+   "opinion",
+   "workmanship",
+   "Redmi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Melanie",
+   "opinion",
+   "heat dissipation",
+   "11P"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gerld",
+   "opinion",
+   "signal",
+   "S21U"
+  ]
+ },
+ {
+  "question_entities": [
+   "Abraham",
+   "opinion",
+   "signal",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Abraham",
+   "opinion",
+   "signal",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Mackenzie",
+   "opinion",
+   "hot",
+   "s21u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kyle",
+   "opinion",
+   "generation",
+   "UI",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Claire",
+   "opinion",
+   "configuration",
+   "nova"
+  ]
+ },
+ {
+  "question_entities": [
+   "Emily",
+   "opinion",
+   "photography",
+   "people",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Emily",
+   "opinion",
+   "photography",
+   "people",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jada",
+   "opinion",
+   "signal",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gabriel",
+   "opinion",
+   "elevator",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Angelina",
+   "opinion",
+   "signal",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Logan",
+   "opinion",
+   "feel",
+   "Xiaomi 12 series"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kayla",
+   "opinion",
+   "texture",
+   "9Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Allison",
+   "opinion",
+   "design",
+   "Oneplus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Taylor",
+   "opinion",
+   "camera module designs",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sara",
+   "opinion",
+   "camera",
+   "9Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Antonio",
+   "opinion",
+   "camera module designs",
+   "vivo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Cody",
+   "opinion",
+   "quality",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Celia",
+   "opinion",
+   "screen",
+   "P50"
+  ]
+ },
+ {
+  "question_entities": [
+   "Hunter",
+   "opinion",
+   "Fast charging",
+   "vivo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gloria",
+   "opinion",
+   "camera",
+   "IQOO"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gloria",
+   "opinion",
+   "camera",
+   "m10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Madeline",
+   "opinion",
+   "screen",
+   "10Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jordan",
+   "opinion",
+   "size",
+   "Meizu 18"
+  ]
+ },
+ {
+  "question_entities": [
+   "Miles",
+   "opinion",
+   "size",
+   "Meizu 18"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sara",
+   "opinion",
+   "system",
+   "Android"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alexander",
+   "opinion",
+   "system",
+   "Android"
+  ]
+ },
+ {
+  "question_entities": [
+   "Amanda",
+   "opinion",
+   "else",
+   "Find"
+  ]
+ },
+ {
+  "question_entities": [
+   "Celia",
+   "opinion",
+   "screen",
+   "Find"
+  ]
+ },
+ {
+  "question_entities": [
+   "Celia",
+   "opinion",
+   "charging",
+   "Find"
+  ]
+ },
+ {
+  "question_entities": [
+   "Celia",
+   "opinion",
+   "else",
+   "Find"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gavin",
+   "opinion",
+   "screen",
+   "Xiaomi 11 series"
+  ]
+ },
+ {
+  "question_entities": [
+   "Andrew",
+   "opinion",
+   "screen",
+   "Xiaomi 11Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ada",
+   "opinion",
+   "screen",
+   "NEO5"
+  ]
+ },
+ {
+  "question_entities": [
+   "Carter",
+   "opinion",
+   "screen",
+   "Xiaomi 11Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Charles",
+   "opinion",
+   "screens",
+   "Mi 12",
+   "Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Charles",
+   "opinion",
+   "materials",
+   "Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Aaron",
+   "opinion",
+   "system",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Maya",
+   "opinion",
+   "heat dissipation",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Dorothy",
+   "opinion",
+   "memory",
+   "P20"
+  ]
+ },
+ {
+  "question_entities": [
+   "Dorothy",
+   "opinion",
+   "cameras",
+   "P20"
+  ]
+ },
+ {
+  "question_entities": [
+   "Dorothy",
+   "opinion",
+   "workmanship",
+   "P20"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lily",
+   "opinion",
+   "photography",
+   "P50 Standard Edition",
+   "P50 Standard Edition"
+  ]
+ },
+ {
+  "question_entities": [
+   "Celia",
+   "opinion",
+   "configuration",
+   "X70 series"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gregory",
+   "opinion",
+   "workmanship",
+   "P20"
+  ]
+ },
+ {
+  "question_entities": [
+   "Joseph",
+   "opinion",
+   "localization",
+   "oneui"
+  ]
+ },
+ {
+  "question_entities": [
+   "Natalie",
+   "opinion",
+   "sales",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Devin",
+   "opinion",
+   "localization",
+   "oneui"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jada",
+   "opinion",
+   "localization",
+   "oneui"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gavin",
+   "opinion",
+   "Localized",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Abraham",
+   "opinion",
+   "localization",
+   "oneui"
+  ]
+ },
+ {
+  "question_entities": [
+   "Amber",
+   "opinion",
+   "focusing",
+   "K30P"
+  ]
+ },
+ {
+  "question_entities": [
+   "Dorothy",
+   "opinion",
+   "pictures",
+   "K30P",
+   "K30P"
+  ]
+ },
+ {
+  "question_entities": [
+   "Christian",
+   "opinion",
+   "x70pp"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lucas",
+   "opinion",
+   "night scene",
+   "X70Pro+"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kevin",
+   "opinion",
+   "battery life",
+   "PM"
+  ]
+ },
+ {
+  "question_entities": [
+   "Isaac",
+   "opinion",
+   "battery life",
+   "13PM"
+  ]
+ },
+ {
+  "question_entities": [
+   "Louis",
+   "opinion",
+   "system",
+   "realme"
+  ]
+ },
+ {
+  "question_entities": [
+   "Devin",
+   "opinion",
+   "system",
+   "OPPO"
+  ]
+ },
+ {
+  "question_entities": [
+   "Rodrigo",
+   "opinion",
+   "update frequency",
+   "realm"
+  ]
+ },
+ {
+  "question_entities": [
+   "Rodrigo",
+   "opinion",
+   "stability",
+   "realm"
+  ]
+ },
+ {
+  "question_entities": [
+   "Noah",
+   "opinion",
+   "system",
+   "Realme"
+  ]
+ },
+ {
+  "question_entities": [
+   "Geoffrey",
+   "opinion",
+   "workmanship",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Amber",
+   "opinion",
+   "sales",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Howard",
+   "opinion",
+   "feels",
+   "Xiaomi 5",
+   "Xiaomi 5"
+  ]
+ },
+ {
+  "question_entities": [
+   "Leah",
+   "opinion",
+   "signal",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Horace",
+   "opinion",
+   "signal",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Curtis",
+   "opinion",
+   "feel",
+   "Mi 10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Henry",
+   "opinion",
+   "appearance",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Isaac",
+   "opinion",
+   "photos",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Isaac",
+   "opinion",
+   "photography",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Christian",
+   "opinion",
+   "pictures",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Christian",
+   "opinion",
+   "pictures",
+   "Meizu"
+  ]
+ },
+ {
+  "question_entities": [
+   "Abigail",
+   "opinion",
+   "pictures",
+   "vivo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lawrence",
+   "opinion",
+   "samples",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jason",
+   "opinion",
+   "pictures",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kyle",
+   "opinion",
+   "screen",
+   "Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lucy",
+   "opinion",
+   "Mi 12",
+   "feel"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lucy",
+   "opinion",
+   "screen",
+   "x3"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lucy",
+   "opinion",
+   "camera",
+   "x3"
+  ]
+ },
+ {
+  "question_entities": [
+   "Bruce",
+   "opinion",
+   "feel",
+   "Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Taylor",
+   "opinion",
+   "photography",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Julian",
+   "opinion",
+   "system",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Carl",
+   "opinion",
+   "signal",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Yvonne",
+   "opinion",
+   "signal",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Katherine",
+   "opinion",
+   "screens",
+   "Black Shark"
+  ]
+ },
+ {
+  "question_entities": [
+   "Virginia",
+   "opinion",
+   "battery life",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lillian",
+   "opinion",
+   "battery life",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Emma",
+   "opinion",
+   "battery life",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Emma",
+   "opinion",
+   "battery life",
+   "pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Logan",
+   "opinion",
+   "battery life",
+   "iphone8"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gavin",
+   "opinion",
+   "battery life",
+   "iphone8"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kathryn",
+   "opinion",
+   "photo",
+   "10u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Madeline",
+   "opinion",
+   "performance",
+   "10u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Clifford",
+   "opinion",
+   "performance",
+   "10u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Isabel",
+   "opinion",
+   "camera algorithm",
+   "10 series"
+  ]
+ },
+ {
+  "question_entities": [
+   "Aidan",
+   "opinion",
+   "battery life",
+   "Meizu"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kimberly",
+   "opinion",
+   "battery life",
+   "Meizu"
+  ]
+ },
+ {
+  "question_entities": [
+   "Christine",
+   "opinion",
+   "charging",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Landon",
+   "opinion",
+   "system",
+   "Android"
+  ]
+ },
+ {
+  "question_entities": [
+   "Linda",
+   "opinion",
+   "record video",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Curtis",
+   "opinion",
+   "algorithm",
+   "miui"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gabriella",
+   "opinion",
+   "camera optimization",
+   "miui"
+  ]
+ },
+ {
+  "question_entities": [
+   "Miguel",
+   "opinion",
+   "camera",
+   "MIUI"
+  ]
+ },
+ {
+  "question_entities": [
+   "Miguel",
+   "opinion",
+   "image algorithm",
+   "OnePlus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Amelia",
+   "opinion",
+   "algorithm",
+   "Oppo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Amelia",
+   "opinion",
+   "algorithm",
+   "miui"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sierra",
+   "opinion",
+   "experience",
+   "x3"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sophia",
+   "opinion",
+   "battery life",
+   "k30u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Mia",
+   "opinion",
+   "everything else",
+   "Oneplus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kayla",
+   "opinion",
+   "experience",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Aaron",
+   "opinion",
+   "battery life",
+   "11pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Aaron",
+   "opinion",
+   "battery life",
+   "xr"
+  ]
+ },
+ {
+  "question_entities": [
+   "Morgan",
+   "opinion",
+   "battery life",
+   "xr"
+  ]
+ },
+ {
+  "question_entities": [
+   "Danielle",
+   "opinion",
+   "battery life",
+   "xr"
+  ]
+ },
+ {
+  "question_entities": [
+   "Danielle",
+   "opinion",
+   "battery life",
+   "xs"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ashley",
+   "opinion",
+   "battery life",
+   "xr"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ian",
+   "opinion",
+   "camera",
+   "Realme gt master exploration version"
+  ]
+ },
+ {
+  "question_entities": [
+   "Evan",
+   "opinion",
+   "processor",
+   "Realme gt master exploration version",
+   "Realme"
+  ]
+ },
+ {
+  "question_entities": [
+   "Evan",
+   "opinion",
+   "charging",
+   "Realme gt master exploration version",
+   "Realme gt master exploration version"
+  ]
+ },
+ {
+  "question_entities": [
+   "Rita",
+   "opinion",
+   "tuning",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lily",
+   "opinion",
+   "bright",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Morgan",
+   "opinion",
+   "system",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Morgan",
+   "opinion",
+   "performance",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Patricia",
+   "opinion",
+   "charging",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Connor",
+   "opinion",
+   "performance",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Emily",
+   "opinion",
+   "everything else",
+   "x3"
+  ]
+ },
+ {
+  "question_entities": [
+   "Adam",
+   "opinion",
+   "battery life",
+   "x3"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jada",
+   "opinion",
+   "battery life",
+   "x3"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kylie",
+   "opinion",
+   "battery life",
+   "OPPO"
+  ]
+ },
+ {
+  "question_entities": [
+   "Taylor",
+   "opinion",
+   "feel",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Daniel",
+   "opinion",
+   "experience",
+   "7pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Eric",
+   "opinion",
+   "battery life",
+   "mini"
+  ]
+ },
+ {
+  "question_entities": [
+   "Juan",
+   "opinion",
+   "sales volume",
+   "Meizu"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jada",
+   "opinion",
+   "screen",
+   "Note10pro",
+   "Note10pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jada",
+   "opinion",
+   "everything else",
+   "Note10pro",
+   "Note10pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Rodrigo",
+   "opinion",
+   "unlocking speed",
+   "Mi 9",
+   "Mi 9"
+  ]
+ },
+ {
+  "question_entities": [
+   "Rodrigo",
+   "opinion",
+   "unlocking speed",
+   "k40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Maya",
+   "opinion",
+   "others",
+   "Mi 9"
+  ]
+ },
+ {
+  "question_entities": [
+   "Morgan",
+   "opinion",
+   "unlocking speed",
+   "Mi 9"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kathryn",
+   "opinion",
+   "unlocking speed",
+   "Mi 9",
+   "Mi 9"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kathryn",
+   "opinion",
+   "unlocking speed",
+   "k40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Patricia",
+   "opinion",
+   "feel",
+   "S10e"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gabriella",
+   "opinion",
+   "portraits",
+   "Mate 40Pro",
+   "Mate 40Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Leonars",
+   "opinion",
+   "pictures",
+   "One plus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Leonars",
+   "opinion",
+   "camera",
+   "One plus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Antonio",
+   "opinion",
+   "pictures",
+   "One plus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Antonio",
+   "opinion",
+   "coloros",
+   "One plus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Brandon",
+   "opinion",
+   "camera algorithm",
+   "Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Maya",
+   "opinion",
+   "pictures",
+   "Pro+",
+   "Pro+"
+  ]
+ },
+ {
+  "question_entities": [
+   "Maria",
+   "opinion",
+   "experience",
+   "12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Malcolm",
+   "opinion",
+   "temperature",
+   "8g1"
+  ]
+ },
+ {
+  "question_entities": [
+   "Clifford",
+   "opinion",
+   "power consumption",
+   "8g1"
+  ]
+ },
+ {
+  "question_entities": [
+   "Adelina",
+   "opinion",
+   "pictures",
+   "12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Adelina",
+   "opinion",
+   "screen",
+   "12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Adelina",
+   "opinion",
+   "details",
+   "colors",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Carl",
+   "opinion",
+   "pictures",
+   "Mi",
+   "Mi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Xavier",
+   "opinion",
+   "camera",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Luccile",
+   "opinion",
+   "sales",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Luccile",
+   "opinion",
+   "sales",
+   "glory"
+  ]
+ },
+ {
+  "question_entities": [
+   "Morgan",
+   "opinion",
+   "color",
+   "12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Josephine",
+   "opinion",
+   "power consumption",
+   "Hongmeng"
+  ]
+ },
+ {
+  "question_entities": [
+   "Wallace",
+   "opinion",
+   "power consumption",
+   "Hongmeng"
+  ]
+ },
+ {
+  "question_entities": [
+   "Violet",
+   "opinion",
+   "software response",
+   "OnePlus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Fred",
+   "opinion",
+   "screen",
+   "mix4"
+  ]
+ },
+ {
+  "question_entities": [
+   "Elijah",
+   "opinion",
+   "screen",
+   "K30P"
+  ]
+ },
+ {
+  "question_entities": [
+   "Elijah",
+   "opinion",
+   "camera",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alexis",
+   "opinion",
+   "imaging quality",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jada",
+   "opinion",
+   "sensitivity control wheel",
+   "m10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Dylan",
+   "opinion",
+   "feel",
+   "M10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Brianna",
+   "opinion",
+   "feel",
+   "m10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jaden",
+   "opinion",
+   "sensitivity control wheel",
+   "m10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Brooke",
+   "opinion",
+   "feel",
+   "M10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Graham",
+   "opinion",
+   "sell",
+   "Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Isaiah",
+   "opinion",
+   "sell",
+   "Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jacqueline",
+   "opinion",
+   "feel",
+   "OnePlus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alexander",
+   "opinion",
+   "feel",
+   "OnePlus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Rebecca",
+   "opinion",
+   "technologies",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gabriel",
+   "opinion",
+   "technologies",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Belinda",
+   "opinion",
+   "signal",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alise",
+   "opinion",
+   "experience",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Dennis",
+   "opinion",
+   "photography",
+   "x60pro+"
+  ]
+ },
+ {
+  "question_entities": [
+   "Dennis",
+   "opinion",
+   "photography",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alexa",
+   "opinion",
+   "temperature",
+   "xiaomi12Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Virginia",
+   "opinion",
+   "functions",
+   "Miui"
+  ]
+ },
+ {
+  "question_entities": [
+   "Zoe",
+   "opinion",
+   "system",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Allison",
+   "opinion",
+   "Honor 60",
+   "positioned"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jennifer",
+   "opinion",
+   "image",
+   "v30pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jaden",
+   "opinion",
+   "pictures",
+   "60pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Riley",
+   "opinion",
+   "Honor 60",
+   "positioned"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ethan",
+   "opinion",
+   "bottom layer",
+   "Android"
+  ]
+ },
+ {
+  "question_entities": [
+   "Louis",
+   "opinion",
+   "battery life",
+   "Mi 10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Zoe",
+   "opinion",
+   "system",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Eric",
+   "opinion",
+   "screen",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Virginia",
+   "opinion",
+   "hardware",
+   "Android"
+  ]
+ },
+ {
+  "question_entities": [
+   "Freda",
+   "opinion",
+   "bright silver",
+   "9Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jaden",
+   "opinion",
+   "battery life",
+   "Mi 8"
+  ]
+ },
+ {
+  "question_entities": [
+   "Isaac",
+   "opinion",
+   "battery",
+   "Mi 9"
+  ]
+ },
+ {
+  "question_entities": [
+   "Deborah",
+   "opinion",
+   "telephoto lens",
+   "X70Pro+"
+  ]
+ },
+ {
+  "question_entities": [
+   "Louis",
+   "opinion",
+   "photos",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Amber",
+   "opinion",
+   "pictures",
+   "Redmi K series",
+   "Redmi K series"
+  ]
+ },
+ {
+  "question_entities": [
+   "John",
+   "opinion",
+   "quality control",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Mackenzie",
+   "opinion",
+   "battery",
+   "Mi 6"
+  ]
+ },
+ {
+  "question_entities": [
+   "Josephine",
+   "opinion",
+   "experience",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lauren",
+   "opinion",
+   "system",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Freda",
+   "opinion",
+   "experience",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Helen",
+   "opinion",
+   "pictures",
+   "IQOO 5Pro",
+   "IQOO 5Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Wallace",
+   "opinion",
+   "imx766v",
+   "8pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Emily",
+   "opinion",
+   "algorithm",
+   "8pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Herbert",
+   "opinion",
+   "amount of light",
+   "9Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kylie",
+   "opinion",
+   "selfie",
+   "civi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Eric",
+   "opinion",
+   "frame drops",
+   "Android"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kaylee",
+   "opinion",
+   "algorithm",
+   "Honor"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kaylee",
+   "opinion",
+   "algorithm",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Bridjet",
+   "opinion",
+   "system",
+   "one plus 7 pro",
+   "one plus 7 pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Leah",
+   "opinion",
+   "materials",
+   "magic2"
+  ]
+ },
+ {
+  "question_entities": [
+   "Leah",
+   "opinion",
+   "case",
+   "magic2"
+  ]
+ },
+ {
+  "question_entities": [
+   "Morgan",
+   "opinion",
+   "Workmanship",
+   "magic2"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ella",
+   "opinion",
+   "feel",
+   "magic2"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ella",
+   "opinion",
+   "case",
+   "magic2"
+  ]
+ },
+ {
+  "question_entities": [
+   "Melissa",
+   "opinion",
+   "night scenes",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Melissa",
+   "opinion",
+   "zoom",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Juan",
+   "opinion",
+   "battery life",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kayla",
+   "opinion",
+   "battery life",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kayla",
+   "opinion",
+   "battery life",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kayla",
+   "opinion",
+   "appearance",
+   "p30pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Juan",
+   "opinion",
+   "experience",
+   "Hongmeng"
+  ]
+ },
+ {
+  "question_entities": [
+   "Evan",
+   "opinion",
+   "optimization",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Faith",
+   "opinion",
+   "pictures",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jordan",
+   "opinion",
+   "main camera",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Makayla",
+   "opinion",
+   "pictures",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gregory",
+   "opinion",
+   "photo",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kaylee",
+   "opinion",
+   "images",
+   "x70pp"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kayla",
+   "opinion",
+   "images",
+   "NEX5"
+  ]
+ },
+ {
+  "question_entities": [
+   "Connor",
+   "opinion",
+   "camera",
+   "12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Connor",
+   "opinion",
+   "feel",
+   "12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Caroline",
+   "opinion",
+   "photography",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Katherine",
+   "opinion",
+   "photography",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Katherine",
+   "opinion",
+   "pictures",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lily",
+   "opinion",
+   "pictures",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jeffery",
+   "opinion",
+   "play games",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kathryn",
+   "opinion",
+   "games",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Roger",
+   "opinion",
+   "play games",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kylie",
+   "opinion",
+   "screen",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Celia",
+   "opinion",
+   "screen",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "James",
+   "opinion",
+   "pictures",
+   "6sp"
+  ]
+ },
+ {
+  "question_entities": [
+   "Beatrice",
+   "opinion",
+   "charging",
+   "iPhone 6s"
+  ]
+ },
+ {
+  "question_entities": [
+   "Simon",
+   "opinion",
+   "photo",
+   "Note 6"
+  ]
+ },
+ {
+  "question_entities": [
+   "Joseph",
+   "opinion",
+   "appearance",
+   "Note 6"
+  ]
+ },
+ {
+  "question_entities": [
+   "Malcolm",
+   "opinion",
+   "pictures",
+   "11p"
+  ]
+ },
+ {
+  "question_entities": [
+   "Rita",
+   "opinion",
+   "focus",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alise",
+   "opinion",
+   "configuration",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Anthony",
+   "opinion",
+   "texture",
+   "Dimensity 1200",
+   "Dimensity 1200"
+  ]
+ },
+ {
+  "question_entities": [
+   "Patricia",
+   "opinion",
+   "permeability",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Keith",
+   "opinion",
+   "positioned",
+   "GT"
+  ]
+ },
+ {
+  "question_entities": [
+   "Austin",
+   "opinion",
+   "border",
+   "8pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Brandon",
+   "opinion",
+   "line quality",
+   "Oneplus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Brandon",
+   "opinion",
+   "wireless charging",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kaitlyn",
+   "opinion",
+   "video chips",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alise",
+   "opinion",
+   "pictures",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sophia",
+   "opinion",
+   "video",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Keith",
+   "opinion",
+   "sharpening",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sophia",
+   "opinion",
+   "pictures",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Donald",
+   "opinion",
+   "update",
+   "Android"
+  ]
+ },
+ {
+  "question_entities": [
+   "Maya",
+   "opinion",
+   "places",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Agatha",
+   "opinion",
+   "battery life",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Marisa",
+   "opinion",
+   "signal",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Juan",
+   "opinion",
+   "battery life",
+   "game",
+   "vivo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Harry",
+   "opinion",
+   "optimization strength",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Freda",
+   "opinion",
+   "screen",
+   "mix"
+  ]
+ },
+ {
+  "question_entities": [
+   "Melanie",
+   "opinion",
+   "night mode",
+   "Miui"
+  ]
+ },
+ {
+  "question_entities": [
+   "Melanie",
+   "opinion",
+   "night mode",
+   "Miui"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ella",
+   "opinion",
+   "night mode",
+   "Miui"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ella",
+   "opinion",
+   "night mode",
+   "Miui"
+  ]
+ },
+ {
+  "question_entities": [
+   "Nicole",
+   "opinion",
+   "screen",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alan",
+   "opinion",
+   "gap",
+   "back cover",
+   "Mi 10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jonathan",
+   "opinion",
+   "texture",
+   "Meizu 18",
+   "Meizu 18"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lucas",
+   "opinion",
+   "experience",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Celia",
+   "opinion",
+   "experience",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sofia",
+   "opinion",
+   "system",
+   "civi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Donald",
+   "opinion",
+   "system",
+   "civi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Emily",
+   "opinion",
+   "feel",
+   "s22"
+  ]
+ },
+ {
+  "question_entities": [
+   "Harry",
+   "opinion",
+   "design",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Leslie",
+   "opinion",
+   "telephoto",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Chase",
+   "opinion",
+   "color sharpening",
+   "vivo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Grace",
+   "opinion",
+   "portrait",
+   "vivo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Daisy",
+   "opinion",
+   "brand",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Taylor",
+   "opinion",
+   "camera",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Morgan",
+   "opinion",
+   "shooting",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Trinity",
+   "opinion",
+   "screen",
+   "11pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Walter",
+   "opinion",
+   "telephoto",
+   "10u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Douglas",
+   "opinion",
+   "pixels",
+   "vivo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Matthew",
+   "opinion",
+   "pictures",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ava",
+   "opinion",
+   "image",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Anthony",
+   "opinion",
+   "screen",
+   "Meizu",
+   "2k"
+  ]
+ },
+ {
+  "question_entities": [
+   "Taylor",
+   "opinion",
+   "ppi",
+   "p40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ian",
+   "opinion",
+   "quality",
+   "screen",
+   "P40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sofia",
+   "opinion",
+   "quality",
+   "screen",
+   "P40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sofia",
+   "opinion",
+   "color",
+   "P40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alan",
+   "opinion",
+   "speed",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lucas",
+   "opinion",
+   "1080PLCD",
+   "P20"
+  ]
+ },
+ {
+  "question_entities": [
+   "Destiny",
+   "opinion",
+   "screen",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Anita",
+   "opinion",
+   "signal",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Isaiah",
+   "opinion",
+   "volume",
+   "Mi 10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Cecilia",
+   "opinion",
+   "sound",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Amber",
+   "opinion",
+   "signal",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Amber",
+   "opinion",
+   "signal",
+   "Android"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jake",
+   "opinion",
+   "price",
+   "12x"
+  ]
+ },
+ {
+  "question_entities": [
+   "Maya",
+   "opinion",
+   "1080P",
+   "12x"
+  ]
+ },
+ {
+  "question_entities": [
+   "Katherine",
+   "opinion",
+   "price",
+   "12x"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jeffery",
+   "opinion",
+   "battery",
+   "12x"
+  ]
+ },
+ {
+  "question_entities": [
+   "Taylor",
+   "opinion",
+   "battery",
+   "blue factory"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ada",
+   "opinion",
+   "signal",
+   "x60"
+  ]
+ },
+ {
+  "question_entities": [
+   "Audrey",
+   "opinion",
+   "scheduling",
+   "x30"
+  ]
+ },
+ {
+  "question_entities": [
+   "Graham",
+   "opinion",
+   "fluency",
+   "8gen1"
+  ]
+ },
+ {
+  "question_entities": [
+   "Joshua",
+   "opinion",
+   "appearance",
+   "x2"
+  ]
+ },
+ {
+  "question_entities": [
+   "Chloe",
+   "opinion",
+   "craftsmanship",
+   "find"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jonathan",
+   "opinion",
+   "configuration",
+   "Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Claire",
+   "opinion",
+   "cooling",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Claire",
+   "opinion",
+   "cooling system",
+   "iphone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sandra",
+   "opinion",
+   "photography",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sandra",
+   "opinion",
+   "else",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ethan",
+   "opinion",
+   "texture",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Makayla",
+   "opinion",
+   "workmanship",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Nicholas",
+   "opinion",
+   "weight",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Nicholas",
+   "opinion",
+   "feel",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gladys",
+   "opinion",
+   "price",
+   "12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Josephine",
+   "opinion",
+   "price",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "John",
+   "opinion",
+   "feel",
+   "Xiaomi Mi 11",
+   "Xiaomi Mi 11"
+  ]
+ },
+ {
+  "question_entities": [
+   "Isabella",
+   "opinion",
+   "battery life",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Florence",
+   "opinion",
+   "camera",
+   "p40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Isabella",
+   "opinion",
+   "performance",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kayla",
+   "opinion",
+   "processor",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Celia",
+   "opinion",
+   "performance",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Celia",
+   "opinion",
+   "performance",
+   "Kirin"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alfred",
+   "opinion",
+   "camera",
+   "p40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ashley",
+   "opinion",
+   "signal",
+   "magic 3 pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jennifer",
+   "opinion",
+   "signal",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Destiny",
+   "opinion",
+   "signal",
+   "Xiaomi Mi 11",
+   "Xiaomi Mi 11"
+  ]
+ },
+ {
+  "question_entities": [
+   "Daisy",
+   "opinion",
+   "signal",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Carter",
+   "opinion",
+   "signal",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Caroline",
+   "opinion",
+   "appearance",
+   "cv"
+  ]
+ },
+ {
+  "question_entities": [
+   "Winifred",
+   "opinion",
+   "battery life",
+   "iQOO5"
+  ]
+ },
+ {
+  "question_entities": [
+   "Graham",
+   "opinion",
+   "texture",
+   "neo5"
+  ]
+ },
+ {
+  "question_entities": [
+   "Rodrigo",
+   "opinion",
+   "camera",
+   "mate40 series"
+  ]
+ },
+ {
+  "question_entities": [
+   "Zachary",
+   "opinion",
+   "feel",
+   "OnePlus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Rita",
+   "opinion",
+   "feel",
+   "OnePlus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jeremiah",
+   "opinion",
+   "feel",
+   "OnePlus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Dennis",
+   "opinion",
+   "algorithm",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alexander",
+   "opinion",
+   "video",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jenna",
+   "opinion",
+   "telephoto camera",
+   "10Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Mabel",
+   "opinion",
+   "dual speakers",
+   "10p ro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jenna",
+   "opinion",
+   "screen",
+   "charging",
+   "10Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Avery",
+   "opinion",
+   "Shooting",
+   "10U"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alexander",
+   "opinion",
+   "10ultra"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alexander",
+   "opinion",
+   "screen",
+   "10ultra"
+  ]
+ },
+ {
+  "question_entities": [
+   "Eric",
+   "opinion",
+   "pictures",
+   "13"
+  ]
+ },
+ {
+  "question_entities": [
+   "Josephine",
+   "opinion",
+   "battery life",
+   "10u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Josephine",
+   "opinion",
+   "battery",
+   "10u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Daniel",
+   "opinion",
+   "fast charge",
+   "10u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Maria",
+   "opinion",
+   "battery",
+   "10u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Nicholas",
+   "opinion",
+   "pictures",
+   "Mi 12pro",
+   "Mi 12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Nicholas",
+   "opinion",
+   "performance scheduling",
+   "Mi 12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Adrian",
+   "opinion",
+   "feel",
+   "Mi 12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Adrian",
+   "opinion",
+   "performance",
+   "scheduling",
+   "Mi 12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jeffery",
+   "opinion",
+   "performance scheduling",
+   "Mi 12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kaitlyn",
+   "opinion",
+   "pictures",
+   "Mi 12pro",
+   "Mi 12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Nicole",
+   "opinion",
+   "signal",
+   "Xm"
+  ]
+ },
+ {
+  "question_entities": [
+   "Louis",
+   "opinion",
+   "signal",
+   "Xm"
+  ]
+ },
+ {
+  "question_entities": [
+   "Abigail",
+   "opinion",
+   "signal",
+   "Xm"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gordon",
+   "opinion",
+   "price",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sara",
+   "opinion",
+   "price",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Aidan",
+   "opinion",
+   "battery",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Neil",
+   "opinion",
+   "camera",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "William",
+   "opinion",
+   "battery",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Leonars",
+   "opinion",
+   "texture",
+   "S21 Ultra"
+  ]
+ },
+ {
+  "question_entities": [
+   "Freda",
+   "opinion",
+   "texture",
+   "S21 Ultra"
+  ]
+ },
+ {
+  "question_entities": [
+   "Leslie",
+   "opinion",
+   "fingerprints",
+   "S21 Ultra"
+  ]
+ },
+ {
+  "question_entities": [
+   "Leslie",
+   "opinion",
+   "texture",
+   "S21 Ultra"
+  ]
+ },
+ {
+  "question_entities": [
+   "Curtis",
+   "opinion",
+   "fingerprints",
+   "S21 Ultra"
+  ]
+ },
+ {
+  "question_entities": [
+   "Curtis",
+   "opinion",
+   "texture",
+   "S21 Ultra",
+   "S21 Ultra"
+  ]
+ },
+ {
+  "question_entities": [
+   "Louis",
+   "opinion",
+   "pictures",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Curtis",
+   "opinion",
+   "photo quality",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alexis",
+   "opinion",
+   "battery",
+   "x2p"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jesse",
+   "opinion",
+   "functions",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jesse",
+   "opinion",
+   "bugs",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Joseph",
+   "opinion",
+   "functions",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Joseph",
+   "opinion",
+   "openings",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Fiona",
+   "opinion",
+   "system",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Aidan",
+   "opinion",
+   "heat dissipation",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Eric",
+   "opinion",
+   "screen",
+   "Redmi Note10pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Hunter",
+   "opinion",
+   "window mode",
+   "Meizu"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jason",
+   "opinion",
+   "pictures",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "John",
+   "opinion",
+   "parameters",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "John",
+   "opinion",
+   "experience",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "John",
+   "opinion",
+   "Kirin 9000",
+   "mate40pro",
+   "mate40pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "John",
+   "opinion",
+   "photography",
+   "mate40pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Andrew",
+   "opinion",
+   "experience",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alise",
+   "opinion",
+   "Kirin 9000",
+   "mate40pro",
+   "mate40pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alise",
+   "opinion",
+   "photography",
+   "mate40pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ava",
+   "opinion",
+   "systems",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Marisa",
+   "opinion",
+   "speed",
+   "mix4",
+   "price"
+  ]
+ },
+ {
+  "question_entities": [
+   "Katelyn",
+   "opinion",
+   "battery life",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jake",
+   "opinion",
+   "battery life",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jake",
+   "opinion",
+   "battery life",
+   "max"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gilbert",
+   "opinion",
+   "pictures",
+   "Realme"
+  ]
+ },
+ {
+  "question_entities": [
+   "Claire",
+   "opinion",
+   "pictures",
+   "Realme"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ella",
+   "opinion",
+   "battery life",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Keith",
+   "opinion",
+   "battery life",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gabriel",
+   "opinion",
+   "battery life",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gabriel",
+   "opinion",
+   "resolution",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Katherine",
+   "opinion",
+   "battery life",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Aaron",
+   "opinion",
+   "experience",
+   "k40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Adam",
+   "opinion",
+   "battery life",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "William",
+   "opinion",
+   "battery",
+   "Meizu"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kylie",
+   "opinion",
+   "battery life",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Xavier",
+   "opinion",
+   "battery life",
+   "Mate40Pro",
+   "Mate40Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Christopher",
+   "opinion",
+   "signal",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Christopher",
+   "opinion",
+   "battery life",
+   "mini"
+  ]
+ },
+ {
+  "question_entities": [
+   "Simon",
+   "opinion",
+   "hand feel",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Luke",
+   "opinion",
+   "feel",
+   "Xiaomi Mi 12",
+   "Xiaomi Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jessica",
+   "opinion",
+   "feels",
+   "12x"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alise",
+   "opinion",
+   "feels",
+   "12x"
+  ]
+ },
+ {
+  "question_entities": [
+   "Katherine",
+   "opinion",
+   "resolution",
+   "moto"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sandra",
+   "opinion",
+   "resolution",
+   "moto"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gabriella",
+   "opinion",
+   "color",
+   "8Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Florence",
+   "opinion",
+   "battery",
+   "12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jack",
+   "opinion",
+   "main camera",
+   "12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jenna",
+   "opinion",
+   "camera",
+   "game",
+   "version 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jeremiah",
+   "opinion",
+   "sales volume",
+   "40 standard version"
+  ]
+ },
+ {
+  "question_entities": [
+   "Cameron",
+   "opinion",
+   "sales volume",
+   "40 standard version"
+  ]
+ },
+ {
+  "question_entities": [
+   "Bernard",
+   "opinion",
+   "battery life",
+   "13mini"
+  ]
+ },
+ {
+  "question_entities": [
+   "David",
+   "opinion",
+   "battery life",
+   "13pm"
+  ]
+ },
+ {
+  "question_entities": [
+   "Christian",
+   "opinion",
+   "battery life",
+   "oneplus 8p"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sofia",
+   "opinion",
+   "battery life",
+   "13pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jane",
+   "opinion",
+   "screen",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lewis",
+   "opinion",
+   "feels",
+   "12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jesse",
+   "opinion",
+   "system",
+   "MIUI"
+  ]
+ },
+ {
+  "question_entities": [
+   "Megan",
+   "opinion",
+   "quality control",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Noah",
+   "opinion",
+   "experience",
+   "10Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ashton",
+   "opinion",
+   "charging",
+   "iPhone13"
+  ]
+ },
+ {
+  "question_entities": [
+   "Malcolm",
+   "opinion",
+   "performance",
+   "Master Exploration"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alexa",
+   "opinion",
+   "chip",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alexa",
+   "opinion",
+   "UI optimization",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jennifer",
+   "opinion",
+   "system",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Curtis",
+   "opinion",
+   "shotting",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Rodrigo",
+   "opinion",
+   "pictures",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kayla",
+   "opinion",
+   "camera module",
+   "fold2"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kayla",
+   "opinion",
+   "camera module",
+   "Huawei m30p"
+  ]
+ },
+ {
+  "question_entities": [
+   "Michael",
+   "opinion",
+   "shotting",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jaden",
+   "opinion",
+   "Shooting",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Bridjet",
+   "opinion",
+   "screen",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ashley",
+   "opinion",
+   "experience",
+   "8gen1"
+  ]
+ },
+ {
+  "question_entities": [
+   "Curtis",
+   "opinion",
+   "battery life",
+   "iPhone 13"
+  ]
+ },
+ {
+  "question_entities": [
+   "Harold",
+   "opinion",
+   "performance",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Harold",
+   "opinion",
+   "performance",
+   "Mi 9",
+   "Mi 9"
+  ]
+ },
+ {
+  "question_entities": [
+   "Claire",
+   "opinion",
+   "portability",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Faith",
+   "opinion",
+   "folding technique",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Avery",
+   "opinion",
+   "folding technique",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Natalie",
+   "opinion",
+   "portability",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Cameron",
+   "opinion",
+   "heat dissipation",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "William",
+   "opinion",
+   "workmanship",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "William",
+   "opinion",
+   "quality control",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gladys",
+   "opinion",
+   "screen",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Emma",
+   "opinion",
+   "pricing",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Emma",
+   "opinion",
+   "workmanship",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gloria",
+   "opinion",
+   "pricing",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Anita",
+   "opinion",
+   "workmanship",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Eleanor",
+   "opinion",
+   "shortcomings",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Cody",
+   "opinion",
+   "pictures",
+   "x70pp"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ethan",
+   "opinion",
+   "screen",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Freda",
+   "opinion",
+   "shortcomings",
+   "x70pro+"
+  ]
+ },
+ {
+  "question_entities": [
+   "Julian",
+   "opinion",
+   "image stabilization",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Austin",
+   "opinion",
+   "algorithm",
+   "vivo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Angelina",
+   "opinion",
+   "main shooter",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Angelina",
+   "opinion",
+   "telephoto",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alfred",
+   "opinion",
+   "positioning",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Violet",
+   "opinion",
+   "signal",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Joyce",
+   "opinion",
+   "pictures",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gloria",
+   "opinion",
+   "miui",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gerld",
+   "opinion",
+   "pixels",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Faith",
+   "opinion",
+   "camera",
+   "s21u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Destiny",
+   "opinion",
+   "performance",
+   "Xiaomi Mi 12",
+   "Xiaomi Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Agatha",
+   "opinion",
+   "performance",
+   "Xiaomi Mi 12",
+   "Xiaomi Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Catherine",
+   "opinion",
+   "battery",
+   "R series"
+  ]
+ },
+ {
+  "question_entities": [
+   "Angelina",
+   "opinion",
+   "signal",
+   "R series"
+  ]
+ },
+ {
+  "question_entities": [
+   "Graham",
+   "opinion",
+   "photo",
+   "11pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lillian",
+   "opinion",
+   "beauty algorithm",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Bailey",
+   "opinion",
+   "battery life",
+   "max"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gabriel",
+   "opinion",
+   "charging",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gabriel",
+   "opinion",
+   "signal",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Christian",
+   "opinion",
+   "system",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Beatrice",
+   "opinion",
+   "system",
+   "vivo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Beatrice",
+   "opinion",
+   "screen",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gordon",
+   "opinion",
+   "system maintenance",
+   "One plus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Bailey",
+   "opinion",
+   "screen",
+   "Mi 10",
+   "Mi 10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Nicole",
+   "opinion",
+   "screen",
+   "Mi 10",
+   "Mi 10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ian",
+   "opinion",
+   "screen",
+   "Mi 10",
+   "Mi 10"
+  ]
+ },
+ {
+  "question_entities": [
+   "William",
+   "opinion",
+   "screen",
+   "Mi 10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Hugh",
+   "opinion",
+   "cameras",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Grace",
+   "opinion",
+   "battery life",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Keith",
+   "opinion",
+   "feel",
+   "OV"
+  ]
+ },
+ {
+  "question_entities": [
+   "Catherine",
+   "opinion",
+   "signal",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Julia",
+   "opinion",
+   "signal",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Chase",
+   "opinion",
+   "battery life",
+   "a15"
+  ]
+ },
+ {
+  "question_entities": [
+   "Margaret",
+   "opinion",
+   "pictures",
+   "K40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alan",
+   "opinion",
+   "camera",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jane",
+   "opinion",
+   "configuration",
+   "Xiaomi Mi 12",
+   "Xiaomi Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jane",
+   "opinion",
+   "configuration",
+   "12 Pro",
+   "12 Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ella",
+   "opinion",
+   "configuration",
+   "12 Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Anthony",
+   "opinion",
+   "fast charging",
+   "oppo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alan",
+   "opinion",
+   "video experience",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Brian",
+   "opinion",
+   "camera",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Patricia",
+   "opinion",
+   "battery life",
+   "X3"
+  ]
+ },
+ {
+  "question_entities": [
+   "Cecilia",
+   "opinion",
+   "processor",
+   "xr"
+  ]
+ },
+ {
+  "question_entities": [
+   "Cecilia",
+   "opinion",
+   "processor",
+   "mate20"
+  ]
+ },
+ {
+  "question_entities": [
+   "Cecilia",
+   "opinion",
+   "System",
+   "mate20"
+  ]
+ },
+ {
+  "question_entities": [
+   "Bridjet",
+   "opinion",
+   "system",
+   "realme"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jaden",
+   "opinion",
+   "system",
+   "realme"
+  ]
+ },
+ {
+  "question_entities": [
+   "Delia",
+   "opinion",
+   "system",
+   "realme"
+  ]
+ },
+ {
+  "question_entities": [
+   "Melissa",
+   "opinion",
+   "appearance",
+   "realme"
+  ]
+ },
+ {
+  "question_entities": [
+   "Agatha",
+   "opinion",
+   "system",
+   "realme"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jordan",
+   "opinion",
+   "feels",
+   "civi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Andrew",
+   "opinion",
+   "feel",
+   "civi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Faith",
+   "opinion",
+   "feels",
+   "Xiaomi Mi 12",
+   "Xiaomi Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Faith",
+   "opinion",
+   "hand feel",
+   "Xiaomi 12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Brooke",
+   "opinion",
+   "hand feel",
+   "Xiaomi 12pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sofia",
+   "opinion",
+   "signal",
+   "13pm"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jocelyn",
+   "opinion",
+   "battery life",
+   "13pm"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alise",
+   "opinion",
+   "workmanship",
+   "OPPO"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ian",
+   "opinion",
+   "battery",
+   "oneplus five"
+  ]
+ },
+ {
+  "question_entities": [
+   "Katherine",
+   "opinion",
+   "experience",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ashley",
+   "opinion",
+   "experience",
+   "Xiaomi 9",
+   "Xiaomi 9"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ashley",
+   "opinion",
+   "power",
+   "Xiaomi 9"
+  ]
+ },
+ {
+  "question_entities": [
+   "Riley",
+   "opinion",
+   "experience",
+   "Xiaomi 9"
+  ]
+ },
+ {
+  "question_entities": [
+   "Riley",
+   "opinion",
+   "power",
+   "Xiaomi 9"
+  ]
+ },
+ {
+  "question_entities": [
+   "Hailey",
+   "opinion",
+   "angle",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jasmine",
+   "opinion",
+   "pictures",
+   "Redmi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Landon",
+   "opinion",
+   "algorithm",
+   "k30Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Hugh",
+   "opinion",
+   "signal",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sara",
+   "opinion",
+   "performance",
+   "Mate40Pro+",
+   "Mate40Pro+"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kaylee",
+   "opinion",
+   "performance",
+   "Mate40Pro+"
+  ]
+ },
+ {
+  "question_entities": [
+   "Emma",
+   "opinion",
+   "feel",
+   "13pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gladys",
+   "opinion",
+   "configuration",
+   "X5"
+  ]
+ },
+ {
+  "question_entities": [
+   "Amber",
+   "opinion",
+   "configuration",
+   "vivo X80",
+   "vivo X80"
+  ]
+ },
+ {
+  "question_entities": [
+   "Stanley",
+   "opinion",
+   "configuration",
+   "vivo X80"
+  ]
+ },
+ {
+  "question_entities": [
+   "Dominic",
+   "opinion",
+   "system",
+   "Android"
+  ]
+ },
+ {
+  "question_entities": [
+   "Devin",
+   "opinion",
+   "system",
+   "Android"
+  ]
+ },
+ {
+  "question_entities": [
+   "Evelyn",
+   "opinion",
+   "workmanship",
+   "Meizu 16",
+   "Meizu 16"
+  ]
+ },
+ {
+  "question_entities": [
+   "Mackenzie",
+   "opinion",
+   "sales",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kaylee",
+   "opinion",
+   "optimization",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Virginia",
+   "opinion",
+   "camera",
+   "Honor"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kayla",
+   "opinion",
+   "appearance",
+   "20U"
+  ]
+ },
+ {
+  "question_entities": [
+   "Agatha",
+   "opinion",
+   "pictures",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Leah",
+   "opinion",
+   "craftsmanship",
+   "Xiaomi Mi 12",
+   "Xiaomi Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Leah",
+   "opinion",
+   "frame",
+   "Xiaomi Mi 12",
+   "Xiaomi Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Leah",
+   "opinion",
+   "screen",
+   "Xiaomi Mi 12",
+   "Xiaomi Mi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Walter",
+   "opinion",
+   "camera optimization",
+   "Xiaomi Mi 11U",
+   "Xiaomi Mi 11U"
+  ]
+ },
+ {
+  "question_entities": [
+   "Barbara",
+   "opinion",
+   "system",
+   "OnePlus 8",
+   "OnePlus 8"
+  ]
+ },
+ {
+  "question_entities": [
+   "Daisy",
+   "opinion",
+   "weight",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Makayla",
+   "opinion",
+   "feel",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Makayla",
+   "opinion",
+   "price",
+   "OPPO"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gerld",
+   "opinion",
+   "feels",
+   "x3"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kathryn",
+   "opinion",
+   "feels",
+   "x3"
+  ]
+ },
+ {
+  "question_entities": [
+   "Madison",
+   "opinion",
+   "camera",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lillian",
+   "opinion",
+   "photography",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lillian",
+   "opinion",
+   "camera",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Martin",
+   "opinion",
+   "camera",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ann",
+   "opinion",
+   "feel",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alex",
+   "opinion",
+   "configuration",
+   "note11 series"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jason",
+   "opinion",
+   "algorithm",
+   "p50Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alise",
+   "opinion",
+   "pictures",
+   "P50"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ariana",
+   "opinion",
+   "screen",
+   "Honor"
+  ]
+ },
+ {
+  "question_entities": [
+   "Amanda",
+   "opinion",
+   "global sales",
+   "Huawei",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Amanda",
+   "opinion",
+   "global sales",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Amanda",
+   "opinion",
+   "global sales",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Antonio",
+   "opinion",
+   "sales volume",
+   "apples"
+  ]
+ },
+ {
+  "question_entities": [
+   "Erin",
+   "opinion",
+   "global sales",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alise",
+   "opinion",
+   "battery life",
+   "x60tpro+"
+  ]
+ },
+ {
+  "question_entities": [
+   "Christine",
+   "opinion",
+   "battery life",
+   "vivo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Aidan",
+   "opinion",
+   "camera",
+   "OnePlus 9pro",
+   "OnePlus 9pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Louis",
+   "opinion",
+   "experience",
+   "8Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gerld",
+   "opinion",
+   "temperament",
+   "Magic3Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Helen",
+   "opinion",
+   "texture",
+   "Mate40Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Emma",
+   "opinion",
+   "temperament",
+   "Mate40Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Emma",
+   "opinion",
+   "temperament",
+   "Magic3Pro",
+   "Magic3Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Margaret",
+   "opinion",
+   "camera",
+   "Android"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jake",
+   "opinion",
+   "camera",
+   "Android"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jake",
+   "opinion",
+   "photos",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Mia",
+   "opinion",
+   "quality",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Aaron",
+   "opinion",
+   "quality",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ariana",
+   "opinion",
+   "feels",
+   "Xiaomi MIX"
+  ]
+ },
+ {
+  "question_entities": [
+   "Rodrigo",
+   "opinion",
+   "design",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Adelina",
+   "opinion",
+   "design",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Rita",
+   "opinion",
+   "design",
+   "OnePlus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Amanda",
+   "opinion",
+   "dual speakers",
+   "p40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Brian",
+   "opinion",
+   "charging",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Mia",
+   "opinion",
+   "play",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kathryn",
+   "opinion",
+   "algorithm",
+   "k30pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kathryn",
+   "opinion",
+   "imx686",
+   "k30pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Graham",
+   "opinion",
+   "battery life",
+   "Xiaomi civi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sophia",
+   "opinion",
+   "optimization",
+   "k30pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jayden",
+   "opinion",
+   "screen",
+   "fold2",
+   "fold2"
+  ]
+ },
+ {
+  "question_entities": [
+   "Adam",
+   "opinion",
+   "screen",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jasmine",
+   "opinion",
+   "experience",
+   "s21u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Laura",
+   "opinion",
+   "localization",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Laura",
+   "opinion",
+   "folding screen",
+   "s21u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Laura",
+   "opinion",
+   "screen",
+   "fold2",
+   "fold2"
+  ]
+ },
+ {
+  "question_entities": [
+   "Diana",
+   "opinion",
+   "system",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Diana",
+   "opinion",
+   "background",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Bernard",
+   "opinion",
+   "charging",
+   "iPhone13"
+  ]
+ },
+ {
+  "question_entities": [
+   "Bernard",
+   "opinion",
+   "background",
+   "iPhone13"
+  ]
+ },
+ {
+  "question_entities": [
+   "Cody",
+   "opinion",
+   "heat dissipation",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Aidan",
+   "opinion",
+   "fast charging",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Caroline",
+   "opinion",
+   "call recording",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Caroline",
+   "opinion",
+   "fast charging",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Riley",
+   "opinion",
+   "system",
+   "iQOO Neo5s"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jeffery",
+   "opinion",
+   "Z axis",
+   "K30Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Miles",
+   "opinion",
+   "battery life",
+   "13mini"
+  ]
+ },
+ {
+  "question_entities": [
+   "Luke",
+   "opinion",
+   "battery life",
+   "pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lynn",
+   "opinion",
+   "screen",
+   "OnePlus"
+  ]
+ },
+ {
+  "question_entities": [
+   "James",
+   "opinion",
+   "system",
+   "one plus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Abigail",
+   "opinion",
+   "signal",
+   "P10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Adelina",
+   "opinion",
+   "memory",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Louis",
+   "opinion",
+   "bugs",
+   "Xiaomi Mi 10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jose",
+   "opinion",
+   "system",
+   "Xiaomi Mi 10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gabriella",
+   "opinion",
+   "processor",
+   "k40"
+  ]
+ },
+ {
+  "question_entities": [
+   "George",
+   "opinion",
+   "battery life",
+   "mate30pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Aaliyah",
+   "opinion",
+   "appearance",
+   "civi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Donald",
+   "opinion",
+   "feel",
+   "11u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Elijah",
+   "opinion",
+   "photography",
+   "Xiaomi Mi 9",
+   "Xiaomi Mi 9"
+  ]
+ },
+ {
+  "question_entities": [
+   "John",
+   "opinion",
+   "feel",
+   "Mi 9",
+   "Mi 9"
+  ]
+ },
+ {
+  "question_entities": [
+   "Joyce",
+   "opinion",
+   "Xiaomi Mi 9",
+   "feel"
+  ]
+ },
+ {
+  "question_entities": [
+   "Leslie",
+   "opinion",
+   "screen",
+   "Mi 6"
+  ]
+ },
+ {
+  "question_entities": [
+   "Adam",
+   "opinion",
+   "screen",
+   "IQOO"
+  ]
+ },
+ {
+  "question_entities": [
+   "Megan",
+   "opinion",
+   "photos",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "John",
+   "opinion",
+   "focus",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Caroline",
+   "opinion",
+   "photo",
+   "mate30"
+  ]
+ },
+ {
+  "question_entities": [
+   "Howard",
+   "opinion",
+   "photo",
+   "mate30"
+  ]
+ },
+ {
+  "question_entities": [
+   "Emma",
+   "opinion",
+   "screens",
+   "10S"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alyssa",
+   "opinion",
+   "texture",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Isabel",
+   "opinion",
+   "texture",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Douglas",
+   "opinion",
+   "texture",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Aidan",
+   "opinion",
+   "texture",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lucy",
+   "opinion",
+   "system",
+   "MIUI"
+  ]
+ },
+ {
+  "question_entities": [
+   "Amber",
+   "opinion",
+   "screen",
+   "OPPO find x3",
+   "OPPO find x3"
+  ]
+ },
+ {
+  "question_entities": [
+   "Madeline",
+   "opinion",
+   "camera",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jeffery",
+   "opinion",
+   "video",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kaylee",
+   "opinion",
+   "video",
+   "nex5",
+   "nex5"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kylie",
+   "opinion",
+   "battery",
+   "10u"
+  ]
+ },
+ {
+  "question_entities": [
+   "Avery",
+   "opinion",
+   "battery life",
+   "13pm"
+  ]
+ },
+ {
+  "question_entities": [
+   "Miguel",
+   "opinion",
+   "battery life",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Natalie",
+   "opinion",
+   "lasts",
+   "Android"
+  ]
+ },
+ {
+  "question_entities": [
+   "Austin",
+   "opinion",
+   "battery life",
+   "OnePlus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Isabel",
+   "opinion",
+   "size",
+   "12p"
+  ]
+ },
+ {
+  "question_entities": [
+   "Caroline",
+   "opinion",
+   "screen",
+   "iPhonex"
+  ]
+ },
+ {
+  "question_entities": [
+   "Hayden",
+   "opinion",
+   "appearance",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sophia",
+   "opinion",
+   "charging",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sophia",
+   "opinion",
+   "screen",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sophia",
+   "opinion",
+   "appearance",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Graham",
+   "opinion",
+   "screen",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Leslie",
+   "opinion",
+   "charging",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Leslie",
+   "opinion",
+   "screen",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Leslie",
+   "opinion",
+   "appearance",
+   "iPhone"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kaitlyn",
+   "opinion",
+   "camera",
+   "P20pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Dennis",
+   "opinion",
+   "screen",
+   "Mi 8"
+  ]
+ },
+ {
+  "question_entities": [
+   "Emma",
+   "opinion",
+   "screen",
+   "OnePlus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Hugh",
+   "opinion",
+   "battery",
+   "promax"
+  ]
+ },
+ {
+  "question_entities": [
+   "Delia",
+   "opinion",
+   "photography",
+   "OnePlus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Albert",
+   "opinion",
+   "screen",
+   "Meizu 18"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jada",
+   "opinion",
+   "feel",
+   "Meizu 18"
+  ]
+ },
+ {
+  "question_entities": [
+   "Carter",
+   "opinion",
+   "battery life",
+   "13pm"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jasmine",
+   "opinion",
+   "videos",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alyssa",
+   "opinion",
+   "signal",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alyssa",
+   "opinion",
+   "signal",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Madeline",
+   "opinion",
+   "appearance",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Caleb",
+   "opinion",
+   "pictures",
+   "note10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alexander",
+   "opinion",
+   "feel",
+   "13pm"
+  ]
+ },
+ {
+  "question_entities": [
+   "Caleb",
+   "opinion",
+   "night scene",
+   "note10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lillian",
+   "opinion",
+   "fast charging",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lillian",
+   "opinion",
+   "screen",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Howard",
+   "opinion",
+   "camera",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Howard",
+   "opinion",
+   "video",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kylie",
+   "opinion",
+   "bugs",
+   "Hongmeng"
+  ]
+ },
+ {
+  "question_entities": [
+   "Autumn",
+   "opinion",
+   "video recording",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kayla",
+   "opinion",
+   "Video",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Mia",
+   "opinion",
+   "video recording",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alexa",
+   "opinion",
+   "photo",
+   "master exploration"
+  ]
+ },
+ {
+  "question_entities": [
+   "Oswald",
+   "opinion",
+   "photo",
+   "max"
+  ]
+ },
+ {
+  "question_entities": [
+   "Austin",
+   "opinion",
+   "pictures",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Winifred",
+   "opinion",
+   "pictures",
+   "Apple",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Clifford",
+   "opinion",
+   "camera",
+   "Redmi note 9pro",
+   "Redmi note 9pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jaden",
+   "opinion",
+   "game",
+   "IQOO"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jose",
+   "opinion",
+   "battery",
+   "max2"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jose",
+   "opinion",
+   "processor",
+   "max2"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ariana",
+   "opinion",
+   "appearance",
+   "vivo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ariana",
+   "opinion",
+   "appearance",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Delia",
+   "opinion",
+   "texture",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Delia",
+   "opinion",
+   "screen",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Douglas",
+   "opinion",
+   "fingerprint",
+   "One plus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Alfred",
+   "opinion",
+   "fluency",
+   "Mi 6",
+   "Mi 6"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lewis",
+   "opinion",
+   "fluency",
+   "Mi 6"
+  ]
+ },
+ {
+  "question_entities": [
+   "Julian",
+   "opinion",
+   "feels",
+   "Mi 6"
+  ]
+ },
+ {
+  "question_entities": [
+   "John",
+   "opinion",
+   "camera",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "John",
+   "opinion",
+   "camera",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Natalie",
+   "opinion",
+   "battery life",
+   "Green factory"
+  ]
+ },
+ {
+  "question_entities": [
+   "Rodrigo",
+   "opinion",
+   "system",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Autumn",
+   "opinion",
+   "system",
+   "Xiaomi 10Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Bailey",
+   "opinion",
+   "battery life",
+   "9pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kylie",
+   "opinion",
+   "camera",
+   "s21"
+  ]
+ },
+ {
+  "question_entities": [
+   "Harry",
+   "opinion",
+   "camera",
+   "note9"
+  ]
+ },
+ {
+  "question_entities": [
+   "Christian",
+   "opinion",
+   "camera",
+   "s21"
+  ]
+ },
+ {
+  "question_entities": [
+   "Isabella",
+   "opinion",
+   "experience",
+   "K40"
+  ]
+ },
+ {
+  "question_entities": [
+   "George",
+   "opinion",
+   "screen",
+   "Xiaomi 12"
+  ]
+ },
+ {
+  "question_entities": [
+   "Bernard",
+   "opinion",
+   "battery life",
+   "Xiaomi Mi 11",
+   "Xiaomi Mi 11"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jada",
+   "opinion",
+   "pictures",
+   "NEX5",
+   "NEX5"
+  ]
+ },
+ {
+  "question_entities": [
+   "Danielle",
+   "opinion",
+   "camera",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Aidan",
+   "opinion",
+   "camera",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Wyatt",
+   "opinion",
+   "camera algorithm",
+   "Xiaomi Mi 10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Florence",
+   "opinion",
+   "experience",
+   "10 s"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gregory",
+   "opinion",
+   "desktop sliding",
+   "10S"
+  ]
+ },
+ {
+  "question_entities": [
+   "Gregory",
+   "opinion",
+   "desktop sliding",
+   "Xiaomi Mi 10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Margaret",
+   "opinion",
+   "screen",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Margaret",
+   "opinion",
+   "screen",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Lucy",
+   "opinion",
+   "screen",
+   "vivo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Hannah",
+   "opinion",
+   "screen",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Laura",
+   "opinion",
+   "screen",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Laura",
+   "opinion",
+   "screen",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Laura",
+   "opinion",
+   "pictures",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Laura",
+   "opinion",
+   "video",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Katherine",
+   "opinion",
+   "screen",
+   "Apple"
+  ]
+ },
+ {
+  "question_entities": [
+   "Walter",
+   "opinion",
+   "screen",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Cyrus",
+   "opinion",
+   "signal",
+   "Meizu"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ronald",
+   "opinion",
+   "main camera",
+   "OnePlus",
+   "camera"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ronald",
+   "opinion",
+   "optical focus",
+   "OnePlus"
+  ]
+ },
+ {
+  "question_entities": [
+   "Horace",
+   "opinion",
+   "screen",
+   "8Pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Rita",
+   "opinion",
+   "camera",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Catherine",
+   "opinion",
+   "screen",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Dominic",
+   "opinion",
+   "screen",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Martin",
+   "opinion",
+   "system",
+   "k40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Howard",
+   "opinion",
+   "system",
+   "K40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Howard",
+   "opinion",
+   "system translation",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Howard",
+   "opinion",
+   "high refresh rate experience",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "Allison",
+   "opinion",
+   "chin",
+   "k40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Allison",
+   "opinion",
+   "holes",
+   "k40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Allison",
+   "opinion",
+   "buttons",
+   "enhanced version of the k40",
+   "k40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Allison",
+   "opinion",
+   "hand feel",
+   "k40 enhanced version"
+  ]
+ },
+ {
+  "question_entities": [
+   "Hannah",
+   "opinion",
+   "holes",
+   "k40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Ashley",
+   "opinion",
+   "holes",
+   "k40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Horace",
+   "opinion",
+   "hand feel",
+   "k40 enhanced version"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jessica",
+   "opinion",
+   "signal",
+   "30pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Brian",
+   "opinion",
+   "loss",
+   "Mi 10",
+   "Mi 10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Edward",
+   "opinion",
+   "camera",
+   "Xiaomi Mi 11",
+   "Xiaomi Mi 11"
+  ]
+ },
+ {
+  "question_entities": [
+   "Catherine",
+   "opinion",
+   "battery life",
+   "mix2"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jack",
+   "opinion",
+   "performance",
+   "Xiaomi cc9pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Louis",
+   "opinion",
+   "design",
+   "Honor"
+  ]
+ },
+ {
+  "question_entities": [
+   "Margaret",
+   "opinion",
+   "design",
+   "Honor"
+  ]
+ },
+ {
+  "question_entities": [
+   "Simon",
+   "opinion",
+   "camera",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Isabel",
+   "opinion",
+   "Xiaomi",
+   "adjusted"
+  ]
+ },
+ {
+  "question_entities": [
+   "Christian",
+   "opinion",
+   "face value",
+   "civi"
+  ]
+ },
+ {
+  "question_entities": [
+   "David",
+   "opinion",
+   "face value",
+   "civi"
+  ]
+ },
+ {
+  "question_entities": [
+   "David",
+   "opinion",
+   "feel",
+   "civi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Benjamin",
+   "opinion",
+   "screen",
+   "civi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Geoffrey",
+   "opinion",
+   "system",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Geoffrey",
+   "opinion",
+   "fluency",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Nicole",
+   "opinion",
+   "system",
+   "Xiaomi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Christian",
+   "opinion",
+   "middle frame",
+   "K40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Nicole",
+   "opinion",
+   "fingerprint",
+   "Meizu"
+  ]
+ },
+ {
+  "question_entities": [
+   "Harold",
+   "opinion",
+   "fingerprint",
+   "Meizu"
+  ]
+ },
+ {
+  "question_entities": [
+   "Madison",
+   "opinion",
+   "fingerprint",
+   "Meizu"
+  ]
+ },
+ {
+  "question_entities": [
+   "Trinity",
+   "opinion",
+   "fingerprint",
+   "Meizu"
+  ]
+ },
+ {
+  "question_entities": [
+   "Riley",
+   "opinion",
+   "battery life",
+   "OnePlus 8pro",
+   "OnePlus 8pro"
+  ]
+ },
+ {
+  "question_entities": [
+   "Madeline",
+   "opinion",
+   "video",
+   "iqoo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Christopher",
+   "opinion",
+   "video",
+   "iqoo"
+  ]
+ },
+ {
+  "question_entities": [
+   "Cole",
+   "opinion",
+   "video",
+   "redmi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Fred",
+   "opinion",
+   "images",
+   "redmi"
+  ]
+ },
+ {
+  "question_entities": [
+   "Adrian",
+   "opinion",
+   "screen",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Margaret",
+   "opinion",
+   "screen",
+   "12x"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sophia",
+   "opinion",
+   "screen",
+   "12x"
+  ]
+ },
+ {
+  "question_entities": [
+   "Danielle",
+   "opinion",
+   "price",
+   "master exploration"
+  ]
+ },
+ {
+  "question_entities": [
+   "Oswald",
+   "opinion",
+   "price",
+   "master exploration"
+  ]
+ },
+ {
+  "question_entities": [
+   "Linda",
+   "opinion",
+   "screen",
+   "curved screen"
+  ]
+ },
+ {
+  "question_entities": [
+   "Trinity",
+   "opinion",
+   "speaker",
+   "Mi 10"
+  ]
+ },
+ {
+  "question_entities": [
+   "Albert",
+   "opinion",
+   "experience",
+   "realme"
+  ]
+ },
+ {
+  "question_entities": [
+   "Charles",
+   "opinion",
+   "battery life",
+   "v40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Dominic",
+   "opinion",
+   "experience",
+   "k30 Extreme Commemorative Edition",
+   "k30 Extreme Commemorative Edition"
+  ]
+ },
+ {
+  "question_entities": [
+   "Cyrus",
+   "opinion",
+   "chip",
+   "MediaTek"
+  ]
+ },
+ {
+  "question_entities": [
+   "Kyle",
+   "opinion",
+   "screen",
+   "k40"
+  ]
+ },
+ {
+  "question_entities": [
+   "Mackenzie",
+   "opinion",
+   "screen",
+   "x2"
+  ]
+ },
+ {
+  "question_entities": [
+   "Carter",
+   "opinion",
+   "power consumption",
+   "Kirin"
+  ]
+ },
+ {
+  "question_entities": [
+   "Keith",
+   "opinion",
+   "power consumption",
+   "Kirin"
+  ]
+ },
+ {
+  "question_entities": [
+   "Donald",
+   "opinion",
+   "battery life",
+   "Huawei"
+  ]
+ },
+ {
+  "question_entities": [
+   "Jose",
+   "opinion",
+   "power consumption",
+   "Kirin"
+  ]
+ },
+ {
+  "question_entities": [
+   "Logan",
+   "opinion",
+   "power consumption",
+   "Kirin"
+  ]
+ },
+ {
+  "question_entities": [
+   "Joshua",
+   "opinion",
+   "battery",
+   "Mi 9"
+  ]
+ },
+ {
+  "question_entities": [
+   "Sophia",
+   "opinion",
+   "video",
+   "Xiaomi Mi 11",
+   "Xiaomi Mi 11"
+  ]
+ },
+ {
+  "question_entities": [
+   "Autumn",
+   "opinion",
+   "images",
+   "X60 series",
+   "X60 series"
+  ]
+ },
+ {
+  "question_entities": [
+   "Dominic",
+   "opinion",
+   "images",
+   "X60 series",
+   "X60 series"
+  ]
+ },
+ {
+  "question_entities": [
+   "Diego",
+   "opinion",
+   "battery life",
+   "S22"
+  ]
+ },
+ {
+  "question_entities": [
+   "Wallace",
+   "opinion",
+   "battery life",
+   "Samsung"
+  ]
+ },
+ {
+  "question_entities": [
+   "William",
+   "opinion",
+   "marketing",
+   "ZTE"
+  ]
+ }
+]
