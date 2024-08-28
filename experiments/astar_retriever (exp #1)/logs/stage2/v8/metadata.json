@@ -1,0 +1,8 @@
+{
+ "LOAD_ENTITIES_VERSION": "v2",
+ "LOAD_NODES_DB_VERSION": "v7",
+ "SAVE_CONN_NODES_VERSION": "v8",
+ "THRESHOLD": 0.5,
+ "MAX_K": 1,
+ "db_location": "local"
+}

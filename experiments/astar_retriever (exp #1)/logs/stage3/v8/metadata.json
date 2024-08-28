@@ -1,0 +1,11 @@
+{
+ "LOAD_CONN_NODES_VERSION": "v8",
+ "LOAD_NODES_DB_VERSION": "v7",
+ "LOAD_SHORT_DISTS_VERSION": "v1",
+ "SAVE_TRIPLETS_VERSION": "v8",
+ "MAX_DEPTH": 25,
+ "MAX_WIDTH": -1,
+ "SAMPLE_MAX_SIZE": 200,
+ "D_METRIC": "constant",
+ "H_METRIC": "short_dist_with_weight"
+}
