@@ -177,29 +177,30 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                     if triplet not in new_chain:
                         subj = list(triplet[0].values())[0].replace("_", " ")
                         obj = list(triplet[-2].values())[0].replace("_", " ")
-                        if (subj in another_entities1 or obj in another_entities1) \
-                                or any([prop_value in another_entities1 for prop_value in triplet[2].values()]):
+                        prop_values = [val.lower() for val in triplet[2].values()]
+                        if (subj.lower() in another_entities1 or obj.lower() in another_entities1) \
+                                or any([prop_value.lower() in another_entities1 for prop_value in prop_values]):
                             new_chain.append(triplet)
                             inters_chains1.append(new_chain)
-                        elif "backw" in direction and subj in another_entities2:
+                        elif "backw" in direction and subj.lower() in another_entities2:
                             new_chain.append(triplet)
-                            second_chain = another_entities2[subj]
+                            second_chain = another_entities2[subj.lower()]
                             persons = count_persons(new_chain, second_chain)
                             if not ([ch[-1] for ch in new_chain] == ["forw", "backw"] \
                                     and [ch[-1] for ch in second_chain] == ["forw", "backw"]) and len(persons) < 3:
                                 inters_chains2.append([new_chain, second_chain, ["backw", subj]])
-                        elif "forw" in direction and obj in another_entities2:
+                        elif "forw" in direction and obj.lower() in another_entities2:
                             new_chain.append(triplet)
-                            second_chain = another_entities2[obj]
+                            second_chain = another_entities2[obj.lower()]
                             persons = count_persons(new_chain, second_chain)
                             if not ([ch[-1] for ch in new_chain] == ["forw", "backw"] \
                                     and [ch[-1] for ch in second_chain] == ["forw", "backw"]) and len(persons) < 3:
                                 inters_chains2.append([new_chain, second_chain, ["forw", obj]])
-                        elif any([prop_value in another_entities2 for prop_value in triplet[2].values()]):
+                        elif any([prop_value.lower() in another_entities2 for prop_value in prop_values]):
                             for prop_value in triplet[2].values():
-                                if prop_value in another_entities2:
+                                if prop_value.lower() in another_entities2:
                                     new_chain.append(triplet)
-                                    second_chain = another_entities2[prop_value]
+                                    second_chain = another_entities2[prop_value.lower()]
                                     persons = count_persons(new_chain, second_chain)
                                     if len(persons) < 3:
                                         inters_chains2.append([new_chain, second_chain, ["prop", prop_value]])
@@ -238,8 +239,8 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                     another_entities1, another_entities2 = [], {}
                     for entities_list2 in another_entities_list:
                         for ent, *_ in entities_list2:
-                            another_entities1.append(ent)
-                    seed_entity = seed_entity.replace(" ", "_")
+                            another_entities1.append(ent.lower())
+                    seed_entity = seed_entity.replace(" ", "_").lower()
                     if step == 0:
                         used_entities[(seed_entity, ne)] = set()
                         entities[(seed_entity, ne)] = [(seed_entity, prop_name, entity_type, [])]
@@ -248,7 +249,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                             for entity, *_, chain in entities_info:
                                 if entity.lower() != cur_seed_entity.lower() and entity.lower() != seed_entity.lower() \
                                         and entity not in another_entities1 and entity not in another_entities2:
-                                    another_entities2[entity] = chain
+                                    another_entities2[entity.lower()] = chain
 
                     new_entities = []
                     for entity, prop_name, tp, chain in entities[(seed_entity, ne)]:

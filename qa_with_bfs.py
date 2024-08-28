@@ -7,7 +7,7 @@ from neo4j_functions import Neo4jConnection
 conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
 
 retriever = Retriever(device="cuda")
-use_embs = False
+use_embs = True
 if use_embs:
     with open("entities.json", 'r') as inp:
         entities_vocab = json.load(inp)
@@ -138,8 +138,17 @@ manufacturer: Apple, manufacturer, device: iphone
 manufacturer: Apple, manufacturer, device: IPHONE""",
      "chain of thought": "Our task is to indicate one person in the answer: Gabriella or Arianna. We should not search completely matching opinions of two people, instead we should define who of two people: Gabriella or Arianna is a little closer in opinions about devices to Alexandra. So, let's think about it. Both Gabriella and Alexandra use Apple devices and Arianna opinions are not mentioned. Therefore, Gabriella's opinions about manufacturers are more similar to Alexandra's.",
      "final answer": "Gabriella"
-     }
+     },
+    {"question": "The majority of speakers have positive, neutral or negative sentiment about display of Mi 10?",
+     "info": "person: Alan, time: 10.9.2020, Colors are vibrant, feature: screen, device: Mi 10",
+     "chain of thought": "The sentiment about the display of Mi 10 is positive according to Alan's statement that the colors are vibrant. There is no mention of any negative or neutral comments about the display.",
+     "final answer": "Positive"
+    }
 ]
+
+prompt_similar_template = """Sort the phrases list in descending order of similarity to the phrase "{phrase}" from the sentence "{sentence}". Give the answer in the format: 1. ... , 2. ... , etc.
+Phrases list: {phrases_list}
+Sorted phrases list: """
 
 prompt_answer_template = """Answer the question, based on provided info by analogy with examples given. Avoid giving None final answer, if you are not sure, give a guess answer. None answers are strictly prohibited. Generate chain of thought and then give the final answer in the following format:
 ### Answer
@@ -157,12 +166,12 @@ num_in_cont = 2
 for flname, depth in [
         #["compare_questions.json", 1],
         #["compare_sentiment.json", 1],
-        #["compare_sentiment_synonims.json", 1],
+        ["compare_sentiment_synonims.json", 1]
         #["device_sentiment.json", 1],
         #["same_devices.json", 1],
         #["same_manufacturer.json", 2],
         #["similar_device_opinions.json", 2],
-        ["similar_manf_opinions.json", 2]
+        #["similar_manf_opinions.json", 2],
         #["which_people_about_device.json", 1],
         #["which_people_about_device_synonims.json", 1]
     ]:
@@ -175,7 +184,7 @@ for flname, depth in [
         thres1 = 6
         thres2 = 3
     results = []
-    for nq, element in enumerate(dataset[:30]):
+    for nq, element in enumerate(dataset[30:50]):
         question = element["question"]
         answer = element["answer"]
         print(f"{nq} --- question: {question}")
@@ -208,11 +217,31 @@ for flname, depth in [
             if use_embs and tp in emb_dict:
                 query = [entity]
                 query_embs = retriever.embed(query)
-                result = retriever.search_in_embeds(emb_dict[tp], query_embs, 5)
+                result = retriever.search_in_embeds(emb_dict[tp], query_embs, 30)
                 idx = result["idx"][0]
                 retr_entities = [entities_dict[tp][ind] for ind in idx]
-                if retr_entities[0].lower() != entity.lower():
-                    cur_entities_input.append((retr_entities[0], "", "node"))
+                sorted_entities_str = ""
+                if tp == "device" and entity.lower() == retr_entities[0].lower():
+                    pass
+                else:
+                    phrases_list = ", ".join(retr_entities)
+                    prompt = prompt_similar_template.format(phrase=entity, sentence=question, phrases_list=phrases_list)
+                    res = pipeline(prompt)
+                    sorted_entities_str = res[0]["generated_text"].split(prompt)[-1].split("\n")[0]
+                    if "1." in sorted_entities_str:
+                        sorted_entities = sorted_entities_str.split(",")
+                        sorted_entities = [" ".join(s_ent.split()[1:]).strip() for s_ent in sorted_entities]
+                        for s_ent in sorted_entities[:3]:
+                            if s_ent.lower() != entity.lower():
+                                cur_entities_input.append((s_ent, "", "node"))
+                    else:
+                        for s_ent in retr_entities[:2]:
+                            if s_ent.lower() != entity.lower():
+                                cur_entities_input.append((s_ent, "", "node"))
+                with open("qa_bfs_log.txt", 'a') as out:
+                    out.write(f"retr_entities: {retr_entities[:5]}"+'\n')
+                    out.write(f"sorted_entities: {sorted_entities_str}"+'\n')
+                    out.write(f"cur_entities_input: {cur_entities_input}"+'\n')
             entities_input.append(cur_entities_input)
             print("input_entities", cur_entities_input)
 
