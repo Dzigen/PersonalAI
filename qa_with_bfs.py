@@ -6,8 +6,6 @@ import torch
 from retrieve.retriever import Retriever
 from neo4j_functions import Neo4jConnection
 
-conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
-
 retriever = Retriever(device="cuda")
 print("retriever loaded")
 
@@ -27,16 +25,18 @@ else:
         rel_data_items = [(key, value) for key, value in rel_data_items
                           if key not in ["raw_time", "time", "sentiment"]]
         rel_data_items = sorted(rel_data_items, key=lambda x: x[0])
-        rel_data_values = [element[1] for element in rel_data_items]
+        rel_data_values = [element[1].lower() for element in rel_data_items]
         rel_data_str = ", ".join([f"{key}: {value}" for key, value in rel_data_items])
         triplet_str = f"{subj_str}, {rel}, {obj_str}, {rel_data_str}"
-        keys = list(subj.values()) + [rel] + list(obj.values()) + rel_data_values
+        subj_values = [val.lower() for val in subj.values()]
+        obj_values = [val.lower() for val in obj.values()]
+        keys = subj_values + [rel] + obj_values + rel_data_values
         triplet_keys_list.append(tuple(keys))
         triplet_str_list.append(triplet_str)
 
     print("triplet_keys_list", len(triplet_keys_list), "triplet_str_list", len(triplet_str_list))
     with open("triplet_keys.txt", 'w') as out:
-        for keys, triplet_str in zip(triplet_keys_list[:10], triplet_str_list[:10]):
+        for keys, triplet_str in zip(triplet_keys_list, triplet_str_list):
             out.write(f"{keys} --- {triplet_str}"+'\n')
         for keys, triplet_str in zip(triplet_keys_list[-10:], triplet_str_list[-10:]):
             out.write(f"{keys} --- {triplet_str}"+'\n')
@@ -56,7 +56,9 @@ else:
     with open("triplet_embs.pickle", 'wb') as out:
         pickle.dump(triplet_embs_dict, out)
 
-use_embs = True
+conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password", embs_dict=triplet_embs_dict)
+
+use_embs = False
 if use_embs:
     with open("entities.json", 'r') as inp:
         entities_vocab = json.load(inp)
@@ -254,13 +256,13 @@ for flname, depth in [
         #["compare_sentiment_synonims.json", 1],
         #["device_sentiment.json", 1],
         #["same_devices.json", 1],
-        #["same_manufacturer.json", 2],
+        ["same_manufacturer.json", 2]
         #["similar_device_opinions.json", 2],
         #["similar_manf_opinions.json", 2],
         #["which_people_about_device.json", 1],
         #["which_people_about_device_synonims.json", 1],
-        ["dominant_opinion.json", 1],
-        ["last_opinion.json", 1]
+        #["dominant_opinion.json", 1],
+        #["last_opinion.json", 1]
     ]:
     with open(f"questions/{flname}", 'r') as inp:
         dataset = json.load(inp)
@@ -335,7 +337,9 @@ for flname, depth in [
         with open("qa_bfs_log.txt", 'a') as out:
             out.write(f"entities_input: {entities_input}"+'\n')
 
-        triplets_dict, inters_chains1, inters_chains2 = conn.bfs(entities_input, depth, db="testdb")
+        triplets_dict, inters_chains1, inters_chains2 = conn.bfs(
+            entities_input, depth, question=question, retriever=retriever, db="testdb"
+        )
         inters_chains1 = sorted(inters_chains1, key=lambda x: x[1], reverse=True)
         inters_chains1_more = [ch for ch, cnt in inters_chains1 if cnt > 1]
         inters_chains1_less = [ch for ch, cnt in inters_chains1 if cnt == 1]
