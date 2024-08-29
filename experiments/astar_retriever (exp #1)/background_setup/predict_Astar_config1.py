@@ -9,7 +9,7 @@ S4_META = {
     "QUESTION_PROMPT_TEMPLATE": PROMPT_QA_TEMPLATE,
     "TRPLETE_PROMPT_TEMPLATES": {
         "manufacturer": "device: {d}, company: {c}",
-        "opinion": "person: {p}, device: {d}, opinion: {o}, feature: {f}",
+        "opinion": "person: {p}, device: {d}, opinion: {o}, time: {t}, feature: {f}",
         'has_device': "person: {p}, has device: {d}"
     },
     "MAX_LIST_LEN": -1
