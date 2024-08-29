@@ -1,4 +1,6 @@
 import json
+import os
+import pickle
 import transformers
 import torch
 from retrieve.retriever import Retriever
@@ -7,6 +9,53 @@ from neo4j_functions import Neo4jConnection
 conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
 
 retriever = Retriever(device="cuda")
+print("retriever loaded")
+
+if os.path.exists("triplet_embs.pickle"):
+    with open("triplet_embs.pickle", 'rb') as inp:
+        triplet_embs_dict = pickle.load(inp)
+else:
+    with open("total_triplets.json", 'r') as inp:
+        total_triplets = json.load(inp)
+
+    triplet_str_list = []
+    triplet_keys_list = []
+    for subj, rel, obj, rel_data in total_triplets:
+        subj_str = ", ".join([f"{key}: {value}" for key, value in subj.items()])
+        obj_str = ", ".join([f"{key}: {value}" for key, value in obj.items()])
+        rel_data_items = list(rel_data.items())
+        rel_data_items = [(key, value) for key, value in rel_data_items
+                          if key not in ["raw_time", "time", "sentiment"]]
+        rel_data_items = sorted(rel_data_items, key=lambda x: x[0])
+        rel_data_values = [element[1] for element in rel_data_items]
+        rel_data_str = ", ".join([f"{key}: {value}" for key, value in rel_data_items])
+        triplet_str = f"{subj_str}, {rel}, {obj_str}, {rel_data_str}"
+        keys = list(subj.values()) + [rel] + list(obj.values()) + rel_data_values
+        triplet_keys_list.append(tuple(keys))
+        triplet_str_list.append(triplet_str)
+
+    print("triplet_keys_list", len(triplet_keys_list), "triplet_str_list", len(triplet_str_list))
+    with open("triplet_keys.txt", 'w') as out:
+        for keys, triplet_str in zip(triplet_keys_list[:10], triplet_str_list[:10]):
+            out.write(f"{keys} --- {triplet_str}"+'\n')
+        for keys, triplet_str in zip(triplet_keys_list[-10:], triplet_str_list[-10:]):
+            out.write(f"{keys} --- {triplet_str}"+'\n')
+
+    triplet_embs_dict = {}
+    chunk_size = 1000
+    num_chunks = len(triplet_str_list) // chunk_size + int(len(triplet_str_list) % chunk_size > 0)
+    for i in range(num_chunks):
+        keys_chunk = triplet_keys_list[i*chunk_size:(i+1)*chunk_size]
+        str_chunk = triplet_str_list[i*chunk_size:(i+1)*chunk_size]
+        embs_chunk = retriever.embed(str_chunk)
+        embs_chunk = embs_chunk.cpu().numpy()
+        for keys, emb in zip(keys_chunk, embs_chunk):
+            triplet_embs_dict[keys] = emb
+        print("embs iter", i)
+
+    with open("triplet_embs.pickle", 'wb') as out:
+        pickle.dump(triplet_embs_dict, out)
+
 use_embs = True
 if use_embs:
     with open("entities.json", 'r') as inp:
@@ -47,21 +96,32 @@ def process_chain(chain, chain_subj_obj, chain_triplets):
         obj = sorted(obj, key=lambda x: x[1])
         subj = str(subj)
         obj = str(obj)
-        if (subj, obj) not in chain_subj_obj and (obj, subj) not in chain_subj_obj and triplet not in chain_triplets:
+        rel_props = triplet[2].items()
+        rel_props = [(key, value) for key, value in rel_props if key not in ["raw_time", "time"]]
+        rel_props = sorted(rel_props, key=lambda x: x[0])
+        rel_props = str(rel_props)
+        if (subj, obj, rel_props) not in chain_subj_obj and (obj, subj, rel_props) not in chain_subj_obj \
+                and triplet not in chain_triplets:
             chain_triplets.append(triplet)
-            chain_subj_obj.add((subj, obj))
+            chain_subj_obj.add((subj, obj, rel_props))
     return chain_subj_obj, chain_triplets
 
 
-def process_inters_chains(inters_chains1, inters_chains2):
-    chain_triplets1, chain_triplets2 = [], []
-    chain_subj_obj1, chain_subj_obj2 = set(), set()
+def process_inters_chains1(inters_chains1):
+    chain_triplets1 = []
+    chain_subj_obj1 = set()
     for chain in inters_chains1:
         chain_subj_obj1, chain_triplets1 = process_chain(chain, chain_subj_obj1, chain_triplets1)
+    return chain_triplets1
+
+
+def process_inters_chains2(inters_chains2):
+    chain_triplets2 = []
+    chain_subj_obj2 = set()
     for chain1, chain2, *_ in inters_chains2:
         chain_subj_obj2, chain_triplets2 = process_chain(chain1, chain_subj_obj2, chain_triplets2)
         chain_subj_obj2, chain_triplets2 = process_chain(chain2, chain_subj_obj2, chain_triplets2)
-    return chain_triplets1, chain_triplets2
+    return chain_triplets2
 
 
 prompt_extract_template = """Extract entities (names and surnames, device names, features) from the question and define the types of entities ("person", "device", "feature").
@@ -89,15 +149,9 @@ person: Faith, device: red rice, opinion: not as good, feature: film effect""",
      "final answer": "Anthony"
      },
     {"question": "The majority of speakers have positive, neutral or negative sentiment about signal of Apple?",
-     "info": """person: Alejandro, time: 15.11.2020, opinion: beats, device: Apple, feature: battery life
-person: Jacqueline, time: 30.12.2020, opinion: Nice pictures taken, device: Apple, feature: taking pictures
-person: Diego, time: 30.12.2020, opinion: Doesnt overheat, device: Apple, feature: heat radiation
-person: Lily, time: 30.12.2020, opinion: Not bad, device: Apple, feature: configuration of other processors
-person: Margaret, time: 25.11.2020, opinion: Pictures turn blurry, device: Apple, feature: taking pictures
-person: Amber, time: 25.11.2020, opinion: Really unhelpful, device: Apple, feature: sales
-person: Jessica, time: 25.11.2020, opinion: Always been strong, device: Apple, feature: signal
+     "info": """person: Jessica, time: 25.11.2020, opinion: is okay, device: Apple, feature: signal
 person: Bernard, time: 25.11.2020, opinion: No lag, device: Apple, feature: play games""",
-     "chain of thought": """To determine the sentiment about the signal of Apple, we need to find the opinions specifically related to the "signal" feature of Apple. From the provided info, only Jessica's opinion mentions the signal: "Always been strong." This is a positive sentiment. Since there's only one opinion regarding the signal, the majority sentiment is positive.""",
+     "chain of thought": """To determine the sentiment about the signal of Apple, we need to find the opinions specifically related to the "signal" feature of Apple. Opinion "Is okay" or "okay" denotes positive (not neutral) sentiment. From the provided info, only Jessica's opinion mentions the signal: "is okay" This is a positive sentiment. Since there's only one opinion regarding the signal, the majority sentiment is positive.""",
      "final answer": "Positive"
      },
     {"question": "Whose opinions from Rita and Bruce about devices are most similar to Danielle's?",
@@ -143,6 +197,37 @@ manufacturer: Apple, manufacturer, device: IPHONE""",
      "info": "person: Alan, time: 10.9.2020, Colors are vibrant, feature: screen, device: Mi 10",
      "chain of thought": "The sentiment about the display of Mi 10 is positive according to Alan's statement that the colors are vibrant. There is no mention of any negative or neutral comments about the display.",
      "final answer": "Positive"
+    },
+    {"question": "The majority of speakers have positive, neutral or negative sentiment about video of LG?",
+     "info": "",
+     "chain of thought": "If info is provided, we suppose positive sentiment.",
+     "final answer": "Positive"
+    },
+    {"question": "What Miles's opinion (positive, negative or neutral) about quality of MIX was dominant during using MIX?",
+     "info": """person: miles, has device, device: mix
+person: Miles, time: 25.12.2018, just alright, feature: quality, device: mix
+person: Miles, time: 26.9.2020, camera is amazing, device: mix, feature: photo""",
+     "chain of thought": """There is only one provided opinion about the quality feature of the MIX device. On 25.12.2018, Miles described the quality as "just alright," which indicates a neutral stance rather than a positive or negative one.""",
+     "final answer": "Neutral"
+    },
+    {"question": "What Megan's opinion (positive, negative or neutral) about system of GT was dominant during using GT?",
+     "info": """person: Megan, time: 20.12.2020, so userfriendly, feature: system, device: gt
+person: Megan, time: 5.12.2020, its been freezing, feature: system, device: gt
+person: Megan, time: 18.11.2020, quite stable, feature: system, device: gt
+person: megan, has device, device: gt
+person: Andrew, time: 27.10.2020, so smooth, feature: system, device: gt
+person: Andrew, time: 20.12.2020, really smooth, feature: system, device: gt
+person: Cody, time: 19.9.2020, too buggy, feature: system, device: xiaomi""",
+     "chain of thought": """Reviewing all the provided information about Megan's opinions, we see that on 20.12.2020 she found the system user-friendly, on 5.12.2020 she mentioned it was freezing, and on 18.11.2020 she found it stable. There are mixed reviews, but she did express a positive opinion about its user-friendliness after expressing a negative view about the freezing issue. The most dominant feedback is positive.""",
+     "final answer": "Positive"
+    },
+    {"question": "What opinion (positive, negative or neutral) about screen of Xiaomi was last during Ashton's experience of Xiaomi?",
+     "info": """person: Ashton, time: 24.11.2020, doesnt live, feature: screen, device: xiaomi
+person: ashton, has device, device: xiaomi
+person: Grace, time: 23.11.2020, really subpar screen, feature: screen, device: xiaomi
+person: Delia, time: 17.12.2020, amazing screen quality, feature: screen, device: xiaomi""",
+     "chain of thought": """There is only one Ashton's opinion on 24.11.2020 ("doesnt live") about screen of Xiaomi, which is negative ("doesnt live" means that the screen does not work).""",
+     "final answer": "Negative"
     }
 ]
 
@@ -161,19 +246,21 @@ Info {n}: {info}
 in_context_questions = [element["question"] for element in in_context_examples]
 in_cont_embs = retriever.embed(in_context_questions)
 
-num_in_cont = 2
+num_in_cont = 3
 
 for flname, depth in [
         #["compare_questions.json", 1],
         #["compare_sentiment.json", 1],
-        ["compare_sentiment_synonims.json", 1]
+        #["compare_sentiment_synonims.json", 1],
         #["device_sentiment.json", 1],
         #["same_devices.json", 1],
         #["same_manufacturer.json", 2],
         #["similar_device_opinions.json", 2],
         #["similar_manf_opinions.json", 2],
         #["which_people_about_device.json", 1],
-        #["which_people_about_device_synonims.json", 1]
+        #["which_people_about_device_synonims.json", 1],
+        ["dominant_opinion.json", 1],
+        ["last_opinion.json", 1]
     ]:
     with open(f"questions/{flname}", 'r') as inp:
         dataset = json.load(inp)
@@ -184,7 +271,7 @@ for flname, depth in [
         thres1 = 6
         thres2 = 3
     results = []
-    for nq, element in enumerate(dataset[30:50]):
+    for nq, element in enumerate(dataset[:20]):
         question = element["question"]
         answer = element["answer"]
         print(f"{nq} --- question: {question}")
@@ -206,7 +293,7 @@ for flname, depth in [
         except Exception as e:
             print(f"error: {e}")
         with open("qa_bfs_log.txt", 'a') as out:
-            out.write(f"question: {question}"+'\n')
+            out.write(f"{nq} question: {question}"+'\n')
             out.write(f"answer: {answer}"+'\n')
             out.write(f"entities: {entities}"+'\n')
             out.write(f"retr_questions: {retr_questions}"+'\n')
@@ -242,12 +329,25 @@ for flname, depth in [
                     out.write(f"retr_entities: {retr_entities[:5]}"+'\n')
                     out.write(f"sorted_entities: {sorted_entities_str}"+'\n')
                     out.write(f"cur_entities_input: {cur_entities_input}"+'\n')
-            entities_input.append(cur_entities_input)
+            if cur_entities_input not in entities_input:
+                entities_input.append(cur_entities_input)
             print("input_entities", cur_entities_input)
+        with open("qa_bfs_log.txt", 'a') as out:
+            out.write(f"entities_input: {entities_input}"+'\n')
 
         triplets_dict, inters_chains1, inters_chains2 = conn.bfs(entities_input, depth, db="testdb")
-        chain_triplets1, chain_triplets2 = process_inters_chains(inters_chains1, inters_chains2)
-        chain_triplets = chain_triplets1 + chain_triplets2
+        inters_chains1 = sorted(inters_chains1, key=lambda x: x[1], reverse=True)
+        inters_chains1_more = [ch for ch, cnt in inters_chains1 if cnt > 1]
+        inters_chains1_less = [ch for ch, cnt in inters_chains1 if cnt == 1]
+        chain_triplets1_more = process_inters_chains1(inters_chains1_more)
+        chain_triplets1_less = process_inters_chains1(inters_chains1_less)
+        chain_triplets2 = process_inters_chains2(inters_chains2)
+        prob_tr = False
+        if inters_chains1_more:
+            chain_triplets = chain_triplets1_more + chain_triplets1_less[:3] + chain_triplets2[:3]
+            prob_tr = True
+        else:
+            chain_triplets = chain_triplets1_less + chain_triplets2
 
         def format_triplet(triplet):
             formatted_triplet = ""
@@ -279,7 +379,7 @@ for flname, depth in [
             thres = thres2
         else:
             thres = thres1
-        if len(chain_triplets) > 20:
+        if len(chain_triplets) < 20 and not prob_tr:
             total_f_triplets = []
             for (step, direction, seed_entity, rel), triplets in triplets_dict.items():
                 f_triplets = []
@@ -312,8 +412,8 @@ Final answer {e_num}: {final_answer}"""
         in_cont_examples_str = "\n".join(in_cont_str_list)
 
         prompt = prompt_answer_template.format(examples=in_cont_examples_str, n=num_in_cont+1, question=question, info=triplets_str)
-        with open("qa_bfs_log.txt", 'a') as out:
-            out.write(f"prompt: {prompt}"+'\n\n')
+        #with open("qa_bfs_log.txt", 'a') as out:
+        #    out.write(f"prompt: {prompt}"+'\n\n')
         res = pipeline(prompt)
 
         res_init = res[0]["generated_text"]
@@ -340,7 +440,7 @@ Final answer {e_num}: {final_answer}"""
         pred_answer = pred_answer.split(f"Question {num_in_cont + 2}")[0]
         with open("qa_bfs_log.txt", 'a') as out:
             out.write(f"pred_answer: {pred_answer}"+'\n')
-            out.write(f"res_answer: {res_init}"+'\n')
+            out.write(f"res_answer: {res}"+'\n')
             out.write("_"*70+'\n\n')
 
         print("pred_answer", pred_answer)

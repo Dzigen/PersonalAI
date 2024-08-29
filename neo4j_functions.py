@@ -178,10 +178,16 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                         subj = list(triplet[0].values())[0].replace("_", " ")
                         obj = list(triplet[-2].values())[0].replace("_", " ")
                         prop_values = [val.lower() for val in triplet[2].values()]
-                        if (subj.lower() in another_entities1 or obj.lower() in another_entities1) \
-                                or any([prop_value.lower() in another_entities1 for prop_value in prop_values]):
+                        cnt1 = 0
+                        if subj.lower() in another_entities1:
+                            cnt1 += 1 
+                        if obj.lower() in another_entities1:
+                            cnt1 += 1
+                        if any([prop_value.lower() in another_entities1 for prop_value in prop_values]):
+                            cnt1 += 1
+                        if cnt1 > 0:
                             new_chain.append(triplet)
-                            inters_chains1.append(new_chain)
+                            inters_chains1.append([new_chain, cnt1])
                         elif "backw" in direction and subj.lower() in another_entities2:
                             new_chain.append(triplet)
                             second_chain = another_entities2[subj.lower()]
@@ -285,7 +291,10 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                                         new_entities.append(ent)
                                 used_entities[(seed_entity, ne)].add((entity, prop_name, tp))
                             elif tp == "rel_prop":
-                                query = self.extract_triplets_rel_prop_template.format(prop_name=prop_name, prop_value=entity)
+                                query = self.extract_triplets_rel_prop_template.format(
+                                    prop_name=prop_name,
+                                    prop_value=entity.capitalize()
+                                )
                                 new_triplets, cur_entities, cur_inters_chains1, cur_inters_chains2 = self.parse_triplet_output(
                                     "forw/backw", query, another_entities1, another_entities2, chain, subj_labels, obj_labels, db
                                 )
