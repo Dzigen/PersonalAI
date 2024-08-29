@@ -130,7 +130,7 @@ def preproc_tripletes(raw_triplets: List[List[str]], META) -> str:
 
 def generate_answers_from_triplets_file(qa_file: str, load_log_tmpdata_dir: str, save_log_tmpdata_dir: str, META: Dict, EVAL_DATADIR: str):
     print(qa_file)
-    triplets_data = load_json(f"{load_log_tmpdata_dir}/{qa_file}")[:1]
+    triplets_data = load_json(f"{load_log_tmpdata_dir}/{qa_file}")
     questions_data = load_json(f"{EVAL_DATADIR}/{qa_file}")
 
     generated_answers = []
