@@ -5,7 +5,8 @@
  "SAVE_TRIPLETS_VERSION": "v8",
  "MAX_DEPTH": 25,
  "MAX_WIDTH": -1,
- "SAMPLE_MAX_SIZE": 200,
- "D_METRIC": "constant",
- "H_METRIC": "short_dist_with_weight"
+ "SAMPLE_MAX_SIZE": 50,
+ "D_METRIC": "ip",
+ "H_METRIC": "weight_with_short_path",
+ "STRINGIFY_TRIPLETS_VERSION": "v1"
 }
