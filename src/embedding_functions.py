@@ -3,12 +3,7 @@ from dataclasses import dataclass, field
 from sentence_transformers import SentenceTransformer
 from typing import Dict, List
 import chromadb
-
-# логироавние 
-# обработка исключений
-# тестирование
-# восстановление соединения
- 
+import enum
 
 class EmbeddingDatabaseConnection:
     def __init__(self, some_other_params = None):
@@ -32,7 +27,6 @@ class EmbeddingDatabaseConnection:
         pass
 
 class DatabaseInterface(ABC):
-    
     @abstractmethod
     def open_connection(self):
         # открытие соединения с бд
@@ -55,42 +49,79 @@ class DatabaseInterface(ABC):
 
     @abstractmethod
     def update(self):
-        # обновить документ/метаданные для конкретного семпла
+        # обновить документ/метаданные для конкретной сущности в базе
         pass
 
     @abstractmethod
     def read(self):
-        # получить элемент по идентификатору 
+        # получить сущность по идентификатору 
         pass
 
     def __del__(self):
         self.close_connection()
 
+@dataclass
+class ChromaConnectionConfig:
+    path: str = '../data/vectorized_nodes_tripletes/densedb'
+    collection_name: str = 'testdb'
+
+@dataclass
+class VectorDBInstance:
+    id: str
+    document: str
+    embedding: List[float]
+    metadata: Dict
+
+
+class ReturnCode(enum.Enum):
+    success = 0
+    error = 1
 
 class ChromaConnection(DatabaseInterface):
+    def __init__(self, config: ChromaConnectionConfig = ChromaConnectionConfig()) -> None:
+        self.config = config
+        self.open_connection()
 
-    def __init__(self) -> None:
-        pass
-        
-    def open_connection(self):
-        pass
+    def open_connection(self) -> int:
+        self.client = chromadb.PersistentClient(path=self.config.path)
+        self.collection = self.client.get_collection(name=self.config.collection_name)
 
     def close_connection(self):
-        pass
+        del self.collection
+        del self.client
 
-    def create(self):
-        pass
+    def create(self, instances: List[VectorDBInstance]) -> int:       
+        self.collection.add(
+            documents=list(map(lambda inst: inst.document, instances)),
+            embeddings=list(map(lambda inst: inst.embedding, instances)),
+            metadatas=list(map(lambda inst: inst.metadata, instances)),
+            ids=list(map(lambda inst: inst.id, instances)))
+        return ReturnCode.success
+ 
+    def read(self, ids: List[str], **kwargs) -> List[VectorDBInstance]:
+        raw_instances = self.collection.get(
+            include=['embeddings', 'documents', 'metadatas'],
+            ids=ids, **kwargs) 
+                                            
+        formates_instances = []
+        for i in range(raw_instances['ids']):
+            cur_inst =VectorDBInstance(id=raw_instances['ids'][i],
+                             document=raw_instances['documents'][i],
+                             embedding=raw_instances['embeddins'][i],
+                             metadata=raw_instances['metadatas'][i],)
+            formates_instances.append(cur_inst)
 
-    def read(self):
-        pass
+        return formates_instances
 
     def update(self):
+        # TODO
         pass
 
-    def delete(self):
-        pass
+    def delete(self, ids: List[str], **kwargs) -> int:
+        self.collection.delete(ids=ids, **kwargs)
+        return ReturnCode.success
 
-@ dataclass
+@dataclass
 class EmbedderConfig:
     model_name_or_path: str = '../models/intfloat/multilingual-e5-small'
     prompts: Dict = field(default_factory=lambda:{"query": "query: ", "passage": "passage: "})
