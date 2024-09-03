@@ -5,27 +5,6 @@ from typing import Dict, List
 import chromadb
 import enum
 
-class EmbeddingDatabaseConnection:
-    def __init__(self, some_other_params = None):
-        # TODO
-        pass
-    
-    def add_triplets(self, triplets):
-        # TODO
-        pass
-    
-    def delete_triplets(self, triplets, deleted_entities):
-        # TODO
-        pass
-    
-    def get_node_emb(self, some_other_params = None):
-        # TODO
-        pass
-    
-    def get_triplet_emb(self, some_other_params = None):
-        # TODO
-        pass
-
 class DatabaseInterface(ABC):
     @abstractmethod
     def open_connection(self):
@@ -68,9 +47,9 @@ class ChromaConnectionConfig:
 @dataclass
 class VectorDBInstance:
     id: str
-    document: str
-    embedding: List[float]
-    metadata: Dict
+    document: str = None
+    embedding: List[float] = None
+    metadata: Dict = field(default=lambda: dict())
 
 
 class ReturnCode(enum.Enum):
@@ -78,8 +57,8 @@ class ReturnCode(enum.Enum):
     error = 1
 
 class ChromaConnection(DatabaseInterface):
-    def __init__(self, config: ChromaConnectionConfig = ChromaConnectionConfig()) -> None:
-        self.config = config
+    def __init__(self, config: ChromaConnectionConfig = None) -> None:
+        self.config = ChromaConnectionConfig() if config is None else config
         self.open_connection()
 
     def open_connection(self) -> int:
@@ -90,26 +69,23 @@ class ChromaConnection(DatabaseInterface):
         del self.collection
         del self.client
 
-    def create(self, instances: List[VectorDBInstance]) -> int:       
+    def create(self, instances: List[VectorDBInstance]):       
         self.collection.add(
             documents=list(map(lambda inst: inst.document, instances)),
             embeddings=list(map(lambda inst: inst.embedding, instances)),
             metadatas=list(map(lambda inst: inst.metadata, instances)),
             ids=list(map(lambda inst: inst.id, instances)))
-        return ReturnCode.success
  
-    def read(self, ids: List[str], **kwargs) -> List[VectorDBInstance]:
+    def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents', 'metadatas'], **kwargs) -> List[VectorDBInstance]:
         raw_instances = self.collection.get(
-            include=['embeddings', 'documents', 'metadatas'],
+            include=includes + ['ids'],
             ids=ids, **kwargs) 
                                             
         formates_instances = []
         for i in range(raw_instances['ids']):
-            cur_inst =VectorDBInstance(id=raw_instances['ids'][i],
-                             document=raw_instances['documents'][i],
-                             embedding=raw_instances['embeddins'][i],
-                             metadata=raw_instances['metadatas'][i],)
-            formates_instances.append(cur_inst)
+            tmp_inst = {requested_field[:-1]: raw_instances[requested_field][i] 
+                        for requested_field in includes}
+            formates_instances.append(VectorDBInstance(**tmp_inst))
 
         return formates_instances
 
@@ -117,9 +93,8 @@ class ChromaConnection(DatabaseInterface):
         # TODO
         pass
 
-    def delete(self, ids: List[str], **kwargs) -> int:
+    def delete(self, ids: List[str], **kwargs):
         self.collection.delete(ids=ids, **kwargs)
-        return ReturnCode.success
 
 @dataclass
 class EmbedderConfig:
@@ -129,18 +104,47 @@ class EmbedderConfig:
     normalize_embeddings: bool = True
 
 class EmbedderModel:
-    def __init__(self, config: EmbedderConfig = EmbedderConfig()) -> None:
-        self.conif = config
+    def __init__(self, config: EmbedderConfig = None) -> None:
+        self.config = EmbedderConfig() if config is None else config
         self.model = SentenceTransformer(
             config.model_name_or_path, device=config.device,
             prompts=config.prompts)
 
     def encode_queries(self, queries: List[str], **kwargs) -> List[List[float]]:
         return self.model.encode(queries, prompt_name='query', 
-                                 normalize_embeddings=self.conif.normalize_embeddings, **kwargs)
+                                 normalize_embeddings=self.config.normalize_embeddings, **kwargs)
 
     def encode_passages(self, passages: List[str], **kwargs) -> List[List[float]]:
         return self.model.encode(passages, prompt_name='query',
-                                 normalize_embeddings=self.conif.normalize_embeddings,
+                                 normalize_embeddings=self.config.normalize_embeddings,
                                  **kwargs)
-        
+
+class EmbeddingDatabaseConnection:
+    def __init__(self, db_connector: DatabaseInterface = None, embedder: EmbedderModel = None):
+        self.db = ChromaConnection() if db_connector is None else db_connector
+        self.embedder = EmbedderModel() if embedder is None else embedder
+    
+    def add_triplets(self, relations_ids: List[str], stringified_relations: List[str], 
+                     nodes_ids: List[str] = None, stringified_nodes: List[str] = None):
+        self.add_instances(relations_ids, stringified_relations)
+        if nodes_ids is not None:
+            self.add_instances(nodes_ids, stringified_nodes)
+
+    def delete_triplets(self, relations_ids: List[str], nodes_ids: List[str] = None):
+        self.delete_instances(relations_ids)
+        if nodes_ids is not None:
+            self.delete_instances(nodes_ids)
+    
+    def add_instances(self, ids, stringified_instances):
+        embs = self.embedder.encode_passages(stringified_instances)
+        formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb) 
+                            for id, doc, emb in zip(ids, stringified_instances, embs)]
+        self.db.create(formated_instances)
+
+    def delete_instances(self, ids: List[str]):
+        self.db.delete(ids)
+
+    def get_embbeddings(self, ids: List[str]) -> List[List[float]]:
+        instances = self.db.read(ids, includes=['embeddins'])
+        embeddings = list(map(lambda inst: inst.embedding,instances))
+        return embeddings
