@@ -5,7 +5,7 @@ from typing import Dict, List
 import chromadb
 import enum
 
-class DatabaseInterface(ABC):
+class AbstractDatabaseConnection(ABC):
     @abstractmethod
     def open_connection(self):
         # открытие соединения с бд
@@ -56,7 +56,7 @@ class ReturnCode(enum.Enum):
     success = 0
     error = 1
 
-class ChromaConnection(DatabaseInterface):
+class ChromaConnection(AbstractDatabaseConnection):
     def __init__(self, config: ChromaConnectionConfig = None) -> None:
         self.config = ChromaConnectionConfig() if config is None else config
         self.open_connection()
@@ -120,7 +120,7 @@ class EmbedderModel:
                                  **kwargs)
 
 class EmbeddingDatabaseConnection:
-    def __init__(self, db_connector: DatabaseInterface = None, embedder: EmbedderModel = None):
+    def __init__(self, db_connector: AbstractDatabaseConnection = None, embedder: EmbedderModel = None):
         self.db = ChromaConnection() if db_connector is None else db_connector
         self.embedder = EmbedderModel() if embedder is None else embedder
     
