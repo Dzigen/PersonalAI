@@ -1,2 +1,2 @@
 from .utils import *
-from embedding_functions import *
+from .embedding_functions import *

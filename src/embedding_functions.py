@@ -1,4 +1,7 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from sentence_transformers import SentenceTransformer
+from typing import Dict, List
 import chromadb
 
 # логироавние 
@@ -87,13 +90,26 @@ class ChromaConnection(DatabaseInterface):
     def delete(self):
         pass
 
+@ dataclass
+class EmbedderConfig:
+    model_name_or_path: str = '../models/intfloat/multilingual-e5-small'
+    prompts: Dict = field(default_factory=lambda:{"query": "query: ", "passage": "passage: "})
+    device: str = 'cuda'
+    normalize_embeddings: bool = True
+
 class EmbedderModel:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, config: EmbedderConfig = EmbedderConfig()) -> None:
+        self.conif = config
+        self.model = SentenceTransformer(
+            config.model_name_or_path, device=config.device,
+            prompts=config.prompts)
 
-    def encode_query(self):
-        pass
+    def encode_queries(self, queries: List[str], **kwargs) -> List[List[float]]:
+        return self.model.encode(queries, prompt_name='query', 
+                                 normalize_embeddings=self.conif.normalize_embeddings, **kwargs)
 
-    def encode_document(self):
-        pass
+    def encode_passages(self, passages: List[str], **kwargs) -> List[List[float]]:
+        return self.model.encode(passages, prompt_name='query',
+                                 normalize_embeddings=self.conif.normalize_embeddings,
+                                 **kwargs)
         
