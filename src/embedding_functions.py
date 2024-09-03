@@ -41,7 +41,7 @@ class DatabaseInterface(ABC):
 
 @dataclass
 class ChromaConnectionConfig:
-    path: str = '../data/vectorized_nodes_tripletes/densedb'
+    path: str = '../data/vectorized_nodes_and_triplets/densedb'
     collection_name: str = 'testdb'
 
 @dataclass
@@ -124,14 +124,14 @@ class EmbeddingDatabaseConnection:
         self.db = ChromaConnection() if db_connector is None else db_connector
         self.embedder = EmbedderModel() if embedder is None else embedder
     
-    def add_triplets(self, relations_ids: List[str], stringified_relations: List[str], 
+    def add_triplets(self, triplets_ids: List[str], stringified_triplets: List[str], 
                      nodes_ids: List[str] = None, stringified_nodes: List[str] = None):
-        self.add_instances(relations_ids, stringified_relations)
+        self.add_instances(triplets_ids, stringified_triplets)
         if nodes_ids is not None:
             self.add_instances(nodes_ids, stringified_nodes)
 
-    def delete_triplets(self, relations_ids: List[str], nodes_ids: List[str] = None):
-        self.delete_instances(relations_ids)
+    def delete_triplets(self, triplets_ids: List[str], nodes_ids: List[str] = None):
+        self.delete_instances(triplets_ids)
         if nodes_ids is not None:
             self.delete_instances(nodes_ids)
     
