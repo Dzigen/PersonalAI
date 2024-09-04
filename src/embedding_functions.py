@@ -36,6 +36,11 @@ class AbstractDatabaseConnection(ABC):
         # получить сущность по идентификатору 
         pass
 
+    @abstractmethod
+    def retrieve(self):
+        # извлечение N ближайших сущностей к данной по заданной метрике
+        pass
+
     def __del__(self):
         self.close_connection()
 
@@ -92,6 +97,25 @@ class ChromaConnection(AbstractDatabaseConnection):
     def update(self):
         # TODO
         pass
+
+    def retrieve(
+            self, query_instances: VectorDBInstance, n_results: int = 50, 
+            includes: List[str]  = ['embeddings', 'documents', 'metadatas']) -> List[List[VectorDBInstance]]:
+        
+        raw_retrieved_instances = self.collection.query(
+            query_embeddings=[inst.embedding for inst in query_instances],
+            include=includes + ['ids'], n_results=n_results)
+
+        formated_instances = []
+        for i in range(len(query_instances)):
+            cur_formated_instances = []
+            for j in range(len(raw_retrieved_instances['ids'][i])):
+                tmp_inst = {requested_field[:-1]: raw_retrieved_instances[requested_field][i][j] 
+                        for requested_field in includes}
+                cur_formated_instances.append(VectorDBInstance(**tmp_inst))
+            formated_instances.append(cur_formated_instances)
+        
+        return formated_instances
 
     def delete(self, ids: List[str], **kwargs):
         self.collection.delete(ids=ids, **kwargs)
