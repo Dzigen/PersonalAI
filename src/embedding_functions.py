@@ -45,9 +45,10 @@ class AbstractDatabaseConnection(ABC):
         self.close_connection()
 
 @dataclass
-class ChromaConnectionConfig:
-    path: str = '../data/vectorized_nodes_and_triplets/densedb'
-    collection_name: str = 'testdb'
+class VectorDBConnectionConfig:
+    db_name: str = 'testdb'
+    path: str
+    params: Dict
 
 @dataclass
 class VectorDBInstance:
@@ -62,8 +63,8 @@ class ReturnCode(enum.Enum):
     error = 1
 
 class ChromaConnection(AbstractDatabaseConnection):
-    def __init__(self, config: ChromaConnectionConfig = None) -> None:
-        self.config = ChromaConnectionConfig() if config is None else config
+    def __init__(self, config: VectorDBConnectionConfig) -> None:
+        self.config = config
         self.open_connection()
 
     def open_connection(self) -> int:
@@ -121,15 +122,15 @@ class ChromaConnection(AbstractDatabaseConnection):
         self.collection.delete(ids=ids, **kwargs)
 
 @dataclass
-class EmbedderConfig:
+class EmbedderModelConfig:
     model_name_or_path: str = '../models/intfloat/multilingual-e5-small'
     prompts: Dict = field(default_factory=lambda:{"query": "query: ", "passage": "passage: "})
     device: str = 'cuda'
     normalize_embeddings: bool = True
 
 class EmbedderModel:
-    def __init__(self, config: EmbedderConfig = None) -> None:
-        self.config = EmbedderConfig() if config is None else config
+    def __init__(self, config: EmbedderModelConfig = None) -> None:
+        self.config = EmbedderModelConfig() if config is None else config
         self.model = SentenceTransformer(
             config.model_name_or_path, device=config.device,
             prompts=config.prompts)
@@ -143,14 +144,23 @@ class EmbedderModel:
                                  normalize_embeddings=self.config.normalize_embeddings,
                                  **kwargs)
 
+@dataclass
+class EmbedderDatabaseConnectionConfig:
+    db_vendor: str = 'chroma'
+    node_db_config: VectorDBConnectionConfig
+    triplets_db_config: VectorDBConnectionConfig
+    embedder_config: EmbedderModelConfig
+
+AVAILABLE_VECTODB_CONNECTORS = {
+    'chroma': ChromaConnection
+}
+
 class EmbeddingDatabaseConnection:
-    def __init__(self, nodes_db_connector: AbstractDatabaseConnection, 
-                 triplets_db_connector: AbstractDatabaseConnection, 
-                 embedder: EmbedderModel):
+    def __init__(self, config: EmbedderDatabaseConnectionConfig):
         self.vecordbs = {
-            'nodes': nodes_db_connector,
-            'triplets': triplets_db_connector}
-        self.embedder = embedder
+            'nodes': AVAILABLE_VECTODB_CONNECTORS[config.db_vendor](config.node_db_config),
+            'triplets': AVAILABLE_VECTODB_CONNECTORS[config.db_vendor](config.triplets_db_config)}
+        self.embedder = EmbedderModel(config.embedder_config)
     
     def add_triplets(self, triplets_ids: List[str], stringified_triplets: List[str], 
                      nodes_ids: List[str] = None, stringified_nodes: List[str] = None):
