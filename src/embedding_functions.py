@@ -144,29 +144,33 @@ class EmbedderModel:
                                  **kwargs)
 
 class EmbeddingDatabaseConnection:
-    def __init__(self, db_connector: AbstractDatabaseConnection = None, embedder: EmbedderModel = None):
-        self.db = ChromaConnection() if db_connector is None else db_connector
-        self.embedder = EmbedderModel() if embedder is None else embedder
+    def __init__(self, nodes_db_connector: AbstractDatabaseConnection, 
+                 triplets_db_connector: AbstractDatabaseConnection, 
+                 embedder: EmbedderModel):
+        self.vecordbs = {
+            'nodes': nodes_db_connector,
+            'triplets': triplets_db_connector}
+        self.embedder = embedder
     
     def add_triplets(self, triplets_ids: List[str], stringified_triplets: List[str], 
                      nodes_ids: List[str] = None, stringified_nodes: List[str] = None):
-        self.add_instances(triplets_ids, stringified_triplets)
+        self.add_instances('triplets', triplets_ids, stringified_triplets)
         if nodes_ids is not None:
-            self.add_instances(nodes_ids, stringified_nodes)
+            self.add_instances('nodes', nodes_ids, stringified_nodes)
 
     def delete_triplets(self, triplets_ids: List[str], nodes_ids: List[str] = None):
-        self.delete_instances(triplets_ids)
+        self.delete_instances('triplets', triplets_ids)
         if nodes_ids is not None:
-            self.delete_instances(nodes_ids)
+            self.delete_instances('nodes', nodes_ids)
     
-    def add_instances(self, ids, stringified_instances):
+    def add_instances(self, db_type: str, ids: List[str], stringified_instances: List[str]):
         embs = self.embedder.encode_passages(stringified_instances)
         formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb) 
                             for id, doc, emb in zip(ids, stringified_instances, embs)]
-        self.db.create(formated_instances)
+        self.vecordbs[db_type].create(formated_instances)
 
-    def delete_instances(self, ids: List[str]):
-        self.db.delete(ids)
+    def delete_instances(self, db_type: str, ids: List[str]):
+        self.vecordbs[db_type].delete(ids)
 
     def get_embbeddings(self, ids: List[str]) -> List[List[float]]:
         instances = self.db.read(ids, includes=['embeddins'])
