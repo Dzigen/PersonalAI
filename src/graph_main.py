@@ -18,7 +18,7 @@ class RemoteKnowledgeGraph:
         self.db_name = db_name
         self.embedder = Retriever(device=retriever_device)
         self.emb_conn = EmbeddingDatabaseConnection(some_other_params)
-                     
+
     @staticmethod            
     def stringify(triplet):
         if triplet[1]["prop"]["type"] in ["hyper", "episodic"]:
