@@ -3,4 +3,6 @@ from dataclasses import dataclass
 
 @dataclass
 class KnowledgeComparatorConfig:
-    pass
+    threshold: float = 0.5
+    fetch_n: int = 20
+    max_k: int = 1

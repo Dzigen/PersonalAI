@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from sentence_transformers import SentenceTransformer
-from typing import Dict, List
+from typing import Dict, List, Tuple
 import chromadb
 import enum
 
@@ -100,20 +100,23 @@ class ChromaConnection(AbstractDatabaseConnection):
         pass
 
     def retrieve(
-            self, query_instances: VectorDBInstance, n_results: int = 50, 
-            includes: List[str]  = ['embeddings', 'documents', 'metadatas']) -> List[List[VectorDBInstance]]:
+            self, query_instances: List[VectorDBInstance], n_results: int = 50, 
+            include: List[str]  = ['embeddings', 'documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
         
+        include += ['ids']
         raw_retrieved_instances = self.collection.query(
             query_embeddings=[inst.embedding for inst in query_instances],
-            include=includes + ['ids'], n_results=n_results)
+            include=include + ['distances'], n_results=n_results)
 
         formated_instances = []
         for i in range(len(query_instances)):
             cur_formated_instances = []
             for j in range(len(raw_retrieved_instances['ids'][i])):
                 tmp_inst = {requested_field[:-1]: raw_retrieved_instances[requested_field][i][j] 
-                        for requested_field in includes}
-                cur_formated_instances.append(VectorDBInstance(**tmp_inst))
+                        for requested_field in include}
+                cur_distance = raw_retrieved_instances['distance'][i][j]
+                
+                cur_formated_instances.append((cur_distance, VectorDBInstance(**tmp_inst)))
             formated_instances.append(cur_formated_instances)
         
         return formated_instances
@@ -146,7 +149,7 @@ class EmbedderModel:
 
 
 @dataclass
-class EmbedderDatabaseConnectionConfig:
+class EmbeddingsDatabaseConnectionConfig:
     db_vendor: str = 'chroma'
     node_db_config: VectorDBConnectionConfig
     triplets_db_config: VectorDBConnectionConfig
@@ -156,8 +159,8 @@ AVAILABLE_VECTODB_CONNECTORS = {
     'chroma': ChromaConnection
 }
 
-class EmbeddingDatabaseConnection:
-    def __init__(self, config: EmbedderDatabaseConnectionConfig):
+class EmbeddingsDatabaseConnection:
+    def __init__(self, config: EmbeddingsDatabaseConnectionConfig):
         self.vecordbs = {
             'nodes': AVAILABLE_VECTODB_CONNECTORS[config.db_vendor](config.node_db_config),
             'triplets': AVAILABLE_VECTODB_CONNECTORS[config.db_vendor](config.triplets_db_config)}
