@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List
 import joblib
 import numpy as np
+from ..knowledge_graph_model import KnowledgeGraphModel
 
 
 @dataclass
@@ -71,19 +72,17 @@ class AStarGraphSearchConfig:
     max_width: int = -1
     graphdb_name: str = 'testdb'
     accepted_node_types: List[str] = '["object", "hyper", "episodic"]'
-    h_metric_name: str 
-    d_metric_name: str
+    metrics_config: AStarMetricsConfig = AStarMetricsConfig()
 
 class AStarGraphSearch:
-    def __init__(self, graphdb_model: object, 
-                 search_config: AStarGraphSearchConfig = None,
-                 metrics_config: AStarMetricsConfig = None) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, 
+                 search_config: AStarGraphSearchConfig = None) -> None:
         self.config = AStarGraphSearchConfig() if search_config is None else search_config
-        self.graphdb_model = graphdb_model
-        self.metrics = AStarMetrics(config=metrics_config)
+        self.kg_model = kg_model
+        self.metrics = AStarMetrics(config=self.config.metrics_config)
 
     def get_adjecent_nodes(self, base_node, parent) -> List[Dict]:
-        raw_nodes = self.graphdb_model.execute_query(
+        raw_nodes = self.kg_model.graph_db.execute_query(
             f'MATCH (a)-[r]-(b) WHERE elementId(a) = "{base_node["id"]}" AND ANY (node_t IN b.type WHERE node_t IN {self.config.accepted_node_types}) RETURN b', 
             db=self.config.graphdb_name)
         formated_nodes = list({node['b'].element_id: {'id': node['b'].element_id, 'name': node['b']['name']} for node in raw_nodes 

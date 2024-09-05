@@ -1,4 +1,4 @@
-from .utils import QueryLLMParserConfig, ParsedQueryStructure
+from .utils import QueryLLMParserConfig, QueryInfo
 from ....agents.llama_agent import LLaMAagent
 
 class QueryParser:
@@ -6,9 +6,9 @@ class QueryParser:
         self.config = config
         self.llm_agent = llm_agent
 
-    def extract_entities(self, query: str) -> ParsedQueryStructure:
+    def extract_entities(self, query: str) -> QueryInfo:
         formated_input = self.config.ents_extr_config.user_prompt.format(text=query)
         raw_output = self.llm_agent.generate(formated_input)
         extracted_entities = list(filter(lambda item: len(item) > 0, list(map(lambda item: item.strip(), raw_output.split('|')))))
 
-        return ParsedQueryStructure(entities=extracted_entities)
+        return QueryInfo(entities=extracted_entities)

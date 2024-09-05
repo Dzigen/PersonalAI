@@ -10,7 +10,7 @@ class KnowledgeComparator:
 
         self.kg_model.embeddings_db.embedder.encode_queries()
 
-    def link_kgnodes_to_query(self, query_structure: ParsedQueryStructure):
+    def link_kgnodes_to_query(self, query_structure: ParsedQueryStructure) -> None:
         # сопостовляем сущности, извлечённые из запроса нодам в графе знаний
         linked_nodess = []
         for entity in query_structure.entities:
@@ -32,4 +32,5 @@ class KnowledgeComparator:
                 unique_nodes_ids.append(node.id)
                 unique_nodes.append(node)
 
-        return linked_nodess
+        query_structure.linked_nodes = linked_nodess
+
