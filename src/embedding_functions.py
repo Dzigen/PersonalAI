@@ -144,6 +144,7 @@ class EmbedderModel:
                                  normalize_embeddings=self.config.normalize_embeddings,
                                  **kwargs)
 
+
 @dataclass
 class EmbedderDatabaseConnectionConfig:
     db_vendor: str = 'chroma'
@@ -161,7 +162,7 @@ class EmbeddingDatabaseConnection:
             'nodes': AVAILABLE_VECTODB_CONNECTORS[config.db_vendor](config.node_db_config),
             'triplets': AVAILABLE_VECTODB_CONNECTORS[config.db_vendor](config.triplets_db_config)}
         self.embedder = EmbedderModel(config.embedder_config)
-    
+
     def add_triplets(self, triplets_ids: List[str], stringified_triplets: List[str], 
                      nodes_ids: List[str] = None, stringified_nodes: List[str] = None):
         self.add_instances('triplets', triplets_ids, stringified_triplets)
