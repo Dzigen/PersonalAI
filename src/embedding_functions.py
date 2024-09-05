@@ -119,7 +119,7 @@ class EmbedderModel:
                                  normalize_embeddings=self.config.normalize_embeddings,
                                  **kwargs)
 
-class EmbeddingDatabaseConnection:
+class EmbeddingsDatabaseConnection:
     def __init__(self, db_connector: AbstractDatabaseConnection = None, embedder: EmbedderModel = None):
         self.db = ChromaConnection() if db_connector is None else db_connector
         self.embedder = EmbedderModel() if embedder is None else embedder

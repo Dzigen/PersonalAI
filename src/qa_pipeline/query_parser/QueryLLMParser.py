@@ -1,11 +1,14 @@
-from typing import List, Union
-from .utils import QueryParserConfig
+from .utils import QueryLLMParserConfig, ParsedQueryStructure
+from ....agents.llama_agent import LLaMAagent
 
 class QueryParser:
-    def __init__(self, config: QueryParserConfig) -> None:
-        pass
+    def __init__(self, config: QueryLLMParserConfig, llm_agent: LLaMAagent) -> None:
+        self.config = config
+        self.llm_agent = llm_agent
 
-    # излвечение сущностей
-    def extract_entities(self, query: str) -> str:
-        # TODO
-        pass
+    def extract_entities(self, query: str) -> ParsedQueryStructure:
+        formated_input = self.config.ents_extr_config.user_prompt.format(text=query)
+        raw_output = self.llm_agent.generate(formated_input)
+        extracted_entities = list(filter(lambda item: len(item) > 0, list(map(lambda item: item.strip(), raw_output.split('|')))))
+
+        return ParsedQueryStructure(entities=extracted_entities)
