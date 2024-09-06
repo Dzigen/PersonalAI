@@ -52,7 +52,7 @@ class VectorDBConnectionConfig:
 
 @dataclass
 class VectorDBInstance:
-    id: str
+    id: str = -1
     document: str = None
     embedding: List[float] = None
     metadata: Dict = field(default=lambda: dict())
@@ -101,12 +101,12 @@ class ChromaConnection(AbstractDatabaseConnection):
 
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50, 
-            include: List[str]  = ['embeddings', 'documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
+            include: List[str]  = ['embeddings', 'documents', 'metadatas'], **kwargs) -> List[List[Tuple[float, VectorDBInstance]]]:
         
         include += ['ids']
         raw_retrieved_instances = self.collection.query(
             query_embeddings=[inst.embedding for inst in query_instances],
-            include=include + ['distances'], n_results=n_results)
+            include=include + ['distances'], n_results=n_results, **kwargs)
 
         formated_instances = []
         for i in range(len(query_instances)):
@@ -115,7 +115,7 @@ class ChromaConnection(AbstractDatabaseConnection):
                 tmp_inst = {requested_field[:-1]: raw_retrieved_instances[requested_field][i][j] 
                         for requested_field in include}
                 cur_distance = raw_retrieved_instances['distance'][i][j]
-                
+
                 cur_formated_instances.append((cur_distance, VectorDBInstance(**tmp_inst)))
             formated_instances.append(cur_formated_instances)
         

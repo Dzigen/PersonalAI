@@ -4,9 +4,9 @@ import joblib
 import numpy as np
 import hashlib
 
-from ..knowledge_graph_model import KnowledgeGraphModel
-from ..qa_pipeline.query_parser.utils import QueryInfo
-from ..qa_pipeline.knowledge_retriever.utils import Node, Relation, Triplet
+from ...knowledge_graph_model import KnowledgeGraphModel
+from ..query_parser.utils import QueryInfo
+from .utils import Node, Relation, Triplet, AStarGraphSearchConfig, AStarMetricsConfig
 
 @dataclass
 class AStarMetricsConfig:
@@ -69,13 +69,6 @@ class AStarMetrics:
 
         short_dist = self.nodes_short_paths['MATRIX'][self.nodes_short_paths['ID_TO_INDEX_MAP'][node1['id']]][self.nodes_short_paths['ID_TO_INDEX_MAP'][node2['id']]]
         return np.mean(acc_dist) * short_dist 
-
-class AStarGraphSearchConfig:
-    max_depth: int = 10 
-    max_width: int = -1
-    graphdb_name: str = 'testdb'
-    accepted_node_types: List[str] = '["object", "hyper", "episodic"]'
-    metrics_config: AStarMetricsConfig = AStarMetricsConfig()
 
 class AStarGraphSearch:
     def __init__(self, kg_model: KnowledgeGraphModel, 

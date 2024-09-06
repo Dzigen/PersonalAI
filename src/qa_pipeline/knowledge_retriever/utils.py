@@ -1,12 +1,25 @@
 from dataclasses import dataclass
 from enum import Enum
-from ...retrieve.astar import AStartTripletsRetriever
+from typing import List
 
-class GraphRetrieveMethod(Enum):
-    astar = AStartTripletsRetriever
+@dataclass
+class NaiveTripletsFilterConfig:
+    pass
 
-class TripletsFilterMethod(Enum):
-    embeddings_distance = 'embeddings_distance'
+@dataclass
+class AStarMetricsConfig:
+    h_metric_name: str = 'weight_with_short_path'
+    d_metric_name: str = 'ip'
+    nodes_distances_path: str = '../../data/nodes_distances'
+    nodes_short_paths_file: str = '../../data/nodes_short_paths'
+
+class AStarGraphSearchConfig:
+    max_depth: int = 10 
+    max_width: int = -1
+    graphdb_name: str = 'testdb'
+    accepted_node_types: List[str] = '["object", "hyper", "episodic"]'
+    metrics_config: AStarMetricsConfig = AStarMetricsConfig()
+
 
 @dataclass
 class KnowledgeRetrieverConfig:
