@@ -1,7 +1,7 @@
 from .utils import QueryLLMParserConfig, QueryInfo
-from ....agents.llama_agent import LLaMAagent
+from ...agents.llama_agent import LLaMAagent
 
-class QueryParser:
+class QueryLLMParser:
     def __init__(self, config: QueryLLMParserConfig, llm_agent: LLaMAagent) -> None:
         self.config = config
         self.llm_agent = llm_agent
@@ -11,4 +11,4 @@ class QueryParser:
         raw_output = self.llm_agent.generate(formated_input)
         extracted_entities = list(filter(lambda item: len(item) > 0, list(map(lambda item: item.strip(), raw_output.split('|')))))
 
-        return QueryInfo(query= query, entities=extracted_entities)
+        return QueryInfo(query=query, entities=extracted_entities)

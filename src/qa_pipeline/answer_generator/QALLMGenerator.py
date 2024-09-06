@@ -14,7 +14,7 @@ class QALLMGenerator:
         # TODO
         pass
 
-    def generate_answer(self, query: str, context: str) -> str:
+    def generate(self, query: str, context: str) -> str:
         formated_input = self.config.user_prompt.format(q=query, c=context)
 
         found_line = ""

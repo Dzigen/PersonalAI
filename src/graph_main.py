@@ -10,6 +10,9 @@ from src.prompts.replacements_prompts import \
 from utils.utils import Logger
 from src.retrieve.retriever import Retriever
 
+from .qa_pipeline import QAPipeline, QAPipelineConfig
+from .knowledge_graph_model import KnowledgeGraphModel
+
 class RemoteKnowledgeGraph:
     def __init__(self, uri, user, pwd, db_name, logpath, pipeline = None, retriever_device = "cpu", some_other_params = None):
         self.conn = Neo4jConnection(uri, user, pwd)
@@ -18,6 +21,12 @@ class RemoteKnowledgeGraph:
         self.db_name = db_name
         self.embedder = Retriever(device=retriever_device)
         self.emb_conn = EmbeddingDatabaseConnection(some_other_params)
+
+        # TODO
+        #self.kg_model = KnowledgeGraphModel()
+        #self.llm_agent = LLaMAagent("You are a helpful assistant", pipeline)
+        #self.qa_pipeline = QAPipeline(self.kg_model, self.llm_agent)
+        #self.updatekg_pipeline = UpdateKGPipeline()
 
     @staticmethod            
     def stringify(triplet):

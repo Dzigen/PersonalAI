@@ -1,0 +1,2 @@
+from .KnowledgeComparator import KnowledgeComparator
+from .utils import KnowledgeComparatorConfig
