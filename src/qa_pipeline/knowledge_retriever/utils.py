@@ -1,17 +1,17 @@
 from dataclasses import dataclass
 from enum import Enum
-from ...retrieve.astar import AStarGraphSearch
+from ...retrieve.astar import AStartTripletsRetriever
 
-class GraphSearchMethod(Enum):
-    astar = AStarGraphSearch
+class GraphRetrieveMethod(Enum):
+    astar = AStartTripletsRetriever
 
 class TripletsFilterMethod(Enum):
     embeddings_distance = 'embeddings_distance'
 
 @dataclass
 class KnowledgeRetrieverConfig:
-    graph_search_method: object
-    graph_search_config: object
+    graph_retriever_method: object
+    graph_retriever_config: object
     triplets_filter_method: object
     triplets_filter_config: object
 
@@ -26,7 +26,7 @@ class Node:
 @dataclass
 class Relation:
     id: str
-    name: str
+    type: str
     prop: dict
 
 @dataclass

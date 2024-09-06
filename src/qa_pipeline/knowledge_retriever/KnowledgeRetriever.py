@@ -7,8 +7,11 @@ class KnowledgeRetriever:
         self.config = config
         self.kg_model = kg_model
 
-    def retrieve(self, query: QueryInfo):
-        pass
+        self.graph_retriever = self.config.graph_search_method(
+            kg_model, self.config.graph_search_config)
+        self.triplets_filter = self.config.triplets_filter_method(
+            kg_model, self.config.triplets_filter_config)
 
-    def retrieve_triplets(self):
-        pass
+    def retrieve(self, query_info: QueryInfo):
+        raw_triplets = self.graph_retriever.get_relevant_triplets(query_info)
+        

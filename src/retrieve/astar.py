@@ -6,6 +6,7 @@ import hashlib
 
 from ..knowledge_graph_model import KnowledgeGraphModel
 from ..qa_pipeline.query_parser.utils import QueryInfo
+from ..qa_pipeline.knowledge_retriever.utils import Node, Relation
 
 @dataclass
 class AStarMetricsConfig:
@@ -175,17 +176,14 @@ class AStartTripletsRetriever(AStarGraphSearch):
                 db=self.config.graphdb_name)
                 
             for relation in relations:
-                formated_node1 = {'name': relation['n1']['name'], 'type': list(relation['n1'].labels)[0], 'id': relation['n1'].element_id}
-                formated_node1['prop'] = relation['n1']
-
-                formated_node2 = {'name': relation['n2']['name'], 'type': list(relation['n2'].labels)[0], 'id': relation['n2'].element_id}
-                formated_node2['prop'] = relation['n2']
-
-                formated_relation = {'type': relation['rel'].type, 'id': relation['rel'].element_id}
-                formated_relation.update(relation['rel'])
-
+                formated_node1 = Node(name=relation['n1']['name'], type=list(relation['n1'].labels)[0],
+                                      id=relation['n1'].element_id, prop=relation['n1'])
+                formated_node2 = Node(name=relation['n2']['name'], type=list(relation['n2'].labels)[0], 
+                                      id=relation['n2'].element_id, prop=relation['n2'])
+                formated_relation = Relation(type=relation['rel'].type, id=relation['rel'].element_id,
+                                             prop=relation['rel'])
                 start_node, end_node = (formated_node1, formated_node2) if relation['n1_is_start_node'] else (formated_node2, formated_node1) 
-                tripletes[formated_relation['id']] = (start_node, formated_relation, end_node)
+                tripletes[formated_relation.id] = (start_node, formated_relation, end_node)
 
         return tripletes
     
