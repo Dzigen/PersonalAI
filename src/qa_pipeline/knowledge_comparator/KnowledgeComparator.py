@@ -4,6 +4,9 @@ from ...knowledge_graph_model import KnowledgeGraphModel
 from ...embedding_functions import VectorDBInstance
 
 class KnowledgeComparator:
+    """Главный класс для сопостовения информации в пользовательском запросе
+    с имеющейся информацией в графе знаний
+    """
     def __init__(self, config: KnowledgeComparatorConfig, kg_model: KnowledgeGraphModel) -> None:
         self.config = config
         self.kg_model = kg_model

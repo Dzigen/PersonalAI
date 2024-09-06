@@ -6,6 +6,9 @@ from ..knowledge_retriever.utils import Triplet
 from typing import List
 
 class KnowledgeRetriever:
+    """Главный класс для извлечения релевантной информации из графа знаний
+    по запросу пользователя 
+    """
     def __init__(self, config: KnowledgeRetrieverConfig, kg_model: KnowledgeGraphModel) -> None:
         self.config = config
         self.kg_model = kg_model

@@ -2,6 +2,9 @@ from .utils import QueryLLMParserConfig, QueryInfo
 from ...agents.llama_agent import LLaMAagent
 
 class QueryLLMParser:
+    """Главный класс для извлечения полезной информации 
+    из пользовательского запроса
+    """
     def __init__(self, config: QueryLLMParserConfig, llm_agent: LLaMAagent) -> None:
         self.config = config
         self.llm_agent = llm_agent

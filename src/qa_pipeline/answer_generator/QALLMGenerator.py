@@ -5,7 +5,9 @@ from ..knowledge_retriever.utils import Triplet
 from typing import List
 
 class QALLMGenerator:
-
+    """Главный класс для генерации ответов по пользовательским вопросам на основе 
+    извлечённой информации из графа знаний
+    """
     def __init__(self, llm_agent: LLaMAagent, config: QALLMGeneratorConfig) -> None:
         self.llm_agent = llm_agent
         self.config = config
