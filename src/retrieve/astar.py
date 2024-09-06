@@ -6,7 +6,7 @@ import hashlib
 
 from ..knowledge_graph_model import KnowledgeGraphModel
 from ..qa_pipeline.query_parser.utils import QueryInfo
-from ..qa_pipeline.knowledge_retriever.utils import Node, Relation
+from ..qa_pipeline.knowledge_retriever.utils import Node, Relation, Triplet
 
 @dataclass
 class AStarMetricsConfig:
@@ -167,7 +167,7 @@ class AStartTripletsRetriever(AStarGraphSearch):
     def __init__(self, kg_model: KnowledgeGraphModel, search_config: AStarGraphSearchConfig = None) -> None:
         super().__init__(kg_model, search_config)
 
-    def get_path_tripletes(self, nodes_path: List[Dict]) -> List[Tuple[Dict, Dict, Dict]]:
+    def get_path_tripletes(self, nodes_path: List[Dict]) -> Dict[str, Triplet]:
         tripletes = {}
         for i in range(len(nodes_path)-1):
             node1, node2 = nodes_path[i], nodes_path[i+1]
@@ -182,8 +182,8 @@ class AStartTripletsRetriever(AStarGraphSearch):
                                       id=relation['n2'].element_id, prop=relation['n2'])
                 formated_relation = Relation(type=relation['rel'].type, id=relation['rel'].element_id,
                                              prop=relation['rel'])
-                start_node, end_node = (formated_node1, formated_node2) if relation['n1_is_start_node'] else (formated_node2, formated_node1) 
-                tripletes[formated_relation.id] = (start_node, formated_relation, end_node)
+                s_node, e_node = (formated_node1, formated_node2) if relation['n1_is_start_node'] else (formated_node2, formated_node1) 
+                tripletes[formated_relation.id] = Triplet(start_node=s_node, relation=formated_relation, end_node=e_node)
 
         return tripletes
     
@@ -218,5 +218,5 @@ class AStartTripletsRetriever(AStarGraphSearch):
 
                     tripletes_pool.update(new_tripletes)
 
-        return tripletes_pool.values()
+        return list(tripletes_pool.values())
         
