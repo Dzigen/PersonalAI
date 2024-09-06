@@ -1,5 +1,5 @@
 from .utils import KnowledgeComparatorConfig
-from ..query_parser.utils import ParsedQueryStructure
+from ..query_parser.utils import QueryInfo
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ...embedding_functions import VectorDBInstance
 
@@ -10,7 +10,7 @@ class KnowledgeComparator:
 
         self.kg_model.embeddings_db.embedder.encode_queries()
 
-    def link_kgnodes_to_query(self, query_structure: ParsedQueryStructure) -> None:
+    def link_kgnodes_to_query(self, query_structure: QueryInfo) -> None:
         # сопостовляем сущности, извлечённые из запроса нодам в графе знаний
         linked_nodess = []
         for entity in query_structure.entities:

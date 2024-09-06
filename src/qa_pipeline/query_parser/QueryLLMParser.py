@@ -11,4 +11,4 @@ class QueryParser:
         raw_output = self.llm_agent.generate(formated_input)
         extracted_entities = list(filter(lambda item: len(item) > 0, list(map(lambda item: item.strip(), raw_output.split('|')))))
 
-        return QueryInfo(entities=extracted_entities)
+        return QueryInfo(query= query, entities=extracted_entities)

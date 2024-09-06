@@ -1,9 +1,11 @@
 from dataclasses import dataclass, field
-from typing import Dict, List
+from typing import Dict, List, Tuple
 import joblib
 import numpy as np
-from ..knowledge_graph_model import KnowledgeGraphModel
+import hashlib
 
+from ..knowledge_graph_model import KnowledgeGraphModel
+from ..qa_pipeline.query_parser.utils import QueryInfo
 
 @dataclass
 class AStarMetricsConfig:
@@ -159,3 +161,64 @@ class AStarGraphSearch:
                 break
 
         return U, Q, D, parent, spare_closest_node
+    
+class AStartTripletsRetriever(AStarGraphSearch):
+    def __init__(self, kg_model: KnowledgeGraphModel, search_config: AStarGraphSearchConfig = None) -> None:
+        super().__init__(kg_model, search_config)
+
+    def get_path_tripletes(self, nodes_path: List[Dict]) -> List[Tuple[Dict, Dict, Dict]]:
+        tripletes = {}
+        for i in range(len(nodes_path)-1):
+            node1, node2 = nodes_path[i], nodes_path[i+1]
+            relations = self.kg_model.graph_db.execute_query(
+                f'MATCH (n1)-[rel]-(n2) WHERE elementId(n1) = "{node1["id"]}" AND elementId(n2) = "{node2["id"]}"  RETURN n1, rel, n2, (startNode(rel) = n1) as n1_is_start_node',
+                db=self.config.graphdb_name)
+                
+            for relation in relations:
+                formated_node1 = {'name': relation['n1']['name'], 'type': list(relation['n1'].labels)[0], 'id': relation['n1'].element_id}
+                formated_node1['prop'] = relation['n1']
+
+                formated_node2 = {'name': relation['n2']['name'], 'type': list(relation['n2'].labels)[0], 'id': relation['n2'].element_id}
+                formated_node2['prop'] = relation['n2']
+
+                formated_relation = {'type': relation['rel'].type, 'id': relation['rel'].element_id}
+                formated_relation.update(relation['rel'])
+
+                start_node, end_node = (formated_node1, formated_node2) if relation['n1_is_start_node'] else (formated_node2, formated_node1) 
+                tripletes[formated_relation['id']] = (start_node, formated_relation, end_node)
+
+        return tripletes
+    
+    def get_nodes_path(parent, U, end_node, spare_closest_node):
+        if end_node['id'] not in parent.keys():
+            node = spare_closest_node
+        else:
+            node = end_node  
+        
+        path, end_flag, cur_n = [node], False, node['id']
+        while not end_flag:
+            next_n = parent[cur_n]
+            if next_n is None:
+                end_flag = True
+            else:
+                path.append(U[next_n])
+                cur_n = next_n
+
+        return path
+
+    def get_relevant_triplets(self, query_info: QueryInfo):
+        formated_nodes = [{'id': node.id, 'name': node.document} for node in query_info.linked_nodes]
+        tripletes_pool = dict()
+        if len(formated_nodes) > 1:
+            for i in range(len(formated_nodes)-1):
+                start_node = formated_nodes[i]
+                for j in range(i+1, len(formated_nodes)):
+                    end_node = formated_nodes[j]
+                    U, _, _, parent, spare_closest_node = self.search_path(start_node, end_node)
+                    nodes_path = self.get_nodes_path(parent, U, end_node, spare_closest_node)
+                    new_tripletes = self.get_path_tripletes(nodes_path) # сразу формируется уникальный (по содержанию) набор триплетов
+
+                    tripletes_pool.update(new_tripletes)
+
+        return tripletes_pool.values()
+        

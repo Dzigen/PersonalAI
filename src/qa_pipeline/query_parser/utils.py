@@ -26,6 +26,7 @@ class QueryLLMParserConfig:
 
 @dataclass
 class QueryInfo:
+    query: str
     entities: List[str]
     linked_nodes: List[VectorDBInstance]
 
