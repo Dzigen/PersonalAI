@@ -29,13 +29,13 @@ class AStarMetrics:
         self.nodes_dists = joblib.load(self.config.nodes_distances_path)
         self.nodes_short_paths = joblib.load(self.config.nodes_short_paths_file)
 
-    def compute_d_metric(self, *args, **kwargs):
+    def compute_d_metric(self, *args, **kwargs) -> float:
         return self.metrics_map[self.config.d_metric_name](*args, **kwargs)
 
-    def compute_h_metric(self, *args, **kwargs):
+    def compute_h_metric(self, *args, **kwargs) -> float:
         return self.metrics_map[self.config.h_metric_name](*args, **kwargs)
 
-    def get_nodes_path(self, parent, U, end_node, spare_closest_node):
+    def get_nodes_path(self, parent, U, end_node: Dict, spare_closest_node: Dict) -> List[Dict]:
         if end_node['id'] not in parent.keys():
             node = spare_closest_node
         else:
@@ -52,22 +52,22 @@ class AStarMetrics:
 
         return path
 
-    def precomputed_dist(self, node1, node2, U, parent):
-        return self.nodes_dists['MATRIX'][self.nodes_dists['ID_TO_INDEX_MAP'][node1['id']]][self.nodes_dists['ID_TO_INDEX_MAP'][node2['id']]]
+    def precomputed_dist(self, node1_id: str, node2_id: str, U: List[str], parent: Dict[str, str]) -> float:
+        return self.nodes_dists['MATRIX'][self.nodes_dists['ID_TO_INDEX_MAP'][node1_id]][self.nodes_dists['ID_TO_INDEX_MAP'][node2_id]]
         
-    def weighted_short_path(self, node1, node2, U, parent):
-        short_dist = self.nodes_short_paths['MATRIX'][self.nodes_short_paths['ID_TO_INDEX_MAP'][node1['id']]][self.nodes_short_paths['ID_TO_INDEX_MAP'][node2['id']]]
-        w = self.precomputed_dist(node1, node2, U, parent)
+    def weighted_short_path(self, node1_id: str, node2_id: str, U: List[str], parent: Dict[str, str]) -> float:
+        short_dist = self.nodes_short_paths['MATRIX'][self.nodes_short_paths['ID_TO_INDEX_MAP'][node1_id]][self.nodes_short_paths['ID_TO_INDEX_MAP'][node2_id]]
+        w = self.precomputed_dist(node1_id, node2_id, U, parent)
         return short_dist * w
 
-    def avg_weighted_short_path(self, node1, node2, U, parent):
-        nodes_path = self.get_nodes_path(parent, U, node1, None)
+    def avg_weighted_short_path(self, node1_id: str, node2_id: str, U: List[str], parent: Dict[str, str]) -> float:
+        nodes_path = self.get_nodes_path(parent, U, node1_id, None)
         acc_dist = 0
         for i in range(len(nodes_path)-1):
             acc_dist += self.precomputed_dist(nodes_path[i], nodes_path[i+1], U, parent)
-        acc_dist += self.precomputed_dist(node1, node2, U, parent)
+        acc_dist += self.precomputed_dist(node1_id, node2_id, U, parent)
 
-        short_dist = self.nodes_short_paths['MATRIX'][self.nodes_short_paths['ID_TO_INDEX_MAP'][node1['id']]][self.nodes_short_paths['ID_TO_INDEX_MAP'][node2['id']]]
+        short_dist = self.nodes_short_paths['MATRIX'][self.nodes_short_paths['ID_TO_INDEX_MAP'][node1_id]][self.nodes_short_paths['ID_TO_INDEX_MAP'][node2_id]]
         return np.mean(acc_dist) * short_dist 
 
 class AStarGraphSearch:
@@ -77,95 +77,97 @@ class AStarGraphSearch:
         self.kg_model = kg_model
         self.metrics = AStarMetrics(config=self.config.metrics_config)
 
-    def get_adjecent_nodes(self, base_node, parent) -> List[Dict]:
+    def get_adjecent_nodes(self, base_node_id: str, parent: Dict[str, str]) -> List[str]:
         raw_nodes = self.kg_model.graph_db.execute_query(
-            f'MATCH (a)-[r]-(b) WHERE elementId(a) = "{base_node["id"]}" AND ANY (node_t IN b.type WHERE node_t IN {self.config.accepted_node_types}) RETURN b', 
+            f'MATCH (a)-[r]-(b) WHERE elementId(a) = "{base_node_id}" AND ANY (node_t IN b.type WHERE node_t IN {self.config.accepted_node_types}) RETURN b', 
             db=self.config.graphdb_name)
-        formated_nodes = list({node['b'].element_id: {'id': node['b'].element_id, 'name': node['b']['name']} for node in raw_nodes 
-                            if node['b'].element_id != parent[base_node['id']]}.values())
-
+        formated_nodes = [node['b'].element_id for node in raw_nodes if node['b'].element_id != parent[base_node_id]]
+        
         return formated_nodes
 
-    def filter_adjenced_nodes(base_node, adj_nodes, distance_metric, U, parent, max_width: int = 10):
-        sorted_adj_n_distances = sorted(list(map(lambda node_item: (node_item[0], distance_metric(base_node, node_item[1], U, parent)), enumerate(adj_nodes))), 
+    def filter_adjenced_nodes(base_node_id: str, adj_nodes_ids: List[str], distance_metric, U: List[str], parent: Dict[str, str], max_width: int = 10) -> List[Dict]:
+        sorted_adj_n_distances = sorted(list(map(lambda node_item: (node_item[0], distance_metric(base_node_id, node_item[1], U, parent)), enumerate(adj_nodes_ids))), 
                                         key=lambda item: item[1])
-        filtered_nodes = [adj_nodes[item[0]] for item in sorted_adj_n_distances[:max_width]]
+        filtered_nodes = [adj_nodes_ids[item[0]] for item in sorted_adj_n_distances[:max_width]]
 
         return filtered_nodes
 
-    def get_min_f_node(self, Q: Dict, f: Dict) -> Dict:
-        node_ids = list(Q.keys())
-        min_node_id = node_ids[0]
+    def get_min_f_node(self, Q: List[str], f: Dict[str, float]) -> Dict:
+        min_idx = 0
+        min_node_id = Q[min_idx]
         min_f = f[min_node_id]
-
-        for idx in range(1, len(node_ids)):
-            if f[node_ids[idx]] < min_f:
-                min_node_id = node_ids[idx]
+        
+        for idx in range(1, len(Q)):
+            if f[Q[idx]] < min_f:
+                min_idx = idx
+                min_node_id = Q[min_idx]
                 min_f = f[min_node_id]
                 
-        return Q[min_node_id]
+        return min_node_id, min_idx 
 
-    def search_path(self, start_node: Dict, end_node: Dict):
-        U, Q, D = {}, {start_node['id']: start_node}, {start_node['id']: 0}
-        g = {start_node['id']: 0}
-        parent = {start_node['id']: None}
-        f = {start_node['id']: g[start_node['id']] + self.metrics.compute_h_metric(start_node, end_node, U, parent)}
+    def search_path(self, start_node_id: str, end_node_id: str) -> Tuple[List[str], List[str], Dict[str, int], Dict[str, str], str]:
+        U, Q, D = [], [start_node_id], {start_node_id: 0}
+        g = {start_node_id: 0}
+        parent = {start_node_id: None}
+        f = {start_node_id: g[start_node_id] + self.metrics.compute_h_metric(start_node_id, end_node_id, U, parent)}
         
-        spare_closest_node = start_node
+        spare_closest_node_id = start_node_id
         while len(Q) != 0:
 
-            current = self.get_min_f_node(Q, f) # вершина из Q с минимальным значением f
+            current_node_id, current_node_idx = self.get_min_f_node(Q, f) # вершина из Q с минимальным значением f
 
             # Сохраняем промежуточную вершину, до которой есть путь. 
             # Если не будет найден путь до end_node, то будет использован путь до spare_closest_node
-            if self.metrics.compute_h_metric(current, end_node, U, parent) <= self.metrics.compute_h_metric(spare_closest_node, end_node, U, parent):
-                if f[current['id']] <= f[spare_closest_node['id']]:
-                    spare_closest_node = current
+            if self.metrics.compute_h_metric(
+                current_node_id, end_node_id, U, parent) <= self.metrics.compute_h_metric(
+                    spare_closest_node_id, end_node_id, U, parent):
+                if f[current_node_id] <= f[spare_closest_node_id]:
+                    spare_closest_node_id = current_node_id
             
             #
-            if current['id'] == end_node['id']:
+            if current_node_id == end_node_id:
                 break
 
-            del Q[current['id']]
-            if D[current['id']] >= self.config.max_depth:
+            del Q[current_node_idx]
+            if D[current_node_id] >= self.config.max_depth:
                 continue
-            U[current['id']] = current
+            U.append(current_node_id)
 
-            adj_nodes = self.get_adjecent_nodes(current, parent)
+            adj_nodes = self.get_adjecent_nodes(current_node_id, parent)
 
             if self.config.max_width > 0:
                 adj_nodes = self.filter_adjenced_nodes(
-                    current, adj_nodes, U, parent)
+                    current_node_id, adj_nodes, U, parent)
 
             break_flag = False
-            for v in adj_nodes:
-                tentativeScore = g[current['id']] + self.metrics.compute_d_metric(current, v, U, parent)      
-                if (v['id'] in U.keys()) and (tentativeScore >= g[v['id']]):
+            for adj_n_id in adj_nodes:
+                tentativeScore = g[current_node_id] + self.metrics.compute_d_metric(current_node_id, v, U, parent)      
+                if (adj_n_id in U) and (tentativeScore >= g[adj_n_id]):
                     continue
-                if (v['id'] not in U.keys()) or (tentativeScore < g[v['id']]):
-                    parent[v['id']] = current['id']
-                    g[v['id']] = tentativeScore
-                    f[v['id']] = g[v['id']] + self.metrics.compute_d_metric(v, end_node, U, parent)
-                    D[v['id']] = D[current['id']] + 1
+                if (adj_n_id not in U) or (tentativeScore < g[adj_n_id]):
+                    parent[adj_n_id] = current_node_id
+                    g[adj_n_id] = tentativeScore
+                    f[adj_n_id] = g[adj_n_id] + self.metrics.compute_d_metric(adj_n_id, end_node_id, U, parent)
+                    D[adj_n_id] = D[current_node_id] + 1
 
-                    if v['id'] not in Q.keys():
-                        Q[v['id']] = v
+                    if adj_n_id not in Q:
+                        Q.append(adj_n_id)
 
             if break_flag:
                 break
 
-        return U, Q, D, parent, spare_closest_node
+        return U, Q, D, parent, spare_closest_node_id
     
 class AStartTripletsRetriever(AStarGraphSearch):
     def __init__(self, kg_model: KnowledgeGraphModel, search_config: AStarGraphSearchConfig = None) -> None:
         super().__init__(kg_model, search_config)
 
-    def get_path_tripletes(self, nodes_path: List[Dict]) -> Dict[str, Triplet]:
+    def get_path_tripletes(self, nodes_ids_path: List[str]) -> Dict[str, Triplet]:
         tripletes = {}
-        for i in range(len(nodes_path)-1):
-            node1, node2 = nodes_path[i], nodes_path[i+1]
+        for i in range(len(nodes_ids_path)-1):
+            node1_id, node2_id = nodes_ids_path[i], nodes_ids_path[i+1]
             relations = self.kg_model.graph_db.execute_query(
-                f'MATCH (n1)-[rel]-(n2) WHERE elementId(n1) = "{node1["id"]}" AND elementId(n2) = "{node2["id"]}"  RETURN n1, rel, n2, (startNode(rel) = n1) as n1_is_start_node',
+                f'MATCH (n1)-[rel]-(n2) WHERE elementId(n1) = "{node1_id}" AND elementId(n2) = "{node2_id}"  RETURN n1, rel, n2, (startNode(rel) = n1) as n1_is_start_node',
                 db=self.config.graphdb_name)
                 
             for relation in relations:
@@ -180,24 +182,21 @@ class AStartTripletsRetriever(AStarGraphSearch):
 
         return tripletes
     
-    def get_nodes_path(parent, U, end_node, spare_closest_node):
-        if end_node['id'] not in parent.keys():
-            node = spare_closest_node
-        else:
-            node = end_node  
+    def get_nodes_path(parent: Dict[str, str], end_node_id: str, spare_closest_node_id: str) -> List[str]:
+        end_node_id = spare_closest_node_id if end_node_id not in parent else end_node_id
         
-        path, end_flag, cur_n = [node], False, node['id']
+        path, end_flag, cur_n = [end_node_id], False, end_node_id
         while not end_flag:
             next_n = parent[cur_n]
             if next_n is None:
                 end_flag = True
             else:
-                path.append(U[next_n])
+                path.append(next_n)
                 cur_n = next_n
 
         return path
 
-    def get_relevant_triplets(self, query_info: QueryInfo):
+    def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         formated_nodes = [{'id': node.id, 'name': node.document} for node in query_info.linked_nodes]
         tripletes_pool = dict()
         if len(formated_nodes) > 1:
@@ -205,8 +204,8 @@ class AStartTripletsRetriever(AStarGraphSearch):
                 start_node = formated_nodes[i]
                 for j in range(i+1, len(formated_nodes)):
                     end_node = formated_nodes[j]
-                    U, _, _, parent, spare_closest_node = self.search_path(start_node, end_node)
-                    nodes_path = self.get_nodes_path(parent, U, end_node, spare_closest_node)
+                    _, _, _, parent, spare_closest_node = self.search_path(start_node, end_node)
+                    nodes_path = self.get_nodes_path(parent, end_node, spare_closest_node)
                     new_tripletes = self.get_path_tripletes(nodes_path) # сразу формируется уникальный (по содержанию) набор триплетов
 
                     tripletes_pool.update(new_tripletes)
