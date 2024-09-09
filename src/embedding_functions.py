@@ -11,6 +11,7 @@ import chromadb
 import enum
 
 class AbstractDatabaseConnection(ABC):
+    
     @abstractmethod
     def open_connection(self):
         # открытие соединения с бд
@@ -94,10 +95,10 @@ class ChromaConnection(AbstractDatabaseConnection):
         del self.client
 
     def create(self, instances: List[VectorDBInstance]):
-        """_summary_
+        """Добавление объектов в базу.
 
         Args:
-            instances (List[VectorDBInstance]): _description_
+            instances (List[VectorDBInstance]): Список объектов на добавление
         """
         self.collection.add(
             documents=list(map(lambda inst: inst.document, instances)),
@@ -106,11 +107,11 @@ class ChromaConnection(AbstractDatabaseConnection):
             ids=list(map(lambda inst: inst.id, instances)))
  
     def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents', 'metadatas'], **kwargs) -> List[VectorDBInstance]:
-        """_summary_
+        """Получение объектов из базы по их идентификаторам.
 
         Args:
-            ids (List[str]): _description_
-            includes (List[str], optional): _description_. Defaults to ['embeddings', 'documents', 'metadatas'].
+            ids (List[str]): Идентификаторы объектов.
+            includes (List[str], optional): Список полей, информацию по которым нужно получить для каждого объекта. Defaults to ['embeddings', 'documents', 'metadatas'].
 
         Returns:
             List[VectorDBInstance]: _description_
@@ -139,7 +140,7 @@ class ChromaConnection(AbstractDatabaseConnection):
         Args:
             query_instances (List[VectorDBInstance]): _description_
             n_results (int, optional): _description_. Defaults to 50.
-            include (List[str], optional): _description_. Defaults to ['embeddings', 'documents', 'metadatas'].
+            include (List[str], optional): Список полей, информацию по которым нужно получить для каждого объекта. Defaults to ['embeddings', 'documents', 'metadatas'].
 
         Returns:
             List[List[Tuple[float, VectorDBInstance]]]: _description_
@@ -163,10 +164,10 @@ class ChromaConnection(AbstractDatabaseConnection):
         return formated_instances
 
     def delete(self, ids: List[str], **kwargs):
-        """_summary_
+        """Удаление объектов из базы по их идентификаторам.
 
         Args:
-            ids (List[str]): _description_
+            ids (List[str]): идентификаторы объектов.
         """
         self.collection.delete(ids=ids, **kwargs)
 
