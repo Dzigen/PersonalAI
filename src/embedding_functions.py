@@ -2,6 +2,11 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from sentence_transformers import SentenceTransformer
 from typing import Dict, List, Tuple
+
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 import chromadb
 import enum
 
@@ -82,7 +87,7 @@ class ChromaConnection(AbstractDatabaseConnection):
 
     def open_connection(self) -> int:
         self.client = chromadb.PersistentClient(path=self.config.path)
-        self.collection = self.client.get_collection(name=self.config.db_name)
+        self.collection = self.client.get_or_create_collection(name=self.config.db_name)
 
     def close_connection(self):
         del self.collection
