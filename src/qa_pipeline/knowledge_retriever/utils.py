@@ -13,6 +13,7 @@ class AStarMetricsConfig:
     nodes_distances_path: str = '../../data/nodes_distances'
     nodes_short_paths_file: str = '../../data/nodes_short_paths'
 
+
 class AStarGraphSearchConfig:
     max_depth: int = 10 
     max_width: int = -1

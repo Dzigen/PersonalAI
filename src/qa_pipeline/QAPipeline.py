@@ -7,6 +7,7 @@ from .knowledge_retriever import KnowledgeRetriever
 from .knowledge_comparator import KnowledgeComparator
 from .query_parser import QueryLLMParser
 
+
 class QAPipeline:
     """Главный класс QA-конвейера по генерации ответов 
     на основе имеющегося графа знаний

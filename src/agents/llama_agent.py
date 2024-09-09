@@ -9,9 +9,8 @@ VPS_IP = "10.5.1.1"
 port = 8000
 
 class LLaMAagent(GPTagent):
-    def __init__(self, system_prompt, pipeline = None):
+    def __init__(self, pipeline = None):
         super().__init__("", "", "")
-        self.system_prompt = system_prompt
         self.pipeline = transformers.pipeline(
             "text-generation",
             model="Undi95/Meta-Llama-3-8B-Instruct-hf",
@@ -19,12 +18,7 @@ class LLaMAagent(GPTagent):
             device_map="auto"
         ) if pipeline is None else pipeline
         
-    def generate(self, prompt, jsn = False, t = 0.2):
-        messages = [
-            {"role": "system", "content": self.system_prompt},
-            {"role": "user", "content": prompt},
-        ]
-
+    def generate(self, messages, jsn = False, t = 0.2):
         prompt = self.pipeline.tokenizer.apply_chat_template(
                 messages, 
                 tokenize=False, 
