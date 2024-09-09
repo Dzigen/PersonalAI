@@ -9,7 +9,7 @@ from query_parser import QueryLLMParser
 
 class QAPipeline:
     """Главный класс QA-конвейера по генерации ответов 
-    на основании имеющегося графа знаний
+    на основе имеющегося графа знаний
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, llm_agent: LLaMAagent, config: QAPipelineConfig) -> None:

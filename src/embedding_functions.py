@@ -46,16 +46,17 @@ class AbstractDatabaseConnection(ABC):
 
 @dataclass
 class VectorDBConnectionConfig:
-    db_name: str = 'testdb'
     path: str
-    params: Dict
+    db_name: str
+    params: Dict = field(default_factory=lambda: {})
+    db_vendor: str = 'chroma'
 
 @dataclass
 class VectorDBInstance:
     id: str = -1
     document: str = None
     embedding: List[float] = None
-    metadata: Dict = field(default=lambda: dict())
+    metadata: Dict = field(default_factory=lambda: dict())
 
 
 class ReturnCode(enum.Enum):
@@ -69,7 +70,7 @@ class ChromaConnection(AbstractDatabaseConnection):
 
     def open_connection(self) -> int:
         self.client = chromadb.PersistentClient(path=self.config.path)
-        self.collection = self.client.get_collection(name=self.config.collection_name)
+        self.collection = self.client.get_collection(name=self.config.db_name)
 
     def close_connection(self):
         del self.collection
@@ -84,11 +85,11 @@ class ChromaConnection(AbstractDatabaseConnection):
  
     def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents', 'metadatas'], **kwargs) -> List[VectorDBInstance]:
         raw_instances = self.collection.get(
-            include=includes + ['ids'],
+            include=includes,
             ids=ids, **kwargs) 
                                             
         formates_instances = []
-        for i in range(raw_instances['ids']):
+        for i in range(len(raw_instances['ids'])):
             tmp_inst = {requested_field[:-1]: raw_instances[requested_field][i] 
                         for requested_field in includes}
             formates_instances.append(VectorDBInstance(**tmp_inst))
@@ -103,7 +104,6 @@ class ChromaConnection(AbstractDatabaseConnection):
             self, query_instances: List[VectorDBInstance], n_results: int = 50, 
             include: List[str]  = ['embeddings', 'documents', 'metadatas'], **kwargs) -> List[List[Tuple[float, VectorDBInstance]]]:
         
-        include += ['ids']
         raw_retrieved_instances = self.collection.query(
             query_embeddings=[inst.embedding for inst in query_instances],
             include=include + ['distances'], n_results=n_results, **kwargs)
@@ -127,7 +127,7 @@ class ChromaConnection(AbstractDatabaseConnection):
 @dataclass
 class EmbedderModelConfig:
     model_name_or_path: str = '../models/intfloat/multilingual-e5-small'
-    prompts: Dict = field(default_factory=lambda:{"query": "query: ", "passage": "passage: "})
+    prompts: Dict = field(default_factory=lambda: {"query": "query: ", "passage": "passage: "})
     device: str = 'cuda'
     normalize_embeddings: bool = True
 
@@ -150,8 +150,7 @@ class EmbedderModel:
 
 @dataclass
 class EmbeddingsDatabaseConnectionConfig:
-    db_vendor: str = 'chroma'
-    node_db_config: VectorDBConnectionConfig
+    nodes_db_config: VectorDBConnectionConfig
     triplets_db_config: VectorDBConnectionConfig
     embedder_config: EmbedderModelConfig
 
@@ -162,31 +161,31 @@ AVAILABLE_VECTODB_CONNECTORS = {
 class EmbeddingsDatabaseConnection:
     def __init__(self, config: EmbeddingsDatabaseConnectionConfig):
         self.vecordbs = {
-            'nodes': AVAILABLE_VECTODB_CONNECTORS[config.db_vendor](config.node_db_config),
-            'triplets': AVAILABLE_VECTODB_CONNECTORS[config.db_vendor](config.triplets_db_config)}
+            'nodes': AVAILABLE_VECTODB_CONNECTORS[config.nodes_db_config.db_vendor](config.nodes_db_config),
+            'triplets': AVAILABLE_VECTODB_CONNECTORS[config.nodes_db_config.db_vendor](config.triplets_db_config)}
         self.embedder = EmbedderModel(config.embedder_config)
 
     def add_triplets(self, triplets_ids: List[str], stringified_triplets: List[str], 
-                     nodes_ids: List[str] = None, stringified_nodes: List[str] = None):
+                     nodes_ids: List[str] = None, stringified_nodes: List[str] = None) -> None:
         self.add_instances('triplets', triplets_ids, stringified_triplets)
         if nodes_ids is not None:
             self.add_instances('nodes', nodes_ids, stringified_nodes)
 
-    def delete_triplets(self, triplets_ids: List[str], nodes_ids: List[str] = None):
+    def delete_triplets(self, triplets_ids: List[str], nodes_ids: List[str] = None) -> None:
         self.delete_instances('triplets', triplets_ids)
         if nodes_ids is not None:
             self.delete_instances('nodes', nodes_ids)
     
-    def add_instances(self, db_type: str, ids: List[str], stringified_instances: List[str]):
+    def add_instances(self, db_type: str, ids: List[str], stringified_instances: List[str]) -> None:
         embs = self.embedder.encode_passages(stringified_instances)
         formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb) 
                             for id, doc, emb in zip(ids, stringified_instances, embs)]
         self.vecordbs[db_type].create(formated_instances)
 
-    def delete_instances(self, db_type: str, ids: List[str]):
+    def delete_instances(self, db_type: str, ids: List[str]) -> None:
         self.vecordbs[db_type].delete(ids)
 
-    def get_embbeddings(self, ids: List[str]) -> List[List[float]]:
-        instances = self.db.read(ids, includes=['embeddins'])
+    def get_embbeddings(self, db_type: str, ids: List[str]) -> List[List[float]]:
+        instances = self.vecordbs[db_type].read(ids, includes=['embeddings'])
         embeddings = list(map(lambda inst: inst.embedding,instances))
         return embeddings
