@@ -2,10 +2,10 @@ from ..agents.llama_agent import LLaMAagent
 from ..knowledge_graph_model import KnowledgeGraphModel
 from .utils import QAPipelineConfig
 
-from answer_generator import QALLMGenerator
-from knowledge_retriever import KnowledgeRetriever
-from knowledge_comparator import KnowledgeComparator
-from query_parser import QueryLLMParser
+from .answer_generator import QALLMGenerator
+from .knowledge_retriever import KnowledgeRetriever
+from .knowledge_comparator import KnowledgeComparator
+from .query_parser import QueryLLMParser
 
 class QAPipeline:
     """Главный класс QA-конвейера по генерации ответов 

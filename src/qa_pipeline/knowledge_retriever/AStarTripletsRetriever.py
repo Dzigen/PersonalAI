@@ -35,19 +35,16 @@ class AStarMetrics:
     def compute_h_metric(self, *args, **kwargs) -> float:
         return self.metrics_map[self.config.h_metric_name](*args, **kwargs)
 
-    def get_nodes_path(self, parent, U, end_node: Dict, spare_closest_node: Dict) -> List[Dict]:
-        if end_node['id'] not in parent.keys():
-            node = spare_closest_node
-        else:
-            node = end_node  
+    def get_nodes_path(parent: Dict[str, str], end_node_id: str, spare_closest_node_id: str) -> List[str]:
+        end_node_id = spare_closest_node_id if end_node_id not in parent else end_node_id
         
-        path, end_flag, cur_n = [node], False, node['id']
+        path, end_flag, cur_n = [end_node_id], False, end_node_id
         while not end_flag:
             next_n = parent[cur_n]
             if next_n is None:
                 end_flag = True
             else:
-                path.append(U[next_n])
+                path.append(next_n)
                 cur_n = next_n
 
         return path

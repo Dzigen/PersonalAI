@@ -3,7 +3,7 @@ import torch
 import requests
 from time import sleep
 
-from agents.parent_agent import GPTagent
+from .parent_agent import GPTagent
 
 VPS_IP = "10.5.1.1"
 port = 8000
