@@ -13,6 +13,10 @@ class AbstractAgentConnector:
         pass
 
     @abstractmethod
+    def check_connection(self):
+        pass
+
+    @abstractmethod
     def generate(self):
         pass
 
