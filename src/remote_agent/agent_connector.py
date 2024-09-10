@@ -1,4 +1,4 @@
-from .utils import AbstractAgentConnector
+from .utils import AbstractAgentConnector, RemoteAgentRequestBody
 from .agent_model import AgentModel, AgentModelConfig
 
 from dataclasses import dataclass, field
@@ -42,11 +42,8 @@ class RemoteAgentConnector(AbstractAgentConnector):
     def generate(self, user_prompt: str, assistant_prompt: str = None, gen_strategy: Dict = None) -> str:
         conn_params = self.config.connection_params
         url = f"{conn_params.host}:{conn_params.port}/{conn_params.path}"
-        body = {
-            'user_prompt': user_prompt,
-            'assistant_prompt': assistant_prompt,
-            'gen_strategy': gen_strategy
-        }
+        body = {"user_prompt": user_prompt, "assistant_prompt": assistant_prompt, 
+                "gen_strategy": gen_strategy}
         response = requests.post(url, json=body)
 
         if response.status_code == 200:

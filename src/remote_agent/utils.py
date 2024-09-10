@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import List
+from typing import List, Dict
 from abc import ABC, abstractmethod
 
 class AbstractAgentConnector:

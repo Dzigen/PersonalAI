@@ -24,7 +24,7 @@ class AgentModel(AbstractAgentModel):
             device_map="auto"
         )
 
-    def generate(self, user_prompt: str, assistant_prompt: str = None) -> str:
+    def generate(self, user_prompt: str, assistant_prompt: str = None, gen_strategy: Dict = None) -> str:
 
         messages = [
             {"role": "system", "content": self.config.system_prompt},
@@ -44,11 +44,12 @@ class AgentModel(AbstractAgentModel):
             self.pipeline.tokenizer.eos_token_id,
             self.pipeline.tokenizer.convert_tokens_to_ids("<|eot_id|>")
         ]
+        gen_strategy = self.config.gen_strategy if gen_strategy is None else gen_strategy
         
         outputs = self.pipeline(
             prompt,
             eos_token_id=terminators,
-            **self.config.gen_strategy
+            **gen_strategy
         )
         
         return outputs[0]["generated_text"][len(prompt):]
