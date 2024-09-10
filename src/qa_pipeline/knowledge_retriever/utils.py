@@ -40,6 +40,7 @@ class Node:
 @dataclass
 class Relation:
     id: str
+    name: str
     type: str
     prop: dict
 

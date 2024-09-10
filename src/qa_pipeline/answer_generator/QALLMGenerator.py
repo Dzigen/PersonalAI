@@ -1,5 +1,5 @@
 from ...agents.llama_agent import LLaMAagent
-from .utils import QALLMGeneratorConfig
+from .utils import QALLMGeneratorConfig, ContextType
 from ..knowledge_retriever.utils import Triplet
 
 from typing import List
@@ -11,10 +11,24 @@ class QALLMGenerator:
     def __init__(self, llm_agent: LLaMAagent, config: QALLMGeneratorConfig) -> None:
         self.llm_agent = llm_agent
         self.config = config
+        self.stringi
 
     def formate_context(self, triplets: List[Triplet]) -> str:
-        # TODO
-        pass
+        filtered_context = []
+        for triplet in triplets:
+            rel_type = triplet.relation.type
+            if rel_type in self.config.context_type:
+                if (rel_type == ContextType.episodic) or (rel_type == ContextType.hyper):
+                    filtered_context.append(
+                        triplet.relation.prop["time"] + ": " + triplet.end_node.name)
+                elif rel_type == ContextType.simple:
+                    filtered_context.append(
+                        triplet.relation.prop["time"] + ": " + " ".join(
+                            [triplet.start_node.name, triplet.relation.name, triplet.end_node.name]))
+                else:
+                    raise KeyError
+                
+        return "\n".join(filtered_context)
 
     def generate(self, query: str, context: str) -> str:
         formated_input = self.config.user_prompt.format(q=query, c=context)

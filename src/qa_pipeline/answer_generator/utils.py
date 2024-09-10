@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+from typing import List
+from enum import Enum
 
 QUESTION_ANSWERING_USER_PROMPT = """Answer the question, based on provided info by analogy with examples given. Generate chain of thought and then give the final answer in the following format:
 ### Answer
@@ -30,6 +32,12 @@ Question 3: {q}
 Info 3: {c}
 ### Answer 3 """
 
+class ContextType(Enum):
+    simple = "simple"
+    hyper = "hyper"
+    episodic = "episodic"
+
 @dataclass
 class QALLMGeneratorConfig:
     user_prompt: str = QUESTION_ANSWERING_USER_PROMPT
+    context_type: List[ContextType] = [ContextType.simple, ContextType.hyper, ContextType.episodic]
