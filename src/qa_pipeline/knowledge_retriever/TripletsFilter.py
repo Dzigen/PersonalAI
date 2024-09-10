@@ -1,8 +1,7 @@
 from ...knowledge_graph_model import KnowledgeGraphModel
-from .utils import TripletsFilterConfig, Triplet
 from ..query_parser.utils import QueryInfo
 from ...embedding_functions import VectorDBInstance
-from .utils import AbstractTriplesFilter
+from .utils import AbstractTriplesFilter, Triplet
 
 from dataclasses import dataclass
 from typing import List

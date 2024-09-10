@@ -15,12 +15,13 @@ class AStarMetricsConfig:
     nodes_distances_path: str = '../../data/nodes_distances'
     nodes_short_paths_file: str = '../../data/nodes_short_paths'
 
+@dataclass
 class AStarGraphSearchConfig:
     max_depth: int = 10 
     max_width: int = -1
     graphdb_name: str = 'testdb'
     accepted_node_types: List[str] = '["object", "hyper", "episodic"]'
-    metrics_config: AStarMetricsConfig = AStarMetricsConfig()
+    metrics_config: AStarMetricsConfig = field(default_factory=lambda:AStarMetricsConfig())
 
 class AStarMetrics:
     def __init__(self, config: AStarMetricsConfig = None) -> None:

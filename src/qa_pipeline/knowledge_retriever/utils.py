@@ -4,26 +4,6 @@ from typing import List
 from abc import ABC, abstractmethod
 
 from ..query_parser import QueryInfo
-from .utils import Triplet
-
-class AbstractTriplesFilter(ABC):
-    @abstractmethod
-    def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
-        # фильтрация триплетов по заданному правилу
-        pass
-
-class AbstractTripletsRetriever(ABC):
-    @abstractmethod
-    def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
-        pass
-
-@dataclass
-class KnowledgeRetrieverConfig:
-    graph_retriever_method: object
-    graph_retriever_config: object
-    triplets_filter_method: AbstractTriplesFilter
-    triplets_filter_config: object
-
 
 @dataclass
 class Node:
@@ -44,3 +24,14 @@ class Triplet:
     start_node: Node 
     relation: Relation 
     end_node: Node
+
+class AbstractTriplesFilter(ABC):
+    @abstractmethod
+    def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
+        # фильтрация триплетов по заданному правилу
+        pass
+
+class AbstractTripletsRetriever(ABC):
+    @abstractmethod
+    def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
+        pass

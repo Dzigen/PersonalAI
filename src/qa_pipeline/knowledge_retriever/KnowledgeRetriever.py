@@ -1,9 +1,18 @@
-from .utils import KnowledgeRetrieverConfig
 from ..query_parser.utils import QueryInfo
 from ...knowledge_graph_model import KnowledgeGraphModel
-from ..knowledge_retriever.utils import Triplet
+from .utils import Triplet, AbstractTriplesFilter, AbstractTripletsRetriever
+from .TripletsFilter import TripletsFilterConfig, TripletsFilter
+from .AStarTripletsRetriever import AStartTripletsRetriever, AStarGraphSearchConfig
 
+from dataclasses import dataclass, field
 from typing import List
+
+@dataclass
+class KnowledgeRetrieverConfig:
+    graph_retriever_method: AbstractTripletsRetriever = field(default_factory=lambda: AStartTripletsRetriever)
+    graph_retriever_config: object = field(default_factory=lambda: AStarGraphSearchConfig())
+    triplets_filter_method: AbstractTriplesFilter = field(default_factory=lambda: TripletsFilter)
+    triplets_filter_config: object = field(default_factory=lambda: TripletsFilterConfig())
 
 class KnowledgeRetriever:
     """Главный класс для извлечения релевантной информации из графа знаний

@@ -1,2 +1,1 @@
-from .KnowledgeRetriever import KnowledgeRetriever
-from .utils import KnowledgeRetrieverConfig
+from .KnowledgeRetriever import KnowledgeRetriever, KnowledgeRetrieverConfig
