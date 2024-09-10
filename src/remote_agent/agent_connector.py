@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, Union
 import gc
-
+import requests
 
 class AgentConnectionType:
     local = 0
@@ -17,7 +17,8 @@ class GeneralAgentConnectionParams:
 
 @dataclass
 class RemoteAgentConnectionParams(GeneralAgentConnectionParams):
-    url: str
+    host: str
+    path: str
     port: str
 
 @dataclass
@@ -34,28 +35,31 @@ class RemoteAgentConnector(AbstractAgentConnector):
     def __init__(self, config: AgentConnectorConfig) -> None:
         self.config = config
     
-    def open_connection(self):
-        pass
-
-    def close_connection(self):
-        pass
     def check_connection(self):
-        pass
+        response = requests.head()
+        return response.status_code == 200
 
-    def generate(self):
-        pass
+    def generate(self, user_prompt: str, assistant_prompt: str = None, gen_strategy: Dict = None) -> str:
+        conn_params = self.config.connection_params
+        url = f"{conn_params.host}:{conn_params.port}/{conn_params.path}"
+        body = {
+            'user_prompt': user_prompt,
+            'assistant_prompt': assistant_prompt,
+            'gen_strategy': gen_strategy
+        }
+        response = requests.post(url, json=body)
+
+        if response.status_code == 200:
+            output = response.json()['generated_output']
+        else:
+            raise ValueError
+
+        return output
 
 class LocalAgentConnector(AbstractAgentConnector):
     def __init__(self, config: AgentConnectorConfig) -> None:
         self.config = config
-        self.open_connection()
-        
-    def open_connection(self):
-        self.agent = AgentModel(self.config.agent_config)
-
-    def close_connection(self):
-        del self.agent 
-        gc.collect()
+        self.agent = AgentModel(config.agent_config)
 
     def check_connection(self):
         return hasattr(self, 'agent') and isinstance(self.agent, AbstractAgentConnector)
