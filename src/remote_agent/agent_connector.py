@@ -9,7 +9,7 @@ class AgentConnectionType:
 
 @dataclass
 class GeneralAgentConnectionParams:
-    gen_strategy: Dict = field(default_factory=lambda: {'early_stoping': True})
+    gen_strategy: Dict = field(default_factory=lambda: {'early_stoping': True, 'num_beams': 3})
     model_name_or_path: str = "Undi95/Meta-Llama-3-8B-Instruct-hf"
 
 @dataclass
@@ -34,5 +34,5 @@ class AgentConnector(AbstractAgentConnector):
     def close_connection(self):
         pass
 
-    def update_gen_strategy(self):
+    def generate(self):
         pass

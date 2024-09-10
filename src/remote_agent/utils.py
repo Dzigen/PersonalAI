@@ -16,10 +16,6 @@ class AbstractAgentConnector:
     def generate(self):
         pass
 
-    @abstractmethod
-    def update_gen_strategy(self):
-        pass
-
 class AbstractAgentModel:
     @abstractmethod
     def generate(self):
