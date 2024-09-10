@@ -4,7 +4,7 @@ from .utils import QAPipelineConfig
 
 from .answer_generator import QALLMGenerator
 from .knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
-from .knowledge_retriever.NaiveTripletsFilter import NaiveTripletsFilter
+from .knowledge_retriever.TripletsFilter import TripletsFilter
 from .knowledge_retriever.utils import AStarGraphSearchConfig, NaiveTripletsFilterConfig
 from .knowledge_retriever.AStarTripletsRetriever import AStarGraphSearch
 from .knowledge_comparator import KnowledgeComparator
@@ -55,7 +55,7 @@ kg_model = KnowledgeGraphModel(graph_db=neo4j_conn, embeddings_db=emb_db)
 astar = AStarGraphSearch(kg_model=kg_model)
 astar_config = AStarGraphSearchConfig()
 filter_config = NaiveTripletsFilterConfig()
-filter_model = NaiveTripletsFilter(kg_model=kg_model, config=filter_config)
+filter_model = TripletsFilter(kg_model=kg_model, config=filter_config)
 kn_retr_config = KnowledgeRetrieverConfig(
     graph_retriever_method=astar,
     graph_retriever_config=astar_config,

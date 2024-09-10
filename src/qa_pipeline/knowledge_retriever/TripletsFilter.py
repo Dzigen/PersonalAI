@@ -1,12 +1,19 @@
 from ...knowledge_graph_model import KnowledgeGraphModel
-from .utils import NaiveTripletsFilterConfig, Triplet
+from .utils import TripletsFilterConfig, Triplet
 from ..query_parser.utils import QueryInfo
 from ...embedding_functions import VectorDBInstance
+from .utils import AbstractTriplesFilter
 
+from dataclasses import dataclass
 from typing import List
 
-class NaiveTripletsFilter:
-    def __init__(self, kg_model: KnowledgeGraphModel, config: NaiveTripletsFilterConfig) -> None:
+@dataclass
+class TripletsFilterConfig:
+    # TODO
+    pass
+
+class TripletsFilter(AbstractTriplesFilter):
+    def __init__(self, kg_model: KnowledgeGraphModel, config: TripletsFilterConfig) -> None:
         self.kg_model = kg_model
         self.config = config
 

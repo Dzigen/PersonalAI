@@ -6,7 +6,7 @@ import hashlib
 
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ..query_parser.utils import QueryInfo
-from .utils import Node, Relation, Triplet, AStarGraphSearchConfig, AStarMetricsConfig
+from .utils import Node, Relation, Triplet, AbstractTripletsRetriever
 
 @dataclass
 class AStarMetricsConfig:
@@ -14,6 +14,13 @@ class AStarMetricsConfig:
     d_metric_name: str = 'ip'
     nodes_distances_path: str = '../../data/nodes_distances'
     nodes_short_paths_file: str = '../../data/nodes_short_paths'
+
+class AStarGraphSearchConfig:
+    max_depth: int = 10 
+    max_width: int = -1
+    graphdb_name: str = 'testdb'
+    accepted_node_types: List[str] = '["object", "hyper", "episodic"]'
+    metrics_config: AStarMetricsConfig = AStarMetricsConfig()
 
 class AStarMetrics:
     def __init__(self, config: AStarMetricsConfig = None) -> None:
@@ -155,7 +162,7 @@ class AStarGraphSearch:
 
         return U, Q, D, parent, spare_closest_node_id
     
-class AStartTripletsRetriever(AStarGraphSearch):
+class AStartTripletsRetriever(AStarGraphSearch, AbstractTripletsRetriever):
     def __init__(self, kg_model: KnowledgeGraphModel, search_config: AStarGraphSearchConfig = None) -> None:
         super().__init__(kg_model, search_config)
 
