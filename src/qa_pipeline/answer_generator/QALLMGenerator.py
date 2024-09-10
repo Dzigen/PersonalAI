@@ -14,6 +14,17 @@ class QALLMGenerator:
         self.stringi
 
     def formate_context(self, triplets: List[Triplet]) -> str:
+        """_summary_
+
+        Args:
+            triplets (List[Triplet]): _description_
+
+        Raises:
+            KeyError: _description_
+
+        Returns:
+            str: _description_
+        """
         filtered_context = []
         for triplet in triplets:
             rel_type = triplet.relation.type
@@ -31,6 +42,15 @@ class QALLMGenerator:
         return "\n".join(filtered_context)
 
     def generate(self, query: str, context: str) -> str:
+        """_summary_
+
+        Args:
+            query (str): _description_
+            context (str): _description_
+
+        Returns:
+            str: _description_
+        """
         formated_input = self.config.user_prompt.format(q=query, c=context)
 
         found_line = ""

@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List
 from enum import Enum
 
@@ -40,4 +40,5 @@ class ContextType(Enum):
 @dataclass
 class QALLMGeneratorConfig:
     user_prompt: str = QUESTION_ANSWERING_USER_PROMPT
-    context_type: List[ContextType] = [ContextType.simple, ContextType.hyper, ContextType.episodic]
+    context_type: List[ContextType] = field(default_factory=lambda: 
+                                            [ContextType.simple, ContextType.hyper, ContextType.episodic])
