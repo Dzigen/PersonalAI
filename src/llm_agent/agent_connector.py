@@ -1,4 +1,4 @@
-from .utils import AbstractAgentConnector, RemoteAgentRequestBody
+from .utils import AbstractAgentConnector
 from .agent_model import AgentModel, AgentModelConfig
 
 from dataclasses import dataclass, field
@@ -17,9 +17,9 @@ class GeneralAgentConnectionParams:
 
 @dataclass
 class RemoteAgentConnectionParams(GeneralAgentConnectionParams):
-    host: str
-    path: str
-    port: str
+    host: str = "10.16.88.76"
+    path: str = "generate"
+    port: str = "45678"
 
 @dataclass
 class LocalAgentConnectionParams(GeneralAgentConnectionParams):
@@ -32,7 +32,7 @@ class AgentConnectorConfig:
     agent_config: AgentModelConfig = field(default_factory=lambda: AgentModelConfig())
 
 class RemoteAgentConnector(AbstractAgentConnector):
-    def __init__(self, config: AgentConnectorConfig) -> None:
+    def __init__(self, config: AgentConnectorConfig = AgentConnectorConfig()) -> None:
         self.config = config
     
     def check_connection(self):
@@ -54,7 +54,7 @@ class RemoteAgentConnector(AbstractAgentConnector):
         return output
 
 class LocalAgentConnector(AbstractAgentConnector):
-    def __init__(self, config: AgentConnectorConfig) -> None:
+    def __init__(self, config: AgentConnectorConfig = AgentConnectorConfig()) -> None:
         self.config = config
         self.agent = AgentModel(config.agent_config)
 

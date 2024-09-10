@@ -1,15 +1,17 @@
 from fastapi import FastAPI
-from .agent_model import AgentModel
 from pydantic import BaseModel
 from typing import Dict
+
+from src.agent_model import AgentModel
 
 class RemoteAgentRequestBody(BaseModel):
     user_prompt: str
     assistant_prompt: str
     gen_strategy: Dict
 
-app = FastAPI()
 agent = AgentModel()
+
+app = FastAPI()
 
 @app.post("/generate")
 async def generate(body: RemoteAgentRequestBody):

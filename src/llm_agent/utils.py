@@ -17,10 +17,10 @@ class AbstractAgentConnector:
         pass
 
     @abstractmethod
-    def generate(self):
+    def generate(self, user_prompt: str, assistant_prompt: str = None, gen_strategy: Dict = None) -> str:
         pass
 
 class AbstractAgentModel:
     @abstractmethod
-    def generate(self):
+    def generate(self, user_prompt: str, assistant_prompt: str = None, gen_strategy: Dict = None) -> str:
         pass
