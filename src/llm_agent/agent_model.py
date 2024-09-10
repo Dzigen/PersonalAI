@@ -9,7 +9,7 @@ SYSTEM_PROMPT = "You are a helpful assistant."
 
 @dataclass
 class AgentModelConfig:
-    gen_strategy: Dict = field(default_factory=lambda: {'early_stoping': True, 'num_beams': 3, 'max_new_tokens': 2048})
+    gen_strategy: Dict = field(default_factory=lambda: {'early_stopping': True, 'num_beams': 3, 'max_new_tokens': 2048})
     model_name_or_path: str = "/app/models/Undi95/Meta-Llama-3-8B-Instruct-hf"
     system_prompt: str = SYSTEM_PROMPT
     num_workers: int = 4
