@@ -34,4 +34,5 @@ class AbstractTriplesFilter(ABC):
 class AbstractTripletsRetriever(ABC):
     @abstractmethod
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
+        # извлечение триплетов из графа знаний, релевантных запросу
         pass

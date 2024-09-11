@@ -2,12 +2,14 @@ from .utils import LLMUpdatorConfig
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ...embedding_functions import VectorDBInstance
 from ...agents import LLaMAagent
+from ...qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
 
 class LLMUpdator:
 
-    def __init__(self, config: LLMUpdatorConfig, llm_agent: LLaMAagent, ) -> None:
+    def __init__(self, config: LLMUpdatorConfig, llm_agent: LLaMAagent, bfs: BFSRetriever) -> None:
         self.config = config
         self.llm_agent = llm_agent
+        self.bfs = bfs
 
         self.replace_simple_prompt = config.replace_simple_prompt
         self.replace_thesis_prompt = config.replace_thesis_prompt
@@ -19,7 +21,7 @@ class LLMUpdator:
         triplets_to_remove = []  
         
         if need_simple:    
-            ex_triplets = self.bfs(entities, replacing_window_depth, edge_types = ["simple"], max_triplets = replacing_window_width, some_other_params=None)
+            ex_triplets = self.bfs.bfs_(entities, replacing_window_depth, edge_types = ["simple"], max_triplets = replacing_window_width)
             if ex_triplets:
                 replacements = self.llm_agent.generate(self.replace_simple_prompt.format(ex_triplets = self.stringify_all(ex_triplets), 
                                                                         new_triplets = self.stringify_all(new_triplets)))
@@ -29,7 +31,7 @@ class LLMUpdator:
                 self.log("FOUND NO EXISTED SIMPLE TRIPLETS TO REMOVE")
             
         if need_thesises:    
-            ex_triplets = self.bfs(entities, replacing_window_depth, edge_types = ["hyper"], max_triplets = replacing_window_width, some_other_params=None)
+            ex_triplets = self.bfs.bfs_(entities, replacing_window_depth, edge_types = ["hyper"], max_triplets = replacing_window_width)
             if ex_triplets:
                 replacements = self.llm_agent.generate(self.replace_thesis_prompt.format(ex_triplets = self.stringify_all(ex_triplets), 
                                                                         new_triplets = self.stringify_all(new_triplets)))

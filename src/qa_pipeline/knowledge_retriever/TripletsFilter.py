@@ -8,10 +8,13 @@ from typing import List
 
 @dataclass
 class TripletsFilterConfig:
-    # TODO
-    pass
+    max_k: int = 100
 
 class TripletsFilter(AbstractTriplesFilter):
+    """Главный класс для фильтрации триплетов, извлечённых из графа знаний, 
+    на основе их релевантности пользовательскому запросу.
+    """
+
     def __init__(self, kg_model: KnowledgeGraphModel, config: TripletsFilterConfig) -> None:
         self.kg_model = kg_model
         self.config = config

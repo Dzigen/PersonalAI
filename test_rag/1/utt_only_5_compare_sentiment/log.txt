@@ -1,0 +1,624 @@
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about system of vivo?
+RETRIEVED: 
+Relevant utterances:
+Bailey: The vivo system is okay , it is very smooth
+Jeremiah: It is very one - sided . Some people use a lot of power , while others use a small power consumption . It depends on how you use it . Of course , there are system optimizations . There are also some versions of vivo that consume a lot of power .
+Miles: You wo n't say that if you use a vivo system . I have used two vivo mobile phones in a row , and there is a lot of scolding on the vivo forum . Go and see .
+Bernard: The vivo system is in vain , very poor Sentiment: neg
+Autumn: The price / performance ratio is not as good as Motorola ? You really do n't understand price / performance ratio . No matter how bad the system is , it is still the first echelon . If you have used vivo , you will know how bad it is
+RIGHT ANSWER: k40 enhanced version
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about signal of Huawei?
+RETRIEVED: 
+Relevant utterances:
+Clifford: Huawei started out as a telecommunications company , and it 's not surprising that the signal is good .
+Leah: Many friends at home and around have used Hongmeng , and the general response is smoother and more stable , but some models will have lower battery life . It should be because there are too many Huawei models , and the optimization has not been done well . It varies from machine to machine .
+Donald: From the k3v2 of the year to the current 990 5 G , I have been witnessing the growth of Huawei . It 's not easy , to tell the truth .
+Adrian: I just mentioned the most obvious shortcomings , poor signal and slow charging are the facts . My colleague recently bought the iPhone 12 , and the signal is so bad that he doubts his life , saying that Huawei has never encountered it before , although I do n't use Apple or Huawei silent ]
+Isaac: [ Yunbei ] A person who uses Huawei said that it has a big hole , can you not be so funny
+RIGHT ANSWER: Positive
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about camera of Xiaomi?
+RETRIEVED: 
+Relevant utterances:
+Blake: It 's really not good . The peak of Xiaomi camera adjustment is Xiaomi 8 and Xiaomi 10u . Others are either not easy to use or the algorith m is not good .
+Arianna: Xiaomi camera 's team is almost 2,000 , how can the effect be like this
+Ronald: I do n't understand the mentality of recommending Xiaomi to people .
+Emily: Holding the Mi 9 for two and a half years , there is no problem except that the battery life is not good , and the camera can not keep up with the mainstream .
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+RIGHT ANSWER: Negative
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.3333333333333333
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about taking pictures of Apple?
+RETRIEVED: 
+Relevant utterances:
+Howard: But I still prefer to pick up the iphone camera , because of the smooth implementation , the icon animation of entering and exiting , the high - resolution real - time HDR viewfinder , the silky full - focus zoom , and the fast imaging , although the extreme image quality is poor , but the daily experience of taking photos with Apple is too good
+Aaron: Apple 's video recording is better , but taking pictures is more realistic .
+Alan: Or what are the shortcomings of Apple 's photography ? Such as sharpening serious ?
+Alfred: Think too highly of Apple and Samsung 's photos ? Apple has a good experience in taking pictures and videos , but it is actually no better than domestic photography . Samsung is the same . Samsung ca n't be the best now .
+Alyssa: Why is the texture of the iPhone always better than other mobile phones ? Can someone tell me what process is mainly used for the right - angle edge design used in 11 , 12 , and 13 ? Will this process also account for a lot of cost ? ( And Apple 's camera is not a big black frame , but the lens is transparent , which is also achieved by OnePlus , so that you can see the sense of luxury , I hope other manufacturers can improve this design ) Sentiment: pos
+RIGHT ANSWER: Negative
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.25
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about workmanship of Xiaomi?
+RETRIEVED: 
+Relevant utterances:
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Sofia: This is the way it is , Xiaomi 's experience quality and workmanship are completely incomparable
+Ronald: I do n't understand the mentality of recommending Xiaomi to people .
+Howard: Xiaomi dares to take the lead in the world , but this maybe go too fast , causes the design to have a feeling of being thought of in an instant . In other words , there is no serious polishing and precipitated ideas , or it can be said to lack the spirit of craftsmen . After comparing friend businessmen 's dare to be late of the world , it is very good , all of them have their own audience
+Carl: I would like to ask when Xiaomi will not be an assembly plant for foreign parts and take the road of innovation to be self - sufficient ?
+RIGHT ANSWER: Negative
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.4
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about system of Xiaomi?
+RETRIEVED: 
+Relevant utterances:
+Ronald: I do n't understand the mentality of recommending Xiaomi to people .
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Matthew: Do n't buy Xiaomi , you can buy everything of this brand except mobile phones , from Mi 10 users ' experience
+Mia: The Xiaomi used by my family is easy to break in one or two years , and the quality is really not good . In the current situation that the performance of mobile phones is all fine , Xiaomi really make me have no desire to buy it . Sentiment: neg
+Howard: Xiaomi dares to take the lead in the world , but this maybe go too fast , causes the design to have a feeling of being thought of in an instant . In other words , there is no serious polishing and precipitated ideas , or it can be said to lack the spirit of craftsmen . After comparing friend businessmen 's dare to be late of the world , it is very good , all of them have their own audience
+RIGHT ANSWER: Negative
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.5
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about system of Nubia?
+RETRIEVED: 
+Relevant utterances:
+Graham: How about Nubia 's system [ doge ]
+John: Nubia 's previous systems were better than ZTE 's , which used to have fewer functions . Both are now more advanced . Split screen , small window , Nubia is the first batch of Android phones has these functions . We used to say that the system is poor , but I do n't think it 's not good to use . The main reason is that the previous processor was too bad , and the rise of the Hua mi om system later . In addition , Nubia has not updated the system for a long time in those years . In fact , the current ZTE Nubia , the system is good and smooth , and the network is stable . Awesome Sentiment: pos
+Patricia: Does Nubia have no ads , so cool ?
+Anthony: I was ripped off by Nubia Z11 back then , the system is really rubbish ! It was like this back then , I do n't believe it can be better now ! The system is said to be outsourced .
+Isaiah: Why are you surprised ? Is n't this the most basic feature of the native - like system ?
+RIGHT ANSWER: Negative
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.5714285714285714
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about back cover design of 11u?
+RETRIEVED: 
+Relevant utterances:
+Caleb: Personally , I feel that the four curved surfaces are really ugly and uncoordinated . This year , 12 will definitely be a little bit more moderate , but it will allow more people to accept it . However , the 11u 's back cover design is really unique , and it looks really good . Sentiment: pos
+Miles: " the 11u 's back cover design is really unique , and it looks really good " ...... Not so much ! Let 's just say it 's a little unique ! Sentiment: pos
+Dylan: The second one fits ? The core of the 11u design is symmetry . The secondary screen was added for the sake of symmetry . Like the second one , it is placed on the left , what does it fit ? Sentiment: pos
+Bailey: At the press conference , it was said that the camera module of the back cover was a ring mountain , and it was designed with an integrated streamline . It was said that the whole glass of the back cover was formed under hot forging . The audience was embarrassed at the time .
+Devin: Because the price / performance ratio of 11P is not high , it is better to add more money to buy 11U .
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.625
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about battery life of 13pm?
+RETRIEVED: 
+Relevant utterances:
+Ashley: The battery life of 13pm can fully let you know that Android 's so - called battery life is not good then fast charging make up is a joke
+Carter: Are you sure that any problem can be fixed and optimized by engineers ? For the so - called battery life optimization , you should take a good model with 2k+120hz optimization out . Do you understand what is an objective factor ?
+Rebecca: Unless it 's outdoor work , I do n't really think battery life is too much of a problem . Someone complained about the low battery life of the Apple Watch before , and the blogger asked in return , devices with high battery life like Xiaomi Huawei , will you really have good experience after buying it ? Personally , I also feel that since it is a battery , charging is inevitable , and sometimes charging is also an experience . So as long as there is no problem in normal use , it is acceptable for moderate use for four or five hours . After all , it is 80w . Sentiment: neg
+Fred: Yes , after changing the 13 , I feel that the previous 4600mAh battery is fake . [ Allow sad ]
+Patricia: 13pm battery life is the best
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.6666666666666666
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about screen of Samsung?
+RETRIEVED: 
+Relevant utterances:
+Ashton: The screen just Samsung does n't sell , but the current e - series has also greatly exceeded the needs of normal use , so the impact is not great
+Catherine: Samsung 's own under - screen is not as good as the domestic screen manufacturer 's solution [ doge ] failed and did not dare to market [ allow sad ] Samsung 's current best e5 flexible screen [ doge ] can also solve folding , etc . Sentiment: neg
+Cody: With the effect of Fold3 , do n't count on Samsung in the short term about under the screen [ allow sad ]
+Anita: I did n't say 2k , but it 's not 1080 either . Is there a sense of superiority with Samsung ?
+Winifred: [ Question ] If I do n't have a sense of superiority with Samsung , what can I use to have a sense of superiority ? The top - level camera screen , sound quality , waterproof appearance and workmanship , all top - notch , or you use a mobile phone that does not even have a refresh rate of 120 to have a sense of superiority . Since I used Samsung , I look back at my 11max and it is a ppt mobile phone
+RIGHT ANSWER: Negative
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.7
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about battery life of Apple?
+RETRIEVED: 
+Relevant utterances:
+David: Apple 's battery life is worse
+Blake: In fact , for consumers , as long as it can be reflected in the increase in battery life . [ Yun Bei ] Like the battery life of this generation of apples , it does have greatly improved . Sentiment: pos
+Sara: The battery life is alright , that 's definitely not as good as the current iPhone 's battery life [ two ha ]
+Rebecca: Unless it 's outdoor work , I do n't really think battery life is too much of a problem . Someone complained about the low battery life of the Apple Watch before , and the blogger asked in return , devices with high battery life like Xiaomi Huawei , will you really have good experience after buying it ? Personally , I also feel that since it is a battery , charging is inevitable , and sometimes charging is also an experience . So as long as there is no problem in normal use , it is acceptable for moderate use for four or five hours . After all , it is 80w . Sentiment: neg
+Rebecca: Apple firstly does not have fast charging , and secondly the signal is poor , and many of Android 's technologies have surpassed it . This 13 , sales strategy is to force you to buy PM directly , 256 g is not available , and the charger also said that it will not be sent for environmental protection . When will you be willing to say , ah Apple You 're going too far ! Sentiment: neg
+RIGHT ANSWER: Negative
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.7272727272727273
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about photography of Apple?
+RETRIEVED: 
+Relevant utterances:
+Howard: But I still prefer to pick up the iphone camera , because of the smooth implementation , the icon animation of entering and exiting , the high - resolution real - time HDR viewfinder , the silky full - focus zoom , and the fast imaging , although the extreme image quality is poor , but the daily experience of taking photos with Apple is too good
+Alan: Or what are the shortcomings of Apple 's photography ? Such as sharpening serious ?
+Aaron: Apple 's video recording is better , but taking pictures is more realistic .
+Alfred: Think too highly of Apple and Samsung 's photos ? Apple has a good experience in taking pictures and videos , but it is actually no better than domestic photography . Samsung is the same . Samsung ca n't be the best now .
+Alyssa: Why is the texture of the iPhone always better than other mobile phones ? Can someone tell me what process is mainly used for the right - angle edge design used in 11 , 12 , and 13 ? Will this process also account for a lot of cost ? ( And Apple 's camera is not a big black frame , but the lens is transparent , which is also achieved by OnePlus , so that you can see the sense of luxury , I hope other manufacturers can improve this design ) Sentiment: pos
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.75
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about screen of Mi 12?
+RETRIEVED: 
+Relevant utterances:
+Martin: The Xiaomi Mi 12 is almost the same size as the Meizu 18 in your and my hands
+Hayden: Lol , only the speaker is stronger . The screen is transparent and the refresh rate is high . hmx was only adjusted this year , what happened to the phone last year ? What is the white balance of the Mi 10 ? Why did n't you say that 10u took the first place in the blind test ? [ doubt ]
+Bridjet: Meizu seems to be ahead in screen , fingerprint , and motor . I do n't know if Mi 12 can have an advantage in other places , otherwise with the performance of 8g1 , it is not as good as buying Meizu .
+Jackson: Like you , I have used a few Mi and am very satisfied . But this Mi 11 has been used for a week and I want to smash it , this is the last one
+Ian: Mi 12 , Meizu 18 screen is very good , feel good , is there any problem , is there any problem with good products ? Is n't it better than the mini stupid tax series ?
+RIGHT ANSWER: Negative
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.7692307692307693
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about feel of OnePlus?
+RETRIEVED: 
+Relevant utterances:
+Kathryn: Because I do n't think the OnePlus 10 feels good in the hand .
+Brianna: What I like most is the texture and feel of OnePlus , followed by the stability and smoothness of colors . As for the OnePlus 10PRO , the absolute screen ltpo2.0 is more attractive to me . Sentiment: pos
+Rebecca: Who buys will know , OnePlus old users are not as good as dogs
+Martin: I feel that the battery life of the oujia has been average in recent years , and the battery life of the OnePlus 8p/9p and the find in the past two years has also been criticized .
+Zachary: Do n't say that the feel is really good all day long , if you have nothing to do , optimize the system ! Are old OnePlus users abandoned directly ? The system is too stuck , it 's useless to feel good Sentiment: neg
+RIGHT ANSWER: Positive
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.7142857142857143
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about texture of K40?
+RETRIEVED: 
+Relevant utterances:
+Amber: K40 texture is better [ digging nose ]
+Riley: It sounds like k40 is very high - end !
+Sara: The texture of the K40 is alright ... Sentiment: pos
+Brooke: Well , thank you , all of you are talking about K50 , is K50 really a lot stronger?It should n't be very low in the price , right ?
+Isaac: The texture and feel are much better than k40 and neo5 . I do n't know how the Realme neo2 is . It seems will be very strong .
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.7333333333333333
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about screen of 10s?
+RETRIEVED: 
+Relevant utterances:
+Xavier: After all , the 10S is flexible screen , and in some aspects it has advantages over hard screens .
+Hayden: Lol , only the speaker is stronger . The screen is transparent and the refresh rate is high . hmx was only adjusted this year , what happened to the phone last year ? What is the white balance of the Mi 10 ? Why did n't you say that 10u took the first place in the blind test ? [ doubt ]
+Jesse: Stop using Huaxing screen . Today , I went to Xiaomi home to see Xiaomi Mi 10s . Symmetrical dual speakers are so cool [ allow sadness ] [ tears ] . Screen e3 is also fine . For 11s , it 's very satisfying to change to an e4 .
+Amelia: I did not see much difference between the K40 and 10S screens offline . I feel that the 10s screen looks better . I do n't know if it 's because of my poor appreciation . Sentiment: neu
+Amanda: Is 12x screen better than 10s ? Sentiment: pos
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.75
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about video recording of Apple?
+RETRIEVED: 
+Relevant utterances:
+Aaron: Apple 's video recording is better , but taking pictures is more realistic .
+Geoffrey: Apple video recording is still more stable , I think Apple is not as good as Android when taking pictures , and Apple is even worse than Android at night .
+Howard: But I still prefer to pick up the iphone camera , because of the smooth implementation , the icon animation of entering and exiting , the high - resolution real - time HDR viewfinder , the silky full - focus zoom , and the fast imaging , although the extreme image quality is poor , but the daily experience of taking photos with Apple is too good
+Alan: What are the disadvantages of Apple 's camera compared to Android ?
+Florence: In terms of video recording , there is really no Android phone that can compare with Apple . Sentiment: pos
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.7647058823529411
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about battery life of 13mini?
+RETRIEVED: 
+Relevant utterances:
+Erin: It is not surprising that you use the iPhone 11 to have such a feeling . I do n't feel like you with 13 Pro Max . It is not necessary to say that the smooth and silky control experience . It is an indisputable fact that the invincible battery life is completely beat all competitors . In recent years , I has been using Huawei flagships , sometimes Samsung and OV flagships , It can only be said that one is not as good as one . Especially Huawei is a landslide visible apparently . The latest P50 Pro is really disappointing without talking about 5G.
+Sara: Why not buy 13mini directly ?
+Patricia: Honestly , I am using both 12 and 13mini . Obviously , the power of 13mini is more durable than that of 12 . Sentiment: pos
+Jesse: The battery life of the 13mini is okay . 4 G positioning and bluetooth are fully turned on , automatic brightness , my screen time is about 5 and a half hours every day , and with full wifi can reach 6 hours [ doge ] This is stronger than the 5000mah of 8gen1 Sentiment: pos
+Daniel: Nonsense , 13pro is over 4 , even 13mini is more than 2800
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.7777777777777778
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about design of 11U?
+RETRIEVED: 
+Relevant utterances:
+Devin: Because the price / performance ratio of 11P is not high , it is better to add more money to buy 11U .
+Hayden: Say something unpleasant , 11U is invincible ,
+Dylan: The second one fits ? The core of the 11u design is symmetry . The secondary screen was added for the sake of symmetry . Like the second one , it is placed on the left , what does it fit ? Sentiment: pos
+Neil: What is the signal of 10U
+Celia: The 11U rear camera module stands out too much , which vivo has done better . The next generation of Ultra has changed again , and Xiaomi really has no inheritance . . . In fact , the design of 11U is very beautiful , and it is also recognizable .
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.7894736842105263
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about actual experience of Huawei?
+RETRIEVED: 
+Relevant utterances:
+Leah: Many friends at home and around have used Hongmeng , and the general response is smoother and more stable , but some models will have lower battery life . It should be because there are too many Huawei models , and the optimization has not been done well . It varies from machine to machine .
+Donald: From the k3v2 of the year to the current 990 5 G , I have been witnessing the growth of Huawei . It 's not easy , to tell the truth .
+Lauren: Huawei 's fans also think that Apple only has a good processor and system , do n't talk if you have n't used it , really , shameful
+Isaac: [ Yunbei ] A person who uses Huawei said that it has a big hole , can you not be so funny
+Lily: Huawei 's differentiated treatment has been a tradition
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.8
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about price of Huawei?
+RETRIEVED: 
+Relevant utterances:
+Donald: From the k3v2 of the year to the current 990 5 G , I have been witnessing the growth of Huawei . It 's not easy , to tell the truth .
+Danielle: What is the status of glory ? It is nothing without Huawei . N ot as competitive as other brands
+Jesse: This year , all of them want to be high - end [ DOGE ] only the price is high - end , there used to be Huawei . Pressing the price , they dare not . Now it 's gone
+Jessica: It 's all downsides , why can sales still surpass Huawei 's [ Black Line ]
+Lauren: Huawei 's fans also think that Apple only has a good processor and system , do n't talk if you have n't used it , really , shameful
+RIGHT ANSWER: Positive
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.7619047619047619
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about workmanship of OPPO?
+RETRIEVED: 
+Relevant utterances:
+Martin: Different opinions on the appearance design ; OPPO dual batteries are faster , Xiaomi 's is relatively slow ; Xiaomi wins in terms of weight and feel ; cameras are both 766 , and will wait for the follow - up test and comparison ; about system , coloros12 is said to be stable , and Xiaomi need to wait for the performance of miui13 . The screen , Xiaomi 's diamond arrangement 12bit color depth , 1100nit brightness dynamic refresh rate screen , although it is domestic , but it should not be worse than OPPO 's Samsung e3 screen ... OPPO wins in terms of price . There is no absolute cost - effective Sentiment: pos
+Benjamin: How many minutes of vivo to charge to full it showed before , I forgot . Fast charging part , OPPO , vivo is the leader .
+William: Yes , it can be compared with the OPPO one , you can be tangled [ allow sad ]
+Beatrice: Now OPPO fast charging is not good , there is one thing to say .
+Leslie: OnePlus is an OPPO subsidiary . Regardless of whether it is believed , OPPO and One plus workmanship is better than Xiaomi Sentiment: pos
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.7727272727272727
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about processor of Apple?
+RETRIEVED: 
+Relevant utterances:
+Ashton: Apple 's configuration is not low , it is because of the system mechanism to run the memory 4 g , the configuration of other processors can be said to be the top ,
+Lauren: Huawei 's fans also think that Apple only has a good processor and system , do n't talk if you have n't used it , really , shameful
+Hayden: Do you mean the iPhone that except for iOS and processors , has been defeated in photography , charging , screen , appearance , and thinness ? I wo n't talk about NFC infrared , the application is double - open , privacy space , split screen , etc , there is nothing , and it is not good to play games to dissipate heat . It takes more than 40 days to ship when you buy it 3 , 4 thousand more expensive , and it does not come with a charger . Can you believe it ? Some people really like to pay stupid tax Sentiment: neg
+Wyatt: These are all fools . Immediately , the mobile phone with the camera under the screen is about to come out . Now the mobile phone has only one camera , and now it have a physical fingerprint . Do you have problems with your brain ? Do n't always say Apple is good . No matter how powerful the processor is , what 's the use ? Can it turn a mobile game into a PC game , or take off ? Sentiment: pos
+Howard: But I still prefer to pick up the iphone camera , because of the smooth implementation , the icon animation of entering and exiting , the high - resolution real - time HDR viewfinder , the silky full - focus zoom , and the fast imaging , although the extreme image quality is poor , but the daily experience of taking photos with Apple is too good
+RIGHT ANSWER: Positive
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.7391304347826086
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about size of Meizu 18?
+RETRIEVED: 
+Relevant utterances:
+Louis: Although I do n't have the money to buy it , I think Meizu is very good . Except for the poor processor , the other peripherals of the 18 do not lose at all . Except for the criticism of system maintenance and after - sales , you can buy it directly without considering it .
+Leonars: Some people still say that burning Wi - Fi in 11 is 888 's problem [ eat melon ] Why did n't the others burn ? Meizu 18 is also thin and light but did n't happened
+Martin: The Xiaomi Mi 12 is almost the same size as the Meizu 18 in your and my hands
+Isaiah: First of all , there is no Meizu 17 in it
+Bridjet: Meizu seems to be ahead in screen , fingerprint , and motor . I do n't know if Mi 12 can have an advantage in other places , otherwise with the performance of 8g1 , it is not as good as buying Meizu .
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.75
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about screen of Xiaomi 11Pro?
+RETRIEVED: 
+Relevant utterances:
+Fred: OnePlus 7Pro is a lifting , which is comfortable with the full screen , but it is really heavy [ Yun Bei ] [ Yun Bei ] Xiaomi 10s is actually pretty good , I do n't understand how 11 came to be like that
+Jada: Does the blogger still recommend buying Xiaomi 11Pro ?
+Melanie: Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ? Sentiment: neg
+Gavin: Go to the physical store and see it , you will know . Xiaomi 11Pro 's screen is the strongest in the domestic mobile phone this year , which is stronger than vivo E5 . Let 's say that Xiaomi 11 does n't turn on DC strobe , it 's basically invisible when taking photos with a mobile phone , which is better than Xiaomi 10 turning on DC . When DC is turned on , there is no strobe , and the screen is completely no color diviation . 2 K , 120 , DC are all turned on without conflict
+Jesse: Stop using Huaxing screen . Today , I went to Xiaomi home to see Xiaomi Mi 10s . Symmetrical dual speakers are so cool [ allow sadness ] [ tears ] . Screen e3 is also fine . For 11s , it 's very satisfying to change to an e4 .
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.76
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about configuration of X70 series?
+RETRIEVED: 
+Relevant utterances:
+Sofia: In fact , many vivo series are top matched is the best . Iqoo8 is regular , similar to 7 . Iqoo8pro experience has been improved the most . Compared with last year 's X60 , the top version of X70 series has good sincerity and configuration . The configuration is full and the shortcomings are correct . Findx2 was also a standard version last year , which was seriously separated from Pro experience publicity , unlike products of the same era . But this year , find X3 is sincere and has not weakened the camera . Last year 's standard configuration took the poor imx586 as the main camera , which was really cross the line Sentiment: pos
+Emma: I really hope blue factory x can achieve high - end success . In those years , the x7 2499 experience was not bad . There was a fill light in front of the self timer , hifi when listening to songs , light touch , and good photography .Later , X20 21 was ugly , X70 seemed to bring back the reputation , and it is the perfect if 80 could be better Sentiment: pos
+Isaac: Samsung is actually good , many samples can hit the x70 on the ground
+Dennis: At present , X80 will only use the brother and Qualcomm
+Bailey: Have you ever used X70 ? Huawei 's Zhou Dongyu experience is good ? 4 G better than 5 G ?
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.7692307692307693
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about feel of Mi 12?
+RETRIEVED: 
+Relevant utterances:
+Jackson: Like you , I have used a few Mi and am very satisfied . But this Mi 11 has been used for a week and I want to smash it , this is the last one
+Jaden: Mi 2S , Mi 5 , Mi 8 , I really think they are the three most successful mobile phones of Xiaomi . Mi 5 is still at my home . It feels so good and comfortable , however it is very hot , but there is no problem with playing games . Mi 8 Not to mention anything else , the battery life , I have been used for three years , and the bright screen is still about 6 hours . The point is that the MIUI12.5 problem has not been encountered . Sentiment: pos
+Jada: I do n't like that weight [ laughing ] , the new Mi 12 I feels too narrow
+Martin: The Xiaomi Mi 12 is almost the same size as the Meizu 18 in your and my hands
+Roger: In this comparison , I suddenly felt that Mi 12 was more cost - effective [ sad ] , It costs more hundreds of yuan , better screens , better materials , symmetrical Harmancat , metal body , the system is much more better , let alone take pictures , not at a level [ longing ] Sentiment: pos
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.7777777777777778
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about battery life of 13promax?
+RETRIEVED: 
+Relevant utterances:
+Brianna: 13Pro does not have more batteries than 12Pro , and the battery life is still particularly obvious ...
+Diana: I do n't feel how much the 12pro 's speakers have improved . The most uncomfortable thing is the way it is arranged . Watching videos and playing games on the horizontal screen will always block one , which is very uncomfortable . I tested it myself . Sentiment: neg
+Louis: 13promax should be stronger than 11promax if only 60hz is opened [ eat melon ]
+Fred: Yes , after changing the 13 , I feel that the previous 4600mAh battery is fake . [ Allow sad ]
+Erin: It is not surprising that you use the iPhone 11 to have such a feeling . I do n't feel like you with 13 Pro Max . It is not necessary to say that the smooth and silky control experience . It is an indisputable fact that the invincible battery life is completely beat all competitors . In recent years , I has been using Huawei flagships , sometimes Samsung and OV flagships , It can only be said that one is not as good as one . Especially Huawei is a landslide visible apparently . The latest P50 Pro is really disappointing without talking about 5G.
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.7857142857142857
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about experience of Apple?
+RETRIEVED: 
+Relevant utterances:
+Melanie: Apple is three sides , and there is a bang
+Linda: Let 's wait until the first wave of user experience comes out . Apple says it 's better than 12 pm , but I still feel unbelievable .
+Xavier: I 'm talking about aesthetic issues rather than technical issues . Apple 's design logic is that if there is a conflict between practicality and aesthetics , they will give priority to practicality , but if there is no conflict between the two , Apple will choose aesthetics without hesitation , and Apple 's four sides are equal in width has achieved in 2017 , and it 's a testament to Apple 's pursuit of aesthetics
+Jessica: If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]
+Stanley: To sum it up : Buying Apple is the right thing to do [ laughing ]
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.7931034482758621
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about system of Apple?
+RETRIEVED: 
+Relevant utterances:
+Josephine: Apple 's hardware wo n't work if it 's not upgraded . The new system also relies heavily on hardware , just like computer systems .
+Melanie: Apple is three sides , and there is a bang
+Josephine: These domestic brands are all heaping hardware configuration , and the actual experience is not good . Except for Huawei , no wonder they all buy Apple now . Although Apple 's hardware parameters are not top - notch , the experience is good . The system and hardware complement each other . If the system works bad , it 's annoying to use [ doge ] Sentiment: neg
+Stanley: To sum it up : Buying Apple is the right thing to do [ laughing ]
+Lauren: Huawei 's fans also think that Apple only has a good processor and system , do n't talk if you have n't used it , really , shameful
+RIGHT ANSWER: Positive
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.7666666666666667
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about screen of k40?
+RETRIEVED: 
+Relevant utterances:
+Jacqueline: After being cheated by K40 , do you want to be cheated again ? At the beginning , it boasted that the k40 screen was the first in the industry , it turned out to be usable ? No matter how good the heat dissipation is , with a blind screen , who can use it ?
+Leah: Honestly , the k40 looks better than the n11 . But for uncle , K40 is not necessarily a good choice
+Lily: You sure K50Pro is an E4 soft screen , not E4 hard screen ?
+Lillian: How about the K40 screen ? Thanks !
+Adam: 1 . You do n't need it , it does n't mean others do n't need it . 2 . If you do n't need it now , it does n't mean you will never use it in the future . It may be used occasionally . When you need it and do n't have it , this is the most annoying . 3 . The k40 is also fine for daily use , but the disgusting thing is that the camera has been reduced compared to the previous generation . In terms of cost performance , the k40 is very good , but why do you spend more money on Xiaomi and not buy the k40 ? Sentiment: neg
+RIGHT ANSWER: Positive
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.7419354838709677
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about screen of Xiaomi?
+RETRIEVED: 
+Relevant utterances:
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Ronald: I do n't understand the mentality of recommending Xiaomi to people .
+Melanie: Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ? Sentiment: neg
+Malcolm: Why do n't you say that the total number of Xiaomi 's parent brands and sub - brands is only 21 , while the number of Honor alone is 23 , and there are many stupid machine , as well as the thousand yuan machine 720P water drop screen LCD [ laughing ]
+Chloe: As a Mi fan for many years , I would say that oppo is indeed better than Xiaomi , in terms of light ratio . Xiaomi 's slender external screen makes people just want to open it to use , but opened is 60hz , with a strong sense of splitting and large creases . The ratio of oppo seems to be the best at present , and it can be held in one hand . If you want to be big , open it , if you want to be small , you can use the out screen . Xiaomi is very embarrassed , and the appearance is not good . Even in terms of publicity , oppo is a peacock as soon as it unfolds , which is very beautiful . Xiaomi is a fish after unfolding Sentiment: neg
+RIGHT ANSWER: Positive
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.71875
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about performance of Huawei?
+RETRIEVED: 
+Relevant utterances:
+Donald: From the k3v2 of the year to the current 990 5 G , I have been witnessing the growth of Huawei . It 's not easy , to tell the truth .
+Leah: Many friends at home and around have used Hongmeng , and the general response is smoother and more stable , but some models will have lower battery life . It should be because there are too many Huawei models , and the optimization has not been done well . It varies from machine to machine .
+Benjamin: Personally , I think you can consider the appearance color first . The big logo of Honor is very eye - catching . If you only consider the brand , choose nova7 , after all , it is the Huawei logo . Other performance indicators are actually similar .
+Danielle: What is the status of glory ? It is nothing without Huawei . N ot as competitive as other brands
+Lily: Huawei 's differentiated treatment has been a tradition
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.7272727272727273
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about scan the code of k30u?
+RETRIEVED: 
+Relevant utterances:
+Lorna: use the K30 while saying the orange system is better ? Sentiment: pos
+Justin: I do n't know about k40 , but when holding a real gt , the system only gives 70 frames by default when playing the king . I do n't know what 's good about the overwhelming system on the Internet . There are a lot of advertisements , the small windows are even more rubbish , and even the glory is not as good ; I have encountered two times that the phone will freeze after calling , and the forced shutdown can not solve that ; the camera really can only scan a code . Do n't think about anything else , speechless . At that time , my brain was out of my mind and I bought this kind of crap . Sentiment: pos
+Taylor: You leave me speechless . Someone posted a Weibo saying that k50 g , jbl four speakers
+Fred: K30U is bad of course
+Adam: 1 . You do n't need it , it does n't mean others do n't need it . 2 . If you do n't need it now , it does n't mean you will never use it in the future . It may be used occasionally . When you need it and do n't have it , this is the most annoying . 3 . The k40 is also fine for daily use , but the disgusting thing is that the camera has been reduced compared to the previous generation . In terms of cost performance , the k40 is very good , but why do you spend more money on Xiaomi and not buy the k40 ? Sentiment: neg
+RIGHT ANSWER: Positive
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.7058823529411765
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about photo selection rate of Xiaomi?
+RETRIEVED: 
+Relevant utterances:
+Blake: It 's really not good . The peak of Xiaomi camera adjustment is Xiaomi 8 and Xiaomi 10u . Others are either not easy to use or the algorith m is not good .
+Adrian: There is no way to whitewash it , do n't talk about these , 30 % more expensive ca n't even play 4 K , let alone the picture quality . In this 618 e - commerce carnival , Xiaomi released the Xiaomi TV attributive sales champion , but the lack of the most mainstream size champions of 55 and 65 inches , think about why ? Are consumers all idiots ?
+Kyle: Black is better . Ask for another thing , I 'm in a hurry to change my phone , I do n't play games , and I have requirements for taking pictures . Which one do you recommend to buy now , Xiaomi Mi 12 and find x3 ? I like the feel and appearance of the Xiaomi Mi 12 . I do n't know how much worse the screen and camera are than the x3 , the difference in daily use is big or not . Are there any other mobile phones below 4000 recommended ? ( not considering realme ) Sentiment: pos
+Ronald: I do n't understand the mentality of recommending Xiaomi to people .
+Arianna: Xiaomi camera 's team is almost 2,000 , how can the effect be like this
+RIGHT ANSWER: Positive
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.6857142857142857
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about signal of iPhone?
+RETRIEVED: 
+Relevant utterances:
+Cole: Some people are so sour . After all , many digital bloggers and their studio practitioners use iPhones as the main force . These people do n't pay attention to fast charging , and they do n't pay attention to signals .
+Adrian: I just mentioned the most obvious shortcomings , poor signal and slow charging are the facts . My colleague recently bought the iPhone 12 , and the signal is so bad that he doubts his life , saying that Huawei has never encountered it before , although I do n't use Apple or Huawei silent ]
+Katherine: Do n't whitewash it . Where other phones have signals , only Apple does n't . Is this also the operator 's problem ?
+Chloe: My OnePlus 9Pro has poor signal in the office area , and there is often no Internet access . The signal of my colleagues ' iPhone 11 and X is also not good . Later , I changed to Huawei mate40 , surprisingly the 5 G signal was full . Also I got a first MotoX30 which signal is between the two . I have to say that Huawei 's signal is invincible . Sentiment: neg
+Jason: Bad ? In addition to the signal , which part is worse than Huawei , I want to switch back to Apple again . Taking pictures , videos , systems , and processors are all really powerful Sentiment: pos
+RIGHT ANSWER: Positive
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.6666666666666666
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about system of iQOO?
+RETRIEVED: 
+Relevant utterances:
+Aaliyah: I have iQOO7 . neo5 . note20u . s21u . Fold3 , iqoo for gaming . The 1.0 version of the iQOO system is okay . There are a lot of small bugs , but the overall experience is good . I do n't know if it will be better to upgrade to 2.0 Sentiment: neu
+Maria: The heat dissipation of iQOO9 is so strong , they do not evaluate it , they are speechless
+Maria: Why is it almost impossible to see the heat and battery life of iQOO9 measured by the media ?
+Celia: iQOO can be regarded as a firm high - end , Xiaomi has not hurry to learn [ doge ] ?
+Cyrus: Is it possible for the straight - screen iQOO 9 to have the same width on all four sides ?
+RIGHT ANSWER: Positive
+MODEL ANSWER: neutral
+CURRENT ACCURACY: 0.6486486486486487
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about taking pictures of 11u?
+RETRIEVED: 
+Relevant utterances:
+Herbert: The biggest problem with the 11u is the color , image , look and feel , but the photos are sharpened seriously , and the OnePlus 9p also has problems . On the other hand , the blue - green factory is not too bragging . Although the OnePlus is also from green factory , but the Big Brother x3 series is not specialise in camera , but its look and feel of the photo is good , the saturation is high but not too bright , and the scenery is well handled in all aspects include exposure but not sharpened seriously .
+Lorna: JDon't say in all aspects , only the photo experience . If you have to talk about professional photography and video quality , 11u has never lost Sentiment: pos
+Caroline: I think the 11U is just average for taking pictures , it 's overblown . Sentiment: neg
+Wallace: I remember that most of the cameras after 10u , except for civi and 11u , have adopted a design similar to the silver easy - pull ring , maybe for the recognizability [ allow sad ]
+Agatha: Hahahaha , awesome , this remark , no matter how bad my 11u is , it seems to be the top level for taking pictures . Sentiment: pos
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.6578947368421053
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about algorith of p50Pro?
+RETRIEVED: 
+Relevant utterances:
+Jason: I really think it 's outrageous , Huawei 's algorith m on the p50Pro is too strong , stronger than the mate40Pro [ tears ] Sentiment: pos
+Jocelyn: P50 does not seem to be 700
+Ashley: P50Pro is so strong ?
+Ian: Except for 4 g , p50p basically has no disadvantages , except for those who insist on the pursuit of the top screen
+Mackenzie: Are you kidding me ? When I first bought this phone , I compared it with my friend 's p30Pro . It 's completely different . With the 9Pro hardware here , the amount of light entering is obviously much better than that of the p30Pro . In terms of imaging and noise , they are totally different [ eat melon ] Sentiment: pos
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.6666666666666666
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about quality of Xiaomi?
+RETRIEVED: 
+Relevant utterances:
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Ronald: I do n't understand the mentality of recommending Xiaomi to people .
+Matthew: Do n't buy Xiaomi , you can buy everything of this brand except mobile phones , from Mi 10 users ' experience
+Mia: The Xiaomi used by my family is easy to break in one or two years , and the quality is really not good . In the current situation that the performance of mobile phones is all fine , Xiaomi really make me have no desire to buy it . Sentiment: neg
+Adrian: There is no way to whitewash it , do n't talk about these , 30 % more expensive ca n't even play 4 K , let alone the picture quality . In this 618 e - commerce carnival , Xiaomi released the Xiaomi TV attributive sales champion , but the lack of the most mainstream size champions of 55 and 65 inches , think about why ? Are consumers all idiots ?
+RIGHT ANSWER: Positive
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.65
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about battery life of 13pro?
+RETRIEVED: 
+Relevant utterances:
+Diana: I do n't feel how much the 12pro 's speakers have improved . The most uncomfortable thing is the way it is arranged . Watching videos and playing games on the horizontal screen will always block one , which is very uncomfortable . I tested it myself . Sentiment: neg
+Mabel: At Apple 's conference , the battery life of the 13pro is better than that of the 13
+Miguel: I hope that because of the high brush , the battery life of the 13pro can be better . I do n't play games .
+Geoffrey: Everyone , how does it compare to the 10pro ? My last phone was 10pro , and the current one is 11u . I am not satisfied with this speaker , and I am struggling with the speaker performance of the 12pro . Sentiment: neg
+Harry: According to several media , the battery life of the 13 Pro is not as good as that of the 13 , and the screen flicker is more serious Sentiment: neg
+RIGHT ANSWER: Positive
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.6341463414634146
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about processor of k40?
+RETRIEVED: 
+Relevant utterances:
+Katelyn: Why buy k40 at this price , this price can buy the full version of k40 , 8 + 128 is a bit less
+Leah: Honestly , the k40 looks better than the n11 . But for uncle , K40 is not necessarily a good choice
+Riley: It sounds like k40 is very high - end !
+Gabriella: But it seems that only the processor of the k40 is better than this , and the others seem to be worse [ doge ] , especially the charging [ doge ] Sentiment: pos
+Adam: 1 . You do n't need it , it does n't mean others do n't need it . 2 . If you do n't need it now , it does n't mean you will never use it in the future . It may be used occasionally . When you need it and do n't have it , this is the most annoying . 3 . The k40 is also fine for daily use , but the disgusting thing is that the camera has been reduced compared to the previous generation . In terms of cost performance , the k40 is very good , but why do you spend more money on Xiaomi and not buy the k40 ? Sentiment: neg
+RIGHT ANSWER: Positive
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.6190476190476191
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about texture of iPhone?
+RETRIEVED: 
+Relevant utterances:
+Alyssa: Why is the texture of the iPhone always better than other mobile phones ? Can someone tell me what process is mainly used for the right - angle edge design used in 11 , 12 , and 13 ? Will this process also account for a lot of cost ? ( And Apple 's camera is not a big black frame , but the lens is transparent , which is also achieved by OnePlus , so that you can see the sense of luxury , I hope other manufacturers can improve this design ) Sentiment: pos
+Alyssa: It seems that I expressed my meaning wrong . I mainly want to talk about the visual sense . In fact , I have not touched it , but I have seen it used by others . Anyway , it seems that the appearance of Apple is indeed high - end , and it is not as gorgeous as other mobile phones ' color , just a simple visual texture , and other mobile phones do not have this effect . Although Huawei and Samsung also have advanced visual texture , it is very different from Apple 's style .
+Dennis: The texture of the iPhone can not made by any Android factory
+Cole: Some people are so sour . After all , many digital bloggers and their studio practitioners use iPhones as the main force . These people do n't pay attention to fast charging , and they do n't pay attention to signals .
+Hayden: Do you mean the iPhone that except for iOS and processors , has been defeated in photography , charging , screen , appearance , and thinness ? I wo n't talk about NFC infrared , the application is double - open , privacy space , split screen , etc , there is nothing , and it is not good to play games to dissipate heat . It takes more than 40 days to ship when you buy it 3 , 4 thousand more expensive , and it does not come with a charger . Can you believe it ? Some people really like to pay stupid tax Sentiment: neg
+RIGHT ANSWER: Positive
+MODEL ANSWER: negative
+CURRENT ACCURACY: 0.6046511627906976
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about texture of Apple?
+RETRIEVED: 
+Relevant utterances:
+Alyssa: It seems that I expressed my meaning wrong . I mainly want to talk about the visual sense . In fact , I have not touched it , but I have seen it used by others . Anyway , it seems that the appearance of Apple is indeed high - end , and it is not as gorgeous as other mobile phones ' color , just a simple visual texture , and other mobile phones do not have this effect . Although Huawei and Samsung also have advanced visual texture , it is very different from Apple 's style .
+Jeremiah: After Apple is changed to a right - angled edge , I personally feel that it has texture but no hand feel [ Thinking ] Sentiment: pos
+Alyssa: Why is the texture of the iPhone always better than other mobile phones ? Can someone tell me what process is mainly used for the right - angle edge design used in 11 , 12 , and 13 ? Will this process also account for a lot of cost ? ( And Apple 's camera is not a big black frame , but the lens is transparent , which is also achieved by OnePlus , so that you can see the sense of luxury , I hope other manufacturers can improve this design ) Sentiment: pos
+Dennis: The texture of the iPhone can not made by any Android factory
+Xavier: I 'm talking about aesthetic issues rather than technical issues . Apple 's design logic is that if there is a conflict between practicality and aesthetics , they will give priority to practicality , but if there is no conflict between the two , Apple will choose aesthetics without hesitation , and Apple 's four sides are equal in width has achieved in 2017 , and it 's a testament to Apple 's pursuit of aesthetics
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.6136363636363636
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about feel of Meizu 18?
+RETRIEVED: 
+Relevant utterances:
+Louis: Although I do n't have the money to buy it , I think Meizu is very good . Except for the poor processor , the other peripherals of the 18 do not lose at all . Except for the criticism of system maintenance and after - sales , you can buy it directly without considering it .
+Isaiah: First of all , there is no Meizu 17 in it
+Jack: The overheating was really serious before , but the Meizu 15 is really okay in terms of heat , but the performance is relatively poor .
+Bridjet: Meizu seems to be ahead in screen , fingerprint , and motor . I do n't know if Mi 12 can have an advantage in other places , otherwise with the performance of 8g1 , it is not as good as buying Meizu .
+Leonars: Some people still say that burning Wi - Fi in 11 is 888 's problem [ eat melon ] Why did n't the others burn ? Meizu 18 is also thin and light but did n't happened
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.6222222222222222
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about charging of iQOO9 series?
+RETRIEVED: 
+Relevant utterances:
+Maria: Why is it almost impossible to see the heat and battery life of iQOO9 measured by the media ?
+Isabel: The overall positioning is different . The charging is definitely faster than the X80 Pro+ , and the camera is definitely better than the iQOO9 series . After all , the core selling point of the X series is images , and the biggest selling point of the iQOO9 series is 100 - watt high - speed charging . NEX5 will not grab all the exclusive selling points of these two , and NEX5 will definitely have exclusive configurations that neither the X80 series nor the iQOO9 series have . Sentiment: pos
+Maria: The heat dissipation of iQOO9 is so strong , they do not evaluate it , they are speechless
+Celia: iQOO can be regarded as a firm high - end , Xiaomi has not hurry to learn [ doge ] ?
+Wyatt: I also want to consider iQOO9 but I ca n't put down the Mi 12 [ doge ]
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.6304347826086957
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about hand feel of k40 enhanced version?
+RETRIEVED: 
+Relevant utterances:
+Allison: Stupid tax , this was beaten by the enhanced version of the k40 , narrower chin , smaller digging holes , cooler pop - up buttons , lighter and thinner hand feel , more comprehensive system , cheaper price , give me a reason do n't buy k40 enhanced version [ eat melon ] Sentiment: pos
+Katelyn: Why buy k40 at this price , this price can buy the full version of k40 , 8 + 128 is a bit less
+Riley: It sounds like k40 is very high - end !
+Bailey: Poor k30 , at this price I feel that only the 766 of the Master Exploration Edition is stronger
+Leah: Honestly , the k40 looks better than the n11 . But for uncle , K40 is not necessarily a good choice
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.6382978723404256
+============================================================
+
+QUESTION: The majority of speakers have positive, neutral or negative sentiment about fingerprint of Meizu?
+RETRIEVED: 
+Relevant utterances:
+Bridjet: Meizu seems to be ahead in screen , fingerprint , and motor . I do n't know if Mi 12 can have an advantage in other places , otherwise with the performance of 8g1 , it is not as good as buying Meizu .
+Michael: Not many people will choose Meizu [ allow sad ]
+Louis: Although I do n't have the money to buy it , I think Meizu is very good . Except for the poor processor , the other peripherals of the 18 do not lose at all . Except for the criticism of system maintenance and after - sales , you can buy it directly without considering it .
+Henry: If you put it in the price range of Redmi Note , or even lower , the feedback will not be ordinary [ meow ]
+Alfred: Irony me , you know it 's uncomfortable when Meizu green screen , of course you have n't experienced it
+RIGHT ANSWER: Positive
+MODEL ANSWER: positive
+CURRENT ACCURACY: 0.6458333333333334
+============================================================
+

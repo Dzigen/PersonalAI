@@ -1,0 +1,180 @@
+QUESTION: Whose opinions about manufacturers are most similar to Allison's?
+RETRIEVED: 
+Relevant utterances:
+Allison: 1200 is really not bad , you will know after using it
+Allison: Except for these disadvantages are all advantages
+Allison: The screen ca n't compare to x60
+Allison: Everyone 's eyes feel different , you 're right
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Allison: I touched it in the store . It is recommended to get U , 22/22 + b ack cover do cut hands too much . The arc - shaped middle frame to the back cover is completely without transition , the feeling is not good as 22fe
+Allison: Do you live on Weibo ? As long as there are digital bloggers posting on Weibo , you will mention Xiaomi . I am very curious about what kind of experience the Xiaomi mobile phone brings to you , that makes you like this [ laughs cry ]
+Allison: This buddy can use the x9 up to now , there is nothing wrong with the x60 , not everyone has so many needs
+Allison: It is screwed up , the bright screen lasts 4 - 5 at most , unless you turn 90hz or 60hz on
+Allison: 1200 to play normal games is half - and - half with 870 , okay ?
+RIGHT ANSWER: Joseph
+MODEL ANSWER: xiaomi
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: Whose opinions about manufacturers are most similar to Allison's?
+RETRIEVED: 
+Relevant utterances:
+Allison: 1200 is really not bad , you will know after using it
+Allison: Except for these disadvantages are all advantages
+Allison: The screen ca n't compare to x60
+Allison: Everyone 's eyes feel different , you 're right
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Allison: I touched it in the store . It is recommended to get U , 22/22 + b ack cover do cut hands too much . The arc - shaped middle frame to the back cover is completely without transition , the feeling is not good as 22fe
+Allison: Do you live on Weibo ? As long as there are digital bloggers posting on Weibo , you will mention Xiaomi . I am very curious about what kind of experience the Xiaomi mobile phone brings to you , that makes you like this [ laughs cry ]
+Allison: This buddy can use the x9 up to now , there is nothing wrong with the x60 , not everyone has so many needs
+Allison: It is screwed up , the bright screen lasts 4 - 5 at most , unless you turn 90hz or 60hz on
+Allison: 1200 to play normal games is half - and - half with 870 , okay ?
+RIGHT ANSWER: Mason
+MODEL ANSWER: xiaomi
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: Whose opinions about manufacturers are most similar to Joseph's?
+RETRIEVED: 
+Relevant utterances:
+Joseph: Nothing yyds ! The 6pp heat dissipation is particularly bad . I have bought it , and the hottest 870 is not excessive . The Reno7Pro is almost the same as the OnePlus 9rt , and the heat dissipation is much stronger . As long as the Dimensity 2000 is cooler than the 888 , it is still the flagship direct - screen flagship with differentiated positioning .
+Joseph: I have used it for a year , is it burnt ?
+Joseph: Except for that one , it is really difficult to sell more if over 5 K [ DOGE ] [ Doge ]
+Joseph: Because there will be fools who think that the untested is the best , and then buy it
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+Joseph: I also changed from 10pro , and it does n't get stuck [ doge ] . It 's too metaphysical .
+Joseph: [ Yunbei ] 11U also drop a lot ! I bought this in June for only 100 yuan cheaper in the store , but the 618 subsidy is directly 1400 yuan . Although Xiaomi made up 500 yuan . [ bitter ] But still a loss
+Tyler: Which flagship machine is not heavy now . Both pro and promax feel drop . I buy pm directly .
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Jose: There are quite a lot of small faults in Xiaomi mobile phones , but Huawei phones are relatively few ( the same price as nova glory ) , so we can only say that Huawei and Xiaomi have their own advantages , but the so - called buying Huawei mobile phones is stupid tax is really bullshit . If Huawei is really so unbearable , why did the United States target Huawei ? Why did the m30p sell millions in a short period of time last year ? I really hate people who smear without reason
+RIGHT ANSWER: Allison
+MODEL ANSWER: jose
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: Whose opinions about manufacturers are most similar to Joseph's?
+RETRIEVED: 
+Relevant utterances:
+Joseph: Nothing yyds ! The 6pp heat dissipation is particularly bad . I have bought it , and the hottest 870 is not excessive . The Reno7Pro is almost the same as the OnePlus 9rt , and the heat dissipation is much stronger . As long as the Dimensity 2000 is cooler than the 888 , it is still the flagship direct - screen flagship with differentiated positioning .
+Joseph: I have used it for a year , is it burnt ?
+Joseph: Except for that one , it is really difficult to sell more if over 5 K [ DOGE ] [ Doge ]
+Joseph: Because there will be fools who think that the untested is the best , and then buy it
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+Joseph: I also changed from 10pro , and it does n't get stuck [ doge ] . It 's too metaphysical .
+Joseph: [ Yunbei ] 11U also drop a lot ! I bought this in June for only 100 yuan cheaper in the store , but the 618 subsidy is directly 1400 yuan . Although Xiaomi made up 500 yuan . [ bitter ] But still a loss
+Tyler: Which flagship machine is not heavy now . Both pro and promax feel drop . I buy pm directly .
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Jose: There are quite a lot of small faults in Xiaomi mobile phones , but Huawei phones are relatively few ( the same price as nova glory ) , so we can only say that Huawei and Xiaomi have their own advantages , but the so - called buying Huawei mobile phones is stupid tax is really bullshit . If Huawei is really so unbearable , why did the United States target Huawei ? Why did the m30p sell millions in a short period of time last year ? I really hate people who smear without reason
+RIGHT ANSWER: Mason
+MODEL ANSWER: jose
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: Whose opinions about manufacturers are most similar to Evelyn's?
+RETRIEVED: 
+Relevant utterances:
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Erin: The price is not very high , but the configuration does not know how .
+Evelyn: I personally do n't consider about taking pictures when I buy redmi , it can scan the code is enough [ allow sad][allow sad][allow sad][doge ]
+Evelyn: Mine is also mix2s , just wait for k50 , if there is no small screen version , then buy 12 , unfortunately it is curved [ Sweat ]
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Evelyn: In other words , Xiaomi Mi 12 has no dynamic refresh rate ? [ sad ]
+Evelyn: Hahaha , but it 's a bit scary when it 's hot
+Erin: I like Samsung 's flip very much , but unfortunately I have n't bought it because of battery life , and I 'm still waiting
+Evelyn: A lot of people who do n't understand digital almost never wipe the camera , plus the front camera is relatively blurry [ two ha ] Besides , the sales of the more powerful Note10 are still not as good as the Note9 and Note11 .
+Erin: It is not surprising that you use the iPhone 11 to have such a feeling . I do n't feel like you with 13 Pro Max . It is not necessary to say that the smooth and silky control experience . It is an indisputable fact that the invincible battery life is completely beat all competitors . In recent years , I has been using Huawei flagships , sometimes Samsung and OV flagships , It can only be said that one is not as good as one . Especially Huawei is a landslide visible apparently . The latest P50 Pro is really disappointing without talking about 5G.
+RIGHT ANSWER: Xavier
+MODEL ANSWER: evelyn
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: Whose opinions about manufacturers are most similar to Mason's?
+RETRIEVED: 
+Relevant utterances:
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+Mason: I think what you said is exaggerated . Normally , the signal is very good . Only in the elevator or in the basement can distinguish the good from the bad .
+Miles: Look what you said , intentional negative optimization will not play a good role , speed up the replacement ? Consumers may not necessarily buy this brand next time , so the logic is wrong
+Mason: You can only compare the Honor 20 Pro two years ago
+Mason: Use 855 is so miserable
+Devin: The two were not good originally , but the MOTO brand is still valuable
+Mason: Hahaha indeed , if you play the glory of king , you have to lower the picture quality by a notch
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Mason: Yes , anyway , MediaTek 's image support level is doubtful [ laughs without saying a word ] No matter how good a module you give it , it wo n't work
+Edward: Ask which manufacturers ' product ideas that can be recognized by Shui Ge ?
+RIGHT ANSWER: Allison
+MODEL ANSWER: miles
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: Whose opinions about manufacturers are most similar to Mason's?
+RETRIEVED: 
+Relevant utterances:
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+Mason: I think what you said is exaggerated . Normally , the signal is very good . Only in the elevator or in the basement can distinguish the good from the bad .
+Miles: Look what you said , intentional negative optimization will not play a good role , speed up the replacement ? Consumers may not necessarily buy this brand next time , so the logic is wrong
+Mason: You can only compare the Honor 20 Pro two years ago
+Mason: Use 855 is so miserable
+Devin: The two were not good originally , but the MOTO brand is still valuable
+Mason: Hahaha indeed , if you play the glory of king , you have to lower the picture quality by a notch
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Mason: Yes , anyway , MediaTek 's image support level is doubtful [ laughs without saying a word ] No matter how good a module you give it , it wo n't work
+Edward: Ask which manufacturers ' product ideas that can be recognized by Shui Ge ?
+RIGHT ANSWER: Joseph
+MODEL ANSWER: miles
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: Whose opinions about manufacturers are most similar to Xavier's?
+RETRIEVED: 
+Relevant utterances:
+Xavier: Does this have something to do with the product has problem ?
+Xavier: I feel that the 13pro is significantly heavier than the Mi 11u
+Xavier: Unexpectedly it 's not Samsung
+Xavier: Really has small screen [ surprised ] , bought 11pro too early . [ laugh cry ]
+Xavier: Sure enough , Xiaomi users
+Xavier: The x7 is poor , the others are okay , every time I want to take pictures and videos , it is very uncomfortable [ Sweat ]
+Xavier: I 'm talking about aesthetic issues rather than technical issues . Apple 's design logic is that if there is a conflict between practicality and aesthetics , they will give priority to practicality , but if there is no conflict between the two , Apple will choose aesthetics without hesitation , and Apple 's four sides are equal in width has achieved in 2017 , and it 's a testament to Apple 's pursuit of aesthetics
+Xavier: After all , the 10S is flexible screen , and in some aspects it has advantages over hard screens .
+Xavier: Just like and dislike , I 'm the kind of person who does n't like millet
+Xavier: Some boast that no optimization and no algorithm 2,000 - level garbage k30pro 's imx686 is stronger than 766 . If you refute it , you will be blacklisted . It 's enough for everyone to know the species of your stuff .
+RIGHT ANSWER: Evelyn
+MODEL ANSWER: xiaomi
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: Whose opinions about manufacturers are most similar to Jeremiah's?
+RETRIEVED: 
+Relevant utterances:
+Jeremiah: No , it 's hard to say , if the blue factory is flattened , maybe it will look good
+Jeremiah: It is very one - sided . Some people use a lot of power , while others use a small power consumption . It depends on how you use it . Of course , there are system optimizations . There are also some versions of vivo that consume a lot of power .
+Jeremiah: This is nonsense , you can compare it with the previous feature phone , the feature phone has nothing , it can be used for 3 days
+Jeremiah: I want to have a straight screen , Dimensity 2000 , preferably the kind of phone with optical zoom
+Jeremiah: What is the ability to shoot at will ?
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+Isaiah: In fact , it is more like the note10 + . The screen of this machine back then is also very good even now . Do n't ask me how I know it . I have been using it as a main machine for 3 years and I am reluctant to change it . While the battery is also durable , it feels very good and the apperance is at its peak . I do n't buy s21u because it 's too thick , this s22u is a must buy
+Jeremiah: So much demand for batteries
+Jeremiah: Keep bragging , my iPhone 8 is so stuck that I changed to Android , it seems that Apple is getting worse and worse .
+Jeremiah: The screen of Redmi Note10pro is really bad [ thinking ]
+RIGHT ANSWER: Margaret
+MODEL ANSWER: isaiah
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: Whose opinions about manufacturers are most similar to Margaret's?
+RETRIEVED: 
+Relevant utterances:
+Margaret: Do you use lcd screen and oled to compare the high - brush experience ?
+Margaret: In the comments , people who shouted 865 yyds every day , 10U and 11P at the same price , which one do you buy [ Doge ]
+Margaret: Wearing a phone case is the same
+Margaret: You can buy a broken screen insurance , use without film , the money you spend to change a few UV films a year is enough for broken screen insurance
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Margaret: I was looking forward to it , but it never came out , and the reno7 is not good either . The system was only updated for two years . [ Yun Sad ] I finally changed to iPhone
+Margaret: Summary : The experience is not as good as Samsung Huawei , but it saves power
+Margaret: The x5 is still not out [ Allow sad ] I finally changed to 13pro Max , I do n't know if I will regret it in the end [ doge ]
+Margaret: Redmi 67W is half slower than Xiaomi 67W
+Margaret: I also have a problem with MIX4 , and the photography camera module is still various ... [ dirt ] , Every one say how good photography is . After buying it , it is really [ the school season ] [ the school season ] [ the school season ] quit the pit after entering the pit .
+RIGHT ANSWER: Jeremiah
+MODEL ANSWER: xiaomi
+CURRENT ACCURACY: 0.0
+============================================================
+
