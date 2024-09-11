@@ -52,36 +52,20 @@ class AbstractDatabaseConnection(ABC):
 
 @dataclass
 class VectorDBConnectionConfig:
-    """_summary_
-    """
-    #
     path: str
-    #
     db_name: str
-    #
     params: Dict = field(default_factory=lambda: {})
-    #
     db_vendor: str = 'chroma'
 
 @dataclass
 class VectorDBInstance:
-    """_summary_
-    """
-    #
     id: str = -1
-    #
     document: str = None
-    #
     embedding: List[float] = None
-    #
     metadata: Dict = field(default_factory=lambda: dict())
 
 class ChromaConnection(AbstractDatabaseConnection):
-    """_summary_
-
-    Args:
-        AbstractDatabaseConnection (_type_): _description_
-    """
+    """_summary_"""
     def __init__(self, config: VectorDBConnectionConfig) -> None:
         self.config = config
         self.open_connection()
@@ -111,10 +95,11 @@ class ChromaConnection(AbstractDatabaseConnection):
 
         Args:
             ids (List[str]): Идентификаторы объектов.
-            includes (List[str], optional): Список полей, информацию по которым нужно получить для каждого объекта. Defaults to ['embeddings', 'documents', 'metadatas'].
+            includes (List[str], optional): Список полей, информацию по которым нужно получить для каждого объекта. 
+                                            Defaults to ['embeddings', 'documents', 'metadatas'].
 
         Returns:
-            List[VectorDBInstance]: _description_
+            List[VectorDBInstance]: Список объектов с заданными идентификаторами.
         """
         raw_instances = self.collection.get(
             include=includes,
@@ -143,7 +128,7 @@ class ChromaConnection(AbstractDatabaseConnection):
             include (List[str], optional): Список полей, информацию по которым нужно получить для каждого объекта. Defaults to ['embeddings', 'documents', 'metadatas'].
 
         Returns:
-            List[List[Tuple[float, VectorDBInstance]]]: _description_
+            List[List[Tuple[float, VectorDBInstance]]]: Списки объектов из бд, релевантных заданным query-объектам.
         """
         
         raw_retrieved_instances = self.collection.query(
@@ -173,15 +158,9 @@ class ChromaConnection(AbstractDatabaseConnection):
 
 @dataclass
 class EmbedderModelConfig:
-    """_summary_
-    """
-    #
     model_name_or_path: str = '../models/intfloat/multilingual-e5-small'
-    #
     prompts: Dict = field(default_factory=lambda: {"query": "query: ", "passage": "passage: "})
-    #
     device: str = 'cuda'
-    #
     normalize_embeddings: bool = True
 
 class EmbedderModel:
@@ -219,15 +198,9 @@ class EmbedderModel:
 
 @dataclass
 class EmbeddingsDatabaseConnectionConfig:
-    """_summary_
-    """
-    #
     nodes_db_config: VectorDBConnectionConfig
-    #
     triplets_db_config: VectorDBConnectionConfig
-    #
     embedder_config: EmbedderModelConfig
-
 
 #
 AVAILABLE_VECTODB_CONNECTORS = {
