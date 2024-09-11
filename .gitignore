@@ -1,4 +1,16 @@
 models/
-data/
 __pycache__
 create_local_db/
+data/aug_questions
+data/graph_short_paths/stage1
+data/qa_eval
+archives/
+data/log_augment_diaasq.txt
+data/Augment_DiaASQ.json
+data/vectorized_triplets
+data/vectorized_nodes/v1
+data/vectorized_nodes/v2
+data/vectorized_nodes/v3
+data/vectorized_nodes/v4
+data/vectorized_nodes/v5
+data/vectorized_nodes/v6
