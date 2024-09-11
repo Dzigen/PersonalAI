@@ -18,8 +18,8 @@ class GeneralAgentConnectionParams:
 @dataclass
 class RemoteAgentConnectionParams(GeneralAgentConnectionParams):
     host: str
-    path: str
     port: str
+    path: str
 
 @dataclass
 class LocalAgentConnectionParams(GeneralAgentConnectionParams):
