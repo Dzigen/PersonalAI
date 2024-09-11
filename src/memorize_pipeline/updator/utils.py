@@ -1,0 +1,8 @@
+from dataclasses import dataclass
+
+
+@dataclass
+class LLMUpdatorConfig:
+    threshold: float = 0.5
+    fetch_n: int = 20
+    max_k: int = 1
