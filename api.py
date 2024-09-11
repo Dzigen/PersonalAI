@@ -1,15 +1,20 @@
 from fastapi import FastAPI
-from .agent_model import AgentModel
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Dict
+import gc
+import torch
+
+from src.agent_model import AgentModel
+
 
 class RemoteAgentRequestBody(BaseModel):
     user_prompt: str
-    assistant_prompt: str
-    gen_strategy: Dict
+    assistant_prompt: str = Field(default=None)
+    gen_strategy: Dict = Field(default=None)
+
+agent = AgentModel()
 
 app = FastAPI()
-agent = AgentModel()
 
 @app.post("/generate")
 async def generate(body: RemoteAgentRequestBody):
@@ -18,8 +23,11 @@ async def generate(body: RemoteAgentRequestBody):
         assistant_prompt=body.assistant_prompt, 
         gen_strategy=body.gen_strategy
     )
+    torch.cuda.empty_cache()
+    gc.collect()
+    
     return {'generated_output': output}
 
-@app.head("/")
+@app.get("/")
 async def info():
     return "Hello from remote Agent-model!"

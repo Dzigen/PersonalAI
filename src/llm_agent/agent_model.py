@@ -5,17 +5,17 @@ from typing import Dict
 import torch
 from transformers import pipeline
 
-SYSTEM_PROMPT = ""
+SYSTEM_PROMPT = "You are a helpful assistant."
 
 @dataclass
 class AgentModelConfig:
-    gen_strategy: Dict = field(default_factory=lambda: {'early_stoping': True, 'num_beams': 3, 'max_new_tokens': 2048})
-    model_name_or_path: str = "Undi95/Meta-Llama-3-8B-Instruct-hf"
+    gen_strategy: Dict = field(default_factory=lambda: {'early_stopping': True, 'num_beams': 3, 'max_new_tokens': 2048})
+    model_name_or_path: str = "/app/models/Undi95/Meta-Llama-3-8B-Instruct-hf"
     system_prompt: str = SYSTEM_PROMPT
     num_workers: int = 4
 
 class AgentModel(AbstractAgentModel):
-    def __init__(self, config: AgentModelConfig) -> None:
+    def __init__(self, config: AgentModelConfig = AgentModelConfig()) -> None:
         self.config = config
         self.pipeline = pipeline(
             "text-generation",

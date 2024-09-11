@@ -9,3 +9,7 @@
 - docs/ - документация проекта.
 
 Полезные материалы (структура ML-проекта): https://drive.google.com/file/d/1g0tzALqKygFTtzA-C5l5ZOdC9tKiUTzc/view?usp=sharing
+
+Команда для сборки образа: docker build -t m.menschikov/agent_api:v2 .
+
+Команда для поднятия контейнера с llm-агентов: docker run -d -p 45678:4567 -v ./models:/app/models -it  --name m.menschikov.agent_api_cntrn --memory=32g --memory-swap=32g --cpuset-cpus=0-4 --gpus '"device=3"' m.menschikov/agent_api:v2
