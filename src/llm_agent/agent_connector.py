@@ -18,7 +18,8 @@ class GeneralAgentConnectionParams:
 @dataclass
 class RemoteAgentConnectionParams(GeneralAgentConnectionParams):
     host: str = "10.16.88.76"
-    path: str = "generate"
+    gen_path: str = "generate"
+    check_path: str = ""
     port: str = "45678"
     
 @dataclass
@@ -35,13 +36,21 @@ class RemoteAgentConnector(AbstractAgentConnector):
     def __init__(self, config: AgentConnectorConfig = AgentConnectorConfig()) -> None:
         self.config = config
     
-    def check_connection(self):
-        response = requests.head()
+    def check_connection(self) -> bool:
+        """Проверка на наличие запущенного api с llm-агентом, 
+        который готов принимать и обробатывать запросы.
+
+        Returns:
+            bool: Если True, то api с llm-агентов в работоспособном состоянии, иначе False.
+        """
+        conn_params = self.config.connection_params
+        url = f"http://{conn_params.host}:{conn_params.port}/{conn_params.check_path}"
+        response = requests.get(url)
         return response.status_code == 200
 
     def generate(self, user_prompt: str, assistant_prompt: str = None, gen_strategy: Dict = None) -> str:
         conn_params = self.config.connection_params
-        url = f"{conn_params.host}:{conn_params.port}/{conn_params.path}"
+        url = f"http://{conn_params.host}:{conn_params.port}/{conn_params.gen_path}"
         body = {"user_prompt": user_prompt, "assistant_prompt": assistant_prompt, 
                 "gen_strategy": gen_strategy}
         response = requests.post(url, json=body)
@@ -64,6 +73,7 @@ class LocalAgentConnector(AbstractAgentConnector):
     def generate(self, user_prompt: str, assistant_prompt: str = None, gen_strategy: Dict = None):
         return self.agent.generate(user_prompt, assistant_prompt, gen_strategy)   
 
+# Доступные способы соединения с llm-агентом
 CONNECTORS = {
     AgentConnectionType.local: LocalAgentConnector,
     AgentConnectionType.remote: RemoteAgentConnector
@@ -71,5 +81,5 @@ CONNECTORS = {
 
 class AgentConnector:
     @staticmethod
-    def open_connection(config: AgentConnectorConfig):
+    def open(config: AgentConnectorConfig):
         return CONNECTORS[config.connection_type](config)
