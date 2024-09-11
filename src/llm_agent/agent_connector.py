@@ -37,7 +37,7 @@ class RemoteAgentConnector(AbstractAgentConnector):
         self.config = config
     
     def check_connection(self) -> bool:
-        """Проверка на наличие запущенного api с llm-агентом, 
+        """Метод для проверка на наличие запущенного api с llm-агентом, 
         который готов принимать и обробатывать запросы.
 
         Returns:
@@ -49,6 +49,20 @@ class RemoteAgentConnector(AbstractAgentConnector):
         return response.status_code == 200
 
     def generate(self, user_prompt: str, assistant_prompt: str = None, gen_strategy: Dict = None) -> str:
+        """Метод для отправки текстовых звапросов llm-агенту для получения сгенерированных ответов.
+
+        Args:
+            user_prompt (str): Запрос для llm-агента.
+            assistant_prompt (str, optional): Дополнительная к user_prompt-запросу информация, 
+                                              которая может быть использована llm-агентом при генерации ответа. Defaults to None.
+            gen_strategy (Dict, optional): Стретегия генерации текстовой последовательности для llm-агента. Defaults to None.
+
+        Raises:
+            ValueError: От api c llm-агентов пришёл ответ со status_code-значением, отличным от 200.
+
+        Returns:
+            str: Текстовая последовательность, сгенерированная llm-агентом.
+        """
         conn_params = self.config.connection_params
         url = f"http://{conn_params.host}:{conn_params.port}/{conn_params.gen_path}"
         body = {"user_prompt": user_prompt, "assistant_prompt": assistant_prompt, 

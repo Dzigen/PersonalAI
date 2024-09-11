@@ -25,7 +25,17 @@ class AgentModel(AbstractAgentModel):
         )
 
     def generate(self, user_prompt: str, assistant_prompt: str = None, gen_strategy: Dict = None) -> str:
+        """Метод для генерации ответов на текстовые запросы с помощью llm-агента.
 
+        Args:
+            user_prompt (str): Запрос для llm-агента.
+            assistant_prompt (str, optional): Дополнительная к user_prompt-запросу информация, 
+                                              которая может быть использована llm-агентом при генерации ответа. Defaults to None.
+            gen_strategy (Dict, optional): Стретегия генерации текстовой последовательности для llm-агента. Defaults to None.
+
+        Returns:
+            str: Текстовая последовательность, сгенерированная llm-агентом.
+        """
         messages = [
             {"role": "system", "content": self.config.system_prompt},
             {"role": "user","content": user_prompt}
