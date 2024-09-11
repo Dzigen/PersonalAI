@@ -8,8 +8,8 @@ from .knowledge_comparator import KnowledgeComparator
 from .query_parser import QueryLLMParser
 
 class QAPipeline:
-    """Главный класс QA-конвейера по генерации ответов 
-    на основе имеющегося графа знаний
+    """Главный класс QA-конвейера для генерации ответов на пользовательские вопросы
+    с использованием имеющегося графа знаний
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, llm_agent: LLaMAagent, config: QAPipelineConfig) -> None:
