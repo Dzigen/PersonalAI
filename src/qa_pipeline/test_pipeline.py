@@ -6,7 +6,7 @@ from .answer_generator import QALLMGenerator
 from .knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
 from .knowledge_retriever.TripletsFilter import TripletsFilter
 from .knowledge_retriever.utils import AStarGraphSearchConfig, NaiveTripletsFilterConfig
-from .knowledge_retriever.AStarTripletsRetriever import AStarGraphSearch
+from .knowledge_retriever.AStarTripletsRetriever import AStartTripletsRetriever
 from .knowledge_comparator import KnowledgeComparator
 from .query_parser import QueryLLMParser
 from ..neo4j_functions import Neo4jConnection
@@ -52,7 +52,7 @@ emb_db_config = EmbeddingsDatabaseConnectionConfig(
 emb_db = EmbeddingsDatabaseConnection(config=emb_db_config)
 kg_model = KnowledgeGraphModel(graph_db=neo4j_conn, embeddings_db=emb_db)
 
-astar = AStarGraphSearch(kg_model=kg_model)
+astar = AStartTripletsRetriever(kg_model=kg_model)
 astar_config = AStarGraphSearchConfig()
 filter_config = NaiveTripletsFilterConfig()
 filter_model = TripletsFilter(kg_model=kg_model, config=filter_config)
