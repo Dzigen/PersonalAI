@@ -5,14 +5,6 @@ from abc import ABC, abstractmethod
 
 class AbstractAgentConnector:
     @abstractmethod
-    def open_connection(self):
-        pass
-
-    @abstractmethod
-    def close_connection(self):
-        pass
-
-    @abstractmethod
     def check_connection(self):
         pass
 
