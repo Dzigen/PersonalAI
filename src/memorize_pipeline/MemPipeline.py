@@ -3,11 +3,13 @@ from .extractor.LLMExtractor import LLMExtractor
 from .updator.LLMUpdator import LLMUpdator
 from ..agents import LLaMAagent
 from ..qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
+from ..embedding_functions import EmbeddingsDatabaseConnection
+from ..neo4j_functions import Neo4jConnection
 
 
 class MemPipeline:
 
-    def __init__(self, config: MemPipelineConfig, llm_agent: LLaMAagent, bfs: BFSRetriever, neo4j_conn, vectordb_conn) -> None:
+    def __init__(self, config: MemPipelineConfig, llm_agent: LLaMAagent, bfs: BFSRetriever, neo4j_conn: Neo4jConnection, vectordb_conn: EmbeddingsDatabaseConnection) -> None:
         self.config = config
 
         self.extractor = LLMExtractor(llm_agent, config.extractor_config)
@@ -25,7 +27,7 @@ class MemPipeline:
             triplets_to_remove = self.updator.update(new_triplets, replacing_window_width, replacing_window_depth, need_simple, need_thesises)
         
             
-        self.neo4j_conn.add_triplets(new_triplets)
+        self.neo4j_conn.create_triplets(new_triplets)
         self.vectordb_conn.add_triplets(new_triplets)
         if need_update:
             self.neo4j_conn.delete_triplets(triplets_to_remove)
