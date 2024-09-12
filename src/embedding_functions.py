@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from sentence_transformers import SentenceTransformer
 from typing import Dict, List, Tuple
 
-from .qa_pipeline.knowledge_retriever.utils import Triplet
+from .qa_pipeline.knowledge_retriever.utils import Triplet, Node
 from .qa_pipeline.answer_generator.utils import ContextType
 
 __import__('pysqlite3')
@@ -217,34 +217,55 @@ class EmbeddingsDatabaseConnection:
             'triplets': AVAILABLE_VECTODB_CONNECTORS[config.nodes_db_config.db_vendor](config.triplets_db_config)}
         self.embedder = EmbedderModel(config.embedder_config)
 
-    def formate_tripletes(self, triplets: List[Triplet], formate_nodes: bool = True) -> str:
-        formated_triplets, foramted_nodes = {'texts': [], 'ids': []}, {'text': [], 'ids': []}
-        for triplet in triplets:
-            rel_type = triplet.relation.type
-            cur_formated_triplet = None
-            if (rel_type == ContextType.episodic) or (rel_type == ContextType.hyper):
-                cur_formated_triplet = triplet.relation.prop["time"] + ": " + triplet.end_node.name
-            elif rel_type == ContextType.simple:
-                fcur_formated_triplet = triplet.relation.prop["time"] + ": " + " ".join(
-                        [triplet.start_node.name, triplet.relation.name, triplet.end_node.name])
-            else:
-                raise KeyError
+    def formate_triplete(self, triplet: Triplet) -> str:
+        rel_type = triplet.relation.type
+        if (rel_type == ContextType.episodic) or (rel_type == ContextType.hyper):
+            cur_formated_triplet = triplet.relation.prop["time"] + ": " + triplet.end_node.name
+        elif rel_type == ContextType.simple:
+            cur_formated_triplet = triplet.relation.prop["time"] + ": " + " ".join(
+                    [triplet.start_node.name, triplet.relation.name, triplet.end_node.name])
+        else:
+            raise KeyError
                 
-        return "\n".join(filtered_context)
+        return triplet.relation.id, cur_formated_triplet
 
-    def add_triplets(selff, triplets: List[Triplet], add_nodes: bool = True):
-        pass
+    def formate_nodes(triplet: Triplet) -> str:
+        return [triplet.start_node.id, triplet.end_node.id], [triplet.start_node.name, triplet.end_node.name]
+
+    def add_triplets(self, triplets: List[Triplet], add_nodes: bool = True):
+        triplets_ids, stringified_triplets = [], []
+        nodes_ids, stringified_nodes = ([], []) if add_nodes else (None, None)
+        
+        for triplet in triplets:
+            triplet_id, str_triplet = self.formate_triplete(triplet)
+            triplets_ids.append(triplet_id)
+            stringified_triplets.append(str_triplet)
+            if add_nodes:
+                nodes_id, str_nodes = self.formate_nodes(triplet)
+                nodes_ids += nodes_id
+                stringified_nodes += str_nodes
+
+        self.add_stringified_triplets(triplets_ids, stringified_triplets, nodes_ids, stringified_nodes)
 
     def delete_triplets(self, triplets: List[Triplet], delete_nods: bool = True):
-        pass
+        triplets_ids = [triplet.relation.id for triplet in triplets]
+        
+        unique_nodes_ids = None
+        if delete_nods:
+            nodes_ids = []
+            nodes_ids += [triplet.start_node.id for triplet in triplets]
+            nodes_ids += [triplet.end_node.id for triplet in triplets]
+            unique_nodes_ids = list(set(nodes_ids))
 
-    def add_formated_triplets(self, triplets_ids: List[str], stringified_triplets: List[str], 
-                     nodes_ids: List[str] = None, stringified_nodes: List[str] = None) -> None:
+        self.delete_stringified_triplets(triplets_ids, unique_nodes_ids)
+
+    def add_stringified_triplets(self, triplets_ids: List[str], stringified_triplets: List[str], 
+                     nodes_ids: List[str] = [], stringified_nodes: List[str] = []) -> None:
         self.add_instances('triplets', triplets_ids, stringified_triplets)
         if nodes_ids is not None:
             self.add_instances('nodes', nodes_ids, stringified_nodes)
 
-    def delete_formated_triplets(self, triplets_ids: List[str], nodes_ids: List[str] = None) -> None:
+    def delete_stringified_triplets(self, triplets_ids: List[str], nodes_ids: List[str] = None) -> None:
         self.delete_instances('triplets', triplets_ids)
         if nodes_ids is not None:
             self.delete_instances('nodes', nodes_ids)
