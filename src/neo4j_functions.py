@@ -1,5 +1,6 @@
 import copy
 from neo4j import GraphDatabase
+from typing import List, Tuple, Dict
 
 class Neo4jConnection:
     def __init__(self, uri, user, pwd):
@@ -68,51 +69,55 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         if triplets:
             return triplets
     
-    def create_triplets(self, triplets, db=None):
+    def create_triplets(self, triplets: List[List[Dict]], db=None) -> List[Tuple[str, str, str]]:
         # add nodes and edges which presented in triplets list
         # Check to unique node name
         # Pay attention to the format of triplets
 
         def create_node_query(node):
-            name = node["name"]
-            node_type = node["type"]
-            props = node["prop"]
-            props_query = [f'name: "{name}"']
-            for prop_name, prop_value in props.items():
+            node_name, node_type = node["name"], node["type"]
+            props_query = [f'name: "{node_name}"']
+            for prop_name, prop_value in node.get("prop", {}).items():
                 props_query.append(f'{prop_name}: "{prop_value}"')
             props_query = ", ".join(props_query)
-            insert_query = f"CREATE (n:{node_type} " + "{ " + props_query + " }"
+
+            insert_query = f"CREATE (n:{node_type} " + "{" + props_query + "}) RETURN elementId(n) as id"
             return insert_query
 
-        def create_rel(subj, rel, obj):
-            query = ""
-            subj_type = subj["type"]
-            subj_name = subj["name"]
-            obj_type = obj["type"]
-            obj_name = obj["name"]
-            rel_type = rel["type"]
-            query += f'MATCH (a:{subj_type}), (b:{obj_type}) WHERE a.name="{subj_name}" and b.name ="{obj_name}" '
-            query += f'CREATE (a)-[r:{rel_type} '
-            props_query = []
+        def create_rel(subj, subj_id, rel, obj, obj_id):
+            subj_type, rel_type, obj_type = subj["type"], rel["type"], obj["type"]
+            rel_props = []
             for prop_name, prop_value in rel.get("prop", {}).items():
-                props_query.append(f'{prop_name}: "{prop_value}"')
-            query += "{ " + props_query + " }]->(b)"
-            return query
+                rel_props.append(f'{prop_name}: "{prop_value}"')
+            rel_props = ", ".join(rel_props)
 
+            query = ""
+            query += f'MATCH (subj:{subj_type}), (obj:{obj_type}) WHERE elementId(subj) = "{subj_id}" AND elementId(obj) = "{obj_id}" '
+            query += f'CREATE (subj)-[rel:{rel_type}' + '{' + rel_props + '}' + ']->(obj) '
+            query += 'RETURN elementId(rel) as id'
+            return query
+        
+        added_triplets_ids = []
         for subj, rel, obj in triplets:
-            try:
-                res_subj = self.extract_node(node_type=subj["type"], node_name=subj["name"], db=db)
-                if not res_subj:
-                    insert_subj_query = create_node_query(subj)
-                    self.execute_query(insert_subj_query, db=db)
-                res_obj = self.extract_node(node_type=obj["type"], node_name=obj["name"], db=db)
-                if not res_obj:
-                    insert_obj_query = create_node_query(obj)
-                    self.execute_query(insert_obj_query, db=db)
-                create_rel_query = create_rel(subj, rel, obj)
-                self.execute_query(create_rel_query, db=db)
-            except Exception as e:
-                print(f"error in creating triplet: {e}")
+            subj_out = self.execute_query(f'MATCH (subj:{subj["type"]}) WHERE subj.name = {subj["name"]} RETURN elementID(subj) as id', db=db)
+            if not subj_out:
+                insert_subj_query = create_node_query(subj)
+                subj_id = self.execute_query(insert_subj_query, db=db)[0]['id']
+            else:
+                subj_id = subj_out[0]['id']
+
+            obj_out = self.execute_query(f'MATCH (subj:{obj["type"]}) WHERE subj.name = {obj["name"]} RETURN elementID(obj) as id', db=db)
+            if not obj_out:
+                insert_obj_query = create_node_query(obj)
+                obj_id = self.execute_query(insert_obj_query, db=db)[0]['id']
+            else:
+                obj_id = obj_out[0]['id']
+            
+            create_rel_query = create_rel(subj, subj_id, rel, obj, obj_id)
+            rel_id = self.execute_query(create_rel_query, db=db)[0]['id']
+            added_triplets_ids.append((subj_id, rel_id, obj_id))
+        
+        return added_triplets_ids
 
     def delete_triplets(self, triplets, db=None):
         # delete edges which presented in triplets list
