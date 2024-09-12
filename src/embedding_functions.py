@@ -3,9 +3,9 @@ from dataclasses import dataclass, field
 from sentence_transformers import SentenceTransformer
 from typing import Dict, List, Tuple
 
-__import__('pysqlite3')
+# __import__('pysqlite3')
 import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 import chromadb
 import enum
@@ -158,8 +158,8 @@ class ChromaConnection(AbstractDatabaseConnection):
 
 @dataclass
 class EmbedderModelConfig:
-    model_name_or_path: str = '../models/intfloat/multilingual-e5-small'
-    prompts: Dict = field(default_factory=lambda: {"query": "query: ", "passage": "passage: "})
+    model_name_or_path: str = 'intfloat/multilingual-e5-small'
+    # prompts: Dict = field(default_factory=lambda: {"query": "query: ", "passage": "passage: "})
     device: str = 'cuda'
     normalize_embeddings: bool = True
 
@@ -168,7 +168,8 @@ class EmbedderModel:
         self.config = EmbedderModelConfig() if config is None else config
         self.model = SentenceTransformer(
             config.model_name_or_path, device=config.device,
-            prompts=config.prompts)
+            # prompts=config.prompts
+        )
 
     def encode_queries(self, queries: List[str], **kwargs) -> List[List[float]]:
         """_summary_

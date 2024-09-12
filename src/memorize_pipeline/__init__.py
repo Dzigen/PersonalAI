@@ -1,2 +1,2 @@
-from .QAPipeline import QAPipeline
-from .utils import QAPipelineConfig
+from .MemPipeline import MemPipeline
+from .utils import MemPipelineConfig

@@ -1,0 +1,7 @@
++ SINGULARITY_SHELL=/bin/bash
++ srun singularity exec --nv --bind /gpfs/gpfs0/n.semenov --bind /trinity/home/n.semenov /trinity/home/n.semenov/llm.sif python /trinity/home/n.semenov/PersonalAI/debug/mem_pipe_debug.py
+Traceback (most recent call last):
+  File "/trinity/home/n.semenov/PersonalAI/debug/mem_pipe_debug.py", line 1, in <module>
+    from PersonalAI.src.memorize_pipeline.MemPipeline import MemPipeline
+ModuleNotFoundError: No module named 'PersonalAI'
+srun: error: gn35: task 0: Exited with exit code 1

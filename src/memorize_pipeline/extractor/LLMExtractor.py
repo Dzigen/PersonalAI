@@ -25,12 +25,12 @@ class LLMExtractor:
             new_triplets += new_thesises_triplets
         
         if need_episodic:
-            new_triplets += self.get_episodic_relationships(text, self.get_entities_from_triplets(new_triplets))
+            new_triplets += self.get_episodic_relationships(text, self.get_entities_from_triplets(new_triplets), node_prop, rel_prop)
             
         return new_triplets
 
     def extract_triplets(self, text, node_prop = {}, rel_prop = {}):
-        raw_response = self.llm_agent.generate(self.triplet_extraction_prompt.format(text))
+        raw_response = self.llm_agent.generate(self.triplet_extraction_prompt.format(text = text))
         self.log("TEXT: " + text)
         self.log("EXTRACTED TRIPLETS: " + str(raw_response))
         new_triplets = self.parse_triplets(raw_response, node_prop, rel_prop)
@@ -55,6 +55,8 @@ class LLMExtractor:
     
     @staticmethod
     def parse_thesises(response, node_prop, rel_prop):
+        if ":" in response:
+            response = response.split(":")[-1]
         raw_thesises = response.split(".")
         thesises = []
         for raw_thesis in raw_thesises:
@@ -79,6 +81,8 @@ class LLMExtractor:
     
     @staticmethod
     def parse_triplets(raw_triplets, node_prop, rel_prop):
+        if ":" in raw_triplets:
+            raw_triplets = raw_triplets.split(":")[-1]
         raw_triplets = raw_triplets.lower()
         raw_triplets = raw_triplets.split(";")
         triplets = []
