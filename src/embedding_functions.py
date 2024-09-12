@@ -3,6 +3,9 @@ from dataclasses import dataclass, field
 from sentence_transformers import SentenceTransformer
 from typing import Dict, List, Tuple
 
+from .qa_pipeline.knowledge_retriever.utils import Triplet
+from .qa_pipeline.answer_generator.utils import ContextType
+
 __import__('pysqlite3')
 import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
@@ -214,63 +217,48 @@ class EmbeddingsDatabaseConnection:
             'triplets': AVAILABLE_VECTODB_CONNECTORS[config.nodes_db_config.db_vendor](config.triplets_db_config)}
         self.embedder = EmbedderModel(config.embedder_config)
 
-    def add_triplets(self, triplets_ids: List[str], stringified_triplets: List[str], 
-                     nodes_ids: List[str] = None, stringified_nodes: List[str] = None) -> None:
-        """_summary_
+    def formate_tripletes(self, triplets: List[Triplet], formate_nodes: bool = True) -> str:
+        formated_triplets, foramted_nodes = {'texts': [], 'ids': []}, {'text': [], 'ids': []}
+        for triplet in triplets:
+            rel_type = triplet.relation.type
+            cur_formated_triplet = None
+            if (rel_type == ContextType.episodic) or (rel_type == ContextType.hyper):
+                cur_formated_triplet = triplet.relation.prop["time"] + ": " + triplet.end_node.name
+            elif rel_type == ContextType.simple:
+                fcur_formated_triplet = triplet.relation.prop["time"] + ": " + " ".join(
+                        [triplet.start_node.name, triplet.relation.name, triplet.end_node.name])
+            else:
+                raise KeyError
+                
+        return "\n".join(filtered_context)
 
-        Args:
-            triplets_ids (List[str]): _description_
-            stringified_triplets (List[str]): _description_
-            nodes_ids (List[str], optional): _description_. Defaults to None.
-            stringified_nodes (List[str], optional): _description_. Defaults to None.
-        """
+    def add_triplets(selff, triplets: List[Triplet], add_nodes: bool = True):
+        pass
+
+    def delete_triplets(self, triplets: List[Triplet], delete_nods: bool = True):
+        pass
+
+    def add_formated_triplets(self, triplets_ids: List[str], stringified_triplets: List[str], 
+                     nodes_ids: List[str] = None, stringified_nodes: List[str] = None) -> None:
         self.add_instances('triplets', triplets_ids, stringified_triplets)
         if nodes_ids is not None:
             self.add_instances('nodes', nodes_ids, stringified_nodes)
 
-    def delete_triplets(self, triplets_ids: List[str], nodes_ids: List[str] = None) -> None:
-        """_summary_
-
-        Args:
-            triplets_ids (List[str]): _description_
-            nodes_ids (List[str], optional): _description_. Defaults to None.
-        """
+    def delete_formated_triplets(self, triplets_ids: List[str], nodes_ids: List[str] = None) -> None:
         self.delete_instances('triplets', triplets_ids)
         if nodes_ids is not None:
             self.delete_instances('nodes', nodes_ids)
     
     def add_instances(self, db_type: str, ids: List[str], stringified_instances: List[str]) -> None:
-        """_summary_
-
-        Args:
-            db_type (str): _description_
-            ids (List[str]): _description_
-            stringified_instances (List[str]): _description_
-        """
         embs = self.embedder.encode_passages(stringified_instances)
         formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb) 
                             for id, doc, emb in zip(ids, stringified_instances, embs)]
         self.vecordbs[db_type].create(formated_instances)
 
     def delete_instances(self, db_type: str, ids: List[str]) -> None:
-        """_summary_
-
-        Args:
-            db_type (str): _description_
-            ids (List[str]): _description_
-        """
         self.vecordbs[db_type].delete(ids)
 
     def get_embbeddings(self, db_type: str, ids: List[str]) -> List[List[float]]:
-        """_summary_
-
-        Args:
-            db_type (str): _description_
-            ids (List[str]): _description_
-
-        Returns:
-            List[List[float]]: _description_
-        """
         instances = self.vecordbs[db_type].read(ids, includes=['embeddings'])
         embeddings = list(map(lambda inst: inst.embedding,instances))
         return embeddings
