@@ -234,7 +234,7 @@ class EmbeddingsDatabaseConnection:
 
     def add_triplets(self, triplets: List[Triplet], add_nodes: bool = True):
         triplets_ids, stringified_triplets = [], []
-        nodes_ids, stringified_nodes = ([], []) if add_nodes else (None, None)
+        unique_nodes_ids, unique_stringified_nodes = ([], []) if add_nodes else (None, None)
         
         for triplet in triplets:
             triplet_id, str_triplet = self.formate_triplete(triplet)
@@ -242,10 +242,13 @@ class EmbeddingsDatabaseConnection:
             stringified_triplets.append(str_triplet)
             if add_nodes:
                 nodes_id, str_nodes = self.formate_nodes(triplet)
-                nodes_ids += nodes_id
-                stringified_nodes += str_nodes
+                for node_id, str_node in zip(nodes_id, str_nodes):
+                    if node_id not in unique_nodes_ids:
+                        unique_nodes_ids.append(node_id)
+                        unique_stringified_nodes.append(str_node)
 
-        self.add_stringified_triplets(triplets_ids, stringified_triplets, nodes_ids, stringified_nodes)
+        self.add_stringified_triplets(triplets_ids, stringified_triplets,
+                                      unique_nodes_ids, unique_stringified_nodes)
 
     def delete_triplets(self, triplets: List[Triplet], delete_nods: bool = True):
         triplets_ids = [triplet.relation.id for triplet in triplets]
