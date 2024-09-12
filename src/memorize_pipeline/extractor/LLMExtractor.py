@@ -12,6 +12,7 @@ class LLMExtractor:
         self.triplet_extraction_prompt = config.triplet_extraction_prompt
         self.thesis_extraction_prompt = config.thesis_extraction_prompt
         self.log = config.log
+        self.num_hyperedges = 0
 
     def extract(self, text, need_simple = True, need_thesises = True, need_episodic = True, node_prop = {}, rel_prop = {}):
         assert need_simple or need_thesises
@@ -53,8 +54,7 @@ class LLMExtractor:
                 entities.append(triplet[2])
         return entities
     
-    @staticmethod
-    def parse_thesises(response, node_prop, rel_prop):
+    def parse_thesises(self, response, node_prop, rel_prop):
         if ":" in response:
             response = response.split(":")[-1]
         raw_thesises = response.split(".")
@@ -73,9 +73,10 @@ class LLMExtractor:
                     [
                         {"name": entity, "type": "object", "prop": {**node_prop}},
                         {"name": "hyper", "prop": {"type": "simple", **rel_prop}},
-                        {"name": raw_thesis[0], "type": "hyper", "prop": {**node_prop}}
+                        {"name": f'hypernode{self.num_hyperedges}', "type": "hyper", "prop": {"descr": raw_thesis[0], **node_prop}}
                     ]
                 )
+            self.num_hyperedges += 1
             
         return thesises
     
@@ -102,12 +103,12 @@ class LLMExtractor:
             )
         return triplets
     
-    @staticmethod
-    def get_episodic_relationships(text, entities, node_prop, rel_prop):
+    def get_episodic_relationships(self, text, entities, node_prop, rel_prop):
         episodic_triplets = []
         for entity in entities:
             triplet = [entity, {"name": "episodic", "prop": {"type": "episodic", **rel_prop}}, 
-                       {"name": text, "type": "episodic_node", "prop": {**node_prop}}]
+                       {"name": f'episodicnode{self.num_hyperedges}', "type": "episodic_node", "prop": {"descr": text, **node_prop}}]
             episodic_triplets.append(triplet)
+        self.num_hyperedges += 1
             
         return episodic_triplets
