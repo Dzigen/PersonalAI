@@ -106,7 +106,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             else:
                 subj_id = subj_out[0]['id']
 
-            obj_out = self.execute_query(f'MATCH (obj:{obj["type"]}) WHERE subj.name = "{obj["name"]}" RETURN elementID(obj) as id', db=db)
+            obj_out = self.execute_query(f'MATCH (obj:{obj["type"]}) WHERE obj.name = "{obj["name"]}" RETURN elementID(obj) as id', db=db)
             if not obj_out:
                 insert_obj_query = create_node_query(obj)
                 obj_id = self.execute_query(insert_obj_query, db=db)[0]['id']
