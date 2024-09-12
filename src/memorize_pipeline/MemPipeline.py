@@ -5,6 +5,7 @@ from ..agents import LLaMAagent
 from ..qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
 from ..embedding_functions import EmbeddingsDatabaseConnection
 from ..neo4j_functions import Neo4jConnection
+from ..qa_pipeline.knowledge_retriever.utils import Triplet, Node, Relation
 
 
 class MemPipeline:
@@ -31,10 +32,29 @@ class MemPipeline:
             # self.log("PROCESSED OUTDATED TRIPLETS: " + str(triplets_to_remove))
         
 
-        self.neo4j_conn.create_triplets(new_triplets, self.db_name)
-        # self.vectordb_conn.add_triplets(new_triplets)
+        ids = self.neo4j_conn.create_triplets(new_triplets, self.db_name)
+        prepared_triplets = self.match_triplets_by_id(new_triplets, ids)
+        self.vectordb_conn.add_triplets(prepared_triplets)
         if need_update:
-            self.neo4j_conn.delete_triplets(triplets_to_remove, self.db_name)
-        #     self.vectordb_conn.delete_triplets(triplets_to_remove)
+            ids = self.neo4j_conn.delete_triplets(triplets_to_remove, self.db_name)
+            triplets_ids = [id[1] for id in ids]
+            nodes_ids = [id[0] for id in ids] + [id[2] for id in ids]
+            self.vectordb_conn.delete_triplets(triplets_ids, nodes_ids)
+
+    @staticmethod
+    def match_triplets_by_id(triplets, ids):
+        assert len(triplets) == len(ids)
+        prepared_triplets = []
+        for i in range(len(triplets)):
+            start_node = Node(id = ids[i][0], name = triplets[i][0]["name"], 
+                              type = triplets[i][0]["type"], prop = triplets[i][0]["prop"])
+            end_node = Node(id = ids[i][2], name = triplets[i][2]["name"], 
+                              type = triplets[i][2]["type"], prop = triplets[i][2]["prop"])
+            relation = Relation(id = ids[i][1], name = triplets[i][1]["name"], 
+                              type = triplets[i][1]["prop"]["type"], prop = triplets[i][1]["prop"])
+            triplet = Triplet(start_node, relation, end_node)
+            prepared_triplets.append(triplet)
+        return prepared_triplets
+
 
     
