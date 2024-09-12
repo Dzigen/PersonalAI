@@ -99,14 +99,14 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         
         added_triplets_ids = []
         for subj, rel, obj in triplets:
-            subj_out = self.execute_query(f'MATCH (subj:{subj["type"]}) WHERE subj.name = {subj["name"]} RETURN elementID(subj) as id', db=db)
+            subj_out = self.execute_query(f'MATCH (subj:{subj["type"]}) WHERE subj.name = "{subj["name"]}" RETURN elementID(subj) as id', db=db)
             if not subj_out:
                 insert_subj_query = create_node_query(subj)
                 subj_id = self.execute_query(insert_subj_query, db=db)[0]['id']
             else:
                 subj_id = subj_out[0]['id']
 
-            obj_out = self.execute_query(f'MATCH (subj:{obj["type"]}) WHERE subj.name = {obj["name"]} RETURN elementID(obj) as id', db=db)
+            obj_out = self.execute_query(f'MATCH (subj:{obj["type"]}) WHERE subj.name = "{obj["name"]}" RETURN elementID(obj) as id', db=db)
             if not obj_out:
                 insert_obj_query = create_node_query(obj)
                 obj_id = self.execute_query(insert_obj_query, db=db)[0]['id']
