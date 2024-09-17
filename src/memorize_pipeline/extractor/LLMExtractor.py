@@ -1,8 +1,8 @@
-from ...agents.llama_agent import LLaMAagent
+from ...llm_agent import AgentConnector
 from .utils import TRIPLETS_EXTRACTION_PROMPT, THESISES_EXTRACTION_PROMPT, Logger, log_path
 
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Dict
 import ast
 
 @dataclass
@@ -13,14 +13,14 @@ class LLMExtractorConfig:
 
 class LLMExtractor:
 
-    def __init__(self, llm_agent: LLaMAagent, config: LLMExtractorConfig) -> None:
-        self.llm_agent = llm_agent
+    def __init__(self, agent_conn: AgentConnector, config: LLMExtractorConfig =  LLMExtractorConfig()) -> None:
+        self.agent_conn = agent_conn
         self.config = config
         self.triplet_extraction_prompt = config.triplet_extraction_prompt
         self.thesis_extraction_prompt = config.thesis_extraction_prompt
         self.log = config.log
 
-    def extract(self, text, need_simple = True, need_thesises = True, need_episodic = True, node_prop = {}, rel_prop = {}):
+    def extract(self, text: str, need_simple = True, need_thesises = True, need_episodic = True, node_prop = {}, rel_prop = {}):
         assert need_simple or need_thesises
         new_triplets = []
         if need_simple:
@@ -37,14 +37,16 @@ class LLMExtractor:
         return new_triplets
 
     def extract_triplets(self, text, node_prop = {}, rel_prop = {}):
-        raw_response = self.llm_agent.generate(self.triplet_extraction_prompt.format(text = text))
+        raw_response = self.agent_conn.generate(self.triplet_extraction_prompt.format(text = text), 
+                                                gen_strategy={'max_new_tokens': 2048})
         self.log("TEXT: " + text)
         self.log("EXTRACTED TRIPLETS: " + str(raw_response))
         new_triplets = self.parse_triplets(raw_response, node_prop, rel_prop)
         return new_triplets
         
     def extract_thesises(self, text, node_prop = {}, rel_prop = {}):
-        raw_response = self.llm_agent.generate(self.thesis_extraction_prompt.format(text = text))
+        raw_response = self.agent_conn.generate(self.thesis_extraction_prompt.format(text = text), 
+                                                gen_strategy={'max_new_tokens': 2048})
         self.log("TEXT: " + text)
         self.log("EXTRACTED THESISES: " + str(raw_response))
         new_triplets = self.parse_thesises(raw_response, node_prop, rel_prop)
@@ -87,10 +89,8 @@ class LLMExtractor:
         return thesises
     
     @staticmethod
-    def parse_triplets(raw_triplets, node_prop, rel_prop):
-        if ":" in raw_triplets:
-            raw_triplets = raw_triplets.split(":")[-1]
-        raw_triplets = raw_triplets.lower()
+    def parse_triplets(raw_triplets: str, node_prop: Dict, rel_prop: Dict):
+        raw_triplets = ' '.join(list(filter(lambda v: len(v), raw_triplets.split("\n")[1:-1]))).lower()
         raw_triplets = raw_triplets.split(";")
         triplets = []
         for triplet in raw_triplets:

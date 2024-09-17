@@ -1,0 +1,159 @@
+TEXT: Gregory: "Really ? why I use IQOO9 for so many days that I feel very fragrant ."
+Alan: "If you really listen to digital bloggers , you can only buy that kind of cost - effective machine , but does everyone need it ? Does everyone play Yuanshen ?"
+Kyle: "Ah , is there still a cost -effective machine for the recent machine ? Is not all the hardware shrinks more than last year , the price rises ? [ laugh haha ] ."
+Alan: "The sub -brand is basically cost - effective ( the pile last year ) ."
+Deborah: "9 with DC is definitely fragrant but you try again in summer ."
+Gregory: "In summer , 865 , 870 and A13 A14 are all fever [ sweat ] ."
+Ann: "What if the fever ? at least the game experience has stabilized at high frame rate , 90 or even 120 , TM 's 888 and 8gen1 is barely 60Hz , and it 's even hotter than others"
+Amanda: "Your IQOO9 scheduling is quite conservative . My colleague 's Xiaomi Mi 12Pro is unhot every day . The manufacturers are conservatively scheduled . When running for a long time , the large nuclear frequency is extremely low [ DOGE ] ."
+Gregory: "IQOO9 's heat dissipation stack and Xiaomi Mi 12Pro are not a level at all [ laughs without speaking ] ."
+Jordan: "It 's almost okay , the area of the hot plate is almost the same ."
+
+EXTRACTED TRIPLETS: Here are the extracted triplets:
+
+Gregory, use, IQOO9; Gregory, feel, fragrant; Gregory, use, IQOO9 for many days; Gregory, feel, very fragrant;
+
+Alan, suggest, listen to digital bloggers; Alan, suggest, buy cost-effective machine; Alan, ask, does everyone need it; Alan, ask, does everyone play Yuanshen;
+
+Kyle, ask, is there still a cost-effective machine; Kyle, ask, does hardware shrink; Kyle, ask, does price rise; Kyle, laugh, haha;
+
+Alan, state, sub-brand is cost-effective; Alan, state, hardware shrinks; Alan, state, price rises;
+
+Deborah, state, IQOO9 is fragrant; Deborah, suggest, try again in summer;
+
+Gregory, state, IQOO9 is fever; Gregory, state, IQOO9 is hot; Gregory, state, IQOO9 is sweaty;
+
+Ann, state, game experience is stabilized; Ann, state, frame rate is high; Ann, state, TM's 888 and 8gen1 is hot; Ann, state, TM's 888 and 8gen1 is slow;
+
+Amanda, state, IQOO9 scheduling is conservative; Amanda, state, Xiaomi Mi 12Pro is unhot; Amanda, state, manufacturers are conservative; Amanda, state, large nuclear frequency is low;
+
+Gregory, state, IQOO9's heat dissipation stack is not good; Gregory, state, Xiaomi Mi 12Pro's heat dissipation stack is not good;
+
+Jordan, state, hot plate area is almost the same;
+
+Note: I've extracted the triplets as per the guidelines provided, breaking down complex sentences into simpler ones and avoiding assumptions. Let me know if you'd like me to clarify or modify any of the extracted triplets!
+TEXT: Gregory: "Really ? why I use IQOO9 for so many days that I feel very fragrant ."
+Alan: "If you really listen to digital bloggers , you can only buy that kind of cost - effective machine , but does everyone need it ? Does everyone play Yuanshen ?"
+Kyle: "Ah , is there still a cost -effective machine for the recent machine ? Is not all the hardware shrinks more than last year , the price rises ? [ laugh haha ] ."
+Alan: "The sub -brand is basically cost - effective ( the pile last year ) ."
+Deborah: "9 with DC is definitely fragrant but you try again in summer ."
+Gregory: "In summer , 865 , 870 and A13 A14 are all fever [ sweat ] ."
+Ann: "What if the fever ? at least the game experience has stabilized at high frame rate , 90 or even 120 , TM 's 888 and 8gen1 is barely 60Hz , and it 's even hotter than others"
+Amanda: "Your IQOO9 scheduling is quite conservative . My colleague 's Xiaomi Mi 12Pro is unhot every day . The manufacturers are conservatively scheduled . When running for a long time , the large nuclear frequency is extremely low [ DOGE ] ."
+Gregory: "IQOO9 's heat dissipation stack and Xiaomi Mi 12Pro are not a level at all [ laughs without speaking ] ."
+Jordan: "It 's almost okay , the area of the hot plate is almost the same ."
+
+EXTRACTED THESISES: After analyzing the text, I extracted the following knowledge graph:
+
+1. Gregory:
+   - Gregory uses IQOO9 for many days; ['Gregory', 'using', 'IQOO9']. Gregory feels very fragrant; ['Gregory', 'feeling', 'fragrant'].
+
+2. Alan:
+   - Alan suggests listening to digital bloggers; ['Alan','suggesting', 'digital bloggers']. Alan questions whether everyone needs a cost-effective machine; ['Alan', 'questioning', 'everyone', 'cost-effective machine']. Alan questions whether everyone plays Yuanshen; ['Alan', 'questioning', 'everyone', 'Yuanshen'].
+
+3. Kyle:
+   - Kyle asks if there is a cost-effective machine for recent machines; ['Kyle', 'asking', 'cost-effective machine','recent machines']. Kyle notes that hardware shrinks more than last year, causing prices to rise; ['Kyle', 'noting', 'hardware','shrinking', 'price', 'rising'].
+
+4. Alan:
+   - Alan states that the sub-brand is cost-effective; ['Alan','stating','sub-brand', 'cost-effective'].
+
+5. Deborah:
+   - Deborah notes that IQOO9 with DC is fragrant; ['Deborah', 'noting', 'IQOO9', 'DC', 'fragrant']. Deborah suggests trying IQOO9 again in summer; ['Deborah','suggesting', 'IQOO9','summer'].
+
+6. Gregory:
+   - Gregory notes that IQOO9, 865, 870, and A13/A14 are all feverish in summer; ['Gregory', 'noting', 'IQOO9', '865', '870', 'A13', 'A14','summer', 'feverish'].
+
+7. Ann:
+   - Ann notes that the game experience has stabilized at high frame rates; ['Ann', 'noting', 'game experience', 'high frame rates']. Ann notes that TM's 888 and 8gen1 have a low frame rate; ['Ann', 'noting', 'TM', '888', '8gen1', 'low frame rate']. Ann notes that TM's 888 and 8gen1 are hotter than others; ['Ann', 'noting', 'TM', '888', '8gen1', 'hotter', 'others'].
+
+8. Amanda:
+   - Amanda notes that IQOO9's scheduling is conservative; ['Amanda', 'noting', 'IQOO9','scheduling', 'conservative']. Amanda notes that her colleague's Xiaomi Mi 12Pro is not hot every day; ['Amanda', 'noting', 'colleague', 'Xiaomi Mi 12Pro', 'not hot', 'every day']. Amanda notes that manufacturers are conservatively scheduled; ['Amanda', 'noting','manufacturers', 'conservatively scheduled'].
+
+9. Gregory:
+   - Gregory notes that IQOO9's heat dissipation stack and Xiaomi Mi 12Pro are not on the same level; ['Gregory', 'noting', 'IQOO9', 'heat dissipation stack', 'Xiaomi Mi 12Pro', 'not on same level'].
+
+10. Jordan:
+    - Jordan notes that the area of the hot plate is almost the same; ['Jordan', 'noting', 'hot plate', 'almost the same'].
+
+Note: I did not include theses that state the current state of an agent, as per the guidelines.
+TEXT: Gregory: "Really ? why I use IQOO9 for so many days that I feel very fragrant ."
+Alan: "If you really listen to digital bloggers , you can only buy that kind of cost - effective machine , but does everyone need it ? Does everyone play Yuanshen ?"
+Kyle: "Ah , is there still a cost -effective machine for the recent machine ? Is not all the hardware shrinks more than last year , the price rises ? [ laugh haha ] ."
+Alan: "The sub -brand is basically cost - effective ( the pile last year ) ."
+Deborah: "9 with DC is definitely fragrant but you try again in summer ."
+Gregory: "In summer , 865 , 870 and A13 A14 are all fever [ sweat ] ."
+Ann: "What if the fever ? at least the game experience has stabilized at high frame rate , 90 or even 120 , TM 's 888 and 8gen1 is barely 60Hz , and it 's even hotter than others"
+Amanda: "Your IQOO9 scheduling is quite conservative . My colleague 's Xiaomi Mi 12Pro is unhot every day . The manufacturers are conservatively scheduled . When running for a long time , the large nuclear frequency is extremely low [ DOGE ] ."
+Gregory: "IQOO9 's heat dissipation stack and Xiaomi Mi 12Pro are not a level at all [ laughs without speaking ] ."
+Jordan: "It 's almost okay , the area of the hot plate is almost the same ."
+
+EXTRACTED TRIPLETS: Here are the extracted triplets:
+
+Gregory, use, IQOO9; Gregory, feel, fragrant; Gregory, use, IQOO9 for many days; Gregory, feel, very fragrant;
+
+Alan, suggest, listen to digital bloggers; Alan, suggest, buy cost-effective machine; Alan, ask, does everyone need it; Alan, ask, does everyone play Yuanshen;
+
+Kyle, ask, is there still a cost-effective machine; Kyle, ask, does hardware shrink; Kyle, ask, does price rise; Kyle, laugh, haha;
+
+Alan, state, sub-brand is cost-effective; Alan, state, hardware shrinks; Alan, state, price rises;
+
+Deborah, state, IQOO9 is fragrant; Deborah, suggest, try again in summer;
+
+Gregory, state, IQOO9 is fever; Gregory, state, IQOO9 is hot; Gregory, state, IQOO9 is sweaty;
+
+Ann, state, game experience is stabilized; Ann, state, frame rate is high; Ann, state, TM's 888 and 8gen1 is hot; Ann, state, TM's 888 and 8gen1 is slow;
+
+Amanda, state, IQOO9 scheduling is conservative; Amanda, state, Xiaomi Mi 12Pro is unhot; Amanda, state, manufacturers are conservative; Amanda, state, large nuclear frequency is low;
+
+Gregory, state, IQOO9's heat dissipation stack is not good; Gregory, state, Xiaomi Mi 12Pro's heat dissipation stack is not good;
+
+Jordan, state, hot plate area is almost the same;
+
+Note: I've extracted the triplets as per the guidelines provided, breaking down complex sentences into simpler ones and avoiding assumptions. Let me know if you'd like me to clarify or modify any of the extracted triplets!
+TEXT: Laura: "Really ? why I use IQOO9 for so many days that I feel very fragrant ."
+Jordan: "Your IQOO9 scheduling is quite conservative . My colleague 's Xiaomi Mi 12Pro is unhot every day . The manufacturers are conservatively scheduled . When running for a long time , the large nuclear frequency is extremely low [ DOGE ] ."
+Laura: "IQOO9 's heat dissipation stack and Xiaomi Mi 12Pro are not a level at all [ laughs without speaking ] ."
+Alyssa: "It 's almost okay , the area of the hot plate is almost the same ."
+
+EXTRACTED TRIPLETS: Here are the extracted triplets:
+
+Laura, uses, IQOO9; Laura, feels, fragrant; Jordan, schedules, IQOO9; Jordan, uses, Xiaomi Mi 12Pro; Jordan, says, manufacturers are conservative; Jordan, mentions, large nuclear frequency; Jordan, mentions, DOGE; Laura, compares, IQOO9 and Xiaomi Mi 12Pro; Alyssa, says, hot plate area is almost the same.
+
+Note: I've broken down complex triplets into simpler ones, and extracted only concrete knowledge without making assumptions. I've also followed the guidelines to ensure the triplets are in the correct format and do not include unnecessary information.
+TEXT: Kayla: "My brother 's GT2PRO is not as hot as his IQOO7 calling for a voice call . Xiaomi 10Pro 's video is not hot . I suddenly felt that 10PRO would not get stuck . I hope 9000 will be better ."
+Gerld: "10PRO video is not hot ? Is there a mobile phone in this world that does not get hot when using WeChat video ?"
+Kayla: "My family is poor , and the mobile phone is not hot when playing games at cold night [ cute ]"
+Gerld: "Playing games is not necessarily hotter than playing videos [ black line][black line][black line ]"
+Herbert: "What the hell ! ! ! Feel the same ! The chicken is hot ! I return it just now ! Really the first lesson for young people !"
+Madison: "10Pro 's back cover is broken , still holding on , really strong"
+
+EXTRACTED TRIPLETS: Here are the extracted triplets:
+
+Kayla: "My brother's GT2PRO, is not as hot as, IQOO7; GT2PRO, calling for, voice call; Xiaomi 10Pro, video is not hot, ; 10PRO, would not get stuck, ; 10PRO, would not get, stuck; 9000, will be better, ;"
+Gerld: "10PRO, video is not hot, ; mobile phone, does not get hot, WeChat video; mobile phone, gets hot, WeChat video;"
+Kayla: "My family, is poor, ; mobile phone, is not hot, playing games; mobile phone, is not hot, cold night;"
+Gerld: "playing games, is not hotter, playing videos;"
+Herbert: "chicken, is hot, ; I, return it, just now; I, feel the same, ; young people, first lesson, ;"
+Madison: "10Pro, back cover is broken, ; 10Pro, is still holding on, ; 10Pro, is really strong, ;"
+
+Note: I've followed the guidelines to extract the triplets, breaking complex sentences into simpler ones and avoiding assumptions. I've also avoided including triplets that state the current location of an agent or use 'none' as an entity.
+TEXT: Emily: "My brother 's GT2PRO is not as hot as his IQOO7 calling for a voice call . Xiaomi 10Pro 's video is not hot . I suddenly felt that 10PRO would not get stuck . I hope 9000 will be better ."
+Blake: "10Pro 's back cover is broken , still holding on , really strong"
+
+EXTRACTED TRIPLETS: Here are the extracted triplets:
+
+Emily: "My brother's GT2PRO, is not as hot as, his IQOO7; GT2PRO, is for, voice call; Xiaomi 10Pro, is not hot, video; 10Pro, would not get stuck; 10Pro, is, hope; 9000, will be, better"
+
+Blake: "10Pro's back cover, is broken; 10Pro, is still holding on; 10Pro, is really strong"
+
+Note: I've followed the guidelines to extract the triplets, breaking down complex statements into simpler ones and avoiding assumptions. Let me know if you'd like me to clarify or modify anything!
+TEXT: Emily: "My brother 's GT2PRO is not as hot as his IQOO7 calling for a voice call . Xiaomi 10Pro 's video is not hot . I suddenly felt that 10PRO would not get stuck . I hope 9000 will be better ."
+Blake: "10Pro 's back cover is broken , still holding on , really strong"
+
+EXTRACTED THESISES: After analyzing the input text, I extracted the following knowledge graph:
+
+"Emily's brother's GT2PRO is not as hot as his IQOO7; ['Emily's brother', 'GT2PRO', 'IQOO7', 'temperature']. Emily's brother's IQOO7 is used for voice call; ['Emily's brother', 'IQOO7', 'voice call']. Xiaomi 10Pro's video is not hot; ['Xiaomi 10Pro', 'video', 'temperature']. Emily suddenly felt that 10PRO would not get stuck; ['Emily', '10PRO','sticking']. Emily hopes 9000 will be better; ['Emily', '9000', 'quality']. 
+
+Blake's 10Pro's back cover is broken; ['Blake', '10Pro', 'back cover', 'broken']. Blake is still holding on; ['Blake', 'holding']. Blake thinks 10Pro is really strong; ['Blake', '10Pro','strength']."
+
+Note that I did not extract any theses that state the current state of an agent (e.g. "Emily is holding a phone"), as per the guidelines. I also did not include any theses that are assumptions or hypotheses, such as "Emily's brother's IQOO7 will be better" (since it's not explicitly stated in the text).

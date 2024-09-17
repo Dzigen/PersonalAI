@@ -1,7 +1,7 @@
 from .utils import MemPipelineConfig
 from .extractor.LLMExtractor import LLMExtractor
 from .updator.LLMUpdator import LLMUpdator
-from ..agents import LLaMAagent
+from ..llm_agent import AgentConnector
 from ..qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
 from ..utils.data_structs import Triplet, Node, Relation
 from ..knowledge_graph_model import KnowledgeGraphModel
@@ -10,12 +10,12 @@ from typing import Dict
 
 class MemPipeline:
 
-    def __init__(self, config: MemPipelineConfig, llm_agent: LLaMAagent, bfs: BFSRetriever, kg_model: KnowledgeGraphModel) -> None:
+    def __init__(self, config: MemPipelineConfig, agent_conn: AgentConnector, bfs: BFSRetriever, kg_model: KnowledgeGraphModel) -> None:
         self.config = config
         self.log = config.log
 
-        self.extractor = LLMExtractor(llm_agent, config.extractor_config)
-        self.updator = LLMUpdator(config.updator_config, llm_agent, bfs)
+        self.extractor = LLMExtractor(agent_conn, config.extractor_config)
+        self.updator = LLMUpdator(config.updator_config, agent_conn, bfs)
         
         self.kg_model = kg_model
 

@@ -9,7 +9,7 @@ SYSTEM_PROMPT = "You are a helpful assistant."
 
 @dataclass
 class AgentModelConfig:
-    gen_strategy: Dict = field(default_factory=lambda: {'early_stopping': True, 'num_beams': 3, 'max_new_tokens': 2048})
+    gen_strategy: Dict = field(default_factory=lambda: {'max_new_tokens': 2048})
     model_name_or_path: str = "/app/models/Undi95/Meta-Llama-3-8B-Instruct-hf"
     system_prompt: str = SYSTEM_PROMPT
     num_workers: int = 4
@@ -24,7 +24,7 @@ class AgentModel(AbstractAgentModel):
             device_map="auto"
         )
 
-    def generate(self, user_prompt: str, assistant_prompt: str = None, gen_strategy: Dict = None) -> str:
+    def generate(self, user_prompt: str, assistant_prompt: str = None, system_prompt: str = None, gen_strategy: Dict = None) -> str:
         """Метод для генерации ответов на текстовые запросы с помощью llm-агента.
 
         Args:
@@ -37,9 +37,9 @@ class AgentModel(AbstractAgentModel):
             str: Текстовая последовательность, сгенерированная llm-агентом.
         """
         messages = [
-            {"role": "system", "content": self.config.system_prompt},
-            {"role": "user","content": user_prompt}
-            ]
+            {"role": "system", "content":system_prompt if system_prompt is not None else SYSTEM_PROMPT},
+            {"role": "user","content": user_prompt}]
+
 
         if assistant_prompt is not None:
             messages.insert(1, {"role": "assistant", "content": assistant_prompt})
@@ -59,7 +59,9 @@ class AgentModel(AbstractAgentModel):
         outputs = self.pipeline(
             prompt,
             eos_token_id=terminators,
+            pad_token_id=self.pipeline.tokenizer.eos_token_id,
+            return_full_text=False,
             **gen_strategy
         )
         
-        return outputs[0]["generated_text"][len(prompt):]
+        return outputs[0]["generated_text"]
