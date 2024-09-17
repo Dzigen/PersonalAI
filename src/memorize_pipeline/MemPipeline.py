@@ -10,7 +10,7 @@ from typing import Dict
 
 class MemPipeline:
 
-    def __init__(self, config: MemPipelineConfig, agent_conn: AgentConnector, bfs: BFSRetriever, kg_model: KnowledgeGraphModel) -> None:
+    def __init__(self, agent_conn: AgentConnector, bfs: BFSRetriever, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig()) -> None:
         self.config = config
         self.log = config.log
 

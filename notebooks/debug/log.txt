@@ -3347,3 +3347,112 @@ Gabriella, mobile phones, Xiaomi; Gabriella, stuck, Xiaomi's mobile phones
 Anthony, phone, unless 13; Anthony, more and more stuck, [DOGE]
 
 Note: I did not include any triplets that state the current location of an agent, as per the guidelines. I also did not include any triplets that use "none" as an entity.
+TEXT: Lewis: "The Kirin 980 will fight for anoter two years ."
+Abigail: "Honor V20 has been used for three years , and it is also this processor . It is not stuck . The most annoying thing is the running memory ! I ca n't open three softwares . I have to re - enter when I switch back . I ca n't open them all the time . I 'm so annoying . I want to save money to buy Apple"
+Marjorie: "[ doge ] Banned a lot of Wisdom xx with the little black house , now you can save six or seven apps in the background , do n't kill the background anymore"
+Abigail: "Why do you say a bunch of things I do n't understand , what is black house , and wisdom?You tell me how to operate , I am too uncomfortable ."
+Marjorie: "V20 can also fight for three years [ DOGE ] ."
+Ella: "I am V10 ."
+Gabriella: "Xiaomi 's mobile phones are stuck now ."
+Anthony: "Unless it is 13 , it is more and more stuck [ doge ]"
+
+EXTRACTED THESISES: After analyzing the text, I extracted the following knowledge graph:
+
+1. Kirin 980; ['Kirin 980', 'fight', 'two years']
+2. Honor V20; ['Honor V20', 'processor', 'Kirin 980']
+3. Honor V20; ['Honor V20', 'used', 'three years']
+4. Honor V20; ['Honor V20', 'running memory', 'annoying']
+5. Softwares; ['softwares', 'opening', 'Honor V20']
+6. Apple; ['Apple', 'buy', 'Abigail']
+7. Black House; ['Black House', 'Wisdom xx', 'banned']
+8. Background; ['background','saving','six or seven apps']
+9. V20; ['V20', 'fight', 'three years']
+10. V10; ['V10', 'Ella']
+11. Xiaomi; ['Xiaomi','mobile phones','stuck']
+12. DOGE; ['DOGE', 'Anthony','stuck']
+
+Note that I did not extract theses that state the current state of an agent, such as "Abigail is using Honor V20" or "Anthony is stuck". I also did not extract theses that are assumptions or hypotheses, such as "Honor V20 will be stuck in the future". The theses I extracted are concrete and based on the information provided in the text.
+TEXT: Kevin: "The Kirin 980 will fight for anoter two years ."
+Gladys: "Honor V20 has been used for three years , and it is also this processor . It is not stuck . The most annoying thing is the running memory ! I ca n't open three softwares . I have to re - enter when I switch back . I ca n't open them all the time . I 'm so annoying . I want to save money to buy Apple"
+Kaitlyn: "[ doge ] Banned a lot of Wisdom xx with the little black house , now you can save six or seven apps in the background , do n't kill the background anymore"
+Gladys: "Why do you say a bunch of things I do n't understand , what is black house , and wisdom?You tell me how to operate , I am too uncomfortable ."
+
+EXTRACTED TRIPLETS: Here are the extracted triplets:
+
+Kevin, said, Kirin 980 will fight for another two years;
+Gladys, used, Honor V20;
+Gladys, used, Kirin 980;
+Gladys, not stuck, Honor V20;
+Gladys, annoyed, running memory;
+Gladys, can't open, three softwares;
+Gladys, has to re-enter, when switch back;
+Gladys, can't open, all the time;
+Gladys, wants to save money, to buy Apple;
+Kaitlyn, shared, little black house;
+Kaitlyn, shared, Wisdom xx;
+Kaitlyn, allows, save six or seven apps in the background;
+Kaitlyn, allows, not kill the background anymore;
+Gladys, asked, what is black house;
+Gladys, asked, what is Wisdom;
+Gladys, asked, how to operate;
+Gladys, felt, uncomfortable;
+
+Note: I did not include any assumptions or hypotheses, and only extracted concrete knowledge from the text. I also followed the guidelines to break complex triplets into simple ones, and to ensure that the length of each triplet is not more than 7 words.
+TEXT: Kevin: "The Kirin 980 will fight for anoter two years ."
+Gladys: "Honor V20 has been used for three years , and it is also this processor . It is not stuck . The most annoying thing is the running memory ! I ca n't open three softwares . I have to re - enter when I switch back . I ca n't open them all the time . I 'm so annoying . I want to save money to buy Apple"
+Kaitlyn: "[ doge ] Banned a lot of Wisdom xx with the little black house , now you can save six or seven apps in the background , do n't kill the background anymore"
+Gladys: "Why do you say a bunch of things I do n't understand , what is black house , and wisdom?You tell me how to operate , I am too uncomfortable ."
+
+EXTRACTED THESISES: After analyzing the input text, I extracted the following knowledge graph:
+
+1. Kirin 980; ['Kirin 980', 'fight', 'two years']
+2. Honor V20; ['Honor V20', 'processor', 'Kirin 980']
+3. Honor V20; ['Honor V20', 'used', 'three years']
+4. Honor V20; ['Honor V20', 'running memory', 'annoying']
+5. Software; ['Software', 'opening', 'Honor V20']
+6. Apple; ['Apple', 'buy', 'Gladys']
+7. Little Black House; ['Little Black House', 'background','save']
+8. Wisdom; ['Wisdom', 'banned', 'Little Black House']
+9. Doge; ['Doge', 'posting', 'Little Black House']
+10. Background; ['Background','save', 'Little Black House']
+11. Kirin 980; ['Kirin 980', 'processor', 'Honor V20']
+
+Note that I did not extract any theses that state the current state of an agent (e.g., "Gladys is using Honor V20") or any assumptions that are not explicitly stated in the text. I also did not include any theses that are not concrete knowledge, such as "Gladys will buy Apple" since it is not explicitly stated in the text.
+TEXT: Violet: "Why , is n't it good ?"
+Anthony: "My family bought 6 Xiaomi mobile phones , and they all broke after about a year . What 's even more abhorrent is that a mobile phone broke down in less than a year , and it was hard to find a special maintenance point . It even said that I had dismantled it and asked me to pay 300 yuan for the maintenance fee . I took it back without repairing it , and it was only 30 yuan at a nearby store . So : Xiaomi phones are rubbish ."
+Violet: "So it 's not as easy to use as my oppo . After using it for four years , except for the lack of memory , everything else is fine , and it wo n't be broken . I saw that my friend 's Xiaomi Mi 11 took good pictures , and I 'm a little excited ."
+Emily: "Holding the Mi 9 for two and a half years , there is no problem except that the battery life is not good , and the camera can not keep up with the mainstream ."
+Lynn: "why ? It 's from Huawei , is n't that obvious ?"
+Violet: "Is Xiaomi 11 recommended to buy ?"
+Xavier: "Just like and dislike , I 'm the kind of person who does n't like millet"
+
+EXTRACTED TRIPLETS: Here are the extracted triplets:
+
+Violet, asked, why; Violet, asked, isn't it good; Anthony, bought, 6 Xiaomi mobile phones; Anthony, broke, 6 Xiaomi mobile phones; Anthony, had problem, maintenance point; Anthony, paid, 300 yuan; Anthony, took back, mobile phone; Anthony, found, nearby store; Anthony, paid, 30 yuan; Violet, compared, Xiaomi and Oppo; Violet, used, Oppo for four years; Violet, saw, friend's Xiaomi Mi 11; Violet, excited, Xiaomi Mi 11; Emily, used, Mi 9 for two and a half years; Emily, had problem, battery life; Emily, had problem, camera; Lynn, asked, why; Lynn, mentioned, Huawei; Violet, asked, is Xiaomi 11 recommended to buy; Xavier, mentioned, Xiaomi; Xavier, dislikes, Xiaomi
+
+Note: I've followed the guidelines to extract the triplets, breaking down complex sentences into simpler ones and avoiding assumptions. I've also avoided including triplets that state the current location of an agent or use "none" as an entity.
+TEXT: Violet: "Why , is n't it good ?"
+Anthony: "My family bought 6 Xiaomi mobile phones , and they all broke after about a year . What 's even more abhorrent is that a mobile phone broke down in less than a year , and it was hard to find a special maintenance point . It even said that I had dismantled it and asked me to pay 300 yuan for the maintenance fee . I took it back without repairing it , and it was only 30 yuan at a nearby store . So : Xiaomi phones are rubbish ."
+Violet: "So it 's not as easy to use as my oppo . After using it for four years , except for the lack of memory , everything else is fine , and it wo n't be broken . I saw that my friend 's Xiaomi Mi 11 took good pictures , and I 'm a little excited ."
+Emily: "Holding the Mi 9 for two and a half years , there is no problem except that the battery life is not good , and the camera can not keep up with the mainstream ."
+Lynn: "why ? It 's from Huawei , is n't that obvious ?"
+Violet: "Is Xiaomi 11 recommended to buy ?"
+Xavier: "Just like and dislike , I 'm the kind of person who does n't like millet"
+
+EXTRACTED THESISES: After analyzing the text, I extracted the following knowledge graph:
+
+1. Xiaomi mobile phones; ['Xiaomi','mobile phones']
+2. Xiaomi mobile phones broke after a year; ['Xiaomi mobile phones', 'breaking', 'year']
+3. Xiaomi mobile phones are hard to maintain; ['Xiaomi mobile phones','maintenance', 'difficulty']
+4. Xiaomi mobile phones have a high maintenance fee; ['Xiaomi mobile phones','maintenance fee', 'high']
+5. Xiaomi mobile phones are rubbish; ['Xiaomi mobile phones', 'quality', 'poor']
+6. Oppo mobile phones are easy to use; ['Oppo','mobile phones', 'usability', 'easy']
+7. Oppo mobile phones last for four years; ['Oppo','mobile phones', 'duration', 'four years']
+8. Oppo mobile phones have good performance; ['Oppo','mobile phones', 'performance', 'good']
+9. Xiaomi Mi 11 takes good pictures; ['Xiaomi Mi 11', 'camera', 'quality', 'good']
+10. Xiaomi Mi 11 is a type of Xiaomi mobile phone; ['Xiaomi Mi 11', 'type', 'Xiaomi mobile phones']
+11. Huawei mobile phones are from Huawei; ['Huawei','mobile phones', 'origin', 'Huawei']
+12. Xiaomi 11 is a type of Xiaomi mobile phone; ['Xiaomi 11', 'type', 'Xiaomi mobile phones']
+13. Xavier dislikes Xiaomi; ['Xavier', 'Xiaomi', 'opinion', 'dislike']
+
+Note that I did not extract any theses that state the current state of an agent (e.g. "you are in location"), as per the guidelines. I also did not include any theses that are assumptions or hypotheses, but only concrete knowledge.
