@@ -1,14 +1,16 @@
 import copy
 from neo4j import GraphDatabase
-from typing import List, Tuple, Dict
 
 class Neo4jConnection:
-    def __init__(self, uri, user, pwd):
+    def __init__(self, uri, user, pwd, default_db="testdb"):
         self.driver = None
         try:
             self.driver = GraphDatabase.driver(uri, auth=(user, pwd))
         except Exception as e:
             print("Failed to create the driver:", e)
+        self.default_db = default_db
+        self.execute_query(f"CREATE DATABASE {default_db} IF NOT EXISTS", db=default_db)
+
         self.create_node_template = 'CREATE (n:{type} {{ name: "{name}"}})'
         self.create_rel_template0 = """MATCH (a:{type1}), (b:{type2})
 WHERE a.name="{name1}" and b.name ="{name2}"
@@ -155,6 +157,8 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         return []
 
     def execute_query(self, query, db=None):
+        if db is None:
+            db = self.default_db
         assert self.driver is not None, "Driver not initialized!"
         session = None
         response = None
@@ -169,10 +173,14 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         return response
 
     def create_node(self, node_type, node_name, db=None):
+        if db is None:
+            db = self.default_db
         query = self.create_node_template.format(type=node_type, name=node_name)
         self.execute_query(query, db=db)
 
     def create_relationship_no_props(self, type1, type2, name1, name2, rel_name, db=None):
+        if db is None:
+            db = self.default_db
         query = self.create_rel_template0.format(
             type1=type1,
             type2=type2,
@@ -183,6 +191,8 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         self.execute_query(query, db=db)
 
     def create_relationship(self, type1, type2, name1, name2, rel_name, rel_prop_name, rel_prop_value, db=None):
+        if db is None:
+            db = self.default_db
         query = self.create_rel_template1.format(
             type1=type1,
             type2=type2,
@@ -196,6 +206,8 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
     def create_relationship_2props(self, type1, type2, name1, name2, rel_name, rel_prop_name1, rel_prop_value1,
                                          rel_prop_name2, rel_prop_value2, db=None):
+        if db is None:
+            db = self.default_db
         query = self.create_rel_template2.format(
             type1=type1,
             type2=type2,
@@ -215,6 +227,8 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                                    rel_prop_name3, rel_prop_value3,
                                    rel_prop_name4, rel_prop_value4,
                                    rel_prop_name5, rel_prop_value5, db=None):
+        if db is None:
+            db = self.default_db
         query = self.create_rel_template5.format(
             type1=type1,
             type2=type2,
@@ -235,6 +249,8 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         self.execute_query(query, db=db)
 
     def extract_node(self, node_type=None, node_name=None, db=None):
+        if db is None:
+            db = self.default_db
         if node_type and node_name:
             query = self.extract_node_type_name_template.format(type=node_type, name=node_name)
         elif node_type:
@@ -245,6 +261,8 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         return res
 
     def extract_triplets(self, name1=None, name2=None, rel=None, db=None):
+        if db is None:
+            db = self.default_db
         if name1 and name2:
             query = self.extract_triplets_names_template.format(name1=name1, name2=name2)
         elif name1 and rel:
@@ -261,6 +279,8 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         return res
 
     def parse_triplet_output(self, query, another_entities, chain, subj_labels=None, obj_labels=None, db=None):
+        if db is None:
+            db = self.default_db
         triplets = []
         inters_chains = []
         new_entities = []
@@ -294,6 +314,8 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         return triplets, new_entities, inters_chains
 
     def bfs(self, seed_entities, depth=1, subj_labels=None, obj_labels=None, db=None):
+        if db is None:
+            db = self.default_db
         triplets_dict = {}
         inters_chains = []
         # seed_entity, prop_name="", entity_type="node"
