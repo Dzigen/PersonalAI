@@ -10,10 +10,9 @@ from typing import Dict
 
 class MemPipeline:
 
-    def __init__(self, config: MemPipelineConfig, llm_agent: LLaMAagent, bfs: BFSRetriever, kg_model: KnowledgeGraphModel, db_name: str) -> None:
+    def __init__(self, config: MemPipelineConfig, llm_agent: LLaMAagent, bfs: BFSRetriever, kg_model: KnowledgeGraphModel) -> None:
         self.config = config
         self.log = config.log
-        self.db_name = db_name
 
         self.extractor = LLMExtractor(llm_agent, config.extractor_config)
         self.updator = LLMUpdator(config.updator_config, llm_agent, bfs)
@@ -32,11 +31,11 @@ class MemPipeline:
             # self.log("PROCESSED OUTDATED TRIPLETS: " + str(triplets_to_remove))
         
 
-        ids = self.kg_model.graph_db.create_triplets(new_triplets, self.db_name)
+        ids = self.kg_model.graph_db.create_triplets(new_triplets)
         prepared_triplets = self.match_triplets_by_id(new_triplets, ids)
         self.kg_model.embeddings_db.add_triplets(prepared_triplets)
         if need_update:
-            ids = self.kg_model.graph_db.delete_triplets(triplets_to_remove, self.db_name)
+            ids = self.kg_model.graph_db.delete_triplets(triplets_to_remove)
             triplets_ids = [id[1] for id in ids]
             nodes_ids = [id[0] for id in ids] + [id[2] for id in ids]
             self.kg_model.embeddings_db.delete_triplets(triplets_ids, nodes_ids)
