@@ -2,18 +2,18 @@ from dataclasses import dataclass
 
 from .utils import EntitiesExtractorConfig
 from ...utils.data_structs import QueryInfo
-from ...agents.llama_agent import LLaMAagent
+from ...llm_agent import AgentConnector
 
 @dataclass
 class QueryLLMParserConfig:
-    ents_extr_config: EntitiesExtractorConfig
+    ents_extr_config: EntitiesExtractorConfig = EntitiesExtractorConfig()
 
 
 class QueryLLMParser:
     """Главный класс для извлечения полезной информации 
     из пользовательского запроса
     """
-    def __init__(self, config: QueryLLMParserConfig, llm_agent: LLaMAagent) -> None:
+    def __init__(self, llm_agent: AgentConnector, config: QueryLLMParserConfig = QueryLLMParserConfig()) -> None:
         self.config = config
         self.llm_agent = llm_agent
 

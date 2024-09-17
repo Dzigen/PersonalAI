@@ -1,6 +1,6 @@
 from .utils import QUESTION_ANSWERING_USER_PROMPT, ContextType
 from ...utils.data_structs import Triplet
-from ...agents.llama_agent import LLaMAagent
+from ...llm_agent import AgentConnector
 
 from typing import List
 from dataclasses import dataclass, field
@@ -15,10 +15,9 @@ class QALLMGenerator:
     """Главный класс для генерации ответов по пользовательским вопросам на основе 
     извлечённой информации из графа знаний
     """
-    def __init__(self, llm_agent: LLaMAagent, config: QALLMGeneratorConfig) -> None:
+    def __init__(self, llm_agent: AgentConnector, config: QALLMGeneratorConfig = QALLMGeneratorConfig()) -> None:
         self.llm_agent = llm_agent
         self.config = config
-        self.stringi
 
     def formate_context(self, triplets: List[Triplet]) -> str:
         filtered_context = []

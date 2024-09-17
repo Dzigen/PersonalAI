@@ -14,7 +14,7 @@ class KnowledgeComparator:
     """Главный класс для сопостовения информации в пользовательском запросе
     с имеющейся информацией в графе знаний
     """
-    def __init__(self, config: KnowledgeComparatorConfig, kg_model: KnowledgeGraphModel) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeComparatorConfig = KnowledgeComparatorConfig()) -> None:
         self.config = config
         self.kg_model = kg_model
 

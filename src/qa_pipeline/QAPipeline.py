@@ -24,10 +24,10 @@ class QAPipeline:
         self.llama_agent = llm_agent
         self.config = config
 
-        self.query_parser = QueryLLMParser(self.config.query_parser_config)
-        self.knowledge_comparator = KnowledgeComparator(self.config.knowledge_comparator_config)
-        self.knowledge_retriever = KnowledgeRetriever(self.config.knowledge_retriever_config)
-        self.answer_generator = QALLMGenerator(self.config.answer_generator_config)
+        self.query_parser = QueryLLMParser(self.llama_agent, self.config.query_parser_config)
+        self.knowledge_comparator = KnowledgeComparator(self.kg_model, self.config.knowledge_comparator_config)
+        self.knowledge_retriever = KnowledgeRetriever(self.kg_model, self.config.knowledge_retriever_config)
+        self.answer_generator = QALLMGenerator(self.llama_agent, self.config.answer_generator_config)
 
     def answer(self, query: str) -> str:
         # stage 1

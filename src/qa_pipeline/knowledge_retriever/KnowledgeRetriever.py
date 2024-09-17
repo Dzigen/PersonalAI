@@ -18,7 +18,7 @@ class KnowledgeRetriever:
     """Главный класс для извлечения релевантной информации из графа знаний
     по запросу пользователя 
     """
-    def __init__(self, config: KnowledgeRetrieverConfig, kg_model: KnowledgeGraphModel) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeRetrieverConfig = KnowledgeRetrieverConfig()) -> None:
         self.config = config
         self.kg_model = kg_model
 

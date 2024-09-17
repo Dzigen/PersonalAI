@@ -65,13 +65,17 @@ class RemoteAgentConnector(AbstractAgentConnector):
         """
         conn_params = self.config.connection_params
         url = f"http://{conn_params.host}:{conn_params.port}/{conn_params.gen_path}"
+        
         body = {"user_prompt": user_prompt}
         if assistant_prompt is not None:
             body["assistant_prompt"] = assistant_prompt
         if gen_strategy is not None:
             body["gen_strategy"] = gen_strategy
+        else:
+            body["gen_strategy"] = self.config.agent_config.gen_strategy
         if system_prompt is not None:
             body["system_prompt"] = system_prompt
+        
         response = requests.post(url, json=body)
 
         if response.status_code == 200:
