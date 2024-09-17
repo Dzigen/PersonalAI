@@ -1,0 +1,1353 @@
+QUESTION: Whose opinions from Evan and James about manufacturers are most similar to Abigail's?
+RETRIEVED: 
+Relevant utterances:
+Abigail: If you care about creases , it seems that the creases are well controlled , you can consider .
+Abigail: Agree with you , I wanted to buy the latest flip some time ago for my wife
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Evan: But it may not be easy to match the phone case
+Abigail: [ doge ] Stainless steel frame , can it not be heavy ? The aluminum used in 13 is much lighter . The pro with the same measurements costs 200 +
+Abigail: No problem using it so far
+Evan: It 's not the same price ,
+Abigail: Now using the realme gt2 , taming the 888 does have an effect , but at least after using it we can know the 888 has been marketed and exaggerated
+Benjamin: In fact , if the price of the blue factory has been there , the workmanship and texture will be fine . My rubbish 70 + is like that , I know that he is very expensive as soon as I touch it . [ doge ]
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Abigail: As far as his cognitive level is concerned , do n't need Apple , Nokia is enough
+David: There are more of blue factory 's in 3000 to 4000 , under 3000 , generally the middle end
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Abigail: The power consumption is relatively stable , there is no problem to use for a day , and it is also acceptable to play games
+Abigail: During the blind test , the photo selection rate of Xiaomi mobile phone was the highest . It 's a pity that as soon as the brand is exposed , it is said to be rubbish 🙄
+James: I feel that Xiaobai is the most worthless test .
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+James: Omg , go to a repair shop and see who has the worst battery ? ? What makes you lie through your teeth
+Abigail: Ca n't stick the film
+Evan: Mainly I do n't like digging holes in the upper left corner , I like the center
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Alan: Glory is all purchased from suppliers , right ?
+Lillian: Blue Factory 's super - sized cup I personally think it 's the best to take pictures
+Evan: Green is more chic and more attractive
+Evan: What 's so bad ? I also want to buy a p50pro [ allow sad ]
+RIGHT ANSWER: Evan
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: Whose opinions from Abraham and James about manufacturers are most similar to Anthony's?
+RETRIEVED: 
+Relevant utterances:
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Benjamin: In fact , if the price of the blue factory has been there , the workmanship and texture will be fine . My rubbish 70 + is like that , I know that he is very expensive as soon as I touch it . [ doge ]
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Anthony: If you do n't believe it , I have no way . At that time , the signal of Hongmeng really make me headache . I do n't know if it is to control power consumption . It does n't work anyway . Then I sold it
+Anthony: Are you sure that droplet is serious ...
+Alan: Glory is all purchased from suppliers , right ?
+Abraham: Mi Factory and Blue Factory do n't have to worry about this problem , they have their way
+Isabella: A less known and inferior brand do n't talk about the workmanship
+James: I feel that Xiaobai is the most worthless test .
+Anthony: take a part of the whole
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+Anthony: Very bad , regardless of old users
+David: There are more of blue factory 's in 3000 to 4000 , under 3000 , generally the middle end
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Anthony: At that time , the signal was very bad , and many people in the club reported that , it was not only me . Then I sold it . Maybe the later version has been updated it well
+Anthony: Do n't say it , my battery life is super poor , the heat is serious , and the charging became slow .
+Anthony: It 's easy to see the difference after a year
+Anthony: I just posted yesterday , you can rummage it
+Francis: The emphasis is on experience , and also on the manufacturer 's adjusting
+Noah: A pound of compressed cotton and a pound of iron are not the same weight in the hand ?
+Donald: Only when we are strong and keep doing basic research well is the foundation of our future . Those gadgets are named what black technology . Really ca n't take it to the table . Cheap is not a panacea , texture and brand appeal are not simply based on the configuration that you have , I have and everyone has . Brand image is important .
+Jeremiah: No , it 's hard to say , if the blue factory is flattened , maybe it will look good
+Alexander: But since you can have a better experience , of course you should choose a better one . Neo5 , there are not many short boards . Why do you have to choose one have more short boards for a similar price ?
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Adrian: There is no way to whitewash it , do n't talk about these , 30 % more expensive ca n't even play 4 K , let alone the picture quality . In this 618 e - commerce carnival , Xiaomi released the Xiaomi TV attributive sales champion , but the lack of the most mainstream size champions of 55 and 65 inches , think about why ? Are consumers all idiots ?
+RIGHT ANSWER: Abraham
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: Whose opinions from Josephine and James about manufacturers are most similar to Agatha's?
+RETRIEVED: 
+Relevant utterances:
+Agatha: How can it not be compared ? Tell me
+Agatha: The problem is that they did n't stack any
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+Agatha: Why does n't blue factory use it if gn2 is so good ?
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Ashley: I really do n't think there is anything wrong with the water droplets . On the contrary , I think the water droplets are very good .
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Jennifer: Except for the first batch , 11 seems to have not been burned , and only 100 people have burned in hundreds of thousands of sales , which can only mean that they are unlucky [ cute ]
+Jacqueline: After being cheated by K40 , do you want to be cheated again ? At the beginning , it boasted that the k40 screen was the first in the industry , it turned out to be usable ? No matter how good the heat dissipation is , with a blind screen , who can use it ?
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+Marjorie: What about the Samsung Miracle 's compare with the True Flagship 's
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Angelina: The main thing is that it is thin and light . It has everything that should be there , and the price is OK . I am using 13p now . There are too many places to complain .
+Agatha: Not sure
+Agatha: What we are talking about is 9 , honey , seriously review the question please[hee hee ]
+Kathryn: I also want the Dimensity 9000 for the super cup . Forget the fire Snapdragon . If you want to buy the Snapdragon , you can choose Xiaomi [ laughs but does not speak ]
+Diana: But if you care about thickness , it is really a disaster for bare mechine more than 9 mm and plus the mobile phone case .
+Elizabeth: The Honor water army is indeed a lot , but to be honest , Magic3 is pretty good , it 's just that other series of products are leek
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Josephine: These domestic brands are all heaping hardware configuration , and the actual experience is not good . Except for Huawei , no wonder they all buy Apple now . Although Apple 's hardware parameters are not top - notch , the experience is good . The system and hardware complement each other . If the system works bad , it 's annoying to use [ doge ] Sentiment: neg
+James: Omg , go to a repair shop and see who has the worst battery ? ? What makes you lie through your teeth
+Jacqueline: The screen speaker work system , plus Google service is much better . Personally , I think the flagship is acceptable to be expensive , but it is not acceptable to have shortcomings ...
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+RIGHT ANSWER: Josephine
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: Whose opinions from Hayden and James about manufacturers are most similar to Ella's?
+RETRIEVED: 
+Relevant utterances:
+Hayden: I laughed when you found a Fire Dragon 821 to compare [ laugh cry ]
+Hayden: Then it must be 10U , 11p to change 10u and it is very comfortable [ Laughhaha ] After all , the positioning is different . 11P is compared to 10p [ two ha ]
+Ella: I changed to the k20pro from Xiaomi 6 premium edition , which all are stepped on by me . Now I have another idea for Xiaomi 12 [ bad laugh ]
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Hayden: Do you mean the iPhone that except for iOS and processors , has been defeated in photography , charging , screen , appearance , and thinness ? I wo n't talk about NFC infrared , the application is double - open , privacy space , split screen , etc , there is nothing , and it is not good to play games to dissipate heat . It takes more than 40 days to ship when you buy it 3 , 4 thousand more expensive , and it does not come with a charger . Can you believe it ? Some people really like to pay stupid tax Sentiment: neg
+Hayden: The same . The front is really nice , a dream machine . The charging speed is slow but tolerable , and I do n't know how 's the 8gen1 perform .
+Ella: Are you holding this wireless charging in your hand ?
+Hayden: Lol , only the speaker is stronger . The screen is transparent and the refresh rate is high . hmx was only adjusted this year , what happened to the phone last year ? What is the white balance of the Mi 10 ? Why did n't you say that 10u took the first place in the blind test ? [ doubt ]
+Hayden: Blind guess is that Xiaomi 11U wins all , you will be sour , and you will not admit it .
+Hayden: 618 2600 to buy the top with 9R is really cost - effective
+Ella: The same question
+Hayden: [ Yunbei ] Ask after the sale , there is no problem in theory . . It should be a touch issue
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Ella: Mine is also Xiaomi 11U , just changed [ school season ]
+Leslie: The brand is improving , I do n't like ov either , but they have changed their strategy from high price and low configuration
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Alexandra: I have used all three you mentioned , and I have also used Le 2max zuk z2 , Mi 5 is my favorite , it is thin and light , and the feel is good , I have used three different versions before and after , and I have also used mate8 p9 . They are all used to play the glory of king , and I did n't feel too hot in summer . It 's far away from the 11 11p 11u I used last year . Besides , Huawei of the same year play the glory of king is garbage , and the performance is not good , only the temperature is not high is useless
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+Jada: I do n't mean to argue , 6.1 inches , 200 grams and 6.5 inches , 200 grams feel a lot different in the hand . The volume is slightly larger , and the weight does not feel so heavy after the weight is distributed
+Emma: The problem is that many small - screen followers just like the flagship processor without considering the heat dissipation and the power consumption , Otherwise why are they clamoring for the flagship of the small screen ? [ Yun Sad ] 9se died quite miserably with 712 ...
+Sara: The individual brand is slightly better than before , and there are still many offline machines
+Allison: 1200 is really not bad , you will know after using it
+Ella: In fact , I prefer Xiaomi Mi 10S , but I 'm a little worried about the charging speed and screen . IQOO is also worried about the screen Sentiment: neg
+Daniel: Player of the K30p zoom version is here . The photography experience is very general . The starting price of 3699 is really not worth . There is also a gap between 686 and iqoo 's 598 . Only compared with the previous 363 can win steadily . 586 also depends on who adjusted it .
+RIGHT ANSWER: Hayden
+MODEL ANSWER: xiaomi
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: Whose opinions from Sofia and James about manufacturers are most similar to Chase's?
+RETRIEVED: 
+Relevant utterances:
+Chase: The hardware is good , but actually it can only be said to be about the same , it is not necessary to say that it is better [ doge ]
+Sara: The individual brand is slightly better than before , and there are still many offline machines
+Chase: Configuration is the basis of experience
+Jessica: If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+Sofia: Compared with Huawei , it is really bad . After all , base station is what Huawei does , but the signal of Xiaomi is not much better . I think the signal of Xiaomi and Apple are similar . I have never used other Androids , so I do n't know .
+Chase: How is the main camera better ? [ doge ]
+Miles: Look what you said , intentional negative optimization will not play a good role , speed up the replacement ? Consumers may not necessarily buy this brand next time , so the logic is wrong
+Sofia: It is a bit high than the 11 price
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Leonora: If a friend 's product is generally recognized in the digital chat comment area , then this product is considered a good one . If it is recognized and at the same time , the mi fans are shut up , then this product is almost impeccable [ dig nose][dig nose ]
+Fiona: Mainly it is the stainless steel which is heavy . I heard that titanium alloy will be used in two years , and it will be lighter at that time .
+Chase: Gn1 is flat , the square piece , emmm , seems to be a way to flatten [ thinking ]
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+Chase: Guessing the wrong word is also called strong algorithm ? ? ?
+Horace: It 's perfectly fine for a big man . The pro is top - heavy . Really a nonsense . The two are almost the same in hands , and the perception is not obvious . After using the max for more than a month , I feel that the proportion is better and comfortable instead . 😅
+Devin: The two were not good originally , but the MOTO brand is still valuable
+Jacob: It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+Melanie: I dare not touch the 888 , and I am a little hesitant to see the power - down feedback and fever related to the 870 game . Maybe it depends on the optimization of the system . I feel that 865 has less negative reviews
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Brandon: Do n't listen to Laoba nonsense . To be honest , the price is very kind . At present , it is the top version . If you do n't play games , standard version also has multi - functions , but other brands do n't have .
+Sofia: This is the way it is , Xiaomi 's experience quality and workmanship are completely incomparable
+RIGHT ANSWER: Sofia
+MODEL ANSWER: sofia
+CURRENT ACCURACY: 0.2
+============================================================
+
+QUESTION: Whose opinions from Wyatt and James about manufacturers are most similar to Aaliyah's?
+RETRIEVED: 
+Relevant utterances:
+Aaliyah: I heard that the battery life is not good [ laugh cry ]
+Aaliyah: The straight - screen iQOO9 is estimated to be a domestic screen .
+Aaliyah: The performance of Qualcomm is okay . Unless you plan to use a mobile phone for more than 3 years , there is no difference . Most people change it for two or three years , using longer is for the people who do n't play large games . Like my friend , he used the iphone6 for 5 years until change to XR . We bought the iPhone6 at the same time , but before he changed XR , I had changed my 6 to 6SPlus , Note7 , Note8 , S10 [ Eat melon ]
+Wyatt: Do n't they just want to use the telephoto as the selling point of the top flagship ? [ Laughs haha ] Saying that the usage rate is not high . Reasonable castration
+Aaliyah: Unexpectedly ultra is wider .
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Wyatt: I also want to consider iQOO9 but I ca n't put down the Mi 12 [ doge ]
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Edward: Ask which manufacturers ' product ideas that can be recognized by Shui Ge ?
+Alyssa: A real brand?What is a real brand in your eyes ? Sure enough , whoever gets the loser can get the world .
+Wyatt: Hi , may I ask what happened to the pro ? I want to buy pro , thank you
+Wyatt: IQOO seems to have only 4000 mAh , the battery life is not good
+Wyatt: I also want to buy a better camera . The k30s I use ca n't take pictures at night , but now I can play games on my mobile phone . Let 's see what the major manufacturers do this year
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+Wyatt: No , the screen is too small , it is not suitable
+Aaliyah: The camera is too big , I just use it to scan the code
+Miles: Haha , this may not true . My ace has been used for more than two years , and it is still very smooth , almost not much worse than when I first bought it . Even when I just bought it , it is not so stable , two major version upgrades are good , there is no negative optimization , my colleague 's Apple , Huawei are also good after many upgrades , manufacturers deliberately negative optimization will only damage their own brand .
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Nicholas: Vivo , OPPO , Xiaomi are real brands , iQOO , realme , OnePlus , and Redmi are sub - brands . You refute this , how much prejudice do you have .
+James: It is indeed too much ahead of other models [ laugh cry ]
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Jacob: It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+Jada: I do n't mean to argue , 6.1 inches , 200 grams and 6.5 inches , 200 grams feel a lot different in the hand . The volume is slightly larger , and the weight does not feel so heavy after the weight is distributed
+Kathryn: I also want the Dimensity 9000 for the super cup . Forget the fire Snapdragon . If you want to buy the Snapdragon , you can choose Xiaomi [ laughs but does not speak ]
+RIGHT ANSWER: Wyatt
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.16666666666666666
+============================================================
+
+QUESTION: Whose opinions from Simon and James about manufacturers are most similar to Helen's?
+RETRIEVED: 
+Relevant utterances:
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Simon: Is n't that normal ? I repaired it once in less than a month and then it happened again . Later , I decided to buy Apple .
+Simon: If you have enough budget , definitely go for Pro
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Helen: Indeed , now xs max can be sold for more than 3k
+Jacqueline: After being cheated by K40 , do you want to be cheated again ? At the beginning , it boasted that the k40 screen was the first in the industry , it turned out to be usable ? No matter how good the heat dissipation is , with a blind screen , who can use it ?
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Helen: No , I bought an LCD screen and do n't need to worry about anything
+Simon: Quite enough to use , the system also feels very good . I have used the Huawei P series and the Honor series , and this is the most satisfying one so far .
+Simon: The Pro 's processor , screen , charging , waterproof rating , face unlock , camera are all better
+Helen: Even a 1000W battery that is not as cool as a 5000mah battery . I never bring a charger or power bank when I go out .
+Elizabeth: Like square and upright , 20U is no problem . If not , do n't you think the design of this 22plus is beautiful [ tears ] ; speaking of note20U , you can see the appearance of 22U this year , I feel that 20U can be used for a few more years , believe me , if you have never used Samsung , it is absolutely amazing ( If you buy online , do n't buy parallel imports )
+David: There are more of blue factory 's in 3000 to 4000 , under 3000 , generally the middle end
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Helen: Equivalent 60 mm , 2.5 times optical change , OIS anti - shake S5K3P9 is no worse than equivalent 48 mm
+James: I feel that Xiaobai is the most worthless test .
+Helen: You have to buy Motorola
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Leslie: The brand is improving , I do n't like ov either , but they have changed their strategy from high price and low configuration
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+James: It is indeed too much ahead of other models [ laugh cry ]
+Jacqueline: The screen speaker work system , plus Google service is much better . Personally , I think the flagship is acceptable to be expensive , but it is not acceptable to have shortcomings ...
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+Simon: There are more Xiaomi than OV over 4000yuan , and more OV in 2000 - 3000yuan .
+RIGHT ANSWER: Simon
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.14285714285714285
+============================================================
+
+QUESTION: Whose opinions from Anthony and James about manufacturers are most similar to Abraham's?
+RETRIEVED: 
+Relevant utterances:
+Abraham: Mi Factory and Blue Factory do n't have to worry about this problem , they have their way
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Abraham: It 's mainly a software system problem , it has nothing to do with the chip , and the p30 is not 100 % domestic [ doge][doge][doge ]
+David: There are more of blue factory 's in 3000 to 4000 , under 3000 , generally the middle end
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Donald: Only when we are strong and keep doing basic research well is the foundation of our future . Those gadgets are named what black technology . Really ca n't take it to the table . Cheap is not a panacea , texture and brand appeal are not simply based on the configuration that you have , I have and everyone has . Brand image is important .
+Abraham: The same , 7P has been used for four years , and it 's really stuck [ laugh cry ] when I was searching for something in class yesterday , it could n't come up with a word for a long time , and my classmates even asked me why it was so stuck .
+Alan: Glory is all purchased from suppliers , right ?
+James: I feel that Xiaobai is the most worthless test .
+Jacob: It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Benjamin: In fact , if the price of the blue factory has been there , the workmanship and texture will be fine . My rubbish 70 + is like that , I know that he is very expensive as soon as I touch it . [ doge ]
+Francis: The emphasis is on experience , and also on the manufacturer 's adjusting
+Adrian: There is no way to whitewash it , do n't talk about these , 30 % more expensive ca n't even play 4 K , let alone the picture quality . In this 618 e - commerce carnival , Xiaomi released the Xiaomi TV attributive sales champion , but the lack of the most mainstream size champions of 55 and 65 inches , think about why ? Are consumers all idiots ?
+Malcolm: Why do n't you say that the total number of Xiaomi 's parent brands and sub - brands is only 21 , while the number of Honor alone is 23 , and there are many stupid machine , as well as the thousand yuan machine 720P water drop screen LCD [ laughing ]
+Howard: Because all manufacturers will negatively optimize [ tears ] They are not afraid that you will not choose the previous one
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Jeremiah: No , it 's hard to say , if the blue factory is flattened , maybe it will look good
+Carlos: Vivo 's portrait photography , none of the other factorys can compare
+Anthony: If you do n't believe it , I have no way . At that time , the signal of Hongmeng really make me headache . I do n't know if it is to control power consumption . It does n't work anyway . Then I sold it
+Abraham: Then OP 's 65w totally beats 66/67/68/
+Alexander: But since you can have a better experience , of course you should choose a better one . Neo5 , there are not many short boards . Why do you have to choose one have more short boards for a similar price ?
+Nicholas: Vivo , OPPO , Xiaomi are real brands , iQOO , realme , OnePlus , and Redmi are sub - brands . You refute this , how much prejudice do you have .
+RIGHT ANSWER: Anthony
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.125
+============================================================
+
+QUESTION: Whose opinions from Leonora and James about manufacturers are most similar to Benjamin's?
+RETRIEVED: 
+Relevant utterances:
+Benjamin: In fact , if the price of the blue factory has been there , the workmanship and texture will be fine . My rubbish 70 + is like that , I know that he is very expensive as soon as I touch it . [ doge ]
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Leonora: If a friend 's product is generally recognized in the digital chat comment area , then this product is considered a good one . If it is recognized and at the same time , the mi fans are shut up , then this product is almost impeccable [ dig nose][dig nose ]
+Leonora: The texture is required for money , but Xiaomi customers are on the line , spend more money on CMF on the configuration . There is no comparison between 4000 yuan and 2000 yuan
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Elizabeth: Like square and upright , 20U is no problem . If not , do n't you think the design of this 22plus is beautiful [ tears ] ; speaking of note20U , you can see the appearance of 22U this year , I feel that 20U can be used for a few more years , believe me , if you have never used Samsung , it is absolutely amazing ( If you buy online , do n't buy parallel imports )
+Benjamin: Personally , I think you can consider the appearance color first . The big logo of Honor is very eye - catching . If you only consider the brand , choose nova7 , after all , it is the Huawei logo . Other performance indicators are actually similar .
+Benjamin: Is n't this DXO 's reviewer fat water [ longing ] [ longing ] [ longing ] .
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+David: There are more of blue factory 's in 3000 to 4000 , under 3000 , generally the middle end
+Elizabeth: The Honor water army is indeed a lot , but to be honest , Magic3 is pretty good , it 's just that other series of products are leek
+Benjamin: How many minutes of vivo to charge to full it showed before , I forgot . Fast charging part , OPPO , vivo is the leader .
+Kathryn: I also want the Dimensity 9000 for the super cup . Forget the fire Snapdragon . If you want to buy the Snapdragon , you can choose Xiaomi [ laughs but does not speak ]
+Devin: The two were not good originally , but the MOTO brand is still valuable
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+Jacob: It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while
+Leonora: That fancy but stainless steel frame [ doge ]
+Benjamin: Redmi 's workmanship and texture is not very good , only the configuration is high
+Lillian: Blue Factory 's super - sized cup I personally think it 's the best to take pictures
+Elizabeth: After sales never tell the truth . They do n't know the time of day , if you ask again , they will tell you to replace at your own expense
+Miles: Look what you said , intentional negative optimization will not play a good role , speed up the replacement ? Consumers may not necessarily buy this brand next time , so the logic is wrong
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Abigail: If you care about creases , it seems that the creases are well controlled , you can consider .
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+RIGHT ANSWER: Leonora
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.1111111111111111
+============================================================
+
+QUESTION: Whose opinions from Benjamin and James about manufacturers are most similar to Leonora's?
+RETRIEVED: 
+Relevant utterances:
+Leonora: If a friend 's product is generally recognized in the digital chat comment area , then this product is considered a good one . If it is recognized and at the same time , the mi fans are shut up , then this product is almost impeccable [ dig nose][dig nose ]
+Benjamin: In fact , if the price of the blue factory has been there , the workmanship and texture will be fine . My rubbish 70 + is like that , I know that he is very expensive as soon as I touch it . [ doge ]
+Leonora: The texture is required for money , but Xiaomi customers are on the line , spend more money on CMF on the configuration . There is no comparison between 4000 yuan and 2000 yuan
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Leonora: That fancy but stainless steel frame [ doge ]
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Elizabeth: Like square and upright , 20U is no problem . If not , do n't you think the design of this 22plus is beautiful [ tears ] ; speaking of note20U , you can see the appearance of 22U this year , I feel that 20U can be used for a few more years , believe me , if you have never used Samsung , it is absolutely amazing ( If you buy online , do n't buy parallel imports )
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Kathryn: I also want the Dimensity 9000 for the super cup . Forget the fire Snapdragon . If you want to buy the Snapdragon , you can choose Xiaomi [ laughs but does not speak ]
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Benjamin: Personally , I think you can consider the appearance color first . The big logo of Honor is very eye - catching . If you only consider the brand , choose nova7 , after all , it is the Huawei logo . Other performance indicators are actually similar .
+Lillian: Blue Factory 's super - sized cup I personally think it 's the best to take pictures
+Elizabeth: The Honor water army is indeed a lot , but to be honest , Magic3 is pretty good , it 's just that other series of products are leek
+David: There are more of blue factory 's in 3000 to 4000 , under 3000 , generally the middle end
+Elizabeth: After sales never tell the truth . They do n't know the time of day , if you ask again , they will tell you to replace at your own expense
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Miguel: As long as the anti - shake is good , it is good to take pictures ? The lens quality gn5 is several grades worse than 707 .
+Carlos: Vivo 's portrait photography , none of the other factorys can compare
+Miles: Look what you said , intentional negative optimization will not play a good role , speed up the replacement ? Consumers may not necessarily buy this brand next time , so the logic is wrong
+Devin: The two were not good originally , but the MOTO brand is still valuable
+Benjamin: Is n't this DXO 's reviewer fat water [ longing ] [ longing ] [ longing ] .
+Jacob: It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while
+Abigail: If you care about creases , it seems that the creases are well controlled , you can consider .
+RIGHT ANSWER: Benjamin
+MODEL ANSWER: xiaomi
+CURRENT ACCURACY: 0.1
+============================================================
+
+QUESTION: Whose opinions from Helen and James about manufacturers are most similar to Donald's?
+RETRIEVED: 
+Relevant utterances:
+Donald: Only when we are strong and keep doing basic research well is the foundation of our future . Those gadgets are named what black technology . Really ca n't take it to the table . Cheap is not a panacea , texture and brand appeal are not simply based on the configuration that you have , I have and everyone has . Brand image is important .
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Donald: Still the price is too confident , the x2 is so , and now the x5 feels the same
+Donald: But without independent research and development , the future is really uncertain . Whether to supply and whether to increase the price depends on others . Take a look at the price increase of domestic mobile phones this year . It can be seen . In this way , I think it is a good deal to buy Samsung , Apple and Huawei . The brand is there , the performance is there , and the texture is there .
+Donald: The 820 and 821 are both bad , and it is a little better than the 810 , far less than the Orion 8890 of the same period
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+Donald: Is the battery life good or not ?
+David: There are more of blue factory 's in 3000 to 4000 , under 3000 , generally the middle end
+Donald: Yes , I 'm still using it as a spare machine
+Donald: Borrow a blog to ask , will the x80pro+ be released in March , and will the blue factory update the x90pro+ in half a year this year [ doge ]
+Donald: A straight screen , a curved surface , depending on personal preferences . I support the direct screen
+Donald: I really hope that the appearance of the Pro will be the same material as the non - Pro in the future , so light
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Donald: I only like the straight screen [ Yunbei ] , otherwise I would n't be so confused about which one to choose [ tears ]
+Danielle: What is the status of glory ? It is nothing without Huawei . N ot as competitive as other brands
+Miles: Look what you said , intentional negative optimization will not play a good role , speed up the replacement ? Consumers may not necessarily buy this brand next time , so the logic is wrong
+Jacqueline: After being cheated by K40 , do you want to be cheated again ? At the beginning , it boasted that the k40 screen was the first in the industry , it turned out to be usable ? No matter how good the heat dissipation is , with a blind screen , who can use it ?
+Donald: I 'm going to buy it on Double Eleven , but I do n't want to buy the MIUI system this time , because I have been using Xiaomi phones before , and now I want to change the brand [ laugh cry ]
+Donald: From the k3v2 of the year to the current 990 5 G , I have been witnessing the growth of Huawei . It 's not easy , to tell the truth .
+Miles: Haha , this may not true . My ace has been used for more than two years , and it is still very smooth , almost not much worse than when I first bought it . Even when I just bought it , it is not so stable , two major version upgrades are good , there is no negative optimization , my colleague 's Apple , Huawei are also good after many upgrades , manufacturers deliberately negative optimization will only damage their own brand .
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Devin: The two were not good originally , but the MOTO brand is still valuable
+Jessica: If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]
+Donald: Does the Mi 8 have an appearance at all ?
+RIGHT ANSWER: Helen
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.09090909090909091
+============================================================
+
+QUESTION: Whose opinions from Florence and James about manufacturers are most similar to Howard's?
+RETRIEVED: 
+Relevant utterances:
+Howard: Because all manufacturers will negatively optimize [ tears ] They are not afraid that you will not choose the previous one
+Howard: Xiaomi dares to take the lead in the world , but this maybe go too fast , causes the design to have a feeling of being thought of in an instant . In other words , there is no serious polishing and precipitated ideas , or it can be said to lack the spirit of craftsmen . After comparing friend businessmen 's dare to be late of the world , it is very good , all of them have their own audience
+Howard: The battery life of the x2pro I bought before is terrible . The oppofind series is really good , but it is this battery life that makes me dare not buy it .
+Howard: But I still prefer to pick up the iphone camera , because of the smooth implementation , the icon animation of entering and exiting , the high - resolution real - time HDR viewfinder , the silky full - focus zoom , and the fast imaging , although the extreme image quality is poor , but the daily experience of taking photos with Apple is too good
+Howard: Power consumption is fine , mainly takes up too much internal space [ DOGE ]
+Howard: My classmates bought the iPhone 4 before , it also beat the vivo I bought this year [ Yunbei ]
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Francis: The emphasis is on experience , and also on the manufacturer 's adjusting
+Miles: Look what you said , intentional negative optimization will not play a good role , speed up the replacement ? Consumers may not necessarily buy this brand next time , so the logic is wrong
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Howard: it 's already very conscientious that cheat us once a year[doge ]
+David: There are more of blue factory 's in 3000 to 4000 , under 3000 , generally the middle end
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+Howard: My mobile phone is very stuck when playing games . The iPhone 4 that my classmate bought in elementary school is not stuck . The battery life of the game is longer than my vivo [ Grass Mud Horse ]
+Jacqueline: After being cheated by K40 , do you want to be cheated again ? At the beginning , it boasted that the k40 screen was the first in the industry , it turned out to be usable ? No matter how good the heat dissipation is , with a blind screen , who can use it ?
+Edward: Ask which manufacturers ' product ideas that can be recognized by Shui Ge ?
+Rita: Indeed , many have not been written , and 12 this time , the small size , separate mold opening , internal stacking design and so on are all costs , which brings a good feel . The small screen flagship also caters to some small screen users . How can he compares , the positioning is different . His size should be compared with 12pro [ doge ]
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Sara: The individual brand is slightly better than before , and there are still many offline machines
+Donald: Only when we are strong and keep doing basic research well is the foundation of our future . Those gadgets are named what black technology . Really ca n't take it to the table . Cheap is not a panacea , texture and brand appeal are not simply based on the configuration that you have , I have and everyone has . Brand image is important .
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+Gladys: I really do n't understand the border design other than U this year . The original machine that was perfect was destroyed by the frame feel
+RIGHT ANSWER: Florence
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.08333333333333333
+============================================================
+
+QUESTION: Whose opinions from Luccile and James about manufacturers are most similar to Ashton's?
+RETRIEVED: 
+Relevant utterances:
+Ashton: The screen just Samsung does n't sell , but the current e - series has also greatly exceeded the needs of normal use , so the impact is not great
+Ashton: They just say that the second one looks good , but they did n't say that Huawei is not good . Do you understand again ? [ Too happy ]
+Ashton: If the material is stacked particularly full , do you still buy something else ?
+Ashton: My S21 Ultra is just over three hours and I do n't play games
+Ashton: Which machine
+Ashton: Configuration is not equal to experience
+Luccile: Is the price of 8999 still nice ? [ Allow sad ]
+Ashton: The battery life of the S20 + is not bad [ Erha ] I also have a BTS , which can last for more than three hours .
+Ashton: No matter how bad 65W two years ago , it is stronger than your garbage mobile phone [ not easy ]
+Ashton: ? Is n't Xiaomi Note2 a 4 - curved surface ?
+Luccile: It 's ridiculously strong , it 's totally beat the note9pro on experience
+Ashton: The battery life is awesome
+Luccile: It 's barely OK . It 's suitable as a standby machine , but it 's relatively heavy
+Ashton: Apple 's configuration is not low , it is because of the system mechanism to run the memory 4 g , the configuration of other processors can be said to be the top ,
+Luccile: You can buy it and try it , this is the real feeling I use , 7 years of Mi fan .
+Jessica: If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]
+Luccile: Yes , even the previous generation of mate30p ca n't beat [ tears ]
+Luccile: The frame drop is too serious , I am going to sell it , and it is even overheat when taking pictures [ tears ]
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+Jacob: It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while
+Ashton: Is n't this specialise in game ? I do n't really need a lot of game time .
+Ashton: Z17 's system is also very bad
+Luccile: Is 17 's 865 better ?
+Miles: Haha , this may not true . My ace has been used for more than two years , and it is still very smooth , almost not much worse than when I first bought it . Even when I just bought it , it is not so stable , two major version upgrades are good , there is no negative optimization , my colleague 's Apple , Huawei are also good after many upgrades , manufacturers deliberately negative optimization will only damage their own brand .
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+RIGHT ANSWER: Luccile
+MODEL ANSWER: xiaomi
+CURRENT ACCURACY: 0.07692307692307693
+============================================================
+
+QUESTION: Whose opinions from Agatha and James about manufacturers are most similar to Josephine's?
+RETRIEVED: 
+Relevant utterances:
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+Agatha: How can it not be compared ? Tell me
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Jacqueline: After being cheated by K40 , do you want to be cheated again ? At the beginning , it boasted that the k40 screen was the first in the industry , it turned out to be usable ? No matter how good the heat dissipation is , with a blind screen , who can use it ?
+Josephine: These domestic brands are all heaping hardware configuration , and the actual experience is not good . Except for Huawei , no wonder they all buy Apple now . Although Apple 's hardware parameters are not top - notch , the experience is good . The system and hardware complement each other . If the system works bad , it 's annoying to use [ doge ] Sentiment: neg
+Jennifer: Except for the first batch , 11 seems to have not been burned , and only 100 people have burned in hundreds of thousands of sales , which can only mean that they are unlucky [ cute ]
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Agatha: The problem is that they did n't stack any
+Josephine: I want to rent one and try it [ doge ] If the signal is good , I will consider changing it
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Ashley: I really do n't think there is anything wrong with the water droplets . On the contrary , I think the water droplets are very good .
+Marjorie: What about the Samsung Miracle 's compare with the True Flagship 's
+Josephine: Apple 's hardware wo n't work if it 's not upgraded . The new system also relies heavily on hardware , just like computer systems .
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+Angelina: The main thing is that it is thin and light . It has everything that should be there , and the price is OK . I am using 13p now . There are too many places to complain .
+Diana: But if you care about thickness , it is really a disaster for bare mechine more than 9 mm and plus the mobile phone case .
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+Agatha: Why does n't blue factory use it if gn2 is so good ?
+Jacqueline: The screen speaker work system , plus Google service is much better . Personally , I think the flagship is acceptable to be expensive , but it is not acceptable to have shortcomings ...
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+Brandon: Do n't listen to Laoba nonsense . To be honest , the price is very kind . At present , it is the top version . If you do n't play games , standard version also has multi - functions , but other brands do n't have .
+Kathryn: I also want the Dimensity 9000 for the super cup . Forget the fire Snapdragon . If you want to buy the Snapdragon , you can choose Xiaomi [ laughs but does not speak ]
+Joyce: They are just talking nonsense about the processor . The integrated 985 has a better comprehensive experience than the plug - in 994 . Even though the 994 has a higher running score than the 985 , the actual use of the plug - in is not as good as the integrated one .
+RIGHT ANSWER: Agatha
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.07142857142857142
+============================================================
+
+QUESTION: Whose opinions from Abigail and James about manufacturers are most similar to Evan's?
+RETRIEVED: 
+Relevant utterances:
+Evan: But it may not be easy to match the phone case
+Evan: It 's not the same price ,
+Abigail: If you care about creases , it seems that the creases are well controlled , you can consider .
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Evan: What 's so bad ? I also want to buy a p50pro [ allow sad ]
+Evan: Mainly I do n't like digging holes in the upper left corner , I like the center
+Abigail: Agree with you , I wanted to buy the latest flip some time ago for my wife
+Evan: Green is more chic and more attractive
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Evan: Meizu 's after - sales maintenance stores have all closed down , and there are no physical sales stores , so we have to turn to Mi
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Benjamin: In fact , if the price of the blue factory has been there , the workmanship and texture will be fine . My rubbish 70 + is like that , I know that he is very expensive as soon as I touch it . [ doge ]
+David: There are more of blue factory 's in 3000 to 4000 , under 3000 , generally the middle end
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Abigail: [ doge ] Stainless steel frame , can it not be heavy ? The aluminum used in 13 is much lighter . The pro with the same measurements costs 200 +
+Abigail: Now using the realme gt2 , taming the 888 does have an effect , but at least after using it we can know the 888 has been marketed and exaggerated
+Abigail: As far as his cognitive level is concerned , do n't need Apple , Nokia is enough
+James: I feel that Xiaobai is the most worthless test .
+Leslie: The brand is improving , I do n't like ov either , but they have changed their strategy from high price and low configuration
+Evan: When was that time ? The Honor 10 was 2018 mobile phone , and the Mi 6 was already released for a year , still talk about stuck ?
+Evan: Sell it and change to 12pro ! Do n't need to worry about burning WiFi and motherboard , and 11pro is ugly to me [ allow sad ]
+Edward: Ask which manufacturers ' product ideas that can be recognized by Shui Ge ?
+James: Omg , go to a repair shop and see who has the worst battery ? ? What makes you lie through your teeth
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Evan: Power consumption , small battery ca n't stand up to ultra - high refresh rate battery life
+RIGHT ANSWER: Abigail
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.06666666666666667
+============================================================
+
+QUESTION: Whose opinions from Christopher and James about manufacturers are most similar to Brian's?
+RETRIEVED: 
+Relevant utterances:
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Brian: If there is a new intact , it 's okay ( provided that you have to accept the weight , thickness and the bad display frame rate scheduling of the new version of the firmware )
+Brian: I bought 7 in 2017 and sold more than 800 this year . Does anyone want your 2017 Xiaomi ?
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Eric: The battery life is too poor , the appearance is super good , and it is still very good after 2 years
+Christopher: In fact , to be honest , the crease is just uncomfortable to look at when the screen is black , but it does not actually affect the use of [ allow sad ]
+Alan: Glory is all purchased from suppliers , right ?
+Brian: Is n't the processor changed ? [ Yunbei ] I am struggling to buy 21 or wait for 22 . Is the Snapdragon 888 overheating seriously ? How is the battery life ?
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Christopher: The current k30u is very good , I use it without any problem
+Brandon: My 3c was fine at night , but I do n't know what happened the next morning that the motherboard was broken . Each generation of products always has good or bad quality
+Ashley: Yes , the screen is Zhou Dongyu arrangement , and the quality is the worst among the flagship machines .
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Brian: The standard version uses 67w very well , the speed is not slow
+Jonathan: I only know that the camera of the previous generation product is weak compared to the mainstream of the domestic flagship . This is recognized . And the battery is n't durable either . Besides a screen , what else ?
+David: There are more of blue factory 's in 3000 to 4000 , under 3000 , generally the middle end
+Christopher: I think it 's okay , I did n't pay much attention to the lock frame . The battery life is OK . 120hz+5 g runs faster when playing games . It 's ok for daily use .
+Donald: Only when we are strong and keep doing basic research well is the foundation of our future . Those gadgets are named what black technology . Really ca n't take it to the table . Cheap is not a panacea , texture and brand appeal are not simply based on the configuration that you have , I have and everyone has . Brand image is important .
+James: I feel that Xiaobai is the most worthless test .
+Alexander: But since you can have a better experience , of course you should choose a better one . Neo5 , there are not many short boards . Why do you have to choose one have more short boards for a similar price ?
+Brian: This is just the tuning test piece given by Qualcomm . [ doge ] Dare to first launch with only 10,000 piece ! But not much people buy it , it 's purely for connotate Xiaomi [ Bye bye ]
+Brandon: Do n't listen to Laoba nonsense . To be honest , the price is very kind . At present , it is the top version . If you do n't play games , standard version also has multi - functions , but other brands do n't have .
+Brian: The positioning is quite different . The note series is a mid - to - low - end machine that is just sufficient in all aspects . The large frame of the K - series is basically the mid - to - high - end machine configuration of the past year or so plus the latest flagship processor .
+Benjamin: In fact , if the price of the blue factory has been there , the workmanship and texture will be fine . My rubbish 70 + is like that , I know that he is very expensive as soon as I touch it . [ doge ]
+Ian: But this yours is hotter than the grain factory . Does it have something to do with whether it burn the motherboard ? Overheated but ca n't be scolded ?
+RIGHT ANSWER: Christopher
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.0625
+============================================================
+
+QUESTION: Whose opinions from Gavin and James about manufacturers are most similar to Taylor's?
+RETRIEVED: 
+Relevant utterances:
+Taylor: Compared with the flagship machine , there is no advantage
+Taylor: Does the k50pro+ have four speakers ? It 's more important to me than the motor
+Taylor: Could it be that pro+ is not as good as G ? [ Allow sad ] . Not really .
+Taylor: You leave me speechless . Someone posted a Weibo saying that k50 g , jbl four speakers
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Taylor: Ca n't it open the 90 and 120 gears ? I do n't worry about the battery life at home , why ca n't I enjoy more
+Taylor: Always overheat , With the cooling back clip , the frame still drops . Playing the sausage party is not as smooth as the s10 5 g that was eliminated before , [ Allow sad ] ,
+Edward: Ask which manufacturers ' product ideas that can be recognized by Shui Ge ?
+Taylor: Not ordinary , it quite sucks ...
+Jacob: It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while
+Gavin: Go to the physical store and see it , you will know . Xiaomi 11Pro 's screen is the strongest in the domestic mobile phone this year , which is stronger than vivo E5 . Let 's say that Xiaomi 11 does n't turn on DC strobe , it 's basically invisible when taking photos with a mobile phone , which is better than Xiaomi 10 turning on DC . When DC is turned on , there is no strobe , and the screen is completely no color diviation . 2 K , 120 , DC are all turned on without conflict
+Taylor: The configuration is not good any more
+Devin: The two were not good originally , but the MOTO brand is still valuable
+Brandon: Do n't listen to Laoba nonsense . To be honest , the price is very kind . At present , it is the top version . If you do n't play games , standard version also has multi - functions , but other brands do n't have .
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Gavin: Honor V20 change to any 2000 + machine will not hurt eyes , right ?
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Miles: Look what you said , intentional negative optimization will not play a good role , speed up the replacement ? Consumers may not necessarily buy this brand next time , so the logic is wrong
+Howard: Because all manufacturers will negatively optimize [ tears ] They are not afraid that you will not choose the previous one
+Tyler: Which flagship machine is not heavy now . Both pro and promax feel drop . I buy pm directly .
+David: There are more of blue factory 's in 3000 to 4000 , under 3000 , generally the middle end
+Gavin: Yes [ allow sadness ] [ allow sadness ] [ allow sadness ] as long as the charging speed is not too slow , and then has a 5000 large battery . 4500 is not enough
+Miles: Haha , this may not true . My ace has been used for more than two years , and it is still very smooth , almost not much worse than when I first bought it . Even when I just bought it , it is not so stable , two major version upgrades are good , there is no negative optimization , my colleague 's Apple , Huawei are also good after many upgrades , manufacturers deliberately negative optimization will only damage their own brand .
+Lawrence: Indeed , it is the most powerful cmos at this price . After all , it is GN2 . There is no better than this this year .
+RIGHT ANSWER: Gavin
+MODEL ANSWER: gavin
+CURRENT ACCURACY: 0.11764705882352941
+============================================================
+
+QUESTION: Whose opinions from Ashton and James about manufacturers are most similar to Luccile's?
+RETRIEVED: 
+Relevant utterances:
+Luccile: Is the price of 8999 still nice ? [ Allow sad ]
+Luccile: It 's barely OK . It 's suitable as a standby machine , but it 's relatively heavy
+Luccile: It 's ridiculously strong , it 's totally beat the note9pro on experience
+Luccile: You can buy it and try it , this is the real feeling I use , 7 years of Mi fan .
+Luccile: Yes , even the previous generation of mate30p ca n't beat [ tears ]
+Luccile: Is 17 's 865 better ?
+Luccile: The frame drop is too serious , I am going to sell it , and it is even overheat when taking pictures [ tears ]
+Luccile: You think it 's useless does n't mean everyone does n't need it
+Luccile: I also use Mate9 , already a bit slow and stuck
+Ashton: The screen just Samsung does n't sell , but the current e - series has also greatly exceeded the needs of normal use , so the impact is not great
+Luccile: If you change from 12 pm , you will find that whether you play games or daily use is fine , 888 is not as hot as you think , half half
+Jessica: If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]
+Luccile: Yeah , pretty much [ DOGE ]
+Ashton: They just say that the second one looks good , but they did n't say that Huawei is not good . Do you understand again ? [ Too happy ]
+Ashton: My S21 Ultra is just over three hours and I do n't play games
+Luccile: Same feel . Mine is also charging slow , and photos are really bad . But it is enough to play Honor of Kings . It is still very comfortable to use at ordinary times .
+Luccile: I ca n't put the comments , I sent a private letter [ love you ]
+Ashton: The battery life of the S20 + is not bad [ Erha ] I also have a BTS , which can last for more than three hours .
+Ashton: If the material is stacked particularly full , do you still buy something else ?
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Jacob: It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Luccile: The ov freeze and drop frame is serious , the one plus 9p I bought before is also , basically say goodbye to the game
+RIGHT ANSWER: Ashton
+MODEL ANSWER: xiaomi
+CURRENT ACCURACY: 0.1111111111111111
+============================================================
+
+QUESTION: Whose opinions from Gavin and James about manufacturers are most similar to Bernard's?
+RETRIEVED: 
+Relevant utterances:
+David: There are more of blue factory 's in 3000 to 4000 , under 3000 , generally the middle end
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Benjamin: In fact , if the price of the blue factory has been there , the workmanship and texture will be fine . My rubbish 70 + is like that , I know that he is very expensive as soon as I touch it . [ doge ]
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Gavin: Go to the physical store and see it , you will know . Xiaomi 11Pro 's screen is the strongest in the domestic mobile phone this year , which is stronger than vivo E5 . Let 's say that Xiaomi 11 does n't turn on DC strobe , it 's basically invisible when taking photos with a mobile phone , which is better than Xiaomi 10 turning on DC . When DC is turned on , there is no strobe , and the screen is completely no color diviation . 2 K , 120 , DC are all turned on without conflict
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Bernard: ? Is n't the battery life better than Xiaomi civi ? [ Thinking ] At least at some ordinary battery life levels .
+Bernard: In fact , everyone 's needs are different . For a heavy user like me , 8 g of RAM is not enough so far , the running speed of the 870 is alright , but it wo n't last until next year [ allow sad ] [ allow sad ]
+Neil: [ Doge ] Of course , do n't want to buy an apple just for OV 's stable and worry - free .
+Neil: Buy new and not buy old , and the price difference is not too much
+Nicholas: When I first bought the 13mini , I also hoped it can be the main machine
+Bernard: Budget 2500 , want to take pictures better , memory 256 , screen eye protection , which mobile phone is better to buy ? [ laugh cry ]
+Elizabeth: Like square and upright , 20U is no problem . If not , do n't you think the design of this 22plus is beautiful [ tears ] ; speaking of note20U , you can see the appearance of 22U this year , I feel that 20U can be used for a few more years , believe me , if you have never used Samsung , it is absolutely amazing ( If you buy online , do n't buy parallel imports )
+Gavin: I think miui is better than originos
+Benjamin: Personally , I think you can consider the appearance color first . The big logo of Honor is very eye - catching . If you only consider the brand , choose nova7 , after all , it is the Huawei logo . Other performance indicators are actually similar .
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+Gavin: Yes [ allow sadness ] [ allow sadness ] [ allow sadness ] as long as the charging speed is not too slow , and then has a 5000 large battery . 4500 is not enough
+Jonathan: 60 was relatively successful , 70 the initial pricing was outrageous , screwed up directly
+Jesse: [ Doge ] You really want to buy a ov with more than 8,000?I think most people wo n't do it . [ Doge ] I remember that the Blue Factory was not so expensive in the past two years
+James: I feel that Xiaobai is the most worthless test .
+Devin: The two were not good originally , but the MOTO brand is still valuable
+Jonathan: I only know that the camera of the previous generation product is weak compared to the mainstream of the domestic flagship . This is recognized . And the battery is n't durable either . Besides a screen , what else ?
+Leslie: The brand is improving , I do n't like ov either , but they have changed their strategy from high price and low configuration
+David: All I can say is that this design does n't have white , I do n't know what the product manager thinks .
+Isabella: A less known and inferior brand do n't talk about the workmanship
+RIGHT ANSWER: Gavin
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.10526315789473684
+============================================================
+
+QUESTION: Whose opinions from Brian and James about manufacturers are most similar to Christopher's?
+RETRIEVED: 
+Relevant utterances:
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Christopher: In fact , to be honest , the crease is just uncomfortable to look at when the screen is black , but it does not actually affect the use of [ allow sad ]
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Eric: The battery life is too poor , the appearance is super good , and it is still very good after 2 years
+Christopher: The current k30u is very good , I use it without any problem
+Brian: If there is a new intact , it 's okay ( provided that you have to accept the weight , thickness and the bad display frame rate scheduling of the new version of the firmware )
+Brian: I bought 7 in 2017 and sold more than 800 this year . Does anyone want your 2017 Xiaomi ?
+Christopher: I think it 's okay , I did n't pay much attention to the lock frame . The battery life is OK . 120hz+5 g runs faster when playing games . It 's ok for daily use .
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Brandon: My 3c was fine at night , but I do n't know what happened the next morning that the motherboard was broken . Each generation of products always has good or bad quality
+Alan: Glory is all purchased from suppliers , right ?
+Ashley: Yes , the screen is Zhou Dongyu arrangement , and the quality is the worst among the flagship machines .
+Brandon: Do n't listen to Laoba nonsense . To be honest , the price is very kind . At present , it is the top version . If you do n't play games , standard version also has multi - functions , but other brands do n't have .
+Alexander: But since you can have a better experience , of course you should choose a better one . Neo5 , there are not many short boards . Why do you have to choose one have more short boards for a similar price ?
+Benjamin: In fact , if the price of the blue factory has been there , the workmanship and texture will be fine . My rubbish 70 + is like that , I know that he is very expensive as soon as I touch it . [ doge ]
+Brian: Is n't the processor changed ? [ Yunbei ] I am struggling to buy 21 or wait for 22 . Is the Snapdragon 888 overheating seriously ? How is the battery life ?
+James: I feel that Xiaobai is the most worthless test .
+Jonathan: I only know that the camera of the previous generation product is weak compared to the mainstream of the domestic flagship . This is recognized . And the battery is n't durable either . Besides a screen , what else ?
+Christopher: The same screen ...
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Tyler: Which flagship machine is not heavy now . Both pro and promax feel drop . I buy pm directly .
+Christopher: How to watch ?
+Donald: Only when we are strong and keep doing basic research well is the foundation of our future . Those gadgets are named what black technology . Really ca n't take it to the table . Cheap is not a panacea , texture and brand appeal are not simply based on the configuration that you have , I have and everyone has . Brand image is important .
+David: There are more of blue factory 's in 3000 to 4000 , under 3000 , generally the middle end
+James: I am also waiting for x80 , curious about the difference between Pro and Pro+ actual shooting
+RIGHT ANSWER: Brian
+MODEL ANSWER: xiaomi
+CURRENT ACCURACY: 0.1
+============================================================
+
+QUESTION: Whose opinions from Helen and James about manufacturers are most similar to Hunter's?
+RETRIEVED: 
+Relevant utterances:
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Hunter: Well , I bought a 12 pm [ laughing ] so just asked about the battery life
+Hunter: Nothing else burns ? It 's just that the sales are not that big .
+Isabella: A less known and inferior brand do n't talk about the workmanship
+David: There are more of blue factory 's in 3000 to 4000 , under 3000 , generally the middle end
+Hunter: I want to ask how about the 9R experience , the system , the battery life , will there be app locking frames in high brushes ?
+Elizabeth: Like square and upright , 20U is no problem . If not , do n't you think the design of this 22plus is beautiful [ tears ] ; speaking of note20U , you can see the appearance of 22U this year , I feel that 20U can be used for a few more years , believe me , if you have never used Samsung , it is absolutely amazing ( If you buy online , do n't buy parallel imports )
+Jacqueline: After being cheated by K40 , do you want to be cheated again ? At the beginning , it boasted that the k40 screen was the first in the industry , it turned out to be usable ? No matter how good the heat dissipation is , with a blind screen , who can use it ?
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Leslie: The brand is improving , I do n't like ov either , but they have changed their strategy from high price and low configuration
+Hunter: Plus one , it 's almost impossible to lift pm , the brick [ doge ]
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Hunter: I would like to ask , how is the battery life of 12 pm [ cute ]
+Hunter: 10pro is the best , everything else sounds stiff
+Hunter: OnePlus 586 has been polished for a long time . How can it be bad ? It should also be a general mid - range machine level
+Miles: Look what you said , intentional negative optimization will not play a good role , speed up the replacement ? Consumers may not necessarily buy this brand next time , so the logic is wrong
+Sara: The individual brand is slightly better than before , and there are still many offline machines
+Isaac: Samsung is actually good , many samples can hit the x70 on the ground
+Jacob: It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while
+Helen: Indeed , now xs max can be sold for more than 3k
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Helen: Even a 1000W battery that is not as cool as a 5000mah battery . I never bring a charger or power bank when I go out .
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+RIGHT ANSWER: Helen
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.09523809523809523
+============================================================
+
+QUESTION: Whose opinions from Christopher and James about manufacturers are most similar to Alyssa's?
+RETRIEVED: 
+Relevant utterances:
+Alyssa: A real brand?What is a real brand in your eyes ? Sure enough , whoever gets the loser can get the world .
+Alyssa: [ Yunbei ] To tell you the truth , I am now planning to buy the flagship of 2023 ( the target model is the flagship of various domestic manufacturers ) . The reason why I post a texture comment is to attract the attention of the people in the machine circle . By then hopefully they can design the product I want in 2023 [ not easy ]
+Alyssa: It seems that I expressed my meaning wrong . I mainly want to talk about the visual sense . In fact , I have not touched it , but I have seen it used by others . Anyway , it seems that the appearance of Apple is indeed high - end , and it is not as gorgeous as other mobile phones ' color , just a simple visual texture , and other mobile phones do not have this effect . Although Huawei and Samsung also have advanced visual texture , it is very different from Apple 's style .
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Christopher: In fact , to be honest , the crease is just uncomfortable to look at when the screen is black , but it does not actually affect the use of [ allow sad ]
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Alexander: But since you can have a better experience , of course you should choose a better one . Neo5 , there are not many short boards . Why do you have to choose one have more short boards for a similar price ?
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Carlos: Vivo 's portrait photography , none of the other factorys can compare
+Alyssa: Why is the texture of the iPhone always better than other mobile phones ? Can someone tell me what process is mainly used for the right - angle edge design used in 11 , 12 , and 13 ? Will this process also account for a lot of cost ? ( And Apple 's camera is not a big black frame , but the lens is transparent , which is also achieved by OnePlus , so that you can see the sense of luxury , I hope other manufacturers can improve this design ) Sentiment: pos
+Jacob: It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Alyssa: It has always been , but the screen is too bad
+Ashley: I really do n't think there is anything wrong with the water droplets . On the contrary , I think the water droplets are very good .
+Abigail: If you care about creases , it seems that the creases are well controlled , you can consider .
+Elizabeth: Like square and upright , 20U is no problem . If not , do n't you think the design of this 22plus is beautiful [ tears ] ; speaking of note20U , you can see the appearance of 22U this year , I feel that 20U can be used for a few more years , believe me , if you have never used Samsung , it is absolutely amazing ( If you buy online , do n't buy parallel imports )
+Miles: Haha , this may not true . My ace has been used for more than two years , and it is still very smooth , almost not much worse than when I first bought it . Even when I just bought it , it is not so stable , two major version upgrades are good , there is no negative optimization , my colleague 's Apple , Huawei are also good after many upgrades , manufacturers deliberately negative optimization will only damage their own brand .
+Christopher: I think it 's okay , I did n't pay much attention to the lock frame . The battery life is OK . 120hz+5 g runs faster when playing games . It 's ok for daily use .
+Nicholas: When I first bought the 13mini , I also hoped it can be the main machine
+James: It is indeed too much ahead of other models [ laugh cry ]
+James: Come on , I have been using the s10 + Forerunner for three years [ doge ] is still smooth , I will upgrade oneui4.0 next month and it can fight for another two years [ laugh cry ]
+Tyler: Which flagship machine is not heavy now . Both pro and promax feel drop . I buy pm directly .
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+Elizabeth: The Honor water army is indeed a lot , but to be honest , Magic3 is pretty good , it 's just that other series of products are leek
+RIGHT ANSWER: Christopher
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.09090909090909091
+============================================================
+
+QUESTION: Whose opinions from Natalie and James about manufacturers are most similar to Jasmine's?
+RETRIEVED: 
+Relevant utterances:
+Kaylee: I do n't know , but my friends recommend 30s . Nova 's price / performance ratio is not high
+Natalie: After all , the thousand yuan machine has to increase the price . If the screen is better , it will be castrated in other places .
+Nicholas: When I first bought the 13mini , I also hoped it can be the main machine
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Jasmine: How to check the battery health [ question ]
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Jada: I do n't mean to argue , 6.1 inches , 200 grams and 6.5 inches , 200 grams feel a lot different in the hand . The volume is slightly larger , and the weight does not feel so heavy after the weight is distributed
+Jessica: If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+Natalie: How is the battery life ? I 've been a little heartbeat recently , cool guy pink [ doge ]
+Nicole: It 's not just used this time and it wo n't be used again . . . In the future , if the cost is recovered , it can be gradually delegated to the sub - flagship , and the flagship will use the latest and better one . What I mean is , is it possible that in order to differentiate , the standard version if you want to buy a slightly cheaper one , and the pro version if you want to take better pictures ? This year 's x3 series standard version is almost the same as the pro version , the photos are exactly the same , only the processor has been upgraded from 870 to 888 , and it ca n't arouse my desire to buy a pro at all [ two ha ]
+Nicholas: Vivo , OPPO , Xiaomi are real brands , iQOO , realme , OnePlus , and Redmi are sub - brands . You refute this , how much prejudice do you have .
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Danielle: I just started to use it , the texture of the ceramic is as warm as I said before , and for the weight , the subjective feeling is slightly heavier than the previous generation . As for the others , I need to use first
+Horace: It 's perfectly fine for a big man . The pro is top - heavy . Really a nonsense . The two are almost the same in hands , and the perception is not obvious . After using the max for more than a month , I feel that the proportion is better and comfortable instead . 😅
+Jasmine: It is not very recommended . 2K120 can not be opened at the same time . You can consider this year 's S21U
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Sara: The individual brand is slightly better than before , and there are still many offline machines
+Natalie: The color is okay , and why are you very sure that the color is taken by the phone , not because of the different screens . But I do n't care very much about the color . I always match color again if I want to produce photos
+Elizabeth: The Honor water army is indeed a lot , but to be honest , Magic3 is pretty good , it 's just that other series of products are leek
+Diana: But if you care about thickness , it is really a disaster for bare mechine more than 9 mm and plus the mobile phone case .
+Jada: MAX is too big , even if Max is only 200 grams , the feel will not feel good .
+Jonathan: I can buy a lot of brands , it 's not just one thing
+Angelina: The main thing is that it is thin and light . It has everything that should be there , and the price is OK . I am using 13p now . There are too many places to complain .
+RIGHT ANSWER: Natalie
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.08695652173913043
+============================================================
+
+QUESTION: Whose opinions from Josephine and James about manufacturers are most similar to Miles's?
+RETRIEVED: 
+Relevant utterances:
+Miles: Look what you said , intentional negative optimization will not play a good role , speed up the replacement ? Consumers may not necessarily buy this brand next time , so the logic is wrong
+Miles: How outrageous is the battery life ? How does it compare with the domestic 5000mAh battery ?
+Miles: Sure enough , it 's not one case . What else can you expect from a company that ca n't do a basic function like a camera ?
+Miles: How great is the battery life ? How does it compare with the domestic 5000mAh battery ?
+Miles: No problem in three years
+Miles: Haha , this may not true . My ace has been used for more than two years , and it is still very smooth , almost not much worse than when I first bought it . Even when I just bought it , it is not so stable , two major version upgrades are good , there is no negative optimization , my colleague 's Apple , Huawei are also good after many upgrades , manufacturers deliberately negative optimization will only damage their own brand .
+Miles: What does periscope mean ? Is n't it the same as a telephoto lens ?
+Miles: This is indeed .
+Miles: This happens ! There is loss ! All phones are the same
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+Miles: It would be wise to wait until 618 to buy . Unfortunately , the phone I use now only has 64 memory , so I ca n't wait . If 12x is 300 cheaper , it is definitely the first choice
+Miles: You wo n't say that if you use a vivo system . I have used two vivo mobile phones in a row , and there is a lot of scolding on the vivo forum . Go and see .
+Miles: I play several games a day , and still can use it when I go home at night .
+Miles: I guess it 's about the 10u screen [ doge ]
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Carlos: Vivo 's portrait photography , none of the other factorys can compare
+Miles: Handheld 13mini , it is very easy to use when not playing games , and I have an Android machine for playing games
+Devin: The two were not good originally , but the MOTO brand is still valuable
+Horace: It 's perfectly fine for a big man . The pro is top - heavy . Really a nonsense . The two are almost the same in hands , and the perception is not obvious . After using the max for more than a month , I feel that the proportion is better and comfortable instead . 😅
+Jacqueline: The screen speaker work system , plus Google service is much better . Personally , I think the flagship is acceptable to be expensive , but it is not acceptable to have shortcomings ...
+Elizabeth: The Honor water army is indeed a lot , but to be honest , Magic3 is pretty good , it 's just that other series of products are leek
+Marjorie: What about the Samsung Miracle 's compare with the True Flagship 's
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Jacqueline: After being cheated by K40 , do you want to be cheated again ? At the beginning , it boasted that the k40 screen was the first in the industry , it turned out to be usable ? No matter how good the heat dissipation is , with a blind screen , who can use it ?
+Miles: Anyway , you just ca n't see that it have been played the game for two hours , and do n't even think about turning on 120hz .
+RIGHT ANSWER: Josephine
+MODEL ANSWER: xiaomi
+CURRENT ACCURACY: 0.08333333333333333
+============================================================
+
+QUESTION: Whose opinions from Luccile and James about manufacturers are most similar to Evelyn's?
+RETRIEVED: 
+Relevant utterances:
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Luccile: Is the price of 8999 still nice ? [ Allow sad ]
+Luccile: It 's barely OK . It 's suitable as a standby machine , but it 's relatively heavy
+Benjamin: In fact , if the price of the blue factory has been there , the workmanship and texture will be fine . My rubbish 70 + is like that , I know that he is very expensive as soon as I touch it . [ doge ]
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Erin: The price is not very high , but the configuration does not know how .
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Evelyn: I personally do n't consider about taking pictures when I buy redmi , it can scan the code is enough [ allow sad][allow sad][allow sad][doge ]
+Evelyn: Mine is also mix2s , just wait for k50 , if there is no small screen version , then buy 12 , unfortunately it is curved [ Sweat ]
+Evelyn: A lot of people who do n't understand digital almost never wipe the camera , plus the front camera is relatively blurry [ two ha ] Besides , the sales of the more powerful Note10 are still not as good as the Note9 and Note11 .
+Erin: It is not surprising that you use the iPhone 11 to have such a feeling . I do n't feel like you with 13 Pro Max . It is not necessary to say that the smooth and silky control experience . It is an indisputable fact that the invincible battery life is completely beat all competitors . In recent years , I has been using Huawei flagships , sometimes Samsung and OV flagships , It can only be said that one is not as good as one . Especially Huawei is a landslide visible apparently . The latest P50 Pro is really disappointing without talking about 5G.
+Elizabeth: Like square and upright , 20U is no problem . If not , do n't you think the design of this 22plus is beautiful [ tears ] ; speaking of note20U , you can see the appearance of 22U this year , I feel that 20U can be used for a few more years , believe me , if you have never used Samsung , it is absolutely amazing ( If you buy online , do n't buy parallel imports )
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+Ian: But this yours is hotter than the grain factory . Does it have something to do with whether it burn the motherboard ? Overheated but ca n't be scolded ?
+Ian: The k40 is the cheapest among these . 8 + 128 Pinxixi 1579 , which should be the first choice .
+Luccile: You can buy it and try it , this is the real feeling I use , 7 years of Mi fan .
+Luccile: If you change from 12 pm , you will find that whether you play games or daily use is fine , 888 is not as hot as you think , half half
+Horace: It 's perfectly fine for a big man . The pro is top - heavy . Really a nonsense . The two are almost the same in hands , and the perception is not obvious . After using the max for more than a month , I feel that the proportion is better and comfortable instead . 😅
+Evelyn: In other words , Xiaomi Mi 12 has no dynamic refresh rate ? [ sad ]
+Luccile: The frame drop is too serious , I am going to sell it , and it is even overheat when taking pictures [ tears ]
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Luccile: It 's ridiculously strong , it 's totally beat the note9pro on experience
+Rita: Indeed , many have not been written , and 12 this time , the small size , separate mold opening , internal stacking design and so on are all costs , which brings a good feel . The small screen flagship also caters to some small screen users . How can he compares , the positioning is different . His size should be compared with 12pro [ doge ]
+Ian: Do n't talk that nonsense . Huawei 's sales are all low - end phones . The flagship sales are not even half of Apple ' s. Sales and profits are even worse . Apple will go bankrupt without sanctions against Huawei ? Laughing to death you rubbish
+Erin: I like Samsung 's flip very much , but unfortunately I have n't bought it because of battery life , and I 'm still waiting
+RIGHT ANSWER: Luccile
+MODEL ANSWER: luccile
+CURRENT ACCURACY: 0.12
+============================================================
+
+QUESTION: Whose opinions from Luccile and James about manufacturers are most similar to Xavier's?
+RETRIEVED: 
+Relevant utterances:
+Luccile: Is the price of 8999 still nice ? [ Allow sad ]
+Xavier: Does this have something to do with the product has problem ?
+Xavier: Really has small screen [ surprised ] , bought 11pro too early . [ laugh cry ]
+Xavier: I feel that the 13pro is significantly heavier than the Mi 11u
+Xavier: I 'm talking about aesthetic issues rather than technical issues . Apple 's design logic is that if there is a conflict between practicality and aesthetics , they will give priority to practicality , but if there is no conflict between the two , Apple will choose aesthetics without hesitation , and Apple 's four sides are equal in width has achieved in 2017 , and it 's a testament to Apple 's pursuit of aesthetics
+Luccile: It 's barely OK . It 's suitable as a standby machine , but it 's relatively heavy
+Luccile: It 's ridiculously strong , it 's totally beat the note9pro on experience
+Luccile: You can buy it and try it , this is the real feeling I use , 7 years of Mi fan .
+Xavier: After all , the 10S is flexible screen , and in some aspects it has advantages over hard screens .
+Xavier: The x7 is poor , the others are okay , every time I want to take pictures and videos , it is very uncomfortable [ Sweat ]
+Xavier: Sure enough , Xiaomi users
+Xavier: Unexpectedly it 's not Samsung
+Xavier: Except for the iPhone , the only one has four sides of the same width[lick screen][lick screen][lick screen ]
+Luccile: Is 17 's 865 better ?
+Xavier: Just like and dislike , I 'm the kind of person who does n't like millet
+Miles: Haha , this may not true . My ace has been used for more than two years , and it is still very smooth , almost not much worse than when I first bought it . Even when I just bought it , it is not so stable , two major version upgrades are good , there is no negative optimization , my colleague 's Apple , Huawei are also good after many upgrades , manufacturers deliberately negative optimization will only damage their own brand .
+Luccile: I also use Mate9 , already a bit slow and stuck
+Luccile: Yes , even the previous generation of mate30p ca n't beat [ tears ]
+Xavier: There 's no need to talk to this Mi fan . As soon as we mentions the point , he will brag and blacklist others . It 's so funny . Even imx686 is so bad he was still bragging it . 766 is no better than 686 in his mind . [ Tan Shou ]
+Xavier: Some boast that no optimization and no algorithm 2,000 - level garbage k30pro 's imx686 is stronger than 766 . If you refute it , you will be blacklisted . It 's enough for everyone to know the species of your stuff .
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Kathryn: I also want the Dimensity 9000 for the super cup . Forget the fire Snapdragon . If you want to buy the Snapdragon , you can choose Xiaomi [ laughs but does not speak ]
+Tyler: Which flagship machine is not heavy now . Both pro and promax feel drop . I buy pm directly .
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+RIGHT ANSWER: Luccile
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.11538461538461539
+============================================================
+
+QUESTION: Whose opinions from Chase and James about manufacturers are most similar to Sofia's?
+RETRIEVED: 
+Relevant utterances:
+Sofia: It is a bit high than the 11 price
+Chase: The hardware is good , but actually it can only be said to be about the same , it is not necessary to say that it is better [ doge ]
+Sofia: Compared with Huawei , it is really bad . After all , base station is what Huawei does , but the signal of Xiaomi is not much better . I think the signal of Xiaomi and Apple are similar . I have never used other Androids , so I do n't know .
+Sofia: The appearance of the previous generations of the s series is really beautiful
+Sofia: This is the way it is , Xiaomi 's experience quality and workmanship are completely incomparable
+Sofia: In fact , many vivo series are top matched is the best . Iqoo8 is regular , similar to 7 . Iqoo8pro experience has been improved the most . Compared with last year 's X60 , the top version of X70 series has good sincerity and configuration . The configuration is full and the shortcomings are correct . Findx2 was also a standard version last year , which was seriously separated from Pro experience publicity , unlike products of the same era . But this year , find X3 is sincere and has not weakened the camera . Last year 's standard configuration took the poor imx586 as the main camera , which was really cross the line Sentiment: pos
+Sofia: In addition to the processor , is n't all other hardware shrinking ? [ question ]
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Sofia: The civi system is already so bad , still brag it ? Go to search the actual measurement . Some people always think that system optimization is not a cost , software engineers do not need wages , and mobile phones only need to stack materials . Sentiment: neg
+Sara: The individual brand is slightly better than before , and there are still many offline machines
+Jessica: If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]
+Leonora: If a friend 's product is generally recognized in the digital chat comment area , then this product is considered a good one . If it is recognized and at the same time , the mi fans are shut up , then this product is almost impeccable [ dig nose][dig nose ]
+Sofia: I used it for two years from 2015 , and I have n't used Xiaomi since 2017
+Sofia: It is recommended not to consume in advance [ doge ]
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+Fiona: Mainly it is the stainless steel which is heavy . I heard that titanium alloy will be used in two years , and it will be lighter at that time .
+Miles: Look what you said , intentional negative optimization will not play a good role , speed up the replacement ? Consumers may not necessarily buy this brand next time , so the logic is wrong
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Sofia: It 's fine , the daily use is very smooth , and there are no bugs , and I do n't seem to have used the small window [ two ha ]
+Sofia: how is this possible
+Jesse: After the 12 came out , the price of the 11 series rose [ glutton ]
+Brandon: Do n't listen to Laoba nonsense . To be honest , the price is very kind . At present , it is the top version . If you do n't play games , standard version also has multi - functions , but other brands do n't have .
+RIGHT ANSWER: Chase
+MODEL ANSWER: xiaomi
+CURRENT ACCURACY: 0.1111111111111111
+============================================================
+
+QUESTION: Whose opinions from Brian and James about manufacturers are most similar to Delia's?
+RETRIEVED: 
+Relevant utterances:
+Delia: The X60 I bought for my mother last year , Zeissga has attracted me for a whole year . [ Laughing Cry ] , in my opinion , high - priced and low matching is also cheaper than high -priced and high - priced . It ca n't attract me without Leica . Mi has only a smart home attracting me . I dare not touch the price of the fruit . I 've been using it for 6 years .
+Delia: The screen of 12 is not very good , barely okay , choose one of 60hz and dc
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+Delia: Did n't OnePlus break the news ahead of time to say that the red data cable was canceled ? Does it still have this time ? Is there a white data cable released this time ?
+Delia: I have used Apple and Huawei , and your so - called better experience is not true . Bad experience in my hands ! I am using nova8 now , which is better than Apple ! You apple fans can really bear it , you can really cheat yourselves .
+Alan: Glory is all purchased from suppliers , right ?
+Delia: Xiaomi is not good , why buy 6
+Delia: Signal , heat dissipation , charging , high brushing , file management , return button ...
+Delia: Lose something , then can take something
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Ashley: I really do n't think there is anything wrong with the water droplets . On the contrary , I think the water droplets are very good .
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+Daisy: What is the configuration of mini5 ? What year is the machine ?
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Devin: The two were not good originally , but the MOTO brand is still valuable
+Marjorie: What about the Samsung Miracle 's compare with the True Flagship 's
+Ashley: Yes , the screen is Zhou Dongyu arrangement , and the quality is the worst among the flagship machines .
+Leonora: If a friend 's product is generally recognized in the digital chat comment area , then this product is considered a good one . If it is recognized and at the same time , the mi fans are shut up , then this product is almost impeccable [ dig nose][dig nose ]
+Dominic: Sony 582 is not bad ? Not good at the same price
+Dominic: The 4.7 - inch screen is not only small , but also the screen ratio is too low . The size of this body is almost the same as that of the full - screen 6 - inch screen !
+Brian: If there is a new intact , it 's okay ( provided that you have to accept the weight , thickness and the bad display frame rate scheduling of the new version of the firmware )
+Tyler: Which flagship machine is not heavy now . Both pro and promax feel drop . I buy pm directly .
+RIGHT ANSWER: Brian
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.10714285714285714
+============================================================
+
+QUESTION: Whose opinions from Aaliyah and James about manufacturers are most similar to Wyatt's?
+RETRIEVED: 
+Relevant utterances:
+Wyatt: I also want to consider iQOO9 but I ca n't put down the Mi 12 [ doge ]
+Wyatt: Hi , may I ask what happened to the pro ? I want to buy pro , thank you
+Wyatt: Do n't they just want to use the telephoto as the selling point of the top flagship ? [ Laughs haha ] Saying that the usage rate is not high . Reasonable castration
+Wyatt: No , the screen is too small , it is not suitable
+Wyatt: I also want to buy a better camera . The k30s I use ca n't take pictures at night , but now I can play games on my mobile phone . Let 's see what the major manufacturers do this year
+Wyatt: IQOO seems to have only 4000 mAh , the battery life is not good
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Edward: Ask which manufacturers ' product ideas that can be recognized by Shui Ge ?
+Wyatt: These are all fools . Immediately , the mobile phone with the camera under the screen is about to come out . Now the mobile phone has only one camera , and now it have a physical fingerprint . Do you have problems with your brain ? Do n't always say Apple is good . No matter how powerful the processor is , what 's the use ? Can it turn a mobile game into a PC game , or take off ? Sentiment: pos
+Aaliyah: I heard that the battery life is not good [ laugh cry ]
+Wyatt: Miui without 12.5 is all strong [ doge ]
+Aaliyah: The performance of Qualcomm is okay . Unless you plan to use a mobile phone for more than 3 years , there is no difference . Most people change it for two or three years , using longer is for the people who do n't play large games . Like my friend , he used the iphone6 for 5 years until change to XR . We bought the iPhone6 at the same time , but before he changed XR , I had changed my 6 to 6SPlus , Note7 , Note8 , S10 [ Eat melon ]
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Nicholas: Vivo , OPPO , Xiaomi are real brands , iQOO , realme , OnePlus , and Redmi are sub - brands . You refute this , how much prejudice do you have .
+Aaliyah: The straight - screen iQOO9 is estimated to be a domestic screen .
+Edward: All items are not the top , but the experience together is better than yours . You also know that you only used the P10 . If you have n't bought a new machine , do n't talk nonsense there . I also have the OnePlus 9P . I just used it for a week , and I am ready to put it away to bite the dust [ dig nose ]
+Alyssa: A real brand?What is a real brand in your eyes ? Sure enough , whoever gets the loser can get the world .
+Jacob: It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+Miles: Haha , this may not true . My ace has been used for more than two years , and it is still very smooth , almost not much worse than when I first bought it . Even when I just bought it , it is not so stable , two major version upgrades are good , there is no negative optimization , my colleague 's Apple , Huawei are also good after many upgrades , manufacturers deliberately negative optimization will only damage their own brand .
+Wyatt: The rise of Android is from the Snapdragon 835 , and there has been a qualitative change since the Snapdragon 660
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Kathryn: I also want the Dimensity 9000 for the super cup . Forget the fire Snapdragon . If you want to buy the Snapdragon , you can choose Xiaomi [ laughs but does not speak ]
+Wyatt: Mainly space is close to satellites [ doge ]
+RIGHT ANSWER: Aaliyah
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.10344827586206896
+============================================================
+
+QUESTION: Whose opinions from Bernard and James about manufacturers are most similar to Laura's?
+RETRIEVED: 
+Relevant utterances:
+Laura: Mine is the official silicone case , maybe it 's not on the shelves yet
+Laura: Compared to the iPhone ? I use Apple now , and I will support domestic production in the future .
+Laura: [ Not simple ] [ Not simple ] [ Not simple ] 920 is not so bad , my mother 's G90 T can still be used , do n't repeat word for word what others say
+Laura: To be honest , magic3 is really not good . When it was first released , my friend bought one . The photos were very bad and the optimization was poor . However , it was much better after it was updated . Compared with other Android flagship , magic3 has no advantages and sells more expensive . The sales volume of magic3 series is also not good .
+David: There are more of blue factory 's in 3000 to 4000 , under 3000 , generally the middle end
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Laura: Which one .
+Kaylee: I do n't know , but my friends recommend 30s . Nova 's price / performance ratio is not high
+Laura: Yes , both Honor of Kings and PUBG can be played , different personal needs [ not simple ] [ not simple ] , I think this phone is very good , 920 is higher than G90 T a lot [ not simple ]
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Elizabeth: Like square and upright , 20U is no problem . If not , do n't you think the design of this 22plus is beautiful [ tears ] ; speaking of note20U , you can see the appearance of 22U this year , I feel that 20U can be used for a few more years , believe me , if you have never used Samsung , it is absolutely amazing ( If you buy online , do n't buy parallel imports )
+Laura: If it 's just for playing games , wait for 9 . For comprehensive experience , 8Pro is the flagship . Of course , 9Pro is also okay [ two ha ] Let 's wait for 898 to come out and see , if it really does n't work , after the release of 9 , it 's not bad to buy 8Pro then [ allow sad ] Sentiment: pos
+Leonora: If a friend 's product is generally recognized in the digital chat comment area , then this product is considered a good one . If it is recognized and at the same time , the mi fans are shut up , then this product is almost impeccable [ dig nose][dig nose ]
+Joseph: Nothing yyds ! The 6pp heat dissipation is particularly bad . I have bought it , and the hottest 870 is not excessive . The Reno7Pro is almost the same as the OnePlus 9rt , and the heat dissipation is much stronger . As long as the Dimensity 2000 is cooler than the 888 , it is still the flagship direct - screen flagship with differentiated positioning .
+James: I feel that Xiaobai is the most worthless test .
+Sara: The individual brand is slightly better than before , and there are still many offline machines
+Laura: That 's stable
+Neil: Buy new and not buy old , and the price difference is not too much
+Louis: Although I do n't have the money to buy it , I think Meizu is very good . Except for the poor processor , the other peripherals of the 18 do not lose at all . Except for the criticism of system maintenance and after - sales , you can buy it directly without considering it .
+Benjamin: In fact , if the price of the blue factory has been there , the workmanship and texture will be fine . My rubbish 70 + is like that , I know that he is very expensive as soon as I touch it . [ doge ]
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+RIGHT ANSWER: Bernard
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.1
+============================================================
+
+QUESTION: Whose opinions from Jennifer and James about manufacturers are most similar to Megan's?
+RETRIEVED: 
+Relevant utterances:
+Megan: Both are the same
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+Jennifer: Except for the first batch , 11 seems to have not been burned , and only 100 people have burned in hundreds of thousands of sales , which can only mean that they are unlucky [ cute ]
+Megan: Is 730 g still usable ? [ Doraemon is scared ]
+Jennifer: Less money and more things , ca n't you consider Xiaomi or Black Shark ?
+Megan: Please private letter me without watermark original image , thank you ! And this Wechat public account is ?
+Jacqueline: The screen speaker work system , plus Google service is much better . Personally , I think the flagship is acceptable to be expensive , but it is not acceptable to have shortcomings ...
+Megan: It 's better to buy 18pro with 500 cheaper and 30 [ eat melon][eat melon][eat melon ]
+Jacqueline: After being cheated by K40 , do you want to be cheated again ? At the beginning , it boasted that the k40 screen was the first in the industry , it turned out to be usable ? No matter how good the heat dissipation is , with a blind screen , who can use it ?
+Kaylee: I do n't know , but my friends recommend 30s . Nova 's price / performance ratio is not high
+Deborah: I think 9000 is perfect for super large cups . Snapdragon sucks
+Lauren: After the upgrade , the battery life is worse ? which model ?
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Laura: Mine is the official silicone case , maybe it 's not on the shelves yet
+Kathryn: I also want the Dimensity 9000 for the super cup . Forget the fire Snapdragon . If you want to buy the Snapdragon , you can choose Xiaomi [ laughs but does not speak ]
+Kimberly: Really no one buys the oneplus for the second time [ hee hee ]
+Elizabeth: The Honor water army is indeed a lot , but to be honest , Magic3 is pretty good , it 's just that other series of products are leek
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Melanie: I just bought the k30s yesterday and felt confused now
+Sara: The individual brand is slightly better than before , and there are still many offline machines
+Melanie: I dare not touch the 888 , and I am a little hesitant to see the power - down feedback and fever related to the 870 game . Maybe it depends on the optimization of the system . I feel that 865 has less negative reviews
+Ashley: I really do n't think there is anything wrong with the water droplets . On the contrary , I think the water droplets are very good .
+Jennifer: But Samsung has no processor as good as Apple ' s. [ Doge ] [ Doge ]
+RIGHT ANSWER: Jennifer
+MODEL ANSWER: xiaomi
+CURRENT ACCURACY: 0.0967741935483871
+============================================================
+
+QUESTION: Whose opinions from Brian and James about manufacturers are most similar to Isabel's?
+RETRIEVED: 
+Relevant utterances:
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Erin: The price is not very high , but the configuration does not know how .
+Ian: But this yours is hotter than the grain factory . Does it have something to do with whether it burn the motherboard ? Overheated but ca n't be scolded ?
+Isabel: Look forward to samples
+Ian: The k40 is the cheapest among these . 8 + 128 Pinxixi 1579 , which should be the first choice .
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Benjamin: In fact , if the price of the blue factory has been there , the workmanship and texture will be fine . My rubbish 70 + is like that , I know that he is very expensive as soon as I touch it . [ doge ]
+Isabel: The battery life of the s20 is very poor , but I am very satisfied in other aspects , so I have been using it as the main machine
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Alan: Glory is all purchased from suppliers , right ?
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Alexander: But since you can have a better experience , of course you should choose a better one . Neo5 , there are not many short boards . Why do you have to choose one have more short boards for a similar price ?
+Ian: Mi 12 , Meizu 18 screen is very good , feel good , is there any problem , is there any problem with good products ? Is n't it better than the mini stupid tax series ?
+Erin: It is not surprising that you use the iPhone 11 to have such a feeling . I do n't feel like you with 13 Pro Max . It is not necessary to say that the smooth and silky control experience . It is an indisputable fact that the invincible battery life is completely beat all competitors . In recent years , I has been using Huawei flagships , sometimes Samsung and OV flagships , It can only be said that one is not as good as one . Especially Huawei is a landslide visible apparently . The latest P50 Pro is really disappointing without talking about 5G.
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Evelyn: I personally do n't consider about taking pictures when I buy redmi , it can scan the code is enough [ allow sad][allow sad][allow sad][doge ]
+Elizabeth: Like square and upright , 20U is no problem . If not , do n't you think the design of this 22plus is beautiful [ tears ] ; speaking of note20U , you can see the appearance of 22U this year , I feel that 20U can be used for a few more years , believe me , if you have never used Samsung , it is absolutely amazing ( If you buy online , do n't buy parallel imports )
+Isabel: At 618 , I bought a black , top version for my mother . She used it very well . The battery can last for a day . Every time I went home and looked at her phone , it did n't carelessly download any software .
+Eric: The battery life is too poor , the appearance is super good , and it is still very good after 2 years
+Brian: If there is a new intact , it 's okay ( provided that you have to accept the weight , thickness and the bad display frame rate scheduling of the new version of the firmware )
+Sara: The individual brand is slightly better than before , and there are still many offline machines
+Erin: I like Samsung 's flip very much , but unfortunately I have n't bought it because of battery life , and I 'm still waiting
+Evelyn: A lot of people who do n't understand digital almost never wipe the camera , plus the front camera is relatively blurry [ two ha ] Besides , the sales of the more powerful Note10 are still not as good as the Note9 and Note11 .
+Ian: Except for 4 g , p50p basically has no disadvantages , except for those who insist on the pursuit of the top screen
+RIGHT ANSWER: Brian
+MODEL ANSWER: xiaomi
+CURRENT ACCURACY: 0.09375
+============================================================
+
+QUESTION: Whose opinions from Ella and James about manufacturers are most similar to Hayden's?
+RETRIEVED: 
+Relevant utterances:
+Hayden: I laughed when you found a Fire Dragon 821 to compare [ laugh cry ]
+Hayden: Then it must be 10U , 11p to change 10u and it is very comfortable [ Laughhaha ] After all , the positioning is different . 11P is compared to 10p [ two ha ]
+Hayden: The same . The front is really nice , a dream machine . The charging speed is slow but tolerable , and I do n't know how 's the 8gen1 perform .
+Hayden: Do you mean the iPhone that except for iOS and processors , has been defeated in photography , charging , screen , appearance , and thinness ? I wo n't talk about NFC infrared , the application is double - open , privacy space , split screen , etc , there is nothing , and it is not good to play games to dissipate heat . It takes more than 40 days to ship when you buy it 3 , 4 thousand more expensive , and it does not come with a charger . Can you believe it ? Some people really like to pay stupid tax Sentiment: neg
+Hayden: 618 2600 to buy the top with 9R is really cost - effective
+Hayden: Lol , only the speaker is stronger . The screen is transparent and the refresh rate is high . hmx was only adjusted this year , what happened to the phone last year ? What is the white balance of the Mi 10 ? Why did n't you say that 10u took the first place in the blind test ? [ doubt ]
+Hayden: Blind guess is that Xiaomi 11U wins all , you will be sour , and you will not admit it .
+Hayden: [ Yunbei ] Ask after the sale , there is no problem in theory . . It should be a touch issue
+Hayden: Say something unpleasant , 11U is invincible ,
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Hayden: I am wondering , although I know the camera is the leading part of X80Pro+ , NEX is a high - end flagship , so the camera is at least as good , but after seeing the news , actually it is not as good as Sentiment: pos
+Ella: I changed to the k20pro from Xiaomi 6 premium edition , which all are stepped on by me . Now I have another idea for Xiaomi 12 [ bad laugh ]
+Hayden: Use another machine before you bark !
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Alexandra: I feel pretty good about the 820 . It was the 820 when I first came into contact with phone . I did n't feel very hot . I used it in summer .
+Emma: The problem is that many small - screen followers just like the flagship processor without considering the heat dissipation and the power consumption , Otherwise why are they clamoring for the flagship of the small screen ? [ Yun Sad ] 9se died quite miserably with 712 ...
+Ella: Are you holding this wireless charging in your hand ?
+Leslie: The brand is improving , I do n't like ov either , but they have changed their strategy from high price and low configuration
+Jessica: If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]
+Alexandra: I have used all three you mentioned , and I have also used Le 2max zuk z2 , Mi 5 is my favorite , it is thin and light , and the feel is good , I have used three different versions before and after , and I have also used mate8 p9 . They are all used to play the glory of king , and I did n't feel too hot in summer . It 's far away from the 11 11p 11u I used last year . Besides , Huawei of the same year play the glory of king is garbage , and the performance is not good , only the temperature is not high is useless
+Sara: The individual brand is slightly better than before , and there are still many offline machines
+Jada: I do n't mean to argue , 6.1 inches , 200 grams and 6.5 inches , 200 grams feel a lot different in the hand . The volume is slightly larger , and the weight does not feel so heavy after the weight is distributed
+RIGHT ANSWER: Ella
+MODEL ANSWER: ella
+CURRENT ACCURACY: 0.12121212121212122
+============================================================
+
+QUESTION: Whose opinions from Howard and James about manufacturers are most similar to Austin's?
+RETRIEVED: 
+Relevant utterances:
+Howard: Because all manufacturers will negatively optimize [ tears ] They are not afraid that you will not choose the previous one
+Howard: The battery life of the x2pro I bought before is terrible . The oppofind series is really good , but it is this battery life that makes me dare not buy it .
+Howard: Xiaomi dares to take the lead in the world , but this maybe go too fast , causes the design to have a feeling of being thought of in an instant . In other words , there is no serious polishing and precipitated ideas , or it can be said to lack the spirit of craftsmen . After comparing friend businessmen 's dare to be late of the world , it is very good , all of them have their own audience
+Howard: Power consumption is fine , mainly takes up too much internal space [ DOGE ]
+Austin: Considering pm , you must have a need for battery life , then pm [ Jerry ]
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Howard: But I still prefer to pick up the iphone camera , because of the smooth implementation , the icon animation of entering and exiting , the high - resolution real - time HDR viewfinder , the silky full - focus zoom , and the fast imaging , although the extreme image quality is poor , but the daily experience of taking photos with Apple is too good
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+David: There are more of blue factory 's in 3000 to 4000 , under 3000 , generally the middle end
+Donald: Only when we are strong and keep doing basic research well is the foundation of our future . Those gadgets are named what black technology . Really ca n't take it to the table . Cheap is not a panacea , texture and brand appeal are not simply based on the configuration that you have , I have and everyone has . Brand image is important .
+Howard: My classmates bought the iPhone 4 before , it also beat the vivo I bought this year [ Yunbei ]
+Devin: The two were not good originally , but the MOTO brand is still valuable
+Austin: 13 is 60 , only Pro and Promax are 120
+Howard: it 's already very conscientious that cheat us once a year[doge ]
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+Austin: It 's boring to follow the trend [ weak ]
+Sara: The individual brand is slightly better than before , and there are still many offline machines
+Dorothy: iqoo and Realme have produced too many mobile phones , they have not been properly trained and polished , the screen and photos are not good , and the machine is very rough , not recommended . Moreover , system upgrades and maintenance will be a problem in the future , and it is basically a one - shot deal .
+Angelina: The main thing is that it is thin and light . It has everything that should be there , and the price is OK . I am using 13p now . There are too many places to complain .
+Austin: In addition to the dual card , this generation is also a full version of the mini , worth to buy [ Jerry ]
+Jesse: [ Doge ] You really want to buy a ov with more than 8,000?I think most people wo n't do it . [ Doge ] I remember that the Blue Factory was not so expensive in the past two years
+Cameron: Yeah?That 's so good . The first batch of goods sent are basically night scenes . I do n't know if they used the wrong model , or which lens did they use ? Or , do you have to turn on the night view mode or what is it ? Or , is there a night scene mode or not , or my expectations are too high , or I have a prejudice against Samsung 's module , such as Suzhou , that night scene was really a mess , it was black and black , just a few bright spots in the darkness
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Miles: Look what you said , intentional negative optimization will not play a good role , speed up the replacement ? Consumers may not necessarily buy this brand next time , so the logic is wrong
+RIGHT ANSWER: Howard
+MODEL ANSWER: xiaomi
+CURRENT ACCURACY: 0.11764705882352941
+============================================================
+
+QUESTION: Whose opinions from Brian and James about manufacturers are most similar to Jane's?
+RETRIEVED: 
+Relevant utterances:
+Jane: Is there no 120W in the ordinary version ?
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Alan: Glory is all purchased from suppliers , right ?
+Brian: If there is a new intact , it 's okay ( provided that you have to accept the weight , thickness and the bad display frame rate scheduling of the new version of the firmware )
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Brian: I bought 7 in 2017 and sold more than 800 this year . Does anyone want your 2017 Xiaomi ?
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Melanie: I dare not touch the 888 , and I am a little hesitant to see the power - down feedback and fever related to the 870 game . Maybe it depends on the optimization of the system . I feel that 865 has less negative reviews
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Ian: The k40 is the cheapest among these . 8 + 128 Pinxixi 1579 , which should be the first choice .
+Jane: Yes , whether it 's taking pictures or videos , it 's too strong , especially video , it 's even better
+Jessica: If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+Jane: Not much stronger , the CPU part is like squeezing toothpaste , the GPU increased by more than 20 % , but the energy consumption is outrageous , depending on the adjustment of Xiaomi , otherwise it will be trolled worse than 888 [ DOGE ] [ Doge ]
+Jacqueline: After being cheated by K40 , do you want to be cheated again ? At the beginning , it boasted that the k40 screen was the first in the industry , it turned out to be usable ? No matter how good the heat dissipation is , with a blind screen , who can use it ?
+James: I feel that Xiaobai is the most worthless test .
+Jonathan: I only know that the camera of the previous generation product is weak compared to the mainstream of the domestic flagship . This is recognized . And the battery is n't durable either . Besides a screen , what else ?
+Jonathan: I can buy a lot of brands , it 's not just one thing
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+Francis: The emphasis is on experience , and also on the manufacturer 's adjusting
+Ian: Except for 4 g , p50p basically has no disadvantages , except for those who insist on the pursuit of the top screen
+John: How should I say it ? I think the heat dissipation of 12 pm is too poor to hold down the a14 . The battery life of two 12 pm I used is not very good [ laugh cry ] It 's a bit difficult
+Dennis: As we all know , Xiaomi changed after being scolded .
+Ian: But this yours is hotter than the grain factory . Does it have something to do with whether it burn the motherboard ? Overheated but ca n't be scolded ?
+RIGHT ANSWER: Brian
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.11428571428571428
+============================================================
+
+QUESTION: Whose opinions from Adrian and James about manufacturers are most similar to Winifred's?
+RETRIEVED: 
+Relevant utterances:
+Winifred: [ Question ] If I do n't have a sense of superiority with Samsung , what can I use to have a sense of superiority ? The top - level camera screen , sound quality , waterproof appearance and workmanship , all top - notch , or you use a mobile phone that does not even have a refresh rate of 120 to have a sense of superiority . Since I used Samsung , I look back at my 11max and it is a ppt mobile phone
+Adrian: There is no way to whitewash it , do n't talk about these , 30 % more expensive ca n't even play 4 K , let alone the picture quality . In this 618 e - commerce carnival , Xiaomi released the Xiaomi TV attributive sales champion , but the lack of the most mainstream size champions of 55 and 65 inches , think about why ? Are consumers all idiots ?
+Winifred: I have been looking at Xianyu that second - hand findx3 256 G for less than 3,000 recently , but I want to wait for the Dimensity version of findx5 , the 12 installments ready
+Winifred: Wake up ...... A sentence reveals that you do n't understand mobile phones . According to your calculation , is my Samsung 3200×1440 3k screen ?
+Winifred: I do n't know if the top version of x5 will exceed 7000 this time .
+Winifred: The price is too expensive 6999
+Winifred: Wi - Fi does not feel like a big problem , but the traffic signal is obviously not as strong as other mobile phones , even not as good as iPhone7
+Winifred: Just the screen should make it be passed . It 's not that Samsung does n't give Huawei screens . When mate30 , it said that it supports domestic screens , but there are better BOE screens made in China but they do n't use . Mate40 was also use a garbage screen , and the overall quality ? The screen ? motor ? speaker ? Only taking pictures can boast , even taking pictures is not the strongest Sentiment: neg
+Winifred: What else do you want with only more than 1,000 ? Do you want 2KE5 ? Do you want 199 ? [ Puzzled][Puzzled ]
+Donald: Only when we are strong and keep doing basic research well is the foundation of our future . Those gadgets are named what black technology . Really ca n't take it to the table . Cheap is not a panacea , texture and brand appeal are not simply based on the configuration that you have , I have and everyone has . Brand image is important .
+Winifred: It really does n't feel much if do n't play games . When I play games , I 'm so anxious that I want to smash my phone [ two ha ]
+Winifred: It 's the truth , otherwise I wo n't ask the image questions of the two mobile phones . How can the standard configuration compare to the Pro version ? Sentiment: neg
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+Adrian: I am also puzzled by his statement . I guess that the rotary motor is replaced by a linear motor .
+Miles: Haha , this may not true . My ace has been used for more than two years , and it is still very smooth , almost not much worse than when I first bought it . Even when I just bought it , it is not so stable , two major version upgrades are good , there is no negative optimization , my colleague 's Apple , Huawei are also good after many upgrades , manufacturers deliberately negative optimization will only damage their own brand .
+Donald: Borrow a blog to ask , will the x80pro+ be released in March , and will the blue factory update the x90pro+ in half a year this year [ doge ]
+Winifred: Memory , flash memory , etc . , not the same level ...
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+Adrian: The 10 Pro is slightly worse .
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Adrian: People who buy iPhones are really stupid and rich . Does that need to be said ? [ laughs silently ]
+Winifred: Now if it exceeds 10,000 , do n't even consider playing with the x2 . Samsung 's folding screen mainly relies on selling parallel imports . Sentiment: neg
+Donald: Still the price is too confident , the x2 is so , and now the x5 feels the same
+Joseph: Nothing yyds ! The 6pp heat dissipation is particularly bad . I have bought it , and the hottest 870 is not excessive . The Reno7Pro is almost the same as the OnePlus 9rt , and the heat dissipation is much stronger . As long as the Dimensity 2000 is cooler than the 888 , it is still the flagship direct - screen flagship with differentiated positioning .
+Melanie: I dare not touch the 888 , and I am a little hesitant to see the power - down feedback and fever related to the 870 game . Maybe it depends on the optimization of the system . I feel that 865 has less negative reviews
+RIGHT ANSWER: Adrian
+MODEL ANSWER: adrian
+CURRENT ACCURACY: 0.1388888888888889
+============================================================
+
+QUESTION: Whose opinions from Taylor and James about manufacturers are most similar to Morgan's?
+RETRIEVED: 
+Relevant utterances:
+Morgan: Probably because it 's expensive
+Taylor: Compared with the flagship machine , there is no advantage
+Morgan: I have bought a lot of Xiaomiand redmi for my family to use . Basically , after two or three years of use , I bought them new ones before replacing them , and none of them broke .
+Taylor: Does the k50pro+ have four speakers ? It 's more important to me than the motor
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Morgan: I am using it . Now mobile phones are like computers . Celeron is also watching videos and typing ... When I bought it , 5 G just came out . I thought that 4 G phones would be eliminated in two years . Now looking at the new mobile phone around 5000 , the camera is not as comprehensive as this machine . Probably still need to use it for another two years
+Edward: Ask which manufacturers ' product ideas that can be recognized by Shui Ge ?
+Morgan: I do n't know about the u series , but the s22 s22 + is really shrinking from the s20 . Too difficult , I thought it would get better and better , but I did n't expect it to start castrating the storage and the screen
+Taylor: Could it be that pro+ is not as good as G ? [ Allow sad ] . Not really .
+Devin: The two were not good originally , but the MOTO brand is still valuable
+Howard: Because all manufacturers will negatively optimize [ tears ] They are not afraid that you will not choose the previous one
+Taylor: You leave me speechless . Someone posted a Weibo saying that k50 g , jbl four speakers
+Taylor: Always overheat , With the cooling back clip , the frame still drops . Playing the sausage party is not as smooth as the s10 5 g that was eliminated before , [ Allow sad ] ,
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+Taylor: Ca n't it open the 90 and 120 gears ? I do n't worry about the battery life at home , why ca n't I enjoy more
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Miles: Look what you said , intentional negative optimization will not play a good role , speed up the replacement ? Consumers may not necessarily buy this brand next time , so the logic is wrong
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Brandon: Do n't listen to Laoba nonsense . To be honest , the price is very kind . At present , it is the top version . If you do n't play games , standard version also has multi - functions , but other brands do n't have .
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Tyler: Which flagship machine is not heavy now . Both pro and promax feel drop . I buy pm directly .
+Jacob: It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while
+Morgan: Hahahaha , what 's wrong with 13p
+Taylor: The configuration is not good any more
+RIGHT ANSWER: Taylor
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.13513513513513514
+============================================================
+
+QUESTION: Whose opinions from Winifred and James about manufacturers are most similar to Adrian's?
+RETRIEVED: 
+Relevant utterances:
+Adrian: There is no way to whitewash it , do n't talk about these , 30 % more expensive ca n't even play 4 K , let alone the picture quality . In this 618 e - commerce carnival , Xiaomi released the Xiaomi TV attributive sales champion , but the lack of the most mainstream size champions of 55 and 65 inches , think about why ? Are consumers all idiots ?
+Winifred: [ Question ] If I do n't have a sense of superiority with Samsung , what can I use to have a sense of superiority ? The top - level camera screen , sound quality , waterproof appearance and workmanship , all top - notch , or you use a mobile phone that does not even have a refresh rate of 120 to have a sense of superiority . Since I used Samsung , I look back at my 11max and it is a ppt mobile phone
+Adrian: I am also puzzled by his statement . I guess that the rotary motor is replaced by a linear motor .
+Adrian: The 10 Pro is slightly worse .
+Adrian: People who buy iPhones are really stupid and rich . Does that need to be said ? [ laughs silently ]
+Martin: The x2pro is not that good , but the good and the bad are relative , and the latter is worse , so the x2pro is forced to be the best in comparison . In addition , if the product is not good , it should be scolded . I am a consumer who has a mouth and I have not wronged anyone . Bite me . [ eat melon ]
+Adrian: Now I basically do n't play games , mainly is poor battery life in outdoor scenes . My brother 's mobile phone is always on with AutoNavi Maps Navigation , and when I use my mobile phone at low frequency , the power is down more than ten percent faster than pm .
+Adrian: I just mentioned the most obvious shortcomings , poor signal and slow charging are the facts . My colleague recently bought the iPhone 12 , and the signal is so bad that he doubts his life , saying that Huawei has never encountered it before , although I do n't use Apple or Huawei silent ]
+Donald: Only when we are strong and keep doing basic research well is the foundation of our future . Those gadgets are named what black technology . Really ca n't take it to the table . Cheap is not a panacea , texture and brand appeal are not simply based on the configuration that you have , I have and everyone has . Brand image is important .
+Winifred: I have been looking at Xianyu that second - hand findx3 256 G for less than 3,000 recently , but I want to wait for the Dimensity version of findx5 , the 12 installments ready
+Miles: Haha , this may not true . My ace has been used for more than two years , and it is still very smooth , almost not much worse than when I first bought it . Even when I just bought it , it is not so stable , two major version upgrades are good , there is no negative optimization , my colleague 's Apple , Huawei are also good after many upgrades , manufacturers deliberately negative optimization will only damage their own brand .
+Donald: Borrow a blog to ask , will the x80pro+ be released in March , and will the blue factory update the x90pro+ in half a year this year [ doge ]
+Winifred: Wake up ...... A sentence reveals that you do n't understand mobile phones . According to your calculation , is my Samsung 3200×1440 3k screen ?
+Adrian: Good lord , the taste is heavy enough [ doge ]
+Isaac: How on earth about one plus 9r ? Is it worth buying a second - hand minimum configuration for two thousand ? @Dami evaluation
+Winifred: I do n't know if the top version of x5 will exceed 7000 this time .
+Adrian: Haha , that 's . If you really feel the utilization rate is not high , do n't bring it anymore
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+Devin: The two were not good originally , but the MOTO brand is still valuable
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Rita: Indeed , many have not been written , and 12 this time , the small size , separate mold opening , internal stacking design and so on are all costs , which brings a good feel . The small screen flagship also caters to some small screen users . How can he compares , the positioning is different . His size should be compared with 12pro [ doge ]
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Winifred: Just the screen should make it be passed . It 's not that Samsung does n't give Huawei screens . When mate30 , it said that it supports domestic screens , but there are better BOE screens made in China but they do n't use . Mate40 was also use a garbage screen , and the overall quality ? The screen ? motor ? speaker ? Only taking pictures can boast , even taking pictures is not the strongest Sentiment: neg
+Donald: Still the price is too confident , the x2 is so , and now the x5 feels the same
+Winifred: Wi - Fi does not feel like a big problem , but the traffic signal is obviously not as strong as other mobile phones , even not as good as iPhone7
+RIGHT ANSWER: Winifred
+MODEL ANSWER: winifred
+CURRENT ACCURACY: 0.15789473684210525
+============================================================
+
+QUESTION: Whose opinions from Brian and James about manufacturers are most similar to Jordan's?
+RETRIEVED: 
+Relevant utterances:
+Jordan: At that time , the 870 leapfrogged
+Jordan: I bought the k20Pro . emmm at first I thought it was amazing , after using it for a long time I thought emmm ... not very good
+Jordan: Do n't they read reviews from digital bloggers ?
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Jordan: 1080 + 60Hz?I turn on the 2K+120Hz bright screen and just about 4.5 - 5 hours
+Jordan: The battery life of the x2pro is outrageously bad , worse than the x3 , the others are ok [ allow sad ]
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Jordan: The image is not bad at the same price , but the fast charging and heat dissipation are not good ( K40 former user
+Jordan: My 12Pro was powered down by 1 % overnight ( about 9 hours ) , which is normal .
+Jordan: Deficient than better , excess than worse
+Alan: Glory is all purchased from suppliers , right ?
+Brian: If there is a new intact , it 's okay ( provided that you have to accept the weight , thickness and the bad display frame rate scheduling of the new version of the firmware )
+Jordan: Now the price in Pinduoduo has already be early 3,000s . 8 + 256
+Jordan: Yes . get stuck , the signal is not good [ allow sad ]
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Miles: Look what you said , intentional negative optimization will not play a good role , speed up the replacement ? Consumers may not necessarily buy this brand next time , so the logic is wrong
+Brian: I bought 7 in 2017 and sold more than 800 this year . Does anyone want your 2017 Xiaomi ?
+Jordan: This phone is very nice and the price is too
+James: I feel that Xiaobai is the most worthless test .
+Jordan: The Android phones in the past two years are average , the flagship phone can not last for a day , and even the large battery ca n't support it .
+Donald: Only when we are strong and keep doing basic research well is the foundation of our future . Those gadgets are named what black technology . Really ca n't take it to the table . Cheap is not a panacea , texture and brand appeal are not simply based on the configuration that you have , I have and everyone has . Brand image is important .
+Jordan: How hot can 660 be ?
+James: Omg , go to a repair shop and see who has the worst battery ? ? What makes you lie through your teeth
+James: I am also waiting for x80 , curious about the difference between Pro and Pro+ actual shooting
+RIGHT ANSWER: Brian
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.15384615384615385
+============================================================
+
+QUESTION: Whose opinions from Isabella and Julia about manufacturers are most similar to Kathryn's?
+RETRIEVED: 
+Relevant utterances:
+Kathryn: Is it hot for daily use ?
+Isabella: A less known and inferior brand do n't talk about the workmanship
+Kathryn: I also want the Dimensity 9000 for the super cup . Forget the fire Snapdragon . If you want to buy the Snapdragon , you can choose Xiaomi [ laughs but does not speak ]
+Kathryn: Wo n't work better than mainstream systems
+Marjorie: What about the Samsung Miracle 's compare with the True Flagship 's
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Lillian: Blue Factory 's super - sized cup I personally think it 's the best to take pictures
+Kathryn: That maggot has already been blacklisted , low - energy species [ love you ]
+Kathryn: The system needs to run data , use it again before saying .
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Kathryn: Is the battery life of ONE UI not as good as that of MIUI Hongmeng ? I do n't play games , I do n't watch videos .
+Elizabeth: Like square and upright , 20U is no problem . If not , do n't you think the design of this 22plus is beautiful [ tears ] ; speaking of note20U , you can see the appearance of 22U this year , I feel that 20U can be used for a few more years , believe me , if you have never used Samsung , it is absolutely amazing ( If you buy online , do n't buy parallel imports )
+Edward: Ask which manufacturers ' product ideas that can be recognized by Shui Ge ?
+Kathryn: Because I do n't think the OnePlus 10 feels good in the hand .
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Laura: Mine is the official silicone case , maybe it 's not on the shelves yet
+Abigail: If you care about creases , it seems that the creases are well controlled , you can consider .
+Kathryn: I have n't seen it in a physical store yet , at least it 's more comfortable than Xiaomi Mi 12
+Jacqueline: After being cheated by K40 , do you want to be cheated again ? At the beginning , it boasted that the k40 screen was the first in the industry , it turned out to be usable ? No matter how good the heat dissipation is , with a blind screen , who can use it ?
+Danielle: No matter how much you save , it 's impossible to save more than the one without high refresh rate , right ? Not to mention that the battery is a little smaller .
+Kathryn: Did you get paid ?
+Rebecca: Unless it 's outdoor work , I do n't really think battery life is too much of a problem . Someone complained about the low battery life of the Apple Watch before , and the blogger asked in return , devices with high battery life like Xiaomi Huawei , will you really have good experience after buying it ? Personally , I also feel that since it is a battery , charging is inevitable , and sometimes charging is also an experience . So as long as there is no problem in normal use , it is acceptable for moderate use for four or five hours . After all , it is 80w . Sentiment: neg
+Jacob: It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while
+RIGHT ANSWER: Isabella
+MODEL ANSWER: xiaomi
+CURRENT ACCURACY: 0.15
+============================================================
+
+QUESTION: Whose opinions from Isabella and Julia about manufacturers are most similar to James's?
+RETRIEVED: 
+Relevant utterances:
+Isabella: A less known and inferior brand do n't talk about the workmanship
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Elizabeth: Like square and upright , 20U is no problem . If not , do n't you think the design of this 22plus is beautiful [ tears ] ; speaking of note20U , you can see the appearance of 22U this year , I feel that 20U can be used for a few more years , believe me , if you have never used Samsung , it is absolutely amazing ( If you buy online , do n't buy parallel imports )
+James: Omg , go to a repair shop and see who has the worst battery ? ? What makes you lie through your teeth
+Leslie: Obviously it is a consumer , but it has to be the dog of the manufacturer .
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+James: It is indeed too much ahead of other models [ laugh cry ]
+Isabella: I still like the shape of the s21u . I did n't buy it for more than 6,000 on Double Eleven last year . I regret it very much . Sentiment: pos
+James: I feel that Xiaobai is the most worthless test .
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+Josephine: Mr. Lu , a lot of Mi fan have a little opinion on the use of Dimensity 9000 for the super cup .
+James: Come on , I have been using the s10 + Forerunner for three years [ doge ] is still smooth , I will upgrade oneui4.0 next month and it can fight for another two years [ laugh cry ]
+Ethan: The ring does n't matter , mainly because I think the design is not very good - looking , but it still depends on the final product . The blue factory has been looking good in recent years .
+Horace: It 's perfectly fine for a big man . The pro is top - heavy . Really a nonsense . The two are almost the same in hands , and the perception is not obvious . After using the max for more than a month , I feel that the proportion is better and comfortable instead . 😅
+Jacob: It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while
+Edward: Ask which manufacturers ' product ideas that can be recognized by Shui Ge ?
+Daisy: The requirements are too high , why do cost - effective machines need , 5 g , high - brush , good screen , large battery , fast charging , etc . As a result , the price of cost - effective machines has all increased , and it is about to top the previous price of the main brand .
+Julia: The storage of the s10 is a bit insufficient , but I feel like it can last for another year [ two ha ]
+James: I am also waiting for x80 , curious about the difference between Pro and Pro+ actual shooting
+Isabel: The battery life of the s20 is very poor , but I am very satisfied in other aspects , so I have been using it as the main machine
+Isaiah: In fact , it is more like the note10 + . The screen of this machine back then is also very good even now . Do n't ask me how I know it . I have been using it as a main machine for 3 years and I am reluctant to change it . While the battery is also durable , it feels very good and the apperance is at its peak . I do n't buy s21u because it 's too thick , this s22u is a must buy
+Julia: Ay , now there are no 512s in the small cup and the middle cup . Force to buy top match , learn from Apple , too rubbish
+Leslie: The brand is improving , I do n't like ov either , but they have changed their strategy from high price and low configuration
+Lillian: Blue Factory 's super - sized cup I personally think it 's the best to take pictures
+RIGHT ANSWER: Isabella
+MODEL ANSWER: xiaomi
+CURRENT ACCURACY: 0.14634146341463414
+============================================================
+

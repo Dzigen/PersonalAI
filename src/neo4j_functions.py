@@ -1,5 +1,6 @@
 import copy
 from neo4j import GraphDatabase
+from typing import List, Tuple, Dict
 
 class Neo4jConnection:
     def __init__(self, uri, user, pwd):
@@ -39,23 +40,118 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         if self.driver is not None:
             self.driver.close()
     
-    def extract_triplets_by_query(self, query, max_triplets):
-        # TODO - execute query and return triplets in given format or
+    def extract_triplets_by_query(self, query, max_triplets, db=None):
+        # execute query and return triplets in given format or
         # None if query is incorrect or returned triplets list is emtpy
-        pass
+        triplets = []
+        try:
+            def process_node(node):
+                node_props = dict(node)
+                name = node_props.get("name", "")
+                node_props = {key.replace("_", " "): value.replace("_", " ")
+                              for key, value in node_props.items() if key != "name"}
+                labels = list(node.labels)
+                node_type = ""
+                if labels:
+                    node_type = labels[0]
+                return {"name": name.replace("_", " "), "type": node_type, "prop": node_props}
+
+            def process_rel(rel):
+                rel_type = rel.type
+                rel_props = dict(rel)
+                return {"type": rel_type, "prop": rel_props}
+
+            res = self.execute_query(query, db=db)
+            for subj, rel, obj in res:
+                triplet = [process_node(subj), process_rel(rel), process_node(obj)]
+                triplets.append(triplet)
+        except Exception as e:
+            print(f"error in extracting triplets: {e}")
+        if triplets:
+            return triplets
     
-    def create_triplets(self, triplets):
-        # TODO - add nodes and edges which presented in triplets list
+    def create_triplets(self, triplets: List[List[Dict]], db=None) -> List[Tuple[str, str, str]]:
+        # add nodes and edges which presented in triplets list
         # Check to unique node name
         # Pay attention to the format of triplets
-        pass
-    
-    def delete_triplets(self, triplets):
-        # TODO - delete edges which presented in triplets list
+
+        def create_node_query(node):
+            name = node["name"].replace(" ", "_")
+            node_type = node["type"].replace(" ", "_")
+            props = node["prop"]
+            props_query = [f'name: "{name}"']
+            for prop_name, prop_value in props.items():
+                prop_name_f = prop_name.replace(" ", "_")
+                prop_value_f = prop_value.replace(" ", "_")
+                props_query.append(f'{prop_name_f}: "{prop_value_f}"')
+            props_query = ", ".join(props_query)
+
+            insert_query = f"CREATE (n:{node_type} " + "{" + props_query + "}) RETURN elementId(n) as id"
+            return insert_query
+
+
+        def create_rel(subj, subj_id, rel, obj, obj_id):
+            subj_type, rel_type, obj_type = subj["type"].replace(" ", "_"), rel["type"].replace(" ", "_"), obj["type"].replace(" ", "_")
+            rel_props = []
+            for prop_name, prop_value in rel.get("prop", {}).items():
+                rel_props.append(f'{prop_name.replace(" ", "_")}: "{prop_value.replace(" ", "_")}"')
+            rel_props = ", ".join(rel_props)
+
+            query = ""
+            query += f'MATCH (subj:{subj_type}), (obj:{obj_type}) WHERE elementId(subj) = "{subj_id}" AND elementId(obj) = "{obj_id}" '
+            query += f'CREATE (subj)-[rel:{rel_type}' + '{' + rel_props + '}' + ']->(obj) '
+            query += 'RETURN elementId(rel) as id'
+            return query
+        
+        added_triplets_ids = []
+        for subj, rel, obj in triplets:
+            subj_out = self.execute_query(f'MATCH (subj:{subj["type"]}) WHERE subj.name = "{subj["name"]}" RETURN elementID(subj) as id', db=db)
+            if not subj_out:
+                insert_subj_query = create_node_query(subj)
+                subj_id = self.execute_query(insert_subj_query, db=db)[0]['id']
+            else:
+                subj_id = subj_out[0]['id']
+
+            obj_out = self.execute_query(f'MATCH (obj:{obj["type"]}) WHERE obj.name = "{obj["name"]}" RETURN elementID(obj) as id', db=db)
+            if not obj_out:
+                insert_obj_query = create_node_query(obj)
+                obj_id = self.execute_query(insert_obj_query, db=db)[0]['id']
+            else:
+                obj_id = obj_out[0]['id']
+            
+            create_rel_query = create_rel(subj, subj_id, rel, obj, obj_id)
+            rel_id = self.execute_query(create_rel_query, db=db)[0]['id']
+            added_triplets_ids.append((subj_id, rel_id, obj_id))
+        
+        return added_triplets_ids
+
+    def delete_triplets(self, triplets, db=None):
+        # delete edges which presented in triplets list
         # Pay attention to the format of triplets and check if triplets indeed are in graph
         # If some node loss its last edge, it must be deleted too
         # This method return list of deleted nodes in format which appears in triplets 
         # (only if this nodes haven't type "thesis" or "episodic")
+        for subj, rel, obj in triplets:
+            try:
+                subj_type = subj["type"].replace(" ", "_")
+                subj_name = subj["name"].replace(" ", "_")
+                obj_type = obj["type"].replace(" ", "_")
+                obj_name = obj["name"].replace(" ", "_")
+                rel_type = rel["type"].replace(" ", "_")
+                rel_props = rel["prop"]
+                query = "MATCH "
+                query += f'(n:{subj_type}' + ' { ' + f'name: "{subj_name}"' + ' })-'
+                props_query = []
+                for prop_name, prop_value in rel_props.items():
+                    prop_name_f = prop_name.replace(" ", "_")
+                    prop_value_f = prop_value.replace(" ", "_")
+                    props_query.append(f'{prop_name_f}: "{prop_value_f}"')
+                props_query = ", ".join(props_query)
+                query += f'[r:{rel_type} ' + '{ ' + props_query + ' }]'
+                query += f'->(n:{obj_type}' + ' { ' + f'name: "{obj_name}"' + ' })'
+                self.execute_query(query, db=db)
+            except Exception as e:
+                print(f"error in deleting triplets: {e}")
         return []
 
     def execute_query(self, query, db=None):

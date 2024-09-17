@@ -1,0 +1,739 @@
+QUESTION: Whose opinions from Linda and Arianna about manufacturers are most similar to Hugh's?
+RETRIEVED: 
+
+Relevant dialogs:
+
+Hugh: "The battery of promax is small , but its battery life dominates the list [ allow sad ] [ two ha ]"
+Diana: "But it is heavy [ laughs cry ]"
+Hugh: "Which flagship machine is not heavy now . Both pro and promax feel drop . I buy pm directly ."
+
+
+Hugh: "Are you Mi fan ? The sales of Xiaomi 11U far exceed 11P , which can explain the problem"
+Erin: "The design of 11Pro is not good , and the heavy border feels bad ( whether compared to Xiaomi Mi 11 or Ultra ) . Go to the store to experience it you will know[doge][doge ]"
+Sara: "Indeed , but the weight is okay"
+Erin: "Xiaomi 11Pro may be the worst hand feeling in the Xiaomi mobile phone digital series[doge][doge][doge ]"
+Devin: "Because the price / performance ratio of 11P is not high , it is better to add more money to buy 11U ."
+Lily: "If you have to talk about configuration , there is not much difference between 11u and 11p taking pictures , just two small cameras are worth 700 ? It 's the appearance design that is worth 700 . At this price , it 's not just consider about the basic hardware parameters like soc ."
+Joseph: "[ Yunbei ] 11U also drop a lot ! I bought this in June for only 100 yuan cheaper in the store , but the 618 subsidy is directly 1400 yuan . Although Xiaomi made up 500 yuan . [ bitter ] But still a loss"
+
+
+Arianna: "[ Doge ] You really want to buy a ov with more than 8,000?I think most people wo n't do it . [ Doge ] I remember that the Blue Factory was not so expensive in the past two years"
+Lewis: "In fact , if the price of the blue factory has been there , the workmanship and texture will be fine . My rubbish 70 + is like that , I know that he is very expensive as soon as I touch it . [ doge ]"
+Helen: "I sold my Mate40pro . I bought 70Pro+ . I think Huawei 's texture is better . Maybe I like heavy mobile phones . Compared to it , I think the IQOO9 series is really good to touch offline"
+
+
+Hugh: "Is there a good mobile phone with a good photo of the 2000 yuan ? Do not consider performance [ Tears ] [ Tears ]"
+Laura: "Since there is no Huawei [ Erha ] At present , more than 2,000 yuan does n't care about taking pictures at all . If you do n't care about 5 g , currently more than 2,000 yuan , it is absolutely OK to take pictures with nova9 ."
+Daisy: "Huawei is good at taking pictures ? Nova is not as good as iQOO [ Rabbit ]"
+Laura: "IQOO takes pictures ? [ Yun Bei ] [ Yun Bei ] A main game , do n't blow up if you like it"
+
+
+Gabriella: "Honor 's rear camera is really ugly , that two flounder rear cameras are big and abrupt . As for the screen , Honor helped everyone get to know " Zhou Dongyu Arrangement " before . Do n't compare the screen with others . After all , the screen is bought by the supplier . Their " screen lottery " before , did n't they know ?"
+Ariana: "The problem is , before the Honor screen was not good , everyone scolded it , and I also scolded it because I bought the Honor rag screen . But when it comes to Xiaomi , it is not allowed to scold ? Besides , we did n't say that Xiaomi 's screen is bad , it 's just that something is worse than Honor ."
+Gabriella: "It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while"
+Ariana: "Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ?"
+
+
+Josephine: I'm thinking of buying a Xiaomi phone, but I'm not sure about their after-sales service.
+Hugh: I've been using an Apple phone for years, and I have to say, the signal is always strong.
+Riley: I'm so disappointed with my Xiaomi phone's camera. The pictures always turn out blurry.
+Madison: I've been using Xiaomi for a while now, and I think the system is okay, but it could be better.
+Josephine: Yeah, I've heard mixed reviews about Xiaomi's customer service. Have you had any issues with Apple's signal, Hugh?
+Hugh: Nope, never. It's always been reliable.
+Riley: Ugh, I wish I could say the same about my phone's camera. It's really frustrating.
+Madison: I think Xiaomi's system is decent, but sometimes it can be a bit slow.
+
+Herbert: "The Huawei mate20pro released in the same year as yours , I have no reason to change it now ."
+Hugh: "Is this still not replaced ? Huawei is not good any more ."
+Helen: "Please do n't take a part for the whole about Huawei . Huawei 's new flagship is indeed getting worse and worse , but Huawei 's old flagship configuration in 2018 and 2019 is not bad . If you really need to change it , then consider others [ ok ]"
+
+RIGHT ANSWER: Linda
+MODEL ANSWER: arianna
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: Whose opinions from Belinda and Arianna about manufacturers are most similar to Gerld's?
+RETRIEVED: 
+
+Relevant dialogs:
+
+Alexa: "When it comes to weight , I 've have nothing to say about Apple . [ Allow sad ] The battery is not too big , the bottom of the camera is not too big , there is no periscope , there is no soaking plate for heat dissipation , and the body is not made of ceramics or other heavy material . How did it get 238g[allow sadness ] [ allow sadness ] [ allow sadness ]"
+Gerld: "[ doge ] Stainless steel frame , can it not be heavy ? The aluminum used in 13 is much lighter . The pro with the same measurements costs 200 +"
+Alexa: "What is the meaning of stainless steel ? [ Allow sad ] [ Allow sad ] Can you really feel the difference between bright stainless steel and bright aluminum alloy ? [ Allow sad ]"
+Lily: "If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]"
+
+
+Douglas: I'm so disappointed with my vivo, the pixels are really bad.
+Destiny: I don't know, I think Apple's pixels are okay, not great, not bad.
+Belinda: Ugh, don't even get me started on Xiaomi's pixels, they're terrible!
+Gerld: I'm with Belinda, Samsung's pixels are a letdown.
+Ashley: I have to disagree, I think Apple's pixels are amazing, the display is so crisp!
+
+Diego: "I read your Weibo every day just for the news of Samsung s22u [ tears ] ! Lack of machine [ allow sad ] , the s21u beats the current machine , the texture is very good , the material is stacked a lot , the industrial design of the camera screen is very top , the domestic machine is really not good [ allow sad ] [ allow sad ]"
+Gerld: "I heard people say that the screen of Samsung S21U is not as comfortable as the screen of Xiaomi 10Pro indoors ? They also said Samsung 's 100 million pixels is not as good as Xiaomi 's , and the tenx optical zoom is not very good ?"
+Amelia: "Xiaomi is the sky , only xiaomi is the best in the world [ doge ]"
+Ronald: "The domestic machines are almost all garbage , mainly because the industrial design is unimaginable bad . No matter how awesome the parameters are , it will screw up as soon as you get started in your hand , and both feel and workmanship are a mess . Needless to say s21u , as long as you go to a physical store to experience even s21 or s21 + , you do n't want to touch the domestic machine anymore ."
+Diego: "I agree with your opinion [ like ] [ like ]"
+Daisy: "Except there is no push and background management garbage , it 's just perfect [ two ha][two ha][two ha ]"
+
+
+Here is the generated dialog:
+Gerld: I don't like the feel of my x3, it's just not comfortable in my hand.
+Austin: I've got a 12pro and it's okay, I mean, it's not amazing or anything, but it's fine.
+Julian: I've had my Mi 6 for a while now, and I've gotten used to how it feels, but I wouldn't say it's the best.
+Ariana: I've been using my Xiaomi MIX for a bit, and it's...it's alright, I guess. I don't love it, but I don't hate it either.
+
+Arianna: "It should be that red rice is used too much , you need to learn mix"
+Gordon: "Just for your sentence , please see what equipment I used to reply to you , mix2 , the quality is very general . Do n't make fun , zz , even if I am a Mi Fan , I admit that Xiaomi hardware can not be used normally for three years , at most two years , My screen - closing button has been released , and I can directly start the screen when I open the screen . The fingerprint does not press"
+Belinda: "To be honest , if you want to use a mobile phone for three or five years , it is recommended that you use Apple directly . Android phones also have Android phone usage . After one or two years , you can replace one . In a few years , the cost is similar to using Apple . Of course , it is needless to say that rich people renew their apples every year ."
+Gordon: "I 'm not talking about three to five years , , , , Apple will get stuck in five years . Well , my Mi 6 , on a not - too - high table , slipped and fell to the ground because of the slope and smoothness . The back cover was completely broken , and the frame was slightly Knock deformation , the mix2 opens the screen directly with fingerprints , only use the power button when the screen is off , but the button is very loose in less than a year , although I am a rice fan , but I must admit that Samsung flagship will not be like this for two or three years , this is quality"
+
+
+Ariana: "The only disadvantage of iPhone13 for me is the slow charging , but the 13 battery life is good . Moderate use for a day is no problem , just charge the battery when I go to sleep [ doge][Like ]"
+Gerld: "Not even have the high refresh rate . The only disadvantage ?"
+Jake: "Obviously you are the one who only looks at the parameters . Apple 13 does not have a high refresh rate , but the smooth experience still beats the high refresh rate of Android 120 ."
+Gerld: "You are all right [ Er Ha ]"
+
+
+Francis: I've been using the Mi 8 for a while now, and I'd say the battery life is decent.
+Florence: I've got the 10S, and I think the battery could be better, but it's not terrible.
+Gerld: Ugh, my S22U's battery is a nightmare. It drains so fast!
+Allison: I'm so frustrated with my Xiaomi Mi 9's battery. It can't even last a day.
+Isaac: I've got the Mi 9 too, and I think the battery's okay. It's not amazing, but it's not bad either.
+Florence: Yeah, I think the 10S's battery is similar to the Mi 9's. It's just... average.
+Gerld: Average? My S22U's battery is way worse than average! I need to charge it multiple times a day.
+Francis: I think the Mi 8's battery is a bit better than the Mi 9's, but it's still not the best.
+Allison: I wish I could say the same about my Mi 9. The battery's just so unreliable.
+RIGHT ANSWER: Belinda
+MODEL ANSWER: belinda
+CURRENT ACCURACY: 0.5
+============================================================
+
+QUESTION: Whose opinions from Amanda and Arianna about manufacturers are most similar to Joshua's?
+RETRIEVED: 
+
+Relevant dialogs:
+
+Jacob: "Honor 's rear camera is really ugly , that two flounder rear cameras are big and abrupt . As for the screen , Honor helped everyone get to know " Zhou Dongyu Arrangement " before . Do n't compare the screen with others . After all , the screen is bought by the supplier . Their " screen lottery " before , did n't they know ?"
+Melanie: "The problem is , before the Honor screen was not good , everyone scolded it , and I also scolded it because I bought the Honor rag screen . But when it comes to Xiaomi , it is not allowed to scold ? Besides , we did n't say that Xiaomi 's screen is bad , it 's just that something is worse than Honor ."
+Jacob: "It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while"
+Melanie: "Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ?"
+Avery: "At least it is indicated that the mixed use , do you know that the media machine of a certain company is directly different from the machine purchased by the user ?"
+Jacob: "I do n't allow you to say that to Gree , oh no , it 's Little Pepper , oh no , it 's BBK , oh no , BBK is gone now . Oh no , then iphone [ laugh cry ]"
+Bernard: "The zhizhen version is pretty cool"
+
+
+Maya: I'm so disappointed with my Xiaomi, it's not durable at all.
+Alejandro: I don't know, I think it looks pretty nice.
+Arianna: Yeah, but have you seen the charging speed? It's only 67w single cell, it's so slow!
+Helen: And don't even get me started on the updates, they're always so slow to arrive.
+Jacqueline: I'm telling you, it's all because of their poor quality control.
+Zoe: I'm not sure, I think the system is okay, it's not the best but it's not the worst either.
+Maya: Okay is not enough, I expect more from a brand like Xiaomi.
+Alejandro: I guess we all have different expectations.
+Arianna: Yeah, and mine is definitely faster charging.
+Helen: And more frequent updates.
+Jacqueline: And better quality control.
+Zoe: I'll just stick with what I have, it's not perfect but it works for me.
+
+Abraham: "I went to see the 12pro yesterday . Although it feels good in the hand , the texture is still much worse than that of the 11u . The black edge of the chin is also larger than that of the 11u . Overall , the 11u is still very strong ."
+Arianna: "11ultra is highly recognizable , and 12Pro seems a little too young . Waterproof is gone [ handshake ]"
+Abraham: "correct"
+
+
+Belinda: "Since you raised the topic to support domestic production . Should we also consider the possibility that the U.S. 's extreme sanctions and long - arm jurisdiction have led to Huawei 's use of foreign components ( including but not limited to Samsung screens ) , and there is a possibility that the supply will be completely cut off ?"
+Amanda: "Now that you talk about supporting domestic production , you use such a rubbish screen , and it still sell for 4,000 yuan . There are so many state - owned enterprises , Xiaomi OPPOvivo , any one is better than yours , why do n't I support domestic production that is stronger than you ?"
+Lillian: "Where is Xiaomi 's Huaxing Optoelectronics screen good ?"
+Amanda: "First , the Mi Pro is a Samsung screen . Even if the Xiaomi Mi 10 is replaced by Huaxing Optoelectronics , it seems that it will not be worse than this [ too happy ] Second , this Weibo is about the Honor 30Pro . Now , if the Xiaomi Mi 10 is really bad after replacing Huaxing Optoelectronics , there will naturally be an evaluation to say it , so what are you talking about ? [ Unintelligible ]"
+
+
+Jennifer: "A pound of compressed cotton and a pound of iron are not the same weight in the hand ?"
+Sofia: "I do n't mean to argue , 6.1 inches , 200 grams and 6.5 inches , 200 grams feel a lot different in the hand . The volume is slightly larger , and the weight does not feel so heavy after the weight is distributed"
+Joshua: "Then you all should buy Promax"
+Sofia: "MAX is too big , even if Max is only 200 grams , the feel will not feel good ."
+
+
+Maya: I just got my new Apple phone and I'm loving the accessories that came with it!
+Lillian: Yeah, Apple's photography is top-notch. I've been taking amazing shots with my iPhone.
+Jose: I'm a gamer and I have to say, Apple's phones are perfect for playing games. The performance is so smooth!
+Agatha: I've been using my Apple phone for a while now and I'd say the battery life is decent. It gets me through the day.
+Joshua: Did you know that Apple's global sales have been through the roof? They're really dominating the market.
+Angelina: Ugh, I'm so frustrated with my R series phone. The signal is always dropping. I'm thinking of switching to a different brand.
+
+Oswald: "In terms of quality , Xiaomi is definitely better than Huawei , but the brand influence Huawei is stronger ."
+Marisa: "Do you still not understand the disassembly comparison ? Show IQ ?"
+Julian: "The one that uses a thermometer to measure noise and a vernier caliper to measure power ? It 's not like that even if you do n't read ."
+Adrian: "There is no way to whitewash it , do n't talk about these , 30 % more expensive ca n't even play 4 K , let alone the picture quality . In this 618 e - commerce carnival , Xiaomi released the Xiaomi TV attributive sales champion , but the lack of the most mainstream size champions of 55 and 65 inches , think about why ? Are consumers all idiots ?"
+Aidan: "Xiaomi quality control is the worst of all brands , no one of ."
+Julia: "There is a saying that the wool comes from the sheep . [ Khan ] Using the same money to improve the exchange is also a way . I have been using Xiaomi for 7 years , and there are all kinds of things . The quality is very good . And I do n't think you 've used all the brands and enough products of each brand to judge this sentence ."
+Aidan: "I do n't need to use all brands of mobile phones to say this . Xiaomi 's quality control has always been poor . Do you know how much the front camera is crooked ? Do you think capitalists are stupid ? Good things are cheap for you ?"
+Kathryn: "Xiaomi 's quality control is famous for its poor quality , no matter quality control , products or brand influence , Xiaomi is too much worse"
+James: "Today 's joke"
+
+RIGHT ANSWER: Amanda
+MODEL ANSWER: amanda
+CURRENT ACCURACY: 0.6666666666666666
+============================================================
+
+QUESTION: Whose opinions from Jesse and Arianna about manufacturers are most similar to Joseph's?
+RETRIEVED: 
+
+Relevant dialogs:
+
+Joseph: "Except for that one , it is really difficult to sell more if over 5 K [ DOGE ] [ Doge ]"
+Laura: "Which one ."
+Henry: "h [ doge ] [ doge ] [ doge ]"
+Emma: "I really hope blue factory x can achieve high - end success . In those years , the x7 2499 experience was not bad . There was a fill light in front of the self timer , hifi when listening to songs , light touch , and good photography .Later , X20 21 was ugly , X70 seemed to bring back the reputation , and it is the perfect if 80 could be better"
+Jonathan: "60 was relatively successful , 70 the initial pricing was outrageous , screwed up directly"
+Faith: "The point is that one 's x - axis is not used for sale"
+Patricia: "That one is not willing to use . [ Laughing without words ] So miserable to make money to research and develop , just gratitude [ laughing without saying ]"
+
+
+Louis: "Picture comment"
+Aidan: "Some people think that the Samsung system is garbage , but some people think that the Huawei system is garbage . It depends on what do you like to use ? If you do n't like to use Apple , you can also say that Apple 's system is garbage [ two ha ]"
+Joseph: "[ Erha ] Even Apple 's heat dissipation is better than Samsung 's , it can be seen that the S21 series has no heat dissipation at all"
+Aidan: "Complimenting Apple 's heat dissipation ? forget it [ two ha ]"
+
+
+Cameron: I'm thinking of getting a new phone, but I'm not sure about the price of Samsung.
+Joseph: Yeah, I've been using Samsung for a while, and I think the functions are pretty standard.
+Jesse: I agree, the functions are okay, but nothing special.
+Marisa: I've been eyeing the new Samsung, the screen looks really nice.
+Angelina: Ugh, I've been waiting for my Samsung to arrive for weeks, their shipping is so slow.
+Joseph: Yeah, I've heard that before, it's a bit of a hassle.
+Cameron: Maybe I'll wait for a sale or something, I don't want to break the bank.
+Jesse: That's a good idea, you don't want to overspend on a phone.
+Marisa: Yeah, but the screen is really worth it, it's so clear and vibrant.
+Angelina: If only they could get their shipping together, I'd be happy.
+
+Jocelyn: "Tangled 9pro and 18pro , the only tangle is that the 18 system is good , but I want to experience 9p fast charging . too difficult !"
+Joseph: "The only thing I 'm tangling with is the battery life , it seems that neither of them is good . The not bad one Xiaomi 11u , I do n't think it looks good [ disappointed ]"
+Jocelyn: "At first , I torned among these three , and I went to see Xiaomi . Not as good as the official picture . Originally , I was going for the appearance , but after seeing the real machine , I found that the texture is not very good , and the R angle is a bit awkward , and the screen is not as good as I imagined , it feels no difference from Apple or even not as good . But 120hz is really smooth . On the contrary , I prefer the 11pro ."
+Joseph: "Xiaomi 's appearance is really not good , the camera is too huge . Xiaomi 11 series only 11 is okay"
+
+
+Joseph: "Did n't oppo just launch a self - developed image npu a few days ago ? [ doge ] In this way , the shortcomings of MediaTek 's only competing product are gone ! It is difficult to ride the fire Snapdragon , why do they have to ride it ?"
+Florence: "Will only the pro version use self - developed npu [ laughing ]"
+Jessica: "That 's definitely not the case . The research and development costs are so high that only selling the pro will be a loss . The find series has not sold very much , the standard version will definitely use . It 's better to sell more"
+Florence: "It 's not just used this time and it wo n't be used again . . . In the future , if the cost is recovered , it can be gradually delegated to the sub - flagship , and the flagship will use the latest and better one . What I mean is , is it possible that in order to differentiate , the standard version if you want to buy a slightly cheaper one , and the pro version if you want to take better pictures ? This year 's x3 series standard version is almost the same as the pro version , the photos are exactly the same , only the processor has been upgraded from 870 to 888 , and it ca n't arouse my desire to buy a pro at all [ two ha ]"
+
+
+Gabriella: "Honor 's rear camera is really ugly , that two flounder rear cameras are big and abrupt . As for the screen , Honor helped everyone get to know " Zhou Dongyu Arrangement " before . Do n't compare the screen with others . After all , the screen is bought by the supplier . Their " screen lottery " before , did n't they know ?"
+Ariana: "The problem is , before the Honor screen was not good , everyone scolded it , and I also scolded it because I bought the Honor rag screen . But when it comes to Xiaomi , it is not allowed to scold ? Besides , we did n't say that Xiaomi 's screen is bad , it 's just that something is worse than Honor ."
+Gabriella: "It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while"
+Ariana: "Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ?"
+
+
+Maya: I'm so disappointed with my Xiaomi, it's not durable at all.
+Alejandro: I don't know, I think it looks pretty nice.
+Arianna: Yeah, but have you seen the charging speed? It's only 67w single cell, it's so slow!
+Helen: And don't even get me started on the updates, they're always so slow to arrive.
+Jacqueline: I'm telling you, it's all because of their poor quality control.
+Zoe: I'm not sure, I think the system is okay, it's not the best but it's not the worst either.
+Maya: Okay is not enough, I expect more from a brand like Xiaomi.
+Alejandro: I guess we all have different expectations.
+Arianna: Yeah, and mine is definitely faster charging.
+Helen: And more frequent updates.
+Jacqueline: And better quality control.
+Zoe: I'll just stick with what I have, it's not perfect but it works for me.
+RIGHT ANSWER: Jesse
+MODEL ANSWER: jesse
+CURRENT ACCURACY: 0.75
+============================================================
+
+QUESTION: Whose opinions from Hugh and Arianna about manufacturers are most similar to Linda's?
+RETRIEVED: 
+
+Relevant dialogs:
+
+Arianna: "[ Doge ] You really want to buy a ov with more than 8,000?I think most people wo n't do it . [ Doge ] I remember that the Blue Factory was not so expensive in the past two years"
+Lewis: "In fact , if the price of the blue factory has been there , the workmanship and texture will be fine . My rubbish 70 + is like that , I know that he is very expensive as soon as I touch it . [ doge ]"
+Helen: "I sold my Mate40pro . I bought 70Pro+ . I think Huawei 's texture is better . Maybe I like heavy mobile phones . Compared to it , I think the IQOO9 series is really good to touch offline"
+
+
+Hugh: "The battery of promax is small , but its battery life dominates the list [ allow sad ] [ two ha ]"
+Diana: "But it is heavy [ laughs cry ]"
+Hugh: "Which flagship machine is not heavy now . Both pro and promax feel drop . I buy pm directly ."
+
+
+Hugh: "Are you Mi fan ? The sales of Xiaomi 11U far exceed 11P , which can explain the problem"
+Erin: "The design of 11Pro is not good , and the heavy border feels bad ( whether compared to Xiaomi Mi 11 or Ultra ) . Go to the store to experience it you will know[doge][doge ]"
+Sara: "Indeed , but the weight is okay"
+Erin: "Xiaomi 11Pro may be the worst hand feeling in the Xiaomi mobile phone digital series[doge][doge][doge ]"
+Devin: "Because the price / performance ratio of 11P is not high , it is better to add more money to buy 11U ."
+Lily: "If you have to talk about configuration , there is not much difference between 11u and 11p taking pictures , just two small cameras are worth 700 ? It 's the appearance design that is worth 700 . At this price , it 's not just consider about the basic hardware parameters like soc ."
+Joseph: "[ Yunbei ] 11U also drop a lot ! I bought this in June for only 100 yuan cheaper in the store , but the 618 subsidy is directly 1400 yuan . Although Xiaomi made up 500 yuan . [ bitter ] But still a loss"
+
+
+Gabriella: "Honor 's rear camera is really ugly , that two flounder rear cameras are big and abrupt . As for the screen , Honor helped everyone get to know " Zhou Dongyu Arrangement " before . Do n't compare the screen with others . After all , the screen is bought by the supplier . Their " screen lottery " before , did n't they know ?"
+Ariana: "The problem is , before the Honor screen was not good , everyone scolded it , and I also scolded it because I bought the Honor rag screen . But when it comes to Xiaomi , it is not allowed to scold ? Besides , we did n't say that Xiaomi 's screen is bad , it 's just that something is worse than Honor ."
+Gabriella: "It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while"
+Ariana: "Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ?"
+
+
+Arianna: "It should be that red rice is used too much , you need to learn mix"
+Gordon: "Just for your sentence , please see what equipment I used to reply to you , mix2 , the quality is very general . Do n't make fun , zz , even if I am a Mi Fan , I admit that Xiaomi hardware can not be used normally for three years , at most two years , My screen - closing button has been released , and I can directly start the screen when I open the screen . The fingerprint does not press"
+Belinda: "To be honest , if you want to use a mobile phone for three or five years , it is recommended that you use Apple directly . Android phones also have Android phone usage . After one or two years , you can replace one . In a few years , the cost is similar to using Apple . Of course , it is needless to say that rich people renew their apples every year ."
+Gordon: "I 'm not talking about three to five years , , , , Apple will get stuck in five years . Well , my Mi 6 , on a not - too - high table , slipped and fell to the ground because of the slope and smoothness . The back cover was completely broken , and the frame was slightly Knock deformation , the mix2 opens the screen directly with fingerprints , only use the power button when the screen is off , but the button is very loose in less than a year , although I am a rice fan , but I must admit that Samsung flagship will not be like this for two or three years , this is quality"
+
+
+Linda: "To be honest , this is also the case when the Dami test the p40pro , but that video has not been deleted . Screen rubbish is rubbish , " people have the right to speak ""
+Lorna: "No need to whitewash . It 's almost the same . Dami said that the Mate40Pro has a better texture than the Honor Magic3Pro , so it was deleted by the Honor according to the Civil Code ."
+Nicole: "The reviewer has a video that is very obvious . What Dami said is purely subjective . Have some brains , please"
+
+
+Julia: "What is the cost -effectiveness of the Redmi thousand yuan machine now ? Look at the note10 , Dimensity 700 and that piece of garbage brightness screen , 18w fast charge ? It was completely beaten by Realme Q3 ! The screen of Note10pro is also garbage , but everything else is fine"
+Linda: "After all , the thousand yuan machine has to increase the price . If the screen is better , it will be castrated in other places ."
+Julia: "Is the screen the most basic thing ?"
+
+RIGHT ANSWER: Hugh
+MODEL ANSWER: honor
+CURRENT ACCURACY: 0.6
+============================================================
+
+QUESTION: Whose opinions from Joseph and Arianna about manufacturers are most similar to Jesse's?
+RETRIEVED: 
+
+Relevant dialogs:
+
+Cameron: I'm thinking of getting a new phone, but I'm not sure about the price of Samsung.
+Joseph: Yeah, I've been using Samsung for a while, and I think the functions are pretty standard.
+Jesse: I agree, the functions are okay, but nothing special.
+Marisa: I've been eyeing the new Samsung, the screen looks really nice.
+Angelina: Ugh, I've been waiting for my Samsung to arrive for weeks, their shipping is so slow.
+Joseph: Yeah, I've heard that before, it's a bit of a hassle.
+Cameron: Maybe I'll wait for a sale or something, I don't want to break the bank.
+Jesse: That's a good idea, you don't want to overspend on a phone.
+Marisa: Yeah, but the screen is really worth it, it's so clear and vibrant.
+Angelina: If only they could get their shipping together, I'd be happy.
+
+Jesse: I've been using Samsung for a while now, and I have to say, the bugs are really minimal. Plus, the functions are so advanced, it's amazing!
+Ada: I've got the s22, and I think the workmanship is decent. Not the best, not the worst.
+Patricia: I've had Samsung for a bit, and I've noticed the permeability is...fine. It's not like it's super impressive or anything.
+Claire: I've been carrying my Samsung around, and I think it's pretty portable. Not too heavy, not too light.
+Cameron: I've had some issues with heat dissipation on my Samsung, but it's not a deal-breaker or anything.
+Katherine: Ugh, the battery life on my Samsung is terrible. I'm always running out of juice.
+
+Alexandra: "Picture comment"
+Jesse: "The smoothness and animation of the Samsung system are really not very good . Fortunately , the system is stable , with few bugs and advertisements , and full functions . The openings and creases of the folding screen are indeed not dominant . The texture and workmanship of the waterproof screen do n't need to talk , and there are still shortcomings that need to be filled ."
+Alexandra: "But oneui4 animation is no problem"
+Jesse: "[ Erha ] Without fold 3 , the S21 has been upgraded to 4.0 , which is an improvement than before , but the frame still drops . It 's really not smooth . Maybe with the bigger RAM will be better ."
+Arianna: "Some people think that the Samsung system is garbage , but some people think that the Huawei system is garbage . It depends on what do you like to use ? If you do n't like to use Apple , you can also say that Apple 's system is garbage [ two ha ]"
+David: "[ Erha ] Even Apple 's heat dissipation is better than Samsung 's , it can be seen that the S21 series has no heat dissipation at all"
+Arianna: "Complimenting Apple 's heat dissipation ? forget it [ two ha ]"
+Cyrus: "It 's a pity that the internal screen does not support a stylus [ smile ]"
+Alexandra: "They ca n't do it , and he ca n't handle dual - screen emr communication [ smile ]"
+Cyrus: "So I think it must be Samsung [ Smile ]"
+
+
+Gabriella: "Honor 's rear camera is really ugly , that two flounder rear cameras are big and abrupt . As for the screen , Honor helped everyone get to know " Zhou Dongyu Arrangement " before . Do n't compare the screen with others . After all , the screen is bought by the supplier . Their " screen lottery " before , did n't they know ?"
+Ariana: "The problem is , before the Honor screen was not good , everyone scolded it , and I also scolded it because I bought the Honor rag screen . But when it comes to Xiaomi , it is not allowed to scold ? Besides , we did n't say that Xiaomi 's screen is bad , it 's just that something is worse than Honor ."
+Gabriella: "It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while"
+Ariana: "Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ?"
+
+
+Louis: "Picture comment"
+Aidan: "Some people think that the Samsung system is garbage , but some people think that the Huawei system is garbage . It depends on what do you like to use ? If you do n't like to use Apple , you can also say that Apple 's system is garbage [ two ha ]"
+Joseph: "[ Erha ] Even Apple 's heat dissipation is better than Samsung 's , it can be seen that the S21 series has no heat dissipation at all"
+Aidan: "Complimenting Apple 's heat dissipation ? forget it [ two ha ]"
+
+
+Maya: I'm so disappointed with my Xiaomi, it's not durable at all.
+Alejandro: I don't know, I think it looks pretty nice.
+Arianna: Yeah, but have you seen the charging speed? It's only 67w single cell, it's so slow!
+Helen: And don't even get me started on the updates, they're always so slow to arrive.
+Jacqueline: I'm telling you, it's all because of their poor quality control.
+Zoe: I'm not sure, I think the system is okay, it's not the best but it's not the worst either.
+Maya: Okay is not enough, I expect more from a brand like Xiaomi.
+Alejandro: I guess we all have different expectations.
+Arianna: Yeah, and mine is definitely faster charging.
+Helen: And more frequent updates.
+Jacqueline: And better quality control.
+Zoe: I'll just stick with what I have, it's not perfect but it works for me.
+
+Joseph: "Except for that one , it is really difficult to sell more if over 5 K [ DOGE ] [ Doge ]"
+Laura: "Which one ."
+Henry: "h [ doge ] [ doge ] [ doge ]"
+Emma: "I really hope blue factory x can achieve high - end success . In those years , the x7 2499 experience was not bad . There was a fill light in front of the self timer , hifi when listening to songs , light touch , and good photography .Later , X20 21 was ugly , X70 seemed to bring back the reputation , and it is the perfect if 80 could be better"
+Jonathan: "60 was relatively successful , 70 the initial pricing was outrageous , screwed up directly"
+Faith: "The point is that one 's x - axis is not used for sale"
+Patricia: "That one is not willing to use . [ Laughing without words ] So miserable to make money to research and develop , just gratitude [ laughing without saying ]"
+
+RIGHT ANSWER: Joseph
+MODEL ANSWER: arianna
+CURRENT ACCURACY: 0.5
+============================================================
+
+QUESTION: Whose opinions from Gabriella and Arianna about manufacturers are most similar to Alexandra's?
+RETRIEVED: 
+
+Relevant dialogs:
+
+Gabriella: "Honor 's rear camera is really ugly , that two flounder rear cameras are big and abrupt . As for the screen , Honor helped everyone get to know " Zhou Dongyu Arrangement " before . Do n't compare the screen with others . After all , the screen is bought by the supplier . Their " screen lottery " before , did n't they know ?"
+Ariana: "The problem is , before the Honor screen was not good , everyone scolded it , and I also scolded it because I bought the Honor rag screen . But when it comes to Xiaomi , it is not allowed to scold ? Besides , we did n't say that Xiaomi 's screen is bad , it 's just that something is worse than Honor ."
+Gabriella: "It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while"
+Ariana: "Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ?"
+
+
+Leslie: I've been using my Apple phone for a while now, and I have to say, the heat dissipation is amazing. It never gets too hot, even when I'm playing games for hours.
+Ariana: I'm having some issues with my iPhone 12. The signal is really weak, and I often find myself without service.
+Gabriel: I'm not a fan of Apple's technologies. I think they're overhyped and don't live up to the expectations.
+Destiny: I recently got the Xiaomi Mi 11, and I'm disappointed with the signal. It's always dropping calls and losing service.
+Jessica: I have to say, my Apple phone's electricity is really impressive. The battery lasts all day, and I don't need to charge it multiple times.
+Leslie: Yeah, Apple's heat dissipation is one of the reasons I chose their phone. I was tired of my old phone overheating all the time.
+Ariana: I wish I could say the same about my iPhone 12's signal. It's really frustrating when I need to make an important call and I don't have service.
+Gabriel: I think Apple's focus on aesthetics over functionality is a major issue. They prioritize looks over performance.
+Destiny: I'm considering switching to a different phone because of the signal issues with my Xiaomi Mi 11. Has anyone had any good experiences with other brands?
+Jessica: I've been really happy with my Apple phone's performance overall. The electricity is just one of the many things I like about it.
+
+Arianna: "It should be that red rice is used too much , you need to learn mix"
+Gordon: "Just for your sentence , please see what equipment I used to reply to you , mix2 , the quality is very general . Do n't make fun , zz , even if I am a Mi Fan , I admit that Xiaomi hardware can not be used normally for three years , at most two years , My screen - closing button has been released , and I can directly start the screen when I open the screen . The fingerprint does not press"
+Belinda: "To be honest , if you want to use a mobile phone for three or five years , it is recommended that you use Apple directly . Android phones also have Android phone usage . After one or two years , you can replace one . In a few years , the cost is similar to using Apple . Of course , it is needless to say that rich people renew their apples every year ."
+Gordon: "I 'm not talking about three to five years , , , , Apple will get stuck in five years . Well , my Mi 6 , on a not - too - high table , slipped and fell to the ground because of the slope and smoothness . The back cover was completely broken , and the frame was slightly Knock deformation , the mix2 opens the screen directly with fingerprints , only use the power button when the screen is off , but the button is very loose in less than a year , although I am a rice fan , but I must admit that Samsung flagship will not be like this for two or three years , this is quality"
+
+
+Here is the generated dialog:
+Kayla: I've been using the 20U for a while now, and I'm still getting used to its design.
+Jenna: I know what you mean, I've had the x60tpro+ for a bit and it's not really my style, but it's not bad either.
+Alexandra: I've seen the new s series, and I think it's okay, not really my favorite but not bad.
+Gabriella: Oh, I love the way OPPO phones look, they're so sleek and modern!
+Alise: I'm a huge fan of Huawei's design, their phones always look so premium and high-end.
+
+Hunter: I've been using my S8 for a while now, and I'm still getting used to the feel of it.
+Deborah: I remember when I had the Mi 6, the front fingerprint sensor was something I didn't love or hate.
+Jessica: Ugh, the 12x is so uncomfortable to hold, I'm glad I got rid of it.
+Jada: I tried my friend's S21 and I didn't like the way it felt in my hand.
+Ariana: I was really disappointed with the Xiaomi MIX, it just didn't feel right to me.
+
+Jaden: I'm so happy with my m40p, the battery lasts me all day and then some.
+Diana: I know what you mean, my 13pm's battery life is amazing, I can go on and on without needing to charge.
+Brooke: Same here, my x2pro's battery is incredible, I can play games for hours and still have plenty of juice left.
+Gabriella: I've had my 10u for a while now, and the battery life is... decent. It gets the job done, but I wouldn't say it's exceptional.
+Rebecca: I've had my 12Pro for a bit, and the battery life is okay. It's not the best, but it's not the worst either.
+
+Alexandra: "Picture comment"
+Jesse: "The smoothness and animation of the Samsung system are really not very good . Fortunately , the system is stable , with few bugs and advertisements , and full functions . The openings and creases of the folding screen are indeed not dominant . The texture and workmanship of the waterproof screen do n't need to talk , and there are still shortcomings that need to be filled ."
+Alexandra: "But oneui4 animation is no problem"
+Jesse: "[ Erha ] Without fold 3 , the S21 has been upgraded to 4.0 , which is an improvement than before , but the frame still drops . It 's really not smooth . Maybe with the bigger RAM will be better ."
+Arianna: "Some people think that the Samsung system is garbage , but some people think that the Huawei system is garbage . It depends on what do you like to use ? If you do n't like to use Apple , you can also say that Apple 's system is garbage [ two ha ]"
+David: "[ Erha ] Even Apple 's heat dissipation is better than Samsung 's , it can be seen that the S21 series has no heat dissipation at all"
+Arianna: "Complimenting Apple 's heat dissipation ? forget it [ two ha ]"
+Cyrus: "It 's a pity that the internal screen does not support a stylus [ smile ]"
+Alexandra: "They ca n't do it , and he ca n't handle dual - screen emr communication [ smile ]"
+Cyrus: "So I think it must be Samsung [ Smile ]"
+
+RIGHT ANSWER: Gabriella
+MODEL ANSWER: arianna
+CURRENT ACCURACY: 0.42857142857142855
+============================================================
+
+QUESTION: Whose opinions from Joshua and Arianna about manufacturers are most similar to Amanda's?
+RETRIEVED: 
+
+Relevant dialogs:
+
+Belinda: "Since you raised the topic to support domestic production . Should we also consider the possibility that the U.S. 's extreme sanctions and long - arm jurisdiction have led to Huawei 's use of foreign components ( including but not limited to Samsung screens ) , and there is a possibility that the supply will be completely cut off ?"
+Amanda: "Now that you talk about supporting domestic production , you use such a rubbish screen , and it still sell for 4,000 yuan . There are so many state - owned enterprises , Xiaomi OPPOvivo , any one is better than yours , why do n't I support domestic production that is stronger than you ?"
+Lillian: "Where is Xiaomi 's Huaxing Optoelectronics screen good ?"
+Amanda: "First , the Mi Pro is a Samsung screen . Even if the Xiaomi Mi 10 is replaced by Huaxing Optoelectronics , it seems that it will not be worse than this [ too happy ] Second , this Weibo is about the Honor 30Pro . Now , if the Xiaomi Mi 10 is really bad after replacing Huaxing Optoelectronics , there will naturally be an evaluation to say it , so what are you talking about ? [ Unintelligible ]"
+
+
+Amanda: I'm so in love with my Find, it charges so fast!
+Celia: I know, right? The charging speed is amazing! But, I have to say, the screen could be better.
+Amanda: Yeah, I agree with you on that. The screen is not my favorite part of the phone. But, overall, I'm really happy with it.
+Celia: Same here! The rest of the features are great. I don't know what I'd do without it.
+Sandra: I'm not a fan of Samsung, to be honest. There are just too many things that annoy me about it.
+Madison: I'm with Sandra on this one. I've had nothing but trouble with my Samsung.
+
+Zoe: "Is there brother who has touched the little cup , How does S21 + feel"
+Amanda: "The hand feel is very good . The offline store clerk said that Samsung 's first launch this year is selling well at both ends ( super large and s ) , and no one asked in the middle ( + has not sold well for two consecutive years ) . However , for heavy mobile games , you should be careful , and battery life is indeed a problem ."
+Zoe: "Is n't it said that it 's a little rough"
+Amanda: "It depends on the size of the hand , I have a stubby palm and I have no problem holding a small cup . But the design of the small cup may not be so friendly to friends with slender hands ."
+
+
+Celia: I'm so in love with my Find, the screen is amazing!
+Amanda: I know, right? The screen is gorgeous! And the charging is so fast, I can use it all day.
+Celia: Yeah, the charging is decent. But what I really love is everything else about it, it's just perfect.
+Amanda: I agree, everything else is good, but it's not like it's the best or anything.
+Sandra: I'm so disappointed with my Samsung, it's just not what I expected.
+Madison: I feel you, my Samsung has been a letdown too.
+
+Maya: I'm so disappointed with my Xiaomi, it's not durable at all.
+Alejandro: I don't know, I think it looks pretty nice.
+Arianna: Yeah, but have you seen the charging speed? It's only 67w single cell, it's so slow!
+Helen: And don't even get me started on the updates, they're always so slow to arrive.
+Jacqueline: I'm telling you, it's all because of their poor quality control.
+Zoe: I'm not sure, I think the system is okay, it's not the best but it's not the worst either.
+Maya: Okay is not enough, I expect more from a brand like Xiaomi.
+Alejandro: I guess we all have different expectations.
+Arianna: Yeah, and mine is definitely faster charging.
+Helen: And more frequent updates.
+Jacqueline: And better quality control.
+Zoe: I'll just stick with what I have, it's not perfect but it works for me.
+
+Emma: "Xiaomi never dares to design a mobile phone below 4200mAh , I put my words here"
+Madison: "Make the screen smaller , the refresh rate is changed to 90Hz , and equipped with a Snapdragon 7 , and the 4200 battery is totally okay ."
+Allison: "So you like the Mi 10 Youth Edition , right ? [ doge ]"
+Madison: "10 Youth Edition screen is not small"
+Gabriel: "With a 778 , it will dare , and the battery life will beat 11u [ doge ]"
+Amanda: "Xiaomi is not as cost - effective as red rice , 778 is difficult to make Mi fan pay for [ dirty ]"
+Gabriel: "778 Xiaomi only sells for just over 2,000 , and there are still a lot of people who buy it , and offline people do n't care about the configuration , just care about whether it looks good or not ."
+Cecilia: "Does Xiaomi 's stacking ability have to worry about these ?"
+
+
+Roger: I've been using Xiaomi for years and I've never had any issues with their quality control.
+Amanda: I'm so disappointed with Huawei's global sales, it's really affected their reputation.
+Autumn: I've noticed that my Xiaomi's power consumption is pretty average, not too bad but not amazing either.
+Dylan: I've had a few small faults with my Xiaomi, but nothing that's been a major problem.
+Roger: I think Xiaomi's quality control is one of the reasons I stick with them, they really know what they're doing.
+Amanda: I used to love Huawei, but their global sales have been a real letdown.
+Autumn: I'm not really bothered about the power consumption, as long as it gets the job done.
+Dylan: Yeah, the small faults are annoying, but they're not deal-breakers for me.
+RIGHT ANSWER: Joshua
+MODEL ANSWER: arianna
+CURRENT ACCURACY: 0.375
+============================================================
+
+QUESTION: Whose opinions from Isabel and Arianna about manufacturers are most similar to Jonathan's?
+RETRIEVED: 
+
+Relevant dialogs:
+
+Joseph: "Except for that one , it is really difficult to sell more if over 5 K [ DOGE ] [ Doge ]"
+Laura: "Which one ."
+Henry: "h [ doge ] [ doge ] [ doge ]"
+Emma: "I really hope blue factory x can achieve high - end success . In those years , the x7 2499 experience was not bad . There was a fill light in front of the self timer , hifi when listening to songs , light touch , and good photography .Later , X20 21 was ugly , X70 seemed to bring back the reputation , and it is the perfect if 80 could be better"
+Jonathan: "60 was relatively successful , 70 the initial pricing was outrageous , screwed up directly"
+Faith: "The point is that one 's x - axis is not used for sale"
+Patricia: "That one is not willing to use . [ Laughing without words ] So miserable to make money to research and develop , just gratitude [ laughing without saying ]"
+
+
+Ian: "What about 12pro ? I 'm afraid that the max is too big for girls to use"
+Aidan: "The cost performance ratio of Pro is too low . It 's only a few hundred dollars less than promax . Either 12 or pm . The pro is really nothing more than the 12 , only the rear camera is stronger and the price is more expensive for more than a thousand dollars . If you do n't care about cost performance and you care about the rear camera configuration , the pro is also fine . 12pro is the lowest price / performance ratio . The mini is afraid that the battery life will be too bad , so I feel that these two are not worth ."
+
+
+Leonora: "If a friend 's product is generally recognized in the digital chat comment area , then this product is considered a good one . If it is recognized and at the same time , the mi fans are shut up , then this product is almost impeccable [ dig nose][dig nose ]"
+Jonathan: "Who buys Xiaomi , what percentage are brand fans , and what percentage are pure cost - effective users like me [ laugh haha ]"
+Clifford: "Are n't you a prodigal ? [ doge ] Do n't hide it , so big eyes are there"
+Jonathan: "I can buy a lot of brands , it 's not just one thing"
+Beatrice: "Now OPPO fast charging is not good , there is one thing to say ."
+Ashton: "No matter how bad 65W two years ago , it is stronger than your garbage mobile phone [ not easy ]"
+Elijah: "Indeed yes [ Yun Bei ] Otherwise , how else is called mi station"
+Melanie: "If you do n't want to watch it , you can go , watch their @changandigitaljun @Couragedigitaljun . The electronic waste , like Huawei nova 8se , they will brag to you too"
+
+
+Jonathan: "Station bro , 11u and 12p , which one is worth buying [ cute ]"
+Ethan: "Definitely 11U , it 's totally beat 12pro"
+Nicholas: "11u has many bugs , burns WIFI and burns the motherboard , the weight is outrageous , the feel is bad , and the price is even more expensive . In addition to the camera 's image quality is a little better , which other points are better than 12p ?"
+Ethan: "Xiaomi Mi 11 has many bugs ? What bug are you talking about ? The ip68 ceramic back cover completely beats the wide - angle and telephoto of the 12pro . Why is the advantage not big ? If you want to say that the weight and feel is a disadvantage , it is also an advantage for a mobile phone of more than 2,000 compared to an iPhone that is more than 10,000 . That 's right , the reduce material phone is really not too heavy . In the end , the price of 11u is basically the same as that of 12pro , there is no " more expensive " ."
+Gladys: "Excluding the screen , one is good except for soc , and one is not good except for soc"
+Ava: "Putting aside the facts , let 's talk about things that have not improved in terms of user experience ."
+Nicholas: "12p for sure , no need to ask . 11U burn the motherboard and WIFI , plus the system with a lot of bugs and the bad feel . The price is even more expensive . There is really no reason to choose 11U ."
+
+
+Noah: "A pound of compressed cotton and a pound of iron are not the same weight in the hand ?"
+Jada: "I do n't mean to argue , 6.1 inches , 200 grams and 6.5 inches , 200 grams feel a lot different in the hand . The volume is slightly larger , and the weight does not feel so heavy after the weight is distributed"
+Rodrigo: "Then you all should buy Promax"
+Jada: "MAX is too big , even if Max is only 200 grams , the feel will not feel good ."
+Michael: "Do n't come to tech bloggers at this level . Is a pound of cotton and a pound of iron the same size/.[Sad ] Think more before making anti - intellectual remarks"
+Xavier: "I feel that the 13pro is significantly heavier than the Mi 11u"
+
+
+Isabella: I've been using the Honor Magic3Pro for a while now, and I'm still getting used to the feel of it.
+Jonathan: I know what you mean, I've had the Meizu 18 for a bit and it's just...fine.
+Juan: You guys are crazy, my Redmi has the best texture, it feels so premium in my hand!
+Isabella: Yeah, I can see why you'd like it, but for me, it's just okay.
+Juan: And have you felt the Xiaomi? It's even better than the Redmi!
+Jonathan: I've held the Xiaomi before, it's definitely nice, but I don't know if it's worth the hype.
+Isabella: I think it's all about personal preference, what one person loves, another might not care about.
+Juan: For me, the texture makes all the difference, it's what sets a good phone apart from a great one.
+
+Jonathan: "Apart from the small size and good feel , nothing else good . It is recommended to replace 13pro with 13pro max ."
+Mackenzie: "12 pm battery life is quite average , 13pm battery life is fine"
+Cameron: "[ Doge ]"
+Mackenzie: "1Sell 12 pm , replace it with 13pm , the difference is quite obvious [ haha ]"
+Connor: "......"
+Josephine: "Forget it . I used the 12 Pro Max for a while last year , and I could n't like it . The battery life is good , and it 's good in all aspects , but it 's too big ."
+
+RIGHT ANSWER: Isabel
+MODEL ANSWER: xiaomi
+CURRENT ACCURACY: 0.3333333333333333
+============================================================
+
+QUESTION: Whose opinions from Gerld and Arianna about manufacturers are most similar to Belinda's?
+RETRIEVED: 
+
+Relevant dialogs:
+
+Alexa: "When it comes to weight , I 've have nothing to say about Apple . [ Allow sad ] The battery is not too big , the bottom of the camera is not too big , there is no periscope , there is no soaking plate for heat dissipation , and the body is not made of ceramics or other heavy material . How did it get 238g[allow sadness ] [ allow sadness ] [ allow sadness ]"
+Gerld: "[ doge ] Stainless steel frame , can it not be heavy ? The aluminum used in 13 is much lighter . The pro with the same measurements costs 200 +"
+Alexa: "What is the meaning of stainless steel ? [ Allow sad ] [ Allow sad ] Can you really feel the difference between bright stainless steel and bright aluminum alloy ? [ Allow sad ]"
+Lily: "If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]"
+
+
+Arianna: "It should be that red rice is used too much , you need to learn mix"
+Gordon: "Just for your sentence , please see what equipment I used to reply to you , mix2 , the quality is very general . Do n't make fun , zz , even if I am a Mi Fan , I admit that Xiaomi hardware can not be used normally for three years , at most two years , My screen - closing button has been released , and I can directly start the screen when I open the screen . The fingerprint does not press"
+Belinda: "To be honest , if you want to use a mobile phone for three or five years , it is recommended that you use Apple directly . Android phones also have Android phone usage . After one or two years , you can replace one . In a few years , the cost is similar to using Apple . Of course , it is needless to say that rich people renew their apples every year ."
+Gordon: "I 'm not talking about three to five years , , , , Apple will get stuck in five years . Well , my Mi 6 , on a not - too - high table , slipped and fell to the ground because of the slope and smoothness . The back cover was completely broken , and the frame was slightly Knock deformation , the mix2 opens the screen directly with fingerprints , only use the power button when the screen is off , but the button is very loose in less than a year , although I am a rice fan , but I must admit that Samsung flagship will not be like this for two or three years , this is quality"
+
+
+Douglas: I'm so disappointed with my vivo, the pixels are really bad.
+Destiny: I don't know, I think Apple's pixels are okay, not great, not bad.
+Belinda: Ugh, don't even get me started on Xiaomi's pixels, they're terrible!
+Gerld: I'm with Belinda, Samsung's pixels are a letdown.
+Ashley: I have to disagree, I think Apple's pixels are amazing, the display is so crisp!
+
+Belinda: "Since you raised the topic to support domestic production . Should we also consider the possibility that the U.S. 's extreme sanctions and long - arm jurisdiction have led to Huawei 's use of foreign components ( including but not limited to Samsung screens ) , and there is a possibility that the supply will be completely cut off ?"
+Amanda: "Now that you talk about supporting domestic production , you use such a rubbish screen , and it still sell for 4,000 yuan . There are so many state - owned enterprises , Xiaomi OPPOvivo , any one is better than yours , why do n't I support domestic production that is stronger than you ?"
+Lillian: "Where is Xiaomi 's Huaxing Optoelectronics screen good ?"
+Amanda: "First , the Mi Pro is a Samsung screen . Even if the Xiaomi Mi 10 is replaced by Huaxing Optoelectronics , it seems that it will not be worse than this [ too happy ] Second , this Weibo is about the Honor 30Pro . Now , if the Xiaomi Mi 10 is really bad after replacing Huaxing Optoelectronics , there will naturally be an evaluation to say it , so what are you talking about ? [ Unintelligible ]"
+
+
+Here is the generated dialog:
+Gerld: I don't like the feel of my x3, it's just not comfortable in my hand.
+Austin: I've got a 12pro and it's okay, I mean, it's not amazing or anything, but it's fine.
+Julian: I've had my Mi 6 for a while now, and I've gotten used to how it feels, but I wouldn't say it's the best.
+Ariana: I've been using my Xiaomi MIX for a bit, and it's...it's alright, I guess. I don't love it, but I don't hate it either.
+
+Gabriella: "Honor 's rear camera is really ugly , that two flounder rear cameras are big and abrupt . As for the screen , Honor helped everyone get to know " Zhou Dongyu Arrangement " before . Do n't compare the screen with others . After all , the screen is bought by the supplier . Their " screen lottery " before , did n't they know ?"
+Ariana: "The problem is , before the Honor screen was not good , everyone scolded it , and I also scolded it because I bought the Honor rag screen . But when it comes to Xiaomi , it is not allowed to scold ? Besides , we did n't say that Xiaomi 's screen is bad , it 's just that something is worse than Honor ."
+Gabriella: "It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while"
+Ariana: "Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ?"
+
+
+Diego: "I read your Weibo every day just for the news of Samsung s22u [ tears ] ! Lack of machine [ allow sad ] , the s21u beats the current machine , the texture is very good , the material is stacked a lot , the industrial design of the camera screen is very top , the domestic machine is really not good [ allow sad ] [ allow sad ]"
+Gerld: "I heard people say that the screen of Samsung S21U is not as comfortable as the screen of Xiaomi 10Pro indoors ? They also said Samsung 's 100 million pixels is not as good as Xiaomi 's , and the tenx optical zoom is not very good ?"
+Amelia: "Xiaomi is the sky , only xiaomi is the best in the world [ doge ]"
+Ronald: "The domestic machines are almost all garbage , mainly because the industrial design is unimaginable bad . No matter how awesome the parameters are , it will screw up as soon as you get started in your hand , and both feel and workmanship are a mess . Needless to say s21u , as long as you go to a physical store to experience even s21 or s21 + , you do n't want to touch the domestic machine anymore ."
+Diego: "I agree with your opinion [ like ] [ like ]"
+Daisy: "Except there is no push and background management garbage , it 's just perfect [ two ha][two ha][two ha ]"
+
+RIGHT ANSWER: Gerld
+MODEL ANSWER: gerld
+CURRENT ACCURACY: 0.4
+============================================================
+
+QUESTION: Whose opinions from Alexandra and Arianna about manufacturers are most similar to Gabriella's?
+RETRIEVED: 
+
+Relevant dialogs:
+
+Gabriella: "Honor 's rear camera is really ugly , that two flounder rear cameras are big and abrupt . As for the screen , Honor helped everyone get to know " Zhou Dongyu Arrangement " before . Do n't compare the screen with others . After all , the screen is bought by the supplier . Their " screen lottery " before , did n't they know ?"
+Ariana: "The problem is , before the Honor screen was not good , everyone scolded it , and I also scolded it because I bought the Honor rag screen . But when it comes to Xiaomi , it is not allowed to scold ? Besides , we did n't say that Xiaomi 's screen is bad , it 's just that something is worse than Honor ."
+Gabriella: "It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while"
+Ariana: "Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ?"
+
+
+Leslie: I've been using my Apple phone for a while now, and I have to say, the heat dissipation is amazing. It never gets too hot, even when I'm playing games for hours.
+Ariana: I'm having some issues with my iPhone 12. The signal is really weak, and I often find myself without service.
+Gabriel: I'm not a fan of Apple's technologies. I think they're overhyped and don't live up to the expectations.
+Destiny: I recently got the Xiaomi Mi 11, and I'm disappointed with the signal. It's always dropping calls and losing service.
+Jessica: I have to say, my Apple phone's electricity is really impressive. The battery lasts all day, and I don't need to charge it multiple times.
+Leslie: Yeah, Apple's heat dissipation is one of the reasons I chose their phone. I was tired of my old phone overheating all the time.
+Ariana: I wish I could say the same about my iPhone 12's signal. It's really frustrating when I need to make an important call and I don't have service.
+Gabriel: I think Apple's focus on aesthetics over functionality is a major issue. They prioritize looks over performance.
+Destiny: I'm considering switching to a different phone because of the signal issues with my Xiaomi Mi 11. Has anyone had any good experiences with other brands?
+Jessica: I've been really happy with my Apple phone's performance overall. The electricity is just one of the many things I like about it.
+
+Gabriella: "God , plastic back cover , small battery , heirloom 1200W , this . . ."
+Isabel: "The 12MP 555 is not bad , stronger than the s21u main camera"
+Gabriella: "In addition to anti - shake , it ca n't be better than hm3"
+Isabel: "12 million mode is stronger than hm3"
+Madeline: "Let 's just put it this way , the Mi 10Pro in your hand ca n't beat the S21 knife product in terms of overall or SOOC quality ."
+Gabriella: "Well , definitely , at the same price , and the S21 was released a year later as a new product , and the 888 computing power is also strong"
+Madeline: "But even the Mi 11 is not as powerful as the S21 [ Black Line ] 11ultra is awesome . Although the camera experience is not perfect , beat the S21 is completely enough ."
+Madeline: "Small battery : refers to 6.2 inches , 180 grams be packed into 4000mha ? [ Khan ] The ancestral 12MP , finally directly beat a certain Mi 's HMX ? [ doge ]"
+Jack: "I am using the s21 now , the battery life and heat dissipation are really not good [ tears ]"
+Madeline: "Fire Dragon 888 are all like this , there 's no way , and others are also in the same situation ."
+
+
+Here is the generated dialog:
+Kayla: I've been using the 20U for a while now, and I'm still getting used to its design.
+Jenna: I know what you mean, I've had the x60tpro+ for a bit and it's not really my style, but it's not bad either.
+Alexandra: I've seen the new s series, and I think it's okay, not really my favorite but not bad.
+Gabriella: Oh, I love the way OPPO phones look, they're so sleek and modern!
+Alise: I'm a huge fan of Huawei's design, their phones always look so premium and high-end.
+
+Jaden: I'm so happy with my m40p, the battery lasts me all day and then some.
+Diana: I know what you mean, my 13pm's battery life is amazing, I can go on and on without needing to charge.
+Brooke: Same here, my x2pro's battery is incredible, I can play games for hours and still have plenty of juice left.
+Gabriella: I've had my 10u for a while now, and the battery life is... decent. It gets the job done, but I wouldn't say it's exceptional.
+Rebecca: I've had my 12Pro for a bit, and the battery life is okay. It's not the best, but it's not the worst either.
+
+Arianna: "It should be that red rice is used too much , you need to learn mix"
+Gordon: "Just for your sentence , please see what equipment I used to reply to you , mix2 , the quality is very general . Do n't make fun , zz , even if I am a Mi Fan , I admit that Xiaomi hardware can not be used normally for three years , at most two years , My screen - closing button has been released , and I can directly start the screen when I open the screen . The fingerprint does not press"
+Belinda: "To be honest , if you want to use a mobile phone for three or five years , it is recommended that you use Apple directly . Android phones also have Android phone usage . After one or two years , you can replace one . In a few years , the cost is similar to using Apple . Of course , it is needless to say that rich people renew their apples every year ."
+Gordon: "I 'm not talking about three to five years , , , , Apple will get stuck in five years . Well , my Mi 6 , on a not - too - high table , slipped and fell to the ground because of the slope and smoothness . The back cover was completely broken , and the frame was slightly Knock deformation , the mix2 opens the screen directly with fingerprints , only use the power button when the screen is off , but the button is very loose in less than a year , although I am a rice fan , but I must admit that Samsung flagship will not be like this for two or three years , this is quality"
+
+
+Gabriella: "Is 10u worth buying now ?"
+Autumn: "It 's worth , based on this year 's flagship performance , you can buy it and use it for another year"
+Gabriella: "The battery life of the k30u I use now is really outrageous . It need to be charged three or four times a day . I do n't know what to change now"
+Fred: "K30U is bad of course"
+Angelina: "Not so good"
+Autumn: "What else is there except the screen ?"
+Angelina: "Overheat and battery life"
+Madison: "I just bought one , I feel very comfortable [ doge ]"
+Gabriella: "How long has it been used and how fast is the charging ?"
+Madison: "It has been used for about 10 days , and the charging is very fast . After all , I switched from the charging speed of 30w , and it can be fully charged from 0 to 100 % in 30 minutes ."
+
+RIGHT ANSWER: Alexandra
+MODEL ANSWER: alexandra
+CURRENT ACCURACY: 0.45454545454545453
+============================================================
+
+QUESTION: Whose opinions from Graham and Arianna about manufacturers are most similar to Sophia's?
+RETRIEVED: 
+
+Relevant dialogs:
+
+Graham: "Is it really good looking ? The Android flagship color has a lot that more beautiful than this , or is it an Apple so it looks good ?"
+Edward: "What do you think , apart from OPPO that is willing to spend money on it , who else is willing to spend money on appearance craftsmanship ? First of all , consumers think that there is no need for bells and whistles [ doge ] How can this be the fault of Android phones ?"
+Sandra: "OPPO , vivo , Huawei 's appearance are all okay"
+Edward: "As you said , there are only three ."
+
+
+Gabriella: "Honor 's rear camera is really ugly , that two flounder rear cameras are big and abrupt . As for the screen , Honor helped everyone get to know " Zhou Dongyu Arrangement " before . Do n't compare the screen with others . After all , the screen is bought by the supplier . Their " screen lottery " before , did n't they know ?"
+Ariana: "The problem is , before the Honor screen was not good , everyone scolded it , and I also scolded it because I bought the Honor rag screen . But when it comes to Xiaomi , it is not allowed to scold ? Besides , we did n't say that Xiaomi 's screen is bad , it 's just that something is worse than Honor ."
+Gabriella: "It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while"
+Ariana: "Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ?"
+
+
+Dennis: I've been using Xiaomi for a while now, and I think their algorithm is okay, it gets the job done.
+Sophia: I just got the Mix4, and I have to say, the camera is amazing! The front could be better, but it's not a deal-breaker for me.
+Natalie: Ugh, I'm so frustrated with my iqoo, the algorithm is so slow and glitchy. I'm thinking of switching to something else.
+Dennis: Yeah, I've heard mixed reviews about iqoo's algorithm. Maybe you should try Xiaomi, it's not perfect, but it's reliable.
+Sophia: I've heard good things about Xiaomi, but I'm happy with my Mix4. The camera is so good, it takes amazing photos!
+Natalie: Yeah, I've seen the Mix4, it looks nice. But I need something that can handle my heavy usage, and iqoo just isn't cutting it.
+
+Christopher: "Ask who else has this year ? Xiaomi and Samsung are the last hope . Domestic manufacturers all try to blame on consumers with their own problems . I really treat domestic goods as treasures , and domestic goods make me cry . I want to support it , but it 's hard to"
+Graham: "Must have 12u"
+Bailey: "The price must take off . 12pro has no periscope , no IP68 , the price of 256 g is5000 + , then 12u must be 7000 +"
+Graham: "Then do n't know"
+Daisy: "Huawei : You can have no confidence in me , but you ca n't without expect [ DOGE ]"
+Christopher: "I also want to have expectations . Originally , P50 , wanted to support it . It does n't matter if do n't have 5G. Anyway , my three - line small cities do n't need it , but your screen is taht bad while you still sell it so expensive . I can afford it , but I do n't want to"
+
+
+Caroline: I'm thinking of getting a cv, what do you think of its design?
+Daisy: Honestly, I'm not a fan of OPPO's dual batteries, they're so bulky.
+Joshua: I've been using an x2 for a while now, and I think its appearance is just okay.
+Graham: Ugh, I hate the way iPhones look, they're so outdated.
+Cole: I just got a Huawei and I have to say, it looks amazing!
+Bernard: Samsung's designs are just not my thing, they're so bland.
+
+Sophia: "Why do you say that the Mate 40Pro camera is not good , and there are girls around you who still dislike taking portraits ? [ Erha ]"
+Lillian: "Because they all use the original iPhone camera , and then they have been repaired in the later period ! Girls ' post - editing ability is super strong . So what is needed in the early stage is real rather than Huawei 's automatic ps ( p50pro in my hand is really good at " p " , I do n't know much about Android )"
+Sophia: "How about p50 ? P50 does not have 5 G so I still do n't want to buy it"
+Lillian: "I have never used the p50 , and it is really not recommended without 5G. I use the pro because I have WiFi6 at home , which can make up for the 5 G defect of the p50pro . There are still a lot of Hongmeng appliances at home , and the mate40pro+ ca n't get it , so I have to buy this one ."
+
+
+Emma: "So do you recommend 12 , wait for reduce the price , ask for views"
+Sandra: "The main reason is that the 12 generation seems to be not very good for heat dissipation , but it also depends on the machine . Some do n't . 128 g of 13 need more than 6000 , if you can buy a 12 128 g about 5000,I think it 's very worthy"
+Chloe: "I feel that Apple 's heat dissipation every year is very bad , except for the big size"
+Lawrence: "X heat dissipation is not as good as 8 and 8P . XR heat dissipation is better than XS and XSM , 11 heat dissipation is better than 11P and 11PM"
+
+RIGHT ANSWER: Graham
+MODEL ANSWER: ariana
+CURRENT ACCURACY: 0.4166666666666667
+============================================================
+

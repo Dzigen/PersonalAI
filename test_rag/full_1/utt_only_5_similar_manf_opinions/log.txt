@@ -1,0 +1,156 @@
+QUESTION: Whose opinions from Linda and Arianna about manufacturers are most similar to Hugh's?
+RETRIEVED: 
+Relevant utterances:
+Hugh: "Which flagship machine is not heavy now . Both pro and promax feel drop . I buy pm directly ."
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Daisy: But the heat dissipation is really a problem, I'm considering switching to another brand.
+Josephine: Yeah, I've heard mixed reviews about Xiaomi's customer service. Have you had any issues with Apple's signal, Hugh?
+Hugh: I know what you mean, my promax has an amazing battery life too. I can go on trips without worrying about running out of juice.
+RIGHT ANSWER: Linda
+MODEL ANSWER: josephine
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: Whose opinions from Belinda and Arianna about manufacturers are most similar to Gerld's?
+RETRIEVED: 
+Relevant utterances:
+Gerld: I'm with Belinda, Samsung's pixels are a letdown.
+Gerld: I don't like the feel of my x3, it's just not comfortable in my hand.
+Gerld: "Mine is the official silicone case , maybe it 's not on the shelves yet"
+Gerld: I don't know why people like Mate40Pro, Magic3Pro is way better in my opinion.
+Gerld: I feel the same way about the Magic3Pro's temperament. It's not bad, but it's not great either.
+RIGHT ANSWER: Belinda
+MODEL ANSWER: belinda
+CURRENT ACCURACY: 0.5
+============================================================
+
+QUESTION: Whose opinions from Amanda and Arianna about manufacturers are most similar to Joshua's?
+RETRIEVED: 
+Relevant utterances:
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Joshua: "Others are worse , look at other brands , everyone is scolding everyone , Xiaomi is relatively good , at least there are not many machines , those who are using machine sea tactical , you really think that maintenance is better than Xiaomi ?"
+Joshua: "[ doge ] Are there so many requirements to buy at this price , enough to play games and daily use is enough"
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Joshua: I love my x2, the design is so sleek and modern!
+RIGHT ANSWER: Amanda
+MODEL ANSWER: amanda
+CURRENT ACCURACY: 0.6666666666666666
+============================================================
+
+QUESTION: Whose opinions from Jesse and Arianna about manufacturers are most similar to Joseph's?
+RETRIEVED: 
+Relevant utterances:
+Joseph: Exactly! It's like they really care about our experience.
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Joseph: Yeah, I agree with Isaiah, the Z axis is not a big deal for me, it's just average.
+Joseph: Maybe we're just too picky, but I think the workmanship could be better.
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+RIGHT ANSWER: Jesse
+MODEL ANSWER: jesse
+CURRENT ACCURACY: 0.75
+============================================================
+
+QUESTION: Whose opinions from Hugh and Arianna about manufacturers are most similar to Linda's?
+RETRIEVED: 
+Relevant utterances:
+Linda: I'm considering switching to K40, but I'm not sure about the texture.
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Daisy: But the heat dissipation is really a problem, I'm considering switching to another brand.
+Linda: I've had the Meizu for a few months, it's decent, doesn't really impress me though.
+RIGHT ANSWER: Hugh
+MODEL ANSWER: hugh
+CURRENT ACCURACY: 0.8
+============================================================
+
+QUESTION: Whose opinions from Joseph and Arianna about manufacturers are most similar to Jesse's?
+RETRIEVED: 
+Relevant utterances:
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Jesse: I'm not bothered about the weight of my max, it's not too heavy or light.
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Jesse: Ugh, the openings of Samsung are so small, it's hard to handle.
+Jesse: "why ? I am considering buying one . Oppo or oneplus which is better"
+RIGHT ANSWER: Joseph
+MODEL ANSWER: joseph
+CURRENT ACCURACY: 0.8333333333333334
+============================================================
+
+QUESTION: Whose opinions from Gabriella and Arianna about manufacturers are most similar to Alexandra's?
+RETRIEVED: 
+Relevant utterances:
+Alexandra: I mean, the heat dissipation is fine, it's not like it's overheating or anything.
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Alexandra: I'm not really bothered about the heat dissipation, it's not a big deal for me.
+Alexandra: I've had some issues with overheating on my 11 series, but it's not a huge deal.
+Alexandra: "I have used all three you mentioned , and I have also used Le 2max zuk z2 , Mi 5 is my favorite , it is thin and light , and the feel is good , I have used three different versions before and after , and I have also used mate8 p9 . They are all used to play the glory of king , and I did n't feel too hot in summer . It 's far away from the 11 11p 11u I used last year . Besides , Huawei of the same year play the glory of king is garbage , and the performance is not good , only the temperature is not high is useless"
+RIGHT ANSWER: Gabriella
+MODEL ANSWER: gabriella
+CURRENT ACCURACY: 0.8571428571428571
+============================================================
+
+QUESTION: Whose opinions from Joshua and Arianna about manufacturers are most similar to Amanda's?
+RETRIEVED: 
+Relevant utterances:
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Amanda: "It depends on the size of the hand , I have a stubby palm and I have no problem holding a small cup . But the design of the small cup may not be so friendly to friends with slender hands ."
+Amanda: I've been using the P40 and I think the dual speakers are okay, not bad but not amazing either.
+Amanda: I'm not blown away by the speakers on my p40, but they're not bad either.
+Amanda: I agree, everything else is good, but it's not like it's the best or anything.
+RIGHT ANSWER: Joshua
+MODEL ANSWER: joshua
+CURRENT ACCURACY: 0.875
+============================================================
+
+QUESTION: Whose opinions from Isabel and Arianna about manufacturers are most similar to Jonathan's?
+RETRIEVED: 
+Relevant utterances:
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Jonathan: "I can buy a lot of brands , it 's not just one thing"
+Jonathan: "Apart from the small size and good feel , nothing else good . It is recommended to replace 13pro with 13pro max ."
+Jonathan: "I only know that the camera of the previous generation product is weak compared to the mainstream of the domestic flagship . This is recognized . And the battery is n't durable either . Besides a screen , what else ?"
+RIGHT ANSWER: Isabel
+MODEL ANSWER: aidan
+CURRENT ACCURACY: 0.7777777777777778
+============================================================
+
+QUESTION: Whose opinions from Gerld and Arianna about manufacturers are most similar to Belinda's?
+RETRIEVED: 
+Relevant utterances:
+Gerld: I'm with Belinda, Samsung's pixels are a letdown.
+Belinda: I've tried the Max and it's...fine, I don't love it or hate it.
+Gerld: I don't like the feel of my x3, it's just not comfortable in my hand.
+Belinda: "I think the silver version of p40peo is still very good - looking even now [ doge][doge ]"
+Gerld: "Mine is the official silicone case , maybe it 's not on the shelves yet"
+RIGHT ANSWER: Gerld
+MODEL ANSWER: gerld
+CURRENT ACCURACY: 0.8
+============================================================
+
+QUESTION: Whose opinions from Alexandra and Arianna about manufacturers are most similar to Gabriella's?
+RETRIEVED: 
+Relevant utterances:
+Gabriella: Have you tried Xiaomi's phones? I've heard they're really good.
+Gabriella: "It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while"
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Alexandra: I mean, the heat dissipation is fine, it's not like it's overheating or anything.
+Gabriella: "The floor host is right , blogger do n't think that you are very clever , everything is just as what you said ? Consumers have no steelyard in their hearts ? [ doge ]"
+RIGHT ANSWER: Alexandra
+MODEL ANSWER: alexandra
+CURRENT ACCURACY: 0.8181818181818182
+============================================================
+
+QUESTION: Whose opinions from Graham and Arianna about manufacturers are most similar to Sophia's?
+RETRIEVED: 
+Relevant utterances:
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Sophia: The color of my mate30 series is nice, but not my favorite.
+Sophia: I don't really have an opinion about the feel of my m10, it's just a phone to me.
+Sophia: I've tried a few different devices, and they all have their pros and cons. I'm just happy with something that works, you know?
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+RIGHT ANSWER: Graham
+MODEL ANSWER: graham
+CURRENT ACCURACY: 0.8333333333333334
+============================================================
+

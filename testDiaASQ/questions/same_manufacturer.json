@@ -1,0 +1,802 @@
+[
+  {
+    "question": "Do Maria and Tyler prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Dylan and Miguel prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Aaliyah and Kathryn prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi"
+  },
+  {
+    "question": "Do Joshua and Herbert prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Jake and Kathryn prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi"
+  },
+  {
+    "question": "Do Dylan and Jenna prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Chase and Mia prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Landon and Winifred prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Huawei"
+  },
+  {
+    "question": "Do Katherine and Anita prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Huawei, Samsung"
+  },
+  {
+    "question": "Do Bruce and Diana prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Cecilia and Jesse prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Virginia and Austin prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple"
+  },
+  {
+    "question": "Do Melanie and Leslie prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi"
+  },
+  {
+    "question": "Do Emily and Trinity prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Huawei"
+  },
+  {
+    "question": "Do Kyle and Aaliyah prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Andrew and Gavin prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi"
+  },
+  {
+    "question": "Do Ronald and Charles prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Jocelyn and Lorna prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Jason and Lynn prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, OnePlus"
+  },
+  {
+    "question": "Do Natalie and Maria prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple"
+  },
+  {
+    "question": "Do Eleanor and Marjorie prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Autumn and Marjorie prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Jackson and Molly prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Huawei"
+  },
+  {
+    "question": "Do Gilbert and Alexa prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi, Huawei"
+  },
+  {
+    "question": "Do Carl and William prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi"
+  },
+  {
+    "question": "Do Jenna and Allison prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi, Huawei"
+  },
+  {
+    "question": "Do Miguel and Malcolm prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Cecilia and Jayden prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Austin and Kaitlyn prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Maria and Emily prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple"
+  },
+  {
+    "question": "Do Abigail and Amanda prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Huawei"
+  },
+  {
+    "question": "Do Gordon and Brooke prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi, OnePlus"
+  },
+  {
+    "question": "Do Daniel and Alejandro prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Huawei"
+  },
+  {
+    "question": "Do Nicole and Julian prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Carter and Gabriel prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Huawei"
+  },
+  {
+    "question": "Do Patricia and Connor prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple"
+  },
+  {
+    "question": "Do Adelina and Jacob prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Kylie and Malcolm prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Mabel and Eric prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple"
+  },
+  {
+    "question": "Do Caleb and Jessica prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Gordon and Kylie prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Evan and Natalie prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Jesse and Trinity prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Erin and Lorna prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple"
+  },
+  {
+    "question": "Do Charles and Brian prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Kyle and Gabriella prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Molly and Herbert prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Albert and Evan prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "OnePlus"
+  },
+  {
+    "question": "Do Adam and Julia prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Harold and Maria prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple"
+  },
+  {
+    "question": "Do Jaden and Jenna prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Sierra and Horace prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Abraham and Violet prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi, OnePlus"
+  },
+  {
+    "question": "Do Herbert and Belinda prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Nicholas and Julian prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Samsung"
+  },
+  {
+    "question": "Do Kyle and Ronald prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Charles and Erin prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Caleb and Devin prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Huawei"
+  },
+  {
+    "question": "Do Lucas and Luke prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Stanley and Lawrence prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Huawei, Vivo, Samsung"
+  },
+  {
+    "question": "Do Patricia and Arianna prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Virginia and Elizabeth prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Noah and Chase prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Jesse and Horace prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Arianna and Linda prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Gloria and Austin prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Michael and Marisa prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Samsung"
+  },
+  {
+    "question": "Do Anthony and Lynn prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple"
+  },
+  {
+    "question": "Do Abigail and Diego prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi"
+  },
+  {
+    "question": "Do Makayla and Edward prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi"
+  },
+  {
+    "question": "Do Antonio and Elizabeth prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Huawei, OnePlus"
+  },
+  {
+    "question": "Do Antonio and Dylan prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Chase and Kyle prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Carter and Carlos prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi, Huawei"
+  },
+  {
+    "question": "Do Henry and Caleb prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Gerld and Aaron prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi"
+  },
+  {
+    "question": "Do Dominic and Mason prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple"
+  },
+  {
+    "question": "Do Laura and Bernard prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Vivo, Samsung"
+  },
+  {
+    "question": "Do Alise and Leslie prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, OnePlus"
+  },
+  {
+    "question": "Do Audrey and Ariana prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Charles and Ethan prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Madison and Kaylee prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi, Samsung"
+  },
+  {
+    "question": "Do Faith and Sierra prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Carlos and Jessica prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Matthew and Maria prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Kathryn and Kylie prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Lorna and Zachary prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Arianna and Hayden prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Fred and Florence prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Audrey and Lillian prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Charles and Bailey prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do John and Avery prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Samsung"
+  },
+  {
+    "question": "Do Malcolm and Horace prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Oswald and Isabel prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Isaac and Winifred prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Samsung"
+  },
+  {
+    "question": "Do Christine and Alex prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Vivo"
+  },
+  {
+    "question": "Do Carlos and Nicole prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi, Huawei"
+  },
+  {
+    "question": "Do Adam and Belinda prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Samsung"
+  },
+  {
+    "question": "Do Cody and Malcolm prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Christine and Emma prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Huawei"
+  },
+  {
+    "question": "Do Adam and Eric prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Hayden and Evelyn prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Charles and Justin prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Sandra and Jocelyn prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Samsung"
+  },
+  {
+    "question": "Do Makayla and Ada prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi"
+  },
+  {
+    "question": "Do Bruce and Virginia prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Katherine and Alex prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Samsung"
+  },
+  {
+    "question": "Do Florence and Cole prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Audrey and Amelia prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Jackson and Tyler prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Adam and Caleb prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Huawei"
+  },
+  {
+    "question": "Do Virginia and Nicholas prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Samsung"
+  },
+  {
+    "question": "Do Alexa and Beatrice prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Huawei, Samsung"
+  },
+  {
+    "question": "Do Benjamin and Amelia prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Audrey and Sara prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Jeffery and Charles prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Samsung"
+  },
+  {
+    "question": "Do Mason and Jake prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi"
+  },
+  {
+    "question": "Do Neil and Isaiah prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Huawei, Samsung"
+  },
+  {
+    "question": "Do Chase and Caleb prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Aaron and Oswald prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Emily and Ashley prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi"
+  },
+  {
+    "question": "Do Blake and Noah prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Melissa and Juan prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Hannah and Melissa prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Zoe and Evan prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Oswald and Abraham prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Jane and Kayla prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Samsung"
+  },
+  {
+    "question": "Do Kaitlyn and Ann prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Belinda and Brianna prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Samsung"
+  },
+  {
+    "question": "Do Charles and Edward prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Chase and Lauren prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Malcolm and Erin prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do James and Hailey prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi, Samsung"
+  },
+  {
+    "question": "Do Katherine and Geoffrey prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Honor"
+  },
+  {
+    "question": "Do Abigail and Audrey prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Kylie and Martin prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Malcolm and Molly prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Molly and Gregory prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Huawei, Vivo"
+  },
+  {
+    "question": "Do Tyler and Caleb prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Aaliyah and Audrey prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Herbert and Megan prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Hailey and Yvonne prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Diana and Ann prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple"
+  },
+  {
+    "question": "Do Josephine and Malcolm prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Sierra and Blake prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Malcolm and Kimberly prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Claire and Caleb prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Elizabeth and Morgan prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Ava and Cecilia prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Huawei"
+  },
+  {
+    "question": "Do Sophia and Gabriel prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi, Huawei"
+  },
+  {
+    "question": "Do Francis and Taylor prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Huawei"
+  },
+  {
+    "question": "Do Rodrigo and Elizabeth prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi, Huawei, OnePlus"
+  },
+  {
+    "question": "Do Charles and Bruce prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Sierra and Alexa prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Melissa and Maria prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Daniel and Danielle prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi"
+  },
+  {
+    "question": "Do Douglas and Kevin prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Avery and Oswald prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Dominic and Jonathan prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Dylan and Lauren prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Abigail and Diana prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Huawei"
+  },
+  {
+    "question": "Do Leonars and Bernard prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Vivo"
+  },
+  {
+    "question": "Do Lucas and Colin prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Bridjet and Herbert prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Melissa and Leslie prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Evan and Hannah prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Luke and Gabriella prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Herbert and Florence prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Megan and Jaden prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Zachary and Harry prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Lorna and Joseph prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Ronald and Gloria prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Virginia and Zachary prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Kaylee and Maria prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Carl and John prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi"
+  },
+  {
+    "question": "Do Audrey and Celia prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do George and Walter prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi"
+  },
+  {
+    "question": "Do Ashley and Luke prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Bruce and Linda prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Sofia and Charles prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Bailey and Malcolm prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Avery and Lucy prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Natalie and Lucas prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple"
+  },
+  {
+    "question": "Do Cameron and Agatha prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi, Huawei"
+  },
+  {
+    "question": "Do Madison and Caleb prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Cody and Bruce prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Alexandra and Marisa prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi"
+  },
+  {
+    "question": "Do Brianna and Rodrigo prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi, Huawei, Apple, Samsung, OnePlus"
+  },
+  {
+    "question": "Do Laura and Jonathan prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi, Vivo"
+  },
+  {
+    "question": "Do Carlos and Deborah prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Diego and Charles prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Neil and Colin prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Charles and Neil prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Samsung"
+  },
+  {
+    "question": "Do Aaliyah and Gordon prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi, Samsung"
+  },
+  {
+    "question": "Do Leonora and Melissa prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Lily and Jessica prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple, Xiaomi"
+  },
+  {
+    "question": "Do Benjamin and Brandon prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Xiaomi"
+  },
+  {
+    "question": "Do Lorna and Trinity prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "Apple"
+  },
+  {
+    "question": "Do Audrey and Fiona prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  },
+  {
+    "question": "Do Caleb and Gordon prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
+    "answer": "No"
+  }
+]

@@ -6,10 +6,6 @@ from typing import Dict, List, Tuple
 from .qa_pipeline.knowledge_retriever.utils import Triplet, Node
 from .qa_pipeline.answer_generator.utils import ContextType
 
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-
 import chromadb
 import enum
 
@@ -171,7 +167,8 @@ class EmbedderModel:
         self.config = EmbedderModelConfig() if config is None else config
         self.model = SentenceTransformer(
             config.model_name_or_path, device=config.device,
-            prompts=config.prompts)
+            # prompts=config.prompts
+        )
 
     def encode_queries(self, queries: List[str], **kwargs) -> List[List[float]]:
         """_summary_

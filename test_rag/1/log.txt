@@ -1,0 +1,8 @@
+Utterances shape: torch.Size([3168, 768]), Dialogs shape: torch.Size([432, 768])
+Utterances shape: torch.Size([3168, 768]), Dialogs shape: torch.Size([432, 768])
+Utterances shape: torch.Size([3168, 768]), Dialogs shape: torch.Size([432, 768])
+Utterances shape: torch.Size([3168, 768]), Dialogs shape: torch.Size([432, 768])
+Utterances shape: torch.Size([3168, 768]), Dialogs shape: torch.Size([432, 768])
+Utterances shape: torch.Size([3168, 768]), Dialogs shape: torch.Size([432, 768])
+Utterances shape: torch.Size([3168, 768]), Dialogs shape: torch.Size([432, 768])
+Utterances shape: torch.Size([3168, 768]), Dialogs shape: torch.Size([432, 768])

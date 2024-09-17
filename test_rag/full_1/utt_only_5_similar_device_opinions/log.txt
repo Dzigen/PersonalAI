@@ -1,0 +1,403 @@
+QUESTION: Whose opinions from Freda and Bruce about devices are most similar to Kayla's?
+RETRIEVED: 
+Relevant utterances:
+Kayla: "Why are you talking about the battery life ? ? ? Is n't battery life good ?"
+Kayla: I wish the battery lasted a bit longer, but it's not like it's terrible or anything.
+Kayla: I've been using Samsung for a while, and I think the system is okay, not bad, not great.
+Kayla: I don't care about any of that, I just wish the battery would last longer.
+Kayla: Yeah, I've had a pretty average experience with Android, nothing to complain about.
+RIGHT ANSWER: Freda
+MODEL ANSWER: freda
+CURRENT ACCURACY: 1.0
+============================================================
+
+QUESTION: Whose opinions from Riley and Hannah about devices are most similar to Matthew's?
+RETRIEVED: 
+Relevant utterances:
+Matthew: "Indeed , but now most people have only one main device"
+Riley: I've been using the Max for a while now, and I'd say the battery life is decent.
+Riley: I'm with Ashley, my Xiaomi 9 has been a nightmare, I regret buying it.
+Riley: I've got the same phone as Ashley, and I have to say, the system is just okay. It's not amazing, but it's not terrible either.
+Riley: I wish I could say the same, my iQOO Neo5s is always freezing on me.
+RIGHT ANSWER: Riley
+MODEL ANSWER: riley
+CURRENT ACCURACY: 1.0
+============================================================
+
+QUESTION: Whose opinions from Jasmine and Bruce about devices are most similar to Jayden's?
+RETRIEVED: 
+Relevant utterances:
+Jayden: I'm not a fan of Samsung's localization, to be honest. It's always a hassle.
+Jayden: I'm not really bothered about the four curved surfaces on my Honor, it's just a design thing.
+Jayden: "Well , I 've been checking whether there is a 5 G version recently . After you finish speaking , I 'm a little hesitant ."
+Jayden: Yeah, I love how Samsung's GPS is so accurate, it always knows where I am.
+Jayden: It's...fine. I don't really have an opinion about it.
+RIGHT ANSWER: Jasmine
+MODEL ANSWER: jasmine
+CURRENT ACCURACY: 1.0
+============================================================
+
+QUESTION: Whose opinions from Matthew and Bruce about devices are most similar to Anthony's?
+RETRIEVED: 
+Relevant utterances:
+Christopher: Actually, I've heard great things about the mini's battery. My friend has one and loves it.
+Bruce: "Black is better . Ask for another thing , I 'm in a hurry to change my phone , I do n't play games , and I have requirements for taking pictures . Which one do you recommend to buy now , Xiaomi Mi 12 and find x3 ? I like the feel and appearance of the Xiaomi Mi 12 . I do n't know how much worse the screen and camera are than the x3 , the difference in daily use is big or not . Are there any other mobile phones below 4000 recommended ? ( not considering realme )"
+Christopher: I've had okay experiences with Apple's sales, but I've heard mixed reviews from friends.
+Christopher: If you're looking for a reliable signal, I'd say Apple's a good choice.
+Anthony: I've tried a few different phones with the Dimensity 1200, and they all have the same problem, it's just not a good chip.
+RIGHT ANSWER: Matthew
+MODEL ANSWER: bruce
+CURRENT ACCURACY: 0.75
+============================================================
+
+QUESTION: Whose opinions from Simon and Alex about devices are most similar to Lynn's?
+RETRIEVED: 
+Relevant utterances:
+Lynn: I don't know, I'm not a fan of the screen on OnePlus, it's just not that great.
+Lynn: I've had my Android for a while now and I have to say, the bug fixes are always on point.
+Lynn: "How can Xiaomi 12U use GN5 ? 12P uses 1/1.28 IMX707 , 12U GN5 use 1/1.5?Are you kidding ?"
+Lynn: "[ laugh cry][laugh cry ] I think the 12x screen is also good , but it 's a little smaller . Recently , I 've been learning about the realme master , and wait the new machine released after 2 days ."
+Lynn: "The xs max takes good pictures , but the battery life is really bad"
+RIGHT ANSWER: Simon
+MODEL ANSWER: alex
+CURRENT ACCURACY: 0.6
+============================================================
+
+QUESTION: Whose opinions from Douglas and Oswald about devices are most similar to Christine's?
+RETRIEVED: 
+Relevant utterances:
+Oswald: "[ Question ] If I do n't have a sense of superiority with Samsung , what can I use to have a sense of superiority ? The top - level camera screen , sound quality , waterproof appearance and workmanship , all top - notch , or you use a mobile phone that does not even have a refresh rate of 120 to have a sense of superiority . Since I used Samsung , I look back at my 11max and it is a ppt mobile phone"
+Douglas: I'm not really impressed with the fingerprint scanner, it's just okay.
+Oswald: I've also tried the Max, and the camera is pretty average.
+Douglas: "Ca n't afford two mobile phones?I have Android and apple . Let 's talk about the power first , and Apple will basically enter the shutdown state less than a day . Android in the evening still can have about forty left , and I have used this 12 for only 10 months . There are only 89 of batteries . My friend 12 months , battery 86 , the lock screen key is flaking paint . My XSM used for two years , At that time , the battery life was still 90 ."
+Douglas: I'm just not blown away by the fingerprint scanner, it's not a deal-breaker but...
+RIGHT ANSWER: Douglas
+MODEL ANSWER: oswald
+CURRENT ACCURACY: 0.5
+============================================================
+
+QUESTION: Whose opinions from Rita and Fred about devices are most similar to Adelina's?
+RETRIEVED: 
+Relevant utterances:
+Adelina: I don't like Oneplus, the overall experience is just not good.
+Adelina: I don't know, I think Xiaomi's design is a bit bland, it doesn't stand out to me.
+Adelina: Yeah, I've heard that Apple phones can be a bit sluggish.
+Adelina: Actually, I'm not a fan of OnePlus, it's a bit too flashy for me.
+Adelina: I don't like the design of OnePlus, it's not my style.
+RIGHT ANSWER: Rita
+MODEL ANSWER: rita
+CURRENT ACCURACY: 0.5714285714285714
+============================================================
+
+QUESTION: Whose opinions from Jessica and Hannah about devices are most similar to Martin's?
+RETRIEVED: 
+Relevant utterances:
+Martin: Yeah, I've heard that too. But I'm not sure about the weight of Xiaomi, is it heavy?
+Martin: "In terms of parameters , it is better to be ZTE anyway ~ but Fat Water recommends 4000 gear , who has no brain iPhone [ Doge ] who approves , who is opposed ?"
+Martin: Yeah, I've had friends with those kinds of phones, it's a real hassle.
+Martin: Maybe it's because of the brand loyalty?
+Martin: ZTE's parameters are decent, I don't have any strong feelings about them.
+RIGHT ANSWER: Jessica
+MODEL ANSWER: jessica
+CURRENT ACCURACY: 0.625
+============================================================
+
+QUESTION: Whose opinions from Simon and Fred about devices are most similar to Delia's?
+RETRIEVED: 
+Relevant utterances:
+Delia: Ugh, I don't like the design of realme phones. They just don't appeal to me.
+Delia: Meizu is just...there, it doesn't impress me, but it doesn't bother me either.
+Delia: I don't like the feel of Xiaomi phones, they're so slippery.
+Delia: I've got a Xiaomi phone and the screen is... yeah, it's okay. Not amazing, but not bad either.
+Delia: "The screen of 12 is not very good , barely okay , choose one of 60hz and dc"
+RIGHT ANSWER: Simon
+MODEL ANSWER: fred
+CURRENT ACCURACY: 0.5555555555555556
+============================================================
+
+QUESTION: Whose opinions from Christian and Fred about devices are most similar to Rodrigo's?
+RETRIEVED: 
+Relevant utterances:
+Rodrigo: Yeah, I have Xiaomi, it's not bad, not great either.
+Rodrigo: You know, I've also been eyeing the Xiaomi, the design is so on point.
+Rodrigo: I wish I could say the same about my Mate40 series, but unfortunately, it's just not living up to my expectations.
+Rodrigo: Have you seen the videos I took with my Samsung? They're so clear and smooth!
+Rodrigo: Exactly! And the best part is, it doesn't bother me with constant updates like MIUI does.
+RIGHT ANSWER: Christian
+MODEL ANSWER: fred
+CURRENT ACCURACY: 0.5
+============================================================
+
+QUESTION: Whose opinions from Rita and Bruce about devices are most similar to Amber's?
+RETRIEVED: 
+Relevant utterances:
+Bruce: "Black is better . Ask for another thing , I 'm in a hurry to change my phone , I do n't play games , and I have requirements for taking pictures . Which one do you recommend to buy now , Xiaomi Mi 12 and find x3 ? I like the feel and appearance of the Xiaomi Mi 12 . I do n't know how much worse the screen and camera are than the x3 , the difference in daily use is big or not . Are there any other mobile phones below 4000 recommended ? ( not considering realme )"
+Amber: I'm not a fan of Samsung's OneUI, it's just not my style.
+Amber: I have to disagree, I love my Apple's signal, it's always stable and fast.
+Amber: I don't have strong feelings about it, it's just a phone.
+Amber: I don't care about the night mode, Miui's functions are just too much for me.
+RIGHT ANSWER: Rita
+MODEL ANSWER: bruce
+CURRENT ACCURACY: 0.45454545454545453
+============================================================
+
+QUESTION: Whose opinions from Rodrigo and Bruce about devices are most similar to Christian's?
+RETRIEVED: 
+Relevant utterances:
+Rodrigo: Yeah, I have Xiaomi, it's not bad, not great either.
+Bruce: "Black is better . Ask for another thing , I 'm in a hurry to change my phone , I do n't play games , and I have requirements for taking pictures . Which one do you recommend to buy now , Xiaomi Mi 12 and find x3 ? I like the feel and appearance of the Xiaomi Mi 12 . I do n't know how much worse the screen and camera are than the x3 , the difference in daily use is big or not . Are there any other mobile phones below 4000 recommended ? ( not considering realme )"
+Rodrigo: You know, I've also been eyeing the Xiaomi, the design is so on point.
+Christian: "But I have used it for three years , one year in Yantai , one year in a small county , and one year in Shanghai . At any daily life scene does not affect the experience of use . Is n't that enough ? What 's the point of comparing this ? [ Cracked ]"
+Rodrigo: Have you seen the videos I took with my Samsung? They're so clear and smooth!
+RIGHT ANSWER: Rodrigo
+MODEL ANSWER: bruce
+CURRENT ACCURACY: 0.4166666666666667
+============================================================
+
+QUESTION: Whose opinions from Chloe and Fred about devices are most similar to Horace's?
+RETRIEVED: 
+Relevant utterances:
+Horace: I've got the same phone as Allison, and I don't really have an opinion about the hand feel one way or the other.
+Horace: I like the design of Huawei phones, but I'm not blown away by it.
+Horace: Maybe we should look into getting a new phone, one that doesn't have that gap.
+Horace: I've had some friends who have Xiaomi phones and they've never complained about the signal, so maybe it's just me.
+Horace: "Even if it gets better with Android , it ca n't be your kind of suck phone , right ?"
+RIGHT ANSWER: Chloe
+MODEL ANSWER: chloe
+CURRENT ACCURACY: 0.46153846153846156
+============================================================
+
+QUESTION: Whose opinions from Lillian and Oswald about devices are most similar to Howard's?
+RETRIEVED: 
+Relevant utterances:
+Howard: "The charging speed is actually not bad , it can charge seventy or eighty in thirty or forty minutes , and battery lifetime is more important to me . My one plus 6 's battery life is really bad , there are shadows [ two ha ]"
+Howard: I'm sticking with Apple, at least their processors don't overheat.
+Howard: "In fact , it is more like the note10 + . The screen of this machine back then is also very good even now . Do n't ask me how I know it . I have been using it as a main machine for 3 years and I am reluctant to change it . While the battery is also durable , it feels very good and the apperance is at its peak . I do n't buy s21u because it 's too thick , this s22u is a must buy"
+Howard: I've been taking pictures with my Apple phone, it's decent, but not the best.
+Howard: That's true, but I think the benefits outweigh the drawbacks.
+RIGHT ANSWER: Lillian
+MODEL ANSWER: oswald
+CURRENT ACCURACY: 0.42857142857142855
+============================================================
+
+QUESTION: Whose opinions from Amber and Bruce about devices are most similar to Rita's?
+RETRIEVED: 
+Relevant utterances:
+Rita: I have to disagree, I think OnePlus phones have a much better feel to them.
+Bruce: "Black is better . Ask for another thing , I 'm in a hurry to change my phone , I do n't play games , and I have requirements for taking pictures . Which one do you recommend to buy now , Xiaomi Mi 12 and find x3 ? I like the feel and appearance of the Xiaomi Mi 12 . I do n't know how much worse the screen and camera are than the x3 , the difference in daily use is big or not . Are there any other mobile phones below 4000 recommended ? ( not considering realme )"
+Rita: I've seen my friends' photos taken with other phones, they're so much better than mine.
+Rita: I don't like the design of OnePlus, it's not my style.
+Rita: You should consider an Apple, their battery life is pretty good too.
+RIGHT ANSWER: Amber
+MODEL ANSWER: bruce
+CURRENT ACCURACY: 0.4
+============================================================
+
+QUESTION: Whose opinions from William and Fred about devices are most similar to Madison's?
+RETRIEVED: 
+Relevant utterances:
+Madison: I've been using Xiaomi for a while now, and I think the system is okay, but it could be better.
+Madison: "Sorry , Xiaomi 2 -6 , 10 , 11 , iPhone , 6 and later , have basically been used for about half a year . There are many people in my family , and everyone has more than one mobile phone , we often used interchangeably . Is there any problem ?"
+Madison: "Haha , this may not true . My ace has been used for more than two years , and it is still very smooth , almost not much worse than when I first bought it . Even when I just bought it , it is not so stable , two major version upgrades are good , there is no negative optimization , my colleague 's Apple , Huawei are also good after many upgrades , manufacturers deliberately negative optimization will only damage their own brand ."
+Madison: "Ah ? Otherwise , provide what the user does not need ? Do n't you feel that your phone is treating itself as a master if they do n't compromise ?"
+Madison: Ugh, don't even get me started on Apple, their phones are like ovens.
+RIGHT ANSWER: William
+MODEL ANSWER: fred
+CURRENT ACCURACY: 0.375
+============================================================
+
+QUESTION: Whose opinions from Melanie and Audrey about devices are most similar to Donald's?
+RETRIEVED: 
+Relevant utterances:
+Melanie: "The key is that I do n't put the phone to my ear . Sometimes I play games with the microphone , or watch videos while on the WeChat call with my boyfriend . The screen is always black , who can bear it"
+Melanie: Yeah, I've seen some great photos taken with those phones.
+Melanie: I know, right? The design logic of Apple is just so intuitive and user-friendly.
+Melanie: I've been using Oppo for a bit, and I think their software ecosystem is...fine.
+Donald: "Considering pm , you must have a need for battery life , then pm [ Jerry ]"
+RIGHT ANSWER: Melanie
+MODEL ANSWER: melanie
+CURRENT ACCURACY: 0.4117647058823529
+============================================================
+
+QUESTION: Whose opinions from Mia and Bruce about devices are most similar to Lawrence's?
+RETRIEVED: 
+Relevant utterances:
+Bruce: "Black is better . Ask for another thing , I 'm in a hurry to change my phone , I do n't play games , and I have requirements for taking pictures . Which one do you recommend to buy now , Xiaomi Mi 12 and find x3 ? I like the feel and appearance of the Xiaomi Mi 12 . I do n't know how much worse the screen and camera are than the x3 , the difference in daily use is big or not . Are there any other mobile phones below 4000 recommended ? ( not considering realme )"
+Lawrence: Ugh, I'm so disappointed with the screen of my Mi 10s, it's just not what I expected.
+Lawrence: I'm so disappointed with the samples of my Samsung, they're really low quality.
+Lawrence: I wouldn't recommend the Xiaomi Mi 11U, it's way too expensive for what it offers.
+Lawrence: I mean, have you seen the prices of the new Xiaomi phones? It's like they're trying to rip us off!
+RIGHT ANSWER: Mia
+MODEL ANSWER: bruce
+CURRENT ACCURACY: 0.3888888888888889
+============================================================
+
+QUESTION: Whose opinions from Jacqueline and Cecilia about devices are most similar to Clifford's?
+RETRIEVED: 
+Relevant utterances:
+Clifford: "Can the mini also say that the battery life is good ? [ thinking ] [ thinking ]"
+Celia: I think it's all about finding the right device that fits your needs, you know?
+Clifford: I've got a Xiaomi and the video is okay, it's not something that really impresses me or bothers me.
+Clifford: I'm not really sure about the power consumption, it's just...fine.
+Clifford: I've tried taking pictures with Huawei, and it's... decent. Not the best, not the worst.
+RIGHT ANSWER: Jacqueline
+MODEL ANSWER: celia
+CURRENT ACCURACY: 0.3684210526315789
+============================================================
+
+QUESTION: Whose opinions from Alfred and Danielle about devices are most similar to Autumn's?
+RETRIEVED: 
+Relevant utterances:
+Alfred: I've been really happy with my 10Pro overall, the screen and battery life are both top-notch.
+Danielle: I feel the same about Samsung's design, it's not bad, but not amazing either.
+Alfred: I have to say, the screen on my 10Pro is amazing, the colors are so rich and detailed.
+Autumn: "Hi dami , I have a question I want to ask you . I saw the review before saying that the sound quality of the Xiaomi Mi 10s is very good . I would like to ask if the volume of 10s is louder than other mobile phones when the volume is turned to the maximum ? My mother 's hearing is not very good . I want to give her a phone with a louder volume . There is no requirement for sound quality . The volume is more important . Thank you , can you give me an answer ?"
+Alfred: I'm so disappointed with my Oneplus, the hardware is really poor.
+RIGHT ANSWER: Alfred
+MODEL ANSWER: alfred
+CURRENT ACCURACY: 0.4
+============================================================
+
+QUESTION: Whose opinions from Howard and Fred about devices are most similar to Lillian's?
+RETRIEVED: 
+Relevant utterances:
+Lillian: Honestly, I don't really have an opinion about the cooling system of Samsung phones, it's just...fine.
+Lillian: I guess it just depends on what you're looking for in a phone. For me, it's all about ease of use.
+Lillian: "I do n't think the MIX product line is worse than the iPhone ."
+Lillian: "This comparison is basically no problem . Apple 's screen ca n't beat a bunch of others like those years , and the battery life is also very poor . Xiaomi camera has not said that it is better than Apple , but actually below pro , Apple 's photography is really average , only the A15 and the system are really strong . . Do you think there is anything wrong with this comparison ?"
+Lillian: I've been using my Apple for a year now, and the battery life is just okay.
+RIGHT ANSWER: Howard
+MODEL ANSWER: fred
+CURRENT ACCURACY: 0.38095238095238093
+============================================================
+
+QUESTION: Whose opinions from Jacqueline and Alex about devices are most similar to Eric's?
+RETRIEVED: 
+Relevant utterances:
+Eric: "Really ? I have n't used it and I do n't know , have you compared it with other Android phones ? Or how is your daily use ?"
+Eric: I mean, the battery life is fine, but it's not like it's revolutionary or anything.
+Eric: I'll stick with Android, it's not perfect but it works for me.
+Eric: My mini's battery is amazing! I can use it all day without worrying about running out of power.
+Eric: Maybe you should consider switching to Apple, their screens are top-notch.
+RIGHT ANSWER: Jacqueline
+MODEL ANSWER: alex
+CURRENT ACCURACY: 0.36363636363636365
+============================================================
+
+QUESTION: Whose opinions from Donald and Audrey about devices are most similar to Melanie's?
+RETRIEVED: 
+Relevant utterances:
+Melanie: Yeah, I've seen some great photos taken with those phones.
+Melanie: "The key is that I do n't put the phone to my ear . Sometimes I play games with the microphone , or watch videos while on the WeChat call with my boyfriend . The screen is always black , who can bear it"
+Melanie: I know, right? The design logic of Apple is just so intuitive and user-friendly.
+Melanie: I've been using Oppo for a bit, and I think their software ecosystem is...fine.
+Melanie: "Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ?"
+RIGHT ANSWER: Donald
+MODEL ANSWER: donald
+CURRENT ACCURACY: 0.391304347826087
+============================================================
+
+QUESTION: Whose opinions from Christine and Bruce about devices are most similar to Douglas's?
+RETRIEVED: 
+Relevant utterances:
+Douglas: "Ca n't afford two mobile phones?I have Android and apple . Let 's talk about the power first , and Apple will basically enter the shutdown state less than a day . Android in the evening still can have about forty left , and I have used this 12 for only 10 months . There are only 89 of batteries . My friend 12 months , battery 86 , the lock screen key is flaking paint . My XSM used for two years , At that time , the battery life was still 90 ."
+Douglas: I'm not really impressed with the fingerprint scanner, it's just okay.
+Douglas: I'm just not blown away by the fingerprint scanner, it's not a deal-breaker but...
+Douglas: I'm thinking of switching to a new phone, anyone have any recommendations?
+Douglas: I don't have strong feelings about the fingerprint sensor on my One plus, it works fine.
+RIGHT ANSWER: Christine
+MODEL ANSWER: christine
+CURRENT ACCURACY: 0.4166666666666667
+============================================================
+
+QUESTION: Whose opinions from Winifred and Bruce about devices are most similar to Angelina's?
+RETRIEVED: 
+Relevant utterances:
+Winifred: "[ Question ] If I do n't have a sense of superiority with Samsung , what can I use to have a sense of superiority ? The top - level camera screen , sound quality , waterproof appearance and workmanship , all top - notch , or you use a mobile phone that does not even have a refresh rate of 120 to have a sense of superiority . Since I used Samsung , I look back at my 11max and it is a ppt mobile phone"
+Angelina: "The main thing is that it is thin and light . It has everything that should be there , and the price is OK . I am using 13p now . There are too many places to complain ."
+Angelina: If only they could improve their screens, I'd consider switching.
+Angelina: I'm not a fan of Samsung's screens, to be honest. I find them a bit dull.
+Winifred: "Just the screen should make it be passed . It 's not that Samsung does n't give Huawei screens . When mate30 , it said that it supports domestic screens , but there are better BOE screens made in China but they do n't use . Mate40 was also use a garbage screen , and the overall quality ? The screen ? motor ? speaker ? Only taking pictures can boast , even taking pictures is not the strongest"
+RIGHT ANSWER: Winifred
+MODEL ANSWER: winifred
+CURRENT ACCURACY: 0.44
+============================================================
+
+QUESTION: Whose opinions from Jessica and Oswald about devices are most similar to Jeffery's?
+RETRIEVED: 
+Relevant utterances:
+Jeffery: Yeah, I'm definitely not happy with mine. I'm thinking of switching to a different phone.
+Jeffery: But hey, at least the battery life is consistent, right?
+Jeffery: If only the battery life was as good as the screen...
+Jeffery: I've got an Apple phone too, and the power is...fine, I suppose.
+Jeffery: But the power is incredible! My Apple phone lasts me all day without needing a charge.
+RIGHT ANSWER: Jessica
+MODEL ANSWER: jessica
+CURRENT ACCURACY: 0.46153846153846156
+============================================================
+
+QUESTION: Whose opinions from Madison and Bruce about devices are most similar to William's?
+RETRIEVED: 
+Relevant utterances:
+Madison: "Haha , this may not true . My ace has been used for more than two years , and it is still very smooth , almost not much worse than when I first bought it . Even when I just bought it , it is not so stable , two major version upgrades are good , there is no negative optimization , my colleague 's Apple , Huawei are also good after many upgrades , manufacturers deliberately negative optimization will only damage their own brand ."
+Madison: "Ah ? Otherwise , provide what the user does not need ? Do n't you feel that your phone is treating itself as a master if they do n't compromise ?"
+Madison: I've been using Xiaomi for a while now, and I think the system is okay, but it could be better.
+William: "x As long as the original product is genuine , and the memory and battery capacity are sufficient , it should not be stuck ..."
+William: I'm not impressed with the ISP of Snapdragon, it's just okay, not bad but not great either.
+RIGHT ANSWER: Madison
+MODEL ANSWER: madison
+CURRENT ACCURACY: 0.48148148148148145
+============================================================
+
+QUESTION: Whose opinions from Alejandro and Bruce about devices are most similar to Diana's?
+RETRIEVED: 
+Relevant utterances:
+Diana: I'm not really bothered about the background on my Apple, it's just fine.
+Diana: "But Apple is also stuck . My ipadmini5 often gets stuck , I think Android is better to use"
+Diana: "But if you care about thickness , it is really a disaster for bare mechine more than 9 mm and plus the mobile phone case ."
+Diana: I'm really unhappy with the selfies I take with my Mate40. The front camera just doesn't do me justice.
+Diana: "You are even interested in picking up the iphone 13 promax every day . You think this is too heavy ?"
+RIGHT ANSWER: Alejandro
+MODEL ANSWER: bruce
+CURRENT ACCURACY: 0.4642857142857143
+============================================================
+
+QUESTION: Whose opinions from Zachary and Hannah about devices are most similar to Oswald's?
+RETRIEVED: 
+Relevant utterances:
+Oswald: "[ Question ] If I do n't have a sense of superiority with Samsung , what can I use to have a sense of superiority ? The top - level camera screen , sound quality , waterproof appearance and workmanship , all top - notch , or you use a mobile phone that does not even have a refresh rate of 120 to have a sense of superiority . Since I used Samsung , I look back at my 11max and it is a ppt mobile phone"
+Oswald: "6666666 , the great god of cloud evaluation , You have n't touched the real machine , but say it is thick , why do n't you say that nex is heavier than find . Is there any problem ? There is no difference at all , giving you a number will scare you to death , you will follow your number go [ doge ]"
+Oswald: I've tried to make it work, but it's just not my favorite. Maybe I just need to get better at using it...
+Oswald: "The bottom layer of Android consumes more power . I have learn about mechine for two or three years . This is the first time I heard it . Where did you get it ?"
+Oswald: I just don't see it. I think there are better options out there.
+RIGHT ANSWER: Zachary
+MODEL ANSWER: zachary
+CURRENT ACCURACY: 0.4827586206896552
+============================================================
+
+QUESTION: Whose opinions from Jessica and Bruce about devices are most similar to Gabriella's?
+RETRIEVED: 
+Relevant utterances:
+Gabriella: Have you tried Xiaomi's phones? I've heard they're really good.
+Gabriella: I've used the Mate 40Pro, it's okay, I guess. Not amazing, not bad.
+Bruce: "Black is better . Ask for another thing , I 'm in a hurry to change my phone , I do n't play games , and I have requirements for taking pictures . Which one do you recommend to buy now , Xiaomi Mi 12 and find x3 ? I like the feel and appearance of the Xiaomi Mi 12 . I do n't know how much worse the screen and camera are than the x3 , the difference in daily use is big or not . Are there any other mobile phones below 4000 recommended ? ( not considering realme )"
+Gabriella: Yeah, I've tried taking pictures with my friends' phones and Nova5 is still the best.
+Gabriella: I've heard One plus's battery life is not that great, is that true?
+RIGHT ANSWER: Jessica
+MODEL ANSWER: bruce
+CURRENT ACCURACY: 0.4666666666666667
+============================================================
+
+QUESTION: Whose opinions from Rita and Bruce about devices are most similar to Danielle's?
+RETRIEVED: 
+Relevant utterances:
+Danielle: I feel the same about Samsung's design, it's not bad, but not amazing either.
+Celia: I think it's all about finding the right device that fits your needs, you know?
+Daisy: "What I want to express is that the global 120hz is easier to use than the ltpo , it ca n't save electricity , my wife 's 90hz use not shorter than my 60 , especially when I look at the side head , OnePlus or what , anyway , there are several Androids , ltpo does n't have any power saving effect"
+Bruce: "Black is better . Ask for another thing , I 'm in a hurry to change my phone , I do n't play games , and I have requirements for taking pictures . Which one do you recommend to buy now , Xiaomi Mi 12 and find x3 ? I like the feel and appearance of the Xiaomi Mi 12 . I do n't know how much worse the screen and camera are than the x3 , the difference in daily use is big or not . Are there any other mobile phones below 4000 recommended ? ( not considering realme )"
+Danielle: "When it comes to weight , I 've have nothing to say about Apple . [ Allow sad ] The battery is not too big , the bottom of the camera is not too big , there is no periscope , there is no soaking plate for heat dissipation , and the body is not made of ceramics or other heavy material . How did it get 238g[allow sadness ] [ allow sadness ] [ allow sadness ]"
+RIGHT ANSWER: Rita
+MODEL ANSWER: bruce
+CURRENT ACCURACY: 0.45161290322580644
+============================================================
+

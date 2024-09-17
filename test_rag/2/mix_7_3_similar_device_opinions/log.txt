@@ -1,0 +1,1040 @@
+QUESTION: Whose opinions from Anthony and Grace about devices are most similar to Faith's?
+RETRIEVED: 
+Relevant utterances:
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+Grace: I took my mother to Xiaomi offline to watch . The top three of visual feeling are civi , mix4 , and note11 . Note10 really looks like a low - end machine at first glance .
+Faith: Yes , the focusing is also very weak . It is often impossible to focus in low light at night . You have to touch it with your hand to trigger the enhanced focus to focus on the distant focus , otherwise no matter how to tap the screen you will not be able to focus ...
+Faith: I sometimes feel that the pictures I shoot are very good , maybe the screen is not very good , and the pictures do n't look very good ,
+Chloe: As a Mi fan for many years , I would say that oppo is indeed better than Xiaomi , in terms of light ratio . Xiaomi 's slender external screen makes people just want to open it to use , but opened is 60hz , with a strong sense of splitting and large creases . The ratio of oppo seems to be the best at present , and it can be held in one hand . If you want to be big , open it , if you want to be small , you can use the out screen . Xiaomi is very embarrassed , and the appearance is not good . Even in terms of publicity , oppo is a peacock as soon as it unfolds , which is very beautiful . Xiaomi is a fish after unfolding Sentiment: neg
+Faith: I have n't tried the night scene , I 'm not interested in this thousand yuan machine to try the night scene , just tried it in the experience store during the day , and my Weibo also has a comparison with the p40pro+ main camera
+Amelia: Because many people use Xiaomi , so more people smear it .
+
+Relevant dialogs:
+
+Chloe: As a Mi fan for many years , I would say that oppo is indeed better than Xiaomi , in terms of light ratio . Xiaomi 's slender external screen makes people just want to open it to use , but opened is 60hz , with a strong sense of splitting and large creases . The ratio of oppo seems to be the best at present , and it can be held in one hand . If you want to be big , open it , if you want to be small , you can use the out screen . Xiaomi is very embarrassed , and the appearance is not good . Even in terms of publicity , oppo is a peacock as soon as it unfolds , which is very beautiful . Xiaomi is a fish after unfolding
+Kimberly: What is there to boast about the one - to - one internal screen ? When watching videos , the display area is not as good as that of mainstream Android phones
+Chloe: It looks comfortable and feels good to hold . The Mi fold is so long , like a remote control , and the display area is also very awkward . It 's too ugly to take it out . Will you watch videos on the outside screen ? ? ? If there is a folding screen , you do n't use the inner screen to watch the video , then why do you buy a folding screen
+Kimberly: Android tablet ecological adaptation is very poor , only this 1:1 , I hope oppo can give developers the money spent on marketing . Only rely on yourself to fight Huawei , Xiaomi , Samsung , Lenovo and other software ecosystems .
+Adrian: ?
+Alan: [ Yun Bei ] [ Yun Bei ] [ Yun Bei ]
+Jacqueline: Just boasting [ Switting ] [ Switting ] [ Swinding ]
+Chloe: Then you buy Mi fold , see if you are comfortable with it
+
+
+Ariana: With Lei Jun 's character , Xiaomi is said to have neither this nor that , and I believe that he will fight back with strength .
+Geoffrey: Just like Xiaomi was told that it 's charge , take pictures , sound quality , and screen is bad . Now it 's doing very well in these aspects .
+Kimberly: Come on , the same 120 fast charge VIVO will be fully charged in 15 minutes , and Xiaomi half of it has not been charged yet , take a photo freeze once per five seconds , it is recommended to refer to the  Xiaomi Bible  for Harman Kardon sound quality , the Harman is gone , just the rest is stuck . And the screen ? ? Samsung 's screen is not made by Xiaomi . I really do n't know what to brag . Buy other people 's things and then brag yourself and sell it yourself ?
+Marjorie: You seem to have used it ?
+Geoffrey: If you do n't like it , do n't come to find a sense of existence , you can directly past it , dear
+Dennis: Xiaomi Changjiang Fund participates in the reorganization of Datang Telecom , Datang 's automotive - grade chips , things need to be linked together
+
+
+Angelina: After spending money on various flagship machines , such as Xiaomi , Samsung , Huawei , Apple , OnePlus , Meizu , etc . , I looked down upon these machines . After playing CIVI the day before yesterday , I decided to buy it . The parameters are really virtual , and the experience is real . I think online people are the easiest to be deceived . They study various parameters and watch various tests , all of which are data experience .
+Morgan: civi is ok , I also used it , because someone around me buys it , I often use it to play games , the touch and weight are very good
+Angelina: The main thing is that it is thin and light . It has everything that should be there , and the price is OK . I am using 13p now . There are too many places to complain .
+Morgan: Hahahaha , what 's wrong with 13p
+Clifford: I think 8848 is more awesome [ laughs without speaking ]
+Angelina: I have never used 8848 , I have used too many mobile phones , I feel that many things are meaningless and the direction is wrong .
+
+RIGHT ANSWER: Anthony
+MODEL ANSWER: anthony
+CURRENT ACCURACY: 1.0
+============================================================
+
+QUESTION: Whose opinions from Anthony and Grace about devices are most similar to Blake's?
+RETRIEVED: 
+Relevant utterances:
+Blake: I bought a mobile phone and I do n't think it deserves to be called high - end . I think it 's not good . What 's wrong ? Are you worthy ?
+Blake: It 's really not good . The peak of Xiaomi camera adjustment is Xiaomi 8 and Xiaomi 10u . Others are either not easy to use or the algorith m is not good .
+Grace: I took my mother to Xiaomi offline to watch . The top three of visual feeling are civi , mix4 , and note11 . Note10 really looks like a low - end machine at first glance .
+Blake: I think you can consider k50 as an upgraded version of note11pro [ allow sad ]
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+Blake: In fact , for consumers , as long as it can be reflected in the increase in battery life . [ Yun Bei ] Like the battery life of this generation of apples , it does have greatly improved . Sentiment: pos
+Blake: 10pro is really more uncomfortable , both are covered
+
+Relevant dialogs:
+
+Blake: You can adjust the parameters manually , after all , Xiaomi cameras are generally regarded as garbage [ doge ]
+Natalie: During the blind test , the photo selection rate of Xiaomi mobile phone was the highest . It 's a pity that as soon as the brand is exposed , it is said to be rubbish 🙄
+Blake: It 's really not good . The peak of Xiaomi camera adjustment is Xiaomi 8 and Xiaomi 10u . Others are either not easy to use or the algorith m is not good .
+Alise: paratrooper ,
+Abigail: During the blind test , the photo selection rate of Xiaomi mobile phone was the highest . It 's a pity that as soon as the brand is exposed , it is said to be rubbish 🙄
+Blake: ?
+Adelina: It 's not as good as my K20P [ not easy ]
+Gabriel: Your name is recognized ?
+Blake: I bought a mobile phone and I do n't think it deserves to be called high - end . I think it 's not good . What 's wrong ? Are you worthy ?
+Gabriel: That 's what you think , do n't talk  recognizedall day long , you represent yourself
+
+
+Blake: In fact , for consumers , as long as it can be reflected in the increase in battery life . [ Yun Bei ] Like the battery life of this generation of apples , it does have greatly improved .
+Charles: The improvement is because the battery capacity increases
+Brianna: 13Pro does not have more batteries than 12Pro , and the battery life is still particularly obvious ...
+Charles: How much is 4352 - 3687 ? Is n't this not much ?
+Morgan: If the apps are really adapted , the iPhone 's battery life will be down , but ... many apps obviously ca n't run at 120Hz , some of Xianyu 's interfaces are OK , some apps ' transition animations can go to 120Hz , and slide back down to 80 ( this refresh rate is My guess )
+Rodrigo: The battery life will not decrease . Generally , the native H5 app does not need special adaptation . Xianyu has many flutter pages so it does n't fit , but flutter actually supports promotion
+Marisa: It is recommended to take a look at Douban . When you swipe quickly , his homepage can run to 120 , and the book video interface can run to 80 . When you click on the book video details , he locks 60 again . Haha . It should be because the details of the book , video and audio are the controls written by Douban itself .
+Jesse: ltpo and A15 are the key
+
+
+Bridjet: It 's terrible . Blue Green Factory and Low Yao are all machine crowd tactics .
+Blake: Glory only sent two more than monkeys [ Yunbei ]
+Malcolm: Why do n't you say that the total number of Xiaomi 's parent brands and sub - brands is only 21 , while the number of Honor alone is 23 , and there are many stupid machine , as well as the thousand yuan machine 720P water drop screen LCD [ laughing ]
+Linda: Do n't buy Honor mobile phones , there is no cost - effective , and quality control is not good ! Blue and green at least have quality control
+Alan: Glory is all purchased from suppliers , right ?
+Blake: Are the V40 series , 50 series , and play series released in the second half of the year ?
+
+RIGHT ANSWER: Anthony
+MODEL ANSWER: anthony
+CURRENT ACCURACY: 1.0
+============================================================
+
+QUESTION: Whose opinions from Matthew and James about devices are most similar to Jesse's?
+RETRIEVED: 
+Relevant utterances:
+Matthew: Indeed , but now most people have only one main device
+Jesse: Stop using Huaxing screen . Today , I went to Xiaomi home to see Xiaomi Mi 10s . Symmetrical dual speakers are so cool [ allow sadness ] [ tears ] . Screen e3 is also fine . For 11s , it 's very satisfying to change to an e4 .
+Matthew: Do n't buy Xiaomi , you can buy everything of this brand except mobile phones , from Mi 10 users ' experience
+Matthew: Come on , I used two of my friends ' + , and both of them regret it . It 's either stuck or crashed , and the battery become bad recently .
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+Jesse: This year , all of them want to be high - end [ DOGE ] only the price is high - end , there used to be Huawei . Pressing the price , they dare not . Now it 's gone
+Jesse: The front camera 's level is just can scan the code , the ceramic is heavy , and the power volume button is easy to be degummed and dropped , and the others are ok ( the miui13 fluency has improved a lot )
+
+Relevant dialogs:
+
+Matthew: Do n't buy Xiaomi , you can buy everything of this brand except mobile phones , from Mi 10 users ' experience
+Lillian: Mi 10Pro works great , thanks
+Matthew: Then you continue to use it , I 'm just talking about subjective feelings
+Lillian: Of course , 10Pro is much easier to use than 10 [ two ha ]
+Diego: Mi 10 is okay [ single dog ] I have one as the main machine
+Matthew: Come on , I used two of my friends ' + , and both of them regret it . It 's either stuck or crashed , and the battery become bad recently .
+Diego: So serious [ dumbfounded ] I personally think that the battery is a bit bad , maybe it 's a miui problem . Usually wireless charging is convenient , so I do n't care too much . The bug I encountered is that there is a problem when adjusting the brightness . Others like games or daily use are still ok every day .
+Christian: 😂
+
+
+Jesse: Stop using Huaxing screen . Today , I went to Xiaomi home to see Xiaomi Mi 10s . Symmetrical dual speakers are so cool [ allow sadness ] [ tears ] . Screen e3 is also fine . For 11s , it 's very satisfying to change to an e4 .
+Amelia: I did not see much difference between the K40 and 10S screens offline . I feel that the 10s screen looks better . I do n't know if it 's because of my poor appreciation .
+Xavier: After all , the 10S is flexible screen , and in some aspects it has advantages over hard screens .
+Angelina: The Xiaomi Mi 11s should be a 120hz Huaxing Optoelectronics curved screen , which is the same model as the Xiaomi civi . It is impossible to use the same model as the Xiaomi 11 series .
+Miles: I guess it 's about the 10u screen [ doge ]
+Hugh: The screen quality is ok [ laugh haha ] , I feel that the frontal look and fineness is not much different from the 10PRO , mainly looking obliquely , the rainbow spots are serious
+
+
+James: Come on , I have been using the s10 + Forerunner for three years [ doge ] is still smooth , I will upgrade oneui4.0 next month and it can fight for another two years [ laugh cry ]
+Patricia: [ doge ] The tenth generation is ahead of the times
+James: It is indeed too much ahead of other models [ laugh cry ]
+Rebecca: The s10 has been used for nearly 3 years . The battery and charging are the flaws . Others are fine .
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Julian: After using a high refresh rate mobile phone , I feel that the S10 is a bit stuck [ laugh cry ]
+James: I use it normally , I do n't feel the lag [ laugh cry ] and I 'm still a heavy mobile phone user
+
+RIGHT ANSWER: Matthew
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.6666666666666666
+============================================================
+
+QUESTION: Whose opinions from Aaliyah and James about devices are most similar to Elijah's?
+RETRIEVED: 
+Relevant utterances:
+Elijah: Taking pictures is better than them . The chip is Dimensity 9000 , which is stronger than x5 's 888 . The screen is Samsung e51080p . These three points are indeed better than them . It is hard to say other places .
+Elijah: Really?I'd love to use note7 change with her , my daily use is smooth
+Elijah: If I buy note20u now , is it out of time ? I do n't play games
+Elijah: The iPhone 11 started to get stuck after just over a year of use , and it would quit suddenly . Last time , it shut down inexplicably . I thought it was out of power , but it turned out to have more than 30 power . When I used the 5s for several years , the phone was dropped so there was a crack , and it did n't get stuck . Now this 11 is really speechless . I can only say that Apple phones are getting more and more pitted .
+Aaliyah: I heard that the battery life is not good [ laugh cry ]
+Elijah: Indeed yes [ Yun Bei ] Otherwise , how else is called mi station
+Elijah: Samsung hopes to keep the same worse heat radiation as Apple , so that foreigners wo n't be so addicted to mobile games like Chinese . Samsung never forgets its original intention , and gives the mobile phone extremely limited heat dissipation . Smart phones should be like mobile phones , use the GPU frequency reduction and CPU lock to dissuade the addicts . Do not do superior heat dissipation is Samsung 's anti - addiction skills , which is much more better than Tencent 's authentication and Xiaomi 's screen time reminds . Sentiment: neg
+
+Relevant dialogs:
+
+Elijah: Samsung hopes to keep the same worse heat radiation as Apple , so that foreigners wo n't be so addicted to mobile games like Chinese . Samsung never forgets its original intention , and gives the mobile phone extremely limited heat dissipation . Smart phones should be like mobile phones , use the GPU frequency reduction and CPU lock to dissuade the addicts . Do not do superior heat dissipation is Samsung 's anti - addiction skills , which is much more better than Tencent 's authentication and Xiaomi 's screen time reminds .
+Louis: 13Pro Max 's heat dissipation is very good
+Jose: Apple has no cooling from the design , so it is not very good .
+Louis: The main reason is that the processor consumption is low , so it will not be too hot in itself
+Jennifer: But Samsung has no processor as good as Apple ' s. [ Doge ] [ Doge ]
+Aaliyah: The performance of Qualcomm is okay . Unless you plan to use a mobile phone for more than 3 years , there is no difference . Most people change it for two or three years , using longer is for the people who do n't play large games . Like my friend , he used the iphone6 for 5 years until change to XR . We bought the iPhone6 at the same time , but before he changed XR , I had changed my 6 to 6SPlus , Note7 , Note8 , S10 [ Eat melon ]
+Howard: That 's so typical of the lanyangyang dalao who think bingyuzhou dalao is his enemy , he breaks mysterious in a word !
+
+
+Elijah: The iQOO system is very smooth and the animation is good
+Jackson: OK , I 'll try it after released
+Aaliyah: I have iQOO7 . neo5 . note20u . s21u . Fold3 , iqoo for gaming . The 1.0 version of the iQOO system is okay . There are a lot of small bugs , but the overall experience is good . I do n't know if it will be better to upgrade to 2.0
+William: Should I buy fold3 or wait for s22u ?
+Cyrus: Is it possible for the straight - screen iQOO 9 to have the same width on all four sides ?
+Aaliyah: The straight - screen iQOO9 is estimated to be a domestic screen .
+
+
+Gladys: The overall configuration of the vivo X80 entry version is higher than the Green Factory X5 , and even higher than that of the Xiaomi 12 . I said overall , not every item
+Elijah: Taking pictures is better than them . The chip is Dimensity 9000 , which is stronger than x5 's 888 . The screen is Samsung e51080p . These three points are indeed better than them . It is hard to say other places .
+Hannah: The three core configurations of the mobile phone , the camera , the screen , and the processor are all strong , and the others do not matter .
+Ashton: The screen just Samsung does n't sell , but the current e - series has also greatly exceeded the needs of normal use , so the impact is not great
+Geoffrey: mi12 this year will definitely repeat the status quo that the mi10 product force was crushed by find the previous year [ eat melon ] unless findx5 is not even as good as x3
+Connor: It feels like 12 is learning Samsung 's s number [ doge ]
+Julian: It feels like it has always been the best for taking pictures
+
+RIGHT ANSWER: Aaliyah
+MODEL ANSWER: aaliyah
+CURRENT ACCURACY: 0.75
+============================================================
+
+QUESTION: Whose opinions from Florence and James about devices are most similar to Rebecca's?
+RETRIEVED: 
+Relevant utterances:
+Rebecca: Unless it 's outdoor work , I do n't really think battery life is too much of a problem . Someone complained about the low battery life of the Apple Watch before , and the blogger asked in return , devices with high battery life like Xiaomi Huawei , will you really have good experience after buying it ? Personally , I also feel that since it is a battery , charging is inevitable , and sometimes charging is also an experience . So as long as there is no problem in normal use , it is acceptable for moderate use for four or five hours . After all , it is 80w . Sentiment: neg
+Rebecca: Who buys will know , OnePlus old users are not as good as dogs
+Rebecca: The s10 has been used for nearly 3 years . The battery and charging are the flaws . Others are fine .
+Rebecca: Apple firstly does not have fast charging , and secondly the signal is poor , and many of Android 's technologies have surpassed it . This 13 , sales strategy is to force you to buy PM directly , 256 g is not available , and the charger also said that it will not be sent for environmental protection . When will you be willing to say , ah Apple You 're going too far ! Sentiment: neg
+Florence: Yours are a mobile phone with a few hundred yuan that can be " beaten " by the iPhone 4 ten years ago . Do n't you know the progress of science and technology , which of the various hardware in ten years is not stronger by a few grades .
+Rebecca: The note9Pro has 100 million pixels . The most important thing is to take good photos at this price . However , the note9Pro is still the machine at this time last year . If you think about it carefully , it is not as good as this , how uninteresting it is .
+Melanie: The key is that I do n't put the phone to my ear . Sometimes I play games with the microphone , or watch videos while on the WeChat call with my boyfriend . The screen is always black , who can bear it
+
+Relevant dialogs:
+
+Rebecca: Let me see who dares to buy Xiaomi Miracle ! ! ! [ Meow Meow ] ( previous 10pro user )
+Simon: I have to say that in recent years , Xiaomi mobile phones have been very bad , and basically every one has some problems . I used to be a Mi fan , but since I used Mi 9 , I realized that the workmanship of Xiaomi mobile phones is really rubbish . After using the phone for a few months , all three buttons are stuck , the charging is intermittent , and the battery is also very poor . Later , I decided to switch to Apple . After using it , I realized that the Xiaomi mobile phone is really garbage .
+Faith: Hahaha , shocked , Xiaomi mobile phone has a strange product control problem [ like ] All three keys are stuck , you really NB
+Simon: Is n't that normal ? I repaired it once in less than a month and then it happened again . Later , I decided to buy Apple .
+Austin: It 's boring to follow the trend [ weak ]
+Rebecca: I Play stalks , I am also rice noodles myself
+Ava: Now if you say that Xiaomi is not good , you have to prove your identity first .
+
+
+Rebecca: Apple firstly does not have fast charging , and secondly the signal is poor , and many of Android 's technologies have surpassed it . This 13 , sales strategy is to force you to buy PM directly , 256 g is not available , and the charger also said that it will not be sent for environmental protection . When will you be willing to say , ah Apple You 're going too far !
+Jeffery: Who told you that Apple does n't have fast charging and 256 g ? Do n't pretend you understand if you do n't , okay ?
+Rebecca: How can there be fast charge , do n't tell me 20w is fast charge [ too happy ] [ too happy ]
+Jeffery: It does have fast charging , but you have to buy it yourself
+Jeffery: But its mobile phone is really good , who will use vivo after using Apple
+Jacqueline: well said
+
+
+Rebecca: Victory is one thing , the key is that most of the top flagships of mobile phone manufacturers dare not use Dimensity 9000 [ doge][doge][doge ]
+Christian: Redmi directly uses Dimensity 9000 to beat Xiaomi 12
+Jayden: The victory in terms of games and heating and battery life is certain , and the quality and sound quality of photos are definitely not as good as 12 .
+Destiny: God , you already know the texture of the unreleased machines , who are you ?
+Harold: Because it is not easy to debug photography , but I can consider accepting a mobile phone that does not good at taking pictures . The Dimensity 9000 is still good at around 3000 [ doge ]
+Jayden: K50P is beckoning to you
+Harold: At least in February next year [ eat melon ] is still a long time
+Leonars: 1500 , want or not ?
+
+RIGHT ANSWER: Florence
+MODEL ANSWER: rebecca
+CURRENT ACCURACY: 0.6
+============================================================
+
+QUESTION: Whose opinions from Isaac and Grace about devices are most similar to Rita's?
+RETRIEVED: 
+Relevant utterances:
+Rita: Is n't it normal that the mobile phone got stuck seven years ago ? Have feelings for a broken cell phone , right ? Do n't boast it anymore , it 's just a phone
+Rita: Indeed , many have not been written , and 12 this time , the small size , separate mold opening , internal stacking design and so on are all costs , which brings a good feel . The small screen flagship also caters to some small screen users . How can he compares , the positioning is different . His size should be compared with 12pro [ doge ]
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+Isaac: [ Yunbei ] A person who uses Huawei said that it has a big hole , can you not be so funny
+Grace: Ca n't beat it , next [ doge ] , today I saw a disassembly diagram of OPPO 's 766 with suspension and anti - shake . The volume is larger than gn2 , but the bottom is a little smaller .
+Dorothy: No , there is a basic function problem here . The daily public will not pursue complex functions and hardware , but the effect of basic video calls must be guaranteed . Nowadays , online WeChat video calls between family members , video conferences at work , and socializing are all too important , but the front camera screen is currently far from being able to do it , especially outdoors , when the light is not good , it is equivalent to losing its effect . People obviously ca n't accept it
+Grace: I took my mother to Xiaomi offline to watch . The top three of visual feeling are civi , mix4 , and note11 . Note10 really looks like a low - end machine at first glance .
+
+Relevant dialogs:
+
+Isaac: How on earth about one plus 9r ? Is it worth buying a second - hand minimum configuration for two thousand ? @Dami evaluation
+Isabel: At 618 , I bought a black , top version for my mother . She used it very well . The battery can last for a day . Every time I went home and looked at her phone , it did n't carelessly download any software .
+Isaac: I originally wanted to buy a second - hand s20 for 2000 , but I 'm fear of screen problems so I bought a 9r .
+Isabel: The battery life of the s20 is very poor , but I am very satisfied in other aspects , so I have been using it as the main machine
+Bridjet: I bought a 12 + 256 for my dad and he used it very well
+Isaac: The texture and feel are much better than k40 and neo5 . I do n't know how the Realme neo2 is . It seems will be very strong .
+Bridjet: The texture and feel are really good , the direct screen film is also easy to film , the warranty is still long , and it comes with a two - year warranty
+Hayden: 618 2600 to buy the top with 9R is really cost - effective
+Isaac: To be a backup machine , it does n't need that high memory
+
+
+Lorna: Then the market feedback under the screen is actually so so , and the products with lower positioning prepared by the grain factory have been postponed or killed . . .
+Lillian: In fact , I think the pop - up camera of the K30ULTRA is pretty good , except for the processor and the resulting power consumption .
+Howard: Power consumption is fine , mainly takes up too much internal space [ DOGE ]
+Lillian: bro yours is k30s , mine is k30u , the battery life is really poor , charging twice a day is not enough
+Sophia: It is a person who can only speak on the Internet . In reality , there are a few real users who can be so idle that they are confused about whether the screen is punched or off the screen . [ laughs haha ]
+Dorothy: No , there is a basic function problem here . The daily public will not pursue complex functions and hardware , but the effect of basic video calls must be guaranteed . Nowadays , online WeChat video calls between family members , video conferences at work , and socializing are all too important , but the front camera screen is currently far from being able to do it , especially outdoors , when the light is not good , it is equivalent to losing its effect . People obviously ca n't accept it
+Malcolm: The performance is not good , it can only be compensated by differentiation [ doge ]
+Henry: If you put it in the price range of Redmi Note , or even lower , the feedback will not be ordinary [ meow ]
+Evelyn: A lot of people who do n't understand digital almost never wipe the camera , plus the front camera is relatively blurry [ two ha ] Besides , the sales of the more powerful Note10 are still not as good as the Note9 and Note11 .
+
+
+Maria: hh , it seems that it does n't matter if you do n't play games at present , 11u upgrades 12pro , taking pictures , experience , charging perception is obvious , the screen feels the same , especially taking pictures , taking pictures and outputting pictures are very fast , and the details and colors are much more normal than 11u . Very satisfied , there are no bugs in 13 ui [ doge][doge][doge ]
+Diana: Yes , I think everyone should not always focus on the excellent performance of high load , other improvements brought by the chip are also very important , just leave the large game to the game phone
+Malcolm: The medium and low load of 8g1 is also not good . The temperature of daily use is higher than that of a15 and Kirin 9000 , and even not as good as the 865 of the year before last [ eat melon ]
+Diana: It may be because many software have not been upgraded to 64 - bit , and the large and medium cores of 8g1 only support 64 - bit , so all 32 - bit software can only be supported by the super - large core , and the power consumption will naturally be high .
+Clifford: Yes , testing those games and checking the frame rate power consumption is really boring for people who do n't play big games
+Fiona: If one day , when the uploaders ' test is also hot when daily use , can this phone still play games ?
+Chloe: I do n't quite agree with your point of view . Now the bloggers test , the temperature basically revolves around the game , but for people like me who play games for up to an hour a day , it does n't matter at all , I focus on the Power consumption , heat generation , and battery life in the case of daily using Weibo , navigation , watching videos , listening to music , chatting , etc . , but I ca n't find this kind of data .
+Belinda: Today 's phone reviews put too much emphasis on peak performance , with half of the videos testing games
+Joyce: That is , bells and whistles
+
+RIGHT ANSWER: Isaac
+MODEL ANSWER: isaac
+CURRENT ACCURACY: 0.6666666666666666
+============================================================
+
+QUESTION: Whose opinions from Anthony and Grace about devices are most similar to Beatrice's?
+RETRIEVED: 
+Relevant utterances:
+Beatrice: Mine is M40Pro+ ... the charging is ok . . . Wired 66 , wireless 50 , enough . Especially when I see my sister and my brother - in - law using the iPhone ... it 's too enough [ hee hee ]
+Beatrice: The v10 top version I bought at the end of 2017 is still smooth , the memory is enough , and it is still fast charging . After upgrading Hongmeng , it is better to use . If it was n't for wanting to change to 5 g , it would n't retire ( although it 's also a backup machine now , used to watch dramas and watch videos )
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+Beatrice: Now OPPO fast charging is not good , there is one thing to say .
+Grace: I took my mother to Xiaomi offline to watch . The top three of visual feeling are civi , mix4 , and note11 . Note10 really looks like a low - end machine at first glance .
+Brandon: Do n't listen to Laoba nonsense . To be honest , the price is very kind . At present , it is the top version . If you do n't play games , standard version also has multi - functions , but other brands do n't have .
+Abigail: The power consumption is relatively stable , there is no problem to use for a day , and it is also acceptable to play games
+
+Relevant dialogs:
+
+Ariana: With Lei Jun 's character , Xiaomi is said to have neither this nor that , and I believe that he will fight back with strength .
+Geoffrey: Just like Xiaomi was told that it 's charge , take pictures , sound quality , and screen is bad . Now it 's doing very well in these aspects .
+Kimberly: Come on , the same 120 fast charge VIVO will be fully charged in 15 minutes , and Xiaomi half of it has not been charged yet , take a photo freeze once per five seconds , it is recommended to refer to the  Xiaomi Bible  for Harman Kardon sound quality , the Harman is gone , just the rest is stuck . And the screen ? ? Samsung 's screen is not made by Xiaomi . I really do n't know what to brag . Buy other people 's things and then brag yourself and sell it yourself ?
+Marjorie: You seem to have used it ?
+Geoffrey: If you do n't like it , do n't come to find a sense of existence , you can directly past it , dear
+Dennis: Xiaomi Changjiang Fund participates in the reorganization of Datang Telecom , Datang 's automotive - grade chips , things need to be linked together
+
+
+Leonora: If a friend 's product is generally recognized in the digital chat comment area , then this product is considered a good one . If it is recognized and at the same time , the mi fans are shut up , then this product is almost impeccable [ dig nose][dig nose ]
+Jonathan: Who buys Xiaomi , what percentage are brand fans , and what percentage are pure cost - effective users like me [ laugh haha ]
+Clifford: Are n't you a prodigal ? [ doge ] Do n't hide it , so big eyes are there
+Jonathan: I can buy a lot of brands , it 's not just one thing
+Beatrice: Now OPPO fast charging is not good , there is one thing to say .
+Ashton: No matter how bad 65W two years ago , it is stronger than your garbage mobile phone [ not easy ]
+Elijah: Indeed yes [ Yun Bei ] Otherwise , how else is called mi station
+Melanie: If you do n't want to watch it , you can go , watch their @changandigitaljun @Couragedigitaljun . The electronic waste , like Huawei nova 8se , they will brag to you too
+
+
+Abigail: Now using the realme gt2 , taming the 888 does have an effect , but at least after using it we can know the 888 has been marketed and exaggerated
+Christine: How is the power consumption [ glutton ]
+Abigail: The power consumption is relatively stable , there is no problem to use for a day , and it is also acceptable to play games
+Christine: OK , will it get hot when you watch videos or Weibo ?
+Christine: Does the gt2 screen a little red ?
+Abigail: No problem using it so far
+Christine: Is it heavy to feel ?
+Francis: After almost a year , the Snapdragon 888 is actually optimized in place by every one , and so many more than a thousand mobile phones are all 888 this year [ doge ]
+
+RIGHT ANSWER: Anthony
+MODEL ANSWER: anthony
+CURRENT ACCURACY: 0.7142857142857143
+============================================================
+
+QUESTION: Whose opinions from Brian and James about devices are most similar to Hugh's?
+RETRIEVED: 
+Relevant utterances:
+Hugh: When I switched to Android three years ago , I sneered at Apple . I bought 13 this year , looking at Android , and I 'm really not interested in any of them
+Hugh: I have only used Xiaomi since childhood . Can you say that why do n't you like Xiaomi ? I really want to ask . Do n't come swearing 🙊
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Hugh: The battery life is related to the number of charging times , and it is definitely more durable than a model that need to be charged multiple times a day .
+Hugh: It 's almost the same as Xiaomi Mi 9 .
+Hugh: Android is as smooth now , and it 's still the same after more than a year use .
+Hugh: The screen quality is ok [ laugh haha ] , I feel that the frontal look and fineness is not much different from the 10PRO , mainly looking obliquely , the rainbow spots are serious
+
+Relevant dialogs:
+
+Hugh: Are you Mi fan ? The sales of Xiaomi 11U far exceed 11P , which can explain the problem
+Erin: The design of 11Pro is not good , and the heavy border feels bad ( whether compared to Xiaomi Mi 11 or Ultra ) . Go to the store to experience it you will know[doge][doge ]
+Sara: Indeed , but the weight is okay
+Erin: Xiaomi 11Pro may be the worst hand feeling in the Xiaomi mobile phone digital series[doge][doge][doge ]
+Devin: Because the price / performance ratio of 11P is not high , it is better to add more money to buy 11U .
+Lily: If you have to talk about configuration , there is not much difference between 11u and 11p taking pictures , just two small cameras are worth 700 ? It 's the appearance design that is worth 700 . At this price , it 's not just consider about the basic hardware parameters like soc .
+Joseph: [ Yunbei ] 11U also drop a lot ! I bought this in June for only 100 yuan cheaper in the store , but the 618 subsidy is directly 1400 yuan . Although Xiaomi made up 500 yuan . [ bitter ] But still a loss
+
+
+Noah: A pound of compressed cotton and a pound of iron are not the same weight in the hand ?
+Jada: I do n't mean to argue , 6.1 inches , 200 grams and 6.5 inches , 200 grams feel a lot different in the hand . The volume is slightly larger , and the weight does not feel so heavy after the weight is distributed
+Rodrigo: Then you all should buy Promax
+Jada: MAX is too big , even if Max is only 200 grams , the feel will not feel good .
+Michael: Do n't come to tech bloggers at this level . Is a pound of cotton and a pound of iron the same size/.[Sad ] Think more before making anti - intellectual remarks
+Xavier: I feel that the 13pro is significantly heavier than the Mi 11u
+
+
+Miguel: IQOO does not have the 8 + 128 option . Personally , I think the imx707ois is better than the GN5 micro - cloud platform . The GN5 is similar to the imx766 . Is the micro - cloud platform too high - end ? [ laugh cry ]
+Angelina: I 'm laughing to death , GN5 ? Xiaomi 12U is ready to use GN5 [ laughing without speaking ]
+Lynn: How can Xiaomi 12U use GN5 ? 12P uses 1/1.28 IMX707 , 12U GN5 use 1/1.5?Are you kidding ?
+Angelina: You know nothing . GN5 is an upgraded version of GN2 , Xiaomi 11 U use GN2 , and Xiaomi 12 u uses GN5 , which is definitely [ nose picking ]
+Autumn: Can you take photos by feel ? You are awesome , then you can cloudly evaluate which one is better , the sports car or your electric motorcycle ?
+Miguel:  Personally think  = I think . The hardware is all put here , why feel it .
+Andrew: One thing to say , iqoo8p is better than Xiaomi Mi 11 for taking pictures . I have both mobile phones . When the Xiaomi phone is hot , the camera is very slow to open , and it will freeze when taking pictures , but iqoo will not . And I feel the algorith m of iqoo better . I bought 12p now , the fluency is not as good as the 11 whose memory is almost full and who has been used for a year , and the system is 12.5
+Eric: ois is definitely not as good as the micro cloud platform , the pricing is the same , I ca n't figure out some people say that Xiaomi is cost - effective , but I really ca n't see where it is high .
+Natalie: Ask you , how does GN5+jn1 fight against 707+jn1+jn1
+Helen: Equivalent 60 mm , 2.5 times optical change , OIS anti - shake S5K3P9 is no worse than equivalent 48 mm
+
+RIGHT ANSWER: Brian
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.625
+============================================================
+
+QUESTION: Whose opinions from Rita and Grace about devices are most similar to Isaac's?
+RETRIEVED: 
+Relevant utterances:
+Isaac: [ Yunbei ] A person who uses Huawei said that it has a big hole , can you not be so funny
+Isaac: The feel X2P is better , lighter , the screen X2P is better , 10U charging is faster , has wireless charging , and better photos
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+Grace: Ca n't beat it , next [ doge ] , today I saw a disassembly diagram of OPPO 's 766 with suspension and anti - shake . The volume is larger than gn2 , but the bottom is a little smaller .
+Isaac: Samsung is actually good , many samples can hit the x70 on the ground
+Rita: Indeed , many have not been written , and 12 this time , the small size , separate mold opening , internal stacking design and so on are all costs , which brings a good feel . The small screen flagship also caters to some small screen users . How can he compares , the positioning is different . His size should be compared with 12pro [ doge ]
+Rita: Is n't it normal that the mobile phone got stuck seven years ago ? Have feelings for a broken cell phone , right ? Do n't boast it anymore , it 's just a phone
+
+Relevant dialogs:
+
+Isaac: How on earth about one plus 9r ? Is it worth buying a second - hand minimum configuration for two thousand ? @Dami evaluation
+Isabel: At 618 , I bought a black , top version for my mother . She used it very well . The battery can last for a day . Every time I went home and looked at her phone , it did n't carelessly download any software .
+Isaac: I originally wanted to buy a second - hand s20 for 2000 , but I 'm fear of screen problems so I bought a 9r .
+Isabel: The battery life of the s20 is very poor , but I am very satisfied in other aspects , so I have been using it as the main machine
+Bridjet: I bought a 12 + 256 for my dad and he used it very well
+Isaac: The texture and feel are much better than k40 and neo5 . I do n't know how the Realme neo2 is . It seems will be very strong .
+Bridjet: The texture and feel are really good , the direct screen film is also easy to film , the warranty is still long , and it comes with a two - year warranty
+Hayden: 618 2600 to buy the top with 9R is really cost - effective
+Isaac: To be a backup machine , it does n't need that high memory
+
+
+Hannah: I 'm worried that the Black Shark will disconnect . If it 's really good enough , why do n't KPL use Black Shark , but use iQOO3 ? Is it really that Black Shark ca n't afford money , can afford stars , and ca n't get into KPL ? ? ? Think carefully
+Isabel: Remember the vivo stickers on iPhone of the competition ? Advertisement [ pick nose ]
+Hannah: Now what ? ? Have you seen kpl , the last iQOO Pro back light was also from Apple ? Do n't use what happened a few years ago to refute , first do a good job in Xiaomi 's quality control . The quality control is not good , but the control evaluation is very powerful
+Isaac: As a game mobile phone , you still want it to be light
+Alfred: It is possible that IQOO and KPL signed for more than one year
+Gilbert: 65W super fast charging , lift - type physical buttons , 18W magnetic charging , 90 Hz refresh rate , 270 Hz sampling rate , three - layer cooling module , Not special - shaped screen , is n't it good ?
+
+
+Howard: it 's already very conscientious that cheat us once a year[doge ]
+Jenna: [ doge ] Come on , at least Apple wo n't make a rubbish emperor , and many domestic flagships are more expensive than the 13 . There are few hedges better than him . Who else will discuss or remember the Android flagship of the year of the iPhone 13 in 3 years ?
+Deborah: Picture comment
+Jenna: [ Laughs without saying a word ] Ah , no need , ip13pro is the most smooth and stable mobile phone at present , I changed it from Mi 11u . Although the Xiaomi Mi 11u can be 120hz globally , it has high heat generation and power consumption , and the software quality of Android is not as good as that of ios . A night mode Miui that some software is not adapted , the font and background are very uncomfortable when the night mode is forced
+Melanie: Chives will grow whether they are cut or not , so it is best to wait for a year to grow taller [ doge ]
+Isaac: Even if the apple play somebody for a sucker , the person who can at least take out more than 5,000
+
+RIGHT ANSWER: Rita
+MODEL ANSWER: rita
+CURRENT ACCURACY: 0.6666666666666666
+============================================================
+
+QUESTION: Whose opinions from Anthony and Grace about devices are most similar to Joseph's?
+RETRIEVED: 
+Relevant utterances:
+Joseph: I have used it for a year , is it burnt ?
+Joseph: Nothing yyds ! The 6pp heat dissipation is particularly bad . I have bought it , and the hottest 870 is not excessive . The Reno7Pro is almost the same as the OnePlus 9rt , and the heat dissipation is much stronger . As long as the Dimensity 2000 is cooler than the 888 , it is still the flagship direct - screen flagship with differentiated positioning .
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+Anthony: If you do n't believe it , I have no way . At that time , the signal of Hongmeng really make me headache . I do n't know if it is to control power consumption . It does n't work anyway . Then I sold it
+Anthony: I have n't dared to use Android since the z11 rip me up , I 'm really scared
+Jonathan: I only know that the camera of the previous generation product is weak compared to the mainstream of the domestic flagship . This is recognized . And the battery is n't durable either . Besides a screen , what else ?
+Joseph: Because there will be fools who think that the untested is the best , and then buy it
+
+Relevant dialogs:
+
+Joseph: Except for that one , it is really difficult to sell more if over 5 K [ DOGE ] [ Doge ]
+Laura: Which one .
+Henry: h [ doge ] [ doge ] [ doge ]
+Emma: I really hope blue factory x can achieve high - end success . In those years , the x7 2499 experience was not bad . There was a fill light in front of the self timer , hifi when listening to songs , light touch , and good photography .Later , X20 21 was ugly , X70 seemed to bring back the reputation , and it is the perfect if 80 could be better
+Jonathan: 60 was relatively successful , 70 the initial pricing was outrageous , screwed up directly
+Faith: The point is that one 's x - axis is not used for sale
+Patricia: That one is not willing to use . [ Laughing without words ] So miserable to make money to research and develop , just gratitude [ laughing without saying ]
+
+
+Anthony: What makes you think so ? Have you seen the blind test of Brother Zhan 's original image ?
+Caroline: I think the 11U is just average for taking pictures , it 's overblown .
+Anthony: Brother Zhan 's original picture , blindly test , see for yourself . Whether it is good or bad is naturally inhabits man 's heart
+Herbert: The biggest problem with the 11u is the color , image , look and feel , but the photos are sharpened seriously , and the OnePlus 9p also has problems . On the other hand , the blue - green factory is not too bragging . Although the OnePlus is also from green factory , but the Big Brother x3 series is not specialise in camera , but its look and feel of the photo is good , the saturation is high but not too bright , and the scenery is well handled in all aspects include exposure but not sharpened seriously .
+Jason: Is Brother Zhan zhe digital chat station ?
+Anthony: I just posted yesterday , you can rummage it
+
+
+Violet: Why , is n't it good ?
+Anthony: My family bought 6 Xiaomi mobile phones , and they all broke after about a year . What 's even more abhorrent is that a mobile phone broke down in less than a year , and it was hard to find a special maintenance point . It even said that I had dismantled it and asked me to pay 300 yuan for the maintenance fee . I took it back without repairing it , and it was only 30 yuan at a nearby store . So : Xiaomi phones are rubbish .
+Violet: So it 's not as easy to use as my oppo . After using it for four years , except for the lack of memory , everything else is fine , and it wo n't be broken . I saw that my friend 's Xiaomi Mi 11 took good pictures , and I 'm a little excited .
+Emily: Holding the Mi 9 for two and a half years , there is no problem except that the battery life is not good , and the camera can not keep up with the mainstream .
+Lynn: why ? It 's from Huawei , is n't that obvious ?
+Violet: Is Xiaomi 11 recommended to buy ?
+Xavier: Just like and dislike , I 'm the kind of person who does n't like millet
+
+RIGHT ANSWER: Anthony
+MODEL ANSWER: anthony
+CURRENT ACCURACY: 0.7
+============================================================
+
+QUESTION: Whose opinions from Austin and James about devices are most similar to Sara's?
+RETRIEVED: 
+Relevant utterances:
+Sara: The individual brand is slightly better than before , and there are still many offline machines
+Sara: The battery life is alright , that 's definitely not as good as the current iPhone 's battery life [ two ha ]
+Sara: It is said that the battery life is two hours longer than 12 pm
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Jessica: If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]
+Sara: Is civi a small screen ? It 's thin and light , and I like thin and light , but the small screen they said is like 6.1 inches . Whoever makes that kind in Android will die , and the post will be the proof . Sentiment: neg
+Simon: The Pro 's processor , screen , charging , waterproof rating , face unlock , camera are all better
+
+Relevant dialogs:
+
+Sara: Android 's small screen is all courting death , all of them
+Ariana: Xiaomi CVCI successfully proves that not everyone likes big screen phones
+Sara: Is civi a small screen ? It 's thin and light , and I like thin and light , but the small screen they said is like 6.1 inches . Whoever makes that kind in Android will die , and the post will be the proof .
+Allison: Do you have mochi ? divide and eat
+Kevin: Not necessarily , the premise of making a small screen without failure is to find a CPU that can be used with low power consumption and heat , plus a good screen . However , the Android small screen is a pseudo - demand . Many people say they want a small screen , but it is not for a small screen , but for a low - priced flagship . The price can not exceed the price of iphone se .
+Emma: The problem is that many small - screen followers just like the flagship processor without considering the heat dissipation and the power consumption , Otherwise why are they clamoring for the flagship of the small screen ? [ Yun Sad ] 9se died quite miserably with 712 ...
+Melanie: Former 9se users , the problem is not on 712 . The hand feel is really good , but the jumping screen is really unpopular , and there is no version with high memory and memory , the space is not enough so I replaced my machine . The feel is actually quite comfortable
+Gordon: Xiaomi 6 [ Doge ] ?
+
+
+Rebecca: Let me see who dares to buy Xiaomi Miracle ! ! ! [ Meow Meow ] ( previous 10pro user )
+Simon: I have to say that in recent years , Xiaomi mobile phones have been very bad , and basically every one has some problems . I used to be a Mi fan , but since I used Mi 9 , I realized that the workmanship of Xiaomi mobile phones is really rubbish . After using the phone for a few months , all three buttons are stuck , the charging is intermittent , and the battery is also very poor . Later , I decided to switch to Apple . After using it , I realized that the Xiaomi mobile phone is really garbage .
+Faith: Hahaha , shocked , Xiaomi mobile phone has a strange product control problem [ like ] All three keys are stuck , you really NB
+Simon: Is n't that normal ? I repaired it once in less than a month and then it happened again . Later , I decided to buy Apple .
+Austin: It 's boring to follow the trend [ weak ]
+Rebecca: I Play stalks , I am also rice noodles myself
+Ava: Now if you say that Xiaomi is not good , you have to prove your identity first .
+
+
+Marisa: Which of the most impressive mobile phones ?
+Alexandra: Nova3 is also very easy to use
+Dennis: The appearance I bought a few years ago is also good -looking now , but unfortunately it was broken last year .
+Alexandra: Indeed , the style is beautiful and lightweight now
+Logan: Honor play , the pioneering work of the play series . The metal body is very resistant to falling . It has been used for three years and has been dropped no less than 20 times . It is not damaged , but it is slightly worn . Kirin 970 can fight again . ( But the later play actually dropped from the mid - end machine to the low - end machine , I hate Hornor ) The later play series is e - waste .
+Barbara: Honor Play is really the first mobile phone I bought in college . Repeatedly considering the comparison , it is very easy to use . It 's a pity that the later Play series made me greatly disappointed
+Logan: I am still using it . Except for battery life , the charging speed is slow , and there are really no other shortcomings . But I changed my phone right away , but unfortunately it is no longer glory .
+Katherine: Nokia 5230 ?
+Lewis: 5800
+
+RIGHT ANSWER: Austin
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.6363636363636364
+============================================================
+
+QUESTION: Whose opinions from Anthony and Grace about devices are most similar to Kaitlyn's?
+RETRIEVED: 
+Relevant utterances:
+Kaitlyn: Apple is not very cost - effective . If want to campare cost - effective , Xiaomi is the most cost - effective , but Xiaomi is not durable . Apple 's system is smooth and hardware is powerful , but expensive and not durable . Huawei 's flagship machine is very durable and comprehensive , but it is also expensive . It 's a personal choice
+Kaitlyn: Ordinary Android signal 60 points , 12 Qualcomm baseband 55 points can be used , then about the previous Intel baseband ! Did you only used iPhone ?
+Kaitlyn: The last time I went to the Huawei store to get started with the nova9 , it got stuck as soon as I got started . It really surprised me . [ Thinking ] It is the Hongmeng system . This system may vary from machine to machine .
+Kaitlyn: The Snapdragon 480 has similar specifications to the Dimensity 700 , but it is likely to be more expensive . You can see the price of the Dimensity 700 and know it is impossible .
+Kaitlyn: The charging is really bad , at the level of Android 4 years ago . 📶 The signal after 12 can be used but it is not good
+Kaitlyn: No matter how the price is reduced , it is still more expensive than MediaTek . Now MediaTek 's 4 G chip G25 Redmi 9A 4 + 64 G sells for 599 . How could it be possible to use the Qualcomm 5 G chip 480 , which has 4 times the performance , and increase the memory to 6 + 128 , then still selling at 599 [ allow sadness ] In that case , let 's not talk about the cost , the Redmi digital series does n't even need to sell the standard version of the note series
+Kaitlyn: 6188 can buy three Xiaomi at that time , you really earn a lot
+
+Relevant dialogs:
+
+Kaitlyn: MIUI is not good to use , even more uncomfortable than OriginOs . I feel that Xiaomi has complicated the UI system
+Ashton: Do n't yygq in the post , I have tried iQOO many times , it is indeed better than Xiaomi , at least the desktop animation iQOO is much more complete
+Lorna: use the K30 while saying the orange system is better ?
+Makayla: The system is really good , very smooth [ laugh ]
+Virginia: That 's because the original os does n't have anything , only changed the skin . Miui has many functions , so sometimes do n't know how to use it . For you , I think you are more suitable for Apple , and Samsung 's oneui is also not suitable for you .
+Benjamin: Animation is much better than MIUI
+Gavin: I think miui is better than originos
+Violet: Die of laughter , originOS is the complicate one actually , a desktop setting like the system setting , bells and whistles
+Joshua: Catch [ Heha ] mogul
+
+
+Emily: 6 + 128 Qualcomm 480 sells 599 is awesome
+Alexis: Buying a second - hand Mi 8 , is n't the experience better than it ? Taking pictures , chips , and system fluency have been fully upgraded , and in the second - hand market is only a little over 600 [ doge][doge ]
+Abigail: It 's freeze sometimes , my Mi 6 is not as stable as my dad 's Redmi 9 , especially freeze when use Taobao
+Alexis: Why is your Mi 6 still in use , you have no desire to change it , or it is just used as a backup machine ?
+Kaitlyn: The Snapdragon 480 has similar specifications to the Dimensity 700 , but it is likely to be more expensive . You can see the price of the Dimensity 700 and know it is impossible .
+Carter: The 480plus has been released , the price of 480 should be reduced
+Kaitlyn: No matter how the price is reduced , it is still more expensive than MediaTek . Now MediaTek 's 4 G chip G25 Redmi 9A 4 + 64 G sells for 599 . How could it be possible to use the Qualcomm 5 G chip 480 , which has 4 times the performance , and increase the memory to 6 + 128 , then still selling at 599 [ allow sadness ] In that case , let 's not talk about the cost , the Redmi digital series does n't even need to sell the standard version of the note series
+Brianna: 1080 60Hz 18W fast charge Snapdragon 480 scan code photography 4 + 128 599
+Julia: The entry model is not necessary , 64 is enough
+
+
+Kaitlyn: Apple is not very cost - effective . If want to campare cost - effective , Xiaomi is the most cost - effective , but Xiaomi is not durable . Apple 's system is smooth and hardware is powerful , but expensive and not durable . Huawei 's flagship machine is very durable and comprehensive , but it is also expensive . It 's a personal choice
+Brian: I bought 7 in 2017 and sold more than 800 this year . Does anyone want your 2017 Xiaomi ?
+Kaitlyn: 6188 can buy three Xiaomi at that time , you really earn a lot
+Cameron: It ca n't be compared like this , Xiaomi can not be used to this year , and the cost of changing mobile phones from 2017 to 2021 is about the same as buying an Apple .
+Keith: The use cycle is long , the second -hand value preservation is high , and the overall cost performance is high .
+Helen: Indeed , now xs max can be sold for more than 3k
+Sara: How many people are willing to accept second - hand Xiaomi ? Many people are willing to accept second - hand iPhone 7
+
+RIGHT ANSWER: Anthony
+MODEL ANSWER: anthony
+CURRENT ACCURACY: 0.6666666666666666
+============================================================
+
+QUESTION: Whose opinions from Delia and James about devices are most similar to Marjorie's?
+RETRIEVED: 
+Relevant utterances:
+Marjorie: What about the Samsung Miracle 's compare with the True Flagship 's
+Delia: I have used Apple and Huawei , and your so - called better experience is not true . Bad experience in my hands ! I am using nova8 now , which is better than Apple ! You apple fans can really bear it , you can really cheat yourselves .
+Marjorie: Can only be said to be general . The screen is poor , and the touch screen experience is extremely bad . When playing games , if you answer the phone , you 'll be stuck out 100 % .
+Delia: The X60 I bought for my mother last year , Zeissga has attracted me for a whole year . [ Laughing Cry ] , in my opinion , high - priced and low matching is also cheaper than high -priced and high - priced . It ca n't attract me without Leica . Mi has only a smart home attracting me . I dare not touch the price of the fruit . I 've been using it for 6 years .
+Marjorie: But the Motorola is still smooth
+Delia: Just acting as a mobile hard disk , how many people will transfer movies to mobile phones ?
+Marjorie: Not playing games is the first , playing games can only be 60hz , there is no comparison
+
+Relevant dialogs:
+
+Ariana: With Lei Jun 's character , Xiaomi is said to have neither this nor that , and I believe that he will fight back with strength .
+Geoffrey: Just like Xiaomi was told that it 's charge , take pictures , sound quality , and screen is bad . Now it 's doing very well in these aspects .
+Kimberly: Come on , the same 120 fast charge VIVO will be fully charged in 15 minutes , and Xiaomi half of it has not been charged yet , take a photo freeze once per five seconds , it is recommended to refer to the  Xiaomi Bible  for Harman Kardon sound quality , the Harman is gone , just the rest is stuck . And the screen ? ? Samsung 's screen is not made by Xiaomi . I really do n't know what to brag . Buy other people 's things and then brag yourself and sell it yourself ?
+Marjorie: You seem to have used it ?
+Geoffrey: If you do n't like it , do n't come to find a sense of existence , you can directly past it , dear
+Dennis: Xiaomi Changjiang Fund participates in the reorganization of Datang Telecom , Datang 's automotive - grade chips , things need to be linked together
+
+
+Delia: Ask if do n't know , usually Apple 's charging is really slow , the signal is really bad ? ? [ Allow sad ] ( Poor guy that never used Apple )
+Kaitlyn: The charging is really bad , at the level of Android 4 years ago . 📶 The signal after 12 can be used but it is not good
+Mason: I think what you said is exaggerated . Normally , the signal is very good . Only in the elevator or in the basement can distinguish the good from the bad .
+Kaitlyn: Ordinary Android signal 60 points , 12 Qualcomm baseband 55 points can be used , then about the previous Intel baseband ! Did you only used iPhone ?
+Ashley: The battery life of 13pm can fully let you know that Android 's so - called battery life is not good then fast charging make up is a joke
+Fred: Yes , after changing the 13 , I feel that the previous 4600mAh battery is fake . [ Allow sad ]
+Fiona: The ipad pro 2020 is still very fast to charge while playing games
+Michael: It 's very fast when it 's not hot [ two ha ]
+
+
+Dominic: Not all mobile phone users like Apple 's closed system . In terms of system convenience , Android is better
+Anita: Not all mobile phone users like the bells and whistles of Android , in terms of ease of use , ios is better
+Dominic: To transfer movies from a computer to a mobile phone , Android does not need to install anything or transcode , but what about Apple ?
+Delia: Just acting as a mobile hard disk , how many people will transfer movies to mobile phones ?
+Neil: But it does n't affect me using two phones [ doge][doge][doge ]
+Dominic: ok , nobled note9Pro users [ too happy ]
+Neil: [ Eat melon ] [ Eat melon ] [ Eat melon ]
+Bruce: agree
+
+RIGHT ANSWER: Delia
+MODEL ANSWER: delia
+CURRENT ACCURACY: 0.6923076923076923
+============================================================
+
+QUESTION: Whose opinions from Hugh and James about devices are most similar to Brian's?
+RETRIEVED: 
+Relevant utterances:
+Hugh: When I switched to Android three years ago , I sneered at Apple . I bought 13 this year , looking at Android , and I 'm really not interested in any of them
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Hugh: I have only used Xiaomi since childhood . Can you say that why do n't you like Xiaomi ? I really want to ask . Do n't come swearing 🙊
+Hugh: The battery life is related to the number of charging times , and it is definitely more durable than a model that need to be charged multiple times a day .
+Hugh: It 's almost the same as Xiaomi Mi 9 .
+Hugh: Android is as smooth now , and it 's still the same after more than a year use .
+Hugh: The screen quality is ok [ laugh haha ] , I feel that the frontal look and fineness is not much different from the 10PRO , mainly looking obliquely , the rainbow spots are serious
+
+Relevant dialogs:
+
+Hugh: Are you Mi fan ? The sales of Xiaomi 11U far exceed 11P , which can explain the problem
+Erin: The design of 11Pro is not good , and the heavy border feels bad ( whether compared to Xiaomi Mi 11 or Ultra ) . Go to the store to experience it you will know[doge][doge ]
+Sara: Indeed , but the weight is okay
+Erin: Xiaomi 11Pro may be the worst hand feeling in the Xiaomi mobile phone digital series[doge][doge][doge ]
+Devin: Because the price / performance ratio of 11P is not high , it is better to add more money to buy 11U .
+Lily: If you have to talk about configuration , there is not much difference between 11u and 11p taking pictures , just two small cameras are worth 700 ? It 's the appearance design that is worth 700 . At this price , it 's not just consider about the basic hardware parameters like soc .
+Joseph: [ Yunbei ] 11U also drop a lot ! I bought this in June for only 100 yuan cheaper in the store , but the 618 subsidy is directly 1400 yuan . Although Xiaomi made up 500 yuan . [ bitter ] But still a loss
+
+
+Noah: A pound of compressed cotton and a pound of iron are not the same weight in the hand ?
+Jada: I do n't mean to argue , 6.1 inches , 200 grams and 6.5 inches , 200 grams feel a lot different in the hand . The volume is slightly larger , and the weight does not feel so heavy after the weight is distributed
+Rodrigo: Then you all should buy Promax
+Jada: MAX is too big , even if Max is only 200 grams , the feel will not feel good .
+Michael: Do n't come to tech bloggers at this level . Is a pound of cotton and a pound of iron the same size/.[Sad ] Think more before making anti - intellectual remarks
+Xavier: I feel that the 13pro is significantly heavier than the Mi 11u
+
+
+Miguel: IQOO does not have the 8 + 128 option . Personally , I think the imx707ois is better than the GN5 micro - cloud platform . The GN5 is similar to the imx766 . Is the micro - cloud platform too high - end ? [ laugh cry ]
+Angelina: I 'm laughing to death , GN5 ? Xiaomi 12U is ready to use GN5 [ laughing without speaking ]
+Lynn: How can Xiaomi 12U use GN5 ? 12P uses 1/1.28 IMX707 , 12U GN5 use 1/1.5?Are you kidding ?
+Angelina: You know nothing . GN5 is an upgraded version of GN2 , Xiaomi 11 U use GN2 , and Xiaomi 12 u uses GN5 , which is definitely [ nose picking ]
+Autumn: Can you take photos by feel ? You are awesome , then you can cloudly evaluate which one is better , the sports car or your electric motorcycle ?
+Miguel:  Personally think  = I think . The hardware is all put here , why feel it .
+Andrew: One thing to say , iqoo8p is better than Xiaomi Mi 11 for taking pictures . I have both mobile phones . When the Xiaomi phone is hot , the camera is very slow to open , and it will freeze when taking pictures , but iqoo will not . And I feel the algorith m of iqoo better . I bought 12p now , the fluency is not as good as the 11 whose memory is almost full and who has been used for a year , and the system is 12.5
+Eric: ois is definitely not as good as the micro cloud platform , the pricing is the same , I ca n't figure out some people say that Xiaomi is cost - effective , but I really ca n't see where it is high .
+Natalie: Ask you , how does GN5+jn1 fight against 707+jn1+jn1
+Helen: Equivalent 60 mm , 2.5 times optical change , OIS anti - shake S5K3P9 is no worse than equivalent 48 mm
+
+RIGHT ANSWER: Hugh
+MODEL ANSWER: hugh
+CURRENT ACCURACY: 0.7142857142857143
+============================================================
+
+QUESTION: Whose opinions from Oswald and James about devices are most similar to Sierra's?
+RETRIEVED: 
+Relevant utterances:
+Sierra: Why not optimistic [ tears ] I just want to buy a pro
+Sierra: Have you used it?I bought the original price of 4699 , others burned , my card slot was burned , Do n't open your mouth and say you know it after you use . Quality control is like that . Wo n't you let me talk ?
+Jessica: If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]
+Sierra: [ doge ] Actually , I do n't have much requirements for photography because I want to buy a camera in the future . The pro max is too big and I 'm not comfortable to play games with it . I use 11 to take pictures and I think it 's okay hahahaha , after all , I do n't take pictures or shoot videos much .
+Neil: [ Doge ] Of course , do n't want to buy an apple just for OV 's stable and worry - free .
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Jose: There are also many young people around me who use telephoto . On the contrary , many middle - aged people ca n't even tell the difference between telephoto and ultra - wide ( many of my relatives ca n't tell the difference ) [ doge ] Of course , this is all around me human data . To be honest , for a flagship machine , both telephoto and ultra - wide - angle are indispensable . Apple 's telephoto ca n't work , this has long been determined , and now Android 's telephoto ca n't work , that is , " the frequency of use is not high " [ doge ]
+
+Relevant dialogs:
+
+Angelina: After spending money on various flagship machines , such as Xiaomi , Samsung , Huawei , Apple , OnePlus , Meizu , etc . , I looked down upon these machines . After playing CIVI the day before yesterday , I decided to buy it . The parameters are really virtual , and the experience is real . I think online people are the easiest to be deceived . They study various parameters and watch various tests , all of which are data experience .
+Morgan: civi is ok , I also used it , because someone around me buys it , I often use it to play games , the touch and weight are very good
+Angelina: The main thing is that it is thin and light . It has everything that should be there , and the price is OK . I am using 13p now . There are too many places to complain .
+Morgan: Hahahaha , what 's wrong with 13p
+Clifford: I think 8848 is more awesome [ laughs without speaking ]
+Angelina: I have never used 8848 , I have used too many mobile phones , I feel that many things are meaningless and the direction is wrong .
+
+
+Leslie: When it comes to weight , I 've have nothing to say about Apple . [ Allow sad ] The battery is not too big , the bottom of the camera is not too big , there is no periscope , there is no soaking plate for heat dissipation , and the body is not made of ceramics or other heavy material . How did it get 238g[allow sadness ] [ allow sadness ] [ allow sadness ]
+Abigail: [ doge ] Stainless steel frame , can it not be heavy ? The aluminum used in 13 is much lighter . The pro with the same measurements costs 200 +
+Leslie: What is the meaning of stainless steel ? [ Allow sad ] [ Allow sad ] Can you really feel the difference between bright stainless steel and bright aluminum alloy ? [ Allow sad ]
+Jessica: If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]
+Leonora: That fancy but stainless steel frame [ doge ]
+Fiona: Mainly it is the stainless steel which is heavy . I heard that titanium alloy will be used in two years , and it will be lighter at that time .
+
+
+Leslie: Why do you all say s10 like this ? [ Allow sad ]
+Marisa: The propaganda slogan at that time , the 10th generation , was ahead of the times , plus the overall punching holes later , it can be regarded as a leader .
+Leslie: At that time , it started punching , but the big grooving is really not good - looking [ allow sad ] , the p40 series is like the s10 [ allow sad ]
+Carl: The s10 + punch is not as big as the p40 [ doge ]
+Claire: The advertisements at that time , and the appearance of the tenth generation is still very good today , and it is very sufficient . Basically , they are all nail households .
+Eric: The battery life is too poor , the appearance is super good , and it is still very good after 2 years
+Claire: My friend SIO+ can still work after changing the battery , and it 's one UI2 .
+
+RIGHT ANSWER: Oswald
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.6666666666666666
+============================================================
+
+QUESTION: Whose opinions from Freda and James about devices are most similar to Claire's?
+RETRIEVED: 
+Relevant utterances:
+Claire: I really do n't use Samsung . I bought this Black Shark 2 at the same time as my friend 's Samsung . Both are new flagship machine at the same time . As a result , his Samsung is stuck in the glory of the king . Mine smoothness is extreme , and the same 855 cpu , Samsung 's only screen is better than my Black Shark II , the rest is not as good as my Black Shark , the most important point is , the Black Shark II is not as good as the Mi 9 , and the Mi 9 is not as good as Huawei 's Kirin CPU flagship machine with the same performance , poor Samsung !
+Claire: After all , this mobile phone has a lot of diving space in 618 [ doge ]
+Claire: The 12Pro definitely sounds better than the 10s 10Pro . You can go offline to compare
+Claire: My friend SIO+ can still work after changing the battery , and it 's one UI2 .
+Claire: Good evening Pigo , will there be an LCD mobile phone with a lower positioning such as the 870 this year ? The family shed tears when watching OLED [ disappointment ] , thank you Pige [ cheers ] [ cheers ]
+Molly: Indeed , these KOLs use money to tout other products , and then look at their Weibo , all of them are honestly using iPhone s , as expected , they are doing business on the surface , but privately they have their own ideas .
+Chloe: I do n't quite agree with your point of view . Now the bloggers test , the temperature basically revolves around the game , but for people like me who play games for up to an hour a day , it does n't matter at all , I focus on the Power consumption , heat generation , and battery life in the case of daily using Weibo , navigation , watching videos , listening to music , chatting , etc . , but I ca n't find this kind of data .
+
+Relevant dialogs:
+
+Claire: The utilization of this folding technique . . . . Others turned the tablet into a mobile phone , increased portability , and expanded the utilization rate of the mobile phone board . Samsung turned the mobile phone into a power bank , just to increase the portability , which is actually useless .
+Lynn: Samsung also has one that unfolds into a tablet . [ Too happy ] Z Fold to understand , Z flip positioning is small and portable , I suggest you still use Huawei
+Claire: I really do n't use Samsung . I bought this Black Shark 2 at the same time as my friend 's Samsung . Both are new flagship machine at the same time . As a result , his Samsung is stuck in the glory of the king . Mine smoothness is extreme , and the same 855 cpu , Samsung 's only screen is better than my Black Shark II , the rest is not as good as my Black Shark , the most important point is , the Black Shark II is not as good as the Mi 9 , and the Mi 9 is not as good as Huawei 's Kirin CPU flagship machine with the same performance , poor Samsung !
+Harold: You can really talk . It 's funny when you compare your gaming phone with others . Why do n't you compare games with a gaming laptop and a MacBook and say that MacBook is garbage ... The reality is that except for a few students who are still in school , not many people will choose the so - called game mobile phone that is stupid , ugly and heavy . Speaking of which , is there any mobile game worth buying a mobile phone to play ?
+Aaron: But it 's beautiful , and it 's super easy to take . I really want to have [ love you ]
+Miles: Samsung Fold series is unfold to tablet
+
+
+Cole: Some people are so sour . After all , many digital bloggers and their studio practitioners use iPhones as the main force . These people do n't pay attention to fast charging , and they do n't pay attention to signals .
+Katelyn: I am selling iphone , Aishide authorized store ( Apple 's official website can be checked ) . I am often asked to return the goods by customers because of the poor signal , and I am also scolded ! You ca n't say that most of the people who use Apple are stupid , just a little stubborn , and there are many people who think that 5W chargers are better than fast charging . There are also people who are afraid of explosion because the ipad charging fast charger is too hot to ask for a return ! Change career already [ eat melon ]
+Cole: It is indeed worse than Android , this is no problem
+Sofia: Compared with Huawei , it is really bad . After all , base station is what Huawei does , but the signal of Xiaomi is not much better . I think the signal of Xiaomi and Apple are similar . I have never used other Androids , so I do n't know .
+Leah: Are you a student ? After go to work , you will find that long battery life is more useful than fast charging .
+Alexis: Yes , every time I go out to run a project , it takes one day to explore . If the battery life is short , it ca n't stand it at all .
+Molly: Indeed , these KOLs use money to tout other products , and then look at their Weibo , all of them are honestly using iPhone s , as expected , they are doing business on the surface , but privately they have their own ideas .
+
+
+Lorna: Then the market feedback under the screen is actually so so , and the products with lower positioning prepared by the grain factory have been postponed or killed . . .
+Lillian: In fact , I think the pop - up camera of the K30ULTRA is pretty good , except for the processor and the resulting power consumption .
+Howard: Power consumption is fine , mainly takes up too much internal space [ DOGE ]
+Lillian: bro yours is k30s , mine is k30u , the battery life is really poor , charging twice a day is not enough
+Sophia: It is a person who can only speak on the Internet . In reality , there are a few real users who can be so idle that they are confused about whether the screen is punched or off the screen . [ laughs haha ]
+Dorothy: No , there is a basic function problem here . The daily public will not pursue complex functions and hardware , but the effect of basic video calls must be guaranteed . Nowadays , online WeChat video calls between family members , video conferences at work , and socializing are all too important , but the front camera screen is currently far from being able to do it , especially outdoors , when the light is not good , it is equivalent to losing its effect . People obviously ca n't accept it
+Malcolm: The performance is not good , it can only be compensated by differentiation [ doge ]
+Henry: If you put it in the price range of Redmi Note , or even lower , the feedback will not be ordinary [ meow ]
+Evelyn: A lot of people who do n't understand digital almost never wipe the camera , plus the front camera is relatively blurry [ two ha ] Besides , the sales of the more powerful Note10 are still not as good as the Note9 and Note11 .
+
+RIGHT ANSWER: Freda
+MODEL ANSWER: freda
+CURRENT ACCURACY: 0.6875
+============================================================
+
+QUESTION: Whose opinions from Delia and James about devices are most similar to Isaiah's?
+RETRIEVED: 
+Relevant utterances:
+Isaiah: Yes , it 's also inconvenient to carry it in the pocket .
+Isaiah: In fact , it is more like the note10 + . The screen of this machine back then is also very good even now . Do n't ask me how I know it . I have been using it as a main machine for 3 years and I am reluctant to change it . While the battery is also durable , it feels very good and the apperance is at its peak . I do n't buy s21u because it 's too thick , this s22u is a must buy
+Delia: I have used Apple and Huawei , and your so - called better experience is not true . Bad experience in my hands ! I am using nova8 now , which is better than Apple ! You apple fans can really bear it , you can really cheat yourselves .
+Isaiah: Why are you surprised ? Is n't this the most basic feature of the native - like system ?
+Isaiah: It 's easy to use , but compared to the Xiaomi 11ultra flagship machine that is good in all aspects , some things are not good enough , such as taking pictures and charging , so I took the two mobile phones out together , and I found that I used Xiaomi more often .
+Delia: The X60 I bought for my mother last year , Zeissga has attracted me for a whole year . [ Laughing Cry ] , in my opinion , high - priced and low matching is also cheaper than high -priced and high - priced . It ca n't attract me without Leica . Mi has only a smart home attracting me . I dare not touch the price of the fruit . I 've been using it for 6 years .
+Isaiah: First of all , there is no Meizu 17 in it
+
+Relevant dialogs:
+
+Dominic: Not all mobile phone users like Apple 's closed system . In terms of system convenience , Android is better
+Anita: Not all mobile phone users like the bells and whistles of Android , in terms of ease of use , ios is better
+Dominic: To transfer movies from a computer to a mobile phone , Android does not need to install anything or transcode , but what about Apple ?
+Delia: Just acting as a mobile hard disk , how many people will transfer movies to mobile phones ?
+Neil: But it does n't affect me using two phones [ doge][doge][doge ]
+Dominic: ok , nobled note9Pro users [ too happy ]
+Neil: [ Eat melon ] [ Eat melon ] [ Eat melon ]
+Bruce: agree
+
+
+Delia: Ask if do n't know , usually Apple 's charging is really slow , the signal is really bad ? ? [ Allow sad ] ( Poor guy that never used Apple )
+Kaitlyn: The charging is really bad , at the level of Android 4 years ago . 📶 The signal after 12 can be used but it is not good
+Mason: I think what you said is exaggerated . Normally , the signal is very good . Only in the elevator or in the basement can distinguish the good from the bad .
+Kaitlyn: Ordinary Android signal 60 points , 12 Qualcomm baseband 55 points can be used , then about the previous Intel baseband ! Did you only used iPhone ?
+Ashley: The battery life of 13pm can fully let you know that Android 's so - called battery life is not good then fast charging make up is a joke
+Fred: Yes , after changing the 13 , I feel that the previous 4600mAh battery is fake . [ Allow sad ]
+Fiona: The ipad pro 2020 is still very fast to charge while playing games
+Michael: It 's very fast when it 's not hot [ two ha ]
+
+
+Jason: Bad ? In addition to the signal , which part is worse than Huawei , I want to switch back to Apple again . Taking pictures , videos , systems , and processors are all really powerful
+Delia: Signal , heat dissipation , charging , high brushing , file management , return button ...
+Jason: The 13 has a high refresh rate . I can only say that today 's mobile phones have their own advantages and disadvantages . It does n't have fast charge is for protect the battery . The 13 is also the place time longest mobile phone on the market . To put it bluntly , Apple seems to have the average parameters . But the actual experience is much better than the domestic machine . I just feel that the signal is better when I use the mate40pro , and there are still some places where there is no signal . The Kirin 9000 is not bad , but the optimization of the system and photography is still not in place .
+Delia: I have used Apple and Huawei , and your so - called better experience is not true . Bad experience in my hands ! I am using nova8 now , which is better than Apple ! You apple fans can really bear it , you can really cheat yourselves .
+John: A bunch of my friends use 12 , I use m40p more comfortable than them . That phone gets too hot . Is n't the 13 that just came out have all the problems , the gap of the phone can jammed with paper , the screen is green , the screen is flickering , the WeChat is stuck , the battery is not fully charged , and the battery life sucks . I already wanted to give it back after reading Chaohua . These people are still blaming their bad luck . It 's the most outrageous . No one scolds Apple . Double standard .
+Andrew: I 've used them all , each has its own merits . Without the fingerprint on the screen , many scenes are uncomfortable , such as payment . Mobile phones prefer Android , tablets only ipadpro
+
+RIGHT ANSWER: Delia
+MODEL ANSWER: delia
+CURRENT ACCURACY: 0.7058823529411765
+============================================================
+
+QUESTION: Whose opinions from Anthony and Grace about devices are most similar to Fiona's?
+RETRIEVED: 
+Relevant utterances:
+Fiona: If one day , when the uploaders ' test is also hot when daily use , can this phone still play games ?
+Fiona: [ doge ] Does coarse grain have a Samsung solution under the screen ?
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+Fiona: Dimensity is here would be better . Better energy consumption than a14
+Fiona: Are you talking about Xueli 8 or Apple 8 ?
+Fiona: Mainly it is the stainless steel which is heavy . I heard that titanium alloy will be used in two years , and it will be lighter at that time .
+Fiona: Honestly , 8th generation 8p , do you dare to say that it is stuck ? Which software can not open very smoothly ? The crash probability is lower than the current Android flagship
+
+Relevant dialogs:
+
+Maria: hh , it seems that it does n't matter if you do n't play games at present , 11u upgrades 12pro , taking pictures , experience , charging perception is obvious , the screen feels the same , especially taking pictures , taking pictures and outputting pictures are very fast , and the details and colors are much more normal than 11u . Very satisfied , there are no bugs in 13 ui [ doge][doge][doge ]
+Diana: Yes , I think everyone should not always focus on the excellent performance of high load , other improvements brought by the chip are also very important , just leave the large game to the game phone
+Malcolm: The medium and low load of 8g1 is also not good . The temperature of daily use is higher than that of a15 and Kirin 9000 , and even not as good as the 865 of the year before last [ eat melon ]
+Diana: It may be because many software have not been upgraded to 64 - bit , and the large and medium cores of 8g1 only support 64 - bit , so all 32 - bit software can only be supported by the super - large core , and the power consumption will naturally be high .
+Clifford: Yes , testing those games and checking the frame rate power consumption is really boring for people who do n't play big games
+Fiona: If one day , when the uploaders ' test is also hot when daily use , can this phone still play games ?
+Chloe: I do n't quite agree with your point of view . Now the bloggers test , the temperature basically revolves around the game , but for people like me who play games for up to an hour a day , it does n't matter at all , I focus on the Power consumption , heat generation , and battery life in the case of daily using Weibo , navigation , watching videos , listening to music , chatting , etc . , but I ca n't find this kind of data .
+Belinda: Today 's phone reviews put too much emphasis on peak performance , with half of the videos testing games
+Joyce: That is , bells and whistles
+
+
+Leslie: When it comes to weight , I 've have nothing to say about Apple . [ Allow sad ] The battery is not too big , the bottom of the camera is not too big , there is no periscope , there is no soaking plate for heat dissipation , and the body is not made of ceramics or other heavy material . How did it get 238g[allow sadness ] [ allow sadness ] [ allow sadness ]
+Abigail: [ doge ] Stainless steel frame , can it not be heavy ? The aluminum used in 13 is much lighter . The pro with the same measurements costs 200 +
+Leslie: What is the meaning of stainless steel ? [ Allow sad ] [ Allow sad ] Can you really feel the difference between bright stainless steel and bright aluminum alloy ? [ Allow sad ]
+Jessica: If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]
+Leonora: That fancy but stainless steel frame [ doge ]
+Fiona: Mainly it is the stainless steel which is heavy . I heard that titanium alloy will be used in two years , and it will be lighter at that time .
+
+
+Lorna: Then the market feedback under the screen is actually so so , and the products with lower positioning prepared by the grain factory have been postponed or killed . . .
+Lillian: In fact , I think the pop - up camera of the K30ULTRA is pretty good , except for the processor and the resulting power consumption .
+Howard: Power consumption is fine , mainly takes up too much internal space [ DOGE ]
+Lillian: bro yours is k30s , mine is k30u , the battery life is really poor , charging twice a day is not enough
+Sophia: It is a person who can only speak on the Internet . In reality , there are a few real users who can be so idle that they are confused about whether the screen is punched or off the screen . [ laughs haha ]
+Dorothy: No , there is a basic function problem here . The daily public will not pursue complex functions and hardware , but the effect of basic video calls must be guaranteed . Nowadays , online WeChat video calls between family members , video conferences at work , and socializing are all too important , but the front camera screen is currently far from being able to do it , especially outdoors , when the light is not good , it is equivalent to losing its effect . People obviously ca n't accept it
+Malcolm: The performance is not good , it can only be compensated by differentiation [ doge ]
+Henry: If you put it in the price range of Redmi Note , or even lower , the feedback will not be ordinary [ meow ]
+Evelyn: A lot of people who do n't understand digital almost never wipe the camera , plus the front camera is relatively blurry [ two ha ] Besides , the sales of the more powerful Note10 are still not as good as the Note9 and Note11 .
+
+RIGHT ANSWER: Anthony
+MODEL ANSWER: anthony
+CURRENT ACCURACY: 0.7222222222222222
+============================================================
+
+QUESTION: Whose opinions from Anthony and Grace about devices are most similar to George's?
+RETRIEVED: 
+Relevant utterances:
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+Grace: Ca n't beat it , next [ doge ] , today I saw a disassembly diagram of OPPO 's 766 with suspension and anti - shake . The volume is larger than gn2 , but the bottom is a little smaller .
+George: It costs 199 to replace the battery , oh my god
+Jacqueline: The screen speaker work system , plus Google service is much better . Personally , I think the flagship is acceptable to be expensive , but it is not acceptable to have shortcomings ...
+Grace: I took my mother to Xiaomi offline to watch . The top three of visual feeling are civi , mix4 , and note11 . Note10 really looks like a low - end machine at first glance .
+Anthony: I have n't dared to use Android since the z11 rip me up , I 'm really scared
+Anthony: If you do n't believe it , I have no way . At that time , the signal of Hongmeng really make me headache . I do n't know if it is to control power consumption . It does n't work anyway . Then I sold it
+
+Relevant dialogs:
+
+Angelina: After spending money on various flagship machines , such as Xiaomi , Samsung , Huawei , Apple , OnePlus , Meizu , etc . , I looked down upon these machines . After playing CIVI the day before yesterday , I decided to buy it . The parameters are really virtual , and the experience is real . I think online people are the easiest to be deceived . They study various parameters and watch various tests , all of which are data experience .
+Morgan: civi is ok , I also used it , because someone around me buys it , I often use it to play games , the touch and weight are very good
+Angelina: The main thing is that it is thin and light . It has everything that should be there , and the price is OK . I am using 13p now . There are too many places to complain .
+Morgan: Hahahaha , what 's wrong with 13p
+Clifford: I think 8848 is more awesome [ laughs without speaking ]
+Angelina: I have never used 8848 , I have used too many mobile phones , I feel that many things are meaningless and the direction is wrong .
+
+
+Chloe: As a Mi fan for many years , I would say that oppo is indeed better than Xiaomi , in terms of light ratio . Xiaomi 's slender external screen makes people just want to open it to use , but opened is 60hz , with a strong sense of splitting and large creases . The ratio of oppo seems to be the best at present , and it can be held in one hand . If you want to be big , open it , if you want to be small , you can use the out screen . Xiaomi is very embarrassed , and the appearance is not good . Even in terms of publicity , oppo is a peacock as soon as it unfolds , which is very beautiful . Xiaomi is a fish after unfolding
+Kimberly: What is there to boast about the one - to - one internal screen ? When watching videos , the display area is not as good as that of mainstream Android phones
+Chloe: It looks comfortable and feels good to hold . The Mi fold is so long , like a remote control , and the display area is also very awkward . It 's too ugly to take it out . Will you watch videos on the outside screen ? ? ? If there is a folding screen , you do n't use the inner screen to watch the video , then why do you buy a folding screen
+Kimberly: Android tablet ecological adaptation is very poor , only this 1:1 , I hope oppo can give developers the money spent on marketing . Only rely on yourself to fight Huawei , Xiaomi , Samsung , Lenovo and other software ecosystems .
+Adrian: ?
+Alan: [ Yun Bei ] [ Yun Bei ] [ Yun Bei ]
+Jacqueline: Just boasting [ Switting ] [ Switting ] [ Swinding ]
+Chloe: Then you buy Mi fold , see if you are comfortable with it
+
+
+Miguel: IQOO does not have the 8 + 128 option . Personally , I think the imx707ois is better than the GN5 micro - cloud platform . The GN5 is similar to the imx766 . Is the micro - cloud platform too high - end ? [ laugh cry ]
+Angelina: I 'm laughing to death , GN5 ? Xiaomi 12U is ready to use GN5 [ laughing without speaking ]
+Lynn: How can Xiaomi 12U use GN5 ? 12P uses 1/1.28 IMX707 , 12U GN5 use 1/1.5?Are you kidding ?
+Angelina: You know nothing . GN5 is an upgraded version of GN2 , Xiaomi 11 U use GN2 , and Xiaomi 12 u uses GN5 , which is definitely [ nose picking ]
+Autumn: Can you take photos by feel ? You are awesome , then you can cloudly evaluate which one is better , the sports car or your electric motorcycle ?
+Miguel:  Personally think  = I think . The hardware is all put here , why feel it .
+Andrew: One thing to say , iqoo8p is better than Xiaomi Mi 11 for taking pictures . I have both mobile phones . When the Xiaomi phone is hot , the camera is very slow to open , and it will freeze when taking pictures , but iqoo will not . And I feel the algorith m of iqoo better . I bought 12p now , the fluency is not as good as the 11 whose memory is almost full and who has been used for a year , and the system is 12.5
+Eric: ois is definitely not as good as the micro cloud platform , the pricing is the same , I ca n't figure out some people say that Xiaomi is cost - effective , but I really ca n't see where it is high .
+Natalie: Ask you , how does GN5+jn1 fight against 707+jn1+jn1
+Helen: Equivalent 60 mm , 2.5 times optical change , OIS anti - shake S5K3P9 is no worse than equivalent 48 mm
+
+RIGHT ANSWER: Anthony
+MODEL ANSWER: anthony
+CURRENT ACCURACY: 0.7368421052631579
+============================================================
+
+QUESTION: Whose opinions from Matthew and James about devices are most similar to Diana's?
+RETRIEVED: 
+Relevant utterances:
+Matthew: Indeed , but now most people have only one main device
+Diana: I did n't buy 10U because it was too thick . The thickness of 11u is really comfortable . It does n't matter if it 's heavy . If it 's thick , I do n't even consider it
+Diana: But if you care about thickness , it is really a disaster for bare mechine more than 9 mm and plus the mobile phone case .
+Matthew: Come on , I used two of my friends ' + , and both of them regret it . It 's either stuck or crashed , and the battery become bad recently .
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Diana: Bought debut , used it for more than half a year . I personally think the battery life is pretty good , very satisfied
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+
+Relevant dialogs:
+
+Matthew: Do n't buy Xiaomi , you can buy everything of this brand except mobile phones , from Mi 10 users ' experience
+Lillian: Mi 10Pro works great , thanks
+Matthew: Then you continue to use it , I 'm just talking about subjective feelings
+Lillian: Of course , 10Pro is much easier to use than 10 [ two ha ]
+Diego: Mi 10 is okay [ single dog ] I have one as the main machine
+Matthew: Come on , I used two of my friends ' + , and both of them regret it . It 's either stuck or crashed , and the battery become bad recently .
+Diego: So serious [ dumbfounded ] I personally think that the battery is a bit bad , maybe it 's a miui problem . Usually wireless charging is convenient , so I do n't care too much . The bug I encountered is that there is a problem when adjusting the brightness . Others like games or daily use are still ok every day .
+Christian: 😂
+
+
+Maria: hh , it seems that it does n't matter if you do n't play games at present , 11u upgrades 12pro , taking pictures , experience , charging perception is obvious , the screen feels the same , especially taking pictures , taking pictures and outputting pictures are very fast , and the details and colors are much more normal than 11u . Very satisfied , there are no bugs in 13 ui [ doge][doge][doge ]
+Diana: Yes , I think everyone should not always focus on the excellent performance of high load , other improvements brought by the chip are also very important , just leave the large game to the game phone
+Malcolm: The medium and low load of 8g1 is also not good . The temperature of daily use is higher than that of a15 and Kirin 9000 , and even not as good as the 865 of the year before last [ eat melon ]
+Diana: It may be because many software have not been upgraded to 64 - bit , and the large and medium cores of 8g1 only support 64 - bit , so all 32 - bit software can only be supported by the super - large core , and the power consumption will naturally be high .
+Clifford: Yes , testing those games and checking the frame rate power consumption is really boring for people who do n't play big games
+Fiona: If one day , when the uploaders ' test is also hot when daily use , can this phone still play games ?
+Chloe: I do n't quite agree with your point of view . Now the bloggers test , the temperature basically revolves around the game , but for people like me who play games for up to an hour a day , it does n't matter at all , I focus on the Power consumption , heat generation , and battery life in the case of daily using Weibo , navigation , watching videos , listening to music , chatting , etc . , but I ca n't find this kind of data .
+Belinda: Today 's phone reviews put too much emphasis on peak performance , with half of the videos testing games
+Joyce: That is , bells and whistles
+
+
+Howard: Is the battery life of Findx3 good ?
+Alise: I see that the battery life in Xiaobai 's data is quite poor . You said that if the battery life is good , this phone is ok . It 's not cheap after all .
+Howard: The battery life of the x2pro I bought before is terrible . The oppofind series is really good , but it is this battery life that makes me dare not buy it .
+Alise: I definitely do n't buy a phone with poor battery life . No matter how fast you fast charge . Do you bring a charger when you go out ? I hate power banks .
+Brooke: Unless you do n't turn on high brush , battery life is indeed the most influential factor
+Diana: Bought debut , used it for more than half a year . I personally think the battery life is pretty good , very satisfied
+
+RIGHT ANSWER: Matthew
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.7
+============================================================
+
+QUESTION: Whose opinions from Sierra and James about devices are most similar to Oswald's?
+RETRIEVED: 
+Relevant utterances:
+Oswald: Just put the Note series into the S series
+Oswald: It 's been bad all the time . I bought a Xiaomi note , and the touch was not working when I put it on the table . I have n't used Xiaomi in the next few years . The failed product is too harmful to the brand .
+Oswald: It is very clear to tell you that with the tempered film is still easy to use , and the speed is still a little faster than the optical one
+Oswald: What about Dimensity 9000 ? I do n't know how
+Oswald: In fact , the 870 is usually enough , as long as other configurations are not castrated
+Jessica: If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]
+Jose: There are also many young people around me who use telephoto . On the contrary , many middle - aged people ca n't even tell the difference between telephoto and ultra - wide ( many of my relatives ca n't tell the difference ) [ doge ] Of course , this is all around me human data . To be honest , for a flagship machine , both telephoto and ultra - wide - angle are indispensable . Apple 's telephoto ca n't work , this has long been determined , and now Android 's telephoto ca n't work , that is , " the frequency of use is not high " [ doge ]
+
+Relevant dialogs:
+
+Angelina: After spending money on various flagship machines , such as Xiaomi , Samsung , Huawei , Apple , OnePlus , Meizu , etc . , I looked down upon these machines . After playing CIVI the day before yesterday , I decided to buy it . The parameters are really virtual , and the experience is real . I think online people are the easiest to be deceived . They study various parameters and watch various tests , all of which are data experience .
+Morgan: civi is ok , I also used it , because someone around me buys it , I often use it to play games , the touch and weight are very good
+Angelina: The main thing is that it is thin and light . It has everything that should be there , and the price is OK . I am using 13p now . There are too many places to complain .
+Morgan: Hahahaha , what 's wrong with 13p
+Clifford: I think 8848 is more awesome [ laughs without speaking ]
+Angelina: I have never used 8848 , I have used too many mobile phones , I feel that many things are meaningless and the direction is wrong .
+
+
+Leslie: Why do you all say s10 like this ? [ Allow sad ]
+Marisa: The propaganda slogan at that time , the 10th generation , was ahead of the times , plus the overall punching holes later , it can be regarded as a leader .
+Leslie: At that time , it started punching , but the big grooving is really not good - looking [ allow sad ] , the p40 series is like the s10 [ allow sad ]
+Carl: The s10 + punch is not as big as the p40 [ doge ]
+Claire: The advertisements at that time , and the appearance of the tenth generation is still very good today , and it is very sufficient . Basically , they are all nail households .
+Eric: The battery life is too poor , the appearance is super good , and it is still very good after 2 years
+Claire: My friend SIO+ can still work after changing the battery , and it 's one UI2 .
+
+
+Leslie: When it comes to weight , I 've have nothing to say about Apple . [ Allow sad ] The battery is not too big , the bottom of the camera is not too big , there is no periscope , there is no soaking plate for heat dissipation , and the body is not made of ceramics or other heavy material . How did it get 238g[allow sadness ] [ allow sadness ] [ allow sadness ]
+Abigail: [ doge ] Stainless steel frame , can it not be heavy ? The aluminum used in 13 is much lighter . The pro with the same measurements costs 200 +
+Leslie: What is the meaning of stainless steel ? [ Allow sad ] [ Allow sad ] Can you really feel the difference between bright stainless steel and bright aluminum alloy ? [ Allow sad ]
+Jessica: If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]
+Leonora: That fancy but stainless steel frame [ doge ]
+Fiona: Mainly it is the stainless steel which is heavy . I heard that titanium alloy will be used in two years , and it will be lighter at that time .
+
+RIGHT ANSWER: Sierra
+MODEL ANSWER: sierra
+CURRENT ACCURACY: 0.7142857142857143
+============================================================
+
+QUESTION: Whose opinions from Sara and James about devices are most similar to Austin's?
+RETRIEVED: 
+Relevant utterances:
+Sara: The individual brand is slightly better than before , and there are still many offline machines
+Austin: Considering pm , you must have a need for battery life , then pm [ Jerry ]
+Kimberly: What is there to boast about the one - to - one internal screen ? When watching videos , the display area is not as good as that of mainstream Android phones
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Sara: It is said that the battery life is two hours longer than 12 pm
+Austin: Quick search on the side , the bullet screen notification in the game is really good to use
+Jessica: If you feel it carefully , you can feel that stainless steel is more advanced , but I still feel that Apple is deliberately differentiating [ doge][doge][doge ]
+
+Relevant dialogs:
+
+Sara: Android 's small screen is all courting death , all of them
+Ariana: Xiaomi CVCI successfully proves that not everyone likes big screen phones
+Sara: Is civi a small screen ? It 's thin and light , and I like thin and light , but the small screen they said is like 6.1 inches . Whoever makes that kind in Android will die , and the post will be the proof .
+Allison: Do you have mochi ? divide and eat
+Kevin: Not necessarily , the premise of making a small screen without failure is to find a CPU that can be used with low power consumption and heat , plus a good screen . However , the Android small screen is a pseudo - demand . Many people say they want a small screen , but it is not for a small screen , but for a low - priced flagship . The price can not exceed the price of iphone se .
+Emma: The problem is that many small - screen followers just like the flagship processor without considering the heat dissipation and the power consumption , Otherwise why are they clamoring for the flagship of the small screen ? [ Yun Sad ] 9se died quite miserably with 712 ...
+Melanie: Former 9se users , the problem is not on 712 . The hand feel is really good , but the jumping screen is really unpopular , and there is no version with high memory and memory , the space is not enough so I replaced my machine . The feel is actually quite comfortable
+Gordon: Xiaomi 6 [ Doge ] ?
+
+
+Rebecca: Let me see who dares to buy Xiaomi Miracle ! ! ! [ Meow Meow ] ( previous 10pro user )
+Simon: I have to say that in recent years , Xiaomi mobile phones have been very bad , and basically every one has some problems . I used to be a Mi fan , but since I used Mi 9 , I realized that the workmanship of Xiaomi mobile phones is really rubbish . After using the phone for a few months , all three buttons are stuck , the charging is intermittent , and the battery is also very poor . Later , I decided to switch to Apple . After using it , I realized that the Xiaomi mobile phone is really garbage .
+Faith: Hahaha , shocked , Xiaomi mobile phone has a strange product control problem [ like ] All three keys are stuck , you really NB
+Simon: Is n't that normal ? I repaired it once in less than a month and then it happened again . Later , I decided to buy Apple .
+Austin: It 's boring to follow the trend [ weak ]
+Rebecca: I Play stalks , I am also rice noodles myself
+Ava: Now if you say that Xiaomi is not good , you have to prove your identity first .
+
+
+Marisa: Which of the most impressive mobile phones ?
+Alexandra: Nova3 is also very easy to use
+Dennis: The appearance I bought a few years ago is also good -looking now , but unfortunately it was broken last year .
+Alexandra: Indeed , the style is beautiful and lightweight now
+Logan: Honor play , the pioneering work of the play series . The metal body is very resistant to falling . It has been used for three years and has been dropped no less than 20 times . It is not damaged , but it is slightly worn . Kirin 970 can fight again . ( But the later play actually dropped from the mid - end machine to the low - end machine , I hate Hornor ) The later play series is e - waste .
+Barbara: Honor Play is really the first mobile phone I bought in college . Repeatedly considering the comparison , it is very easy to use . It 's a pity that the later Play series made me greatly disappointed
+Logan: I am still using it . Except for battery life , the charging speed is slow , and there are really no other shortcomings . But I changed my phone right away , but unfortunately it is no longer glory .
+Katherine: Nokia 5230 ?
+Lewis: 5800
+
+RIGHT ANSWER: Sara
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.6818181818181818
+============================================================
+
+QUESTION: Whose opinions from Anthony and Grace about devices are most similar to James's?
+RETRIEVED: 
+Relevant utterances:
+James: Many people say that Xiaomi lacks designers . In fact , I do n't think it is . Many of Xiaomi 's design is still very advanced , and dare to try new materials . What Xiaomi lacks is the spirit of craftsmen .
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+James: Come on , I have been using the s10 + Forerunner for three years [ doge ] is still smooth , I will upgrade oneui4.0 next month and it can fight for another two years [ laugh cry ]
+Anthony: I have n't dared to use Android since the z11 rip me up , I 'm really scared
+Grace: In a blogger called the technology circle , I do n't know where the pictures came from . [ laugh cry ] , it may be that the manufacturer released it in advance to warm up .
+James: I use it normally , I do n't feel the lag [ laugh cry ] and I 'm still a heavy mobile phone user
+James: I feel that Xiaobai is the most worthless test .
+
+Relevant dialogs:
+
+James: Come on , I have been using the s10 + Forerunner for three years [ doge ] is still smooth , I will upgrade oneui4.0 next month and it can fight for another two years [ laugh cry ]
+Patricia: [ doge ] The tenth generation is ahead of the times
+James: It is indeed too much ahead of other models [ laugh cry ]
+Rebecca: The s10 has been used for nearly 3 years . The battery and charging are the flaws . Others are fine .
+James: I changed the battery once [ laugh cry ] I feel that I will use it for another two years without any problem , mainly because I bought a tabs7 + in the previous paragraph , and the budget for buying an s22u is not enough
+Julian: After using a high refresh rate mobile phone , I feel that the S10 is a bit stuck [ laugh cry ]
+James: I use it normally , I do n't feel the lag [ laugh cry ] and I 'm still a heavy mobile phone user
+
+
+Chloe: As a Mi fan for many years , I would say that oppo is indeed better than Xiaomi , in terms of light ratio . Xiaomi 's slender external screen makes people just want to open it to use , but opened is 60hz , with a strong sense of splitting and large creases . The ratio of oppo seems to be the best at present , and it can be held in one hand . If you want to be big , open it , if you want to be small , you can use the out screen . Xiaomi is very embarrassed , and the appearance is not good . Even in terms of publicity , oppo is a peacock as soon as it unfolds , which is very beautiful . Xiaomi is a fish after unfolding
+Kimberly: What is there to boast about the one - to - one internal screen ? When watching videos , the display area is not as good as that of mainstream Android phones
+Chloe: It looks comfortable and feels good to hold . The Mi fold is so long , like a remote control , and the display area is also very awkward . It 's too ugly to take it out . Will you watch videos on the outside screen ? ? ? If there is a folding screen , you do n't use the inner screen to watch the video , then why do you buy a folding screen
+Kimberly: Android tablet ecological adaptation is very poor , only this 1:1 , I hope oppo can give developers the money spent on marketing . Only rely on yourself to fight Huawei , Xiaomi , Samsung , Lenovo and other software ecosystems .
+Adrian: ?
+Alan: [ Yun Bei ] [ Yun Bei ] [ Yun Bei ]
+Jacqueline: Just boasting [ Switting ] [ Switting ] [ Swinding ]
+Chloe: Then you buy Mi fold , see if you are comfortable with it
+
+
+Anthony: What makes you think so ? Have you seen the blind test of Brother Zhan 's original image ?
+Caroline: I think the 11U is just average for taking pictures , it 's overblown .
+Anthony: Brother Zhan 's original picture , blindly test , see for yourself . Whether it is good or bad is naturally inhabits man 's heart
+Herbert: The biggest problem with the 11u is the color , image , look and feel , but the photos are sharpened seriously , and the OnePlus 9p also has problems . On the other hand , the blue - green factory is not too bragging . Although the OnePlus is also from green factory , but the Big Brother x3 series is not specialise in camera , but its look and feel of the photo is good , the saturation is high but not too bright , and the scenery is well handled in all aspects include exposure but not sharpened seriously .
+Jason: Is Brother Zhan zhe digital chat station ?
+Anthony: I just posted yesterday , you can rummage it
+
+RIGHT ANSWER: Anthony
+MODEL ANSWER: james
+CURRENT ACCURACY: 0.6521739130434783
+============================================================
+

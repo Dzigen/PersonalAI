@@ -1,0 +1,276 @@
+QUESTION: Whose opinions from Linda and Arianna about manufacturers are most similar to Hugh's?
+RETRIEVED: 
+Relevant utterances:
+Hugh: "Which flagship machine is not heavy now . Both pro and promax feel drop . I buy pm directly ."
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Daisy: But the heat dissipation is really a problem, I'm considering switching to another brand.
+Josephine: Yeah, I've heard mixed reviews about Xiaomi's customer service. Have you had any issues with Apple's signal, Hugh?
+Hugh: I know what you mean, my promax has an amazing battery life too. I can go on trips without worrying about running out of juice.
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Linda: I'm considering switching to K40, but I'm not sure about the texture.
+Hugh: I've been using my Promax for a while now, and I'd say the battery life is decent.
+Hugh: I agree, my promax's battery is amazing, I can use it all day without worrying.
+Hugh: Yeah, I was considering the 11pro, but I'm glad I went with the Findx3 instead.
+Hugh: I think the configuration of my Huawei is pretty standard, nothing special.
+Hugh: I don't like their cameras, the pictures always turn out blurry.
+Hugh: "Do n't buy 8G1 and 888 [ doge ] Others are optional"
+Hugh: "Everyone 's aesthetics are different , I think it 's pretty , but the problem is that it 's like 🍎 ( especially with the case ) , it 's the flagship phone anyway , but when I take it out , everyone thinks it 's an Apple , and I feel disgusted when I think about it . ."
+Ariana: "Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ?"
+RIGHT ANSWER: Linda
+MODEL ANSWER: arianna
+CURRENT ACCURACY: 0.0
+============================================================
+
+QUESTION: Whose opinions from Belinda and Arianna about manufacturers are most similar to Gerld's?
+RETRIEVED: 
+Relevant utterances:
+Gerld: I'm with Belinda, Samsung's pixels are a letdown.
+Gerld: I don't like the feel of my x3, it's just not comfortable in my hand.
+Gerld: "Mine is the official silicone case , maybe it 's not on the shelves yet"
+Gerld: I don't know why people like Mate40Pro, Magic3Pro is way better in my opinion.
+Gerld: I feel the same way about the Magic3Pro's temperament. It's not bad, but it's not great either.
+Gerld: I wish I could say the same about my S21U, but the screen is just not reliable.
+Gerld: Yeah, I've heard that too. Maybe I'll look into it. Anything's gotta be better than this S21U.
+Gerld: Ugh, don't even get me started on my S21U. The signal is so weak, it's like it's not even trying.
+Gerld: Average? My S22U's battery is way worse than average! I need to charge it multiple times a day.
+Gerld: Oh, I completely agree with Aidan! The charging on my S22U is super fast, I can get a full day's use with just a quick top-up.
+Gerld: "[ doge ] Stainless steel frame , can it not be heavy ? The aluminum used in 13 is much lighter . The pro with the same measurements costs 200 +"
+Gerld: Ugh, I'm so frustrated with the S22U, the camera is really subpar.
+Gerld: Ugh, I'm so tired of having no signal on my Apple phone, it's so unreliable.
+Gerld: "That 's true , when it first came out , it was 4500 . I also scolded it like Apple when it with a case . But when it drops to 3000 , there is no disadvantage [ allow sad ] the rear camera module does look like ip"
+Gerld: "The functional aspects I am talking about ."
+RIGHT ANSWER: Belinda
+MODEL ANSWER: belinda
+CURRENT ACCURACY: 0.5
+============================================================
+
+QUESTION: Whose opinions from Amanda and Arianna about manufacturers are most similar to Joshua's?
+RETRIEVED: 
+Relevant utterances:
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Joshua: "Others are worse , look at other brands , everyone is scolding everyone , Xiaomi is relatively good , at least there are not many machines , those who are using machine sea tactical , you really think that maintenance is better than Xiaomi ?"
+Joshua: "[ doge ] Are there so many requirements to buy at this price , enough to play games and daily use is enough"
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Joshua: I love my x2, the design is so sleek and modern!
+Joshua: I don't think so, their global sales are really struggling.
+Joshua: "There is basically no frame lock , and the battery life is quite good . It is very good to charge once a day . The overall cos11 is stable . It has all the functions it should have , but it 's just that taking pictures is quite ordinary"
+Ariana: "Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ?"
+Arianna: "13 is 1000 more expensive , it does not have a high brush , and it is not much upgraded compared to 12 ."
+Joshua: "Yes , but it is slightly thicker . It ca n't compare to my 18 , but other places have improved a lot . Prep 618 buy 12x"
+Joshua: "Yes , it has , open 5 g or not make 865 and a15 two different chips"
+Patricia: I'm not really sure about the water resistance, I've heard mixed reviews.
+Joshua: I've been using an x2 for a while now, and I think its appearance is just okay.
+Joshua: "I recommended that give these two hundred yuan to vivo"
+Joshua: Yeah, I've had a good experience with Apple's customer service too. They're pretty helpful.
+RIGHT ANSWER: Amanda
+MODEL ANSWER: arianna
+CURRENT ACCURACY: 0.3333333333333333
+============================================================
+
+QUESTION: Whose opinions from Jesse and Arianna about manufacturers are most similar to Joseph's?
+RETRIEVED: 
+Relevant utterances:
+Joseph: Exactly! It's like they really care about our experience.
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Joseph: Yeah, I agree with Isaiah, the Z axis is not a big deal for me, it's just average.
+Joseph: Maybe we're just too picky, but I think the workmanship could be better.
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Joseph: I think Samsung is a good choice, it has everything I need, but nothing that really stands out.
+Joseph: What? I think the case of magic2 is really well-made, it's so durable!
+Joseph: I've had nothing but problems with my K30s Supreme, it's been a real disappointment.
+Joseph: "Is n't you talking about the K30s Supreme ? Except the charging is less than 67w , the others basically in line with your requirements , and the 865 actually has no difference to 870 ."
+Joseph: What's wrong with it? I've heard great things about the Mi series.
+Ariana: "Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ?"
+Joseph: Yeah, the apps are pretty disappointing. I wish they were better.
+Joseph: I've had no issues with the openings, it's easy to use.
+Joseph: Yeah, I have to agree with you on the feel, it's not the most comfortable phone to hold.
+Joseph: I disagree, I think the case of Magic2 is really nice, it's so sleek!
+RIGHT ANSWER: Jesse
+MODEL ANSWER: arianna
+CURRENT ACCURACY: 0.25
+============================================================
+
+QUESTION: Whose opinions from Hugh and Arianna about manufacturers are most similar to Linda's?
+RETRIEVED: 
+Relevant utterances:
+Linda: I'm considering switching to K40, but I'm not sure about the texture.
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Daisy: But the heat dissipation is really a problem, I'm considering switching to another brand.
+Linda: I've had the Meizu for a few months, it's decent, doesn't really impress me though.
+Linda: I'm not a fan of Vivo's texture, it feels cheap to me.
+Hugh: "Which flagship machine is not heavy now . Both pro and promax feel drop . I buy pm directly ."
+Linda: I'm not sure what to say about the battery, it's just okay, I guess.
+Ariana: "Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ?"
+Linda: "You have a little bit of this . People only need the king and the chicken . The 660 from n years ago can run well . Do you really think there will be a big gap in the same chip experience ? [ hee hee ]"
+Linda: I know how you feel, my Mate 20's battery is also very poor.
+Linda: Yeah, I've had some issues with the processor, but it's not a deal-breaker.
+Arianna: "[ Doge ] You really want to buy a ov with more than 8,000?I think most people wo n't do it . [ Doge ] I remember that the Blue Factory was not so expensive in the past two years"
+Linda: "After all , the thousand yuan machine has to increase the price . If the screen is better , it will be castrated in other places ."
+Katherine: I'm thinking of switching to a different brand, anyone have any recommendations?
+RIGHT ANSWER: Hugh
+MODEL ANSWER: arianna
+CURRENT ACCURACY: 0.2
+============================================================
+
+QUESTION: Whose opinions from Joseph and Arianna about manufacturers are most similar to Jesse's?
+RETRIEVED: 
+Relevant utterances:
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Jesse: I'm not bothered about the weight of my max, it's not too heavy or light.
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Jesse: Ugh, the openings of Samsung are so small, it's hard to handle.
+Jesse: "why ? I am considering buying one . Oppo or oneplus which is better"
+Ariana: "Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ?"
+Jesse: I don't have strong feelings about the positioning of my Realme, it's just okay.
+Jesse: MIUI is...alright. It's not my favorite, but it's not bad either.
+Jesse: I agree, the functions are okay, but nothing special.
+Jesse: "I used to be a staunch supporter of 6s and x , but after I bought the 12p at first launch , the battery life became bad after half a year . It did n't take long for me to start worrying about the battery when I go out . For the sake of battery life , I have to endure the volume and weight , and I want to buy a max ."
+Joseph: Yeah, I agree with Isaiah, the Z axis is not a big deal for me, it's just average.
+Jesse: I hate the handling of my m10, it's so uncomfortable.
+Joseph: Exactly! It's like they really care about our experience.
+Joseph: I think Samsung is a good choice, it has everything I need, but nothing that really stands out.
+Arianna: "13 is 1000 more expensive , it does not have a high brush , and it is not much upgraded compared to 12 ."
+RIGHT ANSWER: Joseph
+MODEL ANSWER: arianna
+CURRENT ACCURACY: 0.16666666666666666
+============================================================
+
+QUESTION: Whose opinions from Gabriella and Arianna about manufacturers are most similar to Alexandra's?
+RETRIEVED: 
+Relevant utterances:
+Alexandra: I mean, the heat dissipation is fine, it's not like it's overheating or anything.
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Alexandra: I'm not really bothered about the heat dissipation, it's not a big deal for me.
+Alexandra: I've had some issues with overheating on my 11 series, but it's not a huge deal.
+Alexandra: "I have used all three you mentioned , and I have also used Le 2max zuk z2 , Mi 5 is my favorite , it is thin and light , and the feel is good , I have used three different versions before and after , and I have also used mate8 p9 . They are all used to play the glory of king , and I did n't feel too hot in summer . It 's far away from the 11 11p 11u I used last year . Besides , Huawei of the same year play the glory of king is garbage , and the performance is not good , only the temperature is not high is useless"
+Alexandra: I don't think I'll ever switch from nova, it's just that good.
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Alexandra: I don't have any issues with the refresh rate, it's decent.
+Katherine: I'm thinking of switching to a different brand, anyone have any recommendations?
+Alexandra: I feel the same about my 11pro. The memory is decent, but sometimes I wish I had a bit more.
+Ariana: "Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ?"
+Arianna: "Which color ! Hahaha , wait for a feedback , I do n't know if the difference between 13pro and XR is very big ."
+Patricia: I'm not really sure about the water resistance, I've heard mixed reviews.
+Arianna: "13 is 1000 more expensive , it does not have a high brush , and it is not much upgraded compared to 12 ."
+Daisy: But the heat dissipation is really a problem, I'm considering switching to another brand.
+RIGHT ANSWER: Gabriella
+MODEL ANSWER: arianna
+CURRENT ACCURACY: 0.14285714285714285
+============================================================
+
+QUESTION: Whose opinions from Joshua and Arianna about manufacturers are most similar to Amanda's?
+RETRIEVED: 
+Relevant utterances:
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Amanda: "It depends on the size of the hand , I have a stubby palm and I have no problem holding a small cup . But the design of the small cup may not be so friendly to friends with slender hands ."
+Amanda: I've been using the P40 and I think the dual speakers are okay, not bad but not amazing either.
+Amanda: I'm not blown away by the speakers on my p40, but they're not bad either.
+Amanda: I agree, everything else is good, but it's not like it's the best or anything.
+Amanda: "Now that you talk about supporting domestic production , you use such a rubbish screen , and it still sell for 4,000 yuan . There are so many state - owned enterprises , Xiaomi OPPOvivo , any one is better than yours , why do n't I support domestic production that is stronger than you ?"
+Amanda: Ugh, I'm really disappointed with the dual speakers on my P40, they're so weak.
+Amanda: I've been really happy with the battery on my 13mini, it's been a big improvement over my old phone.
+Amanda: I've had my mate30 for a bit, and the battery life is...fine. It's not amazing, but it's not terrible either.
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Amanda: I've seen Xiaomi's sales rising, but I don't know if it's just a trend.
+Patricia: I'm not really sure about the water resistance, I've heard mixed reviews.
+Amanda: Yeah, I've seen it, it's really good. But I'm used to my P40 now, it's not so bad.
+Amanda: "Pro is the same as this ?"
+Amanda: I used to love Huawei, but their global sales have been a real letdown.
+RIGHT ANSWER: Joshua
+MODEL ANSWER: josephine
+CURRENT ACCURACY: 0.125
+============================================================
+
+QUESTION: Whose opinions from Isabel and Arianna about manufacturers are most similar to Jonathan's?
+RETRIEVED: 
+Relevant utterances:
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Jonathan: "I can buy a lot of brands , it 's not just one thing"
+Jonathan: "Apart from the small size and good feel , nothing else good . It is recommended to replace 13pro with 13pro max ."
+Jonathan: "I only know that the camera of the previous generation product is weak compared to the mainstream of the domestic flagship . This is recognized . And the battery is n't durable either . Besides a screen , what else ?"
+Jonathan: Yeah, Xiaomi's not perfect, but it's not bad either.
+Jonathan: I've been using vivo and I think the adjustments are just so-so.
+Jonathan: I used to have an X5 series phone, but the motor was so loud and annoying. I'm glad I switched.
+Jonathan: "The same question"
+Katherine: I'm thinking of switching to a different brand, anyone have any recommendations?
+Nicole: I've tried everything, but nothing seems to work. I'm thinking of switching to a different brand.
+Jonathan: "What 's so bad ? I also want to buy a p50pro [ allow sad ]"
+Arianna: "Which color ! Hahaha , wait for a feedback , I do n't know if the difference between 13pro and XR is very big ."
+Jonathan: "After all , cheap"
+Nicholas: iQOO's prices are ridiculous, I'll never buy one.
+RIGHT ANSWER: Isabel
+MODEL ANSWER: arianna
+CURRENT ACCURACY: 0.1111111111111111
+============================================================
+
+QUESTION: Whose opinions from Gerld and Arianna about manufacturers are most similar to Belinda's?
+RETRIEVED: 
+Relevant utterances:
+Gerld: I'm with Belinda, Samsung's pixels are a letdown.
+Belinda: I've tried the Max and it's...fine, I don't love it or hate it.
+Gerld: I don't like the feel of my x3, it's just not comfortable in my hand.
+Belinda: "I think the silver version of p40peo is still very good - looking even now [ doge][doge ]"
+Gerld: "Mine is the official silicone case , maybe it 's not on the shelves yet"
+Gerld: I feel the same way about the Magic3Pro's temperament. It's not bad, but it's not great either.
+Belinda: I have to say, the signal on my Apple is really good, I never have any problems with it.
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Gerld: I don't know why people like Mate40Pro, Magic3Pro is way better in my opinion.
+Belinda: Honestly, I don't have any strong feelings about the signal on my Apple phone, it's just...there.
+Gerld: I wish I could say the same about my S21U, but the screen is just not reliable.
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Gerld: "[ doge ] Stainless steel frame , can it not be heavy ? The aluminum used in 13 is much lighter . The pro with the same measurements costs 200 +"
+Gerld: Yeah, I've heard that too. Maybe I'll look into it. Anything's gotta be better than this S21U.
+Belinda: I have a mini too, but I'm not impressed with the battery life. I need to charge it multiple times a day.
+RIGHT ANSWER: Gerld
+MODEL ANSWER: gerld
+CURRENT ACCURACY: 0.2
+============================================================
+
+QUESTION: Whose opinions from Alexandra and Arianna about manufacturers are most similar to Gabriella's?
+RETRIEVED: 
+Relevant utterances:
+Gabriella: Have you tried Xiaomi's phones? I've heard they're really good.
+Gabriella: "It 's okay to scold . I just think a brand that uses a mix of screens , and the quality of the screen also requires a lottery by consumers , is talking about the screen materials with others , which is rather funny . As for whose screen is bad , KOLs will come up with a result after a while"
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Alexandra: I mean, the heat dissipation is fine, it's not like it's overheating or anything.
+Gabriella: "The floor host is right , blogger do n't think that you are very clever , everything is just as what you said ? Consumers have no steelyard in their hearts ? [ doge ]"
+Alexandra: I'm not really bothered about the heat dissipation, it's not a big deal for me.
+Gabriella: I'm obsessed with the color of my 8Pro, it's so sleek and stylish.
+Alexandra: I've had some issues with overheating on my 11 series, but it's not a huge deal.
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Gabriella: "Yes , I bought 11u for taking pictures , but it was annoying to get the UV film off after a month . Now I can only use the hydrogel film that Xiaomi post - sale gives"
+Patricia: I'm not really sure about the water resistance, I've heard mixed reviews.
+Gabriella: "Changed from 12 pm , it 's completely different ! Smooth and lasting"
+Gabriella: "I do n't think so , 10pro is Samsung e3 90hz , 12x is Huaxing 120hz , it 's almost the s a me , they are symmetrical , the performance is the same core [ doge ] , maybe the heat dissipation is not as good , but it feels good ."
+Gabriella: Honestly, the color is just okay, doesn't really stand out to me.
+Katherine: I'm thinking of switching to a different brand, anyone have any recommendations?
+RIGHT ANSWER: Alexandra
+MODEL ANSWER: alexandra
+CURRENT ACCURACY: 0.2727272727272727
+============================================================
+
+QUESTION: Whose opinions from Graham and Arianna about manufacturers are most similar to Sophia's?
+RETRIEVED: 
+Relevant utterances:
+Josephine: I'm so disappointed with domestic brands, they're just not reliable.
+Sophia: The color of my mate30 series is nice, but not my favorite.
+Sophia: I don't really have an opinion about the feel of my m10, it's just a phone to me.
+Sophia: I've tried a few different devices, and they all have their pros and cons. I'm just happy with something that works, you know?
+Aidan: I'm thinking of switching to a different brand, anyone have any recommendations?
+Sophia: I have to say, the feel of the M10 in my hand is really comfortable.
+Sophia: "How about p50 ? P50 does not have 5 G so I still do n't want to buy it"
+Sophia: Maybe we're just not using it right? I've heard some people rave about Samsung's cameras.
+Ariana: "Do you mean that Honor can be scolded when it uses a garbage screen , but ca n't be praised when it has improved and use a better screen ? And another brand can be boasted about its good screen in the first two years ( most of the people I follow , including me also agree that the screen of Xiaomi Mi 10.11 is very good ) , but when this one lose , it ca n't be scolded ? It 's a bit too double standard , this is just a normal comparison , why not ?"
+Sophia: I've had my Oppo for a while now, and I have to say, the charging is pretty decent.
+Graham: I've been thinking of upgrading to a newer model, anyone have any recommendations?
+Sophia: I'm so happy with my max, the battery lasts me all day and I don't need to recharge until bedtime.
+Sophia: I think I'll wait a bit longer before making a decision.
+Sophia: I don't know, I think the feel of my m10 is just okay.
+Sophia: I've been considering the 12x, but I'm not sure if the screen is worth the price.
+RIGHT ANSWER: Graham
+MODEL ANSWER: arianna
+CURRENT ACCURACY: 0.25
+============================================================
+
