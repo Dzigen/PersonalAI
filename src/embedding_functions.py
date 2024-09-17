@@ -46,6 +46,11 @@ class AbstractDatabaseConnection(ABC):
         # извлечение N ближайших сущностей к данной по заданной метрике
         pass
 
+    @abstractmethod
+    def clear(self):
+        # Удаление содержания заднной базы 
+        pass
+
     def __del__(self):
         self.close_connection()
 
@@ -55,6 +60,7 @@ class VectorDBConnectionConfig:
     db_name: str
     params: Dict = field(default_factory=lambda: {})
     db_vendor: str = 'chroma'
+    need_to_clear: bool = False
 
 @dataclass
 class VectorDBInstance:
@@ -64,18 +70,24 @@ class VectorDBInstance:
     metadata: Dict = field(default_factory=lambda: dict())
 
 class ChromaConnection(AbstractDatabaseConnection):
-    """_summary_"""
     def __init__(self, config: VectorDBConnectionConfig) -> None:
         self.config = config
         self.open_connection()
 
-    def open_connection(self) -> int:
+    def open_connection(self):
         self.client = chromadb.PersistentClient(path=self.config.path)
         self.collection = self.client.get_or_create_collection(name=self.config.db_name)
+
+        if self.config.need_to_clear:
+            self.clear()
 
     def close_connection(self):
         del self.collection
         del self.client
+
+    def clear(self):
+        self.client.delete_collection(name=self.config.db_name)
+        self.collection = self.client.create_collection(name=self.config.db_name)
 
     def create(self, instances: List[VectorDBInstance]):
         """Добавление объектов в базу.
@@ -171,26 +183,10 @@ class EmbedderModel:
         )
 
     def encode_queries(self, queries: List[str], **kwargs) -> List[List[float]]:
-        """_summary_
-
-        Args:
-            queries (List[str]): _description_
-
-        Returns:
-            List[List[float]]: _description_
-        """
         return self.model.encode(queries, prompt_name='query', 
                                  normalize_embeddings=self.config.normalize_embeddings, **kwargs)
 
     def encode_passages(self, passages: List[str], **kwargs) -> List[List[float]]:
-        """_summary_
-
-        Args:
-            passages (List[str]): _description_
-
-        Returns:
-            List[List[float]]: _description_
-        """
         return self.model.encode(passages, prompt_name='query',
                                  normalize_embeddings=self.config.normalize_embeddings,
                                  **kwargs)
