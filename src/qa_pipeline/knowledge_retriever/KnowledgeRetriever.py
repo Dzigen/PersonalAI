@@ -1,8 +1,8 @@
-from ..query_parser.utils import QueryInfo
-from ...knowledge_graph_model import KnowledgeGraphModel
-from .utils import Triplet, AbstractTriplesFilter, AbstractTripletsRetriever
+from .utils import AbstractTriplesFilter, AbstractTripletsRetriever
 from .TripletsFilter import TripletsFilterConfig, TripletsFilter
 from .AStarTripletsRetriever import AStartTripletsRetriever, AStarGraphSearchConfig
+from ...utils.data_structs import QueryInfo, Triplet
+from ...knowledge_graph_model import KnowledgeGraphModel
 
 from dataclasses import dataclass, field
 from typing import List

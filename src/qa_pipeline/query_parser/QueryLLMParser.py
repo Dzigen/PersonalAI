@@ -1,5 +1,13 @@
-from .utils import QueryLLMParserConfig, QueryInfo
+from dataclasses import dataclass
+
+from .utils import EntitiesExtractorConfig
+from ...utils.data_structs import QueryInfo
 from ...agents.llama_agent import LLaMAagent
+
+@dataclass
+class QueryLLMParserConfig:
+    ents_extr_config: EntitiesExtractorConfig
+
 
 class QueryLLMParser:
     """Главный класс для извлечения полезной информации 

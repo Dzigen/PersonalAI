@@ -1,6 +1,4 @@
 from dataclasses import dataclass
-from typing import List
-from ...embedding_functions import VectorDBInstance
 
 ENTITIES_EXTRACTION_USER_PROMPT = '''You are an expert system that can extract key entities from text. Key entities is a noun or an object like persone, device, company and etc. Extract such entities from the given text and present the results in the following format: <entitie1> | <entitie2> | ... | <entitieN>. Generate only entities and dont return some additional text. Examples of texts and extracted entities are listed below:
 Text 1: Kayla has positive, negative or neutral opinion about video of Xiaomi 10Pro?
@@ -18,15 +16,4 @@ Entities: '''
 @dataclass
 class EntitiesExtractorConfig:
     user_prompt: str = ENTITIES_EXTRACTION_USER_PROMPT
-
-@dataclass
-class QueryLLMParserConfig:
-    ents_extr_config: EntitiesExtractorConfig
-
-
-@dataclass
-class QueryInfo:
-    query: str
-    entities: List[str]
-    linked_nodes: List[VectorDBInstance]
 

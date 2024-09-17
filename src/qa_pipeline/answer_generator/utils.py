@@ -36,9 +36,3 @@ class ContextType(Enum):
     simple = "simple"
     hyper = "hyper"
     episodic = "episodic"
-
-@dataclass
-class QALLMGeneratorConfig:
-    user_prompt: str = QUESTION_ANSWERING_USER_PROMPT
-    context_type: List[ContextType] = field(default_factory=lambda: 
-                                            [ContextType.simple, ContextType.hyper, ContextType.episodic])

@@ -16,3 +16,22 @@ class AbstractAgentModel:
     @abstractmethod
     def generate(self, user_prompt: str, assistant_prompt: str = None, gen_strategy: Dict = None) -> str:
         pass
+
+class AgentConnectionType:
+    local = 0
+    remote = 1
+
+@dataclass
+class GeneralAgentConnectionParams:
+    pass
+
+@dataclass
+class RemoteAgentConnectionParams(GeneralAgentConnectionParams):
+    host: str = "10.16.88.76"
+    gen_path: str = "generate"
+    check_path: str = ""
+    port: str = "45678"
+    
+@dataclass
+class LocalAgentConnectionParams(GeneralAgentConnectionParams):
+    pass

@@ -3,7 +3,7 @@ from .extractor.LLMExtractor import LLMExtractor
 from .updator.LLMUpdator import LLMUpdator
 from ..agents import LLaMAagent
 from ..qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
-from ..qa_pipeline.knowledge_retriever.utils import Triplet, Node, Relation
+from ..utils.data_structs import Triplet, Node, Relation
 from ..knowledge_graph_model import KnowledgeGraphModel
 
 from typing import Dict

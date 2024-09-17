@@ -1,4 +1,4 @@
-from .utils import AbstractAgentConnector
+from .utils import AbstractAgentConnector, RemoteAgentConnectionParams, AgentConnectionType, GeneralAgentConnectionParams
 from .agent_model import AgentModel, AgentModelConfig
 
 from dataclasses import dataclass, field
@@ -6,25 +6,6 @@ from enum import Enum
 from typing import Dict, Union
 import gc
 import requests
-
-class AgentConnectionType:
-    local = 0
-    remote = 1
-
-@dataclass
-class GeneralAgentConnectionParams:
-    pass
-
-@dataclass
-class RemoteAgentConnectionParams(GeneralAgentConnectionParams):
-    host: str = "10.16.88.76"
-    gen_path: str = "generate"
-    check_path: str = ""
-    port: str = "45678"
-    
-@dataclass
-class LocalAgentConnectionParams(GeneralAgentConnectionParams):
-    pass
 
 @dataclass
 class AgentConnectorConfig:

@@ -1,2 +1,1 @@
-from .utils import QALLMGeneratorConfig
-from .QALLMGenerator import QALLMGenerator
+from .QALLMGenerator import QALLMGenerator, QALLMGeneratorConfig

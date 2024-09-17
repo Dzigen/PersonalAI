@@ -1,7 +1,14 @@
-from .utils import KnowledgeComparatorConfig
-from ..query_parser.utils import QueryInfo
+from ...utils.data_structs import QueryInfo
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ...embedding_functions import VectorDBInstance
+
+from dataclasses import dataclass
+
+@dataclass
+class KnowledgeComparatorConfig:
+    threshold: float = 0.5
+    fetch_n: int = 20
+    max_k: int = 1
 
 class KnowledgeComparator:
     """Главный класс для сопостовения информации в пользовательском запросе

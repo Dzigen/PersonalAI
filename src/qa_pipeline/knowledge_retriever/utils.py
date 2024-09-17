@@ -1,29 +1,7 @@
-from dataclasses import dataclass, field
-from enum import Enum
 from typing import List
 from abc import ABC, abstractmethod
 
-from ..query_parser import QueryInfo
-
-@dataclass
-class Node:
-    name: str
-    type: str
-    id: str = None
-    prop: dict = field(default_factory=lambda: {})
-
-@dataclass
-class Relation:
-    name: str
-    type: str
-    id: str = None
-    prop: dict = field(default_factory=lambda: {})
-
-@dataclass
-class Triplet:
-    start_node: Node 
-    relation: Relation 
-    end_node: Node
+from ...utils.data_structs import QueryInfo, Triplet
 
 class AbstractTriplesFilter(ABC):
     @abstractmethod

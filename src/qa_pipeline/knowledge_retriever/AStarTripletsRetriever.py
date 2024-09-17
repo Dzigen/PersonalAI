@@ -2,11 +2,10 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Tuple
 import joblib
 import numpy as np
-import hashlib
 
+from .utils import AbstractTripletsRetriever
+from ...utils.data_structs import QueryInfo, Node, Relation, Triplet
 from ...knowledge_graph_model import KnowledgeGraphModel
-from ..query_parser.utils import QueryInfo
-from .utils import Node, Relation, Triplet, AbstractTripletsRetriever
 
 @dataclass
 class AStarMetricsConfig:

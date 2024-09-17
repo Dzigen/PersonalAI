@@ -1,18 +1,25 @@
-from ..agents.llama_agent import LLaMAagent
+from .answer_generator import QALLMGenerator, QALLMGeneratorConfig
+from .knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
+from .knowledge_comparator import KnowledgeComparator, KnowledgeComparatorConfig
+from .query_parser import QueryLLMParser, QueryLLMParserConfig
+from ..llm_agent import AgentConnector
 from ..knowledge_graph_model import KnowledgeGraphModel
-from .utils import QAPipelineConfig
 
-from .answer_generator import QALLMGenerator
-from .knowledge_retriever import KnowledgeRetriever
-from .knowledge_comparator import KnowledgeComparator
-from .query_parser import QueryLLMParser
+from dataclasses import dataclass, field
+
+@dataclass
+class QAPipelineConfig:
+    knowledge_retriever_config: KnowledgeRetrieverConfig = field(default_factory=lambda: KnowledgeRetrieverConfig())
+    query_parser_config: QueryLLMParserConfig = field(default_factory=lambda: QueryLLMParserConfig())
+    knowledge_comparator_config: KnowledgeComparatorConfig = field(default_factory=lambda: KnowledgeComparatorConfig())
+    answer_generator_config: QALLMGeneratorConfig = field(default_factory=lambda: QALLMGeneratorConfig())
 
 class QAPipeline:
     """Главный класс QA-конвейера для генерации ответов на пользовательские вопросы
     с использованием имеющегося графа знаний
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, llm_agent: LLaMAagent, config: QAPipelineConfig) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, llm_agent: AgentConnector, config: QAPipelineConfig) -> None:
         self.kg_model = kg_model
         self.llama_agent = llm_agent
         self.config = config

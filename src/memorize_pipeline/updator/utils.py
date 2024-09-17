@@ -75,9 +75,3 @@ Warning! Replacing must be generated strictly in following format: [[outdated_tr
 Replacing: """
 
 log_path = "debug"
-
-@dataclass
-class LLMUpdatorConfig:
-    log: Logger = field(default_factory=lambda: Logger(log_path))
-    replace_thesis_prompt: str = REPLACE_THESIS_PROMPT
-    replace_simple_prompt: str = REPLACE_SIMPLE_PROMPT

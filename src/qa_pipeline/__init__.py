@@ -1,2 +1,1 @@
-from .QAPipeline import QAPipeline
-from .utils import QAPipelineConfig
+from .QAPipeline import QAPipeline, QAPipelineConfig

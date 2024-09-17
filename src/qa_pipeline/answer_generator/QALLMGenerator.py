@@ -1,8 +1,15 @@
+from .utils import QUESTION_ANSWERING_USER_PROMPT, ContextType
+from ...utils.data_structs import Triplet
 from ...agents.llama_agent import LLaMAagent
-from .utils import QALLMGeneratorConfig, ContextType
-from ..knowledge_retriever.utils import Triplet
 
 from typing import List
+from dataclasses import dataclass, field
+
+@dataclass
+class QALLMGeneratorConfig:
+    user_prompt: str = QUESTION_ANSWERING_USER_PROMPT
+    context_type: List[ContextType] = field(default_factory=lambda: 
+                                            [ContextType.simple, ContextType.hyper, ContextType.episodic])
 
 class QALLMGenerator:
     """Главный класс для генерации ответов по пользовательским вопросам на основе 

@@ -1,8 +1,15 @@
 from ...agents.llama_agent import LLaMAagent
-from .utils import LLMExtractorConfig
+from .utils import TRIPLETS_EXTRACTION_PROMPT, THESISES_EXTRACTION_PROMPT, Logger, log_path
 
+from dataclasses import dataclass, field
 from typing import List
 import ast
+
+@dataclass
+class LLMExtractorConfig:
+    triplet_extraction_prompt: str = TRIPLETS_EXTRACTION_PROMPT
+    thesis_extraction_prompt: str = THESISES_EXTRACTION_PROMPT
+    log: Logger = field(default_factory=lambda: Logger(log_path))
 
 class LLMExtractor:
 

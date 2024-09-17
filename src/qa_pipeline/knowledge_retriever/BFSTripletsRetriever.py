@@ -1,13 +1,11 @@
+from .utils import AbstractTripletsRetriever
+from ...utils.data_structs import QueryInfo, Node, Relation, Triplet
+from ...knowledge_graph_model import KnowledgeGraphModel
+
 import copy
 from dataclasses import dataclass
 from typing import List
-
 import torch
-
-from ...knowledge_graph_model import KnowledgeGraphModel
-from ..query_parser.utils import QueryInfo
-from .utils import Node, Relation, Triplet, AbstractTripletsRetriever
-
 
 @dataclass
 class BFSSearchConfig:

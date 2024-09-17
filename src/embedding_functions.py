@@ -3,11 +3,8 @@ from dataclasses import dataclass, field
 from sentence_transformers import SentenceTransformer
 from typing import Dict, List, Tuple
 
-from .qa_pipeline.knowledge_retriever.utils import Triplet, Node
+from .utils.data_structs import Triplet
 from .qa_pipeline.answer_generator.utils import ContextType
-
-import chromadb
-import enum
 
 class AbstractDatabaseConnection(ABC):
     
