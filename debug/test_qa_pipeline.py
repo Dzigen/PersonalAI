@@ -1,16 +1,16 @@
-from ..agents.llama_agent import LLaMAagent
-from ..knowledge_graph_model import KnowledgeGraphModel
-from .utils import QAPipelineConfig
+from ..src.agents.llama_agent import LLaMAagent
+from ..src.knowledge_graph_model import KnowledgeGraphModel
+from ..src.qa_pipeline.utils import QAPipelineConfig
 
-from .answer_generator import QALLMGenerator
-from .knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
-from .knowledge_retriever.TripletsFilter import TripletsFilter
-from .knowledge_retriever.utils import AStarGraphSearchConfig, NaiveTripletsFilterConfig
-from .knowledge_retriever.AStarTripletsRetriever import AStartTripletsRetriever
-from .knowledge_comparator import KnowledgeComparator
-from .query_parser import QueryLLMParser
-from ..neo4j_functions import Neo4jConnection
-from ..embedding_functions import VectorDBConnectionConfig, EmbeddingsDatabaseConnectionConfig, \
+from ..src.qa_pipeline.answer_generator import QALLMGenerator
+from ..src.qa_pipeline.knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
+from ..src.qa_pipeline.knowledge_retriever.TripletsFilter import TripletsFilter
+from ..src.qa_pipeline.knowledge_retriever.utils import AStarGraphSearchConfig, NaiveTripletsFilterConfig
+from ..src.qa_pipeline.knowledge_retriever.AStarTripletsRetriever import AStartTripletsRetriever
+from ..src.qa_pipeline.knowledge_comparator import KnowledgeComparator
+from ..src.qa_pipeline.query_parser import QueryLLMParser
+from ..src.neo4j_functions import Neo4jConnection
+from ..src.embedding_functions import VectorDBConnectionConfig, EmbeddingsDatabaseConnectionConfig, \
     EmbeddingsDatabaseConnection, EmbedderModel, EmbedderModelConfig
 
 
