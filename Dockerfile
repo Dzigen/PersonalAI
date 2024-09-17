@@ -27,4 +27,5 @@ RUN ls -la
 RUN python3 --version
 WORKDIR /app/src
 
-CMD  ["sh", "-c", "uvicorn api:app --reload --host 0.0.0.0 --port 4567"]
+CMD  ["sh", "-c", "uvicorn api:app --reload --host 0.0.0.0 --port 4567"] 
+#CMD ["sh", "-c", "sleep infinity"]

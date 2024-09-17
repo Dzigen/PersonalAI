@@ -24,7 +24,7 @@ class AgentModel(AbstractAgentModel):
             device_map="auto"
         )
 
-    def generate(self, user_prompt: str, assistant_prompt: str = None, gen_strategy: Dict = None) -> str:
+    def generate(self, user_prompt: str, assistant_prompt: str = None, system_prompt: str = None, gen_strategy: Dict = None) -> str:
         """Метод для генерации ответов на текстовые запросы с помощью llm-агента.
 
         Args:
@@ -37,9 +37,10 @@ class AgentModel(AbstractAgentModel):
             str: Текстовая последовательность, сгенерированная llm-агентом.
         """
         messages = [
-            {"role": "system", "content": self.config.system_prompt},
             {"role": "user","content": user_prompt}
             ]
+        
+        messages.insert(0, {"role": "system", "content": self.config.system_prompt if system_prompt is not None else SYSTEM_PROMPT})
 
         if assistant_prompt is not None:
             messages.insert(1, {"role": "assistant", "content": assistant_prompt})
@@ -59,6 +60,8 @@ class AgentModel(AbstractAgentModel):
         outputs = self.pipeline(
             prompt,
             eos_token_id=terminators,
+            pad_token_id=self.pipeline.tokenizer.eos_token_id,
+            return_full_text=False,
             **gen_strategy
         )
         
