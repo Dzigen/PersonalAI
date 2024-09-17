@@ -3,26 +3,25 @@ from .extractor.LLMExtractor import LLMExtractor
 from .updator.LLMUpdator import LLMUpdator
 from ..agents import LLaMAagent
 from ..qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
-from ..embedding_functions import EmbeddingsDatabaseConnection
-from ..neo4j_functions import Neo4jConnection
 from ..qa_pipeline.knowledge_retriever.utils import Triplet, Node, Relation
+from ..knowledge_graph_model import KnowledgeGraphModel
 
+from typing import Dict
 
 class MemPipeline:
 
-    def __init__(self, config: MemPipelineConfig, llm_agent: LLaMAagent, bfs: BFSRetriever, neo4j_conn: Neo4jConnection, vectordb_conn: EmbeddingsDatabaseConnection, db_name: str) -> None:
+    def __init__(self, config: MemPipelineConfig, llm_agent: LLaMAagent, bfs: BFSRetriever, kg_model: KnowledgeGraphModel) -> None:
         self.config = config
         self.log = config.log
-        self.db_name = db_name
 
         self.extractor = LLMExtractor(llm_agent, config.extractor_config)
         self.updator = LLMUpdator(config.updator_config, llm_agent, bfs)
+        
+        self.kg_model = kg_model
 
-        self.neo4j_conn = neo4j_conn
-        self.vectordb_conn = vectordb_conn
-
-    def remember(self, text, replacing_window_width = 32, replacing_window_depth = 1, need_simple = True, need_thesises = True, need_episodic = True, 
-                 need_update = False, node_prop = {}, rel_prop = {}):
+    def remember(self, text: str, replacing_window_width: int = 32, replacing_window_depth: int = 1, 
+                 need_simple: bool = True, need_thesises: bool = True, need_episodic: bool = True, 
+                 need_update: bool = False, node_prop: Dict = {}, rel_prop: Dict = {}) -> None:
         assert need_simple or need_thesises
         new_triplets = self.extractor.extract(text, need_simple, need_thesises, need_episodic, node_prop, rel_prop)  
         # self.log("PROCESSED NEW TRIPLETS: " + str(new_triplets))
@@ -32,14 +31,14 @@ class MemPipeline:
             # self.log("PROCESSED OUTDATED TRIPLETS: " + str(triplets_to_remove))
         
 
-        ids = self.neo4j_conn.create_triplets(new_triplets, self.db_name)
+        ids = self.kg_model.graph_db.create_triplets(new_triplets)
         prepared_triplets = self.match_triplets_by_id(new_triplets, ids)
-        self.vectordb_conn.add_triplets(prepared_triplets)
+        self.kg_model.embeddings_db.add_triplets(prepared_triplets)
         if need_update:
-            ids = self.neo4j_conn.delete_triplets(triplets_to_remove, self.db_name)
+            ids = self.kg_model.graph_db.delete_triplets(triplets_to_remove)
             triplets_ids = [id[1] for id in ids]
             nodes_ids = [id[0] for id in ids] + [id[2] for id in ids]
-            self.vectordb_conn.delete_triplets(triplets_ids, nodes_ids)
+            self.kg_model.embeddings_db.delete_triplets(triplets_ids, nodes_ids)
 
     @staticmethod
     def match_triplets_by_id(triplets, ids):

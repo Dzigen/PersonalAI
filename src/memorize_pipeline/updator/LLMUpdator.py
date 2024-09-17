@@ -1,6 +1,4 @@
 from .utils import LLMUpdatorConfig
-from ...knowledge_graph_model import KnowledgeGraphModel
-from ...embedding_functions import VectorDBInstance
 from ...agents import LLaMAagent
 from ...qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
 

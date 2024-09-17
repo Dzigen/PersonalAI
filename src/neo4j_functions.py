@@ -1,5 +1,6 @@
 import copy
 from neo4j import GraphDatabase
+from typing import List, Dict, Tuple
 
 class Neo4jConnection:
     def __init__(self, uri, user, pwd, default_db="testdb"):
