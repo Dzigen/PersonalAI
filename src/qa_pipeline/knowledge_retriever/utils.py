@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import List
 from abc import ABC, abstractmethod
@@ -7,17 +7,17 @@ from ..query_parser import QueryInfo
 
 @dataclass
 class Node:
-    id: str
     name: str
     type: str
-    prop: dict
+    id: str = None
+    prop: dict = field(default_factory=lambda: {})
 
 @dataclass
 class Relation:
-    id: str
     name: str
     type: str
-    prop: dict
+    id: str = None
+    prop: dict = field(default_factory=lambda: {})
 
 @dataclass
 class Triplet:
