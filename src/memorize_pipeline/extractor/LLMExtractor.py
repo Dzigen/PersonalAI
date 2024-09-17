@@ -39,16 +39,16 @@ class LLMExtractor:
     def extract_triplets(self, text, node_prop = {}, rel_prop = {}):
         raw_response = self.agent_conn.generate(self.triplet_extraction_prompt.format(text = text), 
                                                 gen_strategy={'max_new_tokens': 2048})
-        self.log("TEXT: " + text)
-        self.log("EXTRACTED TRIPLETS: " + str(raw_response))
+        self.log("TEXT: " + text, verbose=False)
+        self.log("EXTRACTED TRIPLETS: " + str(raw_response), verbose=False)
         new_triplets = self.parse_triplets(raw_response, node_prop, rel_prop)
         return new_triplets
         
     def extract_thesises(self, text, node_prop = {}, rel_prop = {}):
         raw_response = self.agent_conn.generate(self.thesis_extraction_prompt.format(text = text), 
                                                 gen_strategy={'max_new_tokens': 2048})
-        self.log("TEXT: " + text)
-        self.log("EXTRACTED THESISES: " + str(raw_response))
+        self.log("TEXT: " + text, verbose=False)
+        self.log("EXTRACTED THESISES: " + str(raw_response), verbose=False)
         new_triplets = self.parse_thesises(raw_response, node_prop, rel_prop)
         return new_triplets
     

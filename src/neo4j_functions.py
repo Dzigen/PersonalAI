@@ -3,14 +3,14 @@ from neo4j import GraphDatabase
 from typing import List, Dict, Tuple
 
 class Neo4jConnection:
-    def __init__(self, uri, user, pwd, default_db="testdb"):
+    def __init__(self, uri, user, pwd, db_name="testdb"):
         self.driver = None
         try:
             self.driver = GraphDatabase.driver(uri, auth=(user, pwd))
         except Exception as e:
             print("Failed to create the driver:", e)
-        self.default_db = default_db
-        self.execute_query(f"CREATE DATABASE {default_db} IF NOT EXISTS", db=default_db)
+        self.db_name = db_name
+        self.execute_query(f"CREATE DATABASE {db_name} IF NOT EXISTS", db_flag=False)
 
         self.create_node_template = 'CREATE (n:{type} {{ name: "{name}"}})'
         self.create_rel_template0 = """MATCH (a:{type1}), (b:{type2})
@@ -43,7 +43,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         if self.driver is not None:
             self.driver.close()
     
-    def extract_triplets_by_query(self, query, max_triplets, db=None):
+    def extract_triplets_by_query(self, query):
         # execute query and return triplets in given format or
         # None if query is incorrect or returned triplets list is emtpy
         triplets = []
@@ -64,7 +64,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                 rel_props = dict(rel)
                 return {"type": rel_type, "prop": rel_props}
 
-            res = self.execute_query(query, db=db)
+            res = self.execute_query(query)
             for subj, rel, obj in res:
                 triplet = [process_node(subj), process_rel(rel), process_node(obj)]
                 triplets.append(triplet)
@@ -73,7 +73,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         if triplets:
             return triplets
     
-    def create_triplets(self, triplets: List[List[Dict]], db=None) -> List[Tuple[str, str, str]]:
+    def create_triplets(self, triplets: List[List[Dict]]) -> List[Tuple[str, str, str]]:
         # add nodes and edges which presented in triplets list
         # Check to unique node name
         # Pay attention to the format of triplets
@@ -108,27 +108,27 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         
         added_triplets_ids = []
         for subj, rel, obj in triplets:
-            subj_out = self.execute_query(f'MATCH (subj:{subj["type"]}) WHERE subj.name = "{subj["name"]}" RETURN elementID(subj) as id', db=db)
+            subj_out = self.execute_query(f'MATCH (subj:{subj["type"]}) WHERE subj.name = "{subj["name"]}" RETURN elementID(subj) as id')
             if not subj_out:
                 insert_subj_query = create_node_query(subj)
-                subj_id = self.execute_query(insert_subj_query, db=db)[0]['id']
+                subj_id = self.execute_query(insert_subj_query)[0]['id']
             else:
                 subj_id = subj_out[0]['id']
 
-            obj_out = self.execute_query(f'MATCH (obj:{obj["type"]}) WHERE obj.name = "{obj["name"]}" RETURN elementID(obj) as id', db=db)
+            obj_out = self.execute_query(f'MATCH (obj:{obj["type"]}) WHERE obj.name = "{obj["name"]}" RETURN elementID(obj) as id')
             if not obj_out:
                 insert_obj_query = create_node_query(obj)
-                obj_id = self.execute_query(insert_obj_query, db=db)[0]['id']
+                obj_id = self.execute_query(insert_obj_query)[0]['id']
             else:
                 obj_id = obj_out[0]['id']
             
             create_rel_query = create_rel(subj, subj_id, rel, obj, obj_id)
-            rel_id = self.execute_query(create_rel_query, db=db)[0]['id']
+            rel_id = self.execute_query(create_rel_query)[0]['id']
             added_triplets_ids.append((subj_id, rel_id, obj_id))
         
         return added_triplets_ids
 
-    def delete_triplets(self, triplets, db=None):
+    def delete_triplets(self, triplets):
         # delete edges which presented in triplets list
         # Pay attention to the format of triplets and check if triplets indeed are in graph
         # If some node loss its last edge, it must be deleted too
@@ -152,19 +152,17 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                 props_query = ", ".join(props_query)
                 query += f'[r:{rel_type} ' + '{ ' + props_query + ' }]'
                 query += f'->(n:{obj_type}' + ' { ' + f'name: "{obj_name}"' + ' })'
-                self.execute_query(query, db=db)
+                self.execute_query(query)
             except Exception as e:
                 print(f"error in deleting triplets: {e}")
         return []
 
-    def execute_query(self, query, db=None):
-        if db is None:
-            db = self.default_db
+    def execute_query(self, query: str, db_flag: bool = True):
         assert self.driver is not None, "Driver not initialized!"
         session = None
         response = None
         try:
-            session = self.driver.session(database=db) if db is not None else self.driver.session()
+            session = self.driver.session(database=self.db_name) if db_flag else self.driver.session()
             response = list(session.run(query))
         except Exception as e:
             print("Query failed:", e)
@@ -173,15 +171,11 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                 session.close()
         return response
 
-    def create_node(self, node_type, node_name, db=None):
-        if db is None:
-            db = self.default_db
+    def create_node(self, node_type, node_name):
         query = self.create_node_template.format(type=node_type, name=node_name)
-        self.execute_query(query, db=db)
+        self.execute_query(query)
 
-    def create_relationship_no_props(self, type1, type2, name1, name2, rel_name, db=None):
-        if db is None:
-            db = self.default_db
+    def create_relationship_no_props(self, type1, type2, name1, name2, rel_name):
         query = self.create_rel_template0.format(
             type1=type1,
             type2=type2,
@@ -189,11 +183,9 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             name2=name2,
             rel_name=rel_name
         )
-        self.execute_query(query, db=db)
+        self.execute_query(query)
 
-    def create_relationship(self, type1, type2, name1, name2, rel_name, rel_prop_name, rel_prop_value, db=None):
-        if db is None:
-            db = self.default_db
+    def create_relationship(self, type1, type2, name1, name2, rel_name, rel_prop_name, rel_prop_value):
         query = self.create_rel_template1.format(
             type1=type1,
             type2=type2,
@@ -203,12 +195,10 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             rel_prop_name=rel_prop_name,
             rel_prop_value=rel_prop_value
         )
-        self.execute_query(query, db=db)
+        self.execute_query(query)
 
     def create_relationship_2props(self, type1, type2, name1, name2, rel_name, rel_prop_name1, rel_prop_value1,
-                                         rel_prop_name2, rel_prop_value2, db=None):
-        if db is None:
-            db = self.default_db
+                                         rel_prop_name2, rel_prop_value2):
         query = self.create_rel_template2.format(
             type1=type1,
             type2=type2,
@@ -220,16 +210,14 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             rel_prop_name2=rel_prop_name2,
             rel_prop_value2=rel_prop_value2
         )
-        self.execute_query(query, db=db)
+        self.execute_query(query)
 
     def create_relationship_5props(self, type1, type2, name1, name2, rel_name,
                                    rel_prop_name1, rel_prop_value1,
                                    rel_prop_name2, rel_prop_value2,
                                    rel_prop_name3, rel_prop_value3,
                                    rel_prop_name4, rel_prop_value4,
-                                   rel_prop_name5, rel_prop_value5, db=None):
-        if db is None:
-            db = self.default_db
+                                   rel_prop_name5, rel_prop_value5):
         query = self.create_rel_template5.format(
             type1=type1,
             type2=type2,
@@ -247,23 +235,19 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             rel_prop_name5=rel_prop_name5,
             rel_prop_value5=rel_prop_value5
         )
-        self.execute_query(query, db=db)
+        self.execute_query(query)
 
-    def extract_node(self, node_type=None, node_name=None, db=None):
-        if db is None:
-            db = self.default_db
+    def extract_node(self, node_type=None, node_name=None):
         if node_type and node_name:
             query = self.extract_node_type_name_template.format(type=node_type, name=node_name)
         elif node_type:
             query = self.extract_node_type_template.format(type=node_type)
         elif node_name:
             query = self.extract_node_name_template.format(name=node_name)
-        res = self.execute_query(query, db=db)
+        res = self.execute_query(query)
         return res
 
-    def extract_triplets(self, name1=None, name2=None, rel=None, db=None):
-        if db is None:
-            db = self.default_db
+    def extract_triplets(self, name1=None, name2=None, rel=None):
         if name1 and name2:
             query = self.extract_triplets_names_template.format(name1=name1, name2=name2)
         elif name1 and rel:
@@ -276,17 +260,15 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             query = self.extract_triplets_name2_template.format(name2=name2)
         elif rel:
             query = self.extract_triplets_rel_template.format(rel=rel)
-        res = self.execute_query(query, db=db)
+        res = self.execute_query(query)
         return res
 
-    def parse_triplet_output(self, query, another_entities, chain, subj_labels=None, obj_labels=None, db=None):
-        if db is None:
-            db = self.default_db
+    def parse_triplet_output(self, query, another_entities, chain, subj_labels=None, obj_labels=None):
         triplets = []
         inters_chains = []
         new_entities = []
         try:
-            res = self.execute_query(query, db=db)
+            res = self.execute_query(query)
             for element in res:
                 rel_props = dict(element["r"])
                 rel_props = {key: value for key, value in rel_props.items() if key not in ["raw_time", "sentiment"]}
@@ -314,9 +296,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             print(f"error in query execution: {e}")
         return triplets, new_entities, inters_chains
 
-    def bfs(self, seed_entities, depth=1, subj_labels=None, obj_labels=None, db=None):
-        if db is None:
-            db = self.default_db
+    def bfs(self, seed_entities, depth=1, subj_labels=None, obj_labels=None):
         triplets_dict = {}
         inters_chains = []
         # seed_entity, prop_name="", entity_type="node"
@@ -338,7 +318,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                             if tp == "node":
                                 query = self.extract_triplets_name1_template.format(name1=entity)
                                 new_triplets, cur_entities, cur_inters_chains = self.parse_triplet_output(
-                                    query, another_entities, chain, subj_labels, obj_labels, db
+                                    query, another_entities, chain, subj_labels, obj_labels
                                 )
                                 for ch in cur_inters_chains:
                                     if ch not in inters_chains:
@@ -353,7 +333,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                                         new_entities.append(ent)
                                 query = self.extract_triplets_name2_template.format(name2=entity)
                                 new_triplets, cur_entities, cur_inters_chains = self.parse_triplet_output(
-                                    query, another_entities, chain, subj_labels, obj_labels, db
+                                    query, another_entities, chain, subj_labels, obj_labels
                                 )
                                 for ch in cur_inters_chains:
                                     if ch not in inters_chains:
@@ -370,7 +350,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                             elif tp == "rel_prop":
                                 query = self.extract_triplets_rel_prop_template.format(prop_name=prop_name, prop_value=entity)
                                 new_triplets, cur_entities, cur_inters_chains = self.parse_triplet_output(
-                                    query, another_entities, chain, subj_labels, obj_labels, db
+                                    query, another_entities, chain, subj_labels, obj_labels
                                 )
                                 for ch in cur_inters_chains:
                                     if ch not in inters_chains:
@@ -393,12 +373,12 @@ if __name__ == "__main__":
 
     # создание базы данных
 
-    conn.execute_query("CREATE DATABASE testdb IF NOT EXISTS")
+    conn.execute_query("CREATE DATABASE testdb IF NOT EXISTS", db_flag=False)
 
     # Создание узлов графа
 
-    conn.create_node(node_type="smartphone", node_name="Xiaomi 11", db="testdb")
-    conn.create_node(node_type="feature", node_name="WiFi module", db="testdb")
+    conn.create_node(node_type="smartphone", node_name="Xiaomi 11")
+    conn.create_node(node_type="feature", node_name="WiFi module")
 
     # Создание relation между узлами (rel_prop_name - название property для связи между узлами)
 
@@ -410,32 +390,31 @@ if __name__ == "__main__":
         rel_name="opinion",
         rel_prop_name="dialog_id",
         rel_prop_value="12345",
-        db="testdb"
     )
 
     # Извлечение узлов
 
-    res = conn.extract_node(node_name="Xiaomi 11", db="testdb")
+    res = conn.extract_node(node_name="Xiaomi 11")
     print(res)
 
     # extract all smartphones
-    res = conn.extract_node(node_type="smartphone", db="testdb")
+    res = conn.extract_node(node_type="smartphone")
     print(res)
 
-    res = conn.extract_node(node_type="smartphone", node_name="Xiaomi 11", db="testdb")
+    res = conn.extract_node(node_type="smartphone", node_name="Xiaomi 11")
     print(res)
 
     # извлечение триплетов
-    res = conn.extract_triplets(name1="Xiaomi 11", db="testdb")
+    res = conn.extract_triplets(name1="Xiaomi 11")
     print(res)
 
-    res = conn.extract_triplets(name2="WiFi module", db="testdb")
+    res = conn.extract_triplets(name2="WiFi module")
     print(res)
 
-    res = conn.extract_triplets(rel="opinion", db="testdb")
+    res = conn.extract_triplets(rel="opinion")
     print(res)
 
-    res = conn.extract_triplets(name1="Xiaomi 11", rel="opinion", db="testdb")
+    res = conn.extract_triplets(name1="Xiaomi 11", rel="opinion")
     print(res)
 
 # MATCH (n) RETURN (n) - извлечь все узлы

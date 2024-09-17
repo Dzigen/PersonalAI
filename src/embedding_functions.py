@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from sentence_transformers import SentenceTransformer
 from typing import Dict, List, Tuple
+import chromadb
 
 from .utils.data_structs import Triplet
 from .qa_pipeline.answer_generator.utils import ContextType
@@ -55,7 +56,7 @@ class AbstractDatabaseConnection(ABC):
 class VectorDBConnectionConfig:
     path: str
     db_name: str
-    params: Dict = field(default_factory=lambda: {})
+    params: Dict = field(default_factory=lambda: {"hnsw:space": "ip"})
     db_vendor: str = 'chroma'
     need_to_clear: bool = False
 
@@ -73,7 +74,12 @@ class ChromaConnection(AbstractDatabaseConnection):
 
     def open_connection(self):
         self.client = chromadb.PersistentClient(path=self.config.path)
-        self.collection = self.client.get_or_create_collection(name=self.config.db_name)
+
+        if self.config.need_to_clear:
+            self.collection = self.client.get_or_create_collection(name=self.config.db_name)
+        else:
+            self.collection = self.client.create_collection(name=self.config.db_name, 
+                                                            metadata=self.config.params)
 
         if self.config.need_to_clear:
             self.clear()
@@ -84,7 +90,8 @@ class ChromaConnection(AbstractDatabaseConnection):
 
     def clear(self):
         self.client.delete_collection(name=self.config.db_name)
-        self.collection = self.client.create_collection(name=self.config.db_name)
+        self.collection = self.client.create_collection(name=self.config.db_name, 
+                                                        metadata=self.config.params)
 
     def create(self, instances: List[VectorDBInstance]):
         """Добавление объектов в базу.
@@ -189,11 +196,14 @@ class EmbedderModel:
                                  **kwargs)
 
 
+NODES_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="./nodes", db_name="nodes")
+TRIPLETS_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="./triplets", db_name="triplets")
+
 @dataclass
 class EmbeddingsDatabaseConnectionConfig:
-    nodes_db_config: VectorDBConnectionConfig
-    triplets_db_config: VectorDBConnectionConfig
-    embedder_config: EmbedderModelConfig
+    nodes_db_config: VectorDBConnectionConfig = NODES_DB_DEFAULT_CONFIG
+    triplets_db_config: VectorDBConnectionConfig = TRIPLETS_DB_DEFAULT_CONFIG
+    embedder_config: EmbedderModelConfig = EmbedderModelConfig()
 
 #
 AVAILABLE_VECTODB_CONNECTORS = {
@@ -201,7 +211,7 @@ AVAILABLE_VECTODB_CONNECTORS = {
 }
 
 class EmbeddingsDatabaseConnection:
-    def __init__(self, config: EmbeddingsDatabaseConnectionConfig):
+    def __init__(self, config: EmbeddingsDatabaseConnectionConfig = EmbeddingsDatabaseConnectionConfig()):
         self.vecordbs = {
             'nodes': AVAILABLE_VECTODB_CONNECTORS[config.nodes_db_config.db_vendor](config.nodes_db_config),
             'triplets': AVAILABLE_VECTODB_CONNECTORS[config.nodes_db_config.db_vendor](config.triplets_db_config)}
