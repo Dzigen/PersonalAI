@@ -11,7 +11,7 @@ class Neo4jConnection:
         except Exception as e:
             print("Failed to create the driver:", e)
         self.create_node_template = 'CREATE (n:{type} {{ name: "{name}"}})'
-        self.create_entity_template = 'CREATE (n:entity {{ kind: "{type}", name: "{name}"}})'
+        self.create_entity_template = 'CREATE (n:object {{ kind: "{type}", name: "{name}"}})'
 
         self.create_rel_template0 = """MATCH (a:{type1}), (b:{type2})
 WHERE a.name="{name1}" and b.name ="{name2}"
@@ -30,14 +30,14 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 WHERE a.name="{name1}" and b.name ="{name2}"
 CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
 
-        self.create_rel_template_props_entity = """MATCH (a:entity), (b:entity)
+        self.create_rel_template_props_entity = """MATCH (a:object), (b:object)
 WHERE a.name="{name1}" AND a.kind="{type1}" AND b.name="{name2}" AND b.kind="{type2}"
 CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
 
         self.extract_node_type_template = 'MATCH (a:{type}) RETURN a'
         self.extract_node_name_template = 'MATCH (a) WHERE a.name="{name}" RETURN a'
         self.extract_node_type_name_template = 'MATCH (a:{type}) WHERE a.name="{name}" RETURN a'
-        self.extract_entity_template = 'MATCH (a:entity) WHERE a.name="{name}" AND a.kind="{type}" RETURN a'
+        self.extract_entity_template = 'MATCH (a:object) WHERE a.name="{name}" AND a.kind="{type}" RETURN a'
 
         # MATCH (a:User {username: 'user6'})-[r]-(b) RETURN r, a, b
         self.extract_triplets_name1_template = 'MATCH (a)-[r]-(b) WHERE a.name="{name1}" RETURN a, r, b'
