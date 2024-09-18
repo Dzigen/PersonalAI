@@ -13,7 +13,7 @@ print(len(samples))
 conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
 
 all_devices = set()
-insert_main = False
+insert_main = True
 insert_aux = True
 total_triplets = []
 good_samples = []
@@ -171,7 +171,7 @@ for device in all_devices:
                 type2="manufacturer",
                 name1=device,
                 name2=found_manf,
-                rel_type="manufacturer",
+                rel_type="simple",
                 props_dict=props_dict,
                 db="testdb"
             )
