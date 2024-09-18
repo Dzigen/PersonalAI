@@ -39,16 +39,16 @@ class LLMExtractor:
     def extract_triplets(self, text, node_prop = {}, rel_prop = {}):
         raw_response = self.agent_conn.generate(self.triplet_extraction_prompt.format(text = text), 
                                                 gen_strategy={'max_new_tokens': 2048})
-        self.log("TEXT: " + text, verbose=False)
-        self.log("EXTRACTED TRIPLETS: " + str(raw_response), verbose=False)
+        self.log("TEXT: " + text, verbose=True)
+        self.log("EXTRACTED TRIPLETS: " + str(raw_response), verbose=True)
         new_triplets = self.parse_triplets(raw_response, node_prop, rel_prop)
         return new_triplets
         
     def extract_thesises(self, text, node_prop = {}, rel_prop = {}):
         raw_response = self.agent_conn.generate(self.thesis_extraction_prompt.format(text = text), 
                                                 gen_strategy={'max_new_tokens': 2048})
-        self.log("TEXT: " + text, verbose=False)
-        self.log("EXTRACTED THESISES: " + str(raw_response), verbose=False)
+        self.log("TEXT: " + text, verbose=True)
+        self.log("EXTRACTED THESISES: " + str(raw_response), verbose=True)
         new_triplets = self.parse_thesises(raw_response, node_prop, rel_prop)
         return new_triplets
     
@@ -64,16 +64,14 @@ class LLMExtractor:
     
     @staticmethod
     def parse_thesises(response, node_prop, rel_prop):
-        if ":" in response:
-            response = response.split(":")[-1]
-        raw_thesises = response.split(".")
+        raw_triplets = ' '.join(list(filter(lambda v: len(v) and (';' in v) and ('.' in v), response.split("\n")[1:-1]))).lower()
+        raw_thesises = raw_triplets .split(".")
         thesises = []
         for raw_thesis in raw_thesises:
-            if ";" not in raw_thesis:
-                continue
-            raw_thesis = raw_thesis.split(";")
             try:
-                entities = ast.literal_eval(raw_thesis[1].strip(''' \n'".,/'''))
+                raw_thesis, raw_entities = raw_thesis.split(";")
+                thesis = raw_thesis.strip('.-* ')
+                entities = ast.literal_eval(raw_entities.strip(''' \n'".,/'''))
             except:
                 continue
             
@@ -82,7 +80,7 @@ class LLMExtractor:
                     [
                         {"name": entity, "type": "object", "prop": {**node_prop}},
                         {"name": "hyper", "prop": {"type": "simple", **rel_prop}},
-                        {"name": raw_thesis[0], "type": "hyper", "prop": {**node_prop}}
+                        {"name": thesis, "type": "hyper", "prop": {**node_prop}}
                     ]
                 )
             

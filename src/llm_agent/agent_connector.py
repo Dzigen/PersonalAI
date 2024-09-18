@@ -93,8 +93,8 @@ class LocalAgentConnector(AbstractAgentConnector):
     def check_connection(self):
         return hasattr(self, 'agent') and isinstance(self.agent, AbstractAgentConnector)
 
-    def generate(self, user_prompt: str, assistant_prompt: str = None, gen_strategy: Dict = None):
-        return self.agent.generate(user_prompt, assistant_prompt, gen_strategy)   
+    def generate(self, user_prompt: str, assistant_prompt: str = None, system_prompt: str = None, gen_strategy: Dict = None):
+        return self.agent.generate(user_prompt, assistant_prompt, system_prompt, gen_strategy)   
 
 # Доступные способы соединения с llm-агентом
 CONNECTORS = {

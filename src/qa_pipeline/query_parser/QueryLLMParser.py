@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from .utils import EntitiesExtractorConfig
 from ...utils.data_structs import QueryInfo
@@ -6,7 +6,7 @@ from ...llm_agent import AgentConnector
 
 @dataclass
 class QueryLLMParserConfig:
-    ents_extr_config: EntitiesExtractorConfig = EntitiesExtractorConfig()
+    ents_extr_config: EntitiesExtractorConfig = field(default_factory=lambda: EntitiesExtractorConfig()) 
 
 
 class QueryLLMParser:

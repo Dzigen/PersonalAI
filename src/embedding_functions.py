@@ -59,6 +59,7 @@ class VectorDBConnectionConfig:
     params: Dict = field(default_factory=lambda: {"hnsw:space": "ip"})
     db_vendor: str = 'chroma'
     need_to_clear: bool = False
+    is_exist: bool = True
 
 @dataclass
 class VectorDBInstance:
@@ -75,14 +76,15 @@ class ChromaConnection(AbstractDatabaseConnection):
     def open_connection(self):
         self.client = chromadb.PersistentClient(path=self.config.path)
 
-        if self.config.need_to_clear:
-            self.collection = self.client.get_or_create_collection(name=self.config.db_name)
+        if self.config.is_exist:
+            if self.config.need_to_clear:
+                self.clear()
+            else:
+                self.collection = self.client.get_collection(name=self.config.db_name) 
+            
         else:
             self.collection = self.client.create_collection(name=self.config.db_name, 
                                                             metadata=self.config.params)
-
-        if self.config.need_to_clear:
-            self.clear()
 
     def close_connection(self):
         del self.collection
@@ -196,14 +198,14 @@ class EmbedderModel:
                                  **kwargs)
 
 
-NODES_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="./nodes", db_name="nodes")
-TRIPLETS_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="./triplets", db_name="triplets")
+NODES_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="./nodes", db_name="vectorized_nodes")
+TRIPLETS_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="./triplets", db_name="vectorized_triplets")
 
 @dataclass
 class EmbeddingsDatabaseConnectionConfig:
-    nodes_db_config: VectorDBConnectionConfig = NODES_DB_DEFAULT_CONFIG
-    triplets_db_config: VectorDBConnectionConfig = TRIPLETS_DB_DEFAULT_CONFIG
-    embedder_config: EmbedderModelConfig = EmbedderModelConfig()
+    nodes_db_config: VectorDBConnectionConfig = field(default_factory=lambda: NODES_DB_DEFAULT_CONFIG) 
+    triplets_db_config: VectorDBConnectionConfig = field(default_factory=lambda: TRIPLETS_DB_DEFAULT_CONFIG)
+    embedder_config: EmbedderModelConfig = field(default_factory=lambda: EmbedderModelConfig())
 
 #
 AVAILABLE_VECTODB_CONNECTORS = {
