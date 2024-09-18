@@ -185,11 +185,11 @@ class AStartTripletsRetriever(AStarGraphSearch, AbstractTripletsRetriever):
                 
             for relation in relations:
                 formated_node1 = Node(name=relation['n1']['name'], type=list(relation['n1'].labels)[0],
-                                      id=relation['n1'].element_id, prop=relation['n1'])
+                                      id=relation['n1'].element_id, prop=dict(relation['n1']))
                 formated_node2 = Node(name=relation['n2']['name'], type=list(relation['n2'].labels)[0], 
-                                      id=relation['n2'].element_id, prop=relation['n2'])
+                                      id=relation['n2'].element_id, prop=dict(relation['n2']))
                 formated_relation = Relation(type=relation['rel'].type, id=relation['rel'].element_id,
-                                             prop=relation['rel'])
+                                             prop=dict(relation['rel']))
                 s_node, e_node = (formated_node1, formated_node2) if relation['n1_is_start_node'] else (formated_node2, formated_node1) 
                 tripletes[formated_relation.id] = Triplet(start_node=s_node, relation=formated_relation, end_node=e_node)
 
