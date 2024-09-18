@@ -111,8 +111,9 @@ class LLMExtractor:
     def get_episodic_relationships(text, entities, node_prop, rel_prop):
         episodic_triplets = []
         for entity in entities:
-            triplet = [entity, {"name": "episodic", "prop": {"type": "episodic", **rel_prop}}, 
-                       {"name": text, "type": "episodic_node", "prop": {**node_prop}}]
+            triplet = [entity, 
+                       {"name": "episodic", "prop": {"type": "episodic", **rel_prop}}, 
+                       {"name": text, "type": "episodic", "prop": {**node_prop}}]
             episodic_triplets.append(triplet)
             
         return episodic_triplets

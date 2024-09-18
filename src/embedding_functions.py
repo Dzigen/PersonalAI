@@ -222,10 +222,17 @@ class EmbeddingsDatabaseConnection:
     def formate_triplete(self, triplet: Triplet) -> str:
         rel_type = triplet.relation.type
         if (rel_type == ContextType.episodic) or (rel_type == ContextType.hyper):
-            cur_formated_triplet = triplet.relation.prop["time"] + ": " + triplet.end_node.name
+            cur_formated_triplet = ""
+            if "time" in triplet.relation.prop.keys():
+                cur_formated_triplet += triplet.relation.prop["time"] + ": "
+            cur_formated_triplet += triplet.end_node.name
+
         elif rel_type == ContextType.simple:
-            cur_formated_triplet = triplet.relation.prop["time"] + ": " + " ".join(
-                    [triplet.start_node.name, triplet.relation.name, triplet.end_node.name])
+            cur_formated_triplet = ""
+            if "time" in triplet.relation.prop.keys():
+                cur_formated_triplet += triplet.relation.prop["time"] + ": "
+            cur_formated_triplet += " ".join([triplet.start_node.name, triplet.relation.name, triplet.end_node.name])
+
         else:
             raise KeyError
                 
