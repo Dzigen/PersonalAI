@@ -25,12 +25,19 @@ class QALLMGenerator:
             rel_type = triplet.relation.type
             if rel_type in self.config.context_type:
                 if (rel_type == ContextType.episodic) or (rel_type == ContextType.hyper):
-                    filtered_context.append(
-                        triplet.relation.prop["time"] + ": " + triplet.end_node.name)
+                    str_triplet = ""
+                    if "time" in triplet.relation.prop.keys():
+                        str_triplet += triplet.relation.prop["time"] + ": "
+                    str_triplet += triplet.end_node.name
+
+                    filtered_context.append(str_triplet)
                 elif rel_type == ContextType.simple:
-                    filtered_context.append(
-                        triplet.relation.prop["time"] + ": " + " ".join(
-                            [triplet.start_node.name, triplet.relation.name, triplet.end_node.name]))
+                    str_triplet = ""
+                    if "time" in triplet.relation.prop.keys():
+                        str_triplet += triplet.relation.prop["time"] + ": "
+                    str_triplet += " ".join([triplet.start_node.name, triplet.relation.name, triplet.end_node.name])
+
+                    filtered_context.append( str_triplet)
                 else:
                     raise KeyError
                 
