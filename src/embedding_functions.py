@@ -219,7 +219,8 @@ class EmbeddingsDatabaseConnection:
             'triplets': AVAILABLE_VECTODB_CONNECTORS[config.nodes_db_config.db_vendor](config.triplets_db_config)}
         self.embedder = EmbedderModel(config.embedder_config)
 
-    def formate_triplete(self, triplet: Triplet) -> str:
+    @staticmethod
+    def formate_triplete(triplet: Triplet) -> str:
         rel_type = triplet.relation.type
         if (rel_type == ContextType.episodic) or (rel_type == ContextType.hyper):
             cur_formated_triplet = ""
@@ -238,6 +239,7 @@ class EmbeddingsDatabaseConnection:
                 
         return triplet.relation.id, cur_formated_triplet
 
+    @staticmethod
     def formate_nodes(triplet: Triplet) -> str:
         return [triplet.start_node.id, triplet.end_node.id], [triplet.start_node.name, triplet.end_node.name]
 
@@ -246,11 +248,11 @@ class EmbeddingsDatabaseConnection:
         unique_nodes_ids, unique_stringified_nodes = ([], []) if add_nodes else (None, None)
         
         for triplet in triplets:
-            triplet_id, str_triplet = self.formate_triplete(triplet)
+            triplet_id, str_triplet = EmbeddingsDatabaseConnection.formate_triplete(triplet)
             triplets_ids.append(triplet_id)
             stringified_triplets.append(str_triplet)
             if add_nodes:
-                nodes_id, str_nodes = self.formate_nodes(triplet)
+                nodes_id, str_nodes = EmbeddingsDatabaseConnection.formate_nodes(triplet)
                 for node_id, str_node in zip(nodes_id, str_nodes):
                     if node_id not in unique_nodes_ids:
                         unique_nodes_ids.append(node_id)

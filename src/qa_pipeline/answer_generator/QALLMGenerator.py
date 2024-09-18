@@ -1,9 +1,11 @@
 from .utils import QUESTION_ANSWERING_USER_PROMPT, ContextType
 from ...utils.data_structs import Triplet
 from ...llm_agent import AgentConnector
+from ...embedding_functions import EmbeddingsDatabaseConnection
 
 from typing import List
 from dataclasses import dataclass, field
+
 
 @dataclass
 class QALLMGeneratorConfig:
@@ -20,27 +22,8 @@ class QALLMGenerator:
         self.config = config
 
     def formate_context(self, triplets: List[Triplet]) -> str:
-        filtered_context = []
-        for triplet in triplets:
-            rel_type = triplet.relation.type
-            if rel_type in self.config.context_type:
-                if (rel_type == ContextType.episodic) or (rel_type == ContextType.hyper):
-                    str_triplet = ""
-                    if "time" in triplet.relation.prop.keys():
-                        str_triplet += triplet.relation.prop["time"] + ": "
-                    str_triplet += triplet.end_node.name
-
-                    filtered_context.append(str_triplet)
-                elif rel_type == ContextType.simple:
-                    str_triplet = ""
-                    if "time" in triplet.relation.prop.keys():
-                        str_triplet += triplet.relation.prop["time"] + ": "
-                    str_triplet += " ".join([triplet.start_node.name, triplet.relation.name, triplet.end_node.name])
-
-                    filtered_context.append( str_triplet)
-                else:
-                    raise KeyError
-                
+        filtered_context = list(map(lambda triplet: EmbeddingsDatabaseConnection.formate_triplete(triplet), triplets))
+        filtered_context = list(map(lambda triplet: triplet[1], filtered_context))                
         return "\n".join(filtered_context)
 
     def generate(self, query: str, context: str) -> str:
