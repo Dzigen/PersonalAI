@@ -149,7 +149,7 @@ class ChromaConnection(AbstractDatabaseConnection):
         """
         
         raw_retrieved_instances = self.collection.query(
-            query_embeddings=[inst.embedding for inst in query_instances],
+            query_embeddings=[inst.embedding.tolist() for inst in query_instances],
             include=include + ['distances'], n_results=n_results, **kwargs)
 
         formated_instances = []
@@ -158,7 +158,7 @@ class ChromaConnection(AbstractDatabaseConnection):
             for j in range(len(raw_retrieved_instances['ids'][i])):
                 tmp_inst = {requested_field[:-1]: raw_retrieved_instances[requested_field][i][j] 
                         for requested_field in include}
-                cur_distance = raw_retrieved_instances['distance'][i][j]
+                cur_distance = raw_retrieved_instances['distances'][i][j]
 
                 cur_formated_instances.append((cur_distance, VectorDBInstance(**tmp_inst)))
             formated_instances.append(cur_formated_instances)
@@ -185,7 +185,7 @@ class EmbedderModel:
         self.config = EmbedderModelConfig() if config is None else config
         self.model = SentenceTransformer(
             config.model_name_or_path, device=config.device,
-            # prompts=config.prompts
+            prompts=config.prompts
         )
 
     def encode_queries(self, queries: List[str], **kwargs) -> List[List[float]]:
@@ -198,8 +198,8 @@ class EmbedderModel:
                                  **kwargs)
 
 
-NODES_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="./nodes", db_name="vectorized_nodes")
-TRIPLETS_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="./triplets", db_name="vectorized_triplets")
+NODES_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="../data/vectorized_nodes/v8/densedb", db_name="vectorized_nodes")
+TRIPLETS_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="../data/vectorized_triplets/v4/densedb", db_name="vectorized_triplets")
 
 @dataclass
 class EmbeddingsDatabaseConnectionConfig:

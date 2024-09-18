@@ -26,5 +26,5 @@ from ..embedding_functions import VectorDBInstance
 @dataclass
 class QueryInfo:
     query: str
-    entities: List[str]
-    linked_nodes: List[VectorDBInstance]
+    entities: List[str] = None
+    linked_nodes: List[VectorDBInstance] = None

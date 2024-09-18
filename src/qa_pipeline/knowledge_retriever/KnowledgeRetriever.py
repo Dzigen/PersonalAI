@@ -22,8 +22,8 @@ class KnowledgeRetriever:
         self.config = config
         self.kg_model = kg_model
 
-        self.graph_retriever = self.config.graph_search_method(
-            kg_model, self.config.graph_search_config)
+        self.graph_retriever = self.config.graph_retriever_method(
+            kg_model, self.config.graph_retriever_config)
         self.triplets_filter = self.config.triplets_filter_method(
             kg_model, self.config.triplets_filter_config)
 

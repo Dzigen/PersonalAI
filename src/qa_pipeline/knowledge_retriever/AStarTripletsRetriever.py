@@ -11,8 +11,8 @@ from ...knowledge_graph_model import KnowledgeGraphModel
 class AStarMetricsConfig:
     h_metric_name: str = 'weight_with_short_path'
     d_metric_name: str = 'ip'
-    nodes_distances_path: str = '../../data/nodes_distances'
-    nodes_short_paths_file: str = '../../data/nodes_short_paths'
+    nodes_distances_path: str = '../data/vectorized_nodes/v8/nodes_distances_matrix'
+    nodes_short_paths_file: str = '../data/graph_short_paths/stage2/v2/distances_matrix'
 
 @dataclass
 class AStarGraphSearchConfig:
