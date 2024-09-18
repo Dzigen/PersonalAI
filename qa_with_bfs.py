@@ -58,7 +58,7 @@ else:
 
 conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password", embs_dict=triplet_embs_dict)
 
-use_embs = False
+use_embs = True
 if use_embs:
     with open("entities.json", 'r') as inp:
         entities_vocab = json.load(inp)
@@ -137,101 +137,8 @@ Entities 3: {{"screen": "feature", "Samsung": "device"}}
 Question 4: {question}
 Entities 4: """
 
-in_context_examples = [
-    {"question": "Whose opinions from Anthony and Grace about devices are most similar to Faith's?",
-     "info": """person: Anthony, device: Xiaomi, opinion: hard, feature: maintenance point
-person: Anthony, device: mate30pro, opinion: not as good as, feature: signal
-person: Anthony, device: iPhone, opinion: not as good as, feature: signal
-person: Grace, device: Xiaomi 12, opinion: beat, feature: charging speed
-person: Faith, device: Xiaomi, opinion: problem, feature: product control
-person: Faith, device: k30s, opinion: not as good, feature: film effect
-person: Faith, device: red rice, opinion: not as good, feature: film effect""",
-     "chain of thought": """The task is to compare Anthony's and Grace's opinions to Faith's opinions about devices. Faith has two types of opinions: "problem" with the Xiaomi device and "not as good" with both k30s and red rice devices. We will look for similar expressions of dissatisfaction from Anthony and Grace. Grace's opinion about Xiaomi 12 is "beat," which is not similar to any of Faith's negative opinions. Anthony's opinions include "hard" for Xiaomi and "not as good as" for mate30pro and iPhone with respect to the signal feature. "Not as good as" matches Faith's "not as good."
-     """,
-     "final answer": "Anthony"
-     },
-    {"question": "The majority of speakers have positive, neutral or negative sentiment about signal of Apple?",
-     "info": """person: Jessica, time: 25.11.2020, opinion: is okay, device: Apple, feature: signal
-person: Bernard, time: 25.11.2020, opinion: No lag, device: Apple, feature: play games""",
-     "chain of thought": """To determine the sentiment about the signal of Apple, we need to find the opinions specifically related to the "signal" feature of Apple. Opinion "Is okay" or "okay" denotes positive (not neutral) sentiment. From the provided info, only Jessica's opinion mentions the signal: "is okay" This is a positive sentiment. Since there's only one opinion regarding the signal, the majority sentiment is positive.""",
-     "final answer": "Positive"
-     },
-    {"question": "Whose opinions from Rita and Bruce about devices are most similar to Danielle's?",
-     "info": """person: Danielle, time: 15.11.2020, opinion: nice, device: Apple, feature: battery life
-person: Rita, time: 30.12.2020, opinion: good, device: Apple, feature: battery life
-person: Bruce, time: 30.12.2020, opinion: bad, device: Apple, feature: battery life""",
-     "chain of thought": "Danielle and Rita both have positive opinions about the battery life feature of Apple devices, while Bruce has a negative opinion.",
-     "final answer": "Rita"
-     },
-    {"question": "Whose opinions from Zachary and Hannah about devices are most similar to Oswald's?",
-     "info": """person: Oswald, time: 15.11.2020, opinion: nice, device: Xiaomi, feature: battery life
-person: Zachary, time: 30.12.2020, opinion: good, device: Nokia, feature: battery life
-person: Hannah, time: 30.12.2020, opinion: bad, device: Apple, feature: battery life""",
-     "chain of thought": "Our task is to indicate one person in the answer: Zachary or Hannah. one person: Zachary or Hannah. Zachary, Hannah and Oswald do not have common devices, but I can guess that Zachary's opinion can be more similar to Oswald's.",
-     "final answer": "Zachary"
-     },
-    {"question": "Do Abraham and Violet prefer the same device manufacturer? If so, list common manufacturers. Otherwise, answer 'No'.",
-     "info": """person: Abraham, has device, Redmi Note
-device: Redmi Note, person: Violet, time: 29.12.2018, opinion: well, feature: take_pictures
-device: Redmi Note, has device, person: Violet
-person: Abraham, has device, 12pro
-device: 12pro, manufacturer, OnePlus
-person: Violet, has device, 12pro
-manufacturer: Xiaomi, manufacturer, device: Redmi Note""",
-     "chain of thought": "Both Abraham and Violet have devices manufactured by Xiaomi (Redmi Note) and OnePlus (12pro).",
-     "final answer": "Xiaomi, OnePlus"
-     },
-    {"question": "Whose opinions from Gabriella and Arianna about manufacturers are most similar to Alexandra's?",
-     "info": """person: Gabriella, has device, device: Apple
-person: Alexandra, time: 10.11.2020, Runs out quickly, device: Apple, feature: battery life
-device: Apple, has device, person: Alexandra
-person: Alexandra, has device, device: Apple
-person: Gabriella, has device, device: Apple
-device: Apple, manufacturer, manufacturer: Apple
-manufacturer: Apple, manufacturer, device: iPhone
-manufacturer: Apple, manufacturer, device: apple
-manufacturer: Apple, manufacturer, device: iphone
-manufacturer: Apple, manufacturer, device: IPHONE""",
-     "chain of thought": "Our task is to indicate one person in the answer: Gabriella or Arianna. We should not search completely matching opinions of two people, instead we should define who of two people: Gabriella or Arianna is a little closer in opinions about devices to Alexandra. So, let's think about it. Both Gabriella and Alexandra use Apple devices and Arianna opinions are not mentioned. Therefore, Gabriella's opinions about manufacturers are more similar to Alexandra's.",
-     "final answer": "Gabriella"
-     },
-    {"question": "The majority of speakers have positive, neutral or negative sentiment about display of Mi 10?",
-     "info": "person: Alan, time: 10.9.2020, Colors are vibrant, feature: screen, device: Mi 10",
-     "chain of thought": "The sentiment about the display of Mi 10 is positive according to Alan's statement that the colors are vibrant. There is no mention of any negative or neutral comments about the display.",
-     "final answer": "Positive"
-    },
-    {"question": "The majority of speakers have positive, neutral or negative sentiment about video of LG?",
-     "info": "",
-     "chain of thought": "If info is provided, we suppose positive sentiment.",
-     "final answer": "Positive"
-    },
-    {"question": "What Miles's opinion (positive, negative or neutral) about quality of MIX was dominant during using MIX?",
-     "info": """person: miles, has device, device: mix
-person: Miles, time: 25.12.2018, just alright, feature: quality, device: mix
-person: Miles, time: 26.9.2020, camera is amazing, device: mix, feature: photo""",
-     "chain of thought": """There is only one provided opinion about the quality feature of the MIX device. On 25.12.2018, Miles described the quality as "just alright," which indicates a neutral stance rather than a positive or negative one.""",
-     "final answer": "Neutral"
-    },
-    {"question": "What Megan's opinion (positive, negative or neutral) about system of GT was dominant during using GT?",
-     "info": """person: Megan, time: 20.12.2020, so userfriendly, feature: system, device: gt
-person: Megan, time: 5.12.2020, its been freezing, feature: system, device: gt
-person: Megan, time: 18.11.2020, quite stable, feature: system, device: gt
-person: megan, has device, device: gt
-person: Andrew, time: 27.10.2020, so smooth, feature: system, device: gt
-person: Andrew, time: 20.12.2020, really smooth, feature: system, device: gt
-person: Cody, time: 19.9.2020, too buggy, feature: system, device: xiaomi""",
-     "chain of thought": """Reviewing all the provided information about Megan's opinions, we see that on 20.12.2020 she found the system user-friendly, on 5.12.2020 she mentioned it was freezing, and on 18.11.2020 she found it stable. There are mixed reviews, but she did express a positive opinion about its user-friendliness after expressing a negative view about the freezing issue. The most dominant feedback is positive.""",
-     "final answer": "Positive"
-    },
-    {"question": "What opinion (positive, negative or neutral) about screen of Xiaomi was last during Ashton's experience of Xiaomi?",
-     "info": """person: Ashton, time: 24.11.2020, doesnt live, feature: screen, device: xiaomi
-person: ashton, has device, device: xiaomi
-person: Grace, time: 23.11.2020, really subpar screen, feature: screen, device: xiaomi
-person: Delia, time: 17.12.2020, amazing screen quality, feature: screen, device: xiaomi""",
-     "chain of thought": """There is only one Ashton's opinion on 24.11.2020 ("doesnt live") about screen of Xiaomi, which is negative ("doesnt live" means that the screen does not work).""",
-     "final answer": "Negative"
-    }
-]
+with open("question_in_context_examples.json", 'r') as inp:
+    in_context_examples = json.load(inp)
 
 prompt_similar_template = """Sort the phrases list in descending order of similarity to the phrase "{phrase}" from the sentence "{sentence}". Give the answer in the format: 1. ... , 2. ... , etc.
 Phrases list: {phrases_list}
@@ -252,13 +159,13 @@ num_in_cont = 3
 
 for flname, depth in [
         #["compare_questions.json", 1],
-        #["compare_sentiment.json", 1],
+        ["compare_sentiment.json", 1],
         #["compare_sentiment_synonims.json", 1],
         #["device_sentiment.json", 1],
-        #["same_devices.json", 1],
-        ["same_manufacturer.json", 2]
+        ["same_devices.json", 1],
+        #["same_manufacturer.json", 2]
         #["similar_device_opinions.json", 2],
-        #["similar_manf_opinions.json", 2],
+        ["similar_manf_opinions.json", 2]
         #["which_people_about_device.json", 1],
         #["which_people_about_device_synonims.json", 1],
         #["dominant_opinion.json", 1],

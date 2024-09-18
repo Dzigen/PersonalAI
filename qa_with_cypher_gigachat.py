@@ -108,7 +108,7 @@ for flname in [
             qas = json.load(inp)
     start_n = len(qas)
 
-    for n, question_info in enumerate(questions[start_n:20]):
+    for n, question_info in enumerate(questions[20:25]):
         question = question_info["question"]
 
         query = [question]
@@ -216,7 +216,7 @@ Final answer {e_num}: {final_answer}"""
                     "gold_answer": gold_answer,
                     "pred_answer": pred_answer
         })
-        with open(f"answers_gigachat/{flname.replace('.json', '')}_gigachat.json", 'w') as out:
+        with open(f"answers_gigachat/{flname.replace('.json', '')}_gigachat_test.json", 'w') as out:
             json.dump(qas, out, indent=2)
         print("gold_answer", gold_answer)
         print("pred_answer", pred_answer)
