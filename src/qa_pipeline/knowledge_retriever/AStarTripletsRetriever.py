@@ -85,7 +85,7 @@ class AStarGraphSearch:
 
     def get_adjecent_nodes(self, base_node_id: str, parent: Dict[str, str]) -> List[str]:
         raw_nodes = self.kg_model.graph_db.execute_query(
-            f'MATCH (a)-[r]-(b) WHERE elementId(a) = "{base_node_id}" AND ANY (node_t IN b.type WHERE node_t IN {self.config.accepted_node_types}) RETURN b', 
+            f'MATCH (a)-[r]-(b) WHERE elementId(a) = "{base_node_id}" AND ANY(lbl in {self.config.accepted_node_types} where lbl in labels(b)) RETURN b', 
             db=self.config.graphdb_name)
         formated_nodes = [node['b'].element_id for node in raw_nodes if node['b'].element_id != parent[base_node_id]]
         
