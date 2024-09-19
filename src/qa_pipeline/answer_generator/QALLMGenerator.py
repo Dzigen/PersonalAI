@@ -1,4 +1,4 @@
-from .utils import QUESTION_ANSWERING_USER_PROMPT, ContextType
+from .utils import QUESTION_ANSWERING_USER_PROMPT, RelationType
 from ...utils.data_structs import Triplet
 from ...llm_agent import AgentConnector
 from ...embedding_functions import EmbeddingsDatabaseConnection
@@ -10,8 +10,8 @@ from dataclasses import dataclass, field
 @dataclass
 class QALLMGeneratorConfig:
     user_prompt: str = QUESTION_ANSWERING_USER_PROMPT
-    context_type: List[ContextType] = field(default_factory=lambda: 
-                                            [ContextType.simple, ContextType.hyper, ContextType.episodic])
+    relation_type: List[RelationType] = field(default_factory=lambda: 
+                                            [RelationType.simple, RelationType.hyper, RelationType.episodic])
 
 class QALLMGenerator:
     """Главный класс для генерации ответов по пользовательским вопросам на основе 

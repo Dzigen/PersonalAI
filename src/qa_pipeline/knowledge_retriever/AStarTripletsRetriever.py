@@ -4,6 +4,7 @@ import joblib
 import numpy as np
 
 from .utils import AbstractTripletsRetriever
+from ..answer_generator.utils import NODES_TYPES_MAP, RELATION_TYPES_MAP
 from ...utils.data_structs import QueryInfo, Node, Relation, Triplet
 from ...knowledge_graph_model import KnowledgeGraphModel
 
@@ -182,11 +183,11 @@ class AStartTripletsRetriever(AStarGraphSearch, AbstractTripletsRetriever):
                 f'MATCH (n1)-[rel]-(n2) WHERE elementId(n1) = "{node1_id}" AND elementId(n2) = "{node2_id}"  RETURN n1, rel, n2, (startNode(rel) = n1) as n1_is_start_node')
                 
             for relation in relations:
-                formated_node1 = Node(name=relation['n1']['name'], type=list(relation['n1'].labels)[0],
+                formated_node1 = Node(name=relation['n1']['name'], type=NODES_TYPES_MAP[list(relation['n1'].labels)[0]],
                                       id=relation['n1'].element_id, prop=dict(relation['n1']))
-                formated_node2 = Node(name=relation['n2']['name'], type=list(relation['n2'].labels)[0], 
+                formated_node2 = Node(name=relation['n2']['name'], type=NODES_TYPES_MAP[list(relation['n2'].labels)[0]], 
                                       id=relation['n2'].element_id, prop=dict(relation['n2']))
-                formated_relation = Relation(name=relation['rel']['name'], type=relation['rel'].type, 
+                formated_relation = Relation(name=relation['rel']['name'], type=RELATION_TYPES_MAP[relation['rel'].type], 
                                              id=relation['rel'].element_id, prop=dict(relation['rel']))
                 s_node, e_node = (formated_node1, formated_node2) if relation['n1_is_start_node'] else (formated_node2, formated_node1) 
                 tripletes[formated_relation.id] = Triplet(start_node=s_node, relation=formated_relation, end_node=e_node)

@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from sentence_transformers import SentenceTransformer
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 import chromadb
 
-from .utils.data_structs import Triplet
-from .qa_pipeline.answer_generator.utils import ContextType
+from .utils.data_structs import Triplet, Relation, Node
+from .qa_pipeline.answer_generator.utils import RelationType
 
 class AbstractDatabaseConnection(ABC):
     
@@ -224,19 +224,31 @@ class EmbeddingsDatabaseConnection:
         self.embedder = EmbedderModel(config.embedder_config)
 
     @staticmethod
-    def formate_triplete(triplet: Triplet) -> str:
-        rel_type = triplet.relation.type
-        if (rel_type == ContextType.episodic) or (rel_type == ContextType.hyper):
-            cur_formated_triplet = ""
-            if "time" in triplet.relation.prop.keys():
-                cur_formated_triplet += triplet.relation.prop["time"] + ": "
-            cur_formated_triplet += triplet.end_node.name
+    def add_str_props(obj: Union[Relation, Node], obj_str: str) -> str:
+        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in ['name','raw_time']])
+        if str_prop:
+            obj_str += f" ({str_prop})"
+        return obj_str
 
-        elif rel_type == ContextType.simple:
+    @staticmethod
+    def formate_triplete(triplet: Triplet) -> str:
+
+        rel_type = triplet.relation.type
+
+        if (rel_type == RelationType.episodic) or (rel_type == RelationType.hyper):
             cur_formated_triplet = ""
             if "time" in triplet.relation.prop.keys():
                 cur_formated_triplet += triplet.relation.prop["time"] + ": "
-            cur_formated_triplet += " ".join([triplet.start_node.name, triplet.relation.name, triplet.end_node.name])
+            cur_formated_triplet += EmbeddingsDatabaseConnection.add_str_props(triplet.end_node, triplet.end_node.name)
+            
+        elif rel_type == RelationType.simple:
+            cur_formated_triplet = ""
+            if "time" in triplet.relation.prop.keys():
+                cur_formated_triplet += triplet.relation.prop["time"] + ": "
+            cur_formated_triplet += " ".join([
+                EmbeddingsDatabaseConnection.add_str_props(triplet.start_node, triplet.start_node.name),
+                EmbeddingsDatabaseConnection.add_str_props(triplet.relation, triplet.relation.name),
+                EmbeddingsDatabaseConnection.add_str_props(triplet.end_node, triplet.end_node.name)])
 
         else:
             raise KeyError
