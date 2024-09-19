@@ -64,8 +64,10 @@ class LLMExtractor:
     
     @staticmethod
     def parse_thesises(response, node_prop, rel_prop):
-        raw_triplets = ' '.join(list(filter(lambda v: len(v) and (';' in v) and ('.' in v), response.split("\n")[1:-1]))).lower()
-        raw_thesises = raw_triplets .split(".")
+        #raw_triplets = ' '.join(list(filter(lambda v: len(v) and (';' in v) and ('.' in v), response.split("\n")[1:-1]))).lower()
+        if ":" in response:
+            response = response.split(":")[-1]  
+        raw_thesises = response.split(".")
         thesises = []
         for raw_thesis in raw_thesises:
             try:
@@ -88,7 +90,10 @@ class LLMExtractor:
     
     @staticmethod
     def parse_triplets(raw_triplets: str, node_prop: Dict, rel_prop: Dict):
-        raw_triplets = ' '.join(list(filter(lambda v: len(v), raw_triplets.split("\n")[1:-1]))).lower()
+        #raw_triplets = ' '.join(list(filter(lambda v: len(v), raw_triplets.split("\n")[1:-1]))).lower()
+        if ":" in raw_triplets:
+            raw_triplets = raw_triplets.split(":")[-1]
+        raw_triplets = raw_triplets.lower()
         raw_triplets = raw_triplets.split(";")
         triplets = []
         for triplet in raw_triplets:
