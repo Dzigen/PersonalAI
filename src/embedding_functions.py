@@ -198,8 +198,8 @@ class EmbedderModel:
                                  **kwargs)
 
 
-NODES_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="../data/vectorized_nodes/v8/densedb", db_name="vectorized_nodes")
-TRIPLETS_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="../data/vectorized_triplets/v4/densedb", db_name="vectorized_triplets")
+NODES_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="../../data/vectorized_nodes/v8/densedb", db_name="vectorized_nodes")
+TRIPLETS_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="../../data/vectorized_triplets/v4/densedb", db_name="vectorized_triplets")
 
 @dataclass
 class EmbeddingsDatabaseConnectionConfig:

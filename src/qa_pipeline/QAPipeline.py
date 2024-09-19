@@ -2,8 +2,10 @@ from .answer_generator import QALLMGenerator, QALLMGeneratorConfig
 from .knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
 from .knowledge_comparator import KnowledgeComparator, KnowledgeComparatorConfig
 from .query_parser import QueryLLMParser, QueryLLMParserConfig
+from .utils import log_path
 from ..llm_agent import AgentConnector
 from ..knowledge_graph_model import KnowledgeGraphModel
+from ..utils import Logger
 
 from dataclasses import dataclass, field
 
@@ -13,6 +15,8 @@ class QAPipelineConfig:
     query_parser_config: QueryLLMParserConfig = field(default_factory=lambda: QueryLLMParserConfig())
     knowledge_comparator_config: KnowledgeComparatorConfig = field(default_factory=lambda: KnowledgeComparatorConfig())
     answer_generator_config: QALLMGeneratorConfig = field(default_factory=lambda: QALLMGeneratorConfig())
+    log: Logger = field(default_factory=lambda: Logger(log_path))
+    verbose: bool = False
 
 class QAPipeline:
     """Главный класс QA-конвейера для генерации ответов на пользовательские вопросы
@@ -23,21 +27,29 @@ class QAPipeline:
         self.kg_model = kg_model
         self.llama_agent = llm_agent
         self.config = config
+        self.log = config.log
 
         self.query_parser = QueryLLMParser(self.llama_agent, self.config.query_parser_config)
         self.knowledge_comparator = KnowledgeComparator(self.kg_model, self.config.knowledge_comparator_config)
         self.knowledge_retriever = KnowledgeRetriever(self.kg_model, self.config.knowledge_retriever_config)
         self.answer_generator = QALLMGenerator(self.llama_agent, self.config.answer_generator_config)
 
+        self.log("USER PROMPT: " + self.answer_generator.config.user_prompt, verbose=self.config.verbose)
+
     def answer(self, query: str) -> str:
-        # stage 1
+        self.log("Stage#1 - entities extraction", verbose=self.config.verbose)
         query_info = self.query_parser.extract_entities(query)
-        # stage 2
+        
+        self.log("Stage#2 - kg_nodes to query linking", verbose=self.config.verbose)
         self.knowledge_comparator.link_kgnodes_to_query(query_info)
-        # stage 3
+        
+        self.log("Stage#3 - retrieve", verbose=self.config.verbose)
         retrieved_triplets = self.knowledge_retriever.retrieve(query_info)
-        # stage 4
+        
+        self.log("Stage#4 - answer generation", verbose=self.config.verbose)
         context = self.answer_generator.formate_context(retrieved_triplets)
+        self.log("CONTEXT:\n" + context, verbose=self.config.verbose)
         answer = self.answer_generator.generate(query_info.query, context)
+        self.log("ANSWER: " + answer, verbose=self.config.verbose)
 
         return answer

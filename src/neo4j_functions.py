@@ -2,6 +2,7 @@ import copy
 from neo4j import GraphDatabase
 from typing import List, Dict, Tuple
 from tqdm import tqdm
+import json
 
 class Neo4jConnection:
     def __init__(self, uri, user, pwd, db_name="testdb"):
@@ -80,14 +81,14 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         # Pay attention to the format of triplets
 
         def create_node_query(node):
-            name = node["name"].replace(" ", "_")
+            name = json.dumps(node["name"], ensure_ascii=False)
             node_type = node["type"].replace(" ", "_")
             props = node["prop"]
-            props_query = [f'name: "{name}"']
+            props_query = [f'name: {name}']
             for prop_name, prop_value in props.items():
-                prop_name_f = prop_name.replace(" ", "_")
-                prop_value_f = prop_value.replace(" ", "_")
-                props_query.append(f'{prop_name_f}: "{prop_value_f}"')
+                p_name = prop_name.replace(" ", "_")
+                p_value = json.dumps(prop_value, ensure_ascii=False)
+                props_query.append(f'{p_name}: {p_value}')
             props_query = ", ".join(props_query)
 
             insert_query = f"CREATE (n:{node_type} " + "{" + props_query + "}) RETURN elementId(n) as id"
@@ -99,7 +100,8 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             rel_props = []
             for prop_name, prop_value in rel['prop'].items():
                 if prop_name != "type":
-                    rel_props.append(f'{prop_name.replace(" ", "_")}: "{prop_value.replace(" ", "_")}"')
+                    p_value, p_name = json.dumps(prop_value, ensure_ascii=False), prop_name.replace(' ', '_')
+                    rel_props.append(f'{p_name}: {p_value}')
             rel_props = ", ".join(rel_props)
 
             query = ""
@@ -110,14 +112,16 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         
         added_triplets_ids = []
         for subj, rel, obj in tqdm(triplets):
-            subj_out = self.execute_query(f'MATCH (subj:{subj["type"]}) WHERE subj.name = "{subj["name"]}" RETURN elementID(subj) as id')
+            subj_n = json.dumps(subj['name'], ensure_ascii=False)
+            subj_out = self.execute_query(f'MATCH (subj:{subj["type"]}) WHERE subj.name = {subj_n} RETURN elementID(subj) as id')
             if not subj_out:
                 insert_subj_query = create_node_query(subj)
                 subj_id = self.execute_query(insert_subj_query)[0]['id']
             else:
                 subj_id = subj_out[0]['id']
 
-            obj_out = self.execute_query(f'MATCH (obj:{obj["type"]}) WHERE obj.name = "{obj["name"]}" RETURN elementID(obj) as id')
+            obj_n = json.dumps(obj['name'], ensure_ascii=False)
+            obj_out = self.execute_query(f'MATCH (obj:{obj["type"]}) WHERE obj.name = {obj_n} RETURN elementID(obj) as id')
             if not obj_out:
                 insert_obj_query = create_node_query(obj)
                 obj_id = self.execute_query(insert_obj_query)[0]['id']

@@ -12,4 +12,4 @@
 
 Команда для сборки образа: docker build -t m.menschikov/agent_api:v2 .
 
-Команда для поднятия контейнера с llm-агентов: docker run -d -p 45678:4567 -v ./models:/app/models -it  --name m.menschikov.agent_api_cntrn --memory=32g --memory-swap=32g --cpuset-cpus=0-4 --gpus '"device=2"' m.menschikov/agent_api:v2
+Команда для поднятия контейнера с llm-агентов: docker run -d -p 45678:4567 -v ./models:/app/models -it  --name m.menschikov.agent_api_cntrn --memory=32g --memory-swap=32g --cpuset-cpus=0-4 --gpus '"device=1"' m.menschikov/agent_api:v2
