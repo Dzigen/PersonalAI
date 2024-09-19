@@ -23,7 +23,7 @@ class KnowledgeComparator:
         linked_nodess = []
         entities_embeddings = self.kg_model.embeddings_db.embedder.encode_queries(query_structure.entities)
         entities_instances = list(map(lambda embed: VectorDBInstance(embedding=embed), entities_embeddings))
-        nodes_with_scores = self.kg_model.embeddings_db.vecordbs['nodes'].retrieve(entities_instances, n_results=self.config.fetch_n)
+        nodes_with_scores = self.kg_model.embeddings_db.vectordbs['nodes'].retrieve(entities_instances, n_results=self.config.fetch_n)
 
         for retrieved_instances in nodes_with_scores:    
             filtered_nodes = list(filter(lambda node_item: node_item[0] < self.config.threshold, retrieved_instances))

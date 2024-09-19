@@ -123,6 +123,7 @@ class ChromaConnection(AbstractDatabaseConnection):
             ids=ids, **kwargs) 
                                             
         formates_instances = []
+        includes += ['ids']
         for i in range(len(raw_instances['ids'])):
             tmp_inst = {requested_field[:-1]: raw_instances[requested_field][i] 
                         for requested_field in includes}
@@ -136,28 +137,31 @@ class ChromaConnection(AbstractDatabaseConnection):
 
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50, 
-            include: List[str]  = ['embeddings', 'documents', 'metadatas'], **kwargs) -> List[List[Tuple[float, VectorDBInstance]]]:
+            includes: List[str]  = ['embeddings', 'documents', 'metadatas'], **kwargs) -> List[List[Tuple[float, VectorDBInstance]]]:
         """_summary_
 
         Args:
             query_instances (List[VectorDBInstance]): _description_
             n_results (int, optional): _description_. Defaults to 50.
-            include (List[str], optional): Список полей, информацию по которым нужно получить для каждого объекта. Defaults to ['embeddings', 'documents', 'metadatas'].
+            includes (List[str], optional): Список полей, информацию по которым нужно получить для каждого объекта. Defaults to ['embeddings', 'documents', 'metadatas'].
 
         Returns:
             List[List[Tuple[float, VectorDBInstance]]]: Списки объектов из бд, релевантных заданным query-объектам.
         """
         
+        print(includes)
+
         raw_retrieved_instances = self.collection.query(
             query_embeddings=[inst.embedding.tolist() for inst in query_instances],
-            include=include + ['distances'], n_results=n_results, **kwargs)
+            include=includes + ['distances'], n_results=n_results, **kwargs)
 
+        includes += ['ids']
         formated_instances = []
         for i in range(len(query_instances)):
             cur_formated_instances = []
             for j in range(len(raw_retrieved_instances['ids'][i])):
                 tmp_inst = {requested_field[:-1]: raw_retrieved_instances[requested_field][i][j] 
-                        for requested_field in include}
+                        for requested_field in includes}
                 cur_distance = raw_retrieved_instances['distances'][i][j]
 
                 cur_formated_instances.append((cur_distance, VectorDBInstance(**tmp_inst)))
@@ -214,9 +218,9 @@ AVAILABLE_VECTODB_CONNECTORS = {
 
 class EmbeddingsDatabaseConnection:
     def __init__(self, config: EmbeddingsDatabaseConnectionConfig = EmbeddingsDatabaseConnectionConfig()):
-        self.vecordbs = {
+        self.vectordbs = {
             'nodes': AVAILABLE_VECTODB_CONNECTORS[config.nodes_db_config.db_vendor](config.nodes_db_config),
-            'triplets': AVAILABLE_VECTODB_CONNECTORS[config.nodes_db_config.db_vendor](config.triplets_db_config)}
+            'triplets': AVAILABLE_VECTODB_CONNECTORS[config.triplets_db_config.db_vendor](config.triplets_db_config)}
         self.embedder = EmbedderModel(config.embedder_config)
 
     @staticmethod
@@ -288,12 +292,12 @@ class EmbeddingsDatabaseConnection:
         embs = self.embedder.encode_passages(stringified_instances)
         formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb) 
                             for id, doc, emb in zip(ids, stringified_instances, embs)]
-        self.vecordbs[db_type].create(formated_instances)
+        self.vectordbs[db_type].create(formated_instances)
 
     def delete_instances(self, db_type: str, ids: List[str]) -> None:
-        self.vecordbs[db_type].delete(ids)
+        self.vectordbs[db_type].delete(ids)
 
     def get_embbeddings(self, db_type: str, ids: List[str]) -> List[List[float]]:
-        instances = self.vecordbs[db_type].read(ids, includes=['embeddings'])
+        instances = self.vectordbs[db_type].read(ids, includes=['embeddings'])
         embeddings = list(map(lambda inst: inst.embedding,instances))
         return embeddings

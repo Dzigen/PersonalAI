@@ -24,6 +24,10 @@ class KnowledgeRetriever:
 
         self.graph_retriever = self.config.graph_retriever_method(
             kg_model, self.config.graph_retriever_config)
+        
+        # TODO
+        # реализовать дополнительный этап для фильтрации по содержанию
+
         self.triplets_filter = self.config.triplets_filter_method(
             kg_model, self.config.triplets_filter_config)
 
