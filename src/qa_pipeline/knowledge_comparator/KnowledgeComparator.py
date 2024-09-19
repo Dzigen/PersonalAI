@@ -19,7 +19,8 @@ class KnowledgeComparator:
         self.kg_model = kg_model
 
     def link_kgnodes_to_query(self, query_structure: QueryInfo) -> None:
-        # сопостовляем сущности, извлечённые из запроса нодам в графе знаний
+        # сопоставляем сущности, извлечённые из запроса нодам в графе знаний
+        
         linked_nodess = []
         entities_embeddings = self.kg_model.embeddings_db.embedder.encode_queries(query_structure.entities)
         entities_instances = list(map(lambda embed: VectorDBInstance(embedding=embed), entities_embeddings))

@@ -3,9 +3,9 @@ from dataclasses import dataclass, field
 from sentence_transformers import SentenceTransformer
 from typing import Dict, List, Tuple, Union
 import chromadb
+import math
 
-from .utils.data_structs import Triplet, Relation, Node
-from .qa_pipeline.answer_generator.utils import RelationType
+from .utils.data_structs import Triplet, Relation, Node, TripletCreator, NodeCreator
 
 class AbstractDatabaseConnection(ABC):
     
@@ -63,7 +63,7 @@ class VectorDBConnectionConfig:
 
 @dataclass
 class VectorDBInstance:
-    id: str = -1
+    id: str = None
     document: str = None
     embedding: List[float] = None
     metadata: Dict = field(default_factory=lambda: dict())
@@ -219,62 +219,32 @@ class EmbeddingsDatabaseConnection:
             'triplets': AVAILABLE_VECTODB_CONNECTORS[config.triplets_db_config.db_vendor](config.triplets_db_config)}
         self.embedder = EmbedderModel(config.embedder_config)
 
-    @staticmethod
-    def add_str_props(obj: Union[Relation, Node], obj_str: str) -> str:
-        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in ['name','raw_time']])
-        if str_prop:
-            obj_str += f" ({str_prop})"
-        return obj_str
+    def add_triplets(self, triplets:List[Triplet], add_nodes:bool=True, batch_size:int=64)->None:
+        unique_nodes_ids = [] if add_nodes else None
 
-    @staticmethod
-    def formate_triplete(triplet: Triplet) -> str:
+        batch_count = math.ceil(len(triplets) / batch_size)
+        for batch_idx in range(batch_count):
+            triplets_ids, triplets_str = [], []
+            nodes_ids, nodes_str = ([], []) if add_nodes else (None, None)
 
-        rel_type = triplet.relation.type
-
-        if (rel_type == RelationType.episodic) or (rel_type == RelationType.hyper):
-            cur_formated_triplet = ""
-            if "time" in triplet.relation.prop.keys():
-                cur_formated_triplet += triplet.relation.prop["time"] + ": "
-            cur_formated_triplet += EmbeddingsDatabaseConnection.add_str_props(triplet.end_node, triplet.end_node.name)
-            
-        elif rel_type == RelationType.simple:
-            cur_formated_triplet = ""
-            if "time" in triplet.relation.prop.keys():
-                cur_formated_triplet += triplet.relation.prop["time"] + ": "
-            cur_formated_triplet += " ".join([
-                EmbeddingsDatabaseConnection.add_str_props(triplet.start_node, triplet.start_node.name),
-                EmbeddingsDatabaseConnection.add_str_props(triplet.relation, triplet.relation.name),
-                EmbeddingsDatabaseConnection.add_str_props(triplet.end_node, triplet.end_node.name)])
-
-        else:
-            raise KeyError
+            for triplet_idx in range(batch_idx*batch_size, (batch_idx+1)*batch_size):
+                triplet = triplets[triplet_idx]
+                _, triplet_str =  TripletCreator.stringify(triplet) if triplet.stringified is None else (triplet.id, triplet.stringified) 
+                triplets_ids.append(triplet.id)
+                triplets_str.append(triplet_str)
                 
-        return triplet.relation.id, cur_formated_triplet
+                if add_nodes:
+                    for node in [triplet.start_node, triplet.end_node]:
+                        if node.id not in unique_nodes_ids:
+                            _, node_str = NodeCreator.stringify(node) if node.stringified is None else (node.id, node.stringified)
+                            unique_nodes_ids.append(node.id)
+                            nodes_ids.append(node.id)                        
+                            nodes_str.append(node_str)
 
-    @staticmethod
-    def formate_nodes(triplet: Triplet) -> str:
-        return [triplet.start_node.id, triplet.end_node.id], [triplet.start_node.name, triplet.end_node.name]
-
-    def add_triplets(self, triplets: List[Triplet], add_nodes: bool = True):
-        triplets_ids, stringified_triplets = [], []
-        unique_nodes_ids, unique_stringified_nodes = ([], []) if add_nodes else (None, None)
-        
-        for triplet in triplets:
-            triplet_id, str_triplet = EmbeddingsDatabaseConnection.formate_triplete(triplet)
-            triplets_ids.append(triplet_id)
-            stringified_triplets.append(str_triplet)
-            if add_nodes:
-                nodes_id, str_nodes = EmbeddingsDatabaseConnection.formate_nodes(triplet)
-                for node_id, str_node in zip(nodes_id, str_nodes):
-                    if node_id not in unique_nodes_ids:
-                        unique_nodes_ids.append(node_id)
-                        unique_stringified_nodes.append(str_node)
-
-        self.add_stringified_triplets(triplets_ids, stringified_triplets,
-                                      unique_nodes_ids, unique_stringified_nodes)
+            self.add_stringified_triplets(triplets_ids, triplets_str, nodes_ids, nodes_ids)
 
     def delete_triplets(self, triplets: List[Triplet], delete_nods: bool = True):
-        triplets_ids = [triplet.relation.id for triplet in triplets]
+        triplets_ids = list(map(lambda v: v.id, triplets))
         
         unique_nodes_ids = None
         if delete_nods:
@@ -286,7 +256,7 @@ class EmbeddingsDatabaseConnection:
         self.delete_stringified_triplets(triplets_ids, unique_nodes_ids)
 
     def add_stringified_triplets(self, triplets_ids: List[str], stringified_triplets: List[str], 
-                     nodes_ids: List[str] = [], stringified_nodes: List[str] = []) -> None:
+                     nodes_ids: List[str] = None, stringified_nodes: List[str] = None) -> None:
         self.add_instances('triplets', triplets_ids, stringified_triplets)
         if nodes_ids is not None:
             self.add_instances('nodes', nodes_ids, stringified_nodes)
@@ -307,5 +277,5 @@ class EmbeddingsDatabaseConnection:
 
     def get_embbeddings(self, db_type: str, ids: List[str]) -> List[List[float]]:
         instances = self.vectordbs[db_type].read(ids, includes=['embeddings'])
-        embeddings = list(map(lambda inst: inst.embedding,instances))
+        embeddings = list(map(lambda inst: inst.embedding, instances))
         return embeddings

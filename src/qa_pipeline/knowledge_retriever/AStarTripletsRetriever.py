@@ -4,9 +4,9 @@ import joblib
 import numpy as np
 
 from .utils import AbstractTripletsRetriever
-from ..answer_generator.utils import NODES_TYPES_MAP, RELATION_TYPES_MAP
-from ...utils.data_structs import QueryInfo, Node, Relation, Triplet
+from ...utils.data_structs import QueryInfo, Node, Relation, Triplet, NodeCreator, TripletCreator
 from ...knowledge_graph_model import KnowledgeGraphModel
+from ...utils.data_structs import NODES_TYPES_MAP, RELATION_TYPES_MAP
 
 @dataclass
 class AStarMetricsConfig:
@@ -176,23 +176,27 @@ class AStartTripletsRetriever(AStarGraphSearch, AbstractTripletsRetriever):
         super().__init__(kg_model, search_config)
 
     def get_path_tripletes(self, nodes_ids_path: List[str]) -> Dict[str, Triplet]:
-        tripletes = {}
+        formated_tripletes = {}
         for i in range(len(nodes_ids_path)-1):
             node1_id, node2_id = nodes_ids_path[i], nodes_ids_path[i+1]
-            relations = self.kg_model.graph_db.execute_query(
-                f'MATCH (n1)-[rel]-(n2) WHERE elementId(n1) = "{node1_id}" AND elementId(n2) = "{node2_id}"  RETURN n1, rel, n2, (startNode(rel) = n1) as n1_is_start_node')
+            raw_triplets = self.kg_model.graph_db.execute_query(
+                f'MATCH (n1)-[rel]->(n2) WHERE elementId(n1) = "{node1_id}" AND elementId(n2) = "{node2_id}" RETURN n1, rel, n2')
                 
-            for relation in relations:
-                formated_node1 = Node(name=relation['n1']['name'], type=NODES_TYPES_MAP[list(relation['n1'].labels)[0]],
-                                      id=relation['n1'].element_id, prop=dict(relation['n1']))
-                formated_node2 = Node(name=relation['n2']['name'], type=NODES_TYPES_MAP[list(relation['n2'].labels)[0]], 
-                                      id=relation['n2'].element_id, prop=dict(relation['n2']))
-                formated_relation = Relation(name=relation['rel']['name'], type=RELATION_TYPES_MAP[relation['rel'].type], 
-                                             id=relation['rel'].element_id, prop=dict(relation['rel']))
-                s_node, e_node = (formated_node1, formated_node2) if relation['n1_is_start_node'] else (formated_node2, formated_node1) 
-                tripletes[formated_relation.id] = Triplet(start_node=s_node, relation=formated_relation, end_node=e_node)
+            for raw_triplet in raw_triplets:
+                start_node = NodeCreator.create(id=raw_triplet['n1'].element_id, name=raw_triplet['n1']['name'], 
+                                                type=NODES_TYPES_MAP[list(raw_triplet['n1'].labels)[0]],
+                                                prop=dict(raw_triplet['n1']))
+                end_node = NodeCreator.create(id=raw_triplet['n2'].element_id, name=raw_triplet['n2']['name'], 
+                                              type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]],
+                                              prop=dict(raw_triplet['n2']))
+                relation = Relation(id=raw_triplet['rel'].element_id, name=raw_triplet['rel']['name'], 
+                                    type=RELATION_TYPES_MAP[raw_triplet['rel'].type], 
+                                    prop=dict(raw_triplet['rel']))
+                
+                triplet = TripletCreator.create(start_node, relation, end_node, add_stringified_triplet=False)
+                formated_tripletes[triplet.id] = triplet
 
-        return tripletes
+        return formated_tripletes
     
     def get_nodes_path(self, parent: Dict[str, str], end_node_id: str, spare_closest_node_id: str) -> List[str]:
         end_node_id = spare_closest_node_id if end_node_id not in parent else end_node_id

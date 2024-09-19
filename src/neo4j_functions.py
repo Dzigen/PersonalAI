@@ -1,6 +1,7 @@
 import copy
 from neo4j import GraphDatabase
 from typing import List, Dict, Tuple
+from tqdm import tqdm
 
 class Neo4jConnection:
     def __init__(self, uri, user, pwd, db_name="testdb"):
@@ -94,10 +95,11 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
 
         def create_rel(subj, subj_id, rel, obj, obj_id):
-            subj_type, rel_type, obj_type = subj["type"].replace(" ", "_"), rel["type"].replace(" ", "_"), obj["type"].replace(" ", "_")
+            subj_type, rel_type, obj_type = subj["type"].replace(" ", "_"), rel["prop"]["type"].replace(" ", "_"), obj["type"].replace(" ", "_")
             rel_props = []
-            for prop_name, prop_value in rel.get("prop", {}).items():
-                rel_props.append(f'{prop_name.replace(" ", "_")}: "{prop_value.replace(" ", "_")}"')
+            for prop_name, prop_value in rel['prop'].items():
+                if prop_name != "type":
+                    rel_props.append(f'{prop_name.replace(" ", "_")}: "{prop_value.replace(" ", "_")}"')
             rel_props = ", ".join(rel_props)
 
             query = ""
@@ -107,7 +109,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             return query
         
         added_triplets_ids = []
-        for subj, rel, obj in triplets:
+        for subj, rel, obj in tqdm(triplets):
             subj_out = self.execute_query(f'MATCH (subj:{subj["type"]}) WHERE subj.name = "{subj["name"]}" RETURN elementID(subj) as id')
             if not subj_out:
                 insert_subj_query = create_node_query(subj)

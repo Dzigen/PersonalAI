@@ -31,25 +31,3 @@ Final answer 2: Positive
 Question 3: {q}
 Info 3: {c}
 ### Answer 3 """
-
-class NodeType(Enum):
-    object = "object"
-    hyper = "hyper"
-    episodic = "episodic"
-
-NODES_TYPES_MAP = {
-    'object': NodeType.object,
-    'hyper': NodeType.hyper,
-    'episodic': NodeType.episodic
-}
-
-class RelationType(Enum):
-    simple = "simple"
-    hyper = "hyper"
-    episodic = "episodic"
-
-RELATION_TYPES_MAP = {
-    'simple': RelationType.simple,
-    'hyper': RelationType.hyper,
-    'episodic': RelationType.episodic
-}

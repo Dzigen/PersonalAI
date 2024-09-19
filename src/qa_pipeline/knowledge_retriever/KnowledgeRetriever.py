@@ -29,12 +29,6 @@ class KnowledgeRetriever:
             kg_model, self.config.triplets_filter_config)
 
     def retrieve(self, query_info: QueryInfo) -> List[Triplet]:
-
-        # возвращает список уникальных (по идентификаторам) триплетов
         triplets = self.graph_retriever.get_relevant_triplets(query_info)
-
-        # TODO
-        # реализовать этап удаления триплетов-дубликатов по содержанию (строковому представлению)
-
         filtered_triplets = self.triplets_filter.apply_filter(query_info, triplets)
         return filtered_triplets
