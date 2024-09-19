@@ -1,31 +1,35 @@
-from .utils import KnowledgeComparatorConfig
-from ..query_parser.utils import QueryInfo
+from ...utils.data_structs import QueryInfo
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ...embedding_functions import VectorDBInstance
+
+from dataclasses import dataclass
+
+@dataclass
+class KnowledgeComparatorConfig:
+    threshold: float = 0.5
+    fetch_n: int = 20
+    max_k: int = 1
 
 class KnowledgeComparator:
     """Главный класс для сопостовения информации в пользовательском запросе
     с имеющейся информацией в графе знаний
     """
-    def __init__(self, config: KnowledgeComparatorConfig, kg_model: KnowledgeGraphModel) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeComparatorConfig = KnowledgeComparatorConfig()) -> None:
         self.config = config
         self.kg_model = kg_model
-
-        self.kg_model.embeddings_db.embedder.encode_queries()
 
     def link_kgnodes_to_query(self, query_structure: QueryInfo) -> None:
         # сопостовляем сущности, извлечённые из запроса нодам в графе знаний
         linked_nodess = []
-        for entity in query_structure.entities:
-            entity_embedding = self.kg_model.embeddings_db.embedder.encode_query(entity)
-            entity_instance = VectorDBInstance(embedding=entity_embedding)
+        entities_embeddings = self.kg_model.embeddings_db.embedder.encode_queries(query_structure.entities)
+        entities_instances = list(map(lambda embed: VectorDBInstance(embedding=embed), entities_embeddings))
+        nodes_with_scores = self.kg_model.embeddings_db.vectordbs['nodes'].retrieve(entities_instances, n_results=self.config.fetch_n)
 
-            nodes_with_scores = self.kg_model.embeddings_db.vecordbs['nodes'].retrieve(entity_instance, n_results=self.config.fetch_n)
-            filtered_nodes = list(filter(lambda node_item: node_item[0] < self.config.threshold, nodes_with_scores))
+        for retrieved_instances in nodes_with_scores:    
+            filtered_nodes = list(filter(lambda node_item: node_item[0] < self.config.threshold, retrieved_instances))
                 
             if self.config.max_k > 0:
                 filtered_nodes = filtered_nodes[:self.config.max_k]
-
             linked_nodess += list(map(lambda node_item: node_item[1], filtered_nodes))
 
         unique_nodes_ids = []

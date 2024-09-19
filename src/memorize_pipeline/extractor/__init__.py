@@ -1,2 +1,1 @@
-from .utils import LLMExtractorConfig
-from .LLMExtractor import LLMExtractor
+from .LLMExtractor import LLMExtractor, LLMExtractorConfig

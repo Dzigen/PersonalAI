@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-
 from ...utils import Logger
 
 TRIPLETS_EXTRACTION_PROMPT = '''Objective: The main goal is to meticulously gather information from the text and organize this data into a clear, structured knowledge graph.
@@ -53,9 +52,3 @@ Text: {text}
 Remember that thesises must be extracted in format: "thesis_1; [list of entites for thesis_1]. thesis2; [list of entites for thesis_2]. etc.'''
 
 log_path = "debug"
-
-@dataclass
-class LLMExtractorConfig:
-    triplet_extraction_prompt: str = TRIPLETS_EXTRACTION_PROMPT
-    thesis_extraction_prompt: str = THESISES_EXTRACTION_PROMPT
-    log: Logger = field(default_factory=lambda: Logger(log_path))

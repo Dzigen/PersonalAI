@@ -32,13 +32,24 @@ Question 3: {q}
 Info 3: {c}
 ### Answer 3 """
 
-class ContextType(Enum):
+class NodeType(Enum):
+    object = "object"
+    hyper = "hyper"
+    episodic = "episodic"
+
+NODES_TYPES_MAP = {
+    'object': NodeType.object,
+    'hyper': NodeType.hyper,
+    'episodic': NodeType.episodic
+}
+
+class RelationType(Enum):
     simple = "simple"
     hyper = "hyper"
     episodic = "episodic"
 
-@dataclass
-class QALLMGeneratorConfig:
-    user_prompt: str = QUESTION_ANSWERING_USER_PROMPT
-    context_type: List[ContextType] = field(default_factory=lambda: 
-                                            [ContextType.simple, ContextType.hyper, ContextType.episodic])
+RELATION_TYPES_MAP = {
+    'simple': RelationType.simple,
+    'hyper': RelationType.hyper,
+    'episodic': RelationType.episodic
+}

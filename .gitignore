@@ -1,6 +1,6 @@
 models/
 data/
-__pycache__
 create_local_db/
 archives/
 inference/
+__pycache__

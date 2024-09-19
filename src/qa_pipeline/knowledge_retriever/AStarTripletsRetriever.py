@@ -2,18 +2,18 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Tuple
 import joblib
 import numpy as np
-import hashlib
 
+from .utils import AbstractTripletsRetriever
+from ..answer_generator.utils import NODES_TYPES_MAP, RELATION_TYPES_MAP
+from ...utils.data_structs import QueryInfo, Node, Relation, Triplet
 from ...knowledge_graph_model import KnowledgeGraphModel
-from ..query_parser.utils import QueryInfo
-from .utils import Node, Relation, Triplet, AbstractTripletsRetriever
 
 @dataclass
 class AStarMetricsConfig:
     h_metric_name: str = 'weight_with_short_path'
     d_metric_name: str = 'ip'
-    nodes_distances_path: str = '../../data/nodes_distances'
-    nodes_short_paths_file: str = '../../data/nodes_short_paths'
+    nodes_distances_path: str = '../data/vectorized_nodes/v8/nodes_distances_matrix'
+    nodes_short_paths_file: str = '../data/graph_short_paths/stage2/v2/distances_matrix'
 
 @dataclass
 class AStarGraphSearchConfig:
@@ -86,8 +86,7 @@ class AStarGraphSearch:
 
     def get_adjecent_nodes(self, base_node_id: str, parent: Dict[str, str]) -> List[str]:
         raw_nodes = self.kg_model.graph_db.execute_query(
-            f'MATCH (a)-[r]-(b) WHERE elementId(a) = "{base_node_id}" AND ANY (node_t IN b.type WHERE node_t IN {self.config.accepted_node_types}) RETURN b', 
-            db=self.config.graphdb_name)
+            f'MATCH (a)-[r]-(b) WHERE elementId(a) = "{base_node_id}" AND ANY(lbl in {self.config.accepted_node_types} where lbl in labels(b)) RETURN b')
         formated_nodes = [node['b'].element_id for node in raw_nodes if node['b'].element_id != parent[base_node_id]]
         
         return formated_nodes
@@ -148,7 +147,7 @@ class AStarGraphSearch:
 
             break_flag = False
             for adj_n_id in adj_nodes:
-                tentativeScore = g[current_node_id] + self.metrics.compute_d_metric(current_node_id, v, U, parent)      
+                tentativeScore = g[current_node_id] + self.metrics.compute_d_metric(current_node_id, adj_n_id, U, parent)      
                 if (adj_n_id in U) and (tentativeScore >= g[adj_n_id]):
                     continue
                 if (adj_n_id not in U) or (tentativeScore < g[adj_n_id]):
@@ -181,22 +180,21 @@ class AStartTripletsRetriever(AStarGraphSearch, AbstractTripletsRetriever):
         for i in range(len(nodes_ids_path)-1):
             node1_id, node2_id = nodes_ids_path[i], nodes_ids_path[i+1]
             relations = self.kg_model.graph_db.execute_query(
-                f'MATCH (n1)-[rel]-(n2) WHERE elementId(n1) = "{node1_id}" AND elementId(n2) = "{node2_id}"  RETURN n1, rel, n2, (startNode(rel) = n1) as n1_is_start_node',
-                db=self.config.graphdb_name)
+                f'MATCH (n1)-[rel]-(n2) WHERE elementId(n1) = "{node1_id}" AND elementId(n2) = "{node2_id}"  RETURN n1, rel, n2, (startNode(rel) = n1) as n1_is_start_node')
                 
             for relation in relations:
-                formated_node1 = Node(name=relation['n1']['name'], type=list(relation['n1'].labels)[0],
-                                      id=relation['n1'].element_id, prop=relation['n1'])
-                formated_node2 = Node(name=relation['n2']['name'], type=list(relation['n2'].labels)[0], 
-                                      id=relation['n2'].element_id, prop=relation['n2'])
-                formated_relation = Relation(type=relation['rel'].type, id=relation['rel'].element_id,
-                                             prop=relation['rel'])
+                formated_node1 = Node(name=relation['n1']['name'], type=NODES_TYPES_MAP[list(relation['n1'].labels)[0]],
+                                      id=relation['n1'].element_id, prop=dict(relation['n1']))
+                formated_node2 = Node(name=relation['n2']['name'], type=NODES_TYPES_MAP[list(relation['n2'].labels)[0]], 
+                                      id=relation['n2'].element_id, prop=dict(relation['n2']))
+                formated_relation = Relation(name=relation['rel']['name'], type=RELATION_TYPES_MAP[relation['rel'].type], 
+                                             id=relation['rel'].element_id, prop=dict(relation['rel']))
                 s_node, e_node = (formated_node1, formated_node2) if relation['n1_is_start_node'] else (formated_node2, formated_node1) 
                 tripletes[formated_relation.id] = Triplet(start_node=s_node, relation=formated_relation, end_node=e_node)
 
         return tripletes
     
-    def get_nodes_path(parent: Dict[str, str], end_node_id: str, spare_closest_node_id: str) -> List[str]:
+    def get_nodes_path(self, parent: Dict[str, str], end_node_id: str, spare_closest_node_id: str) -> List[str]:
         end_node_id = spare_closest_node_id if end_node_id not in parent else end_node_id
         
         path, end_flag, cur_n = [end_node_id], False, end_node_id
@@ -211,7 +209,7 @@ class AStartTripletsRetriever(AStarGraphSearch, AbstractTripletsRetriever):
         return path
 
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
-        formated_nodes = [{'id': node.id, 'name': node.document} for node in query_info.linked_nodes]
+        formated_nodes = [node.id for node in query_info.linked_nodes]
         tripletes_pool = dict()
         if len(formated_nodes) > 1:
             for i in range(len(formated_nodes)-1):
@@ -220,7 +218,7 @@ class AStartTripletsRetriever(AStarGraphSearch, AbstractTripletsRetriever):
                     end_node = formated_nodes[j]
                     _, _, _, parent, spare_closest_node = self.search_path(start_node, end_node)
                     nodes_path = self.get_nodes_path(parent, end_node, spare_closest_node)
-                    new_tripletes = self.get_path_tripletes(nodes_path) # сразу формируется уникальный (по содержанию) набор триплетов
+                    new_tripletes = self.get_path_tripletes(nodes_path) # сразу формируется уникальный (по идентификаторам триплетов) набор триплетов
 
                     tripletes_pool.update(new_tripletes)
 

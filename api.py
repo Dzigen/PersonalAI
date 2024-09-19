@@ -26,8 +26,8 @@ async def generate(body: RemoteAgentRequestBody):
         system_prompt=body.system_prompt
 
     )
-    torch.cuda.empty_cache()
-    gc.collect()
+    #torch.cuda.empty_cache()
+    #gc.collect()
     
     return {'generated_output': output}
 

@@ -1,19 +1,26 @@
-from ...agents.llama_agent import LLaMAagent
-from .utils import LLMExtractorConfig
+from ...llm_agent import AgentConnector
+from .utils import TRIPLETS_EXTRACTION_PROMPT, THESISES_EXTRACTION_PROMPT, Logger, log_path
 
-from typing import List
+from dataclasses import dataclass, field
+from typing import List, Dict
 import ast
+
+@dataclass
+class LLMExtractorConfig:
+    triplet_extraction_prompt: str = TRIPLETS_EXTRACTION_PROMPT
+    thesis_extraction_prompt: str = THESISES_EXTRACTION_PROMPT
+    log: Logger = field(default_factory=lambda: Logger(log_path))
 
 class LLMExtractor:
 
-    def __init__(self, llm_agent: LLaMAagent, config: LLMExtractorConfig) -> None:
-        self.llm_agent = llm_agent
+    def __init__(self, agent_conn: AgentConnector, config: LLMExtractorConfig =  LLMExtractorConfig()) -> None:
+        self.agent_conn = agent_conn
         self.config = config
         self.triplet_extraction_prompt = config.triplet_extraction_prompt
         self.thesis_extraction_prompt = config.thesis_extraction_prompt
         self.log = config.log
 
-    def extract(self, text, need_simple = True, need_thesises = True, need_episodic = True, node_prop = {}, rel_prop = {}):
+    def extract(self, text: str, need_simple = True, need_thesises = True, need_episodic = True, node_prop = {}, rel_prop = {}):
         assert need_simple or need_thesises
         new_triplets = []
         if need_simple:
@@ -30,16 +37,18 @@ class LLMExtractor:
         return new_triplets
 
     def extract_triplets(self, text, node_prop = {}, rel_prop = {}):
-        raw_response = self.llm_agent.generate(self.triplet_extraction_prompt.format(text = text))
-        self.log("TEXT: " + text)
-        self.log("EXTRACTED TRIPLETS: " + str(raw_response))
+        raw_response = self.agent_conn.generate(self.triplet_extraction_prompt.format(text = text), 
+                                                gen_strategy={'max_new_tokens': 2048})
+        self.log("TEXT: " + text, verbose=True)
+        self.log("EXTRACTED TRIPLETS: " + str(raw_response), verbose=True)
         new_triplets = self.parse_triplets(raw_response, node_prop, rel_prop)
         return new_triplets
         
     def extract_thesises(self, text, node_prop = {}, rel_prop = {}):
-        raw_response = self.llm_agent.generate(self.thesis_extraction_prompt.format(text = text))
-        self.log("TEXT: " + text)
-        self.log("EXTRACTED THESISES: " + str(raw_response))
+        raw_response = self.agent_conn.generate(self.thesis_extraction_prompt.format(text = text), 
+                                                gen_strategy={'max_new_tokens': 2048})
+        self.log("TEXT: " + text, verbose=True)
+        self.log("EXTRACTED THESISES: " + str(raw_response), verbose=True)
         new_triplets = self.parse_thesises(raw_response, node_prop, rel_prop)
         return new_triplets
     
@@ -55,16 +64,14 @@ class LLMExtractor:
     
     @staticmethod
     def parse_thesises(response, node_prop, rel_prop):
-        if ":" in response:
-            response = response.split(":")[-1]
-        raw_thesises = response.split(".")
+        raw_triplets = ' '.join(list(filter(lambda v: len(v) and (';' in v) and ('.' in v), response.split("\n")[1:-1]))).lower()
+        raw_thesises = raw_triplets .split(".")
         thesises = []
         for raw_thesis in raw_thesises:
-            if ";" not in raw_thesis:
-                continue
-            raw_thesis = raw_thesis.split(";")
             try:
-                entities = ast.literal_eval(raw_thesis[1].strip(''' \n'".,/'''))
+                raw_thesis, raw_entities = raw_thesis.split(";")
+                thesis = raw_thesis.strip('.-* ')
+                entities = ast.literal_eval(raw_entities.strip(''' \n'".,/'''))
             except:
                 continue
             
@@ -73,17 +80,15 @@ class LLMExtractor:
                     [
                         {"name": entity, "type": "object", "prop": {**node_prop}},
                         {"name": "hyper", "prop": {"type": "simple", **rel_prop}},
-                        {"name": raw_thesis[0], "type": "hyper", "prop": {**node_prop}}
+                        {"name": thesis, "type": "hyper", "prop": {**node_prop}}
                     ]
                 )
             
         return thesises
     
     @staticmethod
-    def parse_triplets(raw_triplets, node_prop, rel_prop):
-        if ":" in raw_triplets:
-            raw_triplets = raw_triplets.split(":")[-1]
-        raw_triplets = raw_triplets.lower()
+    def parse_triplets(raw_triplets: str, node_prop: Dict, rel_prop: Dict):
+        raw_triplets = ' '.join(list(filter(lambda v: len(v), raw_triplets.split("\n")[1:-1]))).lower()
         raw_triplets = raw_triplets.split(";")
         triplets = []
         for triplet in raw_triplets:
@@ -106,8 +111,9 @@ class LLMExtractor:
     def get_episodic_relationships(text, entities, node_prop, rel_prop):
         episodic_triplets = []
         for entity in entities:
-            triplet = [entity, {"name": "episodic", "prop": {"type": "episodic", **rel_prop}}, 
-                       {"name": text, "type": "episodic_node", "prop": {**node_prop}}]
+            triplet = [entity, 
+                       {"name": "episodic", "prop": {"type": "episodic", **rel_prop}}, 
+                       {"name": text, "type": "episodic", "prop": {**node_prop}}]
             episodic_triplets.append(triplet)
             
         return episodic_triplets

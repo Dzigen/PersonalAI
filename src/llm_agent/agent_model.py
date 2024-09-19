@@ -9,7 +9,7 @@ SYSTEM_PROMPT = "You are a helpful assistant."
 
 @dataclass
 class AgentModelConfig:
-    gen_strategy: Dict = field(default_factory=lambda: {'early_stopping': True, 'num_beams': 3, 'max_new_tokens': 2048})
+    gen_strategy: Dict = field(default_factory=lambda: {'max_new_tokens': 2048})
     model_name_or_path: str = "/app/models/Undi95/Meta-Llama-3-8B-Instruct-hf"
     system_prompt: str = SYSTEM_PROMPT
     num_workers: int = 4
@@ -37,10 +37,8 @@ class AgentModel(AbstractAgentModel):
             str: Текстовая последовательность, сгенерированная llm-агентом.
         """
         messages = [
-            {"role": "user","content": user_prompt}
-            ]
-        
-        messages.insert(0, {"role": "system", "content": self.config.system_prompt if system_prompt is not None else SYSTEM_PROMPT})
+            {"role": "system", "content": system_prompt if system_prompt is not None else SYSTEM_PROMPT},
+            {"role": "user","content": user_prompt}]
 
         if assistant_prompt is not None:
             messages.insert(1, {"role": "assistant", "content": assistant_prompt})
@@ -65,4 +63,4 @@ class AgentModel(AbstractAgentModel):
             **gen_strategy
         )
         
-        return outputs[0]["generated_text"][len(prompt):]
+        return outputs[0]["generated_text"]
