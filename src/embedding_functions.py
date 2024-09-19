@@ -123,10 +123,9 @@ class ChromaConnection(AbstractDatabaseConnection):
             ids=ids, **kwargs) 
                                             
         formates_instances = []
-        includes += ['ids']
         for i in range(len(raw_instances['ids'])):
             tmp_inst = {requested_field[:-1]: raw_instances[requested_field][i] 
-                        for requested_field in includes}
+                        for requested_field in includes + ['ids']}
             formates_instances.append(VectorDBInstance(**tmp_inst))
 
         return formates_instances
@@ -148,20 +147,17 @@ class ChromaConnection(AbstractDatabaseConnection):
         Returns:
             List[List[Tuple[float, VectorDBInstance]]]: Списки объектов из бд, релевантных заданным query-объектам.
         """
-        
-        print(includes)
 
         raw_retrieved_instances = self.collection.query(
             query_embeddings=[inst.embedding.tolist() for inst in query_instances],
             include=includes + ['distances'], n_results=n_results, **kwargs)
 
-        includes += ['ids']
         formated_instances = []
         for i in range(len(query_instances)):
             cur_formated_instances = []
             for j in range(len(raw_retrieved_instances['ids'][i])):
                 tmp_inst = {requested_field[:-1]: raw_retrieved_instances[requested_field][i][j] 
-                        for requested_field in includes}
+                        for requested_field in includes + ['ids']}
                 cur_distance = raw_retrieved_instances['distances'][i][j]
 
                 cur_formated_instances.append((cur_distance, VectorDBInstance(**tmp_inst)))
