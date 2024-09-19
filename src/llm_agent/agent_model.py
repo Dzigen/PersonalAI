@@ -37,7 +37,7 @@ class AgentModel(AbstractAgentModel):
             str: Текстовая последовательность, сгенерированная llm-агентом.
         """
         messages = [
-            {"role": "system", "content": system_prompt if system_prompt is not None else SYSTEM_PROMPT},
+            {"role": "system", "content": system_prompt if system_prompt is not None else self.config.system_prompt},
             {"role": "user","content": user_prompt}]
 
         if assistant_prompt is not None:

@@ -10,6 +10,7 @@ class LLMExtractorConfig:
     triplet_extraction_prompt: str = TRIPLETS_EXTRACTION_PROMPT
     thesis_extraction_prompt: str = THESISES_EXTRACTION_PROMPT
     log: Logger = field(default_factory=lambda: Logger(log_path))
+    verbose: bool = False
 
 class LLMExtractor:
 
@@ -39,16 +40,16 @@ class LLMExtractor:
     def extract_triplets(self, text, node_prop = {}, rel_prop = {}):
         raw_response = self.agent_conn.generate(self.triplet_extraction_prompt.format(text = text), 
                                                 gen_strategy={'max_new_tokens': 2048})
-        self.log("TEXT: " + text, verbose=True)
-        self.log("EXTRACTED TRIPLETS: " + str(raw_response), verbose=True)
+        self.log("TEXT: " + text, verbose=self.config.verbose)
+        self.log("EXTRACTED TRIPLETS: " + str(raw_response), verbose=self.config.verbose)
         new_triplets = self.parse_triplets(raw_response, node_prop, rel_prop)
         return new_triplets
         
     def extract_thesises(self, text, node_prop = {}, rel_prop = {}):
         raw_response = self.agent_conn.generate(self.thesis_extraction_prompt.format(text = text), 
                                                 gen_strategy={'max_new_tokens': 2048})
-        self.log("TEXT: " + text, verbose=True)
-        self.log("EXTRACTED THESISES: " + str(raw_response), verbose=True)
+        self.log("TEXT: " + text, verbose=self.config.verbose)
+        self.log("EXTRACTED THESISES: " + str(raw_response), verbose=self.config.verbose)
         new_triplets = self.parse_thesises(raw_response, node_prop, rel_prop)
         return new_triplets
     
@@ -81,7 +82,7 @@ class LLMExtractor:
                 thesises.append(
                     [
                         {"name": entity, "type": "object", "prop": {**node_prop}},
-                        {"name": "hyper", "prop": {"type": "simple", **rel_prop}},
+                        {"name": "hyper", "prop": {"type": "hyper", **rel_prop}},
                         {"name": thesis, "type": "hyper", "prop": {**node_prop}}
                     ]
                 )
