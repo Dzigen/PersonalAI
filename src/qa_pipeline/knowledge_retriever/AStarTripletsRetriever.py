@@ -4,9 +4,9 @@ import joblib
 import numpy as np
 
 from .utils import AbstractTripletsRetriever
-from ...utils.data_structs import QueryInfo, Node, Relation, Triplet, NodeCreator, TripletCreator
+from ...utils.data_structs import QueryInfo, Node, Relation, Triplet, NodeCreator, TripletCreator, NodeType
 from ...knowledge_graph_model import KnowledgeGraphModel
-from ...utils.data_structs import NODES_TYPES_MAP, RELATION_TYPES_MAP
+from ...utils.data_structs import NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 
 @dataclass
 class AStarMetricsConfig:
@@ -20,7 +20,7 @@ class AStarGraphSearchConfig:
     max_depth: int = 10 
     max_width: int = -1
     graphdb_name: str = 'testdb'
-    accepted_node_types: List[str] = '["object", "hyper", "episodic"]'
+    accepted_node_types: List[str] = f'["{NodeType.object.value}", "{NodeType.hyper.value}", "{NodeType.episodic.value}"]'
     metrics_config: AStarMetricsConfig = field(default_factory=lambda:AStarMetricsConfig())
 
 class AStarMetrics:
@@ -175,8 +175,8 @@ class AStartTripletsRetriever(AStarGraphSearch, AbstractTripletsRetriever):
     def __init__(self, kg_model: KnowledgeGraphModel, search_config: AStarGraphSearchConfig = None) -> None:
         super().__init__(kg_model, search_config)
 
-    def get_path_tripletes(self, nodes_ids_path: List[str]) -> Dict[str, Triplet]:
-        formated_tripletes = {}
+    def get_path_triplets(self, nodes_ids_path: List[str]) -> Dict[str, Triplet]:
+        formated_triplets = {}
         for i in range(len(nodes_ids_path)-1):
             node1_id, node2_id = nodes_ids_path[i], nodes_ids_path[i+1]
             raw_triplets = self.kg_model.graph_db.execute_query(
@@ -190,13 +190,13 @@ class AStartTripletsRetriever(AStarGraphSearch, AbstractTripletsRetriever):
                                               type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]],
                                               prop=dict(raw_triplet['n2']))
                 relation = Relation(id=raw_triplet['rel'].element_id, name=raw_triplet['rel']['name'], 
-                                    type=RELATION_TYPES_MAP[raw_triplet['rel'].type], 
+                                    type=RELATIONS_TYPES_MAP[raw_triplet['rel'].type], 
                                     prop=dict(raw_triplet['rel']))
                 
                 triplet = TripletCreator.create(start_node, relation, end_node, add_stringified_triplet=False)
-                formated_tripletes[triplet.id] = triplet
+                formated_triplets[triplet.id] = triplet
 
-        return formated_tripletes
+        return formated_triplets
     
     def get_nodes_path(self, parent: Dict[str, str], end_node_id: str, spare_closest_node_id: str) -> List[str]:
         end_node_id = spare_closest_node_id if end_node_id not in parent else end_node_id
@@ -222,7 +222,7 @@ class AStartTripletsRetriever(AStarGraphSearch, AbstractTripletsRetriever):
                     end_node = formated_nodes[j]
                     _, _, _, parent, spare_closest_node = self.search_path(start_node, end_node)
                     nodes_path = self.get_nodes_path(parent, end_node, spare_closest_node)
-                    new_tripletes = self.get_path_tripletes(nodes_path) # сразу формируется уникальный (по идентификаторам триплетов) набор триплетов
+                    new_tripletes = self.get_path_triplets(nodes_path) # сразу формируется уникальный (по идентификаторам триплетов) набор триплетов
 
                     tripletes_pool.update(new_tripletes)
 

@@ -19,7 +19,7 @@ class RelationType(Enum):
     hyper = "hyper"
     episodic = "episodic"
 
-RELATION_TYPES_MAP = {
+RELATIONS_TYPES_MAP = {
     'simple': RelationType.simple,
     'hyper': RelationType.hyper,
     'episodic': RelationType.episodic
@@ -51,7 +51,7 @@ class Triplet:
 class BaseCreator:
     @staticmethod
     def add_str_props(obj: Union[Relation, Node], obj_str: str) -> str:
-        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in ['name','type','raw_time']])
+        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in ['name','type','raw_time', 'time']])
         if str_prop:
             obj_str += f" ({str_prop})"
         return obj_str

@@ -23,7 +23,7 @@ class QALLMGenerator:
         self.config = config
 
     def formate_context(self, triplets: List[Triplet]) -> str:
-        filtered_context = list(map(lambda triplet: f"- {TripletCreator.stringify(triplet)[1] if triplet.stringify is None else triplet.stringified}", triplets))                
+        filtered_context = list(map(lambda triplet: f"- {TripletCreator.stringify(triplet)[1] if triplet.stringified is None else triplet.stringified}", triplets))                
         return "\n".join(filtered_context)
 
     def generate(self, query: str, context: str) -> str:
