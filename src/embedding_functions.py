@@ -175,7 +175,7 @@ class ChromaConnection(AbstractDatabaseConnection):
 
 @dataclass
 class EmbedderModelConfig:
-    model_name_or_path: str = '../models/intfloat/multilingual-e5-small'
+    model_name_or_path: str = '../../models/intfloat/multilingual-e5-small'
     prompts: Dict = field(default_factory=lambda: {"query": "query: ", "passage": "passage: "})
     device: str = 'cuda'
     normalize_embeddings: bool = True

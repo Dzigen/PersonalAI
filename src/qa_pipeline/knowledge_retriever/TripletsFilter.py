@@ -21,6 +21,7 @@ class TripletsFilter(AbstractTriplesFilter):
         self.config = config
 
     def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
+        print("Количество извлечённых триплетов: ", len(triplets))
         filtered_triplets = []
         query_embd = self.kg_model.embeddings_db.embedder.encode_queries([query_info.query])[0]
         query_instance = VectorDBInstance(embedding=query_embd)

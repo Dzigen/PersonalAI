@@ -39,14 +39,17 @@ class QAPipeline:
     def answer(self, query: str) -> str:
         self.log("Stage#1 - entities extraction", verbose=self.config.verbose)
         query_info = self.query_parser.extract_entities(query)
+        self.log("EXTRACTED_ENTITIES:\n" + ', '.join(query_info.entities), verbose=self.config.verbose)
         
         self.log("Stage#2 - kg_nodes to query linking", verbose=self.config.verbose)
         self.knowledge_comparator.link_kgnodes_to_query(query_info)
+        self.log("LINKED_NODES:\n" + ', '.join(list(map(lambda v: v.document, query_info.linked_nodes))), verbose=self.config.verbose)
         
         self.log("Stage#3 - retrieve", verbose=self.config.verbose)
         retrieved_triplets = self.knowledge_retriever.retrieve(query_info)
         
         self.log("Stage#4 - answer generation", verbose=self.config.verbose)
+        self.log("QUERY:\n" + query_info.query, verbose=self.config.verbose)
         context = self.answer_generator.formate_context(retrieved_triplets)
         self.log("CONTEXT:\n" + context, verbose=self.config.verbose)
         answer = self.answer_generator.generate(query_info.query, context)

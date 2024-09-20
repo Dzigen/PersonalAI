@@ -17,7 +17,7 @@ class AStarMetricsConfig:
 
 @dataclass
 class AStarGraphSearchConfig:
-    max_depth: int = 10 
+    max_depth: int = 25
     max_width: int = -1
     graphdb_name: str = 'testdb'
     accepted_node_types: List[str] = f'["{NodeType.object.value}", "{NodeType.hyper.value}", "{NodeType.episodic.value}"]'
@@ -119,6 +119,7 @@ class AStarGraphSearch:
         
         spare_closest_node_id = start_node_id
         while len(Q) != 0:
+            print(len(U), len(Q))
 
             current_node_id, current_node_idx = self.get_min_f_node(Q, f) # вершина из Q с минимальным значением f
 

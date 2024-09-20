@@ -40,30 +40,14 @@ class MemPipeline:
             triplets_to_remove = self.updator.update(new_triplets, replacing_window_width, replacing_window_depth, need_simple, need_thesises)
             # self.log("PROCESSED OUTDATED TRIPLETS: " + str(triplets_to_remove))
         
-
-        ids = self.kg_model.graph_db.create_triplets(new_triplets)
-        formated_triplets = list(map(lambda pair: self.formate_triplet(pair[0], pair[1]), zip(new_triplets, ids)))
-        self.kg_model.embeddings_db.add_triplets(formated_triplets)
+        # В объекты триплетов добавлются идентикаторы, присвоенные им в рамках графовой бд
+        self.kg_model.graph_db.create_triplets(new_triplets)
+        self.kg_model.embeddings_db.add_triplets(new_triplets)
         if need_update:
             ids = self.kg_model.graph_db.delete_triplets(triplets_to_remove)
             triplets_ids = [id[1] for id in ids]
             nodes_ids = [id[0] for id in ids] + [id[2] for id in ids]
             self.kg_model.embeddings_db.delete_triplets(triplets_ids, nodes_ids)
-
-    @staticmethod
-    def formate_triplet(raw_triplet, ids, stringify: bool = False):        
-        start_node = NodeCreator.create(id=ids[0], name=raw_triplet[0]['name'], type=NODES_TYPES_MAP[raw_triplet[0]['type']],
-                                            prop=raw_triplet[0]['prop'], add_stringified_node=stringify)
-        end_node = NodeCreator.create(id=ids[2], name=raw_triplet[2]['name'], type=NODES_TYPES_MAP[raw_triplet[2]['type']],
-                                        prop=raw_triplet[2]['prop'], add_stringified_node=stringify)
-        relation = Relation(id=ids[1], name=raw_triplet[1]['name'], 
-                            type=RELATIONS_TYPES_MAP[raw_triplet[1]['type']], 
-                            prop=raw_triplet[1]['rel']['prop'])
-        
-        triplet = TripletCreator.create(start_node, relation, end_node, 
-                                        add_stringified_triplet=stringify)
-        
-        return triplet
 
 
     
