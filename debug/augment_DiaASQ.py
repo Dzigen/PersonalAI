@@ -7,7 +7,7 @@ from random import randint
 from copy import deepcopy
 
 from agents.llama_agent import LLaMAagent
-from utils.utils import Logger
+from src.utils import Logger
 
 # def generate(query):
 #     return "Just: just"

@@ -1,2 +1,0 @@
-Utterances shape: torch.Size([18960, 768]), Dialogs shape: torch.Size([3472, 768])
-Utterances shape: torch.Size([18960, 768]), Dialogs shape: torch.Size([3472, 768])

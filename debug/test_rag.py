@@ -3,8 +3,8 @@ import torch
 import numpy as np
 from tqdm.auto import tqdm
 
-from utils.utils import Logger
-from utils.contriever import Retriever
+from src.utils.utils2 import Logger
+from src.utils.contriever import Retriever
 from agents.llama_agent import LLaMAagent, LLaMAagentLocal
 
 
