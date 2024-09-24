@@ -21,17 +21,17 @@ class TripletsFilter(AbstractTriplesFilter):
         self.config = config
 
     def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
-
+        print("Количество извлечённых триплетов: ", len(triplets))
         filtered_triplets = []
         query_embd = self.kg_model.embeddings_db.embedder.encode_queries([query_info.query])[0]
         query_instance = VectorDBInstance(embedding=query_embd)
-        base_triplets_ids = list(map(lambda triplet: triplet.relation.id, triplets))
+        base_triplets_ids = list(map(lambda triplet: triplet.id, triplets))
 
         if len(base_triplets_ids) > 0:
             raw_relevant_triplets = self.kg_model.embeddings_db.vectordbs['triplets'].retrieve(
                 [query_instance], self.config.max_k, includes=['embeddings', 'documents', 'metadatas'], where={"triplet_id": {"$in": base_triplets_ids}})[0]
             accepted_tripletes_ids = list(map(lambda item: item[1].id, raw_relevant_triplets))
-            filtered_triplets = list(filter(lambda triplet: triplet.relation.id in accepted_tripletes_ids, triplets))
+            filtered_triplets = list(filter(lambda triplet: triplet.id in accepted_tripletes_ids, triplets))
 
         return filtered_triplets   
             

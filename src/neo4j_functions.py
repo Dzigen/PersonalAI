@@ -1,6 +1,10 @@
 import copy
 from neo4j import GraphDatabase
 from typing import List, Dict, Tuple
+from tqdm import tqdm
+import json
+
+from .utils.data_structs import Triplet, Node, Relation
 
 class Neo4jConnection:
     def __init__(self, uri, user, pwd, db_name="testdb"):
@@ -73,61 +77,61 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         if triplets:
             return triplets
     
-    def create_triplets(self, triplets: List[List[Dict]]) -> List[Tuple[str, str, str]]:
+    def create_triplets(self, triplets: List[Triplet]) -> None:
         # add nodes and edges which presented in triplets list
         # Check to unique node name
         # Pay attention to the format of triplets
 
-        def create_node_query(node):
-            name = node["name"].replace(" ", "_")
-            node_type = node["type"].replace(" ", "_")
-            props = node["prop"]
-            props_query = [f'name: "{name}"']
-            for prop_name, prop_value in props.items():
-                prop_name_f = prop_name.replace(" ", "_")
-                prop_value_f = prop_value.replace(" ", "_")
-                props_query.append(f'{prop_name_f}: "{prop_value_f}"')
+        def create_node_query(node: Node) -> str:
+            name = json.dumps(node.name, ensure_ascii=False)
+            props_query = [f'name: {name}']
+            for prop_name, prop_value in node.prop.items():
+                p_name = prop_name.replace(" ", "_")
+                p_value = json.dumps(prop_value, ensure_ascii=False)
+                props_query.append(f'{p_name}: {p_value}')
             props_query = ", ".join(props_query)
 
-            insert_query = f"CREATE (n:{node_type} " + "{" + props_query + "}) RETURN elementId(n) as id"
+            insert_query = f"CREATE (n:{node.type.value} " + "{" + props_query + "}) RETURN elementId(n) as id"
             return insert_query
 
 
-        def create_rel(subj, subj_id, rel, obj, obj_id):
-            subj_type, rel_type, obj_type = subj["type"].replace(" ", "_"), rel["type"].replace(" ", "_"), obj["type"].replace(" ", "_")
+        def create_rel(triplet: Triplet) -> str:
             rel_props = []
-            for prop_name, prop_value in rel.get("prop", {}).items():
-                rel_props.append(f'{prop_name.replace(" ", "_")}: "{prop_value.replace(" ", "_")}"')
+            for prop_name, prop_value in triplet.relation.prop.items():
+                if prop_name != "type":
+                    p_value, p_name = json.dumps(prop_value, ensure_ascii=False), prop_name.replace(' ', '_')
+                    rel_props.append(f'{p_name}: {p_value}')
             rel_props = ", ".join(rel_props)
 
             query = ""
-            query += f'MATCH (subj:{subj_type}), (obj:{obj_type}) WHERE elementId(subj) = "{subj_id}" AND elementId(obj) = "{obj_id}" '
-            query += f'CREATE (subj)-[rel:{rel_type}' + '{' + rel_props + '}' + ']->(obj) '
+            subj_t, subj_id = triplet.start_node.type.value, triplet.start_node.id
+            obj_t, obj_id = triplet.end_node.type.value, triplet.end_node.id
+            rel_t = triplet.relation.type.value
+            query += f'MATCH (subj:{subj_t}), (obj:{obj_t}) WHERE elementId(subj) = "{subj_id}" AND elementId(obj) = "{obj_id}" '
+            query += f'CREATE (subj)-[rel:{rel_t}' + '{' + rel_props + '}' + ']->(obj) '
             query += 'RETURN elementId(rel) as id'
             return query
         
-        added_triplets_ids = []
-        for subj, rel, obj in triplets:
-            subj_out = self.execute_query(f'MATCH (subj:{subj["type"]}) WHERE subj.name = "{subj["name"]}" RETURN elementID(subj) as id')
+        for triplet in tqdm(triplets):
+            subj_n, subj_t = json.dumps(triplet.start_node.name, ensure_ascii=False), triplet.start_node.type.value
+            subj_out = self.execute_query(f'MATCH (subj:{subj_t}) WHERE subj.name = {subj_n} RETURN elementID(subj) as id')
             if not subj_out:
-                insert_subj_query = create_node_query(subj)
-                subj_id = self.execute_query(insert_subj_query)[0]['id']
+                insert_subj_query = create_node_query(triplet.start_node)
+                triplet.start_node.id = self.execute_query(insert_subj_query)[0]['id']
             else:
-                subj_id = subj_out[0]['id']
-
-            obj_out = self.execute_query(f'MATCH (obj:{obj["type"]}) WHERE obj.name = "{obj["name"]}" RETURN elementID(obj) as id')
-            if not obj_out:
-                insert_obj_query = create_node_query(obj)
-                obj_id = self.execute_query(insert_obj_query)[0]['id']
-            else:
-                obj_id = obj_out[0]['id']
+                triplet.start_node.id = subj_out[0]['id']
             
-            create_rel_query = create_rel(subj, subj_id, rel, obj, obj_id)
-            rel_id = self.execute_query(create_rel_query)[0]['id']
-            added_triplets_ids.append((subj_id, rel_id, obj_id))
-        
-        return added_triplets_ids
-
+            obj_n, obj_t = json.dumps(triplet.end_node.name, ensure_ascii=False), triplet.end_node.type.value
+            obj_out = self.execute_query(f'MATCH (obj:{obj_t}) WHERE obj.name = {obj_n} RETURN elementID(obj) as id')
+            if not obj_out:
+                insert_obj_query = create_node_query(triplet.end_node)
+                triplet.end_node.id = self.execute_query(insert_obj_query)[0]['id']
+            else:
+                triplet.end_node.id = obj_out[0]['id']
+            
+            create_rel_query = create_rel(triplet)
+            triplet.relation.id = self.execute_query(create_rel_query)[0]['id']
+            
     def delete_triplets(self, triplets):
         # delete edges which presented in triplets list
         # Pay attention to the format of triplets and check if triplets indeed are in graph
@@ -166,6 +170,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             response = list(session.run(query))
         except Exception as e:
             print("Query failed:", e)
+            print("Error query: ", query)
         finally:
             if session is not None:
                 session.close()

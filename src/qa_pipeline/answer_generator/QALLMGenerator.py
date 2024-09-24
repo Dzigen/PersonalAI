@@ -1,7 +1,8 @@
-from .utils import QUESTION_ANSWERING_USER_PROMPT, RelationType
+from .utils import QUESTION_ANSWERING_USER_PROMPT
 from ...utils.data_structs import Triplet
 from ...llm_agent import AgentConnector
-from ...embedding_functions import EmbeddingsDatabaseConnection
+from ...utils.data_structs import TripletCreator
+from ...utils.data_structs import RelationType
 
 from typing import List
 from dataclasses import dataclass, field
@@ -22,8 +23,7 @@ class QALLMGenerator:
         self.config = config
 
     def formate_context(self, triplets: List[Triplet]) -> str:
-        filtered_context = list(map(lambda triplet: EmbeddingsDatabaseConnection.formate_triplete(triplet), triplets))
-        filtered_context = list(map(lambda triplet: triplet[1], filtered_context))                
+        filtered_context = list(map(lambda triplet: f"- {TripletCreator.stringify(triplet)[1] if triplet.stringified is None else triplet.stringified}", triplets))                
         return "\n".join(filtered_context)
 
     def generate(self, query: str, context: str) -> str:

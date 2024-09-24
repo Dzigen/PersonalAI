@@ -1,12 +1,22 @@
-from .utils import MemPipelineConfig
+from .utils import log_path
 from .extractor.LLMExtractor import LLMExtractor
 from .updator.LLMUpdator import LLMUpdator
+from .extractor import LLMExtractorConfig
+from .updator import LLMUpdatorConfig
 from ..llm_agent import AgentConnector
 from ..qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
-from ..utils.data_structs import Triplet, Node, Relation
+from ..utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 from ..knowledge_graph_model import KnowledgeGraphModel
+from ..utils import Logger
 
+from dataclasses import dataclass, field
 from typing import Dict
+
+@dataclass
+class MemPipelineConfig:
+    extractor_config: LLMExtractorConfig = field(default_factory=lambda: LLMExtractorConfig())
+    updator_config: LLMUpdatorConfig = field(default_factory=lambda: LLMUpdatorConfig())
+    log: Logger = field(default_factory=lambda: Logger(log_path))
 
 class MemPipeline:
 
@@ -30,30 +40,14 @@ class MemPipeline:
             triplets_to_remove = self.updator.update(new_triplets, replacing_window_width, replacing_window_depth, need_simple, need_thesises)
             # self.log("PROCESSED OUTDATED TRIPLETS: " + str(triplets_to_remove))
         
-
-        ids = self.kg_model.graph_db.create_triplets(new_triplets)
-        prepared_triplets = self.match_triplets_by_id(new_triplets, ids)
-        self.kg_model.embeddings_db.add_triplets(prepared_triplets)
+        # В объекты триплетов добавлются идентикаторы, присвоенные им в рамках графовой бд
+        self.kg_model.graph_db.create_triplets(new_triplets)
+        self.kg_model.embeddings_db.add_triplets(new_triplets)
         if need_update:
             ids = self.kg_model.graph_db.delete_triplets(triplets_to_remove)
             triplets_ids = [id[1] for id in ids]
             nodes_ids = [id[0] for id in ids] + [id[2] for id in ids]
             self.kg_model.embeddings_db.delete_triplets(triplets_ids, nodes_ids)
-
-    @staticmethod
-    def match_triplets_by_id(triplets, ids):
-        assert len(triplets) == len(ids)
-        prepared_triplets = []
-        for i in range(len(triplets)):
-            start_node = Node(id = ids[i][0], name = triplets[i][0]["name"], 
-                              type = triplets[i][0]["type"], prop = triplets[i][0]["prop"])
-            end_node = Node(id = ids[i][2], name = triplets[i][2]["name"], 
-                              type = triplets[i][2]["type"], prop = triplets[i][2]["prop"])
-            relation = Relation(id = ids[i][1], name = triplets[i][1]["name"], 
-                              type = triplets[i][1]["prop"]["type"], prop = triplets[i][1]["prop"])
-            triplet = Triplet(start_node, relation, end_node)
-            prepared_triplets.append(triplet)
-        return prepared_triplets
 
 
     
