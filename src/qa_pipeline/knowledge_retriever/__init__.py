@@ -1,1 +1,2 @@
 from .KnowledgeRetriever import KnowledgeRetriever, KnowledgeRetrieverConfig
+from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarMetricsConfig

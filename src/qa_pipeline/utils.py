@@ -1,1 +1,1 @@
-log_path = 'debug'
+log_path = 'qa_log'

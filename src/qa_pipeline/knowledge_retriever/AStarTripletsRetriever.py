@@ -13,14 +13,14 @@ from ...utils.data_structs import NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 class AStarMetricsConfig:
     h_metric_name: str = 'weight_with_short_path'
     d_metric_name: str = 'ip'
-    nodes_distances_path: str = '../data/vectorized_nodes/v8/nodes_distances_matrix'
-    nodes_short_paths_file: str = '../data/graph_short_paths/stage2/v2/distances_matrix'
+    nodes_distances_path: str = '../data/graph_structures/vectorized_nodes/v8/nodes_distances_matrix'
+    nodes_short_paths_file: str = '../data/graph_structures/graph_short_paths/stage2/v2/distances_matrix'
 
 @dataclass
 class AStarGraphSearchConfig:
     max_depth: int = 25
     graphdb_name: str = 'testdb'
-    accepted_node_types: List[str] = f'["{NodeType.object.value}", "{NodeType.hyper.value}", "{NodeType.episodic.value}"]'
+    accepted_node_types: List[str] = f'["{NodeType.object.value}"]'
     metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
 
 class AStarMetrics:

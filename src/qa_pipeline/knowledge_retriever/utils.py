@@ -4,6 +4,8 @@ from typing import Dict
 
 from ...utils.data_structs import QueryInfo, Triplet
 
+LOG_PATH = 'retriever_log'
+
 class AbstractTriplesFilter(ABC):
     @abstractmethod
     def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:

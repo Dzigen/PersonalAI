@@ -17,7 +17,7 @@ class GeneralAgentConnectionParams:
 
 @dataclass
 class RemoteAgentConnectionParams(GeneralAgentConnectionParams):
-    host: str = "10.16.88.76"
+    host: str = "localhost"
     gen_path: str = "generate"
     check_path: str = ""
     port: str = "45678"
