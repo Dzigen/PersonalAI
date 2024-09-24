@@ -4,7 +4,7 @@ from typing import Dict
 import gc
 import torch
 
-from src.agent_model import AgentModel
+from llm_agent.agent_model import AgentModel
 
 
 class RemoteAgentRequestBody(BaseModel):

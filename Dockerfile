@@ -15,17 +15,16 @@ RUN pip install accelerate==0.24.0
 ARG APP_DIR=/app
 ENV PYTHONPATH "${PYTHONPATH}:${APP_DIR}"
 
-RUN mkdir /app/src
+RUN mkdir /app/llm_agent
 RUN mkdir /app/models
 RUN mkdir /app/notebooks
 
 COPY notebooks/download_llama3_8b.py /app/notebooks
-COPY src/llm_agent /app/src
-COPY api.py .
+COPY src/llm_agent /app/llm_agent
+COPY src/agent_api.py .
 
 RUN ls -la
 RUN python3 --version
-WORKDIR /app/src
 
-CMD  ["sh", "-c", "uvicorn api:app --reload --host 0.0.0.0 --port 4567"] 
+CMD  ["sh", "-c", "uvicorn agent_api:app --reload --host 0.0.0.0 --port 4567"] 
 #CMD ["sh", "-c", "sleep infinity"]
