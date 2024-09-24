@@ -6,7 +6,7 @@ import json
 
 from .utils.data_structs import Triplet, Node, Relation
 
-class Neo4jConnection:
+class Neo4jConnection(AbstractGraphConnection):
     def __init__(self, uri, user, pwd, db_name="testdb"):
         self.driver = None
         try:
