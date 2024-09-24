@@ -91,7 +91,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                 props_query.append(f'{p_name}: {p_value}')
             props_query = ", ".join(props_query)
 
-            insert_query = f"CREATE (n:{node.type} " + "{" + props_query + "}) RETURN elementId(n) as id"
+            insert_query = f"CREATE (n:{node.type.value} " + "{" + props_query + "}) RETURN elementId(n) as id"
             return insert_query
 
 
@@ -104,16 +104,16 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             rel_props = ", ".join(rel_props)
 
             query = ""
-            subj_t, subj_id = triplet.start_node.type, triplet.start_node.id
-            obj_t, obj_id = triplet.end_node.type, triplet.end_node.id
-            rel_t = triplet.relation.type
+            subj_t, subj_id = triplet.start_node.type.value, triplet.start_node.id
+            obj_t, obj_id = triplet.end_node.type.value, triplet.end_node.id
+            rel_t = triplet.relation.type.value
             query += f'MATCH (subj:{subj_t}), (obj:{obj_t}) WHERE elementId(subj) = "{subj_id}" AND elementId(obj) = "{obj_id}" '
             query += f'CREATE (subj)-[rel:{rel_t}' + '{' + rel_props + '}' + ']->(obj) '
             query += 'RETURN elementId(rel) as id'
             return query
         
         for triplet in tqdm(triplets):
-            subj_n, subj_t = json.dumps(triplet.start_node.name, ensure_ascii=False), triplet.start_node.type
+            subj_n, subj_t = json.dumps(triplet.start_node.name, ensure_ascii=False), triplet.start_node.type.value
             subj_out = self.execute_query(f'MATCH (subj:{subj_t}) WHERE subj.name = {subj_n} RETURN elementID(subj) as id')
             if not subj_out:
                 insert_subj_query = create_node_query(triplet.start_node)
@@ -121,7 +121,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             else:
                 triplet.start_node.id = subj_out[0]['id']
             
-            obj_n, obj_t = json.dumps(triplet.end_node.name, ensure_ascii=False), triplet.end_node.type
+            obj_n, obj_t = json.dumps(triplet.end_node.name, ensure_ascii=False), triplet.end_node.type.value
             obj_out = self.execute_query(f'MATCH (obj:{obj_t}) WHERE obj.name = {obj_n} RETURN elementID(obj) as id')
             if not obj_out:
                 insert_obj_query = create_node_query(triplet.end_node)
@@ -170,6 +170,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             response = list(session.run(query))
         except Exception as e:
             print("Query failed:", e)
+            print("Error query: ", query)
         finally:
             if session is not None:
                 session.close()

@@ -175,7 +175,7 @@ class ChromaConnection(AbstractDatabaseConnection):
 
 @dataclass
 class EmbedderModelConfig:
-    model_name_or_path: str = '../../models/intfloat/multilingual-e5-small'
+    model_name_or_path: str = '../models/intfloat/multilingual-e5-small'
     prompts: Dict = field(default_factory=lambda: {"query": "query: ", "passage": "passage: "})
     device: str = 'cuda'
     normalize_embeddings: bool = True
@@ -198,8 +198,8 @@ class EmbedderModel:
                                  **kwargs)
 
 
-NODES_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="../../data/vectorized_nodes/v8/densedb", db_name="vectorized_nodes")
-TRIPLETS_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="../../data/vectorized_triplets/v4/densedb", db_name="vectorized_triplets")
+NODES_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="../data/vectorized_nodes/v8/densedb", db_name="vectorized_nodes")
+TRIPLETS_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="../data/vectorized_triplets/v4/densedb", db_name="vectorized_triplets")
 
 @dataclass
 class EmbeddingsDatabaseConnectionConfig:
