@@ -3,7 +3,7 @@ from .TripletsFilter import TripletsFilterConfig, TripletsFilter
 from .AStarTripletsRetriever import AStartTripletsRetriever, AStarGraphSearchConfig
 from ...utils.data_structs import QueryInfo, Triplet
 from ...knowledge_graph_model import KnowledgeGraphModel
-from ..utils import Logger
+from ...utils import Logger
 
 from dataclasses import dataclass, field
 from typing import List
@@ -35,10 +35,10 @@ class KnowledgeRetriever:
     def retrieve(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("stage #3.1 - extracting triplets...", verbose=self.config.verbose)
         triplets = self.graph_retriever.get_relevant_triplets(query_info)
-        self.log("Количество извлечённых триплетов: ", len(triplets))
+        self.log(f"Количество извлечённых триплетов: {len(triplets)}", verbose=self.config.verbose)
 
         self.log("stage #3.2 - filtering triplets...", verbose=self.config.verbose)
         filtered_triplets = self.triplets_filter.apply_filter(query_info, triplets)
-        self.log("Количество триплетов после фильтрации: ", len(filtered_triplets))
+        self.log(f"Количество триплетов после фильтрации: {len(filtered_triplets)}", verbose=self.config.verbose)
 
         return filtered_triplets

@@ -1,1 +1,1 @@
-log_path = 'qa_log'
+LOG_PATH = 'qa_log'

@@ -2,7 +2,7 @@ from .answer_generator import QALLMGenerator, QALLMGeneratorConfig
 from .knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
 from .knowledge_comparator import KnowledgeComparator, KnowledgeComparatorConfig
 from .query_parser import QueryLLMParser, QueryLLMParserConfig
-from .utils import log_path
+from .utils import LOG_PATH
 from ..llm_agent import AgentConnector
 from ..knowledge_graph_model import KnowledgeGraphModel
 from ..utils import Logger
@@ -15,7 +15,7 @@ class QAPipelineConfig:
     query_parser_config: QueryLLMParserConfig = field(default_factory=lambda: QueryLLMParserConfig())
     knowledge_comparator_config: KnowledgeComparatorConfig = field(default_factory=lambda: KnowledgeComparatorConfig())
     answer_generator_config: QALLMGeneratorConfig = field(default_factory=lambda: QALLMGeneratorConfig())
-    log: Logger = field(default_factory=lambda: Logger(log_path))
+    log: Logger = field(default_factory=lambda: Logger(LOG_PATH))
     verbose: bool = False
 
 class QAPipeline:

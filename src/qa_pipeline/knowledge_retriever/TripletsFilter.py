@@ -9,7 +9,7 @@ from typing import List
 
 @dataclass
 class TripletsFilterConfig:
-    max_k: int = 100
+    max_k: int = 50
 
 class TripletsFilter(AbstractTriplesFilter):
     """Главный класс для фильтрации триплетов, извлечённых из графа знаний, 
