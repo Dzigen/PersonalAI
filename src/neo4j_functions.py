@@ -2,9 +2,14 @@ import copy
 from neo4j import GraphDatabase
 from typing import List, Dict, Tuple
 from tqdm import tqdm
+from abc import ABC, abstractmethod
 import json
 
 from .utils.data_structs import Triplet, Node, Relation
+
+
+class AbstractGraphConnection(ABC):
+    pass
 
 class Neo4jConnection(AbstractGraphConnection):
     def __init__(self, uri, user, pwd, db_name="testdb"):
