@@ -181,13 +181,13 @@ class AStartTripletsRetriever(AbstractTripletsRetriever):
         
         formated_triplets = dict()
         for raw_triplet in raw_triplets:
-            start_node = NodeCreator.create(id=raw_triplet['n1'].element_id, name=raw_triplet['n1']['name'], 
+            start_node = NodeCreator.create(id=raw_triplet['n1'].element_id, name=str(raw_triplet['n1']['name']), 
                                             type=NODES_TYPES_MAP[list(raw_triplet['n1'].labels)[0]],
                                             prop=dict(raw_triplet['n1']))
-            end_node = NodeCreator.create(id=raw_triplet['n2'].element_id, name=raw_triplet['n2']['name'], 
+            end_node = NodeCreator.create(id=raw_triplet['n2'].element_id, name=str(raw_triplet['n2']['name']), 
                                             type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]],
                                             prop=dict(raw_triplet['n2']))
-            relation = Relation(id=raw_triplet['rel'].element_id, name=raw_triplet['rel']['name'], 
+            relation = Relation(id=raw_triplet['rel'].element_id, name=str(raw_triplet['rel']['name']), 
                                 type=RELATIONS_TYPES_MAP[raw_triplet['rel'].type], 
                                 prop=dict(raw_triplet['rel']))
             

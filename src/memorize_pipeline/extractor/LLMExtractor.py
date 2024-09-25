@@ -81,7 +81,7 @@ class LLMExtractor:
             thesis_rel = Relation(name=RelationType.hyper, type=RelationType.hyper, prop={**rel_prop})
             for entity in entities:
                 thesises.append(TripletCreator.create(
-                    NodeCreator.create(name=entity, type=NodeType.object, prop={**node_prop}),
+                    NodeCreator.create(name=str(entity), type=NodeType.object, prop={**node_prop}),
                     thesis_rel, thesis_node))
             
         return thesises
