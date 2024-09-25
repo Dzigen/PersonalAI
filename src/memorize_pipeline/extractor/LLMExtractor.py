@@ -27,13 +27,11 @@ class LLMExtractor:
         assert need_simple or need_thesises
         new_triplets = []
         if need_simple:
-            new_simple_triplets = self.extract_triplets(text, node_prop, rel_prop)
-            new_triplets += new_simple_triplets
-
+            new_triplets += self.extract_triplets(text, node_prop, rel_prop)
+            
         if need_thesises:
-            new_thesises_triplets = self.extract_thesises(text, node_prop, rel_prop)
-            new_triplets += new_thesises_triplets
-        
+            new_triplets += self.extract_thesises(text, node_prop, rel_prop)
+            
         if need_episodic:
             new_triplets += self.get_episodic_relationships(
                 text, self.get_entities_from_triplets(new_triplets), node_prop, rel_prop)
@@ -58,8 +56,8 @@ class LLMExtractor:
     def get_entities_from_triplets(triplets: List[Triplet]) -> List[Node]:
         entities = {}
         for triplet in triplets:
-            entities[triplet.start_node.name] = triplet.start_node
-            entities[triplet.end_node.name] = triplet.end_node
+            entities[triplet.start_node.stringified] = triplet.start_node
+            entities[triplet.end_node.stringified] = triplet.end_node
         return list(entities.values())
     
     @staticmethod
@@ -70,6 +68,8 @@ class LLMExtractor:
         raw_thesises = response.split(".")
         thesises = []
         for raw_thesis in raw_thesises:
+            if ";" not in raw_thesis:
+                continue
             try:
                 raw_thesis, raw_entities = raw_thesis.split(";")
                 thesis = raw_thesis.strip('.-* ')

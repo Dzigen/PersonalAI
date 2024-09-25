@@ -1,1 +1,1 @@
-log_path = "debug"
+LOG_PATH = "mem_log"

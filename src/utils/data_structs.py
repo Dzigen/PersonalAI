@@ -51,7 +51,7 @@ class Triplet:
 class BaseCreator:
     @staticmethod
     def add_str_props(obj: Union[Relation, Node], obj_str: str) -> str:
-        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in ['name','type','raw_time', 'time']])
+        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in ['name', 'type', 'raw_time', 'time']])
         if str_prop:
             obj_str += f" ({str_prop})"
         return obj_str
@@ -66,7 +66,7 @@ class NodeCreator(BaseCreator):
 
     @staticmethod
     def stringify(node: Node) -> str:    
-        return node.id, NodeCreator.add_str_props(node, node.name)
+        return node.id, NodeCreator.add_str_props(node, str(node.name))
 
 class TripletCreator(BaseCreator):
     @staticmethod
@@ -85,16 +85,16 @@ class TripletCreator(BaseCreator):
             str_triplet = ""
             if "time" in triplet.relation.prop.keys():
                 str_triplet += triplet.relation.prop["time"] + ": "
-            str_triplet += TripletCreator.add_str_props(triplet.end_node, triplet.end_node.name)
+            str_triplet += TripletCreator.add_str_props(triplet.end_node, str(triplet.end_node.name))
             
         elif rel_type == RelationType.simple:
             str_triplet = ""
             if "time" in triplet.relation.prop.keys():
                 str_triplet += triplet.relation.prop["time"] + ": "
             str_triplet += " ".join([
-                TripletCreator.add_str_props(triplet.start_node, triplet.start_node.name),
-                TripletCreator.add_str_props(triplet.relation, triplet.relation.name),
-                TripletCreator.add_str_props(triplet.end_node, triplet.end_node.name)])
+                TripletCreator.add_str_props(triplet.start_node, str(triplet.start_node.name)),
+                TripletCreator.add_str_props(triplet.relation, str(triplet.relation.name)),
+                TripletCreator.add_str_props(triplet.end_node, str(triplet.end_node.name))])
 
         else:
             raise KeyError
