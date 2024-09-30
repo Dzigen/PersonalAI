@@ -15,8 +15,8 @@ llm_agent = LLaMAagentLocal("You are a helpful assistant")
 uri, user, pwd = "bolt://31.207.47.254:7687", 'neo4j', 'password'
 neo4j_conn = Neo4jConnection(uri, user, pwd)
 db_name = "testMem"
-neo4j_conn.execute_query(f"DELETE DATABASE {db_name} IF EXISTS")
 neo4j_conn.execute_query(f"CREATE DATABASE {db_name} IF NOT EXISTS")
+neo4j_conn.execute_query(f"MATCH (n) DETACH DELETE n", db_name)
 
 triplets_db_config = VectorDBConnectionConfig("test_path_triplets", "test_db_triplets")
 nodes_db_config = VectorDBConnectionConfig("test_path_nodes", "test_db_nodes")
@@ -37,4 +37,4 @@ with open("Augment_DiaASQ.json") as f:
 
 facts = [dialog["text_dialog"] for dialog in data["data"]][:15]
 for fact in facts:
-    mem_pipe.remember(fact, node_prop={}, rel_prop = {"time": 1}, need_thesises=False)
+    mem_pipe.remember(fact, node_prop={}, rel_prop = {"time": 1}, need_thesises=True, need_simple=False)

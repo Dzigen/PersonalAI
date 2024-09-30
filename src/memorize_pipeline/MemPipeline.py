@@ -32,14 +32,14 @@ class MemPipeline:
             # self.log("PROCESSED OUTDATED TRIPLETS: " + str(triplets_to_remove))
         
 
-        ids = self.neo4j_conn.create_triplets(new_triplets, self.db_name)
-        prepared_triplets = self.match_triplets_by_id(new_triplets, ids)
-        self.vectordb_conn.add_triplets(prepared_triplets)
-        if need_update:
-            ids = self.neo4j_conn.delete_triplets(triplets_to_remove, self.db_name)
-            triplets_ids = [id[1] for id in ids]
-            nodes_ids = [id[0] for id in ids] + [id[2] for id in ids]
-            self.vectordb_conn.delete_triplets(triplets_ids, nodes_ids)
+        # ids = self.neo4j_conn.create_triplets(new_triplets, self.db_name)
+        # prepared_triplets = self.match_triplets_by_id(new_triplets, ids)
+        # self.vectordb_conn.add_triplets(prepared_triplets)
+        # if need_update:
+        #     ids = self.neo4j_conn.delete_triplets(triplets_to_remove, self.db_name)
+        #     triplets_ids = [id[1] for id in ids]
+        #     nodes_ids = [id[0] for id in ids] + [id[2] for id in ids]
+        #     self.vectordb_conn.delete_triplets(triplets_ids, nodes_ids)
 
     @staticmethod
     def match_triplets_by_id(triplets, ids):

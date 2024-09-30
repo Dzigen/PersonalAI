@@ -1,5 +1,7 @@
+*.sh
+*.txt
+*.json
 models/
 data/
 __pycache__
 create_local_db/
-archives/

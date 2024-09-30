@@ -2,16 +2,41 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from sentence_transformers import SentenceTransformer
 from typing import Dict, List, Tuple
+from enum import Enum
 
-from .qa_pipeline.knowledge_retriever.utils import Triplet, Node
-from .qa_pipeline.answer_generator.utils import ContextType
 
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+# __import__('pysqlite3')
+# import sys
+# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 import chromadb
 import enum
+
+
+@dataclass
+class Node:
+    id: str
+    name: str
+    type: str
+    prop: dict
+
+@dataclass
+class Relation:
+    id: str
+    name: str
+    type: str
+    prop: dict
+
+@dataclass
+class Triplet:
+    start_node: Node 
+    relation: Relation 
+    end_node: Node
+    
+class ContextType(Enum):
+    simple = "simple"
+    hyper = "hyper"
+    episodic = "episodic"
 
 class AbstractDatabaseConnection(ABC):
     
@@ -161,8 +186,8 @@ class ChromaConnection(AbstractDatabaseConnection):
 
 @dataclass
 class EmbedderModelConfig:
-    model_name_or_path: str = '../models/intfloat/multilingual-e5-small'
-    prompts: Dict = field(default_factory=lambda: {"query": "query: ", "passage": "passage: "})
+    model_name_or_path: str = 'intfloat/multilingual-e5-small'
+    # prompts: Dict = field(default_factory=lambda: {"query": "query: ", "passage": "passage: "})
     device: str = 'cuda'
     normalize_embeddings: bool = True
 
@@ -171,7 +196,8 @@ class EmbedderModel:
         self.config = EmbedderModelConfig() if config is None else config
         self.model = SentenceTransformer(
             config.model_name_or_path, device=config.device,
-            prompts=config.prompts)
+            # prompts=config.prompts
+        )
 
     def encode_queries(self, queries: List[str], **kwargs) -> List[List[float]]:
         """_summary_

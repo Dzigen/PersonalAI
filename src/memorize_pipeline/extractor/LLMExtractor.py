@@ -72,7 +72,7 @@ class LLMExtractor:
                 thesises.append(
                     [
                         {"name": entity, "type": "object", "prop": {**node_prop}},
-                        {"name": "hyper", "prop": {"type": "simple", **rel_prop}},
+                        {"name": "hyper", "prop": {"type": "hyper", **rel_prop}},
                         {"name": f'hypernode{self.num_hyperedges}', "type": "hyper", "prop": {"descr": raw_thesis[0], **node_prop}}
                     ]
                 )

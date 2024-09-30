@@ -47,7 +47,7 @@ class LLaMAagentLocal:
         self.system_prompt = system_prompt
 
     def generate(self, prompt):
-        URL = "https://3f4b-109-252-76-222.ngrok-free.app/llama" 
+        URL = "https://b451-178-176-73-130.ngrok-free.app/llama" 
         prompt = prompt + "&&&&&" + self.system_prompt
         response = requests.post( 
             URL, params = {"prompt": prompt}
