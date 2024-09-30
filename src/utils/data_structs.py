@@ -65,8 +65,12 @@ class NodeCreator(BaseCreator):
         return node
 
     @staticmethod
-    def stringify(node: Node) -> str:    
-        return node.id, NodeCreator.add_str_props(node, str(node.name))
+    def stringify(node: Node) -> str:
+        str_node = ""
+        if "time" in node.prop.keys():
+            str_node += node.prop["time"] + ": "
+        str_node += NodeCreator.add_str_props(node, str(node.name))   
+        return node.id, str_node
 
 class TripletCreator(BaseCreator):
     @staticmethod
@@ -84,7 +88,7 @@ class TripletCreator(BaseCreator):
         if (rel_type == RelationType.episodic) or (rel_type == RelationType.hyper):
             str_triplet = ""
             if "time" in triplet.relation.prop.keys():
-                str_triplet += triplet.relation.prop["time"] + ": "
+                str_triplet += triplet.end_node.prop["time"] + ": "
             str_triplet += TripletCreator.add_str_props(triplet.end_node, str(triplet.end_node.name))
             
         elif rel_type == RelationType.simple:
