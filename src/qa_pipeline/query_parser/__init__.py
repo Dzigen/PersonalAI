@@ -1,2 +1,1 @@
-from .QueryLLMParser import QueryLLMParser
-from .utils import QueryLLMParserConfig, QueryInfo
+from .QueryLLMParser import QueryLLMParser, QueryLLMParserConfig

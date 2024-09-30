@@ -17,7 +17,7 @@ class GeneralAgentConnectionParams:
 
 @dataclass
 class RemoteAgentConnectionParams(GeneralAgentConnectionParams):
-    host: str = "10.16.88.76"
+    host: str = "localhost"
     gen_path: str = "generate"
     check_path: str = ""
     port: str = "45678"
@@ -48,7 +48,7 @@ class RemoteAgentConnector(AbstractAgentConnector):
         response = requests.get(url)
         return response.status_code == 200
 
-    def generate(self, user_prompt: str, assistant_prompt: str = None, gen_strategy: Dict = None) -> str:
+    def generate(self, user_prompt: str, assistant_prompt: str = None, system_prompt: str = None, gen_strategy: Dict = None) -> str:
         """Метод для отправки текстовых звапросов llm-агенту для получения сгенерированных ответов.
 
         Args:
@@ -65,8 +65,17 @@ class RemoteAgentConnector(AbstractAgentConnector):
         """
         conn_params = self.config.connection_params
         url = f"http://{conn_params.host}:{conn_params.port}/{conn_params.gen_path}"
-        body = {"user_prompt": user_prompt, "assistant_prompt": assistant_prompt, 
-                "gen_strategy": gen_strategy}
+
+        body = {"user_prompt": user_prompt}
+        if assistant_prompt is not None:
+            body["assistant_prompt"] = assistant_prompt
+        if gen_strategy is not None:
+            body["gen_strategy"] = gen_strategy
+        else:
+            body["gen_strategy"] = self.config.agent_config.gen_strategy
+        if system_prompt is not None:
+            body["system_prompt"] = system_prompt
+        
         response = requests.post(url, json=body)
 
         if response.status_code == 200:
@@ -84,8 +93,8 @@ class LocalAgentConnector(AbstractAgentConnector):
     def check_connection(self):
         return hasattr(self, 'agent') and isinstance(self.agent, AbstractAgentConnector)
 
-    def generate(self, user_prompt: str, assistant_prompt: str = None, gen_strategy: Dict = None):
-        return self.agent.generate(user_prompt, assistant_prompt, gen_strategy)   
+    def generate(self, user_prompt: str, assistant_prompt: str = None, system_prompt: str = None, gen_strategy: Dict = None):
+        return self.agent.generate(user_prompt, assistant_prompt, system_prompt, gen_strategy)   
 
 # Доступные способы соединения с llm-агентом
 CONNECTORS = {
@@ -95,5 +104,5 @@ CONNECTORS = {
 
 class AgentConnector:
     @staticmethod
-    def open(config: AgentConnectorConfig):
+    def open(config: AgentConnectorConfig = AgentConnectorConfig()):
         return CONNECTORS[config.connection_type](config)

@@ -7,7 +7,7 @@ from src.prompts.extraction_prompts import \
     triplet_extraction_prompt, thesis_extraction_prompt
 from src.prompts.replacements_prompts import \
     replace_simple_prompt, replace_thesis_prompt
-from utils.utils import Logger
+from src.utils import Logger
 from src.retrieve.retriever import Retriever
 
 from .qa_pipeline import QAPipeline, QAPipelineConfig

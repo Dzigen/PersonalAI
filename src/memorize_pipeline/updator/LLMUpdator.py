@@ -1,8 +1,14 @@
-from .utils import LLMUpdatorConfig
-from ...knowledge_graph_model import KnowledgeGraphModel
-from ...embedding_functions import VectorDBInstance
+from .utils import Logger, log_path, REPLACE_THESIS_PROMPT, REPLACE_SIMPLE_PROMPT
 from ...agents import LLaMAagent
 from ...qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
+
+from dataclasses import dataclass, field
+
+@dataclass
+class LLMUpdatorConfig:
+    log: Logger = field(default_factory=lambda: Logger(log_path))
+    replace_thesis_prompt: str = REPLACE_THESIS_PROMPT
+    replace_simple_prompt: str = REPLACE_SIMPLE_PROMPT
 
 class LLMUpdator:
 

@@ -3,5 +3,10 @@
 *.json
 models/
 data/
-__pycache__
 create_local_db/
+archives/
+inference/
+__pycache__
+notebooks/tmp_extracted_openai_gpt4omini_triplets.json
+notebooks/evaluation
+log.txt

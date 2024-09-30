@@ -1,8 +1,9 @@
-from ..query_parser.utils import QueryInfo
-from ...knowledge_graph_model import KnowledgeGraphModel
-from .utils import Triplet, AbstractTriplesFilter, AbstractTripletsRetriever
+from .utils import AbstractTriplesFilter, AbstractTripletsRetriever, LOG_PATH
 from .TripletsFilter import TripletsFilterConfig, TripletsFilter
 from .AStarTripletsRetriever import AStartTripletsRetriever, AStarGraphSearchConfig
+from ...utils.data_structs import QueryInfo, Triplet
+from ...knowledge_graph_model import KnowledgeGraphModel
+from ...utils import Logger
 
 from dataclasses import dataclass, field
 from typing import List
@@ -13,21 +14,31 @@ class KnowledgeRetrieverConfig:
     graph_retriever_config: object = field(default_factory=lambda: AStarGraphSearchConfig())
     triplets_filter_method: AbstractTriplesFilter = field(default_factory=lambda: TripletsFilter)
     triplets_filter_config: object = field(default_factory=lambda: TripletsFilterConfig())
+    log: Logger = field(default_factory=lambda: Logger(LOG_PATH))
+    verbose: bool = False
 
 class KnowledgeRetriever:
     """Главный класс для извлечения релевантной информации из графа знаний
     по запросу пользователя 
     """
-    def __init__(self, config: KnowledgeRetrieverConfig, kg_model: KnowledgeGraphModel) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeRetrieverConfig = KnowledgeRetrieverConfig()) -> None:
         self.config = config
         self.kg_model = kg_model
+        self.log = config.log
 
-        self.graph_retriever = self.config.graph_search_method(
-            kg_model, self.config.graph_search_config)
+        self.graph_retriever = self.config.graph_retriever_method(
+            kg_model, self.config.graph_retriever_config)
+        
         self.triplets_filter = self.config.triplets_filter_method(
             kg_model, self.config.triplets_filter_config)
 
     def retrieve(self, query_info: QueryInfo) -> List[Triplet]:
+        self.log("stage #3.1 - extracting triplets...", verbose=self.config.verbose)
         triplets = self.graph_retriever.get_relevant_triplets(query_info)
+        self.log(f"Количество извлечённых триплетов: {len(triplets)}", verbose=self.config.verbose)
+
+        self.log("stage #3.2 - filtering triplets...", verbose=self.config.verbose)
         filtered_triplets = self.triplets_filter.apply_filter(query_info, triplets)
+        self.log(f"Количество триплетов после фильтрации: {len(filtered_triplets)}", verbose=self.config.verbose)
+
         return filtered_triplets

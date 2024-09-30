@@ -1,29 +1,10 @@
-from dataclasses import dataclass
-from enum import Enum
 from typing import List
 from abc import ABC, abstractmethod
+from typing import Dict
 
-from ..query_parser import QueryInfo
+from ...utils.data_structs import QueryInfo, Triplet
 
-@dataclass
-class Node:
-    id: str
-    name: str
-    type: str
-    prop: dict
-
-@dataclass
-class Relation:
-    id: str
-    name: str
-    type: str
-    prop: dict
-
-@dataclass
-class Triplet:
-    start_node: Node 
-    relation: Relation 
-    end_node: Node
+LOG_PATH = 'retriever_log'
 
 class AbstractTriplesFilter(ABC):
     @abstractmethod
@@ -35,4 +16,11 @@ class AbstractTripletsRetriever(ABC):
     @abstractmethod
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         # извлечение триплетов из графа знаний, релевантных запросу
+        pass
+
+
+class AbstractGraphDriver(ABC):
+    @abstractmethod
+    def get_adjecent_nodes(self, base_node_id: str, parent_node_id: str) -> List[str]:
+        # получение списка смежных с данной вершин, без вершины из которой пришли ранее
         pass
