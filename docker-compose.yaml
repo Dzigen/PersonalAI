@@ -1,0 +1,26 @@
+version: "3"
+services:
+  aerospike:
+    container_name: personalai_aerospike
+    hostname: aerospikelservice
+    image: aerospike:ee-7.1.0.6_1
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+      - "3002:3002"
+    volumes:
+      - ../aerospike/data:/opt/etc/aerospike/
+
+  neo4j:
+    container_name: personalai_neo4j
+    restart: always
+    image: neo4j:5.21.0-enterprise
+    hostname: neo4jservice
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/password
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+    volumes:
+      - ../neo4j_volume/data:/data

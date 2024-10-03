@@ -7,7 +7,7 @@ import math
 
 from .utils.data_structs import Triplet, Relation, Node, TripletCreator, NodeCreator
 
-class AbstractDatabaseConnection(ABC):
+class AbstractEmbeddingsDatabaseConnection(ABC):
     
     @abstractmethod
     def open_connection(self):
@@ -68,7 +68,7 @@ class VectorDBInstance:
     embedding: List[float] = None
     metadata: Dict = field(default_factory=lambda: dict())
 
-class ChromaConnection(AbstractDatabaseConnection):
+class ChromaConnection(AbstractEmbeddingsDatabaseConnection):
     def __init__(self, config: VectorDBConnectionConfig) -> None:
         self.config = config
         self.open_connection()
