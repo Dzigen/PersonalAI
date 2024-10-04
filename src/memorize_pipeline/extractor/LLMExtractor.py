@@ -1,5 +1,11 @@
 from ...llm_agent import AgentConnector
-from .utils import TRIPLETS_EXTRACTION_PROMPT, THESISES_EXTRACTION_PROMPT, Logger, log_path
+from .utils import TRIPLETS_EXTRACTION_PROMPT_ENG, THESISES_EXTRACTION_PROMPT_ENG, \
+                    TRIPLETS_EXTRACTION_PROMPT, THESISES_EXTRACTION_PROMPT, \
+                    TRIPLETS_EXTRACTION_PROMPT_ENG_SYSTEM, THESISES_EXTRACTION_PROMPT_ENG_SYSTEM, \
+                    TRIPLETS_EXTRACTION_PROMPT_SYSTEM, THESISES_EXTRACTION_PROMPT_SYSTEM, \
+                    TRIPLETS_EXTRACTION_PROMPT_ENG_USER, THESISES_EXTRACTION_PROMPT_ENG_USER, \
+                    TRIPLETS_EXTRACTION_PROMPT_USER, THESISES_EXTRACTION_PROMPT_USER, \
+                    Logger, log_path
 from ...utils.data_structs import TripletCreator, NodeCreator, NODES_TYPES_MAP, RELATIONS_TYPES_MAP, Node, Relation, RelationType, NodeType, Triplet
 
 from dataclasses import dataclass, field
@@ -8,8 +14,14 @@ import ast
 
 @dataclass
 class LLMExtractorConfig:
-    triplet_extraction_prompt: str = TRIPLETS_EXTRACTION_PROMPT
-    thesis_extraction_prompt: str = THESISES_EXTRACTION_PROMPT
+    triplet_extraction_prompt: str = TRIPLETS_EXTRACTION_PROMPT_ENG
+    thesis_extraction_prompt: str = THESISES_EXTRACTION_PROMPT_ENG
+    
+    triplet_extraction_prompt_system: str = TRIPLETS_EXTRACTION_PROMPT_ENG_SYSTEM
+    thesis_extraction_prompt_system: str = THESISES_EXTRACTION_PROMPT_ENG_SYSTEM
+    
+    triplet_extraction_prompt_user: str = TRIPLETS_EXTRACTION_PROMPT_ENG_USER
+    thesis_extraction_prompt_user: str = THESISES_EXTRACTION_PROMPT_ENG_USER
     log: Logger = field(default_factory=lambda: Logger(log_path))
     verbose: bool = False
 
@@ -20,6 +32,12 @@ class LLMExtractor:
         self.config = config
         self.triplet_extraction_prompt = config.triplet_extraction_prompt
         self.thesis_extraction_prompt = config.thesis_extraction_prompt
+        
+        self.triplet_extraction_prompt_system = config.triplet_extraction_prompt_system
+        self.thesis_extraction_prompt_system = config.thesis_extraction_prompt_system
+        
+        self.triplet_extraction_prompt_user = config.triplet_extraction_prompt_user
+        self.thesis_extraction_prompt_user = config.thesis_extraction_prompt_user
         self.log = config.log
         self.num_hyperedges = 0
 
@@ -40,7 +58,8 @@ class LLMExtractor:
         return new_triplets
 
     def extract_triplets(self, text: str, node_prop = {}, rel_prop = {}) -> List[Triplet]:
-        raw_response = self.agent_conn.generate(self.triplet_extraction_prompt.format(text = text))
+        raw_response = self.agent_conn.generate(self.triplet_extraction_prompt_user.format(text = text), 
+                                                system_prompt = self.triplet_extraction_prompt_system)
         self.log("TEXT: " + text, verbose=self.config.verbose)
         self.log("EXTRACTED TRIPLETS: " + str(raw_response), verbose=self.config.verbose)
         new_triplets = self.parse_triplets(raw_response, node_prop, rel_prop)
