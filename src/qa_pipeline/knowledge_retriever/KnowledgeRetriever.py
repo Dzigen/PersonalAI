@@ -10,8 +10,8 @@ from typing import List
 
 @dataclass
 class KnowledgeRetrieverConfig:
+    graph_retriever_config: object
     graph_retriever_method: AbstractTripletsRetriever = field(default_factory=lambda: AStartTripletsRetriever)
-    graph_retriever_config: object = field(default_factory=lambda: AStarGraphSearchConfig())
     triplets_filter_method: AbstractTriplesFilter = field(default_factory=lambda: TripletsFilter)
     triplets_filter_config: object = field(default_factory=lambda: TripletsFilterConfig())
     log: Logger = field(default_factory=lambda: Logger(LOG_PATH))
@@ -21,7 +21,7 @@ class KnowledgeRetriever:
     """Главный класс для извлечения релевантной информации из графа знаний
     по запросу пользователя 
     """
-    def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeRetrieverConfig = KnowledgeRetrieverConfig()) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeRetrieverConfig) -> None:
         self.config = config
         self.kg_model = kg_model
         self.log = config.log

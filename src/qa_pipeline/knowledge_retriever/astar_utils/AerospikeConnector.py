@@ -3,9 +3,12 @@ import aerospike
 
 from .utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 
+DEFAULT_AEROSPIKE_CONFIG = KVDBConnectionConfig(host='localhost', port=3000)
+
 class AerospikeConnector(AbstractKVDatabaseConnection):
-    def __init__(self, config: KVDBConnectionConfig):
+    def __init__(self, config: KVDBConnectionConfig = DEFAULT_AEROSPIKE_CONFIG):
         self.config = config
+        self.open_connection()
 
     def open_connection(self):
         db_config = {'hosts': [(self.config.host, self.config.port)]}
@@ -18,13 +21,14 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
         for k, v in zip(key_tuples, values):
             self.client.put(k, v)
 
-    def delete(self, key_tuples: List[Tuple]):
-        self.client.batch_remove(key_tuples)
+    def delete(self, key_tuples: List[Tuple], durable_delete: bool = False):
+        self.client.batch_remove(key_tuples, policy_batch_remove= {'durable_delete': durable_delete})
 
     def read(self, key_tuples: List[Tuple]):
         mixed_records = self.client.get_many(key_tuples)
-        records = [mixed_record[3] for mixed_record in mixed_records]
+        records = [mixed_record[2] for mixed_record in mixed_records]
         return records
 
     def clear(self, key_tuples: List[Tuple]):
-        self.client.batch_remove(key_tuples)
+        # TODO
+        pass

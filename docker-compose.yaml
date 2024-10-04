@@ -2,6 +2,7 @@ version: "3"
 services:
   aerospike:
     container_name: personalai_aerospike
+    restart: always
     hostname: aerospikelservice
     image: aerospike:ee-7.1.0.6_1
     ports:

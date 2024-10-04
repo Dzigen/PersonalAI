@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from sentence_transformers import SentenceTransformer
 from typing import Dict, List, Tuple, Union
+from tqdm import tqdm
 import chromadb
 import math
 
@@ -95,7 +96,7 @@ class ChromaConnection(AbstractEmbeddingsDatabaseConnection):
         self.collection = self.client.create_collection(name=self.config.db_name, 
                                                         metadata=self.config.params)
 
-    def create(self, instances: List[VectorDBInstance]):
+    def create(self, instances: List[VectorDBInstance], add_metadata: bool = False):
         """Добавление объектов в базу.
 
         Args:
@@ -104,16 +105,15 @@ class ChromaConnection(AbstractEmbeddingsDatabaseConnection):
         self.collection.add(
             documents=list(map(lambda inst: inst.document, instances)),
             embeddings=list(map(lambda inst: inst.embedding, instances)),
-            metadatas=list(map(lambda inst: inst.metadata, instances)),
             ids=list(map(lambda inst: inst.id, instances)))
  
-    def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents', 'metadatas'], **kwargs) -> List[VectorDBInstance]:
+    def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents'], **kwargs) -> List[VectorDBInstance]:
         """Получение объектов из базы по их идентификаторам.
 
         Args:
             ids (List[str]): Идентификаторы объектов.
             includes (List[str], optional): Список полей, информацию по которым нужно получить для каждого объекта. 
-                                            Defaults to ['embeddings', 'documents', 'metadatas'].
+                                            Defaults to ['embeddings', 'documents'].
 
         Returns:
             List[VectorDBInstance]: Список объектов с заданными идентификаторами.
@@ -136,13 +136,13 @@ class ChromaConnection(AbstractEmbeddingsDatabaseConnection):
 
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50, 
-            includes: List[str]  = ['embeddings', 'documents', 'metadatas'], **kwargs) -> List[List[Tuple[float, VectorDBInstance]]]:
+            includes: List[str]  = ['embeddings', 'documents'], **kwargs) -> List[List[Tuple[float, VectorDBInstance]]]:
         """_summary_
 
         Args:
             query_instances (List[VectorDBInstance]): _description_
             n_results (int, optional): _description_. Defaults to 50.
-            includes (List[str], optional): Список полей, информацию по которым нужно получить для каждого объекта. Defaults to ['embeddings', 'documents', 'metadatas'].
+            includes (List[str], optional): Список полей, информацию по которым нужно получить для каждого объекта. Defaults to ['embeddings', 'documents'].
 
         Returns:
             List[List[Tuple[float, VectorDBInstance]]]: Списки объектов из бд, релевантных заданным query-объектам.
@@ -219,30 +219,38 @@ class EmbeddingsDatabaseConnection:
             'triplets': AVAILABLE_VECTODB_CONNECTORS[config.triplets_db_config.db_vendor](config.triplets_db_config)}
         self.embedder = EmbedderModel(config.embedder_config)
 
-    def add_triplets(self, triplets:List[Triplet], add_nodes:bool=True, batch_size:int=64)->None:
-        unique_nodes_ids = [] if add_nodes else None
+    def add_triplets(self, triplets:List[Triplet], add_nodes:bool=True, batch_size:int=128)->None:
+        unique_nodes_ids, unique_triplets_ids = set(), set()
 
         batch_count = math.ceil(len(triplets) / batch_size)
-        for batch_idx in range(batch_count):
-            triplets_ids, triplets_str = [], []
-            nodes_ids, nodes_str = ([], []) if add_nodes else (None, None)
+        for batch_idx in tqdm(range(batch_count)):
+            triplets_ids, triplets_strs = list(), list()
+            nodes_ids, nodes_strs = list(), list()
 
             for triplet_idx in range(batch_idx*batch_size, (batch_idx+1)*batch_size):
+                if triplet_idx >= len(triplets):
+                    break
+
                 triplet = triplets[triplet_idx]
                 _, triplet_str =  TripletCreator.stringify(triplet) if triplet.stringified is None else (triplet.id, triplet.stringified) 
-                triplets_ids.append(triplet.id)
-                triplets_str.append(triplet_str)
-                
+                if triplet.id not in unique_triplets_ids:
+                    unique_triplets_ids.add(triplet.id) 
+                    triplets_ids.append(triplet.id)
+                    triplets_strs.append(triplet_str)
+
                 if add_nodes:
                     for node in [triplet.start_node, triplet.end_node]:
+                        _, node_str = NodeCreator.stringify(node) if node.stringified is None else (node.id, node.stringified)
                         if node.id not in unique_nodes_ids:
-                            _, node_str = NodeCreator.stringify(node) if node.stringified is None else (node.id, node.stringified)
-                            unique_nodes_ids.append(node.id)
-                            nodes_ids.append(node.id)                        
-                            nodes_str.append(node_str)
+                            unique_nodes_ids.add(node.id)
+                            nodes_ids.append(node.id)
+                            nodes_strs.append(node_str)
 
-            self.add_stringified_triplets(triplets_ids, triplets_str, nodes_ids, nodes_ids)
+            self.add_stringified_triplets(triplets_ids, triplets_strs, nodes_ids, nodes_strs)
 
+        print(f"all/unique_triplets - {len(triplets)}/{len(unique_triplets_ids)}")
+        print(f"all/unique_nodes - {len(triplets)*2}/{len(unique_nodes_ids)}")
+        
     def delete_triplets(self, triplets: List[Triplet], delete_nods: bool = True):
         triplets_ids = list(map(lambda v: v.id, triplets))
         
@@ -257,8 +265,9 @@ class EmbeddingsDatabaseConnection:
 
     def add_stringified_triplets(self, triplets_ids: List[str], stringified_triplets: List[str], 
                      nodes_ids: List[str] = None, stringified_nodes: List[str] = None) -> None:
-        self.add_instances('triplets', triplets_ids, stringified_triplets)
-        if nodes_ids is not None:
+        if len(triplets_ids):
+            self.add_instances('triplets', triplets_ids, stringified_triplets)
+        if nodes_ids is not None and len(nodes_ids):
             self.add_instances('nodes', nodes_ids, stringified_nodes)
 
     def delete_stringified_triplets(self, triplets_ids: List[str], nodes_ids: List[str] = None) -> None:

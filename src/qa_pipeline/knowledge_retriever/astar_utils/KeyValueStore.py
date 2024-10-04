@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Dict
 
-from .utils import KVDBConnectionConfig, DEFAULT_KVDB_CONFIGS, AVAILABLE_KVDB_CONNECTORS
+from .utils import KVDBConnectionConfig
+from .configs import DEFAULT_KVDB_CONFIGS, AVAILABLE_KVDB_CONNECTORS
 
 @dataclass
 class KeyValueStoreConfig:
@@ -9,7 +10,7 @@ class KeyValueStoreConfig:
     db_config: KVDBConnectionConfig = DEFAULT_KVDB_CONFIGS['aerospike']
 
 class KeyValueStore:
-    def __init__(self, config: KeyValueStoreConfig) -> None:
+    def __init__(self, config: KeyValueStoreConfig = KeyValueStoreConfig()) -> None:
         self.config = config
         self.db_connector = AVAILABLE_KVDB_CONNECTORS[config.db_vendor](config.db_config)
 

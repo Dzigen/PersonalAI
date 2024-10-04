@@ -8,9 +8,11 @@ from ...utils.data_structs import QueryInfo, Node, Relation, Triplet, NodeCreato
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ...neo4j_functions import AbstractGraphConnection
 from ...utils.data_structs import NODES_TYPES_MAP, RELATIONS_TYPES_MAP
+from ...embedding_functions import ChromaConnection
 
 @dataclass
 class AStarMetricsConfig:
+    nodes_db: ChromaConnection
     h_metric_name: str = 'weight_with_short_path'
     d_metric_name: str = 'ip'
     nodes_distances_path: str = '../data/graph_structures/vectorized_nodes/v8/nodes_distances_matrix'
@@ -18,10 +20,9 @@ class AStarMetricsConfig:
 
 @dataclass
 class AStarGraphSearchConfig:
+    metrics_config: AStarMetricsConfig
     max_depth: int = 25
-    graphdb_name: str = 'testdb'
-    accepted_node_types: List[str] = f'["{NodeType.object.value}"]'
-    metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
+    accepted_node_types: List[str] = f'["{NodeType.object.value}","{NodeType.hyper.value}","{NodeType.episodic.value}"]'
 
 class AStarMetrics:
     def __init__(self, config: AStarMetricsConfig = None) -> None:
@@ -34,8 +35,8 @@ class AStarMetrics:
             'avg_weighted_with_short_path': self.avg_weighted_short_path,
         }
 
-        self.nodes_dists = joblib.load(self.config.nodes_distances_path)
-        self.nodes_short_paths = joblib.load(self.config.nodes_short_paths_file)
+        #self.nodes_dists = joblib.load(self.config.nodes_distances_path)
+        #self.nodes_short_paths = joblib.load(self.config.nodes_short_paths_file)
 
     def compute_d_metric(self, *args, **kwargs) -> float:
         return self.metrics_map[self.config.d_metric_name](*args, **kwargs)
@@ -58,7 +59,12 @@ class AStarMetrics:
         return path
 
     def precomputed_dist(self, node1_id: str, node2_id: str, U: List[str], parent: Dict[str, str]) -> float:
-        return self.nodes_dists['MATRIX'][self.nodes_dists['ID_TO_INDEX_MAP'][node1_id]][self.nodes_dists['ID_TO_INDEX_MAP'][node2_id]]
+        instances = self.config.nodes_db.read([node1_id, node2_id], includes=['embeddings'])
+        dist = 1-np.dot(instances[0].embedding, instances[1].embedding)
+        #print(dist, instances[0].id, instances[1].id)
+        return dist
+
+        #return self.nodes_dists['MATRIX'][self.nodes_dists['ID_TO_INDEX_MAP'][node1_id]][self.nodes_dists['ID_TO_INDEX_MAP'][node2_id]]
         
     def weighted_short_path(self, node1_id: str, node2_id: str, U: List[str], parent: Dict[str, str]) -> float:
         short_dist = self.nodes_short_paths['MATRIX'][self.nodes_short_paths['ID_TO_INDEX_MAP'][node1_id]][self.nodes_short_paths['ID_TO_INDEX_MAP'][node2_id]]
@@ -94,7 +100,7 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
         """Класс с реализацией A*-алгоритма поиска по графу"""
 
         def __init__(self, graph_db: AbstractGraphConnection, 
-                    search_config: AStarGraphSearchConfig = AStarGraphSearchConfig()) -> None:
+                    search_config: AStarGraphSearchConfig) -> None:
             super().__init__()
 
             self.config = search_config
@@ -143,8 +149,8 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
                 U.append(current_node_id)
 
                 adj_nodes = self.get_adjecent_nodes(current_node_id, parent[current_node_id], self.config.accepted_node_types)
+                #print("adjenced nodes: ", len(adj_nodes))
 
-                break_flag = False
                 for adj_n_id in adj_nodes:
                     tentativeScore = g[current_node_id] + self.metrics.compute_d_metric(current_node_id, adj_n_id, U, parent)      
                     if (adj_n_id in U) and (tentativeScore >= g[adj_n_id]):
@@ -157,9 +163,6 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
 
                         if adj_n_id not in Q:
                             Q.append(adj_n_id)
-
-                if break_flag:
-                    break
 
             return U, Q, D, parent, spare_closest_node_id
         
@@ -212,6 +215,7 @@ class AStartTripletsRetriever(AbstractTripletsRetriever):
 
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         formated_nodes = [node.id for node in query_info.linked_nodes]
+        #print(formated_nodes)
         unique_raw_nodes_pairs = set()
         formated_triplets = dict()
         if len(formated_nodes) > 1:
@@ -221,6 +225,7 @@ class AStartTripletsRetriever(AbstractTripletsRetriever):
                     end_node = formated_nodes[j]
                     _, _, _, parent, spare_closest_node = self.graph_searcher.search_path(start_node, end_node)
                     nodes_path = self.get_nodes_path(parent, end_node, spare_closest_node)
+                    #print(len(nodes_path))
                     unique_raw_nodes_pairs.update([(nodes_path[i], nodes_path[i+1]) for i in range(len(nodes_path)-1)] if len(nodes_path) > 1 else [])
 
         for nodes_pair in unique_raw_nodes_pairs:

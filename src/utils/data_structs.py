@@ -72,6 +72,11 @@ class NodeCreator(BaseCreator):
         str_node += NodeCreator.add_str_props(node, str(node.name))   
         return node.id, str_node
 
+
+def create_id_for_node_pair(node1_id: str, node2_id: str) -> str:
+    start_id, end_id = (node1_id, node2_id) if node1_id > node2_id else (node2_id, node1_id)
+    return hashlib.md5((start_id+end_id).encode()).hexdigest()
+
 class TripletCreator(BaseCreator):
     @staticmethod
     def create(start_node: Node, relation: Relation, end_node: Node, add_stringified_triplet: bool = True) -> Triplet:
@@ -103,7 +108,7 @@ class TripletCreator(BaseCreator):
         else:
             raise KeyError
                 
-        return triplet.relation.id, str_triplet
+        return triplet.id, str_triplet
 
 
 from ..embedding_functions import VectorDBInstance
