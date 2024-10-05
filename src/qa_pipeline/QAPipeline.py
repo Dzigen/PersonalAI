@@ -23,7 +23,7 @@ class QAPipeline:
     с использованием имеющегося графа знаний
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, llm_agent: AgentConnector, config: QAPipelineConfig) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, llm_agent: AgentConnector, config: QAPipelineConfig = QAPipelineConfig()) -> None:
         self.kg_model = kg_model
         self.llama_agent = llm_agent
         self.config = config

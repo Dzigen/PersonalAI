@@ -9,3 +9,8 @@ DEFAULT_KVDB_CONFIGS = {
 AVAILABLE_KVDB_CONNECTORS = {
     'aerospike': AerospikeConnector
 }
+
+# TODO
+AVAILABLE_CACHE_CONFIGS = {
+    'astar': None
+}

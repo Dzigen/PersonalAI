@@ -4,6 +4,7 @@ import joblib
 import numpy as np
 
 from .utils import AbstractTripletsRetriever, AbstractGraphDriver
+from .cache import KeyValueStore
 from ...utils.data_structs import QueryInfo, Node, Relation, Triplet, NodeCreator, TripletCreator, NodeType
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ...neo4j_functions import AbstractGraphConnection
@@ -20,13 +21,15 @@ class AStarMetricsConfig:
 
 @dataclass
 class AStarGraphSearchConfig:
-    metrics_config: AStarMetricsConfig
+    metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
     max_depth: int = 25
     accepted_node_types: List[str] = f'["{NodeType.object.value}","{NodeType.hyper.value}","{NodeType.episodic.value}"]'
 
 class AStarMetrics:
-    def __init__(self, config: AStarMetricsConfig = None) -> None:
-        self.config = AStarMetricsConfig() if config is None else config
+    def __init__(self, kg_model: KnowledgeGraphModel, config: AStarMetricsConfig = AStarMetricsConfig(), cache: KeyValueStore = None):
+        self.kg_model = kg_model
+        self.cache = cache
+        self.config = config
         self.metrics_map = {
             'l2': self.precomputed_dist,
             'ip': self.precomputed_dist,
@@ -35,16 +38,13 @@ class AStarMetrics:
             'avg_weighted_with_short_path': self.avg_weighted_short_path,
         }
 
-        #self.nodes_dists = joblib.load(self.config.nodes_distances_path)
-        #self.nodes_short_paths = joblib.load(self.config.nodes_short_paths_file)
-
     def compute_d_metric(self, *args, **kwargs) -> float:
         return self.metrics_map[self.config.d_metric_name](*args, **kwargs)
 
     def compute_h_metric(self, *args, **kwargs) -> float:
         return self.metrics_map[self.config.h_metric_name](*args, **kwargs)
 
-    def get_nodes_path(parent: Dict[str, str], end_node_id: str, spare_closest_node_id: str) -> List[str]:
+    def get_nodes_path(self, parent: Dict[str, str], end_node_id: str, spare_closest_node_id: str) -> List[str]:
         end_node_id = spare_closest_node_id if end_node_id not in parent else end_node_id
         
         path, end_flag, cur_n = [end_node_id], False, end_node_id
@@ -71,6 +71,7 @@ class AStarMetrics:
         w = self.precomputed_dist(node1_id, node2_id, U, parent)
         return short_dist * w
 
+    # TODO
     def avg_weighted_short_path(self, node1_id: str, node2_id: str, U: List[str], parent: Dict[str, str]) -> float:
         nodes_path = self.get_nodes_path(parent, U, node1_id, None)
         acc_dist = 0
@@ -85,13 +86,13 @@ class AStarMetrics:
 class Neo4jGraphDriver(AbstractGraphDriver):
     
     def get_adjecent_nodes(self, base_node_id: str, parent_node_id: str, accepted_n_types: str) -> List[str]:
-        raw_nodes = self.graph_db.execute_query(
+        raw_nodes = self.kg_model.graph_db.execute_query(
             f'MATCH (a)-[r]-(b) WHERE elementId(a) = "{base_node_id}" AND elementId(b) <> "{parent_node_id}" AND ANY(lbl in {accepted_n_types} where lbl in labels(b)) RETURN b')
         formated_nodes = [node['b'].element_id for node in raw_nodes]
         return formated_nodes
     
     def get_raw_triplets(self, node1_id: str, node2_id: str):
-        return self.graph_db.execute_query(
+        return self.kg_model.graph_db.execute_query(
             f'MATCH (n1)-[rel]->(n2) WHERE elementId(n1) = "{node1_id}" AND elementId(n2) = "{node2_id}" RETURN n1, rel, n2')
 
 def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
@@ -99,13 +100,13 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
     class AStarGraphSearch(graph_driver):
         """Класс с реализацией A*-алгоритма поиска по графу"""
 
-        def __init__(self, graph_db: AbstractGraphConnection, 
-                    search_config: AStarGraphSearchConfig) -> None:
+        def __init__(self, kg_model: KnowledgeGraphModel, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
+                     cache: KeyValueStore = None) -> None:
             super().__init__()
 
             self.config = search_config
-            self.graph_db = graph_db
-            self.metrics = AStarMetrics(config=self.config.metrics_config)
+            self.kg_model = kg_model
+            self.metrics = AStarMetrics(kg_model, config=self.config.metrics_config, cache=cache)
 
         def get_min_f_node(self, Q: List[str], f: Dict[str, float]) -> Dict:
             min_idx = 0
@@ -176,8 +177,9 @@ class AStartTripletsRetriever(AbstractTripletsRetriever):
         AbstractTripletsRetriever: Интерфейс для классов с алгоритма извлечения релевантных триплетов из графов знаний.
     """
     
-    def __init__(self, kg_model: KnowledgeGraphModel, search_config: AStarGraphSearchConfig = None) -> None:
-        self.graph_searcher = getAStarGraphSearcher()(kg_model.graph_db, search_config)
+    def __init__(self, kg_model: KnowledgeGraphModel, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(), 
+                 cache: KeyValueStore = None) -> None:
+        self.graph_searcher = getAStarGraphSearcher()(kg_model, cache, search_config)
 
     def get_formated_triplets(self, nodes_pair: Tuple[str, str]) -> Dict[str,Triplet]:
         raw_triplets = self.graph_searcher.get_raw_triplets(nodes_pair[0], nodes_pair[1])
