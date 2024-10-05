@@ -16,3 +16,6 @@ class KeyValueStore:
 
     def get_value_by_key(self, key: object):
         return self.db_connector.read([key])[0]
+    
+    def is_key_exists(self, key: object) -> bool:
+        return self.db_connector.key_exist(key)

@@ -28,6 +28,10 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
         mixed_records = self.client.get_many(key_tuples)
         records = [mixed_record[2] for mixed_record in mixed_records]
         return records
+    
+    def key_exist(self, key_tuple: Tuple) -> bool:
+        _, meta = self.client.exists(key_tuple)
+        return False if meta is None else True
 
     def clear(self, key_tuples: List[Tuple]):
         # TODO

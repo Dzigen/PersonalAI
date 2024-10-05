@@ -40,5 +40,10 @@ class AbstractKVDatabaseConnection(ABC):
         # Удаление содержания заднной базы 
         pass
 
+    @abstractmethod
+    def key_exist(self):
+        # проверка на существование записи с данным ключом в бд
+        pass
+
     def __del__(self):
         self.close_connection()

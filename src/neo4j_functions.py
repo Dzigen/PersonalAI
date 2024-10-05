@@ -123,7 +123,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         unique_triplets_counter, unique_nodes_counter = 0, 0
         for triplet in tqdm(triplets):
             subj_n, subj_t = json.dumps(triplet.start_node.name, ensure_ascii=False), triplet.start_node.type.value
-            subj_out = self.execute_query(f'MATCH (subj:{subj_t}) WHERE subj.name = "{subj_n}" RETURN elementID(subj) as id')
+            subj_out = self.execute_query(f'MATCH (subj:{subj_t}) WHERE subj.name = {subj_n} RETURN elementID(subj) as node_id')
             if len(subj_out) < 1:
                 unique_nodes_counter += 1
                 insert_subj_query = create_node_query(triplet.start_node)
@@ -132,7 +132,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                 triplet.start_node.id = subj_out[0]['node_id']
             
             obj_n, obj_t = json.dumps(triplet.end_node.name, ensure_ascii=False), triplet.end_node.type.value
-            obj_out = self.execute_query(f'MATCH (obj:{obj_t}) WHERE obj.name = "{obj_n}" RETURN elementID(obj) as id')
+            obj_out = self.execute_query(f'MATCH (obj:{obj_t}) WHERE obj.name = {obj_n} RETURN elementID(obj) as node_id')
             if len(obj_out) < 1:
                 unique_nodes_counter += 1
                 insert_obj_query = create_node_query(triplet.end_node)

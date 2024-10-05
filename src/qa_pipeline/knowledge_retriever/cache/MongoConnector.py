@@ -31,5 +31,9 @@ class MongoConnector(AbstractKVDatabaseConnection):
     def read(self, ids: List[str]) -> List[Dict]:
         return [item for item in self.collection.find({"_id": { "$in": ids}})]
 
+    def key_exist(self):
+        # TODO
+        pass
+
     def clear(self):
         self.collection.delete_many({})
