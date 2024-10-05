@@ -1,11 +1,10 @@
 from .utils import AbstractAgentModel
+from ..utils import SYSTEM_PROMPT
 
 from dataclasses import dataclass, field
 from typing import Dict
 import torch
 from transformers import pipeline
-
-SYSTEM_PROMPT = "You are a helpful assistant."
 
 @dataclass
 class AgentModelConfig:
