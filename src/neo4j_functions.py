@@ -88,33 +88,35 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         # Pay attention to the format of triplets
 
         def create_node_query(node: Node) -> str:
-            name = json.dumps(node.name, ensure_ascii=False)
-            props_query = [f'name: {name}']
+            query_props = {}
             for prop_name, prop_value in node.prop.items():
-                p_name = prop_name.replace(" ", "_")
-                p_value = json.dumps(prop_value, ensure_ascii=False)
-                props_query.append(f'{p_name}: {p_value}')
-            props_query = ", ".join(props_query)
+                p_name, p_value = prop_name.replace(" ", "_"), json.dumps(prop_value, ensure_ascii=False)
+                query_props[p_name] = p_value
 
-            insert_query = f"CREATE (n:{node.type.value} " + "{" + props_query + "}) RETURN elementId(n) as id"
+            node_name = json.dumps(node.name, ensure_ascii=False)
+            query_props['name'] = node_name
+
+            str_props = ", ".join([f"{k}: {v}" for k, v in query_props.items()])
+            insert_query = f"CREATE (n:{node.type.value} " + "{" + str_props + "}) RETURN elementId(n) as id"
             return insert_query
 
 
-        def create_rel(triplet: Triplet) -> str:
-            name = json.dumps(triplet.relation.name, ensure_ascii=False)
-            rel_props = [f"name: {name}"]
+        def create_rel_query(triplet: Triplet) -> str:
+            rel_props = {}
             for prop_name, prop_value in triplet.relation.prop.items():
-                if prop_name != "type":
-                    p_name, p_value = prop_name.replace(' ', '_'), json.dumps(prop_value, ensure_ascii=False)
-                    rel_props.append(f'{p_name}: {p_value}')
-            rel_props = ", ".join(rel_props)
+                p_name, p_value = prop_name.replace(' ', '_'), json.dumps(prop_value, ensure_ascii=False)
+                rel_props[p_name] = p_value
 
+            rel_name = json.dumps(triplet.relation.name, ensure_ascii=False)
+            rel_props['name'] = rel_name 
+            
             query = ""
+            str_props = ", ".join([f"{k}: {v}" for k, v in rel_props.items()])
             subj_t, subj_id = triplet.start_node.type.value, triplet.start_node.id
             obj_t, obj_id = triplet.end_node.type.value, triplet.end_node.id
             rel_t = triplet.relation.type.value
             query += f'MATCH (subj:{subj_t}), (obj:{obj_t}) WHERE elementId(subj) = "{subj_id}" AND elementId(obj) = "{obj_id}" '
-            query += f'CREATE (subj)-[rel:{rel_t}' + '{' + rel_props + '}' + ']->(obj) '
+            query += f'CREATE (subj)-[rel:{rel_t}' + '{' + str_props + '}' + ']->(obj) '
             query += 'RETURN elementId(rel) as id'
             return query
         
@@ -135,8 +137,8 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             else:
                 triplet.end_node.id = obj_out[0]['id']
             
-            create_rel_query = create_rel(triplet)
-            triplet.relation.id = self.execute_query(create_rel_query)[0]['id']
+            rel_query = create_rel_query(triplet)
+            triplet.relation.id = self.execute_query(rel_query)[0]['id']
             
     def delete_triplets(self, triplets):
         # delete edges which presented in triplets list
