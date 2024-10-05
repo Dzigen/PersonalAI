@@ -13,10 +13,8 @@ from ...embedding_functions import ChromaConnection
 
 @dataclass
 class AStarMetricsConfig:
-    h_metric_name: str = 'weight_with_short_path'
     d_metric_name: str = 'ip'
-    nodes_distances_path: str = '../data/graph_structures/vectorized_nodes/v8/nodes_distances_matrix'
-    nodes_short_paths_file: str = '../data/graph_structures/graph_short_paths/stage2/v2/distances_matrix'
+    h_metric_name: str = 'weight_with_short_path'
 
 @dataclass
 class AStarGraphSearchConfig:
@@ -41,10 +39,13 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
 
     class AStarMetrics(Neo4jGraphDriver):
         def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: str, config: AStarMetricsConfig = AStarMetricsConfig(), cache: KeyValueStore = None):
+            super().__init__()
+
             self.kg_model = kg_model
             self.cache = cache
             self.config = config
             self.accepted_node_types = accepted_node_types
+            
             self.metrics_map = {
                 'ip': self.precomputed_dist,
                 'constant': lambda v1, v2, U, parent: 1,
@@ -158,7 +159,8 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
 
             self.config = search_config
             self.kg_model = kg_model
-            self.metrics = AStarMetrics(kg_model, config=self.config.metrics_config, cache=cache)
+            self.metrics = AStarMetrics(kg_model, config=self.config.metrics_config, cache=cache, 
+                                        accepted_node_types=self.config.accepted_node_types)
 
         def get_min_f_node(self, Q: List[str], f: Dict[str, float]) -> Dict:
             min_idx = 0
