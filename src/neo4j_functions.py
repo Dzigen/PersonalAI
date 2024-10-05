@@ -97,8 +97,8 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             query_props['name'] = node_name
 
             str_props = ", ".join([f"{k}: {v}" for k, v in query_props.items()])
-            insert_query = f"CREATE (n:{node.type.value} " + "{" + str_props + "}) RETURN elementId(n) as id"
-            return insert_query
+            query = f"CREATE (n:{node.type.value} " + "{" + str_props + "}) RETURN elementId(n) as node_id"
+            return query
 
 
         def create_rel_query(triplet: Triplet) -> str:
@@ -117,28 +117,35 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             rel_t = triplet.relation.type.value
             query += f'MATCH (subj:{subj_t}), (obj:{obj_t}) WHERE elementId(subj) = "{subj_id}" AND elementId(obj) = "{obj_id}" '
             query += f'CREATE (subj)-[rel:{rel_t}' + '{' + str_props + '}' + ']->(obj) '
-            query += 'RETURN elementId(rel) as id'
+            query += 'RETURN elementId(rel) as rel_id'
             return query
         
+        unique_triplets_counter, unique_nodes_counter = 0, 0
         for triplet in tqdm(triplets):
             subj_n, subj_t = json.dumps(triplet.start_node.name, ensure_ascii=False), triplet.start_node.type.value
-            subj_out = self.execute_query(f'MATCH (subj:{subj_t}) WHERE subj.name = {subj_n} RETURN elementID(subj) as id')
-            if not subj_out:
+            subj_out = self.execute_query(f'MATCH (subj:{subj_t}) WHERE subj.name = "{subj_n}" RETURN elementID(subj) as id')
+            if len(subj_out) < 1:
+                unique_nodes_counter += 1
                 insert_subj_query = create_node_query(triplet.start_node)
-                triplet.start_node.id = self.execute_query(insert_subj_query)[0]['id']
+                triplet.start_node.id = self.execute_query(insert_subj_query)[0]['node_id']
             else:
-                triplet.start_node.id = subj_out[0]['id']
+                triplet.start_node.id = subj_out[0]['node_id']
             
             obj_n, obj_t = json.dumps(triplet.end_node.name, ensure_ascii=False), triplet.end_node.type.value
-            obj_out = self.execute_query(f'MATCH (obj:{obj_t}) WHERE obj.name = {obj_n} RETURN elementID(obj) as id')
-            if not obj_out:
+            obj_out = self.execute_query(f'MATCH (obj:{obj_t}) WHERE obj.name = "{obj_n}" RETURN elementID(obj) as id')
+            if len(obj_out) < 1:
+                unique_nodes_counter += 1
                 insert_obj_query = create_node_query(triplet.end_node)
-                triplet.end_node.id = self.execute_query(insert_obj_query)[0]['id']
+                triplet.end_node.id = self.execute_query(insert_obj_query)[0]['node_id']
             else:
-                triplet.end_node.id = obj_out[0]['id']
+                triplet.end_node.id = obj_out[0]['node_id']
             
+            unique_triplets_counter += 1
             rel_query = create_rel_query(triplet)
-            triplet.relation.id = self.execute_query(rel_query)[0]['id']
+            triplet.relation.id = self.execute_query(rel_query)[0]['rel_id']
+
+        print(f"all/unique_triplets - {len(triplets)}/{unique_triplets_counter}")
+        print(f"all/unique_nodes - {len(triplets)*2}/{unique_nodes_counter}")
             
     def delete_triplets(self, triplets):
         # delete edges which presented in triplets list
