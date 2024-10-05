@@ -14,8 +14,11 @@ class KeyValueStore:
         self.config = config
         self.db_connector = AVAILABLE_KVDB_CONNECTORS[config.db_vendor](config.db_config)
 
-    def get_value_by_key(self, key: object):
+    def get_value_by_key(self, key: object) -> Dict:
         return self.db_connector.read([key])[0]
+    
+    def save_kv_pair(self, key, value) -> None:
+        self.db_connector.create([key], [value])
     
     def is_key_exists(self, key: object) -> bool:
         return self.db_connector.key_exist(key)

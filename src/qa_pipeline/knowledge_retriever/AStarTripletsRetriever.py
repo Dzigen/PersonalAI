@@ -8,7 +8,7 @@ from .cache import KeyValueStore
 from ...utils.data_structs import QueryInfo, Node, Relation, Triplet, NodeCreator, TripletCreator, NodeType
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ...neo4j_functions import AbstractGraphConnection
-from ...utils.data_structs import NODES_TYPES_MAP, RELATIONS_TYPES_MAP
+from ...utils.data_structs import NODES_TYPES_MAP, RELATIONS_TYPES_MAP, create_id_for_node_pair
 from ...embedding_functions import ChromaConnection
 
 @dataclass
@@ -22,65 +22,7 @@ class AStarMetricsConfig:
 class AStarGraphSearchConfig:
     metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
     max_depth: int = 25
-    accepted_node_types: List[str] = f'["{NodeType.object.value}","{NodeType.hyper.value}","{NodeType.episodic.value}"]'
-
-class AStarMetrics:
-    def __init__(self, kg_model: KnowledgeGraphModel, config: AStarMetricsConfig = AStarMetricsConfig(), cache: KeyValueStore = None):
-        self.kg_model = kg_model
-        self.cache = cache
-        self.config = config
-        self.metrics_map = {
-            'l2': self.precomputed_dist,
-            'ip': self.precomputed_dist,
-            'constant': lambda v1, v2, U, parent: 1,
-            'weight_with_short_path': self.weighted_short_path,
-            'avg_weighted_with_short_path': self.avg_weighted_short_path,
-        }
-
-    def compute_d_metric(self, *args, **kwargs) -> float:
-        return self.metrics_map[self.config.d_metric_name](*args, **kwargs)
-
-    def compute_h_metric(self, *args, **kwargs) -> float:
-        return self.metrics_map[self.config.h_metric_name](*args, **kwargs)
-
-    def get_nodes_path(self, parent: Dict[str, str], end_node_id: str, spare_closest_node_id: str) -> List[str]:
-        end_node_id = spare_closest_node_id if end_node_id not in parent else end_node_id
-        
-        path, end_flag, cur_n = [end_node_id], False, end_node_id
-        while not end_flag:
-            next_n = parent[cur_n]
-            if next_n is None:
-                end_flag = True
-            else:
-                path.append(next_n)
-                cur_n = next_n
-
-        return path
-
-    def precomputed_dist(self, node1_id: str, node2_id: str, U: List[str], parent: Dict[str, str]) -> float:
-        instances = self.config.nodes_db.read([node1_id, node2_id], includes=['embeddings'])
-        dist = 1-np.dot(instances[0].embedding, instances[1].embedding)
-        #print(dist, instances[0].id, instances[1].id)
-        return dist
-
-        #return self.nodes_dists['MATRIX'][self.nodes_dists['ID_TO_INDEX_MAP'][node1_id]][self.nodes_dists['ID_TO_INDEX_MAP'][node2_id]]
-        
-    def weighted_short_path(self, node1_id: str, node2_id: str, U: List[str], parent: Dict[str, str]) -> float:
-        short_dist = self.nodes_short_paths['MATRIX'][self.nodes_short_paths['ID_TO_INDEX_MAP'][node1_id]][self.nodes_short_paths['ID_TO_INDEX_MAP'][node2_id]]
-        w = self.precomputed_dist(node1_id, node2_id, U, parent)
-        return short_dist * w
-
-    # TODO
-    def avg_weighted_short_path(self, node1_id: str, node2_id: str, U: List[str], parent: Dict[str, str]) -> float:
-        nodes_path = self.get_nodes_path(parent, U, node1_id, None)
-        acc_dist = 0
-        for i in range(len(nodes_path)-1):
-            acc_dist += self.precomputed_dist(nodes_path[i], nodes_path[i+1], U, parent)
-        acc_dist += self.precomputed_dist(node1_id, node2_id, U, parent)
-
-        short_dist = self.nodes_short_paths['MATRIX'][self.nodes_short_paths['ID_TO_INDEX_MAP'][node1_id]][self.nodes_short_paths['ID_TO_INDEX_MAP'][node2_id]]
-        return np.mean(acc_dist) * short_dist 
-
+    accepted_node_types: str = f'["{NodeType.object.value}","{NodeType.hyper.value}","{NodeType.episodic.value}"]'
 
 class Neo4jGraphDriver(AbstractGraphDriver):
     
@@ -96,6 +38,116 @@ class Neo4jGraphDriver(AbstractGraphDriver):
         return output[0] if len(output) else output 
 
 def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
+
+    class AStarMetrics(Neo4jGraphDriver):
+        def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: str, config: AStarMetricsConfig = AStarMetricsConfig(), cache: KeyValueStore = None):
+            self.kg_model = kg_model
+            self.cache = cache
+            self.config = config
+            self.accepted_node_types = accepted_node_types
+            self.metrics_map = {
+                'ip': self.precomputed_dist,
+                'constant': lambda v1, v2, U, parent: 1,
+                'weight_with_short_path': self.weighted_short_path,
+                'avg_weighted_with_short_path': self.avg_weighted_short_path,
+            }
+
+        def compute_d_metric(self, *args, **kwargs) -> float:
+            return self.metrics_map[self.config.d_metric_name](*args, **kwargs)
+
+        def compute_h_metric(self, *args, **kwargs) -> float:
+            return self.metrics_map[self.config.h_metric_name](*args, **kwargs)
+
+        def get_nodes_path(self, parent: Dict[str, str], U: List[str], end_node_id: str) -> List[str]:
+            #end_node_id = U[-1] if (end_node_id not in parent) else end_node_id
+            path, end_flag, cur_n = [end_node_id], False, end_node_id
+            while not end_flag:
+                next_n = parent[cur_n]
+                if next_n is None:
+                    end_flag = True
+                else:
+                    path.append(next_n)
+                    cur_n = next_n
+
+            return path
+
+        def precomputed_dist(self, node1_id: str, node2_id: str, **kwargs) -> float:
+            pair_id = create_id_for_node_pair(node1_id, node2_id)
+            cache_key = ('test', 'dist', pair_id)
+            dist = None
+            if self.cache.is_key_exists(cache_key):
+                print("exists")
+                dist = self.cache.get_value_by_key(cache_key)['v']
+            else:
+                print("calculating")
+                instances = self.kg_model.embeddings_db.vectordbs['nodes'].read([node1_id, node2_id], includes=['embeddings'])
+                # calculation ip distance 
+                dist = 1 - np.dot(instances[0].embedding, instances[1].embedding)
+                self.cache.save_kv_pair(cache_key, {'v': dist})
+                
+            return dist
+
+        def dijkstra(self, s_node_id, e_node_id):
+            # Используемая реализация алгоритма Дейкстры: https://ru.wikibooks.org/wiki/%D0%A0%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_%D0%B0%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC%D0%BE%D0%B2/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D0%94%D0%B5%D0%B9%D0%BA%D1%81%D1%82%D1%80%D1%8B
+            available_nodes = {s_node_id: 0}
+            parent = {s_node_id: None}
+            passed_nodes_counter = 0
+            while len(available_nodes) > 0:
+                min_weight = 1000001
+                ID_min_weight = -1
+                for node_id, weight in available_nodes.items():
+                    if weight < min_weight:
+                        min_weight = weight
+                        ID_min_weight = node_id
+                
+                if ID_min_weight == e_node_id:
+                    print("passed nodes: ", passed_nodes_counter)
+                    if self.cache is not None:
+                        pair_id = create_id_for_node_pair(s_node_id, ID_min_weight)
+                        self.cache.save_kv_pair(('test', 'short_path', pair_id), {'v': available_nodes[ID_min_weight]})
+                    return min_weight
+
+                adjenced_nodes_ids = self.get_adjecent_nodes(ID_min_weight, parent[ID_min_weight], self.accepted_node_types)
+
+                for adj_n_id in adjenced_nodes_ids:
+                    if (adj_n_id not in available_nodes) or ((available_nodes[ID_min_weight] + 1) < available_nodes[adj_n_id]):
+                        available_nodes[adj_n_id] = available_nodes[ID_min_weight] + 1
+                        parent[adj_n_id] = ID_min_weight
+                
+                pair_id = create_id_for_node_pair(s_node_id, ID_min_weight)
+                self.cache.save_kv_pair(('test', 'short_path', pair_id), {'v': available_nodes[ID_min_weight]})
+                del available_nodes[ID_min_weight]
+                passed_nodes_counter += 1
+
+            # между вершинами нет пути
+            return 1000001
+
+        def precomputed_short_path(self, node1_id: str, node2_id: str) -> float:
+            pair_id = create_id_for_node_pair(node1_id, node2_id)
+            cache_key = ('test', 'short_path', pair_id)
+            if self.cache.is_key_exists(cache_key):
+                print("exists")
+                short_path = self.cache.get_value_by_key(cache_key)['v']
+            else:
+                print("calculating")
+                short_path = self.dijkstra(node1_id, node2_id)
+
+            return short_path
+
+        def weighted_short_path(self, node1_id: str, node2_id: str, **kwargs) -> float:
+            short_path_len = self.precomputed_short_path(node1_id, node2_id)
+            w = self.precomputed_dist(node1_id, node2_id)
+            return short_path_len * w
+
+        def avg_weighted_short_path(self, node1_id: str, node2_id: str, U: List[str], parent: Dict[str, str]) -> float:
+            nodes_path = self.get_nodes_path(parent, U, node1_id)
+            acc_dist = 0
+            for i in range(len(nodes_path)-1):
+                acc_dist += self.precomputed_dist(nodes_path[i], nodes_path[i+1])
+            acc_dist += self.precomputed_dist(node1_id, node2_id)
+
+            short_path_len = self.precomputed_short_path(node1_id, node2_id)
+            return np.mean(acc_dist) * short_path_len
 
     class AStarGraphSearch(graph_driver):
         """Класс с реализацией A*-алгоритма поиска по графу"""
@@ -223,7 +275,7 @@ class AStartTripletsRetriever(AbstractTripletsRetriever):
                     end_node = nodes_ids[j]
                     _, _, _, parent, spare_closest_node = self.graph_searcher.search_path(start_node, end_node)
                     nodes_path = self.get_nodes_path(parent, end_node, spare_closest_node)
-                    
+
                     # Сохраняем только уникальные пары вершин (по их идентификаторам)
                     unique_raw_nodes_pairs.update([(nodes_path[i], nodes_path[i+1]) for i in range(len(nodes_path)-1)] if len(nodes_path) > 1 else [])
         
