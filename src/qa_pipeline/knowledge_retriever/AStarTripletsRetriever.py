@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Tuple
 import joblib
 import numpy as np
+from time import time
 
 from .utils import AbstractTripletsRetriever, AbstractGraphDriver
 from .cache import KeyValueStore
@@ -10,16 +11,17 @@ from ...knowledge_graph_model import KnowledgeGraphModel
 from ...neo4j_functions import AbstractGraphConnection
 from ...utils.data_structs import NODES_TYPES_MAP, RELATIONS_TYPES_MAP, create_id_for_node_pair
 from ...embedding_functions import ChromaConnection
+from ...utils import Logger
 
 @dataclass
 class AStarMetricsConfig:
     d_metric_name: str = 'ip'
-    h_metric_name: str = 'weight_with_short_path'
+    h_metric_name: str = 'ip' #'weight_with_short_path'
 
 @dataclass
 class AStarGraphSearchConfig:
     metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
-    max_depth: int = 25
+    max_depth: int = 10
     accepted_node_types: str = f'["{NodeType.object.value}","{NodeType.hyper.value}","{NodeType.episodic.value}"]'
 
 class Neo4jGraphDriver(AbstractGraphDriver):
@@ -32,20 +34,31 @@ class Neo4jGraphDriver(AbstractGraphDriver):
     
     def get_raw_triplet(self, node1_id: str, node2_id: str):
         output = self.kg_model.graph_db.execute_query(
-            f'MATCH (n1)-[rel]->(n2) WHERE elementId(n1) = "{node1_id}" AND elementId(n2) = "{node2_id}" RETURN n1, rel, n2')
-        return output[0] if len(output) else output 
+            f'MATCH (n1)-[rel]-(n2) WHERE elementId(n1) = "{node1_id}" AND elementId(n2) = "{node2_id}" RETURN n1, rel, n2')
+        if not len(output):
+            raise ValueError
+        return output[0] 
 
 def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
 
     class AStarMetrics(Neo4jGraphDriver):
-        def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: str, config: AStarMetricsConfig = AStarMetricsConfig(), cache: KeyValueStore = None):
+        def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: str, log: Logger, 
+                     config: AStarMetricsConfig = AStarMetricsConfig(), cache: KeyValueStore = None,
+                     log_verbose: bool = False):
             super().__init__()
 
+            self.log = log
+            self.log_verbose = log_verbose
             self.kg_model = kg_model
             self.cache = cache
             self.config = config
             self.accepted_node_types = accepted_node_types
-            
+
+            self.cache_info = {
+                'dist': {'exist': 0, 'calc': 0},
+                'short_path': {'exist': 0, 'calc': 0}
+            }
+
             self.metrics_map = {
                 'ip': self.precomputed_dist,
                 'constant': lambda v1, v2, U, parent: 1,
@@ -72,19 +85,24 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
 
             return path
 
-        def precomputed_dist(self, node1_id: str, node2_id: str, **kwargs) -> float:
+        def precomputed_dist(self, node1_id: str, node2_id: str, *args, **kwargs) -> float:
             pair_id = create_id_for_node_pair(node1_id, node2_id)
             cache_key = ('test', 'dist', pair_id)
             dist = None
             if self.cache.is_key_exists(cache_key):
-                print("exists")
+                #print("exists")
                 dist = self.cache.get_value_by_key(cache_key)['v']
+                self.cache_info['dist']['exist'] += 1
             else:
-                print("calculating")
-                instances = self.kg_model.embeddings_db.vectordbs['nodes'].read([node1_id, node2_id], includes=['embeddings'])
-                # calculation ip distance 
-                dist = 1 - np.dot(instances[0].embedding, instances[1].embedding)
+                #print("calculating")
+                if node1_id != node2_id:
+                    instances = self.kg_model.embeddings_db.vectordbs['nodes'].read([node1_id, node2_id], includes=['embeddings'])
+                    # calculation ip distance 
+                    dist = 1 - np.dot(instances[0].embedding, instances[1].embedding)
+                else:
+                    dist = 0
                 self.cache.save_kv_pair(cache_key, {'v': dist})
+                self.cache_info['dist']['calc'] += 1
                 
             return dist
 
@@ -102,10 +120,12 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
                         ID_min_weight = node_id
                 
                 if ID_min_weight == e_node_id:
-                    print("passed nodes: ", passed_nodes_counter)
+                    self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.log_verbose)
                     if self.cache is not None:
                         pair_id = create_id_for_node_pair(s_node_id, ID_min_weight)
-                        self.cache.save_kv_pair(('test', 'short_path', pair_id), {'v': available_nodes[ID_min_weight]})
+                        cache_key = ('test', 'short_path', pair_id)
+                        if not self.cache.is_key_exists(cache_key):
+                            self.cache.save_kv_pair(cache_key, {'v': available_nodes[ID_min_weight]})
                     return min_weight
 
                 adjenced_nodes_ids = self.get_adjecent_nodes(ID_min_weight, parent[ID_min_weight], self.accepted_node_types)
@@ -116,26 +136,31 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
                         parent[adj_n_id] = ID_min_weight
                 
                 pair_id = create_id_for_node_pair(s_node_id, ID_min_weight)
-                self.cache.save_kv_pair(('test', 'short_path', pair_id), {'v': available_nodes[ID_min_weight]})
+                cache_key = ('test', 'short_path', pair_id)
+                if not self.cache.is_key_exists(cache_key):
+                    self.cache.save_kv_pair(cache_key, {'v': available_nodes[ID_min_weight]})
                 del available_nodes[ID_min_weight]
                 passed_nodes_counter += 1
 
             # между вершинами нет пути
+            self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.log_verbose)
             return 1000001
 
         def precomputed_short_path(self, node1_id: str, node2_id: str) -> float:
             pair_id = create_id_for_node_pair(node1_id, node2_id)
             cache_key = ('test', 'short_path', pair_id)
             if self.cache.is_key_exists(cache_key):
-                print("exists")
+                #print("exists")
                 short_path = self.cache.get_value_by_key(cache_key)['v']
+                self.cache_info['short_path']['exist'] += 1
             else:
-                print("calculating")
+                #print("calculating")
                 short_path = self.dijkstra(node1_id, node2_id)
+                self.cache_info['short_path']['calc'] += 1
 
             return short_path
 
-        def weighted_short_path(self, node1_id: str, node2_id: str, **kwargs) -> float:
+        def weighted_short_path(self, node1_id: str, node2_id: str, *args, **kwargs) -> float:
             short_path_len = self.precomputed_short_path(node1_id, node2_id)
             w = self.precomputed_dist(node1_id, node2_id)
             return short_path_len * w
@@ -153,14 +178,17 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
     class AStarGraphSearch(graph_driver):
         """Класс с реализацией A*-алгоритма поиска по графу"""
 
-        def __init__(self, kg_model: KnowledgeGraphModel, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
-                     cache: KeyValueStore = None) -> None:
+        def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
+                     cache: KeyValueStore = None, log_verbose: bool = False) -> None:
             super().__init__()
 
+            self.log = log
+            self.log_verbose = log_verbose
             self.config = search_config
             self.kg_model = kg_model
-            self.metrics = AStarMetrics(kg_model, config=self.config.metrics_config, cache=cache, 
-                                        accepted_node_types=self.config.accepted_node_types)
+            self.metrics = AStarMetrics(
+                kg_model, self.config.accepted_node_types, self.log, config=self.config.metrics_config, 
+                cache=cache, log_verbose=log_verbose)
 
         def get_min_f_node(self, Q: List[str], f: Dict[str, float]) -> Dict:
             min_idx = 0
@@ -182,9 +210,11 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
             f = {start_node_id: g[start_node_id] + self.metrics.compute_h_metric(start_node_id, end_node_id, U, parent)}
             
             spare_closest_node_id = start_node_id
+            passed_nodes_counter = 0
             while len(Q) != 0:
 
                 current_node_id, current_node_idx = self.get_min_f_node(Q, f) # вершина из Q с минимальным значением f
+                passed_nodes_counter += 1
 
                 # Сохраняем промежуточную вершину, до которой есть путь. 
                 # Если не будет найден путь до end_node, то будет использован путь до spare_closest_node
@@ -219,6 +249,7 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
                         if adj_n_id not in Q:
                             Q.append(adj_n_id)
 
+            self.log(f"neo4j queries: {passed_nodes_counter}", verbose=self.log_verbose)
             return U, Q, D, parent, spare_closest_node_id
         
     return AStarGraphSearch
@@ -231,23 +262,28 @@ class AStartTripletsRetriever(AbstractTripletsRetriever):
         AbstractTripletsRetriever: Интерфейс для классов с алгоритма извлечения релевантных триплетов из графов знаний.
     """
     
-    def __init__(self, kg_model: KnowledgeGraphModel, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(), 
-                 cache: KeyValueStore = None) -> None:
-        self.graph_searcher = getAStarGraphSearcher()(kg_model, cache, search_config)
+    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(), 
+                 cache: KeyValueStore = None, log_verbose: bool = False) -> None:
+        self.log = log
+        self.log_verbose = log_verbose
+        self.graph_searcher = getAStarGraphSearcher()(kg_model, log, search_config, cache, log_verbose)
 
     def get_formated_triplet(self, nodes_pair: Tuple[str, str]) -> Dict[str,Triplet]:
         raw_triplet = self.graph_searcher.get_raw_triplet(nodes_pair[0], nodes_pair[1])
+        #print(nodes_pair, raw_triplet)
         
-        start_node = NodeCreator.create(id=raw_triplet['n1'].element_id, name=str(raw_triplet['n1']['name']), 
+        node1 = NodeCreator.create(id=raw_triplet['n1'].element_id, name=str(raw_triplet['n1']['name']), 
                                         type=NODES_TYPES_MAP[list(raw_triplet['n1'].labels)[0]],
                                         prop=dict(raw_triplet['n1']))
-        end_node = NodeCreator.create(id=raw_triplet['n2'].element_id, name=str(raw_triplet['n2']['name']), 
+        node2 = NodeCreator.create(id=raw_triplet['n2'].element_id, name=str(raw_triplet['n2']['name']), 
                                         type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]],
                                         prop=dict(raw_triplet['n2']))
         relation = Relation(id=raw_triplet['rel'].element_id, name=str(raw_triplet['rel']['name']), 
                             type=RELATIONS_TYPES_MAP[raw_triplet['rel'].type], 
                             prop=dict(raw_triplet['rel']))
-            
+        
+        start_node_id = raw_triplet['rel'].nodes[0].element_id
+        start_node, end_node = (node1, node2) if start_node_id == node1.id else (node2, node1)
         triplet = TripletCreator.create(start_node, relation, end_node, add_stringified_triplet=False)
         return triplet
     
@@ -270,21 +306,51 @@ class AStartTripletsRetriever(AbstractTripletsRetriever):
         #print(formated_nodes)
         unique_raw_nodes_pairs = set()
         formated_triplets = dict()
+
+        all_pair_nodes_counter = sum(list(range(len(nodes_ids))))
+        pair_nodes_counter = 0
         if len(nodes_ids) > 1:
+            self.log("pair nodes calculation:", verbose=self.log_verbose)
             for i in range(len(nodes_ids)-1):
                 start_node = nodes_ids[i]
                 for j in range(i+1, len(nodes_ids)):
+                    pair_nodes_counter += 1
+                    self.log(f"{all_pair_nodes_counter} / {pair_nodes_counter}", verbose=self.log_verbose)
                     end_node = nodes_ids[j]
+                    
+                    s_time = time()
                     _, _, _, parent, spare_closest_node = self.graph_searcher.search_path(start_node, end_node)
+                    self.log(f"search elapsed_time: {time() - s_time}", verbose=self.log_verbose)
+                    
+                    s_time = time()
                     nodes_path = self.get_nodes_path(parent, end_node, spare_closest_node)
+                    self.log(f"get_path elapsed_time: {time() - s_time}", verbose=self.log_verbose)
 
                     # Сохраняем только уникальные пары вершин (по их идентификаторам)
+                    s_time = time()
                     unique_raw_nodes_pairs.update([(nodes_path[i], nodes_path[i+1]) for i in range(len(nodes_path)-1)] if len(nodes_path) > 1 else [])
-        
+                    self.log(f"saving_nodes elapsed_time: {time() - s_time}", verbose=self.log_verbose)
+                    
+                    self.log(self.graph_searcher.metrics.cache_info, verbose=self.log_verbose)
+
         # Сохраняем только уникальные триплеты (по их строковым представлениям)
+        self.log("pair nodes formating:", verbose=self.log_verbose)
+        s_time = time()
+        right_nodes_order_counter = len(unique_raw_nodes_pairs)
         for nodes_pair in unique_raw_nodes_pairs:
             triplet = self.get_formated_triplet(nodes_pair)
+
+            # проверки на порядок нод в триплете
+            if triplet.end_node.type is NodeType.object and not triplet.start_node.type is NodeType.object:
+                right_nodes_order_counter -=1
+            if triplet.end_node.type is NodeType.hyper and triplet.start_node.type is NodeType.episodic:
+                right_nodes_order_counter -=1
+            
             formated_triplets.update({triplet.id: triplet})
+        
+        self.log(f"triplet nodes right order: {right_nodes_order_counter} / {len(unique_raw_nodes_pairs)}", verbose=self.log_verbose)
+        self.log(f"neo4j queries: {len(unique_raw_nodes_pairs)}", verbose=self.log_verbose)
+        self.log(f"= sum elapsed_time: {time() - s_time}", verbose=self.log_verbose)
 
         return formated_triplets.values()
         

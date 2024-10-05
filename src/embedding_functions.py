@@ -277,7 +277,7 @@ class EmbeddingsDatabaseConnection:
     
     def add_instances(self, db_type: str, ids: List[str], stringified_instances: List[str]) -> None:
         embs = self.embedder.encode_passages(stringified_instances)
-        formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb) 
+        formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb, metadata={'id': id}) 
                             for id, doc, emb in zip(ids, stringified_instances, embs)]
         self.vectordbs[db_type].create(formated_instances)
 

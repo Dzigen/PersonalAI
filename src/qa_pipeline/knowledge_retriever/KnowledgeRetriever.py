@@ -38,10 +38,10 @@ class KnowledgeRetriever:
         self.cache = KeyValueStore(config.cache_config)
 
         self.graph_retriever = AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method](
-            kg_model, self.config.retriever_config, self.cache)
+            kg_model, self.log, self.config.retriever_config, self.cache, self.config.verbose)
         
         self.triplets_filter = AVAILABLE_TRIPLETS_FILTERS[self.config.filter_method](
-            kg_model, self.config.filter_config)
+            kg_model, self.log, self.config.filter_config, self.config.verbose)
 
     def retrieve(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("stage #3.1 - extracting triplets...", verbose=self.config.verbose)
