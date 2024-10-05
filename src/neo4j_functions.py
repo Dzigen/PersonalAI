@@ -101,10 +101,11 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
 
         def create_rel(triplet: Triplet) -> str:
-            rel_props = []
+            name = json.dumps(triplet.relation.name, ensure_ascii=False)
+            rel_props = [f"name: {name}"]
             for prop_name, prop_value in triplet.relation.prop.items():
                 if prop_name != "type":
-                    p_value, p_name = json.dumps(prop_value, ensure_ascii=False), prop_name.replace(' ', '_')
+                    p_name, p_value = prop_name.replace(' ', '_'), json.dumps(prop_value, ensure_ascii=False)
                     rel_props.append(f'{p_name}: {p_value}')
             rel_props = ", ".join(rel_props)
 

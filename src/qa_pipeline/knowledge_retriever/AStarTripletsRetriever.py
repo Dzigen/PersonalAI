@@ -13,7 +13,6 @@ from ...embedding_functions import ChromaConnection
 
 @dataclass
 class AStarMetricsConfig:
-    nodes_db: ChromaConnection
     h_metric_name: str = 'weight_with_short_path'
     d_metric_name: str = 'ip'
     nodes_distances_path: str = '../data/graph_structures/vectorized_nodes/v8/nodes_distances_matrix'
