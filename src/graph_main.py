@@ -2,7 +2,7 @@ import ast
 
 from src.neo4j_functions import Neo4jConnection
 from src.embedding_functions import EmbeddingDatabaseConnection
-from agents.llama_agent import LLaMAagent
+from src.agents.private import GigaChatAgent
 from src.prompts.extraction_prompts import \
     triplet_extraction_prompt, thesis_extraction_prompt
 from src.prompts.replacements_prompts import \

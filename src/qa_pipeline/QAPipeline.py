@@ -3,7 +3,7 @@ from .knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
 from .knowledge_comparator import KnowledgeComparator, KnowledgeComparatorConfig
 from .query_parser import QueryLLMParser, QueryLLMParserConfig
 from .utils import LOG_PATH
-from ..llm_agent import AgentConnector
+from ..agents.private import GigaChatAgent
 from ..knowledge_graph_model import KnowledgeGraphModel
 from ..utils import Logger
 
@@ -23,7 +23,7 @@ class QAPipeline:
     с использованием имеющегося графа знаний
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, llm_agent: AgentConnector, config: QAPipelineConfig = QAPipelineConfig()) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, llm_agent: GigaChatAgent, config: QAPipelineConfig = QAPipelineConfig()) -> None:
         self.kg_model = kg_model
         self.llama_agent = llm_agent
         self.config = config

@@ -1,6 +1,6 @@
 from .utils import QUESTION_ANSWERING_USER_PROMPT
 from ...utils.data_structs import Triplet
-from ...llm_agent import AgentConnector
+from ...agents.private import GigaChatAgent
 from ...utils.data_structs import TripletCreator
 from ...utils.data_structs import RelationType
 
@@ -18,7 +18,7 @@ class QALLMGenerator:
     """Главный класс для генерации ответов по пользовательским вопросам на основе 
     извлечённой информации из графа знаний
     """
-    def __init__(self, llm_agent: AgentConnector, config: QALLMGeneratorConfig = QALLMGeneratorConfig()) -> None:
+    def __init__(self, llm_agent: GigaChatAgent, config: QALLMGeneratorConfig = QALLMGeneratorConfig()) -> None:
         self.llm_agent = llm_agent
         self.config = config
 

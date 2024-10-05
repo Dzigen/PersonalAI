@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 from .utils import EntitiesExtractorConfig
 from ...utils.data_structs import QueryInfo
-from ...llm_agent import AgentConnector
+from ...agents.private import GigaChatAgent
 
 @dataclass
 class QueryLLMParserConfig:
@@ -13,7 +13,7 @@ class QueryLLMParser:
     """Главный класс для извлечения полезной информации 
     из пользовательского запроса
     """
-    def __init__(self, llm_agent: AgentConnector, config: QueryLLMParserConfig = QueryLLMParserConfig()) -> None:
+    def __init__(self, llm_agent: GigaChatAgent, config: QueryLLMParserConfig = QueryLLMParserConfig()) -> None:
         self.config = config
         self.llm_agent = llm_agent
 
