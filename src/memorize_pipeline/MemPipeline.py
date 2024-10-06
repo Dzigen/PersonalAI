@@ -10,13 +10,14 @@ from ..knowledge_graph_model import KnowledgeGraphModel
 from ..utils import Logger
 
 from dataclasses import dataclass, field
-from typing import Dict
+from typing import Dict, List
 
 @dataclass
 class MemPipelineConfig:
     extractor_config: LLMExtractorConfig = field(default_factory=lambda: LLMExtractorConfig())
     updator_config: LLMUpdatorConfig = field(default_factory=lambda: LLMUpdatorConfig())
     log: Logger = field(default_factory=lambda: Logger(LOG_PATH))
+    log_verbose: bool = False
 
 class MemPipeline:
 
@@ -31,14 +32,14 @@ class MemPipeline:
 
     def remember(self, text: str, replacing_window_width: int = 32, replacing_window_depth: int = 1, 
                  need_simple: bool = True, need_thesises: bool = True, need_episodic: bool = True, 
-                 need_update: bool = False, node_prop: Dict = {}, rel_prop: Dict = {}) -> None:
+                 need_update: bool = False, node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
         assert need_simple or need_thesises
         new_triplets = self.extractor.extract(text, need_simple, need_thesises, need_episodic, node_prop, rel_prop)  
-        # self.log("PROCESSED NEW TRIPLETS: " + str(new_triplets))
+        self.log("PROCESSED NEW TRIPLETS: " + str(new_triplets), verbose=self.config.log_verbose)
 
         if need_update:
             triplets_to_remove = self.updator.update(new_triplets, replacing_window_width, replacing_window_depth, need_simple, need_thesises)
-            # self.log("PROCESSED OUTDATED TRIPLETS: " + str(triplets_to_remove))
+            self.log("PROCESSED OUTDATED TRIPLETS: " + str(triplets_to_remove))
         
         # В объекты триплетов добавлются идентикаторы, присвоенные им в рамках графовой бд
         self.kg_model.graph_db.create_triplets(new_triplets)
@@ -49,5 +50,6 @@ class MemPipeline:
             nodes_ids = [id[0] for id in ids] + [id[2] for id in ids]
             self.kg_model.embeddings_db.delete_triplets(triplets_ids, nodes_ids)
 
+        return new_triplets
 
     

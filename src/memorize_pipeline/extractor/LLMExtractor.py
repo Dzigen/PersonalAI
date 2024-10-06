@@ -42,18 +42,18 @@ class LLMExtractor:
         self.num_hyperedges = 0
 
     def extract(self, text: str, need_simple: bool = True, need_thesises: bool = True, 
-                need_episodic: bool = True, node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
+                need_episodic: bool = True, hyper_node_prop: Dict = {}, simple_rel_prop: Dict = {}) -> List[Triplet]:
         assert need_simple or need_thesises
         new_triplets = []
         if need_simple:
-            new_triplets += self.extract_triplets(text, node_prop, rel_prop)
+            new_triplets += self.extract_triplets(text, rel_prop=simple_rel_prop)
             
         if need_thesises:
-            new_triplets += self.extract_thesises(text, node_prop, rel_prop)
+            new_triplets += self.extract_thesises(text, node_prop=hyper_node_prop)
             
         if need_episodic:
             new_triplets += self.get_episodic_relationships(
-                text, self.get_entities_from_triplets(new_triplets), node_prop, rel_prop)
+                text, self.get_entities_from_triplets(new_triplets), node_prop=hyper_node_prop)
             
         return new_triplets
 
@@ -97,7 +97,7 @@ class LLMExtractor:
             except:
                 continue
             
-            thesis_node = NodeCreator.create(name=thesis, type=NodeType.hyper, prop={**node_prop})
+            thesis_node = NodeCreator.create(name=str(thesis), type=NodeType.hyper, prop={**node_prop})
             thesis_rel = Relation(name=RelationType.hyper, type=RelationType.hyper, prop={**rel_prop})
             for entity in entities:
                 thesises.append(TripletCreator.create(
@@ -123,9 +123,9 @@ class LLMExtractor:
                 continue
 
             triplets.append(TripletCreator.create(
-                NodeCreator.create(name=subj, type=NodeType.object, prop={**node_prop}),
-                Relation(name=rel, type=RelationType.simple, prop={**rel_prop}),
-                NodeCreator.create(name=obj, type=NodeType.object, prop={**node_prop})))
+                NodeCreator.create(name=str(subj), type=NodeType.object, prop={**node_prop}),
+                Relation(name=str(rel), type=RelationType.simple, prop={**rel_prop}),
+                NodeCreator.create(name=str(obj), type=NodeType.object, prop={**node_prop})))
 
         return triplets
     

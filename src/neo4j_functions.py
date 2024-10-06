@@ -19,7 +19,7 @@ class Neo4jConnection(AbstractGraphConnection):
         except Exception as e:
             print("Failed to create the driver:", e)
         self.db_name = db_name
-        self.execute_query(f"CREATE DATABASE {db_name} IF NOT EXISTS", db_flag=False)
+        self.execute_query(f'CREATE DATABASE {db_name} IF NOT EXISTS', db_flag=False)
 
         self.create_node_template = 'CREATE (n:{type} {{ name: "{name}"}})'
         self.create_rel_template0 = """MATCH (a:{type1}), (b:{type2})

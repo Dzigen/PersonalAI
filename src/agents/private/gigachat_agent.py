@@ -14,8 +14,8 @@ class GigaChatAgent:
             credentials=creds, scope=scope, verify_ssl_certs=verify_ssl_certs, model=model) 
         
     def generate(self, user_prompt: str, assistant_prompt: str = None, 
-                 system_prompt: str = None, gen_strategy: Dict = None) -> str:
+                 system_prompt: str = None, gen_strategy: Dict = {'temperature': 0.001}) -> str:
         chat = Chat(messages=[Messages(role='system', content=system_prompt if system_prompt is not None else SYSTEM_PROMPT), 
-                            Messages(role='user', content=user_prompt)]) 
+                            Messages(role='user', content=user_prompt)], **gen_strategy) 
         response = self.giga_model.chat(chat) 
         return response.choices[0].message.content

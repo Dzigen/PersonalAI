@@ -1,6 +1,6 @@
 from src.memorize_pipeline.MemPipeline import MemPipeline
 from src.memorize_pipeline.utils import MemPipelineConfig
-from src.agents.llama_agent import LLaMAagentLocal
+from src.agents.hosted.llama_agent import LLaMAagentLocal
 from src.qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
 from src.knowledge_graph_model import KnowledgeGraphModel
 from src.neo4j_functions import Neo4jConnection
