@@ -3,21 +3,28 @@ services:
   # Database - Aerospike
   aerospike:
     container_name: personalai_aerospike
-    restart: always
     hostname: aerospikelservice
-    image: aerospike:ee-7.1.0.6_1
+    image: m.menschikov/aerospike:ee-7.1.0.6_1
     ports:
       - "3000:3000"
       - "3001:3001"
       - "3002:3002"
     volumes:
       - ../aerospike_volume/data:/opt/etc/aerospike/
+    deploy:
+      resources:
+        limits:
+          cpus: '16'
+          memory: 32G
+        reservations:
+          cpus: '8'
+          memory: 24G
+
 
   # Database - Neo4j
   neo4j:
-    container_name: personalai_neo4j
-    restart: always
-    image: neo4j:5.21.0-enterprise
+    container_name: personalai_mmenschikov_neo4j
+    image: m.menschikov/neo4j:5.21.0-enterprise
     hostname: neo4jservice
     ports:
       - "7474:7474"
@@ -27,11 +34,19 @@ services:
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
     volumes:
       - ../neo4j_volume/data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '16'
+          memory: 32G
+        reservations:
+          cpus: '8'
+          memory: 24G
 
   # Database - Mongo DB
   mongo:
     image: mongo:7.0.9
-    container_name: personalai_mongo
+    container_name: personalai_mmenschikov_mongo
     hostname: mongoservice
     environment:
       - MONGO_INITDB_ROOT_USERNAME=mongo_root
@@ -40,16 +55,16 @@ services:
       - MONGO_USER_PWD=user1_password
       - MONGO_DB_NAME=personalai
     ports:
-      - 27017:27017
+      - "27017:27017"
     volumes:
-      - /home/dzigen/Desktop/PersonalAI/mongo_volume/data:/data/db
+      - ../mongo_volume/data:/data/db
 
   # MongoDB-manager
   mongoui:
     image: mongo-express:1.0.2
     ports:
-      - 8099:8081
-    container_name: personalai_mongoui
+      - "8099:8081"
+    container_name: personalai_mmenschikov_mongoui
     hostname: mongoexpressservice
     environment:
       - ME_CONFIG_MONGODB_PORT=27017
@@ -60,3 +75,30 @@ services:
       - ME_CONFIG_MONGODB_ADMINPASSWORD=root_password
     depends_on:
       - mongo
+
+  # Container for computations on server
+  workspace:
+    image: m.menschikov/workspace:v1
+    build:
+      dockerfile: workspace.Dockerfile
+    container_name: personalai_mmenschikov_worksapce
+    hostname: worksapceservice
+    ports:
+      - "10888:10888"
+    volumes:
+      - ./:/workspace
+    depends_on:
+      - aerospike
+      - neo4j
+    deploy:
+      resources:
+        limits:
+          cpus: '16'
+          memory: 32G
+        reservations:
+          cpus: '8'
+          memory: 24G
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]

@@ -218,4 +218,4 @@ Extracted thesises: '''
 
 
 
-log_path = "debug"
+log_path = "log_extract"

@@ -44,6 +44,7 @@ class LLMExtractor:
     def extract(self, text: str, need_simple: bool = True, need_thesises: bool = True, 
                 need_episodic: bool = True, hyper_node_prop: Dict = {}, simple_rel_prop: Dict = {}) -> List[Triplet]:
         assert need_simple or need_thesises
+        self.log("START EXTRACTION...", verbose=self.config.verbose)
         new_triplets = []
         if need_simple:
             new_triplets += self.extract_triplets(text, rel_prop=simple_rel_prop)
@@ -130,7 +131,7 @@ class LLMExtractor:
         return triplets
     
     @staticmethod
-    def get_episodic_relationships(text: str, entities: List[Node], node_prop: Dict, rel_prop: Dict) -> List[Triplet]:
+    def get_episodic_relationships(text: str, entities: List[Node], node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
         episodic_node = NodeCreator.create(name=text, type=NodeType.episodic, prop={**node_prop})
         episodic_rel = Relation(name=RelationType.episodic, type=RelationType.episodic, prop={**rel_prop})
         episodic_triplets = [TripletCreator.create(entity, episodic_rel, episodic_node) for entity in entities]

@@ -3,7 +3,7 @@ import aerospike
 
 from .utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 
-DEFAULT_AEROSPIKE_CONFIG = KVDBConnectionConfig(host='localhost', port=3000)
+DEFAULT_AEROSPIKE_CONFIG = KVDBConnectionConfig(host='aerospikelservice', port=3000)
 
 class AerospikeConnector(AbstractKVDatabaseConnection):
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_AEROSPIKE_CONFIG):
