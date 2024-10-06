@@ -5,7 +5,7 @@ import joblib
 import gc
 
 # TO CHANGE
-BASEDIR = "/workspace"
+BASEDIR = "/home/dzigen/Desktop/PersonalAI/Personal-AI/"
 # TO CHNAGE
 
 sys.path.insert(0, BASEDIR)
