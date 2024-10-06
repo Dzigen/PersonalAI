@@ -17,7 +17,7 @@ from ...utils import Logger
 @dataclass
 class AStarMetricsConfig:
     d_metric_name: str = 'ip'
-    h_metric_name: str = 'ip' #'weight_with_short_path'
+    h_metric_name: str = 'weight_with_short_path'
 
 @dataclass
 class AStarGraphSearchConfig:
