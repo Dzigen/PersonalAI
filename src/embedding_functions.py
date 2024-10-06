@@ -96,7 +96,7 @@ class ChromaConnection(AbstractEmbeddingsDatabaseConnection):
         self.collection = self.client.create_collection(name=self.config.db_name, 
                                                         metadata=self.config.params)
 
-    def create(self, instances: List[VectorDBInstance], add_metadata: bool = False):
+    def create(self, instances: List[VectorDBInstance]):
         """Добавление объектов в базу.
 
         Args:
@@ -105,6 +105,7 @@ class ChromaConnection(AbstractEmbeddingsDatabaseConnection):
         self.collection.add(
             documents=list(map(lambda inst: inst.document, instances)),
             embeddings=list(map(lambda inst: inst.embedding, instances)),
+            metadatas=list(map(lambda inst: inst.metadata, instances)),
             ids=list(map(lambda inst: inst.id, instances)))
  
     def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents'], **kwargs) -> List[VectorDBInstance]:
@@ -136,7 +137,7 @@ class ChromaConnection(AbstractEmbeddingsDatabaseConnection):
 
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50, 
-            includes: List[str]  = ['embeddings', 'documents'], **kwargs) -> List[List[Tuple[float, VectorDBInstance]]]:
+            includes: List[str]  = ['embeddings', 'documents', 'metadatas'], **kwargs) -> List[List[Tuple[float, VectorDBInstance]]]:
         """_summary_
 
         Args:

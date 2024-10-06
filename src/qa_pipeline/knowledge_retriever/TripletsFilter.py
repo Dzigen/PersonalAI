@@ -32,7 +32,7 @@ class TripletsFilter(AbstractTriplesFilter):
 
         if len(base_triplets_ids) > 0:
             raw_relevant_triplets = self.kg_model.embeddings_db.vectordbs['triplets'].retrieve(
-                [query_instance], self.config.max_k, includes=['embeddings', 'documents', 'metadatas'], where={"triplet_id": {"$in": base_triplets_ids}})[0]
+                [query_instance], self.config.max_k, includes=['embeddings', 'documents', 'metadatas'], where={"id": {"$in": base_triplets_ids}})[0]
             accepted_tripletes_ids = list(map(lambda item: item[1].id, raw_relevant_triplets))
             self.log(f"accepted ids: {accepted_tripletes_ids}", verbose=self.log_verbose)
             filtered_triplets = list(filter(lambda triplet: triplet.id in accepted_tripletes_ids, triplets))

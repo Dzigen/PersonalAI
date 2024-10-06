@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Tuple
 import joblib
 import numpy as np
+import heapq
 from time import time
 
 from .utils import AbstractTripletsRetriever, AbstractGraphDriver
@@ -108,16 +109,14 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
 
         def dijkstra(self, s_node_id, e_node_id):
             # Используемая реализация алгоритма Дейкстры: https://ru.wikibooks.org/wiki/%D0%A0%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_%D0%B0%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC%D0%BE%D0%B2/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D0%94%D0%B5%D0%B9%D0%BA%D1%81%D1%82%D1%80%D1%8B
-            available_nodes = {s_node_id: 0}
+            available_nodes = { s_node_id: 0}
+            weights_heap = [(0, s_node_id)]
+            heapq.heapify(weights_heap)
             parent = {s_node_id: None}
             passed_nodes_counter = 0
+            
             while len(available_nodes) > 0:
-                min_weight = 1000001
-                ID_min_weight = -1
-                for node_id, weight in available_nodes.items():
-                    if weight < min_weight:
-                        min_weight = weight
-                        ID_min_weight = node_id
+                min_weight, ID_min_weight = heapq.heappop(weights_heap)
                 
                 if ID_min_weight == e_node_id:
                     self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.log_verbose)
@@ -125,20 +124,30 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
                         pair_id = create_id_for_node_pair(s_node_id, ID_min_weight)
                         cache_key = ('test', 'short_path', pair_id)
                         if not self.cache.is_key_exists(cache_key):
-                            self.cache.save_kv_pair(cache_key, {'v': available_nodes[ID_min_weight]})
+                            self.cache.save_kv_pair(cache_key, {'v': min_weight})
                     return min_weight
 
-                adjenced_nodes_ids = self.get_adjecent_nodes(ID_min_weight, parent[ID_min_weight], self.accepted_node_types)
+                adjenced_nodes_ids = self.get_adjecent_nodes(ID_min_weight, parent[ID_min_weight], 
+                                                             self.accepted_node_types)
 
                 for adj_n_id in adjenced_nodes_ids:
-                    if (adj_n_id not in available_nodes) or ((available_nodes[ID_min_weight] + 1) < available_nodes[adj_n_id]):
-                        available_nodes[adj_n_id] = available_nodes[ID_min_weight] + 1
+                    if adj_n_id not in available_nodes:
+                        available_nodes[adj_n_id] = min_weight + 1
+                        heapq.heappush(weights_heap, (available_nodes[adj_n_id], adj_n_id))
                         parent[adj_n_id] = ID_min_weight
-                
+                    
+                    elif (min_weight + 1) < available_nodes[adj_n_id]:
+                        weights_heap.remove((available_nodes[adj_n_id], adj_n_id))
+                        heapq.heapify(weights_heap)
+                        available_nodes[adj_n_id] = min_weight + 1
+                        heapq.heappush(weights_heap, (available_nodes[adj_n_id], adj_n_id))
+                        parent[adj_n_id] = ID_min_weight
+
                 pair_id = create_id_for_node_pair(s_node_id, ID_min_weight)
                 cache_key = ('test', 'short_path', pair_id)
                 if not self.cache.is_key_exists(cache_key):
                     self.cache.save_kv_pair(cache_key, {'v': available_nodes[ID_min_weight]})
+                
                 del available_nodes[ID_min_weight]
                 passed_nodes_counter += 1
 
