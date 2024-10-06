@@ -92,7 +92,7 @@ class TripletCreator(BaseCreator):
         rel_type = triplet.relation.type
         if (rel_type == RelationType.episodic) or (rel_type == RelationType.hyper):
             str_triplet = ""
-            if "time" in triplet.relation.prop.keys():
+            if "time" in triplet.end_node.prop.keys():
                 str_triplet += triplet.end_node.prop["time"] + ": "
             str_triplet += TripletCreator.add_str_props(triplet.end_node, str(triplet.end_node.name))
             

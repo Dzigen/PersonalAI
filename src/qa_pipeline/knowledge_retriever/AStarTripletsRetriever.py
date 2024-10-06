@@ -4,6 +4,7 @@ import joblib
 import numpy as np
 import heapq
 from time import time
+import json
 
 from .utils import AbstractTripletsRetriever, AbstractGraphDriver
 from .cache import KeyValueStore
@@ -17,12 +18,12 @@ from ...utils import Logger
 @dataclass
 class AStarMetricsConfig:
     d_metric_name: str = 'ip'
-    h_metric_name: str = 'weight_with_short_path'
+    h_metric_name: str = 'ip'
 
 @dataclass
 class AStarGraphSearchConfig:
     metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
-    max_depth: int = 10
+    max_depth: int = 5
     accepted_node_types: str = f'["{NodeType.object.value}","{NodeType.hyper.value}","{NodeType.episodic.value}"]'
 
 class Neo4jGraphDriver(AbstractGraphDriver):
@@ -119,6 +120,7 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
                 min_weight, ID_min_weight = heapq.heappop(weights_heap)
                 
                 if ID_min_weight == e_node_id:
+                    self.log(f"dijkstra neo4j queries: {passed_nodes_counter}", verbose=self.log_verbose)
                     self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.log_verbose)
                     if self.cache is not None:
                         pair_id = create_id_for_node_pair(s_node_id, ID_min_weight)
@@ -142,16 +144,19 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
                         available_nodes[adj_n_id] = min_weight + 1
                         heapq.heappush(weights_heap, (available_nodes[adj_n_id], adj_n_id))
                         parent[adj_n_id] = ID_min_weight
-
-                pair_id = create_id_for_node_pair(s_node_id, ID_min_weight)
-                cache_key = ('test', 'short_path', pair_id)
-                if not self.cache.is_key_exists(cache_key):
-                    self.cache.save_kv_pair(cache_key, {'v': available_nodes[ID_min_weight]})
+                
+                if self.cache is not None:
+                    pair_id = create_id_for_node_pair(s_node_id, ID_min_weight)
+                    cache_key = ('test', 'short_path', pair_id)
+                    if not self.cache.is_key_exists(cache_key):
+                        self.cache.save_kv_pair(cache_key, {'v': available_nodes[ID_min_weight]})
                 
                 del available_nodes[ID_min_weight]
                 passed_nodes_counter += 1
 
             # между вершинами нет пути
+            self.log(f"нет пути", verbose=self.log_verbose)
+            self.log(f"dijkstra neo4j queries: {passed_nodes_counter}", verbose=self.log_verbose)
             self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.log_verbose)
             return 1000001
 
@@ -213,31 +218,30 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
             return min_node_id, min_idx 
 
         def search_path(self, start_node_id: str, end_node_id: str) -> Tuple[List[str], List[str], Dict[str, int], Dict[str, str], str]:
-            U, Q, D = [], [start_node_id], {start_node_id: 0}
+            U, Q, D = [], {start_node_id}, {start_node_id: 0}
             g = {start_node_id: 0}
             parent = {start_node_id: None}
             f = {start_node_id: g[start_node_id] + self.metrics.compute_h_metric(start_node_id, end_node_id, U, parent)}
-            
+            heap_q_f = [(f[start_node_id], start_node_id)]
+            heapq.heapify(heap_q_f)
+
             spare_closest_node_id = start_node_id
             passed_nodes_counter = 0
             while len(Q) != 0:
 
-                current_node_id, current_node_idx = self.get_min_f_node(Q, f) # вершина из Q с минимальным значением f
+                _, current_node_id = heapq.heappop(heap_q_f) # вершина из Q с минимальным значением f
                 passed_nodes_counter += 1
 
                 # Сохраняем промежуточную вершину, до которой есть путь. 
                 # Если не будет найден путь до end_node, то будет использован путь до spare_closest_node
-                if self.metrics.compute_h_metric(
-                    current_node_id, end_node_id, U, parent) <= self.metrics.compute_h_metric(
-                        spare_closest_node_id, end_node_id, U, parent):
-                    if f[current_node_id] <= f[spare_closest_node_id]:
-                        spare_closest_node_id = current_node_id
+                if f[current_node_id] <= f[spare_closest_node_id]:
+                    spare_closest_node_id = current_node_id
                 
                 #
                 if current_node_id == end_node_id:
                     break
 
-                del Q[current_node_idx]
+                Q.remove(current_node_id)
                 if D[current_node_id] >= self.config.max_depth:
                     continue
                 U.append(current_node_id)
@@ -250,15 +254,22 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
                     if (adj_n_id in U) and (tentativeScore >= g[adj_n_id]):
                         continue
                     if (adj_n_id not in U) or (tentativeScore < g[adj_n_id]):
+                        prev_f = f.get(adj_n_id, None)
+                        
                         parent[adj_n_id] = current_node_id
                         g[adj_n_id] = tentativeScore
-                        f[adj_n_id] = g[adj_n_id] + self.metrics.compute_d_metric(adj_n_id, end_node_id, U, parent)
+                        f[adj_n_id] = g[adj_n_id] + self.metrics.compute_h_metric(adj_n_id, end_node_id, U, parent)
                         D[adj_n_id] = D[current_node_id] + 1
 
                         if adj_n_id not in Q:
-                            Q.append(adj_n_id)
+                            Q.add(adj_n_id)
+                            heapq.heappush(heap_q_f, (f[adj_n_id], adj_n_id))
+                        else:
+                            heap_q_f.remove((prev_f, adj_n_id))
+                            heapq.heapify(heap_q_f)
+                            heapq.heappush(heap_q_f, (f[adj_n_id], adj_n_id))
 
-            self.log(f"neo4j queries: {passed_nodes_counter}", verbose=self.log_verbose)
+            self.log(f"astar neo4j queries: {passed_nodes_counter}", verbose=self.log_verbose)
             return U, Q, D, parent, spare_closest_node_id
         
     return AStarGraphSearch
@@ -350,15 +361,15 @@ class AStartTripletsRetriever(AbstractTripletsRetriever):
             triplet = self.get_formated_triplet(nodes_pair)
 
             # проверки на порядок нод в триплете
-            if triplet.end_node.type is NodeType.object and not triplet.start_node.type is NodeType.object:
-                right_nodes_order_counter -=1
-            if triplet.end_node.type is NodeType.hyper and triplet.start_node.type is NodeType.episodic:
-                right_nodes_order_counter -=1
+            #if triplet.end_node.type is NodeType.object and not triplet.start_node.type is NodeType.object:
+            #    right_nodes_order_counter -=1
+            #if triplet.end_node.type is NodeType.hyper and triplet.start_node.type is NodeType.episodic:
+            #    right_nodes_order_counter -=1
             
-            formated_triplets.update({triplet.id: triplet})
+            formated_triplets[triplet.id] = triplet
         
         self.log(f"triplet nodes right order: {right_nodes_order_counter} / {len(unique_raw_nodes_pairs)}", verbose=self.log_verbose)
-        self.log(f"neo4j queries: {len(unique_raw_nodes_pairs)}", verbose=self.log_verbose)
+        self.log(f"foramting neo4j queries: {len(unique_raw_nodes_pairs)}", verbose=self.log_verbose)
         self.log(f"= sum elapsed_time: {time() - s_time}", verbose=self.log_verbose)
 
         return formated_triplets.values()
