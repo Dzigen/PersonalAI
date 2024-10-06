@@ -60,13 +60,12 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             def process_node(node):
                 node_props = dict(node)
                 name = node_props.get("name", "")
-                node_props = {key.replace("_", " "): value.replace("_", " ")
-                              for key, value in node_props.items() if key != "name"}
+                node_props = {key: value for key, value in node_props.items() if key != "name"}
                 labels = list(node.labels)
                 node_type = ""
                 if labels:
                     node_type = labels[0]
-                return {"name": name.replace("_", " "), "type": node_type, "prop": node_props}
+                return {"name": name, "type": node_type, "prop": node_props}
 
             def process_rel(rel):
                 rel_type = rel.type
@@ -155,19 +154,17 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         # (only if this nodes haven't type "thesis" or "episodic")
         for subj, rel, obj in triplets:
             try:
-                subj_type = subj["type"].replace(" ", "_")
-                subj_name = subj["name"].replace(" ", "_")
-                obj_type = obj["type"].replace(" ", "_")
-                obj_name = obj["name"].replace(" ", "_")
-                rel_type = rel["type"].replace(" ", "_")
+                subj_type = subj["type"]
+                subj_name = subj["name"]
+                obj_type = obj["type"]
+                obj_name = obj["name"]
+                rel_type = rel["type"]
                 rel_props = rel["prop"]
                 query = "MATCH "
                 query += f'(n:{subj_type}' + ' { ' + f'name: "{subj_name}"' + ' })-'
                 props_query = []
                 for prop_name, prop_value in rel_props.items():
-                    prop_name_f = prop_name.replace(" ", "_")
-                    prop_value_f = prop_value.replace(" ", "_")
-                    props_query.append(f'{prop_name_f}: "{prop_value_f}"')
+                    props_query.append(f'{prop_name}: "{prop_value}"')
                 props_query = ", ".join(props_query)
                 query += f'[r:{rel_type} ' + '{ ' + props_query + ' }]'
                 query += f'->(n:{obj_type}' + ' { ' + f'name: "{obj_name}"' + ' })'
