@@ -5,6 +5,7 @@ import numpy as np
 import heapq
 from time import time
 import json
+import collections
 
 from .utils import AbstractTripletsRetriever, AbstractGraphDriver
 from .cache import KeyValueStore
@@ -17,13 +18,16 @@ from ...utils import Logger
 
 @dataclass
 class AStarMetricsConfig:
-    d_metric_name: str = 'ip'
-    h_metric_name: str = 'ip'
+    h_metric_name: str = 'weight_with_short_path'
 
 @dataclass
 class AStarGraphSearchConfig:
     metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
-    max_depth: int = 5
+    # макимальная глубина обхода графа для поиска заданной вершины
+    max_depth: int = 5 
+    # максимальное количество вершин графа, которые можно обойти для поиска заднной вершины
+    max_passed_nodes: int = 100
+    # типы вершин, которые можно обходить во время поиска заданной вершины
     accepted_node_types: str = f'["{NodeType.object.value}","{NodeType.hyper.value}","{NodeType.episodic.value}"]'
 
 class Neo4jGraphDriver(AbstractGraphDriver):
@@ -58,23 +62,20 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
 
             self.cache_info = {
                 'dist': {'exist': 0, 'calc': 0},
-                'short_path': {'exist': 0, 'calc': 0}
+                'bfs_short_path': {'exist': 0, 'calc': 0}
             }
 
             self.metrics_map = {
                 'ip': self.precomputed_dist,
-                'constant': lambda v1, v2, U, parent: 1,
+                'constant': lambda v1, v2, parent: 1,
                 'weight_with_short_path': self.weighted_short_path,
                 'avg_weighted_with_short_path': self.avg_weighted_short_path,
             }
 
-        def compute_d_metric(self, *args, **kwargs) -> float:
-            return self.metrics_map[self.config.d_metric_name](*args, **kwargs)
-
         def compute_h_metric(self, *args, **kwargs) -> float:
             return self.metrics_map[self.config.h_metric_name](*args, **kwargs)
 
-        def get_nodes_path(self, parent: Dict[str, str], U: List[str], end_node_id: str) -> List[str]:
+        def get_nodes_path(self, parent: Dict[str, str], end_node_id: str) -> List[str]:
             #end_node_id = U[-1] if (end_node_id not in parent) else end_node_id
             path, end_flag, cur_n = [end_node_id], False, end_node_id
             while not end_flag:
@@ -108,69 +109,53 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
                 
             return dist
 
-        def dijkstra(self, s_node_id, e_node_id):
-            # Используемая реализация алгоритма Дейкстры: https://ru.wikibooks.org/wiki/%D0%A0%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_%D0%B0%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC%D0%BE%D0%B2/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D0%94%D0%B5%D0%B9%D0%BA%D1%81%D1%82%D1%80%D1%8B
-            available_nodes = { s_node_id: 0}
-            weights_heap = [(0, s_node_id)]
-            heapq.heapify(weights_heap)
+        def bfs(self, s_node_id, e_node_id):
+            visited, queue = set(), collections.deque([s_node_id])
+            visited.add(s_node_id)
+            D = {s_node_id: 0}
             parent = {s_node_id: None}
-            passed_nodes_counter = 0
-            
-            while len(available_nodes) > 0:
-                min_weight, ID_min_weight = heapq.heappop(weights_heap)
-                
-                if ID_min_weight == e_node_id:
-                    self.log(f"dijkstra neo4j queries: {passed_nodes_counter}", verbose=self.log_verbose)
-                    self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.log_verbose)
-                    if self.cache is not None:
-                        pair_id = create_id_for_node_pair(s_node_id, ID_min_weight)
-                        cache_key = ('test', 'short_path', pair_id)
-                        if not self.cache.is_key_exists(cache_key):
-                            self.cache.save_kv_pair(cache_key, {'v': min_weight})
-                    return min_weight
+            neo4j_queries_counter, passed_nodes_counter = 0, 0
+            while queue:
+                vertex = queue.popleft()
+                neighbours = self.get_adjecent_nodes(vertex, parent[vertex], self.accepted_node_types)
+                neo4j_queries_counter += 1
+                for neighbour in neighbours: 
+                    if neighbour not in visited: 
+                        parent[neighbour] = vertex
+                        D[neighbour] = D[vertex] + 1
+                        visited.add(neighbour)
+                        passed_nodes_counter += 1
 
-                adjenced_nodes_ids = self.get_adjecent_nodes(ID_min_weight, parent[ID_min_weight], 
-                                                             self.accepted_node_types)
+                        if self.cache is not None:
+                            pair_id = create_id_for_node_pair(s_node_id, neighbour)
+                            cache_key = ('test', 'bfs_short_path', pair_id)
+                            if not self.cache.is_key_exists(cache_key):
+                                self.cache.save_kv_pair(cache_key, {'v': D[neighbour]})
 
-                for adj_n_id in adjenced_nodes_ids:
-                    if adj_n_id not in available_nodes:
-                        available_nodes[adj_n_id] = min_weight + 1
-                        heapq.heappush(weights_heap, (available_nodes[adj_n_id], adj_n_id))
-                        parent[adj_n_id] = ID_min_weight
-                    
-                    elif (min_weight + 1) < available_nodes[adj_n_id]:
-                        weights_heap.remove((available_nodes[adj_n_id], adj_n_id))
-                        heapq.heapify(weights_heap)
-                        available_nodes[adj_n_id] = min_weight + 1
-                        heapq.heappush(weights_heap, (available_nodes[adj_n_id], adj_n_id))
-                        parent[adj_n_id] = ID_min_weight
-                
-                if self.cache is not None:
-                    pair_id = create_id_for_node_pair(s_node_id, ID_min_weight)
-                    cache_key = ('test', 'short_path', pair_id)
-                    if not self.cache.is_key_exists(cache_key):
-                        self.cache.save_kv_pair(cache_key, {'v': available_nodes[ID_min_weight]})
-                
-                del available_nodes[ID_min_weight]
-                passed_nodes_counter += 1
+                        if neighbour == e_node_id:
+                            self.log(f"bfs neo4j queries: {neo4j_queries_counter}", verbose=self.log_verbose)
+                            self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.log_verbose)
+                            return D[neighbour]
+
+                        queue.append(neighbour)
 
             # между вершинами нет пути
             self.log(f"нет пути", verbose=self.log_verbose)
-            self.log(f"dijkstra neo4j queries: {passed_nodes_counter}", verbose=self.log_verbose)
+            self.log(f"bfs neo4j queries: {neo4j_queries_counter}", verbose=self.log_verbose)
             self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.log_verbose)
             return 1000001
 
         def precomputed_short_path(self, node1_id: str, node2_id: str) -> float:
             pair_id = create_id_for_node_pair(node1_id, node2_id)
-            cache_key = ('test', 'short_path', pair_id)
+            cache_key = ('test', 'bfs_short_path', pair_id)
             if self.cache.is_key_exists(cache_key):
                 #print("exists")
                 short_path = self.cache.get_value_by_key(cache_key)['v']
-                self.cache_info['short_path']['exist'] += 1
+                self.cache_info['bfs_short_path']['exist'] += 1
             else:
                 #print("calculating")
-                short_path = self.dijkstra(node1_id, node2_id)
-                self.cache_info['short_path']['calc'] += 1
+                short_path = self.bfs(node1_id, node2_id)
+                self.cache_info['bfs_short_path']['calc'] += 1
 
             return short_path
 
@@ -179,8 +164,8 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
             w = self.precomputed_dist(node1_id, node2_id)
             return short_path_len * w
 
-        def avg_weighted_short_path(self, node1_id: str, node2_id: str, U: List[str], parent: Dict[str, str]) -> float:
-            nodes_path = self.get_nodes_path(parent, U, node1_id)
+        def avg_weighted_short_path(self, node1_id: str, node2_id: str, parent: Dict[str, str]) -> float:
+            nodes_path = self.get_nodes_path(parent, node1_id)
             acc_dist = 0
             for i in range(len(nodes_path)-1):
                 acc_dist += self.precomputed_dist(nodes_path[i], nodes_path[i+1])
@@ -204,73 +189,52 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
                 kg_model, self.config.accepted_node_types, self.log, config=self.config.metrics_config, 
                 cache=cache, log_verbose=log_verbose)
 
-        def get_min_f_node(self, Q: List[str], f: Dict[str, float]) -> Dict:
-            min_idx = 0
-            min_node_id = Q[min_idx]
-            min_f = f[min_node_id]
-            
-            for idx in range(1, len(Q)):
-                if f[Q[idx]] < min_f:
-                    min_idx = idx
-                    min_node_id = Q[min_idx]
-                    min_f = f[min_node_id]
-                    
-            return min_node_id, min_idx 
-
         def search_path(self, start_node_id: str, end_node_id: str) -> Tuple[List[str], List[str], Dict[str, int], Dict[str, str], str]:
-            U, Q, D = [], {start_node_id}, {start_node_id: 0}
-            g = {start_node_id: 0}
+            # использованная реализация A*-алгоритма поиска кратчайшего пути между вершинами: https://www.redblobgames.com/pathfinding/a-star/implementation.html
+            frontier = []
+            heapq.heappush(frontier, (0, start_node_id))
             parent = {start_node_id: None}
-            f = {start_node_id: g[start_node_id] + self.metrics.compute_h_metric(start_node_id, end_node_id, U, parent)}
-            heap_q_f = [(f[start_node_id], start_node_id)]
-            heapq.heapify(heap_q_f)
-
+            cost_so_far = {start_node_id: 0} 
+            D = {start_node_id: 0}
+        
             spare_closest_node_id = start_node_id
             passed_nodes_counter = 0
-            while len(Q) != 0:
-
-                _, current_node_id = heapq.heappop(heap_q_f) # вершина из Q с минимальным значением f
+            while len(frontier):
+                current_node_id = heapq.heappop(frontier)[1]
                 passed_nodes_counter += 1
+
+                if passed_nodes_counter >= self.config.max_passed_nodes:
+                    self.log("PASSED LIMIT OF MAX NODES", verbose=self.log_verbose)
+                    break
+
+                if D[current_node_id] >= self.config.max_depth:
+                    self.log("PASSED MAX DEPTH LIMIT", verbose=self.log_verbose)
+                    continue
 
                 # Сохраняем промежуточную вершину, до которой есть путь. 
                 # Если не будет найден путь до end_node, то будет использован путь до spare_closest_node
-                if f[current_node_id] <= f[spare_closest_node_id]:
-                    spare_closest_node_id = current_node_id
+                spare_closest_node_id = current_node_id
                 
                 #
                 if current_node_id == end_node_id:
                     break
 
-                Q.remove(current_node_id)
-                if D[current_node_id] >= self.config.max_depth:
-                    continue
-                U.append(current_node_id)
-
                 adj_nodes = self.get_adjecent_nodes(current_node_id, parent[current_node_id], self.config.accepted_node_types)
                 #print("adjenced nodes: ", len(adj_nodes))
 
                 for adj_n_id in adj_nodes:
-                    tentativeScore = g[current_node_id] + self.metrics.compute_d_metric(current_node_id, adj_n_id, U, parent)      
-                    if (adj_n_id in U) and (tentativeScore >= g[adj_n_id]):
-                        continue
-                    if (adj_n_id not in U) or (tentativeScore < g[adj_n_id]):
-                        prev_f = f.get(adj_n_id, None)
-                        
+                    new_cost = cost_so_far[current_node_id] + 1 # работаем с невзвешенным графом      
+                    if (adj_n_id not in cost_so_far) or (new_cost < cost_so_far[adj_n_id]):
                         parent[adj_n_id] = current_node_id
-                        g[adj_n_id] = tentativeScore
-                        f[adj_n_id] = g[adj_n_id] + self.metrics.compute_h_metric(adj_n_id, end_node_id, U, parent)
                         D[adj_n_id] = D[current_node_id] + 1
 
-                        if adj_n_id not in Q:
-                            Q.add(adj_n_id)
-                            heapq.heappush(heap_q_f, (f[adj_n_id], adj_n_id))
-                        else:
-                            heap_q_f.remove((prev_f, adj_n_id))
-                            heapq.heapify(heap_q_f)
-                            heapq.heappush(heap_q_f, (f[adj_n_id], adj_n_id))
-
+                        cost_so_far[adj_n_id] = new_cost
+                        priority = new_cost + self.metrics.compute_h_metric(adj_n_id, end_node_id, parent)
+                        heapq.heappush(frontier, (priority, adj_n_id))
+                            
+            self.log(f"start-spare node path len: {D[spare_closest_node_id]}" if end_node_id not in parent else f"start-end node path len: {D[end_node_id]}", verbose=self.log_verbose)
             self.log(f"astar neo4j queries: {passed_nodes_counter}", verbose=self.log_verbose)
-            return U, Q, D, parent, spare_closest_node_id
+            return cost_so_far, frontier, D, parent, spare_closest_node_id
         
     return AStarGraphSearch
     
@@ -325,7 +289,6 @@ class AStartTripletsRetriever(AbstractTripletsRetriever):
         nodes_ids = [node.id for node in query_info.linked_nodes]
         #print(formated_nodes)
         unique_raw_nodes_pairs = set()
-        formated_triplets = dict()
 
         all_pair_nodes_counter = sum(list(range(len(nodes_ids))))
         pair_nodes_counter = 0
@@ -356,6 +319,7 @@ class AStartTripletsRetriever(AbstractTripletsRetriever):
         # Сохраняем только уникальные триплеты (по их строковым представлениям)
         self.log("pair nodes formating:", verbose=self.log_verbose)
         s_time = time()
+        formated_triplets = dict()
         right_nodes_order_counter = len(unique_raw_nodes_pairs)
         for nodes_pair in unique_raw_nodes_pairs:
             triplet = self.get_formated_triplet(nodes_pair)
@@ -368,7 +332,7 @@ class AStartTripletsRetriever(AbstractTripletsRetriever):
             
             formated_triplets[triplet.id] = triplet
         
-        self.log(f"triplet nodes right order: {right_nodes_order_counter} / {len(unique_raw_nodes_pairs)}", verbose=self.log_verbose)
+        #self.log(f"triplet nodes right order: {right_nodes_order_counter} / {len(unique_raw_nodes_pairs)}", verbose=self.log_verbose)
         self.log(f"foramting neo4j queries: {len(unique_raw_nodes_pairs)}", verbose=self.log_verbose)
         self.log(f"= sum elapsed_time: {time() - s_time}", verbose=self.log_verbose)
 

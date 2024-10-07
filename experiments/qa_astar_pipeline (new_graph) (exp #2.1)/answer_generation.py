@@ -21,6 +21,7 @@ from src.embedding_functions import EmbeddingsDatabaseConnection, EmbeddingsData
 
 from src.embedding_functions import VectorDBConnectionConfig, EmbeddingsDatabaseConnectionConfig
 from src.agents.private import GigaChatAgent
+from src.qa_pipeline import QAPipeline
 
 NEO4J_URL ="bolt://personalai_mmenschikov_neo4j:7687"
 NEO4J_USER = "neo4j"
@@ -59,7 +60,7 @@ kg_model = KnowledgeGraphModel(
 qa_pipeline = QAPipeline(kg_model, agent)
 
 qa_files = os.listdir(EVAL_DATADIR)
-for qa_file in qa_files:
+for qa_file in qa_files[2:]:
     print(qa_file)
     s_time = time()
     with open(f"{EVAL_DATADIR}/{qa_file}", 'r', encoding='utf-8') as fd:

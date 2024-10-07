@@ -16,7 +16,7 @@ sys.path.insert(0, BASEDIR)
 
 from src.utils.data_structs import TripletCreator, NodeCreator, Relation, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 from src.neo4j_functions import Neo4jConnection
-from src.embedding_functions import EmbeddingsDatabaseConnection, EmbeddingsDatabaseConnectionConfig, VectorDBConnectionConfig
+from src.embedding_functions import EmbeddingsDatabaseConnection, EmbeddingsDatabaseConnectionConfig, VectorDBConnectionConfig, EmbedderModelConfig
 from src.knowledge_graph_model import KnowledgeGraphModel
 
 NEO4J_URL ="bolt://personalai_mmenschikov_neo4j:7687"
@@ -24,8 +24,9 @@ NEO4J_USER = "neo4j"
 NEO4J_PWD = "password"
 
 GRAPH_DB_NAME = 'DiaasqGPT4omini'
-NODES_VECTORDB_PATH = '../data/graph_structures/vectorized_nodes/v11/densedb'
-TRIPLETS_VECTORDB_PATH = '../data/graph_structures/vectorized_triplets/v7/densedb'
+NODES_VECTORDB_PATH = '../../data/graph_structures/vectorized_nodes/v11/densedb'
+TRIPLETS_VECTORDB_PATH = '../../data/graph_structures/vectorized_triplets/v7/densedb'
+EMBEDDER_MODEL_PATH = '../../models/intfloat/multilingual-e5-small'
 gc.collect()
 
 ###########
@@ -36,10 +37,13 @@ kg_model = KnowledgeGraphModel(
     graph_db=Neo4jConnection(uri=NEO4J_URL, user=NEO4J_USER, pwd=NEO4J_PWD, db_name=GRAPH_DB_NAME),
     embeddings_db=EmbeddingsDatabaseConnection(EmbeddingsDatabaseConnectionConfig(
         nodes_db_config=VectorDBConnectionConfig(
-            NODES_VECTORDB_PATH, 'vectorized_nodes', is_exist=True, need_to_clear=True
+            NODES_VECTORDB_PATH, 'vectorized_nodes', is_exist=False, need_to_clear=False
         ),
         triplets_db_config=VectorDBConnectionConfig(
-            TRIPLETS_VECTORDB_PATH, 'vectorized_triplets', is_exist=True, need_to_clear=True
+            TRIPLETS_VECTORDB_PATH, 'vectorized_triplets', is_exist=False, need_to_clear=False
+        ),
+        embedder_config=EmbedderModelConfig(
+            model_name_or_path=EMBEDDER_MODEL_PATH
         )
     ))
 )
