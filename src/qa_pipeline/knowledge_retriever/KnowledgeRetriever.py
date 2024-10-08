@@ -1,6 +1,7 @@
 from .utils import AbstractTriplesFilter, AbstractTripletsRetriever, LOG_PATH
 from .TripletsFilter import TripletsFilterConfig, TripletsFilter
 from .AStarTripletsRetriever import AStartTripletsRetriever, AStarGraphSearchConfig
+from .BFSTripletsRetriever import BFSRetriever, BFSSearchConfig
 from .cache import KeyValueStoreConfig, KeyValueStore
 from ...utils.data_structs import QueryInfo, Triplet
 from ...knowledge_graph_model import KnowledgeGraphModel
@@ -10,7 +11,8 @@ from dataclasses import dataclass, field
 from typing import List
 
 AVAILABLE_TRIPLETS_RETRIEVERS  = {
-    'astar': AStartTripletsRetriever
+    'astar': AStartTripletsRetriever,
+    'bfs': BFSRetriever
 }
 
 AVAILABLE_TRIPLETS_FILTERS = {
