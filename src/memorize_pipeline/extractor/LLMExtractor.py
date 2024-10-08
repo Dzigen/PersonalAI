@@ -99,7 +99,7 @@ class LLMExtractor:
                 continue
             
             thesis_node = NodeCreator.create(name=str(thesis), type=NodeType.hyper, prop={**node_prop})
-            thesis_rel = Relation(name=RelationType.hyper, type=RelationType.hyper, prop={**rel_prop})
+            thesis_rel = Relation(name=RelationType.hyper.value, type=RelationType.hyper, prop={**rel_prop})
             for entity in entities:
                 thesises.append(TripletCreator.create(
                     NodeCreator.create(name=str(entity), type=NodeType.object, prop={**node_prop}),
@@ -133,6 +133,6 @@ class LLMExtractor:
     @staticmethod
     def get_episodic_relationships(text: str, entities: List[Node], node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
         episodic_node = NodeCreator.create(name=text, type=NodeType.episodic, prop={**node_prop})
-        episodic_rel = Relation(name=RelationType.episodic, type=RelationType.episodic, prop={**rel_prop})
+        episodic_rel = Relation(name=RelationType.episodic.value, type=RelationType.episodic, prop={**rel_prop})
         episodic_triplets = [TripletCreator.create(entity, episodic_rel, episodic_node) for entity in entities]
         return episodic_triplets

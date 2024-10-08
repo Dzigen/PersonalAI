@@ -40,5 +40,5 @@ class KnowledgeComparator:
                 unique_nodes_ids.append(node.id)
                 unique_nodes.append(node)
 
-        query_structure.linked_nodes = linked_nodess
+        query_structure.linked_nodes = unique_nodes
 
