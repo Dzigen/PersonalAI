@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 @dataclass
 class KVDBConnectionConfig:
     host: str
-    port: str
+    port: str = None
     params: Dict = field(default_factory=lambda: {})
 
 class AbstractKVDatabaseConnection(ABC):
