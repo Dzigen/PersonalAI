@@ -61,9 +61,10 @@ class BFSRetriever(AbstractTripletsRetriever):
                  kg_model: KnowledgeGraphModel,
                  log=None,
                  search_config: BFSSearchConfig = None,
-                 cache=None, verbose=None,
-                 retriever = None
-                 ) -> None:
+                 cache=None,
+                 verbose=None,
+                 retriever=None
+                ) -> None:
         super().__init__()
         self.kg_model = kg_model
         self.config = search_config
@@ -76,11 +77,11 @@ class BFSRetriever(AbstractTripletsRetriever):
             'MATCH (a:object)-[r]-(b:object) WHERE r.{prop_name}="{prop_value}" RETURN a, r, b'
 
     def parse_triplet_output(self, direction, query, another_entities1, another_entities2, chain, subj_labels=None,
-                                obj_labels=None, db=None):
+                                obj_labels=None):
         triplets_info = []
         inters_chains1, inters_chains2 = [], []
         try:
-            res = self.kg_model.graph_db.execute_query(query, db=self.config.graphdb_name)
+            res = self.kg_model.graph_db.execute_query(query)
             for element in res:
                 subj_props = dict(element["a"])
                 subj_props = {key.replace("_", " "): value.replace("_", " ") for key, value in subj_props.items()
@@ -204,10 +205,13 @@ class BFSRetriever(AbstractTripletsRetriever):
         for nodes_list in query_info.linked_nodes_by_entities:
             seed_entity = []
             for node in nodes_list:
-                seed_entity.append((node, "", "node"))
+                if isinstance(node, str):
+                    seed_entity.append((node, "", "node"))
+                else:
+                    seed_entity.append((node.document, "", "node"))
             seed_entities.append(seed_entity)
 
-        triplets_dict, inters_chains1, inters_chains2 = self.bfs(seed_entities, depth, db=self.config.graphdb_name)
+        triplets_dict, inters_chains1, inters_chains2 = self.bfs(seed_entities, depth)
         output_texts = self.extract_thesis(seed_entities, same_types)
 
         thres = 25
@@ -295,8 +299,8 @@ class BFSRetriever(AbstractTripletsRetriever):
                                         if entities_list2 != entities_list]
             query1 = f"""MATCH (a:object)-[r]-(b:{entity_type}) WHERE a.name="{seed_entity}" RETURN a, r, b"""
             query2 = f"""MATCH (a:object)-[r]-(b:{entity_type}) WHERE a.name="{seed_entity.lower()}" RETURN a, r, b"""
-            res1 = self.kg_model.graph_db.execute_query(query1, db=self.config.graphdb_name)
-            res2 = self.kg_model.graph_db.execute_query(query2, db=self.config.graphdb_name)
+            res1 = self.kg_model.graph_db.execute_query(query1)
+            res2 = self.kg_model.graph_db.execute_query(query2)
 
             for element in res1 + res2:
                 obj_dict = dict(element["b"])
@@ -356,7 +360,7 @@ class BFSRetriever(AbstractTripletsRetriever):
 
 
     def bfs(self, seed_entities, depth=1, subj_labels=None, obj_labels=None, question=None, top_n=10,
-            insert_underscores=False, use_rel_props=False, db=None):
+            insert_underscores=False, use_rel_props=False):
         triplets_dict = {}
         inters_chains1, inters_chains2 = {}, {}
         # seed_entity, prop_name="", entity_type="node"
@@ -392,7 +396,7 @@ class BFSRetriever(AbstractTripletsRetriever):
                             if tp == "node":
                                 query = self.extract_triplets_name1_template.format(name1=entity)
                                 cur_triplets_info, cur_inters_chains1, cur_inters_chains2 = self.parse_triplet_output(
-                                    "forw", query, another_entities1, another_entities2, chain, subj_labels, obj_labels, db
+                                    "forw", query, another_entities1, another_entities2, chain, subj_labels, obj_labels
                                 )
                                 ent_inters_chains1, ent_inters_chains2 = \
                                     self.add_chains(ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)
@@ -400,7 +404,7 @@ class BFSRetriever(AbstractTripletsRetriever):
                                     triplets_info.append([(step, "forw", seed_entity, triplet[0][1]["type"])] + triplet)
                                 query = self.extract_triplets_name2_template.format(name2=entity)
                                 cur_triplets_info, cur_inters_chains1, cur_inters_chains2 = self.parse_triplet_output(
-                                    "backw", query, another_entities1, another_entities2, chain, subj_labels, obj_labels, db
+                                    "backw", query, another_entities1, another_entities2, chain, subj_labels, obj_labels
                                 )
                                 ent_inters_chains1, ent_inters_chains2 = \
                                     self.add_chains(ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)
@@ -413,7 +417,7 @@ class BFSRetriever(AbstractTripletsRetriever):
                                     prop_value=entity.capitalize()
                                 )
                                 cur_triplets_info, cur_inters_chains1, cur_inters_chains2 = self.parse_triplet_output(
-                                    "forw/backw", query, another_entities1, another_entities2, chain, subj_labels, obj_labels, db
+                                    "forw/backw", query, another_entities1, another_entities2, chain, subj_labels, obj_labels
                                 )
                                 ent_inters_chains1, ent_inters_chains2 = \
                                     self.add_chains(ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)
