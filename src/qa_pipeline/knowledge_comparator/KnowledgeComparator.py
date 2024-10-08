@@ -22,16 +22,21 @@ class KnowledgeComparator:
         # сопоставляем сущности, извлечённые из запроса нодам в графе знаний
         
         linked_nodess = []
-        entities_embeddings = self.kg_model.embeddings_db.embedder.encode_queries(query_structure.entities)
-        entities_instances = list(map(lambda embed: VectorDBInstance(embedding=embed), entities_embeddings))
-        nodes_with_scores = self.kg_model.embeddings_db.vectordbs['nodes'].retrieve(entities_instances, n_results=self.config.fetch_n)
+        linked_nodes_by_entities = []
+        for entity in query_structure.entities:
+            entity_embedding = self.kg_model.embeddings_db.embedder.encode_queries([entity])[0]
+            entity_instance = VectorDBInstance(embedding=entity_embedding)
 
-        for retrieved_instances in nodes_with_scores:    
-            filtered_nodes = list(filter(lambda node_item: node_item[0] < self.config.threshold, retrieved_instances))
-                
+            nodes_with_scores = self.kg_model.embeddings_db.vecordbs['nodes'].retrieve(
+                [entity_instance],
+                n_results=self.config.fetch_n
+            )[0]
+            filtered_nodes = list(filter(lambda node_item: node_item[0] < self.config.threshold, nodes_with_scores))
             if self.config.max_k > 0:
                 filtered_nodes = filtered_nodes[:self.config.max_k]
-            linked_nodess += list(map(lambda node_item: node_item[1], filtered_nodes))
+            cur_linked_nodes = list(map(lambda node_item: node_item[1], filtered_nodes))
+            linked_nodess += cur_linked_nodes
+            linked_nodes_by_entities.append(cur_linked_nodes)
 
         unique_nodes_ids = []
         unique_nodes = []
@@ -41,4 +46,4 @@ class KnowledgeComparator:
                 unique_nodes.append(node)
 
         query_structure.linked_nodes = unique_nodes
-
+        query_structure.linked_nodes_by_entities = linked_nodes_by_entities

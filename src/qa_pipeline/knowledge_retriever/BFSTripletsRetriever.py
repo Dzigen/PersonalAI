@@ -1,26 +1,34 @@
-from .utils import AbstractTripletsRetriever
-from ...utils.data_structs import QueryInfo, Node, Relation, Triplet
-from ...knowledge_graph_model import KnowledgeGraphModel
-
 import copy
 from dataclasses import dataclass
 from typing import List
+
 import torch
+
+from ...knowledge_graph_model import KnowledgeGraphModel
+from ...utils.data_structs import QueryInfo, Node, Relation, Triplet
+from .utils import AbstractTripletsRetriever
+
 
 @dataclass
 class BFSSearchConfig:
-    pass
+    graphdb_name: str = "diaasq2"
 
 
 def process_chain(chain, chain_subj_obj, chain_triplets):
     for triplet in chain:
-        subj = triplet[0].items()
+        subj = triplet[0]
+        subj_no_props = {key: value for key, value in subj.items() if key != "prop"}
+        subj_props = subj["prop"]
+        subj = list(subj_no_props.items()) + list(subj_props.items())
         subj = sorted(subj, key=lambda x: x[1])
-        obj = triplet[-2].items()
+        obj = triplet[2]
+        obj_no_props = {key: value for key, value in obj.items() if key != "prop"}
+        obj_props = obj["prop"]
+        obj = list(obj_no_props.items()) + list(obj_props.items())
         obj = sorted(obj, key=lambda x: x[1])
         subj = str(subj)
         obj = str(obj)
-        rel_props = triplet[2].items()
+        rel_props = triplet[1]["prop"].items()
         rel_props = [(key, value) for key, value in rel_props if key not in ["raw_time", "time"]]
         rel_props = sorted(rel_props, key=lambda x: x[0])
         rel_props = str(rel_props)
@@ -52,33 +60,46 @@ class BFSRetriever(AbstractTripletsRetriever):
     def __init__(self, kg_model: KnowledgeGraphModel, search_config: BFSSearchConfig = None, retriever = None) -> None:
         super().__init__()
         self.kg_model = kg_model
-        self.search_config = search_config
+        self.config = search_config
         self.retriever = retriever
-        self.extract_triplets_name1_template = 'MATCH (a)-[r]-(b) WHERE a.name="{name1}" RETURN a, r, b'
-        self.extract_triplets_name2_template = 'MATCH (a)-[r]-(b) WHERE b.name="{name2}" RETURN a, r, b'
-        self.extract_triplets_rel_prop_template = 'MATCH (a)-[r]-(b) WHERE r.{prop_name}="{prop_value}" RETURN a, r, b'
+        self.extract_triplets_name1_template = \
+            'MATCH (a:object)-[r]-(b:object) WHERE a.name="{name1}" RETURN a, r, b'
+        self.extract_triplets_name2_template = \
+            'MATCH (a:object)-[r]-(b:object) WHERE b.name="{name2}" RETURN a, r, b'
+        self.extract_triplets_rel_prop_template = \
+            'MATCH (a:object)-[r]-(b:object) WHERE r.{prop_name}="{prop_value}" RETURN a, r, b'
 
     def parse_triplet_output(self, direction, query, another_entities1, another_entities2, chain, subj_labels=None,
                                 obj_labels=None, db=None):
         triplets_info = []
         inters_chains1, inters_chains2 = [], []
         try:
-            res = self.kg_model.graph_db(query, db=self.config.graphdb_name)
+            res = self.kg_model.graph_db.execute_query(query, db=self.config.graphdb_name)
             for element in res:
+                subj_props = dict(element["a"])
+                subj_props = {key.replace("_", " "): value.replace("_", " ") for key, value in subj_props.items()
+                                if key != "name"}
+                obj_props = dict(element["b"])
+                obj_props = {key.replace("_", " "): value.replace("_", " ") for key, value in obj_props.items()
+                                if key != "name"}
                 rel_props = dict(element["r"])
-                rel_props = {key: value for key, value in rel_props.items() if key not in ["raw_time", "sentiment"]}
+
+                rel_props = {key.replace("_", " "): value.replace("_", " ") for key, value in rel_props.items()
+                                if key not in ["raw_time", "sentiment"]}
                 if (subj_labels is None or set(element["a"].labels).intersection(set(subj_labels))) \
                         and (obj_labels is None or set(element["b"].labels).intersection(set(obj_labels))):
                     triplet = [{"id": element["a"].element_id,
                                 "type": list(element["a"].labels)[0],
-                                "name": element["a"]["name"]},
-                               {"id": element["r"].element_id,
+                                "name": element["a"]["name"].replace("_", " "),
+                                "prop": subj_props},
+                                {"id": element["r"].element_id,
                                 "type": element["r"].type,
                                 "prop": rel_props},
-                               {"id": element["b"].element_id,
+                                {"id": element["b"].element_id,
                                 "type": list(element["b"].labels)[0],
-                                "name": element["b"]["name"]},
-                               direction]
+                                "name": element["b"]["name"].replace("_", " "),
+                                "prop": obj_props},
+                                direction]
                     new_chain = copy.deepcopy(chain)
 
                     def count_persons(new_chain, second_chain):
@@ -93,7 +114,7 @@ class BFSRetriever(AbstractTripletsRetriever):
                     if triplet not in new_chain:
                         subj = triplet[0]["name"].replace("_", " ")
                         obj = triplet[-2]["name"].replace("_", " ")
-                        prop_values = [val.lower() for val in triplet[2]["prop"].values()]
+                        prop_values = [val.lower() for val in triplet[1]["prop"].values()]
                         cnt1 = 0
                         if subj.lower() in another_entities1:
                             cnt1 += 1 
@@ -101,6 +122,7 @@ class BFSRetriever(AbstractTripletsRetriever):
                             cnt1 += 1
                         if any([prop_value.lower() in another_entities1 for prop_value in prop_values]):
                             cnt1 += 1
+
                         if cnt1 > 0:
                             new_chain.append(triplet)
                             inters_chains1.append([new_chain, cnt1])
@@ -119,7 +141,7 @@ class BFSRetriever(AbstractTripletsRetriever):
                                     and [ch[-1] for ch in second_chain] == ["forw", "backw"]) and len(persons) < 3:
                                 inters_chains2.append([new_chain, second_chain, ["forw", obj]])
                         elif any([prop_value.lower() in another_entities2 for prop_value in prop_values]):
-                            for prop_value in triplet[2].values():
+                            for prop_value in triplet[1]["prop"].values():
                                 if prop_value.lower() in another_entities2:
                                     new_chain.append(triplet)
                                     second_chain = another_entities2[prop_value.lower()]
@@ -163,45 +185,89 @@ class BFSRetriever(AbstractTripletsRetriever):
         keys_rev = [obj_name, rel_type, subj_name] + rel_data_values
         return tuple(keys), tuple(keys_rev)
 
-    def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
+    def get_relevant_triplets(self, query_info: QueryInfo, depth: int = 1) -> List[Triplet]:
         seed_entities = []
+        if hasattr(query_info, "entities_with_types"):
+            entities_with_types = query_info.entities_with_types
+            entity_types = list(entities_with_types.values())
+            same_types = len(entity_types) > 1 and all([entity_type == entity_types[0]
+                                                        for entity_type in entity_types])
+        else:
+            same_types = False
+
         for nodes_list in query_info.linked_nodes_by_entities:
             seed_entity = []
             for node in nodes_list:
-                seed_entity.append((node.document, "", "node"))
+                seed_entity.append((node, "", "node"))
             seed_entities.append(seed_entity)
-        triplets_dict, inters_chains1, inters_chains2 = self.bfs(seed_entity, db=self.config.graphdb_name)
-        inters_chains1 = sorted(inters_chains1, key=lambda x: x[1], reverse=True)
-        inters_chains1_more = [ch for ch, cnt in inters_chains1 if cnt > 1]
-        inters_chains1_less = [ch for ch, cnt in inters_chains1 if cnt == 1]
-        chain_triplets1_more = process_inters_chains1(inters_chains1_more)
-        chain_triplets1_less = process_inters_chains1(inters_chains1_less)
-        chain_triplets2 = process_inters_chains2(inters_chains2)
-        prob_tr = False
-        if inters_chains1_more:
-            chain_triplets = chain_triplets1_more + chain_triplets1_less[:3] + chain_triplets2[:3]
-            prob_tr = True
-        else:
-            chain_triplets = chain_triplets1_less + chain_triplets2
+
+        triplets_dict, inters_chains1, inters_chains2 = self.bfs(seed_entities, depth, db=self.config.graphdb_name)
+        output_texts = self.extract_thesis(seed_entities, same_types)
+
+        thres = 25
+        if len(inters_chains1) == 1:
+            thres = 25
+        elif len(inters_chains1) == 2:
+            thres = 12
+        elif len(inters_chains1) >= 3:
+            thres = 10
+
+        chain_triplets = []
+        for seed_entity in inters_chains1:
+            ent_chain_triplets = []
+            ent_inters_chains1 = inters_chains1[seed_entity]
+            ent_inters_chains2 = inters_chains2[seed_entity]
+            ent_inters_chains1 = sorted(ent_inters_chains1, key=lambda x: x[1], reverse=True)
+
+            inters_chains1_more = [ch for ch, cnt in ent_inters_chains1 if cnt > 1]
+            inters_chains1_less = [ch for ch, cnt in ent_inters_chains1 if cnt == 1]
+            chain_triplets1_more = process_inters_chains1(inters_chains1_more)
+            chain_triplets1_less = process_inters_chains1(inters_chains1_less)
+
+            chain_triplets2 = process_inters_chains2(ent_inters_chains2)
+            prob_tr = False
+            if inters_chains1_more:
+                #chain_triplets = chain_triplets1_more + chain_triplets1_less[:3] + chain_triplets2[:3]
+                ent_chain_triplets = chain_triplets1_more
+                prob_tr = True
+            else:
+                ent_chain_triplets = chain_triplets1_less + chain_triplets2
+            chain_triplets += ent_chain_triplets[:thres]
 
         def format_triplet(triplet_data):
             subj, rel, obj, *_ = triplet_data
-            subj_node = Node(name=subj["name"], type=subj["type"], id=subj["id"], prop={})
-            obj_node = Node(name=obj["name"], type=obj["type"], id=obj["id"], prop={})
-            rel_edge = Relation(type=rel["type"], id=rel["id"], prop=rel["prop"])
+            subj_node = Node(name=subj["name"], type=subj["type"], id=subj["id"], prop=subj["prop"])
+            obj_node = Node(name=obj["name"], type=obj["type"], id=obj["id"], prop=obj["prop"])
+            rel_edge = Relation(name="", type=rel["type"], id=rel["id"], prop=rel["prop"])
             triplet = Triplet(start_node=subj_node, relation=rel_edge, end_node=obj_node)
             return triplet
 
+        def triplet_from_hyper(text, seed_entity, obj_props, rel_props):
+            subj_node = Node(name=seed_entity, type="object", id="1", prop={})
+            obj_node = Node(name=text, type="hyper", id="1", prop=obj_props)
+            rel_edge = Relation(name="", type="hyper", id="1", prop=rel_props)
+            triplet = Triplet(start_node=subj_node, relation=rel_edge, end_node=obj_node)
+            return triplet
+
+        ex_triplets = []
         formatted_triplets = []
-        for triplet in chain_triplets[:25]:
-            formatted_triplet = format_triplet(triplet)
-            formatted_triplets.append(formatted_triplet)
+        for text, seed_entity, obj_props, rel_props in output_texts:
+            triplet = triplet_from_hyper(text, seed_entity, obj_props, rel_props)
+            formatted_triplets.append(triplet)
+
+        for triplet in chain_triplets:
+            subj, rel, obj, *_ = triplet
+            if (subj, rel, obj) not in ex_triplets and (obj, rel, subj) not in ex_triplets:
+                formatted_triplet = format_triplet(triplet)
+                formatted_triplets.append(formatted_triplet)
+                ex_triplets.append((subj, rel, obj))
 
         if chain_triplets:
             thres = 3
         else:
             thres = 6
-        if len(chain_triplets) < 20 and not prob_tr:
+
+        if not chain_triplets and not prob_tr and not output_texts:
             total_f_triplets = []
             for (*_, seed_entity, _), triplets in triplets_dict.items():
                 f_triplets = []
@@ -215,22 +281,94 @@ class BFSRetriever(AbstractTripletsRetriever):
                     formatted_triplets.append(formatted_triplet)
         return formatted_triplets
 
-    def bfs(self, seed_entities, depth=1, subj_labels=None, obj_labels=None, question=None, top_n=10, db=None):
+
+    def extract_thesis_for_entities(self, seed_entities, entities_list, entity_type, texts_set):
+        cur_texts = []
+        for seed_entity, *_ in entities_list:
+            another_entities_list = [entities_list2 for entities_list2 in seed_entities
+                                        if entities_list2 != entities_list]
+            query1 = f"""MATCH (a:object)-[r]-(b:{entity_type}) WHERE a.name="{seed_entity}" RETURN a, r, b"""
+            query2 = f"""MATCH (a:object)-[r]-(b:{entity_type}) WHERE a.name="{seed_entity.lower()}" RETURN a, r, b"""
+            res1 = self.kg_model.graph_db.execute_query(query1, db=self.config.graphdb_name)
+            res2 = self.kg_model.graph_db.execute_query(query2, db=self.config.graphdb_name)
+
+            for element in res1 + res2:
+                obj_dict = dict(element["b"])
+                rel_dict = dict(element["r"])
+                text = obj_dict["name"].strip()
+                obj_props = {key: value for key, value in obj_dict.items() if key != "name"}
+                text_chunks = text.split("\n")
+                for text_chunk in text_chunks:
+                    text_chunk = text_chunk.strip()
+                    if text_chunk not in texts_set:
+                        num_inters = 0
+                        for entities_list2 in another_entities_list:
+                            found = False
+                            for ent, *_ in entities_list2:
+                                if ent.lower() in text_chunk.lower() \
+                                        or ent.lower() in obj_props.values() \
+                                        or ent.lower() in rel_dict.values():
+                                    found = True
+                            if found:
+                                num_inters += 1
+                        cur_texts.append([text_chunk, seed_entity, obj_props, rel_dict, num_inters])
+                        texts_set.add(text_chunk)
+        return cur_texts, texts_set
+
+
+    def extract_thesis(self, seed_entities, same_types):
+        output_texts = []
+        retr_texts = {ne: [] for ne in range(len(seed_entities))}
+        texts_set = set()
+        for ne, entities_list in enumerate(seed_entities):
+            cur_texts1, texts_set = self.extract_thesis_for_entities(seed_entities, entities_list, "hyper", texts_set)
+            cur_texts2, texts_set = self.extract_thesis_for_entities(seed_entities, entities_list, "episodic", texts_set)
+            retr_texts[ne] = cur_texts1 + cur_texts2
+
+        for key in retr_texts:
+            retr_texts[key] = sorted(retr_texts[key], key=lambda x: x[-1], reverse=True)
+
+        if len(seed_entities) == 1:
+            thres = 15
+        elif len(seed_entities) == 2:
+            thres = 10
+        else:
+            thres = 7
+        print("extract_thesis, thres", thres)
+
+        if same_types:
+            for key in retr_texts:
+                cur_texts = [[text, seed_entity, obj_props, rel_props]
+                             for text, seed_entity, obj_props, rel_props, _ in retr_texts[key]]
+                output_texts += cur_texts[:thres]
+        else:
+            for key in retr_texts:
+                cur_texts = [[text, seed_entity, obj_props, rel_props]
+                             for text, seed_entity, obj_props, rel_props, cnt in retr_texts[key] if cnt > 0]
+                output_texts += cur_texts[:thres]
+        return output_texts
+
+
+    def bfs(self, seed_entities, depth=1, subj_labels=None, obj_labels=None, question=None, top_n=10,
+            insert_underscores=False, use_rel_props=False, db=None):
         triplets_dict = {}
-        inters_chains1, inters_chains2 = [], []
+        inters_chains1, inters_chains2 = {}, {}
         # seed_entity, prop_name="", entity_type="node"
         used_entities = {}
         entities = {}
         for step in range(depth):
             for ne, entities_list in enumerate(seed_entities):
                 for seed_entity, prop_name, entity_type in entities_list:
+                    ent_inters_chains1, ent_inters_chains2 = [], []
                     another_entities_list = [entities_list2 for entities_list2 in seed_entities
                                             if entities_list2 != entities_list]
                     another_entities1, another_entities2 = [], {}
                     for entities_list2 in another_entities_list:
                         for ent, *_ in entities_list2:
                             another_entities1.append(ent.lower())
-                    seed_entity = seed_entity.replace(" ", "_").lower()
+                    if insert_underscores:
+                        seed_entity = seed_entity.replace(" ", "_")
+                    seed_entity = seed_entity.lower()
                     if step == 0:
                         used_entities[(seed_entity, ne)] = set()
                         entities[(seed_entity, ne)] = [(seed_entity, prop_name, entity_type, [])]
@@ -250,20 +388,20 @@ class BFSRetriever(AbstractTripletsRetriever):
                                 cur_triplets_info, cur_inters_chains1, cur_inters_chains2 = self.parse_triplet_output(
                                     "forw", query, another_entities1, another_entities2, chain, subj_labels, obj_labels, db
                                 )
-                                inters_chains1, inters_chains2 = \
-                                    self.add_chains(inters_chains1, inters_chains2, cur_inters_chains1, cur_inters_chains2)
+                                ent_inters_chains1, ent_inters_chains2 = \
+                                    self.add_chains(ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)
                                 for triplet in cur_triplets_info:
-                                    triplets_info.append([(step, "forw", seed_entity, triplet[0][1])] + triplet)
+                                    triplets_info.append([(step, "forw", seed_entity, triplet[0][1]["type"])] + triplet)
                                 query = self.extract_triplets_name2_template.format(name2=entity)
                                 cur_triplets_info, cur_inters_chains1, cur_inters_chains2 = self.parse_triplet_output(
                                     "backw", query, another_entities1, another_entities2, chain, subj_labels, obj_labels, db
                                 )
-                                inters_chains1, inters_chains2 = \
-                                    self.add_chains(inters_chains1, inters_chains2, cur_inters_chains1, cur_inters_chains2)
+                                ent_inters_chains1, ent_inters_chains2 = \
+                                    self.add_chains(ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)
                                 for triplet in cur_triplets_info:
-                                    triplets_info.append([(step, "backw", seed_entity, triplet[0][1])] + triplet)
+                                    triplets_info.append([(step, "backw", seed_entity, triplet[0][1]["type"])] + triplet)
                                 used_entities[(seed_entity, ne)].add((entity, prop_name, tp))
-                            elif tp == "rel_prop":
+                            elif tp == "rel_prop" and use_rel_props:
                                 query = self.extract_triplets_rel_prop_template.format(
                                     prop_name=prop_name,
                                     prop_value=entity.capitalize()
@@ -271,11 +409,12 @@ class BFSRetriever(AbstractTripletsRetriever):
                                 cur_triplets_info, cur_inters_chains1, cur_inters_chains2 = self.parse_triplet_output(
                                     "forw/backw", query, another_entities1, another_entities2, chain, subj_labels, obj_labels, db
                                 )
-                                inters_chains1, inters_chains2 = \
-                                    self.add_chains(inters_chains1, inters_chains2, cur_inters_chains1, cur_inters_chains2)
+                                ent_inters_chains1, ent_inters_chains2 = \
+                                    self.add_chains(ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)
                                 for triplet in cur_triplets_info:
-                                    triplets_info.append([(step, "forw", seed_entity, triplet[0][1])] + triplet)
+                                    triplets_info.append([(step, "forw", seed_entity, triplet[0][1]["type"])] + triplet)
                                 used_entities[(seed_entity, ne)].add((entity, prop_name, tp))
+
                     if question and step > 0:
                         triplets_for_rank = [triplet[1] for triplet in triplets_info]
                         cur_embs = []
@@ -301,4 +440,13 @@ class BFSRetriever(AbstractTripletsRetriever):
                             triplets_dict[step_dir_seed_rel] = []
                         triplets_dict[step_dir_seed_rel].append(triplet)
                     entities[(seed_entity, ne)] += new_entities
+
+                    if seed_entity not in inters_chains1:
+                        inters_chains1[seed_entity] = ent_inters_chains1
+                    else:
+                        inters_chains1[seed_entity] += ent_inters_chains1
+                    if seed_entity not in inters_chains2:
+                        inters_chains2[seed_entity] = ent_inters_chains2
+                    else:
+                        inters_chains2[seed_entity] += ent_inters_chains2
         return triplets_dict, inters_chains1, inters_chains2
