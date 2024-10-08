@@ -28,7 +28,7 @@ class KnowledgeComparator:
             entity_instance = VectorDBInstance(embedding=entity_embedding)
 
             nodes_with_scores = self.kg_model.embeddings_db.vecordbs['nodes'].retrieve(
-                entity_instance,
+                [entity_instance],
                 n_results=self.config.fetch_n
             )[0]
             filtered_nodes = list(filter(lambda node_item: node_item[0] < self.config.threshold, nodes_with_scores))
@@ -45,5 +45,5 @@ class KnowledgeComparator:
                 unique_nodes_ids.append(node.id)
                 unique_nodes.append(node)
 
-        query_structure.linked_nodes = linked_nodess
+        query_structure.linked_nodes = unique_nodes
         query_structure.linked_nodes_by_entities = linked_nodes_by_entities
