@@ -57,7 +57,13 @@ def process_inters_chains2(inters_chains2):
 
 
 class BFSRetriever(AbstractTripletsRetriever):
-    def __init__(self, kg_model: KnowledgeGraphModel, search_config: BFSSearchConfig = None, retriever = None) -> None:
+    def __init__(self,
+                 kg_model: KnowledgeGraphModel,
+                 log=None,
+                 search_config: BFSSearchConfig = None,
+                 cache=None, verbose=None,
+                 retriever = None
+                 ) -> None:
         super().__init__()
         self.kg_model = kg_model
         self.config = search_config
