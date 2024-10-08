@@ -261,7 +261,6 @@ class AStartTripletsRetriever(AbstractTripletsRetriever):
 
     def get_formated_triplets(self, nodes_pair: Tuple[str, str]) -> Dict[str,Triplet]:
         raw_triplets = self.graph_searcher.get_raw_triplets(nodes_pair[0], nodes_pair[1])
-        #print(nodes_pair, raw_triplet)
         
         formated_triplets = dict()
         for raw_triplet in raw_triplets:
