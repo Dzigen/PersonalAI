@@ -11,13 +11,14 @@ services:
       - "3002:3002"
     volumes:
       - ../aerospike_volume/data:/opt/aerospike/data
+      - ../aerospike_configs:/etc/aerospike
     deploy:
       resources:
         limits:
-          cpus: '16'
-          memory: 32G
-        reservations:
           cpus: '8'
+          memory: 48G
+        reservations:
+          cpus: '4'
           memory: 24G
 
 
@@ -37,10 +38,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '16'
+          cpus: '8'
           memory: 32G
         reservations:
-          cpus: '8'
+          cpus: '4'
           memory: 24G
 
   # Database - Mongo DB

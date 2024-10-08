@@ -116,6 +116,7 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
             parent = {s_node_id: None}
             neo4j_queries_counter, passed_nodes_counter = 0, 0
             while queue:
+                #print(len(queue))
                 vertex = queue.popleft()
                 neighbours = self.get_adjecent_nodes(vertex, parent[vertex], self.accepted_node_types)
                 neo4j_queries_counter += 1
@@ -143,7 +144,15 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
             self.log(f"нет пути", verbose=self.log_verbose)
             self.log(f"bfs neo4j queries: {neo4j_queries_counter}", verbose=self.log_verbose)
             self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.log_verbose)
-            return 1000001
+
+            INF_VALUE = 1000001
+            if self.cache is not None:
+                pair_id = create_id_for_node_pair(s_node_id, e_node_id)
+                cache_key = ('test', 'bfs_short_path', pair_id)
+                if not self.cache.is_key_exists(cache_key):
+                    self.cache.save_kv_pair(cache_key, {'v': INF_VALUE})
+
+            return INF_VALUE
 
         def precomputed_short_path(self, node1_id: str, node2_id: str) -> float:
             pair_id = create_id_for_node_pair(node1_id, node2_id)
