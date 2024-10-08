@@ -38,12 +38,10 @@ class Neo4jGraphDriver(AbstractGraphDriver):
         formated_nodes = [node['b'].element_id for node in raw_nodes]
         return formated_nodes
     
-    def get_raw_triplet(self, node1_id: str, node2_id: str):
+    def get_raw_triplets(self, node1_id: str, node2_id: str) -> List[object]:
         output = self.kg_model.graph_db.execute_query(
             f'MATCH (n1)-[rel]-(n2) WHERE elementId(n1) = "{node1_id}" AND elementId(n2) = "{node2_id}" RETURN n1, rel, n2')
-        if not len(output):
-            raise ValueError
-        return output[0] 
+        return output
 
 def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
 
@@ -261,24 +259,28 @@ class AStartTripletsRetriever(AbstractTripletsRetriever):
         self.log_verbose = log_verbose
         self.graph_searcher = getAStarGraphSearcher()(kg_model, log, search_config, cache, log_verbose)
 
-    def get_formated_triplet(self, nodes_pair: Tuple[str, str]) -> Dict[str,Triplet]:
-        raw_triplet = self.graph_searcher.get_raw_triplet(nodes_pair[0], nodes_pair[1])
+    def get_formated_triplets(self, nodes_pair: Tuple[str, str]) -> Dict[str,Triplet]:
+        raw_triplets = self.graph_searcher.get_raw_triplets(nodes_pair[0], nodes_pair[1])
         #print(nodes_pair, raw_triplet)
         
-        node1 = NodeCreator.create(id=raw_triplet['n1'].element_id, name=str(raw_triplet['n1']['name']), 
-                                        type=NODES_TYPES_MAP[list(raw_triplet['n1'].labels)[0]],
-                                        prop=dict(raw_triplet['n1']))
-        node2 = NodeCreator.create(id=raw_triplet['n2'].element_id, name=str(raw_triplet['n2']['name']), 
-                                        type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]],
-                                        prop=dict(raw_triplet['n2']))
-        relation = Relation(id=raw_triplet['rel'].element_id, name=str(raw_triplet['rel']['name']), 
-                            type=RELATIONS_TYPES_MAP[raw_triplet['rel'].type], 
-                            prop=dict(raw_triplet['rel']))
+        formated_triplets = dict()
+        for raw_triplet in raw_triplets:
+            node1 = NodeCreator.create(id=raw_triplet['n1'].element_id, name=str(raw_triplet['n1']['name']), 
+                                            type=NODES_TYPES_MAP[list(raw_triplet['n1'].labels)[0]],
+                                            prop=dict(raw_triplet['n1']))
+            node2 = NodeCreator.create(id=raw_triplet['n2'].element_id, name=str(raw_triplet['n2']['name']), 
+                                            type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]],
+                                            prop=dict(raw_triplet['n2']))
+            relation = Relation(id=raw_triplet['rel'].element_id, name=str(raw_triplet['rel']['name']), 
+                                type=RELATIONS_TYPES_MAP[raw_triplet['rel'].type], 
+                                prop=dict(raw_triplet['rel']))
+            
+            start_node_id = raw_triplet['rel'].nodes[0].element_id
+            start_node, end_node = (node1, node2) if start_node_id == node1.id else (node2, node1)
+            triplet = TripletCreator.create(start_node, relation, end_node, add_stringified_triplet=False)
+            formated_triplets[triplet.id] = triplet
         
-        start_node_id = raw_triplet['rel'].nodes[0].element_id
-        start_node, end_node = (node1, node2) if start_node_id == node1.id else (node2, node1)
-        triplet = TripletCreator.create(start_node, relation, end_node, add_stringified_triplet=False)
-        return triplet
+        return formated_triplets
     
     def get_nodes_path(self, parent: Dict[str, str], end_node_id: str, spare_closest_node_id: str) -> List[str]:
         end_node_id = spare_closest_node_id if (end_node_id not in parent) else end_node_id
@@ -331,15 +333,8 @@ class AStartTripletsRetriever(AbstractTripletsRetriever):
         formated_triplets = dict()
         right_nodes_order_counter = len(unique_raw_nodes_pairs)
         for nodes_pair in unique_raw_nodes_pairs:
-            triplet = self.get_formated_triplet(nodes_pair)
-
-            # проверки на порядок нод в триплете
-            #if triplet.end_node.type is NodeType.object and not triplet.start_node.type is NodeType.object:
-            #    right_nodes_order_counter -=1
-            #if triplet.end_node.type is NodeType.hyper and triplet.start_node.type is NodeType.episodic:
-            #    right_nodes_order_counter -=1
-            
-            formated_triplets[triplet.id] = triplet
+            triplets = self.get_formated_triplets(nodes_pair)
+            formated_triplets.update(triplets)
         
         #self.log(f"triplet nodes right order: {right_nodes_order_counter} / {len(unique_raw_nodes_pairs)}", verbose=self.log_verbose)
         self.log(f"foramting neo4j queries: {len(unique_raw_nodes_pairs)}", verbose=self.log_verbose)
