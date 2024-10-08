@@ -5,7 +5,7 @@ from typing import List
 import torch
 
 from ...knowledge_graph_model import KnowledgeGraphModel
-from ...utils.data_structs import QueryInfo, Node, Relation, Triplet
+from ...utils.data_structs import QueryInfo, Node, Relation, Triplet, RELATIONS_TYPES_MAP
 from .utils import AbstractTripletsRetriever
 
 
@@ -248,14 +248,14 @@ class BFSRetriever(AbstractTripletsRetriever):
             subj, rel, obj, *_ = triplet_data
             subj_node = Node(name=subj["name"], type=subj["type"], id=subj["id"], prop=subj["prop"])
             obj_node = Node(name=obj["name"], type=obj["type"], id=obj["id"], prop=obj["prop"])
-            rel_edge = Relation(name="", type=rel["type"], id=rel["id"], prop=rel["prop"])
+            rel_edge = Relation(name="", type=RELATIONS_TYPES_MAP[rel["type"]], id=rel["id"], prop=rel["prop"])
             triplet = Triplet(start_node=subj_node, relation=rel_edge, end_node=obj_node)
             return triplet
 
         def triplet_from_hyper(text, seed_entity, obj_props, rel_props):
             subj_node = Node(name=seed_entity, type="object", id="1", prop={})
             obj_node = Node(name=text, type="hyper", id="1", prop=obj_props)
-            rel_edge = Relation(name="", type="hyper", id="1", prop=rel_props)
+            rel_edge = Relation(name="", type=RELATIONS_TYPES_MAP["hyper"], id="1", prop=rel_props)
             triplet = Triplet(start_node=subj_node, relation=rel_edge, end_node=obj_node)
             return triplet
 
