@@ -10,7 +10,7 @@ services:
       - "3001:3001"
       - "3002:3002"
     volumes:
-      - ../aerospike_volume/data:/opt/etc/aerospike/
+      - ../aerospike_volume/data:/opt/aerospike/data
     deploy:
       resources:
         limits:

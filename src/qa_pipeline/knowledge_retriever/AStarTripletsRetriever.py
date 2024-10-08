@@ -26,7 +26,7 @@ class AStarGraphSearchConfig:
     # макимальная глубина обхода графа для поиска заданной вершины
     max_depth: int = 5 
     # максимальное количество вершин графа, которые можно обойти для поиска заднной вершины
-    max_passed_nodes: int = 100
+    max_passed_nodes: int = 20
     # типы вершин, которые можно обходить во время поиска заданной вершины
     accepted_node_types: str = f'["{NodeType.object.value}","{NodeType.hyper.value}","{NodeType.episodic.value}"]'
 
@@ -220,7 +220,7 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
                     break
 
                 adj_nodes = self.get_adjecent_nodes(current_node_id, parent[current_node_id], self.config.accepted_node_types)
-                #print("adjenced nodes: ", len(adj_nodes))
+                self.log(f"adjenced nodes: {len(adj_nodes)}", verbose=self.log_verbose)
 
                 for adj_n_id in adj_nodes:
                     new_cost = cost_so_far[current_node_id] + 1 # работаем с невзвешенным графом      
