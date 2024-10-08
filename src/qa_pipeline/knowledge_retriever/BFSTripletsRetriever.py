@@ -5,8 +5,8 @@ from typing import List
 import torch
 
 from ...knowledge_graph_model import KnowledgeGraphModel
-from ..query_parser.utils import QueryInfo
-from .utils import Node, Relation, Triplet, AbstractTripletsRetriever
+from ...utils.data_structs import QueryInfo, Node, Relation, Triplet
+from .utils import AbstractTripletsRetriever
 
 
 @dataclass
