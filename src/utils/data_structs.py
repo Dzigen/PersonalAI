@@ -111,10 +111,10 @@ class TripletCreator(BaseCreator):
         return triplet.id, str_triplet
 
 
-from ..embedding_functions import VectorDBInstance
+#from ..embedding_functions import VectorDBInstance
 
 @dataclass
 class QueryInfo:
     query: str
     entities: List[str] = None
-    linked_nodes: List[VectorDBInstance] = None
+    linked_nodes: List[object] = None

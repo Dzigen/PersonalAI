@@ -3,6 +3,7 @@ import json
 from tqdm import tqdm
 from openai import OpenAI 
 import os
+import joblib
 from functools import reduce
 import joblib
 from typing import Dict
@@ -35,32 +36,33 @@ graph_db = graph_db=Neo4jConnection(uri=NEO4J_URL, user=NEO4J_USER, pwd=NEO4J_PW
 ###########
 
 print("loading structures..")
-base_dialogs = json.loads(open(DATASET_PATH, 'r', encoding='utf-8').read())
-raw_time = [dialogue['time'].split(', ')[0].strip() for dialogue in base_dialogs['data']]
-print(len(raw_time))
+#base_dialogs = json.loads(open(DATASET_PATH, 'r', encoding='utf-8').read())
+#raw_time = [dialogue['time'].split(', ')[0].strip() for dialogue in base_dialogs['data']]
+#print(len(raw_time))
 
-extracted_triplets = json.loads(open(LOAD_EXTRACTED_TRIPLETS_FILE, 'r', encoding='utf-8').read())
+#extracted_triplets = json.loads(open(LOAD_EXTRACTED_TRIPLETS_FILE, 'r', encoding='utf-8').read())
+extracted_triplets = joblib.loads(LOAD_EXTRACTED_TRIPLETS_FILE)
 print(len(extracted_triplets))
 
-print("adding time...")
-not_str_counter = 0
-all_items_counter = 0
-for group_idx in tqdm(range(len(extracted_triplets))):
-    cur_time = raw_time[group_idx]
-    for triplet_idx in range(len(extracted_triplets[group_idx])):
-        for item_idx in range(len(extracted_triplets[group_idx][triplet_idx])):
-            if type(extracted_triplets[group_idx][triplet_idx][item_idx]['name']) is not str:
-                not_str_counter += 1
-            
-            all_items_counter += 1
-            extracted_triplets[group_idx][triplet_idx][item_idx]['name'] = str(extracted_triplets[group_idx][triplet_idx][item_idx]['name']).strip()
-
-        if extracted_triplets[group_idx][triplet_idx][1]['prop']['type'] == 'simple':
-            extracted_triplets[group_idx][triplet_idx][1]['prop']['time'] = cur_time
-        else:
-            extracted_triplets[group_idx][triplet_idx][2]['prop']['time'] = cur_time
-
-print(f"not-str values in 'name'-field: {not_str_counter}/{all_items_counter}")
+#print("adding time...")
+#not_str_counter = 0
+#all_items_counter = 0
+#for group_idx in tqdm(range(len(extracted_triplets))):
+#    cur_time = raw_time[group_idx]
+#    for triplet_idx in range(len(extracted_triplets[group_idx])):
+#        for item_idx in range(len(extracted_triplets[group_idx][triplet_idx])):
+#            if type(extracted_triplets[group_idx][triplet_idx][item_idx]['name']) is not str:
+#                not_str_counter += 1
+#            
+#            all_items_counter += 1
+#            extracted_triplets[group_idx][triplet_idx][item_idx]['name'] = str(extracted_triplets[group_idx][triplet_idx][item_idx]['name']).strip()
+#
+#        if extracted_triplets[group_idx][triplet_idx][1]['prop']['type'] == 'simple':
+#            extracted_triplets[group_idx][triplet_idx][1]['prop']['time'] = cur_time
+#        else:
+#            extracted_triplets[group_idx][triplet_idx][2]['prop']['time'] = cur_time#
+#
+#print(f"not-str values in 'name'-field: {not_str_counter}/{all_items_counter}")
 
 print("flat...")
 extracted_triplets = reduce(lambda acc, v: acc + v, extracted_triplets, [])

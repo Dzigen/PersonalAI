@@ -6,7 +6,7 @@ from tqdm import tqdm
 import chromadb
 import math
 
-from .utils.data_structs import Triplet, Relation, Node, TripletCreator, NodeCreator
+from .utils import Triplet, TripletCreator, NodeCreator
 
 class AbstractEmbeddingsDatabaseConnection(ABC):
     
@@ -241,8 +241,8 @@ class EmbeddingsDatabaseConnection:
 
                 if add_nodes:
                     for node in [triplet.start_node, triplet.end_node]:
-                        _, node_str = NodeCreator.stringify(node) if node.stringified is None else (node.id, node.stringified)
                         if node.id not in unique_nodes_ids:
+                            _, node_str = NodeCreator.stringify(node) if node.stringified is None else (node.id, node.stringified)
                             unique_nodes_ids.add(node.id)
                             nodes_ids.append(node.id)
                             nodes_strs.append(node_str)
