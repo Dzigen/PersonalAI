@@ -1,12 +1,19 @@
 from typing import List, Tuple, Dict
 import gc
 import joblib
+import os
+import time
+import hashlib
 
 from .utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 
 DEFAULT_INMEMORY_CONFIG = KVDBConnectionConfig(
     host='localhost', 
-    params={'kvstore_dump_name': 'inmemory_store.dump', 'load_from_disk': False})
+    params={
+        'kvstore_dump_name': 'inmemory_store', 
+        'load_from_disk': False, 'load_dump_dir': '.',
+        'save_on_disk': True, 'save_dump_dir': '.'
+    })
 
 class InMemoryConnector(AbstractKVDatabaseConnection):
     
@@ -14,16 +21,29 @@ class InMemoryConnector(AbstractKVDatabaseConnection):
         self.config = config
         self.open_connection(load_from_disk=self.config.params['load_from_disk'])
 
-    def open_connection(self, load_from_disk: bool = False, kvstore_dump_dir: str = '.') -> None:
-        if load_from_disk:
-            self.kv_store = joblib.loads(f"{kvstore_dump_dir}/{self.config.params['kvstore_dump_name']}")
+    def open_connection(self) -> None:
+        if self.config.params['load_from_disk']:
+            load_path = f"{self.config.params['load_dump_dir']}/{self.config.params['kvstore_dump_name']}.dump"
+            if os.path.exists(load_path):
+                self.kv_store = joblib.load(load_path)
+            else:
+                print(f"warning: kvstore-dump '{load_path}' doesnt exists. creating empty kv-store")
+                self.kv_store = dict()
         else:
             self.kv_store = dict()
 
-    def close_connection(self, save_on_disk: bool = True):
-        if save_on_disk:
-            joblib.dump(self.kv_store, self.config.params['save_store_path'])
+    def close_connection(self):
+        if self.config.params['save_on_disk']:
+            save_path = f"{self.config.params['save_dump_dir']}/{self.config.params['kvstore_dump_name']}"
+            if os.path.exists(save_path):
+                print("warning: file on that path is already exists")
+                postfix = hashlib.md5(str(time.time()).encode()).hexdigest()
+                save_path += postfix
+            save_path += '.dump'
+
+            joblib.dump(self.kv_store, save_path)
         del self.kv_store
+        gc.collect()
 
     def create(self, keys: List[object], values: List[str]):
         for k, v in zip(keys, values):
@@ -39,7 +59,8 @@ class InMemoryConnector(AbstractKVDatabaseConnection):
 
     def clear(self):
         del self.kv_store
-        self.open_connection()
+        gc.collect()
+        self.kv_store = dict()
 
     def key_exist(self, key: object):
         return key in self.kv_store
