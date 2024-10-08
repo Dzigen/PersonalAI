@@ -27,7 +27,7 @@ class KnowledgeComparator:
             entity_embedding = self.kg_model.embeddings_db.embedder.encode_queries([entity])[0]
             entity_instance = VectorDBInstance(embedding=entity_embedding)
 
-            nodes_with_scores = self.kg_model.embeddings_db.vecordbs['nodes'].retrieve(
+            nodes_with_scores = self.kg_model.embeddings_db.vectordbs['nodes'].retrieve(
                 [entity_instance],
                 n_results=self.config.fetch_n
             )[0]
