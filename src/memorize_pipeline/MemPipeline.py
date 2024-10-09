@@ -21,12 +21,13 @@ class MemPipelineConfig:
 
 class MemPipeline:
 
-    def __init__(self, agent_conn: GigaChatAgent, bfs: BFSRetriever, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig()) -> None:
+    def __init__(self, agent_conn: GigaChatAgent, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig(), bfs: BFSRetriever = None) -> None:
         self.config = config
         self.log = config.log
 
         self.extractor = LLMExtractor(agent_conn, config.extractor_config)
-        self.updator = LLMUpdator(config.updator_config, agent_conn, bfs)
+        # TODO
+        #self.updator = LLMUpdator(config.updator_config, agent_conn, bfs)
         
         self.kg_model = kg_model
 

@@ -19,7 +19,7 @@ class InMemoryConnector(AbstractKVDatabaseConnection):
     
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_INMEMORY_CONFIG) -> None:
         self.config = config
-        self.open_connection(load_from_disk=self.config.params['load_from_disk'])
+        self.open_connection()
 
     def open_connection(self) -> None:
         if self.config.params['load_from_disk']:
