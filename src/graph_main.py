@@ -16,7 +16,7 @@ from .knowledge_graph_model import KnowledgeGraphModel
 class RemoteKnowledgeGraph:
     def __init__(self, uri, user, pwd, db_name, logpath, pipeline = None, retriever_device = "cpu", some_other_params = None):
         self.conn = Neo4jConnection(uri, user, pwd)
-        self.agent = LLaMAagent("You are a helpful assistant", pipeline)
+        self.agent = GigaChatAgent()
         self.log = Logger(logpath)
         self.db_name = db_name
         self.embedder = Retriever(device=retriever_device)

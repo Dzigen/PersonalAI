@@ -9,7 +9,8 @@ from typing import Dict
 import gc
 
 # TO CHANGE
-BASEDIR = "/workspace"
+#BASEDIR = "/workspace"
+BASEDIR = "/home/dzigen/Desktop/PersonalAI/Personal-AI/"
 # TO CHNAGE
 
 sys.path.insert(0, BASEDIR)
@@ -19,13 +20,14 @@ from src.neo4j_functions import Neo4jConnection
 from src.embedding_functions import EmbeddingsDatabaseConnection, EmbeddingsDatabaseConnectionConfig, VectorDBConnectionConfig, EmbedderModelConfig
 from src.knowledge_graph_model import KnowledgeGraphModel
 
-NEO4J_URL ="bolt://personalai_mmenschikov_neo4j:7687"
+# personalai_mmenschikov_neo4j
+NEO4J_URL ="bolt://localhost:7687"
 NEO4J_USER = "neo4j"
 NEO4J_PWD = "password"
 
-GRAPH_DB_NAME = 'DiaasqGPT4omini'
-NODES_VECTORDB_PATH = '../../data/graph_structures/vectorized_nodes/v11/densedb'
-TRIPLETS_VECTORDB_PATH = '../../data/graph_structures/vectorized_triplets/v7/densedb'
+GRAPH_DB_NAME = 'DiaasqGigachat'
+NODES_VECTORDB_PATH = '../../data/graph_structures/vectorized_nodes/v12/densedb'
+TRIPLETS_VECTORDB_PATH = '../../data/graph_structures/vectorized_triplets/v8/densedb'
 EMBEDDER_MODEL_PATH = '../../models/intfloat/multilingual-e5-small'
 gc.collect()
 

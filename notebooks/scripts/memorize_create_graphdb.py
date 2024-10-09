@@ -93,6 +93,7 @@ print("clearing database...")
 graph_db.execute_query("match (a) -[r] -> () delete a, r")
 graph_db.execute_query("match (a) delete a")
 
+# 89964
 print("adding triplets to grapgdb...")
 graph_db.create_triplets(extracted_triplets)
 
