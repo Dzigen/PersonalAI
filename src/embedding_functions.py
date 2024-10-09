@@ -190,14 +190,17 @@ class EmbedderModel:
         )
 
     def encode_queries(self, queries: List[str], **kwargs) -> List[List[float]]:
-        return self.model.encode(queries, prompt_name='query', 
+        output = self.model.encode(queries, prompt_name='query', 
                                  normalize_embeddings=self.config.normalize_embeddings, **kwargs)
+        print(type(output))
+        return output
 
     def encode_passages(self, passages: List[str], **kwargs) -> List[List[float]]:
-        return self.model.encode(passages, prompt_name='query',
+        output = self.model.encode(passages, prompt_name='query',
                                  normalize_embeddings=self.config.normalize_embeddings,
                                  **kwargs)
-
+        print(type(output))
+        return output
 
 NODES_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="../data/graph_structures/vectorized_nodes/v8/densedb", db_name="vectorized_nodes")
 TRIPLETS_DB_DEFAULT_CONFIG = VectorDBConnectionConfig(path="../data/graph_structures/vectorized_triplets/v4/densedb", db_name="vectorized_triplets")
