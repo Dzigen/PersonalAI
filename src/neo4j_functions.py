@@ -4,6 +4,7 @@ from typing import List, Dict, Tuple
 from tqdm import tqdm
 from abc import ABC, abstractmethod
 import json
+from dataclasses import dataclass
 
 from .utils.data_structs import Triplet, Node, Relation
 
@@ -11,15 +12,22 @@ from .utils.data_structs import Triplet, Node, Relation
 class AbstractGraphConnection(ABC):
     pass
 
+@dataclass
+class Neo4jConnectionConfig:
+    uri: str 
+    user: str 
+    pwd: str 
+    db_name: str
+
 class Neo4jConnection(AbstractGraphConnection):
-    def __init__(self, uri, user, pwd, db_name="testdb"):
+    def __init__(self, config: Neo4jConnectionConfig, ):
         self.driver = None
+        self.config = config
         try:
-            self.driver = GraphDatabase.driver(uri, auth=(user, pwd))
+            self.driver = GraphDatabase.driver(self.config.uri, auth=(self.config.user, self.config.pwd))
         except Exception as e:
             print("Failed to create the driver:", e)
-        self.db_name = db_name
-        self.execute_query(f'CREATE DATABASE {db_name} IF NOT EXISTS', db_flag=False)
+        self.execute_query(f'CREATE DATABASE {self.config.db_name} IF NOT EXISTS', db_flag=False)
 
         self.create_node_template = 'CREATE (n:{type} {{ name: "{name}"}})'
         self.create_rel_template0 = """MATCH (a:{type1}), (b:{type2})
@@ -178,7 +186,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         session = None
         response = None
         try:
-            session = self.driver.session(database=self.db_name) if db_flag else self.driver.session()
+            session = self.driver.session(database=self.config.db_name) if db_flag else self.driver.session()
             response = list(session.run(query))
         except Exception as e:
             print("Query failed:", e)
