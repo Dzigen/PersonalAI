@@ -3,7 +3,7 @@ from .extractor.LLMExtractor import LLMExtractor
 from .updator.LLMUpdator import LLMUpdator
 from .extractor import LLMExtractorConfig
 from .updator import LLMUpdatorConfig
-from ..llm_agent import AgentConnector
+from ..agents.private import GigaChatAgent
 from ..qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
 from ..utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 from ..knowledge_graph_model import KnowledgeGraphModel
@@ -21,7 +21,7 @@ class MemPipelineConfig:
 
 class MemPipeline:
 
-    def __init__(self, agent_conn: AgentConnector, bfs: BFSRetriever, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig()) -> None:
+    def __init__(self, agent_conn: GigaChatAgent, bfs: BFSRetriever, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig()) -> None:
         self.config = config
         self.log = config.log
 

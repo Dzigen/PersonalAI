@@ -1,5 +1,5 @@
 from .utils import Logger, log_path, REPLACE_THESIS_PROMPT, REPLACE_SIMPLE_PROMPT
-from ...agents import LLaMAagent
+from ...agents.private import GigaChatAgent
 from ...qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
 
 from dataclasses import dataclass, field
@@ -12,7 +12,7 @@ class LLMUpdatorConfig:
 
 class LLMUpdator:
 
-    def __init__(self, config: LLMUpdatorConfig, llm_agent: LLaMAagent, bfs: BFSRetriever) -> None:
+    def __init__(self, config: LLMUpdatorConfig, llm_agent: GigaChatAgent, bfs: BFSRetriever) -> None:
         self.config = config
         self.llm_agent = llm_agent
         self.bfs = bfs
