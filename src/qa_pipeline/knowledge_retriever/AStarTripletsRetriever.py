@@ -18,15 +18,15 @@ from ...utils import Logger
 
 @dataclass
 class AStarMetricsConfig:
-    h_metric_name: str = 'weight_with_short_path'
+    h_metric_name: str = 'ip'
 
 @dataclass
 class AStarGraphSearchConfig:
     metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
     # макимальная глубина обхода графа для поиска заданной вершины
-    max_depth: int = 5 
+    max_depth: int = 10
     # максимальное количество вершин графа, которые можно обойти для поиска заднной вершины
-    max_passed_nodes: int = 20
+    max_passed_nodes: int = 500
     # типы вершин, которые можно обходить во время поиска заданной вершины
     accepted_node_types: str = f'["{NodeType.object.value}","{NodeType.hyper.value}","{NodeType.episodic.value}"]'
 
@@ -108,6 +108,7 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
             return dist
 
         def bfs(self, s_node_id, e_node_id):
+            print("bfs execute start...")
             visited, queue = set(), collections.deque([s_node_id])
             visited.add(s_node_id)
             D = {s_node_id: 0}
@@ -205,8 +206,11 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
             D = {start_node_id: 0}
         
             spare_closest_node_id = start_node_id
-            passed_nodes_counter = 0
+            passed_nodes_counter, find_flag = 0, False
             while len(frontier):
+                if find_flag:
+                    break
+
                 current_node_id = heapq.heappop(frontier)[1]
                 passed_nodes_counter += 1
 
@@ -227,7 +231,7 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
                     break
 
                 adj_nodes = self.get_adjecent_nodes(current_node_id, parent[current_node_id], self.config.accepted_node_types)
-                self.log(f"adjenced nodes: {len(adj_nodes)}", verbose=self.log_verbose)
+                #self.log(f"adjenced nodes: {len(adj_nodes)}", verbose=self.log_verbose)
 
                 for adj_n_id in adj_nodes:
                     new_cost = cost_so_far[current_node_id] + 1 # работаем с невзвешенным графом      
@@ -238,6 +242,11 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
                         cost_so_far[adj_n_id] = new_cost
                         priority = new_cost + self.metrics.compute_h_metric(adj_n_id, end_node_id, parent)
                         heapq.heappush(frontier, (priority, adj_n_id))
+
+                        #
+                        if adj_n_id == end_node_id:
+                            find_flag = True
+                            break
                             
             self.log(f"start-spare node path len: {D[spare_closest_node_id]}" if end_node_id not in parent else f"start-end node path len: {D[end_node_id]}", verbose=self.log_verbose)
             self.log(f"astar neo4j queries: {passed_nodes_counter}", verbose=self.log_verbose)

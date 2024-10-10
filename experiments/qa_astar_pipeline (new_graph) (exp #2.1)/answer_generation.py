@@ -22,6 +22,7 @@ from src.embedding_functions import EmbeddingsDatabaseConnection, EmbeddingsData
 from src.embedding_functions import VectorDBConnectionConfig, EmbeddingsDatabaseConnectionConfig
 from src.agents.private import GigaChatAgent
 from src.qa_pipeline import QAPipeline
+from src.utils import Logger
 
 NEO4J_URL ="bolt://personalai_mmenschikov_neo4j:7687"
 NEO4J_USER = "neo4j"
@@ -59,24 +60,31 @@ kg_model = KnowledgeGraphModel(
 
 qa_pipeline = QAPipeline(kg_model, agent)
 
+log = Logger('answer_gen_log')
 qa_files = os.listdir(EVAL_DATADIR)
-for qa_file in qa_files[2:]:
-    print(qa_file)
+for qa_file in qa_files[3:]:
+    log(qa_file, verbose=False)
     s_time = time()
     with open(f"{EVAL_DATADIR}/{qa_file}", 'r', encoding='utf-8') as fd:
         data = json.loads(fd.read())
 
     gen_answers = []
-    process = tqdm(data)
-    for qa_pair in process:
+    process = enumerate(data)
+    for i, qa_pair in process:
+        log(f"[{i} / {len(data)}]", verobse=False)
+        answ_gen_s_time = time() 
         gen_answer = qa_pipeline.answer(qa_pair['question'])
         gen_answers.append({"generated_answer": gen_answer})
-        process.set_postfix({'target': qa_pair['answer'], 'generated': gen_answer})
+        #process.set_postfix({'target': qa_pair['answer'], 'generated': gen_answer})
+        answ_gen_e_time = time()
+        log(f"\ttarget: ", qa_pair['answer'], verobse=False)
+        log(f"\tgenerated: {gen_answer}", verbose=False)
+        log(f"\tanswer_gen_time: {answ_gen_e_time-answ_gen_s_time} sec", verbose=False)
     e_time = time()
 
     with open(f"./logs/generated/{qa_file}", 'w', encoding='utf-8') as fd:
         fd.write(json.dumps(gen_answers, indent=1, ensure_ascii=False))
 
-    print("elapsed_time: ", e_time - s_time)
+    log(f"elapsed_time: {e_time - s_time}", verbose=False)
 
-print("DONE")
+log("DONE", verbose=False)

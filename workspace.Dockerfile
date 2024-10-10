@@ -15,4 +15,4 @@ RUN pip install accelerate==0.24.0
 ARG APP_DIR=/workspace
 ENV PYTHONPATH "${PYTHONPATH}:${APP_DIR}"
 
-CMD ["sh", "-c", "sleep infinity"]
+CMD ["sh", "-c", "ls -la /workspace && cd '/workspace/experiments/qa_astar_pipeline (new_graph) (exp #2.1)/' && python3 answer_generation.py"]
