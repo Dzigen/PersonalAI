@@ -2,13 +2,13 @@ import ast
 from dataclasses import dataclass, field
 from typing import List
 
-from .neo4j_functions import Neo4jConnection, Neo4jConnectionConfig
+from .db_models.graph_db.neo4j_functions import Neo4jConnection, Neo4jConnectionConfig
 from .agents.private import GigaChatAgent
 from .utils import Logger
 from .qa_pipeline import QAPipeline, QAPipelineConfig
 from .memorize_pipeline import MemPipeline, MemPipelineConfig
 from .knowledge_graph_model import KnowledgeGraphModel
-from .embedding_functions import EmbeddingsDatabaseConnection, EmbeddingsDatabaseConnectionConfig
+from .db_models.embeddings_db.embedding_functions import EmbeddingsDatabaseConnection, EmbeddingsDatabaseConnectionConfig
 
 RKG_LOG_PATH = "rmkg_log"
 

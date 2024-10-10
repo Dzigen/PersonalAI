@@ -6,29 +6,17 @@ from abc import ABC, abstractmethod
 import json
 from dataclasses import dataclass
 
-from .utils.data_structs import Triplet, Node, Relation
+from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
+from ....utils.data_structs import Triplet, Node, Relation
 
+DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(uri="bolt://localhost:7687", params={'user': "neo4j", 'pwd': 'password', 'db_name': 'testdb'})
 
-class AbstractGraphConnection(ABC):
-    pass
-
-@dataclass
-class Neo4jConnectionConfig:
-    uri: str 
-    user: str 
-    pwd: str 
-    db_name: str
-
-class Neo4jConnection(AbstractGraphConnection):
-    def __init__(self, config: Neo4jConnectionConfig, ):
-        self.driver = None
+class Neo4jConnector(AbstractGraphDatabaseConnection):
+    def __init__(self, config: GraphDBConnectionConfig):
         self.config = config
-        try:
-            self.driver = GraphDatabase.driver(self.config.uri, auth=(self.config.user, self.config.pwd))
-        except Exception as e:
-            print("Failed to create the driver:", e)
-        self.execute_query(f'CREATE DATABASE {self.config.db_name} IF NOT EXISTS', db_flag=False)
+        self.open_connection()
 
+        self.execute_query(f'CREATE DATABASE {self.config.params['db_name']} IF NOT EXISTS', db_flag=False)
         self.create_node_template = 'CREATE (n:{type} {{ name: "{name}"}})'
         self.create_rel_template0 = """MATCH (a:{type1}), (b:{type2})
 WHERE a.name="{name1}" and b.name ="{name2}"
@@ -56,7 +44,14 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         self.extract_triplets_rel_template = 'MATCH (a)-[r:{rel}]-(b) RETURN a, r, b'
         self.extract_triplets_rel_prop_template = 'MATCH (a)-[r]-(b) WHERE r.{prop_name}="{prop_value}" RETURN a, r, b'
 
-    def close(self):
+    def open_connection(self):
+        self.driver = None
+        try:
+            self.driver = GraphDatabase.driver(self.config.uri, auth=(self.config.params['user'], self.config.params['pwd']))
+        except Exception as e:
+            print("Failed to create the driver:", e)
+
+    def close_connection(self):
         if self.driver is not None:
             self.driver.close()
     
@@ -186,7 +181,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         session = None
         response = None
         try:
-            session = self.driver.session(database=self.config.db_name) if db_flag else self.driver.session()
+            session = self.driver.session(database=self.config.params['db_name']) if db_flag else self.driver.session()
             response = list(session.run(query))
         except Exception as e:
             print("Query failed:", e)
@@ -391,55 +386,3 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                                 used_entities.add((entity, prop_name, tp))
                     entities += new_entities
         return triplets_dict, inters_chains
-
-
-if __name__ == "__main__":
-    conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
-
-    # создание базы данных
-
-    conn.execute_query("CREATE DATABASE testdb IF NOT EXISTS", db_flag=False)
-
-    # Создание узлов графа
-
-    conn.create_node(node_type="smartphone", node_name="Xiaomi 11")
-    conn.create_node(node_type="feature", node_name="WiFi module")
-
-    # Создание relation между узлами (rel_prop_name - название property для связи между узлами)
-
-    conn.create_relationship(
-        type1="smartphone",
-        type2="feature",
-        name1="Xiaomi 11",
-        name2="WiFi module",
-        rel_name="opinion",
-        rel_prop_name="dialog_id",
-        rel_prop_value="12345",
-    )
-
-    # Извлечение узлов
-
-    res = conn.extract_node(node_name="Xiaomi 11")
-    print(res)
-
-    # extract all smartphones
-    res = conn.extract_node(node_type="smartphone")
-    print(res)
-
-    res = conn.extract_node(node_type="smartphone", node_name="Xiaomi 11")
-    print(res)
-
-    # извлечение триплетов
-    res = conn.extract_triplets(name1="Xiaomi 11")
-    print(res)
-
-    res = conn.extract_triplets(name2="WiFi module")
-    print(res)
-
-    res = conn.extract_triplets(rel="opinion")
-    print(res)
-
-    res = conn.extract_triplets(name1="Xiaomi 11", rel="opinion")
-    print(res)
-
-# MATCH (n) RETURN (n) - извлечь все узлы

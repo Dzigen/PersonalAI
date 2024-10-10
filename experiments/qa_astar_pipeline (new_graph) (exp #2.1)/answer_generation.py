@@ -16,10 +16,10 @@ EVAL_DATADIR = '../../data/qa_eval'
 
 from src.agents.private import GigaChatAgent
 from src.knowledge_graph_model import KnowledgeGraphModel
-from src.neo4j_functions import Neo4jConnection
-from src.embedding_functions import EmbeddingsDatabaseConnection, EmbeddingsDatabaseConnectionConfig, VectorDBConnectionConfig, EmbedderModelConfig
+from src.db_models.graph_db.neo4j_functions import Neo4jConnection
+from src.db_models.embeddings_db.embedding_functions import EmbeddingsDatabaseConnection, EmbeddingsDatabaseConnectionConfig, VectorDBConnectionConfig, EmbedderModelConfig
 
-from src.embedding_functions import VectorDBConnectionConfig, EmbeddingsDatabaseConnectionConfig
+from src.db_models.embeddings_db.embedding_functions import VectorDBConnectionConfig, EmbeddingsDatabaseConnectionConfig
 from src.agents.private import GigaChatAgent
 from src.qa_pipeline import QAPipeline
 

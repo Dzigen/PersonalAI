@@ -1,6 +1,6 @@
 from ...utils.data_structs import QueryInfo
 from ...knowledge_graph_model import KnowledgeGraphModel
-from ...embedding_functions import VectorDBInstance
+from ...db_models.embeddings_db.embedding_functions import VectorDBInstance
 
 from dataclasses import dataclass
 

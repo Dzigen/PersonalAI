@@ -3,7 +3,7 @@ from .utils import AbstractTriplesFilter
 from ...utils.data_structs import Triplet, QueryInfo
 from ...utils import Logger
 from ...knowledge_graph_model import KnowledgeGraphModel
-from ...embedding_functions import VectorDBInstance
+from ...db_models.embeddings_db.embedding_functions import VectorDBInstance
 
 from dataclasses import dataclass
 from typing import List

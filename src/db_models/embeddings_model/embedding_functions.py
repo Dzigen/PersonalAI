@@ -6,7 +6,7 @@ from tqdm import tqdm
 import chromadb
 import math
 
-from .utils import Triplet, TripletCreator, NodeCreator
+from ...utils import Triplet, TripletCreator, NodeCreator
 
 class AbstractEmbeddingsDatabaseConnection(ABC):
     

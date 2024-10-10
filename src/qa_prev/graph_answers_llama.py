@@ -3,7 +3,7 @@ import os
 import re
 import transformers
 import torch
-from neo4j_functions import Neo4jConnection
+from src.db_models.graph_db.neo4j_functions import Neo4jConnection
 
 os.environ['HF_HOME'] = '/archive/evseev.cache'
 

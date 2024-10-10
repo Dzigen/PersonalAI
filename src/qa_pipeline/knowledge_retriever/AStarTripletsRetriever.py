@@ -8,12 +8,12 @@ import json
 import collections
 
 from .utils import AbstractTripletsRetriever, AbstractGraphDriver
-from .cache import KeyValueStore
+from ...db_models.kv_model import KeyValueModel
 from ...utils.data_structs import QueryInfo, Node, Relation, Triplet, NodeCreator, TripletCreator, NodeType
 from ...knowledge_graph_model import KnowledgeGraphModel
-from ...neo4j_functions import AbstractGraphConnection
+from ...db_models.graph_db.neo4j_functions import AbstractGraphConnection
 from ...utils.data_structs import NODES_TYPES_MAP, RELATIONS_TYPES_MAP, create_id_for_node_pair
-from ...embedding_functions import ChromaConnection
+from ...db_models.embeddings_db.embedding_functions import ChromaConnection
 from ...utils import Logger
 
 @dataclass
@@ -47,7 +47,7 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
 
     class AStarMetrics(Neo4jGraphDriver):
         def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: str, log: Logger, 
-                     config: AStarMetricsConfig = AStarMetricsConfig(), cache: KeyValueStore = None,
+                     config: AStarMetricsConfig = AStarMetricsConfig(), cache: KeyValueModel = None,
                      log_verbose: bool = False):
             super().__init__()
 
@@ -185,7 +185,7 @@ def getAStarGraphSearcher(graph_driver: AbstractGraphDriver = Neo4jGraphDriver):
         """Класс с реализацией A*-алгоритма поиска по графу"""
 
         def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
-                     cache: KeyValueStore = None, log_verbose: bool = False) -> None:
+                     cache: KeyValueModel = None, log_verbose: bool = False) -> None:
             super().__init__()
 
             self.log = log
@@ -254,7 +254,7 @@ class AStartTripletsRetriever(AbstractTripletsRetriever):
     """
     
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(), 
-                 cache: KeyValueStore = None, log_verbose: bool = False) -> None:
+                 cache: KeyValueModel = None, log_verbose: bool = False) -> None:
         self.log = log
         self.log_verbose = log_verbose
         self.graph_searcher = getAStarGraphSearcher()(kg_model, log, search_config, cache, log_verbose)

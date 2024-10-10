@@ -1,0 +1,15 @@
+from dataclasses import dataclass, field
+from typing import Dict
+
+from .utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
+from .configs import DEFAULT_KVDB_CONFIGS, AVAILABLE_KVDB_CONNECTORS
+
+@dataclass
+class KeyValueModelConfig:
+    db_vendor: str = 'aerospike'
+    db_config: KVDBConnectionConfig = DEFAULT_KVDB_CONFIGS['aerospike']
+
+class KeyValueModel:
+    @staticmethod
+    def connect(config: KeyValueModelConfig = KeyValueModelConfig()) -> AbstractKVDatabaseConnection:
+        return AVAILABLE_KVDB_CONNECTORS[config.db_vendor](config.db_config)
