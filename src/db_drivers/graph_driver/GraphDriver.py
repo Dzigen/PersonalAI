@@ -5,11 +5,11 @@ from .utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from .configs import DEFAULT_GRAPHDB_CONFIGS, AVAILABLE_GRAPHDB_CONNECTORS
 
 @dataclass
-class GraphModelConfig:
+class GraphDriverConfig:
     db_vendor: str = 'neo4j'
     db_config: GraphDBConnectionConfig = DEFAULT_GRAPHDB_CONFIGS['neo4j']
 
-class GraphModel:
+class GraphDriver:
     @staticmethod
-    def connect(config: GraphModelConfig = GraphModelConfig()) -> AbstractGraphDatabaseConnection:
+    def connect(config: GraphDriverConfig = GraphDriverConfig()) -> AbstractGraphDatabaseConnection:
         return AVAILABLE_GRAPHDB_CONNECTORS[config.db_vendor](config.db_config)
