@@ -1,9 +1,101 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import List, Dict
+import math
+from tqdm import tqdm
 
-# TODO
+from .db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriver, VectorDriverConfig, VectorDBInstance
+from .db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
+from .utils.data_structs import Triplet, TripletCreator, NodeCreator
+
+NODES_DB_DEFAULT_CONFIG = VectorDriverConfig(
+    db_vendor='chroma', db_config=VectorDBConnectionConfig(
+        path="../data/graph_structures/vectorized_nodes/v8/densedb", db_name="vectorized_nodes"))
+TRIPLETS_DB_DEFAULT_CONFIG = VectorDriverConfig(
+    db_vendor='chroma', db_config=VectorDBConnectionConfig(
+        path="../data/graph_structures/vectorized_triplets/v4/densedb", db_name="vectorized_triplets"))
+
+@dataclass
+class EmbeddingsModelConfig:
+    nodes_db_config: VectorDBConnectionConfig = field(default_factory=lambda: NODES_DB_DEFAULT_CONFIG) 
+    triplets_db_config: VectorDBConnectionConfig = field(default_factory=lambda: TRIPLETS_DB_DEFAULT_CONFIG)
+    embedder_config: EmbedderModelConfig = field(default_factory=lambda: EmbedderModelConfig())
+
 class EmbeddingsModel:
-    pass
+    def __init__(self, config: EmbeddingsModelConfig = EmbeddingsModelConfig()):
+        self.vectordbs = {
+            'nodes': VectorDriver.connect(config.nodes_db_config),
+            'triplets': VectorDriver.connect(config.triplets_db_config)}
+        self.embedder = EmbedderModel(config.embedder_config)
 
+    def add_triplets(self, triplets:List[Triplet], add_nodes:bool=True, batch_size:int=128)->None:
+        unique_nodes_ids, unique_triplets_ids = set(), set()
+
+        batch_count = math.ceil(len(triplets) / batch_size)
+        for batch_idx in tqdm(range(batch_count)):
+            triplets_ids, triplets_strs = list(), list()
+            nodes_ids, nodes_strs = list(), list()
+
+            for triplet_idx in range(batch_idx*batch_size, (batch_idx+1)*batch_size):
+                if triplet_idx >= len(triplets):
+                    break
+
+                triplet = triplets[triplet_idx]
+                _, triplet_str =  TripletCreator.stringify(triplet) if triplet.stringified is None else (triplet.id, triplet.stringified) 
+                if triplet.id not in unique_triplets_ids:
+                    unique_triplets_ids.add(triplet.id) 
+                    triplets_ids.append(triplet.id)
+                    triplets_strs.append(triplet_str)
+
+                if add_nodes:
+                    for node in [triplet.start_node, triplet.end_node]:
+                        if node.id not in unique_nodes_ids:
+                            _, node_str = NodeCreator.stringify(node) if node.stringified is None else (node.id, node.stringified)
+                            unique_nodes_ids.add(node.id)
+                            nodes_ids.append(node.id)
+                            nodes_strs.append(node_str)
+
+            self.add_stringified_triplets(triplets_ids, triplets_strs, nodes_ids, nodes_strs)
+
+        print(f"all/unique_triplets - {len(triplets)}/{len(unique_triplets_ids)}")
+        print(f"all/unique_nodes - {len(triplets)*2}/{len(unique_nodes_ids)}")
+        
+    def delete_triplets(self, triplets: List[Triplet], delete_nods: bool = True):
+        triplets_ids = list(map(lambda v: v.id, triplets))
+        
+        unique_nodes_ids = None
+        if delete_nods:
+            nodes_ids = []
+            nodes_ids += [triplet.start_node.id for triplet in triplets]
+            nodes_ids += [triplet.end_node.id for triplet in triplets]
+            unique_nodes_ids = list(set(nodes_ids))
+
+        self.delete_stringified_triplets(triplets_ids, unique_nodes_ids)
+
+    def add_stringified_triplets(self, triplets_ids: List[str], stringified_triplets: List[str], 
+                     nodes_ids: List[str] = None, stringified_nodes: List[str] = None) -> None:
+        if len(triplets_ids):
+            self.add_instances('triplets', triplets_ids, stringified_triplets)
+        if nodes_ids is not None and len(nodes_ids):
+            self.add_instances('nodes', nodes_ids, stringified_nodes)
+
+    def delete_stringified_triplets(self, triplets_ids: List[str], nodes_ids: List[str] = None) -> None:
+        self.delete_instances('triplets', triplets_ids)
+        if nodes_ids is not None:
+            self.delete_instances('nodes', nodes_ids)
+    
+    def add_instances(self, db_type: str, ids: List[str], stringified_instances: List[str]) -> None:
+        embs = self.embedder.encode_passages(stringified_instances)
+        formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb, metadata={'id': id}) 
+                            for id, doc, emb in zip(ids, stringified_instances, embs)]
+        self.vectordbs[db_type].create(formated_instances)
+
+    def delete_instances(self, db_type: str, ids: List[str]) -> None:
+        self.vectordbs[db_type].delete(ids)
+
+    def get_embbeddings(self, db_type: str, ids: List[str]) -> List[List[float]]:
+        instances = self.vectordbs[db_type].read(ids, includes=['embeddings'])
+        embeddings = list(map(lambda inst: inst.embedding, instances))
+        return embeddings
 # TODO
 class GraphModel:
     pass

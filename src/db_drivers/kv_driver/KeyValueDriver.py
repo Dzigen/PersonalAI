@@ -5,11 +5,11 @@ from .utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 from .configs import DEFAULT_KVDB_CONFIGS, AVAILABLE_KVDB_CONNECTORS
 
 @dataclass
-class KeyValueModelConfig:
+class KeyValueDriverConfig:
     db_vendor: str = 'aerospike'
     db_config: KVDBConnectionConfig = DEFAULT_KVDB_CONFIGS['aerospike']
 
-class KeyValueModel:
+class KeyValueDriver:
     @staticmethod
-    def connect(config: KeyValueModelConfig = KeyValueModelConfig()) -> AbstractKVDatabaseConnection:
+    def connect(config: KeyValueDriverConfig = KeyValueDriverConfig()) -> AbstractKVDatabaseConnection:
         return AVAILABLE_KVDB_CONNECTORS[config.db_vendor](config.db_config)

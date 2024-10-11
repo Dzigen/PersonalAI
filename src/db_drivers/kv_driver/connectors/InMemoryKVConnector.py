@@ -15,7 +15,7 @@ DEFAULT_INMEMORYKV_CONFIG = KVDBConnectionConfig(
         'save_on_disk': True, 'save_dump_dir': '.'
     })
 
-class InMemoryConnector(AbstractKVDatabaseConnection):
+class InMemoryKVConnector(AbstractKVDatabaseConnection):
     
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_INMEMORYKV_CONFIG) -> None:
         self.config = config
