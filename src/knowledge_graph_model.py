@@ -105,7 +105,6 @@ GRAPH_DB_DEFAULT_DRIVER_CONFIG = GraphDriverConfig(db_vendor='neo4j', db_config=
 class GraphModelConfig:
     driver_config: GraphDriverConfig = field(default_factory=lambda: GRAPH_DB_DEFAULT_DRIVER_CONFIG) 
 
-# TODO
 class GraphModel:
     def __init__(self, config: GraphModelConfig = GraphModelConfig()) -> None:
         self.config = config

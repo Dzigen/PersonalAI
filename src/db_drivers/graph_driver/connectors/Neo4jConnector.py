@@ -118,6 +118,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
         return created_nodes_count, created_rels_count
 
+    # TODO
     def delete_triplet(self, triplet: Triplet) -> None:
         pass
 
