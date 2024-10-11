@@ -21,18 +21,22 @@ from src.embedding_functions import EmbeddingsDatabaseConnection, EmbeddingsData
 
 from src.embedding_functions import VectorDBConnectionConfig, EmbeddingsDatabaseConnectionConfig
 from src.agents.private import GigaChatAgent
-from src.qa_pipeline import QAPipeline
+from src.qa_pipeline import QAPipeline, QAPipelineConfig
+from src.qa_pipeline.knowledge_retriever import KnowledgeRetrieverConfig
+from src.qa_pipeline.knowledge_retriever.cache import KeyValueStoreConfig, KVDBConnectionConfig
 from src.utils import Logger
 
 NEO4J_URL ="bolt://personalai_mmenschikov_neo4j:7687"
 NEO4J_USER = "neo4j"
 NEO4J_PWD = "password"
-GRAPH_DB_NAME = 'DiaasqGPT4omini'
+GRAPH_DB_NAME = 'DiaasqGigachat'
 
-NODES_VECTORDB_PATH = '../../data/graph_structures/vectorized_nodes/v11/densedb'
-TRIPLETS_VECTORDB_PATH = '../../data/graph_structures/vectorized_triplets/v7/densedb'
+NODES_VECTORDB_PATH = '../../data/graph_structures/vectorized_nodes/v12/densedb'
+TRIPLETS_VECTORDB_PATH = '../../data/graph_structures/vectorized_triplets/v8/densedb'
 EMBEDDING_MODEL_PATH = "../../models/intfloat/multilingual-e5-small"
 gc.collect()
+
+print(GRAPH_DB_NAME)
 
 ###########
 
@@ -58,11 +62,18 @@ kg_model = KnowledgeGraphModel(
 )
 
 
-qa_pipeline = QAPipeline(kg_model, agent)
+qa_config = QAPipelineConfig(
+    knowledge_retriever_config=KnowledgeRetrieverConfig(
+        cache_config=KeyValueStoreConfig(
+            db_config=KVDBConnectionConfig(host='aerospikelservice_gigachat', port=4000, params={'ports': [4001,4002]})
+        )
+    )
+)
+qa_pipeline = QAPipeline(kg_model, agent, config=qa_config)
 
 log = Logger('answer_gen_log')
 qa_files = os.listdir(EVAL_DATADIR)
-for qa_file in qa_files[4:]:
+for qa_file in qa_files:
     log(qa_file, verbose=False)
     s_time = time()
     with open(f"{EVAL_DATADIR}/{qa_file}", 'r', encoding='utf-8') as fd:

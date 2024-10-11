@@ -12,6 +12,10 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
 
     def open_connection(self):
         db_config = {'hosts': [(self.config.host, self.config.port)]}
+        if 'ports' in self.config.params:
+            for ext_port in self.config.params['ports']:
+                db_config['hosts'].append((self.config.host, ext_port))
+        print(db_config)
         self.client = aerospike.client(db_config).connect()
         
     def close_connection(self):

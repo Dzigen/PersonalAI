@@ -21,6 +21,26 @@ services:
           cpus: '4'
           memory: 24G
 
+  # Database - Aerospike for cache
+  aerospike_gigachat:
+    container_name: personalai_aerospike_gigachat
+    hostname: aerospikelservice_gigachat
+    image: m.menschikov/aerospike:ee-7.1.0.6_1
+    ports:
+      - "4000:3000"
+      - "4001:3001"
+      - "4002:3002"
+    volumes:
+      - ../aerospike_volume_gigachat/data:/opt/aerospike/data
+      - ../aerospike_configs:/etc/aerospike
+    deploy:
+      resources:
+        limits:
+          cpus: '8'
+          memory: 48G
+        reservations:
+          cpus: '4'
+          memory: 24G
 
   # Database - Neo4j
   neo4j:
@@ -90,6 +110,33 @@ services:
       - ./:/workspace
     depends_on:
       - aerospike
+      - neo4j
+    deploy:
+      resources:
+        limits:
+          cpus: '16'
+          memory: 32G
+        reservations:
+          cpus: '8'
+          memory: 24G
+          devices:
+            - driver: nvidia
+              device_ids: ['3']
+              capabilities: [gpu]
+
+  # Container for computations on server (gigachat)
+  workspace_gigachat:
+    image: m.menschikov/workspace:v2
+    build:
+      dockerfile: workspace_gigachat.Dockerfile
+    container_name: personalai_mmenschikov_worksapce_gigachat
+    hostname: worksapceservice_gigachat
+    ports:
+      - "20888:20888"
+    volumes:
+      - ./:/workspace
+    depends_on:
+      - aerospike_gigachat
       - neo4j
     deploy:
       resources:

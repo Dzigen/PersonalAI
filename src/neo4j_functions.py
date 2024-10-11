@@ -20,7 +20,7 @@ class Neo4jConnectionConfig:
     db_name: str
 
 class Neo4jConnection(AbstractGraphConnection):
-    def __init__(self, config: Neo4jConnectionConfig, ):
+    def __init__(self, config: Neo4jConnectionConfig):
         self.driver = None
         self.config = config
         try:
