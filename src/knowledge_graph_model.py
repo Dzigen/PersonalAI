@@ -2,29 +2,31 @@ from dataclasses import dataclass, field
 from typing import List, Dict
 import math
 from tqdm import tqdm
+import json
 
 from .db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriver, VectorDriverConfig, VectorDBInstance
 from .db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
-from .utils.data_structs import Triplet, TripletCreator, NodeCreator
+from .db_drivers.graph_driver import GraphDriver, GraphDriverConfig, GraphDBConnectionConfig, DEFAULT_NEO4J_CONFIG
+from .utils.data_structs import Triplet, TripletCreator, NodeCreator, Node
 
-NODES_DB_DEFAULT_CONFIG = VectorDriverConfig(
+NODES_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
     db_vendor='chroma', db_config=VectorDBConnectionConfig(
         path="../data/graph_structures/vectorized_nodes/v8/densedb", db_name="vectorized_nodes"))
-TRIPLETS_DB_DEFAULT_CONFIG = VectorDriverConfig(
+TRIPLETS_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
     db_vendor='chroma', db_config=VectorDBConnectionConfig(
         path="../data/graph_structures/vectorized_triplets/v4/densedb", db_name="vectorized_triplets"))
 
 @dataclass
 class EmbeddingsModelConfig:
-    nodes_db_config: VectorDBConnectionConfig = field(default_factory=lambda: NODES_DB_DEFAULT_CONFIG) 
-    triplets_db_config: VectorDBConnectionConfig = field(default_factory=lambda: TRIPLETS_DB_DEFAULT_CONFIG)
+    nodesdb_driver_config: VectorDriverConfig = field(default_factory=lambda: NODES_DB_DEFAULT_DRIVER_CONFIG) 
+    tripletsdb_driver_config: VectorDriverConfig = field(default_factory=lambda: TRIPLETS_DB_DEFAULT_DRIVER_CONFIG)
     embedder_config: EmbedderModelConfig = field(default_factory=lambda: EmbedderModelConfig())
 
 class EmbeddingsModel:
     def __init__(self, config: EmbeddingsModelConfig = EmbeddingsModelConfig()):
         self.vectordbs = {
-            'nodes': VectorDriver.connect(config.nodes_db_config),
-            'triplets': VectorDriver.connect(config.triplets_db_config)}
+            'nodes': VectorDriver.connect(config.nodesdb_driver_config),
+            'triplets': VectorDriver.connect(config.tripletsdb_driver_config)}
         self.embedder = EmbedderModel(config.embedder_config)
 
     def add_triplets(self, triplets:List[Triplet], add_nodes:bool=True, batch_size:int=128)->None:
@@ -96,9 +98,32 @@ class EmbeddingsModel:
         instances = self.vectordbs[db_type].read(ids, includes=['embeddings'])
         embeddings = list(map(lambda inst: inst.embedding, instances))
         return embeddings
+
+GRAPH_DB_DEFAULT_DRIVER_CONFIG = GraphDriverConfig(db_vendor='neo4j', db_config=DEFAULT_NEO4J_CONFIG)
+
+@dataclass
+class GraphModelConfig:
+    driver_config: GraphDriverConfig = field(default_factory=lambda: GRAPH_DB_DEFAULT_DRIVER_CONFIG) 
+
 # TODO
 class GraphModel:
-    pass
+    def __init__(self, config: GraphModelConfig = GraphModelConfig()) -> None:
+        self.config = config
+        self.db_conn = GraphDriver(self.config.driver_config)
+
+    def create_triplets(self, triplets: List[Triplet]):
+        created_nodes_count, created_rels_count = 0,0
+        for triplet in triplets:
+            created_nodes, created_rels = self.db_conn.create_triplet(triplet)
+            created_nodes_count += created_nodes
+            created_rels_count += created_rels
+
+        print(f"all/created_triplets - {len(triplets)}/{created_rels_count}")
+        print(f"all/created_nodes - {len(triplets)*2}/{created_nodes_count}")
+
+    def delete_triplets(self, triplets: List[Triplet]):
+        for triplet in triplets:
+            self.db_conn.delete_triplet(triplet)
 
 @dataclass
 class KnowledgeGraphModel:

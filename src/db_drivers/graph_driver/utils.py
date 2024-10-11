@@ -1,6 +1,8 @@
-from typing import Dict
+from typing import Dict, List
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
+
+from ...utils.data_structs import Triplet
 
 @dataclass
 class GraphDBConnectionConfig:
@@ -21,6 +23,12 @@ class AbstractGraphDatabaseConnection(ABC):
 
     @abstractmethod
     def execute_query(self, query: str) -> object:
+        pass
+
+    def create_triplet(self, triplets: Triplet) -> None:
+        pass
+
+    def delete_triplet(self, triplet_id: str) -> None:
         pass
 
     def __del__(self):
