@@ -29,7 +29,7 @@ from src.utils import Logger
 NEO4J_URL ="bolt://personalai_mmenschikov_neo4j:7687"
 NEO4J_USER = "neo4j"
 NEO4J_PWD = "password"
-GRAPH_DB_NAME = 'DiaasqGigachat'
+GRAPH_DB_NAME = 'diaasqgigachat'
 
 NODES_VECTORDB_PATH = '../../data/graph_structures/vectorized_nodes/v12/densedb'
 TRIPLETS_VECTORDB_PATH = '../../data/graph_structures/vectorized_triplets/v8/densedb'
@@ -65,7 +65,7 @@ kg_model = KnowledgeGraphModel(
 qa_config = QAPipelineConfig(
     knowledge_retriever_config=KnowledgeRetrieverConfig(
         cache_config=KeyValueStoreConfig(
-            db_config=KVDBConnectionConfig(host='aerospikelservice_gigachat', port=4000, params={'ports': [4001,4002]})
+            db_config=KVDBConnectionConfig(host='aerospikelservice_gigachat', port=3000)
         )
     )
 )
