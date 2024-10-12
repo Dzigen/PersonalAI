@@ -38,18 +38,21 @@ class MemPipeline:
         new_triplets = self.extractor.extract(text, need_simple, need_thesises, need_episodic, node_prop, rel_prop)  
         self.log("PROCESSED NEW TRIPLETS: " + str(new_triplets), verbose=self.config.log_verbose)
 
-        if need_update:
-            triplets_to_remove = self.updator.update(new_triplets, replacing_window_width, replacing_window_depth, need_simple, need_thesises)
-            self.log("PROCESSED OUTDATED TRIPLETS: " + str(triplets_to_remove))
+        # TODO
+        #if need_update:
+        #    triplets_to_remove = self.updator.update(new_triplets, replacing_window_width, replacing_window_depth, need_simple, need_thesises)
+        #    self.log("PROCESSED OUTDATED TRIPLETS: " + str(triplets_to_remove))
         
         # В объекты триплетов добавлются идентикаторы, присвоенные им в рамках графовой бд
-        self.kg_model.graph_db.create_triplets(new_triplets)
-        self.kg_model.embeddings_db.add_triplets(new_triplets)
-        if need_update:
-            ids = self.kg_model.graph_db.delete_triplets(triplets_to_remove)
-            triplets_ids = [id[1] for id in ids]
-            nodes_ids = [id[0] for id in ids] + [id[2] for id in ids]
-            self.kg_model.embeddings_db.delete_triplets(triplets_ids, nodes_ids)
+        self.kg_model.graph_struct.create_triplets(new_triplets)
+        self.kg_model.embeddings_struct.add_triplets(new_triplets)
+        
+        # TODO
+        #if need_update:
+        #    ids = self.kg_model.graph_struct.delete_triplets(triplets_to_remove)
+        #    triplets_ids = [id[1] for id in ids]
+        #    nodes_ids = [id[0] for id in ids] + [id[2] for id in ids]
+        #    self.kg_model.graph_struct.delete_triplets(triplets_ids, nodes_ids)
 
         return new_triplets
 
