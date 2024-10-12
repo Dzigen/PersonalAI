@@ -7,7 +7,7 @@ import json
 from dataclasses import dataclass
 
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
-from ....utils.data_structs import Triplet, Node, Relation
+from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 
 DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(uri="bolt://localhost:7687", params={'user': "neo4j", 'pwd': 'password', 'db_name': 'testdb'})
 
@@ -136,3 +136,31 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             if session is not None:
                 session.close()
         return response
+    
+    def get_adjecent_nodes(self, base_node_id: str, parent_node_id: str, accepted_n_types: str) -> List[str]:
+        raw_nodes = self.execute_query(
+            f'MATCH (a)-[r]-(b) WHERE elementId(a) = "{base_node_id}" AND elementId(b) <> "{parent_node_id}" AND ANY(lbl in {accepted_n_types} where lbl in labels(b)) RETURN b')
+        formated_nodes = [node['b'].element_id for node in raw_nodes]
+        return formated_nodes
+    
+    def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
+        output = self.execute_query(
+            f'MATCH (n1)-[rel]-(n2) WHERE elementId(n1) = "{node1_id}" AND elementId(n2) = "{node2_id}" RETURN n1, rel, n2')
+        
+        formated_triplets = []
+        for raw_triplet in output:
+            node1 = NodeCreator.create(id=raw_triplet['n1'].element_id, name=str(raw_triplet['n1']['name']), 
+                                            type=NODES_TYPES_MAP[list(raw_triplet['n1'].labels)[0]],
+                                            prop=dict(raw_triplet['n1']))
+            node2 = NodeCreator.create(id=raw_triplet['n2'].element_id, name=str(raw_triplet['n2']['name']), 
+                                            type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]],
+                                            prop=dict(raw_triplet['n2']))
+            relation = Relation(id=raw_triplet['rel'].element_id, name=str(raw_triplet['rel']['name']), 
+                                type=RELATIONS_TYPES_MAP[raw_triplet['rel'].type], 
+                                prop=dict(raw_triplet['rel']))
+            
+            start_node_id = raw_triplet['rel'].nodes[0].element_id
+            start_node, end_node = (node1, node2) if start_node_id == node1.id else (node2, node1)
+            triplet = TripletCreator.create(start_node, relation, end_node, add_stringified_triplet=False)
+            formated_triplets.append(triplet)
+        return formated_triplets

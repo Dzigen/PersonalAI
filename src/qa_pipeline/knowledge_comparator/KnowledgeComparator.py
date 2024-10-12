@@ -1,7 +1,6 @@
 from ...utils.data_structs import QueryInfo
 from ...knowledge_graph_model import KnowledgeGraphModel
-from ...db_models.embeddings_db.embedding_functions import VectorDBInstance
-
+from ...db_drivers.vector_driver import VectorDBInstance
 from dataclasses import dataclass
 
 @dataclass
@@ -24,10 +23,10 @@ class KnowledgeComparator:
         linked_nodess = []
         linked_nodes_by_entities = []
         for entity in query_structure.entities:
-            entity_embedding = self.kg_model.embeddings_db.embedder.encode_queries([entity])[0]
+            entity_embedding = self.kg_model.embeddings_struct.embedder.encode_queries([entity])[0]
             entity_instance = VectorDBInstance(embedding=entity_embedding)
 
-            nodes_with_scores = self.kg_model.embeddings_db.vectordbs['nodes'].retrieve(
+            nodes_with_scores = self.kg_model.embeddings_struct.vectordbs['nodes'].retrieve(
                 [entity_instance],
                 n_results=self.config.fetch_n
             )[0]

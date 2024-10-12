@@ -8,14 +8,13 @@ from ...utils import Logger
 from typing import List
 from dataclasses import dataclass, field
 
-LOG_PATH = 'raw_qa_log'
+QA_LOG_PATH = 'raw_qa_log'
 
 @dataclass
 class QALLMGeneratorConfig:
     user_prompt: str = QUESTION_ANSWERING_USER_PROMPT
-    relation_type: List[RelationType] = field(default_factory=lambda: 
-                                            [RelationType.simple, RelationType.hyper, RelationType.episodic])
-    log: Logger = field(default_factory=lambda: Logger(LOG_PATH))
+    relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
+    log: Logger = field(default_factory=lambda: Logger(QA_LOG_PATH))
     verbose: bool = False
 
 class QALLMGenerator:

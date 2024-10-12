@@ -6,8 +6,9 @@ import json
 
 from .db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriver, VectorDriverConfig, VectorDBInstance
 from .db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
-from .db_drivers.graph_driver import GraphDriver, GraphDriverConfig, GraphDBConnectionConfig, DEFAULT_NEO4J_CONFIG
-from .utils.data_structs import Triplet, TripletCreator, NodeCreator, Node
+from .db_drivers.graph_driver import GraphDriver, GraphDriverConfig, DEFAULT_NEO4J_CONFIG
+from .utils.data_structs import Triplet, TripletCreator, NodeCreator
+from .utils import Logger
 
 NODES_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
     db_vendor='chroma', db_config=VectorDBConnectionConfig(
@@ -16,20 +17,27 @@ TRIPLETS_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
     db_vendor='chroma', db_config=VectorDBConnectionConfig(
         path="../data/graph_structures/vectorized_triplets/v4/densedb", db_name="vectorized_triplets"))
 
+EMBEDDINGS_MODEL_LOG_PATH = 'em_log'
+
 @dataclass
 class EmbeddingsModelConfig:
     nodesdb_driver_config: VectorDriverConfig = field(default_factory=lambda: NODES_DB_DEFAULT_DRIVER_CONFIG) 
     tripletsdb_driver_config: VectorDriverConfig = field(default_factory=lambda: TRIPLETS_DB_DEFAULT_DRIVER_CONFIG)
     embedder_config: EmbedderModelConfig = field(default_factory=lambda: EmbedderModelConfig())
+    log: Logger = field(default_factory=Logger(EMBEDDINGS_MODEL_LOG_PATH))
+    verbose: bool = False
 
 class EmbeddingsModel:
     def __init__(self, config: EmbeddingsModelConfig = EmbeddingsModelConfig()):
+        self.config = config
+        self.log = config.log
         self.vectordbs = {
-            'nodes': VectorDriver.connect(config.nodesdb_driver_config),
-            'triplets': VectorDriver.connect(config.tripletsdb_driver_config)}
-        self.embedder = EmbedderModel(config.embedder_config)
+            'nodes': VectorDriver.connect(config.nodesdb_driver_config, self.log, self.config.verbose),
+            'triplets': VectorDriver.connect(config.tripletsdb_driver_config, self.log, self.config.verbose)}
+        self.embedder = EmbedderModel(config.embedder_config, self.log, self.config.verbose)
 
-    def add_triplets(self, triplets:List[Triplet], add_nodes:bool=True, batch_size:int=128)->None:
+    def add_triplets(self, triplets:List[Triplet], add_nodes:bool=True, batch_size:int=128)-> None:
+        self.log("Adding triples to vector model...")
         unique_nodes_ids, unique_triplets_ids = set(), set()
 
         batch_count = math.ceil(len(triplets) / batch_size)
@@ -49,6 +57,7 @@ class EmbeddingsModel:
                     triplets_strs.append(triplet_str)
 
                 if add_nodes:
+                    self.log("- Also adding triples nodes to vector model")
                     for node in [triplet.start_node, triplet.end_node]:
                         if node.id not in unique_nodes_ids:
                             _, node_str = NodeCreator.stringify(node) if node.stringified is None else (node.id, node.stringified)
@@ -58,10 +67,11 @@ class EmbeddingsModel:
 
             self.add_stringified_triplets(triplets_ids, triplets_strs, nodes_ids, nodes_strs)
 
-        print(f"all/unique_triplets - {len(triplets)}/{len(unique_triplets_ids)}")
-        print(f"all/unique_nodes - {len(triplets)*2}/{len(unique_nodes_ids)}")
+        self.log(f"all/unique_triplets - {len(triplets)}/{len(unique_triplets_ids)}", verbose=self.config.verbose)
+        self.log(f"all/unique_nodes - {len(triplets)*2}/{len(unique_nodes_ids)}", verbose=self.config.verbose)
+        self.log("Triples were successfully added to vector model!")
         
-    def delete_triplets(self, triplets: List[Triplet], delete_nods: bool = True):
+    def delete_triplets(self, triplets: List[Triplet], delete_nods: bool = True) -> None:
         triplets_ids = list(map(lambda v: v.id, triplets))
         
         unique_nodes_ids = None
@@ -100,27 +110,34 @@ class EmbeddingsModel:
         return embeddings
 
 GRAPH_DB_DEFAULT_DRIVER_CONFIG = GraphDriverConfig(db_vendor='neo4j', db_config=DEFAULT_NEO4J_CONFIG)
+GRAPH_MODEL_LOG_PATH = 'gm_log'
 
 @dataclass
 class GraphModelConfig:
-    driver_config: GraphDriverConfig = field(default_factory=lambda: GRAPH_DB_DEFAULT_DRIVER_CONFIG) 
+    driver_config: GraphDriverConfig = field(default_factory=lambda: GRAPH_DB_DEFAULT_DRIVER_CONFIG)
+    log: Logger = field(default_factory=Logger(GRAPH_MODEL_LOG_PATH))
+    verbose: bool = False
 
 class GraphModel:
     def __init__(self, config: GraphModelConfig = GraphModelConfig()) -> None:
         self.config = config
-        self.db_conn = GraphDriver(self.config.driver_config)
+        self.log = config.log
+        self.db_conn = GraphDriver.connect(self.config.driver_config, self.log, self.config.verbose)
 
-    def create_triplets(self, triplets: List[Triplet]):
+    def create_triplets(self, triplets: List[Triplet]) -> None:
+        self.log("Adding triplets to graph-database...", verbose=self.config.verbose)
         created_nodes_count, created_rels_count = 0,0
         for triplet in triplets:
             created_nodes, created_rels = self.db_conn.create_triplet(triplet)
             created_nodes_count += created_nodes
             created_rels_count += created_rels
 
-        print(f"all/created_triplets - {len(triplets)}/{created_rels_count}")
-        print(f"all/created_nodes - {len(triplets)*2}/{created_nodes_count}")
+        self.log(f"all/created_triplets - {len(triplets)}/{created_rels_count}", verbose=self.config.verbose)
+        self.log(f"all/created_nodes - {len(triplets)*2}/{created_nodes_count}", verbose=self.config.verbose)
+        self.log("Triplets added successfully!", verbose=self.config.verbose)
 
-    def delete_triplets(self, triplets: List[Triplet]):
+    # TODO
+    def delete_triplets(self, triplets: List[Triplet]) -> None:
         for triplet in triplets:
             self.db_conn.delete_triplet(triplet)
 

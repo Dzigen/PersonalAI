@@ -18,7 +18,7 @@ class RemoteKnowledgeGraphConfig:
     qa_pipeline_config: QAPipelineConfig = field(default_factory=lambda:QAPipelineConfig())
     mem_pipeline_config: MemPipelineConfig = field(default_factory=lambda:MemPipelineConfig())
     log: Logger = field(default_factory=Logger(RKG_LOG_PATH))
-    log_verbose: bool = False
+    verbose: bool = False
 
 class RemoteKnowledgeGraph:
     def __init__(self, config: RemoteKnowledgeGraphConfig):
@@ -33,17 +33,17 @@ class RemoteKnowledgeGraph:
         self.mem_pipeline = MemPipeline(agent_conn=self.llm_agent, kg_model=self.kg_model, config=config.mem_pipeline_config)
 
     def answer_question(self, question: str) -> str:
-        self.log("Start answer generation:", verbose=self.config.log_verbose)
+        self.log("Start answer generation:", verbose=self.config.verbose)
         self.log(f"- question: {question}")
         answer = self.qa_pipeline.answer(question)
         self.log(f"- answer: {answer}")
         return answer
 
     def update_memory(self, new_info: List[str]):
-        self.log("Start memory-updating...", verbose=self.config.log_verbose)
+        self.log("Start memory-updating...", verbose=self.config.verbose)
         for info in new_info:
             self.mem_pipeline.remember(info)
-        self.log("Memory updated successfully!", verbose=self.config.log_verbose)
+        self.log("Memory updated successfully!", verbose=self.config.verbose)
             
         
                 

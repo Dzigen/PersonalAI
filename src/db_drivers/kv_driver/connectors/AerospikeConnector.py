@@ -17,9 +17,8 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
     def close_connection(self):
         self.client.close()
 
-    def create(self, key_tuples: List[Tuple], values: List[Dict]):
-        for k, v in zip(key_tuples, values):
-            self.client.put(k, v)
+    def create(self, key: Tuple, value: Dict):
+        self.client.put(key, value)
 
     def delete(self, key_tuples: List[Tuple], durable_delete: bool = False):
         self.client.batch_remove(key_tuples, policy_batch_remove= {'durable_delete': durable_delete})
