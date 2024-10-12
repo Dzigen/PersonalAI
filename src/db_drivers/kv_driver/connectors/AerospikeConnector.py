@@ -1,7 +1,7 @@
 from typing import List, Tuple, Dict
 import aerospike 
 
-from .utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
+from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 
 DEFAULT_AEROSPIKE_CONFIG = KVDBConnectionConfig(host='aerospikelservice', port=3000)
 

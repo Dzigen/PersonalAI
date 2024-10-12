@@ -17,7 +17,7 @@ class RemoteKnowledgeGraphConfig:
     embedds_struct_config: EmbeddingsModelConfig = field(default_factory=lambda: EmbeddingsModelConfig())
     qa_pipeline_config: QAPipelineConfig = field(default_factory=lambda:QAPipelineConfig())
     mem_pipeline_config: MemPipelineConfig = field(default_factory=lambda:MemPipelineConfig())
-    log: Logger = field(default_factory=Logger(RKG_LOG_PATH))
+    log: Logger = field(default_factory=lambda:Logger(RKG_LOG_PATH))
     verbose: bool = False
 
 class RemoteKnowledgeGraph:

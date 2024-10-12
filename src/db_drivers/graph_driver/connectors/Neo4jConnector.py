@@ -16,7 +16,7 @@ class Neo4jConnector(AbstractGraphDatabaseConnection):
         self.config = config
         self.open_connection()
 
-        self.execute_query(f'CREATE DATABASE {self.config.params['db_name']} IF NOT EXISTS', db_flag=False)
+        self.execute_query(f'CREATE DATABASE {self.config.params["db_name"]} IF NOT EXISTS', db_flag=False)
         self.create_node_template = 'CREATE (n:{type} {{ name: "{name}"}})'
         self.create_rel_template0 = """MATCH (a:{type1}), (b:{type2})
 WHERE a.name="{name1}" and b.name ="{name2}"

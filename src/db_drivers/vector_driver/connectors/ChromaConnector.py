@@ -3,8 +3,7 @@ import chromadb
 
 from ..utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
 
-# TODO
-DEFAULT_CHROMA_CONFIG = VectorDBConnectionConfig()
+DEFAULT_CHROMA_CONFIG = VectorDBConnectionConfig(path='./default_vectordb', db_name='vectors')
 
 class ChromaConnection(AbstractVectorDatabaseConnection):
     def __init__(self, config: VectorDBConnectionConfig) -> None:
