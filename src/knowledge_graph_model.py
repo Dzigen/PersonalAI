@@ -32,12 +32,12 @@ class EmbeddingsModel:
         self.config = config
         self.log = config.log
         self.vectordbs = {
-            'nodes': VectorDriver.connect(config.nodesdb_driver_config, self.log, self.config.verbose),
-            'triplets': VectorDriver.connect(config.tripletsdb_driver_config, self.log, self.config.verbose)}
-        self.embedder = EmbedderModel(config.embedder_config, self.log, self.config.verbose)
+            'nodes': VectorDriver.connect(config.nodesdb_driver_config),
+            'triplets': VectorDriver.connect(config.tripletsdb_driver_config)}
+        self.embedder = EmbedderModel(config.embedder_config)
 
     def add_triplets(self, triplets:List[Triplet], add_nodes:bool=True, batch_size:int=128)-> None:
-        self.log("Adding triples to vector model...")
+        self.log("Adding triples to vector model...", verbose=self.config.verbose)
         unique_nodes_ids, unique_triplets_ids = set(), set()
 
         batch_count = math.ceil(len(triplets) / batch_size)
@@ -57,7 +57,7 @@ class EmbeddingsModel:
                     triplets_strs.append(triplet_str)
 
                 if add_nodes:
-                    self.log("- Also adding triples nodes to vector model")
+                    self.log("- Also adding triples nodes to vector model", verbose=self.config.verbose)
                     for node in [triplet.start_node, triplet.end_node]:
                         if node.id not in unique_nodes_ids:
                             _, node_str = NodeCreator.stringify(node) if node.stringified is None else (node.id, node.stringified)
@@ -69,7 +69,7 @@ class EmbeddingsModel:
 
         self.log(f"all/unique_triplets - {len(triplets)}/{len(unique_triplets_ids)}", verbose=self.config.verbose)
         self.log(f"all/unique_nodes - {len(triplets)*2}/{len(unique_nodes_ids)}", verbose=self.config.verbose)
-        self.log("Triples were successfully added to vector model!")
+        self.log("Triples were successfully added to vector model!", verbose=self.config.verbose)
         
     def delete_triplets(self, triplets: List[Triplet], delete_nods: bool = True) -> None:
         triplets_ids = list(map(lambda v: v.id, triplets))
@@ -122,7 +122,7 @@ class GraphModel:
     def __init__(self, config: GraphModelConfig = GraphModelConfig()) -> None:
         self.config = config
         self.log = config.log
-        self.db_conn = GraphDriver.connect(self.config.driver_config, self.log, self.config.verbose)
+        self.db_conn = GraphDriver.connect(self.config.driver_config)
 
     def create_triplets(self, triplets: List[Triplet]) -> None:
         self.log("Adding triplets to graph-database...", verbose=self.config.verbose)

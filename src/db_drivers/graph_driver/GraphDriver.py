@@ -3,6 +3,7 @@ from typing import Dict
 
 from .utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from .configs import DEFAULT_GRAPHDB_CONFIGS, AVAILABLE_GRAPHDB_CONNECTORS
+from ...utils import Logger
 
 @dataclass
 class GraphDriverConfig:

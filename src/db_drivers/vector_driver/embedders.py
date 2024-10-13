@@ -20,12 +20,10 @@ class EmbedderModel:
     def encode_queries(self, queries: List[str], **kwargs) -> List[List[float]]:
         output = self.model.encode(queries, prompt_name='query', 
                                  normalize_embeddings=self.config.normalize_embeddings, **kwargs)
-        print(type(output))
         return output
 
     def encode_passages(self, passages: List[str], **kwargs) -> List[List[float]]:
         output = self.model.encode(passages, prompt_name='query',
                                  normalize_embeddings=self.config.normalize_embeddings,
                                  **kwargs)
-        print(type(output))
         return output

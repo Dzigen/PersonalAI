@@ -13,7 +13,7 @@ RKG_LOG_PATH = "rmkg_log"
 
 @dataclass
 class RemoteKnowledgeGraphConfig:
-    graph_sturct_config: GraphModelConfig = field(default_factory=lambda:GraphModelConfig())
+    graph_struct_config: GraphModelConfig = field(default_factory=lambda:GraphModelConfig())
     embedds_struct_config: EmbeddingsModelConfig = field(default_factory=lambda: EmbeddingsModelConfig())
     qa_pipeline_config: QAPipelineConfig = field(default_factory=lambda:QAPipelineConfig())
     mem_pipeline_config: MemPipelineConfig = field(default_factory=lambda:MemPipelineConfig())
@@ -34,9 +34,9 @@ class RemoteKnowledgeGraph:
 
     def answer_question(self, question: str) -> str:
         self.log("Start answer generation:", verbose=self.config.verbose)
-        self.log(f"- question: {question}")
+        self.log(f"- question: {question}", verbose=self.config.verbose)
         answer = self.qa_pipeline.answer(question)
-        self.log(f"- answer: {answer}")
+        self.log(f"- answer: {answer}", verbose=self.config.verbose)
         return answer
 
     def update_memory(self, new_info: List[str]):
