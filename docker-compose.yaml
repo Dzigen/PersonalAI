@@ -25,28 +25,28 @@ services:
   aerospike_gigachat:
     container_name: personalai_aerospike_gigachat
     hostname: aerospikelservice_gigachat
-    image: m.menschikov/aerospike:ee-7.1.0.6_1
+    image: aerospike:ee-7.1.0.6_1
     ports:
-      - "4000:3000"
-      - "4001:3001"
-      - "4002:3002"
+      - "3000:3000"
+      - "3001:3001"
+      - "3002:3002"
     volumes:
       - ../aerospike_volume_gigachat/data:/opt/aerospike/data
       - ../aerospike_configs:/etc/aerospike
     deploy:
       resources:
         limits:
-          cpus: '8'
-          memory: 48G
+          cpus: '2'
+          memory: 4G
         reservations:
-          cpus: '4'
-          memory: 24G
+          cpus: '1'
+          memory: 2G
 
   # Database - Neo4j
   neo4j:
     container_name: personalai_mmenschikov_neo4j
-    image: m.menschikov/neo4j:5.21.0-enterprise
-    hostname: neo4jservice
+    image: neo4j:5.21.0-enterprise
+    hostname: personalai_mmenschikov_neo4j
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -58,11 +58,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '8'
-          memory: 32G
+          cpus: '2'
+          memory: 8G
         reservations:
-          cpus: '4'
-          memory: 24G
+          cpus: '1'
+          memory: 4G
 
   # Database - Mongo DB
   mongo:
@@ -100,8 +100,6 @@ services:
   # Container for computations on server
   workspace:
     image: m.menschikov/workspace:v1
-    build:
-      dockerfile: workspace.Dockerfile
     container_name: personalai_mmenschikov_worksapce
     hostname: worksapceservice
     ports:
@@ -127,8 +125,6 @@ services:
   # Container for computations on server (gigachat)
   workspace_gigachat:
     image: m.menschikov/workspace:v2
-    build:
-      dockerfile: workspace_gigachat.Dockerfile
     container_name: personalai_mmenschikov_worksapce_gigachat
     hostname: worksapceservice_gigachat
     ports:
@@ -141,12 +137,12 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '16'
-          memory: 32G
+          cpus: '2'
+          memory: 4G
         reservations:
-          cpus: '8'
-          memory: 24G
+          cpus: '1'
+          memory: 2G
           devices:
             - driver: nvidia
-              device_ids: ['3']
+              device_ids: ['0']
               capabilities: [gpu]
