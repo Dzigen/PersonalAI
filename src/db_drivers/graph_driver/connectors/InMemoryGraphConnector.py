@@ -10,12 +10,11 @@ import hashlib
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils import Triplet, NodeType
 
-# TODO
 DEFAULT_INMEMORYGRAPH_CONFIG = GraphDBConnectionConfig()
 
-# TODO
 class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
     def __init__(self, config: GraphDBConnectionConfig = DEFAULT_INMEMORYGRAPH_CONFIG) -> None:
+        self.config = config
         self.open_connection()
 
     def open_connection(self) -> None:
@@ -52,11 +51,25 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
         return created_nodes_count, created_rels_count
 
-    # TODO
-    def delete_triplet(self, triplet_id: str) -> None:
-        pass
+    def delete_triplet(self, triplet: Triplet) -> None:
+        
+        if triplet.id in self.triplets_ids:
+            self.triplets_ids.pop(triplet.id)
 
-    #
+            if triplet.start_node.id in self.edges:
+                if triplet.id in self.edges[triplet.start_node.id]:
+                    self.edges[triplet.start_node.id].remove(triplet.id)
+                if not self.edges[triplet.start_node.id]:
+                    self.items_ids.pop(triplet.start_node.id)
+                    self.edges.pop(triplet.start_node.id)
+
+            if triplet.end_node.id in self.edges:
+                if triplet.id in self.edges[triplet.end_node.id]:
+                    self.edges[triplet.end_node.id].remove(triplet.id)
+                if not self.edges[triplet.end_node.id]:
+                    self.items_ids.pop(triplet.end_node.id)
+                    self.edges.pop(triplet.end_node.id)
+
     def get_adjecent_nodes(self, base_node_id: str, parent_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
         nodes = deepcopy(self.adjacent_nodes.get(base_node_id, []))
         filtered_nodes = list(filter(lambda n_id: self.items_ids[n_id].type in accepted_n_types, nodes))
