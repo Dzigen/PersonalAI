@@ -16,7 +16,7 @@ GIGACHAT_CREDS = 'OWUwOGUzOWEtMjJiNi00YmMxLThmMmItNzMwNjM2MTI2YmYxOjg2ODdiOTVhLT
 
 class GigaChatAgent:
     def __init__(self, creds: str = GIGACHAT_CREDS, scope: str = 'GIGACHAT_API_CORP', model: str = "GigaChat-Pro",
-                 verify_ssl_certs: bool = False, timeout_sleep_time: int = 120) -> None:
+                 verify_ssl_certs: bool = False, timeout_sleep_time: int =480) -> None:
         self.giga_model = GigaChat(
             credentials=creds, scope=scope, verify_ssl_certs=verify_ssl_certs, model=model, timeout=timeout_sleep_time)
         self.creds = creds

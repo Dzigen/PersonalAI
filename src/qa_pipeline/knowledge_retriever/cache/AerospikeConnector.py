@@ -29,7 +29,7 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
         self.client.batch_remove(key_tuples, policy_batch_remove= {'durable_delete': durable_delete})
 
     def read(self, key_tuples: List[Tuple]):
-        mixed_records = self.client.get_many(key_tuples)
+        mixed_records = self.client.get_many(key_tuples, policy={'total_timeout': 10000})
         records = [mixed_record[2] for mixed_record in mixed_records]
         return records
     
