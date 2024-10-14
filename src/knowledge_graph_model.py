@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Dict
 import math
 import json
+from tqdm import tqdm
 
 from .db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriver, VectorDriverConfig, VectorDBInstance
 from .db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
@@ -16,7 +17,7 @@ TRIPLETS_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
     db_vendor='chroma', db_config=VectorDBConnectionConfig(
         path="../data/graph_structures/vectorized_triplets/v4/densedb", db_name="vectorized_triplets"))
 
-EMBEDDINGS_MODEL_LOG_PATH = 'em_log'
+EMBEDDINGS_MODEL_LOG_PATH = 'log/em'
 
 @dataclass
 class EmbeddingsModelConfig:
@@ -40,7 +41,7 @@ class EmbeddingsModel:
         unique_nodes_ids, unique_triplets_ids = set(), set()
 
         batch_count = math.ceil(len(triplets) / batch_size)
-        for batch_idx in range(batch_count):
+        for batch_idx in tqdm(range(batch_count)):
             triplets_ids, triplets_strs = list(), list()
             nodes_ids, nodes_strs = list(), list()
 
@@ -109,7 +110,7 @@ class EmbeddingsModel:
         return embeddings
 
 GRAPH_DB_DEFAULT_DRIVER_CONFIG = GraphDriverConfig(db_vendor='neo4j', db_config=DEFAULT_NEO4J_CONFIG)
-GRAPH_MODEL_LOG_PATH = 'gm_log'
+GRAPH_MODEL_LOG_PATH = 'log/gm'
 
 @dataclass
 class GraphModelConfig:
@@ -126,7 +127,7 @@ class GraphModel:
     def create_triplets(self, triplets: List[Triplet]) -> None:
         self.log("Adding triplets to graph-database...", verbose=self.config.verbose)
         created_nodes_count, created_rels_count = 0,0
-        for triplet in triplets:
+        for triplet in tqdm(triplets):
             created_nodes, created_rels = self.db_conn.create_triplet(triplet)
             created_nodes_count += created_nodes
             created_rels_count += created_rels

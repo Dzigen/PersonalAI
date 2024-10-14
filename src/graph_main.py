@@ -10,7 +10,7 @@ from .knowledge_graph_model import KnowledgeGraphModel
 from .agents.private import GigaChatAgent
 from .utils import Logger
 
-RKG_LOG_PATH = "rmkg_log"
+RKG_LOG_PATH = "log/rmkg"
 
 @dataclass
 class RemoteKnowledgeGraphConfig:

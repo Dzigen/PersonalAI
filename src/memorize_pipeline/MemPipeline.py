@@ -1,4 +1,4 @@
-from .utils import LOG_PATH
+from .utils import MEM_LOG_PATH
 from .extractor.LLMExtractor import LLMExtractor
 from .updator.LLMUpdator import LLMUpdator
 from .extractor import LLMExtractorConfig
@@ -16,7 +16,7 @@ from typing import Dict, List
 class MemPipelineConfig:
     extractor_config: LLMExtractorConfig = field(default_factory=lambda: LLMExtractorConfig())
     updator_config: LLMUpdatorConfig = field(default_factory=lambda: LLMUpdatorConfig())
-    log: Logger = field(default_factory=lambda: Logger(LOG_PATH))
+    log: Logger = field(default_factory=lambda: Logger(MEM_LOG_PATH))
     log_verbose: bool = False
 
 class MemPipeline:
