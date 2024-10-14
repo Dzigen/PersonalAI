@@ -1,6 +1,7 @@
 import ast
 from dataclasses import dataclass, field
 from typing import List
+from tqdm import tqdm
 
 from .knowledge_graph_model import GraphModel, GraphModelConfig, EmbeddingsModelConfig, EmbeddingsModel
 from .qa_pipeline import QAPipeline, QAPipelineConfig
@@ -41,7 +42,7 @@ class RemoteKnowledgeGraph:
 
     def update_memory(self, new_info: List[str]):
         self.log("Start memory-updating...", verbose=self.config.verbose)
-        for info in new_info:
+        for info in tqdm(new_info):
             self.mem_pipeline.remember(info)
         self.log("Memory updated successfully!", verbose=self.config.verbose)
             

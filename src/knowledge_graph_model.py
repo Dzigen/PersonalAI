@@ -1,7 +1,6 @@
 from dataclasses import dataclass, field
 from typing import List, Dict
 import math
-from tqdm import tqdm
 import json
 
 from .db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriver, VectorDriverConfig, VectorDBInstance
@@ -41,7 +40,7 @@ class EmbeddingsModel:
         unique_nodes_ids, unique_triplets_ids = set(), set()
 
         batch_count = math.ceil(len(triplets) / batch_size)
-        for batch_idx in tqdm(range(batch_count)):
+        for batch_idx in range(batch_count):
             triplets_ids, triplets_strs = list(), list()
             nodes_ids, nodes_strs = list(), list()
 
