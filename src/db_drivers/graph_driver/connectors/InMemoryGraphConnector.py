@@ -13,13 +13,14 @@ from ....utils import Triplet, NodeType
 DEFAULT_INMEMORYGRAPH_CONFIG = GraphDBConnectionConfig()
 
 class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
-    def __init__(self, config: GraphDBConnectionConfig = DEFAULT_INMEMORYGRAPH_CONFIG) -> None:
+    def __init__(self, config: GraphDBConnectionConfig) -> None:
         self.config = config
         self.open_connection()
 
     def open_connection(self) -> None:
         self.edges = defaultdict(list)
         self.adjacent_nodes = defaultdict(list)
+        self.uniques_content_nodes = defaultdict(list)
         self.items_ids = {}
         self.triplets_ids = {}
 
@@ -36,9 +37,23 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
     def create_triplet(self, triplet: Triplet) -> None:
         created_nodes_count, created_rels_count = 0, 0
         
-        triplet.start_node.id = self.generate_id()
+        #
+        s_node_content_id = self.generate_id(f"{triplet.start_node.type.value} {triplet.start_node.name}")
+        if s_node_content_id in self.uniques_content_nodes:
+            triplet.start_node.id = self.uniques_content_nodes[s_node_content_id]
+        else:
+            triplet.start_node.id = self.generate_id()
+            self.uniques_content_nodes[s_node_content_id] = triplet.start_node.id 
+
+        #
+        e_node_content_id = self.generate_id(f"{triplet.end_node.type.value} {triplet.end_node.name}")
+        if e_node_content_id in self.uniques_content_nodes:
+            triplet.end_node.id = self.uniques_content_nodes[e_node_content_id]
+        else:
+            triplet.end_node.id = self.generate_id()
+            self.uniques_content_nodes[e_node_content_id] = triplet.end_node.id 
+
         triplet.relation.id = self.generate_id()
-        triplet.end_node.id = self.generate_id()
         
         self.edges[triplet.start_node.id].append(triplet.id)
         self.edges[triplet.end_node.id].append(triplet.id)

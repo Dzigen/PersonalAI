@@ -21,10 +21,6 @@ class AbstractGraphDatabaseConnection(ABC):
         # закрытие соединения с бд
         pass
 
-    @abstractmethod
-    def execute_query(self, query: str) -> object:
-        pass
-
     def create_triplet(self, triplets: Triplet) -> None:
         pass
 

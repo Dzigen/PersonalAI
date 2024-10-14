@@ -25,7 +25,7 @@ class AStarGraphSearchConfig:
     # максимальное количество вершин графа, которые можно обойти для поиска заднной вершины
     max_passed_nodes: int = 20
     # типы вершин, которые можно обходить во время поиска заданной вершины
-    accepted_node_types: List[NodeType] = [NodeType.object , NodeType.hyper, NodeType.episodic]
+    accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic])
 
 class AStarMetrics:
     def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: str, log: Logger, 
@@ -77,7 +77,9 @@ class AStarMetrics:
         else:
             #print("calculating")
             if node1_id != node2_id:
+                #print(node1_id, node2_id)
                 instances = self.kg_model.embeddings_struct.vectordbs['nodes'].read([node1_id, node2_id], includes=['embeddings'])
+                #print(instances)
                 # calculation ip distance 
                 dist = 1 - np.dot(instances[0].embedding, instances[1].embedding)
             else:
