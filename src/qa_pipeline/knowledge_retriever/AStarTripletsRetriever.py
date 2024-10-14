@@ -25,7 +25,7 @@ class AStarGraphSearchConfig:
     # максимальное количество вершин графа, которые можно обойти для поиска заднной вершины
     max_passed_nodes: int = 20
     # типы вершин, которые можно обходить во время поиска заданной вершины
-    accepted_node_types: str = f'["{NodeType.object.value}","{NodeType.hyper.value}","{NodeType.episodic.value}"]'
+    accepted_node_types: List[NodeType] = [NodeType.object , NodeType.hyper, NodeType.episodic]
 
 class AStarMetrics:
     def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: str, log: Logger, 

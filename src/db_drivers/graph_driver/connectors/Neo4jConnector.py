@@ -7,7 +7,7 @@ import json
 from dataclasses import dataclass
 
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
-from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
+from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NodeType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 
 DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(uri="bolt://localhost:7687", params={'user': "neo4j", 'pwd': 'password', 'db_name': 'testdb'})
 
@@ -137,9 +137,11 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                 session.close()
         return response
     
-    def get_adjecent_nodes(self, base_node_id: str, parent_node_id: str, accepted_n_types: str) -> List[str]:
+    def get_adjecent_nodes(self, base_node_id: str, parent_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
+        str_accepted_nodes = ', '.join(list(map(lambda tpe: f'"{tpe.value}"', accepted_n_types)))
+
         raw_nodes = self.execute_query(
-            f'MATCH (a)-[r]-(b) WHERE elementId(a) = "{base_node_id}" AND elementId(b) <> "{parent_node_id}" AND ANY(lbl in {accepted_n_types} where lbl in labels(b)) RETURN b')
+            f'MATCH (a)-[r]-(b) WHERE elementId(a) = "{base_node_id}" AND elementId(b) <> "{parent_node_id}" AND ANY(lbl in {str_accepted_nodes} where lbl in labels(b)) RETURN b')
         formated_nodes = [node['b'].element_id for node in raw_nodes]
         return formated_nodes
     
