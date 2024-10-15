@@ -74,7 +74,7 @@ qa_pipeline = QAPipeline(kg_model, agent, config=qa_config)
 log = Logger('log/answer_gen')
 qa_files = os.listdir(EVAL_DATADIR)
 log(qa_files, verbose=False)
-for qa_file in qa_files[7:]:
+for qa_file in qa_files[6:7]:
     log(qa_file, verbose=False)
     s_time = time()
     with open(f"{EVAL_DATADIR}/{qa_file}", 'r', encoding='utf-8') as fd:
@@ -92,11 +92,11 @@ for qa_file in qa_files[7:]:
         log(f"\ttarget: {qa_pair['answer']}", verbose=False)
         log(f"\tgenerated: {gen_answer}", verbose=False)
         log(f"\tanswer_gen_time: {answ_gen_e_time-answ_gen_s_time} sec", verbose=False)
+    
+        with open(f"./logs/generated/{qa_file}", 'w', encoding='utf-8') as fd:
+            fd.write(json.dumps(gen_answers, indent=1, ensure_ascii=False))
+
     e_time = time()
-
-    with open(f"./logs/generated/{qa_file}", 'w', encoding='utf-8') as fd:
-        fd.write(json.dumps(gen_answers, indent=1, ensure_ascii=False))
-
     log(f"elapsed_time: {e_time - s_time}", verbose=False)
 
 log("DONE", verbose=False)
