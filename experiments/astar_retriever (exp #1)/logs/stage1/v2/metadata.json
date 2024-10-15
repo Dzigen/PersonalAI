@@ -1,0 +1,48 @@
+{
+ "SAVE_ENTITIES_VERSION": "v2",
+ "EXTRACT_PROMPT_TEMPLATE": "You are an expert system that can extract key entities from text. Key entities is a noun or an object like persone, device, company and etc. Extract such entities from the given text and present the results in the following format: <entitie1> | <entitie2> | ... | <entitieN>. Generate only entities and dont return some additional text. Examples of texts and extracted entities are listed below:\nText 1: Kayla has positive, negative or neutral opinion about video of Xiaomi 10Pro?\nEntities 1: Kayla | opinion | video | Xiaomi 10Pro.\nText 2: Which device is better in battery life: Apple or k30u?\nEntities 2: device | battery life | Apple | k30u.\nText 3: The majority of speakers have positive, neutral or negative sentiment about screen of Samsung?\nEntities 3: speakers | sentiment | screen | Samsung.\nText 4: Which people have positive opinion about video of Xiaomi 10Pro on 25.11.2020?\nEntities 4: people | opinion | video | Xiaomi 10Pro | 25.11.2020.\n\nText: {text}\nEntities: ",
+ "ENTITIES_PER_QUESTION": {
+  "last_opinion.json": {
+   "mean": 4.095343680709535,
+   "median": 4.0,
+   "std": 0.3273517780664105,
+   "min": 3,
+   "max": 7
+  },
+  "compare_sentiment.json": {
+   "mean": 4.06,
+   "median": 4.0,
+   "std": 0.34117444218463966,
+   "min": 4,
+   "max": 8
+  },
+  "which_people_about_device_synonims.json": {
+   "mean": 5.0344827586206895,
+   "median": 5.0,
+   "std": 0.18246560765962697,
+   "min": 5,
+   "max": 6
+  },
+  "same_devices.json": {
+   "mean": 3.0,
+   "median": 3.0,
+   "std": 0.0,
+   "min": 3,
+   "max": 3
+  },
+  "dominant_opinion.json": {
+   "mean": 4.124168514412417,
+   "median": 4.0,
+   "std": 0.336430207088296,
+   "min": 3,
+   "max": 5
+  },
+  "device_sentiment.json": {
+   "mean": 5.015,
+   "median": 5.0,
+   "std": 0.12155245781143219,
+   "min": 5,
+   "max": 6
+  }
+ }
+}

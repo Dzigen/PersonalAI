@@ -1,0 +1,421 @@
+TEXT: Gregory: "Really ? why I use IQOO9 for so many days that I feel very fragrant ."
+Alan: "If you really listen to digital bloggers , you can only buy that kind of cost - effective machine , but does everyone need it ? Does everyone play Yuanshen ?"
+Kyle: "Ah , is there still a cost -effective machine for the recent machine ? Is not all the hardware shrinks more than last year , the price rises ? [ laugh haha ] ."
+Alan: "The sub -brand is basically cost - effective ( the pile last year ) ."
+Deborah: "9 with DC is definitely fragrant but you try again in summer ."
+Gregory: "In summer , 865 , 870 and A13 A14 are all fever [ sweat ] ."
+Ann: "What if the fever ? at least the game experience has stabilized at high frame rate , 90 or even 120 , TM 's 888 and 8gen1 is barely 60Hz , and it 's even hotter than others"
+Amanda: "Your IQOO9 scheduling is quite conservative . My colleague 's Xiaomi Mi 12Pro is unhot every day . The manufacturers are conservatively scheduled . When running for a long time , the large nuclear frequency is extremely low [ DOGE ] ."
+Gregory: "IQOO9 's heat dissipation stack and Xiaomi Mi 12Pro are not a level at all [ laughs without speaking ] ."
+Jordan: "It 's almost okay , the area of the hot plate is almost the same ."
+
+EXTRACTED TRIPLETS: Here are the extracted triplets from the given text:
+
+Gregory, uses, IQOO9; Gregory, feels, fragrant; 
+Alan, listens to, digital bloggers; digital bloggers, recommend, cost-effective machine; 
+Kyle, laughs, haha; 
+Alan, mentions, sub-brand; sub-brand, is, cost-effective; 
+Deborah, mentions, DC; 9, has, DC; 
+Gregory, mentions, summer; 865, is, hot; 870, is, hot; A13, is, hot; A14, is, hot; 
+Ann, mentions, game experience; game experience, has, high frame rate; TM's 888, has, 60Hz; TM's 8gen1, has, 60Hz; 
+Amanda, mentions, IQOO9 scheduling; IQOO9 scheduling, is, conservative; Amanda's colleague, uses, Xiaomi Mi 12Pro; Xiaomi Mi 12Pro, is, unhot; 
+Gregory, compares, IQOO9 heat dissipation; IQOO9 heat dissipation, is not, Xiaomi Mi 12Pro; 
+Jordan, mentions, hot plate; IQOO9, has, hot plate; Xiaomi Mi 12Pro, has, hot plate;
+TEXT: Gregory: "Really ? why I use IQOO9 for so many days that I feel very fragrant ."
+Alan: "If you really listen to digital bloggers , you can only buy that kind of cost - effective machine , but does everyone need it ? Does everyone play Yuanshen ?"
+Kyle: "Ah , is there still a cost -effective machine for the recent machine ? Is not all the hardware shrinks more than last year , the price rises ? [ laugh haha ] ."
+Alan: "The sub -brand is basically cost - effective ( the pile last year ) ."
+Deborah: "9 with DC is definitely fragrant but you try again in summer ."
+Gregory: "In summer , 865 , 870 and A13 A14 are all fever [ sweat ] ."
+Ann: "What if the fever ? at least the game experience has stabilized at high frame rate , 90 or even 120 , TM 's 888 and 8gen1 is barely 60Hz , and it 's even hotter than others"
+Amanda: "Your IQOO9 scheduling is quite conservative . My colleague 's Xiaomi Mi 12Pro is unhot every day . The manufacturers are conservatively scheduled . When running for a long time , the large nuclear frequency is extremely low [ DOGE ] ."
+Gregory: "IQOO9 's heat dissipation stack and Xiaomi Mi 12Pro are not a level at all [ laughs without speaking ] ."
+Jordan: "It 's almost okay , the area of the hot plate is almost the same ."
+
+EXTRACTED THESISES: Based on the provided text, I will extract the thesises in the format specified. Here is the knowledge graph:
+
+Gregory uses IQOO9; ['Gregory', 'uses', 'IQOO9']. 
+IQOO9 is fragrant; ['IQOO9', 'is', 'fragrant']. 
+Digital bloggers recommend cost-effective machines; ['digital bloggers','recommend', 'cost-effective machines']. 
+Not everyone needs cost-effective machines; ['everyone', 'needs', 'cost-effective machines', 'no']. 
+Not everyone plays Yuanshen; ['everyone', 'plays', 'Yuanshen', 'no']. 
+Recent machines have shrunk hardware and risen in price; ['recent machines', 'have','shrunk hardware', 'risen in price']. 
+Sub-brands are cost-effective; ['sub-brands', 'are', 'cost-effective']. 
+IQOO9 with DC is fragrant; ['IQOO9', 'with', 'DC', 'is', 'fragrant']. 
+865, 870, and A13 A14 are hot in summer; ['865', '870', 'A13 A14', 'are', 'hot', 'in summer']. 
+High frame rate stabilizes game experience; ['high frame rate','stabilizes', 'game experience']. 
+TM's 888 and 8gen1 have low frame rate; ['TM's 888', '8gen1', 'have', 'low frame rate']. 
+TM's 888 and 8gen1 are hot; ['TM's 888', '8gen1', 'are', 'hot']. 
+IQOO9 scheduling is conservative; ['IQOO9','scheduling', 'is', 'conservative']. 
+Xiaomi Mi 12Pro is unhot; ['Xiaomi Mi 12Pro', 'is', 'unhot']. 
+Manufacturers schedule conservatively; ['manufacturers','schedule', 'conservatively']. 
+Large nuclear frequency is low when running for a long time; ['large nuclear frequency', 'is', 'low', 'when running for a long time']. 
+IQOO9's heat dissipation stack is different from Xiaomi Mi 12Pro; ['IQOO9', 'heat dissipation stack', 'is different from', 'Xiaomi Mi 12Pro']. 
+Hot plate area of IQOO9 and Xiaomi Mi 12Pro are almost the same; ['hot plate area', 'of', 'IQOO9', 'and', 'Xiaomi Mi 12Pro', 'are almost the same'].
+TEXT: Gregory: "Really ? why I use IQOO9 for so many days that I feel very fragrant ."
+Alan: "If you really listen to digital bloggers , you can only buy that kind of cost - effective machine , but does everyone need it ? Does everyone play Yuanshen ?"
+Kyle: "Ah , is there still a cost -effective machine for the recent machine ? Is not all the hardware shrinks more than last year , the price rises ? [ laugh haha ] ."
+Alan: "The sub -brand is basically cost - effective ( the pile last year ) ."
+Deborah: "9 with DC is definitely fragrant but you try again in summer ."
+Gregory: "In summer , 865 , 870 and A13 A14 are all fever [ sweat ] ."
+Ann: "What if the fever ? at least the game experience has stabilized at high frame rate , 90 or even 120 , TM 's 888 and 8gen1 is barely 60Hz , and it 's even hotter than others"
+Amanda: "Your IQOO9 scheduling is quite conservative . My colleague 's Xiaomi Mi 12Pro is unhot every day . The manufacturers are conservatively scheduled . When running for a long time , the large nuclear frequency is extremely low [ DOGE ] ."
+Gregory: "IQOO9 's heat dissipation stack and Xiaomi Mi 12Pro are not a level at all [ laughs without speaking ] ."
+Jordan: "It 's almost okay , the area of the hot plate is almost the same ."
+
+EXTRACTED TRIPLETS: Here are the extracted triplets from the given text:
+
+Gregory, uses, IQOO9; Gregory, feels, fragrant; 
+Alan, listens to, digital bloggers; digital bloggers, recommend, cost-effective machine; 
+Kyle, laughs, haha; 
+Alan, says, sub-brand is cost-effective; 
+Deborah, says, 9 with DC is fragrant; 
+Gregory, experiences, fever; 865, causes, fever; 870, causes, fever; A13, causes, fever; A14, causes, fever; 
+Ann, says, game experience has stabilized; TM's 888, has frame rate, 60Hz; 8gen1, has frame rate, 60Hz; 
+Amanda, says, IQOO9 scheduling is conservative; Amanda's colleague, uses, Xiaomi Mi 12Pro; Xiaomi Mi 12Pro, is unhot; 
+Gregory, laughs, without speaking; 
+Jordan, says, hot plate area is almost the same; IQOO9, has, heat dissipation stack; Xiaomi Mi 12Pro, has, heat dissipation stack;
+TEXT: Gregory: "Really ? why I use IQOO9 for so many days that I feel very fragrant ."
+Alan: "If you really listen to digital bloggers , you can only buy that kind of cost - effective machine , but does everyone need it ? Does everyone play Yuanshen ?"
+Kyle: "Ah , is there still a cost -effective machine for the recent machine ? Is not all the hardware shrinks more than last year , the price rises ? [ laugh haha ] ."
+Alan: "The sub -brand is basically cost - effective ( the pile last year ) ."
+Deborah: "9 with DC is definitely fragrant but you try again in summer ."
+Gregory: "In summer , 865 , 870 and A13 A14 are all fever [ sweat ] ."
+Ann: "What if the fever ? at least the game experience has stabilized at high frame rate , 90 or even 120 , TM 's 888 and 8gen1 is barely 60Hz , and it 's even hotter than others"
+Amanda: "Your IQOO9 scheduling is quite conservative . My colleague 's Xiaomi Mi 12Pro is unhot every day . The manufacturers are conservatively scheduled . When running for a long time , the large nuclear frequency is extremely low [ DOGE ] ."
+Gregory: "IQOO9 's heat dissipation stack and Xiaomi Mi 12Pro are not a level at all [ laughs without speaking ] ."
+Jordan: "It 's almost okay , the area of the hot plate is almost the same ."
+
+EXTRACTED THESISES: I'll extract the thesises from the given text in the format you specified. Here's the result:
+
+Gregory uses IQOO9; ['Gregory', 'uses', 'IQOO9']. 
+IQOO9 makes Gregory feel fragrant; ['IQOO9','makes', 'Gregory', 'fragrant']. 
+Digital bloggers recommend cost-effective machines; ['digital bloggers','recommend', 'cost-effective machines']. 
+Not everyone needs cost-effective machines; ['not everyone', 'needs', 'cost-effective machines']. 
+Not everyone plays Yuanshen; ['not everyone', 'plays', 'Yuanshen']. 
+Recent machines have shrunk hardware and risen in price; ['recent machines', 'have','shrunk hardware', 'risen in price']. 
+Sub-brands are cost-effective; ['sub-brands', 'are', 'cost-effective']. 
+IQOO9 with DC is fragrant; ['IQOO9', 'with', 'DC', 'is', 'fragrant']. 
+IQOO9 is not fragrant in summer; ['IQOO9', 'is not', 'fragrant', 'in summer']. 
+865, 870, and A13 A14 are hot in summer; ['865', '870', 'A13 A14', 'are', 'hot', 'in summer']. 
+High frame rate stabilizes game experience; ['high frame rate','stabilizes', 'game experience']. 
+TM's 888 and 8gen1 have low frame rate; ['TM's 888', '8gen1', 'have', 'low frame rate']. 
+TM's 888 and 8gen1 are hot; ['TM's 888', '8gen1', 'are', 'hot']. 
+Amanda's colleague's Xiaomi Mi 12Pro is not hot; ['Amanda's colleague's Xiaomi Mi 12Pro', 'is not', 'hot']. 
+Manufacturers schedule conservatively; ['manufacturers','schedule', 'conservatively']. 
+Large nuclear frequency is low when running for a long time; ['large nuclear frequency', 'is', 'low', 'when running for a long time']. 
+IQOO9's heat dissipation stack is different from Xiaomi Mi 12Pro's; ['IQOO9's heat dissipation stack', 'is different from', 'Xiaomi Mi 12Pro's']. 
+Hot plate area of IQOO9 and Xiaomi Mi 12Pro are almost the same; ['hot plate area of IQOO9', 'is almost the same as', 'hot plate area of Xiaomi Mi 12Pro'].
+TEXT: Gregory: "Really ? why I use IQOO9 for so many days that I feel very fragrant ."
+Alan: "If you really listen to digital bloggers , you can only buy that kind of cost - effective machine , but does everyone need it ? Does everyone play Yuanshen ?"
+Kyle: "Ah , is there still a cost -effective machine for the recent machine ? Is not all the hardware shrinks more than last year , the price rises ? [ laugh haha ] ."
+Alan: "The sub -brand is basically cost - effective ( the pile last year ) ."
+Deborah: "9 with DC is definitely fragrant but you try again in summer ."
+Gregory: "In summer , 865 , 870 and A13 A14 are all fever [ sweat ] ."
+Ann: "What if the fever ? at least the game experience has stabilized at high frame rate , 90 or even 120 , TM 's 888 and 8gen1 is barely 60Hz , and it 's even hotter than others"
+Amanda: "Your IQOO9 scheduling is quite conservative . My colleague 's Xiaomi Mi 12Pro is unhot every day . The manufacturers are conservatively scheduled . When running for a long time , the large nuclear frequency is extremely low [ DOGE ] ."
+Gregory: "IQOO9 's heat dissipation stack and Xiaomi Mi 12Pro are not a level at all [ laughs without speaking ] ."
+Jordan: "It 's almost okay , the area of the hot plate is almost the same ."
+
+EXTRACTED TRIPLETS: Here are the extracted triplets from the given text:
+
+Gregory, uses, IQOO9; Gregory, feels, fragrant; 
+Alan, listens to, digital bloggers; digital bloggers, recommend, cost-effective machine; 
+Kyle, laughs, haha; 
+Alan, says, sub-brand is cost-effective; 
+Deborah, says, 9 with DC is fragrant; 
+Gregory, experiences, fever; 865, causes, fever; 870, causes, fever; A13, causes, fever; A14, causes, fever; 
+Ann, says, game experience has stabilized; TM's 888, has frame rate, 60Hz; 8gen1, has frame rate, 60Hz; 
+Amanda, says, IQOO9 scheduling is conservative; Amanda's colleague, uses, Xiaomi Mi 12Pro; Xiaomi Mi 12Pro, is unhot; 
+Gregory, laughs, without speaking; 
+Jordan, says, hot plate area is almost the same; IQOO9, has, heat dissipation stack; Xiaomi Mi 12Pro, has, heat dissipation stack;
+TEXT: Gregory: "Really ? why I use IQOO9 for so many days that I feel very fragrant ."
+Alan: "If you really listen to digital bloggers , you can only buy that kind of cost - effective machine , but does everyone need it ? Does everyone play Yuanshen ?"
+Kyle: "Ah , is there still a cost -effective machine for the recent machine ? Is not all the hardware shrinks more than last year , the price rises ? [ laugh haha ] ."
+Alan: "The sub -brand is basically cost - effective ( the pile last year ) ."
+Deborah: "9 with DC is definitely fragrant but you try again in summer ."
+Gregory: "In summer , 865 , 870 and A13 A14 are all fever [ sweat ] ."
+Ann: "What if the fever ? at least the game experience has stabilized at high frame rate , 90 or even 120 , TM 's 888 and 8gen1 is barely 60Hz , and it 's even hotter than others"
+Amanda: "Your IQOO9 scheduling is quite conservative . My colleague 's Xiaomi Mi 12Pro is unhot every day . The manufacturers are conservatively scheduled . When running for a long time , the large nuclear frequency is extremely low [ DOGE ] ."
+Gregory: "IQOO9 's heat dissipation stack and Xiaomi Mi 12Pro are not a level at all [ laughs without speaking ] ."
+Jordan: "It 's almost okay , the area of the hot plate is almost the same ."
+
+EXTRACTED THESISES: Based on the provided text, I will extract the thesises in the format you specified. Here is the result:
+
+Gregory uses IQOO9; ['Gregory', 'uses', 'IQOO9']. 
+IQOO9 is fragrant; ['IQOO9', 'is', 'fragrant']. 
+Digital bloggers recommend cost-effective machines; ['digital bloggers','recommend', 'cost-effective machines']. 
+Not everyone needs cost-effective machines; ['everyone', 'needs', 'cost-effective machines', 'no']. 
+Not everyone plays Yuanshen; ['everyone', 'plays', 'Yuanshen', 'no']. 
+Recent machines have shrunk hardware and risen in price; ['recent machines', 'have','shrunk hardware', 'risen in price']. 
+Sub-brands are cost-effective; ['sub-brands', 'are', 'cost-effective']. 
+IQOO9 with DC is fragrant; ['IQOO9', 'with', 'DC', 'is', 'fragrant']. 
+IQOO9 is hot in summer; ['IQOO9', 'is', 'hot', 'in summer']. 
+865, 870, and A13 A14 are hot in summer; ['865', '870', 'A13', 'A14', 'are', 'hot', 'in summer']. 
+High frame rate stabilizes game experience; ['high frame rate','stabilizes', 'game experience']. 
+TM's 888 and 8gen1 have low frame rate; ['TM's 888', '8gen1', 'have', 'low frame rate']. 
+TM's 888 and 8gen1 are hot; ['TM's 888', '8gen1', 'are', 'hot']. 
+IQOO9 scheduling is conservative; ['IQOO9','scheduling', 'is', 'conservative']. 
+Xiaomi Mi 12Pro is unhot; ['Xiaomi Mi 12Pro', 'is', 'unhot']. 
+Manufacturers schedule conservatively; ['manufacturers','schedule', 'conservatively']. 
+Large nuclear frequency is low when running for a long time; ['large nuclear frequency', 'is', 'low', 'when running for a long time']. 
+IQOO9 heat dissipation stack is different from Xiaomi Mi 12Pro; ['IQOO9', 'heat dissipation stack', 'is different from', 'Xiaomi Mi 12Pro']. 
+Hot plate area of IQOO9 and Xiaomi Mi 12Pro are almost the same; ['hot plate area', 'of IQOO9', 'and', 'Xiaomi Mi 12Pro', 'are almost the same'].
+TEXT: Laura: "Really ? why I use IQOO9 for so many days that I feel very fragrant ."
+Jordan: "Your IQOO9 scheduling is quite conservative . My colleague 's Xiaomi Mi 12Pro is unhot every day . The manufacturers are conservatively scheduled . When running for a long time , the large nuclear frequency is extremely low [ DOGE ] ."
+Laura: "IQOO9 's heat dissipation stack and Xiaomi Mi 12Pro are not a level at all [ laughs without speaking ] ."
+Alyssa: "It 's almost okay , the area of the hot plate is almost the same ."
+
+EXTRACTED TRIPLETS: Here are the extracted triplets from the given text:
+
+Laura, uses, IQOO9; Laura, feels, fragrant; 
+Jordan, has, colleague; Jordan's colleague, uses, Xiaomi Mi 12Pro; 
+Xiaomi Mi 12Pro, is, unhot; manufacturers, are, conservative; 
+IQOO9, has, heat dissipation stack; Xiaomi Mi 12Pro, has, heat dissipation stack; 
+Laura, laughs; Alyssa, says, it's almost okay; 
+hot plate, has, area; IQOO9, has, hot plate; Xiaomi Mi 12Pro, has, hot plate;
+TEXT: Laura: "Really ? why I use IQOO9 for so many days that I feel very fragrant ."
+Jordan: "Your IQOO9 scheduling is quite conservative . My colleague 's Xiaomi Mi 12Pro is unhot every day . The manufacturers are conservatively scheduled . When running for a long time , the large nuclear frequency is extremely low [ DOGE ] ."
+Laura: "IQOO9 's heat dissipation stack and Xiaomi Mi 12Pro are not a level at all [ laughs without speaking ] ."
+Alyssa: "It 's almost okay , the area of the hot plate is almost the same ."
+
+EXTRACTED THESISES: Here is the extracted knowledge graph in the format of thesises:
+
+Laura uses IQOO9; ['Laura', 'uses', 'IQOO9']. 
+Laura feels fragrant; ['Laura', 'feels', 'fragrant']. 
+Jordan's colleague has Xiaomi Mi 12Pro; ['Jordan's colleague', 'has', 'Xiaomi Mi 12Pro']. 
+Xiaomi Mi 12Pro is unhot; ['Xiaomi Mi 12Pro', 'is', 'unhot']. 
+Manufacturers schedule conservatively; ['manufacturers','schedule', 'conservatively']. 
+Large nuclear frequency is extremely low; ['large nuclear frequency', 'is', 'extremely low']. 
+IQOO9's heat dissipation stack is not at the same level as Xiaomi Mi 12Pro; ['IQOO9', 'heat dissipation stack', 'Xiaomi Mi 12Pro']. 
+Area of hot plate of IQOO9 is almost the same as Xiaomi Mi 12Pro; ['IQOO9', 'area of hot plate', 'Xiaomi Mi 12Pro'].
+TEXT: Kayla: "My brother 's GT2PRO is not as hot as his IQOO7 calling for a voice call . Xiaomi 10Pro 's video is not hot . I suddenly felt that 10PRO would not get stuck . I hope 9000 will be better ."
+Gerld: "10PRO video is not hot ? Is there a mobile phone in this world that does not get hot when using WeChat video ?"
+Kayla: "My family is poor , and the mobile phone is not hot when playing games at cold night [ cute ]"
+Gerld: "Playing games is not necessarily hotter than playing videos [ black line][black line][black line ]"
+Herbert: "What the hell ! ! ! Feel the same ! The chicken is hot ! I return it just now ! Really the first lesson for young people !"
+Madison: "10Pro 's back cover is broken , still holding on , really strong"
+
+EXTRACTED TRIPLETS: Here are the extracted triplets from the given text:
+
+Kayla, has, brother; 
+brother, has, GT2PRO; 
+GT2PRO, is not, hot; 
+brother, has, IQOO7; 
+IQOO7, is hot, voice call; 
+Xiaomi 10Pro, has, video; 
+Xiaomi 10Pro, video, is not hot; 
+Kayla, hopes, 9000; 
+9000, will be, better;
+
+Gerld, asks, question; 
+question, is about, 10PRO; 
+10PRO, video, is not hot; 
+Gerld, asks, question; 
+question, is about, mobile phone; 
+mobile phone, gets hot, WeChat video;
+
+Kayla, has, family; 
+family, is, poor; 
+mobile phone, is not hot, playing games; 
+games, are played, cold night;
+
+Gerld, says, statement; 
+statement, is about, playing games; 
+playing games, is not hotter, playing videos;
+
+Herbert, feels, same; 
+Herbert, returns, chicken; 
+chicken, is, hot; 
+Herbert, learns, lesson; 
+lesson, is for, young people;
+
+Madison, says, statement; 
+statement, is about, 10Pro; 
+10Pro, back cover, is broken; 
+10Pro, is, strong;
+TEXT: Kayla: "My brother 's GT2PRO is not as hot as his IQOO7 calling for a voice call . Xiaomi 10Pro 's video is not hot . I suddenly felt that 10PRO would not get stuck . I hope 9000 will be better ."
+Gerld: "10PRO video is not hot ? Is there a mobile phone in this world that does not get hot when using WeChat video ?"
+Kayla: "My family is poor , and the mobile phone is not hot when playing games at cold night [ cute ]"
+Gerld: "Playing games is not necessarily hotter than playing videos [ black line][black line][black line ]"
+Herbert: "What the hell ! ! ! Feel the same ! The chicken is hot ! I return it just now ! Really the first lesson for young people !"
+Madison: "10Pro 's back cover is broken , still holding on , really strong"
+
+EXTRACTED THESISES: Based on the provided text, I will extract the thesises in the format specified. Here is the knowledge graph:
+
+GT2PRO is not hot; ['GT2PRO', 'hot']. 
+IQOO7 is hot; ['IQOO7', 'hot']. 
+Xiaomi 10Pro's video is not hot; ['Xiaomi 10Pro', 'video', 'hot']. 
+Kayla hopes 9000 will be better; ['Kayla', '9000', 'better']. 
+10PRO video is not hot; ['10PRO', 'video', 'hot']. 
+Gerld doubts if there is a mobile phone that does not get hot when using WeChat video; ['Gerld','mobile phone', 'WeChat video', 'hot']. 
+Kayla's family is poor; ['Kayla', 'family', 'poor']. 
+Mobile phone is not hot when playing games at cold night; ['mobile phone', 'playing games', 'cold night', 'hot']. 
+Gerld thinks playing games is not necessarily hotter than playing videos; ['Gerld', 'playing games', 'playing videos', 'hot']. 
+Herbert feels the same; ['Herbert','same']. 
+The chicken is hot; ['chicken', 'hot']. 
+Herbert returns the chicken; ['Herbert', 'chicken','return']. 
+The chicken is the first lesson for young people; ['chicken', 'first lesson', 'young people']. 
+10Pro's back cover is broken; ['10Pro', 'back cover', 'broken']. 
+10Pro's back cover is still holding on; ['10Pro', 'back cover', 'holding on']. 
+10Pro's back cover is strong; ['10Pro', 'back cover','strong'].
+TEXT: Gregory: "Really ? why I use IQOO9 for so many days that I feel very fragrant ."
+Alan: "If you really listen to digital bloggers , you can only buy that kind of cost - effective machine , but does everyone need it ? Does everyone play Yuanshen ?"
+Kyle: "Ah , is there still a cost -effective machine for the recent machine ? Is not all the hardware shrinks more than last year , the price rises ? [ laugh haha ] ."
+Alan: "The sub -brand is basically cost - effective ( the pile last year ) ."
+Deborah: "9 with DC is definitely fragrant but you try again in summer ."
+Gregory: "In summer , 865 , 870 and A13 A14 are all fever [ sweat ] ."
+Ann: "What if the fever ? at least the game experience has stabilized at high frame rate , 90 or even 120 , TM 's 888 and 8gen1 is barely 60Hz , and it 's even hotter than others"
+Amanda: "Your IQOO9 scheduling is quite conservative . My colleague 's Xiaomi Mi 12Pro is unhot every day . The manufacturers are conservatively scheduled . When running for a long time , the large nuclear frequency is extremely low [ DOGE ] ."
+Gregory: "IQOO9 's heat dissipation stack and Xiaomi Mi 12Pro are not a level at all [ laughs without speaking ] ."
+Jordan: "It 's almost okay , the area of the hot plate is almost the same ."
+
+EXTRACTED TRIPLETS: Here are the extracted triplets from the given text:
+
+Gregory, uses, IQOO9; Gregory, feels, fragrant; 
+Alan, listens to, digital bloggers; digital bloggers, recommend, cost-effective machine; 
+Kyle, laughs, haha; 
+Alan, mentions, sub-brand; sub-brand, is, cost-effective; 
+Deborah, mentions, DC; 9, has, DC; 
+Gregory, mentions, summer; 865, is, hot; 870, is, hot; A13, is, hot; A14, is, hot; 
+Ann, mentions, game experience; game experience, has, high frame rate; TM's 888, has, 60Hz; TM's 8gen1, has, 60Hz; 
+Amanda, mentions, IQOO9 scheduling; IQOO9 scheduling, is, conservative; Amanda's colleague, uses, Xiaomi Mi 12Pro; Xiaomi Mi 12Pro, is, unhot; 
+Gregory, compares, IQOO9 heat dissipation; IQOO9 heat dissipation, is not, Xiaomi Mi 12Pro; 
+Jordan, mentions, hot plate; IQOO9, has, hot plate; Xiaomi Mi 12Pro, has, hot plate;
+TEXT: Laura: "Really ? why I use IQOO9 for so many days that I feel very fragrant ."
+Jordan: "Your IQOO9 scheduling is quite conservative . My colleague 's Xiaomi Mi 12Pro is unhot every day . The manufacturers are conservatively scheduled . When running for a long time , the large nuclear frequency is extremely low [ DOGE ] ."
+Laura: "IQOO9 's heat dissipation stack and Xiaomi Mi 12Pro are not a level at all [ laughs without speaking ] ."
+Alyssa: "It 's almost okay , the area of the hot plate is almost the same ."
+
+EXTRACTED TRIPLETS: Here are the extracted triplets from the given text:
+
+Laura, uses, IQOO9; Laura, feels, fragrant; 
+Jordan, has, colleague; Jordan's colleague, uses, Xiaomi Mi 12Pro; 
+Xiaomi Mi 12Pro, is, unhot; manufacturers, are, conservative; 
+IQOO9, has, heat dissipation stack; Xiaomi Mi 12Pro, has, heat dissipation stack; 
+Laura, laughs; Alyssa, says, it's almost okay; 
+hot plate, has, area; IQOO9, has, hot plate; Xiaomi Mi 12Pro, has, hot plate;
+TEXT: Kayla: "My brother 's GT2PRO is not as hot as his IQOO7 calling for a voice call . Xiaomi 10Pro 's video is not hot . I suddenly felt that 10PRO would not get stuck . I hope 9000 will be better ."
+Gerld: "10PRO video is not hot ? Is there a mobile phone in this world that does not get hot when using WeChat video ?"
+Kayla: "My family is poor , and the mobile phone is not hot when playing games at cold night [ cute ]"
+Gerld: "Playing games is not necessarily hotter than playing videos [ black line][black line][black line ]"
+Herbert: "What the hell ! ! ! Feel the same ! The chicken is hot ! I return it just now ! Really the first lesson for young people !"
+Madison: "10Pro 's back cover is broken , still holding on , really strong"
+
+EXTRACTED TRIPLETS: Here are the extracted triplets from the given text:
+
+Kayla, has, brother; 
+brother, has, GT2PRO; 
+GT2PRO, is not, hot; 
+brother, has, IQOO7; 
+IQOO7, is hot, voice call; 
+Xiaomi 10Pro, has, video; 
+Xiaomi 10Pro, video, is not hot; 
+Kayla, hopes, 9000; 
+9000, will be, better;
+
+Gerld, asks, question; 
+question, is about, 10PRO; 
+10PRO, video, is not hot; 
+WeChat, has, video; 
+video, makes, hot;
+
+Kayla, has, family; 
+family, is, poor; 
+mobile phone, is not, hot; 
+mobile phone, plays, games; 
+games, are at, cold night;
+
+Gerld, says, statement; 
+statement, is about, games; 
+games, are not, hotter; 
+games, are compared to, videos;
+
+Herbert, feels, same; 
+Herbert, returns, chicken; 
+chicken, is, hot; 
+chicken, is lesson; 
+lesson, is for, young people;
+
+Madison, says, statement; 
+statement, is about, 10Pro; 
+10Pro, has, back cover; 
+back cover, is, broken; 
+10Pro, is, strong;
+TEXT: Fiona: "My brother 's GT2PRO is not as hot as his IQOO7 calling for a voice call . Xiaomi 10Pro 's video is not hot . I suddenly felt that 10PRO would not get stuck . I hope 9000 will be better ."
+Julian: "10PRO video is not hot ? Is there a mobile phone in this world that does not get hot when using WeChat video ?"
+Fiona: "My family is poor , and the mobile phone is not hot when playing games at cold night [ cute ]"
+Julian: "Playing games is not necessarily hotter than playing videos [ black line][black line][black line ]"
+
+EXTRACTED TRIPLETS: Here are the extracted triplets from the given text:
+
+Fiona, has brother, brother; brother, has, GT2PRO; brother, has, IQOO7; GT2PRO, not as hot as, IQOO7; IQOO7, used for, voice call; Xiaomi 10Pro, has, video; video, not hot, ; Fiona, hopes, 9000; 9000, will be, better;
+
+Julian, asks, question; question, is about, 10PRO; 10PRO, has, video; video, not hot, ; Julian, implies, WeChat video; WeChat video, makes phone hot, ;
+
+Fiona, describes, family; family, is, poor; Fiona, has, mobile phone; mobile phone, not hot, ; mobile phone, used for, playing games; games, played at, cold night; Fiona, finds it, cute;
+
+Julian, responds, ; Julian, implies, playing games; playing games, not hotter than, playing videos;
+TEXT: Gregory: "Really ? why I use IQOO9 for so many days that I feel very fragrant ."
+Alan: "If you really listen to digital bloggers , you can only buy that kind of cost - effective machine , but does everyone need it ? Does everyone play Yuanshen ?"
+Kyle: "Ah , is there still a cost -effective machine for the recent machine ? Is not all the hardware shrinks more than last year , the price rises ? [ laugh haha ] ."
+Alan: "The sub -brand is basically cost - effective ( the pile last year ) ."
+Deborah: "9 with DC is definitely fragrant but you try again in summer ."
+Gregory: "In summer , 865 , 870 and A13 A14 are all fever [ sweat ] ."
+Ann: "What if the fever ? at least the game experience has stabilized at high frame rate , 90 or even 120 , TM 's 888 and 8gen1 is barely 60Hz , and it 's even hotter than others"
+Amanda: "Your IQOO9 scheduling is quite conservative . My colleague 's Xiaomi Mi 12Pro is unhot every day . The manufacturers are conservatively scheduled . When running for a long time , the large nuclear frequency is extremely low [ DOGE ] ."
+Gregory: "IQOO9 's heat dissipation stack and Xiaomi Mi 12Pro are not a level at all [ laughs without speaking ] ."
+Jordan: "It 's almost okay , the area of the hot plate is almost the same ."
+
+EXTRACTED THESISES: I'll extract the thesises from the given text in the required format. Here's the output:
+
+Gregory uses IQOO9; ['Gregory', 'uses', 'IQOO9']. 
+IQOO9 makes Gregory feel fragrant; ['IQOO9','makes', 'Gregory', 'fragrant']. 
+Digital bloggers recommend cost-effective machines; ['digital bloggers','recommend', 'cost-effective machines']. 
+Not everyone needs cost-effective machines; ['everyone', 'needs', 'cost-effective machines', 'no']. 
+Not everyone plays Yuanshen; ['everyone', 'plays', 'Yuanshen', 'no']. 
+Recent machines have shrunk hardware and increased price; ['recent machines', 'have','shrunk hardware', 'increased price']. 
+Sub-brands are cost-effective; ['sub-brands', 'are', 'cost-effective']. 
+IQOO9 with DC is fragrant; ['IQOO9', 'with', 'DC', 'fragrant']. 
+IQOO9 is not fragrant in summer; ['IQOO9', 'is', 'not fragrant','summer']. 
+865, 870, and A13 A14 are hot in summer; ['865', '870', 'A13 A14', 'are', 'hot','summer']. 
+High frame rate stabilizes game experience; ['high frame rate','stabilizes', 'game experience']. 
+TM's 888 and 8gen1 have low frame rate; ['TM's 888', '8gen1', 'have', 'low frame rate']. 
+TM's 888 and 8gen1 are hotter than others; ['TM's 888', '8gen1', 'are', 'hotter', 'others']. 
+Amanda's colleague's Xiaomi Mi 12Pro is not hot; ['Amanda's colleague', 'Xiaomi Mi 12Pro', 'is', 'not hot']. 
+Manufacturers schedule conservatively; ['manufacturers','schedule', 'conservatively']. 
+Large nuclear frequency is low when running for a long time; ['large nuclear frequency', 'is', 'low', 'when running for a long time']. 
+IQOO9's heat dissipation stack is different from Xiaomi Mi 12Pro; ['IQOO9', 'heat dissipation stack', 'is different from', 'Xiaomi Mi 12Pro']. 
+Hot plate area of IQOO9 and Xiaomi Mi 12Pro are almost the same; ['hot plate area', 'IQOO9', 'Xiaomi Mi 12Pro', 'are almost the same'].
+TEXT: Gregory: "Really ? why I use IQOO9 for so many days that I feel very fragrant ."
+Alan: "If you really listen to digital bloggers , you can only buy that kind of cost - effective machine , but does everyone need it ? Does everyone play Yuanshen ?"
+Kyle: "Ah , is there still a cost -effective machine for the recent machine ? Is not all the hardware shrinks more than last year , the price rises ? [ laugh haha ] ."
+Alan: "The sub -brand is basically cost - effective ( the pile last year ) ."
+Deborah: "9 with DC is definitely fragrant but you try again in summer ."
+Gregory: "In summer , 865 , 870 and A13 A14 are all fever [ sweat ] ."
+Ann: "What if the fever ? at least the game experience has stabilized at high frame rate , 90 or even 120 , TM 's 888 and 8gen1 is barely 60Hz , and it 's even hotter than others"
+Amanda: "Your IQOO9 scheduling is quite conservative . My colleague 's Xiaomi Mi 12Pro is unhot every day . The manufacturers are conservatively scheduled . When running for a long time , the large nuclear frequency is extremely low [ DOGE ] ."
+Gregory: "IQOO9 's heat dissipation stack and Xiaomi Mi 12Pro are not a level at all [ laughs without speaking ] ."
+Jordan: "It 's almost okay , the area of the hot plate is almost the same ."
+
+EXTRACTED THESISES: I'll extract the thesises from the given text in the format you specified. Here's the result:
+
+Gregory uses IQOO9; ['Gregory', 'uses', 'IQOO9']. 
+IQOO9 makes Gregory feel fragrant; ['IQOO9','makes', 'Gregory', 'fragrant']. 
+Digital bloggers recommend cost-effective machines; ['digital bloggers','recommend', 'cost-effective machines']. 
+Not everyone needs cost-effective machines; ['everyone', 'needs', 'cost-effective machines', 'no']. 
+Not everyone plays Yuanshen; ['everyone', 'plays', 'Yuanshen', 'no']. 
+Recent machines have shrunk hardware and risen in price; ['recent machines', 'have','shrunk hardware', 'risen in price']. 
+Sub-brands are cost-effective; ['sub-brands', 'are', 'cost-effective']. 
+IQOO9 with DC is fragrant; ['IQOO9', 'with', 'DC', 'is', 'fragrant']. 
+IQOO9 is not fragrant in summer; ['IQOO9', 'is', 'not', 'fragrant', 'in summer']. 
+865, 870, and A13 A14 are hot in summer; ['865', '870', 'A13', 'A14', 'are', 'hot', 'in summer']. 
+High frame rate stabilizes game experience; ['high frame rate','stabilizes', 'game experience']. 
+TM's 888 and 8gen1 have low frame rate; ['TM's 888', '8gen1', 'have', 'low frame rate']. 
+TM's 888 and 8gen1 are hot; ['TM's 888', '8gen1', 'are', 'hot']. 
+IQOO9 scheduling is conservative; ['IQOO9','scheduling', 'is', 'conservative']. 
+Xiaomi Mi 12Pro is not hot; ['Xiaomi Mi 12Pro', 'is', 'not', 'hot']. 
+Manufacturers schedule conservatively; ['manufacturers','schedule', 'conservatively']. 
+Large nuclear frequency is low when running for a long time; ['large nuclear frequency', 'is', 'low', 'when running for a long time']. 
+IQOO9's heat dissipation stack is different from Xiaomi Mi 12Pro's; ['IQOO9', 'heat dissipation stack', 'is', 'different from', 'Xiaomi Mi 12Pro']. 
+Hot plate area of IQOO9 and Xiaomi Mi 12Pro are almost the same; ['hot plate area', 'of', 'IQOO9', 'and', 'Xiaomi Mi 12Pro', 'are', 'almost the same'].

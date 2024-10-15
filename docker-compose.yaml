@@ -1,0 +1,148 @@
+version: "3"
+services:
+  # Database - Aerospike
+  aerospike:
+    container_name: personalai_aerospike
+    hostname: aerospikelservice
+    image: m.menschikov/aerospike:ee-7.1.0.6_1
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+      - "3002:3002"
+    volumes:
+      - ../aerospike_volume/data:/opt/aerospike/data
+      - ../aerospike_configs:/etc/aerospike
+    deploy:
+      resources:
+        limits:
+          cpus: '8'
+          memory: 48G
+        reservations:
+          cpus: '4'
+          memory: 24G
+
+  # Database - Aerospike for cache
+  aerospike_gigachat:
+    container_name: personalai_aerospike_gigachat
+    hostname: aerospikelservice_gigachat
+    image: aerospike:ee-7.1.0.6_1
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+      - "3002:3002"
+    volumes:
+      - ../aerospike_volume_gigachat/data:/opt/aerospike/data
+      - ../aerospike_configs:/etc/aerospike
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+
+  # Database - Neo4j
+  neo4j:
+    container_name: personalai_mmenschikov_neo4j
+    image: neo4j:5.21.0-enterprise
+    hostname: personalai_mmenschikov_neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/password
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+    volumes:
+      - ../neo4j_volume/data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 8G
+        reservations:
+          cpus: '1'
+          memory: 4G
+
+  # Database - Mongo DB
+  mongo:
+    image: mongo:7.0.9
+    container_name: personalai_mmenschikov_mongo
+    hostname: mongoservice
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo_root
+      - MONGO_INITDB_ROOT_PASSWORD=root_password
+      - MONGO_USER_NAME=user1
+      - MONGO_USER_PWD=user1_password
+      - MONGO_DB_NAME=personalai
+    ports:
+      - "27017:27017"
+    volumes:
+      - ../mongo_volume/data:/data/db
+
+  # MongoDB-manager
+  mongoui:
+    image: mongo-express:1.0.2
+    ports:
+      - "8099:8081"
+    container_name: personalai_mmenschikov_mongoui
+    hostname: mongoexpressservice
+    environment:
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_SERVER=mongoservice
+      - ME_CONFIG_BASICAUTH_USERNAME=express_user1
+      - ME_CONFIG_BASICAUTH_PASSWORD=express_password
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=mongo_root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=root_password
+    depends_on:
+      - mongo
+
+  # Container for computations on server
+  workspace:
+    image: m.menschikov/workspace:v1
+    container_name: personalai_mmenschikov_worksapce
+    hostname: worksapceservice
+    ports:
+      - "10888:10888"
+    volumes:
+      - ./:/workspace
+    depends_on:
+      - aerospike
+      - neo4j
+    deploy:
+      resources:
+        limits:
+          cpus: '16'
+          memory: 32G
+        reservations:
+          cpus: '8'
+          memory: 24G
+          devices:
+            - driver: nvidia
+              device_ids: ['3']
+              capabilities: [gpu]
+
+  # Container for computations on server (gigachat)
+  workspace_gigachat:
+    image: m.menschikov/workspace:v2
+    container_name: personalai_mmenschikov_worksapce_gigachat
+    hostname: worksapceservice_gigachat
+    ports:
+      - "20888:20888"
+    volumes:
+      - ./:/workspace
+    depends_on:
+      - aerospike_gigachat
+      - neo4j
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]

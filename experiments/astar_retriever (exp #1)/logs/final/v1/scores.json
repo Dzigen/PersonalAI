@@ -1,0 +1,122 @@
+{
+ "which_people_about_device.json": {
+  "BLEU1": "0.2",
+  "BLEU2": "0.0",
+  "METEOR": "0.0",
+  "RougeL": "0.2",
+  "ExactMatch": "0.2",
+  "BertScore": {
+   "precision": "0.55942",
+   "recall": "0.62818",
+   "f1": "0.58899"
+  }
+ },
+ "compare_questions.json": {
+  "BLEU1": "0.07297",
+  "BLEU2": "0.05621",
+  "METEOR": "0.05621",
+  "RougeL": "0.14138",
+  "ExactMatch": "0.0",
+  "BertScore": {
+   "precision": "0.64085",
+   "recall": "0.71816",
+   "f1": "0.67545"
+  }
+ },
+ "same_manufacturer.json": {
+  "BLEU1": "0.02",
+  "BLEU2": "0.0",
+  "METEOR": "0.0",
+  "RougeL": "0.05218",
+  "ExactMatch": "0.0",
+  "BertScore": {
+   "precision": "0.68515",
+   "recall": "0.69052",
+   "f1": "0.68647"
+  }
+ },
+ "similar_device_opinions.json": {
+  "BLEU1": "0.13788",
+  "BLEU2": "0.0",
+  "METEOR": "0.0",
+  "RougeL": "0.50714",
+  "ExactMatch": "0.0",
+  "BertScore": {
+   "precision": "0.55243",
+   "recall": "0.62293",
+   "f1": "0.58445"
+  }
+ },
+ "similar_manf_opinions.json": {
+  "BLEU1": "0.16667",
+  "BLEU2": "0.0",
+  "METEOR": "0.0",
+  "RougeL": "0.42949",
+  "ExactMatch": "0.0",
+  "BertScore": {
+   "precision": "0.57425",
+   "recall": "0.65833",
+   "f1": "0.6111"
+  }
+ },
+ "last_opinion.json": {
+  "BLEU1": "0.025",
+  "BLEU2": "0.0",
+  "METEOR": "0.0",
+  "RougeL": "0.23333",
+  "ExactMatch": "0.0",
+  "BertScore": {
+   "precision": "0.58937",
+   "recall": "0.62877",
+   "f1": "0.60699"
+  }
+ },
+ "compare_sentiment.json": {
+  "BLEU1": "0.0",
+  "BLEU2": "0.0",
+  "METEOR": "0.0",
+  "RougeL": "0.0",
+  "ExactMatch": "0.0",
+  "BertScore": {
+   "precision": "0.57155",
+   "recall": "0.61984",
+   "f1": "0.59363"
+  }
+ },
+ "same_devices.json": {
+  "BLEU1": "0.0",
+  "BLEU2": "0.0",
+  "METEOR": "0.0",
+  "RougeL": "0.0",
+  "ExactMatch": "0.0",
+  "BertScore": {
+   "precision": "0.62165",
+   "recall": "0.69978",
+   "f1": "0.65611"
+  }
+ },
+ "dominant_opinion.json": {
+  "BLEU1": "0.0",
+  "BLEU2": "0.0",
+  "METEOR": "0.0",
+  "RougeL": "0.25",
+  "ExactMatch": "0.0",
+  "BertScore": {
+   "precision": "0.59094",
+   "recall": "0.60184",
+   "f1": "0.59579"
+  }
+ },
+ "device_sentiment.json": {
+  "BLEU1": "0.3",
+  "BLEU2": "0.0",
+  "METEOR": "0.0",
+  "RougeL": "0.3",
+  "ExactMatch": "0.3",
+  "BertScore": {
+   "precision": "0.55976",
+   "recall": "0.58268",
+   "f1": "0.56948"
+  }
+ }
+}
