@@ -285,15 +285,13 @@ class BFSRetriever(AbstractTripletsRetriever):
         for seed_entity, *_ in entities_list:
             another_entities_list = [entities_list2 for entities_list2 in seed_entities
                                         if entities_list2 != entities_list]
-            query1 = f"""MATCH (a:object)-[r]-(b:{entity_type}) WHERE a.name="{seed_entity}" RETURN a, r, b"""
-            query2 = f"""MATCH (a:object)-[r]-(b:{entity_type}) WHERE a.name="{seed_entity.lower()}" RETURN a, r, b"""
-            res1 = self.kg_model.graph_struct.db_conn.execute_query(query1)
-            res2 = self.kg_model.graph_struct.db_conn.execute_query(query2)
+            res1 = self.kg_model.graph_struct.db_conn.get_triplets_by_name(seed_entity, None, entity_type)
+            res2 = self.kg_model.graph_struct.db_conn.execute_query(seed_entity.lower(), None, entity_type)
 
             for element in res1 + res2:
-                obj_dict = dict(element["b"])
-                rel_dict = dict(element["r"])
-                text = obj_dict["name"].strip()
+                obj_dict = element.end_node.prop
+                rel_dict = element.relation.prop
+                text = element.end_node.name.strip()
                 obj_props = {key: value for key, value in obj_dict.items() if key != "name"}
                 text_chunks = text.split("\n")
                 for text_chunk in text_chunks:
