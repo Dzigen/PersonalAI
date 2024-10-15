@@ -2,6 +2,8 @@ from dataclasses import dataclass, field
 from typing import List
 from enum import Enum
 
+QA_LOG_PATH = 'log/raw_qa'
+
 QUESTION_ANSWERING_USER_PROMPT = """Answer the question, based on provided info by analogy with examples given. Generate chain of thought and then give the final answer in the following format:
 ### Answer
 Chain of thought: ... Final answer: ...

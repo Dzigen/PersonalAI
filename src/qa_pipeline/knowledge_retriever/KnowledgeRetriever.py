@@ -1,17 +1,17 @@
-from .utils import AbstractTriplesFilter, AbstractTripletsRetriever, LOG_PATH
+from .utils import AbstractTriplesFilter, AbstractTripletsRetriever, RETRIEVER_LOG_PATH
 from .TripletsFilter import TripletsFilterConfig, TripletsFilter
-from .AStarTripletsRetriever import AStartTripletsRetriever, AStarGraphSearchConfig
+from .AStarTripletsRetriever import AStarTripletsRetriever, AStarGraphSearchConfig
 from .BFSTripletsRetriever import BFSRetriever, BFSSearchConfig
-from .cache import KeyValueStoreConfig, KeyValueStore
 from ...utils.data_structs import QueryInfo, Triplet
 from ...knowledge_graph_model import KnowledgeGraphModel
+from ...db_drivers.kv_driver import KeyValueDriver, KeyValueDriverConfig
 from ...utils import Logger
 
 from dataclasses import dataclass, field
 from typing import List
 
 AVAILABLE_TRIPLETS_RETRIEVERS  = {
-    'astar': AStartTripletsRetriever,
+    'astar': AStarTripletsRetriever,
     'bfs': BFSRetriever
 }
 
@@ -25,8 +25,8 @@ class KnowledgeRetrieverConfig:
     retriever_config: object = field(default_factory=lambda: AStarGraphSearchConfig())
     filter_method: str = 'naive'
     filter_config: object = field(default_factory=lambda: TripletsFilterConfig())
-    cache_config: KeyValueStoreConfig = field(default_factory=lambda: KeyValueStoreConfig())
-    log: Logger = field(default_factory=lambda: Logger(LOG_PATH))
+    cache_config: KeyValueDriverConfig = field(default_factory=lambda: KeyValueDriverConfig())
+    log: Logger = field(default_factory=lambda: Logger(RETRIEVER_LOG_PATH))
     verbose: bool = False
 
 class KnowledgeRetriever:
@@ -37,7 +37,7 @@ class KnowledgeRetriever:
         self.config = config
         self.kg_model = kg_model
         self.log = config.log
-        self.cache = KeyValueStore(config.cache_config)
+        self.cache = KeyValueDriver.connect(config.cache_config)
 
         self.graph_retriever = AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method](
             kg_model, self.log, self.config.retriever_config, self.cache, self.config.verbose)

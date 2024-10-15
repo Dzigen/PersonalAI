@@ -25,11 +25,11 @@ from src.qa_pipeline.answer_generator import QALLMGenerator
 
 from src.agents.private import GigaChatAgent
 from src.knowledge_graph_model import KnowledgeGraphModel
-from src.neo4j_functions import Neo4jConnection
-from src.embedding_functions import EmbeddingsDatabaseConnection, EmbeddingsDatabaseConnectionConfig, VectorDBConnectionConfig, EmbedderModelConfig
+from src.db_models.graph_db.neo4j_functions import Neo4jConnection
+from src.db_models.embeddings_db.embedding_functions import EmbeddingsDatabaseConnection, EmbeddingsDatabaseConnectionConfig, VectorDBConnectionConfig, EmbedderModelConfig
 
 from src.utils import ReaderMetrics
-from src.embedding_functions import ChromaConnection, VectorDBConnectionConfig, EmbeddingsDatabaseConnectionConfig
+from src.db_models.embeddings_db.embedding_functions import ChromaConnection, VectorDBConnectionConfig, EmbeddingsDatabaseConnectionConfig
 from src.agents.private import GigaChatAgent
 from src.utils.data_structs import NodeType
 

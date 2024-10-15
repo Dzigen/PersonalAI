@@ -1,1 +1,1 @@
-LOG_PATH = "mem_log"
+MEM_LOG_PATH = "log/mem"

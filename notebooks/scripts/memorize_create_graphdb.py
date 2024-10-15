@@ -18,8 +18,8 @@ sys.path.insert(0, BASEDIR)
 
 from src.utils.data_structs import RelationType, NodeType
 from src.utils.data_structs import TripletCreator, NodeCreator, Relation, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
-from src.neo4j_functions import Neo4jConnection
-from src.embedding_functions import EmbeddingsDatabaseConnection, EmbeddingsDatabaseConnectionConfig, VectorDBConnectionConfig
+from src.db_models.graph_db.neo4j_functions import Neo4jConnection
+from src.db_models.embeddings_db.embedding_functions import EmbeddingsDatabaseConnection, EmbeddingsDatabaseConnectionConfig, VectorDBConnectionConfig
 from src.knowledge_graph_model import KnowledgeGraphModel
 
 # personalai_mmenschikov_neo4j

@@ -216,6 +216,4 @@ Remember that thesises must be extracted in format: "thesis_1; [list of entites 
 
 Extracted thesises: '''
 
-
-
-log_path = "log_extract"
+EXTRACT_LOG = "log/extract"

@@ -1,7 +1,7 @@
 import json
 import transformers
 import torch
-from neo4j_functions import Neo4jConnection
+from src.db_models.graph_db.neo4j_functions import Neo4jConnection
 
 conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
 

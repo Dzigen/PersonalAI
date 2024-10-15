@@ -81,7 +81,7 @@ class BFSRetriever(AbstractTripletsRetriever):
         triplets_info = []
         inters_chains1, inters_chains2 = [], []
         try:
-            res = self.kg_model.graph_db.execute_query(query)
+            res = self.kg_model.graph_struct.db_conn.execute_query(query)
             for element in res:
                 subj_props = dict(element["a"])
                 subj_props = {key.replace("_", " "): value.replace("_", " ") for key, value in subj_props.items()
@@ -299,8 +299,8 @@ class BFSRetriever(AbstractTripletsRetriever):
                                         if entities_list2 != entities_list]
             query1 = f"""MATCH (a:object)-[r]-(b:{entity_type}) WHERE a.name="{seed_entity}" RETURN a, r, b"""
             query2 = f"""MATCH (a:object)-[r]-(b:{entity_type}) WHERE a.name="{seed_entity.lower()}" RETURN a, r, b"""
-            res1 = self.kg_model.graph_db.execute_query(query1)
-            res2 = self.kg_model.graph_db.execute_query(query2)
+            res1 = self.kg_model.graph_struct.db_conn.execute_query(query1)
+            res2 = self.kg_model.graph_struct.db_conn.execute_query(query2)
 
             for element in res1 + res2:
                 obj_dict = dict(element["b"])

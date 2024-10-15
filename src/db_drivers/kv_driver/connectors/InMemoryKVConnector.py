@@ -5,9 +5,9 @@ import os
 import time
 import hashlib
 
-from .utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
+from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 
-DEFAULT_INMEMORY_CONFIG = KVDBConnectionConfig(
+DEFAULT_INMEMORYKV_CONFIG = KVDBConnectionConfig(
     host='localhost', 
     params={
         'kvstore_dump_name': 'inmemory_store', 
@@ -15,9 +15,9 @@ DEFAULT_INMEMORY_CONFIG = KVDBConnectionConfig(
         'save_on_disk': True, 'save_dump_dir': '.'
     })
 
-class InMemoryConnector(AbstractKVDatabaseConnection):
+class InMemoryKVConnector(AbstractKVDatabaseConnection):
     
-    def __init__(self, config: KVDBConnectionConfig = DEFAULT_INMEMORY_CONFIG) -> None:
+    def __init__(self, config: KVDBConnectionConfig = DEFAULT_INMEMORYKV_CONFIG) -> None:
         self.config = config
         self.open_connection()
 

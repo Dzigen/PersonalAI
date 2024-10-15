@@ -1,4 +1,4 @@
-from .utils import QUESTION_ANSWERING_USER_PROMPT
+from .utils import QUESTION_ANSWERING_USER_PROMPT, QA_LOG_PATH
 from ...utils.data_structs import Triplet
 from ...agents.private import GigaChatAgent
 from ...utils.data_structs import TripletCreator
@@ -8,14 +8,11 @@ from ...utils import Logger
 from typing import List
 from dataclasses import dataclass, field
 
-LOG_PATH = 'raw_qa_log'
-
 @dataclass
 class QALLMGeneratorConfig:
     user_prompt: str = QUESTION_ANSWERING_USER_PROMPT
-    relation_type: List[RelationType] = field(default_factory=lambda: 
-                                            [RelationType.simple, RelationType.hyper, RelationType.episodic])
-    log: Logger = field(default_factory=lambda: Logger(LOG_PATH))
+    relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
+    log: Logger = field(default_factory=lambda: Logger(QA_LOG_PATH))
     verbose: bool = False
 
 class QALLMGenerator:

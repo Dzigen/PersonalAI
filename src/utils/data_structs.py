@@ -118,4 +118,4 @@ class QueryInfo:
     query: str
     entities: List[str] = None
     linked_nodes: List[object] = None
-    linked_nodes_by_entitie: List[object] = None
+    linked_nodes_by_entities: List[object] = None
