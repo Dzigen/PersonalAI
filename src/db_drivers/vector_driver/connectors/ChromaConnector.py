@@ -12,8 +12,7 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
 
     def open_connection(self):
         self.client = chromadb.PersistentClient(path=self.config.path)
-        self.collection = self.client.get_or_create_collection(name=self.config.db_name)
-        self.collection.modify(metadata=self.config.params)
+        self.collection = self.client.get_or_create_collection(name=self.config.db_name, metadata=self.config.params)
 
         if self.config.need_to_clear:
             self.clear()
