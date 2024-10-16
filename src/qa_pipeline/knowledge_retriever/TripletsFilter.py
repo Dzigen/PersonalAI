@@ -35,7 +35,7 @@ class TripletsFilter(AbstractTriplesFilter):
                 accepted_tripletes_ids = list(map(lambda item: item[1].id, raw_relevant_triplets))
                 filtered_triplets = list(filter(lambda triplet: triplet.id in accepted_tripletes_ids, triplets))
 
-            self.log(f"accepted ids: {accepted_tripletes_ids}", verbose=self.log_verbose)
+                self.log(f"accepted ids: {accepted_tripletes_ids}", verbose=self.log_verbose)
         except Exception as e:
             print(f"error in apply_filter: {e}")
             filtered_triplets = triplets[:self.config.max_k]

@@ -90,7 +90,7 @@ class TripletCreator(BaseCreator):
         _, str_triplet = TripletCreator.stringify(triplet)
         if add_stringified_triplet:
             triplet.stringified = str_triplet
-        if t_id:
+        if t_id is None:
             triplet.id = hashlib.md5(str_triplet.encode()).hexdigest()
         else:
             triplet.id = t_id
