@@ -79,6 +79,9 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
             List[List[Tuple[float, VectorDBInstance]]]: Списки объектов из бд, релевантных заданным query-объектам.
         """
 
+        collection_size = self.collection.count()
+        n_results = collection_size if collection_size < n_results else n_results
+
         raw_retrieved_instances = self.collection.query(
             query_embeddings=[inst.embedding.tolist() for inst in query_instances],
             include=includes + ['distances'], n_results=n_results, **kwargs)
