@@ -286,7 +286,7 @@ class BFSRetriever(AbstractTripletsRetriever):
             another_entities_list = [entities_list2 for entities_list2 in seed_entities
                                         if entities_list2 != entities_list]
             res1 = self.kg_model.graph_struct.db_conn.get_triplets_by_name(seed_entity, None, entity_type)
-            res2 = self.kg_model.graph_struct.db_conn.execute_query(seed_entity.lower(), None, entity_type)
+            res2 = self.kg_model.graph_struct.db_conn.get_triplets_by_name(seed_entity.lower(), None, entity_type)
 
             for element in res1 + res2:
                 obj_dict = element.end_node.prop
