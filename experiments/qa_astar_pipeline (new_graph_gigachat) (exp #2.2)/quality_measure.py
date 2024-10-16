@@ -13,7 +13,7 @@ nltk.download('punkt_tab')
 nltk.download('wordnet')
 
 # TO CHANGE
-BASEDIR = "/workspace"
+BASEDIR = "../../"
 # TO CHNAGE
 
 sys.path.insert(0, BASEDIR)

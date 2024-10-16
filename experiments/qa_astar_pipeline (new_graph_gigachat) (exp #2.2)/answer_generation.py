@@ -16,10 +16,11 @@ EVAL_DATADIR = '../../data/qa_eval'
 
 from src.agents.private import GigaChatAgent
 from src.knowledge_graph_model import KnowledgeGraphModel
-from src.neo4j_functions import Neo4jConnection, Neo4jConnectionConfig
-from src.embedding_functions import EmbeddingsDatabaseConnection, EmbeddingsDatabaseConnectionConfig, VectorDBConnectionConfig, EmbedderModelConfig
+from src.knowledge_graph_model import KnowledgeGraphModel, GraphModelConfig, EmbeddingsModelConfig, GraphDriverConfig
+from src.db_drivers.vector_driver import VectorDriverConfig, VectorDBConnectionConfig, EmbedderModelConfig
+from src.db_drivers.graph_driver import GraphDBConnectionConfig
+from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
 
-from src.embedding_functions import VectorDBConnectionConfig, EmbeddingsDatabaseConnectionConfig
 from src.agents.private import GigaChatAgent
 from src.qa_pipeline import QAPipeline, QAPipelineConfig
 from src.qa_pipeline.knowledge_retriever import KnowledgeRetrieverConfig
@@ -43,37 +44,29 @@ print(GRAPH_DB_NAME)
 agent = GigaChatAgent()
 
 kg_model = KnowledgeGraphModel(
-    graph_db=Neo4jConnection(Neo4jConnectionConfig(uri=NEO4J_URL, user=NEO4J_USER, pwd=NEO4J_PWD, db_name=GRAPH_DB_NAME)),
-    embeddings_db=EmbeddingsDatabaseConnection(
-        config=EmbeddingsDatabaseConnectionConfig(
-            nodes_db_config=VectorDBConnectionConfig(
-                path=NODES_VECTORDB_PATH,
-                db_name="vectorized_nodes"
-            ),
-            triplets_db_config=VectorDBConnectionConfig(
-                path=TRIPLETS_VECTORDB_PATH,
-                db_name="vectorized_triplets"
-            ),
-            embedder_config=EmbedderModelConfig(
-                model_name_or_path=EMBEDDING_MODEL_PATH
-            )
-        )
-    )
-)
-
+    graph_struct=GraphModelConfig(driver_config=GraphDriverConfig(
+        db_vendor='neo4j', db_config=GraphDBConnectionConfig(
+            uri=NEO4J_URL, params={'user': NEO4J_USER, 'password': NEO4J_PWD, 'db_name': GRAPH_DB_NAME}))),
+    embeddings_struct=EmbeddingsModelConfig(
+        nodesdb_driver_config=VectorDriverConfig(db_config=VectorDBConnectionConfig(
+            path=NODES_VECTORDB_PATH, db_name="vectorized_nodes")),
+        tripletsdb_driver_config=VectorDriverConfig(db_config=VectorDBConnectionConfig(
+            path=TRIPLETS_VECTORDB_PATH, db_name="vectorized_triplets")),
+        embedder_config=EmbedderModelConfig(
+        model_name_or_path=EMBEDDING_MODEL_PATH)))
 
 qa_config = QAPipelineConfig(
     knowledge_retriever_config=KnowledgeRetrieverConfig(
-        cache_config=KeyValueStoreConfig(
-            db_config=KVDBConnectionConfig(host='aerospikelservice_gigachat', port=3000)
-        )
-    )
-)
+        cache_config=KeyValueDriverConfig(
+            db_config=KVDBConnectionConfig(
+                host='aerospikelservice_gigachat', port=3000))))
+                 
 qa_pipeline = QAPipeline(kg_model, agent, config=qa_config)
 
-log = Logger('answer_gen_log')
+log = Logger('log/answer_gen')
 qa_files = os.listdir(EVAL_DATADIR)
-for qa_file in qa_files:
+log(qa_files, verbose=False)
+for qa_file in qa_files[6:7]:
     log(qa_file, verbose=False)
     s_time = time()
     with open(f"{EVAL_DATADIR}/{qa_file}", 'r', encoding='utf-8') as fd:
@@ -91,11 +84,11 @@ for qa_file in qa_files:
         log(f"\ttarget: {qa_pair['answer']}", verbose=False)
         log(f"\tgenerated: {gen_answer}", verbose=False)
         log(f"\tanswer_gen_time: {answ_gen_e_time-answ_gen_s_time} sec", verbose=False)
+    
+        with open(f"./logs/generated/{qa_file}", 'w', encoding='utf-8') as fd:
+            fd.write(json.dumps(gen_answers, indent=1, ensure_ascii=False))
+
     e_time = time()
-
-    with open(f"./logs/generated/{qa_file}", 'w', encoding='utf-8') as fd:
-        fd.write(json.dumps(gen_answers, indent=1, ensure_ascii=False))
-
     log(f"elapsed_time: {e_time - s_time}", verbose=False)
 
 log("DONE", verbose=False)

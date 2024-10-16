@@ -74,11 +74,16 @@ for n, sample in list(enumerate(samples)):
             rel = rel.replace('"', '').replace(" ", "_")
             obj = obj.replace(" ", "_")
             if len(subj) > 1 and len(rel) > 1 and len(rel.split("_")) < 5:
-                total_triplets.append([subj, obj, rel_data])
+                total_triplets.append([{"device": subj}, "opinion", {"feature": obj},
+                                       {"opinion": rel, "person": speaker, "sentiment": sentiment}])
                 entities.add((subj, "device"))
                 entities.add((obj, "feature"))
+                person_triplets.add((subj, "has_device", speaker))
+                subj = subj.lower()
+                obj = obj.lower()
+                rel = rel.lower()
+                all_devices.add(subj)
                 if insert:
-                    person_triplets.add((subj, "has_device", speaker))
                     print(n, subj, rel, obj, sentiment, speaker)
                     res1 = conn.extract_node(node_type="device", node_name=subj, db="testdb")
                     if not res1:
@@ -106,10 +111,16 @@ for n, sample in list(enumerate(samples)):
                         db="testdb"
                     )
 
+person_tr_cnt = 0
 for subj, rel, person in person_triplets:
-    print(subj, rel, person)
     entities.add((person, "person"))
+    if [{"person": person}, "has device", {"device": subj}, {}] not in total_triplets:
+        #print(subj, rel, person)
+        total_triplets.append([{"person": person}, "has device", {"device": subj}, {}])
+        person_tr_cnt += 1
     if insert:
+        subj = subj.lower()
+        person = person.lower()
         res1 = conn.extract_node(node_type="person", node_name=person, db="testdb")
         if not res1:
             conn.create_node(node_type="person", node_name=person, db="testdb")
@@ -121,25 +132,41 @@ for subj, rel, person in person_triplets:
             rel_name=rel,
             db="testdb"
         )
+print("person triplets", person_tr_cnt)
 
-manf_dict = {"Xiaomi": "Xiaomi", "Apple": "Apple", "OnePlus": "OnePlus", "Vivo": "Vivo", "Honor": "Honor",
-             "Huawei": "Huawei", "Samsung": "Samsung", "Redmi": "Xiaomi", "Iphone": "Apple", "One Plus": "OnePlus"}
+manf_dict = {"xiaomi": "Xiaomi", "apple": "Apple", "oneplus": "OnePlus", "vivo": "Vivo", "honor": "Honor",
+             "huawei": "Huawei", "samsung": "Samsung", "redmi": "Xiaomi", "iphone": "Apple", "one plus": "OnePlus"}
 
 for manf in manf_dict.values():
     entities.add((manf, "manufacturer"))
 
-if insert:
-    for manf in manf_dict.values():
+for manf in manf_dict.values():
+    manf = manf.lower()
+    if insert:
         conn.create_node(node_type="manufacturer", node_name=manf, db="testdb")
 
+manf_triplets = 0
+print("all devices", len(all_devices))
+all_devices = sorted(list(all_devices))
+with open("all_devices.txt", 'w') as out:
     for device in all_devices:
-        found_manf = ""
-        for manf in manf_dict:
-            if device.lower() == manf.lower():
-                found_manf = manf_dict[manf]
-            elif any([tok == manf.lower() for tok in device.lower().split()]):
-                found_manf = manf_dict[manf]
-        if found_manf:
+        out.write(device+'\n')
+
+for device in all_devices:
+    device = device.replace("_", " ")
+    found_manf = ""
+    for manf in manf_dict:
+        if device.lower() == manf.lower():
+            found_manf = manf_dict[manf]
+        elif any([tok == manf.lower() for tok in device.lower().split()]):
+            found_manf = manf_dict[manf]
+    if found_manf:
+        if [{"device": device}, "manufacturer", {"manufacturer": found_manf}, {}] not in total_triplets:
+            total_triplets.append([{"device": device}, "manufacturer", {"manufacturer": found_manf}, {}])
+        manf_triplets += 1
+        if insert:
+            device = device.lower()
+            found_manf = found_manf.lower()
             conn.create_relationship_no_props(
                 type1="device",
                 type2="manufacturer",
@@ -148,18 +175,21 @@ if insert:
                 rel_name="manufacturer",
                 db="testdb"
             )
+print("triplets with manufacturers", manf_triplets)
 
 mult_rels, mult_subj = 0, 0
 stats1, stats2 = {}, {}
-for subj, obj, rel_data in total_triplets:
-    rel = rel_data["label"]
-    sent = rel_data["sentiment"]
-    if (subj, obj) not in stats1:
-        stats1[(subj, obj)] = []
-    stats1[(subj, obj)].append((rel, sent))
-    if obj not in stats2:
-        stats2[obj] = []
-    stats2[obj].append((subj, rel, sent))
+for raw_subj, rel, raw_obj, rel_data in total_triplets:
+    subj = list(raw_subj.values())[0]
+    obj = list(raw_obj.values())[0]
+    if "sentiment" in rel_data:
+        sent = rel_data["sentiment"]
+        if (subj, obj) not in stats1:
+            stats1[(subj, obj)] = []
+        stats1[(subj, obj)].append((rel, sent))
+        if obj not in stats2:
+            stats2[obj] = []
+        stats2[obj].append((subj, rel, sent))
 
 stats1 = {subj_obj: rel_sent for subj_obj, rel_sent in stats1.items() if len(rel_sent) > 1}
 stats1 = list(stats1.items())
@@ -208,3 +238,14 @@ entities = [list(entity) for entity in entities]
 
 with open("entities.json", 'w') as out:
     json.dump(entities, out, indent=2)
+
+f_total_triplets = []
+for subj, rel, obj, rel_data in total_triplets:
+    subj = {key: value.replace("_", " ") for key, value in subj.items()}
+    obj = {key: value.replace("_", " ") for key, value in obj.items()}
+    rel_data = {key: value.replace("_", " ") for key, value in rel_data.items()}
+    f_total_triplets.append([subj, rel, obj, rel_data])
+print("total triplets", len(f_total_triplets))
+
+with open("total_triplets.json", 'w') as out:
+    json.dump(f_total_triplets, out, indent=2)

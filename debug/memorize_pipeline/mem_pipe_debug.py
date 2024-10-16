@@ -3,9 +3,9 @@ from src.memorize_pipeline.utils import MemPipelineConfig
 from src.agents.hosted.llama_agent import LLaMAagentLocal
 from src.qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
 from src.knowledge_graph_model import KnowledgeGraphModel
-from src.neo4j_functions import Neo4jConnection
-from src.embedding_functions import EmbeddingsDatabaseConnection
-from src.embedding_functions import EmbeddingsDatabaseConnectionConfig, VectorDBConnectionConfig, EmbedderModelConfig
+from src.db_models.graph_db.neo4j_functions import Neo4jConnection
+from src.db_models.embeddings_db.embedding_functions import EmbeddingsDatabaseConnection
+from src.db_models.embeddings_db.embedding_functions import EmbeddingsDatabaseConnectionConfig, VectorDBConnectionConfig, EmbedderModelConfig
 
 import json
 

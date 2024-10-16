@@ -5,7 +5,7 @@ from .utils import TRIPLETS_EXTRACTION_PROMPT_ENG, THESISES_EXTRACTION_PROMPT_EN
                     TRIPLETS_EXTRACTION_PROMPT_SYSTEM, THESISES_EXTRACTION_PROMPT_SYSTEM, \
                     TRIPLETS_EXTRACTION_PROMPT_ENG_USER, THESISES_EXTRACTION_PROMPT_ENG_USER, \
                     TRIPLETS_EXTRACTION_PROMPT_USER, THESISES_EXTRACTION_PROMPT_USER, \
-                    Logger, log_path
+                    Logger, EXTRACT_LOG
 from ...utils.data_structs import TripletCreator, NodeCreator, NODES_TYPES_MAP, RELATIONS_TYPES_MAP, Node, Relation, RelationType, NodeType, Triplet
 
 from dataclasses import dataclass, field
@@ -22,7 +22,7 @@ class LLMExtractorConfig:
     
     triplet_extraction_prompt_user: str = TRIPLETS_EXTRACTION_PROMPT_ENG_USER
     thesis_extraction_prompt_user: str = THESISES_EXTRACTION_PROMPT_ENG_USER
-    log: Logger = field(default_factory=lambda: Logger(log_path))
+    log: Logger = field(default_factory=lambda: Logger(EXTRACT_LOG))
     verbose: bool = False
 
 class LLMExtractor:

@@ -1,7 +1,7 @@
 from typing import List, Tuple, Dict
 from pymongo import MongoClient
 
-from .utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
+from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 
 DEFAULT_MONGO_CONFIG = KVDBConnectionConfig(
     host='localhost', port=27017, 

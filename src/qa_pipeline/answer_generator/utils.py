@@ -2,7 +2,14 @@ from dataclasses import dataclass, field
 from typing import List
 from enum import Enum
 
-QUESTION_ANSWERING_USER_PROMPT = """Answer the question, based on provided info by analogy with examples given. Generate chain of thought and then give the final answer in the following format:
+QA_LOG_PATH = 'log/raw_qa'
+
+QUESTION_ANSWERING_USER_PROMPT = {
+    "rus": """Ответь на вопрос, опираясь на приведенную информацию.
+Вопрос: {q}
+Информация для ответа: {c}
+Ответ: """,
+    "eng": """Answer the question, based on provided info by analogy with examples given. Generate chain of thought and then give the final answer in the following format:
 ### Answer
 Chain of thought: ... Final answer: ...
 Question 1: Whose opinions from Anthony and Grace about devices are most similar to Faith's?
@@ -34,3 +41,4 @@ Question 3: {q}
 Info 3: 
 {c}
 ### Answer 3 """
+}
