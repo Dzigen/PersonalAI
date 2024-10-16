@@ -64,6 +64,3 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
 
     def key_exist(self, key: object):
         return key in self.kv_store
-
-    def __del__(self):
-        self.close_connection()
