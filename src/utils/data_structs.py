@@ -79,12 +79,21 @@ def create_id_for_node_pair(node1_id: str, node2_id: str) -> str:
 
 class TripletCreator(BaseCreator):
     @staticmethod
-    def create(start_node: Node, relation: Relation, end_node: Node, add_stringified_triplet: bool = True) -> Triplet:
+    def create(
+            start_node: Node,
+            relation: Relation,
+            end_node: Node,
+            add_stringified_triplet: bool = True, 
+            t_id: str = None
+        ) -> Triplet:
         triplet = Triplet(start_node, relation, end_node)
         _, str_triplet = TripletCreator.stringify(triplet)
         if add_stringified_triplet:
             triplet.stringified = str_triplet
-        triplet.id = hashlib.md5(str_triplet.encode()).hexdigest()
+        if t_id:
+            triplet.id = hashlib.md5(str_triplet.encode()).hexdigest()
+        else:
+            triplet.id = t_id
         return triplet
 
     @staticmethod

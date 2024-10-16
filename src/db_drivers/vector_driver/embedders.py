@@ -26,4 +26,4 @@ class EmbedderModel:
         output = self.model.encode(passages, prompt_name='query',
                                  normalize_embeddings=self.config.normalize_embeddings,
                                  **kwargs)
-        return output
+        return [list(obj.astype(float)) for obj in output]

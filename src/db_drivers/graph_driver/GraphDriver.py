@@ -8,7 +8,7 @@ from ...utils import Logger
 @dataclass
 class GraphDriverConfig:
     db_vendor: str = 'neo4j'
-    db_config: GraphDBConnectionConfig = DEFAULT_GRAPHDB_CONFIGS['neo4j']
+    db_config: GraphDBConnectionConfig = field(default_factory=lambda:DEFAULT_GRAPHDB_CONFIGS['neo4j'])
 
 class GraphDriver:
     @staticmethod

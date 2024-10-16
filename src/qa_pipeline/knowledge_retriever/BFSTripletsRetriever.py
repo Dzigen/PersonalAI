@@ -76,95 +76,83 @@ class BFSRetriever(AbstractTripletsRetriever):
         self.extract_triplets_rel_prop_template = \
             'MATCH (a:object)-[r]-(b:object) WHERE r.{prop_name}="{prop_value}" RETURN a, r, b'
 
-    def parse_triplet_output(self, direction, query, another_entities1, another_entities2, chain, subj_labels=None,
-                                obj_labels=None):
+    def parse_triplet_output(self, direction, query, another_entities1, another_entities2, chain):
         triplets_info = []
         inters_chains1, inters_chains2 = [], []
         try:
-            res = self.kg_model.graph_struct.db_conn.execute_query(query)
-            for element in res:
-                subj_props = dict(element["a"])
-                subj_props = {key.replace("_", " "): value.replace("_", " ") for key, value in subj_props.items()
-                                if key != "name"}
-                obj_props = dict(element["b"])
-                obj_props = {key.replace("_", " "): value.replace("_", " ") for key, value in obj_props.items()
-                                if key != "name"}
-                rel_props = dict(element["r"])
+            subj_name, obj_name, obj_type = query
+            res = self.kg_model.graph_struct.db_conn.get_triplets_by_name(subj_name, obj_name, obj_type)
+            for triplet_raw in res:
+                triplet = [{"id": triplet_raw.start_node.id,
+                            "type": triplet_raw.start_node.type,
+                            "name": triplet_raw.start_node.name.replace("_", " "),
+                            "prop": triplet_raw.start_node.prop},
+                            {"id": triplet_raw.relation.id,
+                            "type": triplet_raw.relation.type,
+                            "prop": triplet_raw.relation.prop},
+                            {"id": triplet_raw.end_node.id,
+                            "type": triplet_raw.end_node.type,
+                            "name": triplet_raw.end_node.name.replace("_", " "),
+                            "prop": triplet_raw.end_node.prop},
+                            direction]
+                new_chain = copy.deepcopy(chain)
 
-                rel_props = {key.replace("_", " "): value.replace("_", " ") for key, value in rel_props.items()
-                                if key not in ["raw_time", "sentiment"]}
-                if (subj_labels is None or set(element["a"].labels).intersection(set(subj_labels))) \
-                        and (obj_labels is None or set(element["b"].labels).intersection(set(obj_labels))):
-                    triplet = [{"id": element["a"].element_id,
-                                "type": list(element["a"].labels)[0],
-                                "name": element["a"]["name"].replace("_", " "),
-                                "prop": subj_props},
-                                {"id": element["r"].element_id,
-                                "type": element["r"].type,
-                                "prop": rel_props},
-                                {"id": element["b"].element_id,
-                                "type": list(element["b"].labels)[0],
-                                "name": element["b"]["name"].replace("_", " "),
-                                "prop": obj_props},
-                                direction]
-                    new_chain = copy.deepcopy(chain)
+                def count_persons(new_chain, second_chain):
+                    persons  = set()
+                    for cur_chain in [new_chain, second_chain]:
+                        for tr in cur_chain:
+                            for ent in tr:
+                                if "person" in ent:
+                                    persons.add(ent["person"])
+                    return persons
 
-                    def count_persons(new_chain, second_chain):
-                        persons  = set()
-                        for cur_chain in [new_chain, second_chain]:
-                            for tr in cur_chain:
-                                for ent in tr:
-                                    if "person" in ent:
-                                        persons.add(ent["person"])
-                        return persons
+                if triplet not in new_chain:
+                    subj = triplet[0]["name"].replace("_", " ")
+                    obj = triplet[-2]["name"].replace("_", " ")
+                    prop_values = [val.lower() for val in triplet[1]["prop"].values()]
+                    cnt1 = 0
+                    if subj.lower() in another_entities1:
+                        cnt1 += 1 
+                    if obj.lower() in another_entities1:
+                        cnt1 += 1
+                    if any([prop_value.lower() in another_entities1 for prop_value in prop_values]):
+                        cnt1 += 1
 
-                    if triplet not in new_chain:
-                        subj = triplet[0]["name"].replace("_", " ")
-                        obj = triplet[-2]["name"].replace("_", " ")
-                        prop_values = [val.lower() for val in triplet[1]["prop"].values()]
-                        cnt1 = 0
-                        if subj.lower() in another_entities1:
-                            cnt1 += 1 
-                        if obj.lower() in another_entities1:
-                            cnt1 += 1
-                        if any([prop_value.lower() in another_entities1 for prop_value in prop_values]):
-                            cnt1 += 1
-
-                        if cnt1 > 0:
-                            new_chain.append(triplet)
-                            inters_chains1.append([new_chain, cnt1])
-                        elif "backw" in direction and subj.lower() in another_entities2:
-                            new_chain.append(triplet)
-                            second_chain = another_entities2[subj.lower()]
-                            persons = count_persons(new_chain, second_chain)
-                            if not ([ch[-1] for ch in new_chain] == ["forw", "backw"] \
-                                    and [ch[-1] for ch in second_chain] == ["forw", "backw"]) and len(persons) < 3:
-                                inters_chains2.append([new_chain, second_chain, ["backw", subj]])
-                        elif "forw" in direction and obj.lower() in another_entities2:
-                            new_chain.append(triplet)
-                            second_chain = another_entities2[obj.lower()]
-                            persons = count_persons(new_chain, second_chain)
-                            if not ([ch[-1] for ch in new_chain] == ["forw", "backw"] \
-                                    and [ch[-1] for ch in second_chain] == ["forw", "backw"]) and len(persons) < 3:
-                                inters_chains2.append([new_chain, second_chain, ["forw", obj]])
-                        elif any([prop_value.lower() in another_entities2 for prop_value in prop_values]):
-                            for prop_value in triplet[1]["prop"].values():
-                                if prop_value.lower() in another_entities2:
-                                    new_chain.append(triplet)
-                                    second_chain = another_entities2[prop_value.lower()]
-                                    persons = count_persons(new_chain, second_chain)
-                                    if len(persons) < 3:
-                                        inters_chains2.append([new_chain, second_chain, ["prop", prop_value]])
-                        else:
-                            new_chain.append(triplet)
+                    if cnt1 > 0:
+                        new_chain.append(triplet)
+                        inters_chains1.append([new_chain, cnt1])
+                    elif "backw" in direction and subj.lower() in another_entities2:
+                        new_chain.append(triplet)
+                        second_chain = another_entities2[subj.lower()]
+                        persons = count_persons(new_chain, second_chain)
+                        if not ([ch[-1] for ch in new_chain] == ["forw", "backw"] \
+                                and [ch[-1] for ch in second_chain] == ["forw", "backw"]) and len(persons) < 3:
+                            inters_chains2.append([new_chain, second_chain, ["backw", subj]])
+                    elif "forw" in direction and obj.lower() in another_entities2:
+                        new_chain.append(triplet)
+                        second_chain = another_entities2[obj.lower()]
+                        persons = count_persons(new_chain, second_chain)
+                        if not ([ch[-1] for ch in new_chain] == ["forw", "backw"] \
+                                and [ch[-1] for ch in second_chain] == ["forw", "backw"]) and len(persons) < 3:
+                            inters_chains2.append([new_chain, second_chain, ["forw", obj]])
+                    elif any([prop_value.lower() in another_entities2 for prop_value in prop_values]):
+                        for prop_value in triplet[1]["prop"].values():
+                            if prop_value.lower() in another_entities2:
+                                new_chain.append(triplet)
+                                second_chain = another_entities2[prop_value.lower()]
+                                persons = count_persons(new_chain, second_chain)
+                                if len(persons) < 3:
+                                    inters_chains2.append([new_chain, second_chain, ["prop", prop_value]])
                     else:
                         new_chain.append(triplet)
-                    new_entities = []
-                    if "forw" in direction:
-                        new_entities.append((element["b"]["name"], "", "node"))
-                    if "backw" in direction:
-                        new_entities.append((element["a"]["name"], "", "node"))
-                    triplets_info.append([triplet, new_entities, new_chain])
+                else:
+                    new_chain.append(triplet)
+                new_entities = []
+                if "forw" in direction:
+                    new_entities.append((triplet_raw.end_node.name, "", "node"))
+                if "backw" in direction:
+                    new_entities.append((triplet_raw.start_node.name, "", "node"))
+                triplets_info.append([triplet, new_entities, new_chain])
         except Exception as e:
             print(f"error in query execution: {e}")
         return triplets_info, inters_chains1, inters_chains2
@@ -248,21 +236,27 @@ class BFSRetriever(AbstractTripletsRetriever):
             subj, rel, obj, *_ = triplet_data
             subj_node = NodeCreator.create(name=subj["name"], type=subj["type"], id=subj["id"], prop=subj["prop"])
             obj_node = NodeCreator.create(name=obj["name"], type=obj["type"], id=obj["id"], prop=obj["prop"])
-            rel_edge = Relation(name="", type=RELATIONS_TYPES_MAP[rel["type"]], id=rel["id"], prop=rel["prop"])
+            rel_edge = Relation(name="", type=rel["type"], id=rel["id"], prop=rel["prop"])
             triplet = TripletCreator.create(start_node=subj_node, relation=rel_edge, end_node=obj_node, add_stringified_triplet=False)
             return triplet
 
-        def triplet_from_hyper(text, seed_entity, obj_props, rel_props):
+        def triplet_from_hyper(text, seed_entity, obj_props, rel_props, e_id):
             subj_node = NodeCreator.create(name=seed_entity, type="object", id="1", prop={})
             obj_node = NodeCreator.create(name=text, type="hyper", id="1", prop=obj_props)
             rel_edge = Relation(name="", type=RELATIONS_TYPES_MAP["hyper"], id="1", prop=rel_props)
-            triplet = TripletCreator.create(start_node=subj_node, relation=rel_edge, end_node=obj_node, add_stringified_triplet=False)
+            triplet = TripletCreator.create(
+                start_node=subj_node,
+                relation=rel_edge,
+                end_node=obj_node,
+                add_stringified_triplet=False,
+                t_id=e_id
+            )
             return triplet
 
         ex_triplets = []
         formatted_triplets = []
-        for text, seed_entity, obj_props, rel_props in output_texts:
-            triplet = triplet_from_hyper(text, seed_entity, obj_props, rel_props)
+        for text, seed_entity, obj_props, rel_props, e_id in output_texts:
+            triplet = triplet_from_hyper(text, seed_entity, obj_props, rel_props, e_id)
             formatted_triplets.append(triplet)
 
         for triplet in chain_triplets:
@@ -277,7 +271,7 @@ class BFSRetriever(AbstractTripletsRetriever):
         else:
             thres = 6
 
-        if not chain_triplets and not prob_tr and not output_texts:
+        if not chain_triplets and not prob_tr and len(output_texts) < 2:
             total_f_triplets = []
             for (*_, seed_entity, _), triplets in triplets_dict.items():
                 f_triplets = []
@@ -297,15 +291,13 @@ class BFSRetriever(AbstractTripletsRetriever):
         for seed_entity, *_ in entities_list:
             another_entities_list = [entities_list2 for entities_list2 in seed_entities
                                         if entities_list2 != entities_list]
-            query1 = f"""MATCH (a:object)-[r]-(b:{entity_type}) WHERE a.name="{seed_entity}" RETURN a, r, b"""
-            query2 = f"""MATCH (a:object)-[r]-(b:{entity_type}) WHERE a.name="{seed_entity.lower()}" RETURN a, r, b"""
-            res1 = self.kg_model.graph_struct.db_conn.execute_query(query1)
-            res2 = self.kg_model.graph_struct.db_conn.execute_query(query2)
+            res1 = self.kg_model.graph_struct.db_conn.get_triplets_by_name(seed_entity, None, entity_type)
+            res2 = self.kg_model.graph_struct.db_conn.get_triplets_by_name(seed_entity.lower(), None, entity_type)
 
             for element in res1 + res2:
-                obj_dict = dict(element["b"])
-                rel_dict = dict(element["r"])
-                text = obj_dict["name"].strip()
+                obj_dict = element.end_node.prop
+                rel_dict = element.relation.prop
+                text = element.end_node.name.strip()
                 obj_props = {key: value for key, value in obj_dict.items() if key != "name"}
                 text_chunks = text.split("\n")
                 for text_chunk in text_chunks:
@@ -321,7 +313,7 @@ class BFSRetriever(AbstractTripletsRetriever):
                                     found = True
                             if found:
                                 num_inters += 1
-                        cur_texts.append([text_chunk, seed_entity, obj_props, rel_dict, num_inters])
+                        cur_texts.append([text_chunk, seed_entity, obj_props, rel_dict, num_inters, element.id])
                         texts_set.add(text_chunk)
         return cur_texts, texts_set
 
@@ -336,7 +328,7 @@ class BFSRetriever(AbstractTripletsRetriever):
             retr_texts[ne] = cur_texts1 + cur_texts2
 
         for key in retr_texts:
-            retr_texts[key] = sorted(retr_texts[key], key=lambda x: x[-1], reverse=True)
+            retr_texts[key] = sorted(retr_texts[key], key=lambda x: x[-2], reverse=True)
 
         if len(seed_entities) == 1:
             thres = 15
@@ -344,17 +336,16 @@ class BFSRetriever(AbstractTripletsRetriever):
             thres = 10
         else:
             thres = 7
-        print("extract_thesis, thres", thres)
 
         if same_types:
             for key in retr_texts:
-                cur_texts = [[text, seed_entity, obj_props, rel_props]
-                             for text, seed_entity, obj_props, rel_props, _ in retr_texts[key]]
+                cur_texts = [[text, seed_entity, obj_props, rel_props, e_id]
+                             for text, seed_entity, obj_props, rel_props, _, e_id in retr_texts[key]]
                 output_texts += cur_texts[:thres]
         else:
             for key in retr_texts:
-                cur_texts = [[text, seed_entity, obj_props, rel_props]
-                             for text, seed_entity, obj_props, rel_props, cnt in retr_texts[key] if cnt > 0]
+                cur_texts = [[text, seed_entity, obj_props, rel_props, e_id]
+                             for text, seed_entity, obj_props, rel_props, cnt, e_id in retr_texts[key] if cnt > 0]
                 output_texts += cur_texts[:thres]
         return output_texts
 
@@ -394,17 +385,15 @@ class BFSRetriever(AbstractTripletsRetriever):
                     for entity, prop_name, tp, chain in entities[(seed_entity, ne)]:
                         if (entity, prop_name, tp) not in used_entities[(seed_entity, ne)]:
                             if tp == "node":
-                                query = self.extract_triplets_name1_template.format(name1=entity)
                                 cur_triplets_info, cur_inters_chains1, cur_inters_chains2 = self.parse_triplet_output(
-                                    "forw", query, another_entities1, another_entities2, chain, subj_labels, obj_labels
+                                    "forw", [entity, None, "object"], another_entities1, another_entities2, chain
                                 )
                                 ent_inters_chains1, ent_inters_chains2 = \
                                     self.add_chains(ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)
                                 for triplet in cur_triplets_info:
                                     triplets_info.append([(step, "forw", seed_entity, triplet[0][1]["type"])] + triplet)
-                                query = self.extract_triplets_name2_template.format(name2=entity)
                                 cur_triplets_info, cur_inters_chains1, cur_inters_chains2 = self.parse_triplet_output(
-                                    "backw", query, another_entities1, another_entities2, chain, subj_labels, obj_labels
+                                    "backw", [None, entity, "object"], another_entities1, another_entities2, chain
                                 )
                                 ent_inters_chains1, ent_inters_chains2 = \
                                     self.add_chains(ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)

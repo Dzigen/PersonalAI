@@ -13,7 +13,8 @@ print(len(samples))
 conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
 
 all_devices = set()
-insert = False
+insert_main = True
+insert_aux = True
 total_triplets = []
 good_samples = []
 good_dialogs = 0
@@ -83,55 +84,52 @@ for n, sample in list(enumerate(samples)):
                 obj = obj.lower()
                 rel = rel.lower()
                 all_devices.add(subj)
-                if insert:
-                    print(n, subj, rel, obj, sentiment, speaker)
-                    res1 = conn.extract_node(node_type="device", node_name=subj, db="testdb")
+                print(n, subj, rel, obj, sentiment, speaker)
+                all_devices.add(subj)
+                if insert_main:
+                    res1 = conn.extract_entity(node_type="device", node_name=subj, db="testdb")
                     if not res1:
-                        conn.create_node(node_type="device", node_name=subj, db="testdb")
-                    res2 = conn.extract_node(node_type="feature", node_name=obj, db="testdb")
+                        conn.create_entity(node_type="device", node_name=subj, db="testdb")
+                    res2 = conn.extract_entity(node_type="feature", node_name=obj, db="testdb")
                     if not res2:
-                        conn.create_node(node_type="feature", node_name=obj, db="testdb")
-                    all_devices.add(subj)
-                    conn.create_relationship_5props(
+                        conn.create_entity(node_type="feature", node_name=obj, db="testdb")
+                    props_dict = {"name": "opinion", "opinion": rel, "person": speaker, "sentiment": sentiment, "time": time,
+                                  "raw_time": raw_time}
+                    conn.create_relationship_props_entity(
                         type1="device",
                         type2="feature",
                         name1=subj,
                         name2=obj,
-                        rel_name="opinion",
-                        rel_prop_name1="opinion",
-                        rel_prop_value1=rel,
-                        rel_prop_name2="person",
-                        rel_prop_value2=speaker,
-                        rel_prop_name3="sentiment",
-                        rel_prop_value3=sentiment,
-                        rel_prop_name4="time",
-                        rel_prop_value4=time,
-                        rel_prop_name5="raw_time",
-                        rel_prop_value5=raw_time,
+                        rel_type="simple",
+                        props_dict=props_dict,
                         db="testdb"
                     )
 
 person_tr_cnt = 0
-for subj, rel, person in person_triplets:
+for n, (subj, rel, person) in enumerate(person_triplets):
     entities.add((person, "person"))
+    print("person has device", n, person, subj)
     if [{"person": person}, "has device", {"device": subj}, {}] not in total_triplets:
         #print(subj, rel, person)
         total_triplets.append([{"person": person}, "has device", {"device": subj}, {}])
         person_tr_cnt += 1
-    if insert:
+    if insert_aux:
         subj = subj.lower()
         person = person.lower()
-        res1 = conn.extract_node(node_type="person", node_name=person, db="testdb")
+        res1 = conn.extract_entity(node_type="person", node_name=person, db="testdb")
         if not res1:
-            conn.create_node(node_type="person", node_name=person, db="testdb")
-        conn.create_relationship_no_props(
+            conn.create_entity(node_type="person", node_name=person, db="testdb")
+        props_dict = {"name": rel}
+        conn.create_relationship_props_entity(
             type1="person",
             type2="device",
             name1=person,
             name2=subj,
-            rel_name=rel,
+            rel_type="simple",
+            props_dict=props_dict,
             db="testdb"
         )
+
 print("person triplets", person_tr_cnt)
 
 manf_dict = {"xiaomi": "Xiaomi", "apple": "Apple", "oneplus": "OnePlus", "vivo": "Vivo", "honor": "Honor",
@@ -142,8 +140,8 @@ for manf in manf_dict.values():
 
 for manf in manf_dict.values():
     manf = manf.lower()
-    if insert:
-        conn.create_node(node_type="manufacturer", node_name=manf, db="testdb")
+    if insert_aux:
+        conn.create_entity(node_type="manufacturer", node_name=manf, db="testdb")
 
 manf_triplets = 0
 print("all devices", len(all_devices))
@@ -164,15 +162,17 @@ for device in all_devices:
         if [{"device": device}, "manufacturer", {"manufacturer": found_manf}, {}] not in total_triplets:
             total_triplets.append([{"device": device}, "manufacturer", {"manufacturer": found_manf}, {}])
         manf_triplets += 1
-        if insert:
+        if insert_aux:
             device = device.lower()
             found_manf = found_manf.lower()
-            conn.create_relationship_no_props(
+            props_dict = {"name": "manufacturer"}
+            conn.create_relationship_props_entity(
                 type1="device",
                 type2="manufacturer",
                 name1=device,
                 name2=found_manf,
-                rel_name="manufacturer",
+                rel_type="simple",
+                props_dict=props_dict,
                 db="testdb"
             )
 print("triplets with manufacturers", manf_triplets)
