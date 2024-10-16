@@ -64,7 +64,7 @@ log = Logger('answer_gen_log')
 qa_files = os.listdir(EVAL_DATADIR)
 log(qa_files, verbose=False)
 
-for qa_file in qa_files[:2]:
+for qa_file in qa_files[1:2]:
     log(qa_file, verbose=False)
     s_time = time()
     with open(f"{EVAL_DATADIR}/{qa_file}", 'r', encoding='utf-8') as fd:

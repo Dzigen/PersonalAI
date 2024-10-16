@@ -11,8 +11,10 @@ WORKDIR /workspace
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 RUN pip install accelerate==0.24.0
+RUN pip install nltk
 
 ARG APP_DIR=/workspace
 ENV PYTHONPATH "${PYTHONPATH}:${APP_DIR}"
 
-CMD ["sh", "-c", "ls -la /workspace && cd '/workspace/experiments/qa_astar_pipeline (new_graph) (exp #2.1)/' && python3 answer_generation.py"]
+CMD ["sh", "-c", "sleep infinity"]
+#CMD ["sh", "-c", "ls -la /workspace && cd '/workspace/experiments/qa_astar_pipeline (new_graph) (exp #2.1)/' && python3 answer_generation.py"]

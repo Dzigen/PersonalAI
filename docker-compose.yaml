@@ -10,7 +10,7 @@ services:
       - "3001:3001"
       - "3002:3002"
     volumes:
-      - ../aerospike_volume/data:/opt/aerospike/data
+      - ../aerospike_volume2/data:/opt/aerospike/data
       - ../aerospike_configs:/etc/aerospike
     deploy:
       resources:
@@ -106,6 +106,7 @@ services:
       - "10888:10888"
     volumes:
       - ./:/workspace
+      - ../aerospike_volume:/vol1
     depends_on:
       - aerospike
       - neo4j
