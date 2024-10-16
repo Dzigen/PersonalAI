@@ -34,7 +34,7 @@ class QAPipeline:
         self.knowledge_retriever = KnowledgeRetriever(self.kg_model, self.config.knowledge_retriever_config)
         self.answer_generator = QALLMGenerator(self.llama_agent, self.config.answer_generator_config)
 
-        self.log("USER PROMPT: " + self.answer_generator.config.user_prompt, verbose=self.config.verbose)
+        self.log("USER PROMPT: " + self.answer_generator.config.user_prompt[self.answer_generator.config.lang], verbose=self.config.verbose)
 
     def answer(self, query: str) -> str:
         self.log("Stage#1 - entities extraction", verbose=self.config.verbose)
