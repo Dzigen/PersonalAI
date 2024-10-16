@@ -8,6 +8,7 @@ class KnowledgeComparatorConfig:
     threshold: float = 0.5
     fetch_n: int = 20
     max_k: int = 1
+    k_compare: int = 5
 
 class KnowledgeComparator:
     """Главный класс для сопостовения информации в пользовательском запросе
