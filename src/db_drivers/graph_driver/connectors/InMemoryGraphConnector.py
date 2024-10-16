@@ -97,10 +97,19 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
         return filtered_nodes
 
-    #
     def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:        
         shared_triplets_ids = set(self.edges[node1_id]).union(set(self.edges[node2_id]))
         triplets = list(map(lambda id: self.triplets_ids[id], shared_triplets_ids))
+        return triplets
+
+    def get_triplets_by_name(self, subj_name, obj_name, obj_type):
+        triplets = []
+        for triplet in self.triplets_ids.values():
+            if triplet.end_node.type == obj_type:
+                if subj_name and triplet.start_node.name == subj_name:
+                    triplets.append(triplet)
+                elif obj_name and triplet.end_node.name == obj_name:
+                    triplets.append(triplet)
         return triplets
 
     def __del__(self):

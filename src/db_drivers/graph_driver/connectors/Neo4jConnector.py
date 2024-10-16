@@ -144,11 +144,8 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             f'MATCH (a)-[r]-(b) WHERE elementId(a) = "{base_node_id}" AND elementId(b) <> "{parent_node_id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(b)) RETURN b')
         formated_nodes = [node['b'].element_id for node in raw_nodes]
         return formated_nodes
-    
-    def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
-        output = self.execute_query(
-            f'MATCH (n1)-[rel]-(n2) WHERE elementId(n1) = "{node1_id}" AND elementId(n2) = "{node2_id}" RETURN n1, rel, n2')
-        
+
+    def parse_query_output(self, output):
         formated_triplets = []
         for raw_triplet in output:
             node1 = NodeCreator.create(id=raw_triplet['n1'].element_id, name=str(raw_triplet['n1']['name']), 
@@ -165,4 +162,23 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             start_node, end_node = (node1, node2) if start_node_id == node1.id else (node2, node1)
             triplet = TripletCreator.create(start_node, relation, end_node, add_stringified_triplet=False)
             formated_triplets.append(triplet)
-        return formated_triplets
+
+    def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
+        output = self.execute_query(
+            f'MATCH (n1)-[rel]-(n2) WHERE elementId(n1) = "{node1_id}" AND elementId(n2) = "{node2_id}" RETURN n1, rel, n2')
+
+        formatted_triplets = self.parse_query_output(output)
+        return formatted_triplets
+
+    def get_triplets_by_name(self, subj_name, obj_name, obj_type):
+        if subj_name:
+            output = self.execute_query(
+                f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE n1.name = {subj_name} RETURN n1, rel, n2')
+        elif obj_name:
+            output = self.execute_query(
+                f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE n2.name = {subj_name} RETURN n1, rel, n2')
+        else:
+            output = self.execute_query(
+                f'MATCH (n1:object)-[rel]-(n2:{obj_type}) RETURN n1, rel, n2')
+        formatted_triplets = self.parse_query_output(output)
+        return formatted_triplets
