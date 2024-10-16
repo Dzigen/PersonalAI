@@ -20,11 +20,13 @@ def process_chain(chain, chain_subj_obj, chain_triplets):
         subj_no_props = {key: value for key, value in subj.items() if key != "prop"}
         subj_props = subj["prop"]
         subj = list(subj_no_props.items()) + list(subj_props.items())
-        subj = sorted(subj, key=lambda x: x[1])
+        subj = [(key, str(value)) for key, value in subj]
+        subj = sorted(subj, key=lambda x: str(x[1]))
         obj = triplet[2]
         obj_no_props = {key: value for key, value in obj.items() if key != "prop"}
         obj_props = obj["prop"]
         obj = list(obj_no_props.items()) + list(obj_props.items())
+        obj = [(key, str(value)) for key, value in obj]
         obj = sorted(obj, key=lambda x: x[1])
         subj = str(subj)
         obj = str(obj)
@@ -285,7 +287,6 @@ class BFSRetriever(AbstractTripletsRetriever):
                     formatted_triplets.append(formatted_triplet)
         return formatted_triplets
 
-
     def extract_thesis_for_entities(self, seed_entities, entities_list, entity_type, texts_set):
         cur_texts = []
         for seed_entity, *_ in entities_list:
@@ -370,7 +371,7 @@ class BFSRetriever(AbstractTripletsRetriever):
 
 
     def bfs(self, seed_entities, depth=1, subj_labels=None, obj_labels=None, question=None, top_n=10,
-            insert_underscores=False, use_rel_props=False):
+            use_rel_props=False):
         triplets_dict = {}
         inters_chains1, inters_chains2 = {}, {}
         # seed_entity, prop_name="", entity_type="node"
@@ -386,8 +387,7 @@ class BFSRetriever(AbstractTripletsRetriever):
                     for entities_list2 in another_entities_list:
                         for ent, *_ in entities_list2:
                             another_entities1.append(ent.lower())
-                    if insert_underscores:
-                        seed_entity = seed_entity.replace(" ", "_")
+
                     seed_entity = seed_entity.lower()
                     if step == 0:
                         used_entities[(seed_entity, ne)] = set()
@@ -405,14 +405,22 @@ class BFSRetriever(AbstractTripletsRetriever):
                         if (entity, prop_name, tp) not in used_entities[(seed_entity, ne)]:
                             if tp == "node":
                                 cur_triplets_info, cur_inters_chains1, cur_inters_chains2 = self.parse_triplet_output(
-                                    "forw", [[entity], [], "object"], another_entities1, another_entities2, chain
+                                    "forw",
+                                    [[entity, entity.replace(" ", "_")], [], "object"],
+                                    another_entities1,
+                                    another_entities2,
+                                    chain
                                 )
                                 ent_inters_chains1, ent_inters_chains2 = \
                                     self.add_chains(ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)
                                 for triplet in cur_triplets_info:
                                     triplets_info.append([(step, "forw", seed_entity, triplet[0][1]["type"])] + triplet)
                                 cur_triplets_info, cur_inters_chains1, cur_inters_chains2 = self.parse_triplet_output(
-                                    "backw", [[], [entity], "object"], another_entities1, another_entities2, chain
+                                    "backw",
+                                    [[], [entity, entity.replace(" ", "_")], "object"],
+                                    another_entities1,
+                                    another_entities2,
+                                    chain
                                 )
                                 ent_inters_chains1, ent_inters_chains2 = \
                                     self.add_chains(ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)
