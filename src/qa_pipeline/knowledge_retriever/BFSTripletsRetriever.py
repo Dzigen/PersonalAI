@@ -236,21 +236,27 @@ class BFSRetriever(AbstractTripletsRetriever):
             subj, rel, obj, *_ = triplet_data
             subj_node = NodeCreator.create(name=subj["name"], type=subj["type"], id=subj["id"], prop=subj["prop"])
             obj_node = NodeCreator.create(name=obj["name"], type=obj["type"], id=obj["id"], prop=obj["prop"])
-            rel_edge = Relation(name="", type=RELATIONS_TYPES_MAP[rel["type"]], id=rel["id"], prop=rel["prop"])
+            rel_edge = Relation(name="", type=rel["type"], id=rel["id"], prop=rel["prop"])
             triplet = TripletCreator.create(start_node=subj_node, relation=rel_edge, end_node=obj_node, add_stringified_triplet=False)
             return triplet
 
-        def triplet_from_hyper(text, seed_entity, obj_props, rel_props):
+        def triplet_from_hyper(text, seed_entity, obj_props, rel_props, e_id):
             subj_node = NodeCreator.create(name=seed_entity, type="object", id="1", prop={})
             obj_node = NodeCreator.create(name=text, type="hyper", id="1", prop=obj_props)
             rel_edge = Relation(name="", type=RELATIONS_TYPES_MAP["hyper"], id="1", prop=rel_props)
-            triplet = TripletCreator.create(start_node=subj_node, relation=rel_edge, end_node=obj_node, add_stringified_triplet=False)
+            triplet = TripletCreator.create(
+                start_node=subj_node,
+                relation=rel_edge,
+                end_node=obj_node,
+                add_stringified_triplet=False,
+                t_id=e_id
+            )
             return triplet
 
         ex_triplets = []
         formatted_triplets = []
-        for text, seed_entity, obj_props, rel_props in output_texts:
-            triplet = triplet_from_hyper(text, seed_entity, obj_props, rel_props)
+        for text, seed_entity, obj_props, rel_props, e_id in output_texts:
+            triplet = triplet_from_hyper(text, seed_entity, obj_props, rel_props, e_id)
             formatted_triplets.append(triplet)
 
         for triplet in chain_triplets:
@@ -265,7 +271,7 @@ class BFSRetriever(AbstractTripletsRetriever):
         else:
             thres = 6
 
-        if not chain_triplets and not prob_tr and not output_texts:
+        if not chain_triplets and not prob_tr and len(output_texts) < 2:
             total_f_triplets = []
             for (*_, seed_entity, _), triplets in triplets_dict.items():
                 f_triplets = []
@@ -307,7 +313,7 @@ class BFSRetriever(AbstractTripletsRetriever):
                                     found = True
                             if found:
                                 num_inters += 1
-                        cur_texts.append([text_chunk, seed_entity, obj_props, rel_dict, num_inters])
+                        cur_texts.append([text_chunk, seed_entity, obj_props, rel_dict, num_inters, element.id])
                         texts_set.add(text_chunk)
         return cur_texts, texts_set
 
@@ -322,7 +328,7 @@ class BFSRetriever(AbstractTripletsRetriever):
             retr_texts[ne] = cur_texts1 + cur_texts2
 
         for key in retr_texts:
-            retr_texts[key] = sorted(retr_texts[key], key=lambda x: x[-1], reverse=True)
+            retr_texts[key] = sorted(retr_texts[key], key=lambda x: x[-2], reverse=True)
 
         if len(seed_entities) == 1:
             thres = 15
@@ -330,17 +336,16 @@ class BFSRetriever(AbstractTripletsRetriever):
             thres = 10
         else:
             thres = 7
-        print("extract_thesis, thres", thres)
 
         if same_types:
             for key in retr_texts:
-                cur_texts = [[text, seed_entity, obj_props, rel_props]
-                             for text, seed_entity, obj_props, rel_props, _ in retr_texts[key]]
+                cur_texts = [[text, seed_entity, obj_props, rel_props, e_id]
+                             for text, seed_entity, obj_props, rel_props, _, e_id in retr_texts[key]]
                 output_texts += cur_texts[:thres]
         else:
             for key in retr_texts:
-                cur_texts = [[text, seed_entity, obj_props, rel_props]
-                             for text, seed_entity, obj_props, rel_props, cnt in retr_texts[key] if cnt > 0]
+                cur_texts = [[text, seed_entity, obj_props, rel_props, e_id]
+                             for text, seed_entity, obj_props, rel_props, cnt, e_id in retr_texts[key] if cnt > 0]
                 output_texts += cur_texts[:thres]
         return output_texts
 
