@@ -106,9 +106,9 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         triplets = []
         for triplet in self.triplets_ids.values():
             if obj_type in str(triplet.end_node.type):
-                if subj_name and triplet.start_node.name == subj_name:
+                if subj_name and triplet.start_node.name in subj_name:
                     triplets.append(triplet)
-                elif obj_name and triplet.end_node.name == obj_name:
+                elif obj_name and triplet.end_node.name in obj_name:
                     triplets.append(triplet)
         return triplets
 

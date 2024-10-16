@@ -291,10 +291,12 @@ class BFSRetriever(AbstractTripletsRetriever):
         for seed_entity, *_ in entities_list:
             another_entities_list = [entities_list2 for entities_list2 in seed_entities
                                         if entities_list2 != entities_list]
-            res1 = self.kg_model.graph_struct.db_conn.get_triplets_by_name(seed_entity, None, entity_type)
-            res2 = self.kg_model.graph_struct.db_conn.get_triplets_by_name(seed_entity.lower(), None, entity_type)
-
-            for element in res1 + res2:
+            res = self.kg_model.graph_struct.db_conn.get_triplets_by_name(
+                [seed_entity, seed_entity.lower(), seed_entity.replace(" ", "_"), seed_entity.lower().replace(" ", "_")],
+                [],
+                entity_type
+            )
+            for element in res:
                 obj_dict = element.end_node.prop
                 rel_dict = element.relation.prop
                 text = element.end_node.name.strip()
@@ -403,14 +405,14 @@ class BFSRetriever(AbstractTripletsRetriever):
                         if (entity, prop_name, tp) not in used_entities[(seed_entity, ne)]:
                             if tp == "node":
                                 cur_triplets_info, cur_inters_chains1, cur_inters_chains2 = self.parse_triplet_output(
-                                    "forw", [entity, None, "object"], another_entities1, another_entities2, chain
+                                    "forw", [[entity], [], "object"], another_entities1, another_entities2, chain
                                 )
                                 ent_inters_chains1, ent_inters_chains2 = \
                                     self.add_chains(ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)
                                 for triplet in cur_triplets_info:
                                     triplets_info.append([(step, "forw", seed_entity, triplet[0][1]["type"])] + triplet)
                                 cur_triplets_info, cur_inters_chains1, cur_inters_chains2 = self.parse_triplet_output(
-                                    "backw", [None, entity, "object"], another_entities1, another_entities2, chain
+                                    "backw", [[], [entity], "object"], another_entities1, another_entities2, chain
                                 )
                                 ent_inters_chains1, ent_inters_chains2 = \
                                     self.add_chains(ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)
