@@ -38,7 +38,9 @@ class TripletsFilter(AbstractTriplesFilter):
             self.log(f"accepted ids: {accepted_tripletes_ids}", verbose=self.log_verbose)
         except Exception as e:
             print(f"error in apply_filter: {e}")
-            filtered_triplets = triplets
+            filtered_triplets = triplets[:self.config.max_k]
+        if not filtered_triplets:
+            filtered_triplets = triplets[:self.config.max_k]
         return filtered_triplets   
             
         

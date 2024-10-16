@@ -49,5 +49,5 @@ class QALLMGenerator:
                 self.log("NOT FORMATED ANSWER", verbose=self.config.verbose)
                 answer = raw_output
         elif lang == "rus":
-            answer = raw_output.split("\n")[0]
+            answer = raw_output
         return answer

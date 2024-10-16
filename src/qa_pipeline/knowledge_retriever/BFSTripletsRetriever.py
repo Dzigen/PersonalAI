@@ -311,6 +311,18 @@ class BFSRetriever(AbstractTripletsRetriever):
                                         or ent.lower() in obj_props.values() \
                                         or ent.lower() in rel_dict.values():
                                     found = True
+                                else:
+                                    words = ent.lower().split()
+                                    words_no_end = []
+                                    for word in words:
+                                        if len(word) > 4:
+                                            words_no_end.append(word[:-2])
+                                        elif len(word) == 4:
+                                            words_no_end.append(word[:-1])
+                                        else:
+                                            words_no_end.append(word)
+                                    if all([word in text_chunk.lower() for word in words_no_end]):
+                                        found = True
                             if found:
                                 num_inters += 1
                         cur_texts.append([text_chunk, seed_entity, obj_props, rel_dict, num_inters, element.id])
@@ -347,6 +359,11 @@ class BFSRetriever(AbstractTripletsRetriever):
                 cur_texts = [[text, seed_entity, obj_props, rel_props, e_id]
                              for text, seed_entity, obj_props, rel_props, cnt, e_id in retr_texts[key] if cnt > 0]
                 output_texts += cur_texts[:thres]
+            if not output_texts:
+                for key in retr_texts:
+                    cur_texts = [[text, seed_entity, obj_props, rel_props, e_id]
+                                for text, seed_entity, obj_props, rel_props, _, e_id in retr_texts[key]]
+                    output_texts += cur_texts[:thres]
         return output_texts
 
 

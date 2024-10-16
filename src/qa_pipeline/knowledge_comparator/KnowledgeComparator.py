@@ -20,8 +20,9 @@ class KnowledgeComparator:
     def link_kgnodes_to_query(self, query_structure: QueryInfo) -> None:
         # сопоставляем сущности, извлечённые из запроса нодам в графе знаний
         
-        linked_nodess = []
         linked_nodes_by_entities = []
+        unique_nodes_ids = []
+        unique_nodes = []
         for entity in query_structure.entities:
             entity_embedding = self.kg_model.embeddings_struct.embedder.encode_queries([entity])[0]
             entity_instance = VectorDBInstance(embedding=entity_embedding)
@@ -31,18 +32,20 @@ class KnowledgeComparator:
                 n_results=self.config.fetch_n
             )[0]
             filtered_nodes = list(filter(lambda node_item: node_item[0] < self.config.threshold, nodes_with_scores))
-            if self.config.max_k > 0:
-                filtered_nodes = filtered_nodes[:self.config.max_k]
             cur_linked_nodes = list(map(lambda node_item: node_item[1], filtered_nodes))
-            linked_nodess += cur_linked_nodes
-            linked_nodes_by_entities.append(cur_linked_nodes)
-
-        unique_nodes_ids = []
-        unique_nodes = []
-        for node in linked_nodess:
-            if node.id not in unique_nodes_ids:
-                unique_nodes_ids.append(node.id)
-                unique_nodes.append(node)
+            cur_unique_names, cur_unique_nodes, cur_unique_names_lower = [], [], []
+            for n, node in enumerate(cur_linked_nodes):
+                if node.id not in unique_nodes_ids:
+                    unique_nodes_ids.append(node.id)
+                    cur_unique_nodes.append(node)
+                    cur_unique_names.append(node.document)
+                    cur_unique_names_lower.append(node.document.lower())
+            unique_nodes += cur_unique_nodes[:self.config.max_k]
+            if entity.lower() in cur_unique_names_lower[:self.config.k_compare]:
+                cur_unique_names = [entity]
+            else:
+                cur_unique_names = [entity] + cur_unique_names[:self.config.max_k]
+            linked_nodes_by_entities.append(cur_unique_names)
 
         query_structure.linked_nodes = unique_nodes
         query_structure.linked_nodes_by_entities = linked_nodes_by_entities
