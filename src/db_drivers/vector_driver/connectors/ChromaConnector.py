@@ -1,5 +1,7 @@
 from typing import Dict, List, Tuple
 import chromadb
+import logging
+logging.getLogger("chromadb").setLevel(logging.CRITICAL)
 
 from ..utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
 
