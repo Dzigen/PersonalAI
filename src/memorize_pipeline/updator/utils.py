@@ -1,4 +1,3 @@
-
 # TODO
 REPLACE_THESIS_PROMPT = {'ru': ..., 'en': ...}
 REPLACE_SIMPLE_PROMPT = {'ru': ..., 'en': ...}

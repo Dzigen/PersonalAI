@@ -1,16 +1,14 @@
+from dataclasses import dataclass, field
+from typing import Dict, List
+
 from .utils import MEM_LOG_PATH
 from .extractor.LLMExtractor import LLMExtractor
 from .updator.LLMUpdator import LLMUpdator
 from .extractor import LLMExtractorConfig
 from .updator import LLMUpdatorConfig
-from ..agents.private import GigaChatAgent
 from ..qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
-from ..utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 from ..knowledge_graph_model import KnowledgeGraphModel
 from ..utils import Logger
-
-from dataclasses import dataclass, field
-from typing import Dict, List
 
 @dataclass
 class MemPipelineConfig:
@@ -21,13 +19,13 @@ class MemPipelineConfig:
 
 class MemPipeline:
 
-    def __init__(self, agent_conn: GigaChatAgent, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig(), bfs: BFSRetriever = None) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig(), bfs: BFSRetriever = None) -> None:
         self.config = config
         self.log = config.log
 
-        self.extractor = LLMExtractor(agent_conn, config.extractor_config)
+        self.extractor = LLMExtractor(config.extractor_config)
         # TODO
-        #self.updator = LLMUpdator(config.updator_config, agent_conn, bfs)
+        #self.updator = LLMUpdator(config.updator_config, bfs)
         
         self.kg_model = kg_model
 

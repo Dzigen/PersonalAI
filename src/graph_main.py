@@ -1,4 +1,3 @@
-import ast
 from dataclasses import dataclass, field
 from typing import List
 from tqdm import tqdm
@@ -7,7 +6,6 @@ from .knowledge_graph_model import GraphModel, GraphModelConfig, EmbeddingsModel
 from .qa_pipeline import QAPipeline, QAPipelineConfig
 from .memorize_pipeline import MemPipeline, MemPipelineConfig
 from .knowledge_graph_model import KnowledgeGraphModel
-from .agents.private import GigaChatAgent
 from .utils import Logger
 
 RKG_LOG_PATH = "log/rmkg"
@@ -29,9 +27,8 @@ class RemoteKnowledgeGraph:
         self.kg_model = KnowledgeGraphModel(
             graph_struct=GraphModel(config.graph_struct_config),
             embeddings_struct=EmbeddingsModel(config.embedds_struct_config))
-        self.llm_agent = GigaChatAgent()
-        self.qa_pipeline = QAPipeline(kg_model=self.kg_model, llm_agent=self.llm_agent, config=config.qa_pipeline_config)
-        self.mem_pipeline = MemPipeline(agent_conn=self.llm_agent, kg_model=self.kg_model, config=config.mem_pipeline_config)
+        self.qa_pipeline = QAPipeline(kg_model=self.kg_model, config=config.qa_pipeline_config)
+        self.mem_pipeline = MemPipeline(kg_model=self.kg_model, config=config.mem_pipeline_config)
 
     def answer_question(self, question: str) -> str:
         self.log("Start answer generation:", verbose=self.config.verbose)
