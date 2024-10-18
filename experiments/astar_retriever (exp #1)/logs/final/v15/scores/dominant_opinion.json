@@ -1,0 +1,12 @@
+{
+ "BLEU1": "0.0",
+ "BLEU2": "0.0",
+ "METEOR": "0.28",
+ "RougeL": "0.56",
+ "ExactMatch": "0.56",
+ "BertScore": {
+  "precision": "nan",
+  "recall": "0.69769",
+  "f1": "0.69507"
+ }
+}

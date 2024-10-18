@@ -1,0 +1,12 @@
+{
+ "LOAD_CONN_NODES_VERSION": "v8",
+ "LOAD_NODES_DB_VERSION": "v7",
+ "LOAD_SHORT_DISTS_VERSION": "v1",
+ "SAVE_TRIPLETS_VERSION": "v8",
+ "MAX_DEPTH": 25,
+ "MAX_WIDTH": -1,
+ "SAMPLE_MAX_SIZE": 50,
+ "D_METRIC": "ip",
+ "H_METRIC": "weight_with_short_path",
+ "STRINGIFY_TRIPLETS_VERSION": "v1"
+}
