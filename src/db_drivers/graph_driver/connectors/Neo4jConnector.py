@@ -162,6 +162,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             start_node, end_node = (node1, node2) if start_node_id == node1.id else (node2, node1)
             triplet = TripletCreator.create(start_node, relation, end_node, add_stringified_triplet=False)
             formated_triplets.append(triplet)
+        return formated_triplets
 
     def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
         output = self.execute_query(

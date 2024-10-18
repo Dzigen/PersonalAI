@@ -206,7 +206,7 @@ class AStarGraphSearch:
                 break
 
             adj_nodes = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(current_node_id, parent[current_node_id], self.config.accepted_node_types)
-            self.log(f"adjenced nodes: {len(adj_nodes)}", verbose=self.verbose)
+            #self.log(f"adjenced nodes: {len(adj_nodes)}", verbose=self.verbose)
 
             for adj_n_id in adj_nodes:
                 new_cost = cost_so_far[current_node_id] + 1 # работаем с невзвешенным графом      
