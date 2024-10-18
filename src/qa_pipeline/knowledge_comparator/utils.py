@@ -1,0 +1,1 @@
+COMPARATOR_LOG_PATH = 'log/comparator'
