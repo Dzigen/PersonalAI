@@ -1,17 +1,20 @@
 from dataclasses import dataclass
 
-ENTITIES_EXTRACTION_USER_PROMPT = '''You are an expert system that can extract key entities from text. Key entities is a noun or an object like persone, device, company and etc. Extract such entities from the given text and present the results in the following format: <entitie1> | <entitie2> | ... | <entitieN>. Generate only entities and dont return some additional text. Examples of texts and extracted entities are listed below:
-Text 1: Kayla has positive, negative or neutral opinion about video of Xiaomi 10Pro?
-Entities 1: Kayla | opinion | video | Xiaomi 10Pro.
-Text 2: Which device is better in battery life: Apple or k30u?
-Entities 2: device | battery life | Apple | k30u.
-Text 3: The majority of speakers have positive, neutral or negative sentiment about screen of Samsung?
-Entities 3: speakers | sentiment | screen | Samsung.
-Text 4: Which people have positive opinion about video of Xiaomi 10Pro on 25.11.2020?
-Entities 4: people | opinion | video | Xiaomi 10Pro | 25.11.2020.
+from ...prompts.query_parser import ENTITIES_EXTRACTION_EN_USER_PROMPT, ENTITIES_EXTRACTION_RU_USER_PROMPT
+from ...prompts.system import RU_SYSTEM_PROMPT, EN_SYSTEM_PROMPT
 
-Text: {text}
-Entities: '''
+QP_LOG_PATH = 'log/qp'
+
+ENTITIES_EXTRACTION_USER_PROMPT = {
+    'ru': ENTITIES_EXTRACTION_RU_USER_PROMPT,
+    'en:': ENTITIES_EXTRACTION_EN_USER_PROMPT
+}
+
+ENTITIES_EXTRACTION_SYSTEM_PROMPT = {
+    'ru': RU_SYSTEM_PROMPT,
+    'en:': EN_SYSTEM_PROMPT
+}
+
 
 @dataclass
 class EntitiesExtractorConfig:

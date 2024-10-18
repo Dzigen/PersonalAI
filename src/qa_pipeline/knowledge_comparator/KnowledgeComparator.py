@@ -1,7 +1,8 @@
+from dataclasses import dataclass
+
 from ...utils.data_structs import QueryInfo
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ...db_drivers.vector_driver import VectorDBInstance
-from dataclasses import dataclass
 
 @dataclass
 class KnowledgeComparatorConfig:

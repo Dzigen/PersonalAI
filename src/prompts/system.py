@@ -1,0 +1,3 @@
+RU_SYSTEM_PROMPT = ""
+
+EN_SYSTEM_PROMPT = ""
