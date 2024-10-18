@@ -5,7 +5,7 @@ data/
 create_local_db/
 archives/
 inference/
-__pycache__
+__pycache__/
 notebooks/tmp_extracted_openai_gpt4omini_triplets.json
 log.txt
 pai_venv/
