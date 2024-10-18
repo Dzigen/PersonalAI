@@ -1,29 +1,28 @@
-from .utils import AbstractAgentModel
-from ..utils import SYSTEM_PROMPT
-
-from dataclasses import dataclass, field
 from typing import Dict
 import torch
 from transformers import pipeline
 
-@dataclass
-class AgentModelConfig:
-    gen_strategy: Dict = field(default_factory=lambda: {'max_new_tokens': 2048})
-    model_name_or_path: str = "/app/models/Undi95/Meta-Llama-3-8B-Instruct-hf"
-    system_prompt: str = SYSTEM_PROMPT
-    num_workers: int = 4
+from ..utils import AbstractAgentConnector, AgentConnectorConfig
 
-class AgentModel(AbstractAgentModel):
-    def __init__(self, config: AgentModelConfig = AgentModelConfig()) -> None:
+DEFAULT_LOCALAGENT_CONFIG = AgentConnectorConfig(
+    gen_strategy={'max_new_tokens': 2048},
+    credentials={'model_name_or_path': '../models/Undi95/Meta-Llama-3-8B-Instruct-hf'},
+    ext_params={'num_workers': 4, 'torch_dtype': torch.bfloat16})
+
+class LocalAgentConnector(AbstractAgentConnector):
+    def __init__(self, config: AgentConnectorConfig = DEFAULT_LOCALAGENT_CONFIG) -> None:
         self.config = config
         self.pipeline = pipeline(
             "text-generation",
-            model=self.config.model_name_or_path,
-            model_kwargs={"torch_dtype": torch.bfloat16},
+            model=self.config.credentials['model_name_or_path'],
+            model_kwargs={"torch_dtype": self.config.ext_params['torch_dtype']},
             device_map="auto"
         )
 
-    def generate(self, user_prompt: str, assistant_prompt: str = None, system_prompt: str = None, gen_strategy: Dict = None) -> str:
+    def check_connection(self):
+        pass
+
+    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
         """Метод для генерации ответов на текстовые запросы с помощью llm-агента.
 
         Args:
@@ -36,17 +35,14 @@ class AgentModel(AbstractAgentModel):
             str: Текстовая последовательность, сгенерированная llm-агентом.
         """
         messages = [
-            {"role": "system", "content": system_prompt if system_prompt is not None else self.config.system_prompt},
+            {"role": "system", "content": system_prompt},
             {"role": "user","content": user_prompt}]
 
         if assistant_prompt is not None:
             messages.insert(1, {"role": "assistant", "content": assistant_prompt})
 
         prompt = self.pipeline.tokenizer.apply_chat_template(
-                messages, 
-                tokenize=False, 
-                add_generation_prompt=True
-        )
+            messages, tokenize=False, add_generation_prompt=True)
 
         terminators = [
             self.pipeline.tokenizer.eos_token_id,
