@@ -22,3 +22,5 @@
 - task#N - ветка, предназначенная для решения конкретной/атомарной задачи, проведения эксперимента, описанной в соответствующем issue на gitlab.
 
 Пример работы с описанной структурой веток:
+
+![alt text](https://github.com/zer0o0ne/Personal-AI/blob/dev/docs/branch_workflow.jpg)
