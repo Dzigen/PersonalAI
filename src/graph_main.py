@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Dict
 from tqdm import tqdm
 
 from .knowledge_graph_model import GraphModel, GraphModelConfig, EmbeddingsModelConfig, EmbeddingsModel
@@ -37,10 +37,10 @@ class RemoteKnowledgeGraph:
         self.log(f"- answer: {answer}", verbose=self.config.verbose)
         return answer
 
-    def update_memory(self, new_info: List[str]):
+    def update_memory(self, new_info: List[str], properties: List[Dict]):
         self.log("Start memory-updating...", verbose=self.config.verbose)
-        for info in tqdm(new_info):
-            self.mem_pipeline.remember(info)
+        for info, props in tqdm(zip(new_info, properties)):
+            self.mem_pipeline.remember(info, props)
         self.log("Memory updated successfully!", verbose=self.config.verbose)
             
         

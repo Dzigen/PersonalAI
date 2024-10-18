@@ -28,19 +28,19 @@ class LLMExtractor:
         self.num_hyperedges = 0
 
     def extract(self, text: str, need_simple: bool = True, need_thesises: bool = True, 
-                need_episodic: bool = True, hyper_node_prop: Dict = {}, simple_rel_prop: Dict = {}) -> List[Triplet]:
+                need_episodic: bool = True, properties: Dict = {}) -> List[Triplet]:
         assert need_simple or need_thesises
         self.log("START EXTRACTION...", verbose=self.config.verbose)
         new_triplets = []
         if need_simple:
-            new_triplets += self.extract_triplets(text, rel_prop=simple_rel_prop)
+            new_triplets += self.extract_triplets(text, rel_prop=properties)
             
         if need_thesises:
-            new_triplets += self.extract_thesises(text, node_prop=hyper_node_prop)
+            new_triplets += self.extract_thesises(text, node_prop=properties)
             
         if need_episodic:
             new_triplets += self.get_episodic_relationships(
-                text, self.get_entities_from_triplets(new_triplets), node_prop=hyper_node_prop)
+                text, self.get_entities_from_triplets(new_triplets), node_prop=properties)
             
         return new_triplets
 

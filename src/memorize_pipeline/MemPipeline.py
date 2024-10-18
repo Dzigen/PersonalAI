@@ -8,7 +8,7 @@ from .extractor import LLMExtractorConfig
 from .updator import LLMUpdatorConfig
 from ..qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
 from ..knowledge_graph_model import KnowledgeGraphModel
-from ..utils import Logger
+from ..utils import Logger, Triplet
 
 @dataclass
 class MemPipelineConfig:
@@ -31,9 +31,9 @@ class MemPipeline:
 
     def remember(self, text: str, replacing_window_width: int = 32, replacing_window_depth: int = 1, 
                  need_simple: bool = True, need_thesises: bool = True, need_episodic: bool = True, 
-                 need_update: bool = False, node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
+                 need_update: bool = False, properties: Dict = dict()) -> List[Triplet]:
         assert need_simple or need_thesises
-        new_triplets = self.extractor.extract(text, need_simple, need_thesises, need_episodic, node_prop, rel_prop)  
+        new_triplets = self.extractor.extract(text, need_simple, need_thesises, need_episodic, properties)  
         self.log("PROCESSED NEW TRIPLETS: " + str(new_triplets), verbose=self.config.log_verbose)
 
         # TODO
