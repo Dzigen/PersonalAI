@@ -11,3 +11,5 @@ log.txt
 pai_venv/
 notebooks/scripts/extract_parts
 experiments/../*.json
+docs/_build
+docs/log

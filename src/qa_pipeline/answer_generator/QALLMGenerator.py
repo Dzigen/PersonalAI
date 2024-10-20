@@ -1,17 +1,19 @@
-from .utils import QUESTION_ANSWERING_USER_PROMPT, QA_LOG_PATH
+from typing import List
+from dataclasses import dataclass, field\
+
+from .utils import QA_USER_PROMPT, QA_SYSTEM_PROMPT, QA_LOG_PATH
 from ...utils.data_structs import Triplet
-from ...agents.private import GigaChatAgent
+from ...agents import AgentDriver, AgentDriverConfig
 from ...utils.data_structs import TripletCreator
 from ...utils.data_structs import RelationType
-from ...utils import Logger
-
-from typing import List
-from dataclasses import dataclass, field
+from ...utils import Logger, detect_lang
 
 @dataclass
 class QALLMGeneratorConfig:
-    lang: str = "rus"
-    user_prompt: dict = field(default_factory=lambda: QUESTION_ANSWERING_USER_PROMPT)
+    lang: str = "auto"
+    system_prompt: dict = field(default_factory=lambda: QA_SYSTEM_PROMPT)
+    user_prompt: dict = field(default_factory=lambda: QA_USER_PROMPT)
+    agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
     log: Logger = field(default_factory=lambda: Logger(QA_LOG_PATH))
     verbose: bool = False
@@ -20,9 +22,9 @@ class QALLMGenerator:
     """Главный класс для генерации ответов по пользовательским вопросам на основе 
     извлечённой информации из графа знаний
     """
-    def __init__(self, llm_agent: GigaChatAgent, config: QALLMGeneratorConfig = QALLMGeneratorConfig()) -> None:
-        self.llm_agent = llm_agent
+    def __init__(self, config: QALLMGeneratorConfig = QALLMGeneratorConfig()) -> None:
         self.config = config
+        self.agent = AgentDriver.connect(config.agent_cofig)
         self.log = self.config.log
 
     def formate_context(self, triplets: List[Triplet]) -> str:
@@ -30,14 +32,19 @@ class QALLMGenerator:
         return "\n".join(filtered_context)
 
     def generate(self, query: str, context: str) -> str:
-        lang = self.config.lang
-        formated_input = self.config.user_prompt[lang].format(q=query, c=context)
+        detected_lang = detect_lang(query) if self.config.lang == 'auto' else self.config.lang
+        self.log(f"DETECTED LANG: {detected_lang}", verbose=self.config.verbose)
+        
+        formated_input = self.config.user_prompt[detected_lang].format(q=query, c=context)
 
         found_line = ""
-        raw_output = self.llm_agent.generate(formated_input).strip()
-
+        raw_output = self.agent.generate(
+            system_prompt=self.config.system_prompt[detected_lang], 
+            user_prompt=formated_input).strip()
         self.log(f"RAW_ANSWER: {raw_output}", verbose=self.config.verbose)
-        if lang == "eng":
+
+        # TO MODIFY
+        if detected_lang == "en":
             for line in raw_output.split("\n"):
                 if "Final answer 3" in line:
                     found_line = line
@@ -48,6 +55,7 @@ class QALLMGenerator:
             else:
                 self.log("NOT FORMATED ANSWER", verbose=self.config.verbose)
                 answer = raw_output
-        elif lang == "rus":
+        elif detected_lang == "ru":
             answer = raw_output
+
         return answer

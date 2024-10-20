@@ -1,74 +1,66 @@
-from ...agents.private import GigaChatAgent
-from .utils import TRIPLETS_EXTRACTION_PROMPT_ENG, THESISES_EXTRACTION_PROMPT_ENG, \
-                    TRIPLETS_EXTRACTION_PROMPT, THESISES_EXTRACTION_PROMPT, \
-                    TRIPLETS_EXTRACTION_PROMPT_ENG_SYSTEM, THESISES_EXTRACTION_PROMPT_ENG_SYSTEM, \
-                    TRIPLETS_EXTRACTION_PROMPT_SYSTEM, THESISES_EXTRACTION_PROMPT_SYSTEM, \
-                    TRIPLETS_EXTRACTION_PROMPT_ENG_USER, THESISES_EXTRACTION_PROMPT_ENG_USER, \
-                    TRIPLETS_EXTRACTION_PROMPT_USER, THESISES_EXTRACTION_PROMPT_USER, \
-                    Logger, EXTRACT_LOG
-from ...utils.data_structs import TripletCreator, NodeCreator, NODES_TYPES_MAP, RELATIONS_TYPES_MAP, Node, Relation, RelationType, NodeType, Triplet
-
 from dataclasses import dataclass, field
 from typing import List, Dict
 import ast
 
+from .utils import MEM_EXTRACT_LOG_PATH, MEM_EXTRACT_TRIPLET_SYSTEM_PROMPT, MEM_EXTRACT_TRIPLET_USER_PROMPT, MEM_EXTRACT_THESIS_SYSTEM_PROMPT, MEM_EXTRACT_THESIS_USER_PROMPT
+from ...utils import Logger, detect_lang
+from ...utils.data_structs import TripletCreator, NodeCreator, Node, Relation, RelationType, NodeType, Triplet
+from ...agents import AgentDriver, AgentDriverConfig
+
 @dataclass
 class LLMExtractorConfig:
-    triplet_extraction_prompt: str = TRIPLETS_EXTRACTION_PROMPT_ENG
-    thesis_extraction_prompt: str = THESISES_EXTRACTION_PROMPT_ENG
-    
-    triplet_extraction_prompt_system: str = TRIPLETS_EXTRACTION_PROMPT_ENG_SYSTEM
-    thesis_extraction_prompt_system: str = THESISES_EXTRACTION_PROMPT_ENG_SYSTEM
-    
-    triplet_extraction_prompt_user: str = TRIPLETS_EXTRACTION_PROMPT_ENG_USER
-    thesis_extraction_prompt_user: str = THESISES_EXTRACTION_PROMPT_ENG_USER
-    log: Logger = field(default_factory=lambda: Logger(EXTRACT_LOG))
+    lang: str = "auto"
+    agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
+    triplet_extract_system_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_TRIPLET_SYSTEM_PROMPT)
+    triplet_extract_user_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_TRIPLET_USER_PROMPT)
+    thesis_extract_system_prompt:  dict = field(default_factory=lambda: MEM_EXTRACT_THESIS_SYSTEM_PROMPT)
+    thesis_extract_user_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_THESIS_USER_PROMPT)
+    log: Logger = field(default_factory=lambda: Logger(MEM_EXTRACT_LOG_PATH))
     verbose: bool = False
 
 class LLMExtractor:
 
-    def __init__(self, agent_conn: GigaChatAgent, config: LLMExtractorConfig = LLMExtractorConfig()) -> None:
-        self.agent_conn = agent_conn
+    def __init__(self, config: LLMExtractorConfig = LLMExtractorConfig()) -> None:
         self.config = config
-        self.triplet_extraction_prompt = config.triplet_extraction_prompt
-        self.thesis_extraction_prompt = config.thesis_extraction_prompt
-        
-        self.triplet_extraction_prompt_system = config.triplet_extraction_prompt_system
-        self.thesis_extraction_prompt_system = config.thesis_extraction_prompt_system
-        
-        self.triplet_extraction_prompt_user = config.triplet_extraction_prompt_user
-        self.thesis_extraction_prompt_user = config.thesis_extraction_prompt_user
+        self.agent = AgentDriver.connect(config.agent_config)
         self.log = config.log
         self.num_hyperedges = 0
 
     def extract(self, text: str, need_simple: bool = True, need_thesises: bool = True, 
-                need_episodic: bool = True, hyper_node_prop: Dict = {}, simple_rel_prop: Dict = {}) -> List[Triplet]:
+                need_episodic: bool = True, properties: Dict = {}) -> List[Triplet]:
         assert need_simple or need_thesises
         self.log("START EXTRACTION...", verbose=self.config.verbose)
+        detected_lang = detect_lang(text) if self.config.lang == 'auto' else self.config.lang
+        self.log(f"DETECTED LANG: {detected_lang}", verbose=self.config.verbose)
+        
         new_triplets = []
+
         if need_simple:
-            new_triplets += self.extract_triplets(text, rel_prop=simple_rel_prop)
+            new_triplets += self.extract_triplets(text, detected_lang, rel_prop=properties)
             
         if need_thesises:
-            new_triplets += self.extract_thesises(text, node_prop=hyper_node_prop)
+            new_triplets += self.extract_thesises(text, detected_lang, node_prop=properties)
             
         if need_episodic:
             new_triplets += self.get_episodic_relationships(
-                text, self.get_entities_from_triplets(new_triplets), node_prop=hyper_node_prop)
+                text, self.get_entities_from_triplets(new_triplets), node_prop=properties)
             
         return new_triplets
 
-    def extract_triplets(self, text: str, node_prop = {}, rel_prop = {}) -> List[Triplet]:
-        raw_response = self.agent_conn.generate(self.triplet_extraction_prompt_user.format(text = text), 
-                                                system_prompt = self.triplet_extraction_prompt_system)
+    def extract_triplets(self, text: str, lang: str, node_prop = {}, rel_prop = {}) -> List[Triplet]:
         self.log("TEXT: " + text, verbose=self.config.verbose)
+        raw_response = self.agent.generate(
+            system_prompt=self.config.triplet_extract_system_prompt[lang],
+            user_prompt=self.config.triplet_extract_user_prompt[lang].format(text=text))
         self.log("EXTRACTED TRIPLETS: " + str(raw_response), verbose=self.config.verbose)
         new_triplets = self.parse_triplets(raw_response, node_prop, rel_prop)
         return new_triplets
         
-    def extract_thesises(self, text: str, node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
-        raw_response = self.agent_conn.generate(self.thesis_extraction_prompt.format(text=text))
+    def extract_thesises(self, text: str, lang: str, node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
         self.log("TEXT: " + text, verbose=self.config.verbose)
+        raw_response = self.agent.generate(
+            system_prompt=self.config.thesis_extract_system_prompt[lang],
+            user_prompt=self.config.thesis_extract_user_prompt[lang].format(text=text))
         self.log("EXTRACTED THESISES: " + str(raw_response), verbose=self.config.verbose)
         new_triplets = self.parse_thesises(raw_response, node_prop, rel_prop)
         return new_triplets

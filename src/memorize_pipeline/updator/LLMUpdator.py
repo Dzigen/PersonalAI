@@ -1,20 +1,26 @@
-from .utils import Logger, log_path, REPLACE_THESIS_PROMPT, REPLACE_SIMPLE_PROMPT
-from ...agents.private import GigaChatAgent
+from .utils import MEM_UPDATE_LOG, REPLACE_THESIS_PROMPT, REPLACE_SIMPLE_PROMPT
+from ...utils import Logger
+from ...agents import AgentDriver, AgentDriverConfig
 from ...qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
 
 from dataclasses import dataclass, field
+from typing import Dict
 
 @dataclass
 class LLMUpdatorConfig:
-    log: Logger = field(default_factory=lambda: Logger(log_path))
-    replace_thesis_prompt: str = REPLACE_THESIS_PROMPT
-    replace_simple_prompt: str = REPLACE_SIMPLE_PROMPT
+    lang: str = "auto"
+    agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig)
+    replace_thesis_prompt: Dict = field(default_factory=lambda: REPLACE_THESIS_PROMPT)
+    replace_simple_prompt: Dict = field(default_factory=lambda: REPLACE_SIMPLE_PROMPT)
+    log: Logger = field(default_factory=lambda: Logger(MEM_UPDATE_LOG))
+    verbose: bool = False
 
+# TODO
 class LLMUpdator:
 
-    def __init__(self, config: LLMUpdatorConfig, llm_agent: GigaChatAgent, bfs: BFSRetriever) -> None:
+    def __init__(self, config: LLMUpdatorConfig, bfs: BFSRetriever) -> None:
         self.config = config
-        self.llm_agent = llm_agent
+        self.agent = AgentDriver.connect(config.agent_config)
         self.bfs = bfs
 
         self.replace_simple_prompt = config.replace_simple_prompt

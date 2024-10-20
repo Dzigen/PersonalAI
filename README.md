@@ -20,11 +20,14 @@
 ![alt text](https://github.com/zer0o0ne/Personal-AI/blob/dev/docs/branch_workflow.jpg)
 
 ##### Полезные материалы (структура ML-проекта): 
-https://drive.google.com/file/d/1g0tzALqKygFTtzA-C5l5ZOdC9tKiUTzc/view?usp=sharing
+* https://drive.google.com/file/d/1g0tzALqKygFTtzA-C5l5ZOdC9tKiUTzc/view?usp=sharing
 
-##### Команда для сборки образа: 
-docker build -t m.menschikov/agent_api:v2 .
+##### Команда для деплоя контейнеров: 
+* docker build -t m.menschikov/agent_api:v2 .
+* docker run -d -p 45678:4567 -v ./models:/app/models -it  --name m.menschikov.agent_api_cntrn --memory=32g --memory-swap=32g --cpuset-cpus=0-4 --gpus '"device=1"' m.menschikov/agent_api:v2
 
-##### Команда для поднятия контейнера с llm-агентов: 
-docker run -d -p 45678:4567 -v ./models:/app/models -it  --name m.menschikov.agent_api_cntrn --memory=32g --memory-swap=32g --cpuset-cpus=0-4 --gpus '"device=1"' m.menschikov/agent_api:v2
-
+##### Команды для генерации документации
+* find . -type d -name __pycache__ -exec rm -r {} \+
+* sphinx-apidoc -o ../docs .
+* make html
+* make clean
