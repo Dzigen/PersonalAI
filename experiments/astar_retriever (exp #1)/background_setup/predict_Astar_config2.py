@@ -15,7 +15,7 @@ S4_META = {
     "MAX_LIST_LEN": -1
 }
 
-save_log_dir = f"{SAVE_STAGE4_LOGDIR}/{S4_META['SAVE_GEN_ANSWERS_VERSION']}" 
+save_log_dir = f"{SAVE_STAGE4_LOGDIR}/{S4_META['SAVE_GEN_ANSWERS_VERSION']}"
 load_log_tmpdata_dir = f"{SAVE_STAGE3_1_LOGDIR}/{S4_META['LOAD_FILTERED_TRIPLETS_VERSION']}/{LOG_TMPDATA_DIRNAME}"
 save_log_tmpdata_dir = f"{save_log_dir}/{LOG_TMPDATA_DIRNAME}"
 save_log_metafile = f"{save_log_dir}/{LOG_META_FILENMAE}"
@@ -28,7 +28,7 @@ for qa_file in qa_files:
     generate_answers_from_triplets_file(
         qa_file, load_log_tmpdata_dir, save_log_tmpdata_dir, S4_META, EVAL_DATADIR)
     gc.collect()
-    
+
 save_json(S4_META, save_log_metafile)
 
 ############### Оценка качеста ###############
@@ -40,7 +40,7 @@ SF_META = {
 
 METRICS = ReaderMetrics(base_dir=UTILS_DIR)
 
-save_log_dir = f"{SAVE_SCORES_LOGDIR}/{SF_META['SAVE_SCORES_VERSION']}" 
+save_log_dir = f"{SAVE_SCORES_LOGDIR}/{SF_META['SAVE_SCORES_VERSION']}"
 save_log_metafile = f"{save_log_dir}/{LOG_META_FILENMAE}"
 save_log_tmpdata_dir = f"{save_log_dir}/{LOG_SCORES_DIRNAME}"
 gen_answers_dir = f'{SAVE_STAGE4_LOGDIR}/{SF_META["LOAD_GEN_ANSWERS_VERSION"]}/{LOG_TMPDATA_DIRNAME}'

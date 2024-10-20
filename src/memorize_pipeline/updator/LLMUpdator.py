@@ -29,31 +29,31 @@ class LLMUpdator:
 
     def update(self, new_triplets, replacing_window_width, replacing_window_depth, need_simple = True, need_thesises = True):
         assert need_simple or need_thesises
-        entities = self.get_entities_from_triplets(new_triplets)  
-        triplets_to_remove = []  
-        
-        if need_simple:    
+        entities = self.get_entities_from_triplets(new_triplets)
+        triplets_to_remove = []
+
+        if need_simple:
             ex_triplets = self.bfs.bfs_(entities, replacing_window_depth, edge_types = ["simple"], max_triplets = replacing_window_width)
             if ex_triplets:
-                replacements = self.llm_agent.generate(self.replace_simple_prompt.format(ex_triplets = self.stringify_all(ex_triplets), 
+                replacements = self.llm_agent.generate(self.replace_simple_prompt.format(ex_triplets = self.stringify_all(ex_triplets),
                                                                         new_triplets = self.stringify_all(new_triplets)))
                 self.log("FOUND SIMPLE REPLACEMENTS: " + str(replacements))
                 triplets_to_remove += self.parse_replacements_simple(replacements)
             else:
                 self.log("FOUND NO EXISTED SIMPLE TRIPLETS TO REMOVE")
-            
-        if need_thesises:    
+
+        if need_thesises:
             ex_triplets = self.bfs.bfs_(entities, replacing_window_depth, edge_types = ["hyper"], max_triplets = replacing_window_width)
             if ex_triplets:
-                replacements = self.llm_agent.generate(self.replace_thesis_prompt.format(ex_triplets = self.stringify_all(ex_triplets), 
+                replacements = self.llm_agent.generate(self.replace_thesis_prompt.format(ex_triplets = self.stringify_all(ex_triplets),
                                                                         new_triplets = self.stringify_all(new_triplets)))
                 self.log("FOUND THESIS REPLACEMENTS: " + str(replacements))
                 triplets_to_remove += self.parse_replacements_thesis(replacements)
             else:
                 self.log("FOUND NO EXISTED THESIS TRIPLETS TO REMOVE")
-            
+
         return triplets_to_remove
-    
+
     @staticmethod
     def parse_replacements_simple(raw_replacements):
         raw_replacements = raw_replacements.lower()
@@ -76,7 +76,7 @@ class LLMUpdator:
                 ]
             )
         return triplets_to_remove
-        
+
     @staticmethod
     def parse_replacements_thesis(raw_replacements):
         raw_replacements = raw_replacements.lower()
@@ -92,7 +92,7 @@ class LLMUpdator:
                 ]
             )
         return triplets_to_remove
-    
+
     @staticmethod
     def get_entities_from_triplets(triplets):
         entities = []
@@ -102,14 +102,14 @@ class LLMUpdator:
             if triplet[2] not in entities:
                 entities.append(triplet[2])
         return entities
-    
-    @staticmethod            
+
+    @staticmethod
     def stringify(triplet):
         if triplet[1]["prop"]["type"] in ["hyper", "episodic"]:
             return triplet[1]["prop"]["time"] + ": " + triplet[2]["name"]
         if triplet[1]["prop"]["type"] in ["simple"]:
             return triplet[1]["prop"]["time"] + ": " + " ".join([triplet[0]["name"], triplet[1]["name"], triplet[2]["name"]])
-        
-    @staticmethod    
+
+    @staticmethod
     def stringify_all(triplets):
-        return list({LLMUpdator.stringify(triplet) for triplet in triplets}) 
+        return list({LLMUpdator.stringify(triplet) for triplet in triplets})

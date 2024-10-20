@@ -33,7 +33,7 @@ class AStarGraphSearchConfig:
     accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic])
 
 class AStarMetrics:
-    def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: str, log: Logger, 
+    def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: str, log: Logger,
                 config: AStarMetricsConfig = AStarMetricsConfig(), cache: AbstractKVDatabaseConnection = None,
                 verbose: bool = False):
         """_summary_
@@ -122,13 +122,13 @@ class AStarMetrics:
                 #print(node1_id, node2_id)
                 instances = self.kg_model.embeddings_struct.vectordbs['nodes'].read([node1_id, node2_id], includes=['embeddings'])
                 #print(instances)
-                # calculation ip distance 
+                # calculation ip distance
                 dist = 1 - np.dot(instances[0].embedding, instances[1].embedding)
             else:
                 dist = 0
             self.cache.create(cache_key, {'v': dist})
             self.cache_info['dist']['calc'] += 1
-            
+
         return dist
 
     def bfs(self, s_node_id, e_node_id):
@@ -151,8 +151,8 @@ class AStarMetrics:
             vertex = queue.popleft()
             neighbours = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(vertex, parent[vertex], self.accepted_node_types)
             neo4j_queries_counter += 1
-            for neighbour in neighbours: 
-                if neighbour not in visited: 
+            for neighbour in neighbours:
+                if neighbour not in visited:
                     parent[neighbour] = vertex
                     D[neighbour] = D[vertex] + 1
                     visited.add(neighbour)
@@ -266,7 +266,7 @@ class AStarGraphSearch:
         self.config = search_config
         self.kg_model = kg_model
         self.metrics = AStarMetrics(
-            kg_model=kg_model, accepted_node_types=self.config.accepted_node_types, 
+            kg_model=kg_model, accepted_node_types=self.config.accepted_node_types,
             log=self.log, config=self.config.metrics_config, cache=cache, verbose=verbose)
 
     def search_path(self, start_node_id: str, end_node_id: str) -> Tuple[List[str], List[str], Dict[str, int], Dict[str, str], str]:
@@ -283,9 +283,9 @@ class AStarGraphSearch:
         frontier = []
         heapq.heappush(frontier, (0, start_node_id))
         parent = {start_node_id: None}
-        cost_so_far = {start_node_id: 0} 
+        cost_so_far = {start_node_id: 0}
         D = {start_node_id: 0}
-    
+
         spare_closest_node_id = start_node_id
         passed_nodes_counter = 0
         while len(frontier):
@@ -300,10 +300,10 @@ class AStarGraphSearch:
                 self.log("PASSED MAX DEPTH LIMIT", verbose=self.verbose)
                 continue
 
-            # Сохраняем промежуточную вершину, до которой есть путь. 
+            # Сохраняем промежуточную вершину, до которой есть путь.
             # Если не будет найден путь до end_node, то будет использован путь до spare_closest_node
             spare_closest_node_id = current_node_id
-            
+
             #
             if current_node_id == end_node_id:
                 break
@@ -312,7 +312,7 @@ class AStarGraphSearch:
             #self.log(f"adjenced nodes: {len(adj_nodes)}", verbose=self.verbose)
 
             for adj_n_id in adj_nodes:
-                new_cost = cost_so_far[current_node_id] + 1 # работаем с невзвешенным графом      
+                new_cost = cost_so_far[current_node_id] + 1 # работаем с невзвешенным графом
                 if (adj_n_id not in cost_so_far) or (new_cost < cost_so_far[adj_n_id]):
                     parent[adj_n_id] = current_node_id
                     D[adj_n_id] = D[current_node_id] + 1
@@ -320,11 +320,11 @@ class AStarGraphSearch:
                     cost_so_far[adj_n_id] = new_cost
                     priority = new_cost + self.metrics.compute_h_metric(adj_n_id, end_node_id, parent)
                     heapq.heappush(frontier, (priority, adj_n_id))
-                        
+
         self.log(f"start-spare node path len: {D[spare_closest_node_id]}" if end_node_id not in parent else f"start-end node path len: {D[end_node_id]}", verbose=self.verbose)
         self.log(f"astar neo4j queries: {passed_nodes_counter}", verbose=self.verbose)
         return cost_so_far, frontier, D, parent, spare_closest_node_id
-         
+
 class AStarTripletsRetriever(AbstractTripletsRetriever):
     """Главный класс для извлечения триплетов из графа знаний, релевантных запросу, на основе A*-алгоритма поиска.
 
@@ -332,8 +332,8 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
         AStarGraphSearch: A* алгоритм поиска по графу знаний.
         AbstractTripletsRetriever: Интерфейс для классов с алгоритма извлечения релевантных триплетов из графов знаний.
     """
-    
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(), 
+
+    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
                  cache: AbstractKVDatabaseConnection = None, verbose: bool = False) -> None:
         """_summary_
 
@@ -366,7 +366,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
         :rtype: List[str]
         """
         end_node_id = spare_closest_node_id if (end_node_id not in parent) else end_node_id
-        
+
         path, end_flag, cur_n = [end_node_id], False, end_node_id
         while not end_flag:
             next_n = parent[cur_n]
@@ -399,11 +399,11 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
                     pair_nodes_counter += 1
                     self.log(f"{all_pair_nodes_counter} / {pair_nodes_counter}", verbose=self.verbose)
                     end_node = nodes_ids[j]
-                    
+
                     s_time = time()
                     _, _, _, parent, spare_closest_node = self.graph_searcher.search_path(start_node, end_node)
                     self.log(f"search elapsed_time: {time() - s_time}", verbose=self.verbose)
-                    
+
                     s_time = time()
                     nodes_path = self.get_nodes_path(parent, end_node, spare_closest_node)
                     self.log(f"get_path elapsed_time: {time() - s_time}", verbose=self.verbose)
@@ -412,7 +412,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
                     s_time = time()
                     unique_nodes_pairs.update([(nodes_path[i], nodes_path[i+1]) for i in range(len(nodes_path)-1)] if len(nodes_path) > 1 else [])
                     self.log(f"saving_nodes elapsed_time: {time() - s_time}", verbose=self.verbose)
-                    
+
                     self.log(self.graph_searcher.metrics.cache_info, verbose=self.verbose)
 
         # Сохраняем только уникальные триплеты (по их строковым представлениям)
@@ -428,4 +428,3 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
         self.log(f"= formating elapsed_time: {time() - s_time}", verbose=self.verbose)
 
         return list(unique_triplets.values())
-        

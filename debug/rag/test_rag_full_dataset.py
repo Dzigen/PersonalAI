@@ -21,7 +21,7 @@ def test(n_u, n_d, utt_emb, dialogs_emb, dataset, utterances, dialogs, add_manf_
             retrieved += "\n\nRelevant dialogs:\n\n"
             best_ids = (dialogs_emb @ task["embedding"]).topk(n_d).indices.cpu().detach().numpy()
             retrieved += "\n\n".join(dialogs[best_ids])
-        
+
         question = task["question"]
         log("QUESTION: " + str(question))
         log("RETRIEVED: " + str(retrieved))
@@ -33,14 +33,14 @@ Redmi and Note is made by Xiaomi, Iphone is made by Apple\n\n"""
 
 You are provided with relevant memories about dialogs: {retrieved}
 
-Question: {question} This is a closed question, the answer choices are listed in its text. 
+Question: {question} This is a closed question, the answer choices are listed in its text.
 You must respond with one of these options and nothing else.
 Answer: '''
         answer = agent.generate(prompt).lower()
         log("MODEL ANSWER: " + str(answer))
         results.append(task["answer"].strip('''"' .,:-''').lower() in answer)
         log("CURRENT ACCURACY: " + str(np.mean(results)))
-        log("==" * 30 + "\n")   
+        log("==" * 30 + "\n")
 
 
 n_utt, n_dia, n_utt_mix, n_dia_mix = [5, 10, 15, 20, 25], [3, 5, 7, 10, 15], [5, 7, 10, 12, 15], [2, 3, 5, 7, 10]
@@ -105,4 +105,3 @@ for n_u, n_d in zip(n_utt_mix, n_dia_mix):
         log.__init__(log_path + f"/mix_{n_u}_{n_d}_{question_type}" )
         add_manf_info = question_type in for_manufactured_info
         test(n_u, n_d, utt_emb, dialogs_emb, dataset[question_type], utterances, dialogs, add_manf_info, agent, log)
-

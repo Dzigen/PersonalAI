@@ -230,7 +230,7 @@ CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
                         prop_values = [val.lower() for val in triplet[2].values()]
                         cnt1 = 0
                         if subj.lower() in another_entities1:
-                            cnt1 += 1 
+                            cnt1 += 1
                         if obj.lower() in another_entities1:
                             cnt1 += 1
                         if any([prop_value.lower() in another_entities1 for prop_value in prop_values]):

@@ -64,8 +64,8 @@ Info: {info}"""}
 
 def generate(messages):
     prompt = pipeline.tokenizer.apply_chat_template(
-        messages, 
-        tokenize=False, 
+        messages,
+        tokenize=False,
         add_generation_prompt=True
     )
     outputs = pipeline(

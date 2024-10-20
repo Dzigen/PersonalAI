@@ -1,7 +1,7 @@
 import sys
 import json
 from tqdm import tqdm
-from openai import OpenAI 
+from openai import OpenAI
 import os
 from functools import reduce
 import joblib
@@ -57,16 +57,16 @@ print("reading/formating triplets from graphdb...")
 raw_triplets = list(kg_model.graph_db.execute_query("MATCH (n1)-[rel]->(n2) RETURN n1, rel, n2"))
 formated_triplets = []
 for raw_triplet in tqdm(raw_triplets):
-    start_node = NodeCreator.create(id=raw_triplet['n1'].element_id, name=str(raw_triplet['n1']['name']), 
+    start_node = NodeCreator.create(id=raw_triplet['n1'].element_id, name=str(raw_triplet['n1']['name']),
                                         type=NODES_TYPES_MAP[list(raw_triplet['n1'].labels)[0]],
                                         prop=dict(raw_triplet['n1']))
-    end_node = NodeCreator.create(id=raw_triplet['n2'].element_id, name=str(raw_triplet['n2']['name']), 
+    end_node = NodeCreator.create(id=raw_triplet['n2'].element_id, name=str(raw_triplet['n2']['name']),
                                         type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]],
                                         prop=dict(raw_triplet['n2']))
-    relation = Relation(id=raw_triplet['rel'].element_id, name=str(raw_triplet['rel']['name']), 
-                            type=RELATIONS_TYPES_MAP[raw_triplet['rel'].type], 
+    relation = Relation(id=raw_triplet['rel'].element_id, name=str(raw_triplet['rel']['name']),
+                            type=RELATIONS_TYPES_MAP[raw_triplet['rel'].type],
                             prop=dict(raw_triplet['rel']))
-    
+
     triplet = TripletCreator.create(start_node, relation, end_node, add_stringified_triplet=False)
     formated_triplets.append(triplet)
 

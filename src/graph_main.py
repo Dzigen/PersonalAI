@@ -30,7 +30,7 @@ class RemoteKnowledgeGraph:
     def __init__(self, config: RemoteKnowledgeGraphConfig):
         self.config = config
         self.log = self.config.log
-        
+
         self.kg_model = KnowledgeGraphModel(
             graph_struct=GraphModel(config.graph_struct_config),
             embeddings_struct=EmbeddingsModel(config.embedds_struct_config))
@@ -63,12 +63,3 @@ class RemoteKnowledgeGraph:
         for info, props in tqdm(zip(new_info, properties)):
             self.mem_pipeline.remember(info, props)
         self.log("Memory updated successfully!", verbose=self.config.verbose)
-            
-        
-                
-        
-        
-    
-        
-        
-

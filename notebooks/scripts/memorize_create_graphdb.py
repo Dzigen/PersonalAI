@@ -1,7 +1,7 @@
 import sys
 import json
 from tqdm import tqdm
-from openai import OpenAI 
+from openai import OpenAI
 import os
 import joblib
 from functools import reduce
@@ -56,7 +56,7 @@ print(len(extracted_triplets))
 #        for item_idx in range(len(extracted_triplets[group_idx][triplet_idx])):
 #            if type(extracted_triplets[group_idx][triplet_idx][item_idx]['name']) is not str:
 #                not_str_counter += 1
-#            
+#
 #            all_items_counter += 1
 #            extracted_triplets[group_idx][triplet_idx][item_idx]['name'] = str(extracted_triplets[group_idx][triplet_idx][item_idx]['name']).strip()
 #
@@ -81,11 +81,11 @@ for triplet in tqdm(extracted_triplets):
 #for raw_triplet in tqdm(extracted_triplets):
 #    formated_triplets.append(TripletCreator.create(
 #        NodeCreator.create(
-#            name=raw_triplet[0]['name'], type=NODES_TYPES_MAP[raw_triplet[0]['type']], 
+#            name=raw_triplet[0]['name'], type=NODES_TYPES_MAP[raw_triplet[0]['type']],
 #            prop=raw_triplet[0]['prop'], add_stringified_node=False),
-#        Relation(name=raw_triplet[1]['name'], type=RELATIONS_TYPES_MAP[raw_triplet[1]['prop']['type']], 
+#        Relation(name=raw_triplet[1]['name'], type=RELATIONS_TYPES_MAP[raw_triplet[1]['prop']['type']],
 #                 prop={k: v for k, v in raw_triplet[1]['prop'].items() if k != 'type'}),
-#        NodeCreator.create(name=raw_triplet[2]['name'], type=NODES_TYPES_MAP[raw_triplet[2]['type']], 
+#        NodeCreator.create(name=raw_triplet[2]['name'], type=NODES_TYPES_MAP[raw_triplet[2]['type']],
 #                           prop=raw_triplet[2]['prop'], add_stringified_node=False)
 #    ))
 

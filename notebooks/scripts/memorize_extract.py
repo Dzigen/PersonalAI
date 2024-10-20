@@ -9,13 +9,13 @@ import argparse
 # Define the parser
 parser = argparse.ArgumentParser(description='Short sample app')
 
-# Declare an argument (`--algo`), saying that the 
-# corresponding value should be stored in the `algo` 
-# field, and using a default value if the argument 
+# Declare an argument (`--algo`), saying that the
+# corresponding value should be stored in the `algo`
+# field, and using a default value if the argument
 # isn't given
 parser.add_argument('--batch', action="store", dest='batch', default=-1)
 
-# Now, parse the command line arguments and store the 
+# Now, parse the command line arguments and store the
 # values in the `args` variable
 args = parser.parse_args()
 

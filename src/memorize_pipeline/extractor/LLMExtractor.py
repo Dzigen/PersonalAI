@@ -40,7 +40,7 @@ class LLMExtractor:
         self.log = config.log
         self.num_hyperedges = 0
 
-    def extract(self, text: str, need_simple: bool = True, need_thesises: bool = True, 
+    def extract(self, text: str, need_simple: bool = True, need_thesises: bool = True,
                 need_episodic: bool = True, properties: Dict = {}) -> List[Triplet]:
         """_summary_
 
@@ -61,19 +61,19 @@ class LLMExtractor:
         self.log("START EXTRACTION...", verbose=self.config.verbose)
         detected_lang = detect_lang(text) if self.config.lang == 'auto' else self.config.lang
         self.log(f"DETECTED LANG: {detected_lang}", verbose=self.config.verbose)
-        
+
         new_triplets = []
 
         if need_simple:
             new_triplets += self.extract_triplets(text, detected_lang, rel_prop=properties)
-            
+
         if need_thesises:
             new_triplets += self.extract_thesises(text, detected_lang, node_prop=properties)
-            
+
         if need_episodic:
             new_triplets += self.get_episodic_relationships(
                 text, self.get_entities_from_triplets(new_triplets), node_prop=properties)
-            
+
         return new_triplets
 
     def extract_triplets(self, text: str, lang: str, node_prop = {}, rel_prop = {}) -> List[Triplet]:
@@ -97,7 +97,7 @@ class LLMExtractor:
         self.log("EXTRACTED TRIPLETS: " + str(raw_response), verbose=self.config.verbose)
         new_triplets = self.parse_triplets(raw_response, node_prop, rel_prop)
         return new_triplets
-        
+
     def extract_thesises(self, text: str, lang: str, node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
         """_summary_
 
@@ -119,7 +119,7 @@ class LLMExtractor:
         self.log("EXTRACTED THESISES: " + str(raw_response), verbose=self.config.verbose)
         new_triplets = self.parse_thesises(raw_response, node_prop, rel_prop)
         return new_triplets
-    
+
     @staticmethod
     def get_entities_from_triplets(triplets: List[Triplet]) -> List[Node]:
         """_summary_
@@ -134,7 +134,7 @@ class LLMExtractor:
             entities[triplet.start_node.stringified] = triplet.start_node
             entities[triplet.end_node.stringified] = triplet.end_node
         return list(entities.values())
-    
+
     @staticmethod
     def parse_thesises(response: str, node_prop: Dict, rel_prop: Dict) -> List[Triplet]:
         """_summary_
@@ -150,7 +150,7 @@ class LLMExtractor:
         """
         #raw_triplets = ' '.join(list(filter(lambda v: len(v) and (';' in v) and ('.' in v), response.split("\n")[1:-1]))).lower()
         if ":" in response:
-            response = response.split(":")[-1]  
+            response = response.split(":")[-1]
         raw_thesises = response.split(".")
         thesises = []
         for raw_thesis in raw_thesises:
@@ -162,16 +162,16 @@ class LLMExtractor:
                 entities = ast.literal_eval(raw_entities.strip(''' \n'".,/'''))
             except:
                 continue
-            
+
             thesis_node = NodeCreator.create(name=str(thesis), type=NodeType.hyper, prop={**node_prop})
             thesis_rel = Relation(name=RelationType.hyper.value, type=RelationType.hyper, prop={**rel_prop})
             for entity in entities:
                 thesises.append(TripletCreator.create(
                     NodeCreator.create(name=str(entity), type=NodeType.object, prop={**node_prop}),
                     thesis_rel, thesis_node))
-            
+
         return thesises
-    
+
     @staticmethod
     def parse_triplets(raw_triplets: str, node_prop: Dict, rel_prop: Dict) -> List[Triplet]:
         """_summary_
@@ -205,7 +205,7 @@ class LLMExtractor:
                 NodeCreator.create(name=str(obj), type=NodeType.object, prop={**node_prop})))
 
         return triplets
-    
+
     @staticmethod
     def get_episodic_relationships(text: str, entities: List[Node], node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
         """_summary_

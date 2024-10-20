@@ -36,14 +36,14 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
     def create_triplet(self, triplet: Triplet) -> None:
         created_nodes_count, created_rels_count = 0, 0
-        
+
         #
         s_node_content_id = self.generate_id(f"{triplet.start_node.type.value} {triplet.start_node.name}")
         if s_node_content_id in self.uniques_content_nodes:
             triplet.start_node.id = self.uniques_content_nodes[s_node_content_id]
         else:
             triplet.start_node.id = self.generate_id()
-            self.uniques_content_nodes[s_node_content_id] = triplet.start_node.id 
+            self.uniques_content_nodes[s_node_content_id] = triplet.start_node.id
 
         #
         e_node_content_id = self.generate_id(f"{triplet.end_node.type.value} {triplet.end_node.name}")
@@ -51,10 +51,10 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
             triplet.end_node.id = self.uniques_content_nodes[e_node_content_id]
         else:
             triplet.end_node.id = self.generate_id()
-            self.uniques_content_nodes[e_node_content_id] = triplet.end_node.id 
+            self.uniques_content_nodes[e_node_content_id] = triplet.end_node.id
 
         triplet.relation.id = self.generate_id()
-        
+
         self.edges[triplet.start_node.id].append(triplet.id)
         self.edges[triplet.end_node.id].append(triplet.id)
         self.adjacent_nodes[triplet.start_node.id].append(triplet.end_node.id)
@@ -67,7 +67,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         return created_nodes_count, created_rels_count
 
     def delete_triplet(self, triplet: Triplet) -> None:
-        
+
         if triplet.id in self.triplets_ids:
             self.triplets_ids.pop(triplet.id)
 
@@ -97,7 +97,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
         return filtered_nodes
 
-    def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:        
+    def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
         shared_triplets_ids = set(self.edges[node1_id]).union(set(self.edges[node2_id]))
         triplets = list(map(lambda id: self.triplets_ids[id], shared_triplets_ids))
         return triplets

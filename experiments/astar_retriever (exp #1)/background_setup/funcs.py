@@ -59,11 +59,11 @@ LOG_STATSDATA_DIRNAME = "stats"
 LOG_META_FILENMAE = "metadata.json"
 LOG_SCORES_DIRNAME = 'scores'
 
-LLM_URL = "https://985f-109-252-76-222.ngrok-free.app/llama" 
+LLM_URL = "https://985f-109-252-76-222.ngrok-free.app/llama"
 
 def generate(prompt: str) -> str:
     flag = True
-    while flag:    
+    while flag:
         try:
             response = requests.post(LLM_URL, params = {"prompt": prompt})
             resp = response.json()["response"]
@@ -115,14 +115,14 @@ def preproc_tripletes(raw_triplets: List[List[str]], META) -> str:
             formated_triplete = META["TRPLETE_PROMPT_TEMPLATES"]["opinion"].format(
                 p=relation["person"], o=relation["opinion"].replace('_', ' '),
                 t=relation["time"], f=feature_node['name'],d=device_node['name'])
-        
+
         elif triplete[1]["type"] == "has_device":
             device_node, person_node = (triplete[0], triplete[2]) if 'device' in triplete[0]["labels"] else (triplete[2], triplete[0])
             formated_triplete = META["TRPLETE_PROMPT_TEMPLATES"]['has_device'].format(d=device_node['name'], p=person_node['name'])
 
         else:
             raise ValueError
-        
+
         formated_triplets.append(formated_triplete)
 
     str_triplets = "\n".join(formated_triplets[:META["MAX_LIST_LEN"]] if META["MAX_LIST_LEN"] > 0 else formated_triplets)
@@ -138,10 +138,10 @@ def generate_answers_from_triplets_file(qa_file: str, load_log_tmpdata_dir: str,
         context = preproc_tripletes(triplete_item['filtered_triplets'], META)
         question = quiestion_item['question']
         prompt = META["QUESTION_PROMPT_TEMPLATE"].format(q=question, c=context)
-        
+
         #print()
         #print(prompt)
-        
+
         found_line = ""
         raw_answer = generate(prompt).strip()
         for line in raw_answer.split("\n"):
@@ -156,7 +156,7 @@ def generate_answers_from_triplets_file(qa_file: str, load_log_tmpdata_dir: str,
         #print(answer)
 
         generated_answers.append({'generated_answer': answer, 'used_prompt': prompt})
-        
+
     save_json(generated_answers, f"{save_log_tmpdata_dir}/{qa_file}")
 
 ##############
@@ -165,8 +165,8 @@ def measure_quality_from_answers_file(qa_file: str, gen_answers_dir: str, save_l
     print(qa_file)
     generated_answers_data = load_json(f"{gen_answers_dir}/{qa_file}")
     target_answers_data = load_json(f"{EVAL_DATADIR}/{qa_file}")
-    
-    gen_answers = list(map(lambda item: item['generated_answer'], generated_answers_data)) 
+
+    gen_answers = list(map(lambda item: item['generated_answer'], generated_answers_data))
     trgt_answers = list(map(lambda item: item['answer'], target_answers_data))[:len(gen_answers)]
 
     b1_scores = METRICS.bleu1(gen_answers, trgt_answers)

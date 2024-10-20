@@ -4,12 +4,12 @@ from pymongo import MongoClient
 from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 
 DEFAULT_MONGO_CONFIG = KVDBConnectionConfig(
-    host='localhost', port=27017, 
-    params={'dbname': 'personalai', 'collectionname': 'astar', 
+    host='localhost', port=27017,
+    params={'dbname': 'personalai', 'collectionname': 'astar',
             'user': 'mongo_root', 'password': 'root_password'})
 
 class MongoConnector(AbstractKVDatabaseConnection):
-    
+
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_MONGO_CONFIG) -> None:
         self.config = config
         self.open_connection()

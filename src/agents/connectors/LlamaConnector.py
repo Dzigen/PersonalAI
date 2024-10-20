@@ -10,9 +10,9 @@ DEFAULT_LLAMA_CONFIG = AgentConnectorConfig(
 class LlamaConnector(AbstractAgentConnector):
     def __init__(self, config: AgentConnectorConfig = DEFAULT_LLAMA_CONFIG) -> None:
         self.config = config
-    
+
     def check_connection(self) -> bool:
-        """Метод для проверка на наличие запущенного api с llm-агентом, 
+        """Метод для проверка на наличие запущенного api с llm-агентом,
         который готов принимать и обробатывать запросы.
 
         Returns:
@@ -28,7 +28,7 @@ class LlamaConnector(AbstractAgentConnector):
 
         Args:
             user_prompt (str): Запрос для llm-агента.
-            assistant_prompt (str, optional): Дополнительная к user_prompt-запросу информация, 
+            assistant_prompt (str, optional): Дополнительная к user_prompt-запросу информация,
                                               которая может быть использована llm-агентом при генерации ответа. Defaults to None.
             gen_strategy (Dict, optional): Стретегия генерации текстовой последовательности для llm-агента. Defaults to None.
 
@@ -46,7 +46,7 @@ class LlamaConnector(AbstractAgentConnector):
         body["gen_strategy"] = self.config.gen_strategy
         if assistant_prompt is not None:
             body["assistant_prompt"] = assistant_prompt
-        
+
         response = requests.post(url, json=body)
 
         if response.status_code == 200:

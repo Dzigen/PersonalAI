@@ -31,7 +31,7 @@ class Logger:
     def __init__(self, path):
         self.path = path
         os.makedirs(path, exist_ok=True)
-        
+
     def __call__(self, text, filename = "log.txt", verbose = True, debug=True):
         if debug:
             text = str(text)
@@ -39,7 +39,7 @@ class Logger:
                 print(text)
             with open(self.path + "/" + filename, "a") as file:
                 file.write(text + "\n")
-            
+
     def to_json(self, obj, filename = "history.json"):
         try:
             with open(self.path + "/" + filename, "w") as file:

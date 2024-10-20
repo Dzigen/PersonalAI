@@ -12,7 +12,7 @@ class TripletsFilterConfig:
     max_k: int = 50
 
 class TripletsFilter(AbstractTriplesFilter):
-    """Главный класс для фильтрации триплетов, извлечённых из графа знаний, 
+    """Главный класс для фильтрации триплетов, извлечённых из графа знаний,
     на основе их релевантности пользовательскому запросу.
     """
 
@@ -60,6 +60,4 @@ class TripletsFilter(AbstractTriplesFilter):
             filtered_triplets = triplets[:self.config.max_k]
         if not filtered_triplets:
             filtered_triplets = triplets[:self.config.max_k]
-        return filtered_triplets   
-            
-        
+        return filtered_triplets

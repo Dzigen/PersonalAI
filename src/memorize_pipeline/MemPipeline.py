@@ -40,11 +40,11 @@ class MemPipeline:
         self.extractor = LLMExtractor(config.extractor_config)
         # TODO
         #self.updator = LLMUpdator(config.updator_config, bfs)
-        
+
         self.kg_model = kg_model
 
-    def remember(self, text: str, replacing_window_width: int = 32, replacing_window_depth: int = 1, 
-                 need_simple: bool = True, need_thesises: bool = True, need_episodic: bool = True, 
+    def remember(self, text: str, replacing_window_width: int = 32, replacing_window_depth: int = 1,
+                 need_simple: bool = True, need_thesises: bool = True, need_episodic: bool = True,
                  need_update: bool = False, properties: Dict = dict()) -> List[Triplet]:
         """_summary_
 
@@ -68,18 +68,18 @@ class MemPipeline:
         :rtype: List[Triplet]
         """
         assert need_simple or need_thesises
-        new_triplets = self.extractor.extract(text, need_simple, need_thesises, need_episodic, properties)  
+        new_triplets = self.extractor.extract(text, need_simple, need_thesises, need_episodic, properties)
         self.log("PROCESSED NEW TRIPLETS: " + str(new_triplets), verbose=self.config.log_verbose)
 
         # TODO
         #if need_update:
         #    triplets_to_remove = self.updator.update(new_triplets, replacing_window_width, replacing_window_depth, need_simple, need_thesises)
         #    self.log("PROCESSED OUTDATED TRIPLETS: " + str(triplets_to_remove))
-        
+
         # В объекты триплетов добавлются идентикаторы, присвоенные им в рамках графовой бд
         self.kg_model.graph_struct.create_triplets(new_triplets)
         self.kg_model.embeddings_struct.add_triplets(new_triplets)
-        
+
         # TODO
         #if need_update:
         #    ids = self.kg_model.graph_struct.delete_triplets(triplets_to_remove)
@@ -88,5 +88,3 @@ class MemPipeline:
         #    self.kg_model.graph_struct.delete_triplets(triplets_ids, nodes_ids)
 
         return new_triplets
-
-    

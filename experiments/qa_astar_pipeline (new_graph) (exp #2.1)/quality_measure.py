@@ -49,8 +49,8 @@ def measure_quality_from_answers_file(qa_file: str, gen_answers_dir: str, save_l
     print(qa_file)
     generated_answers_data = load_json(f"{gen_answers_dir}/{qa_file}")
     target_answers_data = load_json(f"{EVAL_DATADIR}/{qa_file}")
-    
-    gen_answers = list(map(lambda item: item['generated_answer'], generated_answers_data)) 
+
+    gen_answers = list(map(lambda item: item['generated_answer'], generated_answers_data))
     trgt_answers = list(map(lambda item: item['answer'], target_answers_data))[:len(gen_answers)]
 
     b1_scores = METRICS.bleu1(gen_answers, trgt_answers)

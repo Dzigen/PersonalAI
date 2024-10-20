@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #SBATCH --job-name=test_rag_full
-#SBATCH --output=/trinity/home/n.semenov/sbatch_logs/%x@%A_%a.out 
+#SBATCH --output=/trinity/home/n.semenov/sbatch_logs/%x@%A_%a.out
 #SBATCH --error=/trinity/home/n.semenov/sbatch_logs/%x@%A_%a.err
 #SBATCH --time=36:00:00
 #SBATCH --partition=ais-gpu
@@ -18,5 +18,5 @@ srun singularity exec --nv \
     --bind /trinity/home/n.semenov \
     /trinity/home/n.semenov/llm.sif python /trinity/home/n.semenov/PersonalAI/test_rag_full_dataset.py << EOF
 
-    
+
 EOF

@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List
 
 class AbstractVectorDatabaseConnection(ABC):
-    
+
     @abstractmethod
     def open_connection(self):
         # открытие соединения с бд
@@ -31,7 +31,7 @@ class AbstractVectorDatabaseConnection(ABC):
 
     @abstractmethod
     def read(self):
-        # получить сущность по идентификатору 
+        # получить сущность по идентификатору
         pass
 
     @abstractmethod
@@ -41,7 +41,7 @@ class AbstractVectorDatabaseConnection(ABC):
 
     @abstractmethod
     def clear(self):
-        # Удаление содержания заднной базы 
+        # Удаление содержания заднной базы
         pass
 
     def __del__(self):

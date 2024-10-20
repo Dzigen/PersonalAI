@@ -54,25 +54,25 @@ Query: """,
 }
 
 questions_dict = {
-    "simple_sentiment": 
+    "simple_sentiment":
         ["Kayla has positive, negative or neutral opinion about video of Xiaomi 10Pro?",
          "Emily has positive, negative or neutral opinion about pictures of Mi 11?",
          "Alfred has positive, negative or neutral opinion about heat of Xiaomi 11Pro?",
          "Simon has positive, negative or neutral opinion about charging of Mi 9?",
          "Anthony has positive, negative or neutral opinion about maintenance point of Xiaomi?"],
-    "simple_triplet": 
+    "simple_triplet":
         ["What did Lily say about XiaoMi?",
          "What did Jacob think about photography camera module of MIX4?",
          "What did Alfred say about heat of Xiaomi 11Pro?",
          "What did Kathryn think about Xiaomi 9?",
          "What did Anthony say about maintenance point of Xiaomi?"],
-    "compare_devices": 
+    "compare_devices":
         ["Which device is better in battery life: 13promax or 13pro?",
          "Which device has better screen: K40 or Xiaomi 11Pro?",
          "Which devices have better screen: Xiaomi or Huawei?",
          "Which devices have more stable signal: Huawei or Apple?",
          "Which device is better in charging: M20 or iQOO9 series?"],
-    "compare_sentiment": 
+    "compare_sentiment":
         ["The majority of speakers have positive, neutral or negative sentiment about system of Nubia?",
          "The majority of speakers have positive, neutral or negative sentiment about signal of Huawei?",
          "The majority of speakers have positive, neutral or negative sentiment about back cover design of 11u?",

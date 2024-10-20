@@ -37,7 +37,7 @@ class KnowledgeComparator:
         :type query_structure: QueryInfo
         """
         # сопоставляем сущности, извлечённые из запроса нодам в графе знаний
-        
+
         linked_nodes_by_entities = []
         unique_nodes = []
         for entity in query_structure.entities:

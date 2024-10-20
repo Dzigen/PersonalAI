@@ -12,7 +12,7 @@ class QueryLLMParserConfig:
     #
     lang: str = 'auto'
     #
-    ents_extr_config: EntitiesExtractorConfig = field(default_factory=lambda: EntitiesExtractorConfig()) 
+    ents_extr_config: EntitiesExtractorConfig = field(default_factory=lambda: EntitiesExtractorConfig())
     #
     agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     #
@@ -20,12 +20,12 @@ class QueryLLMParserConfig:
     verbose: bool = False
 
 class QueryLLMParser:
-    """Главный класс для извлечения полезной информации 
+    """Главный класс для извлечения полезной информации
     из пользовательского запроса
     """
     def __init__(self, config: QueryLLMParserConfig = QueryLLMParserConfig()) -> None:
         self.config = config
-        
+
         self.agent = AgentDriver.connect(config.agent_cofig)
         self.log = self.config.log
 
@@ -42,7 +42,7 @@ class QueryLLMParser:
 
         formated_input = self.config.ents_extr_config.user_prompt[detected_lang].format(text=query)
         raw_output = self.agent.generate(
-            system_prompt=self.config.ents_extr_config.system_prompt[detected_lang], 
+            system_prompt=self.config.ents_extr_config.system_prompt[detected_lang],
             user_prompt=formated_input)
         self.log(f"RAW_ENTITIES: {raw_output}", verbose=self.config.verbose)
 

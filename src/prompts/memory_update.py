@@ -1,4 +1,4 @@
-REPLACE_THESIS_PROMPT = '''Тебе будет предоставлен список существующих тезисов и список новых тезисов. 
+REPLACE_THESIS_PROMPT = '''Тебе будет предоставлен список существующих тезисов и список новых тезисов.
 Тезисы обозначают факты о мире. Окружение меняется, поэтому некоторые тезисы из списка существующих тезисов можно заменить на один из новых тезисов. Например, игрок взял предмет из шкафчика, и существующий тезис «предмет находится в шкафчике» должен быть заменен новым тезисом «предмет находится в инвентаре».
 
 Иногда тезисы, которые нужно заменить, отсутствуют:
@@ -14,18 +14,18 @@ REPLACE_THESIS_PROMPT = '''Тебе будет предоставлен спис
 Убедись, что тезисы заменяются только в том случае, если они содержат избыточную или противоречивую информацию об одном и том же аспекте сущности. Не следует заменять тезисы, если они предоставляют отличную или дополнительную информацию о сущности по сравнению с новыми тезисами. В частности, рассмотри отношения, свойства или контексты, описываемые каждым тезисом, и проверьте их соответствие перед заменой. Если есть неопределенность в том, следует ли заменить тезис, отдайте предпочтение сохранению существующего тезиса, а не его замене. При сравнении существующих и новых тезисов, если они относятся к разным аспектам или атрибутам сущностей, не заменяйте их. Замены должны происходить только в случае семантического дублирования между существующим и новым тезисами.
 Пример существующих тезисов: [«яблоко нужно приготовить», «нож используется для нарезки», «яблоко было нарезано»].
 Пример новых тезисов: [«яблоко лежит на столе», «кухня содержит нож», «яблоко было запечено»].
-Пример замены: []. Заменять здесь нечего. Эти тезисы описывают разные свойства предметов, поэтому их не следует заменять. 
+Пример замены: []. Заменять здесь нечего. Эти тезисы описывают разные свойства предметов, поэтому их не следует заменять.
 
 Еще один пример того, когда не следует заменять существующие тезисы:
 Пример существующих тезисов: [«кисть используется для рисования»].
 Пример новых тезисов: [«кисть находится в художественном классе»].
-Пример замены: []. Заменять здесь нечего. Эти тезисы описывают разные свойства кисти, поэтому их не следует заменять. 
+Пример замены: []. Заменять здесь нечего. Эти тезисы описывают разные свойства кисти, поэтому их не следует заменять.
 
 Повторяю, не заменяй тезисы, если они несут разную информацию о сущностях!!! Лучше оставить тезис, чем заменить тот, который несет важную информацию. Не утверждай, что тезис нужно заменить, если ты в этом не уверен!!!
-Если ты обнаружил в существующих тезисах тезисы, которые семантически дублируют некоторые тезисы в новых тезисах, замени такие тезисы из существующих тезисов. Однако не заменяй тезисы, если они относятся к разным вещам. 
+Если ты обнаружил в существующих тезисах тезисы, которые семантически дублируют некоторые тезисы в новых тезисах, замени такие тезисы из существующих тезисов. Однако не заменяй тезисы, если они относятся к разным вещам.
 Для каждого тезиса, который вы хотите заменить, вы должны найти замену в новых тезисах. Если нет четкой замены, не заменяйте существующие тезисы.
 Замены должны содержать информацию о тех же свойствах, что и заменяемые утверждения, но включать более свежую информацию.
-Ты ДОЛЖЕН сохранить существующие тезисы, если они содержат уникальную или актуальную информацию о сущностях. 
+Ты ДОЛЖЕН сохранить существующие тезисы, если они содержат уникальную или актуальную информацию о сущностях.
 Например, ты НЕ ДОЛЖЕН заменять тезис «бег осуществляется в кроссовках» на «кроссовки находятся в магазине».
 ####
 
@@ -36,7 +36,7 @@ REPLACE_THESIS_PROMPT = '''Тебе будет предоставлен спис
 Внимание! Замены должны формироваться строго в следующем формате: [«новый_тезис_1 <- устаревший_тезис_1»; «новый_тезис_2 <- устаревший_тезис_2»; ...], ты НЕ ДОЛЖЕН включать в ответ какие-либо описания.
 Замена: '''
 
-REPLACE_THESIS_PROMPT_ENG = '''You will be provided with list of existing thesises and list of new thesises. 
+REPLACE_THESIS_PROMPT_ENG = '''You will be provided with list of existing thesises and list of new thesises.
 The thesises denote facts about the environment where the player moves. The player takes actions and the environment changes, so some thesises from the list of existing thesises can be replaced with one of the new thesises. For example, the player took the item from the locker and the existing thesis "item is in locker" should be replaced with the new thesis "item is in inventory".
 
 Sometimes there are no thesises to replace:
@@ -52,18 +52,18 @@ Example of replacing: ["broom is in inventory <- kitchen contains broom", "broom
 Ensure that thesises are only replaced if they contain redundant or conflicting information about the same aspect of an entity. Thesises should not be replaced if they provide distinct or complementary information about entities compared to the new thesises. Specifically, consider the relationships, properties, or contexts described by each thesis and verify that they align before replacement. If there is uncertainty about whether a thesis should be replaced, prioritize retaining the existing thesis over replacing it. When comparing existing and new thesises, if they refer to different aspects or attributes of entities, do not replace them. Replacements should only occur when there is semantic duplication between an existing thesis and a new thesis.
 Example of existing thesises: ["apple need to be cooked", 'knife used for cutting', 'apple has been sliced']
 Example of new thesises: ["apple is on table", 'kitchen contains knife', 'apple has beed grilled']
-Example of replacing: []. Nothing to replace here. These thesises describe different properties of items, so they should not be replaced. 
+Example of replacing: []. Nothing to replace here. These thesises describe different properties of items, so they should not be replaced.
 
 Another example of when not to replase existung thesises:
 Example of existing thesises: ["brush is used for painting"]
 Example of new thesises: ["brush is in art class"]
-Example of replacing: []. Nothing to replace here. These thesises describe different properties of brush, so they should not be replaced. 
+Example of replacing: []. Nothing to replace here. These thesises describe different properties of brush, so they should not be replaced.
 
 I repeat, do not replace thesises if they carry differend type of information about entities!!! It is better to leave a thesis, than to replace the one that has important information. Do not state that thesis needs to be replaced if you are not sure!!!
-If you find thesis in Existing thesises which semantically duplicate some thesis in New thesises, replace such thesis from Existing thesises. However do not replace thesis if they refer to different things. 
+If you find thesis in Existing thesises which semantically duplicate some thesis in New thesises, replace such thesis from Existing thesises. However do not replace thesis if they refer to different things.
 For every thesis you want to replace you must find replacement from new thesises. If there is no clear replacement, you must not replace existing thesis.
 The replacements should contain information about the same properties as the statements being replaced, but must include more recent information.
-You MUST save existing thesis if it contains unique or actual information about entities. 
+You MUST save existing thesis if it contains unique or actual information about entities.
 For example, you MUST NOT replace thesis "running is done with sneakers" with "sneakers located at store".
 ####
 
@@ -90,15 +90,15 @@ REPLACE_SIMPLE_PROMPT = """Тебе будет предоставлен спис
 Убедитесь, что триплеты заменяются только в том случае, если они содержат избыточную или противоречивую информацию об одном и том же аспекте сущности. Триплеты не должны заменяться, если они предоставляют отличную или дополнительную информацию о сущностях по сравнению с новыми триплетами. В частности, рассмотрите отношения, свойства или контексты, описываемые каждой тройкой, и убедитесь, что они совпадают перед заменой. Если существует неопределенность в отношении того, следует ли заменять триплет, отдайте предпочтение сохранению существующего триплета, а не его замене. При сравнении существующих и новых триплетов, если они относятся к разным аспектам или атрибутам сущностей, не заменяйте их. Замены должны происходить только в случае семантического дублирования между существующим и новым триплетом.
 Пример существующих триплетов: 'яблоко, будет, приготовлено', 'нож, используется для, нарезка', 'яблоко, было, нарезано'.
 Пример новых триплетов: "яблоко, лежит на, столе", "кухня, содержит, нож", "яблоко, было, запечено".
-Пример замены: []. Заменять здесь нечего. Эти триплеты описывают разные свойства предметов, поэтому их не следует заменять. 
+Пример замены: []. Заменять здесь нечего. Эти триплеты описывают разные свойства предметов, поэтому их не следует заменять.
 
 Еще один пример того, когда не следует заменять существующие тройки:
 Пример существующих триплетов: "кисть, используется для, рисования".
 Пример новых триплетов: "кисть, находится в, художественный класс".
-Пример замены: []. Заменять здесь нечего. Эти триплеты описывают разные свойства кисти, поэтому их не следует заменять. 
+Пример замены: []. Заменять здесь нечего. Эти триплеты описывают разные свойства кисти, поэтому их не следует заменять.
 
 Повторяю, не заменяйте триплеты, если они несут разную информацию о сущностях!!! Лучше оставить триплет, чем заменить тот, который несет важную информацию. Не утверждайте, что триплет нужно заменить, если вы в этом не уверены!!!
-Если вы нашли триплет в существующих триплетах, который семантически дублирует некоторый триплет в новых триплетах, замените такой триплет из существующих триплетов. Однако не заменяйте триплеты, если они относятся к разным вещам. 
+Если вы нашли триплет в существующих триплетах, который семантически дублирует некоторый триплет в новых триплетах, замените такой триплет из существующих триплетов. Однако не заменяйте триплеты, если они относятся к разным вещам.
 ####
 
 Генерировать только замены, описания не нужны.
@@ -124,15 +124,15 @@ Example of replacing: [["kitchen, contains, broom" -> "broom, is in, inventory"]
 Ensure that triplets are only replaced if they contain redundant or conflicting information about the same aspect of an entity. Triplets should not be replaced if they provide distinct or complementary information about entities compared to the new triplets. Specifically, consider the relationships, properties, or contexts described by each triplet and verify that they align before replacement. If there is uncertainty about whether a triplet should be replaced, prioritize retaining the existing triplet over replacing it. When comparing existing and new triplets, if they refer to different aspects or attributes of entities, do not replace them. Replacements should only occur when there is semantic duplication between an existing triplet and a new triplet.
 Example of existing triplets: "apple, to be, cooked", 'knife, used for, cutting', 'apple, has been, sliced'
 Example of new triplets: "apple, is on, table", 'kitchen, contsins, knife', 'apple, has beed, grilled'.
-Example of replacing: []. Nothing to replace here. These triplets describe different properties of items, so they should not be replaced. 
+Example of replacing: []. Nothing to replace here. These triplets describe different properties of items, so they should not be replaced.
 
 Another example of when not to replase existung triplets:
 Example of existing triplets: "brush, used for, painting".
 Example of new triplets: "brush, is in, art class".
-Example of replacing: []. Nothing to replace here. These triplets describe different properties of brush, so they should not be replaced. 
+Example of replacing: []. Nothing to replace here. These triplets describe different properties of brush, so they should not be replaced.
 
 I repeat, do not replace triplets, if they carry differend type of information about entities!!! It is better to leave a tripplet, than to replace the one that has important information. Do not state that triplet needs to be replaced if you are not sure!!!
-If you find triplet in Existing triplets which semantically duplicate some triplet in New triplets, replace such triplet from Existing triplets. However do not replace triplets if they refer to different things. 
+If you find triplet in Existing triplets which semantically duplicate some triplet in New triplets, replace such triplet from Existing triplets. However do not replace triplets if they refer to different things.
 ####
 
 Generate only replacing, no descriptions are needed.

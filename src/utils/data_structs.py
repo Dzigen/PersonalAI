@@ -42,8 +42,8 @@ class Relation:
 
 @dataclass
 class Triplet:
-    start_node: Node 
-    relation: Relation 
+    start_node: Node
+    relation: Relation
     end_node: Node
     id: str = None
     stringified: str = None
@@ -69,7 +69,7 @@ class NodeCreator(BaseCreator):
         str_node = ""
         if "time" in node.prop.keys():
             str_node += node.prop["time"] + ": "
-        str_node += NodeCreator.add_str_props(node, str(node.name))   
+        str_node += NodeCreator.add_str_props(node, str(node.name))
         return node.id, str_node
 
 
@@ -83,7 +83,7 @@ class TripletCreator(BaseCreator):
             start_node: Node,
             relation: Relation,
             end_node: Node,
-            add_stringified_triplet: bool = True, 
+            add_stringified_triplet: bool = True,
             t_id: str = None
         ) -> Triplet:
         triplet = Triplet(start_node, relation, end_node)
@@ -104,7 +104,7 @@ class TripletCreator(BaseCreator):
             if "time" in triplet.end_node.prop.keys():
                 str_triplet += triplet.end_node.prop["time"] + ": "
             str_triplet += TripletCreator.add_str_props(triplet.end_node, str(triplet.end_node.name))
-            
+
         elif rel_type == RelationType.simple:
             str_triplet = ""
             if "time" in triplet.relation.prop.keys():
@@ -116,7 +116,7 @@ class TripletCreator(BaseCreator):
 
         else:
             raise KeyError
-                
+
         return triplet.id, str_triplet
 
 

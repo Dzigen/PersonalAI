@@ -36,7 +36,7 @@ class EmbedderModel:
         :return: _description_
         :rtype: List[List[float]]
         """
-        output = self.model.encode(queries, prompt_name='query', 
+        output = self.model.encode(queries, prompt_name='query',
                                  normalize_embeddings=self.config.normalize_embeddings, **kwargs)
         return output
 

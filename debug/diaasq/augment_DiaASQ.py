@@ -46,7 +46,7 @@ with open("Clean_DiaASQ.json") as f:
 for dialog in data["data"]:
     raw_time = randint(1, 26279)
     time = compute_time(raw_time)
-    
+
     dialog["time"] = time
     dialog["raw_time"] = raw_time
     for triplet in dialog["clean_triplets"]:
@@ -76,7 +76,7 @@ while n < 1000:
     for triplet in triplets:
         if (triplet[0] == support[0] or triplet[1] == support[1]) and triplet not in candidates:
             candidates.append(deepcopy(triplet))
-    
+
     if len(candidates) < 5:
         continue
     if len(candidates) > 8:
@@ -89,7 +89,7 @@ while n < 1000:
         continue
     raw_time = randint(raw_time, 26279)
     time = compute_time(raw_time)
-    
+
     n_rep = randint(2, 5)
     for_rep_ids = np.random.permutation(len(candidates))[:n_rep]
     for i in for_rep_ids:
@@ -143,8 +143,8 @@ Anthony: Unless it is 13 , it is more and more stuck [ doge ]
 ####
 STATEMENTS: {statements}
 Your task is to generate dialog based on given statements (as in Example).
-Characteristics of devices from statements must be explicitly conveyed in the text 
-(for example, the statement "Maria has a positive opinion about the iPhone 10's battery" 
+Characteristics of devices from statements must be explicitly conveyed in the text
+(for example, the statement "Maria has a positive opinion about the iPhone 10's battery"
 can be expressed with the sentence "Maria: The battery of my iPhone 10 works excellently!")
 Dialog must not contain words "positive", "negative", "neutral".
 You must write only dialog and nothing else.
@@ -186,5 +186,3 @@ What did {name} said about {option} of {target}? Just cite with no more than 3 w
 
     with open("Clean_DiaASQ_temp.json", "w") as f:
         json.dump(data, f)
-
-

@@ -21,4 +21,3 @@ ENTITIES_EXTRACTION_SYSTEM_PROMPT = {
 class EntitiesExtractorConfig:
     user_prompt: Dict = field(default_factory=lambda: ENTITIES_EXTRACTION_USER_PROMPT)
     system_prompt:Dict = field(default_factory=lambda: ENTITIES_EXTRACTION_SYSTEM_PROMPT)
-

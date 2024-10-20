@@ -149,4 +149,3 @@ class Retriever:
             result = {k: v[0] for k,v in result.items()}
 
         return result
-

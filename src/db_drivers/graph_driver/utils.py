@@ -10,7 +10,7 @@ class GraphDBConnectionConfig:
     params: Dict = field(default_factory=lambda: dict())
 
 class AbstractGraphDatabaseConnection(ABC):
-        
+
     @abstractmethod
     def open_connection(self) -> None:
         # открытие соединения с бд

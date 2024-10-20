@@ -19,7 +19,7 @@ class QALLMGeneratorConfig:
     verbose: bool = False
 
 class QALLMGenerator:
-    """Главный класс для генерации ответов по пользовательским вопросам на основе 
+    """Главный класс для генерации ответов по пользовательским вопросам на основе
     извлечённой информации из графа знаний
     """
     def __init__(self, config: QALLMGeneratorConfig = QALLMGeneratorConfig()) -> None:
@@ -40,7 +40,7 @@ class QALLMGenerator:
         :return: _description_
         :rtype: str
         """
-        filtered_context = list(map(lambda triplet: f"- {TripletCreator.stringify(triplet)[1] if triplet.stringified is None else triplet.stringified}", triplets))                
+        filtered_context = list(map(lambda triplet: f"- {TripletCreator.stringify(triplet)[1] if triplet.stringified is None else triplet.stringified}", triplets))
         return "\n".join(filtered_context)
 
     def generate(self, query: str, context: str) -> str:
@@ -55,12 +55,12 @@ class QALLMGenerator:
         """
         detected_lang = detect_lang(query) if self.config.lang == 'auto' else self.config.lang
         self.log(f"DETECTED LANG: {detected_lang}", verbose=self.config.verbose)
-        
+
         formated_input = self.config.user_prompt[detected_lang].format(q=query, c=context)
 
         found_line = ""
         raw_output = self.agent.generate(
-            system_prompt=self.config.system_prompt[detected_lang], 
+            system_prompt=self.config.system_prompt[detected_lang],
             user_prompt=formated_input).strip()
         self.log(f"RAW_ANSWER: {raw_output}", verbose=self.config.verbose)
 

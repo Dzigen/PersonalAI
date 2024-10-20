@@ -26,5 +26,5 @@ COPY src/agent_api.py .
 RUN ls -la
 RUN python3 --version
 
-CMD  ["sh", "-c", "uvicorn agent_api:app --reload --host 0.0.0.0 --port 4567"] 
+CMD  ["sh", "-c", "uvicorn agent_api:app --reload --host 0.0.0.0 --port 4567"]
 #CMD ["sh", "-c", "sleep infinity"]

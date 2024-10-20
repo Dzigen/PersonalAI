@@ -9,7 +9,7 @@ class KVDBConnectionConfig:
     params: Dict = field(default_factory=lambda: {})
 
 class AbstractKVDatabaseConnection(ABC):
-        
+
     @abstractmethod
     def open_connection(self) -> None:
         """_summary_
@@ -57,7 +57,7 @@ class AbstractKVDatabaseConnection(ABC):
         :return: _description_
         :rtype: List[Dict]
         """
-        # получить сущность по идентификатору 
+        # получить сущность по идентификатору
         pass
 
     @abstractmethod
@@ -67,7 +67,7 @@ class AbstractKVDatabaseConnection(ABC):
         :param key_tuples: _description_
         :type key_tuples: List[Tuple]
         """
-        # Удаление содержания заднной базы 
+        # Удаление содержания заднной базы
         pass
 
     @abstractmethod

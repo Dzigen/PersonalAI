@@ -1,5 +1,5 @@
 from typing import List, Tuple, Dict
-import aerospike 
+import aerospike
 
 from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 
@@ -17,7 +17,7 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
                 db_config['hosts'].append((self.config.host, ext_port))
         print(db_config)
         self.client = aerospike.client(db_config).connect()
-        
+
     def close_connection(self) -> None:
         self.client.close()
 
@@ -31,7 +31,7 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
         mixed_records = self.client.get_many(keys, policy={'total_timeout': 10000})
         records = [mixed_record[2] for mixed_record in mixed_records]
         return records
-    
+
     def key_exist(self, key: Tuple) -> bool:
         _, meta = self.client.exists(key)
         return False if meta is None else True

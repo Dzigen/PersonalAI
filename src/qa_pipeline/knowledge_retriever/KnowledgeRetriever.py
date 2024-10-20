@@ -39,7 +39,7 @@ class KnowledgeRetrieverConfig:
 
 class KnowledgeRetriever:
     """Главный класс для извлечения релевантной информации из графа знаний
-    по запросу пользователя 
+    по запросу пользователя
     """
     def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeRetrieverConfig = KnowledgeRetrieverConfig()) -> None:
         self.config = config
@@ -49,7 +49,7 @@ class KnowledgeRetriever:
 
         self.graph_retriever = AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method](
             kg_model, self.log, self.config.retriever_config, self.cache, self.config.verbose)
-        
+
         self.triplets_filter = AVAILABLE_TRIPLETS_FILTERS[self.config.filter_method](
             kg_model, self.log, self.config.filter_config, self.config.verbose)
 

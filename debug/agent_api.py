@@ -20,15 +20,15 @@ app = FastAPI()
 @app.post("/generate")
 async def generate(body: RemoteAgentRequestBody):
     output = agent.generate(
-        user_prompt=body.user_prompt, 
-        assistant_prompt=body.assistant_prompt, 
+        user_prompt=body.user_prompt,
+        assistant_prompt=body.assistant_prompt,
         gen_strategy=body.gen_strategy,
         system_prompt=body.system_prompt
 
     )
     #torch.cuda.empty_cache()
     #gc.collect()
-    
+
     return {'generated_output': output}
 
 @app.get("/")

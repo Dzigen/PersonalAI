@@ -27,7 +27,7 @@ class LocalAgentConnector(AbstractAgentConnector):
 
         Args:
             user_prompt (str): Запрос для llm-агента.
-            assistant_prompt (str, optional): Дополнительная к user_prompt-запросу информация, 
+            assistant_prompt (str, optional): Дополнительная к user_prompt-запросу информация,
                                               которая может быть использована llm-агентом при генерации ответа. Defaults to None.
             gen_strategy (Dict, optional): Стретегия генерации текстовой последовательности для llm-агента. Defaults to None.
 
@@ -49,7 +49,7 @@ class LocalAgentConnector(AbstractAgentConnector):
             self.pipeline.tokenizer.convert_tokens_to_ids("<|eot_id|>")
         ]
         gen_strategy = self.config.gen_strategy if gen_strategy is None else gen_strategy
-        
+
         outputs = self.pipeline(
             prompt,
             eos_token_id=terminators,
@@ -57,5 +57,5 @@ class LocalAgentConnector(AbstractAgentConnector):
             return_full_text=False,
             **gen_strategy
         )
-        
+
         return outputs[0]["generated_text"]

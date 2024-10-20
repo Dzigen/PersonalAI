@@ -29,8 +29,8 @@ question = "Which device is better in battery life: iPhone11 Pro Max or Xiaomi 1
 messages_extract[-1]["content"].format(question=question)
 
 prompt = pipeline.tokenizer.apply_chat_template(
-        messages_extract, 
-        tokenize=False, 
+        messages_extract,
+        tokenize=False,
         add_generation_prompt=True
 )
 

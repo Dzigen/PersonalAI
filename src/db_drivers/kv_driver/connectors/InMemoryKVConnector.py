@@ -8,15 +8,15 @@ import hashlib
 from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 
 DEFAULT_INMEMORYKV_CONFIG = KVDBConnectionConfig(
-    host='localhost', 
+    host='localhost',
     params={
-        'kvstore_dump_name': 'inmemory_store', 
+        'kvstore_dump_name': 'inmemory_store',
         'load_from_disk': False, 'load_dump_dir': '.',
         'save_on_disk': True, 'save_dump_dir': '.'
     })
 
 class InMemoryKVConnector(AbstractKVDatabaseConnection):
-    
+
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_INMEMORYKV_CONFIG) -> None:
         self.config = config
         self.open_connection()

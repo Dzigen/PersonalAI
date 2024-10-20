@@ -50,7 +50,7 @@ EMBEDDINGS_CONFIG = EmbeddingsModelConfig(
     tripletsdb_driver_config=VectorDriverConfig(db_config=VectorDBConnectionConfig(
         path=TRIPLETS_VECTORDB_PATH, db_name="vectorized_triplets", need_to_clear=False)),
     embedder_config=EmbedderModelConfig(model_name_or_path=EMBEDDING_MODEL_PATH))
-    
+
 QA_CONFIG = QAPipelineConfig(
     knowledge_retriever_config=KnowledgeRetrieverConfig(
         retriever_method='astar',
@@ -79,7 +79,7 @@ for qa_file in qa_files[-1:]:
     process = enumerate(data)
     for i, qa_pair in process:
         log(f"[{i} / {len(data)}]", verbose=False)
-        answ_gen_s_time = time() 
+        answ_gen_s_time = time()
         gen_answer = qa_pipeline.answer(qa_pair['question'])
         gen_answers.append({"generated_answer": gen_answer})
         #process.set_postfix({'target': qa_pair['answer'], 'generated': gen_answer})
@@ -87,7 +87,7 @@ for qa_file in qa_files[-1:]:
         log(f"\ttarget: {qa_pair['answer']}", verbose=False)
         log(f"\tgenerated: {gen_answer}", verbose=False)
         log(f"\tanswer_gen_time: {answ_gen_e_time-answ_gen_s_time} sec", verbose=False)
-    
+
         with open(f"./logs/generated/{qa_file}", 'w', encoding='utf-8') as fd:
             fd.write(json.dumps(gen_answers, indent=1, ensure_ascii=False))
 

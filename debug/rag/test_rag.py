@@ -20,7 +20,7 @@ def test(n_u, n_d, utt_emb, dialogs_emb, dataset, utterances, dialogs, add_manf_
             retrieved += "\n\nRelevant dialogs:\n\n"
             best_ids = (dialogs_emb @ task["embedding"]).topk(n_d).indices.cpu().detach().numpy()
             retrieved += "\n\n".join(dialogs[best_ids])
-        
+
         question = task["question"]
         log("QUESTION: " + str(question))
         log("RETRIEVED: " + str(retrieved))
@@ -32,14 +32,14 @@ Redmi and Note is made by Xiaomi, Iphone is made by Apple\n\n"""
 
 You are provided with relevant memories about dialogs: {retrieved}
 
-Question: {question} This is a closed question, the answer choices are listed in its text. 
+Question: {question} This is a closed question, the answer choices are listed in its text.
 You must respond with one of these options and nothing else.
 Answer: '''
         answer = agent.generate(prompt)[0].lower()
         log("MODEL ANSWER: " + str(answer))
         results.append(task["answer"].strip('''"' .,:-''').lower() in answer)
         log("CURRENT ACCURACY: " + str(np.mean(results)))
-        log("==" * 30 + "\n")   
+        log("==" * 30 + "\n")
 
 
 n_utt, n_dia, n_utt_mix, n_dia_mix = [5, 10, 15, 20, 25], [3, 5, 7, 10, 15], [5, 7, 10, 12, 15], [2, 3, 5, 7, 10]
@@ -83,8 +83,8 @@ log(f"Utterances shape: {str(utt_emb.shape)}, Dialogs shape: {str(dialogs_emb.sh
 #         task["embedding"] = embedder.embed([task["question"]])[0]
 
 # dataset = {
-#     "compare_sentiment": compare_sentiment, 
-#     "compare_questions": compare_questions, 
+#     "compare_sentiment": compare_sentiment,
+#     "compare_questions": compare_questions,
 #     "questions_for_test": questions_for_test
 # }
 
@@ -105,8 +105,8 @@ for dataset in [similar_manf_opinions, which_people_about_device]:
         task["embedding"] = embedder.embed([task["question"]])[0]
 
 dataset = {
-    # "same_devices": same_devices, 
-    # "same_manufacturer": same_manufacturer, 
+    # "same_devices": same_devices,
+    # "same_manufacturer": same_manufacturer,
     # "similar_device_opinions": similar_device_opinions,
     "similar_manf_opinions": similar_manf_opinions,
     "which_people_about_device": which_people_about_device
@@ -131,4 +131,3 @@ for n_u, n_d in zip(n_utt_mix, n_dia_mix):
         log.__init__(log_path + f"/mix_{n_u}_{n_d}_{question_type}" )
         add_manf_info = question_type in for_manufactured_info
         test(n_u, n_d, utt_emb, dialogs_emb, dataset[question_type], utterances, dialogs, add_manf_info, agent, log)
-

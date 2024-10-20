@@ -1,6 +1,6 @@
 ---
 title: METEOR
-emoji: 🤗 
+emoji: 🤗
 colorFrom: blue
 colorTo: red
 sdk: gradio
@@ -22,7 +22,7 @@ description: >-
   a measure of fragmentation that is designed to directly capture how
   well-ordered the matched words in the machine translation are in relation
   to the reference.
-  
+
   METEOR gets an R correlation value of 0.347 with human evaluation on the Arabic
   data and 0.331 on the Chinese data. This is shown to be an improvement on
   using simply unigram-precision, unigram-recall and their harmonic F1
@@ -33,12 +33,12 @@ description: >-
 
 ## Metric description
 
-METEOR (Metric for Evaluation of Translation with Explicit ORdering) is a machine translation evaluation metric, which is calculated based on the harmonic mean of precision and recall, with recall weighted more than precision. 
+METEOR (Metric for Evaluation of Translation with Explicit ORdering) is a machine translation evaluation metric, which is calculated based on the harmonic mean of precision and recall, with recall weighted more than precision.
 
-METEOR is based on a generalized concept of unigram matching between the machine-produced translation and human-produced reference translations. Unigrams can be matched based on their surface forms, stemmed forms, and meanings. Once all generalized unigram matches between the two strings have been found, METEOR computes a score for this matching using a combination of unigram-precision, unigram-recall, and a measure of fragmentation that is designed to directly capture how well-ordered the matched words in the machine translation are in relation to the reference. 
+METEOR is based on a generalized concept of unigram matching between the machine-produced translation and human-produced reference translations. Unigrams can be matched based on their surface forms, stemmed forms, and meanings. Once all generalized unigram matches between the two strings have been found, METEOR computes a score for this matching using a combination of unigram-precision, unigram-recall, and a measure of fragmentation that is designed to directly capture how well-ordered the matched words in the machine translation are in relation to the reference.
 
 
-## How to use 
+## How to use
 
 METEOR has two mandatory arguments:
 
@@ -52,7 +52,7 @@ It also has several optional parameters:
 
 `beta`: Parameter for controlling shape of penalty as a function of fragmentation. The default value is `3`.
 
-`gamma`: The relative weight assigned to fragmentation penalty. The default is `0.5`. 
+`gamma`: The relative weight assigned to fragmentation penalty. The default is `0.5`.
 
 Refer to the [METEOR paper](https://aclanthology.org/W05-0909.pdf) for more information about parameter values and ranges.
 
@@ -72,10 +72,10 @@ The metric outputs a dictionary containing the METEOR score. Its values range fr
 
 
 ### Values from popular papers
-The [METEOR paper](https://aclanthology.org/W05-0909.pdf) does not report METEOR score values for different models, but it does report that METEOR gets an R correlation value of 0.347 with human evaluation on the Arabic data and 0.331 on the Chinese data. 
+The [METEOR paper](https://aclanthology.org/W05-0909.pdf) does not report METEOR score values for different models, but it does report that METEOR gets an R correlation value of 0.347 with human evaluation on the Arabic data and 0.331 on the Chinese data.
 
 
-## Examples 
+## Examples
 
 One `reference` per `prediction`:
 
@@ -112,7 +112,7 @@ Multiple `references` per `prediction`, partial match:
 
 ## Limitations and bias
 
-While the correlation between METEOR and human judgments was measured for Chinese and Arabic and found to be significant, further experimentation is needed to check its correlation for other languages. 
+While the correlation between METEOR and human judgments was measured for Chinese and Arabic and found to be significant, further experimentation is needed to check its correlation for other languages.
 
 Furthermore, while the alignment and matching done in METEOR is based on unigrams, using multiple word entities (e.g. bigrams) could contribute to improving its accuracy -- this has been proposed in [more recent publications](https://www.cs.cmu.edu/~alavie/METEOR/pdf/meteor-naacl-2010.pdf) on the subject.
 
@@ -132,8 +132,7 @@ Furthermore, while the alignment and matching done in METEOR is based on unigram
   pages     = {65--72},
 }
 ```
-    
-## Further References 
+
+## Further References
 - [METEOR -- Wikipedia](https://en.wikipedia.org/wiki/METEOR)
 - [METEOR score -- NLTK](https://www.nltk.org/_modules/nltk/translate/meteor_score.html)
-

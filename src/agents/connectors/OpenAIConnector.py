@@ -1,6 +1,6 @@
-import os 
+import os
 from typing import Dict
-from openai import OpenAI 
+from openai import OpenAI
 
 from ..utils import AbstractAgentConnector, AgentConnectorConfig
 

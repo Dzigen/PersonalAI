@@ -24,7 +24,7 @@ class EmbeddingsModelConfig:
     """_summary_
     """
     #
-    nodesdb_driver_config: VectorDriverConfig = field(default_factory=lambda: NODES_DB_DEFAULT_DRIVER_CONFIG) 
+    nodesdb_driver_config: VectorDriverConfig = field(default_factory=lambda: NODES_DB_DEFAULT_DRIVER_CONFIG)
     #
     tripletsdb_driver_config: VectorDriverConfig = field(default_factory=lambda: TRIPLETS_DB_DEFAULT_DRIVER_CONFIG)
     #
@@ -65,9 +65,9 @@ class EmbeddingsModel:
                     break
 
                 triplet = triplets[triplet_idx]
-                _, triplet_str =  TripletCreator.stringify(triplet) if triplet.stringified is None else (triplet.id, triplet.stringified) 
+                _, triplet_str =  TripletCreator.stringify(triplet) if triplet.stringified is None else (triplet.id, triplet.stringified)
                 if triplet.id not in unique_triplets_ids:
-                    unique_triplets_ids.add(triplet.id) 
+                    unique_triplets_ids.add(triplet.id)
                     triplets_ids.append(triplet.id)
                     triplets_strs.append(triplet_str)
 
@@ -85,7 +85,7 @@ class EmbeddingsModel:
         self.log(f"all/unique_triplets - {len(triplets)}/{len(unique_triplets_ids)}", verbose=self.config.verbose)
         self.log(f"all/unique_nodes - {len(triplets)*2}/{len(unique_nodes_ids)}", verbose=self.config.verbose)
         self.log("Triples were successfully added to vector model!", verbose=self.config.verbose)
-        
+
     def delete_triplets(self, triplets: List[Triplet], delete_nods: bool = True) -> None:
         """_summary_
 
@@ -95,7 +95,7 @@ class EmbeddingsModel:
         :type delete_nods: bool, optional
         """
         triplets_ids = list(map(lambda v: v.id, triplets))
-        
+
         unique_nodes_ids = None
         if delete_nods:
             nodes_ids = []
@@ -105,7 +105,7 @@ class EmbeddingsModel:
 
         self.delete_stringified_triplets(triplets_ids, unique_nodes_ids)
 
-    def add_stringified_triplets(self, triplets_ids: List[str], stringified_triplets: List[str], 
+    def add_stringified_triplets(self, triplets_ids: List[str], stringified_triplets: List[str],
                      nodes_ids: List[str] = None, stringified_nodes: List[str] = None) -> None:
         """_summary_
 
@@ -134,7 +134,7 @@ class EmbeddingsModel:
         self.delete_instances('triplets', triplets_ids)
         if nodes_ids is not None:
             self.delete_instances('nodes', nodes_ids)
-    
+
     def add_instances(self, db_type: str, ids: List[str], stringified_instances: List[str]) -> None:
         """_summary_
 
@@ -146,7 +146,7 @@ class EmbeddingsModel:
         :type stringified_instances: List[str]
         """
         embs = self.embedder.encode_passages(stringified_instances)
-        formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb, metadata={'id': id}) 
+        formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb, metadata={'id': id})
                             for id, doc, emb in zip(ids, stringified_instances, embs)]
         self.vectordbs[db_type].create(formated_instances)
 
