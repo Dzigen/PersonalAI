@@ -3,7 +3,11 @@
 #models/
 models/facebook
 models/google
-data/
+#data/
+data/test
+data/log_augment_diaasq.txt
+data/aug_questions
+data/graph_structures/graph_short_paths
 create_local_db/
 archives/
 inference/

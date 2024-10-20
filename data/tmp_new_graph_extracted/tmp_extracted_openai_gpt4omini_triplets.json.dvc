@@ -1,0 +1,5 @@
+outs:
+- md5: 7697d5005ee4de74b4377e46ed4d62f2
+  size: 156707467
+  hash: md5
+  path: tmp_extracted_openai_gpt4omini_triplets.json

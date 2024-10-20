@@ -1,0 +1,5 @@
+outs:
+- md5: cd93f11ef6705c90e6a1295bcb397119
+  size: 4003903
+  hash: md5
+  path: testdb.pickle
