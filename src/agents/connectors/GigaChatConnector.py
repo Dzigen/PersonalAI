@@ -9,7 +9,7 @@ from ..utils import AbstractAgentConnector, AgentConnectorConfig
 GIGACHAT_KEY = 'OWUwOGUzOWEtMjJiNi00YmMxLThmMmItNzMwNjM2MTI2YmYxOjg2ODdiOTVhLTZkNDctNGFjOC1iMmViLTEyNDA5MmFiN2Q5Mw=='
 
 DEFAULT_GIGACHAT_CONFIG = AgentConnectorConfig(
-    gen_strategy={'temperature': 0}, 
+    gen_strategy={'temperature': 10e-8}, 
     credentials={'token': GIGACHAT_KEY, 'scope': 'GIGACHAT_API_CORP',
                   'model': "GigaChat-Pro", 'verify_ssl_certs': False},
     ext_params={'timeout': 480})

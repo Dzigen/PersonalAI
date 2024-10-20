@@ -52,7 +52,6 @@ class VectorDBConnectionConfig:
     path: str
     db_name: str
     params: Dict = field(default_factory=lambda: {"hnsw:space": "ip"})
-    db_vendor: str = 'chroma'
     need_to_clear: bool = False
 
 @dataclass

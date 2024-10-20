@@ -7,7 +7,7 @@ from ...agents import AgentDriver, AgentDriverConfig
 
 @dataclass
 class QueryLLMParserConfig:
-    lang: str = 'ru'
+    lang: str = 'en'
     ents_extr_config: EntitiesExtractorConfig = field(default_factory=lambda: EntitiesExtractorConfig()) 
     agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     log: Logger = field(default_factory=lambda: Logger(QP_LOG_PATH))
@@ -25,7 +25,9 @@ class QueryLLMParser:
 
     def extract_entities(self, query: str) -> QueryInfo:
         formated_input = self.config.ents_extr_config.user_prompt[self.config.lang].format(text=query)
-        raw_output = self.agent.generate(formated_input)
+        raw_output = self.agent.generate(
+            system_prompt=self.config.ents_extr_config.system_prompt[self.config.lang], 
+            user_prompt=formated_input)
         self.log(f"RAW_ENTITIES: {raw_output}", verbose=self.config.verbose)
 
         extracted_entities = list(filter(lambda item: len(item) > 0, list(map(lambda item: item.strip(), raw_output.split('|')))))

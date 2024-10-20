@@ -10,8 +10,8 @@ from ...agents import AgentDriver, AgentDriverConfig
 
 @dataclass
 class LLMExtractorConfig:
-    lang: str = "ru"
-    agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig)
+    lang: str = "en"
+    agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     triplet_extract_system_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_TRIPLET_SYSTEM_PROMPT)
     triplet_extract_user_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_TRIPLET_USER_PROMPT)
     thesis_extract_system_prompt:  dict = field(default_factory=lambda: MEM_EXTRACT_THESIS_SYSTEM_PROMPT)
@@ -47,8 +47,8 @@ class LLMExtractor:
     def extract_triplets(self, text: str, node_prop = {}, rel_prop = {}) -> List[Triplet]:
         self.log("TEXT: " + text, verbose=self.config.verbose)
         raw_response = self.agent.generate(
-            self.config.triplet_extract_system_prompt[self.config.lang],
-            self.config.triplet_extract_user_prompt[self.config.lang].format(text=text))
+            system_prompt=self.config.triplet_extract_system_prompt[self.config.lang],
+            user_prompt=self.config.triplet_extract_user_prompt[self.config.lang].format(text=text))
         self.log("EXTRACTED TRIPLETS: " + str(raw_response), verbose=self.config.verbose)
         new_triplets = self.parse_triplets(raw_response, node_prop, rel_prop)
         return new_triplets
@@ -56,8 +56,8 @@ class LLMExtractor:
     def extract_thesises(self, text: str, node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
         self.log("TEXT: " + text, verbose=self.config.verbose)
         raw_response = self.agent.generate(
-            self.config.thesis_extract_system_prompt[self.config.lang],
-            self.config.thesis_extract_user_prompt.format(text=text))
+            system_prompt=self.config.thesis_extract_system_prompt[self.config.lang],
+            user_prompt=self.config.thesis_extract_user_prompt[self.config.lang].format(text=text))
         self.log("EXTRACTED THESISES: " + str(raw_response), verbose=self.config.verbose)
         new_triplets = self.parse_thesises(raw_response, node_prop, rel_prop)
         return new_triplets

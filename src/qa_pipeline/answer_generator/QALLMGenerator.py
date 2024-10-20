@@ -10,7 +10,7 @@ from ...utils import Logger
 
 @dataclass
 class QALLMGeneratorConfig:
-    lang: str = "ru"
+    lang: str = "en"
     system_prompt: dict = field(default_factory=lambda: QA_SYSTEM_PROMPT)
     user_prompt: dict = field(default_factory=lambda: QA_USER_PROMPT)
     agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
@@ -36,7 +36,9 @@ class QALLMGenerator:
         formated_input = self.config.user_prompt[lang].format(q=query, c=context)
 
         found_line = ""
-        raw_output = self.agent.generate(formated_input).strip()
+        raw_output = self.agent.generate(
+            system_prompt=self.config.system_prompt[self.config.lang], 
+            user_prompt=formated_input).strip()
         self.log(f"RAW_ANSWER: {raw_output}", verbose=self.config.verbose)
 
         # TO MODIFY

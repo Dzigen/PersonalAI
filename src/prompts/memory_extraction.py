@@ -48,8 +48,9 @@ because without context of kitchen "north exit is blocked by door" can be relate
 Text: {text}
 Remember that thesises must be extracted in format: "thesis_1; [list of entites for thesis_1]. thesis2; [list of entites for thesis_2]. etc.'''
 
+# =======================================
 
-TRIPLETS_EXTRACTION_PROMPT = '''Задача: Основная цель - скрупулезно собрать информацию из текста и организовать эти данные в четкий, структурированный граф знаний.
+TRIPLETS_EXTRACTION_PROMPT_RU = '''Задача: Основная цель - скрупулезно собрать информацию из текста и организовать эти данные в четкий, структурированный граф знаний.
 
 Рекомендации по построению графа знаний:
 
@@ -71,7 +72,7 @@ TRIPLETS_EXTRACTION_PROMPT = '''Задача: Основная цель - скр
 
 Извлеченные триплеты: '''
 
-TRIPLETS_EXTRACTION_PROMPT_ENG = '''Objective: The main goal is to meticulously gather information from the text and organize this data into a clear, structured knowledge graph.
+TRIPLETS_EXTRACTION_PROMPT_EN = '''Objective: The main goal is to meticulously gather information from the text and organize this data into a clear, structured knowledge graph.
 
 Guidelines for Building the Knowledge Graph:
 
@@ -99,7 +100,9 @@ Remember that triplets must be extracted in format: "subject_1, relation_1, obje
 
 Extracted triplets: '''
 
-THESISES_EXTRACTION_PROMPT = '''Задача: Основная цель - тщательно собрать информацию из входного текста и организовать эти данные в четкий, структурированный граф знаний.
+# =======================================
+
+THESISES_EXTRACTION_PROMPT_RU = '''Задача: Основная цель - тщательно собрать информацию из входного текста и организовать эти данные в четкий, структурированный граф знаний.
 
 Руководство по построению графа знаний:
 
@@ -121,7 +124,7 @@ THESISES_EXTRACTION_PROMPT = '''Задача: Основная цель - тща
 Текст: {text}
 Помни, что тезисы должны быть извлечены в формате: 'тезис_1; [список объектов для тезиса_1]. тезис2; [список объектов для тезиса_2].' и т. д.'''
 
-THESISES_EXTRACTION_PROMPT_ENG = '''Objective: The main goal is to meticulously gather information from input text and organize this data into a clear, structured knowledge graph.
+THESISES_EXTRACTION_PROMPT_EN = '''Objective: The main goal is to meticulously gather information from input text and organize this data into a clear, structured knowledge graph.
 
 Guidelines for Building the Knowledge Graph:
 
@@ -156,8 +159,9 @@ Remember that thesises must be extracted in format: "thesis_1; [list of entites 
 
 Extracted thesises: '''
 
+# =======================================
 
-TRIPLETS_EXTRACTION_PROMPT_SYSTEM = '''Задача: Основная цель - скрупулезно собрать информацию из текста и организовать эти данные в четкий, структурированный граф знаний.
+TRIPLETS_EXTRACTION_PROMPT_RU_SYSTEM = '''Задача: Основная цель - скрупулезно собрать информацию из текста и организовать эти данные в четкий, структурированный граф знаний.
 
 Рекомендации по построению графа знаний:
 
@@ -173,7 +177,7 @@ TRIPLETS_EXTRACTION_PROMPT_SYSTEM = '''Задача: Основная цель -
 Другие примеры триплетов: 'комната z, содержит, черный шкафчик'; 'комната x, имеет выход на, восток', 'яблоко, лежит на, стол', 'ключ, находится в, шкафчик', 'яблоко, нужно приготовить на, гриль'.
 Не используй 'none' в качестве одной из сущностей.'''
 
-TRIPLETS_EXTRACTION_PROMPT_ENG_SYSTEM = '''Objective: The main goal is to meticulously gather information from the text and organize this data into a clear, structured knowledge graph.
+TRIPLETS_EXTRACTION_PROMPT_EN_SYSTEM = '''Objective: The main goal is to meticulously gather information from the text and organize this data into a clear, structured knowledge graph.
 
 Guidelines for Building the Knowledge Graph:
 
@@ -193,7 +197,9 @@ Do not include triplets that state the current location of an agent like 'you, a
 Do not use 'none' as one of the objects.
 If there is information that you read something, do not forget to incluse triplets that state that entitie that you read contains information that you extract.'''
 
-THESISES_EXTRACTION_PROMPT_SYSTEM = '''Задача: Основная цель - тщательно собрать информацию из входного текста и организовать эти данные в четкий, структурированный граф знаний.
+# =======================================
+
+THESISES_EXTRACTION_PROMPT_RU_SYSTEM = '''Задача: Основная цель - тщательно собрать информацию из входного текста и организовать эти данные в четкий, структурированный граф знаний.
 
 Руководство по построению графа знаний:
 
@@ -212,7 +218,7 @@ THESISES_EXTRACTION_PROMPT_SYSTEM = '''Задача: Основная цель -
 Например, лучше составить тезис "Северный выход из кухни заблокирован дверью», чем "в кухне есть дверь» и "северный выход заблокирован дверью».
 потому что без контекста кухни "северный выход заблокирован дверью» может относиться к любой комнате дома.'''
 
-THESISES_EXTRACTION_PROMPT_ENG_SYSTEM = '''Objective: The main goal is to meticulously gather information from input text and organize this data into a clear, structured knowledge graph.
+THESISES_EXTRACTION_PROMPT_EN_SYSTEM = '''Objective: The main goal is to meticulously gather information from input text and organize this data into a clear, structured knowledge graph.
 
 Guidelines for Building the Knowledge Graph:
 
@@ -236,13 +242,15 @@ because without context of kitchen "north exit is blocked by door" can be relate
 Entities must not include verbs and any other words which described motion, properties and etc. 
 All the entities must be the real world objects or abstract concept.'''
 
-TRIPLETS_EXTRACTION_PROMPT_USER = '''Текст: {text}
+# =======================================
+
+TRIPLETS_EXTRACTION_PROMPT_RU_USER = '''Текст: {text}
 
 Помни, что триплеты должны быть извлечены в формате: "субъект_1, отношение_1, объект_1; субъект_2, отношение_2, объект_2; ...».
 
 Извлеченные триплеты: '''
 
-TRIPLETS_EXTRACTION_PROMPT_ENG_USER = '''Text: {text}
+TRIPLETS_EXTRACTION_PROMPT_EN_USER = '''Text: {text}
 
 Remember that triplets must be extracted in format: "subject_1, relation_1, object_1; subject_2, relation_2, object_2; ..."
 This is important
@@ -252,10 +260,12 @@ Remember that triplets must be extracted in format: "subject_1, relation_1, obje
 
 Extracted triplets: '''
 
-THESISES_EXTRACTION_PROMPT_USER = '''Текст: {text}
+# =======================================
+
+THESISES_EXTRACTION_PROMPT_RU_USER = '''Текст: {text}
 Помни, что тезисы должны быть извлечены в формате: 'тезис_1; [список объектов для тезиса_1]. тезис2; [список объектов для тезиса_2].' и т. д.'''
 
-THESISES_EXTRACTION_PROMPT_ENG_USER = '''Text: {text}
+THESISES_EXTRACTION_PROMPT_EN_USER = '''Text: {text}
 Remember that thesises must be extracted in format: "thesis_1; [list of entites for thesis_1]. thesis2; [list of entites for thesis_2]. etc.
 This is important
 Remember that thesises must be extracted in format: "thesis_1; [list of entites for thesis_1]. thesis2; [list of entites for thesis_2]. etc.
@@ -263,3 +273,5 @@ THIS IS IMPORTANT!!!
 Remember that thesises must be extracted in format: "thesis_1; [list of entites for thesis_1]. thesis2; [list of entites for thesis_2]. etc.
 
 Extracted thesises: '''
+
+# =======================================

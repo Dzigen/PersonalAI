@@ -1,3 +1,7 @@
-RU_SYSTEM_PROMPT = ""
+# TODO
 
-EN_SYSTEM_PROMPT = ""
+RU_SYSTEM_PROMPT = \
+''''''
+
+EN_SYSTEM_PROMPT = \
+'''You are a helpful assistant.'''
