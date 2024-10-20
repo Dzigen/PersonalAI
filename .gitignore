@@ -1,6 +1,8 @@
 *.sh
 *.json
-models/
+#models/
+models/facebook
+models/google
 data/
 create_local_db/
 archives/

@@ -1,0 +1,6 @@
+outs:
+- md5: b34c60dc89ce6cb31b63243451cf2f5a.dir
+  size: 492792086
+  nfiles: 6
+  hash: md5
+  path: multilingual-e5-small
