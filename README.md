@@ -26,7 +26,7 @@
 * docker build -t m.menschikov/agent_api:v2 .
 * docker run -d -p 45678:4567 -v ./models:/app/models -it  --name m.menschikov.agent_api_cntrn --memory=32g --memory-swap=32g --cpuset-cpus=0-4 --gpus '"device=1"' m.menschikov/agent_api:v2
 
-##### Команды для генерации документации
+##### Команды для генерации документации:
 * find . -type d -name __pycache__ -exec rm -r {} \+
 * sphinx-apidoc -o ../docs .
 * make html
