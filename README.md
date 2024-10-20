@@ -31,3 +31,7 @@
 * sphinx-apidoc -o ../docs .
 * make html
 * make clean
+
+linting and formating: https://www.laac.dev/blog/automating-convention-linting-formatting-python/
+
+dvc: https://dvc.org/doc/user-guide/data-management/remote-storage/ssh
