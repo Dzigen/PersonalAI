@@ -14,10 +14,16 @@ from ...utils import Logger
 
 @dataclass
 class AStarMetricsConfig:
+    """_summary_
+    """
+    #
     h_metric_name: str = 'ip'
 
 @dataclass
 class AStarGraphSearchConfig:
+    """_summary_
+    """
+    #
     metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
     # макимальная глубина обхода графа для поиска заданной вершины
     max_depth: int = 10
@@ -30,6 +36,21 @@ class AStarMetrics:
     def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: str, log: Logger, 
                 config: AStarMetricsConfig = AStarMetricsConfig(), cache: AbstractKVDatabaseConnection = None,
                 verbose: bool = False):
+        """_summary_
+
+        :param kg_model: _description_
+        :type kg_model: KnowledgeGraphModel
+        :param accepted_node_types: _description_
+        :type accepted_node_types: str
+        :param log: _description_
+        :type log: Logger
+        :param config: _description_, defaults to AStarMetricsConfig()
+        :type config: AStarMetricsConfig, optional
+        :param cache: _description_, defaults to None
+        :type cache: AbstractKVDatabaseConnection, optional
+        :param verbose: _description_, defaults to False
+        :type verbose: bool, optional
+        """
         self.log = log
         self.verbose = verbose
         self.cache = cache
@@ -50,9 +71,23 @@ class AStarMetrics:
         }
 
     def compute_h_metric(self, *args, **kwargs) -> float:
+        """_summary_
+
+        :return: _description_
+        :rtype: float
+        """
         return self.metrics_map[self.config.h_metric_name](*args, **kwargs)
 
     def get_nodes_path(self, parent: Dict[str, str], end_node_id: str) -> List[str]:
+        """_summary_
+
+        :param parent: _description_
+        :type parent: Dict[str, str]
+        :param end_node_id: _description_
+        :type end_node_id: str
+        :return: _description_
+        :rtype: List[str]
+        """
         #end_node_id = U[-1] if (end_node_id not in parent) else end_node_id
         path, end_flag, cur_n = [end_node_id], False, end_node_id
         while not end_flag:
@@ -65,6 +100,15 @@ class AStarMetrics:
         return path
 
     def precomputed_dist(self, node1_id: str, node2_id: str, *args, **kwargs) -> float:
+        """_summary_
+
+        :param node1_id: _description_
+        :type node1_id: str
+        :param node2_id: _description_
+        :type node2_id: str
+        :return: _description_
+        :rtype: float
+        """
         pair_id = create_id_for_node_pair(node1_id, node2_id)
         cache_key = ('test', 'dist', pair_id)
         dist = None
@@ -88,6 +132,15 @@ class AStarMetrics:
         return dist
 
     def bfs(self, s_node_id, e_node_id):
+        """_summary_
+
+        :param s_node_id: _description_
+        :type s_node_id: _type_
+        :param e_node_id: _description_
+        :type e_node_id: _type_
+        :return: _description_
+        :rtype: _type_
+        """
         visited, queue = set(), collections.deque([s_node_id])
         visited.add(s_node_id)
         D = {s_node_id: 0}
@@ -133,6 +186,15 @@ class AStarMetrics:
         return INF_VALUE
 
     def precomputed_short_path(self, node1_id: str, node2_id: str) -> float:
+        """_summary_
+
+        :param node1_id: _description_
+        :type node1_id: str
+        :param node2_id: _description_
+        :type node2_id: str
+        :return: _description_
+        :rtype: float
+        """
         pair_id = create_id_for_node_pair(node1_id, node2_id)
         cache_key = ('test', 'bfs_short_path', pair_id)
         if self.cache.key_exist(cache_key):
@@ -147,11 +209,31 @@ class AStarMetrics:
         return short_path
 
     def weighted_short_path(self, node1_id: str, node2_id: str, *args, **kwargs) -> float:
+        """_summary_
+
+        :param node1_id: _description_
+        :type node1_id: str
+        :param node2_id: _description_
+        :type node2_id: str
+        :return: _description_
+        :rtype: float
+        """
         short_path_len = self.precomputed_short_path(node1_id, node2_id)
         w = self.precomputed_dist(node1_id, node2_id)
         return short_path_len * w
 
     def avg_weighted_short_path(self, node1_id: str, node2_id: str, parent: Dict[str, str]) -> float:
+        """_summary_
+
+        :param node1_id: _description_
+        :type node1_id: str
+        :param node2_id: _description_
+        :type node2_id: str
+        :param parent: _description_
+        :type parent: Dict[str, str]
+        :return: _description_
+        :rtype: float
+        """
         nodes_path = self.get_nodes_path(parent, node1_id)
         acc_dist = 0
         for i in range(len(nodes_path)-1):
@@ -166,6 +248,19 @@ class AStarGraphSearch:
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
                 cache: AbstractKVDatabaseConnection = None, verbose: bool = False) -> None:
+        """_summary_
+
+        :param kg_model: _description_
+        :type kg_model: KnowledgeGraphModel
+        :param log: _description_
+        :type log: Logger
+        :param search_config: _description_, defaults to AStarGraphSearchConfig()
+        :type search_config: AStarGraphSearchConfig, optional
+        :param cache: _description_, defaults to None
+        :type cache: AbstractKVDatabaseConnection, optional
+        :param verbose: _description_, defaults to False
+        :type verbose: bool, optional
+        """
         self.log = log
         self.verbose = verbose
         self.config = search_config
@@ -175,6 +270,15 @@ class AStarGraphSearch:
             log=self.log, config=self.config.metrics_config, cache=cache, verbose=verbose)
 
     def search_path(self, start_node_id: str, end_node_id: str) -> Tuple[List[str], List[str], Dict[str, int], Dict[str, str], str]:
+        """_summary_
+
+        :param start_node_id: _description_
+        :type start_node_id: str
+        :param end_node_id: _description_
+        :type end_node_id: str
+        :return: _description_
+        :rtype: Tuple[List[str], List[str], Dict[str, int], Dict[str, str], str]
+        """
         # использованная реализация A*-алгоритма поиска кратчайшего пути между вершинами: https://www.redblobgames.com/pathfinding/a-star/implementation.html
         frontier = []
         heapq.heappush(frontier, (0, start_node_id))
@@ -231,12 +335,36 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
     
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(), 
                  cache: AbstractKVDatabaseConnection = None, verbose: bool = False) -> None:
+        """_summary_
+
+        :param kg_model: _description_
+        :type kg_model: KnowledgeGraphModel
+        :param log: _description_
+        :type log: Logger
+        :param search_config: _description_, defaults to AStarGraphSearchConfig()
+        :type search_config: AStarGraphSearchConfig, optional
+        :param cache: _description_, defaults to None
+        :type cache: AbstractKVDatabaseConnection, optional
+        :param verbose: _description_, defaults to False
+        :type verbose: bool, optional
+        """
         self.log = log
         self.verbose = verbose
         self.kg_model = kg_model
         self.graph_searcher = AStarGraphSearch(kg_model, log, search_config, cache, verbose)
 
     def get_nodes_path(self, parent: Dict[str, str], end_node_id: str, spare_closest_node_id: str) -> List[str]:
+        """_summary_
+
+        :param parent: _description_
+        :type parent: Dict[str, str]
+        :param end_node_id: _description_
+        :type end_node_id: str
+        :param spare_closest_node_id: _description_
+        :type spare_closest_node_id: str
+        :return: _description_
+        :rtype: List[str]
+        """
         end_node_id = spare_closest_node_id if (end_node_id not in parent) else end_node_id
         
         path, end_flag, cur_n = [end_node_id], False, end_node_id
@@ -251,6 +379,13 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
         return path
 
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
+        """_summary_
+
+        :param query_info: _description_
+        :type query_info: QueryInfo
+        :return: _description_
+        :rtype: List[Triplet]
+        """
         nodes_ids = [node.id for node in query_info.linked_nodes]
         unique_nodes_pairs = set()
 

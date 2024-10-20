@@ -21,11 +21,19 @@ AVAILABLE_TRIPLETS_FILTERS = {
 
 @dataclass
 class KnowledgeRetrieverConfig:
+    """_summary_
+    """
+    #
     retriever_method: str = 'astar'
+    #
     retriever_config: object = field(default_factory=lambda: AStarGraphSearchConfig())
+    #
     filter_method: str = 'naive'
+    #
     filter_config: object = field(default_factory=lambda: TripletsFilterConfig())
+    #
     cache_config: KeyValueDriverConfig = field(default_factory=lambda: KeyValueDriverConfig())
+    #
     log: Logger = field(default_factory=lambda: Logger(RETRIEVER_LOG_PATH))
     verbose: bool = False
 
@@ -46,6 +54,13 @@ class KnowledgeRetriever:
             kg_model, self.log, self.config.filter_config, self.config.verbose)
 
     def retrieve(self, query_info: QueryInfo) -> List[Triplet]:
+        """_summary_
+
+        :param query_info: _description_
+        :type query_info: QueryInfo
+        :return: _description_
+        :rtype: List[Triplet]
+        """
         self.log("stage #3.1 - extracting triplets...", verbose=self.config.verbose)
         triplets = self.graph_retriever.get_relevant_triplets(query_info)
         self.log(f"Количество извлечённых триплетов: {len(triplets)}", verbose=self.config.verbose)

@@ -10,7 +10,7 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
         self.config = config
         self.open_connection()
 
-    def open_connection(self):
+    def open_connection(self) -> None:
         db_config = {'hosts': [(self.config.host, self.config.port)]}
         if 'ports' in self.config.params:
             for ext_port in self.config.params['ports']:
@@ -18,24 +18,24 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
         print(db_config)
         self.client = aerospike.client(db_config).connect()
         
-    def close_connection(self):
+    def close_connection(self) -> None:
         self.client.close()
 
-    def create(self, key: Tuple, value: Dict):
+    def create(self, key: Tuple, value: Dict) -> None:
         self.client.put(key, value)
 
-    def delete(self, key_tuples: List[Tuple], durable_delete: bool = False):
-        self.client.batch_remove(key_tuples, policy_batch_remove= {'durable_delete': durable_delete})
+    def delete(self, keys: List[Tuple], durable_delete: bool = False) -> None:
+        self.client.batch_remove(keys, policy_batch_remove= {'durable_delete': durable_delete})
 
-    def read(self, key_tuples: List[Tuple]):
-        mixed_records = self.client.get_many(key_tuples, policy={'total_timeout': 10000})
+    def read(self, keys: List[Tuple]) -> List[Dict]:
+        mixed_records = self.client.get_many(keys, policy={'total_timeout': 10000})
         records = [mixed_record[2] for mixed_record in mixed_records]
         return records
     
-    def key_exist(self, key_tuple: Tuple) -> bool:
-        _, meta = self.client.exists(key_tuple)
+    def key_exist(self, key: Tuple) -> bool:
+        _, meta = self.client.exists(key)
         return False if meta is None else True
 
-    def clear(self, key_tuples: List[Tuple]):
+    def clear(self, keys: List[Tuple]) -> None:
         # TODO
         pass

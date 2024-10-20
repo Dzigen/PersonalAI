@@ -7,9 +7,15 @@ from ...agents import AgentDriver, AgentDriverConfig
 
 @dataclass
 class QueryLLMParserConfig:
+    """_summary_
+    """
+    #
     lang: str = 'auto'
+    #
     ents_extr_config: EntitiesExtractorConfig = field(default_factory=lambda: EntitiesExtractorConfig()) 
+    #
     agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
+    #
     log: Logger = field(default_factory=lambda: Logger(QP_LOG_PATH))
     verbose: bool = False
 
@@ -24,6 +30,13 @@ class QueryLLMParser:
         self.log = self.config.log
 
     def extract_entities(self, query: str) -> QueryInfo:
+        """_summary_
+
+        :param query: _description_
+        :type query: str
+        :return: _description_
+        :rtype: QueryInfo
+        """
         detected_lang = detect_lang(query) if self.config.lang == 'auto' else self.config.lang
         self.log(f"DETECTED LANG: {detected_lang}", verbose=self.config.verbose)
 

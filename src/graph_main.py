@@ -12,10 +12,17 @@ RKG_LOG_PATH = "log/rmkg"
 
 @dataclass
 class RemoteKnowledgeGraphConfig:
+    """_summary_
+    """
+    #
     graph_struct_config: GraphModelConfig = field(default_factory=lambda:GraphModelConfig())
+    #
     embedds_struct_config: EmbeddingsModelConfig = field(default_factory=lambda: EmbeddingsModelConfig())
+    #
     qa_pipeline_config: QAPipelineConfig = field(default_factory=lambda:QAPipelineConfig())
+    #
     mem_pipeline_config: MemPipelineConfig = field(default_factory=lambda:MemPipelineConfig())
+    #
     log: Logger = field(default_factory=lambda:Logger(RKG_LOG_PATH))
     verbose: bool = False
 
@@ -31,6 +38,13 @@ class RemoteKnowledgeGraph:
         self.mem_pipeline = MemPipeline(kg_model=self.kg_model, config=config.mem_pipeline_config)
 
     def answer_question(self, question: str) -> str:
+        """_summary_
+
+        :param question: _description_
+        :type question: str
+        :return: _description_
+        :rtype: str
+        """
         self.log("Start answer generation:", verbose=self.config.verbose)
         self.log(f"- question: {question}", verbose=self.config.verbose)
         answer = self.qa_pipeline.answer(question)
@@ -38,6 +52,13 @@ class RemoteKnowledgeGraph:
         return answer
 
     def update_memory(self, new_info: List[str], properties: List[Dict]):
+        """_summary_
+
+        :param new_info: _description_
+        :type new_info: List[str]
+        :param properties: _description_
+        :type properties: List[Dict]
+        """
         self.log("Start memory-updating...", verbose=self.config.verbose)
         for info, props in tqdm(zip(new_info, properties)):
             self.mem_pipeline.remember(info, props)

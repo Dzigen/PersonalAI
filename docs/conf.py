@@ -23,6 +23,7 @@ extensions = [
 ]
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+todo_include_todos = True
 
 language = 'ru'
 

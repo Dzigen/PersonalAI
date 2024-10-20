@@ -8,11 +8,23 @@ logging.getLogger("chromadb").setLevel(logging.CRITICAL)
 DEFAULT_CHROMA_CONFIG = VectorDBConnectionConfig(path='./default_vectordb', db_name='vectors')
 
 class ChromaConnection(AbstractVectorDatabaseConnection):
+    """_summary_
+
+    :param AbstractVectorDatabaseConnection: _description_
+    :type AbstractVectorDatabaseConnection: _type_
+    """
     def __init__(self, config: VectorDBConnectionConfig) -> None:
+        """_summary_
+
+        :param config: _description_
+        :type config: VectorDBConnectionConfig
+        """
         self.config = config
         self.open_connection()
 
     def open_connection(self):
+        """_summary_
+        """
         self.client = chromadb.PersistentClient(path=self.config.path)
         self.collection = self.client.get_or_create_collection(name=self.config.db_name, metadata=self.config.params)
 
@@ -20,6 +32,8 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
             self.clear()
 
     def close_connection(self):
+        """_summary_
+        """
         del self.collection
         del self.client
 
@@ -70,17 +84,6 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50, 
             includes: List[str]  = ['embeddings', 'documents', 'metadatas'], **kwargs) -> List[List[Tuple[float, VectorDBInstance]]]:
-        """_summary_
-
-        Args:
-            query_instances (List[VectorDBInstance]): _description_
-            n_results (int, optional): _description_. Defaults to 50.
-            includes (List[str], optional): Список полей, информацию по которым нужно получить для каждого объекта. Defaults to ['embeddings', 'documents'].
-
-        Returns:
-            List[List[Tuple[float, VectorDBInstance]]]: Списки объектов из бд, релевантных заданным query-объектам.
-        """
-
         collection_size = self.collection.count()
         n_results = collection_size if collection_size < n_results else n_results
 
@@ -102,9 +105,4 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         return formated_instances
 
     def delete(self, ids: List[str], **kwargs):
-        """Удаление объектов из базы по их идентификаторам.
-
-        Args:
-            ids (List[str]): идентификаторы объектов.
-        """
         self.collection.delete(ids=ids, **kwargs)

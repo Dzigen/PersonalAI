@@ -23,15 +23,36 @@ class QALLMGenerator:
     извлечённой информации из графа знаний
     """
     def __init__(self, config: QALLMGeneratorConfig = QALLMGeneratorConfig()) -> None:
+        """_summary_
+
+        :param config: _description_, defaults to QALLMGeneratorConfig()
+        :type config: QALLMGeneratorConfig, optional
+        """
         self.config = config
         self.agent = AgentDriver.connect(config.agent_cofig)
         self.log = self.config.log
 
     def formate_context(self, triplets: List[Triplet]) -> str:
+        """_summary_
+
+        :param triplets: _description_
+        :type triplets: List[Triplet]
+        :return: _description_
+        :rtype: str
+        """
         filtered_context = list(map(lambda triplet: f"- {TripletCreator.stringify(triplet)[1] if triplet.stringified is None else triplet.stringified}", triplets))                
         return "\n".join(filtered_context)
 
     def generate(self, query: str, context: str) -> str:
+        """_summary_
+
+        :param query: _description_
+        :type query: str
+        :param context: _description_
+        :type context: str
+        :return: _description_
+        :rtype: str
+        """
         detected_lang = detect_lang(query) if self.config.lang == 'auto' else self.config.lang
         self.log(f"DETECTED LANG: {detected_lang}", verbose=self.config.verbose)
         

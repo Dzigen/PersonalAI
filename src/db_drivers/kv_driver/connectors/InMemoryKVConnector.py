@@ -32,7 +32,7 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         else:
             self.kv_store = dict()
 
-    def close_connection(self):
+    def close_connection(self) -> None:
         if self.config.params['save_on_disk']:
             save_path = f"{self.config.params['save_dump_dir']}/{self.config.params['kvstore_dump_name']}"
             if os.path.exists(save_path):
@@ -45,15 +45,14 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         del self.kv_store
         gc.collect()
 
-    def create(self, keys: List[object], values: List[str]):
-        for k, v in zip(keys, values):
-            self.kv_store[k] = v
+    def create(self, key: Tuple, value: Dict) -> None:
+        self.kv_store[key] = value
 
     def delete(self, keys: List[str]):
         for k in keys:
             del self.kv_store[k]
 
-    def read(self, keys: List[object]) -> Dict:
+    def read(self, keys: List[Tuple]) -> Dict:
         records = [self.kv_store[k] for k in keys]
         return records
 
@@ -62,5 +61,5 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         gc.collect()
         self.kv_store = dict()
 
-    def key_exist(self, key: object):
+    def key_exist(self, key: Tuple):
         return key in self.kv_store

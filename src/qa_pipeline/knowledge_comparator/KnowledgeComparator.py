@@ -20,10 +20,22 @@ class KnowledgeComparator:
     с имеющейся информацией в графе знаний
     """
     def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeComparatorConfig = KnowledgeComparatorConfig()) -> None:
+        """_summary_
+
+        :param kg_model: _description_
+        :type kg_model: KnowledgeGraphModel
+        :param config: _description_, defaults to KnowledgeComparatorConfig()
+        :type config: KnowledgeComparatorConfig, optional
+        """
         self.config = config
         self.kg_model = kg_model
 
     def link_kgnodes_to_query(self, query_structure: QueryInfo) -> None:
+        """_summary_
+
+        :param query_structure: _description_
+        :type query_structure: QueryInfo
+        """
         # сопоставляем сущности, извлечённые из запроса нодам в графе знаний
         
         linked_nodes_by_entities = []

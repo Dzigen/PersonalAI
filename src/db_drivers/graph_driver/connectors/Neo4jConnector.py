@@ -56,6 +56,13 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             self.driver.close()
 
     def create_node_query(self, node: Node) -> str:
+        """_summary_
+
+        :param node: _description_
+        :type node: Node
+        :return: _description_
+        :rtype: str
+        """
         query_props = {}
         for prop_name, prop_value in node.prop.items():
             p_name, p_value = prop_name.replace(" ", "_"), json.dumps(prop_value, ensure_ascii=False)
@@ -70,6 +77,13 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
     
     def create_rel_query(self, triplet: Triplet) -> str:
+        """_summary_
+
+        :param triplet: _description_
+        :type triplet: Triplet
+        :return: _description_
+        :rtype: str
+        """
         rel_props = {}
         for prop_name, prop_value in triplet.relation.prop.items():
             p_name, p_value = prop_name.replace(' ', '_'), json.dumps(prop_value, ensure_ascii=False)
@@ -123,6 +137,15 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         pass
 
     def execute_query(self, query: str, db_flag: bool = True):
+        """_summary_
+
+        :param query: _description_
+        :type query: str
+        :param db_flag: _description_, defaults to True
+        :type db_flag: bool, optional
+        :return: _description_
+        :rtype: _type_
+        """
         assert self.driver is not None, "Driver not initialized!"
         session = None
         response = None
@@ -146,6 +169,13 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         return formated_nodes
 
     def parse_query_output(self, output):
+        """_summary_
+
+        :param output: _description_
+        :type output: _type_
+        :return: _description_
+        :rtype: _type_
+        """
         formated_triplets = []
         for raw_triplet in output:
             node1 = NodeCreator.create(id=raw_triplet['n1'].element_id, name=str(raw_triplet['n1']['name']), 

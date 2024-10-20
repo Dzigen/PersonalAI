@@ -12,14 +12,28 @@ from ..utils import Logger, Triplet
 
 @dataclass
 class MemPipelineConfig:
+    """_summary_
+    """
+    #
     extractor_config: LLMExtractorConfig = field(default_factory=lambda: LLMExtractorConfig())
+    #
     updator_config: LLMUpdatorConfig = field(default_factory=lambda: LLMUpdatorConfig())
+    #
     log: Logger = field(default_factory=lambda: Logger(MEM_LOG_PATH))
     log_verbose: bool = False
 
 class MemPipeline:
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig(), bfs: BFSRetriever = None) -> None:
+        """_summary_
+
+        :param kg_model: _description_
+        :type kg_model: KnowledgeGraphModel
+        :param config: _description_, defaults to MemPipelineConfig()
+        :type config: MemPipelineConfig, optional
+        :param bfs: _description_, defaults to None
+        :type bfs: BFSRetriever, optional
+        """
         self.config = config
         self.log = config.log
 
@@ -32,6 +46,27 @@ class MemPipeline:
     def remember(self, text: str, replacing_window_width: int = 32, replacing_window_depth: int = 1, 
                  need_simple: bool = True, need_thesises: bool = True, need_episodic: bool = True, 
                  need_update: bool = False, properties: Dict = dict()) -> List[Triplet]:
+        """_summary_
+
+        :param text: _description_
+        :type text: str
+        :param replacing_window_width: _description_, defaults to 32
+        :type replacing_window_width: int, optional
+        :param replacing_window_depth: _description_, defaults to 1
+        :type replacing_window_depth: int, optional
+        :param need_simple: _description_, defaults to True
+        :type need_simple: bool, optional
+        :param need_thesises: _description_, defaults to True
+        :type need_thesises: bool, optional
+        :param need_episodic: _description_, defaults to True
+        :type need_episodic: bool, optional
+        :param need_update: _description_, defaults to False
+        :type need_update: bool, optional
+        :param properties: _description_, defaults to dict()
+        :type properties: Dict, optional
+        :return: _description_
+        :rtype: List[Triplet]
+        """
         assert need_simple or need_thesises
         new_triplets = self.extractor.extract(text, need_simple, need_thesises, need_episodic, properties)  
         self.log("PROCESSED NEW TRIPLETS: " + str(new_triplets), verbose=self.config.log_verbose)

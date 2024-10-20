@@ -4,6 +4,7 @@ from typing import Dict
 
 from ...utils.data_structs import QueryInfo, Triplet
 
+
 RETRIEVER_LOG_PATH = 'log/retriever'
 
 class AbstractTriplesFilter(ABC):
