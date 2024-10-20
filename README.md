@@ -32,8 +32,11 @@
 * make html
 * make clean
 
-pre-commit: https://pre-commit.com/#pre-commit-configyaml---repos
+pre-commit:
+* https://pre-commit.com/#pre-commit-configyaml---repos
+* https://www.laac.dev/blog/automating-convention-linting-formatting-python/
 
-linting and formating: https://www.laac.dev/blog/automating-convention-linting-formatting-python/
-
-dvc: https://dvc.org/doc/user-guide/data-management/remote-storage/ssh
+dvc tutorial:
+* get-start - https://dvc.org/doc/start
+* remote ssh-storage - https://dvc.org/doc/user-guide/data-management/remote-storage/ssh
+* remote gdrive-storage - https://dvc.org/doc/user-guide/data-management/remote-storage/google-drive
