@@ -1,13 +1,13 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field\
 
 from .utils import EntitiesExtractorConfig, QP_LOG_PATH
 from ...utils.data_structs import QueryInfo
-from ...utils import Logger
+from ...utils import Logger, detect_lang
 from ...agents import AgentDriver, AgentDriverConfig
 
 @dataclass
 class QueryLLMParserConfig:
-    lang: str = 'en'
+    lang: str = 'auto'
     ents_extr_config: EntitiesExtractorConfig = field(default_factory=lambda: EntitiesExtractorConfig()) 
     agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     log: Logger = field(default_factory=lambda: Logger(QP_LOG_PATH))
@@ -24,9 +24,12 @@ class QueryLLMParser:
         self.log = self.config.log
 
     def extract_entities(self, query: str) -> QueryInfo:
-        formated_input = self.config.ents_extr_config.user_prompt[self.config.lang].format(text=query)
+        detected_lang = detect_lang(query) if self.config.lang == 'auto' else self.config.lang
+        self.log(f"DETECTED LANG: {detected_lang}", verbose=self.config.verbose)
+
+        formated_input = self.config.ents_extr_config.user_prompt[detected_lang].format(text=query)
         raw_output = self.agent.generate(
-            system_prompt=self.config.ents_extr_config.system_prompt[self.config.lang], 
+            system_prompt=self.config.ents_extr_config.system_prompt[detected_lang], 
             user_prompt=formated_input)
         self.log(f"RAW_ENTITIES: {raw_output}", verbose=self.config.verbose)
 

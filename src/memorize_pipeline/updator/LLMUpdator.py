@@ -8,7 +8,7 @@ from typing import Dict
 
 @dataclass
 class LLMUpdatorConfig:
-    lang: str = "en"
+    lang: str = "auto"
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig)
     replace_thesis_prompt: Dict = field(default_factory=lambda: REPLACE_THESIS_PROMPT)
     replace_simple_prompt: Dict = field(default_factory=lambda: REPLACE_SIMPLE_PROMPT)

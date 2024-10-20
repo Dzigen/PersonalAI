@@ -1,16 +1,16 @@
 from typing import List
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field\
 
 from .utils import QA_USER_PROMPT, QA_SYSTEM_PROMPT, QA_LOG_PATH
 from ...utils.data_structs import Triplet
 from ...agents import AgentDriver, AgentDriverConfig
 from ...utils.data_structs import TripletCreator
 from ...utils.data_structs import RelationType
-from ...utils import Logger
+from ...utils import Logger, detect_lang
 
 @dataclass
 class QALLMGeneratorConfig:
-    lang: str = "en"
+    lang: str = "auto"
     system_prompt: dict = field(default_factory=lambda: QA_SYSTEM_PROMPT)
     user_prompt: dict = field(default_factory=lambda: QA_USER_PROMPT)
     agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
@@ -32,17 +32,19 @@ class QALLMGenerator:
         return "\n".join(filtered_context)
 
     def generate(self, query: str, context: str) -> str:
-        lang = self.config.lang
-        formated_input = self.config.user_prompt[lang].format(q=query, c=context)
+        detected_lang = detect_lang(query) if self.config.lang == 'auto' else self.config.lang
+        self.log(f"DETECTED LANG: {detected_lang}", verbose=self.config.verbose)
+        
+        formated_input = self.config.user_prompt[detected_lang].format(q=query, c=context)
 
         found_line = ""
         raw_output = self.agent.generate(
-            system_prompt=self.config.system_prompt[self.config.lang], 
+            system_prompt=self.config.system_prompt[detected_lang], 
             user_prompt=formated_input).strip()
         self.log(f"RAW_ANSWER: {raw_output}", verbose=self.config.verbose)
 
         # TO MODIFY
-        if lang == "en":
+        if detected_lang == "en":
             for line in raw_output.split("\n"):
                 if "Final answer 3" in line:
                     found_line = line
@@ -53,7 +55,7 @@ class QALLMGenerator:
             else:
                 self.log("NOT FORMATED ANSWER", verbose=self.config.verbose)
                 answer = raw_output
-        elif lang == "ru":
+        elif detected_lang == "ru":
             answer = raw_output
 
         return answer
