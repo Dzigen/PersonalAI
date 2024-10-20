@@ -3,7 +3,6 @@ from .knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
 from .knowledge_comparator import KnowledgeComparator, KnowledgeComparatorConfig
 from .query_parser import QueryLLMParser, QueryLLMParserConfig
 from .utils import LOG_PATH
-from ..agents.private import GigaChatAgent
 from ..knowledge_graph_model import KnowledgeGraphModel
 from ..utils import Logger
 

@@ -5,8 +5,8 @@ from typing import Dict, List
 @dataclass
 class AgentConnectorConfig:
     gen_strategy: Dict
-    credentials: Dict = field(lambda: dict())
-    ext_params: Dict = field(lambda: dict())
+    credentials: Dict = field(default_factory=lambda: dict())
+    ext_params: Dict = field(default_factory=lambda: dict())
 
 class AbstractAgentConnector:
     @abstractmethod

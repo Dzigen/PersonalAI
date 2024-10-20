@@ -9,7 +9,7 @@ from ...agents import AgentDriver, AgentDriverConfig
 class QueryLLMParserConfig:
     lang: str = 'ru'
     ents_extr_config: EntitiesExtractorConfig = field(default_factory=lambda: EntitiesExtractorConfig()) 
-    agent_cofig: AgentDriverConfig = field(default_factory=AgentDriverConfig())
+    agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     log: Logger = field(default_factory=lambda: Logger(QP_LOG_PATH))
     verbose: bool = False
 

@@ -4,13 +4,14 @@ from ...agents import AgentDriver, AgentDriverConfig
 from ...qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
 
 from dataclasses import dataclass, field
+from typing import Dict
 
 @dataclass
 class LLMUpdatorConfig:
     lang: str = "ru"
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig)
-    replace_thesis_prompt: str = REPLACE_THESIS_PROMPT
-    replace_simple_prompt: str = REPLACE_SIMPLE_PROMPT
+    replace_thesis_prompt: Dict = field(default_factory=lambda: REPLACE_THESIS_PROMPT)
+    replace_simple_prompt: Dict = field(default_factory=lambda: REPLACE_SIMPLE_PROMPT)
     log: Logger = field(default_factory=lambda: Logger(MEM_UPDATE_LOG))
     verbose: bool = False
 

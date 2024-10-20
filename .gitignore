@@ -10,3 +10,5 @@ notebooks/tmp_extracted_openai_gpt4omini_triplets.json
 log.txt
 pai_venv/
 notebooks/scripts/extract_parts
+docs/_build
+docs/log

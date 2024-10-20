@@ -13,7 +13,7 @@ class QALLMGeneratorConfig:
     lang: str = "ru"
     system_prompt: dict = field(default_factory=lambda: QA_SYSTEM_PROMPT)
     user_prompt: dict = field(default_factory=lambda: QA_USER_PROMPT)
-    agent_cofig: AgentDriverConfig = field(default_factory=AgentDriverConfig())
+    agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
     log: Logger = field(default_factory=lambda: Logger(QA_LOG_PATH))
     verbose: bool = False

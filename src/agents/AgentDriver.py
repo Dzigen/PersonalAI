@@ -11,4 +11,4 @@ class AgentDriverConfig:
 class AgentDriver:
     @staticmethod
     def connect(config: AgentDriverConfig = AgentDriverConfig()) -> AbstractAgentConnector:
-        return AVAILABLE_AGENT_CONNECTORS[config.name](config.name)
+        return AVAILABLE_AGENT_CONNECTORS[config.name](config.agent_config)
