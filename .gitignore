@@ -8,6 +8,8 @@ data/test
 data/log_augment_diaasq.txt
 data/aug_questions
 data/graph_structures/graph_short_paths
+data/graph_structures/vectorized_nodes/testing
+data/graph_structures/vectorized_triplets/testing
 create_local_db/
 archives/
 inference/
