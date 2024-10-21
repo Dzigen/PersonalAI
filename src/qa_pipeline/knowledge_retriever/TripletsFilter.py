@@ -58,6 +58,6 @@ class TripletsFilter(AbstractTriplesFilter):
         except Exception as e:
             print(f"error in apply_filter: {e}")
             filtered_triplets = triplets[:self.config.max_k]
-        if not filtered_triplets:
+        if len(filtered_triplets) < self.config.max_k:
             filtered_triplets = triplets[:self.config.max_k]
         return filtered_triplets
