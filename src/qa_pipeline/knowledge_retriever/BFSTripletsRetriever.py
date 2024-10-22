@@ -91,6 +91,7 @@ class BFSRetriever(AbstractTripletsRetriever):
                             "prop": triplet_raw.start_node.prop},
                             {"id": triplet_raw.relation.id,
                             "type": triplet_raw.relation.type,
+                            "name": triplet_raw.relation.name,
                             "prop": triplet_raw.relation.prop},
                             {"id": triplet_raw.end_node.id,
                             "type": triplet_raw.end_node.type,
@@ -238,7 +239,7 @@ class BFSRetriever(AbstractTripletsRetriever):
             subj, rel, obj, *_ = triplet_data
             subj_node = NodeCreator.create(name=subj["name"], type=subj["type"], id=subj["id"], prop=subj["prop"])
             obj_node = NodeCreator.create(name=obj["name"], type=obj["type"], id=obj["id"], prop=obj["prop"])
-            rel_edge = Relation(name="", type=rel["type"], id=rel["id"], prop=rel["prop"])
+            rel_edge = Relation(name=rel.get("name", ""), type=rel["type"], id=rel["id"], prop=rel["prop"])
             triplet = TripletCreator.create(start_node=subj_node, relation=rel_edge, end_node=obj_node, add_stringified_triplet=False)
             return triplet
 
