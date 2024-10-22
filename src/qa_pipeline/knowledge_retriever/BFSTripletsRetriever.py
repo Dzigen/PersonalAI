@@ -12,6 +12,7 @@ from .utils import AbstractTripletsRetriever
 @dataclass
 class BFSSearchConfig:
     graphdb_name: str = "diaasq2"
+    strict_filter: bool = True
 
 
 def process_chain(chain, chain_subj_obj, chain_triplets):
@@ -89,11 +90,11 @@ class BFSRetriever(AbstractTripletsRetriever):
                             "type": triplet_raw.start_node.type,
                             "name": triplet_raw.start_node.name.replace("_", " "),
                             "prop": triplet_raw.start_node.prop},
-                            {"id": triplet_raw.relation.id,
+                           {"id": triplet_raw.relation.id,
                             "type": triplet_raw.relation.type,
                             "name": triplet_raw.relation.name,
                             "prop": triplet_raw.relation.prop},
-                            {"id": triplet_raw.end_node.id,
+                           {"id": triplet_raw.end_node.id,
                             "type": triplet_raw.end_node.type,
                             "name": triplet_raw.end_node.name.replace("_", " "),
                             "prop": triplet_raw.end_node.prop},
@@ -227,12 +228,15 @@ class BFSRetriever(AbstractTripletsRetriever):
 
             chain_triplets2 = process_inters_chains2(ent_inters_chains2)
             prob_tr = False
-            if inters_chains1_more:
-                #chain_triplets = chain_triplets1_more + chain_triplets1_less[:3] + chain_triplets2[:3]
-                ent_chain_triplets = chain_triplets1_more
-                prob_tr = True
+            if self.config.strict_filter:
+                if inters_chains1_more:
+                    #chain_triplets = chain_triplets1_more + chain_triplets1_less[:3] + chain_triplets2[:3]
+                    ent_chain_triplets = chain_triplets1_more
+                    prob_tr = True
+                else:
+                    ent_chain_triplets = chain_triplets1_less + chain_triplets2
             else:
-                ent_chain_triplets = chain_triplets1_less + chain_triplets2
+                ent_chain_triplets = chain_triplets1_more + chain_triplets1_less + chain_triplets2
             chain_triplets += ent_chain_triplets[:thres]
 
         def format_triplet(triplet_data):
@@ -269,12 +273,16 @@ class BFSRetriever(AbstractTripletsRetriever):
                 formatted_triplets.append(formatted_triplet)
                 ex_triplets.append((subj, rel, obj))
 
-        if chain_triplets:
-            thres = 3
+        if self.config.strict_filter:
+            if chain_triplets:
+                thres = 3
+            else:
+                thres = 6
         else:
-            thres = 6
+            thres = 10
 
-        if not chain_triplets and not prob_tr and len(output_texts) < 2:
+        if (not chain_triplets and not prob_tr and len(output_texts) < 2) \
+                or (not self.config.strict_filter and len(chain_triplets) + len(output_texts) < 20):
             total_f_triplets = []
             for (*_, seed_entity, _), triplets in triplets_dict.items():
                 f_triplets = []
@@ -346,14 +354,17 @@ class BFSRetriever(AbstractTripletsRetriever):
         for key in retr_texts:
             retr_texts[key] = sorted(retr_texts[key], key=lambda x: x[-2], reverse=True)
 
-        if len(seed_entities) == 1:
-            thres = 15
-        elif len(seed_entities) == 2:
-            thres = 10
+        if self.config.strict_filter:
+            if len(seed_entities) == 1:
+                thres = 15
+            elif len(seed_entities) == 2:
+                thres = 10
+            else:
+                thres = 7
         else:
-            thres = 7
+            thres = 10
 
-        if same_types:
+        if same_types or not self.config.strict_filter:
             for key in retr_texts:
                 cur_texts = [[text, seed_entity, obj_props, rel_props, e_id]
                              for text, seed_entity, obj_props, rel_props, _, e_id in retr_texts[key]]
