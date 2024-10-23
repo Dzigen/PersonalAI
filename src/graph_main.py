@@ -60,6 +60,8 @@ class RemoteKnowledgeGraph:
         :type properties: List[Dict]
         """
         self.log("Start memory-updating...", verbose=self.config.verbose)
-        for info, props in tqdm(zip(new_info, properties)):
+
+        pairs = list(zip(new_info, properties))
+        for info, props in tqdm(pairs):
             self.mem_pipeline.remember(info, props)
         self.log("Memory updated successfully!", verbose=self.config.verbose)
