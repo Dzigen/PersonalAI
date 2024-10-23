@@ -47,6 +47,10 @@ class TripletsFilter(AbstractTriplesFilter):
         query_embd = self.kg_model.embeddings_struct.embedder.encode_queries([query_info.query])[0]
         query_instance = VectorDBInstance(embedding=query_embd)
         base_triplets_ids = list(map(lambda triplet: triplet.id, triplets))
+
+        # Проверка на наличие дубликатов в полученном наборе триплетов
+        assert len(base_triplets_ids) == len(set(base_triplets_ids))
+
         try:
             if len(base_triplets_ids) > 0:
                 raw_relevant_triplets = self.kg_model.embeddings_struct.vectordbs['triplets'].retrieve(
