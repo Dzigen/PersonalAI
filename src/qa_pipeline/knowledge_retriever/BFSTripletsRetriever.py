@@ -11,7 +11,6 @@ from .utils import AbstractTripletsRetriever
 
 @dataclass
 class BFSSearchConfig:
-    graphdb_name: str = "diaasq2"
     strict_filter: bool = True
     hyper_episodic_num: int = 15
     chain_triplets_num: int = 25
