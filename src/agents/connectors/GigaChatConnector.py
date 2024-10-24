@@ -31,8 +31,8 @@ class GigaChatConnector(AbstractAgentConnector):
                                    verify_ssl_certs=config.credentials['verify_ssl_certs'], model=config.credentials['model'],
                                    timeout=config.ext_params['timeout'])
 
-    # TODO
     def check_connection(self):
+        # TODO
         pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:

@@ -20,6 +20,7 @@ class LocalAgentConnector(AbstractAgentConnector):
         )
 
     def check_connection(self):
+        # TODO
         pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:

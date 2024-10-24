@@ -28,7 +28,7 @@ RELATIONS_TYPES_MAP = {
 @dataclass
 class Node:
     name: str
-    type: str
+    type: NodeType
     id: str = None
     prop: dict = field(default_factory=lambda: {})
     stringified: str = None
@@ -36,7 +36,7 @@ class Node:
 @dataclass
 class Relation:
     name: str
-    type: str
+    type: RelationType
     id: str = None
     prop: dict = field(default_factory=lambda: {})
 

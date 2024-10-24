@@ -26,8 +26,8 @@ class OpenAIConnector(AbstractAgentConnector):
         self.gen_strategy = config['gen_strategy']
         self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", config.credentials['token']))
 
-    # TODO
     def check_connection(self):
+        # TODO
         pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:

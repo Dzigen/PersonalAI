@@ -208,7 +208,6 @@ class GraphModel:
         self.log(f"all/created_nodes - {len(triplets)*2}/{created_nodes_count}", verbose=self.config.verbose)
         self.log("Triplets added successfully!", verbose=self.config.verbose)
 
-    # TODO
     def delete_triplets(self, triplets: List[Triplet]) -> None:
         """_summary_
 
