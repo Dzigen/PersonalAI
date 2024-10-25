@@ -1,0 +1,15 @@
+chromadb==0.5.3
+gigachat==0.1.17
+aerospike==15.1.0
+torch==2.4.1+cu118
+# torch==2.4.1
+torchaudio
+torchmetrics
+torchvision
+transformers==4.40.0
+evaluate
+openai
+neo4j
+sentence_transformers
+pysqlite3-binary
+pymongo

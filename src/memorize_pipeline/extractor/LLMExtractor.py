@@ -160,6 +160,8 @@ class LLMExtractor:
                 raw_thesis, raw_entities = raw_thesis.split(";")
                 thesis = raw_thesis.strip('.-* ')
                 entities = ast.literal_eval(raw_entities.strip(''' \n'".,/'''))
+                if not isinstance(entities, list):
+                    continue
             except:
                 continue
 
