@@ -1,5 +1,6 @@
 *.sh
 *.json
+*.pyc
 #models/
 models/facebook
 models/google

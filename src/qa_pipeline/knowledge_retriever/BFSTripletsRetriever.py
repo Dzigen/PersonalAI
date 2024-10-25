@@ -11,8 +11,10 @@ from .utils import AbstractTripletsRetriever
 
 @dataclass
 class BFSSearchConfig:
-    graphdb_name: str = "diaasq2"
     strict_filter: bool = True
+    hyper_episodic_num: int = 15
+    chain_triplets_num: int = 25
+    other_triplets_num: int = 6
 
 
 def process_chain(chain, chain_subj_obj, chain_triplets):
@@ -206,13 +208,13 @@ class BFSRetriever(AbstractTripletsRetriever):
         triplets_dict, inters_chains1, inters_chains2 = self.bfs(seed_entities, depth)
         output_texts = self.extract_thesis(seed_entities, same_types)
 
-        thres = 25
+        thres = self.config.chain_triplets_num
         if len(inters_chains1) == 1:
-            thres = 25
+            thres = self.config.chain_triplets_num
         elif len(inters_chains1) == 2:
-            thres = 12
+            thres = int(self.config.chain_triplets_num * 0.5)
         elif len(inters_chains1) >= 3:
-            thres = 10
+            thres = int(self.config.chain_triplets_num * 0.3)
 
         chain_triplets = []
         for seed_entity in inters_chains1:
@@ -275,11 +277,11 @@ class BFSRetriever(AbstractTripletsRetriever):
 
         if self.config.strict_filter:
             if chain_triplets:
-                thres = 3
+                thres = int(self.config.other_triplets_num * 0.5)
             else:
-                thres = 6
+                thres = self.config.other_triplets_num
         else:
-            thres = 10
+            thres = int(self.config.other_triplets_num * 1.5)
 
         if (not chain_triplets and not prob_tr and len(output_texts) < 2) \
                 or (not self.config.strict_filter and len(chain_triplets) + len(output_texts) < 20):
@@ -356,13 +358,13 @@ class BFSRetriever(AbstractTripletsRetriever):
 
         if self.config.strict_filter:
             if len(seed_entities) == 1:
-                thres = 15
+                thres = self.config.hyper_episodic_num
             elif len(seed_entities) == 2:
-                thres = 10
+                thres = int(0.67 * self.config.hyper_episodic_num)
             else:
-                thres = 7
+                thres = int(0.5 * self.config.hyper_episodic_num)
         else:
-            thres = 10
+            thres = int(0.67 * self.config.hyper_episodic_num)
 
         if same_types or not self.config.strict_filter:
             for key in retr_texts:
