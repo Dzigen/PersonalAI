@@ -52,11 +52,12 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         insts_with_md = list(filter(lambda i: len(instances[i].metadata), insts_idxs))
         insts_wo_md = set(insts_idxs).difference(set(insts_with_md))
 
-        self.collection.add(
-            documents=list(map(lambda idx: instances[idx].document, insts_with_md)),
-            embeddings=list(map(lambda idx: instances[idx].embedding, insts_with_md)),
-            metadatas=list(map(lambda idx: instances[idx].metadata, insts_with_md)),
-            ids=list(map(lambda idx: instances[idx].id, insts_with_md)))
+        if len(insts_with_md):
+            self.collection.add(
+                documents=list(map(lambda idx: instances[idx].document, insts_with_md)),
+                embeddings=list(map(lambda idx: instances[idx].embedding, insts_with_md)),
+                metadatas=list(map(lambda idx: instances[idx].metadata, insts_with_md)),
+                ids=list(map(lambda idx: instances[idx].id, insts_with_md)))
 
         if len(insts_wo_md):
             self.collection.add(
