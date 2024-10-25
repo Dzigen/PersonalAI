@@ -21,4 +21,4 @@ notebooks/scripts/extract_parts
 experiments/../*.json
 docs/_build
 docs/log
-tests/../tmp
+tmp/
