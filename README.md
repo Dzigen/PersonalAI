@@ -40,3 +40,6 @@ dvc tutorial:
 * get-start - https://dvc.org/doc/start
 * remote ssh-storage - https://dvc.org/doc/user-guide/data-management/remote-storage/ssh
 * remote gdrive-storage - https://dvc.org/doc/user-guide/data-management/remote-storage/google-drive
+
+pytest tutorial:
+* https://realpython.com/pytest-python-testing/#parametrization-combining-tests
