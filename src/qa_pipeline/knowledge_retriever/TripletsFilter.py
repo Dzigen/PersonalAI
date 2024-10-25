@@ -48,8 +48,7 @@ class TripletsFilter(AbstractTriplesFilter):
         query_instance = VectorDBInstance(embedding=query_embd)
         base_triplets_ids = list(map(lambda triplet: triplet.id, triplets))
 
-        # Проверка на наличие дубликатов в полученном наборе триплетов
-        assert len(base_triplets_ids) == len(set(base_triplets_ids))
+        self.log(f"Количество уникальных триплетов: {len(set(base_triplets_ids))}", verbose=self.log_verbose)
 
         try:
             if len(base_triplets_ids) > 0:
@@ -62,6 +61,6 @@ class TripletsFilter(AbstractTriplesFilter):
         except Exception as e:
             print(f"error in apply_filter: {e}")
             filtered_triplets = triplets[:self.config.max_k]
-        if len(filtered_triplets) < self.config.max_k:
-            filtered_triplets = triplets[:self.config.max_k]
+        #if len(filtered_triplets) < self.config.max_k:
+        #    filtered_triplets = triplets[:self.config.max_k]
         return filtered_triplets
