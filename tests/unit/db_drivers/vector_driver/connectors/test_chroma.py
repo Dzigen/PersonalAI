@@ -50,6 +50,3 @@ def test_delete(chroma_connection, instances):
     insts_ids = list(map(lambda inst: inst.id, instances))
     chroma_connection.delete(insts_ids)
     assert chroma_connection.collection.count() == 0
-
-def test_retrieve(chroma_connection):
-    pass
