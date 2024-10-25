@@ -2,7 +2,7 @@ from .utils import AbstractTriplesFilter, AbstractTripletsRetriever, RETRIEVER_L
 from .TripletsFilter import TripletsFilterConfig, TripletsFilter
 from .AStarTripletsRetriever import AStarTripletsRetriever, AStarGraphSearchConfig
 from .BFSTripletsRetriever import BFSRetriever, BFSSearchConfig
-from .MixtureTripletsRetriever import MixtureTripletsRetriever, MixtureGraphSearchConfig
+from .MixturedTripletsRetriever import MixturedTripletsRetriever, MixturedGraphSearchConfig
 from ...utils.data_structs import QueryInfo, Triplet
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ...db_drivers.kv_driver import KeyValueDriver, KeyValueDriverConfig
@@ -14,7 +14,7 @@ from typing import List
 AVAILABLE_TRIPLETS_RETRIEVERS  = {
     'astar': AStarTripletsRetriever,
     'bfs': BFSRetriever,
-    'mixture': MixtureTripletsRetriever
+    'mixture': MixturedTripletsRetriever
 }
 
 AVAILABLE_TRIPLETS_FILTERS = {

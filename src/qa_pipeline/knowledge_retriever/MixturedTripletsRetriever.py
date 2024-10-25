@@ -11,7 +11,7 @@ from ...db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
 from ...utils import Logger
 
 @dataclass
-class MixtureGraphSearchConfig:
+class MixturedGraphSearchConfig:
     """_summary_
     """
     #
@@ -19,8 +19,8 @@ class MixtureGraphSearchConfig:
     #
     bfs_config: BFSSearchConfig = field(default_factory=lambda: BFSSearchConfig())
 
-class MixtureTripletsRetriever(AbstractTripletsRetriever):
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: MixtureGraphSearchConfig = MixtureGraphSearchConfig(),
+class MixturedTripletsRetriever(AbstractTripletsRetriever):
+    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: MixturedGraphSearchConfig = MixturedGraphSearchConfig(),
                  cache: AbstractKVDatabaseConnection = None, verbose: bool = False) -> None:
         self.log = log
         self.verbose = verbose
