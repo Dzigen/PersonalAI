@@ -2,7 +2,10 @@ from dataclasses import dataclass, field
 from typing import List, Dict
 import ast
 
-from .utils import MEM_EXTRACT_LOG_PATH, MEM_EXTRACT_TRIPLET_SYSTEM_PROMPT, MEM_EXTRACT_TRIPLET_USER_PROMPT, MEM_EXTRACT_THESIS_SYSTEM_PROMPT, MEM_EXTRACT_THESIS_USER_PROMPT
+from .utils import MEM_EXTRACT_LOG_PATH, MEM_EXTRACT_TRIPLET_SYSTEM_PROMPT, MEM_EXTRACT_TRIPLET_USER_PROMPT, \
+    MEM_EXTRACT_THESIS_SYSTEM_PROMPT, MEM_EXTRACT_THESIS_USER_PROMPT, \
+    MEM_TRIPLET_PARSE_FUNC, MEM_THESIS_PARSE_FUNC
+
 from ...utils import Logger, detect_lang
 from ...utils.data_structs import TripletCreator, NodeCreator, Node, Relation, RelationType, NodeType, Triplet
 from ...agents import AgentDriver, AgentDriverConfig
@@ -17,12 +20,12 @@ class LLMExtractorConfig:
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     #
     triplet_extract_system_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_TRIPLET_SYSTEM_PROMPT)
-    #
     triplet_extract_user_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_TRIPLET_USER_PROMPT)
+    triplet_parse_func: dict = field(default_factory=lambda: MEM_TRIPLET_PARSE_FUNC)
     #
     thesis_extract_system_prompt:  dict = field(default_factory=lambda: MEM_EXTRACT_THESIS_SYSTEM_PROMPT)
-    #
     thesis_extract_user_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_THESIS_USER_PROMPT)
+    thesis_parse_func: dict = field(default_factory=lambda: MEM_THESIS_PARSE_FUNC)
     #
     log: Logger = field(default_factory=lambda: Logger(MEM_EXTRACT_LOG_PATH))
     verbose: bool = False
@@ -95,7 +98,7 @@ class LLMExtractor:
             system_prompt=self.config.triplet_extract_system_prompt[lang],
             user_prompt=self.config.triplet_extract_user_prompt[lang].format(text=text))
         self.log("EXTRACTED TRIPLETS: " + str(raw_response), verbose=self.config.verbose)
-        new_triplets = self.parse_triplets(raw_response, node_prop, rel_prop)
+        new_triplets = self.parse_triplets(raw_response, lang, node_prop, rel_prop)
         return new_triplets
 
     def extract_thesises(self, text: str, lang: str, node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
@@ -117,7 +120,7 @@ class LLMExtractor:
             system_prompt=self.config.thesis_extract_system_prompt[lang],
             user_prompt=self.config.thesis_extract_user_prompt[lang].format(text=text))
         self.log("EXTRACTED THESISES: " + str(raw_response), verbose=self.config.verbose)
-        new_triplets = self.parse_thesises(raw_response, node_prop, rel_prop)
+        new_triplets = self.parse_thesises(raw_response, lang, node_prop, rel_prop)
         return new_triplets
 
     @staticmethod
@@ -135,8 +138,7 @@ class LLMExtractor:
             entities[triplet.end_node.stringified] = triplet.end_node
         return list(entities.values())
 
-    @staticmethod
-    def parse_thesises(response: str, node_prop: Dict, rel_prop: Dict) -> List[Triplet]:
+    def parse_thesises(self, raw_response: str, lang: str, node_prop: Dict, rel_prop: Dict) -> List[Triplet]:
         """_summary_
 
         :param response: _description_
@@ -148,32 +150,21 @@ class LLMExtractor:
         :return: _description_
         :rtype: List[Triplet]
         """
-        #raw_triplets = ' '.join(list(filter(lambda v: len(v) and (';' in v) and ('.' in v), response.split("\n")[1:-1]))).lower()
-        if ":" in response:
-            response = response.split(":")[-1]
-        raw_thesises = response.split(".")
-        thesises = []
-        for raw_thesis in raw_thesises:
-            if ";" not in raw_thesis:
-                continue
-            try:
-                raw_thesis, raw_entities = raw_thesis.split(";")
-                thesis = raw_thesis.strip('.-* ')
-                entities = ast.literal_eval(raw_entities.strip(''' \n'".,/'''))
-            except:
-                continue
+        raw_triplets = self.config.thesis_parse_func[lang](raw_response)
+        formated_triplets = []
+        for triplet in raw_triplets:
+            thesis, entities = triplet
 
             thesis_node = NodeCreator.create(name=str(thesis), type=NodeType.hyper, prop={**node_prop})
             thesis_rel = Relation(name=RelationType.hyper.value, type=RelationType.hyper, prop={**rel_prop})
             for entity in entities:
-                thesises.append(TripletCreator.create(
+                formated_triplets.append(TripletCreator.create(
                     NodeCreator.create(name=str(entity), type=NodeType.object, prop={**node_prop}),
                     thesis_rel, thesis_node))
 
-        return thesises
+        return formated_triplets
 
-    @staticmethod
-    def parse_triplets(raw_triplets: str, node_prop: Dict, rel_prop: Dict) -> List[Triplet]:
+    def parse_triplets(self, raw_response: str, lang: str, node_prop: Dict, rel_prop: Dict) -> List[Triplet]:
         """_summary_
 
         :param raw_triplets: _description_
@@ -185,26 +176,17 @@ class LLMExtractor:
         :return: _description_
         :rtype: List[Triplet]
         """
-        #raw_triplets = ' '.join(list(filter(lambda v: len(v), raw_triplets.split("\n")[1:-1]))).lower()
-        if ":" in raw_triplets:
-            raw_triplets = raw_triplets.split(":")[-1]
-        raw_triplets = raw_triplets.lower()
-        raw_triplets = raw_triplets.split(";")
-        triplets = []
-        for triplet in raw_triplets:
-            if len(triplet.split(",")) != 3:
-                continue
-            subj, rel, obj = triplet.split(",")
-            subj, rel, obj = subj.split(":")[-1].split(".")[-1].strip(''' \n'".,/'''), rel.strip(''' \n'".,/'''), obj.strip(''' \n'".,/''')
-            if len(subj) == 0 or len(rel) == 0 or len(obj) == 0:
-                continue
 
-            triplets.append(TripletCreator.create(
+        raw_triplets = self.config.triplet_parse_func[lang](raw_response)
+        formated_triplets = []
+        for triplet in raw_triplets:
+            subj, rel, obj = triplet
+            formated_triplets.append(TripletCreator.create(
                 NodeCreator.create(name=str(subj), type=NodeType.object, prop={**node_prop}),
                 Relation(name=str(rel), type=RelationType.simple, prop={**rel_prop}),
                 NodeCreator.create(name=str(obj), type=NodeType.object, prop={**node_prop})))
 
-        return triplets
+        return formated_triplets
 
     @staticmethod
     def get_episodic_relationships(text: str, entities: List[Node], node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
