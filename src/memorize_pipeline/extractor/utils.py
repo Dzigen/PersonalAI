@@ -4,7 +4,7 @@ from ...prompts.memory_extraction import \
     THESISES_EXTRACTION_PROMPT_EN_USER, THESISES_EXTRACTION_PROMPT_EN_SYSTEM, \
     THESISES_EXTRACTION_PROMPT_RU_USER, THESISES_EXTRACTION_PROMPT_RU_SYSTEM
 
-from ...parsers.memory_extraction import mem_custom_triplet_parse_func, mem_custome_thesis_parse_func
+from ...parsers.memory_extraction import mem_custom_triplet_parse_func, mem_custom_thesis_parse_func
 
 # triplet-prompts
 MEM_EXTRACT_TRIPLET_SYSTEM_PROMPT = {
@@ -30,8 +30,8 @@ MEM_EXTRACT_THESIS_USER_PROMPT = {
 
 # thesis-parsers
 MEM_THESIS_PARSE_FUNC = {
-    'ru': mem_custome_thesis_parse_func,
-    'en': mem_custome_thesis_parse_func
+    'ru': mem_custom_thesis_parse_func,
+    'en': mem_custom_thesis_parse_func
 }
 
 MEM_EXTRACT_LOG_PATH = "log/extract"

@@ -19,7 +19,7 @@ def mem_custom_triplet_parse_func(raw_response: str) -> List[Tuple[str, str, str
     return raw_triplets
 
 #
-def mem_custome_thesis_parse_func(raw_response: str) -> List[Tuple[str, str]]:
+def mem_custom_thesis_parse_func(raw_response: str) -> List[Tuple[str, str]]:
     if ":" in raw_response:
         raw_response = raw_response.split(":")[-1]
     raw_response = raw_response.split(".")

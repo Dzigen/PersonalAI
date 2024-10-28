@@ -46,6 +46,7 @@ class QueryLLMParser:
             user_prompt=formated_input)
         self.log(f"RAW_ENTITIES: {raw_output}", verbose=self.config.verbose)
 
-        extracted_entities = list(filter(lambda item: len(item) > 0, list(map(lambda item: item.strip(), raw_output.split('|')))))
+        extracted_entities = self.config.ents_extr_config.entities_parse_func[detected_lang](raw_output)
+        self.log(f"PARSED_ENTITIES: {extracted_entities}", verbose=self.config.verbose)
 
         return QueryInfo(query=query, entities=extracted_entities)
