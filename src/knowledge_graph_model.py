@@ -25,7 +25,6 @@ class EmbeddingsModelConfig:
     """
     #
     nodesdb_driver_config: VectorDriverConfig = field(default_factory=lambda: NODES_DB_DEFAULT_DRIVER_CONFIG)
-    #
     tripletsdb_driver_config: VectorDriverConfig = field(default_factory=lambda: TRIPLETS_DB_DEFAULT_DRIVER_CONFIG)
     #
     embedder_config: EmbedderModelConfig = field(default_factory=lambda: EmbedderModelConfig())
