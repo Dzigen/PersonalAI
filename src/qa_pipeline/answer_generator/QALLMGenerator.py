@@ -1,5 +1,5 @@
 from typing import List
-from dataclasses import dataclass, field\
+from dataclasses import dataclass, field
 
 from .utils import QA_USER_PROMPT, QA_SYSTEM_PROMPT, QA_LOG_PATH, ANSWER_PARSE_FUNC
 from ...utils.data_structs import Triplet
