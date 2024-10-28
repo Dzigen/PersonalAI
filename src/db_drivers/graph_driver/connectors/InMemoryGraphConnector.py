@@ -44,6 +44,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         if s_node_content_id in self.uniques_content_nodes:
             triplet.start_node.id = self.uniques_content_nodes[s_node_content_id]
         else:
+            created_nodes_count += 1
             triplet.start_node.id = self.generate_id()
             self.uniques_content_nodes[s_node_content_id] = triplet.start_node.id
             self.items_ids[triplet.start_node.id] = triplet.start_node
@@ -53,6 +54,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         if e_node_content_id in self.uniques_content_nodes:
             triplet.end_node.id = self.uniques_content_nodes[e_node_content_id]
         else:
+            created_nodes_count += 1
             triplet.end_node.id = self.generate_id()
             self.uniques_content_nodes[e_node_content_id] = triplet.end_node.id
             self.items_ids[triplet.end_node.id] = triplet.end_node
@@ -62,6 +64,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         if rel_content_id in self.unique_content_relations:
             triplet.relation.id = self.unique_content_relations[rel_content_id]
         else:
+            created_rels_count += 1
             triplet.relation.id = self.generate_id()
             self.unique_content_relations[rel_content_id] = triplet.relation.id
 
