@@ -8,6 +8,7 @@ class ReturnStatus(Enum):
     bad_format = 3
     zero_triplets = 4
     zero_entities = 5
+    zero_linked_nodes = 6
 
 @dataclass
 class ReturnInfo:

@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 
 from .utils import COMPARATOR_LOG_PATH
-from ...utils import Logger, ReturnStatus
+from ...utils import Logger, ReturnStatus, ReturnInfo
 from ...utils.errors import QA_ZERO_LINKED_NODES_MSG
 from ...utils.data_structs import QueryInfo
 from ...knowledge_graph_model import KnowledgeGraphModel
@@ -38,7 +38,7 @@ class KnowledgeComparator:
         :type query_structure: QueryInfo
         """
         # сопоставляем сущности, извлечённые из запроса нодам в графе знаний
-
+        info = ReturnInfo()
         linked_nodes_by_entities = []
         unique_nodes = []
         for entity in query_structure.entities:
@@ -68,8 +68,8 @@ class KnowledgeComparator:
         query_structure.linked_nodes = unique_nodes
         query_structure.linked_nodes_by_entities = linked_nodes_by_entities
 
-        status, msg = ReturnStatus.success, ""
         if len(query_structure.linked_nodes) == 0:
-            status, msg = ReturnStatus.warning, QA_ZERO_LINKED_NODES_MSG
+            info.status = ReturnStatus.zero_linked_nodes
+            info.message = QA_ZERO_LINKED_NODES_MSG
 
-        return status, msg
+        return info
