@@ -53,7 +53,7 @@ class QAPipeline:
             return status, msg
 
         self.log("=STAGE#2 - kg_nodes to query linking", verbose=self.config.verbose)
-        status_code, msg = self.knowledge_comparator.link_kgnodes_to_query(query_info)
+        status, msg = self.knowledge_comparator.link_kgnodes_to_query(query_info)
         self.log("LINKED_NODES:\n" + ', '.join(list(map(lambda v: v.document, query_info.linked_nodes))), verbose=self.config.verbose)
         if status == ReturnStatus.warning:
             self.log(f"Warning: {msg}", verbose=self.config.verbose)
