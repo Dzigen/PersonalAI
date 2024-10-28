@@ -98,6 +98,7 @@ class TripletCreator(BaseCreator):
             triplet.id = create_id(str_triplet)
         else:
             triplet.id = t_id
+
         return triplet
 
     @staticmethod
