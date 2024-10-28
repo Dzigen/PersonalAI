@@ -68,6 +68,8 @@ class MemPipeline:
         :rtype: List[Triplet]
         """
         assert need_simple or need_thesises
+        new_triplets, info = None, ReturnInfo()
+
         new_triplets, info = self.extractor.extract(text, need_simple, need_thesises, need_episodic, properties)
         self.log("PROCESSED NEW TRIPLETS: " + str(new_triplets), verbose=self.config.log_verbose)
         if info.status == ReturnStatus.success:
@@ -86,7 +88,8 @@ class MemPipeline:
             #    triplets_ids = [id[1] for id in ids]
             #    nodes_ids = [id[0] for id in ids] + [id[2] for id in ids]
             #    self.kg_model.graph_struct.delete_triplets(triplets_ids, nodes_ids)
-        else:
-            self.log(info.message, verbose=self.config.log_verbose)
+
+        if info.status != ReturnStatus.success:
+            self.log(f"{info.status}: {info.message}", verbose=self.config.verbose)
 
         return new_triplets, info

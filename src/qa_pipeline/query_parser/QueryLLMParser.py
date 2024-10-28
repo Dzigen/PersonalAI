@@ -3,8 +3,8 @@ from typing import Tuple
 
 from .utils import EntitiesExtractorConfig, QP_LOG_PATH
 from ...utils.data_structs import QueryInfo
-from ...utils import Logger, detect_lang, ReturnStatus
-from ...utils.errors import QA_ZERO_ENTITIES_MSG
+from ...utils import Logger, detect_lang, ReturnStatus, ReturnInfo
+from ...utils.errors import QA_ZERO_ENTITIES_MSG, QA_BAD_ENTITIES_EXTRACTION_PROMPT
 from ...agents import AgentDriver, AgentDriverConfig
 
 @dataclass
@@ -31,7 +31,7 @@ class QueryLLMParser:
         self.agent = AgentDriver.connect(config.agent_cofig)
         self.log = self.config.log
 
-    def extract_entities(self, query: str) -> Tuple[QueryInfo, ReturnStatus, str]:
+    def extract_entities(self, query: str) -> Tuple[QueryInfo, ReturnInfo]:
         """_summary_
 
         :param query: _description_
@@ -39,6 +39,7 @@ class QueryLLMParser:
         :return: _description_
         :rtype: QueryInfo
         """
+        info = ReturnInfo()
         detected_lang = detect_lang(query) if self.config.lang == 'auto' else self.config.lang
         self.log(f"DETECTED LANG: {detected_lang}", verbose=self.config.verbose)
 
@@ -48,11 +49,13 @@ class QueryLLMParser:
             user_prompt=formated_input)
         self.log(f"RAW_ENTITIES: {raw_output}", verbose=self.config.verbose)
 
-        extracted_entities = self.config.ents_extr_config.entities_parse_func[detected_lang](raw_output)
+        extracted_entities, status = self.config.ents_extr_config.entities_parse_func[detected_lang](raw_output)
         self.log(f"PARSED_ENTITIES: {extracted_entities}", verbose=self.config.verbose)
+        if status == ReturnStatus.bad_format:
+            self.log(QA_BAD_ENTITIES_EXTRACTION_PROMPT, verbose=self.config.verbose)
 
-        status, msg = ReturnStatus.success, ""
         if len(extracted_entities) == 0:
-            status, msg = ReturnStatus.warning, QA_ZERO_ENTITIES_MSG
+            info.status = ReturnStatus.zero_entities
+            info.message = QA_ZERO_ENTITIES_MSG
 
-        return QueryInfo(query=query, entities=extracted_entities), status, msg
+        return QueryInfo(query=query, entities=extracted_entities), info
