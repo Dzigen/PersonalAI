@@ -52,7 +52,7 @@ class EmbeddingsModel:
         :param batch_size: _description_, defaults to 128
         :type batch_size: int, optional
         """
-        self.log("Adding triples to vector model...", verbose=self.config.verbose)
+        self.log("Adding triples to vector-model...", verbose=self.config.verbose)
         unique_nodes_ids, unique_triplets_ids = set(), set()
 
         batch_count = math.ceil(len(triplets) / batch_size)
@@ -84,7 +84,7 @@ class EmbeddingsModel:
 
         self.log(f"all/unique_triplets - {len(triplets)}/{len(unique_triplets_ids)}", verbose=self.config.verbose)
         self.log(f"all/unique_nodes - {len(triplets)*2}/{len(unique_nodes_ids)}", verbose=self.config.verbose)
-        self.log("Triples were successfully added to vector model!", verbose=self.config.verbose)
+        self.log("Triples were successfully added to vector-model!", verbose=self.config.verbose)
 
     def delete_triplets(self, triplets: List[Triplet], delete_nods: bool = True) -> None:
         """_summary_
@@ -197,14 +197,14 @@ class GraphModel:
         :param triplets: _description_
         :type triplets: List[Triplet]
         """
-        self.log("Adding triplets to graph-database...", verbose=self.config.verbose)
+        self.log("Adding triplets to graph-model...", verbose=self.config.verbose)
         created_nodes_count, created_rels_count = 0,0
         for triplet in tqdm(triplets):
             created_nodes, created_rels = self.db_conn.create_triplet(triplet)
             created_nodes_count += created_nodes
             created_rels_count += created_rels
 
-        self.log(f"all/created_triplets - {len(triplets)}/{created_rels_count}", verbose=self.config.verbose)
+        self.log(f"all/created_relations - {len(triplets)}/{created_rels_count}", verbose=self.config.verbose)
         self.log(f"all/created_nodes - {len(triplets)*2}/{created_nodes_count}", verbose=self.config.verbose)
         self.log("Triplets added successfully!", verbose=self.config.verbose)
 
