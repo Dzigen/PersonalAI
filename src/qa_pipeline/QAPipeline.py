@@ -4,7 +4,7 @@ from .knowledge_comparator import KnowledgeComparator, KnowledgeComparatorConfig
 from .query_parser import QueryLLMParser, QueryLLMParserConfig
 from .utils import LOG_PATH
 from ..knowledge_graph_model import KnowledgeGraphModel
-from ..utils import Logger
+from ..utils import Logger, ReturnStatus
 
 from dataclasses import dataclass, field
 
@@ -46,15 +46,25 @@ class QAPipeline:
         :rtype: str
         """
         self.log("=STAGE#1 - entities extraction", verbose=self.config.verbose)
-        query_info = self.query_parser.extract_entities(query)
+        query_info, status, msg = self.query_parser.extract_entities(query)
         self.log("EXTRACTED_ENTITIES:\n" + ', '.join(query_info.entities), verbose=self.config.verbose)
+        if status == ReturnStatus.warning:
+            self.log(f"Warning: {msg}", verbose=self.config.verbose)
+            return status, msg
 
         self.log("=STAGE#2 - kg_nodes to query linking", verbose=self.config.verbose)
-        self.knowledge_comparator.link_kgnodes_to_query(query_info)
+        status_code, msg = self.knowledge_comparator.link_kgnodes_to_query(query_info)
         self.log("LINKED_NODES:\n" + ', '.join(list(map(lambda v: v.document, query_info.linked_nodes))), verbose=self.config.verbose)
+        if status == ReturnStatus.warning:
+            self.log(f"Warning: {msg}", verbose=self.config.verbose)
+            return status, msg
 
         self.log("=STAGE#3 - retrieve", verbose=self.config.verbose)
-        retrieved_triplets = self.knowledge_retriever.retrieve(query_info)
+        retrieved_triplets, status, msg = self.knowledge_retriever.retrieve(query_info)
+        self.log(f"RETRIEVED_TRIPLES:\n {retrieved_triplets}", verbose=self.config.verbose)
+        if status == ReturnStatus.warning:
+            self.log(f"Warning: {msg}", verbose=self.config.verbose)
+            return status, msg
 
         self.log("=STAGE#4 - answer generation", verbose=self.config.verbose)
         self.log("QUERY:\n" + query_info.query, verbose=self.config.verbose)

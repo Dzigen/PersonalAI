@@ -6,7 +6,8 @@ from .MixturedTripletsRetriever import MixturedTripletsRetriever, MixturedGraphS
 from ...utils.data_structs import QueryInfo, Triplet
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ...db_drivers.kv_driver import KeyValueDriver, KeyValueDriverConfig
-from ...utils import Logger
+from ...utils import Logger, ReturnStatus
+from ...utils.errors import QA_ZERO_RETRIEVED_TRIPLETS_MSG
 
 from dataclasses import dataclass, field
 from typing import List
@@ -70,5 +71,9 @@ class KnowledgeRetriever:
         self.log("stage #3.2 - filtering triplets...", verbose=self.config.verbose)
         filtered_triplets = self.triplets_filter.apply_filter(query_info, triplets)
         self.log(f"Количество триплетов после фильтрации: {len(filtered_triplets)}", verbose=self.config.verbose)
+
+        status, msg = ReturnStatus.success, ""
+        if len(filtered_triplets) == 0:
+            status, msg = ReturnStatus.warning, QA_ZERO_RETRIEVED_TRIPLETS_MSG
 
         return filtered_triplets

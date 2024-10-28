@@ -1,8 +1,10 @@
-from dataclasses import dataclass, field\
+from dataclasses import dataclass, field
+from typing import Tuple
 
 from .utils import EntitiesExtractorConfig, QP_LOG_PATH
 from ...utils.data_structs import QueryInfo
-from ...utils import Logger, detect_lang
+from ...utils import Logger, detect_lang, ReturnStatus
+from ...utils.errors import QA_ZERO_ENTITIES_MSG
 from ...agents import AgentDriver, AgentDriverConfig
 
 @dataclass
@@ -29,7 +31,7 @@ class QueryLLMParser:
         self.agent = AgentDriver.connect(config.agent_cofig)
         self.log = self.config.log
 
-    def extract_entities(self, query: str) -> QueryInfo:
+    def extract_entities(self, query: str) -> Tuple[QueryInfo, ReturnStatus, str]:
         """_summary_
 
         :param query: _description_
@@ -49,4 +51,8 @@ class QueryLLMParser:
         extracted_entities = self.config.ents_extr_config.entities_parse_func[detected_lang](raw_output)
         self.log(f"PARSED_ENTITIES: {extracted_entities}", verbose=self.config.verbose)
 
-        return QueryInfo(query=query, entities=extracted_entities)
+        status, msg = ReturnStatus.success, ""
+        if len(extracted_entities) == 0:
+            status, msg = ReturnStatus.warning, QA_ZERO_ENTITIES_MSG
+
+        return QueryInfo(query=query, entities=extracted_entities), status, msg
