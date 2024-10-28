@@ -1,9 +1,23 @@
 from enum import Enum
+from dataclasses import dataclass
 
 class ReturnStatus(Enum):
     success = 0
     warning = 1
     error = 2
+    bad_format = 3
+    zero_triplets = 4
+
+@dataclass
+class ReturnInfo:
+    status: ReturnStatus = ReturnStatus.success
+    message: str = ""
+
+MEM_BAD_TRIPLET_EXTRACTION_PROMPT = ''
+
+MEM_BAD_THESIS_EXTRACTION_PROMPT = ''
+
+MEM_ZERO_EXTRACTED_TRIPLETS_MSG = ''
 
 QA_ZERO_ENTITIES_MSG = ''
 
