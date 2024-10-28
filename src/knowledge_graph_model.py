@@ -72,7 +72,7 @@ class EmbeddingsModel:
                     triplets_strs.append(triplet_str)
 
                 if add_nodes:
-                    self.log("- Also adding triples nodes to vector model", verbose=self.config.verbose)
+                    self.log("\t- Also adding triplet-nodes to vector-model", verbose=self.config.verbose)
                     for node in [triplet.start_node, triplet.end_node]:
                         if node.id not in unique_nodes_ids:
                             _, node_str = NodeCreator.stringify(node) if node.stringified is None else (node.id, node.stringified)
