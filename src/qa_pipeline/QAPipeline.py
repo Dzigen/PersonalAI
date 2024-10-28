@@ -4,9 +4,10 @@ from .knowledge_comparator import KnowledgeComparator, KnowledgeComparatorConfig
 from .query_parser import QueryLLMParser, QueryLLMParserConfig
 from .utils import LOG_PATH
 from ..knowledge_graph_model import KnowledgeGraphModel
-from ..utils import Logger, ReturnStatus
+from ..utils import Logger, ReturnStatus, ReturnInfo
 
 from dataclasses import dataclass, field
+from typing import Tuple
 
 @dataclass
 class QAPipelineConfig:
@@ -37,7 +38,7 @@ class QAPipeline:
         self.knowledge_retriever = KnowledgeRetriever(self.kg_model, self.config.knowledge_retriever_config)
         self.answer_generator = QALLMGenerator(self.config.answer_generator_config)
 
-    def answer(self, query: str) -> str:
+    def answer(self, query: str) -> Tuple[str, ReturnInfo]:
         """_summary_
 
         :param query: _description_
@@ -45,32 +46,31 @@ class QAPipeline:
         :return: _description_
         :rtype: str
         """
+        answer, info = None, ReturnInfo()
+
         self.log("=STAGE#1 - entities extraction", verbose=self.config.verbose)
-        query_info, status, msg = self.query_parser.extract_entities(query)
+        query_info, info = self.query_parser.extract_entities(query)
         self.log("EXTRACTED_ENTITIES:\n" + ', '.join(query_info.entities), verbose=self.config.verbose)
-        if status == ReturnStatus.warning:
-            self.log(f"Warning: {msg}", verbose=self.config.verbose)
-            return status, msg
 
-        self.log("=STAGE#2 - kg_nodes to query linking", verbose=self.config.verbose)
-        status, msg = self.knowledge_comparator.link_kgnodes_to_query(query_info)
-        self.log("LINKED_NODES:\n" + ', '.join(list(map(lambda v: v.document, query_info.linked_nodes))), verbose=self.config.verbose)
-        if status == ReturnStatus.warning:
-            self.log(f"Warning: {msg}", verbose=self.config.verbose)
-            return status, msg
+        if info.status == ReturnStatus.success:
+            self.log("=STAGE#2 - kg_nodes to query linking", verbose=self.config.verbose)
+            info = self.knowledge_comparator.link_kgnodes_to_query(query_info)
+            self.log("LINKED_NODES:\n" + ', '.join(list(map(lambda v: v.document, query_info.linked_nodes))), verbose=self.config.verbose)
 
-        self.log("=STAGE#3 - retrieve", verbose=self.config.verbose)
-        retrieved_triplets, status, msg = self.knowledge_retriever.retrieve(query_info)
-        self.log(f"RETRIEVED_TRIPLES:\n {retrieved_triplets}", verbose=self.config.verbose)
-        if status == ReturnStatus.warning:
-            self.log(f"Warning: {msg}", verbose=self.config.verbose)
-            return status, msg
+        if info.status == ReturnStatus.success:
+            self.log("=STAGE#3 - retrieve", verbose=self.config.verbose)
+            retrieved_triplets, info = self.knowledge_retriever.retrieve(query_info)
+            self.log(f"RETRIEVED_TRIPLES:\n {retrieved_triplets}", verbose=self.config.verbose)
 
-        self.log("=STAGE#4 - answer generation", verbose=self.config.verbose)
-        self.log("QUERY:\n" + query_info.query, verbose=self.config.verbose)
-        context = self.answer_generator.formate_context(retrieved_triplets)
-        self.log("CONTEXT:\n" + context, verbose=self.config.verbose)
-        answer = self.answer_generator.generate(query_info.query, context)
-        self.log("ANSWER: " + answer, verbose=self.config.verbose)
+        if info.status == ReturnStatus.success:
+            self.log("=STAGE#4 - answer generation", verbose=self.config.verbose)
+            self.log("QUERY:\n" + query_info.query, verbose=self.config.verbose)
+            context = self.answer_generator.formate_context(retrieved_triplets)
+            self.log("CONTEXT:\n" + context, verbose=self.config.verbose)
+            answer, info = self.answer_generator.generate(query_info.query, context)
+            self.log("ANSWER: " + answer, verbose=self.config.verbose)
 
-        return answer
+        if info.status != ReturnStatus.success:
+            self.log(f"{info.status}: {info.message}", verbose=self.config.verbose)
+
+        return answer, info
