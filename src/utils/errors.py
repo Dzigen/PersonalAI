@@ -10,6 +10,7 @@ class ReturnStatus(Enum):
     zero_entities = 5
     zero_linked_nodes = 6
     zero_retrieved_triplets = 7
+    empty_answer = 8
 
 @dataclass
 class ReturnInfo:
@@ -21,6 +22,10 @@ MEM_BAD_TRIPLET_EXTRACTION_PROMPT = ''
 MEM_BAD_THESIS_EXTRACTION_PROMPT = ''
 
 MEM_ZERO_EXTRACTED_TRIPLETS_MSG = ''
+
+QA_EMPTY_ANSWER = ''
+
+QA_BAD_QA_PROMPT = ''
 
 QA_ZERO_ENTITIES_MSG = ''
 
