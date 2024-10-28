@@ -77,4 +77,4 @@ class KnowledgeRetriever:
             info.status = ReturnStatus.zero_retrieved_triplets
             info.message = QA_ZERO_RETRIEVED_TRIPLETS_MSG
 
-        return filtered_triplets
+        return filtered_triplets, info

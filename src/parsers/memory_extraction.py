@@ -1,7 +1,9 @@
 from typing import List, Tuple
 import ast
 
-def mem_custom_triplet_parse_func(raw_response: str) -> List[Tuple[str, str, str]]:
+from ..utils import ReturnStatus
+
+def mem_custom_triplet_parse_func(raw_response: str) -> Tuple[List[Tuple[str, str, str]], ReturnStatus]:
     if ":" in raw_response:
         raw_response = raw_response.split(":")[-1]
     raw_response = raw_response.lower()
@@ -16,10 +18,10 @@ def mem_custom_triplet_parse_func(raw_response: str) -> List[Tuple[str, str, str
             continue
         else:
             raw_triplets.append((subj, rel, obj))
-    return raw_triplets
+    return raw_triplets, ReturnStatus.success
 
 #
-def mem_custom_thesis_parse_func(raw_response: str) -> List[Tuple[str, str]]:
+def mem_custom_thesis_parse_func(raw_response: str) -> Tuple[List[Tuple[str, str]], ReturnStatus]:
     if ":" in raw_response:
         raw_response = raw_response.split(":")[-1]
     raw_response = raw_response.split(".")
@@ -34,4 +36,4 @@ def mem_custom_thesis_parse_func(raw_response: str) -> List[Tuple[str, str]]:
         except:
             continue
         raw_triplets.append((thesis, entities))
-    return raw_triplets
+    return raw_triplets, ReturnStatus.success

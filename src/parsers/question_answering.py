@@ -1,6 +1,8 @@
+from typing import Tuple
 
+from ..utils import ReturnStatus
 
-def qa_custom_answer_parse_func_en(raw_response: str):
+def qa_custom_answer_parse_func_en(raw_response: str) -> Tuple[str, ReturnStatus]:
     found_line = ""
     for line in raw_response.split("\n"):
         if "Final answer 3" in line:
@@ -10,7 +12,7 @@ def qa_custom_answer_parse_func_en(raw_response: str):
         answer = found_line.split("Final answer 3: ")[-1]
     else:
         answer = raw_response
-    return answer
+    return answer, ReturnStatus.success
 
-def qa_custom_answer_parse_func_ru(raw_response: str) -> str:
-    return raw_response
+def qa_custom_answer_parse_func_ru(raw_response: str) -> Tuple[str, ReturnStatus]:
+    return raw_response, ReturnStatus.success

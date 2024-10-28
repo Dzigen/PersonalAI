@@ -1,4 +1,7 @@
-from typing import List
+from typing import List, Tuple
 
-def qa_custom_entities_parse_func(raw_response: str) -> List[str]:
-    return list(filter(lambda item: len(item) > 0, list(map(lambda item: item.strip(), raw_response.split('|')))))
+from ..utils import ReturnStatus
+
+def qa_custom_entities_parse_func(raw_response: str) -> Tuple[List[str], ReturnStatus]:
+    entities = list(filter(lambda item: len(item) > 0, list(map(lambda item: item.strip(), raw_response.split('|')))))
+    return entities, ReturnStatus.success
