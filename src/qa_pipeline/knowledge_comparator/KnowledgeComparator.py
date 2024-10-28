@@ -31,7 +31,7 @@ class KnowledgeComparator:
         self.config = config
         self.kg_model = kg_model
 
-    def link_kgnodes_to_query(self, query_structure: QueryInfo) -> None:
+    def link_kgnodes_to_query(self, query_structure: QueryInfo) -> ReturnInfo:
         """_summary_
 
         :param query_structure: _description_

@@ -9,6 +9,7 @@ class ReturnStatus(Enum):
     zero_triplets = 4
     zero_entities = 5
     zero_linked_nodes = 6
+    zero_retrieved_triplets = 7
 
 @dataclass
 class ReturnInfo:
