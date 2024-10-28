@@ -51,7 +51,7 @@ class Triplet:
 class BaseCreator:
     @staticmethod
     def add_str_props(obj: Union[Relation, Node], obj_str: str) -> str:
-        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in ['name', 'type', 'raw_time', 'time']])
+        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in ['name', 'type', 'raw_time', 'time', 'str_id']])
         if str_prop:
             obj_str += f" ({str_prop})"
         return obj_str
@@ -60,8 +60,10 @@ class NodeCreator(BaseCreator):
     @staticmethod
     def create(add_stringified_node: bool = True, **kwargs):
         node = Node(**kwargs)
+        _, str_node = NodeCreator.stringify(node)
+        node.prop['str_id'] = create_id(str_node)
         if add_stringified_node:
-            _, node.stringified = NodeCreator.stringify(node)
+            node.stringified = str_node
         return node
 
     @staticmethod
@@ -72,10 +74,12 @@ class NodeCreator(BaseCreator):
         str_node += NodeCreator.add_str_props(node, str(node.name))
         return node.id, str_node
 
-
 def create_id_for_node_pair(node1_id: str, node2_id: str) -> str:
     start_id, end_id = (node1_id, node2_id) if node1_id > node2_id else (node2_id, node1_id)
     return hashlib.md5((start_id+end_id).encode()).hexdigest()
+
+def create_id(seed: str) -> str:
+    return hashlib.md5(seed.encode()).hexdigest()
 
 class TripletCreator(BaseCreator):
     @staticmethod
@@ -91,7 +95,7 @@ class TripletCreator(BaseCreator):
         if add_stringified_triplet:
             triplet.stringified = str_triplet
         if t_id is None:
-            triplet.id = hashlib.md5(str_triplet.encode()).hexdigest()
+            triplet.id = create_id(str_triplet)
         else:
             triplet.id = t_id
         return triplet
