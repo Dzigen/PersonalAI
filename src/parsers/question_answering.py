@@ -3,6 +3,13 @@ from typing import Tuple
 from ..utils import ReturnStatus
 
 def qa_custom_answer_parse_func_en(raw_response: str) -> Tuple[str, ReturnStatus]:
+    """_summary_
+
+    :param raw_response: _description_
+    :type raw_response: str
+    :return: _description_
+    :rtype: Tuple[str, ReturnStatus]
+    """
     found_line = ""
     for line in raw_response.split("\n"):
         if "Final answer 3" in line:
@@ -15,4 +22,11 @@ def qa_custom_answer_parse_func_en(raw_response: str) -> Tuple[str, ReturnStatus
     return answer, ReturnStatus.success
 
 def qa_custom_answer_parse_func_ru(raw_response: str) -> Tuple[str, ReturnStatus]:
+    """_summary_
+
+    :param raw_response: _description_
+    :type raw_response: str
+    :return: _description_
+    :rtype: Tuple[str, ReturnStatus]
+    """
     return raw_response, ReturnStatus.success

@@ -59,7 +59,7 @@ class LLMExtractor:
         :param properties: _description_, defaults to {}
         :type properties: Dict, optional
         :return: _description_
-        :rtype: List[Triplet]
+        :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         assert need_simple or need_thesises
         self.log("START EXTRACTION...", verbose=self.config.verbose)
@@ -105,7 +105,7 @@ class LLMExtractor:
         :param rel_prop: _description_, defaults to {}
         :type rel_prop: dict, optional
         :return: _description_
-        :rtype: List[Triplet]
+        :rtype: Tuple[List[Triplet], ReturnStatus]
         """
         self.log("TEXT: " + text, verbose=self.config.verbose)
         raw_response = self.agent.generate(
@@ -127,7 +127,7 @@ class LLMExtractor:
         :param rel_prop: _description_, defaults to {}
         :type rel_prop: Dict, optional
         :return: _description_
-        :rtype: List[Triplet]
+        :rtype: Tuple[List[Triplet], ReturnStatus]
         """
         self.log("TEXT: " + text, verbose=self.config.verbose)
         raw_response = self.agent.generate(
@@ -155,14 +155,16 @@ class LLMExtractor:
     def parse_thesises(self, raw_response: str, lang: str, node_prop: Dict, rel_prop: Dict) -> Tuple[List[Triplet], ReturnStatus]:
         """_summary_
 
-        :param response: _description_
-        :type response: str
+        :param raw_response: _description_
+        :type raw_response: str
+        :param lang: _description_
+        :type lang: str
         :param node_prop: _description_
         :type node_prop: Dict
         :param rel_prop: _description_
         :type rel_prop: Dict
         :return: _description_
-        :rtype: List[Triplet]
+        :rtype: Tuple[List[Triplet], ReturnStatus]
         """
         raw_triplets, status = self.config.thesis_parse_func[lang](raw_response)
         formated_triplets = []
@@ -181,16 +183,17 @@ class LLMExtractor:
     def parse_triplets(self, raw_response: str, lang: str, node_prop: Dict, rel_prop: Dict) -> Tuple[List[Triplet], ReturnStatus]:
         """_summary_
 
-        :param raw_triplets: _description_
-        :type raw_triplets: str
+        :param raw_response: _description_
+        :type raw_response: str
+        :param lang: _description_
+        :type lang: str
         :param node_prop: _description_
         :type node_prop: Dict
         :param rel_prop: _description_
         :type rel_prop: Dict
         :return: _description_
-        :rtype: List[Triplet]
+        :rtype: Tuple[List[Triplet], ReturnStatus]
         """
-
         raw_triplets, status = self.config.triplet_parse_func[lang](raw_response)
         formated_triplets = []
         for triplet in raw_triplets:

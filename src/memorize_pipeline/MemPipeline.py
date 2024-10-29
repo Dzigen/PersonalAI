@@ -65,7 +65,7 @@ class MemPipeline:
         :param properties: _description_, defaults to dict()
         :type properties: Dict, optional
         :return: _description_
-        :rtype: List[Triplet]
+        :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         assert need_simple or need_thesises
         new_triplets, info = [], ReturnInfo()

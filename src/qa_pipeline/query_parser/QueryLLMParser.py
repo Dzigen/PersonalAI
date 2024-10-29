@@ -26,6 +26,11 @@ class QueryLLMParser:
     из пользовательского запроса
     """
     def __init__(self, config: QueryLLMParserConfig = QueryLLMParserConfig()) -> None:
+        """_summary_
+
+        :param config: _description_, defaults to QueryLLMParserConfig()
+        :type config: QueryLLMParserConfig, optional
+        """
         self.config = config
 
         self.agent = AgentDriver.connect(config.agent_cofig)
@@ -37,7 +42,7 @@ class QueryLLMParser:
         :param query: _description_
         :type query: str
         :return: _description_
-        :rtype: QueryInfo
+        :rtype: Tuple[QueryInfo, ReturnInfo]
         """
         info = ReturnInfo()
         detected_lang = detect_lang(query) if self.config.lang == 'auto' else self.config.lang

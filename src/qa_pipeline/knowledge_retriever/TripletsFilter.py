@@ -9,6 +9,9 @@ from ...db_drivers.vector_driver import VectorDBInstance
 
 @dataclass
 class TripletsFilterConfig:
+    """_summary_
+    """
+    #
     max_k: int = 50
 
 class TripletsFilter(AbstractTriplesFilter):
@@ -56,11 +59,8 @@ class TripletsFilter(AbstractTriplesFilter):
                     [query_instance], self.config.max_k, includes=['embeddings', 'documents', 'metadatas'], where={"id": {"$in": base_triplets_ids}})[0]
                 accepted_tripletes_ids = list(map(lambda item: item[1].id, raw_relevant_triplets))
                 filtered_triplets = list(filter(lambda triplet: triplet.id in accepted_tripletes_ids, triplets))
-
                 self.log(f"accepted ids: {accepted_tripletes_ids}", verbose=self.log_verbose)
         except Exception as e:
             print(f"error in apply_filter: {e}")
             filtered_triplets = triplets[:self.config.max_k]
-        #if len(filtered_triplets) < self.config.max_k:
-        #    filtered_triplets = triplets[:self.config.max_k]
         return filtered_triplets

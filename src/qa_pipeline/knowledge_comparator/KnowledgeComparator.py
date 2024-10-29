@@ -9,10 +9,17 @@ from ...db_drivers.vector_driver import VectorDBInstance
 
 @dataclass
 class KnowledgeComparatorConfig:
+    """_summary_
+    """
+    #
     threshold: float = 0.5
+    #
     fetch_n: int = 20
+    #
     max_k: int = 1
+    #
     k_compare: int = 5
+    #
     log: Logger = field(default_factory=lambda: Logger(COMPARATOR_LOG_PATH))
     log_verbose: bool = False
 
@@ -36,6 +43,8 @@ class KnowledgeComparator:
 
         :param query_structure: _description_
         :type query_structure: QueryInfo
+        :return: _description_
+        :rtype: ReturnInfo
         """
         # сопоставляем сущности, извлечённые из запроса нодам в графе знаний
         info = ReturnInfo()
