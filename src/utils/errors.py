@@ -17,20 +17,15 @@ class ReturnInfo:
     status: ReturnStatus = ReturnStatus.success
     message: str = ""
 
-MEM_BAD_TRIPLET_EXTRACTION_PROMPT = ''
+#
+MEM_BAD_TRIPLET_EXTRACTION_PROMPT_MSG = ''
+MEM_BAD_THESIS_EXTRACTION_PROMPT_MSG = ''
+QA_BAD_ENTITIES_EXTRACTION_PROMPT_MSG = ''
+QA_BAD_QA_PROMPT_MSG = ''
 
-MEM_BAD_THESIS_EXTRACTION_PROMPT = ''
-
-MEM_ZERO_EXTRACTED_TRIPLETS_MSG = ''
-
-QA_EMPTY_ANSWER = ''
-
-QA_BAD_QA_PROMPT = ''
-
-QA_ZERO_ENTITIES_MSG = ''
-
-QA_BAD_ENTITIES_EXTRACTION_PROMPT = ''
-
-QA_ZERO_LINKED_NODES_MSG = ''
-
-QA_ZERO_RETRIEVED_TRIPLETS_MSG = ''
+#
+MEM_ZERO_EXTRACTED_TRIPLETS_MSG = 'Из текста было извлечено ноль триплетов/тезисов.'
+QA_EMPTY_ANSWER_MSG = 'Не удалось получить ответ на вопрос.'
+QA_ZERO_ENTITIES_MSG = 'Из вопроса было извлечено ноль сущностей.'
+QA_ZERO_LINKED_NODES_MSG = 'Сущностям из вопроса было сопоставлено ноль вершин из используемого графа знаний.'
+QA_ZERO_RETRIEVED_TRIPLETS_MSG = 'Было извлечено ноль триплетов из используемого графа знаний.'

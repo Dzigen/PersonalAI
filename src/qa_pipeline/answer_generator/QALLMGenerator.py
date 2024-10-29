@@ -7,7 +7,7 @@ from ...agents import AgentDriver, AgentDriverConfig
 from ...utils.data_structs import TripletCreator
 from ...utils.data_structs import RelationType
 from ...utils import Logger, detect_lang, ReturnInfo, ReturnStatus
-from ...utils.errors import QA_BAD_QA_PROMPT, QA_EMPTY_ANSWER
+from ...utils.errors import QA_BAD_QA_PROMPT_MSG, QA_EMPTY_ANSWER_MSG
 
 @dataclass
 class QALLMGeneratorConfig:
@@ -75,10 +75,10 @@ class QALLMGenerator:
         answer, status = self.config.answer_parse_func[detected_lang](raw_output)
         self.log(f"PARSED_ANSWER: {answer}", verbose=self.config.verbose)
         if status == ReturnStatus.bad_format:
-            self.log(QA_BAD_QA_PROMPT, verbose=self.config.verbose)
+            self.log(QA_BAD_QA_PROMPT_MSG, verbose=self.config.verbose)
 
         if len(answer) == 0:
             info.status = ReturnStatus.empty_answer
-            info.message = QA_EMPTY_ANSWER
+            info.message = QA_EMPTY_ANSWER_MSG
 
         return answer, info

@@ -4,7 +4,7 @@ from typing import Tuple
 from .utils import EntitiesExtractorConfig, QP_LOG_PATH
 from ...utils.data_structs import QueryInfo
 from ...utils import Logger, detect_lang, ReturnStatus, ReturnInfo
-from ...utils.errors import QA_ZERO_ENTITIES_MSG, QA_BAD_ENTITIES_EXTRACTION_PROMPT
+from ...utils.errors import QA_ZERO_ENTITIES_MSG, QA_BAD_ENTITIES_EXTRACTION_PROMPT_MSG
 from ...agents import AgentDriver, AgentDriverConfig
 
 @dataclass
@@ -57,7 +57,7 @@ class QueryLLMParser:
         extracted_entities, status = self.config.ents_extr_config.entities_parse_func[detected_lang](raw_output)
         self.log(f"PARSED_ENTITIES: {extracted_entities}", verbose=self.config.verbose)
         if status == ReturnStatus.bad_format:
-            self.log(QA_BAD_ENTITIES_EXTRACTION_PROMPT, verbose=self.config.verbose)
+            self.log(QA_BAD_ENTITIES_EXTRACTION_PROMPT_MSG, verbose=self.config.verbose)
 
         if len(extracted_entities) == 0:
             info.status = ReturnStatus.zero_entities
