@@ -12,12 +12,14 @@ from ...utils.errors import QA_ZERO_RETRIEVED_TRIPLETS_MSG
 from dataclasses import dataclass, field
 from typing import List, Tuple
 
+#
 AVAILABLE_TRIPLETS_RETRIEVERS  = {
     'astar': AStarTripletsRetriever,
     'bfs': BFSRetriever,
     'mixture': MixturedTripletsRetriever
 }
 
+#
 AVAILABLE_TRIPLETS_FILTERS = {
     'naive': TripletsFilter
 }
@@ -45,6 +47,13 @@ class KnowledgeRetriever:
     по запросу пользователя
     """
     def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeRetrieverConfig = KnowledgeRetrieverConfig()) -> None:
+        """_summary_
+
+        :param kg_model: _description_
+        :type kg_model: KnowledgeGraphModel
+        :param config: _description_, defaults to KnowledgeRetrieverConfig()
+        :type config: KnowledgeRetrieverConfig, optional
+        """
         self.config = config
         self.kg_model = kg_model
         self.log = config.log
@@ -62,7 +71,7 @@ class KnowledgeRetriever:
         :param query_info: _description_
         :type query_info: QueryInfo
         :return: _description_
-        :rtype: List[Triplet]
+        :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         info = ReturnInfo()
         self.log("stage #3.1 - extracting triplets...", verbose=self.config.verbose)

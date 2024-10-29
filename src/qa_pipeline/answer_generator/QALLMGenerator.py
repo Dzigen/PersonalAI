@@ -11,6 +11,8 @@ from ...utils.errors import QA_BAD_QA_PROMPT, QA_EMPTY_ANSWER
 
 @dataclass
 class QALLMGeneratorConfig:
+    """_summary_
+    """
     #
     lang: str = "auto"
     system_prompt: dict = field(default_factory=lambda: QA_SYSTEM_PROMPT)
@@ -57,7 +59,7 @@ class QALLMGenerator:
         :param context: _description_
         :type context: str
         :return: _description_
-        :rtype: str
+        :rtype: Tuple[str, ReturnInfo]
         """
         answer, info = None, ReturnInfo()
         detected_lang = detect_lang(query) if self.config.lang == 'auto' else self.config.lang
