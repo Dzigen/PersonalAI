@@ -91,6 +91,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
         rel_name = json.dumps(triplet.relation.name, ensure_ascii=False)
         rel_props['name'] = rel_name
+        rel_props['str_id'] = triplet.id
 
         query = ""
         str_props = ", ".join([f"{k}: {v}" for k, v in rel_props.items()])
@@ -107,9 +108,10 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         # Check to unique node name
         # Pay attention to the format of triplets
 
+        #
         created_nodes_count, created_rels_count = 0,0
-        subj_n, subj_t = json.dumps(triplet.start_node.name, ensure_ascii=False), triplet.start_node.type.value
-        subj_out = self.execute_query(f'MATCH (subj:{subj_t}) WHERE subj.name = {subj_n} RETURN elementID(subj) as node_id')
+        subj_str_id, subj_t = triplet.start_node.prop['str_id'], triplet.start_node.type.value
+        subj_out = self.execute_query(f'MATCH (subj:{subj_t}) WHERE subj.str_id = "{subj_str_id}" RETURN elementID(subj) as node_id')
         if len(subj_out) < 1:
             created_nodes_count += 1
             insert_subj_query = self.create_node_query(triplet.start_node)
@@ -117,8 +119,9 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         else:
             triplet.start_node.id = subj_out[0]['node_id']
 
-        obj_n, obj_t = json.dumps(triplet.end_node.name, ensure_ascii=False), triplet.end_node.type.value
-        obj_out = self.execute_query(f'MATCH (obj:{obj_t}) WHERE obj.name = {obj_n} RETURN elementID(obj) as node_id')
+        #
+        obj_str_id, obj_t = triplet.end_node.prop['str_id'], triplet.end_node.type.value
+        obj_out = self.execute_query(f'MATCH (obj:{obj_t}) WHERE obj.str_id = "{obj_str_id}" RETURN elementID(obj) as node_id')
         if len(obj_out) < 1:
             created_nodes_count += 1
             insert_obj_query = self.create_node_query(triplet.end_node)
@@ -126,9 +129,15 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         else:
             triplet.end_node.id = obj_out[0]['node_id']
 
-        created_rels_count += 1
-        rel_query = self.create_rel_query(triplet)
-        triplet.relation.id = self.execute_query(rel_query)[0]['rel_id']
+        #
+        rel_str_id, rel_t = triplet.id, triplet.relation.type.value
+        rel_out = self.execute_query(f'MATCH (a)-[rel:{rel_t}]->(b) WHERE rel.str_id = "{rel_str_id}" RETURN elementID(rel) as rel_id')
+        if len(rel_out) < 1:
+            created_rels_count += 1
+            rel_query = self.create_rel_query(triplet)
+            triplet.relation.id = self.execute_query(rel_query)[0]['rel_id']
+        else:
+            triplet.relation.id = rel_out[0]['rel_id']
 
         return created_nodes_count, created_rels_count
 

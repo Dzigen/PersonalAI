@@ -21,6 +21,8 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         self.edges = defaultdict(list)
         self.adjacent_nodes = defaultdict(list)
         self.uniques_content_nodes = defaultdict(list)
+        self.unique_content_relations = defaultdict(list)
+
         self.items_ids = {}
         self.triplets_ids = {}
 
@@ -38,31 +40,41 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         created_nodes_count, created_rels_count = 0, 0
 
         #
-        s_node_content_id = self.generate_id(f"{triplet.start_node.type.value} {triplet.start_node.name}")
+        s_node_content_id = triplet.start_node.prop['str_id']
         if s_node_content_id in self.uniques_content_nodes:
             triplet.start_node.id = self.uniques_content_nodes[s_node_content_id]
         else:
+            created_nodes_count += 1
             triplet.start_node.id = self.generate_id()
             self.uniques_content_nodes[s_node_content_id] = triplet.start_node.id
+            self.items_ids[triplet.start_node.id] = triplet.start_node
 
         #
-        e_node_content_id = self.generate_id(f"{triplet.end_node.type.value} {triplet.end_node.name}")
+        e_node_content_id = triplet.end_node.prop['str_id']
         if e_node_content_id in self.uniques_content_nodes:
             triplet.end_node.id = self.uniques_content_nodes[e_node_content_id]
         else:
+            created_nodes_count += 1
             triplet.end_node.id = self.generate_id()
             self.uniques_content_nodes[e_node_content_id] = triplet.end_node.id
+            self.items_ids[triplet.end_node.id] = triplet.end_node
 
-        triplet.relation.id = self.generate_id()
+        #
+        rel_content_id = triplet.id
+        if rel_content_id in self.unique_content_relations:
+            triplet.relation.id = self.unique_content_relations[rel_content_id]
+        else:
+            created_rels_count += 1
+            triplet.relation.id = self.generate_id()
+            self.unique_content_relations[rel_content_id] = triplet.relation.id
 
-        self.edges[triplet.start_node.id].append(triplet.id)
-        self.edges[triplet.end_node.id].append(triplet.id)
-        self.adjacent_nodes[triplet.start_node.id].append(triplet.end_node.id)
-        self.adjacent_nodes[triplet.end_node.id].append(triplet.start_node.id)
+            self.edges[triplet.start_node.id].append(triplet.id)
+            self.edges[triplet.end_node.id].append(triplet.id)
+            self.adjacent_nodes[triplet.start_node.id].append(triplet.end_node.id)
+            self.adjacent_nodes[triplet.end_node.id].append(triplet.start_node.id)
 
-        self.items_ids[triplet.start_node.id] = triplet.start_node
-        self.items_ids[triplet.end_node.id] = triplet.end_node
-        self.triplets_ids[triplet.id] = triplet
+            # костыль
+            self.triplets_ids[triplet.id] = triplet
 
         return created_nodes_count, created_rels_count
 

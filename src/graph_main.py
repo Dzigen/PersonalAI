@@ -1,12 +1,12 @@
 from dataclasses import dataclass, field
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from tqdm import tqdm
 
 from .knowledge_graph_model import GraphModel, GraphModelConfig, EmbeddingsModelConfig, EmbeddingsModel
 from .qa_pipeline import QAPipeline, QAPipelineConfig
 from .memorize_pipeline import MemPipeline, MemPipelineConfig
 from .knowledge_graph_model import KnowledgeGraphModel
-from .utils import Logger
+from .utils import Logger, ReturnInfo, Triplet
 
 RKG_LOG_PATH = "log/rmkg"
 
@@ -37,7 +37,7 @@ class RemoteKnowledgeGraph:
         self.qa_pipeline = QAPipeline(kg_model=self.kg_model, config=config.qa_pipeline_config)
         self.mem_pipeline = MemPipeline(kg_model=self.kg_model, config=config.mem_pipeline_config)
 
-    def answer_question(self, question: str) -> str:
+    def answer_question(self, question: str) -> Tuple[str, ReturnInfo]:
         """_summary_
 
         :param question: _description_
@@ -47,11 +47,11 @@ class RemoteKnowledgeGraph:
         """
         self.log("Start answer generation:", verbose=self.config.verbose)
         self.log(f"- question: {question}", verbose=self.config.verbose)
-        answer = self.qa_pipeline.answer(question)
+        answer, info = self.qa_pipeline.answer(question)
         self.log(f"- answer: {answer}", verbose=self.config.verbose)
-        return answer
+        return answer, info
 
-    def update_memory(self, new_info: List[str], properties: List[Dict]):
+    def update_memory(self, new_info: List[str], properties: List[Dict]) -> Tuple[List[Triplet], ReturnInfo]:
         """_summary_
 
         :param new_info: _description_
@@ -61,6 +61,10 @@ class RemoteKnowledgeGraph:
         """
         self.log("Start memory-updating...", verbose=self.config.verbose)
         pairs = list(zip(new_info, properties))
+        triplets = []
         for info, props in tqdm(pairs):
-            self.mem_pipeline.remember(info, props)
-        self.log("Memory updated successfully!", verbose=self.config.verbose)
+            tmp_triplets, info = self.mem_pipeline.remember(info, props)
+            triplets += tmp_triplets
+
+        self.log(f"- triplets amount: {len(triplets)}", verbose=self.config.verbose)
+        return triplets, info

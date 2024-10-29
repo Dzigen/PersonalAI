@@ -1,20 +1,26 @@
-from typing import List
-from dataclasses import dataclass, field\
+from typing import List, Tuple
+from dataclasses import dataclass, field
 
-from .utils import QA_USER_PROMPT, QA_SYSTEM_PROMPT, QA_LOG_PATH
+from .utils import QA_USER_PROMPT, QA_SYSTEM_PROMPT, QA_LOG_PATH, ANSWER_PARSE_FUNC
 from ...utils.data_structs import Triplet
 from ...agents import AgentDriver, AgentDriverConfig
 from ...utils.data_structs import TripletCreator
 from ...utils.data_structs import RelationType
-from ...utils import Logger, detect_lang
+from ...utils import Logger, detect_lang, ReturnInfo, ReturnStatus
+from ...utils.errors import QA_BAD_QA_PROMPT, QA_EMPTY_ANSWER
 
 @dataclass
 class QALLMGeneratorConfig:
+    #
     lang: str = "auto"
     system_prompt: dict = field(default_factory=lambda: QA_SYSTEM_PROMPT)
     user_prompt: dict = field(default_factory=lambda: QA_USER_PROMPT)
+    answer_parse_func: dict = field(default_factory=lambda: ANSWER_PARSE_FUNC)
+    #
     agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
+    #
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
+    #
     log: Logger = field(default_factory=lambda: Logger(QA_LOG_PATH))
     verbose: bool = False
 
@@ -43,7 +49,7 @@ class QALLMGenerator:
         filtered_context = list(map(lambda triplet: f"- {TripletCreator.stringify(triplet)[1] if triplet.stringified is None else triplet.stringified}", triplets))
         return "\n".join(filtered_context)
 
-    def generate(self, query: str, context: str) -> str:
+    def generate(self, query: str, context: str) -> Tuple[str, ReturnInfo]:
         """_summary_
 
         :param query: _description_
@@ -53,30 +59,24 @@ class QALLMGenerator:
         :return: _description_
         :rtype: str
         """
+        answer, info = None, ReturnInfo()
         detected_lang = detect_lang(query) if self.config.lang == 'auto' else self.config.lang
         self.log(f"DETECTED LANG: {detected_lang}", verbose=self.config.verbose)
 
         formated_input = self.config.user_prompt[detected_lang].format(q=query, c=context)
 
-        found_line = ""
         raw_output = self.agent.generate(
             system_prompt=self.config.system_prompt[detected_lang],
             user_prompt=formated_input).strip()
         self.log(f"RAW_ANSWER: {raw_output}", verbose=self.config.verbose)
 
-        # TO MODIFY
-        if detected_lang == "en":
-            for line in raw_output.split("\n"):
-                if "Final answer 3" in line:
-                    found_line = line
-                    break
-            if found_line:
-                self.log("FORMATED ANSWER", verbose=self.config.verbose)
-                answer = found_line.split("Final answer 3: ")[-1]
-            else:
-                self.log("NOT FORMATED ANSWER", verbose=self.config.verbose)
-                answer = raw_output
-        elif detected_lang == "ru":
-            answer = raw_output
+        answer, status = self.config.answer_parse_func[detected_lang](raw_output)
+        self.log(f"PARSED_ANSWER: {answer}", verbose=self.config.verbose)
+        if status == ReturnStatus.bad_format:
+            self.log(QA_BAD_QA_PROMPT, verbose=self.config.verbose)
 
-        return answer
+        if len(answer) == 0:
+            info.status = ReturnStatus.empty_answer
+            info.message = QA_EMPTY_ANSWER
+
+        return answer, info

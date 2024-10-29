@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 
 from .utils import COMPARATOR_LOG_PATH
-from ...utils import Logger
+from ...utils import Logger, ReturnStatus, ReturnInfo
+from ...utils.errors import QA_ZERO_LINKED_NODES_MSG
 from ...utils.data_structs import QueryInfo
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ...db_drivers.vector_driver import VectorDBInstance
@@ -30,14 +31,14 @@ class KnowledgeComparator:
         self.config = config
         self.kg_model = kg_model
 
-    def link_kgnodes_to_query(self, query_structure: QueryInfo) -> None:
+    def link_kgnodes_to_query(self, query_structure: QueryInfo) -> ReturnInfo:
         """_summary_
 
         :param query_structure: _description_
         :type query_structure: QueryInfo
         """
         # сопоставляем сущности, извлечённые из запроса нодам в графе знаний
-
+        info = ReturnInfo()
         linked_nodes_by_entities = []
         unique_nodes = []
         for entity in query_structure.entities:
@@ -51,7 +52,7 @@ class KnowledgeComparator:
             filtered_nodes = list(filter(lambda node_item: node_item[0] < self.config.threshold, nodes_with_scores))
             cur_linked_nodes = list(map(lambda node_item: node_item[1], filtered_nodes))
             cur_unique_names, cur_unique_nodes, cur_unique_names_lower, unique_nodes_ids = [], [], [], []
-            for n, node in enumerate(cur_linked_nodes):
+            for _, node in enumerate(cur_linked_nodes):
                 if node.id not in unique_nodes_ids:
                     unique_nodes_ids.append(node.id)
                     cur_unique_nodes.append(node)
@@ -66,3 +67,9 @@ class KnowledgeComparator:
 
         query_structure.linked_nodes = unique_nodes
         query_structure.linked_nodes_by_entities = linked_nodes_by_entities
+
+        if len(query_structure.linked_nodes) == 0:
+            info.status = ReturnStatus.zero_linked_nodes
+            info.message = QA_ZERO_LINKED_NODES_MSG
+
+        return info

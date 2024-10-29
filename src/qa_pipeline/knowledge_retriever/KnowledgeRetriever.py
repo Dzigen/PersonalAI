@@ -6,10 +6,11 @@ from .MixturedTripletsRetriever import MixturedTripletsRetriever, MixturedGraphS
 from ...utils.data_structs import QueryInfo, Triplet
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ...db_drivers.kv_driver import KeyValueDriver, KeyValueDriverConfig
-from ...utils import Logger
+from ...utils import Logger, ReturnStatus, ReturnInfo
+from ...utils.errors import QA_ZERO_RETRIEVED_TRIPLETS_MSG
 
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Tuple
 
 AVAILABLE_TRIPLETS_RETRIEVERS  = {
     'astar': AStarTripletsRetriever,
@@ -55,7 +56,7 @@ class KnowledgeRetriever:
         self.triplets_filter = AVAILABLE_TRIPLETS_FILTERS[self.config.filter_method](
             kg_model, self.log, self.config.filter_config, self.config.verbose)
 
-    def retrieve(self, query_info: QueryInfo) -> List[Triplet]:
+    def retrieve(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo]:
         """_summary_
 
         :param query_info: _description_
@@ -63,6 +64,7 @@ class KnowledgeRetriever:
         :return: _description_
         :rtype: List[Triplet]
         """
+        info = ReturnInfo()
         self.log("stage #3.1 - extracting triplets...", verbose=self.config.verbose)
         triplets = self.graph_retriever.get_relevant_triplets(query_info)
         self.log(f"Количество извлечённых триплетов: {len(triplets)}", verbose=self.config.verbose)
@@ -71,4 +73,8 @@ class KnowledgeRetriever:
         filtered_triplets = self.triplets_filter.apply_filter(query_info, triplets)
         self.log(f"Количество триплетов после фильтрации: {len(filtered_triplets)}", verbose=self.config.verbose)
 
-        return filtered_triplets
+        if len(filtered_triplets) == 0:
+            info.status = ReturnStatus.zero_retrieved_triplets
+            info.message = QA_ZERO_RETRIEVED_TRIPLETS_MSG
+
+        return filtered_triplets, info
