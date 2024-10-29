@@ -71,7 +71,7 @@ class EmbeddingsModel:
                     triplets_strs.append(triplet_str)
 
                 if add_nodes:
-                    self.log("\t- Also adding triplet-nodes to vector-model", verbose=self.config.verbose)
+                    self.log("\t- Also adding triplet-nodes in vector-model", verbose=self.config.verbose)
                     for node in [triplet.start_node, triplet.end_node]:
                         if node.id not in unique_nodes_ids:
                             _, node_str = NodeCreator.stringify(node) if node.stringified is None else (node.id, node.stringified)
@@ -85,7 +85,7 @@ class EmbeddingsModel:
         self.log(f"all/unique_nodes - {len(triplets)*2}/{len(unique_nodes_ids)}", verbose=self.config.verbose)
         self.log("Triples were successfully added to vector-model!", verbose=self.config.verbose)
 
-    def delete_triplets(self, triplets: List[Triplet], delete_nods: bool = True) -> None:
+    def delete_triplets(self, triplets: List[Triplet], delete_nodes: bool = True) -> None:
         """_summary_
 
         :param triplets: _description_
@@ -96,7 +96,7 @@ class EmbeddingsModel:
         triplets_ids = list(map(lambda v: v.id, triplets))
 
         unique_nodes_ids = None
-        if delete_nods:
+        if delete_nodes:
             nodes_ids = []
             nodes_ids += [triplet.start_node.id for triplet in triplets]
             nodes_ids += [triplet.end_node.id for triplet in triplets]

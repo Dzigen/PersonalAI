@@ -15,13 +15,13 @@ class RemoteKnowledgeGraphConfig:
     """_summary_
     """
     #
-    graph_struct_config: GraphModelConfig = field(default_factory=lambda:GraphModelConfig())
+    graph_struct_config: GraphModelConfig = field(default_factory=lambda: GraphModelConfig())
     #
     embedds_struct_config: EmbeddingsModelConfig = field(default_factory=lambda: EmbeddingsModelConfig())
     #
-    qa_pipeline_config: QAPipelineConfig = field(default_factory=lambda:QAPipelineConfig())
+    qa_pipeline_config: QAPipelineConfig = field(default_factory=lambda: QAPipelineConfig())
     #
-    mem_pipeline_config: MemPipelineConfig = field(default_factory=lambda:MemPipelineConfig())
+    mem_pipeline_config: MemPipelineConfig = field(default_factory=lambda: MemPipelineConfig())
     #
     log: Logger = field(default_factory=lambda:Logger(RKG_LOG_PATH))
     verbose: bool = False
@@ -51,17 +51,19 @@ class RemoteKnowledgeGraph:
         self.log(f"- answer: {answer}", verbose=self.config.verbose)
         return answer, info
 
-    def update_memory(self, new_info: List[str], properties: List[Dict]) -> Tuple[List[Triplet], ReturnInfo]:
+    def update_memory(self, texts: List[str], texts_properties: List[Dict]) -> Tuple[List[Triplet], ReturnInfo]:
         """_summary_
 
-        :param new_info: _description_
-        :type new_info: List[str]
-        :param properties: _description_
-        :type properties: List[Dict]
+        :param texts: _description_
+        :type texts: List[str]
+        :param texts_properties: _description_
+        :type texts_properties: List[Dict]
+        :return: _description_
+        :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         self.log("Start memory-updating...", verbose=self.config.verbose)
 
-        pairs = list(zip(new_info, properties))
+        pairs = list(zip(texts, texts_properties))
         triplets = []
         for info, props in tqdm(pairs):
             tmp_triplets, info = self.mem_pipeline.remember(info, props)

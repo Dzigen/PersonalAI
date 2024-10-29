@@ -52,7 +52,7 @@ class AbstractGraphDatabaseConnection(ABC):
         pass
 
     # TODO
-    def get_triplets_by_name(self, subj_name, obj_name, obj_type):
+    def get_triplets_by_name(self, subj_name: str, obj_name: str, obj_type) -> List[Triplet]:
         pass
 
     def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:

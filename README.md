@@ -58,12 +58,13 @@ pytest tutorial:
 4. (diaasq_gigachat) - build-граф (diaasq2 с добавленным полем name для realtions)
     * vectorized nodes = 12
     * vectorized triplets = 8
-5. (testdb_v2)
+5. (testdb_v2) -  testdb-граф, который был перестроен по обновлённому алгоритму (более строгий контроль за дубликатами вершин и связей)
     * vectorized nodes = 13
     * vectorized triplets = 9
-6. (diaasq_gpt4omini_v2)
+    * graph-creation info: all/created_relations - 10355/10296; all/created_nodes - 20710/1434
+6. (diaasq_gpt4omini_v2) -  diaasq_gpt4omini-граф, который был перестроен по обновлённому алгоритму (более строгий контроль за дубликатами вершин и связей)
     * vectorized nodes = 14
     * vectorized triplets = 10
-7. (diaasq_gigachat_v2)
+7. (diaasq_gigachat_v2) -  diaasq_gigachat-граф, который был перестроен по обновлённому алгоритму (более строгий контроль за дубликатами вершин и связей)
     * vectorized nodes = 15
     * vectorized triplets = 11
