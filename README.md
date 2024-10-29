@@ -43,3 +43,27 @@ dvc tutorial:
 
 pytest tutorial:
 * https://realpython.com/pytest-python-testing/#parametrization-combining-tests
+
+
+Построенные графы знаний:
+1. (testdb) - golden-граф
+    * vectorized nodes = 8
+    * vectorized triplets = 4
+2. (diaasq2) - build-грфа (c добавленным полем time)
+    * vectorized nodes = 10
+    * vectorized triplets = 6
+3. (diaasq_gpt4omini) - build-граф (diaasq2 с добавленным полем name для realtions)
+    * vectorized nodes = 11
+    * vectorized triplets = 7
+4. (diaasq_gigachat) - build-граф (diaasq2 с добавленным полем name для realtions)
+    * vectorized nodes = 12
+    * vectorized triplets = 8
+5. (testdb_v2)
+    * vectorized nodes = 13
+    * vectorized triplets = 9
+6. (diaasq_gpt4omini_v2)
+    * vectorized nodes = 14
+    * vectorized triplets = 10
+7. (diaasq_gigachat_v2)
+    * vectorized nodes = 15
+    * vectorized triplets = 11
