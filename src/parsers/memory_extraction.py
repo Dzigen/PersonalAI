@@ -38,6 +38,7 @@ def mem_custom_thesis_parse_func(raw_response: str) -> Tuple[List[Tuple[str, str
     """
     if ":" in raw_response:
         raw_response = raw_response.split(":")[-1]
+    raw_response = raw_response.lower()
     raw_response = raw_response.split(".")
     raw_triplets = []
     for raw_thesis in raw_response:

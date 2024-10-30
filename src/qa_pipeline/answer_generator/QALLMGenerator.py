@@ -48,7 +48,7 @@ class QALLMGenerator:
         :return: _description_
         :rtype: str
         """
-        filtered_context = list(map(lambda triplet: f"- {TripletCreator.stringify(triplet)[1] if triplet.stringified is None else triplet.stringified}", triplets))
+        filtered_context = list(map(lambda triplet: f"- {(TripletCreator.stringify(triplet)[1] if triplet.stringified is None else triplet.stringified).strip()}", triplets))
         return "\n".join(filtered_context)
 
     def generate(self, query: str, context: str) -> Tuple[str, ReturnInfo]:
