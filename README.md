@@ -65,6 +65,7 @@ pytest tutorial:
 6. (diaasq_gpt4omini_v2) -  diaasq_gpt4omini-граф, который был перестроен по обновлённому алгоритму (более строгий контроль за дубликатами вершин и связей)
     * vectorized nodes = 14
     * vectorized triplets = 10
+    * graph-creation info: all/created_relations - 283268/72789; all/created_nodes - 566536/71254
 7. (diaasq_gigachat_v2) -  diaasq_gigachat-граф, который был перестроен по обновлённому алгоритму (более строгий контроль за дубликатами вершин и связей)
     * vectorized nodes = 15
     * vectorized triplets = 11

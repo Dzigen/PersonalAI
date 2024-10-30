@@ -11,11 +11,14 @@ class ReturnStatus(Enum):
     zero_linked_nodes = 6
     zero_retrieved_triplets = 7
     empty_answer = 8
+    not_supported_lang = 9
 
 @dataclass
 class ReturnInfo:
     status: ReturnStatus = ReturnStatus.success
     message: str = ""
+#
+NOT_SUPPORTED_LANG_MSG = ""
 
 #
 MEM_BAD_TRIPLET_EXTRACTION_PROMPT_MSG = ''
