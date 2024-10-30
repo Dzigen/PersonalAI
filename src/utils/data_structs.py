@@ -97,7 +97,7 @@ class TripletCreator(BaseCreator):
         if t_id is None:
             triplet.id = create_id(str_triplet)
         else:
-            triplet.id = t_id
+            triplet.id = str(t_id)
 
         return triplet
 
