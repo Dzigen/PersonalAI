@@ -91,11 +91,11 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         rel_props['name'] = json.dumps(triplet.relation.name, ensure_ascii=False)
         rel_props['str_id'] = json.dumps(triplet.id, ensure_ascii=False)
 
-        query = ""
         str_props = ", ".join([f"{k}: {v}" for k, v in rel_props.items()])
         subj_t, subj_id = triplet.start_node.type.value, triplet.start_node.id
         obj_t, obj_id = triplet.end_node.type.value, triplet.end_node.id
         rel_t = triplet.relation.type.value
+        query = ""
         query += f'MATCH (subj:{subj_t}), (obj:{obj_t}) WHERE elementId(subj) = "{subj_id}" AND elementId(obj) = "{obj_id}" '
         query += f'CREATE (subj)-[rel:{rel_t}' + '{' + str_props + '}' + ']->(obj) '
         query += 'RETURN elementId(rel) as rel_id'
@@ -105,9 +105,9 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         # add nodes and edges which presented in triplets list
         # Check to unique node name
         # Pay attention to the format of triplets
+        created_nodes_count, created_rels_count = 0,0
 
         #
-        created_nodes_count, created_rels_count = 0,0
         subj_str_id, subj_t = triplet.start_node.prop['str_id'], triplet.start_node.type.value
         subj_out = self.execute_query(f'MATCH (subj:{subj_t}) WHERE subj.str_id = "{subj_str_id}" RETURN elementID(subj) as node_id')
         if len(subj_out) < 1:
