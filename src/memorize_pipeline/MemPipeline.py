@@ -70,7 +70,7 @@ class MemPipeline:
         assert need_simple or need_thesises
 
         new_triplets, info = self.extractor.extract(text, need_simple, need_thesises, need_episodic, properties)
-        self.log("PROCESSED NEW TRIPLETS: " + str(new_triplets), verbose=self.config.log_verbose)
+        #self.log("PROCESSED NEW TRIPLETS: " + str(new_triplets), verbose=self.config.log_verbose)
         if info.status == ReturnStatus.success:
             # TODO
             #if need_update:

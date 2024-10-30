@@ -60,13 +60,13 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
             self.items_ids[triplet.end_node.id] = triplet.end_node
 
         #
-        rel_content_id = triplet.id
-        if rel_content_id in self.unique_content_relations:
-            triplet.relation.id = self.unique_content_relations[rel_content_id]
+        triplet_content_id = (triplet.start_node.id, triplet.id, triplet.end_node.id)
+        if triplet_content_id in self.unique_content_relations:
+            triplet.relation.id = self.unique_content_relations[triplet_content_id]
         else:
             created_rels_count += 1
             triplet.relation.id = self.generate_id()
-            self.unique_content_relations[rel_content_id] = triplet.relation.id
+            self.unique_content_relations[triplet_content_id] = triplet.relation.id
 
             self.edges[triplet.start_node.id].append(triplet.id)
             self.edges[triplet.end_node.id].append(triplet.id)

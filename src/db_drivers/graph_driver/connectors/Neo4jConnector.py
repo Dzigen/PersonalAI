@@ -129,7 +129,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
         #
         rel_str_id, rel_t = triplet.id, triplet.relation.type.value
-        rel_out = self.execute_query(f'MATCH (a)-[rel:{rel_t}]->(b) WHERE rel.str_id = "{rel_str_id}" RETURN elementID(rel) as rel_id')
+        rel_out = self.execute_query(f'MATCH (a)-[rel:{rel_t}]->(b) WHERE elementId(a) = "{triplet.start_node.id}" AND elementId(b) = "{triplet.end_node.id}" AND rel.str_id = "{rel_str_id}" RETURN elementID(rel) as rel_id')
         if len(rel_out) < 1:
             created_rels_count += 1
             rel_query = self.create_rel_query(triplet)

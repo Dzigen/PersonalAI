@@ -12,8 +12,6 @@ from ...utils.data_structs import create_id_for_node_pair
 from ...db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
 from ...utils import Logger
 
-
-
 @dataclass
 class AStarMetricsConfig:
     """_summary_
@@ -170,15 +168,16 @@ class AStarMetrics:
                             self.cache.create(cache_key, {'v': D[neighbour]})
 
                     if neighbour == e_node_id:
-                        self.log(f"bfs neo4j queries: {neo4j_queries_counter}", verbose=self.verbose)
+                        self.log(f"bfs end-node found!", verbose=self.verbose)
+                        self.log(f"bfs graph-db queries: {neo4j_queries_counter}", verbose=self.verbose)
                         self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.verbose)
                         return D[neighbour]
 
                     queue.append(neighbour)
 
         # между вершинами нет пути
-        self.log(f"нет пути", verbose=self.verbose)
-        self.log(f"bfs neo4j queries: {neo4j_queries_counter}", verbose=self.verbose)
+        self.log(f"bfs not found end-node", verbose=self.verbose)
+        self.log(f"bfs graph-db queries: {neo4j_queries_counter}", verbose=self.verbose)
         self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.verbose)
 
         INF_VALUE = 1000001
@@ -312,10 +311,11 @@ class AStarGraphSearch:
 
             #
             if current_node_id == end_node_id:
+                self.log("FOUND END-NODE", verbose=self.verbose)
                 break
 
             adj_nodes = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(current_node_id, parent[current_node_id], self.config.accepted_node_types)
-            #self.log(f"adjenced nodes: {len(adj_nodes)}", verbose=self.verbose)
+            self.log(f"adjenced nodes: {len(adj_nodes)}", verbose=self.verbose)
 
             for adj_n_id in adj_nodes:
                 new_cost = cost_so_far[current_node_id] + 1 # работаем с невзвешенным графом
@@ -392,7 +392,10 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
         :return: _description_
         :rtype: List[Triplet]
         """
-        nodes_ids = [node.id for node in query_info.linked_nodes]
+        nodes_ids = []
+        for node in query_info.linked_nodes:
+            if node.id not in nodes_ids:
+                nodes_ids.append(node.id)
         unique_nodes_pairs = set()
 
         all_pair_nodes_counter = sum(list(range(len(nodes_ids))))
