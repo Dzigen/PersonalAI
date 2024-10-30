@@ -21,7 +21,7 @@ INT_PROP_VALUE = 1001
     # строкое представление со свойствами
     ({'add_stringified_node': True, 'name': TEST_NODE_NAME, 'prop': {'p1': STRING_PROP_VALUE, 'p2': INT_PROP_VALUE}}, {'str': f"{TEST_NODE_NAME} (p1: {STRING_PROP_VALUE}; p2: {INT_PROP_VALUE})"}),
     # строкоове представление без свойств/имени
-    ({'add_stringified_node': True, 'name': '', 'prop': {}}, {'str': ' '}),
+    ({'add_stringified_node': True, 'name': '', 'prop': {}}, {'str': ''}),
     # строковое представление со специальными свойствами
     ({'add_stringified_node': True, 'name': TEST_NODE_NAME, 'prop': {'name': STRING_PROP_VALUE, 'type': STRING_PROP_VALUE, 'raw_time': STRING_PROP_VALUE, 'time': TEST_TIME, 'str_id': STRING_PROP_VALUE}}, {'str': f"{TEST_TIME}: {TEST_NODE_NAME}"}),
 ])
@@ -44,7 +44,7 @@ def test_create_object_node(params, expected):
     # строкое представление со свойствами
     ({'add_stringified_node': True, 'name': TEST_NODE_NAME, 'prop': {'p1': STRING_PROP_VALUE, 'p2': INT_PROP_VALUE}}, {'str': f"{TEST_NODE_NAME} (p1: {STRING_PROP_VALUE}; p2: {INT_PROP_VALUE})"}),
     # строкоове представление без свойств/имени
-    ({'add_stringified_node': True, 'name': '', 'prop': {}}, {'str': ' '}),
+    ({'add_stringified_node': True, 'name': '', 'prop': {}}, {'str': ''}),
     # строковое представление со специальными свойствами
     ({'add_stringified_node': True, 'name': TEST_NODE_NAME, 'prop': {'name': STRING_PROP_VALUE, 'type': STRING_PROP_VALUE, 'raw_time': STRING_PROP_VALUE, 'time': TEST_TIME, 'str_id': STRING_PROP_VALUE}}, {'str': f"{TEST_TIME}: {TEST_NODE_NAME}"}),
 ])
@@ -67,7 +67,7 @@ def test_create_thesis_node(params, expected):
     # строкое представление со свойствами
     ({'add_stringified_node': True, 'name': TEST_NODE_NAME, 'prop': {'p1': STRING_PROP_VALUE, 'p2': INT_PROP_VALUE}}, {'str': f"{TEST_NODE_NAME} (p1: {STRING_PROP_VALUE}; p2: {INT_PROP_VALUE})"}),
     # строкоове представление без свойств/имён
-    ({'add_stringified_node': True, 'name': '', 'prop': {}}, {'str': ' '}),
+    ({'add_stringified_node': True, 'name': '', 'prop': {}}, {'str': ''}),
     # строковое представление со специальными свойствами
     ({'add_stringified_node': True, 'name': TEST_NODE_NAME, 'prop': {'name': STRING_PROP_VALUE, 'type': STRING_PROP_VALUE, 'raw_time': STRING_PROP_VALUE, 'time': TEST_TIME, 'str_id': STRING_PROP_VALUE}}, {'str': f"{TEST_TIME}: {TEST_NODE_NAME}"}),
 ])

@@ -53,7 +53,7 @@ def test_create_simple_triplet(params, expected):
     if params['id'] is not None:
         assert triplet.id == params['id']
 
-    if params['add_stringified_node']:
+    if params['s_str']:
         assert expected['str'] == triplet.stringified
     else:
         assert triplet.stringified is None
@@ -67,7 +67,7 @@ TEST_THESIS_NODE4 = Node(name=TEST_NODE_NAME, type=NodeType.hyper, prop=TEST_PRO
 
 TEST_EXPECTED_HYPER_TRIPLET_STR1 = f"{TEST_NODE_NAME}"
 TEST_EXPECTED_HYPER_TRIPLET_STR2 = f"{TEST_TIME}: {TEST_NODE_NAME}"
-TEST_EXPECTED_HYPER_TRIPLET_STR3 = f"{TEST_EXPECTED_HYPER_TRIPLET_STR2} (p1: {STRING_PROP_VALUE}; p2: {INT_PROP_VALUE})"
+TEST_EXPECTED_HYPER_TRIPLET_STR3 = f"{TEST_EXPECTED_HYPER_TRIPLET_STR1} (p1: {STRING_PROP_VALUE}; p2: {INT_PROP_VALUE})"
 
 @pytest.mark.parametrize("params, expected", [
     # сохранить строковое представление в триплете
@@ -95,7 +95,7 @@ def test_create_hyper_triplet(params, expected):
     if params['id'] is not None:
         assert triplet.id == params['id']
 
-    if params['add_stringified_node']:
+    if params['s_str']:
         assert expected['str'] == triplet.stringified
     else:
         assert triplet.stringified is None
@@ -109,7 +109,7 @@ TEST_EPISODIC_NODE4 = Node(name=TEST_NODE_NAME, type=NodeType.episodic, prop=TES
 
 TEST_EXPECTED_EPISODIC_TRIPLET_STR1 = f"{TEST_NODE_NAME}"
 TEST_EXPECTED_EPISODIC_TRIPLET_STR2 = f"{TEST_TIME}: {TEST_NODE_NAME}"
-TEST_EXPECTED_EPISODIC_TRIPLET_STR3 = f"{TEST_EXPECTED_EPISODIC_TRIPLET_STR2} (p1: {STRING_PROP_VALUE}; p2: {INT_PROP_VALUE})"
+TEST_EXPECTED_EPISODIC_TRIPLET_STR3 = f"{TEST_EXPECTED_EPISODIC_TRIPLET_STR1} (p1: {STRING_PROP_VALUE}; p2: {INT_PROP_VALUE})"
 
 @pytest.mark.parametrize("params, expected", [
     # сохранить строковое представление в триплете
@@ -137,7 +137,7 @@ def test_create_episodic_triplet(params, expected):
     if params['id'] is not None:
         assert triplet.id == params['id']
 
-    if params['add_stringified_node']:
+    if params['s_str']:
         assert expected['str'] == triplet.stringified
     else:
         assert triplet.stringified is None
