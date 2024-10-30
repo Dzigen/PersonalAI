@@ -82,5 +82,10 @@ class AbstractKVDatabaseConnection(ABC):
         # проверка на существование записи с данным ключом в бд
         pass
 
+    @abstractmethod
+    def count_instances(self) -> int:
+        # Получить текущее количество объектов в базе
+        pass
+
     def __del__(self):
         self.close_connection()

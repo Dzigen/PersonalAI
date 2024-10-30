@@ -4,7 +4,8 @@ from ...prompts.memory_extraction import \
     THESISES_EXTRACTION_PROMPT_EN_USER, THESISES_EXTRACTION_PROMPT_EN_SYSTEM, \
     THESISES_EXTRACTION_PROMPT_RU_USER, THESISES_EXTRACTION_PROMPT_RU_SYSTEM
 
-from ...parsers.memory_extraction import mem_custom_triplet_parse_func, mem_custom_thesis_parse_func
+from ...parsers.memory_extraction import \
+    mem_custom_triplet_parse_func, mem_custom_thesis_parse_func
 
 # triplet-prompts
 MEM_EXTRACT_TRIPLET_SYSTEM_PROMPT = {

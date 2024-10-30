@@ -57,7 +57,7 @@ class KnowledgeRetriever:
         self.config = config
         self.kg_model = kg_model
         self.log = config.log
-        self.cache = KeyValueDriver.connect(config.cache_config)
+        self.cache = KeyValueDriver.connect(config.cache_config) if config.cache_config is not None else None
 
         self.graph_retriever = AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method](
             kg_model, self.log, self.config.retriever_config, self.cache, self.config.verbose)

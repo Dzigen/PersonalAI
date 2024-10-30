@@ -55,8 +55,7 @@ class QAPipeline:
         :return: _description_
         :rtype: Tuple[str, ReturnInfo]
         """
-        answer, info = None, ReturnInfo()
-
+        answer = None
         self.log("==="*4 + "STAGE#1 - entities extraction" + "==="*4, verbose=self.config.verbose)
         query_info, info = self.query_parser.extract_entities(query)
         self.log("EXTRACTED_ENTITIES:\n" + ', '.join(query_info.entities), verbose=self.config.verbose)
@@ -67,7 +66,7 @@ class QAPipeline:
             self.log("LINKED_NODES:\n" + ', '.join(list(map(lambda v: v.document, query_info.linked_nodes))), verbose=self.config.verbose)
 
         if info.status == ReturnStatus.success:
-            self.log("==="*4 + "STAGE#3 - retrieve", verbose=self.config.verbose)
+            self.log("==="*4 + "STAGE#3 - retrieve" + "==="*4, verbose=self.config.verbose)
             retrieved_triplets, info = self.knowledge_retriever.retrieve(query_info)
             #self.log(f"RETRIEVED_TRIPLES:\n {retrieved_triplets}", verbose=self.config.verbose)
 

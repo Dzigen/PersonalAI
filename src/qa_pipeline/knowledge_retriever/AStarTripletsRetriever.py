@@ -12,12 +12,14 @@ from ...utils.data_structs import create_id_for_node_pair
 from ...db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
 from ...utils import Logger
 
+
+
 @dataclass
 class AStarMetricsConfig:
     """_summary_
     """
     #
-    h_metric_name: str = 'ip'
+    h_metric_name: str = 'ip' # 'ip', 'weight_with_short_path', 'avg_weighted_with_short_path'
 
 @dataclass
 class AStarGraphSearchConfig:
@@ -26,9 +28,9 @@ class AStarGraphSearchConfig:
     #
     metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
     # макимальная глубина обхода графа для поиска заданной вершины
-    max_depth: int = 10
+    max_depth: int = 10 # int number or -1
     # максимальное количество вершин графа, которые можно обойти для поиска заднной вершины
-    max_passed_nodes: int = 500
+    max_passed_nodes: int = 500 # int number or -1
     # типы вершин, которые можно обходить во время поиска заданной вершины
     accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic])
 
@@ -109,25 +111,28 @@ class AStarMetrics:
         :return: _description_
         :rtype: float
         """
-        pair_id = create_id_for_node_pair(node1_id, node2_id)
-        cache_key = ('test', 'dist', pair_id)
-        dist = None
-        if self.cache.key_exist(cache_key):
-            #print("exists")
-            dist = self.cache.read([cache_key])[0]['v']
-            self.cache_info['dist']['exist'] += 1
-        else:
-            #print("calculating")
+        def _calculate_node_distance(id1: str, id2: str) -> float:
+            dist = 0
             if node1_id != node2_id:
-                #print(node1_id, node2_id)
                 instances = self.kg_model.embeddings_struct.vectordbs['nodes'].read([node1_id, node2_id], includes=['embeddings'])
-                #print(instances)
                 # calculation ip distance
                 dist = 1 - np.dot(instances[0].embedding, instances[1].embedding)
+            return dist
+
+        if self.cache is not None:
+            pair_id = create_id_for_node_pair(node1_id, node2_id)
+            cache_key = ('test', 'dist', pair_id)
+            if self.cache.key_exist(cache_key):
+                #print("exists")
+                dist = self.cache.read([cache_key])[0]['v']
+                self.cache_info['dist']['exist'] += 1
             else:
-                dist = 0
-            self.cache.create(cache_key, {'v': dist})
-            self.cache_info['dist']['calc'] += 1
+                #print("calculating")
+                dist = _calculate_node_distance(node1_id, node2_id)
+                self.cache.create(cache_key, {'v': dist})
+                self.cache_info['dist']['calc'] += 1
+        else:
+            dist = _calculate_node_distance(node1_id, node2_id)
 
         return dist
 
@@ -204,6 +209,7 @@ class AStarMetrics:
         else:
             #print("calculating")
             short_path = self.bfs(node1_id, node2_id)
+            self.cache.create(cache_key, {'v': short_path})
             self.cache_info['bfs_short_path']['calc'] += 1
 
         return short_path
@@ -292,11 +298,11 @@ class AStarGraphSearch:
             current_node_id = heapq.heappop(frontier)[1]
             passed_nodes_counter += 1
 
-            if passed_nodes_counter >= self.config.max_passed_nodes:
+            if (self.config.max_passed_nodes >= 0) and (passed_nodes_counter >= self.config.max_passed_nodes):
                 self.log("PASSED LIMIT OF MAX NODES", verbose=self.verbose)
                 break
 
-            if D[current_node_id] >= self.config.max_depth:
+            if (self.config.max_depth >= 0) and (D[current_node_id] >= self.config.max_depth):
                 self.log("PASSED MAX DEPTH LIMIT", verbose=self.verbose)
                 continue
 

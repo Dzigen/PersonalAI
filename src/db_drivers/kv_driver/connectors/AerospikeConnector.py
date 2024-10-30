@@ -36,6 +36,10 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
         _, meta = self.client.exists(key)
         return False if meta is None else True
 
+    def count_instances(self) -> int:
+        # TODO
+        pass
+
     def clear(self, keys: List[Tuple]) -> None:
         # TODO
         pass

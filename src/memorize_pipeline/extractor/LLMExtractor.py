@@ -7,7 +7,7 @@ from .utils import MEM_EXTRACT_LOG_PATH, MEM_EXTRACT_TRIPLET_SYSTEM_PROMPT, MEM_
     MEM_TRIPLET_PARSE_FUNC, MEM_THESIS_PARSE_FUNC
 
 from ...utils import Logger, detect_lang, ReturnStatus, ReturnInfo
-from ...utils.errors import MEM_ZERO_EXTRACTED_TRIPLETS_MSG, MEM_BAD_TRIPLET_EXTRACTION_PROMPT, MEM_BAD_THESIS_EXTRACTION_PROMPT
+from ...utils.errors import MEM_ZERO_EXTRACTED_TRIPLETS_MSG, MEM_BAD_TRIPLET_EXTRACTION_PROMPT_MSG, MEM_BAD_THESIS_EXTRACTION_PROMPT_MSG, NOT_SUPPORTED_LANG_MSG
 from ...utils.data_structs import TripletCreator, NodeCreator, Node, Relation, RelationType, NodeType, Triplet
 from ...agents import AgentDriver, AgentDriverConfig
 
@@ -63,29 +63,33 @@ class LLMExtractor:
         """
         assert need_simple or need_thesises
         self.log("START EXTRACTION...", verbose=self.config.verbose)
-        info = ReturnInfo()
-        detected_lang = detect_lang(text) if self.config.lang == 'auto' else self.config.lang
+        new_triplets, info = [], ReturnInfo()
+        detected_lang, status = detect_lang(text) if self.config.lang == 'auto' else (self.config.lang, ReturnStatus.success)
         self.log(f"DETECTED LANG: {detected_lang}", verbose=self.config.verbose)
+        if status == ReturnStatus.not_supported_lang:
+            self.log(NOT_SUPPORTED_LANG_MSG, verbose=self.config.verbose)
+            info.occurred_warning.append(status)
 
-        new_triplets = []
+        if status == ReturnStatus.success:
+            if need_simple:
+                tmp_triplets, status = self.extract_triplets(text, detected_lang, rel_prop=properties)
+                if status == ReturnStatus.bad_format:
+                    self.log(MEM_BAD_TRIPLET_EXTRACTION_PROMPT_MSG, verbose=self.config.verbose)
+                    info.occurred_warning.append(status)
+                else:
+                    new_triplets += tmp_triplets
 
-        if need_simple:
-            tmp_triplets, status = self.extract_triplets(text, detected_lang, rel_prop=properties)
-            if status == ReturnStatus.bad_format:
-                self.log(MEM_BAD_TRIPLET_EXTRACTION_PROMPT, verbose=self.config.verbose)
-            else:
-                new_triplets += tmp_triplets
+            if need_thesises:
+                tmp_triplets, status = self.extract_thesises(text, detected_lang, node_prop=properties)
+                if status == ReturnStatus.bad_format:
+                    self.log(MEM_BAD_THESIS_EXTRACTION_PROMPT_MSG, verbose=self.config.verbose)
+                    info.occurred_warning.append(status)
+                else:
+                    new_triplets += tmp_triplets
 
-        if need_thesises:
-            tmp_triplets, status = self.extract_thesises(text, detected_lang, node_prop=properties)
-            if status == ReturnStatus.bad_format:
-                self.log(MEM_BAD_THESIS_EXTRACTION_PROMPT, verbose=self.config.verbose)
-            else:
-                new_triplets += tmp_triplets
-
-        if need_episodic:
-            new_triplets += self.get_episodic_relationships(
-                text, self.get_entities_from_triplets(new_triplets), node_prop=properties)
+            if need_episodic:
+                new_triplets += self.get_episodic_relationships(
+                    text, self.get_entities_from_triplets(new_triplets), node_prop=properties)
 
         if len(new_triplets) == 0:
             info.status = ReturnStatus.zero_triplets

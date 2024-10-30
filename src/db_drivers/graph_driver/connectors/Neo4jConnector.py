@@ -68,8 +68,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             p_name, p_value = prop_name.replace(" ", "_"), json.dumps(prop_value, ensure_ascii=False)
             query_props[p_name] = p_value
 
-        node_name = json.dumps(node.name, ensure_ascii=False)
-        query_props['name'] = node_name
+        query_props['name'] = json.dumps(node.name, ensure_ascii=False)
 
         str_props = ", ".join([f"{k}: {v}" for k, v in query_props.items()])
         query = f"CREATE (n:{node.type.value} " + "{" + str_props + "}) RETURN elementId(n) as node_id"
@@ -89,9 +88,8 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             p_name, p_value = prop_name.replace(' ', '_'), json.dumps(prop_value, ensure_ascii=False)
             rel_props[p_name] = p_value
 
-        rel_name = json.dumps(triplet.relation.name, ensure_ascii=False)
-        rel_props['name'] = rel_name
-        rel_props['str_id'] = triplet.id
+        rel_props['name'] = json.dumps(triplet.relation.name, ensure_ascii=False)
+        rel_props['str_id'] = json.dumps(triplet.id, ensure_ascii=False)
 
         query = ""
         str_props = ", ".join([f"{k}: {v}" for k, v in rel_props.items()])
@@ -210,7 +208,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         formatted_triplets = self.parse_query_output(output)
         return formatted_triplets
 
-    def get_triplets_by_name(self, subj_name, obj_name, obj_type):
+    def get_triplets_by_name(self, subj_name: str, obj_name: str, obj_type: str) -> List[Triplet]:
         if subj_name:
             output = self.execute_query(
                 f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE n1.name = {subj_name} RETURN n1, rel, n2')
@@ -222,3 +220,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                 f'MATCH (n1:object)-[rel]-(n2:{obj_type}) RETURN n1, rel, n2')
         formatted_triplets = self.parse_query_output(output)
         return formatted_triplets
+
+    def count_instances(self) -> int:
+        # TODO
+        pass

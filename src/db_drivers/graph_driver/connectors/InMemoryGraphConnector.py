@@ -114,7 +114,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         triplets = list(map(lambda id: self.triplets_ids[id], shared_triplets_ids))
         return triplets
 
-    def get_triplets_by_name(self, subj_name, obj_name, obj_type):
+    def get_triplets_by_name(self, subj_name: str, obj_name: str, obj_type) -> List[Triplet]:
         triplets = []
         for triplet in self.triplets_ids.values():
             if obj_type in str(triplet.end_node.type):
@@ -123,3 +123,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
                 elif obj_name and triplet.end_node.name in obj_name:
                     triplets.append(triplet)
         return triplets
+
+    def count_instances(self) -> int:
+        # TODO
+        pass

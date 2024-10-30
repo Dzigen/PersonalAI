@@ -61,5 +61,9 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         gc.collect()
         self.kv_store = dict()
 
+    def count_instances(self) -> int:
+        # TODO
+        pass
+
     def key_exist(self, key: Tuple):
         return key in self.kv_store

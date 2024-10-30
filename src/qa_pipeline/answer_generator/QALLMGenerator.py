@@ -7,7 +7,7 @@ from ...agents import AgentDriver, AgentDriverConfig
 from ...utils.data_structs import TripletCreator
 from ...utils.data_structs import RelationType
 from ...utils import Logger, detect_lang, ReturnInfo, ReturnStatus
-from ...utils.errors import QA_BAD_QA_PROMPT, QA_EMPTY_ANSWER
+from ...utils.errors import QA_BAD_QA_PROMPT_MSG, QA_EMPTY_ANSWER_MSG, NOT_SUPPORTED_LANG_MSG
 
 @dataclass
 class QALLMGeneratorConfig:
@@ -61,24 +61,29 @@ class QALLMGenerator:
         :return: _description_
         :rtype: Tuple[str, ReturnInfo]
         """
-        answer, info = None, ReturnInfo()
-        detected_lang = detect_lang(query) if self.config.lang == 'auto' else self.config.lang
+        answer, info = '', ReturnInfo()
+        detected_lang, status = detect_lang(query) if self.config.lang == 'auto' else (self.config.lang, ReturnStatus.success)
         self.log(f"DETECTED LANG: {detected_lang}", verbose=self.config.verbose)
+        if status == ReturnStatus.not_supported_lang:
+            self.log(NOT_SUPPORTED_LANG_MSG, verbose=self.config.verbose)
+            info.occurred_warning.append(status)
 
-        formated_input = self.config.user_prompt[detected_lang].format(q=query, c=context)
+        if status == ReturnStatus.success:
+            formated_input = self.config.user_prompt[detected_lang].format(q=query, c=context)
 
-        raw_output = self.agent.generate(
-            system_prompt=self.config.system_prompt[detected_lang],
-            user_prompt=formated_input).strip()
-        self.log(f"RAW_ANSWER: {raw_output}", verbose=self.config.verbose)
+            raw_output = self.agent.generate(
+                system_prompt=self.config.system_prompt[detected_lang],
+                user_prompt=formated_input).strip()
+            self.log(f"RAW_ANSWER: {raw_output}", verbose=self.config.verbose)
 
-        answer, status = self.config.answer_parse_func[detected_lang](raw_output)
-        self.log(f"PARSED_ANSWER: {answer}", verbose=self.config.verbose)
-        if status == ReturnStatus.bad_format:
-            self.log(QA_BAD_QA_PROMPT, verbose=self.config.verbose)
+            answer, status = self.config.answer_parse_func[detected_lang](raw_output)
+            self.log(f"PARSED_ANSWER: {answer}", verbose=self.config.verbose)
+            if status == ReturnStatus.bad_format:
+                self.log(QA_BAD_QA_PROMPT_MSG, verbose=self.config.verbose)
+                info.occurred_warning.append(status)
 
         if len(answer) == 0:
             info.status = ReturnStatus.empty_answer
-            info.message = QA_EMPTY_ANSWER
+            info.message = QA_EMPTY_ANSWER_MSG
 
         return answer, info
