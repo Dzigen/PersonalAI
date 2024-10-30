@@ -44,11 +44,12 @@ class QueryLLMParser:
         :return: _description_
         :rtype: Tuple[QueryInfo, ReturnInfo]
         """
-        info = ReturnInfo()
+        extracted_entities, info = [], ReturnInfo()
         detected_lang, status = detect_lang(query) if self.config.lang == 'auto' else (self.config.lang, ReturnStatus.success)
         self.log(f"DETECTED LANG: {detected_lang}", verbose=self.config.verbose)
         if status == ReturnStatus.not_supported_lang:
             self.log(NOT_SUPPORTED_LANG_MSG, verbose=self.config.verbose)
+            info.occurred_warning.append(status)
 
         if status == ReturnStatus.success:
             formated_input = self.config.ents_extr_config.user_prompt[detected_lang].format(text=query)
@@ -61,6 +62,7 @@ class QueryLLMParser:
             self.log(f"PARSED_ENTITIES: {extracted_entities}", verbose=self.config.verbose)
             if status == ReturnStatus.bad_format:
                 self.log(QA_BAD_ENTITIES_EXTRACTION_PROMPT_MSG, verbose=self.config.verbose)
+                info.occurred_warning.append(status)
 
         if len(extracted_entities) == 0:
             info.status = ReturnStatus.zero_entities

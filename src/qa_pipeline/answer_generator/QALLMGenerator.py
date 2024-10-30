@@ -62,10 +62,11 @@ class QALLMGenerator:
         :rtype: Tuple[str, ReturnInfo]
         """
         answer, info = '', ReturnInfo()
-        detected_lang = detect_lang(query) if self.config.lang == 'auto' else (self.config.lang, ReturnStatus.success)
+        detected_lang, status = detect_lang(query) if self.config.lang == 'auto' else (self.config.lang, ReturnStatus.success)
         self.log(f"DETECTED LANG: {detected_lang}", verbose=self.config.verbose)
         if status == ReturnStatus.not_supported_lang:
             self.log(NOT_SUPPORTED_LANG_MSG, verbose=self.config.verbose)
+            info.occurred_warning.append(status)
 
         if status == ReturnStatus.success:
             formated_input = self.config.user_prompt[detected_lang].format(q=query, c=context)
@@ -79,6 +80,7 @@ class QALLMGenerator:
             self.log(f"PARSED_ANSWER: {answer}", verbose=self.config.verbose)
             if status == ReturnStatus.bad_format:
                 self.log(QA_BAD_QA_PROMPT_MSG, verbose=self.config.verbose)
+                info.occurred_warning.append(status)
 
         if len(answer) == 0:
             info.status = ReturnStatus.empty_answer

@@ -63,18 +63,19 @@ class LLMExtractor:
         """
         assert need_simple or need_thesises
         self.log("START EXTRACTION...", verbose=self.config.verbose)
-        info = ReturnInfo()
+        new_triplets, info = [], ReturnInfo()
         detected_lang, status = detect_lang(text) if self.config.lang == 'auto' else (self.config.lang, ReturnStatus.success)
         self.log(f"DETECTED LANG: {detected_lang}", verbose=self.config.verbose)
         if status == ReturnStatus.not_supported_lang:
             self.log(NOT_SUPPORTED_LANG_MSG, verbose=self.config.verbose)
+            info.occurred_warning.append(status)
 
-        new_triplets = []
         if status == ReturnStatus.success:
             if need_simple:
                 tmp_triplets, status = self.extract_triplets(text, detected_lang, rel_prop=properties)
                 if status == ReturnStatus.bad_format:
                     self.log(MEM_BAD_TRIPLET_EXTRACTION_PROMPT_MSG, verbose=self.config.verbose)
+                    info.occurred_warning.append(status)
                 else:
                     new_triplets += tmp_triplets
 
@@ -82,6 +83,7 @@ class LLMExtractor:
                 tmp_triplets, status = self.extract_thesises(text, detected_lang, node_prop=properties)
                 if status == ReturnStatus.bad_format:
                     self.log(MEM_BAD_THESIS_EXTRACTION_PROMPT_MSG, verbose=self.config.verbose)
+                    info.occurred_warning.append(status)
                 else:
                     new_triplets += tmp_triplets
 

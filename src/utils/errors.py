@@ -1,5 +1,6 @@
 from enum import Enum
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import List
 
 class ReturnStatus(Enum):
     success = 0
@@ -15,6 +16,7 @@ class ReturnStatus(Enum):
 
 @dataclass
 class ReturnInfo:
+    occurred_warning: List[ReturnStatus] = field(default_factory=lambda: list())
     status: ReturnStatus = ReturnStatus.success
     message: str = ""
 #
