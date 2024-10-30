@@ -10,5 +10,8 @@ def qa_custom_entities_parse_func(raw_response: str) -> Tuple[List[str], ReturnS
     :return: _description_
     :rtype: Tuple[List[str], ReturnStatus]
     """
+    status = ReturnStatus.success
     entities = list(filter(lambda item: len(item) > 0, list(map(lambda item: item.strip(), raw_response.split('|')))))
-    return entities, ReturnStatus.success
+    if len(entities) == 0:
+        status = ReturnStatus.bad_format
+    return entities, status
