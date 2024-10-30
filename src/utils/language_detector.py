@@ -18,6 +18,6 @@ def detect_lang(text: str) -> Tuple[str, ReturnStatus]:
             status = ReturnStatus.unknown_lang
 
     if (status == ReturnStatus.success) and (lang not in SUPPORTED_LANGUAGES):
-        status = ReturnStatus.not_supported_lang
+        lang, status = None, ReturnStatus.not_supported_lang
 
     return lang, status
