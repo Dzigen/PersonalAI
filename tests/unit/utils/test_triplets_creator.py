@@ -5,21 +5,84 @@ import sys
 sys.path.insert(0, "../../")
 from src.utils.data_structs import TripletCreator, Node, Relation, NodeType, RelationType
 
-@pytest.mark.parametrize("params, expected", [
-    ({'start_n': Node(name='a', type=NodeType.object), 'rel': Relation(name='b', type=RelationType.simple, prop={"time": '1'}), 'end_n': Node(name='c', type=NodeType.object)}, {'str_triplet': "1: a b c"}),
-    ({'start_n': Node(name='a', type=NodeType.object, prop={'1': '2'}), 'rel': Relation(name='b', type=RelationType.simple, prop={'3': '4'}), 'end_n': Node(name='c', type=NodeType.object, prop={'5': '6'})}, {'str_triplet': "a (1: 2) b (3: 4) c (5: 6)"}),
-    ({'start_n': Node(name='a', type=NodeType.object, prop={'1': '2'}), 'rel': Relation(name='b', type=RelationType.hyper), 'end_n': Node(name='c', type=NodeType.hyper, prop={'5': '6', 'time': "t"})}, {'str_triplet': "t: c (5: 6)"}),
-    ({'start_n': Node(name='a', type=NodeType.object, prop={'1': '2'}), 'rel': Relation(name='b', type=RelationType.hyper), 'end_n': Node(name='c', type=NodeType.episodic, prop={'5': '6', 'time': "t"})}, {'str_triplet': "t: c (5: 6)"}),
-])
-def test_craete_triplet(params, expected):
-    triplet = TripletCreator.create(
-        start_node=params['start_n'],
-        relation=params['rel'],
-        end_node=params['end_n'])
+STRING_PROP_VALUE = 'string_value'
+INT_PROP_VALUE = 1001
+TEST_TIME = '12.12.2012'
+TEST_NODE_NAME = 'abc'
+TEST_REL_NAME = 'def'
+TEST_ID = 'id123'
 
-    expected_id = hashlib.md5(expected['str_triplet'].encode()).hexdigest()
-    assert triplet.id == expected_id
-    assert triplet.stringified == expected['str_triplet']
-    assert triplet.start_node.id is None
-    assert triplet.relation.id is None
-    assert triplet.end_node.id is None
+TEST_PROPS_WITH_TIME = {'time': TEST_TIME, 'p1': STRING_PROP_VALUE, 'p2': INT_PROP_VALUE} 
+TEST_PROPS_WO_TIME = {'p1': STRING_PROP_VALUE, 'p2': INT_PROP_VALUE} 
+TEST_PROPS_WITH_SPECIAL = {
+    'name': STRING_PROP_VALUE, 'type': STRING_PROP_VALUE, 'raw_time': STRING_PROP_VALUE, 
+    'time': TEST_TIME, 'str_id': STRING_PROP_VALUE}
+
+TEST_OBJECT_NODE = Node(name=TEST_NODE_NAME, type=NodeType.object)
+TEST_SIMPLE_REL = Relation(name=TEST_REL_NAME, type=RelationType.simple)
+
+TEST_THESIS_NODE = Node(name=TEST_NODE_NAME, type=NodeType.hyper)
+TEST_THESIS_REL = Relation(name=TEST_REL_NAME, rtpe=RelationType.hyper)
+
+TEST_EPISODIC_NODE = Node(name=TEST_NODE_NAME, type=NodeType.episodic)
+TEST_EPISODIC_REL = Relation(name=TEST_REL_NAME, rtpe=RelationType.episodic)
+
+@pytest.mark.parametrize("params, expected", [
+    # сохранить строковое представление в триплете
+    ({'sn': TEST_OBJECT_NODE, 'en': TEST_OBJECT_NODE, 'r': TEST_SIMPLE_REL, 'id': None, 's_str': True}, {'str': ...}),
+    # не сохранять строковое представление в триплете
+    ({'sn': ..., 'en': ..., 'r': ..., 'id': None, 's_str': False}, {'str': ...}),
+    # назначить собственный идентификатор триплету
+    ({'sn': ..., 'en': ..., 'r': ..., 'id': TEST_ID, 's_str': True}, {'str': ...}),
+    # строковое представление с отметкой времени
+    ({'sn': ..., 'en': ..., 'r': ..., 'id': None, 's_str': True}, {'str': ...}),
+    # строковое представление без отметки времени
+    ({'sn': ..., 'en': ..., 'r': ..., 'id': None, 's_str': True}, {'str': ...}),
+    # строкое представление со свойствами
+    ({'sn': ..., 'en': ..., 'r': ..., 'id': None, 's_str': True}, {'str': ...}),
+    # строкоове представление без свойств/имён
+    ({'sn': ..., 'en': ..., 'r': ..., 'id': None, 's_str': True}, {'str': ...}),
+    # строковое представление со специальными свойствами
+    ({'sn': ..., 'en': ..., 'r': ..., 'id': None, 's_str': True}, {'str': ...}),
+])
+def test_create_simple_triplet(params, expected):
+    triplet = TripletCreator.create(
+        start_node=params['sn'], relation=params['r'], 
+        end_node=params['en'], add_stringified_triplet=params['s_str'], 
+        t_id=params['id'])
+    
+    if params['id'] is not None:
+        assert triplet.id == params['id']
+
+    if params['add_stringified_node']:
+        assert expected['str'] == triplet.stringified
+    else:
+        assert triplet.stringified is None
+
+def test_create_hyper_triplet(params, expected):
+    triplet = TripletCreator.create(
+        start_node=params['sn'], relation=params['r'], 
+        end_node=params['en'], add_stringified_triplet=params['s_str'], 
+        t_id=params['id'])
+    
+    if params['id'] is not None:
+        assert triplet.id == params['id']
+
+    if params['add_stringified_node']:
+        assert expected['str'] == triplet.stringified
+    else:
+        assert triplet.stringified is None
+
+def test_create_episodic_triplet(params, expected):
+    triplet = TripletCreator.create(
+        start_node=params['sn'], relation=params['r'], 
+        end_node=params['en'], add_stringified_triplet=params['s_str'], 
+        t_id=params['id'])
+    
+    if params['id'] is not None:
+        assert triplet.id == params['id']
+
+    if params['add_stringified_node']:
+        assert expected['str'] == triplet.stringified
+    else:
+        assert triplet.stringified is None
