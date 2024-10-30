@@ -13,6 +13,8 @@ class ReturnStatus(Enum):
     zero_retrieved_triplets = 7
     empty_answer = 8
     not_supported_lang = 9
+    empty_input_text = 10
+    unknown_lang = 11
 
 @dataclass
 class ReturnInfo:
