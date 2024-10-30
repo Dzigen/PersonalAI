@@ -37,6 +37,9 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         del self.collection
         del self.client
 
+    def count_instances(self) -> int:
+        return self.collection.count()
+
     def clear(self):
         self.client.delete_collection(name=self.config.db_name)
         self.collection = self.client.create_collection(name=self.config.db_name,

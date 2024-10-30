@@ -35,5 +35,9 @@ class MongoConnector(AbstractKVDatabaseConnection):
         # TODO
         pass
 
+    def count_instances(self) -> int:
+        # TODO
+        pass
+
     def clear(self):
         self.collection.delete_many({})

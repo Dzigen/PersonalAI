@@ -123,3 +123,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
                 elif obj_name and triplet.end_node.name in obj_name:
                     triplets.append(triplet)
         return triplets
+
+    def count_instances(self) -> int:
+        # TODO
+        pass

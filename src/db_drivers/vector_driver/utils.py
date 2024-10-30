@@ -44,6 +44,10 @@ class AbstractVectorDatabaseConnection(ABC):
         # Удаление содержания заднной базы
         pass
 
+    @abstractmethod
+    def count_instances(self):
+        # Получить текущее количество объектов в базе
+        pass
     def __del__(self):
         self.close_connection()
 

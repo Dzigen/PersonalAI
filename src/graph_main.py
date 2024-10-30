@@ -51,23 +51,8 @@ class RemoteKnowledgeGraph:
         self.log(f"- answer: {answer}", verbose=self.config.verbose)
         return answer, info
 
-    def update_memory(self, texts: List[str], texts_properties: List[Dict]) -> Tuple[List[Triplet], ReturnInfo]:
-        """_summary_
-
-        :param texts: _description_
-        :type texts: List[str]
-        :param texts_properties: _description_
-        :type texts_properties: List[Dict]
-        :return: _description_
-        :rtype: Tuple[List[Triplet], ReturnInfo]
-        """
+    def update_memory(self, text: str, text_properties: Dict) -> Tuple[List[Triplet], ReturnInfo]:
         self.log("Start memory-updating...", verbose=self.config.verbose)
-
-        pairs = list(zip(texts, texts_properties))
-        triplets = []
-        for info, props in tqdm(pairs):
-            tmp_triplets, info = self.mem_pipeline.remember(info, props)
-            triplets += tmp_triplets
-
+        triplets, info = self.mem_pipeline.remember(text, text_properties)
         self.log(f"- triplets amount: {len(triplets)}", verbose=self.config.verbose)
         return triplets, info

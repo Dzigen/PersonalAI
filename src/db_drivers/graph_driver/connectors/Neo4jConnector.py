@@ -220,3 +220,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                 f'MATCH (n1:object)-[rel]-(n2:{obj_type}) RETURN n1, rel, n2')
         formatted_triplets = self.parse_query_output(output)
         return formatted_triplets
+
+    def count_instances(self) -> int:
+        # TODO
+        pass
