@@ -10,6 +10,7 @@ def qa_custom_answer_parse_func_en(raw_response: str) -> Tuple[str, ReturnStatus
     :return: _description_
     :rtype: Tuple[str, ReturnStatus]
     """
+    status = ReturnStatus.success
     found_line = ""
     for line in raw_response.split("\n"):
         if "Final answer 3" in line:
@@ -19,7 +20,7 @@ def qa_custom_answer_parse_func_en(raw_response: str) -> Tuple[str, ReturnStatus
         answer = found_line.split("Final answer 3: ")[-1]
     else:
         answer = raw_response
-    return answer, ReturnStatus.success
+    return answer, status
 
 def qa_custom_answer_parse_func_ru(raw_response: str) -> Tuple[str, ReturnStatus]:
     """_summary_
@@ -29,4 +30,5 @@ def qa_custom_answer_parse_func_ru(raw_response: str) -> Tuple[str, ReturnStatus
     :return: _description_
     :rtype: Tuple[str, ReturnStatus]
     """
-    return raw_response, ReturnStatus.success
+    status = ReturnStatus.success
+    return raw_response, status

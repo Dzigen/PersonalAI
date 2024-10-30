@@ -11,6 +11,7 @@ def mem_custom_triplet_parse_func(raw_response: str) -> Tuple[List[Tuple[str, st
     :return: _description_
     :rtype: Tuple[List[Tuple[str, str, str]], ReturnStatus]
     """
+    status = ReturnStatus.success
     if ":" in raw_response:
         raw_response = raw_response.split(":")[-1]
     raw_response = raw_response.lower()
@@ -25,7 +26,11 @@ def mem_custom_triplet_parse_func(raw_response: str) -> Tuple[List[Tuple[str, st
             continue
         else:
             raw_triplets.append((subj, rel, obj))
-    return raw_triplets, ReturnStatus.success
+
+    if len(raw_triplets) == 0:
+        status = ReturnStatus.bad_format
+
+    return raw_triplets, status
 
 #
 def mem_custom_thesis_parse_func(raw_response: str) -> Tuple[List[Tuple[str, str]], ReturnStatus]:
@@ -36,6 +41,7 @@ def mem_custom_thesis_parse_func(raw_response: str) -> Tuple[List[Tuple[str, str
     :return: _description_
     :rtype: Tuple[List[Tuple[str, str]], ReturnStatus]
     """
+    status = ReturnStatus.success
     if ":" in raw_response:
         raw_response = raw_response.split(":")[-1]
     raw_response = raw_response.lower()
@@ -51,4 +57,8 @@ def mem_custom_thesis_parse_func(raw_response: str) -> Tuple[List[Tuple[str, str
         except:
             continue
         raw_triplets.append((thesis, entities))
-    return raw_triplets, ReturnStatus.success
+
+    if len(raw_triplets) == 0:
+        status = ReturnStatus.bad_format
+
+    return raw_triplets, status
