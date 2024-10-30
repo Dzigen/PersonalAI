@@ -69,3 +69,4 @@ pytest tutorial:
 7. (diaasq_gigachat_v2) -  diaasq_gigachat-граф, который был перестроен по обновлённому алгоритму (более строгий контроль за дубликатами вершин и связей)
     * vectorized nodes = 15
     * vectorized triplets = 11
+    * graph-creation info: all/created_relations - 211542/50917; all/created_nodes - 423084/54051
