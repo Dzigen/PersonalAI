@@ -110,7 +110,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         return filtered_nodes
 
     def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
-        shared_triplets_ids = set(self.edges[node1_id]).union(set(self.edges[node2_id]))
+        shared_triplets_ids = set(self.edges[node1_id]).intersection(set(self.edges[node2_id]))
         triplets = list(map(lambda id: self.triplets_ids[id], shared_triplets_ids))
         return triplets
 
