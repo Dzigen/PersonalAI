@@ -5,7 +5,7 @@ import heapq
 from time import time
 import collections
 
-from .utils import AbstractTripletsRetriever
+from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from ...utils.data_structs import QueryInfo, Triplet, NodeType
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ...utils.data_structs import create_id_for_node_pair
@@ -20,7 +20,7 @@ class AStarMetricsConfig:
     h_metric_name: str = 'ip' # 'ip', 'weight_with_short_path', 'avg_weighted_with_short_path'
 
 @dataclass
-class AStarGraphSearchConfig:
+class AStarGraphSearchConfig(BaseGraphSearchConfig):
     """_summary_
     """
     #

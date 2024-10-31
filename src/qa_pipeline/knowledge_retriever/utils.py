@@ -1,5 +1,6 @@
 from typing import List
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from typing import Dict
 
 from ...utils.data_structs import QueryInfo, Triplet
@@ -17,3 +18,11 @@ class AbstractTripletsRetriever(ABC):
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         # извлечение триплетов из графа знаний, релевантных запросу
         pass
+
+@dataclass
+class BaseGraphSearchConfig:
+    pass
+
+@dataclass
+class BaseTripletsFilterConfig:
+    pass
