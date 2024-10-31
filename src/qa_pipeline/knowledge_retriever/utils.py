@@ -22,3 +22,7 @@ class AbstractTripletsRetriever(ABC):
 @dataclass
 class BaseGraphSearchConfig:
     pass
+
+@dataclass
+class BaseTripletsFilterConfig:
+    pass

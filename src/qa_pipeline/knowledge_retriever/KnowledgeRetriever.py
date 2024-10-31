@@ -1,4 +1,4 @@
-from .utils import AbstractTriplesFilter, AbstractTripletsRetriever, RETRIEVER_LOG_PATH
+from .utils import AbstractTriplesFilter, AbstractTripletsRetriever, RETRIEVER_LOG_PATH, BaseGraphSearchConfig, BaseTripletsFilterConfig
 from .TripletsFilter import TripletsFilterConfig, TripletsFilter
 from .AStarTripletsRetriever import AStarTripletsRetriever, AStarGraphSearchConfig
 from .BFSTripletsRetriever import BFSRetriever, BFSSearchConfig
@@ -31,11 +31,11 @@ class KnowledgeRetrieverConfig:
     #
     retriever_method: str = 'astar'
     #
-    retriever_config: object = field(default_factory=lambda: AStarGraphSearchConfig())
+    retriever_config: BaseGraphSearchConfig = field(default_factory=lambda: AStarGraphSearchConfig())
     #
     filter_method: str = 'naive'
     #
-    filter_config: object = field(default_factory=lambda: TripletsFilterConfig())
+    filter_config: BaseTripletsFilterConfig = field(default_factory=lambda: TripletsFilterConfig())
     #
     cache_config: KeyValueDriverConfig = field(default_factory=lambda: KeyValueDriverConfig())
     #
