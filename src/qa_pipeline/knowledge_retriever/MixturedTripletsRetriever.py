@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import List
 from copy import deepcopy
 
-from .utils import AbstractTripletsRetriever
+from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarTripletsRetriever
 from .BFSTripletsRetriever import BFSSearchConfig, BFSRetriever
 from ...utils.data_structs import QueryInfo, Triplet
@@ -11,7 +11,7 @@ from ...db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
 from ...utils import Logger
 
 @dataclass
-class MixturedGraphSearchConfig:
+class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     """_summary_
     """
     #
