@@ -6,11 +6,11 @@ import torch
 
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ...utils.data_structs import QueryInfo, NodeCreator, Relation, TripletCreator, Triplet, Node, RELATIONS_TYPES_MAP
-from .utils import AbstractTripletsRetriever
+from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 
 
 @dataclass
-class BFSSearchConfig:
+class BFSSearchConfig(BaseGraphSearchConfig):
     strict_filter: bool = True
     hyper_episodic_num: int = 15
     chain_triplets_num: int = 25
