@@ -11,7 +11,7 @@ class KeyValueDriverConfig:
     #
     db_vendor: str = 'aerospike'
     #
-    db_config: KVDBConnectionConfig = field(default_factory=lambda:DEFAULT_KVDB_CONFIGS['aerospike'])
+    db_config: KVDBConnectionConfig = field(default_factory=lambda: DEFAULT_KVDB_CONFIGS['aerospike'])
 
 class KeyValueDriver:
     @staticmethod
