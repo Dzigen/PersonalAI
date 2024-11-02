@@ -208,17 +208,22 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         formatted_triplets = self.parse_query_output(output)
         return formatted_triplets
 
-    def get_triplets_by_name(self, subj_name: str, obj_name: str, obj_type: str) -> List[Triplet]:
-        if subj_name:
-            output = self.execute_query(
-                f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE n1.name = {subj_name} RETURN n1, rel, n2')
-        elif obj_name:
-            output = self.execute_query(
-                f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE n2.name = {subj_name} RETURN n1, rel, n2')
+    def get_triplets_by_name(self, subj_names: List[str], obj_names: List[str], obj_type: str) -> List[Triplet]:
+        formatted_triplets = []
+        if subj_names:
+            for subj_name in subj_names:
+                output = self.execute_query(
+                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n1.name) = LOWER("{subj_name}") RETURN n1, rel, n2')
+                formatted_triplets += self.parse_query_output(output)
+        elif obj_names:
+            for obj_name in obj_names:
+                output = self.execute_query(
+                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n2.name) = LOWER("{obj_name}") RETURN n1, rel, n2')
+                formatted_triplets += self.parse_query_output(output)
         else:
             output = self.execute_query(
                 f'MATCH (n1:object)-[rel]-(n2:{obj_type}) RETURN n1, rel, n2')
-        formatted_triplets = self.parse_query_output(output)
+            formatted_triplets += self.parse_query_output(output)
         return formatted_triplets
 
     def count_instances(self) -> int:
