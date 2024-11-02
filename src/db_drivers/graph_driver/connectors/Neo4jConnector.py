@@ -213,12 +213,12 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         if subj_names:
             for subj_name in subj_names:
                 output = self.execute_query(
-                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE n1.name = {subj_name} RETURN n1, rel, n2')
+                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n1.name) = LOWER("{subj_name}") RETURN n1, rel, n2')
                 formatted_triplets += self.parse_query_output(output)
         elif obj_names:
             for obj_name in obj_names:
                 output = self.execute_query(
-                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE n2.name = {obj_name} RETURN n1, rel, n2')
+                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n2.name) = LOWER("{obj_name}") RETURN n1, rel, n2')
                 formatted_triplets += self.parse_query_output(output)
         else:
             output = self.execute_query(
