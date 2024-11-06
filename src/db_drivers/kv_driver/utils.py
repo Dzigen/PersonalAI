@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, List
+from typing import Dict, Tuple, List, Union
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
 
@@ -18,6 +18,11 @@ class AbstractKVDatabaseConnection(ABC):
         pass
 
     @abstractmethod
+    def is_open(self) -> bool:
+        # Проверка наличия открытого соединения с базой
+        pass
+
+    @abstractmethod
     def close_connection(self) -> None:
         """_summary_
         """
@@ -25,7 +30,7 @@ class AbstractKVDatabaseConnection(ABC):
         pass
 
     @abstractmethod
-    def create(self, key: Tuple, value: Dict) -> None:
+    def create(self, keys: Union[Tuple, List[Tuple]], values: Union[Dict, List[Dict]]) -> None:
         """_summary_
 
         :param key: _description_
@@ -37,19 +42,7 @@ class AbstractKVDatabaseConnection(ABC):
         pass
 
     @abstractmethod
-    def delete(self, keys: List[Tuple], durable_delete: bool = False) -> None:
-        """_summary_
-
-        :param key_tuples: _description_
-        :type key_tuples: List[Tuple]
-        :param durable_delete: _description_, defaults to False
-        :type durable_delete: bool, optional
-        """
-        # удалить елементы по идентификатору
-        pass
-
-    @abstractmethod
-    def read(self, keys: List[Tuple]) -> List[Dict]:
+    def read(self, keys: Union[List[Tuple],Tuple]) -> Union[List[Dict], Dict]:
         """_summary_
 
         :param key_tuples: _description_
@@ -61,17 +54,33 @@ class AbstractKVDatabaseConnection(ABC):
         pass
 
     @abstractmethod
-    def clear(self, keys: List[Tuple]) -> None:
+    def update(self, keys: Union[List[Tuple], Tuple], values: Union[List[Dict], Dict]) -> None:
+        pass
+
+    @abstractmethod
+    def delete(self, keys: Union[List[Tuple], Tuple], durable_delete: bool = False) -> None:
+        """_summary_
+
+        :param key_tuples: _description_
+        :type key_tuples: List[Tuple]
+        :param durable_delete: _description_, defaults to False
+        :type durable_delete: bool, optional
+        """
+        # удалить елементы по идентификатору
+        pass
+
+    @abstractmethod
+    def clear(self) -> None:
         """_summary_
 
         :param key_tuples: _description_
         :type key_tuples: List[Tuple]
         """
-        # Удаление содержания заднной базы
+        # Удаление содержания базы данных, которой было подключение
         pass
 
     @abstractmethod
-    def key_exist(self, key_tuple: Tuple) -> bool:
+    def key_exist(self, key: Tuple) -> bool:
         """_summary_
 
         :param key_tuple: _description_
