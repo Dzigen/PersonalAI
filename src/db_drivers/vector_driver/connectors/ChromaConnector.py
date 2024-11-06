@@ -41,36 +41,28 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         del self.collection
         del self.client
 
-    def count_instances(self) -> int:
-        return self.collection.count()
-
-    def clear(self) -> None:
-        self.client.delete_collection(name=self.config.db_name)
-        self.collection = self.client.create_collection(name=self.config.db_name,
-                                                        metadata=self.config.params)
-
-    def create(self, instances: List[VectorDBInstance]) -> None:
+    def create(self, items: List[VectorDBInstance]) -> None:
         """Добавление объектов в базу.
 
         Args:
-            instances (List[VectorDBInstance]): Список объектов на добавление
+            items (List[VectorDBInstance]): Список объектов на добавление
         """
-        insts_idxs = list(range(len(instances)))
-        insts_with_md = list(filter(lambda i: len(instances[i].metadata), insts_idxs))
+        insts_idxs = list(range(len(items)))
+        insts_with_md = list(filter(lambda i: len(items[i].metadata), insts_idxs))
         insts_wo_md = set(insts_idxs).difference(set(insts_with_md))
 
         if len(insts_with_md):
             self.collection.add(
-                documents=list(map(lambda idx: instances[idx].document, insts_with_md)),
-                embeddings=list(map(lambda idx: instances[idx].embedding, insts_with_md)),
-                metadatas=list(map(lambda idx: instances[idx].metadata, insts_with_md)),
-                ids=list(map(lambda idx: instances[idx].id, insts_with_md)))
+                documents=list(map(lambda idx: items[idx].document, insts_with_md)),
+                embeddings=list(map(lambda idx: items[idx].embedding, insts_with_md)),
+                metadatas=list(map(lambda idx: items[idx].metadata, insts_with_md)),
+                ids=list(map(lambda idx: items[idx].id, insts_with_md)))
 
         if len(insts_wo_md):
             self.collection.add(
-                documents=list(map(lambda idx: instances[idx].document, insts_wo_md)),
-                embeddings=list(map(lambda idx: instances[idx].embedding, insts_wo_md)),
-                ids=list(map(lambda idx: instances[idx].id, insts_wo_md)))
+                documents=list(map(lambda idx: items[idx].document, insts_wo_md)),
+                embeddings=list(map(lambda idx: items[idx].embedding, insts_wo_md)),
+                ids=list(map(lambda idx: items[idx].id, insts_wo_md)))
 
     def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents'], **kwargs) -> List[VectorDBInstance]:
         """Получение объектов из базы по их идентификаторам.
@@ -99,6 +91,9 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         # TODO
         pass
 
+    def delete(self, ids: List[str], **kwargs) -> None:
+        self.collection.delete(ids=ids, **kwargs)
+
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50,
             includes: List[str]  = ['embeddings', 'documents', 'metadatas'], **kwargs) -> List[List[Tuple[float, VectorDBInstance]]]:
@@ -122,5 +117,10 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
 
         return formated_instances
 
-    def delete(self, ids: List[str], **kwargs) -> None:
-        self.collection.delete(ids=ids, **kwargs)
+    def count_items(self) -> int:
+        return self.collection.count()
+
+    def clear(self) -> None:
+        self.client.delete_collection(name=self.config.db_name)
+        self.collection = self.client.create_collection(name=self.config.db_name,
+                                                        metadata=self.config.params)

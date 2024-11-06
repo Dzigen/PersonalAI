@@ -88,5 +88,10 @@ class AbstractGraphDatabaseConnection(ABC):
     def count_items(self) -> int:
         pass
 
+    @abstractmethod
+    def clear(self) -> None:
+        # Удаление содержания базы данных, которой было подключение
+        pass
+
     def __del__(self):
         self.close_connection()
