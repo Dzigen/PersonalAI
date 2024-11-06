@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Tuple
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
 
@@ -17,12 +17,17 @@ class AbstractGraphDatabaseConnection(ABC):
         pass
 
     @abstractmethod
+    def is_open(self) -> None:
+        #
+        pass
+
+    @abstractmethod
     def close_connection(self) -> None:
         # закрытие соединения с бд
         pass
 
     @abstractmethod
-    def create_triplet(self, triplet: Triplet) -> None:
+    def create(self, items: List[Triplet]) -> None:
         """_summary_
 
         :param triplet: _description_
@@ -31,7 +36,15 @@ class AbstractGraphDatabaseConnection(ABC):
         pass
 
     @abstractmethod
-    def delete_triplet(self, triplet: Triplet) -> None:
+    def read(self, ids: List[Tuple[str,str,str]]) -> List[Triplet]:
+        pass
+
+    @abstractmethod
+    def update(self, items: List[Triplet]) -> None:
+        pass
+
+    @abstractmethod
+    def delete(self, ids: List[Tuple[str,str,str]]) -> None:
         """_summary_
 
         :param triplet: _description_
@@ -59,7 +72,7 @@ class AbstractGraphDatabaseConnection(ABC):
         pass
 
     @abstractmethod
-    def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
+    def get_all_triplets_between_nodes(self, node1_id: str, node2_id: str) -> List[Triplet]:
         """_summary_
 
         :param node1_id: _description_
@@ -72,8 +85,7 @@ class AbstractGraphDatabaseConnection(ABC):
         pass
 
     @abstractmethod
-    def count_instances(self) -> int:
-        # TODO
+    def count_items(self) -> int:
         pass
 
     def __del__(self):

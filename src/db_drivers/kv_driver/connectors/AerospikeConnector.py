@@ -1,6 +1,8 @@
 from typing import List, Tuple, Dict
 import aerospike
 
+from ..utils import KeyValueDBInstance
+
 from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 
 DEFAULT_AEROSPIKE_CONFIG = KVDBConnectionConfig(host='aerospikelservice', port=3000)
@@ -18,28 +20,34 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
         print(db_config)
         self.client = aerospike.client(db_config).connect()
 
+    def is_open(self) -> bool:
+        pass
+
     def close_connection(self) -> None:
         self.client.close()
 
     def create(self, key: Tuple, value: Dict) -> None:
         self.client.put(key, value)
 
-    def delete(self, keys: List[Tuple], durable_delete: bool = False) -> None:
-        self.client.batch_remove(keys, policy_batch_remove= {'durable_delete': durable_delete})
-
     def read(self, keys: List[Tuple]) -> List[Dict]:
         mixed_records = self.client.get_many(keys, policy={'total_timeout': 10000})
         records = [mixed_record[2] for mixed_record in mixed_records]
         return records
 
-    def key_exist(self, key: Tuple) -> bool:
-        _, meta = self.client.exists(key)
-        return False if meta is None else True
+    def update(self, items: List[KeyValueDBInstance]) -> None:
+        pass
 
-    def count_instances(self) -> int:
+    def delete(self, keys: List[Tuple], durable_delete: bool = False) -> None:
+        self.client.batch_remove(keys, policy_batch_remove= {'durable_delete': durable_delete})
+
+    def clear(self, keys: List[Tuple]) -> None:
         # TODO
         pass
 
-    def clear(self, keys: List[Tuple]) -> None:
+    def item_exist(self, key: Tuple) -> bool:
+        _, meta = self.client.exists(key)
+        return False if meta is None else True
+
+    def count_items(self) -> int:
         # TODO
         pass

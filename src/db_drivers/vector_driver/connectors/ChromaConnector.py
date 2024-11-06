@@ -22,7 +22,7 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         self.config = config
         self.open_connection()
 
-    def open_connection(self):
+    def open_connection(self) -> None:
         """_summary_
         """
         self.client = chromadb.PersistentClient(path=self.config.path)
@@ -31,7 +31,11 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         if self.config.need_to_clear:
             self.clear()
 
-    def close_connection(self):
+    def is_open(self) -> bool:
+        # TODO
+        pass
+
+    def close_connection(self) -> None:
         """_summary_
         """
         del self.collection
@@ -40,12 +44,12 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
     def count_instances(self) -> int:
         return self.collection.count()
 
-    def clear(self):
+    def clear(self) -> None:
         self.client.delete_collection(name=self.config.db_name)
         self.collection = self.client.create_collection(name=self.config.db_name,
                                                         metadata=self.config.params)
 
-    def create(self, instances: List[VectorDBInstance]):
+    def create(self, instances: List[VectorDBInstance]) -> None:
         """Добавление объектов в базу.
 
         Args:
@@ -91,7 +95,7 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
 
         return formates_instances
 
-    def update(self):
+    def update(self) -> None:
         # TODO
         pass
 
@@ -118,5 +122,5 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
 
         return formated_instances
 
-    def delete(self, ids: List[str], **kwargs):
+    def delete(self, ids: List[str], **kwargs) -> None:
         self.collection.delete(ids=ids, **kwargs)
