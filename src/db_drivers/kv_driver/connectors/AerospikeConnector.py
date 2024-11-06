@@ -5,7 +5,9 @@ from ..utils import KeyValueDBInstance
 
 from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 
-DEFAULT_AEROSPIKE_CONFIG = KVDBConnectionConfig(host='aerospikelservice', port=3000)
+DEFAULT_AEROSPIKE_CONFIG = KVDBConnectionConfig(
+    host='aerospikelservice', db_info={'namespace': 'test', 'set': 'astar_ip'},
+    port=3000)
 
 class AerospikeConnector(AbstractKVDatabaseConnection):
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_AEROSPIKE_CONFIG):
@@ -21,30 +23,37 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
         self.client = aerospike.client(db_config).connect()
 
     def is_open(self) -> bool:
+        # TODO
         pass
 
     def close_connection(self) -> None:
         self.client.close()
 
-    def create(self, key: Tuple, value: Dict) -> None:
-        self.client.put(key, value)
+    def create(self, items: List[KeyValueDBInstance]) -> None:
+        for item in items:
+            key = (self.config.db_info['namespace'], self.config.db_info['set'], item.id)
+            self.client.put(key, item.metadata)
 
-    def read(self, keys: List[Tuple]) -> List[Dict]:
+    def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
+        keys = list(map(lambda id: (self.config.db_info['namespace'], self.config.db_info['set'], id), ids))
         mixed_records = self.client.get_many(keys, policy={'total_timeout': 10000})
-        records = [mixed_record[2] for mixed_record in mixed_records]
+        records = [KeyValueDBInstance(id=record[0][2], metadata=record[2]) for record in mixed_records]
         return records
 
     def update(self, items: List[KeyValueDBInstance]) -> None:
-        pass
-
-    def delete(self, keys: List[Tuple], durable_delete: bool = False) -> None:
-        self.client.batch_remove(keys, policy_batch_remove= {'durable_delete': durable_delete})
-
-    def clear(self, keys: List[Tuple]) -> None:
         # TODO
         pass
 
-    def item_exist(self, key: Tuple) -> bool:
+    def delete(self, ids: List[str], durable_delete: bool = False) -> None:
+        keys = list(map(lambda id: (self.config.db_info['namespace'], self.config.db_info['set'], id), ids))
+        self.client.batch_remove(keys, policy_batch_remove= {'durable_delete': durable_delete})
+
+    def clear(self) -> None:
+        # TODO
+        pass
+
+    def item_exist(self, id: str) -> bool:
+        key = (self.config.db_info['namespace'], self.config.db_info['set'], id)
         _, meta = self.client.exists(key)
         return False if meta is None else True
 
