@@ -78,7 +78,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
         return created_nodes_count, created_rels_count
 
-    def read(self, ids: List[Tuple[str,str,str]]) -> List[Triplet]:
+    def read(self, ids: List[str]) -> List[Triplet]:
         # TODO
         pass
 

@@ -8,6 +8,7 @@ from ...utils.data_structs import Triplet, NodeType
 class GraphDBConnectionConfig:
     uri: str = None
     params: Dict = field(default_factory=lambda: dict())
+    need_to_clear: bool = False
 
 class AbstractGraphDatabaseConnection(ABC):
 
@@ -44,7 +45,7 @@ class AbstractGraphDatabaseConnection(ABC):
         pass
 
     @abstractmethod
-    def delete(self, ids: List[Tuple[str,str,str]]) -> None:
+    def delete(self, ids: List[Triplet]) -> None:
         """_summary_
 
         :param triplet: _description_

@@ -140,7 +140,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
         return created_nodes_count, created_rels_count
 
-    def read(self, ids: List[Tuple[str, str, str]]) -> List[Triplet]:
+    def read(self, ids: List[str]) -> List[Triplet]:
         # TODO
         pass
 
