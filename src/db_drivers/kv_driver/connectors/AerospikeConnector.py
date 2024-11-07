@@ -6,7 +6,7 @@ from ..utils import KeyValueDBInstance
 from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 
 DEFAULT_AEROSPIKE_CONFIG = KVDBConnectionConfig(
-    host='aerospikelservice', db_info={'namespace': 'test', 'set': 'astar_ip'},
+    host='aerospikelservice', db_info={'db': 'test', 'table': 'astar_ip'},
     port=3000)
 
 class AerospikeConnector(AbstractKVDatabaseConnection):
@@ -31,11 +31,11 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
 
     def create(self, items: List[KeyValueDBInstance]) -> None:
         for item in items:
-            key = (self.config.db_info['namespace'], self.config.db_info['set'], item.id)
+            key = (self.config.db_info['db'], self.config.db_info['table'], item.id)
             self.client.put(key, item.metadata)
 
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
-        keys = list(map(lambda id: (self.config.db_info['namespace'], self.config.db_info['set'], id), ids))
+        keys = list(map(lambda id: (self.config.db_info['db'], self.config.db_info['table'], id), ids))
         mixed_records = self.client.get_many(keys, policy={'total_timeout': 10000})
         records = [KeyValueDBInstance(id=record[0][2], metadata=record[2]) for record in mixed_records]
         return records
@@ -45,7 +45,7 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
         pass
 
     def delete(self, ids: List[str], durable_delete: bool = False) -> None:
-        keys = list(map(lambda id: (self.config.db_info['namespace'], self.config.db_info['set'], id), ids))
+        keys = list(map(lambda id: (self.config.db_info['db'], self.config.db_info['table'], id), ids))
         self.client.batch_remove(keys, policy_batch_remove= {'durable_delete': durable_delete})
 
     def clear(self) -> None:
@@ -53,7 +53,7 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
         pass
 
     def item_exist(self, id: str) -> bool:
-        key = (self.config.db_info['namespace'], self.config.db_info['set'], id)
+        key = (self.config.db_info['db'], self.config.db_info['table'], id)
         _, meta = self.client.exists(key)
         return False if meta is None else True
 

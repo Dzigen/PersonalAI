@@ -190,7 +190,7 @@ class GraphModel:
         self.log = config.log
         self.db_conn = GraphDriver.connect(self.config.driver_config)
 
-    def create_triplets(self, triplets: List[Triplet]) -> None:
+    def create_triplets(self, triplets: List[Triplet], batch_size: int = 64) -> None:
         """_summary_
 
         :param triplets: _description_
@@ -198,8 +198,10 @@ class GraphModel:
         """
         self.log("Adding triplets to graph-model...", verbose=self.config.verbose)
         created_nodes_count, created_rels_count = 0,0
-        for triplet in tqdm(triplets):
-            created_nodes, created_rels = self.db_conn.create_triplet(triplet)
+
+        steps = math.floor(len(triplets) / batch_size)
+        for step in tqdm(steps):
+            created_nodes, created_rels = self.db_conn.create(triplets[step*batch_size: (step+1)*batch_size])
             created_nodes_count += created_nodes
             created_rels_count += created_rels
 
@@ -207,15 +209,15 @@ class GraphModel:
         self.log(f"all/created_nodes - {len(triplets)*2}/{created_nodes_count}", verbose=self.config.verbose)
         self.log("Triplets added successfully!", verbose=self.config.verbose)
 
-    # TODO
-    def delete_triplets(self, triplets: List[Triplet]) -> None:
+    def delete_triplets(self, triplets: List[Triplet], batch_size: int = 64) -> None:
         """_summary_
 
         :param triplets: _description_
         :type triplets: List[Triplet]
         """
-        for triplet in triplets:
-            self.db_conn.delete_triplet(triplet)
+        steps = math.floor(len(triplets) / batch_size)
+        for step in tqdm(steps):
+            self.db_conn.delete(triplets[step*batch_size: (step+1)*batch_size])
 
 @dataclass
 class KnowledgeGraphModel:

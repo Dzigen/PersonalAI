@@ -37,7 +37,7 @@ class AbstractGraphDatabaseConnection(ABC):
         pass
 
     @abstractmethod
-    def read(self, ids: List[Tuple[str,str,str]]) -> List[Triplet]:
+    def read(self, ids: List[str]) -> List[Triplet]:
         pass
 
     @abstractmethod
