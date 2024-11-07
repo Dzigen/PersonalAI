@@ -79,7 +79,7 @@ class EmbeddingsModel:
                             nodes_ids.append(node.id)
                             nodes_strs.append(node_str)
 
-            self.add_stringified_triplets(triplets_ids, triplets_strs, nodes_ids, nodes_strs)
+            self.create_stringified_triplets(triplets_ids, triplets_strs, nodes_ids, nodes_strs)
 
         self.log(f"all/unique_triplets - {len(triplets)}/{len(unique_triplets_ids)}", verbose=self.config.verbose)
         self.log(f"all/unique_nodes - {len(triplets)*2}/{len(unique_nodes_ids)}", verbose=self.config.verbose)
@@ -118,9 +118,9 @@ class EmbeddingsModel:
         :type stringified_nodes: List[str], optional
         """
         if len(triplets_ids):
-            self.add_instances('triplets', triplets_ids, stringified_triplets)
+            self.create_instances('triplets', triplets_ids, stringified_triplets)
         if nodes_ids is not None and len(nodes_ids):
-            self.add_instances('nodes', nodes_ids, stringified_nodes)
+            self.create_instances('nodes', nodes_ids, stringified_nodes)
 
     def delete_stringified_triplets(self, triplets_ids: List[str], nodes_ids: List[str] = None) -> None:
         """_summary_
@@ -199,8 +199,8 @@ class GraphModel:
         self.log("Adding triplets to graph-model...", verbose=self.config.verbose)
         created_nodes_count, created_rels_count = 0,0
 
-        steps = math.floor(len(triplets) / batch_size)
-        for step in tqdm(steps):
+        steps = math.ceil(len(triplets) / batch_size)
+        for step in tqdm(range(steps)):
             created_nodes, created_rels = self.db_conn.create(triplets[step*batch_size: (step+1)*batch_size])
             created_nodes_count += created_nodes
             created_rels_count += created_rels
@@ -215,8 +215,8 @@ class GraphModel:
         :param triplets: _description_
         :type triplets: List[Triplet]
         """
-        steps = math.floor(len(triplets) / batch_size)
-        for step in tqdm(steps):
+        steps = math.ceil(len(triplets) / batch_size)
+        for step in tqdm(range(steps)):
             self.db_conn.delete(triplets[step*batch_size: (step+1)*batch_size])
 
 @dataclass
