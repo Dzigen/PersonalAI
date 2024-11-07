@@ -14,17 +14,10 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
     :type AbstractVectorDatabaseConnection: _type_
     """
     def __init__(self, config: VectorDBConnectionConfig) -> None:
-        """_summary_
-
-        :param config: _description_
-        :type config: VectorDBConnectionConfig
-        """
         self.config = config
         self.open_connection()
 
     def open_connection(self) -> None:
-        """_summary_
-        """
         self.client = chromadb.PersistentClient(path=self.config.path)
         self.collection = self.client.get_or_create_collection(name=self.config.db_name, metadata=self.config.params)
 
@@ -36,17 +29,10 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         pass
 
     def close_connection(self) -> None:
-        """_summary_
-        """
         del self.collection
         del self.client
 
     def create(self, items: List[VectorDBInstance]) -> None:
-        """Добавление объектов в базу.
-
-        Args:
-            items (List[VectorDBInstance]): Список объектов на добавление
-        """
         insts_idxs = list(range(len(items)))
         insts_with_md = list(filter(lambda i: len(items[i].metadata), insts_idxs))
         insts_wo_md = set(insts_idxs).difference(set(insts_with_md))
@@ -65,16 +51,6 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
                 ids=list(map(lambda idx: items[idx].id, insts_wo_md)))
 
     def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents'], **kwargs) -> List[VectorDBInstance]:
-        """Получение объектов из базы по их идентификаторам.
-
-        Args:
-            ids (List[str]): Идентификаторы объектов.
-            includes (List[str], optional): Список полей, информацию по которым нужно получить для каждого объекта.
-                                            Defaults to ['embeddings', 'documents'].
-
-        Returns:
-            List[VectorDBInstance]: Список объектов с заданными идентификаторами.
-        """
         raw_instances = self.collection.get(
             include=includes,
             ids=ids, **kwargs)
