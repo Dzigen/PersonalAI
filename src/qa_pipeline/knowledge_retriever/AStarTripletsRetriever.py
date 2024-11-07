@@ -196,7 +196,7 @@ class AStarMetrics:
         if self.config.cache_vendor is not None:
             pair_id = create_id_for_node_pair(s_node_id, e_node_id)
             if not self.cache['bfs_short_path'].item_exist(pair_id):
-                self.cache.create([KeyValueDBInstance(id=pair_id, metadata={'v': INF_VALUE})])
+                self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, metadata={'v': INF_VALUE})])
 
         return INF_VALUE
 
@@ -213,12 +213,12 @@ class AStarMetrics:
         pair_id = create_id_for_node_pair(node1_id, node2_id)
         if self.cache['bfs_short_path'].item_exist(pair_id):
             #print("exists")
-            short_path = self.cache.read([pair_id])[0]['v']
+            short_path = self.cache['bfs_short_path'].read([pair_id])[0]['v']
             self.cache_info['bfs_short_path']['exist'] += 1
         else:
             #print("calculating")
             short_path = self.bfs(node1_id, node2_id)
-            self.cache.create([KeyValueDBInstance(id=pair_id, metadata={'v': short_path})])
+            self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, metadata={'v': short_path})])
             self.cache_info['bfs_short_path']['calc'] += 1
 
         return short_path
