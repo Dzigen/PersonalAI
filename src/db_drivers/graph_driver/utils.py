@@ -33,7 +33,7 @@ class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
         pass
 
     @abstractmethod
-    def get_all_triplets_between_nodes(self, node1_id: str, node2_id: str) -> List[Triplet]:
+    def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
         """_summary_
 
         :param node1_id: _description_

@@ -10,8 +10,8 @@ from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from ...utils.data_structs import QueryInfo, Triplet, NodeType
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ...utils.data_structs import create_id_for_node_pair
-from ...db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
-from ...db_drivers.kv_driver.configs import AVAILABLE_KVDB_CONNECTORS
+from ...db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KeyValueDBInstance
+from ...db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver
 from ...utils import Logger
 
 @dataclass
@@ -20,8 +20,7 @@ class AStarMetricsConfig:
     """
     #
     h_metric_name: str = 'ip' # 'ip', 'weight_with_short_path', 'avg_weighted_with_short_path'
-    cache_vendor: str = None
-    cache_config: KVDBConnectionConfig = None
+    kvdriver_config: KeyValueDriverConfig = None
 
 @dataclass
 class AStarGraphSearchConfig(BaseGraphSearchConfig):
@@ -61,17 +60,16 @@ class AStarMetrics:
         self.verbose = verbose
 
         # костыль
-        if self.config.cache_vendor is not None:
+        if self.config.kvdriver_config is not None:
             self.cache = dict()
             if self.config.h_metric_name in ['ip', 'weight_with_short_path',  'avg_weighted_with_short_path']:
-                ip_config = deepcopy(config.cache_config)
-                ip_config.db_info['table'] = 'ip'
-                self.cache['ip'] = AVAILABLE_KVDB_CONNECTORS[config.cache_vendor](ip_config)
+                ip_config = deepcopy(config.kvdriver_config)
+                ip_config.db_config.db_info['table'] = 'ip'
+                self.cache['ip'] = KeyValueDriver.connect(ip_config)
             if self.config.h_metric_name in ['weight_with_short_path',  'avg_weighted_with_short_path']:
-                sp_config = deepcopy(config.cache_config)
-                sp_config.db_info['table'] = 'bfs_short_path'
-                self.cache['bfs_short_path'] = AVAILABLE_KVDB_CONNECTORS[config.cache_vendor](sp_config)
-
+                sp_config = deepcopy(config.kvdriver_config)
+                sp_config.db_config.db_info['table'] = 'bfs_short_path'
+                self.cache['bfs_short_path'] = KeyValueDriver.connect(sp_config)
 
         self.cache_info = {
             'dist': {'exist': 0, 'calc': 0},
@@ -131,7 +129,7 @@ class AStarMetrics:
                 dist = 1 - np.dot(instances[0].embedding, instances[1].embedding)
             return dist
 
-        if self.config.cache_vendor is not None:
+        if self.config.kvdriver_config is not None:
             pair_id = create_id_for_node_pair(node1_id, node2_id)
             if self.cache['ip'].item_exist(pair_id):
                 #print("exists")
@@ -174,7 +172,7 @@ class AStarMetrics:
                     visited.add(neighbour)
                     passed_nodes_counter += 1
 
-                    if self.config.cache_vendor is not None:
+                    if self.config.kvdriver_config is not None:
                         pair_id = create_id_for_node_pair(s_node_id, neighbour)
                         if not self.cache['bfs_short_path'].item_exist(pair_id):
                             self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, metadata={'v': D[neighbour]})])
@@ -193,7 +191,7 @@ class AStarMetrics:
         self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.verbose)
 
         INF_VALUE = 1000001
-        if self.config.cache_vendor is not None:
+        if self.config.kvdriver_config is not None:
             pair_id = create_id_for_node_pair(s_node_id, e_node_id)
             if not self.cache['bfs_short_path'].item_exist(pair_id):
                 self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, metadata={'v': INF_VALUE})])

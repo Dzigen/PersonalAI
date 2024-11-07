@@ -37,8 +37,6 @@ class KnowledgeRetrieverConfig:
     #
     filter_config: BaseTripletsFilterConfig = field(default_factory=lambda: TripletsFilterConfig())
     #
-    cache_config: KeyValueDriverConfig = field(default_factory=lambda: KeyValueDriverConfig())
-    #
     log: Logger = field(default_factory=lambda: Logger(RETRIEVER_LOG_PATH))
     verbose: bool = False
 
@@ -57,10 +55,9 @@ class KnowledgeRetriever:
         self.config = config
         self.kg_model = kg_model
         self.log = config.log
-        self.cache = KeyValueDriver.connect(config.cache_config) if config.cache_config is not None else None
 
         self.graph_retriever = AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method](
-            kg_model, self.log, self.config.retriever_config, self.cache, self.config.verbose)
+            kg_model, self.log, self.config.retriever_config, self.config.verbose)
 
         self.triplets_filter = AVAILABLE_TRIPLETS_FILTERS[self.config.filter_method](
             kg_model, self.log, self.config.filter_config, self.config.verbose)

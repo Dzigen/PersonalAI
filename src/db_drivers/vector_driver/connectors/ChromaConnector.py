@@ -120,6 +120,10 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
     def count_items(self) -> int:
         return self.collection.count()
 
+    def item_exist(self, id: str) -> bool:
+        # TODO
+        pass
+
     def clear(self) -> None:
         self.client.delete_collection(name=self.config.db_name)
         self.collection = self.client.create_collection(name=self.config.db_name,

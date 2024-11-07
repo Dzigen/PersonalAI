@@ -26,6 +26,10 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         self.items_ids = {}
         self.triplets_ids = {}
 
+    def is_open(self) -> bool:
+        # TODO
+        pass
+
     def close_connection(self) -> None:
         del self.edges
         del self.adjacent_nodes
