@@ -41,7 +41,7 @@ class EmbeddingsModel:
             'triplets': VectorDriver.connect(config.tripletsdb_driver_config)}
         self.embedder = EmbedderModel(config.embedder_config)
 
-    def add_triplets(self, triplets:List[Triplet], add_nodes:bool=True, batch_size:int=128)-> None:
+    def create_triplets(self, triplets:List[Triplet], add_nodes:bool=True, batch_size:int=128)-> None:
         """_summary_
 
         :param triplets: _description_
@@ -79,7 +79,7 @@ class EmbeddingsModel:
                             nodes_ids.append(node.id)
                             nodes_strs.append(node_str)
 
-            self.add_stringified_triplets(triplets_ids, triplets_strs, nodes_ids, nodes_strs)
+            self.create_stringified_triplets(triplets_ids, triplets_strs, nodes_ids, nodes_strs)
 
         self.log(f"all/unique_triplets - {len(triplets)}/{len(unique_triplets_ids)}", verbose=self.config.verbose)
         self.log(f"all/unique_nodes - {len(triplets)*2}/{len(unique_nodes_ids)}", verbose=self.config.verbose)
@@ -104,7 +104,7 @@ class EmbeddingsModel:
 
         self.delete_stringified_triplets(triplets_ids, unique_nodes_ids)
 
-    def add_stringified_triplets(self, triplets_ids: List[str], stringified_triplets: List[str],
+    def create_stringified_triplets(self, triplets_ids: List[str], stringified_triplets: List[str],
                      nodes_ids: List[str] = None, stringified_nodes: List[str] = None) -> None:
         """_summary_
 
@@ -118,9 +118,9 @@ class EmbeddingsModel:
         :type stringified_nodes: List[str], optional
         """
         if len(triplets_ids):
-            self.add_instances('triplets', triplets_ids, stringified_triplets)
+            self.create_instances('triplets', triplets_ids, stringified_triplets)
         if nodes_ids is not None and len(nodes_ids):
-            self.add_instances('nodes', nodes_ids, stringified_nodes)
+            self.create_instances('nodes', nodes_ids, stringified_nodes)
 
     def delete_stringified_triplets(self, triplets_ids: List[str], nodes_ids: List[str] = None) -> None:
         """_summary_
@@ -134,7 +134,7 @@ class EmbeddingsModel:
         if nodes_ids is not None:
             self.delete_instances('nodes', nodes_ids)
 
-    def add_instances(self, db_type: str, ids: List[str], stringified_instances: List[str]) -> None:
+    def create_instances(self, db_type: str, ids: List[str], stringified_instances: List[str]) -> None:
         """_summary_
 
         :param db_type: _description_
@@ -159,7 +159,7 @@ class EmbeddingsModel:
         """
         self.vectordbs[db_type].delete(ids)
 
-    def get_embbeddings(self, db_type: str, ids: List[str]) -> List[List[float]]:
+    def read_embbeddings(self, db_type: str, ids: List[str]) -> List[List[float]]:
         """_summary_
 
         :param db_type: _description_
@@ -190,7 +190,7 @@ class GraphModel:
         self.log = config.log
         self.db_conn = GraphDriver.connect(self.config.driver_config)
 
-    def create_triplets(self, triplets: List[Triplet]) -> None:
+    def create_triplets(self, triplets: List[Triplet], batch_size: int = 64) -> None:
         """_summary_
 
         :param triplets: _description_
@@ -198,8 +198,10 @@ class GraphModel:
         """
         self.log("Adding triplets to graph-model...", verbose=self.config.verbose)
         created_nodes_count, created_rels_count = 0,0
-        for triplet in tqdm(triplets):
-            created_nodes, created_rels = self.db_conn.create_triplet(triplet)
+
+        steps = math.ceil(len(triplets) / batch_size)
+        for step in tqdm(range(steps)):
+            created_nodes, created_rels = self.db_conn.create(triplets[step*batch_size: (step+1)*batch_size])
             created_nodes_count += created_nodes
             created_rels_count += created_rels
 
@@ -207,14 +209,16 @@ class GraphModel:
         self.log(f"all/created_nodes - {len(triplets)*2}/{created_nodes_count}", verbose=self.config.verbose)
         self.log("Triplets added successfully!", verbose=self.config.verbose)
 
-    def delete_triplets(self, triplets: List[Triplet]) -> None:
+
+    def delete_triplets(self, triplets: List[Triplet], batch_size: int = 64) -> None:
         """_summary_
 
         :param triplets: _description_
         :type triplets: List[Triplet]
         """
-        for triplet in triplets:
-            self.db_conn.delete_triplet(triplet)
+        steps = math.ceil(len(triplets) / batch_size)
+        for step in tqdm(range(steps)):
+            self.db_conn.delete(triplets[step*batch_size: (step+1)*batch_size])
 
 @dataclass
 class KnowledgeGraphModel:

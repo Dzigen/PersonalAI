@@ -24,16 +24,16 @@ class LocalAgentConnector(AbstractAgentConnector):
         pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
-        """Метод для генерации ответов на текстовые запросы с помощью llm-агента.
+        """_summary_
 
-        Args:
-            user_prompt (str): Запрос для llm-агента.
-            assistant_prompt (str, optional): Дополнительная к user_prompt-запросу информация,
-                                              которая может быть использована llm-агентом при генерации ответа. Defaults to None.
-            gen_strategy (Dict, optional): Стретегия генерации текстовой последовательности для llm-агента. Defaults to None.
-
-        Returns:
-            str: Текстовая последовательность, сгенерированная llm-агентом.
+        :param system_prompt: _description_
+        :type system_prompt: str
+        :param user_prompt: _description_
+        :type user_prompt: str
+        :param assistant_prompt: _description_, defaults to None
+        :type assistant_prompt: str, optional
+        :return: _description_
+        :rtype: str
         """
         messages = [
             {"role": "system", "content": system_prompt},

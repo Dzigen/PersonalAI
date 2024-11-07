@@ -1,6 +1,4 @@
 import requests
-
-
 from ..utils import AbstractAgentConnector, AgentConnectorConfig
 
 DEFAULT_LLAMA_CONFIG = AgentConnectorConfig(
@@ -12,11 +10,10 @@ class LlamaConnector(AbstractAgentConnector):
         self.config = config
 
     def check_connection(self) -> bool:
-        """Метод для проверка на наличие запущенного api с llm-агентом,
-        который готов принимать и обробатывать запросы.
+        """_summary_
 
-        Returns:
-            bool: Если True, то api с llm-агентов в работоспособном состоянии, иначе False.
+        :return: _description_
+        :rtype: bool
         """
 
         url = f"{self.config.credentials['host']}/{self.config.credentials['check_method']}"
@@ -24,19 +21,17 @@ class LlamaConnector(AbstractAgentConnector):
         return response.status_code == 200
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
-        """Метод для отправки текстовых звапросов llm-агенту для получения сгенерированных ответов.
+        """_summary_
 
-        Args:
-            user_prompt (str): Запрос для llm-агента.
-            assistant_prompt (str, optional): Дополнительная к user_prompt-запросу информация,
-                                              которая может быть использована llm-агентом при генерации ответа. Defaults to None.
-            gen_strategy (Dict, optional): Стретегия генерации текстовой последовательности для llm-агента. Defaults to None.
-
-        Raises:
-            ValueError: От api c llm-агентов пришёл ответ со status_code-значением, отличным от 200.
-
-        Returns:
-            str: Текстовая последовательность, сгенерированная llm-агентом.
+        :param system_prompt: _description_
+        :type system_prompt: str
+        :param user_prompt: _description_
+        :type user_prompt: str
+        :param assistant_prompt: _description_, defaults to None
+        :type assistant_prompt: str, optional
+        :raises ValueError: _description_
+        :return: _description_
+        :rtype: str
         """
 
         url = f"{self.config.credentials['host']}/{self.config.credentials['generate_method']}"

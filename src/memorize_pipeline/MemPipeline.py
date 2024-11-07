@@ -79,7 +79,7 @@ class MemPipeline:
 
             # В объекты триплетов добавлются идентикаторы, присвоенные им в рамках графовой бд
             self.kg_model.graph_struct.create_triplets(new_triplets)
-            self.kg_model.embeddings_struct.add_triplets(new_triplets)
+            self.kg_model.embeddings_struct.create_triplets(new_triplets)
 
             # TODO
             #if need_update:

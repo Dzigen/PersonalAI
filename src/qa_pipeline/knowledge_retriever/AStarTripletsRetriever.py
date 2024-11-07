@@ -4,12 +4,14 @@ import numpy as np
 import heapq
 from time import time
 import collections
+from copy import deepcopy
 
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from ...utils.data_structs import QueryInfo, Triplet, NodeType
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ...utils.data_structs import create_id_for_node_pair
-from ...db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
+from ...db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KeyValueDBInstance
+from ...db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver
 from ...utils import Logger
 
 @dataclass
@@ -18,6 +20,7 @@ class AStarMetricsConfig:
     """
     #
     h_metric_name: str = 'ip' # 'ip', 'weight_with_short_path', 'avg_weighted_with_short_path'
+    kvdriver_config: KeyValueDriverConfig = None
 
 @dataclass
 class AStarGraphSearchConfig(BaseGraphSearchConfig):
@@ -34,8 +37,7 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
 
 class AStarMetrics:
     def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: str, log: Logger,
-                config: AStarMetricsConfig = AStarMetricsConfig(), cache: AbstractKVDatabaseConnection = None,
-                verbose: bool = False):
+                config: AStarMetricsConfig = AStarMetricsConfig(), verbose: bool = False):
         """_summary_
 
         :param kg_model: _description_
@@ -51,12 +53,23 @@ class AStarMetrics:
         :param verbose: _description_, defaults to False
         :type verbose: bool, optional
         """
-        self.log = log
-        self.verbose = verbose
-        self.cache = cache
         self.config = config
         self.accepted_node_types = accepted_node_types
         self.kg_model = kg_model
+        self.log = log
+        self.verbose = verbose
+
+        # костыль
+        if self.config.kvdriver_config is not None:
+            self.cache = dict()
+            if self.config.h_metric_name in ['ip', 'weight_with_short_path',  'avg_weighted_with_short_path']:
+                ip_config = deepcopy(config.kvdriver_config)
+                ip_config.db_config.db_info['table'] = 'ip'
+                self.cache['ip'] = KeyValueDriver.connect(ip_config)
+            if self.config.h_metric_name in ['weight_with_short_path',  'avg_weighted_with_short_path']:
+                sp_config = deepcopy(config.kvdriver_config)
+                sp_config.db_config.db_info['table'] = 'bfs_short_path'
+                self.cache['bfs_short_path'] = KeyValueDriver.connect(sp_config)
 
         self.cache_info = {
             'dist': {'exist': 0, 'calc': 0},
@@ -65,7 +78,6 @@ class AStarMetrics:
 
         self.metrics_map = {
             'ip': self.precomputed_dist,
-            'constant': lambda v1, v2, parent: 1,
             'weight_with_short_path': self.weighted_short_path,
             'avg_weighted_with_short_path': self.avg_weighted_short_path,
         }
@@ -117,17 +129,16 @@ class AStarMetrics:
                 dist = 1 - np.dot(instances[0].embedding, instances[1].embedding)
             return dist
 
-        if self.cache is not None:
+        if self.config.kvdriver_config is not None:
             pair_id = create_id_for_node_pair(node1_id, node2_id)
-            cache_key = ('test', 'dist', pair_id)
-            if self.cache.key_exist(cache_key):
+            if self.cache['ip'].item_exist(pair_id):
                 #print("exists")
-                dist = self.cache.read([cache_key])[0]['v']
+                dist = self.cache['ip'].read([pair_id])[0]['v']
                 self.cache_info['dist']['exist'] += 1
             else:
                 #print("calculating")
                 dist = _calculate_node_distance(node1_id, node2_id)
-                self.cache.create(cache_key, {'v': dist})
+                self.cache['ip'].create([KeyValueDBInstance(id=pair_id, metadata={'v': dist})])
                 self.cache_info['dist']['calc'] += 1
         else:
             dist = _calculate_node_distance(node1_id, node2_id)
@@ -161,11 +172,10 @@ class AStarMetrics:
                     visited.add(neighbour)
                     passed_nodes_counter += 1
 
-                    if self.cache is not None:
+                    if self.config.kvdriver_config is not None:
                         pair_id = create_id_for_node_pair(s_node_id, neighbour)
-                        cache_key = ('test', 'bfs_short_path', pair_id)
-                        if not self.cache.key_exist(cache_key):
-                            self.cache.create(cache_key, {'v': D[neighbour]})
+                        if not self.cache['bfs_short_path'].item_exist(pair_id):
+                            self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, metadata={'v': D[neighbour]})])
 
                     if neighbour == e_node_id:
                         self.log(f"bfs end-node found!", verbose=self.verbose)
@@ -181,11 +191,10 @@ class AStarMetrics:
         self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.verbose)
 
         INF_VALUE = 1000001
-        if self.cache is not None:
+        if self.config.kvdriver_config is not None:
             pair_id = create_id_for_node_pair(s_node_id, e_node_id)
-            cache_key = ('test', 'bfs_short_path', pair_id)
-            if not self.cache.key_exist(cache_key):
-                self.cache.create(cache_key, {'v': INF_VALUE})
+            if not self.cache['bfs_short_path'].item_exist(pair_id):
+                self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, metadata={'v': INF_VALUE})])
 
         return INF_VALUE
 
@@ -200,15 +209,14 @@ class AStarMetrics:
         :rtype: float
         """
         pair_id = create_id_for_node_pair(node1_id, node2_id)
-        cache_key = ('test', 'bfs_short_path', pair_id)
-        if self.cache.key_exist(cache_key):
+        if self.cache['bfs_short_path'].item_exist(pair_id):
             #print("exists")
-            short_path = self.cache.read([cache_key])[0]['v']
+            short_path = self.cache['bfs_short_path'].read([pair_id])[0]['v']
             self.cache_info['bfs_short_path']['exist'] += 1
         else:
             #print("calculating")
             short_path = self.bfs(node1_id, node2_id)
-            self.cache.create(cache_key, {'v': short_path})
+            self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, metadata={'v': short_path})])
             self.cache_info['bfs_short_path']['calc'] += 1
 
         return short_path
@@ -252,7 +260,7 @@ class AStarGraphSearch:
     """Класс с реализацией A*-алгоритма поиска по графу"""
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
-                cache: AbstractKVDatabaseConnection = None, verbose: bool = False) -> None:
+                 verbose: bool = False) -> None:
         """_summary_
 
         :param kg_model: _description_
@@ -272,7 +280,7 @@ class AStarGraphSearch:
         self.kg_model = kg_model
         self.metrics = AStarMetrics(
             kg_model=kg_model, accepted_node_types=self.config.accepted_node_types,
-            log=self.log, config=self.config.metrics_config, cache=cache, verbose=verbose)
+            log=self.log, config=self.config.metrics_config, verbose=verbose)
 
     def search_path(self, start_node_id: str, end_node_id: str) -> Tuple[List[str], List[str], Dict[str, int], Dict[str, str], str]:
         """_summary_
@@ -340,7 +348,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
-                 cache: AbstractKVDatabaseConnection = None, verbose: bool = False) -> None:
+                 verbose: bool = False) -> None:
         """_summary_
 
         :param kg_model: _description_
@@ -357,7 +365,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
         self.log = log
         self.verbose = verbose
         self.kg_model = kg_model
-        self.graph_searcher = AStarGraphSearch(kg_model, log, search_config, cache, verbose)
+        self.graph_searcher = AStarGraphSearch(kg_model, log, search_config, verbose)
 
     def get_nodes_path(self, parent: Dict[str, str], end_node_id: str, spare_closest_node_id: str) -> List[str]:
         """_summary_
