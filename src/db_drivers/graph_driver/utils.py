@@ -1,8 +1,9 @@
-from typing import Dict, List, Tuple
+from typing import Dict, List
 from dataclasses import dataclass, field
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 from ...utils.data_structs import Triplet, NodeType
+from ..utils import AbstractDatabaseConnection
 
 @dataclass
 class GraphDBConnectionConfig:
@@ -10,48 +11,7 @@ class GraphDBConnectionConfig:
     params: Dict = field(default_factory=lambda: dict())
     need_to_clear: bool = False
 
-class AbstractGraphDatabaseConnection(ABC):
-
-    @abstractmethod
-    def open_connection(self) -> None:
-        # открытие соединения с бд
-        pass
-
-    @abstractmethod
-    def is_open(self) -> None:
-        #
-        pass
-
-    @abstractmethod
-    def close_connection(self) -> None:
-        # закрытие соединения с бд
-        pass
-
-    @abstractmethod
-    def create(self, items: List[Triplet]) -> None:
-        """_summary_
-
-        :param triplet: _description_
-        :type triplet: Triplet
-        """
-        pass
-
-    @abstractmethod
-    def read(self, ids: List[str]) -> List[Triplet]:
-        pass
-
-    @abstractmethod
-    def update(self, items: List[Triplet]) -> None:
-        pass
-
-    @abstractmethod
-    def delete(self, ids: List[Triplet]) -> None:
-        """_summary_
-
-        :param triplet: _description_
-        :type triplet: Triplet
-        """
-        pass
+class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
 
     @abstractmethod
     def get_adjecent_nodes(self, base_node_id: str, parent_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
@@ -84,15 +44,3 @@ class AbstractGraphDatabaseConnection(ABC):
         :rtype: List[Triplet]
         """
         pass
-
-    @abstractmethod
-    def count_items(self) -> int:
-        pass
-
-    @abstractmethod
-    def clear(self) -> None:
-        # Удаление содержания базы данных, которой было подключение
-        pass
-
-    def __del__(self):
-        self.close_connection()
