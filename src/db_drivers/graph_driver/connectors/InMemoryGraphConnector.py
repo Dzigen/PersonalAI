@@ -135,6 +135,10 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
     def count_items(self) -> int:
         return len(self.triplets_ids)
 
+    def item_exist(self, id: str) -> bool:
+        # TODO
+        pass
+
     def clear(self) -> None:
         # TODO
         pass

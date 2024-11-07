@@ -6,7 +6,7 @@ from ..utils import KeyValueDBInstance
 from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 
 DEFAULT_AEROSPIKE_CONFIG = KVDBConnectionConfig(
-    host='aerospikelservice', db_info={'db': 'test', 'table': 'astar_ip'},
+    host='aerospikelservice', db_info={'db': 'test', 'table': 'test_name'},
     port=3000)
 
 class AerospikeConnector(AbstractKVDatabaseConnection):

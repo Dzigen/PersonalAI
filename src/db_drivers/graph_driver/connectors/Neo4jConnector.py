@@ -239,6 +239,10 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         # TODO
         pass
 
+    def item_exist(self, id: str) -> bool:
+        # TODO
+        pass
+
     def clear(self) -> None:
         # TODO
         pass
