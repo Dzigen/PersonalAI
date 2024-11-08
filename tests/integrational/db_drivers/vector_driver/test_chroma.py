@@ -17,6 +17,7 @@ def test_create(input, expected, chromadb_conn):
         for inp in input:
             chromadb_conn.create(inp)
     except (ChromaError, ValueError) as e:
+        print(str(e))
         assert expected['exception']
 
     assert chromadb_conn.count_items() == expected['db_size']
@@ -29,6 +30,7 @@ def test_delete(instances, input, expected, chromadb_conn):
     try:
         chromadb_conn.delete(input)
     except Exception as e:
+        print(str(e))
         assert expected['exception']
 
     assert chromadb_conn.count_items() == expected['db_size']
@@ -41,6 +43,7 @@ def test_read(instances, input, expected, chromadb_conn):
     try:
         output = chromadb_conn.read(input)
     except Exception as e:
+        print(str(e))
         assert expected['exception']
 
     if not expected['exception']:
@@ -76,6 +79,7 @@ def test_item_exist(instances, input, expected, chromadb_conn):
     try:
         real = chromadb_conn.item_exist(input)
     except Exception as e:
+        print(str(e))
         assert expected['exception']
 
     if not expected['exception']:
