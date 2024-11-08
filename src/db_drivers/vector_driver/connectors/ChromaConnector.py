@@ -2,22 +2,18 @@ from typing import Dict, List, Tuple
 import chromadb
 import logging
 
+from ....utils.errors import ReturnInfo
 from ..utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
 logging.getLogger("chromadb").setLevel(logging.CRITICAL)
 
 DEFAULT_CHROMA_CONFIG = VectorDBConnectionConfig(path='./default_vectordb', db_name='vectors')
 
 class ChromaConnection(AbstractVectorDatabaseConnection):
-    """_summary_
-
-    :param AbstractVectorDatabaseConnection: _description_
-    :type AbstractVectorDatabaseConnection: _type_
-    """
     def __init__(self, config: VectorDBConnectionConfig) -> None:
         self.config = config
         self.open_connection()
 
-    def open_connection(self) -> None:
+    def open_connection(self) -> ReturnInfo:
         self.client = chromadb.PersistentClient(path=self.config.path)
         self.collection = self.client.get_or_create_collection(name=self.config.db_name, metadata=self.config.params)
 
@@ -28,11 +24,12 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         # TODO
         pass
 
-    def close_connection(self) -> None:
+    def close_connection(self) -> ReturnInfo:
         del self.collection
         del self.client
 
-    def create(self, items: List[VectorDBInstance]) -> None:
+    def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
+
         insts_idxs = list(range(len(items)))
         insts_with_md = list(filter(lambda i: len(items[i].metadata), insts_idxs))
         insts_wo_md = set(insts_idxs).difference(set(insts_with_md))
@@ -63,11 +60,11 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
 
         return formates_instances
 
-    def update(self) -> None:
+    def update(self) -> ReturnInfo:
         # TODO
         pass
 
-    def delete(self, ids: List[str], **kwargs) -> None:
+    def delete(self, ids: List[str], **kwargs) -> ReturnInfo:
         self.collection.delete(ids=ids, **kwargs)
 
     def retrieve(
@@ -100,7 +97,7 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         # TODO
         pass
 
-    def clear(self) -> None:
+    def clear(self) -> ReturnInfo:
         self.client.delete_collection(name=self.config.db_name)
         self.collection = self.client.create_collection(name=self.config.db_name,
                                                         metadata=self.config.params)
