@@ -4,12 +4,12 @@ from chromadb.errors import ChromaError
 import sys
 sys.path.insert(0, "../../")
 
-from cases import VECTORDB_CREAT_TEST_CASES, VECTORDB_DELETE_TEST_CASES, \
+from cases import VECTORDB_CREATE_TEST_CASES, VECTORDB_DELETE_TEST_CASES, \
     VECTORDB_READ_TEST_CASES, VECTORDB_RETRIEVE_TEST_CASES, \
     VECTORDV_COUNT_TEST_CASES, VECTORDB_EXIST_TEST_CASES, \
     VECTORDB_CLEAR_TEST_CASES
 
-@pytest.mark.parametrize("input, expected", VECTORDB_CREAT_TEST_CASES)
+@pytest.mark.parametrize("input, expected", VECTORDB_CREATE_TEST_CASES)
 def test_create(input, expected, chromadb_conn):
     chromadb_conn.clear()
 

@@ -13,26 +13,26 @@ def test_create(input, expected, inmemory_conn):
     pass
 
 
-@pytest.mark.parametrize("input, expected", KVDB_DELETE_TEST_CASES)
-def test_delete(input, expected, inmemory_conn):
+@pytest.mark.parametrize("instances, input, expected", KVDB_DELETE_TEST_CASES)
+def test_delete(instances, input, expected, inmemory_conn):
     pass
 
 
-@pytest.mark.parametrize("input, expected", KVDB_READ_TEST_CASES)
-def test_read(input, expected, inmemory_conn):
+@pytest.mark.parametrize("instances, input, expected", KVDB_READ_TEST_CASES)
+def test_read(instances, input, expected, inmemory_conn):
     pass
 
 
-@pytest.mark.parametrize("input, expected", KVDB_COUNT_TEST_CASES)
-def test_count(input, expected, inmemory_conn):
+@pytest.mark.parametrize("instances, expected", KVDB_COUNT_TEST_CASES)
+def test_count(instances, expected, inmemory_conn):
     pass
 
 
-@pytest.mark.parametrize("input, expected", KVDB_EXIST_TEST_CASES)
-def test_exist(input, expected, inmemory_conn):
+@pytest.mark.parametrize("instances, input, expected", KVDB_EXIST_TEST_CASES)
+def test_exist(instances, input, expected, inmemory_conn):
     pass
 
 
-@pytest.mark.parametrize("input, expected", KVDB_CLEAR_TEST_CASES)
-def test_clear(input, expected, inmemory_conn):
+@pytest.mark.parametrize("instances", KVDB_CLEAR_TEST_CASES)
+def test_clear(instances, inmemory_conn):
     pass

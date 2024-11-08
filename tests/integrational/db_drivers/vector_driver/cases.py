@@ -24,9 +24,9 @@ INSTANCE_WITH_BAD_EMB1 = VectorDBInstance(id='456', document='ytrewq', embedding
 INSTANCE_WITH_BAD_EMB2 = VectorDBInstance(id='456', document='ytrewq', embedding=None)
 INSTANCE_WITH_BAD_EMB3 = VectorDBInstance(id='456', document='ytrewq', embedding=[[0.4,0.5,0.6]])
 
-VECTORDB_CREAT_TEST_CASES = [
+VECTORDB_CREATE_TEST_CASES = [
     # пустой список
-    ([[]], {'info': ReturnInfo(), 'db_size': 0}),
+    ([[]], {'exception': False, 'db_size': 0}),
     # один элемент с метаданными
     ([[FULL_INSTANCE1]], {'exception': False, 'db_size': 1}),
     # один элемент без метаданных
@@ -41,7 +41,7 @@ VECTORDB_CREAT_TEST_CASES = [
     ([[FULL_INSTANCE1,FULL_INSTANCE1]], {'exception': True, 'db_size': 0}),
     # элемент существует в бд (по id)
     ([[FULL_INSTANCE1],[FULL_INSTANCE1]], {'exception': False, 'db_size': 1}),
-        # torch-тип данных эмбеддинга
+    # torch-тип данных эмбеддинга
     ([[INSTANCE_WITH_TORCH_EMB]], {'exception': False, 'db_size': 1}),
     # numpy-тип данных эмбеддинга
     ([[INSTANCE_WITH_NUMPY_EMB]], {'exception': False, 'db_size': 1}),
