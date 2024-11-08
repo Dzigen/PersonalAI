@@ -41,6 +41,10 @@ VECTORDB_CREAT_TEST_CASES = [
     ([[FULL_INSTANCE1,FULL_INSTANCE1]], {'exception': True, 'db_size': 0}),
     # элемент существует в бд (по id)
     ([[FULL_INSTANCE1],[FULL_INSTANCE1]], {'exception': False, 'db_size': 1}),
+        # torch-тип данных эмбеддинга
+    ([[INSTANCE_WITH_TORCH_EMB]], {'exception': False, 'db_size': 1}),
+    # numpy-тип данных эмбеддинга
+    ([[INSTANCE_WITH_NUMPY_EMB]], {'exception': False, 'db_size': 1}),
     # неверный формат идентикатора 1
     ([[INSTANCE_WITH_BAD_ID1]],{'exception': True, 'db_size': 0}),
     # неверный формат идентификатора 2
@@ -51,7 +55,7 @@ VECTORDB_CREAT_TEST_CASES = [
 
 VECTORDB_DELETE_TEST_CASES = [
     # пустой список
-    ([FULL_INSTANCE1,FULL_INSTANCE2], [], {'exception': False, 'db_size': 2})
+    ([FULL_INSTANCE1,FULL_INSTANCE2], [], {'exception': False, 'db_size': 2}),
     # удаление одного существующего элемента
     ([FULL_INSTANCE1,FULL_INSTANCE2], ['456'], {'exception': False, 'db_size': 1}),
     # удаление одного несуществующего элемента
@@ -65,45 +69,45 @@ VECTORDB_DELETE_TEST_CASES = [
     # неверный формат идентификатора 2
     ([FULL_INSTANCE1,FULL_INSTANCE2], [True], {'exception': True, 'db_size': 2}),
     # неверный формат идентификатора 3
-    ([FULL_INSTANCE1,FULL_INSTANCE2], [None], {'exception': True, 'db_size': 2}),
+    ([FULL_INSTANCE1,FULL_INSTANCE2], [None], {'exception': True, 'db_size': 2})
 ]
 
 VECTORDB_READ_TEST_CASES = [
     # пустой список
-    ([[FULL_INSTANCE1,FULL_INSTANCE2]], [], {'exception': False, 'output_ids': []}),
+    ([FULL_INSTANCE1,FULL_INSTANCE2], [], {'exception': False, 'output_ids': []}),
     # один существующий элемент
-    ([[FULL_INSTANCE1,FULL_INSTANCE2]], ['123'], {'exception': False, 'output_ids': ['123']}),
+    ([FULL_INSTANCE1,FULL_INSTANCE2], ['123'], {'exception': False, 'output_ids': ['123']}),
     # один несуществующий элемент
-    ([[FULL_INSTANCE1,FULL_INSTANCE2]], ['789'], {'exception': False, 'output_ids': [None]}),
+    ([FULL_INSTANCE1,FULL_INSTANCE2], ['789'], {'exception': False, 'output_ids': []}),
     # несколько существующих элементов
-    ([[FULL_INSTANCE1,FULL_INSTANCE2]], ['123', '456'], {'exception': False, 'output_ids': ['123','456']}),
+    ([FULL_INSTANCE1,FULL_INSTANCE2], ['123', '456'], {'exception': False, 'output_ids': ['123','456']}),
     # в списке есть несуществующий элемент
-    ([[FULL_INSTANCE1,FULL_INSTANCE2]], ['123', '789'], {'exception': False, 'output_ids': ['123',None]})
+    ([FULL_INSTANCE1,FULL_INSTANCE2], ['123', '789', '456'], {'exception': False, 'output_ids': ['123', '456']}),
     #неверный формат идентификаторов 1
-    ([[FULL_INSTANCE1,FULL_INSTANCE2]], [123], {'exception': True, 'output_ids': []}),
+    ([FULL_INSTANCE1,FULL_INSTANCE2], [123], {'exception': True, 'output_ids': []}),
     # неверный формат идентификатора 2
-    ([[FULL_INSTANCE1,FULL_INSTANCE2]], [True], {'exception': True, 'output_ids': []}),
+    ([FULL_INSTANCE1,FULL_INSTANCE2], [True], {'exception': True, 'output_ids': []}),
     # неверный формат идентификатора 3
-    ([[FULL_INSTANCE1,FULL_INSTANCE2]], [None], {'exception': True, 'output_ids': []}),
+    ([FULL_INSTANCE1,FULL_INSTANCE2], [None], {'exception': True, 'output_ids': []})
 ]
 
 VECTORDB_RETRIEVE_TEST_CASES = [
     # ретрив по одному квери
-    ([FULL_INSTANCE1,FULL_INSTANCE2], [FULL_INSTANCE1], 1, {'exception': False, 'output_size': [1]}),
+    ([FULL_INSTANCE1,FULL_INSTANCE2], [FULL_INSTANCE1], 1, {'exception': False, 'output_size': 1}),
     # ретрив по нескольким квери
-    ([FULL_INSTANCE1,FULL_INSTANCE2], [FULL_INSTANCE1, FULL_INSTANCE1], 1, {'exception': False, 'output_size': [1, 1]}),
+    ([FULL_INSTANCE1,FULL_INSTANCE2], [FULL_INSTANCE1, FULL_INSTANCE1], 1, {'exception': False, 'output_size': 1}),
     # в бд меньше элементов, чем заданное количество
-    ([FULL_INSTANCE1], [FULL_INSTANCE1], 2, {'exception': False, 'output_size': [1]}),
+    ([FULL_INSTANCE1], [FULL_INSTANCE1], 2, {'exception': False, 'output_size': 1}),
     # torch-тип данных эмбеддинга
-    ([FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_TORCH_EMB], 2, {'exception': False, 'output_size': [1]}),
+    ([FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_TORCH_EMB], 2, {'exception': False, 'output_size': 2}),
     # numpy-тип данных эмбеддинга
-    ([FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_NUMPY_EMB], 2, {'exception': False, 'output_size': [1]}),
+    ([FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_NUMPY_EMB], 2, {'exception': False, 'output_size': 2}),
     # неверный формат ембеддинга квери # 1
-    ([FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_BAD_EMB1], 2, {'exception': True, 'output_size': [-1]}),
+    ([FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_BAD_EMB1], 2, {'exception': True, 'output_size': -1}),
     # неверный формат ембеддинга квери # 2
-    ([FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_BAD_EMB2], 2, {'exception': True, 'output_size': [-1]}),
+    ([FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_BAD_EMB2], 2, {'exception': True, 'output_size': -1}),
     # неверный формат ебмеддинга квери # 3
-    ([FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_BAD_EMB2], 2, {'exception': True, 'output_size': [-1]}),
+    ([FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_BAD_EMB2], 2, {'exception': True, 'output_size': -1})
 ]
 
 VECTORDV_COUNT_TEST_CASES = [
@@ -112,18 +116,18 @@ VECTORDV_COUNT_TEST_CASES = [
     # один Элемент
     ([FULL_INSTANCE1], 1),
     # несколько элементов
-    ([FULL_INSTANCE1,FULL_INSTANCE2], 2),
+    ([FULL_INSTANCE1,FULL_INSTANCE2], 2)
 ]
 
 VECTORDB_EXIST_TEST_CASES = [
     # элемент существует
-    ([FULL_INSTANCE1,FULL_INSTANCE2], '123', {'exception': False, 'exist': True})
+    ([FULL_INSTANCE1,FULL_INSTANCE2], '123', {'exception': False, 'exist': True}),
     # элемента не существует
-    ([FULL_INSTANCE1,FULL_INSTANCE2], '789', {'exception': False, 'exist': False})
+    ([FULL_INSTANCE1,FULL_INSTANCE2], '789', {'exception': False, 'exist': False}),
     # неверный формат идентификатора # 1
-    ([FULL_INSTANCE1,FULL_INSTANCE2], 789, {'exception': True, 'exist': False})
+    ([FULL_INSTANCE1,FULL_INSTANCE2], 789, {'exception': True, 'exist': False}),
     # неверный формат идентификатора # 2
-    ([FULL_INSTANCE1,FULL_INSTANCE2], False, {'exception': True, 'exist': False})
+    ([FULL_INSTANCE1,FULL_INSTANCE2], False, {'exception': True, 'exist': False}),
     # неверный формат идентификатора # 3
     ([FULL_INSTANCE1,FULL_INSTANCE2], None, {'exception': True, 'exist': False})
 ]

@@ -33,7 +33,7 @@ def test_delete(instances, input, expected, chromadb_conn):
 
     assert chromadb_conn.count_items() == expected['db_size']
 
-@pytest.mark.parametrize("input, expected", VECTORDB_READ_TEST_CASES)
+@pytest.mark.parametrize("instances, input, expected", VECTORDB_READ_TEST_CASES)
 def test_read(instances, input, expected, chromadb_conn):
     chromadb_conn.clear()
     chromadb_conn.create(instances)
@@ -43,14 +43,25 @@ def test_read(instances, input, expected, chromadb_conn):
     except Exception as e:
         assert expected['exception']
 
-    if expected['exception']:
+    if not expected['exception']:
         assert list(map(lambda item: item.id, output)) == expected['output_ids']
 
-@pytest.mark.parametrize("input, expected", VECTORDB_RETRIEVE_TEST_CASES)
+@pytest.mark.parametrize("instances, queries, n_results, expected", VECTORDB_RETRIEVE_TEST_CASES)
 def test_retrieve(instances, queries, n_results, expected, chromadb_conn):
     chromadb_conn.clear()
+    chromadb_conn.create(instances)
 
-@pytest.mark.parametrize("input, expected", VECTORDV_COUNT_TEST_CASES)
+    try:
+        output = chromadb_conn.retrieve(queries, n_results=n_results)
+    except Exception as e:
+        print(str(e))
+        assert expected['exception']
+
+    if not expected['exception']:
+        for query_output in output:
+            assert expected['output_size'] == len(query_output)
+
+@pytest.mark.parametrize("instances, expected", VECTORDV_COUNT_TEST_CASES)
 def test_count_items(instances, expected, chromadb_conn):
     chromadb_conn.clear()
     chromadb_conn.create(instances)
@@ -67,7 +78,7 @@ def test_item_exist(instances, input, expected, chromadb_conn):
     except Exception as e:
         assert expected['exception']
 
-    if expected['exception']:
+    if not expected['exception']:
         assert real == expected['exist']
 
 @pytest.mark.parametrize("instances", VECTORDB_CLEAR_TEST_CASES)
