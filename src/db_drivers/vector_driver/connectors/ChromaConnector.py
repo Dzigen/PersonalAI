@@ -48,9 +48,11 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
                 ids=list(map(lambda idx: items[idx].id, insts_wo_md)))
 
     def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents'], **kwargs) -> List[VectorDBInstance]:
-        raw_instances = self.collection.get(
-            include=includes,
-            ids=ids, **kwargs)
+        raw_instances = []
+        if len(ids):
+            raw_instances = self.collection.get(
+                include=includes,
+                ids=ids, **kwargs)
 
         formates_instances = []
         for i in range(len(raw_instances['ids'])):
@@ -64,8 +66,9 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         # TODO
         pass
 
-    def delete(self, ids: List[str], **kwargs) -> ReturnInfo:
-        self.collection.delete(ids=ids, **kwargs)
+    def delete(self, ids: List[str], **kwargs) -> None:
+        if len(ids):
+            self.collection.delete(ids=ids, **kwargs)
 
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50,
@@ -94,8 +97,8 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         return self.collection.count()
 
     def item_exist(self, id: str) -> bool:
-        # TODO
-        pass
+        output = self.collection.get(ids=[id])
+        return len(output) > 0
 
     def clear(self) -> ReturnInfo:
         self.client.delete_collection(name=self.config.db_name)
