@@ -51,7 +51,7 @@ class Triplet:
 class BaseCreator:
     @staticmethod
     def add_str_props(obj: Union[Relation, Node], obj_str: str) -> str:
-        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in ['name', 'type', 'raw_time', 'time', 'str_id']])
+        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in ['name', 'type', 'raw_time', 'time', 'str_id', 't_id']])
         if str_prop:
             obj_str += f" ({str_prop})"
         return obj_str
@@ -87,7 +87,8 @@ class TripletCreator(BaseCreator):
             start_node: Node,
             relation: Relation,
             end_node: Node,
-            add_stringified_triplet: bool = True
+            add_stringified_triplet: bool = True,
+            t_id: str = None
         ) -> Triplet:
         triplet = Triplet(start_node, relation, end_node)
         _, str_triplet = TripletCreator.stringify(triplet)
@@ -95,9 +96,11 @@ class TripletCreator(BaseCreator):
             triplet.stringified = str_triplet
         triplet.relation.id = create_id(str_triplet)
 
-        triplet.id = create_id(''.join(
-            [triplet.start_node.id,triplet.relation.id,
-             triplet.end_node.id]))
+        if t_id is None:
+            triplet.id = create_id(''.join(
+                [triplet.start_node.id,triplet.relation.id,triplet.end_node.id]))
+        else:
+            triplet.id = t_id
 
         return triplet
 

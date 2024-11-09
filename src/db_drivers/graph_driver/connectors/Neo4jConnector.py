@@ -194,19 +194,20 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         """
         formated_triplets = []
         for raw_triplet in output:
-            node1 = NodeCreator.create(id=raw_triplet['n1'].element_id, name=str(raw_triplet['n1']['name']),
+            node1 = NodeCreator.create(id=raw_triplet['n1']['str_id'], name=str(raw_triplet['n1']['name']),
                                             type=NODES_TYPES_MAP[list(raw_triplet['n1'].labels)[0]],
                                             prop=dict(raw_triplet['n1']))
-            node2 = NodeCreator.create(id=raw_triplet['n2'].element_id, name=str(raw_triplet['n2']['name']),
+            node2 = NodeCreator.create(id=raw_triplet['n2']['str_id'], name=str(raw_triplet['n2']['name']),
                                             type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]],
                                             prop=dict(raw_triplet['n2']))
-            relation = Relation(id=raw_triplet['rel'].element_id, name=str(raw_triplet['rel']['name']),
+            relation = Relation(id=raw_triplet['rel']['str_id'], name=str(raw_triplet['rel']['name']),
                                 type=RELATIONS_TYPES_MAP[raw_triplet['rel'].type],
                                 prop=dict(raw_triplet['rel']))
 
             start_node_id = raw_triplet['rel'].nodes[0].element_id
             start_node, end_node = (node1, node2) if start_node_id == node1.id else (node2, node1)
-            triplet = TripletCreator.create(start_node, relation, end_node, add_stringified_triplet=False)
+            triplet = TripletCreator.create(start_node, relation, end_node,
+                                            add_stringified_triplet=False, t_id=raw_triplet['rel']['t_id'])
             formated_triplets.append(triplet)
         return formated_triplets
 
