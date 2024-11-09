@@ -42,6 +42,7 @@ class Relation:
 
 @dataclass
 class Triplet:
+    id: str = None
     start_node: Node
     relation: Relation
     end_node: Node
@@ -86,17 +87,17 @@ class TripletCreator(BaseCreator):
             start_node: Node,
             relation: Relation,
             end_node: Node,
-            add_stringified_triplet: bool = True,
-            rel_id: str = None
+            add_stringified_triplet: bool = True
         ) -> Triplet:
         triplet = Triplet(start_node, relation, end_node)
         _, str_triplet = TripletCreator.stringify(triplet)
         if add_stringified_triplet:
             triplet.stringified = str_triplet
-        if rel_id is None:
-            triplet.relation.id = create_id(str_triplet)
-        else:
-            triplet.relation.id = str(rel_id)
+        triplet.relation.id = create_id(str_triplet)
+
+        triplet.id = create_id(''.join(
+            [triplet.start_node.id,triplet.relation.id,
+             triplet.end_node.id]))
 
         return triplet
 

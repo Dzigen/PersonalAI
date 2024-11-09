@@ -197,10 +197,13 @@ class GraphModel:
         :type triplets: List[Triplet]
         """
         self.log("Adding triplets to graph-model...", verbose=self.config.verbose)
-        created_nodes_count, created_rels_count = 0,0
+
 
         steps = math.ceil(len(triplets) / batch_size)
         for step in tqdm(range(steps)):
+            # проверка триплетов на наличие дубликатов
+            # метода create есть дополнительный аргумент
+
             created_nodes, created_rels = self.db_conn.create(triplets[step*batch_size: (step+1)*batch_size])
             created_nodes_count += created_nodes
             created_rels_count += created_rels
