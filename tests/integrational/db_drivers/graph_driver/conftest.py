@@ -7,12 +7,12 @@ from src.db_drivers.graph_driver import GraphDriver, GraphDriverConfig, GraphDBC
 @pytest.fixture()
 def inmemory_conn():
     config = GraphDriverConfig(db_vendor='inmemory', db_config=GraphDBConnectionConfig(
-        need_to_clear=True))
+        db_info={'db': 'testing', 'table': 'testing'}, need_to_clear=True))
     return GraphDriver.connect(config)
 
 @pytest.fixture()
 def neo4j_conn():
     config = GraphDriverConfig(db_vendor='neo4j', db_config=GraphDBConnectionConfig(
-        db_info={'dbname': 'testing', 'table': 'testing'}
-        need_to_clear=True))
+        uri="bolt://localhost:7687", db_info={'db': 'testing', 'table': 'testing'},
+        params={'user': "neo4j", 'pwd': 'password'}, need_to_clear=True))
     return GraphDriver.connect(config)

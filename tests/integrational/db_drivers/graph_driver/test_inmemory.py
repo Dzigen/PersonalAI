@@ -4,27 +4,29 @@ from chromadb.errors import ChromaError
 import sys
 sys.path.insert(0, "../../")
 
-from cases import GRAPHDB_CREAT_TEST_CASES, GRAPHDB_DELETE_TEST_CASES, \
+from cases import GRAPHDB_CREATE_TEST_CASES, GRAPHDB_DELETE_TEST_CASES, \
     GRAPHDB_READ_TEST_CASES, GRAPHDB_COUNT_TEST_CASES, GRAPHDB_EXIST_TEST_CASES, \
-    GRAPHDB_CLEAR_TEST_CASES
+    GRAPHDB_CLEAR_TEST_CASES, GRAPHDB_GET_TRIPLETS_TEST_CASES, GRAPHDB_GET_ADJECENT_TEST_CASES
 
-@pytest.mark.parametrize("input, expected", GRAPHDB_CREAT_TEST_CASES)
-def test_create(input, expected, inmemory_conn):
+@pytest.mark.parametrize("input, expected", GRAPHDB_CREATE_TEST_CASES)
+def test_create(input, create_info, expected, inmemory_conn):
     inmemory_conn.clear()
 
     try:
-        for inp in input:
-            inmemory_conn.create(inp)
+        for inp, info in zip(input, create_info):
+            inmemory_conn.create(inp, info)
     except Exception as e:
         print(str(e))
         assert expected['exception']
 
-    assert inmemory_conn.count_items() == expected['db_size']
+    items_info = inmemory_conn.count_items()
+    assert items_info['triplets'] == expected['triplets_count']
+    assert items_info['nodes'] == expected['nodes_count']
 
 @pytest.mark.parametrize("instances, input, expected", GRAPHDB_DELETE_TEST_CASES)
-def test_delete(instances, input, expected, inmemory_conn):
+def test_delete(instances, create_info, input, expected, inmemory_conn):
     inmemory_conn.clear()
-    inmemory_conn.create(instances)
+    inmemory_conn.create(instances, create_info)
 
     try:
         inmemory_conn.delete(input)
@@ -32,13 +34,15 @@ def test_delete(instances, input, expected, inmemory_conn):
         print(str(e))
         assert expected['exception']
 
-    assert inmemory_conn.count_items() == expected['db_size']
+    items_info = inmemory_conn.count_items()
+    assert items_info['triplets'] == expected['triplets_count']
+    assert items_info['nodes'] == expected['nodes_count']
 
 
 @pytest.mark.parametrize("instances, input, expected", GRAPHDB_READ_TEST_CASES)
-def test_read(instances, input, expected, inmemory_conn):
+def test_read(instances, create_info, input, expected, inmemory_conn):
     inmemory_conn.clear()
-    inmemory_conn.create(instances)
+    inmemory_conn.create(instances, create_info)
 
     try:
         output = inmemory_conn.read(input)
@@ -51,11 +55,13 @@ def test_read(instances, input, expected, inmemory_conn):
 
 
 @pytest.mark.parametrize("instances, expected", GRAPHDB_COUNT_TEST_CASES)
-def test_count(instances, expected, inmemory_conn):
+def test_count(instances, create_info, expected, inmemory_conn):
     inmemory_conn.clear()
-    inmemory_conn.create(instances)
+    inmemory_conn.create(instances, create_info)
 
-    assert inmemory_conn.count_items() == expected
+    items_info = inmemory_conn.count_items()
+    assert items_info['triplets'] == expected['triplets_count']
+    assert items_info['nodes'] == expected['nodes_count']
 
 
 @pytest.mark.parametrize("instances, input, expected", GRAPHDB_EXIST_TEST_CASES)
@@ -78,6 +84,39 @@ def test_clear(instances, inmemory_conn):
     inmemory_conn.clear()
     inmemory_conn.create(instances)
 
-    assert inmemory_conn.count_items() == len(instances)
+    items_info = inmemory_conn.count_items()
+    assert items_info['triplets'] == len(instances)
+    assert items_info['nodes'] == 2*len(instances)
+
     inmemory_conn.clear()
-    assert inmemory_conn.count_items() == 0
+
+    items_info = inmemory_conn.count_items()
+    assert items_info['triplets'] == 0
+    assert items_info['nodes'] == 0
+
+@pytest.mark.parametrize("instances", GRAPHDB_GET_ADJECENT_TEST_CASES)
+def test_get_adjecent_nodes(instances, create_info, node, accepted_n_types, expected, inmemory_conn):
+    inmemory_conn.clear()
+    inmemory_conn.create(instances, create_info)
+
+    try:
+        output = inmemory_conn.get_adjecent_nodes(node, accepted_n_types=accepted_n_types)
+    except Exception as e:
+        print(str(e))
+        assert expected['exception']
+
+    assert expected['output_ids'] == set(output)
+
+
+@pytest.mark.parametrize("instances", GRAPHDB_GET_TRIPLETS_TEST_CASES)
+def test_get_triplets(instances, create_info, nodes, expected, inmemory_conn):
+    inmemory_conn.clear()
+    inmemory_conn.create(instances, create_info)
+
+    try:
+        output = inmemory_conn.get_triplets(*nodes)
+    except Exception as e:
+        print(str(e))
+        assert expected['exception']
+
+    assert expected['output_ids'] == set(list(map(lambda triplet: triplet.id, output)))

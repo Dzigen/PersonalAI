@@ -25,6 +25,3 @@ def test_create_triplets(embeddings_model):
 
 def test_delete_triplets(embeddings_model):
     pass
-
-def test_get_embeddings(embeddings_model):
-    pass

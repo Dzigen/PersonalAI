@@ -1,30 +1,31 @@
 import pytest
-from chromadb.errors import ChromaError
 
 import sys
 sys.path.insert(0, "../../")
 
-from cases import GRAPHDB_CREAT_TEST_CASES, GRAPHDB_DELETE_TEST_CASES, \
+from cases import GRAPHDB_CREATE_TEST_CASES, GRAPHDB_DELETE_TEST_CASES, \
     GRAPHDB_READ_TEST_CASES, GRAPHDB_COUNT_TEST_CASES, GRAPHDB_EXIST_TEST_CASES, \
-    GRAPHDB_CLEAR_TEST_CASES
+    GRAPHDB_CLEAR_TEST_CASES, GRAPHDB_GET_ADJECENT_TEST_CASES, GRAPHDB_GET_TRIPLETS_TEST_CASES
 
-@pytest.mark.parametrize("input, expected", GRAPHDB_CREAT_TEST_CASES)
-def test_create(input, expected, neo4j_conn):
+@pytest.mark.parametrize("input, expected", GRAPHDB_CREATE_TEST_CASES)
+def test_create(input, create_info, expected, neo4j_conn):
     neo4j_conn.clear()
 
     try:
-        for inp in input:
-            neo4j_conn.create(inp)
+        for inp, info in zip(input, create_info):
+            neo4j_conn.create(inp, info)
     except Exception as e:
         print(str(e))
         assert expected['exception']
 
-    assert neo4j_conn.count_items() == expected['db_size']
+    items_info = neo4j_conn.count_items()
+    assert items_info['triplets'] == expected['triplets_count']
+    assert items_info['nodes'] == expected['nodes_count']
 
 @pytest.mark.parametrize("instances, input, expected", GRAPHDB_DELETE_TEST_CASES)
-def test_delete(instances, input, expected, neo4j_conn):
+def test_delete(instances, create_info, input, expected, neo4j_conn):
     neo4j_conn.clear()
-    neo4j_conn.create(instances)
+    neo4j_conn.create(instances, create_info)
 
     try:
         neo4j_conn.delete(input)
@@ -32,13 +33,15 @@ def test_delete(instances, input, expected, neo4j_conn):
         print(str(e))
         assert expected['exception']
 
-    assert neo4j_conn.count_items() == expected['db_size']
+    items_info = neo4j_conn.count_items()
+    assert items_info['triplets'] == expected['triplets_count']
+    assert items_info['nodes'] == expected['nodes_count']
 
 
 @pytest.mark.parametrize("instances, input, expected", GRAPHDB_READ_TEST_CASES)
-def test_read(instances, input, expected, neo4j_conn):
+def test_read(instances, create_info, input, expected, neo4j_conn):
     neo4j_conn.clear()
-    neo4j_conn.create(instances)
+    neo4j_conn.create(instances, create_info)
 
     try:
         output = neo4j_conn.read(input)
@@ -51,11 +54,13 @@ def test_read(instances, input, expected, neo4j_conn):
 
 
 @pytest.mark.parametrize("instances, expected", GRAPHDB_COUNT_TEST_CASES)
-def test_count(instances, expected, neo4j_conn):
+def test_count(instances, create_info, expected, neo4j_conn):
     neo4j_conn.clear()
-    neo4j_conn.create(instances)
+    neo4j_conn.create(instances, create_info)
 
-    assert neo4j_conn.count_items() == expected
+    items_info = neo4j_conn.count_items()
+    assert items_info['triplets'] == expected['triplets_count']
+    assert items_info['nodes'] == expected['nodes_count']
 
 
 @pytest.mark.parametrize("instances, input, expected", GRAPHDB_EXIST_TEST_CASES)
@@ -78,6 +83,40 @@ def test_clear(instances, neo4j_conn):
     neo4j_conn.clear()
     neo4j_conn.create(instances)
 
-    assert neo4j_conn.count_items() == len(instances)
+    items_info = neo4j_conn.count_items()
+    assert items_info['triplets'] == len(instances)
+    assert items_info['nodes'] == 2*len(instances)
+
     neo4j_conn.clear()
-    assert neo4j_conn.count_items() == 0
+
+    items_info = neo4j_conn.count_items()
+    assert items_info['triplets'] == 0
+    assert items_info['nodes'] == 0
+
+
+@pytest.mark.parametrize("instances", GRAPHDB_GET_ADJECENT_TEST_CASES)
+def test_get_adjecent_nodes(instances, create_info, node, accepted_n_types, expected, neo4j_conn):
+    neo4j_conn.clear()
+    neo4j_conn.create(instances, create_info)
+
+    try:
+        output = neo4j_conn.get_adjecent_nodes(node, accepted_n_types=accepted_n_types)
+    except Exception as e:
+        print(str(e))
+        assert expected['exception']
+
+    assert expected['output_ids'] == set(output)
+
+
+@pytest.mark.parametrize("instances", GRAPHDB_GET_TRIPLETS_TEST_CASES)
+def test_get_triplets(instances, create_info, nodes, expected, neo4j_conn):
+    neo4j_conn.clear()
+    neo4j_conn.create(instances, create_info)
+
+    try:
+        output = neo4j_conn.get_triplets(*nodes)
+    except Exception as e:
+        print(str(e))
+        assert expected['exception']
+
+    assert expected['output_ids'] == set(list(map(lambda triplet: triplet.id, output)))
