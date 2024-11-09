@@ -13,91 +13,91 @@ INSTANCE_WITH_BAD_ID3 = KeyValueDBInstance(id=None, metadata={'k1': 'v2'})
 
 
 KVDB_CREAT_TEST_CASES = [
-    # пустой список
+    # 1. пустой список
     ([[]], {'exception': False, 'db_size': 0}),
-    # элемент с метаданными
+    # 2. элемент с метаданными
     ([[FULL_INSTANCE1]], {'exception': False, 'db_size': 1}),
-    # элемент без метаданныйх (пустой)
+    # 3. элемент без метаданныйх (пустой)
     ([[INSTANCE_WITH_EMPTY_METADATA]], {'exception': True, 'db_size': 0}),
-    # несколько элементов
+    # 4. несколько элементов
     ([[FULL_INSTANCE1, FULL_INSTANCE2]], {'exception': False, 'db_size': 2}),
-    # дубликаты в списке
+    # 5. дубликаты в списке
     ([[FULL_INSTANCE1, FULL_INSTANCE1]], {'exception': True, 'db_size': 0}),
-    # элемент существует в бд (по id)
+    # 6. элемент существует в бд (по id)
     ([[FULL_INSTANCE1], [FULL_INSTANCE1]], {'exception': False, 'db_size': 1}),
-    # неверный формат идентификатора # 1
+    # 7. неверный формат идентификатора # 1
     ([[INSTANCE_WITH_BAD_ID1]], {'exception': True, 'db_size': 0}),
-    # неверный формат идентификатора # 2
+    # 8. неверный формат идентификатора # 2
     ([[INSTANCE_WITH_BAD_ID2]], {'exception': True, 'db_size': 0}),
-    # неверный формат идентификатора # 3
+    # 9. неверный формат идентификатора # 3
     ([[INSTANCE_WITH_BAD_ID3]], {'exception': True, 'db_size': 0}),
 ]
 
 KVDB_DELETE_TEST_CASES = [
-    # пустой список
+    # 1. пустой список
     ([FULL_INSTANCE1, FULL_INSTANCE1], [], {'exception': False, 'db_size': 2}),
-    # удаление одного существующего элемента
+    # 2. удаление одного существующего элемента
     ([FULL_INSTANCE1, FULL_INSTANCE2], ['456'], {'exception': False, 'db_size': 1}),
-    # удаление одного несуществующего элемента
+    # 3. удаление одного несуществующего элемента
     ([FULL_INSTANCE1, FULL_INSTANCE2], ['789'], {'exception': False, 'db_size': 2}),
-    # в списке элементов на удаление есть несуществующие
+    # 4. в списке элементов на удаление есть несуществующие
     ([FULL_INSTANCE1, FULL_INSTANCE2], ['456','789'], {'exception': False, 'db_size': 1}),
-    # в списке элементов на удаление все существуют
+    # 5. в списке элементов на удаление все существуют
     ([FULL_INSTANCE1, FULL_INSTANCE2], ['123','456'], {'exception': False, 'db_size': 0}),
-    #неверный формат идентификаторов 1
+    # 6. неверный формат идентификаторов 1
     ([FULL_INSTANCE1, FULL_INSTANCE2], [123], {'exception': True, 'db_size': 2}),
-    # неверный формат идентификатора 2
+    # 7. неверный формат идентификатора 2
     ([FULL_INSTANCE1, FULL_INSTANCE2], [True], {'exception': True, 'db_size': 2}),
-    # неверный формат идентификатора 3
+    # 8. неверный формат идентификатора 3
     ([FULL_INSTANCE1, FULL_INSTANCE2], [None], {'exception': True, 'db_size': 2})
 ]
 
 KVDB_READ_TEST_CASES = [
-    # пустой список
+    # 1. пустой список
     ([FULL_INSTANCE1, FULL_INSTANCE2], [], {'exception': False, 'output_ids': []})
-    # один существующий элемент
+    # 2. один существующий элемент
     ([FULL_INSTANCE1, FULL_INSTANCE2], ['123'], {'exception': False, 'output_ids': ['123']}),
-    # один несуществующий элемент
+    # 3. один несуществующий элемент
     ([FULL_INSTANCE1,FULL_INSTANCE2], ['789'], {'exception': False, 'output_ids': []}),
-    # несколько существующих элементов
+    # 4. несколько существующих элементов
     ([FULL_INSTANCE1,FULL_INSTANCE2], ['123', '456'], {'exception': False, 'output_ids': ['123','456']}),
-    # в списке есть несуществующий элемент
+    # 5. в списке есть несуществующий элемент
     ([FULL_INSTANCE1,FULL_INSTANCE2], ['123', '789', '456'], {'exception': False, 'output_ids': ['123', '456']}),
-    # неверный формат идентификатора 1
+    # 6. неверный формат идентификатора 1
     ([FULL_INSTANCE1,FULL_INSTANCE2], [123], {'exception': True, 'output_ids': []}),
-    # неверный формат идентификатора 2
+    # 7. неверный формат идентификатора 2
     ([FULL_INSTANCE1,FULL_INSTANCE2], [True], {'exception': True, 'output_ids': []}),
-    # неверный формат идентификатора 3
+    # 8. неверный формат идентификатора 3
     ([FULL_INSTANCE1,FULL_INSTANCE2], [None], {'exception': True, 'output_ids': []}),
 ]
 
 KVDB_COUNT_TEST_CASES = [
-    # нуль элементов
+    # 1. нуль элементов
     ([], 0),
-    # один Элемент
+    # 2. один Элемент
     ([FULL_INSTANCE1], 1),
-    # несколько элементов
+    # 3. несколько элементов
     ([FULL_INSTANCE1,FULL_INSTANCE2], 2)
 ]
 
 KVDB_EXIST_TEST_CASES = [
-    # элемент существует
+    # 1. элемент существует
     ([FULL_INSTANCE1,FULL_INSTANCE2], '123', {'exception': False, 'exist': True}),
-    # элемента не существует
+    # 2. элемента не существует
     ([FULL_INSTANCE1,FULL_INSTANCE2], '789', {'exception': False, 'exist': False}),
-    # неверный формат идентификатора # 1
+    # 3. неверный формат идентификатора # 1
     ([FULL_INSTANCE1,FULL_INSTANCE2], 789, {'exception': True, 'exist': False}),
-    # неверный формат идентификатора # 2
+    # 4. неверный формат идентификатора # 2
     ([FULL_INSTANCE1,FULL_INSTANCE2], False, {'exception': True, 'exist': False}),
-    # неверный формат идентификатора # 3
+    # 5. неверный формат идентификатора # 3
     ([FULL_INSTANCE1,FULL_INSTANCE2], None, {'exception': True, 'exist': False})
 ]
 
 KVDB_CLEAR_TEST_CASES = [
-    # чистка пустой бд
+    # 1. чистка пустой бд
     [],
-    # чиста бд с одним элементов
+    # 2. чиста бд с одним элементов
     [FULL_INSTANCE1],
-    # чиста бд с несколькими элементами
+    # 3. чиста бд с несколькими элементами
     [FULL_INSTANCE1,FULL_INSTANCE2]
 ]
