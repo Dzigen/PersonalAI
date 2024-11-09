@@ -20,7 +20,7 @@ def embeddings_model():
         embedder_config=EmbedderModelConfig(model_name_or_path='../../models/intfloat/multilingual-e5-small', device='cuda'))
     return EmbeddingsModel(config)
 
-def test_add_triplets(embeddings_model):
+def test_create_triplets(embeddings_model):
     pass
 
 def test_delete_triplets(embeddings_model):
