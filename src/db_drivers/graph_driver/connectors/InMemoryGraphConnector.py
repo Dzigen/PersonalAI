@@ -40,45 +40,23 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
     def generate_id(self, seed: str = None):
         return hashlib.md5((str(time()) if seed is None else seed).encode()).hexdigest()
 
-    def create(self, triplets: List[Triplet]) -> None:
+    def create(self, triplets: List[Triplet], creation_info: Dict = dict()) -> None:
         created_nodes_count, created_rels_count = 0, 0
-        for triplet in triplets:
-            #
-            s_node_content_id = triplet.start_node.prop['str_id']
-            if s_node_content_id in self.uniques_content_nodes:
-                triplet.start_node.id = self.uniques_content_nodes[s_node_content_id]
-            else:
-                created_nodes_count += 1
-                triplet.start_node.id = self.generate_id()
-                self.uniques_content_nodes[s_node_content_id] = triplet.start_node.id
-                self.items_ids[triplet.start_node.id] = triplet.start_node
+        for i, triplet in enumerate(triplets):
+            cur_info = creation_info.get(i, None)
 
-            #
-            e_node_content_id = triplet.end_node.prop['str_id']
-            if e_node_content_id in self.uniques_content_nodes:
-                triplet.end_node.id = self.uniques_content_nodes[e_node_content_id]
-            else:
-                created_nodes_count += 1
-                triplet.end_node.id = self.generate_id()
-                self.uniques_content_nodes[e_node_content_id] = triplet.end_node.id
+            if cur_info is None or cur_info['s_node']:
+                self.items_ids[triplet.start_node.id] = triplet.start_node
+            if cur_info is None or cur_info['e_node']:
                 self.items_ids[triplet.end_node.id] = triplet.end_node
 
-            #
-            triplet_content_id = (triplet.start_node.id, triplet.id, triplet.end_node.id)
-            if triplet_content_id in self.unique_content_relations:
-                triplet.relation.id = self.unique_content_relations[triplet_content_id]
-            else:
-                created_rels_count += 1
-                triplet.relation.id = self.generate_id()
-                self.unique_content_relations[triplet_content_id] = triplet.relation.id
-
+            if cur_info is None or cur_info['rel']:
                 self.edges[triplet.start_node.id].append(triplet.id)
                 self.edges[triplet.end_node.id].append(triplet.id)
                 self.adjacent_nodes[triplet.start_node.id].append(triplet.end_node.id)
                 self.adjacent_nodes[triplet.end_node.id].append(triplet.start_node.id)
 
-                # костыль
-                self.triplets_ids[triplet.id] = triplet
+            self.triplets_ids[triplet.id] = triplet
 
         return created_nodes_count, created_rels_count
 
@@ -90,24 +68,9 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         # TODO
         pass
 
-    def delete(self, triplets: List[Triplet]) -> None:
-        for triplet in triplets:
-            if triplet.id in self.triplets_ids:
-                self.triplets_ids.pop(triplet.id)
-
-                if triplet.start_node.id in self.edges:
-                    if triplet.id in self.edges[triplet.start_node.id]:
-                        self.edges[triplet.start_node.id].remove(triplet.id)
-                    if not self.edges[triplet.start_node.id]:
-                        self.items_ids.pop(triplet.start_node.id)
-                        self.edges.pop(triplet.start_node.id)
-
-                if triplet.end_node.id in self.edges:
-                    if triplet.id in self.edges[triplet.end_node.id]:
-                        self.edges[triplet.end_node.id].remove(triplet.id)
-                    if not self.edges[triplet.end_node.id]:
-                        self.items_ids.pop(triplet.end_node.id)
-                        self.edges.pop(triplet.end_node.id)
+    def delete(self, ids: List[str]) -> None:
+        # TODO
+        pass
 
     def get_adjecent_nodes(self, base_node_id: str, parent_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
         nodes = deepcopy(self.adjacent_nodes.get(base_node_id, []))
