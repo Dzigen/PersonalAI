@@ -52,37 +52,43 @@ class EmbeddingsModel:
         :type batch_size: int, optional
         """
         self.log("Adding triples to vector-model...", verbose=self.config.verbose)
-        unique_nodes_ids, unique_triplets_ids = set(), set()
+        unique_relation_ids, unique_node_ids = set(), set()
+        existed_relation_ids, existed_node_ids = set(), set()
 
         batch_count = math.ceil(len(triplets) / batch_size)
         for batch_idx in tqdm(range(batch_count)):
-            triplets_ids, triplets_strs = list(), list()
-            nodes_ids, nodes_strs = list(), list()
+            relation_ids, relation_strs = list(), list()
+            node_ids, node_strs = list(), list()
 
             for triplet_idx in range(batch_idx*batch_size, (batch_idx+1)*batch_size):
                 if triplet_idx >= len(triplets):
                     break
 
-                triplet = triplets[triplet_idx]
-                _, triplet_str =  TripletCreator.stringify(triplet) if triplet.stringified is None else (triplet.id, triplet.stringified)
-                if triplet.id not in unique_triplets_ids:
-                    unique_triplets_ids.add(triplet.id)
-                    triplets_ids.append(triplet.id)
-                    triplets_strs.append(triplet_str)
+                cur_triplet = triplets[triplet_idx]
+                cur_rel_id = cur_triplet.relation.id
+                _, triplet_str =  TripletCreator.stringify(cur_triplet) if cur_triplet.stringified is None else (None, cur_triplet.stringified)
+                if cur_rel_id not in unique_relation_ids:
+                    unique_relation_ids.add(cur_rel_id)
+                    if ((cur_rel_id not in existed_relation_ids) and (not self.vectordbs['triplet'].item_exist(cur_rel_id))):
+                        existed_relation_ids.add(cur_rel_id)
+                        relation_ids.append(cur_triplet.relation.id)
+                        relation_strs.append(triplet_str)
 
                 if add_nodes:
                     self.log("\t- Also adding triplet-nodes in vector-model", verbose=self.config.verbose)
-                    for node in [triplet.start_node, triplet.end_node]:
-                        if node.id not in unique_nodes_ids:
-                            _, node_str = NodeCreator.stringify(node) if node.stringified is None else (node.id, node.stringified)
-                            unique_nodes_ids.add(node.id)
-                            nodes_ids.append(node.id)
-                            nodes_strs.append(node_str)
+                    for node in [cur_triplet.start_node, cur_triplet.end_node]:
+                        if node.id not in unique_node_ids:
+                            unique_node_ids.add(node.id)
+                            _, node_str = NodeCreator.stringify(node) if node.stringified is None else (None, node.stringified)
+                            if ((node.id not in existed_relation_ids) and (not self.vectordbs['node'].item_exist(node.id))):
+                                existed_node_ids.add(node.id)
+                                node_ids.append(node.id)
+                                node_strs.append(node_str)
 
-            self.create_stringified_triplets(triplets_ids, triplets_strs, nodes_ids, nodes_strs)
+            self.create_stringified_triplets(relation_ids, relation_strs, node_ids, node_strs)
 
-        self.log(f"all/unique_triplets - {len(triplets)}/{len(unique_triplets_ids)}", verbose=self.config.verbose)
-        self.log(f"all/unique_nodes - {len(triplets)*2}/{len(unique_nodes_ids)}", verbose=self.config.verbose)
+        self.log(f"all/unique_relations - {len(triplets)}/{len(unique_relation_ids)}", verbose=self.config.verbose)
+        self.log(f"all/unique_nodes - {len(triplets)*2}/{len(unique_node_ids)}", verbose=self.config.verbose)
         self.log("Triples were successfully added to vector-model!", verbose=self.config.verbose)
 
     def delete_triplets(self, triplets: List[Triplet], delete_nodes: bool = True) -> None:
@@ -199,8 +205,8 @@ class GraphModel:
         self.log("Adding triplets to graph-model...", verbose=self.config.verbose)
         created_rels_counter, created_nodes_counter = 0, 0
 
-        steps = math.ceil(len(triplets) / batch_size)
-        for step in tqdm(range(steps)):
+        batches = math.ceil(len(triplets) / batch_size)
+        for batch_idx in tqdm(range(batches)):
             # if n1 rel n2
             # else empty
                 # n1 _ _
@@ -211,7 +217,10 @@ class GraphModel:
             creation_info = dict()
             triplets_to_create = list()
             info_counter = -1
-            for triplet_idx in range(step*batch_size, (step+1)*batch_size, 1):
+            for triplet_idx in range(batch_idx*batch_size, (batch_idx+1)*batch_size, 1):
+                if triplet_idx >= len(triplets):
+                    break
+
                 cur_triplet = triplets[triplet_idx]
                 if not self.db_conn.item_exist(cur_triplet.id, id_type='triplet'):
                     info_counter += 1
