@@ -197,19 +197,41 @@ class GraphModel:
         :type triplets: List[Triplet]
         """
         self.log("Adding triplets to graph-model...", verbose=self.config.verbose)
-
+        created_rels_counter, created_nodes_counter = 0, 0
 
         steps = math.ceil(len(triplets) / batch_size)
         for step in tqdm(range(steps)):
-            # проверка триплетов на наличие дубликатов
-            # метода create есть дополнительный аргумент
+            # if n1 rel n2
+            # else empty
+                # n1 _ _
+                # _ _ n2
+                # n1 _ n2
+                # _ _ _
 
-            created_nodes, created_rels = self.db_conn.create(triplets[step*batch_size: (step+1)*batch_size])
-            created_nodes_count += created_nodes
-            created_rels_count += created_rels
+            creation_info = dict()
+            triplets_to_create = list()
+            info_counter = -1
+            for triplet_idx in range(step*batch_size, (step+1)*batch_size, 1):
+                cur_triplet = triplets[triplet_idx]
+                if not self.db_conn.item_exist(cur_triplet.id, id_type='triplet'):
+                    info_counter += 1
+                    triplets_to_create.append(cur_triplet)
+                    creation_info[info_counter] = {'s_node': False, 'rel': True, 'e_node': False}
 
-        self.log(f"all/created_relations - {len(triplets)}/{created_rels_count}", verbose=self.config.verbose)
-        self.log(f"all/created_nodes - {len(triplets)*2}/{created_nodes_count}", verbose=self.config.verbose)
+                    if not self.db_conn.item_exist(cur_triplet.start_node.id):
+                        creation_info[info_counter]['s_node'] = True
+                        created_nodes_counter += 1
+
+                    if not self.db_conn.item_exist(cur_triplet.start_node.id):
+                        creation_info[info_counter]['e_node'] = True
+                        created_nodes_counter += 1
+
+                    created_rels_counter += 1
+
+            self.db_conn.create(triplets_to_create, creation_info)
+
+        self.log(f"all/created_relations - {len(triplets)}/{created_rels_counter}", verbose=self.config.verbose)
+        self.log(f"all/created_nodes - {len(triplets)*2}/{created_nodes_counter}", verbose=self.config.verbose)
         self.log("Triplets added successfully!", verbose=self.config.verbose)
 
     def delete_triplets(self, triplets: List[Triplet], batch_size: int = 64) -> None:
