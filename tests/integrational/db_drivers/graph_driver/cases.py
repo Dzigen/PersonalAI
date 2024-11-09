@@ -41,9 +41,16 @@ GRAPHB_READ_TEST_CASES = [
 ]
 
 GRAPHB_COUNT_TEST_CASES = [
-    # нуль элементов
-    # один Элемент
-    # несколько элементов
+    # элемент существует
+    ([FULL_INSTANCE1,FULL_INSTANCE2], '123', {'exception': False, 'exist': True}),
+    # элемента не существует
+    ([FULL_INSTANCE1,FULL_INSTANCE2], '789', {'exception': False, 'exist': False}),
+    # неверный формат идентификатора # 1
+    ([FULL_INSTANCE1,FULL_INSTANCE2], 789, {'exception': True, 'exist': False}),
+    # неверный формат идентификатора # 2
+    ([FULL_INSTANCE1,FULL_INSTANCE2], False, {'exception': True, 'exist': False}),
+    # неверный формат идентификатора # 3
+    ([FULL_INSTANCE1,FULL_INSTANCE2], None, {'exception': True, 'exist': False})
 ]
 
 GRAPHB_EXIST_TEST_CASES = [
@@ -53,6 +60,9 @@ GRAPHB_EXIST_TEST_CASES = [
 
 GRAPHB_CLEAR_TEST_CASES = [
     # чистка пустой бд
+    [],
     # чиста бд с одним элементов
+    [FULL_INSTANCE1],
     # чиста бд с несколькими элементами
+    [FULL_INSTANCE1,FULL_INSTANCE2]
 ]

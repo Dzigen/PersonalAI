@@ -10,29 +10,74 @@ from cases import GRAPHDB_CREAT_TEST_CASES, GRAPHDB_DELETE_TEST_CASES, \
 
 @pytest.mark.parametrize("input, expected", GRAPHDB_CREAT_TEST_CASES)
 def test_create(input, expected, inmemory_conn):
-    pass
+    inmemory_conn.clear()
+
+    try:
+        for inp in input:
+            inmemory_conn.create(inp)
+    except Exception as e:
+        print(str(e))
+        assert expected['exception']
+
+    assert inmemory_conn.count_items() == expected['db_size']
+
+@pytest.mark.parametrize("instances, input, expected", GRAPHDB_DELETE_TEST_CASES)
+def test_delete(instances, input, expected, inmemory_conn):
+    inmemory_conn.clear()
+    inmemory_conn.create(instances)
+
+    try:
+        inmemory_conn.delete(input)
+    except Exception as e:
+        print(str(e))
+        assert expected['exception']
+
+    assert inmemory_conn.count_items() == expected['db_size']
 
 
-@pytest.mark.parametrize("input, expected", GRAPHDB_DELETE_TEST_CASES)
-def test_delete(input, expected, inmemory_conn):
-    pass
+@pytest.mark.parametrize("instances, input, expected", GRAPHDB_READ_TEST_CASES)
+def test_read(instances, input, expected, inmemory_conn):
+    inmemory_conn.clear()
+    inmemory_conn.create(instances)
+
+    try:
+        output = inmemory_conn.read(input)
+    except Exception as e:
+        print(str(e))
+        assert expected['exception']
+
+    if not expected['exception']:
+        assert list(map(lambda item: item.id, output)) == expected['output_ids']
 
 
-@pytest.mark.parametrize("input, expected", GRAPHDB_READ_TEST_CASES)
-def test_read(input, expected, inmemory_conn):
-    pass
+@pytest.mark.parametrize("instances, expected", GRAPHDB_COUNT_TEST_CASES)
+def test_count(instances, expected, inmemory_conn):
+    inmemory_conn.clear()
+    inmemory_conn.create(instances)
+
+    assert inmemory_conn.count_items() == expected
 
 
-@pytest.mark.parametrize("input, expected", GRAPHDB_COUNT_TEST_CASES)
-def test_count(input, expected, inmemory_conn):
-    pass
+@pytest.mark.parametrize("instances, input, expected", GRAPHDB_EXIST_TEST_CASES)
+def test_exist(instances, input, expected, inmemory_conn):
+    inmemory_conn.clear()
+    inmemory_conn.create(instances)
+
+    try:
+        real = inmemory_conn.item_exist(input)
+    except Exception as e:
+        print(str(e))
+        assert expected['exception']
+
+    if not expected['exception']:
+        assert real == expected['exist']
 
 
-@pytest.mark.parametrize("input, expected", GRAPHDB_EXIST_TEST_CASES)
-def test_exist(input, expected, inmemory_conn):
-    pass
+@pytest.mark.parametrize("instances", GRAPHDB_CLEAR_TEST_CASES)
+def test_clear(instances, inmemory_conn):
+    inmemory_conn.clear()
+    inmemory_conn.create(instances)
 
-
-@pytest.mark.parametrize("input, expected", GRAPHDB_CLEAR_TEST_CASES)
-def test_clear(input, expected, inmemory_conn):
-    pass
+    assert inmemory_conn.count_items() == len(instances)
+    inmemory_conn.clear()
+    assert inmemory_conn.count_items() == 0
