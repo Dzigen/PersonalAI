@@ -42,16 +42,16 @@ class Relation:
 
 @dataclass
 class Triplet:
+    id: str = None
     start_node: Node
     relation: Relation
     end_node: Node
-    id: str = None
     stringified: str = None
 
 class BaseCreator:
     @staticmethod
     def add_str_props(obj: Union[Relation, Node], obj_str: str) -> str:
-        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in ['name', 'type', 'raw_time', 'time', 'str_id']])
+        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in ['name', 'type', 'raw_time', 'time', 'str_id', 't_id']])
         if str_prop:
             obj_str += f" ({str_prop})"
         return obj_str
@@ -61,7 +61,7 @@ class NodeCreator(BaseCreator):
     def create(add_stringified_node: bool = True, **kwargs):
         node = Node(**kwargs)
         _, str_node = NodeCreator.stringify(node)
-        node.prop['str_id'] = create_id(str_node)
+        node.id = create_id(str_node)
         if add_stringified_node:
             node.stringified = str_node
         return node
@@ -94,10 +94,13 @@ class TripletCreator(BaseCreator):
         _, str_triplet = TripletCreator.stringify(triplet)
         if add_stringified_triplet:
             triplet.stringified = str_triplet
+        triplet.relation.id = create_id(str_triplet)
+
         if t_id is None:
-            triplet.id = create_id(str_triplet)
+            triplet.id = create_id(''.join(
+                [triplet.start_node.id,triplet.relation.id,triplet.end_node.id]))
         else:
-            triplet.id = str(t_id)
+            triplet.id = t_id
 
         return triplet
 
@@ -122,7 +125,7 @@ class TripletCreator(BaseCreator):
         else:
             raise KeyError
 
-        return triplet.id, str_triplet
+        return triplet.relation.id, str_triplet
 
 
 #from ..embedding_functions import VectorDBInstance

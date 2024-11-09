@@ -93,7 +93,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             rel_props[p_name] = p_value
 
         rel_props['name'] = json.dumps(triplet.relation.name, ensure_ascii=False)
-        rel_props['str_id'] = json.dumps(triplet.id, ensure_ascii=False)
+        rel_props['t_id'] = json.dumps(triplet.id, ensure_ascii=False)
 
         str_props = ", ".join([f"{k}: {v}" for k, v in rel_props.items()])
         subj_t, subj_id = triplet.start_node.type.value, triplet.start_node.id
@@ -105,40 +105,24 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         query += 'RETURN elementId(rel) as rel_id'
         return query
 
-    def create(self, triplets: List[Triplet]) -> Tuple[int,int]:
-        created_nodes_count, created_rels_count = 0,0
-        for triplet in triplets:
+    def create(self, triplets: List[Triplet], creation_info: Dict = dict()) -> None:
+        for i, triplet in enumerate(triplets):
+            cur_info = creation_info.get(i, None)
             #
-            subj_str_id, subj_t = triplet.start_node.prop['str_id'], triplet.start_node.type.value
-            subj_out = self.execute_query(f'MATCH (subj:{subj_t}) WHERE subj.str_id = "{subj_str_id}" RETURN elementID(subj) as node_id')
-            if len(subj_out) < 1:
-                created_nodes_count += 1
+            if cur_info is None or cur_info['s_node']:
                 insert_subj_query = self.create_node_query(triplet.start_node)
-                triplet.start_node.id = self.execute_query(insert_subj_query)[0]['node_id']
-            else:
-                triplet.start_node.id = subj_out[0]['node_id']
+                self.execute_query(insert_subj_query)[0]['node_id']
 
             #
-            obj_str_id, obj_t = triplet.end_node.prop['str_id'], triplet.end_node.type.value
-            obj_out = self.execute_query(f'MATCH (obj:{obj_t}) WHERE obj.str_id = "{obj_str_id}" RETURN elementID(obj) as node_id')
-            if len(obj_out) < 1:
-                created_nodes_count += 1
+            if cur_info is None or cur_info['e_node']:
                 insert_obj_query = self.create_node_query(triplet.end_node)
                 triplet.end_node.id = self.execute_query(insert_obj_query)[0]['node_id']
-            else:
-                triplet.end_node.id = obj_out[0]['node_id']
 
             #
-            rel_str_id, rel_t = triplet.id, triplet.relation.type.value
-            rel_out = self.execute_query(f'MATCH (a)-[rel:{rel_t}]->(b) WHERE elementId(a) = "{triplet.start_node.id}" AND elementId(b) = "{triplet.end_node.id}" AND rel.str_id = "{rel_str_id}" RETURN elementID(rel) as rel_id')
-            if len(rel_out) < 1:
-                created_rels_count += 1
+            if cur_info is None or cur_info['rel']:
                 rel_query = self.create_rel_query(triplet)
                 triplet.relation.id = self.execute_query(rel_query)[0]['rel_id']
-            else:
-                triplet.relation.id = rel_out[0]['rel_id']
 
-        return created_nodes_count, created_rels_count
 
     def read(self, ids: List[str]) -> List[Triplet]:
         # TODO
@@ -148,7 +132,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         # TODO
         pass
 
-    def delete(self, ids: List[Tuple[str, str, str]]) -> None:
+    def delete(self, ids: List[str]) -> None:
         # TODO
         pass
 
@@ -194,19 +178,20 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         """
         formated_triplets = []
         for raw_triplet in output:
-            node1 = NodeCreator.create(id=raw_triplet['n1'].element_id, name=str(raw_triplet['n1']['name']),
+            node1 = NodeCreator.create(id=raw_triplet['n1']['str_id'], name=str(raw_triplet['n1']['name']),
                                             type=NODES_TYPES_MAP[list(raw_triplet['n1'].labels)[0]],
                                             prop=dict(raw_triplet['n1']))
-            node2 = NodeCreator.create(id=raw_triplet['n2'].element_id, name=str(raw_triplet['n2']['name']),
+            node2 = NodeCreator.create(id=raw_triplet['n2']['str_id'], name=str(raw_triplet['n2']['name']),
                                             type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]],
                                             prop=dict(raw_triplet['n2']))
-            relation = Relation(id=raw_triplet['rel'].element_id, name=str(raw_triplet['rel']['name']),
+            relation = Relation(id=raw_triplet['rel']['str_id'], name=str(raw_triplet['rel']['name']),
                                 type=RELATIONS_TYPES_MAP[raw_triplet['rel'].type],
                                 prop=dict(raw_triplet['rel']))
 
             start_node_id = raw_triplet['rel'].nodes[0].element_id
             start_node, end_node = (node1, node2) if start_node_id == node1.id else (node2, node1)
-            triplet = TripletCreator.create(start_node, relation, end_node, add_stringified_triplet=False)
+            triplet = TripletCreator.create(start_node, relation, end_node,
+                                            add_stringified_triplet=False, t_id=raw_triplet['rel']['t_id'])
             formated_triplets.append(triplet)
         return formated_triplets
 
