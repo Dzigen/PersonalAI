@@ -50,11 +50,10 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
             if cur_info is None or cur_info['e_node']:
                 self.items_ids[triplet.end_node.id] = triplet.end_node
 
-            if cur_info is None or cur_info['rel']:
-                self.edges[triplet.start_node.id].append(triplet.id)
-                self.edges[triplet.end_node.id].append(triplet.id)
-                self.adjacent_nodes[triplet.start_node.id].append(triplet.end_node.id)
-                self.adjacent_nodes[triplet.end_node.id].append(triplet.start_node.id)
+            self.edges[triplet.start_node.id].append(triplet.id)
+            self.edges[triplet.end_node.id].append(triplet.id)
+            self.adjacent_nodes[triplet.start_node.id].append(triplet.end_node.id)
+            self.adjacent_nodes[triplet.end_node.id].append(triplet.start_node.id)
 
             self.triplets_ids[triplet.id] = triplet
 
@@ -72,15 +71,9 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         # TODO
         pass
 
-    def get_adjecent_nodes(self, base_node_id: str, parent_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
+    def get_adjecent_nodes(self, base_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
         nodes = deepcopy(self.adjacent_nodes.get(base_node_id, []))
         filtered_nodes = list(filter(lambda n_id: self.items_ids[n_id].type in accepted_n_types, nodes))
-
-        try:
-            parent_idx = filtered_nodes.index(parent_node_id)
-            del nodes[parent_idx]
-        except ValueError:
-            pass
 
         return filtered_nodes
 

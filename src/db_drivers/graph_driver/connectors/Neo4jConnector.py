@@ -111,17 +111,16 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             #
             if cur_info is None or cur_info['s_node']:
                 insert_subj_query = self.create_node_query(triplet.start_node)
-                self.execute_query(insert_subj_query)[0]['node_id']
+                self.execute_query(insert_subj_query)
 
             #
             if cur_info is None or cur_info['e_node']:
                 insert_obj_query = self.create_node_query(triplet.end_node)
-                triplet.end_node.id = self.execute_query(insert_obj_query)[0]['node_id']
+                triplet.end_node.id = self.execute_query(insert_obj_query)
 
             #
-            if cur_info is None or cur_info['rel']:
-                rel_query = self.create_rel_query(triplet)
-                triplet.relation.id = self.execute_query(rel_query)[0]['rel_id']
+            rel_query = self.create_rel_query(triplet)
+            triplet.relation.id = self.execute_query(rel_query)
 
 
     def read(self, ids: List[str]) -> List[Triplet]:
@@ -160,12 +159,12 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                 session.close()
         return response
 
-    def get_adjecent_nodes(self, base_node_id: str, parent_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
+    def get_adjecent_nodes(self, base_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
         str_accepted_nodes = ', '.join(list(map(lambda tpe: f'"{tpe.value}"', accepted_n_types)))
 
         raw_nodes = self.execute_query(
-            f'MATCH (a)-[r]-(b) WHERE elementId(a) = "{base_node_id}" AND elementId(b) <> "{parent_node_id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(b)) RETURN b')
-        formated_nodes = [node['b'].element_id for node in raw_nodes]
+            f'MATCH (a)-[r]-(b) WHERE elementId(a) = "{base_node_id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(b)) RETURN b')
+        formated_nodes = [node['b']['str_id'] for node in raw_nodes]
         return formated_nodes
 
     def parse_query_output(self, output):
@@ -220,7 +219,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             formatted_triplets += self.parse_query_output(output)
         return formatted_triplets
 
-    def count_instances(self) -> int:
+    def count_items(self) -> int:
         # TODO
         pass
 
