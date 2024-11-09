@@ -45,7 +45,6 @@ class Triplet:
     start_node: Node
     relation: Relation
     end_node: Node
-    id: str = None
     stringified: str = None
 
 class BaseCreator:
@@ -61,7 +60,7 @@ class NodeCreator(BaseCreator):
     def create(add_stringified_node: bool = True, **kwargs):
         node = Node(**kwargs)
         _, str_node = NodeCreator.stringify(node)
-        node.prop['str_id'] = create_id(str_node)
+        node.id = create_id(str_node)
         if add_stringified_node:
             node.stringified = str_node
         return node
@@ -88,16 +87,16 @@ class TripletCreator(BaseCreator):
             relation: Relation,
             end_node: Node,
             add_stringified_triplet: bool = True,
-            t_id: str = None
+            rel_id: str = None
         ) -> Triplet:
         triplet = Triplet(start_node, relation, end_node)
         _, str_triplet = TripletCreator.stringify(triplet)
         if add_stringified_triplet:
             triplet.stringified = str_triplet
-        if t_id is None:
-            triplet.id = create_id(str_triplet)
+        if rel_id is None:
+            triplet.relation.id = create_id(str_triplet)
         else:
-            triplet.id = str(t_id)
+            triplet.relation.id = str(rel_id)
 
         return triplet
 
@@ -122,7 +121,7 @@ class TripletCreator(BaseCreator):
         else:
             raise KeyError
 
-        return triplet.id, str_triplet
+        return triplet.relation.id, str_triplet
 
 
 #from ..embedding_functions import VectorDBInstance
