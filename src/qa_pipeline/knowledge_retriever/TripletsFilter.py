@@ -49,18 +49,15 @@ class TripletsFilter(AbstractTriplesFilter):
         filtered_triplets = []
         query_embd = self.kg_model.embeddings_struct.embedder.encode_queries([query_info.query])[0]
         query_instance = VectorDBInstance(embedding=query_embd)
-        base_triplets_ids = list(map(lambda triplet: triplet.id, triplets))
+        base_relation_ids = list(map(lambda triplet: triplet.relation.id, triplets))
 
-        self.log(f"Количество уникальных триплетов: {len(set(base_triplets_ids))}", verbose=self.log_verbose)
+        self.log(f"Количество уникальных триплетов: {len(set(base_relation_ids))}", verbose=self.log_verbose)
 
-        try:
-            if len(base_triplets_ids) > 0:
-                raw_relevant_triplets = self.kg_model.embeddings_struct.vectordbs['triplets'].retrieve(
-                    [query_instance], self.config.max_k, includes=['embeddings', 'documents', 'metadatas'], where={"id": {"$in": base_triplets_ids}})[0]
-                accepted_tripletes_ids = list(map(lambda item: item[1].id, raw_relevant_triplets))
-                filtered_triplets = list(filter(lambda triplet: triplet.id in accepted_tripletes_ids, triplets))
-                self.log(f"accepted ids: {accepted_tripletes_ids}", verbose=self.log_verbose)
-        except Exception as e:
-            print(f"error in apply_filter: {e}")
-            filtered_triplets = triplets[:self.config.max_k]
+        if len(base_relation_ids) > 0:
+            raw_relevant_triplets = self.kg_model.embeddings_struct.vectordbs['triplets'].retrieve(
+                [query_instance], self.config.max_k, includes=['embeddings', 'documents', 'metadatas'], where={"id": {"$in": base_relation_ids}})[0]
+            accepted_tripletes_ids = list(map(lambda item: item[1].id, raw_relevant_triplets))
+            filtered_triplets = list(filter(lambda triplet: triplet.id in accepted_tripletes_ids, triplets))
+            self.log(f"accepted ids: {accepted_tripletes_ids}", verbose=self.log_verbose)
+
         return filtered_triplets
