@@ -62,7 +62,8 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
 
     def delete(self, ids: List[str]):
         for id in ids:
-            del self.kv_store[id]
+            if self.item_exist(id):
+                del self.kv_store[id]
 
     def clear(self):
         del self.kv_store
