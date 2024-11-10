@@ -23,8 +23,7 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
         self.client = aerospike.client(db_config).connect()
 
     def is_open(self) -> bool:
-        # TODO
-        pass
+        return self.client.is_connected()
 
     def close_connection(self) -> None:
         self.client.close()

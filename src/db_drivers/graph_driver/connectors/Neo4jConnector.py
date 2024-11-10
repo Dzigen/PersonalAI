@@ -73,6 +73,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             query_props[p_name] = p_value
 
         query_props['name'] = json.dumps(node.name, ensure_ascii=False)
+        query_props['str_id'] = json.dumps(node.id, ensure_ascii=False)
 
         str_props = ", ".join([f"{k}: {v}" for k, v in query_props.items()])
         query = f"CREATE (n:{node.type.value} " + "{" + str_props + "}) RETURN elementId(n) as node_id"
@@ -94,6 +95,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
         rel_props['name'] = json.dumps(triplet.relation.name, ensure_ascii=False)
         rel_props['t_id'] = json.dumps(triplet.id, ensure_ascii=False)
+        rel_props['str_id'] = json.dumps(triplet.relation.id, ensure_ascii=False)
 
         str_props = ", ".join([f"{k}: {v}" for k, v in rel_props.items()])
         subj_t, subj_id = triplet.start_node.type.value, triplet.start_node.id
@@ -220,13 +222,23 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         return formatted_triplets
 
     def count_items(self) -> int:
-        # TODO
-        pass
+        n_output = self.execute_query("MATCH (a) RETURN count(a) as n_count")
+        r_output = self.execute_query("MATCH (a)-[rel]->(b) RETURN count(rel) as r_count")
+        return {'triplets': r_output['r_count'], 'nodes': n_output['n_count']}
 
-    def item_exist(self, id: str) -> bool:
-        # TODO
-        pass
+    def item_exist(self, id: str, id_type='triplet') -> bool:
+        if id_type == 'node':
+            query = f'MATCH (n) WHERE n.str_id = "{id}" RETURN n'
+        if id_type == 'relation':
+            query = f'MATCH (n1)-[rel]-(n2) WHERE rel.str_id = "{id}" RETURN rel'
+        elif id_type == 'triplet':
+            query = f'MATCH (n1)-[rel]-(n2) WHERE rel.t_id = "{id}" RETURN rel'
+        else:
+            raise ValueError
+
+        output = self.execute_query(query)
+        return len(output) > 0
 
     def clear(self) -> None:
-        # TODO
-        pass
+        self.execute_query("MATCH (n)-[rel]->() DELETE n,rel")
+        self.execute_query("MATCH (n) DELETE n")
