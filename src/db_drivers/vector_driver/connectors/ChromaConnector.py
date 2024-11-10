@@ -19,7 +19,7 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
 
     def open_connection(self) -> None:
         self.client = chromadb.PersistentClient(path=self.config.path)
-        self.collection = self.client.get_or_create_collection(name=self.config.db_name, metadata=self.config.params)
+        self.collection = self.client.get_or_create_collection(name=self.config.db_info['table'], metadata=self.config.params)
 
         if self.config.need_to_clear:
             self.clear()
@@ -103,6 +103,6 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         return len(output['ids']) > 0
 
     def clear(self) -> None:
-        self.client.delete_collection(name=self.config.db_name)
-        self.collection = self.client.create_collection(name=self.config.db_name,
+        self.client.delete_collection(name=self.config.db_info['table'])
+        self.collection = self.client.create_collection(name=self.config.db_info['table'],
                                                         metadata=self.config.params)
