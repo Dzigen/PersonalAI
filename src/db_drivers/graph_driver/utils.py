@@ -8,6 +8,7 @@ from ..utils import AbstractDatabaseConnection
 @dataclass
 class GraphDBConnectionConfig:
     uri: str = None
+    db_info: Dict = field(default_factory=lambda: dict())
     params: Dict = field(default_factory=lambda: dict())
     need_to_clear: bool = False
 

@@ -227,17 +227,17 @@ class GraphModel:
                     unique_triplet_ids.add(cur_triplet.id)
                     triplets_to_create.append(cur_triplet)
                     info_counter += 1
-                    creation_info[info_counter] = {'s_node': False, 'rel': True, 'e_node': False}
+                    creation_info[info_counter] = {'s_node': False, 'e_node': False}
 
                     s_node_id = cur_triplet.start_node.id
-                    if ((s_node_id not in unique_node_ids) and (not self.db_conn.item_exist(s_node_id))):
+                    if ((s_node_id not in unique_node_ids) and (not self.db_conn.item_exist(s_node_id, id_type='node'))):
                         unique_node_ids.add(s_node_id)
                         creation_info[info_counter]['s_node'] = True
                     else:
                         existed_node_ids.add(s_node_id)
 
                     e_node_id = cur_triplet.end_node.id
-                    if ((e_node_id not in unique_node_ids) and (not self.db_conn.item_exist(e_node_id))):
+                    if ((e_node_id not in unique_node_ids) and (not self.db_conn.item_exist(e_node_id, id_type='node'))):
                         unique_node_ids.add(e_node_id)
                         creation_info[info_counter]['e_node'] = True
                     else:
