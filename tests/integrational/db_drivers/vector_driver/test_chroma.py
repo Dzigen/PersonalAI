@@ -29,7 +29,7 @@ def test_delete(instances, input, expected, chromadb_conn):
 
     try:
         chromadb_conn.delete(input)
-    except Exception as e:
+    except ValueError as e:
         print(str(e))
         assert expected['exception']
 
@@ -42,7 +42,7 @@ def test_read(instances, input, expected, chromadb_conn):
 
     try:
         output = chromadb_conn.read(input)
-    except Exception as e:
+    except ValueError as e:
         print(str(e))
         assert expected['exception']
 
@@ -56,7 +56,7 @@ def test_retrieve(instances, queries, n_results, expected, chromadb_conn):
 
     try:
         output = chromadb_conn.retrieve(queries, n_results=n_results)
-    except Exception as e:
+    except ValueError as e:
         print(str(e))
         assert expected['exception']
 
@@ -78,7 +78,7 @@ def test_item_exist(instances, input, expected, chromadb_conn):
 
     try:
         real = chromadb_conn.item_exist(input)
-    except Exception as e:
+    except ValueError as e:
         print(str(e))
         assert expected['exception']
 
