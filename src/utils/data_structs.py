@@ -42,10 +42,10 @@ class Relation:
 
 @dataclass
 class Triplet:
-    id: str = None
     start_node: Node
     relation: Relation
     end_node: Node
+    id: str = None
     stringified: str = None
 
 class BaseCreator:
