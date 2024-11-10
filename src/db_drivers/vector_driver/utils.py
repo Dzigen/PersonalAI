@@ -7,7 +7,7 @@ from ..utils import AbstractDatabaseConnection
 @dataclass
 class VectorDBConnectionConfig:
     path: str
-    db_name: str
+    db_info: Dict = field(default_factory=lambda: {"db": 'default_db', 'table': 'default_table'})
     params: Dict = field(default_factory=lambda: {"hnsw:space": "ip"})
     need_to_clear: bool = False
 

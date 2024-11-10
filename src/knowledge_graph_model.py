@@ -12,10 +12,10 @@ from .utils import Logger
 
 NODES_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
     db_vendor='chroma', db_config=VectorDBConnectionConfig(
-        path="../data/graph_structures/vectorized_nodes/v8/densedb", db_name="vectorized_nodes"))
+        path="../data/graph_structures/vectorized_nodes/default_densedb", db_name="vectorized_nodes"))
 TRIPLETS_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
     db_vendor='chroma', db_config=VectorDBConnectionConfig(
-        path="../data/graph_structures/vectorized_triplets/v4/densedb", db_name="vectorized_triplets"))
+        path="../data/graph_structures/vectorized_triplets/default_densedb", db_name="vectorized_triplets"))
 
 EMBEDDINGS_MODEL_LOG_PATH = 'log/em'
 
@@ -41,7 +41,7 @@ class EmbeddingsModel:
             'triplets': VectorDriver.connect(config.tripletsdb_driver_config)}
         self.embedder = EmbedderModel(config.embedder_config)
 
-    def create_triplets(self, triplets:List[Triplet], add_nodes:bool=True, batch_size:int=128)-> None:
+    def create_triplets(self, triplets:List[Triplet], create_nodes:bool=True, batch_size:int=128)-> None:
         """_summary_
 
         :param triplets: _description_
@@ -74,7 +74,7 @@ class EmbeddingsModel:
                         relation_ids.append(cur_triplet.relation.id)
                         relation_strs.append(triplet_str)
 
-                if add_nodes:
+                if create_nodes:
                     self.log("\t- Also adding triplet-nodes in vector-model", verbose=self.config.verbose)
                     for node in [cur_triplet.start_node, cur_triplet.end_node]:
                         if node.id not in unique_node_ids:
