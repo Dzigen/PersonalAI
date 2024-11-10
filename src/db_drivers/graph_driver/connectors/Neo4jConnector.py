@@ -9,14 +9,14 @@ from dataclasses import dataclass
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NodeType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 
-DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(uri="bolt://localhost:7687", params={'user': "neo4j", 'pwd': 'password', 'db_name': 'testdb'})
+DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(uri="bolt://localhost:7687", params={'user': "neo4j", 'pwd': 'password'})
 
 class Neo4jConnector(AbstractGraphDatabaseConnection):
     def __init__(self, config: GraphDBConnectionConfig):
         self.config = config
         self.open_connection()
 
-        self.execute_query(f'CREATE DATABASE {self.config.params["db_name"]} IF NOT EXISTS', db_flag=False)
+        self.execute_query(f'CREATE DATABASE {self.config.db_info["db"]} IF NOT EXISTS', db_flag=False)
         self.create_node_template = 'CREATE (n:{type} {{ name: "{name}"}})'
         self.create_rel_template0 = """MATCH (a:{type1}), (b:{type2})
 WHERE a.name="{name1}" and b.name ="{name2}"
@@ -151,7 +151,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         session = None
         response = None
         try:
-            session = self.driver.session(database=self.config.params['db_name']) if db_flag else self.driver.session()
+            session = self.driver.session(database=self.config.db_info['db']) if db_flag else self.driver.session()
             response = list(session.run(query))
         except Exception as e:
             print("Query failed:", e)

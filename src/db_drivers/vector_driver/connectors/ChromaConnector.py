@@ -6,7 +6,7 @@ from ....utils.errors import ReturnInfo
 from ..utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
 logging.getLogger("chromadb").setLevel(logging.CRITICAL)
 
-DEFAULT_CHROMA_CONFIG = VectorDBConnectionConfig(path='./default_vectordb', db_name='vectors')
+DEFAULT_CHROMA_CONFIG = VectorDBConnectionConfig(path='../data/graph_structures/default_vectorstore')
 
 class ChromaConnection(AbstractVectorDatabaseConnection):
     def __init__(self, config: VectorDBConnectionConfig) -> None:
