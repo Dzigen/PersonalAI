@@ -39,7 +39,7 @@ def test_delete_triplets(triplets. expected, embeddings_model):
     assert real_nodes_db_size == expected['nodes_count']
     assert real_triplets_db_size == expected['triplets_count']
 
-    assert len(deleted_item_ids['nodes']) == expected['deleted_n_count']
+    assert len(deleted_item_ids['nodes']) == len(expected['deleted_n_count'])
     assert len(deleted_item_ids['triplets']) == len(deleted_item_ids['deleted_t_count'])
 
     if add_nodes_flag:
