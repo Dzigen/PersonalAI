@@ -35,7 +35,7 @@ KVDB_CREAT_TEST_CASES = [
 
 KVDB_DELETE_TEST_CASES = [
     # 1. пустой список
-    ([FULL_INSTANCE1, FULL_INSTANCE1], [], {'exception': False, 'db_size': 2}),
+    ([FULL_INSTANCE1, FULL_INSTANCE2], [], {'exception': False, 'db_size': 2}),
     # 2. удаление одного существующего элемента
     ([FULL_INSTANCE1, FULL_INSTANCE2], ['456'], {'exception': False, 'db_size': 1}),
     # 3. удаление одного несуществующего элемента
@@ -54,7 +54,7 @@ KVDB_DELETE_TEST_CASES = [
 
 KVDB_READ_TEST_CASES = [
     # 1. пустой список
-    ([FULL_INSTANCE1, FULL_INSTANCE2], [], {'exception': False, 'output_ids': []})
+    ([FULL_INSTANCE1, FULL_INSTANCE2], [], {'exception': False, 'output_ids': []}),
     # 2. один существующий элемент
     ([FULL_INSTANCE1, FULL_INSTANCE2], ['123'], {'exception': False, 'output_ids': ['123']}),
     # 3. один несуществующий элемент
@@ -68,7 +68,7 @@ KVDB_READ_TEST_CASES = [
     # 7. неверный формат идентификатора 2
     ([FULL_INSTANCE1,FULL_INSTANCE2], [True], {'exception': True, 'output_ids': []}),
     # 8. неверный формат идентификатора 3
-    ([FULL_INSTANCE1,FULL_INSTANCE2], [None], {'exception': True, 'output_ids': []}),
+    ([FULL_INSTANCE1,FULL_INSTANCE2], [None], {'exception': True, 'output_ids': []})
 ]
 
 KVDB_COUNT_TEST_CASES = [
