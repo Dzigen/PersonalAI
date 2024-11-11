@@ -20,8 +20,8 @@ class QueryLLMParserConfig:
     verbose: bool = False
 
 class QueryLLMParser:
-    """Главный класс для извлечения полезной информации
-    из пользовательского запроса
+    """Главный класс для извлечения сущностей
+    из user-вопроса.
     """
     def __init__(self, config: QueryLLMParserConfig = QueryLLMParserConfig()) -> None:
         self.config = config

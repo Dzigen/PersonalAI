@@ -24,15 +24,6 @@ class TripletsFilter(AbstractTriplesFilter):
         self.config = config
 
     def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
-        """_summary_
-
-        :param query_info: _description_
-        :type query_info: QueryInfo
-        :param triplets: _description_
-        :type triplets: List[Triplet]
-        :return: _description_
-        :rtype: List[Triplet]
-        """
         filtered_triplets = []
         query_embd = self.kg_model.embeddings_struct.embedder.encode_queries([query_info.query])[0]
         query_instance = VectorDBInstance(embedding=query_embd)

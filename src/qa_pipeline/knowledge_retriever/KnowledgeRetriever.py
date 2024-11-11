@@ -12,14 +12,12 @@ from ...utils.errors import QA_ZERO_RETRIEVED_TRIPLETS_MSG
 from dataclasses import dataclass, field
 from typing import List, Tuple
 
-#
 AVAILABLE_TRIPLETS_RETRIEVERS  = {
     'astar': AStarTripletsRetriever,
     'bfs': BFSRetriever,
     'mixture': MixturedTripletsRetriever
 }
 
-#
 AVAILABLE_TRIPLETS_FILTERS = {
     'naive': TripletsFilter
 }
@@ -28,11 +26,9 @@ AVAILABLE_TRIPLETS_FILTERS = {
 class KnowledgeRetrieverConfig:
     #
     retriever_method: str = 'astar'
-    #
     retriever_config: BaseGraphSearchConfig = field(default_factory=lambda: AStarGraphSearchConfig())
     #
     filter_method: str = 'naive'
-    #
     filter_config: BaseTripletsFilterConfig = field(default_factory=lambda: TripletsFilterConfig())
     #
     log: Logger = field(default_factory=lambda: Logger(RETRIEVER_LOG_PATH))
@@ -43,13 +39,6 @@ class KnowledgeRetriever:
     по запросу пользователя
     """
     def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeRetrieverConfig = KnowledgeRetrieverConfig()) -> None:
-        """_summary_
-
-        :param kg_model: _description_
-        :type kg_model: KnowledgeGraphModel
-        :param config: _description_, defaults to KnowledgeRetrieverConfig()
-        :type config: KnowledgeRetrieverConfig, optional
-        """
         self.config = config
         self.kg_model = kg_model
         self.log = config.log

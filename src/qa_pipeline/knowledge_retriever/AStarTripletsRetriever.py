@@ -176,7 +176,7 @@ class AStarMetrics:
         self.log(f"bfs graph-db queries: {neo4j_queries_counter}", verbose=self.verbose)
         self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.verbose)
 
-        INF_VALUE = 1000001
+        INF_VALUE = 1000001 # специальное значение, которое говорит, что между вершинами нет пути
         if self.config.kvdriver_config is not None:
             pair_id = create_id_for_node_pair(s_node_id, e_node_id)
             if not self.cache['bfs_short_path'].item_exist(pair_id):
@@ -247,17 +247,6 @@ class AStarGraphSearch:
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
                  verbose: bool = False) -> None:
-        """_summary_
-
-        :param kg_model: _description_
-        :type kg_model: KnowledgeGraphModel
-        :param log: _description_
-        :type log: Logger
-        :param search_config: _description_, defaults to AStarGraphSearchConfig()
-        :type search_config: AStarGraphSearchConfig, optional
-        :param verbose: _description_, defaults to False
-        :type verbose: bool, optional
-        """
         self.log = log
         self.verbose = verbose
         self.config = search_config
@@ -369,13 +358,6 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
         return path
 
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
-        """_summary_
-
-        :param query_info: _description_
-        :type query_info: QueryInfo
-        :return: _description_
-        :rtype: List[Triplet]
-        """
         nodes_ids = []
         for node in query_info.linked_nodes:
             if node.id not in nodes_ids:

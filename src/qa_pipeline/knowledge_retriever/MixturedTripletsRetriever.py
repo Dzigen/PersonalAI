@@ -12,9 +12,7 @@ from ...utils import Logger
 
 @dataclass
 class MixturedGraphSearchConfig(BaseGraphSearchConfig):
-    #
     astar_config: AStarGraphSearchConfig = field(default_factory=lambda: AStarGraphSearchConfig())
-    #
     bfs_config: BFSSearchConfig = field(default_factory=lambda: BFSSearchConfig())
 
 class MixturedTripletsRetriever(AbstractTripletsRetriever):
@@ -27,13 +25,6 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever):
         self.bfs_searcher = BFSRetriever(kg_model, log, search_config.bfs_config, cache, verbose)
 
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
-        """_summary_
-
-        :param query_info: _description_
-        :type query_info: QueryInfo
-        :return: _description_
-        :rtype: List[Triplet]
-        """
         astar_triplets = self.astar_searcher.get_relevant_triplets(query_info)
         bfs_triplets = self.bfs_searcher.get_relevant_triplets(query_info)
 
