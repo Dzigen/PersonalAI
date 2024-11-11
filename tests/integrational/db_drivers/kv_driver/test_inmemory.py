@@ -28,7 +28,7 @@ def test_delete(instances, input, expected, inmemory_conn):
 
     try:
         inmemory_conn.delete(input)
-    except Exception as e:
+    except ValueError as e:
         print(str(e))
         assert expected['exception']
 
