@@ -130,5 +130,4 @@ def test_get_triplets(instances, create_info, nodes, expected, inmemory_conn):
         assert expected['exception']
     else:
         assert not expected['exception']
-
-    assert expected['output_ids'] == set(list(map(lambda triplet: triplet.id, output)))
+        assert expected['output_ids'] == set(list(map(lambda triplet: triplet.id, output)))
