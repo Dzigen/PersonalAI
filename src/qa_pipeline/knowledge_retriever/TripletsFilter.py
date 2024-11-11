@@ -9,7 +9,6 @@ from ...db_drivers.vector_driver import VectorDBInstance
 
 @dataclass
 class TripletsFilterConfig(BaseTripletsFilterConfig):
-    """_summary_"""
     #
     max_k: int = 50
 

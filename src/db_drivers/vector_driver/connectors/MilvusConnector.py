@@ -6,6 +6,6 @@ from ..utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, 
 # TODO
 DEFAULT_MILVUS_CONFIG = ...
 
-# TODO
 class MilvusConnection(AbstractVectorDatabaseConnection):
+    # TODO
     pass

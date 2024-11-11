@@ -8,11 +8,7 @@ logging.getLogger("chromadb").setLevel(logging.CRITICAL)
 DEFAULT_CHROMA_CONFIG = VectorDBConnectionConfig(path='../data/graph_structures/default_vectorstore')
 
 class ChromaConnection(AbstractVectorDatabaseConnection):
-    """_summary_
-
-    :param AbstractVectorDatabaseConnection: _description_
-    :type AbstractVectorDatabaseConnection: _type_
-    """
+    """_summary_ """
     def __init__(self, config: VectorDBConnectionConfig) -> None:
         self.config = config
         self.open_connection()

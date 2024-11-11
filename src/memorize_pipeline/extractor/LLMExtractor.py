@@ -13,8 +13,6 @@ from ...agents import AgentDriver, AgentDriverConfig
 
 @dataclass
 class LLMExtractorConfig:
-    """_summary_
-    """
     #
     lang: str = "auto"
     #

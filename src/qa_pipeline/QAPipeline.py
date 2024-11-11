@@ -11,8 +11,6 @@ from typing import Tuple
 
 @dataclass
 class QAPipelineConfig:
-    """_summary_
-    """
     #
     query_parser_config: QueryLLMParserConfig = field(default_factory=lambda: QueryLLMParserConfig())
     #

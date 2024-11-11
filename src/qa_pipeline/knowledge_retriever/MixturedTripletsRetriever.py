@@ -12,8 +12,6 @@ from ...utils import Logger
 
 @dataclass
 class MixturedGraphSearchConfig(BaseGraphSearchConfig):
-    """_summary_
-    """
     #
     astar_config: AStarGraphSearchConfig = field(default_factory=lambda: AStarGraphSearchConfig())
     #

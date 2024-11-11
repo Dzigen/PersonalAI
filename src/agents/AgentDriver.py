@@ -5,8 +5,6 @@ from .configs import DEFAULT_AGENT_CONFIGS, AVAILABLE_AGENT_CONNECTORS
 
 @dataclass
 class AgentDriverConfig:
-    """_summary_
-    """
     #
     name: str = 'gigachat'
     #

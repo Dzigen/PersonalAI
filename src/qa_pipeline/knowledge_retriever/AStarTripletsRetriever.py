@@ -16,16 +16,12 @@ from ...utils import Logger
 
 @dataclass
 class AStarMetricsConfig:
-    """_summary_
-    """
     #
     h_metric_name: str = 'ip' # 'ip', 'weight_with_short_path', 'avg_weighted_with_short_path'
     kvdriver_config: KeyValueDriverConfig = None
 
 @dataclass
 class AStarGraphSearchConfig(BaseGraphSearchConfig):
-    """_summary_
-    """
     #
     metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
     # макимальная глубина обхода графа для поиска заданной вершины

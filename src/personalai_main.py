@@ -8,10 +8,10 @@ from .memorize_pipeline import MemPipeline, MemPipelineConfig
 from .knowledge_graph_model import KnowledgeGraphModel
 from .utils import Logger, ReturnInfo, Triplet
 
-RKG_LOG_PATH = "log/rmkg"
+RKG_LOG_PATH = "log/personalai"
 
 @dataclass
-class RemoteKnowledgeGraphConfig:
+class PersonalAIConfig:
     #
     graph_struct_config: GraphModelConfig = field(default_factory=lambda: GraphModelConfig())
     #
@@ -24,10 +24,10 @@ class RemoteKnowledgeGraphConfig:
     log: Logger = field(default_factory=lambda:Logger(RKG_LOG_PATH))
     verbose: bool = False
 
-class RemoteKnowledgeGraph:
+class PersonalAI:
     """_summary_
     """
-    def __init__(self, config: RemoteKnowledgeGraphConfig):
+    def __init__(self, config: PersonalAIConfig):
         self.config = config
         self.log = self.config.log
 
@@ -46,9 +46,9 @@ class RemoteKnowledgeGraph:
         :rtype: Tuple[str, ReturnInfo]
         """
         self.log("Start answer generation:", verbose=self.config.verbose)
-        self.log(f"- question: {question}", verbose=self.config.verbose)
+        self.log(f"\t- question: {question}", verbose=self.config.verbose)
         answer, info = self.qa_pipeline.answer(question)
-        self.log(f"- answer: {answer}", verbose=self.config.verbose)
+        self.log(f"\t- answer: {answer}", verbose=self.config.verbose)
         return answer, info
 
     def update_memory(self, text: str, text_properties: Dict) -> Tuple[List[Triplet], ReturnInfo]:
@@ -63,5 +63,5 @@ class RemoteKnowledgeGraph:
         """
         self.log("Start memory-updating...", verbose=self.config.verbose)
         triplets, info = self.mem_pipeline.remember(text, text_properties)
-        self.log(f"- triplets amount: {len(triplets)}", verbose=self.config.verbose)
+        self.log(f"\t- triplets amount: {len(triplets)}", verbose=self.config.verbose)
         return triplets, info

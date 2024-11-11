@@ -3,16 +3,15 @@ from dataclasses import dataclass, field
 from abc import abstractmethod
 
 from ...utils.data_structs import Triplet, NodeType
-from ..utils import AbstractDatabaseConnection
+from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
 @dataclass
-class GraphDBConnectionConfig:
+class GraphDBConnectionConfig(BaseDatabaseConfig):
+    #
     uri: str = None
-    db_info: Dict = field(default_factory=lambda: {'db': 'default_db', 'table': 'default_table'})
-    params: Dict = field(default_factory=lambda: dict())
-    need_to_clear: bool = False
 
 class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
+    """_summary_"""
 
     @abstractmethod
     def get_adjecent_nodes(self, base_node_id: str, parent_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
@@ -31,6 +30,17 @@ class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
 
     @abstractmethod
     def get_triplets_by_name(self, subj_name: str, obj_name: str, obj_type) -> List[Triplet]:
+        """_summary_
+
+        :param subj_name: _description_
+        :type subj_name: str
+        :param obj_name: _description_
+        :type obj_name: str
+        :param obj_type: _description_
+        :type obj_type: _type_
+        :return: _description_
+        :rtype: List[Triplet]
+        """
         pass
 
     @abstractmethod

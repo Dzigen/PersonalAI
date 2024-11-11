@@ -26,8 +26,6 @@ AVAILABLE_TRIPLETS_FILTERS = {
 
 @dataclass
 class KnowledgeRetrieverConfig:
-    """_summary_
-    """
     #
     retriever_method: str = 'astar'
     #

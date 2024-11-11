@@ -11,8 +11,6 @@ from ...utils.errors import QA_BAD_QA_PROMPT_MSG, QA_EMPTY_ANSWER_MSG, NOT_SUPPO
 
 @dataclass
 class QALLMGeneratorConfig:
-    """_summary_
-    """
     #
     lang: str = "auto"
     system_prompt: dict = field(default_factory=lambda: QA_SYSTEM_PROMPT)

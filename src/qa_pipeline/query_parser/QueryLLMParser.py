@@ -9,8 +9,6 @@ from ...agents import AgentDriver, AgentDriverConfig
 
 @dataclass
 class QueryLLMParserConfig:
-    """_summary_
-    """
     #
     lang: str = 'auto'
     #

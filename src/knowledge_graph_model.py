@@ -21,8 +21,6 @@ EMBEDDINGS_MODEL_LOG_PATH = 'log/em'
 
 @dataclass
 class EmbeddingsModelConfig:
-    """_summary_
-    """
     #
     nodesdb_driver_config: VectorDriverConfig = field(default_factory=lambda: NODES_DB_DEFAULT_DRIVER_CONFIG)
     tripletsdb_driver_config: VectorDriverConfig = field(default_factory=lambda: TRIPLETS_DB_DEFAULT_DRIVER_CONFIG)
@@ -186,8 +184,6 @@ GRAPH_MODEL_LOG_PATH = 'log/gm'
 
 @dataclass
 class GraphModelConfig:
-    """_summary_
-    """
     #
     driver_config: GraphDriverConfig = field(default_factory=lambda: GRAPH_DB_DEFAULT_DRIVER_CONFIG)
     #

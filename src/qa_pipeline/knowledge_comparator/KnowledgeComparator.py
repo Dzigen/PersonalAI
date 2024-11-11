@@ -9,8 +9,6 @@ from ...db_drivers.vector_driver import VectorDBInstance
 
 @dataclass
 class KnowledgeComparatorConfig:
-    """_summary_
-    """
     #
     threshold: float = 0.5
     #

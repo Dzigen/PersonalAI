@@ -4,8 +4,6 @@ from typing import Dict, List
 
 @dataclass
 class AgentConnectorConfig:
-    """_summary_
-    """
     #
     gen_strategy: Dict
     #

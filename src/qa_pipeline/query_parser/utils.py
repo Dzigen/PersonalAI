@@ -27,8 +27,6 @@ ENTITIES_PARSE_FUNC = {
 
 @dataclass
 class EntitiesExtractorConfig:
-    """_summary_
-    """
     #
     user_prompt: Dict = field(default_factory=lambda: ENTITIES_EXTRACTION_USER_PROMPT)
     #

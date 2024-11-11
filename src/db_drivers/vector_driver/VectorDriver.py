@@ -6,8 +6,6 @@ from .configs import DEFAULT_VECTORDB_CONFIGS, AVAILABLE_VECTORDB_CONNECTORS
 
 @dataclass
 class VectorDriverConfig:
-    """_summary_
-    """
     #
     db_vendor: str = 'chroma'
     #
