@@ -62,6 +62,9 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
                 self.kv_store[item.id] = item.metadata
 
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
+        for id in ids:
+            if type(id) is not str:
+                raise ValueError
         records = [KeyValueDBInstance(id=id, metadata=self.kv_store[id]) for id in ids if id in self.kv_store]
         return records
 
@@ -87,4 +90,6 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         return len(self.kv_store)
 
     def item_exist(self, id: str):
+        if type(id) is not str:
+            raise ValueError
         return id in self.kv_store
