@@ -31,13 +31,6 @@ class QAPipeline:
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: QAPipelineConfig = QAPipelineConfig()) -> None:
-        """_summary_
-
-        :param kg_model: _description_
-        :type kg_model: KnowledgeGraphModel
-        :param config: _description_, defaults to QAPipelineConfig()
-        :type config: QAPipelineConfig, optional
-        """
         self.config = config
         self.kg_model = kg_model
         self.log = config.log

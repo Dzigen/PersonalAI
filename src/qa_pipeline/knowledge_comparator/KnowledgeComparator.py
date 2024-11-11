@@ -28,13 +28,6 @@ class KnowledgeComparator:
     с имеющейся информацией в графе знаний
     """
     def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeComparatorConfig = KnowledgeComparatorConfig()) -> None:
-        """_summary_
-
-        :param kg_model: _description_
-        :type kg_model: KnowledgeGraphModel
-        :param config: _description_, defaults to KnowledgeComparatorConfig()
-        :type config: KnowledgeComparatorConfig, optional
-        """
         self.config = config
         self.kg_model = kg_model
 

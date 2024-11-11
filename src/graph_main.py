@@ -12,8 +12,6 @@ RKG_LOG_PATH = "log/rmkg"
 
 @dataclass
 class RemoteKnowledgeGraphConfig:
-    """_summary_
-    """
     #
     graph_struct_config: GraphModelConfig = field(default_factory=lambda: GraphModelConfig())
     #
@@ -27,6 +25,8 @@ class RemoteKnowledgeGraphConfig:
     verbose: bool = False
 
 class RemoteKnowledgeGraph:
+    """_summary_
+    """
     def __init__(self, config: RemoteKnowledgeGraphConfig):
         self.config = config
         self.log = self.config.log
@@ -43,7 +43,7 @@ class RemoteKnowledgeGraph:
         :param question: _description_
         :type question: str
         :return: _description_
-        :rtype: str
+        :rtype: Tuple[str, ReturnInfo]
         """
         self.log("Start answer generation:", verbose=self.config.verbose)
         self.log(f"- question: {question}", verbose=self.config.verbose)
@@ -52,6 +52,15 @@ class RemoteKnowledgeGraph:
         return answer, info
 
     def update_memory(self, text: str, text_properties: Dict) -> Tuple[List[Triplet], ReturnInfo]:
+        """_summary_
+
+        :param text: _description_
+        :type text: str
+        :param text_properties: _description_
+        :type text_properties: Dict
+        :return: _description_
+        :rtype: Tuple[List[Triplet], ReturnInfo]
+        """
         self.log("Start memory-updating...", verbose=self.config.verbose)
         triplets, info = self.mem_pipeline.remember(text, text_properties)
         self.log(f"- triplets amount: {len(triplets)}", verbose=self.config.verbose)

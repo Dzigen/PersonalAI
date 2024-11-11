@@ -7,6 +7,13 @@ from .errors import ReturnStatus
 SUPPORTED_LANGUAGES = {'ru', 'en'}
 
 def detect_lang(text: str) -> Tuple[str, ReturnStatus]:
+    """_summary_
+
+    :param text: _description_
+    :type text: str
+    :return: _description_
+    :rtype: Tuple[str, ReturnStatus]
+    """
     lang, status = None, ReturnStatus.success
     if len(text) == 0:
         status = ReturnStatus.empty_input_text

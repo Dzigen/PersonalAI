@@ -33,6 +33,8 @@ class EmbeddingsModelConfig:
     verbose: bool = False
 
 class EmbeddingsModel:
+    """_summary_
+    """
     def __init__(self, config: EmbeddingsModelConfig = EmbeddingsModelConfig()):
         self.config = config
         self.log = config.log
@@ -46,8 +48,8 @@ class EmbeddingsModel:
 
         :param triplets: _description_
         :type triplets: List[Triplet]
-        :param add_nodes: _description_, defaults to True
-        :type add_nodes: bool, optional
+        :param create_nodes: _description_, defaults to True
+        :type create_nodes: bool, optional
         :param batch_size: _description_, defaults to 128
         :type batch_size: int, optional
         """
@@ -96,8 +98,8 @@ class EmbeddingsModel:
 
         :param triplets: _description_
         :type triplets: List[Triplet]
-        :param delete_nods: _description_, defaults to True
-        :type delete_nods: bool, optional
+        :param delete_nodes: _description_, defaults to True
+        :type delete_nodes: bool, optional
         """
         triplets_ids = list(map(lambda v: v.id, triplets))
 
@@ -184,6 +186,8 @@ GRAPH_MODEL_LOG_PATH = 'log/gm'
 
 @dataclass
 class GraphModelConfig:
+    """_summary_
+    """
     #
     driver_config: GraphDriverConfig = field(default_factory=lambda: GRAPH_DB_DEFAULT_DRIVER_CONFIG)
     #
@@ -191,6 +195,8 @@ class GraphModelConfig:
     verbose: bool = False
 
 class GraphModel:
+    """_summary_
+    """
     def __init__(self, config: GraphModelConfig = GraphModelConfig()) -> None:
         self.config = config
         self.log = config.log
@@ -201,6 +207,8 @@ class GraphModel:
 
         :param triplets: _description_
         :type triplets: List[Triplet]
+        :param batch_size: _description_, defaults to 64
+        :type batch_size: int, optional
         """
         self.log("Adding triplets to graph-model...", verbose=self.config.verbose)
         unique_triplet_ids, unique_node_ids = set(), set()
@@ -258,6 +266,8 @@ class GraphModel:
 
         :param triplets: _description_
         :type triplets: List[Triplet]
+        :param batch_size: _description_, defaults to 64
+        :type batch_size: int, optional
         """
         steps = math.ceil(len(triplets) / batch_size)
         for step in tqdm(range(steps)):
@@ -265,5 +275,9 @@ class GraphModel:
 
 @dataclass
 class KnowledgeGraphModel:
+    """_summary_
+    """
+    #
     graph_struct: GraphModel
+    #
     embeddings_struct: EmbeddingsModel

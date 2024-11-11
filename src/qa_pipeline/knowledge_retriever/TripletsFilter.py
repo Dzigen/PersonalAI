@@ -9,8 +9,7 @@ from ...db_drivers.vector_driver import VectorDBInstance
 
 @dataclass
 class TripletsFilterConfig(BaseTripletsFilterConfig):
-    """_summary_
-    """
+    """_summary_"""
     #
     max_k: int = 50
 
@@ -20,17 +19,6 @@ class TripletsFilter(AbstractTriplesFilter):
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, config: TripletsFilterConfig, log_verbose: bool = False) -> None:
-        """_summary_
-
-        :param kg_model: _description_
-        :type kg_model: KnowledgeGraphModel
-        :param log: _description_
-        :type log: Logger
-        :param config: _description_
-        :type config: TripletsFilterConfig
-        :param log_verbose: _description_, defaults to False
-        :type log_verbose: bool, optional
-        """
         self.log = log
         self.log_verbose = log_verbose
         self.kg_model = kg_model

@@ -26,11 +26,6 @@ class QueryLLMParser:
     из пользовательского запроса
     """
     def __init__(self, config: QueryLLMParserConfig = QueryLLMParserConfig()) -> None:
-        """_summary_
-
-        :param config: _description_, defaults to QueryLLMParserConfig()
-        :type config: QueryLLMParserConfig, optional
-        """
         self.config = config
 
         self.agent = AgentDriver.connect(config.agent_cofig)

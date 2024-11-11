@@ -38,21 +38,6 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
 class AStarMetrics:
     def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: str, log: Logger,
                 config: AStarMetricsConfig = AStarMetricsConfig(), verbose: bool = False):
-        """_summary_
-
-        :param kg_model: _description_
-        :type kg_model: KnowledgeGraphModel
-        :param accepted_node_types: _description_
-        :type accepted_node_types: str
-        :param log: _description_
-        :type log: Logger
-        :param config: _description_, defaults to AStarMetricsConfig()
-        :type config: AStarMetricsConfig, optional
-        :param cache: _description_, defaults to None
-        :type cache: AbstractKVDatabaseConnection, optional
-        :param verbose: _description_, defaults to False
-        :type verbose: bool, optional
-        """
         self.config = config
         self.accepted_node_types = accepted_node_types
         self.kg_model = kg_model
@@ -274,8 +259,6 @@ class AStarGraphSearch:
         :type log: Logger
         :param search_config: _description_, defaults to AStarGraphSearchConfig()
         :type search_config: AStarGraphSearchConfig, optional
-        :param cache: _description_, defaults to None
-        :type cache: AbstractKVDatabaseConnection, optional
         :param verbose: _description_, defaults to False
         :type verbose: bool, optional
         """
@@ -359,19 +342,6 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
                  verbose: bool = False) -> None:
-        """_summary_
-
-        :param kg_model: _description_
-        :type kg_model: KnowledgeGraphModel
-        :param log: _description_
-        :type log: Logger
-        :param search_config: _description_, defaults to AStarGraphSearchConfig()
-        :type search_config: AStarGraphSearchConfig, optional
-        :param cache: _description_, defaults to None
-        :type cache: AbstractKVDatabaseConnection, optional
-        :param verbose: _description_, defaults to False
-        :type verbose: bool, optional
-        """
         self.log = log
         self.verbose = verbose
         self.kg_model = kg_model

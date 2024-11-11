@@ -31,11 +31,6 @@ class QALLMGenerator:
     извлечённой информации из графа знаний
     """
     def __init__(self, config: QALLMGeneratorConfig = QALLMGeneratorConfig()) -> None:
-        """_summary_
-
-        :param config: _description_, defaults to QALLMGeneratorConfig()
-        :type config: QALLMGeneratorConfig, optional
-        """
         self.config = config
         self.agent = AgentDriver.connect(config.agent_cofig)
         self.log = self.config.log

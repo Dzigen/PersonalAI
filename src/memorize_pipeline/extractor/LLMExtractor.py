@@ -34,11 +34,6 @@ class LLMExtractorConfig:
 class LLMExtractor:
 
     def __init__(self, config: LLMExtractorConfig = LLMExtractorConfig()) -> None:
-        """_summary_
-
-        :param config: _description_, defaults to LLMExtractorConfig()
-        :type config: LLMExtractorConfig, optional
-        """
         self.config = config
         self.agent = AgentDriver.connect(config.agent_config)
         self.log = config.log
