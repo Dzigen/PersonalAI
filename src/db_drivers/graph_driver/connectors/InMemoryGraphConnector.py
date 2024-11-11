@@ -56,30 +56,37 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
             t_id = self.generate_id()
             self.tid_triplets_index[triplet.id].append(t_id)
-            self.triplets[t_id].append(triplet)
+            self.triplets[t_id] = triplet
 
             r_id = self.generate_id()
             self.strid_relation_index[triplet.relation.id].append(r_id)
             self.relations[r_id] = triplet.relation
 
+            #
             if cur_info is None or cur_info['s_node']:
-                sn_id = self.generate_id()
-                self.strid_nodes_index[triplet.start_node.id].append(sn_id)
-                self.nodes[sn_id] = triplet.start_node
+                sn_ids = [self.generate_id()]
+                self.strid_nodes_index[triplet.start_node.id].append(sn_ids[0])
+                self.nodes[sn_ids[0]] = triplet.start_node
             else:
-                sn_id = self.strid_nodes_index[triplet.start_node.id]
+                sn_ids = self.strid_nodes_index[triplet.start_node.id]
 
             if cur_info is None or cur_info['e_node']:
-                en_id = self.generate_id()
-                self.strid_nodes_index[triplet.end_node.id].append(en_id)
-                self.nodes[en_id] = triplet.end_node
+                en_ids = [self.generate_id()]
+                self.strid_nodes_index[triplet.end_node.id].append(en_ids[0])
+                self.nodes[en_ids[0]] = triplet.end_node
             else:
-                en_id = self.strid_nodes_index[triplet.end_node.id]
+                en_ids = self.strid_nodes_index[triplet.end_node.id]
 
-            self.edges[sn_id].append(t_id)
-            self.edges[en_id].append(t_id)
-            self.adjacent_nodes[sn_id].append(en_id)
-            self.adjacent_nodes[en_id].append(sn_id)
+            #
+            for sn_id in sn_ids:
+                self.edges[sn_id].append(t_id)
+                for en_id in en_ids:
+                    self.adjacent_nodes[sn_id].append(en_id)
+
+            for en_id in en_ids:
+                self.edges[en_id].append(t_id)
+                for sn_id in sn_ids:
+                    self.adjacent_nodes[en_id].append(sn_id)
 
     def read(self, ids: List[str]) -> List[Triplet]:
         triplets = []
@@ -100,12 +107,18 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         pass
 
     def get_adjecent_nodes(self, base_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
+        if type(base_node_id) is not str:
+            raise ValueError
+
         nodes = deepcopy(self.adjacent_nodes.get(base_node_id, []))
         filtered_nodes = list(filter(lambda n_id: self.items_ids[n_id].type in accepted_n_types, nodes))
 
         return filtered_nodes
 
     def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
+        if (type(node1_id) is not str) or (type(node2_id) is not str):
+            raise ValueError
+
         shared_triplets_ids = set(self.edges[node1_id]).intersection(set(self.edges[node2_id]))
         triplets = list(map(lambda id: self.triplets_ids[id], shared_triplets_ids))
         return triplets
@@ -124,6 +137,9 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         return {'triplets': len(self.triplets), 'nodes': len(self.nodes)}
 
     def item_exist(self, id: str, id_type='triplet') -> bool:
+        if type(id) is not str:
+            raise ValueError
+
         output = None
         if id_type == 'node':
             output = self.strid_nodes_index.get(id, [])
