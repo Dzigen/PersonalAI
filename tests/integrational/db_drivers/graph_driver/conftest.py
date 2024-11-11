@@ -6,7 +6,7 @@ from src.db_drivers.graph_driver import GraphDriver, GraphDriverConfig, GraphDBC
 
 @pytest.fixture()
 def inmemory_conn():
-    config = GraphDriverConfig(db_vendor='inmemory', db_config=GraphDBConnectionConfig(
+    config = GraphDriverConfig(db_vendor='inmemory_graph', db_config=GraphDBConnectionConfig(
         db_info={'db': 'testing', 'table': 'testing'}, need_to_clear=True))
     return GraphDriver.connect(config)
 
