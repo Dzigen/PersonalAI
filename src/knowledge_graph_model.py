@@ -271,9 +271,8 @@ class GraphModel:
 
 @dataclass
 class KnowledgeGraphModel:
-    """_summary_
-    """
-    #
+    """Модель памяти (графа знаний) ассистента"""
+    # знания, хранящиеся в графовой структуре данных
     graph_struct: GraphModel
-    #
+    # знания, хранящиеся в векторной структуре данных
     embeddings_struct: EmbeddingsModel

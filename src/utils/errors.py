@@ -44,7 +44,7 @@ NOT_SUPPORTED_LANG_MSG = ""
 
 MEM_BAD_TRIPLET_EXTRACTION_PROMPT_MSG = ''
 MEM_BAD_THESIS_EXTRACTION_PROMPT_MSG = ''
-MEM_ZERO_EXTRACTED_TRIPLETS_MSG = 'Из текста было извлечено ноль триплетов/тезисов.'
+MEM_ZERO_EXTRACTED_TRIPLETS_MSG = 'Из текста было извлечено нуль триплетов/тезисов.'
 
 QA_BAD_ENTITIES_EXTRACTION_PROMPT_MSG = ''
 QA_BAD_QA_PROMPT_MSG = ''

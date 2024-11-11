@@ -12,28 +12,18 @@ from ..utils import Logger, Triplet, ReturnStatus, ReturnInfo
 
 @dataclass
 class MemPipelineConfig:
-    """_summary_
-    """
-    #
+    # Конфигурация первой стадии Mem-конвейера: извлечение информации из текстовых данных и приведение их в triplet-формат
     extractor_config: LLMExtractorConfig = field(default_factory=lambda: LLMExtractorConfig())
-    #
+    # Конфигурация второй стадии Mem-конвейера: актуализация знаний в памяти ассистента
     updator_config: LLMUpdatorConfig = field(default_factory=lambda: LLMUpdatorConfig())
     #
     log: Logger = field(default_factory=lambda: Logger(MEM_LOG_PATH))
     log_verbose: bool = False
 
 class MemPipeline:
+    """Верхнеуровневый класс Mem-конвейера, отвечающего за изменение знаний в памяти ассистента."""
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig(), bfs: BFSRetriever = None) -> None:
-        """_summary_
-
-        :param kg_model: _description_
-        :type kg_model: KnowledgeGraphModel
-        :param config: _description_, defaults to MemPipelineConfig()
-        :type config: MemPipelineConfig, optional
-        :param bfs: _description_, defaults to None
-        :type bfs: BFSRetriever, optional
-        """
         self.config = config
         self.log = config.log
 
@@ -46,25 +36,25 @@ class MemPipeline:
     def remember(self, text: str, replacing_window_width: int = 32, replacing_window_depth: int = 1,
                  need_simple: bool = True, need_thesises: bool = True, need_episodic: bool = True,
                  need_update: bool = False, properties: Dict = dict()) -> Tuple[List[Triplet], ReturnInfo]:
-        """_summary_
+        """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста, и обновление/актуализацию знаний в памяти (графе знаний).
 
-        :param text: _description_
+        :param text: Слабоструктурированный текст на естественном языке.
         :type text: str
         :param replacing_window_width: _description_, defaults to 32
         :type replacing_window_width: int, optional
         :param replacing_window_depth: _description_, defaults to 1
         :type replacing_window_depth: int, optional
-        :param need_simple: _description_, defaults to True
+        :param need_simple: Если True, то на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'simple' из входного текста, иначе False, defaults to True
         :type need_simple: bool, optional
-        :param need_thesises: _description_, defaults to True
+        :param need_thesises: Если True, то на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'hyper' из входного текста, иначе False, defaults to True
         :type need_thesises: bool, optional
-        :param need_episodic: _description_, defaults to True
+        :param need_episodic: Если True, то на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'episodic' из входного текста, иначе False, defaults to True
         :type need_episodic: bool, optional
         :param need_update: _description_, defaults to False
         :type need_update: bool, optional
-        :param properties: _description_, defaults to dict()
+        :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, defaults to dict()
         :type properties: Dict, optional
-        :return: _description_
+        :return: Кортеж из двух объектов: (1) Список извлечённой из текста информации (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         assert need_simple or need_thesises

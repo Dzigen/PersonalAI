@@ -12,21 +12,20 @@ RKG_LOG_PATH = "log/personalai"
 
 @dataclass
 class PersonalAIConfig:
-    #
+    # Конфигурация модели, отвечающей за представление знаний ассистента в графовом формате
     graph_struct_config: GraphModelConfig = field(default_factory=lambda: GraphModelConfig())
-    #
+    # Конфигурация модели, отвечающей за предтсавление знаний ассистента в векторном формате
     embedds_struct_config: EmbeddingsModelConfig = field(default_factory=lambda: EmbeddingsModelConfig())
-    #
+    # Конфигурация конвейера, отвечающего за генерацию ответов на вопросы
     qa_pipeline_config: QAPipelineConfig = field(default_factory=lambda: QAPipelineConfig())
-    #
+    # Конфигурация конвейера, отвечающего за изменение знаний в памяти ассистента
     mem_pipeline_config: MemPipelineConfig = field(default_factory=lambda: MemPipelineConfig())
     #
     log: Logger = field(default_factory=lambda:Logger(RKG_LOG_PATH))
     verbose: bool = False
 
 class PersonalAI:
-    """_summary_
-    """
+    """Верхнеуровневый класс персонального AI-ассистента."""
     def __init__(self, config: PersonalAIConfig):
         self.config = config
         self.log = self.config.log
@@ -38,11 +37,11 @@ class PersonalAI:
         self.mem_pipeline = MemPipeline(kg_model=self.kg_model, config=config.mem_pipeline_config)
 
     def answer_question(self, question: str) -> Tuple[str, ReturnInfo]:
-        """_summary_
+        """Метод предназанчен для контекстуального поиска и извлечения релевантной информации из памяти (графа знаний) ассистента для генерации ответа на user-вопрос.
 
-        :param question: _description_
+        :param question: User-вопрос на естественном языке.
         :type question: str
-        :return: _description_
+        :return: Кортеж из двух объектов: (1) сгенерированный ответ; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
         self.log("Start answer generation:", verbose=self.config.verbose)
@@ -52,13 +51,13 @@ class PersonalAI:
         return answer, info
 
     def update_memory(self, text: str, text_properties: Dict) -> Tuple[List[Triplet], ReturnInfo]:
-        """_summary_
+        """Метод предназначен для добавления новой информации в память (граф знаний) и её актуализации.
 
-        :param text: _description_
+        :param text: Слабоструктурированный текст на естественном языке.
         :type text: str
-        :param text_properties: _description_
+        :param text_properties: Набор свойств данного текста, который необходимо дополнительно сохранить в памяти.
         :type text_properties: Dict
-        :return: _description_
+        :return: Кортеж из двух объектов: (1) Список извлечённой из текста информации (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         self.log("Start memory-updating...", verbose=self.config.verbose)

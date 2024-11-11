@@ -11,22 +11,20 @@ from typing import Tuple
 
 @dataclass
 class QAPipelineConfig:
-    #
+    # Конфигурация первой стадии qa-конвейера: извлечение сущностей из user-вопроса
     query_parser_config: QueryLLMParserConfig = field(default_factory=lambda: QueryLLMParserConfig())
-    #
+    # Конфигурация второй стадии qa-конвейера: match сущностей из user-вопроса с информацией в графе знаний
     knowledge_comparator_config: KnowledgeComparatorConfig = field(default_factory=lambda: KnowledgeComparatorConfig())
-    #
+    # Конфигурация третьей стадии qa-конвейера: извлечение релевантной информации из графа знаний для user-вопроса
     knowledge_retriever_config: KnowledgeRetrieverConfig = field(default_factory=lambda: KnowledgeRetrieverConfig())
-    #
+    # Конфигурация четвёртой стадии qa-конвейера: условная генерация ответа на user-вопрос
     answer_generator_config: QALLMGeneratorConfig = field(default_factory=lambda: QALLMGeneratorConfig())
     #
     log: Logger = field(default_factory=lambda: Logger(LOG_PATH))
     verbose: bool = False
 
 class QAPipeline:
-    """Главный класс QA-конвейера для генерации ответов на пользовательские вопросы
-    с использованием имеющегося графа знаний
-    """
+    """Верхнеуровневый класс QA-конвейера, отвечающего за генерацию ответов на вопросы."""
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: QAPipelineConfig = QAPipelineConfig()) -> None:
         self.config = config
@@ -39,11 +37,11 @@ class QAPipeline:
         self.answer_generator = QALLMGenerator(self.config.answer_generator_config)
 
     def answer(self, query: str) -> Tuple[str, ReturnInfo]:
-        """_summary_
+        """Метод предназначен для генерации ответа на user-вопрос. Ответ обуславливается на информацию из имеющегося графа знаний.
 
-        :param query: _description_
+        :param query: User-вопрос на естественном языке.
         :type query: str
-        :return: _description_
+        :return: Кортеж из двух объектов: (1) cгенерированный ответ; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
         answer = None
