@@ -1,6 +1,14 @@
 src.agents package
 ==================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   src.agents.connectors
+
 Submodules
 ----------
 

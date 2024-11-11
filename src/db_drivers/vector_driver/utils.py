@@ -7,7 +7,7 @@ from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 @dataclass
 class VectorDBConnectionConfig(BaseDatabaseConfig):
     #
-    path: str
+    path: str = None
     #
     params: Dict = field(default_factory=lambda: {"hnsw:space": "ip"})
 

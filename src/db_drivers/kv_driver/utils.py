@@ -5,7 +5,7 @@ from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
 @dataclass
 class KVDBConnectionConfig(BaseDatabaseConfig):
-    host: str
+    host: str = None
     port: str = None
 
 @dataclass

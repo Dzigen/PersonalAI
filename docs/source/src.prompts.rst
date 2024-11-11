@@ -36,10 +36,10 @@ src.prompts.question\_answering module
    :undoc-members:
    :show-inheritance:
 
-src.prompts.replacements\_prompts module
-----------------------------------------
+src.prompts.replacements module
+-------------------------------
 
-.. automodule:: src.prompts.replacements_prompts
+.. automodule:: src.prompts.replacements
    :members:
    :undoc-members:
    :show-inheritance:
@@ -48,14 +48,6 @@ src.prompts.system module
 -------------------------
 
 .. automodule:: src.prompts.system
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-src.prompts.system\_prompts module
-----------------------------------
-
-.. automodule:: src.prompts.system_prompts
    :members:
    :undoc-members:
    :show-inheritance:

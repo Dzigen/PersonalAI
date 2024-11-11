@@ -12,10 +12,10 @@ from .utils import Logger
 
 NODES_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
     db_vendor='chroma', db_config=VectorDBConnectionConfig(
-        path="../data/graph_structures/vectorized_nodes/default_densedb", db_name="vectorized_nodes"))
+        path="../data/graph_structures/vectorized_nodes/default_densedb", db_info={'db': 'default_db', 'table': "vectorized_nodes"}))
 TRIPLETS_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
     db_vendor='chroma', db_config=VectorDBConnectionConfig(
-        path="../data/graph_structures/vectorized_triplets/default_densedb", db_name="vectorized_triplets"))
+        path="../data/graph_structures/vectorized_triplets/default_densedb", db_info={'db': 'default_db', 'table': "vectorized_nodes"}))
 
 EMBEDDINGS_MODEL_LOG_PATH = 'log/em'
 

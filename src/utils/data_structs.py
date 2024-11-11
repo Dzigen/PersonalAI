@@ -43,7 +43,7 @@ class Relation:
     prop: dict = field(default_factory=lambda: {})
 
 @dataclass
-class Triplet
+class Triplet:
     start_node: Node
     relation: Relation
     end_node: Node
