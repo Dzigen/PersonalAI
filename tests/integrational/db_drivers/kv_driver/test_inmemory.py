@@ -18,6 +18,8 @@ def test_create(input, expected, inmemory_conn):
     except Exception as e:
         print(str(e))
         assert expected['exception']
+    else:
+        assert not expected['exception']
 
     assert inmemory_conn.count_items() == expected['db_size']
 
@@ -31,6 +33,8 @@ def test_delete(instances, input, expected, inmemory_conn):
     except ValueError as e:
         print(str(e))
         assert expected['exception']
+    else:
+        assert not expected['exception']
 
     assert inmemory_conn.count_items() == expected['db_size']
 
@@ -45,6 +49,8 @@ def test_read(instances, input, expected, inmemory_conn):
     except Exception as e:
         print(str(e))
         assert expected['exception']
+    else:
+        assert not expected['exception']
 
     if not expected['exception']:
         assert list(map(lambda item: item.id, output)) == expected['output_ids']
@@ -68,6 +74,8 @@ def test_exist(instances, input, expected, inmemory_conn):
     except Exception as e:
         print(str(e))
         assert expected['exception']
+    else:
+        assert not expected['exception']
 
     if not expected['exception']:
         assert real == expected['exist']

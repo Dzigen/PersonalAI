@@ -19,6 +19,8 @@ def test_create(input, expected, chromadb_conn):
     except (ChromaError, ValueError) as e:
         print(str(e))
         assert expected['exception']
+    else:
+        assert not expected['exception']
 
     assert chromadb_conn.count_items() == expected['db_size']
 
@@ -32,6 +34,8 @@ def test_delete(instances, input, expected, chromadb_conn):
     except ValueError as e:
         print(str(e))
         assert expected['exception']
+    else:
+        assert not expected['exception']
 
     assert chromadb_conn.count_items() == expected['db_size']
 
@@ -45,6 +49,8 @@ def test_read(instances, input, expected, chromadb_conn):
     except ValueError as e:
         print(str(e))
         assert expected['exception']
+    else:
+        assert not expected['exception']
 
     if not expected['exception']:
         assert list(map(lambda item: item.id, output)) == expected['output_ids']
@@ -59,6 +65,8 @@ def test_retrieve(instances, queries, n_results, expected, chromadb_conn):
     except ValueError as e:
         print(str(e))
         assert expected['exception']
+    else:
+        assert not expected['exception']
 
     if not expected['exception']:
         for query_output in output:
@@ -81,6 +89,8 @@ def test_item_exist(instances, input, expected, chromadb_conn):
     except ValueError as e:
         print(str(e))
         assert expected['exception']
+    else:
+        assert not expected['exception']
 
     if not expected['exception']:
         assert real == expected['exist']
