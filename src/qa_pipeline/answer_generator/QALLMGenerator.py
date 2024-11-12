@@ -25,8 +25,8 @@ class QALLMGeneratorConfig:
     verbose: bool = False
 
 class QALLMGenerator:
-    """Главный класс для генерации ответов по пользовательским вопросам на основе
-    извлечённой информации из графа знаний
+    """Верхнеуровневый класс четвёртой стадии QA-конвейера для генерации ответа на user-вопрос,
+    обусловленного извлёчённой информацией из памяти (графа знаний) ассистента.
     """
     def __init__(self, config: QALLMGeneratorConfig = QALLMGeneratorConfig()) -> None:
         self.config = config
