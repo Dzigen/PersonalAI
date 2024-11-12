@@ -40,15 +40,7 @@ class EmbeddingsModel:
         self.embedder = EmbedderModel(config.embedder_config)
 
     def create_triplets(self, triplets:List[Triplet], create_nodes:bool=True, batch_size:int=128)-> None:
-        """Метод предназначен для добавления информации, представленной в виде списка триплетов.
-
-        :param triplets: _description_
-        :type triplets: List[Triplet]
-        :param create_nodes: _description_, defaults to True
-        :type create_nodes: bool, optional
-        :param batch_size: _description_, defaults to 128
-        :type batch_size: int, optional
-        """
+        """Метод предназначен для добавления информации, представленной в виде списка триплетов, в модель."""
         self.log("Adding triples to vector-model...", verbose=self.config.verbose)
         unique_relation_ids, unique_node_ids = set(), set()
         existed_relation_ids, existed_node_ids = set(), set()
@@ -90,7 +82,7 @@ class EmbeddingsModel:
         self.log("Triples were successfully added to vector-model!", verbose=self.config.verbose)
 
     def delete_triplets(self, triplets: List[Triplet], delete_nodes: bool = True) -> None:
-        """Метод предназначен для удаления информации, представленной в виде списка триплетов."""
+        """Метод предназначен для удаления информации, представленной в виде списка триплетов, из модели."""
         triplets_ids = list(map(lambda v: v.id, triplets))
 
         unique_nodes_ids = None
@@ -147,7 +139,7 @@ class GraphModel:
         self.db_conn = GraphDriver.connect(self.config.driver_config)
 
     def create_triplets(self, triplets: List[Triplet], batch_size: int = 64) -> None:
-        """Метод предназначен для сохранения информации, представленной в виде списка триплетов."""
+        """Метод предназначен для сохранения информации, представленной в виде списка триплетов, в модель."""
         self.log("Adding triplets to graph-model...", verbose=self.config.verbose)
         unique_triplet_ids, unique_node_ids = set(), set()
         existed_triplet_ids, existed_node_ids = set(), set()
@@ -200,7 +192,7 @@ class GraphModel:
         self.log("Triplets added successfully!", verbose=self.config.verbose)
 
     def delete_triplets(self, triplets: List[Triplet], batch_size: int = 64) -> None:
-        """Метод предназначен для удаления информации, представленной в виде списка триплетов."""
+        """Метод предназначен для удаления информации, представленной в виде списка триплетов, из модели."""
         steps = math.ceil(len(triplets) / batch_size)
         for step in tqdm(range(steps)):
             self.db_conn.delete(triplets[step*batch_size: (step+1)*batch_size])

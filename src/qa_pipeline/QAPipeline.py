@@ -11,13 +11,13 @@ from typing import Tuple
 
 @dataclass
 class QAPipelineConfig:
-    # Конфигурация первой стадии qa-конвейера: извлечение сущностей из user-вопроса
+    # Конфигурация первой стадии QA-конвейера: извлечение сущностей из user-вопроса
     query_parser_config: QueryLLMParserConfig = field(default_factory=lambda: QueryLLMParserConfig())
-    # Конфигурация второй стадии qa-конвейера: match сущностей из user-вопроса с информацией в графе знаний
+    # Конфигурация второй стадии QA-конвейера: сопоставление (match) сущностей из user-вопроса с информацией в графе знаний
     knowledge_comparator_config: KnowledgeComparatorConfig = field(default_factory=lambda: KnowledgeComparatorConfig())
-    # Конфигурация третьей стадии qa-конвейера: извлечение релевантной информации из графа знаний для user-вопроса
+    # Конфигурация третьей стадии QA-конвейера: извлечение релевантной информации из графа знаний для user-вопроса
     knowledge_retriever_config: KnowledgeRetrieverConfig = field(default_factory=lambda: KnowledgeRetrieverConfig())
-    # Конфигурация четвёртой стадии qa-конвейера: условная генерация ответа на user-вопрос
+    # Конфигурация четвёртой стадии QA-конвейера: условная генерация ответа на user-вопрос
     answer_generator_config: QALLMGeneratorConfig = field(default_factory=lambda: QALLMGeneratorConfig())
     #
     log: Logger = field(default_factory=lambda: Logger(LOG_PATH))

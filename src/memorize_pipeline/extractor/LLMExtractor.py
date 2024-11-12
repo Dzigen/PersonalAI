@@ -13,15 +13,17 @@ from ...agents import AgentDriver, AgentDriverConfig
 
 @dataclass
 class LLMExtractorConfig:
-    #
+    # Язык, который будет использоваться в подаваемом на вход тексте.
+    # На основании выбранного языка будут использоваться соответствующие промпты.
+    # Если 'auto', то язык определяется автоматически.
     lang: str = "auto"
-    #
+    # Конфигурация LLM-агента, который будет использоваться в рамках данной стадии
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    #
+    # Промпты и parse-функция для LLM-агента, которые используются для извлечения триплетов типа "simple" их входного текста
     triplet_extract_system_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_TRIPLET_SYSTEM_PROMPT)
     triplet_extract_user_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_TRIPLET_USER_PROMPT)
     triplet_parse_func: dict = field(default_factory=lambda: MEM_TRIPLET_PARSE_FUNC)
-    #
+    # Промпты и parse-функция для LLM-агента, которые используются для извлечения триплетов типа "hyper" их входного текста
     thesis_extract_system_prompt:  dict = field(default_factory=lambda: MEM_EXTRACT_THESIS_SYSTEM_PROMPT)
     thesis_extract_user_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_THESIS_USER_PROMPT)
     thesis_parse_func: dict = field(default_factory=lambda: MEM_THESIS_PARSE_FUNC)
@@ -30,7 +32,7 @@ class LLMExtractorConfig:
     verbose: bool = False
 
 class LLMExtractor:
-    """Верхнеуровневый класс первой стадии Mem-конвейера 
+    """Верхнеуровневый класс первой стадии Mem-конвейера
     для извлечения информации (и её приведения в triplet-формат) из слабоструктурированных данных."""
     def __init__(self, config: LLMExtractorConfig = LLMExtractorConfig()) -> None:
         self.config = config
@@ -40,20 +42,20 @@ class LLMExtractor:
 
     def extract(self, text: str, need_simple: bool = True, need_thesises: bool = True,
                 need_episodic: bool = True, properties: Dict = {}) -> Tuple[List[Triplet], ReturnInfo]:
-        """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста 
+        """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста
         на естественном языке.
 
         :param text: Слабоструктурированный текст.
         :type text: str
-        :param need_simple: Если True, то на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'simple' из входного текста, иначе False, defaults to True
+        :param need_simple: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'simple', иначе False, defaults to True
         :type need_simple: bool, optional
-        :param need_thesises: Если True, то на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'hyper' из входного текста, иначе False, defaults to True
+        :param need_thesises: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'hyper', иначе False, defaults to True
         :type need_thesises: bool, optional
-        :param need_episodic: Если True, то на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'episodic' из входного текста, иначе False, defaults to True
+        :param need_episodic: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False, defaults to True
         :type need_episodic: bool, optional
         :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, defaults to dict()
         :type properties: Dict, optional
-        :return: Кортеж из двух объектов: (1) Список извлечённой из текста информации (в виде триплетов); (2) статус завершения операции с пояснительной информацией.
+        :return: Кортеж из двух объектов: (1) cписок извлечённой из текста информации (в виде триплетов); (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         assert need_simple or need_thesises

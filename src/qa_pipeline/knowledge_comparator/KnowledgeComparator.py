@@ -9,11 +9,11 @@ from ...db_drivers.vector_driver import VectorDBInstance
 
 @dataclass
 class KnowledgeComparatorConfig:
-    #
+    # Макимальный порог близости между эмбеддингами сущностей и вершин для их сопоставления
     threshold: float = 0.5
-    #
+    # Служебный гиперпараметр
     fetch_n: int = 20
-    #
+    # Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности
     max_k: int = 1
     #
     k_compare: int = 5
@@ -30,7 +30,7 @@ class KnowledgeComparator:
         self.kg_model = kg_model
 
     def link_kgnodes_to_query(self, query_structure: QueryInfo) -> ReturnInfo:
-        """Метод предназначен для сопоставления (матчинга) сущностей, извлечённых из user-вопроса с вершинами из графа знаний ассистента.
+        """Метод предназначен для сопоставления (матчинга) сущностей, извлечённых из user-вопроса, с вершинами из графа знаний ассистента.
 
         :param query_structure: Структура данных, которая хранит user-вопрос и извлечённые из него сущности.
         :type query_structure: QueryInfo

@@ -25,15 +25,15 @@ class AStarMetricsConfig:
 @dataclass
 class AStarGraphSearchConfig(BaseGraphSearchConfig):
     metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
-    # макимальная глубина обхода графа для поиска заданной вершины
+    # Макимальная глубина обхода графа для поиска заданной вершины
     max_depth: int = 10 # int number or -1
-    # максимальное количество вершин графа, которые можно обойти для поиска заднной вершины
+    # Максимальное количество вершин, которые можно обойти для поиска заднной вершины в графе
     max_passed_nodes: int = 500 # int number or -1
-    # типы вершин, которые можно обходить во время поиска заданной вершины
+    # Типы вершин, которые можно обходить во время поиска заданной вершины
     accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic])
 
 class AStarMetrics:
-    """Класс предназначен для расчёта d- и h-метрик, испрльзуемых в рамках A*алгоритма поиска."""
+    """Класс предназначен для расчёта d- и h-метрик, испрльзуемых в рамках A*-алгоритма поиска."""
     def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: str, log: Logger,
                 config: AStarMetricsConfig = AStarMetricsConfig(), verbose: bool = False):
         self.config = config
@@ -69,15 +69,6 @@ class AStarMetrics:
         return self.metrics_map[self.config.h_metric_name](*args, **kwargs)
 
     def get_nodes_path(self, parent: Dict[str, str], end_node_id: str) -> List[str]:
-        """_summary_
-
-        :param parent: _description_
-        :type parent: Dict[str, str]
-        :param end_node_id: _description_
-        :type end_node_id: str
-        :return: _description_
-        :rtype: List[str]
-        """
         #end_node_id = U[-1] if (end_node_id not in parent) else end_node_id
         path, end_flag, cur_n = [end_node_id], False, end_node_id
         while not end_flag:
@@ -115,15 +106,6 @@ class AStarMetrics:
         return dist
 
     def bfs(self, s_node_id, e_node_id):
-        """_summary_
-
-        :param s_node_id: _description_
-        :type s_node_id: _type_
-        :param e_node_id: _description_
-        :type e_node_id: _type_
-        :return: _description_
-        :rtype: _type_
-        """
         visited, queue = set(), collections.deque([s_node_id])
         visited.add(s_node_id)
         D = {s_node_id: 0}
@@ -187,31 +169,11 @@ class AStarMetrics:
         return short_path
 
     def weighted_short_path(self, node1_id: str, node2_id: str, *args, **kwargs) -> float:
-        """_summary_
-
-        :param node1_id: _description_
-        :type node1_id: str
-        :param node2_id: _description_
-        :type node2_id: str
-        :return: _description_
-        :rtype: float
-        """
         short_path_len = self.precomputed_short_path(node1_id, node2_id)
         w = self.precomputed_dist(node1_id, node2_id)
         return short_path_len * w
 
     def avg_weighted_short_path(self, node1_id: str, node2_id: str, parent: Dict[str, str]) -> float:
-        """_summary_
-
-        :param node1_id: _description_
-        :type node1_id: str
-        :param node2_id: _description_
-        :type node2_id: str
-        :param parent: _description_
-        :type parent: Dict[str, str]
-        :return: _description_
-        :rtype: float
-        """
         nodes_path = self.get_nodes_path(parent, node1_id)
         acc_dist = 0
         for i in range(len(nodes_path)-1):
@@ -235,7 +197,7 @@ class AStarGraphSearch:
             log=self.log, config=self.config.metrics_config, verbose=verbose)
 
     def search_path(self, start_node_id: str, end_node_id: str) -> Tuple[List[str], List[str], Dict[str, int], Dict[str, str], str]:
-        # использованная реализация A*-алгоритма поиска кратчайшего пути между вершинами: https://www.redblobgames.com/pathfinding/a-star/implementation.html
+        """Реализация A*-алгоритма: https://www.redblobgames.com/pathfinding/a-star/implementation.html"""
         frontier = []
         heapq.heappush(frontier, (0, start_node_id))
         parent = {start_node_id: None}
@@ -288,7 +250,7 @@ class AStarGraphSearch:
         return cost_so_far, frontier, D, parent, spare_closest_node_id
 
 class AStarTripletsRetriever(AbstractTripletsRetriever):
-    """Класс предназначен для извлечения триплетов из графа знаний на основе A*-алгоритма поиска.1"""
+    """Класс предназначен для извлечения триплетов из графа знаний на основе A*-алгоритма поиска."""
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
                  verbose: bool = False) -> None:
@@ -298,17 +260,6 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
         self.graph_searcher = AStarGraphSearch(kg_model, log, search_config, verbose)
 
     def get_nodes_path(self, parent: Dict[str, str], end_node_id: str, spare_closest_node_id: str) -> List[str]:
-        """_summary_
-
-        :param parent: _description_
-        :type parent: Dict[str, str]
-        :param end_node_id: _description_
-        :type end_node_id: str
-        :param spare_closest_node_id: _description_
-        :type spare_closest_node_id: str
-        :return: _description_
-        :rtype: List[str]
-        """
         end_node_id = spare_closest_node_id if (end_node_id not in parent) else end_node_id
 
         path, end_flag, cur_n = [end_node_id], False, end_node_id

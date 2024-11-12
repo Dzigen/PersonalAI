@@ -11,14 +11,16 @@ from ...utils.errors import QA_BAD_QA_PROMPT_MSG, QA_EMPTY_ANSWER_MSG, NOT_SUPPO
 
 @dataclass
 class QALLMGeneratorConfig:
-    #
+    # Язык, который будет использоваться в подаваемом на вход тексте.
+    # На основании выбранного языка будут использоваться соответствующие промпты.
+    # Если 'auto', то язык определяется автоматически.
     lang: str = "auto"
     system_prompt: dict = field(default_factory=lambda: QA_SYSTEM_PROMPT)
     user_prompt: dict = field(default_factory=lambda: QA_USER_PROMPT)
     answer_parse_func: dict = field(default_factory=lambda: ANSWER_PARSE_FUNC)
-    #
+    # Конфигурация LLM-агента, который будет использоваться в рамках данной стадии
     agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    #
+    # Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
     #
     log: Logger = field(default_factory=lambda: Logger(QA_LOG_PATH))
@@ -34,12 +36,12 @@ class QALLMGenerator:
         self.log = self.config.log
 
     def formate_context(self, triplets: List[Triplet]) -> str:
-        """Метод предназначен для приведения набора триплетов 
-        к ненумерованному списку с их строковыми представдениями на естественном языке.
+        """Метод предназначен для предтсавления набора триплетов
+        в виде ненумерованного списка с их строковыми представлениями на естественном языке.
 
-        :param triplets: Набор триплетов
+        :param triplets: Набор триплетов.
         :type triplets: List[Triplet]
-        :return: Ненумепованный список со строковыми представлениями триплетов
+        :return: Ненумепованный список со строковыми представлениями триплетов.
         :rtype: str
         """
         filtered_context = list(map(lambda triplet: f"- {(TripletCreator.stringify(triplet)[1] if triplet.stringified is None else triplet.stringified).strip()}", triplets))
@@ -50,9 +52,9 @@ class QALLMGenerator:
 
         :param query: Вопрос на естественном языке.
         :type query: str
-        :param context: Ненумерованный список информации на естественном языке.
+        :param context: Ненумерованный список дополнительной информации на естественном языке.
         :type context: str
-        :return: Кортеж из двух объектов: (1) Сгенерированнвй ответ на вопрос; (2) Статус выполнения операции с пояснительной информацией.
+        :return: Кортеж из двух объектов: (1) сгенерированнвй ответ на вопрос; (2) статус выполнения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
         answer, info = '', ReturnInfo()

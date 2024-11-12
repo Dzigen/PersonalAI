@@ -24,10 +24,10 @@ AVAILABLE_TRIPLETS_FILTERS = {
 
 @dataclass
 class KnowledgeRetrieverConfig:
-    #
+    # Конфигурация алгоритма, который будет извлекать триплеты из графа знаний
     retriever_method: str = 'astar'
     retriever_config: BaseGraphSearchConfig = field(default_factory=lambda: AStarGraphSearchConfig())
-    #
+    # Конфигурация алгоритма, который будет ранжировать извлённые триплеты по их релевантности к user-вопросу
     filter_method: str = 'naive'
     filter_config: BaseTripletsFilterConfig = field(default_factory=lambda: TripletsFilterConfig())
     #
@@ -35,9 +35,8 @@ class KnowledgeRetrieverConfig:
     verbose: bool = False
 
 class KnowledgeRetriever:
-    """Верхнеуровневый класс третьей стадии QA-конвейера 
-    для извлечения релевантной информации из памяти (графа знаний) ассистента
-    к user-вопросу.
+    """Верхнеуровневый класс третьей стадии QA-конвейера для извлечения
+    релевантной информации к user-вопросу из памяти (графа знаний) ассистента.
     """
     def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeRetrieverConfig = KnowledgeRetrieverConfig()) -> None:
         self.config = config
