@@ -34,24 +34,25 @@ class QALLMGenerator:
         self.log = self.config.log
 
     def formate_context(self, triplets: List[Triplet]) -> str:
-        """_summary_
+        """Метод предназначен для приведения набора триплетов 
+        к ненумерованному списку с их строковыми представдениями на естественном языке.
 
-        :param triplets: _description_
+        :param triplets: Набор триплетов
         :type triplets: List[Triplet]
-        :return: _description_
+        :return: Ненумепованный список со строковыми представлениями триплетов
         :rtype: str
         """
         filtered_context = list(map(lambda triplet: f"- {(TripletCreator.stringify(triplet)[1] if triplet.stringified is None else triplet.stringified).strip()}", triplets))
         return "\n".join(filtered_context)
 
     def generate(self, query: str, context: str) -> Tuple[str, ReturnInfo]:
-        """_summary_
+        """Метод предназначен для условной генерации ответа на вопрос.
 
-        :param query: _description_
+        :param query: Вопрос на естественном языке.
         :type query: str
-        :param context: _description_
+        :param context: Ненумерованный список информации на естественном языке.
         :type context: str
-        :return: _description_
+        :return: Кортеж из двух объектов: (1) Сгенерированнвй ответ на вопрос; (2) Статус выполнения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
         answer, info = '', ReturnInfo()
