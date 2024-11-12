@@ -30,14 +30,13 @@ class KnowledgeComparator:
         self.kg_model = kg_model
 
     def link_kgnodes_to_query(self, query_structure: QueryInfo) -> ReturnInfo:
-        """_summary_
+        """Метод предназначен для сопоставления (матчинга) сущностей, извлечённых из user-вопроса с вершинами из графа знаний ассистента.
 
-        :param query_structure: _description_
+        :param query_structure: Структура данных, которая хранит user-вопрос и извлечённые из него сущности.
         :type query_structure: QueryInfo
-        :return: _description_
+        :return: Статс завершения операции с пояснительной информацией.
         :rtype: ReturnInfo
         """
-        # сопоставляем сущности, извлечённые из запроса нодам в графе знаний
         info = ReturnInfo()
         linked_nodes_by_entities, linked_nodes = [], []
         for entity in query_structure.entities:
