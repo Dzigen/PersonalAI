@@ -30,7 +30,8 @@ class LLMExtractorConfig:
     verbose: bool = False
 
 class LLMExtractor:
-
+    """Верхнеуровневый класс первой стадии Mem-конвейера 
+    для извлечения информации (и её приведения в triplet-формат) из слабоструктурированных данных."""
     def __init__(self, config: LLMExtractorConfig = LLMExtractorConfig()) -> None:
         self.config = config
         self.agent = AgentDriver.connect(config.agent_config)
