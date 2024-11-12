@@ -32,6 +32,7 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic])
 
 class AStarMetrics:
+    """Класс предназначен для расчёта d- и h-метрик, испрльзуемых в рамках A*алгоритма поиска."""
     def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: str, log: Logger,
                 config: AStarMetricsConfig = AStarMetricsConfig(), verbose: bool = False):
         self.config = config
@@ -243,7 +244,7 @@ class AStarMetrics:
         return np.mean(acc_dist) * short_path_len
 
 class AStarGraphSearch:
-    """Класс с реализацией A*-алгоритма поиска по графу"""
+    """Класс предназначен для запуска A*-алгоритма поиска."""
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
                  verbose: bool = False) -> None:
@@ -318,12 +319,7 @@ class AStarGraphSearch:
         return cost_so_far, frontier, D, parent, spare_closest_node_id
 
 class AStarTripletsRetriever(AbstractTripletsRetriever):
-    """Главный класс для извлечения триплетов из графа знаний, релевантных запросу, на основе A*-алгоритма поиска.
-
-    Args:
-        AStarGraphSearch: A* алгоритм поиска по графу знаний.
-        AbstractTripletsRetriever: Интерфейс для классов с алгоритма извлечения релевантных триплетов из графов знаний.
-    """
+    """Класс предназначен для извлечения триплетов из графа знаний на основе A*-алгоритма поиска.1"""
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
                  verbose: bool = False) -> None:
