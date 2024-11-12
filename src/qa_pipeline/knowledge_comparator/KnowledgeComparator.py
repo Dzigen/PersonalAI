@@ -22,8 +22,8 @@ class KnowledgeComparatorConfig:
     log_verbose: bool = False
 
 class KnowledgeComparator:
-    """Главный класс для сопостовения информации в пользовательском запросе
-    с имеющейся информацией в графе знаний
+    """Верхнеуровневый класс второй стадии QA-конвейера для сопостовения информации из user-вопроса
+    с имеющейся информацией в памяти (графе знаний) ассистента.
     """
     def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeComparatorConfig = KnowledgeComparatorConfig()) -> None:
         self.config = config
