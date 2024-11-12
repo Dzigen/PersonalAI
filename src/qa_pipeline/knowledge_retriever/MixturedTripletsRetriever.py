@@ -16,6 +16,7 @@ class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     bfs_config: BFSSearchConfig = field(default_factory=lambda: BFSSearchConfig())
 
 class MixturedTripletsRetriever(AbstractTripletsRetriever):
+    """Класс предназначен для извлечения триплетов из графа знаний с помощью комбинации BFS- и A*-алгоритмов поиска."""
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: MixturedGraphSearchConfig = MixturedGraphSearchConfig(),
                  cache: AbstractKVDatabaseConnection = None, verbose: bool = False) -> None:
         self.log = log
