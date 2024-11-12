@@ -15,38 +15,17 @@ DEFAULT_GIGACHAT_CONFIG = AgentConnectorConfig(
     ext_params={'timeout': 480})
 
 class GigaChatConnector(AbstractAgentConnector):
-    """_summary_
-
-    :param AbstractAgentConnector: _description_
-    :type AbstractAgentConnector: _type_
-    """
     def __init__(self, config: AgentConnectorConfig = DEFAULT_GIGACHAT_CONFIG) -> None:
-        """_summary_
-
-        :param config: _description_, defaults to DEFAULT_GIGACHAT_CONFIG
-        :type config: AgentConnectorConfig, optional
-        """
         self.gen_strategy = config.gen_strategy
         self.giga_model = GigaChat(credentials=config.credentials['token'], scope=config.credentials['scope'],
                                    verify_ssl_certs=config.credentials['verify_ssl_certs'], model=config.credentials['model'],
                                    timeout=config.ext_params['timeout'])
 
-    # TODO
     def check_connection(self):
+        # TODO
         pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
-        """_summary_
-
-        :param system_prompt: _description_
-        :type system_prompt: str
-        :param user_prompt: _description_
-        :type user_prompt: str
-        :param assistant_prompt: _description_, defaults to None
-        :type assistant_prompt: str, optional
-        :return: _description_
-        :rtype: str
-        """
         msgs = [Messages(role='system', content=system_prompt)]
         if assistant_prompt is not None:
             msgs.append(Messages(role='assistant', content=assistant_prompt))

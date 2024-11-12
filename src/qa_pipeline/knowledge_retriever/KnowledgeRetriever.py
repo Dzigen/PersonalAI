@@ -12,46 +12,33 @@ from ...utils.errors import QA_ZERO_RETRIEVED_TRIPLETS_MSG
 from dataclasses import dataclass, field
 from typing import List, Tuple
 
-#
 AVAILABLE_TRIPLETS_RETRIEVERS  = {
     'astar': AStarTripletsRetriever,
     'bfs': BFSRetriever,
     'mixture': MixturedTripletsRetriever
 }
 
-#
 AVAILABLE_TRIPLETS_FILTERS = {
     'naive': TripletsFilter
 }
 
 @dataclass
 class KnowledgeRetrieverConfig:
-    """_summary_
-    """
-    #
+    # Конфигурация алгоритма, который будет извлекать триплеты из графа знаний
     retriever_method: str = 'astar'
-    #
     retriever_config: BaseGraphSearchConfig = field(default_factory=lambda: AStarGraphSearchConfig())
-    #
+    # Конфигурация алгоритма, который будет ранжировать извлённые триплеты по их релевантности к user-вопросу
     filter_method: str = 'naive'
-    #
     filter_config: BaseTripletsFilterConfig = field(default_factory=lambda: TripletsFilterConfig())
     #
     log: Logger = field(default_factory=lambda: Logger(RETRIEVER_LOG_PATH))
     verbose: bool = False
 
 class KnowledgeRetriever:
-    """Главный класс для извлечения релевантной информации из графа знаний
-    по запросу пользователя
+    """Верхнеуровневый класс третьей стадии QA-конвейера для извлечения
+    релевантной информации к user-вопросу из памяти (графа знаний) ассистента.
     """
     def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeRetrieverConfig = KnowledgeRetrieverConfig()) -> None:
-        """_summary_
-
-        :param kg_model: _description_
-        :type kg_model: KnowledgeGraphModel
-        :param config: _description_, defaults to KnowledgeRetrieverConfig()
-        :type config: KnowledgeRetrieverConfig, optional
-        """
         self.config = config
         self.kg_model = kg_model
         self.log = config.log
@@ -63,13 +50,6 @@ class KnowledgeRetriever:
             kg_model, self.log, self.config.filter_config, self.config.verbose)
 
     def retrieve(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo]:
-        """_summary_
-
-        :param query_info: _description_
-        :type query_info: QueryInfo
-        :return: _description_
-        :rtype: Tuple[List[Triplet], ReturnInfo]
-        """
         info = ReturnInfo()
         self.log("stage #3.1 - extracting triplets...", verbose=self.config.verbose)
         triplets = self.graph_retriever.get_relevant_triplets(query_info)

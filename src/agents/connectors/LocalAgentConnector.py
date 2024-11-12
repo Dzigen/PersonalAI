@@ -20,20 +20,10 @@ class LocalAgentConnector(AbstractAgentConnector):
         )
 
     def check_connection(self):
+        # TODO
         pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
-        """_summary_
-
-        :param system_prompt: _description_
-        :type system_prompt: str
-        :param user_prompt: _description_
-        :type user_prompt: str
-        :param assistant_prompt: _description_, defaults to None
-        :type assistant_prompt: str, optional
-        :return: _description_
-        :rtype: str
-        """
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user","content": user_prompt}]

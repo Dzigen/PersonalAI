@@ -12,27 +12,25 @@ from .utils import Logger
 
 NODES_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
     db_vendor='chroma', db_config=VectorDBConnectionConfig(
-        path="../data/graph_structures/vectorized_nodes/default_densedb", db_name="vectorized_nodes"))
+        path="../data/graph_structures/vectorized_nodes/default_densedb", db_info={'db': 'default_db', 'table': "vectorized_nodes"}))
 TRIPLETS_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
     db_vendor='chroma', db_config=VectorDBConnectionConfig(
-        path="../data/graph_structures/vectorized_triplets/default_densedb", db_name="vectorized_triplets"))
+        path="../data/graph_structures/vectorized_triplets/default_densedb", db_info={'db': 'default_db', 'table': "vectorized_nodes"}))
 
 EMBEDDINGS_MODEL_LOG_PATH = 'log/em'
 
 @dataclass
 class EmbeddingsModelConfig:
-    """_summary_
-    """
     #
     nodesdb_driver_config: VectorDriverConfig = field(default_factory=lambda: NODES_DB_DEFAULT_DRIVER_CONFIG)
     tripletsdb_driver_config: VectorDriverConfig = field(default_factory=lambda: TRIPLETS_DB_DEFAULT_DRIVER_CONFIG)
-    #
     embedder_config: EmbedderModelConfig = field(default_factory=lambda: EmbedderModelConfig())
     #
     log: Logger = field(default_factory=lambda: Logger(EMBEDDINGS_MODEL_LOG_PATH))
     verbose: bool = False
 
 class EmbeddingsModel:
+    """Модель хранения информации в векторной структуре данных."""
     def __init__(self, config: EmbeddingsModelConfig = EmbeddingsModelConfig()):
         self.config = config
         self.log = config.log
@@ -42,15 +40,7 @@ class EmbeddingsModel:
         self.embedder = EmbedderModel(config.embedder_config)
 
     def create_triplets(self, triplets:List[Triplet], create_nodes:bool=True, batch_size:int=128)-> None:
-        """_summary_
-
-        :param triplets: _description_
-        :type triplets: List[Triplet]
-        :param add_nodes: _description_, defaults to True
-        :type add_nodes: bool, optional
-        :param batch_size: _description_, defaults to 128
-        :type batch_size: int, optional
-        """
+        """Метод предназначен для добавления информации, представленной в виде списка триплетов, в модель."""
         self.log("Adding triples to vector-model...", verbose=self.config.verbose)
         unique_relation_ids, unique_node_ids = set(), set()
         existed_relation_ids, existed_node_ids = set(), set()
@@ -92,13 +82,7 @@ class EmbeddingsModel:
         self.log("Triples were successfully added to vector-model!", verbose=self.config.verbose)
 
     def delete_triplets(self, triplets: List[Triplet], delete_nodes: bool = True) -> None:
-        """_summary_
-
-        :param triplets: _description_
-        :type triplets: List[Triplet]
-        :param delete_nods: _description_, defaults to True
-        :type delete_nods: bool, optional
-        """
+        """Метод предназначен для удаления информации, представленной в виде списка триплетов, из модели."""
         triplets_ids = list(map(lambda v: v.id, triplets))
 
         unique_nodes_ids = None
@@ -112,69 +96,26 @@ class EmbeddingsModel:
 
     def create_stringified_triplets(self, triplets_ids: List[str], stringified_triplets: List[str],
                      nodes_ids: List[str] = None, stringified_nodes: List[str] = None) -> None:
-        """_summary_
-
-        :param triplets_ids: _description_
-        :type triplets_ids: List[str]
-        :param stringified_triplets: _description_
-        :type stringified_triplets: List[str]
-        :param nodes_ids: _description_, defaults to None
-        :type nodes_ids: List[str], optional
-        :param stringified_nodes: _description_, defaults to None
-        :type stringified_nodes: List[str], optional
-        """
         if len(triplets_ids):
             self.create_instances('triplets', triplets_ids, stringified_triplets)
         if nodes_ids is not None and len(nodes_ids):
             self.create_instances('nodes', nodes_ids, stringified_nodes)
 
     def delete_stringified_triplets(self, triplets_ids: List[str], nodes_ids: List[str] = None) -> None:
-        """_summary_
-
-        :param triplets_ids: _description_
-        :type triplets_ids: List[str]
-        :param nodes_ids: _description_, defaults to None
-        :type nodes_ids: List[str], optional
-        """
         self.delete_instances('triplets', triplets_ids)
         if nodes_ids is not None:
             self.delete_instances('nodes', nodes_ids)
 
     def create_instances(self, db_type: str, ids: List[str], stringified_instances: List[str]) -> None:
-        """_summary_
-
-        :param db_type: _description_
-        :type db_type: str
-        :param ids: _description_
-        :type ids: List[str]
-        :param stringified_instances: _description_
-        :type stringified_instances: List[str]
-        """
         embs = self.embedder.encode_passages(stringified_instances)
         formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb, metadata={'id': id})
                             for id, doc, emb in zip(ids, stringified_instances, embs)]
         self.vectordbs[db_type].create(formated_instances)
 
     def delete_instances(self, db_type: str, ids: List[str]) -> None:
-        """_summary_
-
-        :param db_type: _description_
-        :type db_type: str
-        :param ids: _description_
-        :type ids: List[str]
-        """
         self.vectordbs[db_type].delete(ids)
 
     def read_embbeddings(self, db_type: str, ids: List[str]) -> List[List[float]]:
-        """_summary_
-
-        :param db_type: _description_
-        :type db_type: str
-        :param ids: _description_
-        :type ids: List[str]
-        :return: _description_
-        :rtype: List[List[float]]
-        """
         instances = self.vectordbs[db_type].read(ids, includes=['embeddings'])
         embeddings = list(map(lambda inst: inst.embedding, instances))
         return embeddings
@@ -191,17 +132,14 @@ class GraphModelConfig:
     verbose: bool = False
 
 class GraphModel:
+    """Модель хранения информации в графовой структуре данных."""
     def __init__(self, config: GraphModelConfig = GraphModelConfig()) -> None:
         self.config = config
         self.log = config.log
         self.db_conn = GraphDriver.connect(self.config.driver_config)
 
     def create_triplets(self, triplets: List[Triplet], batch_size: int = 64) -> None:
-        """_summary_
-
-        :param triplets: _description_
-        :type triplets: List[Triplet]
-        """
+        """Метод предназначен для сохранения информации, представленной в виде списка триплетов, в модель."""
         self.log("Adding triplets to graph-model...", verbose=self.config.verbose)
         unique_triplet_ids, unique_node_ids = set(), set()
         existed_triplet_ids, existed_node_ids = set(), set()
@@ -254,16 +192,15 @@ class GraphModel:
         self.log("Triplets added successfully!", verbose=self.config.verbose)
 
     def delete_triplets(self, triplets: List[Triplet], batch_size: int = 64) -> None:
-        """_summary_
-
-        :param triplets: _description_
-        :type triplets: List[Triplet]
-        """
+        """Метод предназначен для удаления информации, представленной в виде списка триплетов, из модели."""
         steps = math.ceil(len(triplets) / batch_size)
         for step in tqdm(range(steps)):
             self.db_conn.delete(triplets[step*batch_size: (step+1)*batch_size])
 
 @dataclass
 class KnowledgeGraphModel:
+    """Модель памяти (графа знаний) ассистента"""
+    # знания, хранящиеся в графовой структуре данных
     graph_struct: GraphModel
+    # знания, хранящиеся в векторной структуре данных
     embeddings_struct: EmbeddingsModel

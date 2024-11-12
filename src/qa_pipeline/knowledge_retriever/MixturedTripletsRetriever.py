@@ -12,29 +12,13 @@ from ...utils import Logger
 
 @dataclass
 class MixturedGraphSearchConfig(BaseGraphSearchConfig):
-    """_summary_
-    """
-    #
     astar_config: AStarGraphSearchConfig = field(default_factory=lambda: AStarGraphSearchConfig())
-    #
     bfs_config: BFSSearchConfig = field(default_factory=lambda: BFSSearchConfig())
 
 class MixturedTripletsRetriever(AbstractTripletsRetriever):
+    """Класс предназначен для извлечения триплетов из графа знаний с помощью комбинации BFS- и A*-алгоритмов поиска."""
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: MixturedGraphSearchConfig = MixturedGraphSearchConfig(),
                  cache: AbstractKVDatabaseConnection = None, verbose: bool = False) -> None:
-        """_summary_
-
-        :param kg_model: _description_
-        :type kg_model: KnowledgeGraphModel
-        :param log: _description_
-        :type log: Logger
-        :param search_config: _description_, defaults to MixturedGraphSearchConfig()
-        :type search_config: MixturedGraphSearchConfig, optional
-        :param cache: _description_, defaults to None
-        :type cache: AbstractKVDatabaseConnection, optional
-        :param verbose: _description_, defaults to False
-        :type verbose: bool, optional
-        """
         self.log = log
         self.verbose = verbose
 
@@ -42,13 +26,6 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever):
         self.bfs_searcher = BFSRetriever(kg_model, log, search_config.bfs_config, cache, verbose)
 
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
-        """_summary_
-
-        :param query_info: _description_
-        :type query_info: QueryInfo
-        :return: _description_
-        :rtype: List[Triplet]
-        """
         astar_triplets = self.astar_searcher.get_relevant_triplets(query_info)
         bfs_triplets = self.bfs_searcher.get_relevant_triplets(query_info)
 

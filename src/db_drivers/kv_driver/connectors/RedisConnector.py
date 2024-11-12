@@ -6,6 +6,6 @@ from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection, KeyValue
 # TODO
 DEFAULT_REDIS_CONFIG = ...
 
-# TODO
 class RedisConnection(AbstractKVDatabaseConnection):
+    # TODO
     pass

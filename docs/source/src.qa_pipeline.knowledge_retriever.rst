@@ -28,6 +28,14 @@ src.qa\_pipeline.knowledge\_retriever.KnowledgeRetriever module
    :undoc-members:
    :show-inheritance:
 
+src.qa\_pipeline.knowledge\_retriever.MixturedTripletsRetriever module
+----------------------------------------------------------------------
+
+.. automodule:: src.qa_pipeline.knowledge_retriever.MixturedTripletsRetriever
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 src.qa\_pipeline.knowledge\_retriever.TripletsFilter module
 -----------------------------------------------------------
 

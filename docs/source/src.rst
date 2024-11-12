@@ -10,24 +10,26 @@ Subpackages
    src.agents
    src.db_drivers
    src.memorize_pipeline
+   src.parsers
+   src.prompts
    src.qa_pipeline
    src.utils
 
 Submodules
 ----------
 
-src.graph\_main module
-----------------------
-
-.. automodule:: src.graph_main
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 src.knowledge\_graph\_model module
 ----------------------------------
 
 .. automodule:: src.knowledge_graph_model
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.personalai\_main module
+---------------------------
+
+.. automodule:: src.personalai_main
    :members:
    :undoc-members:
    :show-inheritance:

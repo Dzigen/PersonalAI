@@ -11,6 +11,17 @@ Subpackages
    src.db_drivers.kv_driver
    src.db_drivers.vector_driver
 
+Submodules
+----------
+
+src.db\_drivers.utils module
+----------------------------
+
+.. automodule:: src.db_drivers.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

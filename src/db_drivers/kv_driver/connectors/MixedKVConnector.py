@@ -6,6 +6,6 @@ from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection, KeyValue
 # TODO
 DEFAULT_MIKEDKVDB_CONFIG = ...
 
-# TODO
 class MixedKVConnection(AbstractKVDatabaseConnection):
+    # TODO
     pass

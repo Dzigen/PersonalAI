@@ -4,8 +4,6 @@ from typing import Dict, List
 
 @dataclass
 class EmbedderModelConfig:
-    """_summary_
-    """
     #
     model_name_or_path: str = '../models/intfloat/multilingual-e5-small'
     #
@@ -17,11 +15,6 @@ class EmbedderModelConfig:
 
 class EmbedderModel:
     def __init__(self, config: EmbedderModelConfig = None) -> None:
-        """_summary_
-
-        :param config: _description_, defaults to None
-        :type config: EmbedderModelConfig, optional
-        """
         self.config = EmbedderModelConfig() if config is None else config
         self.model = SentenceTransformer(
             config.model_name_or_path, device=config.device,

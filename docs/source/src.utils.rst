@@ -12,10 +12,26 @@ src.utils.data\_structs module
    :undoc-members:
    :show-inheritance:
 
+src.utils.errors module
+-----------------------
+
+.. automodule:: src.utils.errors
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 src.utils.evaluation\_metrics module
 ------------------------------------
 
 .. automodule:: src.utils.evaluation_metrics
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.utils.language\_detector module
+-----------------------------------
+
+.. automodule:: src.utils.language_detector
    :members:
    :undoc-members:
    :show-inheritance:

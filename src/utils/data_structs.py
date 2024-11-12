@@ -4,6 +4,7 @@ from enum import Enum
 import hashlib
 
 class NodeType(Enum):
+    """_summary_"""
     object = "object"
     hyper = "hyper"
     episodic = "episodic"
@@ -15,6 +16,7 @@ NODES_TYPES_MAP = {
 }
 
 class RelationType(Enum):
+    """_summary_"""
     simple = "simple"
     hyper = "hyper"
     episodic = "episodic"

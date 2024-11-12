@@ -4,14 +4,15 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
 import sys
-sys.path.insert(0, "../")
+import os
+sys.path.insert(0, os.path.abspath("../../"))
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'personal_ai'
-copyright = '2024, skoltech applied ai lab'
-author = 'skoltech applied ai lab'
+project = 'Personal AI'
+copyright = '2024, Skoltech Applied AI Lab'
+author = 'Skoltech Applied AI Lab'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -20,11 +21,14 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'sphinx.ext.todo',
-    'rst2pdf.pdfbuilder'
+    'rst2pdf.pdfbuilder',
+    "sphinx_rtd_dark_mode"
 ]
+
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 todo_include_todos = True
+default_dark_mode = False
 
 language = 'ru'
 
