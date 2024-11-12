@@ -22,7 +22,7 @@ class QueryLLMParserConfig:
     verbose: bool = False
 
 class QueryLLMParser:
-    """Высокоуровневый класс первой стадии QA-конвейера 
+    """Верхнеуровневый класс первой стадии QA-конвейера 
     для извлечения сущностей из user-вопроса.
     """
     def __init__(self, config: QueryLLMParserConfig = QueryLLMParserConfig()) -> None:
