@@ -35,8 +35,9 @@ class KnowledgeRetrieverConfig:
     verbose: bool = False
 
 class KnowledgeRetriever:
-    """Главный класс для извлечения релевантной информации из графа знаний
-    по запросу пользователя
+    """Верхнеуровневый класс третьей стадии QA-конвейера 
+    для извлечения релевантной информации из памяти (графа знаний) ассистента
+    к user-вопросу.
     """
     def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeRetrieverConfig = KnowledgeRetrieverConfig()) -> None:
         self.config = config
