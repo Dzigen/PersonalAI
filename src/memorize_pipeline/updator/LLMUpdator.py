@@ -8,10 +8,14 @@ from typing import Dict
 
 @dataclass
 class LLMUpdatorConfig:
+    #
     lang: str = "auto"
+    #
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig)
+    #
     replace_thesis_prompt: Dict = field(default_factory=lambda: REPLACE_THESIS_PROMPT)
     replace_simple_prompt: Dict = field(default_factory=lambda: REPLACE_SIMPLE_PROMPT)
+    #
     log: Logger = field(default_factory=lambda: Logger(MEM_UPDATE_LOG))
     verbose: bool = False
 
