@@ -9,12 +9,12 @@ from ...db_drivers.vector_driver import VectorDBInstance
 
 @dataclass
 class TripletsFilterConfig(BaseTripletsFilterConfig):
-    #
+    # Первые k (по релевантности) триплетов, которые будут возвращены в результате операции ранжирования.
     max_k: int = 50
 
 class TripletsFilter(AbstractTriplesFilter):
-    """Главный класс для фильтрации триплетов, извлечённых из графа знаний,
-    на основе их релевантности пользовательскому запросу.
+    """Класс предназначен для ранжирования/фильтрации триплетов, извлечённых из графа знаний,
+    на основе их релевантности к user-вопросу.
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, config: TripletsFilterConfig, log_verbose: bool = False) -> None:
