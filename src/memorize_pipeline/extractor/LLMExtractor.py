@@ -40,19 +40,20 @@ class LLMExtractor:
 
     def extract(self, text: str, need_simple: bool = True, need_thesises: bool = True,
                 need_episodic: bool = True, properties: Dict = {}) -> Tuple[List[Triplet], ReturnInfo]:
-        """_summary_
+        """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста 
+        на естественном языке.
 
-        :param text: _description_
+        :param text: Слабоструктурированный текст.
         :type text: str
-        :param need_simple: _description_, defaults to True
+        :param need_simple: Если True, то на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'simple' из входного текста, иначе False, defaults to True
         :type need_simple: bool, optional
-        :param need_thesises: _description_, defaults to True
+        :param need_thesises: Если True, то на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'hyper' из входного текста, иначе False, defaults to True
         :type need_thesises: bool, optional
-        :param need_episodic: _description_, defaults to True
+        :param need_episodic: Если True, то на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'episodic' из входного текста, иначе False, defaults to True
         :type need_episodic: bool, optional
-        :param properties: _description_, defaults to {}
+        :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, defaults to dict()
         :type properties: Dict, optional
-        :return: 
+        :return: Кортеж из двух объектов: (1) Список извлечённой из текста информации (в виде триплетов); (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         assert need_simple or need_thesises
