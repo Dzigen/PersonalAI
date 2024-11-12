@@ -24,3 +24,4 @@ docs/_build
 docs/log
 tmp/
 tests/integrational/volumes
+docs/build

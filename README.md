@@ -28,7 +28,7 @@
 
 ##### Команды для генерации документации:
 * find . -type d -name __pycache__ -exec rm -r {} \+
-* sphinx-apidoc -o ../docs .
+* sphinx-apidoc -o ../docs/source/ .
 * make html
 * make clean
 

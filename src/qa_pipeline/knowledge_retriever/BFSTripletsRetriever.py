@@ -28,7 +28,7 @@ def process_chain(
 
     :param chain: пути в графе, которые начинаются от сущностей из вопроса
     :type chain: List[List[str]]
-    :param chain_subj_obj: список субъектов и объектов триплетов из путей в графе 
+    :param chain_subj_obj: список субъектов и объектов триплетов из путей в графе
     :type chain_subj_obj: List[Tuple[str]]
     :param chain_triplets: список триплетов из путей в графе
     :type chain_triplets: List[List[str]]
@@ -129,7 +129,7 @@ class BFSRetriever(AbstractTripletsRetriever):
             another_entities1: List[str],
             another_entities2: Dict[str, List[List[str]]],
             chain: List[List[str]]
-        ) -> Tuple[List[List[dict], List[Tuple[str]], List[List[dict]]], List[List[List[str]]], List[List[List[str]]]]:
+        ) -> Tuple[Tuple[List[dict], List[Tuple[str]], List[List[dict]]], List[List[List[str]]], List[List[List[str]]]]:
         """_summary_
 
         :param direction: направление поиска
@@ -402,7 +402,7 @@ class BFSRetriever(AbstractTripletsRetriever):
             entities_list: List[Tuple[str]],
             entity_type: str,
             texts_set: Set[str]
-        ) -> Tuple[List[Tuple[str, str, Dict[str], Dict[str], int, str]], Set[str]]:
+        ) -> Tuple[List[Tuple[str, str, Dict[str, str], Dict[str, str], int, str]], Set[str]]:
         """_summary_
 
         :param seed_entities: список сущностей из графа для сущностей из вопроса
@@ -515,7 +515,7 @@ class BFSRetriever(AbstractTripletsRetriever):
             subj_labels: List[str] = None,
             obj_labels: List[str] = None,
             use_rel_props: bool = False
-        ) -> Tuple[Dict[tuple, List[List[dict], List[Tuple[str]], List[List[dict]]]],
+        ) -> Tuple[Dict[tuple, Tuple[List[dict], List[Tuple[str]], List[List[dict]]]],
                    List[List[List[str]]],
                    List[List[List[str]]]]:
         """_summary_
