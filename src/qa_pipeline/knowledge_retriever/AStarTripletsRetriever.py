@@ -16,13 +16,14 @@ from ...utils import Logger
 
 @dataclass
 class AStarMetricsConfig:
-    #
+    # Эвристическая метрика, которая будет использоваться
+    # для оценки расстояния между текущей и конечной вершинами.
     h_metric_name: str = 'ip' # 'ip', 'weight_with_short_path', 'avg_weighted_with_short_path'
+    # Конфигурация кеша для хранения рассчитанных h-оценок между вершинами.
     kvdriver_config: KeyValueDriverConfig = None
 
 @dataclass
 class AStarGraphSearchConfig(BaseGraphSearchConfig):
-    #
     metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
     # макимальная глубина обхода графа для поиска заданной вершины
     max_depth: int = 10 # int number or -1
