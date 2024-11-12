@@ -52,7 +52,7 @@ class LLMExtractor:
         :type need_episodic: bool, optional
         :param properties: _description_, defaults to {}
         :type properties: Dict, optional
-        :return: _description_
+        :return: 
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         assert need_simple or need_thesises
@@ -92,19 +92,6 @@ class LLMExtractor:
         return new_triplets, info
 
     def extract_triplets(self, text: str, lang: str, node_prop = {}, rel_prop = {}) -> Tuple[List[Triplet], ReturnStatus]:
-        """_summary_
-
-        :param text: _description_
-        :type text: str
-        :param lang: _description_
-        :type lang: str
-        :param node_prop: _description_, defaults to {}
-        :type node_prop: dict, optional
-        :param rel_prop: _description_, defaults to {}
-        :type rel_prop: dict, optional
-        :return: _description_
-        :rtype: Tuple[List[Triplet], ReturnStatus]
-        """
         self.log("TEXT: " + text, verbose=self.config.verbose)
         raw_response = self.agent.generate(
             system_prompt=self.config.triplet_extract_system_prompt[lang],
@@ -114,19 +101,6 @@ class LLMExtractor:
         return new_triplets, status
 
     def extract_thesises(self, text: str, lang: str, node_prop: Dict = {}, rel_prop: Dict = {}) -> Tuple[List[Triplet], ReturnStatus]:
-        """_summary_
-
-        :param text: _description_
-        :type text: str
-        :param lang: _description_
-        :type lang: str
-        :param node_prop: _description_, defaults to {}
-        :type node_prop: Dict, optional
-        :param rel_prop: _description_, defaults to {}
-        :type rel_prop: Dict, optional
-        :return: _description_
-        :rtype: Tuple[List[Triplet], ReturnStatus]
-        """
         self.log("TEXT: " + text, verbose=self.config.verbose)
         raw_response = self.agent.generate(
             system_prompt=self.config.thesis_extract_system_prompt[lang],
@@ -137,13 +111,6 @@ class LLMExtractor:
 
     @staticmethod
     def get_entities_from_triplets(triplets: List[Triplet]) -> List[Node]:
-        """_summary_
-
-        :param triplets: _description_
-        :type triplets: List[Triplet]
-        :return: _description_
-        :rtype: List[Node]
-        """
         entities = {}
         for triplet in triplets:
             entities[triplet.start_node.stringified] = triplet.start_node
@@ -151,19 +118,6 @@ class LLMExtractor:
         return list(entities.values())
 
     def parse_thesises(self, raw_response: str, lang: str, node_prop: Dict, rel_prop: Dict) -> Tuple[List[Triplet], ReturnStatus]:
-        """_summary_
-
-        :param raw_response: _description_
-        :type raw_response: str
-        :param lang: _description_
-        :type lang: str
-        :param node_prop: _description_
-        :type node_prop: Dict
-        :param rel_prop: _description_
-        :type rel_prop: Dict
-        :return: _description_
-        :rtype: Tuple[List[Triplet], ReturnStatus]
-        """
         raw_triplets, status = self.config.thesis_parse_func[lang](raw_response)
         formated_triplets = []
         for triplet in raw_triplets:
@@ -179,19 +133,6 @@ class LLMExtractor:
         return formated_triplets, status
 
     def parse_triplets(self, raw_response: str, lang: str, node_prop: Dict, rel_prop: Dict) -> Tuple[List[Triplet], ReturnStatus]:
-        """_summary_
-
-        :param raw_response: _description_
-        :type raw_response: str
-        :param lang: _description_
-        :type lang: str
-        :param node_prop: _description_
-        :type node_prop: Dict
-        :param rel_prop: _description_
-        :type rel_prop: Dict
-        :return: _description_
-        :rtype: Tuple[List[Triplet], ReturnStatus]
-        """
         raw_triplets, status = self.config.triplet_parse_func[lang](raw_response)
         formated_triplets = []
         for triplet in raw_triplets:
@@ -205,19 +146,6 @@ class LLMExtractor:
 
     @staticmethod
     def get_episodic_relationships(text: str, entities: List[Node], node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
-        """_summary_
-
-        :param text: _description_
-        :type text: str
-        :param entities: _description_
-        :type entities: List[Node]
-        :param node_prop: _description_, defaults to {}
-        :type node_prop: Dict, optional
-        :param rel_prop: _description_, defaults to {}
-        :type rel_prop: Dict, optional
-        :return: _description_
-        :rtype: List[Triplet]
-        """
         episodic_node = NodeCreator.create(name=text, type=NodeType.episodic, prop={**node_prop})
         episodic_rel = Relation(name=RelationType.episodic.value, type=RelationType.episodic, prop={**rel_prop})
         episodic_triplets = [TripletCreator.create(entity, episodic_rel, episodic_node) for entity in entities]
