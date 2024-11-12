@@ -66,11 +66,6 @@ class AStarMetrics:
         }
 
     def compute_h_metric(self, *args, **kwargs) -> float:
-        """_summary_
-
-        :return: _description_
-        :rtype: float
-        """
         return self.metrics_map[self.config.h_metric_name](*args, **kwargs)
 
     def get_nodes_path(self, parent: Dict[str, str], end_node_id: str) -> List[str]:
@@ -95,15 +90,6 @@ class AStarMetrics:
         return path
 
     def precomputed_dist(self, node1_id: str, node2_id: str, *args, **kwargs) -> float:
-        """_summary_
-
-        :param node1_id: _description_
-        :type node1_id: str
-        :param node2_id: _description_
-        :type node2_id: str
-        :return: _description_
-        :rtype: float
-        """
         def _calculate_node_distance(id1: str, id2: str) -> float:
             dist = 0
             if node1_id != node2_id:
@@ -187,15 +173,6 @@ class AStarMetrics:
         return INF_VALUE
 
     def precomputed_short_path(self, node1_id: str, node2_id: str) -> float:
-        """_summary_
-
-        :param node1_id: _description_
-        :type node1_id: str
-        :param node2_id: _description_
-        :type node2_id: str
-        :return: _description_
-        :rtype: float
-        """
         pair_id = create_id_for_node_pair(node1_id, node2_id)
         if self.cache['bfs_short_path'].item_exist(pair_id):
             #print("exists")
@@ -258,15 +235,6 @@ class AStarGraphSearch:
             log=self.log, config=self.config.metrics_config, verbose=verbose)
 
     def search_path(self, start_node_id: str, end_node_id: str) -> Tuple[List[str], List[str], Dict[str, int], Dict[str, str], str]:
-        """_summary_
-
-        :param start_node_id: _description_
-        :type start_node_id: str
-        :param end_node_id: _description_
-        :type end_node_id: str
-        :return: _description_
-        :rtype: Tuple[List[str], List[str], Dict[str, int], Dict[str, str], str]
-        """
         # использованная реализация A*-алгоритма поиска кратчайшего пути между вершинами: https://www.redblobgames.com/pathfinding/a-star/implementation.html
         frontier = []
         heapq.heappush(frontier, (0, start_node_id))
