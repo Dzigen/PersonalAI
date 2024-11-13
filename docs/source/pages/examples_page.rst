@@ -1,50 +1,9 @@
 Примеры использования
 =====================
 
+.. toctree::
+   :maxdepth: 1
 
-
-Конфигурация с A*-поиском
--------------------------
-
-.. code-block:: python
-  :linenos:
-
-  code . . .
-
-
-Конфигурация с BFS-поиском
---------------------------
-
-
-.. code-block:: python
-  :linenos:
-
-  code . . .
-
-Конфигурация с Mixed-поиском
-----------------------------
-
-.. code-block:: python
-  :linenos:
-
-  code . . .
-
-
-Запуск ассистента
------------------
-
-Набор знаний для запоминания
-
-.. code-block:: python
-  :linenos:
-
-  code . . .
-
-Сохранение информации в памяти ассистента
-
-.. code-block:: python
-  :linenos:
-
-  code . . .
-
-Получение информации из памяти ассистента
+   ../notebooks/remote_knowledge_graph_astar.ipynb
+   ../notebooks/remote_knowledge_graph_bfs.ipynb
+   ../notebooks/remote_knowledge_graph_mixture.ipynb
