@@ -12,13 +12,13 @@ RKG_LOG_PATH = "log/personalai"
 
 @dataclass
 class PersonalAIConfig:
-    # Конфигурация модели, которая отвечает за представление знаний ассистента в графовом формате
+    #: Конфигурация модели, которая отвечает за представление знаний ассистента в графовом формате
     graph_struct_config: GraphModelConfig = field(default_factory=lambda: GraphModelConfig())
-    # Конфигурация модели, которая отвечает за предтсавление знаний ассистента в векторном формате
+    #: Конфигурация модели, которая отвечает за предтсавление знаний ассистента в векторном формате
     embedds_struct_config: EmbeddingsModelConfig = field(default_factory=lambda: EmbeddingsModelConfig())
-    # Конфигурация конвейера, который выполняет генерацию ответов на вопросы
+    #: Конфигурация конвейера, который выполняет генерацию ответов на вопросы
     qa_pipeline_config: QAPipelineConfig = field(default_factory=lambda: QAPipelineConfig())
-    # Конфигурация конвейера, который выполняет изменения знаний в памяти ассистента
+    #: Конфигурация конвейера, который выполняет изменения знаний в памяти ассистента
     mem_pipeline_config: MemPipelineConfig = field(default_factory=lambda: MemPipelineConfig())
     #
     log: Logger = field(default_factory=lambda:Logger(RKG_LOG_PATH))

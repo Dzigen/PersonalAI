@@ -26,6 +26,9 @@ extensions = [
     "nbsphinx"
 ]
 
+# xelatex to solve Unicode problems https://github.com/sphinx-doc/sphinx/issues/4159
+latex_engine = 'xelatex'
+
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 todo_include_todos = True
