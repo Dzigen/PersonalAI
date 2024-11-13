@@ -2,7 +2,7 @@ Available Agent Connectors
 ==========================
 
 .. image:: ../../../class_diagram/available_agent_connectors.png
-  :width: 500
+  :width: 800
   :align: center
 
 .. toctree::

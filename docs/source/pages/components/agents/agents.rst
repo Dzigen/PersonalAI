@@ -2,7 +2,7 @@ Agents
 ======
 
 .. image:: ../../../class_diagram/agent_driver.png
-  :width: 400
+  :width: 800
   :align: center
 
 src.agents package
