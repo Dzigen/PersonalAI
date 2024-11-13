@@ -22,7 +22,8 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.todo',
     'rst2pdf.pdfbuilder',
-    "sphinx_rtd_dark_mode"
+    "sphinx_rtd_dark_mode",
+    "nbsphinx"
 ]
 
 templates_path = ['_templates']

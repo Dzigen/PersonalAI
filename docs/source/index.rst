@@ -3,19 +3,18 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-personal_ai documentation
+Personal AI документация
 =========================
-
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
-   modules
+   pages/installing_page
+   pages/architecture_page
+   pages/components_page
+   pages/examples_page
 
 Indices and tables
 ==================

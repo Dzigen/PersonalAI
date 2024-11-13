@@ -1,0 +1,50 @@
+QA-pipeline
+===========
+
+.. image:: ../../../class_diagram/mem_pipeline.png
+  :width: 800
+  :align: center
+
+src.qa\_pipeline package
+------------------------
+
+Subpackages
+^^^^^^^^^^^
+
+.. toctree::
+   :maxdepth: 1
+
+   query_parser
+   knowledge_comparator
+   knowledge_retriever
+   answer_generator
+
+Submodules
+^^^^^^^^^^
+
+src.qa\_pipeline.QAPipeline module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: src.qa_pipeline.QAPipeline
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :no-index:
+
+src.qa\_pipeline.utils module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: src.qa_pipeline.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :no-index:
+
+Module contents
+^^^^^^^^^^^^^^^
+
+.. automodule:: src.qa_pipeline
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :no-index:
