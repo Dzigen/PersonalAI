@@ -12,9 +12,9 @@ from ..utils import Logger, Triplet, ReturnStatus, ReturnInfo
 
 @dataclass
 class MemPipelineConfig:
-    # Конфигурация первой стадии Mem-конвейера: извлечение информации из текстовых данных и приведение их в triplet-формат
+    #: Конфигурация первой стадии Mem-конвейера: извлечение информации из текстовых данных и приведение их в triplet-формат
     extractor_config: LLMExtractorConfig = field(default_factory=lambda: LLMExtractorConfig())
-    # Конфигурация второй стадии Mem-конвейера: актуализация знаний в памяти ассистента
+    #: Конфигурация второй стадии Mem-конвейера: актуализация знаний в памяти ассистента
     updator_config: LLMUpdatorConfig = field(default_factory=lambda: LLMUpdatorConfig())
     #
     log: Logger = field(default_factory=lambda: Logger(MEM_LOG_PATH))

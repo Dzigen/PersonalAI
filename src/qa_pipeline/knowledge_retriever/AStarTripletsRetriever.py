@@ -16,20 +16,19 @@ from ...utils import Logger
 
 @dataclass
 class AStarMetricsConfig:
-    # Эвристическая метрика, которая будет использоваться
-    # для оценки расстояния между текущей и конечной вершинами.
+    #: Эвристическая метрика, которая будет использоваться для оценки расстояния между текущей и конечной вершинами.
     h_metric_name: str = 'ip' # 'ip', 'weight_with_short_path', 'avg_weighted_with_short_path'
-    # Конфигурация кеша для хранения рассчитанных h-оценок между вершинами.
+    #: Конфигурация кеша для хранения рассчитанных h-оценок между вершинами.
     kvdriver_config: KeyValueDriverConfig = None
 
 @dataclass
 class AStarGraphSearchConfig(BaseGraphSearchConfig):
     metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
-    # Макимальная глубина обхода графа для поиска заданной вершины
+    #: Макимальная глубина обхода графа для поиска заданной вершины
     max_depth: int = 10 # int number or -1
-    # Максимальное количество вершин, которые можно обойти для поиска заднной вершины в графе
+    #: Максимальное количество вершин, которые можно обойти для поиска заднной вершины в графе
     max_passed_nodes: int = 500 # int number or -1
-    # Типы вершин, которые можно обходить во время поиска заданной вершины
+    #: Типы вершин, которые можно обходить во время поиска заданной вершины
     accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic])
 
 class AStarMetrics:

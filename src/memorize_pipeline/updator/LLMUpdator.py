@@ -8,9 +8,9 @@ from typing import Dict
 
 @dataclass
 class LLMUpdatorConfig:
-    #
+    #: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически.
     lang: str = "auto"
-    #
+    #: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig)
     #
     replace_thesis_prompt: Dict = field(default_factory=lambda: REPLACE_THESIS_PROMPT)

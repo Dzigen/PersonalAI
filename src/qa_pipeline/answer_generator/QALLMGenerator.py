@@ -11,16 +11,14 @@ from ...utils.errors import QA_BAD_QA_PROMPT_MSG, QA_EMPTY_ANSWER_MSG, NOT_SUPPO
 
 @dataclass
 class QALLMGeneratorConfig:
-    # Язык, который будет использоваться в подаваемом на вход тексте.
-    # На основании выбранного языка будут использоваться соответствующие промпты.
-    # Если 'auto', то язык определяется автоматически.
+    #: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически.
     lang: str = "auto"
     system_prompt: dict = field(default_factory=lambda: QA_SYSTEM_PROMPT)
     user_prompt: dict = field(default_factory=lambda: QA_USER_PROMPT)
     answer_parse_func: dict = field(default_factory=lambda: ANSWER_PARSE_FUNC)
-    # Конфигурация LLM-агента, который будет использоваться в рамках данной стадии
+    #: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии
     agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    # Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос
+    #: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
     #
     log: Logger = field(default_factory=lambda: Logger(QA_LOG_PATH))

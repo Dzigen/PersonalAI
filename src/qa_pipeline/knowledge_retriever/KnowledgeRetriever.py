@@ -24,10 +24,10 @@ AVAILABLE_TRIPLETS_FILTERS = {
 
 @dataclass
 class KnowledgeRetrieverConfig:
-    # Конфигурация алгоритма, который будет извлекать триплеты из графа знаний
+    #: Конфигурация алгоритма, который будет извлекать триплеты из графа знаний
     retriever_method: str = 'astar'
     retriever_config: BaseGraphSearchConfig = field(default_factory=lambda: AStarGraphSearchConfig())
-    # Конфигурация алгоритма, который будет ранжировать извлённые триплеты по их релевантности к user-вопросу
+    #: Конфигурация алгоритма, который будет ранжировать извлённые триплеты по их релевантности к user-вопросу
     filter_method: str = 'naive'
     filter_config: BaseTripletsFilterConfig = field(default_factory=lambda: TripletsFilterConfig())
     #

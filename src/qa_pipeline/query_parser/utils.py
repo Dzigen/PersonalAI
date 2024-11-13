@@ -24,8 +24,8 @@ ENTITIES_PARSE_FUNC = {
 
 @dataclass
 class EntitiesExtractorConfig:
-    # Промты для LLM-агента с описанием задачи по извлечению ключевых сущностей из текста.
+    #: Промты для LLM-агента с описанием задачи по извлечению ключевых сущностей из текста.
     user_prompt: Dict = field(default_factory=lambda: ENTITIES_EXTRACTION_USER_PROMPT)
     system_prompt: Dict = field(default_factory=lambda: ENTITIES_EXTRACTION_SYSTEM_PROMPT)
-    # Функция парснга результатов генерации LLM-агента
+    #: Функция парснга результатов генерации LLM-агента
     entities_parse_func: Dict = field(default_factory=lambda: ENTITIES_PARSE_FUNC)

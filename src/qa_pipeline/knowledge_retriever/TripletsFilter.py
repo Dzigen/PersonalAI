@@ -9,7 +9,7 @@ from ...db_drivers.vector_driver import VectorDBInstance
 
 @dataclass
 class TripletsFilterConfig(BaseTripletsFilterConfig):
-    # Первые k (по релевантности) триплетов, которые будут возвращены в результате операции ранжирования.
+    #: Первые k (по релевантности) триплетов, которые будут возвращены в результате операции ранжирования.
     max_k: int = 50
 
 class TripletsFilter(AbstractTriplesFilter):
