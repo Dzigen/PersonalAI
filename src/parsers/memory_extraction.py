@@ -4,11 +4,11 @@ import ast
 from ..utils import ReturnStatus
 
 def mem_custom_triplet_parse_func(raw_response: str) -> Tuple[List[Tuple[str, str, str]], ReturnStatus]:
-    """_summary_
+    """Функция предназначена для разбора результата генерации ответа LLM-агента, в рамаках задачи по извлечению триплетов из текста на естественном языке.
 
-    :param raw_response: _description_
+    :param raw_response: Ответ LLM-агента
     :type raw_response: str
-    :return: _description_
+    :return: Разобранный список триплетов из ответа LLM-модели.
     :rtype: Tuple[List[Tuple[str, str, str]], ReturnStatus]
     """
     status = ReturnStatus.success
@@ -33,7 +33,7 @@ def mem_custom_triplet_parse_func(raw_response: str) -> Tuple[List[Tuple[str, st
     return raw_triplets, status
 
 def mem_custom_thesis_parse_func(raw_response: str) -> Tuple[List[Tuple[str, str]], ReturnStatus]:
-    """_summary_
+    """
 
     :param raw_response: _description_
     :type raw_response: str
