@@ -20,13 +20,6 @@ src.utils.errors module
    :undoc-members:
    :show-inheritance:
 
-src.utils.evaluation\_metrics module
-------------------------------------
-
-.. automodule:: src.utils.evaluation_metrics
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 src.utils.language\_detector module
 -----------------------------------

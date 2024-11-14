@@ -19,8 +19,9 @@ class QAPipelineConfig:
     knowledge_retriever_config: KnowledgeRetrieverConfig = field(default_factory=lambda: KnowledgeRetrieverConfig())
     #: Конфигурация четвёртой стадии QA-конвейера: условная генерация ответа на user-вопрос
     answer_generator_config: QALLMGeneratorConfig = field(default_factory=lambda: QALLMGeneratorConfig())
-    #
+    #: Отладочный класс для журналирования/мониторинга поведения комопненты
     log: Logger = field(default_factory=lambda: Logger(LOG_PATH))
+    #: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл.
     verbose: bool = False
 
 class QAPipeline:

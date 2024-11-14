@@ -4,8 +4,12 @@ from enum import Enum
 import hashlib
 
 class NodeType(Enum):
+    """Доступные типы вершин."""
+    #: Вершина хранить атомарную сущность.
     object = "object"
+    #: Вершина хранит тезисную информацию.
     hyper = "hyper"
+    #: Вершина хранит эпизодическую информацию.
     episodic = "episodic"
 
 NODES_TYPES_MAP = {
@@ -15,8 +19,12 @@ NODES_TYPES_MAP = {
 }
 
 class RelationType(Enum):
+    """Доступные типы связей/триплетов."""
+    #: Связывает только вершины с типом 'object'.
     simple = "simple"
+    #: Связывает пары вершин ('object','hyper').
     hyper = "hyper"
+    #: Связывает пары вершин ('object', 'episodic') и ('object', 'hyper').
     episodic = "episodic"
 
 RELATIONS_TYPES_MAP = {
@@ -27,26 +35,42 @@ RELATIONS_TYPES_MAP = {
 
 @dataclass
 class Node:
+    #: Основное хранилище информации.
     name: str
-    type: str
-    id: str = None
+    #: Тип вершины
+    type: NodeType
+    #: Дополнительные свойства вершины
     prop: dict = field(default_factory=lambda: {})
+    #: Строковое представление вершины
     stringified: str = None
+    #: Идентификатор вершины, полученный на основе её стрококового представления.
+    id: str = None
 
 @dataclass
 class Relation:
+    #: Основное хранилище информации.
     name: str
-    type: str
-    id: str = None
+    # Тип связи.
+    type: RelationType
+    #: Дополнительные свойства вершины
     prop: dict = field(default_factory=lambda: {})
+    #: Идентификатор триплета, полученный на основе его стрококового представления.
+    #: Отличается от значения в поле id объекта класса Triplet.
+    id: str = None
 
 @dataclass
 class Triplet:
+    #
     start_node: Node
+    #
     relation: Relation
+    #
     end_node: Node
-    id: str = None
+    #: Строковое представление триплета
     stringified: str = None
+    #: Идентификатор триплета, полученный на основе его стрококового представления.
+    #: Отличается от значения в поле id объекта класса Relation.
+    id: str = None
 
 class BaseCreator:
     @staticmethod
@@ -187,7 +211,14 @@ class TripletCreator(BaseCreator):
 
 @dataclass
 class QueryInfo:
+    """Класс предназначен для хранения промежуточных результатов по user-вопросу,
+    который обрабатывается в рамках QA-конвейера
+    """
+    #: Исходный user-вопрос.
     query: str
+    #: Набор сущностей, который был извлечён из user-вопроса.
     entities: List[str] = None
+    #: Набор объектов (вершин) из памяти (графа знаний) ассистента,
+    #: который был сопоставлен сущностям из user-вопроса.
     linked_nodes: List[object] = None
     linked_nodes_by_entities: List[object] = None
