@@ -14,17 +14,17 @@ RKG_LOG_PATH = "log/personalai"
 class PersonalAIConfig:
     """Конфигурация персонального ассистента.
 
-    :param graph_struct_config: Конфигурация модели, которая отвечает за представление знаний ассистента в графовом формате.
+    :param graph_struct_config: Конфигурация модели, которая отвечает за представление знаний ассистента в графовом формате. Значение по умолчанию GraphModelConfig().
     :type graph_struct_config: GraphModelConfig
-    :param embedds_struct_config: Конфигурация модели, которая отвечает за предтсавление знаний ассистента в векторном формате.
+    :param embedds_struct_config: Конфигурация модели, которая отвечает за предтсавление знаний ассистента в векторном формате. Значение по умолчанию EmbeddingsModelConfig().
     :type embedds_struct_config: EmbeddingsModelConfig
-    :param qa_pipeline_config: Конфигурация конвейера, который выполняет генерацию ответов на вопросы.
+    :param qa_pipeline_config: Конфигурация конвейера, который выполняет генерацию ответов на вопросы. Значение по умолчанию QAPipelineConfig().
     :type qa_pipeline_config: QAPipelineConfig
-    :param mem_pipeline_config: Конфигурация конвейера, который выполняет изменения знаний в памяти ассистента.
+    :param mem_pipeline_config: Конфигурация конвейера, который выполняет изменение/обновление знаний в памяти ассистента. Значение по умолчанию MemPipelineConfig().
     :type mem_pipeline_config: MemPipelineConfig
-    :param log: Отладочный класс для журналирования/мониторинга поведения комопненты.
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(RKG_LOG_PATH).
     :type log: Logger
-    :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл.
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
     graph_struct_config: GraphModelConfig = field(default_factory=lambda: GraphModelConfig())
