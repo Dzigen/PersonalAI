@@ -11,7 +11,8 @@ from ...utils.errors import QA_BAD_QA_PROMPT_MSG, QA_EMPTY_ANSWER_MSG, NOT_SUPPO
 
 @dataclass
 class QALLMGeneratorConfig:
-    #: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически.
+    #: Язык, который будет использоваться в подаваемом на вход тексте.
+    #: На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически.
     lang: str = "auto"
     system_prompt: dict = field(default_factory=lambda: QA_SYSTEM_PROMPT)
     user_prompt: dict = field(default_factory=lambda: QA_USER_PROMPT)
@@ -20,13 +21,17 @@ class QALLMGeneratorConfig:
     agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     #: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
-    #
+    #: Отладочный класс для журналирования/мониторинга поведения комопненты.
     log: Logger = field(default_factory=lambda: Logger(QA_LOG_PATH))
+    #: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл.
     verbose: bool = False
 
 class QALLMGenerator:
     """Верхнеуровневый класс четвёртой стадии QA-конвейера для генерации ответа на user-вопрос,
     обусловленного извлёчённой информацией из памяти (графа знаний) ассистента.
+
+    :param config: Конфигурация "Answer-generation"-стадии. Defaults to QALLMGeneratorConfig().
+    :type config: QALLMGeneratorConfig
     """
     def __init__(self, config: QALLMGeneratorConfig = QALLMGeneratorConfig()) -> None:
         self.config = config

@@ -6,6 +6,7 @@ DEFAULT_LLAMA_CONFIG = AgentConnectorConfig(
     credentials={'host': 'http://localhost:45678', 'generate_merhod': 'generate', 'check_method': ''})
 
 class LlamaConnector(AbstractAgentConnector):
+    """_summary_"""
     def __init__(self, config: AgentConnectorConfig = DEFAULT_LLAMA_CONFIG) -> None:
         self.config = config
 

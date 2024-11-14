@@ -12,21 +12,34 @@ RKG_LOG_PATH = "log/personalai"
 
 @dataclass
 class PersonalAIConfig:
-    #: Конфигурация модели, которая отвечает за представление знаний ассистента в графовом формате
+    """Конфигурация персонального ассистента.
+
+    :param graph_struct_config: Конфигурация модели, которая отвечает за представление знаний ассистента в графовом формате.
+    :type graph_struct_config: GraphModelConfig
+    :param embedds_struct_config: Конфигурация модели, которая отвечает за предтсавление знаний ассистента в векторном формате.
+    :type embedds_struct_config: EmbeddingsModelConfig
+    :param qa_pipeline_config: Конфигурация конвейера, который выполняет генерацию ответов на вопросы.
+    :type qa_pipeline_config: QAPipelineConfig
+    :param mem_pipeline_config: Конфигурация конвейера, который выполняет изменения знаний в памяти ассистента.
+    :type mem_pipeline_config: MemPipelineConfig
+    :param log: Отладочный класс для журналирования/мониторинга поведения комопненты.
+    :type log: Logger
+    :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл.
+    :type verbose: bool
+    """
     graph_struct_config: GraphModelConfig = field(default_factory=lambda: GraphModelConfig())
-    #: Конфигурация модели, которая отвечает за предтсавление знаний ассистента в векторном формате
     embedds_struct_config: EmbeddingsModelConfig = field(default_factory=lambda: EmbeddingsModelConfig())
-    #: Конфигурация конвейера, который выполняет генерацию ответов на вопросы
     qa_pipeline_config: QAPipelineConfig = field(default_factory=lambda: QAPipelineConfig())
-    #: Конфигурация конвейера, который выполняет изменения знаний в памяти ассистента
     mem_pipeline_config: MemPipelineConfig = field(default_factory=lambda: MemPipelineConfig())
-    #: Отладочный класс для журналирования/мониторинга поведения комопненты
     log: Logger = field(default_factory=lambda:Logger(RKG_LOG_PATH))
-    #: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл.
     verbose: bool = False
 
 class PersonalAI:
-    """Верхнеуровневый класс персонального AI-ассистента."""
+    """Верхнеуровневый класс персонального ассистента.
+
+    :param config: Конфигурация персонального ассистента.
+    :type config: PersonalAIConfig
+    """
     def __init__(self, config: PersonalAIConfig):
         self.config = config
         self.log = self.config.log

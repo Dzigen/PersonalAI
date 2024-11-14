@@ -10,6 +10,7 @@ DEFAULT_LOCALAGENT_CONFIG = AgentConnectorConfig(
     ext_params={'num_workers': 4, 'torch_dtype': torch.bfloat16})
 
 class LocalAgentConnector(AbstractAgentConnector):
+    """_summary_"""
     def __init__(self, config: AgentConnectorConfig = DEFAULT_LOCALAGENT_CONFIG) -> None:
         self.config = config
         self.pipeline = pipeline(

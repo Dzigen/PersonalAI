@@ -13,22 +13,27 @@ from ...agents import AgentDriver, AgentDriverConfig
 
 @dataclass
 class LLMExtractorConfig:
-    # Язык, который будет использоваться в подаваемом на вход тексте.
-    # На основании выбранного языка будут использоваться соответствующие промпты.
-    # Если 'auto', то язык определяется автоматически.
+    #: Язык, который будет использоваться в подаваемом на вход тексте.
+    #: На основании выбранного языка будут использоваться соответствующие промпты.
+    #: Если 'auto', то язык определяется автоматически.
     lang: str = "auto"
-    # Конфигурация LLM-агента, который будет использоваться в рамках данной стадии
+    #: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    # Промпты и parse-функция для LLM-агента, которые используются для извлечения триплетов типа "simple" их входного текста
+    #: Промпты и parse-функция для LLM-агента, которые используются для извлечения триплетов типа "simple" их входного текста
     triplet_extract_system_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_TRIPLET_SYSTEM_PROMPT)
+    #: TODO
     triplet_extract_user_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_TRIPLET_USER_PROMPT)
+    #: TODO
     triplet_parse_func: dict = field(default_factory=lambda: MEM_TRIPLET_PARSE_FUNC)
-    # Промпты и parse-функция для LLM-агента, которые используются для извлечения триплетов типа "hyper" их входного текста
+    #: Промпты и parse-функция для LLM-агента, которые используются для извлечения триплетов типа "hyper" их входного текста
     thesis_extract_system_prompt:  dict = field(default_factory=lambda: MEM_EXTRACT_THESIS_SYSTEM_PROMPT)
+    #: TODO
     thesis_extract_user_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_THESIS_USER_PROMPT)
+    #: TODO
     thesis_parse_func: dict = field(default_factory=lambda: MEM_THESIS_PARSE_FUNC)
-    #
+    #: Отладочный класс для журналирования/мониторинга поведения комопненты.
     log: Logger = field(default_factory=lambda: Logger(MEM_EXTRACT_LOG_PATH))
+    #: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл.
     verbose: bool = False
 
 class LLMExtractor:

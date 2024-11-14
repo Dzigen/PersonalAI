@@ -5,12 +5,16 @@ from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
 @dataclass
 class KVDBConnectionConfig(BaseDatabaseConfig):
+    #: TODO
     host: str = None
+    #: TODO
     port: str = None
 
 @dataclass
 class KeyValueDBInstance:
+    #: TODO
     id: str
+    #: TODO
     metadata: Dict
 
 class AbstractKVDatabaseConnection(AbstractDatabaseConnection):

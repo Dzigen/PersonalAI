@@ -14,6 +14,8 @@ class EmbedderModelConfig:
     normalize_embeddings: bool = True
 
 class EmbedderModel:
+    """_summary_"""
+
     def __init__(self, config: EmbedderModelConfig = None) -> None:
         self.config = EmbedderModelConfig() if config is None else config
         self.model = SentenceTransformer(

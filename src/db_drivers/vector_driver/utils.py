@@ -13,9 +13,13 @@ class VectorDBConnectionConfig(BaseDatabaseConfig):
 
 @dataclass
 class VectorDBInstance:
+    #: TODO
     id: str = None
+    #: TODO
     document: str = None
+    #: TODO
     embedding: List[float] = None
+    #: TODO
     metadata: Dict = field(default_factory=lambda: dict())
 
 class AbstractVectorDatabaseConnection(AbstractDatabaseConnection):

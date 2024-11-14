@@ -4,6 +4,13 @@ import ast
 from ..utils import ReturnStatus
 
 def mem_custom_triplet_parse_func(raw_response: str) -> Tuple[List[Tuple[str, str, str]], ReturnStatus]:
+    """_summary_
+
+    :param raw_response: _description_
+    :type raw_response: str
+    :return: _description_
+    :rtype: Tuple[List[Tuple[str, str, str]], ReturnStatus]
+    """
     status = ReturnStatus.success
     if ":" in raw_response:
         raw_response = raw_response.split(":")[-1]
@@ -25,8 +32,14 @@ def mem_custom_triplet_parse_func(raw_response: str) -> Tuple[List[Tuple[str, st
 
     return raw_triplets, status
 
-#
 def mem_custom_thesis_parse_func(raw_response: str) -> Tuple[List[Tuple[str, str]], ReturnStatus]:
+    """_summary_
+
+    :param raw_response: _description_
+    :type raw_response: str
+    :return: _description_
+    :rtype: Tuple[List[Tuple[str, str]], ReturnStatus]
+    """
     status = ReturnStatus.success
     if ":" in raw_response:
         raw_response = raw_response.split(":")[-1]

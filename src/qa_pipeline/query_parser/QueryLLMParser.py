@@ -9,19 +9,24 @@ from ...agents import AgentDriver, AgentDriverConfig
 
 @dataclass
 class QueryLLMParserConfig:
-    #: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически.
+    #: Язык, который будет использоваться в подаваемом на вход тексте.
+    #: На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически.
     lang: str = 'auto'
     #: Конфигурация алгоритма по извлечению ключевых сущностей из текста.
     ents_extr_config: EntitiesExtractorConfig = field(default_factory=lambda: EntitiesExtractorConfig())
-    #: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии
+    #: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии.
     agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    #
+    #: Отладочный класс для журналирования/мониторинга поведения комопненты.
     log: Logger = field(default_factory=lambda: Logger(QP_LOG_PATH))
+    #: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл.
     verbose: bool = False
 
 class QueryLLMParser:
     """Верхнеуровневый класс первой стадии QA-конвейера
     для извлечения сущностей из user-вопроса.
+
+    :param config: Конфигурация "Query Parser"-стадии. Defaults to QueryLLMParserConfig().
+    :type config: QueryLLMParserConfig
     """
     def __init__(self, config: QueryLLMParserConfig = QueryLLMParserConfig()) -> None:
         self.config = config

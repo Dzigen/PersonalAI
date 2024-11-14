@@ -16,9 +16,10 @@ class MemPipelineConfig:
     extractor_config: LLMExtractorConfig = field(default_factory=lambda: LLMExtractorConfig())
     #: Конфигурация второй стадии Mem-конвейера: актуализация знаний в памяти ассистента
     updator_config: LLMUpdatorConfig = field(default_factory=lambda: LLMUpdatorConfig())
-    #
+    #: Отладочный класс для журналирования/мониторинга поведения комопненты.
     log: Logger = field(default_factory=lambda: Logger(MEM_LOG_PATH))
-    log_verbose: bool = False
+    #: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл.
+    verbose: bool = False
 
 class MemPipeline:
     """Верхнеуровневый класс Mem-конвейера, отвечающего за изменение знаний в памяти ассистента."""
@@ -60,7 +61,7 @@ class MemPipeline:
         assert need_simple or need_thesises
 
         new_triplets, info = self.extractor.extract(text, need_simple, need_thesises, need_episodic, properties)
-        #self.log("PROCESSED NEW TRIPLETS: " + str(new_triplets), verbose=self.config.log_verbose)
+        #self.log("PROCESSED NEW TRIPLETS: " + str(new_triplets), verbose=self.config.verbose)
         if info.status == ReturnStatus.success:
             # TODO
             #if need_update:

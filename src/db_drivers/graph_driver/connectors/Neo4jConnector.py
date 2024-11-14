@@ -13,6 +13,7 @@ DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(uri="bolt://localhost:7687", para
 
 class Neo4jConnector(AbstractGraphDatabaseConnection):
     """_summary_"""
+
     def __init__(self, config: GraphDBConnectionConfig):
         self.config = config
         self.open_connection()

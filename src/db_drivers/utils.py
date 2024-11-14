@@ -6,9 +6,11 @@ from ..utils.errors import ReturnInfo
 
 @dataclass
 class BaseDatabaseConfig:
+    #: TODO
     db_info: Dict = field(default_factory=lambda: {'db': 'default_db', 'table': 'default_table'})
+    #: TODO
     params: Dict = field(default_factory=lambda: dict())
-    #
+    #: TODO
     need_to_clear: bool = False
 
 class AbstractDatabaseConnection(ABC):

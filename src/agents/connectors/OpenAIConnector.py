@@ -11,6 +11,7 @@ DEFAULT_OPENAI_CONFIG = AgentConnectorConfig(
     credentials={'token': OPENAI_KEY, 'model': 'gpt-4o-mini'})
 
 class OpenAIConnector(AbstractAgentConnector):
+    """_summary_"""
     def __init__(self, config: AgentConnectorConfig = DEFAULT_OPENAI_CONFIG) -> None:
         self.model = config.credentials['model']
         self.gen_strategy = config['gen_strategy']
