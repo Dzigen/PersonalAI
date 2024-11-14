@@ -13,32 +13,46 @@ from ...agents import AgentDriver, AgentDriverConfig
 
 @dataclass
 class LLMExtractorConfig:
-    #: Язык, который будет использоваться в подаваемом на вход тексте.
-    #: На основании выбранного языка будут использоваться соответствующие промпты.
-    #: Если 'auto', то язык определяется автоматически.
+    """Конфигурация Extractor-стадии.
+
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
+    :type lang: str
+    :param agent_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии.
+    :type agent_config: AgentDriverConfig
+    :param triplet_extract_system_prompt: System-промпты с описание персоны, свойствам которой должен удовлетворять LLM-агент при генерации оветов по задаче извлечения триплетов.
+    :type triplet_extract_system_prompt: dict
+    :param triplet_extract_user_prompt: User-промпты для LLM-агента с описанием задачи по извлечению триплетов из текста на естественном языке.
+    :type triplet_extract_user_prompt: dict
+    :param triplet_parse_func: Функция разбора результатов генерации LLM-агента по задаче извлечения триплетов.
+    :type triplet_parse_func: dict
+    :param thesis_extract_system_prompt: System-промпты с описание персоны, свойствам которой должен удовлетворять LLM-агент при генерации оветов по задаче извлечения тезисной  информации.
+    :type thesis_extract_system_prompt: dict
+    :param thesis_extract_user_prompt: User-промпты для LLM-агента с описанием задачи по извлечению тезисной информации из текста на естественном языке.
+    :type thesis_extract_user_prompt: dict
+    :param thesis_parse_func: Функция разбора результатов генерации LLM-агента по задаче извлечения тезисной информации.
+    :type thesis_parse_func: dict
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(MEM_EXTRACT_LOG_PATH).
+    :type log: Logger
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
+    """
     lang: str = "auto"
-    #: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    #: Промпты и parse-функция для LLM-агента, которые используются для извлечения триплетов типа "simple" их входного текста
     triplet_extract_system_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_TRIPLET_SYSTEM_PROMPT)
-    #: TODO
     triplet_extract_user_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_TRIPLET_USER_PROMPT)
-    #: TODO
     triplet_parse_func: dict = field(default_factory=lambda: MEM_TRIPLET_PARSE_FUNC)
-    #: Промпты и parse-функция для LLM-агента, которые используются для извлечения триплетов типа "hyper" их входного текста
     thesis_extract_system_prompt:  dict = field(default_factory=lambda: MEM_EXTRACT_THESIS_SYSTEM_PROMPT)
-    #: TODO
     thesis_extract_user_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_THESIS_USER_PROMPT)
-    #: TODO
     thesis_parse_func: dict = field(default_factory=lambda: MEM_THESIS_PARSE_FUNC)
-    #: Отладочный класс для журналирования/мониторинга поведения комопненты.
     log: Logger = field(default_factory=lambda: Logger(MEM_EXTRACT_LOG_PATH))
-    #: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл.
     verbose: bool = False
 
 class LLMExtractor:
-    """Верхнеуровневый класс первой стадии Mem-конвейера
-    для извлечения информации (и её приведения в triplet-формат) из слабоструктурированных данных."""
+    """Верхнеуровневый класс первой стадии Memorize-конвейера для извлечения информации (и её приведения в triplet-формат) из слабоструктурированных данных.
+
+    :param config: Конфигурация Exctrator-стадии. Значение по умолчанию LLMExtractorConfig().
+    :type config: LLMExtractorConfig
+    """
     def __init__(self, config: LLMExtractorConfig = LLMExtractorConfig()) -> None:
         self.config = config
         self.agent = AgentDriver.connect(config.agent_config)
@@ -52,13 +66,13 @@ class LLMExtractor:
 
         :param text: Слабоструктурированный текст.
         :type text: str
-        :param need_simple: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'simple', иначе False, defaults to True
+        :param need_simple: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'simple', иначе False. Значение по умолчанию True.
         :type need_simple: bool, optional
-        :param need_thesises: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'hyper', иначе False, defaults to True
+        :param need_thesises: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'hyper', иначе False. Значение по умолчанию True.
         :type need_thesises: bool, optional
-        :param need_episodic: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False, defaults to True
+        :param need_episodic: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False. Значение по умолчанию True.
         :type need_episodic: bool, optional
-        :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, defaults to dict()
+        :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, Значение по умолчанию dict().
         :type properties: Dict, optional
         :return: Кортеж из двух объектов: (1) cписок извлечённой из текста информации (в виде триплетов); (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[Triplet], ReturnInfo]

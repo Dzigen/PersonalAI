@@ -8,19 +8,34 @@ from typing import Dict
 
 @dataclass
 class LLMUpdatorConfig:
-    #: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически.
+    """Конфигурация Updator-стадии.
+
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
+    :type lang: str
+    :param agent_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии.
+    :type agent_config: AgentDriverConfig
+    :param replace_thesis_prompt: Значение по умолчанию REPLACE_THESIS_PROMPT.
+    :type replace_thesis_prompt: Dict
+    :param replace_simple_prompt: Значение по умолчанию REPLACE_SIMPLE_PROMPT.
+    :type replace_simple_prompt: Dict
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(MEM_UPDATE_LOG).
+    :type log: Logger
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
+    """
     lang: str = "auto"
-    #: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig)
-    #
     replace_thesis_prompt: Dict = field(default_factory=lambda: REPLACE_THESIS_PROMPT)
     replace_simple_prompt: Dict = field(default_factory=lambda: REPLACE_SIMPLE_PROMPT)
-    #
     log: Logger = field(default_factory=lambda: Logger(MEM_UPDATE_LOG))
     verbose: bool = False
 
-# TODO
 class LLMUpdator:
+    """Верхнеуровневый класс первой стадии Memorize-конвейера для актуализации знаний в памяти ассистента.
+
+    :param config: Конфигурация Updator-стадии. Значение по умолчанию LLMUpdatorConfig().
+    :type config: LLMUpdatorConfig
+    """
 
     def __init__(self, config: LLMUpdatorConfig, bfs: BFSRetriever) -> None:
         self.config = config
