@@ -26,8 +26,36 @@ extensions = [
     "nbsphinx"
 ]
 
+# long function signature fix
+autodoc_typehints = "description"
+autodoc_class_signature = "mixed"
+autodoc_member_order = 'bysource'
+
 # xelatex to solve Unicode problems https://github.com/sphinx-doc/sphinx/issues/4159
 latex_engine = 'xelatex'
+
+latex_elements = {
+    'fontpkg': '''
+\setmainfont{FreeSerif}[
+  UprightFont    = *,
+  ItalicFont     = *Italic,
+  BoldFont       = *Bold,
+  BoldItalicFont = *BoldItalic
+]
+\setsansfont{FreeSans}[
+  UprightFont    = *,
+  ItalicFont     = *Oblique,
+  BoldFont       = *Bold,
+  BoldItalicFont = *BoldOblique,
+]
+\setmonofont{FreeMono}[
+  UprightFont    = *,
+  ItalicFont     = *Oblique,
+  BoldFont       = *Bold,
+  BoldItalicFont = *BoldOblique,
+]
+''',
+ }
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']

@@ -39,12 +39,3 @@ src.qa\_pipeline.utils module
    :undoc-members:
    :show-inheritance:
    :no-index:
-
-Module contents
-^^^^^^^^^^^^^^^
-
-.. automodule:: src.qa_pipeline
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :no-index:

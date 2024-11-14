@@ -38,12 +38,3 @@ src.memorize\_pipeline.utils module
    :undoc-members:
    :show-inheritance:
    :no-index:
-
-Module contents
-^^^^^^^^^^^^^^^
-
-.. automodule:: src.memorize_pipeline
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :no-index:
