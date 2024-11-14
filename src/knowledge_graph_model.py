@@ -21,12 +21,15 @@ EMBEDDINGS_MODEL_LOG_PATH = 'log/em'
 
 @dataclass
 class EmbeddingsModelConfig:
-    #
+    #: Конфигурация векторной базы данных, которая будет отвечать за хранение векторных представлений вершин из графовой модели
     nodesdb_driver_config: VectorDriverConfig = field(default_factory=lambda: NODES_DB_DEFAULT_DRIVER_CONFIG)
+    #: Конфигурация векторной базы данных, которая будет отвечать за хранение векторных представлений триплетов из графовой модели
     tripletsdb_driver_config: VectorDriverConfig = field(default_factory=lambda: TRIPLETS_DB_DEFAULT_DRIVER_CONFIG)
+    # Конфигурация класса, отвечающего за приведения текста в его векторрное представление с помощью embedder-модели
     embedder_config: EmbedderModelConfig = field(default_factory=lambda: EmbedderModelConfig())
-    #
+    #: Отладочный класс для журналирования/мониторинга поведения комопненты
     log: Logger = field(default_factory=lambda: Logger(EMBEDDINGS_MODEL_LOG_PATH))
+    #: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл.
     verbose: bool = False
 
 class EmbeddingsModel:

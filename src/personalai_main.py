@@ -20,8 +20,9 @@ class PersonalAIConfig:
     qa_pipeline_config: QAPipelineConfig = field(default_factory=lambda: QAPipelineConfig())
     #: Конфигурация конвейера, который выполняет изменения знаний в памяти ассистента
     mem_pipeline_config: MemPipelineConfig = field(default_factory=lambda: MemPipelineConfig())
-    #
+    #: Отладочный класс для журналирования/мониторинга поведения комопненты
     log: Logger = field(default_factory=lambda:Logger(RKG_LOG_PATH))
+    #: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл.
     verbose: bool = False
 
 class PersonalAI:
