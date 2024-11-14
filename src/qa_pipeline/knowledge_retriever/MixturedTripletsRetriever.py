@@ -12,7 +12,11 @@ from ...utils import Logger
 
 @dataclass
 class MixturedGraphSearchConfig(BaseGraphSearchConfig):
+    # Конфигурация смешанного алгоритиа по извлечению релевантных триплетов из графа знаний.
+
+    # Конфигурация A*-алгоритиа поиска
     astar_config: AStarGraphSearchConfig = field(default_factory=lambda: AStarGraphSearchConfig())
+    # Конфмгурацич BFs-алгоритма поискс
     bfs_config: BFSSearchConfig = field(default_factory=lambda: BFSSearchConfig())
 
 class MixturedTripletsRetriever(AbstractTripletsRetriever):
