@@ -11,17 +11,17 @@ from ...db_drivers.vector_driver import VectorDBInstance
 class KnowledgeComparatorConfig:
     """Конфигурация "Knowledge Comparator"-стадии.
 
-    :param threshold: Нижний порог близости между эмбеддингами сущностей и вершин для их сопоставления. Defaults to 0.5.
+    :param threshold: Нижний порог близости между эмбеддингами сущностей и вершин для их сопоставления. Значение по умолчанию 0.5.
     :type threshold: float
     :param fetch_n: лужебный гиперпараметр. Defaults to 20.
     :type fetch_n: int
-    :param max_k: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Defaults to 1.
+    :param max_k: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 1.
     :type max_k: int
-    :param k_compare: Defaults to 5.
+    :param k_compare: Значение по умолчанию 5.
     :type k_compare: int
-    :param log: Отладочный класс для журналирования/мониторинга поведения комопненты. Defaults to Logger(QP_LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(COMPARATOR_LOG_PATH).
     :type log: Logger
-    :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Defaults to False.
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
     threshold: float = 0.5
@@ -37,7 +37,7 @@ class KnowledgeComparator:
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
-    :param config: Конфигурация "Knowledge Comparator"-стадии. Defaults to KnowledgeComparatorConfig().
+    :param config: Конфигурация "Knowledge Comparator"-стадии. Значение по умолчанию KnowledgeComparatorConfig().
     :type config: KnowledgeComparatorConfig
     """
     def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeComparatorConfig = KnowledgeComparatorConfig()) -> None:

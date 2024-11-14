@@ -9,15 +9,26 @@ from ...db_drivers.vector_driver import VectorDBInstance
 
 @dataclass
 class TripletsFilterConfig(BaseTripletsFilterConfig):
-    #: Первые k (по релевантности) триплетов, которые будут возвращены в результате операции ранжирования.
+    """Конфигурация наивного алгоритма раннжирования/фильтрации триплетов.
+
+    :param max_k: Первые k (по релевантности) триплетов, которые будут возвращены в результате операции ранжирования. Значение по умолчанию 50.
+    :type max_k: int
+    """
     max_k: int = 50
 
 class TripletsFilter(AbstractTriplesFilter):
-    """Класс предназначен для ранжирования/фильтрации триплетов, извлечённых из графа знаний,
-    на основе их релевантности к user-вопросу.
-    """
+    """Класс реализует логику наивного ранжирования/фильтрации триплетов на основе их релевантности к user-вопросу.
 
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, config: TripletsFilterConfig, log_verbose: bool = False) -> None:
+    :param kg_model: Модель памяти (графа знаний) ассистента.
+    :type kg_model: KnowledgeGraphModel
+    :param config: Конфигурация наивного алгоритма фильтрации. Значение по умолчанию TripletsFilterConfig().
+    :type config: TripletsFilterConfig
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(LOG_PATH).
+    :type log: Logger
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
+    """
+    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, config: TripletsFilterConfig = TripletsFilterConfig(), log_verbose: bool = False) -> None:
         self.log = log
         self.log_verbose = log_verbose
         self.kg_model = kg_model

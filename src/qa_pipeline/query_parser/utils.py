@@ -26,10 +26,10 @@ ENTITIES_PARSE_FUNC = {
 class EntitiesExtractorConfig:
     """Конфигурация алгоритма по извлечению ключевых сущностей из текста.
 
-    :param user_prompt: User-промт для LLM-агента с описанием задачи по извлечению ключевых сущностей из текста.
+    :param user_prompt: User-промпт для LLM-агента с описанием задачи по извлечению ключевых сущностей из текста.
     :type user_prompt: Dict
-    :param system_prompt: System-промт с описание персоны, свойствам которой должен удовлетворять LLM-агент при генерации оветов.
-    :param entities_parse_func: Функция парснга результатов генерации LLM-агента.
+    :param system_prompt: System-промпт с описание персоны, свойствам которой должен удовлетворять LLM-агент при генерации оветов.
+    :param entities_parse_func: Функция разбора результатов генерации LLM-агента.
     :type entities_parse_func: Dict
     """
     user_prompt: Dict = field(default_factory=lambda: ENTITIES_EXTRACTION_USER_PROMPT)

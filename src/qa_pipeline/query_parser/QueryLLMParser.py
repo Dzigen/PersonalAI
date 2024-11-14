@@ -11,15 +11,15 @@ from ...agents import AgentDriver, AgentDriverConfig
 class QueryLLMParserConfig:
     """Конфигурация "Query Parser"-стадии.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически. Defualts to 'auto'.
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str
-    :param ents_extr_config: Конфигурация алгоритма по извлечению ключевых сущностей из текста. Defaults to EntitiesExtractorConfig().
+    :param ents_extr_config: Конфигурация алгоритма по извлечению ключевых сущностей из текста. Значение по умолчанию EntitiesExtractorConfig().
     :type ents_extr_config: EntitiesExtractorConfig
-    :param agent_cofig: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Defaults to AgentDriverConfig().
+    :param agent_cofig: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
     :type agent_cofig: AgentDriverConfig
-    :param log: Отладочный класс для журналирования/мониторинга поведения комопненты. Defaults to Logger(QP_LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(QP_LOG_PATH).
     :type log: Logger
-    :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Defaults to False.
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
     lang: str = 'auto'
@@ -32,7 +32,7 @@ class QueryLLMParser:
     """Верхнеуровневый класс первой стадии QA-конвейера
     для извлечения сущностей из user-вопроса.
 
-    :param config: Конфигурация "Query Parser"-стадии. Defaults to QueryLLMParserConfig().
+    :param config: Конфигурация "Query Parser"-стадии. Значение по умолчанию QueryLLMParserConfig().
     :type config: QueryLLMParserConfig
     """
     def __init__(self, config: QueryLLMParserConfig = QueryLLMParserConfig()) -> None:

@@ -93,7 +93,17 @@ def process_inters_chains2(inters_chains2: List[List[List[str]]]) -> List[List[s
 
 
 class BFSRetriever(AbstractTripletsRetriever):
-    """Класс с реализацией алгоритма BFS (поиск в ширину) поиска по графу"""
+    """Класс с реализацией алгоритма BFS (поиск в ширину) по графу
+
+    :param kg_model: класс для извлечения триплетов из графа
+    :type kg_model: KnowledgeGraphModel
+    :param log: класс для логирования
+    :type log: Logger
+    :param search_config: конфигурация поиска по графу
+    :type search_config: BFSSearchConfig, optional
+    :param cache: использовать кэш или нет, defaults to None
+    :type cache: AbstractKVDatabaseConnection, optional
+    """
 
     def __init__(self,
                  kg_model: KnowledgeGraphModel,
@@ -101,17 +111,6 @@ class BFSRetriever(AbstractTripletsRetriever):
                  search_config: BFSSearchConfig = None,
                  cache=None
                 ) -> None:
-        """_summary_
-
-        :param kg_model: класс для извлечения триплетов из графа
-        :type kg_model: KnowledgeGraphModel
-        :param log: класс для логирования
-        :type log: Logger
-        :param search_config: конфигурация поиска по графу
-        :type search_config: BFSSearchConfig, optional
-        :param cache: использовать кэш или нет, defaults to None
-        :type cache: AbstractKVDatabaseConnection, optional
-        """
         super().__init__()
         self.kg_model = kg_model
         self.config = search_config
@@ -276,15 +275,6 @@ class BFSRetriever(AbstractTripletsRetriever):
         return tuple(keys), tuple(keys_rev)
 
     def get_relevant_triplets(self, query_info: QueryInfo, depth: int = 1) -> List[Triplet]:
-        """_summary_
-
-        :param query_info: информация о вопросе, включая извлеченные сущности
-        :type query_info: QueryInfo
-        :param depth: глубина поиска
-        :type depth: int, optional
-        :return: список извлеченных триплетов
-        :rtype: List[Triplet]
-        """
         seed_entities = []
         if hasattr(query_info, "entities_with_types"):
             entities_with_types = query_info.entities_with_types

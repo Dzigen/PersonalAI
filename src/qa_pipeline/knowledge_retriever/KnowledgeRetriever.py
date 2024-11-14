@@ -24,19 +24,36 @@ AVAILABLE_TRIPLETS_FILTERS = {
 
 @dataclass
 class KnowledgeRetrieverConfig:
-    #: Конфигурация алгоритма, который будет извлекать триплеты из графа знаний
+    """Конфигурация "Knowledge Retriever"-стадии.
+
+    :param retriever_method: TODO. Значение по умолчанию 'astar'.
+    :type retriever_method: str
+    :param retriever_config: TODO. Значение по умолчанию AStarGraphSearchConfig().
+    :type retriever_config: BaseGraphSearchConfig
+    :param filter_method: TODO. Значение по умолчанию 'naive'.
+    :type filter_method: str
+    :param filter_config: TODO. Значение по умолчанию TripletsFilterConfig().
+    :type filter_config: BaseTripletsFilterConfig
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(RETRIEVER_LOG_PATH).
+    :type log: Logger
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
+    """
     retriever_method: str = 'astar'
     retriever_config: BaseGraphSearchConfig = field(default_factory=lambda: AStarGraphSearchConfig())
-    #: Конфигурация алгоритма, который будет ранжировать извлённые триплеты по их релевантности к user-вопросу
     filter_method: str = 'naive'
     filter_config: BaseTripletsFilterConfig = field(default_factory=lambda: TripletsFilterConfig())
-    #
     log: Logger = field(default_factory=lambda: Logger(RETRIEVER_LOG_PATH))
     verbose: bool = False
 
 class KnowledgeRetriever:
     """Верхнеуровневый класс третьей стадии QA-конвейера для извлечения
-    релевантной информации к user-вопросу из памяти (графа знаний) ассистента.
+    релевантной к user-вопросу информации из памяти (графа знаний) ассистента.
+
+    :param kg_model: Модель памяти (графа знаний) ассистента. Значение по умолчанию 'astar'.
+    :type kg_model: KnowledgeGraphModel
+    :param config: Конфигурация 'Knowledge Retriever'-стадии. Значение по умолчанию KnowledgeRetrieverConfig().
+    :type config: KnowledgeRetrieverConfig
     """
     def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeRetrieverConfig = KnowledgeRetrieverConfig()) -> None:
         self.config = config
@@ -50,6 +67,13 @@ class KnowledgeRetriever:
             kg_model, self.log, self.config.filter_config, self.config.verbose)
 
     def retrieve(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo]:
+        """Метод предназначен для извлечения релевантных к user-вопросу триплетов из графа знаний.
+
+        :param query_info: Структура данных, которая хранит user-вопрос и связанную с ним инфомрацию.
+        :type query_info: QueryInfo
+        :return: Кортеж из двух объектов: (1) список релевантных user-вопросу триплетов; (2) статус завершения операции с пояснительной информацией.
+        :rtype: Tuple[List[Triplet], ReturnInfo]
+        """
         info = ReturnInfo()
         self.log("stage #3.1 - extracting triplets...", verbose=self.config.verbose)
         triplets = self.graph_retriever.get_relevant_triplets(query_info)

@@ -13,21 +13,21 @@ from ...utils.errors import QA_BAD_QA_PROMPT_MSG, QA_EMPTY_ANSWER_MSG, NOT_SUPPO
 class QALLMGeneratorConfig:
     """Конфигурация "Question Answering"-стадии.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически. Defaults to 'auto'.
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str
-    :param system_prompt: TODO
+    :param system_prompt: System-промпт с описание персоны, свойствам которой должен удовлетворять LLM-агент при генерации оветов.
     :type system_prompt: dict
-    :param user_prompt: TODO
+    :param user_prompt: User-промпт для LLM-агента с описанием QA-задачи.
     :type user_prompt: dict
-    :param answer_parse_func: TODO
+    :param answer_parse_func: Функция разбора результатов генерации LLM-агента.
     :type answer_parse_func: dict
-    :param agent_cofig: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Defaults to AgentDriverConfig().
+    :param agent_cofig: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
     :type agent_cofig: AgentDriverConfig
-    :param relation_type: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос. Defaults to [RelationType.simple, RelationType.hyper, RelationType.episodic].
+    :param relation_type: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос. Значение по умолчанию [RelationType.simple, RelationType.hyper, RelationType.episodic].
     :type relation_type: List[RelationType]
-    :param log: Отладочный класс для журналирования/мониторинга поведения комопненты. Defaults to Logger(QA_LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(QA_LOG_PATH).
     :type log: Logger
-    :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Defaults to False.
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
     lang: str = "auto"
@@ -43,7 +43,7 @@ class QALLMGenerator:
     """Верхнеуровневый класс четвёртой стадии QA-конвейера для генерации ответа на user-вопрос,
     обусловленного извлёчённой информацией из памяти (графа знаний) ассистента.
 
-    :param config: Конфигурация "Answer-generation"-стадии. Defaults to QALLMGeneratorConfig().
+    :param config: Конфигурация "Answer-generation"-стадии. Значение по умолчанию QALLMGeneratorConfig().
     :type config: QALLMGeneratorConfig
     """
     def __init__(self, config: QALLMGeneratorConfig = QALLMGeneratorConfig()) -> None:
@@ -68,7 +68,7 @@ class QALLMGenerator:
 
         :param query: Вопрос на естественном языке.
         :type query: str
-        :param context: Ненумерованный список дополнительной информации на естественном языке.
+        :param context: Ненумерованный список дополнительной информации на естественном языке для генерации ответа.
         :type context: str
         :return: Кортеж из двух объектов: (1) сгенерированнвй ответ на вопрос; (2) статус выполнения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]

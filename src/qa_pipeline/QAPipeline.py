@@ -13,17 +13,17 @@ from typing import Tuple
 class QAPipelineConfig:
     """Конфигурация QA-конвейера.
 
-    :param query_parser_config: Конфигурация первой стадии QA-конвейера: извлечение сущностей из user-вопроса.
+    :param query_parser_config: Конфигурация первой стадии QA-конвейера: извлечение сущностей из user-вопроса. Значение по умолчанию QueryLLMParserConfig().
     :type query_parser_config: QueryLLMParserConfig
-    :param knowledge_comparator_config: Конфигурация второй стадии QA-конвейера: сопоставление (match) сущностей из user-вопроса с информацией в графе знаний.
+    :param knowledge_comparator_config: Конфигурация второй стадии QA-конвейера: сопоставление (match) сущностей из user-вопроса с информацией в графе знаний. Значение по умолчанию KnowledgeComparatorConfig().
     :type knowledge_comparator_config: KnowledgeComparatorConfig
-    :param knowledge_retriever_config: Конфигурация третьей стадии QA-конвейера: извлечение релевантной информации из графа знаний для user-вопроса.
+    :param knowledge_retriever_config: Конфигурация третьей стадии QA-конвейера: извлечение релевантной информации из графа знаний для user-вопроса. Значение по умолчанию KnowledgeRetrieverConfig().
     :type knowledge_retriever_config: KnowledgeRetrieverConfig
-    :param answer_generator_config: Конфигурация четвёртой стадии QA-конвейера: условная генерация ответа на user-вопрос.
+    :param answer_generator_config: Конфигурация четвёртой стадии QA-конвейера: условная генерация ответа на user-вопрос. Значение по умолчанию QALLMGeneratorConfig().
     :type answer_generator_config: QALLMGeneratorConfig
-    :param log: Отладочный класс для журналирования/мониторинга поведения комопненты.
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(LOG_PATH).
     :type log: Logger
-    :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл.
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
     query_parser_config: QueryLLMParserConfig = field(default_factory=lambda: QueryLLMParserConfig())
@@ -34,11 +34,11 @@ class QAPipelineConfig:
     verbose: bool = False
 
 class QAPipeline:
-    """Верхнеуровневый класс QA-конвейера, отвечающего за генерацию ответов на вопросы.
+    """Верхнеуровневый класс QA-конвейера, отвечающий за генерацию ответов на вопросы.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
-    :param config: Конфигурация QA-конвейера.
+    :param config: Конфигурация QA-конвейера. Значение по умолчанию QAPipelineConfig().
     :type config: QAPipelineConfig
     """
 
