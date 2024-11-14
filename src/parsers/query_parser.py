@@ -3,11 +3,11 @@ from typing import List, Tuple
 from ..utils import ReturnStatus
 
 def qa_custom_entities_parse_func(raw_response: str) -> Tuple[List[str], ReturnStatus]:
-    """_summary_
+    """Функция предназначена для разбора результата генерации ответа LLM-агента, в рамаках задачи по извлечению ключевых сущностей из текста на естественном языке.
 
-    :param raw_response: _description_
+    :param raw_response: Исходный ответ LLM-агента.
     :type raw_response: str
-    :return: _description_
+    :return: Разобранный список ключевых сущностей из ответа LLM-агента.
     :rtype: Tuple[List[str], ReturnStatus]
     """
     status = ReturnStatus.success

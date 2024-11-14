@@ -7,7 +7,6 @@ from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
 @dataclass
 class GraphDBConnectionConfig(BaseDatabaseConfig):
-    #
     uri: str = None
 
 class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):

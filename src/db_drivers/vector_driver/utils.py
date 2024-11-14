@@ -6,20 +6,14 @@ from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
 @dataclass
 class VectorDBConnectionConfig(BaseDatabaseConfig):
-    #
     path: str = None
-    #
     params: Dict = field(default_factory=lambda: {"hnsw:space": "ip"})
 
 @dataclass
 class VectorDBInstance:
-    #: TODO
     id: str = None
-    #: TODO
     document: str = None
-    #: TODO
     embedding: List[float] = None
-    #: TODO
     metadata: Dict = field(default_factory=lambda: dict())
 
 class AbstractVectorDatabaseConnection(AbstractDatabaseConnection):

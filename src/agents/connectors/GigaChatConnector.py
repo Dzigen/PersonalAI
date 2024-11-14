@@ -15,7 +15,6 @@ DEFAULT_GIGACHAT_CONFIG = AgentConnectorConfig(
     ext_params={'timeout': 480})
 
 class GigaChatConnector(AbstractAgentConnector):
-    """_summary_"""
     def __init__(self, config: AgentConnectorConfig = DEFAULT_GIGACHAT_CONFIG) -> None:
         self.gen_strategy = config.gen_strategy
         self.giga_model = GigaChat(credentials=config.credentials['token'], scope=config.credentials['scope'],

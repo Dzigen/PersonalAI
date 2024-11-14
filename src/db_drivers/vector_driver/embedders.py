@@ -4,13 +4,9 @@ from typing import Dict, List
 
 @dataclass
 class EmbedderModelConfig:
-    #
     model_name_or_path: str = '../models/intfloat/multilingual-e5-small'
-    #
     prompts: Dict = field(default_factory=lambda: {"query": "query: ", "passage": "passage: "})
-    #
     device: str = 'cuda'
-    #
     normalize_embeddings: bool = True
 
 class EmbedderModel:
@@ -24,25 +20,11 @@ class EmbedderModel:
         )
 
     def encode_queries(self, queries: List[str], **kwargs) -> List[List[float]]:
-        """_summary_
-
-        :param queries: _description_
-        :type queries: List[str]
-        :return: _description_
-        :rtype: List[List[float]]
-        """
         output = self.model.encode(queries, prompt_name='query',
                                  normalize_embeddings=self.config.normalize_embeddings, **kwargs)
         return output
 
     def encode_passages(self, passages: List[str], **kwargs) -> List[List[float]]:
-        """_summary_
-
-        :param passages: _description_
-        :type passages: List[str]
-        :return: _description_
-        :rtype: List[List[float]]
-        """
         output = self.model.encode(passages, prompt_name='query',
                                  normalize_embeddings=self.config.normalize_embeddings,
                                  **kwargs)
