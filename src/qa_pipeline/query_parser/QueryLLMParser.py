@@ -9,16 +9,23 @@ from ...agents import AgentDriver, AgentDriverConfig
 
 @dataclass
 class QueryLLMParserConfig:
-    #: Язык, который будет использоваться в подаваемом на вход тексте.
-    #: На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически.
+    """Конфигурация "Query Parser"-стадии.
+
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически. Defualts to 'auto'.
+    :type lang: str
+    :param ents_extr_config: Конфигурация алгоритма по извлечению ключевых сущностей из текста. Defaults to EntitiesExtractorConfig().
+    :type ents_extr_config: EntitiesExtractorConfig
+    :param agent_cofig: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Defaults to AgentDriverConfig().
+    :type agent_cofig: AgentDriverConfig
+    :param log: Отладочный класс для журналирования/мониторинга поведения комопненты. Defaults to Logger(QP_LOG_PATH).
+    :type log: Logger
+    :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Defaults to False.
+    :type verbose: bool
+    """
     lang: str = 'auto'
-    #: Конфигурация алгоритма по извлечению ключевых сущностей из текста.
     ents_extr_config: EntitiesExtractorConfig = field(default_factory=lambda: EntitiesExtractorConfig())
-    #: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии.
     agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    #: Отладочный класс для журналирования/мониторинга поведения комопненты.
     log: Logger = field(default_factory=lambda: Logger(QP_LOG_PATH))
-    #: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл.
     verbose: bool = False
 
 class QueryLLMParser:

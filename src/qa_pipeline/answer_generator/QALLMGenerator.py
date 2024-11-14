@@ -11,19 +11,32 @@ from ...utils.errors import QA_BAD_QA_PROMPT_MSG, QA_EMPTY_ANSWER_MSG, NOT_SUPPO
 
 @dataclass
 class QALLMGeneratorConfig:
-    #: Язык, который будет использоваться в подаваемом на вход тексте.
-    #: На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически.
+    """Конфигурация "Question Answering"-стадии.
+
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически. Defaults to 'auto'.
+    :type lang: str
+    :param system_prompt: TODO
+    :type system_prompt: dict
+    :param user_prompt: TODO
+    :type user_prompt: dict
+    :param answer_parse_func: TODO
+    :type answer_parse_func: dict
+    :param agent_cofig: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Defaults to AgentDriverConfig().
+    :type agent_cofig: AgentDriverConfig
+    :param relation_type: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос. Defaults to [RelationType.simple, RelationType.hyper, RelationType.episodic].
+    :type relation_type: List[RelationType]
+    :param log: Отладочный класс для журналирования/мониторинга поведения комопненты. Defaults to Logger(QA_LOG_PATH).
+    :type log: Logger
+    :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Defaults to False.
+    :type verbose: bool
+    """
     lang: str = "auto"
     system_prompt: dict = field(default_factory=lambda: QA_SYSTEM_PROMPT)
     user_prompt: dict = field(default_factory=lambda: QA_USER_PROMPT)
     answer_parse_func: dict = field(default_factory=lambda: ANSWER_PARSE_FUNC)
-    #: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии
     agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    #: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
-    #: Отладочный класс для журналирования/мониторинга поведения комопненты.
     log: Logger = field(default_factory=lambda: Logger(QA_LOG_PATH))
-    #: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл.
     verbose: bool = False
 
 class QALLMGenerator:

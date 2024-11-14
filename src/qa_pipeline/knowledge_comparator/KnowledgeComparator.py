@@ -9,17 +9,26 @@ from ...db_drivers.vector_driver import VectorDBInstance
 
 @dataclass
 class KnowledgeComparatorConfig:
-    #: Нижний порог близости между эмбеддингами сущностей и вершин для их сопоставления.
+    """Конфигурация "Knowledge Comparator"-стадии.
+
+    :param threshold: Нижний порог близости между эмбеддингами сущностей и вершин для их сопоставления. Defaults to 0.5.
+    :type threshold: float
+    :param fetch_n: лужебный гиперпараметр. Defaults to 20.
+    :type fetch_n: int
+    :param max_k: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Defaults to 1.
+    :type max_k: int
+    :param k_compare: Defaults to 5.
+    :type k_compare: int
+    :param log: Отладочный класс для журналирования/мониторинга поведения комопненты. Defaults to Logger(QP_LOG_PATH).
+    :type log: Logger
+    :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Defaults to False.
+    :type verbose: bool
+    """
     threshold: float = 0.5
-    #: Служебный гиперпараметр.
     fetch_n: int = 20
-    #: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности.
     max_k: int = 1
-    #
     k_compare: int = 5
-    #: Отладочный класс для журналирования/мониторинга поведения комопненты.
     log: Logger = field(default_factory=lambda: Logger(COMPARATOR_LOG_PATH))
-    #: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл.
     verbose: bool = False
 
 class KnowledgeComparator:

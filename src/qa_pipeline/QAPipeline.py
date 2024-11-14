@@ -11,17 +11,26 @@ from typing import Tuple
 
 @dataclass
 class QAPipelineConfig:
-    #: Конфигурация первой стадии QA-конвейера: извлечение сущностей из user-вопроса.
+    """Конфигурация QA-конвейера.
+
+    :param query_parser_config: Конфигурация первой стадии QA-конвейера: извлечение сущностей из user-вопроса.
+    :type query_parser_config: QueryLLMParserConfig
+    :param knowledge_comparator_config: Конфигурация второй стадии QA-конвейера: сопоставление (match) сущностей из user-вопроса с информацией в графе знаний.
+    :type knowledge_comparator_config: KnowledgeComparatorConfig
+    :param knowledge_retriever_config: Конфигурация третьей стадии QA-конвейера: извлечение релевантной информации из графа знаний для user-вопроса.
+    :type knowledge_retriever_config: KnowledgeRetrieverConfig
+    :param answer_generator_config: Конфигурация четвёртой стадии QA-конвейера: условная генерация ответа на user-вопрос.
+    :type answer_generator_config: QALLMGeneratorConfig
+    :param log: Отладочный класс для журналирования/мониторинга поведения комопненты.
+    :type log: Logger
+    :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл.
+    :type verbose: bool
+    """
     query_parser_config: QueryLLMParserConfig = field(default_factory=lambda: QueryLLMParserConfig())
-    #: Конфигурация второй стадии QA-конвейера: сопоставление (match) сущностей из user-вопроса с информацией в графе знаний.
     knowledge_comparator_config: KnowledgeComparatorConfig = field(default_factory=lambda: KnowledgeComparatorConfig())
-    #: Конфигурация третьей стадии QA-конвейера: извлечение релевантной информации из графа знаний для user-вопроса.
     knowledge_retriever_config: KnowledgeRetrieverConfig = field(default_factory=lambda: KnowledgeRetrieverConfig())
-    #: Конфигурация четвёртой стадии QA-конвейера: условная генерация ответа на user-вопрос.
     answer_generator_config: QALLMGeneratorConfig = field(default_factory=lambda: QALLMGeneratorConfig())
-    #: Отладочный класс для журналирования/мониторинга поведения комопненты.
     log: Logger = field(default_factory=lambda: Logger(LOG_PATH))
-    #: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл.
     verbose: bool = False
 
 class QAPipeline:
