@@ -6,14 +6,16 @@ from ..utils.errors import ReturnInfo
 
 @dataclass
 class BaseDatabaseConfig:
-    #: TODO
+    """Базовая конфигурация для прдключения к базе данных"""
+    #: Название базы данных и таблицы, которой ножно прдключитьмя и выпрлнять в дальнейшем операции соответственно.
     db_info: Dict = field(default_factory=lambda: {'db': 'default_db', 'table': 'default_table'})
-    #: TODO
+    #: Набор дополнительных параметров, которые необходимы для подключения и настройки конфигурации бд
     params: Dict = field(default_factory=lambda: dict())
-    #: TODO
+    #: Если True, то после успешного прдключения к базе данных содержимое указанной таблицы будет очищено.
     need_to_clear: bool = False
 
 class AbstractDatabaseConnection(ABC):
+    """Интерфейс, который должен поддерживать класс взаимодействия с определённой базой данных"""
     @abstractmethod
     def open_connection(self) -> ReturnInfo:
         """Метод предназначен для подключения бд.
