@@ -6,9 +6,7 @@ from .configs import DEFAULT_KVDB_CONFIGS, AVAILABLE_KVDB_CONNECTORS
 
 @dataclass
 class KeyValueDriverConfig:
-    #: TODO
     db_vendor: str = 'aerospike'
-    #: TODO
     db_config: KVDBConnectionConfig = field(default_factory=lambda: DEFAULT_KVDB_CONFIGS['aerospike'])
 
 class KeyValueDriver:

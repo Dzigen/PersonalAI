@@ -14,5 +14,4 @@ class KeyValueDBInstance:
     metadata: Dict
 
 class AbstractKVDatabaseConnection(AbstractDatabaseConnection):
-    """_summary_"""
     pass
