@@ -24,7 +24,13 @@ class QAPipelineConfig:
     verbose: bool = False
 
 class QAPipeline:
-    """Верхнеуровневый класс QA-конвейера, отвечающего за генерацию ответов на вопросы."""
+    """Верхнеуровневый класс QA-конвейера, отвечающего за генерацию ответов на вопросы.
+
+    :param kg_model: _description_.
+    :type kg_model: KnowledgeGraphModel
+    :param config: _description_.
+    :type config: QAPipelineConfig
+    """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: QAPipelineConfig = QAPipelineConfig()) -> None:
         self.config = config

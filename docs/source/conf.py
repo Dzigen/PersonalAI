@@ -23,13 +23,16 @@ extensions = [
     'sphinx.ext.todo',
     'rst2pdf.pdfbuilder',
     "sphinx_rtd_dark_mode",
-    "nbsphinx"
+    "nbsphinx",
+    'sphinx_automodapi.automodapi',
+    'sphinx_automodapi.smart_resolver'
 ]
 
 # long function signature fix
 autodoc_typehints = "description"
 autodoc_class_signature = "mixed"
 autodoc_member_order = 'bysource'
+numpydoc_show_class_members = False
 
 # xelatex to solve Unicode problems https://github.com/sphinx-doc/sphinx/issues/4159
 latex_engine = 'xelatex'
