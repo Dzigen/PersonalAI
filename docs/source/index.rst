@@ -11,7 +11,6 @@ Personal AI документация
    :maxdepth: 1
    :caption: Contents:
 
-   pages/installing_page
    pages/architecture_page
    pages/components_page
    pages/examples_page

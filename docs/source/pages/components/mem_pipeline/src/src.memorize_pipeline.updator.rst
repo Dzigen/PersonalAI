@@ -7,26 +7,12 @@ Submodules
 src.memorize\_pipeline.updator.LLMUpdator module
 ------------------------------------------------
 
-.. automodule:: src.memorize_pipeline.updator.LLMUpdator
+.. autoclass:: src.memorize_pipeline.updator.LLMUpdator.LLMUpdatorConfig()
    :members:
    :undoc-members:
    :show-inheritance:
-   :no-index:
 
-src.memorize\_pipeline.updator.utils module
--------------------------------------------
-
-.. automodule:: src.memorize_pipeline.updator.utils
+.. autoclass:: src.memorize_pipeline.updator.LLMUpdator.LLMUpdator()
    :members:
    :undoc-members:
    :show-inheritance:
-   :no-index:
-
-Module contents
----------------
-
-.. automodule:: src.memorize_pipeline.updator
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :no-index:

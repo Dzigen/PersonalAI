@@ -39,12 +39,3 @@ src.agents.connectors.OpenAIConnector module
    :undoc-members:
    :show-inheritance:
    :no-index:
-
-Module contents
----------------
-
-.. automodule:: src.agents.connectors
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :no-index:

@@ -8,8 +8,12 @@ PersonalAI Main
 src.personalai\_main module
 ---------------------------
 
-.. automodule:: src.personalai_main
+.. autoclass:: src.personalai_main.PersonalAIConfig()
    :members:
    :undoc-members:
    :show-inheritance:
-   :no-index:
+
+.. autoclass:: src.personalai_main.PersonalAI()
+   :members:
+   :undoc-members:
+   :show-inheritance:

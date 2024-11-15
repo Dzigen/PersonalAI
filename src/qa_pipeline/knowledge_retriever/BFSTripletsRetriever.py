@@ -101,15 +101,12 @@ class BFSRetriever(AbstractTripletsRetriever):
     :type log: Logger
     :param search_config: конфигурация поиска по графу
     :type search_config: BFSSearchConfig, optional
-    :param cache: использовать кэш или нет, defaults to None
-    :type cache: AbstractKVDatabaseConnection, optional
     """
 
     def __init__(self,
                  kg_model: KnowledgeGraphModel,
                  log=None,
-                 search_config: BFSSearchConfig = None,
-                 cache=None
+                 search_config: BFSSearchConfig = None
                 ) -> None:
         super().__init__()
         self.kg_model = kg_model

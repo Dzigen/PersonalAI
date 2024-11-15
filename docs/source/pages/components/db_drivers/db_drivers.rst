@@ -19,11 +19,3 @@ src.db\_drivers.utils module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: src.db_drivers
-   :members:
-   :undoc-members:
-   :show-inheritance:

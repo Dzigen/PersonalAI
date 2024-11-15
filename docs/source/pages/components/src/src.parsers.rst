@@ -27,11 +27,3 @@ src.parsers.question\_answering module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: src.parsers
-   :members:
-   :undoc-members:
-   :show-inheritance:

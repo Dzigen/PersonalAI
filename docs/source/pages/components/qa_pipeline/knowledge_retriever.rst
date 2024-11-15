@@ -18,25 +18,20 @@ src.qa\_pipeline.knowledge\_retriever package
 src.qa\_pipeline.knowledge\_retriever.KnowledgeRetriever module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: src.qa_pipeline.knowledge_retriever.KnowledgeRetriever
+.. autoclass:: src.qa_pipeline.knowledge_retriever.KnowledgeRetriever.KnowledgeRetrieverConfig()
    :members:
    :undoc-members:
    :show-inheritance:
-   :no-index:
+
+.. autoclass:: src.qa_pipeline.knowledge_retriever.KnowledgeRetriever.KnowledgeRetriever()
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 src.qa\_pipeline.knowledge\_retriever.utils module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: src.qa_pipeline.knowledge_retriever.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :no-index:
-
-Module contents
-^^^^^^^^^^^^^^^
-
-.. automodule:: src.qa_pipeline.knowledge_retriever
    :members:
    :undoc-members:
    :show-inheritance:

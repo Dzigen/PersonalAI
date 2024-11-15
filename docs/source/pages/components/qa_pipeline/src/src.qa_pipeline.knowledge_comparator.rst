@@ -7,23 +7,13 @@ Submodules
 src.qa\_pipeline.knowledge\_comparator.KnowledgeComparator module
 -----------------------------------------------------------------
 
-.. automodule:: src.qa_pipeline.knowledge_comparator.KnowledgeComparator
+
+.. autoclass:: src.qa_pipeline.knowledge_comparator.KnowledgeComparator.KnowledgeComparatorConfig()
    :members:
    :undoc-members:
    :show-inheritance:
 
-src.qa\_pipeline.knowledge\_comparator.utils module
----------------------------------------------------
-
-.. automodule:: src.qa_pipeline.knowledge_comparator.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: src.qa_pipeline.knowledge_comparator
+.. autoclass:: src.qa_pipeline.knowledge_comparator.KnowledgeComparator.KnowledgeComparator()
    :members:
    :undoc-members:
    :show-inheritance:

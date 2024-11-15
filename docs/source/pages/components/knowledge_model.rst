@@ -8,8 +8,27 @@ Knowledge Graph Model
 src.knowledge\_graph\_model module
 ----------------------------------
 
-.. automodule:: src.knowledge_graph_model
+.. autoclass:: src.knowledge_graph_model.EmbeddingsModelConfig()
    :members:
    :undoc-members:
    :show-inheritance:
-   :no-index:
+
+.. autoclass:: src.knowledge_graph_model.EmbeddingsModel()
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. autoclass:: src.knowledge_graph_model.GraphModelConfig()
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. autoclass:: src.knowledge_graph_model.GraphModel()
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. autoclass:: src.knowledge_graph_model.KnowledgeGraphModel()
+   :members:
+   :undoc-members:
+   :show-inheritance:

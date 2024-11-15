@@ -17,5 +17,4 @@
    :caption: Вспомогательные
 
    components/src/src.parsers
-   components/src/src.prompts
    components/src/src.utils

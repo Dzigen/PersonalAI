@@ -28,15 +28,6 @@ src.db\_drivers.vector\_driver.VectorDriver module
    :show-inheritance:
    :no-index:
 
-src.db\_drivers.vector\_driver.configs module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: src.db_drivers.vector_driver.configs
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :no-index:
-
 src.db\_drivers.vector\_driver.embedders module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -50,15 +41,6 @@ src.db\_drivers.vector\_driver.utils module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: src.db_drivers.vector_driver.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :no-index:
-
-Module contents
-^^^^^^^^^^^^^^^
-
-.. automodule:: src.db_drivers.vector_driver
    :members:
    :undoc-members:
    :show-inheritance:

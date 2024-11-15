@@ -25,7 +25,7 @@ Submodules
 src.qa\_pipeline.QAPipeline module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: src.qa_pipeline.QAPipelineConfig
+.. autoclass:: src.qa_pipeline.QAPipelineConfig()
    :members:
    :undoc-members:
    :show-inheritance:
@@ -34,12 +34,3 @@ src.qa\_pipeline.QAPipeline module
    :members:
    :undoc-members:
    :show-inheritance:
-
-src.qa\_pipeline.utils module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: src.qa_pipeline.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :no-index:

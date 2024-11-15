@@ -11,8 +11,12 @@ src.qa\_pipeline.knowledge\_retriever package
 src.qa\_pipeline.knowledge\_retriever.TripletsFilter module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: src.qa_pipeline.knowledge_retriever.TripletsFilter
+.. autoclass:: src.qa_pipeline.knowledge_retriever.TripletsFilter.TripletsFilterConfig()
    :members:
    :undoc-members:
    :show-inheritance:
-   :no-index:
+
+.. autoclass:: src.qa_pipeline.knowledge_retriever.TripletsFilter.TripletsFilter()
+   :members:
+   :undoc-members:
+   :show-inheritance:

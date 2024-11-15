@@ -24,17 +24,12 @@ Submodules
 src.memorize\_pipeline.MemPipeline module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: src.memorize_pipeline.MemPipeline
+.. autoclass:: src.memorize_pipeline.MemPipeline.MemPipelineConfig()
    :members:
    :undoc-members:
    :show-inheritance:
-   :no-index:
 
-src.memorize\_pipeline.utils module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: src.memorize_pipeline.utils
+.. autoclass:: src.memorize_pipeline.MemPipeline.MemPipeline()
    :members:
    :undoc-members:
    :show-inheritance:
-   :no-index:

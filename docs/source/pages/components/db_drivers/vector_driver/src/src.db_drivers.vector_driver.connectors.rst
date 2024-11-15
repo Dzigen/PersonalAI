@@ -21,12 +21,3 @@ src.db\_drivers.vector\_driver.connectors.MilvusConnector module
    :undoc-members:
    :show-inheritance:
    :no-index:
-
-Module contents
----------------
-
-.. automodule:: src.db_drivers.vector_driver.connectors
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :no-index:

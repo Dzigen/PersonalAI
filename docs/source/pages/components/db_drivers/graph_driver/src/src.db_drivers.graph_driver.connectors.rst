@@ -21,12 +21,3 @@ src.db\_drivers.graph\_driver.connectors.Neo4jConnector module
    :undoc-members:
    :show-inheritance:
    :no-index:
-
-Module contents
----------------
-
-.. automodule:: src.db_drivers.graph_driver.connectors
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :no-index:

@@ -28,28 +28,10 @@ src.db\_drivers.graph\_driver.GraphDriver module
    :show-inheritance:
    :no-index:
 
-src.db\_drivers.graph\_driver.configs module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: src.db_drivers.graph_driver.configs
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :no-index:
-
 src.db\_drivers.graph\_driver.utils module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: src.db_drivers.graph_driver.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :no-index:
-
-Module contents
-^^^^^^^^^^^^^^^
-
-.. automodule:: src.db_drivers.graph_driver
    :members:
    :undoc-members:
    :show-inheritance:

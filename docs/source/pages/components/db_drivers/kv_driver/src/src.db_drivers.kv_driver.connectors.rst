@@ -47,12 +47,3 @@ src.db\_drivers.kv\_driver.connectors.RedisConnector module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: src.db_drivers.kv_driver.connectors
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :no-index:

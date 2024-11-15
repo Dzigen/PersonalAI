@@ -28,28 +28,10 @@ src.db\_drivers.kv\_driver.KeyValueDriver module
    :show-inheritance:
    :no-index:
 
-src.db\_drivers.kv\_driver.configs module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: src.db_drivers.kv_driver.configs
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :no-index:
-
 src.db\_drivers.kv\_driver.utils module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: src.db_drivers.kv_driver.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :no-index:
-
-Module contents
-^^^^^^^^^^^^^^^
-
-.. automodule:: src.db_drivers.kv_driver
    :members:
    :undoc-members:
    :show-inheritance:

@@ -28,28 +28,10 @@ src.agents.AgentDriver module
    :show-inheritance:
    :no-index:
 
-src.agents.configs module
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: src.agents.configs
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :no-index:
-
 src.agents.utils module
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: src.agents.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :no-index:
-
-Module contents
-^^^^^^^^^^^^^^^
-
-.. automodule:: src.agents
    :members:
    :undoc-members:
    :show-inheritance:

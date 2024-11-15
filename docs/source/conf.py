@@ -29,10 +29,10 @@ extensions = [
 ]
 
 # long function signature fix
-autodoc_typehints = "description"
+autodoc_typehints = "signature"
 autodoc_class_signature = "mixed"
 autodoc_member_order = 'bysource'
-numpydoc_show_class_members = False
+#numpydoc_show_class_members = False
 
 # xelatex to solve Unicode problems https://github.com/sphinx-doc/sphinx/issues/4159
 latex_engine = 'xelatex'
