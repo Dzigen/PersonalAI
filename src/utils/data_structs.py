@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Union
+from typing import List, Union, Tuple
 from enum import Enum
 import hashlib
 
@@ -108,11 +108,13 @@ class NodeCreator(BaseCreator):
         return node
 
     @staticmethod
-    def stringify(node: Node) -> str:
+    def stringify(node: Node) -> Tuple[str,str]:
         """Метод предназначен для приведения структуры данных вершины в её строковое представление.
 
         :param triplet: Структура данных вершины.
         :type triplet: Node
+        :return: Идентификатор вершины.
+        :rtype: str
         :return: Строковое представление вершины.
         :rtype: str
         """
@@ -175,13 +177,15 @@ class TripletCreator(BaseCreator):
         return triplet
 
     @staticmethod
-    def stringify(triplet: Triplet) -> str:
+    def stringify(triplet: Triplet) -> Tuple[str,str]:
         """Метод предназначен для приведения структуры данных триплета в его строковое представление. Строковое представление зависит от типа триплета:
         (1) simple - используется информация из обоих вершин и связи; (2) hyper/episodic - используется информация только из конечной вершины.
 
         :param triplet: Структура данных триплета.
         :type triplet: Triplet
         :raises KeyError: В триплете указа связь с типом, который не поддерживается.
+        :return: Идентификатор связи между данной парой вершин из триплета.
+        :rtype: str
         :return: Стрококвое представление триплета.
         :rtype: str
         """
