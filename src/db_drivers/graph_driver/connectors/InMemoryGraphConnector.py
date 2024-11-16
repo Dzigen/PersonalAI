@@ -135,8 +135,18 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         if (type(node1_id) is not str) or (type(node2_id) is not str):
             raise ValueError
 
-        shared_triplets_ids = set(self.edges[node1_id]).intersection(set(self.edges[node2_id]))
-        triplets = list(map(lambda id: self.triplets_ids[id], shared_triplets_ids))
+        start_n_db_ids = self.strid_nodes_index[node1_id]
+        start_n_edges = []
+        for n_db_id in start_n_db_ids:
+            start_n_edges += self.edges[n_db_id]
+
+        end_n_db_ids = self.strid_nodes_index[node2_id]
+        end_n_edges = []
+        for n_db_id in end_n_db_ids:
+            end_n_edges += self.edges[n_db_id]
+
+        shared_triplets_ids = set(end_n_edges).intersection(set(start_n_edges))
+        triplets = list(map(lambda id: self.triplets[id], shared_triplets_ids))
         return triplets
 
     def get_triplets_by_name(self, subj_names: List[str], obj_names: List[str], obj_type: str) -> List[Triplet]:
