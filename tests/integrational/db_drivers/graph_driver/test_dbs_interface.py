@@ -1,0 +1,135 @@
+import pytest
+
+import sys
+# TO CHANGE
+PROJECT_BASE_DIR = '/home/dzigen/Desktop/PersonalAI/Personal-AI'
+TEST_VOLUME_DIR = './volumes'
+sys.path.insert(0, PROJECT_BASE_DIR)
+
+from cases import GRAPHDB_POPULATED_CREATE_TEST_CASES, GRAPHDB_POPULATED_DELETE_TEST_CASES, \
+    GRAPHDB_POPULATED_READ_TEST_CASES, GRAPHDB_POPULATED_COUNT_TEST_CASES, GRAPHDB_POPULATED_EXIST_TEST_CASES, \
+    GRAPHDB_POPULATED_CLEAR_TEST_CASES, GRAPHDB_POPULATED_GET_TRIPLETS_TEST_CASES, GRAPHDB_POPULATED_GET_ADJECENT_TEST_CASES
+
+@pytest.mark.parametrize("inputs, create_info, expected, graphdb_conn", GRAPHDB_POPULATED_CREATE_TEST_CASES, indirect=['graphdb_conn'])
+def test_create(inputs, create_info, expected, graphdb_conn):
+    graphdb_conn.clear()
+
+    try:
+        for inp, info in zip(inputs, create_info):
+            graphdb_conn.create(inp, info)
+    except Exception as e:
+        print(str(e))
+        assert expected['exception']
+    else:
+        assert not expected['exception']
+
+    items_info = graphdb_conn.count_items()
+    assert items_info['triplets'] == expected['triplets_count']
+    assert items_info['nodes'] == expected['nodes_count']
+
+@pytest.mark.parametrize("instances, create_info, inputs, expected, graphdb_conn", GRAPHDB_POPULATED_DELETE_TEST_CASES, indirect=['graphdb_conn'])
+def test_delete(instances, create_info, inputs, expected, graphdb_conn):
+    graphdb_conn.clear()
+    graphdb_conn.create(instances, create_info)
+
+    try:
+        graphdb_conn.delete(inputs)
+    except Exception as e:
+        print(str(e))
+        assert expected['exception']
+    else:
+        assert not expected['exception']
+
+    items_info = graphdb_conn.count_items()
+    assert items_info['triplets'] == expected['triplets_count']
+    assert items_info['nodes'] == expected['nodes_count']
+
+
+@pytest.mark.parametrize("instances, create_info, inputs, expected, graphdb_conn", GRAPHDB_POPULATED_READ_TEST_CASES, indirect=['graphdb_conn'])
+def test_read(instances, create_info, inputs, expected, graphdb_conn):
+    graphdb_conn.clear()
+    graphdb_conn.create(instances, create_info)
+
+    try:
+        output = graphdb_conn.read(inputs)
+    except Exception as e:
+        print(str(e))
+        assert expected['exception']
+    else:
+        assert not expected['exception']
+
+    if not expected['exception']:
+        print(output)
+        assert list(map(lambda item: item.id, output)) == expected['output_ids']
+
+
+@pytest.mark.parametrize("instances, create_info, expected, graphdb_conn", GRAPHDB_POPULATED_COUNT_TEST_CASES, indirect=['graphdb_conn'])
+def test_count(instances, create_info, expected, graphdb_conn):
+    graphdb_conn.clear()
+    graphdb_conn.create(instances, create_info)
+
+    items_info = graphdb_conn.count_items()
+    assert items_info['triplets'] == expected['triplets_count']
+    assert items_info['nodes'] == expected['nodes_count']
+
+
+@pytest.mark.parametrize("instances, inputs, expected, graphdb_conn", GRAPHDB_POPULATED_EXIST_TEST_CASES, indirect=['graphdb_conn'])
+def test_exist(instances, inputs, expected, graphdb_conn):
+    graphdb_conn.clear()
+    graphdb_conn.create(instances)
+
+    try:
+        real = graphdb_conn.item_exist(inputs)
+    except Exception as e:
+        print(str(e))
+        assert expected['exception']
+    else:
+        assert not expected['exception']
+
+    if not expected['exception']:
+        assert real == expected['exist']
+
+
+@pytest.mark.parametrize("instances, base_info, graphdb_conn", GRAPHDB_POPULATED_CLEAR_TEST_CASES, indirect=['graphdb_conn'])
+def test_clear(instances, base_info, graphdb_conn):
+    graphdb_conn.clear()
+    graphdb_conn.create(instances)
+
+    items_info = graphdb_conn.count_items()
+    assert items_info['triplets'] == base_info['triplets_count']
+    assert items_info['nodes'] == base_info['nodes_count']
+
+    graphdb_conn.clear()
+
+    items_info = graphdb_conn.count_items()
+    assert items_info['triplets'] == 0
+    assert items_info['nodes'] == 0
+
+@pytest.mark.parametrize("instances, create_info, node, accepted_n_types, expected, graphdb_conn", GRAPHDB_POPULATED_GET_ADJECENT_TEST_CASES, indirect=['graphdb_conn'])
+def test_get_adjecent_nodes(instances, create_info, node, accepted_n_types, expected, graphdb_conn):
+    graphdb_conn.clear()
+    graphdb_conn.create(instances, create_info)
+
+    try:
+        output = graphdb_conn.get_adjecent_nodes(node, accepted_n_types=accepted_n_types)
+    except Exception as e:
+        print(str(e))
+        assert expected['exception']
+    else:
+        assert not expected['exception']
+        assert expected['output_ids'] == set(output)
+
+
+@pytest.mark.parametrize("instances, create_info, nodes, expected, graphdb_conn", GRAPHDB_POPULATED_GET_TRIPLETS_TEST_CASES, indirect=['graphdb_conn'])
+def test_get_triplets(instances, create_info, nodes, expected, graphdb_conn):
+    graphdb_conn.clear()
+    graphdb_conn.create(instances, create_info)
+
+    try:
+        output = graphdb_conn.get_triplets(*nodes)
+    except Exception as e:
+        print(str(e))
+        assert expected['exception']
+    else:
+        assert not expected['exception']
+        assert expected['output_ids'] == set(list(map(lambda triplet: triplet.id, output)))

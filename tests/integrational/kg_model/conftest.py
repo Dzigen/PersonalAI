@@ -1,5 +1,12 @@
 import pytest
 
+import sys
+# TO CHANGE
+PROJECT_BASE_DIR = '/home/dzigen/Desktop/PersonalAI/Personal-AI'
+TEST_VOLUME_DIR = './volumes'
+sys.path.insert(0, PROJECT_BASE_DIR)
+
+
 from src.knowledge_graph_model import EmbeddingsModel, EmbeddingsModelConfig, GraphModel, GraphModelConfig
 from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriverConfig
 from src.db_drivers.vector_driver.embedders import EmbedderModelConfig
@@ -45,14 +52,14 @@ def graph_model(available_graph_models, request):
 
 #!!!AVAILABLE VECTOR MODELS!!!#
 
-@pytest.fixture
+@pytest.fixture(scope='package')
 def embeddings_chroma_model():
     config = EmbeddingsModelConfig(
         nodesdb_driver_config=VectorDriverConfig(db_config=VectorDBConnectionConfig(
-            path='./volumes/chroma', db_info={'db': 'testing', 'table': 'vectorized_nodes'}, need_to_clear=True)),
+            path=f'{TEST_VOLUME_DIR}/chroma', db_info={'db': 'testing', 'table': 'vectorized_nodes'}, need_to_clear=True)),
         tripletsdb_driver_config=VectorDriverConfig(db_config=VectorDBConnectionConfig(
-            path='./volumes/chroma', db_info={'db': 'testing', 'table': 'vectorized_triplets'}, need_to_clear=True)),
-        embedder_config=EmbedderModelConfig(model_name_or_path='../../models/intfloat/multilingual-e5-small', device='cuda'))
+            path=f'{TEST_VOLUME_DIR}/chroma', db_info={'db': 'testing', 'table': 'vectorized_triplets'}, need_to_clear=True)),
+        embedder_config=EmbedderModelConfig(model_name_or_path=f'{PROJECT_BASE_DIR}/models/intfloat/multilingual-e5-small', device='cuda'))
     return EmbeddingsModel(config)
 
 #------------------------------#
@@ -66,5 +73,5 @@ def available_embedding_models(
     }
 
 @pytest.fixture(scope='function')
-def vector_model(available_embedding_models, request):
+def embeddings_model(available_embedding_models, request):
     return available_embedding_models[request.param]

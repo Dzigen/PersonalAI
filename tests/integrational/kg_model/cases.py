@@ -1,9 +1,16 @@
 import sys
-sys.path.insert(0, "../../../")
+# TO CHANGE
+PROJECT_BASE_DIR = '/home/dzigen/Desktop/PersonalAI/Personal-AI/'
+sys.path.insert(0, PROJECT_BASE_DIR)
+
 from src.utils.data_structs import Triplet, NodeCreator, Relation, RelationType, NodeType
 from src.utils.errors import ReturnInfo
 
+
+# TO CHANGE
 AVAILABLE_GRAPH_MODELS = ['inmemory_graph', 'neo4j']
+
+# TO CHANGE
 AVAILABLE_EMBEDDING_MODELS = ['chroma']
 
 ###############################################################################################
@@ -45,154 +52,161 @@ EPISODIC_TRIPLET4 = Triplet(start_node=THESIS_NODE2, relation=Relation(name='epi
 ###############################################################################################
 
 # embeddings-model tests
-EM_CREATE_TESTS = [
+EM_CREATE_TEST_CASES = [
     # 1. пустой список
-    ([], False, {'triplets_count': 0, 'nodes_count': 0}),
+    [[], False, {'triplets_count': 0, 'nodes_count': 0}],
     # 2. добавление одного триплета
     # 2.1 simple
-    ([SIMPLE_TRIPLET1], True, {'triplets_count': 1, 'nodes_count': 2}),
+    [[SIMPLE_TRIPLET1], True, {'triplets_count': 1, 'nodes_count': 2}],
     # 2.2 thesis
-    ([THESIS_TRIPLET2], True, {'triplets_count': 1, 'nodes_count': 2}),
+    [[THESIS_TRIPLET2], True, {'triplets_count': 1, 'nodes_count': 2}],
     # 2.3 episodic with object
-    ([EPISODIC_TRIPLET1], True, {'triplets_count': 1, 'nodes_count': 2}),
+    [[EPISODIC_TRIPLET1], True, {'triplets_count': 1, 'nodes_count': 2}],
     # 2.4 episodic with thesis
-    ([EPISODIC_TRIPLET4], True, {'triplets_count': 1, 'nodes_count': 2}),
+    [[EPISODIC_TRIPLET4], True, {'triplets_count': 1, 'nodes_count': 2}],
     # 3. добавление связанных триплетов (full, wo_sn, only_rel)
     # 3.1 simple rel
-    ([SIMPLE_TRIPLET1, SIMPLE_TRIPLET2, SIMPLE_TRIPLET3], True, {'triplets_count': 3, 'nodes_count': 3}),
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2, SIMPLE_TRIPLET3], True, {'triplets_count': 3, 'nodes_count': 3}],
     # 3.2 hyper (object with thesis)
-    ([SIMPLE_TRIPLET2, THESIS_TRIPLET1, THESIS_TRIPLET2], True, {'triplets_count': 3, 'nodes_count': 3}),
+    [[SIMPLE_TRIPLET2, THESIS_TRIPLET1, THESIS_TRIPLET2], True, {'triplets_count': 3, 'nodes_count': 3}],
     # 3.3 episodic (object with episodic)
-    ([SIMPLE_TRIPLET1, EPISODIC_TRIPLET1, EPISODIC_TRIPLET2], True, {'triplets_count': 3, 'nodes_count': 3}),
+    [[SIMPLE_TRIPLET1, EPISODIC_TRIPLET1, EPISODIC_TRIPLET2], True, {'triplets_count': 3, 'nodes_count': 3}],
     # 3.4 episodic (thesis with episodic)
-    ([EPISODIC_TRIPLET3, THESIS_TRIPLET3,EPISODIC_TRIPLET4], True, {'triplets_count': 3, 'nodes_count': 3}),
+    [[EPISODIC_TRIPLET3, THESIS_TRIPLET3,EPISODIC_TRIPLET4], True, {'triplets_count': 3, 'nodes_count': 3}],
     # 4. добавление связанных триплетов (full, wo_en)
     # 4.1 object -[simple]> object
-    ([SIMPLE_TRIPLET2, SIMPLE_TRIPLET1], True, {'triplets_count': 2, 'nodes_count': 2}),
+    [[SIMPLE_TRIPLET2, SIMPLE_TRIPLET1], True, {'triplets_count': 2, 'nodes_count': 2}],
     # 4.2 object -[hyper]> thesis
-    ([THESIS_TRIPLET2, THESIS_TRIPLET1], True, {'triplets_count': 2, 'nodes_count': 2}),
+    [[THESIS_TRIPLET2, THESIS_TRIPLET1], True, {'triplets_count': 2, 'nodes_count': 2}],
     # 4.3 object -[episodic]> episodic
-    ([EPISODIC_TRIPLET2, EPISODIC_TRIPLET1], True, {'triplets_count': 2, 'nodes_count': 2}),
+    [[EPISODIC_TRIPLET2, EPISODIC_TRIPLET1], True, {'triplets_count': 2, 'nodes_count': 2}],
     # 4.4 thesis -[episodic]> episodic
-    ([EPISODIC_TRIPLET3, EPISODIC_TRIPLET4], True, {'triplets_count': 2, 'nodes_count': 2}),
+    [[EPISODIC_TRIPLET3, EPISODIC_TRIPLET4], True, {'triplets_count': 2, 'nodes_count': 2}],
     # 5. добавление связанных триплетов (full, wo_sn)
     # 5.1 object <[simple]- object
-    ([SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], True, {'triplets_count': 2, 'nodes_count': 2}),
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], True, {'triplets_count': 2, 'nodes_count': 2}],
     # 5.2 thesis <[hyper]- object
-    ([SIMPLE_TRIPLET1, THESIS_TRIPLET1], True, {'triplets_count': 2, 'nodes_count': 2}),
+    [[SIMPLE_TRIPLET1, THESIS_TRIPLET1], True, {'triplets_count': 2, 'nodes_count': 2}],
     # 5.3 episodic <[episodic]- object
-    ([SIMPLE_TRIPLET1, EPISODIC_TRIPLET1], True, {'triplets_count': 2, 'nodes_count': 2}),
+    [[SIMPLE_TRIPLET1, EPISODIC_TRIPLET1], True, {'triplets_count': 2, 'nodes_count': 2}],
     # 5.4 episodic <[episodic]- thesis
-    ([THESIS_TRIPLET3, EPISODIC_TRIPLET4], True, {'triplets_count': 2, 'nodes_count': 2}),
+    [[THESIS_TRIPLET3, EPISODIC_TRIPLET4], True, {'triplets_count': 2, 'nodes_count': 2}],
     # 6. добавление несколько разных триплетов
     # 6.1 simple and simple
-    ([SIMPLE_TRIPLET1, SIMPLE_TRIPLET4], True, {'triplets_count': 2, 'nodes_count': 4}),
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET4], True, {'triplets_count': 2, 'nodes_count': 4}],
     # 6.2 simple and hyper
-    ([SIMPLE_TRIPLET1, THESIS_TRIPLET3], True, {'triplets_count': 2, 'nodes_count': 4}),
+    [[SIMPLE_TRIPLET1, THESIS_TRIPLET3], True, {'triplets_count': 2, 'nodes_count': 4}],
     # 6.3 hyper and episodic
-    ([THESIS_TRIPLET1, EPISODIC_TRIPLET2], True, {'triplets_count': 2, 'nodes_count': 4}),
+    [[THESIS_TRIPLET1, EPISODIC_TRIPLET2], True, {'triplets_count': 2, 'nodes_count': 4}],
     # 6.4 simple and episodic
-    ([SIMPLE_TRIPLET4, EPISODIC_TRIPLET1], True, {'triplets_count': 2, 'nodes_count': 4}),
+    [[SIMPLE_TRIPLET4, EPISODIC_TRIPLET1], True, {'triplets_count': 2, 'nodes_count': 4}],
     # 7. добавление триплетов с одинаковыми строковыми представлениями
     # 7.1 simple
-    ([SIMPLE_TRIPLET1, SIMPLE_TRIPLET1], True, {'triplets_count': 1, 'nodes_count': 2}),
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET1], True, {'triplets_count': 1, 'nodes_count': 2}],
     # 7.2 thesis
-    ([THESIS_TRIPLET1, THESIS_TRIPLET2], True, {'triplets_count': 1, 'nodes_count': 3}),
+    [[THESIS_TRIPLET1, THESIS_TRIPLET2], True, {'triplets_count': 1, 'nodes_count': 3}],
     # 7.3 episodic
-    ([EPISODIC_TRIPLET1, EPISODIC_TRIPLET2], True, {'triplets_count': 1, 'nodes_count': 3}),
-
+    [[EPISODIC_TRIPLET1, EPISODIC_TRIPLET2], True, {'triplets_count': 1, 'nodes_count': 3}]
 ]
 
-EM_POPULATED_CREATE_TESTS = []
+EM_POPULATED_CREATE_TEST_CASES = []
 for db_vendor in AVAILABLE_EMBEDDING_MODELS:
-    for i in len(EM_CREATE_TESTS):
-        EM_CREATE_TESTS[i].append(db_vendor)
+    for i in range(len(EM_CREATE_TEST_CASES)):
+        EM_POPULATED_CREATE_TEST_CASES.append(EM_CREATE_TEST_CASES[i] + [db_vendor])
+
+print("Количество порождённых тестов для EM_CREATE:", len(EM_POPULATED_CREATE_TEST_CASES))
 
 ###############################################################################################
 
-EM_DELETE_TESTS = [
+EM_DELETE_TEST_CASES = [
     # TODO
 ]
 
-EM_POPULATED_DELETE_TESTS = []
+EM_POPULATED_DELETE_TEST_CASES = []
 for db_vendor in AVAILABLE_EMBEDDING_MODELS:
-    for i in len(EM_DELETE_TESTS):
-        EM_DELETE_TESTS[i].append(db_vendor)
+    for i in range(len(EM_DELETE_TEST_CASES)):
+        EM_POPULATED_DELETE_TEST_CASES.append(EM_DELETE_TEST_CASES[i] + [db_vendor])
+
+print("Количество порождённых тестов для EM_DELETE:", len(EM_POPULATED_DELETE_TEST_CASES))
 
 ###############################################################################################
 
 # graph-model tests
-GM_CREATE_TESTS = [
+GM_CREATE_TEST_CASES = [
     # 1. пустой список
-    ([], {'triplets_count': 0, 'nodes_count': 0}),
+    [[], {'triplets_count': 0, 'nodes_count': 0}],
     # 2. добавление одного триплета
     # 2.1 simple
-    ([SIMPLE_TRIPLET1], {'triplets_count': 1, 'nodes_count': 2}),
+    [[SIMPLE_TRIPLET1], {'triplets_count': 1, 'nodes_count': 2}],
     # 2.2 thesis
-    ([THESIS_TRIPLET2], {'triplets_count': 1, 'nodes_count': 2}),
+    [[THESIS_TRIPLET2], {'triplets_count': 1, 'nodes_count': 2}],
     # 2.3 episodic with object
-    ([EPISODIC_TRIPLET1], {'triplets_count': 1, 'nodes_count': 2}),
+    [[EPISODIC_TRIPLET1], {'triplets_count': 1, 'nodes_count': 2}],
     # 2.4 episodic with thesis
-    ([EPISODIC_TRIPLET4], {'triplets_count': 1, 'nodes_count': 2}),
+    [[EPISODIC_TRIPLET4], {'triplets_count': 1, 'nodes_count': 2}],
     # 3. добавление связанных триплетов (full, wo_sn, only_rel)
     # 3.1 simple rel
-    ([SIMPLE_TRIPLET1, SIMPLE_TRIPLET2, SIMPLE_TRIPLET3], {'triplets_count': 3, 'nodes_count': 3}),
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2, SIMPLE_TRIPLET3], {'triplets_count': 3, 'nodes_count': 3}],
     # 3.2 hyper (object with thesis)
-    ([SIMPLE_TRIPLET2, THESIS_TRIPLET1, THESIS_TRIPLET2], {'triplets_count': 3, 'nodes_count': 3}),
+    [[SIMPLE_TRIPLET2, THESIS_TRIPLET1, THESIS_TRIPLET2], {'triplets_count': 3, 'nodes_count': 3}],
     # 3.3 episodic (object with episodic)
-    ([SIMPLE_TRIPLET1, EPISODIC_TRIPLET1, EPISODIC_TRIPLET2], {'triplets_count': 3, 'nodes_count': 3}),
+    [[SIMPLE_TRIPLET1, EPISODIC_TRIPLET1, EPISODIC_TRIPLET2], {'triplets_count': 3, 'nodes_count': 3}],
     # 3.4 episodic (thesis with episodic)
-    ([EPISODIC_TRIPLET3, THESIS_TRIPLET3,EPISODIC_TRIPLET4],  {'triplets_count': 3, 'nodes_count': 3}),
+    [[EPISODIC_TRIPLET3, THESIS_TRIPLET3,EPISODIC_TRIPLET4],  {'triplets_count': 3, 'nodes_count': 3}],
     # 4. добавление связанных триплетов (full, wo_en)
     # 4.1 object -[simple]> object
-    ([SIMPLE_TRIPLET2, SIMPLE_TRIPLET1], {'triplets_count': 2, 'nodes_count': 2}),
+    [[SIMPLE_TRIPLET2, SIMPLE_TRIPLET1], {'triplets_count': 2, 'nodes_count': 2}],
     # 4.2 object -[hyper]> thesis
-    ([THESIS_TRIPLET2, THESIS_TRIPLET1], {'triplets_count': 2, 'nodes_count': 2}),
+    [[THESIS_TRIPLET2, THESIS_TRIPLET1], {'triplets_count': 2, 'nodes_count': 2}],
     # 4.3 object -[episodic]> episodic
-    ([EPISODIC_TRIPLET2, EPISODIC_TRIPLET1], {'triplets_count': 2, 'nodes_count': 2}),
+    [[EPISODIC_TRIPLET2, EPISODIC_TRIPLET1], {'triplets_count': 2, 'nodes_count': 2}],
     # 4.4 thesis -[episodic]> episodic
-    ([EPISODIC_TRIPLET3, EPISODIC_TRIPLET4], {'triplets_count': 2, 'nodes_count': 2}),
+    [[EPISODIC_TRIPLET3, EPISODIC_TRIPLET4], {'triplets_count': 2, 'nodes_count': 2}],
     # 5. добавление связанных триплетов (full, wo_sn)
     # 5.1 object <[simple]- object
-    ([SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {'triplets_count': 2, 'nodes_count': 2}),
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {'triplets_count': 2, 'nodes_count': 2}],
     # 5.2 thesis <[hyper]- object
-    ([SIMPLE_TRIPLET1, THESIS_TRIPLET1], {'triplets_count': 2, 'nodes_count': 2}),
+    [[SIMPLE_TRIPLET1, THESIS_TRIPLET1], {'triplets_count': 2, 'nodes_count': 2}],
     # 5.3 episodic <[episodic]- object
-    ([SIMPLE_TRIPLET1, EPISODIC_TRIPLET1], {'triplets_count': 2, 'nodes_count': 2}),
+    [[SIMPLE_TRIPLET1, EPISODIC_TRIPLET1], {'triplets_count': 2, 'nodes_count': 2}],
     # 5.4 episodic <[episodic]- thesis
-    ([THESIS_TRIPLET3, EPISODIC_TRIPLET4], {'triplets_count': 2, 'nodes_count': 2}),
+    [[THESIS_TRIPLET3, EPISODIC_TRIPLET4], {'triplets_count': 2, 'nodes_count': 2}],
     # 6. добавление несколько разных триплетов
     # 6.1 simple and simple
-    ([SIMPLE_TRIPLET1, SIMPLE_TRIPLET4], { 'triplets_count': 2, 'nodes_count': 4}),
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET4], { 'triplets_count': 2, 'nodes_count': 4}],
     # 6.2 simple and hyper
-    ([SIMPLE_TRIPLET1, THESIS_TRIPLET3], { 'triplets_count': 2, 'nodes_count': 4}),
+    [[SIMPLE_TRIPLET1, THESIS_TRIPLET3], { 'triplets_count': 2, 'nodes_count': 4}],
     # 6.3 hyper and episodic
-    ([THESIS_TRIPLET1, EPISODIC_TRIPLET2], { 'triplets_count': 2, 'nodes_count': 4}),
+    [[THESIS_TRIPLET1, EPISODIC_TRIPLET2], { 'triplets_count': 2, 'nodes_count': 4}],
     # 6.4 simple and episodic
-    ([SIMPLE_TRIPLET4, EPISODIC_TRIPLET1], { 'triplets_count': 2, 'nodes_count': 4}),
+    [[SIMPLE_TRIPLET4, EPISODIC_TRIPLET1], { 'triplets_count': 2, 'nodes_count': 4}],
     # 7. добавление триплетов с одинаковыми строковыми представлениями
     # 7.1 simple
-    ([SIMPLE_TRIPLET1, SIMPLE_TRIPLET1], True, {'triplets_count': 1, 'nodes_count': 2}),
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET1], True, {'triplets_count': 1, 'nodes_count': 2}],
     # 7.2 thesis
-    ([THESIS_TRIPLET1, THESIS_TRIPLET2], True, {'triplets_count': 2, 'nodes_count': 3}),
+    [[THESIS_TRIPLET1, THESIS_TRIPLET2], True, {'triplets_count': 2, 'nodes_count': 3}],
     # 7.3 episodic
-    ([EPISODIC_TRIPLET1, EPISODIC_TRIPLET2], True, {'triplets_count': 2, 'nodes_count': 3}),
+    [[EPISODIC_TRIPLET1, EPISODIC_TRIPLET2], True, {'triplets_count': 2, 'nodes_count': 3}]
 ]
 
-GM_POPULATED_CREATE_TESTS = []
+GM_POPULATED_CREATE_TEST_CASES = []
 for db_vendor in AVAILABLE_GRAPH_MODELS:
-    for i in len(GM_CREATE_TESTS):
-        GM_CREATE_TESTS[i].append(db_vendor)
+    for i in range(len(GM_CREATE_TEST_CASES)):
+        GM_POPULATED_CREATE_TEST_CASES.append(GM_CREATE_TEST_CASES[i] + [db_vendor])
+
+print("Количество порождённых тестов для GM_CREATE:", len(GM_POPULATED_CREATE_TEST_CASES))
 
 ###############################################################################################
 
-GM_DELETE_TESTS = [
+GM_DELETE_TEST_CASES = [
     # TODO
 ]
 
-GM_POPULATED_DELETE_TESTS = []
+GM_POPULATED_DELETE_TEST_CASES = []
 for db_vendor in AVAILABLE_GRAPH_MODELS:
-    for i in len(GM_DELETE_TESTS):
-        GM_DELETE_TESTS[i].append(db_vendor)
+    for i in range(len(GM_DELETE_TEST_CASES)):
+        GM_POPULATED_DELETE_TEST_CASES.append(GM_DELETE_TEST_CASES[i] + [db_vendor])
+
+print("Количество порождённых тестов для GM_DELETE:", len(GM_POPULATED_DELETE_TEST_CASES))
 
 ###############################################################################################

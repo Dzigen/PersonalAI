@@ -1,8 +1,8 @@
 import pytest
 
-from cases import GM_POPULATED_CREATE_TESTS, GM_POPULATED_DELETE_TESTS
+from cases import GM_POPULATED_CREATE_TEST_CASES, GM_POPULATED_DELETE_TEST_CASES
 
-@pytest.mark.parametrize("triplets, expected, graph_model", GM_POPULATED_CREATE_TESTS)
+@pytest.mark.parametrize("triplets, expected, graph_model", GM_POPULATED_CREATE_TEST_CASES)
 def test_create_triplets(triplets, expected, graph_model):
     graph_model.db_conn.clear()
     created_item_ids = graph_model.create_triplets(triplets, batch_size=1)
@@ -14,7 +14,7 @@ def test_create_triplets(triplets, expected, graph_model):
     for triplet_id in created_item_ids['triplets']:
         assert graph_model.db_conn.item_exist(triplet_id, id_type='triplet')
 
-@pytest.mark.parametrize("base_triplets, triplets_to_delete, expected, graph_model", GM_POPULATED_DELETE_TESTS)
+@pytest.mark.parametrize("base_triplets, triplets_to_delete, expected, graph_model", GM_POPULATED_DELETE_TEST_CASES)
 def test_delete_triplets(base_triplets, triplets_to_delete, expected, graph_model):
     graph_model.db_conn.clear()
     created_item_ids = graph_model.create_triplets(base_triplets, batch_size=1)
