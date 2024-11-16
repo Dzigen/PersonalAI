@@ -3,6 +3,8 @@ import pytest
 import sys
 sys.path.insert(0, "../../")
 from src.utils import NodeCreator, NodeType
+from src.utils.data_structs import create_id
+
 
 TEST_NODE_NAME = 'abc'
 TEST_TIME = '12.12.2012'
@@ -32,6 +34,8 @@ def test_create_object_node(params, expected):
     else:
         assert node.stringified is None
 
+    assert node.id == create_id(NodeCreator.stringify(node))
+
 @pytest.mark.parametrize("params, expected", [
     # добавить строковое представление в вершину
     ({'add_stringified_node': True, 'name': TEST_NODE_NAME, 'prop': {}}, {'str': TEST_NODE_NAME}),
@@ -54,6 +58,8 @@ def test_create_thesis_node(params, expected):
         assert expected['str'] == node.stringified
     else:
         assert node.stringified is None
+
+    assert node.id == create_id(NodeCreator.stringify(node))
 
 @pytest.mark.parametrize("params, expected", [
     # добавить строковое представление в вершину
@@ -78,4 +84,4 @@ def test_create_episodic_node(params, expected):
     else:
         assert node.stringified is None
 
-    assert node.id is None
+    assert node.id == create_id(NodeCreator.stringify(node))
