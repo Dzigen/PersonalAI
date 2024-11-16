@@ -97,9 +97,9 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         for id in ids:
             if type(id) is not str:
                 raise ValueError
-            tid_triplets = self.tid_triplets_index.get(id, None)
-            if tid_triplets is not None:
-                triplets += tid_triplets
+            t_ids = self.tid_triplets_index.get(id, None)
+            if t_ids is not None:
+                triplets += list(map(lambda t_id: self.triplets[t_id], t_ids))
         return triplets
 
     def update(self, items: List[Triplet]) -> None:

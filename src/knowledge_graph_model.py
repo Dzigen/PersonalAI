@@ -83,7 +83,7 @@ class EmbeddingsModel:
                 _, triplet_str =  TripletCreator.stringify(cur_triplet) if cur_triplet.stringified is None else (None, cur_triplet.stringified)
                 if cur_rel_id not in unique_relation_ids:
                     unique_relation_ids.add(cur_rel_id)
-                    if ((cur_rel_id not in existed_relation_ids) and (not self.vectordbs['triplet'].item_exist(cur_rel_id))):
+                    if ((cur_rel_id not in existed_relation_ids) and (not self.vectordbs['triplets'].item_exist(cur_rel_id))):
                         existed_relation_ids.add(cur_rel_id)
                         relation_ids.append(cur_triplet.relation.id)
                         relation_strs.append(triplet_str)
@@ -94,7 +94,7 @@ class EmbeddingsModel:
                         if node.id not in unique_node_ids:
                             unique_node_ids.add(node.id)
                             _, node_str = NodeCreator.stringify(node) if node.stringified is None else (None, node.stringified)
-                            if ((node.id not in existed_relation_ids) and (not self.vectordbs['node'].item_exist(node.id))):
+                            if ((node.id not in existed_relation_ids) and (not self.vectordbs['nodes'].item_exist(node.id))):
                                 existed_node_ids.add(node.id)
                                 node_ids.append(node.id)
                                 node_strs.append(node_str)
