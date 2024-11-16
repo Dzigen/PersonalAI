@@ -12,6 +12,8 @@ from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, Node
 DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(uri="bolt://localhost:7687", params={'user': "neo4j", 'pwd': 'password'})
 
 class Neo4jConnector(AbstractGraphDatabaseConnection):
+    """_summary_"""
+
     def __init__(self, config: GraphDBConnectionConfig):
         self.config = config
         self.open_connection()

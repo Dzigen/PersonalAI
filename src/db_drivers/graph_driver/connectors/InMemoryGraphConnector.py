@@ -13,6 +13,8 @@ from ....utils import Triplet, NodeType
 DEFAULT_INMEMORYGRAPH_CONFIG = GraphDBConnectionConfig()
 
 class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
+    """_summary_"""
+
     def __init__(self, config: GraphDBConnectionConfig) -> None:
         self.config = config
         self.open_connection()
@@ -30,7 +32,9 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         self.tid_triplets_index = defaultdict(list)
 
     def is_open(self) -> bool:
-        need_to_exist = ['edges', 'adjacent_nodes', 'nodes', 'relations', 'triplets', 'strid_nodes_index', 'str_relation_index', 'tid_triplets_index']
+        need_to_exist = [
+            'edges', 'adjacent_nodes', 'nodes', 'relations', 'triplets',
+            'strid_nodes_index', 'str_relation_index', 'tid_triplets_index']
         condition = True
         for field in need_to_exist:
             condition = condition and hasattr(self, field)

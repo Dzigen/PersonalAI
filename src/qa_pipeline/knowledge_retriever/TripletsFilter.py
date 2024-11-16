@@ -9,43 +9,32 @@ from ...db_drivers.vector_driver import VectorDBInstance
 
 @dataclass
 class TripletsFilterConfig(BaseTripletsFilterConfig):
-    """_summary_
+    """Конфигурация наивного алгоритма раннжирования/фильтрации триплетов.
+
+    :param max_k: Первые k (по релевантности) триплетов, которые будут возвращены в результате операции ранжирования. Значение по умолчанию 50.
+    :type max_k: int
     """
-    #
     max_k: int = 50
 
 class TripletsFilter(AbstractTriplesFilter):
-    """Главный класс для фильтрации триплетов, извлечённых из графа знаний,
-    на основе их релевантности пользовательскому запросу.
+    """Класс реализует логику наивного ранжирования/фильтрации триплетов на основе их релевантности к user-вопросу.
+
+    :param kg_model: Модель памяти (графа знаний) ассистента.
+    :type kg_model: KnowledgeGraphModel
+    :param config: Конфигурация наивного алгоритма фильтрации. Значение по умолчанию TripletsFilterConfig().
+    :type config: TripletsFilterConfig
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(LOG_PATH).
+    :type log: Logger
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
     """
-
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, config: TripletsFilterConfig, log_verbose: bool = False) -> None:
-        """_summary_
-
-        :param kg_model: _description_
-        :type kg_model: KnowledgeGraphModel
-        :param log: _description_
-        :type log: Logger
-        :param config: _description_
-        :type config: TripletsFilterConfig
-        :param log_verbose: _description_, defaults to False
-        :type log_verbose: bool, optional
-        """
+    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, config: TripletsFilterConfig = TripletsFilterConfig(), log_verbose: bool = False) -> None:
         self.log = log
         self.log_verbose = log_verbose
         self.kg_model = kg_model
         self.config = config
 
     def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
-        """_summary_
-
-        :param query_info: _description_
-        :type query_info: QueryInfo
-        :param triplets: _description_
-        :type triplets: List[Triplet]
-        :return: _description_
-        :rtype: List[Triplet]
-        """
         filtered_triplets = []
         query_embd = self.kg_model.embeddings_struct.embedder.encode_queries([query_info.query])[0]
         query_instance = VectorDBInstance(embedding=query_embd)

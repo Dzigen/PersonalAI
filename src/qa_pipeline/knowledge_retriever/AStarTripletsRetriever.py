@@ -16,43 +16,32 @@ from ...utils import Logger
 
 @dataclass
 class AStarMetricsConfig:
-    """_summary_
+    """Конфигурация класса для расчёта метрик, используемых в рамках A*-алгоритма.
+
+    :param h_metric_name: Эвристическая метрика, которая будет использоваться для оценки расстояния между текущей и конечной вершинами. Данное поле принимает следующие значения: 'ip', 'weight_with_short_path', 'avg_weighted_with_short_path'. Значение по умолчанию 'ip'.
+    :type h_metric_name: str
+    :param kvdriver_config: Конфигурация кеша для хранения рассчитанных h-оценок между вершинами. Значение по умолчанию None
+    :type kvdriver_config: KeyValueDriverConfig
     """
-    #
-    h_metric_name: str = 'ip' # 'ip', 'weight_with_short_path', 'avg_weighted_with_short_path'
+    h_metric_name: str = 'ip'
     kvdriver_config: KeyValueDriverConfig = None
 
-@dataclass
-class AStarGraphSearchConfig(BaseGraphSearchConfig):
-    """_summary_
-    """
-    #
-    metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
-    # макимальная глубина обхода графа для поиска заданной вершины
-    max_depth: int = 10 # int number or -1
-    # максимальное количество вершин графа, которые можно обойти для поиска заднной вершины
-    max_passed_nodes: int = 500 # int number or -1
-    # типы вершин, которые можно обходить во время поиска заданной вершины
-    accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic])
-
 class AStarMetrics:
-    def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: str, log: Logger,
-                config: AStarMetricsConfig = AStarMetricsConfig(), verbose: bool = False):
-        """_summary_
+    """Класс предназначен для расчёта d- и h-метрик, испрльзуемых в рамках A*-алгоритма поиска.
 
-        :param kg_model: _description_
-        :type kg_model: KnowledgeGraphModel
-        :param accepted_node_types: _description_
-        :type accepted_node_types: str
-        :param log: _description_
-        :type log: Logger
-        :param config: _description_, defaults to AStarMetricsConfig()
-        :type config: AStarMetricsConfig, optional
-        :param cache: _description_, defaults to None
-        :type cache: AbstractKVDatabaseConnection, optional
-        :param verbose: _description_, defaults to False
-        :type verbose: bool, optional
-        """
+    :param kg_model: Модель памяти (графа знаний) ассистента.
+    :type kg_model: KnowledgeGraphModel
+    :param config: Конфигурация класса. Значение по умолчанию AStarMetricsConfig().
+    :type config: AStarMetricsConfig
+    :param accepted_node_types: Типы вершин, которые можно использовать при расчёте метрик.
+    :type accepted_node_types: List[NodeType]
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(RETRIEVER_LOG_PATH).
+    :type log: Logger
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
+    """
+    def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: List[NodeType], log: Logger,
+                config: AStarMetricsConfig = AStarMetricsConfig(), verbose: bool = False):
         self.config = config
         self.accepted_node_types = accepted_node_types
         self.kg_model = kg_model
@@ -83,23 +72,9 @@ class AStarMetrics:
         }
 
     def compute_h_metric(self, *args, **kwargs) -> float:
-        """_summary_
-
-        :return: _description_
-        :rtype: float
-        """
         return self.metrics_map[self.config.h_metric_name](*args, **kwargs)
 
     def get_nodes_path(self, parent: Dict[str, str], end_node_id: str) -> List[str]:
-        """_summary_
-
-        :param parent: _description_
-        :type parent: Dict[str, str]
-        :param end_node_id: _description_
-        :type end_node_id: str
-        :return: _description_
-        :rtype: List[str]
-        """
         #end_node_id = U[-1] if (end_node_id not in parent) else end_node_id
         path, end_flag, cur_n = [end_node_id], False, end_node_id
         while not end_flag:
@@ -112,15 +87,6 @@ class AStarMetrics:
         return path
 
     def precomputed_dist(self, node1_id: str, node2_id: str, *args, **kwargs) -> float:
-        """_summary_
-
-        :param node1_id: _description_
-        :type node1_id: str
-        :param node2_id: _description_
-        :type node2_id: str
-        :return: _description_
-        :rtype: float
-        """
         def _calculate_node_distance(id1: str, id2: str) -> float:
             dist = 0
             if node1_id != node2_id:
@@ -146,15 +112,6 @@ class AStarMetrics:
         return dist
 
     def bfs(self, s_node_id, e_node_id):
-        """_summary_
-
-        :param s_node_id: _description_
-        :type s_node_id: _type_
-        :param e_node_id: _description_
-        :type e_node_id: _type_
-        :return: _description_
-        :rtype: _type_
-        """
         visited, queue = set(), collections.deque([s_node_id])
         visited.add(s_node_id)
         D = {s_node_id: 0}
@@ -195,7 +152,7 @@ class AStarMetrics:
         self.log(f"bfs graph-db queries: {neo4j_queries_counter}", verbose=self.verbose)
         self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.verbose)
 
-        INF_VALUE = 1000001
+        INF_VALUE = 1000001 # специальное значение, которое говорит, что между вершинами нет пути
         if self.config.kvdriver_config is not None:
             pair_id = create_id_for_node_pair(s_node_id, e_node_id)
             if not self.cache['bfs_short_path'].item_exist(pair_id):
@@ -204,15 +161,6 @@ class AStarMetrics:
         return INF_VALUE
 
     def precomputed_short_path(self, node1_id: str, node2_id: str) -> float:
-        """_summary_
-
-        :param node1_id: _description_
-        :type node1_id: str
-        :param node2_id: _description_
-        :type node2_id: str
-        :return: _description_
-        :rtype: float
-        """
         pair_id = create_id_for_node_pair(node1_id, node2_id)
         if self.cache['bfs_short_path'].item_exist(pair_id):
             #print("exists")
@@ -227,31 +175,11 @@ class AStarMetrics:
         return short_path
 
     def weighted_short_path(self, node1_id: str, node2_id: str, *args, **kwargs) -> float:
-        """_summary_
-
-        :param node1_id: _description_
-        :type node1_id: str
-        :param node2_id: _description_
-        :type node2_id: str
-        :return: _description_
-        :rtype: float
-        """
         short_path_len = self.precomputed_short_path(node1_id, node2_id)
         w = self.precomputed_dist(node1_id, node2_id)
         return short_path_len * w
 
     def avg_weighted_short_path(self, node1_id: str, node2_id: str, parent: Dict[str, str]) -> float:
-        """_summary_
-
-        :param node1_id: _description_
-        :type node1_id: str
-        :param node2_id: _description_
-        :type node2_id: str
-        :param parent: _description_
-        :type parent: Dict[str, str]
-        :return: _description_
-        :rtype: float
-        """
         nodes_path = self.get_nodes_path(parent, node1_id)
         acc_dist = 0
         for i in range(len(nodes_path)-1):
@@ -261,24 +189,39 @@ class AStarMetrics:
         short_path_len = self.precomputed_short_path(node1_id, node2_id)
         return np.mean(acc_dist) * short_path_len
 
+@dataclass
+class AStarGraphSearchConfig(BaseGraphSearchConfig):
+    """Конфигурация класса, реализующего логику A*-алгоритма поиска по графу знаний.
+
+    :param metrics_config: Конфигурация класса, выполняющая расчёт необходимых матрик для A*-алгоритма. Значение по по умолчанию AStarMetricsConfig().
+    :type metrics_config: AStarMetricsConfig
+    :param max_depth: Макимальная глубина обхода графа для поиска заданной вершины. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 10.
+    :type max_depth: int
+    :param max_passed_nodes: Максимальное количество вершин, которое можно обойти для поиска заднной вершины в графе. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 500.
+    :type max_passed_nodes: int
+    :param accepted_node_types: Типы вершин, которые можно обходить во время поиска заданной вершины. Значение по умолчанию [NodeType.object , NodeType.hyper, NodeType.episodic].
+    :type accepted_node_types: List[NodeType]
+    """
+    metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
+    max_depth: int = 10
+    max_passed_nodes: int = 500
+    accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic])
+
 class AStarGraphSearch:
-    """Класс с реализацией A*-алгоритма поиска по графу"""
+    """Класс предназначен для запуска A*-алгоритма для излвечения триплетов из графового хранилища триплетов.
+
+    :param kg_model: Модель памяти (графа знаний) ассистента.
+    :type kg_model: KnowledgeGraphModel
+    :param search_config: Конфигурация A*-алгоритма поиска по графовому хранилищу триплетов. Значение по умолчанию AStarGraphSearchConfig().
+    :type search_config: AStarGraphSearchConfig
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(RETRIEVER_LOG_PATH).
+    :type log: Logger
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
+    """
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
                  verbose: bool = False) -> None:
-        """_summary_
-
-        :param kg_model: _description_
-        :type kg_model: KnowledgeGraphModel
-        :param log: _description_
-        :type log: Logger
-        :param search_config: _description_, defaults to AStarGraphSearchConfig()
-        :type search_config: AStarGraphSearchConfig, optional
-        :param cache: _description_, defaults to None
-        :type cache: AbstractKVDatabaseConnection, optional
-        :param verbose: _description_, defaults to False
-        :type verbose: bool, optional
-        """
         self.log = log
         self.verbose = verbose
         self.config = search_config
@@ -288,16 +231,7 @@ class AStarGraphSearch:
             log=self.log, config=self.config.metrics_config, verbose=verbose)
 
     def search_path(self, start_node_id: str, end_node_id: str) -> Tuple[List[str], List[str], Dict[str, int], Dict[str, str], str]:
-        """_summary_
-
-        :param start_node_id: _description_
-        :type start_node_id: str
-        :param end_node_id: _description_
-        :type end_node_id: str
-        :return: _description_
-        :rtype: Tuple[List[str], List[str], Dict[str, int], Dict[str, str], str]
-        """
-        # использованная реализация A*-алгоритма поиска кратчайшего пути между вершинами: https://www.redblobgames.com/pathfinding/a-star/implementation.html
+        """Реализация A*-алгоритма. Источник: https://www.redblobgames.com/pathfinding/a-star/implementation.html."""
         frontier = []
         heapq.heappush(frontier, (0, start_node_id))
         parent = {start_node_id: None}
@@ -350,45 +284,26 @@ class AStarGraphSearch:
         return cost_so_far, frontier, D, parent, spare_closest_node_id
 
 class AStarTripletsRetriever(AbstractTripletsRetriever):
-    """Главный класс для извлечения триплетов из графа знаний, релевантных запросу, на основе A*-алгоритма поиска.
+    """Класс предназначен для извлечения триплетов из графа знаний на основе A*-алгоритма поиска.
 
-    Args:
-        AStarGraphSearch: A* алгоритм поиска по графу знаний.
-        AbstractTripletsRetriever: Интерфейс для классов с алгоритма извлечения релевантных триплетов из графов знаний.
+    :param kg_model: Модель памяти (графа знаний) ассистента.
+    :type kg_model: KnowledgeGraphModel
+    :param search_config: Конфигурация A*-алгоритма поиска по графовому хранилищу триплетов. Значение по умолчанию AStarGraphSearchConfig().
+    :type search_config: AStarGraphSearchConfig
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(RETRIEVER_LOG_PATH).
+    :type log: Logger
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
                  verbose: bool = False) -> None:
-        """_summary_
-
-        :param kg_model: _description_
-        :type kg_model: KnowledgeGraphModel
-        :param log: _description_
-        :type log: Logger
-        :param search_config: _description_, defaults to AStarGraphSearchConfig()
-        :type search_config: AStarGraphSearchConfig, optional
-        :param cache: _description_, defaults to None
-        :type cache: AbstractKVDatabaseConnection, optional
-        :param verbose: _description_, defaults to False
-        :type verbose: bool, optional
-        """
         self.log = log
         self.verbose = verbose
         self.kg_model = kg_model
         self.graph_searcher = AStarGraphSearch(kg_model, log, search_config, verbose)
 
     def get_nodes_path(self, parent: Dict[str, str], end_node_id: str, spare_closest_node_id: str) -> List[str]:
-        """_summary_
-
-        :param parent: _description_
-        :type parent: Dict[str, str]
-        :param end_node_id: _description_
-        :type end_node_id: str
-        :param spare_closest_node_id: _description_
-        :type spare_closest_node_id: str
-        :return: _description_
-        :rtype: List[str]
-        """
         end_node_id = spare_closest_node_id if (end_node_id not in parent) else end_node_id
 
         path, end_flag, cur_n = [end_node_id], False, end_node_id
@@ -403,13 +318,6 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
         return path
 
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
-        """_summary_
-
-        :param query_info: _description_
-        :type query_info: QueryInfo
-        :return: _description_
-        :rtype: List[Triplet]
-        """
         nodes_ids = []
         for node in query_info.linked_nodes:
             if node.id not in nodes_ids:

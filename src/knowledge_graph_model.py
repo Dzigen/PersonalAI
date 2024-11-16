@@ -12,27 +12,40 @@ from .utils import Logger
 
 NODES_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
     db_vendor='chroma', db_config=VectorDBConnectionConfig(
-        path="../data/graph_structures/vectorized_nodes/default_densedb", db_name="vectorized_nodes"))
+        path="../data/graph_structures/vectorized_nodes/default_densedb", db_info={'db': 'default_db', 'table': "vectorized_nodes"}))
 TRIPLETS_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
     db_vendor='chroma', db_config=VectorDBConnectionConfig(
-        path="../data/graph_structures/vectorized_triplets/default_densedb", db_name="vectorized_triplets"))
+        path="../data/graph_structures/vectorized_triplets/default_densedb", db_info={'db': 'default_db', 'table': "vectorized_nodes"}))
 
 EMBEDDINGS_MODEL_LOG_PATH = 'log/em'
 
 @dataclass
 class EmbeddingsModelConfig:
-    """_summary_
+    """Конфигурация векторной модели данных.
+
+    :param nodesdb_driver_config: Конфигурация векторной базы данных, которая будет отвечать за хранение векторных представлений вершин из графовой модели. Значение по умолчанию NODES_DB_DEFAULT_DRIVER_CONFIG.
+    :type nodesdb_driver_config: VectorDriverConfig
+    :param tripletsdb_driver_config: Конфигурация векторной базы данных, которая будет отвечать за хранение векторных представлений триплетов из графовой модели. Значение по умолчанию TRIPLETS_DB_DEFAULT_DRIVER_CONFIG.
+    :type tripletsdb_driver_config: VectorDriverConfig
+    :param tripletsdb_driver_config: Конфигурация класса, отвечающего за приведения текста в его векторрное представление с помощью embedder-модели. Значение по умолчанию EmbedderModelConfig().
+    :type embedder_config: EmbedderModelConfig
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(EMBEDDINGS_MODEL_LOG_PATH).
+    :type log: Logger
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
     """
-    #
     nodesdb_driver_config: VectorDriverConfig = field(default_factory=lambda: NODES_DB_DEFAULT_DRIVER_CONFIG)
     tripletsdb_driver_config: VectorDriverConfig = field(default_factory=lambda: TRIPLETS_DB_DEFAULT_DRIVER_CONFIG)
-    #
     embedder_config: EmbedderModelConfig = field(default_factory=lambda: EmbedderModelConfig())
-    #
     log: Logger = field(default_factory=lambda: Logger(EMBEDDINGS_MODEL_LOG_PATH))
     verbose: bool = False
 
 class EmbeddingsModel:
+    """Модель хранения информации в векторной структуре данных.
+
+    :param config: Конфигурация векторной модели данных. Значение по умолчанию EmbeddingsModelConfig().
+    :type config: EmbeddingsModelConfig
+    """
     def __init__(self, config: EmbeddingsModelConfig = EmbeddingsModelConfig()):
         self.config = config
         self.log = config.log
@@ -42,13 +55,14 @@ class EmbeddingsModel:
         self.embedder = EmbedderModel(config.embedder_config)
 
     def create_triplets(self, triplets:List[Triplet], create_nodes:bool=True, batch_size:int=128)-> None:
-        """_summary_
+        """Метод предназначен для добавления информации, представленной в виде списка триплетов, в векторную модель.
+        Триплеты-дубликаты (по строковому представлению) в модель не добавляются.
 
-        :param triplets: _description_
+        :param triplets: Набор триплетов для добавления в векторную модель данных.
         :type triplets: List[Triplet]
-        :param add_nodes: _description_, defaults to True
-        :type add_nodes: bool, optional
-        :param batch_size: _description_, defaults to 128
+        :param create_nodes: Если True, то в векторную модель отдельно также будут добавлены вершины из триплетов. Вершины-дубликаты (по строковому представлению) не добавляются (отбрасываются), иначе False. Значение по умолчанию True.
+        :type create_nodes: bool, optional
+        :param batch_size: Количество триплетов, которое за одну create-операцию добавляются в векторную модель. Значение по умолчанию 128.
         :type batch_size: int, optional
         """
         self.log("Adding triples to vector-model...", verbose=self.config.verbose)
@@ -92,12 +106,12 @@ class EmbeddingsModel:
         self.log("Triples were successfully added to vector-model!", verbose=self.config.verbose)
 
     def delete_triplets(self, triplets: List[Triplet], delete_nodes: bool = True) -> None:
-        """_summary_
+        """Метод предназначен для удаления информации, представленной в виде списка триплетов, из векторной модели.
 
-        :param triplets: _description_
+        :param triplets: Набора триплетов для удаления.
         :type triplets: List[Triplet]
-        :param delete_nods: _description_, defaults to True
-        :type delete_nods: bool, optional
+        :param delete_nodes: Если True, то из векторной модели также будут удалены вершины, которые принадлежат данным триплетам, иначе False, Значение по умолчанию True.
+        :type delete_nodes: bool, optional
         """
         triplets_ids = list(map(lambda v: v.id, triplets))
 
@@ -112,15 +126,15 @@ class EmbeddingsModel:
 
     def create_stringified_triplets(self, triplets_ids: List[str], stringified_triplets: List[str],
                      nodes_ids: List[str] = None, stringified_nodes: List[str] = None) -> None:
-        """_summary_
+        """Метод предназначен для добавления строковых представлений триплетов/вершин в векторную модель.
 
-        :param triplets_ids: _description_
+        :param triplets_ids: Идентификаторы триплетов, с которыми они будут сохранены в моделе.
         :type triplets_ids: List[str]
-        :param stringified_triplets: _description_
+        :param stringified_triplets: Строковые представления триплетов для сохранения в моделе.
         :type stringified_triplets: List[str]
-        :param nodes_ids: _description_, defaults to None
+        :param nodes_ids: Идентификаторы вершин, с которыми они будут сохранены в моделе. Значение по умолчанию None.
         :type nodes_ids: List[str], optional
-        :param stringified_nodes: _description_, defaults to None
+        :param stringified_nodes: Строковые представления вершин для сохранения в моделе. Значение по умолчанию None.
         :type stringified_nodes: List[str], optional
         """
         if len(triplets_ids):
@@ -129,11 +143,11 @@ class EmbeddingsModel:
             self.create_instances('nodes', nodes_ids, stringified_nodes)
 
     def delete_stringified_triplets(self, triplets_ids: List[str], nodes_ids: List[str] = None) -> None:
-        """_summary_
+        """Метод предназначен для удаления строковых представлений триплетов/вершин из векторной модели.
 
-        :param triplets_ids: _description_
+        :param triplets_ids: Идентификаторы триплетов на удаление из модели.
         :type triplets_ids: List[str]
-        :param nodes_ids: _description_, defaults to None
+        :param nodes_ids: Идентификаторы вершин на удаление из модели. Значение по умолчанию None.
         :type nodes_ids: List[str], optional
         """
         self.delete_instances('triplets', triplets_ids)
@@ -141,13 +155,13 @@ class EmbeddingsModel:
             self.delete_instances('nodes', nodes_ids)
 
     def create_instances(self, db_type: str, ids: List[str], stringified_instances: List[str]) -> None:
-        """_summary_
+        """Метод предназанчен для добавления набора объектов в одно из хранилищ данных векторной модели: для триплетов или вершин.
 
-        :param db_type: _description_
+        :param db_type: Тип хранилища, в которое нужно добавить объекты. Принимает значение "triplets" или "nodes".
         :type db_type: str
-        :param ids: _description_
+        :param ids: Идентификаторы объектов, с которыми они будут добавлены в хранилище.
         :type ids: List[str]
-        :param stringified_instances: _description_
+        :param stringified_instances: Строковые представления объектов, которые будут сохранены в хранилище.
         :type stringified_instances: List[str]
         """
         embs = self.embedder.encode_passages(stringified_instances)
@@ -156,23 +170,23 @@ class EmbeddingsModel:
         self.vectordbs[db_type].create(formated_instances)
 
     def delete_instances(self, db_type: str, ids: List[str]) -> None:
-        """_summary_
+        """Метод предназанчен для удаления набора объектов из определённого хранилища данных векторной модели: из хранилища триплетов или вершин.
 
-        :param db_type: _description_
+        :param db_type: Тип хранилища, из которого нужно удалить объекты. Принимает значение "triplets" или "nodes".
         :type db_type: str
-        :param ids: _description_
+        :param ids: Идентификаторы объектов на удаление из хранилища.
         :type ids: List[str]
         """
         self.vectordbs[db_type].delete(ids)
 
     def read_embbeddings(self, db_type: str, ids: List[str]) -> List[List[float]]:
-        """_summary_
+        """Метод предназначен для получения векторных представлений объектов из определённого хранилища векторной модели: из хранилища триплетов или вершин.
 
-        :param db_type: _description_
+        :param db_type: Тип хранилища, в котором осуществялется поиск векторных представлений для заданных объектов. Принимает значени "triplets" или "nodes".
         :type db_type: str
-        :param ids: _description_
+        :param ids: Идентификаторы объектов, для которых необходимо получить векторные представления.
         :type ids: List[str]
-        :return: _description_
+        :return: Список полученных векторных представлений для заданных объектов.
         :rtype: List[List[float]]
         """
         instances = self.vectordbs[db_type].read(ids, includes=['embeddings'])
@@ -184,23 +198,37 @@ GRAPH_MODEL_LOG_PATH = 'log/gm'
 
 @dataclass
 class GraphModelConfig:
-    #
+    """Конфигруация графовой модели.
+
+    :param driver_config: Конфигурация графового хранилища данных.
+    :type driver_config: GraphDriverConfig
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(GRAPH_MODEL_LOG_PATH).
+    :type log: Logger
+    :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
+    """
     driver_config: GraphDriverConfig = field(default_factory=lambda: GRAPH_DB_DEFAULT_DRIVER_CONFIG)
-    #
     log: Logger = field(default_factory=lambda: Logger(GRAPH_MODEL_LOG_PATH))
     verbose: bool = False
 
 class GraphModel:
+    """Модель хранения информации в графовой структуре данных.
+
+    :param config: Конфигурация графовой модели. Значение по умолчанию GraphModelConfig().
+    :type config: GraphModelConfig
+    """
     def __init__(self, config: GraphModelConfig = GraphModelConfig()) -> None:
         self.config = config
         self.log = config.log
         self.db_conn = GraphDriver.connect(self.config.driver_config)
 
     def create_triplets(self, triplets: List[Triplet], batch_size: int = 64) -> None:
-        """_summary_
+        """Метод предназначен для сохранения информации, представленной в виде списка триплетов, в графовую модель.
 
-        :param triplets: _description_
+        :param triplets: Набора триплетов для добавления в графовую модель.
         :type triplets: List[Triplet]
+        :param batch_size: Количество триплетов, которое за одну create-операцию добавляется в модель. Значение по умолчанию 64.
+        :type batch_size: int, optional
         """
         self.log("Adding triplets to graph-model...", verbose=self.config.verbose)
         unique_triplet_ids, unique_node_ids = set(), set()
@@ -255,10 +283,12 @@ class GraphModel:
 
 
     def delete_triplets(self, triplets: List[Triplet], batch_size: int = 64) -> None:
-        """_summary_
+        """Метод предназначен для удаления информации, представленной в виде списка триплетов, из графовой модели.
 
-        :param triplets: _description_
+        :param triplets: Набор триплетов для удаления из графовой модели.
         :type triplets: List[Triplet]
+        :param batch_size:  Количество триплетов, которое за одну delete-операцию удаляется из графовой модели. Значение по умолчанию 64.
+        :type batch_size: int, optional
         """
         steps = math.ceil(len(triplets) / batch_size)
         for step in tqdm(range(steps)):
@@ -266,5 +296,12 @@ class GraphModel:
 
 @dataclass
 class KnowledgeGraphModel:
+    """Модель памяти (графа знаний) ассистента.
+
+    :param graph_struct: Знания, хранящиеся в графовой структуре данных.
+    :type graph_struct: GraphModel
+    :param graph_struct: Знания, хранящиеся в векторной структуре данных.
+    :type graph_struct: EmbeddingsModel
+    """
     graph_struct: GraphModel
     embeddings_struct: EmbeddingsModel

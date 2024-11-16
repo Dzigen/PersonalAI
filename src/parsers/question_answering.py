@@ -3,11 +3,11 @@ from typing import Tuple
 from ..utils import ReturnStatus
 
 def qa_custom_answer_parse_func_en(raw_response: str) -> Tuple[str, ReturnStatus]:
-    """_summary_
+    """Функция предназначена для разбора результата генерации ответа LLM-агента, в рамаках условной QA-задачи на английском языке.
 
-    :param raw_response: _description_
+    :param raw_response: Исходный ответ LLM-агента.
     :type raw_response: str
-    :return: _description_
+    :return: Разобранный ответ на user-вопрос от LLM-агента.
     :rtype: Tuple[str, ReturnStatus]
     """
     status = ReturnStatus.success
@@ -23,11 +23,11 @@ def qa_custom_answer_parse_func_en(raw_response: str) -> Tuple[str, ReturnStatus
     return answer, status
 
 def qa_custom_answer_parse_func_ru(raw_response: str) -> Tuple[str, ReturnStatus]:
-    """_summary_
+    """Функция предназначена для разбора результата генерации ответа LLM-агента, в рамаках условной QA-задачи на русском языке.
 
-    :param raw_response: _description_
+    :param raw_response: Исходный ответ LLM-агента.
     :type raw_response: str
-    :return: _description_
+    :return: Разобранный ответ на user-вопрос от LLM-агента.
     :rtype: Tuple[str, ReturnStatus]
     """
     status = ReturnStatus.success

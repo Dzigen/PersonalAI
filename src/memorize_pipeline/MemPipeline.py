@@ -12,28 +12,34 @@ from ..utils import Logger, Triplet, ReturnStatus, ReturnInfo
 
 @dataclass
 class MemPipelineConfig:
-    """_summary_
+    """Конфигурация Memorize-конвейера.
+
+    :param extractor_config: Конфигурация первой стадии Memorize-конвейера: извлечение информации из текстовых данных и приведение их в triplet-формат. Значение по умолчанию LLMExtractorConfig().
+    :type extractor_config: LLMExtractorConfig
+    :param updator_config: Конфигурация второй стадии Mem-конвейера: актуализация знаний в памяти ассистента. Значение по умолчанию LLMUpdatorConfig().
+    :type updator_config: LLMUpdatorConfig
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(MEM_LOG_PATH).
+    :type log: Logger
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
     """
-    #
     extractor_config: LLMExtractorConfig = field(default_factory=lambda: LLMExtractorConfig())
-    #
     updator_config: LLMUpdatorConfig = field(default_factory=lambda: LLMUpdatorConfig())
-    #
     log: Logger = field(default_factory=lambda: Logger(MEM_LOG_PATH))
-    log_verbose: bool = False
+    verbose: bool = False
 
 class MemPipeline:
+    """Верхнеуровневый класс Memorize-конвейера, отвечающего за изменение знаний в памяти ассистента.
+
+    :param kg_model: Модель памяти (графа знаний) ассистента.
+    :type kg_model: KnowledgeGraphModel
+    :param config: Конфигурация Memorize-конвейера. Значение по умолчанию MemPipelineConfig().
+    :type config: MemPipelineConfig
+    :param bfs: Значение по умолчанию None.
+    :type bfs: BFSRetriever
+    """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig(), bfs: BFSRetriever = None) -> None:
-        """_summary_
-
-        :param kg_model: _description_
-        :type kg_model: KnowledgeGraphModel
-        :param config: _description_, defaults to MemPipelineConfig()
-        :type config: MemPipelineConfig, optional
-        :param bfs: _description_, defaults to None
-        :type bfs: BFSRetriever, optional
-        """
         self.config = config
         self.log = config.log
 
@@ -46,31 +52,31 @@ class MemPipeline:
     def remember(self, text: str, replacing_window_width: int = 32, replacing_window_depth: int = 1,
                  need_simple: bool = True, need_thesises: bool = True, need_episodic: bool = True,
                  need_update: bool = False, properties: Dict = dict()) -> Tuple[List[Triplet], ReturnInfo]:
-        """_summary_
+        """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста и обновление/актуализацию знаний в памяти (графе знаний) ассистена.
 
-        :param text: _description_
+        :param text: Слабоструктурированный текст на естественном языке.
         :type text: str
-        :param replacing_window_width: _description_, defaults to 32
+        :param replacing_window_width: Значение по умолчанию 32.
         :type replacing_window_width: int, optional
-        :param replacing_window_depth: _description_, defaults to 1
+        :param replacing_window_depth: Значение по умолчанию 1.
         :type replacing_window_depth: int, optional
-        :param need_simple: _description_, defaults to True
+        :param need_simple: Если True, то из входного текста на первой стадии Memorize-конвейера будет выполнено извлечение триплетов с типом связи 'simple', иначе False. Значение по умолчанию True.
         :type need_simple: bool, optional
-        :param need_thesises: _description_, defaults to True
+        :param need_thesises: Если True, то из входного текста на первой стадии Memorize-конвейера будет выполнено извлечение триплетов с типом связи 'hyper', иначе False. Значение по умолчанию True.
         :type need_thesises: bool, optional
-        :param need_episodic: _description_, defaults to True
+        :param need_episodic: Если True, то из входного текста на первой стадии Memorize-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False. Значение по умолчанию True.
         :type need_episodic: bool, optional
-        :param need_update: _description_, defaults to False
+        :param need_update: Значение по умолчанию False.
         :type need_update: bool, optional
-        :param properties: _description_, defaults to dict()
+        :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, Значение по умолчанию dict().
         :type properties: Dict, optional
-        :return: _description_
+        :return: Кортеж из двух объектов: (1) список с извлечённой из текста информацией (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         assert need_simple or need_thesises
 
         new_triplets, info = self.extractor.extract(text, need_simple, need_thesises, need_episodic, properties)
-        #self.log("PROCESSED NEW TRIPLETS: " + str(new_triplets), verbose=self.config.log_verbose)
+        #self.log("PROCESSED NEW TRIPLETS: " + str(new_triplets), verbose=self.config.verbose)
         if info.status == ReturnStatus.success:
             # TODO
             #if need_update:

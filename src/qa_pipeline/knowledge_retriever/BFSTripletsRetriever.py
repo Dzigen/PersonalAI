@@ -1,6 +1,6 @@
 import copy
 from dataclasses import dataclass
-from typing import List
+from typing import Dict, List, Set, Tuple, Union
 
 import torch
 
@@ -11,13 +11,30 @@ from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 
 @dataclass
 class BFSSearchConfig(BaseGraphSearchConfig):
+    """_summary_
+    """
     strict_filter: bool = True
     hyper_episodic_num: int = 15
     chain_triplets_num: int = 25
     other_triplets_num: int = 6
 
 
-def process_chain(chain, chain_subj_obj, chain_triplets):
+def process_chain(
+        chain: List[List[str]],
+        chain_subj_obj: List[Tuple[str]],
+        chain_triplets: List[List[str]]
+    ) -> Tuple[List[Tuple[str]], List[List[str]]]:
+    """_summary_
+
+    :param chain: пути в графе, которые начинаются от сущностей из вопроса
+    :type chain: List[List[str]]
+    :param chain_subj_obj: список субъектов и объектов триплетов из путей в графе
+    :type chain_subj_obj: List[Tuple[str]]
+    :param chain_triplets: список триплетов из путей в графе
+    :type chain_triplets: List[List[str]]
+    :return: список субъектов и объектов триплетов из путей в графе, список триплетов из путей в графе
+    :rtype: Tuple[List[Tuple[str]], List[List[str]]]
+    """
     for triplet in chain:
         subj = triplet[0]
         subj_no_props = {key: value for key, value in subj.items() if key != "prop"}
@@ -44,7 +61,14 @@ def process_chain(chain, chain_subj_obj, chain_triplets):
     return chain_subj_obj, chain_triplets
 
 
-def process_inters_chains1(inters_chains1):
+def process_inters_chains1(inters_chains1: List[List[List[str]]]) -> List[List[str]]:
+    """_summary_
+
+    :param inters_chains1: пути в графе, которые начинаются от сущностей из вопроса и пересекаются
+    :type inters_chains1: List[List[List[str]]]
+    :return: список триплетов из путей в графе
+    :rtype: List[List[str]]
+    """
     chain_triplets1 = []
     chain_subj_obj1 = set()
     for chain in inters_chains1:
@@ -52,7 +76,14 @@ def process_inters_chains1(inters_chains1):
     return chain_triplets1
 
 
-def process_inters_chains2(inters_chains2):
+def process_inters_chains2(inters_chains2: List[List[List[str]]]) -> List[List[str]]:
+    """_summary_
+
+    :param inters_chains2: пути в графе, которые начинаются от сущностей из вопроса и пересекаются
+    :type inters_chains3: List[List[List[str]]]
+    :return: список триплетов из путей в графе
+    :rtype: List[List[str]]
+    """
     chain_triplets2 = []
     chain_subj_obj2 = set()
     for chain1, chain2, *_ in inters_chains2:
@@ -62,18 +93,24 @@ def process_inters_chains2(inters_chains2):
 
 
 class BFSRetriever(AbstractTripletsRetriever):
+    """Класс с реализацией алгоритма BFS (поиск в ширину) по графу
+
+    :param kg_model: класс для извлечения триплетов из графа
+    :type kg_model: KnowledgeGraphModel
+    :param log: класс для логирования
+    :type log: Logger
+    :param search_config: конфигурация поиска по графу
+    :type search_config: BFSSearchConfig, optional
+    """
+
     def __init__(self,
                  kg_model: KnowledgeGraphModel,
                  log=None,
-                 search_config: BFSSearchConfig = None,
-                 cache=None,
-                 verbose=None,
-                 retriever=None
+                 search_config: BFSSearchConfig = None
                 ) -> None:
         super().__init__()
         self.kg_model = kg_model
         self.config = search_config
-        self.retriever = retriever
         self.extract_triplets_name1_template = \
             'MATCH (a:object)-[r]-(b:object) WHERE a.name="{name1}" RETURN a, r, b'
         self.extract_triplets_name2_template = \
@@ -81,7 +118,29 @@ class BFSRetriever(AbstractTripletsRetriever):
         self.extract_triplets_rel_prop_template = \
             'MATCH (a:object)-[r]-(b:object) WHERE r.{prop_name}="{prop_value}" RETURN a, r, b'
 
-    def parse_triplet_output(self, direction, query, another_entities1, another_entities2, chain):
+    def parse_triplet_output(
+            self,
+            direction: str,
+            query: List[Union[list, str]],
+            another_entities1: List[str],
+            another_entities2: Dict[str, List[List[str]]],
+            chain: List[List[str]]
+        ) -> Tuple[Tuple[List[dict], List[Tuple[str]], List[List[dict]]], List[List[List[str]]], List[List[List[str]]]]:
+        """_summary_
+
+        :param direction: направление поиска
+        :type direction: str
+        :param query: запрос для поиска
+        :type query: List[Union[list, str]]
+        :param another_entities1: сущности из вопроса
+        :type another_entities1: List[str]
+        :param another_entities2: сущности, найденные в процессе поиска
+        :type another_entities2: Dict[str, List[List[str]]]
+        :param chain: путь в графе
+        :type chain: List[List[str]]
+        :return: информация об извлеченных триплетах и пути в графе
+        :rtype: Tuple[List[List[dict], List[Tuple[str]], List[List[dict]]], List[List[List[str]]], List[List[List[str]]]]
+        """
         triplets_info = []
         inters_chains1, inters_chains2 = [], []
         try:
@@ -163,7 +222,26 @@ class BFSRetriever(AbstractTripletsRetriever):
             print(f"error in query execution: {e}")
         return triplets_info, inters_chains1, inters_chains2
 
-    def add_chains(self, inters_chains1, inters_chains2, cur_inters_chains1, cur_inters_chains2):
+    def add_chains(
+            self,
+            inters_chains1: List[List[List[str]]],
+            inters_chains2: List[List[List[str]]],
+            cur_inters_chains1: List[List[List[str]]],
+            cur_inters_chains2: List[List[List[str]]]
+        ) -> Tuple[List[List[List[str]]], List[List[List[str]]]]:
+        """_summary_
+
+        :param inters_chains1: пути в графе, которые пересекаются с сущностями из вопроса
+        :type inters_chains1: List[List[List[str]]]
+        :param inters_chains2: пути в графе, которые пересекаются с другими путями
+        :type inters_chains2: List[List[List[str]]]
+        :param cur_inters_chains1: пути в графе, которые пересекаются с сущностями из вопроса, на текущем шаге поиска
+        :type cur_inters_chains1: List[List[List[str]]]
+        :param cur_inters_chains2: пути в графе, которые пересекаются с другими путями, на текущем шаге поиска
+        :type cur_inters_chains2: List[List[List[str]]]
+        :return: пути в графе, которые пересекаются с сущностями из вопроса
+        :rtype: Tuple[List[List[List[str]]], List[List[List[str]]]]
+        """
         for ch in cur_inters_chains1:
             if ch not in inters_chains1:
                 inters_chains1.append(ch)
@@ -172,7 +250,14 @@ class BFSRetriever(AbstractTripletsRetriever):
                 inters_chains2.append(ch)
         return inters_chains1, inters_chains2
 
-    def make_triplet_key(self, triplet):
+    def make_triplet_key(self, triplet: List[Dict[str, str]]) -> Tuple[Tuple[str], Tuple[str]]:
+        """_summary_
+
+        :param triplet: триплет
+        :type triplet: List[Dict[str, str]]
+        :return: субъект, отношение и объект в триплете
+        :rtype: Tuple[Tuple[str], Tuple[str]]
+        """
         subj, rel, obj, *_ = triplet
         rel_data_items = list(rel["prop"].items())
         rel_data_items = [(key.replace("_", " "), value.replace("_", " ")) for key, value in rel_data_items
@@ -298,7 +383,26 @@ class BFSRetriever(AbstractTripletsRetriever):
                     formatted_triplets.append(formatted_triplet)
         return formatted_triplets
 
-    def extract_thesis_for_entities(self, seed_entities, entities_list, entity_type, texts_set):
+    def extract_thesis_for_entities(
+            self,
+            seed_entities: List[List[Tuple[str]]],
+            entities_list: List[Tuple[str]],
+            entity_type: str,
+            texts_set: Set[str]
+        ) -> Tuple[List[Tuple[str, str, Dict[str, str], Dict[str, str], int, str]], Set[str]]:
+        """_summary_
+
+        :param seed_entities: список сущностей из графа для сущностей из вопроса
+        :type seed_entities: List[List[Tuple[str]]]
+        :param entities_list: список сущностей из графа для данной сущности из вопроса
+        :type entities_list: List[Tuple[str]]
+        :param entity_type: тип сущности ("hyper" или "episodic")
+        :type entity_type: str
+        :param texts_set: набор текстов из триплетов
+        :type texts_set: Set[str]
+        :return: извлеченные тексты из триплетов типа hyper и episodic
+        :rtype: Tuple[List[Tuple[str, str, Dict[str], Dict[str], int, str]], Set[str]]
+        """
         cur_texts = []
         for seed_entity, *_ in entities_list:
             another_entities_list = [entities_list2 for entities_list2 in seed_entities
@@ -343,8 +447,16 @@ class BFSRetriever(AbstractTripletsRetriever):
                         texts_set.add(text_chunk)
         return cur_texts, texts_set
 
+    def extract_thesis(self, seed_entities: List[List[Tuple[str]]], same_types: bool) -> List[str]:
+        """_summary_
 
-    def extract_thesis(self, seed_entities, same_types):
+        :param seed_entities: список сущностей из графа для сущностей из вопроса
+        :type seed_entities: List[List[Tuple[str]]]
+        :param same_types: принадлежат ли сущности из вопроса к одному и тому же типу
+        :type same_types: bool
+        :return: список текстов тезисов
+        :rtype: List[str]
+        """
         output_texts = []
         retr_texts = {ne: [] for ne in range(len(seed_entities))}
         texts_set = set()
@@ -383,9 +495,33 @@ class BFSRetriever(AbstractTripletsRetriever):
                     output_texts += cur_texts[:thres]
         return output_texts
 
+    def bfs(
+            self,
+            seed_entities: List[List[Tuple[str]]],
+            depth: int = 1,
+            subj_labels: List[str] = None,
+            obj_labels: List[str] = None,
+            use_rel_props: bool = False
+        ) -> Tuple[Dict[tuple, Tuple[List[dict], List[Tuple[str]], List[List[dict]]]],
+                   List[List[List[str]]],
+                   List[List[List[str]]]]:
+        """_summary_
 
-    def bfs(self, seed_entities, depth=1, subj_labels=None, obj_labels=None, question=None, top_n=10,
-            use_rel_props=False):
+        :param seed_entities: список сущностей из графа для сущностей из вопроса
+        :type seed_entities: List[List[Tuple[str]]]
+        :param depth: глубина поиска
+        :type depth: int, optional
+        :param subj_labels: список типов субъекта в триплетах, включаемых в пути в графе во время поиска
+        :type subj_labels: List[str], optional
+        :param obj_labels: список типов субъекта в триплетах, включаемых в пути в графе во время поиска
+        :type obj_labels: List[str], optional
+        :param use_rel_props: использовать ли при поиске свойства relations
+        :type use_rel_props: bool, optional
+        :return: извлеченные триплеты и пути в графе
+        :rtype: Tuple[Dict[tuple, List[List[dict], List[Tuple[str]], List[List[dict]]]],
+                      List[List[List[str]]],
+                      List[List[List[str]]]]
+        """
         triplets_dict = {}
         inters_chains1, inters_chains2 = {}, {}
         # seed_entity, prop_name="", entity_type="node"
@@ -412,7 +548,6 @@ class BFSRetriever(AbstractTripletsRetriever):
                                 if entity.lower() != cur_seed_entity.lower() and entity.lower() != seed_entity.lower() \
                                         and entity not in another_entities1 and entity not in another_entities2:
                                     another_entities2[entity.lower()] = chain
-
                     triplets_info = []
                     new_entities = []
                     for entity, prop_name, tp, chain in entities[(seed_entity, ne)]:
@@ -454,23 +589,6 @@ class BFSRetriever(AbstractTripletsRetriever):
                                 for triplet in cur_triplets_info:
                                     triplets_info.append([(step, "forw", seed_entity, triplet[0][1]["type"])] + triplet)
                                 used_entities[(seed_entity, ne)].add((entity, prop_name, tp))
-
-                    if question and step > 0:
-                        triplets_for_rank = [triplet[1] for triplet in triplets_info]
-                        cur_embs = []
-                        for triplet in triplets_for_rank:
-                            triplet_key, triplet_key_rev = self.make_triplet_key(triplet)
-                            if triplet_key in self.triplet_embs_dict:
-                                emb = self.triplet_embs_dict[triplet_key]
-                            else:
-                                emb = self.triplet_embs_dict[triplet_key_rev]
-                            cur_embs.append(emb)
-                        if cur_embs:
-                            embs_for_rank = torch.Tensor(cur_embs).to("cuda")
-                            query_embs = self.retriever.embed([question])
-                            result = self.retriever.search_in_embeds(embs_for_rank, query_embs, 5)
-                            idx = result["idx"][0][:top_n]
-                            triplets_info = [triplets_info[ind] for ind in idx]
 
                     for step_dir_seed_rel, triplet, cur_entities, new_chain in triplets_info:
                         for (cur_ent, cur_prop_name, cur_prop_type) in cur_entities:

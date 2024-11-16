@@ -13,32 +13,47 @@ from ...agents import AgentDriver, AgentDriverConfig
 
 @dataclass
 class LLMExtractorConfig:
-    """_summary_
+    """Конфигурация Extractor-стадии.
+
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
+    :type lang: str
+    :param agent_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии.
+    :type agent_config: AgentDriverConfig
+    :param triplet_extract_system_prompt: System-промпты с описание персоны, свойствам которой должен удовлетворять LLM-агент при генерации оветов по задаче извлечения триплетов.
+    :type triplet_extract_system_prompt: dict
+    :param triplet_extract_user_prompt: User-промпты для LLM-агента с описанием задачи по извлечению триплетов из текста на естественном языке.
+    :type triplet_extract_user_prompt: dict
+    :param triplet_parse_func: Функция разбора результатов генерации LLM-агента по задаче извлечения триплетов.
+    :type triplet_parse_func: dict
+    :param thesis_extract_system_prompt: System-промпты с описание персоны, свойствам которой должен удовлетворять LLM-агент при генерации оветов по задаче извлечения тезисной  информации.
+    :type thesis_extract_system_prompt: dict
+    :param thesis_extract_user_prompt: User-промпты для LLM-агента с описанием задачи по извлечению тезисной информации из текста на естественном языке.
+    :type thesis_extract_user_prompt: dict
+    :param thesis_parse_func: Функция разбора результатов генерации LLM-агента по задаче извлечения тезисной информации.
+    :type thesis_parse_func: dict
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(MEM_EXTRACT_LOG_PATH).
+    :type log: Logger
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
     """
-    #
     lang: str = "auto"
-    #
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    #
     triplet_extract_system_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_TRIPLET_SYSTEM_PROMPT)
     triplet_extract_user_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_TRIPLET_USER_PROMPT)
     triplet_parse_func: dict = field(default_factory=lambda: MEM_TRIPLET_PARSE_FUNC)
-    #
     thesis_extract_system_prompt:  dict = field(default_factory=lambda: MEM_EXTRACT_THESIS_SYSTEM_PROMPT)
     thesis_extract_user_prompt: dict = field(default_factory=lambda: MEM_EXTRACT_THESIS_USER_PROMPT)
     thesis_parse_func: dict = field(default_factory=lambda: MEM_THESIS_PARSE_FUNC)
-    #
     log: Logger = field(default_factory=lambda: Logger(MEM_EXTRACT_LOG_PATH))
     verbose: bool = False
 
 class LLMExtractor:
+    """Верхнеуровневый класс первой стадии Memorize-конвейера для извлечения информации (и её приведения в triplet-формат) из слабоструктурированных данных.
 
+    :param config: Конфигурация Exctrator-стадии. Значение по умолчанию LLMExtractorConfig().
+    :type config: LLMExtractorConfig
+    """
     def __init__(self, config: LLMExtractorConfig = LLMExtractorConfig()) -> None:
-        """_summary_
-
-        :param config: _description_, defaults to LLMExtractorConfig()
-        :type config: LLMExtractorConfig, optional
-        """
         self.config = config
         self.agent = AgentDriver.connect(config.agent_config)
         self.log = config.log
@@ -46,19 +61,20 @@ class LLMExtractor:
 
     def extract(self, text: str, need_simple: bool = True, need_thesises: bool = True,
                 need_episodic: bool = True, properties: Dict = {}) -> Tuple[List[Triplet], ReturnInfo]:
-        """_summary_
+        """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста
+        на естественном языке.
 
-        :param text: _description_
+        :param text: Слабоструктурированный текст.
         :type text: str
-        :param need_simple: _description_, defaults to True
+        :param need_simple: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'simple', иначе False. Значение по умолчанию True.
         :type need_simple: bool, optional
-        :param need_thesises: _description_, defaults to True
+        :param need_thesises: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'hyper', иначе False. Значение по умолчанию True.
         :type need_thesises: bool, optional
-        :param need_episodic: _description_, defaults to True
+        :param need_episodic: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False. Значение по умолчанию True.
         :type need_episodic: bool, optional
-        :param properties: _description_, defaults to {}
+        :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, Значение по умолчанию dict().
         :type properties: Dict, optional
-        :return: _description_
+        :return: Кортеж из двух объектов: (1) cписок извлечённой из текста информации (в виде триплетов); (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         assert need_simple or need_thesises
@@ -98,19 +114,6 @@ class LLMExtractor:
         return new_triplets, info
 
     def extract_triplets(self, text: str, lang: str, node_prop = {}, rel_prop = {}) -> Tuple[List[Triplet], ReturnStatus]:
-        """_summary_
-
-        :param text: _description_
-        :type text: str
-        :param lang: _description_
-        :type lang: str
-        :param node_prop: _description_, defaults to {}
-        :type node_prop: dict, optional
-        :param rel_prop: _description_, defaults to {}
-        :type rel_prop: dict, optional
-        :return: _description_
-        :rtype: Tuple[List[Triplet], ReturnStatus]
-        """
         self.log("TEXT: " + text, verbose=self.config.verbose)
         raw_response = self.agent.generate(
             system_prompt=self.config.triplet_extract_system_prompt[lang],
@@ -120,19 +123,6 @@ class LLMExtractor:
         return new_triplets, status
 
     def extract_thesises(self, text: str, lang: str, node_prop: Dict = {}, rel_prop: Dict = {}) -> Tuple[List[Triplet], ReturnStatus]:
-        """_summary_
-
-        :param text: _description_
-        :type text: str
-        :param lang: _description_
-        :type lang: str
-        :param node_prop: _description_, defaults to {}
-        :type node_prop: Dict, optional
-        :param rel_prop: _description_, defaults to {}
-        :type rel_prop: Dict, optional
-        :return: _description_
-        :rtype: Tuple[List[Triplet], ReturnStatus]
-        """
         self.log("TEXT: " + text, verbose=self.config.verbose)
         raw_response = self.agent.generate(
             system_prompt=self.config.thesis_extract_system_prompt[lang],
@@ -143,13 +133,6 @@ class LLMExtractor:
 
     @staticmethod
     def get_entities_from_triplets(triplets: List[Triplet]) -> List[Node]:
-        """_summary_
-
-        :param triplets: _description_
-        :type triplets: List[Triplet]
-        :return: _description_
-        :rtype: List[Node]
-        """
         entities = {}
         for triplet in triplets:
             entities[triplet.start_node.stringified] = triplet.start_node
@@ -157,19 +140,6 @@ class LLMExtractor:
         return list(entities.values())
 
     def parse_thesises(self, raw_response: str, lang: str, node_prop: Dict, rel_prop: Dict) -> Tuple[List[Triplet], ReturnStatus]:
-        """_summary_
-
-        :param raw_response: _description_
-        :type raw_response: str
-        :param lang: _description_
-        :type lang: str
-        :param node_prop: _description_
-        :type node_prop: Dict
-        :param rel_prop: _description_
-        :type rel_prop: Dict
-        :return: _description_
-        :rtype: Tuple[List[Triplet], ReturnStatus]
-        """
         raw_triplets, status = self.config.thesis_parse_func[lang](raw_response)
         formated_triplets = []
         for triplet in raw_triplets:
@@ -185,19 +155,6 @@ class LLMExtractor:
         return formated_triplets, status
 
     def parse_triplets(self, raw_response: str, lang: str, node_prop: Dict, rel_prop: Dict) -> Tuple[List[Triplet], ReturnStatus]:
-        """_summary_
-
-        :param raw_response: _description_
-        :type raw_response: str
-        :param lang: _description_
-        :type lang: str
-        :param node_prop: _description_
-        :type node_prop: Dict
-        :param rel_prop: _description_
-        :type rel_prop: Dict
-        :return: _description_
-        :rtype: Tuple[List[Triplet], ReturnStatus]
-        """
         raw_triplets, status = self.config.triplet_parse_func[lang](raw_response)
         formated_triplets = []
         for triplet in raw_triplets:
@@ -211,19 +168,6 @@ class LLMExtractor:
 
     @staticmethod
     def get_episodic_relationships(text: str, entities: List[Node], node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
-        """_summary_
-
-        :param text: _description_
-        :type text: str
-        :param entities: _description_
-        :type entities: List[Node]
-        :param node_prop: _description_, defaults to {}
-        :type node_prop: Dict, optional
-        :param rel_prop: _description_, defaults to {}
-        :type rel_prop: Dict, optional
-        :return: _description_
-        :rtype: List[Triplet]
-        """
         episodic_node = NodeCreator.create(name=text, type=NodeType.episodic, prop={**node_prop})
         episodic_rel = Relation(name=RelationType.episodic.value, type=RelationType.episodic, prop={**rel_prop})
         episodic_triplets = [TripletCreator.create(entity, episodic_rel, episodic_node) for entity in entities]

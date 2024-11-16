@@ -28,8 +28,10 @@
 
 ##### Команды для генерации документации:
 * find . -type d -name __pycache__ -exec rm -r {} \+
-* sphinx-apidoc -o ../docs .
+* sphinx-apidoc -o ../docs/tmp/ .
 * make html
+* make latexpdf
+* make singlehtml
 * make clean
 
 pre-commit:
