@@ -1,8 +1,8 @@
 import pytest
 
-from cases import GM_CREATE_TESTS, GM_DELETE_TESTS
+from cases import GM_POPULATED_CREATE_TESTS, GM_POPULATED_DELETE_TESTS
 
-@pytest.mark.parametrize("triplets, expected", GM_CREATE_TESTS)
+@pytest.mark.parametrize("triplets, expected, graph_model", GM_POPULATED_CREATE_TESTS)
 def test_create_triplets(triplets, expected, graph_model):
     graph_model.db_conn.clear()
     created_item_ids = graph_model.create_triplets(triplets, batch_size=1)
@@ -10,15 +10,14 @@ def test_create_triplets(triplets, expected, graph_model):
     assert created_item_ids['triplets'] == expected['triplets_count']
 
     for node_id in created_item_ids['nodes']:
-        assert item_exist(node_id, id_type='node')
+        assert graph_model.db_conn.item_exist(node_id, id_type='node')
     for triplet_id in created_item_ids['triplets']:
-        assert item_exist(triplet_id, id_type='triplet')
+        assert graph_model.db_conn.item_exist(triplet_id, id_type='triplet')
 
-
-@pytest.mark.parametrize("base_triplets, triplets_to_delete, expected", GM_DELETE_TESTS)
+@pytest.mark.parametrize("base_triplets, triplets_to_delete, expected, graph_model", GM_POPULATED_DELETE_TESTS)
 def test_delete_triplets(base_triplets, triplets_to_delete, expected, graph_model):
     graph_model.db_conn.clear()
-    created_item_ids = graph_model.create_triplets(triplets, batch_size=1)
+    created_item_ids = graph_model.create_triplets(base_triplets, batch_size=1)
     assert created_item_ids['nodes'] == expected['nodes_count']
     assert created_item_ids['triplets'] == expected['triplets_count']
 
@@ -28,6 +27,6 @@ def test_delete_triplets(base_triplets, triplets_to_delete, expected, graph_mode
     assert len(deleted_item_ids['triplets']) == len(deleted_item_ids['deleted_t_count'])
 
     for node_id in deleted_item_ids['nodes']:
-        assert not item_exist(node_id, id_type='node')
+        assert not graph_model.db_conn.item_exist(node_id, id_type='node')
     for triplet_id in deleted_item_ids['triplets']:
-        assert not item_exist(triplet_id, id_type='triplet')
+        assert not graph_model.db_conn.item_exist(triplet_id, id_type='triplet')

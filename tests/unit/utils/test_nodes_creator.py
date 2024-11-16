@@ -34,7 +34,7 @@ def test_create_object_node(params, expected):
     else:
         assert node.stringified is None
 
-    assert node.id == create_id(NodeCreator.stringify(node))
+    assert node.id == create_id(NodeCreator.stringify(node)[1])
 
 @pytest.mark.parametrize("params, expected", [
     # добавить строковое представление в вершину
@@ -59,7 +59,7 @@ def test_create_thesis_node(params, expected):
     else:
         assert node.stringified is None
 
-    assert node.id == create_id(NodeCreator.stringify(node))
+    assert node.id == create_id(NodeCreator.stringify(node)[1])
 
 @pytest.mark.parametrize("params, expected", [
     # добавить строковое представление в вершину
@@ -84,4 +84,4 @@ def test_create_episodic_node(params, expected):
     else:
         assert node.stringified is None
 
-    assert node.id == create_id(NodeCreator.stringify(node))
+    assert node.id == create_id(NodeCreator.stringify(node)[1])

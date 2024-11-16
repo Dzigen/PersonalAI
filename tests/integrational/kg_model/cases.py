@@ -3,6 +3,11 @@ sys.path.insert(0, "../../../")
 from src.utils.data_structs import Triplet, NodeCreator, Relation, RelationType, NodeType
 from src.utils.errors import ReturnInfo
 
+AVAILABLE_GRAPH_MODELS = ['inmemory_graph', 'neo4j']
+AVAILABLE_EMBEDDING_MODELS = ['chroma']
+
+###############################################################################################
+
 # nodes
 OBJECT_NODE1 = NodeCreator.create(name='abc', type=NodeType.object, prop={'k1': 'v1'})
 OBJECT_NODE2 = NodeCreator.create(name='def', type=NodeType.object, prop={'k2': 'v2'})
@@ -37,7 +42,7 @@ EPISODIC_TRIPLET2 = Triplet(start_node=OBJECT_NODE2, relation=Relation(name='epi
 EPISODIC_TRIPLET3 = Triplet(start_node=OBJECT_NODE3, relation=Relation(name='episodic', type=RelationType.episodic), end_node=EPISODIC_NODE2)
 EPISODIC_TRIPLET4 = Triplet(start_node=THESIS_NODE2, relation=Relation(name='episodic', type=RelationType.episodic), end_node=EPISODIC_NODE2)
 
-# ======================
+###############################################################################################
 
 # embeddings-model tests
 EM_CREATE_TESTS = [
@@ -98,9 +103,23 @@ EM_CREATE_TESTS = [
 
 ]
 
+EM_POPULATED_CREATE_TESTS = []
+for db_vendor in AVAILABLE_EMBEDDING_MODELS:
+    for i in len(EM_CREATE_TESTS):
+        EM_CREATE_TESTS[i].append(db_vendor)
+
+###############################################################################################
+
 EM_DELETE_TESTS = [
     # TODO
 ]
+
+EM_POPULATED_DELETE_TESTS = []
+for db_vendor in AVAILABLE_EMBEDDING_MODELS:
+    for i in len(EM_DELETE_TESTS):
+        EM_DELETE_TESTS[i].append(db_vendor)
+
+###############################################################################################
 
 # graph-model tests
 GM_CREATE_TESTS = [
@@ -160,6 +179,20 @@ GM_CREATE_TESTS = [
     ([EPISODIC_TRIPLET1, EPISODIC_TRIPLET2], True, {'triplets_count': 2, 'nodes_count': 3}),
 ]
 
+GM_POPULATED_CREATE_TESTS = []
+for db_vendor in AVAILABLE_GRAPH_MODELS:
+    for i in len(GM_CREATE_TESTS):
+        GM_CREATE_TESTS[i].append(db_vendor)
+
+###############################################################################################
+
 GM_DELETE_TESTS = [
     # TODO
 ]
+
+GM_POPULATED_DELETE_TESTS = []
+for db_vendor in AVAILABLE_GRAPH_MODELS:
+    for i in len(GM_DELETE_TESTS):
+        GM_DELETE_TESTS[i].append(db_vendor)
+
+###############################################################################################

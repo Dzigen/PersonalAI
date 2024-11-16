@@ -3,7 +3,7 @@ import hashlib
 
 import sys
 sys.path.insert(0, "../../")
-from src.utils.data_structs import TripletCreator, Node, Relation, NodeType, RelationType
+from src.utils.data_structs import TripletCreator, NodeCreator, Node, Relation, NodeType, RelationType, create_id
 
 STRING_PROP_VALUE = 'string_value'
 INT_PROP_VALUE = 1001
@@ -20,7 +20,7 @@ TEST_PROPS_WITH_SPECIAL = {
 
 ###################
 
-TEST_OBJECT_NODE = Node(name=TEST_NODE_NAME, type=NodeType.object)
+TEST_OBJECT_NODE = NodeCreator.create(name=TEST_NODE_NAME, type=NodeType.object)
 
 TEST_EXPECTED_SIMPLE_TRIPLET_STR1 = f'{TEST_NODE_NAME} {TEST_REL_NAME} {TEST_NODE_NAME}'
 TEST_EXPECTED_SIMPLE_TRIPLET_WITH_TIME_STR2 = f'{TEST_TIME}: {TEST_EXPECTED_SIMPLE_TRIPLET_STR1}'
@@ -52,6 +52,10 @@ def test_create_simple_triplet(params, expected):
 
     if params['id'] is not None:
         assert triplet.id == params['id']
+    else:
+        assert triplet.id == create_id(''.join([triplet.start_node.id, triplet.relation.id, triplet.end_node.id]))
+
+    assert triplet.relation.id == create_id(TripletCreator.stringify(triplet)[1])
 
     if params['s_str']:
         assert expected['str'] == triplet.stringified
@@ -60,10 +64,10 @@ def test_create_simple_triplet(params, expected):
 
 ###################
 
-TEST_THESIS_NODE1 = Node(name=TEST_NODE_NAME, type=NodeType.hyper)
-TEST_THESIS_NODE2 = Node(name=TEST_NODE_NAME, type=NodeType.hyper, prop=TEST_PROPS_WITH_TIME)
-TEST_THESIS_NODE3 = Node(name=TEST_NODE_NAME, type=NodeType.hyper, prop=TEST_PROPS_WO_TIME)
-TEST_THESIS_NODE4 = Node(name=TEST_NODE_NAME, type=NodeType.hyper, prop=TEST_PROPS_WITH_SPECIAL)
+TEST_THESIS_NODE1 = NodeCreator.create(name=TEST_NODE_NAME, type=NodeType.hyper)
+TEST_THESIS_NODE2 = NodeCreator.create(name=TEST_NODE_NAME, type=NodeType.hyper, prop=TEST_PROPS_WITH_TIME)
+TEST_THESIS_NODE3 = NodeCreator.create(name=TEST_NODE_NAME, type=NodeType.hyper, prop=TEST_PROPS_WO_TIME)
+TEST_THESIS_NODE4 = NodeCreator.create(name=TEST_NODE_NAME, type=NodeType.hyper, prop=TEST_PROPS_WITH_SPECIAL)
 
 TEST_EXPECTED_HYPER_TRIPLET_STR1 = f"{TEST_NODE_NAME}"
 TEST_EXPECTED_HYPER_TRIPLET_STR2 = f"{TEST_TIME}: {TEST_NODE_NAME}"
@@ -94,6 +98,10 @@ def test_create_hyper_triplet(params, expected):
 
     if params['id'] is not None:
         assert triplet.id == params['id']
+    else:
+        assert triplet.id == create_id(''.join([triplet.start_node.id, triplet.relation.id, triplet.end_node.id]))
+
+    assert triplet.relation.id == create_id(TripletCreator.stringify(triplet)[1])
 
     if params['s_str']:
         assert expected['str'] == triplet.stringified
@@ -102,10 +110,10 @@ def test_create_hyper_triplet(params, expected):
 
 ###################
 
-TEST_EPISODIC_NODE1 = Node(name=TEST_NODE_NAME, type=NodeType.episodic)
-TEST_EPISODIC_NODE2 = Node(name=TEST_NODE_NAME, type=NodeType.episodic, prop=TEST_PROPS_WITH_TIME)
-TEST_EPISODIC_NODE3 = Node(name=TEST_NODE_NAME, type=NodeType.episodic, prop=TEST_PROPS_WO_TIME)
-TEST_EPISODIC_NODE4 = Node(name=TEST_NODE_NAME, type=NodeType.episodic, prop=TEST_PROPS_WITH_SPECIAL)
+TEST_EPISODIC_NODE1 = NodeCreator.create(name=TEST_NODE_NAME, type=NodeType.episodic)
+TEST_EPISODIC_NODE2 = NodeCreator.create(name=TEST_NODE_NAME, type=NodeType.episodic, prop=TEST_PROPS_WITH_TIME)
+TEST_EPISODIC_NODE3 = NodeCreator.create(name=TEST_NODE_NAME, type=NodeType.episodic, prop=TEST_PROPS_WO_TIME)
+TEST_EPISODIC_NODE4 = NodeCreator.create(name=TEST_NODE_NAME, type=NodeType.episodic, prop=TEST_PROPS_WITH_SPECIAL)
 
 TEST_EXPECTED_EPISODIC_TRIPLET_STR1 = f"{TEST_NODE_NAME}"
 TEST_EXPECTED_EPISODIC_TRIPLET_STR2 = f"{TEST_TIME}: {TEST_NODE_NAME}"
@@ -136,6 +144,10 @@ def test_create_episodic_triplet(params, expected):
 
     if params['id'] is not None:
         assert triplet.id == params['id']
+    else:
+        assert triplet.id == create_id(''.join([triplet.start_node.id, triplet.relation.id, triplet.end_node.id]))
+
+    assert triplet.relation.id == create_id(TripletCreator.stringify(triplet)[1])
 
     if params['s_str']:
         assert expected['str'] == triplet.stringified

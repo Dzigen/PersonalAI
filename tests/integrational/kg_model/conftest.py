@@ -1,11 +1,49 @@
 import pytest
 
 from src.knowledge_graph_model import EmbeddingsModel, EmbeddingsModelConfig, GraphModel, GraphModelConfig
-from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriver, VectorDriverConfig, VectorDBInstance
-from src.db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
-from src.db_drivers.graph_driver import GraphDriver, GraphDriverConfig, DEFAULT_NEO4J_CONFIG
-from src.utils.data_structs import Triplet, TripletCreator, NodeCreator
-from src.utils import Logger
+from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriverConfig
+from src.db_drivers.vector_driver.embedders import EmbedderModelConfig
+from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
+
+#!!!AVAILABLE GRAPH MODELS!!!#
+
+@pytest.fixture(scope='package')
+def graph_neo4j_model():
+    config = GraphModelConfig(
+        driver_config=GraphDriverConfig(
+            db_vendor='neo4j',
+            db_config=GraphDBConnectionConfig(
+                uri="bolt://localhost:7687", db_info={'db': 'testing', 'table': 'testing'},
+                params={'user': "neo4j", 'pwd': 'password'}, need_to_clear=True)))
+    return GraphModel(config)
+
+@pytest.fixture(scope='package')
+def graph_inmemory_model():
+    config = GraphModelConfig(
+        driver_config=GraphDriverConfig(
+            db_vendor='inmemory_graph',
+            db_config=GraphDBConnectionConfig(
+                uri="", db_info={'db': 'testing', 'table': 'testing'},
+                params=dict(), need_to_clear=True)))
+    return GraphModel(config)
+
+#------------------------------#
+
+@pytest.fixture(scope='package')
+def available_graph_models(
+    graph_neo4j_model,
+    graph_inmemory_model
+):
+    return {
+        'neo4j': graph_neo4j_model,
+        'inmemory_graph': graph_inmemory_model
+    }
+
+@pytest.fixture(scope='function')
+def graph_model(available_graph_models, request):
+    return available_graph_models[request.param]
+
+#!!!AVAILABLE VECTOR MODELS!!!#
 
 @pytest.fixture
 def embeddings_chroma_model():
@@ -17,22 +55,16 @@ def embeddings_chroma_model():
         embedder_config=EmbedderModelConfig(model_name_or_path='../../models/intfloat/multilingual-e5-small', device='cuda'))
     return EmbeddingsModel(config)
 
-@pytest.fixture
-def graph_neo4j_model():
-    config = GraphModelConfig(
-        driver_config=GraphDriverConfig(
-            db_vendor='neo4j',
-            db_config=GraphDBConnectionConfig(
-                uri="bolt://localhost:7687", db_info={'db': 'testing', 'table': 'testing'}
-                params={'user': "neo4j", 'pwd': 'password'}, need_to_clear=True)))
-    return GraphModel(config)
+#------------------------------#
 
-@pytest.fixture
-def graph_inmemory_model():
-    config = GraphModelConfig(
-        driver_config=GraphDriverConfig(
-            db_vendor='inmemory',
-            db_config=GraphDBConnectionConfig(
-                uri="", db_info={'db': 'testing', 'table': 'testing'}
-                params={}, need_to_clear=True)))
-    return GraphModel(config)
+@pytest.fixture(scope='package')
+def available_embedding_models(
+    embeddings_chroma_model,
+):
+    return {
+        'chroma': embeddings_chroma_model
+    }
+
+@pytest.fixture(scope='function')
+def vector_model(available_embedding_models, request):
+    return available_embedding_models[request.param]
