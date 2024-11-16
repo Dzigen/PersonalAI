@@ -22,6 +22,7 @@ notebooks/scripts/extract_parts
 tests/integrational/volumes
 experiments/../*.json
 docs/_build
+docs/build
 docs/log
 tmp/
 tests/integrational/volumes
