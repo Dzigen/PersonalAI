@@ -43,9 +43,11 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
     def close_connection(self) -> None:
         del self.edges
         del self.adjacent_nodes
+
         del self.nodes
         del self.relations
         del self.triplets
+
         del self.strid_nodes_index
         del self.strid_relation_index
         del self.tid_triplets_index
@@ -135,12 +137,16 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         if (type(node1_id) is not str) or (type(node2_id) is not str):
             raise ValueError
 
-        start_n_db_ids = self.strid_nodes_index[node1_id]
+        start_n_db_ids = self.strid_nodes_index.get(node1_id, None)
+        if start_n_db_ids is None:
+            raise ValueError
         start_n_edges = []
         for n_db_id in start_n_db_ids:
             start_n_edges += self.edges[n_db_id]
 
-        end_n_db_ids = self.strid_nodes_index[node2_id]
+        end_n_db_ids = self.strid_nodes_index.get(node2_id, None)
+        if end_n_db_ids is None:
+            raise ValueError
         end_n_edges = []
         for n_db_id in end_n_db_ids:
             end_n_edges += self.edges[n_db_id]
@@ -162,17 +168,17 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
     def count_items(self) -> int:
         return {'triplets': len(self.triplets), 'nodes': len(self.nodes)}
 
-    def item_exist(self, id: str, id_type='triplet') -> bool:
-        if type(id) is not str:
+    def item_exist(self, item_id: str, id_type: str ='triplet') -> bool:
+        if type(item_id) is not str:
             raise ValueError
 
         output = None
         if id_type == 'node':
-            output = self.strid_nodes_index.get(id, [])
-        if id_type == 'relation':
-            output = self.strid_relation_index.get(id, [])
+            output = self.strid_nodes_index.get(item_id, [])
+        elif id_type == 'relation':
+            output = self.strid_relation_index.get(item_id, [])
         elif id_type == 'triplet':
-            output = self.tid_triplets_index.get(id, [])
+            output = self.tid_triplets_index.get(item_id, [])
         else:
             raise ValueError
 
