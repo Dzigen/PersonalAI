@@ -15,7 +15,7 @@ def test_create(input, expected, keyvaluedb_conn):
     try:
         for inp in input:
             keyvaluedb_conn.create(inp)
-    except Exception as e:
+    except ValueError as e:
         print(str(e))
         assert expected['exception']
     else:
@@ -46,7 +46,7 @@ def test_read(instances, input, expected, keyvaluedb_conn):
 
     try:
         output = keyvaluedb_conn.read(input)
-    except Exception as e:
+    except ValueError as e:
         print(str(e))
         assert expected['exception']
     else:
@@ -71,7 +71,7 @@ def test_exist(instances, input, expected, keyvaluedb_conn):
 
     try:
         real = keyvaluedb_conn.item_exist(input)
-    except Exception as e:
+    except ValueError as e:
         print(str(e))
         assert expected['exception']
     else:

@@ -34,7 +34,7 @@ def test_delete(instances, create_info, inputs, expected, graphdb_conn):
 
     try:
         graphdb_conn.delete(inputs)
-    except Exception as e:
+    except ValueError as e:
         print(str(e))
         assert expected['exception']
     else:
@@ -52,7 +52,7 @@ def test_read(instances, create_info, inputs, expected, graphdb_conn):
 
     try:
         output = graphdb_conn.read(inputs)
-    except Exception as e:
+    except ValueError as e:
         print(str(e))
         assert expected['exception']
     else:
@@ -80,7 +80,7 @@ def test_exist(instances, inputs, expected, graphdb_conn):
 
     try:
         real = graphdb_conn.item_exist(inputs)
-    except Exception as e:
+    except ValueError as e:
         print(str(e))
         assert expected['exception']
     else:
@@ -112,7 +112,7 @@ def test_get_adjecent_nodes(instances, create_info, node, accepted_n_types, expe
 
     try:
         output = graphdb_conn.get_adjecent_nodes(node, accepted_n_types=accepted_n_types)
-    except Exception as e:
+    except ValueError as e:
         print(str(e))
         assert expected['exception']
     else:
@@ -127,7 +127,7 @@ def test_get_triplets(instances, create_info, nodes, expected, graphdb_conn):
 
     try:
         output = graphdb_conn.get_triplets(*nodes)
-    except Exception as e:
+    except ValueError as e:
         print(str(e))
         assert expected['exception']
     else:

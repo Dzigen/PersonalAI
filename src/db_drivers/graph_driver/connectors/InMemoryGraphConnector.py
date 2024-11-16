@@ -55,6 +55,14 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         return hashlib.md5((str(time()) if seed is None else seed).encode()).hexdigest()
 
     def create(self, triplets: List[Triplet], creation_info: Dict = dict()) -> None:
+        # triplet-ids checking
+        for triplet in triplets:
+            if type(triplet.id) is not str:
+                raise ValueError
+        unique_ids = set(map(lambda triplet: triplet.id, triplets))
+        if len(triplets) != len(unique_ids):
+            raise ValueError
+
         for i, triplet in enumerate(triplets):
             cur_info = creation_info.get(i, None)
 
@@ -114,10 +122,14 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         if type(base_node_id) is not str:
             raise ValueError
 
-        nodes = deepcopy(self.adjacent_nodes.get(base_node_id, []))
-        filtered_nodes = list(filter(lambda n_id: self.items_ids[n_id].type in accepted_n_types, nodes))
+        node_db_ids = self.strid_nodes_index.get(base_node_id, [])
+        adjanced_nodes_db_ids = []
+        for node_id in node_db_ids:
+            adjanced_nodes_db_ids += self.adjacent_nodes[node_id]
 
-        return filtered_nodes
+        filtered_adj_n_dbids = list(filter(lambda n_db_id: self.nodes[n_db_id].type in accepted_n_types, adjanced_nodes_db_ids))
+        nodes_str_ids = list(map(lambda db_n_id: self.nodes[db_n_id].id, filtered_adj_n_dbids))
+        return nodes_str_ids
 
     def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
         if (type(node1_id) is not str) or (type(node2_id) is not str):
