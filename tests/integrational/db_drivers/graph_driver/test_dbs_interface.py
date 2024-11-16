@@ -79,7 +79,7 @@ def test_exist(instances, inputs, expected, graphdb_conn):
     graphdb_conn.create(instances)
 
     try:
-        real = graphdb_conn.item_exist(inputs)
+        real = graphdb_conn.item_exist(inputs, expected['type'])
     except ValueError as e:
         print(str(e))
         assert expected['exception']
@@ -124,6 +124,11 @@ def test_get_adjecent_nodes(instances, create_info, node, accepted_n_types, expe
 def test_get_triplets(instances, create_info, nodes, expected, graphdb_conn):
     graphdb_conn.clear()
     graphdb_conn.create(instances, create_info)
+    print(nodes)
+    if expected['exist'][0] is not None:
+        assert graphdb_conn.item_exist(nodes[0],id_type='node') == expected['exist'][0]
+    if expected['exist'][1] is not None:
+        assert graphdb_conn.item_exist(nodes[1],id_type='node') == expected['exist'][1]
 
     try:
         output = graphdb_conn.get_triplets(*nodes)

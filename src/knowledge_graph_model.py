@@ -94,7 +94,7 @@ class EmbeddingsModel:
                         if node.id not in unique_node_ids:
                             unique_node_ids.add(node.id)
                             _, node_str = NodeCreator.stringify(node) if node.stringified is None else (None, node.stringified)
-                            if ((node.id not in existed_relation_ids) and (not self.vectordbs['nodes'].item_exist(node.id))):
+                            if ((node.id not in existed_node_ids) and (not self.vectordbs['nodes'].item_exist(node.id))):
                                 existed_node_ids.add(node.id)
                                 node_ids.append(node.id)
                                 node_strs.append(node_str)
@@ -104,6 +104,7 @@ class EmbeddingsModel:
         self.log(f"all/unique/existed relations - {len(triplets)}/{len(unique_relation_ids)}/{len(existed_relation_ids)}", verbose=self.config.verbose)
         self.log(f"all/unique/existed nodes - {len(triplets)*2}/{len(unique_node_ids)}/{len(existed_node_ids)}", verbose=self.config.verbose)
         self.log("Triples were successfully added to vector-model!", verbose=self.config.verbose)
+        return {'nodes': existed_node_ids, 'triplets': existed_relation_ids}
 
     def delete_triplets(self, triplets: List[Triplet], delete_nodes: bool = True) -> None:
         """Метод предназначен для удаления информации, представленной в виде списка триплетов, из векторной модели.
