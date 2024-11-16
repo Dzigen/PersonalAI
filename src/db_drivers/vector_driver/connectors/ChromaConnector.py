@@ -29,6 +29,14 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         del self.client
 
     def create(self, items: List[VectorDBInstance]) -> None:
+        # item-ids checking
+        for item in items:
+            if type(item.id) is not str:
+                raise ValueError
+        unique_ids = set(map(lambda item: item.id, items))
+        if len(items) != len(unique_ids):
+            raise ValueError
+
         insts_idxs = list(range(len(items)))
         insts_with_md = list(filter(lambda i: len(items[i].metadata), insts_idxs))
         insts_wo_md = set(insts_idxs).difference(set(insts_with_md))
