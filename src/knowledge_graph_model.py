@@ -95,6 +95,7 @@ class EmbeddingsModel:
                             unique_node_ids.add(node.id)
                             _, node_str = NodeCreator.stringify(node) if node.stringified is None else (None, node.stringified)
                             if ((node.id not in existed_node_ids) and (not self.vectordbs['nodes'].item_exist(node.id))):
+                                print(node.id)
                                 existed_node_ids.add(node.id)
                                 node_ids.append(node.id)
                                 node_strs.append(node_str)
@@ -234,6 +235,7 @@ class GraphModel:
         self.log("Adding triplets to graph-model...", verbose=self.config.verbose)
         unique_triplet_ids, unique_node_ids = set(), set()
         existed_triplet_ids, existed_node_ids = set(), set()
+        created_triplet_ids, created_node_ids = set(), set()
 
         batches = math.ceil(len(triplets) / batch_size)
         for batch_idx in tqdm(range(batches)):
@@ -252,36 +254,45 @@ class GraphModel:
                     break
 
                 cur_triplet = triplets[triplet_idx]
-                if ((cur_triplet.id not in unique_triplet_ids) and (not self.db_conn.item_exist(cur_triplet.id, id_type='triplet'))):
+                if cur_triplet.id in unique_triplet_ids:
+                    continue
+                else:
                     unique_triplet_ids.add(cur_triplet.id)
+
+                if self.db_conn.item_exist(cur_triplet.id, id_type='triplet'):
+                    existed_triplet_ids.add(cur_triplet.id)
+                    continue
+                else:
                     triplets_to_create.append(cur_triplet)
                     info_counter += 1
                     creation_info[info_counter] = {'s_node': False, 'e_node': False}
+                    created_triplet_ids.add(cur_triplet.id)
 
-                    s_node_id = cur_triplet.start_node.id
-                    if ((s_node_id not in unique_node_ids) and (not self.db_conn.item_exist(s_node_id, id_type='node'))):
-                        unique_node_ids.add(s_node_id)
+                s_node_id = cur_triplet.start_node.id
+                if (s_node_id not in unique_node_ids):
+                    unique_node_ids.add(s_node_id)
+                    if not self.db_conn.item_exist(s_node_id, id_type='node'):
                         creation_info[info_counter]['s_node'] = True
+                        created_node_ids.add(s_node_id)
                     else:
                         existed_node_ids.add(s_node_id)
 
-                    e_node_id = cur_triplet.end_node.id
-                    if ((e_node_id not in unique_node_ids) and (not self.db_conn.item_exist(e_node_id, id_type='node'))):
-                        unique_node_ids.add(e_node_id)
+                e_node_id = cur_triplet.end_node.id
+                if (e_node_id not in unique_node_ids):
+                    unique_node_ids.add(e_node_id)
+                    if not self.db_conn.item_exist(e_node_id, id_type='node'):
                         creation_info[info_counter]['e_node'] = True
+                        created_node_ids.add(e_node_id)
                     else:
                         existed_node_ids.add(e_node_id)
-
-                    unique_triplet_ids.add(cur_triplet.id)
-                else:
-                    existed_triplet_ids.add(cur_triplet.id)
 
             self.db_conn.create(triplets_to_create, creation_info)
 
         self.log(f"all/unique/existed triplets - {len(triplets)}/{len(unique_triplet_ids)}/{len(existed_triplet_ids)}", verbose=self.config.verbose)
-        self.log(f"all/unique/existed/ nodes - {len(triplets)*2}/{len(unique_node_ids)}/{len(existed_node_ids)}", verbose=self.config.verbose)
+        self.log(f"all/unique/existed nodes - {len(triplets)*2}/{len(unique_node_ids)}/{len(existed_node_ids)}", verbose=self.config.verbose)
         self.log("Triplets added successfully!", verbose=self.config.verbose)
 
+        return {'triplets': created_triplet_ids, 'nodes': created_node_ids}
 
     def delete_triplets(self, triplets: List[Triplet], batch_size: int = 64) -> None:
         """Метод предназначен для удаления информации, представленной в виде списка триплетов, из графовой модели.
