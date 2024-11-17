@@ -110,21 +110,26 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         return query
 
     def create(self, triplets: List[Triplet], creation_info: Dict = dict()) -> None:
+        # triplet-ids checking
+        for triplet in triplets:
+            if type(triplet.id) is not str:
+                raise ValueError
+        unique_ids = set(map(lambda triplet: triplet.id, triplets))
+        if len(triplets) != len(unique_ids):
+            raise ValueError
+
         for i, triplet in enumerate(triplets):
             cur_info = creation_info.get(i, None)
-            #
+
             if cur_info is None or cur_info['s_node']:
                 insert_subj_query = self.create_node_query(triplet.start_node)
                 self.execute_query(insert_subj_query)
-
-            #
             if cur_info is None or cur_info['e_node']:
                 insert_obj_query = self.create_node_query(triplet.end_node)
-                triplet.end_node.id = self.execute_query(insert_obj_query)
+                self.execute_query(insert_obj_query)
 
-            #
             rel_query = self.create_rel_query(triplet)
-            triplet.relation.id = self.execute_query(rel_query)
+            self.execute_query(rel_query)
 
 
     def read(self, ids: List[str]) -> List[Triplet]:
@@ -140,15 +145,6 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         pass
 
     def execute_query(self, query: str, db_flag: bool = True):
-        """_summary_
-
-        :param query: _description_
-        :type query: str
-        :param db_flag: _description_, defaults to True
-        :type db_flag: bool, optional
-        :return: _description_
-        :rtype: _type_
-        """
         assert self.driver is not None, "Driver not initialized!"
         session = None
         response = None
@@ -164,43 +160,44 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         return response
 
     def get_adjecent_nodes(self, base_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
+        if type(base_node_id) is not str:
+            raise ValueError
+
         str_accepted_nodes = ', '.join(list(map(lambda tpe: f'"{tpe.value}"', accepted_n_types)))
 
         raw_nodes = self.execute_query(
-            f'MATCH (a)-[r]-(b) WHERE elementId(a) = "{base_node_id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(b)) RETURN b')
+            f'MATCH (a)-[r]-(b) WHERE a.str_id = "{base_node_id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(b)) RETURN b')
         formated_nodes = [node['b']['str_id'] for node in raw_nodes]
         return formated_nodes
 
     def parse_query_output(self, output):
-        """_summary_
-
-        :param output: _description_
-        :type output: _type_
-        :return: _description_
-        :rtype: _type_
-        """
         formated_triplets = []
         for raw_triplet in output:
-            node1 = NodeCreator.create(id=raw_triplet['n1']['str_id'], name=str(raw_triplet['n1']['name']),
-                                            type=NODES_TYPES_MAP[list(raw_triplet['n1'].labels)[0]],
-                                            prop=dict(raw_triplet['n1']))
-            node2 = NodeCreator.create(id=raw_triplet['n2']['str_id'], name=str(raw_triplet['n2']['name']),
-                                            type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]],
-                                            prop=dict(raw_triplet['n2']))
-            relation = Relation(id=raw_triplet['rel']['str_id'], name=str(raw_triplet['rel']['name']),
-                                type=RELATIONS_TYPES_MAP[raw_triplet['rel'].type],
-                                prop=dict(raw_triplet['rel']))
+            node1 = NodeCreator.create(
+                id=raw_triplet['n1']['str_id'], name=str(raw_triplet['n1']['name']),
+                type=NODES_TYPES_MAP[list(raw_triplet['n1'].labels)[0]], prop=dict(raw_triplet['n1']))
+            node2 = NodeCreator.create(
+                id=raw_triplet['n2']['str_id'], name=str(raw_triplet['n2']['name']),
+                type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]], prop=dict(raw_triplet['n2']))
+            relation = Relation(
+                id=raw_triplet['rel']['str_id'], name=str(raw_triplet['rel']['name']),
+                type=RELATIONS_TYPES_MAP[raw_triplet['rel'].type], prop=dict(raw_triplet['rel']))
 
             start_node_id = raw_triplet['rel'].nodes[0].element_id
             start_node, end_node = (node1, node2) if start_node_id == node1.id else (node2, node1)
-            triplet = TripletCreator.create(start_node, relation, end_node,
-                                            add_stringified_triplet=False, t_id=raw_triplet['rel']['t_id'])
+            triplet = TripletCreator.create(
+                start_node, relation, end_node, add_stringified_triplet=False, t_id=raw_triplet['rel']['t_id'])
             formated_triplets.append(triplet)
         return formated_triplets
 
     def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
+        if (type(node1_id) is not str) or (type(node2_id) is not str):
+            raise ValueError
+        if (not self.item_exist(node1_id)) or (not self.item_exist(node2_id)):
+            raise ValueError
+
         output = self.execute_query(
-            f'MATCH (n1)-[rel]-(n2) WHERE elementId(n1) = "{node1_id}" AND elementId(n2) = "{node2_id}" RETURN n1, rel, n2')
+            f'MATCH (n1)-[rel]-(n2) WHERE n1.str_id = "{node1_id}" AND n2.str_id = "{node2_id}" RETURN n1, rel, n2')
 
         formatted_triplets = self.parse_query_output(output)
         return formatted_triplets
@@ -229,6 +226,9 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         return {'triplets': r_output['r_count'], 'nodes': n_output['n_count']}
 
     def item_exist(self, id: str, id_type='triplet') -> bool:
+        if type(id) is not str:
+            raise ValueError
+
         if id_type == 'node':
             query = f'MATCH (n) WHERE n.str_id = "{id}" RETURN n'
         if id_type == 'relation':
