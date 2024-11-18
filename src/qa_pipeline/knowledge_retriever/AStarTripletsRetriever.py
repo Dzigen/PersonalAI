@@ -66,7 +66,7 @@ class AStarMetrics:
         }
 
         self.metrics_map = {
-            'ip': self.precomputed_dist,
+            'ip': self.embeddings_dist,
             'weight_with_short_path': self.weighted_short_path,
             'avg_weighted_with_short_path': self.avg_weighted_short_path,
         }
@@ -86,15 +86,15 @@ class AStarMetrics:
                 cur_n = next_n
         return path
 
-    def precomputed_dist(self, node1_id: str, node2_id: str, *args, **kwargs) -> float:
-        def _calculate_node_distance(id1: str, id2: str) -> float:
-            dist = 0
-            if node1_id != node2_id:
-                instances = self.kg_model.embeddings_struct.vectordbs['nodes'].read([node1_id, node2_id], includes=['embeddings'])
-                # calculation ip distance
-                dist = 1 - np.dot(instances[0].embedding, instances[1].embedding)
-            return dist
+    def calculate_ip_distance(self, node1_id: str, node2_id: str) -> float:
+        dist = 0
+        if node1_id != node2_id:
+            instances = self.kg_model.embeddings_struct.vectordbs['nodes'].read([node1_id, node2_id], includes=['embeddings'])
+            # calculation ip distance
+            dist = 1 - np.dot(instances[0].embedding, instances[1].embedding)
+        return dist
 
+    def embeddings_dist(self, node1_id: str, node2_id: str, *args, **kwargs) -> float:
         if self.config.kvdriver_config is not None:
             pair_id = create_id_for_node_pair(node1_id, node2_id)
             if self.cache['ip'].item_exist(pair_id):
@@ -103,13 +103,47 @@ class AStarMetrics:
                 self.cache_info['dist']['exist'] += 1
             else:
                 #print("calculating")
-                dist = _calculate_node_distance(node1_id, node2_id)
+                dist = self.calculate_ip_distance(node1_id, node2_id)
                 self.cache['ip'].create([KeyValueDBInstance(id=pair_id, metadata={'v': dist})])
                 self.cache_info['dist']['calc'] += 1
         else:
-            dist = _calculate_node_distance(node1_id, node2_id)
+            self.cache_info['dist']['calc'] += 1
+            dist = self.calculate_ip_distance(node1_id, node2_id)
 
         return dist
+
+    def compute_short_path(self, node1_id: str, node2_id: str) -> float:
+        if self.config.kvdriver_config is not None:
+            pair_id = create_id_for_node_pair(node1_id, node2_id)
+            if self.cache['bfs_short_path'].item_exist(pair_id):
+                #print("exists")
+                short_path = self.cache['bfs_short_path'].read([pair_id])[0].metadata['v']
+                self.cache_info['bfs_short_path']['exist'] += 1
+            else:
+                #print("calculating")
+                short_path = self.bfs(node1_id, node2_id)
+                self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, metadata={'v': short_path})])
+                self.cache_info['bfs_short_path']['calc'] += 1
+        else:
+            self.cache_info['bfs_short_path']['calc'] += 1
+            short_path = self.bfs(node1_id, node2_id)
+
+        return short_path
+
+    def weighted_short_path(self, node1_id: str, node2_id: str, *args, **kwargs) -> float:
+        short_path_len = self.compute_short_path(node1_id, node2_id)
+        w = self.embeddings_dist(node1_id, node2_id)
+        return short_path_len * w
+
+    def avg_weighted_short_path(self, node1_id: str, node2_id: str, parent: Dict[str, str]) -> float:
+        nodes_path = self.get_nodes_path(parent, node1_id)
+        acc_dist = 0
+        for i in range(len(nodes_path)-1):
+            acc_dist += self.embeddings_dist(nodes_path[i], nodes_path[i+1])
+        acc_dist += self.embeddings_dist(node1_id, node2_id)
+
+        short_path_len = self.compute_short_path(node1_id, node2_id)
+        return np.mean(acc_dist) * short_path_len
 
     def bfs(self, s_node_id, e_node_id):
         visited, queue = set(), collections.deque([s_node_id])
@@ -159,35 +193,6 @@ class AStarMetrics:
                 self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, metadata={'v': INF_VALUE})])
 
         return INF_VALUE
-
-    def precomputed_short_path(self, node1_id: str, node2_id: str) -> float:
-        pair_id = create_id_for_node_pair(node1_id, node2_id)
-        if self.cache['bfs_short_path'].item_exist(pair_id):
-            #print("exists")
-            short_path = self.cache['bfs_short_path'].read([pair_id])[0].metadata['v']
-            self.cache_info['bfs_short_path']['exist'] += 1
-        else:
-            #print("calculating")
-            short_path = self.bfs(node1_id, node2_id)
-            self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, metadata={'v': short_path})])
-            self.cache_info['bfs_short_path']['calc'] += 1
-
-        return short_path
-
-    def weighted_short_path(self, node1_id: str, node2_id: str, *args, **kwargs) -> float:
-        short_path_len = self.precomputed_short_path(node1_id, node2_id)
-        w = self.precomputed_dist(node1_id, node2_id)
-        return short_path_len * w
-
-    def avg_weighted_short_path(self, node1_id: str, node2_id: str, parent: Dict[str, str]) -> float:
-        nodes_path = self.get_nodes_path(parent, node1_id)
-        acc_dist = 0
-        for i in range(len(nodes_path)-1):
-            acc_dist += self.precomputed_dist(nodes_path[i], nodes_path[i+1])
-        acc_dist += self.precomputed_dist(node1_id, node2_id)
-
-        short_path_len = self.precomputed_short_path(node1_id, node2_id)
-        return np.mean(acc_dist) * short_path_len
 
 @dataclass
 class AStarGraphSearchConfig(BaseGraphSearchConfig):
