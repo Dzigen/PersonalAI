@@ -6,7 +6,7 @@ from tqdm import tqdm
 from .db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriver, VectorDriverConfig, VectorDBInstance
 from .db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
 from .db_drivers.graph_driver import GraphDriver, GraphDriverConfig, DEFAULT_NEO4J_CONFIG
-from .utils.data_structs import Triplet, TripletCreator, NodeCreator
+from .utils.data_structs import Triplet, TripletCreator, NodeCreator, RelationCreator
 from .utils import Logger
 
 NODES_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
@@ -306,7 +306,6 @@ class GraphModel:
         for step in tqdm(range(steps)):
             self.db_conn.delete(triplets[step*batch_size: (step+1)*batch_size])
 
-@dataclass
 class KnowledgeGraphModel:
     """Модель памяти (графа знаний) ассистента.
 
@@ -315,5 +314,39 @@ class KnowledgeGraphModel:
     :param graph_struct: Знания, хранящиеся в векторной структуре данных.
     :type graph_struct: EmbeddingsModel
     """
-    graph_struct: GraphModel
-    embeddings_struct: EmbeddingsModel
+
+    def __init__(self, graph_struct: GraphModel, embeddings_struct: EmbeddingsModel) -> None:
+        self.graph_struct = graph_struct
+        self.embeddings_struct = embeddings_struct
+
+    def create_triplets_from_json(json_triplets: List[Dict]) -> List[Triplet]:
+        """_summary_
+
+        Триплет в json-формате должен иметь следующую структуру:
+        - subject (Dict)
+            - name (str)
+            - type (str)
+            - prop (Dict)
+        - relation (Dict)
+            - name (str)
+            - type (str)
+            - prop (Dict)
+        - object (Dict)
+            - name (str)
+            - type (str)
+            - prop (Dict)
+
+        :param raw_json_triplets: _description_
+        :type raw_json_triplets: List[Dict]
+        :return: _description_
+        :rtype: List[Triplet]
+        """
+        formated_triplets = []
+        for raw_triplet in tqdm(json_triplets):
+            subject = NodeCreator.create(raw_triplet['subject'])
+            relation = RelationCreator.create(raw_triplet['relation'])
+            object = NodeCreator.create(raw_triplet['object'])
+
+            triplet = TripletCreator.create(start_node=subject, relation=relation, end_node=object)
+            formated_triplets.append(triplet)
+        return formated_triplets

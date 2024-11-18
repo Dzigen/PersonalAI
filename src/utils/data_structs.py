@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Union, Tuple
+from typing import List, Union, Tuple, Dict
 from enum import Enum
 import hashlib
 
@@ -89,9 +89,22 @@ class BaseCreator:
             obj_str += f" ({str_prop})"
         return obj_str
 
+class RelationCreator(BaseCreator):
+    @staticmethod
+    def create(name: str, r_type: Union[str, RelationType], prop: Dict):
+        if type(r_type) is not RelationType:
+            formated_r_type = RELATIONS_TYPES_MAP.get(r_type, None)
+            if formated_r_type is None:
+                raise ValueError
+            else:
+                r_type = formated_r_type
+
+        rel = Relation(name=name, type=r_type, prop=prop)
+        return rel
+
 class NodeCreator(BaseCreator):
     @staticmethod
-    def create(add_stringified_node: bool = True, **kwargs) -> Node:
+    def create(name: str, n_type: Union[str, NodeType], prop: Dict, add_stringified_node: bool = True) -> Node:
         """Метод предназначен для создания структуры данных вершины с указанным содержанием.
 
         :param add_stringified_node: Если True, то в структуру данных вершины будет сохранено её строковое представление, иначе False, Значение по усолчанию True.
@@ -100,7 +113,14 @@ class NodeCreator(BaseCreator):
         :return: Созданная структура данных вершины.
         :rtype: Node
         """
-        node = Node(**kwargs)
+        if type(n_type) is not NodeType:
+            formated_n_type = NODES_TYPES_MAP.get(n_type, None)
+            if formated_n_type is None:
+                raise ValueError
+            else:
+                n_type = formated_n_type
+
+        node = Node(name=name, type=formated_n_type, prop=prop)
         _, str_node = NodeCreator.stringify(node)
         node.id = create_id(str_node)
         if add_stringified_node:
