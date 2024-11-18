@@ -28,10 +28,18 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
 
     def create(self, items: List[KeyValueDBInstance]) -> None:
         for item in items:
+            if not len(item.metadata) or type(item.id) is not str:
+                raise ValueError
+
+        for item in items:
             key = (self.config.db_info['db'], self.config.db_info['table'], item.id)
             self.client.put(key, item.metadata)
 
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
+        for id in ids:
+            if type(id) is not str:
+                raise ValueError
+
         keys = list(map(lambda id: (self.config.db_info['db'], self.config.db_info['table'], id), ids))
         mixed_records = self.client.get_many(keys, policy={'total_timeout': 10000})
         records = [KeyValueDBInstance(id=record[0][2], metadata=record[2]) for record in mixed_records]
@@ -42,6 +50,10 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
         pass
 
     def delete(self, ids: List[str], durable_delete: bool = False) -> None:
+        for id in ids:
+            if type(id) is not str:
+                raise ValueError
+
         keys = list(map(lambda id: (self.config.db_info['db'], self.config.db_info['table'], id), ids))
         self.client.batch_remove(keys, policy_batch_remove= {'durable_delete': durable_delete})
 
@@ -50,6 +62,9 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
         pass
 
     def item_exist(self, id: str) -> bool:
+        if type(id) is not str:
+            raise ValueError
+
         key = (self.config.db_info['db'], self.config.db_info['table'], id)
         _, meta = self.client.exists(key)
         return False if meta is None else True
