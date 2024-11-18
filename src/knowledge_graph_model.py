@@ -70,7 +70,8 @@ class EmbeddingsModel:
         existed_relation_ids, existed_node_ids = set(), set()
 
         batch_count = math.ceil(len(triplets) / batch_size)
-        for batch_idx in tqdm(range(batch_count)):
+        process = range(batch_count) if len(triplets) == 1 else tqdm(range(batch_count))
+        for batch_idx in process:
             relation_ids, relation_strs = list(), list()
             node_ids, node_strs = list(), list()
 
@@ -238,7 +239,8 @@ class GraphModel:
         created_triplet_ids, created_node_ids = set(), set()
 
         batches = math.ceil(len(triplets) / batch_size)
-        for batch_idx in tqdm(range(batches)):
+        process = range(batches) if len(triplets) == 1 else tqdm(range(batches))
+        for batch_idx in process:
             # if n1 rel n2
             # else empty
                 # n1 _ _
