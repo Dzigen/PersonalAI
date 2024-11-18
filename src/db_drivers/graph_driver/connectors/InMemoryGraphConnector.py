@@ -157,7 +157,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
     def get_triplets_by_name(self, subj_names: List[str], obj_names: List[str], obj_type: str) -> List[Triplet]:
         triplets = []
-        for triplet in self.triplets_ids.values():
+        for triplet in self.triplets.values():
             if obj_type in str(triplet.end_node.type):
                 if subj_names and triplet.start_node.name in subj_names:
                     triplets.append(triplet)

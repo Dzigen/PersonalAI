@@ -99,7 +99,7 @@ class AStarMetrics:
             pair_id = create_id_for_node_pair(node1_id, node2_id)
             if self.cache['ip'].item_exist(pair_id):
                 #print("exists")
-                dist = self.cache['ip'].read([pair_id])[0]['v']
+                dist = self.cache['ip'].read([pair_id])[0].metadata['v']
                 self.cache_info['dist']['exist'] += 1
             else:
                 #print("calculating")
@@ -164,7 +164,7 @@ class AStarMetrics:
         pair_id = create_id_for_node_pair(node1_id, node2_id)
         if self.cache['bfs_short_path'].item_exist(pair_id):
             #print("exists")
-            short_path = self.cache['bfs_short_path'].read([pair_id])[0]['v']
+            short_path = self.cache['bfs_short_path'].read([pair_id])[0].metadata['v']
             self.cache_info['bfs_short_path']['exist'] += 1
         else:
             #print("calculating")
@@ -357,7 +357,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
         for nodes_pair in unique_nodes_pairs:
             triplets = self.kg_model.graph_struct.db_conn.get_triplets(*nodes_pair)
             for triplet in triplets:
-                unique_triplets[triplet.id] = triplet
+                unique_triplets[triplet.relation.id] = triplet
 
         self.log(f"foramting neo4j queries: {len(unique_nodes_pairs)}", verbose=self.verbose)
         self.log(f"= formating elapsed_time: {time() - s_time}", verbose=self.verbose)

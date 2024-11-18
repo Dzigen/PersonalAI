@@ -28,9 +28,9 @@ class TripletsFilter(AbstractTriplesFilter):
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, config: TripletsFilterConfig = TripletsFilterConfig(), log_verbose: bool = False) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, config: TripletsFilterConfig = TripletsFilterConfig(), verbose: bool = False) -> None:
         self.log = log
-        self.log_verbose = log_verbose
+        self.log_verbose = verbose
         self.kg_model = kg_model
         self.config = config
 
@@ -41,12 +41,13 @@ class TripletsFilter(AbstractTriplesFilter):
         base_relation_ids = list(map(lambda triplet: triplet.relation.id, triplets))
 
         self.log(f"Количество уникальных триплетов: {len(set(base_relation_ids))}", verbose=self.log_verbose)
+        self.log(f"base ids: {base_relation_ids}", verbose=self.log_verbose)
 
         if len(base_relation_ids) > 0:
             raw_relevant_triplets = self.kg_model.embeddings_struct.vectordbs['triplets'].retrieve(
                 [query_instance], self.config.max_k, includes=['embeddings', 'documents', 'metadatas'], where={"id": {"$in": base_relation_ids}})[0]
             accepted_tripletes_ids = list(map(lambda item: item[1].id, raw_relevant_triplets))
-            filtered_triplets = list(filter(lambda triplet: triplet.id in accepted_tripletes_ids, triplets))
+            filtered_triplets = list(filter(lambda triplet: triplet.relation.id in accepted_tripletes_ids, triplets))
             self.log(f"accepted ids: {accepted_tripletes_ids}", verbose=self.log_verbose)
 
         return filtered_triplets

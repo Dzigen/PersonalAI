@@ -54,7 +54,7 @@ class EmbeddingsModel:
             'triplets': VectorDriver.connect(config.tripletsdb_driver_config)}
         self.embedder = EmbedderModel(config.embedder_config)
 
-    def create_triplets(self, triplets:List[Triplet], create_nodes:bool=True, batch_size:int=128)-> None:
+    def create_triplets(self, triplets:List[Triplet], create_nodes:bool=True, batch_size:int=128, status_bar: bool = True)-> Dict[str, List[str]]:
         """Метод предназначен для добавления информации, представленной в виде списка триплетов, в векторную модель.
         Триплеты-дубликаты (по строковому представлению) в модель не добавляются.
 
@@ -70,7 +70,7 @@ class EmbeddingsModel:
         existed_relation_ids, existed_node_ids = set(), set()
 
         batch_count = math.ceil(len(triplets) / batch_size)
-        process = range(batch_count) if len(triplets) == 1 else tqdm(range(batch_count))
+        process = tqdm(range(batch_count)) if status_bar else range(batch_count)
         for batch_idx in process:
             relation_ids, relation_strs = list(), list()
             node_ids, node_strs = list(), list()
@@ -96,7 +96,6 @@ class EmbeddingsModel:
                             unique_node_ids.add(node.id)
                             _, node_str = NodeCreator.stringify(node) if node.stringified is None else (None, node.stringified)
                             if ((node.id not in existed_node_ids) and (not self.vectordbs['nodes'].item_exist(node.id))):
-                                print(node.id)
                                 existed_node_ids.add(node.id)
                                 node_ids.append(node.id)
                                 node_strs.append(node_str)
@@ -225,7 +224,7 @@ class GraphModel:
         self.log = config.log
         self.db_conn = GraphDriver.connect(self.config.driver_config)
 
-    def create_triplets(self, triplets: List[Triplet], batch_size: int = 64) -> None:
+    def create_triplets(self, triplets: List[Triplet], batch_size: int = 64, status_bar: bool = True) -> Dict[str, List[str]]:
         """Метод предназначен для сохранения информации, представленной в виде списка триплетов, в графовую модель.
 
         :param triplets: Набора триплетов для добавления в графовую модель.
@@ -239,7 +238,7 @@ class GraphModel:
         created_triplet_ids, created_node_ids = set(), set()
 
         batches = math.ceil(len(triplets) / batch_size)
-        process = range(batches) if len(triplets) == 1 else tqdm(range(batches))
+        process = tqdm(range(batches)) if status_bar else range(batches)
         for batch_idx in process:
             # if n1 rel n2
             # else empty
