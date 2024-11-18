@@ -68,13 +68,11 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
             #
             if cur_info is None or cur_info['s_node']:
                 new_node_id = self.generate_id()
-                print("n1: ", triplet.start_node.id)
                 self.strid_nodes_index[triplet.start_node.id].append(new_node_id)
                 self.nodes[new_node_id] = triplet.start_node
 
             if cur_info is None or cur_info['e_node']:
                 new_node_id = self.generate_id()
-                print("n2: ", triplet.end_node.id)
                 self.strid_nodes_index[triplet.end_node.id].append(new_node_id)
                 self.nodes[new_node_id] = triplet.end_node
 
