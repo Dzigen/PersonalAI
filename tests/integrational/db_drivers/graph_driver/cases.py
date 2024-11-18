@@ -8,7 +8,7 @@ from src.utils.data_structs import Triplet, NodeCreator, Relation, RelationType,
 from src.utils.errors import ReturnInfo
 
 # TO CHANGE
-AVAILABLE_GRAPH_DBS = ['neo4j'] # 'inmemory_graph',
+AVAILABLE_GRAPH_DBS = ['neo4j', 'inmemory_graph']
 
 ###############################################################################################
 

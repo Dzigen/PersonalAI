@@ -17,20 +17,22 @@ def inmemory_kv_conn():
         'load_dump_dir': TEST_VOLUME_DIR, 'save_on_disk': True, 'save_dump_dir': TEST_VOLUME_DIR}, need_to_clear=True))
     return KeyValueDriver.connect(config)
 
-#@pytest.fixture(scope='package')
-#def aerospike_conn():
-#    config = KeyValueDriverConfig(db_vendor='aerospike', db_config=KVDBConnectionConfig(
-#        host='aerospikelservice', port=3000, db_info={'dbname': 'testing', 'table': 'testing'},
-#        need_to_clear=True))
-#    return KeyValueDriver.connect(config)
+@pytest.fixture(scope='package')
+def aerospike_conn():
+    config = KeyValueDriverConfig(db_vendor='aerospike', db_config=KVDBConnectionConfig(
+        host='localhost', port=3000, db_info={'db': 'test', 'table': 'testing'},
+        need_to_clear=True))
+    return KeyValueDriver.connect(config)
 
 #------------------------------#
 
 @pytest.fixture(scope='package')
 def available_keyvalue_connections(
+    aerospike_conn,
     inmemory_kv_conn
 ):
     return {
+        'aerospike': aerospike_conn,
         'inmemory_kv': inmemory_kv_conn
     }
 
