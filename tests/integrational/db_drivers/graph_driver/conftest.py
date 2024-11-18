@@ -16,20 +16,22 @@ def inmemory_graph_conn():
         db_info={'db': 'testing', 'table': 'testing'}, need_to_clear=True))
     return GraphDriver.connect(config)
 
-#@pytest.fixture(scope='package')
-#def neo4j_conn():
-#    config = GraphDriverConfig(db_vendor='neo4j', db_config=GraphDBConnectionConfig(
-#        uri="bolt://localhost:7687", db_info={'db': 'testing', 'table': 'testing'},
-#        params={'user': "neo4j", 'pwd': 'password'}, need_to_clear=True))
-#    return GraphDriver.connect(config)
+@pytest.fixture(scope='package')
+def neo4j_conn():
+    config = GraphDriverConfig(db_vendor='neo4j', db_config=GraphDBConnectionConfig(
+        uri="bolt://localhost:7687", db_info={'db': 'testing', 'table': 'testing'},
+        params={'user': "neo4j", 'pwd': 'password'}, need_to_clear=True))
+    return GraphDriver.connect(config)
 
 #------------------------------#
 
 @pytest.fixture(scope='package')
 def available_graph_connections(
-    inmemory_graph_conn
+    inmemory_graph_conn,
+    neo4j_conn
 ):
     return {
+        'neo4j': neo4j_conn,
         'inmemory_graph': inmemory_graph_conn
     }
 

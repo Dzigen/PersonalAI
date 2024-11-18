@@ -100,7 +100,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         obj_t, obj_id = triplet.end_node.type.value, triplet.end_node.id
         rel_t = triplet.relation.type.value
         query = ""
-        query += f'MATCH (subj:{subj_t}), (obj:{obj_t}) WHERE elementId(subj) = "{subj_id}" AND elementId(obj) = "{obj_id}" '
+        query += f'MATCH (subj:{subj_t}), (obj:{obj_t}) WHERE subj.str_id = "{subj_id}" AND obj.str_id = "{obj_id}" '
         query += f'CREATE (subj)-[rel:{rel_t}' + '{' + str_props + '}' + ']->(obj) '
         query += 'RETURN elementId(rel) as rel_id'
         return query
@@ -116,16 +116,19 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
         for i, triplet in enumerate(triplets):
             cur_info = creation_info.get(i, None)
-
+            print("===triplet===")
             if cur_info is None or cur_info['s_node']:
                 insert_subj_query = self.create_node_query(triplet.start_node)
-                self.execute_query(insert_subj_query)
+                print(insert_subj_query)
+                print(self.execute_query(insert_subj_query))
             if cur_info is None or cur_info['e_node']:
                 insert_obj_query = self.create_node_query(triplet.end_node)
-                self.execute_query(insert_obj_query)
+                print(insert_obj_query)
+                print(self.execute_query(insert_obj_query))
 
-            rel_query = self.create_rel_query(triplet)
-            self.execute_query(rel_query)
+            insert_rel_query = self.create_rel_query(triplet)
+            print(insert_rel_query)
+            print(self.execute_query(insert_rel_query))
 
 
     def read(self, ids: List[str]) -> List[Triplet]:
@@ -189,7 +192,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
     def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
         if (type(node1_id) is not str) or (type(node2_id) is not str):
             raise ValueError
-        if (not self.item_exist(node1_id)) or (not self.item_exist(node2_id)):
+        if (not self.item_exist(node1_id, id_type='node')) or (not self.item_exist(node2_id, id_type='node')):
             raise ValueError
 
         output = self.execute_query(
@@ -217,8 +220,8 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         return formatted_triplets
 
     def count_items(self) -> int:
-        n_output = self.execute_query("MATCH (a) RETURN count(a) as n_count")
-        r_output = self.execute_query("MATCH (a)-[rel]->(b) RETURN count(rel) as r_count")
+        n_output = self.execute_query("MATCH (a) RETURN count(a) as n_count")[0]
+        r_output = self.execute_query("MATCH (a)-[rel]->(b) RETURN count(rel) as r_count")[0]
         return {'triplets': r_output['r_count'], 'nodes': n_output['n_count']}
 
     def item_exist(self, id: str, id_type='triplet') -> bool:
@@ -227,7 +230,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
         if id_type == 'node':
             query = f'MATCH (n) WHERE n.str_id = "{id}" RETURN n'
-        if id_type == 'relation':
+        elif id_type == 'relation':
             query = f'MATCH (n1)-[rel]-(n2) WHERE rel.str_id = "{id}" RETURN rel'
         elif id_type == 'triplet':
             query = f'MATCH (n1)-[rel]-(n2) WHERE rel.t_id = "{id}" RETURN rel'

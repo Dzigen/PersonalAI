@@ -137,4 +137,10 @@ def test_get_triplets(instances, create_info, nodes, expected, graphdb_conn):
         assert expected['exception']
     else:
         assert not expected['exception']
+
+        items_info = graphdb_conn.count_items()
+        assert items_info['triplets'] == expected['triplets']
+        assert items_info['nodes'] == expected['nodes']
+
         assert expected['output_ids'] == set(list(map(lambda triplet: triplet.id, output)))
+        assert expected['count'] == len(output)
