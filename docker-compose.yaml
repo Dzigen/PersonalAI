@@ -88,10 +88,11 @@ services:
               capabilities: [gpu]
 
   isolated_environment:
-    image: python:3.10-alpine
+    image: m.menschikov/empty_workspace:v1
     container_name: personalai_mmenschikov_isolated_env
     hostname: isolated_env
     volumes:
-      - ./src:/workspace/src
-      - ./data:/workspace/data
-      - ./models:/workspace/models
+      - ./src:/home/workspace/src
+      - ./data:/home/workspace/data
+      - ./models:/home/workspace/models
+      - ./notebooks:/home/worksapce/notebooks

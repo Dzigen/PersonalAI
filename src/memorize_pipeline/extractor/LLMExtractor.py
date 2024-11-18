@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from typing import List, Dict, Tuple
-import ast
 
 from .utils import MEM_EXTRACT_LOG_PATH, MEM_EXTRACT_TRIPLET_SYSTEM_PROMPT, MEM_EXTRACT_TRIPLET_USER_PROMPT, \
     MEM_EXTRACT_THESIS_SYSTEM_PROMPT, MEM_EXTRACT_THESIS_USER_PROMPT, \

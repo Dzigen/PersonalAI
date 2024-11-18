@@ -1,7 +1,6 @@
 from dataclasses import dataclass, field
 from typing import List, Dict
 import math
-import json
 from tqdm import tqdm
 
 from .db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriver, VectorDriverConfig, VectorDBInstance
