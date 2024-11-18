@@ -65,39 +65,47 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         for i, triplet in enumerate(triplets):
             cur_info = creation_info.get(i, None)
 
-            t_id = self.generate_id()
-            self.tid_triplets_index[triplet.id].append(t_id)
-            self.triplets[t_id] = triplet
-
-            r_id = self.generate_id()
-            self.strid_relation_index[triplet.relation.id].append(r_id)
-            self.relations[r_id] = triplet.relation
-
             #
             if cur_info is None or cur_info['s_node']:
-                sn_ids = [self.generate_id()]
-                self.strid_nodes_index[triplet.start_node.id].append(sn_ids[0])
-                self.nodes[sn_ids[0]] = triplet.start_node
-            else:
-                sn_ids = self.strid_nodes_index[triplet.start_node.id]
+                new_node_id = self.generate_id()
+                print("n1: ", triplet.start_node.id)
+                self.strid_nodes_index[triplet.start_node.id].append(new_node_id)
+                self.nodes[new_node_id] = triplet.start_node
 
             if cur_info is None or cur_info['e_node']:
-                en_ids = [self.generate_id()]
-                self.strid_nodes_index[triplet.end_node.id].append(en_ids[0])
-                self.nodes[en_ids[0]] = triplet.end_node
-            else:
-                en_ids = self.strid_nodes_index[triplet.end_node.id]
+                new_node_id = self.generate_id()
+                print("n2: ", triplet.end_node.id)
+                self.strid_nodes_index[triplet.end_node.id].append(new_node_id)
+                self.nodes[new_node_id] = triplet.end_node
 
-            #
+            sn_ids = self.strid_nodes_index[triplet.start_node.id]
+            en_ids = self.strid_nodes_index[triplet.end_node.id]
+
+            # NOTE: если в графе будет несколько вершин с одинаковым str_id,
+            # то нам необходимо их все соединить ребром с новой вершиной
+            # например:
+            # - есть два триплета (n1, rel1, n2) и (n2, rel2, n3) c пустой creation_info (пусть номера это str_id)
+            # - сначала стандартно полностью добавляем первый трипет
+            # - при добавлении второго триплета у нас вершина n2 в граф добавляется повторно с другим внутренним id (из-за пустого creation_info)
+            # - таким образом добавленную в граф вершину n3 нужно связать с вершиной n2 как из второго так и их первого триплетов
             for sn_id in sn_ids:
-                self.edges[sn_id].append(t_id)
                 for en_id in en_ids:
-                    self.adjacent_nodes[sn_id].append(en_id)
+                    t_id = self.generate_id()
+                    self.tid_triplets_index[triplet.id].append(t_id)
+                    self.triplets[t_id] = triplet
 
-            for en_id in en_ids:
-                self.edges[en_id].append(t_id)
-                for sn_id in sn_ids:
-                    self.adjacent_nodes[en_id].append(sn_id)
+                    r_id = self.generate_id()
+                    self.strid_relation_index[triplet.relation.id].append(r_id)
+                    self.relations[r_id] = triplet.relation
+
+                    self.edges[sn_id].append(t_id)
+                    if en_id not in self.adjacent_nodes[sn_id]:
+                        self.adjacent_nodes[sn_id].append(en_id)
+
+                    self.edges[en_id].append(t_id)
+                    if sn_id not in self.adjacent_nodes[en_id]:
+                        self.adjacent_nodes[en_id].append(sn_id)
+
 
     def read(self, ids: List[str]) -> List[Triplet]:
         triplets = []
