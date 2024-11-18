@@ -84,8 +84,8 @@ class MemPipeline:
             #    self.log("PROCESSED OUTDATED TRIPLETS: " + str(triplets_to_remove))
 
             # В объекты триплетов добавлются идентикаторы, присвоенные им в рамках графовой бд
-            self.kg_model.graph_struct.create_triplets(new_triplets)
-            self.kg_model.embeddings_struct.create_triplets(new_triplets)
+            self.kg_model.graph_struct.create_triplets(new_triplets, status_bar=False)
+            self.kg_model.embeddings_struct.create_triplets(new_triplets, status_bar=False)
 
             # TODO
             #if need_update:

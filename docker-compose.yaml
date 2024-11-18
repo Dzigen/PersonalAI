@@ -86,3 +86,13 @@ services:
             - driver: nvidia
               device_ids: ['3']
               capabilities: [gpu]
+
+  isolated_environment:
+    image: m.menschikov/empty_workspace:v1
+    container_name: personalai_mmenschikov_isolated_env
+    hostname: isolated_env
+    volumes:
+      - ./src:/home/workspace/src
+      - ./data:/home/workspace/data
+      - ./models:/home/workspace/models
+      - ./notebooks:/home/worksapce/notebooks

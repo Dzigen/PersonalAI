@@ -2,10 +2,9 @@ import copy
 from dataclasses import dataclass
 from typing import Dict, List, Set, Tuple, Union
 
-import torch
-
 from ...knowledge_graph_model import KnowledgeGraphModel
-from ...utils.data_structs import QueryInfo, NodeCreator, Relation, TripletCreator, Triplet, Node, RELATIONS_TYPES_MAP
+from ...utils.data_structs import QueryInfo, NodeCreator, Relation, TripletCreator, Triplet, RELATIONS_TYPES_MAP
+from ...utils import Logger
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 
 
@@ -105,8 +104,9 @@ class BFSRetriever(AbstractTripletsRetriever):
 
     def __init__(self,
                  kg_model: KnowledgeGraphModel,
-                 log=None,
-                 search_config: BFSSearchConfig = None
+                 log: Logger,
+                 search_config: BFSSearchConfig = BFSSearchConfig(),
+                 verbose: bool = False
                 ) -> None:
         super().__init__()
         self.kg_model = kg_model

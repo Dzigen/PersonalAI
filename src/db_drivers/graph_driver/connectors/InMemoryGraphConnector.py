@@ -1,9 +1,6 @@
-from typing import List, Tuple, Dict
+from typing import List, Dict
 from collections import defaultdict
 import gc
-from copy import deepcopy
-import joblib
-import os
 from time import time
 import hashlib
 
@@ -157,7 +154,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
     def get_triplets_by_name(self, subj_names: List[str], obj_names: List[str], obj_type: str) -> List[Triplet]:
         triplets = []
-        for triplet in self.triplets_ids.values():
+        for triplet in self.triplets.values():
             if obj_type in str(triplet.end_node.type):
                 if subj_names and triplet.start_node.name in subj_names:
                     triplets.append(triplet)

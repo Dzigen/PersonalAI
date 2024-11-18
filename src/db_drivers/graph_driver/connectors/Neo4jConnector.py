@@ -1,10 +1,6 @@
-import copy
 from neo4j import GraphDatabase
-from typing import List, Dict, Tuple
-from tqdm import tqdm
-from abc import ABC, abstractmethod
+from typing import List, Dict
 import json
-from dataclasses import dataclass
 
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NodeType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
