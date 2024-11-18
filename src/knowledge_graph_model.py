@@ -314,39 +314,5 @@ class KnowledgeGraphModel:
     :param graph_struct: Знания, хранящиеся в векторной структуре данных.
     :type graph_struct: EmbeddingsModel
     """
-
-    def __init__(self, graph_struct: GraphModel, embeddings_struct: EmbeddingsModel) -> None:
-        self.graph_struct = graph_struct
-        self.embeddings_struct = embeddings_struct
-
-    def create_triplets_from_json(json_triplets: List[Dict]) -> List[Triplet]:
-        """_summary_
-
-        Триплет в json-формате должен иметь следующую структуру:
-        - subject (Dict)
-            - name (str)
-            - type (str)
-            - prop (Dict)
-        - relation (Dict)
-            - name (str)
-            - type (str)
-            - prop (Dict)
-        - object (Dict)
-            - name (str)
-            - type (str)
-            - prop (Dict)
-
-        :param raw_json_triplets: _description_
-        :type raw_json_triplets: List[Dict]
-        :return: _description_
-        :rtype: List[Triplet]
-        """
-        formated_triplets = []
-        for raw_triplet in tqdm(json_triplets):
-            subject = NodeCreator.create(raw_triplet['subject'])
-            relation = RelationCreator.create(raw_triplet['relation'])
-            object = NodeCreator.create(raw_triplet['object'])
-
-            triplet = TripletCreator.create(start_node=subject, relation=relation, end_node=object)
-            formated_triplets.append(triplet)
-        return formated_triplets
+    graph_struct: GraphModel
+    embeddings_struct: EmbeddingsModel

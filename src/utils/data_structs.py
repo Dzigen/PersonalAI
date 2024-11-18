@@ -230,6 +230,36 @@ class TripletCreator(BaseCreator):
 
         return triplet.relation.id, str_triplet
 
+    @staticmethod
+    def from_json(json_triplet: Dict) -> Triplet:
+        """_summary_
+
+        Триплет в json-формате должен иметь следующую структуру:
+        - subject (Dict)
+            - name (str)
+            - type (str)
+            - prop (Dict)
+        - relation (Dict)
+            - name (str)
+            - type (str)
+            - prop (Dict)
+        - object (Dict)
+            - name (str)
+            - type (str)
+            - prop (Dict)
+
+        :param json_triplet: _description_
+        :type json_triplet: Dict
+        :return: _description_
+        :rtype: Triplet
+        """
+
+        subject = NodeCreator.create(json_triplet['subject'])
+        relation = RelationCreator.create(json_triplet['relation'])
+        object = NodeCreator.create(json_triplet['object'])
+
+        convert_triplet = TripletCreator.create(start_node=subject, relation=relation, end_node=object)
+        return convert_triplet
 
 #from ..embedding_functions import VectorDBInstance
 
