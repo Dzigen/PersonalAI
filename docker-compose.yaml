@@ -86,3 +86,12 @@ services:
             - driver: nvidia
               device_ids: ['3']
               capabilities: [gpu]
+
+  isolated_environment:
+    image: python:3.10-alpine
+    container_name: personalai_mmenschikov_isolated_env
+    hostname: isolated_env
+    volumes:
+      - ./src:/workspace/src
+      - ./data:/workspace/data
+      - ./models:/workspace/models
