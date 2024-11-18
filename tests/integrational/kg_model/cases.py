@@ -8,7 +8,7 @@ from src.utils.errors import ReturnInfo
 
 
 # TO CHANGE
-AVAILABLE_GRAPH_MODELS = ['inmemory_graph'] # add 'neo4j'
+AVAILABLE_GRAPH_MODELS = ['inmemory_graph', 'neo4j']
 
 # TO CHANGE
 AVAILABLE_EMBEDDING_MODELS = ['chroma']
