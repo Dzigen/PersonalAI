@@ -153,3 +153,32 @@ def test_create_episodic_triplet(params, expected):
         assert expected['str'] == triplet.stringified
     else:
         assert triplet.stringified is None
+
+@pytest.mark.parametrize("json_triplet, formated_triplet", [
+    # 1. в subject
+    # 1.1. не заполнено prop-поле
+    # 1.2. не заполнено name-поле
+    # 1.2.1 type = 'object'
+    # 1.2.2 type = 'hyper'
+    # 1.2.3 type = 'episodic'
+    # 1.3. не заполнено type-поле
+    # 1.4. указано невалидное значение в type-поле
+    # 2. В relation
+    # 2.1. пустое prop-поле
+    # 2.2. не заполнено name-поле
+    # 2.2.1 type = 'object'
+    # 2.2.2 type = 'hyper'
+    # 2.2.3 type = 'episodic'
+    # 2.3. не заполнено type-поле
+    # 2.4. указано невалидное значение в type-поле
+    # 3. В object
+    # 3.1. пустое prop-поле
+    # 3.2. не заполнено name-поле
+    # 3.2.1 type = 'object'
+    # 3.2.2 type = 'hyper'
+    # 3.2.3 type = 'episodic'
+    # 3.3. не заполнено type-поле
+    # 3.4. указано невалидное значение в type-поле
+])
+def test_create_from_json(json_triplet, formated_triplet):
+    real_f_triplet = TripletCreator.from_json()
