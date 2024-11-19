@@ -144,11 +144,11 @@ class LLMExtractor:
         for triplet in raw_triplets:
             thesis, entities = triplet
 
-            thesis_node = NodeCreator.create(name=str(thesis), type=NodeType.hyper, prop={**node_prop})
+            thesis_node = NodeCreator.create(name=str(thesis), n_type=NodeType.hyper, prop={**node_prop})
             thesis_rel = Relation(name=RelationType.hyper.value, type=RelationType.hyper, prop={**rel_prop})
             for entity in entities:
                 formated_triplets.append(TripletCreator.create(
-                    NodeCreator.create(name=str(entity), type=NodeType.object, prop={**node_prop}),
+                    NodeCreator.create(name=str(entity), n_type=NodeType.object, prop={**node_prop}),
                     thesis_rel, thesis_node))
 
         return formated_triplets, status
@@ -159,15 +159,15 @@ class LLMExtractor:
         for triplet in raw_triplets:
             subj, rel, obj = triplet
             formated_triplets.append(TripletCreator.create(
-                NodeCreator.create(name=str(subj), type=NodeType.object, prop={**node_prop}),
+                NodeCreator.create(name=str(subj), n_type=NodeType.object, prop={**node_prop}),
                 Relation(name=str(rel), type=RelationType.simple, prop={**rel_prop}),
-                NodeCreator.create(name=str(obj), type=NodeType.object, prop={**node_prop})))
+                NodeCreator.create(name=str(obj), n_type=NodeType.object, prop={**node_prop})))
 
         return formated_triplets, status
 
     @staticmethod
     def get_episodic_relationships(text: str, entities: List[Node], node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
-        episodic_node = NodeCreator.create(name=text, type=NodeType.episodic, prop={**node_prop})
+        episodic_node = NodeCreator.create(name=text, n_type=NodeType.episodic, prop={**node_prop})
         episodic_rel = Relation(name=RelationType.episodic.value, type=RelationType.episodic, prop={**rel_prop})
         episodic_triplets = [TripletCreator.create(entity, episodic_rel, episodic_node) for entity in entities]
         return episodic_triplets
