@@ -1,9 +1,10 @@
 import pytest
 import hashlib
+from typing import Dict
 
 import sys
 sys.path.insert(0, "../../")
-from src.utils.data_structs import TripletCreator, NodeCreator, Node, Relation, NodeType, RelationType, create_id
+from src.utils.data_structs import TripletCreator, NodeCreator, Node, Relation, NodeType, RelationType, create_id, Triplet
 
 STRING_PROP_VALUE = 'string_value'
 INT_PROP_VALUE = 1001
@@ -157,28 +158,69 @@ def test_create_episodic_triplet(params, expected):
 @pytest.mark.parametrize("json_triplet, formated_triplet", [
     # 1. в subject
     # 1.1. не заполнено prop-поле
+    ({}, ..., False),
     # 1.2. не заполнено name-поле
+    ({}, ..., False),
     # 1.2.1 type = 'object'
+    ({}, ..., False),
     # 1.2.2 type = 'hyper'
+    ({}, ..., False),
     # 1.2.3 type = 'episodic'
+    ({}, ..., False),
     # 1.3. не заполнено type-поле
+    ({}, ..., False),
     # 1.4. указано невалидное значение в type-поле
+    ({}, ..., False),
     # 2. В relation
     # 2.1. пустое prop-поле
+    ({}, ..., False),
     # 2.2. не заполнено name-поле
     # 2.2.1 type = 'object'
+    ({}, ..., False),
     # 2.2.2 type = 'hyper'
+    ({}, ..., False),
     # 2.2.3 type = 'episodic'
+    ({}, ..., False),
     # 2.3. не заполнено type-поле
+    ({}, ..., False),
     # 2.4. указано невалидное значение в type-поле
+    ({}, ..., False),
     # 3. В object
     # 3.1. пустое prop-поле
+    ({}, ..., False),
     # 3.2. не заполнено name-поле
     # 3.2.1 type = 'object'
+    ({}, ..., False),
     # 3.2.2 type = 'hyper'
+    ({}, ..., False),
     # 3.2.3 type = 'episodic'
+    ({}, ..., False),
     # 3.3. не заполнено type-поле
+    ({}, ..., False),
     # 3.4. указано невалидное значение в type-поле
+    ({}, ..., False)
 ])
-def test_create_from_json(json_triplet, formated_triplet):
-    real_f_triplet = TripletCreator.from_json()
+def test_create_from_json(json_triplet: Dict, expected_triplet: Triplet, exception: bool):
+    try:
+        real_triplet = TripletCreator.from_json(json_triplet)
+    except ValueError as e:
+        assert exception
+    else:
+        assert not exception
+
+    assert real_triplet.id == expected_triplet.id
+
+    assert real_triplet.start_node.id == expected_triplet.start_node.id
+    assert real_triplet.start_node.name == expected_triplet.start_node.name
+    assert real_triplet.start_node.type == expected_triplet.start_node.type
+    assert real_triplet.start_node.prop == expected_triplet.start_node.prop
+
+    assert real_triplet.end_node.id == expected_triplet.end_node.id
+    assert real_triplet.end_node.name == expected_triplet.end_node.name
+    assert real_triplet.end_node.type == expected_triplet.end_node.type
+    assert real_triplet.end_node.prop == expected_triplet.end_node.prop
+
+    assert real_triplet.relation.id == expected_triplet.relation.id
+    assert real_triplet.relation.name == expected_triplet.relation.name
+    assert real_triplet.relation.type == expected_triplet.relation.type
+    assert real_triplet.relation.prop == expected_triplet.relation.prop
