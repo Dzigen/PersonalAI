@@ -101,6 +101,8 @@ class RelationCreator(BaseCreator):
 
         if r_type is not RelationType.simple:
             name = r_type.value
+        elif name is None:
+            raise ValueError
 
         prop = dict() if prop is None else prop
 
@@ -127,7 +129,7 @@ class NodeCreator(BaseCreator):
 
         prop = dict() if prop is None else prop
 
-        node = Node(name=name, type=formated_n_type, prop=prop)
+        node = Node(name=name, type=n_type, prop=prop)
         _, str_node = NodeCreator.stringify(node)
         node.id = create_id(str_node)
         if add_stringified_node:
@@ -269,9 +271,18 @@ class TripletCreator(BaseCreator):
         :rtype: Triplet
         """
 
-        subject = NodeCreator.create(**json_triplet['subject'])
-        relation = RelationCreator.create(**json_triplet['relation'])
-        object = NodeCreator.create(**json_triplet['object'])
+        subject = NodeCreator.create(
+            name=json_triplet['subject']['name'],
+            n_type=json_triplet['subject']['type'],
+            prop=json_triplet['subject'].get('prop', None))
+        relation = RelationCreator.create(
+            name=json_triplet['relation'].get('name', None),
+            r_type=json_triplet['relation']['type'],
+            prop=json_triplet['relation'].get('prop', None))
+        object = NodeCreator.create(
+            name=json_triplet['object']['name'],
+            n_type=json_triplet['object']['type'],
+            prop=json_triplet['object'].get('prop', None))
 
         converted_triplet = TripletCreator.create(start_node=subject, relation=relation, end_node=object)
         return converted_triplet

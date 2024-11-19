@@ -28,7 +28,7 @@ INT_PROP_VALUE = 1001
     ({'add_stringified_node': True, 'name': TEST_NODE_NAME, 'prop': {'name': STRING_PROP_VALUE, 'type': STRING_PROP_VALUE, 'raw_time': STRING_PROP_VALUE, 'time': TEST_TIME, 'str_id': STRING_PROP_VALUE}}, {'str': f"{TEST_TIME}: {TEST_NODE_NAME}"}),
 ])
 def test_create_object_node(params, expected):
-    node = NodeCreator.create(type=NodeType.object, **params)
+    node = NodeCreator.create(n_type=NodeType.object, **params)
     if params['add_stringified_node']:
         assert expected['str'] == node.stringified
     else:
@@ -53,7 +53,7 @@ def test_create_object_node(params, expected):
     ({'add_stringified_node': True, 'name': TEST_NODE_NAME, 'prop': {'name': STRING_PROP_VALUE, 'type': STRING_PROP_VALUE, 'raw_time': STRING_PROP_VALUE, 'time': TEST_TIME, 'str_id': STRING_PROP_VALUE}}, {'str': f"{TEST_TIME}: {TEST_NODE_NAME}"}),
 ])
 def test_create_thesis_node(params, expected):
-    node = NodeCreator.create(type=NodeType.hyper, **params)
+    node = NodeCreator.create(n_type=NodeType.hyper, **params)
     if params['add_stringified_node']:
         assert expected['str'] == node.stringified
     else:
@@ -78,7 +78,7 @@ def test_create_thesis_node(params, expected):
     ({'add_stringified_node': True, 'name': TEST_NODE_NAME, 'prop': {'name': STRING_PROP_VALUE, 'type': STRING_PROP_VALUE, 'raw_time': STRING_PROP_VALUE, 'time': TEST_TIME, 'str_id': STRING_PROP_VALUE}}, {'str': f"{TEST_TIME}: {TEST_NODE_NAME}"}),
 ])
 def test_create_episodic_node(params, expected):
-    node = NodeCreator.create(type=NodeType.episodic, **params)
+    node = NodeCreator.create(n_type=NodeType.episodic, **params)
     if params['add_stringified_node']:
         assert expected['str'] == node.stringified
     else:
