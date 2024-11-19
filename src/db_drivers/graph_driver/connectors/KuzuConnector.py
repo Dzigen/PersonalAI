@@ -10,23 +10,36 @@ import joblib
 import os
 
 from ....utils.errors import ReturnInfo
-from ....utils.data_structs import Node
+from ....utils.data_structs import Node, NodeCreator, NODES_TYPES_MAP, RelationCreator, TripletCreator, Relation, RELATIONS_TYPES_MAP, NodeType, RelationType
 
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils import Triplet, NodeType
 
 DEFAULT_KUZU_CONFIG = GraphDBConnectionConfig(
-    params={'path': '../../kuzu_volume', 'buffer_pool_size': 1024**3}
+    params={'path': '../../kuzu_volume', 'buffer_pool_size': 1024**3,
+            'schema': [
+                "CREATE NODE TABLE IF NOT EXISTS object (id SERIAL, name STRING, prop MAP(STRING, STRING), str_id STRING, PRIMARY KEY(id));",
+                "CREATE NODE TABLE IF NOT EXISTS hyper (id SERIAL, name STRING, prop MAP(STRING, STRING), str_id STRING, PRIMARY KEY(id));",
+                "CREATE NODE TABLE IF NOT EXISTS episodic (id SERIAL, name STRING, prop MAP(STRING, STRING), str_id STRING, PRIMARY KEY(id));",
+                "CREATE REL TABLE IF NOT EXISTS simple (FROM object TO object, name STRING, t_id STRING, str_id STRING, prop MAP(STRING, STRING));",
+                "CREATE REL TABLE IF NOT EXISTS hyper_rel (FROM object TO hyper, name STRING, t_id STRING, str_id STRING, prop MAP(STRING, STRING));",
+                "CREATE REL TABLE GROUP IF NOT EXISTS episodic_rel (FROM object TO episodic, FROM hyper TO episodic, name STRING, t_id STRING, str_id STRING, prop MAP(STRING, STRING));"
+            ],
+            'table_type_map': {
+                'relations': {'forward': {RelationType.simple.value: 'simple', RelationType.hyper.value: 'hyper', RelationType.episodic.value: 'episodic'},},
+                'nodes': {'forward': {NodeType.object.value: 'object', NodeType.hyper.value: 'hyper_rel', NodeType.episodic.value: 'episodic_rel'}}
+            }
+    }
 )
 
 class KuzuConnector(AbstractGraphDatabaseConnection):
 
-    def __init__(self, config: GraphDBConnectionConfig) -> None:
+    def __init__(self, config: GraphDBConnectionConfig = DEFAULT_KUZU_CONFIG) -> None:
         self.config = config
         self.open_connection()
 
     def open_connection(self) -> ReturnInfo:
-        load_path = f'{self.config.params['path']}/{self.config.db_info['db']}'
+        load_path = f"{self.config.params['path']}/{self.config.db_info['db']}"
 
         if not os.path.exists(load_path):
             print(f"warning: graph-dump '{load_path}' doesnt exists. creating empty graph-store")
@@ -34,8 +47,14 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         self.db = kuzu.Database(load_path, buffer_pool_size=self.config.params['buffer_pool_size'])
         self.conn = kuzu.Connection(self.db)
 
+        for schema_statement in self.config.params['schema']:
+            self.conn.execute(schema_statement)
+
         if self.config.need_to_clear:
             self.clear()
+
+        self.config.params['table_type_map']['relations']['inverse'] = {v: k for k,v in self.config.params['table_type_map']['relations']['forward'].items()}
+        self.config.params['table_type_map']['nodes']['inverse'] = {v: k for k,v in self.config.params['table_type_map']['nodes']['forward'].items()}
 
     def close_connection(self) -> ReturnInfo:
         self.conn.close()
@@ -45,54 +64,44 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         return not self.conn.is_closed
 
     def create_node_query(self, node: Node) -> str:
-        """_summary_
-
-        :param node: _description_
-        :type node: Node
-        :return: _description_
-        :rtype: str
-        """
-        query_props = {}
+        prop_keys, prop_values = [], []
         for prop_name, prop_value in node.prop.items():
-            p_name, p_value = prop_name.replace(" ", "_"), json.dumps(prop_value, ensure_ascii=False)
-            query_props[p_name] = p_value
+            prop_keys.append(prop_name.replace(" ", "_"))
+            prop_values.append(prop_value)
 
-        query_props['name'] = json.dumps(node.name, ensure_ascii=False)
-        query_props['str_id'] = json.dumps(node.id, ensure_ascii=False)
+        fields = {}
+        fields['name'] = json.dumps(node.name, ensure_ascii=False)
+        fields['str_id'] = json.dumps(node.id, ensure_ascii=False)
+        fields['prop'] = f"map({prop_keys},{prop_values})"
 
-        str_props = ", ".join([f"{k}: {v}" for k, v in query_props.items()])
-        query = f"CREATE (n:{node.type.value} " + "{" + str_props + "}) RETURN elementId(n) as node_id"
+        str_fields = ", ".join([f"{k}: {v}" for k, v in fields.items()])
+
+        node_t = self.config.params['table_type_map']['nodes']['forward'][node.type.value]
+        query = f"CREATE (n:{node_t} " + "{" + str_fields + "});"
         return query
 
 
     def create_rel_query(self, triplet: Triplet) -> str:
-        """_summary_
-
-        :param triplet: _description_
-        :type triplet: Triplet
-        :return: _description_
-        :rtype: str
-        """
-        rel_props = {}
+        prop_keys, prop_values = [], []
         for prop_name, prop_value in triplet.relation.prop.items():
-            p_name, p_value = prop_name.replace(' ', '_'), json.dumps(prop_value, ensure_ascii=False)
-            rel_props[p_name] = p_value
+            prop_keys.append(prop_name.replace(' ', '_'))
+            prop_values.append(prop_value)
 
-        rel_props['name'] = json.dumps(triplet.relation.name, ensure_ascii=False)
-        rel_props['t_id'] = json.dumps(triplet.id, ensure_ascii=False)
-        rel_props['str_id'] = json.dumps(triplet.relation.id, ensure_ascii=False)
+        fields = {}
+        fields['name'] = json.dumps(triplet.relation.name, ensure_ascii=False)
+        fields['t_id'] = json.dumps(triplet.id, ensure_ascii=False)
+        fields['str_id'] = json.dumps(triplet.relation.id, ensure_ascii=False)
+        fields['prop'] = f"map({prop_keys},{prop_values})"
+        str_fields = ", ".join([f"{k}: {v}" for k, v in fields.items()])
 
-        str_props = ", ".join([f"{k}: {v}" for k, v in rel_props.items()])
         subj_t, subj_id = triplet.start_node.type.value, triplet.start_node.id
         obj_t, obj_id = triplet.end_node.type.value, triplet.end_node.id
-        rel_t = triplet.relation.type.value
-        query = ""
-        query += f'MATCH (subj:{subj_t}), (obj:{obj_t}) WHERE subj.str_id = "{subj_id}" AND obj.str_id = "{obj_id}" '
-        query += f'CREATE (subj)-[rel:{rel_t}' + '{' + str_props + '}' + ']->(obj) '
-        query += 'RETURN elementId(rel) as rel_id'
+        rel_t = self.config.params['table_type_map']['relations']['forward'][triplet.relation.type.value]
+        query = f'MATCH (subj:{subj_t}), (obj:{obj_t}) WHERE subj.str_id = "{subj_id}" AND obj.str_id = "{obj_id}" '
+        query += f'CREATE (subj)-[rel:{rel_t} ' + '{' + str_fields + '}' + ']->(obj);'
         return query
 
-    def create(self, triplets: List[object], creation_info: Dict = dict()) -> ReturnInfo:
+    def create(self, triplets: List[Triplet], creation_info: Dict = dict()) -> ReturnInfo:
         # triplet-ids checking
         for triplet in triplets:
             if type(triplet.id) is not str:
@@ -126,8 +135,29 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         pass
 
     def parse_query_output(self, output: List[object]) -> List[Triplet]:
-        # TODO
-        return output
+        formated_triplets = []
+        output = output.get_as_df()
+        triplets_count = len(output['rel'])
+        for i in range(triplets_count):
+            cur_n1, cur_rel, cur_n2 = output['n1'][i], output['rel'][i], output['n2'][i]
+            n1_type = self.config.params['table_type_map']['nodes']['inverse'][cur_n1['_label']]
+            n2_type = self.config.params['table_type_map']['nodes']['inverse'][cur_n2['_label']]
+            rel_type = self.config.params['table_type_map']['relations']['inverse'][cur_rel['_label']]
+
+            node1 = Node(id=cur_n1['str_id'], name=str(cur_n1['name']),
+                         type=NODES_TYPES_MAP[n1_type], prop=dict(cur_n1['prop']))
+            node2 = Node(id=cur_n2['str_id'], name=str(cur_n2['name']),
+                         type=NODES_TYPES_MAP[n2_type], prop=dict(cur_n2['prop']))
+
+            relation = Relation(id=cur_rel['str_id'], name=str(cur_rel['name']),
+                type=RELATIONS_TYPES_MAP[rel_type], prop=dict(cur_rel['prop']))
+
+            start_node_id = cur_rel['_src']
+            start_node, end_node = (node1, node2) if start_node_id == cur_n1['_id'] else (node2, node1)
+            triplet = TripletCreator.create(
+                start_node, relation, end_node, add_stringified_triplet=False, t_id=cur_rel['t_id'])
+            formated_triplets.append(triplet)
+        return formated_triplets
 
     def get_adjecent_nodes(self, base_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
         if type(base_node_id) is not str:
@@ -136,8 +166,8 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         str_accepted_nodes = ', '.join(list(map(lambda tpe: f'"{tpe.value}"', accepted_n_types)))
 
         raw_nodes = self.conn.execute(
-            f'MATCH (a)-[r]-(b) WHERE a.str_id = "{base_node_id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(b)) RETURN b')
-        formated_nodes = [node['b']['str_id'] for node in raw_nodes]
+            f'MATCH (a)-[r]-(b) WHERE a.str_id = "{base_node_id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(b)) RETURN b;')
+        formated_nodes = [node['str_id'] for node in raw_nodes.get_as_df()['b']]
         return formated_nodes
 
     def get_triplets_by_name(self, subj_names: List[str], obj_names: List[str], obj_type: str) -> List[Triplet]:
@@ -145,16 +175,16 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         if subj_names:
             for subj_name in subj_names:
                 output = self.conn.execute(
-                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n1.name) = LOWER("{subj_name}") RETURN n1, rel, n2')
+                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n1.name) = LOWER("{subj_name}") RETURN n1, rel, n2;')
                 formatted_triplets += self.parse_query_output(output)
         elif obj_names:
             for obj_name in obj_names:
                 output = self.conn.execute(
-                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n2.name) = LOWER("{obj_name}") RETURN n1, rel, n2')
+                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n2.name) = LOWER("{obj_name}") RETURN n1, rel, n2;')
                 formatted_triplets += self.parse_query_output(output)
         else:
             output = self.conn.execute(
-                f'MATCH (n1:object)-[rel]-(n2:{obj_type}) RETURN n1, rel, n2')
+                f'MATCH (n1:object)-[rel]-(n2:{obj_type}) RETURN n1, rel, n2;')
             formatted_triplets += self.parse_query_output(output)
         return formatted_triplets
 
@@ -165,32 +195,32 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
             raise ValueError
 
         output = self.conn.execute(
-            f'MATCH (n1)-[rel]-(n2) WHERE n1.str_id = "{node1_id}" AND n2.str_id = "{node2_id}" RETURN n1, rel, n2')
+            f'MATCH (n1)-[rel]-(n2) WHERE n1.str_id = "{node1_id}" AND n2.str_id = "{node2_id}" RETURN n1, rel, n2;')
 
         formatted_triplets = self.parse_query_output(output)
         return formatted_triplets
 
     def count_items(self) -> int:
-        n_output = self.conn.execute("MATCH (a) RETURN count(a) as n_count")[0]
-        r_output = self.conn.execute("MATCH (a)-[rel]->(b) RETURN count(rel) as r_count")[0]
-        return {'triplets': r_output['r_count'], 'nodes': n_output['n_count']}
+        n_output = int(self.conn.execute("MATCH (a) RETURN count(a) as n_count;").get_as_df()['n_count'][0])
+        r_output = int(self.conn.execute("MATCH (a)-[rel]->(b) RETURN count(rel) as r_count;").get_as_df()['r_count'][0])
+        return {'triplets': r_output, 'nodes': n_output}
 
     def item_exist(self, id: str, id_type='triplet') -> bool:
         if type(id) is not str:
             raise ValueError
 
         if id_type == 'node':
-            query = f'MATCH (n) WHERE n.str_id = "{id}" RETURN n'
+            query = f'MATCH (n) WHERE n.str_id = "{id}" RETURN n;'
         elif id_type == 'relation':
-            query = f'MATCH (n1)-[rel]-(n2) WHERE rel.str_id = "{id}" RETURN rel'
+            query = f'MATCH (n1)-[rel]-(n2) WHERE rel.str_id = "{id}" RETURN rel;'
         elif id_type == 'triplet':
-            query = f'MATCH (n1)-[rel]-(n2) WHERE rel.t_id = "{id}" RETURN rel'
+            query = f'MATCH (n1)-[rel]-(n2) WHERE rel.t_id = "{id}" RETURN rel;'
         else:
             raise ValueError
 
         output = self.conn.execute(query)
-        return len(output) > 0
+        return output.get_as_df().shape[0] > 0
 
     def clear(self) -> None:
-        self.conn.execute("MATCH (n)-[rel]->() DELETE n,rel")
-        self.conn.execute("MATCH (n) DELETE n")
+        self.conn.execute("MATCH (n)-[rel]->() DELETE n,rel;")
+        self.conn.execute("MATCH (n) DELETE n;")

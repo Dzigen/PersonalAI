@@ -12,7 +12,7 @@ DEFAULT_INMEMORYGRAPH_CONFIG = GraphDBConnectionConfig()
 class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
     """_summary_"""
 
-    def __init__(self, config: GraphDBConnectionConfig) -> None:
+    def __init__(self, config: GraphDBConnectionConfig = DEFAULT_INMEMORYGRAPH_CONFIG) -> None:
         self.config = config
         self.open_connection()
 
