@@ -250,7 +250,7 @@ class TripletCreator(BaseCreator):
         * в случае "relation" это "simple", "hyper" и "episodic".
 
         В случае если по ключу "type" компоненты триплета "relation" указывается значение "hyper" или "episodic", то значение по соответствующему ключу "name"
-        не указывается.
+        можно не заполнять/указывать: оно использоваться не будет.
 
         Примеры json-триплетов:
         1. {'subject': {'name': 'qwe', 'type': 'object', 'prop': {'k1': 'v1'}},
