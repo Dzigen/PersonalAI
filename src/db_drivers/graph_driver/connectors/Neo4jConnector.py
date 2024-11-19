@@ -116,19 +116,15 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
         for i, triplet in enumerate(triplets):
             cur_info = creation_info.get(i, None)
-            print("===triplet===")
             if cur_info is None or cur_info['s_node']:
                 insert_subj_query = self.create_node_query(triplet.start_node)
-                print(insert_subj_query)
-                print(self.execute_query(insert_subj_query))
+                self.execute_query(insert_subj_query)
             if cur_info is None or cur_info['e_node']:
                 insert_obj_query = self.create_node_query(triplet.end_node)
-                print(insert_obj_query)
-                print(self.execute_query(insert_obj_query))
+                self.execute_query(insert_obj_query)
 
             insert_rel_query = self.create_rel_query(triplet)
-            print(insert_rel_query)
-            print(self.execute_query(insert_rel_query))
+            self.execute_query(insert_rel_query)
 
 
     def read(self, ids: List[str]) -> List[Triplet]:
