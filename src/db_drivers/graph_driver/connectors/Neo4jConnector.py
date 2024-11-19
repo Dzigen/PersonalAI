@@ -42,7 +42,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         self.extract_triplets_rel_template = 'MATCH (a)-[r:{rel}]-(b) RETURN a, r, b'
         self.extract_triplets_rel_prop_template = 'MATCH (a)-[r]-(b) WHERE r.{prop_name}="{prop_value}" RETURN a, r, b'
 
-    def open_connection(self):
+    def open_connection(self) -> None:
         self.driver = None
         try:
             self.driver = GraphDatabase.driver(self.config.uri, auth=(self.config.params['user'], self.config.params['pwd']))
@@ -53,7 +53,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         # TODO
         pass
 
-    def close_connection(self):
+    def close_connection(self) -> None:
         if self.driver is not None:
             self.driver.close()
 
@@ -139,7 +139,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         # TODO
         pass
 
-    def execute_query(self, query: str, db_flag: bool = True):
+    def execute_query(self, query: str, db_flag: bool = True) -> List[object]:
         assert self.driver is not None, "Driver not initialized!"
         session = None
         response = None
@@ -165,7 +165,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         formated_nodes = [node['b']['str_id'] for node in raw_nodes]
         return formated_nodes
 
-    def parse_query_output(self, output):
+    def parse_query_output(self, output: List[object]) -> List[Triplet]:
         formated_triplets = []
         for raw_triplet in output:
             node1 = NodeCreator.create(

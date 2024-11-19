@@ -2,6 +2,7 @@ from typing import Dict, List
 from dataclasses import dataclass, field
 from abc import abstractmethod
 
+from ...utils import ReturnInfo
 from ...utils.data_structs import Triplet, NodeType
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
@@ -12,7 +13,11 @@ class GraphDBConnectionConfig(BaseDatabaseConfig):
 class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
 
     @abstractmethod
-    def get_adjecent_nodes(self, base_node_id: str, parent_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
+    def create(self, triplets: List[object], creation_info: Dict = dict()) -> ReturnInfo:
+        pass
+
+    @abstractmethod
+    def get_adjecent_nodes(self, base_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
         pass
 
     @abstractmethod
