@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Union, Tuple
+from typing import List, Union, Tuple, Dict
 from enum import Enum
 import hashlib
 
@@ -89,9 +89,27 @@ class BaseCreator:
             obj_str += f" ({str_prop})"
         return obj_str
 
+class RelationCreator(BaseCreator):
+    @staticmethod
+    def create(r_type: Union[str, RelationType], name: str = None,  prop: Dict = None):
+        if type(r_type) is not RelationType:
+            formated_r_type = RELATIONS_TYPES_MAP.get(r_type, None)
+            if formated_r_type is None:
+                raise ValueError
+            else:
+                r_type = formated_r_type
+
+        if r_type is not RelationType.simple:
+            name = r_type.value
+
+        prop = dict() if prop is None else prop
+
+        rel = Relation(name=name, type=r_type, prop=prop)
+        return rel
+
 class NodeCreator(BaseCreator):
     @staticmethod
-    def create(add_stringified_node: bool = True, **kwargs) -> Node:
+    def create(n_type: Union[str, NodeType], name: str, prop: Dict = None, add_stringified_node: bool = True) -> Node:
         """Метод предназначен для создания структуры данных вершины с указанным содержанием.
 
         :param add_stringified_node: Если True, то в структуру данных вершины будет сохранено её строковое представление, иначе False, Значение по усолчанию True.
@@ -100,7 +118,16 @@ class NodeCreator(BaseCreator):
         :return: Созданная структура данных вершины.
         :rtype: Node
         """
-        node = Node(**kwargs)
+        if type(n_type) is not NodeType:
+            formated_n_type = NODES_TYPES_MAP.get(n_type, None)
+            if formated_n_type is None:
+                raise ValueError
+            else:
+                n_type = formated_n_type
+
+        prop = dict() if prop is None else prop
+
+        node = Node(name=name, type=formated_n_type, prop=prop)
         _, str_node = NodeCreator.stringify(node)
         node.id = create_id(str_node)
         if add_stringified_node:
@@ -210,6 +237,44 @@ class TripletCreator(BaseCreator):
 
         return triplet.relation.id, str_triplet
 
+    @staticmethod
+    def from_json(json_triplet: Dict) -> Triplet:
+        """Метод предназначен для перевода триплета из json-формата (полуструктурированного) в dataclass-формат (структурированный) хранения.
+        Триплет является направленным: связь идёт от субъекта к объекту.
+
+        Триплет в формате json должен содержать следующие ключи: "subject", "relation" и "object". По каждому из данных ключей должен храниться словарь
+        со следующими ключами: "name", "type" и "prop". По ключу "name" должна храниться строка текста на естественном языке, предстатвляющая основную
+        смысловую информацию данной части триплета. По ключу "prop" в виде словаря могут храниться дополнительные свойства данной части триплета.
+        Если у компоненты триплета нет свойст, то соответствующее поле "prop" можно не указывать/заполнять. По ключу "type" могут храниться только следующие значения:
+        * в случае "subject"/"object"-компонет это "object", "hyper" и "episodic";
+        * в случае "relation" это "simple", "hyper" и "episodic".
+
+        В случае если по ключу "type" компоненты триплета "relation" указывается значение "hyper" или "episodic", то значение по соответствующему ключу "name"
+        можно не заполнять/указывать: оно использоваться не будет.
+
+        Примеры валидных json-триплетов:
+        1. {'subject': {'name': 'qwe', 'type': 'object', 'prop': {'k1': 'v1'}},
+            'relation': {'name': 'rty', 'type': 'simple'},
+            'object': {'name': 'uio', 'type': 'object'}};
+        2. {'subject': {'name': 'asd', 'type': 'object', 'prop': {'k2': 'v2'}},
+            'relation': {'type': 'hyper', 'prop': {'k3': 'v3'}},
+            'object': {'name': 'fgh', 'type': 'hyper'}};
+        3. {'subject': {'name': 'jkl', 'type': 'hyper', 'prop': {'k4': 'v4'}},
+            'relation': {'type': 'episodic', 'prop': {'k5': 'v5'}},
+            'object': {'name': 'zxc', 'type': 'episodic', 'prop': {'k5': 'v5'}}}.
+
+        :param json_triplet: Триплет в json-формате.
+        :type json_triplet: Dict
+        :return: Трипет в dataclass-формате.
+        :rtype: Triplet
+        """
+
+        subject = NodeCreator.create(**json_triplet['subject'])
+        relation = RelationCreator.create(**json_triplet['relation'])
+        object = NodeCreator.create(**json_triplet['object'])
+
+        converted_triplet = TripletCreator.create(start_node=subject, relation=relation, end_node=object)
+        return converted_triplet
 
 #from ..embedding_functions import VectorDBInstance
 

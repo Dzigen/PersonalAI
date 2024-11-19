@@ -6,7 +6,7 @@ from tqdm import tqdm
 from .db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriver, VectorDriverConfig, VectorDBInstance
 from .db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
 from .db_drivers.graph_driver import GraphDriver, GraphDriverConfig, DEFAULT_NEO4J_CONFIG
-from .utils.data_structs import Triplet, TripletCreator, NodeCreator
+from .utils.data_structs import Triplet, TripletCreator, NodeCreator, RelationCreator
 from .utils import Logger
 
 NODES_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
@@ -306,7 +306,6 @@ class GraphModel:
         for step in tqdm(range(steps)):
             self.db_conn.delete(triplets[step*batch_size: (step+1)*batch_size])
 
-@dataclass
 class KnowledgeGraphModel:
     """Модель памяти (графа знаний) ассистента.
 
