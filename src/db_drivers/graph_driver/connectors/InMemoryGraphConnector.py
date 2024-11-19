@@ -12,7 +12,7 @@ DEFAULT_INMEMORYGRAPH_CONFIG = GraphDBConnectionConfig()
 class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
     """_summary_"""
 
-    def __init__(self, config: GraphDBConnectionConfig) -> None:
+    def __init__(self, config: GraphDBConnectionConfig = DEFAULT_INMEMORYGRAPH_CONFIG) -> None:
         self.config = config
         self.open_connection()
 
@@ -50,7 +50,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         del self.tid_triplets_index
         gc.collect()
 
-    def generate_id(self, seed: str = None):
+    def generate_id(self, seed: str = None) -> str:
         return hashlib.md5((str(time()) if seed is None else seed).encode()).hexdigest()
 
     def create(self, triplets: List[Triplet], creation_info: Dict = dict()) -> None:

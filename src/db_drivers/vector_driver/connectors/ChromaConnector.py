@@ -10,7 +10,7 @@ DEFAULT_CHROMA_CONFIG = VectorDBConnectionConfig(path='../data/graph_structures/
 
 class ChromaConnection(AbstractVectorDatabaseConnection):
     """Класс предназначен для взаимодействия с векторной базой ChromaDB."""
-    def __init__(self, config: VectorDBConnectionConfig) -> None:
+    def __init__(self, config: VectorDBConnectionConfig = DEFAULT_CHROMA_CONFIG) -> None:
         self.config = config
         self.open_connection()
 
