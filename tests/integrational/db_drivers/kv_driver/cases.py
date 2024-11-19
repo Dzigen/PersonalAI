@@ -4,7 +4,7 @@ from src.db_drivers.kv_driver import KeyValueDBInstance
 from src.utils.errors import ReturnInfo
 
 # TO CHANGE
-AVAILABLE_KV_DBS = ['inmemory_kv'] # ,'aerospike'
+AVAILABLE_KV_DBS = ['inmemory_kv', 'aerospike']
 
 ###############################################################################################
 
