@@ -306,6 +306,7 @@ class GraphModel:
         for step in tqdm(range(steps)):
             self.db_conn.delete(triplets[step*batch_size: (step+1)*batch_size])
 
+@dataclass
 class KnowledgeGraphModel:
     """Модель памяти (графа знаний) ассистента.
 
