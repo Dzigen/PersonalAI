@@ -119,12 +119,11 @@ def test_get_adjecent_nodes(instances, create_info, node, accepted_n_types, expe
         assert not expected['exception']
         assert expected['output_ids'] == set(output)
 
-
 @pytest.mark.parametrize("instances, create_info, nodes, expected, graphdb_conn", GRAPHDB_POPULATED_GET_TRIPLETS_TEST_CASES, indirect=['graphdb_conn'])
 def test_get_triplets(instances, create_info, nodes, expected, graphdb_conn):
     graphdb_conn.clear()
     graphdb_conn.create(instances, create_info)
-    print(nodes)
+
     if expected['exist'][0] is not None:
         assert graphdb_conn.item_exist(nodes[0],id_type='node') == expected['exist'][0]
     if expected['exist'][1] is not None:

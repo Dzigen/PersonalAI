@@ -11,6 +11,7 @@ from src.knowledge_graph_model import EmbeddingsModel, EmbeddingsModelConfig, Gr
 from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriverConfig
 from src.db_drivers.vector_driver.embedders import EmbedderModelConfig
 from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
+from src.utils.data_structs import NodeType, RelationType
 
 #!!!AVAILABLE GRAPH MODELS!!!#
 
@@ -34,16 +35,46 @@ def graph_inmemory_model():
                 params=dict(), need_to_clear=True)))
     return GraphModel(config)
 
+@pytest.fixture(scope='package')
+def graph_kuzu_model():
+    config = GraphModelConfig(
+        driver_config=GraphDriverConfig(
+            db_vendor='kuzu',
+            db_config=GraphDBConnectionConfig(
+                db_info={'db': 'testing', 'table': 'testing'},
+                params={'path': f'{TEST_VOLUME_DIR}/kuzu', 'buffer_pool_size': 1024**3,
+                    'schema': [
+                        "CREATE NODE TABLE IF NOT EXISTS object (id SERIAL, name STRING, prop MAP(STRING, STRING), str_id STRING, PRIMARY KEY(id));",
+                        "CREATE NODE TABLE IF NOT EXISTS hyper (id SERIAL, name STRING, prop MAP(STRING, STRING), str_id STRING, PRIMARY KEY(id));",
+                        "CREATE NODE TABLE IF NOT EXISTS episodic (id SERIAL, name STRING, prop MAP(STRING, STRING), str_id STRING, PRIMARY KEY(id));",
+                        "CREATE REL TABLE IF NOT EXISTS simple (FROM object TO object, name STRING, t_id STRING, str_id STRING, prop MAP(STRING, STRING));",
+                        "CREATE REL TABLE IF NOT EXISTS hyper_rel (FROM object TO hyper, name STRING, t_id STRING, str_id STRING, prop MAP(STRING, STRING));",
+                        "CREATE REL TABLE GROUP IF NOT EXISTS episodic_rel (FROM object TO episodic, FROM hyper TO episodic, name STRING, t_id STRING, str_id STRING, prop MAP(STRING, STRING));"
+                    ],
+                    'table_type_map': {
+                        'relations': {'forward': {RelationType.simple.value: 'simple', RelationType.hyper.value: 'hyper_rel', RelationType.episodic.value: 'episodic_rel'},},
+                        'nodes': {'forward': {NodeType.object.value: 'object', NodeType.hyper.value: 'hyper', NodeType.episodic.value: 'episodic'}}
+                    }
+                },
+                need_to_clear=True
+            )
+        )
+    )
+    return GraphModel(config)
+
+
 #------------------------------#
 
 @pytest.fixture(scope='package')
 def available_graph_models(
     graph_neo4j_model,
-    graph_inmemory_model
+    graph_inmemory_model,
+    graph_kuzu_model
 ):
     return {
         'neo4j': graph_neo4j_model,
-        'inmemory_graph': graph_inmemory_model
+        'inmemory_graph': graph_inmemory_model,
+        'kuzu': graph_kuzu_model
     }
 
 @pytest.fixture(scope='function')

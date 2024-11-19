@@ -8,23 +8,23 @@ from src.utils.data_structs import Triplet, NodeCreator, Relation, RelationType,
 from src.utils.errors import ReturnInfo
 
 # TO CHANGE
-AVAILABLE_GRAPH_DBS = ['neo4j', 'inmemory_graph']
+AVAILABLE_GRAPH_DBS = ['kuzu', 'neo4j', 'inmemory_graph']
 
 ###############################################################################################
 
 # nodes
-OBJECT_NODE1 = NodeCreator.create(name='abc', type=NodeType.object, prop={'k1': 'v1'})
-OBJECT_NODE2 = NodeCreator.create(name='def', type=NodeType.object, prop={'k2': 'v2'})
-OBJECT_NODE3 = NodeCreator.create(name='ghi', type=NodeType.object, prop={'k3': 'v3'})
-OBJECT_NODE4 = NodeCreator.create(name='yhn', type=NodeType.object, prop={'k13': 'v13'})
+OBJECT_NODE1 = NodeCreator.create(name='abc', n_type=NodeType.object, prop={'k1': 'v1'})
+OBJECT_NODE2 = NodeCreator.create(name='def', n_type=NodeType.object, prop={'k2': 'v2'})
+OBJECT_NODE3 = NodeCreator.create(name='ghi', n_type=NodeType.object, prop={'k3': 'v3'})
+OBJECT_NODE4 = NodeCreator.create(name='yhn', n_type=NodeType.object, prop={'k13': 'v13'})
 
-THESIS_NODE1 = NodeCreator.create(name='qwerty', type=NodeType.hyper, prop={'k4': 'v4'})
-THESIS_NODE2 = NodeCreator.create(name='asdfgh', type=NodeType.hyper, prop={'k5': 'v5'})
-THESIS_NODE3 = NodeCreator.create(name='zxcvbn', type=NodeType.hyper, prop={'k6': 'v6'})
+THESIS_NODE1 = NodeCreator.create(name='qwerty', n_type=NodeType.hyper, prop={'k4': 'v4'})
+THESIS_NODE2 = NodeCreator.create(name='asdfgh', n_type=NodeType.hyper, prop={'k5': 'v5'})
+THESIS_NODE3 = NodeCreator.create(name='zxcvbn', n_type=NodeType.hyper, prop={'k6': 'v6'})
 
-EPISODIC_NODE1 = NodeCreator.create(name='uiop', type=NodeType.episodic, prop={'k7': 'v7'})
-EPISODIC_NODE2 = NodeCreator.create(name='jkl', type=NodeType.episodic, prop={'k8': 'v8'})
-EPISODIC_NODE3 = NodeCreator.create(name='mnbv', type=NodeType.episodic, prop={'k9': 'v9'})
+EPISODIC_NODE1 = NodeCreator.create(name='uiop', n_type=NodeType.episodic, prop={'k7': 'v7'})
+EPISODIC_NODE2 = NodeCreator.create(name='jkl', n_type=NodeType.episodic, prop={'k8': 'v8'})
+EPISODIC_NODE3 = NodeCreator.create(name='mnbv', n_type=NodeType.episodic, prop={'k9': 'v9'})
 
 # triplets
 SIMPLE_TRIPLET1 = TripletCreator.create(start_node=OBJECT_NODE1, relation=Relation(name='simple1', type=RelationType.simple, prop={'k10': 'v10'}), end_node=OBJECT_NODE2)
