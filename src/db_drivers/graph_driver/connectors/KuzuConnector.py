@@ -26,8 +26,8 @@ DEFAULT_KUZU_CONFIG = GraphDBConnectionConfig(
                 "CREATE REL TABLE GROUP IF NOT EXISTS episodic_rel (FROM object TO episodic, FROM hyper TO episodic, name STRING, t_id STRING, str_id STRING, prop MAP(STRING, STRING));"
             ],
             'table_type_map': {
-                'relations': {'forward': {RelationType.simple.value: 'simple', RelationType.hyper.value: 'hyper', RelationType.episodic.value: 'episodic'},},
-                'nodes': {'forward': {NodeType.object.value: 'object', NodeType.hyper.value: 'hyper_rel', NodeType.episodic.value: 'episodic_rel'}}
+                'relations': {'forward': {RelationType.simple.value: 'simple', RelationType.hyper.value: 'hyper_rel', RelationType.episodic.value: 'episodic_rel'},},
+                'nodes': {'forward': {NodeType.object.value: 'object', NodeType.hyper.value: 'hyper', NodeType.episodic.value: 'episodic'}}
             }
     }
 )
@@ -163,10 +163,10 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         if type(base_node_id) is not str:
             raise ValueError
 
-        str_accepted_nodes = ', '.join(list(map(lambda tpe: f'"{tpe.value}"', accepted_n_types)))
+        str_accepted_nodes = ''.join(list(map(lambda tpe: f':{tpe.value}', accepted_n_types)))
 
         raw_nodes = self.conn.execute(
-            f'MATCH (a)-[r]-(b) WHERE a.str_id = "{base_node_id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(b)) RETURN b;')
+            f'MATCH (a)-[r]-(b{str_accepted_nodes}) WHERE a.str_id = "{base_node_id}" RETURN b;')
         formated_nodes = [node['str_id'] for node in raw_nodes.get_as_df()['b']]
         return formated_nodes
 
@@ -197,8 +197,9 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         output = self.conn.execute(
             f'MATCH (n1)-[rel]-(n2) WHERE n1.str_id = "{node1_id}" AND n2.str_id = "{node2_id}" RETURN n1, rel, n2;')
 
-        formatted_triplets = self.parse_query_output(output)
-        return formatted_triplets
+        formated_triplets = self.parse_query_output(output)
+        unique_triplets = {triplet.id: triplet for triplet in formated_triplets}
+        return list(unique_triplets.values())
 
     def count_items(self) -> int:
         n_output = int(self.conn.execute("MATCH (a) RETURN count(a) as n_count;").get_as_df()['n_count'][0])
@@ -222,5 +223,5 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         return output.get_as_df().shape[0] > 0
 
     def clear(self) -> None:
-        self.conn.execute("MATCH (n)-[rel]->() DELETE n,rel;")
+        self.conn.execute("MATCH (n1)-[rel]->(n2) DELETE rel;")
         self.conn.execute("MATCH (n) DELETE n;")

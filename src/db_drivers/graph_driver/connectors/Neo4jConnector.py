@@ -168,11 +168,9 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
     def parse_query_output(self, output: List[object]) -> List[Triplet]:
         formated_triplets = []
         for raw_triplet in output:
-            node1 = NodeCreator.create(
-                id=raw_triplet['n1']['str_id'], name=str(raw_triplet['n1']['name']),
+            node1 = Node(id=raw_triplet['n1']['str_id'], name=str(raw_triplet['n1']['name']),
                 type=NODES_TYPES_MAP[list(raw_triplet['n1'].labels)[0]], prop=dict(raw_triplet['n1']))
-            node2 = NodeCreator.create(
-                id=raw_triplet['n2']['str_id'], name=str(raw_triplet['n2']['name']),
+            node2 = Node(id=raw_triplet['n2']['str_id'], name=str(raw_triplet['n2']['name']),
                 type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]], prop=dict(raw_triplet['n2']))
             relation = Relation(
                 id=raw_triplet['rel']['str_id'], name=str(raw_triplet['rel']['name']),
