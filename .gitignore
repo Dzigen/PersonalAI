@@ -20,7 +20,8 @@ pai_venv/
 notebooks/scripts/extract_parts
 experiments/../*.json
 docs/_build
+docs/build
 docs/log
 tmp/
-tests/integrational/volumes
+tests/volumes
 docs/build
