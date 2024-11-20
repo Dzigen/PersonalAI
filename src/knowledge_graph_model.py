@@ -306,7 +306,6 @@ class GraphModel:
         for step in tqdm(range(steps)):
             self.db_conn.delete(triplets[step*batch_size: (step+1)*batch_size])
 
-@dataclass
 class KnowledgeGraphModel:
     """Модель памяти (графа знаний) ассистента.
 
@@ -315,5 +314,6 @@ class KnowledgeGraphModel:
     :param graph_struct: Знания, хранящиеся в векторной структуре данных.
     :type graph_struct: EmbeddingsModel
     """
+
     graph_struct: GraphModel
     embeddings_struct: EmbeddingsModel
