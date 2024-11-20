@@ -7,6 +7,7 @@ import collections
 from copy import deepcopy
 
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
+from .errors import NO_START_NODE_IN_PARENT_ERROR_MSG, EMPTY_PARENT_ERROR_MSG, NOT_VALID_ID_ERROR_MSG
 from ...utils.data_structs import QueryInfo, Triplet, NodeType
 from ...knowledge_graph_model import KnowledgeGraphModel
 from ...utils.data_structs import create_id_for_node_pair
@@ -74,18 +75,6 @@ class AStarMetrics:
     def compute_h_metric(self, *args, **kwargs) -> float:
         return self.metrics_map[self.config.h_metric_name](*args, **kwargs)
 
-    def get_nodes_path(self, parent: Dict[str, str], end_node_id: str) -> List[str]:
-        #end_node_id = U[-1] if (end_node_id not in parent) else end_node_id
-        path, end_flag, cur_n = [end_node_id], False, end_node_id
-        while not end_flag:
-            next_n = parent[cur_n]
-            if next_n is None:
-                end_flag = True
-            else:
-                path.append(next_n)
-                cur_n = next_n
-        return path
-
     def calculate_ip_distance(self, node1_id: str, node2_id: str) -> float:
         dist = 0
         if node1_id != node2_id:
@@ -136,7 +125,7 @@ class AStarMetrics:
         return short_path_len * w
 
     def avg_weighted_short_path(self, node1_id: str, node2_id: str, parent: Dict[str, str]) -> float:
-        nodes_path = self.get_nodes_path(parent, node1_id)
+        nodes_path = AStarTripletsRetriever.get_nodes_path(parent, node1_id)
         acc_dist = 0
         for i in range(len(nodes_path)-1):
             acc_dist += self.embeddings_dist(nodes_path[i], nodes_path[i+1])
@@ -308,8 +297,25 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
         self.kg_model = kg_model
         self.graph_searcher = AStarGraphSearch(kg_model, log, search_config, verbose)
 
-    def get_nodes_path(self, parent: Dict[str, str], end_node_id: str, spare_closest_node_id: str) -> List[str]:
-        end_node_id = spare_closest_node_id if (end_node_id not in parent) else end_node_id
+    @staticmethod
+    def get_nodes_path(parent: Dict[str, str], end_node_id: str) -> List[str]:
+        """Метод предназначен для получения пути обхода графа, заканчивая заданной конечной end_node_id вершиной.
+        Путь должен быть ацикличным: Есть стартовая вершин, у которой нет родителя.
+
+        :param parent: Словарь с идентификаторами родительских вершин. Ключи - идентикиаторы вершин, которые были посещены;
+        значения - идентификаторы вершины (родитель), из которой был выполнен переход в данную (ключ) вершину.
+        :type parent: Dict[str, str]
+        :param end_node_id: Идентификатор последней посещённой вершины.
+        :type end_node_id: str
+        :return: Последовательность посещённых вершин: от конечной до стартовой (в обратном порядке).
+        :rtype: List[str]
+        """
+        if type(end_node_id) is not str:
+            raise ValueError(NOT_VALID_ID_ERROR_MSG)
+        if None not in parent.values():
+            raise ValueError(NO_START_NODE_IN_PARENT_ERROR_MSG)
+        if len(parent) == 0:
+            raise ValueError(EMPTY_PARENT_ERROR_MSG)
 
         path, end_flag, cur_n = [end_node_id], False, end_node_id
         while not end_flag:
@@ -319,7 +325,6 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
             else:
                 path.append(next_n)
                 cur_n = next_n
-
         return path
 
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
@@ -345,7 +350,8 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
                     self.log(f"search elapsed_time: {time() - s_time}", verbose=self.verbose)
 
                     s_time = time()
-                    nodes_path = self.get_nodes_path(parent, end_node, spare_closest_node)
+                    nodes_path = AStarTripletsRetriever.get_nodes_path(
+                        parent, spare_closest_node if end_node not in parent else end_node)
                     self.log(f"get_path elapsed_time: {time() - s_time}", verbose=self.verbose)
 
                     # Сохраняем только уникальные пары вершин (по их идентификаторам)
