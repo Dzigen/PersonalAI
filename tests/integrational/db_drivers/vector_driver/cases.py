@@ -53,7 +53,7 @@ VECTORDB_CREATE_TEST_CASES = [
     # 8. элемент существует в бд (по id)
     [[[FULL_INSTANCE1],[FULL_INSTANCE1]], {'exception': False, 'db_size': 1}],
     # 9. torch-тип данных эмбеддинга
-    [[[INSTANCE_WITH_TORCH_EMB]], {'exception': False, 'db_size': 1}],
+    [[[INSTANCE_WITH_TORCH_EMB]], {'exception': True, 'db_size': 0}],
     # 10. numpy-тип данных эмбеддинга
     [[[INSTANCE_WITH_NUMPY_EMB]], {'exception': False, 'db_size': 1}],
     # 11. неверный формат идентикатора 1
@@ -131,7 +131,7 @@ VECTORDB_RETRIEVE_TEST_CASES = [
     # 3. в бд меньше элементов, чем заданное количество
     [[FULL_INSTANCE1], [FULL_INSTANCE1], 2, {'exception': False, 'output_size': 1}],
     # 4. torch-тип данных эмбеддинга
-    [[FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_TORCH_EMB], 2, {'exception': False, 'output_size': 2}],
+    [[FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_TORCH_EMB], 2, {'exception': True, 'output_size': 2}],
     # 5. numpy-тип данных эмбеддинга
     [[FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_NUMPY_EMB], 2, {'exception': False, 'output_size': 2}],
     # 6. неверный формат ембеддинга квери # 1

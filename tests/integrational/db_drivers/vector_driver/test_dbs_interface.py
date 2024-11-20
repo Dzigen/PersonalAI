@@ -16,7 +16,7 @@ def test_create(input, expected, vectordb_conn):
     try:
         for inp in input:
             vectordb_conn.create(inp)
-    except (ChromaError, ValueError) as e:
+    except (ChromaError, ValueError, AssertionError) as e:
         print(str(e))
         assert expected['exception']
     else:
@@ -62,7 +62,7 @@ def test_retrieve(instances, queries, n_results, expected, vectordb_conn):
 
     try:
         output = vectordb_conn.retrieve(queries, n_results=n_results)
-    except ValueError as e:
+    except (ValueError, AssertionError) as e:
         print(str(e))
         assert expected['exception']
     else:

@@ -13,14 +13,14 @@ from src.db_drivers.kv_driver import KeyValueDriver, KeyValueDriverConfig, KVDBC
 @pytest.fixture(scope='package')
 def inmemory_kv_conn():
     config = KeyValueDriverConfig(db_vendor='inmemory_kv', db_config=KVDBConnectionConfig(
-        host='localhost', params={'kvstore_dump_name': 'inmemory_store', 'load_from_disk': False,
+        params={'kvstore_dump_name': 'inmemory_store', 'load_from_disk': False,
         'load_dump_dir': TEST_VOLUME_DIR, 'save_on_disk': True, 'save_dump_dir': TEST_VOLUME_DIR}, need_to_clear=True))
     return KeyValueDriver.connect(config)
 
 @pytest.fixture(scope='package')
 def aerospike_conn():
     config = KeyValueDriverConfig(db_vendor='aerospike', db_config=KVDBConnectionConfig(
-        host='localhost', port=3000, db_info={'db': 'test', 'table': 'testing'},
+        host='0.0.0.0', port=3000, db_info={'db': 'test', 'table': 'testing'},
         need_to_clear=True))
     return KeyValueDriver.connect(config)
 

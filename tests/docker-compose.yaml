@@ -39,3 +39,17 @@ services:
         reservations:
           cpus: '1'
           memory: 4G
+
+  isolated_environment:
+    image: m.menschikov/empty_workspace:v1
+    container_name: personalai_mmenschikov_isolated_env
+    hostname: isolated_env
+    volumes:
+      - ../src:/home/workspace/src
+      - ../data:/home/workspace/data
+      - ../models:/home/workspace/models
+      - ../tests:/home/workspace/tests
+      - ../configs:/home/workspace/configs
+    depend_on:
+      - neo4j
+      - aerospike
