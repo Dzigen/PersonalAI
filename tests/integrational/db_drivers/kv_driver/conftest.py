@@ -3,7 +3,7 @@ import pytest
 import sys
 # TO CHANGE
 PROJECT_BASE_DIR = '../../'
-TEST_VOLUME_DIR = './volumes'
+TEST_VOLUME_DIR = '../volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
 from src.db_drivers.kv_driver import KeyValueDriver, KeyValueDriverConfig, KVDBConnectionConfig
@@ -20,7 +20,7 @@ def inmemory_kv_conn():
 @pytest.fixture(scope='package')
 def aerospike_conn():
     config = KeyValueDriverConfig(db_vendor='aerospike', db_config=KVDBConnectionConfig(
-        host='personalai_test_aerospike', port=3000, db_info={'db': 'test', 'table': 'testing'},
+        host='localhost', port=3000, db_info={'db': 'test', 'table': 'testing'}, # host: personalai_test_aerospike
         need_to_clear=True))
     return KeyValueDriver.connect(config)
 

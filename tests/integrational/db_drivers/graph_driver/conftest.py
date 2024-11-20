@@ -3,7 +3,7 @@ import pytest
 import sys
 # TO CHANGE
 PROJECT_BASE_DIR = '../../'
-TEST_VOLUME_DIR = './volumes'
+TEST_VOLUME_DIR = '../volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
 from src.utils.data_structs import NodeType, RelationType
@@ -20,7 +20,7 @@ def inmemory_graph_conn():
 @pytest.fixture(scope='package')
 def neo4j_conn():
     config = GraphDriverConfig(db_vendor='neo4j', db_config=GraphDBConnectionConfig(
-        uri="bolt://personalai_mmenschikov_test_neo4j:7687", db_info={'db': 'testing', 'table': 'testing'},
+        uri="bolt://localhost:7687", db_info={'db': 'testing', 'table': 'testing'}, # host: personalai_mmenschikov_test_neo4j
         params={'user': "neo4j", 'pwd': 'password'}, need_to_clear=True))
     return GraphDriver.connect(config)
 
