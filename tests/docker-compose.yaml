@@ -30,7 +30,7 @@ services:
       - "3002:3002"
     volumes:
       - ./volumes/aerospike:/opt/aerospike/data
-      - ../../configs/aerospike:/etc/aerospike
+      - ../configs/aerospike:/etc/aerospike
     deploy:
       resources:
         limits:
@@ -50,6 +50,6 @@ services:
       - ../models:/home/workspace/models
       - ../tests:/home/workspace/tests
       - ../configs:/home/workspace/configs
-    depend_on:
+    depends_on:
       - neo4j
       - aerospike

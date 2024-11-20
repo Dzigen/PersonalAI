@@ -20,7 +20,7 @@ def inmemory_kv_conn():
 @pytest.fixture(scope='package')
 def aerospike_conn():
     config = KeyValueDriverConfig(db_vendor='aerospike', db_config=KVDBConnectionConfig(
-        host='0.0.0.0', port=3000, db_info={'db': 'test', 'table': 'testing'},
+        host='personalai_test_aerospike', port=3000, db_info={'db': 'test', 'table': 'testing'},
         need_to_clear=True))
     return KeyValueDriver.connect(config)
 
