@@ -1,5 +1,8 @@
+from typing import List
+
 from .graph_model import GraphModel
 from .embeddings_model import EmbeddingsModel
+from ..utils import Triplet
 
 class KnowledgeGraphModel:
     """Модель памяти (графа знаний) ассистента.
@@ -14,9 +17,10 @@ class KnowledgeGraphModel:
         self.graph_struct = graph_struct
         self.embeddings_struct =  embeddings_model
 
-    def create_triplets(self):
-        # TODO
-        pass
+    def create_triplets(self, triplets: List[Triplet], update_nodes: bool = False) -> None:
+        # на уровне графа знаний выдерживается консистентность графовой и векторой моделей
+        self.graph_struct.create_triplets(triplets, status_bar=False) # внутри идёт сначала create , а потом update
+        self.embeddings_struct.create_triplets(triplets, status_bar=False)
 
     def delete_triplets(self):
         # TODO
