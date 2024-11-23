@@ -1,10 +1,11 @@
 from .utils import MEM_UPDATE_LOG, REPLACE_THESIS_PROMPT, REPLACE_SIMPLE_PROMPT
-from ...utils import Logger
+from ...utils import Logger, Triplet
+from ...utils.errors import ReturnInfo, ReturnStatus
 from ...agents import AgentDriver, AgentDriverConfig
-from ...qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
+from ...knowledge_graph_model import KnowledgeGraphModel
 
 from dataclasses import dataclass, field
-from typing import Dict
+from typing import Dict, List
 
 @dataclass
 class LLMUpdatorConfig:
@@ -37,16 +38,31 @@ class LLMUpdator:
     :type config: LLMUpdatorConfig
     """
 
-    def __init__(self, config: LLMUpdatorConfig, bfs: BFSRetriever) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel,  config: LLMUpdatorConfig) -> None:
         self.config = config
         self.agent = AgentDriver.connect(config.agent_config)
-        self.bfs = bfs
+        self.kg_model = kg_model
 
         self.replace_simple_prompt = config.replace_simple_prompt
         self.replace_thesis_prompt = config.replace_thesis_prompt
         self.log = config.log
 
-    def update(self, new_triplets, replacing_window_width, replacing_window_depth, need_simple = True, need_thesises = True):
+    def update(self, new_triplets: List[Triplet], delete_obsolete_info:bool=False,
+               need_simple:bool=True, need_thesises:bool=True) -> ReturnInfo:
+        info = ReturnInfo()
+
+        if delete_obsolete_info:
+            # Ищём устаревшую информацю в памяти ассистента
+            obsolete_triplet_ids = ...
+
+            # Удаляем устаревшую информацию из памяти ассистента
+            self.kg_model.delete_triplets(obsolete_triplet_ids)
+
+        # Добавляем новую информацию в память ассистента
+        self.kg_model.create_triplets(new_triplets)
+
+        return info
+
         assert need_simple or need_thesises
         entities = self.get_entities_from_triplets(new_triplets)
         triplets_to_remove = []
