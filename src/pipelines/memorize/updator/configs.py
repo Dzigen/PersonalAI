@@ -10,11 +10,9 @@ from ....parsers.memorize_pipeline.updator.replace_thesis_triplets import en_rt_
       ru_rt_parse, ru_rt_postprocess, rt_formate
 from ....prompts.memorize_pipeline.updator.replace_thesis_triplets import RU_REPLACE_THESIS_USER_PROMPT, EN_REPLACE_THESIS_USER_PROMPT
 
-
 MEM_UPDATE_LOG = "log/memorize/updator/main"
 MEM_REPLACE_SIMPLE_LOG = 'log/memorize/updator/replace_simple_triplets'
 MEM_REPLACE_THESIS_LOG = 'log/memorize/updator/replace_thesis_triplets'
-
 
 ### AGENT TASK-SUITES ###
 
@@ -36,10 +34,12 @@ RU_REPLACE_SIMPLE_SUITE = AgentTaskSuite(
     postprocess_answer_func=ru_rs_postprocess
 )
 
-REPLACE_SIMPLE_TASK_CONFIG = AgentTaskSolverConfig(
-    suites={'ru': RU_REPLACE_SIMPLE_SUITE, 'en': EN_REPLACE_SIMPLE_SUITE},
+DEFAULT_REPLACE_SIMPLE_SUITES = {'ru': RU_REPLACE_SIMPLE_SUITE, 'en': EN_REPLACE_SIMPLE_SUITE}
+
+DEFAULT_REPLACE_SIMPLE_TASK_CONFIG = AgentTaskSolverConfig(
+    suites=DEFAULT_REPLACE_SIMPLE_SUITES,
     formate_context_func=rs_formate,
-    log=Logger(MEM_REPLACE_SIMPLE_LOG),
+    log=Logger(MEM_REPLACE_SIMPLE_LOG)
 )
 
 # REPLACE THESIS TRIPLETS
@@ -60,8 +60,10 @@ RU_REPLACE_THESIS_SUITE = AgentTaskSuite(
     postprocess_answer_func=ru_rt_postprocess
 )
 
-REPLACE_HYPER_TASK_CONFIG = AgentTaskSolverConfig(
-    suites={'ru': RU_REPLACE_THESIS_SUITE, 'en': EN_REPLACE_THESIS_SUITE},
+DEFAULT_REPLACE_THESIS_SUITES = {'ru': RU_REPLACE_THESIS_SUITE, 'en': EN_REPLACE_THESIS_SUITE}
+
+DEFAULT_REPLACE_THESIS_TASK_CONFIG = AgentTaskSolverConfig(
+    suites=DEFAULT_REPLACE_THESIS_SUITES,
     formate_context_func=rt_formate,
-    log=Logger(MEM_REPLACE_THESIS_LOG),
+    log=Logger(MEM_REPLACE_THESIS_LOG)
 )

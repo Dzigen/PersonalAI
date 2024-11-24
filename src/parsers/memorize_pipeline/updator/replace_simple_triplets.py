@@ -1,17 +1,25 @@
+from typing import List, Dict
 
-def en_rs_parse():
+from ....utils import Triplet
+
+def en_rs_parse(raw_agent_answer: str, **kwargs) -> object:
+    # TODO
     pass
 
-def en_rs_postprocess():
+def en_rs_postprocess(foramted_agent_answer: object, base_triplet: Triplet, incident_triplets: List[Triplet]) -> List[str]:
+    # TODO
     pass
 
-def ru_rs_parse():
+def ru_rs_parse(agent_raw_output: str, **kwargs) -> object:
+    # TODO
     pass
 
-def ru_rs_postprocess():
+def ru_rs_postprocess(foramted_agent_answer: object, base_triplet: Triplet, incident_triplets: List[Triplet]) -> List[str]:
+    # TODO
     pass
 
-def rs_formate():
+def rs_formate(base_triplet: Triplet, incident_triplets: List[Triplet]) -> Dict[str,str]:
+    # TODO
     pass
 
 @staticmethod
@@ -29,27 +37,6 @@ def rs_formate():
                 ]
             )
         return triplets_to_remove
-
-    @staticmethod
-    def get_entities_from_triplets(triplets):
-        entities = []
-        for triplet in triplets:
-            if triplet[0] not in entities:
-                entities.append(triplet[0])
-            if triplet[2] not in entities:
-                entities.append(triplet[2])
-        return entities
-
-    @staticmethod
-    def stringify(triplet):
-        if triplet[1]["prop"]["type"] in ["hyper", "episodic"]:
-            return triplet[1]["prop"]["time"] + ": " + triplet[2]["name"]
-        if triplet[1]["prop"]["type"] in ["simple"]:
-            return triplet[1]["prop"]["time"] + ": " + " ".join([triplet[0]["name"], triplet[1]["name"], triplet[2]["name"]])
-
-    @staticmethod
-    def stringify_all(triplets):
-        return list({LLMUpdator.stringify(triplet) for triplet in triplets})
 
     @staticmethod
     def parse_replacements_simple(raw_replacements):

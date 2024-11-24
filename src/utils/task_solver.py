@@ -48,7 +48,7 @@ class AgentTaskSolver:
 
         # TODO: пустая raw-строка
 
-        formated_answer = self.config.suites[detected_lang].parse_answer_func(formated_answer, **kwargs)
+        formated_answer = self.config.suites[detected_lang].parse_answer_func(raw_answer, **kwargs)
         self.log("Formated agent answer: " + str(formated_answer), verbose=self.config.verbose)
 
         task_result = self.config.suites[detected_lang].postprocess_answer_func(formated_answer, **kwargs)

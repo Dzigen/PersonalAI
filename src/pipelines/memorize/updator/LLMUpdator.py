@@ -1,9 +1,9 @@
-from .utils import MEM_UPDATE_LOG, REPLACE_SIMPLE_TASK_CONFIG, REPLACE_HYPER_TASK_CONFIG
-from ...utils import Logger, Triplet, AgentTaskSolverConfig, AgentTaskSolver
-from ...utils.data_structs import RelationType, NodeType
-from ...utils.errors import ReturnInfo, ReturnStatus
-from ...agents import AgentDriver, AgentDriverConfig
-from ...knowledge_graph_model import KnowledgeGraphModel
+from .configs import MEM_UPDATE_LOG, DEFAULT_REPLACE_SIMPLE_TASK_CONFIG, DEFAULT_REPLACE_THESIS_TASK_CONFIG
+from ....utils import Logger, Triplet, AgentTaskSolverConfig, AgentTaskSolver
+from ....utils.data_structs import RelationType, NodeType
+from ....utils.errors import ReturnInfo, ReturnStatus
+from ....agents import AgentDriver, AgentDriverConfig
+from ....knowledge_graph_model import KnowledgeGraphModel
 
 from dataclasses import dataclass, field
 from typing import Dict, List
@@ -26,9 +26,9 @@ class LLMUpdatorConfig:
     :type verbose: bool
     """
     lang: str = "auto"
-    agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig)
-    replace_simple_task_config: AgentTaskSolverConfig = field(default_factory=lambda: REPLACE_SIMPLE_TASK_CONFIG)
-    replace_thesis_task_config: AgentTaskSolverConfig = field(default_factory=lambda: REPLACE_HYPER_TASK_CONFIG)
+    agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
+    replace_simple_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_REPLACE_SIMPLE_TASK_CONFIG)
+    replace_thesis_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_REPLACE_THESIS_TASK_CONFIG)
     log: Logger = field(default_factory=lambda: Logger(MEM_UPDATE_LOG))
     verbose: bool = False
 
