@@ -1,5 +1,6 @@
 from .utils import MEM_UPDATE_LOG, REPLACE_THESIS_PROMPT, REPLACE_SIMPLE_PROMPT
 from ...utils import Logger, Triplet
+from ...utils.data_structs import RelationType, NodeType, AgentTaskSuitcase
 from ...utils.errors import ReturnInfo, ReturnStatus
 from ...agents import AgentDriver, AgentDriverConfig
 from ...knowledge_graph_model import KnowledgeGraphModel
@@ -26,8 +27,8 @@ class LLMUpdatorConfig:
     """
     lang: str = "auto"
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig)
-    replace_thesis_prompt: Dict = field(default_factory=lambda: REPLACE_THESIS_PROMPT)
-    replace_simple_prompt: Dict = field(default_factory=lambda: REPLACE_SIMPLE_PROMPT)
+    replace_simple_task: AgentTaskSuitcase = field(default_factory=lambda: ...)
+    replace_thesis_task: AgentTaskSuitcase = field(default_factory=lambda: ...)
     log: Logger = field(default_factory=lambda: Logger(MEM_UPDATE_LOG))
     verbose: bool = False
 
@@ -42,52 +43,104 @@ class LLMUpdator:
         self.config = config
         self.agent = AgentDriver.connect(config.agent_config)
         self.kg_model = kg_model
-
-        self.replace_simple_prompt = config.replace_simple_prompt
-        self.replace_thesis_prompt = config.replace_thesis_prompt
         self.log = config.log
 
+    def find_simple_obsolete_triplet_ids(self, triplets: List[Triplet]) -> List[str]:
+        obsolete_triplet_ids = list()
+        simple_triplets = list(filter(lambda triplet: triplet.relation.type == RelationType.simple, triplets))
+        for base_triplet in simple_triplets:
+
+            # Формируем уникальный список триплетов, которые инциденты вершинам
+            # из текущего триплета (если такие вершины присутствуют в графе знаний)
+            incident_triplets = dict()
+            for base_node in [base_triplet.start_node, base_triplet.end_node]:
+
+                # сопоставляем ноду из триплета нодам в графе знаний по полю name
+                matched_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
+                    name=[base_node.name], type=NodeType.object, object='node')
+
+                for m_node in matched_nodes:
+                    neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_node.id, [NodeType.object])
+                    for neighbour_id in neighbour_node_ids:
+                        shared_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_node.id, neighbour_id)
+                        incident_triplets.update({item.id: item for item in shared_triplets})
+                incident_triplets = list(incident_triplets.items())
+
+            # Выполняем поиск устаревших триплетов
+            obsolete_triplet_ids += self.config.replace_simple_task.solve_task(base_triplet, incident_triplets)
+        return obsolete_triplet_ids
+
+    def find_hyper_obsolete_triplet_ids(self, triplets: List[Triplet]) -> List[str]:
+        obsolete_triplet_ids = list()
+        hyper_triplets = list(filter(lambda triplet: triplet.relation.type == RelationType.hyper, triplets))
+        for base_triplet in hyper_triplets:
+
+            # Формируем уникальный список триплетов, которые инциденты вершинам
+            # из текущего триплета (если такие вершины присутствуют в графе знаний)
+            incident_triplets = dict()
+
+            # сопоставляем ноду из триплета нодам в графе знаний по полю name
+            matched_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
+                name=[base_triplet.start_node.name], type=NodeType.object, object='node')
+
+            for m_node in matched_nodes:
+                neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_node.id, [NodeType.hyper])
+                for neighbour_id in neighbour_node_ids:
+                    shared_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_node.id, neighbour_id)
+                    incident_triplets.update({item.id: item for item in shared_triplets})
+            incident_triplets = list(incident_triplets.items())
+
+            # Выполняем поиск устаревших триплетов
+            obsolete_triplet_ids += self.config.replace_simple_task.solve_task(base_triplet, incident_triplets)
+        return obsolete_triplet_ids
+
+    def find_episodic_obsolete_triplet_ids(triplets: List[Triplet], obsolete_hyper_triplet_ids: List[str]) -> List[str]:
+        obsolete_triplet_ids = list()
+        episodic_triplets = list(filter(lambda triplet: triplet.relation.type == RelationType.episodic and triplet.start_node.type == NodeType.object, triplets))
+        for triplet in episodic_triplets:
+            # найти shared thesis между object и episodic
+            # если
+            # получаем триплет между object
+            # TODO
+            pass
+
+        return obsolete_triplet_ids
+
+    def get_obsolete_triplet_ids(self, new_triplets: List[Triplet], check_simple: bool = True,
+                                 check_hyper: bool = True, check_episodic: bool = True) -> List[str]:
+        obsolete_triplet_ids = dict()
+
+        if check_episodic and not check_hyper:
+            raise ValueError
+
+        if check_simple:
+            obsolete_triplet_ids[RelationType.simple.value] = self.find_simple_obsolete_triplet_ids(new_triplets)
+
+        if check_hyper:
+            obsolete_triplet_ids[RelationType.hyper.value] = self.find_hyper_obsolete_triplet_ids(new_triplets)
+
+        if check_episodic:
+            obsolete_triplet_ids[RelationType.episodic.value] = self.find_episodic_obsolete_triplet_ids(
+                new_triplets, obsolete_triplet_ids[RelationType.hyper.value])
+
+        return obsolete_triplet_ids
+
     def update(self, new_triplets: List[Triplet], delete_obsolete_info:bool=False,
-               need_simple:bool=True, need_thesises:bool=True) -> ReturnInfo:
+               need_simple:bool=True, need_hyper:bool=True, need_episodic:bool=True) -> ReturnInfo:
         info = ReturnInfo()
 
         if delete_obsolete_info:
             # Ищём устаревшую информацю в памяти ассистента
-            obsolete_triplet_ids = ...
+            obsolete_t_ids = self.get_obsolete_triplet_ids(new_triplets, need_simple, need_hyper, need_episodic)
 
             # Удаляем устаревшую информацию из памяти ассистента
-            self.kg_model.delete_triplets(obsolete_triplet_ids)
+            self.kg_model.delete_triplets(obsolete_t_ids)
 
         # Добавляем новую информацию в память ассистента
         self.kg_model.create_triplets(new_triplets)
 
         return info
 
-        assert need_simple or need_thesises
-        entities = self.get_entities_from_triplets(new_triplets)
-        triplets_to_remove = []
-
-        if need_simple:
-            ex_triplets = self.bfs.bfs_(entities, replacing_window_depth, edge_types = ["simple"], max_triplets = replacing_window_width)
-            if ex_triplets:
-                replacements = self.llm_agent.generate(self.replace_simple_prompt.format(ex_triplets = self.stringify_all(ex_triplets),
-                                                                        new_triplets = self.stringify_all(new_triplets)))
-                self.log("FOUND SIMPLE REPLACEMENTS: " + str(replacements))
-                triplets_to_remove += self.parse_replacements_simple(replacements)
-            else:
-                self.log("FOUND NO EXISTED SIMPLE TRIPLETS TO REMOVE")
-
-        if need_thesises:
-            ex_triplets = self.bfs.bfs_(entities, replacing_window_depth, edge_types = ["hyper"], max_triplets = replacing_window_width)
-            if ex_triplets:
-                replacements = self.llm_agent.generate(self.replace_thesis_prompt.format(ex_triplets = self.stringify_all(ex_triplets),
-                                                                        new_triplets = self.stringify_all(new_triplets)))
-                self.log("FOUND THESIS REPLACEMENTS: " + str(replacements))
-                triplets_to_remove += self.parse_replacements_thesis(replacements)
-            else:
-                self.log("FOUND NO EXISTED THESIS TRIPLETS TO REMOVE")
-
-        return triplets_to_remove
 
     @staticmethod
     def parse_replacements_simple(raw_replacements):

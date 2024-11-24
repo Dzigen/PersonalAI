@@ -3,6 +3,9 @@ from typing import List, Union, Tuple, Dict
 from enum import Enum
 import hashlib
 
+from .logger import Logger
+from ..agents.utils import AbstractAgentConnector
+
 class NodeType(Enum):
     """Доступные типы вершин."""
     #: Вершина хранит атомарную сущность.
@@ -307,3 +310,42 @@ class QueryInfo:
     entities: List[str] = None
     linked_nodes: List[object] = None
     linked_nodes_by_entities: List[object] = None
+
+
+AGENT_TASK_LOG = './log/aget_task_suitcase'
+
+@dataclass
+class AgentTaskSuitcaseConfig:
+    system_prompt: str
+    user_prompt: str
+    assistant_prompt: str
+    enriche_user_prompt_func: object
+    parse_answer_func: object
+    postprocess_answer_func: object
+
+    log: Logger = field(default_factory=lambda: Logger(AGENT_TASK_LOG))
+    verbose: bool = False
+
+class AgentTaskSuitcase:
+
+    def __init__(self, agent: AbstractAgentConnector, config: AgentTaskSuitcaseConfig) -> None:
+        self.agent = agent
+        self.config = config
+        self.log = self.config.log
+
+    def solve_task(self, *args, **kwargs) -> object:
+        enriched_user_prompt = self.config.enriche_user_prompt_func(*args, **kwargs)
+
+        raw_answer = self.agent.generate(
+            system_prompt=self.config.system_prompt,
+            user_prompt=enriched_user_prompt,
+            assistant_prompt=self.config.assistant_prompt)
+        self.log("Raw agent answer: " + raw_answer, verbose=self.config.verbose)
+
+        formated_answer = self.config.parse_answer_func(formated_answer, *args, **kwargs)
+        self.log("Formated agent answer: " + str(formated_answer), verbose=self.config.verbose)
+
+        task_result = self.config.postprocess_answer_func(formated_answer, *args, **kwargs)
+        self.log("Task reulst: " + str(task_result), verbose=self.config.verbose)
+
+        return task_result
