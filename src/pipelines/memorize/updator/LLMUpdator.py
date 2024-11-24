@@ -41,11 +41,12 @@ class LLMUpdator:
 
     def __init__(self, kg_model: KnowledgeGraphModel,  config: LLMUpdatorConfig) -> None:
         self.config = config
-        self.agent = AgentDriver.connect(config.agent_config)
-        self.replace_simple_solver = AgentTaskSolver()
-        self.replace_hyper_solver =  AgentTaskSolver
         self.kg_model = kg_model
         self.log = config.log
+
+        self.agent = AgentDriver.connect(config.agent_config)
+        self.replace_simple_solver = AgentTaskSolver(self.agent, self.config.replace_simple_task_config)
+        self.replace_hyper_solver = AgentTaskSolver(self.agent, self.config.replace_thesis_task_config)
 
     def find_simple_obsolete_triplet_ids(self, triplets: List[Triplet]) -> List[str]:
         obsolete_triplet_ids = list()
@@ -69,7 +70,8 @@ class LLMUpdator:
                 incident_triplets = list(incident_triplets.items())
 
             # Выполняем поиск устаревших триплетов
-            obsolete_triplet_ids += self.config.replace_simple_task.solve_task(base_triplet, incident_triplets)
+            obsolete_triplet_ids += self.replace_simple_solver.solve(
+                lang=self.config.lang, base_triplet=base_triplet, incident_triplets=incident_triplets)
         return obsolete_triplet_ids
 
     def find_hyper_obsolete_triplet_ids(self, triplets: List[Triplet]) -> List[str]:
@@ -93,7 +95,8 @@ class LLMUpdator:
             incident_triplets = list(incident_triplets.items())
 
             # Выполняем поиск устаревших триплетов
-            obsolete_triplet_ids += self.config.replace_simple_task.solve_task(base_triplet, incident_triplets)
+            obsolete_triplet_ids += self.replace_simple_solver.solve(
+                lang=self.config.lang, base_triplet=base_triplet, incident_triplets=incident_triplets)
         return obsolete_triplet_ids
 
     def find_episodic_obsolete_triplet_ids(self, triplets: List[Triplet], obsolete_hyper_triplet_ids: List[str]) -> List[str]:
