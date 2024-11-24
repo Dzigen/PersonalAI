@@ -1,6 +1,6 @@
-from .utils import MEM_UPDATE_LOG, REPLACE_THESIS_PROMPT, REPLACE_SIMPLE_PROMPT
-from ...utils import Logger, Triplet
-from ...utils.data_structs import RelationType, NodeType, AgentTaskSuitcase
+from .utils import MEM_UPDATE_LOG, REPLACE_SIMPLE_TASK_CONFIG, REPLACE_HYPER_TASK_CONFIG
+from ...utils import Logger, Triplet, AgentTaskSolverConfig, AgentTaskSolver
+from ...utils.data_structs import RelationType, NodeType
 from ...utils.errors import ReturnInfo, ReturnStatus
 from ...agents import AgentDriver, AgentDriverConfig
 from ...knowledge_graph_model import KnowledgeGraphModel
@@ -27,8 +27,8 @@ class LLMUpdatorConfig:
     """
     lang: str = "auto"
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig)
-    replace_simple_task: AgentTaskSuitcase = field(default_factory=lambda: ...)
-    replace_thesis_task: AgentTaskSuitcase = field(default_factory=lambda: ...)
+    replace_simple_task_config: AgentTaskSolverConfig = field(default_factory=lambda: REPLACE_SIMPLE_TASK_CONFIG)
+    replace_thesis_task_config: AgentTaskSolverConfig = field(default_factory=lambda: REPLACE_HYPER_TASK_CONFIG)
     log: Logger = field(default_factory=lambda: Logger(MEM_UPDATE_LOG))
     verbose: bool = False
 
@@ -42,6 +42,8 @@ class LLMUpdator:
     def __init__(self, kg_model: KnowledgeGraphModel,  config: LLMUpdatorConfig) -> None:
         self.config = config
         self.agent = AgentDriver.connect(config.agent_config)
+        self.replace_simple_solver = AgentTaskSolver()
+        self.replace_hyper_solver =  AgentTaskSolver
         self.kg_model = kg_model
         self.log = config.log
 
@@ -165,64 +167,3 @@ class LLMUpdator:
         self.kg_model.create_triplets(new_triplets)
 
         return info
-
-
-    @staticmethod
-    def parse_replacements_simple(raw_replacements):
-        raw_replacements = raw_replacements.lower()
-        raw_replacements = raw_replacements.split("[[")[-1] if "[[" in raw_replacements else raw_replacements.split("[\n[")[-1]
-        pairs = raw_replacements.replace("[", "").strip("]").split("],")
-        triplets_to_remove = []
-        for pair in pairs:
-            splitted_pair = pair.split("->")
-            if len(splitted_pair) != 2:
-                continue
-            first_triplet = splitted_pair[0].split(",")
-            if len(first_triplet) != 3:
-                continue
-            subj, rel, obj = first_triplet[0].strip(''' \n'".,/'''), first_triplet[1].strip(''' \n'".,/'''), first_triplet[2].strip(''' \n'".,/''')
-            triplets_to_remove.append(
-                [
-                    {"name": subj, "type": "remove", "prop": {}},
-                    {"name": rel, "prop": {"type": "remove"}},
-                    {"name": obj, "type": "remove", "prop": {}}
-                ]
-            )
-        return triplets_to_remove
-
-    @staticmethod
-    def parse_replacements_thesis(raw_replacements):
-        raw_replacements = raw_replacements.lower()
-        predicted_outdated = raw_replacements.split("[")[-1].split("]")[0].split(";")
-        predicted_outdated = [pair.strip().split("<-")[1].strip(''' \n'".,/''') for pair in predicted_outdated if "<-" in pair]
-        triplets_to_remove = []
-        for outdated_thesis in predicted_outdated:
-            triplets_to_remove.append(
-                [
-                    {"name": "remove", "type": "remove", "prop": {}},
-                    {"name": "hyper", "prop": {"type": "hyper"}},
-                    {"name": outdated_thesis, "type": "hyper", "prop": {}}
-                ]
-            )
-        return triplets_to_remove
-
-    @staticmethod
-    def get_entities_from_triplets(triplets):
-        entities = []
-        for triplet in triplets:
-            if triplet[0] not in entities:
-                entities.append(triplet[0])
-            if triplet[2] not in entities:
-                entities.append(triplet[2])
-        return entities
-
-    @staticmethod
-    def stringify(triplet):
-        if triplet[1]["prop"]["type"] in ["hyper", "episodic"]:
-            return triplet[1]["prop"]["time"] + ": " + triplet[2]["name"]
-        if triplet[1]["prop"]["type"] in ["simple"]:
-            return triplet[1]["prop"]["time"] + ": " + " ".join([triplet[0]["name"], triplet[1]["name"], triplet[2]["name"]])
-
-    @staticmethod
-    def stringify_all(triplets):
-        return list({LLMUpdator.stringify(triplet) for triplet in triplets})
