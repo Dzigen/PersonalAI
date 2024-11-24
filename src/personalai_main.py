@@ -3,8 +3,8 @@ from typing import List, Dict, Tuple
 from tqdm import tqdm
 
 from .knowledge_graph_model import GraphModel, GraphModelConfig, EmbeddingsModelConfig, EmbeddingsModel
-from .qa_pipeline import QAPipeline, QAPipelineConfig
-from .memorize_pipeline import MemPipeline, MemPipelineConfig
+from .pipelines.qa import QAPipeline, QAPipelineConfig
+from .pipelines.memorize import MemPipeline, MemPipelineConfig
 from .knowledge_graph_model import KnowledgeGraphModel
 from .utils import Logger, ReturnInfo, Triplet
 

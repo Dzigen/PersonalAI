@@ -2,7 +2,7 @@ from typing import List, Dict
 
 from ....utils import Triplet
 
-def en_rs_parse(raw_agent_answer: str, **kwargs) -> object:
+def rs_custom_parse(raw_agent_answer: str, **kwargs) -> object:
     raw_replacements = raw_agent_answer.lower()
     raw_replacements = raw_replacements.split("[[")[-1] if "[[" in raw_replacements else raw_replacements.split("[\n[")[-1]
     pairs = raw_replacements.replace("[", "").strip("]").split("],")
@@ -18,19 +18,7 @@ def en_rs_parse(raw_agent_answer: str, **kwargs) -> object:
 
         # TODO
 
-def en_rs_postprocess(foramted_agent_answer: object, base_triplet: Triplet, incident_triplets: List[Triplet]) -> List[str]:
-    # TODO
-    pass
-
-def ru_rs_parse(agent_raw_output: str, **kwargs) -> object:
-    # TODO
-    pass
-
-def ru_rs_postprocess(foramted_agent_answer: object, base_triplet: Triplet, incident_triplets: List[Triplet]) -> List[str]:
-    # TODO
-    pass
-
-def rs_formate(base_triplet: Triplet, incident_triplets: List[Triplet]) -> Dict[str,str]:
+def rs_custom_foramte(base_triplet: Triplet, incident_triplets: List[Triplet]) -> Dict[str,str]:
 
     def _custom_triplet_stringify(triplet: Triplet) -> str:
         return f"{triplet.start_node.name}, {triplet.relation.name}, {triplet.end_node.name}"
@@ -38,4 +26,8 @@ def rs_formate(base_triplet: Triplet, incident_triplets: List[Triplet]) -> Dict[
     existing_str_triplet = f'"{_custom_triplet_stringify(base_triplet)}".'
     new_str_triplets = '; '.join(map(lambda triplet: f'"{_custom_triplet_stringify(triplet)}"', incident_triplets)) + '.'
 
-    return {'ex_triplets': existing_str_triplet, 'new_triplets': new_str_triplets}.
+    return {'ex_triplets': existing_str_triplet, 'new_triplets': new_str_triplets}
+
+def rs_custom_postprocess(foramted_agent_answer: object, base_triplet: Triplet, incident_triplets: List[Triplet]) -> List[str]:
+    # TODO
+    pass

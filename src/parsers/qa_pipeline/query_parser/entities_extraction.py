@@ -1,6 +1,6 @@
 from typing import List, Tuple
 
-from ..utils import ReturnStatus
+from ....utils import ReturnStatus
 
 def qa_custom_entities_parse_func(raw_response: str) -> Tuple[List[str], ReturnStatus]:
     """Функция предназначена для разбора результата генерации ответа LLM-агента, в рамаках задачи по извлечению ключевых сущностей из текста на естественном языке.

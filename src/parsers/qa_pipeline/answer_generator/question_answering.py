@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from ..utils import ReturnStatus
+from ....utils import ReturnStatus
 
 def qa_custom_answer_parse_func_en(raw_response: str) -> Tuple[str, ReturnStatus]:
     """Функция предназначена для разбора результата генерации ответа LLM-агента, в рамаках условной QA-задачи на английском языке.
