@@ -1,5 +1,20 @@
 
-    @staticmethod
+def en_rs_parse():
+    pass
+
+def en_rs_postprocess():
+    pass
+
+def ru_rs_parse():
+    pass
+
+def ru_rs_postprocess():
+    pass
+
+def rs_formate():
+    pass
+
+@staticmethod
     def parse_replacements_thesis(raw_replacements):
         raw_replacements = raw_replacements.lower()
         predicted_outdated = raw_replacements.split("[")[-1].split("]")[0].split(";")
