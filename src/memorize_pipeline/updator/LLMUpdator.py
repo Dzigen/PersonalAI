@@ -98,9 +98,9 @@ class LLMUpdator:
         obsolete_triplet_ids = list()
         episodic_triplets = list(filter(lambda triplet: triplet.relation.type == RelationType.episodic and triplet.start_node.type == NodeType.object, triplets))
         for triplet in episodic_triplets:
-            # найти shared thesis между object и episodic
-            # если
-            # получаем триплет между object
+            # найти shared hyper-верщина между object и episodic
+            # получаем триплет с object- и hyper-вершинами
+            # если этот триплет в списке на удаление, то также удаляем эпизодическую связь с данной object-вершиной
             # TODO
             pass
 
