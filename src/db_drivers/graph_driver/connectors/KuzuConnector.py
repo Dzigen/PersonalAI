@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Union
 import kuzu
 import json
 import os
@@ -128,7 +128,7 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         # TODO
         pass
 
-    def read_by_name(self, name: str) -> List[Triplet]:
+    def read_by_name(self, name: str, type: Union[List[RelationType], List[NodeType]], object: str = 'triplet') -> List[Triplet]:
         # TODO
         pass
 

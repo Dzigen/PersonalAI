@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Union
 from collections import defaultdict
 import gc
 from time import time
@@ -6,6 +6,7 @@ import hashlib
 
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils import Triplet, NodeType
+from ....utils import RelationType
 
 DEFAULT_INMEMORYGRAPH_CONFIG = GraphDBConnectionConfig()
 
@@ -123,7 +124,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         # TODO
         pass
 
-    def read_by_name(self, name: str) -> List[Triplet]:
+    def read_by_name(self, name: str, type: Union[List[RelationType], List[NodeType]], object: str = 'triplet') -> List[Triplet]:
         # TODO
         pass
 
