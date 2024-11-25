@@ -1,9 +1,9 @@
 from neo4j import GraphDatabase
-from typing import List, Dict
+from typing import List, Dict, Union
 import json
 
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
-from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NodeType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
+from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NodeType, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 
 DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(uri="bolt://localhost:7687", params={'user': "neo4j", 'pwd': 'password'})
 
@@ -139,7 +139,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         # TODO
         pass
 
-    def read_by_name(self, name: str) -> List[Triplet]:
+    def read_by_name(self, name: str, type: Union[List[RelationType], List[NodeType]], object: str = 'triplet') -> List[Triplet]:
         # TODO
         pass
 

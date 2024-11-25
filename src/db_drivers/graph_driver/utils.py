@@ -1,9 +1,9 @@
-from typing import Dict, List
+from typing import Dict, List, Union
 from dataclasses import dataclass, field
 from abc import abstractmethod
 
 from ...utils import ReturnInfo
-from ...utils.data_structs import Triplet, NodeType
+from ...utils.data_structs import Triplet, NodeType, RelationType
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
 @dataclass
@@ -29,5 +29,5 @@ class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
         pass
 
     @abstractmethod
-    def read_by_name(self, name: str) -> List[Triplet]:
+    def read_by_name(self, name: str, type: Union[List[RelationType], List[NodeType]], object: str = 'triplet') -> List[Triplet]:
         pass
