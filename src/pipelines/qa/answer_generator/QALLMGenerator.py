@@ -50,7 +50,7 @@ class QALLMGenerator:
         self.log = self.config.log
 
         self.agent = AgentDriver.connect(config.agent_cofig)
-        self.answer_generator_solver = AgentTaskSolver(self.config.ag_task_config)
+        self.answer_generator_solver = AgentTaskSolver(self.agent, self.config.ag_task_config)
 
     def generate(self, query: str, context_triplets: List[Triplet]) -> Tuple[str, ReturnInfo]:
         """Метод предназначен для условной генерации ответа на вопрос.

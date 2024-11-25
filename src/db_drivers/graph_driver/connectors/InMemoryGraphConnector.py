@@ -123,6 +123,10 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         # TODO
         pass
 
+    def read_by_name(self, name: str) -> List[Triplet]:
+        # TODO
+        pass
+
     def get_adjecent_nodes(self, base_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
         if type(base_node_id) is not str:
             raise ValueError

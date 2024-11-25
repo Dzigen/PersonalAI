@@ -1,7 +1,7 @@
 from .configs import MEM_UPDATOR_MAIN_LOG_PATH, DEFAULT_REPLACE_SIMPLE_TASK_CONFIG, DEFAULT_REPLACE_THESIS_TASK_CONFIG
 from ....utils import Logger, Triplet, AgentTaskSolverConfig, AgentTaskSolver
 from ....utils.data_structs import RelationType, NodeType
-from ....utils.errors import ReturnInfo
+from ....utils.errors import ReturnInfo, ReturnStatus
 from ....agents import AgentDriver, AgentDriverConfig
 from ....knowledge_graph_model import KnowledgeGraphModel
 
@@ -71,8 +71,12 @@ class LLMUpdator:
                 incident_triplets = list(incident_triplets.items())
 
             # Выполняем поиск устаревших триплетов
-            obsolete_triplet_ids += self.replace_simple_solver.solve(
+            tmp_obsolete_triplet_ids, status = self.replace_simple_solver.solve(
                 lang=self.config.lang, base_triplet=base_triplet, incident_triplets=incident_triplets)
+
+            if status == ReturnStatus.success:
+                obsolete_triplet_ids += tmp_obsolete_triplet_ids
+
         return obsolete_triplet_ids
 
     def find_hyper_obsolete_triplet_ids(self, triplets: List[Triplet]) -> List[str]:
@@ -96,8 +100,12 @@ class LLMUpdator:
             incident_triplets = list(incident_triplets.items())
 
             # Выполняем поиск устаревших триплетов
-            obsolete_triplet_ids += self.replace_simple_solver.solve(
+            tmp_obsolete_triplet_ids, status = self.replace_simple_solver.solve(
                 lang=self.config.lang, base_triplet=base_triplet, incident_triplets=incident_triplets)
+
+            if status == ReturnStatus.success:
+                obsolete_triplet_ids += tmp_obsolete_triplet_ids
+
         return obsolete_triplet_ids
 
     def find_episodic_obsolete_triplet_ids(self, triplets: List[Triplet], obsolete_hyper_triplet_ids: List[str]) -> List[str]:

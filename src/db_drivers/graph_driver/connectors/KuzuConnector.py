@@ -128,6 +128,10 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         # TODO
         pass
 
+    def read_by_name(self, name: str) -> List[Triplet]:
+        # TODO
+        pass
+
     def parse_query_output(self, output: List[object]) -> List[Triplet]:
         formated_triplets = []
         output = output.get_as_df()

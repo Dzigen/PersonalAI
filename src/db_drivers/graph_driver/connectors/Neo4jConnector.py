@@ -139,6 +139,10 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         # TODO
         pass
 
+    def read_by_name(self, name: str) -> List[Triplet]:
+        # TODO
+        pass
+
     def execute_query(self, query: str, db_flag: bool = True) -> List[object]:
         assert self.driver is not None, "Driver not initialized!"
         session = None

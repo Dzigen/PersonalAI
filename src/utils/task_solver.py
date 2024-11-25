@@ -30,7 +30,7 @@ class AgentTaskSolver:
         self.log = self.config.log
 
     def solve(self, lang: str = 'auto', **kwargs) -> Tuple[object, ReturnStatus]:
-        status = ReturnStatus.success
+        task_result, status = None, ReturnStatus.success
         self.log("="*20, verbose=self.config.verbose)
         self.log("1. Предобработка данных для их дальнейшней вставки в user-prompt...", verbose=self.config.verbose)
 
@@ -39,7 +39,7 @@ class AgentTaskSolver:
         except Exception:
             status = ReturnStatus.bad_formater
 
-        self.log(f"Результат:\n{json.dump(formated_context, indent=1, ensure_ascii=False)}.", verbose=self.config.verbose)
+        self.log(f"Результат:\n{json.dumps(formated_context, indent=1, ensure_ascii=False)}.", verbose=self.config.verbose)
         self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
 
         # Если удалось без ошибок привести данных в формат контекста
@@ -47,7 +47,7 @@ class AgentTaskSolver:
         if status == ReturnStatus.success:
             self.log("-"*20, verbose=self.config.verbose)
             self.log("2. Детекция используемого языка...", verbose=self.config.verbose)
-            flatten_context = ' '.join(list(formated_context.items()))
+            flatten_context = ' '.join(list(formated_context.values()))
             detected_lang, status = detect_lang(flatten_context) if lang == 'auto' else (lang, ReturnStatus.success)
 
             self.log(f"Результат:\n{detected_lang}.", verbose=self.config.verbose)
