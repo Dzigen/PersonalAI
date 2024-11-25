@@ -5,6 +5,7 @@ from ....utils.errors import ReturnInfo, ReturnStatus
 from ....agents import AgentDriver, AgentDriverConfig
 from ....knowledge_graph_model import KnowledgeGraphModel
 
+from functools import reduce
 from dataclasses import dataclass, field
 from typing import Dict, List
 
@@ -162,7 +163,8 @@ class LLMUpdator:
             obsolete_triplet_ids[RelationType.episodic.value] = self.find_episodic_obsolete_triplet_ids(
                 new_triplets, obsolete_triplet_ids[RelationType.hyper.value])
 
-        return obsolete_triplet_ids
+        flatten_triplet_ids = reduce(lambda acc, v: acc + list(v), [], obsolete_triplet_ids.values())
+        return flatten_triplet_ids
 
     def update_knowledge(self, new_triplets: List[Triplet], delete_obsolete_info:bool=False,
                need_simple:bool=True, need_hyper:bool=True, need_episodic:bool=True) -> ReturnInfo:
