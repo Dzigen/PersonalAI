@@ -1,9 +1,10 @@
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 import ast
 
-from ....utils import ReturnStatus
+from ....utils import ReturnStatus, NodeCreator, TripletCreator, NodeType
+from ....utils.data_structs import Relation, RelationType, Triplet
 
-def etriplets_custom_parse(raw_response: str) -> Tuple[List[Tuple[str, str, str]], ReturnStatus]:
+def etriplets_custom_parse(raw_response: str) -> List[Tuple[str, str, str]]:
     """Функция предназначена для разбора результата генерации ответа LLM-агента, в рамаках задачи по извлечению триплетов из текста на естественном языке.
 
     :param raw_response: Исходный ответ LLM-агента.
@@ -28,21 +29,21 @@ def etriplets_custom_parse(raw_response: str) -> Tuple[List[Tuple[str, str, str]
             raw_triplets.append((subj, rel, obj))
 
     if len(raw_triplets) == 0:
-        status = ReturnStatus.bad_format
+        status = ReturnStatus.bad_formater
 
     return raw_triplets, status
 
-def etriplets_custom_formate():
+def etriplets_custom_formate() -> Dict[str, str]:
     # TODO
-    pass
+    return dict()
 
-def etriplets_custom_postprocess(self, parsed_response: str, lang: str, node_prop: Dict, rel_prop: Dict) -> Tuple[List[Triplet], ReturnStatus]:
+def etriplets_custom_postprocess(parsed_response: str, lang: str, node_prop: Dict, rel_prop: Dict) -> List[Triplet]:
     formated_triplets = []
-    for triplet in raw_triplets:
+    for triplet in parsed_response:
         subj, rel, obj = triplet
         formated_triplets.append(TripletCreator.create(
             NodeCreator.create(name=str(subj), n_type=NodeType.object, prop={**node_prop}),
             Relation(name=str(rel), type=RelationType.simple, prop={**rel_prop}),
             NodeCreator.create(name=str(obj), n_type=NodeType.object, prop={**node_prop})))
 
-    return formated_triplets, status
+    return formated_triplets

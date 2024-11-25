@@ -33,7 +33,11 @@ class AgentTaskSolver:
         status = ReturnStatus.success
         self.log("="*20, verbose=self.config.verbose)
         self.log("1. Предобработка данных для их дальнейшней вставки в user-prompt...", verbose=self.config.verbose)
-        formated_context, status = self.config.formate_context_func(**kwargs)
+
+        try:
+            formated_context = self.config.formate_context_func(**kwargs)
+        except Exception:
+            status = ReturnStatus.bad_formater
 
         self.log(f"Результат:\n{json.dump(formated_context, indent=1, ensure_ascii=False)}.", verbose=self.config.verbose)
         self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
@@ -68,7 +72,11 @@ class AgentTaskSolver:
         if status == ReturnStatus.success:
             self.log("-"*20, verbose=self.config.verbose)
             self.log("4. Разбор ответа, сгенерированного LLM-агентом.", verbose=self.config.verbose)
-            formated_answer, status = self.config.suites[detected_lang].parse_answer_func(raw_answer, **kwargs)
+
+            try:
+                formated_answer, status = self.config.suites[detected_lang].parse_answer_func(raw_answer, **kwargs)
+            except Exception:
+                status = ReturnStatus.bad_parser
 
             self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
 
@@ -77,7 +85,11 @@ class AgentTaskSolver:
             self.log("-"*20, verbose=self.config.verbose)
             self.log("5. Постобработка ответа от LLM-агента.", verbose=self.config.verbose)
 
-            task_result, status = self.config.suites[detected_lang].postprocess_answer_func(formated_answer, **kwargs)
+            try:
+                task_result, status = self.config.suites[detected_lang].postprocess_answer_func(formated_answer, **kwargs)
+            except Exception:
+                status = ReturnStatus.bad_postprocessor
+
             self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
 
         return task_result, status

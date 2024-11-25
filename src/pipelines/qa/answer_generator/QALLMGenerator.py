@@ -31,7 +31,7 @@ class QALLMGeneratorConfig:
     """
     lang: str = "auto"
     agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    ag_task_config: AgentTaskSolverConfig = field(default_factory=DEFAULT_ANSWER_GEN_TASK_CONFIG)
+    ag_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_ANSWER_GEN_TASK_CONFIG)
 
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
 

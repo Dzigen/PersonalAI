@@ -1,15 +1,16 @@
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 import ast
 
-from ....utils import ReturnStatus
+from ....utils import ReturnStatus, NodeCreator, TripletCreator, NodeType
+from ....utils.data_structs import Relation, RelationType, Triplet
 
-def ethesises_custom_parse(raw_response: str) -> Tuple[List[Tuple[str, str]], ReturnStatus]:
+def ethesises_custom_parse(raw_response: str) -> List[Tuple[str, str]]:
     """Функция предназначена для разбора результата генерации ответа LLM-агента, в рамаках задачи по извлечению тезисной информации из текста на естественном языке.
 
     :param raw_response: Исходный ответ LLM-агента.
     :type raw_response: str
     :return: Разобранный список 'тезисных' триплетов из ответа LLM-агента.
-    :rtype: Tuple[List[Tuple[str, str]], ReturnStatus]
+    :rtype: List[Tuple[str, str]]
     """
     status = ReturnStatus.success
     if ":" in raw_response:
@@ -33,13 +34,13 @@ def ethesises_custom_parse(raw_response: str) -> Tuple[List[Tuple[str, str]], Re
 
     return raw_triplets, status
 
-def ethesises_custom_formate():
+def ethesises_custom_formate() -> Dict[str, str]:
     # TODO
-    pass
+    return dict()
 
-def ethesises_custom_postprocess(self, parsed_answer: object, node_prop: Dict, rel_prop: Dict) -> Tuple[List[Triplet], ReturnStatus]:
+def ethesises_custom_postprocess(parsed_response: object, node_prop: Dict, rel_prop: Dict) -> List[Triplet]:
     formated_triplets = []
-    for triplet in raw_triplets:
+    for triplet in parsed_response:
         thesis, entities = triplet
 
         thesis_node = NodeCreator.create(name=str(thesis), n_type=NodeType.hyper, prop={**node_prop})
@@ -49,4 +50,4 @@ def ethesises_custom_postprocess(self, parsed_answer: object, node_prop: Dict, r
                 NodeCreator.create(name=str(entity), n_type=NodeType.object, prop={**node_prop}),
                 thesis_rel, thesis_node))
 
-    return formated_triplets, status
+    return formated_triplets

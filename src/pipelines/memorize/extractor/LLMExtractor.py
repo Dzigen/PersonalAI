@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Tuple
 
 from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
-from ....utils.errors import MEM_ZERO_EXTRACTED_TRIPLETS_MSG, MEM_BAD_TRIPLET_EXTRACTION_PROMPT_MSG, MEM_BAD_THESIS_EXTRACTION_PROMPT_MSG
+from ....utils.errors import STATUS_MESSAGE
 from ....utils.data_structs import TripletCreator, NodeCreator, Node, Relation, RelationType, NodeType, Triplet
 from ....agents import AgentDriver, AgentDriverConfig
 
@@ -51,21 +51,26 @@ class LLMExtractor:
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         assert need_simple or need_thesises
-        self.log("START EXTRACTION...", verbose=self.config.verbose)
         new_triplets, info = [], ReturnInfo()
 
         if need_simple:
+            self.log("EXTRACTING SIMPLE TRIPLETS...", verbose=self.config.verbose)
             tmp_triplets, status = self.triplets_extraction_solver.solve(lang=self.config.lang, text=text, rel_prop=properties)
-            if status == ReturnStatus.bad_format:
-                self.log(MEM_BAD_TRIPLET_EXTRACTION_PROMPT_MSG, verbose=self.config.verbose)
+            self.log(f"Результат:\n{tmp_triplets}", verbose=self.config.verbose)
+            self.log(f"Статус: {status}", verbose=self.config.verbose)
+
+            if status != ReturnStatus.success:
                 info.occurred_warning.append(status)
             else:
                 new_triplets += tmp_triplets
 
         if need_thesises:
+            self.log("EXTRACTING THESIS TRIPLETS...", verbose=self.config.verbose)
             tmp_triplets, status = self.triplets_extraction_solver.solve(lang=self.config.lang, text=text, node_prop=properties)
-            if status == ReturnStatus.bad_format:
-                self.log(MEM_BAD_THESIS_EXTRACTION_PROMPT_MSG, verbose=self.config.verbose)
+            self.log(f"Результат:\n{tmp_triplets}", verbose=self.config.verbose)
+            self.log(f"Статус: {status}", verbose=self.config.verbose)
+
+            if status != ReturnStatus.success:
                 info.occurred_warning.append(status)
             else:
                 new_triplets += tmp_triplets
@@ -76,7 +81,7 @@ class LLMExtractor:
 
         if len(new_triplets) == 0:
             info.status = ReturnStatus.zero_triplets
-            info.message = MEM_ZERO_EXTRACTED_TRIPLETS_MSG
+            info.message = STATUS_MESSAGE[info.status]
 
         return new_triplets, info
 
