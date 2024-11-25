@@ -2,9 +2,9 @@ from .answer_generator import QALLMGenerator, QALLMGeneratorConfig
 from .knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
 from .knowledge_comparator import KnowledgeComparator, KnowledgeComparatorConfig
 from .query_parser import QueryLLMParser, QueryLLMParserConfig
-from .utils import LOG_PATH
-from ..knowledge_graph_model import KnowledgeGraphModel
-from ..utils import Logger, ReturnStatus, ReturnInfo
+from .configs import QA_MAIN_LOG_PATH
+from ...knowledge_graph_model import KnowledgeGraphModel
+from ...utils import Logger, ReturnStatus, ReturnInfo
 
 from dataclasses import dataclass, field
 from typing import Tuple
@@ -30,7 +30,7 @@ class QAPipelineConfig:
     knowledge_comparator_config: KnowledgeComparatorConfig = field(default_factory=lambda: KnowledgeComparatorConfig())
     knowledge_retriever_config: KnowledgeRetrieverConfig = field(default_factory=lambda: KnowledgeRetrieverConfig())
     answer_generator_config: QALLMGeneratorConfig = field(default_factory=lambda: QALLMGeneratorConfig())
-    log: Logger = field(default_factory=lambda: Logger(LOG_PATH))
+    log: Logger = field(default_factory=lambda: Logger(QA_MAIN_LOG_PATH))
     verbose: bool = False
 
 class QAPipeline:
@@ -61,29 +61,28 @@ class QAPipeline:
         :rtype: Tuple[str, ReturnInfo]
         """
         answer = None
-        self.log("==="*4 + "STAGE#1 - entities extraction" + "==="*4, verbose=self.config.verbose)
+        self.log("="*20)
+        self.log("-"*10 + "STAGE#1 - entities extraction" + "-"*10, verbose=self.config.verbose)
+        self.log("QUERY:\n" + query, verbose=self.config.verbose)
         query_info, info = self.query_parser.extract_entities(query)
         self.log("EXTRACTED_ENTITIES:\n" + ', '.join(query_info.entities), verbose=self.config.verbose)
 
         if info.status == ReturnStatus.success:
-            self.log("==="*4 + "STAGE#2 - kg_nodes to query linking" + "==="*4, verbose=self.config.verbose)
+            self.log("-"*10 + "STAGE#2 - kg_nodes to query linking" + "-"*10, verbose=self.config.verbose)
             info = self.knowledge_comparator.link_kgnodes_to_query(query_info)
             self.log("LINKED_NODES:\n" + ', '.join(list(map(lambda v: v.document, query_info.linked_nodes))), verbose=self.config.verbose)
 
         if info.status == ReturnStatus.success:
-            self.log("==="*4 + "STAGE#3 - retrieve" + "==="*4, verbose=self.config.verbose)
+            self.log("-"*10 + "STAGE#3 - retrieve" + "-"*10, verbose=self.config.verbose)
             retrieved_triplets, info = self.knowledge_retriever.retrieve(query_info)
-            #self.log(f"RETRIEVED_TRIPLES:\n {retrieved_triplets}", verbose=self.config.verbose)
+            self.log(f"RETRIEVED_TRIPLETS:\n {retrieved_triplets}", verbose=self.config.verbose)
 
         if info.status == ReturnStatus.success:
-            self.log("==="*4 + "STAGE#4 - answer generation" + "==="*4, verbose=self.config.verbose)
-            self.log("QUERY:\n" + query_info.query, verbose=self.config.verbose)
-            context = self.answer_generator.formate_context(retrieved_triplets)
-            self.log("CONTEXT:\n" + context, verbose=self.config.verbose)
-            answer, info = self.answer_generator.generate(query_info.query, context)
-            self.log("ANSWER: " + answer, verbose=self.config.verbose)
+            self.log("-"*10 + "STAGE#4 - answer generation" + "-"*10, verbose=self.config.verbose)
+            answer, info = self.answer_generator.generate(query_info.query, retrieved_triplets)
+            self.log("ANSWER:\n" + answer, verbose=self.config.verbose)
 
-        if info.status != ReturnStatus.success:
-            self.log(f"{info.status}: {info.message}", verbose=self.config.verbose)
+        self.log("-"*20)
+        self.log(f"Статус: {info.message}", verbose=self.config.verbose)
 
         return answer, info

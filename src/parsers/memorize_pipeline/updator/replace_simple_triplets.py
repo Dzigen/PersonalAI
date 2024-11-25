@@ -18,7 +18,7 @@ def rs_custom_parse(raw_agent_answer: str, **kwargs) -> object:
 
         # TODO
 
-def rs_custom_foramte(base_triplet: Triplet, incident_triplets: List[Triplet]) -> Dict[str,str]:
+def rs_custom_formate(base_triplet: Triplet, incident_triplets: List[Triplet]) -> Dict[str,str]:
 
     def _custom_triplet_stringify(triplet: Triplet) -> str:
         return f"{triplet.start_node.name}, {triplet.relation.name}, {triplet.end_node.name}"

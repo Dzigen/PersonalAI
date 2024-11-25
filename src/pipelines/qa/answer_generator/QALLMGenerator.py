@@ -1,7 +1,7 @@
 from typing import List, Tuple
 from dataclasses import dataclass, field
 
-from .configs import DEFAULT_ANSWER_GEN_TASK_CONFIG, QA_LOG
+from .configs import DEFAULT_ANSWER_GEN_TASK_CONFIG, QA_MAIN_LOG_PATH
 
 from ....utils.data_structs import Triplet, TripletCreator, RelationType
 from ....utils.errors import STATUS_MESSAGE
@@ -35,7 +35,7 @@ class QALLMGeneratorConfig:
 
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
 
-    log: Logger = field(default_factory=lambda: Logger(QA_LOG))
+    log: Logger = field(default_factory=lambda: Logger(QA_MAIN_LOG_PATH))
     verbose: bool = False
 
 class QALLMGenerator:

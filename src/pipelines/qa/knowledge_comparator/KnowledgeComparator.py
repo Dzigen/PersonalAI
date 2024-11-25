@@ -1,11 +1,11 @@
 from dataclasses import dataclass, field
 
-from .utils import COMPARATOR_LOG_PATH
-from ...utils import Logger, ReturnStatus, ReturnInfo
-from ...utils.errors import QA_ZERO_LINKED_NODES_MSG
-from ...utils.data_structs import QueryInfo
-from ...knowledge_graph_model import KnowledgeGraphModel
-from ...db_drivers.vector_driver import VectorDBInstance
+from .configs import KC_MAIN_LOG_PATH
+from ....utils import Logger, ReturnStatus, ReturnInfo
+from ....utils.errors import STATUS_MESSAGE
+from ....utils.data_structs import QueryInfo
+from ....knowledge_graph_model import KnowledgeGraphModel
+from ....db_drivers.vector_driver import VectorDBInstance
 
 @dataclass
 class KnowledgeComparatorConfig:
@@ -28,7 +28,7 @@ class KnowledgeComparatorConfig:
     fetch_n: int = 20
     max_k: int = 1
     k_compare: int = 5
-    log: Logger = field(default_factory=lambda: Logger(COMPARATOR_LOG_PATH))
+    log: Logger = field(default_factory=lambda: Logger(KC_MAIN_LOG_PATH))
     verbose: bool = False
 
 class KnowledgeComparator:
@@ -77,6 +77,6 @@ class KnowledgeComparator:
 
         if len(query_structure.linked_nodes) == 0:
             info.status = ReturnStatus.zero_linked_nodes
-            info.message = QA_ZERO_LINKED_NODES_MSG
+            info.message = STATUS_MESSAGE[info.status]
 
         return info

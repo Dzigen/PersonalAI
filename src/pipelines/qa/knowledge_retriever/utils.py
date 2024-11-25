@@ -1,11 +1,8 @@
 from typing import List
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Dict
 
-from ...utils.data_structs import QueryInfo, Triplet
-
-RETRIEVER_LOG_PATH = 'log/retriever'
+from ....utils.data_structs import QueryInfo, Triplet
 
 class AbstractTriplesFilter(ABC):
     """Интерфейс алгоритмов фильтрации/ранжирования триплетов."""

@@ -2,11 +2,11 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Tuple
 
 from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
-from ....utils.errors import MEM_ZERO_EXTRACTED_TRIPLETS_MSG, MEM_BAD_TRIPLET_EXTRACTION_PROMPT_MSG, MEM_BAD_THESIS_EXTRACTION_PROMPT_MSG, NOT_SUPPORTED_LANG_MSG
+from ....utils.errors import MEM_ZERO_EXTRACTED_TRIPLETS_MSG, MEM_BAD_TRIPLET_EXTRACTION_PROMPT_MSG, MEM_BAD_THESIS_EXTRACTION_PROMPT_MSG
 from ....utils.data_structs import TripletCreator, NodeCreator, Node, Relation, RelationType, NodeType, Triplet
 from ....agents import AgentDriver, AgentDriverConfig
 
-from .configs import DEFAULT_EXTRACT_THESISES_TASK_CONFIG, DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG, MEM_EXTRACTOR_LOG
+from .configs import DEFAULT_EXTRACT_THESISES_TASK_CONFIG, DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG, MEM_EXTRACTOR_MAIN_LOG_PATH
 
 @dataclass
 class LLMExtractorConfig:
@@ -14,7 +14,7 @@ class LLMExtractorConfig:
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     triplets_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG)
     thesises_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_EXTRACT_THESISES_TASK_CONFIG)
-    log: Logger = field(default_factory=lambda: Logger(MEM_EXTRACTOR_LOG))
+    log: Logger = field(default_factory=lambda: Logger(MEM_EXTRACTOR_MAIN_LOG_PATH))
     verbose: bool = False
 
 class LLMExtractor:

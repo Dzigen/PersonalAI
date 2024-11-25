@@ -1,14 +1,14 @@
 from dataclasses import dataclass, field
 from typing import Dict, List, Tuple
 
-from .utils import MEM_LOG_PATH
+from .configs import MEMORIZE_MAIN_LOG_PATH
 from .extractor.LLMExtractor import LLMExtractor
 from .updator.LLMUpdator import LLMUpdator
 from .extractor import LLMExtractorConfig
 from .updator import LLMUpdatorConfig
-from ..qa_pipeline.knowledge_retriever.BFSTripletsRetriever import BFSRetriever
-from ..knowledge_graph_model import KnowledgeGraphModel
-from ..utils import Logger, Triplet, ReturnStatus, ReturnInfo
+from ...knowledge_graph_model import KnowledgeGraphModel
+from ...utils import Logger, Triplet, ReturnStatus, ReturnInfo
+from ...utils.errors import STATUS_MESSAGE
 
 @dataclass
 class MemPipelineConfig:
@@ -25,7 +25,8 @@ class MemPipelineConfig:
     """
     extractor_config: LLMExtractorConfig = field(default_factory=lambda: LLMExtractorConfig())
     updator_config: LLMUpdatorConfig = field(default_factory=lambda: LLMUpdatorConfig())
-    log: Logger = field(default_factory=lambda: Logger(MEM_LOG_PATH))
+
+    log: Logger = field(default_factory=lambda: Logger(MEMORIZE_MAIN_LOG_PATH))
     verbose: bool = False
 
 class MemPipeline:
@@ -39,7 +40,7 @@ class MemPipeline:
     :type bfs: BFSRetriever
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig(), bfs: BFSRetriever = None) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig()) -> None:
         self.config = config
         self.log = config.log
 
@@ -67,14 +68,17 @@ class MemPipeline:
         """
 
         # Извлекаем информацию в структурированном формате из текстов на естественном языке
+        self.log("="*20)
+        self.log("-"*5 + "STAGE#1 - information extraction" + "-"*5, verbose=self.config.verbose)
         new_triplets, info = self.extractor.extract(text, need_simple, need_thesises, need_episodic, properties)
-        #self.log("PROCESSED NEW TRIPLETS: " + str(new_triplets), verbose=self.config.verbose)
+        self.log(f"EXTRACTED INFORMATION FROM TEXT (IN TRIPLET FORMAT): \n{new_triplets}", verbose=self.config.verbose)
 
         if info.status == ReturnStatus.success:
+            self.log("-"*5 + "STAGE#2 - updating information in assistant memory (knowledge graph)" + "-"*5, verbose=self.config.verbose)
             # Добавляем в граф знаний новую информацию; по требванию (delete_obolete_info = True) удаляем устаревшую информацию
             info = self.updator.update_knowledge(new_triplets, delete_obsolete_info)
 
-        if info.status != ReturnStatus.success:
-            self.log(f"{info.status}: {info.message}", verbose=self.config.verbose)
+        self.log("-"*20)
+        self.log(f"Статус: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
         return new_triplets, info

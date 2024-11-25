@@ -7,12 +7,12 @@ import collections
 from copy import deepcopy
 
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
-from ...utils.data_structs import QueryInfo, Triplet, NodeType
-from ...knowledge_graph_model import KnowledgeGraphModel
-from ...utils.data_structs import create_id_for_node_pair
-from ...db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KeyValueDBInstance
-from ...db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver
-from ...utils import Logger
+from ....utils.data_structs import QueryInfo, Triplet, NodeType
+from ....knowledge_graph_model import KnowledgeGraphModel
+from ....utils.data_structs import create_id_for_node_pair
+from ....db_drivers.kv_driver.utils import KeyValueDBInstance
+from ....db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver
+from ....utils import Logger
 
 @dataclass
 class AStarMetricsConfig:
@@ -45,6 +45,7 @@ class AStarMetrics:
         self.config = config
         self.accepted_node_types = accepted_node_types
         self.kg_model = kg_model
+
         self.log = log
         self.verbose = verbose
 

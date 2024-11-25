@@ -6,8 +6,8 @@ from ....parsers.qa_pipeline.answer_generator.question_answering import ag_custo
 from ....prompts.qa_pipeline.answer_generator.question_answering import RU_AG_USER_PROMPT, EN_AG_USER_PROMPT
 from ....prompts.system import RU_SYSTEM_PROMPT, EN_SYSTEM_PROMPT
 
-QA_LOG = 'log/qa/main'
-ANSWER_GENERATION_LOG = 'log/qa/answer_generation'
+QA_MAIN_LOG_PATH = 'log/qa/main'
+ANSWER_GENERATION_LOG_PATH = 'log/qa/answer_generation'
 
 EN_ANSWER_GEN_SUITE = AgentTaskSuite(
     system_prompt=EN_SYSTEM_PROMPT,
@@ -30,5 +30,5 @@ DEFAULT_ANSWER_GEN_SUITE = {'ru': RU_ANSWER_GEN_SUITE, 'en': EN_ANSWER_GEN_SUITE
 DEFAULT_ANSWER_GEN_TASK_CONFIG = AgentTaskSolverConfig(
     suites=DEFAULT_ANSWER_GEN_SUITE,
     formate_context_func=ag_custom_foramte,
-    log=Logger(ANSWER_GENERATION_LOG)
+    log=Logger(ANSWER_GENERATION_LOG_PATH)
 )

@@ -2,11 +2,11 @@ import copy
 from dataclasses import dataclass
 from typing import Dict, List, Set, Tuple, Union
 
-from ...knowledge_graph_model import KnowledgeGraphModel
-from ...utils.data_structs import QueryInfo, NodeCreator, Relation, TripletCreator, Triplet, RELATIONS_TYPES_MAP, Node
-from ...utils import Logger
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 
+from ....knowledge_graph_model import KnowledgeGraphModel
+from ....utils.data_structs import QueryInfo, Relation, TripletCreator, Triplet, RELATIONS_TYPES_MAP, Node
+from ....utils import Logger
 
 @dataclass
 class BFSSearchConfig(BaseGraphSearchConfig):

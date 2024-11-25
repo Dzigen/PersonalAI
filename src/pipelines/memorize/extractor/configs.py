@@ -8,9 +8,9 @@ from ....parsers.memorize_pipeline.extractor.thesis_extraction import ethesises_
 from ....prompts.memorize_pipeline.extractor.thesis_extraction import EN_THESISES_EXTRACTION_SYSTEM_PROMPT, EN_THESISES_EXTRACTION_USER_PROMPT,\
       RU_THESISES_EXTRACTION_SYSTEM_PROMPT, RU_THESISES_EXTRACTION_USER_PROMPT
 
-MEM_EXTRACTOR_LOG = "log/memorize/extractor/main"
-MEM_EXTRACT_TRIPLETS_LOG = "log/memorize/extractor/extract_triplets"
-MEM_EXTRACT_THESISES_LOG = "log/memorize/extractor/extract_thesises"
+MEM_EXTRACTOR_MAIN_LOG_PATH = "log/memorize/extractor/main"
+MEM_EXTRACT_TRIPLETS_LOG_PATH = "log/memorize/extractor/extract_triplets"
+MEM_EXTRACT_THESISES_LOG_PATH = "log/memorize/extractor/extract_thesises"
 
 ### AGENT TASK-SUITES ###
 
@@ -37,7 +37,7 @@ DEFAULT_EXTRACT_TRIPLETS_SUITES = {'ru': RU_EXTRACT_TRIPLETS_SUITE, 'en': EN_EXT
 DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG = AgentTaskSolverConfig(
     suites=DEFAULT_EXTRACT_TRIPLETS_SUITES,
     formate_context_func=etriplets_custom_formate,
-    log=Logger(MEM_EXTRACT_TRIPLETS_LOG)
+    log=Logger(MEM_EXTRACT_TRIPLETS_LOG_PATH)
 )
 
 # EXTRACT THESISES
@@ -63,5 +63,5 @@ DEFAULT_EXTRACT_THESISES_SUITES = {'ru': RU_EXTRACT_THESISES_SUITE, 'en': EN_EXT
 DEFAULT_EXTRACT_THESISES_TASK_CONFIG = AgentTaskSolverConfig(
     suites=DEFAULT_EXTRACT_THESISES_SUITES,
     formate_context_func=ethesises_custom_formate,
-    log=Logger(MEM_EXTRACT_THESISES_LOG)
+    log=Logger(MEM_EXTRACT_THESISES_LOG_PATH)
 )

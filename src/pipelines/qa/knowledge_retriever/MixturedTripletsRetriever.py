@@ -5,10 +5,9 @@ from copy import deepcopy
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarTripletsRetriever
 from .BFSTripletsRetriever import BFSSearchConfig, BFSRetriever
-from ...utils.data_structs import QueryInfo, Triplet
-from ...knowledge_graph_model import KnowledgeGraphModel
-from ...db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
-from ...utils import Logger
+from ....utils.data_structs import QueryInfo, Triplet
+from ....knowledge_graph_model import KnowledgeGraphModel
+from ....utils import Logger
 
 @dataclass
 class MixturedGraphSearchConfig(BaseGraphSearchConfig):

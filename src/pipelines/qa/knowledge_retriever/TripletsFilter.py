@@ -2,10 +2,10 @@ from dataclasses import dataclass
 from typing import List
 
 from .utils import AbstractTriplesFilter, BaseTripletsFilterConfig
-from ...utils.data_structs import Triplet, QueryInfo
-from ...utils import Logger
-from ...knowledge_graph_model import KnowledgeGraphModel
-from ...db_drivers.vector_driver import VectorDBInstance
+from ....utils.data_structs import Triplet, QueryInfo
+from ....utils import Logger
+from ....knowledge_graph_model import KnowledgeGraphModel
+from ....db_drivers.vector_driver import VectorDBInstance
 
 @dataclass
 class TripletsFilterConfig(BaseTripletsFilterConfig):

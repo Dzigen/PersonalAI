@@ -1,26 +1,15 @@
-from .utils import AbstractTriplesFilter, AbstractTripletsRetriever, RETRIEVER_LOG_PATH, BaseGraphSearchConfig, BaseTripletsFilterConfig
-from .TripletsFilter import TripletsFilterConfig, TripletsFilter
-from .AStarTripletsRetriever import AStarTripletsRetriever, AStarGraphSearchConfig
-from .BFSTripletsRetriever import BFSRetriever, BFSSearchConfig
-from .MixturedTripletsRetriever import MixturedTripletsRetriever, MixturedGraphSearchConfig
-from ...utils.data_structs import QueryInfo, Triplet
-from ...knowledge_graph_model import KnowledgeGraphModel
-from ...db_drivers.kv_driver import KeyValueDriver, KeyValueDriverConfig
-from ...utils import Logger, ReturnStatus, ReturnInfo
-from ...utils.errors import QA_ZERO_RETRIEVED_TRIPLETS_MSG
-
 from dataclasses import dataclass, field
 from typing import List, Tuple
 
-AVAILABLE_TRIPLETS_RETRIEVERS  = {
-    'astar': AStarTripletsRetriever,
-    'bfs': BFSRetriever,
-    'mixture': MixturedTripletsRetriever
-}
+from .configs import KR_MAIN_LOG_PATH, AVAILABLE_TRIPLETS_FILTERS, AVAILABLE_TRIPLETS_RETRIEVERS
+from .utils import BaseGraphSearchConfig, BaseTripletsFilterConfig
+from .TripletsFilter import TripletsFilterConfig
+from .AStarTripletsRetriever import AStarGraphSearchConfig
 
-AVAILABLE_TRIPLETS_FILTERS = {
-    'naive': TripletsFilter
-}
+from ....utils.data_structs import QueryInfo, Triplet
+from ....knowledge_graph_model import KnowledgeGraphModel
+from ....utils import Logger, ReturnStatus, ReturnInfo
+from ....utils.errors import STATUS_MESSAGE
 
 @dataclass
 class KnowledgeRetrieverConfig:
@@ -43,7 +32,7 @@ class KnowledgeRetrieverConfig:
     retriever_config: BaseGraphSearchConfig = field(default_factory=lambda: AStarGraphSearchConfig())
     filter_method: str = 'naive'
     filter_config: BaseTripletsFilterConfig = field(default_factory=lambda: TripletsFilterConfig())
-    log: Logger = field(default_factory=lambda: Logger(RETRIEVER_LOG_PATH))
+    log: Logger = field(default_factory=lambda: Logger(KR_MAIN_LOG_PATH))
     verbose: bool = False
 
 class KnowledgeRetriever:
@@ -85,6 +74,6 @@ class KnowledgeRetriever:
 
         if len(filtered_triplets) == 0:
             info.status = ReturnStatus.zero_retrieved_triplets
-            info.message = QA_ZERO_RETRIEVED_TRIPLETS_MSG
+            info.message = STATUS_MESSAGE[info.status]
 
         return filtered_triplets, info

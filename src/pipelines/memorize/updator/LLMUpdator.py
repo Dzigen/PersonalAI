@@ -1,7 +1,7 @@
-from .configs import MEM_UPDATE_LOG, DEFAULT_REPLACE_SIMPLE_TASK_CONFIG, DEFAULT_REPLACE_THESIS_TASK_CONFIG
+from .configs import MEM_UPDATOR_MAIN_LOG_PATH, DEFAULT_REPLACE_SIMPLE_TASK_CONFIG, DEFAULT_REPLACE_THESIS_TASK_CONFIG
 from ....utils import Logger, Triplet, AgentTaskSolverConfig, AgentTaskSolver
 from ....utils.data_structs import RelationType, NodeType
-from ....utils.errors import ReturnInfo, ReturnStatus
+from ....utils.errors import ReturnInfo
 from ....agents import AgentDriver, AgentDriverConfig
 from ....knowledge_graph_model import KnowledgeGraphModel
 
@@ -29,7 +29,8 @@ class LLMUpdatorConfig:
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     replace_simple_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_REPLACE_SIMPLE_TASK_CONFIG)
     replace_thesis_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_REPLACE_THESIS_TASK_CONFIG)
-    log: Logger = field(default_factory=lambda: Logger(MEM_UPDATE_LOG))
+
+    log: Logger = field(default_factory=lambda: Logger(MEM_UPDATOR_MAIN_LOG_PATH))
     verbose: bool = False
 
 class LLMUpdator:
@@ -155,7 +156,7 @@ class LLMUpdator:
 
         return obsolete_triplet_ids
 
-    def update(self, new_triplets: List[Triplet], delete_obsolete_info:bool=False,
+    def update_knowledge(self, new_triplets: List[Triplet], delete_obsolete_info:bool=False,
                need_simple:bool=True, need_hyper:bool=True, need_episodic:bool=True) -> ReturnInfo:
         info = ReturnInfo()
 
