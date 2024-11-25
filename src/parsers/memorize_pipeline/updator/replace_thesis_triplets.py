@@ -23,8 +23,8 @@ def rt_custom_parse(raw_response: str, **kwargs) -> Dict[str, object]:
         if len(splitted_pair) != 2:
             continue
 
-        str_existing_thesis = splitted_pair[0].strip(''' \n'".,/''')
-        str_new_thesis = splitted_pair[1].strip(''' \n'".,/''')
+        str_existing_thesis = splitted_pair[1].strip(''' \n'".,/''')
+        str_new_thesis = splitted_pair[0].strip(''' \n'".,/''')
         thesises_to_remove[create_id(str_new_thesis)].add(create_id(str_existing_thesis))
 
     return thesises_to_remove
