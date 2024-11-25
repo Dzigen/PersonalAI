@@ -1,0 +1,108 @@
+import sys
+sys.path.insert(0, "../../")
+from src.utils import ReturnStatus, TripletCreator, NodeCreator, NodeType
+from src.utils.data_structs import RelationCreator, RelationType, create_id
+
+# OBJECT NODES
+
+VALID_OBJECT_NODE1 = NodeCreator.create(
+    n_type=NodeType.object,
+    name='qwe', prop={'k1': 'v1'})
+
+VALID_OBJECT_NODE2 = NodeCreator.create(
+    n_type=NodeType.object,
+    name='asd', prop={'k2': 'v2'})
+
+VALID_OBJECT_NODE3 = NodeCreator.create(
+    n_type=NodeType.object,
+    name='uio', prop={'k3': 'v3'})
+
+# HYPER NODES
+
+VALID_HYPER_NODE1 = NodeCreator.create(
+    n_type=NodeType.hyper,
+    name='rty', prop={'k4': 'v4'}
+)
+
+VALID_HYPER_NODE2 = NodeCreator.create(
+    n_type=NodeType.hyper,
+    name='fgh', prop={'k5': 'v5'}
+)
+
+VALID_HYPER_NODE3 = NodeCreator.create(
+    n_type=NodeType.hyper,
+    name='jkl', prop={'k6': 'v7'}
+)
+
+# HYPER RELATIONS
+
+VALID_HYPER_RELATION = RelationCreator.create(
+    r_type=RelationType.hyper, prop={'k5': 'v5'})
+
+# SIMPLE RELATIONS
+
+VALID_SIMPLE_RELATION = RelationCreator.create(
+    r_type=RelationType.simple,
+    name='zxc',vprop={'k3': 'v3'})
+
+# SIMPLE TRIPLETS
+
+VALID_SIMPLE_TRIPLET = TripletCreator.create(
+    start_node=VALID_OBJECT_NODE1,
+    relation=VALID_SIMPLE_RELATION,
+    end_node=VALID_OBJECT_NODE2
+)
+
+# HYPER TRIPLETS
+
+VALID_HYPER_TRIPLET1 = TripletCreator.create(
+    start_node=VALID_OBJECT_NODE1,
+    relation=VALID_HYPER_RELATION,
+    end_node=VALID_HYPER_NODE1
+)
+
+
+VALID_HYPER_TRIPLET2 = TripletCreator.create(
+    start_node=VALID_OBJECT_NODE2,
+    relation=VALID_HYPER_RELATION,
+    end_node=VALID_HYPER_NODE2
+)
+
+VALID_HYPER_TRIPLET3 = TripletCreator.create(
+    start_node=VALID_OBJECT_NODE3,
+    relation=VALID_HYPER_RELATION,
+    end_node=VALID_HYPER_NODE3
+)
+
+#
+
+REPLACE_THESISES_2AND3 = f'["{VALID_HYPER_TRIPLET2.end_node.name}", "{VALID_HYPER_TRIPLET3.end_node.name}"]'
+REPLACE_THESISES_1 = f'["{VALID_HYPER_TRIPLET1.end_node.name}"]'
+REPLACE_THESISES_2 = f'["{VALID_HYPER_TRIPLET2.end_node.name}"]'
+
+#
+
+# валидный (один сопоставленный тезис)
+REPLACE_THESISES_RAW_RESPONSE1 = '["qwe rty <- asd fgh"]'
+REPLACE_THESISES_PARSE_OUTPUT1 =
+
+# валидный (несколько сопоставленных тезисов)
+REPLACE_THESISES_RAW_RESPONSE1 = '["qwe rty <- asd fgh", "qwe rty <- zxc vbn"]'
+
+# невалидный (отсутствует стрелка)
+REPLACE_THESISES_RAW_RESPONSE3 =  '["qwe rty  asd fgh", "qwe rty <- zxc vbn"]'
+
+# невалидный (отсутствует скобка)
+REPLACE_THESISES_RAW_RESPONSE4 = '"qwe rty <- asd fgh", "qwe rty <- zxc vbn"]'
+
+# невалидный (отсутствует кавычка)
+REPLACE_THESISES_RAW_RESPONSE5 = '[qwe rty <- asd fgh, "qwe rty <- zxc vbn"]'
+
+# специальный символ (стрелка)
+REPLACE_THESISES_RAW_RESPONSE6 = '["qwe <- rty <- asd fgh", "qwe rty <- zxc vbn"]'
+
+# специальный символ (скобки)
+REPLACE_THESISES_RAW_RESPONSE7 = '["qwe [rty] <- asd fgh", "qwe rty <- zxc vbn"]'
+
+# специальный символ (кавычки)
+REPLACE_THESISES_RAW_RESPONSE8 = '["qwe "rty <- asd fgh", "qwe rty <- zxc vbn"]'
