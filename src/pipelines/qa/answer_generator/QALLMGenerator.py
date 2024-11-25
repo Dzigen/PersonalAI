@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from .configs import DEFAULT_ANSWER_GEN_TASK_CONFIG, QA_LOG
 
 from ....utils.data_structs import Triplet, TripletCreator, RelationType
-from ....utils.errors import QA_BAD_QA_PROMPT_MSG, QA_EMPTY_ANSWER_MSG, NOT_SUPPORTED_LANG_MSG
+from ....utils.errors import STATUS_MESSAGE
 from ....agents import AgentDriver, AgentDriverConfig
 from ....utils import Logger, detect_lang, ReturnInfo, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
 
@@ -63,10 +63,22 @@ class QALLMGenerator:
         :rtype: Tuple[str, ReturnInfo]
         """
 
-        answer, info = self.answer_generator_solver.solve(query=query, triplets=context_triplets)
+        info = ReturnInfo()
+        self.log("="*20, verbose=self.config.verbose)
+        self.log(f"Входные данные:", verbose=self.config.verbose)
+        self.log(f"\tQUERY: {query}", verbose=self.config.verbose)
+        self.log(f"\tCONTEXT_TRIPLETS: {context_triplets}", verbose=self.config.verbose)
+
+        self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...", verbose=self.config.verbose)
+        answer, status = self.answer_generator_solver.solve(query=query, triplets=context_triplets)
+        self.log(f"Результат:\n{answer}")
+        self.log(f"Статус: {STATUS_MESSAGE[status]}")
+
+        if status != ReturnStatus.success:
+            info.occurred_warning.append(status)
 
         if len(answer) == 0:
             info.status = ReturnStatus.empty_answer
-            info.message = QA_EMPTY_ANSWER_MSG
+            info.message = STATUS_MESSAGE[info.status]
 
         return answer, info

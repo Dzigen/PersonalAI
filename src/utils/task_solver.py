@@ -1,9 +1,10 @@
 from dataclasses import dataclass, field
 from typing import List, Union, Tuple, Dict
+import json
 
 from .logger import Logger
 from .language_detector import detect_lang
-from .errors import ReturnInfo, ReturnStatus, NOT_SUPPORTED_LANG_MSG
+from .errors import ReturnInfo, ReturnStatus, STATUS_MESSAGE
 from ..agents.utils import AbstractAgentConnector
 
 @dataclass
@@ -28,30 +29,55 @@ class AgentTaskSolver:
         self.agent = agent
         self.log = self.config.log
 
-    def solve(self, lang: str = 'auto', **kwargs) -> Union[object, ReturnInfo]:
-        info = ReturnInfo()
+    def solve(self, lang: str = 'auto', **kwargs) -> Tuple[object, ReturnStatus]:
+        status = ReturnStatus.success
+        self.log("="*20, verbose=self.config.verbose)
+        self.log("1. Предобработка данных для их дальнейшней вставки в user-prompt...", verbose=self.config.verbose)
+        formated_context, status = self.config.formate_context_func(**kwargs)
 
-        formated_context = self.config.formate_context_func(**kwargs)
-        flatten_context = ' '.join(list(formated_context.items()))
+        self.log(f"Результат:\n{json.dump(formated_context, indent=1, ensure_ascii=False)}.", verbose=self.config.verbose)
+        self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
 
-        detected_lang, status = detect_lang(flatten_context) if lang == 'auto' else (lang, ReturnStatus.success)
+        # Если удалось без ошибок привести данных в формат контекста
+        # для вставки в user-prompt
+        if status == ReturnStatus.success:
+            self.log("-"*20, verbose=self.config.verbose)
+            self.log("2. Детекция используемого языка...", verbose=self.config.verbose)
+            flatten_context = ' '.join(list(formated_context.items()))
+            detected_lang, status = detect_lang(flatten_context) if lang == 'auto' else (lang, ReturnStatus.success)
 
-        # TODO: Не удалось определить язык
+            self.log(f"Результат:\n{detected_lang}.", verbose=self.config.verbose)
+            self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
 
-        enriched_user_prompt = self.config.suites[detected_lang].user_prompt.format(**formated_context)
+        # Если удалось определить язык (находится в списке доступных)
+        if status == ReturnStatus.success:
+            self.log("-"*20, verbose=self.config.verbose)
+            self.log("3. Генерация ответа с помощью LLM-агента.", verbose=self.config.verbose)
 
-        raw_answer = self.agent.generate(
-            system_prompt=self.config.suites[detected_lang].system_prompt,
-            user_prompt=enriched_user_prompt,
-            assistant_prompt=self.config.suites[detected_lang].assistant_prompt)
-        self.log("Raw agent answer: " + raw_answer, verbose=self.config.verbose)
+            enriched_user_prompt = self.config.suites[detected_lang].user_prompt.format(**formated_context)
 
-        # TODO: пустая raw-строка
+            raw_answer = self.agent.generate(
+                system_prompt=self.config.suites[detected_lang].system_prompt,
+                user_prompt=enriched_user_prompt,
+                assistant_prompt=self.config.suites[detected_lang].assistant_prompt)
 
-        formated_answer = self.config.suites[detected_lang].parse_answer_func(raw_answer, **kwargs)
-        self.log("Formated agent answer: " + str(formated_answer), verbose=self.config.verbose)
+            self.log(f"Результат:\n{raw_answer}.", verbose=self.config.verbose)
+            self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
 
-        task_result = self.config.suites[detected_lang].postprocess_answer_func(formated_answer, **kwargs)
-        self.log("Task reulst: " + str(task_result), verbose=self.config.verbose)
+        # Если сгенрированная raw-строка не является пустой
+        if status == ReturnStatus.success:
+            self.log("-"*20, verbose=self.config.verbose)
+            self.log("4. Разбор ответа, сгенерированного LLM-агентом.", verbose=self.config.verbose)
+            formated_answer, status = self.config.suites[detected_lang].parse_answer_func(raw_answer, **kwargs)
 
-        return task_result, info
+            self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
+
+        #  Если не было ошибок при разборе raw-строки
+        if status == ReturnStatus.success:
+            self.log("-"*20, verbose=self.config.verbose)
+            self.log("5. Постобработка ответа от LLM-агента.", verbose=self.config.verbose)
+
+            task_result, status = self.config.suites[detected_lang].postprocess_answer_func(formated_answer, **kwargs)
+            self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
+
+        return task_result, status

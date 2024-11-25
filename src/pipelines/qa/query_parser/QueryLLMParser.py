@@ -3,7 +3,7 @@ from typing import Tuple
 
 from .configs import DEFAULT_KW_EXTRACTION_TASK_CONFIG, QP_LOG
 from ....utils.data_structs import QueryInfo
-from ....utils.errors import QA_ZERO_ENTITIES_MSG
+from ....utils.errors import STATUS_MESSAGE, QA_ZERO_ENTITIES_MSG
 from ....utils import Logger, detect_lang, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 from ....agents import AgentDriver, AgentDriverConfig
 
@@ -50,11 +50,23 @@ class QueryLLMParser:
         :return: Кортеж из двух объектов: (1) структура данных со списком извлечённых ключевых сущностей из query; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[QueryInfo, ReturnInfo]
         """
-        extracted_entities, info = self.kw_extraction_solver.solve(
+
+        info = ReturnInfo()
+        self.log("="*20, verbose=self.config.verbose)
+        self.log(f"Входные данные:", verbose=self.config.verbose)
+        self.log(f"\tQUERY: {query}", verbose=self.config.verbose)
+
+        self.log("Выполнение извлечение ключевых сущностей из запроса с помощью LLM-агента...", verbose=self.config.verbose)
+        extracted_entities, status = self.kw_extraction_solver.solve(
             lang=self.config.lang, query=query)
+        self.log(f"Результат:\n{extracted_entities}")
+        self.log(f"Статус: {STATUS_MESSAGE[status]}")
+
+        if status != ReturnStatus.success:
+            info.occurred_warning.append(status)
 
         if len(extracted_entities) == 0:
             info.status = ReturnStatus.zero_entities
-            info.message = QA_ZERO_ENTITIES_MSG
+            info.message = STATUS_MESSAGE[info.status]
 
         return QueryInfo(query=query, entities=extracted_entities), info

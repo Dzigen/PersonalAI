@@ -4,8 +4,6 @@ from typing import List
 
 class ReturnStatus(Enum):
     success = 0
-    warning = 1
-    error = 2
     #: QA_BAD_QA_PROMPT_MSG, QA_BAD_ENTITIES_EXTRACTION_PROMPT_MSG,
     #: MEM_BAD_THESIS_EXTRACTION_PROMPT_MSG, MEM_BAD_TRIPLET_EXTRACTION_PROMPT_MSG
     bad_format = 3
@@ -25,6 +23,31 @@ class ReturnStatus(Enum):
     empty_input_text = 10
     #: NOT_SUPPORTED_LANG_MSG
     unknown_lang = 11
+
+    bad_parser: 12
+    bad_formater: 13
+    bad_postprocessor: 14
+
+STATUS_MESSAGE = {
+    ReturnStatus.success: "Операция выполнена успешно.",
+    ReturnStatus.empty_input_text: "",
+    # agent solver
+    ReturnStatus.bad_format: "Не удалось привести данные в context-формат для их дальнейшей вставки в user-prompt.",
+    ReturnStatus.bad_parser: "Не удалось разобрать ответ LLM-агента.",
+    ReturnStatus.bad_postprocessor: "Не удалось привести разобранный ответ LLM-агента к заданному формату.",
+    # detect language
+    ReturnStatus.not_supported_lang: "",
+    ReturnStatus.unknown_lang: "",
+    # qa-pipeline (answer generation)
+    ReturnStatus.empty_answer: 'Не удалось получить ответ на вопрос.',
+    # qa-pipeline (query parser)
+    ReturnStatus.zero_entities: 'Из вопроса было извлечено нуль сущностей.'
+    # memorize-pipeline (extractor)
+    # TODO
+    # memorize-pipeline (updator)
+    # TODO
+}
+
 
 #
 NOT_SUPPORTED_LANG_MSG = ""
