@@ -1,13 +1,12 @@
 from typing import List, Tuple
 from dataclasses import dataclass, field
 
-from .utils import QA_USER_PROMPT, QA_SYSTEM_PROMPT, QA_LOG_PATH, ANSWER_PARSE_FUNC
-from ...utils.data_structs import Triplet
-from ...agents import AgentDriver, AgentDriverConfig
-from ...utils.data_structs import TripletCreator
-from ...utils.data_structs import RelationType
-from ...utils import Logger, detect_lang, ReturnInfo, ReturnStatus
-from ...utils.errors import QA_BAD_QA_PROMPT_MSG, QA_EMPTY_ANSWER_MSG, NOT_SUPPORTED_LANG_MSG
+from .configs import DEFAULT_ANSWER_GEN_TASK_CONFIG, QA_LOG
+
+from ....utils.data_structs import Triplet, TripletCreator, RelationType
+from ....utils.errors import QA_BAD_QA_PROMPT_MSG, QA_EMPTY_ANSWER_MSG, NOT_SUPPORTED_LANG_MSG
+from ....agents import AgentDriver, AgentDriverConfig
+from ....utils import Logger, detect_lang, ReturnInfo, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
 
 @dataclass
 class QALLMGeneratorConfig:
@@ -31,12 +30,12 @@ class QALLMGeneratorConfig:
     :type verbose: bool
     """
     lang: str = "auto"
-    system_prompt: dict = field(default_factory=lambda: QA_SYSTEM_PROMPT)
-    user_prompt: dict = field(default_factory=lambda: QA_USER_PROMPT)
-    answer_parse_func: dict = field(default_factory=lambda: ANSWER_PARSE_FUNC)
     agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
+    ag_task_config: AgentTaskSolverConfig = field(default_factory=DEFAULT_ANSWER_GEN_TASK_CONFIG)
+
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
-    log: Logger = field(default_factory=lambda: Logger(QA_LOG_PATH))
+
+    log: Logger = field(default_factory=lambda: Logger(QA_LOG))
     verbose: bool = False
 
 class QALLMGenerator:
@@ -48,22 +47,12 @@ class QALLMGenerator:
     """
     def __init__(self, config: QALLMGeneratorConfig = QALLMGeneratorConfig()) -> None:
         self.config = config
-        self.agent = AgentDriver.connect(config.agent_cofig)
         self.log = self.config.log
 
-    def formate_context(self, triplets: List[Triplet]) -> str:
-        """Метод предназначен для предтсавления набора триплетов
-        в виде ненумерованного списка с их строковыми представлениями на естественном языке.
+        self.agent = AgentDriver.connect(config.agent_cofig)
+        self.answer_generator_solver = AgentTaskSolver(self.config.ag_task_config)
 
-        :param triplets: Набор триплетов.
-        :type triplets: List[Triplet]
-        :return: Ненумепованный список со строковыми представлениями триплетов.
-        :rtype: str
-        """
-        filtered_context = list(map(lambda triplet: f"- {(TripletCreator.stringify(triplet)[1] if triplet.stringified is None else triplet.stringified).strip()}", triplets))
-        return "\n".join(filtered_context)
-
-    def generate(self, query: str, context: str) -> Tuple[str, ReturnInfo]:
+    def generate(self, query: str, context_triplets: List[Triplet]) -> Tuple[str, ReturnInfo]:
         """Метод предназначен для условной генерации ответа на вопрос.
 
         :param query: Вопрос на естественном языке.
@@ -73,26 +62,8 @@ class QALLMGenerator:
         :return: Кортеж из двух объектов: (1) сгенерированнвй ответ на вопрос; (2) статус выполнения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
-        answer, info = '', ReturnInfo()
-        detected_lang, status = detect_lang(query) if self.config.lang == 'auto' else (self.config.lang, ReturnStatus.success)
-        self.log(f"DETECTED LANG: {detected_lang}", verbose=self.config.verbose)
-        if status == ReturnStatus.not_supported_lang:
-            self.log(NOT_SUPPORTED_LANG_MSG, verbose=self.config.verbose)
-            info.occurred_warning.append(status)
 
-        if status == ReturnStatus.success:
-            formated_input = self.config.user_prompt[detected_lang].format(q=query, c=context)
-
-            raw_output = self.agent.generate(
-                system_prompt=self.config.system_prompt[detected_lang],
-                user_prompt=formated_input).strip()
-            self.log(f"RAW_ANSWER: {raw_output}", verbose=self.config.verbose)
-
-            answer, status = self.config.answer_parse_func[detected_lang](raw_output)
-            self.log(f"PARSED_ANSWER: {answer}", verbose=self.config.verbose)
-            if status == ReturnStatus.bad_format:
-                self.log(QA_BAD_QA_PROMPT_MSG, verbose=self.config.verbose)
-                info.occurred_warning.append(status)
+        answer, info = self.answer_generator_solver.solve(query=query, triplets=context_triplets)
 
         if len(answer) == 0:
             info.status = ReturnStatus.empty_answer

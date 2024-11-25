@@ -1,10 +1,10 @@
-QA_RU_USER_PROMPT = \
+RU_AG_USER_PROMPT = \
 """Ответь на вопрос, опираясь на приведенную информацию.
 Вопрос: {q}
 Информация для ответа: {c}
 Ответ: """
 
-QA_EN_USER_PROMPT = \
+EN_AG_USER_PROMPT = \
 """Answer the question, based on provided info by analogy with examples given. Generate chain of thought and then give the final answer in the following format:
 ### Answer
 Chain of thought: ... Final answer: ...
