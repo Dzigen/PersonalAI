@@ -27,3 +27,7 @@ class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
     @abstractmethod
     def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
         pass
+
+    @abstractmethod
+    def read_by_name(self, name: str) -> List[Triplet]:
+        pass
