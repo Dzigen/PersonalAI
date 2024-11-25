@@ -42,19 +42,29 @@ from cases import REPLACE_THESISES_RAW_RESPONSE1, REPLACE_THESISES_RAW_RESPONSE2
           REPLACE_THESISES_RAW_RESPONSE5, REPLACE_THESISES_RAW_RESPONSE6,\
           REPLACE_THESISES_RAW_RESPONSE7, REPLACE_THESISES_RAW_RESPONSE8
 
+from cases import REPLACE_THESISES_PARSE_OUTPUT1, REPLACE_THESISES_PARSE_OUTPUT2
+
 @pytest.mark.parametrize("raw_response, expected_output, exception", [
     # 1. один сопоставленный тезис
-    (REPLACE_THESISES_RAW_RESPONSE1, )
+    (REPLACE_THESISES_RAW_RESPONSE1, REPLACE_THESISES_PARSE_OUTPUT1, False),
     # 2. несколько сопоставленных тезисов
+    (REPLACE_THESISES_RAW_RESPONSE2, REPLACE_THESISES_PARSE_OUTPUT2, False),
     # 3. сопоставленные тезисы отсутствуют
+    ("[]", dict(), False),
     # 4. невалидный response
     # 4.1. отсутствует стрелка
+    (REPLACE_THESISES_RAW_RESPONSE3, None, True),
     # 4.2 отсутствуют скобки
+    (REPLACE_THESISES_RAW_RESPONSE4, None, True),
     # 4.3 отсутствуют кавычки
+    (REPLACE_THESISES_RAW_RESPONSE5, None, True),
     # 4.4 присутствуте специальный символ в тезисе
     # 4.4.1 стрелка
+    (REPLACE_THESISES_RAW_RESPONSE6, None, True),
     # 4.4.2 скобки
+    (REPLACE_THESISES_RAW_RESPONSE7, None, True),
     # 4.4.3 кавычки
+    (REPLACE_THESISES_RAW_RESPONSE8, None, True)
 ])
 def test_custom_parse(raw_response: str, expected_output: Dict[str, Set[str]],
                       exception: bool):
@@ -71,16 +81,19 @@ def test_custom_parse(raw_response: str, expected_output: Dict[str, Set[str]],
             assert expected_output[expected_key] == real_output[expected_key]
 
 
-@pytest.mark.parametrize("parsed_response, base_triplet, incident_triplets", [
+@pytest.mark.parametrize("parsed_response, base_triplet, incident_triplets, exception", [
     # 1. разобранный existing-triplet = base_triplet и разобранные new-triplet содержатся в incident_triplets
+    (),
     # 2. разобранный existing-triplet != base_triplet
+    (),
     # 3. разобранный existing-triplet = base_triplet, но часть разобранных new-triplets не содержится в incident_triplets
+    ()
 ])
 def test_custom_postprocess(parsed_response: Dict[str, Set[str]], base_triplet: Triplet,
                             incident_triplets: List[Triplet], expected_output: List[str], exception: bool):
     try:
         real_output = rt_custom_postprocess(
-            parsed_response, base_triplet, incident_triplets)
+            parsed_response, base_triplet, incident_triplets, exception)
     except Exception:
         assert exception
     else:
