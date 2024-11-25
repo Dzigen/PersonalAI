@@ -6,7 +6,7 @@ import hashlib
 
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils import Triplet, NodeType
-from ....utils import RelationType
+from ....utils.data_structs import RelationType
 
 DEFAULT_INMEMORYGRAPH_CONFIG = GraphDBConnectionConfig()
 
