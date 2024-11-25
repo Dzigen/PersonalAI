@@ -4,10 +4,8 @@ import ast
 from ....utils import ReturnStatus, NodeCreator, TripletCreator, NodeType
 from ....utils.data_structs import Relation, RelationType, Triplet
 
-def etriplets_custom_formate(text: str, node_prop: Dict[str, object] = dict(),
-                             rel_prop: Dict[str, object] = dict()) -> Dict[str, str]:
-    # TODO
-    return dict()
+def etriplets_custom_formate(text: str, **kwargs) -> Dict[str, str]:
+    return {'text': text}
 
 def etriplets_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, str, str]]:
     """Функция предназначена для разбора ответа LLM-агента, полученного в рамаках задачи по извлечению триплетов из текста на естественном языке.
