@@ -3,7 +3,7 @@ from typing import Tuple, List, Dict
 from ....utils import ReturnStatus, Triplet, TripletCreator
 
 def ag_custom_foramte(query: str, triplets: List[Triplet]) -> str:
-    """Метод предназначен для предтсавления набора триплетов
+    """Функция предназначена для предтсавления набора триплетов
     в виде ненумерованного списка с их строковыми представлениями на естественном языке.
 
     :param triplets: Набор триплетов.
@@ -15,12 +15,12 @@ def ag_custom_foramte(query: str, triplets: List[Triplet]) -> str:
     return {'c':"\n".join(filtered_context), 'q': query}
 
 def en_ag_custom_answer_parse(raw_response: str) -> str:
-    """Функция предназначена для разбора результата генерации ответа LLM-агента, в рамаках условной QA-задачи на английском языке.
+    """Функция предназначена для разбора ответа LLM-агента, полученного в рамаках условной QA-задачи на английском языке.
 
     :param raw_response: Исходный ответ LLM-агента.
     :type raw_response: str
     :return: Разобранный ответ на user-вопрос от LLM-агента.
-    :rtype: Tuple[str, ReturnStatus]
+    :rtype: str
     """
     found_line = ""
     for line in raw_response.strip().split("\n"):
@@ -34,15 +34,15 @@ def en_ag_custom_answer_parse(raw_response: str) -> str:
     return answer
 
 def ru_ag_custom_answer_parse(raw_response: str) -> str:
-    """Функция предназначена для разбора результата генерации ответа LLM-агента, в рамаках условной QA-задачи на русском языке.
+    """Функция предназначена для разбора ответа LLM-агента, полученного в рамаках условной QA-задачи на русском языке.
 
     :param raw_response: Исходный ответ LLM-агента.
     :type raw_response: str
     :return: Разобранный ответ на user-вопрос от LLM-агента.
-    :rtype: Tuple[str, ReturnStatus]
+    :rtype: str
     """
     raw_response = raw_response.strip()
     return raw_response
 
-def ag_custom_postprocess(parsed_response: Dict[str, object]) -> str:
+def ag_custom_postprocess(parsed_response: str) -> str:
     return parsed_response
