@@ -4,39 +4,41 @@ from typing import List
 
 class ReturnStatus(Enum):
     success = 0
-    warning = 1
-    error = 2
-    #: QA_BAD_QA_PROMPT_MSG, QA_BAD_ENTITIES_EXTRACTION_PROMPT_MSG,
-    #: MEM_BAD_THESIS_EXTRACTION_PROMPT_MSG, MEM_BAD_TRIPLET_EXTRACTION_PROMPT_MSG
-    bad_format = 3
-    #: MEM_ZERO_EXTRACTED_TRIPLETS_MSG
-    zero_triplets = 4
-    #: QA_ZERO_ENTITIES_MSG
-    zero_entities = 5
-    #: QA_ZERO_LINKED_NODES_MSG
-    zero_linked_nodes = 6
-    #: QA_ZERO_RETRIEVED_TRIPLETS_MSG
-    zero_retrieved_triplets = 7
-    #: QA_EMPTY_ANSWER_MSG
-    empty_answer = 8
-    #: NOT_SUPPORTED_LANG_MSG
-    not_supported_lang = 9
-    #: NOT_SUPPORTED_LANG_MSG
-    empty_input_text = 10
-    #: NOT_SUPPORTED_LANG_MSG
-    unknown_lang = 11
+    empty_input_text = 1
+    bad_formater = 2
+    bad_parser = 3
+    bad_postprocessor = 4
+    not_supported_lang = 5
+    unknown_lang = 6
+    empty_answer = 7
+    zero_entities = 8
+    zero_linked_nodes = 9
+    zero_retrieved_triplets = 10
+    zero_triplets = 11
 
-#
-NOT_SUPPORTED_LANG_MSG = ""
-MEM_BAD_TRIPLET_EXTRACTION_PROMPT_MSG = ''
-MEM_BAD_THESIS_EXTRACTION_PROMPT_MSG = ''
-MEM_ZERO_EXTRACTED_TRIPLETS_MSG = 'Из текста было извлечено нуль триплетов/тезисов.'
-QA_BAD_ENTITIES_EXTRACTION_PROMPT_MSG = ''
-QA_BAD_QA_PROMPT_MSG = ''
-QA_EMPTY_ANSWER_MSG = 'Не удалось получить ответ на вопрос.'
-QA_ZERO_ENTITIES_MSG = 'Из вопроса было извлечено ноль сущностей.'
-QA_ZERO_LINKED_NODES_MSG = 'Сущностям из вопроса было сопоставлено ноль вершин из используемого графа знаний.'
-QA_ZERO_RETRIEVED_TRIPLETS_MSG = 'Было извлечено ноль триплетов из используемого графа знаний.'
+STATUS_MESSAGE = {
+    ReturnStatus.success: "Операция выполнена успешно.",
+    ReturnStatus.empty_input_text: "",
+    # agent solver
+    ReturnStatus.bad_formater: "Не удалось привести данные в context-формат для их дальнейшей вставки в user-prompt.",
+    ReturnStatus.bad_parser: "Не удалось разобрать ответ LLM-агента.",
+    ReturnStatus.bad_postprocessor: "Не удалось привести разобранный ответ LLM-агента к заданному формату.",
+    # detect language
+    ReturnStatus.not_supported_lang: "",
+    ReturnStatus.unknown_lang: "",
+    # qa-pipeline (answer generation)
+    ReturnStatus.empty_answer: 'Не удалось получить ответ на вопрос.',
+    # qa-pipeline (query parser)
+    ReturnStatus.zero_entities: 'Из вопроса было извлечено нуль сущностей.',
+    # qa-pipeline (knowledge comparator)
+    ReturnStatus.zero_linked_nodes: 'Сущностям из вопроса было сопоставлено ноль вершин из используемого графа знаний.',
+    # qa-pipeline (knowledge retriever)
+    ReturnStatus.zero_retrieved_triplets: 'Было извлечено ноль триплетов из используемого графа знаний.',
+    # memorize-pipeline (extractor)
+    ReturnStatus.zero_triplets: 'Из текста было извлечено нуль триплетов/тезисов.'
+    # memorize-pipeline (updator)
+    # TODO
+}
 
 @dataclass
 class ReturnInfo:

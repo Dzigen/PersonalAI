@@ -128,6 +128,10 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         # TODO
         pass
 
+    def read_by_name(self, name: str) -> List[Triplet]:
+        # TODO
+        pass
+
     def parse_query_output(self, output: List[object]) -> List[Triplet]:
         formated_triplets = []
         output = output.get_as_df()
@@ -200,7 +204,7 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         r_output = int(self.conn.execute("MATCH (a)-[rel]->(b) RETURN count(rel) as r_count;").get_as_df()['r_count'][0])
         return {'triplets': r_output, 'nodes': n_output}
 
-    def item_exist(self, id: str, id_type='triplet') -> bool:
+    def item_exist(self, id: str, id_type: str='triplet') -> bool:
         if type(id) is not str:
             raise ValueError
 
