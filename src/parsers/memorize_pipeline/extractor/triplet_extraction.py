@@ -2,7 +2,7 @@ from typing import List, Tuple, Dict
 import ast
 
 from ....utils import ReturnStatus, NodeCreator, TripletCreator, NodeType
-from ....utils.data_structs import Relation, RelationType, Triplet
+from ....utils.data_structs import Relation, RelationType, Triplet, RelationCreator
 
 def etriplets_custom_formate(text: str, **kwargs) -> Dict[str, str]:
     if len(text) < 1:
@@ -49,7 +49,7 @@ def etriplets_custom_postprocess(parsed_response: List[Tuple[str, str, str]],  n
 
         formated_triplets.append(TripletCreator.create(
             NodeCreator.create(name=str(subj), n_type=NodeType.object, prop={**node_prop}),
-            Relation(name=str(rel), type=RelationType.simple, prop={**rel_prop}),
+            RelationCreator.create(name=str(rel), r_type=RelationType.simple, prop={**rel_prop}),
             NodeCreator.create(name=str(obj), n_type=NodeType.object, prop={**node_prop})))
 
     return formated_triplets
