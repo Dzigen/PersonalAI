@@ -88,20 +88,20 @@ from cases import VALID_HYPER_TRIPLET4, VALID_HYPER_TRIPLET5, VALID_HYPER_TRIPLE
       [VALID_HYPER_TRIPLET5.id, VALID_HYPER_TRIPLET6.id], False),
     # 2. разобранный new-triplet != base_triplet
     (REPLACE_THESISES_PARSE_OUTPUT2, VALID_HYPER_TRIPLET5, [VALID_HYPER_TRIPLET6],
-     [VALID_HYPER_TRIPLET6.id], False),
+     [], False),
     # 3. разобранный new-triplet = base_triplet, но часть разобранных existing-triplets не содержится в incident_triplets
     (REPLACE_THESISES_PARSE_OUTPUT2, VALID_HYPER_TRIPLET4, [VALID_HYPER_TRIPLET5],
      [VALID_HYPER_TRIPLET5.id], False)
 ])
 def test_custom_postprocess(parsed_response: Dict[str, Set[str]], base_triplet: Triplet,
                             incident_triplets: List[Triplet], expected_output: List[str], exception: bool):
-    #try:
-    real_output = rt_custom_postprocess(
-        parsed_response, base_triplet, incident_triplets)
-    #except Exception:
-    #    assert exception
-    #else:
-    #    assert not exception
+    try:
+        real_output = rt_custom_postprocess(
+            parsed_response, base_triplet, incident_triplets)
+    except Exception:
+        assert exception
+    else:
+        assert not exception
 
     if not exception:
         assert expected_output == real_output

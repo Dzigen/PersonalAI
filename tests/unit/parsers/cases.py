@@ -116,30 +116,30 @@ REPLACE_THESISES_2 = f'["{VALID_HYPER_TRIPLET2.end_node.name}"]'
 #
 
 # валидный (один сопоставленный тезис)
-REPLACE_THESISES_RAW_RESPONSE1 = '["qwe rty <- asd fgh"]'
+REPLACE_THESISES_RAW_RESPONSE1 = '["qwe rty <- asd fgh"].'
 REPLACE_THESISES_PARSE_OUTPUT1 = {create_id("qwe rty"): {create_id("asd fgh")}}
 
 
 # валидный (несколько сопоставленных тезисов)
-REPLACE_THESISES_RAW_RESPONSE2 = '["qwe rty <- asd fgh", "qwe rty <- zxc vbn"]'
+REPLACE_THESISES_RAW_RESPONSE2 = '["qwe rty <- asd fgh", "qwe rty <- zxc vbn"].'
 REPLACE_THESISES_PARSE_OUTPUT2 = {create_id("qwe rty"): {create_id("asd fgh"), create_id("zxc vbn")}}
 
 # невалидный (отсутствует стрелка)
-REPLACE_THESISES_RAW_RESPONSE3 =  '["qwe rty  asd fgh", "qwe rty <- zxc vbn"]'
+REPLACE_THESISES_RAW_RESPONSE3 =  '["qwe rty  asd fgh", "qwe rty <- zxc vbn"].'
 
 # невалидный (отсутствует скобка)
-REPLACE_THESISES_RAW_RESPONSE4 = '"qwe rty <- asd fgh", "qwe rty <- zxc vbn"]'
+REPLACE_THESISES_RAW_RESPONSE4 = '"qwe rty <- asd fgh", "qwe rty <- zxc vbn"].'
 
 # невалидный (отсутствует кавычка)
-REPLACE_THESISES_RAW_RESPONSE5 = '[qwe rty <- asd fgh, "qwe rty <- zxc vbn"]'
+REPLACE_THESISES_RAW_RESPONSE5 = '[qwe rty <- asd fgh, "qwe rty <- zxc vbn"].'
 
 # специальный символ (стрелка)
-REPLACE_THESISES_RAW_RESPONSE6 = '["qwe <- rty <- asd fgh", "qwe rty <- zxc vbn"]'
+REPLACE_THESISES_RAW_RESPONSE6 = '["qwe <- rty <- asd fgh", "qwe rty <- zxc vbn"].'
 
 # специальный символ (скобки)
-REPLACE_THESISES_RAW_RESPONSE7 = '["qwe [rty] <- asd fgh", "qwe rty <- zxc vbn"]'
+REPLACE_THESISES_RAW_RESPONSE7 = '["qwe [rty] <- asd fgh", "qwe rty <- zxc vbn"].'
 
 # специальный символ (кавычки)
-REPLACE_THESISES_RAW_RESPONSE8 = '["qwe "rty <- asd fgh", "qwe rty <- zxc vbn"]'
+REPLACE_THESISES_RAW_RESPONSE8 = '["qwe "rty <- asd fgh", "qwe rty <- zxc vbn"].'
 
 #
