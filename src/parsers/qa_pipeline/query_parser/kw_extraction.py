@@ -12,7 +12,7 @@ def kwe_custom_parse(raw_response: str, **kwargs) -> List[str]:
     :return: Разобранный список ключевых сущностей из ответа LLM-агента.
     :rtype: List[str]
     """
-    entities = list(filter(lambda item: len(item) > 0, list(map(lambda item: item.strip(), raw_response.strip().split('|')))))
+    entities = list(filter(lambda item: len(item) > 0, list(map(lambda item: item.strip(), raw_response.strip('.;,').split('|')))))
     return entities
 
 def kwe_custom_postprocess(parsed_response: List[str], **kwargs) -> List[str]:
