@@ -195,6 +195,7 @@ class TripletCreator(BaseCreator):
         _, str_triplet = TripletCreator.stringify(triplet)
         if add_stringified_triplet:
             triplet.stringified = str_triplet
+
         triplet.relation.id = create_id(str_triplet)
 
         if t_id is None:

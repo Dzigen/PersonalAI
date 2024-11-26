@@ -87,15 +87,4 @@ def test_custom_postprocess(parsed_response: List[Tuple[str, str, str]], rel_pro
         assert not exception
 
     if not exception:
-        for t1, t2 in zip(triplets, expected_output):
-            print(t1.start_node)
-            print(t2.start_node)
-            print("===")
-            print(t1.relation)
-            print(t2.relation)
-            print("===")
-            print(t1.end_node)
-            print(t2.end_node)
-            print("===")
-
         assert expected_output == triplets

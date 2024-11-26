@@ -47,9 +47,10 @@ def etriplets_custom_postprocess(parsed_response: List[Tuple[str, str, str]],  n
         if len(subj) < 1 or len(rel) < 1 or len(obj) < 1:
             raise ValueError
 
+        print("HERE")
         formated_triplets.append(TripletCreator.create(
-            NodeCreator.create(name=str(subj), n_type=NodeType.object, prop={**node_prop}),
-            RelationCreator.create(name=str(rel), r_type=RelationType.simple, prop={**rel_prop}),
-            NodeCreator.create(name=str(obj), n_type=NodeType.object, prop={**node_prop})))
+            start_node=NodeCreator.create(name=subj, n_type=NodeType.object, prop={**node_prop}),
+            relation=RelationCreator.create(name=rel, r_type=RelationType.simple, prop={**rel_prop}),
+            end_node=NodeCreator.create(name=obj, n_type=NodeType.object, prop={**node_prop})))
 
     return formated_triplets

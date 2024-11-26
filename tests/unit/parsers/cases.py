@@ -1,3 +1,4 @@
+import copy
 import sys
 sys.path.insert(0, "../../")
 from src.utils import ReturnStatus, TripletCreator, NodeCreator, NodeType
@@ -93,50 +94,50 @@ VALID_SIMPLE_RELATION5 = RelationCreator.create(
 
 VALID_SIMPLE_TRIPLET1 = TripletCreator.create(
     start_node=VALID_OBJECT_NODE1,
-    relation=VALID_SIMPLE_RELATION1,
+    relation=copy.deepcopy(VALID_SIMPLE_RELATION1),
     end_node=VALID_OBJECT_NODE2
 )
 
 VALID_SIMPLE_TRIPLET2 = TripletCreator.create(
     start_node=VALID_OBJECT_NODE2,
-    relation=VALID_SIMPLE_RELATION1,
+    relation=copy.deepcopy(VALID_SIMPLE_RELATION1),
     end_node=VALID_OBJECT_NODE3
 )
 
 VALID_SIMPLE_TRIPLET3 = TripletCreator.create(
     start_node=VALID_OBJECT_NODE3,
-    relation=VALID_SIMPLE_RELATION1,
+    relation=copy.deepcopy(VALID_SIMPLE_RELATION1),
     end_node=VALID_OBJECT_NODE1
 )
 
 VALID_SIMPLE_TRIPLET4 = TripletCreator.create(
     start_node=VALID_OBJECT_NODE2,
-    relation=VALID_SIMPLE_RELATION4,
+    relation=copy.deepcopy(VALID_SIMPLE_RELATION4),
     end_node=VALID_OBJECT_NODE4
 )
 
 VALID_SIMPLE_TRIPLET5 = TripletCreator.create(
     start_node=VALID_OBJECT_NODE1,
-    relation=VALID_SIMPLE_RELATION2,
+    relation=copy.deepcopy(VALID_SIMPLE_RELATION2),
     end_node=VALID_OBJECT_NODE3
 )
 
 VALID_SIMPLE_TRIPLET6 = TripletCreator.create(
     start_node=VALID_OBJECT_NODE5,
-    relation=VALID_SIMPLE_RELATION3,
+    relation=copy.deepcopy(VALID_SIMPLE_RELATION3),
     end_node=VALID_OBJECT_NODE4
 )
 
 VALID_SIMPLE_TRIPLET7 = TripletCreator.create(
     start_node=VALID_OBJECT_NODE6,
-    relation=VALID_SIMPLE_RELATION1,
+    relation=copy.deepcopy(VALID_SIMPLE_RELATION1),
     end_node=VALID_OBJECT_NODE6
 )
 
 
 VALID_SIMPLE_TRIPLET8 = TripletCreator.create(
     start_node=VALID_OBJECT_NODE1,
-    relation=VALID_SIMPLE_RELATION5,
+    relation=copy.deepcopy(VALID_SIMPLE_RELATION5),
     end_node=VALID_OBJECT_NODE2
 )
 
@@ -144,38 +145,38 @@ VALID_SIMPLE_TRIPLET8 = TripletCreator.create(
 
 VALID_HYPER_TRIPLET1 = TripletCreator.create(
     start_node=VALID_OBJECT_NODE1,
-    relation=VALID_HYPER_RELATION,
+    relation=copy.deepcopy(VALID_HYPER_RELATION),
     end_node=VALID_HYPER_NODE1
 )
 
 
 VALID_HYPER_TRIPLET2 = TripletCreator.create(
     start_node=VALID_OBJECT_NODE2,
-    relation=VALID_HYPER_RELATION,
+    relation=copy.deepcopy(VALID_HYPER_RELATION),
     end_node=VALID_HYPER_NODE2
 )
 
 VALID_HYPER_TRIPLET3 = TripletCreator.create(
     start_node=VALID_OBJECT_NODE3,
-    relation=VALID_HYPER_RELATION,
+    relation=copy.deepcopy(VALID_HYPER_RELATION),
     end_node=VALID_HYPER_NODE3
 )
 
 VALID_HYPER_TRIPLET4 = TripletCreator.create(
     start_node=VALID_OBJECT_NODE2,
-    relation=VALID_HYPER_RELATION,
+    relation=copy.deepcopy(VALID_HYPER_RELATION),
     end_node=VALID_HYPER_NODE4
 )
 
 VALID_HYPER_TRIPLET5 = TripletCreator.create(
     start_node=VALID_OBJECT_NODE2,
-    relation=VALID_HYPER_RELATION,
+    relation=copy.deepcopy(VALID_HYPER_RELATION),
     end_node=VALID_HYPER_NODE5
 )
 
 VALID_HYPER_TRIPLET6 = TripletCreator.create(
     start_node=VALID_OBJECT_NODE2,
-    relation=VALID_HYPER_RELATION,
+    relation=copy.deepcopy(VALID_HYPER_RELATION),
     end_node=VALID_HYPER_NODE6
 )
 
