@@ -40,6 +40,9 @@ def en_ag_custom_answer_parse(raw_response: str) -> str:
     else:
         answer = raw_response
 
+    if len(answer) < 1:
+        raise ValueError
+
     return answer
 
 def ru_ag_custom_answer_parse(raw_response: str) -> str:
@@ -53,8 +56,13 @@ def ru_ag_custom_answer_parse(raw_response: str) -> str:
     if len(raw_response) < 1:
         raise ValueError
 
-    raw_response = raw_response.strip()
-    return raw_response
+    answer = raw_response.strip()
+
+
+    if len(answer) < 1:
+        raise ValueError
+
+    return answer
 
 def ag_custom_postprocess(parsed_response: str) -> str:
     if len(parsed_response) < 1:
