@@ -6,29 +6,52 @@ sys.path.insert(0, "../../")
 from src.utils import ReturnStatus
 from src.parsers.qa_pipeline.query_parser.kw_extraction import kwe_custom_formate, kwe_custom_parse, kwe_custom_postprocess
 
-
-GOOD_RESPONSE = "a | b | d"
-BAD_RESPONSE = ... # TODO
-
 @pytest.mark.parametrize("query, expected_output, exception", [
     ("simple query", {'text': 'simple query'}, False)
 ])
 def test_custom_formate(query: str, expected_output: Dict[str, str], exception: bool):
     try:
-         real_output = kwe_custom_formate(query)
+         formated_output = kwe_custom_formate(query)
     except Exception:
         assert exception
     else:
         assert not exception
 
     if not exception:
-        assert expected_output == real_output
+        assert expected_output == formated_output
 
-@pytest.mark.parametrize("raw_response, parsed_output, exception", [
-    (GOOD_RESPONSE, ['a', 'b', 'd'], ReturnStatus.success)
+@pytest.mark.parametrize("raw_response, expected_output, exception", [
+    # пустая строк
+    (' .', [], False),
+    # одна сущность
+    ('asd.', ['asd'], False),
+    # несколько сущностей
+    ('asd | qwe | zxc.', ['ads', 'qwe', 'zxc'], False)
 ])
-def test_kw_parse(raw_response: str, parsed_output: List[str], exception: bool):
-    pass
+def test_kw_parse(raw_response: str, expected_output: List[str], exception: bool):
+    try:
+         parsed_output = kwe_custom_parse(raw_response)
+    except Exception:
+        assert exception
+    else:
+        assert not exception
 
-def test_kw_preprocess(parsed_output: List[str], expected_output: List[str], exception: bool):
-    pass
+    if not exception:
+        assert expected_output == parsed_output
+
+@pytest.mark.parametrize("parsed_output, expected_output, exception", [
+    # Пустой ссок
+    ([], [], False),
+    # Непустой список
+    (['asd', 'zxc'], ['asd', 'zxc'], False)
+])
+def test_kw_postprocess(parsed_output: List[str], expected_output: List[str], exception: bool):
+    try:
+         postprocessed_output = kwe_custom_postprocess(parsed_output)
+    except Exception:
+        assert exception
+    else:
+        assert not exception
+
+    if not exception:
+        assert expected_output == postprocessed_output
