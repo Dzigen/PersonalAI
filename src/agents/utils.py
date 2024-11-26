@@ -4,7 +4,7 @@ from typing import Dict, List
 
 @dataclass
 class AgentConnectorConfig:
-    gen_strategy: Dict
+    gen_strategy: Dict = field(default_factory=lambda: dict())
     credentials: Dict = field(default_factory=lambda: dict())
     ext_params: Dict = field(default_factory=lambda: dict())
 
