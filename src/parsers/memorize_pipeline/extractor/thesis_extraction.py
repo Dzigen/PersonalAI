@@ -5,6 +5,8 @@ from ....utils import ReturnStatus, NodeCreator, TripletCreator, NodeType
 from ....utils.data_structs import Relation, RelationType, Triplet
 
 def ethesises_custom_formate(text: str, **kwargs) -> Dict[str, str]:
+    if len(text) < 1:
+        raise ValueError
     return {'text': text}
 
 
@@ -16,6 +18,9 @@ def ethesises_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, List[
     :return: Разобранный список 'тезисных' триплетов из ответа LLM-агента.
     :rtype: List[Tuple[str, str]]
     """
+    if len(raw_response) < 1:
+        raise ValueError
+
     if ":" in raw_response:
         raw_response = raw_response.split(":")[-1]
     raw_response = raw_response.lower()
@@ -23,7 +28,7 @@ def ethesises_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, List[
     raw_triplets = []
     for raw_thesis in raw_response:
         if ";" not in raw_thesis:
-            continue
+            raise ValueError
 
         raw_thesis, raw_entities = raw_thesis.split(";")
         thesis = raw_thesis.strip('.-* ')
@@ -39,9 +44,15 @@ def ethesises_custom_postprocess(parsed_response: List[Tuple[str, List[str]]], n
     for triplet in parsed_response:
         thesis, entities = triplet
 
+        if len(thesis) < 1:
+            raise ValueError
+
         thesis_node = NodeCreator.create(name=str(thesis), n_type=NodeType.hyper, prop={**node_prop})
         thesis_rel = Relation(name=RelationType.hyper.value, type=RelationType.hyper, prop={**rel_prop})
         for entity in entities:
+            if len(entity) < 1:
+                raise ValueError
+
             formated_triplets.append(TripletCreator.create(
                 NodeCreator.create(name=str(entity), n_type=NodeType.object, prop={**node_prop}),
                 thesis_rel, thesis_node))
