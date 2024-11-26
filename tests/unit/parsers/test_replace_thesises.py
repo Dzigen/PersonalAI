@@ -20,8 +20,7 @@ from cases import VALID_HYPER_TRIPLET1, VALID_HYPER_TRIPLET2, VALID_HYPER_TRIPLE
     (VALID_HYPER_TRIPLET1, [VALID_HYPER_TRIPLET2],
      {'ex_thesises': REPLACE_THESISES_2, 'new_thesises': REPLACE_THESISES_1}, False),
     # 3. корректный base_triplet и  пустой incident_triplets
-    (VALID_HYPER_TRIPLET1, [],
-     {'ex_thesises': '[]', 'new_thesises': REPLACE_THESISES_1}, False),
+    (VALID_HYPER_TRIPLET1, [], None, True),
 ])
 def test_custom_foramte(base_triplet: Triplet, incident_triplets: List[Triplet],
                         expected_output: Dict[str, str], exception: bool):

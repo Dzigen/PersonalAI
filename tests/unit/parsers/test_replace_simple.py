@@ -19,8 +19,7 @@ from cases import VALID_SIMPLE_TRIPLET1, VALID_SIMPLE_TRIPLET2, VALID_SIMPLE_TRI
     (VALID_SIMPLE_TRIPLET1, [VALID_SIMPLE_TRIPLET2],
      {'ex_triplets': REPLACE_SIMPLE_2, 'new_triplets': REPLACE_SIMPLE_1}, False),
     # 3. корректный base_triplet и  пустой incident_triplets
-    (VALID_SIMPLE_TRIPLET1, [],
-     {'ex_triplets': '[]', 'new_triplets': REPLACE_SIMPLE_1}, False),
+    (VALID_SIMPLE_TRIPLET1, [], None, True),
 ])
 def test_custom_foramte(base_triplet: Triplet, incident_triplets: List[Triplet],
                         expected_output: Dict[str, str], exception: bool):

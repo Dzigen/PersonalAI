@@ -202,7 +202,7 @@ REPLACE_THESISES_RAW_RESPONSE8 = '["qwe "rty <- asd fgh", "qwe rty <- zxc vbn"].
 #
 
 
-REPLACE_SIMPLE_RAW_RESPONSE1 = '[["qwe, rty, uio" -> "asd, fgh, jkl"]].'
+REPLACE_SIMPLE_RAW_RESPONSE1 = '[["qwe, rty, uio" -> "asd, fgh, jkl"]]'
 REPLACE_SIMPLE_PARSE_OUTPUT1 = {create_id("asd, fgh, jkl"): {create_id("qwe, rty, uio")}}
 
 REPLACE_SIMPLE_RAW_RESPONSE2 = '[["qwe, rty, uio" -> "asd, fgh, jkl"],["zxc, vbn, jkl" -> "asd, fgh, jkl"]]'
