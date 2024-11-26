@@ -46,8 +46,8 @@ def test_kw_parse(raw_response: str, expected_output: List[str], exception: bool
         assert expected_output == parsed_output
 
 @pytest.mark.parametrize("parsed_output, expected_output, exception", [
-    # Пустой ссок
-    ([], [], False),
+    # Пустой список
+    ([], None, True),
     # Непустой список
     (['asd', 'zxc'], ['asd', 'zxc'], False)
 ])
