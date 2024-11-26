@@ -36,7 +36,10 @@ def test_qa_custom_formate(query: str, context_triplets: List[Triplet],
         assert not exception
 
     if not exception:
-        assert formated_output == expected_output
+        assert expected_output.keys() == formated_output.keys()
+        for expected_key in expected_output.keys():
+            assert expected_output[expected_key] == formated_output[expected_key]
+
 
 EN_GOOD_RESPONSE1 = 'Chain of thought 3: bla bla bla\nFinal answer 3: simple answer'
 EN_BAD_RESPONSE1 = 'Chain of thought 3: bla bla bla\nFinal answer 3: '

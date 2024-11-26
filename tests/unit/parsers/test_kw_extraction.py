@@ -7,7 +7,10 @@ from src.utils import ReturnStatus
 from src.parsers.qa_pipeline.query_parser.kw_extraction import kwe_custom_formate, kwe_custom_parse, kwe_custom_postprocess
 
 @pytest.mark.parametrize("query, expected_output, exception", [
-    ("simple query", {'text': 'simple query'}, False)
+    # непустая строка
+    ("simple query", {'text': 'simple query'}, False),
+    # пустая строка
+    ("", None, True)
 ])
 def test_custom_formate(query: str, expected_output: Dict[str, str], exception: bool):
     try:
@@ -18,7 +21,10 @@ def test_custom_formate(query: str, expected_output: Dict[str, str], exception: 
         assert not exception
 
     if not exception:
-        assert expected_output == formated_output
+        assert expected_output.keys() == formated_output.keys()
+        for expected_key in expected_output.keys():
+            assert expected_output[expected_key] == formated_output[expected_key]
+
 
 @pytest.mark.parametrize("raw_response, expected_output, exception", [
     # пустая строк
