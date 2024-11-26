@@ -5,7 +5,7 @@ from ....utils import ReturnStatus, NodeCreator, TripletCreator, NodeType
 from ....utils.data_structs import Relation, RelationType, Triplet
 
 def etriplets_custom_formate(text: str, **kwargs) -> Dict[str, str]:
-    if len(text) < 0:
+    if len(text) < 1:
         raise ValueError
 
     return {'text': text}
