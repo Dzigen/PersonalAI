@@ -29,16 +29,14 @@ def rs_custom_parse(raw_response: str, **kwargs) -> Dict[str, object]:
         existing_triplet = splitted_pair[0].split(",")
         if len(existing_triplet) != 3:
             continue
-        str_existing_triplet = existing_triplet.strip(''' \n'".,/''')
+        str_existing_triplet = splitted_pair[0].strip(''' \n'".,/''')
 
-        new_triplet = splitted_pair[0].split(",")
+        new_triplet = splitted_pair[1].split(",")
         if len(new_triplet) != 3:
             continue
-        str_new_triplet = new_triplet.strip(''' \n'".,/''')
+        str_new_triplet = splitted_pair[1].strip(''' \n'".,/''')
 
         triplets_to_remove[create_id(str_new_triplet)].add(create_id(str_existing_triplet))
-
-    return triplets_to_remove
 
 def rs_custom_postprocess(parsed_response: Dict[str, Set[str]], base_triplet: Triplet, incident_triplets: List[Triplet]) -> List[str]:
     if len(incident_triplets) < 1:
