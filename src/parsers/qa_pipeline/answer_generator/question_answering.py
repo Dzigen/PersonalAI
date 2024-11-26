@@ -39,6 +39,7 @@ def en_ag_custom_answer_parse(raw_response: str) -> str:
         answer = found_line.split("Final answer 3: ")[-1]
     else:
         answer = raw_response
+
     return answer
 
 def ru_ag_custom_answer_parse(raw_response: str) -> str:
