@@ -9,10 +9,10 @@ def rt_custom_formate(base_triplet: Triplet, incident_triplets: List[Triplet]) -
     def _custom_thesis_stringify(triplet: Triplet) -> str:
         return triplet.end_node.name
 
-    existing_str_thesise = f'["{_custom_thesis_stringify(base_triplet)}"]'
-    new_str_thesises = '[' +', '.join(map(lambda triplet: f'"{_custom_thesis_stringify(triplet)}"', incident_triplets)) + ']'
+    new_str_thesise = f'["{_custom_thesis_stringify(base_triplet)}"]'
+    existing_str_thesises = '[' +', '.join(map(lambda triplet: f'"{_custom_thesis_stringify(triplet)}"', incident_triplets)) + ']'
 
-    return {'ex_thesises': existing_str_thesise, 'new_thesises': new_str_thesises}
+    return {'ex_thesises': existing_str_thesises, 'new_thesises': new_str_thesise}
 
 def rt_custom_parse(raw_response: str, **kwargs) -> Dict[str, object]:
     raw_replacements = raw_response.lower()
