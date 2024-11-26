@@ -80,25 +80,28 @@ def test_custom_parse(raw_response: str, expected_output: Dict[str, Set[str]],
         for expected_key in expected_output.keys():
             assert expected_output[expected_key] == real_output[expected_key]
 
-from cases import VALID_HYPER_NODE4, VALID_HYPER_NODE5, VALID_HYPER_NODE6
+from cases import VALID_HYPER_TRIPLET4, VALID_HYPER_TRIPLET5, VALID_HYPER_TRIPLET6
 
-@pytest.mark.parametrize("parsed_response, base_triplet, incident_triplets, exception", [
+@pytest.mark.parametrize("parsed_response, base_triplet, incident_triplets, expected_output, exception", [
     # 1. разобранный new-triplet = base_triplet и разобранные existing-triplets содержатся в incident_triplets
-    (REPLACE_THESISES_PARSE_OUTPUT2, VALID_HYPER_NODE4, [VALID_HYPER_NODE5, VALID_HYPER_NODE6], False),
+    (REPLACE_THESISES_PARSE_OUTPUT2, VALID_HYPER_TRIPLET4, [VALID_HYPER_TRIPLET5, VALID_HYPER_TRIPLET6],
+      [VALID_HYPER_TRIPLET5.id, VALID_HYPER_TRIPLET6.id], False),
     # 2. разобранный new-triplet != base_triplet
-    (REPLACE_THESISES_PARSE_OUTPUT2, VALID_HYPER_NODE5, [VALID_HYPER_NODE6], False),
+    (REPLACE_THESISES_PARSE_OUTPUT2, VALID_HYPER_TRIPLET5, [VALID_HYPER_TRIPLET6],
+     [VALID_HYPER_TRIPLET6.id], False),
     # 3. разобранный new-triplet = base_triplet, но часть разобранных existing-triplets не содержится в incident_triplets
-    (REPLACE_THESISES_PARSE_OUTPUT2, VALID_HYPER_NODE4, [VALID_HYPER_NODE5], False)
+    (REPLACE_THESISES_PARSE_OUTPUT2, VALID_HYPER_TRIPLET4, [VALID_HYPER_TRIPLET5],
+     [VALID_HYPER_TRIPLET5.id], False)
 ])
 def test_custom_postprocess(parsed_response: Dict[str, Set[str]], base_triplet: Triplet,
                             incident_triplets: List[Triplet], expected_output: List[str], exception: bool):
-    try:
-        real_output = rt_custom_postprocess(
-            parsed_response, base_triplet, incident_triplets, exception)
-    except Exception:
-        assert exception
-    else:
-        assert not exception
+    #try:
+    real_output = rt_custom_postprocess(
+        parsed_response, base_triplet, incident_triplets)
+    #except Exception:
+    #    assert exception
+    #else:
+    #    assert not exception
 
     if not exception:
         assert expected_output == real_output
