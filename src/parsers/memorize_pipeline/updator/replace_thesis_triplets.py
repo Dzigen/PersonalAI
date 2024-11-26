@@ -16,7 +16,7 @@ def rt_custom_formate(base_triplet: Triplet, incident_triplets: List[Triplet]) -
 
 def rt_custom_parse(raw_response: str, **kwargs) -> Dict[str, object]:
     raw_replacements = raw_response.lower()
-    predicted_outdated = raw_replacements.split("[")[-1].split("]")[0].split(";")
+    predicted_outdated = raw_replacements.split("[")[-1].split("]")[0].split('", "')
     thesises_to_remove = defaultdict(set)
     for pair in predicted_outdated:
         splitted_pair = pair.split("<-")
