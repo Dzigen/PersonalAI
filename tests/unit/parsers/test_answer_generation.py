@@ -84,7 +84,7 @@ def test_qa_ru_parse(raw_response: str, expected_output: Dict[str, str], excepti
 
 @pytest.mark.parametrize("parsed_response, expected_output, exception", [
     # пустая строка
-    ("", "", True),
+    ("", None, True),
     # непустая строка
     ("simple answer", "simple answer", False),
 ])
