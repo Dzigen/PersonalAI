@@ -31,11 +31,15 @@ VALID_OBJECT_NODE6 = NodeCreator.create(
     n_type=NodeType.object,
     name='qazxsw')
 
+VALID_OBJECT_NODE7 = NodeCreator.create(
+    n_type=NodeType.object,
+    name='tgbh')
+
 # HYPER NODES
 
 VALID_HYPER_NODE1 = NodeCreator.create(
     n_type=NodeType.hyper,
-    name='rty', prop={'k4': 'v4'}
+    name='rty', prop={'k1': 'v1'}
 )
 
 VALID_HYPER_NODE2 = NodeCreator.create(
@@ -63,10 +67,17 @@ VALID_HYPER_NODE6 = NodeCreator.create(
     name='zxc vbn', prop={'k9': 'v9'}
 )
 
+VALID_HYPER_NODE7 = NodeCreator.create(
+    n_type=NodeType.hyper,
+    name='qsdcb')
+
 # HYPER RELATIONS
 
 VALID_HYPER_RELATION = RelationCreator.create(
     r_type=RelationType.hyper, prop={'k5': 'v5'})
+
+VALID_HYPER_RELATION2 = RelationCreator.create(
+    r_type=RelationType.hyper)
 
 # SIMPLE RELATIONS
 
@@ -149,6 +160,12 @@ VALID_HYPER_TRIPLET1 = TripletCreator.create(
     end_node=VALID_HYPER_NODE1
 )
 
+VALID_HYPER_TRIPLET1_2 = TripletCreator.create(
+    start_node=VALID_OBJECT_NODE2,
+    relation=copy.deepcopy(VALID_HYPER_RELATION),
+    end_node=VALID_HYPER_NODE1
+)
+
 
 VALID_HYPER_TRIPLET2 = TripletCreator.create(
     start_node=VALID_OBJECT_NODE2,
@@ -178,6 +195,19 @@ VALID_HYPER_TRIPLET6 = TripletCreator.create(
     start_node=VALID_OBJECT_NODE2,
     relation=copy.deepcopy(VALID_HYPER_RELATION),
     end_node=VALID_HYPER_NODE6
+)
+
+VALID_HYPER_TRIPLET7 = TripletCreator.create(
+    start_node=VALID_OBJECT_NODE1,
+    relation=copy.deepcopy(VALID_HYPER_RELATION2),
+    end_node=VALID_HYPER_NODE1
+)
+
+
+VALID_HYPER_TRIPLET8 = TripletCreator.create(
+    start_node=VALID_OBJECT_NODE6,
+    relation=copy.deepcopy(VALID_HYPER_RELATION),
+    end_node=VALID_HYPER_NODE7
 )
 
 #

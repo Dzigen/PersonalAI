@@ -2,7 +2,7 @@ from typing import List, Tuple, Dict
 import ast
 
 from ....utils import ReturnStatus, NodeCreator, TripletCreator, NodeType
-from ....utils.data_structs import Relation, RelationType, Triplet
+from ....utils.data_structs import Relation, RelationType, Triplet, RelationCreator
 
 def ethesises_custom_formate(text: str, **kwargs) -> Dict[str, str]:
     if len(text) < 1:
@@ -23,8 +23,7 @@ def ethesises_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, List[
 
     if ":" in raw_response:
         raw_response = raw_response.split(":")[-1]
-    raw_response = raw_response.lower()
-    raw_response = raw_response.split(".")
+    raw_response = raw_response.lower().strip('.-* ').split(".")
     raw_triplets = []
     for raw_thesis in raw_response:
         if ";" not in raw_thesis:
@@ -48,13 +47,13 @@ def ethesises_custom_postprocess(parsed_response: List[Tuple[str, List[str]]], n
             raise ValueError
 
         thesis_node = NodeCreator.create(name=str(thesis), n_type=NodeType.hyper, prop={**node_prop})
-        thesis_rel = Relation(name=RelationType.hyper.value, type=RelationType.hyper, prop={**rel_prop})
+        thesis_rel = RelationCreator.create(name=RelationType.hyper.value, r_type=RelationType.hyper, prop={**rel_prop})
         for entity in entities:
             if len(entity) < 1:
                 raise ValueError
 
             formated_triplets.append(TripletCreator.create(
-                NodeCreator.create(name=str(entity), n_type=NodeType.object, prop={**node_prop}),
-                thesis_rel, thesis_node))
+                start_node=NodeCreator.create(name=str(entity), n_type=NodeType.object, prop={**node_prop}),
+                relation=thesis_rel, end_node=thesis_node))
 
     return formated_triplets
