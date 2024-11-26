@@ -36,9 +36,9 @@ def en_ag_custom_answer_parse(raw_response: str) -> str:
             found_line = line
             break
     if found_line:
-        answer = found_line.split("Final answer 3: ")[-1]
+        answer = found_line.split("Final answer 3:")[-1].strip()
     else:
-        answer = raw_response
+        answer = raw_response.strip()
 
     if len(answer) < 1:
         raise ValueError
