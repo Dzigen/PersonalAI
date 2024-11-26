@@ -11,11 +11,11 @@ VALID_OBJECT_NODE1 = NodeCreator.create(
 
 VALID_OBJECT_NODE2 = NodeCreator.create(
     n_type=NodeType.object,
-    name='asd', prop={'k2': 'v2'})
+    name='asd', prop={'k1': 'v1'})
 
 VALID_OBJECT_NODE3 = NodeCreator.create(
     n_type=NodeType.object,
-    name='uio', prop={'k3': 'v3'})
+    name='uio', prop={'k1': 'v1'})
 
 VALID_OBJECT_NODE4 = NodeCreator.create(
     n_type=NodeType.object,
@@ -24,6 +24,11 @@ VALID_OBJECT_NODE4 = NodeCreator.create(
 VALID_OBJECT_NODE5 = NodeCreator.create(
     n_type=NodeType.object,
     name='zxc', prop={'k5': 'v5'})
+
+
+VALID_OBJECT_NODE6 = NodeCreator.create(
+    n_type=NodeType.object,
+    name='qazxsw')
 
 # HYPER NODES
 
@@ -80,6 +85,9 @@ VALID_SIMPLE_RELATION4 = RelationCreator.create(
     r_type=RelationType.simple,
     name='fgh', prop={'k5': 'v5'})
 
+VALID_SIMPLE_RELATION5 = RelationCreator.create(
+    r_type=RelationType.simple,
+    name='rfvbgt')
 
 # SIMPLE TRIPLETS
 
@@ -117,6 +125,19 @@ VALID_SIMPLE_TRIPLET6 = TripletCreator.create(
     start_node=VALID_OBJECT_NODE5,
     relation=VALID_SIMPLE_RELATION3,
     end_node=VALID_OBJECT_NODE4
+)
+
+VALID_SIMPLE_TRIPLET7 = TripletCreator.create(
+    start_node=VALID_OBJECT_NODE6,
+    relation=VALID_SIMPLE_RELATION1,
+    end_node=VALID_OBJECT_NODE6
+)
+
+
+VALID_SIMPLE_TRIPLET8 = TripletCreator.create(
+    start_node=VALID_OBJECT_NODE1,
+    relation=VALID_SIMPLE_RELATION5,
+    end_node=VALID_OBJECT_NODE2
 )
 
 # HYPER TRIPLETS
