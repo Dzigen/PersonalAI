@@ -5,6 +5,9 @@ from ....utils import ReturnStatus, NodeCreator, TripletCreator, NodeType
 from ....utils.data_structs import Relation, RelationType, Triplet
 
 def etriplets_custom_formate(text: str, **kwargs) -> Dict[str, str]:
+    if len(text) < 0:
+        raise ValueError
+
     return {'text': text}
 
 def etriplets_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, str, str]]:
@@ -15,6 +18,9 @@ def etriplets_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, str, 
     :return: Разобранный список триплетов из ответа LLM-агента.
     :rtype: List[Tuple[str, str, str]]
     """
+    if len(raw_response) < 1:
+        raise ValueError
+
     if ":" in raw_response:
         raw_response = raw_response.split(":")[-1]
     raw_response = raw_response.lower()
@@ -37,6 +43,10 @@ def etriplets_custom_postprocess(parsed_response: List[Tuple[str, str, str]],  n
     formated_triplets = []
     for triplet in parsed_response:
         subj, rel, obj = triplet
+
+        if len(subj) < 1 or len(rel) < 1 or len(obj) < 1:
+            raise ValueError
+
         formated_triplets.append(TripletCreator.create(
             NodeCreator.create(name=str(subj), n_type=NodeType.object, prop={**node_prop}),
             Relation(name=str(rel), type=RelationType.simple, prop={**rel_prop}),
