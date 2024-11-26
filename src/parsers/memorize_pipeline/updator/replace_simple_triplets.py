@@ -49,7 +49,7 @@ def rs_custom_postprocess(parsed_response: Dict[str, Set[str]], base_triplet: Tr
         return f"{triplet.start_node.name}, {triplet.relation.name}, {triplet.end_node.name}"
 
     custom_ids_to_triplets = {create_id(_custom_triplet_stringify(triplet)): triplet for triplet in incident_triplets}
-    base_triplet_custom_id = _custom_triplet_stringify(base_triplet)
+    base_triplet_custom_id = create_id(_custom_triplet_stringify(base_triplet))
     obsolete_str_ids = parsed_response[base_triplet_custom_id]
 
     triplet_ids_to_remove = []
