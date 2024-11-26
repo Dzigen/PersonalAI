@@ -15,6 +15,7 @@ class ReturnStatus(Enum):
     zero_linked_nodes = 9
     zero_retrieved_triplets = 10
     zero_triplets = 11
+    bad_user_prompt_maping = 12
 
 STATUS_MESSAGE = {
     ReturnStatus.success: "Операция выполнена успешно.",
@@ -23,6 +24,7 @@ STATUS_MESSAGE = {
     ReturnStatus.bad_formater: "Не удалось привести данные в context-формат для их дальнейшей вставки в user-prompt.",
     ReturnStatus.bad_parser: "Не удалось разобрать ответ LLM-агента.",
     ReturnStatus.bad_postprocessor: "Не удалось привести разобранный ответ LLM-агента к заданному формату.",
+    ReturnStatus.bad_user_prompt_maping: "",
     # detect language
     ReturnStatus.not_supported_lang: "",
     ReturnStatus.unknown_lang: "",
