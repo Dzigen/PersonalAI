@@ -5,6 +5,8 @@ from ....utils import Triplet, ReturnStatus
 from ....utils.data_structs import create_id
 
 def rs_custom_formate(base_triplet: Triplet, incident_triplets: List[Triplet]) -> Dict[str,str]:
+    if len(incident_triplets) < 1:
+        raise ValueError
 
     def _custom_triplet_stringify(triplet: Triplet) -> str:
         return f"{triplet.start_node.name}, {triplet.relation.name}, {triplet.end_node.name}"
@@ -39,6 +41,8 @@ def rs_custom_parse(raw_response: str, **kwargs) -> Dict[str, object]:
     return triplets_to_remove
 
 def rs_custom_postprocess(parsed_response: Dict[str, Set[str]], base_triplet: Triplet, incident_triplets: List[Triplet]) -> List[str]:
+    if len(incident_triplets) < 1:
+        raise ValueError
 
     def _custom_triplet_stringify(triplet: Triplet) -> str:
         return f"{triplet.start_node.name}, {triplet.relation.name}, {triplet.end_node.name}"

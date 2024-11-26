@@ -5,6 +5,8 @@ from ....utils import Triplet
 from ....utils.data_structs import create_id
 
 def rt_custom_formate(base_triplet: Triplet, incident_triplets: List[Triplet]) -> Dict[str,str]:
+    if len(incident_triplets) < 1:
+        raise ValueError
 
     def _custom_thesis_stringify(triplet: Triplet) -> str:
         return triplet.end_node.name
@@ -30,6 +32,8 @@ def rt_custom_parse(raw_response: str, **kwargs) -> Dict[str, object]:
     return thesises_to_remove
 
 def rt_custom_postprocess(parsed_response: Dict[str, Set[str]], base_triplet: Triplet, incident_triplets: List[Triplet]) -> List[str]:
+    if len(incident_triplets) < 1:
+        raise ValueError
 
     def _custom_thesis_stringify(triplet: Triplet) -> str:
         return triplet.end_node.name
