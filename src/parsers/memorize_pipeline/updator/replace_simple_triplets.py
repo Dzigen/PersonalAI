@@ -17,6 +17,9 @@ def rs_custom_formate(base_triplet: Triplet, incident_triplets: List[Triplet]) -
     return {'ex_triplets': existing_str_triplets, 'new_triplets': new_str_triplet}
 
 def rs_custom_parse(raw_response: str, **kwargs) -> Dict[str, object]:
+    if len(raw_response) < 1:
+        raise ValueError
+
     raw_replacements = raw_response.lower()
     raw_replacements = raw_replacements.split("[[")[-1] if "[[" in raw_replacements else raw_replacements.split("[\n[")[-1]
     pairs = raw_replacements.replace("[", "").strip("]").split("],")
