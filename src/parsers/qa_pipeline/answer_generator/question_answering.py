@@ -11,6 +11,10 @@ def ag_custom_foramte(query: str, triplets: List[Triplet]) -> str:
     :return: Ненумепованный список со строковыми представлениями триплетов.
     :rtype: str
     """
+
+    if len(query) < 1 or len(triplets) < 1:
+        raise ValueError
+
     filtered_context = list(map(lambda triplet: f"- {(TripletCreator.stringify(triplet)[1] if triplet.stringified is None else triplet.stringified).strip()}", triplets))
     return {'c':"\n".join(filtered_context), 'q': query}
 
@@ -22,6 +26,10 @@ def en_ag_custom_answer_parse(raw_response: str) -> str:
     :return: Разобранный ответ на user-вопрос от LLM-агента.
     :rtype: str
     """
+
+    if len(raw_response) < 1:
+        raise ValueError
+
     found_line = ""
     for line in raw_response.strip().split("\n"):
         if "Final answer 3" in line:
@@ -41,8 +49,14 @@ def ru_ag_custom_answer_parse(raw_response: str) -> str:
     :return: Разобранный ответ на user-вопрос от LLM-агента.
     :rtype: str
     """
+    if len(raw_response) < 1:
+        raise ValueError
+
     raw_response = raw_response.strip()
     return raw_response
 
 def ag_custom_postprocess(parsed_response: str) -> str:
+    if len(parsed_response) < 1:
+        raise ValueError
+
     return parsed_response
