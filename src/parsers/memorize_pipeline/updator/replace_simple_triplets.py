@@ -9,10 +9,10 @@ def rs_custom_formate(base_triplet: Triplet, incident_triplets: List[Triplet]) -
     def _custom_triplet_stringify(triplet: Triplet) -> str:
         return f"{triplet.start_node.name}, {triplet.relation.name}, {triplet.end_node.name}"
 
-    existing_str_triplet = f'"{_custom_triplet_stringify(base_triplet)}".'
-    new_str_triplets = '; '.join(map(lambda triplet: f'"{_custom_triplet_stringify(triplet)}"', incident_triplets)) + '.'
+    new_str_triplet = f'"{_custom_triplet_stringify(base_triplet)}"'
+    existing_str_triplets = '; '.join(map(lambda triplet: f'"{_custom_triplet_stringify(triplet)}"', incident_triplets))
 
-    return {'ex_triplets': existing_str_triplet, 'new_triplets': new_str_triplets}
+    return {'ex_triplets': existing_str_triplets, 'new_triplets': new_str_triplet}
 
 def rs_custom_parse(raw_response: str, **kwargs) -> Dict[str, object]:
     raw_replacements = raw_response.lower()
