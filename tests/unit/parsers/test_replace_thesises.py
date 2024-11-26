@@ -80,14 +80,15 @@ def test_custom_parse(raw_response: str, expected_output: Dict[str, Set[str]],
         for expected_key in expected_output.keys():
             assert expected_output[expected_key] == real_output[expected_key]
 
+from cases import VALID_HYPER_NODE4, VALID_HYPER_NODE5, VALID_HYPER_NODE6
 
 @pytest.mark.parametrize("parsed_response, base_triplet, incident_triplets, exception", [
-    # 1. разобранный existing-triplet = base_triplet и разобранные new-triplet содержатся в incident_triplets
-    (),
-    # 2. разобранный existing-triplet != base_triplet
-    (),
-    # 3. разобранный existing-triplet = base_triplet, но часть разобранных new-triplets не содержится в incident_triplets
-    ()
+    # 1. разобранный new-triplet = base_triplet и разобранные existing-triplets содержатся в incident_triplets
+    (REPLACE_THESISES_PARSE_OUTPUT2, VALID_HYPER_NODE4, [VALID_HYPER_NODE5, VALID_HYPER_NODE6], False),
+    # 2. разобранный new-triplet != base_triplet
+    (REPLACE_THESISES_PARSE_OUTPUT2, VALID_HYPER_NODE5, [VALID_HYPER_NODE6], False),
+    # 3. разобранный new-triplet = base_triplet, но часть разобранных existing-triplets не содержится в incident_triplets
+    (REPLACE_THESISES_PARSE_OUTPUT2, VALID_HYPER_NODE4, [VALID_HYPER_NODE5], False)
 ])
 def test_custom_postprocess(parsed_response: Dict[str, Set[str]], base_triplet: Triplet,
                             incident_triplets: List[Triplet], expected_output: List[str], exception: bool):

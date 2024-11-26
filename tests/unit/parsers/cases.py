@@ -34,6 +34,21 @@ VALID_HYPER_NODE3 = NodeCreator.create(
     name='jkl', prop={'k6': 'v7'}
 )
 
+VALID_HYPER_NODE4 = NodeCreator.create(
+    n_type=NodeType.hyper,
+    name='qwe rty', prop={'k7': 'v7'}
+)
+
+VALID_HYPER_NODE5 = NodeCreator.create(
+    n_type=NodeType.hyper,
+    name='asd fgh', prop={'k8': 'v8'}
+)
+
+VALID_HYPER_NODE6 = NodeCreator.create(
+    n_type=NodeType.hyper,
+    name='zxc vbn', prop={'k9': 'v9'}
+)
+
 # HYPER RELATIONS
 
 VALID_HYPER_RELATION = RelationCreator.create(
@@ -43,7 +58,7 @@ VALID_HYPER_RELATION = RelationCreator.create(
 
 VALID_SIMPLE_RELATION = RelationCreator.create(
     r_type=RelationType.simple,
-    name='zxc',vprop={'k3': 'v3'})
+    name='zxc', prop={'k3': 'v3'})
 
 # SIMPLE TRIPLETS
 
@@ -74,6 +89,24 @@ VALID_HYPER_TRIPLET3 = TripletCreator.create(
     end_node=VALID_HYPER_NODE3
 )
 
+VALID_HYPER_TRIPLET4 = TripletCreator.create(
+    start_node=VALID_OBJECT_NODE2,
+    relation=VALID_HYPER_RELATION,
+    end_node=VALID_HYPER_NODE4
+)
+
+VALID_HYPER_TRIPLET5 = TripletCreator.create(
+    start_node=VALID_OBJECT_NODE2,
+    relation=VALID_HYPER_RELATION,
+    end_node=VALID_HYPER_NODE5
+)
+
+VALID_HYPER_TRIPLET6 = TripletCreator.create(
+    start_node=VALID_OBJECT_NODE2,
+    relation=VALID_HYPER_RELATION,
+    end_node=VALID_HYPER_NODE6
+)
+
 #
 
 REPLACE_THESISES_2AND3 = f'["{VALID_HYPER_TRIPLET2.end_node.name}", "{VALID_HYPER_TRIPLET3.end_node.name}"]'
@@ -85,6 +118,7 @@ REPLACE_THESISES_2 = f'["{VALID_HYPER_TRIPLET2.end_node.name}"]'
 # валидный (один сопоставленный тезис)
 REPLACE_THESISES_RAW_RESPONSE1 = '["qwe rty <- asd fgh"]'
 REPLACE_THESISES_PARSE_OUTPUT1 = {create_id("qwe rty"): {create_id("asd fgh")}}
+
 
 # валидный (несколько сопоставленных тезисов)
 REPLACE_THESISES_RAW_RESPONSE2 = '["qwe rty <- asd fgh", "qwe rty <- zxc vbn"]'
