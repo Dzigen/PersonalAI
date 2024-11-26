@@ -58,7 +58,6 @@ def ru_ag_custom_answer_parse(raw_response: str) -> str:
 
     answer = raw_response.strip()
 
-
     if len(answer) < 1:
         raise ValueError
 

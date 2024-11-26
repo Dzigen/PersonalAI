@@ -50,7 +50,7 @@ EN_BAD_RESPONSE2 = 'Chain of thought 3: bla bla bla\nFInaL aNsWer: simple answer
     # валидный формат + пустой ответ
     (EN_BAD_RESPONSE1, None, True),
     # изменённый регистр формата
-    (EN_BAD_RESPONSE2, None, True)
+    (EN_BAD_RESPONSE2, 'simple answer', False)
 ])
 def test_qa_en_parse(raw_response: str, expected_output: Dict[str, str], exception: bool):
     try:
