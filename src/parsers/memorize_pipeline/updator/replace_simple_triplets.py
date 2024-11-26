@@ -39,6 +39,8 @@ def rs_custom_parse(raw_response: str, **kwargs) -> Dict[str, object]:
 
         triplets_to_remove[create_id(str_new_triplet)].add(create_id(str_existing_triplet))
 
+    return triplets_to_remove
+
 def rs_custom_postprocess(parsed_response: Dict[str, Set[str]], base_triplet: Triplet, incident_triplets: List[Triplet]) -> List[str]:
     if len(incident_triplets) < 1:
         raise ValueError
