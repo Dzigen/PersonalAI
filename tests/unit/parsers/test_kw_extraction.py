@@ -26,7 +26,7 @@ def test_custom_formate(query: str, expected_output: Dict[str, str], exception: 
     # одна сущность
     ('asd.', ['asd'], False),
     # несколько сущностей
-    ('asd | qwe | zxc.', ['ads', 'qwe', 'zxc'], False)
+    ('asd | qwe | zxc.', ['asd', 'qwe', 'zxc'], False)
 ])
 def test_kw_parse(raw_response: str, expected_output: List[str], exception: bool):
     try:
