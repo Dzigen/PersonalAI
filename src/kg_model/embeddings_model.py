@@ -192,3 +192,7 @@ class EmbeddingsModel:
         instances = self.vectordbs[db_type].read(ids, includes=['embeddings'])
         embeddings = list(map(lambda inst: inst.embedding, instances))
         return embeddings
+
+    def clear(self) -> None:
+        self.vectordbs['nodes'].clear()
+        self.vectordbs['triplets'].clear()

@@ -118,3 +118,7 @@ class GraphModel:
         steps = math.ceil(len(triplets) / batch_size)
         for step in tqdm(range(steps)):
             self.db_conn.delete(triplets[step*batch_size: (step+1)*batch_size])
+
+
+    def clear(self) -> None:
+        self.db_conn.clear()
