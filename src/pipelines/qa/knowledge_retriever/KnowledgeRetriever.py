@@ -7,7 +7,7 @@ from .TripletsFilter import TripletsFilterConfig
 from .AStarTripletsRetriever import AStarGraphSearchConfig
 
 from ....utils.data_structs import QueryInfo, Triplet
-from ....knowledge_graph_model import KnowledgeGraphModel
+from ....kg_model import KnowledgeGraphModel
 from ....utils import Logger, ReturnStatus, ReturnInfo
 from ....utils.errors import STATUS_MESSAGE
 
