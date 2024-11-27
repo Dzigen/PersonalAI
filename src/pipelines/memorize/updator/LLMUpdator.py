@@ -62,7 +62,7 @@ class LLMUpdator:
 
                 # сопоставляем ноду из триплета нодам в графе знаний по полю name
                 matched_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-                    name=[base_node.name], type=NodeType.object, object='node')
+                    name=base_node.name, type=NodeType.object, object='node')
 
                 for m_node in matched_nodes:
                     neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_node.id, [NodeType.object])
@@ -91,7 +91,7 @@ class LLMUpdator:
 
             # сопоставляем ноду из триплета нодам в графе знаний по полю name
             matched_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-                name=[base_triplet.start_node.name], type=NodeType.object, object='node')
+                name=base_triplet.start_node.name, type=NodeType.object, object='node')
 
             for m_node in matched_nodes:
                 neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_node.id, [NodeType.hyper])
@@ -118,9 +118,9 @@ class LLMUpdator:
         for triplet in episodic_triplets:
             # Сопоставляем сущности из триплета вершинам в графе знаний
             matched_object_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-                    name=[triplet.start_node.name], type=NodeType.object, object='node')
+                    name=triplet.start_node.name, type=NodeType.object, object='node')
             matched_episodic_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-                    name=[triplet.end_node.name], type=NodeType.episodic, object='node')
+                    name=triplet.end_node.name, type=NodeType.episodic, object='node')
             if len(matched_object_nodes) == 0 or len(matched_episodic_nodes) == 0:
                 continue
 
