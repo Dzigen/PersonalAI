@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Tuple
 from tqdm import tqdm
 
-from .kg_model import GraphModel, GraphModelConfig, EmbeddingsModelConfig, EmbeddingsModel, KnowledgeGraphModel
+from .kg_model import GraphModelConfig, EmbeddingsModelConfig, KnowledgeGraphModel
 from .pipelines.qa import QAPipeline, QAPipelineConfig
 from .pipelines.memorize import MemPipeline, MemPipelineConfig
 from .utils import Logger, ReturnInfo, Triplet
@@ -44,8 +44,8 @@ class PersonalAI:
         self.log = self.config.log
 
         self.kg_model = KnowledgeGraphModel(
-            graph_struct=GraphModel(config.graph_struct_config),
-            embeddings_struct=EmbeddingsModel(config.embedds_struct_config))
+            graph_config=config.graph_struct_config,
+            embeddings_config=config.embedds_struct_config)
         self.qa_pipeline = QAPipeline(kg_model=self.kg_model, config=config.qa_pipeline_config)
         self.mem_pipeline = MemPipeline(kg_model=self.kg_model, config=config.mem_pipeline_config)
 
