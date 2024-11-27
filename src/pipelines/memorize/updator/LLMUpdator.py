@@ -175,9 +175,9 @@ class LLMUpdator:
             obsolete_t_ids = self.get_obsolete_triplet_ids(new_triplets, need_simple, need_hyper, need_episodic)
 
             # Удаляем устаревшую информацию из памяти ассистента
-            self.kg_model.delete_triplets(obsolete_t_ids)
+            self.kg_model.remove_knowledge(obsolete_t_ids)
 
         # Добавляем новую информацию в память ассистента
-        self.kg_model.create_triplets(new_triplets)
+        self.kg_model.add_knowledge(new_triplets)
 
         return info

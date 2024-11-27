@@ -17,19 +17,15 @@ class KnowledgeGraphModel:
         self.graph_struct = graph_struct
         self.embeddings_struct =  embeddings_model
 
-    def create_triplets(self, triplets: List[Triplet], update_nodes: bool = False) -> None:
+    def add_knowledge(self, triplets: List[Triplet], update_nodes: bool = False) -> None:
         # на уровне графа знаний выдерживается консистентность графовой и векторой моделей
         self.graph_struct.create_triplets(triplets, status_bar=False) # внутри идёт сначала create , а потом update
         self.embeddings_struct.create_triplets(triplets, status_bar=False)
 
-    def delete_triplets(self):
-        # TODO
-        pass
+    def remove_knowledge(self, triplet_ids: List[str]) -> None:
+        self.graph_struct.delete_triplets(triplet_ids)
+        self.embeddings_struct.delete_triplets(triplet_ids, delete_nodes=True)
 
-    def update_relations(self):
-        # TODO
-        pass
-
-    def update_nodes(self):
-        # TODO
-        pass
+    def clear(self) -> None:
+        self.embeddings_struct.clear()
+        self.graph_struct.clear()

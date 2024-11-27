@@ -32,7 +32,7 @@ class LLMExtractor:
         self.thesises_extraction_solver = AgentTaskSolver(self.agent, self.config.thesises_extraction_task_config)
 
 
-    def extract(self, text: str, need_simple: bool = True, need_thesises: bool = True,
+    def extract_knowledge(self, text: str, need_simple: bool = True, need_thesises: bool = True,
                 need_episodic: bool = True, properties: Dict = {}) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста
         на естественном языке.
