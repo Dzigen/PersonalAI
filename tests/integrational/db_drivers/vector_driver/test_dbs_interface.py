@@ -2,7 +2,7 @@ import pytest
 from chromadb.errors import ChromaError
 
 import sys
-sys.path.insert(0, "../../")
+sys.path.insert(0, "../")
 
 from cases import VECTORDB_POPULATED_CREATE_TEST_CASES, VECTORDB_POPULATED_DELETE_TEST_CASES, \
     VECTORDB_POPULATED_READ_TEST_CASES, VECTORDB_POPULATED_RETRIEVE_TEST_CASES, \

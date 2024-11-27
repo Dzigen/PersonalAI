@@ -2,7 +2,7 @@ import pytest
 from typing import Dict, List, Set, Tuple
 
 import sys
-sys.path.insert(0, "../../")
+sys.path.insert(0, "../")
 from src.utils.data_structs import Triplet
 from src.parsers.memorize_pipeline.extractor.thesis_extraction import\
       ethesises_custom_formate, ethesises_custom_parse,\

@@ -2,7 +2,7 @@ import pytest
 from typing import Dict, List
 
 import sys
-sys.path.insert(0, "../../")
+sys.path.insert(0, "../")
 from src.utils import ReturnStatus
 from src.parsers.qa_pipeline.query_parser.kw_extraction import kwe_custom_formate, kwe_custom_parse, kwe_custom_postprocess
 

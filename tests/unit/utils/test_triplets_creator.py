@@ -3,7 +3,7 @@ import hashlib
 from typing import Dict
 
 import sys
-sys.path.insert(0, "../../")
+sys.path.insert(0, "../")
 from src.utils.data_structs import TripletCreator, NodeCreator, RelationCreator, \
     Node, Relation, Triplet, NodeType, RelationType, create_id
 

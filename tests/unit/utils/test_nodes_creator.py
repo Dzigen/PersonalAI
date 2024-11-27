@@ -1,7 +1,7 @@
 import pytest
 
 import sys
-sys.path.insert(0, "../../")
+sys.path.insert(0, "../")
 from src.utils import NodeCreator, NodeType
 from src.utils.data_structs import create_id
 

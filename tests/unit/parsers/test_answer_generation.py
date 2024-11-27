@@ -2,7 +2,7 @@ import pytest
 from typing import List, Dict
 
 import sys
-sys.path.insert(0, "../../")
+sys.path.insert(0, "../")
 
 from src.utils import Triplet, TripletCreator
 from src.parsers.qa_pipeline.answer_generator.question_answering import \

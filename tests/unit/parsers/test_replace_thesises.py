@@ -2,7 +2,7 @@ import pytest
 from typing import Dict, Set, List
 
 import sys
-sys.path.insert(0, "../../")
+sys.path.insert(0, "../")
 from src.utils import ReturnStatus, Triplet
 
 from src.parsers.memorize_pipeline.updator.replace_thesis_triplets import \

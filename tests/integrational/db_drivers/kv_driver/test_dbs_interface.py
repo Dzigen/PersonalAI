@@ -2,7 +2,7 @@ import pytest
 from chromadb.errors import ChromaError
 
 import sys
-sys.path.insert(0, "../../")
+sys.path.insert(0, "../")
 
 from cases import KVDB_POPULATED_CREATE_TEST_CASES, KVDB_POPULATED_DELETE_TEST_CASES, \
     KVDB_POPULATED_READ_TEST_CASES, KVDB_POPULATED_COUNT_TEST_CASES, KVDB_POPULATED_EXIST_TEST_CASES, \

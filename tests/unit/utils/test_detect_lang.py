@@ -1,7 +1,7 @@
 import pytest
 
 import sys
-sys.path.insert(0, "../../")
+sys.path.insert(0, "../")
 from src.utils import detect_lang, ReturnStatus
 
 @pytest.mark.parametrize("text, expected", [
@@ -17,4 +17,3 @@ def test_detect_lang(text, expected):
 
     assert status == expected['status']
     assert lang == expected['lang']
-    

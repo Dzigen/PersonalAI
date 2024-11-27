@@ -2,7 +2,7 @@ import pytest
 from typing import Dict, List, Tuple
 
 import sys
-sys.path.insert(0, "../../")
+sys.path.insert(0, "../")
 from src.utils import detect_lang, ReturnStatus, Triplet
 
 from src.parsers.memorize_pipeline.extractor.triplet_extraction import\
