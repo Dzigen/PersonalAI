@@ -124,9 +124,18 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         # TODO
         pass
 
-    def read_by_name(self, name: str, type: Union[List[RelationType], List[NodeType]], object: str = 'triplet') -> List[Union[Triplet, Node]]:
-        # TODO
-        pass
+    def read_by_name(self, name: str, type: Union[RelationType, NodeType], object: str = 'triplet') -> List[Union[Triplet, Node]]:
+        # Note: Реализован наивный способ поиска элементов в графе, удовлетворяющих условию
+        # (алгоритмическая сложность O(n), где n - количество триплетов/вершин в графе)
+
+        if object == 'triplet':
+            formated_output =  [triplet for triplet in self.triplets.values() if triplet.relation.type == type and triplet.relation.name == name]
+        elif object == 'node':
+            formated_output =  [node for node in self.nodes.values() if node.type == type and node.name == name]
+        else:
+            raise ValueError
+
+        return formated_output
 
     def get_adjecent_nodes(self, base_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
         if type(base_node_id) is not str:

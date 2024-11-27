@@ -29,6 +29,6 @@ class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
         pass
 
     @abstractmethod
-    def read_by_name(self, name: str, type: Union[List[RelationType], List[NodeType]],
+    def read_by_name(self, name: str, type: Union[RelationType,NodeType],
                      object: str = 'triplet') -> List[Union[Triplet, Node]]:
         pass
