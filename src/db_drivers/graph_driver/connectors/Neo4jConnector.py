@@ -139,9 +139,17 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         # TODO
         pass
 
-    def read_by_name(self, name: str, type: Union[List[RelationType], List[NodeType]], object: str = 'triplet') -> List[Triplet]:
-        # TODO
-        pass
+    def read_by_name(self, name: str, type: Union[RelationType, NodeType], object: str = 'triplet') -> List[Union[Triplet, Node]]:
+        if object == 'triplet':
+            output = self.execute_query(f"MATCH (n1)-[rel:{type.value}]->(n2) WHERE rel.name = {name} RETURN n1,rel,n2;")
+            formated_output = self.parse_query_triplets_output(output)
+        elif object == 'node':
+            output = self.execute_query(f"MATCH (n:{type.value}) WHERE n.name = {name} RETURN n;")
+            formated_output = self.parse_query_nodes_output(output)
+        else:
+            raise ValueError
+
+        return formated_output
 
     def execute_query(self, query: str, db_flag: bool = True) -> List[object]:
         assert self.driver is not None, "Driver not initialized!"
@@ -169,7 +177,15 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         formated_nodes = [node['b']['str_id'] for node in raw_nodes]
         return formated_nodes
 
-    def parse_query_output(self, output: List[object]) -> List[Triplet]:
+    def parse_query_nodes_output(self, output: List[object]) -> List[Node]:
+        formated_nodes = []
+        for raw_node in output:
+            node = Node(id=raw_node['n']['str_id'], name=str(raw_node['n']['name']),
+                type=NODES_TYPES_MAP[list(raw_node['n'].labels)[0]], prop=dict(raw_node['n']))
+            formated_nodes.append(node)
+        return formated_nodes
+
+    def parse_query_triplets_output(self, output: List[object]) -> List[Triplet]:
         formated_triplets = []
         for raw_triplet in output:
             node1 = Node(id=raw_triplet['n1']['str_id'], name=str(raw_triplet['n1']['name']),
@@ -196,7 +212,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         output = self.execute_query(
             f'MATCH (n1)-[rel]-(n2) WHERE n1.str_id = "{node1_id}" AND n2.str_id = "{node2_id}" RETURN n1, rel, n2')
 
-        formatted_triplets = self.parse_query_output(output)
+        formatted_triplets = self.parse_query_triplets_output(output)
         return formatted_triplets
 
     def get_triplets_by_name(self, subj_names: List[str], obj_names: List[str], obj_type: str) -> List[Triplet]:
@@ -205,16 +221,16 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             for subj_name in subj_names:
                 output = self.execute_query(
                     f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n1.name) = LOWER("{subj_name}") RETURN n1, rel, n2')
-                formatted_triplets += self.parse_query_output(output)
+                formatted_triplets += self.parse_query_triplets_output(output)
         elif obj_names:
             for obj_name in obj_names:
                 output = self.execute_query(
                     f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n2.name) = LOWER("{obj_name}") RETURN n1, rel, n2')
-                formatted_triplets += self.parse_query_output(output)
+                formatted_triplets += self.parse_query_triplets_output(output)
         else:
             output = self.execute_query(
                 f'MATCH (n1:object)-[rel]-(n2:{obj_type}) RETURN n1, rel, n2')
-            formatted_triplets += self.parse_query_output(output)
+            formatted_triplets += self.parse_query_triplets_output(output)
         return formatted_triplets
 
     def count_items(self) -> int:

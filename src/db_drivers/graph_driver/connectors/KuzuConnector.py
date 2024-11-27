@@ -128,11 +128,36 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         # TODO
         pass
 
-    def read_by_name(self, name: str, type: Union[List[RelationType], List[NodeType]], object: str = 'triplet') -> List[Triplet]:
-        # TODO
-        pass
+    def read_by_name(self, name: str, type: Union[RelationType, NodeType], object: str = 'triplet') -> List[Union[Triplet, Node]]:
+        if object == 'triplet':
+            rel_t = self.config.params['table_type_map']['relations']['forward'][type.value]
+            output = self.conn.execute(f"MATCH (n1)-[rel:{rel_t}]->(n2) WHERE rel.name = {name} RETURN n1,rel,n2;")
+            formated_output = self.parse_query_triplets_output(output)
+        elif object == 'node':
+            node_t = self.config.params['table_type_map']['nodes']['forward'][type.value]
+            output = self.conn.execute(f"MATCH (n:{node_t}) WHERE a.name = {name} RETURN n;")
+            formated_output = self.parse_query_nodes_output(output)
+        else:
+            raise ValueError
 
-    def parse_query_output(self, output: List[object]) -> List[Triplet]:
+        return formated_output
+
+    def parse_query_nodes_output(self, output: List[object]) -> List[Node]:
+        formated_nodes = []
+        output = output.get_as_df()
+        triplets_count = len(output['n'])
+        for i in range(triplets_count):
+            raw_node = output['n'][i]
+            node_type = self.config.params['table_type_map']['nodes']['inverse'][raw_node['_label']]
+
+            node = Node(id=raw_node['str_id'], name=str(raw_node['name']),
+                         type=NODES_TYPES_MAP[node_type], prop=dict(raw_node['prop']))
+
+            formated_nodes.append(node)
+
+        return formated_nodes
+
+    def parse_query_triplets_output(self, output: List[object]) -> List[Triplet]:
         formated_triplets = []
         output = output.get_as_df()
         triplets_count = len(output['rel'])
@@ -174,16 +199,16 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
             for subj_name in subj_names:
                 output = self.conn.execute(
                     f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n1.name) = LOWER("{subj_name}") RETURN n1, rel, n2;')
-                formatted_triplets += self.parse_query_output(output)
+                formatted_triplets += self.parse_query_triplets_output(output)
         elif obj_names:
             for obj_name in obj_names:
                 output = self.conn.execute(
                     f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n2.name) = LOWER("{obj_name}") RETURN n1, rel, n2;')
-                formatted_triplets += self.parse_query_output(output)
+                formatted_triplets += self.parse_query_triplets_output(output)
         else:
             output = self.conn.execute(
                 f'MATCH (n1:object)-[rel]-(n2:{obj_type}) RETURN n1, rel, n2;')
-            formatted_triplets += self.parse_query_output(output)
+            formatted_triplets += self.parse_query_triplets_output(output)
         return formatted_triplets
 
     def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
@@ -195,7 +220,7 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         output = self.conn.execute(
             f'MATCH (n1)-[rel]-(n2) WHERE n1.str_id = "{node1_id}" AND n2.str_id = "{node2_id}" RETURN n1, rel, n2;')
 
-        formated_triplets = self.parse_query_output(output)
+        formated_triplets = self.parse_query_triplets_output(output)
         unique_triplets = {triplet.id: triplet for triplet in formated_triplets}
         return list(unique_triplets.values())
 
