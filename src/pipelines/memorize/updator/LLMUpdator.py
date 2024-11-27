@@ -163,7 +163,7 @@ class LLMUpdator:
             obsolete_triplet_ids[RelationType.episodic.value] = self.find_episodic_obsolete_triplet_ids(
                 new_triplets, obsolete_triplet_ids[RelationType.hyper.value])
 
-        flatten_triplet_ids = reduce(lambda acc, v: acc + list(v), [], obsolete_triplet_ids.values())
+        flatten_triplet_ids = reduce(lambda acc, v: acc + list(v), obsolete_triplet_ids.values(), [])
         return flatten_triplet_ids
 
     def update_knowledge(self, new_triplets: List[Triplet], delete_obsolete_info:bool=False,
