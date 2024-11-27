@@ -1,7 +1,7 @@
 import pytest
 
 import sys
-sys.path.insert(0, "../../")
+sys.path.insert(0, "../../../")
 
 from src.utils import Triplet, ReturnStatus
 from src.utils import AgentTaskSolver
@@ -60,12 +60,12 @@ EN_BAD_REPONSE_TRIPLET_2AND3 = '[["asd, zxc, uio" "qwe, zxc, asd"],["uio, zxc, q
     # 3. ошибка при распознавании языка
     # TODO
 ])
-def test_replace_thesis(replace_simple_solver: AgentTaskSolver, lang: str, base_triplet: Triplet, incident_triplets: List[Triplet],
+def test_replace_simple(replace_simple_solver: AgentTaskSolver, lang: str, base_triplet: Triplet, incident_triplets: List[Triplet],
                         agent_stub_answers: List[str], expected_triplet_ids: List[str], expected_status: ReturnStatus):
     replace_simple_solver.agent.looped_answers.clear()
     replace_simple_solver.agent.looped_answers += agent_stub_answers
 
     real_triplet_ids, real_status = replace_simple_solver.solve(
         lang=lang, base_triplet=base_triplet, incident_triplets=incident_triplets)
-    assert expected_triplet_ids == real_triplet_ids
     assert expected_status == real_status
+    assert expected_triplet_ids == real_triplet_ids

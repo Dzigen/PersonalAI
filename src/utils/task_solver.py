@@ -36,7 +36,8 @@ class AgentTaskSolver:
 
         try:
             formated_context = self.config.formate_context_func(**kwargs)
-        except Exception:
+        except Exception as e:
+            self.log(str(e), verbose=self.config.verbose)
             status = ReturnStatus.bad_formater
         else:
             self.log(f"Результат:\n{json.dumps(formated_context, indent=1, ensure_ascii=False)}.", verbose=self.config.verbose)
@@ -60,7 +61,8 @@ class AgentTaskSolver:
             self.log("3. Добавление информации в user-prompt...", verbose=self.config.verbose)
             try:
                 enriched_user_prompt = self.config.suites[detected_lang].user_prompt.format(**formated_context)
-            except Exception:
+            except Exception as e:
+                self.log(str(e), verbose=self.config.verbose)
                 status = ReturnStatus.bad_user_prompt_maping
             else:
                 self.log(f"Результат:\n{enriched_user_prompt}.", verbose=self.config.verbose)
@@ -86,8 +88,9 @@ class AgentTaskSolver:
             self.log("5. Разбор ответа, сгенерированного LLM-агентом.", verbose=self.config.verbose)
 
             try:
-                formated_answer, status = self.config.suites[detected_lang].parse_answer_func(raw_answer, **kwargs)
-            except Exception:
+                formated_answer = self.config.suites[detected_lang].parse_answer_func(raw_answer, **kwargs)
+            except (KeyError, ValueError) as e:
+                self.log(str(e), verbose=self.config.verbose)
                 status = ReturnStatus.bad_parser
             finally:
                 self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
@@ -98,8 +101,9 @@ class AgentTaskSolver:
             self.log("6. Постобработка ответа от LLM-агента.", verbose=self.config.verbose)
 
             try:
-                task_result, status = self.config.suites[detected_lang].postprocess_answer_func(formated_answer, **kwargs)
-            except Exception:
+                task_result = self.config.suites[detected_lang].postprocess_answer_func(formated_answer, **kwargs)
+            except Exception as e:
+                self.log(str(e), verbose=self.config.verbose)
                 status = ReturnStatus.bad_postprocessor
             finally:
                 self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)

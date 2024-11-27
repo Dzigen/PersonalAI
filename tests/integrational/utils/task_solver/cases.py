@@ -83,17 +83,17 @@ EN_VALID_HYPER_TRIPLET1 = TripletCreator.create(
     end_node=EN_VALID_HYPER_NODE1
 )
 
-EN_VALID_HYPER_TRIPLET1_2 = TripletCreator.create(
-    start_node=EN_VALID_OBJECT_NODE2,
-    relation=copy.deepcopy(EN_VALID_HYPER_RELATION1),
-    end_node=EN_VALID_HYPER_NODE1
-)
-
-
 EN_VALID_HYPER_TRIPLET2 = TripletCreator.create(
     start_node=EN_VALID_OBJECT_NODE2,
     relation=copy.deepcopy(EN_VALID_HYPER_RELATION1),
     end_node=EN_VALID_HYPER_NODE2
+)
+
+
+EN_VALID_HYPER_TRIPLET3 = TripletCreator.create(
+    start_node=EN_VALID_OBJECT_NODE3,
+    relation=copy.deepcopy(EN_VALID_HYPER_RELATION1),
+    end_node=EN_VALID_HYPER_NODE3
 )
 
 # data structures for russian language
@@ -175,14 +175,14 @@ RU_VALID_HYPER_TRIPLET1 = TripletCreator.create(
     end_node=RU_VALID_HYPER_NODE1
 )
 
-RU_VALID_HYPER_TRIPLET1_2 = TripletCreator.create(
-    start_node=RU_VALID_OBJECT_NODE2,
-    relation=copy.deepcopy(RU_VALID_HYPER_RELATION1),
-    end_node=RU_VALID_HYPER_NODE1
-)
-
 RU_VALID_HYPER_TRIPLET2 = TripletCreator.create(
     start_node=RU_VALID_OBJECT_NODE2,
     relation=copy.deepcopy(RU_VALID_HYPER_RELATION1),
     end_node=RU_VALID_HYPER_NODE2
+)
+
+RU_VALID_HYPER_TRIPLET3 = TripletCreator.create(
+    start_node=RU_VALID_OBJECT_NODE3,
+    relation=copy.deepcopy(RU_VALID_HYPER_RELATION1),
+    end_node=RU_VALID_HYPER_NODE3
 )
