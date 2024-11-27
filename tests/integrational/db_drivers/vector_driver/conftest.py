@@ -3,7 +3,7 @@ import pytest
 import sys
 # TO CHANGE
 PROJECT_BASE_DIR = '../..'
-TEST_VOLUME_DIR = '../volumes'
+TEST_VOLUME_DIR = '../../volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
 from src.db_drivers.vector_driver import VectorDriver, VectorDriverConfig, VectorDBConnectionConfig

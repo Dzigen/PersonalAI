@@ -7,7 +7,7 @@ TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
 
-from src.knowledge_graph_model import EmbeddingsModel, EmbeddingsModelConfig, GraphModel, GraphModelConfig
+from src.kg_model import EmbeddingsModel, EmbeddingsModelConfig, GraphModel, GraphModelConfig
 from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriverConfig
 from src.db_drivers.vector_driver.embedders import EmbedderModelConfig
 from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
