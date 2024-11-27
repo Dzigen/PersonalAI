@@ -23,8 +23,8 @@ class KnowledgeGraphModel:
         self.embeddings_struct.create_triplets(triplets, status_bar=False)
 
     def remove_knowledge(self, triplet_ids: List[str]) -> None:
-        # TODO
-        pass
+        self.graph_struct.delete_triplets(triplet_ids)
+        self.embeddings_struct.delete_triplets(triplet_ids, delete_nodes=True)
 
     def clear(self) -> None:
         self.embeddings_struct.clear()
