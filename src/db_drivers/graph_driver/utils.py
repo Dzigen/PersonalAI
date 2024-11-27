@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from abc import abstractmethod
 
 from ...utils import ReturnInfo
-from ...utils.data_structs import Triplet, NodeType, RelationType
+from ...utils.data_structs import Triplet, NodeType, RelationType, Node
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
 @dataclass
@@ -29,5 +29,6 @@ class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
         pass
 
     @abstractmethod
-    def read_by_name(self, name: str, type: Union[List[RelationType], List[NodeType]], object: str = 'triplet') -> List[Triplet]:
+    def read_by_name(self, name: str, type: Union[List[RelationType], List[NodeType]],
+                     object: str = 'triplet') -> List[Union[Triplet, Node]]:
         pass

@@ -128,7 +128,7 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         # TODO
         pass
 
-    def read_by_name(self, name: str, type: Union[List[RelationType], List[NodeType]], object: str = 'triplet') -> List[Triplet]:
+    def read_by_name(self, name: str, type: Union[List[RelationType], List[NodeType]], object: str = 'triplet') -> List[Union[Triplet, Node]]:
         # TODO
         pass
 

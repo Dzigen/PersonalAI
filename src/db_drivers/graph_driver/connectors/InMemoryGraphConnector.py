@@ -6,7 +6,7 @@ import hashlib
 
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils import Triplet, NodeType
-from ....utils.data_structs import RelationType
+from ....utils.data_structs import RelationType, Node
 
 DEFAULT_INMEMORYGRAPH_CONFIG = GraphDBConnectionConfig()
 
@@ -124,7 +124,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         # TODO
         pass
 
-    def read_by_name(self, name: str, type: Union[List[RelationType], List[NodeType]], object: str = 'triplet') -> List[Triplet]:
+    def read_by_name(self, name: str, type: Union[List[RelationType], List[NodeType]], object: str = 'triplet') -> List[Union[Triplet, Node]]:
         # TODO
         pass
 
