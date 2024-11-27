@@ -14,6 +14,7 @@ from typing import List, Dict
     # 1.2. ошибка в formater-функции
     # 1.3. ошибка мапинга значений в user-prompt
     # 1.4. ошибка генерации
+    # TODO
     # 1.5. ошибка в parser-функции
     # 1.6. ошибка в postprocessor-функции
     # 2. английский язык
@@ -21,6 +22,7 @@ from typing import List, Dict
     # 2.2. ошибка в formater-функции
     # 2.3. ошибка мапинга значений в user-prompt
     # 2.4. ошибка генерации
+    # TODO
     # 2.5. ошибка в parser-функции
     # 2.6. ошибка в postprocessor-функции
     # 3. ошибка при распознавании языка
