@@ -4,7 +4,7 @@ from typing import Dict, List, Set, Tuple, Union
 
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 
-from ....knowledge_graph_model import KnowledgeGraphModel
+from ....kg_model import KnowledgeGraphModel
 from ....utils.data_structs import QueryInfo, Relation, TripletCreator, Triplet, RELATIONS_TYPES_MAP, Node
 from ....utils import Logger
 

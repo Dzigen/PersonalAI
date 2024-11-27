@@ -3,7 +3,7 @@ from .knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
 from .knowledge_comparator import KnowledgeComparator, KnowledgeComparatorConfig
 from .query_parser import QueryLLMParser, QueryLLMParserConfig
 from .configs import QA_MAIN_LOG_PATH
-from ...knowledge_graph_model import KnowledgeGraphModel
+from ...kg_model import KnowledgeGraphModel
 from ...utils import Logger, ReturnStatus, ReturnInfo
 
 from dataclasses import dataclass, field

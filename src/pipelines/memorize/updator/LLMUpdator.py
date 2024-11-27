@@ -3,7 +3,7 @@ from ....utils import Logger, Triplet, AgentTaskSolverConfig, AgentTaskSolver
 from ....utils.data_structs import RelationType, NodeType
 from ....utils.errors import ReturnInfo, ReturnStatus
 from ....agents import AgentDriver, AgentDriverConfig
-from ....knowledge_graph_model import KnowledgeGraphModel
+from ....kg_model import KnowledgeGraphModel
 
 from functools import reduce
 from dataclasses import dataclass, field

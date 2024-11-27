@@ -2,10 +2,9 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Tuple
 from tqdm import tqdm
 
-from .knowledge_graph_model import GraphModel, GraphModelConfig, EmbeddingsModelConfig, EmbeddingsModel
+from .kg_model import GraphModel, GraphModelConfig, EmbeddingsModelConfig, EmbeddingsModel, KnowledgeGraphModel
 from .pipelines.qa import QAPipeline, QAPipelineConfig
 from .pipelines.memorize import MemPipeline, MemPipelineConfig
-from .knowledge_graph_model import KnowledgeGraphModel
 from .utils import Logger, ReturnInfo, Triplet
 
 RKG_LOG_PATH = "log/personalai"

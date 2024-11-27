@@ -6,7 +6,7 @@ from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarTripletsRetriever
 from .BFSTripletsRetriever import BFSSearchConfig, BFSRetriever
 from ....utils.data_structs import QueryInfo, Triplet
-from ....knowledge_graph_model import KnowledgeGraphModel
+from ....kg_model import KnowledgeGraphModel
 from ....utils import Logger
 
 @dataclass

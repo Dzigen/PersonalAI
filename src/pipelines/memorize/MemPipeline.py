@@ -6,7 +6,7 @@ from .extractor.LLMExtractor import LLMExtractor
 from .updator.LLMUpdator import LLMUpdator
 from .extractor import LLMExtractorConfig
 from .updator import LLMUpdatorConfig
-from ...knowledge_graph_model import KnowledgeGraphModel
+from ...kg_model import KnowledgeGraphModel
 from ...utils import Logger, Triplet, ReturnStatus, ReturnInfo
 from ...utils.errors import STATUS_MESSAGE
 
