@@ -69,16 +69,16 @@ class MemPipeline:
 
         # Извлекаем информацию в структурированном формате из текстов на естественном языке
         self.log("="*20, verbose=self.config.verbose)
-        self.log("-"*5 + "STAGE#1 - information extraction" + "-"*5, verbose=self.config.verbose)
+        self.log("-"*5 + "STAGE#1 - Извлечение информации (в структурированном формате) из текста" + "-"*5, verbose=self.config.verbose)
         new_triplets, info = self.extractor.extract_knowledge(text, need_simple, need_thesises, need_episodic, properties)
-        self.log(f"EXTRACTED INFORMATION FROM TEXT (IN TRIPLET FORMAT): \n{new_triplets}", verbose=self.config.verbose)
+        self.log(f"Извлечённая информация (в triplet-формате): \n{new_triplets}", verbose=self.config.verbose)
 
         if info.status == ReturnStatus.success:
-            self.log("-"*5 + "STAGE#2 - updating information in assistant memory (knowledge graph)" + "-"*5, verbose=self.config.verbose)
+            self.log("-"*5 + "STAGE#2 - Обновление информации в памяти (графе знаний) асситента " + "-"*5, verbose=self.config.verbose)
             # Добавляем в граф знаний новую информацию; по требванию (delete_obolete_info = True) удаляем устаревшую информацию
             info = self.updator.update_knowledge(new_triplets, delete_obsolete_info)
 
-        self.log("-"*20, verbose=self.config.verbose)
+        self.log("+"*20, verbose=self.config.verbose)
         self.log(f"Статус: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
         return new_triplets, info

@@ -3,6 +3,7 @@ import sys
 import json
 import logging
 import torch
+import datetime
 
 LOGGER = logging.getLogger(__name__)
 
@@ -34,7 +35,7 @@ class Logger:
             if verbose:
                 print(text)
             with open(self.path + "/" + filename, "a") as file:
-                file.write(text + "\n")
+                file.write(f"[{str(datetime.datetime.now())}] {text}\n")
 
     def to_json(self, obj, filename = "history.json"):
         try:

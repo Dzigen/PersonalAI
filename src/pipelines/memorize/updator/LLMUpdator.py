@@ -156,6 +156,7 @@ class LLMUpdator:
         if check_simple:
             obsolete_triplet_ids[RelationType.simple.value] = self.find_simple_obsolete_triplet_ids(new_triplets)
 
+
         if check_hyper:
             obsolete_triplet_ids[RelationType.hyper.value] = self.find_hyper_obsolete_triplet_ids(new_triplets)
 
@@ -171,13 +172,14 @@ class LLMUpdator:
         info = ReturnInfo()
 
         if delete_obsolete_info:
-            # Ищём устаревшую информацю в памяти ассистента
+            self.log(f"Поиск устаревшей информации в памяти ассистента...", verbose=self.config.verbose)
             obsolete_t_ids = self.get_obsolete_triplet_ids(new_triplets, need_simple, need_hyper, need_episodic)
+            self.log(f"Результат: суммарное количество устаревших триплетов - {len(obsolete_t_ids)}.", verbose=self.config.verbose)
 
-            # Удаляем устаревшую информацию из памяти ассистента
+            self.log(f"Удаление устаревшей информации из памяти асситента...", verbose=self.config.verbose)
             self.kg_model.remove_knowledge(obsolete_t_ids)
 
-        # Добавляем новую информацию в память ассистента
+        self.log(f"Добавление информации в память асситента...", verbose=self.config.verbose)
         self.kg_model.add_knowledge(new_triplets)
 
         return info

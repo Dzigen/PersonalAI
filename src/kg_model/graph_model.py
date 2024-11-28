@@ -8,7 +8,7 @@ from ..utils.data_structs import Triplet
 from ..utils import Logger
 
 GRAPH_DB_DEFAULT_DRIVER_CONFIG = GraphDriverConfig(db_vendor='neo4j', db_config=DEFAULT_NEO4J_CONFIG)
-GRAPH_MODEL_LOG_PATH = 'log/gm'
+GRAPH_MODEL_LOG_PATH = 'log/kg_model/graph'
 
 @dataclass
 class GraphModelConfig:

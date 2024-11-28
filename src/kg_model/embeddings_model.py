@@ -15,7 +15,7 @@ TRIPLETS_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
     db_vendor='chroma', db_config=VectorDBConnectionConfig(
         path="../data/graph_structures/vectorized_triplets/default_densedb", db_info={'db': 'default_db', 'table': "vectorized_nodes"}))
 
-EMBEDDINGS_MODEL_LOG_PATH = 'log/em'
+EMBEDDINGS_MODEL_LOG_PATH = 'log/kg_model/embeddings'
 
 @dataclass
 class EmbeddingsModelConfig:
