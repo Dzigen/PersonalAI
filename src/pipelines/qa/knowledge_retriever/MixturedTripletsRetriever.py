@@ -11,9 +11,9 @@ from ....utils import Logger
 
 @dataclass
 class MixturedGraphSearchConfig(BaseGraphSearchConfig):
-    """Конфигурация комбинированного алгоритма по исзлечению триплетов из графа знаний.
+    """Конфигурация комбинированного алгоритма извлечения триплетов из графа знаний.
 
-    :param astar_config: Конфигурация A*-алгоритиа поиска. Значение по умолчанию AStarGraphSearchConfig().
+    :param astar_config: Конфигурация A*-алгоритма поиска. Значение по умолчанию AStarGraphSearchConfig().
     :type astar_config: AStarGraphSearchConfig
     :param bfs_config: Конфигурация BFS-алгоритма поиска. Значение по умолчанию BFSSearchConfig().
     :type bfs_config: BFSSearchConfig

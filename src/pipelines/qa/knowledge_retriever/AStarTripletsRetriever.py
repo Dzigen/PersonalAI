@@ -20,9 +20,9 @@ from ....utils import Logger
 class AStarMetricsConfig:
     """Конфигурация класса для расчёта метрик, используемых в рамках A*-алгоритма.
 
-    :param h_metric_name: Эвристическая метрика, которая будет использоваться для оценки расстояния между текущей и конечной вершинами. Данное поле принимает следующие значения: 'ip', 'weight_with_short_path', 'avg_weighted_with_short_path'. Значение по умолчанию 'ip'.
+    :param h_metric_name: Эвристическая метрика, которая будет использоваться для оценки расстояния между текущей и конечной вершинами. Данное поле может принимать следующие значения: (1) 'ip' - косинусное расстояние между ебмеддингами текущей и конечной вершин; (2) 'weight_with_short_path' - кратчайшее расстояние между текущей и конечной вершинами (полученное с помощью bfs-алгоритма), домноженное на 'ip'-метрику; (3) 'avg_weighted_with_short_path' - кратчайшее расстояние между текущей и конечной вершинами (полученное с помощью bfs-алгоритма), домноженное на усреднённое значение 'ip'-метрики между парами вершин в пути от начальной до текущей вершины + пара из текущей и конечной веришин. Значение по умолчанию 'ip'.
     :type h_metric_name: str
-    :param kvdriver_config: Конфигурация кеша для хранения рассчитанных h-оценок между вершинами. Значение по умолчанию None
+    :param kvdriver_config: Конфигурация кеша для хранения рассчитанных h-оценок между вершинами. Значение по умолчанию None (кеширование не используется).
     :type kvdriver_config: KeyValueDriverConfig
     """
     h_metric_name: str = 'ip'
@@ -189,13 +189,13 @@ class AStarMetrics:
 class AStarGraphSearchConfig(BaseGraphSearchConfig):
     """Конфигурация класса, реализующего логику A*-алгоритма поиска по графу знаний.
 
-    :param metrics_config: Конфигурация класса, выполняющая расчёт необходимых матрик для A*-алгоритма. Значение по по умолчанию AStarMetricsConfig().
+    :param metrics_config: Конфигурация класса, выполняющая расчёт необходимых метрик для A*-алгоритма. Значение по по умолчанию AStarMetricsConfig().
     :type metrics_config: AStarMetricsConfig
     :param max_depth: Макимальная глубина обхода графа для поиска заданной вершины. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 10.
     :type max_depth: int
     :param max_passed_nodes: Максимальное количество вершин, которое можно обойти для поиска заднной вершины в графе. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 500.
     :type max_passed_nodes: int
-    :param accepted_node_types: Типы вершин, которые можно обходить во время поиска заданной вершины. Значение по умолчанию [NodeType.object , NodeType.hyper, NodeType.episodic].
+    :param accepted_node_types: Типы вершин, которые можно обходить во время поиска заданной вершины. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic].
     :type accepted_node_types: List[NodeType]
     """
     metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
@@ -204,7 +204,7 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic])
 
 class AStarGraphSearch:
-    """Класс предназначен для запуска A*-алгоритма для излвечения триплетов из графового хранилища триплетов.
+    """Класс предназначен для запуска A*-алгоритма с целью излвечения триплетов из графового хранилища триплетов.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
@@ -302,7 +302,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
     @staticmethod
     def get_nodes_path(parent: Dict[str, str], end_node_id: str) -> List[str]:
         """Метод предназначен для получения пути обхода графа, заканчивая заданной конечной end_node_id вершиной.
-        Путь должен быть ацикличным: Есть стартовая вершин, у которой нет родителя.
+        Путь должен быть ацикличным: есть стартовая вершин, у которой нет родителя.
 
         :param parent: Словарь с идентификаторами родительских вершин. Ключи - идентикиаторы вершин, которые были посещены;
         значения - идентификаторы вершины (родитель), из которой был выполнен переход в данную (ключ) вершину.

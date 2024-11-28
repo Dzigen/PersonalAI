@@ -10,6 +10,21 @@ from .configs import DEFAULT_EXTRACT_THESISES_TASK_CONFIG, DEFAULT_EXTRACT_TRIPL
 
 @dataclass
 class LLMExtractorConfig:
+    """Конфигурация Extractor-стадии Memorize-конвейера.
+
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
+    :type lang: str
+    :param agent_cofig: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
+    :type agent_cofig: AgentDriverConfig
+    :param triplets_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению трипетов с информацией типа 'simple' из слабоструктурированных текстов на естественном языке. Значение по умолчанию DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG.
+    :type triplets_extraction_task_config: AgentTaskSolverConfig
+    :param thesises_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению трипетов с информацией типа 'hyper' из слабоструктурированных текстов на естественном языке. Значение по умолчанию DEFAULT_EXTRACT_THESISES_TASK_CONFIG.
+    :type thesises_extraction_task_config: AgentTaskSolverConfig
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(QA_LOG_PATH).
+    :type log: Logger
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
+    """
     lang: str = "auto"
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     triplets_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG)

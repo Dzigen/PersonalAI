@@ -10,18 +10,14 @@ from ....utils import Logger, detect_lang, ReturnInfo, ReturnStatus, AgentTaskSo
 
 @dataclass
 class QALLMGeneratorConfig:
-    """Конфигурация "Question Answering"-стадии.
+    """Конфигурация "Question Answering"-стадии QA-конвейера.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str
-    :param system_prompt: System-промпт с описание персоны, свойствам которой должен удовлетворять LLM-агент при генерации оветов.
-    :type system_prompt: dict
-    :param user_prompt: User-промпт для LLM-агента с описанием QA-задачи.
-    :type user_prompt: dict
-    :param answer_parse_func: Функция разбора результатов генерации LLM-агента.
-    :type answer_parse_func: dict
     :param agent_cofig: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
     :type agent_cofig: AgentDriverConfig
+    :param ag_task_config: Конфигурация атомарной задачи для LLM-агента по условной генерации ответа на вопрос.
+    :type ag_tasK_config: AgentTaskSolverConfig
     :param relation_type: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос. Значение по умолчанию [RelationType.simple, RelationType.hyper, RelationType.episodic].
     :type relation_type: List[RelationType]
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(QA_LOG_PATH).

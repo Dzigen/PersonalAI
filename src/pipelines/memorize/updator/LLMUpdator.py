@@ -11,16 +11,16 @@ from typing import Dict, List
 
 @dataclass
 class LLMUpdatorConfig:
-    """Конфигурация Updator-стадии.
+    """Конфигурация Updator-стадии Memorize-конвейера.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str
     :param agent_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии.
     :type agent_config: AgentDriverConfig
-    :param replace_thesis_prompt: Значение по умолчанию REPLACE_THESIS_PROMPT.
-    :type replace_thesis_prompt: Dict
-    :param replace_simple_prompt: Значение по умолчанию REPLACE_SIMPLE_PROMPT.
-    :type replace_simple_prompt: Dict
+    :param replace_simple_task_config: Конфигурация атомарной задачи для LLM-агента по поиску устаревших триплетов типа "simple". Значение по умолчанию DEFAULT_REPLACE_SIMPLE_TASK_CONFIG.
+    :type replace_simple_task_config: AgentTaskSolverConfig
+    :param replace_thesis_task_config: Конфигурация атомарной задачи для LLM-агента по поиску устаревших триплетов типа "hyper". Значение по умолчанию DEFAULT_REPLACE_THESIS_TASK_CONFIG.
+    :type replace_thesis_task_config: AgentTaskSolverConfig
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(MEM_UPDATE_LOG).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
@@ -37,6 +37,8 @@ class LLMUpdatorConfig:
 class LLMUpdator:
     """Верхнеуровневый класс первой стадии Memorize-конвейера для актуализации знаний в памяти ассистента.
 
+    :param kg_model: Модель памяти (графа знаний) ассистента.
+    :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация Updator-стадии. Значение по умолчанию LLMUpdatorConfig().
     :type config: LLMUpdatorConfig
     """
@@ -148,6 +150,20 @@ class LLMUpdator:
 
     def get_obsolete_triplet_ids(self, new_triplets: List[Triplet], check_simple: bool = True,
                                  check_hyper: bool = True, check_episodic: bool = True) -> List[str]:
+        """_summary_
+
+        :param new_triplets: _description_
+        :type new_triplets: List[Triplet]
+        :param check_simple: _description_, defaults to True
+        :type check_simple: bool, optional
+        :param check_hyper: _description_, defaults to True
+        :type check_hyper: bool, optional
+        :param check_episodic: _description_, defaults to True
+        :type check_episodic: bool, optional
+        :raises ValueError: _description_
+        :return: _description_
+        :rtype: List[str]
+        """
         obsolete_triplet_ids = dict()
 
         if check_episodic and not check_hyper:
@@ -169,6 +185,21 @@ class LLMUpdator:
 
     def update_knowledge(self, new_triplets: List[Triplet], delete_obsolete_info:bool=False,
                need_simple:bool=True, need_hyper:bool=True, need_episodic:bool=True) -> ReturnInfo:
+        """_summary_
+
+        :param new_triplets: _description_
+        :type new_triplets: List[Triplet]
+        :param delete_obsolete_info: _description_, defaults to False
+        :type delete_obsolete_info: bool, optional
+        :param need_simple: _description_, defaults to True
+        :type need_simple: bool, optional
+        :param need_hyper: _description_, defaults to True
+        :type need_hyper: bool, optional
+        :param need_episodic: _description_, defaults to True
+        :type need_episodic: bool, optional
+        :return: _description_
+        :rtype: ReturnInfo
+        """
         info = ReturnInfo()
 
         if delete_obsolete_info:
