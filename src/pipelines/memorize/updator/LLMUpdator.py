@@ -150,18 +150,18 @@ class LLMUpdator:
 
     def get_obsolete_triplet_ids(self, new_triplets: List[Triplet], check_simple: bool = True,
                                  check_hyper: bool = True, check_episodic: bool = True) -> List[str]:
-        """_summary_
+        """Метод предназначен для поиска устаревшей информации в памяти (графе знаний) асситента. Информация представляется в виде набора триплетов.
 
-        :param new_triplets: _description_
+        :param new_triplets: Список триплетов, на основе которой осуществляется поиск/детекция устаревшей информации в памяти.
         :type new_triplets: List[Triplet]
-        :param check_simple: _description_, defaults to True
+        :param check_simple: Если True, то будет осуществляться поиск устаревшей информации среди триплетов типа "simple" в графе знаний, иначе False. Значение по умолчанию True.
         :type check_simple: bool, optional
-        :param check_hyper: _description_, defaults to True
+        :param check_hyper: Если True, то будет осуществляться поиск устаревшей информации среди триплетов типа "hyper" в графе знаний, иначе False. Значение по умолчанию True.
         :type check_hyper: bool, optional
-        :param check_episodic: _description_, defaults to True
+        :param check_episodic: Если True, то будет осуществляться поиск устаревшей информации среди триплетов типа "episodic" в графе знаний, иначе False. Значение по умолчанию True.
         :type check_episodic: bool, optional
-        :raises ValueError: _description_
-        :return: _description_
+        :raises ValueError: Данное исключение выбрасывается, если парметр check_episodic == True, а парметр check_hyper == False.
+        :return: Список идентификаторов триплетов из графа знаний, в которых содержится устаревшая информация.
         :rtype: List[str]
         """
         obsolete_triplet_ids = dict()
@@ -185,19 +185,19 @@ class LLMUpdator:
 
     def update_knowledge(self, new_triplets: List[Triplet], delete_obsolete_info:bool=False,
                need_simple:bool=True, need_hyper:bool=True, need_episodic:bool=True) -> ReturnInfo:
-        """_summary_
+        """Метод предназначен для изменения (удаления устаревшей / добавление новой информации) памяти (графа знаний) асситента.
 
-        :param new_triplets: _description_
+        :param new_triplets: Список триплетов с информацией для добавления в память (граф знаний) асситента.
         :type new_triplets: List[Triplet]
-        :param delete_obsolete_info: _description_, defaults to False
-        :type delete_obsolete_info: bool, optional
-        :param need_simple: _description_, defaults to True
+        :param need_simple: Если True, то из входного текста на первой стадии Memorize-конвейера будет выполнено извлечение триплетов с типом связи 'simple', иначе False. Значение по умолчанию True.
         :type need_simple: bool, optional
-        :param need_hyper: _description_, defaults to True
-        :type need_hyper: bool, optional
-        :param need_episodic: _description_, defaults to True
+        :param need_thesises: Если True, то из входного текста на первой стадии Memorize-конвейера будет выполнено извлечение триплетов с типом связи 'hyper', иначе False. Значение по умолчанию True.
+        :type need_thesises: bool, optional
+        :param need_episodic: Если True, то из входного текста на первой стадии Memorize-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False. Значение по умолчанию True.
         :type need_episodic: bool, optional
-        :return: _description_
+        :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшая информация из памяти (графа знаний) асситента, инчае False. Значение по умолчанию False.
+        :type delete_obsolete_info: bool, optional
+        :return: Статус завершения операции с пояснительной информацией.
         :rtype: ReturnInfo
         """
         info = ReturnInfo()

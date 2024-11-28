@@ -57,8 +57,6 @@ class MemPipeline:
         :type need_thesises: bool, optional
         :param need_episodic: Если True, то из входного текста на первой стадии Memorize-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False. Значение по умолчанию True.
         :type need_episodic: bool, optional
-        :param need_update: Значение по умолчанию False.
-        :type need_update: bool, optional
         :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшая информация из памяти (графа знаний) асситента, инчае False. Значение по умолчанию False.
         :type delete_obsolete_info: bool, optional
         :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, Значение по умолчанию dict().
