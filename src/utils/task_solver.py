@@ -9,7 +9,7 @@ from ..agents.utils import AbstractAgentConnector
 
 @dataclass
 class AgentTaskSuite:
-    """Набор гиперпараметров для инференса и разбора ответа LLM-агента
+    """Набор гиперпараметров для инференса и разбора ответа LLM-агента в рамках заданной атомарной задачи.
 
     :param system_prompt: System-промпт с описание персоны, свойствам которой должен удовлетворять LLM-агент во время инференса.
     :type system_prompt: str
@@ -68,7 +68,7 @@ class AgentTaskSolver:
 
         :param lang: Язык промптов, которые будут использоваться на этапе инференса LLM-агента, Значение по умолчанию 'auto'.
         :type lang: str, optional
-        :return: Кортеж из двух объектов: (1) результат работы agent-солвера и (2) Статус завершения данной операции.
+        :return: Кортеж из двух объектов: (1) результат работы agent-солвера; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[object, ReturnStatus]
         """
         task_result, status = None, ReturnStatus.success
