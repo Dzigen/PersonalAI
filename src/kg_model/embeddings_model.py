@@ -25,7 +25,7 @@ class EmbeddingsModelConfig:
     :type nodesdb_driver_config: VectorDriverConfig
     :param tripletsdb_driver_config: Конфигурация векторной базы данных, которая будет отвечать за хранение векторных представлений триплетов из графовой модели. Значение по умолчанию TRIPLETS_DB_DEFAULT_DRIVER_CONFIG.
     :type tripletsdb_driver_config: VectorDriverConfig
-    :param tripletsdb_driver_config: Конфигурация класса, отвечающего за приведения текста в его векторрное представление с помощью embedder-модели. Значение по умолчанию EmbedderModelConfig().
+    :param embedder_config: Конфигурация класса, отвечающего за приведения текста в его векторрное представление с помощью embedder-модели. Значение по умолчанию EmbedderModelConfig().
     :type embedder_config: EmbedderModelConfig
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(EMBEDDINGS_MODEL_LOG_PATH).
     :type log: Logger
@@ -62,6 +62,8 @@ class EmbeddingsModel:
         :type create_nodes: bool, optional
         :param batch_size: Количество триплетов, которое за одну create-операцию добавляются в векторную модель. Значение по умолчанию 128.
         :type batch_size: int, optional
+        :param status_bar: Если True, то в stdout будет записываться прогресс операции (количество обработанных триплетов), иначе False. Значение по умолчанию True.
+        :type status_bar: boll, optional
         """
         self.log("Adding triples to vector-model...", verbose=self.config.verbose)
         unique_relation_ids, unique_node_ids = set(), set()
@@ -128,13 +130,13 @@ class EmbeddingsModel:
                      nodes_ids: List[str] = None, stringified_nodes: List[str] = None) -> None:
         """Метод предназначен для добавления строковых представлений триплетов/вершин в векторную модель.
 
-        :param triplets_ids: Идентификаторы триплетов, с которыми они будут сохранены в моделе.
+        :param triplets_ids: Идентификаторы триплетов, с которыми они будут сохранены в модель.
         :type triplets_ids: List[str]
-        :param stringified_triplets: Строковые представления триплетов для сохранения в моделе.
+        :param stringified_triplets: Строковые представления триплетов для сохранения в модель.
         :type stringified_triplets: List[str]
-        :param nodes_ids: Идентификаторы вершин, с которыми они будут сохранены в моделе. Значение по умолчанию None.
+        :param nodes_ids: Идентификаторы вершин, с которыми они будут сохранены в модель. Значение по умолчанию None.
         :type nodes_ids: List[str], optional
-        :param stringified_nodes: Строковые представления вершин для сохранения в моделе. Значение по умолчанию None.
+        :param stringified_nodes: Строковые представления вершин для сохранения в модель. Значение по умолчанию None.
         :type stringified_nodes: List[str], optional
         """
         if len(triplets_ids):
@@ -194,5 +196,7 @@ class EmbeddingsModel:
         return embeddings
 
     def clear(self) -> None:
+        """Метод предназначен для удаления содержимого векторной модели данных.
+        """
         self.vectordbs['nodes'].clear()
         self.vectordbs['triplets'].clear()

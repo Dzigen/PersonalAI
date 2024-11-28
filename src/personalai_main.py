@@ -13,9 +13,9 @@ RKG_LOG_PATH = "log/personalai"
 class PersonalAIConfig:
     """Конфигурация персонального ассистента.
 
-    :param graph_struct_config: Конфигурация модели, которая отвечает за представление знаний ассистента в графовом формате. Значение по умолчанию GraphModelConfig().
+    :param graph_struct_config: Конфигурация модели, которая отвечает за представление знаний ассистента в графовой структуре данных. Значение по умолчанию GraphModelConfig().
     :type graph_struct_config: GraphModelConfig
-    :param embedds_struct_config: Конфигурация модели, которая отвечает за предтсавление знаний ассистента в векторном формате. Значение по умолчанию EmbeddingsModelConfig().
+    :param embedds_struct_config: Конфигурация модели, которая отвечает за представление знаний ассистента в векторной структуре данных. Значение по умолчанию EmbeddingsModelConfig().
     :type embedds_struct_config: EmbeddingsModelConfig
     :param qa_pipeline_config: Конфигурация конвейера, который выполняет генерацию ответов на вопросы. Значение по умолчанию QAPipelineConfig().
     :type qa_pipeline_config: QAPipelineConfig

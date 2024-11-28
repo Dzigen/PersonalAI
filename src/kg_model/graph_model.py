@@ -14,7 +14,7 @@ GRAPH_MODEL_LOG_PATH = 'log/kg_model/graph'
 class GraphModelConfig:
     """Конфигруация графовой модели.
 
-    :param driver_config: Конфигурация графового хранилища данных.
+    :param driver_config: Конфигурация графовой базы данных.
     :type driver_config: GraphDriverConfig
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(GRAPH_MODEL_LOG_PATH).
     :type log: Logger
@@ -121,4 +121,5 @@ class GraphModel:
 
 
     def clear(self) -> None:
+        """Метод предназначен для удаления содержимого графовой модели данных."""
         self.db_conn.clear()

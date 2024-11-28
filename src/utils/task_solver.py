@@ -49,16 +49,14 @@ class AgentTaskSolverConfig:
 
 class AgentTaskSolver:
     """Класс-обёртка, предназначенный для решения атомарной задачи на базе инференса LLM-агента.
+
+    :param agent: интерфейс взаимодейсвия с LLM-агеном.
+    :type agent: AbstractAgentConnector
+    :param config: Конфигурация решения конкретной задачи.
+    :type config: AgentTaskSolverConfig
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: AgentTaskSolverConfig) -> None:
-        """Инициализация agent-солвера.
-
-        :param agent: интерфейс взаимодейсвия с LLM-агеном.
-        :type agent: AbstractAgentConnector
-        :param config: Конфигурация решения конкретной задачи.
-        :type config: AgentTaskSolverConfig
-        """
         self.config = config
         self.agent = agent
         self.log = self.config.log
