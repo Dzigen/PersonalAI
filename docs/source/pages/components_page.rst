@@ -16,6 +16,5 @@
    :maxdepth: 2
    :caption: Вспомогательные
 
-   components/src/src.prompts
-   components/src/src.parsers
+   components/parsers/src.parsers
    components/src/src.utils

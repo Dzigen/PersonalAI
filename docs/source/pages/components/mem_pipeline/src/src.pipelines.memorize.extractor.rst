@@ -17,11 +17,3 @@ src.pipelines.memorize.extractor.LLMExtractor module
    :members:
    :undoc-members:
    :show-inheritance:
-
-src.pipelines.memorize.extractor.configs module
------------------------------------------------
-
-.. automodule:: src.pipelines.memorize.extractor.configs
-   :members:
-   :undoc-members:
-   :show-inheritance:
