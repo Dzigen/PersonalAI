@@ -3,12 +3,9 @@ import sys
 import json
 import logging
 import torch
-import errno
-from typing import Union, Tuple, List, Dict
-from collections import defaultdict
+import datetime
 
-Number = Union[float, int]
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 def init_logger(args, stdout_only=False):
@@ -25,7 +22,7 @@ def init_logger(args, stdout_only=False):
         format="[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s",
         handlers=handlers,
     )
-    return logger
+    return LOGGER
 
 class Logger:
     def __init__(self, path):
@@ -38,7 +35,7 @@ class Logger:
             if verbose:
                 print(text)
             with open(self.path + "/" + filename, "a") as file:
-                file.write(text + "\n")
+                file.write(f"[{str(datetime.datetime.now())}] {text}\n")
 
     def to_json(self, obj, filename = "history.json"):
         try:

@@ -1,22 +1,19 @@
-import copy
 from neo4j import GraphDatabase
-from typing import List, Dict, Tuple
-from tqdm import tqdm
-from abc import ABC, abstractmethod
+from typing import List, Dict, Union
 import json
-from dataclasses import dataclass
 
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
-from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NodeType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
+from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NodeType, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 
-DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(uri="bolt://localhost:7687", params={'user': "neo4j", 'pwd': 'password', 'db_name': 'testdb'})
+DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(uri="bolt://localhost:7687", params={'user': "neo4j", 'pwd': 'password'})
 
 class Neo4jConnector(AbstractGraphDatabaseConnection):
-    def __init__(self, config: GraphDBConnectionConfig):
+
+    def __init__(self, config: GraphDBConnectionConfig = DEFAULT_NEO4J_CONFIG):
         self.config = config
         self.open_connection()
 
-        self.execute_query(f'CREATE DATABASE {self.config.params["db_name"]} IF NOT EXISTS', db_flag=False)
+        self.execute_query(f'CREATE DATABASE {self.config.db_info["db"]} IF NOT EXISTS', db_flag=False)
         self.create_node_template = 'CREATE (n:{type} {{ name: "{name}"}})'
         self.create_rel_template0 = """MATCH (a:{type1}), (b:{type2})
 WHERE a.name="{name1}" and b.name ="{name2}"
@@ -44,32 +41,29 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         self.extract_triplets_rel_template = 'MATCH (a)-[r:{rel}]-(b) RETURN a, r, b'
         self.extract_triplets_rel_prop_template = 'MATCH (a)-[r]-(b) WHERE r.{prop_name}="{prop_value}" RETURN a, r, b'
 
-    def open_connection(self):
+    def open_connection(self) -> None:
         self.driver = None
         try:
             self.driver = GraphDatabase.driver(self.config.uri, auth=(self.config.params['user'], self.config.params['pwd']))
         except Exception as e:
             print("Failed to create the driver:", e)
 
-    def close_connection(self):
+    def is_open(self) -> None:
+        # TODO
+        pass
+
+    def close_connection(self) -> None:
         if self.driver is not None:
             self.driver.close()
 
     def create_node_query(self, node: Node) -> str:
-        """_summary_
-
-        :param node: _description_
-        :type node: Node
-        :return: _description_
-        :rtype: str
-        """
         query_props = {}
         for prop_name, prop_value in node.prop.items():
             p_name, p_value = prop_name.replace(" ", "_"), json.dumps(prop_value, ensure_ascii=False)
             query_props[p_name] = p_value
 
-        node_name = json.dumps(node.name, ensure_ascii=False)
-        query_props['name'] = node_name
+        query_props['name'] = json.dumps(node.name, ensure_ascii=False)
+        query_props['str_id'] = json.dumps(node.id, ensure_ascii=False)
 
         str_props = ", ".join([f"{k}: {v}" for k, v in query_props.items()])
         query = f"CREATE (n:{node.type.value} " + "{" + str_props + "}) RETURN elementId(n) as node_id"
@@ -77,80 +71,77 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
 
     def create_rel_query(self, triplet: Triplet) -> str:
-        """_summary_
-
-        :param triplet: _description_
-        :type triplet: Triplet
-        :return: _description_
-        :rtype: str
-        """
         rel_props = {}
         for prop_name, prop_value in triplet.relation.prop.items():
             p_name, p_value = prop_name.replace(' ', '_'), json.dumps(prop_value, ensure_ascii=False)
             rel_props[p_name] = p_value
 
-        rel_name = json.dumps(triplet.relation.name, ensure_ascii=False)
-        rel_props['name'] = rel_name
+        rel_props['name'] = json.dumps(triplet.relation.name, ensure_ascii=False)
+        rel_props['t_id'] = json.dumps(triplet.id, ensure_ascii=False)
+        rel_props['str_id'] = json.dumps(triplet.relation.id, ensure_ascii=False)
 
-        query = ""
         str_props = ", ".join([f"{k}: {v}" for k, v in rel_props.items()])
         subj_t, subj_id = triplet.start_node.type.value, triplet.start_node.id
         obj_t, obj_id = triplet.end_node.type.value, triplet.end_node.id
         rel_t = triplet.relation.type.value
-        query += f'MATCH (subj:{subj_t}), (obj:{obj_t}) WHERE elementId(subj) = "{subj_id}" AND elementId(obj) = "{obj_id}" '
+        query = ""
+        query += f'MATCH (subj:{subj_t}), (obj:{obj_t}) WHERE subj.str_id = "{subj_id}" AND obj.str_id = "{obj_id}" '
         query += f'CREATE (subj)-[rel:{rel_t}' + '{' + str_props + '}' + ']->(obj) '
         query += 'RETURN elementId(rel) as rel_id'
         return query
 
-    def create_triplet(self, triplet: Triplet) -> Tuple[int,int]:
-        # add nodes and edges which presented in triplets list
-        # Check to unique node name
-        # Pay attention to the format of triplets
+    def create(self, triplets: List[Triplet], creation_info: Dict = dict()) -> None:
+        # triplet-ids checking
+        for triplet in triplets:
+            if type(triplet.id) is not str:
+                raise ValueError
+        unique_ids = set(map(lambda triplet: triplet.id, triplets))
+        if len(triplets) != len(unique_ids):
+            raise ValueError
 
-        created_nodes_count, created_rels_count = 0,0
-        subj_n, subj_t = json.dumps(triplet.start_node.name, ensure_ascii=False), triplet.start_node.type.value
-        subj_out = self.execute_query(f'MATCH (subj:{subj_t}) WHERE subj.name = {subj_n} RETURN elementID(subj) as node_id')
-        if len(subj_out) < 1:
-            created_nodes_count += 1
-            insert_subj_query = self.create_node_query(triplet.start_node)
-            triplet.start_node.id = self.execute_query(insert_subj_query)[0]['node_id']
-        else:
-            triplet.start_node.id = subj_out[0]['node_id']
+        for i, triplet in enumerate(triplets):
+            cur_info = creation_info.get(i, None)
+            if cur_info is None or cur_info['s_node']:
+                insert_subj_query = self.create_node_query(triplet.start_node)
+                self.execute_query(insert_subj_query)
+            if cur_info is None or cur_info['e_node']:
+                insert_obj_query = self.create_node_query(triplet.end_node)
+                self.execute_query(insert_obj_query)
 
-        obj_n, obj_t = json.dumps(triplet.end_node.name, ensure_ascii=False), triplet.end_node.type.value
-        obj_out = self.execute_query(f'MATCH (obj:{obj_t}) WHERE obj.name = {obj_n} RETURN elementID(obj) as node_id')
-        if len(obj_out) < 1:
-            created_nodes_count += 1
-            insert_obj_query = self.create_node_query(triplet.end_node)
-            triplet.end_node.id = self.execute_query(insert_obj_query)[0]['node_id']
-        else:
-            triplet.end_node.id = obj_out[0]['node_id']
+            insert_rel_query = self.create_rel_query(triplet)
+            self.execute_query(insert_rel_query)
 
-        created_rels_count += 1
-        rel_query = self.create_rel_query(triplet)
-        triplet.relation.id = self.execute_query(rel_query)[0]['rel_id']
 
-        return created_nodes_count, created_rels_count
-
-    # TODO
-    def delete_triplet(self, triplet: Triplet) -> None:
+    def read(self, ids: List[str]) -> List[Triplet]:
+        # TODO
         pass
 
-    def execute_query(self, query: str, db_flag: bool = True):
-        """_summary_
+    def update(self, items: List[Triplet]) -> None:
+        # TODO
+        pass
 
-        :param query: _description_
-        :type query: str
-        :param db_flag: _description_, defaults to True
-        :type db_flag: bool, optional
-        :return: _description_
-        :rtype: _type_
-        """
+    def delete(self, ids: List[str]) -> None:
+        # TODO
+        pass
+
+    def read_by_name(self, name: str, type: Union[RelationType, NodeType], object: str = 'triplet') -> List[Union[Triplet, Node]]:
+        if object == 'triplet':
+            output = self.execute_query(f"MATCH (n1)-[rel:{type.value}]->(n2) WHERE rel.name = {name} RETURN n1,rel,n2;")
+            formated_output = self.parse_query_triplets_output(output)
+        elif object == 'node':
+            output = self.execute_query(f"MATCH (n:{type.value}) WHERE n.name = {name} RETURN n;")
+            formated_output = self.parse_query_nodes_output(output)
+        else:
+            raise ValueError
+
+        return formated_output
+
+    def execute_query(self, query: str, db_flag: bool = True) -> List[object]:
         assert self.driver is not None, "Driver not initialized!"
         session = None
         response = None
         try:
-            session = self.driver.session(database=self.config.params['db_name']) if db_flag else self.driver.session()
+            session = self.driver.session(database=self.config.db_info['db']) if db_flag else self.driver.session()
             response = list(session.run(query))
         except Exception as e:
             print("Query failed:", e)
@@ -160,56 +151,94 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                 session.close()
         return response
 
-    def get_adjecent_nodes(self, base_node_id: str, parent_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
+    def get_adjecent_nodes(self, base_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
+        if type(base_node_id) is not str:
+            raise ValueError
+
         str_accepted_nodes = ', '.join(list(map(lambda tpe: f'"{tpe.value}"', accepted_n_types)))
 
         raw_nodes = self.execute_query(
-            f'MATCH (a)-[r]-(b) WHERE elementId(a) = "{base_node_id}" AND elementId(b) <> "{parent_node_id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(b)) RETURN b')
-        formated_nodes = [node['b'].element_id for node in raw_nodes]
+            f'MATCH (a)-[r]-(b) WHERE a.str_id = "{base_node_id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(b)) RETURN b')
+        formated_nodes = [node['b']['str_id'] for node in raw_nodes]
         return formated_nodes
 
-    def parse_query_output(self, output):
-        """_summary_
+    def parse_query_nodes_output(self, output: List[object]) -> List[Node]:
+        formated_nodes = []
+        for raw_node in output:
+            node = Node(id=raw_node['n']['str_id'], name=str(raw_node['n']['name']),
+                type=NODES_TYPES_MAP[list(raw_node['n'].labels)[0]], prop=dict(raw_node['n']))
+            formated_nodes.append(node)
+        return formated_nodes
 
-        :param output: _description_
-        :type output: _type_
-        :return: _description_
-        :rtype: _type_
-        """
+    def parse_query_triplets_output(self, output: List[object]) -> List[Triplet]:
         formated_triplets = []
         for raw_triplet in output:
-            node1 = NodeCreator.create(id=raw_triplet['n1'].element_id, name=str(raw_triplet['n1']['name']),
-                                            type=NODES_TYPES_MAP[list(raw_triplet['n1'].labels)[0]],
-                                            prop=dict(raw_triplet['n1']))
-            node2 = NodeCreator.create(id=raw_triplet['n2'].element_id, name=str(raw_triplet['n2']['name']),
-                                            type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]],
-                                            prop=dict(raw_triplet['n2']))
-            relation = Relation(id=raw_triplet['rel'].element_id, name=str(raw_triplet['rel']['name']),
-                                type=RELATIONS_TYPES_MAP[raw_triplet['rel'].type],
-                                prop=dict(raw_triplet['rel']))
+            node1 = Node(id=raw_triplet['n1']['str_id'], name=str(raw_triplet['n1']['name']),
+                type=NODES_TYPES_MAP[list(raw_triplet['n1'].labels)[0]], prop=dict(raw_triplet['n1']))
+            node2 = Node(id=raw_triplet['n2']['str_id'], name=str(raw_triplet['n2']['name']),
+                type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]], prop=dict(raw_triplet['n2']))
+            relation = Relation(
+                id=raw_triplet['rel']['str_id'], name=str(raw_triplet['rel']['name']),
+                type=RELATIONS_TYPES_MAP[raw_triplet['rel'].type], prop=dict(raw_triplet['rel']))
 
             start_node_id = raw_triplet['rel'].nodes[0].element_id
             start_node, end_node = (node1, node2) if start_node_id == node1.id else (node2, node1)
-            triplet = TripletCreator.create(start_node, relation, end_node, add_stringified_triplet=False)
+            triplet = TripletCreator.create(
+                start_node, relation, end_node, add_stringified_triplet=False, t_id=raw_triplet['rel']['t_id'])
             formated_triplets.append(triplet)
         return formated_triplets
 
     def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
-        output = self.execute_query(
-            f'MATCH (n1)-[rel]-(n2) WHERE elementId(n1) = "{node1_id}" AND elementId(n2) = "{node2_id}" RETURN n1, rel, n2')
+        if (type(node1_id) is not str) or (type(node2_id) is not str):
+            raise ValueError
+        if (not self.item_exist(node1_id, id_type='node')) or (not self.item_exist(node2_id, id_type='node')):
+            raise ValueError
 
-        formatted_triplets = self.parse_query_output(output)
+        output = self.execute_query(
+            f'MATCH (n1)-[rel]-(n2) WHERE n1.str_id = "{node1_id}" AND n2.str_id = "{node2_id}" RETURN n1, rel, n2')
+
+        formatted_triplets = self.parse_query_triplets_output(output)
         return formatted_triplets
 
-    def get_triplets_by_name(self, subj_name, obj_name, obj_type):
-        if subj_name:
-            output = self.execute_query(
-                f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE n1.name = {subj_name} RETURN n1, rel, n2')
-        elif obj_name:
-            output = self.execute_query(
-                f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE n2.name = {subj_name} RETURN n1, rel, n2')
+    def get_triplets_by_name(self, subj_names: List[str], obj_names: List[str], obj_type: str) -> List[Triplet]:
+        formatted_triplets = []
+        if subj_names:
+            for subj_name in subj_names:
+                output = self.execute_query(
+                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n1.name) = LOWER("{subj_name}") RETURN n1, rel, n2')
+                formatted_triplets += self.parse_query_triplets_output(output)
+        elif obj_names:
+            for obj_name in obj_names:
+                output = self.execute_query(
+                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n2.name) = LOWER("{obj_name}") RETURN n1, rel, n2')
+                formatted_triplets += self.parse_query_triplets_output(output)
         else:
             output = self.execute_query(
                 f'MATCH (n1:object)-[rel]-(n2:{obj_type}) RETURN n1, rel, n2')
-        formatted_triplets = self.parse_query_output(output)
+            formatted_triplets += self.parse_query_triplets_output(output)
         return formatted_triplets
+
+    def count_items(self) -> int:
+        n_output = self.execute_query("MATCH (a) RETURN count(a) as n_count")[0]
+        r_output = self.execute_query("MATCH (a)-[rel]->(b) RETURN count(rel) as r_count")[0]
+        return {'triplets': r_output['r_count'], 'nodes': n_output['n_count']}
+
+    def item_exist(self, id: str, id_type='triplet') -> bool:
+        if type(id) is not str:
+            raise ValueError
+
+        if id_type == 'node':
+            query = f'MATCH (n) WHERE n.str_id = "{id}" RETURN n'
+        elif id_type == 'relation':
+            query = f'MATCH (n1)-[rel]-(n2) WHERE rel.str_id = "{id}" RETURN rel'
+        elif id_type == 'triplet':
+            query = f'MATCH (n1)-[rel]-(n2) WHERE rel.t_id = "{id}" RETURN rel'
+        else:
+            raise ValueError
+
+        output = self.execute_query(query)
+        return len(output) > 0
+
+    def clear(self) -> None:
+        self.execute_query("MATCH (n)-[rel]->() DELETE n,rel")
+        self.execute_query("MATCH (n) DELETE n")

@@ -2,95 +2,80 @@ from typing import Dict, List, Tuple
 import chromadb
 import logging
 
+from ....utils.errors import ReturnInfo
 from ..utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
 logging.getLogger("chromadb").setLevel(logging.CRITICAL)
 
-DEFAULT_CHROMA_CONFIG = VectorDBConnectionConfig(path='./default_vectordb', db_name='vectors')
+DEFAULT_CHROMA_CONFIG = VectorDBConnectionConfig(path='../data/graph_structures/default_vectorstore')
 
 class ChromaConnection(AbstractVectorDatabaseConnection):
-    """_summary_
 
-    :param AbstractVectorDatabaseConnection: _description_
-    :type AbstractVectorDatabaseConnection: _type_
-    """
-    def __init__(self, config: VectorDBConnectionConfig) -> None:
-        """_summary_
-
-        :param config: _description_
-        :type config: VectorDBConnectionConfig
-        """
+    def __init__(self, config: VectorDBConnectionConfig = DEFAULT_CHROMA_CONFIG) -> None:
         self.config = config
         self.open_connection()
 
-    def open_connection(self):
-        """_summary_
-        """
+    def open_connection(self) -> ReturnInfo:
         self.client = chromadb.PersistentClient(path=self.config.path)
-        self.collection = self.client.get_or_create_collection(name=self.config.db_name, metadata=self.config.params)
+        self.collection = self.client.get_or_create_collection(name=self.config.db_info['table'], metadata=self.config.params)
 
         if self.config.need_to_clear:
             self.clear()
 
-    def close_connection(self):
-        """_summary_
-        """
+    def is_open(self) -> bool:
+        # TODO
+        pass
+
+    def close_connection(self) -> ReturnInfo:
         del self.collection
         del self.client
 
-    def clear(self):
-        self.client.delete_collection(name=self.config.db_name)
-        self.collection = self.client.create_collection(name=self.config.db_name,
-                                                        metadata=self.config.params)
+    def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
+        # item-ids checking
+        for item in items:
+            if type(item.id) is not str:
+                raise ValueError
+        unique_ids = set(map(lambda item: item.id, items))
+        if len(items) != len(unique_ids):
+            raise ValueError
 
-    def create(self, instances: List[VectorDBInstance]):
-        """Добавление объектов в базу.
-
-        Args:
-            instances (List[VectorDBInstance]): Список объектов на добавление
-        """
-        insts_idxs = list(range(len(instances)))
-        insts_with_md = list(filter(lambda i: len(instances[i].metadata), insts_idxs))
+        insts_idxs = list(range(len(items)))
+        insts_with_md = list(filter(lambda i: len(items[i].metadata), insts_idxs))
         insts_wo_md = set(insts_idxs).difference(set(insts_with_md))
 
         if len(insts_with_md):
             self.collection.add(
-                documents=list(map(lambda idx: instances[idx].document, insts_with_md)),
-                embeddings=list(map(lambda idx: instances[idx].embedding, insts_with_md)),
-                metadatas=list(map(lambda idx: instances[idx].metadata, insts_with_md)),
-                ids=list(map(lambda idx: instances[idx].id, insts_with_md)))
+                documents=list(map(lambda idx: items[idx].document, insts_with_md)),
+                embeddings=list(map(lambda idx: items[idx].embedding, insts_with_md)),
+                metadatas=list(map(lambda idx: items[idx].metadata, insts_with_md)),
+                ids=list(map(lambda idx: items[idx].id, insts_with_md)))
 
         if len(insts_wo_md):
             self.collection.add(
-                documents=list(map(lambda idx: instances[idx].document, insts_wo_md)),
-                embeddings=list(map(lambda idx: instances[idx].embedding, insts_wo_md)),
-                ids=list(map(lambda idx: instances[idx].id, insts_wo_md)))
+                documents=list(map(lambda idx: items[idx].document, insts_wo_md)),
+                embeddings=list(map(lambda idx: items[idx].embedding, insts_wo_md)),
+                ids=list(map(lambda idx: items[idx].id, insts_wo_md)))
 
     def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents'], **kwargs) -> List[VectorDBInstance]:
-        """Получение объектов из базы по их идентификаторам.
-
-        Args:
-            ids (List[str]): Идентификаторы объектов.
-            includes (List[str], optional): Список полей, информацию по которым нужно получить для каждого объекта.
-                                            Defaults to ['embeddings', 'documents'].
-
-        Returns:
-            List[VectorDBInstance]: Список объектов с заданными идентификаторами.
-        """
-        raw_instances = self.collection.get(
-            include=includes,
-            ids=ids, **kwargs)
-
         formates_instances = []
-        for i in range(len(raw_instances['ids'])):
-            tmp_inst = {requested_field[:-1]: raw_instances[requested_field][i]
-                        for requested_field in includes + ['ids']}
-            formates_instances.append(VectorDBInstance(**tmp_inst))
+        if len(ids):
+            raw_instances = self.collection.get(
+                include=includes,
+                ids=ids, **kwargs)
+
+            for i in range(len(raw_instances['ids'])):
+                tmp_inst = {requested_field[:-1]: raw_instances[requested_field][i]
+                            for requested_field in includes + ['ids']}
+                formates_instances.append(VectorDBInstance(**tmp_inst))
 
         return formates_instances
 
-    def update(self):
+    def update(self) -> ReturnInfo:
         # TODO
         pass
+
+    def delete(self, ids: List[str], **kwargs) -> None:
+        if len(ids):
+            self.collection.delete(ids=ids, **kwargs)
 
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50,
@@ -99,7 +84,7 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         n_results = collection_size if collection_size < n_results else n_results
 
         raw_retrieved_instances = self.collection.query(
-            query_embeddings=[inst.embedding.tolist() for inst in query_instances],
+            query_embeddings=[inst.embedding for inst in query_instances],
             include=includes + ['distances'], n_results=n_results, **kwargs)
 
         formated_instances = []
@@ -115,5 +100,14 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
 
         return formated_instances
 
-    def delete(self, ids: List[str], **kwargs):
-        self.collection.delete(ids=ids, **kwargs)
+    def count_items(self) -> int:
+        return self.collection.count()
+
+    def item_exist(self, id: str) -> bool:
+        output = self.collection.get(ids=[id])
+        return len(output['ids']) > 0
+
+    def clear(self) -> None:
+        self.client.delete_collection(name=self.config.db_info['table'])
+        self.collection = self.client.create_collection(
+            name=self.config.db_info['table'], metadata=self.config.params)

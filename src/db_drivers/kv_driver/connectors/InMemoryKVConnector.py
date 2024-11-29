@@ -5,7 +5,7 @@ import os
 import time
 import hashlib
 
-from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
+from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection, KeyValueDBInstance
 
 DEFAULT_INMEMORYKV_CONFIG = KVDBConnectionConfig(
     host='localhost',
@@ -32,6 +32,9 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         else:
             self.kv_store = dict()
 
+    def is_open(self) -> bool:
+        return hasattr(self, 'kv_store')
+
     def close_connection(self) -> None:
         if self.config.params['save_on_disk']:
             save_path = f"{self.config.params['save_dump_dir']}/{self.config.params['kvstore_dump_name']}"
@@ -45,21 +48,48 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         del self.kv_store
         gc.collect()
 
-    def create(self, key: Tuple, value: Dict) -> None:
-        self.kv_store[key] = value
+    def create(self, items: List[KeyValueDBInstance]) -> None:
+        for item in items:
+            if not len(item.metadata) or type(item.id) is not str:
+                raise ValueError
 
-    def delete(self, keys: List[str]):
-        for k in keys:
-            del self.kv_store[k]
+        unique_ids = set(map(lambda item: item.id, items))
+        if len(items) != len(unique_ids):
+            raise ValueError
 
-    def read(self, keys: List[Tuple]) -> Dict:
-        records = [self.kv_store[k] for k in keys]
+        for item in items:
+            if not self.item_exist(item.id):
+                self.kv_store[item.id] = item.metadata
+
+    def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
+        for id in ids:
+            if type(id) is not str:
+                raise ValueError
+        records = [KeyValueDBInstance(id=id, metadata=self.kv_store[id]) for id in ids if id in self.kv_store]
         return records
+
+    def update(self, items: List[KeyValueDBInstance]) -> None:
+        # TODO
+        pass
+
+    def delete(self, ids: List[str]):
+        for id in ids:
+            if type(id) is not str:
+                raise ValueError
+
+        for id in ids:
+            if self.item_exist(id):
+                del self.kv_store[id]
 
     def clear(self):
         del self.kv_store
         gc.collect()
         self.kv_store = dict()
 
-    def key_exist(self, key: Tuple):
-        return key in self.kv_store
+    def count_items(self) -> int:
+        return len(self.kv_store)
+
+    def item_exist(self, id: str):
+        if type(id) is not str:
+            raise ValueError
+        return id in self.kv_store

@@ -1,4 +1,3 @@
-version: "3"
 services:
 
   aerospike_golden_gigachat:
