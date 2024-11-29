@@ -9,11 +9,3 @@ Subpackages
 
    src.parsers.qa_pipeline.answer_generator
    src.parsers.qa_pipeline.query_parser
-
-Module contents
----------------
-
-.. automodule:: src.parsers.qa_pipeline
-   :members:
-   :undoc-members:
-   :show-inheritance:

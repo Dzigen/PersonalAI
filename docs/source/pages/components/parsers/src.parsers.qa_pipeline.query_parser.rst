@@ -11,11 +11,3 @@ src.parsers.qa\_pipeline.query\_parser.kw\_extraction module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: src.parsers.qa_pipeline.query_parser
-   :members:
-   :undoc-members:
-   :show-inheritance:

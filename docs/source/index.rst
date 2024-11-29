@@ -14,6 +14,7 @@ Personal AI документация
    pages/architecture_page
    pages/components_page
    pages/examples_page
+   pages/environment_page
 
 Indices and tables
 ==================

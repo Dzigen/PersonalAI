@@ -11,11 +11,3 @@ src.parsers.qa\_pipeline.answer\_generator.question\_answering module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: src.parsers.qa_pipeline.answer_generator
-   :members:
-   :undoc-members:
-   :show-inheritance:
