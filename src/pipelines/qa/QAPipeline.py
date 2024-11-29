@@ -61,7 +61,7 @@ class QAPipeline:
         :rtype: Tuple[str, ReturnInfo]
         """
         answer = None
-        self.log("="*20)
+        self.log("="*20, verbose=self.config.verbose)
         self.log("-"*10 + "STAGE#1 - entities extraction" + "-"*10, verbose=self.config.verbose)
         self.log("QUERY:\n" + query, verbose=self.config.verbose)
         query_info, info = self.query_parser.extract_entities(query)
@@ -82,7 +82,7 @@ class QAPipeline:
             answer, info = self.answer_generator.generate(query_info.query, retrieved_triplets)
             self.log("ANSWER:\n" + answer, verbose=self.config.verbose)
 
-        self.log("-"*20)
+        self.log("-"*20, verbose=self.config.verbose)
         self.log(f"Статус: {info.message}", verbose=self.config.verbose)
 
         return answer, info

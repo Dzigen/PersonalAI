@@ -8,7 +8,6 @@ from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, Node
 DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(uri="bolt://localhost:7687", params={'user': "neo4j", 'pwd': 'password'})
 
 class Neo4jConnector(AbstractGraphDatabaseConnection):
-    """_summary_"""
 
     def __init__(self, config: GraphDBConnectionConfig = DEFAULT_NEO4J_CONFIG):
         self.config = config
@@ -58,13 +57,6 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             self.driver.close()
 
     def create_node_query(self, node: Node) -> str:
-        """_summary_
-
-        :param node: _description_
-        :type node: Node
-        :return: _description_
-        :rtype: str
-        """
         query_props = {}
         for prop_name, prop_value in node.prop.items():
             p_name, p_value = prop_name.replace(" ", "_"), json.dumps(prop_value, ensure_ascii=False)
@@ -79,13 +71,6 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
 
     def create_rel_query(self, triplet: Triplet) -> str:
-        """_summary_
-
-        :param triplet: _description_
-        :type triplet: Triplet
-        :return: _description_
-        :rtype: str
-        """
         rel_props = {}
         for prop_name, prop_value in triplet.relation.prop.items():
             p_name, p_value = prop_name.replace(' ', '_'), json.dumps(prop_value, ensure_ascii=False)

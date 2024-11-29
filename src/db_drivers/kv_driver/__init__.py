@@ -1,5 +1,4 @@
 from .connectors.AerospikeConnector import AerospikeConnector, DEFAULT_AEROSPIKE_CONFIG
-from .connectors.MongoConnector import MongoConnector, DEFAULT_MONGO_CONFIG
 from .connectors.InMemoryKVConnector import InMemoryKVConnector, DEFAULT_INMEMORYKV_CONFIG
 from .KeyValueDriver import KeyValueDriver, KeyValueDriverConfig
 from .utils import KVDBConnectionConfig, KeyValueDBInstance

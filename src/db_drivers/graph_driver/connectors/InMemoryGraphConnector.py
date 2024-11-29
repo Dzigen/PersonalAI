@@ -11,7 +11,6 @@ from ....utils.data_structs import RelationType, Node
 DEFAULT_INMEMORYGRAPH_CONFIG = GraphDBConnectionConfig()
 
 class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
-    """_summary_"""
 
     def __init__(self, config: GraphDBConnectionConfig = DEFAULT_INMEMORYGRAPH_CONFIG) -> None:
         self.config = config
@@ -125,7 +124,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         pass
 
     def read_by_name(self, name: str, type: Union[RelationType, NodeType], object: str = 'triplet') -> List[Union[Triplet, Node]]:
-        # Note: Реализован наивный способ поиска элементов в графе, удовлетворяющих условию
+        # Note: Реализован наивный способ поиска элементов в графе
         # (алгоритмическая сложность O(n), где n - количество триплетов/вершин в графе)
 
         if object == 'triplet':

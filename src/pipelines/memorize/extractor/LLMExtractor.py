@@ -10,6 +10,21 @@ from .configs import DEFAULT_EXTRACT_THESISES_TASK_CONFIG, DEFAULT_EXTRACT_TRIPL
 
 @dataclass
 class LLMExtractorConfig:
+    """Конфигурация Extractor-стадии Memorize-конвейера.
+
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
+    :type lang: str
+    :param agent_cofig: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
+    :type agent_cofig: AgentDriverConfig
+    :param triplets_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению трипетов с информацией типа 'simple' из слабоструктурированных текстов на естественном языке. Значение по умолчанию DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG.
+    :type triplets_extraction_task_config: AgentTaskSolverConfig
+    :param thesises_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению трипетов с информацией типа 'hyper' из слабоструктурированных текстов на естественном языке. Значение по умолчанию DEFAULT_EXTRACT_THESISES_TASK_CONFIG.
+    :type thesises_extraction_task_config: AgentTaskSolverConfig
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(QA_LOG_PATH).
+    :type log: Logger
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
+    """
     lang: str = "auto"
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     triplets_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG)
@@ -54,9 +69,9 @@ class LLMExtractor:
         new_triplets, info = [], ReturnInfo()
 
         if need_simple:
-            self.log("EXTRACTING SIMPLE TRIPLETS...", verbose=self.config.verbose)
+            self.log("Старт извлечения simple-связей...", verbose=self.config.verbose)
             tmp_triplets, status = self.triplets_extraction_solver.solve(lang=self.config.lang, text=text, rel_prop=properties)
-            self.log(f"Результат:\n{tmp_triplets}", verbose=self.config.verbose)
+            self.log(f"Результат: {tmp_triplets}", verbose=self.config.verbose)
             self.log(f"Статус: {status}", verbose=self.config.verbose)
 
             if status != ReturnStatus.success:
@@ -65,9 +80,9 @@ class LLMExtractor:
                 new_triplets += tmp_triplets
 
         if need_thesises:
-            self.log("EXTRACTING THESIS TRIPLETS...", verbose=self.config.verbose)
+            self.log("Старт извлечения thesis-связей...", verbose=self.config.verbose)
             tmp_triplets, status = self.triplets_extraction_solver.solve(lang=self.config.lang, text=text, node_prop=properties)
-            self.log(f"Результат:\n{tmp_triplets}", verbose=self.config.verbose)
+            self.log(f"Результат: {tmp_triplets}", verbose=self.config.verbose)
             self.log(f"Статус: {status}", verbose=self.config.verbose)
 
             if status != ReturnStatus.success:
@@ -76,8 +91,10 @@ class LLMExtractor:
                 new_triplets += tmp_triplets
 
         if need_episodic:
+            self.log("Формирование episodic-связей...", verbose=self.config.verbose)
             new_triplets += self.get_episodic_relationships(
                 text, self.get_entities_from_triplets(new_triplets), node_prop=properties)
+            self.log(f"Статус: {status}", verbose=self.config.verbose)
 
         if len(new_triplets) == 0:
             info.status = ReturnStatus.zero_triplets

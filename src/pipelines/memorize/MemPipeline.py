@@ -16,7 +16,7 @@ class MemPipelineConfig:
 
     :param extractor_config: Конфигурация первой стадии Memorize-конвейера: извлечение информации из текстовых данных и приведение их в triplet-формат. Значение по умолчанию LLMExtractorConfig().
     :type extractor_config: LLMExtractorConfig
-    :param updator_config: Конфигурация второй стадии Mem-конвейера: актуализация знаний в памяти ассистента. Значение по умолчанию LLMUpdatorConfig().
+    :param updator_config: Конфигурация второй стадии Memorize-конвейера: актуализация знаний в памяти ассистента. Значение по умолчанию LLMUpdatorConfig().
     :type updator_config: LLMUpdatorConfig
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(MEM_LOG_PATH).
     :type log: Logger
@@ -30,14 +30,12 @@ class MemPipelineConfig:
     verbose: bool = False
 
 class MemPipeline:
-    """Верхнеуровневый класс Memorize-конвейера, отвечающего за изменение знаний в памяти ассистента.
+    """Верхнеуровневый класс Memorize-конвейера, отвечающий за изменение знаний в памяти ассистента.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация Memorize-конвейера. Значение по умолчанию MemPipelineConfig().
     :type config: MemPipelineConfig
-    :param bfs: Значение по умолчанию None.
-    :type bfs: BFSRetriever
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig()) -> None:
@@ -59,26 +57,24 @@ class MemPipeline:
         :type need_thesises: bool, optional
         :param need_episodic: Если True, то из входного текста на первой стадии Memorize-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False. Значение по умолчанию True.
         :type need_episodic: bool, optional
-        :param need_update: Значение по умолчанию False.
-        :type need_update: bool, optional
+        :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшая информация из памяти (графа знаний) асситента, инчае False. Значение по умолчанию False.
+        :type delete_obsolete_info: bool, optional
         :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, Значение по умолчанию dict().
         :type properties: Dict, optional
         :return: Кортеж из двух объектов: (1) список с извлечённой из текста информацией (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
 
-        # Извлекаем информацию в структурированном формате из текстов на естественном языке
         self.log("="*20, verbose=self.config.verbose)
-        self.log("-"*5 + "STAGE#1 - information extraction" + "-"*5, verbose=self.config.verbose)
+        self.log("-"*5 + "STAGE#1 - Извлечение информации (в структурированном формате) из текста" + "-"*5, verbose=self.config.verbose)
         new_triplets, info = self.extractor.extract_knowledge(text, need_simple, need_thesises, need_episodic, properties)
-        self.log(f"EXTRACTED INFORMATION FROM TEXT (IN TRIPLET FORMAT): \n{new_triplets}", verbose=self.config.verbose)
+        self.log(f"Извлечённая информация (в triplet-формате): \n{new_triplets}", verbose=self.config.verbose)
 
         if info.status == ReturnStatus.success:
-            self.log("-"*5 + "STAGE#2 - updating information in assistant memory (knowledge graph)" + "-"*5, verbose=self.config.verbose)
-            # Добавляем в граф знаний новую информацию; по требванию (delete_obolete_info = True) удаляем устаревшую информацию
+            self.log("-"*5 + "STAGE#2 - Обновление информации в памяти (графе знаний) асситента " + "-"*5, verbose=self.config.verbose)
             info = self.updator.update_knowledge(new_triplets, delete_obsolete_info)
 
-        self.log("-"*20, verbose=self.config.verbose)
+        self.log("+"*20, verbose=self.config.verbose)
         self.log(f"Статус: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
         return new_triplets, info

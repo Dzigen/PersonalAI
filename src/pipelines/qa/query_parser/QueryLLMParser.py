@@ -9,14 +9,14 @@ from ....agents import AgentDriver, AgentDriverConfig
 
 @dataclass
 class QueryLLMParserConfig:
-    """Конфигурация "Query Parser"-стадии.
+    """Конфигурация "Query Parser"-стадии QA-конвейера.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str
-    :param ents_extr_config: Конфигурация алгоритма по извлечению ключевых сущностей из текста. Значение по умолчанию EntitiesExtractorConfig().
-    :type ents_extr_config: EntitiesExtractorConfig
     :param agent_cofig: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
     :type agent_cofig: AgentDriverConfig
+    :param kw_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению кючевых сущностей из текста.
+    :type kw_extraction_task_config: AgentTaskSolverConfig
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(QP_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.

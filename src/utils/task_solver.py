@@ -9,6 +9,19 @@ from ..agents.utils import AbstractAgentConnector
 
 @dataclass
 class AgentTaskSuite:
+    """Набор гиперпараметров для инференса и разбора ответа LLM-агента в рамках заданной атомарной задачи.
+
+    :param system_prompt: System-промпт с описание персоны, свойствам которой должен удовлетворять LLM-агент во время инференса.
+    :type system_prompt: str
+    :param user_prompt: User-промпт для инференса LLM-агента с описанием задачи.
+    :type user_prompt: str
+    :param assistant_prompt: Assistant-промпт с дополнительной информацией по решаемой задачи для инференса LLM-агента.
+    :type assistant_prompt: str
+    :param parse_answer_func: Кастомная функция, которая должна выполнять промежуточный разбор ответа LLM-агента, полученного в рамках инференса.
+    :type parse_answer_func: object
+    :param postprocess_answer_func: Кастомная функция, которая должна привести разобранный ответ от LLM-агента в формат, который требуется для данной атомарной задачи.
+    :type postprocess_answer_func: object
+    """
     system_prompt: str
     user_prompt: str
     assistant_prompt: str
@@ -17,12 +30,31 @@ class AgentTaskSuite:
 
 @dataclass
 class AgentTaskSolverConfig:
+    """Конфигурация agent-солвера.
+
+    :param suites: Набор гиперпарметров для инференса и разбора ответа LLM-агента в рамках заданной атомарной задачи.
+    :type suites: Dict[str, AgentTaskSuite]
+    :param formate_context_func: Кастомная функция, которая должна приводить входной (в agent-солвер) набор данных
+    в строковый формат (в виде словаря со строковыми значениями), который далее будет добавляться в user-prompt для LLM-агента.
+    :type formate_context_func: object
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(RKG_LOG_PATH).
+    :type log: Logger
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
+    """
     suites: Dict[str, AgentTaskSuite]
     formate_context_func: object
     log: Logger
     verbose: bool = False
 
 class AgentTaskSolver:
+    """Класс-обёртка, предназначенный для решения атомарной задачи на базе инференса LLM-агента.
+
+    :param agent: интерфейс взаимодейсвия с LLM-агеном.
+    :type agent: AbstractAgentConnector
+    :param config: Конфигурация решения конкретной задачи.
+    :type config: AgentTaskSolverConfig
+    """
 
     def __init__(self, agent: AbstractAgentConnector, config: AgentTaskSolverConfig) -> None:
         self.config = config
@@ -30,6 +62,13 @@ class AgentTaskSolver:
         self.log = self.config.log
 
     def solve(self, lang: str = 'auto', **kwargs) -> Tuple[object, ReturnStatus]:
+        """Метод предназначен для запуска agent-солвера на заданных входных данных.
+
+        :param lang: Язык промптов, которые будут использоваться на этапе инференса LLM-агента, Значение по умолчанию 'auto'.
+        :type lang: str, optional
+        :return: Кортеж из двух объектов: (1) результат работы agent-солвера; (2) статус завершения операции с пояснительной информацией.
+        :rtype: Tuple[object, ReturnStatus]
+        """
         task_result, status = None, ReturnStatus.success
         self.log("="*20, verbose=self.config.verbose)
         self.log("1. Предобработка данных для их дальнейшней вставки в user-prompt...", verbose=self.config.verbose)

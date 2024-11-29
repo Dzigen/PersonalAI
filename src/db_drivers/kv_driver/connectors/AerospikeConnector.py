@@ -7,7 +7,7 @@ from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 DEFAULT_AEROSPIKE_CONFIG = KVDBConnectionConfig(host='aerospikelservice', port=3000)
 
 class AerospikeConnector(AbstractKVDatabaseConnection):
-    """_summary_"""
+
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_AEROSPIKE_CONFIG):
         self.config = config
         self.open_connection()

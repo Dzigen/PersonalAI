@@ -8,13 +8,13 @@ from ..utils.data_structs import Triplet
 from ..utils import Logger
 
 GRAPH_DB_DEFAULT_DRIVER_CONFIG = GraphDriverConfig(db_vendor='neo4j', db_config=DEFAULT_NEO4J_CONFIG)
-GRAPH_MODEL_LOG_PATH = 'log/gm'
+GRAPH_MODEL_LOG_PATH = 'log/kg_model/graph'
 
 @dataclass
 class GraphModelConfig:
     """Конфигруация графовой модели.
 
-    :param driver_config: Конфигурация графового хранилища данных.
+    :param driver_config: Конфигурация графовой базы данных.
     :type driver_config: GraphDriverConfig
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(GRAPH_MODEL_LOG_PATH).
     :type log: Logger
@@ -121,4 +121,5 @@ class GraphModel:
 
 
     def clear(self) -> None:
+        """Метод предназначен для удаления содержимого графовой модели данных."""
         self.db_conn.clear()

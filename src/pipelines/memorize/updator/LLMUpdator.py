@@ -11,16 +11,16 @@ from typing import Dict, List
 
 @dataclass
 class LLMUpdatorConfig:
-    """Конфигурация Updator-стадии.
+    """Конфигурация Updator-стадии Memorize-конвейера.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str
     :param agent_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии.
     :type agent_config: AgentDriverConfig
-    :param replace_thesis_prompt: Значение по умолчанию REPLACE_THESIS_PROMPT.
-    :type replace_thesis_prompt: Dict
-    :param replace_simple_prompt: Значение по умолчанию REPLACE_SIMPLE_PROMPT.
-    :type replace_simple_prompt: Dict
+    :param replace_simple_task_config: Конфигурация атомарной задачи для LLM-агента по поиску устаревших триплетов типа "simple". Значение по умолчанию DEFAULT_REPLACE_SIMPLE_TASK_CONFIG.
+    :type replace_simple_task_config: AgentTaskSolverConfig
+    :param replace_thesis_task_config: Конфигурация атомарной задачи для LLM-агента по поиску устаревших триплетов типа "hyper". Значение по умолчанию DEFAULT_REPLACE_THESIS_TASK_CONFIG.
+    :type replace_thesis_task_config: AgentTaskSolverConfig
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(MEM_UPDATE_LOG).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
@@ -37,6 +37,8 @@ class LLMUpdatorConfig:
 class LLMUpdator:
     """Верхнеуровневый класс первой стадии Memorize-конвейера для актуализации знаний в памяти ассистента.
 
+    :param kg_model: Модель памяти (графа знаний) ассистента.
+    :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация Updator-стадии. Значение по умолчанию LLMUpdatorConfig().
     :type config: LLMUpdatorConfig
     """
@@ -148,6 +150,20 @@ class LLMUpdator:
 
     def get_obsolete_triplet_ids(self, new_triplets: List[Triplet], check_simple: bool = True,
                                  check_hyper: bool = True, check_episodic: bool = True) -> List[str]:
+        """Метод предназначен для поиска устаревшей информации в памяти (графе знаний) асситента. Информация представляется в виде набора триплетов.
+
+        :param new_triplets: Список триплетов, на основе которой осуществляется поиск/детекция устаревшей информации в памяти.
+        :type new_triplets: List[Triplet]
+        :param check_simple: Если True, то будет осуществляться поиск устаревшей информации среди триплетов типа "simple" в графе знаний, иначе False. Значение по умолчанию True.
+        :type check_simple: bool, optional
+        :param check_hyper: Если True, то будет осуществляться поиск устаревшей информации среди триплетов типа "hyper" в графе знаний, иначе False. Значение по умолчанию True.
+        :type check_hyper: bool, optional
+        :param check_episodic: Если True, то будет осуществляться поиск устаревшей информации среди триплетов типа "episodic" в графе знаний, иначе False. Значение по умолчанию True.
+        :type check_episodic: bool, optional
+        :raises ValueError: Данное исключение выбрасывается, если парметр check_episodic == True, а парметр check_hyper == False.
+        :return: Список идентификаторов триплетов из графа знаний, в которых содержится устаревшая информация.
+        :rtype: List[str]
+        """
         obsolete_triplet_ids = dict()
 
         if check_episodic and not check_hyper:
@@ -155,6 +171,7 @@ class LLMUpdator:
 
         if check_simple:
             obsolete_triplet_ids[RelationType.simple.value] = self.find_simple_obsolete_triplet_ids(new_triplets)
+
 
         if check_hyper:
             obsolete_triplet_ids[RelationType.hyper.value] = self.find_hyper_obsolete_triplet_ids(new_triplets)
@@ -168,16 +185,32 @@ class LLMUpdator:
 
     def update_knowledge(self, new_triplets: List[Triplet], delete_obsolete_info:bool=False,
                need_simple:bool=True, need_hyper:bool=True, need_episodic:bool=True) -> ReturnInfo:
+        """Метод предназначен для изменения (удаления устаревшей / добавление новой информации) памяти (графа знаний) асситента.
+
+        :param new_triplets: Список триплетов с информацией для добавления в память (граф знаний) асситента.
+        :type new_triplets: List[Triplet]
+        :param need_simple: Если True, то из входного текста на первой стадии Memorize-конвейера будет выполнено извлечение триплетов с типом связи 'simple', иначе False. Значение по умолчанию True.
+        :type need_simple: bool, optional
+        :param need_thesises: Если True, то из входного текста на первой стадии Memorize-конвейера будет выполнено извлечение триплетов с типом связи 'hyper', иначе False. Значение по умолчанию True.
+        :type need_thesises: bool, optional
+        :param need_episodic: Если True, то из входного текста на первой стадии Memorize-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False. Значение по умолчанию True.
+        :type need_episodic: bool, optional
+        :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшая информация из памяти (графа знаний) асситента, инчае False. Значение по умолчанию False.
+        :type delete_obsolete_info: bool, optional
+        :return: Статус завершения операции с пояснительной информацией.
+        :rtype: ReturnInfo
+        """
         info = ReturnInfo()
 
         if delete_obsolete_info:
-            # Ищём устаревшую информацю в памяти ассистента
+            self.log(f"Поиск устаревшей информации в памяти ассистента...", verbose=self.config.verbose)
             obsolete_t_ids = self.get_obsolete_triplet_ids(new_triplets, need_simple, need_hyper, need_episodic)
+            self.log(f"Результат: суммарное количество устаревших триплетов - {len(obsolete_t_ids)}.", verbose=self.config.verbose)
 
-            # Удаляем устаревшую информацию из памяти ассистента
+            self.log(f"Удаление устаревшей информации из памяти асситента...", verbose=self.config.verbose)
             self.kg_model.remove_knowledge(obsolete_t_ids)
 
-        # Добавляем новую информацию в память ассистента
+        self.log(f"Добавление информации в память асситента...", verbose=self.config.verbose)
         self.kg_model.add_knowledge(new_triplets)
 
         return info

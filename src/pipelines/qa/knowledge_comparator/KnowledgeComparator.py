@@ -9,11 +9,11 @@ from ....db_drivers.vector_driver import VectorDBInstance
 
 @dataclass
 class KnowledgeComparatorConfig:
-    """Конфигурация "Knowledge Comparator"-стадии.
+    """Конфигурация "Knowledge Comparator"-стадии QA-конвейера.
 
-    :param threshold: Нижний порог близости между эмбеддингами сущностей и вершин для их сопоставления. Значение по умолчанию 0.5.
+    :param threshold: Нижний порог близости между эмбеддингами сущностей и вершин для их сопоставления (matching). Значение по умолчанию 0.5.
     :type threshold: float
-    :param fetch_n: лужебный гиперпараметр. Defaults to 20.
+    :param fetch_n: Служебный гиперпараметр. Значение по умолчанию 20.
     :type fetch_n: int
     :param max_k: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 1.
     :type max_k: int

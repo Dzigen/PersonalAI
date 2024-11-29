@@ -16,7 +16,6 @@ DEFAULT_INMEMORYKV_CONFIG = KVDBConnectionConfig(
     })
 
 class InMemoryKVConnector(AbstractKVDatabaseConnection):
-    """_summary_"""
 
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_INMEMORYKV_CONFIG) -> None:
         self.config = config

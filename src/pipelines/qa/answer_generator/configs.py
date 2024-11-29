@@ -1,6 +1,6 @@
 from ....utils import AgentTaskSuite, AgentTaskSolverConfig, Logger
 
-from ....parsers.qa_pipeline.answer_generator.question_answering import ag_custom_foramte, ag_custom_postprocess,\
+from ....parsers.qa_pipeline.answer_generator.question_answering import ag_custom_formate, ag_custom_postprocess,\
       ru_ag_custom_answer_parse, en_ag_custom_answer_parse
 
 from ....prompts.qa_pipeline.answer_generator.question_answering import RU_AG_USER_PROMPT, EN_AG_USER_PROMPT
@@ -29,6 +29,6 @@ DEFAULT_ANSWER_GEN_SUITE = {'ru': RU_ANSWER_GEN_SUITE, 'en': EN_ANSWER_GEN_SUITE
 
 DEFAULT_ANSWER_GEN_TASK_CONFIG = AgentTaskSolverConfig(
     suites=DEFAULT_ANSWER_GEN_SUITE,
-    formate_context_func=ag_custom_foramte,
+    formate_context_func=ag_custom_formate,
     log=Logger(ANSWER_GENERATION_LOG_PATH)
 )
