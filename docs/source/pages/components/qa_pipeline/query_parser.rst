@@ -9,4 +9,4 @@ Query Parser
    :maxdepth: 2
    :caption: Contents:
 
-   src/src.qa_pipeline.query_parser
+   src/src.pipelines.qa.query_parser

@@ -12,6 +12,14 @@ src.utils.data\_structs module
    :undoc-members:
    :show-inheritance:
 
+src.utils.task\_solver module
+------------------------------
+
+.. automodule:: src.utils.task_solver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 src.utils.errors module
 -----------------------
 

@@ -9,4 +9,4 @@ Knowledge Comparator
    :maxdepth: 2
    :caption: Contents:
 
-   src/src.qa_pipeline.knowledge_comparator
+   src/src.pipelines.qa.knowledge_comparator

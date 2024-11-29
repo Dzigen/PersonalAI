@@ -5,7 +5,7 @@ Memorize-pipeline
   :width: 800
   :align: center
 
-src.memorize\_pipeline package
+src.pipelines.memorize package
 ------------------------------
 
 Subpackages
@@ -21,15 +21,15 @@ Subpackages
 Submodules
 ^^^^^^^^^^
 
-src.memorize\_pipeline.MemPipeline module
+src.pipelines.memorize.MemPipeline module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: src.memorize_pipeline.MemPipeline.MemPipelineConfig()
+.. autoclass:: src.pipelines.memorize.MemPipeline.MemPipelineConfig()
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: src.memorize_pipeline.MemPipeline.MemPipeline()
+.. autoclass:: src.pipelines.memorize.MemPipeline.MemPipeline()
    :members:
    :undoc-members:
    :show-inheritance:

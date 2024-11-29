@@ -1,11 +1,11 @@
 QA-pipeline
 ===========
 
-.. image:: ../../../class_diagram/mem_pipeline.png
+.. image:: ../../../class_diagram/qa_pipeline.png
   :width: 800
   :align: center
 
-src.qa\_pipeline package
+src.pipelines.qa package
 ------------------------
 
 Subpackages
@@ -22,15 +22,15 @@ Subpackages
 Submodules
 ^^^^^^^^^^
 
-src.qa\_pipeline.QAPipeline module
+src.pipelines.qa.QAPipeline module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: src.qa_pipeline.QAPipelineConfig()
+.. autoclass:: src.pipelines.qa.QAPipelineConfig()
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: src.qa_pipeline.QAPipeline()
+.. autoclass:: src.pipelines.qa.QAPipeline()
    :members:
    :undoc-members:
    :show-inheritance:

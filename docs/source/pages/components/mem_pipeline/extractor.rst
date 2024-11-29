@@ -10,4 +10,4 @@ Memory Extractor
    :maxdepth: 2
    :caption: Contents:
 
-   src/src.memorize_pipeline.extractor.rst
+   src/src.pipelines.memorize.extractor.rst

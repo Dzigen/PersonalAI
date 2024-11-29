@@ -9,4 +9,4 @@ Answer Generator
    :maxdepth: 2
    :caption: Contents:
 
-   src/src.qa_pipeline.answer_generator
+   src/src.pipelines.qa.answer_generator

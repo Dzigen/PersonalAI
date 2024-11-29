@@ -12,26 +12,26 @@ Knowledge Retriever
    triplets_retriever
    triplets_filter
 
-src.qa\_pipeline.knowledge\_retriever package
+src.pipelines.qa.knowledge\_retriever package
 ---------------------------------------------
 
-src.qa\_pipeline.knowledge\_retriever.KnowledgeRetriever module
+src.pipeline.qa.knowledge\_retriever.KnowledgeRetriever module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: src.qa_pipeline.knowledge_retriever.KnowledgeRetriever.KnowledgeRetrieverConfig()
+.. autoclass:: src.pipelines.qa.knowledge_retriever.KnowledgeRetriever.KnowledgeRetrieverConfig()
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: src.qa_pipeline.knowledge_retriever.KnowledgeRetriever.KnowledgeRetriever()
+.. autoclass:: src.pipeline.qa.knowledge_retriever.KnowledgeRetriever.KnowledgeRetriever()
    :members:
    :undoc-members:
    :show-inheritance:
 
-src.qa\_pipeline.knowledge\_retriever.utils module
+src.pipelines.qa.knowledge\_retriever.utils module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: src.qa_pipeline.knowledge_retriever.utils
+.. automodule:: src.pipelines.qa.knowledge_retriever.utils
    :members:
    :undoc-members:
    :show-inheritance:

@@ -10,4 +10,4 @@ Memory Updator
    :maxdepth: 2
    :caption: Contents:
 
-   src/src.memorize_pipeline.updator.rst
+   src/src.pipelines.memorize.updator.rst

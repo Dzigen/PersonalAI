@@ -1,31 +1,31 @@
-src.parsers package
+src.prompts package
 ===================
 
 Submodules
 ----------
 
-src.parsers.memorize\_pipeline module
+src.prompts.memorize\_pipeline module
 -------------------------------------
 
-.. automodule:: src.parsers.memorize_pipeline.extractor
+.. automodule:: src.prompts.memorize_pipeline.extractor
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: src.parsers.memorize_pipeline.updator
+.. automodule:: src.prompts.memorize_pipeline.updator
    :members:
    :undoc-members:
    :show-inheritance:
 
-src.parsers.qa\_pipeline module
+src.prompts.qa\_pipeline module
 --------------------------------
 
-.. automodule:: src.parsers.qa_pipeline.query_parser
+.. automodule:: src.prompts.qa_pipeline.query_parser
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: src.parsers.qa_pipeline.answer_generator
+.. automodule:: src.prompts.qa_pipeline.answer_generator
    :members:
    :undoc-members:
    :show-inheritance:
