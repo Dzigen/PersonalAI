@@ -4,16 +4,24 @@ src.memorize\_pipeline.extractor package
 Submodules
 ----------
 
-src.memorize\_pipeline.extractor.LLMExtractor module
+src.pipelines.memorize.extractor.LLMExtractor module
 ----------------------------------------------------
 
 
-.. autoclass:: src.memorize_pipeline.extractor.LLMExtractor.LLMExtractorConfig()
+.. autoclass:: src.pipelines.memorize.extractor.LLMExtractor.LLMExtractorConfig()
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: src.memorize_pipeline.extractor.LLMExtractor.LLMExtractor()
+.. autoclass:: src.pipelines.memorize.extractor.LLMExtractor.LLMExtractor()
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.pipelines.memorize.extractor.configs module
+-----------------------------------------------
+
+.. automodule:: src.pipelines.memorize.extractor.configs
    :members:
    :undoc-members:
    :show-inheritance:

@@ -14,17 +14,17 @@ Submodules
 src.pipelines.qa.knowledge\_retriever.AStarTripletsRetriever module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: src.pipeline.qa.knowledge_retriever.AStarTripletsRetriever.AStarMetricsConfig()
+.. autoclass:: src.pipelines.qa.knowledge_retriever.AStarTripletsRetriever.AStarMetricsConfig()
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: src.pipeline.qa.knowledge_retriever.AStarTripletsRetriever.AStarMetrics()
+.. autoclass:: src.pipelines.qa.knowledge_retriever.AStarTripletsRetriever.AStarMetrics()
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: src.pipeline.qa.knowledge_retriever.AStarTripletsRetriever.AStarGraphSearchConfig()
+.. autoclass:: src.pipelines.qa.knowledge_retriever.AStarTripletsRetriever.AStarGraphSearchConfig()
    :members:
    :undoc-members:
    :show-inheritance:
@@ -34,7 +34,7 @@ src.pipelines.qa.knowledge\_retriever.AStarTripletsRetriever module
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: src.pipeline.qa.knowledge_retriever.AStarTripletsRetriever.AStarTripletsRetriever()
+.. autoclass:: src.pipelines.qa.knowledge_retriever.AStarTripletsRetriever.AStarTripletsRetriever()
    :members:
    :undoc-members:
    :show-inheritance:

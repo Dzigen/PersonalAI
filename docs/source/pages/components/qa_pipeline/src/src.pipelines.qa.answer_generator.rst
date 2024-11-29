@@ -16,3 +16,11 @@ src.pipelines.qa.answer\_generator.QALLMGenerator module
    :members:
    :undoc-members:
    :show-inheritance:
+
+src.pipelines.qa.answer\_generator.configs module
+-------------------------------------------------
+
+.. automodule:: src.pipelines.qa.answer_generator.configs
+   :members:
+   :undoc-members:
+   :show-inheritance:

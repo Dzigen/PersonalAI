@@ -16,7 +16,7 @@ src.pipelines.qa.knowledge\_retriever.TripletsFilter module
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: src.pipeline.qa.knowledge_retriever.TripletsFilter.TripletsFilter()
+.. autoclass:: src.pipelines.qa.knowledge_retriever.TripletsFilter.TripletsFilter()
    :members:
    :undoc-members:
    :show-inheritance:

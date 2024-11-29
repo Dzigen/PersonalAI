@@ -15,7 +15,7 @@ Knowledge Retriever
 src.pipelines.qa.knowledge\_retriever package
 ---------------------------------------------
 
-src.pipeline.qa.knowledge\_retriever.KnowledgeRetriever module
+src.pipelines.qa.knowledge\_retriever.KnowledgeRetriever module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: src.pipelines.qa.knowledge_retriever.KnowledgeRetriever.KnowledgeRetrieverConfig()
@@ -23,7 +23,7 @@ src.pipeline.qa.knowledge\_retriever.KnowledgeRetriever module
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: src.pipeline.qa.knowledge_retriever.KnowledgeRetriever.KnowledgeRetriever()
+.. autoclass:: src.pipelines.qa.knowledge_retriever.KnowledgeRetriever.KnowledgeRetriever()
    :members:
    :undoc-members:
    :show-inheritance:

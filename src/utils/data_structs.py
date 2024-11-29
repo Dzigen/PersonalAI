@@ -261,14 +261,11 @@ class TripletCreator(BaseCreator):
 
         Примеры валидных json-триплетов:
         1. {'subject': {'name': 'qwe', 'type': 'object', 'prop': {'k1': 'v1'}},
-            'relation': {'name': 'rty', 'type': 'simple'},
-            'object': {'name': 'uio', 'type': 'object'}};
+        'relation': {'name': 'rty', 'type': 'simple'}, 'object': {'name': 'uio', 'type': 'object'}};
         2. {'subject': {'name': 'asd', 'type': 'object', 'prop': {'k2': 'v2'}},
-            'relation': {'type': 'hyper', 'prop': {'k3': 'v3'}},
-            'object': {'name': 'fgh', 'type': 'hyper'}};
+        'relation': {'type': 'hyper', 'prop': {'k3': 'v3'}}, 'object': {'name': 'fgh', 'type': 'hyper'}};
         3. {'subject': {'name': 'jkl', 'type': 'hyper', 'prop': {'k4': 'v4'}},
-            'relation': {'type': 'episodic', 'prop': {'k5': 'v5'}},
-            'object': {'name': 'zxc', 'type': 'episodic', 'prop': {'k5': 'v5'}}}.
+        'relation': {'type': 'episodic', 'prop': {'k5': 'v5'}}, 'object': {'name': 'zxc', 'type': 'episodic', 'prop': {'k5': 'v5'}}}.
 
         :param json_triplet: Триплет в json-формате.
         :type json_triplet: Dict
