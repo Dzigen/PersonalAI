@@ -1,7 +1,7 @@
 import pytest
 
 import sys
-sys.path.insert(0, "../../")
+sys.path.insert(0, "../")
 import pytest
 
 from cases import EM_POPULATED_CREATE_TEST_CASES, EM_POPULATED_DELETE_TEST_CASES

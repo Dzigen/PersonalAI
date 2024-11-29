@@ -1,5 +1,9 @@
 import pytest
 
+import sys
+sys.path.insert(0, "../")
+import pytest
+
 from cases import GM_POPULATED_CREATE_TEST_CASES, GM_POPULATED_DELETE_TEST_CASES
 
 @pytest.mark.parametrize("triplets, expected, graph_model", GM_POPULATED_CREATE_TEST_CASES, indirect=['graph_model'])

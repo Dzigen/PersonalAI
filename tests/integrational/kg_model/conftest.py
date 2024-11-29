@@ -2,7 +2,7 @@ import pytest
 
 import sys
 # TO CHANGE
-PROJECT_BASE_DIR = '../../'
+PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 

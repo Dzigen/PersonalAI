@@ -1,6 +1,6 @@
 import sys
 # TO CHANGE
-PROJECT_BASE_DIR = '/home/dzigen/Desktop/PersonalAI/Personal-AI/'
+PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
 from src.utils.data_structs import Triplet, NodeCreator, Relation, RelationType, NodeType, TripletCreator

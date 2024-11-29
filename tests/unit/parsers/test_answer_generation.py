@@ -6,7 +6,7 @@ sys.path.insert(0, "../")
 
 from src.utils import Triplet, TripletCreator
 from src.parsers.qa_pipeline.answer_generator.question_answering import \
-      ag_custom_foramte, ag_custom_postprocess,\
+      ag_custom_formate, ag_custom_postprocess,\
       en_ag_custom_answer_parse, ru_ag_custom_answer_parse
 
 from cases import VALID_HYPER_TRIPLET1, VALID_SIMPLE_TRIPLET1
@@ -29,7 +29,7 @@ AG_SEVERAL_CONTEXTS = '\n'.join(list(map(lambda triplet: f'- {TripletCreator.str
 def test_qa_custom_formate(query: str, context_triplets: List[Triplet],
                            expected_output: Dict[str, str], exception: bool):
     try:
-        formated_output = ag_custom_foramte(query, context_triplets)
+        formated_output = ag_custom_formate(query, context_triplets)
     except Exception:
         assert exception
     else:
