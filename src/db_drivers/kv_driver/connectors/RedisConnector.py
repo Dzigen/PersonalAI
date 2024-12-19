@@ -3,6 +3,9 @@ from typing import List, Tuple, Dict
 
 from src.db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
 
+DEFAULT_REDISKV_CONFIG = KVDBConnectionConfig(host='localhost', port=6380, need_to_clear=False, db_info={'db': 0},
+                                              params={'ss_name': 'sorted_node_pairs', 'hs_name': 'node_pairs', 'value_dtype': float})
+
 class RedisKVConnector(AbstractKVDatabaseConnection):
     def __init__(self, config: KVDBConnectionConfig):
         self.config = config

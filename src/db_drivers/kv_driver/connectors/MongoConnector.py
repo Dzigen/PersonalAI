@@ -3,6 +3,10 @@ from typing import List, Tuple, Dict
 
 from src.db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
 
+DEFAULT_MONGOKV_CONFIG = KVDBConnectionConfig(host='localhost', port=27017,
+                                              db_info={'db': 'test_db', 'table': 'test_collection'},
+                                              params={'username': 'user', 'password': 'pass'})
+
 class MongoKVConnector(AbstractKVDatabaseConnection):
 
     def __init__(self, config: KVDBConnectionConfig) -> None:
