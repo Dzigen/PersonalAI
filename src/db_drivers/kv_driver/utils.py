@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Union
 from dataclasses import dataclass, field
 
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
@@ -11,7 +11,7 @@ class KVDBConnectionConfig(BaseDatabaseConfig):
 @dataclass
 class KeyValueDBInstance:
     id: str
-    metadata: Dict
+    value: Union[int, float, str]
 
 class AbstractKVDatabaseConnection(AbstractDatabaseConnection):
     pass

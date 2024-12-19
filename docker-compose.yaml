@@ -80,6 +80,7 @@ services:
   redis:
     container_name: personalai_mmenschikov_redis
     image: redis:latest
+    command: redis-server /usr/local/etc/redis/redis.conf
     environment:
       - REDIS_PASSWORD=my_redis_password
       - REDIS_USER=my_user
@@ -87,7 +88,8 @@ services:
     ports:
       - 6380:6379
     volumes:
-      - ./redis_volume/data:/data
+      - ../redis_volume/redis.conf:/usr/local/etc/redis/redis.conf
+      - ../redis_volume/data:/data
     deploy:
       resources:
         limits:

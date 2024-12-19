@@ -75,6 +75,14 @@ class AbstractDatabaseConnection(ABC):
 
     @abstractmethod
     def update(self, items: List[object]) -> ReturnInfo:
+        """Метод прдназначен для обновления значений у существующих ключей. Если данного ключа нет в базе,
+        то элемент будет пропущен.
+
+        :param items: _description_
+        :type items: List[object]
+        :return: _description_
+        :rtype: ReturnInfo
+        """
         pass
 
     @abstractmethod
