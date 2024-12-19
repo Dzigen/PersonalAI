@@ -61,6 +61,43 @@ services:
         reservations:
           cpus: '1'
           memory: 4G
+    tty: true
+    stdin_open: true
+
+  mongo:
+    container_name: personalai_mmenschikov_mongo
+    image: mongo:7.0.9
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    ports:
+      - 27017:27017
+    volumes:
+      - ../mongo_volume/data:/data/db
+    tty: true
+    stdin_open: true
+
+  redis:
+    container_name: personalai_mmenschikov_redis
+    image: redis:latest
+    environment:
+      - REDIS_PASSWORD=my_redis_password
+      - REDIS_USER=my_user
+      - REDIS_USER_PASSWORD=my_user_password
+    ports:
+      - 6380:6379
+    volumes:
+      - ./redis_volume/data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 8G
+        reservations:
+          cpus: '1'
+          memory: 4G
+    tty: true
+    stdin_open: true
 
   workspace:
     image: m.menschikov/workspace:v1
