@@ -1,8 +1,8 @@
 services:
   neo4j:
-    container_name: personalai_mmenschikov_test_neo4j
+    container_name: personalai_test_neo4j
     image: neo4j:5.21.0-enterprise
-    hostname: personalai_mmenschikov_test_neo4j
+    hostname: personalai_test_neo4j
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -40,10 +40,55 @@ services:
           cpus: '1'
           memory: 4G
 
+  mongo:
+    container_name: personalai_test_mongo
+    image: mongo:7.0.9
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./volumes/mongo:/data/db
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 8G
+        reservations:
+          cpus: '1'
+          memory: 4G
+    tty: true
+    stdin_open: true
+
+  redis:
+    container_name: personalai_test_redis
+    image: redis:latest
+    command: redis-server /usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_PASSWORD=my_redis_password
+      - REDIS_USER=my_user
+      - REDIS_USER_PASSWORD=my_user_password
+    ports:
+      - "6380:6379"
+    volumes:
+      - ../configs/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./volumes/redis:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 8G
+        reservations:
+          cpus: '1'
+          memory: 4G
+    tty: true
+    stdin_open: true
+
   isolated_environment:
     image: m.menschikov/empty_workspace:v1
-    container_name: personalai_mmenschikov_isolated_env
-    hostname: isolated_env
+    container_name: personalai_test_isolated_env
+    hostname: test_isolated_env
     volumes:
       - ../src:/home/workspace/src
       - ../data:/home/workspace/data
@@ -53,3 +98,5 @@ services:
     depends_on:
       - neo4j
       - aerospike
+      - redis
+      - mongo

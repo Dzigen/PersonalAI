@@ -7,7 +7,7 @@ DEFAULT_REDISKV_CONFIG = KVDBConnectionConfig(host='localhost', port=6380, need_
                                               params={'ss_name': 'sorted_node_pairs', 'hs_name': 'node_pairs', 'max_storage': 5e+8})
 
 class RedisKVConnector(AbstractKVDatabaseConnection):
-    def __init__(self, config: KVDBConnectionConfig):
+    def __init__(self, config: KVDBConnectionConfig = DEFAULT_REDISKV_CONFIG):
         self.config = config
 
     def open_connection(self):
@@ -35,10 +35,15 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
             if not item_exists:
                 filtered_items.append(item)
 
+        # находимся в фиксированном размере хранилища
+        if self.config.params['max_storage'] > 0:
+            n_items_to_delete = (self.count_items() + len(filtered_items)) - self.config.params['max_storage']
+            if n_items_to_delete > 0:
+                self.delete_rare_items(n_items_to_delete)
+
         if len(filtered_items) > 0:
             self.conn.hset(self.config.params['hs_name'], mapping={item.id: item.value for item in filtered_items})
             self.conn.zadd(self.config.params['ss_name'], {item.id: 0 for item in filtered_items})
-
 
     def read(self, ids: List[str]):
         values = self.conn.hmget(self.config.params['hs_name'], ids)

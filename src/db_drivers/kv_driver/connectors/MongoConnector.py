@@ -5,11 +5,11 @@ from src.db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KVDBCon
 
 DEFAULT_MONGOKV_CONFIG = KVDBConnectionConfig(host='localhost', port=27017,
                                               db_info={'db': 'test_db', 'table': 'test_collection'},
-                                              params={'username': 'user', 'password': 'pass'})
+                                              params={'username': 'user', 'password': 'pass', 'max_storage': -1})
 
 class MongoKVConnector(AbstractKVDatabaseConnection):
 
-    def __init__(self, config: KVDBConnectionConfig) -> None:
+    def __init__(self, config: KVDBConnectionConfig = DEFAULT_MONGOKV_CONFIG) -> None:
         self.config = config
 
     def is_open(self) -> bool:
@@ -34,6 +34,10 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
     def create(self, items: List[KeyValueDBInstance]) -> None:
         filtered_items = [{'_id': item.id, 'value': item.value}
                           for item in items if self._collection.find_one({'_id': item.id}) is None]
+
+        # TODO
+        # фиксировать максимальный размер хранилища
+
         if len(filtered_items) > 0:
             self._collection.insert_many(filtered_items)
 
