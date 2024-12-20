@@ -4,7 +4,7 @@ from typing import List, Tuple, Dict
 from src.db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
 
 DEFAULT_REDISKV_CONFIG = KVDBConnectionConfig(host='localhost', port=6380, need_to_clear=False, db_info={'db': 0},
-                                              params={'ss_name': 'sorted_node_pairs', 'hs_name': 'node_pairs', 'value_dtype': float})
+                                              params={'ss_name': 'sorted_node_pairs', 'hs_name': 'node_pairs', 'max_storage': 5e+8})
 
 class RedisKVConnector(AbstractKVDatabaseConnection):
     def __init__(self, config: KVDBConnectionConfig):
@@ -14,6 +14,9 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
         self.conn = redis.Redis(
             host=self.config.host, port=self.config.port,
             db=self.config.db_info['db'])
+
+        if self.config.need_to_clear:
+            self.clear()
 
     def is_open(self):
         try:
@@ -33,26 +36,28 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
                 filtered_items.append(item)
 
         if len(filtered_items) > 0:
-            self.conn.hset(self.config.params['hs_name'], mapping={item.id: str(item.value) for item in filtered_items})
+            self.conn.hset(self.config.params['hs_name'], mapping={item.id: item.value for item in filtered_items})
             self.conn.zadd(self.config.params['ss_name'], {item.id: 0 for item in filtered_items})
 
 
     def read(self, ids: List[str]):
         values = self.conn.hmget(self.config.params['hs_name'], ids)
         formated_values = []
-        for val in values:
+        for i, val in enumerate(values):
             if val is None:
                 formated_values.append(val)
             else:
-                formated_values.append(self.config.params['value_dtype'](val))
+                formated_values.append(
+                    KeyValueDBInstance(id=ids[i], value=val))
 
         return formated_values
 
     def update(self, items: List[KeyValueDBInstance]):
         filtered_items = [item for item in items if self.conn.hexists(self.config.params['hs_name'], item.id)]
 
-        self.conn.hset(self.config.params['hs_name'], mapping={item.id: str(item.value) for item in filtered_items})
-        self.conn.zadd(self.config.params['ss_name'], {item.id: 0 for item in filtered_items})
+        if len(filtered_items) > 0:
+            self.conn.hset(self.config.params['hs_name'], mapping={item.id: str(item.value) for item in filtered_items})
+            self.conn.zadd(self.config.params['ss_name'], {item.id: 0 for item in filtered_items})
 
     def delete(self, ids: List[str]):
         filtered_ids = [id for id in ids if self.conn.hexists(self.config.params['hs_name'], id)]

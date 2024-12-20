@@ -20,15 +20,18 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
             print(str(err))
             return False
 
-    def open_connection(self):
+    def open_connection(self) -> None:
         self._client = pymongo.MongoClient(f'mongodb://{self.config.host}:{self.config.port}',
                                            username=self.config.params['username'], password=self.config.params['password'])
         self._collection = self._client[self.config.db_info['db']][self.config.db_info['table']]
 
-    def close_connection(self):
+        if self.config.need_to_clear:
+            self.clear()
+
+    def close_connection(self) -> None:
         self._client.close()
 
-    def create(self, items: List[KeyValueDBInstance]):
+    def create(self, items: List[KeyValueDBInstance]) -> None:
         filtered_items = [{'_id': item.id, 'value': item.value}
                           for item in items if self._collection.find_one({'_id': item.id}) is None]
         if len(filtered_items) > 0:
@@ -50,23 +53,19 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
 
         return sorted_items
 
-    def update(self, items: List[KeyValueDBInstance]):
+    def update(self, items: List[KeyValueDBInstance]) -> None:
         if len(items) < 1:
             return
 
         existig_items = self._collection.find({"_id": {"$in": [item.id for item in items]}})
-        print(existig_items)
 
         items_dict = {item.id: item for item in items}
         filtered_items = [items_dict[item['_id']] for item in existig_items if items_dict[item['_id']] is not None]
 
-        print(filtered_items)
-
         for item in filtered_items:
-            output = self._collection.update_one({'_id': item.id}, {"$set": { "value": item.value}})
-            print(output)
+            self._collection.update_one({'_id': item.id}, {"$set": { "value": item.value}})
 
-    def delete(self, ids: List[str]):
+    def delete(self, ids: List[str]) -> None:
         if len(ids) > 0:
             self._collection.delete_many({'_id': {"$in": ids}})
 
@@ -77,5 +76,5 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
         item = self._collection.find_one({'_id': id})
         return item is not None
 
-    def clear(self):
+    def clear(self) -> None:
         self._collection.drop()

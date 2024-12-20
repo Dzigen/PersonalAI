@@ -1,0 +1,99 @@
+from typing import List
+from collections import defaultdict
+
+import sys
+sys.path.insert(0, "../")
+
+from .RedisConnector import DEFAULT_REDISKV_CONFIG, RedisKVConnector
+from .MongoConnector import DEFAULT_MONGOKV_CONFIG, MongoKVConnector
+from ..utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
+
+DEFAULT_MIXEDKV_CONFIG = KVDBConnectionConfig(params={'redis_config': DEFAULT_REDISKV_CONFIG, 'mongo_config': DEFAULT_MONGOKV_CONFIG})
+
+class MixedKVConnector(AbstractKVDatabaseConnection):
+    def __init__(self, config: KVDBConnectionConfig):
+        self.config = config
+        self.redis_conn = RedisKVConnector(self.config.params['redis_config'])
+        self.mongo_conn = MongoKVConnector(self.config.params['mongo_config'])
+
+    def open_connection(self):
+        self.redis_conn.open_connection()
+        self.mongo_conn.open_connection()
+
+        if self.config.need_to_clear:
+            self.clear()
+
+    def is_open(self) -> bool:
+        return self.redis_conn.is_open() and self.mongo_conn.is_open()
+
+    def close_connection(self):
+        self.redis_conn.close_connection()
+        self.mongo_conn.close_connection()
+
+    def create(self, items: List[KeyValueDBInstance]):
+        self.mongo_conn.create(items)
+
+    def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
+        # находим элементы, которых нет в опреативной памяти
+        ram_items = self.redis_conn.read(ids)
+        items_score = defaultdict(lambda: 0)
+        not_cached_item_ids = []
+        for i, item in enumerate(ram_items):
+            if item is None:
+                not_cached_item_ids.append(ids[i])
+            else:
+                items_score[ids[i]] += 1
+
+        # получаем элементы их дискового хранилища
+        persistent_items = self.mongo_conn.read(not_cached_item_ids)
+        existing_p_items = [item for item in persistent_items if item is not None]
+
+        # существующие элементы кешируем в оперативную память
+        n_items_to_delete = (self.redis_conn.count_items() + len(existing_p_items)) - self.redis_conn.config.params['max_storage']
+        if n_items_to_delete > 0:
+            self.redis_conn.delete_rare_items(n_items_to_delete)
+        self.redis_conn.create(existing_p_items)
+
+        # обновляем метрику использования у элементов в оперативной памяти
+        if len(items_score) > 0:
+            self.redis_conn.update_item_score(items_score)
+
+        # объединяем элементы из оперативного и жёсткого хранилищ
+        union_items = []
+        p_idx = 0
+        for ram_idx in range(len(ram_items)):
+            if ram_items[ram_idx] is None:
+                union_items.append(persistent_items[p_idx])
+                p_idx += 1
+            else:
+                union_items.append(ram_items[ram_idx])
+
+        return union_items
+
+    def update(self, items: List[KeyValueDBInstance]) -> None:
+        self.redis_conn.update(items)
+        self.mongo_conn.update(items)
+
+    def delete(self, ids: List[str]) -> None:
+        self.redis_conn.delete(ids)
+        self.mongo_conn.delete(ids)
+
+    def count_items(self, storage_type: int = 0) -> int:
+        if storage_type == 0:
+            return self.mongo_conn.count_items()
+        elif storage_type == 1:
+            return self.redis_conn.count_items()
+        else:
+            raise ValueError
+
+    def item_exist(self, id: str, storage_type: int = 0) -> bool:
+        if storage_type == 0:
+            return self.mongo_conn.item_exist(id)
+        elif storage_type == 1:
+            return self.redis_conn.item_exist(id)
+        else:
+            raise ValueError
+
+    def clear(self) -> None:
+        self.redis_conn.clear()
+        self.mongo_conn.clear()
