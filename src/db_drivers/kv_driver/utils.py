@@ -14,4 +14,8 @@ class KeyValueDBInstance:
     value: Union[int, float, str]
 
 class AbstractKVDatabaseConnection(AbstractDatabaseConnection):
-    pass
+    def update_item_scores(self, mapping: Dict[str, int]) -> None:
+        pass
+
+    def delete_rare_items(self, num: int) -> None:
+        pass

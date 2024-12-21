@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List
 from collections import defaultdict
 
 import sys
@@ -34,30 +34,16 @@ class MixedKVConnector(AbstractKVDatabaseConnection):
         self.mongo_conn.create(items)
 
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
-
-        # находим элементы, которых нет в опреативной памяти
+        # находим элементы, которых нет в оперативной памяти
         ram_items = self.redis_conn.read(ids)
-        items_score = defaultdict(lambda: 0)
-        not_cached_item_ids = []
-        for i, item in enumerate(ram_items):
-            if item is None:
-                not_cached_item_ids.append(ids[i])
-            else:
-                items_score[ids[i]] += 1
+        not_cached_item_ids = [ids[i] for i, item in enumerate(ram_items) if item is None]
 
-        # получаем элементы их дискового хранилища
+        # получаем элементы из дискового хранилища
         persistent_items = self.mongo_conn.read(not_cached_item_ids)
         existing_p_items = [item for item in persistent_items if item is not None]
 
         # существующие элементы кешируем в оперативную память
-        n_items_to_delete = (self.redis_conn.count_items() + len(existing_p_items)) - self.redis_conn.config.params['max_storage']
-        if n_items_to_delete > 0:
-            self.redis_conn.delete_rare_items(n_items_to_delete)
         self.redis_conn.create(existing_p_items)
-
-        # обновляем метрику использования у элементов в оперативной памяти
-        if len(items_score) > 0:
-            self.redis_conn.update_item_score(items_score)
 
         # объединяем элементы из оперативного и жёсткого хранилищ
         union_items = []
@@ -101,3 +87,9 @@ class MixedKVConnector(AbstractKVDatabaseConnection):
     def clear(self) -> None:
         self.redis_conn.clear()
         self.mongo_conn.clear()
+
+    def update_item_scores(self, mapping: Dict[str, int]) -> None:
+        pass
+
+    def delete_rare_items(self, num: int) -> None:
+        pass

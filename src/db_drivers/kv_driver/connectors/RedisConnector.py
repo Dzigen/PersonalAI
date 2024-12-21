@@ -1,5 +1,6 @@
 import redis
 from typing import List, Tuple, Dict
+from collections import defaultdict
 
 from src.db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
 
@@ -65,15 +66,20 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
             return []
 
         values = self.conn.hmget(self.config.params['hs_name'], ids)
-        formated_values = []
+        formated_items = []
+        item_scores = defaultdict(lambda: 0)
         for i, val in enumerate(values):
             if val is None:
-                formated_values.append(val)
+                formated_items.append(val)
             else:
-                formated_values.append(
+                item_scores[ids[i]] += 1
+                formated_items.append(
                     KeyValueDBInstance(id=ids[i], value=val))
 
-        return formated_values
+        # Обновляем метрику использования элементов
+        self.update_item_scores(item_scores)
+
+        return formated_items
 
     def update(self, items: List[KeyValueDBInstance]):
         for item in items:
@@ -100,7 +106,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
             self.conn.hdel(self.config.params['hs_name'], *filtered_ids)
             self.conn.zrem(self.config.params['ss_name'], *filtered_ids)
 
-    def update_item_score(self, mapping: Dict[str, int]) -> None:
+    def update_item_scores(self, mapping: Dict[str, int]) -> None:
         """ Обновляем скоры использования элементов в ордер сете.
 
         :param mapping:

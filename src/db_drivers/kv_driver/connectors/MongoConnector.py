@@ -1,5 +1,6 @@
 import pymongo
 from typing import List, Tuple, Dict
+from collections import defaultdict
 
 from src.db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
 
@@ -44,14 +45,21 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
         if len(items) != len(unique_ids):
             raise ValueError
 
-        filtered_items = [{'_id': item.id, 'value': item.value}
+        filtered_items = [{'_id': item.id, 'value': item.value, 'score': 0}
                           for item in items if self._collection.find_one({'_id': item.id}) is None]
 
-        # TODO
-        # фиксировать максимальный размер хранилища
+        # находимся в фиксированном размере хранилища
+        if self.config.params['max_storage'] > 0:
+            n_items_to_delete = (self.count_items() + len(filtered_items)) - self.config.params['max_storage']
+            if n_items_to_delete > 0:
+                self.delete_rare_items(n_items_to_delete)
 
         if len(filtered_items) > 0:
             self._collection.insert_many(filtered_items)
+
+    def delete_rare_items(self, num: int) -> None:
+        # TODO
+        pass
 
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
         for id in ids:
@@ -65,14 +73,23 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
         items_dict = {item['_id']: item for item in items}
 
         sorted_items = []
+        item_scores = defaultdict(lambda: 0)
         for id in ids:
             item = items_dict.get(id, None)
             if item is not None:
                 item = KeyValueDBInstance(id=item['_id'], value=item['value'])
+                item_scores[item.id] += 1
 
             sorted_items.append(item)
 
+        # Обновляем метрику использования элементов
+        self.update_item_scores(item_scores)
+
         return sorted_items
+
+    def update_item_scores(self, mapping: Dict[str, int]) -> None:
+        # TODO
+        pass
 
     def update(self, items: List[KeyValueDBInstance]) -> None:
         for item in items:

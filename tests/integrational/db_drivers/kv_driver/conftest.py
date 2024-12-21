@@ -13,7 +13,7 @@ from src.db_drivers.kv_driver import KeyValueDriver, KeyValueDriverConfig, KVDBC
 @pytest.fixture(scope='package')
 def inmemory_kv_conn():
     inmemorykv_config = KVDBConnectionConfig(
-        params={'kvstore_dump_name': 'inmemory_store', 'load_from_disk': False,
+        params={'kvstore_dump_name': 'inmemory_store', 'load_from_disk': False, 'max_storage': 5e+8,
         'load_dump_dir': TEST_VOLUME_DIR, 'save_on_disk': True, 'save_dump_dir': TEST_VOLUME_DIR}, need_to_clear=True)
 
     driver_config = KeyValueDriverConfig(db_vendor='inmemory_kv', db_config=inmemorykv_config)

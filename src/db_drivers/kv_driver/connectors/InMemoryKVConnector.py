@@ -4,6 +4,7 @@ import joblib
 import os
 import time
 import hashlib
+from collections import defaultdict
 
 from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection, KeyValueDBInstance
 
@@ -12,7 +13,8 @@ DEFAULT_INMEMORYKV_CONFIG = KVDBConnectionConfig(
     params={
         'kvstore_dump_name': 'inmemory_store',
         'load_from_disk': False, 'load_dump_dir': '.',
-        'save_on_disk': True, 'save_dump_dir': '.'
+        'save_on_disk': True, 'save_dump_dir': '.',
+        'max_storage': 5e+8
     })
 
 class InMemoryKVConnector(AbstractKVDatabaseConnection):
@@ -60,17 +62,43 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         if len(items) != len(unique_ids):
             raise ValueError
 
-        for item in items:
-            if not self.item_exist(item.id):
-                self.kv_store[item.id] = item.value
+        filtered_items = [item for item in items if not self.item_exist(item.id)]
+
+        # находимся в фиксированном размере хранилища
+        if self.config.params['max_storage'] > 0:
+            n_items_to_delete = (self.count_items() + len(filtered_items)) - self.config.params['max_storage']
+            if n_items_to_delete > 0:
+                self.delete_rare_items(n_items_to_delete)
+
+        for item in filtered_items:
+            self.kv_store[item.id] = item.value
+
+    def delete_rare_items(self, num: int) -> None:
+        # TODO
+        pass
 
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
         for id in ids:
             if (id is None) or (type(id) is not str):
                 raise ValueError
 
-        records = [KeyValueDBInstance(id=id, value=self.kv_store[id]) if id in self.kv_store else None for id in ids]
-        return records
+        items = []
+        item_scores = defaultdict(lambda: 0)
+        for id in ids:
+            item = None
+            if self.item_exist(id):
+                item = KeyValueDBInstance(id=id, value=self.kv_store[id])
+                item_scores[id] += 1
+            items.append(item)
+
+        # Обновляем метрику использования элементов
+        self.update_item_scores(item_scores)
+
+        return items
+
+    def update_item_scores(self, mapping: Dict[str, int]) -> None:
+        # TODO
+        pass
 
     def update(self, items: List[KeyValueDBInstance]) -> None:
         # TODO
