@@ -4,7 +4,9 @@ import aerospike
 from ..utils import KeyValueDBInstance
 from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 
-DEFAULT_AEROSPIKE_CONFIG = KVDBConnectionConfig(host='aerospikelservice', port=3000)
+DEFAULT_AEROSPIKE_CONFIG = KVDBConnectionConfig(host='localhost', port=3000)
+
+# !!! AEROSPIKE IS NOT SUPPORTING DUE TO A LACK OF DOCUMENTATION!!!
 
 class AerospikeKVConnector(AbstractKVDatabaseConnection):
 
@@ -45,7 +47,7 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
 
         keys = list(map(lambda id: (self.config.db_info['db'], self.config.db_info['table'], id), ids))
         mixed_records = self.client.get_many(keys, policy={'total_timeout': 10000})
-        records = [KeyValueDBInstance(id=record[0][2], metadata=record[2]['v']) for record in mixed_records]
+        records = [None if record[2] is None else KeyValueDBInstance(id=record[0][2], value=record[2]['v']) for record in mixed_records]
         return records
 
     def update(self, items: List[KeyValueDBInstance]) -> None:
@@ -73,5 +75,7 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
         return False if meta is None else True
 
     def count_items(self) -> int:
-        # TODO
-        pass
+        info = self.client.info_all("sets")
+        node_values = list(info.items())[0][1][1]
+        n_objects = node_values.split(":")[2].split('=')[1]
+        return int(n_objects)

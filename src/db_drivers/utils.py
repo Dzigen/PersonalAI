@@ -15,7 +15,7 @@ class BaseDatabaseConfig:
     :param params: Если True, то после успешного подключения к базе данных содержимое указанной таблицы будет удалено. Значения по умолчанию False.
     :type params: bool
     """
-    db_info: Dict = field(default_factory=lambda: {'db': 'default_db', 'table': 'default_table'})
+    db_info: Dict = field(default_factory=lambda: {'db': 'personalai_db', 'table': 'personalai_table'})
     params: Dict = field(default_factory=lambda: dict())
     need_to_clear: bool = False
 
