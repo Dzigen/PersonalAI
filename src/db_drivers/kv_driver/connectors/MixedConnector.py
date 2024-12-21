@@ -34,6 +34,7 @@ class MixedKVConnector(AbstractKVDatabaseConnection):
         self.mongo_conn.create(items)
 
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
+
         # находим элементы, которых нет в опреативной памяти
         ram_items = self.redis_conn.read(ids)
         items_score = defaultdict(lambda: 0)
@@ -87,6 +88,9 @@ class MixedKVConnector(AbstractKVDatabaseConnection):
             raise ValueError
 
     def item_exist(self, id: str, storage_type: int = 0) -> bool:
+        if type(id) is not str:
+            raise ValueError
+
         if storage_type == 0:
             return self.mongo_conn.item_exist(id)
         elif storage_type == 1:

@@ -6,7 +6,7 @@ from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 
 DEFAULT_AEROSPIKE_CONFIG = KVDBConnectionConfig(host='aerospikelservice', port=3000)
 
-class AerospikeConnector(AbstractKVDatabaseConnection):
+class AerospikeKVConnector(AbstractKVDatabaseConnection):
 
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_AEROSPIKE_CONFIG):
         self.config = config
@@ -28,21 +28,24 @@ class AerospikeConnector(AbstractKVDatabaseConnection):
 
     def create(self, items: List[KeyValueDBInstance]) -> None:
         for item in items:
-            if not len(item.metadata) or type(item.id) is not str:
+            if item is None or item.id is None or item.value is None:
+                raise ValueError
+
+            if type(item.id) is not str or type(item.value) not in [str, float, int]:
                 raise ValueError
 
         for item in items:
             key = (self.config.db_info['db'], self.config.db_info['table'], item.id)
-            self.client.put(key, item.metadata)
+            self.client.put(key, {'v': item.value})
 
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
         for id in ids:
-            if type(id) is not str:
+            if (id is None) or (type(id) is not str):
                 raise ValueError
 
         keys = list(map(lambda id: (self.config.db_info['db'], self.config.db_info['table'], id), ids))
         mixed_records = self.client.get_many(keys, policy={'total_timeout': 10000})
-        records = [KeyValueDBInstance(id=record[0][2], metadata=record[2]) for record in mixed_records]
+        records = [KeyValueDBInstance(id=record[0][2], metadata=record[2]['v']) for record in mixed_records]
         return records
 
     def update(self, items: List[KeyValueDBInstance]) -> None:

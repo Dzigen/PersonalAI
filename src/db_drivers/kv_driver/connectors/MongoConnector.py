@@ -11,6 +11,7 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
 
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_MONGOKV_CONFIG) -> None:
         self.config = config
+        self.open_connection()
 
     def is_open(self) -> bool:
         try:
@@ -32,6 +33,17 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
         self._client.close()
 
     def create(self, items: List[KeyValueDBInstance]) -> None:
+        for item in items:
+            if item is None or item.id is None or item.value is None:
+                raise ValueError
+
+            if type(item.id) is not str or type(item.value) not in [str, float, int]:
+                raise ValueError
+
+        unique_ids = set(map(lambda item: item.id, items))
+        if len(items) != len(unique_ids):
+            raise ValueError
+
         filtered_items = [{'_id': item.id, 'value': item.value}
                           for item in items if self._collection.find_one({'_id': item.id}) is None]
 
@@ -42,8 +54,13 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
             self._collection.insert_many(filtered_items)
 
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
+        for id in ids:
+            if (id is None) or (type(id) is not str):
+                raise ValueError
+
         if len(ids) < 1:
             return []
+
         items = self._collection.find({"_id": {"$in": ids}})
         items_dict = {item['_id']: item for item in items}
 
@@ -58,6 +75,13 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
         return sorted_items
 
     def update(self, items: List[KeyValueDBInstance]) -> None:
+        for item in items:
+            if item is None or item.id is None or item.value is None:
+                raise ValueError
+
+            if type(item.id) is not str or type(item.value) not in [str, float, int]:
+                raise ValueError
+
         if len(items) < 1:
             return
 
@@ -70,6 +94,10 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
             self._collection.update_one({'_id': item.id}, {"$set": { "value": item.value}})
 
     def delete(self, ids: List[str]) -> None:
+        for id in ids:
+            if type(id) is not str:
+                raise ValueError
+
         if len(ids) > 0:
             self._collection.delete_many({'_id': {"$in": ids}})
 
@@ -77,6 +105,9 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
         return self._collection.count_documents({})
 
     def item_exist(self, id: str) -> bool:
+        if type(id) is not str:
+            raise ValueError
+
         item = self._collection.find_one({'_id': id})
         return item is not None
 

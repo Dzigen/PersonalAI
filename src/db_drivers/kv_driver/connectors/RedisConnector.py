@@ -9,6 +9,7 @@ DEFAULT_REDISKV_CONFIG = KVDBConnectionConfig(host='localhost', port=6380, need_
 class RedisKVConnector(AbstractKVDatabaseConnection):
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_REDISKV_CONFIG):
         self.config = config
+        self.open_connection()
 
     def open_connection(self):
         self.conn = redis.Redis(
@@ -29,6 +30,17 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
         self.conn.close()
 
     def create(self, items: List[KeyValueDBInstance]):
+        for item in items:
+            if item is None or item.id is None or item.value is None:
+                raise ValueError
+
+            if type(item.id) is not str or type(item.value) not in [str, float, int]:
+                raise ValueError
+
+        unique_ids = set(map(lambda item: item.id, items))
+        if len(items) != len(unique_ids):
+            raise ValueError
+
         filtered_items = []
         for item in items:
             item_exists = self.conn.hexists(self.config.params['hs_name'], item.id)
@@ -46,6 +58,12 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
             self.conn.zadd(self.config.params['ss_name'], {item.id: 0 for item in filtered_items})
 
     def read(self, ids: List[str]):
+        for id in ids:
+            if type(id) is not str:
+                raise ValueError
+        if len(ids) < 1:
+            return []
+
         values = self.conn.hmget(self.config.params['hs_name'], ids)
         formated_values = []
         for i, val in enumerate(values):
@@ -58,6 +76,13 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
         return formated_values
 
     def update(self, items: List[KeyValueDBInstance]):
+        for item in items:
+            if item is None or item.id is None or item.value is None:
+                raise ValueError
+
+            if type(item.id) is not str or type(item.value) not in [str, float, int]:
+                raise ValueError
+
         filtered_items = [item for item in items if self.conn.hexists(self.config.params['hs_name'], item.id)]
 
         if len(filtered_items) > 0:
@@ -65,6 +90,10 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
             self.conn.zadd(self.config.params['ss_name'], {item.id: 0 for item in filtered_items})
 
     def delete(self, ids: List[str]):
+        for id in ids:
+            if type(id) is not str:
+                raise ValueError
+
         filtered_ids = [id for id in ids if self.conn.hexists(self.config.params['hs_name'], id)]
 
         if len(filtered_ids) > 0:
@@ -99,6 +128,8 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
         return self.conn.hlen(self.config.params['hs_name'])
 
     def item_exist(self, id: str):
+        if type(id) is not str:
+            raise ValueError
         return self.conn.hexists(self.config.params['hs_name'], id)
 
     def clear(self):

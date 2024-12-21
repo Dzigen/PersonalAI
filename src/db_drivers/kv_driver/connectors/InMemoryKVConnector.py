@@ -50,7 +50,10 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
 
     def create(self, items: List[KeyValueDBInstance]) -> None:
         for item in items:
-            if not len(item.metadata) or type(item.id) is not str:
+            if item is None or item.id is None or item.value is None:
+                raise ValueError
+
+            if type(item.id) is not str or type(item.value) not in [str, float, int]:
                 raise ValueError
 
         unique_ids = set(map(lambda item: item.id, items))
@@ -59,13 +62,14 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
 
         for item in items:
             if not self.item_exist(item.id):
-                self.kv_store[item.id] = item.metadata
+                self.kv_store[item.id] = item.value
 
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
         for id in ids:
-            if type(id) is not str:
+            if (id is None) or (type(id) is not str):
                 raise ValueError
-        records = [KeyValueDBInstance(id=id, metadata=self.kv_store[id]) for id in ids if id in self.kv_store]
+
+        records = [KeyValueDBInstance(id=id, value=self.kv_store[id]) if id in self.kv_store else None for id in ids]
         return records
 
     def update(self, items: List[KeyValueDBInstance]) -> None:

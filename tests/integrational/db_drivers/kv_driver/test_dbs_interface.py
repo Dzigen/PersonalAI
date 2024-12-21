@@ -53,7 +53,7 @@ def test_read(instances, input, expected, keyvaluedb_conn):
         assert not expected['exception']
 
     if not expected['exception']:
-        assert list(map(lambda item: item.id, output)) == expected['output_ids']
+        assert list(map(lambda item: None if item is None else item.id, output)) == expected['output_ids']
 
 
 @pytest.mark.parametrize("instances, expected, keyvaluedb_conn", KVDB_POPULATED_COUNT_TEST_CASES, indirect=['keyvaluedb_conn'])

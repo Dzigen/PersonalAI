@@ -1,9 +1,9 @@
 from .connectors  import \
-    AerospikeConnector, DEFAULT_AEROSPIKE_CONFIG,\
+    AerospikeKVConnector, DEFAULT_AEROSPIKE_CONFIG,\
     InMemoryKVConnector, DEFAULT_INMEMORYKV_CONFIG,\
     MixedKVConnector, DEFAULT_MIXEDKV_CONFIG,\
-    RedisConnector, DEFAULT_REDISKV_CONFIG,\
-    MongoConnector, DEFAULT_MONGOKV_CONFIG
+    RedisKVConnector, DEFAULT_REDISKV_CONFIG,\
+    MongoKVConnector, DEFAULT_MONGOKV_CONFIG
 
 DEFAULT_KVDB_CONFIGS = {
     'aerospike': DEFAULT_AEROSPIKE_CONFIG,
@@ -14,9 +14,9 @@ DEFAULT_KVDB_CONFIGS = {
 }
 
 AVAILABLE_KVDB_CONNECTORS = {
-    'aerospike': AerospikeConnector,
+    'aerospike': AerospikeKVConnector,
     'inmemory_kv': InMemoryKVConnector,
-    'redis': RedisConnector,
-    'mongo': MongoConnector,
+    'redis': RedisKVConnector,
+    'mongo': MongoKVConnector,
     'mixed_kv': MixedKVConnector
 }

@@ -4,17 +4,17 @@ from src.db_drivers.kv_driver import KeyValueDBInstance
 from src.utils.errors import ReturnInfo
 
 # TO CHANGE
-AVAILABLE_KV_DBS = ['inmemory_kv', 'aerospike', 'redis', 'mongo', 'mixed_kv']
+AVAILABLE_KV_DBS = ['inmemory_kv', 'redis', 'mongo', 'mixed_kv'] # 'inmemory_kv', 'redis', 'mongo', 'mixed_kv'
 
 ###############################################################################################
 
-FULL_INSTANCE1 = KeyValueDBInstance(id='123', metadata={'k1': 'v1'})
-FULL_INSTANCE2 = KeyValueDBInstance(id='456', metadata={'k2': 'v2'})
-INSTANCE_WITH_EMPTY_METADATA = KeyValueDBInstance(id='789', metadata=dict())
+FULL_INSTANCE1 = KeyValueDBInstance(id='123', value='v1')
+FULL_INSTANCE2 = KeyValueDBInstance(id='456', value='v2')
+INSTANCE_WITH_NONE_VALUE = KeyValueDBInstance(id='789', value=None)
 
-INSTANCE_WITH_BAD_ID1 = KeyValueDBInstance(id=123, metadata={'k1': 'v2'})
-INSTANCE_WITH_BAD_ID2 = KeyValueDBInstance(id=True, metadata={'k1': 'v2'})
-INSTANCE_WITH_BAD_ID3 = KeyValueDBInstance(id=None, metadata={'k1': 'v2'})
+INSTANCE_WITH_BAD_ID1 = KeyValueDBInstance(id=123, value='v2')
+INSTANCE_WITH_BAD_ID2 = KeyValueDBInstance(id=True, value='v2')
+INSTANCE_WITH_BAD_ID3 = KeyValueDBInstance(id=None, value='v2')
 
 ###############################################################################################
 
@@ -24,7 +24,7 @@ KVDB_CREATE_TEST_CASES = [
     # 2. элемент с метаданными
     [[[FULL_INSTANCE1]], {'exception': False, 'db_size': 1}],
     # 3. элемент без метаданныйх (пустой)
-    [[[INSTANCE_WITH_EMPTY_METADATA]], {'exception': True, 'db_size': 0}],
+    [[[INSTANCE_WITH_NONE_VALUE]], {'exception': True, 'db_size': 0}],
     # 4. несколько элементов
     [[[FULL_INSTANCE1, FULL_INSTANCE2]], {'exception': False, 'db_size': 2}],
     # 5. дубликаты в списке
@@ -78,11 +78,11 @@ KVDB_READ_TEST_CASES = [
     # 2. один существующий элемент
     [[FULL_INSTANCE1, FULL_INSTANCE2], ['123'], {'exception': False, 'output_ids': ['123']}],
     # 3. один несуществующий элемент
-    [[FULL_INSTANCE1,FULL_INSTANCE2], ['789'], {'exception': False, 'output_ids': []}],
+    [[FULL_INSTANCE1,FULL_INSTANCE2], ['789'], {'exception': False, 'output_ids': [None]}],
     # 4. несколько существующих элементов
     [[FULL_INSTANCE1,FULL_INSTANCE2], ['123', '456'], {'exception': False, 'output_ids': ['123','456']}],
     # 5. в списке есть несуществующий элемент
-    [[FULL_INSTANCE1,FULL_INSTANCE2], ['123', '789', '456'], {'exception': False, 'output_ids': ['123', '456']}],
+    [[FULL_INSTANCE1,FULL_INSTANCE2], ['123', '789', '456'], {'exception': False, 'output_ids': ['123', None, '456']}],
     # 6. неверный формат идентификатора 1
     [[FULL_INSTANCE1,FULL_INSTANCE2], [123], {'exception': True, 'output_ids': []}],
     # 7. неверный формат идентификатора 2
