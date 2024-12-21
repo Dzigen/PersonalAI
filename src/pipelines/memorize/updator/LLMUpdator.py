@@ -54,8 +54,7 @@ class LLMUpdator:
 
     def find_simple_obsolete_triplet_ids(self, triplets: List[Triplet]) -> List[str]:
         obsolete_triplet_ids = list()
-        simple_triplets = list(filter(lambda triplet: triplet.relation.type == RelationType.simple, triplets))
-        for base_triplet in simple_triplets:
+        for base_triplet in triplets:
 
             # Формируем уникальный список триплетов, которые инциденты вершинам
             # из текущего триплета (если такие вершины присутствуют в графе знаний)
@@ -71,7 +70,7 @@ class LLMUpdator:
                     for neighbour_id in neighbour_node_ids:
                         shared_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_node.id, neighbour_id)
                         incident_triplets.update({item.id: item for item in shared_triplets})
-                incident_triplets = list(incident_triplets.items())
+                incident_triplets = list(incident_triplets.values())
 
             # Выполняем поиск устаревших триплетов
             tmp_obsolete_triplet_ids, status = self.replace_simple_solver.solve(
@@ -84,8 +83,7 @@ class LLMUpdator:
 
     def find_hyper_obsolete_triplet_ids(self, triplets: List[Triplet]) -> List[str]:
         obsolete_triplet_ids = list()
-        hyper_triplets = list(filter(lambda triplet: triplet.relation.type == RelationType.hyper, triplets))
-        for base_triplet in hyper_triplets:
+        for base_triplet in triplets:
 
             # Формируем уникальный список триплетов, которые инциденты вершинам
             # из текущего триплета (если такие вершины присутствуют в графе знаний)
@@ -100,7 +98,7 @@ class LLMUpdator:
                 for neighbour_id in neighbour_node_ids:
                     shared_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_node.id, neighbour_id)
                     incident_triplets.update({item.id: item for item in shared_triplets})
-            incident_triplets = list(incident_triplets.items())
+            incident_triplets = list(incident_triplets.values())
 
             # Выполняем поиск устаревших триплетов
             tmp_obsolete_triplet_ids, status = self.replace_simple_solver.solve(
@@ -113,11 +111,8 @@ class LLMUpdator:
 
     def find_episodic_obsolete_triplet_ids(self, triplets: List[Triplet], obsolete_hyper_triplet_ids: List[str]) -> List[str]:
         obsolete_triplet_ids = list()
-        episodic_triplets = list(filter(
-            lambda triplet: triplet.relation.type == RelationType.episodic and
-            triplet.start_node.type == NodeType.object, triplets))
 
-        for triplet in episodic_triplets:
+        for triplet in triplets:
             # Сопоставляем сущности из триплета вершинам в графе знаний
             matched_object_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
                     name=triplet.start_node.name, type=NodeType.object, object='node')
@@ -142,8 +137,8 @@ class LLMUpdator:
                         # то также удаляем эпизодический триплет с данной object-вершиной
                         if shared_h_triplets[0].id in obsolete_hyper_triplet_ids:
                             shared_e_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_object_n.id, m_episodic_n.id)
-
                             assert len(shared_e_triplets) <= 1
+
                             obsolete_triplet_ids.append(shared_e_triplets[0].id)
 
         return obsolete_triplet_ids
@@ -164,21 +159,31 @@ class LLMUpdator:
         :return: Список идентификаторов триплетов из графа знаний, в которых содержится устаревшая информация.
         :rtype: List[str]
         """
-        obsolete_triplet_ids = dict()
+        obsolete_triplet_ids = {RelationType.simple.value: [], RelationType.hyper.value: [], RelationType.episodic.value: []}
 
         if check_episodic and not check_hyper:
             raise ValueError
 
+        aggregated_triplets = {RelationType.simple.value: [], RelationType.hyper.value: [], RelationType.episodic.value: []}
+        for triplet in new_triplets:
+            if triplet.relation.type == RelationType.simple:
+                aggregated_triplets[RelationType.simple.value].append(triplet)
+            elif triplet.relation.type == RelationType.hyper:
+                aggregated_triplets[RelationType.hyper.value].append(triplet)
+            elif (triplet.relation.type == RelationType.episodic) and (triplet.start_node.type == NodeType.object):
+                aggregated_triplets[RelationType.episodic.value].append(triplet)
+            else:
+                raise ValueError
+
         if check_simple:
-            obsolete_triplet_ids[RelationType.simple.value] = self.find_simple_obsolete_triplet_ids(new_triplets)
-
-
+            obsolete_triplet_ids[RelationType.simple.value] = self.find_simple_obsolete_triplet_ids(
+                aggregated_triplets[RelationType.simple.value])
         if check_hyper:
-            obsolete_triplet_ids[RelationType.hyper.value] = self.find_hyper_obsolete_triplet_ids(new_triplets)
-
+            obsolete_triplet_ids[RelationType.hyper.value] = self.find_hyper_obsolete_triplet_ids(
+                aggregated_triplets[RelationType.hyper.value])
         if check_episodic:
             obsolete_triplet_ids[RelationType.episodic.value] = self.find_episodic_obsolete_triplet_ids(
-                new_triplets, obsolete_triplet_ids[RelationType.hyper.value])
+                aggregated_triplets[RelationType.episodic.value], obsolete_triplet_ids[RelationType.hyper.value])
 
         flatten_triplet_ids = reduce(lambda acc, v: acc + list(v), obsolete_triplet_ids.values(), [])
         return flatten_triplet_ids

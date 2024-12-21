@@ -15,7 +15,9 @@ from cases import INIT_KNOWLEDGE_GRAPH
     (INIT_KNOWLEDGE_GRAPH, [], [], []),
     # найден один устаревший триплет
     (INIT_KNOWLEDGE_GRAPH, [], [], []),
-    # найдено несколько устаревших триплетов
+    # найдено несколько устаревших триплетов (разные замены)
+    (INIT_KNOWLEDGE_GRAPH, [], [], []),
+    # найдено несколько устаревших триплетов (одинаковые замены)
     (INIT_KNOWLEDGE_GRAPH, [], [], []),
     # ошибка при разборе сгенерированного ответа (parser error)
     (INIT_KNOWLEDGE_GRAPH, [], [], []),
