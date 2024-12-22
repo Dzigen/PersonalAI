@@ -14,7 +14,7 @@ from cases import INIT_SIMPLE_KNOWLEDGE_GRAPH,\
     TEST_SIMPLE_TRIPLET6, TRIPLET_ANSWER1, TRIPLET_ANSWER2, TRIPLET_ANSWER3,\
     BAD_SIMPLE_ANSWER
 
-from cases import SIMPLE_TRIPLET1, SIMPLE_TRIPLET2
+from cases import SIMPLE_TRIPLET1, SIMPLE_TRIPLET3
 
 @pytest.mark.parametrize("kg_triplets, triplets, agent_stub_answers, expected_obsolete_ids", [
     # 1. не найдено устаревших трипелтов
@@ -23,11 +23,11 @@ from cases import SIMPLE_TRIPLET1, SIMPLE_TRIPLET2
     # 1.2. нуль смежных вершин
     (INIT_SIMPLE_KNOWLEDGE_GRAPH, [TEST_SIMPLE_TRIPLET2], [], []),
     # 1.3. нуль ids от agent-солвера
-    (INIT_SIMPLE_KNOWLEDGE_GRAPH, [TEST_SIMPLE_TRIPLET3], [TRIPLET_EMPTY_ANSWER], []),
+    (INIT_SIMPLE_KNOWLEDGE_GRAPH, [TEST_SIMPLE_TRIPLET2], [TRIPLET_EMPTY_ANSWER], []),
     # 2. найден один устаревший триплет
     (INIT_SIMPLE_KNOWLEDGE_GRAPH, [TEST_SIMPLE_TRIPLET4], [TRIPLET_ANSWER1], [SIMPLE_TRIPLET1.id]),
     # 3. найдено несколько устаревших триплетов (разные замены)
-    (INIT_SIMPLE_KNOWLEDGE_GRAPH, [TEST_SIMPLE_TRIPLET4, TEST_SIMPLE_TRIPLET5], [TRIPLET_ANSWER1, TRIPLET_ANSWER2], [SIMPLE_TRIPLET1.id, SIMPLE_TRIPLET2.id]),
+    (INIT_SIMPLE_KNOWLEDGE_GRAPH, [TEST_SIMPLE_TRIPLET4, TEST_SIMPLE_TRIPLET5], [TRIPLET_ANSWER1, TRIPLET_ANSWER2], [SIMPLE_TRIPLET1.id, SIMPLE_TRIPLET3.id]),
     # 4. найдено несколько устаревших триплетов (итеративная замена того же ребра)
     (INIT_SIMPLE_KNOWLEDGE_GRAPH, [TEST_SIMPLE_TRIPLET4, TEST_SIMPLE_TRIPLET6], [TRIPLET_ANSWER1, TRIPLET_ANSWER3], [SIMPLE_TRIPLET1.id, TEST_SIMPLE_TRIPLET4.id]),
     # 5. ошибка при разборе сгенерированного ответа (parser error)

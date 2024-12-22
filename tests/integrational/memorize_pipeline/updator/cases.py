@@ -54,28 +54,45 @@ INIT_SIMPLE_KNOWLEDGE_GRAPH = [
 TRIPLET_EMPTY_ANSWER = '[]'
 
 # 1. нуль сопоставленных вершин
-TEST_SIMPLE_TRIPLET1 = ...
+TEST_SIMPLE_TRIPLET1 = TripletCreator.create(
+    start_node=NodeCreator.create(n_type=NodeType.object, name='qsc'),
+    relation=RelationCreator.create(r_type=RelationType.simple, name='esz'),
+    end_node=NodeCreator.create(n_type=NodeType.object, name='vuf')
+)
 
 # 2. нуль смежных вершин
-TEST_SIMPLE_TRIPLET2 = ...
-
-# 3. нуль ids от agent-солвера
-TEST_SIMPLE_TRIPLET3 = ...
+TEST_SIMPLE_TRIPLET2 = TripletCreator.create(
+    start_node=OBJECT_NODE5,
+    relation=RelationCreator.create(r_type=RelationType.simple, name='pkn'),
+    end_node=NodeCreator.create(n_type=NodeType.object, name='vbn')
+)
 
 # 4. найден один устаревший триплет
-TEST_SIMPLE_TRIPLET4 = ...
-TRIPLET_ANSWER1 = ...
+TEST_SIMPLE_TRIPLET4 = TripletCreator.create(
+    start_node=OBJECT_NODE1,
+    relation=RelationCreator.create(r_type=RelationType.simple, name='pkn'),
+    end_node=OBJECT_NODE2
+)
+TRIPLET_ANSWER1 = f'[["{SIMPLE_TRIPLET1.start_node.name}, {SIMPLE_TRIPLET1.relation.name}, {SIMPLE_TRIPLET1.end_node.name}" -> "{TEST_SIMPLE_TRIPLET4.start_node.name}, {TEST_SIMPLE_TRIPLET4.relation.name}, {TEST_SIMPLE_TRIPLET4.end_node.name}"]]'
 
 # 5. найдено несколько устаревших триплетов (разные замены)
-TEST_SIMPLE_TRIPLET5 = ...
-TRIPLET_ANSWER2 = ...
+TEST_SIMPLE_TRIPLET5 = TripletCreator.create(
+    start_node=OBJECT_NODE6,
+    relation=RelationCreator.create(r_type=RelationType.simple, name='qfj'),
+    end_node=OBJECT_NODE8
+)
+TRIPLET_ANSWER2 = f'[["{SIMPLE_TRIPLET1.start_node.name}, {SIMPLE_TRIPLET1.relation.name}, {SIMPLE_TRIPLET1.end_node.name}" -> "{TEST_SIMPLE_TRIPLET4.start_node.name}, {TEST_SIMPLE_TRIPLET4.relation.name}, {TEST_SIMPLE_TRIPLET4.end_node.name}"], ["{SIMPLE_TRIPLET3.start_node.name}, {SIMPLE_TRIPLET3.relation.name}, {SIMPLE_TRIPLET3.end_node.name}" -> "{TEST_SIMPLE_TRIPLET5.start_node.name}, {TEST_SIMPLE_TRIPLET5.relation.name}, {TEST_SIMPLE_TRIPLET5.end_node.name}"]]'
 
 # 6. найдено несколько устаревших триплетов (итеративная замена того же ребра)
-TEST_SIMPLE_TRIPLET6 = ...
-TRIPLET_ANSWER3 = ...
+TEST_SIMPLE_TRIPLET6 = TripletCreator.create(
+    start_node=OBJECT_NODE1,
+    relation=RelationCreator.create(r_type=RelationType.simple, name='pkn pppp'),
+    end_node=OBJECT_NODE2
+)
+TRIPLET_ANSWER3 = f'[["{SIMPLE_TRIPLET1.start_node.name}, {SIMPLE_TRIPLET1.relation.name}, {SIMPLE_TRIPLET1.end_node.name}" -> "{TEST_SIMPLE_TRIPLET4.start_node.name}, {TEST_SIMPLE_TRIPLET4.relation.name}, {TEST_SIMPLE_TRIPLET4.end_node.name}"], ["{TEST_SIMPLE_TRIPLET4.start_node.name}, {TEST_SIMPLE_TRIPLET4.relation.name}, {TEST_SIMPLE_TRIPLET4.end_node.name}" -> "{TEST_SIMPLE_TRIPLET6.start_node.name}, {TEST_SIMPLE_TRIPLET6.relation.name}, {TEST_SIMPLE_TRIPLET6.end_node.name}"]]'
 
 # 7. ошибка при разборе сгенерированного ответа (parser error)
-BAD_SIMPLE_ANSWER = ...
+BAD_SIMPLE_ANSWER = f'[["{SIMPLE_TRIPLET1.start_node.name} {SIMPLE_TRIPLET1.relation.name} {SIMPLE_TRIPLET1.end_node.name}" -> "{TEST_SIMPLE_TRIPLET4.start_node.name} {TEST_SIMPLE_TRIPLET4.relation.name} {TEST_SIMPLE_TRIPLET4.end_node.name}"]]'
 
 # -------- HYPER GRAPH --------
 
