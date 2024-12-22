@@ -132,6 +132,7 @@ class AgentTaskSolver:
                 status = ReturnStatus.bad_parser
             finally:
                 self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
+                self.log(f"Результат:\n{formated_answer}", verbose=self.config.verbose)
 
         #  Если не было ошибок при разборе raw-строки
         if status == ReturnStatus.success:
@@ -145,5 +146,7 @@ class AgentTaskSolver:
                 status = ReturnStatus.bad_postprocessor
             finally:
                 self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
+                self.log(f"Результат:\n{task_result}", verbose=self.config.verbose)
+
 
         return task_result, status
