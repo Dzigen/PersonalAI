@@ -79,7 +79,7 @@ class LLMUpdator:
             if status == ReturnStatus.success:
                 obsolete_triplet_ids += tmp_obsolete_triplet_ids
 
-        return obsolete_triplet_ids
+        return list(set(obsolete_triplet_ids))
 
     def find_hyper_obsolete_triplet_ids(self, triplets: List[Triplet]) -> List[str]:
         obsolete_triplet_ids = list()
@@ -107,7 +107,7 @@ class LLMUpdator:
             if status == ReturnStatus.success:
                 obsolete_triplet_ids += tmp_obsolete_triplet_ids
 
-        return obsolete_triplet_ids
+        return list(set(obsolete_triplet_ids))
 
     def find_episodic_obsolete_triplet_ids(self, triplets: List[Triplet], obsolete_hyper_triplet_ids: List[str]) -> List[str]:
         obsolete_triplet_ids = list()
@@ -141,7 +141,7 @@ class LLMUpdator:
 
                             obsolete_triplet_ids.append(shared_e_triplets[0].id)
 
-        return obsolete_triplet_ids
+        return list(set(obsolete_triplet_ids))
 
     def get_obsolete_triplet_ids(self, new_triplets: List[Triplet], check_simple: bool = True,
                                  check_hyper: bool = True, check_episodic: bool = True) -> List[str]:
@@ -207,15 +207,19 @@ class LLMUpdator:
         """
         info = ReturnInfo()
 
-        if delete_obsolete_info:
-            self.log(f"Поиск устаревшей информации в памяти ассистента...", verbose=self.config.verbose)
-            obsolete_t_ids = self.get_obsolete_triplet_ids(new_triplets, need_simple, need_hyper, need_episodic)
-            self.log(f"Результат: суммарное количество устаревших триплетов - {len(obsolete_t_ids)}.", verbose=self.config.verbose)
+        # Note: обрабатываем каждый триплет по отдельности, так как в пуле триплетов могут быть такие,
+        # которые могут заменить одни и те же устаревшие триплеты. Соответсвенно, мы должны итеративно обновлять память и сохранить
+        # только последнюю актуальную информацию.
+        for triplet in new_triplets:
+            if delete_obsolete_info:
+                self.log(f"Поиск устаревшей информации в памяти ассистента...", verbose=self.config.verbose)
+                obsolete_t_ids = self.get_obsolete_triplet_ids([triplet], need_simple, need_hyper, need_episodic)
+                self.log(f"Результат: суммарное количество устаревших триплетов - {len(obsolete_t_ids)}.", verbose=self.config.verbose)
 
-            self.log(f"Удаление устаревшей информации из памяти асситента...", verbose=self.config.verbose)
-            self.kg_model.remove_knowledge(obsolete_t_ids)
+                self.log(f"Удаление устаревшей информации из памяти асситента...", verbose=self.config.verbose)
+                self.kg_model.remove_knowledge(obsolete_t_ids)
 
-        self.log(f"Добавление информации в память асситента...", verbose=self.config.verbose)
-        self.kg_model.add_knowledge(new_triplets)
+            self.log(f"Добавление информации в память асситента...", verbose=self.config.verbose)
+            self.kg_model.add_knowledge([triplet])
 
         return info
