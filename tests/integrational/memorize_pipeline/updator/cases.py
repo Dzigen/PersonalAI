@@ -29,8 +29,16 @@ SIMPLE_TRIPLET3 = TripletCreator.create(
 
 HYPER_NODE1 = NodeCreator.create(n_type=NodeType.hyper, name="qqq www eee")
 HYPER_NODE2 = NodeCreator.create(n_type=NodeType.hyper, name="aaa sss ddd")
+HYPER_NODE3 = ...
+HYPER_NODE4 = ...
+
+EPISODIC_NODE1 = ...
+EPISODIC_NODE2 = ...
+EPISODIC_NODE3 = ...
+EPISODIC_NODE4 = ...
 
 HYPER_REL = RelationCreator.create(r_type=RelationType.hyper)
+EPISODIC_REL = RelationCreator.create(r_type=RelationType.episodic)
 
 HYPER_TRIPLET1 = TripletCreator.create(
     start_node=OBJECT_NODE2, relation=HYPER_REL, end_node=HYPER_NODE1)
@@ -42,11 +50,46 @@ HYPER_TRIPLET4 = TripletCreator.create(
     start_node=OBJECT_NODE5, relation=HYPER_REL, end_node=HYPER_NODE2)
 HYPER_TRIPLET5 = TripletCreator.create(
     start_node=OBJECT_NODE6, relation=HYPER_REL, end_node=HYPER_NODE2)
+HYPER_TRIPLET6 = TripletCreator.create(
+    start_node=OBJECT_NODE1, relation=HYPER_REL, end_node=HYPER_NODE3)
+HYPER_TRIPLET7 = TripletCreator.create(
+    start_node=OBJECT_NODE8, relation=HYPER_REL, end_node=HYPER_NODE4)
+HYPER_TRIPLET8 = TripletCreator.create(
+    start_node=OBJECT_NODE7,relation=HYPER_REL,end_node=HYPER_NODE4)
+
+EPISODIC_TRIPLET1 = TripletCreator.create(
+    start_node=OBJECT_NODE4, relation=EPISODIC_REL, end_node=EPISODIC_NODE1)
+EPISODIC_TRIPLET2 = TripletCreator.create(
+    start_node=OBJECT_NODE3, relation=EPISODIC_REL, end_node=EPISODIC_NODE1)
+EPISODIC_TRIPLET3 = TripletCreator.create(
+    start_node=HYPER_NODE1, relation=EPISODIC_REL, end_node=EPISODIC_NODE1)
+EPISODIC_TRIPLET4 = TripletCreator.create(
+    start_node=OBJECT_NODE2, relation=EPISODIC_REL, end_node=EPISODIC_NODE1)
+EPISODIC_TRIPLET5 = TripletCreator.create(
+    start_node=HYPER_NODE3, relation=EPISODIC_REL, end_node=EPISODIC_NODE2)
+EPISODIC_TRIPLET6 = TripletCreator.create(
+    start_node=OBJECT_NODE1, relation=EPISODIC_REL, end_node=EPISODIC_NODE2)
+EPISODIC_TRIPLET7 = TripletCreator.create(
+    start_node=OBJECT_NODE7, relation=EPISODIC_REL, end_node=EPISODIC_NODE4)
+EPISODIC_TRIPLET8 = TripletCreator.create(
+    start_node=HYPER_NODE4, relation=EPISODIC_REL, end_node=EPISODIC_NODE4)
+EPISODIC_TRIPLET9 = TripletCreator.create(
+    start_node=OBJECT_NODE8, relation=EPISODIC_REL, end_node=EPISODIC_NODE4)
+EPISODIC_TRIPLET10 = TripletCreator.create(
+    start_node=OBJECT_NODE5, relation=EPISODIC_REL, end_node=EPISODIC_NODE3)
+EPISODIC_TRIPLET11 = TripletCreator.create(
+    start_node=HYPER_NODE2, relation=EPISODIC_REL, end_node=EPISODIC_NODE3)
+EPISODIC_TRIPLET12 = TripletCreator.create(
+    start_node=OBJECT_NODE6, relation=EPISODIC_REL, end_node=EPISODIC_NODE3)
 
 INIT_KNOWLEDGE_GRAPH = [
     SIMPLE_TRIPLET1, SIMPLE_TRIPLET2, SIMPLE_TRIPLET3,
     HYPER_TRIPLET1, HYPER_TRIPLET2, HYPER_TRIPLET3,
-    HYPER_TRIPLET4, HYPER_TRIPLET5
+    HYPER_TRIPLET4, HYPER_TRIPLET5, HYPER_TRIPLET6, HYPER_TRIPLET7, HYPER_TRIPLET8,
+    EPISODIC_TRIPLET1, EPISODIC_TRIPLET2, EPISODIC_TRIPLET3,
+    EPISODIC_TRIPLET4, EPISODIC_TRIPLET5, EPISODIC_TRIPLET6,
+    EPISODIC_TRIPLET7, EPISODIC_TRIPLET8, EPISODIC_TRIPLET9,
+    EPISODIC_TRIPLET10, EPISODIC_TRIPLET11, EPISODIC_TRIPLET12,
 ]
 
 # -------- SIMPLE GRAPH --------
