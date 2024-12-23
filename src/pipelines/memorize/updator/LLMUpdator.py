@@ -8,6 +8,7 @@ from ....kg_model import KnowledgeGraphModel
 from functools import reduce
 from dataclasses import dataclass, field
 from typing import Dict, List
+from tqdm import tqdm
 
 @dataclass
 class LLMUpdatorConfig:
@@ -52,185 +53,172 @@ class LLMUpdator:
         self.replace_simple_solver = AgentTaskSolver(self.agent, self.config.replace_simple_task_config)
         self.replace_hyper_solver = AgentTaskSolver(self.agent, self.config.replace_thesis_task_config)
 
-    def find_simple_obsolete_triplet_ids(self, triplets: List[Triplet]) -> List[str]:
+    def find_simple_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
         obsolete_triplet_ids = list()
-        for base_triplet in triplets:
 
-            # Формируем уникальный список триплетов, которые инциденты вершинам
-            # из текущего триплета (если такие вершины присутствуют в графе знаний)
-            incident_triplets = dict()
-            for base_node in [base_triplet.start_node, base_triplet.end_node]:
-
-                # сопоставляем ноду из триплета нодам в графе знаний по полю name
-                matched_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-                    name=base_node.name, type=NodeType.object, object='node')
-
-                for m_node in matched_nodes:
-                    neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_node.id, [NodeType.object])
-                    for neighbour_id in neighbour_node_ids:
-                        shared_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_node.id, neighbour_id)
-                        incident_triplets.update({item.id: item for item in shared_triplets})
-
-            incident_triplets = list(incident_triplets.values())
-
-            # Выполняем поиск устаревших триплетов
-            tmp_obsolete_triplet_ids, status = self.replace_simple_solver.solve(
-                lang=self.config.lang, base_triplet=base_triplet, incident_triplets=incident_triplets)
-
-            if status == ReturnStatus.success:
-                obsolete_triplet_ids += tmp_obsolete_triplet_ids
-
-        return list(set(obsolete_triplet_ids))
-
-    def find_hyper_obsolete_triplet_ids(self, triplets: List[Triplet]) -> List[str]:
-        obsolete_triplet_ids = list()
-        for base_triplet in triplets:
-
-            # Формируем уникальный список триплетов, которые инциденты вершинам
-            # из текущего триплета (если такие вершины присутствуют в графе знаний)
-            incident_triplets = dict()
+        # Формируем уникальный список триплетов, которые инциденты вершинам
+        # из текущего триплета (если такие вершины присутствуют в графе знаний)
+        incident_triplets = dict()
+        for base_node in [base_triplet.start_node, base_triplet.end_node]:
 
             # сопоставляем ноду из триплета нодам в графе знаний по полю name
             matched_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-                name=base_triplet.start_node.name, type=NodeType.object, object='node')
+                name=base_node.name, type=NodeType.object, object='node')
 
             for m_node in matched_nodes:
-                neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_node.id, [NodeType.hyper])
-
+                neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_node.id, [NodeType.object])
                 for neighbour_id in neighbour_node_ids:
                     shared_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_node.id, neighbour_id)
-
                     incident_triplets.update({item.id: item for item in shared_triplets})
 
-            incident_triplets = list(incident_triplets.values())
+        incident_triplets = list(incident_triplets.values())
 
-            # Выполняем поиск устаревших триплетов
-            tmp_obsolete_triplet_ids, status = self.replace_hyper_solver.solve(
-                lang=self.config.lang, base_triplet=base_triplet, incident_triplets=incident_triplets)
+        # Выполняем поиск устаревших триплетов
+        tmp_obsolete_triplet_ids, status = self.replace_simple_solver.solve(
+            lang=self.config.lang, base_triplet=base_triplet, incident_triplets=incident_triplets)
 
-            if status == ReturnStatus.success:
-                obsolete_triplet_ids += tmp_obsolete_triplet_ids
+        if status == ReturnStatus.success:
+            obsolete_triplet_ids += tmp_obsolete_triplet_ids
 
         return list(set(obsolete_triplet_ids))
 
-    def find_episodic_obsolete_triplet_ids(self, triplets: List[Triplet], obsolete_hyper_triplet_ids: List[str]) -> List[str]:
+    def find_hyper_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
         obsolete_triplet_ids = list()
 
-        for triplet in triplets:
-            # Сопоставляем object-сущность из триплета вершинам в графе знаний
-            matched_object_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-                    name=triplet.start_node.name, type=NodeType.object, object='node')
-            if len(matched_object_nodes) == 0:
-                continue
+        # Формируем уникальный список триплетов, которые инциденты вершинам
+        # из текущего триплета (если такие вершины присутствуют в графе знаний)
+        incident_triplets = dict()
 
-            for m_object_n in matched_object_nodes:
-                # Для object-вершины ищем инцидентные hyper-триплеты из числа устаревших
-                object_adj_hyper_n = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_object_n.id, [NodeType.hyper])
-                filtered_hyper_tripelts = []
-                for hyper_node_id in object_adj_hyper_n:
-                    hyper_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_object_n.id, hyper_node_id)
-                    assert len(hyper_triplets) == 1
-                    if hyper_triplets[0].id in obsolete_hyper_triplet_ids:
-                        filtered_hyper_tripelts.append(hyper_triplets[0])
+        # сопоставляем ноду из триплета нодам в графе знаний по полю name
+        matched_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
+            name=base_triplet.start_node.name, type=NodeType.object, object='node')
 
-                if len(filtered_hyper_tripelts) < 1:
-                    continue
+        for m_node in matched_nodes:
+            neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_node.id, [NodeType.hyper])
 
-                for hyper_triplet in filtered_hyper_tripelts:
-                    # Для hyper-вершины из числа устаревших и смежной с текущей object-вершиной получаем смежные episodic-вершины
-                    hyper_adj_episodic_n = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(hyper_triplet.id, [NodeType.episodic])
+            for neighbour_id in neighbour_node_ids:
+                shared_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_node.id, neighbour_id)
 
-                    for episodic_n in hyper_adj_episodic_n:
-                        # Ищем episodic-трплет, который индидентен текущей object-вершине
-                        e_triplets = self.kg_model.graph_struct.db_conn.get_triplets(
-                            m_object_n.id, episodic_n.id)
-                        assert len(e_triplets) <= 1
+                incident_triplets.update({item.id: item for item in shared_triplets})
 
-                        # Если такой episodic-триплет существе существует, то добавляем его в список на удаление из графа знаний
-                        if len(e_triplets) > 0:
-                            obsolete_triplet_ids.append(e_triplets[0].id)
+        incident_triplets = list(incident_triplets.values())
+
+        # Выполняем поиск устаревших триплетов
+        tmp_obsolete_triplet_ids, status = self.replace_hyper_solver.solve(
+            lang=self.config.lang, base_triplet=base_triplet, incident_triplets=incident_triplets)
+
+        if status == ReturnStatus.success:
+            obsolete_triplet_ids += tmp_obsolete_triplet_ids
 
         return list(set(obsolete_triplet_ids))
 
-    def get_obsolete_triplet_ids(self, new_triplets: List[Triplet], check_simple: bool = True,
-                                 check_hyper: bool = True, check_episodic: bool = True) -> List[str]:
-        """Метод предназначен для поиска устаревшей информации в памяти (графе знаний) асситента. Информация представлена в виде набора триплетов.
+    def find_episodic_o_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
+        obsolete_triplet_ids = list()
 
-        :param new_triplets: Список триплетов, на основе которой осуществляется поиск/детекция устаревшей информации в памяти.
-        :type new_triplets: List[Triplet]
-        :param check_simple: Если True, то будет осуществляться поиск устаревшей информации среди триплетов типа "simple" в графе знаний, иначе False. Значение по умолчанию True.
-        :type check_simple: bool, optional
-        :param check_hyper: Если True, то будет осуществляться поиск устаревшей информации среди триплетов типа "hyper" в графе знаний, иначе False. Значение по умолчанию True.
-        :type check_hyper: bool, optional
-        :param check_episodic: Если True, то будет осуществляться поиск устаревшей информации среди триплетов типа "episodic" в графе знаний, иначе False. Значение по умолчанию True.
-        :type check_episodic: bool, optional
-        :raises ValueError: Данное исключение выбрасывается, если парметр check_episodic == True, а парметр check_hyper == False.
-        :return: Список идентификаторов триплетов из графа знаний, в которых содержится устаревшая информация.
-        :rtype: List[str]
-        """
-        obsolete_triplet_ids = {RelationType.simple.value: [], RelationType.hyper.value: [], RelationType.episodic.value: []}
+        # Сопоставляем object-сущность из триплета вершинам в графе знаний
+        matched_object_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
+                name=base_triplet.start_node.name, type=NodeType.object, object='node')
 
-        if check_episodic and not check_hyper:
-            raise ValueError
+        if len(matched_object_nodes) == 0:
+            return obsolete_triplet_ids
 
-        aggregated_triplets = {RelationType.simple.value: [], RelationType.hyper.value: [], RelationType.episodic.value: []}
-        for triplet in new_triplets:
-            if triplet.relation.type == RelationType.simple:
-                aggregated_triplets[RelationType.simple.value].append(triplet)
-            elif triplet.relation.type == RelationType.hyper:
-                aggregated_triplets[RelationType.hyper.value].append(triplet)
-            elif (triplet.relation.type == RelationType.episodic) and (triplet.start_node.type == NodeType.object):
-                aggregated_triplets[RelationType.episodic.value].append(triplet)
-            else:
-                raise ValueError
+        for m_object_n in matched_object_nodes:
+            # Для object-вершины ищем смежные episodic-вершины
+            object_adj_episodic_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_object_n.id, [NodeType.episodic])
 
-        if check_simple:
-            obsolete_triplet_ids[RelationType.simple.value] = self.find_simple_obsolete_triplet_ids(
-                aggregated_triplets[RelationType.simple.value])
-        if check_hyper:
-            obsolete_triplet_ids[RelationType.hyper.value] = self.find_hyper_obsolete_triplet_ids(
-                aggregated_triplets[RelationType.hyper.value])
-        if check_episodic:
-            obsolete_triplet_ids[RelationType.episodic.value] = self.find_episodic_obsolete_triplet_ids(
-                aggregated_triplets[RelationType.episodic.value], obsolete_triplet_ids[RelationType.hyper.value])
+            if len(object_adj_episodic_ids) < 1:
+                continue
 
-        flatten_triplet_ids = reduce(lambda acc, v: acc + list(v), obsolete_triplet_ids.values(), [])
-        return flatten_triplet_ids
+            # Для object-вершины ищем смежные hyper-вершины
+            object_adj_hyper_ids = set(self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_object_n.id, [NodeType.hyper]))
 
-    def update_knowledge(self, new_triplets: List[Triplet], delete_obsolete_info:bool=False,
-               need_simple:bool=True, need_hyper:bool=True, need_episodic:bool=True) -> ReturnInfo:
+            for episodic_id in object_adj_episodic_ids:
+                # Для episodic-вершины, смежной с текущей object-вершиной, ищем смежные hyper-вершины
+                episodic_adj_hyper_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(episodic_id, [NodeType.hyper])
+
+                shared_hyper_ids = object_adj_hyper_ids.intersection(set(episodic_adj_hyper_ids))
+                if len(shared_hyper_ids) < 1:
+                    # Если у данных object-вершины и episodic-вершины нет общей hyper-вершины, значит данный episodic-триплет устрел
+                    # и его нужно добавить в список на удаление
+                    episodic_triplet = self.kg_model.graph_struct.db_conn.get_triplets(m_object_n.id, episodic_id)
+                    assert len(episodic_triplet) == 1
+
+                    obsolete_triplet_ids.append(episodic_triplet[0].id)
+
+        return list(set(obsolete_triplet_ids))
+
+    def find_episodic_h_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
+        obsolete_triplet_ids = list()
+
+        # Сопоставляем hyper-сущность из триплета вершинам в графе знаний
+        matched_hyper_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
+                name=base_triplet.start_node.name, type=NodeType.hyper, object='node')
+
+        if len(matched_hyper_nodes) == 0:
+            return obsolete_triplet_ids
+
+        for m_hyper_n in matched_hyper_nodes:
+
+            # Проверям: с каким количеством object-вершин смежна данная hyper-вершина
+            hyper_adj_object_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_hyper_n.id, [NodeType.object])
+            if len(hyper_adj_object_ids) < 1:
+                # Если у hyper-вершины нет смежных object-вершин, то связи со всеми episodic-вершинами являются устаревшими
+                hyper_adj_episodic_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_hyper_n.id, [NodeType.episodic])
+                for episodic_id in hyper_adj_episodic_ids:
+                    episodic_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_hyper_n.id, episodic_id)
+                    assert len(episodic_triplets) == 1
+                    obsolete_triplet_ids.append(episodic_triplets[0].id)
+
+        return list(set(obsolete_triplet_ids))
+
+    def update_knowledge(self, new_triplets: List[Triplet], delete_obsolete_info:bool=False) -> ReturnInfo:
         """Метод предназначен для изменения (удаления устаревшей / добавление новой информации) памяти (графа знаний) асситента.
 
         :param new_triplets: Список триплетов с информацией для добавления в память (граф знаний) асситента.
         :type new_triplets: List[Triplet]
-        :param need_simple: Если True, то из входного текста на первой стадии Memorize-конвейера будет выполнено извлечение триплетов с типом связи 'simple', иначе False. Значение по умолчанию True.
-        :type need_simple: bool, optional
-        :param need_thesises: Если True, то из входного текста на первой стадии Memorize-конвейера будет выполнено извлечение триплетов с типом связи 'hyper', иначе False. Значение по умолчанию True.
-        :type need_thesises: bool, optional
-        :param need_episodic: Если True, то из входного текста на первой стадии Memorize-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False. Значение по умолчанию True.
-        :type need_episodic: bool, optional
-        :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшая информация из памяти (графа знаний) асситента, инчае False. Значение по умолчанию False.
+        :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшие знания из памяти (графа знаний) асситента, инчае False. Значение по умолчанию False.
         :type delete_obsolete_info: bool, optional
         :return: Статус завершения операции с пояснительной информацией.
         :rtype: ReturnInfo
         """
         info = ReturnInfo()
 
-        # Note: обрабатываем каждый триплет по отдельности, так как в пуле триплетов могут быть такие,
-        # которые могут заменить одни и те же устаревшие триплеты. Соответсвенно, мы должны итеративно обновлять память и сохранить
-        # только последнюю актуальную информацию.
-        for triplet in new_triplets:
-            if delete_obsolete_info:
-                self.log(f"Поиск устаревшей информации в памяти ассистента...", verbose=self.config.verbose)
-                obsolete_t_ids = self.get_obsolete_triplet_ids([triplet], need_simple, need_hyper, need_episodic)
-                self.log(f"Результат: суммарное количество устаревших триплетов - {len(obsolete_t_ids)}.", verbose=self.config.verbose)
+        if delete_obsolete_info:
+            obsolete_triplets_counter = 0
 
-                obsolete_triplets = self.kg_model.graph_struct.db_conn.read(obsolete_t_ids)
+            self.log(f"Поиск устаревшей информации в памяти ассистента...", verbose=self.config.verbose)
+            # Note: обрабатываем каждый триплет по отдельности, так как в пуле триплетов могут быть такие,
+            # которые заменяют одни и те же устаревшие триплеты. Соответсвенно, мы должны итеративно обновлять память и сохранить
+            # только последнюю актуальную информацию.
+            for triplet in tqdm(new_triplets):
+                self.log(f"Новый триплет: {triplet}", verbose=self.config.verbose)
+
+                if triplet.relation.type == RelationType.simple:
+                    obsolete_t_ids = self.find_simple_obsolete_triplet_ids(triplet)
+                elif triplet.relation.type == RelationType.hyper:
+                    obsolete_t_ids = self.find_hyper_obsolete_triplet_ids(triplet)
+                elif (triplet.relation.type == RelationType.episodic) and (triplet.start_node.type == NodeType.object):
+                    obsolete_t_ids = self.find_episodic_o_obsolete_triplet_ids(triplet)
+                elif (triplet.relation.type == RelationType.episodic) and (triplet.start_node.type == NodeType.hyper):
+                    obsolete_t_ids = self.find_episodic_h_obsolete_triplet_ids(triplet)
+                else:
+                    raise ValueError
+
+                self.log(f"Результат: количество найденных устаревших триплетов - {len(obsolete_t_ids)}.", verbose=self.config.verbose)
+                obsolete_triplets_counter += len(obsolete_t_ids)
+                self.log(f"Идентификаторы устаревших трипелтов: {obsolete_t_ids}.", verbose=self.config.verbose)
 
                 self.log(f"Удаление устаревшей информации из памяти асситента...", verbose=self.config.verbose)
+                obsolete_triplets = self.kg_model.graph_struct.db_conn.read(obsolete_t_ids)
                 self.kg_model.remove_knowledge(obsolete_triplets)
 
+                self.log(f"Добавление информации в память асситента...", verbose=self.config.verbose)
+                self.kg_model.add_knowledge([triplet])
+
+            self.log(f"== Результат: cуммарное количество найденных устаревших триплетов - {obsolete_triplets_counter}.", verbose=self.config.verbose)
+
+        else:
             self.log(f"Добавление информации в память асситента...", verbose=self.config.verbose)
-            self.kg_model.add_knowledge([triplet])
+            self.kg_model.add_knowledge(new_triplets)
 
         return info

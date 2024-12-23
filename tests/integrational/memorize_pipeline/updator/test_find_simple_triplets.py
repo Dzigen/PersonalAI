@@ -43,7 +43,7 @@ def test_find_simple(llm_updator: LLMUpdator, kg_triplets: List[Triplet], triple
         llm_updator.agent.looped_answers.clear()
         llm_updator.agent.looped_answers += stub_answer
 
-        real_obsolete_ids  = llm_updator.find_simple_obsolete_triplet_ids([triplet])
+        real_obsolete_ids  = llm_updator.find_simple_obsolete_triplet_ids(triplet)
 
         assert expected_output == real_obsolete_ids
 

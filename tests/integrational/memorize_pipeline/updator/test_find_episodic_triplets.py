@@ -9,45 +9,48 @@ from src.pipelines.memorize import LLMUpdator
 from typing import List, Dict
 
 from cases import INIT_KNOWLEDGE_GRAPH
+from cases import TEST_O_EPISODIC1, TEST_O_EPISODIC2, TEST_DELETE_TRIPLETS1, TEST_DELETE_TRIPLETS2
+from cases import TEST_H_EPISODIC1, TEST_DELETE_TRIPLETS3, TEST_H_EPISODIC2,\
+    TEST_DELETE_TRIPLETS4, TEST_H_EPISODIC3
 
-@pytest.mark.parametrize("kg_triplets, hyper_triplets, episodic_triplets, agent_stub_answers, expected_hyper_obsolete_ids, expected_episodic_obsolete_ids", [
+@pytest.mark.parametrize("kg_triplets, base_triplet, delete_tripelts, expected_obsolete_ids", [
     # 1. не найдено устаревших трипелтов
-    # 1.1. нуль сопоставленных вершин
-    (INIT_KNOWLEDGE_GRAPH, [], [], [], []),
-    # 1.2. нуль смежных вершин
-    (INIT_KNOWLEDGE_GRAPH, [], [], [], []),
-    # 1.3. нуль ids от agent-солвера
-    (INIT_KNOWLEDGE_GRAPH, [], [], [], []),
-    # 2. найден один устаревший триплет
-    (INIT_KNOWLEDGE_GRAPH, [], [], [], []),
-    # 3. найдено несколько устарев ших триплетов (разные замены)
-    (INIT_KNOWLEDGE_GRAPH, [], [], [], []),
-    # 4. найдено несколько устаревших триплетов (итеративная замена того же ребра)
-    (INIT_KNOWLEDGE_GRAPH, [], [], [], []),
+    # 1.1. нуль сопоставленных object-вершин
+    (INIT_KNOWLEDGE_GRAPH, TEST_O_EPISODIC1, [], []),
+    # 1.2. нуль смежных episodic-вершин
+    (INIT_KNOWLEDGE_GRAPH, TEST_O_EPISODIC2, TEST_DELETE_TRIPLETS1, []),
+    # 2. есть общие hyper-вершины у данной object-вершины и episodic-вершины
+    (INIT_KNOWLEDGE_GRAPH, TEST_O_EPISODIC2, [], []),
+    # 3. найден один устаревший триплет
+    (INIT_KNOWLEDGE_GRAPH, TEST_O_EPISODIC2, TEST_DELETE_TRIPLETS2, [])
 ])
-def test_find_episodic(llm_updator: LLMUpdator, kg_triplets: List[Triplet], hyper_triplets: List[Triplet],
-                     episodic_triplets: List[Triplet], agent_stub_answers: List[str], expected_hyper_obsolete_ids: List[str],
-                     expected_episodic_obsolete_ids: List[str]):
+def test_find_o_episodic(llm_updator: LLMUpdator, kg_triplets: List[Triplet],
+                         base_triplet: Triplet, delete_tripelts: List[Triplet],
+                         expected_obsolete_ids: List[str]):
     llm_updator.kg_model.clear()
     llm_updator.kg_model.add_knowledge(kg_triplets)
+    llm_updator.kg_model.remove_knowledge(delete_tripelts)
 
-    for triplet, stub_answer, h_triplets, expected_h_output, expected_output in zip(episodic_triplets, agent_stub_answers, hyper_triplets, expected_hyper_obsolete_ids, expected_episodic_obsolete_ids):
+    real_obsolete_ids  = llm_updator.find_episodic_o_obsolete_triplet_ids(base_triplet)
+    assert expected_obsolete_ids == real_obsolete_ids
 
-        llm_updator.agent.looped_answers.clear()
-        llm_updator.agent.looped_answers += stub_answer
+@pytest.mark.parametrize("kg_triplets, base_triplet, delete_tripelts, expected_obsolete_ids", [
+    # 1. не найдено устаревших трипелтов
+    # 1.1. нуль сопоставленных hyper-вершин
+    (INIT_KNOWLEDGE_GRAPH, TEST_H_EPISODIC1, [], []),
+    # 1.2. у сопоставленных hyper-вершин есть смежные object-вершины
+    (INIT_KNOWLEDGE_GRAPH, TEST_H_EPISODIC2, [], []),
+    # 1.3. найден один устаревший триплет
+    (INIT_KNOWLEDGE_GRAPH, TEST_H_EPISODIC2, TEST_DELETE_TRIPLETS3, []),
+    # 2. найдено несколько устаревших триплетов
+    (INIT_KNOWLEDGE_GRAPH, TEST_H_EPISODIC3, TEST_DELETE_TRIPLETS4, []),
+])
+def test_find_h_episodic(llm_updator: LLMUpdator, kg_triplets: List[Triplet],
+                         base_triplet: Triplet, delete_tripelts: List[Triplet],
+                         expected_obsolete_ids: List[str]):
+    llm_updator.kg_model.clear()
+    llm_updator.kg_model.add_knowledge(kg_triplets)
+    llm_updator.kg_model.remove_knowledge(delete_tripelts)
 
-        obsolete_hyper_ids = []
-        for h_t in h_triplets:
-            obsolete_hyper_ids += llm_updator.find_hyper_obsolete_triplet_ids([h_t])
-
-        assert expected_h_output == obsolete_hyper_ids
-
-        real_obsolete_ids  = llm_updator.find_episodic_obsolete_triplet_ids([triplet], obsolete_hyper_ids)
-
-        assert expected_output == real_obsolete_ids
-
-        if len(real_obsolete_ids) > 0:
-            obsolete_triplets = llm_updator.kg_model.graph_struct.db_conn.read(real_obsolete_ids)
-
-            llm_updator.kg_model.remove_knowledge(obsolete_triplets)
-            llm_updator.kg_model.add_knowledge([triplet])
+    real_obsolete_ids  = llm_updator.find_episodic_h_obsolete_triplet_ids(base_triplet)
+    assert expected_obsolete_ids == real_obsolete_ids
