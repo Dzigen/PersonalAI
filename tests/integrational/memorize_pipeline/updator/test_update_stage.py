@@ -8,14 +8,18 @@ from src.pipelines.memorize import LLMUpdator
 
 from typing import List, Dict
 
-@pytest.mark.parametrize("triplets, delete_obsolete_info, need_simple, need_hyper,\
-                          need_episodic, agent_stub_answers, expected_status,\
-                          expected_graphdb_triplet_ids, expected_vectordb_triplet_ids, expected_vectordb_node_ids", [
+@pytest.mark.parametrize("kg_triplets, new_triplets, agent_stub_answers, obsolete_flag, expected_kg", [
     # TODO
 ])
-def test_update_knowledge(llm_updator: LLMUpdator, triplets: List[Triplet], delete_obsolete_info:bool,
-                          need_simple:bool, need_hyper:bool, need_episodic:bool, agent_stub_answers: List[str],
-                          expected_graphdb_triplet_ids: List[str], expected_vectordb_triplet_ids: List[str],
-                          expected_vectordb_node_ids: List[str]):
+def test_update_knowledge(llm_updator: LLMUpdator, kg_triplets: List[Triplet], new_triplets: List[Triplet], obsolete_flag: bool,
+                     agent_stub_answers: List[str], expected_graph_ids: List[str], expected_vector_node_ids: List[str],
+                     expected_vector_triplet_ids: List[str]):
+    llm_updator.kg_model.clear()
+    llm_updator.kg_model.add_knowledge(kg_triplets)
+
+    llm_updator.agent.looped_answers.clear()
+    llm_updator.agent.looped_answers += agent_stub_answers
+
+    llm_updator.update_knowledge(new_triplets, delete_obsolete_info=obsolete_flag)
+
     # TODO
-    pass
