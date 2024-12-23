@@ -117,33 +117,38 @@ class LLMUpdator:
         obsolete_triplet_ids = list()
 
         for triplet in triplets:
-            # Сопоставляем сущности из триплета вершинам в графе знаний
+            # Сопоставляем object-сущность из триплета вершинам в графе знаний
             matched_object_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
                     name=triplet.start_node.name, type=NodeType.object, object='node')
-            matched_episodic_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-                    name=triplet.end_node.name, type=NodeType.episodic, object='node')
-            if len(matched_object_nodes) == 0 or len(matched_episodic_nodes) == 0:
+            if len(matched_object_nodes) == 0:
                 continue
 
-            # Ищем одинаковые hyper-вершины, которые смежны как с текущими object-, так и с episodic-вершинами
             for m_object_n in matched_object_nodes:
+                # Для object-вершины ищем инцидентные hyper-триплеты из числа устаревших
                 object_adj_hyper_n = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_object_n.id, [NodeType.hyper])
-                for m_episodic_n in matched_episodic_nodes:
-                    object_adj_episodic_n = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_episodic_n.id, [NodeType.hyper])
+                filtered_hyper_tripelts = []
+                for hyper_node_id in object_adj_hyper_n:
+                    hyper_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_object_n.id, hyper_node_id)
+                    assert len(hyper_triplets) == 1
+                    if hyper_triplets[0].id in obsolete_hyper_triplet_ids:
+                        filtered_hyper_tripelts.append(hyper_triplets[0])
 
-                    shared_hyper_nodes = set(map(lambda item: item.id, object_adj_hyper_n)).intersection(set(map(lambda item: item.id, object_adj_episodic_n)))
-                    for shared_hyper_n in shared_hyper_nodes:
-                        shared_h_triplets = self.kg_model.graph_struct.db_conn.get_triplets(
-                            m_object_n.id, shared_hyper_n.id)
-                        assert len(shared_h_triplets) <= 1
+                if len(filtered_hyper_tripelts) < 1:
+                    continue
 
-                        # Eсли этот триплет в списке на удаление,
-                        # то также удаляем эпизодический триплет с данной object-вершиной
-                        if shared_h_triplets[0].id in obsolete_hyper_triplet_ids:
-                            shared_e_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_object_n.id, m_episodic_n.id)
-                            assert len(shared_e_triplets) <= 1
+                for hyper_triplet in filtered_hyper_tripelts:
+                    # Для hyper-вершины из числа устаревших и смежной с текущей object-вершиной получаем смежные episodic-вершины
+                    hyper_adj_episodic_n = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(hyper_triplet.id, [NodeType.episodic])
 
-                            obsolete_triplet_ids.append(shared_e_triplets[0].id)
+                    for episodic_n in hyper_adj_episodic_n:
+                        # Ищем episodic-трплет, который индидентен текущей object-вершине
+                        e_triplets = self.kg_model.graph_struct.db_conn.get_triplets(
+                            m_object_n.id, episodic_n.id)
+                        assert len(e_triplets) <= 1
+
+                        # Если такой episodic-триплет существе существует, то добавляем его в список на удаление из графа знаний
+                        if len(e_triplets) > 0:
+                            obsolete_triplet_ids.append(e_triplets[0].id)
 
         return list(set(obsolete_triplet_ids))
 
