@@ -30,7 +30,7 @@ SIMPLE_TRIPLET3 = TripletCreator.create(
 HYPER_NODE1 = NodeCreator.create(n_type=NodeType.hyper, name="qqq www eee")
 HYPER_NODE2 = NodeCreator.create(n_type=NodeType.hyper, name="aaa sss ddd")
 
-HYPER_REL = RelationCreator.create(r_type=RelationType.hyper, name='hyper')
+HYPER_REL = RelationCreator.create(r_type=RelationType.hyper)
 
 HYPER_TRIPLET1 = TripletCreator.create(
     start_node=OBJECT_NODE2, relation=HYPER_REL, end_node=HYPER_NODE1)
@@ -43,12 +43,13 @@ HYPER_TRIPLET4 = TripletCreator.create(
 HYPER_TRIPLET5 = TripletCreator.create(
     start_node=OBJECT_NODE6, relation=HYPER_REL, end_node=HYPER_NODE2)
 
-# -------- SIMPLE GRAPH --------
-INIT_SIMPLE_KNOWLEDGE_GRAPH = [
+INIT_KNOWLEDGE_GRAPH = [
     SIMPLE_TRIPLET1, SIMPLE_TRIPLET2, SIMPLE_TRIPLET3,
     HYPER_TRIPLET1, HYPER_TRIPLET2, HYPER_TRIPLET3,
     HYPER_TRIPLET4, HYPER_TRIPLET5
 ]
+
+# -------- SIMPLE GRAPH --------
 
 # SIMPLE_TRIPLETS
 TRIPLET_EMPTY_ANSWER = '[]'
@@ -81,7 +82,7 @@ TEST_SIMPLE_TRIPLET5 = TripletCreator.create(
     relation=RelationCreator.create(r_type=RelationType.simple, name='qfj'),
     end_node=OBJECT_NODE8
 )
-TRIPLET_ANSWER2 = f'[["{SIMPLE_TRIPLET1.start_node.name}, {SIMPLE_TRIPLET1.relation.name}, {SIMPLE_TRIPLET1.end_node.name}" -> "{TEST_SIMPLE_TRIPLET4.start_node.name}, {TEST_SIMPLE_TRIPLET4.relation.name}, {TEST_SIMPLE_TRIPLET4.end_node.name}"], ["{SIMPLE_TRIPLET3.start_node.name}, {SIMPLE_TRIPLET3.relation.name}, {SIMPLE_TRIPLET3.end_node.name}" -> "{TEST_SIMPLE_TRIPLET5.start_node.name}, {TEST_SIMPLE_TRIPLET5.relation.name}, {TEST_SIMPLE_TRIPLET5.end_node.name}"]]'
+TRIPLET_ANSWER2 = f'[["{SIMPLE_TRIPLET3.start_node.name}, {SIMPLE_TRIPLET3.relation.name}, {SIMPLE_TRIPLET3.end_node.name}" -> "{TEST_SIMPLE_TRIPLET5.start_node.name}, {TEST_SIMPLE_TRIPLET5.relation.name}, {TEST_SIMPLE_TRIPLET5.end_node.name}"]]'
 
 # 6. найдено несколько устаревших триплетов (итеративная замена того же ребра)
 TEST_SIMPLE_TRIPLET6 = TripletCreator.create(
@@ -96,12 +97,45 @@ BAD_SIMPLE_ANSWER = f'[["{SIMPLE_TRIPLET1.start_node.name} {SIMPLE_TRIPLET1.rela
 
 # -------- HYPER GRAPH --------
 
-INIT_HYPER_KNOWLEDGE_GRAPH = [
-    ...
-]
+# 1. нуль сопоставленных вершин
+TEST_HYPER_TRIPLET1 = TripletCreator.create(
+    start_node=NodeCreator.create(n_type=NodeType.object, name='pppp wwww'),
+    relation=RelationCreator.create(r_type=RelationType.hyper),
+    end_node=HYPER_NODE1
+)
+
+# 2. нуль смежных вершин
+TEST_HYPER_TRIPLET2 = TripletCreator.create(
+    start_node=OBJECT_NODE7,
+    relation=RelationCreator.create(r_type=RelationType.hyper),
+    end_node=HYPER_NODE2
+)
+
+# 3. найден один устаревший триплет
+TEST_HYPER_TRIPLET4 = TripletCreator.create(
+    start_node=OBJECT_NODE3,
+    relation=RelationCreator.create(r_type=RelationType.hyper),
+    end_node=NodeCreator.create(n_type=NodeType.hyper, name='gggg hhhh jjj')
+)
+HYPER_ANSWER1 = f'["{TEST_HYPER_TRIPLET4.end_node.name} <- {HYPER_NODE1.name}"]'
+
+# 4. найдено несколько устаревших триплетов (разные замены)
+TEST_HYPER_TRIPLET5 = TripletCreator.create(
+    start_node=OBJECT_NODE4,
+    relation=RelationCreator.create(r_type=RelationType.hyper),
+    end_node=NodeCreator.create(n_type=NodeType.hyper, name='zzzzz ssss yyy')
+)
+HYPER_ANSWER2 = f'["{TEST_HYPER_TRIPLET5.end_node.name} <- {HYPER_NODE1.name}"]'
+
+# 5. найдено несколько устаревших триплетов (итеративная замена того же ребра)
+TEST_HYPER_TRIPLET6 = TripletCreator.create(
+    start_node=TEST_HYPER_TRIPLET4.start_node,
+    relation=RelationCreator.create(r_type=RelationType.hyper),
+    end_node=NodeCreator.create(n_type=NodeType.hyper, name='sss ddd ooo')
+)
+HYPER_ANSWER3 = f'["{TEST_HYPER_TRIPLET6.end_node.name} <- {TEST_HYPER_TRIPLET4.end_node.name}"]'
+
+# 6. ошибка при разборе сгенерированного ответа (parser error)
+BAD_HYPER_ANSWER = f'[{TEST_HYPER_TRIPLET4.end_node.name} {HYPER_NODE1.name}]'
 
 # -------- EPISODIC GRAPH --------
-
-INIT_EPISODIC_KNOWLEDGE_GRAPH = [
-    ...
-]

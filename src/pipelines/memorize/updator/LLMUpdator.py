@@ -70,7 +70,8 @@ class LLMUpdator:
                     for neighbour_id in neighbour_node_ids:
                         shared_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_node.id, neighbour_id)
                         incident_triplets.update({item.id: item for item in shared_triplets})
-                incident_triplets = list(incident_triplets.values())
+
+            incident_triplets = list(incident_triplets.values())
 
             # Выполняем поиск устаревших триплетов
             tmp_obsolete_triplet_ids, status = self.replace_simple_solver.solve(
@@ -95,13 +96,16 @@ class LLMUpdator:
 
             for m_node in matched_nodes:
                 neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_node.id, [NodeType.hyper])
+
                 for neighbour_id in neighbour_node_ids:
                     shared_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_node.id, neighbour_id)
+
                     incident_triplets.update({item.id: item for item in shared_triplets})
+
             incident_triplets = list(incident_triplets.values())
 
             # Выполняем поиск устаревших триплетов
-            tmp_obsolete_triplet_ids, status = self.replace_simple_solver.solve(
+            tmp_obsolete_triplet_ids, status = self.replace_hyper_solver.solve(
                 lang=self.config.lang, base_triplet=base_triplet, incident_triplets=incident_triplets)
 
             if status == ReturnStatus.success:
@@ -145,7 +149,7 @@ class LLMUpdator:
 
     def get_obsolete_triplet_ids(self, new_triplets: List[Triplet], check_simple: bool = True,
                                  check_hyper: bool = True, check_episodic: bool = True) -> List[str]:
-        """Метод предназначен для поиска устаревшей информации в памяти (графе знаний) асситента. Информация представляется в виде набора триплетов.
+        """Метод предназначен для поиска устаревшей информации в памяти (графе знаний) асситента. Информация представлена в виде набора триплетов.
 
         :param new_triplets: Список триплетов, на основе которой осуществляется поиск/детекция устаревшей информации в памяти.
         :type new_triplets: List[Triplet]
@@ -216,8 +220,10 @@ class LLMUpdator:
                 obsolete_t_ids = self.get_obsolete_triplet_ids([triplet], need_simple, need_hyper, need_episodic)
                 self.log(f"Результат: суммарное количество устаревших триплетов - {len(obsolete_t_ids)}.", verbose=self.config.verbose)
 
+                obsolete_triplets = self.kg_model.graph_struct.db_conn.read(obsolete_t_ids)
+
                 self.log(f"Удаление устаревшей информации из памяти асситента...", verbose=self.config.verbose)
-                self.kg_model.remove_knowledge(obsolete_t_ids)
+                self.kg_model.remove_knowledge(obsolete_triplets)
 
             self.log(f"Добавление информации в память асситента...", verbose=self.config.verbose)
             self.kg_model.add_knowledge([triplet])

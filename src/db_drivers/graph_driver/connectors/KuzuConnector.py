@@ -116,11 +116,14 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
             insert_rel_query = self.create_rel_query(triplet)
             self.conn.execute(insert_rel_query)
 
-    def read(self, ids: List[str]) -> List[object]:
-        # TODO
-        pass
+    def read(self, ids: List[str]) -> List[Triplet]:
+        str_ids = '['+', '.join(list(map(lambda id: f'"{id}"', ids))) + ']'
+        query = f"MATCH (n1)-[rel]->(n2) WHERE any(id IN {str_ids} WHERE rel.t_id = id) RETURN n1, rel, n2"
+        raw_output = self.execute_query(query)
+        triplets = self.parse_query_triplets_output(raw_output)
+        return triplets
 
-    def update(self, items: List[object]) -> ReturnInfo:
+    def update(self, items: List[Triplet]) -> ReturnInfo:
         # TODO
         pass
 

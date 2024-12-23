@@ -13,7 +13,7 @@ NODES_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
         path="../data/graph_structures/vectorized_nodes/default_densedb", db_info={'db': 'default_db', 'table': "vectorized_nodes"}))
 TRIPLETS_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
     db_vendor='chroma', db_config=VectorDBConnectionConfig(
-        path="../data/graph_structures/vectorized_triplets/default_densedb", db_info={'db': 'default_db', 'table': "vectorized_nodes"}))
+        path="../data/graph_structures/vectorized_triplets/default_densedb", db_info={'db': 'default_db', 'table': "vectorized_triplets"}))
 
 EMBEDDINGS_MODEL_LOG_PATH = 'log/kg_model/embeddings'
 
@@ -110,7 +110,7 @@ class EmbeddingsModel:
     def delete_triplets(self, triplets: List[Triplet], delete_nodes: bool = True) -> None:
         """Метод предназначен для удаления информации, представленной в виде списка триплетов, из векторной модели.
 
-        :param triplets: Набора триплетов для удаления.
+        :param triplets: Набор триплетов на удаление.
         :type triplets: List[Triplet]
         :param delete_nodes: Если True, то из векторной модели также будут удалены вершины, которые принадлежат данным триплетам, иначе False, Значение по умолчанию True.
         :type delete_nodes: bool, optional

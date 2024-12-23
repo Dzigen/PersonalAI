@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Dict
+from typing import List, Dict, Union
 import math
 from tqdm import tqdm
 
@@ -110,14 +110,16 @@ class GraphModel:
     def delete_triplets(self, triplets: List[Triplet], batch_size: int = 64) -> None:
         """Метод предназначен для удаления информации, представленной в виде списка триплетов, из графовой модели.
 
-        :param triplets: Набор триплетов для удаления из графовой модели.
+        :param triplets: Набор триплетов на удаления из графовой модели.
         :type triplets: List[Triplet]
         :param batch_size:  Количество триплетов, которое за одну delete-операцию удаляется из графовой модели. Значение по умолчанию 64.
         :type batch_size: int, optional
         """
-        steps = math.ceil(len(triplets) / batch_size)
+        triplet_ids = list(map(lambda t: t.id, triplets))
+
+        steps = math.ceil(len(triplet_ids) / batch_size)
         for step in tqdm(range(steps)):
-            self.db_conn.delete(triplets[step*batch_size: (step+1)*batch_size])
+            self.db_conn.delete(triplet_ids[step*batch_size: (step+1)*batch_size])
 
 
     def clear(self) -> None:

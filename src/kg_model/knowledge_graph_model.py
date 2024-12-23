@@ -27,16 +27,16 @@ class KnowledgeGraphModel:
         self.graph_struct.create_triplets(triplets, status_bar=False)
         self.embeddings_struct.create_triplets(triplets, status_bar=False)
 
-    def remove_knowledge(self, triplet_ids: List[str]) -> None:
+    def remove_knowledge(self, triplets: List[Triplet]) -> None:
         """Метод предназанчен для удаления информации из памяти (графа знаний) асситента.
         Удаление производится по идентификаторам триплетов, в которых данная информация находилась
         при её добавлении в память с помощью соответствующего add_knowledge-метода.
 
-        :param triplet_ids: Идентификаторы триплетов, по которым нужно удалить соответствующую инфомрацию из памяти ассистента.
+        :param triplets: Набор триплетов, по которым нужно удалить соответствующую инфомрацию из памяти ассистента.
         :type triplet_ids: List[str]
         """
-        self.graph_struct.delete_triplets(triplet_ids)
-        self.embeddings_struct.delete_triplets(triplet_ids, delete_nodes=True)
+        self.graph_struct.delete_triplets(triplets)
+        self.embeddings_struct.delete_triplets(triplets, delete_nodes=True)
 
     def clear(self) -> None:
         """Метод предназначен для удаления содержимого памяти (графа знаний) ассистента.

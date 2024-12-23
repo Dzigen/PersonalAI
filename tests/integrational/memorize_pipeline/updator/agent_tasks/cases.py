@@ -56,7 +56,7 @@ HYPER_TRIPLET4 = TripletCreator.create(
 HYPER_TRIPLET5 = TripletCreator.create(
     start_node=OBJECT_NODE5, relation=HYPER_REL, end_node=HYPER_NODE5)
 
-NO_THESIS_REPL_AGENT_ANSWER = '[].'
+NO_THESIS_REPL_AGENT_ANSWER = '[]'
 ONE_THESIS_REPL_AGENT_ANSWER = f'["{HYPER_TRIPLET2.end_node.name} <- {HYPER_TRIPLET4.end_node.name}"]'
 SEVERAL_THESIS_REPL_AGENT_ANSWER = f'["{HYPER_TRIPLET3.end_node.name} <- {HYPER_TRIPLET4.end_node.name}", "{HYPER_TRIPLET3.end_node.name} <- {HYPER_TRIPLET5.end_node.name}"]'
 BAD_THESIS_AGENT_ANSWER = f'[{HYPER_TRIPLET1.end_node.name} {HYPER_TRIPLET4.end_node.name}]'

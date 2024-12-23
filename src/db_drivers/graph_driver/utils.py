@@ -13,7 +13,7 @@ class GraphDBConnectionConfig(BaseDatabaseConfig):
 class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
 
     @abstractmethod
-    def create(self, triplets: List[object], creation_info: Dict = dict()) -> ReturnInfo:
+    def create(self, triplets: List[Triplet], creation_info: Dict = dict()) -> ReturnInfo:
         pass
 
     @abstractmethod

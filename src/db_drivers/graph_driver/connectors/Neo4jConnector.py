@@ -113,8 +113,11 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
 
     def read(self, ids: List[str]) -> List[Triplet]:
-        # TODO
-        pass
+        str_ids = '['+', '.join(list(map(lambda id: f'"{id}"', ids))) + ']'
+        query = f"MATCH (n1)-[rel]->(n2) WHERE any(id IN {str_ids} WHERE rel.t_id = id) RETURN n1, rel, n2"
+        raw_output = self.execute_query(query)
+        triplets = self.parse_query_triplets_output(raw_output)
+        return triplets
 
     def update(self, items: List[Triplet]) -> None:
         # TODO
