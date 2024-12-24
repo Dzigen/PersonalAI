@@ -3,7 +3,7 @@ from typing import List, Dict, Tuple
 
 from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 from ....utils.errors import STATUS_MESSAGE
-from ....utils.data_structs import TripletCreator, NodeCreator, Node, Relation, RelationType, NodeType, Triplet
+from ....utils.data_structs import TripletCreator, NodeCreator, Node, Relation, RelationType, NodeType, Triplet, create_id
 from ....agents import AgentDriver, AgentDriverConfig
 
 from .configs import DEFAULT_EXTRACT_THESISES_TASK_CONFIG, DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG, MEM_EXTRACTOR_MAIN_LOG_PATH
@@ -20,6 +20,12 @@ class LLMExtractorConfig:
     :type triplets_extraction_task_config: AgentTaskSolverConfig
     :param thesises_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению трипетов с информацией типа 'hyper' из слабоструктурированных текстов на естественном языке. Значение по умолчанию DEFAULT_EXTRACT_THESISES_TASK_CONFIG.
     :type thesises_extraction_task_config: AgentTaskSolverConfig
+    :param need_simple: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'simple', иначе False. Значение по умолчанию True.
+    :type need_simple: bool, optional
+    :param need_thesises: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'hyper', иначе False. Значение по умолчанию True.
+    :type need_thesises: bool, optional
+    :param need_episodic: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False. Значение по умолчанию True.
+    :type need_episodic: bool, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(QA_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
@@ -29,6 +35,9 @@ class LLMExtractorConfig:
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     triplets_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG)
     thesises_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_EXTRACT_THESISES_TASK_CONFIG)
+    need_simple: bool = True
+    need_thesises: bool = True
+    need_episodic: bool = True
     log: Logger = field(default_factory=lambda: Logger(MEM_EXTRACTOR_MAIN_LOG_PATH))
     verbose: bool = False
 
@@ -47,58 +56,68 @@ class LLMExtractor:
         self.thesises_extraction_solver = AgentTaskSolver(self.agent, self.config.thesises_extraction_task_config)
 
 
-    def extract_knowledge(self, text: str, need_simple: bool = True, need_thesises: bool = True,
-                need_episodic: bool = True, properties: Dict = {}) -> Tuple[List[Triplet], ReturnInfo]:
+    def extract_knowledge(self, text: str, properties: Dict = {}) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста
         на естественном языке.
 
         :param text: Слабоструктурированный текст.
         :type text: str
-        :param need_simple: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'simple', иначе False. Значение по умолчанию True.
-        :type need_simple: bool, optional
-        :param need_thesises: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'hyper', иначе False. Значение по умолчанию True.
-        :type need_thesises: bool, optional
-        :param need_episodic: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False. Значение по умолчанию True.
-        :type need_episodic: bool, optional
         :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, Значение по умолчанию dict().
         :type properties: Dict, optional
         :return: Кортеж из двух объектов: (1) cписок извлечённой из текста информации (в виде триплетов); (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
-        assert need_simple or need_thesises
+        assert self.config.need_simple or self.config.need_thesises
         new_triplets, info = [], ReturnInfo()
 
-        if need_simple:
-            self.log("Старт извлечения simple-связей...", verbose=self.config.verbose)
+        self.log("START KNOWLEDGE EXTRACTION...", verbose=self.config.verbose)
+        self.log(f"BASE_TEXT ID: {create_id(text)}", verbose=self.config.verbose)
+
+        if self.config.need_episodic:
+            self.log("START SIMPLE-TRIPLETS EXTRACTION...", verbose=self.config.verbose)
             tmp_triplets, status = self.triplets_extraction_solver.solve(lang=self.config.lang, text=text, rel_prop=properties)
-            self.log(f"Результат: {tmp_triplets}", verbose=self.config.verbose)
-            self.log(f"Статус: {status}", verbose=self.config.verbose)
+
+            self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
+            for triplet in tmp_triplets:
+                self.log(f"* {triplet}", verbose=self.config.verbose)
+            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
 
             if status != ReturnStatus.success:
                 info.occurred_warning.append(status)
             else:
                 new_triplets += tmp_triplets
 
-        if need_thesises:
-            self.log("Старт извлечения thesis-связей...", verbose=self.config.verbose)
+        if self.config.need_thesises:
+            self.log("START HYPER-TRIPLETS EXTRACTION...", verbose=self.config.verbose)
             tmp_triplets, status = self.triplets_extraction_solver.solve(lang=self.config.lang, text=text, node_prop=properties)
-            self.log(f"Результат: {tmp_triplets}", verbose=self.config.verbose)
-            self.log(f"Статус: {status}", verbose=self.config.verbose)
+
+            self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
+            for triplet in tmp_triplets:
+                self.log(f"* {triplet}", verbose=self.config.verbose)
+            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
 
             if status != ReturnStatus.success:
                 info.occurred_warning.append(status)
             else:
                 new_triplets += tmp_triplets
 
-        if need_episodic:
-            self.log("Формирование episodic-связей...", verbose=self.config.verbose)
-            new_triplets += self.get_episodic_relationships(
+        if self.config.need_episodic:
+            self.log("START EPISODIC-TRIPLETS BUILDING...", verbose=self.config.verbose)
+            tmp_triplets += self.get_episodic_relationships(
                 text, self.get_entities_from_triplets(new_triplets), node_prop=properties)
-            self.log(f"Статус: {status}", verbose=self.config.verbose)
+
+            self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
+            for triplet in tmp_triplets:
+                self.log(f"* {triplet}", verbose=self.config.verbose)
+            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
+
+            new_triplets += tmp_triplets
 
         if len(new_triplets) == 0:
             info.status = ReturnStatus.zero_triplets
             info.message = STATUS_MESSAGE[info.status]
+
+        self.log(f"FINAL STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
         return new_triplets, info
 

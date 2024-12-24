@@ -5,7 +5,7 @@ from copy import deepcopy
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarTripletsRetriever
 from .BFSTripletsRetriever import BFSSearchConfig, BFSRetriever
-from ....utils.data_structs import QueryInfo, Triplet
+from ....utils.data_structs import QueryInfo, Triplet, create_id
 from ....kg_model import KnowledgeGraphModel
 from ....utils import Logger
 
@@ -42,6 +42,10 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever):
         self.bfs_searcher = BFSRetriever(kg_model, log, search_config.bfs_config, verbose)
 
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
+        self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
+
         astar_triplets = self.astar_searcher.get_relevant_triplets(query_info)
         bfs_triplets = self.bfs_searcher.get_relevant_triplets(query_info)
 

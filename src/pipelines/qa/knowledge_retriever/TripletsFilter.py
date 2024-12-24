@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import List
 
 from .utils import AbstractTriplesFilter, BaseTripletsFilterConfig
-from ....utils.data_structs import Triplet, QueryInfo
+from ....utils.data_structs import Triplet, QueryInfo, create_id
 from ....utils import Logger
 from ....kg_model import KnowledgeGraphModel
 from ....db_drivers.vector_driver import VectorDBInstance
@@ -35,6 +35,10 @@ class TripletsFilter(AbstractTriplesFilter):
         self.config = config
 
     def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
+        self.log("START KNOWLEDGE FILTERING...", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
+
         filtered_triplets = []
         query_embd = self.kg_model.embeddings_struct.embedder.encode_queries([query_info.query])[0]
         query_instance = VectorDBInstance(embedding=query_embd)

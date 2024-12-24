@@ -8,6 +8,7 @@ from .extractor import LLMExtractorConfig
 from .updator import LLMUpdatorConfig
 from ...kg_model import KnowledgeGraphModel
 from ...utils import Logger, Triplet, ReturnStatus, ReturnInfo
+from ...utils.data_structs import create_id
 from ...utils.errors import STATUS_MESSAGE
 
 @dataclass
@@ -45,18 +46,11 @@ class MemPipeline:
         self.extractor = LLMExtractor(config.extractor_config)
         self.updator = LLMUpdator(kg_model, config.updator_config)
 
-    def remember(self, text: str, need_simple: bool = True, need_thesises: bool = True, need_episodic: bool = True,
-                 delete_obsolete_info: bool = False, properties: Dict = dict()) -> Tuple[List[Triplet], ReturnInfo]:
+    def remember(self, text: str, properties: Dict = dict()) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста и обновление/актуализацию знаний в памяти (графе знаний) ассистена.
 
         :param text: Слабоструктурированный текст на естественном языке.
         :type text: str
-        :param need_simple: Если True, то из входного текста на первой стадии Memorize-конвейера будет выполнено извлечение триплетов с типом связи 'simple', иначе False. Значение по умолчанию True.
-        :type need_simple: bool, optional
-        :param need_thesises: Если True, то из входного текста на первой стадии Memorize-конвейера будет выполнено извлечение триплетов с типом связи 'hyper', иначе False. Значение по умолчанию True.
-        :type need_thesises: bool, optional
-        :param need_episodic: Если True, то из входного текста на первой стадии Memorize-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False. Значение по умолчанию True.
-        :type need_episodic: bool, optional
         :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшая информация из памяти (графа знаний) асситента, инчае False. Значение по умолчанию False.
         :type delete_obsolete_info: bool, optional
         :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, Значение по умолчанию dict().
@@ -65,16 +59,21 @@ class MemPipeline:
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
 
-        self.log("="*20, verbose=self.config.verbose)
-        self.log("-"*5 + "STAGE#1 - Извлечение информации (в структурированном формате) из текста" + "-"*5, verbose=self.config.verbose)
-        new_triplets, info = self.extractor.extract_knowledge(text, need_simple, need_thesises, need_episodic, properties)
-        self.log(f"Извлечённая информация (в triplet-формате): \n{new_triplets}", verbose=self.config.verbose)
+        self.log("START KNOWLEDGE REMEMBERING...", verbose=self.config.verbose)
+        self.log(f"BASE_TEXT ID: {create_id(text)}", verbose=self.config.verbose)
+
+        self.log("STAGE#1 - 'Извлечение информации (в структурированном формате) из текста'", verbose=self.config.verbose)
+        new_triplets, info = self.extractor.extract_knowledge(text, properties)
+
+        self.log(f"RESULT: {len(new_triplets)}", verbose=self.config.verbose)
+        for triplet in new_triplets:
+            self.log(f"* {triplet}", verbose=self.config.verbose)
 
         if info.status == ReturnStatus.success:
-            self.log("-"*5 + "STAGE#2 - Обновление информации в памяти (графе знаний) асситента " + "-"*5, verbose=self.config.verbose)
-            info = self.updator.update_knowledge(new_triplets, delete_obsolete_info)
+            self.log("STAGE#2 - 'Обновление информации в памяти (графе знаний) асситента'", verbose=self.config.verbose)
+            self.log(f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.config.verbose)
+            info = self.updator.update_knowledge(new_triplets)
 
-        self.log("+"*20, verbose=self.config.verbose)
-        self.log(f"Статус: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
+        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
         return new_triplets, info

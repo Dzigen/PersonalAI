@@ -10,6 +10,7 @@ from ....utils.data_structs import QueryInfo, Triplet
 from ....kg_model import KnowledgeGraphModel
 from ....utils import Logger, ReturnStatus, ReturnInfo
 from ....utils.errors import STATUS_MESSAGE
+from ....utils.data_structs import create_id
 
 @dataclass
 class KnowledgeRetrieverConfig:
@@ -63,17 +64,27 @@ class KnowledgeRetriever:
         :return: Кортеж из двух объектов: (1) список релевантных user-вопросу триплетов; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
-        info = ReturnInfo()
-        self.log("stage #3.1 - extracting triplets...", verbose=self.config.verbose)
-        triplets = self.graph_retriever.get_relevant_triplets(query_info)
-        self.log(f"Количество извлечённых триплетов: {len(triplets)}", verbose=self.config.verbose)
+        self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.config.verbose)
 
-        self.log("stage #3.2 - filtering triplets...", verbose=self.config.verbose)
+        info = ReturnInfo()
+        self.log("STAGE #3.1 - TRIPLETS EXTRACTION...", verbose=self.config.verbose)
+        triplets = self.graph_retriever.get_relevant_triplets(query_info)
+        self.log(f"RESULT: {len(triplets)}")
+        for triplet in triplets:
+            self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
+
+        self.log("STAGE #3.2 - TRIPLETS FILTERING...", verbose=self.config.verbose)
         filtered_triplets = self.triplets_filter.apply_filter(query_info, triplets)
-        self.log(f"Количество триплетов после фильтрации: {len(filtered_triplets)}", verbose=self.config.verbose)
+        self.log(f"RESULT: {len(filtered_triplets)}", verbose=self.config.verbose)
+        for triplet in filtered_triplets:
+            self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
 
         if len(filtered_triplets) == 0:
             info.status = ReturnStatus.zero_retrieved_triplets
             info.message = STATUS_MESSAGE[info.status]
+
+        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
         return filtered_triplets, info

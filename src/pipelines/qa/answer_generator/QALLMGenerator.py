@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 
 from .configs import DEFAULT_ANSWER_GEN_TASK_CONFIG, QA_MAIN_LOG_PATH
 
-from ....utils.data_structs import Triplet, TripletCreator, RelationType
+from ....utils.data_structs import Triplet, TripletCreator, RelationType, create_id
 from ....utils.errors import STATUS_MESSAGE
 from ....agents import AgentDriver, AgentDriverConfig
 from ....utils import Logger, detect_lang, ReturnInfo, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
@@ -60,15 +60,15 @@ class QALLMGenerator:
         """
 
         info = ReturnInfo()
-        self.log("="*20, verbose=self.config.verbose)
-        self.log(f"Входные данные:", verbose=self.config.verbose)
-        self.log(f"\tQUERY: {query}", verbose=self.config.verbose)
-        self.log(f"\tCONTEXT_TRIPLETS: {context_triplets}", verbose=self.config.verbose)
+        self.log("START ANSWER GENERATION ...", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
+        self.log(f"CONTEXT_TRIPLETS:",verbose=self.config.verbose)
+        for triplet in context_triplets:
+            self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
 
         self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...", verbose=self.config.verbose)
         answer, status = self.answer_generator_solver.solve(query=query, triplets=context_triplets)
-        self.log(f"Результат:\n{answer}", verbose=self.config.verbose)
-        self.log(f"Статус: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
 
         if status != ReturnStatus.success:
             info.occurred_warning.append(status)
@@ -76,5 +76,8 @@ class QALLMGenerator:
         if len(answer) == 0:
             info.status = ReturnStatus.empty_answer
             info.message = STATUS_MESSAGE[info.status]
+
+        self.log(f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.config.verbose)
+        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
         return answer, info

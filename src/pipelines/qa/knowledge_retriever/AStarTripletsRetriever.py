@@ -11,7 +11,7 @@ from .errors import NOT_VALID_ID_ERROR_MSG, NO_START_NODE_IN_PARENT_ERROR_MSG, E
 
 from ....utils.data_structs import QueryInfo, Triplet, NodeType
 from ....kg_model import KnowledgeGraphModel
-from ....utils.data_structs import create_id_for_node_pair
+from ....utils.data_structs import create_id_for_node_pair, create_id
 from ....db_drivers.kv_driver.utils import KeyValueDBInstance
 from ....db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver
 from ....utils import Logger
@@ -90,12 +90,12 @@ class AStarMetrics:
             pair_id = create_id_for_node_pair(node1_id, node2_id)
             if self.cache['ip'].item_exist(pair_id):
                 #print("exists")
-                dist = self.cache['ip'].read([pair_id])[0].metadata['v']
+                dist = self.cache['ip'].read([pair_id])[0].value
                 self.cache_info['dist']['exist'] += 1
             else:
                 #print("calculating")
                 dist = self.calculate_ip_distance(node1_id, node2_id)
-                self.cache['ip'].create([KeyValueDBInstance(id=pair_id, metadata={'v': dist})])
+                self.cache['ip'].create([KeyValueDBInstance(id=pair_id, value=dist)])
                 self.cache_info['dist']['calc'] += 1
         else:
             self.cache_info['dist']['calc'] += 1
@@ -108,12 +108,12 @@ class AStarMetrics:
             pair_id = create_id_for_node_pair(node1_id, node2_id)
             if self.cache['bfs_short_path'].item_exist(pair_id):
                 #print("exists")
-                short_path = self.cache['bfs_short_path'].read([pair_id])[0].metadata['v']
+                short_path = self.cache['bfs_short_path'].read([pair_id])[0].value
                 self.cache_info['bfs_short_path']['exist'] += 1
             else:
                 #print("calculating")
                 short_path = self.bfs(node1_id, node2_id)
-                self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, metadata={'v': short_path})])
+                self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, value=short_path)])
                 self.cache_info['bfs_short_path']['calc'] += 1
         else:
             self.cache_info['bfs_short_path']['calc'] += 1
@@ -136,7 +136,7 @@ class AStarMetrics:
         short_path_len = self.compute_short_path(node1_id, node2_id)
         return np.mean(acc_dist) * short_path_len
 
-    def bfs(self, s_node_id, e_node_id):
+    def bfs(self, s_node_id: str, e_node_id: str) -> int:
         visited, queue = set(), collections.deque([s_node_id])
         visited.add(s_node_id)
         D = {s_node_id: 0}
@@ -162,7 +162,7 @@ class AStarMetrics:
                     if self.config.kvdriver_config is not None:
                         pair_id = create_id_for_node_pair(s_node_id, neighbour)
                         if not self.cache['bfs_short_path'].item_exist(pair_id):
-                            self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, metadata={'v': D[neighbour]})])
+                            self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, value=D[neighbour])])
 
                     if neighbour == e_node_id:
                         self.log(f"bfs end-node found!", verbose=self.verbose)
@@ -181,7 +181,7 @@ class AStarMetrics:
         if self.config.kvdriver_config is not None:
             pair_id = create_id_for_node_pair(s_node_id, e_node_id)
             if not self.cache['bfs_short_path'].item_exist(pair_id):
-                self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, metadata={'v': INF_VALUE})])
+                self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, value=INF_VALUE)])
 
         return INF_VALUE
 
@@ -276,7 +276,7 @@ class AStarGraphSearch:
                     heapq.heappush(frontier, (priority, adj_n_id))
 
         self.log(f"start-spare node path len: {D[spare_closest_node_id]}" if end_node_id not in parent else f"start-end node path len: {D[end_node_id]}", verbose=self.verbose)
-        self.log(f"astar neo4j queries: {passed_nodes_counter}", verbose=self.verbose)
+        self.log(f"astar queries: {passed_nodes_counter}", verbose=self.verbose)
         return cost_so_far, frontier, D, parent, spare_closest_node_id
 
 class AStarTripletsRetriever(AbstractTripletsRetriever):
@@ -329,6 +329,10 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
         return path
 
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
+        self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
+
         nodes_ids = []
         for node in query_info.linked_nodes:
             if node.id not in nodes_ids:
@@ -371,7 +375,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
             for triplet in triplets:
                 unique_triplets[triplet.relation.id] = triplet
 
-        self.log(f"foramting neo4j queries: {len(unique_nodes_pairs)}", verbose=self.verbose)
-        self.log(f"= formating elapsed_time: {time() - s_time}", verbose=self.verbose)
+        self.log(f"foramting queries: {len(unique_nodes_pairs)}", verbose=self.verbose)
+        self.log(f"formating elapsed_time: {time() - s_time}", verbose=self.verbose)
 
         return list(unique_triplets.values())

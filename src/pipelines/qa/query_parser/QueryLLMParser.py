@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Tuple
 
 from .configs import DEFAULT_KW_EXTRACTION_TASK_CONFIG, QP_MAIN_LOG_PATH
-from ....utils.data_structs import QueryInfo
+from ....utils.data_structs import QueryInfo, create_id
 from ....utils.errors import STATUS_MESSAGE
 from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 from ....agents import AgentDriver, AgentDriverConfig
@@ -53,14 +53,12 @@ class QueryLLMParser:
         """
 
         info = ReturnInfo()
-        self.log("="*20, verbose=self.config.verbose)
-        self.log(f"Входные данные:", verbose=self.config.verbose)
-        self.log(f"\tQUERY: {query}", verbose=self.config.verbose)
+        self.log("START KEY WORD EXTRACTION...", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
 
         self.log("Выполнение извлечения ключевых сущностей из запроса с помощью LLM-агента...", verbose=self.config.verbose)
         extracted_entities, status = self.kw_extraction_solver.solve(lang=self.config.lang, query=query)
-        self.log(f"Результат:\n{extracted_entities}", verbose=self.config.verbose)
-        self.log(f"Статус: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
 
         if status != ReturnStatus.success:
             info.occurred_warning.append(status)
@@ -70,5 +68,10 @@ class QueryLLMParser:
             info.message = STATUS_MESSAGE[info.status]
 
         query_struct = QueryInfo(query=query, entities=extracted_entities)
+
+        self.log(f"RESULT: {len(extracted_entities)}", verbose=self.config.verbose)
+        for entity in extracted_entities:
+            self.log(f"* {entity}", verbose=self.config.verbose)
+        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
         return query_struct, info

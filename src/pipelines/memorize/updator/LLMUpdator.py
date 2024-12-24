@@ -1,7 +1,7 @@
 from .configs import MEM_UPDATOR_MAIN_LOG_PATH, DEFAULT_REPLACE_SIMPLE_TASK_CONFIG, DEFAULT_REPLACE_THESIS_TASK_CONFIG
 from ....utils import Logger, Triplet, AgentTaskSolverConfig, AgentTaskSolver
-from ....utils.data_structs import RelationType, NodeType
-from ....utils.errors import ReturnInfo, ReturnStatus
+from ....utils.data_structs import RelationType, NodeType, create_id
+from ....utils.errors import ReturnInfo, ReturnStatus, STATUS_MESSAGE
 from ....agents import AgentDriver, AgentDriverConfig
 from ....kg_model import KnowledgeGraphModel
 
@@ -22,6 +22,8 @@ class LLMUpdatorConfig:
     :type replace_simple_task_config: AgentTaskSolverConfig
     :param replace_thesis_task_config: Конфигурация атомарной задачи для LLM-агента по поиску устаревших триплетов типа "hyper". Значение по умолчанию DEFAULT_REPLACE_THESIS_TASK_CONFIG.
     :type replace_thesis_task_config: AgentTaskSolverConfig
+    :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшие знания из памяти (графа знаний) асситента, инчае False. Значение по умолчанию False.
+    :type delete_obsolete_info: bool, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(MEM_UPDATE_LOG).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
@@ -31,6 +33,7 @@ class LLMUpdatorConfig:
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     replace_simple_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_REPLACE_SIMPLE_TASK_CONFIG)
     replace_thesis_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_REPLACE_THESIS_TASK_CONFIG)
+    delete_obsolete_info: bool = False
 
     log: Logger = field(default_factory=lambda: Logger(MEM_UPDATOR_MAIN_LOG_PATH))
     verbose: bool = False
@@ -171,27 +174,29 @@ class LLMUpdator:
 
         return list(set(obsolete_triplet_ids))
 
-    def update_knowledge(self, new_triplets: List[Triplet], delete_obsolete_info:bool=False) -> ReturnInfo:
+    def update_knowledge(self, new_triplets: List[Triplet]) -> ReturnInfo:
         """Метод предназначен для изменения (удаления устаревшей / добавление новой информации) памяти (графа знаний) асситента.
 
         :param new_triplets: Список триплетов с информацией для добавления в память (граф знаний) асситента.
         :type new_triplets: List[Triplet]
-        :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшие знания из памяти (графа знаний) асситента, инчае False. Значение по умолчанию False.
-        :type delete_obsolete_info: bool, optional
         :return: Статус завершения операции с пояснительной информацией.
         :rtype: ReturnInfo
         """
         info = ReturnInfo()
 
-        if delete_obsolete_info:
+        self.log("START KNOWLEDGE UPDATING...", verbose=self.config.verbose)
+        self.log(f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.config.verbose)
+
+        if self.config.delete_obsolete_info:
             obsolete_triplets_counter = 0
 
-            self.log(f"Поиск устаревшей информации в памяти ассистента...", verbose=self.config.verbose)
+            self.log(f"START SEARCH OF OBSOLETE TRIPLETS IN MEMORY...", verbose=self.config.verbose)
             # Note: обрабатываем каждый триплет по отдельности, так как в пуле триплетов могут быть такие,
             # которые заменяют одни и те же устаревшие триплеты. Соответсвенно, мы должны итеративно обновлять память и сохранить
             # только последнюю актуальную информацию.
             for triplet in tqdm(new_triplets):
-                self.log(f"Новый триплет: {triplet}", verbose=self.config.verbose)
+                self.log(f"BASE_TRIPLET ID: {triplet.id}", verbose=self.config.verbose)
+                self.log(f"BASE_TRIPLET: {triplet}", verbose=self.config.verbose)
 
                 if triplet.relation.type == RelationType.simple:
                     obsolete_t_ids = self.find_simple_obsolete_triplet_ids(triplet)
@@ -204,21 +209,25 @@ class LLMUpdator:
                 else:
                     raise ValueError
 
-                self.log(f"Результат: количество найденных устаревших триплетов - {len(obsolete_t_ids)}.", verbose=self.config.verbose)
+                self.log("RESULT:", verbose=self.config.verbose)
+                self.log(f"* OBSOLETE TRIPELTS AMOUNT - {len(obsolete_t_ids)}", verbose=self.config.verbose)
+                self.log(f"* OBSOLETE TRIPLET IDS - {obsolete_t_ids}", verbose=self.config.verbose)
                 obsolete_triplets_counter += len(obsolete_t_ids)
-                self.log(f"Идентификаторы устаревших трипелтов: {obsolete_t_ids}.", verbose=self.config.verbose)
 
-                self.log(f"Удаление устаревшей информации из памяти асситента...", verbose=self.config.verbose)
+                self.log(f"DELTING OBSOLETE TRIPLETS FROM MEMORY...", verbose=self.config.verbose)
                 obsolete_triplets = self.kg_model.graph_struct.db_conn.read(obsolete_t_ids)
                 self.kg_model.remove_knowledge(obsolete_triplets)
 
-                self.log(f"Добавление информации в память асситента...", verbose=self.config.verbose)
+                self.log(f"ADDING NEW TRIPLE TO MEMORY...", verbose=self.config.verbose)
                 self.kg_model.add_knowledge([triplet])
 
-            self.log(f"== Результат: cуммарное количество найденных устаревших триплетов - {obsolete_triplets_counter}.", verbose=self.config.verbose)
+            self.log(f"FINAL RESULT:")
+            self.log(f"- SUM AMOUNT OF OBSOLETE TRIPELTS: {obsolete_triplets_counter}", verbose=self.config.verbose)
 
         else:
-            self.log(f"Добавление информации в память асситента...", verbose=self.config.verbose)
+            self.log(f"ADDING TRIPLETS TO MEMORY...", verbose=self.config.verbose)
             self.kg_model.add_knowledge(new_triplets)
+
+        self.log(f"FINAL STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
         return info

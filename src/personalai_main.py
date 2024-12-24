@@ -6,6 +6,7 @@ from .kg_model import GraphModelConfig, EmbeddingsModelConfig, KnowledgeGraphMod
 from .pipelines.qa import QAPipeline, QAPipelineConfig
 from .pipelines.memorize import MemPipeline, MemPipelineConfig
 from .utils import Logger, ReturnInfo, Triplet
+from .utils.data_structs import create_id
 
 RKG_LOG_PATH = "log/personalai"
 
@@ -58,10 +59,12 @@ class PersonalAI:
         :return: Кортеж из двух объектов: (1) сгенерированный ответ; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
-        self.log("Start answer generation:", verbose=self.config.verbose)
-        self.log(f"\t- question: {question}", verbose=self.config.verbose)
+        self.log("START ANSWER GENERATION...", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(question)}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION: {question}", verbose=self.config.verbose)
+
         answer, info = self.qa_pipeline.answer(question)
-        self.log(f"\t- answer: {answer}", verbose=self.config.verbose)
+        self.log(f"RESULT:\n* FINAL ANSWER - {answer}", verbose=self.config.verbose)
         return answer, info
 
     def update_memory(self, text: str, text_properties: Dict) -> Tuple[List[Triplet], ReturnInfo]:
@@ -74,7 +77,11 @@ class PersonalAI:
         :return: Кортеж из двух объектов: (1) список извлечённой из текста информации (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
-        self.log("Start memory-updating...", verbose=self.config.verbose)
+        self.log("START MEMORY_UPDATING ...", verbose=self.config.verbose)
+        self.log(f"BASE_TEXT ID: {create_id(text)}", verbose=self.config.verbose)
+        self.log(f"BASE_TEXT: {text}", verbose=self.config.verbose)
+
         triplets, info = self.mem_pipeline.remember(text, text_properties)
-        self.log(f"\t- triplets amount: {len(triplets)}", verbose=self.config.verbose)
+        self.log(f"RESULT:\n* EXTRACTED_TRIPLETS AMOUNT - {len(triplets)}", verbose=self.config.verbose)
+
         return triplets, info

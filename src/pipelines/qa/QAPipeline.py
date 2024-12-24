@@ -5,6 +5,8 @@ from .query_parser import QueryLLMParser, QueryLLMParserConfig
 from .configs import QA_MAIN_LOG_PATH
 from ...kg_model import KnowledgeGraphModel
 from ...utils import Logger, ReturnStatus, ReturnInfo
+from ...utils.data_structs import create_id
+from ...utils.errors import STATUS_MESSAGE
 
 from dataclasses import dataclass, field
 from typing import Tuple
@@ -60,29 +62,31 @@ class QAPipeline:
         :return: Кортеж из двух объектов: (1) cгенерированный ответ; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
+
+        self.log("START QUESTION ANSWERING...", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
+
         answer = None
-        self.log("="*20, verbose=self.config.verbose)
-        self.log("-"*10 + "STAGE#1 - entities extraction" + "-"*10, verbose=self.config.verbose)
-        self.log("QUERY:\n" + query, verbose=self.config.verbose)
+        self.log("STAGE#1 - KEY WORDS EXTRACTION", verbose=self.config.verbose)
         query_info, info = self.query_parser.extract_entities(query)
-        self.log("EXTRACTED_ENTITIES:\n" + ', '.join(query_info.entities), verbose=self.config.verbose)
+        self.log(f"RESULT:\n* EXTRACTED ENTITIES AMOUNT - {len(query_info.entities)}", verbose=self.config.verbose)
 
         if info.status == ReturnStatus.success:
-            self.log("-"*10 + "STAGE#2 - kg_nodes to query linking" + "-"*10, verbose=self.config.verbose)
+            self.log("STAGE#2 - MATCHING KEY WORDS TO KG-NODES", verbose=self.config.verbose)
             info = self.knowledge_comparator.link_kgnodes_to_query(query_info)
-            self.log("LINKED_NODES:\n" + ', '.join(list(map(lambda v: v.document, query_info.linked_nodes))), verbose=self.config.verbose)
+            self.log(f"RESULT:\n* MATCHED KG-NODES AMOUNT - {len(query_info.linked_nodes)}",verbose=self.config.verbose)
 
         if info.status == ReturnStatus.success:
-            self.log("-"*10 + "STAGE#3 - retrieve" + "-"*10, verbose=self.config.verbose)
+            self.log("STAGE#3 - RETRIEVING RELEVANT TRIPLETS FROM KG", verbose=self.config.verbose)
             retrieved_triplets, info = self.knowledge_retriever.retrieve(query_info)
-            self.log(f"RETRIEVED_TRIPLETS:\n {retrieved_triplets}", verbose=self.config.verbose)
+            self.log(f"RESULT:\n* RETRIEVED TRIPLETS AMOUNT - {len(retrieved_triplets)}", verbose=self.config.verbose)
 
         if info.status == ReturnStatus.success:
-            self.log("-"*10 + "STAGE#4 - answer generation" + "-"*10, verbose=self.config.verbose)
+            self.log("STAGE#4 - ANSWER GENERATION", verbose=self.config.verbose)
             answer, info = self.answer_generator.generate(query_info.query, retrieved_triplets)
-            self.log("ANSWER:\n" + answer, verbose=self.config.verbose)
+            self.log(f"RESULT:\n* ANSWER - {answer}", verbose=self.config.verbose)
 
-        self.log("-"*20, verbose=self.config.verbose)
-        self.log(f"Статус: {info.message}", verbose=self.config.verbose)
+        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
         return answer, info

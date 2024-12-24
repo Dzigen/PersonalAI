@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from .configs import KC_MAIN_LOG_PATH
 from ....utils import Logger, ReturnStatus, ReturnInfo
 from ....utils.errors import STATUS_MESSAGE
-from ....utils.data_structs import QueryInfo
+from ....utils.data_structs import QueryInfo, create_id
 from ....kg_model import KnowledgeGraphModel
 from ....db_drivers.vector_driver import VectorDBInstance
 
@@ -42,6 +42,7 @@ class KnowledgeComparator:
     """
     def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeComparatorConfig = KnowledgeComparatorConfig()) -> None:
         self.config = config
+        self.log = self.config.log
         self.kg_model = kg_model
 
     def link_kgnodes_to_query(self, query_structure: QueryInfo) -> ReturnInfo:
@@ -52,6 +53,11 @@ class KnowledgeComparator:
         :return: Статс завершения операции с пояснительной информацией.
         :rtype: ReturnInfo
         """
+
+        self.log("START MATCHING KEY WORDS ...", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_structure.query)}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION: {query_structure.query}", verbose=self.config.verbose)
+
         info = ReturnInfo()
         linked_nodes_by_entities, linked_nodes = [], []
         for entity in query_structure.entities:
@@ -78,5 +84,10 @@ class KnowledgeComparator:
         if len(query_structure.linked_nodes) == 0:
             info.status = ReturnStatus.zero_linked_nodes
             info.message = STATUS_MESSAGE[info.status]
+
+        self.log(f"RESULT: {len(query_structure.linked_nodes)}", verbose=self.config.verbose)
+        for node in query_structure.linked_nodes:
+            self.log(f"*[{node.id}] {node.document}", verbose=self.config.verbose)
+        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
         return info
