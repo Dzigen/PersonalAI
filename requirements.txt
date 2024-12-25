@@ -1,10 +1,9 @@
-chromadb==0.5.3
-gigachat==0.1.17
 aerospike==15.1.0
 annotated-types==0.7.0
 anyio==4.6.2.post1
 asgiref==3.8.1
 asttokens==2.4.1
+async-timeout==5.0.1
 backoff==2.2.1
 bcrypt==4.2.1
 build==1.2.2.post1
@@ -123,6 +122,7 @@ python-dotenv==1.0.1
 pytz==2024.2
 PyYAML==6.0.2
 pyzmq==26.2.0
+redis==5.2.1
 regex==2024.11.6
 requests==2.32.3
 requests-oauthlib==2.0.0
