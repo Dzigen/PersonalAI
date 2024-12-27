@@ -1,6 +1,7 @@
 services:
 
   aerospike_golden_gigachat:
+    user: "4200235:4200235"
     container_name: personalai_aerospike
     hostname: aerospikelservice
     image: m.menschikov/aerospike:ee-7.1.0.6_1
@@ -21,6 +22,7 @@ services:
           memory: 4G
 
   aerospike_built_gigachat:
+    user: "4200235:4200235"
     container_name: personalai_aerospike
     hostname: aerospikelservice
     image: m.menschikov/aerospike:ee-7.1.0.6_1
@@ -43,6 +45,7 @@ services:
   # Database - Neo4j
   neo4j:
     container_name: personalai_mmenschikov_neo4j
+    user: "4200235:4200235"
     image: neo4j:5.21.0-enterprise
     hostname: personalai_mmenschikov_neo4j
     ports:
@@ -61,53 +64,6 @@ services:
         reservations:
           cpus: '1'
           memory: 4G
-    tty: true
-    stdin_open: true
-
-  mongo:
-    container_name: personalai_mmenschikov_mongo
-    image: mongo:7.0.9
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=user
-      - MONGO_INITDB_ROOT_PASSWORD=pass
-    ports:
-      - 27017:27017
-    volumes:
-      - ../mongo_volume/data:/data/db
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 8G
-        reservations:
-          cpus: '1'
-          memory: 4G
-    tty: true
-    stdin_open: true
-
-  redis:
-    container_name: personalai_mmenschikov_redis
-    image: redis:latest
-    command: redis-server /usr/local/etc/redis/redis.conf
-    environment:
-      - REDIS_PASSWORD=my_redis_password
-      - REDIS_USER=my_user
-      - REDIS_USER_PASSWORD=my_user_password
-    ports:
-      - 6380:6379
-    volumes:
-      - ../redis_volume/redis.conf:/usr/local/etc/redis/redis.conf
-      - ../redis_volume/data:/data
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 8G
-        reservations:
-          cpus: '1'
-          memory: 4G
-    tty: true
-    stdin_open: true
 
   workspace:
     image: m.menschikov/workspace:v1
@@ -116,10 +72,10 @@ services:
     ports:
       - "10888:10888"
     volumes:
-      - ./:/workspace
-    depends_on:
-      - aerospike_built_gigachat
-      - neo4j
+      - ../:/home/workspace
+#    depends_on:
+#      - aerospike_built_gigachat
+#      - neo4j
     deploy:
       resources:
         limits:
@@ -130,5 +86,5 @@ services:
           memory: 24G
           devices:
             - driver: nvidia
-              device_ids: ['3']
+              device_ids: ['1']
               capabilities: [gpu]
