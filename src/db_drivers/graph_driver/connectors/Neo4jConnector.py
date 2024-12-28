@@ -131,11 +131,12 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         pass
 
     def read_by_name(self, name: str, type: Union[RelationType, NodeType], object: str = 'triplet') -> List[Union[Triplet, Node]]:
+        dump_name = json.dumps(name, ensure_ascii=False)
         if object == 'triplet':
-            output = self.execute_query(f"MATCH (n1)-[rel:{type.value}]->(n2) WHERE rel.name = {name} RETURN n1,rel,n2;")
+            output = self.execute_query(f'MATCH (n1)-[rel:{type.value}]->(n2) WHERE rel.name = {dump_name} RETURN n1,rel,n2;')
             formated_output = self.parse_query_triplets_output(output)
         elif object == 'node':
-            output = self.execute_query(f"MATCH (n:{type.value}) WHERE n.name = {name} RETURN n;")
+            output = self.execute_query(f'MATCH (n:{type.value}) WHERE n.name = {dump_name} RETURN n;')
             formated_output = self.parse_query_nodes_output(output)
         else:
             raise ValueError

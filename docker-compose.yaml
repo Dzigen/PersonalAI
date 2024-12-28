@@ -72,10 +72,28 @@ services:
     ports:
       - "10888:10888"
     volumes:
+      - ../:/home/m.menschikov/workspace
+    deploy:
+      resources:
+        limits:
+          cpus: '16'
+          memory: 32G
+        reservations:
+          cpus: '8'
+          memory: 24G
+          devices:
+            - driver: nvidia
+              device_ids: ['1']
+              capabilities: [gpu]
+
+  empty_workspace:
+    image: m.menschikov/empty_workspace:v1
+    container_name: personalai_mmenschikov_empty_worksapce
+    hostname: emptyworksapceservice
+    ports:
+      - "10888:10888"
+    volumes:
       - ../:/home/workspace
-#    depends_on:
-#      - aerospike_built_gigachat
-#      - neo4j
     deploy:
       resources:
         limits:

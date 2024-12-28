@@ -30,7 +30,8 @@ HYPER_PARAMS = {
     'DATASET_NAME': 'diaasqa',
     'KNOWLEDGE_GRAPH_NAME': 'gigachat_filtered',
     'EMBEDDER_MODEL_PATH': '../../models/intfloat/multilingual-e5-small',
-    'DELETE_OBSOLETE_INFO': True
+    'DELETE_OBSOLETE_INFO': True,
+    'LANG': 'en'
 }
 # TO CHANGE
 
@@ -49,16 +50,16 @@ GRAPH_DB_PATH = KG_PATH + "graph_part/"
 
 ####################3
 
-if not os.path.exists(BASE_PATH):
-    raise ValueError(f"Директории не существует: {BASE_PATH}")
-if not os.path.exists(DATASET_PATH):
-    raise ValueError(f"Директории не существует: {DATASET_PATH}")
-if os.path.exists(KG_PATH):
-    raise ValueError(f"Директория существует: {KG_PATH}")
-
-os.mkdir(KG_PATH)
-os.mkdir(VECTORIZED_DB_PATH)
-os.mkdir(GRAPH_DB_PATH)
+#if not os.path.exists(BASE_PATH):
+#    raise ValueError(f"Директории не существует: {BASE_PATH}")
+#if not os.path.exists(DATASET_PATH):
+#    raise ValueError(f"Директории не существует: {DATASET_PATH}")
+#if os.path.exists(KG_PATH):
+#    raise ValueError(f"Директория существует: {KG_PATH}")
+#
+#os.mkdir(KG_PATH)
+#os.mkdir(VECTORIZED_DB_PATH)
+#os.mkdir(GRAPH_DB_PATH)
 
 print(VECTORIZED_DB_PATH)
 print(GRAPH_DB_PATH)
@@ -67,7 +68,7 @@ out = input("continue? ")
 
 ##############
 
-with open(HYPER_PARAMS_PATH, 'w', encodings='utf-8') as fd:
+with open(HYPER_PARAMS_PATH, 'w', encoding='utf-8') as fd:
     fd.write(json.dumps(HYPER_PARAMS, ensure_ascii=False, indent=1))
 
 ##############
@@ -78,7 +79,7 @@ graph_config = GraphModelConfig(
     driver_config=GraphDriverConfig(
         db_vendor='neo4j', 
         db_config=GraphDBConnectionConfig(
-            uri="bolt://0.0.0.0:7687", params={'user': "neo4j", 'pwd': 'password'}, 
+            uri="bolt://personalai_mmenschikov_neo4j:7687", params={'user': "neo4j", 'pwd': 'password'}, 
             need_to_clear=True)))
 
 embed_config = EmbeddingsModelConfig(
@@ -102,8 +103,9 @@ print(kg_model.graph_struct.db_conn.count_items())
 
 # Setting Memorization Pipeline
 mem_config = MemPipelineConfig(
-    extractor_config=LLMExtractorConfig(),
+    extractor_config=LLMExtractorConfig(lang=HYPER_PARAMS['LANG']),
     updator_config=LLMUpdatorConfig(
+        lang=HYPER_PARAMS['LANG'],
         delete_obsolete_info=HYPER_PARAMS['DELETE_OBSOLETE_INFO']))
 
 mem_pipeline = MemPipeline(kg_model, mem_config)

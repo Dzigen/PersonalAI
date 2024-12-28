@@ -107,7 +107,7 @@ class GraphModel:
 
         return {'triplets': created_triplet_ids, 'nodes': created_node_ids}
 
-    def delete_triplets(self, triplets: List[Triplet], batch_size: int = 64) -> None:
+    def delete_triplets(self, triplets: List[Triplet], batch_size: int = 64, status_bar: bool = False) -> None:
         """Метод предназначен для удаления информации, представленной в виде списка триплетов, из графовой модели.
 
         :param triplets: Набор триплетов на удаления из графовой модели.
@@ -118,7 +118,8 @@ class GraphModel:
         triplet_ids = list(map(lambda t: t.id, triplets))
 
         steps = math.ceil(len(triplet_ids) / batch_size)
-        for step in tqdm(range(steps)):
+        process = tqdm(range(steps)) if status_bar else range(steps) 
+        for step in process:
             self.db_conn.delete(triplet_ids[step*batch_size: (step+1)*batch_size])
 
 

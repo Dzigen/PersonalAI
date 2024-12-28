@@ -174,7 +174,7 @@ class LLMUpdator:
 
         return list(set(obsolete_triplet_ids))
 
-    def update_knowledge(self, new_triplets: List[Triplet]) -> ReturnInfo:
+    def update_knowledge(self, new_triplets: List[Triplet], status_bar: bool = False) -> ReturnInfo:
         """Метод предназначен для изменения (удаления устаревшей / добавление новой информации) памяти (графа знаний) асситента.
 
         :param new_triplets: Список триплетов с информацией для добавления в память (граф знаний) асситента.
@@ -194,7 +194,8 @@ class LLMUpdator:
             # Note: обрабатываем каждый триплет по отдельности, так как в пуле триплетов могут быть такие,
             # которые заменяют одни и те же устаревшие триплеты. Соответсвенно, мы должны итеративно обновлять память и сохранить
             # только последнюю актуальную информацию.
-            for triplet in tqdm(new_triplets):
+            process = tqdm(new_triplets) if status_bar else new_triplets
+            for triplet in process:
                 self.log(f"BASE_TRIPLET ID: {triplet.id}", verbose=self.config.verbose)
                 self.log(f"BASE_TRIPLET: {triplet}", verbose=self.config.verbose)
 
@@ -221,7 +222,7 @@ class LLMUpdator:
                 self.log(f"ADDING NEW TRIPLET TO MEMORY...", verbose=self.config.verbose)
                 self.kg_model.add_knowledge([triplet])
 
-            self.log(f"FINAL RESULT:")
+            self.log(f"FINAL RESULT:", verbose=self.config.verbose)
             self.log(f"- SUM AMOUNT OF OBSOLETE TRIPELTS: {obsolete_triplets_counter}", verbose=self.config.verbose)
 
         else:

@@ -21,3 +21,26 @@ services:
         reservations:
           cpus: '1'
           memory: 4G
+
+  workspace:
+    image: m.menschikov/workspace:v1
+    container_name: personalai_mmenschikov_worksapce
+    hostname: worksapceservice
+    ports:
+      - "10888:10888"
+    volumes:
+      - ../../../:/home/m.menschikov/workspace
+    depends_on:
+      - neo4j
+    deploy:
+      resources:
+        limits:
+          cpus: '16'
+          memory: 32G
+        reservations:
+          cpus: '8'
+          memory: 24G
+          devices:
+            - driver: nvidia
+              device_ids: ['1']
+              capabilities: [gpu]

@@ -7,7 +7,10 @@ RUN apt-get --assume-yes install pip
 RUN apt-get --assume-yes install python3.10
 RUN alias python=/usr/bin/python3.10
 
-WORKDIR /home/workspace
+USER m.menschikov
+WORKDIR /home/m.menschikov/workspace
+
+ARG APP_DIR=/home/m.menschikov/workspace
 ENV PYTHONPATH "${PYTHONPATH}:${APP_DIR}"
 
 CMD ["sh", "-c", "sleep infinity"]

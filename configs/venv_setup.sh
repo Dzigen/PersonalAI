@@ -1,5 +1,5 @@
-apt-get update
-apt-get upgrade
+apt-get update -y
+apt-get upgrade -y
 echo "=== REFRESHING END ==="
 
 apt install python3.10-venv
@@ -9,7 +9,7 @@ python3.10 -m venv ../../.pai_venv
 source ../../.pai_venv/bin/activate
 echo "=== ENV-CREATION END ==="
 
-pip install pysqlite3-binary chromadb==0.5.3 aerospike==15.1.0 kuzu pymongo neo4j
+pip install pysqlite3-binary chromadb==0.5.3 aerospike==15.1.0 kuzu pymongo neo4j redis
 pip install dataclasses tqdm joblib
 pip install pyicu pycld2 morfessor polyglot
 pip install numpy pandas
