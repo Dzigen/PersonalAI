@@ -39,7 +39,7 @@ class MemPipeline:
     :type config: MemPipelineConfig
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel = KnowledgeGraphModel(), config: MemPipelineConfig = MemPipelineConfig()) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig()) -> None:
         self.config = config
         self.log = config.log
 

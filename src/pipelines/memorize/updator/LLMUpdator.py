@@ -214,11 +214,11 @@ class LLMUpdator:
                 self.log(f"* OBSOLETE TRIPLET IDS - {obsolete_t_ids}", verbose=self.config.verbose)
                 obsolete_triplets_counter += len(obsolete_t_ids)
 
-                self.log(f"DELTING OBSOLETE TRIPLETS FROM MEMORY...", verbose=self.config.verbose)
+                self.log(f"DELETING OBSOLETE TRIPLETS FROM MEMORY...", verbose=self.config.verbose)
                 obsolete_triplets = self.kg_model.graph_struct.db_conn.read(obsolete_t_ids)
                 self.kg_model.remove_knowledge(obsolete_triplets)
 
-                self.log(f"ADDING NEW TRIPLE TO MEMORY...", verbose=self.config.verbose)
+                self.log(f"ADDING NEW TRIPLET TO MEMORY...", verbose=self.config.verbose)
                 self.kg_model.add_knowledge([triplet])
 
             self.log(f"FINAL RESULT:")

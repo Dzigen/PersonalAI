@@ -1,0 +1,23 @@
+services:
+
+  # Database - Neo4j
+  neo4j:
+    container_name: personalai_mmenschikov_neo4j
+    image: neo4j:5.21.0-enterprise
+    hostname: personalai_mmenschikov_neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/password
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+    volumes:
+      - ${LOCAL_NEO4J_VOLUME}:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 8G
+        reservations:
+          cpus: '1'
+          memory: 4G

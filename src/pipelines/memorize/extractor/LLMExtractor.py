@@ -73,37 +73,37 @@ class LLMExtractor:
         self.log("START KNOWLEDGE EXTRACTION...", verbose=self.config.verbose)
         self.log(f"BASE_TEXT ID: {create_id(text)}", verbose=self.config.verbose)
 
-        if self.config.need_episodic:
+        if self.config.need_simple:
             self.log("START SIMPLE-TRIPLETS EXTRACTION...", verbose=self.config.verbose)
             tmp_triplets, status = self.triplets_extraction_solver.solve(lang=self.config.lang, text=text, rel_prop=properties)
-
-            self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
-            for triplet in tmp_triplets:
-                self.log(f"* {triplet}", verbose=self.config.verbose)
             self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
 
             if status != ReturnStatus.success:
+                self.log(f"RESULT: None", verbose=self.config.verbose)
                 info.occurred_warning.append(status)
             else:
+                self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
+                for triplet in tmp_triplets:
+                    self.log(f"* {triplet}", verbose=self.config.verbose)
                 new_triplets += tmp_triplets
 
         if self.config.need_thesises:
             self.log("START HYPER-TRIPLETS EXTRACTION...", verbose=self.config.verbose)
-            tmp_triplets, status = self.triplets_extraction_solver.solve(lang=self.config.lang, text=text, node_prop=properties)
-
-            self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
-            for triplet in tmp_triplets:
-                self.log(f"* {triplet}", verbose=self.config.verbose)
+            tmp_triplets, status = self.thesises_extraction_solver.solve(lang=self.config.lang, text=text, node_prop=properties)
             self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
 
             if status != ReturnStatus.success:
+                self.log(f"RESULT: None", verbose=self.config.verbose)
                 info.occurred_warning.append(status)
             else:
+                self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
+                for triplet in tmp_triplets:
+                    self.log(f"* {triplet}", verbose=self.config.verbose)
                 new_triplets += tmp_triplets
 
         if self.config.need_episodic:
             self.log("START EPISODIC-TRIPLETS BUILDING...", verbose=self.config.verbose)
-            tmp_triplets += self.get_episodic_relationships(
+            tmp_triplets = self.get_episodic_relationships(
                 text, self.get_entities_from_triplets(new_triplets), node_prop=properties)
 
             self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
@@ -121,16 +121,14 @@ class LLMExtractor:
 
         return new_triplets, info
 
-    @staticmethod
-    def get_entities_from_triplets(triplets: List[Triplet]) -> List[Node]:
+    def get_entities_from_triplets(self, triplets: List[Triplet]) -> List[Node]:
         entities = {}
         for triplet in triplets:
             entities[triplet.start_node.stringified] = triplet.start_node
             entities[triplet.end_node.stringified] = triplet.end_node
         return list(entities.values())
 
-    @staticmethod
-    def get_episodic_relationships(text: str, entities: List[Node], node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
+    def get_episodic_relationships(self, text: str, entities: List[Node], node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
         episodic_node = NodeCreator.create(name=text, n_type=NodeType.episodic, prop={**node_prop})
         episodic_rel = Relation(name=RelationType.episodic.value, type=RelationType.episodic, prop={**rel_prop})
         episodic_triplets = [TripletCreator.create(entity, episodic_rel, episodic_node) for entity in entities]

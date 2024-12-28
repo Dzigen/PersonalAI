@@ -28,11 +28,17 @@ def ethesises_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, List[
     raw_triplets = []
     for raw_thesis in raw_response:
         if ";" not in raw_thesis:
-            raise ValueError
+            continue
+            #raise ValueError
 
         raw_thesis, raw_entities = raw_thesis.split(";")
         thesis = raw_thesis.strip('.-* ')
-        entities = ast.literal_eval(raw_entities.strip(''' \n'".,/'''))
+
+        try:
+            entities = ast.literal_eval(raw_entities.strip(''' \n'".,/'''))
+        except SyntaxError as e:
+            continue
+            #raise ValueError
 
         raw_triplets.append((thesis, entities))
 
@@ -54,7 +60,7 @@ def ethesises_custom_postprocess(parsed_response: List[Tuple[str, List[str]]], n
                 raise ValueError
 
             formated_triplets.append(TripletCreator.create(
-                start_node=NodeCreator.create(name=str(entity), n_type=NodeType.object, prop={**node_prop}),
+                start_node=NodeCreator.create(name=str(entity), n_type=NodeType.object),
                 relation=thesis_rel, end_node=thesis_node))
 
     return formated_triplets
