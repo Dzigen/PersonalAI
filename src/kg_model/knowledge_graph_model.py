@@ -13,7 +13,7 @@ class KnowledgeGraphModel:
     :type embeddings_config: EmbeddingsModel
     """
 
-    def __init__(self, graph_config: GraphModelConfig, embeddings_config: EmbeddingsModelConfig) -> None:
+    def __init__(self, graph_config: GraphModelConfig = GraphModelConfig(), embeddings_config: EmbeddingsModelConfig = EmbeddingsModelConfig()) -> None:
         self.graph_struct = GraphModel(graph_config)
         self.embeddings_struct =  EmbeddingsModel(embeddings_config)
 
