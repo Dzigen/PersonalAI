@@ -1,9 +1,0 @@
-{
- "mean": 80.0875,
- "median": 60.5,
- "std": 56.37800851174153,
- "min": 19,
- "max": 224,
- "elapsed_time (sec)": 19,
- "duplicate_triplets_per_q": 1.0
-}

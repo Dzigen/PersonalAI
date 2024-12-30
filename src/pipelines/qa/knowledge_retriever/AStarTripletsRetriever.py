@@ -60,12 +60,23 @@ class AStarMetrics:
                 self.cache['ip'] = KeyValueDriver.connect(ip_config)
             if self.config.h_metric_name in ['weight_with_short_path',  'avg_weighted_with_short_path']:
                 sp_config = deepcopy(config.kvdriver_config)
-                sp_config.db_config.db_info['table'] = 'bfs_short_path'
+                sp_config.db_config.db_info['table'] = 'bfsshortpath'
                 self.cache['bfs_short_path'] = KeyValueDriver.connect(sp_config)
+
+                sp_config = deepcopy(config.kvdriver_config)
+                sp_config.db_config.db_info['table'] = 'weightwithshortpath'
+                self.cache['weight_with_short_path'] = KeyValueDriver.connect(sp_config)
+
+                sp_config = deepcopy(config.kvdriver_config)
+                sp_config.db_config.db_info['table'] = 'avgweightedwithshortpath'
+                self.cache['avg_weighted_with_short_path'] = KeyValueDriver.connect(sp_config)
+
 
         self.cache_info = {
             'dist': {'exist': 0, 'calc': 0},
-            'bfs_short_path': {'exist': 0, 'calc': 0}
+            'bfs_short_path': {'exist': 0, 'calc': 0},
+            'weight_with_short_path': {'exist': 0, 'calc': 0},
+            'avg_weighted_with_short_path': {'exist': 0, 'calc': 0}
         }
 
         self.metrics_map = {
@@ -122,19 +133,42 @@ class AStarMetrics:
         return short_path
 
     def weighted_short_path(self, node1_id: str, node2_id: str, *args, **kwargs) -> float:
-        short_path_len = self.compute_short_path(node1_id, node2_id)
-        w = self.embeddings_dist(node1_id, node2_id)
-        return short_path_len * w
+        pair_id = create_id_for_node_pair(node1_id, node2_id)
+        if (self.config.kvdriver_config is not None) and (self.cache['weight_with_short_path'].item_exist(pair_id)):
+            #print("exists")
+            w_short_path = self.cache['weight_with_short_path'].read([pair_id])[0].value
+            self.cache_info['weight_with_short_path']['exist'] += 1
+        else:
+            #print("calculated")
+            short_path_len = self.compute_short_path(node1_id, node2_id)
+            w = self.embeddings_dist(node1_id, node2_id)
+            w_short_path = w * short_path_len
+            self.cache['weight_with_short_path'].create([KeyValueDBInstance(id=pair_id, value=w_short_path)])
+            self.cache_info['weight_with_short_path']['calc'] += 1
+
+        return w_short_path
 
     def avg_weighted_short_path(self, node1_id: str, node2_id: str, parent: Dict[str, str]) -> float:
-        nodes_path = AStarTripletsRetriever.get_nodes_path(parent, node1_id)
-        acc_dist = 0
-        for i in range(len(nodes_path)-1):
-            acc_dist += self.embeddings_dist(nodes_path[i], nodes_path[i+1])
-        acc_dist += self.embeddings_dist(node1_id, node2_id)
+        pair_id = create_id_for_node_pair(node1_id, node2_id)
+        if (self.config.kvdriver_config is not None) and (self.cache['avg_weighted_with_short_path'].item_exist(pair_id)):
+            #print("exists")
+            avg_w_short_path = self.cache['avg_weighted_with_short_path'].read([pair_id])[0].value
+            self.cache_info['avg_weighted_with_short_path']['exist'] += 1
+        else:
+            #print("calculated")
+            nodes_path = AStarTripletsRetriever.get_nodes_path(parent, node1_id)
+            acc_dist = 0
+            for i in range(len(nodes_path)-1):
+                acc_dist += self.embeddings_dist(nodes_path[i], nodes_path[i+1])
+            acc_dist += self.embeddings_dist(node1_id, node2_id)
 
-        short_path_len = self.compute_short_path(node1_id, node2_id)
-        return np.mean(acc_dist) * short_path_len
+            short_path_len = self.compute_short_path(node1_id, node2_id)
+            avg_w_short_path = np.mean(acc_dist) * short_path_len
+
+            self.cache['avg_weighted_with_short_path'].create([KeyValueDBInstance(id=pair_id, value=avg_w_short_path)])
+            self.cache_info['avg_weighted_with_short_path']['calc'] += 1
+
+        return avg_w_short_path
 
     def bfs(self, s_node_id: str, e_node_id: str) -> int:
         visited, queue = set(), collections.deque([s_node_id])
@@ -160,14 +194,26 @@ class AStarMetrics:
                     passed_nodes_counter += 1
 
                     if self.config.kvdriver_config is not None:
+                        # кешируем кратчайший bfs-путь от s_node_id-стартовой до текущей вершины
                         pair_id = create_id_for_node_pair(s_node_id, neighbour)
                         if not self.cache['bfs_short_path'].item_exist(pair_id):
                             self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, value=D[neighbour])])
+                            self.cache_info['bfs_short_path']['calc'] += 1
+
+                        # кешируем кратчайший bfs-путь от vertex-вершины до его соседа (путь равен 1)
+                        pair_id = create_id_for_node_pair(vertex, neighbour)
+                        if not self.cache['bfs_short_path'].item_exist(pair_id):
+                            self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, value=1)])
+                            self.cache_info['bfs_short_path']['calc'] += 1
 
                     if neighbour == e_node_id:
                         self.log(f"bfs end-node found!", verbose=self.verbose)
                         self.log(f"bfs graph-db queries: {neo4j_queries_counter}", verbose=self.verbose)
                         self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.verbose)
+
+                        # костыль
+                        self.cache_info['bfs_short_path']['calc'] -= 1
+
                         return D[neighbour]
 
                     queue.append(neighbour)
