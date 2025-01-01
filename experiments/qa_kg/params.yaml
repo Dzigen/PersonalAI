@@ -1,0 +1,10 @@
+experiment_name: "bfs_with_gigachat_fulls"
+dataset_name: 'diaasqa'
+eval_dataset_path: '../../data/qa_datasets/diaasqa/qa_eval'
+kg_name: 'gigachat_full'
+language: 'en'
+knowledge_retriever:
+  retriever_method: 'bfs'
+  retriever_config_path: "retriever_config"
+  filter_method: 'naive'
+  filter_config_path: "filter_config"

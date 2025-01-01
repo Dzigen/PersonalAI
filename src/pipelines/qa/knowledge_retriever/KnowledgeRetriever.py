@@ -71,9 +71,30 @@ class KnowledgeRetriever:
         info = ReturnInfo()
         self.log("STAGE #3.1 - TRIPLETS EXTRACTION...", verbose=self.config.verbose)
         triplets = self.graph_retriever.get_relevant_triplets(query_info)
-        self.log(f"RESULT: {len(triplets)}")
+        self.log(f"RESULT: {len(triplets)}", verbose=self.config.verbose)
         for triplet in triplets:
             self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
+
+        # костыль
+        # self.log("Проверяем, что извлечённый триплеты являются валидными...", verbose=self.config.verbose)
+        # self.log("Невалидные триплеты:", verbose=self.config.verbose)
+        # valid_triplets = []
+        # for triplet in triplets:
+        #     #t_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.id)
+        #     r_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.relation.id, id_type='relation')
+        #     #sn_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.start_node.id, id_type='node')
+        #     #en_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.end_node.id, id_type='node')
+
+        #     r_vector_exists = self.kg_model.embeddings_struct.vectordbs['triplets'].item_exist(triplet.relation.id)
+        #     #sn_vector_exists = self.kg_model.embeddings_struct.vectordbs['nodes'].item_exist(triplet.start_node.id)
+        #     #en_vector_exists = self.kg_model.embeddings_struct.vectordbs['nodes'].item_exist(triplet.end_node.id)
+
+        #     if not (r_graph_exists and r_graph_exists):
+        #         self.log(f"* [graph - r:{r_graph_exists} | vector - r:{r_vector_exists}] {triplet}", verbose=self.config.verbose)
+        #     else:
+        #         valid_triplets.append(triplet)
+
+        # self.log(f"RESULT:\n* валидных - {len(valid_triplets)} \n* невалидных - {len(triplets) - len(valid_triplets)}", verbose=self.config.verbose)
 
         self.log("STAGE #3.2 - TRIPLETS FILTERING...", verbose=self.config.verbose)
         filtered_triplets = self.triplets_filter.apply_filter(query_info, triplets)

@@ -119,11 +119,22 @@ def graph_connectivity_counter(kg_model: KnowledgeGraphModel) -> Dict[str, objec
 
     return info
 
+def get_general_stat(kg_model: KnowledgeGraphModel):
+
+    info = {
+        'vector_node': kg_model.embeddings_struct.vectordbs['nodes'].count_items(),
+        'vector_triplets': kg_model.embeddings_struct.vectordbs['triplets'].count_items(),
+        'graph_counters': kg_model.graph_struct.db_conn.count_items()
+    }
+    return info
+
 ##################################
 
 # статистика по графу
 
 GRAPH_STAT_METRICS = {
+    'general': get_general_stat,
+
     # общее количество вершин
     # - количество вершин типа object
     # - количество вершин типа hyper
@@ -250,6 +261,42 @@ def get_object_nodes_per_hyper_node(kg_model: KnowledgeGraphModel):
 
     return info
 
+def get_triplet_embds_match(kg_model: KnowledgeGraphModel):
+    graph_str_ids = kg_model.graph_struct.db_conn.execute_query("MATCH (a)-[rel]->(b) RETURN rel.str_id as str_id")
+    graph_str_ids = list(map(lambda item: item['str_id'], graph_str_ids))
+
+    uniques_g_str_ids = list(set(graph_str_ids))
+
+    embds_exist_ids = []
+    for g_str_id in tqdm(uniques_g_str_ids):
+        embds_exist_ids.append(kg_model.embeddings_struct.vectordbs['triplets'].item_exist(g_str_id))
+
+    info = {
+        'all': len(graph_str_ids),
+        'unique': len(uniques_g_str_ids),
+        'matched_embds': sum(embds_exist_ids)
+    }
+
+    return info
+
+def get_node_embds_match(kg_model: KnowledgeGraphModel):
+    graph_str_ids = kg_model.graph_struct.db_conn.execute_query("MATCH (a) RETURN a.str_id as str_id")
+    graph_str_ids = list(map(lambda item: item['str_id'], graph_str_ids))
+
+    uniques_g_str_ids = list(set(graph_str_ids))
+
+    embds_exist_ids = []
+    for g_str_id in tqdm(uniques_g_str_ids):
+        embds_exist_ids.append(kg_model.embeddings_struct.vectordbs['nodes'].item_exist(g_str_id))
+
+    info = {
+        'all': len(graph_str_ids),
+        'unique': len(uniques_g_str_ids),
+        'matched_embds': sum(embds_exist_ids)
+    }
+
+    return info
+
 ##################################
 
 # проверка наличия заданных свойств у графа
@@ -262,6 +309,10 @@ GRAPH_HEALTH_CHECKS = {
     'objects_per_episodic': get_object_nodes_per_episodic_node,
     # c hyper вершиной связано >= 1 object-вершин
     'objects_per_hyper': get_object_nodes_per_hyper_node,
+    # для всех трипетов в графе есть векторное представление
+    'triplet_embds_count': get_triplet_embds_match,
+    # для всех вершин в графе есть векторное представление
+    'node_embds_count': get_node_embds_match
 }
 
 ##################################
