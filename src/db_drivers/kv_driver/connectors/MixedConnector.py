@@ -93,3 +93,6 @@ class MixedKVConnector(AbstractKVDatabaseConnection):
 
     def delete_rare_items(self, num: int) -> None:
         pass
+
+    def __del__(self):
+        pass

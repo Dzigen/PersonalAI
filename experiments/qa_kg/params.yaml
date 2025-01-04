@@ -1,10 +1,13 @@
-experiment_name: "bfs_with_gigachat_fulls"
+experiment_name: "astar_with_gigachat_fulls"
 dataset_name: 'diaasqa'
+init_struct: False
 eval_dataset_path: '../../data/qa_datasets/diaasqa/qa_eval'
+eval_bs_model: "google/electra-base-discriminator"
 kg_name: 'gigachat_full'
 language: 'en'
+max_samples_per_pack: 400
 knowledge_retriever:
-  retriever_method: 'bfs'
+  retriever_method: 'astar'
   retriever_config_path: "retriever_config"
   filter_method: 'naive'
   filter_config_path: "filter_config"

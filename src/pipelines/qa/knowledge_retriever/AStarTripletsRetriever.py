@@ -109,8 +109,8 @@ class AStarMetrics:
                 self.cache['ip'].create([KeyValueDBInstance(id=pair_id, value=dist)])
                 self.cache_info['dist']['calc'] += 1
         else:
-            self.cache_info['dist']['calc'] += 1
             dist = self.calculate_ip_distance(node1_id, node2_id)
+            self.cache_info['dist']['calc'] += 1
 
         return dist
 
@@ -304,7 +304,7 @@ class AStarGraphSearch:
                 break
 
             adj_nodes = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(current_node_id, self.config.accepted_node_types)
-            self.log(f"adjenced nodes: {len(adj_nodes)}", verbose=self.verbose)
+            #self.log(f"adjenced nodes: {len(adj_nodes)}", verbose=self.verbose)
 
             for adj_n_id in adj_nodes:
 

@@ -61,6 +61,9 @@ embed_config.embedder_config.model_name_or_path = '/'.join(embed_config.embedder
 embed_config.nodesdb_driver_config.db_config.path = '/'.join(embed_config.nodesdb_driver_config.db_config.path.split("/")[1:])
 embed_config.tripletsdb_driver_config.db_config.path = '/'.join(embed_config.tripletsdb_driver_config.db_config.path.split("/")[1:])
 
+print("graph_config:", graph_config)
+print("embed_config:", embed_config)
+
 kg_model = KnowledgeGraphModel(
     graph_config=graph_config,
     embeddings_config=embed_config)
@@ -75,6 +78,9 @@ print(kg_model.graph_struct.db_conn.count_items())
 
 retriever_config = joblib.load(HYPER_PARAMS['knowledge_retriever']['retriever_config_path'])
 filter_config = joblib.load(HYPER_PARAMS['knowledge_retriever']['filter_config_path'])
+
+print("retriever_config:", retriever_config)
+print("filter_config:", filter_config)
 
 qa_config = QAPipelineConfig(
     query_parser_config=QueryLLMParserConfig(lang=HYPER_PARAMS['language']),
@@ -91,35 +97,36 @@ qa_pipeline = QAPipeline(kg_model, qa_config)
 
 ##################STRUCTURE_INITs#################
 
-if not os.path.exists(HYPER_PARAMS['dataset_name']):
-    raise ValueError("Директории не существует")
+if HYPER_PARAMS['init_struct']:
+    if not os.path.exists(HYPER_PARAMS['dataset_name']):
+        raise ValueError("Директории не существует")
 
-if os.path.exists(EXPERIMENT_DIR):
-    raise ValueError("Директория существует")
+    if os.path.exists(EXPERIMENT_DIR):
+        raise ValueError("Директория существует")
 
-if os.path.exists(GENERATED_ANSWERS_DIR):
-    raise ValueError("Директория существует")
+    if os.path.exists(GENERATED_ANSWERS_DIR):
+        raise ValueError("Директория существует")
 
-if os.path.exists(METRICS_DIR):
-    raise ValueError("Директория существует")
+    if os.path.exists(METRICS_DIR):
+        raise ValueError("Директория существует")
 
-# создать каталог
-os.mkdir(EXPERIMENT_DIR)
-# создать каталог для ответов
-os.mkdir(GENERATED_ANSWERS_DIR)
-# создать каталог для метрик
-os.mkdir(METRICS_DIR)
+    # создать каталог
+    os.mkdir(EXPERIMENT_DIR)
+    # создать каталог для ответов
+    os.mkdir(GENERATED_ANSWERS_DIR)
+    # создать каталог для метрик
+    os.mkdir(METRICS_DIR)
 
-os.mkdir(TMP_GENERATED_ANSWERS_DIR)
+    os.mkdir(TMP_GENERATED_ANSWERS_DIR)
 
-# сохранить параметры
-with open(HYPERPARAMS_SAVE_PATH, 'w', encoding='utf-8') as fd:
-    fd.write(json.dumps(HYPER_PARAMS, indent=1, ensure_ascii=False))
+    # сохранить параметры
+    with open(HYPERPARAMS_SAVE_PATH, 'w', encoding='utf-8') as fd:
+        fd.write(json.dumps(HYPER_PARAMS, indent=1, ensure_ascii=False))
 
-# сохранить конфиги
-joblib.dump(qa_config, QA_CONFIG_SAVE_PATH)
-joblib.dump(retriever_config, RETRIEVER_CONFIG_SAVE_PATH)
-joblib.dump(filter_config, FILTER_CONFIG_SAVE_PATH)
+    # сохранить конфиги
+    joblib.dump(qa_config, QA_CONFIG_SAVE_PATH)
+    joblib.dump(retriever_config, RETRIEVER_CONFIG_SAVE_PATH)
+    joblib.dump(filter_config, FILTER_CONFIG_SAVE_PATH)
 
 #################LOADING_QUESTIONS##################
 
@@ -132,13 +139,17 @@ question_packs = load_dataset(HYPER_PARAMS['eval_dataset_path'])
 
 #################START_QA_PROCESS##################
 
-for pack_name, questions, _ in question_packs:
+for pack_name, questions, _ in question_packs[2:]:
 
     pack_tmp_dir = f"{TMP_GENERATED_ANSWERS_DIR}/{pack_name}"
     if not os.path.exists(pack_tmp_dir):
         os.mkdir(pack_tmp_dir)
 
-    process = tqdm(range(len(questions)))
+    if (HYPER_PARAMS['max_samples_per_pack'] < 0) or (HYPER_PARAMS['max_samples_per_pack'] > len(questions)):
+        process = tqdm(range(len(questions)))
+    else:
+        process = tqdm(range(HYPER_PARAMS['max_samples_per_pack']))
+
     for i in process:
         process.set_postfix_str(pack_name)
 

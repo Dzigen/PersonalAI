@@ -1,6 +1,7 @@
 import pymongo
 from typing import List, Tuple, Dict
 from collections import defaultdict
+import numpy as np
 
 from src.db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
 
@@ -38,8 +39,8 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
             if item is None or item.id is None or item.value is None:
                 raise ValueError
 
-            if type(item.id) is not str or type(item.value) not in [str, float, int]:
-                raise ValueError
+            if type(item.id) is not str or type(item.value) not in [np.float64, float, str, int]:
+                raise ValueError(f"{item} {type(item.id)} {type(item.value)}")
 
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
