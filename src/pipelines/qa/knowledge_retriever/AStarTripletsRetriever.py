@@ -6,8 +6,7 @@ from time import time
 import collections
 from copy import deepcopy
 
-from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
-from .errors import NOT_VALID_ID_ERROR_MSG, NO_START_NODE_IN_PARENT_ERROR_MSG, EMPTY_PARENT_ERROR_MSG
+from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig, get_nodes_path
 
 from ....utils.data_structs import QueryInfo, Triplet, NodeType
 from ....kg_model import KnowledgeGraphModel
@@ -127,8 +126,8 @@ class AStarMetrics:
                 self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, value=short_path)])
                 self.cache_info['bfs_short_path']['calc'] += 1
         else:
-            self.cache_info['bfs_short_path']['calc'] += 1
             short_path = self.bfs(node1_id, node2_id)
+            self.cache_info['bfs_short_path']['calc'] += 1
 
         return short_path
 
@@ -156,7 +155,7 @@ class AStarMetrics:
             self.cache_info['avg_weighted_with_short_path']['exist'] += 1
         else:
             #print("calculated")
-            nodes_path = AStarTripletsRetriever.get_nodes_path(parent, node1_id)
+            nodes_path = get_nodes_path(parent, node1_id)
             acc_dist = 0
             for i in range(len(nodes_path)-1):
                 acc_dist += self.embeddings_dist(nodes_path[i], nodes_path[i+1])
@@ -213,6 +212,15 @@ class AStarMetrics:
 
                         # костыль
                         self.cache_info['bfs_short_path']['calc'] -= 1
+
+                        # кешируем кратчайшие bfs-пути от e_node_id-вершины до вершин,
+                        # которые были в кратчайшем пути между s_node_id- и e_node_id-вершинами
+                        reverse_nodes_path = get_nodes_path(parent, neighbour)
+                        for i in range(1,len(reverse_nodes_path)-1):
+                            pair_id = create_id_for_node_pair(reverse_nodes_path[i], neighbour)
+                            if not self.cache['bfs_short_path'].item_exist(pair_id):
+                                self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, value=i)])
+                                self.cache_info['bfs_short_path']['calc'] += 1
 
                         return D[neighbour]
 
@@ -345,35 +353,6 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
         self.kg_model = kg_model
         self.graph_searcher = AStarGraphSearch(kg_model, log, search_config, verbose)
 
-    @staticmethod
-    def get_nodes_path(parent: Dict[str, str], end_node_id: str) -> List[str]:
-        """Метод предназначен для получения пути обхода графа, заканчивая заданной конечной end_node_id вершиной.
-        Путь должен быть ацикличным: есть стартовая вершин, у которой нет родителя.
-
-        :param parent: Словарь с идентификаторами родительских вершин. Ключи - идентикиаторы вершин, которые были посещены; значения - идентификаторы вершины (родитель), из которой был выполнен переход в данную (ключ) вершину.
-        :type parent: Dict[str, str]
-        :param end_node_id: Идентификатор последней посещённой вершины.
-        :type end_node_id: str
-        :return: Последовательность посещённых вершин: от конечной до стартовой (в обратном порядке).
-        :rtype: List[str]
-        """
-        if type(end_node_id) is not str:
-            raise ValueError(NOT_VALID_ID_ERROR_MSG)
-        if None not in parent.values():
-            raise ValueError(NO_START_NODE_IN_PARENT_ERROR_MSG)
-        if len(parent) == 0:
-            raise ValueError(EMPTY_PARENT_ERROR_MSG)
-
-        path, end_flag, cur_n = [end_node_id], False, end_node_id
-        while not end_flag:
-            next_n = parent[cur_n]
-            if next_n is None:
-                end_flag = True
-            else:
-                path.append(next_n)
-                cur_n = next_n
-        return path
-
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
@@ -401,7 +380,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
                     self.log(f"search elapsed_time: {time() - s_time}", verbose=self.verbose)
 
                     s_time = time()
-                    nodes_path = AStarTripletsRetriever.get_nodes_path(
+                    nodes_path = get_nodes_path(
                         parent, spare_closest_node if end_node not in parent else end_node)
                     self.log(f"get_path elapsed_time: {time() - s_time}", verbose=self.verbose)
 

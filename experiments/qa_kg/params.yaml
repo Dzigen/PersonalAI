@@ -1,6 +1,6 @@
-experiment_name: "astar_with_gigachat_fulls"
+experiment_name: "astar_with_gigachat_full_hm_wbfs"
 dataset_name: 'diaasqa'
-init_struct: False
+init_struct: True
 eval_dataset_path: '../../data/qa_datasets/diaasqa/qa_eval'
 eval_bs_model: "google/electra-base-discriminator"
 kg_name: 'gigachat_full'

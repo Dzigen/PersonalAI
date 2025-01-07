@@ -13,6 +13,10 @@ DEFAULT_MIXEDKV_CONFIG = KVDBConnectionConfig(params={'redis_config': DEFAULT_RE
 class MixedKVConnector(AbstractKVDatabaseConnection):
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_MIXEDKV_CONFIG):
         self.config = config
+
+        self.config.params['mongo_config'].db_info['table'] = self.config.db_info['table']
+        self.config.params['redis_config'].db_info['table'] = self.config.db_info['table']
+
         self.redis_conn = RedisKVConnector(self.config.params['redis_config'])
         self.mongo_conn = MongoKVConnector(self.config.params['mongo_config'])
 
