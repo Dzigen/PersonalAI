@@ -1,13 +1,14 @@
 import sys
-import json 
+import json
 import joblib
 import gc
 from tqdm import tqdm
+import yaml
 import os
 from typing import List, Dict, Tuple
 
 # TO CHANGE
-BASEDIR = "../../"
+BASEDIR = "../../../"
 sys.path.insert(0, BASEDIR)
 
 from src.pipelines.memorize import MemPipelineConfig, MemPipeline, LLMExtractorConfig, LLMUpdatorConfig
@@ -22,18 +23,11 @@ from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriverC
 
 gc.collect()
 
-###################
+########SETTING HYPERPARAMS###########
 
-# TO CHANGE
-HYPER_PARAMS = {
-    'DATASET_PATH': '../../data/qa_datasets/diaasqa/Augment_DiaASQ.json',
-    'DATASET_NAME': 'diaasqa',
-    'KNOWLEDGE_GRAPH_NAME': 'gigachat_filtered',
-    'EMBEDDER_MODEL_PATH': '../../models/intfloat/multilingual-e5-small',
-    'DELETE_OBSOLETE_INFO': True,
-    'LANG': 'en'
-}
-# TO CHANGE
+# Read YAML file
+with open("params.yaml", 'r') as stream:
+    HYPER_PARAMS = yaml.safe_load(stream)
 
 BASE_PATH = "../../data/knowledge_graphs/"
 DATASET_PATH = BASE_PATH + f"{HYPER_PARAMS['DATASET_NAME']}/"
@@ -48,18 +42,23 @@ MEM_PIPELINE_CONFIG_PATH = KG_PATH + "mem_pipeline_config"
 VECTORIZED_DB_PATH = KG_PATH + "embeddings_part/"
 GRAPH_DB_PATH = KG_PATH + "graph_part/"
 
-####################3
+TMP_EXTRACTED_TRIPLETS_PATH = KG_PATH + "tmp_extracted_triplets_path/"
 
-#if not os.path.exists(BASE_PATH):
-#    raise ValueError(f"Директории не существует: {BASE_PATH}")
-#if not os.path.exists(DATASET_PATH):
-#    raise ValueError(f"Директории не существует: {DATASET_PATH}")
-#if os.path.exists(KG_PATH):
-#    raise ValueError(f"Директория существует: {KG_PATH}")
-#
-#os.mkdir(KG_PATH)
-#os.mkdir(VECTORIZED_DB_PATH)
-#os.mkdir(GRAPH_DB_PATH)
+###########FOLDERS INIT#########3
+
+if not os.path.exists(BASE_PATH):
+    raise ValueError(f"Директории не существует: {BASE_PATH}")
+if not os.path.exists(DATASET_PATH):
+    raise ValueError(f"Директории не существует: {DATASET_PATH}")
+if os.path.exists(KG_PATH):
+    raise ValueError(f"Директория существует: {KG_PATH}")
+if os.path.exists(TMP_EXTRACTED_TRIPLETS_PATH):
+    raise ValueError(f"Директория существует: {TMP_EXTRACTED_TRIPLETS_PATH}")
+
+os.mkdir(KG_PATH)
+os.mkdir(VECTORIZED_DB_PATH)
+os.mkdir(GRAPH_DB_PATH)
+os.mkdir(TMP_EXTRACTED_TRIPLETS_PATH)
 
 print(VECTORIZED_DB_PATH)
 print(GRAPH_DB_PATH)
@@ -68,29 +67,24 @@ out = input("continue? ")
 
 ##############
 
-with open(HYPER_PARAMS_PATH, 'w', encoding='utf-8') as fd:
-    fd.write(json.dumps(HYPER_PARAMS, ensure_ascii=False, indent=1))
-
-##############
-
 # Setting knowledge graph
 
 graph_config = GraphModelConfig(
     driver_config=GraphDriverConfig(
-        db_vendor='neo4j', 
+        db_vendor='neo4j',
         db_config=GraphDBConnectionConfig(
-            uri="bolt://personalai_mmenschikov_neo4j:7687", params={'user': "neo4j", 'pwd': 'password'}, 
-            need_to_clear=True)))
+            uri="bolt://personalai_mmenschikov_neo4j:7687", params={'user': "neo4j", 'pwd': 'password'},
+            need_to_clear=HYPER_PARAMS['need_to_clear'])))
 
 embed_config = EmbeddingsModelConfig(
     nodesdb_driver_config=VectorDriverConfig(
         db_vendor='chroma',
         db_config=VectorDBConnectionConfig(
-            path=VECTORIZED_DB_PATH, db_info={'db': 'personalaidb', 'table': "vectorized_nodes"}, need_to_clear=True)),
+            path=VECTORIZED_DB_PATH, db_info={'db': 'personalaidb', 'table': "vectorized_nodes"}, need_to_clear=HYPER_PARAMS['need_to_clear'])),
     tripletsdb_driver_config=VectorDriverConfig(
-        db_vendor='chroma', 
+        db_vendor='chroma',
         db_config=VectorDBConnectionConfig(
-            path=VECTORIZED_DB_PATH, db_info={'db': 'personalaidb', 'table': "vectorized_triplets"}, need_to_clear=True)),
+            path=VECTORIZED_DB_PATH, db_info={'db': 'personalaidb', 'table': "vectorized_triplets"}, need_to_clear=HYPER_PARAMS['need_to_clear'])),
     embedder_config=EmbedderModelConfig(model_name_or_path=HYPER_PARAMS['EMBEDDER_MODEL_PATH']))
 
 kg_model = KnowledgeGraphModel(
@@ -110,7 +104,10 @@ mem_config = MemPipelineConfig(
 
 mem_pipeline = MemPipeline(kg_model, mem_config)
 
-########################
+############SAVING HYPERPARAMS############
+
+with open(HYPER_PARAMS_PATH, 'w', encoding='utf-8') as fd:
+    fd.write(json.dumps(HYPER_PARAMS, ensure_ascii=False, indent=1))
 
 joblib.dump(graph_config, GRAPH_DRIVER_CONFIG_PATH)
 joblib.dump(embed_config, EMBEDDINGS_DRIVER_CONFIG_PATH)
@@ -134,14 +131,19 @@ CUSTOM_LOAD_FUNCS = {
 dataset = CUSTOM_LOAD_FUNCS[HYPER_PARAMS['DATASET_NAME']](HYPER_PARAMS['DATASET_PATH'])
 print(len(dataset))
 
-########################
+###########KG BUILDING#############
 
-saved_triplets = []
-for item in tqdm(dataset):
-    text, properties = item[0], item[1]
+for i in tqdm(range(len(dataset))):
+    text, properties = dataset[i][0], dataset[i][1]
     extracted_triplets, _ = mem_pipeline.remember(text, properties)
-    saved_triplets.append(extracted_triplets)
 
-########################
+    joblib.dump(extracted_triplets, TMP_EXTRACTED_TRIPLETS_PATH + f'item{i}')
 
-joblib.dump(saved_triplets, EXTRACTED_TRIPLETS_PATH)
+###########ACCUMULATING EXTRACTED TRIPLETSs#############
+
+accum_triplets = []
+extracted_t_files = os.listdir(TMP_EXTRACTED_TRIPLETS_PATH)
+for t_file in tqdm(extracted_t_files):
+    accum_triplets.append(joblib.load(TMP_EXTRACTED_TRIPLETS_PATH + t_file))
+
+joblib.dump(accum_triplets, EXTRACTED_TRIPLETS_PATH)
