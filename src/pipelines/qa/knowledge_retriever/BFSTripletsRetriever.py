@@ -5,7 +5,7 @@ from typing import Dict, List, Set, Tuple, Union
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 
 from ....kg_model import KnowledgeGraphModel
-from ....utils.data_structs import QueryInfo, Relation, TripletCreator, Triplet, RELATIONS_TYPES_MAP, Node
+from ....utils.data_structs import QueryInfo, Relation, TripletCreator, Triplet, NodeCreator, RelationCreator, NodeType, RelationType
 from ....utils import Logger
 
 @dataclass
@@ -328,23 +328,30 @@ class BFSRetriever(AbstractTripletsRetriever):
 
         def format_triplet(triplet_data):
             subj, rel, obj, *_ = triplet_data
-            subj_node = Node(name=subj["name"], type=subj["type"], id=subj["id"], prop=subj["prop"])
-            obj_node = Node(name=obj["name"], type=obj["type"], id=obj["id"], prop=obj["prop"])
-            rel_edge = Relation(name=rel.get("name", ""), type=rel["type"], id=rel["id"], prop=rel["prop"])
+            subj_node = NodeCreator.create(name=subj["name"], n_type=subj["type"], prop=subj["prop"])
+            subj_node.id = subj['id']
+
+            obj_node = NodeCreator.create(name=obj["name"], n_type=obj["type"], prop=obj["prop"])
+            obj_node.id = obj['id']
+
+            rel_edge = RelationCreator.create(name=rel.get("name", None), r_type=rel["type"], prop=rel["prop"])
+            rel_edge.id=rel["id"]
+
             triplet = TripletCreator.create(start_node=subj_node, relation=rel_edge, end_node=obj_node, add_stringified_triplet=False)
             return triplet
 
         def triplet_from_hyper(text, seed_entity, obj_props, rel_props, e_id):
-            subj_node = Node(name=seed_entity, type="object", id="1", prop={})
-            obj_node = Node(name=text, type="hyper", id="1", prop=obj_props)
-            rel_edge = Relation(name="", type=RELATIONS_TYPES_MAP["hyper"], id="1", prop=rel_props)
+            subj_node = NodeCreator.create(name=seed_entity, n_type=NodeType.object)
+            subj_node.id = '1'
+
+            obj_node = NodeCreator.create(name=text, n_type=NodeType.hyper, prop=obj_props)
+            obj_node.id = '1'
+
+            rel_edge = RelationCreator.create(r_type=RelationType.hyper, prop=rel_props)
+
             triplet = TripletCreator.create(
-                start_node=subj_node,
-                relation=rel_edge,
-                end_node=obj_node,
-                add_stringified_triplet=False,
-                t_id=e_id
-            )
+                start_node=subj_node, relation=rel_edge, end_node=obj_node,
+                add_stringified_triplet=False, t_id=e_id)
             return triplet
 
         ex_triplets = []

@@ -1,5 +1,0 @@
-{
- "SAVE_SCORES_VERSION": "v15",
- "LOAD_GEN_ANSWERS_VERSION": "v15",
- "BERT_SCORE_MODEL_PATH": "google/electra-base-discriminator"
-}

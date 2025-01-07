@@ -6,8 +6,7 @@ from time import time
 import collections
 from copy import deepcopy
 
-from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
-from .errors import NOT_VALID_ID_ERROR_MSG, NO_START_NODE_IN_PARENT_ERROR_MSG, EMPTY_PARENT_ERROR_MSG
+from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig, get_nodes_path
 
 from ....utils.data_structs import QueryInfo, Triplet, NodeType
 from ....kg_model import KnowledgeGraphModel
@@ -60,12 +59,23 @@ class AStarMetrics:
                 self.cache['ip'] = KeyValueDriver.connect(ip_config)
             if self.config.h_metric_name in ['weight_with_short_path',  'avg_weighted_with_short_path']:
                 sp_config = deepcopy(config.kvdriver_config)
-                sp_config.db_config.db_info['table'] = 'bfs_short_path'
+                sp_config.db_config.db_info['table'] = 'bfsshortpath'
                 self.cache['bfs_short_path'] = KeyValueDriver.connect(sp_config)
+
+                sp_config = deepcopy(config.kvdriver_config)
+                sp_config.db_config.db_info['table'] = 'weightwithshortpath'
+                self.cache['weight_with_short_path'] = KeyValueDriver.connect(sp_config)
+
+                sp_config = deepcopy(config.kvdriver_config)
+                sp_config.db_config.db_info['table'] = 'avgweightedwithshortpath'
+                self.cache['avg_weighted_with_short_path'] = KeyValueDriver.connect(sp_config)
+
 
         self.cache_info = {
             'dist': {'exist': 0, 'calc': 0},
-            'bfs_short_path': {'exist': 0, 'calc': 0}
+            'bfs_short_path': {'exist': 0, 'calc': 0},
+            'weight_with_short_path': {'exist': 0, 'calc': 0},
+            'avg_weighted_with_short_path': {'exist': 0, 'calc': 0}
         }
 
         self.metrics_map = {
@@ -98,8 +108,8 @@ class AStarMetrics:
                 self.cache['ip'].create([KeyValueDBInstance(id=pair_id, value=dist)])
                 self.cache_info['dist']['calc'] += 1
         else:
-            self.cache_info['dist']['calc'] += 1
             dist = self.calculate_ip_distance(node1_id, node2_id)
+            self.cache_info['dist']['calc'] += 1
 
         return dist
 
@@ -116,25 +126,48 @@ class AStarMetrics:
                 self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, value=short_path)])
                 self.cache_info['bfs_short_path']['calc'] += 1
         else:
-            self.cache_info['bfs_short_path']['calc'] += 1
             short_path = self.bfs(node1_id, node2_id)
+            self.cache_info['bfs_short_path']['calc'] += 1
 
         return short_path
 
     def weighted_short_path(self, node1_id: str, node2_id: str, *args, **kwargs) -> float:
-        short_path_len = self.compute_short_path(node1_id, node2_id)
-        w = self.embeddings_dist(node1_id, node2_id)
-        return short_path_len * w
+        pair_id = create_id_for_node_pair(node1_id, node2_id)
+        if (self.config.kvdriver_config is not None) and (self.cache['weight_with_short_path'].item_exist(pair_id)):
+            #print("exists")
+            w_short_path = self.cache['weight_with_short_path'].read([pair_id])[0].value
+            self.cache_info['weight_with_short_path']['exist'] += 1
+        else:
+            #print("calculated")
+            short_path_len = self.compute_short_path(node1_id, node2_id)
+            w = self.embeddings_dist(node1_id, node2_id)
+            w_short_path = w * short_path_len
+            self.cache['weight_with_short_path'].create([KeyValueDBInstance(id=pair_id, value=w_short_path)])
+            self.cache_info['weight_with_short_path']['calc'] += 1
+
+        return w_short_path
 
     def avg_weighted_short_path(self, node1_id: str, node2_id: str, parent: Dict[str, str]) -> float:
-        nodes_path = AStarTripletsRetriever.get_nodes_path(parent, node1_id)
-        acc_dist = 0
-        for i in range(len(nodes_path)-1):
-            acc_dist += self.embeddings_dist(nodes_path[i], nodes_path[i+1])
-        acc_dist += self.embeddings_dist(node1_id, node2_id)
+        pair_id = create_id_for_node_pair(node1_id, node2_id)
+        if (self.config.kvdriver_config is not None) and (self.cache['avg_weighted_with_short_path'].item_exist(pair_id)):
+            #print("exists")
+            avg_w_short_path = self.cache['avg_weighted_with_short_path'].read([pair_id])[0].value
+            self.cache_info['avg_weighted_with_short_path']['exist'] += 1
+        else:
+            #print("calculated")
+            nodes_path = get_nodes_path(parent, node1_id)
+            acc_dist = 0
+            for i in range(len(nodes_path)-1):
+                acc_dist += self.embeddings_dist(nodes_path[i], nodes_path[i+1])
+            acc_dist += self.embeddings_dist(node1_id, node2_id)
 
-        short_path_len = self.compute_short_path(node1_id, node2_id)
-        return np.mean(acc_dist) * short_path_len
+            short_path_len = self.compute_short_path(node1_id, node2_id)
+            avg_w_short_path = np.mean(acc_dist) * short_path_len
+
+            self.cache['avg_weighted_with_short_path'].create([KeyValueDBInstance(id=pair_id, value=avg_w_short_path)])
+            self.cache_info['avg_weighted_with_short_path']['calc'] += 1
+
+        return avg_w_short_path
 
     def bfs(self, s_node_id: str, e_node_id: str) -> int:
         visited, queue = set(), collections.deque([s_node_id])
@@ -160,14 +193,35 @@ class AStarMetrics:
                     passed_nodes_counter += 1
 
                     if self.config.kvdriver_config is not None:
+                        # кешируем кратчайший bfs-путь от s_node_id-стартовой до текущей вершины
                         pair_id = create_id_for_node_pair(s_node_id, neighbour)
                         if not self.cache['bfs_short_path'].item_exist(pair_id):
                             self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, value=D[neighbour])])
+                            self.cache_info['bfs_short_path']['calc'] += 1
+
+                        # кешируем кратчайший bfs-путь от vertex-вершины до его соседа (путь равен 1)
+                        pair_id = create_id_for_node_pair(vertex, neighbour)
+                        if not self.cache['bfs_short_path'].item_exist(pair_id):
+                            self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, value=1)])
+                            self.cache_info['bfs_short_path']['calc'] += 1
 
                     if neighbour == e_node_id:
                         self.log(f"bfs end-node found!", verbose=self.verbose)
                         self.log(f"bfs graph-db queries: {neo4j_queries_counter}", verbose=self.verbose)
                         self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.verbose)
+
+                        # костыль
+                        self.cache_info['bfs_short_path']['calc'] -= 1
+
+                        # кешируем кратчайшие bfs-пути от e_node_id-вершины до вершин,
+                        # которые были в кратчайшем пути между s_node_id- и e_node_id-вершинами
+                        reverse_nodes_path = get_nodes_path(parent, neighbour)
+                        for i in range(1,len(reverse_nodes_path)-1):
+                            pair_id = create_id_for_node_pair(reverse_nodes_path[i], neighbour)
+                            if not self.cache['bfs_short_path'].item_exist(pair_id):
+                                self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, value=i)])
+                                self.cache_info['bfs_short_path']['calc'] += 1
+
                         return D[neighbour]
 
                     queue.append(neighbour)
@@ -258,7 +312,7 @@ class AStarGraphSearch:
                 break
 
             adj_nodes = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(current_node_id, self.config.accepted_node_types)
-            self.log(f"adjenced nodes: {len(adj_nodes)}", verbose=self.verbose)
+            #self.log(f"adjenced nodes: {len(adj_nodes)}", verbose=self.verbose)
 
             for adj_n_id in adj_nodes:
 
@@ -299,35 +353,6 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
         self.kg_model = kg_model
         self.graph_searcher = AStarGraphSearch(kg_model, log, search_config, verbose)
 
-    @staticmethod
-    def get_nodes_path(parent: Dict[str, str], end_node_id: str) -> List[str]:
-        """Метод предназначен для получения пути обхода графа, заканчивая заданной конечной end_node_id вершиной.
-        Путь должен быть ацикличным: есть стартовая вершин, у которой нет родителя.
-
-        :param parent: Словарь с идентификаторами родительских вершин. Ключи - идентикиаторы вершин, которые были посещены; значения - идентификаторы вершины (родитель), из которой был выполнен переход в данную (ключ) вершину.
-        :type parent: Dict[str, str]
-        :param end_node_id: Идентификатор последней посещённой вершины.
-        :type end_node_id: str
-        :return: Последовательность посещённых вершин: от конечной до стартовой (в обратном порядке).
-        :rtype: List[str]
-        """
-        if type(end_node_id) is not str:
-            raise ValueError(NOT_VALID_ID_ERROR_MSG)
-        if None not in parent.values():
-            raise ValueError(NO_START_NODE_IN_PARENT_ERROR_MSG)
-        if len(parent) == 0:
-            raise ValueError(EMPTY_PARENT_ERROR_MSG)
-
-        path, end_flag, cur_n = [end_node_id], False, end_node_id
-        while not end_flag:
-            next_n = parent[cur_n]
-            if next_n is None:
-                end_flag = True
-            else:
-                path.append(next_n)
-                cur_n = next_n
-        return path
-
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
@@ -355,7 +380,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
                     self.log(f"search elapsed_time: {time() - s_time}", verbose=self.verbose)
 
                     s_time = time()
-                    nodes_path = AStarTripletsRetriever.get_nodes_path(
+                    nodes_path = get_nodes_path(
                         parent, spare_closest_node if end_node not in parent else end_node)
                     self.log(f"get_path elapsed_time: {time() - s_time}", verbose=self.verbose)
 

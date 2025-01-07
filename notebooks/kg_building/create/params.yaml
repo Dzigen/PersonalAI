@@ -1,0 +1,7 @@
+DATASET_PATH: '../../../data/qa_datasets/diaasqa/Augment_DiaASQ.json'
+DATASET_NAME: 'diaasqa'
+KNOWLEDGE_GRAPH_NAME: 'gigachat_full'
+EMBEDDER_MODEL_PATH: '../../../models/intfloat/multilingual-e5-small'
+DELETE_OBSOLETE_INFO: False
+LANG: 'en'
+need_to_clear: False

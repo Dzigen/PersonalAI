@@ -63,7 +63,7 @@ class QueryLLMParser:
         if status != ReturnStatus.success:
             info.occurred_warning.append(status)
 
-        if len(extracted_entities) == 0:
+        if extracted_entities is None or len(extracted_entities) == 0:
             info.status = ReturnStatus.zero_entities
             info.message = STATUS_MESSAGE[info.status]
 

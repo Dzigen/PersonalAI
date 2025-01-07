@@ -3,7 +3,7 @@ from typing import List, Dict, Union
 import json
 
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
-from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NodeType, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
+from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NodeType, RelationCreator, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 
 DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(uri="bolt://localhost:7687", params={'user': "neo4j", 'pwd': 'password'})
 
@@ -172,27 +172,60 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
     def parse_query_nodes_output(self, output: List[object]) -> List[Node]:
         formated_nodes = []
         for raw_node in output:
-            node = Node(id=raw_node['n']['str_id'], name=str(raw_node['n']['name']),
-                type=NODES_TYPES_MAP[list(raw_node['n'].labels)[0]], prop=dict(raw_node['n']))
+
+            n_dict = dict(raw_node['n'])
+            for k,v in n_dict.items():
+                try:
+                    n_dict[k] = json.loads(v)
+                except json.decoder.JSONDecodeError as e:
+                    pass
+
+            node = NodeCreator.create(
+                n_type=NODES_TYPES_MAP[list(raw_node['n'].labels)[0]],
+                name=n_dict['name'], prop={**n_dict})
+
             formated_nodes.append(node)
         return formated_nodes
 
     def parse_query_triplets_output(self, output: List[object]) -> List[Triplet]:
         formated_triplets = []
         for raw_triplet in output:
-            node1 = Node(id=raw_triplet['n1']['str_id'], name=str(raw_triplet['n1']['name']),
-                type=NODES_TYPES_MAP[list(raw_triplet['n1'].labels)[0]], prop=dict(raw_triplet['n1']))
-            node2 = Node(id=raw_triplet['n2']['str_id'], name=str(raw_triplet['n2']['name']),
-                type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]], prop=dict(raw_triplet['n2']))
-            relation = Relation(
-                id=raw_triplet['rel']['str_id'], name=str(raw_triplet['rel']['name']),
-                type=RELATIONS_TYPES_MAP[raw_triplet['rel'].type], prop=dict(raw_triplet['rel']))
+
+            n1_dict = dict(raw_triplet['n1'])
+            n2_dict = dict(raw_triplet['n2'])
+            rel_dict = dict(raw_triplet['rel'])
+
+            node1 = NodeCreator.create(
+                n_type=NODES_TYPES_MAP[list(raw_triplet['n1'].labels)[0]],
+                name=n1_dict['name'], prop=n1_dict, add_stringified_node=False)
+
+            node2 = NodeCreator.create(
+                n_type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]],
+                name=n2_dict['name'], prop=n2_dict, add_stringified_node=False)
+
+            relation = RelationCreator.create(
+                r_type=RELATIONS_TYPES_MAP[raw_triplet['rel'].type],
+                name=rel_dict['name'], prop=rel_dict)
 
             start_node_id = raw_triplet['rel'].nodes[0].element_id
-            start_node, end_node = (node1, node2) if start_node_id == node1.id else (node2, node1)
+            if start_node_id == raw_triplet['n1'].element_id:
+                start_node, end_node = (node1, node2)
+            elif start_node_id == raw_triplet['n2'].element_id:
+                start_node, end_node = (node2, node1)
+            else:
+                raise ValueError
+
             triplet = TripletCreator.create(
-                start_node, relation, end_node, add_stringified_triplet=False, t_id=raw_triplet['rel']['t_id'])
+                start_node, relation, end_node, add_stringified_triplet=True)
             formated_triplets.append(triplet)
+
+        # print("PARSED_TRIPLETS: ")
+        # for triplet in formated_triplets:
+        #     print(f"* triplet_id = {triplet.id}")
+        #     print(f"\t s_node: id = {triplet.start_node.id}; str_id = {triplet.start_node.prop['str_id']}")
+        #     print(f"\t rel: id = {triplet.relation.id}; t_id = {triplet.relation.prop['t_id']} str_id = {triplet.relation.prop['str_id']}")
+        #     print(f"\t e_node: id = {triplet.end_node.id}; str_id = {triplet.end_node.prop['str_id']}")
+
         return formated_triplets
 
     def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
@@ -204,26 +237,29 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         output = self.execute_query(
             f'MATCH (n1)-[rel]-(n2) WHERE n1.str_id = "{node1_id}" AND n2.str_id = "{node2_id}" RETURN n1, rel, n2')
 
-        formatted_triplets = self.parse_query_triplets_output(output)
-        return formatted_triplets
+        formated_triplets = self.parse_query_triplets_output(output)
+        return formated_triplets
 
     def get_triplets_by_name(self, subj_names: List[str], obj_names: List[str], obj_type: str) -> List[Triplet]:
-        formatted_triplets = []
+        formated_triplets = []
         if subj_names:
             for subj_name in subj_names:
+                subj_dump = json.dumps(subj_name, ensure_ascii=False)
                 output = self.execute_query(
-                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n1.name) = LOWER("{subj_name}") RETURN n1, rel, n2')
-                formatted_triplets += self.parse_query_triplets_output(output)
+                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n1.name) = LOWER({subj_dump}) RETURN n1, rel, n2')
+                formated_triplets += self.parse_query_triplets_output(output)
         elif obj_names:
             for obj_name in obj_names:
+                obj_dump = json.dumps(obj_name, ensure_ascii=False)
                 output = self.execute_query(
-                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n2.name) = LOWER("{obj_name}") RETURN n1, rel, n2')
-                formatted_triplets += self.parse_query_triplets_output(output)
+                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n2.name) = LOWER({obj_dump}) RETURN n1, rel, n2')
+                formated_triplets += self.parse_query_triplets_output(output)
         else:
             output = self.execute_query(
                 f'MATCH (n1:object)-[rel]-(n2:{obj_type}) RETURN n1, rel, n2')
-            formatted_triplets += self.parse_query_triplets_output(output)
-        return formatted_triplets
+            formated_triplets += self.parse_query_triplets_output(output)
+
+        return formated_triplets
 
     def count_items(self) -> int:
         n_output = self.execute_query("MATCH (a) RETURN count(a) as n_count")[0]

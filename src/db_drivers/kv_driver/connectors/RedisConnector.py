@@ -4,12 +4,14 @@ from collections import defaultdict
 
 from src.db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
 
-DEFAULT_REDISKV_CONFIG = KVDBConnectionConfig(host='localhost', port=6380, need_to_clear=False, db_info={'db': 0},
+DEFAULT_REDISKV_CONFIG = KVDBConnectionConfig(host='localhost', port=6380, need_to_clear=False, db_info={'db': 0, 'table': 'test_collection'},
                                               params={'ss_name': 'sorted_node_pairs', 'hs_name': 'node_pairs', 'max_storage': 5e+8})
 
 class RedisKVConnector(AbstractKVDatabaseConnection):
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_REDISKV_CONFIG):
         self.config = config
+        self.config.params['ss_name'] = f"{self.config.db_info['table']}_{self.config.params['ss_name']}"
+        self.config.params['hs_name'] = f"{self.config.db_info['table']}_{self.config.params['hs_name']}"
         self.open_connection()
 
     def open_connection(self):
@@ -74,7 +76,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
             else:
                 item_scores[ids[i]] += 1
                 formated_items.append(
-                    KeyValueDBInstance(id=ids[i], value=val))
+                    KeyValueDBInstance(id=ids[i], value=float(val)))
 
         # Обновляем метрику использования элементов
         self.update_item_scores(item_scores)

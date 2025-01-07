@@ -68,12 +68,12 @@ class QALLMGenerator:
             self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
 
         self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...", verbose=self.config.verbose)
-        answer, status = self.answer_generator_solver.solve(query=query, triplets=context_triplets)
+        answer, status = self.answer_generator_solver.solve(lang=self.config.lang, query=query, triplets=context_triplets)
 
         if status != ReturnStatus.success:
             info.occurred_warning.append(status)
 
-        if len(answer) == 0:
+        if answer is None or len(answer) == 0:
             info.status = ReturnStatus.empty_answer
             info.message = STATUS_MESSAGE[info.status]
 

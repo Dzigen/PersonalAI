@@ -106,3 +106,88 @@ services:
             - driver: nvidia
               device_ids: ['1']
               capabilities: [gpu]
+
+
+  ollama_agent:
+    #image: m.menschikov/agent_service:v1
+    image: ollama/ollama:latest
+    container_name: personalai_mmenschikov_ollama_service
+    hostname: ollamaservice
+    ports:
+      - "11434:11434"
+    volumes:
+      - ../ollama_volume:/root/.ollama
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 8G
+        reservations:
+          cpus: '1'
+          memory: 4G
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
+
+  mongo_cache:
+    image: mongo:latest
+    container_name: personalai_mmenschikov_mongo_cache
+    hostname: mongo_cache
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: pass
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/knowledge_graphs/diaasqa/gigachat_full/kv_cache/persistent_volume/:/data/db/
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 40G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
+  mongo_ui:
+    image: mongo-express:latest
+    container_name: personalai_mmenschikov_mongo_ui
+    hostname: mongo_ui
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: me_user
+      ME_CONFIG_BASICAUTH_PASSWORD: me_pass
+      ME_CONFIG_MONGODB_ADMINUSERNAME: user
+      ME_CONFIG_MONGODB_ADMINPASSWORD: pass
+      ME_CONFIG_MONGODB_SERVER: mongo_cache
+    depends_on:
+      - mongo_cache
+    ports:
+      - "8081:8081"
+
+  redis_cache:
+    image: redis:latest
+    container_name: personalai_mmenschikov_redis_cache
+    hostname: redis_cache
+    ports:
+      - "6380:6379"
+    volumes:
+      - ./data/knowledge_graphs/diaasqa/gigachat_full/kv_cache/ram_volume:/data
+      - ./configs/redis:/usr/local/etc/redis
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 8G
+        reservations:
+          cpus: '1'
+          memory: 6G
+
+  redis_ui:
+    image: redis/redisinsight:latest
+    container_name: personalai_mmenschikov_redis_ui
+    hostname: redis_ui
+    depends_on:
+      - redis_cache
+    ports:
+      - "5540:5540"
