@@ -174,6 +174,9 @@ embed_config.tripletsdb_driver_config.db_config.need_to_clear = False
 
 ##################################
 
+print("graph config: ", graph_config)
+print("embeddings config: ",embed_config)
+
 kg_model = KnowledgeGraphModel(
     graph_config=graph_config,
     embeddings_config=embed_config)

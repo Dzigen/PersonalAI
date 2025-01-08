@@ -29,7 +29,7 @@ gc.collect()
 with open("params.yaml", 'r') as stream:
     HYPER_PARAMS = yaml.safe_load(stream)
 
-BASE_PATH = "../../data/knowledge_graphs/"
+BASE_PATH = "../../../data/knowledge_graphs/"
 DATASET_PATH = BASE_PATH + f"{HYPER_PARAMS['DATASET_NAME']}/"
 KG_PATH = DATASET_PATH + f"{HYPER_PARAMS['KNOWLEDGE_GRAPH_NAME']}/"
 
