@@ -24,6 +24,9 @@ import os
 BASEDIR = "../../"
 sys.path.insert(0, BASEDIR)
 
+import nltk
+nltk.download('wordnet')
+
 ################LOADING_HYPERPARAMETERS###################
 
 # Read YAML file

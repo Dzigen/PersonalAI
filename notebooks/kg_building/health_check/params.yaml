@@ -1,2 +1,2 @@
 DATASET_NAME: 'diaasqa'
-KNOWLEDGE_GRAPH_NAME: 'gigachat_full'
+KNOWLEDGE_GRAPH_NAME: 'gigachat_filtered'

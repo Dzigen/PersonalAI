@@ -4,6 +4,7 @@ import joblib
 import gc
 from tqdm import tqdm
 import numpy as np
+from collections import defaultdict
 import os
 from typing import List, Dict, Tuple
 import yaml
@@ -174,6 +175,9 @@ embed_config.tripletsdb_driver_config.db_config.need_to_clear = False
 
 ##################################
 
+print("graph config: ", graph_config)
+print("embeddings config: ",embed_config)
+
 kg_model = KnowledgeGraphModel(
     graph_config=graph_config,
     embeddings_config=embed_config)
@@ -262,37 +266,50 @@ def get_object_nodes_per_hyper_node(kg_model: KnowledgeGraphModel):
     return info
 
 def get_triplet_embds_match(kg_model: KnowledgeGraphModel):
-    graph_str_ids = kg_model.graph_struct.db_conn.execute_query("MATCH (a)-[rel]->(b) RETURN rel.str_id as str_id")
-    graph_str_ids = list(map(lambda item: item['str_id'], graph_str_ids))
+    graph_t_items = kg_model.graph_struct.db_conn.execute_query("MATCH (a)-[rel]->(b) RETURN rel.str_id as str_id, rel")
+    graph_t_items = list(map(lambda item: (item['str_id'], item['rel'].type), graph_t_items))
 
-    uniques_g_str_ids = list(set(graph_str_ids))
+    uniques_graph_t_items = list(set(graph_t_items))
 
-    embds_exist_ids = []
-    for g_str_id in tqdm(uniques_g_str_ids):
-        embds_exist_ids.append(kg_model.embeddings_struct.vectordbs['triplets'].item_exist(g_str_id))
+    embds_exist_t_ids = []
+    not_matched_embds = defaultdict(lambda: 0)
+    for item in tqdm(uniques_graph_t_items):
+        str_id, t_type = item
+        is_t_exists = kg_model.embeddings_struct.vectordbs['triplets'].item_exist(str_id)
+
+        embds_exist_t_ids.append(is_t_exists)
+        if not is_t_exists:
+            not_matched_embds[t_type] += 1
 
     info = {
-        'all': len(graph_str_ids),
-        'unique': len(uniques_g_str_ids),
-        'matched_embds': sum(embds_exist_ids)
+        'all': len(graph_t_items),
+        'unique': len(uniques_graph_t_items),
+        'matched_embds': sum(embds_exist_t_ids),
+        'not_matched_embds': not_matched_embds
     }
 
     return info
 
 def get_node_embds_match(kg_model: KnowledgeGraphModel):
-    graph_str_ids = kg_model.graph_struct.db_conn.execute_query("MATCH (a) RETURN a.str_id as str_id")
-    graph_str_ids = list(map(lambda item: item['str_id'], graph_str_ids))
+    graph_n_items = kg_model.graph_struct.db_conn.execute_query("MATCH (a) RETURN a.str_id as str_id, a")
+    graph_n_items = list(map(lambda item: (item['str_id'], list(item['a'].labels)[0]), graph_n_items))
+    uniques_graph_n_items = list(set(graph_n_items))
 
-    uniques_g_str_ids = list(set(graph_str_ids))
-
-    embds_exist_ids = []
-    for g_str_id in tqdm(uniques_g_str_ids):
-        embds_exist_ids.append(kg_model.embeddings_struct.vectordbs['nodes'].item_exist(g_str_id))
+    embds_exist_n_ids = []
+    not_matched_embds = defaultdict(lambda: 0)
+    for item in tqdm(uniques_graph_n_items):
+        str_id, n_tpe = item
+        is_n_exists = kg_model.embeddings_struct.vectordbs['nodes'].item_exist(str_id)
+        
+        embds_exist_n_ids.append(is_n_exists)
+        if not is_n_exists:
+            not_matched_embds[n_tpe] += 1
 
     info = {
-        'all': len(graph_str_ids),
-        'unique': len(uniques_g_str_ids),
-        'matched_embds': sum(embds_exist_ids)
+        'all': len(graph_n_items),
+        'unique': len(uniques_graph_n_items),
+        'matched_embds': sum(embds_exist_n_ids),
+        'not_matched_embds': not_matched_embds
     }
 
     return info

@@ -7,16 +7,30 @@ sys.path.insert(0, BASEDIR)
 
 from src.pipelines.qa.knowledge_retriever import AStarGraphSearchConfig, AStarMetricsConfig, BFSSearchConfig, MixturedGraphSearchConfig
 from src.pipelines.qa.knowledge_retriever.TripletsFilter import TripletsFilterConfig
+from src.db_drivers.kv_driver import KVDBConnectionConfig, KeyValueDriverConfig
+from src.db_drivers.kv_driver.connectors import DEFAULT_MIXEDKV_CONFIG
+from src.utils import NodeType, Logger
 
 # retrieve
 RETRIVER_CONFIG_DUMP = "retriever_config"
 
-retriever_config = BFSSearchConfig(
-    strict_filter=True,
-    hyper_episodic_num=15,
-    chain_triplets_num=25,
-    other_triplets_num=6
+DEFAULT_MIXEDKV_CONFIG.params['redis_config'].host = 'redis_cache'
+DEFAULT_MIXEDKV_CONFIG.params['mongo_config'].host = 'mongo_cache'
+
+KV_STORAGE_CONFIG = KeyValueDriverConfig(db_vendor='mixed_kv', db_config=DEFAULT_MIXEDKV_CONFIG)
+
+retriever_config= AStarGraphSearchConfig(
+    metrics_config=AStarMetricsConfig(h_metric_name='ip', kvdriver_config=KV_STORAGE_CONFIG),
+    max_depth=8, max_passed_nodes=500,
+    accepted_node_types=[NodeType.object , NodeType.hyper, NodeType.episodic]
 )
+
+# retriever_config = BFSSearchConfig(
+#     strict_filter=True,
+#     hyper_episodic_num=15,
+#     chain_triplets_num=25,
+#     other_triplets_num=6
+# )
 
 joblib.dump(retriever_config, RETRIVER_CONFIG_DUMP)
 

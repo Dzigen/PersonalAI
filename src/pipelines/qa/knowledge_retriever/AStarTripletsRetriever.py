@@ -92,7 +92,12 @@ class AStarMetrics:
         if node1_id != node2_id:
             instances = self.kg_model.embeddings_struct.vectordbs['nodes'].read([node1_id, node2_id], includes=['embeddings'])
             # calculation ip distance
-            dist = 1 - np.dot(instances[0].embedding, instances[1].embedding)
+            try:
+                dist = 1 - np.dot(instances[0].embedding, instances[1].embedding)
+            except IndexError:
+                print(instances)
+                raise IndexError
+                
         return dist
 
     def embeddings_dist(self, node1_id: str, node2_id: str, *args, **kwargs) -> float:
