@@ -18,17 +18,17 @@ def test_create_triplets(triplets, expected, graph_model):
     for triplet_id in created_item_ids['triplets']:
         assert graph_model.db_conn.item_exist(triplet_id, id_type='triplet')
 
-@pytest.mark.parametrize("base_triplets, triplets_to_delete, expected, graph_model", GM_POPULATED_DELETE_TEST_CASES, indirect=['graph_model'])
-def test_delete_triplets(base_triplets, triplets_to_delete, expected, graph_model):
+@pytest.mark.parametrize("init_triplets, triplets_to_delete, expected_delete_n_info, expected_init_count, expected_final_count, graph_model", GM_POPULATED_DELETE_TEST_CASES, indirect=['graph_model'])
+def test_delete_triplets(init_triplets, triplets_to_delete, expected_delete_n_info, expected_initexpected_init_count, expected_final_count, graph_model):
     graph_model.db_conn.clear()
-    created_item_ids = graph_model.create_triplets(base_triplets, batch_size=1)
-    assert created_item_ids['nodes'] == expected['nodes_count']
-    assert created_item_ids['triplets'] == expected['triplets_count']
+    created_item_ids = graph_model.create_triplets(init_triplets, batch_size=1)
+    assert created_item_ids['nodes'] == expected_init_count['nodes_count']
+    assert created_item_ids['triplets'] == expected_init_count['triplets_count']
 
-    deleted_item_ids = graph_model.delete_triplets(triplets_to_delete,batch_size=1)
+    nodes_delete_info = graph_model.delete_triplets(triplets_to_delete, batch_size=1)
 
-    assert len(deleted_item_ids['nodes']) == len(expected['deleted_n_count'])
-    assert len(deleted_item_ids['triplets']) == len(deleted_item_ids['deleted_t_count'])
+    for real_delete_info, expected_delete_info in zip(nodes_delete_info, expected_delete_n_info):
+        assert real_delete_info == expected_delete_info
 
     for node_id in deleted_item_ids['nodes']:
         assert not graph_model.db_conn.item_exist(node_id, id_type='node')
