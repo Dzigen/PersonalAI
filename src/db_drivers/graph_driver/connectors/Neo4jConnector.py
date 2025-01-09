@@ -126,10 +126,16 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         # TODO
         pass
 
-    def delete(self, ids: List[str]) -> None:
-        # TODO
-        pass
+    def delete(self, ids: List[str], nodes_delete_info: List[Dict[str,bool]]) -> None:
+        for t_id, nodes_info in zip(ids, nodes_delete_info):
+            delete_statement = f'rel'
+            if nodes_info['s_node']:
+                delete_statement += ', s_node'
+            if ndoes_info['e_node']:
+                delete_statement += ', e_node'
 
+            self.execute_query(f'MATCH (s_node)-[rel]->(e_node) WHERE rel.t_id = "{t_id}" DELETE {delete_statement}')
+        
     def read_by_name(self, name: str, type: Union[RelationType, NodeType], object: str = 'triplet') -> List[Union[Triplet, Node]]:
         dump_name = json.dumps(name, ensure_ascii=False)
         if object == 'triplet':

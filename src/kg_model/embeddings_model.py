@@ -107,23 +107,28 @@ class EmbeddingsModel:
         self.log("Triples were successfully added to vector-model!", verbose=self.config.verbose)
         return {'nodes': existed_node_ids, 'triplets': existed_relation_ids}
 
-    def delete_triplets(self, triplets: List[Triplet], delete_nodes: bool = True) -> None:
+    def delete_triplets(self, triplets: List[Triplet], delete_nodes_info: Union[None, List[Dict[str,bool]]] = None) -> None:
         """Метод предназначен для удаления информации, представленной в виде списка триплетов, из векторной модели.
 
         :param triplets: Набор триплетов на удаление.
         :type triplets: List[Triplet]
-        :param delete_nodes: Если True, то из векторной модели также будут удалены вершины, которые принадлежат данным триплетам, иначе False, Значение по умолчанию True.
-        :type delete_nodes: bool, optional
+        :param delete_nodes_info: Список с информацией о соответстующих вершинах из входных триплетов, которые также необходимо удалить из векторой бд. Если указано значение None, то вершины в векторной бд будут оставлены без изменений. Значение по умолчанию None.
+        :type delete_nodes_info: Union[None, List[Dict[str,bool]]], optional
         """
         triplets_ids = list(map(lambda v: v.id, triplets))
 
-        unique_nodes_ids = None
-        if delete_nodes:
-            nodes_ids = []
-            nodes_ids += [triplet.start_node.id for triplet in triplets]
-            nodes_ids += [triplet.end_node.id for triplet in triplets]
-            unique_nodes_ids = list(set(nodes_ids))
+        unique_nodes_ids = set()     
+        if type(delete_nodes_info) is list:
+            for triplet, nodes_info in zip(triplets, delete_nodes_info):
+                if nodes_info['s_node']:
+                    unique_nodes_ids.add(triplet.start_node.id)
+                if nodes_info['e_node']:
+                    unique_nodes_ids.add(triplet.end_node.id)
+        else:
+            raise TypeError
 
+        unique_nodes_ids = list(unique_nodes_ids) if len(unique_nodes_ids) > 0 else None
+ 
         self.delete_stringified_triplets(triplets_ids, unique_nodes_ids)
 
     def create_stringified_triplets(self, triplets_ids: List[str], stringified_triplets: List[str],

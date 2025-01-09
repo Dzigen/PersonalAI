@@ -107,7 +107,7 @@ class GraphModel:
 
         return {'triplets': created_triplet_ids, 'nodes': created_node_ids}
 
-    def delete_triplets(self, triplets: List[Triplet], batch_size: int = 64, status_bar: bool = False) -> None:
+    def delete_triplets(self, triplets: List[Triplet], batch_size: int = 64, status_bar: bool = False) -> List[Dict[str,bool]]:
         """Метод предназначен для удаления информации, представленной в виде списка триплетов, из графовой модели.
 
         :param triplets: Набор триплетов на удаления из графовой модели.
@@ -115,13 +115,32 @@ class GraphModel:
         :param batch_size:  Количество триплетов, которое за одну delete-операцию удаляется из графовой модели. Значение по умолчанию 64.
         :type batch_size: int, optional
         """
-        triplet_ids = list(map(lambda t: t.id, triplets))
 
+        # Если у вершин в данном триплете только одно инцидентное ребро, то 
+        # также удаляем такие вершины
+        nodes_delete_info = []
+        for triplet in triplets:
+            delete_info = {'s_node': False, 'e_node': False}
+
+            s_node_neighbours = self.db_conn.get_adjecent_nodes(triplet.start_node.id)
+            if len(s_node_neighbours) < 2:
+                delete_info['s_node'] = True
+            
+            e_node_neighbours = self.db_conn.get_adjecent_nodes(triplet.end_node.id)
+            if len(e_node_neighbours) < 2:
+                delete_info['e_node'] = True
+            
+            nodes_delete_info.append(delete_info)
+
+        triplet_ids = list(map(lambda t: t.id, triplets))
         steps = math.ceil(len(triplet_ids) / batch_size)
         process = tqdm(range(steps)) if status_bar else range(steps) 
         for step in process:
-            self.db_conn.delete(triplet_ids[step*batch_size: (step+1)*batch_size])
+            self.db_conn.delete(
+                triplet_ids[step*batch_size: (step+1)*batch_size],
+                nodes_delete_info[step*batch_size: (step+1)*batch_size])
 
+        return nodes_delete_info
 
     def clear(self) -> None:
         """Метод предназначен для удаления содержимого графовой модели данных."""
