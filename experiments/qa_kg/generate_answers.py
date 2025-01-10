@@ -72,29 +72,6 @@ print(kg_model.embeddings_struct.vectordbs['nodes'].count_items())
 print(kg_model.embeddings_struct.vectordbs['triplets'].count_items())
 print(kg_model.graph_struct.db_conn.count_items())
 
-###################################
-
-# задаём конфигурацию qa-пайплайна
-
-retriever_config = joblib.load(HYPER_PARAMS['knowledge_retriever']['retriever_config_path'])
-filter_config = joblib.load(HYPER_PARAMS['knowledge_retriever']['filter_config_path'])
-
-print("retriever_config:", retriever_config)
-print("filter_config:", filter_config)
-
-qa_config = QAPipelineConfig(
-    query_parser_config=QueryLLMParserConfig(lang=HYPER_PARAMS['language']),
-
-    knowledge_comparator_config=KnowledgeComparatorConfig(),
-
-    knowledge_retriever_config=KnowledgeRetrieverConfig(
-        retriever_method=HYPER_PARAMS['knowledge_retriever']['retriever_method'], retriever_config=retriever_config,
-        filter_method=HYPER_PARAMS['knowledge_retriever']['filter_method'], filter_config=filter_config),
-
-    answer_generator_config=QALLMGeneratorConfig(lang=HYPER_PARAMS['language']))
-
-qa_pipeline = QAPipeline(kg_model, qa_config)
-
 ##################STRUCTURE_INITs#################
 
 if HYPER_PARAMS['init_struct']:
@@ -124,9 +101,38 @@ if HYPER_PARAMS['init_struct']:
         fd.write(json.dumps(HYPER_PARAMS, indent=1, ensure_ascii=False))
 
     # сохранить конфиги
-    joblib.dump(qa_config, QA_CONFIG_SAVE_PATH)
+    retriever_config = joblib.load(HYPER_PARAMS['knowledge_retriever']['retriever_config_path'])
+    filter_config = joblib.load(HYPER_PARAMS['knowledge_retriever']['filter_config_path'])
+
     joblib.dump(retriever_config, RETRIEVER_CONFIG_SAVE_PATH)
     joblib.dump(filter_config, FILTER_CONFIG_SAVE_PATH)
+
+###################################
+
+# задаём конфигурацию qa-пайплайна
+
+retriever_config = joblib.load(RETRIEVER_CONFIG_SAVE_PATH)
+filter_config = joblib.load(FILTER_CONFIG_SAVE_PATH)
+
+print("retriever_config:", retriever_config)
+print("filter_config:", filter_config)
+
+qa_config = QAPipelineConfig(
+    query_parser_config=QueryLLMParserConfig(lang=HYPER_PARAMS['language']),
+
+    knowledge_comparator_config=KnowledgeComparatorConfig(),
+
+    knowledge_retriever_config=KnowledgeRetrieverConfig(
+        retriever_method=HYPER_PARAMS['knowledge_retriever']['retriever_method'], retriever_config=retriever_config,
+        filter_method=HYPER_PARAMS['knowledge_retriever']['filter_method'], filter_config=filter_config),
+
+    answer_generator_config=QALLMGeneratorConfig(lang=HYPER_PARAMS['language']))
+
+qa_pipeline = QAPipeline(kg_model, qa_config)
+
+#################SAVING QA CONFIG##################
+
+joblib.dump(qa_config, QA_CONFIG_SAVE_PATH)
 
 #################LOADING_QUESTIONS##################
 
@@ -139,16 +145,16 @@ question_packs = load_dataset(HYPER_PARAMS['eval_dataset_path'])
 
 #################START_QA_PROCESS##################
 
-for pack_name, questions, _ in question_packs[:1]:
+for pack_name, questions, _ in question_packs[1:]:
 
     pack_tmp_dir = f"{TMP_GENERATED_ANSWERS_DIR}/{pack_name}"
     if not os.path.exists(pack_tmp_dir):
         os.mkdir(pack_tmp_dir)
 
     if (HYPER_PARAMS['max_samples_per_pack'] < 0) or (HYPER_PARAMS['max_samples_per_pack'] > len(questions)):
-        process = tqdm(range(87+162, len(questions)))
+        process = tqdm(range(len(questions)))
     else:
-        process = tqdm(range(87+162, HYPER_PARAMS['max_samples_per_pack']))
+        process = tqdm(range(HYPER_PARAMS['max_samples_per_pack']))
 
     for i in process:
         process.set_postfix_str(pack_name)

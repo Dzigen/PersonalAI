@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Dict
+from typing import List, Dict, Union
 import math
 from tqdm import tqdm
 
@@ -107,29 +107,36 @@ class EmbeddingsModel:
         self.log("Triples were successfully added to vector-model!", verbose=self.config.verbose)
         return {'nodes': existed_node_ids, 'triplets': existed_relation_ids}
 
-    def delete_triplets(self, triplets: List[Triplet], delete_nodes_info: Union[None, List[Dict[str,bool]]] = None) -> None:
+    def delete_triplets(self, triplets: List[Triplet], delete_info: List[Dict[str,bool]]) -> None:
         """Метод предназначен для удаления информации, представленной в виде списка триплетов, из векторной модели.
 
         :param triplets: Набор триплетов на удаление.
         :type triplets: List[Triplet]
-        :param delete_nodes_info: Список с информацией о соответстующих вершинах из входных триплетов, которые также необходимо удалить из векторой бд. Если указано значение None, то вершины в векторной бд будут оставлены без изменений. Значение по умолчанию None.
+        :param delete__info: Информация для векторной структуры данных, чтобы удалить устаревшие вершины/триплеты и сохранить консистентность модели графа знаний.
         :type delete_nodes_info: Union[None, List[Dict[str,bool]]], optional
         """
-        triplets_ids = list(map(lambda v: v.id, triplets))
 
-        unique_nodes_ids = set()     
-        if type(delete_nodes_info) is list:
-            for triplet, nodes_info in zip(triplets, delete_nodes_info):
-                if nodes_info['s_node']:
-                    unique_nodes_ids.add(triplet.start_node.id)
-                if nodes_info['e_node']:
-                    unique_nodes_ids.add(triplet.end_node.id)
-        else:
-            raise TypeError
+        unique_nodes_ids, unique_relation_ids = set(), set()
+        for triplet, info in zip(triplets, delete_info):
+            triplet_on_delete = False
+            if info['triplet']:
+                triplet_on_delete = True
+                unique_relation_ids.add(triplet.relation.id)
+
+            if info['s_node']:
+                if not triplet_on_delete:
+                    raise ValueError(f"{triplet}")
+                unique_nodes_ids.add(triplet.start_node.id)
+
+            if info['e_node']:
+                if not triplet_on_delete:
+                    raise ValueError(f"{triplet}")
+                unique_nodes_ids.add(triplet.end_node.id)
 
         unique_nodes_ids = list(unique_nodes_ids) if len(unique_nodes_ids) > 0 else None
- 
-        self.delete_stringified_triplets(triplets_ids, unique_nodes_ids)
+        unique_relation_ids = list(unique_relation_ids)
+
+        self.delete_stringified_triplets(unique_relation_ids, unique_nodes_ids)
 
     def create_stringified_triplets(self, triplets_ids: List[str], stringified_triplets: List[str],
                      nodes_ids: List[str] = None, stringified_nodes: List[str] = None) -> None:
@@ -199,6 +206,11 @@ class EmbeddingsModel:
         instances = self.vectordbs[db_type].read(ids, includes=['embeddings'])
         embeddings = list(map(lambda inst: inst.embedding, instances))
         return embeddings
+
+    def count_items(self):
+        nodes_count = self.vectordbs['nodes'].count_items()
+        triplets_count = self.vectordbs['triplets'].count_items()
+        return {'nodes': nodes_count, 'triplets': triplets_count}
 
     def clear(self) -> None:
         """Метод предназначен для удаления содержимого векторной модели данных.

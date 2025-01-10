@@ -127,9 +127,28 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         # TODO
         pass
 
-    def delete(self, ids: List[str]) -> ReturnInfo:
-        # TODO
-        pass
+    def delete(self, ids: List[str], delete_info: List[Dict[str,bool]]) -> None:
+        for t_id, info in zip(ids, delete_info):
+            delete_statement = []
+            rel_on_delete = False
+
+            if info['rel']:
+                delete_statement.append('rel')
+                rel_on_delete = True
+
+            if info['s_node']:
+                if not rel_on_delete:
+                    raise ValueError
+                delete_statement.append('s_node')
+
+            if info['e_node']:
+                if not rel_on_delete:
+                    raise ValueError
+                delete_statement.append('e_node')
+
+            delete_statement = ', '.join(delete_statement)
+
+            self.conn.execute(f'MATCH (s_node)-[rel]->(e_node) WHERE rel.t_id = "{t_id}" DELETE {delete_statement}')
 
     def read_by_name(self, name: str, type: Union[RelationType, NodeType], object: str = 'triplet') -> List[Union[Triplet, Node]]:
         if object == 'triplet':
@@ -227,10 +246,28 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         unique_triplets = {triplet.id: triplet for triplet in formated_triplets}
         return list(unique_triplets.values())
 
-    def count_items(self) -> int:
-        n_output = int(self.conn.execute("MATCH (a) RETURN count(a) as n_count;").get_as_df()['n_count'][0])
-        r_output = int(self.conn.execute("MATCH (a)-[rel]->(b) RETURN count(rel) as r_count;").get_as_df()['r_count'][0])
-        return {'triplets': r_output, 'nodes': n_output}
+    def count_items(self, id: str = None, id_type: str = None) -> Union[Dict[str,int], int]:
+        if id_type is None:
+            n_output = self.conn.execute("MATCH (a) RETURN count(a) as n_count").get_as_df()['n_count'][0]
+            r_output = self.conn.execute("MATCH (a)-[rel]->(b) RETURN count(rel) as r_count").get_as_df()['r_count'][0]
+            result = {'triplets': int(r_output), 'nodes': int(n_output)}
+
+        elif id_type == 'node':
+            n_output = self.conn.execute(f'MATCH (a) WHERE a.str_id = "{id}" RETURN count(a) as n_count').get_as_df()['n_count'][0]
+            result = int(n_output)
+
+        elif id_type == 'relation':
+            r_output = self.conn.execute(f'MATCH (a)-[rel]->(b) WHERE rel.str_id = "{id}" RETURN count(rel) as r_count').get_as_df()['r_count'][0]
+            result = int(r_output)
+
+        elif id_type == 'triplet':
+            r_output = self.conn.execute(f'MATCH (a)-[rel]->(b) WHERE rel.t_id = "{id}" RETURN count(rel) as r_count').get_as_df()['r_count'][0]
+            result = int(r_output)
+
+        else:
+            raise ValueError
+
+        return result
 
     def item_exist(self, id: str, id_type: str='triplet') -> bool:
         if type(id) is not str:

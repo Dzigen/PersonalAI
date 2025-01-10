@@ -108,39 +108,57 @@ class GraphModel:
         return {'triplets': created_triplet_ids, 'nodes': created_node_ids}
 
     def delete_triplets(self, triplets: List[Triplet], batch_size: int = 64, status_bar: bool = False) -> List[Dict[str,bool]]:
-        """Метод предназначен для удаления информации, представленной в виде списка триплетов, из графовой модели.
+        """Метод предназначен для удаления информации, представленной в виде списка триплетов, из графовой структуры данных.
 
-        :param triplets: Набор триплетов на удаления из графовой модели.
+        :param triplets: Набор триплетов на удаления из графовой структуры данных.
         :type triplets: List[Triplet]
-        :param batch_size:  Количество триплетов, которое за одну delete-операцию удаляется из графовой модели. Значение по умолчанию 64.
+        :param batch_size:  Количество триплетов, которое за одну delete-операцию будет удаляться из графовой структуры. Значение по умолчанию 64.
         :type batch_size: int, optional
+        :return: Информация для векторной структуры данных, чтобы удалить устаревшие вершины/триплеты и сохранить консистентность модели графа знаний.
+        :rtype: List[Dict[str,bool]]
         """
 
-        # Если у вершин в данном триплете только одно инцидентное ребро, то 
-        # также удаляем такие вершины
-        nodes_delete_info = []
+        vdb_delete_info, gdb_delete_info = [], []
         for triplet in triplets:
-            delete_info = {'s_node': False, 'e_node': False}
+            vector_delete_info = {'s_node': False, 'triplet': False, 'e_node': False}
+            graph_delete_info = {'s_node': False, 'rel': True, 'e_node': False}
 
+            # Если в триплете у стартовой вершины только одно инцидентное ребро,
+            # то готовим его к удалению из графовой и векторной структур данных
             s_node_neighbours = self.db_conn.get_adjecent_nodes(triplet.start_node.id)
             if len(s_node_neighbours) < 2:
-                delete_info['s_node'] = True
-            
+                graph_delete_info['s_node'] = True
+                vector_delete_info['s_node'] = True
+
+            # Если в триплете у конечной вершины только одно инцидентное ребро,
+            # то готовим его к удалению из графовой и векторной структур данных
             e_node_neighbours = self.db_conn.get_adjecent_nodes(triplet.end_node.id)
             if len(e_node_neighbours) < 2:
-                delete_info['e_node'] = True
-            
-            nodes_delete_info.append(delete_info)
+                graph_delete_info['e_node'] = True
+                vector_delete_info['e_node'] = True
+
+            # Если в графовой структуре данных содержиться только один триплет с таким-же строковым представлением (как у текущего triplet),
+            # то готовим его к удалению как из графовой, так и из векторной структур данных. Если триплетов с таким же
+            # строковым представлением несколько (>=2), то готовим его к удалению только из графовой структуры.
+            same_str_id_count = self.db_conn.count_items(id=triplet.relation.id, id_type='str_id')
+            if same_str_id_count < 2:
+                vector_delete_info['triplet'] = True
+
+            vdb_delete_info.append(vector_delete_info)
+            gdb_delete_info.append(graph_delete_info)
 
         triplet_ids = list(map(lambda t: t.id, triplets))
         steps = math.ceil(len(triplet_ids) / batch_size)
-        process = tqdm(range(steps)) if status_bar else range(steps) 
+        process = tqdm(range(steps)) if status_bar else range(steps)
         for step in process:
             self.db_conn.delete(
                 triplet_ids[step*batch_size: (step+1)*batch_size],
-                nodes_delete_info[step*batch_size: (step+1)*batch_size])
+                gdb_delete_info[step*batch_size: (step+1)*batch_size])
 
-        return nodes_delete_info
+        return vdb_delete_info
+
+    def count_items(self):
+        return self.db_conn.count_items()
 
     def clear(self) -> None:
         """Метод предназначен для удаления содержимого графовой модели данных."""
