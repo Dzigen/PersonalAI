@@ -161,15 +161,47 @@ print("Количество порождённых тестов для EM_CREATE
 
 ###############################################################################################
 
-# init_triplets, expected_creation_info, expected_init_count, triplets_to_delete, delete_info, expected_final_count
+# init_triplets, expected_creation_info, expected_init_count, triplets_to_delete, delete_info, expected_final_count, exception
 EM_DELETE_TEST_CASES = [
     # 1. Удаление только связи
+    [[SIMPLE_TRIPLET2, SIMPLE_TRIPLET3, SIMPLE_TRIPLET1_2],
+     {'triplets': {SIMPLE_TRIPLET2.relation.id, SIMPLE_TRIPLET3.relation.id, SIMPLE_TRIPLET1_2.relation.id}, 'nodes': {OBJECT_NODE1.id, OBJECT_NODE2.id, OBJECT_NODE3.id}},
+     {'triplets': 3, 'nodes': 3}, [SIMPLE_TRIPLET1_2],
+     {0: {'s_node': False, 'triplet': True, 'e_node': False}}, {'triplets': 2, 'nodes': 3}, False],
     # 2. Удаление связи и стартовой вершины
+    [[SIMPLE_TRIPLET2, SIMPLE_TRIPLET3],
+     {'triplets': {SIMPLE_TRIPLET2.relation.id, SIMPLE_TRIPLET3.relation.id}, 'nodes': {OBJECT_NODE1.id, OBJECT_NODE2.id, OBJECT_NODE3.id}},
+     {'triplets': 2, 'nodes': 3}, [SIMPLE_TRIPLET2],
+     {0: {'s_node': True, 'triplet': True, 'e_node': False}}, {'triplets': 1, 'nodes': 2}, False],
     # 3. Удаление связи и конечной вершины
+    [[SIMPLE_TRIPLET2, SIMPLE_TRIPLET3],
+     {'triplets': {SIMPLE_TRIPLET2.relation.id, SIMPLE_TRIPLET3.relation.id}, 'nodes': {OBJECT_NODE1.id, OBJECT_NODE2.id, OBJECT_NODE3.id}},
+     {'triplets': 2, 'nodes': 3}, [SIMPLE_TRIPLET3],
+     {0: {'s_node': False, 'triplet': True, 'e_node': True}}, {'triplets': 1, 'nodes': 2}, False],
     # 4. Удаление только конечной вершины
+    [[SIMPLE_TRIPLET2, SIMPLE_TRIPLET3],
+     {'triplets': {SIMPLE_TRIPLET2.relation.id, SIMPLE_TRIPLET3.relation.id}, 'nodes': {OBJECT_NODE1.id, OBJECT_NODE2.id, OBJECT_NODE3.id}},
+     {'triplets': 2, 'nodes': 3}, [SIMPLE_TRIPLET3],
+     {0: {'s_node': False, 'triplet': False, 'e_node': True}}, None, True],
     # 5. Удаление только стартовой вершины
+    [[SIMPLE_TRIPLET2, SIMPLE_TRIPLET3],
+     {'triplets': {SIMPLE_TRIPLET2.relation.id, SIMPLE_TRIPLET3.relation.id}, 'nodes': {OBJECT_NODE1.id, OBJECT_NODE2.id, OBJECT_NODE3.id}},
+     {'triplets': 2, 'nodes': 3}, [SIMPLE_TRIPLET2],
+     {0: {'s_node': True, 'triplet': False, 'e_node': False}}, None, True],
     # 6. удаление несколько разных триплетов
+    [[SIMPLE_TRIPLET2, SIMPLE_TRIPLET3, SIMPLE_TRIPLET1_2],
+     {'triplets': {SIMPLE_TRIPLET2.relation.id, SIMPLE_TRIPLET3.relation.id, SIMPLE_TRIPLET1_2.relation.id},
+      'nodes': {OBJECT_NODE1.id, OBJECT_NODE2.id, OBJECT_NODE3.id}},
+      {'triplets': 3, 'nodes': 3}, [SIMPLE_TRIPLET1_2, SIMPLE_TRIPLET2],
+      {0: {'s_node': False, 'triplet': True, 'e_node': False}, 1: {'s_node': True, 'triplet': True, 'e_node': False}},
+      {'triplets': 1, 'nodes': 2}, False],
     # 7. удаление несколько одинаковых триплетов
+    [[SIMPLE_TRIPLET2, SIMPLE_TRIPLET3, SIMPLE_TRIPLET1_2],
+     {'triplets': {SIMPLE_TRIPLET2.relation.id, SIMPLE_TRIPLET3.relation.id, SIMPLE_TRIPLET1_2.relation.id},
+      'nodes': {OBJECT_NODE1.id, OBJECT_NODE2.id, OBJECT_NODE3.id}},
+      {'triplets': 3, 'nodes': 3}, [SIMPLE_TRIPLET1_2, SIMPLE_TRIPLET1_2],
+      {0: {'s_node': False, 'triplet': True, 'e_node': False}, 1: {'s_node': False, 'triplet': True, 'e_node': False}},
+      {'triplets': 2, 'nodes': 3}, False]
 ]
 
 EM_POPULATED_DELETE_TEST_CASES = []
@@ -300,6 +332,8 @@ print("Количество порождённых тестов для GM_CREATE
 GM_DELETE_TEST_CASES = [
   # 1. Удаление всего триплета (один)
   # 2. Удаление всего триплета (несколько)
+  # 2.1 одинаковые триплеты
+  # 2.2 разные триплеты
   # 3. Удаление только связи
   # 3.1 удаление связи из графовой бд и триплета из векторной
   # 3.2 удаление связи из графовой бд, но не триплета из векторной
@@ -318,11 +352,8 @@ print("Количество порождённых тестов для GM_DELETE
 
 # triplets, expected_count, expected_graph_cinfo, expected_vector_cinfo
 KG_CREATE_TEST_CASES = [
-    # два разные триплета
-    # у двух трипелтов смежная вершина
-    # у двх триплетов одинаковые вершины, но разная связь
-    # два одинаковых триплета
-]
+    [GM_T_CASE[0], {'graph_info': GM_T_CASE[1], 'embeddings_info': EM_T_CASE[2]}, GM_T_CASE[2], EM_T_CASE[3]]
+    for EM_T_CASE, GM_T_CASE in zip(EM_CREATE_TEST_CASES, GM_CREATE_TEST_CASES)]
 
 KG_POPULATED_CREATE_TEST_CASES = []
 for vector_vendor in AVAILABLE_EMBEDDING_MODELS:
@@ -336,10 +367,15 @@ print("Количество порождённых тестов для KG_CREATE
 
 # init_triplets, expected_init_count, delete_triplets, expected_graph_ids, expected_vector_ids
 KG_DELETE_TEST_CASES = [
-    # удаление всего триплета
-    # удаление только связи
-    # удаление связи и стартовой вершины
-    # удаление связи и конеченой вершины
+  # 1. Удаление всего триплета (один)
+  # 2. Удаление всего триплета (несколько)
+  # 2.1 одинаковые триплеты
+  # 2.2 разные триплеты
+  # 3. Удаление только связи
+  # 3.1 удаление связи из графовой бд и триплета из векторной
+  # 3.2 удаление связи из графовой бд, но не триплета из векторной
+  # 4. Удаление связи и стартовой вершины
+  # 5. Удаление связи и конечной вершины
 ]
 
 KG_POPULATED_DELETE_TEST_CASES = []
@@ -352,13 +388,13 @@ print("Количество порождённых тестов для KG_DELETE
 
 # init_triplets, expected_init_count
 KG_CLEAR_TEST_CASES = [
-    # TODO
-]
+   [GM_T_CASE[0], {'graph_info': GM_T_CASE[1], 'embeddings_info': EM_T_CASE[2]}]
+   for GM_T_CASE, EM_T_CASE in zip(GM_CREATE_TEST_CASES,EM_CREATE_TEST_CASES)]
 
 KG_POPULATED_CLEAR_TEST_CASES = []
 for vector_vendor in AVAILABLE_EMBEDDING_MODELS:
     for graph_vendor in AVAILABLE_GRAPH_MODELS:
         for i in range(len(KG_CLEAR_TEST_CASES)):
-            KG_POPULATED_CLEAR_TEST_CASES.append(KG_DELETE_TEST_CASES[i] + [f"{vector_vendor}/{graph_vendor}"])
+            KG_POPULATED_CLEAR_TEST_CASES.append(KG_CLEAR_TEST_CASES[i] + [f"{vector_vendor}/{graph_vendor}"])
 
 print("Количество порождённых тестов для KG_CLEAR:", len(KG_POPULATED_CLEAR_TEST_CASES))

@@ -122,7 +122,7 @@ def available_kg_models(available_embedding_configs, available_graph_configs):
     kg_configs = {}
     for vector_name, vector_config in available_embedding_configs.items():
         for graph_name, graph_config in available_graph_configs.items():
-            kg_configs[f"{vector_name}/{graph_name}"] = KnowledgeGraphModel(graph_config, vector_config)
+            kg_configs[f"{vector_name}/{graph_name}"] = KnowledgeGraphModel(graph_config, vector_config, verbose=True)
     return kg_configs
 
 @pytest.fixture(scope='function')

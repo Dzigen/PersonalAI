@@ -24,10 +24,10 @@ class KnowledgeGraphModel:
 
     def check_consistency(self) -> None:
         gdb_count = self.graph_struct.db_conn.count_items()
-        self.log(f"GRAPH DB STATUS: {gdb_count}", verbose=self.config.verbose)
+        self.log(f"GRAPH DB STATUS: {gdb_count}", verbose=self.verbose)
         vdb_nodes_count = self.embeddings_struct.vectordbs['nodes'].count_items()
         vdb_triplets_count = self.embeddings_struct.vectordbs['triplets'].count_items()
-        self.log(f"VECTOR DB STATUS: {vdb_nodes_count} - nodes; {vdb_triplets_count} - triplets")
+        self.log(f"VECTOR DB STATUS: {vdb_nodes_count} - nodes; {vdb_triplets_count} - triplets", verbose=self.verbose)
 
         assert gdb_count['nodes'] == vdb_nodes_count
         assert gdb_count['triplets'] >= vdb_triplets_count
@@ -66,7 +66,8 @@ class KnowledgeGraphModel:
     def count_items(self) -> Dict[str, Dict[str, int]]:
         return {
             'graph_info': self.graph_struct.count_items(),
-            'embeddings_info': self.graph_struct.count_items()}
+            'embeddings_info': self.embeddings_struct.count_items()
+        }
 
     def clear(self) -> None:
         """Метод предназначен для удаления содержимого памяти (графа знаний) ассистента.

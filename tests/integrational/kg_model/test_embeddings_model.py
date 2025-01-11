@@ -45,21 +45,24 @@ def test_delete_triplets(init_triplets: List[Triplet], expected_creation_info: D
     embeddings_model_count = embeddings_model.count_items()
     assert embeddings_model_count == expected_init_count
 
+    flag = False
     try:
         embeddings_model.delete_triplets(triplets_to_delete, delete_info=delete_info)
     except ValueError:
         assert exception
+        flag = True
 
     if not exception:
         embeddings_model_count = embeddings_model.count_items()
         assert embeddings_model_count == expected_final_count
 
         for i, triplet in enumerate(triplets_to_delete):
-            if delete_info[i]['rel']:
+            if delete_info[i]['triplet']:
                 assert not embeddings_model.vectordbs['triplets'].item_exist(triplet.relation.id)
             if delete_info[i]['s_node']:
                 assert not embeddings_model.vectordbs['nodes'].item_exist(triplet.start_node.id)
             if delete_info[i]['e_node']:
                 assert not embeddings_model.vectordbs['nodes'].item_exist(triplet.end_node.id)
     else:
-        assert False
+        if not flag:
+            assert False

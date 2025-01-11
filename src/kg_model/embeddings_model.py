@@ -107,7 +107,7 @@ class EmbeddingsModel:
         self.log("Triples were successfully added to vector-model!", verbose=self.config.verbose)
         return {'nodes': existed_node_ids, 'triplets': existed_relation_ids}
 
-    def delete_triplets(self, triplets: List[Triplet], delete_info: List[Dict[str,bool]]) -> None:
+    def delete_triplets(self, triplets: List[Triplet], delete_info: Dict[int, Dict[str,bool]] = dict()) -> None:
         """Метод предназначен для удаления информации, представленной в виде списка триплетов, из векторной модели.
 
         :param triplets: Набор триплетов на удаление.
@@ -117,18 +117,19 @@ class EmbeddingsModel:
         """
 
         unique_nodes_ids, unique_relation_ids = set(), set()
-        for triplet, info in zip(triplets, delete_info):
+        for i, triplet in enumerate(triplets):
+            cur_info = delete_info.get(i, None)
             triplet_on_delete = False
-            if info['triplet']:
+            if (cur_info is None) or cur_info['triplet']:
                 triplet_on_delete = True
                 unique_relation_ids.add(triplet.relation.id)
 
-            if info['s_node']:
+            if (cur_info is None) or cur_info['s_node']:
                 if not triplet_on_delete:
                     raise ValueError(f"{triplet}")
                 unique_nodes_ids.add(triplet.start_node.id)
 
-            if info['e_node']:
+            if (cur_info is None) or cur_info['e_node']:
                 if not triplet_on_delete:
                     raise ValueError(f"{triplet}")
                 unique_nodes_ids.add(triplet.end_node.id)
