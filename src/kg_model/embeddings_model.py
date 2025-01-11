@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Set
 import math
 from tqdm import tqdm
 
@@ -52,7 +52,7 @@ class EmbeddingsModel:
             'triplets': VectorDriver.connect(config.tripletsdb_driver_config)}
         self.embedder = EmbedderModel(config.embedder_config)
 
-    def create_triplets(self, triplets:List[Triplet], create_nodes:bool=True, batch_size:int=128, status_bar: bool = True)-> Dict[str, List[str]]:
+    def create_triplets(self, triplets:List[Triplet], create_nodes:bool=True, batch_size:int=128, status_bar: bool = True)-> Dict[str, Set[str]]:
         """Метод предназначен для добавления информации, представленной в виде списка триплетов, в векторную модель.
         Триплеты-дубликаты (по строковому представлению) в модель не добавляются.
 
@@ -207,7 +207,7 @@ class EmbeddingsModel:
         embeddings = list(map(lambda inst: inst.embedding, instances))
         return embeddings
 
-    def count_items(self):
+    def count_items(self) -> Dict[str, int]:
         nodes_count = self.vectordbs['nodes'].count_items()
         triplets_count = self.vectordbs['triplets'].count_items()
         return {'nodes': nodes_count, 'triplets': triplets_count}

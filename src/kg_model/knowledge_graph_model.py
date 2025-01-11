@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict, Set
 
 from .graph_model import GraphModelConfig, GraphModel
 from .embeddings_model import EmbeddingsModelConfig, EmbeddingsModel
@@ -22,7 +22,7 @@ class KnowledgeGraphModel:
         self.log = Logger(KG_MAIN_LOG_PATH)
         self.verbose = verbose
 
-    def check_consistency(self):
+    def check_consistency(self) -> None:
         gdb_count = self.graph_struct.db_conn.count_items()
         self.log(f"GRAPH DB STATUS: {gdb_count}", verbose=self.config.verbose)
         vdb_nodes_count = self.embeddings_struct.vectordbs['nodes'].count_items()
@@ -32,20 +32,22 @@ class KnowledgeGraphModel:
         assert gdb_count['nodes'] == vdb_nodes_count
         assert gdb_count['triplets'] >= vdb_triplets_count
 
-    def add_knowledge(self, triplets: List[Triplet], check_consistency: bool = True) -> None:
+    def add_knowledge(self, triplets: List[Triplet], check_consistency: bool = True) -> Dict[str, Dict[str,Set[str]]]:
         """Метод предназначен для добавления информации в память (граф знаний) асситента в виде формате списка триплетов.
 
         :param triplets: Список триплетов с информацией для добавления в память (граф знаний) асситента.
         :type triplets: List[Triplet]
         """
 
-        self.graph_struct.create_triplets(triplets, status_bar=False)
-        self.embeddings_struct.create_triplets(triplets, status_bar=False)
+        graph_create_info = self.graph_struct.create_triplets(triplets, status_bar=False)
+        embd_create_info = self.embeddings_struct.create_triplets(triplets, status_bar=False)
 
         if check_consistency:
             self.check_consistency()
 
-    def remove_knowledge(self, triplets: List[Triplet], check_consistency: bool = True) -> None:
+        return {'graph_info': graph_create_info, 'embeddings_info': embd_create_info}
+
+    def remove_knowledge(self, triplets: List[Triplet], check_consistency: bool = True) -> Dict[str, Dict[int,Dict[str,bool]]]:
         """Метод предназанчен для удаления информации из памяти (графа знаний) асситента.
         Удаление производится по идентификаторам триплетов, в которых данная информация находилась
         при её добавлении в память с помощью соответствующего add_knowledge-метода.
@@ -53,11 +55,18 @@ class KnowledgeGraphModel:
         :param triplets: Набор триплетов, по которым нужно удалить соответствующую информацию из памяти ассистента.
         :type triplet_ids: List[str]
         """
-        embds_delete_info = self.graph_struct.delete_triplets(triplets)
+        graph_delete_info, embds_delete_info = self.graph_struct.delete_triplets(triplets)
         self.embeddings_struct.delete_triplets(triplets, delete_info=embds_delete_info)
 
         if check_consistency:
             self.check_consistency()
+
+        return {'graph_info': graph_delete_info, 'embeddings_info': embds_delete_info}
+
+    def count_items(self) -> Dict[str, Dict[str, int]]:
+        return {
+            'graph_info': self.graph_struct.count_items(),
+            'embeddings_info': self.graph_struct.count_items()}
 
     def clear(self) -> None:
         """Метод предназначен для удаления содержимого памяти (графа знаний) ассистента.

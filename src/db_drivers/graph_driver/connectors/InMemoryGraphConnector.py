@@ -54,7 +54,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
     def generate_id(self, seed: str = None) -> str:
         return hashlib.md5((str(time()) if seed is None else seed).encode()).hexdigest()
 
-    def create(self, triplets: List[Triplet], creation_info: Dict = dict()) -> None:
+    def create(self, triplets: List[Triplet], creation_info: Dict[int,Dict[str,bool]] = dict()) -> None:
         # triplet-ids checking
         for triplet in triplets:
             if type(triplet.id) is not str:
@@ -118,12 +118,14 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         # TODO
         pass
 
-    def delete(self, ids: List[str], delete_info: Dict[int, Dict[str,bool]] = dict()) -> None:
+    def delete(self, ids: List[str], delete_info: Dict[int,Dict[str,bool]] = dict()) -> None:
         for i, t_id in enumerate(ids):
             cur_info = delete_info.get(i, None)
 
             if (cur_info is not None) and (not cur_info['rel']):
                 continue
+            if (not cur_info['s_node']) and (not cur_info['e_node']):
+                raise ValueError
 
             internal_t_ids = self.tid_triplets_index[t_id]
             for internal_t_id in internal_t_ids:

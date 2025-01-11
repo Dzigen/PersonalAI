@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Set, Tuple
 import math
 from tqdm import tqdm
 
@@ -36,7 +36,7 @@ class GraphModel:
         self.log = config.log
         self.db_conn = GraphDriver.connect(self.config.driver_config)
 
-    def create_triplets(self, triplets: List[Triplet], batch_size: int = 64, status_bar: bool = True) -> Dict[str, List[str]]:
+    def create_triplets(self, triplets: List[Triplet], batch_size: int = 64, status_bar: bool = True) -> Dict[str, Set[str]]:
         """Метод предназначен для сохранения информации, представленной в виде списка триплетов, в графовую модель.
 
         :param triplets: Набора триплетов для добавления в графовую модель.
@@ -107,7 +107,7 @@ class GraphModel:
 
         return {'triplets': created_triplet_ids, 'nodes': created_node_ids}
 
-    def delete_triplets(self, triplets: List[Triplet], batch_size: int = 64, status_bar: bool = False) -> List[Dict[str,bool]]:
+    def delete_triplets(self, triplets: List[Triplet], batch_size: int = 64, status_bar: bool = False) -> Tuple[Dict[int,Dict[str,bool]], Dict[int,Dict[str,bool]]]:
         """Метод предназначен для удаления информации, представленной в виде списка триплетов, из графовой структуры данных.
 
         :param triplets: Набор триплетов на удаления из графовой структуры данных.
@@ -118,8 +118,8 @@ class GraphModel:
         :rtype: List[Dict[str,bool]]
         """
 
-        vdb_delete_info, gdb_delete_info = [], []
-        for triplet in triplets:
+        vdb_delete_info, gdb_delete_info = dict(), dict()
+        for i, triplet in enumerate(triplets):
             vector_delete_info = {'s_node': False, 'triplet': False, 'e_node': False}
             graph_delete_info = {'s_node': False, 'rel': True, 'e_node': False}
 
@@ -144,8 +144,8 @@ class GraphModel:
             if same_str_id_count < 2:
                 vector_delete_info['triplet'] = True
 
-            vdb_delete_info.append(vector_delete_info)
-            gdb_delete_info.append(graph_delete_info)
+            vdb_delete_info[i] = vector_delete_info
+            gdb_delete_info[i] = graph_delete_info
 
         triplet_ids = list(map(lambda t: t.id, triplets))
         steps = math.ceil(len(triplet_ids) / batch_size)
@@ -155,9 +155,9 @@ class GraphModel:
                 triplet_ids[step*batch_size: (step+1)*batch_size],
                 gdb_delete_info[step*batch_size: (step+1)*batch_size])
 
-        return vdb_delete_info
+        return gdb_delete_info, vdb_delete_info
 
-    def count_items(self):
+    def count_items(self) -> Dict[str, int]:
         return self.db_conn.count_items()
 
     def clear(self) -> None:

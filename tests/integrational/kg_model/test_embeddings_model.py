@@ -1,23 +1,24 @@
 import pytest
+from typing import Dict, List, Set
 
 import sys
 sys.path.insert(0, "../")
-import pytest
+
+from src.utils import Triplet
+from src.kg_model import EmbeddingsModel
 
 from cases import EM_POPULATED_CREATE_TEST_CASES, EM_POPULATED_DELETE_TEST_CASES
 
 @pytest.mark.parametrize("init_triplets, add_nodes_flag, expected_init_count, expected_creation_info, embeddings_model", EM_POPULATED_CREATE_TEST_CASES, indirect=['embeddings_model'])
-def test_create_triplets(init_triplets, add_nodes_flag, expected_init_count, expected_creation_info, embeddings_model):
-    embeddings_model.vectordbs['nodes'].clear()
-    embeddings_model.vectordbs['triplets'].clear()
+def test_create_triplets(init_triplets: List[Triplet], add_nodes_flag: bool, expected_init_count: Dict[str, int],
+                         expected_creation_info: Dict[str, Set[str]], embeddings_model: EmbeddingsModel):
+    embeddings_model.clear()
 
     real_creation_info = embeddings_model.create_triplets(init_triplets, create_nodes=add_nodes_flag)
-    assert real_creation_info['nodes'] == expected_creation_info['nodes']
-    assert real_creation_info['triplets'] == expected_creation_info['triplets']
+    assert real_creation_info == expected_creation_info
 
     embeddings_model_count = embeddings_model.count_items()
-    assert embeddings_model_count['nodes'] == expected_init_count['nodes']
-    assert embeddings_model_count['triplets'] == expected_init_count['triplets']
+    assert embeddings_model_count == expected_init_count
 
     if add_nodes_flag:
         for node_id in real_creation_info['nodes']:
@@ -29,31 +30,30 @@ def test_create_triplets(init_triplets, add_nodes_flag, expected_init_count, exp
     for triplet_id in real_creation_info['triplets']:
         assert embeddings_model.vectordbs['triplets'].item_exist(triplet_id)
     for triplet in init_triplets:
-        assert embeddings_model.vectordbs['triplets'].item_exist(triplet.id)
+        assert embeddings_model.vectordbs['triplets'].item_exist(triplet.relation.id)
 
 
-@pytest.mark.parametrize("init_triplets, expected_creation_info, triplets_to_delete, nodes_delete_info, expected_init_count, expected_final_count, embeddings_model", EM_POPULATED_DELETE_TEST_CASES, indirect=['embeddings_model'])
-def test_delete_triplets(init_triplets, expected_creation_info, triplets_to_delete, nodes_delete_info, expected_init_count, expected_final_count, embeddings_model):
-    embeddings_model.vectordbs['nodes'].clear()
-    embeddings_model.vectordbs['triplets'].clear()
+@pytest.mark.parametrize("init_triplets, expected_creation_info, expected_init_count, triplets_to_delete, delete_info, expected_final_count, embeddings_model", EM_POPULATED_DELETE_TEST_CASES, indirect=['embeddings_model'])
+def test_delete_triplets(init_triplets: List[Triplet], expected_creation_info: Dict[str, Set[str]], expected_init_count: Dict[str, int],
+                         triplets_to_delete: List[Triplet], delete_info: Dict[int, Dict[str, bool]], expected_final_count: Dict[str, int],
+                         embeddings_model: EmbeddingsModel):
+    embeddings_model.clear()
 
     real_creation_info = embeddings_model.create_triplets(init_triplets, create_nodes=True)
-    assert real_creation_info['nodes'] == expected_creation_info['nodes']
-    assert real_creation_info['triplets'] == expected_creation_info['triplets']
+    assert real_creation_info == expected_creation_info
 
     embeddings_model_count = embeddings_model.count_items()
-    assert embeddings_model_count['nodes'] == expected_init_count['nodes']
-    assert embeddings_model_count['triplets'] == expected_init_count['triplets']
+    assert embeddings_model_count == expected_init_count
 
-    embeddings_model.delete_triplets(triplets_to_delete, delete_nodes_info=nodes_delete_info)
+    embeddings_model.delete_triplets(triplets_to_delete, delete_info=delete_info)
 
     embeddings_model_count = embeddings_model.count_items()
-    assert embeddings_model_count['nodes'] == expected_final_count['nodes']
-    assert embeddings_model_count['triplets'] == expected_final_count['triplets']
+    assert embeddings_model_count == expected_final_count
 
-    for triplet, delete_info in zip(triplets_to_delete, nodes_delete_info):
-        assert not embeddings_model.vectordbs['triplets'].item_exist(triplet.id)
-        if delete_info['s_node']:
+    for i, triplet in enumerate(triplets_to_delete):
+        if delete_info[i]['rel']:
+            assert not embeddings_model.vectordbs['triplets'].item_exist(triplet.relation.id)
+        if delete_info[i]['s_node']:
             assert not embeddings_model.vectordbs['nodes'].item_exist(triplet.start_node.id)
-        if delete_info['e_node']:
+        if delete_info[i]['e_node']:
             assert not embeddings_model.vectordbs['nodes'].item_exist(triplet.end_node.id)
