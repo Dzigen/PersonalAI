@@ -31,10 +31,11 @@ def test_create_triplets(init_triplets: List[Triplet], expected_init_count: Dict
         assert graph_model.db_conn.item_exist(triplet.id, id_type='triplet')
         assert graph_model.db_conn.item_exist(triplet.relation.id, id_type='relation')
 
-@pytest.mark.parametrize("init_triplets, expected_create_info, expected_init_count, triplets_to_delete, expected_delete_ginfo, expected_final_count, graph_model", GM_POPULATED_DELETE_TEST_CASES, indirect=['graph_model'])
+@pytest.mark.parametrize("init_triplets, expected_create_info, expected_init_count, triplets_to_delete, expected_delete_ginfo, expected_final_count, expected_delete_vinfo, graph_model", GM_POPULATED_DELETE_TEST_CASES, indirect=['graph_model'])
 def test_delete_triplets(init_triplets: List[Triplet], expected_create_info: Dict[str, Set[str]], expected_init_count: Dict[str, int],
                          triplets_to_delete: List[Triplet], expected_delete_ginfo: Dict[int, Dict[str, bool]],
-                         expected_final_count: Dict[str, int], expected_delete_vinfo: Dict[int, Dict[str, bool]], graph_model: GraphModel):
+                         expected_final_count: Dict[str, int], expected_delete_vinfo: Dict[int, Dict[str, bool]],
+                         graph_model: GraphModel):
     graph_model.db_conn.clear()
 
     real_create_info = graph_model.create_triplets(init_triplets, batch_size=1)

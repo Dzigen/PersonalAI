@@ -33,10 +33,10 @@ def test_create_triplets(init_triplets: List[Triplet], add_nodes_flag: bool, exp
         assert embeddings_model.vectordbs['triplets'].item_exist(triplet.relation.id)
 
 
-@pytest.mark.parametrize("init_triplets, expected_creation_info, expected_init_count, triplets_to_delete, delete_info, expected_final_count, embeddings_model", EM_POPULATED_DELETE_TEST_CASES, indirect=['embeddings_model'])
+@pytest.mark.parametrize("init_triplets, expected_creation_info, expected_init_count, triplets_to_delete, delete_info, expected_final_count, exception, embeddings_model", EM_POPULATED_DELETE_TEST_CASES, indirect=['embeddings_model'])
 def test_delete_triplets(init_triplets: List[Triplet], expected_creation_info: Dict[str, Set[str]], expected_init_count: Dict[str, int],
                          triplets_to_delete: List[Triplet], delete_info: Dict[int, Dict[str, bool]], expected_final_count: Dict[str, int],
-                         embeddings_model: EmbeddingsModel):
+                         exception: bool, embeddings_model: EmbeddingsModel):
     embeddings_model.clear()
 
     real_creation_info = embeddings_model.create_triplets(init_triplets, create_nodes=True)
@@ -45,15 +45,21 @@ def test_delete_triplets(init_triplets: List[Triplet], expected_creation_info: D
     embeddings_model_count = embeddings_model.count_items()
     assert embeddings_model_count == expected_init_count
 
-    embeddings_model.delete_triplets(triplets_to_delete, delete_info=delete_info)
+    try:
+        embeddings_model.delete_triplets(triplets_to_delete, delete_info=delete_info)
+    except ValueError:
+        assert exception
 
-    embeddings_model_count = embeddings_model.count_items()
-    assert embeddings_model_count == expected_final_count
+    if not exception:
+        embeddings_model_count = embeddings_model.count_items()
+        assert embeddings_model_count == expected_final_count
 
-    for i, triplet in enumerate(triplets_to_delete):
-        if delete_info[i]['rel']:
-            assert not embeddings_model.vectordbs['triplets'].item_exist(triplet.relation.id)
-        if delete_info[i]['s_node']:
-            assert not embeddings_model.vectordbs['nodes'].item_exist(triplet.start_node.id)
-        if delete_info[i]['e_node']:
-            assert not embeddings_model.vectordbs['nodes'].item_exist(triplet.end_node.id)
+        for i, triplet in enumerate(triplets_to_delete):
+            if delete_info[i]['rel']:
+                assert not embeddings_model.vectordbs['triplets'].item_exist(triplet.relation.id)
+            if delete_info[i]['s_node']:
+                assert not embeddings_model.vectordbs['nodes'].item_exist(triplet.start_node.id)
+            if delete_info[i]['e_node']:
+                assert not embeddings_model.vectordbs['nodes'].item_exist(triplet.end_node.id)
+    else:
+        assert False

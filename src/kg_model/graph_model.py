@@ -107,19 +107,18 @@ class GraphModel:
 
         return {'triplets': created_triplet_ids, 'nodes': created_node_ids}
 
-    def delete_triplets(self, triplets: List[Triplet], batch_size: int = 64, status_bar: bool = False) -> Tuple[Dict[int,Dict[str,bool]], Dict[int,Dict[str,bool]]]:
+    def delete_triplets(self, triplets: List[Triplet], status_bar: bool = False) -> Tuple[Dict[int,Dict[str,bool]], Dict[int,Dict[str,bool]]]:
         """Метод предназначен для удаления информации, представленной в виде списка триплетов, из графовой структуры данных.
 
         :param triplets: Набор триплетов на удаления из графовой структуры данных.
         :type triplets: List[Triplet]
-        :param batch_size:  Количество триплетов, которое за одну delete-операцию будет удаляться из графовой структуры. Значение по умолчанию 64.
-        :type batch_size: int, optional
         :return: Информация для векторной структуры данных, чтобы удалить устаревшие вершины/триплеты и сохранить консистентность модели графа знаний.
         :rtype: List[Dict[str,bool]]
         """
 
         vdb_delete_info, gdb_delete_info = dict(), dict()
-        for i, triplet in enumerate(triplets):
+        process = tqdm(enumerate(triplets)) if status_bar else enumerate(triplets)
+        for i, triplet in process:
             vector_delete_info = {'s_node': False, 'triplet': False, 'e_node': False}
             graph_delete_info = {'s_node': False, 'rel': True, 'e_node': False}
 
@@ -147,13 +146,7 @@ class GraphModel:
             vdb_delete_info[i] = vector_delete_info
             gdb_delete_info[i] = graph_delete_info
 
-        triplet_ids = list(map(lambda t: t.id, triplets))
-        steps = math.ceil(len(triplet_ids) / batch_size)
-        process = tqdm(range(steps)) if status_bar else range(steps)
-        for step in process:
-            self.db_conn.delete(
-                triplet_ids[step*batch_size: (step+1)*batch_size],
-                gdb_delete_info[step*batch_size: (step+1)*batch_size])
+            self.db_conn.delete([triplet.id], {0: gdb_delete_info[i]})
 
         return gdb_delete_info, vdb_delete_info
 

@@ -34,10 +34,11 @@ def test_remove_knowledge(init_triplets: List[Triplet], expected_init_count: Dic
     assert kg_model.count_items() == expected_init_count
 
     real_delete_info = kg_model.remove_knowledge(delete_triplets)
-    assert kg_model.count_items() == expected_final_count
 
+    assert kg_model.count_items() == expected_final_count
     assert real_delete_info['graph_info'] == expected_graph_dinfo
     assert real_delete_info['embeddings_info'] == expected_vector_dinfo
+
 
 @pytest.mark.parametrize("init_triplets, expected_init_count, kg_model", KG_POPULATED_CLEAR_TEST_CASES, indirect=['kg_model'])
 def test_clear(init_triplets: List[Triplet], expected_init_count: Dict[str, Dict[str,int]], kg_model: KnowledgeGraphModel):
