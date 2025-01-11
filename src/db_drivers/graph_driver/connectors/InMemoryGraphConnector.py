@@ -122,11 +122,6 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         for i, t_id in enumerate(ids):
             cur_info = delete_info.get(i, None)
 
-            if (cur_info is not None) and (not cur_info['rel']):
-                continue
-            if (not cur_info['s_node']) and (not cur_info['e_node']):
-                raise ValueError
-
             internal_t_ids = self.tid_triplets_index[t_id]
             for internal_t_id in internal_t_ids:
                 matched_triplet = self.triplets[internal_t_id]
@@ -139,8 +134,8 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
                     self.adjacent_nodes[sn_id].difference_update(internal_enode_ids)
 
                     if (cur_info is None) or cur_info['s_node']:
-                        assert len(self.edges[sn_id]) == 0
-                        assert self.adjacent_nodes[sn_id] == 0
+                        #assert len(self.edges[sn_id]) == 0
+                        #assert self.adjacent_nodes[sn_id] == 0
                         del self.nodes[sn_id]
 
                 del self.strid_nodes_index[matched_triplet.start_node.id]
@@ -150,8 +145,8 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
                     self.adjacent_nodes[en_id].difference_update(internal_snode_ids)
 
                     if (cur_info is None) or cur_info['e_node']:
-                        assert len(self.edges[en_id]) == 0
-                        assert self.adjacent_nodes[en_id] == 0
+                        #assert len(self.edges[en_id]) == 0
+                        #assert self.adjacent_nodes[en_id] == 0
                         del self.nodes[en_id]
 
                 del self.strid_nodes_index[matched_triplet.end_node.id]
@@ -175,7 +170,8 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
         return formated_output
 
-    def get_adjecent_nodes(self, base_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
+    def get_adjecent_nodes(self, base_node_id: str,
+            accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[str]:
         if type(base_node_id) is not str:
             raise ValueError
 

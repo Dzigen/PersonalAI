@@ -48,7 +48,7 @@ def test_delete_triplets(init_triplets: List[Triplet], expected_creation_info: D
     flag = False
     try:
         embeddings_model.delete_triplets(triplets_to_delete, delete_info=delete_info)
-    except ValueError:
+    except AssertionError:
         assert exception
         flag = True
 

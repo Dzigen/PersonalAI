@@ -328,17 +328,48 @@ print("Количество порождённых тестов для GM_CREATE
 ###############################################################################################
 
 # init_triplets, expected_create_info, expected_init_count, triplets_to_delete,
-# expected_delete_ginfo, expected_final_count, expected_delete_vinfo, exception
+# expected_delete_ginfo, expected_final_count, expected_delete_vinfo
 GM_DELETE_TEST_CASES = [
   # 1. Удаление всего триплета (один)
+  [[SIMPLE_TRIPLET2], {'triplets': {SIMPLE_TRIPLET2.id}, 'nodes': {SIMPLE_TRIPLET2.start_node.id, SIMPLE_TRIPLET2.end_node.id}},
+   {'triplets': 1, 'nodes': 2}, [SIMPLE_TRIPLET2], {0: {'s_node': True, 'e_node': True}},
+   {'triplets': 0, 'nodes': 0}, {0: {'s_node': True, 'triplet': True, 'e_node': True}}],
   # 2. Удаление всего триплета (несколько)
   # 2.1 одинаковые триплеты
+  [[SIMPLE_TRIPLET1_2, SIMPLE_TRIPLET2],
+   {'triplets': {SIMPLE_TRIPLET2.id, SIMPLE_TRIPLET1_2.id},
+    'nodes': {SIMPLE_TRIPLET1_2.start_node.id, SIMPLE_TRIPLET1_2.end_node.id, SIMPLE_TRIPLET2.end_node.id}},
+   {'triplets': 2, 'nodes': 3}, [SIMPLE_TRIPLET1_2, SIMPLE_TRIPLET1_2],
+   {0: {'s_node': True, 'e_node': False}, 1: {'s_node': False, 'e_node': False}},
+   {'triplets': 1, 'nodes': 2}, {0: {'s_node': True, 'triplet': True, 'e_node': False}, 1: {'s_node': False, 'triplet': False, 'e_node': False}}],
   # 2.2 разные триплеты
+  [[SIMPLE_TRIPLET1_2, SIMPLE_TRIPLET2],
+   {'triplets': {SIMPLE_TRIPLET2.id, SIMPLE_TRIPLET1_2.id},
+    'nodes': {SIMPLE_TRIPLET1_2.start_node.id, SIMPLE_TRIPLET1_2.end_node.id, SIMPLE_TRIPLET2.end_node.id}},
+   {'triplets': 2, 'nodes': 3}, [SIMPLE_TRIPLET1_2, SIMPLE_TRIPLET2],
+   {0: {'s_node': True, 'e_node': False}, 1: {'s_node': True, 'e_node': True}},
+   {'triplets': 0, 'nodes': 0}, {0: {'s_node': True, 'triplet': True, 'e_node': False}, 1: {'s_node': True, 'triplet': True, 'e_node': True}}],
   # 3. Удаление только связи
   # 3.1 удаление связи из графовой бд и триплета из векторной
+  [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2, SIMPLE_TRIPLET3],
+   {'triplets': {SIMPLE_TRIPLET1.id, SIMPLE_TRIPLET2.id, SIMPLE_TRIPLET3.id},
+    'nodes': {SIMPLE_TRIPLET1.start_node.id, SIMPLE_TRIPLET1.end_node.id, SIMPLE_TRIPLET2.end_node.id}},
+    {'triplets': 3, 'nodes': 3}, [SIMPLE_TRIPLET1],
+    {0: {'s_node': False, 'e_node': False}}, {'triplets': 2, 'nodes': 3},
+    {0: {'s_node': False, 'triplet': True, 'e_node': False}}],
   # 3.2 удаление связи из графовой бд, но не триплета из векторной
-  # 4. Удаление связи и стартовой вершины
-  # 5. Удаление связи и конечной вершины
+  [[THESIS_TRIPLET1, THESIS_TRIPLET2],
+   {'triplets': {THESIS_TRIPLET1.id, THESIS_TRIPLET2.id}, 'nodes': {THESIS_TRIPLET1.start_node.id, THESIS_TRIPLET1.end_node.id, THESIS_TRIPLET2.start_node.id}},
+    {'triplets': 2, 'nodes': 3}, [THESIS_TRIPLET1],
+    {0: {'s_node': True, 'e_node': False}}, {'triplets': 1, 'nodes': 2},
+     {0: {'s_node': True, 'triplet': False, 'e_node': False}}],
+  # 4. Удаление связи и конечной вершины
+  [[SIMPLE_TRIPLET1_2, SIMPLE_TRIPLET2],
+   {'triplets': {SIMPLE_TRIPLET2.id, SIMPLE_TRIPLET1_2.id},
+    'nodes': {SIMPLE_TRIPLET1_2.start_node.id, SIMPLE_TRIPLET1_2.end_node.id, SIMPLE_TRIPLET2.end_node.id}},
+   {'triplets': 2, 'nodes': 3}, [SIMPLE_TRIPLET2],
+   {0: {'s_node': False, 'e_node': True}},
+   {'triplets': 1, 'nodes': 2}, {0: {'s_node': False, 'triplet': True, 'e_node': True}}]
 ]
 
 GM_POPULATED_DELETE_TEST_CASES = []
@@ -365,17 +396,40 @@ print("Количество порождённых тестов для KG_CREATE
 
 # Note: Для разных трипелтов может быть одно векторное представление (нужно это проверять при удалении)
 
-# init_triplets, expected_init_count, delete_triplets, expected_graph_ids, expected_vector_ids
+# init_triplets, expected_init_count, delete_triplets, expected_final_count, expected_graph_dinfo, expected_vector_dinfo
 KG_DELETE_TEST_CASES = [
   # 1. Удаление всего триплета (один)
+  [[SIMPLE_TRIPLET2], {'graph_info': {'triplets': 1, 'nodes': 2}, 'embeddings_info': {'triplets': 1, 'nodes': 2}},
+   [SIMPLE_TRIPLET2], {'graph_info': {'triplets': 0, 'nodes': 0}, 'embeddings_info': {'triplets': 0, 'nodes': 0}},
+   {0: {'s_node': True, 'e_node': True}},
+   {0: {'s_node': True, 'triplet': True, 'e_node': True}}],
   # 2. Удаление всего триплета (несколько)
   # 2.1 одинаковые триплеты
+  [[SIMPLE_TRIPLET1_2, SIMPLE_TRIPLET2], {'graph_info': {'triplets': 2, 'nodes': 3}, 'embeddings_info': {'triplets': 2, 'nodes': 3}},
+   [SIMPLE_TRIPLET1_2, SIMPLE_TRIPLET1_2], {'graph_info': {'triplets': 1, 'nodes': 2}, 'embeddings_info': {'triplets': 1, 'nodes': 2}},
+   {0: {'s_node': True, 'e_node': False}, 1: {'s_node': False, 'e_node': False}},
+   {0: {'s_node': True, 'triplet': True, 'e_node': False}, 1: {'s_node': False, 'triplet': False, 'e_node': False}}],
   # 2.2 разные триплеты
+  [[SIMPLE_TRIPLET1_2, SIMPLE_TRIPLET2], {'graph_info': {'triplets': 2, 'nodes': 3}, 'embeddings_info': {'triplets': 2, 'nodes': 3}},
+   [SIMPLE_TRIPLET1_2, SIMPLE_TRIPLET2], {'graph_info': {'triplets': 0, 'nodes': 0}, 'embeddings_info': {'triplets': 0, 'nodes': 0}},
+   {0: {'s_node': True, 'e_node': False}, 1: {'s_node': True, 'e_node': True}},
+   {0: {'s_node': True, 'triplet': True, 'e_node': False}, 1: {'s_node': True, 'triplet': True, 'e_node': True}}],
   # 3. Удаление только связи
   # 3.1 удаление связи из графовой бд и триплета из векторной
+  [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2, SIMPLE_TRIPLET3], {'graph_info': {'triplets': 3, 'nodes': 3}, 'embeddings_info': {'triplets': 3, 'nodes': 3}},
+   [SIMPLE_TRIPLET1], {'graph_info': {'triplets': 2, 'nodes': 3}, 'embeddings_info': {'triplets': 3, 'nodes': 3}},
+    {0: {'s_node': False, 'e_node': False}},
+    {0: {'s_node': False, 'triplet': True, 'e_node': False}}],
   # 3.2 удаление связи из графовой бд, но не триплета из векторной
-  # 4. Удаление связи и стартовой вершины
-  # 5. Удаление связи и конечной вершины
+  [[THESIS_TRIPLET1, THESIS_TRIPLET2], {'graph_info': {'triplets': 2, 'nodes': 3}, 'embeddings_info': {"triplets": 1, 'nodes': 3}},
+   [THESIS_TRIPLET1], {'graph_info': {'triplets': 1, 'nodes': 2}, 'embeddings_info': {'triplets': 1, 'nodes': 2}},
+    {0: {'s_node': True, 'e_node': False}},
+    {0: {'s_node': True, 'triplet': False, 'e_node': False}}],
+  # 4. Удаление связи и конечной вершины
+  [[SIMPLE_TRIPLET1_2, SIMPLE_TRIPLET2], {'graph_info': {'triplets': 2, 'nodes': 3}, 'embeddings_info': {'triplets': 2, 'nodes': 3}},
+   [SIMPLE_TRIPLET2], {'graph_info': {'triplets': 1, 'nodes': 2}, 'embeddings_info': {'triplets': 1, 'nodes': 2}},
+   {0: {'s_node': False, 'e_node': True}},
+   {0: {'s_node': False, 'triplet': True, 'e_node': True}}]
 ]
 
 KG_POPULATED_DELETE_TEST_CASES = []

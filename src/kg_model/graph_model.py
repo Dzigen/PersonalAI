@@ -120,27 +120,27 @@ class GraphModel:
         process = tqdm(enumerate(triplets)) if status_bar else enumerate(triplets)
         for i, triplet in process:
             vector_delete_info = {'s_node': False, 'triplet': False, 'e_node': False}
-            graph_delete_info = {'s_node': False, 'rel': True, 'e_node': False}
+            graph_delete_info = {'s_node': False, 'e_node': False}
 
             # Если в триплете у стартовой вершины только одно инцидентное ребро,
             # то готовим его к удалению из графовой и векторной структур данных
             s_node_neighbours = self.db_conn.get_adjecent_nodes(triplet.start_node.id)
-            if len(s_node_neighbours) < 2:
+            if len(s_node_neighbours) == 1 and s_node_neighbours[0] == triplet.end_node.id:
                 graph_delete_info['s_node'] = True
                 vector_delete_info['s_node'] = True
 
             # Если в триплете у конечной вершины только одно инцидентное ребро,
             # то готовим его к удалению из графовой и векторной структур данных
             e_node_neighbours = self.db_conn.get_adjecent_nodes(triplet.end_node.id)
-            if len(e_node_neighbours) < 2:
+            if len(e_node_neighbours) == 1 and e_node_neighbours[0] == triplet.start_node.id:
                 graph_delete_info['e_node'] = True
                 vector_delete_info['e_node'] = True
 
             # Если в графовой структуре данных содержиться только один триплет с таким-же строковым представлением (как у текущего triplet),
             # то готовим его к удалению как из графовой, так и из векторной структур данных. Если триплетов с таким же
             # строковым представлением несколько (>=2), то готовим его к удалению только из графовой структуры.
-            same_str_id_count = self.db_conn.count_items(id=triplet.relation.id, id_type='str_id')
-            if same_str_id_count < 2:
+            same_str_id_count = self.db_conn.count_items(id=triplet.relation.id, id_type='relation')
+            if same_str_id_count == 1:
                 vector_delete_info['triplet'] = True
 
             vdb_delete_info[i] = vector_delete_info

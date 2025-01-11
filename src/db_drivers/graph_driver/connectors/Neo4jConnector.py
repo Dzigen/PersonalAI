@@ -129,21 +129,12 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
     def delete(self, ids: List[str], delete_info: Dict[int,Dict[str,bool]] = dict()) -> None:
         for i, t_id in enumerate(ids):
             cur_info = delete_info.get(i, None)
-            delete_statement = []
-            rel_on_delete = False
-
-            if cur_info is None or cur_info['rel']:
-                delete_statement.append('rel')
-                rel_on_delete = True
+            delete_statement = ['rel']
 
             if cur_info is None or cur_info['s_node']:
-                if not rel_on_delete:
-                    raise ValueError
                 delete_statement.append('s_node')
 
             if cur_info is None or cur_info['e_node']:
-                if not rel_on_delete:
-                    raise ValueError
                 delete_statement.append('e_node')
 
             delete_statement = ', '.join(delete_statement)
@@ -178,7 +169,8 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                 session.close()
         return response
 
-    def get_adjecent_nodes(self, base_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
+    def get_adjecent_nodes(self, base_node_id: str,
+            accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[str]:
         if type(base_node_id) is not str:
             raise ValueError
 

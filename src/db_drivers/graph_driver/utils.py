@@ -17,7 +17,7 @@ class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
         pass
 
     @abstractmethod
-    def get_adjecent_nodes(self, base_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
+    def get_adjecent_nodes(self, base_node_id: str, accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[str]:
         pass
 
     @abstractmethod

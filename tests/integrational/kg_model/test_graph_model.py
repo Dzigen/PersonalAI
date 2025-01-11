@@ -44,7 +44,7 @@ def test_delete_triplets(init_triplets: List[Triplet], expected_create_info: Dic
     real_items_count = graph_model.count_items()
     assert real_items_count == expected_init_count
 
-    real_gdb_dinfo, real_vdb_dinfo = graph_model.delete_triplets(triplets_to_delete, batch_size=1)
+    real_gdb_dinfo, real_vdb_dinfo = graph_model.delete_triplets(triplets_to_delete)
     assert real_gdb_dinfo == expected_delete_ginfo
     assert real_vdb_dinfo == expected_delete_vinfo
 

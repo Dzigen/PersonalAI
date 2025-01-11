@@ -119,7 +119,7 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
     def read(self, ids: List[str]) -> List[Triplet]:
         str_ids = '['+', '.join(list(map(lambda id: f'"{id}"', ids))) + ']'
         query = f"MATCH (n1)-[rel]->(n2) WHERE any(id IN {str_ids} WHERE rel.t_id = id) RETURN n1, rel, n2"
-        raw_output = self.execute_query(query)
+        raw_output = self.conn.execute(query)
         triplets = self.parse_query_triplets_output(raw_output)
         return triplets
 
@@ -130,21 +130,12 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
     def delete(self, ids: List[str], delete_info: Dict[int,Dict[str,bool]] = dict()) -> None:
         for i, t_id in enumerate(ids):
             cur_info = delete_info.get(i, None)
-            delete_statement = []
-            rel_on_delete = False
-
-            if cur_info is None or cur_info['rel']:
-                delete_statement.append('rel')
-                rel_on_delete = True
+            delete_statement = ['rel']
 
             if cur_info is None or cur_info['s_node']:
-                if not rel_on_delete:
-                    raise ValueError
                 delete_statement.append('s_node')
 
             if cur_info is None or cur_info['e_node']:
-                if not rel_on_delete:
-                    raise ValueError
                 delete_statement.append('e_node')
 
             delete_statement = ', '.join(delete_statement)
@@ -205,7 +196,8 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
             formated_triplets.append(triplet)
         return formated_triplets
 
-    def get_adjecent_nodes(self, base_node_id: str, accepted_n_types: List[NodeType]) -> List[str]:
+    def get_adjecent_nodes(self, base_node_id: str,
+            accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[str]:
         if type(base_node_id) is not str:
             raise ValueError
 

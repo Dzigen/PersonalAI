@@ -119,19 +119,14 @@ class EmbeddingsModel:
         unique_nodes_ids, unique_relation_ids = set(), set()
         for i, triplet in enumerate(triplets):
             cur_info = delete_info.get(i, None)
-            triplet_on_delete = False
+
             if (cur_info is None) or cur_info['triplet']:
-                triplet_on_delete = True
                 unique_relation_ids.add(triplet.relation.id)
 
             if (cur_info is None) or cur_info['s_node']:
-                if not triplet_on_delete:
-                    raise ValueError(f"{triplet}")
                 unique_nodes_ids.add(triplet.start_node.id)
 
             if (cur_info is None) or cur_info['e_node']:
-                if not triplet_on_delete:
-                    raise ValueError(f"{triplet}")
                 unique_nodes_ids.add(triplet.end_node.id)
 
         unique_nodes_ids = list(unique_nodes_ids) if len(unique_nodes_ids) > 0 else None
