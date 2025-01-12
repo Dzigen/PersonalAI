@@ -11,7 +11,7 @@ from typing import List, Dict
 from cases import INIT_KNOWLEDGE_GRAPH
 from cases import TEST_O_EPISODIC1, TEST_O_EPISODIC2, TEST_DELETE_TRIPLETS1, TEST_DELETE_TRIPLETS2
 from cases import TEST_H_EPISODIC1, TEST_DELETE_TRIPLETS3, TEST_H_EPISODIC2,\
-    TEST_DELETE_TRIPLETS4, TEST_H_EPISODIC3
+    TEST_DELETE_TRIPLETS4, TEST_H_EPISODIC3, EPISODIC_TRIPLET3, EPISODIC_TRIPLET13, EPISODIC_TRIPLET14, EPISODIC_TRIPLET1
 
 @pytest.mark.parametrize("kg_triplets, base_triplet, delete_tripelts, expected_obsolete_ids", [
     # 1. не найдено устаревших трипелтов
@@ -22,7 +22,7 @@ from cases import TEST_H_EPISODIC1, TEST_DELETE_TRIPLETS3, TEST_H_EPISODIC2,\
     # 2. есть общие hyper-вершины у данной object-вершины и episodic-вершины
     (INIT_KNOWLEDGE_GRAPH, TEST_O_EPISODIC2, [], []),
     # 3. найден один устаревший триплет
-    (INIT_KNOWLEDGE_GRAPH, TEST_O_EPISODIC2, TEST_DELETE_TRIPLETS2, [])
+    (INIT_KNOWLEDGE_GRAPH, TEST_O_EPISODIC2, TEST_DELETE_TRIPLETS2, [EPISODIC_TRIPLET1])
 ])
 def test_find_o_episodic(llm_updator: LLMUpdator, kg_triplets: List[Triplet],
                          base_triplet: Triplet, delete_tripelts: List[Triplet],
@@ -41,9 +41,9 @@ def test_find_o_episodic(llm_updator: LLMUpdator, kg_triplets: List[Triplet],
     # 1.2. у сопоставленных hyper-вершин есть смежные object-вершины
     (INIT_KNOWLEDGE_GRAPH, TEST_H_EPISODIC2, [], []),
     # 1.3. найден один устаревший триплет
-    (INIT_KNOWLEDGE_GRAPH, TEST_H_EPISODIC2, TEST_DELETE_TRIPLETS3, []),
+    (INIT_KNOWLEDGE_GRAPH, TEST_H_EPISODIC2, TEST_DELETE_TRIPLETS3, [EPISODIC_TRIPLET3.id]),
     # 2. найдено несколько устаревших триплетов
-    (INIT_KNOWLEDGE_GRAPH, TEST_H_EPISODIC3, TEST_DELETE_TRIPLETS4, []),
+    (INIT_KNOWLEDGE_GRAPH, TEST_H_EPISODIC3, TEST_DELETE_TRIPLETS4, [EPISODIC_TRIPLET13.id, EPISODIC_TRIPLET14.id]),
 ])
 def test_find_h_episodic(llm_updator: LLMUpdator, kg_triplets: List[Triplet],
                          base_triplet: Triplet, delete_tripelts: List[Triplet],

@@ -218,23 +218,26 @@ class LLMUpdator:
                 self.log(f"DELETING OBSOLETE TRIPLETS FROM MEMORY...", verbose=self.config.verbose)
                 obsolete_triplets = self.kg_model.graph_struct.db_conn.read(obsolete_t_ids)
 
-                self.log("TRIPLETS TO DELETE:")
-                for t_id, obs_t in zip(obsolete_t_ids, obsolete_triplets):
-                    matched_ids = t_id == obs_t.id
-                    self.log(f"* [{t_id}| match: {matched_ids}] {obs_t}")
-                    assert matched_ids
+                self.log(f"TRIPLETS TO DELETE: {len(obsolete_triplets)}")
+                for obs_t in obsolete_triplets:
+                    self.log(f"* [{obs_t.id}] {obs_t}")
 
-                self.kg_model.remove_knowledge(obsolete_triplets)
+                remove_info = self.kg_model.remove_knowledge(obsolete_triplets)
+                self.log(f"REMOVE INFO: {remove_info}", verbose=self.config.verbose)
 
                 self.log(f"ADDING NEW TRIPLET TO MEMORY...", verbose=self.config.verbose)
-                self.kg_model.add_knowledge([triplet])
+
+                add_info = self.kg_model.add_knowledge([triplet])
+                self.log(f"ADD INFO: {add_info}", verbose=self.config.verbose)
 
             self.log(f"FINAL RESULT:", verbose=self.config.verbose)
             self.log(f"- SUM AMOUNT OF OBSOLETE TRIPELTS: {obsolete_triplets_counter}", verbose=self.config.verbose)
 
         else:
             self.log(f"ADDING TRIPLETS TO MEMORY...", verbose=self.config.verbose)
-            self.kg_model.add_knowledge(new_triplets)
+
+            add_info = self.kg_model.add_knowledge(new_triplets)
+            self.log(f"ADD INFO: {add_info}", verbose=self.config.verbose)
 
         self.log(f"FINAL STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
