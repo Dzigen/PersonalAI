@@ -9,9 +9,9 @@ KG_MAIN_LOG_PATH = 'log/kg_model/main'
 class KnowledgeGraphModel:
     """Модель памяти (графа знаний) ассистента.
 
-    :param graph_config: Конфигурация модели, которая будет использоваться для хранения информации в графовой структуре данных.
+    :param graph_config: Конфигурация структуры данных, которая будет использоваться для хранения информации в формате графа.
     :type graph_struct: GraphModel
-    :param embeddings_config: Конфигурация модели, которая будет использоваться для хранения информации в векторной структуре данных.
+    :param embeddings_config: Конфигурация структуры данных, которая будет использоваться для хранения информации в векторном формате.
     :type embeddings_config: EmbeddingsModel
     """
 
@@ -34,10 +34,12 @@ class KnowledgeGraphModel:
         #assert vdb_nodes_count > vdb_triplets_count
 
     def add_knowledge(self, triplets: List[Triplet], check_consistency: bool = True) -> Dict[str, Dict[str,Set[str]]]:
-        """Метод предназначен для добавления информации в память (граф знаний) асситента в виде формате списка триплетов.
+        """Метод предназначен для добавления информации в память (граф знаний) асситента в виде списка триплетов.
 
         :param triplets: Список триплетов с информацией для добавления в память (граф знаний) асситента.
         :type triplets: List[Triplet]
+        :param check_consistency: Если True, то после выполнения данной операции будет проверена консистентность модели памяти (графа знаний) ассистента, иначе False. Значение по умолчанию True.
+        :type check_consistency: bool, optional
         """
 
         graph_create_info = self.graph_struct.create_triplets(triplets, status_bar=False)
@@ -54,7 +56,9 @@ class KnowledgeGraphModel:
         при её добавлении в память с помощью соответствующего add_knowledge-метода.
 
         :param triplets: Набор триплетов, по которым нужно удалить соответствующую информацию из памяти ассистента.
-        :type triplet_ids: List[str]
+        :type triplets: List[Triplet]
+        :param check_consistency: Если True, то после выполнения данной операции будет проверена консистентность модели памяти (графа знаний) ассистента, иначе False. Значение по умолчанию True.
+        :type check_consistency: bool, optional
         """
         graph_delete_info, embds_delete_info = self.graph_struct.delete_triplets(triplets)
         self.embeddings_struct.delete_triplets(triplets, delete_info=embds_delete_info)
@@ -71,7 +75,7 @@ class KnowledgeGraphModel:
         }
 
     def clear(self) -> None:
-        """Метод предназначен для удаления содержимого памяти (графа знаний) ассистента.
+        """Метод предназначен для полного удаления содержимого памяти (графа знаний) ассистента.
         """
         self.embeddings_struct.clear()
         self.graph_struct.clear()
