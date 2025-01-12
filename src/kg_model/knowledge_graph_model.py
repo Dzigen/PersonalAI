@@ -40,6 +40,8 @@ class KnowledgeGraphModel:
         :type triplets: List[Triplet]
         :param check_consistency: Если True, то после выполнения данной операции будет проверена консистентность модели памяти (графа знаний) ассистента, иначе False. Значение по умолчанию True.
         :type check_consistency: bool, optional
+        :return: Словарь с информацией о входных триплетах и их компонентах, которые были добавлены в память (граф знаний) ассистента.
+        :rtype: Dict[str, Dict[str,Set[str]]]
         """
 
         graph_create_info = self.graph_struct.create_triplets(triplets, status_bar=False)
@@ -59,6 +61,8 @@ class KnowledgeGraphModel:
         :type triplets: List[Triplet]
         :param check_consistency: Если True, то после выполнения данной операции будет проверена консистентность модели памяти (графа знаний) ассистента, иначе False. Значение по умолчанию True.
         :type check_consistency: bool, optional
+        :return: Словарь с информацией о компонентах входных триплетов, которые были удалены (значение True, иначе False) из памяти (граф знаний) ассистента.
+        :rtype: Dict[str, Dict[int,Dict[str,bool]]]
         """
         graph_delete_info, embds_delete_info = self.graph_struct.delete_triplets(triplets)
         self.embeddings_struct.delete_triplets(triplets, delete_info=embds_delete_info)
