@@ -1,5 +1,5 @@
 from typing import Dict, List, Union
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from abc import abstractmethod
 
 from ...utils import ReturnInfo

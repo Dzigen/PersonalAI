@@ -1,4 +1,4 @@
-from typing import List, Tuple, Dict
+from typing import List
 import aerospike
 
 from ..utils import KeyValueDBInstance

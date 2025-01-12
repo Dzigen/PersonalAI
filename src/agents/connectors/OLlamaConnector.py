@@ -1,4 +1,3 @@
-import requests
 from ..utils import AbstractAgentConnector, AgentConnectorConfig
 from ollama import Client
 

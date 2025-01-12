@@ -1,5 +1,5 @@
 import pymongo
-from typing import List, Tuple, Dict
+from typing import List, Dict
 from collections import defaultdict
 import numpy as np
 

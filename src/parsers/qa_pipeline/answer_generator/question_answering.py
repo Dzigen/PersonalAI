@@ -1,6 +1,6 @@
-from typing import Tuple, List, Dict
+from typing import List
 
-from ....utils import ReturnStatus, Triplet, TripletCreator
+from ....utils import Triplet, TripletCreator
 
 def ag_custom_formate(query: str, triplets: List[Triplet]) -> str:
     if len(query) < 1 or len(triplets) < 1:

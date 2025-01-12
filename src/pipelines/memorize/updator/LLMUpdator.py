@@ -5,9 +5,8 @@ from ....utils.errors import ReturnInfo, ReturnStatus, STATUS_MESSAGE
 from ....agents import AgentDriver, AgentDriverConfig
 from ....kg_model import KnowledgeGraphModel
 
-from functools import reduce
 from dataclasses import dataclass, field
-from typing import Dict, List
+from typing import List
 from tqdm import tqdm
 
 @dataclass

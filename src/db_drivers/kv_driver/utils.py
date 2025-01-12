@@ -1,5 +1,5 @@
 from typing import Dict, Union
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 

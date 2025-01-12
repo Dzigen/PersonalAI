@@ -1,4 +1,4 @@
-from typing import List, Dict, Tuple, Set
+from typing import List, Dict, Set
 from collections import defaultdict
 
 from ....utils import Triplet

@@ -1,8 +1,7 @@
 from typing import List, Tuple, Dict
-import ast
 
-from ....utils import ReturnStatus, NodeCreator, TripletCreator, NodeType
-from ....utils.data_structs import Relation, RelationType, Triplet, RelationCreator
+from ....utils import NodeCreator, TripletCreator, NodeType
+from ....utils.data_structs import RelationType, Triplet, RelationCreator
 
 def etriplets_custom_formate(text: str, **kwargs) -> Dict[str, str]:
     if len(text) < 1:

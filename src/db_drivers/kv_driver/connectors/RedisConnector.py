@@ -1,5 +1,5 @@
 import redis
-from typing import List, Tuple, Dict
+from typing import List, Dict
 from collections import defaultdict
 
 from src.db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance

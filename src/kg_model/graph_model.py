@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Dict, Union, Set, Tuple
+from typing import List, Dict, Set, Tuple
 import math
 from tqdm import tqdm
 

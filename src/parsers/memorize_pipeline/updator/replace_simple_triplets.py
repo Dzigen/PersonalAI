@@ -1,8 +1,7 @@
-from typing import List, Dict, Tuple, Set
+from typing import List, Dict, Set
 from collections import defaultdict
 
-
-from ....utils import Triplet, ReturnStatus
+from ....utils import Triplet
 from ....utils.data_structs import create_id
 
 def rs_custom_formate(base_triplet: Triplet, incident_triplets: List[Triplet]) -> Dict[str,str]:

@@ -1,11 +1,11 @@
 from dataclasses import dataclass, field
-from typing import List, Dict, Union, Set
+from typing import List, Dict, Set
 import math
 from tqdm import tqdm
 
 from ..db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriver, VectorDriverConfig, VectorDBInstance
 from ..db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
-from ..utils.data_structs import Triplet, TripletCreator, NodeCreator, RelationCreator
+from ..utils.data_structs import Triplet, TripletCreator, NodeCreator
 from ..utils import Logger
 
 NODES_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(

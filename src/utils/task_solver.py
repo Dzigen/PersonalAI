@@ -1,10 +1,10 @@
-from dataclasses import dataclass, field
-from typing import List, Union, Tuple, Dict
+from dataclasses import dataclass
+from typing import Tuple, Dict
 import json
 
 from .logger import Logger
 from .language_detector import detect_lang
-from .errors import ReturnInfo, ReturnStatus, STATUS_MESSAGE
+from .errors import ReturnStatus, STATUS_MESSAGE
 from ..agents.utils import AbstractAgentConnector
 
 @dataclass
