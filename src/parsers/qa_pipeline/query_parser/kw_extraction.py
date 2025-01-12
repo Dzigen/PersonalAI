@@ -8,7 +8,7 @@ def kwe_custom_formate(query: str) -> Dict[str, str]:
     return {'text': query}
 
 def kwe_custom_parse(raw_response: str, **kwargs) -> List[str]:
-    """Функция предназначена для разбора ответа от LLM-агента, в рамаках задачи по извлечению ключевых сущностей из текста на естественном языке.
+    """Функция предназначена для разбора ответа от LLM-агента, в рамках задачи по извлечению ключевых сущностей из текста на естественном языке.
 
     :param raw_response: Исходный ответ LLM-агента.
     :type raw_response: str
