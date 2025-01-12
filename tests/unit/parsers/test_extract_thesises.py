@@ -67,6 +67,7 @@ def test_custom_parse(raw_response: str, expected_output: List[Tuple[str, str, s
 from cases import VALID_HYPER_TRIPLET1, VALID_HYPER_TRIPLET1_2,\
       VALID_HYPER_TRIPLET7, VALID_HYPER_TRIPLET8
 
+# !!! TO ANALYZE TEST #0 AND #4 CASES !!!
 @pytest.mark.parametrize("parsed_response, rel_prop, node_prop, expected_output, exception", [
     # пустой rel_prop
     ([('rty',['qwe'])], dict(), {'k1': 'v1'}, [VALID_HYPER_TRIPLET7], False),
