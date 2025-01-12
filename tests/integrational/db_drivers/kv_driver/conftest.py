@@ -30,7 +30,7 @@ def inmemory_kv_conn():
 
 @pytest.fixture(scope='package')
 def redis_conn():
-    redis_config = KVDBConnectionConfig(host='localhost', port=6380, need_to_clear=True, db_info={'db': 0},
+    redis_config = KVDBConnectionConfig(host='localhost', port=6380, need_to_clear=True, db_info={'db': 0, 'table': 'test_collection'},
         params={'ss_name': 'sorted_node_pairs', 'hs_name': 'node_pairs', 'max_storage': 5e+8})
 
     driver_config = KeyValueDriverConfig(db_vendor='redis', db_config=redis_config)
@@ -49,7 +49,7 @@ def mongo_conn():
 @pytest.fixture(scope='package')
 def mixed_conn():
     redis_config = KVDBConnectionConfig(
-        host='localhost', port=6380, need_to_clear=True, db_info={'db': 0},
+        host='localhost', port=6380, need_to_clear=True, db_info={'db': 0, 'table': 'test_collection'},
         params={'ss_name': 'sorted_node_pairs', 'hs_name': 'node_pairs', 'max_storage': 5e+8})
 
     mongo_config = KVDBConnectionConfig(

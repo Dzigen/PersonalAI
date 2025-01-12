@@ -116,6 +116,10 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
 
     def read(self, ids: List[str]) -> List[Triplet]:
+        for t_id in ids:
+            if type(t_id) is not str:
+                raise ValueError
+
         str_ids = '['+', '.join(list(map(lambda id: f'"{id}"', ids))) + ']'
         query = f"MATCH (n1)-[rel]->(n2) WHERE any(id IN {str_ids} WHERE rel.t_id = id) RETURN n1, rel, n2"
         raw_output = self.execute_query(query)
@@ -127,19 +131,33 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         pass
 
     def delete(self, ids: List[str], delete_info: Dict[int,Dict[str,bool]] = dict()) -> None:
+        for t_id in ids:
+            if type(t_id) is not str:
+                raise ValueError
+
         for i, t_id in enumerate(ids):
             cur_info = delete_info.get(i, None)
-            delete_statement = ['rel']
+            nodes_to_delete = []
 
             if cur_info is None or cur_info['s_node']:
-                delete_statement.append('s_node')
+                nodes_to_delete.append('sn_id')
 
             if cur_info is None or cur_info['e_node']:
-                delete_statement.append('e_node')
+                nodes_to_delete.append('en_id')
 
-            delete_statement = ', '.join(delete_statement)
 
-            self.execute_query(f'MATCH (s_node)-[rel]->(e_node) WHERE rel.t_id = "{t_id}" DELETE {delete_statement}')
+            output = self.execute_query(f'MATCH (s_node)-[rel]->(e_node) WHERE rel.t_id = "{t_id}" DELETE rel RETURN elementId(s_node) as sn_id, elementId(e_node) as en_id')
+            if len(output) < 1:
+                continue
+
+            assert len(output) == 1
+
+            if len(nodes_to_delete) > 0:
+                where_statement = []
+                for n_name in nodes_to_delete:
+                    where_statement.append(f'elementId(n) = "{output[0][n_name]}"')
+                where_statement = ' or '.join(where_statement)
+                self.execute_query(f'MATCH (n) WHERE {where_statement} DELETE n')
 
     def read_by_name(self, name: str, type: Union[RelationType, NodeType], object: str = 'triplet') -> List[Union[Triplet, Node]]:
         dump_name = json.dumps(name, ensure_ascii=False)
@@ -280,15 +298,15 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             result = {'triplets': r_output['r_count'], 'nodes': n_output['n_count']}
 
         elif id_type == 'node':
-            n_output = self.execute_query(f'MATCH (a) WHERE a.str_id = "{id}" RETURN count(a) as n_count')[0]
+            n_output = self.execute_query(f'MATCH (a) WHERE a.str_id = "{id}" RETURN COUNT(a) as n_count')[0]
             result = n_output['n_count']
 
         elif id_type == 'relation':
-            r_output = self.execute_query(f'MATCH (a)-[rel]->(b) WHERE rel.str_id = "{id}" RETURN count(rel) as r_count')[0]
+            r_output = self.execute_query(f'MATCH (a)-[rel]->(b) WHERE rel.str_id = "{id}" RETURN COUNT(rel) as r_count')[0]
             result = r_output['r_count']
 
         elif id_type == 'triplet':
-            r_output = self.execute_query(f'MATCH (a)-[rel]->(b) WHERE rel.t_id = "{id}" RETURN count(rel) as r_count')[0]
+            r_output = self.execute_query(f'MATCH (a)-[rel]->(b) WHERE rel.t_id = "{id}" RETURN COUNT(rel) as r_count')[0]
             result = r_output['r_count']
 
         else:

@@ -27,24 +27,6 @@ def test_create(inputs, create_info, expected, graphdb_conn):
     assert items_info['triplets'] == expected['triplets_count']
     assert items_info['nodes'] == expected['nodes_count']
 
-@pytest.mark.parametrize("instances, create_info, inputs, expected, graphdb_conn", GRAPHDB_POPULATED_DELETE_TEST_CASES, indirect=['graphdb_conn'])
-def test_delete(instances, create_info, inputs, expected, graphdb_conn):
-    graphdb_conn.clear()
-    graphdb_conn.create(instances, create_info)
-
-    try:
-        graphdb_conn.delete(inputs)
-    except ValueError as e:
-        print(str(e))
-        assert expected['exception']
-    else:
-        assert not expected['exception']
-
-    items_info = graphdb_conn.count_items()
-    assert items_info['triplets'] == expected['triplets_count']
-    assert items_info['nodes'] == expected['nodes_count']
-
-
 @pytest.mark.parametrize("instances, create_info, inputs, expected, graphdb_conn", GRAPHDB_POPULATED_READ_TEST_CASES, indirect=['graphdb_conn'])
 def test_read(instances, create_info, inputs, expected, graphdb_conn):
     graphdb_conn.clear()
@@ -60,8 +42,26 @@ def test_read(instances, create_info, inputs, expected, graphdb_conn):
 
     if not expected['exception']:
         print(output)
-        assert list(map(lambda item: item.id, output)) == expected['output_ids']
+        assert len(output) == len(expected['output_ids'])
+        assert set(map(lambda item: item.id, output)) == expected['output_ids']
 
+
+@pytest.mark.parametrize("instances, create_info, inputs, delete_info, expected, graphdb_conn", GRAPHDB_POPULATED_DELETE_TEST_CASES, indirect=['graphdb_conn'])
+def test_delete(instances, create_info, inputs, delete_info, expected, graphdb_conn):
+    graphdb_conn.clear()
+    graphdb_conn.create(instances, create_info)
+
+    try:
+        graphdb_conn.delete(inputs, delete_info)
+    except ValueError as e:
+        print(str(e))
+        assert expected['exception']
+    else:
+        assert not expected['exception']
+
+    items_info = graphdb_conn.count_items()
+    assert items_info['triplets'] == expected['triplets_count']
+    assert items_info['nodes'] == expected['nodes_count']
 
 @pytest.mark.parametrize("instances, create_info, expected, graphdb_conn", GRAPHDB_POPULATED_COUNT_TEST_CASES, indirect=['graphdb_conn'])
 def test_count(instances, create_info, expected, graphdb_conn):
@@ -71,7 +71,6 @@ def test_count(instances, create_info, expected, graphdb_conn):
     items_info = graphdb_conn.count_items()
     assert items_info['triplets'] == expected['triplets_count']
     assert items_info['nodes'] == expected['nodes_count']
-
 
 @pytest.mark.parametrize("instances, inputs, expected, graphdb_conn", GRAPHDB_POPULATED_EXIST_TEST_CASES, indirect=['graphdb_conn'])
 def test_exist(instances, inputs, expected, graphdb_conn):

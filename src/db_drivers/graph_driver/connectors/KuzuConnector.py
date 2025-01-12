@@ -117,8 +117,12 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
             self.conn.execute(insert_rel_query)
 
     def read(self, ids: List[str]) -> List[Triplet]:
+        for t_id in ids:
+            if type(t_id) is not str:
+                raise ValueError
+
         str_ids = '['+', '.join(list(map(lambda id: f'"{id}"', ids))) + ']'
-        query = f"MATCH (n1)-[rel]->(n2) WHERE any(id IN {str_ids} WHERE rel.t_id = id) RETURN n1, rel, n2"
+        query = f"MATCH (n1)-[rel]->(n2) WHERE rel.t_id IN {str_ids} RETURN n1, rel, n2;"
         raw_output = self.conn.execute(query)
         triplets = self.parse_query_triplets_output(raw_output)
         return triplets
@@ -128,19 +132,37 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         pass
 
     def delete(self, ids: List[str], delete_info: Dict[int,Dict[str,bool]] = dict()) -> None:
+        for t_id in ids:
+            if type(t_id) is not str:
+                raise ValueError
+
         for i, t_id in enumerate(ids):
             cur_info = delete_info.get(i, None)
-            delete_statement = ['rel']
+            nodes_to_delete = []
 
             if cur_info is None or cur_info['s_node']:
-                delete_statement.append('s_node')
+                nodes_to_delete.append('sn_id')
 
             if cur_info is None or cur_info['e_node']:
-                delete_statement.append('e_node')
+                nodes_to_delete.append('en_id')
 
-            delete_statement = ', '.join(delete_statement)
 
-            self.conn.execute(f'MATCH (s_node)-[rel]->(e_node) WHERE rel.t_id = "{t_id}" DELETE {delete_statement}')
+            output = self.conn.execute(f'MATCH (s_node)-[rel]->(e_node) WHERE rel.t_id = "{t_id}" RETURN s_node.str_id AS sn_id, e_node.str_id AS en_id;')
+            self.conn.execute(f'MATCH (s_node)-[rel]->(e_node) WHERE rel.t_id = "{t_id}" DELETE rel;')
+
+            output = output.get_as_df()
+            if output.shape[0] < 1:
+                continue
+
+            assert output.shape[0] == 1
+
+
+            if len(nodes_to_delete) > 0:
+                where_statement = []
+                for n_name in nodes_to_delete:
+                    where_statement.append(f'n.str_id = "{output[n_name][0]}"')
+                where_statement = ' or '.join(where_statement)
+                self.conn.execute(f'MATCH (n) WHERE {where_statement} DELETE n')
 
     def read_by_name(self, name: str, type: Union[RelationType, NodeType], object: str = 'triplet') -> List[Union[Triplet, Node]]:
         if object == 'triplet':
@@ -246,15 +268,15 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
             result = {'triplets': int(r_output), 'nodes': int(n_output)}
 
         elif id_type == 'node':
-            n_output = self.conn.execute(f'MATCH (a) WHERE a.str_id = "{id}" RETURN count(a) as n_count').get_as_df()['n_count'][0]
+            n_output = self.conn.execute(f'MATCH (a) WHERE a.str_id = "{id}" RETURN COUNT(a) as n_count').get_as_df()['n_count'][0]
             result = int(n_output)
 
         elif id_type == 'relation':
-            r_output = self.conn.execute(f'MATCH (a)-[rel]->(b) WHERE rel.str_id = "{id}" RETURN count(rel) as r_count').get_as_df()['r_count'][0]
+            r_output = self.conn.execute(f'MATCH (a)-[rel]->(b) WHERE rel.str_id = "{id}" RETURN COUNT(rel) as r_count').get_as_df()['r_count'][0]
             result = int(r_output)
 
         elif id_type == 'triplet':
-            r_output = self.conn.execute(f'MATCH (a)-[rel]->(b) WHERE rel.t_id = "{id}" RETURN count(rel) as r_count').get_as_df()['r_count'][0]
+            r_output = self.conn.execute(f'MATCH (a)-[rel]->(b) WHERE rel.t_id = "{id}" RETURN COUNT(rel) as r_count').get_as_df()['r_count'][0]
             result = int(r_output)
 
         else:

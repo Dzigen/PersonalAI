@@ -119,16 +119,25 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         pass
 
     def delete(self, ids: List[str], delete_info: Dict[int,Dict[str,bool]] = dict()) -> None:
+        for id in ids:
+            if type(id) is not str:
+                raise ValueError
+
         for i, t_id in enumerate(ids):
             cur_info = delete_info.get(i, None)
 
+            print(cur_info)
+
             internal_t_ids = self.tid_triplets_index[t_id]
+            print(internal_t_ids)
+
             for internal_t_id in internal_t_ids:
                 matched_triplet = self.triplets[internal_t_id]
 
                 internal_snode_ids = list(self.strid_nodes_index[matched_triplet.start_node.id])
                 internal_enode_ids = list(self.strid_nodes_index[matched_triplet.end_node.id])
 
+                nodes_id_to_delete = set()
                 for sn_id in internal_snode_ids:
                     self.edges[sn_id].remove(internal_t_id)
                     self.adjacent_nodes[sn_id].difference_update(internal_enode_ids)
@@ -137,9 +146,12 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
                         #assert len(self.edges[sn_id]) == 0
                         #assert self.adjacent_nodes[sn_id] == 0
                         del self.nodes[sn_id]
+                        nodes_id_to_delete.add(sn_id)
 
-                del self.strid_nodes_index[matched_triplet.start_node.id]
+                if ((cur_info is None) or cur_info['s_node']) and len(nodes_id_to_delete):
+                    self.strid_nodes_index[matched_triplet.start_node.id].difference_update(nodes_id_to_delete)
 
+                nodes_id_to_delete = set()
                 for en_id in internal_enode_ids:
                     self.edges[en_id].remove(internal_t_id)
                     self.adjacent_nodes[en_id].difference_update(internal_snode_ids)
@@ -148,8 +160,10 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
                         #assert len(self.edges[en_id]) == 0
                         #assert self.adjacent_nodes[en_id] == 0
                         del self.nodes[en_id]
+                        nodes_id_to_delete.add(en_id)
 
-                del self.strid_nodes_index[matched_triplet.end_node.id]
+                if ((cur_info is None) or cur_info['e_node']) and len(nodes_id_to_delete):
+                    self.strid_nodes_index[matched_triplet.end_node.id].difference_update(nodes_id_to_delete)
 
                 self.strid_relation_index[matched_triplet.relation.id].pop()
                 del self.triplets[internal_t_id]

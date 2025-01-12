@@ -182,12 +182,12 @@ EM_DELETE_TEST_CASES = [
     [[SIMPLE_TRIPLET2, SIMPLE_TRIPLET3],
      {'triplets': {SIMPLE_TRIPLET2.relation.id, SIMPLE_TRIPLET3.relation.id}, 'nodes': {OBJECT_NODE1.id, OBJECT_NODE2.id, OBJECT_NODE3.id}},
      {'triplets': 2, 'nodes': 3}, [SIMPLE_TRIPLET3],
-     {0: {'s_node': False, 'triplet': False, 'e_node': True}}, None, True],
+     {0: {'s_node': False, 'triplet': False, 'e_node': True}}, {'triplets': 2, 'nodes': 2}, False],
     # 5. Удаление только стартовой вершины
     [[SIMPLE_TRIPLET2, SIMPLE_TRIPLET3],
      {'triplets': {SIMPLE_TRIPLET2.relation.id, SIMPLE_TRIPLET3.relation.id}, 'nodes': {OBJECT_NODE1.id, OBJECT_NODE2.id, OBJECT_NODE3.id}},
      {'triplets': 2, 'nodes': 3}, [SIMPLE_TRIPLET2],
-     {0: {'s_node': True, 'triplet': False, 'e_node': False}}, None, True],
+     {0: {'s_node': True, 'triplet': False, 'e_node': False}}, {'triplets': 2, 'nodes': 2}, False],
     # 6. удаление несколько разных триплетов
     [[SIMPLE_TRIPLET2, SIMPLE_TRIPLET3, SIMPLE_TRIPLET1_2],
      {'triplets': {SIMPLE_TRIPLET2.relation.id, SIMPLE_TRIPLET3.relation.id, SIMPLE_TRIPLET1_2.relation.id},
@@ -417,7 +417,7 @@ KG_DELETE_TEST_CASES = [
   # 3. Удаление только связи
   # 3.1 удаление связи из графовой бд и триплета из векторной
   [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2, SIMPLE_TRIPLET3], {'graph_info': {'triplets': 3, 'nodes': 3}, 'embeddings_info': {'triplets': 3, 'nodes': 3}},
-   [SIMPLE_TRIPLET1], {'graph_info': {'triplets': 2, 'nodes': 3}, 'embeddings_info': {'triplets': 3, 'nodes': 3}},
+   [SIMPLE_TRIPLET1], {'graph_info': {'triplets': 2, 'nodes': 3}, 'embeddings_info': {'triplets': 2, 'nodes': 3}},
     {0: {'s_node': False, 'e_node': False}},
     {0: {'s_node': False, 'triplet': True, 'e_node': False}}],
   # 3.2 удаление связи из графовой бд, но не триплета из векторной

@@ -32,3 +32,11 @@ class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
     def read_by_name(self, name: str, type: Union[RelationType,NodeType],
                      object: str = 'triplet') -> List[Union[Triplet, Node]]:
         pass
+
+    @abstractmethod
+    def count_items(self, id: str = None, id_type: str = None) -> Union[Dict[str,int],int]:
+        pass
+
+    @abstractmethod
+    def item_exist(self, id: str, id_type: str='triplet') -> bool:
+        pass

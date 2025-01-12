@@ -75,8 +75,16 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
                 formated_items.append(val)
             else:
                 item_scores[ids[i]] += 1
+
+                # костыль
+                val = val.decode()
+                try:
+                    val = float(val)
+                except ValueError as e:
+                    pass
+
                 formated_items.append(
-                    KeyValueDBInstance(id=ids[i], value=float(val)))
+                    KeyValueDBInstance(id=ids[i], value=val))
 
         # Обновляем метрику использования элементов
         self.update_item_scores(item_scores)
