@@ -11,15 +11,15 @@ from ..agents.utils import AbstractAgentConnector
 class AgentTaskSuite:
     """Набор гиперпараметров для инференса и разбора ответа LLM-агента в рамках заданной атомарной задачи.
 
-    :param system_prompt: System-промпт с описание персоны, свойствам которой должен удовлетворять LLM-агент во время инференса.
+    :param system_prompt: System-промпт с описанием персоны, свойствам которой должен удовлетворять LLM-агент во время инференса.
     :type system_prompt: str
     :param user_prompt: User-промпт для инференса LLM-агента с описанием задачи.
     :type user_prompt: str
-    :param assistant_prompt: Assistant-промпт с дополнительной информацией по решаемой задачи для инференса LLM-агента.
+    :param assistant_prompt: Assistant-промпт с дополнительной информацией по решаемой задаче для инференса LLM-агента.
     :type assistant_prompt: str
     :param parse_answer_func: Кастомная функция, которая должна выполнять промежуточный разбор ответа LLM-агента, полученного в рамках инференса.
     :type parse_answer_func: object
-    :param postprocess_answer_func: Кастомная функция, которая должна привести разобранный ответ от LLM-агента в формат, который требуется для данной атомарной задачи.
+    :param postprocess_answer_func: Кастомная функция, которая должна привести разобранный ответ от LLM-агента к формату, который требуется для данной атомарной задачи.
     :type postprocess_answer_func: object
     """
     system_prompt: str
@@ -51,7 +51,7 @@ class AgentTaskSolver:
 
     :param agent: интерфейс взаимодейсвия с LLM-агеном.
     :type agent: AbstractAgentConnector
-    :param config: Конфигурация решения конкретной задачи.
+    :param config: Конфигурация решения конкретной атомарной задачи.
     :type config: AgentTaskSolverConfig
     """
 
@@ -63,7 +63,7 @@ class AgentTaskSolver:
     def solve(self, lang: str = 'auto', **kwargs) -> Tuple[object, ReturnStatus]:
         """Метод предназначен для запуска agent-солвера на заданных входных данных.
 
-        :param lang: Язык промптов, которые будут использоваться на этапе инференса LLM-агента, Значение по умолчанию 'auto'.
+        :param lang: Язык промптов, которые будут использоваться на этапе инференса LLM-агента. Значение по умолчанию 'auto'.
         :type lang: str, optional
         :return: Кортеж из двух объектов: (1) результат работы agent-солвера; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[object, ReturnStatus]
@@ -82,7 +82,7 @@ class AgentTaskSolver:
         finally:
             self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
 
-        # Если удалось без ошибок привести данных в формат контекста
+        # Если удалось без ошибок привести данные в формат контекста
         # для вставки в user-prompt
         if status == ReturnStatus.success:
             self.log("-"*20, verbose=self.config.verbose)
@@ -93,7 +93,7 @@ class AgentTaskSolver:
             self.log(f"Результат:\n{detected_lang}.", verbose=self.config.verbose)
             self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
 
-        # Если удалось определить язык (находится в списке доступных)
+        # Если удалось определить язык (распознанный язык находится в списке доступных)
         if status == ReturnStatus.success:
             self.log("-"*20, verbose=self.config.verbose)
             self.log("3. Добавление информации в user-prompt...", verbose=self.config.verbose)

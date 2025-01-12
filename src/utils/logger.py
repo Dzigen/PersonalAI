@@ -7,7 +7,6 @@ import datetime
 
 LOGGER = logging.getLogger(__name__)
 
-
 def init_logger(args, stdout_only=False):
     if torch.distributed.is_initialized():
         torch.distributed.barrier()

@@ -44,7 +44,7 @@ class Node:
     prop: dict = field(default_factory=lambda: {})
     #: Строковое представление вершины.
     stringified: str = None
-    #: Идентификатор вершины, полученный на основе её стрококового представления.
+    #: Идентификатор вершины, полученный на основе её строкового представления.
     id: str = None
 
 @dataclass
@@ -56,8 +56,8 @@ class Relation:
     type: RelationType
     #: Дополнительные свойства связи.
     prop: dict = field(default_factory=lambda: {})
-    #: Идентификатор связи, полученный на основе строкового представления триплета, в котором она находится.
-    #: Отличается от значения в поле id объекта класса Triplet.
+    #: Идентификатор связи, полученный на основе строкового представления триплета, в котором она (связь) находится.
+    #: Данное значение отличается от значения в поле id объекта класса Triplet.
     id: str = None
 
 @dataclass
@@ -71,8 +71,8 @@ class Triplet:
     end_node: Node
     #: Строковое представление триплета.
     stringified: str = None
-    #: Идентификатор триплета, полученный на основе его строкового представления.
-    #: Отличается от значения в поле id объекта класса Relation.
+    #: Идентификатор триплета, полученный на основе идентификаторов его частей.
+    #: Данное значение отличается от значения в поле id объекта класса Relation.
     id: str = None
 
 class BaseCreator:
@@ -95,6 +95,19 @@ class BaseCreator:
 class RelationCreator(BaseCreator):
     @staticmethod
     def create(r_type: Union[str, RelationType], name: str = None,  prop: Dict = None):
+        """_summary_
+
+        :param r_type: _description_
+        :type r_type: Union[str, RelationType]
+        :param name: _description_, defaults to None
+        :type name: str, optional
+        :param prop: _description_, defaults to None
+        :type prop: Dict, optional
+        :raises ValueError: _description_
+        :raises ValueError: _description_
+        :return: _description_
+        :rtype: _type_
+        """
         if type(r_type) is not RelationType:
             formated_r_type = RELATIONS_TYPES_MAP.get(r_type, None)
             if formated_r_type is None:
@@ -121,9 +134,9 @@ class NodeCreator(BaseCreator):
         :type n_type: Union[str, NodeType]
         :param name: Главная смысловая информация, которая будет добавлена в вершину.
         :type name: str
-        :param name: Дополнительные свойства создаваемой вершины.
-        :type name: Dict
-        :param add_stringified_node: Если True, то в структуру данных вершины будет сохранено её строковое представление, иначе False, Значение по умолчанию True.
+        :param prop: Дополнительные свойства создаваемой вершины. Значение по умолчанию None.
+        :type prop: Dict, optional
+        :param add_stringified_node: Если True, то в структуру данных вершины будет сохранено её строковое представление, иначе соответствующее поле будет хранить None. Значение по умолчанию True.
         :type add_stringified_node: bool, optional
         :return: Созданная структура данных вершины.
         :rtype: Node
@@ -183,15 +196,15 @@ class TripletCreator(BaseCreator):
         """Метод предназначен для создания структуры данных триплета с указанным содержанием.
         Триплет является ориентированным: у связи между вершинами (парой subject/object) есть направление.
 
-        :param start_node: Структура данных старотовой (subject) вершины триплета
+        :param start_node: Структура данных стартовой (subject) вершины триплета.
         :type start_node: Node
         :param relation: Структура данных связи триплета.
         :type relation: Relation
-        :param end_node: Структура данных конеченой (object) вершины триплета.
+        :param end_node: Структура данных конечной (object) вершины триплета.
         :type end_node: Node
-        :param add_stringified_triplet: Если True, то в структуру данных триплета будет сохранено его строковое представление, иначе False, Значение по умолчанию True.
+        :param add_stringified_triplet: Если True, то в структуру данных триплета будет сохранено его строковое представление, иначе соответствующее поле будет хранить None. Значение по умолчанию True.
         :type add_stringified_triplet: bool, optional
-        :param t_id: Идентификатор триплета, который будет назначен вручную. Если идентификатор не указан, то он будет автоматически сгенерирован. Значение по умолчанию None.
+        :param t_id: Идентификатор, который будет назначен триплету вручную. Если идентификатор не указан (None), то он будет назначен триплету автоматически. Значение по умолчанию None.
         :type t_id: str, optional
         :return: Созданная структура данных триплета.
         :rtype: Triplet
@@ -214,12 +227,12 @@ class TripletCreator(BaseCreator):
 
     @staticmethod
     def stringify(triplet: Triplet) -> Tuple[str,str]:
-        """Метод предназначен для приведения Triplet структуры данных в его строковое представление. Строковое представление зависит от типа триплета:
-        (1) simple - используется информация из обоих вершин и связи; (2) hyper/episodic - используется информация только из конечной (object) вершины.
+        """Метод предназначен для приведения Triplet-структуры данных в её строковое представление. Строковое представление зависит от типа триплета (Triplet.relation.type):
+        (1) simple - используется информация из обеих вершин и связи; (2) hyper/episodic - используется информация только из конечной (object) вершины.
 
         :param triplet: Структура данных триплета.
         :type triplet: Triplet
-        :raises KeyError: В триплете указа связь с типом, который не поддерживается.
+        :raises KeyError: В триплете у связи указан тип, который не поддерживается.
         :return: Кортеж из двух объектов: (1) идентификатор связи между данной парой вершин из триплета; (2) стрококвое представление триплета.
         :rtype: Tuple[str,str]
         """
@@ -249,15 +262,15 @@ class TripletCreator(BaseCreator):
         """Метод предназначен для перевода триплета из json-формата (полуструктурированного) в dataclass-формат (структурированный) хранения.
         Триплет является направленным: связь идёт от субъекта к объекту.
 
-        Триплет в формате json должен содержать следующие ключи: "subject", "relation" и "object". По каждому из данных ключей должен хранится словарь
+        Триплет в json-формате должен содержать следующие ключи: "subject", "relation" и "object". По каждому из данных ключей должен храниться словарь
         со следующими ключами: "name", "type" и "prop". По ключу "name" должна храниться строка текста на естественном языке, предстатвляющая основную
         смысловую информацию данной части триплета. По ключу "prop" в виде словаря могут храниться дополнительные свойства данной части триплета.
         Если у компоненты триплета нет свойств, то соответствующее поле "prop" можно не указывать/заполнять. По ключу "type" могут храниться только следующие значения:
         * в случае "subject"/"object"-компонет это "object", "hyper" и "episodic";
-        * в случае "relation" это "simple", "hyper" и "episodic".
+        * в случае "relation"-компоненты это "simple", "hyper" и "episodic".
 
-        В случае если по ключу "type" компоненты триплета "relation" указывается значение "hyper" или "episodic", то значение по соответствующему ключу "name"
-        можно не указывать: указанное значение в поле "name" использоваться не будет.
+        В случае если по ключу "type" у "relation"-компоненты триплета указывается значение "hyper" или "episodic", то значение по соответствующему ключу "name"
+        можно не указывать: вручную-указанное значение в поле "name" использоваться не будет.
 
         Примеры валидных json-триплетов:
         1. {'subject': {'name': 'qwe', 'type': 'object', 'prop': {'k1': 'v1'}},
@@ -294,7 +307,7 @@ class TripletCreator(BaseCreator):
 @dataclass
 class QueryInfo:
     """Класс предназначен для хранения промежуточных результатов по user-вопросу,
-    полученных в рамках его обработки с помощью QA-конвейера.
+    полученных в рамках его обработки QA-конвейером.
 
     :param query: Исходный user-вопрос.
     :type query: str
