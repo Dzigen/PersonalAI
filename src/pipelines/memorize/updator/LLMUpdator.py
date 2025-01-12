@@ -56,6 +56,13 @@ class LLMUpdator:
         self.replace_hyper_solver = AgentTaskSolver(self.agent, self.config.replace_thesis_task_config)
 
     def find_simple_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
+        """_summary_
+
+        :param base_triplet: _description_
+        :type base_triplet: Triplet
+        :return: _description_
+        :rtype: List[str]
+        """
         obsolete_triplet_ids = list()
 
         # Формируем уникальный список триплетов, которые инциденты вершинам
@@ -85,6 +92,13 @@ class LLMUpdator:
         return list(set(obsolete_triplet_ids))
 
     def find_hyper_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
+        """_summary_
+
+        :param base_triplet: _description_
+        :type base_triplet: Triplet
+        :return: _description_
+        :rtype: List[str]
+        """
         obsolete_triplet_ids = list()
 
         # Формируем уникальный список триплетов, которые инциденты вершинам
@@ -115,6 +129,13 @@ class LLMUpdator:
         return list(set(obsolete_triplet_ids))
 
     def find_episodic_o_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
+        """_summary_
+
+        :param base_triplet: _description_
+        :type base_triplet: Triplet
+        :return: _description_
+        :rtype: List[str]
+        """
         obsolete_triplet_ids = list()
 
         # Сопоставляем object-сущность из триплета вершинам в графе знаний
@@ -150,6 +171,13 @@ class LLMUpdator:
         return list(set(obsolete_triplet_ids))
 
     def find_episodic_h_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
+        """_summary_
+
+        :param base_triplet: _description_
+        :type base_triplet: Triplet
+        :return: _description_
+        :rtype: List[str]
+        """
         obsolete_triplet_ids = list()
 
         # Сопоставляем hyper-сущность из триплета вершинам в графе знаний

@@ -15,7 +15,15 @@ class KeyValueDBInstance:
 
 class AbstractKVDatabaseConnection(AbstractDatabaseConnection):
     def update_item_scores(self, mapping: Dict[str, int]) -> None:
-        pass
+        """ Обновляем скоры использования элементов в ордер сете.
+
+        :param mapping:
+        :type mapping: Dict[str, int]
+        """
 
     def delete_rare_items(self, num: int) -> None:
-        pass
+        """Удаляем элементы, к которым было сделано наименьшее количество обращений.
+
+        :param num: Количество элементов, которое нужно удалить.
+        :type num: int
+        """

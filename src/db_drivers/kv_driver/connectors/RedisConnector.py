@@ -117,11 +117,6 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
             self.conn.zrem(self.config.params['ss_name'], *filtered_ids)
 
     def update_item_scores(self, mapping: Dict[str, int]) -> None:
-        """ Обновляем скоры использования элементов в ордер сете.
-
-        :param mapping:
-        :type mapping: Dict[str, int]
-        """
         existed_keys = [id for id in list(mapping.keys()) if self.conn.hexists(self.config.params['hs_name'], id)]
         filtered_mapping = {k: mapping[k] for k in existed_keys}
 
@@ -130,11 +125,6 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
                 self.conn.zincrby(self.config.params['ss_name'], v, k)
 
     def delete_rare_items(self, num: int) -> None:
-        """Удаляем элементы, к которым было сделано наименьшее количество обращений.
-
-        :param num: Количество элементов, которое нужно удалить.
-        :type num: int
-        """
         rarest_values = self.conn.zrangebyscore(self.config.params['ss_name'], 0, "+inf", start=0, num=num)
         if len(rarest_values) > 0:
             self.conn.zrem(self.config.params['ss_name'], *rarest_values)
