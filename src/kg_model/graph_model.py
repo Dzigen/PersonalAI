@@ -12,9 +12,9 @@ GRAPH_MODEL_LOG_PATH = 'log/kg_model/graph'
 
 @dataclass
 class GraphModelConfig:
-    """Конфигруация графовой модели.
+    """Конфигруация графовой структуры данных.
 
-    :param driver_config: Конфигурация графовой базы данных.
+    :param driver_config: Конфигурация графовой бд.
     :type driver_config: GraphDriverConfig
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(GRAPH_MODEL_LOG_PATH).
     :type log: Logger
@@ -26,9 +26,9 @@ class GraphModelConfig:
     verbose: bool = False
 
 class GraphModel:
-    """Модель хранения информации в графовой структуре данных.
+    """Структура данных, предназначенная для хранения информации в формате графа.
 
-    :param config: Конфигурация графовой модели. Значение по умолчанию GraphModelConfig().
+    :param config: Конфигурация графовой структуры. Значение по умолчанию GraphModelConfig().
     :type config: GraphModelConfig
     """
     def __init__(self, config: GraphModelConfig = GraphModelConfig()) -> None:
@@ -37,11 +37,11 @@ class GraphModel:
         self.db_conn = GraphDriver.connect(self.config.driver_config)
 
     def create_triplets(self, triplets: List[Triplet], batch_size: int = 64, status_bar: bool = True) -> Dict[str, Set[str]]:
-        """Метод предназначен для сохранения информации, представленной в виде списка триплетов, в графовую модель.
+        """Метод предназначен для сохранения информации, представленной в виде списка триплетов, в графовую структуру.
 
-        :param triplets: Набора триплетов для добавления в графовую модель.
+        :param triplets: Набора триплетов для добавления в графовую структуру.
         :type triplets: List[Triplet]
-        :param batch_size: Количество триплетов, которое за одну create-операцию добавляется в модель. Значение по умолчанию 64.
+        :param batch_size: Количество триплетов, которое за одну create-операцию будет добавляться в структуру. Значение по умолчанию 64.
         :type batch_size: int, optional
         """
         self.log("Adding triplets to graph-model...", verbose=self.config.verbose)
@@ -108,11 +108,11 @@ class GraphModel:
         return {'triplets': created_triplet_ids, 'nodes': created_node_ids}
 
     def delete_triplets(self, triplets: List[Triplet], status_bar: bool = False) -> Tuple[Dict[int,Dict[str,bool]], Dict[int,Dict[str,bool]]]:
-        """Метод предназначен для удаления информации, представленной в виде списка триплетов, из графовой структуры данных.
+        """Метод предназначен для удаления информации, представленной в виде списка триплетов, из графовой структуры.
 
-        :param triplets: Набор триплетов на удаления из графовой структуры данных.
+        :param triplets: Набор триплетов на удаления из графовой структуры.
         :type triplets: List[Triplet]
-        :return: Информация для векторной структуры данных, чтобы удалить устаревшие вершины/триплеты и сохранить консистентность модели графа знаний.
+        :return: Информация для векторной структуры, чтобы удалить устаревшие вершины/триплеты и сохранить консистентность модели графа знаний.
         :rtype: List[Dict[str,bool]]
         """
 
@@ -154,5 +154,5 @@ class GraphModel:
         return self.db_conn.count_items()
 
     def clear(self) -> None:
-        """Метод предназначен для удаления содержимого графовой модели данных."""
+        """Метод предназначен для удаления содержимого графовой структуры."""
         self.db_conn.clear()
