@@ -56,11 +56,11 @@ class LLMUpdator:
         self.replace_hyper_solver = AgentTaskSolver(self.agent, self.config.replace_thesis_task_config)
 
     def find_simple_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
-        """_summary_
+        """Метод предназначен для поиска устаревших simple-триплетов в графе знаний по сравнению с указанным (base_triplet) simple-триплетом.
 
-        :param base_triplet: _description_
+        :param base_triplet: Simple-триплет, на основании которого нужно искать устаревшие simple-триплеты в графе знаний.
         :type base_triplet: Triplet
-        :return: _description_
+        :return: Идентификаторы устаревших simple-триплетов.
         :rtype: List[str]
         """
         obsolete_triplet_ids = list()
@@ -92,11 +92,11 @@ class LLMUpdator:
         return list(set(obsolete_triplet_ids))
 
     def find_hyper_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
-        """_summary_
+        """Метод предназначен для поиска устаревших hyper-триплетов в графе знаний по сравнению с указанным (base_triplet) hyper-триплетом.
 
-        :param base_triplet: _description_
+        :param base_triplet: Hyper-триплет, на основании которого нужно искать устаревшие hyper-триплеты в графе знаний.
         :type base_triplet: Triplet
-        :return: _description_
+        :return: Идентификаторы устаревших hyper-триплетов.
         :rtype: List[str]
         """
         obsolete_triplet_ids = list()
@@ -129,11 +129,11 @@ class LLMUpdator:
         return list(set(obsolete_triplet_ids))
 
     def find_episodic_o_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
-        """_summary_
+        """Метод предназначен для поиска устаревших episodic-триплетов (с object-вершиной) в графе знаний по сравнению с указанным (base_triplet) episodic-триплетом.
 
-        :param base_triplet: _description_
+        :param base_triplet: Episodic-триплет (с object-вершиной), на основании которого нужно искать устаревшие episodic-триплеты в графе знаний.
         :type base_triplet: Triplet
-        :return: _description_
+        :return: Идентификаторы устаревших episodic-триплетов.
         :rtype: List[str]
         """
         obsolete_triplet_ids = list()
@@ -171,11 +171,11 @@ class LLMUpdator:
         return list(set(obsolete_triplet_ids))
 
     def find_episodic_h_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
-        """_summary_
+        """Метод предназначен для поиска устаревших episodic-триплетов (c hyper-вершиной) в графе знаний по сравнению с указанным (base_triplet) episodic-триплетом.
 
-        :param base_triplet: _description_
+        :param base_triplet: Episodic-триплет (с hyper-вершиной), на основании которого нужно искать устаревшие episodic-триплеты в графе знаний.
         :type base_triplet: Triplet
-        :return: _description_
+        :return: Идентификаторы устаревших episodic-триплетов.
         :rtype: List[str]
         """
         obsolete_triplet_ids = list()

@@ -14,23 +14,23 @@ from src.utils import NodeType, Logger
 # retrieve
 RETRIVER_CONFIG_DUMP = "retriever_config"
 
-DEFAULT_MIXEDKV_CONFIG.params['redis_config'].host = 'redis_cache'
-DEFAULT_MIXEDKV_CONFIG.params['mongo_config'].host = 'mongo_cache'
+# DEFAULT_MIXEDKV_CONFIG.params['redis_config'].host = 'redis_cache'
+# DEFAULT_MIXEDKV_CONFIG.params['mongo_config'].host = 'mongo_cache'
 
-KV_STORAGE_CONFIG = KeyValueDriverConfig(db_vendor='mixed_kv', db_config=DEFAULT_MIXEDKV_CONFIG)
+# KV_STORAGE_CONFIG = KeyValueDriverConfig(db_vendor='mixed_kv', db_config=DEFAULT_MIXEDKV_CONFIG)
 
-retriever_config= AStarGraphSearchConfig(
-    metrics_config=AStarMetricsConfig(h_metric_name='ip', kvdriver_config=KV_STORAGE_CONFIG),
-    max_depth=8, max_passed_nodes=500,
-    accepted_node_types=[NodeType.object , NodeType.hyper, NodeType.episodic]
-)
-
-# retriever_config = BFSSearchConfig(
-#     strict_filter=True,
-#     hyper_episodic_num=15,
-#     chain_triplets_num=25,
-#     other_triplets_num=6
+# retriever_config= AStarGraphSearchConfig(
+#     metrics_config=AStarMetricsConfig(h_metric_name='ip', kvdriver_config=KV_STORAGE_CONFIG),
+#     max_depth=8, max_passed_nodes=500,
+#     accepted_node_types=[NodeType.object , NodeType.hyper, NodeType.episodic]
 # )
+
+retriever_config = BFSSearchConfig(
+    strict_filter=True,
+    hyper_episodic_num=15,
+    chain_triplets_num=25,
+    other_triplets_num=6
+)
 
 joblib.dump(retriever_config, RETRIVER_CONFIG_DUMP)
 
