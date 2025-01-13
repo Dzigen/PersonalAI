@@ -14,6 +14,6 @@ pip install dataclasses tqdm joblib
 pip install pyicu pycld2 morfessor polyglot
 pip install numpy pandas
 pip install torch==2.4.1 transformers==4.40.0 sentence_transformers
-pip install gigachat==0.1.17 openai
+pip install gigachat==0.1.17 openai ollama
 pip install pytest
 echo "=== PACKAGES-INSTALLATION END"
