@@ -94,19 +94,17 @@ class BaseCreator:
 
 class RelationCreator(BaseCreator):
     @staticmethod
-    def create(r_type: Union[str, RelationType], name: str = None,  prop: Dict = None):
-        """_summary_
+    def create(r_type: Union[str, RelationType], name: str = None,  prop: Dict = None) -> Relation:
+        """Метод предназначен для создания структуры данных связи с указанным содержанием.
 
-        :param r_type: _description_
+        :param r_type: Тип создаваемой связи в строковой- или Enum-структуре данных.
         :type r_type: Union[str, RelationType]
-        :param name: _description_, defaults to None
+        :param name: Главная смысловая информация, которая будет добавлена в связь. Значение по умолчанию None.
         :type name: str, optional
-        :param prop: _description_, defaults to None
+        :param prop: Дополнительные свойства создаваемой связи. Значение по умолчанию None.
         :type prop: Dict, optional
-        :raises ValueError: _description_
-        :raises ValueError: _description_
-        :return: _description_
-        :rtype: _type_
+        :return: Созданная структура данных связи.
+        :rtype: Relation
         """
         if type(r_type) is not RelationType:
             formated_r_type = RELATIONS_TYPES_MAP.get(r_type, None)

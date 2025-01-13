@@ -11,7 +11,7 @@ def ethesises_custom_formate(text: str, **kwargs) -> Dict[str, str]:
 
 
 def ethesises_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, List[str]]]:
-    """Функция предназначена для разбора результата генерации ответа LLM-агента, в рамаках задачи по извлечению
+    """Функция предназначена для разбора результата генерации ответа LLM-агента, в рамках задачи по извлечению
     триплетов типа "hyper" (тезисной информации) из текста на естественном языке.
 
     :param raw_response: Исходный ответ LLM-агента.

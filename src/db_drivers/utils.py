@@ -8,7 +8,7 @@ from ..utils.errors import ReturnInfo
 class BaseDatabaseConfig:
     """Базовая конфигурация для подключения к базе данных.
 
-    :param db_info: Словарь, который должен хранить название базы данных и таблицы, к которой нужно подключиться. Значение по умолчанию {'db': 'default_db', 'table': 'default_table'}.
+    :param db_info: Словарь, который должен хранить название базы данных и таблицы, к которой нужно подключиться. Значение по умолчанию {'db': 'personalaidb', 'table': 'personalaitable'}.
     :type db_info: Dict
     :param params: Набор дополнительных гиперпараметров, который необходим для подключения и настройки бд. Значения по умолчанию dict().
     :type params: Dict
@@ -75,7 +75,7 @@ class AbstractDatabaseConnection(ABC):
 
     @abstractmethod
     def update(self, items: List[object]) -> ReturnInfo:
-        """Метод прдназначен для обновления значений у существующих ключей. Если данного ключа нет в базе,
+        """Метод предназначен для обновления значений у существующих ключей. Если данного ключа нет в базе,
         то элемент будет пропущен.
 
         :param items: _description_
@@ -110,7 +110,7 @@ class AbstractDatabaseConnection(ABC):
     def item_exist(self, id: str) -> bool:
         """Метод предназначен для проверки на наличие объекта в бд по его идентификатору.
 
-        :param id: Иднетификатор объекта.
+        :param id: Идентификатор объекта.
         :type id: str
         :return: Если объект существуюет, то True, иначе False.
         :rtype: bool

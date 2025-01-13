@@ -10,7 +10,7 @@ def etriplets_custom_formate(text: str, **kwargs) -> Dict[str, str]:
     return {'text': text}
 
 def etriplets_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, str, str]]:
-    """Функция предназначена для разбора ответа LLM-агента, полученного в рамаках задачи по извлечению триплетов типа "simple" из текста на естественном языке.
+    """Функция предназначена для разбора ответа LLM-агента, полученного в рамках задачи по извлечению триплетов типа "simple" из текста на естественном языке.
 
     :param raw_response: Исходный ответ LLM-агента.
     :type raw_response: str
