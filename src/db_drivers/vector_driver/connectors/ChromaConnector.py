@@ -83,6 +83,10 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         collection_size = self.collection.count()
         n_results = collection_size if collection_size < n_results else n_results
 
+        # костыль
+        if n_results < 1:
+            return [[]]
+
         raw_retrieved_instances = self.collection.query(
             query_embeddings=[inst.embedding for inst in query_instances],
             include=includes + ['distances'], n_results=n_results, **kwargs)

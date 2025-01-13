@@ -114,6 +114,7 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
                 self.conn.execute(insert_obj_query)
 
             insert_rel_query = self.create_rel_query(triplet)
+
             self.conn.execute(insert_rel_query)
 
     def read(self, ids: List[str]) -> List[Triplet]:
@@ -165,13 +166,20 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
                 self.conn.execute(f'MATCH (n) WHERE {where_statement} DELETE n')
 
     def read_by_name(self, name: str, type: Union[RelationType, NodeType], object: str = 'triplet') -> List[Union[Triplet, Node]]:
+        dump_name = json.dumps(name, ensure_ascii=False)
         if object == 'triplet':
             rel_t = self.config.params['table_type_map']['relations']['forward'][type.value]
-            output = self.conn.execute(f"MATCH (n1)-[rel:{rel_t}]->(n2) WHERE rel.name = {name} RETURN n1,rel,n2;")
+
+            query = f"MATCH (n1)-[rel:{rel_t}]->(n2) WHERE rel.name = {dump_name} RETURN n1,rel,n2;"
+            output = self.conn.execute(query)
+
             formated_output = self.parse_query_triplets_output(output)
         elif object == 'node':
             node_t = self.config.params['table_type_map']['nodes']['forward'][type.value]
-            output = self.conn.execute(f"MATCH (n:{node_t}) WHERE a.name = {name} RETURN n;")
+
+            query = f"MATCH (n:{node_t}) WHERE n.name = {dump_name} RETURN n;"
+            output = self.conn.execute(query)
+
             formated_output = self.parse_query_nodes_output(output)
         else:
             raise ValueError
@@ -197,11 +205,16 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         formated_triplets = []
         output = output.get_as_df()
         triplets_count = len(output['rel'])
+
         for i in range(triplets_count):
             cur_n1, cur_rel, cur_n2 = output['n1'][i], output['rel'][i], output['n2'][i]
+
+            # костыль
+            raw_rel_type = cur_rel['_label'][:12]
+
             n1_type = self.config.params['table_type_map']['nodes']['inverse'][cur_n1['_label']]
             n2_type = self.config.params['table_type_map']['nodes']['inverse'][cur_n2['_label']]
-            rel_type = self.config.params['table_type_map']['relations']['inverse'][cur_rel['_label']]
+            rel_type = self.config.params['table_type_map']['relations']['inverse'][raw_rel_type]
 
             node1 = Node(id=cur_n1['str_id'], name=str(cur_n1['name']),
                          type=NODES_TYPES_MAP[n1_type], prop=dict(cur_n1['prop']))

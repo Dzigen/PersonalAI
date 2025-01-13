@@ -263,7 +263,7 @@ class LLMUpdator:
         else:
             self.log(f"ADDING TRIPLETS TO MEMORY...", verbose=self.config.verbose)
 
-            add_info = self.kg_model.add_knowledge(new_triplets)
+            add_info = self.kg_model.add_knowledge(new_triplets, status_bar=status_bar)
             self.log(f"ADD INFO: {add_info}", verbose=self.config.verbose)
 
         self.log(f"FINAL STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
