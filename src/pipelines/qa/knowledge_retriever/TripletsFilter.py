@@ -59,6 +59,10 @@ class TripletsFilter(AbstractTriplesFilter):
 
             filtered_triplets = list(filter(lambda triplet: triplet.relation.id in accepted_tripletes_ids, triplets))
             self.log(f"Количество filtered triplets: {len(filtered_triplets)}", verbose=self.verbose)
+
+        # ???? #
         if not filtered_triplets:
             filtered_triplets = triplets
+        # ???? #
+
         return filtered_triplets
