@@ -4,6 +4,7 @@ import joblib
 import os
 import time
 import hashlib
+import numpy as np
 from collections import defaultdict
 
 from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection, KeyValueDBInstance
@@ -55,8 +56,8 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
             if item is None or item.id is None or item.value is None:
                 raise ValueError
 
-            if type(item.id) is not str or type(item.value) not in [str, float, int]:
-                raise ValueError
+            if type(item.id) is not str or type(item.value) not in [np.float64, str, float, int]:
+                raise ValueError(f"id: t - {type(item.id)}; v - {item.id} value: t - {type(item.value)}; v - {item.value}")
 
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):

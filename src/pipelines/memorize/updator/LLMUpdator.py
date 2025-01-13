@@ -245,9 +245,9 @@ class LLMUpdator:
                 self.log(f"DELETING OBSOLETE TRIPLETS FROM MEMORY...", verbose=self.config.verbose)
                 obsolete_triplets = self.kg_model.graph_struct.db_conn.read(obsolete_t_ids)
 
-                self.log(f"TRIPLETS TO DELETE: {len(obsolete_triplets)}")
+                self.log(f"TRIPLETS TO DELETE: {len(obsolete_triplets)}", verbose=self.config.verbose)
                 for obs_t in obsolete_triplets:
-                    self.log(f"* [{obs_t.id}] {obs_t}")
+                    self.log(f"* [{obs_t.id}] {obs_t}", verbose=self.config.verbose)
 
                 remove_info = self.kg_model.remove_knowledge(obsolete_triplets)
                 self.log(f"REMOVE INFO: {remove_info}", verbose=self.config.verbose)

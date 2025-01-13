@@ -126,10 +126,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         for i, t_id in enumerate(ids):
             cur_info = delete_info.get(i, None)
 
-            print(cur_info)
-
             internal_t_ids = self.tid_triplets_index[t_id]
-            print(internal_t_ids)
 
             for internal_t_id in internal_t_ids:
                 matched_triplet = self.triplets[internal_t_id]

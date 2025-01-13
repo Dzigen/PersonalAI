@@ -19,7 +19,7 @@ EMBEDDINGS_MODEL_LOG_PATH = 'log/kg_model/embeddings'
 
 @dataclass
 class EmbeddingsModelConfig:
-    """Конфигурация векторной модели данных.
+    """Конфигурация векторной структуры данных.
 
     :param nodesdb_driver_config: Конфигурация векторной базы данных, которая будет отвечать за хранение векторных представлений вершин из графовой структуры. Значение по умолчанию NODES_DB_DEFAULT_DRIVER_CONFIG.
     :type nodesdb_driver_config: VectorDriverConfig

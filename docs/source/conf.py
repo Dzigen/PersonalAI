@@ -5,7 +5,9 @@
 
 import sys
 import os
-sys.path.insert(0, os.path.abspath("../../"))
+
+sys.path.insert(0, os.path.abspath("../../../.pai_venv/lib/python3.10/site-packages/"))
+sys.path.insert(1, os.path.abspath("../../"))
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information

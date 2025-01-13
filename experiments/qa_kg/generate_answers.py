@@ -145,16 +145,16 @@ question_packs = load_dataset(HYPER_PARAMS['eval_dataset_path'])
 
 #################START_QA_PROCESS##################
 
-for pack_name, questions, _ in question_packs[2,]:
+for pack_name, questions, _ in question_packs:
 
     pack_tmp_dir = f"{TMP_GENERATED_ANSWERS_DIR}/{pack_name}"
     if not os.path.exists(pack_tmp_dir):
         os.mkdir(pack_tmp_dir)
 
     if (HYPER_PARAMS['max_samples_per_pack'] < 0) or (HYPER_PARAMS['max_samples_per_pack'] > len(questions)):
-        process = tqdm(range(42, len(questions)))
+        process = tqdm(range(len(questions)))
     else:
-        process = tqdm(range(42, HYPER_PARAMS['max_samples_per_pack']))
+        process = tqdm(range(HYPER_PARAMS['max_samples_per_pack']))
 
     for i in process:
         process.set_postfix_str(pack_name)

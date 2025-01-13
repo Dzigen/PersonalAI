@@ -13,10 +13,10 @@ src.agents.connectors.GigaChatConnector module
    :show-inheritance:
    :no-index:
 
-src.agents.connectors.LlamaConnector module
--------------------------------------------
+src.agents.connectors.OLlamaConnector module
+--------------------------------------------
 
-.. automodule:: src.agents.connectors.LlamaConnector
+.. automodule:: src.agents.connectors.OLlamaConnector
    :members:
    :undoc-members:
    :show-inheritance:

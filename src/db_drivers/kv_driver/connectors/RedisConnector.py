@@ -1,6 +1,7 @@
 import redis
 from typing import List, Dict
 from collections import defaultdict
+import numpy as np
 
 from src.db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
 
@@ -37,8 +38,8 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
             if item is None or item.id is None or item.value is None:
                 raise ValueError
 
-            if type(item.id) is not str or type(item.value) not in [str, float, int]:
-                raise ValueError
+            if type(item.id) is not str or type(item.value) not in [np.float64, str, float, int]:
+                raise ValueError(f"id: t - {type(item.id)}; v - {item.id} value: t - {type(item.value)}; v - {item.value}")
 
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
