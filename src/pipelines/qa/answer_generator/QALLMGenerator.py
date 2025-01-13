@@ -20,7 +20,7 @@ class QALLMGeneratorConfig:
     :type ag_tasK_config: AgentTaskSolverConfig
     :param relation_type: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос. Значение по умолчанию [RelationType.simple, RelationType.hyper, RelationType.episodic].
     :type relation_type: List[RelationType]
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(QA_LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(QA_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
@@ -36,7 +36,7 @@ class QALLMGeneratorConfig:
 
 class QALLMGenerator:
     """Верхнеуровневый класс четвёртой стадии QA-конвейера для генерации ответа на user-вопрос,
-    обусловленного извлёчённой информацией из памяти (графа знаний) ассистента.
+    обусловленного извлечённой информацией из памяти (графа знаний) ассистента.
 
     :param config: Конфигурация "Answer-generation"-стадии. Значение по умолчанию QALLMGeneratorConfig().
     :type config: QALLMGeneratorConfig
@@ -55,7 +55,7 @@ class QALLMGenerator:
         :type query: str
         :param context: Ненумерованный список дополнительной информации на естественном языке для генерации ответа.
         :type context: str
-        :return: Кортеж из двух объектов: (1) сгенерированнвй ответ на вопрос; (2) статус выполнения операции с пояснительной информацией.
+        :return: Кортеж из двух объектов: (1) сгенерированный ответ на вопрос; (2) статус выполнения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
 

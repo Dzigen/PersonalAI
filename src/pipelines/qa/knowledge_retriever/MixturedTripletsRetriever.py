@@ -26,9 +26,9 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever):
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
-    :param config: Конфигурация комбинирванного алгоритма поиска. Значение по умолчанию MixturedGraphSearchConfig().
+    :param config: Конфигурация комбинированного алгоритма поиска. Значение по умолчанию MixturedGraphSearchConfig().
     :type config: MixturedGraphSearchConfig
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool

@@ -9,7 +9,7 @@ from ....db_drivers.vector_driver import VectorDBInstance
 
 @dataclass
 class TripletsFilterConfig(BaseTripletsFilterConfig):
-    """Конфигурация наивного алгоритма раннжирования/фильтрации триплетов.
+    """Конфигурация наивного алгоритма ранжирования/фильтрации триплетов.
 
     :param max_k: Первые k (по релевантности) триплетов, которые будут возвращены в результате операции ранжирования. Значение по умолчанию 50.
     :type max_k: int
@@ -23,7 +23,7 @@ class TripletsFilter(AbstractTriplesFilter):
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация наивного алгоритма фильтрации. Значение по умолчанию TripletsFilterConfig().
     :type config: TripletsFilterConfig
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool

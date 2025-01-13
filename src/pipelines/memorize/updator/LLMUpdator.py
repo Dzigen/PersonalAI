@@ -21,9 +21,9 @@ class LLMUpdatorConfig:
     :type replace_simple_task_config: AgentTaskSolverConfig
     :param replace_thesis_task_config: Конфигурация атомарной задачи для LLM-агента по поиску устаревших триплетов типа "hyper". Значение по умолчанию DEFAULT_REPLACE_THESIS_TASK_CONFIG.
     :type replace_thesis_task_config: AgentTaskSolverConfig
-    :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшие знания из памяти (графа знаний) асситента, инчае False. Значение по умолчанию False.
+    :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшие знания из памяти (графа знаний) ассистента, иначе False. Значение по умолчанию False.
     :type delete_obsolete_info: bool, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(MEM_UPDATE_LOG).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(MEM_UPDATE_LOG).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
@@ -202,9 +202,9 @@ class LLMUpdator:
         return list(set(obsolete_triplet_ids))
 
     def update_knowledge(self, new_triplets: List[Triplet], status_bar: bool = False) -> ReturnInfo:
-        """Метод предназначен для изменения (удаления устаревшей / добавление новой информации) памяти (графа знаний) асситента.
+        """Метод предназначен для изменения (удаления устаревшей / добавление новой информации) памяти (графа знаний) ассистента.
 
-        :param new_triplets: Список триплетов с информацией для добавления в память (граф знаний) асситента.
+        :param new_triplets: Список триплетов с информацией для добавления в память (граф знаний) ассистента.
         :type new_triplets: List[Triplet]
         :return: Статус завершения операции с пояснительной информацией.
         :rtype: ReturnInfo

@@ -12,11 +12,11 @@ GRAPH_MODEL_LOG_PATH = 'log/kg_model/graph'
 
 @dataclass
 class GraphModelConfig:
-    """Конфигруация графовой структуры данных.
+    """Конфигурация графовой структуры данных.
 
     :param driver_config: Конфигурация графовой бд.
     :type driver_config: GraphDriverConfig
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(GRAPH_MODEL_LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(GRAPH_MODEL_LOG_PATH).
     :type log: Logger
     :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool

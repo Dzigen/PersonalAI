@@ -27,7 +27,7 @@ class EmbeddingsModelConfig:
     :type tripletsdb_driver_config: VectorDriverConfig
     :param embedder_config: Конфигурация класса, отвечающего за приведения текста в его векторное представление с помощью embedder-модели. Значение по умолчанию EmbedderModelConfig().
     :type embedder_config: EmbedderModelConfig
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(EMBEDDINGS_MODEL_LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(EMBEDDINGS_MODEL_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
@@ -165,7 +165,7 @@ class EmbeddingsModel:
             self.delete_instances('nodes', nodes_ids)
 
     def create_instances(self, db_type: str, ids: List[str], stringified_instances: List[str]) -> None:
-        """Метод предназначен для добавления набора объектов в одно из хранилищ данных векторной структурв: для триплетов или вершин.
+        """Метод предназначен для добавления набора объектов в одно из хранилищ данных векторной структуры: для триплетов или вершин.
 
         :param db_type: Тип хранилища, в которое нужно добавить объекты. Принимает значение "triplets" или "nodes".
         :type db_type: str
@@ -190,9 +190,9 @@ class EmbeddingsModel:
         self.vectordbs[db_type].delete(ids)
 
     def read_embbeddings(self, db_type: str, ids: List[str]) -> List[List[float]]:
-        """Метод предназначен для получения векторных представлений объектов из определённой бд векторной структурв: из бд с триплетами или вершинами.
+        """Метод предназначен для получения векторных представлений объектов из определённой бд векторной структуры: из бд с триплетами или вершинами.
 
-        :param db_type: Тип бд, в которой осуществялется поиск векторных представлений для заданных объектов. Принимает значени "triplets" или "nodes".
+        :param db_type: Тип бд, в которой осуществляется поиск векторных представлений для заданных объектов. Принимает значение "triplets" или "nodes".
         :type db_type: str
         :param ids: Идентификаторы объектов, для которых необходимо получить векторные представления.
         :type ids: List[str]

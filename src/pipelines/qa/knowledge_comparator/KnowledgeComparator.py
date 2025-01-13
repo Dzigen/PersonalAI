@@ -19,7 +19,7 @@ class KnowledgeComparatorConfig:
     :type max_k: int
     :param k_compare: Значение по умолчанию 5.
     :type k_compare: int
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(COMPARATOR_LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(COMPARATOR_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
@@ -32,7 +32,7 @@ class KnowledgeComparatorConfig:
     verbose: bool = False
 
 class KnowledgeComparator:
-    """Верхнеуровневый класс второй стадии QA-конвейера для сопостовения информации из user-вопроса
+    """Верхнеуровневый класс второй стадии QA-конвейера для сопоставления информации из user-вопроса
     с имеющейся информацией в памяти (графе знаний) ассистента.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.

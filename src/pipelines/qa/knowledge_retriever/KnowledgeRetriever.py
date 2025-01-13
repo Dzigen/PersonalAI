@@ -16,15 +16,15 @@ from ....utils.data_structs import create_id
 class KnowledgeRetrieverConfig:
     """Конфигурация "Knowledge Retriever"-стадии.
 
-    :param retriever_method: TODO. Значение по умолчанию 'astar'.
+    :param retriever_method: Значение по умолчанию 'astar'.
     :type retriever_method: str
-    :param retriever_config: TODO. Значение по умолчанию AStarGraphSearchConfig().
+    :param retriever_config: Значение по умолчанию AStarGraphSearchConfig().
     :type retriever_config: BaseGraphSearchConfig
-    :param filter_method: TODO. Значение по умолчанию 'naive'.
+    :param filter_method: Значение по умолчанию 'naive'.
     :type filter_method: str
-    :param filter_config: TODO. Значение по умолчанию TripletsFilterConfig().
+    :param filter_config: Значение по умолчанию TripletsFilterConfig().
     :type filter_config: BaseTripletsFilterConfig
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(RETRIEVER_LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(RETRIEVER_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
@@ -59,7 +59,7 @@ class KnowledgeRetriever:
     def retrieve(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения релевантных к user-вопросу триплетов из графа знаний.
 
-        :param query_info: Структура данных, которая хранит user-вопрос и связанную с ним инфомрацию.
+        :param query_info: Структура данных, которая хранит user-вопрос и связанную с ним информацию.
         :type query_info: QueryInfo
         :return: Кортеж из двух объектов: (1) список релевантных user-вопросу триплетов; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[Triplet], ReturnInfo]

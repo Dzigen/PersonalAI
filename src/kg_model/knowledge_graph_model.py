@@ -34,9 +34,9 @@ class KnowledgeGraphModel:
         #assert vdb_nodes_count > vdb_triplets_count
 
     def add_knowledge(self, triplets: List[Triplet], check_consistency: bool = True) -> Dict[str, Dict[str,Set[str]]]:
-        """Метод предназначен для добавления информации в память (граф знаний) асситента в виде списка триплетов.
+        """Метод предназначен для добавления информации в память (граф знаний) ассистента в виде списка триплетов.
 
-        :param triplets: Список триплетов с информацией для добавления в память (граф знаний) асситента.
+        :param triplets: Список триплетов с информацией для добавления в память (граф знаний) ассистента.
         :type triplets: List[Triplet]
         :param check_consistency: Если True, то после выполнения данной операции будет проверена консистентность модели памяти (графа знаний) ассистента, иначе False. Значение по умолчанию True.
         :type check_consistency: bool, optional
@@ -53,7 +53,7 @@ class KnowledgeGraphModel:
         return {'graph_info': graph_create_info, 'embeddings_info': embd_create_info}
 
     def remove_knowledge(self, triplets: List[Triplet], check_consistency: bool = True) -> Dict[str, Dict[int,Dict[str,bool]]]:
-        """Метод предназанчен для удаления информации из памяти (графа знаний) асситента.
+        """Метод предназначен для удаления информации из памяти (графа знаний) ассистента.
         Удаление производится по идентификаторам триплетов, в которых данная информация находилась
         при её добавлении в память с помощью соответствующего add_knowledge-метода.
 

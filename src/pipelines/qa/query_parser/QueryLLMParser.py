@@ -15,7 +15,7 @@ class QueryLLMParserConfig:
     :type lang: str
     :param agent_cofig: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
     :type agent_cofig: AgentDriverConfig
-    :param kw_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению кючевых сущностей из текста.
+    :param kw_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению ключевых сущностей из текста.
     :type kw_extraction_task_config: AgentTaskSolverConfig
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(QP_LOG_PATH).
     :type log: Logger
