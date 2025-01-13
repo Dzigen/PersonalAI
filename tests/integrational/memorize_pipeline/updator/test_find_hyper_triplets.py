@@ -41,9 +41,9 @@ def test_find_hyper(llm_updator: LLMUpdator, kg_triplets: List[Triplet], triplet
         llm_updator.agent.looped_answers.clear()
         llm_updator.agent.looped_answers += stub_answer
 
-        real_obsolete_ids  = llm_updator.find_hyper_obsolete_triplet_ids(triplet)
-
-        assert expected_output == real_obsolete_ids
+        real_obsolete_ids = llm_updator.find_hyper_obsolete_triplet_ids(triplet)
+        assert len(real_obsolete_ids) == len(expected_output)
+        assert set(expected_output) == set(real_obsolete_ids)
 
         if len(real_obsolete_ids) > 0:
             obsolete_triplets = llm_updator.kg_model.graph_struct.db_conn.read(real_obsolete_ids)

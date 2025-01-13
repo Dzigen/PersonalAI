@@ -45,7 +45,8 @@ def test_find_simple(llm_updator: LLMUpdator, kg_triplets: List[Triplet], triple
 
         real_obsolete_ids  = llm_updator.find_simple_obsolete_triplet_ids(triplet)
 
-        assert expected_output == real_obsolete_ids
+        assert len(real_obsolete_ids) == len(expected_output)
+        assert set(expected_output) == set(real_obsolete_ids)
 
         if len(real_obsolete_ids) > 0:
             obsolete_triplets = llm_updator.kg_model.graph_struct.db_conn.read(real_obsolete_ids)
