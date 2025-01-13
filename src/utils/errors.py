@@ -24,7 +24,7 @@ STATUS_MESSAGE = {
     ReturnStatus.bad_formater: "Не удалось привести данные в context-формат для их дальнейшей вставки в user-prompt.",
     ReturnStatus.bad_parser: "Не удалось разобрать ответ LLM-агента.",
     ReturnStatus.bad_postprocessor: "Не удалось привести разобранный ответ LLM-агента к заданному формату.",
-    ReturnStatus.bad_user_prompt_maping: "Не удалось вставить кастомную инфомрацию в user-prompt.",
+    ReturnStatus.bad_user_prompt_maping: "Не удалось вставить кастомную информацию в user-prompt.",
     # detect language
     ReturnStatus.not_supported_lang: "Данный язык не поддерживается.",
     ReturnStatus.unknown_lang: "Не удалось распознать язык входного текста.",
@@ -33,9 +33,9 @@ STATUS_MESSAGE = {
     # qa-pipeline (query parser)
     ReturnStatus.zero_entities: 'Из вопроса было извлечено нуль сущностей.',
     # qa-pipeline (knowledge comparator)
-    ReturnStatus.zero_linked_nodes: 'Сущностям из вопроса было сопоставлено ноль вершин из используемого графа знаний.',
+    ReturnStatus.zero_linked_nodes: 'Сущностям из вопроса было сопоставлено нуль вершин из используемого графа знаний.',
     # qa-pipeline (knowledge retriever)
-    ReturnStatus.zero_retrieved_triplets: 'Было извлечено ноль триплетов из используемого графа знаний.',
+    ReturnStatus.zero_retrieved_triplets: 'Было извлечено нуль триплетов из используемого графа знаний.',
     # memorize-pipeline (extractor)
     ReturnStatus.zero_triplets: 'Из текста было извлечено нуль триплетов/тезисов.'
     # memorize-pipeline (updator)

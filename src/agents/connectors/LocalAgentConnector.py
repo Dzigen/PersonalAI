@@ -4,7 +4,7 @@ from transformers import pipeline
 from ..utils import AbstractAgentConnector, AgentConnectorConfig
 
 DEFAULT_LOCALAGENT_CONFIG = AgentConnectorConfig(
-    gen_strategy={'max_new_tokens': 2048},
+    gen_strategy={'max_new_tokens': 2048, 'seed': 42, 'top_k': 1, 'temperature': 0.0},
     credentials={'model_name_or_path': '../models/Undi95/Meta-Llama-3-8B-Instruct-hf'},
     ext_params={'num_workers': 4, 'torch_dtype': torch.bfloat16})
 

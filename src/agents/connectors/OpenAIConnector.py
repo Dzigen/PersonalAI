@@ -6,7 +6,7 @@ from ..utils import AbstractAgentConnector, AgentConnectorConfig
 OPENAI_KEY = "sk-861mINAavom2SSBqgrI82D4thMOfqT37knCof2o0H0T3BlbkFJ2gdVXJuVjNesNNP2aeUwPoBpZP3a3R1gn1kqv97CsA"
 
 DEFAULT_OPENAI_CONFIG = AgentConnectorConfig(
-    gen_strategy={},
+    gen_strategy={'num_predict': 2048, 'seed': 42, 'top_k': 1, 'temperature': 0.0},
     credentials={'token': OPENAI_KEY, 'model': 'gpt-4o-mini'})
 
 class OpenAIConnector(AbstractAgentConnector):

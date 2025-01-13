@@ -19,7 +19,7 @@ class AgentTaskSuite:
     :type assistant_prompt: str
     :param parse_answer_func: Кастомная функция, которая должна выполнять промежуточный разбор ответа LLM-агента, полученного в рамках инференса.
     :type parse_answer_func: object
-    :param postprocess_answer_func: Кастомная функция, которая должна привести разобранный ответ от LLM-агента к формату, который требуется для данной атомарной задачи.
+    :param postprocess_answer_func: Кастомная функция, приводящая разобранный ответ от LLM-агента к формату, который требуется для данной атомарной задачи.
     :type postprocess_answer_func: object
     """
     system_prompt: str
@@ -32,11 +32,11 @@ class AgentTaskSuite:
 class AgentTaskSolverConfig:
     """Конфигурация agent-солвера.
 
-    :param suites: Набор гиперпарметров для инференса и разбора ответа LLM-агента в рамках заданной атомарной задачи.
+    :param suites: Набор гиперпараметров для инференса и разбора ответа LLM-агента в рамках заданной атомарной задачи.
     :type suites: Dict[str, AgentTaskSuite]
-    :param formate_context_func: Кастомная функция, которая должна приводить входной (в agent-солвер) набор данных в строковый формат (в виде словаря со строковыми значениями), который далее будет добавляться в user-prompt для LLM-агента.
+    :param formate_context_func: Кастомная функция, приводящая входной (в agent-солвер) набор данных в строковый формат (в виде словаря со строковыми значениями), который далее будет добавляться в user-prompt для LLM-агента.
     :type formate_context_func: object
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(RKG_LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(RKG_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
@@ -49,7 +49,7 @@ class AgentTaskSolverConfig:
 class AgentTaskSolver:
     """Класс-обёртка, предназначенный для решения атомарной задачи на базе инференса LLM-агента.
 
-    :param agent: интерфейс взаимодейсвия с LLM-агеном.
+    :param agent: интерфейс взаимодействия с LLM-агеном.
     :type agent: AbstractAgentConnector
     :param config: Конфигурация решения конкретной атомарной задачи.
     :type config: AgentTaskSolverConfig

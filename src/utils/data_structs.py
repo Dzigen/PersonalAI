@@ -78,11 +78,11 @@ class Triplet:
 class BaseCreator:
     @staticmethod
     def add_str_props(obj: Union[Relation, Node], obj_str: str) -> str:
-        """Метод предназначен для добавления свойств, хранящихся в Relation/Node-структуре, к их базовым стрококвым представлениям.
+        """Метод предназначен для добавления свойств, хранящихся в Relation/Node-структуре, к их базовым строковым представлениям.
 
         :param obj: Структура объекта, строковое представление которого обогащается его свойствами.
         :type obj: Union[Relation, Node]
-        :param obj_str: Текущее стрококове представление объекта.
+        :param obj_str: Текущее строковое представление объекта.
         :type obj_str: str
         :return: Обогащённое строковое представление объекта.
         :rtype: str
@@ -130,7 +130,7 @@ class NodeCreator(BaseCreator):
     def create(n_type: Union[str, NodeType], name: str, prop: Dict = None, add_stringified_node: bool = True) -> Node:
         """Метод предназначен для создания структуры данных вершины с указанным содержанием.
 
-        :param n_type: Тип создаваемой вершини в строковой- или Enum-структуре данных.
+        :param n_type: Тип создаваемой вершины в строковой- или Enum-структуре данных.
         :type n_type: Union[str, NodeType]
         :param name: Главная смысловая информация, которая будет добавлена в вершину.
         :type name: str

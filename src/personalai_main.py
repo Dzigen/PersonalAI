@@ -22,7 +22,7 @@ class PersonalAIConfig:
     :type qa_pipeline_config: QAPipelineConfig
     :param mem_pipeline_config: Конфигурация конвейера, который выполняет изменение/обновление знаний в памяти ассистента. Значение по умолчанию MemPipelineConfig().
     :type mem_pipeline_config: MemPipelineConfig
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(RKG_LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(RKG_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
@@ -51,7 +51,7 @@ class PersonalAI:
         self.mem_pipeline = MemPipeline(kg_model=self.kg_model, config=config.mem_pipeline_config)
 
     def answer_question(self, question: str) -> Tuple[str, ReturnInfo]:
-        """Метод предназанчен для контекстуального поиска и извлечения релевантной информации
+        """Метод предназначен для контекстуального поиска и извлечения релевантной информации
         из памяти (графа знаний) ассистента для генерации ответа на user-вопрос.
 
         :param question: User-вопрос на естественном языке.
