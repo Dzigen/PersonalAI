@@ -94,8 +94,6 @@ services:
       - ${LOCAL_WORKSPACE_DIR}:/home/m.menschikov/workspace
     depends_on:
       - neo4j
-      - redis_ui
-      - mongo_ui
     deploy:
       resources:
         limits:

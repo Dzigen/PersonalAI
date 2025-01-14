@@ -7,8 +7,7 @@ import yaml
 import os
 from typing import List, Dict, Tuple
 
-# TO CHANGE
-BASEDIR = "../../../"
+BASEDIR = '/home/m.menschikov/workspace/Personal-AI' # TO CHANGE
 sys.path.insert(0, BASEDIR)
 
 from src.pipelines.memorize import MemPipelineConfig, MemPipeline, LLMExtractorConfig, LLMUpdatorConfig
@@ -26,10 +25,12 @@ gc.collect()
 ########SETTING HYPERPARAMS###########
 
 # Read YAML file
-with open("params.yaml", 'r') as stream:
+PARAMS_FILE_PATH = f'{BASEDIR}/notebooks/kg_building/create/params.yaml'
+
+with open(PARAMS_FILE_PATH, 'r') as stream:
     HYPER_PARAMS = yaml.safe_load(stream)
 
-BASE_PATH = "../../../data/knowledge_graphs/"
+BASE_PATH = f"{BASEDIR}/data/knowledge_graphs/"
 DATASET_PATH = BASE_PATH + f"{HYPER_PARAMS['DATASET_NAME']}/"
 KG_PATH = DATASET_PATH + f"{HYPER_PARAMS['KNOWLEDGE_GRAPH_NAME']}/"
 
@@ -46,24 +47,24 @@ TMP_EXTRACTED_TRIPLETS_PATH = KG_PATH + "tmp_extracted_triplets_path/"
 
 ###########FOLDERS INIT#########3
 
-if not os.path.exists(BASE_PATH):
-    raise ValueError(f"Директории не существует: {BASE_PATH}")
-if not os.path.exists(DATASET_PATH):
-    raise ValueError(f"Директории не существует: {DATASET_PATH}")
-if os.path.exists(KG_PATH):
-    raise ValueError(f"Директория существует: {KG_PATH}")
-if os.path.exists(TMP_EXTRACTED_TRIPLETS_PATH):
-    raise ValueError(f"Директория существует: {TMP_EXTRACTED_TRIPLETS_PATH}")
+if HYPER_PARAMS['init_struct']:
 
-os.mkdir(KG_PATH)
-os.mkdir(VECTORIZED_DB_PATH)
-os.mkdir(GRAPH_DB_PATH)
-os.mkdir(TMP_EXTRACTED_TRIPLETS_PATH)
+    if not os.path.exists(BASE_PATH):
+        raise ValueError(f"Директории не существует: {BASE_PATH}")
+    if not os.path.exists(DATASET_PATH):
+        raise ValueError(f"Директории не существует: {DATASET_PATH}")
+    if os.path.exists(KG_PATH):
+        raise ValueError(f"Директория существует: {KG_PATH}")
+    if os.path.exists(TMP_EXTRACTED_TRIPLETS_PATH):
+        raise ValueError(f"Директория существует: {TMP_EXTRACTED_TRIPLETS_PATH}")
+
+    os.mkdir(KG_PATH)
+    os.mkdir(VECTORIZED_DB_PATH)
+    os.mkdir(GRAPH_DB_PATH)
+    os.mkdir(TMP_EXTRACTED_TRIPLETS_PATH)
 
 print(VECTORIZED_DB_PATH)
 print(GRAPH_DB_PATH)
-
-out = input("continue? ")
 
 ##############
 

@@ -1,7 +1,8 @@
-DATASET_PATH: '../../../data/qa_datasets/diaasqa/Augment_DiaASQ.json'
+DATASET_PATH: '/home/m.menschikov/workspace/Personal-AI/data/qa_datasets/diaasqa/Augment_DiaASQ.json'
 DATASET_NAME: 'diaasqa'
-KNOWLEDGE_GRAPH_NAME: 'gigachat_full'
-EMBEDDER_MODEL_PATH: '../../../models/intfloat/multilingual-e5-small'
-DELETE_OBSOLETE_INFO: False
+KNOWLEDGE_GRAPH_NAME: 'gigachat_filtered'
+EMBEDDER_MODEL_PATH: '/home/m.menschikov/workspace/Personal-AI/models/intfloat/multilingual-e5-small'
+DELETE_OBSOLETE_INFO: True
 LANG: 'en'
-need_to_clear: False
+need_to_clear: True
+init_struct: False
