@@ -72,7 +72,7 @@ class LLMUpdator:
 
             # сопоставляем ноду из триплета нодам в графе знаний по полю name
             matched_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-                name=base_node.name, type=NodeType.object, object='node')
+                name=base_node.name,  object_type=NodeType.object, object='node')
 
             for m_node in matched_nodes:
                 neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_node.id, [NodeType.object])
@@ -107,7 +107,7 @@ class LLMUpdator:
 
         # сопоставляем ноду из триплета нодам в графе знаний по полю name
         matched_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-            name=base_triplet.start_node.name, type=NodeType.object, object='node')
+            name=base_triplet.start_node.name,  object_type=NodeType.object, object='node')
 
         for m_node in matched_nodes:
             neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_node.id, [NodeType.hyper])
@@ -140,7 +140,7 @@ class LLMUpdator:
 
         # Сопоставляем object-сущность из триплета вершинам в графе знаний
         matched_object_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-                name=base_triplet.start_node.name, type=NodeType.object, object='node')
+                name=base_triplet.start_node.name,  object_type=NodeType.object, object='node')
 
         if len(matched_object_nodes) == 0:
             return obsolete_triplet_ids
@@ -182,7 +182,7 @@ class LLMUpdator:
 
         # Сопоставляем hyper-сущность из триплета вершинам в графе знаний
         matched_hyper_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-                name=base_triplet.start_node.name, type=NodeType.hyper, object='node')
+                name=base_triplet.start_node.name,  object_type=NodeType.hyper, object='node')
 
         if len(matched_hyper_nodes) == 0:
             return obsolete_triplet_ids
