@@ -39,25 +39,38 @@ class TripletsFilter(AbstractTriplesFilter):
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 
+        unique_relations_map = {triplet.relation.id: triplet for triplet in triplets}
         filtered_triplets = []
-        query_embd = self.kg_model.embeddings_struct.embedder.encode_queries([query_info.query])[0]
-        query_instance = VectorDBInstance(embedding=query_embd)
-        base_relation_ids = list(map(lambda triplet: triplet.relation.id, triplets))
 
-        self.log(f"Всего триплетов: {len(base_relation_ids)}", verbose=self.verbose)
-        self.log(f"Количество уникальных триплетов: {len(set(base_relation_ids))}", verbose=self.verbose)
-        self.log(f"base ids: {base_relation_ids}", verbose=self.verbose)
+        self.log(f"Всего триплетов: {len(triplets)}", verbose=self.verbose)
+        self.log(f"Количество уникальных триплетов (по строковому представлению): {len(set(unique_relations_map))}", verbose=self.verbose)
+        self.log(f"base ids: {list(unique_relations_map.keys())}", verbose=self.verbose)
 
-        if len(base_relation_ids) > 0:
+        if len(unique_relations_map) <= self.config.max_k:
+            filtered_triplets = list(unique_relations_map.values())
+        else:
+            query_embd = self.kg_model.embeddings_struct.embedder.encode_queries([query_info.query])[0]
+            query_instance = VectorDBInstance(embedding=query_embd)
+
+            relation_ids = unique_relations_map.keys()
+
             raw_relevant_triplets = self.kg_model.embeddings_struct.vectordbs['triplets'].retrieve(
-                [query_instance], self.config.max_k, includes=['embeddings', 'documents', 'metadatas'], where={"id": {"$in": base_relation_ids}})[0]
+                [query_instance], self.config.max_k, includes=['embeddings', 'documents', 'metadatas'],
+                where={"id": {"$in": relation_ids}})[0]
 
-            accepted_tripletes_ids = list(map(lambda item: item[1].id, raw_relevant_triplets))
-            self.log(f"Количество accepted ids: {len(accepted_tripletes_ids)}", verbose=self.verbose)
-            self.log(f"Количество уникальных accepted ids: {len(set(accepted_tripletes_ids))}", verbose=self.verbose)
-            self.log(f"accepted ids: {accepted_tripletes_ids}", verbose=self.verbose)
+            accepted_relation_ids = list(map(lambda item: item[1].id, raw_relevant_triplets))
 
-            filtered_triplets = list(filter(lambda triplet: triplet.relation.id in accepted_tripletes_ids, triplets))
-            self.log(f"Количество filtered triplets: {len(filtered_triplets)}", verbose=self.verbose)
+            self.log(f"Количество accepted ids: {len(accepted_relation_ids)}", verbose=self.verbose)
+            self.log(f"Количество уникальных accepted ids: {len(set(accepted_relation_ids))}", verbose=self.verbose)
+            self.log(f"accepted ids: {accepted_relation_ids}", verbose=self.verbose)
+
+            filtered_triplets = list(filter(lambda rel_id: unique_relations_map[rel_id], accepted_relation_ids))
+
+            # ???? TO DELETE ???? #
+            if not filtered_triplets:
+                filtered_triplets = triplets
+            # ???? TO DELETE ???? #
+
+        self.log(f"Количество триплето после фильтрации: {len(filtered_triplets)}", verbose=self.verbose)
 
         return filtered_triplets

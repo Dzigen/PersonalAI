@@ -159,13 +159,22 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                 where_statement = ' or '.join(where_statement)
                 self.execute_query(f'MATCH (n) WHERE {where_statement} DELETE n')
 
-    def read_by_name(self, name: str, type: Union[RelationType, NodeType], object: str = 'triplet') -> List[Union[Triplet, Node]]:
+    def read_by_name(self, name: str, object_type: Union[RelationType, NodeType], object: str = 'relation') -> List[Union[Triplet, Node]]:
+        if type(object_type) not in [RelationType, NodeType]:
+            raise ValueError
+
+        if type(name) is not str:
+            raise ValueError
+
+        if len(name) < 1:
+            raise ValueError
+
         dump_name = json.dumps(name, ensure_ascii=False)
-        if object == 'triplet':
-            output = self.execute_query(f'MATCH (n1)-[rel:{type.value}]->(n2) WHERE rel.name = {dump_name} RETURN n1,rel,n2;')
+        if object == 'relation':
+            output = self.execute_query(f'MATCH (n1)-[rel:{object_type.value}]->(n2) WHERE rel.name = {dump_name} RETURN n1,rel,n2;')
             formated_output = self.parse_query_triplets_output(output)
         elif object == 'node':
-            output = self.execute_query(f'MATCH (n:{type.value}) WHERE n.name = {dump_name} RETURN n;')
+            output = self.execute_query(f'MATCH (n:{object_type.value}) WHERE n.name = {dump_name} RETURN n;')
             formated_output = self.parse_query_nodes_output(output)
         else:
             raise ValueError

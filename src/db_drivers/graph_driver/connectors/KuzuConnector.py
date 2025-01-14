@@ -165,17 +165,26 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
                 where_statement = ' or '.join(where_statement)
                 self.conn.execute(f'MATCH (n) WHERE {where_statement} DELETE n')
 
-    def read_by_name(self, name: str, type: Union[RelationType, NodeType], object: str = 'triplet') -> List[Union[Triplet, Node]]:
+    def read_by_name(self, name: str, object_type: Union[RelationType, NodeType], object: str = 'relation') -> List[Union[Triplet, Node]]:
+        if type(object_type) not in [RelationType, NodeType]:
+            raise ValueError
+
+        if type(name) is not str:
+            raise ValueError
+
+        if len(name) < 1:
+            raise ValueError
+
         dump_name = json.dumps(name, ensure_ascii=False)
-        if object == 'triplet':
-            rel_t = self.config.params['table_type_map']['relations']['forward'][type.value]
+        if object == 'relation':
+            rel_t = self.config.params['table_type_map']['relations']['forward'][object_type.value]
 
             query = f"MATCH (n1)-[rel:{rel_t}]->(n2) WHERE rel.name = {dump_name} RETURN n1,rel,n2;"
             output = self.conn.execute(query)
 
             formated_output = self.parse_query_triplets_output(output)
         elif object == 'node':
-            node_t = self.config.params['table_type_map']['nodes']['forward'][type.value]
+            node_t = self.config.params['table_type_map']['nodes']['forward'][object_type.value]
 
             query = f"MATCH (n:{node_t}) WHERE n.name = {dump_name} RETURN n;"
             output = self.conn.execute(query)

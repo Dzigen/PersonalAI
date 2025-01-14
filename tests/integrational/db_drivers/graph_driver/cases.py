@@ -14,6 +14,8 @@ AVAILABLE_GRAPH_DBS = ['neo4j', 'kuzu', 'inmemory_graph'] # 'neo4j', 'kuzu', 'in
 
 # nodes
 OBJECT_NODE1 = NodeCreator.create(name='abc', n_type=NodeType.object, prop={'k1': 'v1'})
+OBJECT_NODE1_2 = NodeCreator.create(name='abc', n_type=NodeType.object, prop={'k1_2': 'v1_2'})
+
 OBJECT_NODE2 = NodeCreator.create(name='def', n_type=NodeType.object, prop={'k2': 'v2'})
 OBJECT_NODE3 = NodeCreator.create(name='ghi', n_type=NodeType.object, prop={'k3': 'v3'})
 OBJECT_NODE4 = NodeCreator.create(name='yhn', n_type=NodeType.object, prop={'k13': 'v13'})
@@ -23,12 +25,17 @@ THESIS_NODE2 = NodeCreator.create(name='asdfgh', n_type=NodeType.hyper, prop={'k
 THESIS_NODE3 = NodeCreator.create(name='zxcvbn', n_type=NodeType.hyper, prop={'k6': 'v6'})
 
 EPISODIC_NODE1 = NodeCreator.create(name='uiop', n_type=NodeType.episodic, prop={'k7': 'v7'})
+EPISODIC_NODE1_2 = NodeCreator.create(name='uiop', n_type=NodeType.episodic, prop={'k7_2': 'v7_2'})
+
 EPISODIC_NODE2 = NodeCreator.create(name='jkl', n_type=NodeType.episodic, prop={'k8': 'v8'})
 EPISODIC_NODE3 = NodeCreator.create(name='mnbv', n_type=NodeType.episodic, prop={'k9': 'v9'})
 
 # triplets
 SIMPLE_TRIPLET1 = TripletCreator.create(start_node=OBJECT_NODE1, relation=Relation(name='simple1', type=RelationType.simple, prop={'k10': 'v10'}), end_node=OBJECT_NODE2)
 SIMPLE_TRIPLET1_2 = TripletCreator.create(start_node=OBJECT_NODE1, relation=Relation(name='simple1_1', type=RelationType.simple, prop={'k16': 'v16'}), end_node=OBJECT_NODE2)
+
+SIMPLE_TRIPLET1_3 = TripletCreator.create(start_node=OBJECT_NODE1, relation=Relation(name='simple1_2', type=RelationType.simple, prop={'k16_2': 'v16_2'}), end_node=OBJECT_NODE1_2)
+
 
 SIMPLE_TRIPLET2 = TripletCreator.create(start_node=OBJECT_NODE2, relation=Relation(name='simple2', type=RelationType.simple, prop={'k11': 'v11'}), end_node=OBJECT_NODE3)
 SIMPLE_TRIPLET3 = TripletCreator.create(start_node=OBJECT_NODE3, relation=Relation(name='simple3', type=RelationType.simple, prop={'k12': 'v12'}), end_node=OBJECT_NODE1)
@@ -40,6 +47,8 @@ THESIS_TRIPLET2 = TripletCreator.create(start_node=OBJECT_NODE2, relation=Relati
 THESIS_TRIPLET3 = TripletCreator.create(start_node=OBJECT_NODE3, relation=Relation(name='hyper', type=RelationType.hyper), end_node=THESIS_NODE2)
 
 EPISODIC_TRIPLET1 = TripletCreator.create(start_node=OBJECT_NODE1, relation=Relation(name='episodic', type=RelationType.episodic), end_node=EPISODIC_NODE1)
+EPISODIC_TRIPLET1_2 = TripletCreator.create(start_node=OBJECT_NODE1, relation=Relation(name='episodic', type=RelationType.episodic), end_node=EPISODIC_NODE1_2)
+
 EPISODIC_TRIPLET2 = TripletCreator.create(start_node=OBJECT_NODE2, relation=Relation(name='episodic', type=RelationType.episodic), end_node=EPISODIC_NODE1)
 EPISODIC_TRIPLET3 = TripletCreator.create(start_node=OBJECT_NODE3, relation=Relation(name='episodic', type=RelationType.episodic), end_node=EPISODIC_NODE2)
 EPISODIC_TRIPLET4 = TripletCreator.create(start_node=THESIS_NODE2, relation=Relation(name='episodic', type=RelationType.episodic), end_node=EPISODIC_NODE2)
@@ -320,3 +329,123 @@ GRAPHDB_POPULATED_GET_TRIPLETS_TEST_CASES = []
 for db_vendor in AVAILABLE_GRAPH_DBS:
     for i in range(len(GRAPHDB_GET_TRIPLETS_TEST_CASES)):
         GRAPHDB_POPULATED_GET_TRIPLETS_TEST_CASES.append(GRAPHDB_GET_TRIPLETS_TEST_CASES[i] + [db_vendor])
+
+###############################################################################################
+
+# instances, create_info, init_count, name, type, object, expected_output, exception
+
+from src.utils.data_structs import NodeType, RelationType
+
+
+GRAPHDB_READ_BY_NAME_TEST_CASES = [
+    # 1. NODE - OBJECT
+    # объектов с таким именем (name) не существует
+    [[THESIS_TRIPLET1, SIMPLE_TRIPLET1], {0: {'s_node': True, 'e_node': True}, 1: {'s_node': False, 'e_node': True}},
+     {'triplets': 2, 'nodes': 3}, 'not existing name', NodeType.object, 'node', [], False],
+    # объектов с таким типом (type) не существует
+    [[EPISODIC_TRIPLET4], {0: {'s_node': True, 'e_node': True}},
+     {'triplets': 1, 'nodes': 2}, EPISODIC_TRIPLET4.start_node.name, NodeType.object, 'node', [], False],
+    # такие объекты (node) отсутствуют
+    [[], dict(), {'triplets': 0, 'nodes': 0}, "may existing name",
+     NodeType.object, 'node', [], False],
+    # невалидный тип (type)
+    [[THESIS_TRIPLET1], {0: {'s_node': True, 'e_node': True}}, {'triplets': 1, 'nodes': 2},
+     THESIS_TRIPLET1.start_node.name, 'not valid type', 'node', None, True],
+    # невалидный объект (object)
+    [[THESIS_TRIPLET1], {0: {'s_node': True, 'e_node': True}}, {'triplets': 1, 'nodes': 2},
+     THESIS_TRIPLET1.start_node.name, NodeType.object, 'not valid object', None, True],
+    # бд пустая
+    [[], dict(), {'triplets': 0, 'nodes': 0}, THESIS_TRIPLET1.start_node.name, NodeType.object, 'node', [], False],
+    # найден один объект
+    [[THESIS_TRIPLET1, SIMPLE_TRIPLET1], {0:{'s_node': True, 'e_node': True}, 1:{'s_node': False, 'e_node': True}},
+     {'triplets': 2, 'nodes': 3}, THESIS_TRIPLET1.start_node.name, NodeType.object, 'node', [THESIS_TRIPLET1.start_node], False],
+    # найдено несколько объектов
+    [[SIMPLE_TRIPLET1_3, SIMPLE_TRIPLET1], {0: {'s_node': True, 'e_node': True}, 1:{'s_node': False, 'e_node': True}},
+     {'triplets': 2, 'nodes': 3}, SIMPLE_TRIPLET1_3.start_node.name, NodeType.object, 'node', [SIMPLE_TRIPLET1_3.start_node, SIMPLE_TRIPLET1_3.end_node], False],
+    # поле name имеет пустое значение
+    [[THESIS_TRIPLET1, SIMPLE_TRIPLET1], {0:{'s_node': True, 'e_node': True}, 1:{'s_node': False, 'e_node': True}},
+     {'triplets': 2, 'nodes': 3}, '', NodeType.object, 'node', None, True],
+    # поле name имее нвалидный тип (не str)
+    [[THESIS_TRIPLET1, SIMPLE_TRIPLET1], {0:{'s_node': True, 'e_node': True}, 1:{'s_node': False, 'e_node': True}},
+      {'triplets': 2, 'nodes': 3}, 123, NodeType.object, 'node', None, True],
+    [[THESIS_TRIPLET1, SIMPLE_TRIPLET1], {0:{'s_node': True, 'e_node': True}, 1:{'s_node': False, 'e_node': True}},
+     {'triplets': 2, 'nodes': 3}, None, NodeType.object, 'node', None, True],
+
+    # 2. NODE - HYPER
+    # TODO
+
+    # 3. NODE - EPISODIC
+    # объектов с таким именем (name) не существует
+    [[EPISODIC_TRIPLET2], {0:{'s_node': True, 'e_node': True}},
+     {'triplets': 1, 'nodes': 2}, 'not existing name', NodeType.episodic, 'node', [], False],
+    # объектов с таким типом (type) не существует
+    [[THESIS_TRIPLET1], {0:{'s_node': True, 'e_node': True}},
+     {'triplets': 1, 'nodes': 2}, THESIS_TRIPLET1.start_node.name, NodeType.episodic, 'node', [], False],
+    # такие объекты (node) отсутствуют
+    [[], dict(), {'triplets': 0, 'nodes': 0}, "may existing name", NodeType.episodic, 'node', [], False],
+    # невалидный тип (type)
+    [[EPISODIC_TRIPLET2], {0:{'s_node': True, 'e_node': True}},
+     {'triplets': 1, 'nodes': 2}, EPISODIC_TRIPLET2.end_node.name, 'not valid type', 'node', None, True],
+    # невалидный объект (object)
+    [[EPISODIC_TRIPLET2], {0:{'s_node': True, 'e_node': True}},
+     {'triplets': 1, 'nodes': 2}, EPISODIC_TRIPLET2.end_node.name, NodeType.episodic, 'not valid object', None, True],
+    # бд пустая
+    [[], dict(), {'triplets': 0, 'nodes': 0}, 'may existing name', NodeType.episodic, 'node', [], False],
+    # найден один объект
+    [[EPISODIC_TRIPLET2], {0:{'s_node': True, 'e_node': True}}, {'triplets': 1, 'nodes': 2},
+     EPISODIC_TRIPLET2.end_node.name, NodeType.episodic, 'node', [EPISODIC_TRIPLET2.end_node], False],
+    # найдено несколько объектов
+    [[EPISODIC_TRIPLET1, EPISODIC_TRIPLET1_2], {0:{'s_node': True, 'e_node': True}, 1:{'s_node': False, 'e_node': True}},
+      {'triplets': 2, 'nodes': 3}, EPISODIC_TRIPLET1.end_node.name, NodeType.episodic, 'node', [EPISODIC_TRIPLET1.end_node, EPISODIC_TRIPLET1_2.end_node], False],
+    # поле name имеет пустое значение
+    [[EPISODIC_TRIPLET2], {0:{'s_node': True, 'e_node': True}},
+     {'triplets': 1, 'nodes': 2}, '', NodeType.episodic, 'node', None, True],
+    # поле name имее нвалидный тип (не str)
+    [[EPISODIC_TRIPLET2], {0:{'s_node': True, 'e_node': True}},
+     {'triplets': 1, 'nodes': 2}, 123, NodeType.episodic, 'node', None, True],
+    [[EPISODIC_TRIPLET2], {0:{'s_node': True, 'e_node': True}},
+     {'triplets': 1, 'nodes': 2}, None, NodeType.episodic, 'node', None, True],
+
+    # 4. RELATION - SIMPLE
+    # TODO
+
+    # 5. REALTION - HYPER
+    # TODO
+
+    # 6. RELATION - EPISODIC
+    # объектов с таким именем (name) не существует
+    [[EPISODIC_TRIPLET2], {0:{'s_node': True, 'e_node': True}},
+     {'triplets': 1, 'nodes': 2}, 'not existing name', RelationType.episodic, 'relation', [], False],
+    # объектов с таким типом (type) не существует
+    [[THESIS_TRIPLET1], {0:{'s_node': True, 'e_node': True}},
+     {'triplets': 1, 'nodes': 2}, THESIS_TRIPLET1.relation.name, RelationType.episodic, 'relation', [], False],
+    # такие объекты (realation) отсутствуют
+    [[], dict(), {'triplets': 0, 'nodes': 0}, "may existing name", RelationType.episodic, 'relation', [], False],
+    # невалидный тип (type)
+    [[EPISODIC_TRIPLET2], {0:{'s_node': True, 'e_node': True}},
+     {'triplets': 1, 'nodes': 2}, EPISODIC_TRIPLET2.relation.name, 'not valid type', 'relation', None, True],
+    # невалидный объект (object)
+    [[EPISODIC_TRIPLET2], {0:{'s_node': True, 'e_node': True}},
+     {'triplets': 1, 'nodes': 2}, EPISODIC_TRIPLET2.relation.name, RelationType.episodic, 'not valid object', None, True],
+    # бд пустая
+    [[], dict(), {'triplets': 0, 'nodes': 0}, 'may existing name', RelationType.episodic, 'relation', [], False],
+    # найден один объект
+    [[EPISODIC_TRIPLET2], {0:{'s_node': True, 'e_node': True}},
+     {'triplets': 1, 'nodes': 2}, EPISODIC_TRIPLET2.relation.name, RelationType.episodic, 'relation', [EPISODIC_TRIPLET2], False],
+    # найдено несколько объектов
+    [[EPISODIC_TRIPLET1, EPISODIC_TRIPLET1_2], {0:{'s_node': True, 'e_node': True}, 1:{'s_node': False, 'e_node': True}},
+      {'triplets': 2, 'nodes': 3}, EPISODIC_TRIPLET1.relation.name, RelationType.episodic, 'relation', [EPISODIC_TRIPLET1, EPISODIC_TRIPLET1_2], False],
+    # поле name имеет пустое значение
+    [[EPISODIC_TRIPLET2], {0: {'s_node': True, 'e_node': True}},
+     {'triplets': 1, 'nodes': 2}, '', RelationType.episodic, 'relation', None, True],
+    # поле name имее нвалидный тип (не str)
+    [[EPISODIC_TRIPLET2], {0: {'s_node': True, 'e_node': True}},
+     {'triplets': 1, 'nodes': 2}, 123, RelationType.episodic, 'relation', None, True],
+    [[EPISODIC_TRIPLET2], {0: {'s_node': True, 'e_node': True}},
+     {'triplets': 1, 'nodes': 2}, None, RelationType.episodic, 'relation', None, True]
+]
+
+GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES = []
+for db_vendor in AVAILABLE_GRAPH_DBS:
+    for i in range(len(GRAPHDB_READ_BY_NAME_TEST_CASES)):
+        GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES.append(GRAPHDB_READ_BY_NAME_TEST_CASES[i] + [db_vendor])
