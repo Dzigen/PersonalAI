@@ -322,8 +322,8 @@ class BFSRetriever(AbstractTripletsRetriever):
                     prob_tr = True
                 else:
                     ent_chain_triplets = chain_triplets1_less + chain_triplets2
-                if not ent_chain_triplets:
-                    ent_chain_triplets = chain_triplets1_more + chain_triplets1_less + chain_triplets2
+                # if not ent_chain_triplets:
+                #     ent_chain_triplets = chain_triplets1_more + chain_triplets1_less + chain_triplets2
             else:
                 ent_chain_triplets = chain_triplets1_more + chain_triplets1_less + chain_triplets2
             chain_triplets += ent_chain_triplets[:thres]
@@ -487,7 +487,8 @@ class BFSRetriever(AbstractTripletsRetriever):
         else:
             thres = int(0.67 * self.config.hyper_episodic_num)
 
-        if same_types:
+        #if same_types:
+        if same_types or not self.config.strict_filter:
             for key in retr_texts:
                 cur_texts = [[text, seed_entity, obj_props, rel_props, e_id]
                              for text, seed_entity, obj_props, rel_props, _, e_id in retr_texts[key]]
