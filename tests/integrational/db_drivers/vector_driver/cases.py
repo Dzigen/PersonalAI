@@ -140,6 +140,8 @@ VECTORDB_RETRIEVE_TEST_CASES = [
     [[FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_BAD_EMB2], 2, {'exception': True, 'output_size': -1}],
     # 8. неверный формат ебмеддинга квери # 3
     [[FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_BAD_EMB2], 2, {'exception': True, 'output_size': -1}]
+    # 9. В векторной бд нуль объектов
+    [[], [FULL_INSTANCE1], 2, {'exception': False, 'output_size': 0}]
 ]
 
 VECTORDB_POPULATED_RETRIEVE_TEST_CASES = []

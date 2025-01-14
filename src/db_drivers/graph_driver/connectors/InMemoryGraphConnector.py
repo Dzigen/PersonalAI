@@ -168,14 +168,23 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
             del self.tid_triplets_index[t_id]
 
 
-    def read_by_name(self, name: str, type: Union[RelationType, NodeType], object: str = 'triplet') -> List[Union[Triplet, Node]]:
+    def read_by_name(self, name: str, object_type: Union[RelationType, NodeType], object: str = 'relation') -> List[Union[Triplet, Node]]:
         # Note: Реализован наивный способ поиска элементов в графе
         # (алгоритмическая сложность O(n), где n - количество триплетов/вершин в графе)
 
-        if object == 'triplet':
-            formated_output =  [triplet for triplet in self.triplets.values() if triplet.relation.type == type and triplet.relation.name == name]
+        if type(object_type) not in [RelationType, NodeType]:
+            raise ValueError
+
+        if type(name) is not str:
+            raise ValueError
+
+        if len(name) < 1:
+            raise ValueError
+
+        if object == 'relation':
+            formated_output =  [triplet for triplet in self.triplets.values() if triplet.relation.type == object_type and triplet.relation.name == name]
         elif object == 'node':
-            formated_output =  [node for node in self.nodes.values() if node.type == type and node.name == name]
+            formated_output =  [node for node in self.nodes.values() if node.type == object_type and node.name == name]
         else:
             raise ValueError
 

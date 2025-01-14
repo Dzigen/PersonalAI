@@ -8,7 +8,8 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 
 from cases import GRAPHDB_POPULATED_CREATE_TEST_CASES, GRAPHDB_POPULATED_DELETE_TEST_CASES, \
     GRAPHDB_POPULATED_READ_TEST_CASES, GRAPHDB_POPULATED_COUNT_TEST_CASES, GRAPHDB_POPULATED_EXIST_TEST_CASES, \
-    GRAPHDB_POPULATED_CLEAR_TEST_CASES, GRAPHDB_POPULATED_GET_TRIPLETS_TEST_CASES, GRAPHDB_POPULATED_GET_ADJECENT_TEST_CASES
+    GRAPHDB_POPULATED_CLEAR_TEST_CASES, GRAPHDB_POPULATED_GET_TRIPLETS_TEST_CASES, GRAPHDB_POPULATED_GET_ADJECENT_TEST_CASES, \
+        GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES
 
 @pytest.mark.parametrize("inputs, create_info, expected, graphdb_conn", GRAPHDB_POPULATED_CREATE_TEST_CASES, indirect=['graphdb_conn'])
 def test_create(inputs, create_info, expected, graphdb_conn):
@@ -142,3 +143,38 @@ def test_get_triplets(instances, create_info, nodes, expected, graphdb_conn):
 
         assert expected['output_ids'] == set(list(map(lambda triplet: triplet.id, output)))
         assert expected['count'] == len(output)
+
+@pytest.mark.parametrize("instances, create_info, init_count, name, type, object, expected_output, exception, graphdb_conn", GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES, indirect=['graphdb_conn'])
+def test_read_by_name(instances, create_info, init_count, name, type, object, expected_output, exception, graphdb_conn):
+    graphdb_conn.clear()
+    graphdb_conn.create(instances, create_info)
+
+    items_info = graphdb_conn.count_items()
+    assert items_info['triplets'] == init_count['triplets']
+    assert items_info['nodes'] == init_count['nodes']
+
+    try:
+        real_output = graphdb_conn.read_by_name(name, type, object)
+    except ValueError as e:
+        print(str(e))
+        assert exception
+    else:
+        assert not exception
+
+        assert len(real_output) == len(expected_output)
+        if object == 'relation':
+            expec_t_ids = set([item.id for item in expected_output])
+            for real_t in real_output:
+                assert real_t.relation.name == name
+                assert real_t.relation.type == type
+                assert real_t.id in expec_t_ids
+
+        elif object == 'node':
+            expec_n_ids = set([item.id for item in expected_output])
+            for real_n in real_output:
+                assert real_n.name == name
+                assert real_n.type == type
+                assert real_n.id in expec_n_ids
+
+        else:
+            raise ValueError
