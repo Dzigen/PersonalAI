@@ -97,10 +97,14 @@ class KnowledgeRetriever:
         # self.log(f"RESULT:\n* валидных - {len(valid_triplets)} \n* невалидных - {len(triplets) - len(valid_triplets)}", verbose=self.config.verbose)
 
         self.log("STAGE #3.2 - TRIPLETS FILTERING...", verbose=self.config.verbose)
-        filtered_triplets = self.triplets_filter.apply_filter(query_info, triplets)
-        self.log(f"RESULT: {len(filtered_triplets)}", verbose=self.config.verbose)
-        for triplet in filtered_triplets:
-            self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
+        if self.triplets_filter is not None:
+            filtered_triplets = self.triplets_filter.apply_filter(query_info, triplets)
+            self.log(f"RESULT: {len(filtered_triplets)}", verbose=self.config.verbose)
+            for triplet in filtered_triplets:
+                self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
+        else:
+            filtered_triplets = triplets
+            self.log("Filtering stage was disabled. Continue.")
 
         if len(filtered_triplets) == 0:
             info.status = ReturnStatus.zero_retrieved_triplets

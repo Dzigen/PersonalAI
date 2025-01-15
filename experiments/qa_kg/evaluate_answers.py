@@ -29,11 +29,14 @@ nltk.download('wordnet')
 
 ################LOADING_HYPERPARAMETERS###################
 
+EXPERIMENTS_DIR_PATH = f"{BASEDIR}/experiments/qa_kg"
+PARAMS_FILE_PATH = f"{EXPERIMENTS_DIR_PATH}/params.yaml"
+
 # Read YAML file
-with open("params.yaml", 'r') as stream:
+with open(PARAMS_FILE_PATH, 'r') as stream:
     HYPER_PARAMS = yaml.safe_load(stream)
 
-BASE_PATH = "../../data/knowledge_graphs/"
+BASE_PATH = f"{BASEDIR}/data/knowledge_graphs/"
 DATASET_PATH = BASE_PATH + f"{HYPER_PARAMS['dataset_name']}/"
 KG_PATH = DATASET_PATH + f"{HYPER_PARAMS['kg_name']}/"
 

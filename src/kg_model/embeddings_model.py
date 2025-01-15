@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Dict, Set
+from typing import List, Dict, Set, Union
 import math
 from tqdm import tqdm
 
@@ -72,8 +72,8 @@ class EmbeddingsModel:
         batch_count = math.ceil(len(triplets) / batch_size)
         process = tqdm(range(batch_count)) if status_bar else range(batch_count)
         for batch_idx in process:
-            relation_ids, relation_strs = list(), list()
-            node_ids, node_strs = list(), list()
+            relation_ids, relation_strs, relation_metdatas = list(), list(), list()
+            node_ids, node_strs, node_metadatas = list(), list(), list()
 
             for triplet_idx in range(batch_idx*batch_size, (batch_idx+1)*batch_size):
                 if triplet_idx >= len(triplets):
@@ -88,6 +88,7 @@ class EmbeddingsModel:
                         existed_relation_ids.add(cur_rel_id)
                         relation_ids.append(cur_triplet.relation.id)
                         relation_strs.append(triplet_str)
+                        relation_metdatas.append({'t_id': cur_triplet.id})
 
                 if create_nodes:
                     self.log("\t- Also adding triplet-nodes in vector-model", verbose=self.config.verbose)
@@ -99,8 +100,11 @@ class EmbeddingsModel:
                                 existed_node_ids.add(node.id)
                                 node_ids.append(node.id)
                                 node_strs.append(node_str)
+                                relation_metdatas.append(dict())
 
-            self.create_stringified_triplets(relation_ids, relation_strs, node_ids, node_strs)
+            self.create_stringified_triplets(
+                relation_ids, relation_strs, relation_metdatas,
+                node_ids, node_strs, node_metadatas)
 
         self.log(f"all/unique/existed relations - {len(triplets)}/{len(unique_relation_ids)}/{len(existed_relation_ids)}", verbose=self.config.verbose)
         self.log(f"all/unique/existed nodes - {len(triplets)*2}/{len(unique_node_ids)}/{len(existed_node_ids)}", verbose=self.config.verbose)
@@ -134,8 +138,9 @@ class EmbeddingsModel:
 
         self.delete_stringified_triplets(unique_relation_ids, unique_nodes_ids)
 
-    def create_stringified_triplets(self, triplets_ids: List[str], stringified_triplets: List[str],
-                     nodes_ids: List[str] = None, stringified_nodes: List[str] = None) -> None:
+    def create_stringified_triplets(
+            self, triplets_ids: List[str], stringified_triplets: List[str], triplets_metadatas: List[Dict[str,Union[str,int,float]]],
+            nodes_ids: List[str] = None, stringified_nodes: List[str] = None, nodes_metadatas: List[Dict[str,Union[str,int, float]]] = None) -> None:
         """Метод предназначен для добавления строковых представлений триплетов/вершин в векторную структуру.
 
         :param triplets_ids: Идентификаторы триплетов, с которыми они будут сохранены.
@@ -148,9 +153,9 @@ class EmbeddingsModel:
         :type stringified_nodes: List[str], optional
         """
         if len(triplets_ids):
-            self.create_instances('triplets', triplets_ids, stringified_triplets)
+            self.create_instances('triplets', triplets_ids, stringified_triplets, triplets_metadatas)
         if nodes_ids is not None and len(nodes_ids):
-            self.create_instances('nodes', nodes_ids, stringified_nodes)
+            self.create_instances('nodes', nodes_ids, stringified_nodes, nodes_metadatas)
 
     def delete_stringified_triplets(self, triplets_ids: List[str], nodes_ids: List[str] = None) -> None:
         """Метод предназначен для удаления строковых представлений триплетов/вершин из векторной структуры.
@@ -164,7 +169,7 @@ class EmbeddingsModel:
         if nodes_ids is not None:
             self.delete_instances('nodes', nodes_ids)
 
-    def create_instances(self, db_type: str, ids: List[str], stringified_instances: List[str]) -> None:
+    def create_instances(self, db_type: str, ids: List[str], stringified_instances: List[str], metadatas: List[Dict[str,Union[str,int,float]]]) -> None:
         """Метод предназначен для добавления набора объектов в одно из хранилищ данных векторной структуры: для триплетов или вершин.
 
         :param db_type: Тип хранилища, в которое нужно добавить объекты. Принимает значение "triplets" или "nodes".
@@ -175,8 +180,8 @@ class EmbeddingsModel:
         :type stringified_instances: List[str]
         """
         embs = self.embedder.encode_passages(stringified_instances)
-        formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb, metadata={'id': id})
-                            for id, doc, emb in zip(ids, stringified_instances, embs)]
+        formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb, metadata=metad.update({'id': id}))
+                            for id, doc, emb, metad in zip(ids, stringified_instances, embs, metadatas)]
         self.vectordbs[db_type].create(formated_instances)
 
     def delete_instances(self, db_type: str, ids: List[str]) -> None:
