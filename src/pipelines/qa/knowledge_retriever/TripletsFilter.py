@@ -52,7 +52,7 @@ class TripletsFilter(AbstractTriplesFilter):
             query_embd = self.kg_model.embeddings_struct.embedder.encode_queries([query_info.query])[0]
             query_instance = VectorDBInstance(embedding=query_embd)
 
-            relation_ids = unique_relations_map.keys()
+            relation_ids = list(unique_relations_map.keys())
 
             raw_relevant_triplets = self.kg_model.embeddings_struct.vectordbs['triplets'].retrieve(
                 [query_instance], self.config.max_k, includes=['embeddings', 'documents', 'metadatas'],
