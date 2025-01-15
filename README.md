@@ -34,6 +34,9 @@
 * make singlehtml
 * make clean
 
+##### Команды для тестироваания
+* pytest --cov=src --cov-report=html ...
+
 pre-commit:
 * https://pre-commit.com/#pre-commit-configyaml---repos
 * https://www.laac.dev/blog/automating-convention-linting-formatting-python/
