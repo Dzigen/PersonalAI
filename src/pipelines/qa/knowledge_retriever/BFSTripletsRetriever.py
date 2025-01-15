@@ -293,7 +293,7 @@ class BFSRetriever(AbstractTripletsRetriever):
 
         triplets_dict, inters_chains1, inters_chains2 = self.bfs(seed_entities, depth)
         output_texts_hyper, output_texts_episodic = self.extract_thesis(seed_entities, same_types)
-        print("texts_hyper", len(output_texts_hyper), "texts_episodic", len(output_texts_episodic))
+        #print("texts_hyper", len(output_texts_hyper), "texts_episodic", len(output_texts_episodic))
 
         thres = self.config.chain_triplets_num
         if len(inters_chains1) == 1:
@@ -517,7 +517,7 @@ class BFSRetriever(AbstractTripletsRetriever):
             else:
                 for key in retr_texts[tr_type]:
                     cur_texts = [[text, seed_entity, obj_props, rel_props, e_id]
-                                for text, seed_entity, obj_props, rel_props, cnt, e_id in retr_texts[tr_type][key] 
+                                for text, seed_entity, obj_props, rel_props, cnt, e_id in retr_texts[tr_type][key]
                                 if cnt > 0]
                     output_texts[tr_type] += cur_texts[:thres[tr_type]]
                 if not output_texts[tr_type]:
