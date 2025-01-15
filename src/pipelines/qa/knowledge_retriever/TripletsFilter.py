@@ -66,11 +66,6 @@ class TripletsFilter(AbstractTriplesFilter):
 
             filtered_triplets = list(filter(lambda rel_id: unique_relations_map[rel_id], accepted_relation_ids))
 
-            # ???? TO DELETE ???? #
-            if not filtered_triplets:
-                filtered_triplets = triplets
-            # ???? TO DELETE ???? #
-
         self.log(f"Количество триплето после фильтрации: {len(filtered_triplets)}", verbose=self.verbose)
 
         return filtered_triplets
