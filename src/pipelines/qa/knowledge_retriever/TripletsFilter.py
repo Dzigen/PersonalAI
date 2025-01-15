@@ -64,7 +64,7 @@ class TripletsFilter(AbstractTriplesFilter):
             self.log(f"Количество уникальных accepted ids: {len(set(accepted_relation_ids))}", verbose=self.verbose)
             self.log(f"accepted ids: {accepted_relation_ids}", verbose=self.verbose)
 
-            filtered_triplets = list(filter(lambda rel_id: unique_relations_map[rel_id], accepted_relation_ids))
+            filtered_triplets = list(map(lambda rel_id: unique_relations_map[rel_id], accepted_relation_ids))
 
         self.log(f"Количество триплето после фильтрации: {len(filtered_triplets)}", verbose=self.verbose)
 
