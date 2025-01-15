@@ -1,6 +1,6 @@
-experiment_name: "bfs_with_gigachat_full(greed_gen_strat)"
+experiment_name: "bfs_with_gigachat_full(v1.2.0)"
 dataset_name: 'diaasqa'
-init_struct: False
+init_struct: True
 eval_dataset_path: '../../data/qa_datasets/diaasqa/qa_eval'
 eval_bs_model: "google/electra-base-discriminator"
 kg_name: 'gigachat_full'

@@ -11,9 +11,9 @@ BASEDIR = '/home/m.menschikov/workspace/Personal-AI' # TO CHANGE
 sys.path.insert(0, BASEDIR)
 
 from src.pipelines.memorize import MemPipelineConfig, MemPipeline, LLMExtractorConfig, LLMUpdatorConfig
-from src.kg_model import KnowledgeGraphModel, EmbeddingsModelConfig, GraphModelConfig, EmbedderModelConfig
-from src.db_drivers.graph_driver import GraphDBConnectionConfig, GraphDriverConfig
-from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriverConfig
+from src.kg_model import KnowledgeGraphModel, EmbeddingsModelConfig, GraphModelConfig
+from src.db_drivers.graph_driver import GraphDriverConfig
+from src.db_drivers.vector_driver import VectorDriverConfig
 
 # gigachat key
 #GIGACHAT_CREDS = 'OWUwOGUzOWEtMjJiNi00YmMxLThmMmItNzMwNjM2MTI2YmYxOjg2ODdiOTVhLTZkNDctNGFjOC1iMmViLTEyNDA5MmFiN2Q5Mw=='
@@ -25,7 +25,8 @@ gc.collect()
 ########SETTING HYPERPARAMS###########
 
 # Read YAML file
-PARAMS_FILE_PATH = f'{BASEDIR}/notebooks/kg_building/create/params.yaml'
+CREATE_DIR_PATH = f'{BASEDIR}/notebooks/kg_building/create'
+PARAMS_FILE_PATH = f'{CREATE_DIR_PATH}/params.yaml'
 
 with open(PARAMS_FILE_PATH, 'r') as stream:
     HYPER_PARAMS = yaml.safe_load(stream)
@@ -44,6 +45,11 @@ VECTORIZED_DB_PATH = KG_PATH + "embeddings_part/"
 GRAPH_DB_PATH = KG_PATH + "graph_part/"
 
 TMP_EXTRACTED_TRIPLETS_PATH = KG_PATH + "tmp_extracted_triplets_path/"
+
+GRAPHDB_CONFIG_PATH = f"{CREATE_DIR_PATH}/graphdb_config"
+EMBEDDER_CONFIG_PATH = f"{CREATE_DIR_PATH}/embedder_config"
+NODESDB_CONFIG_PATH = f"{CREATE_DIR_PATH}/nodesdb_config"
+TRIPLETSDB_CONFIG_PATH = f"{CREATE_DIR_PATH}/tripletsdb_config"
 
 ###########FOLDERS INIT#########3
 
@@ -70,23 +76,30 @@ print(GRAPH_DB_PATH)
 
 # Setting knowledge graph
 
+graphdb_config = joblib.load(GRAPHDB_CONFIG_PATH)
+graphdb_config.need_to_clear = HYPER_PARAMS['knowledge_graph']['need_to_clear']
+
+nodesdb_config = joblib.load(NODESDB_CONFIG_PATH)
+nodesdb_config.need_to_clear = HYPER_PARAMS['knowledge_graph']['need_to_clear']
+
+tripletsdb_config =  joblib.load(TRIPLETSDB_CONFIG_PATH)
+tripletsdb_config.need_to_clear = HYPER_PARAMS['knowledge_graph']['need_to_clear']
+
+embedder_config = joblib.load(EMBEDDER_CONFIG_PATH)
+
 graph_config = GraphModelConfig(
     driver_config=GraphDriverConfig(
-        db_vendor='neo4j',
-        db_config=GraphDBConnectionConfig(
-            uri="bolt://personalai_mmenschikov_neo4j:7687", params={'user': "neo4j", 'pwd': 'password'},
-            need_to_clear=HYPER_PARAMS['need_to_clear'])))
+        db_vendor=HYPER_PARAMS['knowledge_graph']['graphdb_vendor'],
+        db_config=graphdb_config))
 
 embed_config = EmbeddingsModelConfig(
     nodesdb_driver_config=VectorDriverConfig(
-        db_vendor='chroma',
-        db_config=VectorDBConnectionConfig(
-            path=VECTORIZED_DB_PATH, db_info={'db': 'personalaidb', 'table': "vectorized_nodes"}, need_to_clear=HYPER_PARAMS['need_to_clear'])),
+        db_vendor=HYPER_PARAMS['knowledge_graph']['nodesdb_vendor'],
+        db_config=nodesdb_config),
     tripletsdb_driver_config=VectorDriverConfig(
-        db_vendor='chroma',
-        db_config=VectorDBConnectionConfig(
-            path=VECTORIZED_DB_PATH, db_info={'db': 'personalaidb', 'table': "vectorized_triplets"}, need_to_clear=HYPER_PARAMS['need_to_clear'])),
-    embedder_config=EmbedderModelConfig(model_name_or_path=HYPER_PARAMS['EMBEDDER_MODEL_PATH']))
+        db_vendor=HYPER_PARAMS['knowledge_graph']['tripletsdb_vendor'],
+        db_config=tripletsdb_config),
+    embedder_config=embedder_config)
 
 kg_model = KnowledgeGraphModel(
     graph_config=graph_config,

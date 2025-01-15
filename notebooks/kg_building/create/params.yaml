@@ -1,8 +1,14 @@
-DATASET_PATH: '/home/m.menschikov/workspace/Personal-AI/data/qa_datasets/diaasqa/Augment_DiaASQ.json'
 DATASET_NAME: 'diaasqa'
 KNOWLEDGE_GRAPH_NAME: 'gigachat_filtered'
-EMBEDDER_MODEL_PATH: '/home/m.menschikov/workspace/Personal-AI/models/intfloat/multilingual-e5-small'
+DATASET_PATH: '/home/m.menschikov/workspace/Personal-AI/data/qa_datasets/diaasqa/Augment_DiaASQ.json'
 DELETE_OBSOLETE_INFO: True
 LANG: 'en'
-need_to_clear: True
 init_struct: False
+knowledge_graph:
+  need_to_clear: True
+  graphdb_vendor: 'neo4j'
+  graphdb_config: 'graphdb_config'
+  nodesdb_vendor: 'chroma'
+  nodesdb_config: 'nodesdb_config'
+  tripletsdb_vendor: 'chroma'
+  tripletsdb_config: 'tripletsdb_config'

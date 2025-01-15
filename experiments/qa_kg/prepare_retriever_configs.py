@@ -26,10 +26,11 @@ RETRIVER_CONFIG_DUMP = "retriever_config"
 # )
 
 retriever_config = BFSSearchConfig(
-    strict_filter=True,
-    hyper_episodic_num=15,
-    chain_triplets_num=25,
-    other_triplets_num=6
+    strict_filter = True,
+    hyper_num = 15,
+    episodic_num = 15,
+    chain_triplets_num = 25,
+    other_triplets_num = 6
 )
 
 joblib.dump(retriever_config, RETRIVER_CONFIG_DUMP)
@@ -41,5 +42,8 @@ FILTER_CONFIG_DUMP = "filter_config"
 filter_config = TripletsFilterConfig(
     max_k=50
 )
+
+print("retriever: ",retriever_config)
+print("filter: ", filter_config)
 
 joblib.dump(filter_config, FILTER_CONFIG_DUMP)

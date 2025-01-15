@@ -8,7 +8,7 @@ import joblib
 from time import time
 
 # TO CHANGE
-BASEDIR = "../../"
+BASEDIR = "../.."
 sys.path.insert(0, BASEDIR)
 
 ###################################
@@ -20,10 +20,14 @@ from src.pipelines.qa import QueryLLMParserConfig, KnowledgeComparatorConfig, Kn
 ################LOADING_HYPERPARAMETERS###################
 
 # Read YAML file
-with open("params.yaml", 'r') as stream:
+
+EXPERIMENTS_DIR_PATH = f"{BASEDIR}/experiments/qa_kg"
+PARAMS_FILE_PATH = f"{EXPERIMENTS_DIR_PATH}/params.yaml"
+
+with open(PARAMS_FILE_PATH, 'r') as stream:
     HYPER_PARAMS = yaml.safe_load(stream)
 
-BASE_PATH = "../../data/knowledge_graphs/"
+BASE_PATH = f"{BASEDIR}/data/knowledge_graphs/"
 DATASET_PATH = BASE_PATH + f"{HYPER_PARAMS['dataset_name']}/"
 KG_PATH = DATASET_PATH + f"{HYPER_PARAMS['kg_name']}/"
 
@@ -132,7 +136,8 @@ qa_pipeline = QAPipeline(kg_model, qa_config)
 
 #################SAVING QA CONFIG##################
 
-joblib.dump(qa_config, QA_CONFIG_SAVE_PATH)
+if HYPER_PARAMS['init_struct']:
+    joblib.dump(qa_config, QA_CONFIG_SAVE_PATH)
 
 #################LOADING_QUESTIONS##################
 
