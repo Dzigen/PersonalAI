@@ -5,6 +5,7 @@ from copy import deepcopy
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarTripletsRetriever
 from .BFSTripletsRetriever import BFSSearchConfig, BFSRetriever
+from .NaiveBFSTripletsRetriever import NaiveBFSTripletsRetriever
 from ....utils.data_structs import QueryInfo, Triplet, create_id
 from ....kg_model import KnowledgeGraphModel
 from ....utils import Logger
@@ -18,8 +19,10 @@ class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     :param bfs_config: Конфигурация BFS-алгоритма поиска. Значение по умолчанию BFSSearchConfig().
     :type bfs_config: BFSSearchConfig
     """
-    astar_config: AStarGraphSearchConfig = field(default_factory=lambda: AStarGraphSearchConfig())
-    bfs_config: BFSSearchConfig = field(default_factory=lambda: BFSSearchConfig())
+    retriever1_name: str = 'astar'
+    retriever1_config: AStarGraphSearchConfig = field(default_factory=lambda: AStarGraphSearchConfig())
+    retriever2_name: str = 'bfs'
+    retriever2_config: BFSSearchConfig = field(default_factory=lambda: BFSSearchConfig())
 
 class MixturedTripletsRetriever(AbstractTripletsRetriever):
     """Класс предназначен для извлечения триплетов из графа знаний с помощью комбинации BFS- и A*-алгоритмов поиска.
@@ -37,24 +40,33 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever):
                  verbose: bool = False) -> None:
         self.log = log
         self.verbose = verbose
+        self.config = search_config
 
-        self.astar_searcher = AStarTripletsRetriever(kg_model, log, search_config.astar_config, verbose)
-        self.bfs_searcher = BFSRetriever(kg_model, log, search_config.bfs_config, verbose)
+        self.available_retrievers = {
+            'astar': AStarTripletsRetriever,
+            'bfs': BFSRetriever,
+            'naive_bfs': NaiveBFSTripletsRetriever
+        }
+
+        self.retriever1 = self.available_retrievers[search_config.retriever1_name](
+            kg_model, log, search_config.retriever1_config, verbose)
+        self.retriever2 = self.available_retrievers[search_config.retriever2_name](
+            kg_model, log, search_config.retriever2_config, verbose)
 
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 
-        astar_triplets = self.astar_searcher.get_relevant_triplets(query_info)
-        bfs_triplets = self.bfs_searcher.get_relevant_triplets(query_info)
+        triplets1 = self.retriever1.get_relevant_triplets(query_info)
+        triplets2 = self.retriever2.get_relevant_triplets(query_info)
 
-        self.log(f"Количество триплетов, извлечённых с помощью A*/BFS: {len(astar_triplets)}/{len(bfs_triplets)}",
+        self.log(f"Количество триплетов, извлечённых с помощью {self.config.retriever1_name}/{self.config.retriever2_name}: {len(triplets1)}/{len(triplets2)}",
                  verbose=self.verbose)
 
         # отбираем только уникальные триплеты (по их идентификаторам)
         unique_triplets = dict()
-        for triplet in astar_triplets + bfs_triplets:
+        for triplet in triplets1 + triplets2:
             unique_triplets[triplet.id] = deepcopy(triplet)
 
-        return unique_triplets.values()
+        return list(unique_triplets.values())
