@@ -161,6 +161,7 @@ class BFSRetriever(AbstractTripletsRetriever):
                             "name": triplet_raw.end_node.name.replace("_", " "),
                             "prop": triplet_raw.end_node.prop},
                             direction]
+                
                 new_chain = copy.deepcopy(chain)
 
                 def count_persons(new_chain, second_chain):
@@ -349,7 +350,7 @@ class BFSRetriever(AbstractTripletsRetriever):
             )
             return triplet
 
-        def triplet_from_hyper(text, seed_entity, obj_props, rel_props, e_id):
+        def triplet_from_hyper(text, seed_entity, obj_props, rel_props, rel_id):
             subj_node = NodeCreator.create(name=seed_entity, n_type=NodeType.object)
             subj_node.id = '1'
 
@@ -357,19 +358,23 @@ class BFSRetriever(AbstractTripletsRetriever):
             obj_node.id = '1'
 
             rel_edge = RelationCreator.create(r_type=RelationType.hyper, prop=rel_props)
+            rel_edge.id=rel_id
 
             triplet = TripletCreator.create(
-                start_node=subj_node, relation=rel_edge, end_node=obj_node,
-                add_stringified_triplet=False, t_id=e_id)
+                start_node=subj_node,
+                relation=rel_edge,
+                end_node=obj_node,
+                add_stringified_triplet=False
+            )
             return triplet
 
         ex_triplets = []
         formatted_triplets = []
-        for text, seed_entity, obj_props, rel_props, e_id in output_texts_hyper:
-            triplet = triplet_from_hyper(text, seed_entity, obj_props, rel_props, e_id)
+        for text, seed_entity, obj_props, rel_props, rel_id in output_texts_hyper:
+            triplet = triplet_from_hyper(text, seed_entity, obj_props, rel_props, rel_id)
             formatted_triplets.append(triplet)
-        for text, seed_entity, obj_props, rel_props, e_id in output_texts_episodic:
-            triplet = triplet_from_hyper(text, seed_entity, obj_props, rel_props, e_id)
+        for text, seed_entity, obj_props, rel_props, rel_id in output_texts_episodic:
+            triplet = triplet_from_hyper(text, seed_entity, obj_props, rel_props, rel_id)
             formatted_triplets.append(triplet)
 
         len_he = len(formatted_triplets)
@@ -436,6 +441,7 @@ class BFSRetriever(AbstractTripletsRetriever):
             for element in res:
                 obj_dict = element.end_node.prop
                 rel_dict = element.relation.prop
+                rel_id = element.relation.id
                 text = element.end_node.name.strip()
                 obj_props = {key: value for key, value in obj_dict.items() if key != "name"}
                 text_chunks = text.split("\n")
@@ -464,7 +470,7 @@ class BFSRetriever(AbstractTripletsRetriever):
                                         found = True
                             if found:
                                 num_inters += 1
-                        cur_texts.append([text_chunk, seed_entity, obj_props, rel_dict, num_inters, element.id])
+                        cur_texts.append([text_chunk, seed_entity, obj_props, rel_dict, num_inters, rel_id])
                         texts_set.add(text_chunk)
         return cur_texts, texts_set
 
