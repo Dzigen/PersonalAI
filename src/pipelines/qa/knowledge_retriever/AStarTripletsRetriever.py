@@ -5,6 +5,7 @@ import heapq
 from time import time
 import collections
 from copy import deepcopy
+from collections import Counter
 
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig, get_nodes_path
 
@@ -405,7 +406,10 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
             for triplet in triplets:
                 unique_triplets[triplet.relation.id] = triplet
 
+        unique_triplets = list(unique_triplets.values())
+
+        self.log(f"Распределение типов связей в наборе извлечённых триплетов: {Counter([triplet.relation.type for triplet in unique_triplets])}", verbose=self.verbose)
         self.log(f"foramting queries: {len(unique_nodes_pairs)}", verbose=self.verbose)
         self.log(f"formating elapsed_time: {time() - s_time}", verbose=self.verbose)
 
-        return list(unique_triplets.values())
+        return unique_triplets
