@@ -8,7 +8,8 @@ KR_MAIN_LOG_PATH = 'log/qa/knowledge_retriever/main'
 AVAILABLE_TRIPLETS_RETRIEVERS  = {
     'astar': AStarTripletsRetriever,
     'bfs': BFSRetriever,
-    'mixture': MixturedTripletsRetriever
+    'mixture': MixturedTripletsRetriever,
+    'naive_bfs': NaiveBFSRetriever
 }
 
 AVAILABLE_TRIPLETS_FILTERS = {
