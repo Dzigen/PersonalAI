@@ -36,7 +36,11 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever):
         D = {node_id: 0}
         parent = {node_id: None}
         neo4j_queries_counter, passed_nodes_counter = 0, 0
+        max_pnodes_flag = False
         while queue:
+            if max_pnodes_flag:
+                break
+
             vertex = queue.popleft()
 
             if self.config.max_depth >= 0 and D[vertex] >= self.config.max_depth:
@@ -59,7 +63,8 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever):
                 if neighbour not in visited:
                     if self.config.max_passed_nodes >= 0 and passed_nodes_counter >= self.config.max_passed_nodes:
                         # Ограничиваем количество вершин, которое можно обойти
-                        continue
+                        max_pnodes_flag = True
+                        break
 
                     passed_nodes_counter += 1
                     parent[neighbour] = vertex
