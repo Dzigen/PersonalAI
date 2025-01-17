@@ -2,3 +2,4 @@ from .KnowledgeRetriever import KnowledgeRetriever, KnowledgeRetrieverConfig
 from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarMetricsConfig
 from .BFSTripletsRetriever import BFSSearchConfig
 from .MixturedTripletsRetriever import MixturedGraphSearchConfig
+from .NaiveBFSTripletsRetriever import NaiveBFSGraphSearchConfig
