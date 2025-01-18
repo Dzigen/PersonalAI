@@ -1,6 +1,6 @@
 experiment_name: "bfs_mikhail_with_gigachat_full(v1.3.0)"
 dataset_name: 'diaasqa'
-init_struct: True
+init_struct: False
 eval_dataset_path: '../../data/qa_datasets/diaasqa/qa_eval'
 eval_bs_model: "google/electra-base-discriminator"
 kg_name: 'gigachat_full'
