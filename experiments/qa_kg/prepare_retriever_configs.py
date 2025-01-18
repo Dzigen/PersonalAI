@@ -25,17 +25,17 @@ RETRIVER_CONFIG_DUMP = "retriever_config"
 #     accepted_node_types=[NodeType.object , NodeType.hyper, NodeType.episodic]
 # )
 
-# retriever_config = BFSSearchConfig(
-#      strict_filter = True,
-#      hyper_num = 15,
-#      episodic_num = 15,
-#      chain_triplets_num = 25,
-#      other_triplets_num = 6
-#  )
+retriever_config = BFSSearchConfig(
+      strict_filter = True,
+      hyper_num = 15,
+      episodic_num = 15,
+      chain_triplets_num = 25,
+      other_triplets_num = 6
+  )
 
-retriever_config = NaiveBFSGraphSearchConfig(
-    max_depth=5, max_width=10, max_passed_nodes=50,
-    accepted_node_types=[NodeType.object , NodeType.hyper, NodeType.episodic])
+# retriever_config = NaiveBFSGraphSearchConfig(
+#     max_depth=5, max_width=10, max_passed_nodes=50,
+#     accepted_node_types=[NodeType.object , NodeType.hyper, NodeType.episodic])
 
 joblib.dump(retriever_config, RETRIVER_CONFIG_DUMP)
 
