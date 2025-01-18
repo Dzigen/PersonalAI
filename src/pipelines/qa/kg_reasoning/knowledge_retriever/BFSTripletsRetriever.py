@@ -161,7 +161,7 @@ class BFSRetriever(AbstractTripletsRetriever):
                             "name": triplet_raw.end_node.name.replace("_", " "),
                             "prop": triplet_raw.end_node.prop},
                             direction]
-                
+
                 new_chain = copy.deepcopy(chain)
 
                 def count_persons(new_chain, second_chain):
