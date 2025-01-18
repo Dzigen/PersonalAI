@@ -4,3 +4,5 @@ from .BFSTripletsRetriever import BFSSearchConfig
 from .MixturedTripletsRetriever import MixturedGraphSearchConfig
 from .NaiveBFSTripletsRetriever import NaiveBFSGraphSearchConfig
 from .NaiveTripletsRetriever import NaiveGraphSearchConfig
+
+from .TripletsFilter import TripletsFilterConfig

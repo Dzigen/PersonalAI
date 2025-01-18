@@ -1,11 +1,11 @@
 from dataclasses import dataclass, field
 from typing import Tuple
 
-from ....utils import ReturnInfo, Logger
-from ....kg_model import KnowledgeGraphModel
 from .weak_reasoner import WeakKGReasonerConfig
 from .config import KGR_MAIN_LOG_PATH, AVAILABLE_KG_REASONERS
 from .utils import BaseKGReasonerConfig
+from ....utils import ReturnInfo, Logger
+from ....kg_model import KnowledgeGraphModel
 
 @dataclass
 class KnowledgeGraphReasonerConfig:

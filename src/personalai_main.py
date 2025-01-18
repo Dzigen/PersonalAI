@@ -8,7 +8,7 @@ from .pipelines.memorize import MemPipeline, MemPipelineConfig
 from .utils import Logger, ReturnInfo, Triplet
 from .utils.data_structs import create_id
 
-RKG_LOG_PATH = "log/personalai"
+RKG_LOG_PATH = "log/main"
 
 @dataclass
 class PersonalAIConfig:
@@ -31,7 +31,7 @@ class PersonalAIConfig:
     embedds_struct_config: EmbeddingsModelConfig = field(default_factory=lambda: EmbeddingsModelConfig())
     qa_pipeline_config: QAPipelineConfig = field(default_factory=lambda: QAPipelineConfig())
     mem_pipeline_config: MemPipelineConfig = field(default_factory=lambda: MemPipelineConfig())
-    log: Logger = field(default_factory=lambda:Logger(RKG_LOG_PATH))
+    log: Logger = field(default_factory=lambda: Logger(RKG_LOG_PATH))
     verbose: bool = False
 
 class PersonalAI:
