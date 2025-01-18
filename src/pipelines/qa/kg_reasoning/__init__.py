@@ -1,1 +1,1 @@
-from .weak_reasoner import WeakKGReasoner, WeakKGReasonerConfig
+from .KGReasoner import KnowledgeGraphReasoner, KnowledgeGraphReasonerConfig

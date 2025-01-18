@@ -12,10 +12,25 @@ from .....utils.errors import STATUS_MESSAGE
 from .....utils.data_structs import QueryInfo
 from .....kg_model import KnowledgeGraphModel
 
-WKGR_MAIN_LOG_PATH = 'log/qa/kg_reasoner/reasoner/main'
+WKGR_MAIN_LOG_PATH = 'log/qa/kg_reasoner/weak/main'
 
 @dataclass
 class WeakKGReasonerConfig(BaseKGReasonerConfig):
+    """
+
+    :param query_parser_config: Конфигурация первой стадии QA-конвейера: извлечение сущностей из user-вопроса. Значение по умолчанию QueryLLMParserConfig().
+    :type query_parser_config: QueryLLMParserConfig
+    :param knowledge_comparator_config: Конфигурация второй стадии QA-конвейера: сопоставление (match) сущностей из user-вопроса с информацией в графе знаний. Значение по умолчанию KnowledgeComparatorConfig().
+    :type knowledge_comparator_config: KnowledgeComparatorConfig
+    :param knowledge_retriever_config: Конфигурация третьей стадии QA-конвейера: извлечение релевантной информации из графа знаний для user-вопроса. Значение по умолчанию KnowledgeRetrieverConfig().
+    :type knowledge_retriever_config: KnowledgeRetrieverConfig
+    :param answer_generator_config: Конфигурация четвёртой стадии QA-конвейера: условная генерация ответа на user-вопрос. Значение по умолчанию QALLMGeneratorConfig().
+    :type answer_generator_config: QALLMGeneratorConfig
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(LOG_PATH).
+    :type log: Logger
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
+    """
     query_parser_config: QueryLLMParserConfig = field(default_factory=lambda: QueryLLMParserConfig())
     knowledge_comparator_config: KnowledgeComparatorConfig = field(default_factory=lambda: KnowledgeComparatorConfig())
     knowledge_retriever_config: KnowledgeRetrieverConfig = field(default_factory=lambda: KnowledgeRetrieverConfig())
