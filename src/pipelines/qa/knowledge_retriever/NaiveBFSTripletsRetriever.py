@@ -60,12 +60,12 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever):
                     # пропускаем вершину, из которой пришли
                     continue
 
-                if neighbour not in visited:
-                    if self.config.max_passed_nodes >= 0 and passed_nodes_counter >= self.config.max_passed_nodes:
-                        # Ограничиваем количество вершин, которое можно обойти
-                        max_pnodes_flag = True
-                        break
+                if self.config.max_passed_nodes >= 0 and passed_nodes_counter >= self.config.max_passed_nodes:
+                    # Ограничиваем количество вершин, которое можно обойти
+                    max_pnodes_flag = True
+                    break
 
+                if neighbour not in visited:
                     passed_nodes_counter += 1
                     parent[neighbour] = vertex
                     D[neighbour] = D[vertex] + 1
