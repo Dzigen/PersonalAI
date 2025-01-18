@@ -157,9 +157,9 @@ for pack_name, questions, _ in question_packs[11:]:
         os.mkdir(pack_tmp_dir)
 
     if (HYPER_PARAMS['max_samples_per_pack'] < 0) or (HYPER_PARAMS['max_samples_per_pack'] > len(questions)):
-        process = tqdm(52, range(len(questions)))
+        process = tqdm(range(52, len(questions)))
     else:
-        process = tqdm(52, range(HYPER_PARAMS['max_samples_per_pack']))
+        process = tqdm(range(52, HYPER_PARAMS['max_samples_per_pack']))
 
     for i in process:
         process.set_postfix_str(pack_name)
