@@ -2,10 +2,10 @@ from typing import List
 from dataclasses import dataclass
 
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
-from ....db_drivers.vector_driver import VectorDBInstance
-from ....kg_model import KnowledgeGraphModel
-from ....utils import Logger
-from ....utils.data_structs import QueryInfo, Triplet, create_id
+from ......db_drivers.vector_driver import VectorDBInstance
+from ......kg_model import KnowledgeGraphModel
+from ......utils import Logger
+from ......utils.data_structs import QueryInfo, Triplet, create_id
 
 @dataclass
 class NaiveGraphSearchConfig(BaseGraphSearchConfig):

@@ -2,7 +2,7 @@ from typing import List, Dict
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from ....utils.data_structs import QueryInfo, Triplet
+from ......utils.data_structs import QueryInfo, Triplet
 from .errors import NOT_VALID_ID_ERROR_MSG, NO_START_NODE_IN_PARENT_ERROR_MSG, EMPTY_PARENT_ERROR_MSG
 
 def get_nodes_path(parent: Dict[str, str], end_node_id: str) -> List[str]:

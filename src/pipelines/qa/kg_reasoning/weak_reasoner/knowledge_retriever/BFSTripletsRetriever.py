@@ -4,9 +4,9 @@ from typing import Dict, List, Set, Tuple, Union
 
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 
-from ....kg_model import KnowledgeGraphModel
-from ....utils.data_structs import QueryInfo, TripletCreator, Triplet, NodeCreator, RelationCreator, NodeType, RelationType
-from ....utils import Logger
+from ......kg_model import KnowledgeGraphModel
+from ......utils.data_structs import QueryInfo, TripletCreator, Triplet, NodeCreator, RelationCreator, NodeType, RelationType
+from ......utils import Logger
 
 @dataclass
 class BFSSearchConfig(BaseGraphSearchConfig):

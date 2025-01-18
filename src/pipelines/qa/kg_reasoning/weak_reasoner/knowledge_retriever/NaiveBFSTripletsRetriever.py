@@ -9,10 +9,10 @@ from copy import deepcopy
 
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 
-from ....utils.data_structs import QueryInfo, Triplet, NodeType
-from ....kg_model import KnowledgeGraphModel
-from ....utils.data_structs import create_id
-from ....utils import Logger
+from ......utils.data_structs import QueryInfo, Triplet, NodeType
+from ......kg_model import KnowledgeGraphModel
+from ......utils.data_structs import create_id
+from ......utils import Logger
 
 @dataclass
 class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):

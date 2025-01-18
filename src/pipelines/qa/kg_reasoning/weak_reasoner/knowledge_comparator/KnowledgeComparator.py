@@ -1,11 +1,11 @@
 from dataclasses import dataclass, field
 
 from .configs import KC_MAIN_LOG_PATH
-from ....utils import Logger, ReturnStatus, ReturnInfo
-from ....utils.errors import STATUS_MESSAGE
-from ....utils.data_structs import QueryInfo, create_id
-from ....kg_model import KnowledgeGraphModel
-from ....db_drivers.vector_driver import VectorDBInstance
+from ......utils import Logger, ReturnStatus, ReturnInfo
+from ......utils.errors import STATUS_MESSAGE
+from ......utils.data_structs import QueryInfo, create_id
+from ......kg_model import KnowledgeGraphModel
+from ......db_drivers.vector_driver import VectorDBInstance
 
 @dataclass
 class KnowledgeComparatorConfig:

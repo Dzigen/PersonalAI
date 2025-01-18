@@ -2,10 +2,10 @@ from dataclasses import dataclass, field
 from typing import Tuple
 
 from .configs import DEFAULT_KW_EXTRACTION_TASK_CONFIG, QP_MAIN_LOG_PATH
-from ....utils.data_structs import QueryInfo, create_id
-from ....utils.errors import STATUS_MESSAGE
-from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
-from ....agents import AgentDriver, AgentDriverConfig
+from ......utils.data_structs import QueryInfo, create_id
+from ......utils.errors import STATUS_MESSAGE
+from ......utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
+from ......agents import AgentDriver, AgentDriverConfig
 
 @dataclass
 class QueryLLMParserConfig:

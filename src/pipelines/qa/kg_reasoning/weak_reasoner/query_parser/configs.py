@@ -1,9 +1,9 @@
-from ....utils import AgentTaskSuite, AgentTaskSolverConfig, Logger
+from ......utils import AgentTaskSuite, AgentTaskSolverConfig, Logger
 
-from ....prompts.qa_pipeline.query_parser.kw_extraction import EN_KW_EXTRACTION_USER_PROMPT, RU_KW_EXTRACTION_USER_PROMPT
-from ....prompts.system import EN_SYSTEM_PROMPT, RU_SYSTEM_PROMPT
+from ......prompts.qa_pipeline.query_parser.kw_extraction import EN_KW_EXTRACTION_USER_PROMPT, RU_KW_EXTRACTION_USER_PROMPT
+from ......prompts.system import EN_SYSTEM_PROMPT, RU_SYSTEM_PROMPT
 
-from ....parsers.qa_pipeline.query_parser.kw_extraction import kwe_custom_formate, kwe_custom_parse, kwe_custom_postprocess
+from ......parsers.qa_pipeline.query_parser.kw_extraction import kwe_custom_formate, kwe_custom_parse, kwe_custom_postprocess
 
 QP_MAIN_LOG_PATH = 'log/qa/query_parser/main'
 KW_EXTRACTION_LOG_PATH = 'log/qa/query_parser/kw_extraction'
