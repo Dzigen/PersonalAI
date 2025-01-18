@@ -100,7 +100,7 @@ class EmbeddingsModel:
                                 existed_node_ids.add(node.id)
                                 node_ids.append(node.id)
                                 node_strs.append(node_str)
-                                relation_metdatas.append(dict())
+                                node_metadatas.append(dict())
 
             self.create_stringified_triplets(
                 relation_ids, relation_strs, relation_metdatas,
@@ -180,7 +180,7 @@ class EmbeddingsModel:
         :type stringified_instances: List[str]
         """
         embs = self.embedder.encode_passages(stringified_instances)
-        formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb, metadata=metad.update({'id': id}))
+        formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb, metadata={'id': id, **metad})
                             for id, doc, emb, metad in zip(ids, stringified_instances, embs, metadatas)]
         self.vectordbs[db_type].create(formated_instances)
 

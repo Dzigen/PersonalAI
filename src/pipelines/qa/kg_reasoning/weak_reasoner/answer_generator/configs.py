@@ -1,10 +1,10 @@
-from ....utils import AgentTaskSuite, AgentTaskSolverConfig, Logger
+from ......utils import AgentTaskSuite, AgentTaskSolverConfig, Logger
 
-from ....parsers.qa_pipeline.answer_generator.question_answering import ag_custom_formate, ag_custom_postprocess,\
+from ......parsers.qa_pipeline.answer_generator.question_answering import ag_custom_formate, ag_custom_postprocess,\
       ru_ag_custom_answer_parse, en_ag_custom_answer_parse
 
-from ....prompts.qa_pipeline.answer_generator.question_answering import RU_AG_USER_PROMPT, EN_AG_USER_PROMPT
-from ....prompts.system import RU_SYSTEM_PROMPT, EN_SYSTEM_PROMPT
+from ......prompts.qa_pipeline.answer_generator.question_answering import RU_AG_USER_PROMPT, EN_AG_USER_PROMPT
+from ......prompts.system import RU_SYSTEM_PROMPT, EN_SYSTEM_PROMPT
 
 QA_MAIN_LOG_PATH = 'log/qa/main'
 ANSWER_GENERATION_LOG_PATH = 'log/qa/answer_generation'

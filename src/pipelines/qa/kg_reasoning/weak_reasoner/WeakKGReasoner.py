@@ -9,9 +9,10 @@ from ..utils import AbstractKGReasoner, BaseKGReasonerConfig
 from .....utils.data_structs import create_id
 from .....utils import Logger, ReturnInfo, ReturnStatus
 from .....utils.errors import STATUS_MESSAGE
+from .....utils.data_structs import QueryInfo
 from .....kg_model import KnowledgeGraphModel
 
-WKGR_MAIN_LOG_PATH = 'log/qa/kg_reasoner/weak/main'
+WKGR_MAIN_LOG_PATH = 'log/qa/kg_reasoner/reasoner/main'
 
 @dataclass
 class WeakKGReasonerConfig(BaseKGReasonerConfig):
@@ -29,8 +30,13 @@ class WeakKGReasoner(AbstractKGReasoner):
         self.kg_model = kg_model
         self.log = config.log
 
-        self.query_parser = QueryLLMParser(self.config.query_parser_config)
-        self.knowledge_comparator = KnowledgeComparator(self.kg_model, self.config.knowledge_comparator_config)
+        if self.config.query_parser_config is None:
+            self.query_parser = None
+            self.knowledge_comparator = None
+        else:
+            self.query_parser = QueryLLMParser(self.config.query_parser_config)
+            self.knowledge_comparator = KnowledgeComparator(self.kg_model, self.config.knowledge_comparator_config)
+
         self.knowledge_retriever = KnowledgeRetriever(self.kg_model, self.config.knowledge_retriever_config)
         self.answer_generator = QALLMGenerator(self.config.answer_generator_config)
 
@@ -48,16 +54,20 @@ class WeakKGReasoner(AbstractKGReasoner):
         self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
 
         answer = None
-        self.log("STAGE#1 - KEY WORDS EXTRACTION", verbose=self.config.verbose)
-        query_info, info = self.query_parser.extract_entities(query)
-        self.log(f"RESULT:\n* EXTRACTED ENTITIES AMOUNT - {len(query_info.entities)}", verbose=self.config.verbose)
+        query_info = QueryInfo(query=query)
+        self.log("STAGE#1.1 - KEY WORDS EXTRACTION", verbose=self.config.verbose)
+        if self.query_parser is None:
+            self.log("Stage #1.1 and #1.2 was omited!", verbose=self.config.verbose)
+        else:
+            info = self.query_parser.extract_entities(query_info)
+            self.log(f"RESULT:\n* EXTRACTED ENTITIES AMOUNT - {len(query_info.entities)}", verbose=self.config.verbose)
 
-        if info.status == ReturnStatus.success:
-            self.log("STAGE#2 - MATCHING KEY WORDS TO KG-NODES", verbose=self.config.verbose)
+        if self.query_parser is not None and info.status == ReturnStatus.success:
+            self.log("STAGE#1.2 - MATCHING KEY WORDS TO KG-NODES", verbose=self.config.verbose)
             info = self.knowledge_comparator.link_kgnodes_to_query(query_info)
             self.log(f"RESULT:\n* MATCHED KG-NODES AMOUNT - {len(query_info.linked_nodes)}",verbose=self.config.verbose)
 
-        if info.status == ReturnStatus.success:
+        if self.query_parser is None or info.status == ReturnStatus.success:
             self.log("STAGE#3 - RETRIEVING RELEVANT TRIPLETS FROM KG", verbose=self.config.verbose)
             retrieved_triplets, info = self.knowledge_retriever.retrieve(query_info)
             self.log(f"RESULT:\n* RETRIEVED TRIPLETS AMOUNT - {len(retrieved_triplets)}", verbose=self.config.verbose)

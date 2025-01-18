@@ -3,10 +3,10 @@ from dataclasses import dataclass, field
 
 from .configs import DEFAULT_ANSWER_GEN_TASK_CONFIG, QA_MAIN_LOG_PATH
 
-from ....utils.data_structs import Triplet, RelationType, create_id
-from ....utils.errors import STATUS_MESSAGE
-from ....agents import AgentDriver, AgentDriverConfig
-from ....utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
+from ......utils.data_structs import Triplet, RelationType, create_id
+from ......utils.errors import STATUS_MESSAGE
+from ......agents import AgentDriver, AgentDriverConfig
+from ......utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
 
 @dataclass
 class QALLMGeneratorConfig:
