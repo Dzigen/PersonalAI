@@ -1,4 +1,4 @@
-experiment_name: "bfs_dmitri_with_gigachat_full(v1.3.0)"
+experiment_name: "mixtured_both_bfs_with_gigachat_full(v1.3.0)"
 dataset_name: 'diaasqa'
 init_struct: True
 eval_dataset_path: '../../data/qa_datasets/diaasqa/qa_eval'
@@ -7,7 +7,7 @@ kg_name: 'gigachat_full'
 language: 'en'
 max_samples_per_pack: 400
 knowledge_retriever:
-  retriever_method: 'bfs'
+  retriever_method: 'mixture'
   retriever_config_path: "retriever_config"
   filter_method: 'naive'
   filter_config_path: "filter_config"
