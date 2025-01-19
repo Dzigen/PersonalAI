@@ -15,7 +15,8 @@ sys.path.insert(0, BASEDIR)
 
 from src.kg_model import KnowledgeGraphModel
 from src.pipelines.qa import QAPipelineConfig, QAPipeline
-from src.pipelines.qa import QueryLLMParserConfig, KnowledgeComparatorConfig, KnowledgeRetrieverConfig, QALLMGeneratorConfig
+from src.pipelines.qa.kg_reasoning.weak_reasoner import QueryLLMParserConfig, KnowledgeComparatorConfig, KnowledgeRetrieverConfig, QALLMGeneratorConfig
+from src.pipelines.qa.kg_reasoning import KnowledgeGraphReasonerConfig
 
 ################LOADING_HYPERPARAMETERS###################
 
@@ -44,8 +45,7 @@ QA_ELAPSED_TIME = f'{EXPERIMENT_DIR}/elapsed_time.json'
 
 HYPERPARAMS_SAVE_PATH = f'{EXPERIMENT_DIR}/hyperparams.json'
 QA_CONFIG_SAVE_PATH = f'{EXPERIMENT_DIR}/qa_config'
-RETRIEVER_CONFIG_SAVE_PATH = f'{EXPERIMENT_DIR}/retirver_config'
-FILTER_CONFIG_SAVE_PATH = f'{EXPERIMENT_DIR}/filter_config'
+REASONER_CONFIG_SAVE_PATH = f'{EXPERIMENT_DIR}/reasoner_config'
 
 ###################################
 
@@ -105,32 +105,22 @@ if HYPER_PARAMS['init_struct']:
         fd.write(json.dumps(HYPER_PARAMS, indent=1, ensure_ascii=False))
 
     # сохранить конфиги
-    retriever_config = joblib.load(HYPER_PARAMS['knowledge_retriever']['retriever_config_path'])
-    filter_config = joblib.load(HYPER_PARAMS['knowledge_retriever']['filter_config_path'])
+    reasoner_config = joblib.load(HYPER_PARAMS['kg_reasoner']['config'])
 
-    joblib.dump(retriever_config, RETRIEVER_CONFIG_SAVE_PATH)
-    joblib.dump(filter_config, FILTER_CONFIG_SAVE_PATH)
+    joblib.dump(reasoner_config, REASONER_CONFIG_SAVE_PATH)
 
 ###################################
 
 # задаём конфигурацию qa-пайплайна
 
-retriever_config = joblib.load(RETRIEVER_CONFIG_SAVE_PATH)
-filter_config = joblib.load(FILTER_CONFIG_SAVE_PATH)
+reasoner_config = joblib.load(HYPER_PARAMS['kg_reasoner']['config'])
 
-print("retriever_config:", retriever_config)
-print("filter_config:", filter_config)
+print("reasoner_config:", reasoner_config)
 
 qa_config = QAPipelineConfig(
-    query_parser_config=QueryLLMParserConfig(lang=HYPER_PARAMS['language']),
-
-    knowledge_comparator_config=KnowledgeComparatorConfig(),
-
-    knowledge_retriever_config=KnowledgeRetrieverConfig(
-        retriever_method=HYPER_PARAMS['knowledge_retriever']['retriever_method'], retriever_config=retriever_config,
-        filter_method=HYPER_PARAMS['knowledge_retriever']['filter_method'], filter_config=filter_config),
-
-    answer_generator_config=QALLMGeneratorConfig(lang=HYPER_PARAMS['language']))
+    reasoner_config=KnowledgeGraphReasonerConfig(
+        reasoner_name=HYPER_PARAMS['kg_reasoner']['name'],
+        reasoner_hyperparameters=reasoner_config))
 
 qa_pipeline = QAPipeline(kg_model, qa_config)
 
@@ -150,16 +140,16 @@ question_packs = load_dataset(HYPER_PARAMS['eval_dataset_path'])
 
 #################START_QA_PROCESS##################
 
-for pack_name, questions, _ in question_packs[11:]:
+for pack_name, questions, _ in question_packs:
 
     pack_tmp_dir = f"{TMP_GENERATED_ANSWERS_DIR}/{pack_name}"
     if not os.path.exists(pack_tmp_dir):
         os.mkdir(pack_tmp_dir)
 
     if (HYPER_PARAMS['max_samples_per_pack'] < 0) or (HYPER_PARAMS['max_samples_per_pack'] > len(questions)):
-        process = tqdm(range(52, len(questions)))
+        process = tqdm(range(len(questions)))
     else:
-        process = tqdm(range(52, HYPER_PARAMS['max_samples_per_pack']))
+        process = tqdm(range(HYPER_PARAMS['max_samples_per_pack']))
 
     for i in process:
         process.set_postfix_str(pack_name)
