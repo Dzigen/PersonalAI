@@ -34,17 +34,19 @@ bfs_config = BFSSearchConfig(
       other_triplets_num = 6
   )
 
-naive_bfs_config = NaiveBFSGraphSearchConfig(
-    max_depth=5, max_width=10, max_passed_nodes=50,
-    accepted_node_types=[NodeType.object , NodeType.hyper, NodeType.episodic])
+# naive_bfs_config = NaiveBFSGraphSearchConfig(
+#     max_depth=5, max_width=10, max_passed_nodes=50,
+#     accepted_node_types=[NodeType.object , NodeType.hyper, NodeType.episodic])
 
 
-retriever_config = MixturedGraphSearchConfig(
-    retriever1_name='bfs',
-    retriever1_config=bfs_config,
-    retriever2_name='naive_bfs',
-    retriever2_config=naive_bfs_config
-)
+# retriever_config = MixturedGraphSearchConfig(
+#     retriever1_name='bfs',
+#     retriever1_config=bfs_config,
+#     retriever2_name='naive_bfs',
+#     retriever2_config=naive_bfs_config
+# )
+
+retriever_config = bfs_config
 
 joblib.dump(retriever_config, RETRIVER_CONFIG_DUMP)
 
