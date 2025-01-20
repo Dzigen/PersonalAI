@@ -351,8 +351,8 @@ class BFSRetriever(AbstractTripletsRetriever):
             )
             return triplet
 
-        def triplet_from_hyper(text, seed_entity, obj_props, rel_props, rel_id):
-            subj_node = NodeCreator.create(name=seed_entity, n_type=NodeType.object)
+        def triplet_from_hyper(text, seed_entity, subj_props, obj_props, rel_props, rel_id):
+            subj_node = NodeCreator.create(name=seed_entity, n_type=NodeType.object, prop=subj_props)
             subj_node.id = '1'
 
             obj_node = NodeCreator.create(name=text, n_type=NodeType.hyper, prop=obj_props)
@@ -371,11 +371,11 @@ class BFSRetriever(AbstractTripletsRetriever):
 
         ex_triplets = []
         formatted_triplets = []
-        for text, seed_entity, obj_props, rel_props, rel_id in output_texts_hyper:
-            triplet = triplet_from_hyper(text, seed_entity, obj_props, rel_props, rel_id)
+        for text, seed_entity, subj_props, obj_props, rel_props, rel_id in output_texts_hyper:
+            triplet = triplet_from_hyper(text, seed_entity, subj_props, obj_props, rel_props, rel_id)
             formatted_triplets.append(triplet)
-        for text, seed_entity, obj_props, rel_props, rel_id in output_texts_episodic:
-            triplet = triplet_from_hyper(text, seed_entity, obj_props, rel_props, rel_id)
+        for text, seed_entity, subj_props, obj_props, rel_props, rel_id in output_texts_episodic:
+            triplet = triplet_from_hyper(text, seed_entity, subj_props, obj_props, rel_props, rel_id)
             formatted_triplets.append(triplet)
 
         len_he = len(formatted_triplets)
@@ -440,16 +440,19 @@ class BFSRetriever(AbstractTripletsRetriever):
                 entity_type
             )
             for element in res:
+                subj_dict = element.start_node.prop
                 obj_dict = element.end_node.prop
                 rel_dict = element.relation.prop
                 rel_id = element.relation.id
-                text = element.end_node.name.strip()
+                text = element.end_node.name
                 obj_props = {key: value for key, value in obj_dict.items() if key != "name"}
                 if self.config.do_text_pruning:
+                    text = text.strip()
                     text_chunks = text.split("\n")
                 else:
                     text_chunks = [text]
                 for text_chunk in text_chunks:
+                    init_text_chunk = copy.deepcopy(text_chunk)
                     text_chunk = text_chunk.strip()
                     if text_chunk not in texts_set:
                         num_inters = 0
@@ -474,7 +477,7 @@ class BFSRetriever(AbstractTripletsRetriever):
                                         found = True
                             if found:
                                 num_inters += 1
-                        cur_texts.append([text_chunk, seed_entity, obj_props, rel_dict, num_inters, rel_id])
+                        cur_texts.append([init_text_chunk, seed_entity, subj_dict, obj_props, rel_dict, num_inters, rel_id])
                         texts_set.add(text_chunk)
         return cur_texts, texts_set
 
@@ -521,19 +524,19 @@ class BFSRetriever(AbstractTripletsRetriever):
         for tr_type in ["hyper", "episodic"]:
             if same_types:
                 for key in retr_texts[tr_type]:
-                    cur_texts = [[text, seed_entity, obj_props, rel_props, e_id]
-                                for text, seed_entity, obj_props, rel_props, _, e_id in retr_texts[tr_type][key]]
+                    cur_texts = [[text, seed_entity, subj_props, obj_props, rel_props, e_id]
+                                for text, seed_entity, subj_props, obj_props, rel_props, _, e_id in retr_texts[tr_type][key]]
                     output_texts[tr_type] += cur_texts[:thres[tr_type]]
             else:
                 for key in retr_texts[tr_type]:
-                    cur_texts = [[text, seed_entity, obj_props, rel_props, e_id]
-                                for text, seed_entity, obj_props, rel_props, cnt, e_id in retr_texts[tr_type][key]
+                    cur_texts = [[text, seed_entity, subj_props, obj_props, rel_props, e_id]
+                                for text, seed_entity, subj_props, obj_props, rel_props, cnt, e_id in retr_texts[tr_type][key]
                                 if cnt > 0]
                     output_texts[tr_type] += cur_texts[:thres[tr_type]]
                 if not output_texts[tr_type]:
                     for key in retr_texts[tr_type]:
-                        cur_texts = [[text, seed_entity, obj_props, rel_props, e_id]
-                                    for text, seed_entity, obj_props, rel_props, _, e_id in retr_texts[tr_type][key]]
+                        cur_texts = [[text, seed_entity, subj_props, obj_props, rel_props, e_id]
+                                    for text, seed_entity, subj_props, obj_props, rel_props, _, e_id in retr_texts[tr_type][key]]
                         output_texts[tr_type] += cur_texts[:thres[tr_type]]
         return output_texts["hyper"], output_texts["episodic"]
 
