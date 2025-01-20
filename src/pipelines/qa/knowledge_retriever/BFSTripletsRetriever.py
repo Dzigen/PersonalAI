@@ -17,6 +17,7 @@ class BFSSearchConfig(BaseGraphSearchConfig):
     episodic_num: int = 15
     chain_triplets_num: int = 25
     other_triplets_num: int = 6
+    do_text_pruning: bool = False
 
 
 def process_chain(
@@ -444,7 +445,10 @@ class BFSRetriever(AbstractTripletsRetriever):
                 rel_id = element.relation.id
                 text = element.end_node.name.strip()
                 obj_props = {key: value for key, value in obj_dict.items() if key != "name"}
-                text_chunks = text.split("\n")
+                if self.config.do_text_pruning:
+                    text_chunks = text.split("\n")
+                else:
+                    text_chunks = [text]
                 for text_chunk in text_chunks:
                     text_chunk = text_chunk.strip()
                     if text_chunk not in texts_set:
