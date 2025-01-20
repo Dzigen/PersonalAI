@@ -21,7 +21,7 @@ STATUS_MESSAGE = {
     ReturnStatus.success: "Операция выполнена успешно.",
     ReturnStatus.empty_input_text: "Пустая входная строка",
     # agent solver
-    ReturnStatus.bad_formater: "Не удалось привести данные в context-формат для их дальнейшей вставки в user-prompt.",
+    ReturnStatus.bad_formater: "Не удалось вставить кастомную информацию в user-prompt.",
     ReturnStatus.bad_parser: "Не удалось разобрать ответ LLM-агента.",
     ReturnStatus.bad_postprocessor: "Не удалось привести разобранный ответ LLM-агента к заданному формату.",
     ReturnStatus.bad_user_prompt_maping: "Не удалось вставить кастомную информацию в user-prompt.",
