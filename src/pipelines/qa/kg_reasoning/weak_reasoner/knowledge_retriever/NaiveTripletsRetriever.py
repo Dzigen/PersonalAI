@@ -37,6 +37,6 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever):
 
         triplets = self.kg_model.graph_struct.db_conn.read(triplet_ids)
         self.log(f"Количество полученных трипелтов из графовой бд: {len(triplets)}", verbose=self.verbose)
-        self.log(f"Распределение типов связей в наборе извлечённых триплетов: {Counter([triplet.relation.type for triplet in triplets.values()])}", verbose=self.verbose)
+        self.log(f"Распределение типов связей в наборе извлечённых триплетов: {Counter([triplet.relation.type for triplet in triplets])}", verbose=self.verbose)
 
         return triplets
