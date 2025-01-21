@@ -2,10 +2,10 @@ from dataclasses import dataclass, field
 from typing import Tuple
 
 from .configs import DEFAULT_KW_EXTRACTION_TASK_CONFIG, QP_MAIN_LOG_PATH
-from ....utils.data_structs import QueryInfo, create_id
-from ....utils.errors import STATUS_MESSAGE
-from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
-from ....agents import AgentDriver, AgentDriverConfig
+from ......utils.data_structs import QueryInfo, create_id
+from ......utils.errors import STATUS_MESSAGE
+from ......utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
+from ......agents import AgentDriver, AgentDriverConfig
 
 @dataclass
 class QueryLLMParserConfig:
@@ -43,7 +43,7 @@ class QueryLLMParser:
         self.agent = AgentDriver.connect(config.agent_cofig)
         self.kw_extraction_solver = AgentTaskSolver(self.agent, self.config.kw_extraction_task_config)
 
-    def extract_entities(self, query: str) -> Tuple[QueryInfo, ReturnInfo]:
+    def extract_entities(self, query_info: QueryInfo) -> ReturnInfo:
         """Метод предназначен для извлечения ключевых сущностей из query-текста.
 
         :param query: Текст на естественном языке.
@@ -54,11 +54,11 @@ class QueryLLMParser:
 
         info = ReturnInfo()
         self.log("START KEY WORD EXTRACTION...", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.config.verbose)
 
         self.log("Выполнение извлечения ключевых сущностей из запроса с помощью LLM-агента...", verbose=self.config.verbose)
-        extracted_entities, status = self.kw_extraction_solver.solve(lang=self.config.lang, query=query)
+        extracted_entities, status = self.kw_extraction_solver.solve(lang=self.config.lang, query=query_info.query)
 
         if status != ReturnStatus.success:
             info.occurred_warning.append(status)
@@ -66,12 +66,13 @@ class QueryLLMParser:
         if extracted_entities is None or len(extracted_entities) == 0:
             info.status = ReturnStatus.zero_entities
             info.message = STATUS_MESSAGE[info.status]
+            query_info.entities=[]
+        else:
+            query_info.entities=extracted_entities
 
-        query_struct = QueryInfo(query=query, entities=extracted_entities)
-
-        self.log(f"RESULT: {len(extracted_entities)}", verbose=self.config.verbose)
-        for entity in extracted_entities:
+        self.log(f"RESULT: {len(query_info.entities)}", verbose=self.config.verbose)
+        for entity in query_info.entities:
             self.log(f"* {entity}", verbose=self.config.verbose)
         self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
-        return query_struct, info
+        return info

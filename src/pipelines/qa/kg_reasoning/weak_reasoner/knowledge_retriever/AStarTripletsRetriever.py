@@ -9,12 +9,12 @@ from collections import Counter
 
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig, get_nodes_path
 
-from ....utils.data_structs import QueryInfo, Triplet, NodeType
-from ....kg_model import KnowledgeGraphModel
-from ....utils.data_structs import create_id_for_node_pair, create_id
-from ....db_drivers.kv_driver.utils import KeyValueDBInstance
-from ....db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver
-from ....utils import Logger
+from ......utils.data_structs import QueryInfo, Triplet, NodeType
+from ......kg_model import KnowledgeGraphModel
+from ......utils.data_structs import create_id_for_node_pair, create_id
+from ......db_drivers.kv_driver.utils import KeyValueDBInstance
+from ......db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver
+from ......utils import Logger
 
 @dataclass
 class AStarMetricsConfig:

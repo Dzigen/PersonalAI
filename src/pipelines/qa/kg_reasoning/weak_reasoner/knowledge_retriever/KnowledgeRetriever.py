@@ -4,13 +4,13 @@ from typing import List, Tuple
 from .configs import KR_MAIN_LOG_PATH, AVAILABLE_TRIPLETS_FILTERS, AVAILABLE_TRIPLETS_RETRIEVERS
 from .utils import BaseGraphSearchConfig, BaseTripletsFilterConfig
 from .TripletsFilter import TripletsFilterConfig
-from .AStarTripletsRetriever import AStarGraphSearchConfig
+from .BFSTripletsRetriever import BFSSearchConfig
 
-from ....utils.data_structs import QueryInfo, Triplet
-from ....kg_model import KnowledgeGraphModel
-from ....utils import Logger, ReturnStatus, ReturnInfo
-from ....utils.errors import STATUS_MESSAGE
-from ....utils.data_structs import create_id
+from ......utils.data_structs import QueryInfo, Triplet
+from ......kg_model import KnowledgeGraphModel
+from ......utils import Logger, ReturnStatus, ReturnInfo
+from ......utils.errors import STATUS_MESSAGE
+from ......utils.data_structs import create_id
 
 @dataclass
 class KnowledgeRetrieverConfig:
@@ -29,8 +29,8 @@ class KnowledgeRetrieverConfig:
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
-    retriever_method: str = 'astar'
-    retriever_config: BaseGraphSearchConfig = field(default_factory=lambda: AStarGraphSearchConfig())
+    retriever_method: str = 'bfs'
+    retriever_config: BaseGraphSearchConfig = field(default_factory=lambda: BFSSearchConfig())
     filter_method: str = 'naive'
     filter_config: BaseTripletsFilterConfig = field(default_factory=lambda: TripletsFilterConfig())
     log: Logger = field(default_factory=lambda: Logger(KR_MAIN_LOG_PATH))
@@ -53,8 +53,11 @@ class KnowledgeRetriever:
         self.graph_retriever = AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method](
             kg_model, self.log, self.config.retriever_config, self.config.verbose)
 
-        self.triplets_filter = AVAILABLE_TRIPLETS_FILTERS[self.config.filter_method](
-            kg_model, self.log, self.config.filter_config, self.config.verbose)
+        if self.config.filter_method is None:
+            self.triplets_filter = None
+        else:
+            self.triplets_filter = AVAILABLE_TRIPLETS_FILTERS[self.config.filter_method](
+                kg_model, self.log, self.config.filter_config, self.config.verbose)
 
     def retrieve(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения релевантных к user-вопросу триплетов из графа знаний.
@@ -104,7 +107,7 @@ class KnowledgeRetriever:
                 self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
         else:
             filtered_triplets = triplets
-            self.log("Filtering stage was disabled. Continue.")
+            self.log("Stage was omited!", verbose=self.config.verbose)
 
         if len(filtered_triplets) == 0:
             info.status = ReturnStatus.zero_retrieved_triplets

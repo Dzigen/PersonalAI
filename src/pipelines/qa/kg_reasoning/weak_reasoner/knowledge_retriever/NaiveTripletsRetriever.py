@@ -1,11 +1,12 @@
 from typing import List
 from dataclasses import dataclass
+from collections import Counter
 
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
-from ....db_drivers.vector_driver import VectorDBInstance
-from ....kg_model import KnowledgeGraphModel
-from ....utils import Logger
-from ....utils.data_structs import QueryInfo, Triplet, create_id
+from ......db_drivers.vector_driver import VectorDBInstance
+from ......kg_model import KnowledgeGraphModel
+from ......utils import Logger
+from ......utils.data_structs import QueryInfo, Triplet, create_id
 
 @dataclass
 class NaiveGraphSearchConfig(BaseGraphSearchConfig):
@@ -36,5 +37,6 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever):
 
         triplets = self.kg_model.graph_struct.db_conn.read(triplet_ids)
         self.log(f"Количество полученных трипелтов из графовой бд: {len(triplets)}", verbose=self.verbose)
+        self.log(f"Распределение типов связей в наборе извлечённых триплетов: {Counter([triplet.relation.type for triplet in triplets.values()])}", verbose=self.verbose)
 
         return triplets

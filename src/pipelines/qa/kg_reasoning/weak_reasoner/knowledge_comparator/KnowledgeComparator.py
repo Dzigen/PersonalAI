@@ -1,11 +1,11 @@
 from dataclasses import dataclass, field
 
 from .configs import KC_MAIN_LOG_PATH
-from ....utils import Logger, ReturnStatus, ReturnInfo
-from ....utils.errors import STATUS_MESSAGE
-from ....utils.data_structs import QueryInfo, create_id
-from ....kg_model import KnowledgeGraphModel
-from ....db_drivers.vector_driver import VectorDBInstance
+from ......utils import Logger, ReturnStatus, ReturnInfo
+from ......utils.errors import STATUS_MESSAGE
+from ......utils.data_structs import QueryInfo, create_id
+from ......kg_model import KnowledgeGraphModel
+from ......db_drivers.vector_driver import VectorDBInstance
 
 @dataclass
 class KnowledgeComparatorConfig:
@@ -45,7 +45,7 @@ class KnowledgeComparator:
         self.log = self.config.log
         self.kg_model = kg_model
 
-    def link_kgnodes_to_query(self, query_structure: QueryInfo) -> ReturnInfo:
+    def link_kgnodes_to_query(self, query_info: QueryInfo) -> ReturnInfo:
         """Метод предназначен для сопоставления (матчинга) сущностей, извлечённых из user-вопроса, с вершинами из графа знаний ассистента.
 
         :param query_structure: Структура данных, которая хранит user-вопрос и извлечённые из него сущности.
@@ -55,12 +55,12 @@ class KnowledgeComparator:
         """
 
         self.log("START MATCHING KEY WORDS ...", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_structure.query)}", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION: {query_structure.query}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.config.verbose)
 
         info = ReturnInfo()
         linked_nodes_by_entities, linked_nodes = [], []
-        for entity in query_structure.entities:
+        for entity in query_info.entities:
             entity_embedding = self.kg_model.embeddings_struct.embedder.encode_queries([entity])[0]
             entity_instance = VectorDBInstance(embedding=entity_embedding)
 
@@ -78,16 +78,17 @@ class KnowledgeComparator:
                 cur_unique_names = [entity] + cur_documents[:self.config.max_k]
             linked_nodes_by_entities.append(cur_unique_names)
 
-        query_structure.linked_nodes = linked_nodes
-        query_structure.linked_nodes_by_entities = linked_nodes_by_entities
+        query_info.linked_nodes = linked_nodes
+        query_info.linked_nodes_by_entities = linked_nodes_by_entities
 
-        if len(query_structure.linked_nodes) == 0:
+        if len(query_info.linked_nodes) == 0:
             info.status = ReturnStatus.zero_linked_nodes
             info.message = STATUS_MESSAGE[info.status]
 
-        self.log(f"RESULT: {len(query_structure.linked_nodes)}", verbose=self.config.verbose)
-        for node in query_structure.linked_nodes:
+        self.log(f"RESULT: {len(query_info.linked_nodes)}", verbose=self.config.verbose)
+        for node in query_info.linked_nodes:
             self.log(f"*[{node.id}] {node.document}", verbose=self.config.verbose)
+
         self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
         return info

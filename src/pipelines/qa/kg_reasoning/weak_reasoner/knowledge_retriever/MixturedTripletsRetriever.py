@@ -6,9 +6,9 @@ from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarTripletsRetriever
 from .BFSTripletsRetriever import BFSSearchConfig, BFSRetriever
 from .NaiveBFSTripletsRetriever import NaiveBFSTripletsRetriever
-from ....utils.data_structs import QueryInfo, Triplet, create_id
-from ....kg_model import KnowledgeGraphModel
-from ....utils import Logger
+from ......utils.data_structs import QueryInfo, Triplet, create_id
+from ......kg_model import KnowledgeGraphModel
+from ......utils import Logger
 
 @dataclass
 class MixturedGraphSearchConfig(BaseGraphSearchConfig):

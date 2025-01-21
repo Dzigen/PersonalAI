@@ -1,12 +1,12 @@
 from typing import List, Tuple
 from dataclasses import dataclass, field
 
-from .configs import DEFAULT_ANSWER_GEN_TASK_CONFIG, QA_MAIN_LOG_PATH
+from .configs import DEFAULT_ANSWER_GEN_TASK_CONFIG, AG_MAIN_LOG_PATH
 
-from ....utils.data_structs import Triplet, RelationType, create_id
-from ....utils.errors import STATUS_MESSAGE
-from ....agents import AgentDriver, AgentDriverConfig
-from ....utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
+from ......utils.data_structs import Triplet, RelationType, create_id
+from ......utils.errors import STATUS_MESSAGE
+from ......agents import AgentDriver, AgentDriverConfig
+from ......utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
 
 @dataclass
 class QALLMGeneratorConfig:
@@ -31,7 +31,7 @@ class QALLMGeneratorConfig:
 
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
 
-    log: Logger = field(default_factory=lambda: Logger(QA_MAIN_LOG_PATH))
+    log: Logger = field(default_factory=lambda: Logger(AG_MAIN_LOG_PATH))
     verbose: bool = False
 
 class QALLMGenerator:

@@ -6,8 +6,6 @@ eval_bs_model: "google/electra-base-discriminator"
 kg_name: 'gigachat_full'
 language: 'en'
 max_samples_per_pack: 400
-knowledge_retriever:
-  retriever_method: 'bfs'
-  retriever_config_path: "retriever_config"
-  filter_method: 'naive'
-  filter_config_path: "filter_config"
+kg_reasoner:
+  name: 'weak'
+  config: "reasoner_config"
