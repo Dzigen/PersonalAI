@@ -51,7 +51,25 @@ EMBEDDER_CONFIG_PATH = f"{CREATE_DIR_PATH}/embedder_config"
 NODESDB_CONFIG_PATH = f"{CREATE_DIR_PATH}/nodesdb_config"
 TRIPLETSDB_CONFIG_PATH = f"{CREATE_DIR_PATH}/tripletsdb_config"
 
-###########FOLDERS INIT#########3
+# if HYPER_PARAMS['need_to_clear']:
+#     u_answer = input("Are you sure is need to clear knowledge graph? (y/n): ")
+#     if u_answer == 'n':
+#         raise AssertionError
+#     elif u_answer == 'y':
+#         pass
+#     else:
+#         raise ValueError
+# else:
+#     u_answer = input("Are you sure is no need to clear knowledge graph? (y/n): ")
+#     if u_answer == 'n':
+#         raise AssertionError
+#     elif u_answer == 'y':
+#         pass
+#     else:
+#         raise ValueError
+
+###########FOLDERS INIT#########
+
 
 if HYPER_PARAMS['init_struct']:
 
