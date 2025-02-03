@@ -31,6 +31,23 @@ PARAMS_FILE_PATH = f'{CREATE_DIR_PATH}/params.yaml'
 with open(PARAMS_FILE_PATH, 'r') as stream:
     HYPER_PARAMS = yaml.safe_load(stream)
 
+# if HYPER_PARAMS['need_to_clear']:
+#     u_answer = input("Are you sure is need to clear knowledge graph? (y/n): ")
+#     if u_answer == 'n':
+#         raise AssertionError
+#     elif u_answer == 'y':
+#         pass
+#     else:
+#         raise ValueError
+# else:
+#     u_answer = input("Are you sure is no need to clear knowledge graph? (y/n): ")
+#     if u_answer == 'n':
+#         raise AssertionError
+#     elif u_answer == 'y':
+#         pass
+#     else:
+#         raise ValueError
+
 BASE_PATH = f"{BASEDIR}/data/knowledge_graphs/"
 DATASET_PATH = BASE_PATH + f"{HYPER_PARAMS['DATASET_NAME']}/"
 KG_PATH = DATASET_PATH + f"{HYPER_PARAMS['KNOWLEDGE_GRAPH_NAME']}/"
