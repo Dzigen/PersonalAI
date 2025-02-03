@@ -1,4 +1,5 @@
 from typing import List
+import re
 
 from ....utils import Triplet, TripletCreator
 
@@ -21,16 +22,15 @@ def en_ag_custom_answer_parse(raw_response: str, **kwargs) -> str:
     if len(raw_response) < 1:
         raise ValueError
 
-    found_line = ""
-    for line in raw_response.strip().split("\n"):
-        if "Final answer 3" in line:
-            found_line = line
-            break
-    if found_line:
-        answer = found_line.split("Final answer 3:")[-1].strip()
-    else:
-        answer = raw_response.strip()
+    answer_pos = re.search("\[Answer\]: ", raw_response)
 
+    # Ответ не соответствует формату
+    if answer_pos is None:
+        raise ValueError
+
+    answer = raw_response[answer_pos.span(0)[0]:]
+
+    # Пустой ответ
     if len(answer) < 1:
         raise ValueError
 
@@ -47,8 +47,15 @@ def ru_ag_custom_answer_parse(raw_response: str, **kwargs) -> str:
     if len(raw_response) < 1:
         raise ValueError
 
-    answer = raw_response.strip()
+    answer_pos = re.search("\[Ответ\]: ", raw_response)
 
+    # Ответ не соответствует формату
+    if answer_pos is None:
+        raise ValueError
+
+    answer = raw_response[answer_pos.span(0)[0]:]
+
+    # Пустой ответ
     if len(answer) < 1:
         raise ValueError
 

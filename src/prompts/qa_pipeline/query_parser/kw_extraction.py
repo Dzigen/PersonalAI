@@ -2,38 +2,40 @@
 
 EN_KW_EXTRACTION_SYSTEM_PROMPT = \
 '''
-You are an expert system that can extract [Key Entities] from a given [Text]. [Key Entities] is a noun or an object like persone, device, company and etc. Extracted entities must be presented in the following format: "<entitie1> | <entitie2> | ... | <entitieN>", where <entitie...> is extracted [Key Entities]. Your response only must contains extracted entities and do not include additional explanations of the obtained result.
+You are an expert system that can extract [Key entities] from a given [Text]. [Key entities] is a noun or an object like persone, device, company and etc. Extracted entities must be presented in the following format: "<entitie1> | <entitie2> | ... | <entitieN>", where <entitie...> is extracted [Key entities]. Your response only must contains extracted entities and do not include additional explanations of the obtained result.
 
-Examples of texts and their corresponding extracted entities are listed below:
-* Example 1
+Examples of [Texts] and their corresponding extracted [Key entities] are listed below:
+#### Example 1
 [Text]: Kayla has positive, negative or neutral opinion about video of Xiaomi 10Pro?
-[Key Entites]: Kayla | opinion | video | Xiaomi 10Pro
-* Example 2
+[Key entites]: Kayla | opinion | video | Xiaomi 10Pro
+#### Example 2
 [Text]: Which device is better in battery life: Apple or k30u?
-[Key Entites]: device | battery life | Apple | k30u.
-* Example 3
+[Key entites]: device | battery life | Apple | k30u.
+#### Example 3
 [Text]: The majority of speakers have positive, neutral or negative sentiment about screen of Samsung?
-[Key Entites]: speakers | sentiment | screen | Samsung
-* Example 4
+[Key entites]: speakers | sentiment | screen | Samsung
+#### Example 4
 [Text]: Which people have positive opinion about video of Xiaomi 10Pro on 25.11.2020?
-[Key Entites]: people | opinion | video | Xiaomi 10Pro | 25.11.2020
+[Key entites]: people | opinion | video | Xiaomi 10Pro | 25.11.2020
 '''
 
 EN_KW_EXTRACTION_USER_PROMPT = \
-'''Extract [Key Entites] from the given [Text].
+'''
+Extract [Key entites] from the given [Text].
 
 [Text]: {text}'''
 
 EN_KW_EXTRACTION_ASSISTANT_PROMPT = \
-'''[Ключевые Сущности]: '''
+'''
+[Key entites]: '''
 
 ### PROMPT IN RUSSIAN ###
 
 RU_KW_EXTRACTION_SYSTEM_PROMPT = \
 '''
-Ты экспертная система, которая может извлекать [Ключевые Сущности] из заданного [Текста]. [Ключевые Сущности] — это существительное или объект, например персона, устройство, компания и т.п. Извлечённые сущности должны быть представлены в следующем формате: "<entitie1> | <entitie2> | ... | <entitieN>", где <entitie...> это извлечённые [Ключевые Сущности]. Твой ответ должен содежать только извлечённые сущности и не включать дополнительных пояснений полученного результата.
+Ты экспертная система, которая может извлекать [Ключевые сущности] из заданного [Текста]. [Ключевые сущности] — это существительное или объект, например персона, устройство, компания и т.п. Извлечённые сущности должны быть представлены в следующем формате: "<entitie1> | <entitie2> | ... | <entitieN>", где <entitie...> это извлечённые [Ключевые сущности]. Твой ответ должен содежать только извлечённые сущности и не включать дополнительных пояснений полученного результата.
 
-Примеры текстов и соответствующих им извлеченных сущностей приведены ниже.
+Примеры [Текстов] и соответствующих им извлеченных [Ключевых сущностей] приведены ниже.
 * Пример 1
 [Текст]: У Кайлы положительное, отрицательное или нейтральное мнение о видео Xiaomi 10Pro?
 [Ключевые сущности]: Кайла | мнение | видео | Xiaomi 10Pro
@@ -49,9 +51,11 @@ RU_KW_EXTRACTION_SYSTEM_PROMPT = \
 '''
 
 RU_KW_EXTRACTION_USER_PROMPT = \
-'''Извлеки [Ключевые Сущности] из данного [Текста].
+'''
+Извлеки [Ключевые сущности] из данного [Текста].
 
 [Текст]: {text}'''
 
 RU_KW_EXTRACTION_ASSISTANT_PROMPT = \
-'''[Ключевые Сущности]: '''
+'''
+[Ключевые сущности]: '''
