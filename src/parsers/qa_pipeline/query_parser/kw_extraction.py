@@ -15,11 +15,19 @@ def kwe_custom_parse(raw_response: str, **kwargs) -> List[str]:
     :return: Разобранный список ключевых сущностей из ответа LLM-агента.
     :rtype: List[str]
     """
+
+    # Пустой ответ
     if len(raw_response) < 1:
         raise ValueError
 
-    entities = list(filter(lambda item: len(item) > 0, list(map(lambda item: item.strip(), raw_response.strip('.;,').split('|')))))
-    return entities
+    extracted_entities = list(map(lambda item: item.strip(), raw_response.split('|')))
+
+    # Ошибка в формате ответа
+    for entitie in extracted_entities:
+        if len(entitie) < 1:
+            raise ValueError
+
+    return extracted_entities
 
 def kwe_custom_postprocess(parsed_response: List[str], **kwargs) -> List[str]:
     if len(parsed_response) < 1:

@@ -1,27 +1,57 @@
-EN_KW_EXTRACTION_USER_PROMPT = \
-'''You are an expert system that can extract key entities from text. Key entities is a noun or an object like persone, device, company and etc. Extract such entities from the given text and present the results in the following format: <entitie1> | <entitie2> | ... | <entitieN>. Generate only entities and dont return some additional text. Examples of texts and extracted entities are listed below:
-Text 1: Kayla has positive, negative or neutral opinion about video of Xiaomi 10Pro?
-Entities 1: Kayla | opinion | video | Xiaomi 10Pro.
-Text 2: Which device is better in battery life: Apple or k30u?
-Entities 2: device | battery life | Apple | k30u.
-Text 3: The majority of speakers have positive, neutral or negative sentiment about screen of Samsung?
-Entities 3: speakers | sentiment | screen | Samsung.
-Text 4: Which people have positive opinion about video of Xiaomi 10Pro on 25.11.2020?
-Entities 4: people | opinion | video | Xiaomi 10Pro | 25.11.2020.
+### PROMPT IN ENGLISH ###
 
-Text: {text}
-Entities: '''
+EN_KW_EXTRACTION_SYSTEM_PROMPT = \
+'''
+You are an expert system that can extract [Key Entities] from a given [Text]. [Key Entities] is a noun or an object like persone, device, company and etc. Extracted entities must be presented in the following format: "<entitie1> | <entitie2> | ... | <entitieN>", where <entitie...> is extracted [Key Entities]. Your response only must contains extracted entities and do not include additional explanations of the obtained result.
+
+Examples of texts and their corresponding extracted entities are listed below:
+* Example 1
+[Text]: Kayla has positive, negative or neutral opinion about video of Xiaomi 10Pro?
+[Key Entites]: Kayla | opinion | video | Xiaomi 10Pro
+* Example 2
+[Text]: Which device is better in battery life: Apple or k30u?
+[Key Entites]: device | battery life | Apple | k30u.
+* Example 3
+[Text]: The majority of speakers have positive, neutral or negative sentiment about screen of Samsung?
+[Key Entites]: speakers | sentiment | screen | Samsung
+* Example 4
+[Text]: Which people have positive opinion about video of Xiaomi 10Pro on 25.11.2020?
+[Key Entites]: people | opinion | video | Xiaomi 10Pro | 25.11.2020
+'''
+
+EN_KW_EXTRACTION_USER_PROMPT = \
+'''Extract [Key Entites] from the given [Text].
+
+[Text]: {text}'''
+
+EN_KW_EXTRACTION_ASSISTANT_PROMPT = \
+'''[Ключевые Сущности]: '''
+
+### PROMPT IN RUSSIAN ###
+
+RU_KW_EXTRACTION_SYSTEM_PROMPT = \
+'''
+Ты экспертная система, которая может извлекать [Ключевые Сущности] из заданного [Текста]. [Ключевые Сущности] — это существительное или объект, например персона, устройство, компания и т.п. Извлечённые сущности должны быть представлены в следующем формате: "<entitie1> | <entitie2> | ... | <entitieN>", где <entitie...> это извлечённые [Ключевые Сущности]. Твой ответ должен содежать только извлечённые сущности и не включать дополнительных пояснений полученного результата.
+
+Примеры текстов и соответствующих им извлеченных сущностей приведены ниже.
+* Пример 1
+[Текст]: У Кайлы положительное, отрицательное или нейтральное мнение о видео Xiaomi 10Pro?
+[Ключевые сущности]: Кайла | мнение | видео | Xiaomi 10Pro
+* Пример 2
+[Текст]: Какое устройство лучше по времени работы от батареи: Apple или k30u?
+[Ключевые сущности]: устройство | время работы от батареи | Apple | k30u.
+* Пример 3
+[Текст]: Большинство говорящих положительно, нейтрально или отрицательно относятся к экрану Samsung?
+[Ключевые сущности]: динамики | настроение | экран | Samsung
+* Пример 4
+[Текст]: Какие люди имеют положительное мнение о видео Xiaomi 10Pro от 25.11.2020?
+[Ключевые сущности]: люди | мнение | видео | Xiaomi 10Pro | 25.11.2020
+'''
 
 RU_KW_EXTRACTION_USER_PROMPT = \
-'''Вы экспертная система, которая может извлекать ключевые сущности из текста. Ключевые сущности — это существительное или объект, например персона, устройство, компания и т. д. Извлеките такие сущности из заданного текста и представьте результаты в следующем формате: <entitie1> | <entitie2> | ... | <entitieN>. Сгенерируйте только сущности и не возвращайте дополнительный текст. Примеры текстов и извлеченных сущностей приведены ниже:
-Текст 1: У Кайлы положительное, отрицательное или нейтральное мнение о видео Xiaomi 10Pro?
-Сущности 1: Кайла | мнение | видео | Xiaomi 10Pro.
-Текст 2: Какое устройство лучше по времени работы от батареи: Apple или k30u?
-Сущности 2: устройство | время работы от батареи | Apple | k30u.
-Текст 3: Большинство говорящих положительно, нейтрально или отрицательно относятся к экрану Samsung?
-Сущности 3: динамики | настроение | экран | Samsung.
-Текст 4: Какие люди имеют положительное мнение о видео Xiaomi 10Pro от 25.11.2020?
-Сущности 4: люди | мнение | видео | Xiaomi 10Pro | 25.11.2020.
+'''Извлеки [Ключевые Сущности] из данного [Текста].
 
-Текст: {text}
-Сущности: '''
+[Текст]: {text}'''
+
+RU_KW_EXTRACTION_ASSISTANT_PROMPT = \
+'''[Ключевые Сущности]: '''

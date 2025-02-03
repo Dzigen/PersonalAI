@@ -23,7 +23,7 @@ class QueryLLMParserConfig:
     :type verbose: bool
     """
     lang: str = 'auto'
-    agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
+    agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     kw_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_KW_EXTRACTION_TASK_CONFIG)
 
     log: Logger = field(default_factory=lambda: Logger(QP_MAIN_LOG_PATH))
@@ -40,7 +40,7 @@ class QueryLLMParser:
         self.config = config
         self.log = self.config.log
 
-        self.agent = AgentDriver.connect(config.agent_cofig)
+        self.agent = AgentDriver.connect(config.agent_config)
         self.kw_extraction_solver = AgentTaskSolver(self.agent, self.config.kw_extraction_task_config)
 
     def extract_entities(self, query_info: QueryInfo) -> ReturnInfo:
