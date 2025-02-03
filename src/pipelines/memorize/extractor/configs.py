@@ -1,12 +1,14 @@
 from ....utils import AgentTaskSolverConfig, AgentTaskSuite, Logger
 
 from ....parsers.memorize_pipeline.extractor.triplet_extraction import etriplets_custom_parse, etriplets_custom_formate, etriplets_custom_postprocess
-from ....prompts.memorize_pipeline.extractor.triplet_extraction import EN_TRIPLETS_EXTRACTION_SYSTEM_PROMPT, EN_TRIPLETS_EXTRACTION_USER_PROMPT,\
-      RU_TRIPLETS_EXTRACTION_SYSTEM_PROMPT, RU_TRIPLETS_EXTRACTION_USER_PROMPT
+from ....prompts.memorize_pipeline.extractor.triplet_extraction import \
+    EN_TRIPLETS_EXTRACTION_SYSTEM_PROMPT, EN_TRIPLETS_EXTRACTION_USER_PROMPT, EN_TRIPLETS_ASSISTANT_PROMPT,\
+        RU_TRIPLETS_EXTRACTION_SYSTEM_PROMPT, RU_TRIPLETS_EXTRACTION_USER_PROMPT, RU_TRIPLETS_ASSISTANT_PROMPT
 
 from ....parsers.memorize_pipeline.extractor.thesis_extraction import ethesises_custom_parse, ethesises_custom_formate, ethesises_custom_postprocess
-from ....prompts.memorize_pipeline.extractor.thesis_extraction import EN_THESISES_EXTRACTION_SYSTEM_PROMPT, EN_THESISES_EXTRACTION_USER_PROMPT,\
-      RU_THESISES_EXTRACTION_SYSTEM_PROMPT, RU_THESISES_EXTRACTION_USER_PROMPT
+from ....prompts.memorize_pipeline.extractor.thesis_extraction import \
+    EN_THESISES_EXTRACTION_SYSTEM_PROMPT, EN_THESISES_EXTRACTION_USER_PROMPT, EN_THESISES_EXTRACTION_ASSISTANT_PROMPT,\
+        RU_THESISES_EXTRACTION_SYSTEM_PROMPT, RU_THESISES_EXTRACTION_USER_PROMPT, RU_THESISES_EXTRACTION_ASSISTANT_PROMPT
 
 MEM_EXTRACTOR_MAIN_LOG_PATH = "log/memorize/extractor/main"
 MEM_EXTRACT_TRIPLETS_LOG_PATH = "log/memorize/extractor/extract_triplets"
@@ -19,7 +21,7 @@ MEM_EXTRACT_THESISES_LOG_PATH = "log/memorize/extractor/extract_thesises"
 EN_EXTRACT_TRIPLETS_SUITE = AgentTaskSuite(
     system_prompt=EN_TRIPLETS_EXTRACTION_SYSTEM_PROMPT,
     user_prompt=EN_TRIPLETS_EXTRACTION_USER_PROMPT,
-    assistant_prompt=None,
+    assistant_prompt=EN_TRIPLETS_ASSISTANT_PROMPT,
     parse_answer_func=etriplets_custom_parse,
     postprocess_answer_func=etriplets_custom_postprocess
 )
@@ -27,7 +29,7 @@ EN_EXTRACT_TRIPLETS_SUITE = AgentTaskSuite(
 RU_EXTRACT_TRIPLETS_SUITE = AgentTaskSuite(
     system_prompt=RU_TRIPLETS_EXTRACTION_SYSTEM_PROMPT,
     user_prompt=RU_TRIPLETS_EXTRACTION_USER_PROMPT,
-    assistant_prompt=None,
+    assistant_prompt=RU_TRIPLETS_ASSISTANT_PROMPT,
     parse_answer_func=etriplets_custom_parse,
     postprocess_answer_func=etriplets_custom_postprocess
 )
@@ -45,7 +47,7 @@ DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG = AgentTaskSolverConfig(
 EN_EXTRACT_THESISES_SUITE = AgentTaskSuite(
     system_prompt=EN_THESISES_EXTRACTION_SYSTEM_PROMPT,
     user_prompt=EN_THESISES_EXTRACTION_USER_PROMPT,
-    assistant_prompt=None,
+    assistant_prompt=EN_THESISES_EXTRACTION_ASSISTANT_PROMPT,
     parse_answer_func=ethesises_custom_parse,
     postprocess_answer_func=ethesises_custom_postprocess
 )
@@ -53,7 +55,7 @@ EN_EXTRACT_THESISES_SUITE = AgentTaskSuite(
 RU_EXTRACT_THESISES_SUITE = AgentTaskSuite(
     system_prompt=RU_THESISES_EXTRACTION_SYSTEM_PROMPT,
     user_prompt=RU_THESISES_EXTRACTION_USER_PROMPT,
-    assistant_prompt=None,
+    assistant_prompt=RU_THESISES_EXTRACTION_ASSISTANT_PROMPT,
     parse_answer_func=ethesises_custom_parse,
     postprocess_answer_func=ethesises_custom_postprocess
 )
