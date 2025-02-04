@@ -1,7 +1,7 @@
 ### PROMPT IN ENGLISH ###
 
 EN_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
-'''Objective: The main goal is to meticulously gather information from the text and organize this data into a clear, structured knowledge graph.
+'''Objective: The main goal is to meticulously gather information from the input [Text] and organize this data into a clear, structured knowledge graph.
 
 Guidelines for Building the Knowledge Graph:
 
@@ -19,25 +19,30 @@ Several triplets can be extracted, that contain information about the same node.
 Other examples of triplets: "room z, contains, black locker"; "room x, has exit, east", "apple, is on, table", "key, is in, locker", "apple, to be, grilled", "potato, to be, sliced", "stove, used for, frying", "recipe, requires, green apple", "recipe, requires, potato".
 Do not include triplets that state the current location of an agent like "you, are in, location".
 Do not use "none" as one of the objects.
-If there is information that you read something, do not forget to incluse triplets that state that entitie that you read contains information that you extract.'''
-
-EN_TRIPLETS_EXTRACTION_USER_PROMPT = \
-'''Text: {text}
+If there is information that you read something, do not forget to incluse triplets that state that entitie that you read contains information that you extract.
 
 Remember that triplets must be extracted in format: "subject_1, relation_1, object_1; subject_2, relation_2, object_2; ..."
 This is important
 Do not separate triplets with new line, separate triplets with ";". Every triplet must contain strictly two "," characters.
 THIS IS IMPORTANT!!!
-Remember that triplets must be extracted in format: "subject_1, relation_1, object_1; subject_2, relation_2, object_2; ..."'''
+Remember that triplets must be extracted in format: "subject_1, relation_1, object_1; subject_2, relation_2, object_2; ..."
+
+As a response generate only extracted triplets in the format, described above and do not include additional explanations of the obtained result.
+'''
+
+EN_TRIPLETS_EXTRACTION_USER_PROMPT = \
+'''
+[Text]:
+{text} '''
 
 EN_TRIPLETS_ASSISTANT_PROMPT = \
 '''
-Extracted triplets: '''
+[Extracted triplets]: '''
 
 ### PROMPT IN RUSSIAN ###
 
 RU_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
-'''Задача: Основная цель - скрупулезно собрать информацию из текста и организовать эти данные в четкий, структурированный граф знаний.
+'''Задача: Основная цель - скрупулезно собрать информацию из входного [Текста] и организовать эти данные в четкий, структурированный граф знаний.
 
 Рекомендации по построению графа знаний:
 
@@ -51,15 +56,19 @@ RU_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
 Между отдельными частями наблюдений могут существовать связи. Например, если в начале наблюдения говорится, что вы находитесь в локации, а в конце - что есть выход на восток, тебе следует извлечь триплет: 'локация, имеет выход, восток'.
 Можно извлечь несколько триплетов, содержащих информацию об одном и том же узле. Например, "кухня, содержит, яблоко", "кухня, содержит, стол", "яблоко, находится на, стол". Не пропускай этот тип связей.
 Другие примеры триплетов: "комната z, содержит, черный шкафчик"; "комната x, имеет выход на, восток", "яблоко, лежит на, стол", "ключ, находится в, шкафчик", "яблоко, нужно приготовить на, гриль".
-Не используй "none" в качестве одной из сущностей.'''
-
-RU_TRIPLETS_EXTRACTION_USER_PROMPT = \
-'''Текст: {text}
+Не используй "none" в качестве одной из сущностей.
 
 Помни, что триплеты должны быть извлечены в формате: "субъект_1, отношение_1, объект_1; субъект_2, отношение_2, объект_2; ...".
 Это важно
-Не разделяй триплеты символом переноса строки, разделяйте триплеты символом ";". Каждый триплет должен содержать строго два символа ",".'''
+Не разделяй триплеты символом переноса строки, разделяйте триплеты символом ";". Каждый триплет должен содержать строго два символа ",".
+
+В качестве ответа сгенерируй только извлеченные триплеты в формате, описанном выше, и не включай дополнительные пояснений результата.
+'''
+
+RU_TRIPLETS_EXTRACTION_USER_PROMPT = \
+'''[Текст]:
+{text} '''
 
 RU_TRIPLETS_ASSISTANT_PROMPT = \
 '''
-Извлеченные триплеты: '''
+[Извлеченные триплеты]: '''

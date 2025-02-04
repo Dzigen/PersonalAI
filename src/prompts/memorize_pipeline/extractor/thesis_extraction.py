@@ -1,13 +1,13 @@
 ### PROMPT IN ENGLISH ###
 
 EN_THESISES_EXTRACTION_SYSTEM_PROMPT = \
-'''Objective: The main goal is to meticulously gather information from input text and organize this data into a clear, structured knowledge graph.
+'''Objective: The main goal is to meticulously gather information from input [Text] and organize this data into a clear, structured knowledge graph.
 
 Guidelines for Building the Knowledge Graph:
 
 Creating Nodes and Thesises: Nodes should depict entities or concepts, similar to Wikipedia nodes. Use a structured thesises format to capture data. For example, from "Albert Einstein, born in Germany, is known for developing the theory of relativity" extract "Albert Einstein was born in Germany; ['Albert Einstein', 'Germany', 'birth']. Albert Einstein developed Theory of Relativity; ['Albert Einstein', 'developing', 'Theory of Relativity'].".
 You should extract only concrete knowledges, any assumptions must be described as hypothesis.
-For example, from phrase "John have scored many points and potentially will be winner" you should extract "John scored many points; ['John', 'scoring', 'point']. John could be winner; ['John', 'winner']." and should not extract "John will be winner".
+For example, from "John have scored many points and potentially will be winner" you should extract "John scored many points; ['John', 'scoring', 'point']. John could be winner; ['John', 'winner']." and should not extract "John will be winner".
 Remember that nodes must be an atomary units while thesis can be more complex and long.
 If observation states that you take item, the triplet shoud be: "item is in inventory" and nothing else.
 
@@ -21,24 +21,29 @@ If there is information that you read something, do not forget to incluse thesis
 Thesises MUST BE comprehension and consistent, so you can make them in form of sentense. You better make a much longer thesis than split it into two which inconsistent separately.
 For example, you better extract thesis "North exit from kitchen is blocked by door" than "kitchen has door" and "north exit is blocked by door" because without context of kitchen "north exit is blocked by door" can be related to every room at home.
 Entities must not include verbs and any other words which described motion, properties and etc.
-All the entities must be the real world objects or abstract concept.'''
+All the entities must be the real world objects or abstract concept.
 
-EN_THESISES_EXTRACTION_USER_PROMPT = \
-'''Text: {text}
 Remember that thesises must be extracted in format: "thesis_1; [list of entites for thesis_1]. thesis2; [list of entites for thesis_2]. etc.
 This is important
 Remember that thesises must be extracted in format: "thesis_1; [list of entites for thesis_1]. thesis2; [list of entites for thesis_2]. etc.
 THIS IS IMPORTANT!!!
-Remember that thesises must be extracted in format: "thesis_1; [list of entites for thesis_1]. thesis2; [list of entites for thesis_2]. etc.'''
+Remember that thesises must be extracted in format: "thesis_1; [list of entites for thesis_1]. thesis2; [list of entites for thesis_2]. etc.
+
+As a response generate only extracted thesises in the format, described above and do not include additional explanations of the obtained result.
+'''
+
+EN_THESISES_EXTRACTION_USER_PROMPT = \
+'''[Text]:
+{text} '''
 
 EN_THESISES_EXTRACTION_ASSISTANT_PROMPT = \
 '''
-Extracted thesises: '''
+[Extracted thesises]: '''
 
 ### PROMPT IN RUSSIAN ###
 
 RU_THESISES_EXTRACTION_SYSTEM_PROMPT = \
-'''Задача: Основная цель - тщательно собрать информацию из входного текста и организовать эти данные в четкий, структурированный граф знаний.
+'''Задача: Основная цель - тщательно собрать информацию из входного [Текста] и организовать эти данные в четкий, структурированный граф знаний.
 
 Руководство по построению графа знаний:
 
@@ -54,12 +59,18 @@ RU_THESISES_EXTRACTION_SYSTEM_PROMPT = \
 Не используй "none" в качестве одного из узлов.
 Тезисы должны быть понятными и последовательными, поэтому ты можешь оформить их в виде предложений. Лучше сделать более длинный тезис, чем разделить его на два, которые будут противоречить друг другу.
 Например, лучше составить тезис "Северный выход из кухни заблокирован дверью", чем "в кухне есть дверь" и "северный выход заблокирован дверью".
-потому что без контекста кухни "северный выход заблокирован дверью" может относиться к любой комнате дома.'''
+потому что без контекста кухни "северный выход заблокирован дверью" может относиться к любой комнате дома.
+
+Помни, что тезисы должны быть извлечены в формате: "тезис_1; [список объектов для тезиса_1]. тезис2; [список объектов для тезиса_2]." и т. д.
+
+В качестве ответа сгенерируй только извлеченные тезисы в формате, описанном выше, и не включай дополнительные пояснений результата.
+'''
 
 RU_THESISES_EXTRACTION_USER_PROMPT = \
-'''Текст: {text}
-Помни, что тезисы должны быть извлечены в формате: "тезис_1; [список объектов для тезиса_1]. тезис2; [список объектов для тезиса_2]." и т. д.'''
+'''
+[Текст]:
+{text}'''
 
 RU_THESISES_EXTRACTION_ASSISTANT_PROMPT = \
 '''
-Извлечённые тезисы: '''
+[Извлечённые тезисы]: '''

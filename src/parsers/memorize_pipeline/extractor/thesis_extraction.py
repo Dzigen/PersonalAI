@@ -32,7 +32,7 @@ def ethesises_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, List[
             #raise ValueError
 
         raw_thesis, raw_entities = raw_thesis.split(";")
-        thesis = raw_thesis.strip('.-* ')
+        thesis = raw_thesis.strip('.-* "\'\n')
 
         try:
             entities = ast.literal_eval(raw_entities.strip(''' \n'".,/'''))
