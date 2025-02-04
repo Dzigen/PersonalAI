@@ -103,7 +103,7 @@ class AgentTaskSolver:
                 self.log(str(e), verbose=self.config.verbose)
                 status = ReturnStatus.bad_user_prompt_maping
             else:
-                self.log(f"Результат:\n{enriched_user_prompt}.", verbose=self.config.verbose)
+                self.log(f"Результат:\n{enriched_user_prompt}", verbose=self.config.verbose)
             finally:
                 self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
 
@@ -117,7 +117,7 @@ class AgentTaskSolver:
                 user_prompt=enriched_user_prompt,
                 assistant_prompt=self.config.suites[detected_lang].assistant_prompt)
 
-            self.log(f"Результат:\n{raw_answer}.", verbose=self.config.verbose)
+            self.log(f"Результат:\n{raw_answer}", verbose=self.config.verbose)
             self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
 
         # Если сгенрированная raw-строка не является пустой

@@ -4,11 +4,12 @@ import re
 from ....utils import Triplet, TripletCreator
 
 def ag_custom_formate(query: str, triplets: List[Triplet]) -> str:
-    if len(query) < 1 or len(triplets) < 1:
+    if len(query) < 1:
         raise ValueError
 
     filtered_context = list(map(lambda triplet: f"- {(TripletCreator.stringify(triplet)[1] if triplet.stringified is None else triplet.stringified).strip()}", triplets))
-    return {'c':"\n".join(filtered_context), 'q': query}
+    return {'c':"\n".join(filtered_context) if len(filtered_context) else "Empty", 'q': query}
+
 
 def en_ag_custom_answer_parse(raw_response: str, **kwargs) -> str:
     """Функция предназначена для разбора ответа LLM-агента, полученного в рамках условной QA-задачи на английском языке.
@@ -28,7 +29,7 @@ def en_ag_custom_answer_parse(raw_response: str, **kwargs) -> str:
     if answer_pos is None:
         raise ValueError
 
-    answer = raw_response[answer_pos.span(0)[0]:]
+    answer = raw_response[answer_pos.span(0)[1]:]
 
     # Пустой ответ
     if len(answer) < 1:

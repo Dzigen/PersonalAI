@@ -24,10 +24,9 @@ class OLlamaConnector(AbstractAgentConnector):
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
 
-        msgs = [{'role':'system', 'content': system_prompt}]
+        msgs = [{'role':'system', 'content': system_prompt}, {'role':'user', 'content':user_prompt}]
         if assistant_prompt is not None:
             msgs.append({'role':'assistant', 'content': assistant_prompt})
-        msgs.append({'role':'user', 'content':user_prompt})
 
         raw_output = self.client.chat(
             model=self.config.ext_params['model'],

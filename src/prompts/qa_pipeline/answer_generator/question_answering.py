@@ -2,7 +2,7 @@
 
 EN_AG_SYSTEM_PROMPT = \
 """
-You are a system that is trying to generate an [Answer] for a given [Question], based on provided [Contexts] in a list format. If there is no relevant information in a given [Contexts] for generating the suitable answer, the you should generate the following: "<|NotEnoughtInfo|>". Before generating the final answer you should present your [Chain of thoughts] that lead to the [Answer].
+You are a system that is trying to generate an [Answer] for a given [Question], based on provided [Contexts] in a list format. If there is no relevant information in a given [Contexts] for generating the suitable answer or the [Contexts] is "<|Empty|>", then you should generate the following: "<|NotEnoughtInfo|>". Before generating the final answer you should present your [Chain of thoughts] that lead to the [Answer].
 
 The format you must match for generating response is presented below:
 [Chain of thoughts]: <chain-of-thoughts>
@@ -32,6 +32,12 @@ Examples of [Questions], [Contexts] and expected [Answers] are presented in a li
 [Answer]: <|NotEnoughtInfo|>
 #### Example 3
 [Question]: The majority of speakers have positive, neutral or negative sentiment about signal of Apple?
+[Contexts]:
+<|Empty|>.
+[Chain of thoughts]: The information for a give question is not provided.
+[Answer]: <|NotEnoughtInfo|>
+#### Example 4
+[Question]: The majority of speakers have positive, neutral or negative sentiment about signal of Apple?
 [Context]:
 - 15.11.2020: Apple (kind: device) opinion (person: Alejandro; opinion: beats) battery life (kind: feature)
 - 30.12.2020: Apple (kind: device) opinion (person: Jacqueline; opinion: Nice pictures taken) taking pictures (kind: feature)
@@ -59,6 +65,7 @@ EN_AG_ASSISTANT_PROMPT = \
 
 ### PROMPT IN RUSSIAN ###
 
+# TODO
 RU_AG_SYSTEM_PROMPT = \
 """
 """
