@@ -18,13 +18,18 @@ class EmbedderModel:
             prompts=config.prompts
         )
 
+    def encode(self, queries: List[str], **kwargs) -> List[List[float]]:
+        output = self.model.encode(
+            queries, normalize_embeddings=self.config.normalize_embeddings, **kwargs)
+        return [list(obj.astype(float)) for obj in output]
+
     def encode_queries(self, queries: List[str], **kwargs) -> List[List[float]]:
         output = self.model.encode(queries, prompt_name='query',
                                  normalize_embeddings=self.config.normalize_embeddings, **kwargs)
         return [list(obj.astype(float)) for obj in output]
 
     def encode_passages(self, passages: List[str], **kwargs) -> List[List[float]]:
-        output = self.model.encode(passages, prompt_name='query',
+        output = self.model.encode(passages, prompt_name='passage',
                                  normalize_embeddings=self.config.normalize_embeddings,
                                  **kwargs)
         return [list(obj.astype(float)) for obj in output]
