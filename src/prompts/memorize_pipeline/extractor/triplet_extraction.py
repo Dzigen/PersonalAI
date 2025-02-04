@@ -1,7 +1,7 @@
 ### PROMPT IN ENGLISH ###
 
 EN_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
-'''Objective: The main goal is to meticulously gather information from the input [Text] and organize this data into a clear, structured knowledge graph.
+'''Objective: The main goal is to meticulously gather information from the input тext and organize this data into a clear, structured knowledge graph.
 
 Guidelines for Building the Knowledge Graph:
 
@@ -21,28 +21,27 @@ Do not include triplets that state the current location of an agent like "you, a
 Do not use "none" as one of the objects.
 If there is information that you read something, do not forget to incluse triplets that state that entitie that you read contains information that you extract.
 
-Remember that triplets must be extracted in format: "subject_1, relation_1, object_1; subject_2, relation_2, object_2; ..."
+Remember that triplets must be extracted in format: "subject_1, relation_1, object_1; subject_2, relation_2, object_2; ...".
 This is important
 Do not separate triplets with new line, separate triplets with ";". Every triplet must contain strictly two "," characters.
 THIS IS IMPORTANT!!!
-Remember that triplets must be extracted in format: "subject_1, relation_1, object_1; subject_2, relation_2, object_2; ..."
+Remember that triplets must be extracted in format: "subject_1, relation_1, object_1; subject_2, relation_2, object_2; ...".'''
 
-As a response generate only extracted triplets in the format, described above and do not include additional explanations of the obtained result.
-'''
+# As a response generate only extracted triplets in the format, described above and do not include additional explanations of the obtained result.
 
 EN_TRIPLETS_EXTRACTION_USER_PROMPT = \
 '''
-[Text]:
+Text:
 {text} '''
 
 EN_TRIPLETS_ASSISTANT_PROMPT = \
 '''
-[Extracted triplets]: '''
+Extracted triplets: '''
 
 ### PROMPT IN RUSSIAN ###
 
 RU_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
-'''Задача: Основная цель - скрупулезно собрать информацию из входного [Текста] и организовать эти данные в четкий, структурированный граф знаний.
+'''Задача: Основная цель - скрупулезно собрать информацию из входного текста и организовать эти данные в четкий, структурированный граф знаний.
 
 Рекомендации по построению графа знаний:
 
@@ -62,13 +61,12 @@ RU_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
 Это важно
 Не разделяй триплеты символом переноса строки, разделяйте триплеты символом ";". Каждый триплет должен содержать строго два символа ",".
 
-В качестве ответа сгенерируй только извлеченные триплеты в формате, описанном выше, и не включай дополнительные пояснений результата.
-'''
+В качестве ответа сгенерируй только извлеченные триплеты в формате, описанном выше, и не включай дополнительные пояснений результата.'''
 
 RU_TRIPLETS_EXTRACTION_USER_PROMPT = \
-'''[Текст]:
+'''Текст:
 {text} '''
 
 RU_TRIPLETS_ASSISTANT_PROMPT = \
 '''
-[Извлеченные триплеты]: '''
+Извлеченные триплеты: '''

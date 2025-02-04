@@ -1,7 +1,7 @@
 ### PROMPT IN ENGLISH ###
 
 EN_THESISES_EXTRACTION_SYSTEM_PROMPT = \
-'''Objective: The main goal is to meticulously gather information from input [Text] and organize this data into a clear, structured knowledge graph.
+'''Objective: The main goal is to meticulously gather information from input text and organize this data into a clear, structured knowledge graph.
 
 Guidelines for Building the Knowledge Graph:
 
@@ -27,23 +27,22 @@ Remember that thesises must be extracted in format: "thesis_1; [list of entites 
 This is important
 Remember that thesises must be extracted in format: "thesis_1; [list of entites for thesis_1]. thesis2; [list of entites for thesis_2]. etc.
 THIS IS IMPORTANT!!!
-Remember that thesises must be extracted in format: "thesis_1; [list of entites for thesis_1]. thesis2; [list of entites for thesis_2]. etc.
+Remember that thesises must be extracted in format: "thesis_1; [list of entites for thesis_1]. thesis2; [list of entites for thesis_2]. etc.'''
 
-As a response generate only extracted thesises in the format, described above and do not include additional explanations of the obtained result.
-'''
+# As a response generate only extracted thesises in the format, described above and do not include additional explanations of the obtained result.
 
 EN_THESISES_EXTRACTION_USER_PROMPT = \
-'''[Text]:
+'''Text:
 {text} '''
 
 EN_THESISES_EXTRACTION_ASSISTANT_PROMPT = \
 '''
-[Extracted thesises]: '''
+Extracted thesises: '''
 
 ### PROMPT IN RUSSIAN ###
 
 RU_THESISES_EXTRACTION_SYSTEM_PROMPT = \
-'''Задача: Основная цель - тщательно собрать информацию из входного [Текста] и организовать эти данные в четкий, структурированный граф знаний.
+'''Задача: Основная цель - тщательно собрать информацию из входного текста и организовать эти данные в четкий, структурированный граф знаний.
 
 Руководство по построению графа знаний:
 
@@ -63,14 +62,13 @@ RU_THESISES_EXTRACTION_SYSTEM_PROMPT = \
 
 Помни, что тезисы должны быть извлечены в формате: "тезис_1; [список объектов для тезиса_1]. тезис2; [список объектов для тезиса_2]." и т. д.
 
-В качестве ответа сгенерируй только извлеченные тезисы в формате, описанном выше, и не включай дополнительные пояснений результата.
-'''
+В качестве ответа сгенерируй только извлеченные тезисы в формате, описанном выше, и не включай дополнительные пояснений результата.'''
 
 RU_THESISES_EXTRACTION_USER_PROMPT = \
 '''
-[Текст]:
+Текст:
 {text}'''
 
 RU_THESISES_EXTRACTION_ASSISTANT_PROMPT = \
 '''
-[Извлечённые тезисы]: '''
+Извлечённые тезисы: '''
