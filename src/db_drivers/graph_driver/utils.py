@@ -21,7 +21,7 @@ class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
         pass
 
     @abstractmethod
-    def get_nodes_shared_ids(self, node1_id: str, node2_id: str, type: str = 'both') -> List[Dict[str,str]]:
+    def get_nodes_shared_ids(self, node1_id: str, node2_id: str, id_type: str = 'both') -> List[Dict[str,str]]:
         pass
 
     @abstractmethod

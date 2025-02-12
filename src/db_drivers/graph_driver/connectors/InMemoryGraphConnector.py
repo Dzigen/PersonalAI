@@ -97,12 +97,10 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
                     self.strid_relation_index[triplet.relation.id].add(r_id)
 
                     self.edges[sn_id].add(t_id)
-                    if en_id not in self.adjacent_nodes[sn_id]:
-                        self.adjacent_nodes[sn_id].add(en_id)
+                    self.adjacent_nodes[sn_id].add(en_id)
 
                     self.edges[en_id].add(t_id)
-                    if sn_id not in self.adjacent_nodes[en_id]:
-                        self.adjacent_nodes[en_id].add(sn_id)
+                    self.adjacent_nodes[en_id].add(sn_id)
 
 
     def read(self, ids: List[str]) -> List[Triplet]:
@@ -204,9 +202,25 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         nodes_str_ids = list(map(lambda db_n_id: self.nodes[db_n_id].id, filtered_adj_n_dbids))
         return nodes_str_ids
 
-    def get_nodes_shared_ids(self, node1_id: str, node2_id: str, type: str = 'both') -> List[Dict[str,str]]:
-        # TODO
-        raise NotImplementedError
+    def get_nodes_shared_ids(self, node1_id: str, node2_id: str, id_type: str = 'both') -> List[Dict[str,str]]:
+        if (type(node1_id) is not str) or (type(node2_id) is not str):
+            raise ValueError
+
+        shared_internal_tids = self.edges[node1_id].intersection(self.edges[node2_id])
+
+        formated_info = []
+        for internal_tid in shared_internal_tids:
+            if id_type == 'triplet':
+                formated_info.append({'t_id': self.triplets[internal_tid].id})
+            elif id_type == 'relation':
+                formated_info.append({'r_id': self.triplets[internal_tid].relation.id})
+            elif id_type == 'both':
+                formated_info.append({'t_id': self.triplets[internal_tid].id,
+                    'r_id':self.triplets[internal_tid].relation.id})
+            else:
+                raise ValueError
+
+        return formated_info
 
     def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
         if (type(node1_id) is not str) or (type(node2_id) is not str):

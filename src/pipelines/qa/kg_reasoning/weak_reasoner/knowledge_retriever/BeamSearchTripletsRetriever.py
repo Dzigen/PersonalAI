@@ -1,12 +1,16 @@
+####
+# Author:   Mikhail Menschikov
+# Email:    menshikov.mikhail.2001@gmail.com
+# Created:  11.02.2025
+# (c) Copyright by Skoltech AI Center.
+####
+
 from dataclasses import dataclass, field
 from typing import Dict, List, Tuple, Set
-import numpy as np
-import heapq
-from time import time
 from collections import defaultdict
 from collections import Counter
 from copy import deepcopy, copy
-from math import log
+import numpy as np
 
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 
@@ -14,7 +18,6 @@ from ......utils.data_structs import QueryInfo, Triplet, NodeType
 from ......kg_model import KnowledgeGraphModel
 from ......utils.data_structs import create_id
 from ......utils import Logger
-from ......db_drivers.vector_driver.embedders import EmbedderModelConfig
 from ......db_drivers.vector_driver.utils import VectorDBInstance
 
 @dataclass
@@ -31,14 +34,31 @@ class TraversedPath:
 
 @dataclass
 class GraphBeamSearchConfig(BaseGraphSearchConfig):
+    # Максимальная глубина построенных путей
     max_depth: int = 10
-    num_paths: int = 50
+    # Максимальное количество построенных путей
+    max_paths: int = 50
+    # Если True, то пути могут пересекаться сами с собой по вершинам, иначе False
     same_path_intersection_by_node: bool = True
+    # Если True, то разные пути могут пересекаться по вершинам, иначе False
     diff_paths_intersection_by_node: bool = True
+    # Если True, то разные пути могут пересекаться по связям, иначе False
     diff_paths_intersection_by_rel: bool = True
+    # Гиперпараметр, отвечающий за учёт длины построенного пути при усреднении его ценности (релевантности).
+    # См. calculate_triplet_score- и calculate_path_score-методы.
     mean_alpha: float = 0.75
+    # Типы вершины, которые можно обходить во время построения путей
     accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic])
-    final_sorting_mode: str = 'finished_first' # 'finished_first' | 'mixed' | 'traversing_first'
+    # Способ финальной фильтрации полученного набора путей. В результате поиска будет сформировано два набора путей:
+    # (1) ended - пути, которые завершились до достижения заданного ограничения на глубину и (2) continious - пути,
+    # которые достигли заданного ограничения на глубину. У каждого такого пути есть оценка его суммарной релевантности.
+    # Если будет указано 'ended_first'-значение, то: ended-пути будут отсортированы по убыванию релевантности и выбраны
+    # первые 'max_paths'-путей. Если ended-путей меньше чем 'max_paths'-значения, то continious-пути будут отсортированы
+    # по релевантности и из них будут выбраны первые N недостающих путей. Если будет указано 'continuous_first'-значение,
+    # то пути будут выбираться по аналогии с 'ended_first'-значением, только сначала сортировка/выбор по continuous-путям,
+    # а потом по ended-путям. Если будет указано 'mixed'-значение, то ended- и continuous-пути будут объединены в один список,
+    # отсортированы по убыванию релевантности и из полученного списко будет выбрано первых 'max_paths'-путей.
+    final_sorting_mode: str = 'continuous_first' # 'ended_first' | 'mixed' | 'continuous_first'
 
 class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger,
@@ -136,19 +156,19 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
         # Готовим финальный список релевантных путей
         filtered_paths = []
         if self.config.final_sorting_mode == 'continuous_first':
-            filtered_paths += sorted(continuous_paths, key=lambda pinfo:pinfo.score)[:self.config.num_paths]
-            if len(filtered_paths) < self.config.num_paths:
-                num_missed_paths = self.config.num_paths - len(filtered_paths)
+            filtered_paths += sorted(continuous_paths, key=lambda pinfo:pinfo.score)[:self.config.max_paths]
+            if len(filtered_paths) < self.config.max_paths:
+                num_missed_paths = self.config.max_paths - len(filtered_paths)
                 filtered_paths += sorted(ended_paths, key=lambda pinfo:pinfo.score)[:num_missed_paths]
 
         if self.config.final_sorting_mode == 'ended_first':
-            filtered_paths += sorted(ended_paths, key=lambda pinfo: pinfo.score)[:self.config.num_paths]
-            if len(filtered_paths) < self.config.num_paths:
-                num_missed_paths = self.config.num_paths - len(filtered_paths)
+            filtered_paths += sorted(ended_paths, key=lambda pinfo: pinfo.score)[:self.config.max_paths]
+            if len(filtered_paths) < self.config.max_paths:
+                num_missed_paths = self.config.max_paths - len(filtered_paths)
                 filtered_paths += sorted(continuous_paths, key=lambda pinfo:pinfo.score)[:num_missed_paths]
 
         elif self.config.final_sorting_mode == 'mixed':
-            filtered_paths = sorted(continuous_paths + ended_paths, key=lambda pinfo:pinfo.score)[:self.config.num_paths]
+            filtered_paths = sorted(continuous_paths + ended_paths, key=lambda pinfo:pinfo.score)[:self.config.max_paths]
 
         else:
             raise KeyError
@@ -192,9 +212,9 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
                 triplet_scores = self.get_triplet_scores(query_vinstance, shared_t_info, rids_to_tids_map)
                 self.update_path_candidates(path_candidates, traversing_paths[i], triplet_scores)
 
-            # Сортируем расширенный список путей по их релевантности и выбираем 'num_paths' лучших
+            # Сортируем расширенный список путей по их релевантности и выбираем 'max_paths' лучших
             ordered_candidates = sorted(path_candidates, key=lambda tup:tup[3])
-            traversing_paths = ordered_candidates[:self.config.num_paths]
+            traversing_paths = ordered_candidates[:self.config.max_paths]
 
         continuous_paths = []
         for path_info in traversing_paths:
