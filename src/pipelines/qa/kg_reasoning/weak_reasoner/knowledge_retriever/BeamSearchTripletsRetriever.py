@@ -18,6 +18,18 @@ from ......db_drivers.vector_driver.embedders import EmbedderModelConfig
 from ......db_drivers.vector_driver.utils import VectorDBInstance
 
 @dataclass
+class TraversingPath:
+    path: List[Tuple[str,str,str]]
+    unique_nids: Set[str]
+    unique_tids: Set[str]
+    accum_score: float
+
+@dataclass
+class TraversedPath:
+    path: List[Tuple[str,str,str]]
+    score: float
+
+@dataclass
 class GraphBeamSearchConfig(BaseGraphSearchConfig):
     max_depth: int = 10
     num_paths: int = 50
@@ -29,7 +41,8 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     final_sorting_mode: str = 'finished_first' # 'finished_first' | 'mixed' | 'traversing_first'
 
 class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: GraphBeamSearchConfig = GraphBeamSearchConfig(),
+    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger,
+                 search_config: GraphBeamSearchConfig = GraphBeamSearchConfig(),
                  verbose: bool = False) -> None:
         self.log = log
         self.verbose = verbose
@@ -42,25 +55,25 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
     def calculate_triplet_score(self, raw_score: float) -> float:
         return -np.log(1 - raw_score)
 
-    def get_available_nids(self, base_nid: str, prev_nid: str, cur_path_idx: int, traversing_paths) -> List[str]:
-        adj_nids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(base_nid, self.config.accepted_node_types)
+    def get_available_nids(self, base_nid: str, prev_nid: str, cur_path_idx: int,
+                           traversing_paths: List[TraversingPath]) -> List[str]:
+        adj_nids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(base_nid, self.config.accepted_node_types)
         adj_nids = set(adj_nids).discard(prev_nid)
 
         if self.config.same_path_intersection_by_node:
             # Удаляем вершины, которые уже есть в текущем пути из числа смежных
-            adj_nids.difference_update(traversing_paths[cur_path_idx][1])
+            adj_nids.difference_update(traversing_paths[cur_path_idx].unique_nids)
 
         if self.config.diff_paths_intersection_by_node:
             # Удаляем вершины, которые есть в других путях из числа смежных для текущего пути
             for i in range(len(traversing_paths)):
                 if i != cur_path_idx:
-                    adj_nids.difference_update(traversing_paths[i][1])
+                    adj_nids.difference_update(traversing_paths[i].unique_nids)
 
         return adj_nids
 
     def get_available_rinfo(self, base_nid: str, adj_nids: List[str], cur_path_idx: int,
-                            traversing_paths: List[List[List[Tuple[str,str,str]], Set[str], Set[str], float]]
-                            ) -> Tuple[Dict[str, str], Dict[str, List[str]]]:
+                            traversing_paths: List[TraversingPath]) -> Tuple[Dict[str, str], Dict[str, List[str]]]:
         shared_t_info = dict()
         rids_to_tids_map = defaultdict(list)
         for adj_nid in adj_nids:
@@ -69,15 +82,13 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
             cur_tids = set(tmp_ids_map.keys())
 
             # Удаляем связи, которые уже есть в текущем пути
-            tmp_shared_ids = cur_tids.discard(traversing_paths[cur_path_idx][2])
+            tmp_shared_ids = cur_tids.discard(traversing_paths[cur_path_idx].unique_tids)
 
             if self.config.diff_paths_intersection_by_rel:
                 # Удаляем связи, которые есть в других путях
                 for i in range(len(traversing_paths)):
-                    if i == cur_path_idx:
-                        continue
-                    other_path_unique_tids = traversing_paths[cur_path_idx][1]
-                    tmp_shared_ids = cur_tids.discard(other_path_unique_tids)
+                    if i != cur_path_idx:
+                        tmp_shared_ids = cur_tids.discard(traversing_paths[i].unique_tids)
 
             for t_id in cur_tids:
                 shared_t_info[t_id] = adj_nid
@@ -105,48 +116,49 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
 
         return extended_scores_info
 
-    def update_path_candidates(path_candidates: List[List[List[Tuple[str,str,str]], Set[str], Set[str], float]],
-                               path_info: List[List[Tuple[str,str,str]], Set[str], Set[str], float],
+    def update_path_candidates(path_candidates: List[TraversingPath], pinfo: TraversingPath,
                                triplet_scores: List[Tuple[str, str, float]]) -> None:
         # добавить новых кандидатов в пул
         for t_id, new_nid, t_score in triplet_scores:
-            ext_path = deepcopy(path_info[0])
-            ext_path.append((path_info[0][-1][2], t_id, new_nid))
+            ext_path = deepcopy(pinfo.path)
+            ext_path.append((pinfo.path[-1][2], t_id, new_nid))
 
-            ext_unique_nids = copy(path_info[1])
+            ext_unique_nids = copy(pinfo.unique_nids)
             ext_unique_nids.add(new_nid)
-            ext_unique_tids = copy(path_info[2])
+            ext_unique_tids = copy(pinfo.unique_tids)
             ext_unique_tids.add(t_id)
 
-            new_accum_score = path_info[3] + t_score
+            new_accum_score = pinfo.accum_score + t_score
             path_candidates.append([ext_path, ext_unique_nids, ext_unique_tids, new_accum_score])
 
-    def filter_paths(self, ended_paths: List[Tuple[List[Tuple[str,str,str]], float]],
-                     continuous_paths: List[Tuple[List[Tuple[str,str,str]], float]]) -> List[Tuple[List[Tuple[str,str,str]], float]]:
+    def filter_paths(self, ended_paths: List[TraversedPath],
+                     continuous_paths: List[TraversedPath]) -> List[TraversedPath]:
         # Готовим финальный список релевантных путей
         filtered_paths = []
         if self.config.final_sorting_mode == 'continuous_first':
-            filtered_paths += sorted(continuous_paths, key=lambda tup:tup[1])[:self.config.num_paths]
+            filtered_paths += sorted(continuous_paths, key=lambda pinfo:pinfo.score)[:self.config.num_paths]
             if len(filtered_paths) < self.config.num_paths:
                 num_missed_paths = self.config.num_paths - len(filtered_paths)
-                filtered_paths += sorted(ended_paths, key=lambda tup:tup[1])[:num_missed_paths]
+                filtered_paths += sorted(ended_paths, key=lambda pinfo:pinfo.score)[:num_missed_paths]
 
         if self.config.final_sorting_mode == 'ended_first':
-            filtered_paths += sorted(ended_paths, key=lambda tup:tup[1])[:self.config.num_paths]
+            filtered_paths += sorted(ended_paths, key=lambda pinfo: pinfo.score)[:self.config.num_paths]
             if len(filtered_paths) < self.config.num_paths:
                 num_missed_paths = self.config.num_paths - len(filtered_paths)
-                filtered_paths += sorted(continuous_paths, key=lambda tup:tup[1])[:num_missed_paths]
+                filtered_paths += sorted(continuous_paths, key=lambda pinfo:pinfo.score)[:num_missed_paths]
 
         elif self.config.final_sorting_mode == 'mixed':
-            filtered_paths = sorted(continuous_paths + ended_paths, key=lambda tup:tup[1])[:self.config.num_paths]
+            filtered_paths = sorted(continuous_paths + ended_paths, key=lambda pinfo:pinfo.score)[:self.config.num_paths]
 
         else:
             raise KeyError
 
         return filtered_paths
 
-    def graph_beamsearch(self, query: str, node_id: str) -> List[Tuple[List[Tuple[str, str, str]], float]]:
-        traversing_paths = [[[(None, None, node_id)], {node_id}, set(), 0.0]]
+    def graph_beamsearch(self, query: str, node_id: str) -> List[TraversedPath]:
+        traversing_paths = [TraversingPath(
+            path=[(None, None, node_id)], unique_nids={node_id},
+            unique_tids=set(), accum_score=0.0)]
         ended_paths = []
 
         query_emb = self.kg_model.embeddings_struct.embedder.encode_queries([query])[0]
@@ -160,19 +172,21 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
                 break
 
             for i in range(len(traversing_paths)):
-                path, _, _, accum_score = traversing_paths[i]
-                prev_nid, tail_nid = path[-1][0], path[-1][2]
+                cur_path_info = traversing_paths[i]
+                prev_nid, tail_nid = cur_path_info.path[-1][0], cur_path_info.path[-1][2]
 
                 adj_nids = self.get_available_nids(tail_nid, prev_nid, i, traversing_paths)
                 if len(adj_nids) < 1:
                     # Если у tail-вершины нет смежных вершин, то считаем путь завершившимся
-                    ended_paths.append([path, self.calculate_path_score(path, accum_score)])
+                    ended_paths.append([deepcopy(cur_path_info.path), self.calculate_path_score(
+                        len(cur_path_info.path), cur_path_info.accum_score)])
                     continue
 
                 shared_t_info, rids_to_tids_map = self.get_available_rinfo(tail_nid, adj_nids, i, traversing_paths)
                 if len(shared_t_info) < 1:
                     # Если нет доступных связей для соединения tail-вершины с новой верщиной, то считаем путь завершившимся
-                    ended_paths.append([path, self.calculate_path_score(path, accum_score)])
+                    ended_paths.append([deepcopy(cur_path_info.path), self.calculate_path_score(
+                        len(cur_path_info.path), cur_path_info.accum_score)])
                     continue
 
                 triplet_scores = self.get_triplet_scores(query_vinstance, shared_t_info, rids_to_tids_map)
@@ -184,7 +198,8 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
 
         continuous_paths = []
         for path_info in traversing_paths:
-            continuous_paths.append([path_info[0], self.calculate_path_score(len(path_info[0]), path_info[3])])
+            continuous_paths.append([path_info.path, self.calculate_path_score(
+                len(path_info.path), path_info.accum_score)])
         filtered_paths = self.filter_paths(ended_paths, continuous_paths)
 
         return filtered_paths
@@ -193,8 +208,8 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
         paths_info = self.graph_beamsearch(query, node_id)
 
         uniques_tids = set()
-        for path, _ in paths_info:
-            for triplet_info in path[1:]:
+        for p_info in paths_info:
+            for triplet_info in p_info.path[1:]:
                 uniques_tids.add(triplet_info[1])
 
         extracted_triplets = self.kg_model.graph_struct.db_conn.read(list(uniques_tids))

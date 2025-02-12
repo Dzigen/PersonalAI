@@ -75,7 +75,7 @@ class LLMUpdator:
                 name=base_node.name,  object_type=NodeType.object, object='node')
 
             for m_node in matched_nodes:
-                neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_node.id, [NodeType.object])
+                neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(m_node.id, [NodeType.object])
                 for neighbour_id in neighbour_node_ids:
                     shared_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_node.id, neighbour_id)
                     incident_triplets.update({item.id: item for item in shared_triplets})
@@ -110,7 +110,7 @@ class LLMUpdator:
             name=base_triplet.start_node.name,  object_type=NodeType.object, object='node')
 
         for m_node in matched_nodes:
-            neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_node.id, [NodeType.hyper])
+            neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(m_node.id, [NodeType.hyper])
 
             for neighbour_id in neighbour_node_ids:
                 shared_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_node.id, neighbour_id)
@@ -147,17 +147,17 @@ class LLMUpdator:
 
         for m_object_n in matched_object_nodes:
             # Для object-вершины ищем смежные episodic-вершины
-            object_adj_episodic_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_object_n.id, [NodeType.episodic])
+            object_adj_episodic_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(m_object_n.id, [NodeType.episodic])
 
             if len(object_adj_episodic_ids) < 1:
                 continue
 
             # Для object-вершины ищем смежные hyper-вершины
-            object_adj_hyper_ids = set(self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_object_n.id, [NodeType.hyper]))
+            object_adj_hyper_ids = set(self.kg_model.graph_struct.db_conn.get_adjecent_nids(m_object_n.id, [NodeType.hyper]))
 
             for episodic_id in object_adj_episodic_ids:
                 # Для episodic-вершины, смежной с текущей object-вершиной, ищем смежные hyper-вершины
-                episodic_adj_hyper_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(episodic_id, [NodeType.hyper])
+                episodic_adj_hyper_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(episodic_id, [NodeType.hyper])
 
                 shared_hyper_ids = object_adj_hyper_ids.intersection(set(episodic_adj_hyper_ids))
                 if len(shared_hyper_ids) < 1:
@@ -190,10 +190,10 @@ class LLMUpdator:
         for m_hyper_n in matched_hyper_nodes:
 
             # Проверям: с каким количеством object-вершин смежна данная hyper-вершина
-            hyper_adj_object_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_hyper_n.id, [NodeType.object])
+            hyper_adj_object_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(m_hyper_n.id, [NodeType.object])
             if len(hyper_adj_object_ids) < 1:
                 # Если у hyper-вершины нет смежных object-вершин, то связи со всеми episodic-вершинами являются устаревшими
-                hyper_adj_episodic_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_hyper_n.id, [NodeType.episodic])
+                hyper_adj_episodic_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(m_hyper_n.id, [NodeType.episodic])
                 for episodic_id in hyper_adj_episodic_ids:
                     episodic_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_hyper_n.id, episodic_id)
                     assert len(episodic_triplets) == 1

@@ -240,7 +240,7 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
             formated_triplets.append(triplet)
         return formated_triplets
 
-    def get_adjecent_nodes(self, base_node_id: str,
+    def get_adjecent_nids(self, base_node_id: str,
             accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[str]:
         if type(base_node_id) is not str:
             raise ValueError
@@ -251,6 +251,28 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
             f'MATCH (a)-[r]-(b{str_accepted_nodes}) WHERE a.str_id = "{base_node_id}" RETURN b;')
         formated_nodes = [node['str_id'] for node in raw_nodes.get_as_df()['b']]
         return formated_nodes
+
+    def get_nodes_shared_ids(self, node1_id: str, node2_id: str, id_type: str = 'both') -> List[Dict[str,str]]:
+        if (type(node1_id) is not str) or (type(node2_id) is not str):
+            raise ValueError
+
+        if id_type == 'triplet':
+            str_return_info = 'r.t_id as t_id'
+        elif id_type == 'relation':
+            str_return_info = 'r.str_id as str_id'
+        elif id_type == 'both':
+            str_return_info = 'r.t_id as t_id, r.str_id as str_id'
+        else:
+            raise ValueError
+
+        raw_rels = self.conn.execute(
+            f'MATCH (a)-[r]-(b) WHERE a.str_id = "{node1_id}" AND b.str_id = "{node2_id}" RETURN {str_return_info};')
+
+        rinfo_df = raw_rels.get_as_df()
+        df_cols = rinfo_df.columns()
+        formated_info = list(map(lambda idx: {rinfo_df[name][idx] for name in df_cols}, range(rinfo_df.shape[1])))
+
+        return formated_info
 
     def get_triplets_by_name(self, subj_names: List[str], obj_names: List[str], obj_type: str) -> List[Triplet]:
         formatted_triplets = []

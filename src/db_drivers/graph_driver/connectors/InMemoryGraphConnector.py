@@ -190,7 +190,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
         return formated_output
 
-    def get_adjecent_nodes(self, base_node_id: str,
+    def get_adjecent_nids(self, base_node_id: str,
             accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[str]:
         if type(base_node_id) is not str:
             raise ValueError
@@ -203,6 +203,10 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         filtered_adj_n_dbids = list(filter(lambda n_db_id: self.nodes[n_db_id].type in accepted_n_types, adjanced_nodes_db_ids))
         nodes_str_ids = list(map(lambda db_n_id: self.nodes[db_n_id].id, filtered_adj_n_dbids))
         return nodes_str_ids
+
+    def get_nodes_shared_ids(self, node1_id: str, node2_id: str, type: str = 'both') -> List[Dict[str,str]]:
+        # TODO
+        raise NotImplementedError
 
     def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
         if (type(node1_id) is not str) or (type(node2_id) is not str):

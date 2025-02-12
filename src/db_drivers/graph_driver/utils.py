@@ -17,7 +17,11 @@ class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
         pass
 
     @abstractmethod
-    def get_adjecent_nodes(self, base_node_id: str, accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[str]:
+    def get_adjecent_nids(self, base_node_id: str, accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[str]:
+        pass
+
+    @abstractmethod
+    def get_nodes_shared_ids(self, node1_id: str, node2_id: str, type: str = 'both') -> List[Dict[str,str]]:
         pass
 
     @abstractmethod
