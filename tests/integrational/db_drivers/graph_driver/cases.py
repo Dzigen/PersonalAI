@@ -449,3 +449,35 @@ GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES = []
 for db_vendor in AVAILABLE_GRAPH_DBS:
     for i in range(len(GRAPHDB_READ_BY_NAME_TEST_CASES)):
         GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES.append(GRAPHDB_READ_BY_NAME_TEST_CASES[i] + [db_vendor])
+
+###############################################################################################
+
+GRAPHDB_GET_NSHARED_IDS_TEST_CASES = [
+    # 1 невалидный тип идентифиаторов вершин
+    # 1.1 первая вершина
+    # 1.2 вторая вершина
+    # TODO
+    # 2. невалидное id_type-значение
+    # 2.1 число
+    # 2.2 None
+    # 2.3 значение
+    # 3 вершины с таким id нет в бд
+    # 3.1 перая вершина
+    # 3.2 вторая вершина
+    # TODO
+    # 4 между вершинами нет связей
+    # 4.1 у вершин есть другие связи
+    # 4.2 у вершин нет других связей
+    # 5 между вершинами одна связь
+    # 5.1 у вершин есть другие связи
+    # 5.2 у вершин нет других связей
+    # 6 между вершинами несколько связей
+    # 6.1 у вершин есть другие связи
+    # 6.2 у вершин нет других связей
+    # 7 между вершинами несколько триплетов с одинаковым relation_id
+]
+
+GRAPHDB_POPULATED_GET_NSHARED_IDS_TEST_CASES = []
+for db_vendor in AVAILABLE_GRAPH_DBS:
+    for i in range(len(GRAPHDB_GET_NSHARED_IDS_TEST_CASES)):
+        GRAPHDB_POPULATED_GET_NSHARED_IDS_TEST_CASES.append(GRAPHDB_GET_NSHARED_IDS_TEST_CASES[i] + [db_vendor])

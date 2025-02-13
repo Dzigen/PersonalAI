@@ -9,7 +9,7 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from cases import GRAPHDB_POPULATED_CREATE_TEST_CASES, GRAPHDB_POPULATED_DELETE_TEST_CASES, \
     GRAPHDB_POPULATED_READ_TEST_CASES, GRAPHDB_POPULATED_COUNT_TEST_CASES, GRAPHDB_POPULATED_EXIST_TEST_CASES, \
     GRAPHDB_POPULATED_CLEAR_TEST_CASES, GRAPHDB_POPULATED_GET_TRIPLETS_TEST_CASES, GRAPHDB_POPULATED_GET_ADJECENT_TEST_CASES, \
-        GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES
+        GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES, GRAPHDB_GET_NSHARED_IDS_TEST_CASES
 
 @pytest.mark.parametrize("inputs, create_info, expected, graphdb_conn", GRAPHDB_POPULATED_CREATE_TEST_CASES, indirect=['graphdb_conn'])
 def test_create(inputs, create_info, expected, graphdb_conn):
@@ -106,12 +106,12 @@ def test_clear(instances, base_info, graphdb_conn):
     assert items_info['nodes'] == 0
 
 @pytest.mark.parametrize("instances, create_info, node, accepted_n_types, expected, graphdb_conn", GRAPHDB_POPULATED_GET_ADJECENT_TEST_CASES, indirect=['graphdb_conn'])
-def test_get_adjecent_nodes(instances, create_info, node, accepted_n_types, expected, graphdb_conn):
+def test_get_adjecent_nids(instances, create_info, node, accepted_n_types, expected, graphdb_conn):
     graphdb_conn.clear()
     graphdb_conn.create(instances, create_info)
 
     try:
-        output = graphdb_conn.get_adjecent_nodes(node, accepted_n_types=accepted_n_types)
+        output = graphdb_conn.get_adjecent_nids(node, accepted_n_types=accepted_n_types)
     except ValueError as e:
         print(str(e))
         assert expected['exception']
@@ -178,3 +178,11 @@ def test_read_by_name(instances, create_info, init_count, name, type, object, ex
 
         else:
             raise ValueError
+
+
+@pytest.mark.parametrize("init_graph, exception, graphdb_conn", GRAPHDB_GET_NSHARED_IDS_TEST_CASES, indirect=['graphdb_conn'])
+def test_get_nshared_ids(instances, create_info, node1_id, node2_id, id_type, expected_output, exception, graphdb_conn):
+    graphdb_conn.clear()
+    graphdb_conn.create(instances, create_info)
+
+    # TODO
