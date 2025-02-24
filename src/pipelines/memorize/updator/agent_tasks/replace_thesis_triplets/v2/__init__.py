@@ -1,1 +1,0 @@
-from .suite import REPLACE_THESIS_TASK_CONFIGV2

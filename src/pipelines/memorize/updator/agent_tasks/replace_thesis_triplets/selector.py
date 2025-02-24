@@ -1,11 +1,10 @@
 from ......utils import AgentTaskSolverConfig, Logger
-from .v2 import REPLACE_THESIS_TASK_CONFIGV2
+from .v1 import REPLACE_THESIS_TASK_CONFIGV1
 
 REPLACE_THESIS_LOG_PATH = 'log/memorize/updator/agent_tasks/replace_thesis_triplets'
 
 AVAILABLE_REPLACE_THESIS_TCONFIGS = {
-    'v1': ...,
-    'v2': REPLACE_THESIS_TASK_CONFIGV2
+    'v1': REPLACE_THESIS_TASK_CONFIGV1
 }
 
 class AgentReplThesisTripletTaskConfigSelector:

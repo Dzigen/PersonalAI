@@ -1,10 +1,11 @@
 from ......utils import AgentTaskSolverConfig, Logger
+from .v1 import THESIS_EXTRACT_TASK_CONFIGV1
 from .v2 import THESIS_EXTRACT_TASK_CONFIGV2
 
 THESIS_EXTR_LOG_PATH = 'log/memorize/extractor/agent_tasks/thesis_extraction'
 
 AVAILABLE_THESIS_EXTRACT_TCONFIGS = {
-    'v1': ...,
+    'v1': THESIS_EXTRACT_TASK_CONFIGV1,
     'v2': THESIS_EXTRACT_TASK_CONFIGV2
 }
 

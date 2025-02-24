@@ -1,10 +1,11 @@
 from ......utils import AgentTaskSolverConfig, Logger
 from .v2 import TRIPLET_EXTRACT_TASK_CONFIGV2
+from .v1 import TRIPLET_EXTRACT_TASK_CONFIGV1
 
 TRIPLET_EXTR_LOG_PATH = 'log/memorize/extractor/agent_tasks/triplet_extraction'
 
 AVAILABLE_TRIPLET_EXTRACT_TCONFIGS = {
-    'v1': ...,
+    'v1': TRIPLET_EXTRACT_TASK_CONFIGV1,
     'v2': TRIPLET_EXTRACT_TASK_CONFIGV2
 }
 

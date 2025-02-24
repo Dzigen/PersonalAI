@@ -1,0 +1,1 @@
+from .suite import THESIS_EXTRACT_TASK_CONFIGV1

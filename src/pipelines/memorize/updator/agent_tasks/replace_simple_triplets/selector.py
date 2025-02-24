@@ -1,11 +1,10 @@
 from ......utils import AgentTaskSolverConfig, Logger
-from .v2 import REPLACE_SIMPLE_TASK_CONFIGV2
+from .v1 import REPLACE_SIMPLE_TASK_CONFIGV1
 
 REPLACE_SIMPLE_LOG_PATH = 'log/memorize/updator/agent_tasks/replace_simple_triplets'
 
 AVAILABLE_REPLACE_SIMPLE_TCONFIGS = {
-    'v1': ...,
-    'v2': REPLACE_SIMPLE_TASK_CONFIGV2
+    'v1': REPLACE_SIMPLE_TASK_CONFIGV1
 }
 
 class AgentReplSimpleTripletTaskConfigSelector:

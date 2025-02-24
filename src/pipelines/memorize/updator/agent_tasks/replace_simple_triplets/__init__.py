@@ -1,1 +1,1 @@
-from .v2 import REPLACE_SIMPLE_TASK_CONFIGV2
+from .selector import AgentReplSimpleTripletTaskConfigSelector

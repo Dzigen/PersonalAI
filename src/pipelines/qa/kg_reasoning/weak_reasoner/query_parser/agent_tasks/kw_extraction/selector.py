@@ -1,10 +1,11 @@
 from ........utils import AgentTaskSolverConfig, Logger
+from .v1 import KWE_TASK_CONFIGV1
 from .v2 import KWE_TASK_CONFIGV2
 
 KW_EXTRACTION_LOG_PATH = 'log/qa/kg_reasoner/weak/query_parser/agent_tasks/kw_extraction'
 
 AVAILABLE_KWE_TCONFIGS = {
-    'v1': ...,
+    'v1': KWE_TASK_CONFIGV1,
     'v2': KWE_TASK_CONFIGV2
 }
 
