@@ -151,3 +151,8 @@ class AgentTaskSolver:
                 self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
 
         return task_result, status
+
+@dataclass
+class AgentTaskBaseConfig:
+    suites: Dict[str, AgentTaskSuite]
+    custom_formate: object

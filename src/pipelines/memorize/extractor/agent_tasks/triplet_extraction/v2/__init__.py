@@ -1,0 +1,1 @@
+from .suite import TRIPLETS_EXTRACT_TASK_CONFIGV2
