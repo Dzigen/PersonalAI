@@ -36,6 +36,8 @@ RU_REPLACE_THESIS_USER_PROMPT = '''Тебе будет предоставлен 
 Внимание! Замены должны формироваться строго в следующем формате: [«новый_тезис_1 <- устаревший_тезис_1»; «новый_тезис_2 <- устаревший_тезис_2»; ...], ты НЕ ДОЛЖЕН включать в ответ какие-либо описания.
 Замена: '''
 
+RU_REPLACE_THESIS_SYSTEM_PROMPT = '''Ты - ассистент, который умеет решать заданные задачи.'''
+
 EN_REPLACE_THESIS_USER_PROMPT = '''You will be provided with list of existing thesises and list of new thesises.
 The thesises denote facts about the environment where the player moves. The player takes actions and the environment changes, so some thesises from the list of existing thesises can be replaced with one of the new thesises. For example, the player took the item from the locker and the existing thesis "item is in locker" should be replaced with the new thesis "item is in inventory".
 
@@ -74,8 +76,4 @@ New thesises: {new_thesises}.
 Warning! Replacing must be generated strictly in following format: ["new_thesis_1 <- outdated_thesis_1"; "new_thesis_2 <- outdated_thesis_2"; ...], you MUST NOT include any descriptions in answer.
 Replacing: '''
 
-RU_SYSTEM_PROMPT = \
-'''Ты - ассистент, который умеет решать заданные задачи.'''
-
-EN_SYSTEM_PROMPT = \
-'''You are a helpful assistant.'''
+EN_REPLACE_THESIS_SYSTEM_PROMPT = '''You are a helpful assistant.'''

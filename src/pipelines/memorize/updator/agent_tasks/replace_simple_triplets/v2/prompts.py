@@ -32,6 +32,8 @@ RU_REPLACE_SIMPLE_USER_PROMPT = """Тебе будет предоставлен 
 Внимание! Замены должны формироваться строго в следующем формате: [[устаревший_триплет_1 -> актуальный_триплет_1], [устаревший_триплет_2 -> актуальный_триплет_2], ...], вы НЕ ДОЛЖНЫ включать в ответ никаких описаний.
 Замена: """
 
+RU_REPLACE_SIMPLE_SYSTEM_PROMPT = """Ты - ассистент, который умеет решать заданные задачи."""
+
 EN_REPLACE_SIMPLE_USER_PROMPT = """You will be provided with list of existing triplets and list of new triplets. Triplets are in the following format: "subject, relation, object".
 The triplets denote facts about the environment where the player moves. The player takes actions and the environment changes, so some triplets from the list of existing triplets can be replaced with one of the new triplets. For example, the player took the item from the locker and the existing triplet "item, is in, locker" should be replaced with the new triplet "item, is in, inventory".
 
@@ -66,8 +68,4 @@ New triplets: {new_triplets}.
 Warning! Replacing must be generated strictly in following format: [[outdated_triplet_1 -> actual_triplet_1], [outdated_triplet_2 -> actual_triplet_2], ...], you MUST NOT include any descriptions in answer.
 Replacing: """
 
-RU_SYSTEM_PROMPT = \
-'''Ты - ассистент, который умеет решать заданные задачи.'''
-
-EN_SYSTEM_PROMPT = \
-'''You are a helpful assistant.'''
+EN_REPLACE_SIMPLE_SYSTEM_PROMPT = """You are a helpful assistant."""

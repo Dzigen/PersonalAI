@@ -1,1 +1,1 @@
-from .suite import AgentThesisesExtrTaskConfigSelector
+from .selector import AgentThesisExtrTaskConfigSelector

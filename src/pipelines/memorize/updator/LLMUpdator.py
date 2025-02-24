@@ -1,4 +1,4 @@
-from .configs import MEM_UPDATOR_MAIN_LOG_PATH, DEFAULT_REPLACE_SIMPLE_TASK_CONFIG, DEFAULT_REPLACE_THESIS_TASK_CONFIG
+from .configs import MEM_UPDATOR_MAIN_LOG_PATH, DEFAULT_REPLACE_THESIS_TASK_CONFIG, DEFAULT_REPLACE_SIMPLE_TASK_CONFIG
 from ....utils import Logger, Triplet, AgentTaskSolverConfig, AgentTaskSolver
 from ....utils.data_structs import RelationType, NodeType, create_id
 from ....utils.errors import ReturnInfo, ReturnStatus, STATUS_MESSAGE

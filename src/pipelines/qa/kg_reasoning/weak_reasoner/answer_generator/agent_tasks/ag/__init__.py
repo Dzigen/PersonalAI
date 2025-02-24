@@ -1,1 +1,1 @@
-from .suites import AgentAGTaskConfigSelector
+from .selector import AgentAGTaskConfigSelector

@@ -1,1 +1,1 @@
-from .suites import AgentKWETaskConfigSelector
+from .selector import AgentKWETaskConfigSelector

@@ -22,9 +22,9 @@ RU_TRIPLETS_EXTRACT_SUITE = AgentTaskSuite(
     postprocess_answer_func=etriplets_custom_postprocess
 )
 
-TRIPLETS_EXTRACT_SUITE = {'ru': RU_TRIPLETS_EXTRACT_SUITE, 'en': EN_TRIPLETS_EXTRACT_SUITE}
+TRIPLET_EXTRACT_SUITE = {'ru': RU_TRIPLETS_EXTRACT_SUITE, 'en': EN_TRIPLETS_EXTRACT_SUITE}
 
-TRIPLETS_EXTRACT_TASK_CONFIGV2 = {
-    'suites': TRIPLETS_EXTRACT_SUITE,
+TRIPLET_EXTRACT_TASK_CONFIGV2 = {
+    'suites': TRIPLET_EXTRACT_SUITE,
     'custom_formate': etriplets_custom_formate
 }

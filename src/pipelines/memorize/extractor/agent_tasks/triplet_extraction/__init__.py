@@ -1,1 +1,1 @@
-from .suite import AgentTripletsExtrTaskConfigSelector
+from .selector import AgentTripletExtrTaskConfigSelector

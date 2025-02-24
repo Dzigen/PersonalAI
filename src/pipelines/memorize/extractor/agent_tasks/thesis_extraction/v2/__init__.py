@@ -1,1 +1,1 @@
-from .suite import THESISES_EXTRACT_TASK_CONFIGV2
+from .suite import THESIS_EXTRACT_TASK_CONFIGV2

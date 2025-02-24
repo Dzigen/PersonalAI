@@ -22,9 +22,9 @@ RU_THESISES_EXTRACT_SUITE = AgentTaskSuite(
     postprocess_answer_func=ethesises_custom_postprocess
 )
 
-THESISES_EXTRACT_SUITE = {'ru': RU_THESISES_EXTRACT_SUITE, 'en': EN_THESISES_EXTRACT_SUITE}
+THESIS_EXTRACT_SUITE = {'ru': RU_THESISES_EXTRACT_SUITE, 'en': EN_THESISES_EXTRACT_SUITE}
 
-THESISES_EXTRACT_TASK_CONFIGV2 = {
-    'suites': THESISES_EXTRACT_SUITE,
+THESIS_EXTRACT_TASK_CONFIGV2 = {
+    'suites': THESIS_EXTRACT_SUITE,
     'custom_formate': ethesises_custom_formate
 }
