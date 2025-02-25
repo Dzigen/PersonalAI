@@ -1,1 +1,1 @@
-from .suite import REPLACE_SIMPLE_TASK_CONFIGV1
+from .suite import REPLACE_SIMPLE_SUITE_V1

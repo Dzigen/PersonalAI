@@ -1,1 +1,1 @@
-from .suite import KWE_TASK_CONFIGV1
+from .suite import KWE_GEN_SUITE_V1

@@ -19,14 +19,11 @@ class AgentTaskSuite:
     :type assistant_prompt: str
     :param parse_answer_func: Кастомная функция, которая должна выполнять промежуточный разбор ответа LLM-агента, полученного в рамках инференса.
     :type parse_answer_func: object
-    :param postprocess_answer_func: Кастомная функция, приводящая разобранный ответ от LLM-агента к формату, который требуется для данной атомарной задачи.
-    :type postprocess_answer_func: object
     """
     system_prompt: str
     user_prompt: str
     assistant_prompt: str
     parse_answer_func: object
-    postprocess_answer_func: object
 
 @dataclass
 class AgentTaskSolverConfig:
@@ -36,6 +33,8 @@ class AgentTaskSolverConfig:
     :type suites: Dict[str, AgentTaskSuite]
     :param formate_context_func: Кастомная функция, приводящая входной (в agent-солвер) набор данных в строковый формат (в виде словаря со строковыми значениями), который далее будет добавляться в user-prompt для LLM-агента.
     :type formate_context_func: object
+    :param postprocess_answer_func: Кастомная функция, приводящая разобранный ответ от LLM-агента к формату, который требуется для данной атомарной задачи.
+    :type postprocess_answer_func: object
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(RKG_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
@@ -43,6 +42,7 @@ class AgentTaskSolverConfig:
     """
     suites: Dict[str, AgentTaskSuite]
     formate_context_func: object
+    postprocess_answer_func: object
     log: Logger
     verbose: bool = False
 
@@ -141,7 +141,7 @@ class AgentTaskSolver:
             self.log("6. Постобработка ответа от LLM-агента.", verbose=self.config.verbose)
 
             try:
-                task_result = self.config.suites[detected_lang].postprocess_answer_func(formated_answer, **kwargs)
+                task_result = self.config.postprocess_answer_func(formated_answer, **kwargs)
             except Exception as e:
                 self.log(str(e), verbose=self.config.verbose)
                 status = ReturnStatus.bad_postprocessor

@@ -1,45 +1,51 @@
 ### PROMPT IN ENGLISH ###
 
 EN_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
-'''Objective: The main goal is to meticulously gather information from the input тext and organize this data into a clear, structured knowledge graph.
+'''Objective: The main goal is to meticulously gather information from the input [Text] and organize this data into a clear, structured knowledge graph. Knowledge graphs consists of a set of triplets. Each triplet contains two entities (subject and object) and one relation
+that connects these subject and object. The subject is the entity that takes or undergo the action expressed by the predicate. The object is the entity which is the factual object of the action. The information provided by each predicate can be summarized as a
+knowledge triplet of the form "subject | predicate | object".
 
-Guidelines for Building the Knowledge Graph:
+Requirements for building a knowledge graph:
+1. Nodes must depict objects or concepts, usually in one or two words. Subjects and objects could be named entities or concepts describing a group of people, events, or abstract objects from the Wikidata knowledge graph.
+2. Complex objects or concepts like "John | position | engineer in Google" must be splitted into simple ones like "John | position | engineer" and "John | work at | Google".
+3. Length of the triplet should not be more than 7 words.
+4. Extract only concrete knowledges, any assumptions must be described as hypothesis. For example, from [Text] "John have scored many points and potentially will be winner" extract "John | scored many | points", "John | could be | winner" and should not extract "John | will be | winner".
+3. Object and subject in triplet must be an atomary units while relation can be more complex and long.
+4. Do not miss important information. If [Text] is "book involves story about knight, who needs to kill a dragon", [Extracted Triplets] should be "book | involves | knight", "knight | needs to kill | dragon".
+5. Several triplets can be extracted, that contain information about the same node. For example: "kitchen | contains | apple", "kitchen | contains | table", "apple | is on | table". Do not miss this type of connections.
+6. Do not use "none" as objects/subject in triplet.
 
-Creating Nodes and Triplets: Nodes should depict objects or concepts, usually one or two words. Use a structured triplet format to capture data, as follows: "subject, relation, object". For example, from "Albert Einstein, born in Germany, is known for developing the theory of relativity" extract "Albert Einstein, country of birth, Germany; Albert Einstein, developed, Theory of Relativity."
+[Extracted triplets] should be returned in the following format:
+subject_1 | relation_1 | object_1;
+subject_2 | relation_2 | object_2;
+...
+subject_n | relation_n | object_n.
 
-THIS PARAGRAPH IS VERY IMPORTANT!!!
-Remember that you should break complex objects or concepts like "John, position, engineer in Google" into simple ones like "John, position, engineer", "John, work at, Google".
-Length of your triplet should not be more than 7 words. You should extract only concrete knowledges, any assumptions must be described as hypothesis.
-For example, from phrase "John have scored many points and potentially will be winner" you should extract "John, scored many, points; John, could be, winner" and should not extract "John, will be, winner".
-Remember that object and subject must be an atomary units while relation can be more complex and long.
-
-Do not miss important information. If text is "book involves story about knight, who needs to kill a dragon", triplets should be "book, involves, knight", "knight, needs to kill, dragon". If observation involves some type of notes, do not forget to include triplets about entities this note includes.
-There could be connections between distinct parts of observations. For example if there is information in the beginning of the observation that you are in location, and in the end it states that there is an exit to the east, you should extract triplet: "location, has exit, east".
-Several triplets can be extracted, that contain information about the same node. For example "kitchen, contains, apple", "kitchen, contains, table", "apple, is on, table". Do not miss this type of connections.
-Other examples of triplets: "room z, contains, black locker"; "room x, has exit, east", "apple, is on, table", "key, is in, locker", "apple, to be, grilled", "potato, to be, sliced", "stove, used for, frying", "recipe, requires, green apple", "recipe, requires, potato".
-Do not include triplets that state the current location of an agent like "you, are in, location".
-Do not use "none" as one of the objects.
-If there is information that you read something, do not forget to incluse triplets that state that entitie that you read contains information that you extract.
-
-Remember that triplets must be extracted in format: "subject_1, relation_1, object_1; subject_2, relation_2, object_2; ...".
-This is important
-Do not separate triplets with new line, separate triplets with ";". Every triplet must contain strictly two "," characters.
-THIS IS IMPORTANT!!!
-Remember that triplets must be extracted in format: "subject_1, relation_1, object_1; subject_2, relation_2, object_2; ...".'''
+Examples of [Text] and expected [Extracted Triplets] are presented in a list below:
+#### Example 1
+[Text]:
+Albert Einstein, born in Germany, is known for developing the theory of relativity.
+[Extracted Triplets]:
+Albert Einstein | country of birth | Germany;
+Albert Einstein | developed | Theory of Relativity.
+'''
 
 # As a response generate only extracted triplets in the format, described above and do not include additional explanations of the obtained result.
 
 EN_TRIPLETS_EXTRACTION_USER_PROMPT = \
 '''
-Text:
-{text} '''
+[Text]:
+{text}
+'''
 
 EN_TRIPLETS_ASSISTANT_PROMPT = \
 '''
-Extracted triplets: '''
+[Extracted Triplets]:
+'''
 
 ### PROMPT IN RUSSIAN ###
 
+# TODO
 RU_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
 '''Задача: Основная цель - скрупулезно собрать информацию из входного текста и организовать эти данные в четкий, структурированный граф знаний.
 
@@ -63,10 +69,12 @@ RU_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
 
 В качестве ответа сгенерируй только извлеченные триплеты в формате, описанном выше, и не включай дополнительные пояснений результата.'''
 
+# TODO
 RU_TRIPLETS_EXTRACTION_USER_PROMPT = \
 '''Текст:
 {text} '''
 
+# TODO
 RU_TRIPLETS_ASSISTANT_PROMPT = \
 '''
 Извлеченные триплеты: '''

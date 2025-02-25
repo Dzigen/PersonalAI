@@ -1,1 +1,1 @@
-from .suite import AG_TASK_CONFIGV2
+from .suite import ANSWER_GEN_SUITE_V2

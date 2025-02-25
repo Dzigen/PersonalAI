@@ -1,1 +1,1 @@
-from .suite import TRIPLET_EXTRACT_TASK_CONFIGV2
+from .suite import TRIPLET_EXTRACT_SUITE_V2

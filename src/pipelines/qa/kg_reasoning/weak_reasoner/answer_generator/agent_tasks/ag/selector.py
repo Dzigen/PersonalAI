@@ -1,12 +1,13 @@
 from ........utils import AgentTaskSolverConfig, Logger
-from .v2 import AG_TASK_CONFIGV2
-from .v1 import AG_TASK_CONFIGV1
+from .general_parsers import ag_custom_formate, ag_custom_postprocess
+from .v2 import ANSWER_GEN_SUITE_V2
+from .v1 import ANSWER_GEN_SUITE_V1
 
 ANSWER_GENERATION_LOG_PATH = 'log/qa/kg_reasoner/weak/answer_generation/agent_tasks/ag'
 
 AVAILABLE_AG_TCONFIGS = {
-    'v1': AG_TASK_CONFIGV1,
-    'v2': AG_TASK_CONFIGV2
+    'v1': ANSWER_GEN_SUITE_V1,
+    'v2': ANSWER_GEN_SUITE_V2
 }
 
 class AgentAGTaskConfigSelector:
@@ -18,5 +19,5 @@ class AgentAGTaskConfigSelector:
     def select(base_config_version: str = 'v1') -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             suites=AVAILABLE_AG_TCONFIGS[base_config_version]['suites'],
-            formate_context_func=AVAILABLE_AG_TCONFIGS[base_config_version]['custom_formate'],
+            formate_context_func=ag_custom_formate, postprocess_func=ag_custom_postprocess,
             log=Logger(ANSWER_GENERATION_LOG_PATH))

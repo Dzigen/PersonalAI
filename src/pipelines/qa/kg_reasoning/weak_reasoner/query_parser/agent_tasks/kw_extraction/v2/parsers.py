@@ -1,11 +1,4 @@
-from typing import List, Dict
-
-
-def kwe_custom_formate(query: str) -> Dict[str, str]:
-    if len(query) < 1:
-        raise ValueError
-
-    return {'text': query}
+from typing import List
 
 def kwe_custom_parse(raw_response: str, **kwargs) -> List[str]:
     """Функция предназначена для разбора ответа от LLM-агента, в рамках задачи по извлечению ключевых сущностей из текста на естественном языке.
@@ -28,9 +21,3 @@ def kwe_custom_parse(raw_response: str, **kwargs) -> List[str]:
             raise ValueError
 
     return extracted_entities
-
-def kwe_custom_postprocess(parsed_response: List[str], **kwargs) -> List[str]:
-    if len(parsed_response) < 1:
-        raise ValueError
-
-    return parsed_response
