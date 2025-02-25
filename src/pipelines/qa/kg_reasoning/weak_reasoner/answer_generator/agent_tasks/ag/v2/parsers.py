@@ -12,7 +12,7 @@ def en_ag_custom_answer_parse(raw_response: str, **kwargs) -> str:
     if len(raw_response) < 1:
         raise ValueError
 
-    answer_pos = re.search("\[Answer\]: ", raw_response)
+    answer_pos = re.search("\[answer\]: ", raw_response, re.IGNORECASE)
 
     # Ответ не соответствует формату
     if answer_pos is None:
@@ -37,7 +37,7 @@ def ru_ag_custom_answer_parse(raw_response: str, **kwargs) -> str:
     if len(raw_response) < 1:
         raise ValueError
 
-    answer_pos = re.search("\[Ответ\]: ", raw_response)
+    answer_pos = re.search("\[ответ\]: ", raw_response, re.IGNORECASE)
 
     # Ответ не соответствует формату
     if answer_pos is None:
