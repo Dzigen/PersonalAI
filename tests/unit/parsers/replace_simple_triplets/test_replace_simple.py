@@ -14,9 +14,9 @@ AVAILABLE_RSIMPLE_VERSIONS = {
 }
 
 RSIMPLE_AGGREGATED_PARSE_TEST_CASES = []
-for v_key, v_tcases in AVAILABLE_RSIMPLE_VERSIONS:
+for v_key, v_tcases in AVAILABLE_RSIMPLE_VERSIONS.items():
     for tcase in v_tcases:
-        RSIMPLE_AGGREGATED_PARSE_TEST_CASES.append(tcase + [v_key])
+        RSIMPLE_AGGREGATED_PARSE_TEST_CASES.append(tcase + (v_key,))
 
 @pytest.mark.parametrize("raw_response, lang, expected_output, exception, rsimple_tconfig",
                          RSIMPLE_AGGREGATED_PARSE_TEST_CASES, indirect=['rsimple_tconfig'])

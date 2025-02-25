@@ -20,9 +20,9 @@ AVAILABLE_AG_VERSIONS = {
 }
 
 AG_AGGREGATED_PARSE_TEST_CASES = []
-for v_key, v_tcases in AVAILABLE_AG_VERSIONS:
+for v_key, v_tcases in AVAILABLE_AG_VERSIONS.items():
     for tcase in v_tcases:
-        AG_AGGREGATED_PARSE_TEST_CASES.append(tcase + [v_key])
+        AG_AGGREGATED_PARSE_TEST_CASES.append(tcase + (v_key,))
 
 @pytest.mark.parametrize("raw_response, lang, expected_output, exception, ag_tconfig", AG_AGGREGATED_PARSE_TEST_CASES, indirect=['ag_tconfig'])
 def test_qa_parse(raw_response: str, lang: str, expected_output: Dict[str, str],
@@ -52,7 +52,7 @@ def test_qa_custom_formate(query: str, context_triplets: List[Triplet],
         for expected_key in expected_output.keys():
             assert expected_output[expected_key] == formated_output[expected_key]
 
-@pytest.mark.parametrize("parsed_response, lang, expected_output, exception", AG_POSTPROCESS_TEST_CASES)
+@pytest.mark.parametrize("parsed_response, expected_output, exception", AG_POSTPROCESS_TEST_CASES)
 def test_qa_postprocess(parsed_response: str, expected_output: str, exception: bool):
     try:
         real_answer = ag_custom_postprocess(parsed_response)

@@ -18,6 +18,6 @@ class AgentAGTaskConfigSelector:
     @staticmethod
     def select(base_config_version: str = 'v1') -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
-            suites=AVAILABLE_AG_TCONFIGS[base_config_version]['suites'],
-            formate_context_func=ag_custom_formate, postprocess_func=ag_custom_postprocess,
+            suites=AVAILABLE_AG_TCONFIGS[base_config_version],
+            formate_context_func=ag_custom_formate, postprocess_answer_func=ag_custom_postprocess,
             log=Logger(ANSWER_GENERATION_LOG_PATH))

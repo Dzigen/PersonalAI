@@ -1,8 +1,8 @@
 KWE_PARSE_V2_TEST_CASES = [
     # пустая строк
-    ('', [], False),
+    ('', 'en', [], True),
     # одна сущность
-    ('asd', ['asd'], False),
+    ('asd', 'en', ['asd'], False),
     # несколько сущностей
-    ('asd | qwe | zxc', ['asd', 'qwe', 'zxc'], False)
+    ('asd | qwe | zxc', 'en', ['asd', 'qwe', 'zxc'], False)
 ]

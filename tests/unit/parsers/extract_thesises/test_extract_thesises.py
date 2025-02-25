@@ -17,15 +17,15 @@ AVAILABLE_ETHESISES_VERSIONS = {
 }
 
 ETHESISES_AGGREGATED_PARSE_TEST_CASES = []
-for v_key, v_tcases in AVAILABLE_ETHESISES_VERSIONS:
+for v_key, v_tcases in AVAILABLE_ETHESISES_VERSIONS.items():
     for tcase in v_tcases:
-        ETHESISES_AGGREGATED_PARSE_TEST_CASES.append(tcase + [v_key])
+        ETHESISES_AGGREGATED_PARSE_TEST_CASES.append(tcase + (v_key,))
 
 @pytest.mark.parametrize("raw_response, lang, expected_output, exception, ethesises_tconfig", ETHESISES_AGGREGATED_PARSE_TEST_CASES, indirect=['ethesises_tconfig'])
 def test_custom_parse(raw_response: str, lang: str, expected_output: List[Tuple[str, str, str]],
-                      exception: bool, thesisextr_tconfig: Dict[str, object]):
+                      exception: bool, ethesises_tconfig: Dict[str, object]):
     try:
-        parsed_output = thesisextr_tconfig[lang].parse_answer_func(raw_response)
+        parsed_output = ethesises_tconfig[lang].parse_answer_func(raw_response)
     except Exception:
         assert exception
     else:

@@ -14,7 +14,7 @@ AG_FORMATE_TEST_CASES = [
     # пустая query-строка
     ('', [VALID_SIMPLE_TRIPLET1, VALID_HYPER_TRIPLET1], None, True),
     # путой context_triplet-список
-    ('simple query', [], None, True),
+    ('simple query', [], {'q': 'simple query', 'c': 'Empty'}, False),
     # один элемент в context_triplets-списке
     ('simple query', [VALID_SIMPLE_TRIPLET1],
      {'q': 'simple query', 'c': AG_ONE_CONTEXT}, False),

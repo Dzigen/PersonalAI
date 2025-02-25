@@ -18,7 +18,7 @@ class AgentKWETaskConfigSelector:
     @staticmethod
     def select(base_config_version: str = 'v1') -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
-            suites=AVAILABLE_KWE_TCONFIGS[base_config_version]['suites'],
+            suites=AVAILABLE_KWE_TCONFIGS[base_config_version],
             formate_context_func=kwe_custom_formate,
             postprocess_answer_func=kwe_custom_postprocess,
             log=Logger(KW_EXTRACTION_LOG_PATH))

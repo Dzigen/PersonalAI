@@ -16,9 +16,9 @@ AVAILABLE_KWE_VERSIONS = {
 }
 
 KWE_AGGREGATED_PARSE_TEST_CASES = []
-for v_key, v_tcases in AVAILABLE_KWE_VERSIONS:
+for v_key, v_tcases in AVAILABLE_KWE_VERSIONS.items():
     for tcase in v_tcases:
-        KWE_AGGREGATED_PARSE_TEST_CASES.append(tcase + [v_key])
+        KWE_AGGREGATED_PARSE_TEST_CASES.append(tcase + (v_key,))
 
 @pytest.mark.parametrize("raw_response, lang, expected_output, exception, kwe_tconfig",
                          KWE_AGGREGATED_PARSE_TEST_CASES, indirect=['kwe_tconfig'])

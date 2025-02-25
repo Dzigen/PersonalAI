@@ -1,5 +1,3 @@
-from ....utils import AgentTaskSolverConfig, AgentTaskSuite, Logger
-
 from .agent_tasks.replace_simple_triplets import AgentReplSimpleTripletTaskConfigSelector
 from .agent_tasks.replace_thesis_triplets import AgentReplThesisTripletTaskConfigSelector
 

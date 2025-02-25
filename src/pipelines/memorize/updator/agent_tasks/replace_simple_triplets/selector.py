@@ -16,7 +16,7 @@ class AgentReplSimpleTripletTaskConfigSelector:
     @staticmethod
     def select(base_config_version: str = 'v1') -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
-            suites=AVAILABLE_REPLACE_SIMPLE_TCONFIGS[base_config_version]['suites'],
+            suites=AVAILABLE_REPLACE_SIMPLE_TCONFIGS[base_config_version],
             formate_context_func=rs_custom_formate,
             postprocess_answer_func=rs_custom_postprocess,
             log=Logger(REPLACE_SIMPLE_LOG_PATH))

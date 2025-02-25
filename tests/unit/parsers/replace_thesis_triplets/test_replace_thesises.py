@@ -15,9 +15,9 @@ AVAILABLE_RTHESIS_VERSIONS = {
 }
 
 RTHESIS_AGGREGATED_PARSE_TEST_CASES = []
-for v_key, v_tcases in AVAILABLE_RTHESIS_VERSIONS:
+for v_key, v_tcases in AVAILABLE_RTHESIS_VERSIONS.items():
     for tcase in v_tcases:
-        RTHESIS_AGGREGATED_PARSE_TEST_CASES.append(tcase + [v_key])
+        RTHESIS_AGGREGATED_PARSE_TEST_CASES.append(tcase + (v_key,))
 
 @pytest.mark.parametrize("raw_response, lang, expected_output, exception, rthesis_tconfig",
                          RTHESIS_AGGREGATED_PARSE_TEST_CASES, indirect=['rthesis_tconfig'])

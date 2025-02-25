@@ -18,7 +18,7 @@ class AgentThesisExtrTaskConfigSelector:
     @staticmethod
     def select(base_config_version: str = 'v1') -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
-            suites=AVAILABLE_THESIS_EXTRACT_TCONFIGS[base_config_version]['suites'],
+            suites=AVAILABLE_THESIS_EXTRACT_TCONFIGS[base_config_version],
             formate_context_func=ethesises_custom_formate,
             postprocess_answer_func=ethesises_custom_postprocess,
             log=Logger(THESIS_EXTR_LOG_PATH))

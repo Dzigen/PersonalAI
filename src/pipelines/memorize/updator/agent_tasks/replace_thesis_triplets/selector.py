@@ -16,6 +16,6 @@ class AgentReplThesisTripletTaskConfigSelector:
     @staticmethod
     def select(base_config_version: str = 'v1') -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
-            suites=AVAILABLE_REPLACE_THESIS_TCONFIGS[base_config_version]['suites'],
+            suites=AVAILABLE_REPLACE_THESIS_TCONFIGS[base_config_version],
             formate_context_func=rt_custom_formate, postprocess_answer_func=rt_custom_postprocess,
             log=Logger(REPLACE_THESIS_LOG_PATH))

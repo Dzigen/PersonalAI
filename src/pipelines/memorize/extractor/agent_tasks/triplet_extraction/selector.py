@@ -18,6 +18,6 @@ class AgentTripletExtrTaskConfigSelector:
     @staticmethod
     def select(base_config_version: str = 'v1') -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
-            suites=AVAILABLE_TRIPLET_EXTRACT_TCONFIGS[base_config_version]['suites'],
+            suites=AVAILABLE_TRIPLET_EXTRACT_TCONFIGS[base_config_version],
             formate_context_func=etriplets_custom_formate, postprocess_answer_func=etriplets_custom_postprocess,
             log=Logger(TRIPLET_EXTR_LOG_PATH))

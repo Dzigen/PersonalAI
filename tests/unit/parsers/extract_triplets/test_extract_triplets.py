@@ -17,9 +17,9 @@ AVAILABLE_ETRIPLETS_VERSIONS = {
 }
 
 ETRIPLETS_AGGREGATED_PARSE_TEST_CASES = []
-for v_key, v_tcases in AVAILABLE_ETRIPLETS_VERSIONS:
+for v_key, v_tcases in AVAILABLE_ETRIPLETS_VERSIONS.items():
     for tcase in v_tcases:
-        ETRIPLETS_AGGREGATED_PARSE_TEST_CASES.append(tcase + [v_key])
+        ETRIPLETS_AGGREGATED_PARSE_TEST_CASES.append(tcase + (v_key,))
 
 @pytest.mark.parametrize("raw_response, lang, expected_output, exception, etriplets_tconfig",
                          ETRIPLETS_AGGREGATED_PARSE_TEST_CASES, indirect=['etriplets_tconfig'])
