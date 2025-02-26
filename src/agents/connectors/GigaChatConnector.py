@@ -34,10 +34,10 @@ class GigaChatConnector(AbstractAgentConnector):
         pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
-        msgs = [Messages(role='system', content=system_prompt)]
+        msgs = [Messages(role='system', content=system_prompt), Messages(role='user', content=user_prompt)]
         if assistant_prompt is not None:
             msgs.append(Messages(role='assistant', content=assistant_prompt))
-        msgs.append(Messages(role='user', content=user_prompt))
+
         chat = Chat(messages=msgs, **self.gen_strategy)
 
         flag, counter = True, 0

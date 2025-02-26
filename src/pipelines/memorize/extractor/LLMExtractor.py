@@ -6,7 +6,7 @@ from ....utils.errors import STATUS_MESSAGE
 from ....utils.data_structs import TripletCreator, NodeCreator, Node, Relation, RelationType, NodeType, Triplet, create_id
 from ....agents import AgentDriver, AgentDriverConfig
 
-from .configs import DEFAULT_EXTRACT_THESISES_TASK_CONFIG, DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG, MEM_EXTRACTOR_MAIN_LOG_PATH
+from .configs import DEFAULT_THESISES_EXTR_TASK_CONFIG, DEFAULT_TRIPLETS_EXTR_TASK_CONFIG, MEM_EXTRACTOR_MAIN_LOG_PATH
 
 @dataclass
 class LLMExtractorConfig:
@@ -33,8 +33,8 @@ class LLMExtractorConfig:
     """
     lang: str = "auto"
     agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    triplets_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG)
-    thesises_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_EXTRACT_THESISES_TASK_CONFIG)
+    triplets_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_TRIPLETS_EXTR_TASK_CONFIG)
+    thesises_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_THESISES_EXTR_TASK_CONFIG)
     need_simple: bool = True
     need_thesises: bool = True
     need_episodic: bool = True

@@ -20,10 +20,9 @@ class OpenAIConnector(AbstractAgentConnector):
         pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
-        msgs = [{"role": "system", "content": system_prompt}]
+        msgs = [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}]
         if assistant_prompt is not None:
             msgs.append({"role": "assistant", "content": assistant_prompt})
-        msgs.append({"role": "user", "content": user_prompt})
 
         completion = self.client.chat.completions.create(
             model=self.model, messages=msgs, **self.gen_strategy)
