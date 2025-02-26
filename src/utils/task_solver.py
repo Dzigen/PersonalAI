@@ -1,10 +1,12 @@
-from dataclasses import dataclass
-from typing import Tuple, Dict
+from dataclasses import dataclass, field
+from typing import Tuple, Dict, Union
 import json
 
 from .logger import Logger
 from .language_detector import detect_lang
 from .errors import ReturnStatus, STATUS_MESSAGE
+from .cache_kv import CacheKV
+from ..db_drivers.kv_driver.KeyValueDriver import KeyValueDriverConfig
 from ..agents.utils import AbstractAgentConnector
 
 @dataclass
@@ -45,6 +47,7 @@ class AgentTaskSolverConfig:
     postprocess_answer_func: object
     log: Logger
     verbose: bool = False
+    cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None
 
 class AgentTaskSolver:
     """Класс-обёртка, предназначенный для решения атомарной задачи на базе инференса LLM-агента.
@@ -59,6 +62,11 @@ class AgentTaskSolver:
         self.config = config
         self.agent = agent
         self.log = self.config.log
+
+        if self.config.cache_kvdriver_config is not None:
+            self.cachekv = CacheKV(self.config.cache_kvdriver_config)
+        else:
+            self.cachekv = None
 
     def solve(self, lang: str = 'auto', **kwargs) -> Tuple[object, ReturnStatus]:
         """Метод предназначен для запуска agent-солвера на заданных входных данных.
@@ -112,10 +120,25 @@ class AgentTaskSolver:
             self.log("-"*20, verbose=self.config.verbose)
             self.log("4. Генерация ответа с помощью LLM-агента.", verbose=self.config.verbose)
 
-            raw_answer = self.agent.generate(
-                system_prompt=self.config.suites[detected_lang].system_prompt,
-                user_prompt=enriched_user_prompt,
-                assistant_prompt=self.config.suites[detected_lang].assistant_prompt)
+            raw_answer = None
+            gen_flag = True
+            cache_key = [self.config.suites[detected_lang].system_prompt, enriched_user_prompt,
+                         self.config.suites[detected_lang].assistant_prompt,self.agent.config]
+
+            if self.cachekv is not None:
+                cstatus, cached_result = self.cachekv.load_value(cache_key)
+                if cstatus == 0:
+                    gen_flag = False
+                    raw_answer = cached_result
+
+            if gen_flag:
+                raw_answer = self.agent.generate(
+                    system_prompt=self.config.suites[detected_lang].system_prompt,
+                    user_prompt=enriched_user_prompt,
+                    assistant_prompt=self.config.suites[detected_lang].assistant_prompt)
+
+            if self.cachekv is not None:
+                self.cachekv.save_value(cache_key, raw_answer)
 
             self.log(f"Результат:\n{raw_answer}", verbose=self.config.verbose)
             self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)

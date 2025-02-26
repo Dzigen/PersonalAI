@@ -1,7 +1,7 @@
 from ..db_drivers.kv_driver.KeyValueDriver import KeyValueDriver, KeyValueDriverConfig
 from ..db_drivers.kv_driver.utils import KeyValueDBInstance, KVDBConnectionConfig
 
-from typing import List, Union
+from typing import List, Union, Tuple
 import pickle
 import hashlib
 
@@ -13,8 +13,7 @@ DEFAULT_CACHEKV_CONFIG = KeyValueDriverConfig(
         need_to_clear=False))
 
 class CacheKV:
-
-    def __init__(self, kvdriver_config: KeyValueDriverConfig):
+    def __init__(self, kvdriver_config: KeyValueDriverConfig = DEFAULT_CACHEKV_CONFIG):
         self.kv_conn = KeyValueDriver.connect(kvdriver_config)
 
     def get_hash(self, key: List[object]) -> str:
@@ -30,7 +29,7 @@ class CacheKV:
     def is_key_valid(self, key: List[object]) -> bool:
         return len(key) > 0
 
-    def load_value(self, key: List[object]) -> object:
+    def load_value(self, key: List[object]) -> Tuple[int, object]:
         if not self.is_key_valid(key):
             raise ValueError
 
@@ -38,11 +37,11 @@ class CacheKV:
         output = self.kv_conn.read([key_hash])
 
         if len(output) < 1:
-            return None
+            return (-1, None)
 
         raw_value = output[0].value
         formated_value = pickle.loads(raw_value)
-        return formated_value
+        return (0, formated_value)
 
     def save_value(self, key: List[object], value: object) -> None:
         if not self.is_key_valid(key):
