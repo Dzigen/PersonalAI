@@ -2,6 +2,7 @@ import pymongo
 from typing import List, Dict
 from collections import defaultdict
 import numpy as np
+import pickle
 
 from src.db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
 
@@ -39,15 +40,21 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
             if item is None or item.id is None or item.value is None:
                 raise ValueError
 
-            if type(item.id) is not str or type(item.value) not in [np.float64, float, str, int]:
+            if type(item.id) is not str:
                 raise ValueError(f"{item} {type(item.id)} {type(item.value)}")
 
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
             raise ValueError
 
-        filtered_items = [{'_id': item.id, 'value': item.value, 'score': 0}
-                          for item in items if self._collection.find_one({'_id': item.id}) is None]
+        filtered_items = []
+        for item in items:
+            if self._collection.find_one({'_id': item.id}) is None:
+                if type(item.value) is bytes:
+                    dumped_value = pickle.dumps((item.value, 'bytes'))
+                else:
+                    dumped_value = pickle.dumps((item.value, 'notbytes'))
+                filtered_items.append({'_id': item.id, 'value': dumped_value, 'score': 0})
 
         # находимся в фиксированном размере хранилища
         if self.config.params['max_storage'] > 0:
@@ -78,7 +85,8 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
         for id in ids:
             item = items_dict.get(id, None)
             if item is not None:
-                item = KeyValueDBInstance(id=item['_id'], value=item['value'])
+                loaded_value = pickle.loads(item['value'])[0]
+                item = KeyValueDBInstance(id=item['_id'], value=loaded_value)
                 item_scores[item.id] += 1
 
             sorted_items.append(item)
@@ -104,12 +112,19 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
             return
 
         existig_items = self._collection.find({"_id": {"$in": [item.id for item in items]}})
-
         items_dict = {item.id: item for item in items}
-        filtered_items = [items_dict[item['_id']] for item in existig_items if items_dict[item['_id']] is not None]
 
-        for item in filtered_items:
-            self._collection.update_one({'_id': item.id}, {"$set": { "value": item.value}})
+        for exist_item in existig_items:
+            if items_dict[exist_item['_id']] is not None:
+                cur_item = items_dict[exist_item['_id']]
+
+                if type(item.value) is bytes:
+                    dumped_value = pickle.dumps((cur_item.value, 'bytes'))
+                else:
+                    dumped_value = pickle.dumps((cur_item.value, 'notbytes'))
+
+                self._collection.update_one({'_id': cur_item.id}, {"$set": { "value": dumped_value}})
+
 
     def delete(self, ids: List[str]) -> None:
         for id in ids:

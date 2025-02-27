@@ -1,10 +1,12 @@
-from dataclasses import dataclass
-from typing import Tuple, Dict
+from dataclasses import dataclass, field
+from typing import Tuple, Dict, Union
 import json
 
 from .logger import Logger
 from .language_detector import detect_lang
 from .errors import ReturnStatus, STATUS_MESSAGE
+from .cache_kv import CacheKV
+from ..db_drivers.kv_driver.KeyValueDriver import KeyValueDriverConfig
 from ..agents.utils import AbstractAgentConnector
 
 @dataclass
@@ -19,14 +21,11 @@ class AgentTaskSuite:
     :type assistant_prompt: str
     :param parse_answer_func: Кастомная функция, которая должна выполнять промежуточный разбор ответа LLM-агента, полученного в рамках инференса.
     :type parse_answer_func: object
-    :param postprocess_answer_func: Кастомная функция, приводящая разобранный ответ от LLM-агента к формату, который требуется для данной атомарной задачи.
-    :type postprocess_answer_func: object
     """
     system_prompt: str
     user_prompt: str
     assistant_prompt: str
     parse_answer_func: object
-    postprocess_answer_func: object
 
 @dataclass
 class AgentTaskSolverConfig:
@@ -36,6 +35,8 @@ class AgentTaskSolverConfig:
     :type suites: Dict[str, AgentTaskSuite]
     :param formate_context_func: Кастомная функция, приводящая входной (в agent-солвер) набор данных в строковый формат (в виде словаря со строковыми значениями), который далее будет добавляться в user-prompt для LLM-агента.
     :type formate_context_func: object
+    :param postprocess_answer_func: Кастомная функция, приводящая разобранный ответ от LLM-агента к формату, который требуется для данной атомарной задачи.
+    :type postprocess_answer_func: object
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(RKG_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
@@ -43,8 +44,10 @@ class AgentTaskSolverConfig:
     """
     suites: Dict[str, AgentTaskSuite]
     formate_context_func: object
+    postprocess_answer_func: object
     log: Logger
     verbose: bool = False
+    cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None
 
 class AgentTaskSolver:
     """Класс-обёртка, предназначенный для решения атомарной задачи на базе инференса LLM-агента.
@@ -59,6 +62,11 @@ class AgentTaskSolver:
         self.config = config
         self.agent = agent
         self.log = self.config.log
+
+        if self.config.cache_kvdriver_config is not None:
+            self.cachekv = CacheKV(self.config.cache_kvdriver_config)
+        else:
+            self.cachekv = None
 
     def solve(self, lang: str = 'auto', **kwargs) -> Tuple[object, ReturnStatus]:
         """Метод предназначен для запуска agent-солвера на заданных входных данных.
@@ -103,7 +111,7 @@ class AgentTaskSolver:
                 self.log(str(e), verbose=self.config.verbose)
                 status = ReturnStatus.bad_user_prompt_maping
             else:
-                self.log(f"Результат:\n{enriched_user_prompt}.", verbose=self.config.verbose)
+                self.log(f"Результат:\n{enriched_user_prompt}", verbose=self.config.verbose)
             finally:
                 self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
 
@@ -112,12 +120,27 @@ class AgentTaskSolver:
             self.log("-"*20, verbose=self.config.verbose)
             self.log("4. Генерация ответа с помощью LLM-агента.", verbose=self.config.verbose)
 
-            raw_answer = self.agent.generate(
-                system_prompt=self.config.suites[detected_lang].system_prompt,
-                user_prompt=enriched_user_prompt,
-                assistant_prompt=self.config.suites[detected_lang].assistant_prompt)
+            raw_answer = None
+            gen_flag = True
+            cache_key = [self.config.suites[detected_lang].system_prompt, enriched_user_prompt,
+                         self.config.suites[detected_lang].assistant_prompt,self.agent.config]
 
-            self.log(f"Результат:\n{raw_answer}.", verbose=self.config.verbose)
+            if self.cachekv is not None:
+                cstatus, cached_result = self.cachekv.load_value(cache_key)
+                if cstatus == 0:
+                    gen_flag = False
+                    raw_answer = cached_result
+
+            if gen_flag:
+                raw_answer = self.agent.generate(
+                    system_prompt=self.config.suites[detected_lang].system_prompt,
+                    user_prompt=enriched_user_prompt,
+                    assistant_prompt=self.config.suites[detected_lang].assistant_prompt)
+
+            if self.cachekv is not None:
+                self.cachekv.save_value(cache_key, raw_answer)
+
+            self.log(f"Результат:\n{raw_answer}", verbose=self.config.verbose)
             self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
 
         # Если сгенрированная raw-строка не является пустой
@@ -141,7 +164,7 @@ class AgentTaskSolver:
             self.log("6. Постобработка ответа от LLM-агента.", verbose=self.config.verbose)
 
             try:
-                task_result = self.config.suites[detected_lang].postprocess_answer_func(formated_answer, **kwargs)
+                task_result = self.config.postprocess_answer_func(formated_answer, **kwargs)
             except Exception as e:
                 self.log(str(e), verbose=self.config.verbose)
                 status = ReturnStatus.bad_postprocessor
@@ -151,3 +174,8 @@ class AgentTaskSolver:
                 self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
 
         return task_result, status
+
+@dataclass
+class AgentTaskBaseConfig:
+    suites: Dict[str, AgentTaskSuite]
+    custom_formate: object

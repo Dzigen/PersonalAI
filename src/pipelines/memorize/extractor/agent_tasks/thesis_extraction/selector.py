@@ -1,0 +1,24 @@
+from ......utils import AgentTaskSolverConfig, Logger
+from .general_parsers import ethesises_custom_formate, ethesises_custom_postprocess
+from .v1 import THESIS_EXTRACT_SUITE_V1
+from .v2 import THESIS_EXTRACT_SUITE_V2
+
+THESIS_EXTR_LOG_PATH = 'log/memorize/extractor/agent_tasks/thesis_extraction'
+
+AVAILABLE_THESIS_EXTRACT_TCONFIGS = {
+    'v1': THESIS_EXTRACT_SUITE_V1,
+    'v2': THESIS_EXTRACT_SUITE_V2
+}
+
+class AgentThesisExtrTaskConfigSelector:
+    @staticmethod
+    def get_available_configs():
+        return AVAILABLE_THESIS_EXTRACT_TCONFIGS
+
+    @staticmethod
+    def select(base_config_version: str = 'v1') -> AgentTaskSolverConfig:
+        return AgentTaskSolverConfig(
+            suites=AVAILABLE_THESIS_EXTRACT_TCONFIGS[base_config_version],
+            formate_context_func=ethesises_custom_formate,
+            postprocess_answer_func=ethesises_custom_postprocess,
+            log=Logger(THESIS_EXTR_LOG_PATH))

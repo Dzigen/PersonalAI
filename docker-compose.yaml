@@ -115,6 +115,8 @@ services:
     hostname: ollamaservice
     ports:
       - "11434:11434"
+    environment:
+      - OLLAMA_DEBUG=1
     volumes:
       - ../ollama_volume:/root/.ollama
     deploy:

@@ -1,7 +1,7 @@
 from typing import List, Tuple
 from dataclasses import dataclass, field
 
-from .configs import DEFAULT_ANSWER_GEN_TASK_CONFIG, AG_MAIN_LOG_PATH
+from .configs import DEFAULT_AG_TASK_CONFIG, AG_MAIN_LOG_PATH
 
 from ......utils.data_structs import Triplet, RelationType, create_id
 from ......utils.errors import STATUS_MESSAGE
@@ -16,7 +16,7 @@ class QALLMGeneratorConfig:
     :type lang: str
     :param agent_cofig: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
     :type agent_cofig: AgentDriverConfig
-    :param ag_task_config: Конфигурация атомарной задачи для LLM-агента по условной генерации ответа на вопрос.
+    :param ag_task_config: Конфигурация атомарной задачи для LLM-агента по условной генерации ответа на вопрос. Значение по умолчанию DEFAULT_AG_TASK_CONFIG.
     :type ag_tasK_config: AgentTaskSolverConfig
     :param relation_type: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос. Значение по умолчанию [RelationType.simple, RelationType.hyper, RelationType.episodic].
     :type relation_type: List[RelationType]
@@ -27,7 +27,7 @@ class QALLMGeneratorConfig:
     """
     lang: str = "auto"
     agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    ag_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_ANSWER_GEN_TASK_CONFIG)
+    ag_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_AG_TASK_CONFIG)
 
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
 

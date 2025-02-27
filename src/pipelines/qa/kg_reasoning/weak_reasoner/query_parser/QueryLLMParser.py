@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Tuple
 
-from .configs import DEFAULT_KW_EXTRACTION_TASK_CONFIG, QP_MAIN_LOG_PATH
+from .configs import DEFAULT_KWE_TASK_CONFIG, QP_MAIN_LOG_PATH
 from ......utils.data_structs import QueryInfo, create_id
 from ......utils.errors import STATUS_MESSAGE
 from ......utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
@@ -15,7 +15,7 @@ class QueryLLMParserConfig:
     :type lang: str
     :param agent_cofig: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
     :type agent_cofig: AgentDriverConfig
-    :param kw_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению ключевых сущностей из текста.
+    :param kw_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению ключевых сущностей из текста. Значение по умолчанию DEFAULT_KWE_TASK_CONFIG.
     :type kw_extraction_task_config: AgentTaskSolverConfig
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(QP_LOG_PATH).
     :type log: Logger
@@ -23,8 +23,8 @@ class QueryLLMParserConfig:
     :type verbose: bool
     """
     lang: str = 'auto'
-    agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    kw_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_KW_EXTRACTION_TASK_CONFIG)
+    agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
+    kw_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_KWE_TASK_CONFIG)
 
     log: Logger = field(default_factory=lambda: Logger(QP_MAIN_LOG_PATH))
     verbose: bool = False
@@ -40,7 +40,7 @@ class QueryLLMParser:
         self.config = config
         self.log = self.config.log
 
-        self.agent = AgentDriver.connect(config.agent_cofig)
+        self.agent = AgentDriver.connect(config.agent_config)
         self.kw_extraction_solver = AgentTaskSolver(self.agent, self.config.kw_extraction_task_config)
 
     def extract_entities(self, query_info: QueryInfo) -> ReturnInfo:

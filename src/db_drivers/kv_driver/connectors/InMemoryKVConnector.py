@@ -1,6 +1,7 @@
 from typing import List, Dict
 import gc
 import joblib
+import pickle
 import os
 import time
 import hashlib
@@ -56,7 +57,7 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
             if item is None or item.id is None or item.value is None:
                 raise ValueError
 
-            if type(item.id) is not str or type(item.value) not in [np.float64, str, float, int]:
+            if type(item.id) is not str:
                 raise ValueError(f"id: t - {type(item.id)}; v - {item.id} value: t - {type(item.value)}; v - {item.value}")
 
         unique_ids = set(map(lambda item: item.id, items))
@@ -72,7 +73,12 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
                 self.delete_rare_items(n_items_to_delete)
 
         for item in filtered_items:
-            self.kv_store[item.id] = item.value
+            if type(item.value) is bytes:
+                dumped_value = pickle.dumps((item.value, 'bytes'))
+            else:
+                dumped_value = pickle.dumps((item.value, 'notbytes'))
+
+            self.kv_store[item.id] = dumped_value
 
     def delete_rare_items(self, num: int) -> None:
         # TODO
@@ -88,7 +94,8 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         for id in ids:
             item = None
             if self.item_exist(id):
-                item = KeyValueDBInstance(id=id, value=self.kv_store[id])
+                loaded_value = pickle.loads(self.kv_store[id])[0]
+                item = KeyValueDBInstance(id=id, value=loaded_value)
                 item_scores[id] += 1
             items.append(item)
 
