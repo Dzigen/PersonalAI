@@ -17,14 +17,14 @@ class CacheKV:
         self.kv_conn = KeyValueDriver.connect(kvdriver_config)
 
     @staticmethod
-    def prepare_key(self, key: List[object], key_hash: str) -> str:
+    def prepare_key(key: List[object] = None, key_hash: str = None) -> str:
         # либо key- либо key_hash-значение должно быть указано,
         # инчае ошибка.
         if key is not None:
             if not CacheKV.is_key_valid(key):
                 raise ValueError
 
-            key_hash = self.get_hash(key)
+            key_hash = CacheKV.get_hash(key)
         elif key_hash is not None:
             pass
         else:
@@ -51,11 +51,12 @@ class CacheKV:
         key_hash = CacheKV.prepare_key(key, key_hash)
 
         output = self.kv_conn.read([key_hash])
+        filtered_output = list(filter(lambda item: item is not None, output))
 
-        if len(output) < 1:
+        if len(filtered_output) < 1:
             return (-1, key_hash)
 
-        raw_value = output[0].value
+        raw_value = filtered_output[0].value
         formated_value = pickle.loads(raw_value)
         return (0, formated_value)
 

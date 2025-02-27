@@ -68,7 +68,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
                 formated_items.append((item.id, dumped_value))
 
             self.conn.hset(self.config.params['hs_name'], mapping={item[0]: item[1] for item in formated_items})
-            self.conn.zadd(self.config.params['ss_name'], {item[0]: 0 for item in filtered_items})
+            self.conn.zadd(self.config.params['ss_name'], {item[0]: 0 for item in formated_items})
 
     def read(self, ids: List[str]):
         for id in ids:
