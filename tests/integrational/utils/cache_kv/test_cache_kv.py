@@ -1,4 +1,5 @@
 import sys
+import pickle
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
@@ -8,10 +9,10 @@ from src.utils.cache_kv import CacheKV
 import pytest
 from typing import List
 
-from cases import CACHEKV_POPULATED_GETHASH_TEST_CASES, CACHEKV_POPULATED_LOAD_TEST_CASES,\
+from cases import CACHEKV_GETHASH_TEST_CASES, CACHEKV_POPULATED_LOAD_TEST_CASES,\
     CACHEKV_POPULATED_SAVE_TEST_CASES
 
-@pytest.mark.parametrize("key, expected, exception, key2, expected2", CACHEKV_POPULATED_GETHASH_TEST_CASES)
+@pytest.mark.parametrize("key, expected, exception, key2, expected2", CACHEKV_GETHASH_TEST_CASES)
 def test_gethash(key: List[object], expected: str, exception: bool, key2: List[object], expected2: str):
     try:
         real = CacheKV.get_hash(key)
@@ -56,5 +57,5 @@ def test_save_value(cache_instances: List[KeyValueDBInstance], value: object, ke
         assert real_key_hash == expected
 
         assert cachekv_conn.kv_conn.item_exist(real_key_hash)
-        real_value = cachekv_conn.kv_conn.read([real_key_hash])[0].value
+        real_value = pickle.loads(cachekv_conn.kv_conn.read([real_key_hash])[0].value)
         assert real_value == value

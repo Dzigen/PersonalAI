@@ -31,12 +31,12 @@ KEY1_OBJECT_MODIF2 = [MODIF_OBJECT2, "123","asd", "asd"]
 KEY_HASH1_OBJECT_MODIF2 = hashlib.sha1((''.join([hashlib.sha1(pickle.dumps(v)).hexdigest() for v in KEY1_OBJECT_MODIF2])).encode()).hexdigest()
 
 VALUE1 = "Hello World!"
-VALUE1_DUMPED = pickle.dumps((VALUE1, 'not bytes'))
+VALUE1_DUMPED = pickle.dumps(VALUE1)
 
 VALUE2 = "Goodbye World!"
-VALUE2_DUMPED = pickle.dumps((VALUE2, 'not bytes'))
+VALUE2_DUMPED = pickle.dumps(VALUE2)
 
-VALUES3 = "New cached value"
+VALUE3 = "New cached value"
 
 CACHED_INSTANCES = [
     KeyValueDBInstance(id=KEY_HASH1, value=VALUE1_DUMPED),
@@ -57,29 +57,24 @@ CACHEKV_GETHASH_TEST_CASES = [
  (KEY1, KEY_HASH1, False, KEY1_OBJECT_MODIF2, KEY_HASH1_OBJECT_MODIF2)
 ]
 
-CACHEKV_POPULATED_GETHASH_TEST_CASES = []
-for db_vendor in AVAILABLE_KV_DBS:
-    for i in range(len(CACHEKV_GETHASH_TEST_CASES)):
-        CACHEKV_POPULATED_GETHASH_TEST_CASES.append(CACHEKV_GETHASH_TEST_CASES[i] + [db_vendor])
-
 # cache_instances, value, key, key_hash, expected, exception
 CACHEKV_SAVE_TEST_CASES = [
     # 1. в key-значении нулевое количество объектов (невалидный key)
-    (CACHED_INSTANCES, VALUES3, KEY_EMPTY, None, None, True),
+    (CACHED_INSTANCES, VALUE3, KEY_EMPTY, None, None, True),
     # 2. key- и key_hash-значения пустые
-    (CACHED_INSTANCES, VALUES3, None, None, None, True),
+    (CACHED_INSTANCES, VALUE3, None, None, None, True),
     # 3. непустое key-значение (value-отсутствует)
-    (CACHED_INSTANCES, "New cached value", KEY1_OBJECT_MODIF2, None, KEY_HASH1_OBJECT_MODIF2, False),
+    (CACHED_INSTANCES, VALUE3, KEY1_OBJECT_MODIF2, None, KEY_HASH1_OBJECT_MODIF2, False),
     # 4. непустое key_hash-значение (values-отсутствует)
-    (CACHED_INSTANCES, "New cached value", None, KEY_HASH1_OBJECT_MODIF2, KEY_HASH1_OBJECT_MODIF2, False),
+    (CACHED_INSTANCES, VALUE3, None, KEY_HASH1_OBJECT_MODIF2, KEY_HASH1_OBJECT_MODIF2, False),
     # 5. key-значение уже содержится в кеше
-    (CACHED_INSTANCES, "New cached value", KEY1, None, None, True)
+    (CACHED_INSTANCES, VALUE3, KEY1, None, None, True)
 ]
 
 CACHEKV_POPULATED_SAVE_TEST_CASES = []
 for db_vendor in AVAILABLE_KV_DBS:
     for i in range(len(CACHEKV_SAVE_TEST_CASES)):
-        CACHEKV_POPULATED_SAVE_TEST_CASES.append(CACHEKV_SAVE_TEST_CASES[i] + [db_vendor])
+        CACHEKV_POPULATED_SAVE_TEST_CASES.append(CACHEKV_SAVE_TEST_CASES[i] + (db_vendor,))
 
 # cache_instances, key, key_hash, expected_status, expected_value, exception
 CACHEKV_LOAD_TEST_CASES = [
@@ -100,4 +95,4 @@ CACHEKV_LOAD_TEST_CASES = [
 CACHEKV_POPULATED_LOAD_TEST_CASES = []
 for db_vendor in AVAILABLE_KV_DBS:
     for i in range(len(CACHEKV_LOAD_TEST_CASES)):
-        CACHEKV_POPULATED_LOAD_TEST_CASES.append(CACHEKV_LOAD_TEST_CASES[i] + [db_vendor])
+        CACHEKV_POPULATED_LOAD_TEST_CASES.append(CACHEKV_LOAD_TEST_CASES[i] + (db_vendor,))
