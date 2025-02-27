@@ -11,7 +11,7 @@ class KVDBConnectionConfig(BaseDatabaseConfig):
 @dataclass
 class KeyValueDBInstance:
     id: str
-    value: Union[int, float, str]
+    value: Union[int, float, str, bytes]
 
 class AbstractKVDatabaseConnection(AbstractDatabaseConnection):
     def update_item_scores(self, mapping: Dict[str, int]) -> None:

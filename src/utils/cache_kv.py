@@ -16,8 +16,25 @@ class CacheKV:
     def __init__(self, kvdriver_config: KeyValueDriverConfig = DEFAULT_CACHEKV_CONFIG):
         self.kv_conn = KeyValueDriver.connect(kvdriver_config)
 
-    def get_hash(self, key: List[object]) -> str:
-        if not self.is_key_valid(key):
+    @staticmethod
+    def prepare_key(self, key: List[object], key_hash: str) -> str:
+        # либо key- либо key_hash-значение должно быть указано,
+        # инчае ошибка.
+        if key is not None:
+            if not CacheKV.is_key_valid(key):
+                raise ValueError
+
+            key_hash = self.get_hash(key)
+        elif key_hash is not None:
+            pass
+        else:
+            raise ValueError
+
+        return key_hash
+
+    @staticmethod
+    def get_hash(key: List[object]) -> str:
+        if not CacheKV.is_key_valid(key):
             raise ValueError
 
         dumps = list(map(lambda key_part: pickle.dumps(key_part), key))
@@ -26,27 +43,31 @@ class CacheKV:
         key_hash = hashlib.sha1(concated_hashes.encode()).hexdigest()
         return key_hash
 
-    def is_key_valid(self, key: List[object]) -> bool:
+    @staticmethod
+    def is_key_valid(key: List[object]) -> bool:
         return len(key) > 0
 
-    def load_value(self, key: List[object]) -> Tuple[int, object]:
-        if not self.is_key_valid(key):
-            raise ValueError
+    def load_value(self, key: List[object] = None, key_hash: str = None) -> Tuple[int, Union[str, object]]:
+        key_hash = CacheKV.prepare_key(key, key_hash)
 
-        key_hash = self.get_hash(key)
         output = self.kv_conn.read([key_hash])
 
         if len(output) < 1:
-            return (-1, None)
+            return (-1, key_hash)
 
         raw_value = output[0].value
         formated_value = pickle.loads(raw_value)
         return (0, formated_value)
 
-    def save_value(self, key: List[object], value: object) -> None:
-        if not self.is_key_valid(key):
+    def save_value(self, value: object, key: List[object] = None, key_hash: str = None) -> str:
+        key_hash = CacheKV.prepare_key(key, key_hash)
+        if self.kv_conn.item_exist(key_hash):
             raise ValueError
 
-        key_hash = self.get_hash(key)
         new_item = KeyValueDBInstance(id=key_hash, value=pickle.dumps(value))
         self.kv_conn.create([new_item])
+        return key_hash
+
+    def check_key_exist(self, key: List[object] = None, key_hash: str = None) -> bool:
+        key_hash = CacheKV.prepare_key(key, key_hash)
+        return self.kv_conn.item_exist(key_hash)

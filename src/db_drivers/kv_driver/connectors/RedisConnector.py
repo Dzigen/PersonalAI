@@ -2,6 +2,7 @@ import redis
 from typing import List, Dict
 from collections import defaultdict
 import numpy as np
+import pickle
 
 from src.db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
 
@@ -38,7 +39,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
             if item is None or item.id is None or item.value is None:
                 raise ValueError
 
-            if type(item.id) is not str or type(item.value) not in [np.float64, str, float, int]:
+            if type(item.id) is not str:
                 raise ValueError(f"id: t - {type(item.id)}; v - {item.id} value: t - {type(item.value)}; v - {item.value}")
 
         unique_ids = set(map(lambda item: item.id, items))
@@ -58,8 +59,16 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
                 self.delete_rare_items(n_items_to_delete)
 
         if len(filtered_items) > 0:
-            self.conn.hset(self.config.params['hs_name'], mapping={item.id: item.value for item in filtered_items})
-            self.conn.zadd(self.config.params['ss_name'], {item.id: 0 for item in filtered_items})
+            formated_items = []
+            for item in filtered_items:
+                if type(item.value) is bytes:
+                    dumped_value = pickle.dumps((item.value, 'bytes'))
+                else:
+                    dumped_value = pickle.dumps((item.value, 'notbytes'))
+                formated_items.append((item.id, dumped_value))
+
+            self.conn.hset(self.config.params['hs_name'], mapping={item[0]: item[1] for item in formated_items})
+            self.conn.zadd(self.config.params['ss_name'], {item[0]: 0 for item in filtered_items})
 
     def read(self, ids: List[str]):
         for id in ids:
@@ -77,15 +86,9 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
             else:
                 item_scores[ids[i]] += 1
 
-                # костыль
-                val = val.decode()
-                try:
-                    val = float(val)
-                except ValueError as e:
-                    pass
-
+                loaded_value = pickle.loads(val)[0]
                 formated_items.append(
-                    KeyValueDBInstance(id=ids[i], value=val))
+                    KeyValueDBInstance(id=ids[i], value=loaded_value))
 
         # Обновляем метрику использования элементов
         self.update_item_scores(item_scores)
@@ -103,8 +106,16 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
         filtered_items = [item for item in items if self.conn.hexists(self.config.params['hs_name'], item.id)]
 
         if len(filtered_items) > 0:
-            self.conn.hset(self.config.params['hs_name'], mapping={item.id: str(item.value) for item in filtered_items})
-            self.conn.zadd(self.config.params['ss_name'], {item.id: 0 for item in filtered_items})
+            formated_items = []
+            for item in filtered_items:
+                if type(item.value) is bytes:
+                    dumped_value = pickle.dumps((item.value, 'bytes'))
+                else:
+                    dumped_value = pickle.dumps((item.value, 'notbytes'))
+                formated_items.append((item.id, dumped_value))
+
+            self.conn.hset(self.config.params['hs_name'], mapping={item[0]: item[1] for item in formated_items})
+            self.conn.zadd(self.config.params['ss_name'], {item[0]: 0 for item in formated_items})
 
     def delete(self, ids: List[str]):
         for id in ids:
