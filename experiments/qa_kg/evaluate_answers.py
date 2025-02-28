@@ -16,6 +16,7 @@ from tqdm import tqdm
 from torchmetrics.text.bert import BERTScore
 from Levenshtein import distance as levenshtain_distance
 from typing import Dict
+from datasets import load_from_disk
 import torch
 import gc
 import os
@@ -43,7 +44,7 @@ KG_PATH = DATASET_PATH + f"{HYPER_PARAMS['kg_name']}/"
 GRAPH_DRIVER_CONFIG_PATH = KG_PATH + "graph_config"
 EMBEDDINGS_DRIVER_CONFIG_PATH = KG_PATH + "embeddings_config"
 
-EXPERIMENT_DIR = f"{HYPER_PARAMS['dataset_name']}/exp_logs/{HYPER_PARAMS['experiment_name']}"
+EXPERIMENT_DIR = f"{EXPERIMENTS_DIR_PATH}/{HYPER_PARAMS['dataset_name']}/exp_logs/{HYPER_PARAMS['experiment_name']}"
 GENERATED_ANSWERS_DIR = f'{EXPERIMENT_DIR}/answer_packs'
 METRICS_DIR = f'{EXPERIMENT_DIR}/metric_packs'
 
@@ -55,15 +56,6 @@ HYPERPARAMS_SAVE_PATH = f'{EXPERIMENT_DIR}/hyperparams.json'
 QA_CONFIG_SAVE_PATH = f'{EXPERIMENT_DIR}/qa_config'
 RETRIEVER_CONFIG_SAVE_PATH = f'{EXPERIMENT_DIR}/retirver_config'
 FILTER_CONFIG_SAVE_PATH = f'{EXPERIMENT_DIR}/filter_config'
-
-#################LOADING_QUESTIONS##################
-
-from importlib import import_module
-
-mod = import_module(HYPER_PARAMS['dataset_name'])
-load_dataset = getattr(mod, "load_dataset")
-
-question_packs = load_dataset(HYPER_PARAMS['eval_dataset_path'])
 
 ####################################################
 
@@ -156,10 +148,37 @@ METRICS = ReaderMetrics(base_dir="../..", model_path=HYPER_PARAMS['eval_bs_model
 
 ####################################################
 
-# загружаем датасте
-question_packs = load_dataset(HYPER_PARAMS['eval_dataset_path'])
+def diaasqa_aload(dataset_path: str) -> List[List[str, List[str]]]:
+    pack_files = os.listdir(dataset_path)
+    packs = []
 
-for pack_name, _, all_target_answers in tqdm(question_packs):
+    for pack_f in pack_files:
+        with open(f"{dataset_path}/{pack_f}", 'r', encoding='utf-8') as fd:
+            data = json.loads(fd.read())
+
+        pack_name = '.'.join(pack_f.split('.')[:-1])
+        answers = list(map(lambda item: item['answer'], data))
+
+        packs.append((pack_name, answers))
+
+    return packs
+
+def hotpotqa_distractor_validation_aload(dataset_path: str) -> List[List[str, List[str]]]:
+    dataset = load_from_disk(dataset_path)
+    return dataset['answer']
+
+CUSTOM_LOAD_FUNCS = {
+    'diaasqa': diaasqa_aload,
+    'hotpotqa_distractor_validation': hotpotqa_distractor_validation_aload
+}
+
+# загружаем датасте
+answers_packs = CUSTOM_LOAD_FUNCS[HYPER_PARAMS['dataset_name']](HYPER_PARAMS['eval_dataset_path'])
+
+####################################################
+
+#
+for pack_name, all_target_answers in tqdm(answers_packs):
 
     torch.cuda.empty_cache()
     gc.collect()

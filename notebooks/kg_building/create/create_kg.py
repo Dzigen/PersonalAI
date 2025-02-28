@@ -6,6 +6,7 @@ from tqdm import tqdm
 import yaml
 import os
 from typing import List, Dict, Tuple
+import pandas as pd
 
 BASEDIR = '/home/m.menschikov/workspace/Personal-AI' # TO CHANGE
 sys.path.insert(0, BASEDIR)
@@ -164,7 +165,7 @@ joblib.dump(mem_config, MEM_PIPELINE_CONFIG_PATH)
 
 ########################
 
-def custom_diaasqa_load(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
+def diaasqa_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
     with open(dataset_path, 'r', encoding='utf-8') as fd:
         data = json.loads(fd.read())
 
@@ -174,8 +175,20 @@ def custom_diaasqa_load(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
 
     return data_pairs
 
+
+def hotpotqa_distractor_validation_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
+    contexts_df = pd.read_csv(f"{dataset_path}/relevant_contexts.csv")
+
+    data_pair = []
+    for r_idx in range(contexts_df.shape[0]):
+        formated_context = f"Title: {contexts_df['title'][r_idx]}\n{contexts_df['context'][r_idx]}"
+        data_pair.append((formated_context, dict()))
+
+    return data_pair
+
 CUSTOM_LOAD_FUNCS = {
-    'diaasqa': custom_diaasqa_load
+    'diaasqa': diaasqa_cload,
+    'hotpotqa_distractor_validation': hotpotqa_distractor_validation_cload
 }
 dataset = CUSTOM_LOAD_FUNCS[HYPER_PARAMS['DATASET_NAME']](HYPER_PARAMS['DATASET_PATH'])
 print(len(dataset))

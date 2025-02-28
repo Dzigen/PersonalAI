@@ -6,6 +6,8 @@ import json
 import numpy as np
 import joblib
 from time import time
+from typing import List, Dict, Tuple
+from datasets import load_from_disk
 
 # TO CHANGE
 BASEDIR = "../.."
@@ -35,7 +37,7 @@ KG_PATH = DATASET_PATH + f"{HYPER_PARAMS['kg_name']}/"
 GRAPH_DRIVER_CONFIG_PATH = KG_PATH + "graph_config"
 EMBEDDINGS_DRIVER_CONFIG_PATH = KG_PATH + "embeddings_config"
 
-EXPERIMENT_DIR = f"{HYPER_PARAMS['dataset_name']}/exp_logs/{HYPER_PARAMS['experiment_name']}"
+EXPERIMENT_DIR = f"{EXPERIMENTS_DIR_PATH}/{HYPER_PARAMS['dataset_name']}/exp_logs/{HYPER_PARAMS['experiment_name']}"
 GENERATED_ANSWERS_DIR = f'{EXPERIMENT_DIR}/answer_packs'
 METRICS_DIR = f'{EXPERIMENT_DIR}/metric_packs'
 
@@ -79,7 +81,7 @@ print(kg_model.graph_struct.db_conn.count_items())
 ##################STRUCTURE_INITs#################
 
 if HYPER_PARAMS['init_struct']:
-    if not os.path.exists(HYPER_PARAMS['dataset_name']):
+    if not os.path.exists(f"{EXPERIMENTS_DIR_PATH}/{HYPER_PARAMS['dataset_name']}"):
         raise ValueError("Директории не существует")
 
     if os.path.exists(EXPERIMENT_DIR):
@@ -131,16 +133,36 @@ if HYPER_PARAMS['init_struct']:
 
 #################LOADING_QUESTIONS##################
 
-from importlib import import_module
+def diaasqa_qload(dataset_path: str) -> List[List[str, List[str]]]:
+    pack_files = os.listdir(dataset_path)
+    packs = []
 
-mod = import_module(HYPER_PARAMS['dataset_name'])
-load_dataset = getattr(mod, "load_dataset")
+    for pack_f in pack_files:
+        with open(f"{dataset_path}/{pack_f}", 'r', encoding='utf-8') as fd:
+            data = json.loads(fd.read())
 
-question_packs = load_dataset(HYPER_PARAMS['eval_dataset_path'])
+        pack_name = '.'.join(pack_f.split('.')[:-1])
+        questions = list(map(lambda item: item['question'], data))
+
+        packs.append((pack_name, questions))
+
+    return packs
+
+
+def hotpotqa_distractor_validation_qload(dataset_path: str) -> List[List[str, List[str]]]:
+    dataset = load_from_disk(dataset_path)
+    return dataset['question']
+
+CUSTOM_LOAD_FUNCS = {
+    'diaasqa': diaasqa_qload,
+    'hotpotqa_distractor_validation': hotpotqa_distractor_validation_qload
+}
+
+question_packs = CUSTOM_LOAD_FUNCS[HYPER_PARAMS['dataset_name']](HYPER_PARAMS['eval_dataset_path'])
 
 #################START_QA_PROCESS##################
 
-for pack_name, questions, _ in question_packs:
+for pack_name, questions in question_packs:
 
     pack_tmp_dir = f"{TMP_GENERATED_ANSWERS_DIR}/{pack_name}"
     if not os.path.exists(pack_tmp_dir):
