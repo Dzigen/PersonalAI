@@ -64,7 +64,7 @@ services:
       - "${REDIS_EXTERNAL_PORT}:6379"
     volumes:
       - ${REDIS_LOCAL_VOLUME}:/data
-      - ${LOCAL_REDIS_CONFIG}:/usr/local/etc/redis
+      - ${REDIS_CONFIG}:/usr/local/etc/redis
     deploy:
       resources:
         limits:
@@ -112,12 +112,13 @@ services:
     container_name: personalai_mmenschikov_worksapce
     hostname: worksapceservice
     volumes:
-      - ${LOCAL_WORKSPACE_DIR}:/home/m.menschikov/workspace
-      - ${LOCAL_VENV_DIR}:/home/m.menschikov/.pai_venv
+      - ${LOCAL_WORKSPACE_DIR}:/home/m.menschikov/workspace/personal_ai/Personal-AI
+      - ${LOCAL_VENV_DIR}:/home/m.menschikov/workspace/personal_ai/.pai_venv
     depends_on:
       - neo4j
       - mongo_ui
       - redis_ui
+      - ollama_agent
     deploy:
       resources:
         limits:

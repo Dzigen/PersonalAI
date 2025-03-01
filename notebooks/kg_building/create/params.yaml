@@ -1,12 +1,10 @@
 DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'qwen25_full' # TO CHANGE
-KGS_BASE_PATH: '/home/dzigen/Desktop/PersonalAI/Personal-AI/data/knowledge_graphs' # TO CHANGE
-DATASET_PATH: '/home/m.menschikov/workspace/Personal-AI/data/qa_datasets/diaasqa/Augment_DiaASQ.json' # TO CHANGE
-INIT_CONTAINERS_DOCKERCOMPOSE_FILE: '/home/dzigen/Desktop/PersonalAI/Personal-AI/notebooks/kg_building/docker-compose.yaml' # TO CHANGE
-DOCKER_COMPOSE_CMD: 'docker-compose'
-BASE_PERSONALAI_DIR: '/home/dzigen/Desktop/PersonalAI/Personal-AI' # TO CHANGE
-PERSONALAI_VENV_DIR: '/home/dzigen/Desktop/PersonalAI/.pai_venv' # TO CHANGE
-OLLAMA_MODELS_DIR: '/home/dzigen/Desktop/PersonalAI/ollama_volume' # TO CHANGE
+KGS_BASE_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs' # TO CHANGE
+DATASET_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets/hotpotqa_distractor_validation' # TO CHANGE
+BASE_PERSONALAI_DIR: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
+PERSONALAI_VENV_DIR: '/home/m.menschikov/workspace/personal_ai/.pai_venv' # TO CHANGE
+OLLAMA_MODELS_DIR: '/home/m.menschikov/workspace/personal_ai/ollama_volume' # TO CHANGE
 INIT_STRUCT: True # !!! PAY ATTENTION !!!
 
 MEM_PIPELINE_CONFIG:
@@ -64,8 +62,8 @@ MEM_PIPELINE_CONFIG:
     params:
       ss_name: 'sorted_node_pairs'
       hs_name: 'node_pairs'
-      max_storage: 5e+8}
-    db_configuration: '/home/dzigen/Desktop/PersonalAI/Personal-AI/configs/redis/'
+      max_storage: 5e+8
+    db_configuration: '/home/m.menschikov/workspace/personal_ai/Personal-AI/configs/redis' # TO CHANGE
 
 KG_DB_CONFIGS:
   need_to_clear: False # !!! PAY ATTENTION !!!
