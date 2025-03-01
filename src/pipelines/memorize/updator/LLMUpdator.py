@@ -15,8 +15,8 @@ class LLMUpdatorConfig:
 
     :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если указано значение 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str
-    :param agent_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии.
-    :type agent_config: AgentDriverConfig
+    :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии.
+    :type adriver_config: AgentDriverConfig
     :param replace_simple_task_config: Конфигурация атомарной задачи для LLM-агента по поиску устаревших триплетов типа "simple". Значение по умолчанию DEFAULT_REPLACE_SIMPLE_TASK_CONFIG.
     :type replace_simple_task_config: AgentTaskSolverConfig
     :param replace_thesis_task_config: Конфигурация атомарной задачи для LLM-агента по поиску устаревших триплетов типа "hyper". Значение по умолчанию DEFAULT_REPLACE_THESIS_TASK_CONFIG.
@@ -29,7 +29,7 @@ class LLMUpdatorConfig:
     :type verbose: bool
     """
     lang: str = "auto"
-    agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
+    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     replace_simple_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_REPLACE_SIMPLE_TASK_CONFIG)
     replace_thesis_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_REPLACE_THESIS_TASK_CONFIG)
     delete_obsolete_info: bool = False
@@ -51,7 +51,7 @@ class LLMUpdator:
         self.kg_model = kg_model
         self.log = config.log
 
-        self.agent = AgentDriver.connect(config.agent_config)
+        self.agent = AgentDriver.connect(config.adriver_config)
         self.replace_simple_solver = AgentTaskSolver(self.agent, self.config.replace_simple_task_config)
         self.replace_hyper_solver = AgentTaskSolver(self.agent, self.config.replace_thesis_task_config)
 

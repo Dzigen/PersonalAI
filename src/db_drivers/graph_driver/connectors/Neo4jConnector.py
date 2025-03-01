@@ -5,7 +5,7 @@ import json
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NodeType, RelationCreator, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 
-DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(uri="bolt://localhost:7687", params={'user': "neo4j", 'pwd': 'password'})
+DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(host='localhost', port=7687, params={'user': "neo4j", 'pwd': 'password'})
 
 class Neo4jConnector(AbstractGraphDatabaseConnection):
 
@@ -47,7 +47,9 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
     def open_connection(self) -> None:
         self.driver = None
         try:
-            self.driver = GraphDatabase.driver(self.config.uri, auth=(self.config.params['user'], self.config.params['pwd']))
+            self.driver = GraphDatabase.driver(
+                f"bolt://{self.config.host}:{self.config.port}",
+                auth=(self.config.params['user'], self.config.params['pwd']))
         except Exception as e:
             print("Failed to create the driver:", e)
 

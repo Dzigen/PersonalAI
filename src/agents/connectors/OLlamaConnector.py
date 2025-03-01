@@ -3,7 +3,7 @@ from ollama import Client
 
 DEFAULT_OLLAMA_CONFIG = AgentConnectorConfig(
     gen_strategy={'num_predict': 2048, 'seed': 42, 'top_k': 1, 'temperature': 0.0},
-    credentials={'host': 'http://localhost:11434'},
+    credentials={'host': 'localhost', 'port': 11434},
     ext_params={'model': 'llama3.2', 'timeout': 560, 'keep_alive': -1})
 
 # available models
@@ -17,7 +17,9 @@ class OLlamaConnector(AbstractAgentConnector):
         self.open_connection()
 
     def open_connection(self):
-        self.client = Client(host=self.config.credentials['host'], timeout=self.config.ext_params['timeout'])
+        self.client = Client(
+            host=f"http://{self.config.credentials['host']}:{self.config.credentials['port']}",
+            timeout=self.config.ext_params['timeout'])
 
     def check_connection(self) -> bool:
         pass

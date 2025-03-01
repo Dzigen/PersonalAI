@@ -1,4 +1,5 @@
 from ......utils import AgentTaskSolverConfig, Logger
+from ......db_drivers.kv_driver import KeyValueDriverConfig
 from .general_parsers import ethesises_custom_formate, ethesises_custom_postprocess
 from .v1 import THESIS_EXTRACT_SUITE_V1
 from .v2 import THESIS_EXTRACT_SUITE_V2
@@ -16,9 +17,9 @@ class AgentThesisExtrTaskConfigSelector:
         return AVAILABLE_THESIS_EXTRACT_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v1') -> AgentTaskSolverConfig:
+    def select(base_config_version: str = 'v1', kvcache_driver_config: KeyValueDriverConfig = None) -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             suites=AVAILABLE_THESIS_EXTRACT_TCONFIGS[base_config_version],
-            formate_context_func=ethesises_custom_formate,
-            postprocess_answer_func=ethesises_custom_postprocess,
+            formate_context_func=ethesises_custom_formate, postprocess_answer_func=ethesises_custom_postprocess,
+            cache_kvdriver_config=kvcache_driver_config,
             log=Logger(THESIS_EXTR_LOG_PATH))

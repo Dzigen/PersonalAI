@@ -1,47 +1,5 @@
 services:
 
-  aerospike_golden_gigachat:
-    user: "4200235:4200235"
-    container_name: personalai_aerospike
-    hostname: aerospikelservice
-    image: m.menschikov/aerospike:ee-7.1.0.6_1
-    ports:
-      - "3000:3000"
-      - "3001:3001"
-      - "3002:3002"
-    volumes:
-      - ../aerospike_volumes/golden_gigachat/data:/opt/aerospike/data
-      - ../aerospike_volumes/configs:/etc/aerospike
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 8G
-        reservations:
-          cpus: '1'
-          memory: 4G
-
-  aerospike_built_gigachat:
-    user: "4200235:4200235"
-    container_name: personalai_aerospike
-    hostname: aerospikelservice
-    image: m.menschikov/aerospike:ee-7.1.0.6_1
-    ports:
-      - "3000:3000"
-      - "3001:3001"
-      - "3002:3002"
-    volumes:
-      - ../aerospike_volumes/built_gigachat/data:/opt/aerospike/data
-      - ../aerospike_volumes/configs:/etc/aerospike
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 8G
-        reservations:
-          cpus: '1'
-          memory: 4G
-
   # Database - Neo4j
   neo4j:
     container_name: personalai_mmenschikov_neo4j
