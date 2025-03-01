@@ -9,9 +9,14 @@ import os
 from typing import List, Dict, Tuple
 import yaml
 
+# Read YAML file
+CREATE_DIR_PATH = sys.orig_argv[1]
+PARAMS_FILE_PATH = f'{CREATE_DIR_PATH}/params.yaml'
+with open("params.yaml", 'r') as stream:
+    HYPER_PARAMS = yaml.safe_load(stream)
+
 # TO CHANGE
-BASEDIR = "../../../"
-sys.path.insert(0, BASEDIR)
+sys.path.insert(0, HYPER_PARAMS['BASE_PERSONALAI_DIR'])
 
 from src.pipelines.memorize import MemPipelineConfig, MemPipeline, LLMExtractorConfig, LLMUpdatorConfig
 from src.kg_model import KnowledgeGraphModel, EmbeddingsModelConfig, GraphModelConfig, EmbedderModelConfig
@@ -22,28 +27,23 @@ gc.collect()
 
 ###############Loading hyperparams###################
 
-# Read YAML file
-with open("params.yaml", 'r') as stream:
-    HYPER_PARAMS = yaml.safe_load(stream)
+DATASET_PATH = f"{HYPER_PARAMS['KGS_BASE_PATH']}/{HYPER_PARAMS['DATASET_NAME']}"
+KG_PATH = DATASET_PATH + f"{HYPER_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
-BASE_PATH = "../../../data/knowledge_graphs/"
-DATASET_PATH = BASE_PATH + f"{HYPER_PARAMS['DATASET_NAME']}/"
-KG_PATH = DATASET_PATH + f"{HYPER_PARAMS['KNOWLEDGE_GRAPH_NAME']}/"
+GRAPH_DRIVER_CONFIG_PATH = f"{KG_PATH}/graph_config"
+EMBEDDINGS_DRIVER_CONFIG_PATH = f"{KG_PATH}/embeddings_config"
+MEM_PIPELINE_CONFIG_PATH = f"{KG_PATH}/mem_pipeline_config"
 
-GRAPH_DRIVER_CONFIG_PATH = KG_PATH + "graph_config"
-EMBEDDINGS_DRIVER_CONFIG_PATH = KG_PATH + "embeddings_config"
-MEM_PIPELINE_CONFIG_PATH = KG_PATH + "mem_pipeline_config"
-
-GRAPH_STATS_DIR = KG_PATH + 'graph_statistics/'
-GRAPH_STATS_PLOT = GRAPH_STATS_DIR + 'plots/'
-GRAPH_STATS_INFO = GRAPH_STATS_DIR + 'stats_info.json'
+GRAPH_STATS_DIR = f'{KG_PATH}/graph_statistics'
+GRAPH_STATS_PLOT = f'{GRAPH_STATS_DIR}/plots/'
+GRAPH_STATS_INFO = f'{GRAPH_STATS_DIR}/stats_info.json'
 
 GRAPH_HEALTH_CHECKS_PATH = GRAPH_STATS_DIR + 'health_checks.json'
 
 ##################################
 
-if not os.path.exists(BASE_PATH):
-    raise ValueError(f"Директории не существует: {BASE_PATH}")
+if not os.path.exists(HYPER_PARAMS['BASE_PERSONALAI_DIR']):
+    raise ValueError(f"Директории не существует: {HYPER_PARAMS['BASE_PERSONALAI_DIR']}")
 if not os.path.exists(DATASET_PATH):
     raise ValueError(f"Директории не существует: {DATASET_PATH}")
 if not os.path.exists(KG_PATH):
@@ -300,7 +300,7 @@ def get_node_embds_match(kg_model: KnowledgeGraphModel):
     for item in tqdm(uniques_graph_n_items):
         str_id, n_tpe = item
         is_n_exists = kg_model.embeddings_struct.vectordbs['nodes'].item_exist(str_id)
-        
+
         embds_exist_n_ids.append(is_n_exists)
         if not is_n_exists:
             not_matched_embds[n_tpe] += 1

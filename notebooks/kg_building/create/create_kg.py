@@ -48,7 +48,7 @@ PERSISTENT_DB_PATH = KV_DB_PATH + f"{HYPER_PARAMS['KG_DIR_STRUCT']['cache_dir_na
 RAM_DB_PATH = KV_DB_PATH + f"{HYPER_PARAMS['KG_DIR_STRUCT']['cache_dir_name']['ram_volume']}/"
 TMP_EXTRACTED_TRIPLETS_PATH = f"{KG_PATH}/{HYPER_PARAMS['KG_DIR_STRUCT']['tmp_triplets_dir_name']}/"
 
-HYPER_PARAMS_PATH = f"{KG_PATH}/hyperparameters.json"
+HYPER_PARAMS_PATH = f"{KG_PATH}/hyperparameters.yaml"
 EXTRACTED_TRIPLETS_PATH = f"{KG_PATH}/extracted_triplets"
 GRAPH_DRIVER_CONFIG_PATH = f"{KG_PATH}/graph_config"
 EMBEDDINGS_DRIVER_CONFIG_PATH = f"{KG_PATH}/embeddings_config"
