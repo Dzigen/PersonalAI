@@ -21,7 +21,7 @@ def graph_neo4j_config():
         driver_config=GraphDriverConfig(
             db_vendor='neo4j',
             db_config=GraphDBConnectionConfig(
-                uri="bolt://localhost:7688", db_info={'db': 'testing', 'table': 'testing'},
+                host="localhost", port="7688", db_info={'db': 'testing', 'table': 'testing'},
                 params={'user': "neo4j", 'pwd': 'password'}, need_to_clear=True)))
     return config
 
@@ -31,7 +31,7 @@ def graph_inmemory_config():
         driver_config=GraphDriverConfig(
             db_vendor='inmemory_graph',
             db_config=GraphDBConnectionConfig(
-                uri="", db_info={'db': 'testing', 'table': 'testing'},
+                db_info={'db': 'testing', 'table': 'testing'},
                 params=dict(), need_to_clear=True)))
     return config
 

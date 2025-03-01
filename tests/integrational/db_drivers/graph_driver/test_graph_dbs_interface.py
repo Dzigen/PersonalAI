@@ -180,9 +180,9 @@ def test_read_by_name(instances, create_info, init_count, name, type, object, ex
             raise ValueError
 
 
-@pytest.mark.parametrize("init_graph, exception, graphdb_conn", GRAPHDB_GET_NSHARED_IDS_TEST_CASES, indirect=['graphdb_conn'])
-def test_get_nshared_ids(instances, create_info, node1_id, node2_id, id_type, expected_output, exception, graphdb_conn):
-    graphdb_conn.clear()
-    graphdb_conn.create(instances, create_info)
+# @pytest.mark.parametrize("init_graph, exception, graphdb_conn", GRAPHDB_GET_NSHARED_IDS_TEST_CASES, indirect=['graphdb_conn'])
+# def test_get_nodes_shared_ids(instances, create_info, node1_id, node2_id, id_type, expected_output, exception, graphdb_conn):
+#     graphdb_conn.clear()
+#     graphdb_conn.create(instances, create_info)
 
-    # TODO
+#     # TODO

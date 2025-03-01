@@ -26,9 +26,6 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         self.strid_nodes_index = defaultdict(set)
         self.tid_triplets_index = defaultdict(set)
 
-        if self.config.need_to_clear:
-            self.clear()
-
     def is_open(self) -> bool:
         need_to_exist = [
             'edges', 'adjacent_nodes', 'nodes', 'relations', 'triplets',
