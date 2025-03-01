@@ -14,10 +14,6 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
     def __init__(self, config: GraphDBConnectionConfig = DEFAULT_INMEMORYGRAPH_CONFIG) -> None:
         self.config = config
-        self.open_connection()
-
-        if self.config.need_to_clear:
-            self.clear()
 
     def open_connection(self) -> None:
         self.edges = defaultdict(set)
@@ -29,6 +25,9 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         self.strid_relation_index = defaultdict(set)
         self.strid_nodes_index = defaultdict(set)
         self.tid_triplets_index = defaultdict(set)
+
+        if self.config.need_to_clear:
+            self.clear()
 
     def is_open(self) -> bool:
         need_to_exist = [

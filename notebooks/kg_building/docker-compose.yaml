@@ -15,11 +15,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
-          memory: 8G
+          cpus: '4'
+          memory: 10G
         reservations:
-          cpus: '1'
-          memory: 4G
+          cpus: '2'
+          memory: 5G
 
   mongo_cache:
     image: mongo:latest
@@ -35,10 +35,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
+          cpus: '4'
           memory: 40G
         reservations:
-          cpus: '1'
+          cpus: '2'
           memory: 5G
 
   mongo_ui:
@@ -59,7 +59,7 @@ services:
   redis_cache:
     image: redis:latest
     container_name: ${REDIS_HOST}
-    hostname: redis_cache
+    hostname: ${REDIS_HOST}
     ports:
       - "${REDIS_EXTERNAL_PORT}:6379"
     volumes:
@@ -69,10 +69,10 @@ services:
       resources:
         limits:
           cpus: '2'
-          memory: 8G
+          memory: 10G
         reservations:
           cpus: '1'
-          memory: 6G
+          memory: 5G
 
   redis_ui:
     image: redis/redisinsight:latest
@@ -96,16 +96,15 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
+          cpus: '4'
           memory: 8G
         reservations:
-          cpus: '1'
+          cpus: '2'
           memory: 4G
           devices:
             - driver: nvidia
-              device_ids: ['2']
+              device_ids: ['1']
               capabilities: [gpu]
-
 
   workspace:
     image: m.menschikov/workspace:v1

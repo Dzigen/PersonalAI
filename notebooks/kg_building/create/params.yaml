@@ -28,17 +28,21 @@ MEM_PIPELINE_CONFIG:
     extract_triplets:
       cache_tname: 'llm_extract_triplets_cache_collection'
       prompts_version: 'v1' # TO CHANGE
+      need_to_clear: True # !!! PAY ATTENTION !!!
     extract_thesises:
       cache_tname: 'llm_extract_thesises_cache_collection'
       prompts_version: 'v1' # TO CHANGE
+      need_to_clear: True # !!! PAY ATTENTION !!!
   updator_stage:
     delete_obsolete_info: False # DONT CHANGE
     replace_simple_triplets:
       cache_tname: 'llm_replace_simple_triplets_cache_collection'
       prompts_version: 'v1' # TO CHANGE
+      need_to_clear: True # !!! PAY ATTENTION !!!
     replace_thesis_triplets:
       cache_tname: 'llm_replace_thesis_triplets_cache_collection'
       prompts_version: 'v1' # TO CHANGE
+      need_to_clear: True # !!! PAY ATTENTION !!!
 
   persistent_cache_config:
     vendor: 'mongo' # DONT CHANGE
@@ -50,23 +54,23 @@ MEM_PIPELINE_CONFIG:
     params:
       username: 'user'
       password: 'pass'
-      max_storage': -1
+      max_storage: -1
 
   ram_cache_config:
     vendor: 'redis' # DONT CHANGE
     host: 'personalai_mmenschikov_redis_cache'
-    port: 6380 # DONT CHANGE
+    port: 6379 # DONT CHANGE
     db_info:
       db: 0
       table: 'mem_llm_cache_collection'
     params:
       ss_name: 'sorted_node_pairs'
       hs_name: 'node_pairs'
-      max_storage: 5e+8
+      max_storage: 50000000
     db_configuration: '/home/m.menschikov/workspace/personal_ai/Personal-AI/configs/redis' # TO CHANGE
 
 KG_DB_CONFIGS:
-  need_to_clear: False # !!! PAY ATTENTION !!!
+  need_to_clear: True # !!! PAY ATTENTION !!!
   graphdb_config:
     vendor: 'neo4j' # DONT CHANGE
     host: 'personalai_mmenschikov_neo4j'
@@ -94,7 +98,7 @@ KG_DB_CONFIGS:
     prompts:
       query: "query: "
       passage: "passage: "
-    model_name_or_path: '/home/m.menschikov/workspace/Personal-AI/models/intfloat/multilingual-e5-small' # TO CHANGE
+    model_name_or_path: '/home/m.menschikov/workspace/personal_ai/Personal-AI/models/intfloat/multilingual-e5-large' # TO CHANGE
 
 KG_DIR_STRUCT:
   embeddings_dir_name: embeddings_part

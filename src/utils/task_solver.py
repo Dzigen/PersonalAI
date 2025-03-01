@@ -124,21 +124,30 @@ class AgentTaskSolver:
             gen_flag = True
             cache_key = [self.config.suites[detected_lang].system_prompt, enriched_user_prompt,
                          self.config.suites[detected_lang].assistant_prompt,self.agent.config]
+            key_hash = None
 
             if self.cachekv is not None:
-                cstatus, cached_result = self.cachekv.load_value(cache_key)
+                self.log("Поиск ответа в кеше...", verbose=self.config.verbose)
+                cstatus, cached_result = self.cachekv.load_value(key=cache_key)
                 if cstatus == 0:
+                    self.log("Результат по заданной конфигурации гиперпараметров уже был получен.", verbose=self.config.verbose)
                     gen_flag = False
                     raw_answer = cached_result
+                else:
+                    self.log("Результата по заданной конфигурации гиперпараметров в кеше нет.", verbose=self.config.verbose)
+                    key_hash = cached_result
 
             if gen_flag:
+                self.log("Выполняем инференс llm...", verbose=self.config.verbose)
+                    
                 raw_answer = self.agent.generate(
                     system_prompt=self.config.suites[detected_lang].system_prompt,
                     user_prompt=enriched_user_prompt,
                     assistant_prompt=self.config.suites[detected_lang].assistant_prompt)
 
-            if self.cachekv is not None:
-                self.cachekv.save_value(cache_key, raw_answer)
+                if self.cachekv is not None:
+                    self.log("Кешируем полученный результат.", verbose=self.config.verbose)
+                    self.cachekv.save_value(value=raw_answer, key_hash=key_hash)
 
             self.log(f"Результат:\n{raw_answer}", verbose=self.config.verbose)
             self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)

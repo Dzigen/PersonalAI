@@ -14,7 +14,6 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
         self.config = config
         self.config.params['ss_name'] = f"{self.config.db_info['table']}_{self.config.params['ss_name']}"
         self.config.params['hs_name'] = f"{self.config.db_info['table']}_{self.config.params['hs_name']}"
-        self.open_connection()
 
     def open_connection(self):
         self.conn = redis.Redis(

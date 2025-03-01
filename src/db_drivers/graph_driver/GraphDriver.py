@@ -11,4 +11,6 @@ class GraphDriverConfig:
 class GraphDriver:
     @staticmethod
     def connect(config: GraphDriverConfig = GraphDriverConfig()) -> AbstractGraphDatabaseConnection:
-        return AVAILABLE_GRAPHDB_CONNECTORS[config.db_vendor](config.db_config)
+        graph_conn = AVAILABLE_GRAPHDB_CONNECTORS[config.db_vendor](config.db_config)
+        graph_conn.open_connection()
+        return graph_conn

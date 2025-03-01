@@ -23,7 +23,6 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
 
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_INMEMORYKV_CONFIG) -> None:
         self.config = config
-        self.open_connection()
 
     def open_connection(self) -> None:
         if self.config.params['load_from_disk']:
@@ -35,6 +34,9 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
                 self.kv_store = dict()
         else:
             self.kv_store = dict()
+
+        if self.config.need_to_clear:
+            self.clear()
 
     def is_open(self) -> bool:
         return hasattr(self, 'kv_store')

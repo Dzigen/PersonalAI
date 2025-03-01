@@ -12,7 +12,6 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
 
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_AEROSPIKE_CONFIG):
         self.config = config
-        self.open_connection()
 
     def open_connection(self) -> None:
         db_config = {'hosts': [(self.config.host, self.config.port)]}
@@ -21,6 +20,9 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
                 db_config['hosts'].append((self.config.host, ext_port))
         print(db_config)
         self.client = aerospike.client(db_config).connect()
+
+        if self.config.need_to_clear:
+            self.clear()
 
     def is_open(self) -> bool:
         return self.client.is_connected()

@@ -11,4 +11,6 @@ class VectorDriverConfig:
 class VectorDriver:
     @staticmethod
     def connect(config: VectorDriverConfig = VectorDriverConfig()) -> AbstractVectorDatabaseConnection:
-        return AVAILABLE_VECTORDB_CONNECTORS[config.db_vendor](config.db_config)
+        vector_conn = AVAILABLE_VECTORDB_CONNECTORS[config.db_vendor](config.db_config)
+        vector_conn.open_connection()
+        return vector_conn
