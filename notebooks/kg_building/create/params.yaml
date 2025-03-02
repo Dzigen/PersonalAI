@@ -5,7 +5,7 @@ DATASET_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_data
 BASE_PERSONALAI_DIR: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
 PERSONALAI_VENV_DIR: '/home/m.menschikov/workspace/personal_ai/.pai_venv' # TO CHANGE
 OLLAMA_MODELS_DIR: '/home/m.menschikov/workspace/personal_ai/ollama_volume' # TO CHANGE
-INIT_STRUCT: True # !!! PAY ATTENTION !!!
+INIT_STRUCT: False # !!! PAY ATTENTION !!!
 
 MEM_PIPELINE_CONFIG:
   lang: 'en'
@@ -28,21 +28,21 @@ MEM_PIPELINE_CONFIG:
     extract_triplets:
       cache_tname: 'llm_extract_triplets_cache_collection'
       prompts_version: 'v1' # TO CHANGE
-      need_to_clear: True # !!! PAY ATTENTION !!!
+      need_to_clear: False # !!! PAY ATTENTION !!!
     extract_thesises:
       cache_tname: 'llm_extract_thesises_cache_collection'
       prompts_version: 'v1' # TO CHANGE
-      need_to_clear: True # !!! PAY ATTENTION !!!
+      need_to_clear: False # !!! PAY ATTENTION !!!
   updator_stage:
     delete_obsolete_info: False # DONT CHANGE
     replace_simple_triplets:
       cache_tname: 'llm_replace_simple_triplets_cache_collection'
       prompts_version: 'v1' # TO CHANGE
-      need_to_clear: True # !!! PAY ATTENTION !!!
+      need_to_clear: False # !!! PAY ATTENTION !!!
     replace_thesis_triplets:
       cache_tname: 'llm_replace_thesis_triplets_cache_collection'
       prompts_version: 'v1' # TO CHANGE
-      need_to_clear: True # !!! PAY ATTENTION !!!
+      need_to_clear: False # !!! PAY ATTENTION !!!
 
   persistent_cache_config:
     vendor: 'mongo' # DONT CHANGE
@@ -70,7 +70,7 @@ MEM_PIPELINE_CONFIG:
     db_configuration: '/home/m.menschikov/workspace/personal_ai/Personal-AI/configs/redis' # TO CHANGE
 
 KG_DB_CONFIGS:
-  need_to_clear: True # !!! PAY ATTENTION !!!
+  need_to_clear: False # !!! PAY ATTENTION !!!
   graphdb_config:
     vendor: 'neo4j' # DONT CHANGE
     host: 'personalai_mmenschikov_neo4j'

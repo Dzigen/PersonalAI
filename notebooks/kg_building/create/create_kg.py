@@ -265,7 +265,9 @@ print(len(dataset))
 
 ###########KG BUILDING#############
 
-for i in tqdm(range(len(dataset))):
+# break point 5158 out of 18005
+
+for i in tqdm(range(5158, len(dataset))):
     text, properties = dataset[i][0], dataset[i][1]
     extracted_triplets, _ = mem_pipeline.remember(text, properties)
 

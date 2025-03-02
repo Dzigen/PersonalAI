@@ -18,7 +18,7 @@ def etriplets_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, str, 
             continue
             #raise ValueError
         subj, rel, obj = triplet.split("|")
-        subj, rel, obj = subj.strip(''' \n'".,/'''), rel.strip(''' \n'".,/'''), obj.strip(''' \n'".;,/''')
+        subj, rel, obj = subj.strip(''' \n'".,/\\'''), rel.strip(''' \n'".,/\\'''), obj.strip(''' \n'".;,/\\''')
         if len(subj) == 0 or len(rel) == 0 or len(obj) == 0:
             raise ValueError
         else:

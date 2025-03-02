@@ -193,7 +193,7 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
             raise ValueError
 
         return formated_output
-
+    
     def parse_query_nodes_output(self, output: List[object]) -> List[Node]:
         formated_nodes = []
         output = output.get_as_df()

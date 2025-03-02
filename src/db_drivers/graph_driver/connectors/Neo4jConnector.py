@@ -220,16 +220,21 @@ class Neo4jConnector(AbstractGraphDatabaseConnection):
 
         return formated_info
 
+    # TO THINK (do we need field serialization because we do json.dumps)
+    def _load_dumped_dict(self, raw_dict: dict) -> Dict:
+        loaded_dict = dict()
+        for k,v in raw_dict.items():
+            try:
+                loaded_dict[k] = json.loads(v)
+            except json.decoder.JSONDecodeError as e:
+                loaded_dict[k] = v
+        return loaded_dict
+
     def parse_query_nodes_output(self, output: List[object]) -> List[Node]:
         formated_nodes = []
         for raw_node in output:
 
             n_dict = dict(raw_node['n'])
-            for k,v in n_dict.items():
-                try:
-                    n_dict[k] = json.loads(v)
-                except json.decoder.JSONDecodeError as e:
-                    pass
 
             node = NodeCreator.create(
                 n_type=NODES_TYPES_MAP[list(raw_node['n'].labels)[0]],
