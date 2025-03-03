@@ -6,8 +6,7 @@ import subprocess
 # Загружаем конфигурационный файл
 
 # Read YAML file
-CREATE_DIR_PATH = sys.orig_argv[2]
-PARAMS_FILE_PATH = f'{CREATE_DIR_PATH}/params.yaml'
+PARAMS_FILE_PATH = sys.orig_argv[2]
 with open(PARAMS_FILE_PATH, 'r') as stream:
     HYPER_PARAMS = yaml.safe_load(stream)
 

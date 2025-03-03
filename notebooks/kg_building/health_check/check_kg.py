@@ -10,8 +10,7 @@ from typing import List, Dict, Tuple
 import yaml
 
 # Read YAML file
-CREATE_DIR_PATH = sys.orig_argv[1]
-PARAMS_FILE_PATH = f'{CREATE_DIR_PATH}/params.yaml'
+PARAMS_FILE_PATH = sys.orig_argv[2]
 with open("params.yaml", 'r') as stream:
     HYPER_PARAMS = yaml.safe_load(stream)
 
@@ -28,7 +27,7 @@ gc.collect()
 ###############Loading hyperparams###################
 
 DATASET_PATH = f"{HYPER_PARAMS['KGS_BASE_PATH']}/{HYPER_PARAMS['DATASET_NAME']}"
-KG_PATH = DATASET_PATH + f"{HYPER_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+KG_PATH = f"{DATASET_PATH}/{HYPER_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
 GRAPH_DRIVER_CONFIG_PATH = f"{KG_PATH}/graph_config"
 EMBEDDINGS_DRIVER_CONFIG_PATH = f"{KG_PATH}/embeddings_config"
@@ -38,7 +37,7 @@ GRAPH_STATS_DIR = f'{KG_PATH}/graph_statistics'
 GRAPH_STATS_PLOT = f'{GRAPH_STATS_DIR}/plots/'
 GRAPH_STATS_INFO = f'{GRAPH_STATS_DIR}/stats_info.json'
 
-GRAPH_HEALTH_CHECKS_PATH = GRAPH_STATS_DIR + 'health_checks.json'
+GRAPH_HEALTH_CHECKS_PATH = f"{GRAPH_STATS_DIR}/health_checks.json"
 
 ##################################
 
