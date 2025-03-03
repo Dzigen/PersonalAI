@@ -13,10 +13,10 @@ MEM_PIPELINE_CONFIG:
   agent_config:
     vendor: 'ollama' # DONT CHANGE
     gen_strategy:
-      num_predict: 2048
-      seed: 42
-      top_k: 1
-      temperature: 0.0
+      num_predict: 2048 # DONT CHANGE
+      seed: 42  # DONT CHANGE
+      top_k: 1  # DONT CHANGE
+      temperature: 0.0  # DONT CHANGE
     credentials:
       host: 'personalai_mmenschikov_ollama_service'
       port: 11434
