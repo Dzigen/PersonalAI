@@ -264,9 +264,9 @@ print(len(dataset))
 
 ###########KG BUILDING#############
 
-# break point 5158 out of 18005
+# break point 5158 out of 18005 for hotpotqa_distractor_validation/qwen25_full
 
-for i in tqdm(range(5158, len(dataset))):
+for i in tqdm(range(len(dataset))):
     text, properties = dataset[i][0], dataset[i][1]
     extracted_triplets, _ = mem_pipeline.remember(text, properties)
 
