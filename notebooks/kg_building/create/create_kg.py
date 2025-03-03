@@ -193,17 +193,17 @@ if HYPER_PARAMS['MEM_PIPELINE_CONFIG']['llm_caching']:
         HYPER_PARAMS['MEM_PIPELINE_CONFIG']['extractor_stage']['extract_triplets']['cache_tname']
     extractor_config.triplets_extraction_task_config.cache_kvdriver_config.db_config.need_to_clear = \
         HYPER_PARAMS['MEM_PIPELINE_CONFIG']['extractor_stage']['extract_triplets']['need_to_clear']
-    
+
     extractor_config.thesises_extraction_task_config.cache_kvdriver_config.db_config.db_info['table'] = \
         HYPER_PARAMS['MEM_PIPELINE_CONFIG']['extractor_stage']['extract_thesises']['cache_tname']
     extractor_config.thesises_extraction_task_config.cache_kvdriver_config.db_config.need_to_clear = \
         HYPER_PARAMS['MEM_PIPELINE_CONFIG']['extractor_stage']['extract_thesises']['need_to_clear']
-    
+
     updator_config.replace_simple_task_config.cache_kvdriver_config.db_config.db_info['table'] = \
         HYPER_PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['replace_simple_triplets']['cache_tname']
     updator_config.replace_simple_task_config.cache_kvdriver_config.db_config.need_to_clear = \
         HYPER_PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['replace_simple_triplets']['need_to_clear']
-    
+
     updator_config.replace_thesis_task_config.cache_kvdriver_config.db_config.db_info['table'] = \
         HYPER_PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['replace_thesis_triplets']['cache_tname']
     updator_config.replace_thesis_task_config.cache_kvdriver_config.db_config.need_to_clear = \
