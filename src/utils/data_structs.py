@@ -11,11 +11,14 @@ class NodeType(Enum):
     hyper = "hyper"
     #: Вершина хранит эпизодическую информацию.
     episodic = "episodic"
+    #: Вершина хранит временную информацию.
+    time = "time"
 
 NODES_TYPES_MAP = {
     'object': NodeType.object,
     'hyper': NodeType.hyper,
-    'episodic': NodeType.episodic
+    'episodic': NodeType.episodic,
+    'time': NodeType.time,
 }
 
 class RelationType(Enum):
@@ -26,11 +29,14 @@ class RelationType(Enum):
     hyper = "hyper"
     #: Связывает пары вершин ('object', 'episodic') и ('object', 'hyper').
     episodic = "episodic"
+    #: Связывает пары вершин ('episodic', 'time') и ('hyper', 'time').
+    time = "time"
 
 RELATIONS_TYPES_MAP = {
     'simple': RelationType.simple,
     'hyper': RelationType.hyper,
-    'episodic': RelationType.episodic
+    'episodic': RelationType.episodic,
+    'time': RelationType.time,
 }
 
 @dataclass
@@ -235,7 +241,7 @@ class TripletCreator(BaseCreator):
         :rtype: Tuple[str,str]
         """
         rel_type = triplet.relation.type
-        if (rel_type == RelationType.episodic) or (rel_type == RelationType.hyper):
+        if (rel_type == RelationType.episodic) or (rel_type == RelationType.hyper) or (rel_type == RelationType.time):
             str_triplet = ""
             if "time" in triplet.end_node.prop.keys():
                 str_triplet += triplet.end_node.prop["time"] + ": "
@@ -249,6 +255,7 @@ class TripletCreator(BaseCreator):
                 TripletCreator.add_str_props(triplet.start_node, str(triplet.start_node.name)),
                 TripletCreator.add_str_props(triplet.relation, str(triplet.relation.name)),
                 TripletCreator.add_str_props(triplet.end_node, str(triplet.end_node.name))])
+
 
         else:
             raise KeyError

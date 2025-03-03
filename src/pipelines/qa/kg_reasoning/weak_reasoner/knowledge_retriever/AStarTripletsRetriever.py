@@ -261,7 +261,7 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
     max_depth: int = 10
     max_passed_nodes: int = 500
-    accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic])
+    accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic, NodeType.time])
 
 class AStarGraphSearch:
     """Класс предназначен для запуска A*-алгоритма с целью извлечения триплетов из графового хранилища триплетов.

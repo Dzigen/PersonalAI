@@ -46,13 +46,15 @@ class MemPipeline:
         self.extractor = LLMExtractor(config.extractor_config)
         self.updator = LLMUpdator(kg_model, config.updator_config)
 
-    def remember(self, text: str, properties: Dict = dict()) -> Tuple[List[Triplet], ReturnInfo]:
+    def remember(self, text: str, time: str = "No time", properties: Dict = dict()) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста и обновление/актуализацию знаний в памяти (графе знаний) ассистента.
 
         :param text: Слабоструктурированный текст на естественном языке.
         :type text: str
         :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшая информация из памяти (графа знаний) ассистента, инчае False. Значение по умолчанию False.
         :type delete_obsolete_info: bool, optional
+        :param time: Время, с которым ассоциированы события текста
+        :type time: str, optional
         :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, Значение по умолчанию dict().
         :type properties: Dict, optional
         :return: Кортеж из двух объектов: (1) список с извлечённой из текста информацией (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией.
@@ -63,7 +65,7 @@ class MemPipeline:
         self.log(f"BASE_TEXT ID: {create_id(text)}", verbose=self.config.verbose)
 
         self.log("STAGE#1 - 'Извлечение информации (в структурированном формате) из текста'", verbose=self.config.verbose)
-        new_triplets, info = self.extractor.extract_knowledge(text, properties)
+        new_triplets, info = self.extractor.extract_knowledge(text, time, properties)
 
         self.log(f"RESULT: {len(new_triplets)}", verbose=self.config.verbose)
         for triplet in new_triplets:
