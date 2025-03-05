@@ -1,4 +1,4 @@
-*.json
+#*.json
 *.pyc
 *.tar
 #models/
@@ -25,6 +25,9 @@ data/qa_datasets/trivia_qa_rcwikipedia_validation/relevant_contexts.csv
 data/qa_datasets/trivia_qa_rcwikipedia_validation/tmp_triviaqa_cntx.csv
 
 notebooks/kg_building/create/crontab_log.txt
+
+experiments/legacy/
+data/tmp_new_graph_extracted/
 
 create_local_db/
 archives/
