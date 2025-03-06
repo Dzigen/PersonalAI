@@ -244,8 +244,17 @@ def diaasqa_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
 
     return data_pairs
 
-
 def hotpotqa_distractor_validation_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
+    contexts_df = pd.read_csv(f"{dataset_path}/relevant_contexts.csv")
+
+    data_pair = []
+    for r_idx in range(contexts_df.shape[0]):
+        formated_context = f"Title: {contexts_df['title'][r_idx]}\n{contexts_df['context'][r_idx]}"
+        data_pair.append((formated_context, dict()))
+
+    return data_pair
+
+def triviaqa_rcwikipedia_validation_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
     contexts_df = pd.read_csv(f"{dataset_path}/relevant_contexts.csv")
 
     data_pair = []
@@ -257,7 +266,8 @@ def hotpotqa_distractor_validation_cload(dataset_path: str) -> List[Tuple[str, D
 
 CUSTOM_LOAD_FUNCS = {
     'diaasqa': diaasqa_cload,
-    'hotpotqa_distractor_validation': hotpotqa_distractor_validation_cload
+    'hotpotqa_distractor_validation': hotpotqa_distractor_validation_cload,
+    'triviaqa_rcwikipedia_validation': triviaqa_rcwikipedia_validation_cload
 }
 dataset = CUSTOM_LOAD_FUNCS[HYPER_PARAMS['DATASET_NAME']](HYPER_PARAMS['DATASET_PATH'])
 print(len(dataset))
