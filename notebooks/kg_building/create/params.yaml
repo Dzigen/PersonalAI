@@ -71,7 +71,7 @@ MEM_PIPELINE_CONFIG:
     db_configuration: '/home/m.menschikov/workspace/personal_ai/Personal-AI/configs/redis' # TO CHANGE
 
 KG_DB_CONFIGS:
-  need_to_clear: False # !!! PAY ATTENTION !!!
+  need_to_clear: True # !!! PAY ATTENTION !!!
   graphdb_config:
     vendor: 'neo4j' # DONT CHANGE
     host: 'personalai_mmenschikov_neo4j'
