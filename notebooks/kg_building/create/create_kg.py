@@ -240,7 +240,7 @@ def diaasqa_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
 
     data_pairs = []
     for item in data['data']:
-        data_pairs.append((item['text_dialog'], {'time': item['time'].split(',')[0]}))
+        data_pairs.append((item['text_dialog'], item['time'].split(',')[0], dict()))
 
     return data_pairs
 
@@ -250,7 +250,7 @@ def hotpotqa_distractor_validation_cload(dataset_path: str) -> List[Tuple[str, D
     data_pair = []
     for r_idx in range(contexts_df.shape[0]):
         formated_context = f"Title: {contexts_df['title'][r_idx]}\n{contexts_df['context'][r_idx]}"
-        data_pair.append((formated_context, dict()))
+        data_pair.append((formated_context, "No time", dict()))
 
     return data_pair
 
@@ -260,7 +260,7 @@ def triviaqa_rcwikipedia_validation_cload(dataset_path: str) -> List[Tuple[str, 
     data_pair = []
     for r_idx in range(contexts_df.shape[0]):
         formated_context = f"Title: {contexts_df['title'][r_idx]}\n{contexts_df['context'][r_idx]}"
-        data_pair.append((formated_context, dict()))
+        data_pair.append((formated_context, "No time", dict()))
 
     return data_pair
 
@@ -277,8 +277,8 @@ print(len(dataset))
 # break point 5158 out of 18005 for hotpotqa_distractor_validation/qwen25_full
 
 for i in tqdm(range(len(dataset))):
-    text, properties = dataset[i][0], dataset[i][1]
-    extracted_triplets, _ = mem_pipeline.remember(text, properties)
+    text, time, properties = dataset[i][0], dataset[i][1]
+    extracted_triplets, _ = mem_pipeline.remember(text, time, properties)
 
     joblib.dump(extracted_triplets, TMP_EXTRACTED_TRIPLETS_PATH + f'item{i}')
 
