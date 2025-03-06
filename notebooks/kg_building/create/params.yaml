@@ -1,11 +1,12 @@
-DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'qwen25_full' # TO CHANGE
+DATASET_NAME: 'diaasqa' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen25_060325_v1prompts' # TO CHANGE
+DATASET_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets/diaasqa' # TO CHANGE
+
 KGS_BASE_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs' # TO CHANGE
-DATASET_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets/hotpotqa_distractor_validation' # TO CHANGE
 BASE_PERSONALAI_DIR: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
 PERSONALAI_VENV_DIR: '/home/m.menschikov/workspace/personal_ai/.pai_venv' # TO CHANGE
 OLLAMA_MODELS_DIR: '/home/m.menschikov/workspace/personal_ai/ollama_volume' # TO CHANGE
-INIT_STRUCT: False # !!! PAY ATTENTION !!!
+INIT_STRUCT: True # !!! PAY ATTENTION !!!
 
 MEM_PIPELINE_CONFIG:
   lang: 'en'

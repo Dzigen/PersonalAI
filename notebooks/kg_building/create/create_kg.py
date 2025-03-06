@@ -235,7 +235,7 @@ joblib.dump(mem_config, MEM_PIPELINE_CONFIG_PATH)
 ########################
 
 def diaasqa_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
-    with open(dataset_path, 'r', encoding='utf-8') as fd:
+    with open(f"{dataset_path}/Augment_DiaASQ.json", 'r', encoding='utf-8') as fd:
         data = json.loads(fd.read())
 
     data_pairs = []
@@ -277,7 +277,7 @@ print(len(dataset))
 # break point 5158 out of 18005 for hotpotqa_distractor_validation/qwen25_full
 
 for i in tqdm(range(len(dataset))):
-    text, time, properties = dataset[i][0], dataset[i][1]
+    text, time, properties = dataset[i][0], dataset[i][1], dataset[i][2]
     extracted_triplets, _ = mem_pipeline.remember(text, time, properties)
 
     joblib.dump(extracted_triplets, TMP_EXTRACTED_TRIPLETS_PATH + f'item{i}')
