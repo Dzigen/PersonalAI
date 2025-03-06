@@ -56,7 +56,7 @@ class LLMExtractor:
         self.thesises_extraction_solver = AgentTaskSolver(self.agent, self.config.thesises_extraction_task_config)
 
 
-    def extract_knowledge(self, text: str, properties: Dict = {}) -> Tuple[List[Triplet], ReturnInfo]:
+    def extract_knowledge(self, text: str, time: str = "No time", properties: Dict = {}) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста
         на естественном языке.
 
@@ -64,11 +64,16 @@ class LLMExtractor:
         :type text: str
         :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, Значение по умолчанию dict().
         :type properties: Dict, optional
+        :param time: Время, с которым ассоциированы события текста
+        :type time: str, optional
         :return: Кортеж из двух объектов: (1) список извлечённой из текста информации (в виде триплетов); (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         assert self.config.need_simple or self.config.need_thesises
         new_triplets, info = [], ReturnInfo()
+
+        if time != "No time" and "time" not in properties:
+            properties["time"] = time
 
         self.log("START KNOWLEDGE EXTRACTION...", verbose=self.config.verbose)
         self.log(f"BASE_TEXT ID: {create_id(text)}", verbose=self.config.verbose)
@@ -113,6 +118,17 @@ class LLMExtractor:
 
             new_triplets += tmp_triplets
 
+        if time != "No time":
+            self.log("ADDING TIME...", verbose=self.config.verbose)
+            tmp_triplets = self.get_time_triplets(new_triplets, time)
+
+            self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
+            for triplet in tmp_triplets:
+                self.log(f"* {triplet}", verbose=self.config.verbose)
+            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
+
+            new_triplets += tmp_triplets
+
         if len(new_triplets) == 0:
             info.status = ReturnStatus.zero_triplets
             info.message = STATUS_MESSAGE[info.status]
@@ -133,3 +149,17 @@ class LLMExtractor:
         episodic_rel = Relation(name=RelationType.episodic.value, type=RelationType.episodic, prop={**rel_prop})
         episodic_triplets = [TripletCreator.create(entity, episodic_rel, episodic_node) for entity in entities]
         return episodic_triplets
+
+    def get_time_triplets(self, triplets: List[Triplet], time: str):
+        time_node = NodeCreator.create(name=time, n_type=NodeType.episodic, prop={})
+        time_rel = Relation(name=RelationType.time.value, type=RelationType.time, prop={})
+        start_nodes, picked_ids = [], set()
+        for triplet in triplets:
+            if (triplet.start_node.type == NodeType.episodic or triplet.start_node.type == NodeType.hyper) and triplet.start_node.id not in picked_ids:
+                picked_ids.add(triplet.start_node.id)
+                start_nodes.append(triplet.start_node)
+            if (triplet.end_node.type == NodeType.episodic or triplet.end_node.type == NodeType.hyper) and triplet.end_node.id not in picked_ids:
+                picked_ids.add(triplet.end_node.id)
+                start_nodes.append(triplet.end_node)
+        time_triplets = [TripletCreator.create(time_node, time_rel, node) for node in start_nodes]
+        return time_triplets

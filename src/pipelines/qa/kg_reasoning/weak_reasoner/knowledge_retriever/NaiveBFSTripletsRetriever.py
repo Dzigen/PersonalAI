@@ -19,7 +19,7 @@ class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):
     max_depth: int = 10
     max_width: int = 50
     max_passed_nodes: int = 1000
-    accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic])
+    accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic, NodeType.time])
 
 class NaiveBFSTripletsRetriever(AbstractTripletsRetriever):
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: NaiveBFSGraphSearchConfig = NaiveBFSGraphSearchConfig(),
