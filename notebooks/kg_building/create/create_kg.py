@@ -48,11 +48,11 @@ PERSISTENT_DB_PATH = KV_DB_PATH + f"{HYPER_PARAMS['KG_DIR_STRUCT']['cache_dir_na
 RAM_DB_PATH = KV_DB_PATH + f"{HYPER_PARAMS['KG_DIR_STRUCT']['cache_dir_name']['ram']}/"
 TMP_EXTRACTED_TRIPLETS_PATH = f"{KG_PATH}/{HYPER_PARAMS['KG_DIR_STRUCT']['tmp_triplets_dir_name']}/"
 
-HYPER_PARAMS_PATH = f"{KG_PATH}/hyperparameters.yaml"
-EXTRACTED_TRIPLETS_PATH = f"{KG_PATH}/extracted_triplets"
-GRAPH_DRIVER_CONFIG_PATH = f"{KG_PATH}/graph_config"
-EMBEDDINGS_DRIVER_CONFIG_PATH = f"{KG_PATH}/embeddings_config"
-MEM_PIPELINE_CONFIG_PATH = f"{KG_PATH}/mem_pipeline_config"
+HYPER_PARAMS_PATH = f"{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['hyperparameters']}"
+EXTRACTED_TRIPLETS_PATH = f"{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['extracted_triplets']}"
+GRAPH_DRIVER_CONFIG_PATH = f"{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['graph_config']}"
+EMBEDDINGS_DRIVER_CONFIG_PATH = f"{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['embeddings_config']}"
+MEM_PIPELINE_CONFIG_PATH = f"{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['mem_pipeline_config']}"
 
 # if HYPER_PARAMS['need_to_clear']:
 #     u_answer = input("Are you sure is need to clear knowledge graph? (y/n): ")
@@ -290,3 +290,5 @@ for t_file in tqdm(extracted_t_files):
     accum_triplets.append(joblib.load(TMP_EXTRACTED_TRIPLETS_PATH + t_file))
 
 joblib.dump(accum_triplets, EXTRACTED_TRIPLETS_PATH)
+
+print("======== DONE ========")

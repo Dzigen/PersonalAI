@@ -59,12 +59,20 @@ llmagents_cnt_variables = {
     'LLMAGENT_LOCAL_VOLUME': HYPER_PARAMS['OLLAMA_MODELS_DIR']
 }
 
+accepted_volume_dirs = {
+    'KG_DIR': f"{HYPER_PARAMS['KGS_BASE_PATH']}/{HYPER_PARAMS['DATASET_NAME']}/{HYPER_PARAMS['KNOWLEDGE_GRAPH_NAME']}",
+    'QA_DATASET': HYPER_PARAMS['DATASET_PATH'],
+    'NOTEBOOKS': f"{HYPER_PARAMS['BASE_PERSONALAI_DIR']}/notebooks",
+    'SRC': f"{HYPER_PARAMS['BASE_PERSONALAI_DIR']}/src",
+    'MODELS': f"{HYPER_PARAMS['BASE_PERSONALAI_DIR']}/models",
+}
+
 def dictvar_to_string(dict_variables) -> str:
     return '\n'.join(list(map(lambda item: f'{item[0]}="{item[1]}"', dict_variables.items())))
 
 
 env_variables = [neo4j_cnt_variables, mongo_cnt_variables, redis_cnt_variables,
-                 worksapce_cnt_variables, llmagents_cnt_variables]
+                 worksapce_cnt_variables, llmagents_cnt_variables, accepted_volume_dirs]
 env_variables = '\n'.join(list(map(lambda vars: dictvar_to_string(vars), env_variables)))
 
 DC_ENV_PATH = f'{KG_PATH}/.env'

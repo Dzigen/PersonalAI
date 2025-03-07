@@ -1,5 +1,5 @@
 DATASET_NAME: 'diaasqa' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'qwen25_060325_v1prompts' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen25_070325_v2prompts' # TO CHANGE
 DATASET_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets/diaasqa' # TO CHANGE
 
 KGS_BASE_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs' # TO CHANGE
@@ -28,21 +28,21 @@ MEM_PIPELINE_CONFIG:
   extractor_stage:
     extract_triplets:
       cache_tname: 'llm_extract_triplets_cache_collection'
-      prompts_version: 'v1' # TO CHANGE
+      prompts_version: 'v2' # TO CHANGE
       need_to_clear: False # !!! PAY ATTENTION !!!
     extract_thesises:
       cache_tname: 'llm_extract_thesises_cache_collection'
-      prompts_version: 'v1' # TO CHANGE
+      prompts_version: 'v2' # TO CHANGE
       need_to_clear: False # !!! PAY ATTENTION !!!
   updator_stage:
     delete_obsolete_info: False # DONT CHANGE
     replace_simple_triplets:
       cache_tname: 'llm_replace_simple_triplets_cache_collection'
-      prompts_version: 'v1' # TO CHANGE
+      prompts_version: 'v1'
       need_to_clear: False # !!! PAY ATTENTION !!!
     replace_thesis_triplets:
       cache_tname: 'llm_replace_thesis_triplets_cache_collection'
-      prompts_version: 'v1' # TO CHANGE
+      prompts_version: 'v1'
       need_to_clear: False # !!! PAY ATTENTION !!!
 
   persistent_cache_config:
@@ -109,3 +109,16 @@ KG_DIR_STRUCT:
     persistant: persistent_volume
     ram: ram_volume
   tmp_triplets_dir_name: tmp_extracted_triplets
+
+SAVE_CONFIGS_NAMES:
+  graph_config: graph_config
+  embeddings_config: embeddings_config
+  mem_pipeline_config: mem_pipeline_config
+
+  hyperparameters: hyperparameters.yaml
+  extracted_triplets: extracted_triplets
+
+  graph_statistics_dir: graph_statistics
+  kg_stats: stats_info.json
+  kg_health_checks: health_checks.json
+

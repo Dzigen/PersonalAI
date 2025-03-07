@@ -1,5 +1,6 @@
-DATASET_NAME: 'diaasqa'
-KNOWLEDGE_GRAPH_NAME: 'gigachat_filtered'
+DATASET_NAME: 'diaasqa' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen25_060325_v1prompts' # TO CHANGE
+
 KGS_BASE_PATH: '/home/dzigen/Desktop/PersonalAI/Personal-AI/data/knowledge_graphs'
 BASE_PERSONALAI_DIR: '/home/dzigen/Desktop/PersonalAI/Personal-AI'
 

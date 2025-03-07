@@ -111,8 +111,12 @@ services:
     container_name: personalai_mmenschikov_worksapce
     hostname: worksapceservice
     volumes:
-      - ${LOCAL_WORKSPACE_DIR}:/home/m.menschikov/workspace/personal_ai/Personal-AI
-      - ${LOCAL_VENV_DIR}:/home/m.menschikov/workspace/personal_ai/.pai_venv
+      - ${KG_DIR}:${KG_DIR}
+      - ${QA_DATASET}:${QA_DATASET}
+      - ${NOTEBOOKS}:${NOTEBOOKS}
+      - ${SRC}:${SRC}
+      - ${MODELS}:${MODELS}
+      - ${LOCAL_VENV_DIR}:${LOCAL_VENV_DIR}
     depends_on:
       - neo4j
       - mongo_ui
