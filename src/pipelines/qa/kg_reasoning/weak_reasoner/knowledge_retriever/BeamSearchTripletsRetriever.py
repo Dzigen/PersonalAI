@@ -2,7 +2,6 @@
 # Author:   Mikhail Menschikov
 # Email:    menshikov.mikhail.2001@gmail.com
 # Created:  11.02.2025
-# (c) Copyright by Skoltech AI Center.
 ####
 
 from dataclasses import dataclass, field
@@ -72,7 +71,8 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
     def calculate_path_score(self, path_len: int, accum_score: float) -> float:
         return accum_score / pow(path_len-1, self.config.mean_alpha)
 
-    def calculate_triplet_score(self, raw_score: float) -> float:
+    @staticmethod
+    def calculate_triplet_score(raw_score: float) -> float:
         # Note: в качества скора используется метрика косинусного расстояния [distance]
         # (её нужно вычесть из единицы, чтобы получить метрику косинусной близоси [similarity])
         return -np.log(1 - raw_score)
@@ -129,7 +129,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
         formated_scores_info = []
         for raw_score, triplet_info in scored_rels:
             formated_scores_info.append(
-                (triplet_info.id, self.calculate_triplet_score(raw_score)))
+                (triplet_info.id, BeamSearchTripletsRetriever.calculate_triplet_score(raw_score)))
 
         extended_scores_info = []
         for r_id, t_score in formated_scores_info:
@@ -138,6 +138,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
 
         return extended_scores_info
 
+    @staticmethod
     def update_path_candidates(path_candidates: List[TraversingPath], pinfo: TraversingPath,
                                triplet_scores: List[Tuple[str, str, float]]) -> None:
         # добавить новых кандидатов (дополненных вариантов i-ого пути) в пул
@@ -211,7 +212,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
                     continue
 
                 triplet_scores = self.get_triplet_scores(query_vinstance, shared_t_info, rids_to_tids_map)
-                self.update_path_candidates(path_candidates, traversing_paths[i], triplet_scores)
+                BeamSearchTripletsRetriever.update_path_candidates(path_candidates, traversing_paths[i], triplet_scores)
 
             # Сортируем (по возрастанию) расширенный список путей
             # по их релевантности и выбираем 'max_paths' лучших
