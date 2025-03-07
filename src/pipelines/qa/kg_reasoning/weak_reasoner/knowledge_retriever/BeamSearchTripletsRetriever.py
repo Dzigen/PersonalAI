@@ -72,10 +72,23 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
         return accum_score / pow(path_len-1, self.config.mean_alpha)
 
     @staticmethod
-    def calculate_triplet_score(raw_score: float) -> float:
+    def calculate_triplet_score(raw_score: float, max_score_value: float = 10e+5) -> float:
         # Note: в качества скора используется метрика косинусного расстояния [distance]
         # (её нужно вычесть из единицы, чтобы получить метрику косинусной близоси [similarity])
-        return -np.log(1 - raw_score)
+
+        # Входное значение должно быть определённого типа
+        if type(raw_score) in [int, str] or raw_score is None:
+            raise ValueError(raw_score, type(raw_score))
+
+        # Входное значение должно быть в заданном диапазоне
+        if raw_score < 0.0 or raw_score > 1.0:
+            raise ValueError(raw_score)
+
+        # Самостоятельно задаём максимальное значение выходного значения
+        if np.abs(1.0 - raw_score) < 10e-10:
+            return max_score_value
+
+        return -np.log(1.0 - raw_score)
 
     def get_available_nids(self, base_nid: str, cur_path_idx: int,
             traversing_paths: List[TraversingPath], prev_nid: str = None) -> List[str]:
@@ -139,18 +152,29 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
         return extended_scores_info
 
     @staticmethod
-    def update_path_candidates(path_candidates: List[TraversingPath], pinfo: TraversingPath,
-                               triplet_scores: List[Tuple[str, str, float]]) -> None:
+    def extend_tpath(pinfo: TraversingPath, triplet_scores: List[Tuple[str, str, float]]) -> List[TraversingPath]:
+        # None: у pinfo в path-поле должен лежать минимум один пройденный триплет
+
+        if len(pinfo.path) < 1:
+            raise ValueError(pinfo)
+
+        new_tpaths = []
         # добавить новых кандидатов (дополненных вариантов i-ого пути) в пул
         for t_id, new_nid, t_score in triplet_scores:
             ext_trpath = deepcopy(pinfo)
 
             ext_trpath.path.append((ext_trpath.path[-1][2], t_id, new_nid))
             ext_trpath.unique_nids.add(new_nid)
+
+            if t_id in ext_trpath.unique_tids:
+                raise ValueError(f"Триплет с id '{t_id}' уже существует в пути {ext_trpath}. Все триплеты должны быть уникальными.")
+
             ext_trpath.unique_tids.add(t_id)
             ext_trpath.accum_score += t_score
 
-            path_candidates.append(ext_trpath)
+            new_tpaths.append(ext_trpath)
+
+        return new_tpaths
 
     def filter_paths(self, ended_paths: List[TraversedPath],
                      continuous_paths: List[TraversedPath]) -> List[TraversedPath]:
@@ -212,7 +236,8 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
                     continue
 
                 triplet_scores = self.get_triplet_scores(query_vinstance, shared_t_info, rids_to_tids_map)
-                BeamSearchTripletsRetriever.update_path_candidates(path_candidates, traversing_paths[i], triplet_scores)
+                new_tpaths = BeamSearchTripletsRetriever.extend_tpath(traversing_paths[i], triplet_scores)
+                path_candidates += new_tpaths
 
             # Сортируем (по возрастанию) расширенный список путей
             # по их релевантности и выбираем 'max_paths' лучших
