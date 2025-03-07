@@ -92,8 +92,13 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
 
     def get_available_nids(self, base_nid: str, cur_path_idx: int,
             traversing_paths: List[TraversingPath], prev_nid: str = None) -> List[str]:
+        if type(base_nid) is not str:
+            raise ValueError(f"base_nid: {base_nid} {type(base_nid)}")
+
         adj_nids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(base_nid, self.config.accepted_node_types)
         if prev_nid is not None:
+            if type(prev_nid) is not str:
+                raise ValueError(f"prev_nid: {prev_nid} {type(prev_nid)}")
             adj_nids = set(adj_nids).discard(prev_nid)
 
         if not self.config.same_path_intersection_by_node:
@@ -111,6 +116,9 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
     def get_available_rinfo(
             self, base_nid: str, adj_nids: List[str], cur_path_idx: int,
             traversing_paths: List[TraversingPath]) -> Tuple[Dict[str, str], Dict[str, List[str]]]:
+        if type(base_nid) is not str:
+            raise ValueError(f"base_nid: {base_nid} {type(base_nid)}")
+
         shared_t_info = dict()
         rids_to_tids_map = defaultdict(list)
         for adj_nid in adj_nids:
@@ -139,15 +147,11 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
         scored_rels = self.kg_model.embeddings_struct.vectordbs['triplets'].retrieve(
             [query_vinstance], n_results=len(r_ids), includes=[], where={"id": {"$in": r_ids}})[0]
 
-        formated_scores_info = []
-        for raw_score, triplet_info in scored_rels:
-            formated_scores_info.append(
-                (triplet_info.id, BeamSearchTripletsRetriever.calculate_triplet_score(raw_score)))
-
         extended_scores_info = []
-        for r_id, t_score in formated_scores_info:
-            for t_id in rids_to_tids_map[r_id]:
-                extended_scores_info.append((t_id, shared_t_info[t_id], t_score))
+        for raw_score, triplet_info in scored_rels:
+            cur_r_id, cur_t_score = (triplet_info.id, BeamSearchTripletsRetriever.calculate_triplet_score(raw_score))
+            for t_id in rids_to_tids_map[cur_r_id]:
+                extended_scores_info.append((t_id, shared_t_info[t_id], cur_t_score))
 
         return extended_scores_info
 
