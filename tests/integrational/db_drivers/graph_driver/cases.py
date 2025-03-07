@@ -452,11 +452,11 @@ for db_vendor in AVAILABLE_GRAPH_DBS:
 
 ###############################################################################################
 
+# instances, create_info, node1_id, node2_id, id_type, expected_output, exception
 GRAPHDB_GET_NSHARED_IDS_TEST_CASES = [
     # 1 невалидный тип идентифиаторов вершин
     # 1.1 первая вершина
     # 1.2 вторая вершина
-    # TODO
     # 2. невалидное id_type-значение
     # 2.1 число
     # 2.2 None
@@ -464,7 +464,6 @@ GRAPHDB_GET_NSHARED_IDS_TEST_CASES = [
     # 3 вершины с таким id нет в бд
     # 3.1 перая вершина
     # 3.2 вторая вершина
-    # TODO
     # 4 между вершинами нет связей
     # 4.1 у вершин есть другие связи
     # 4.2 у вершин нет других связей
@@ -475,6 +474,7 @@ GRAPHDB_GET_NSHARED_IDS_TEST_CASES = [
     # 6.1 у вершин есть другие связи
     # 6.2 у вершин нет других связей
     # 7 между вершинами несколько триплетов с одинаковым relation_id
+    # TO THINK
 ]
 
 GRAPHDB_POPULATED_GET_NSHARED_IDS_TEST_CASES = []
