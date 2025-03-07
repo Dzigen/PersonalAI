@@ -10,7 +10,7 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from cases import GRAPHDB_POPULATED_CREATE_TEST_CASES, GRAPHDB_POPULATED_DELETE_TEST_CASES, \
     GRAPHDB_POPULATED_READ_TEST_CASES, GRAPHDB_POPULATED_COUNT_TEST_CASES, GRAPHDB_POPULATED_EXIST_TEST_CASES, \
     GRAPHDB_POPULATED_CLEAR_TEST_CASES, GRAPHDB_POPULATED_GET_TRIPLETS_TEST_CASES, GRAPHDB_POPULATED_GET_ADJECENT_TEST_CASES, \
-        GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES, GRAPHDB_GET_NSHARED_IDS_TEST_CASES
+        GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES, GRAPHDB_POPULATED_GET_NSHARED_IDS_TEST_CASES
 
 from src.utils import Triplet, RelationType, NodeType
 from src.utils.data_structs import Node
@@ -188,12 +188,17 @@ def test_read_by_name(instances: List[Triplet], create_info: Dict, init_count: D
             raise ValueError
 
 
-@pytest.mark.parametrize("instances, create_info, node1_id, node2_id, id_type, expected_output, exception, graphdb_conn", GRAPHDB_GET_NSHARED_IDS_TEST_CASES, indirect=['graphdb_conn'])
+@pytest.mark.parametrize("instances, create_info, graph_info, node1_id, node2_id, id_type, expected_output, exception, graphdb_conn",
+                         GRAPHDB_POPULATED_GET_NSHARED_IDS_TEST_CASES, indirect=['graphdb_conn'])
 def test_get_nodes_shared_ids(
-    instances: List[Triplet], create_info: Dict, node1_id: str, node2_id: str, id_type: str,
+    instances: List[Triplet], create_info: Dict, graph_info: Tuple[int], node1_id: str, node2_id: str, id_type: str,
     expected_output: List[Dict[str,str]], exception: bool, graphdb_conn: AbstractGraphDatabaseConnection):
     graphdb_conn.clear()
     graphdb_conn.create(instances, create_info)
+
+    real_ginfo =graphdb_conn.count_items()
+    assert real_ginfo['triplets'] == graph_info[0]
+    assert real_ginfo['nodes'] == graph_info[1]
 
     try:
         real_output = graphdb_conn.get_nodes_shared_ids(node1_id, node2_id, id_type)
@@ -202,20 +207,20 @@ def test_get_nodes_shared_ids(
     else:
         assert not exception
 
-        if id_type in ['both']:
+        if id_type == 'both':
             expected_ids = set(map(lambda p: (p['t_id'],p['r_id']), expected_output))
             real_ids = set(map(lambda p: (p['t_id'],p['r_id']), real_output))
             assert expected_ids == real_ids
 
-        if id_type in ['triplet']:
+        elif id_type == 'triplet':
             expected_t_ids = set(map(lambda p: p['t_id'], expected_output))
             real_t_ids = set(map(lambda p: p['t_id'], real_output))
             assert expected_t_ids == real_t_ids
 
-        if id_type in ['relation']:
+        elif id_type  == 'relation':
             expected_r_ids = set(map(lambda p: p['r_id'], expected_output))
             real_r_ids = set(map(lambda p: p['r_id'], real_output))
             assert expected_r_ids == real_r_ids
 
         else:
-            raise ValueError
+            raise ValueError(id_type)

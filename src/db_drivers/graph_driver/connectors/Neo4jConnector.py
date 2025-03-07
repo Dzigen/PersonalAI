@@ -212,20 +212,32 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
     def get_nodes_shared_ids(self, node1_id: str, node2_id: str, id_type: str = 'both') -> List[Dict[str,str]]:
         if (type(node1_id) is not str) or (type(node2_id) is not str):
-            raise ValueError
+            raise ValueError(node1_id, node2_id)
+        if type(id_type) is not str:
+            raise ValueError(id_type)
 
         if id_type == 'triplet':
             str_return_info = 'r.t_id as t_id'
         elif id_type == 'relation':
-            str_return_info = 'r.str_id as str_id'
+            str_return_info = 'r.str_id as r_id'
         elif id_type == 'both':
-            str_return_info = 'r.t_id as t_id, r.str_id as str_id'
+            str_return_info = 'r.t_id as t_id, r.str_id as r_id'
         else:
-            raise ValueError
+            raise ValueError(id_type)
 
         raw_rels = self.execute_query(
             f'MATCH (a)-[r]-(b) WHERE a.str_id = "{node1_id}" AND b.str_id = "{node2_id}" RETURN {str_return_info};')
-        formated_info = list(map(lambda info: {"t_id": info['t_id'], "r_id": info['r_id']}, raw_rels))
+
+        formated_info = []
+        for raw_rel in raw_rels:
+            tmp_info = dict()
+            if id_type in ['both', 'triplet']:
+                tmp_info['t_id'] = raw_rel['t_id']
+
+            if id_type in ['both', 'relation']:
+                tmp_info['r_id'] = raw_rel['r_id']
+
+            formated_info.append(tmp_info)
 
         return formated_info
 

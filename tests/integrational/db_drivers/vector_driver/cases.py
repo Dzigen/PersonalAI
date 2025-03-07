@@ -1,4 +1,3 @@
-from chromadb.errors import ChromaError
 import torch
 import numpy
 
@@ -9,7 +8,6 @@ TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
 from src.db_drivers.vector_driver import VectorDBInstance
-from src.utils.errors import ReturnInfo
 
 # TO CHANGE
 AVAILABLE_VECTOR_DBS = ['chroma']

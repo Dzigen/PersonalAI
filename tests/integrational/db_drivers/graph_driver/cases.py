@@ -4,8 +4,7 @@ PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.utils.data_structs import Triplet, NodeCreator, Relation, RelationType, NodeType, TripletCreator
-from src.utils.errors import ReturnInfo
+from src.utils.data_structs import NodeCreator, Relation, RelationType, NodeType, TripletCreator
 
 # TO CHANGE
 AVAILABLE_GRAPH_DBS = ['neo4j', 'kuzu', 'inmemory_graph'] # 'neo4j', 'kuzu', 'inmemory_graph'
@@ -454,48 +453,48 @@ for db_vendor in AVAILABLE_GRAPH_DBS:
 
 GET_NSHARED_IDS_SIMPLE_GRAPH = [
     [SIMPLE_TRIPLET1, SIMPLE_TRIPLET1_2, SIMPLE_TRIPLET1_3],
-    {0: FULL_CREATION_INFO, 1: ONLY_REL_CREATION_INFO, 2: WO_SN_CREATION_INFO}]
+    {0: FULL_CREATION_INFO, 1: ONLY_REL_CREATION_INFO, 2: WO_SN_CREATION_INFO}, (3, 3)]
 
-# instances, create_info, node1_id, node2_id, id_type, expected_output, exception
+# instances, create_info, graph_info, node1_id, node2_id, id_type, expected_output, exception
 GRAPHDB_GET_NSHARED_IDS_TEST_CASES = [
     # 1 невалидный тип идентифиаторов вершин
     # 1.1 первая вершина
-    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1],
+    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1], GET_NSHARED_IDS_SIMPLE_GRAPH[2],
      123, GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].start_node.id, 'both', None, True),
     # 1.2 вторая вершина
-    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1],
+    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1], GET_NSHARED_IDS_SIMPLE_GRAPH[2],
      GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].start_node.id, 123, 'both', None, True),
     # 2. невалидное id_type-значение
     # 2.1 число
-    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1],
+    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1], GET_NSHARED_IDS_SIMPLE_GRAPH[2],
      GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].start_node.id, GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].end_node.id, 123654, None, True),
     # 2.2 None
-    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1],
+    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1], GET_NSHARED_IDS_SIMPLE_GRAPH[2],
      GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].start_node.id, GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].end_node.id, None, None, True),
     # 2.3 значение
-    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1],
+    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1], GET_NSHARED_IDS_SIMPLE_GRAPH[2],
      GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].start_node.id, GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].end_node.id, "not_supported_type", None, True),
     # 3 вершины с таким id нет в бд
     # 3.1 перая вершина
-    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1],
-     OBJECT_NODE4.start_node.id, GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].end_node.id, "both", [], False),
+    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1], GET_NSHARED_IDS_SIMPLE_GRAPH[2],
+     OBJECT_NODE4.id, GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].end_node.id, "both", [], False),
     # 3.2 вторая вершина
-    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1],
-     GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].start_node.id, OBJECT_NODE4.start_node.id, "both", [], False),
+    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1], GET_NSHARED_IDS_SIMPLE_GRAPH[2],
+     GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].start_node.id, OBJECT_NODE4.id, "both", [], False),
     # 4 между вершинами нет связей
     # 4.1 у вершин есть другие связи
-    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1],
+    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1], GET_NSHARED_IDS_SIMPLE_GRAPH[2],
      GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].end_node.id, GET_NSHARED_IDS_SIMPLE_GRAPH[0][-1].end_node.id, "both", [], False),
     # 4.2 у вершин нет других связей
     # TO THINK
     # 5 между вершинами одна связь
     # 5.1 у вершин есть/нет другие связи
-    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1],
+    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1], GET_NSHARED_IDS_SIMPLE_GRAPH[2],
      GET_NSHARED_IDS_SIMPLE_GRAPH[0][-1].start_node.id, GET_NSHARED_IDS_SIMPLE_GRAPH[0][-1].end_node.id, "both",
     [{'t_id': GET_NSHARED_IDS_SIMPLE_GRAPH[0][-1].id, 'r_id': GET_NSHARED_IDS_SIMPLE_GRAPH[0][-1].relation.id}], False),
     # 6 между вершинами несколько связей
     # 6.1 у вершин есть/нет другие связи
-    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1],
+    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1], GET_NSHARED_IDS_SIMPLE_GRAPH[2],
      GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].start_node.id, GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].end_node.id, "both",
     [{'t_id': GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].id, 'r_id': GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].relation.id},
      {'t_id': GET_NSHARED_IDS_SIMPLE_GRAPH[0][1].id, 'r_id': GET_NSHARED_IDS_SIMPLE_GRAPH[0][1].relation.id}], False),
@@ -503,12 +502,12 @@ GRAPHDB_GET_NSHARED_IDS_TEST_CASES = [
     # TO THINK
     # 8 Возвращается определённая информация
     # 8.1 triplet
-    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1],
+    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1], GET_NSHARED_IDS_SIMPLE_GRAPH[2],
      GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].start_node.id, GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].end_node.id, 'triplet',
     [{'t_id': GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].id},
      {'t_id': GET_NSHARED_IDS_SIMPLE_GRAPH[0][1].id}], False),
     # 8.2 relation
-    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1],
+    (GET_NSHARED_IDS_SIMPLE_GRAPH[0], GET_NSHARED_IDS_SIMPLE_GRAPH[1], GET_NSHARED_IDS_SIMPLE_GRAPH[2],
      GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].start_node.id, GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].end_node.id, 'relation',
     [{'r_id': GET_NSHARED_IDS_SIMPLE_GRAPH[0][0].relation.id},
      {'r_id': GET_NSHARED_IDS_SIMPLE_GRAPH[0][1].relation.id}], False)

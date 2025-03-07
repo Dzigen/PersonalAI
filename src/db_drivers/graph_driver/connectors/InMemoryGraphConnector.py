@@ -204,21 +204,28 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
     def get_nodes_shared_ids(self, node1_id: str, node2_id: str, id_type: str = 'both') -> List[Dict[str,str]]:
         if (type(node1_id) is not str) or (type(node2_id) is not str):
-            raise ValueError
-
-        shared_internal_tids = self.edges[node1_id].intersection(self.edges[node2_id])
+            raise ValueError(node1_id, node2_id)
+        if type(id_type) is not str or id_type not in ['triplet', 'relation', 'both']:
+            raise ValueError(id_type)
 
         formated_info = []
-        for internal_tid in shared_internal_tids:
-            if id_type == 'triplet':
-                formated_info.append({'t_id': self.triplets[internal_tid].id})
-            elif id_type == 'relation':
-                formated_info.append({'r_id': self.triplets[internal_tid].relation.id})
-            elif id_type == 'both':
-                formated_info.append({'t_id': self.triplets[internal_tid].id,
-                    'r_id':self.triplets[internal_tid].relation.id})
-            else:
-                raise ValueError
+
+        n1_internal_ids = self.strid_nodes_index[node1_id]
+        n2_internal_ids = self.strid_nodes_index[node2_id]
+        for n1 in n1_internal_ids:
+            for n2 in n2_internal_ids:
+                shared_internal_tids = self.edges[n1].intersection(self.edges[n2])
+
+                for internal_tid in shared_internal_tids:
+                    if id_type == 'triplet':
+                        formated_info.append({'t_id': self.triplets[internal_tid].id})
+                    elif id_type == 'relation':
+                        formated_info.append({'r_id': self.triplets[internal_tid].relation.id})
+                    elif id_type == 'both':
+                        formated_info.append({'t_id': self.triplets[internal_tid].id,
+                            'r_id':self.triplets[internal_tid].relation.id})
+                    else:
+                        raise ValueError(id_type)
 
         return formated_info
 
