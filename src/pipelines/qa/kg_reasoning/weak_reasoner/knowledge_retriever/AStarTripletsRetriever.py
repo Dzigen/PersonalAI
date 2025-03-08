@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 import numpy as np
 import heapq
 from time import time
@@ -11,7 +11,7 @@ from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig, get_nodes_p
 
 from ......utils.data_structs import QueryInfo, Triplet, NodeType
 from ......kg_model import KnowledgeGraphModel
-from ......utils.data_structs import create_id_for_node_pair, create_id
+from ......utils.data_structs import create_id_for_node_pair, create_id, NODES_TYPES_MAP
 from ......db_drivers.kv_driver.utils import KeyValueDBInstance
 from ......db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver
 from ......utils import Logger
@@ -261,7 +261,7 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
     max_depth: int = 10
     max_passed_nodes: int = 500
-    accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic, NodeType.time])
+    accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
 
 class AStarGraphSearch:
     """Класс предназначен для запуска A*-алгоритма с целью извлечения триплетов из графового хранилища триплетов.
@@ -352,11 +352,21 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
     :type verbose: bool
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
+    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[AStarGraphSearchConfig, Dict] = AStarGraphSearchConfig(),
                  verbose: bool = False) -> None:
         self.log = log
         self.verbose = verbose
         self.kg_model = kg_model
+
+        if type(search_config) is Dict:
+            if 'accepted_node_types' in search_config:
+                search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
+
+            if 'metrics_config' in search_config:
+                search_config['metrics_config'] = AStarMetricsConfig(**search_config['metrics_config'])
+
+            search_config = AStarGraphSearchConfig(
+                **search_config)
         self.graph_searcher = AStarGraphSearch(kg_model, log, search_config, verbose)
 
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:

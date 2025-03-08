@@ -1,11 +1,12 @@
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Union, Dict
 from copy import deepcopy
 
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarTripletsRetriever
 from .BFSTripletsRetriever import BFSSearchConfig, BFSRetriever
 from .NaiveBFSTripletsRetriever import NaiveBFSTripletsRetriever
+from .BeamSearchTripletsRetriever import BeamSearchTripletsRetriever
 from ......utils.data_structs import QueryInfo, Triplet, create_id
 from ......kg_model import KnowledgeGraphModel
 from ......utils import Logger
@@ -20,9 +21,9 @@ class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     :type bfs_config: BFSSearchConfig
     """
     retriever1_name: str = 'astar'
-    retriever1_config: AStarGraphSearchConfig = field(default_factory=lambda: AStarGraphSearchConfig())
+    retriever1_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: AStarGraphSearchConfig())
     retriever2_name: str = 'bfs'
-    retriever2_config: BFSSearchConfig = field(default_factory=lambda: BFSSearchConfig())
+    retriever2_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: BFSSearchConfig())
 
 class MixturedTripletsRetriever(AbstractTripletsRetriever):
     """Класс предназначен для извлечения триплетов из графа знаний с помощью комбинации BFS- и A*-алгоритмов поиска.
@@ -36,21 +37,25 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever):
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: MixturedGraphSearchConfig = MixturedGraphSearchConfig(),
+    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[MixturedGraphSearchConfig, Dict] = MixturedGraphSearchConfig(),
                  verbose: bool = False) -> None:
         self.log = log
         self.verbose = verbose
+
+        if type(search_config) is Dict:
+            search_config = MixturedGraphSearchConfig(**search_config)
         self.config = search_config
 
         self.available_retrievers = {
             'astar': AStarTripletsRetriever,
             'bfs': BFSRetriever,
-            'naive_bfs': NaiveBFSTripletsRetriever
+            'naive_bfs': NaiveBFSTripletsRetriever,
+            'beamsearch': BeamSearchTripletsRetriever
         }
 
-        self.retriever1 = self.available_retrievers[search_config.retriever1_name](
+        self.retriever1 = self.available_retrievers[search_config.retriever1_name]['class'](
             kg_model, log, search_config.retriever1_config, verbose)
-        self.retriever2 = self.available_retrievers[search_config.retriever2_name](
+        self.retriever2 = self.available_retrievers[search_config.retriever2_name]['class'](
             kg_model, log, search_config.retriever2_config, verbose)
 
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:

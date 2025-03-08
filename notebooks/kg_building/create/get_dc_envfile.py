@@ -75,6 +75,6 @@ env_variables = [neo4j_cnt_variables, mongo_cnt_variables, redis_cnt_variables,
                  worksapce_cnt_variables, llmagents_cnt_variables, accepted_volume_dirs]
 env_variables = '\n'.join(list(map(lambda vars: dictvar_to_string(vars), env_variables)))
 
-DC_ENV_PATH = f'{KG_PATH}/.env'
+DC_ENV_PATH = f'{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}'
 with open(DC_ENV_PATH, 'w', encoding='utf-8') as fd:
     fd.write(env_variables)

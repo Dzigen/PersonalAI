@@ -107,12 +107,16 @@ class BFSRetriever(AbstractTripletsRetriever):
     def __init__(self,
                  kg_model: KnowledgeGraphModel,
                  log: Logger,
-                 search_config: BFSSearchConfig = BFSSearchConfig(),
+                 search_config: Union[BFSSearchConfig, Dict] = BFSSearchConfig(),
                  verbose: bool = False
                 ) -> None:
         super().__init__()
         self.kg_model = kg_model
+
+        if type(search_config) is Dict:
+            search_config = BFSSearchConfig(**search_config)
         self.config = search_config
+
         self.extract_triplets_name1_template = \
             'MATCH (a:object)-[r]-(b:object) WHERE a.name="{name1}" RETURN a, r, b'
         self.extract_triplets_name2_template = \

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict, Union
 from dataclasses import dataclass
 from collections import Counter
 
@@ -6,7 +6,7 @@ from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from ......db_drivers.vector_driver import VectorDBInstance
 from ......kg_model import KnowledgeGraphModel
 from ......utils import Logger
-from ......utils.data_structs import QueryInfo, Triplet, create_id
+from ......utils.data_structs import QueryInfo, Triplet, create_id, NODES_TYPES_MAP
 
 @dataclass
 class NaiveGraphSearchConfig(BaseGraphSearchConfig):
@@ -14,11 +14,14 @@ class NaiveGraphSearchConfig(BaseGraphSearchConfig):
 
 class NaiveTripletsRetriever(AbstractTripletsRetriever):
 
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: NaiveGraphSearchConfig = NaiveGraphSearchConfig(),
+    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[NaiveGraphSearchConfig,Dict] = NaiveGraphSearchConfig(),
                  verbose: bool = False) -> None:
         self.log = log
         self.verbose = verbose
         self.kg_model = kg_model
+
+        if type(search_config) is Dict:
+            search_config = NaiveGraphSearchConfig(**search_config)
         self.config = search_config
 
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:

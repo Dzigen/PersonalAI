@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 import numpy as np
 import heapq
 from time import time
@@ -11,7 +11,7 @@ from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 
 from ......utils.data_structs import QueryInfo, Triplet, NodeType
 from ......kg_model import KnowledgeGraphModel
-from ......utils.data_structs import create_id
+from ......utils.data_structs import create_id, NODES_TYPES_MAP
 from ......utils import Logger
 
 @dataclass
@@ -19,14 +19,19 @@ class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):
     max_depth: int = 10
     max_width: int = 50
     max_passed_nodes: int = 1000
-    accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic, NodeType.time])
+    accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
 
 class NaiveBFSTripletsRetriever(AbstractTripletsRetriever):
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: NaiveBFSGraphSearchConfig = NaiveBFSGraphSearchConfig(),
+    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[NaiveBFSGraphSearchConfig, Dict] = NaiveBFSGraphSearchConfig(),
                  verbose: bool = False) -> None:
         self.log = log
         self.verbose = verbose
         self.kg_model = kg_model
+
+        if type(search_config) is Dict:
+            if 'accepted_node_types' in search_config:
+                search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
+            search_config = NaiveBFSGraphSearchConfig(**search_config)
         self.config = search_config
 
     def search(self, node_id: str) -> List[Triplet]:

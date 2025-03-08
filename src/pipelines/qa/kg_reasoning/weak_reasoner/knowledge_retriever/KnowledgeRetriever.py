@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Tuple
+from typing import List, Tuple, Union, Dict
 
 from .configs import KR_MAIN_LOG_PATH, AVAILABLE_TRIPLETS_FILTERS, AVAILABLE_TRIPLETS_RETRIEVERS
 from .utils import BaseGraphSearchConfig, BaseTripletsFilterConfig
@@ -30,9 +30,9 @@ class KnowledgeRetrieverConfig:
     :type verbose: bool
     """
     retriever_method: str = 'bfs'
-    retriever_config: BaseGraphSearchConfig = field(default_factory=lambda: BFSSearchConfig())
+    retriever_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: BFSSearchConfig())
     filter_method: str = 'naive'
-    filter_config: BaseTripletsFilterConfig = field(default_factory=lambda: TripletsFilterConfig())
+    filter_config: Union[BaseTripletsFilterConfig, Dict] = field(default_factory=lambda: TripletsFilterConfig())
     log: Logger = field(default_factory=lambda: Logger(KR_MAIN_LOG_PATH))
     verbose: bool = False
 
@@ -50,13 +50,13 @@ class KnowledgeRetriever:
         self.kg_model = kg_model
         self.log = config.log
 
-        self.graph_retriever = AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method](
+        self.graph_retriever = AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method]['class'](
             kg_model, self.log, self.config.retriever_config, self.config.verbose)
 
         if self.config.filter_method is None:
             self.triplets_filter = None
         else:
-            self.triplets_filter = AVAILABLE_TRIPLETS_FILTERS[self.config.filter_method](
+            self.triplets_filter = AVAILABLE_TRIPLETS_FILTERS[self.config.filter_method]['class'](
                 kg_model, self.log, self.config.filter_config, self.config.verbose)
 
     def retrieve(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo]:

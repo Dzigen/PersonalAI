@@ -6,7 +6,7 @@
 ####
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Tuple, Set
+from typing import Dict, List, Tuple, Set, Union
 from collections import defaultdict
 from collections import Counter
 from copy import deepcopy, copy
@@ -16,7 +16,7 @@ from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 
 from ......utils.data_structs import QueryInfo, Triplet, NodeType
 from ......kg_model import KnowledgeGraphModel
-from ......utils.data_structs import create_id
+from ......utils.data_structs import create_id, NODES_TYPES_MAP
 from ......utils import Logger
 from ......db_drivers.vector_driver.utils import VectorDBInstance
 
@@ -62,11 +62,16 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
 
 class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger,
-                 search_config: GraphBeamSearchConfig = GraphBeamSearchConfig(),
+                 search_config: Union[GraphBeamSearchConfig, Dict] = GraphBeamSearchConfig(),
                  verbose: bool = False) -> None:
         self.log = log
         self.verbose = verbose
         self.kg_model = kg_model
+
+        if type(search_config) is Dict:
+            if 'accepted_node_types' in search_config:
+                search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
+            search_config = GraphBeamSearchConfig(**search_config)
         self.config = search_config
 
     def calculate_path_score(self, path_len: int, accum_score: float) -> float:
