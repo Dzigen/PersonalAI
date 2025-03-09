@@ -1,6 +1,6 @@
-DATASET_NAME: 'diaasqa' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'qwen25_070325_v2prompts' # TO CHANGE
-DATASET_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets/diaasqa' # TO CHANGE
+DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen25_080325_v2prompts' # TO CHANGE
+DATASET_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets/hotpotqa_distractor_validation' # TO CHANGE
 
 KGS_BASE_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs' # TO CHANGE
 BASE_PERSONALAI_DIR: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
