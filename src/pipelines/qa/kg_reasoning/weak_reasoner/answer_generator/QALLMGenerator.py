@@ -14,8 +14,8 @@ class QALLMGeneratorConfig:
 
     :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str
-    :param agent_cofig: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
-    :type agent_cofig: AgentDriverConfig
+    :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
+    :type adriver_config: AgentDriverConfig
     :param ag_task_config: Конфигурация атомарной задачи для LLM-агента по условной генерации ответа на вопрос. Значение по умолчанию DEFAULT_AG_TASK_CONFIG.
     :type ag_tasK_config: AgentTaskSolverConfig
     :param relation_type: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос. Значение по умолчанию [RelationType.simple, RelationType.hyper, RelationType.episodic].
@@ -26,7 +26,7 @@ class QALLMGeneratorConfig:
     :type verbose: bool
     """
     lang: str = "auto"
-    agent_cofig: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
+    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     ag_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_AG_TASK_CONFIG)
 
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
@@ -45,7 +45,7 @@ class QALLMGenerator:
         self.config = config
         self.log = self.config.log
 
-        self.agent = AgentDriver.connect(config.agent_cofig)
+        self.agent = AgentDriver.connect(config.adriver_config)
         self.answer_generator_solver = AgentTaskSolver(self.agent, self.config.ag_task_config)
 
     def generate(self, query: str, context_triplets: List[Triplet]) -> Tuple[str, ReturnInfo]:

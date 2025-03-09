@@ -1,4 +1,5 @@
 from ........utils import AgentTaskSolverConfig, Logger
+from ........db_drivers.kv_driver import KeyValueDriverConfig
 from .general_parsers import kwe_custom_formate, kwe_custom_postprocess
 from .v1 import KWE_GEN_SUITE_V1
 from .v2 import KWE_GEN_SUITE_V2
@@ -16,9 +17,9 @@ class AgentKWETaskConfigSelector:
         return AVAILABLE_KWE_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v1') -> AgentTaskSolverConfig:
+    def select(base_config_version: str = 'v1', kvcache_driver_config: KeyValueDriverConfig = None) -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             suites=AVAILABLE_KWE_TCONFIGS[base_config_version],
-            formate_context_func=kwe_custom_formate,
-            postprocess_answer_func=kwe_custom_postprocess,
+            formate_context_func=kwe_custom_formate, postprocess_answer_func=kwe_custom_postprocess,
+            cache_kvdriver_config=kvcache_driver_config,
             log=Logger(KW_EXTRACTION_LOG_PATH))

@@ -20,7 +20,7 @@ def inmemory_graph_conn():
 @pytest.fixture(scope='package')
 def neo4j_conn():
     config = GraphDriverConfig(db_vendor='neo4j', db_config=GraphDBConnectionConfig(
-        uri="bolt://localhost:7688", db_info={'db': 'testing', 'table': 'testing'}, # host: personalai_mmenschikov_test_neo4j
+        host="localhost", port="7688", db_info={'db': 'testing', 'table': 'testing'}, # host: personalai_mmenschikov_test_neo4j
         params={'user': "neo4j", 'pwd': 'password'}, need_to_clear=True))
     return GraphDriver.connect(config)
 

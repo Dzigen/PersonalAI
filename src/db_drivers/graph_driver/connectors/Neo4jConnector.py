@@ -5,7 +5,7 @@ import json
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NodeType, RelationCreator, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 
-DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(uri="bolt://localhost:7687", params={'user': "neo4j", 'pwd': 'password'})
+DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(host='localhost', port=7687, params={'user': "neo4j", 'pwd': 'password'})
 
 class Neo4jConnector(AbstractGraphDatabaseConnection):
 
@@ -47,7 +47,9 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
     def open_connection(self) -> None:
         self.driver = None
         try:
-            self.driver = GraphDatabase.driver(self.config.uri, auth=(self.config.params['user'], self.config.params['pwd']))
+            self.driver = GraphDatabase.driver(
+                f"bolt://{self.config.host}:{self.config.port}",
+                auth=(self.config.params['user'], self.config.params['pwd']))
         except Exception as e:
             print("Failed to create the driver:", e)
 
@@ -196,7 +198,7 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                 session.close()
         return response
 
-    def get_adjecent_nodes(self, base_node_id: str,
+    def get_adjecent_nids(self, base_node_id: str,
             accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[str]:
         if type(base_node_id) is not str:
             raise ValueError
@@ -207,6 +209,37 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
             f'MATCH (a)-[r]-(b) WHERE a.str_id = "{base_node_id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(b)) RETURN b')
         formated_nodes = [node['b']['str_id'] for node in raw_nodes]
         return formated_nodes
+
+    def get_nodes_shared_ids(self, node1_id: str, node2_id: str, id_type: str = 'both') -> List[Dict[str,str]]:
+        if (type(node1_id) is not str) or (type(node2_id) is not str):
+            raise ValueError(node1_id, node2_id)
+        if type(id_type) is not str:
+            raise ValueError(id_type)
+
+        if id_type == 'triplet':
+            str_return_info = 'r.t_id as t_id'
+        elif id_type == 'relation':
+            str_return_info = 'r.str_id as r_id'
+        elif id_type == 'both':
+            str_return_info = 'r.t_id as t_id, r.str_id as r_id'
+        else:
+            raise ValueError(id_type)
+
+        raw_rels = self.execute_query(
+            f'MATCH (a)-[r]-(b) WHERE a.str_id = "{node1_id}" AND b.str_id = "{node2_id}" RETURN {str_return_info};')
+
+        formated_info = []
+        for raw_rel in raw_rels:
+            tmp_info = dict()
+            if id_type in ['both', 'triplet']:
+                tmp_info['t_id'] = raw_rel['t_id']
+
+            if id_type in ['both', 'relation']:
+                tmp_info['r_id'] = raw_rel['r_id']
+
+            formated_info.append(tmp_info)
+
+        return formated_info
 
     def parse_query_nodes_output(self, output: List[object]) -> List[Node]:
         formated_nodes = []

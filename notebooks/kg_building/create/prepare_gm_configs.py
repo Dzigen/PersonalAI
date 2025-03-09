@@ -31,6 +31,12 @@ EMBEDDER_CONFIG_DUMP = 'embedder_config'
 embedder_config=EmbedderModelConfig(
     model_name_or_path='/home/m.menschikov/workspace/Personal-AI/models/intfloat/multilingual-e5-small')
 
+# TODO
+# Persistent cache
+
+# TODO
+# RAM cache
+
 print("graphdb: ", graphdb_config)
 print("nodesdb: ", nodesdb_config)
 print("tripletsdb: ", tripletsdb_config)

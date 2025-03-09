@@ -240,7 +240,7 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
             formated_triplets.append(triplet)
         return formated_triplets
 
-    def get_adjecent_nodes(self, base_node_id: str,
+    def get_adjecent_nids(self, base_node_id: str,
             accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[str]:
         if type(base_node_id) is not str:
             raise ValueError
@@ -251,6 +251,38 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
             f'MATCH (a)-[r]-(b{str_accepted_nodes}) WHERE a.str_id = "{base_node_id}" RETURN b;')
         formated_nodes = [node['str_id'] for node in raw_nodes.get_as_df()['b']]
         return formated_nodes
+
+    def get_nodes_shared_ids(self, node1_id: str, node2_id: str, id_type: str = 'both') -> List[Dict[str,str]]:
+        if (type(node1_id) is not str) or (type(node2_id) is not str):
+            raise ValueError(node1_id, node2_id)
+        if type(id_type) is not str:
+            raise ValueError(id_type)
+
+        if id_type == 'triplet':
+            str_return_info = 'r.t_id as t_id'
+        elif id_type == 'relation':
+            str_return_info = 'r.str_id as r_id'
+        elif id_type == 'both':
+            str_return_info = 'r.t_id as t_id, r.str_id as r_id'
+        else:
+            raise ValueError(id_type)
+
+        raw_rels = self.conn.execute(
+            f'MATCH (a)-[r]-(b) WHERE a.str_id = "{node1_id}" AND b.str_id = "{node2_id}" RETURN {str_return_info};')
+
+        rinfo_df = raw_rels.get_as_df()
+        formated_info = []
+        for idx in range(rinfo_df.shape[0]):
+            tmp_info = dict()
+            if id_type in ['both', 'triplet']:
+                tmp_info['t_id'] = rinfo_df['t_id'][idx]
+
+            if id_type in ['both', 'relation']:
+                tmp_info['r_id'] = rinfo_df['r_id'][idx]
+
+            formated_info.append(tmp_info)
+
+        return formated_info
 
     def get_triplets_by_name(self, subj_names: List[str], obj_names: List[str], obj_type: str) -> List[Triplet]:
         formatted_triplets = []

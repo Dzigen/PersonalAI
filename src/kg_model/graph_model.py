@@ -124,14 +124,14 @@ class GraphModel:
 
             # Если в триплете у стартовой вершины только одно инцидентное ребро,
             # то готовим его к удалению из графовой и векторной структур данных
-            s_node_neighbours = self.db_conn.get_adjecent_nodes(triplet.start_node.id)
+            s_node_neighbours = self.db_conn.get_adjecent_nids(triplet.start_node.id)
             if len(s_node_neighbours) == 1 and s_node_neighbours[0] == triplet.end_node.id:
                 graph_delete_info['s_node'] = True
                 vector_delete_info['s_node'] = True
 
             # Если в триплете у конечной вершины только одно инцидентное ребро,
             # то готовим его к удалению из графовой и векторной структур данных
-            e_node_neighbours = self.db_conn.get_adjecent_nodes(triplet.end_node.id)
+            e_node_neighbours = self.db_conn.get_adjecent_nids(triplet.end_node.id)
             if len(e_node_neighbours) == 1 and e_node_neighbours[0] == triplet.start_node.id:
                 graph_delete_info['e_node'] = True
                 vector_delete_info['e_node'] = True

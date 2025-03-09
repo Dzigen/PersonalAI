@@ -184,7 +184,7 @@ class AStarMetrics:
         while queue:
             #print(len(queue))
             vertex = queue.popleft()
-            neighbours = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(vertex, self.accepted_node_types)
+            neighbours = self.kg_model.graph_struct.db_conn.get_adjecent_nids(vertex, self.accepted_node_types)
             neo4j_queries_counter += 1
             for neighbour in neighbours:
 
@@ -317,7 +317,7 @@ class AStarGraphSearch:
                 self.log("FOUND END-NODE", verbose=self.verbose)
                 break
 
-            adj_nodes = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(current_node_id, self.config.accepted_node_types)
+            adj_nodes = self.kg_model.graph_struct.db_conn.get_adjecent_nids(current_node_id, self.config.accepted_node_types)
             #self.log(f"adjenced nodes: {len(adj_nodes)}", verbose=self.verbose)
 
             for adj_n_id in adj_nodes:

@@ -1,4 +1,5 @@
 import pytest
+from typing import List, Tuple, Dict, Union
 
 import sys
 # TO CHANGE
@@ -9,7 +10,11 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from cases import GRAPHDB_POPULATED_CREATE_TEST_CASES, GRAPHDB_POPULATED_DELETE_TEST_CASES, \
     GRAPHDB_POPULATED_READ_TEST_CASES, GRAPHDB_POPULATED_COUNT_TEST_CASES, GRAPHDB_POPULATED_EXIST_TEST_CASES, \
     GRAPHDB_POPULATED_CLEAR_TEST_CASES, GRAPHDB_POPULATED_GET_TRIPLETS_TEST_CASES, GRAPHDB_POPULATED_GET_ADJECENT_TEST_CASES, \
-        GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES
+        GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES, GRAPHDB_POPULATED_GET_NSHARED_IDS_TEST_CASES
+
+from src.utils import Triplet, RelationType, NodeType
+from src.utils.data_structs import Node
+from src.db_drivers.graph_driver.utils import AbstractGraphDatabaseConnection
 
 @pytest.mark.parametrize("inputs, create_info, expected, graphdb_conn", GRAPHDB_POPULATED_CREATE_TEST_CASES, indirect=['graphdb_conn'])
 def test_create(inputs, create_info, expected, graphdb_conn):
@@ -106,12 +111,12 @@ def test_clear(instances, base_info, graphdb_conn):
     assert items_info['nodes'] == 0
 
 @pytest.mark.parametrize("instances, create_info, node, accepted_n_types, expected, graphdb_conn", GRAPHDB_POPULATED_GET_ADJECENT_TEST_CASES, indirect=['graphdb_conn'])
-def test_get_adjecent_nodes(instances, create_info, node, accepted_n_types, expected, graphdb_conn):
+def test_get_adjecent_nids(instances, create_info, node, accepted_n_types, expected, graphdb_conn):
     graphdb_conn.clear()
     graphdb_conn.create(instances, create_info)
 
     try:
-        output = graphdb_conn.get_adjecent_nodes(node, accepted_n_types=accepted_n_types)
+        output = graphdb_conn.get_adjecent_nids(node, accepted_n_types=accepted_n_types)
     except ValueError as e:
         print(str(e))
         assert expected['exception']
@@ -120,7 +125,8 @@ def test_get_adjecent_nodes(instances, create_info, node, accepted_n_types, expe
         assert expected['output_ids'] == set(output)
 
 @pytest.mark.parametrize("instances, create_info, nodes, expected, graphdb_conn", GRAPHDB_POPULATED_GET_TRIPLETS_TEST_CASES, indirect=['graphdb_conn'])
-def test_get_triplets(instances, create_info, nodes, expected, graphdb_conn):
+def test_get_triplets(instances: List[Triplet], create_info: Dict, nodes: List[str],
+                      expected: Dict, graphdb_conn: AbstractGraphDatabaseConnection):
     graphdb_conn.clear()
     graphdb_conn.create(instances, create_info)
 
@@ -145,7 +151,9 @@ def test_get_triplets(instances, create_info, nodes, expected, graphdb_conn):
         assert expected['count'] == len(output)
 
 @pytest.mark.parametrize("instances, create_info, init_count, name, type, object, expected_output, exception, graphdb_conn", GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES, indirect=['graphdb_conn'])
-def test_read_by_name(instances, create_info, init_count, name, type, object, expected_output, exception, graphdb_conn):
+def test_read_by_name(instances: List[Triplet], create_info: Dict, init_count: Dict, name: str,
+                      type: Union[RelationType,NodeType], object: str, expected_output: List[Union[Triplet,Node]],
+                      exception: bool, graphdb_conn: AbstractGraphDatabaseConnection):
     graphdb_conn.clear()
     graphdb_conn.create(instances, create_info)
 
@@ -178,3 +186,41 @@ def test_read_by_name(instances, create_info, init_count, name, type, object, ex
 
         else:
             raise ValueError
+
+
+@pytest.mark.parametrize("instances, create_info, graph_info, node1_id, node2_id, id_type, expected_output, exception, graphdb_conn",
+                         GRAPHDB_POPULATED_GET_NSHARED_IDS_TEST_CASES, indirect=['graphdb_conn'])
+def test_get_nodes_shared_ids(
+    instances: List[Triplet], create_info: Dict, graph_info: Tuple[int], node1_id: str, node2_id: str, id_type: str,
+    expected_output: List[Dict[str,str]], exception: bool, graphdb_conn: AbstractGraphDatabaseConnection):
+    graphdb_conn.clear()
+    graphdb_conn.create(instances, create_info)
+
+    real_ginfo =graphdb_conn.count_items()
+    assert real_ginfo['triplets'] == graph_info[0]
+    assert real_ginfo['nodes'] == graph_info[1]
+
+    try:
+        real_output = graphdb_conn.get_nodes_shared_ids(node1_id, node2_id, id_type)
+    except ValueError:
+        assert exception
+    else:
+        assert not exception
+
+        if id_type == 'both':
+            expected_ids = set(map(lambda p: (p['t_id'],p['r_id']), expected_output))
+            real_ids = set(map(lambda p: (p['t_id'],p['r_id']), real_output))
+            assert expected_ids == real_ids
+
+        elif id_type == 'triplet':
+            expected_t_ids = set(map(lambda p: p['t_id'], expected_output))
+            real_t_ids = set(map(lambda p: p['t_id'], real_output))
+            assert expected_t_ids == real_t_ids
+
+        elif id_type  == 'relation':
+            expected_r_ids = set(map(lambda p: p['r_id'], expected_output))
+            real_r_ids = set(map(lambda p: p['r_id'], real_output))
+            assert expected_r_ids == real_r_ids
+
+        else:
+            raise ValueError(id_type)

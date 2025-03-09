@@ -47,7 +47,7 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever):
                 # ограничиваем глубину обхода
                 continue
 
-            neighbours = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(vertex, self.config.accepted_node_types)
+            neighbours = self.kg_model.graph_struct.db_conn.get_adjecent_nids(vertex, self.config.accepted_node_types)
             neo4j_queries_counter += 1
 
             if self.config.max_width >= 0:

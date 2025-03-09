@@ -1,14 +1,108 @@
-DATASET_NAME: 'diaasqa'
-KNOWLEDGE_GRAPH_NAME: 'gigachat_filtered'
-DATASET_PATH: '/home/m.menschikov/workspace/Personal-AI/data/qa_datasets/diaasqa/Augment_DiaASQ.json'
-DELETE_OBSOLETE_INFO: True
-LANG: 'en'
-init_struct: False
-knowledge_graph:
-  need_to_clear: True
-  graphdb_vendor: 'neo4j'
-  graphdb_config: 'graphdb_config'
-  nodesdb_vendor: 'chroma'
-  nodesdb_config: 'nodesdb_config'
-  tripletsdb_vendor: 'chroma'
-  tripletsdb_config: 'tripletsdb_config'
+DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen25_full' # TO CHANGE
+KGS_BASE_PATH: '/home/dzigen/Desktop/PersonalAI/Personal-AI/data/knowledge_graphs' # TO CHANGE
+DATASET_PATH: '/home/m.menschikov/workspace/Personal-AI/data/qa_datasets/diaasqa/Augment_DiaASQ.json' # TO CHANGE
+INIT_CONTAINERS_DOCKERCOMPOSE_FILE: '/home/dzigen/Desktop/PersonalAI/Personal-AI/notebooks/kg_building/docker-compose.yaml' # TO CHANGE
+DOCKER_COMPOSE_CMD: 'docker-compose'
+BASE_PERSONALAI_DIR: '/home/dzigen/Desktop/PersonalAI/Personal-AI' # TO CHANGE
+PERSONALAI_VENV_DIR: '/home/dzigen/Desktop/PersonalAI/.pai_venv' # TO CHANGE
+OLLAMA_MODELS_DIR: '/home/dzigen/Desktop/PersonalAI/ollama_volume' # TO CHANGE
+INIT_STRUCT: True # !!! PAY ATTENTION !!!
+
+MEM_PIPELINE_CONFIG:
+  lang: 'en'
+  llm_caching: True # DONT CHANGE
+  agent_config:
+    vendor: 'ollama' # DONT CHANGE
+    gen_strategy:
+      num_predict: 2048
+      seed: 42
+      top_k: 1
+      temperature: 0.0
+    credentials:
+      host: 'personalai_mmenschikov_ollama_service'
+      port: 11434
+    ext_params:
+      model: 'qwen2.5:7b'
+      timeout: 560
+      keep_alive: -1
+  extractor_stage:
+    extract_triplets:
+      cache_tname: 'llm_extract_triplets_cache_collection'
+      prompts_version: 'v1' # TO CHANGE
+    extract_thesises:
+      cache_tname: 'llm_extract_thesises_cache_collection'
+      prompts_version: 'v1' # TO CHANGE
+  updator_stage:
+    delete_obsolete_info: False # DONT CHANGE
+    replace_simple_triplets:
+      cache_tname: 'llm_replace_simple_triplets_cache_collection'
+      prompts_version: 'v1' # TO CHANGE
+    replace_thesis_triplets:
+      cache_tname: 'llm_replace_thesis_triplets_cache_collection'
+      prompts_version: 'v1' # TO CHANGE
+
+  persistent_cache_config:
+    vendor: 'mongo' # DONT CHANGE
+    host: 'personalai_mmenschikov_mongo_cache'
+    port: 27017 # DONT CHANGE
+    db_info:
+      db: 'memorize_db'
+      table: 'mem_llm_cache_collection'
+    params:
+      username: 'user'
+      password: 'pass'
+      max_storage': -1
+
+  ram_cache_config:
+    vendor: 'redis' # DONT CHANGE
+    host: 'personalai_mmenschikov_redis_cache'
+    port: 6380 # DONT CHANGE
+    db_info:
+      db: 0
+      table: 'mem_llm_cache_collection'
+    params:
+      ss_name: 'sorted_node_pairs'
+      hs_name: 'node_pairs'
+      max_storage: 5e+8}
+    db_configuration: '/home/dzigen/Desktop/PersonalAI/Personal-AI/configs/redis/'
+
+KG_DB_CONFIGS:
+  need_to_clear: False # !!! PAY ATTENTION !!!
+  graphdb_config:
+    vendor: 'neo4j' # DONT CHANGE
+    host: 'personalai_mmenschikov_neo4j'
+    port: 7687
+    params:
+      user: 'neo4j'
+      pwd: 'password'
+    db_info:
+      db: 'knowledgegraphdb'
+      table: 'knowledgegraphtable'
+
+  nodesdb_config:
+    vendor: 'chroma' # DONT CHANGE
+    db_info:
+      db: 'knowledgegraphdb'
+      table: 'vectorized_nodes'
+
+  tripletsdb_config:
+      vendor: 'chroma' # DONT CHANGE
+      db_info:
+        db: 'knowledgegraphdb'
+        table: 'vectorized_triplets'
+
+  embedder_config:
+    prompts:
+      query: "query: "
+      passage: "passage: "
+    model_name_or_path: '/home/m.menschikov/workspace/Personal-AI/models/intfloat/multilingual-e5-small' # TO CHANGE
+
+KG_DIR_STRUCT:
+  embeddings_dir_name: embeddings_part
+  graph_dir_name: graph_part
+  cache_dir_name:
+    base: kv_cache
+    persistant: persistent_volume
+    ram: ram_volume
+  tmp_triplets_dir_name: tmp_extracted_triplets

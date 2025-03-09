@@ -97,12 +97,10 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
                     self.strid_relation_index[triplet.relation.id].add(r_id)
 
                     self.edges[sn_id].add(t_id)
-                    if en_id not in self.adjacent_nodes[sn_id]:
-                        self.adjacent_nodes[sn_id].add(en_id)
+                    self.adjacent_nodes[sn_id].add(en_id)
 
                     self.edges[en_id].add(t_id)
-                    if sn_id not in self.adjacent_nodes[en_id]:
-                        self.adjacent_nodes[en_id].add(sn_id)
+                    self.adjacent_nodes[en_id].add(sn_id)
 
 
     def read(self, ids: List[str]) -> List[Triplet]:
@@ -190,7 +188,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
         return formated_output
 
-    def get_adjecent_nodes(self, base_node_id: str,
+    def get_adjecent_nids(self, base_node_id: str,
             accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[str]:
         if type(base_node_id) is not str:
             raise ValueError
@@ -203,6 +201,33 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         filtered_adj_n_dbids = list(filter(lambda n_db_id: self.nodes[n_db_id].type in accepted_n_types, adjanced_nodes_db_ids))
         nodes_str_ids = list(map(lambda db_n_id: self.nodes[db_n_id].id, filtered_adj_n_dbids))
         return nodes_str_ids
+
+    def get_nodes_shared_ids(self, node1_id: str, node2_id: str, id_type: str = 'both') -> List[Dict[str,str]]:
+        if (type(node1_id) is not str) or (type(node2_id) is not str):
+            raise ValueError(node1_id, node2_id)
+        if type(id_type) is not str or id_type not in ['triplet', 'relation', 'both']:
+            raise ValueError(id_type)
+
+        formated_info = []
+
+        n1_internal_ids = self.strid_nodes_index[node1_id]
+        n2_internal_ids = self.strid_nodes_index[node2_id]
+        for n1 in n1_internal_ids:
+            for n2 in n2_internal_ids:
+                shared_internal_tids = self.edges[n1].intersection(self.edges[n2])
+
+                for internal_tid in shared_internal_tids:
+                    if id_type == 'triplet':
+                        formated_info.append({'t_id': self.triplets[internal_tid].id})
+                    elif id_type == 'relation':
+                        formated_info.append({'r_id': self.triplets[internal_tid].relation.id})
+                    elif id_type == 'both':
+                        formated_info.append({'t_id': self.triplets[internal_tid].id,
+                            'r_id':self.triplets[internal_tid].relation.id})
+                    else:
+                        raise ValueError(id_type)
+
+        return formated_info
 
     def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
         if (type(node1_id) is not str) or (type(node2_id) is not str):

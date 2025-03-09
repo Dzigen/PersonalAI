@@ -13,8 +13,8 @@ class QueryLLMParserConfig:
 
     :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str
-    :param agent_cofig: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
-    :type agent_cofig: AgentDriverConfig
+    :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
+    :type adriver_config: AgentDriverConfig
     :param kw_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению ключевых сущностей из текста. Значение по умолчанию DEFAULT_KWE_TASK_CONFIG.
     :type kw_extraction_task_config: AgentTaskSolverConfig
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(QP_LOG_PATH).
@@ -23,7 +23,7 @@ class QueryLLMParserConfig:
     :type verbose: bool
     """
     lang: str = 'auto'
-    agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
+    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     kw_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_KWE_TASK_CONFIG)
 
     log: Logger = field(default_factory=lambda: Logger(QP_MAIN_LOG_PATH))
@@ -40,7 +40,7 @@ class QueryLLMParser:
         self.config = config
         self.log = self.config.log
 
-        self.agent = AgentDriver.connect(config.agent_config)
+        self.agent = AgentDriver.connect(config.adriver_config)
         self.kw_extraction_solver = AgentTaskSolver(self.agent, self.config.kw_extraction_task_config)
 
     def extract_entities(self, query_info: QueryInfo) -> ReturnInfo:

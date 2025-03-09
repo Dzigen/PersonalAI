@@ -1,3 +1,0 @@
-
-
-GET_NODES_PATH_TEST_CASES = []

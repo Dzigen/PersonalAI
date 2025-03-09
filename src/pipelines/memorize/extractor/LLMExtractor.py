@@ -14,8 +14,8 @@ class LLMExtractorConfig:
 
     :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str
-    :param agent_cofig: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
-    :type agent_cofig: AgentDriverConfig
+    :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
+    :type adriver_config: AgentDriverConfig
     :param triplets_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению триплетов с информацией типа 'simple' из слабоструктурированных текстов на естественном языке. Значение по умолчанию DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG.
     :type triplets_extraction_task_config: AgentTaskSolverConfig
     :param thesises_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению триплетов с информацией типа 'hyper' из слабоструктурированных текстов на естественном языке. Значение по умолчанию DEFAULT_EXTRACT_THESISES_TASK_CONFIG.
@@ -32,7 +32,7 @@ class LLMExtractorConfig:
     :type verbose: bool
     """
     lang: str = "auto"
-    agent_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
+    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     triplets_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_TRIPLETS_EXTR_TASK_CONFIG)
     thesises_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_THESISES_EXTR_TASK_CONFIG)
     need_simple: bool = True
@@ -51,7 +51,7 @@ class LLMExtractor:
         self.config = config
         self.log = config.log
 
-        self.agent = AgentDriver.connect(config.agent_config)
+        self.agent = AgentDriver.connect(config.adriver_config)
         self.triplets_extraction_solver = AgentTaskSolver(self.agent, self.config.triplets_extraction_task_config)
         self.thesises_extraction_solver = AgentTaskSolver(self.agent, self.config.thesises_extraction_task_config)
 
@@ -149,7 +149,7 @@ class LLMExtractor:
         episodic_rel = Relation(name=RelationType.episodic.value, type=RelationType.episodic, prop={**rel_prop})
         episodic_triplets = [TripletCreator.create(entity, episodic_rel, episodic_node) for entity in entities]
         return episodic_triplets
-    
+
     def get_time_triplets(self, triplets: List[Triplet], time: str):
         time_node = NodeCreator.create(name=time, n_type=NodeType.episodic, prop={})
         time_rel = Relation(name=RelationType.time.value, type=RelationType.time, prop={})
@@ -163,4 +163,3 @@ class LLMExtractor:
                 start_nodes.append(triplet.end_node)
         time_triplets = [TripletCreator.create(time_node, time_rel, node) for node in start_nodes]
         return time_triplets
-

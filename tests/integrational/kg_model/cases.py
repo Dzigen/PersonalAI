@@ -3,9 +3,7 @@ import sys
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.utils.data_structs import Triplet, NodeCreator, Relation, RelationType, NodeType, TripletCreator
-from src.utils.errors import ReturnInfo
-
+from src.utils.data_structs import NodeCreator, Relation, RelationType, NodeType, TripletCreator
 
 # TO CHANGE
 AVAILABLE_GRAPH_MODELS = ['inmemory_graph', 'neo4j', 'kuzu']
