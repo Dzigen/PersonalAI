@@ -14,6 +14,8 @@ data/graph_structures/vectorized_triplets/testing
 data/knowledge_graphs
 data/qa_datasets
 
+experiments/qa_kg/diaasqa_old/
+experiments/qa_kg/legacy/
 
 create_local_db/
 archives/
