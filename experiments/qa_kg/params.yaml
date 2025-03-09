@@ -1,6 +1,6 @@
-EXPERIMENT_NAME: "bfs_dmitri_with_gigachat_full(v1.4.0)" # TO CHANGE
+EXPERIMENT_NAME: "naive_rag_qwen25_v2prompts(v1.5.0)" # TO CHANGE
 DATASET_NAME: 'diaasqa' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'qwen25_070325_v2prompts' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen25_080325_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
   max_samples_per_pack: 400
@@ -41,7 +41,7 @@ BASE_KGR_CONFIG:
     port: 27017 # DONT CHANGE
     db_info:
       db: 'qa_db'
-      table: 'qa_llm_cache_collection'
+      table: '' # WILL BE SPECIFIED IN prepare_qa_configs-SCRIPT
     params:
       username: 'user'
       password: 'pass'
@@ -53,7 +53,7 @@ BASE_KGR_CONFIG:
     port: 6379 # DONT CHANGE
     db_info:
       db: 1
-      table: 'qa_llm_cache_collection'
+      table: '' # WILL BE SPECIFIED IN prepare_qa_configs-SCRIPT
     params:
       ss_name: 'sorted_node_pairs'
       hs_name: 'node_pairs'
@@ -64,7 +64,7 @@ WEAK_KG_REASONER:
   query_parser_config:
     kw_extraction_task:
       cache_tname: 'llm_kw_extraction_cache_collection'
-      prompts_version: 'v1'
+      prompts_version: 'v2'
       need_to_clear: False # !!! PAY ATTENTION !!!
   knowledge_comparator_config:
     threshold: 0.5
@@ -72,10 +72,10 @@ WEAK_KG_REASONER:
     max_k: 1 # DONT CHANGE
     k_compare: 5
   knowledge_retriever_config:
-    retriever_method: 'bfs'
+    retriever_method: 'naive_retriever'
     retriever_config:
       # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
-    filter_method: 'naive' # CAN BE none
+    filter_method: None # CAN BE none
     filter_config:
       max_k: 50
   answer_generator_config:
