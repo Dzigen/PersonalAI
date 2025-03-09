@@ -14,10 +14,6 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
     def __init__(self, config: GraphDBConnectionConfig = DEFAULT_INMEMORYGRAPH_CONFIG) -> None:
         self.config = config
-        self.open_connection()
-
-        if self.config.need_to_clear:
-            self.clear()
 
     def open_connection(self) -> None:
         self.edges = defaultdict(set)

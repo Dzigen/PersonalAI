@@ -30,7 +30,7 @@ services:
     ports:
       - "10888:10888"
     volumes:
-      - ../:/home/m.menschikov/workspace
+      - ../:/home/m.menschikov/workspace/personal_ai
     deploy:
       resources:
         limits:

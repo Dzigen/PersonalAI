@@ -10,9 +10,8 @@ from typing import List, Dict, Tuple
 import yaml
 
 # Read YAML file
-CREATE_DIR_PATH = sys.orig_argv[1]
-PARAMS_FILE_PATH = f'{CREATE_DIR_PATH}/params.yaml'
-with open("params.yaml", 'r') as stream:
+PARAMS_FILE_PATH = sys.orig_argv[2]
+with open(PARAMS_FILE_PATH, 'r') as stream:
     HYPER_PARAMS = yaml.safe_load(stream)
 
 # TO CHANGE
@@ -28,17 +27,14 @@ gc.collect()
 ###############Loading hyperparams###################
 
 DATASET_PATH = f"{HYPER_PARAMS['KGS_BASE_PATH']}/{HYPER_PARAMS['DATASET_NAME']}"
-KG_PATH = DATASET_PATH + f"{HYPER_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+KG_PATH = f"{DATASET_PATH}/{HYPER_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
-GRAPH_DRIVER_CONFIG_PATH = f"{KG_PATH}/graph_config"
-EMBEDDINGS_DRIVER_CONFIG_PATH = f"{KG_PATH}/embeddings_config"
-MEM_PIPELINE_CONFIG_PATH = f"{KG_PATH}/mem_pipeline_config"
+GRAPH_DRIVER_CONFIG_PATH = f"{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['graph_config']}"
+EMBEDDINGS_DRIVER_CONFIG_PATH = f"{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['embeddings_config']}"
 
-GRAPH_STATS_DIR = f'{KG_PATH}/graph_statistics'
-GRAPH_STATS_PLOT = f'{GRAPH_STATS_DIR}/plots/'
-GRAPH_STATS_INFO = f'{GRAPH_STATS_DIR}/stats_info.json'
-
-GRAPH_HEALTH_CHECKS_PATH = GRAPH_STATS_DIR + 'health_checks.json'
+GRAPH_STATS_DIR = f"{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['graph_statistics_dir']}"
+GRAPH_STATS_INFO = f"{GRAPH_STATS_DIR}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['kg_stats']}"
+GRAPH_HEALTH_CHECKS_PATH = f"{GRAPH_STATS_DIR}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['kg_health_checks']}"
 
 ##################################
 
@@ -55,7 +51,6 @@ if os.path.exists(GRAPH_HEALTH_CHECKS_PATH):
     raise ValueError(f"Файл существует: {GRAPH_HEALTH_CHECKS_PATH}")
 
 os.mkdir(GRAPH_STATS_DIR)
-os.mkdir(GRAPH_STATS_PLOT)
 
 ###############Computing KG statistics###################
 

@@ -12,6 +12,33 @@ DEFAULT_CACHEKV_CONFIG = KeyValueDriverConfig(
         host='localhost', port=27018, params={'username': 'user', 'password': 'pass', 'max_storage': -1},
         need_to_clear=False))
 
+class CacheUtils:
+    def cache_method_output(function):
+        def wrapper(self, *args, **kwargs):
+            cached_flag = True
+            cache_key = self.get_cache_key()
+            key_hash = None
+
+            if self.cachekv is not None:
+                self.log("Поиск результата в кеше...", verbose=self.config.verbose)
+                cstatus, cached_result = self.cachekv.load_value(key=cache_key)
+                if cstatus == 0:
+                    self.log("Результат по заданной конфигурации гиперпараметров уже был получен.", verbose=self.config.verbose)
+                else:
+                    self.log("Результата по заданной конфигурации гиперпараметров в кеше нет.", verbose=self.config.verbose)
+                    key_hash = cached_result
+
+            if not cached_flag:
+                self.log("Получем результат с нуля...", verbose=self.config.verbose)
+                output = function(self, *args, **kwargs)
+
+                if self.cachekv is not None:
+                    self.log("Кешируем полученный результат.", verbose=self.config.verbose)
+                    self.cachekv.save_value(value=output, key_hash=key_hash)
+
+            return output
+        return wrapper
+
 class CacheKV:
     def __init__(self, kvdriver_config: KeyValueDriverConfig = DEFAULT_CACHEKV_CONFIG):
         self.kv_conn = KeyValueDriver.connect(kvdriver_config)

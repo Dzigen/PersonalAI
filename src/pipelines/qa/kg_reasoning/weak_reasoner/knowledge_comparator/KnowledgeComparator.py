@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from typing import Union, List, Tuple
 
 from .configs import KC_MAIN_LOG_PATH
 from ......utils import Logger, ReturnStatus, ReturnInfo
@@ -6,6 +7,8 @@ from ......utils.errors import STATUS_MESSAGE
 from ......utils.data_structs import QueryInfo, create_id
 from ......kg_model import KnowledgeGraphModel
 from ......db_drivers.vector_driver import VectorDBInstance
+from ......utils.cache_kv import CacheKV, CacheUtils
+from ......db_drivers.kv_driver import KeyValueDriverConfig
 
 @dataclass
 class KnowledgeComparatorConfig:
@@ -28,10 +31,11 @@ class KnowledgeComparatorConfig:
     fetch_n: int = 20
     max_k: int = 1
     k_compare: int = 5
+    cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None
     log: Logger = field(default_factory=lambda: Logger(KC_MAIN_LOG_PATH))
     verbose: bool = False
 
-class KnowledgeComparator:
+class KnowledgeComparator(CacheUtils):
     """Верхнеуровневый класс второй стадии QA-конвейера для сопоставления информации из user-вопроса
     с имеющейся информацией в памяти (графе знаний) ассистента.
 
@@ -45,7 +49,17 @@ class KnowledgeComparator:
         self.log = self.config.log
         self.kg_model = kg_model
 
-    def link_kgnodes_to_query(self, query_info: QueryInfo) -> ReturnInfo:
+        if self.config.cache_kvdriver_config is not None:
+            self.cachekv = CacheKV(self.config.cache_kvdriver_config)
+        else:
+            self.cachekv = None
+
+    def get_cache_key(self, query_info: QueryInfo) -> List[object]:
+        return [self.config, self.kg_model.graph_struct.config,
+                self.kg_model.embeddings_struct.config, query_info.entities]
+
+    @CacheUtils.cache_method_output
+    def link_kgnodes_to_query(self, query_info: QueryInfo) -> Tuple[List[object], List[object], ReturnInfo]:
         """Метод предназначен для сопоставления (матчинга) сущностей, извлечённых из user-вопроса, с вершинами из графа знаний ассистента.
 
         :param query_structure: Структура данных, которая хранит user-вопрос и извлечённые из него сущности.
@@ -60,6 +74,7 @@ class KnowledgeComparator:
 
         info = ReturnInfo()
         linked_nodes_by_entities, linked_nodes = [], []
+
         for entity in query_info.entities:
             entity_embedding = self.kg_model.embeddings_struct.embedder.encode_queries([entity])[0]
             entity_instance = VectorDBInstance(embedding=entity_embedding)
@@ -78,17 +93,14 @@ class KnowledgeComparator:
                 cur_unique_names = [entity] + cur_documents[:self.config.max_k]
             linked_nodes_by_entities.append(cur_unique_names)
 
-        query_info.linked_nodes = linked_nodes
-        query_info.linked_nodes_by_entities = linked_nodes_by_entities
-
-        if len(query_info.linked_nodes) == 0:
+        if len(linked_nodes) == 0:
             info.status = ReturnStatus.zero_linked_nodes
             info.message = STATUS_MESSAGE[info.status]
 
-        self.log(f"RESULT: {len(query_info.linked_nodes)}", verbose=self.config.verbose)
-        for node in query_info.linked_nodes:
+        self.log(f"RESULT: {len(linked_nodes)}", verbose=self.config.verbose)
+        for node in linked_nodes:
             self.log(f"*[{node.id}] {node.document}", verbose=self.config.verbose)
 
         self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
-        return info
+        return linked_nodes, linked_nodes_by_entities, info

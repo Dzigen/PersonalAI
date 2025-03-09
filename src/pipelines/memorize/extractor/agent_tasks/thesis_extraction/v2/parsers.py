@@ -13,9 +13,9 @@ def ethesises_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, List[
     if len(raw_response) < 1:
         raise ValueError
 
-    raw_response = raw_response.lower().split("\n")
     raw_thesises = []
-    for raw_thesis in raw_thesises:
+    raw_response = raw_response.lower().split("\n")
+    for raw_thesis in raw_response:
         if "|" not in raw_thesis:
             continue
             #raise ValueError

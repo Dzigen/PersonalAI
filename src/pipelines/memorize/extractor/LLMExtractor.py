@@ -70,9 +70,10 @@ class LLMExtractor:
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         assert self.config.need_simple or self.config.need_thesises
+        assert 'time' not in properties
         new_triplets, info = [], ReturnInfo()
 
-        if time != "No time" and "time" not in properties:
+        if time != "No time":
             properties["time"] = time
 
         self.log("START KNOWLEDGE EXTRACTION...", verbose=self.config.verbose)
@@ -151,7 +152,7 @@ class LLMExtractor:
         return episodic_triplets
 
     def get_time_triplets(self, triplets: List[Triplet], time: str):
-        time_node = NodeCreator.create(name=time, n_type=NodeType.episodic, prop={})
+        time_node = NodeCreator.create(name=time, n_type=NodeType.time, prop={})
         time_rel = Relation(name=RelationType.time.value, type=RelationType.time, prop={})
         start_nodes, picked_ids = [], set()
         for triplet in triplets:

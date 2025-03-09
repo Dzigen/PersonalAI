@@ -4,26 +4,24 @@ import sys
 
 ########SETTING HYPERPARAMS###########
 
-CREATE_DIR_PATH = sys.orig_argv[1]
-
 # Read YAML file
-PARAMS_FILE_PATH = f'{CREATE_DIR_PATH}/params.yaml'
+PARAMS_FILE_PATH = sys.orig_argv[2]
 
 with open(PARAMS_FILE_PATH, 'r') as stream:
     HYPER_PARAMS = yaml.safe_load(stream)
 
 DATASET_PATH = f"{HYPER_PARAMS['KGS_BASE_PATH']}/{HYPER_PARAMS['DATASET_NAME']}"
-KG_PATH = DATASET_PATH + f"{HYPER_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+KG_PATH = f"{DATASET_PATH}/{HYPER_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
 VECTORIZED_DB_PATH = f"{KG_PATH}/{HYPER_PARAMS['KG_DIR_STRUCT']['embeddings_dir_name']}/"
 GRAPH_DB_PATH = f"{KG_PATH}/{HYPER_PARAMS['KG_DIR_STRUCT']['graph_dir_name']}/"
 KV_DB_PATH = f"{KG_PATH}/{HYPER_PARAMS['KG_DIR_STRUCT']['cache_dir_name']['base']}/"
 PERSISTENT_DB_PATH = KV_DB_PATH + f"{HYPER_PARAMS['KG_DIR_STRUCT']['cache_dir_name']['persistant']}/"
-RAM_DB_PATH = KV_DB_PATH + f"{HYPER_PARAMS['KG_DIR_STRUCT']['cache_dir_name']['ram_volume']}/"
+RAM_DB_PATH = KV_DB_PATH + f"{HYPER_PARAMS['KG_DIR_STRUCT']['cache_dir_name']['ram']}/"
 
 TMP_EXTRACTED_TRIPLETS_PATH = f"{KG_PATH}/{HYPER_PARAMS['KG_DIR_STRUCT']['tmp_triplets_dir_name']}/"
 
-if HYPER_PARAMS['init_struct']:
+if HYPER_PARAMS['INIT_STRUCT']:
     if not os.path.exists(HYPER_PARAMS['KGS_BASE_PATH']):
         raise ValueError(f"Директории не существует: {HYPER_PARAMS['KGS_BASE_PATH']}")
     if not os.path.exists(DATASET_PATH):

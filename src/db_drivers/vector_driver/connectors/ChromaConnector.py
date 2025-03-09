@@ -12,7 +12,6 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
 
     def __init__(self, config: VectorDBConnectionConfig = DEFAULT_CHROMA_CONFIG) -> None:
         self.config = config
-        self.open_connection()
 
     def open_connection(self) -> ReturnInfo:
         self.client = chromadb.PersistentClient(path=self.config.path)

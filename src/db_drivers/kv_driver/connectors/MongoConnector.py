@@ -14,7 +14,6 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
 
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_MONGOKV_CONFIG) -> None:
         self.config = config
-        self.open_connection()
 
     def is_open(self) -> bool:
         try:

@@ -30,7 +30,6 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
 
     def __init__(self, config: GraphDBConnectionConfig = DEFAULT_KUZU_CONFIG) -> None:
         self.config = config
-        self.open_connection()
 
     def open_connection(self) -> ReturnInfo:
         load_path = f"{self.config.params['path']}/{self.config.db_info['db']}"

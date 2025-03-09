@@ -11,22 +11,6 @@ class Neo4jConnector(AbstractGraphDatabaseConnection):
 
     def __init__(self, config: GraphDBConnectionConfig = DEFAULT_NEO4J_CONFIG):
         self.config = config
-        self.open_connection()
-
-        self.execute_query(f'CREATE DATABASE {self.config.db_info["db"]} IF NOT EXISTS', db_flag=False)
-        self.create_node_template = 'CREATE (n:{type} {{ name: "{name}"}})'
-        self.create_rel_template0 = """MATCH (a:{type1}), (b:{type2})
-WHERE a.name="{name1}" and b.name ="{name2}"
-CREATE (a)-[r:{rel_name}]->(b)"""
-        self.create_rel_template1 = """MATCH (a:{type1}), (b:{type2})
-WHERE a.name="{name1}" and b.name ="{name2}"
-CREATE (a)-[r:{rel_name} {{{rel_prop_name}: "{rel_prop_value}"}}]->(b)"""
-        self.create_rel_template2 = """MATCH (a:{type1}), (b:{type2})
-WHERE a.name="{name1}" and b.name ="{name2}"
-CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name2}: "{rel_prop_value2}"}}]->(b)"""
-        self.create_rel_template5 = """MATCH (a:{type1}), (b:{type2})
-WHERE a.name="{name1}" and b.name ="{name2}"
-CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name2}: "{rel_prop_value2}", {rel_prop_name3}: "{rel_prop_value3}", {rel_prop_name4}: "{rel_prop_value4}", {rel_prop_name5}: "{rel_prop_value5}"}}]->(b)"""
 
         self.extract_node_type_template = 'MATCH (a:{type}) RETURN a'
         self.extract_node_name_template = 'MATCH (a) WHERE a.name="{name}" RETURN a'
@@ -41,9 +25,6 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
         self.extract_triplets_rel_template = 'MATCH (a)-[r:{rel}]-(b) RETURN a, r, b'
         self.extract_triplets_rel_prop_template = 'MATCH (a)-[r]-(b) WHERE r.{prop_name}="{prop_value}" RETURN a, r, b'
 
-        if self.config.need_to_clear:
-            self.clear()
-
     def open_connection(self) -> None:
         self.driver = None
         try:
@@ -52,6 +33,16 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
                 auth=(self.config.params['user'], self.config.params['pwd']))
         except Exception as e:
             print("Failed to create the driver:", e)
+
+        self.execute_query(f'CREATE DATABASE {self.config.db_info["db"]} IF NOT EXISTS', db_flag=False)
+        self.create_node_template = 'CREATE (n:{type} {{ name: "{name}"}})'
+        self.create_rel_template0 = """MATCH (a:{type1}), (b:{type2}) WHERE a.name="{name1}" and b.name ="{name2}" CREATE (a)-[r:{rel_name}]->(b)"""
+        self.create_rel_template1 = """MATCH (a:{type1}), (b:{type2}) WHERE a.name="{name1}" and b.name ="{name2}" CREATE (a)-[r:{rel_name} {{{rel_prop_name}: "{rel_prop_value}"}}]->(b)"""
+        self.create_rel_template2 = """MATCH (a:{type1}), (b:{type2}) WHERE a.name="{name1}" and b.name ="{name2}" CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name2}: "{rel_prop_value2}"}}]->(b)"""
+        self.create_rel_template5 = """MATCH (a:{type1}), (b:{type2}) WHERE a.name="{name1}" and b.name ="{name2}" CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name2}: "{rel_prop_value2}", {rel_prop_name3}: "{rel_prop_value3}", {rel_prop_name4}: "{rel_prop_value4}", {rel_prop_name5}: "{rel_prop_value5}"}}]->(b)"""
+
+        if self.config.need_to_clear:
+            self.clear()
 
     def is_open(self) -> None:
         # TODO
@@ -241,16 +232,21 @@ CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name
 
         return formated_info
 
+    # TO THINK (do we need field serialization because we do json.dumps)
+    def _load_dumped_dict(self, raw_dict: dict) -> Dict:
+        loaded_dict = dict()
+        for k,v in raw_dict.items():
+            try:
+                loaded_dict[k] = json.loads(v)
+            except json.decoder.JSONDecodeError as e:
+                loaded_dict[k] = v
+        return loaded_dict
+
     def parse_query_nodes_output(self, output: List[object]) -> List[Node]:
         formated_nodes = []
         for raw_node in output:
 
             n_dict = dict(raw_node['n'])
-            for k,v in n_dict.items():
-                try:
-                    n_dict[k] = json.loads(v)
-                except json.decoder.JSONDecodeError as e:
-                    pass
 
             node = NodeCreator.create(
                 n_type=NODES_TYPES_MAP[list(raw_node['n'].labels)[0]],

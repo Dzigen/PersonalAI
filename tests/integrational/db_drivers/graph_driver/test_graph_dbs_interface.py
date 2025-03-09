@@ -187,7 +187,6 @@ def test_read_by_name(instances: List[Triplet], create_info: Dict, init_count: D
         else:
             raise ValueError
 
-
 @pytest.mark.parametrize("instances, create_info, graph_info, node1_id, node2_id, id_type, expected_output, exception, graphdb_conn",
                          GRAPHDB_POPULATED_GET_NSHARED_IDS_TEST_CASES, indirect=['graphdb_conn'])
 def test_get_nodes_shared_ids(
