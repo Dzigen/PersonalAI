@@ -4,7 +4,7 @@ from copy import deepcopy
 
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarTripletsRetriever
-from .BFSTripletsRetriever import BFSSearchConfig, BFSRetriever
+from .WaterCirclesTripletsRetriever import WaterCirclesSearchConfig, WaterCirclesRetriever
 from .NaiveBFSTripletsRetriever import NaiveBFSTripletsRetriever
 from .BeamSearchTripletsRetriever import BeamSearchTripletsRetriever
 from ......utils.data_structs import QueryInfo, Triplet, create_id
@@ -22,8 +22,8 @@ class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     """
     retriever1_name: str = 'astar'
     retriever1_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: AStarGraphSearchConfig())
-    retriever2_name: str = 'bfs'
-    retriever2_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: BFSSearchConfig())
+    retriever2_name: str = 'watercircles'
+    retriever2_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: WaterCirclesSearchConfig())
 
 class MixturedTripletsRetriever(AbstractTripletsRetriever):
     """Класс предназначен для извлечения триплетов из графа знаний с помощью комбинации BFS- и A*-алгоритмов поиска.
@@ -48,7 +48,7 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever):
 
         self.available_retrievers = {
             'astar': AStarTripletsRetriever,
-            'bfs': BFSRetriever,
+            'watercircles': WaterCirclesRetriever,
             'naive_bfs': NaiveBFSTripletsRetriever,
             'beamsearch': BeamSearchTripletsRetriever
         }

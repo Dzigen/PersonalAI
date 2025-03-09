@@ -1,4 +1,4 @@
-from .BFSTripletsRetriever import BFSRetriever, BaseGraphSearchConfig
+from .WaterCirclesTripletsRetriever import WaterCirclesRetriever, WaterCirclesSearchConfig
 from .MixturedTripletsRetriever import MixturedTripletsRetriever, MixturedGraphSearchConfig
 from .TripletsFilter import TripletsFilter, TripletsFilterConfig
 from .AStarTripletsRetriever import AStarTripletsRetriever, AStarGraphSearchConfig
@@ -13,9 +13,9 @@ AVAILABLE_TRIPLETS_RETRIEVERS  = {
         'config': AStarGraphSearchConfig,
         'class': AStarTripletsRetriever},
 
-    'bfs': {
-        'config': BaseGraphSearchConfig,
-        'class': BFSRetriever},
+    'watercircles': {
+        'config': WaterCirclesSearchConfig,
+        'class': WaterCirclesRetriever},
 
     'mixture': {
         'config': MixturedGraphSearchConfig,

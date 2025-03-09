@@ -1,6 +1,6 @@
 from .KnowledgeRetriever import KnowledgeRetriever, KnowledgeRetrieverConfig
 from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarMetricsConfig
-from .BFSTripletsRetriever import BFSSearchConfig
+from .WaterCirclesTripletsRetriever import WaterCirclesSearchConfig
 from .MixturedTripletsRetriever import MixturedGraphSearchConfig
 from .NaiveBFSTripletsRetriever import NaiveBFSGraphSearchConfig
 from .NaiveTripletsRetriever import NaiveGraphSearchConfig

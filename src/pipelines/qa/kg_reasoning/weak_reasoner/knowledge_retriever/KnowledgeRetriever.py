@@ -4,7 +4,7 @@ from typing import List, Tuple, Union, Dict
 from .configs import KR_MAIN_LOG_PATH, AVAILABLE_TRIPLETS_FILTERS, AVAILABLE_TRIPLETS_RETRIEVERS
 from .utils import BaseGraphSearchConfig, BaseTripletsFilterConfig
 from .TripletsFilter import TripletsFilterConfig
-from .BFSTripletsRetriever import BFSSearchConfig
+from .WaterCirclesTripletsRetriever import WaterCirclesSearchConfig
 
 from ......utils.data_structs import QueryInfo, Triplet
 from ......kg_model import KnowledgeGraphModel
@@ -29,8 +29,8 @@ class KnowledgeRetrieverConfig:
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
-    retriever_method: str = 'bfs'
-    retriever_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: BFSSearchConfig())
+    retriever_method: str = 'water_circles'
+    retriever_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: WaterCirclesSearchConfig())
     filter_method: str = 'naive'
     filter_config: Union[BaseTripletsFilterConfig, Dict] = field(default_factory=lambda: TripletsFilterConfig())
     log: Logger = field(default_factory=lambda: Logger(KR_MAIN_LOG_PATH))

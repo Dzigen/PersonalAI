@@ -58,7 +58,7 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     # то пути будут выбираться по аналогии с 'ended_first'-значением, только сначала сортировка/выбор по continuous-путям,
     # а потом по ended-путям. Если будет указано 'mixed'-значение, то ended- и continuous-пути будут объединены в один список,
     # отсортированы по убыванию релевантности и из полученного списко будет выбрано первых 'max_paths'-путей.
-    final_sorting_mode: str = 'continuous_first' # 'ended_first' | 'mixed' | 'continuous_first'
+    final_sorting_mode: str = 'mixed' # 'ended_first' | 'mixed' | 'continuous_first'
 
 class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger,
