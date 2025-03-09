@@ -11,6 +11,8 @@ from ......kg_model import KnowledgeGraphModel
 from ......utils import Logger, ReturnStatus, ReturnInfo
 from ......utils.errors import STATUS_MESSAGE
 from ......utils.data_structs import create_id
+from ......utils.cache_kv import CacheKV, CacheUtils
+from ......db_drivers.kv_driver import KeyValueDriverConfig
 
 @dataclass
 class KnowledgeRetrieverConfig:
@@ -33,10 +35,12 @@ class KnowledgeRetrieverConfig:
     retriever_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: WaterCirclesSearchConfig())
     filter_method: str = 'naive'
     filter_config: Union[BaseTripletsFilterConfig, Dict] = field(default_factory=lambda: TripletsFilterConfig())
+    cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None
+
     log: Logger = field(default_factory=lambda: Logger(KR_MAIN_LOG_PATH))
     verbose: bool = False
 
-class KnowledgeRetriever:
+class KnowledgeRetriever(CacheUtils):
     """Верхнеуровневый класс третьей стадии QA-конвейера для извлечения
     релевантной к user-вопросу информации из памяти (графа знаний) ассистента.
 
@@ -59,6 +63,16 @@ class KnowledgeRetriever:
             self.triplets_filter = AVAILABLE_TRIPLETS_FILTERS[self.config.filter_method]['class'](
                 kg_model, self.log, self.config.filter_config, self.config.verbose)
 
+        if self.config.cache_kvdriver_config is not None:
+            self.cachekv = CacheKV(self.config.cache_kvdriver_config)
+        else:
+            self.cachekv = None
+
+    def get_cache_key(self, query_info: QueryInfo) -> List[object]:
+        return [self.config.retriever_method, self.config.retriever_config,
+                self.config.filter_method, self.config.filter_config, query_info]
+
+    @CacheUtils.cache_method_output
     def retrieve(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения релевантных к user-вопросу триплетов из графа знаний.
 
