@@ -57,19 +57,19 @@ class AStarMetrics:
             self.cache = dict()
             if self.config.h_metric_name in ['ip', 'weight_with_short_path',  'avg_weighted_with_short_path']:
                 ip_config = deepcopy(config.kvdriver_config)
-                ip_config.db_config.db_info['table'] = 'ip'
+                ip_config.db_config.db_info['table'] = 'astar_retriever_ip'
                 self.cache['ip'] = KeyValueDriver.connect(ip_config)
             if self.config.h_metric_name in ['weight_with_short_path',  'avg_weighted_with_short_path']:
                 sp_config = deepcopy(config.kvdriver_config)
-                sp_config.db_config.db_info['table'] = 'bfsshortpath'
+                sp_config.db_config.db_info['table'] = 'astar_retriever_bfsshortpath'
                 self.cache['bfs_short_path'] = KeyValueDriver.connect(sp_config)
 
                 sp_config = deepcopy(config.kvdriver_config)
-                sp_config.db_config.db_info['table'] = 'weightwithshortpath'
+                sp_config.db_config.db_info['table'] = 'astar_retriever_weightwithshortpath'
                 self.cache['weight_with_short_path'] = KeyValueDriver.connect(sp_config)
 
                 sp_config = deepcopy(config.kvdriver_config)
-                sp_config.db_config.db_info['table'] = 'avgweightedwithshortpath'
+                sp_config.db_config.db_info['table'] = 'astar_retriever_avgweightedwithshortpath'
                 self.cache['avg_weighted_with_short_path'] = KeyValueDriver.connect(sp_config)
 
 
@@ -366,6 +366,8 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
             if 'metrics_config' in search_config:
                 search_config['metrics_config'] = AStarMetricsConfig(**search_config['metrics_config'])
+                search_config['metrics_config'].kvdriver_config = KeyValueDriverConfig(**search_config['metrics_config'].kvdriver_config)
+                search_config['metrics_config'].kvdriver_config.db_config = KVDBConnectionConfig(**search_config['metrics_config'].kvdriver_config.db_config)
 
             if 'cache_kvdriver_config' in search_config:
                 search_config['cache_kvdriver_config'] = KeyValueDriverConfig(**search_config['cache_kvdriver_config'])
