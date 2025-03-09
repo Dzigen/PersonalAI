@@ -1,11 +1,14 @@
 from dataclasses import dataclass, field
-from typing import Tuple
+from typing import Union, Tuple, List
 
 from .configs import DEFAULT_KWE_TASK_CONFIG, QP_MAIN_LOG_PATH
 from ......utils.data_structs import QueryInfo, create_id
 from ......utils.errors import STATUS_MESSAGE
 from ......utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 from ......agents import AgentDriver, AgentDriverConfig
+from ......utils.cache_kv import CacheKV, CacheUtils
+from ......db_drivers.kv_driver import KeyValueDriverConfig
+
 
 @dataclass
 class QueryLLMParserConfig:
@@ -25,11 +28,12 @@ class QueryLLMParserConfig:
     lang: str = 'auto'
     adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     kw_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_KWE_TASK_CONFIG)
+    cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None
 
     log: Logger = field(default_factory=lambda: Logger(QP_MAIN_LOG_PATH))
     verbose: bool = False
 
-class QueryLLMParser:
+class QueryLLMParser(CacheUtils):
     """Верхнеуровневый класс первой стадии QA-конвейера
     для извлечения сущностей из user-вопроса.
 
@@ -43,7 +47,17 @@ class QueryLLMParser:
         self.agent = AgentDriver.connect(config.adriver_config)
         self.kw_extraction_solver = AgentTaskSolver(self.agent, self.config.kw_extraction_task_config)
 
-    def extract_entities(self, query_info: QueryInfo) -> ReturnInfo:
+        if self.config.cache_kvdriver_config is not None:
+            self.cachekv = CacheKV(self.config.cache_kvdriver_config)
+        else:
+            self.cachekv = None
+
+    def get_cache_key(self, query: str) -> List[object]:
+        return [self.config.lang, self.config.adriver_config,
+                self.config.kw_extraction_task_config, query]
+
+    @CacheUtils.cache_method_output
+    def extract_entities(self, query: str) -> Tuple[List[str], ReturnInfo]:
         """Метод предназначен для извлечения ключевых сущностей из query-текста.
 
         :param query: Текст на естественном языке.
@@ -54,25 +68,25 @@ class QueryLLMParser:
 
         info = ReturnInfo()
         self.log("START KEY WORD EXTRACTION...", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
 
         self.log("Выполнение извлечения ключевых сущностей из запроса с помощью LLM-агента...", verbose=self.config.verbose)
-        extracted_entities, status = self.kw_extraction_solver.solve(lang=self.config.lang, query=query_info.query)
+        extracted_entities, status = self.kw_extraction_solver.solve(lang=self.config.lang, query=query)
 
         if status != ReturnStatus.success:
             info.occurred_warning.append(status)
 
+        entities=[]
         if extracted_entities is None or len(extracted_entities) == 0:
             info.status = ReturnStatus.zero_entities
             info.message = STATUS_MESSAGE[info.status]
-            query_info.entities=[]
         else:
-            query_info.entities=extracted_entities
+            entities=extracted_entities
 
-        self.log(f"RESULT: {len(query_info.entities)}", verbose=self.config.verbose)
-        for entity in query_info.entities:
+        self.log(f"RESULT: {len(entities)}", verbose=self.config.verbose)
+        for entity in entities:
             self.log(f"* {entity}", verbose=self.config.verbose)
         self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
-        return info
+        return entities, info

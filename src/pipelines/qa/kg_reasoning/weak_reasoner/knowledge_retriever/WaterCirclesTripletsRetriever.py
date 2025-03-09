@@ -9,7 +9,7 @@ from ......utils.data_structs import QueryInfo, TripletCreator, Triplet, NodeCre
 from ......utils import Logger
 
 @dataclass
-class BFSSearchConfig(BaseGraphSearchConfig):
+class WaterCirclesSearchConfig(BaseGraphSearchConfig):
     """_summary_
     """
     strict_filter: bool = True
@@ -93,7 +93,7 @@ def process_inters_chains2(inters_chains2: List[List[List[str]]]) -> List[List[s
     return chain_triplets2
 
 
-class BFSRetriever(AbstractTripletsRetriever):
+class WaterCirclesRetriever(AbstractTripletsRetriever):
     """Класс с реализацией алгоритма BFS (поиск в ширину) по графу
 
     :param kg_model: класс для извлечения триплетов из графа
@@ -101,18 +101,22 @@ class BFSRetriever(AbstractTripletsRetriever):
     :param log: класс для логирования
     :type log: Logger
     :param search_config: конфигурация поиска по графу
-    :type search_config: BFSSearchConfig, optional
+    :type search_config: WaterCirclesSearchConfig, optional
     """
 
     def __init__(self,
                  kg_model: KnowledgeGraphModel,
                  log: Logger,
-                 search_config: BFSSearchConfig = BFSSearchConfig(),
+                 search_config: Union[WaterCirclesSearchConfig, Dict] = WaterCirclesSearchConfig(),
                  verbose: bool = False
                 ) -> None:
         super().__init__()
         self.kg_model = kg_model
+
+        if type(search_config) is Dict:
+            search_config = WaterCirclesSearchConfig(**search_config)
         self.config = search_config
+
         self.extract_triplets_name1_template = \
             'MATCH (a:object)-[r]-(b:object) WHERE a.name="{name1}" RETURN a, r, b'
         self.extract_triplets_name2_template = \

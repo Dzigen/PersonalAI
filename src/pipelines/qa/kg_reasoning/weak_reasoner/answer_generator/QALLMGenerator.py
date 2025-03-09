@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Union
 from dataclasses import dataclass, field
 
 from .configs import DEFAULT_AG_TASK_CONFIG, AG_MAIN_LOG_PATH
@@ -7,6 +7,9 @@ from ......utils.data_structs import Triplet, RelationType, create_id
 from ......utils.errors import STATUS_MESSAGE
 from ......agents import AgentDriver, AgentDriverConfig
 from ......utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
+from ......utils.cache_kv import CacheKV, CacheUtils
+from ......db_drivers.kv_driver import KeyValueDriverConfig
+
 
 @dataclass
 class QALLMGeneratorConfig:
@@ -30,11 +33,12 @@ class QALLMGeneratorConfig:
     ag_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_AG_TASK_CONFIG)
 
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
+    cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None
 
     log: Logger = field(default_factory=lambda: Logger(AG_MAIN_LOG_PATH))
     verbose: bool = False
 
-class QALLMGenerator:
+class QALLMGenerator(CacheUtils):
     """Верхнеуровневый класс четвёртой стадии QA-конвейера для генерации ответа на user-вопрос,
     обусловленного извлечённой информацией из памяти (графа знаний) ассистента.
 
@@ -48,6 +52,17 @@ class QALLMGenerator:
         self.agent = AgentDriver.connect(config.adriver_config)
         self.answer_generator_solver = AgentTaskSolver(self.agent, self.config.ag_task_config)
 
+        if self.config.cache_kvdriver_config is not None:
+            self.cachekv = CacheKV(self.config.cache_kvdriver_config)
+        else:
+            self.cachekv = None
+
+    def get_cache_key(self, query: str, context_triplets: List[Triplet]) -> List[object]:
+        return [self.config.lang, self.config.adriver_config,
+                self.config.ag_task_config, self.config.relation_type,
+                query, context_triplets]
+
+    @CacheUtils.cache_method_output
     def generate(self, query: str, context_triplets: List[Triplet]) -> Tuple[str, ReturnInfo]:
         """Метод предназначен для условной генерации ответа на вопрос.
 

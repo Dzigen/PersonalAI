@@ -1,11 +1,14 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Union, Dict
 
 from .utils import AbstractTriplesFilter, BaseTripletsFilterConfig
 from ......utils.data_structs import Triplet, QueryInfo, create_id
 from ......utils import Logger
 from ......kg_model import KnowledgeGraphModel
 from ......db_drivers.vector_driver import VectorDBInstance
+from ......utils.cache_kv import CacheKV, CacheUtils
+from ......db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
+
 
 @dataclass
 class TripletsFilterConfig(BaseTripletsFilterConfig):
@@ -15,8 +18,10 @@ class TripletsFilterConfig(BaseTripletsFilterConfig):
     :type max_k: int
     """
     max_k: int = 50
+    cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None
 
-class TripletsFilter(AbstractTriplesFilter):
+
+class TripletsFilter(AbstractTriplesFilter, CacheUtils):
     """Класс реализует логику наивного ранжирования/фильтрации триплетов на основе их релевантности к user-вопросу.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -28,12 +33,29 @@ class TripletsFilter(AbstractTriplesFilter):
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, config: TripletsFilterConfig = TripletsFilterConfig(), verbose: bool = False) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, config: Union[TripletsFilterConfig, Dict] = TripletsFilterConfig(), verbose: bool = False) -> None:
         self.log = log
         self.verbose = verbose
         self.kg_model = kg_model
+
+        if self.config.cache_kvdriver_config is not None:
+            self.cachekv = CacheKV(self.config.cache_kvdriver_config)
+        else:
+            self.cachekv = None
+
+        if type(config) is Dict:
+            if 'cache_kvdriver_config' in config:
+                config['cache_kvdriver_config'] = KeyValueDriverConfig(**config['cache_kvdriver_config'])
+                config['cache_kvdriver_config'].db_config = KVDBConnectionConfig(**config['cache_kvdriver_config'].db_config)
+            config = TripletsFilterConfig(**config)
+
         self.config = config
 
+    def get_cache_key(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[object]:
+        return [self.config.max_k, self.kg_model.embeddings_struct.config,
+                self.kg_model.graph_struct.config, query_info, triplets]
+
+    @CacheUtils.cache_method_output
     def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
         self.log("START KNOWLEDGE FILTERING...", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)

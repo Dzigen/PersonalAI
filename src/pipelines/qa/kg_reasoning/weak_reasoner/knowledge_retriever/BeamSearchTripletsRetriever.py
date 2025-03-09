@@ -6,7 +6,7 @@
 ####
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Tuple, Set
+from typing import Dict, List, Tuple, Set, Union
 from collections import defaultdict
 from collections import Counter
 from copy import deepcopy, copy
@@ -16,9 +16,11 @@ from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 
 from ......utils.data_structs import QueryInfo, Triplet, NodeType
 from ......kg_model import KnowledgeGraphModel
-from ......utils.data_structs import create_id
+from ......utils.data_structs import create_id, NODES_TYPES_MAP
 from ......utils import Logger
 from ......db_drivers.vector_driver.utils import VectorDBInstance
+from ......utils.cache_kv import CacheKV, CacheUtils
+from ......db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
 
 @dataclass
 class TraversingPath:
@@ -58,16 +60,37 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     # то пути будут выбираться по аналогии с 'ended_first'-значением, только сначала сортировка/выбор по continuous-путям,
     # а потом по ended-путям. Если будет указано 'mixed'-значение, то ended- и continuous-пути будут объединены в один список,
     # отсортированы по убыванию релевантности и из полученного списко будет выбрано первых 'max_paths'-путей.
-    final_sorting_mode: str = 'continuous_first' # 'ended_first' | 'mixed' | 'continuous_first'
+    final_sorting_mode: str = 'mixed' # 'ended_first' | 'mixed' | 'continuous_first'
+    cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None
 
-class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
+
+class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger,
-                 search_config: GraphBeamSearchConfig = GraphBeamSearchConfig(),
+                 search_config: Union[GraphBeamSearchConfig, Dict] = GraphBeamSearchConfig(),
                  verbose: bool = False) -> None:
         self.log = log
         self.verbose = verbose
         self.kg_model = kg_model
+
+        if type(search_config) is Dict:
+            if 'accepted_node_types' in search_config:
+                search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
+
+            if 'cache_kvdriver_config' in search_config:
+                search_config['cache_kvdriver_config'] = KeyValueDriverConfig(**search_config['cache_kvdriver_config'])
+                search_config['cache_kvdriver_config'].db_config = KVDBConnectionConfig(**search_config['cache_kvdriver_config'].db_config)
+
+            search_config = GraphBeamSearchConfig(**search_config)
         self.config = search_config
+
+        if self.config.cache_kvdriver_config is not None:
+            self.cachekv = CacheKV(self.config.cache_kvdriver_config)
+        else:
+            self.cachekv = None
+
+    def get_cache_key(self, query_info: QueryInfo) -> List[object]:
+        return [self.config, self.kg_model.embeddings_struct.config,
+                self.kg_model.graph_struct.config, query_info]
 
     def calculate_path_score(self, path_len: int, accum_score: float) -> float:
         return accum_score / pow(path_len-1, self.config.mean_alpha)
@@ -241,6 +264,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever):
         extracted_triplets = self.kg_model.graph_struct.db_conn.read(list(uniques_tids))
         return extracted_triplets
 
+    @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)

@@ -1,22 +1,41 @@
-from .BFSTripletsRetriever import BFSRetriever
-from .MixturedTripletsRetriever import MixturedTripletsRetriever
-from .TripletsFilter import TripletsFilter
-from .AStarTripletsRetriever import AStarTripletsRetriever
-from .NaiveBFSTripletsRetriever import NaiveBFSTripletsRetriever
-from .NaiveTripletsRetriever import NaiveTripletsRetriever
-from .BeamSearchTripletsRetriever import BeamSearchTripletsRetriever
+from .WaterCirclesTripletsRetriever import WaterCirclesRetriever, WaterCirclesSearchConfig
+from .MixturedTripletsRetriever import MixturedTripletsRetriever, MixturedGraphSearchConfig
+from .TripletsFilter import TripletsFilter, TripletsFilterConfig
+from .AStarTripletsRetriever import AStarTripletsRetriever, AStarGraphSearchConfig
+from .NaiveBFSTripletsRetriever import NaiveBFSTripletsRetriever, NaiveBFSGraphSearchConfig
+from .NaiveTripletsRetriever import NaiveTripletsRetriever, NaiveGraphSearchConfig
+from .BeamSearchTripletsRetriever import BeamSearchTripletsRetriever, BaseGraphSearchConfig
 
 KR_MAIN_LOG_PATH = 'log/qa/kg_reasoner/weak/knowledge_retriever/main'
 
 AVAILABLE_TRIPLETS_RETRIEVERS  = {
-    'astar': AStarTripletsRetriever,
-    'bfs': BFSRetriever,
-    'mixture': MixturedTripletsRetriever,
-    'naive_bfs': NaiveBFSTripletsRetriever,
-    'naive_retriever': NaiveTripletsRetriever,
-    'beamsearch': BeamSearchTripletsRetriever
+    'astar': {
+        'config': AStarGraphSearchConfig,
+        'class': AStarTripletsRetriever},
+
+    'watercircles': {
+        'config': WaterCirclesSearchConfig,
+        'class': WaterCirclesRetriever},
+
+    'mixture': {
+        'config': MixturedGraphSearchConfig,
+        'class': MixturedTripletsRetriever},
+
+    'naive_bfs': {
+        'config': NaiveBFSGraphSearchConfig,
+        'class': NaiveBFSTripletsRetriever},
+
+    'naive_retriever': {
+        'config': NaiveGraphSearchConfig,
+        'class': NaiveTripletsRetriever},
+
+    'beamsearch': {
+        'config': BaseGraphSearchConfig,
+        'class': BeamSearchTripletsRetriever}
 }
 
 AVAILABLE_TRIPLETS_FILTERS = {
-    'naive': TripletsFilter
+    'naive': {
+        'config': TripletsFilterConfig,
+        'class': TripletsFilter}
 }

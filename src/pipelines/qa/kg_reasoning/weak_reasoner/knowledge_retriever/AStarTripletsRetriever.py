@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 import numpy as np
 import heapq
 from time import time
@@ -11,10 +11,11 @@ from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig, get_nodes_p
 
 from ......utils.data_structs import QueryInfo, Triplet, NodeType
 from ......kg_model import KnowledgeGraphModel
-from ......utils.data_structs import create_id_for_node_pair, create_id
+from ......utils.data_structs import create_id_for_node_pair, create_id, NODES_TYPES_MAP
 from ......db_drivers.kv_driver.utils import KeyValueDBInstance
-from ......db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver
+from ......db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver, KVDBConnectionConfig
 from ......utils import Logger
+from ......utils.cache_kv import CacheKV, CacheUtils
 
 @dataclass
 class AStarMetricsConfig:
@@ -56,19 +57,19 @@ class AStarMetrics:
             self.cache = dict()
             if self.config.h_metric_name in ['ip', 'weight_with_short_path',  'avg_weighted_with_short_path']:
                 ip_config = deepcopy(config.kvdriver_config)
-                ip_config.db_config.db_info['table'] = 'ip'
+                ip_config.db_config.db_info['table'] = 'astar_retriever_ip'
                 self.cache['ip'] = KeyValueDriver.connect(ip_config)
             if self.config.h_metric_name in ['weight_with_short_path',  'avg_weighted_with_short_path']:
                 sp_config = deepcopy(config.kvdriver_config)
-                sp_config.db_config.db_info['table'] = 'bfsshortpath'
+                sp_config.db_config.db_info['table'] = 'astar_retriever_bfsshortpath'
                 self.cache['bfs_short_path'] = KeyValueDriver.connect(sp_config)
 
                 sp_config = deepcopy(config.kvdriver_config)
-                sp_config.db_config.db_info['table'] = 'weightwithshortpath'
+                sp_config.db_config.db_info['table'] = 'astar_retriever_weightwithshortpath'
                 self.cache['weight_with_short_path'] = KeyValueDriver.connect(sp_config)
 
                 sp_config = deepcopy(config.kvdriver_config)
-                sp_config.db_config.db_info['table'] = 'avgweightedwithshortpath'
+                sp_config.db_config.db_info['table'] = 'astar_retriever_avgweightedwithshortpath'
                 self.cache['avg_weighted_with_short_path'] = KeyValueDriver.connect(sp_config)
 
 
@@ -261,7 +262,8 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     metrics_config: AStarMetricsConfig = field(default_factory=lambda: AStarMetricsConfig())
     max_depth: int = 10
     max_passed_nodes: int = 500
-    accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic, NodeType.time])
+    accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
+    cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None
 
 class AStarGraphSearch:
     """Класс предназначен для запуска A*-алгоритма с целью извлечения триплетов из графового хранилища триплетов.
@@ -339,7 +341,7 @@ class AStarGraphSearch:
         self.log(f"astar queries: {passed_nodes_counter}", verbose=self.verbose)
         return cost_so_far, frontier, D, parent, spare_closest_node_id
 
-class AStarTripletsRetriever(AbstractTripletsRetriever):
+class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     """Класс предназначен для извлечения триплетов из графа знаний на основе A*-алгоритма поиска.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -352,13 +354,40 @@ class AStarTripletsRetriever(AbstractTripletsRetriever):
     :type verbose: bool
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
+    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[AStarGraphSearchConfig, Dict] = AStarGraphSearchConfig(),
                  verbose: bool = False) -> None:
         self.log = log
         self.verbose = verbose
         self.kg_model = kg_model
+
+        if type(search_config) is Dict:
+            if 'accepted_node_types' in search_config:
+                search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
+
+            if 'metrics_config' in search_config:
+                search_config['metrics_config'] = AStarMetricsConfig(**search_config['metrics_config'])
+                search_config['metrics_config'].kvdriver_config = KeyValueDriverConfig(**search_config['metrics_config'].kvdriver_config)
+                search_config['metrics_config'].kvdriver_config.db_config = KVDBConnectionConfig(**search_config['metrics_config'].kvdriver_config.db_config)
+
+            if 'cache_kvdriver_config' in search_config:
+                search_config['cache_kvdriver_config'] = KeyValueDriverConfig(**search_config['cache_kvdriver_config'])
+                search_config['cache_kvdriver_config'].db_config = KVDBConnectionConfig(**search_config['cache_kvdriver_config'].db_config)
+
+            search_config = AStarGraphSearchConfig(**search_config)
+        self.config = search_config
+
         self.graph_searcher = AStarGraphSearch(kg_model, log, search_config, verbose)
 
+        if self.config.cache_kvdriver_config is not None:
+            self.cachekv = CacheKV(self.config.cache_kvdriver_config)
+        else:
+            self.cachekv = None
+
+    def get_cache_key(self, query_info: QueryInfo) -> List[object]:
+        return [self.config, self.kg_model.embeddings_struct.config,
+                self.kg_model.graph_struct.config, query_info]
+
+    @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
