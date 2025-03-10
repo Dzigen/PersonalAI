@@ -5,6 +5,7 @@ from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTa
 from ....utils.errors import STATUS_MESSAGE
 from ....utils.data_structs import TripletCreator, NodeCreator, Node, Relation, RelationType, NodeType, Triplet, create_id
 from ....agents import AgentDriver, AgentDriverConfig
+from ....db_drivers.kv_driver import KeyValueDriverConfig
 
 from .configs import DEFAULT_THESISES_EXTR_TASK_CONFIG, DEFAULT_TRIPLETS_EXTR_TASK_CONFIG, MEM_EXTRACTOR_MAIN_LOG_PATH
 
@@ -47,14 +48,16 @@ class LLMExtractor:
     :param config: Конфигурация Exctrator-стадии. Значение по умолчанию LLMExtractorConfig().
     :type config: LLMExtractorConfig
     """
-    def __init__(self, config: LLMExtractorConfig = LLMExtractorConfig()) -> None:
+    def __init__(self, config: LLMExtractorConfig = LLMExtractorConfig(),
+                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
         self.config = config
         self.log = config.log
 
         self.agent = AgentDriver.connect(config.adriver_config)
-        self.triplets_extraction_solver = AgentTaskSolver(self.agent, self.config.triplets_extraction_task_config)
-        self.thesises_extraction_solver = AgentTaskSolver(self.agent, self.config.thesises_extraction_task_config)
-
+        self.triplets_extraction_solver = AgentTaskSolver(
+            self.agent, self.config.triplets_extraction_task_config, cache_kvdriver_config)
+        self.thesises_extraction_solver = AgentTaskSolver(
+            self.agent, self.config.thesises_extraction_task_config, cache_kvdriver_config)
 
     def extract_knowledge(self, text: str, time: str = "No time", properties: Dict = {}) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста

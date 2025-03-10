@@ -22,7 +22,6 @@ from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag
 
 from src.agents import AgentDriverConfig
 from src.agents.utils import AgentConnectorConfig
-from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
 
 ################ hyperparams #####################
 
@@ -44,27 +43,6 @@ adriver_config = AgentDriverConfig(
         credentials=PARAMS['BASE_KGR_CONFIG']['agent_config']['credentials'],
         ext_params=PARAMS['BASE_KGR_CONFIG']['agent_config']['ext_params']))
 
-################ cache driver config ################
-
-if PARAMS['BASE_KGR_CONFIG']['llm_caching']:
-    kvdriver_config = KeyValueDriverConfig(
-        db_vendor='mixed_kv',
-        db_config=KVDBConnectionConfig(
-            params={
-                'redis_config': KVDBConnectionConfig(
-                    host=PARAMS['BASE_KGR_CONFIG']['ram_cache_config']['host'],
-                    port=PARAMS['BASE_KGR_CONFIG']['ram_cache_config']['port'],
-                    db_info=PARAMS['BASE_KGR_CONFIG']['ram_cache_config']['db_info'],
-                    params=PARAMS['BASE_KGR_CONFIG']['ram_cache_config']['params']),
-                'mongo_config': KVDBConnectionConfig(
-                    host=PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['host'],
-                    port=PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['port'],
-                    db_info=PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['db_info'],
-                    params=PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['params'])}))
-
-else:
-    kvdriver_config = None
-
 ################ KG REAONER ################
 
 if PARAMS['BASE_KGR_CONFIG']['name'] == 'weak':
@@ -80,8 +58,7 @@ if PARAMS['BASE_KGR_CONFIG']['name'] == 'weak':
             lang=PARAMS['BASE_KGR_CONFIG']['lang'],
             adriver_config=adriver_config,
             kw_extraction_task_config=AgentKWETaskConfigSelector.select(
-                base_config_version=PARAMS['WEAK_KG_REASONER']['query_parser_config']['kw_extraction_task']['prompts_version'],
-                kvcache_driver_config=copy.deepcopy(kvdriver_config))),
+                base_config_version=PARAMS['WEAK_KG_REASONER']['query_parser_config']['kw_extraction_task']['prompts_version'])),
         knowledge_comparator_config=KnowledgeComparatorConfig(
             **PARAMS['WEAK_KG_REASONER']['knowledge_comparator_config']),
         knowledge_retriever_config=k_retriever_config,
@@ -89,21 +66,7 @@ if PARAMS['BASE_KGR_CONFIG']['name'] == 'weak':
             lang=PARAMS['BASE_KGR_CONFIG']['lang'],
             adriver_config=adriver_config,
             ag_task_config=AgentAGTaskConfigSelector.select(
-                base_config_version=PARAMS['WEAK_KG_REASONER']['answer_generator_config']['ag_task']['prompts_version'],
-                kvcache_driver_config=copy.deepcopy(kvdriver_config))))
-
-    # setting specific cache table for llm-task
-    if PARAMS['BASE_KGR_CONFIG']['llm_caching']:
-        kg_reasoner_config.query_parser_config.kw_extraction_task_config.cache_kvdriver_config.db_config.db_info['table'] = \
-            PARAMS['WEAK_KG_REASONER']['query_parser_config']['kw_extraction_task']['cache_tname']
-        kg_reasoner_config.query_parser_config.kw_extraction_task_config.cache_kvdriver_config.db_config.need_to_clear = \
-            PARAMS['WEAK_KG_REASONER']['query_parser_config']['kw_extraction_task']['need_to_clear']
-
-        kg_reasoner_config.answer_generator_config.ag_task_config.cache_kvdriver_config.db_config.db_info['table'] = \
-            PARAMS['WEAK_KG_REASONER']['answer_generator_config']['ag_task']['cache_tname']
-        kg_reasoner_config.answer_generator_config.ag_task_config.cache_kvdriver_config.db_config.need_to_clear = \
-            PARAMS['WEAK_KG_REASONER']['answer_generator_config']['ag_task']['need_to_clear']
-
+                base_config_version=PARAMS['WEAK_KG_REASONER']['answer_generator_config']['ag_task']['prompts_version'])))
 else:
     raise ValueError
 

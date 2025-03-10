@@ -40,14 +40,15 @@ services:
           cpus: '1'
           memory: 4G
 
-  mongo:
+  mongo_cache:
     container_name: personalai_test_mongo
     image: mongo:7.0.9
+    hostname: personalai_test_mongo
     environment:
       - MONGO_INITDB_ROOT_USERNAME=user
       - MONGO_INITDB_ROOT_PASSWORD=pass
     ports:
-      - 27018:27017
+      - 27017:27017
     volumes:
       - ./volumes/mongo:/data/db
     deploy:
@@ -61,7 +62,22 @@ services:
     tty: true
     stdin_open: true
 
-  redis:
+  mongo_ui:
+    image: mongo-express:latest
+    container_name: personalai_mmenschikov_mongo_ui
+    hostname: personalai_mmenschikov_mongo_ui
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: me_user
+      ME_CONFIG_BASICAUTH_PASSWORD: me_pass
+      ME_CONFIG_MONGODB_ADMINUSERNAME: user
+      ME_CONFIG_MONGODB_ADMINPASSWORD: pass
+      ME_CONFIG_MONGODB_SERVER: personalai_test_mongo
+    depends_on:
+      - mongo_cache
+    ports:
+      - "8081:8081"
+
+  redis_cache:
     container_name: personalai_test_redis
     image: redis:latest
     command: redis-server /usr/local/etc/redis/redis.conf
@@ -70,7 +86,7 @@ services:
       - REDIS_USER=my_user
       - REDIS_USER_PASSWORD=my_user_password
     ports:
-      - 6381:6379
+      - 6379:6379
     volumes:
       - ../configs/redis/redis.conf:/usr/local/etc/redis/redis.conf
       - ./volumes/redis:/data
@@ -85,6 +101,15 @@ services:
     tty: true
     stdin_open: true
 
+  redis_ui:
+    image: redis/redisinsight:latest
+    container_name: personalai_mmenschikov_redis_ui
+    hostname: redis_ui
+    depends_on:
+      - redis_cache
+    ports:
+      - "5540:5540"
+
   isolated_environment:
     image: m.menschikov/empty_workspace:v1
     container_name: personalai_test_isolated_env
@@ -98,5 +123,5 @@ services:
     depends_on:
       - neo4j
       - aerospike
-      - redis
-      - mongo
+      - redis_ui
+      - mongo_ui

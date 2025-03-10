@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import List, Tuple, Union, Dict
+from copy import deepcopy
 
 from .configs import KR_MAIN_LOG_PATH, AVAILABLE_TRIPLETS_FILTERS, AVAILABLE_TRIPLETS_RETRIEVERS
 from .utils import BaseGraphSearchConfig, BaseTripletsFilterConfig
@@ -35,7 +36,7 @@ class KnowledgeRetrieverConfig:
     retriever_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: WaterCirclesSearchConfig())
     filter_method: str = 'naive'
     filter_config: Union[BaseTripletsFilterConfig, Dict] = field(default_factory=lambda: TripletsFilterConfig())
-    cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None
+    cache_table_name: Union[str, None] = 'qa_kretriever_stage_cache'
 
     log: Logger = field(default_factory=lambda: Logger(KR_MAIN_LOG_PATH))
     verbose: bool = False
@@ -49,28 +50,34 @@ class KnowledgeRetriever(CacheUtils):
     :param config: Конфигурация 'Knowledge Retriever'-стадии. Значение по умолчанию KnowledgeRetrieverConfig().
     :type config: KnowledgeRetrieverConfig
     """
-    def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeRetrieverConfig = KnowledgeRetrieverConfig()) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeRetrieverConfig = KnowledgeRetrieverConfig(),
+                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
         self.config = config
         self.kg_model = kg_model
         self.log = config.log
+        self.verbose = config.verbose
+
+        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
+            cache_config = deepcopy(cache_kvdriver_config)
+            cache_config.db_config.db_info['table'] = self.config.cache_table_name
+            self.cachekv = CacheKV(cache_config)
+        else:
+            self.cachekv = None
 
         self.graph_retriever = AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method]['class'](
-            kg_model, self.log, self.config.retriever_config, self.config.verbose)
+            kg_model, self.log, self.config.retriever_config, cache_kvdriver_config, self.config.verbose)
 
         if self.config.filter_method is None:
             self.triplets_filter = None
         else:
             self.triplets_filter = AVAILABLE_TRIPLETS_FILTERS[self.config.filter_method]['class'](
-                kg_model, self.log, self.config.filter_config, self.config.verbose)
-
-        if self.config.cache_kvdriver_config is not None:
-            self.cachekv = CacheKV(self.config.cache_kvdriver_config)
-        else:
-            self.cachekv = None
+                kg_model, self.log, self.config.filter_config, cache_kvdriver_config, self.config.verbose)
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
         return [self.config.retriever_method, self.config.retriever_config,
-                self.config.filter_method, self.config.filter_config, query_info]
+                self.config.filter_method, self.config.filter_config,
+                self.kg_model.graph_struct.config, self.kg_model.embeddings_struct.config,
+                query_info]
 
     @CacheUtils.cache_method_output
     def retrieve(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo]:

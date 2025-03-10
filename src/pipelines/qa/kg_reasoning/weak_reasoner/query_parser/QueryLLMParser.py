@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Union, Tuple, List
+from copy import deepcopy
 
 from .configs import DEFAULT_KWE_TASK_CONFIG, QP_MAIN_LOG_PATH
 from ......utils.data_structs import QueryInfo, create_id
@@ -28,7 +29,7 @@ class QueryLLMParserConfig:
     lang: str = 'auto'
     adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     kw_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_KWE_TASK_CONFIG)
-    cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None
+    cache_table_name: Union[str, None] = 'qa_queryparser_stage_cache'
 
     log: Logger = field(default_factory=lambda: Logger(QP_MAIN_LOG_PATH))
     verbose: bool = False
@@ -40,17 +41,29 @@ class QueryLLMParser(CacheUtils):
     :param config: Конфигурация "Query Parser"-стадии. Значение по умолчанию QueryLLMParserConfig().
     :type config: QueryLLMParserConfig
     """
-    def __init__(self, config: QueryLLMParserConfig = QueryLLMParserConfig()) -> None:
+    def __init__(self, config: QueryLLMParserConfig = QueryLLMParserConfig(),
+                 cache_kvdriver_config: KeyValueDriverConfig = None,
+                 cache_llm_inference: bool = True) -> None:
+        self.log = config.log
+        self.verbose = config.verbose
         self.config = config
-        self.log = self.config.log
 
-        self.agent = AgentDriver.connect(config.adriver_config)
-        self.kw_extraction_solver = AgentTaskSolver(self.agent, self.config.kw_extraction_task_config)
-
-        if self.config.cache_kvdriver_config is not None:
-            self.cachekv = CacheKV(self.config.cache_kvdriver_config)
+        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
+            cache_config = deepcopy(cache_kvdriver_config)
+            cache_config.db_config.db_info['table'] = self.config.cache_table_name
+            self.cachekv = CacheKV(cache_config)
         else:
             self.cachekv = None
+
+        self.agent = AgentDriver.connect(config.adriver_config)
+
+        kwe_task_cache_config = None
+        if cache_llm_inference:
+            kwe_task_cache_config = deepcopy(cache_kvdriver_config)
+
+        self.kw_extraction_solver = AgentTaskSolver(
+            self.agent, self.config.kw_extraction_task_config,
+            kwe_task_cache_config)
 
     def get_cache_key(self, query: str) -> List[object]:
         return [self.config.lang, self.config.adriver_config,

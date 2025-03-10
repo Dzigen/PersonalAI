@@ -1,13 +1,14 @@
 from dataclasses import dataclass, field
 from typing import Tuple, Dict, Union
 import json
+from copy import deepcopy
 
 from .logger import Logger
 from .language_detector import detect_lang
 from .errors import ReturnStatus, STATUS_MESSAGE
 from .cache_kv import CacheKV
-from ..db_drivers.kv_driver.KeyValueDriver import KeyValueDriverConfig
 from ..agents.utils import AbstractAgentConnector
+from ..db_drivers.kv_driver import KeyValueDriverConfig
 
 @dataclass
 class AgentTaskSuite:
@@ -45,9 +46,11 @@ class AgentTaskSolverConfig:
     suites: Dict[str, AgentTaskSuite]
     formate_context_func: object
     postprocess_answer_func: object
+
+    cache_table_name: str
+
     log: Logger
     verbose: bool = False
-    cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None
 
 class AgentTaskSolver:
     """Класс-обёртка, предназначенный для решения атомарной задачи на базе инференса LLM-агента.
@@ -58,13 +61,17 @@ class AgentTaskSolver:
     :type config: AgentTaskSolverConfig
     """
 
-    def __init__(self, agent: AbstractAgentConnector, config: AgentTaskSolverConfig) -> None:
+    def __init__(self, agent: AbstractAgentConnector, config: AgentTaskSolverConfig,
+                 cache_kvdriver_config: KeyValueDriverConfig = None,) -> None:
         self.config = config
         self.agent = agent
         self.log = self.config.log
+        self.verbose = self.config.verbose
 
-        if self.config.cache_kvdriver_config is not None:
-            self.cachekv = CacheKV(self.config.cache_kvdriver_config)
+        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
+            cache_config = deepcopy(cache_kvdriver_config)
+            cache_config.db_config.db_info['table'] = self.config.cache_table_name
+            self.cachekv = CacheKV(cache_config)
         else:
             self.cachekv = None
 
@@ -128,18 +135,20 @@ class AgentTaskSolver:
 
             if self.cachekv is not None:
                 self.log("Поиск ответа в кеше...", verbose=self.config.verbose)
-                cstatus, cached_result = self.cachekv.load_value(key=cache_key)
+                cstatus, key_hash, cached_result = self.cachekv.load_value(key=cache_key)
                 if cstatus == 0:
                     self.log("Результат по заданной конфигурации гиперпараметров уже был получен.", verbose=self.config.verbose)
+                    self.log(f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
+                    self.log(f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
+
                     gen_flag = False
                     raw_answer = cached_result
                 else:
                     self.log("Результата по заданной конфигурации гиперпараметров в кеше нет.", verbose=self.config.verbose)
-                    key_hash = cached_result
 
             if gen_flag:
                 self.log("Выполняем инференс llm...", verbose=self.config.verbose)
-                    
+
                 raw_answer = self.agent.generate(
                     system_prompt=self.config.suites[detected_lang].system_prompt,
                     user_prompt=enriched_user_prompt,

@@ -4,6 +4,7 @@ from ....utils.data_structs import RelationType, NodeType, create_id
 from ....utils.errors import ReturnInfo, ReturnStatus, STATUS_MESSAGE
 from ....agents import AgentDriver, AgentDriverConfig
 from ....kg_model import KnowledgeGraphModel
+from ....db_drivers.kv_driver import KeyValueDriverConfig
 
 from dataclasses import dataclass, field
 from typing import List
@@ -46,14 +47,17 @@ class LLMUpdator:
     :type config: LLMUpdatorConfig
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel,  config: LLMUpdatorConfig) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, config: LLMUpdatorConfig = LLMUpdatorConfig(),
+                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
         self.config = config
         self.kg_model = kg_model
         self.log = config.log
 
         self.agent = AgentDriver.connect(config.adriver_config)
-        self.replace_simple_solver = AgentTaskSolver(self.agent, self.config.replace_simple_task_config)
-        self.replace_hyper_solver = AgentTaskSolver(self.agent, self.config.replace_thesis_task_config)
+        self.replace_simple_solver = AgentTaskSolver(
+            self.agent, self.config.replace_simple_task_config, cache_kvdriver_config)
+        self.replace_hyper_solver = AgentTaskSolver(
+            self.agent, self.config.replace_thesis_task_config, cache_kvdriver_config)
 
     def find_simple_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
         """Метод предназначен для поиска устаревших simple-триплетов в графе знаний по сравнению с указанным (base_triplet) simple-триплетом.

@@ -33,6 +33,9 @@ class GigaChatConnector(AbstractAgentConnector):
         # TODO
         pass
 
+    def close_connection(self):
+        self.giga_model.close()
+
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
         msgs = [Messages(role='system', content=system_prompt), Messages(role='user', content=user_prompt)]
         if assistant_prompt is not None:

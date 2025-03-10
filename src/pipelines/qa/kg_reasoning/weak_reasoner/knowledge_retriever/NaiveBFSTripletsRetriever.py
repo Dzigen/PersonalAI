@@ -22,11 +22,11 @@ class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):
     max_width: int = 50
     max_passed_nodes: int = 1000
     accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
-    cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None
+    cache_table_name: str = 'qa_bfs_t_retriver_cache'
 
 class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[NaiveBFSGraphSearchConfig, Dict] = NaiveBFSGraphSearchConfig(),
-                 verbose: bool = False) -> None:
+                 cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
         self.log = log
         self.verbose = verbose
         self.kg_model = kg_model
@@ -34,16 +34,13 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         if type(search_config) is Dict:
             if 'accepted_node_types' in search_config:
                 search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
-
-            if 'cache_kvdriver_config' in search_config:
-                search_config['cache_kvdriver_config'] = KeyValueDriverConfig(**search_config['cache_kvdriver_config'])
-                search_config['cache_kvdriver_config'].db_config = KVDBConnectionConfig(**search_config['cache_kvdriver_config'].db_config)
-
             search_config = NaiveBFSGraphSearchConfig(**search_config)
         self.config = search_config
 
-        if self.config.cache_kvdriver_config is not None:
-            self.cachekv = CacheKV(self.config.cache_kvdriver_config)
+        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
+            cache_config = deepcopy(cache_kvdriver_config)
+            cache_config.db_config.db_info['table'] = self.config.cache_table_name
+            self.cachekv = CacheKV(cache_config)
         else:
             self.cachekv = None
 
@@ -52,7 +49,6 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 self.config.max_passed_nodes, self.config.accepted_node_types,
                 self.kg_model.embeddings_struct.config,
                 self.kg_model.graph_struct.config, query_info]
-
 
     def search(self, node_id: str) -> List[Triplet]:
         traversed_triplets = []
@@ -108,6 +104,7 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
+        self.log("RETRIEVER: NaiveBFSTripletsRetriever", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 

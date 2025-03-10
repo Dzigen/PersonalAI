@@ -19,7 +19,12 @@ BASE_KGR_CONFIG:
   name: 'weak' # DONT CHANGE
 
   lang: 'en' # DONT CHANGE
-  llm_caching: True # DONT CHANGE
+  caching: True # DONT CHANGE
+  cache_need_to_clear: False # !!! PAY ATTENTION !!!
+  cache_db_info:
+      db: 'qa_db'
+      table: None
+
   agent_config:
     vendor: 'ollama' # DONT CHANGE
     gen_strategy:
@@ -41,7 +46,7 @@ BASE_KGR_CONFIG:
     port: 27017 # DONT CHANGE
     db_info:
       db: 'qa_db'
-      table: '' # WILL BE SPECIFIED IN prepare_qa_configs-SCRIPT
+      table: None
     params:
       username: 'user'
       password: 'pass'
@@ -53,7 +58,7 @@ BASE_KGR_CONFIG:
     port: 6379 # DONT CHANGE
     db_info:
       db: 1
-      table: '' # WILL BE SPECIFIED IN prepare_qa_configs-SCRIPT
+      table: None
     params:
       ss_name: 'sorted_node_pairs'
       hs_name: 'node_pairs'
@@ -61,16 +66,17 @@ BASE_KGR_CONFIG:
     db_configuration: '/home/m.menschikov/workspace/personal_ai/Personal-AI/configs/redis' # TO CHANGE
 
 WEAK_KG_REASONER:
+
   query_parser_config:
     kw_extraction_task:
-      cache_tname: 'llm_kw_extraction_cache_collection'
       prompts_version: 'v2'
-      need_to_clear: False # !!! PAY ATTENTION !!!
+
   knowledge_comparator_config:
     threshold: 0.5
     fetch_n: 20
     max_k: 1 # DONT CHANGE
     k_compare: 5
+
   knowledge_retriever_config:
     retriever_method: 'naive_retriever'
     retriever_config:
@@ -80,9 +86,7 @@ WEAK_KG_REASONER:
       max_k: 50
   answer_generator_config:
     ag_task:
-      cache_tname: 'llm_naive_ag_cache_collection'
       prompts_version: 'v1'
-      need_to_clear: False # !!! PAY ATTENTION !!!
 
 QA_EXP_DIR_STRUCT:
   metrics_name: metric_packs

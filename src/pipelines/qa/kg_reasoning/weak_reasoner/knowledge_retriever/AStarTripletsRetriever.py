@@ -263,7 +263,7 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     max_depth: int = 10
     max_passed_nodes: int = 500
     accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
-    cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None
+    cache_table_name: str = 'qa_astar_t_retriever_cache'
 
 class AStarGraphSearch:
     """Класс предназначен для запуска A*-алгоритма с целью извлечения триплетов из графового хранилища триплетов.
@@ -355,7 +355,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[AStarGraphSearchConfig, Dict] = AStarGraphSearchConfig(),
-                 verbose: bool = False) -> None:
+                 cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
         self.log = log
         self.verbose = verbose
         self.kg_model = kg_model
@@ -369,17 +369,15 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 search_config['metrics_config'].kvdriver_config = KeyValueDriverConfig(**search_config['metrics_config'].kvdriver_config)
                 search_config['metrics_config'].kvdriver_config.db_config = KVDBConnectionConfig(**search_config['metrics_config'].kvdriver_config.db_config)
 
-            if 'cache_kvdriver_config' in search_config:
-                search_config['cache_kvdriver_config'] = KeyValueDriverConfig(**search_config['cache_kvdriver_config'])
-                search_config['cache_kvdriver_config'].db_config = KVDBConnectionConfig(**search_config['cache_kvdriver_config'].db_config)
-
             search_config = AStarGraphSearchConfig(**search_config)
         self.config = search_config
 
         self.graph_searcher = AStarGraphSearch(kg_model, log, search_config, verbose)
 
-        if self.config.cache_kvdriver_config is not None:
-            self.cachekv = CacheKV(self.config.cache_kvdriver_config)
+        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
+            cache_config = deepcopy(cache_kvdriver_config)
+            cache_config.db_config.db_info['table'] = self.config.cache_table_name
+            self.cachekv = CacheKV(cache_config)
         else:
             self.cachekv = None
 
@@ -390,6 +388,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
+        self.log("RETRIEVER: AStarTripletsRetriever", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 

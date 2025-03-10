@@ -1,12 +1,15 @@
 import copy
-from dataclasses import dataclass
+from copy import deepcopy
+from dataclasses import dataclass, field
 from typing import Dict, List, Set, Tuple, Union
 
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 
 from ......kg_model import KnowledgeGraphModel
-from ......utils.data_structs import QueryInfo, TripletCreator, Triplet, NodeCreator, RelationCreator, NodeType, RelationType
+from ......utils.data_structs import QueryInfo, TripletCreator, create_id, Triplet, NodeCreator, RelationCreator, NodeType, RelationType
 from ......utils import Logger
+from ......utils.cache_kv import CacheKV
+from ......db_drivers.kv_driver import KeyValueDriverConfig
 
 @dataclass
 class WaterCirclesSearchConfig(BaseGraphSearchConfig):
@@ -18,7 +21,8 @@ class WaterCirclesSearchConfig(BaseGraphSearchConfig):
     chain_triplets_num: int = 25
     other_triplets_num: int = 6
     do_text_pruning: bool = False
-
+    cache_table_name: str = 'qa_watercircles_t_retriever_cache'
+    accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
 
 def process_chain(
         chain: List[List[str]],
@@ -104,13 +108,11 @@ class WaterCirclesRetriever(AbstractTripletsRetriever):
     :type search_config: WaterCirclesSearchConfig, optional
     """
 
-    def __init__(self,
-                 kg_model: KnowledgeGraphModel,
-                 log: Logger,
-                 search_config: Union[WaterCirclesSearchConfig, Dict] = WaterCirclesSearchConfig(),
-                 verbose: bool = False
-                ) -> None:
-        super().__init__()
+    def __init__(self,kg_model: KnowledgeGraphModel,
+                 log: Logger, search_config: Union[WaterCirclesSearchConfig, Dict] = WaterCirclesSearchConfig(),
+                 cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
+        self.log = log
+        self.verbose = verbose
         self.kg_model = kg_model
 
         if type(search_config) is Dict:
@@ -123,6 +125,17 @@ class WaterCirclesRetriever(AbstractTripletsRetriever):
             'MATCH (a:object)-[r]-(b:object) WHERE b.name="{name2}" RETURN a, r, b'
         self.extract_triplets_rel_prop_template = \
             'MATCH (a:object)-[r]-(b:object) WHERE r.{prop_name}="{prop_value}" RETURN a, r, b'
+
+        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
+            cache_config = deepcopy(cache_kvdriver_config)
+            cache_config.db_config.db_info['table'] = self.config.cache_table_name
+            self.cachekv = CacheKV(cache_config)
+        else:
+            self.cachekv = None
+
+    def get_cache_key(self, query_info: QueryInfo, depth: int = 1):
+        return [self.kg_model.graph_struct.config, self.kg_model.embeddings_struct.config,
+                self.config, query_info, depth]
 
     def parse_triplet_output(
             self,
@@ -279,6 +292,10 @@ class WaterCirclesRetriever(AbstractTripletsRetriever):
         return tuple(keys), tuple(keys_rev)
 
     def get_relevant_triplets(self, query_info: QueryInfo, depth: int = 1) -> List[Triplet]:
+        self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
+        self.log("RETRIEVER: WaterCirclesTripletsRetriever", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
         seed_entities = []
         if hasattr(query_info, "entities_with_types"):
             entities_with_types = query_info.entities_with_types

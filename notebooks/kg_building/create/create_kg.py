@@ -145,16 +145,16 @@ if HYPER_PARAMS['MEM_PIPELINE_CONFIG']['llm_caching']:
     kvdriver_config = KeyValueDriverConfig(
         db_vendor='mixed_kv',
         db_config=KVDBConnectionConfig(
+            db_info=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['cache_db_info'],
+            need_to_clear=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['cache_need_to_clear'],
             params={
                 'redis_config': KVDBConnectionConfig(
                     host=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['host'],
                     port=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['port'],
-                    db_info=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['db_info'],
                     params=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['params']),
                 'mongo_config': KVDBConnectionConfig(
                     host=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['host'],
                     port=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['port'],
-                    db_info=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['db_info'],
                     params=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['params'])
             }
         )
@@ -167,11 +167,9 @@ extractor_config = LLMExtractorConfig(
     lang=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['lang'],
     adriver_config=adriver_config,
     triplets_extraction_task_config=AgentTripletExtrTaskConfigSelector.select(
-        base_config_version=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['extractor_stage']['extract_triplets']['prompts_version'],
-        kvcache_driver_config=copy.deepcopy(kvdriver_config)),
+        base_config_version=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['extractor_stage']['extract_triplets']['prompts_version']),
     thesises_extraction_task_config=AgentThesisExtrTaskConfigSelector.select(
-        base_config_version=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['extractor_stage']['extract_thesises']['prompts_version'],
-        kvcache_driver_config=copy.deepcopy(kvdriver_config)),
+        base_config_version=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['extractor_stage']['extract_thesises']['prompts_version']),
 )
 
 # updator stage config
@@ -179,42 +177,18 @@ updator_config = LLMUpdatorConfig(
     lang=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['lang'],
     adriver_config=adriver_config,
     replace_simple_task_config=AgentReplSimpleTripletTaskConfigSelector.select(
-        base_config_version=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['replace_simple_triplets']['prompts_version'],
-        kvcache_driver_config=copy.deepcopy(kvdriver_config)),
+        base_config_version=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['replace_simple_triplets']['prompts_version']),
     replace_thesis_task_config= AgentReplThesisTripletTaskConfigSelector.select(
-        base_config_version=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['replace_thesis_triplets']['prompts_version'],
-        kvcache_driver_config=copy.deepcopy(kvdriver_config)),
+        base_config_version=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['replace_thesis_triplets']['prompts_version']),
     delete_obsolete_info=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['delete_obsolete_info']
 )
-
-# setting specific cache table for llm-task
-if HYPER_PARAMS['MEM_PIPELINE_CONFIG']['llm_caching']:
-    extractor_config.triplets_extraction_task_config.cache_kvdriver_config.db_config.db_info['table'] = \
-        HYPER_PARAMS['MEM_PIPELINE_CONFIG']['extractor_stage']['extract_triplets']['cache_tname']
-    extractor_config.triplets_extraction_task_config.cache_kvdriver_config.db_config.need_to_clear = \
-        HYPER_PARAMS['MEM_PIPELINE_CONFIG']['extractor_stage']['extract_triplets']['need_to_clear']
-
-    extractor_config.thesises_extraction_task_config.cache_kvdriver_config.db_config.db_info['table'] = \
-        HYPER_PARAMS['MEM_PIPELINE_CONFIG']['extractor_stage']['extract_thesises']['cache_tname']
-    extractor_config.thesises_extraction_task_config.cache_kvdriver_config.db_config.need_to_clear = \
-        HYPER_PARAMS['MEM_PIPELINE_CONFIG']['extractor_stage']['extract_thesises']['need_to_clear']
-
-    updator_config.replace_simple_task_config.cache_kvdriver_config.db_config.db_info['table'] = \
-        HYPER_PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['replace_simple_triplets']['cache_tname']
-    updator_config.replace_simple_task_config.cache_kvdriver_config.db_config.need_to_clear = \
-        HYPER_PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['replace_simple_triplets']['need_to_clear']
-
-    updator_config.replace_thesis_task_config.cache_kvdriver_config.db_config.db_info['table'] = \
-        HYPER_PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['replace_thesis_triplets']['cache_tname']
-    updator_config.replace_thesis_task_config.cache_kvdriver_config.db_config.need_to_clear = \
-        HYPER_PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['replace_thesis_triplets']['need_to_clear']
 
 # Setting Memorization Pipeline
 mem_config = MemPipelineConfig(
     extractor_config=extractor_config,
     updator_config=updator_config)
 
-mem_pipeline = MemPipeline(kg_model, mem_config)
+mem_pipeline = MemPipeline(kg_model, mem_config, kvdriver_config)
 
 # checking caches status
 if HYPER_PARAMS['MEM_PIPELINE_CONFIG']['llm_caching']:

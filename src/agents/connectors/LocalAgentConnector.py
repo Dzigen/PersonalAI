@@ -22,6 +22,9 @@ class LocalAgentConnector(AbstractAgentConnector):
         # TODO
         pass
 
+    def close_connection(self):
+        pass
+
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
         messages = [
             {"role": "system", "content": system_prompt},

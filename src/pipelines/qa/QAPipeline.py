@@ -4,9 +4,11 @@ from ...kg_model import KnowledgeGraphModel
 from ...utils import Logger, ReturnStatus, ReturnInfo
 from ...utils.data_structs import create_id
 from ...utils.errors import STATUS_MESSAGE
+from ...db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
+
 
 from dataclasses import dataclass, field
-from typing import Tuple
+from typing import Tuple, Union
 
 @dataclass
 class QAPipelineConfig:
@@ -18,6 +20,7 @@ class QAPipelineConfig:
     :type verbose: bool
     """
     reasoner_config: KnowledgeGraphReasonerConfig = field(default_factory=lambda: KnowledgeGraphReasonerConfig())
+
     log: Logger = field(default_factory=lambda: Logger(QA_MAIN_LOG_PATH))
     verbose: bool = False
 
@@ -30,13 +33,15 @@ class QAPipeline:
     :type config: QAPipelineConfig
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, config: QAPipelineConfig = QAPipelineConfig()) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, config: QAPipelineConfig = QAPipelineConfig(),
+                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
         self.config = config
         self.kg_model = kg_model
         self.log = config.log
 
         self.query_enhancement = ... # TODO
-        self.kg_reasoner = KnowledgeGraphReasoner(kg_model, self.config.reasoner_config)
+        self.kg_reasoner = KnowledgeGraphReasoner(
+            kg_model, self.config.reasoner_config, cache_kvdriver_config)
         self.knowledge_summarizer = ... # TODO
 
     def answer(self, query: str) -> Tuple[str, ReturnInfo]:

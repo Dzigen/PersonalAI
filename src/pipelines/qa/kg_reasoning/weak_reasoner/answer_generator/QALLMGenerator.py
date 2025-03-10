@@ -1,5 +1,6 @@
 from typing import List, Tuple, Union
 from dataclasses import dataclass, field
+from copy import deepcopy
 
 from .configs import DEFAULT_AG_TASK_CONFIG, AG_MAIN_LOG_PATH
 
@@ -33,7 +34,7 @@ class QALLMGeneratorConfig:
     ag_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_AG_TASK_CONFIG)
 
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
-    cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None
+    cache_table_name: Union[str, None] = 'qa_agenerator_stage_cache'
 
     log: Logger = field(default_factory=lambda: Logger(AG_MAIN_LOG_PATH))
     verbose: bool = False
@@ -45,17 +46,27 @@ class QALLMGenerator(CacheUtils):
     :param config: Конфигурация "Answer-generation"-стадии. Значение по умолчанию QALLMGeneratorConfig().
     :type config: QALLMGeneratorConfig
     """
-    def __init__(self, config: QALLMGeneratorConfig = QALLMGeneratorConfig()) -> None:
+    def __init__(self, config: QALLMGeneratorConfig = QALLMGeneratorConfig(),
+                 cache_kvdriver_config: KeyValueDriverConfig = None, cache_llm_inference: bool = True) -> None:
         self.config = config
         self.log = self.config.log
+        self.verbose = self.config.verbose
 
-        self.agent = AgentDriver.connect(config.adriver_config)
-        self.answer_generator_solver = AgentTaskSolver(self.agent, self.config.ag_task_config)
-
-        if self.config.cache_kvdriver_config is not None:
-            self.cachekv = CacheKV(self.config.cache_kvdriver_config)
+        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
+            cache_config = deepcopy(cache_kvdriver_config)
+            cache_config.db_config.db_info['table'] = self.config.cache_table_name
+            self.cachekv = CacheKV(cache_config)
         else:
             self.cachekv = None
+
+        self.agent = AgentDriver.connect(config.adriver_config)
+
+        ag_task_cache_config = None
+        if cache_llm_inference:
+            ag_task_cache_config = deepcopy(cache_kvdriver_config)
+
+        self.answer_generator_solver = AgentTaskSolver(
+            self.agent, self.config.ag_task_config, ag_task_cache_config)
 
     def get_cache_key(self, query: str, context_triplets: List[Triplet]) -> List[object]:
         return [self.config.lang, self.config.adriver_config,

@@ -17,9 +17,9 @@ class AgentAGTaskConfigSelector:
         return AVAILABLE_AG_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v1', kvcache_driver_config: KeyValueDriverConfig = None) -> AgentTaskSolverConfig:
+    def select(base_config_version:str = 'v1', cache_table_name:str="qa_agent_ag_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             suites=AVAILABLE_AG_TCONFIGS[base_config_version],
             formate_context_func=ag_custom_formate, postprocess_answer_func=ag_custom_postprocess,
-            cache_kvdriver_config=kvcache_driver_config,
+            cache_table_name=cache_table_name,
             log=Logger(ANSWER_GENERATION_LOG_PATH))

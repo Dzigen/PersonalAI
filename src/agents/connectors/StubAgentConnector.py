@@ -13,6 +13,9 @@ class StubAgentConnector(AbstractAgentConnector):
     def check_connection(self) -> bool:
         return True
 
+    def close_connection(self):
+        pass
+
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
         answer = ''
         if len(self.looped_answers):

@@ -60,13 +60,13 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     # а потом по ended-путям. Если будет указано 'mixed'-значение, то ended- и continuous-пути будут объединены в один список,
     # отсортированы по убыванию релевантности и из полученного списко будет выбрано первых 'max_paths'-путей.
     final_sorting_mode: str = 'mixed' # 'ended_first' | 'mixed' | 'continuous_first'
-    cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None
+    cache_table_name: str = 'qa_beamsearch_t_retriever_cache'
 
 
 class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger,
                  search_config: Union[GraphBeamSearchConfig, Dict] = GraphBeamSearchConfig(),
-                 verbose: bool = False) -> None:
+                 cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
         self.log = log
         self.verbose = verbose
         self.kg_model = kg_model
@@ -74,16 +74,13 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         if type(search_config) is Dict:
             if 'accepted_node_types' in search_config:
                 search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
-
-            if 'cache_kvdriver_config' in search_config:
-                search_config['cache_kvdriver_config'] = KeyValueDriverConfig(**search_config['cache_kvdriver_config'])
-                search_config['cache_kvdriver_config'].db_config = KVDBConnectionConfig(**search_config['cache_kvdriver_config'].db_config)
-
             search_config = GraphBeamSearchConfig(**search_config)
         self.config = search_config
 
-        if self.config.cache_kvdriver_config is not None:
-            self.cachekv = CacheKV(self.config.cache_kvdriver_config)
+        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
+            cache_config = deepcopy(cache_kvdriver_config)
+            cache_config.db_config.db_info['table'] = self.config.cache_table_name
+            self.cachekv = CacheKV(cache_config)
         else:
             self.cachekv = None
 
@@ -119,10 +116,11 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             raise ValueError(f"base_nid: {base_nid} {type(base_nid)}")
 
         adj_nids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(base_nid, self.config.accepted_node_types)
+        adj_nids = set(adj_nids)
         if prev_nid is not None:
             if type(prev_nid) is not str:
                 raise ValueError(f"prev_nid: {prev_nid} {type(prev_nid)}")
-            adj_nids = set(adj_nids).discard(prev_nid)
+            adj_nids.discard(prev_nid)
 
         if not self.config.same_path_intersection_by_node:
             # Удаляем вершины, которые уже есть в текущем пути из числа смежных
@@ -134,7 +132,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 if i != cur_path_idx:
                     adj_nids.difference_update(traversing_paths[i].unique_nids)
 
-        return adj_nids
+        return list(adj_nids)
 
     def get_available_rinfo(
             self, base_nid: str, adj_nids: List[str], cur_path_idx: int,
@@ -145,7 +143,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         shared_t_info = dict()
         rids_to_tids_map = defaultdict(list)
         for adj_nid in adj_nids:
-            tmp_shared_ids = self.kg_model.graph_struct.db_conn.get_nodes_shared_ids(base_nid, adj_nid, type='both')
+            tmp_shared_ids = self.kg_model.graph_struct.db_conn.get_nodes_shared_ids(base_nid, adj_nid, id_type='both')
             tmp_ids_map = {item['t_id']: item['r_id'] for item in tmp_shared_ids}
             cur_tids = set(tmp_ids_map.keys())
 
@@ -236,40 +234,51 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         query_emb = self.kg_model.embeddings_struct.embedder.encode_queries([query])[0]
         query_vinstance = VectorDBInstance(embedding=query_emb)
 
-        for _ in range(self.config.max_depth):
+        for cur_depth in range(self.config.max_depth):
+            self.log(f"Текущая глубина обхода графа: {cur_depth}", verbose=self.verbose)
+            self.log(f"Имеющееся количество незавершившихся путей: {len(traversing_paths)}", verbose=self.verbose)
             path_candidates = list()
 
             if len(traversing_paths) < 1:
                 # прекращаем построение путей, так как больше некуда двигаться
+                self.log(f"Больше некуда двигаться. Прекращаем обход графа", verbose=self.verbose)
                 break
 
             for i in range(len(traversing_paths)):
                 cur_path_info = traversing_paths[i]
                 prev_nid, tail_nid = cur_path_info.path[-1][0], cur_path_info.path[-1][2]
+                self.log(f"Информация по текущему пути:\n* номер: {i}\n* len: {len(cur_path_info.path)}\n* tail_nid: {tail_nid}\n* prev_nid: {prev_nid}", verbose=self.verbose)
 
                 adj_nids = self.get_available_nids(tail_nid, i, traversing_paths, prev_nid=prev_nid)
+                self.log(f"Смежные вершины: {len(adj_nids)}\n* nids: {adj_nids}", verbose=self.verbose)
+
                 if len(adj_nids) < 1:
-                    # Если у tail-вершины нет смежных вершин, то считаем путь завершившимся
-                    ended_paths.append([deepcopy(cur_path_info.path), self.calculate_path_score(
-                        len(cur_path_info.path), cur_path_info.accum_score)])
+                    self.log("У tail-вершины нет смежных вершин. Считаем путь завершившимся.", verbose=self.verbose)
+                    if len(cur_path_info.path) > 1:
+                        ended_paths.append(TraversedPath(path=deepcopy(cur_path_info.path), score=self.calculate_path_score(
+                            len(cur_path_info.path), cur_path_info.accum_score)))
                     continue
 
                 shared_t_info, rids_to_tids_map = self.get_available_rinfo(tail_nid, adj_nids, i, traversing_paths)
                 if len(shared_t_info) < 1:
-                    # Если нет доступных связей для соединения tail-вершины с новой вершиной,
-                    # то считаем путь завершившимся.
-                    ended_paths.append([deepcopy(cur_path_info.path), self.calculate_path_score(
-                        len(cur_path_info.path), cur_path_info.accum_score)])
+                    self.log("Нет доступных связей для соединения tail-вершины с новой вершиной, Считаем путь завершившимся.", verbose=self.verbose)
+                    if len(cur_path_info.path) > 1:
+                        ended_paths.append(TraversedPath(path=deepcopy(cur_path_info.path), score=self.calculate_path_score(
+                            len(cur_path_info.path), cur_path_info.accum_score)))
                     continue
 
                 triplet_scores = self.get_triplet_scores(query_vinstance, shared_t_info, rids_to_tids_map)
                 new_tpaths = BeamSearchTripletsRetriever.extend_tpath(traversing_paths[i], triplet_scores)
+                self.log(f"Количество новых расширенных путей: {len(new_tpaths)}", verbose=self.verbose)
                 path_candidates += new_tpaths
 
+            self.log(f"Количество найденных путей-кандидатов (до урезаний): {len(path_candidates)}", verbose=self.verbose)
             # Сортируем (по возрастанию) расширенный список путей
             # по их релевантности и выбираем 'max_paths' лучших
             ordered_candidates = sorted(path_candidates, key=lambda pinfo: pinfo.accum_score)
             traversing_paths = ordered_candidates[:self.config.max_paths]
+
+        self.log(f"Достигнут предел по глубине обхода графа: {self.config.max_depth}", verbose=self.verbose)
 
         continuous_paths = []
         for path_info in traversing_paths:
@@ -277,6 +286,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 TraversedPath(path=path_info.path, score=self.calculate_path_score(
                     len(path_info.path), path_info.accum_score)))
         filtered_paths = self.filter_paths(ended_paths, continuous_paths)
+        self.log(f"Финальное количество найденных путей: {len(filtered_paths)}", verbose=self.verbose)
 
         return filtered_paths
 
@@ -297,6 +307,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
+        self.log("RETRIEVER: BeamSearchTripletsRetriever", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 

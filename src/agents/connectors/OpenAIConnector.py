@@ -19,6 +19,9 @@ class OpenAIConnector(AbstractAgentConnector):
         # TODO
         pass
 
+    def close_connection(self):
+        self.client.close()
+
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
         msgs = [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}]
         if assistant_prompt is not None:

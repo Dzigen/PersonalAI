@@ -4,6 +4,6 @@ from .WaterCirclesTripletsRetriever import WaterCirclesSearchConfig
 from .MixturedTripletsRetriever import MixturedGraphSearchConfig
 from .NaiveBFSTripletsRetriever import NaiveBFSGraphSearchConfig
 from .NaiveTripletsRetriever import NaiveGraphSearchConfig
-from .BeamSearchTripletsRetriever import BaseGraphSearchConfig
+from .BeamSearchTripletsRetriever import GraphBeamSearchConfig
 
 from .TripletsFilter import TripletsFilterConfig

@@ -4,7 +4,7 @@ from .TripletsFilter import TripletsFilter, TripletsFilterConfig
 from .AStarTripletsRetriever import AStarTripletsRetriever, AStarGraphSearchConfig
 from .NaiveBFSTripletsRetriever import NaiveBFSTripletsRetriever, NaiveBFSGraphSearchConfig
 from .NaiveTripletsRetriever import NaiveTripletsRetriever, NaiveGraphSearchConfig
-from .BeamSearchTripletsRetriever import BeamSearchTripletsRetriever, BaseGraphSearchConfig
+from .BeamSearchTripletsRetriever import BeamSearchTripletsRetriever, GraphBeamSearchConfig
 
 KR_MAIN_LOG_PATH = 'log/qa/kg_reasoner/weak/knowledge_retriever/main'
 
@@ -30,7 +30,7 @@ AVAILABLE_TRIPLETS_RETRIEVERS  = {
         'class': NaiveTripletsRetriever},
 
     'beamsearch': {
-        'config': BaseGraphSearchConfig,
+        'config': GraphBeamSearchConfig,
         'class': BeamSearchTripletsRetriever}
 }
 

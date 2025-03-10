@@ -10,6 +10,10 @@ class AbstractKGReasoner(ABC):
     def perform(self, query: str) -> Tuple[str, ReturnInfo]:
         pass
 
+    @abstractmethod
+    def clear_kv_caches(self) -> None:
+        pass
+
 @dataclass
 class BaseKGReasonerConfig:
     pass

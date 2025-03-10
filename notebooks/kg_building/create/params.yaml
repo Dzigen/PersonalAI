@@ -11,6 +11,11 @@ INIT_STRUCT: True # !!! PAY ATTENTION !!!
 MEM_PIPELINE_CONFIG:
   lang: 'en'
   llm_caching: True # DONT CHANGE
+  cache_need_to_clear: False # !!! PAY ATTENTION !!!
+  cache_db_info:
+      db: 'memorize_db'
+      table: None
+
   agent_config:
     vendor: 'ollama' # DONT CHANGE
     gen_strategy:
@@ -25,33 +30,23 @@ MEM_PIPELINE_CONFIG:
       model: 'qwen2.5:7b'
       timeout: 560
       keep_alive: -1
+
   extractor_stage:
     extract_triplets:
-      cache_tname: 'llm_extract_triplets_cache_collection'
       prompts_version: 'v2' # TO CHANGE
-      need_to_clear: False # !!! PAY ATTENTION !!!
     extract_thesises:
-      cache_tname: 'llm_extract_thesises_cache_collection'
       prompts_version: 'v2' # TO CHANGE
-      need_to_clear: False # !!! PAY ATTENTION !!!
   updator_stage:
     delete_obsolete_info: False # DONT CHANGE
     replace_simple_triplets:
-      cache_tname: 'llm_replace_simple_triplets_cache_collection'
       prompts_version: 'v1'
-      need_to_clear: False # !!! PAY ATTENTION !!!
     replace_thesis_triplets:
-      cache_tname: 'llm_replace_thesis_triplets_cache_collection'
       prompts_version: 'v1'
-      need_to_clear: False # !!! PAY ATTENTION !!!
 
   persistent_cache_config:
     vendor: 'mongo' # DONT CHANGE
     host: 'personalai_mmenschikov_mongo_cache'
     port: 27017 # DONT CHANGE
-    db_info:
-      db: 'memorize_db'
-      table: 'mem_llm_cache_collection'
     params:
       username: 'user'
       password: 'pass'
@@ -61,9 +56,6 @@ MEM_PIPELINE_CONFIG:
     vendor: 'redis' # DONT CHANGE
     host: 'personalai_mmenschikov_redis_cache'
     port: 6379 # DONT CHANGE
-    db_info:
-      db: 0
-      table: 'mem_llm_cache_collection'
     params:
       ss_name: 'sorted_node_pairs'
       hs_name: 'node_pairs'

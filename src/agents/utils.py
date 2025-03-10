@@ -16,3 +16,7 @@ class AbstractAgentConnector:
     @abstractmethod
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
         pass
+
+    @abstractmethod
+    def close_connection(self) -> None:
+        pass

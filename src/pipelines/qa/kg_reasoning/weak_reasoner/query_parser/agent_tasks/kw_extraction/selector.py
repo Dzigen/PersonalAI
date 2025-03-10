@@ -17,9 +17,9 @@ class AgentKWETaskConfigSelector:
         return AVAILABLE_KWE_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v1', kvcache_driver_config: KeyValueDriverConfig = None) -> AgentTaskSolverConfig:
+    def select(base_config_version:str='v1', cache_table_name:str="qa_agent_kwe_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             suites=AVAILABLE_KWE_TCONFIGS[base_config_version],
             formate_context_func=kwe_custom_formate, postprocess_answer_func=kwe_custom_postprocess,
-            cache_kvdriver_config=kvcache_driver_config,
+            cache_table_name=cache_table_name,
             log=Logger(KW_EXTRACTION_LOG_PATH))

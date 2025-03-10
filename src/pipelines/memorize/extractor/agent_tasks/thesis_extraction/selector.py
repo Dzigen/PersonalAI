@@ -17,9 +17,9 @@ class AgentThesisExtrTaskConfigSelector:
         return AVAILABLE_THESIS_EXTRACT_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v1', kvcache_driver_config: KeyValueDriverConfig = None) -> AgentTaskSolverConfig:
+    def select(base_config_version: str = 'v1', cache_table_name: str = "mem_agent_thesisextr_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             suites=AVAILABLE_THESIS_EXTRACT_TCONFIGS[base_config_version],
             formate_context_func=ethesises_custom_formate, postprocess_answer_func=ethesises_custom_postprocess,
-            cache_kvdriver_config=kvcache_driver_config,
+            cache_table_name=cache_table_name,
             log=Logger(THESIS_EXTR_LOG_PATH))

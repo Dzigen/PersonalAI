@@ -13,27 +13,32 @@ DEFAULT_CACHEKV_CONFIG = KeyValueDriverConfig(
         need_to_clear=False))
 
 class CacheUtils:
+
     def cache_method_output(function):
         def wrapper(self, *args, **kwargs):
-            cached_flag = True
-            cache_key = self.get_cache_key()
+            cached_flag = False
+            cache_key = self.get_cache_key(*args, **kwargs)
             key_hash = None
 
             if self.cachekv is not None:
-                self.log("Поиск результата в кеше...", verbose=self.config.verbose)
-                cstatus, cached_result = self.cachekv.load_value(key=cache_key)
+                self.log("Поиск результата в кеше...", verbose=self.verbose)
+                cstatus, key_hash, cached_result = self.cachekv.load_value(key=cache_key)
                 if cstatus == 0:
-                    self.log("Результат по заданной конфигурации гиперпараметров уже был получен.", verbose=self.config.verbose)
+                    self.log("Результат по заданной конфигурации гиперпараметров уже был получен.", verbose=self.verbose)
+                    self.log(f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
+                    self.log(f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
+
+                    cached_flag = True
+                    output = cached_result
                 else:
-                    self.log("Результата по заданной конфигурации гиперпараметров в кеше нет.", verbose=self.config.verbose)
-                    key_hash = cached_result
+                    self.log("Результата по заданной конфигурации гиперпараметров в кеше нет.", verbose=self.verbose)
 
             if not cached_flag:
-                self.log("Получем результат с нуля...", verbose=self.config.verbose)
+                self.log("Получем результат с нуля...", verbose=self.verbose)
                 output = function(self, *args, **kwargs)
 
                 if self.cachekv is not None:
-                    self.log("Кешируем полученный результат.", verbose=self.config.verbose)
+                    self.log("Кешируем полученный результат.", verbose=self.verbose)
                     self.cachekv.save_value(value=output, key_hash=key_hash)
 
             return output
@@ -74,18 +79,18 @@ class CacheKV:
     def is_key_valid(key: List[object]) -> bool:
         return len(key) > 0
 
-    def load_value(self, key: List[object] = None, key_hash: str = None) -> Tuple[int, Union[str, object]]:
+    def load_value(self, key: List[object] = None, key_hash: str = None) -> Tuple[int, str, Union[str, object]]:
         key_hash = CacheKV.prepare_key(key, key_hash)
 
         output = self.kv_conn.read([key_hash])
         filtered_output = list(filter(lambda item: item is not None, output))
 
         if len(filtered_output) < 1:
-            return (-1, key_hash)
+            return (-1, key_hash, None)
 
         raw_value = filtered_output[0].value
         formated_value = pickle.loads(raw_value)
-        return (0, formated_value)
+        return (0, key_hash, formated_value)
 
     def save_value(self, value: object, key: List[object] = None, key_hash: str = None) -> str:
         key_hash = CacheKV.prepare_key(key, key_hash)

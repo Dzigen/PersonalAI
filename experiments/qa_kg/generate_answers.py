@@ -21,6 +21,7 @@ sys.path.insert(0, PARAMS['BASE_PERSONALAI_DIR'])
 from src.kg_model import KnowledgeGraphModel
 from src.pipelines.qa import QAPipelineConfig, QAPipeline
 from src.pipelines.qa.kg_reasoning import KnowledgeGraphReasonerConfig
+from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
 
 ################LOADING_HYPERPARAMETERS###################
 
@@ -68,6 +69,28 @@ print(kg_model.embeddings_struct.vectordbs['nodes'].count_items())
 print(kg_model.embeddings_struct.vectordbs['triplets'].count_items())
 print(kg_model.graph_struct.db_conn.count_items())
 
+
+################ cache driver config ################
+
+if PARAMS['BASE_KGR_CONFIG']['caching']:
+    kvdriver_config = KeyValueDriverConfig(
+        db_vendor='mixed_kv',
+        db_config=KVDBConnectionConfig(
+            need_to_clear=PARAMS['BASE_KGR_CONFIG']['cache_need_to_clear'],
+            db_info=PARAMS['BASE_KGR_CONFIG']['cache_db_info'],
+            params={
+                'redis_config': KVDBConnectionConfig(
+                    host=PARAMS['BASE_KGR_CONFIG']['ram_cache_config']['host'],
+                    port=PARAMS['BASE_KGR_CONFIG']['ram_cache_config']['port'],
+                    params=PARAMS['BASE_KGR_CONFIG']['ram_cache_config']['params']),
+                'mongo_config': KVDBConnectionConfig(
+                    host=PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['host'],
+                    port=PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['port'],
+                    params=PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['params'])}))
+
+else:
+    kvdriver_config = None
+
 ###############INITING QA-PIPELINE####################
 
 kg_reasoner_config = joblib.load(KG_REASONER_CONFIG_PATH)
@@ -81,7 +104,7 @@ qa_config = QAPipelineConfig(
 
 print("KG_PIPELINE-CONFIG:\n", qa_config)
 
-qa_pipeline = QAPipeline(kg_model, qa_config)
+qa_pipeline = QAPipeline(kg_model, qa_config, kvdriver_config)
 
 ############SAVING HYPERPARAMS############
 

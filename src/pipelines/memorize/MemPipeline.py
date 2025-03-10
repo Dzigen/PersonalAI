@@ -10,6 +10,7 @@ from ...kg_model import KnowledgeGraphModel
 from ...utils import Logger, Triplet, ReturnStatus, ReturnInfo
 from ...utils.data_structs import create_id
 from ...utils.errors import STATUS_MESSAGE
+from ...db_drivers.kv_driver import KeyValueDriverConfig
 
 @dataclass
 class MemPipelineConfig:
@@ -39,12 +40,13 @@ class MemPipeline:
     :type config: MemPipelineConfig
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig()) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig(),
+                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
         self.config = config
         self.log = config.log
 
-        self.extractor = LLMExtractor(config.extractor_config)
-        self.updator = LLMUpdator(kg_model, config.updator_config)
+        self.extractor = LLMExtractor(config.extractor_config, cache_kvdriver_config)
+        self.updator = LLMUpdator(kg_model, config.updator_config, cache_kvdriver_config)
 
     def remember(self, text: str, time: str = "No time", properties: Dict = dict()) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста и обновление/актуализацию знаний в памяти (графе знаний) ассистента.

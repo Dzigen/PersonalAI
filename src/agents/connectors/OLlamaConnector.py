@@ -24,6 +24,9 @@ class OLlamaConnector(AbstractAgentConnector):
     def check_connection(self) -> bool:
         pass
 
+    def close_connection(self):
+        del self.client
+
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
 
         msgs = [{'role':'system', 'content': system_prompt}, {'role':'user', 'content':user_prompt}]

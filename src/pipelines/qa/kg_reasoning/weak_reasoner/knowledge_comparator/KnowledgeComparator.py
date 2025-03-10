@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Union, List, Tuple
+from copy import deepcopy
 
 from .configs import KC_MAIN_LOG_PATH
 from ......utils import Logger, ReturnStatus, ReturnInfo
@@ -31,7 +32,9 @@ class KnowledgeComparatorConfig:
     fetch_n: int = 20
     max_k: int = 1
     k_compare: int = 5
-    cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None
+
+    cache_table_name: Union[str, None] = 'qa_kcomparator_stage_cache'
+
     log: Logger = field(default_factory=lambda: Logger(KC_MAIN_LOG_PATH))
     verbose: bool = False
 
@@ -44,13 +47,17 @@ class KnowledgeComparator(CacheUtils):
     :param config: Конфигурация "Knowledge Comparator"-стадии. Значение по умолчанию KnowledgeComparatorConfig().
     :type config: KnowledgeComparatorConfig
     """
-    def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeComparatorConfig = KnowledgeComparatorConfig()) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeComparatorConfig = KnowledgeComparatorConfig(),
+                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
         self.config = config
         self.log = self.config.log
+        self.verbose = self.config.verbose
         self.kg_model = kg_model
 
-        if self.config.cache_kvdriver_config is not None:
-            self.cachekv = CacheKV(self.config.cache_kvdriver_config)
+        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
+            cache_config = deepcopy(cache_kvdriver_config)
+            cache_config.db_config.db_info['table'] = self.config.cache_table_name
+            self.cachekv = CacheKV(cache_config)
         else:
             self.cachekv = None
 
