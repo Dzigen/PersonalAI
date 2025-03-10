@@ -16,15 +16,12 @@ class MixedKVConnector(AbstractKVDatabaseConnection):
         self.config.params['mongo_config'].db_info['db'] = self.config.db_info['db']
         self.config.params['mongo_config'].db_info['table'] = self.config.db_info['table']
         self.config.params['mongo_config'].need_to_clear = False
-        self.config.params['redis_config'].db_info['db'] = self.config.db_info['db']
+        self.config.params['redis_config'].db_info['db'] = 0
         self.config.params['redis_config'].db_info['table'] = self.config.db_info['table']
         self.config.params['redis_config'].need_to_clear = False
 
         self.redis_conn = RedisKVConnector(self.config.params['redis_config'])
         self.mongo_conn = MongoKVConnector(self.config.params['mongo_config'])
-
-        if self.config.need_to_clear:
-            self.clear()
 
     def open_connection(self):
         self.redis_conn.open_connection()

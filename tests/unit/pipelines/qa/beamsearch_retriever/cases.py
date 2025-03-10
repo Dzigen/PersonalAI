@@ -62,7 +62,7 @@ EXTEND_TPATH_TEST_CASES = [
     (EMPTY_TPATH, [("t_id1", 'n_id1', 0.2)], None, True),
     # несколько разных вершин для добавления в путь
     (SIMPLE_TPATH1, [("t_id2", 'n_id3', 0.1), ("t_id3", "n_id4", 0.2)],
-     [SIMPLE_TPATH2, SIMPLE_TPATH3], False),c
+     [SIMPLE_TPATH2, SIMPLE_TPATH3], False),
     # добавляемая вершина уже есть в пути
     (SIMPLE_TPATH3, [("t_id4", "n_id2", 0.3)], [SIMPLE_TPATH3_N1], False),
     # добавляемый триплет уже есть в пути

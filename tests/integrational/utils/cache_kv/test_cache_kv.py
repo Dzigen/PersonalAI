@@ -34,7 +34,9 @@ def test_load_value(cache_instances: List[KeyValueDBInstance], key: List[object]
     cachekv_conn.kv_conn.create(cache_instances)
 
     try:
-        real_status, real_value = cachekv_conn.load_value(key, key_hash)
+        real_status, real_hash_key, real_value = cachekv_conn.load_value(key, key_hash)
+        if real_status != 0:
+            real_value = real_hash_key
     except ValueError as e:
         assert exception
     else:
