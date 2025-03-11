@@ -1,15 +1,15 @@
-EXPERIMENT_NAME: "naive_rag_qwen25_v2prompts(v1.5.0)" # TO CHANGE
+EXPERIMENT_NAME: "wc_v1_qwen25(e1.1.1)(v1.5.0)" # TO CHANGE
 DATASET_NAME: 'diaasqa' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'qwen25_080325_v2prompts' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen25_070325_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
-  max_samples_per_pack: 400
+  max_samples_per_pack: 10
 
-BASE_PERSONALAI_DIR: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
-EXPERIMENTS_BASE_DIR: '/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa_kg' # TO CHANGE
-KGS_BASE_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs' # TO CHANGE
-METEOR_METRIC_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa_kg/metrics/meteor' # TO CHANGE
-EXACT_MATCH_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa_kg/metrics/exact_match' # TO CHANGE
+BASE_PERSONALAI_DIR: '/home/dzigen/Desktop/PersonalAI/Personal-AI' # TO CHANGE
+EXPERIMENTS_BASE_DIR: '/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments/qa_kg' # TO CHANGE
+KGS_BASE_PATH: '/home/dzigen/Desktop/PersonalAI/Personal-AI/data/knowledge_graphs' # TO CHANGE
+METEOR_METRIC_PATH: '/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments/qa_kg/metrics/meteor' # TO CHANGE
+EXACT_MATCH_PATH: '/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments/qa_kg/metrics/exact_match' # TO CHANGE
 MEM_PIPELINE_HYPERP: hyperparameters.yaml # DONT CHANGE
 INIT_STRUCT: True # !!! PAY ATTENTION !!!
 
@@ -33,7 +33,7 @@ BASE_KGR_CONFIG:
       top_k: 1  # DONT CHANGE
       temperature: 0.0  # DONT CHANGE
     credentials:
-      host: 'personalai_mmenschikov_ollama_service'
+      host: 'localhost'
       port: 11434
     ext_params:
       model: 'qwen2.5:7b'
@@ -42,7 +42,7 @@ BASE_KGR_CONFIG:
 
   persistent_cache_config:
     vendor: 'mongo' # DONT CHANGE
-    host: 'personalai_mmenschikov_mongo_cache'
+    host: 'localhost'
     port: 27017 # DONT CHANGE
     db_info:
       db: 'qa_db'
@@ -54,7 +54,7 @@ BASE_KGR_CONFIG:
 
   ram_cache_config:
     vendor: 'redis' # DONT CHANGE
-    host: 'personalai_mmenschikov_redis_cache'
+    host: 'localhost'
     port: 6379 # DONT CHANGE
     db_info:
       db: 1
@@ -63,7 +63,7 @@ BASE_KGR_CONFIG:
       ss_name: 'sorted_node_pairs'
       hs_name: 'node_pairs'
       max_storage: 50000000
-    db_configuration: '/home/m.menschikov/workspace/personal_ai/Personal-AI/configs/redis' # TO CHANGE
+    db_configuration: '/home/dzigen/Desktop/PersonalAI/Personal-AI/configs/redis' # TO CHANGE
 
 WEAK_KG_REASONER:
 
@@ -78,10 +78,21 @@ WEAK_KG_REASONER:
     k_compare: 5
 
   knowledge_retriever_config:
-    retriever_method: 'naive_retriever'
+    retriever_method: 'watercircles'
     retriever_config:
       # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
-    filter_method: None # CAN BE none
+      strict_filter: True
+      hyper_num: 15
+      episodic_num: 15
+      chain_triplets_num: 25
+      other_triplets_num: 6
+      do_text_pruning: False
+      accepted_node_types:
+        - 'object'
+        - 'hyper'
+        - 'episodic'
+        - 'time'
+    filter_method: 'naive' # CAN BE none
     filter_config:
       max_k: 50
   answer_generator_config:
