@@ -3,7 +3,7 @@ DATASET_NAME: 'diaasqa' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'qwen25_070325_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
-  max_samples_per_pack: 10
+  max_samples_per_pack: 1
 
 BASE_PERSONALAI_DIR: '/home/dzigen/Desktop/PersonalAI/Personal-AI' # TO CHANGE
 EXPERIMENTS_BASE_DIR: '/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments/qa_kg' # TO CHANGE
@@ -23,6 +23,8 @@ BASE_KGR_CONFIG:
   cache_need_to_clear: False # !!! PAY ATTENTION !!!
   graphdb_hostname: "localhost"
   vectordb_path: "/home/dzigen/Desktop/PersonalAI/Personal-AI/data/knowledge_graphs/diaasqa/qwen25_070325_v2prompts/embeddings_part"
+  embedder_model_path: "/home/dzigen/Desktop/PersonalAI/Personal-AI/models/intfloat/multilingual-e5-large"
+  qa_dataset_path: "/home/dzigen/Desktop/PersonalAI/Personal-AI/data/qa_datasets/diaasqa"
 
   cache_db_info:
       db: 'qa_db'
@@ -100,7 +102,7 @@ WEAK_KG_REASONER:
       max_k: 50
   answer_generator_config:
     ag_task:
-      prompts_version: 'v1'
+      prompts_version: 'v2'
 
 QA_EXP_DIR_STRUCT:
   metrics_name: metric_packs

@@ -52,7 +52,7 @@ if PARAMS['BASE_KGR_CONFIG']['name'] == 'weak':
         retriever_method=PARAMS['WEAK_KG_REASONER']['knowledge_retriever_config']['retriever_method'],
         retriever_config=PARAMS['WEAK_KG_REASONER']['knowledge_retriever_config']['retriever_config'],
         filter_method=PARAMS['WEAK_KG_REASONER']['knowledge_retriever_config']['filter_method'],
-        filter_config=PARAMS['WEAK_KG_REASONER']['knowledge_retriever_config']['filter_method'])
+        filter_config=PARAMS['WEAK_KG_REASONER']['knowledge_retriever_config']['filter_config'])
 
     kg_reasoner_config = WeakKGReasonerConfig(
         query_parser_config=QueryLLMParserConfig(

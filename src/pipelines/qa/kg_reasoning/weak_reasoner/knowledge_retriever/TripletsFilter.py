@@ -40,7 +40,7 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
         self.verbose = verbose
         self.kg_model = kg_model
 
-        if type(config) is Dict:
+        if type(config) is dict:
             config = TripletsFilterConfig(**config)
         self.config = config
 

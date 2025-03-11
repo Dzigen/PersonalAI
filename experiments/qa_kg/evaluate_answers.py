@@ -29,10 +29,10 @@ with open(PARAMS_FILEP, 'r') as stream:
     PARAMS = yaml.safe_load(stream)
 
 DS_EXPERIMENT_DIR = f"{PARAMS['EXPERIMENTS_BASE_DIR']}/{PARAMS['DATASET_NAME']}"
-SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['EXPERIMENT_NAME']}"
 
-GENERATED_ANSWERS_DIR = f'{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['gen_answers_name']}'
-METRICS_DIR = f'{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['metrics_name']}'
+GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['gen_answers_name']}"
+METRICS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['metrics_name']}"
 
 ####################################################
 
@@ -100,7 +100,7 @@ class ReaderMetrics:
 ####################################################
 
 def loading_generated_pack(base_dir: str, pack_name) -> Dict[int,str]:
-    with open(f"{base_dir}/{pack_name}.json", 'r', encoding='utf-8') as fd:
+    with open(f"{base_dir}/{pack_name}", 'r', encoding='utf-8') as fd:
         data = json.loads(fd.read())
     return data
 
@@ -109,7 +109,7 @@ def round5(number: float) -> float:
 
 def save_json(data: Dict[str, object], save_path: str):
     dump = json.dumps(data, ensure_ascii=False, indent=1)
-    with open(f"{save_path}.json", 'w', encoding='utf-8') as fd:
+    with open(f"{save_path}", 'w', encoding='utf-8') as fd:
         fd.write(dump)
 
 METRICS = ReaderMetrics(

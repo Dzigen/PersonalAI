@@ -115,7 +115,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever):
         self.verbose = verbose
         self.kg_model = kg_model
 
-        if type(search_config) is Dict:
+        if type(search_config) is dict:
             search_config = WaterCirclesSearchConfig(**search_config)
         self.config = search_config
 

@@ -46,7 +46,7 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log = log
         self.verbose = verbose
 
-        if type(search_config) is Dict:
+        if type(search_config) is dict:
             search_config = MixturedGraphSearchConfig(**search_config)
         self.config = search_config
 

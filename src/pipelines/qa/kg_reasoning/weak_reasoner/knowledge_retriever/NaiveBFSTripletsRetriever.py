@@ -31,7 +31,7 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.verbose = verbose
         self.kg_model = kg_model
 
-        if type(search_config) is Dict:
+        if type(search_config) is dict:
             if 'accepted_node_types' in search_config:
                 search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
             search_config = NaiveBFSGraphSearchConfig(**search_config)

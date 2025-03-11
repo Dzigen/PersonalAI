@@ -61,6 +61,7 @@ embed_config.tripletsdb_driver_config.db_config.need_to_clear = False
 graph_config.driver_config.db_config.host = PARAMS['BASE_KGR_CONFIG']['graphdb_hostname']
 embed_config.nodesdb_driver_config.db_config.path = PARAMS['BASE_KGR_CONFIG']['vectordb_path']
 embed_config.tripletsdb_driver_config.db_config.path = PARAMS['BASE_KGR_CONFIG']['vectordb_path']
+embed_config.embedder_config.model_name_or_path = PARAMS['BASE_KGR_CONFIG']['embedder_model_path']
 # !!! IMPORTANT !!!
 
 print("graph_config:", graph_config)
@@ -125,12 +126,13 @@ joblib.dump(qa_config, QA_CONFIG_SPATH)
 
 #################LOADING_QUESTIONS##################
 
-def diaasqa_qa_load(dataset_path: str) -> List[List[str, List[str]]]:
-    pack_files = os.listdir(f"{dataset_path}/qa_eval")
+def diaasqa_qa_load(dataset_path: str) -> List[Tuple[str, List[str], List[str]]]:
+    eval_dir_path = f"{dataset_path}/qa_eval"
+    pack_files = os.listdir(eval_dir_path)
     packs = []
 
     for pack_f in pack_files:
-        with open(f"{dataset_path}/{pack_f}", 'r', encoding='utf-8') as fd:
+        with open(f"{eval_dir_path}/{pack_f}", 'r', encoding='utf-8') as fd:
             data = json.loads(fd.read())
 
         pack_name = '.'.join(pack_f.split('.')[:-1])
@@ -146,7 +148,7 @@ def diaasqa_qa_load(dataset_path: str) -> List[List[str, List[str]]]:
     return packs
 
 
-def hotpotqa_distractor_validation_qa_load(dataset_path: str) -> List[List[str, List[str]]]:
+def hotpotqa_distractor_validation_qa_load(dataset_path: str) -> List[Tuple[str, List[str], List[str]]]:
     qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
 
     questions = qa_df['question'].tolist()
@@ -160,7 +162,7 @@ CUSTOM_LOAD_FUNCS = {
     'hotpotqa_distractor_validation': hotpotqa_distractor_validation_qa_load
 }
 
-question_packs = CUSTOM_LOAD_FUNCS[PARAMS['DATASET_NAME']](MEM_PARAMS['DATASET_PATH'])
+question_packs = CUSTOM_LOAD_FUNCS[PARAMS['DATASET_NAME']](PARAMS['BASE_KGR_CONFIG']['qa_dataset_path'])
 
 #################START_QA_PROCESS##################
 
@@ -185,6 +187,7 @@ for pack_name, questions, _ in question_packs:
 
 elapsed_times = {}
 for pack_name, questions, gold_answers in question_packs:
+    print(pack_name)
 
     pack_tmp_dir = f"{TMP_GENERATED_ANSWERS_DIR}/{pack_name}"
 
