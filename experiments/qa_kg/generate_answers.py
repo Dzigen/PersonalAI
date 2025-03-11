@@ -26,28 +26,29 @@ from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
 ################LOADING_HYPERPARAMETERS###################
 
 KG_DIR_PATH = f"{PARAMS['KGS_BASE_PATH']}/{PARAMS['DATASET_NAME']}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
-GRAPH_DRIVER_CONFIG_PATH = f"{KG_DIR_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['graph_config']}"
-EMBEDDINGS_DRIVER_CONFIG_PATH = f"{KG_DIR_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['embeddings_config']}"
 
 MEM_PARAMS_FILEP = f"{KG_DIR_PATH}/{PARAMS['MEM_PIPELINE_HYPERP']}"
 with open(MEM_PARAMS_FILEP, 'r') as stream:
     MEM_PARAMS = yaml.safe_load(stream)
 
+GRAPH_DRIVER_CONFIG_PATH = f"{KG_DIR_PATH}/{MEM_PARAMS ['SAVE_CONFIGS_NAMES']['graph_config']}"
+EMBEDDINGS_DRIVER_CONFIG_PATH = f"{KG_DIR_PATH}/{MEM_PARAMS ['SAVE_CONFIGS_NAMES']['embeddings_config']}"
+
 DS_EXPERIMENT_DIR = f"{PARAMS['EXPERIMENTS_BASE_DIR']}/{PARAMS['DATASET_NAME']}"
-SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['EXPERIMENT_NAME']}"
 
-TMP_GENERATED_ANSWERS_DIR = f'{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['tmp_gen_answers_name']}'
-GENERATED_ANSWERS_DIR = f'{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['gen_answers_name']}'
-METRICS_DIR = f'{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['metrics_name']}'
-KG_REASONER_CONFIG_PATH = f'{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_FILES_NAMES']['kg_reasoner_config']}'
+TMP_GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['tmp_gen_answers_name']}"
+GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['gen_answers_name']}"
+METRICS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['metrics_name']}"
+KG_REASONER_CONFIG_PATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_FILES_NAMES']['kg_reasoner_config']}"
 
-QA_ELAPSED_TIME_SPATH = f'{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_FILES_NAMES']['elapsed_time']}'
-HYPERPARAMS_SPATH = f'{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_FILES_NAMES']['hyperparameters']}'
-QA_CONFIG_SPATH = f'{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_FILES_NAMES']['qapipeline_config']}'
+QA_ELAPSED_TIME_SPATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_FILES_NAMES']['elapsed_time']}"
+HYPERPARAMS_SPATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_FILES_NAMES']['hyperparameters']}"
+QA_CONFIG_SPATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_FILES_NAMES']['qapipeline_config']}"
 
 ###################################
 
-# инициализируем граф знаний
+print("Инициализируем граф знаний...")
 
 graph_config = joblib.load(GRAPH_DRIVER_CONFIG_PATH)
 embed_config = joblib.load(EMBEDDINGS_DRIVER_CONFIG_PATH)
@@ -56,6 +57,10 @@ embed_config = joblib.load(EMBEDDINGS_DRIVER_CONFIG_PATH)
 graph_config.driver_config.db_config.need_to_clear = False
 embed_config.nodesdb_driver_config.db_config.need_to_clear = False
 embed_config.tripletsdb_driver_config.db_config.need_to_clear = False
+
+graph_config.driver_config.db_config.host = PARAMS['BASE_KGR_CONFIG']['graphdb_hostname']
+embed_config.nodesdb_driver_config.db_config.path = PARAMS['BASE_KGR_CONFIG']['vectordb_path']
+embed_config.tripletsdb_driver_config.db_config.path = PARAMS['BASE_KGR_CONFIG']['vectordb_path']
 # !!! IMPORTANT !!!
 
 print("graph_config:", graph_config)
@@ -69,6 +74,7 @@ print(kg_model.embeddings_struct.vectordbs['nodes'].count_items())
 print(kg_model.embeddings_struct.vectordbs['triplets'].count_items())
 print(kg_model.graph_struct.db_conn.count_items())
 
+print("Готово.")
 
 ################ cache driver config ################
 
@@ -93,6 +99,8 @@ else:
 
 ###############INITING QA-PIPELINE####################
 
+print("Инициализируем QA-пайплайн...")
+
 kg_reasoner_config = joblib.load(KG_REASONER_CONFIG_PATH)
 
 print("KG_REASONER-CONFIG:\n", kg_reasoner_config)
@@ -105,6 +113,8 @@ qa_config = QAPipelineConfig(
 print("KG_PIPELINE-CONFIG:\n", qa_config)
 
 qa_pipeline = QAPipeline(kg_model, qa_config, kvdriver_config)
+
+print("Готово.")
 
 ############SAVING HYPERPARAMS############
 

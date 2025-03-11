@@ -4,7 +4,7 @@ import sys
 import os
 import yaml
 import json
-import pickle
+import joblib
 import copy
 
 # Read YAML file
@@ -77,4 +77,4 @@ print(kg_reasoner_config)
 
 # сохранить полученный конфиг в директорию соответствующего эксперимента
 with open(KG_REASONSER_CONFIG_SPATH, 'wb') as fd:
-    pickle.dump(kg_reasoner_config, fd)
+    joblib.dump(kg_reasoner_config, fd)

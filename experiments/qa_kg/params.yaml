@@ -21,6 +21,9 @@ BASE_KGR_CONFIG:
   lang: 'en' # DONT CHANGE
   caching: True # DONT CHANGE
   cache_need_to_clear: False # !!! PAY ATTENTION !!!
+  graphdb_hostname: "localhost"
+  vectordb_path: "/home/dzigen/Desktop/PersonalAI/Personal-AI/data/knowledge_graphs/diaasqa/qwen25_070325_v2prompts/embeddings_part"
+
   cache_db_info:
       db: 'qa_db'
       table: None

@@ -60,6 +60,10 @@ services:
     image: redis:latest
     container_name: ${REDIS_HOST}
     hostname: ${REDIS_HOST}
+    environment:
+      - REDIS_PASSWORD=my_redis_password
+      - REDIS_USER=my_user
+      - REDIS_USER_PASSWORD=my_user_password
     ports:
       - "${REDIS_EXTERNAL_PORT}:6379"
     volumes:
