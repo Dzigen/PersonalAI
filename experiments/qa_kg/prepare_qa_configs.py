@@ -4,6 +4,7 @@ import sys
 import os
 import yaml
 import json
+import pickle
 import copy
 
 # Read YAML file
@@ -31,8 +32,8 @@ with open(MEM_PARAMS_FILEP, 'r') as stream:
     MEM_PARAMS = yaml.safe_load(stream)
 
 DS_EXPERIMENT_DIR = f"{PARAMS['EXPERIMENTS_BASE_DIR']}/{PARAMS['DATASET_NAME']}"
-SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
-KG_REASONSER_CONFIG_SPATH = f"{DS_EXPERIMENT_DIR}/{PARAMS['SAVE_FILES_NAMES']['kg_reasoner_config']}"
+SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['EXPERIMENT_NAME']}"
+KG_REASONSER_CONFIG_SPATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_FILES_NAMES']['kg_reasoner_config']}"
 
 ################ agent driver config #####################
 
@@ -75,5 +76,5 @@ print("Полученная kg_reasoner-конфигурация:")
 print(kg_reasoner_config)
 
 # сохранить полученный конфиг в директорию соответствующего эксперимента
-with open(KG_REASONSER_CONFIG_SPATH, 'w', encoding='utf-8') as fd:
-    fd.write(json.dumps(kg_reasoner_config, indent=1, ensure_ascii=False))
+with open(KG_REASONSER_CONFIG_SPATH, 'wb') as fd:
+    pickle.dump(kg_reasoner_config, fd)
