@@ -106,7 +106,7 @@ SAVE_CONFIGS_NAMES:
   graph_config: graph_config
   embeddings_config: embeddings_config
   mem_pipeline_config: mem_pipeline_config
-  docker_compose_env: .env_tower
+  docker_compose_env: .env_tower # TO CHANGE
 
   hyperparameters: hyperparameters.yaml
   extracted_triplets: extracted_triplets

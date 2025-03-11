@@ -1,4 +1,4 @@
-EXPERIMENT_NAME: "wc_v1_qwen25(e1.1.1)(v1.5.0)" # TO CHANGE
+EXPERIMENT_NAME: "wc_v2_qwen25(e2.1.1)(v1.5.0)" # TO CHANGE
 DATASET_NAME: 'diaasqa' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'qwen25_070325_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:
@@ -27,8 +27,8 @@ BASE_KGR_CONFIG:
   qa_dataset_path: "/home/dzigen/Desktop/PersonalAI/Personal-AI/data/qa_datasets/diaasqa"
 
   cache_db_info:
-      db: 'qa_db'
-      table: None
+      db: 'qa_db' # DONT CHANGE
+      table: None # DONT CHANGE
 
   agent_config:
     vendor: 'ollama' # DONT CHANGE
@@ -74,7 +74,7 @@ WEAK_KG_REASONER:
 
   query_parser_config:
     kw_extraction_task:
-      prompts_version: 'v2'
+      prompts_version: 'v2' # 'v1' | 'v2'
 
   knowledge_comparator_config:
     threshold: 0.5
@@ -102,7 +102,7 @@ WEAK_KG_REASONER:
       max_k: 50
   answer_generator_config:
     ag_task:
-      prompts_version: 'v2'
+      prompts_version: 'v2' # 'v1' | 'v2'
 
 QA_EXP_DIR_STRUCT:
   metrics_name: metric_packs
