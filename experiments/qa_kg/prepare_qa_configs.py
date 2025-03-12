@@ -54,14 +54,21 @@ if PARAMS['BASE_KGR_CONFIG']['name'] == 'weak':
         filter_method=PARAMS['WEAK_KG_REASONER']['knowledge_retriever_config']['filter_method'],
         filter_config=PARAMS['WEAK_KG_REASONER']['knowledge_retriever_config']['filter_config'])
 
-    kg_reasoner_config = WeakKGReasonerConfig(
-        query_parser_config=QueryLLMParserConfig(
+    if PARAMS['WEAK_KG_REASONER']['query_parser_config'] is None:
+        query_parser_config = None
+        knowledge_comparator_config = None
+    else:
+        query_parser_config = QueryLLMParserConfig(
             lang=PARAMS['BASE_KGR_CONFIG']['lang'],
             adriver_config=adriver_config,
             kw_extraction_task_config=AgentKWETaskConfigSelector.select(
-                base_config_version=PARAMS['WEAK_KG_REASONER']['query_parser_config']['kw_extraction_task']['prompts_version'])),
-        knowledge_comparator_config=KnowledgeComparatorConfig(
-            **PARAMS['WEAK_KG_REASONER']['knowledge_comparator_config']),
+                base_config_version=PARAMS['WEAK_KG_REASONER']['query_parser_config']['kw_extraction_task']['prompts_version']))
+        knowledge_comparator_config = KnowledgeComparatorConfig(
+            **PARAMS['WEAK_KG_REASONER']['knowledge_comparator_config'])
+
+    kg_reasoner_config = WeakKGReasonerConfig(
+        query_parser_config=query_parser_config,
+        knowledge_comparator_config=knowledge_comparator_config,
         knowledge_retriever_config=k_retriever_config,
         answer_generator_config=QALLMGeneratorConfig(
             lang=PARAMS['BASE_KGR_CONFIG']['lang'],
