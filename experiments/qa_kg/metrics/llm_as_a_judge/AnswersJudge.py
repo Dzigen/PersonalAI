@@ -29,7 +29,7 @@ class AnswersJudge(CacheUtils):
 
     def __init__(self, config: AnswersJudgeConfig = AnswersJudgeConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None,
-                 cache_llm_inference: bool = True):
+                 cache_llm_inference: bool = False):
 
         self.log = config.log
         self.verbose = config.verbose
@@ -53,7 +53,7 @@ class AnswersJudge(CacheUtils):
             llmjudge_task_cache_config)
 
     @CacheUtils.cache_method_output
-    def judge(self, ground_truth: str, predicted_response: str) -> Union[int, float]:
+    def perform(self, ground_truth: str, predicted_response: str) -> Union[int, float]:
         info = ReturnInfo()
         self.log("START JUDGING...", verbose=self.config.verbose)
         self.log(f"* GROUND_TRUTH: {ground_truth}", verbose=self.config.verbose)

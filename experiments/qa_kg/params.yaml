@@ -13,10 +13,18 @@ QA_EVALUATION:
   bertscore_model_path: "google/electra-base-discriminator"
   meteor_path: '/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments/qa_kg/metrics/meteor' # TO CHANGE
   exactmatch_path: '/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments/qa_kg/metrics/exact_match' # TO CHANGE
+  llm_as_a_judge_path: '/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments/qa_kg/metrics/' # TO CHANGE
+
   judge_llm_config:
     caching: True # DONT CHANGE
     cache_need_to_clear: False # !!! PAY ATTENTION !!!
+    cache_db_info:
+      db: 'qaeval_db' # DONT CHANGE
+      table: None # DONT CHANGE
+
+    lang: 'en'
     prompts_version: 'v1'
+
     agent_config:
       vendor: 'ollama' # DONT CHANGE
       gen_strategy:
@@ -126,7 +134,10 @@ WEAK_KG_REASONER:
 
 QA_EXP_DIR_STRUCT:
   metrics_name: metric_packs
+
+  tmp_judges_name: tmp_judges_packs
   judges_name: judges_packs
+
   tmp_gen_answers_name: tmp_answer_packs
   gen_answers_name: answer_packs
 
