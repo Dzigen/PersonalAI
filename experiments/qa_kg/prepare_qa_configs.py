@@ -48,13 +48,16 @@ adriver_config = AgentDriverConfig(
 
 if PARAMS['BASE_KGR_CONFIG']['name'] == 'weak':
 
+    if PARAMS['WEAK_KG_REASONER']['knowledge_retriever_config']['filter_method'] == 'None':
+        filter_method = None
+        filter_config = None
+
     k_retriever_config = KnowledgeRetrieverConfig(
         retriever_method=PARAMS['WEAK_KG_REASONER']['knowledge_retriever_config']['retriever_method'],
         retriever_config=PARAMS['WEAK_KG_REASONER']['knowledge_retriever_config']['retriever_config'],
-        filter_method=PARAMS['WEAK_KG_REASONER']['knowledge_retriever_config']['filter_method'],
-        filter_config=PARAMS['WEAK_KG_REASONER']['knowledge_retriever_config']['filter_config'])
+        filter_method=filter_method, filter_config=filter_config)
 
-    if PARAMS['WEAK_KG_REASONER']['query_parser_config'] is None:
+    if PARAMS['WEAK_KG_REASONER']['query_parser_config'] == 'None':
         query_parser_config = None
         knowledge_comparator_config = None
     else:
