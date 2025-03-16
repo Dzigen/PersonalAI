@@ -33,7 +33,7 @@ Examples of [Questions], [Contexts] and expected [Answers] are presented in a li
 #### Example 3
 [Question]: The majority of speakers have positive, neutral or negative sentiment about signal of Apple?
 [Contexts]:
-<|Empty|>.
+<|Empty|>
 [Chain of thoughts]: The information for a give question is not provided.
 [Answer]: <|NotEnoughtInfo|>
 #### Example 4

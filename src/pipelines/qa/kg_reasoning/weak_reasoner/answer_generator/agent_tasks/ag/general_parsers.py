@@ -7,7 +7,7 @@ def ag_custom_formate(query: str, triplets: List[Triplet]) -> str:
         raise ValueError
 
     filtered_context = list(map(lambda triplet: f"- {(TripletCreator.stringify(triplet)[1] if triplet.stringified is None else triplet.stringified).strip()}", triplets))
-    return {'c':"\n".join(filtered_context) if len(filtered_context) else "Empty", 'q': query}
+    return {'c':"\n".join(filtered_context) if len(filtered_context) else "<|Empty|>", 'q': query}
 
 def ag_custom_postprocess(parsed_response: str, **kwargs) -> str:
     if len(parsed_response) < 1:
