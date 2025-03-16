@@ -114,9 +114,9 @@ def save_json(data: Dict[str, object], save_path: str):
 
 METRICS = ReaderMetrics(
     base_dir=PARAMS['BASE_PERSONALAI_DIR'],
-    model_path=PARAMS['EVAL_BERTSCORE_MODEL'],
-    meteor_filep=PARAMS['METEOR_METRIC_PATH'],
-    em_filep=PARAMS['EXACT_MATCH_PATH'])
+    model_path=PARAMS['QA_EVALUATION']['bertscore_model_path'],
+    meteor_filep=PARAMS['QA_EVALUATION']['meteor_path'],
+    em_filep=PARAMS['QA_EVALUATION']['exactmatch_path'])
 
 ####################################################
 
