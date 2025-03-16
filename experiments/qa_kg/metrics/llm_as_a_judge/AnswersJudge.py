@@ -52,14 +52,20 @@ class AnswersJudge(CacheUtils):
             self.agent, self.config.llmjudge_task_config,
             llmjudge_task_cache_config)
 
+    def get_cache_key(self, question:str, ground_truth: str, predicted_response: str):
+        return [question, ground_truth, predicted_response, self.config.adriver_config,
+                self.config.llmjudge_task_config]
+
     @CacheUtils.cache_method_output
-    def perform(self, ground_truth: str, predicted_response: str) -> Union[int, float]:
+    def perform(self, question: str, ground_truth: str, predicted_response: str) -> Union[int, float]:
         info = ReturnInfo()
         self.log("START JUDGING...", verbose=self.config.verbose)
         self.log(f"* GROUND_TRUTH: {ground_truth}", verbose=self.config.verbose)
         self.log(f"* PREDICTED: {predicted_response}", verbose=self.config.verbose)
 
-        predicted_score, status = self.llmjudge_solver.solve(ground_truth, predicted_response)
+        predicted_score, status = self.llmjudge_solver.solve(
+            lang=self.config.lang, question=question,
+            gold_answer=ground_truth, generated_answer=predicted_response)
 
         if status != ReturnStatus.success:
             info.occurred_warning.append(status)

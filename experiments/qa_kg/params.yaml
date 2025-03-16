@@ -1,9 +1,9 @@
-EXPERIMENT_NAME: "wc_v2_qwen25(e2.1.1)(v1.5.0)" # TO CHANGE
-DATASET_NAME: 'diaasqa' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'qwen25_070325_v2prompts' # TO CHANGE
+EXPERIMENT_NAME: "wc_v2_qwen25(e2.1.1)(v1.5.2)" # TO CHANGE
+DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen25_080325_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
-  max_samples_per_pack: 1
+  max_samples_per_pack: 5
 
 BASE_PERSONALAI_DIR: '/home/dzigen/Desktop/PersonalAI/Personal-AI' # TO CHANGE
 EXPERIMENTS_BASE_DIR: '/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments/qa_kg' # TO CHANGE
@@ -17,7 +17,7 @@ QA_EVALUATION:
 
   judge_llm_config:
     caching: True # DONT CHANGE
-    cache_need_to_clear: False # !!! PAY ATTENTION !!!
+    cache_need_to_clear: True # !!! PAY ATTENTION !!!
     cache_db_info:
       db: 'qaeval_db' # DONT CHANGE
       table: None # DONT CHANGE
@@ -48,11 +48,11 @@ BASE_KGR_CONFIG:
 
   lang: 'en' # DONT CHANGE
   caching: True # DONT CHANGE
-  cache_need_to_clear: False # !!! PAY ATTENTION !!!
+  cache_need_to_clear: True # !!! PAY ATTENTION !!!
   graphdb_hostname: "localhost"
-  vectordb_path: "/home/dzigen/Desktop/PersonalAI/Personal-AI/data/knowledge_graphs/diaasqa/qwen25_070325_v2prompts/embeddings_part"
+  vectordb_path: "/home/dzigen/Desktop/PersonalAI/Personal-AI/data/knowledge_graphs/hotpotqa_distractor_validation/qwen25_080325_v2prompts/embeddings_part"
   embedder_model_path: "/home/dzigen/Desktop/PersonalAI/Personal-AI/models/intfloat/multilingual-e5-large"
-  qa_dataset_path: "/home/dzigen/Desktop/PersonalAI/Personal-AI/data/qa_datasets/diaasqa"
+  qa_dataset_path: "/home/dzigen/Desktop/PersonalAI/Personal-AI/data/qa_datasets/hotpotqa_distractor_validation"
 
   cache_db_info:
       db: 'qa_db' # DONT CHANGE

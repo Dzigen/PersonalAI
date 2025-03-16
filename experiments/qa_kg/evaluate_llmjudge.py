@@ -94,13 +94,16 @@ def save_json(data: Dict[str, object], save_path: str):
 answers_pack_names = os.listdir(GENERATED_ANSWERS_DIR)
 for pack_name in answers_pack_names:
     answers_info = load_json(f"{GENERATED_ANSWERS_DIR}/{pack_name}")
-    pack_tmp_dir = f"{TMP_METRICS_DIR}/{pack_name}"
+
+    pack_tmp_dir = f"{TMP_METRICS_DIR}/{pack_name.split('.')[0]}"
+    if not os.path.exists(pack_tmp_dir):
+        os.mkdir(pack_tmp_dir)
 
     process = tqdm(answers_info.items())
     for a_idx, a_info in process:
         process.set_postfix_str(pack_name)
         s_time = time()
-        score, info = judge.perform( a_info['gold_answer'], a_info['gen_answer'])
+        score, info = judge.perform(a_info['question'], a_info['gold_answer'], a_info['gen_answer'])
         e_time = time()
 
         llmj_dump_file = f"{pack_tmp_dir}/judge_{a_idx}"
@@ -113,7 +116,7 @@ for pack_name in answers_pack_names:
 judges_pack_names = os.listdir(TMP_METRICS_DIR)
 process = tqdm(judges_pack_names)
 for pack_name in process:
-    process.set_postfix(pack_name)
+    process.set_postfix_str(pack_name)
 
     pack_tmp_dir = f"{TMP_METRICS_DIR}/{pack_name}"
     if not os.path.exists(pack_tmp_dir):
@@ -140,4 +143,4 @@ for pack_name in process:
     accum_score['score']['median'] = np.median(list(accum_score['answer_score_map'].values()))
     accum_score['score']['frequency'] = dict(Counter(list(accum_score['answer_score_map'].values())))
 
-    save_json(f"{METRICS_DIR}/{pack_name}.json")
+    save_json(accum_score, f"{METRICS_DIR}/{pack_name}.json")

@@ -14,7 +14,7 @@ with open(MEM_PARAMS_FILEP, 'r') as stream:
 
 GRAPH_DRIVER_CONFIG_PATH = f"{KG_DIR_PATH}/{MEM_PARAMS['SAVE_CONFIGS_NAMES']['graph_config']}"
 EMBEDDINGS_DRIVER_CONFIG_PATH = f"{KG_DIR_PATH}/{MEM_PARAMS['SAVE_CONFIGS_NAMES']['embeddings_config']}"
-DC_ENV_FILE_PATH = f"{KG_DIR_PATH}/{MEM_PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"
+#DC_ENV_FILE_PATH = f"{KG_DIR_PATH}/{MEM_PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"
 
 DS_EXPERIMENT_DIR = f"{QA_PARAMS['EXPERIMENTS_BASE_DIR']}/{QA_PARAMS['DATASET_NAME']}"
 SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{QA_PARAMS['EXPERIMENT_NAME']}"
@@ -33,8 +33,8 @@ if QA_PARAMS['INIT_STRUCT']:
         raise ValueError(f"Файла не существует: {GRAPH_DRIVER_CONFIG_PATH}")
     if not os.path.exists(EMBEDDINGS_DRIVER_CONFIG_PATH):
         raise ValueError(f"Файла не существует: {EMBEDDINGS_DRIVER_CONFIG_PATH}")
-    if not os.path.exists(DC_ENV_FILE_PATH):
-        raise ValueError(f"Файла не существует: {DC_ENV_FILE_PATH}")
+    #if not os.path.exists(DC_ENV_FILE_PATH):
+    #    raise ValueError(f"Файла не существует: {DC_ENV_FILE_PATH}")
     print("Требуемый набор файлов найден.")
 
     print("Создаём директорию для сохранения результатов по эксперименту...")
