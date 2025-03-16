@@ -14,7 +14,7 @@ with open(MEM_PARAMS_FILEP, 'r') as stream:
 
 GRAPH_DRIVER_CONFIG_PATH = f"{KG_DIR_PATH}/{MEM_PARAMS['SAVE_CONFIGS_NAMES']['graph_config']}"
 EMBEDDINGS_DRIVER_CONFIG_PATH = f"{KG_DIR_PATH}/{MEM_PARAMS['SAVE_CONFIGS_NAMES']['embeddings_config']}"
-DC_ENV_FILE_PATH = f"{KG_DIR_PATH}/{MEM_PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"
+#DC_ENV_FILE_PATH = f"{KG_DIR_PATH}/{MEM_PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"
 
 DS_EXPERIMENT_DIR = f"{QA_PARAMS['EXPERIMENTS_BASE_DIR']}/{QA_PARAMS['DATASET_NAME']}"
 SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{QA_PARAMS['EXPERIMENT_NAME']}"
@@ -22,6 +22,8 @@ SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{QA_PARAMS['EXPERIMENT_NAME']}"
 TMP_GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{QA_PARAMS['QA_EXP_DIR_STRUCT']['tmp_gen_answers_name']}"
 GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{QA_PARAMS['QA_EXP_DIR_STRUCT']['gen_answers_name']}"
 METRICS_DIR = f"{SPEC_EXPERIMENT_DIR}/{QA_PARAMS['QA_EXP_DIR_STRUCT']['metrics_name']}"
+TMP_JUDGES_DIR = f"{SPEC_EXPERIMENT_DIR}/{QA_PARAMS['QA_EXP_DIR_STRUCT']['tmp_judges_name']}"
+JUDGES_DIR = f"{SPEC_EXPERIMENT_DIR}/{QA_PARAMS['QA_EXP_DIR_STRUCT']['judges_name']}"
 
 if QA_PARAMS['INIT_STRUCT']:
     print("Проверяем существование директории заданного графа знаний...")
@@ -31,8 +33,8 @@ if QA_PARAMS['INIT_STRUCT']:
         raise ValueError(f"Файла не существует: {GRAPH_DRIVER_CONFIG_PATH}")
     if not os.path.exists(EMBEDDINGS_DRIVER_CONFIG_PATH):
         raise ValueError(f"Файла не существует: {EMBEDDINGS_DRIVER_CONFIG_PATH}")
-    if not os.path.exists(DC_ENV_FILE_PATH):
-        raise ValueError(f"Файла не существует: {DC_ENV_FILE_PATH}")
+    #if not os.path.exists(DC_ENV_FILE_PATH):
+    #    raise ValueError(f"Файла не существует: {DC_ENV_FILE_PATH}")
     print("Требуемый набор файлов найден.")
 
     print("Создаём директорию для сохранения результатов по эксперименту...")
@@ -47,8 +49,14 @@ if QA_PARAMS['INIT_STRUCT']:
         raise ValueError(f"Директории существует: {GENERATED_ANSWERS_DIR}")
     if os.path.exists(METRICS_DIR):
         raise ValueError(f"Директории существует: {METRICS_DIR}")
+    if os.path.exists(TMP_JUDGES_DIR):
+        raise ValueError(f"Директории существует: {TMP_JUDGES_DIR}")
+    if os.path.exists(JUDGES_DIR):
+        raise ValueError(f"Директории существует: {JUDGES_DIR}")
 
     os.mkdir(SPEC_EXPERIMENT_DIR)
+    os.mkdir(TMP_JUDGES_DIR)
+    os.mkdir(JUDGES_DIR)
     os.mkdir(TMP_GENERATED_ANSWERS_DIR)
     os.mkdir(GENERATED_ANSWERS_DIR)
     os.mkdir(METRICS_DIR)

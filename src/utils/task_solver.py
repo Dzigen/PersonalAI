@@ -62,7 +62,7 @@ class AgentTaskSolver:
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: AgentTaskSolverConfig,
-                 cache_kvdriver_config: KeyValueDriverConfig = None,) -> None:
+                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
         self.config = config
         self.agent = agent
         self.log = self.config.log

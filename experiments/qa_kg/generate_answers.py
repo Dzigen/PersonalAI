@@ -153,6 +153,11 @@ def hotpotqa_distractor_validation_qa_load(dataset_path: str) -> List[Tuple[str,
 
     questions = qa_df['question'].tolist()
     answers = qa_df['answer'].tolist()
+
+    if (PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack'] > 0):
+        questions = questions[:PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']]
+        answers = answers[:PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']]
+
     packs = [['all', questions, answers]]
 
     return packs
