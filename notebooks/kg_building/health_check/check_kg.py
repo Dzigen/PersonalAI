@@ -12,38 +12,31 @@ import yaml
 # Read YAML file
 PARAMS_FILE_PATH = sys.orig_argv[2]
 with open(PARAMS_FILE_PATH, 'r') as stream:
-    HYPER_PARAMS = yaml.safe_load(stream)
+    PARAMS = yaml.safe_load(stream)
 
-# TO CHANGE
-sys.path.insert(0, HYPER_PARAMS['BASE_PERSONALAI_DIR'])
-
-from src.pipelines.memorize import MemPipelineConfig, MemPipeline, LLMExtractorConfig, LLMUpdatorConfig
-from src.kg_model import KnowledgeGraphModel, EmbeddingsModelConfig, GraphModelConfig, EmbedderModelConfig
-from src.db_drivers.graph_driver import GraphDBConnectionConfig, GraphDriverConfig
-from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriverConfig
+sys.path.insert(0, PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
+from src.kg_model import KnowledgeGraphModel
 
 gc.collect()
 
 ###############Loading hyperparams###################
 
-DATASET_PATH = f"{HYPER_PARAMS['KGS_BASE_PATH']}/{HYPER_PARAMS['DATASET_NAME']}"
-KG_PATH = f"{DATASET_PATH}/{HYPER_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+DATASET_KGS_PATH = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
+SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
-GRAPH_DRIVER_CONFIG_PATH = f"{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['graph_config']}"
-EMBEDDINGS_DRIVER_CONFIG_PATH = f"{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['embeddings_config']}"
+GRAPH_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['graph_config']}"
+EMBEDDINGS_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['embeddings_config']}"
 
-GRAPH_STATS_DIR = f"{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['graph_statistics_dir']}"
-GRAPH_STATS_INFO = f"{GRAPH_STATS_DIR}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['kg_stats']}"
-GRAPH_HEALTH_CHECKS_PATH = f"{GRAPH_STATS_DIR}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['kg_health_checks']}"
+GRAPH_STATS_DIR = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['graph_statistics_dir']}"
+GRAPH_STATS_INFO = f"{GRAPH_STATS_DIR}/{PARAMS['SAVE_CONFIGS_NAMES']['kg_stats']}"
+GRAPH_HEALTH_CHECKS_PATH = f"{GRAPH_STATS_DIR}/{PARAMS['SAVE_CONFIGS_NAMES']['kg_health_checks']}"
 
 ##################################
 
-if not os.path.exists(HYPER_PARAMS['BASE_PERSONALAI_DIR']):
-    raise ValueError(f"Директории не существует: {HYPER_PARAMS['BASE_PERSONALAI_DIR']}")
-if not os.path.exists(DATASET_PATH):
-    raise ValueError(f"Директории не существует: {DATASET_PATH}")
-if not os.path.exists(KG_PATH):
-    raise ValueError(f"Директория не существует: {KG_PATH}")
+if not os.path.exists(DATASET_KGS_PATH):
+    raise ValueError(f"Директории не существует: {DATASET_KGS_PATH}")
+if not os.path.exists(SPEC_KG_PATH):
+    raise ValueError(f"Директория не существует: {SPEC_KG_PATH}")
 
 if os.path.exists(GRAPH_STATS_DIR):
     raise ValueError(f"Директория существует: {GRAPH_STATS_DIR}")
@@ -159,8 +152,8 @@ GRAPH_STAT_METRICS = {
 
 ##################################
 
-graph_config = joblib.load(GRAPH_DRIVER_CONFIG_PATH)
-embed_config = joblib.load(EMBEDDINGS_DRIVER_CONFIG_PATH)
+graph_config = joblib.load(GRAPH_MODEL_CONFIG_PATH)
+embed_config = joblib.load(EMBEDDINGS_MODEL_CONFIG_PATH)
 
 # !!! IMPORTANT !!!
 graph_config.driver_config.db_config.need_to_clear = False

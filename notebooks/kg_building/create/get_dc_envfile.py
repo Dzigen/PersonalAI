@@ -1,80 +1,112 @@
 import sys
 import yaml
-import subprocess
-
-
-# Загружаем конфигурационный файл
 
 # Read YAML file
 PARAMS_FILE_PATH = sys.orig_argv[2]
 with open(PARAMS_FILE_PATH, 'r') as stream:
-    HYPER_PARAMS = yaml.safe_load(stream)
+    PARAMS = yaml.safe_load(stream)
+
+DATASET_KGS_PATH = f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['ERSONALAI_REPO_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
+SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
 # параметры для графовой бд (neo4j)
-
-DATASET_PATH = f"{HYPER_PARAMS['KGS_BASE_PATH']}/{HYPER_PARAMS['DATASET_NAME']}"
-KG_PATH = f"{DATASET_PATH}/{HYPER_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
-GRAPH_DB_PATH = f"{KG_PATH}/{HYPER_PARAMS['KG_DIR_STRUCT']['graph_dir_name']}/"
+GRAPH_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['graph_dir_name']}"
 
 neo4j_cnt_variables = {
-    'NEO4j_AUTH_USER': HYPER_PARAMS['KG_DB_CONFIGS']['graphdb_config']['params']['user'],
-    'NEO4j_AUTH_PWD': HYPER_PARAMS['KG_DB_CONFIGS']['graphdb_config']['params']['pwd'],
-    'NEO4J_LOCAL_VOLUME': GRAPH_DB_PATH,
-    'NEO4J_HOST': HYPER_PARAMS['KG_DB_CONFIGS']['graphdb_config']['host'],
-    'NEO4J_EXTERNAL_PORT': HYPER_PARAMS['KG_DB_CONFIGS']['graphdb_config']['port'],
+    'NEO4J_HOST': PARAMS['KG_DB_CONFIGS']['graphdb_config']['host'],
+
+    'NEO4J_EXTERNAL_PORT': PARAMS['KG_DB_CONFIGS']['neo4j_ui_port'],
+    'NEO4J_UI_EXTERNAL_PORT': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['graphdb_config']['port'],
+
+    'NEO4j_AUTH_USER': PARAMS['KG_DB_CONFIGS']['graphdb_config']['params']['user'],
+    'NEO4j_AUTH_PWD': PARAMS['KG_DB_CONFIGS']['graphdb_config']['params']['pwd'],
+
+    'NEO4J_LOCAL_VOLUME': GRAPH_DB_PATH
 }
 
 # параметры для persistent бд (mongo)
-KV_DB_PATH = f"{KG_PATH}/{HYPER_PARAMS['KG_DIR_STRUCT']['cache_dir_name']['base']}/"
-PERSISTENT_DB_PATH = KV_DB_PATH + f"{HYPER_PARAMS['KG_DIR_STRUCT']['cache_dir_name']['persistant']}/"
+KV_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir_name']['base']}"
+PERSISTENT_DB_PATH = f"{KV_DB_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir_name']['persistant']}/"
 
 mongo_cnt_variables = {
-    'MONGO_AUTH_USER': HYPER_PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['params']['username'],
-    'MONGO_AUTH_PWD': HYPER_PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['params']['password'],
-    'MONGO_HOST': HYPER_PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['host'],
-    'MONGO_EXTERNAL_PORT': HYPER_PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['port'],
-    'MONGO_LOCAL_VOLUME': PERSISTENT_DB_PATH,
+    'MONGO_HOST': PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['host'],
+
+    'MONGO_EXTERNAL_PORT': PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['port'],
+
+    'MONGO_AUTH_USER': PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['params']['username'],
+    'MONGO_AUTH_PWD': PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['params']['password'],
+
+    'MONGO_LOCAL_VOLUME': PERSISTENT_DB_PATH
+}
+
+mongoui_cnt_variables = {
+    'MONGO_UI_HOST': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['mongo_ui_host'],
+    'MONGO_UI_EXTERNAL_PORT': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['mongo_ui_port']
 }
 
 # параметры для ram бд (redis)
-RAM_DB_PATH = KV_DB_PATH + f"{HYPER_PARAMS['KG_DIR_STRUCT']['cache_dir_name']['ram']}/"
+RAM_DB_PATH = f"{KV_DB_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir_name']['ram']}"
 
 redis_cnt_variables = {
-    'REDIS_HOST': HYPER_PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['host'],
-    'REDIS_EXTERNAL_PORT': HYPER_PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['port'],
+    'REDIS_HOST': PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['host'],
+
+    'REDIS_EXTERNAL_PORT': PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['port'],
+
+    'REDIS_AUTH_USER': PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['params']['username'],
+    'REDIS_AUTH_PASS': PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['params']['password'],
+
     'REDIS_LOCAL_VOLUME': RAM_DB_PATH,
-    'REDIS_CONFIG': HYPER_PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['db_configuration']
+    'REDIS_CONFIG': PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['db_configuration']
+}
+
+redisui_cnt_variables = {
+    'REDIS_UI_HOST': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['personalai_mmenschikov_redis_ui'],
+    'REDIS_UI_EXTERNAL_PORT': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['redis_ui_port']
 }
 
 # параметры для workspace - окружения
 worksapce_cnt_variables = {
-    'LOCAL_WORKSPACE_DIR': HYPER_PARAMS['BASE_PERSONALAI_DIR'],
-    'LOCAL_VENV_DIR': HYPER_PARAMS['PERSONALAI_VENV_DIR'],
+    'WORKSPACE_HOST': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['workspace_host'],
+
+    'EXTERNAL_SPEC_KG_PATH': SPEC_KG_PATH,
+    'EXTERNAL_SPEC_QADS_PATH': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['qa_datasets']}/{PARAMS['DATASET_NAME']}",
+    'EXTERNAL_NOTEBOOKS_PATH': f"{PARAMS['BASE_PERSONALAI_DIR']}/{PARAMS['PERSONALAI_REPO_DIRS']['notebooks']}",
+    'EXTERNAL_SRC_PATH': f"{PARAMS['BASE_PERSONALAI_DIR']}/{PARAMS['PERSONALAI_REPO_DIRS']['notebooks']}",
+    'EXTERNAL_MODELS_PATH': f"{PARAMS['BASE_PERSONALAI_DIR']}/{PARAMS['PERSONALAI_REPO_DIRS']['models']}",
+
+    'INTERNAL_SPEC_KG_PATH': f"{PARAMS['KGS_BASE_PATH']}/{PARAMS['DATASET_NAME']}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}",
+    'INTERNAL_SPEC_QADS_PATH': f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['qa_datasets']}/{PARAMS['DATASET_NAME']}",
+    'INTERNAL_NOTEBOOKS_PATH': f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['notebooks']}",
+    'INTERNAL_SRC_PATH': f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['src']}",
+    'INTERNAL_MODELS_PATH': f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['models']}"
+}
+
+#
+emptyworkspace_cnt_variables = {
+    'EMPTY_WORKSPACE_HOST': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['emptyworkspace_host'],
+    'BASE_PERSONALAI_PATH': PARAMS['BASE_PERSONALAI_PATH'],
 }
 
 # параметры для контейнера с llm-моделями
 llmagents_cnt_variables = {
-    'LLMAGENTS_HOST': HYPER_PARAMS['MEM_PIPELINE_CONFIG']['agent_config']['credentials']['host'],
-    'LLMAGENTS_EXTERNAL_PORT': HYPER_PARAMS['MEM_PIPELINE_CONFIG']['agent_config']['credentials']['port'],
-    'LLMAGENT_LOCAL_VOLUME': HYPER_PARAMS['OLLAMA_MODELS_DIR']
+    'OLLAMA_HOST': PARAMS['MEM_PIPELINE_CONFIG']['agent_config']['credentials']['host'],
+    'OLLAMA_EXTERNAL_PORT': PARAMS['MEM_PIPELINE_CONFIG']['agent_config']['credentials']['port'],
+    'OLLAMA_LOCAL_VOLUME': PARAMS['OLLAMA_MODELS_PATH']
 }
 
-accepted_volume_dirs = {
-    'KG_DIR': f"{HYPER_PARAMS['KGS_BASE_PATH']}/{HYPER_PARAMS['DATASET_NAME']}/{HYPER_PARAMS['KNOWLEDGE_GRAPH_NAME']}",
-    'QA_DATASET': HYPER_PARAMS['DATASET_PATH'],
-    'NOTEBOOKS': f"{HYPER_PARAMS['BASE_PERSONALAI_DIR']}/notebooks",
-    'SRC': f"{HYPER_PARAMS['BASE_PERSONALAI_DIR']}/src",
-    'MODELS': f"{HYPER_PARAMS['BASE_PERSONALAI_DIR']}/models",
-}
-
+#
 def dictvar_to_string(dict_variables) -> str:
     return '\n'.join(list(map(lambda item: f'{item[0]}="{item[1]}"', dict_variables.items())))
 
-
-env_variables = [neo4j_cnt_variables, mongo_cnt_variables, redis_cnt_variables,
-                 worksapce_cnt_variables, llmagents_cnt_variables, accepted_volume_dirs]
+env_variables = [neo4j_cnt_variables,
+                 mongo_cnt_variables, mongoui_cnt_variables,
+                 redis_cnt_variables, redisui_cnt_variables,
+                 worksapce_cnt_variables, emptyworkspace_cnt_variables,
+                 llmagents_cnt_variables]
 env_variables = '\n'.join(list(map(lambda vars: dictvar_to_string(vars), env_variables)))
 
-DC_ENV_PATH = f"{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"
+DC_ENV_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"
 with open(DC_ENV_PATH, 'w', encoding='utf-8') as fd:
     fd.write(env_variables)
+
+print("############ DONE ############")

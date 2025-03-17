@@ -114,9 +114,8 @@ for pack_name in answers_pack_names:
 ################# ACCUMULATE SCORES ################
 
 judges_pack_names = os.listdir(TMP_METRICS_DIR)
-process = tqdm(judges_pack_names)
-for pack_name in process:
-    process.set_postfix_str(pack_name)
+for pack_name in judges_pack_names:
+    print(pack_name)
 
     pack_tmp_dir = f"{TMP_METRICS_DIR}/{pack_name}"
     if not os.path.exists(pack_tmp_dir):
@@ -139,8 +138,10 @@ for pack_name in process:
     accum_score['elapsed_time']['mean'] = np.mean(list(accum_score['answer_time_map'].values()))
     accum_score['elapsed_time']['median'] = np.median(list(accum_score['answer_time_map'].values()))
 
-    accum_score['score']['mean'] = np.mean(list(accum_score['answer_score_map'].values()))
-    accum_score['score']['median'] = np.median(list(accum_score['answer_score_map'].values()))
+    filtered_scores = list(filter(lambda score: score is not None, list(accum_score['answer_score_map'].values())))
+    accum_score['score']['mean'] = np.mean(filtered_scores)
+    accum_score['score']['median'] = np.median(filtered_scores)
+
     accum_score['score']['frequency'] = dict(Counter(list(accum_score['answer_score_map'].values())))
 
     save_json(accum_score, f"{METRICS_DIR}/{pack_name}.json")

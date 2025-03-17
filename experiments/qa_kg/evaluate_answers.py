@@ -72,27 +72,27 @@ class ReaderMetrics:
     def rougel(self, predicted: List[str], targets: List[str]):
         return [self.rouge_obj(
             predicted[i], targets[i])['rougeL_fmeasure']
-                 for i in range(len(targets))]
+                 for i in tqdm(range(len(targets)))]
 
     def bleu1(self, predicted: List[str], targets: List[str]):
         return [self.bleu1_obj(
             [predicted[i]], [[targets[i]]])
-                 for i in range(len(targets))]
+                 for i in tqdm(range(len(targets)))]
 
     def bleu2(self, predicted: List[str], targets: List[str]):
         return [self.bleu2_obj(
             [predicted[i]], [[targets[i]]])
-                 for i in range(len(targets))]
+                 for i in tqdm(range(len(targets)))]
 
     def meteor(self, predicted: List[str], targets: List[str]):
         return [self.meteor_obj.compute(
             predictions=[predicted[i]], references=[targets[i]])['meteor']
-                 for i in range(len(targets))]
+                 for i in tqdm(range(len(targets)))]
 
     def exact_match(self, predicted: List[str], targets: List[str]):
         return [self.em_obj.compute(
             predictions=[predicted[i]], references=[targets[i]], ignore_case=True, ignore_punctuation=True)["exact_match"]
-                for i in range(len(targets))]
+                for i in tqdm(range(len(targets)))]
 
     def levenshtain_score(self, predicted: List[str], targets: List[str]):
         return list(map(lambda pair: levenshtain_distance(pair[1], pair[0]), zip(predicted, targets)))
@@ -122,8 +122,7 @@ METRICS = ReaderMetrics(
 
 #
 gen_pack_names = os.listdir(GENERATED_ANSWERS_DIR)
-process = tqdm(gen_pack_names)
-for pack_name in process:
+for pack_name in gen_pack_names:
 
     torch.cuda.empty_cache()
     gc.collect()
@@ -140,11 +139,22 @@ for pack_name in process:
             none_answers += 1
 
     if len(generated_answers) > 0:
+        print("Calculating BLEU1...")
         b1_scores = round5(np.mean(METRICS.bleu1(generated_answers, filtered_target_answers)))
+
+        print("Calculating BLEU2...")
         b2_scores  = round5(np.mean(METRICS.bleu2(generated_answers, filtered_target_answers)))
+
+        print("Calculating RougeL...")
         rl_scores = round5(np.mean(METRICS.rougel(generated_answers, filtered_target_answers)))
+
+        print("Calculating Meteor...")
         m_scores = round5(np.mean(METRICS.meteor(generated_answers, filtered_target_answers)))
+
+        print("Calculating ExactMatch...")
         em_scores = round5(np.mean(METRICS.exact_match(generated_answers, filtered_target_answers)))
+
+        print("Calculating BertScore...")
         bs_scores = METRICS.bertscore(generated_answers, filtered_target_answers)
     else:
         b1_scores, b2_scores, rl_scores, m_scores, em_scores, bs_scores = 0,0,0,0,0,0

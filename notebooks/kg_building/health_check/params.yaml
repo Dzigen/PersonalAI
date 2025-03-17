@@ -1,8 +1,7 @@
-DATASET_NAME: 'diaasqa' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'qwen25_060325_v2prompts' # TO CHANGE
+DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen25_080325_v2prompts' # TO CHANGE
 
-KGS_BASE_PATH: '/home/dzigen/Desktop/PersonalAI/Personal-AI/data/knowledge_graphs'
-BASE_PERSONALAI_DIR: '/home/dzigen/Desktop/PersonalAI/Personal-AI'
+########## HARDCODED PARAMS ##########
 
 KG_DIR_STRUCT:
   embeddings_dir_name: embeddings_part
@@ -11,4 +10,11 @@ KG_DIR_STRUCT:
     base: kv_cache
     persistant: persistent_volume
     ram: ram_volume
-  tmp_triplets_dir_name: tmp_extracted_triplets
+
+WORKSPACE_CONTAINER_DIRS:
+  base_path: '/home/workspace'
+  kg: 'data/knowledge_graphs'
+  qa_datasets: 'data/qa_datasets'
+  notebooks: 'notebooks'
+  src: 'src'
+  models: 'models'
