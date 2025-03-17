@@ -16,8 +16,6 @@ from typing import Dict
 import torch
 import gc
 import os
-
-
 import nltk
 nltk.download('wordnet')
 
@@ -28,7 +26,7 @@ PARAMS_FILEP = sys.orig_argv[2]
 with open(PARAMS_FILEP, 'r') as stream:
     PARAMS = yaml.safe_load(stream)
 
-DS_EXPERIMENT_DIR = f"{PARAMS['EXPERIMENTS_BASE_DIR']}/{PARAMS['DATASET_NAME']}"
+DS_EXPERIMENT_DIR = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{PARAMS['DATASET_NAME']}"
 SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['EXPERIMENT_NAME']}"
 
 GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['gen_answers_name']}"
@@ -49,7 +47,7 @@ class ReaderMetrics:
     # - BLEU presision
     # - ROUGE recall
     # - METEOR f1
-    def __init__(self, model_path:str, base_dir:str= '../..',
+    def __init__(self, model_path:str,
                  meteor_filep:str="./metrics/meteor",
                  em_filep:str="./metrics/exact_match"):
         self.rouge_obj = ROUGEScore()
@@ -59,7 +57,8 @@ class ReaderMetrics:
         self.meteor_obj = evaluate.load(meteor_filep)
         print("Loading ExactMatch")
         self.em_obj = evaluate.load(em_filep)
-        self.bertscore_obj = BERTScore(f"{base_dir}/models/{model_path}", return_hash=True)
+        print("Loading BertScore")
+        self.bertscore_obj = BERTScore(model_path, return_hash=True)
 
     def bertscore(self, predicted: List[str], targets: List[str]):
         output = self.bertscore_obj(predicted, targets)
@@ -113,10 +112,9 @@ def save_json(data: Dict[str, object], save_path: str):
         fd.write(dump)
 
 METRICS = ReaderMetrics(
-    base_dir=PARAMS['BASE_PERSONALAI_DIR'],
-    model_path=PARAMS['QA_EVALUATION']['bertscore_model_path'],
-    meteor_filep=PARAMS['QA_EVALUATION']['meteor_path'],
-    em_filep=PARAMS['QA_EVALUATION']['exactmatch_path'])
+    model_path=f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['models']}/{PARAMS['QA_EVALUATION']['bertscore_model_path']}",
+    meteor_filep=f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['QA_EVALUATION']['meteor_path']}",
+    em_filep=f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['QA_EVALUATION']['exactmatch_path']}")
 
 ####################################################
 
@@ -173,3 +171,5 @@ for pack_name in gen_pack_names:
 
     # сохраняем скоры по папку
     save_json(scores, f"{METRICS_DIR}/{pack_name}")
+
+print("############ DONE ############")

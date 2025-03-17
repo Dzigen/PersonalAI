@@ -5,43 +5,13 @@ QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
   max_samples_per_pack: -1
 
-BASE_PERSONALAI_DIR: '/home/dzigen/Desktop/PersonalAI/Personal-AI' # TO CHANGE
-EXPERIMENTS_BASE_DIR: '/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments/qa_kg' # TO CHANGE
-KGS_BASE_PATH: '/home/dzigen/Desktop/PersonalAI/Personal-AI/data/knowledge_graphs' # TO CHANGE
+# SERVER PATHS
+BASE_PERSONALAI_PATH: '/home/dzigen/Desktop/PersonalAI/Personal-AI' # TO CHANGE
+OLLAMA_MODELS_PATH: '/home/dzigen/Desktop/PersonalAI/ollama_volume' # TO CHANGE
 
-QA_EVALUATION:
-  bertscore_model_path: "google/electra-base-discriminator"
-  meteor_path: '/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments/qa_kg/metrics/meteor' # TO CHANGE
-  exactmatch_path: '/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments/qa_kg/metrics/exact_match' # TO CHANGE
-  llm_as_a_judge_path: '/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments/qa_kg/metrics/' # TO CHANGE
-
-  judge_llm_config:
-    caching: True # DONT CHANGE
-    cache_need_to_clear: False # !!! PAY ATTENTION !!!
-    cache_db_info:
-      db: 'qaeval_db' # DONT CHANGE
-      table: None # DONT CHANGE
-
-    lang: 'en'
-    prompts_version: 'v1'
-
-    agent_config:
-      vendor: 'ollama' # DONT CHANGE
-      gen_strategy:
-        num_predict: 2048 # DONT CHANGE
-        seed: 42  # DONT CHANGE
-        top_k: 1  # DONT CHANGE
-        temperature: 0.0  # DONT CHANGE
-      credentials:
-        host: 'localhost'
-        port: 11434
-      ext_params:
-        model: 'qwen2.5:7b'
-        timeout: 560
-        keep_alive: -1
-
-MEM_PIPELINE_HYPERP: hyperparameters.yaml # DONT CHANGE
 INIT_STRUCT: True # !!! PAY ATTENTION !!!
+
+########## QA PARAMS ##########
 
 BASE_KGR_CONFIG:
   name: 'weak' # DONT CHANGE
@@ -49,10 +19,6 @@ BASE_KGR_CONFIG:
   lang: 'en' # DONT CHANGE
   caching: True # DONT CHANGE
   cache_need_to_clear: False # !!! PAY ATTENTION !!!
-  graphdb_hostname: "localhost"
-  vectordb_path: "/home/dzigen/Desktop/PersonalAI/Personal-AI/data/knowledge_graphs/hotpotqa_distractor_validation/qwen25_080325_v2prompts/embeddings_part"
-  embedder_model_path: "/home/dzigen/Desktop/PersonalAI/Personal-AI/models/intfloat/multilingual-e5-large"
-  qa_dataset_path: "/home/dzigen/Desktop/PersonalAI/Personal-AI/data/qa_datasets/hotpotqa_distractor_validation"
 
   cache_db_info:
       db: 'qa_db' # DONT CHANGE
@@ -66,8 +32,8 @@ BASE_KGR_CONFIG:
       top_k: 1  # DONT CHANGE
       temperature: 0.0  # DONT CHANGE
     credentials:
-      host: 'localhost'
-      port: 11434
+      host: 'localhost' # TO CHANGE
+      port: 11434 # TO CHANGE
     ext_params:
       model: 'qwen2.5:7b'
       timeout: 560
@@ -75,8 +41,8 @@ BASE_KGR_CONFIG:
 
   persistent_cache_config:
     vendor: 'mongo' # DONT CHANGE
-    host: 'localhost'
-    port: 27017 # DONT CHANGE
+    host: 'localhost' # TO CHANGE
+    port: 27017 # TO CHANGE
     db_info:
       db: 'qa_db'
       table: None
@@ -87,8 +53,8 @@ BASE_KGR_CONFIG:
 
   ram_cache_config:
     vendor: 'redis' # DONT CHANGE
-    host: 'localhost'
-    port: 6379 # DONT CHANGE
+    host: 'localhost' # TO CHANGE
+    port: 6379 # TO CHANGE
     db_info:
       db: 1
       table: None
@@ -96,7 +62,7 @@ BASE_KGR_CONFIG:
       ss_name: 'sorted_node_pairs'
       hs_name: 'node_pairs'
       max_storage: 50000000
-    db_configuration: '/home/dzigen/Desktop/PersonalAI/Personal-AI/configs/redis' # TO CHANGE
+    db_configuration: 'redis' # DONT CHANGE
 
 WEAK_KG_REASONER:
 
@@ -133,18 +99,106 @@ WEAK_KG_REASONER:
     ag_task:
       prompts_version: 'v2' # 'v1' | 'v2'
 
+########## EVALUATION PARAMS ##########
+
+QA_EVALUATION:
+  bertscore_model_path: "google/electra-base-discriminator" # DONT CHANGE
+  meteor_path: 'experiments/qa_kg/metrics/meteor' # DONT CHANGE
+  exactmatch_path: 'experiments/qa_kg/metrics/exact_match' # DONT CHANGE
+  llm_as_a_judge_path: 'experiments/qa_kg/metrics/' # DONT CHANGE
+
+  judge_llm_config:
+    caching: True # DONT CHANGE
+    cache_need_to_clear: False # !!! PAY ATTENTION !!!
+    cache_db_info:
+      db: 'qaeval_db' # DONT CHANGE
+      table: None # DONT CHANGE
+
+    lang: 'en'
+    prompts_version: 'v1'
+
+    agent_config:
+      vendor: 'ollama' # DONT CHANGE
+      gen_strategy:
+        num_predict: 2048 # DONT CHANGE
+        seed: 42  # DONT CHANGE
+        top_k: 1  # DONT CHANGE
+        temperature: 0.0  # DONT CHANGE
+      credentials:
+        host: 'localhost' # TO CHANGE
+        port: 11434 # TO CHANGE
+      ext_params:
+        model: 'qwen2.5:7b'
+        timeout: 560
+        keep_alive: -1
+
+########## KNOWLEDGE GRAPH PARAMS ##########
+
+KG_DB_CONFIGS:
+  graphdb_config:
+    host: 'personalai_mmenschikov_neo4j' # TO CHANGE
+    port: 7687 # TO CHANGE
+
+########## CONTAINERS PARAMS ##########
+
+CONTAINERS_ADDITIONAL_CONFIG:
+  workspace_cntname: 'personalai_mmenschikov_workspace'
+  workspace_host: 'personalai_mmenschikov_workspace' # TO CHANGE
+
+  redis_cntname: 'personalai_mmenschikov_redis'
+  redis_ui_cntname: 'personalai_mmenschikov_redis_ui'
+  redis_ui_host: 'personalai_mmenschikov_redis_ui' # TO CHANGE
+  redis_ui_port: 5540 # TO CHANGE
+
+  mongo_cntname: 'personalai_mmenschikov_mongo'
+  mongo_ui_cntname: 'personalai_mmenschikov_mongo_ui' # TO CHANGE
+  mongo_ui_host: 'personalai_mmenschikov_mongo_ui' # TO CHANGE
+  mongo_ui_port: 8081 # TO CHANGE
+
+  neo4j_cntname: 'personalai_mmenschikov_neo4j'
+  neo4j_ui_port: 7474 # TO CHANGE
+
+  agent_cntname: 'personalai_mmenschikov_ollama_service'
+
+########## HARDCODED PARAMS ##########
+
 QA_EXP_DIR_STRUCT:
   metrics_name: metric_packs
-
   tmp_judges_name: tmp_judges_packs
   judges_name: judges_packs
-
   tmp_gen_answers_name: tmp_answer_packs
   gen_answers_name: answer_packs
 
-SAVE_FILES_NAMES:
-  qapipeline_config: "qa_config"
-  kg_reasoner_config: "kg_reasoner_config"
+KG_DIR_STRUCT:
+  embeddings_dir_name: embeddings_part
+  graph_dir_name: graph_part
+  cache_dir_name:
+    base: kv_cache
+    persistant: persistent_volume
+    ram: ram_volume
+
+PERSONALAI_REPO_DIRS:
+  kg: data/knowledge_graphs
+  qa_datasets: data/qa_datasets
+  experiments: experiments/qa_kg
+  notebooks: notebooks
+  src: src
+  models: models
+
+WORKSPACE_CONTAINER_DIRS:
+  base_path: /home/workspace
+  kg: data/knowledge_graphs
+  qa_datasets: data/qa_datasets
+  experiments: experiments
+  notebooks: notebooks
+  src: src
+  models: models
+
+SAVE_CONFIGS_NAMES:
+  graph_config: graph_config
+  embeddings_config: embeddings_config
+  qapipeline_config: qa_config
+  kg_reasoner_config: kg_reasoner_config
 
   hyperparameters: hyperparameters.yaml
   elapsed_time: elapsed_time.json

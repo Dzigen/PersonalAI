@@ -66,7 +66,7 @@ tripletsdb_config=VectorDBConnectionConfig(
     need_to_clear=PARAMS['KG_DB_CONFIGS']['need_to_clear'])
 
 embedder_config=EmbedderModelConfig(
-    model_name_or_path=PARAMS['KG_DB_CONFIGS']['embedder_config']['model_name_or_path'],
+    model_name_or_path=f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['models']}/{PARAMS['KG_DB_CONFIGS']['embedder_config']['model_name_or_path']}",
     prompts=PARAMS['KG_DB_CONFIGS']['embedder_config']['prompts'])
 
 emodel_config = EmbeddingsModelConfig(
