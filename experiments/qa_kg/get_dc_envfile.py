@@ -6,7 +6,7 @@ PARAMS_FILE_PATH = sys.orig_argv[2]
 with open(PARAMS_FILE_PATH, 'r') as stream:
     PARAMS = yaml.safe_load(stream)
 
-DATASET_KGS_PATH = f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['ERSONALAI_REPO_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
+DATASET_KGS_PATH = f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
 SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
 # параметры для графовой бд (neo4j)
@@ -16,8 +16,8 @@ neo4j_cnt_variables = {
     'NEO4J_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['neo4j_cntname'],
     'NEO4J_HOST': PARAMS['KG_DB_CONFIGS']['graphdb_config']['host'],
 
-    'NEO4J_EXTERNAL_PORT': PARAMS['KG_DB_CONFIGS']['neo4j_ui_port'],
-    'NEO4J_UI_EXTERNAL_PORT': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['graphdb_config']['port'],
+    'NEO4J_EXTERNAL_PORT': PARAMS['KG_DB_CONFIGS']['graphdb_config']['port'],
+    'NEO4J_UI_EXTERNAL_PORT': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['neo4j_ui_port'],
 
     'NEO4j_AUTH_USER': PARAMS['KG_DB_CONFIGS']['graphdb_config']['params']['user'],
     'NEO4j_AUTH_PWD': PARAMS['KG_DB_CONFIGS']['graphdb_config']['params']['pwd'],
@@ -65,7 +65,7 @@ redis_cnt_variables = {
 
 redisui_cnt_variables = {
     'REDIS_UI_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['redis_ui_cntname'],
-    'REDIS_UI_HOST': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['personalai_mmenschikov_redis_ui'],
+    'REDIS_UI_HOST': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['redis_ui_host'],
     'REDIS_UI_EXTERNAL_PORT': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['redis_ui_port']
 }
 
@@ -76,12 +76,12 @@ worksapce_cnt_variables = {
 
     'EXTERNAL_SPEC_KG_PATH': SPEC_KG_PATH,
     'EXTERNAL_SPEC_QADS_PATH': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['qa_datasets']}/{PARAMS['DATASET_NAME']}",
-    'EXTERNAL_NOTEBOOKS_PATH': f"{PARAMS['BASE_PERSONALAI_DIR']}/{PARAMS['PERSONALAI_REPO_DIRS']['notebooks']}",
-    'EXTERNAL_EXPERIMENTS_PATH': f"{PARAMS['BASE_PERSONALAI_DIR']}/{PARAMS['PERSONALAI_REPO_DIRS']['experiments']}",
-    'EXTERNAL_SRC_PATH': f"{PARAMS['BASE_PERSONALAI_DIR']}/{PARAMS['PERSONALAI_REPO_DIRS']['notebooks']}",
-    'EXTERNAL_MODELS_PATH': f"{PARAMS['BASE_PERSONALAI_DIR']}/{PARAMS['PERSONALAI_REPO_DIRS']['models']}",
+    'EXTERNAL_NOTEBOOKS_PATH': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['notebooks']}",
+    'EXTERNAL_EXPERIMENTS_PATH': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['experiments']}",
+    'EXTERNAL_SRC_PATH': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['notebooks']}",
+    'EXTERNAL_MODELS_PATH': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['models']}",
 
-    'INTERNAL_SPEC_KG_PATH': f"{PARAMS['KGS_BASE_PATH']}/{PARAMS['DATASET_NAME']}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}",
+    'INTERNAL_SPEC_KG_PATH': f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{PARAMS['DATASET_NAME']}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}",
     'INTERNAL_SPEC_QADS_PATH': f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['qa_datasets']}/{PARAMS['DATASET_NAME']}",
     'INTERNAL_NOTEBOOKS_PATH': f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['notebooks']}",
     'INTERNAL_EXPERIMENTS_PATH': f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}",
@@ -107,7 +107,7 @@ env_variables = [neo4j_cnt_variables,
                  worksapce_cnt_variables, llmagents_cnt_variables]
 env_variables = '\n'.join(list(map(lambda vars: dictvar_to_string(vars), env_variables)))
 
-DC_ENV_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"
+DC_ENV_PATH = f"{PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"
 with open(DC_ENV_PATH, 'w', encoding='utf-8') as fd:
     fd.write(env_variables)
 

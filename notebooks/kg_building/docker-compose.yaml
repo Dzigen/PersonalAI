@@ -137,18 +137,3 @@ services:
             - driver: nvidia
               device_ids: ['0']
               capabilities: [gpu]
-
-    empty_workspace:
-      image: m.menschikov/empty_workspace:v1
-      container_name: ${EMPTY_WORKSPACE_CNTNAME}
-      hostname: ${EMPTY_WORKSPACE_HOST}
-      volumes:
-        - ${BASE_PERSONALAI_PATH}:${BASE_PERSONALAI_PATH}
-      deploy:
-        resources:
-          limits:
-            cpus: '2'
-            memory: 8G
-          reservations:
-            cpus: '1'
-            memory: 4G
