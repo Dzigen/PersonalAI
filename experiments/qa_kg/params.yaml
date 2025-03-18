@@ -3,7 +3,7 @@ DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'qwen25_080325_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
-  max_samples_per_pack: -1
+  max_samples_per_pack: 5
 
 # SERVER PATHS
 BASE_PERSONALAI_PATH: '/home/dzigen/Desktop/PersonalAI/Personal-AI' # TO CHANGE
@@ -41,7 +41,7 @@ BASE_KGR_CONFIG:
 
   persistent_cache_config:
     vendor: 'mongo' # DONT CHANGE
-    host: 'personalai_mmenschikov_mongo' # TO CHANGE
+    host: 'localhost' # TO CHANGE
     port: 27017 # TO CHANGE
     db_info:
       db: 'qa_db'
@@ -53,7 +53,7 @@ BASE_KGR_CONFIG:
 
   ram_cache_config:
     vendor: 'redis' # DONT CHANGE
-    host: 'personalai_mmenschikov_redis' # TO CHANGE
+    host: 'localhost' # TO CHANGE
     port: 6379 # TO CHANGE
     db_info:
       db: 1
@@ -106,9 +106,9 @@ WEAK_KG_REASONER:
 
 QA_EVALUATION:
   bertscore_model_path: "google/electra-base-discriminator" # DONT CHANGE
-  meteor_path: 'experiments/qa_kg/metrics/meteor' # DONT CHANGE
-  exactmatch_path: 'experiments/qa_kg/metrics/exact_match' # DONT CHANGE
-  llm_as_a_judge_path: 'experiments/qa_kg/metrics/' # DONT CHANGE
+  meteor_path: 'experiments/metrics/meteor' # DONT CHANGE
+  exactmatch_path: 'experiments/metrics/exact_match' # DONT CHANGE
+  llm_as_a_judge_path: 'experiments/metrics/' # DONT CHANGE
 
   judge_llm_config:
     caching: True # DONT CHANGE
@@ -139,11 +139,17 @@ QA_EVALUATION:
 
 KG_DB_CONFIGS:
   graphdb_config:
-    host: 'personalai_mmenschikov_neo4j' # TO CHANGE
+    host: 'localhost' # TO CHANGE
     port: 7687 # TO CHANGE
     params:
       user: 'neo4j'
       pwd: 'password'
+
+  embedder_config:
+    prompts:
+      query: "query: "
+      passage: "passage: "
+    model_name_or_path: 'intfloat/multilingual-e5-large'
 
 ########## CONTAINERS PARAMS ##########
 

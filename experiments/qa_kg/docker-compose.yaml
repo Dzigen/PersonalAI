@@ -15,10 +15,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
+          cpus: '3'
           memory: 10G
         reservations:
-          cpus: '1'
+          cpus: '3'
           memory: 5G
 
   mongo_cache:
@@ -35,10 +35,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
+          cpus: '3'
           memory: 40G
         reservations:
-          cpus: '1'
+          cpus: '2'
           memory: 5G
 
   mongo_ui:
@@ -72,10 +72,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
+          cpus: '3'
           memory: 10G
         reservations:
-          cpus: '1'
+          cpus: '2'
           memory: 5G
 
   redis_ui:
@@ -114,6 +114,7 @@ services:
     image: m.menschikov/workspace:v1
     container_name: ${WORKSPACE_CNTNAME}
     hostname: ${WORKSPACE_HOST}
+    network_mode: "host"
     volumes:
       - ${EXTERNAL_SPEC_KG_PATH}:${INTERNAL_SPEC_KG_PATH}
       - ${EXTERNAL_SPEC_QADS_PATH}:${INTERNAL_SPEC_QADS_PATH}
@@ -129,10 +130,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
+          cpus: '3'
           memory: 32G
         reservations:
-          cpus: '1'
+          cpus: '2'
           memory: 24G
           devices:
             - driver: nvidia
