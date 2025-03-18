@@ -15,10 +15,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '4'
+          cpus: '2'
           memory: 10G
         reservations:
-          cpus: '2'
+          cpus: '1'
           memory: 5G
 
   mongo_cache:
@@ -27,7 +27,7 @@ services:
     hostname: ${MONGO_HOST}
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_AUTH_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_AUTH_PWD}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_AUTH_PASS}
     ports:
       - "${MONGO_EXTERNAL_PORT}:27017"
     volumes:
@@ -35,10 +35,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '4'
+          cpus: '2'
           memory: 40G
         reservations:
-          cpus: '2'
+          cpus: '1'
           memory: 5G
 
   mongo_ui:
@@ -100,10 +100,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '4'
+          cpus: '2'
           memory: 8G
         reservations:
-          cpus: '2'
+          cpus: '1'
           memory: 4G
           devices:
             - driver: nvidia
@@ -123,16 +123,16 @@ services:
       - ${EXTERNAL_MODELS_PATH}:${INTERNAL_MODELS_PATH}
     depends_on:
       - neo4j
-      - mongo_ui
-      - redis_ui
+      - mongo_cache
+      - redis_cache
      # - ollama_agent
     deploy:
       resources:
         limits:
-          cpus: '16'
+          cpus: '2'
           memory: 32G
         reservations:
-          cpus: '8'
+          cpus: '1'
           memory: 24G
           devices:
             - driver: nvidia

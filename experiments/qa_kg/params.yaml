@@ -68,9 +68,9 @@ BASE_KGR_CONFIG:
 
 WEAK_KG_REASONER:
 
-  query_parser_config:
-    kw_extraction_task:
-      prompts_version: 'v2' # 'v1' | 'v2'
+  query_parser_config: None
+    # kw_extraction_task:
+    #   prompts_version: 'v2' # 'v1' | 'v2'
 
   knowledge_comparator_config:
     threshold: 0.5
@@ -79,23 +79,24 @@ WEAK_KG_REASONER:
     k_compare: 5
 
   knowledge_retriever_config:
-    retriever_method: 'watercircles'
+    retriever_method: 'naive_retriever'
     retriever_config:
-      # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
-      strict_filter: True
-      hyper_num: 15
-      episodic_num: 15
-      chain_triplets_num: 25
-      other_triplets_num: 6
-      do_text_pruning: False
-      accepted_node_types: None
-        # - 'object'
-        # - 'hyper'
-        # - 'episodic'
-        # - 'time'
-    filter_method: 'naive' # CAN BE None
-    filter_config: # CAND BE None
       max_k: 50
+      # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
+      # strict_filter: True
+      # hyper_num: 15
+      # episodic_num: 15
+      # chain_triplets_num: 25
+      # other_triplets_num: 6
+      # do_text_pruning: False
+      # accepted_node_types: None
+      #   # - 'object'
+      #   # - 'hyper'
+      #   # - 'episodic'
+      #   # - 'time'
+    filter_method: None # CAN BE None
+    filter_config: None # CAND BE None
+    #  max_k: 50
 
   answer_generator_config:
     ag_task:

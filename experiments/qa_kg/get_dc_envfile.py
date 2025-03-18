@@ -36,7 +36,7 @@ mongo_cnt_variables = {
     'MONGO_EXTERNAL_PORT': PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['port'],
 
     'MONGO_AUTH_USER': PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['params']['username'],
-    'MONGO_AUTH_PWD': PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['params']['password'],
+    'MONGO_AUTH_PASS': PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['params']['password'],
 
     'MONGO_LOCAL_VOLUME': PERSISTENT_DB_PATH
 }
@@ -78,7 +78,7 @@ worksapce_cnt_variables = {
     'EXTERNAL_SPEC_QADS_PATH': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['qa_datasets']}/{PARAMS['DATASET_NAME']}",
     'EXTERNAL_NOTEBOOKS_PATH': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['notebooks']}",
     'EXTERNAL_EXPERIMENTS_PATH': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['experiments']}",
-    'EXTERNAL_SRC_PATH': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['notebooks']}",
+    'EXTERNAL_SRC_PATH': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['src']}",
     'EXTERNAL_MODELS_PATH': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['models']}",
 
     'INTERNAL_SPEC_KG_PATH': f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{PARAMS['DATASET_NAME']}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}",
