@@ -119,9 +119,9 @@ CONTAINERS_ADDITIONAL_CONFIG:
 ########## HARDCODED PARAMS ##########
 
 KG_DIR_STRUCT:
-  embeddings_dir_name: embeddings_part
-  graph_dir_name: graph_part
-  cache_dir_name:
+  embeddings_part: embeddings_part
+  graph_part: graph_part
+  cache_dir:
     base: kv_cache
     persistant: persistent_volume
     ram: ram_volume
