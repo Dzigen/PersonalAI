@@ -105,7 +105,7 @@ def triviaqa_rcwikipedia_validation_cload(dataset_path: str) -> List[Tuple[str, 
 CUSTOM_LOAD_FUNCS = {
     'diaasqa': diaasqa_cload,
     'hotpotqa_distractor_validation': hotpotqa_distractor_validation_cload,
-    'triviaqa_rcwikipedia_validation': triviaqa_rcwikipedia_validation_cload
+    'trivia_qa_rcwikipedia_validation': triviaqa_rcwikipedia_validation_cload
 }
 dataset = CUSTOM_LOAD_FUNCS[PARAMS['DATASET_NAME']](PARAMS['DATASET_PATH'])
 print(len(dataset))
