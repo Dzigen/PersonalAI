@@ -46,24 +46,18 @@ services:
 
   empty_workspace:
     image: m.menschikov/empty_workspace:v1
-    container_name: personalai_mmenschikov_empty_worksapce
-    hostname: emptyworksapceservice
-    ports:
-      - "10888:10888"
+    container_name: ${EMPTY_WORKSPACE_CNTNAME}
+    hostname: ${EMPTY_WORKSPACE_HOST}
     volumes:
-      - ../:/home/workspace
+      - ${BASE_PERSONALAI_PATH}:${BASE_PERSONALAI_PATH}
     deploy:
       resources:
         limits:
-          cpus: '16'
-          memory: 32G
+          cpus: '2'
+          memory: 8G
         reservations:
-          cpus: '8'
-          memory: 24G
-          devices:
-            - driver: nvidia
-              device_ids: ['1']
-              capabilities: [gpu]
+          cpus: '1'
+          memory: 4G
 
 
   ollama_agent:

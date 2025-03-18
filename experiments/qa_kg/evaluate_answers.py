@@ -16,8 +16,6 @@ from typing import Dict
 import torch
 import gc
 import os
-
-
 import nltk
 nltk.download('wordnet')
 
@@ -28,7 +26,7 @@ PARAMS_FILEP = sys.orig_argv[2]
 with open(PARAMS_FILEP, 'r') as stream:
     PARAMS = yaml.safe_load(stream)
 
-DS_EXPERIMENT_DIR = f"{PARAMS['EXPERIMENTS_BASE_DIR']}/{PARAMS['DATASET_NAME']}"
+DS_EXPERIMENT_DIR = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{PARAMS['DATASET_NAME']}"
 SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['EXPERIMENT_NAME']}"
 
 GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['gen_answers_name']}"
@@ -49,7 +47,7 @@ class ReaderMetrics:
     # - BLEU presision
     # - ROUGE recall
     # - METEOR f1
-    def __init__(self, model_path:str, base_dir:str= '../..',
+    def __init__(self, model_path:str,
                  meteor_filep:str="./metrics/meteor",
                  em_filep:str="./metrics/exact_match"):
         self.rouge_obj = ROUGEScore()
@@ -59,7 +57,8 @@ class ReaderMetrics:
         self.meteor_obj = evaluate.load(meteor_filep)
         print("Loading ExactMatch")
         self.em_obj = evaluate.load(em_filep)
-        self.bertscore_obj = BERTScore(f"{base_dir}/models/{model_path}", return_hash=True)
+        print("Loading BertScore")
+        self.bertscore_obj = BERTScore(model_path, return_hash=True)
 
     def bertscore(self, predicted: List[str], targets: List[str]):
         output = self.bertscore_obj(predicted, targets)
@@ -72,27 +71,27 @@ class ReaderMetrics:
     def rougel(self, predicted: List[str], targets: List[str]):
         return [self.rouge_obj(
             predicted[i], targets[i])['rougeL_fmeasure']
-                 for i in range(len(targets))]
+                 for i in tqdm(range(len(targets)))]
 
     def bleu1(self, predicted: List[str], targets: List[str]):
         return [self.bleu1_obj(
             [predicted[i]], [[targets[i]]])
-                 for i in range(len(targets))]
+                 for i in tqdm(range(len(targets)))]
 
     def bleu2(self, predicted: List[str], targets: List[str]):
         return [self.bleu2_obj(
             [predicted[i]], [[targets[i]]])
-                 for i in range(len(targets))]
+                 for i in tqdm(range(len(targets)))]
 
     def meteor(self, predicted: List[str], targets: List[str]):
         return [self.meteor_obj.compute(
             predictions=[predicted[i]], references=[targets[i]])['meteor']
-                 for i in range(len(targets))]
+                 for i in tqdm(range(len(targets)))]
 
     def exact_match(self, predicted: List[str], targets: List[str]):
         return [self.em_obj.compute(
             predictions=[predicted[i]], references=[targets[i]], ignore_case=True, ignore_punctuation=True)["exact_match"]
-                for i in range(len(targets))]
+                for i in tqdm(range(len(targets)))]
 
     def levenshtain_score(self, predicted: List[str], targets: List[str]):
         return list(map(lambda pair: levenshtain_distance(pair[1], pair[0]), zip(predicted, targets)))
@@ -113,17 +112,15 @@ def save_json(data: Dict[str, object], save_path: str):
         fd.write(dump)
 
 METRICS = ReaderMetrics(
-    base_dir=PARAMS['BASE_PERSONALAI_DIR'],
-    model_path=PARAMS['QA_EVALUATION']['bertscore_model_path'],
-    meteor_filep=PARAMS['QA_EVALUATION']['meteor_path'],
-    em_filep=PARAMS['QA_EVALUATION']['exactmatch_path'])
+    model_path=f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['models']}/{PARAMS['QA_EVALUATION']['bertscore_model_path']}",
+    meteor_filep=f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['QA_EVALUATION']['meteor_path']}",
+    em_filep=f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['QA_EVALUATION']['exactmatch_path']}")
 
 ####################################################
 
 #
 gen_pack_names = os.listdir(GENERATED_ANSWERS_DIR)
-process = tqdm(gen_pack_names)
-for pack_name in process:
+for pack_name in gen_pack_names:
 
     torch.cuda.empty_cache()
     gc.collect()
@@ -140,11 +137,22 @@ for pack_name in process:
             none_answers += 1
 
     if len(generated_answers) > 0:
+        print("Calculating BLEU1...")
         b1_scores = round5(np.mean(METRICS.bleu1(generated_answers, filtered_target_answers)))
+
+        print("Calculating BLEU2...")
         b2_scores  = round5(np.mean(METRICS.bleu2(generated_answers, filtered_target_answers)))
+
+        print("Calculating RougeL...")
         rl_scores = round5(np.mean(METRICS.rougel(generated_answers, filtered_target_answers)))
+
+        print("Calculating Meteor...")
         m_scores = round5(np.mean(METRICS.meteor(generated_answers, filtered_target_answers)))
+
+        print("Calculating ExactMatch...")
         em_scores = round5(np.mean(METRICS.exact_match(generated_answers, filtered_target_answers)))
+
+        print("Calculating BertScore...")
         bs_scores = METRICS.bertscore(generated_answers, filtered_target_answers)
     else:
         b1_scores, b2_scores, rl_scores, m_scores, em_scores, bs_scores = 0,0,0,0,0,0
@@ -163,3 +171,5 @@ for pack_name in process:
 
     # сохраняем скоры по папку
     save_json(scores, f"{METRICS_DIR}/{pack_name}")
+
+print("############ DONE ############")

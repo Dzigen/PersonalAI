@@ -12,201 +12,65 @@ import pandas as pd
 # Read YAML file
 PARAMS_FILE_PATH = sys.orig_argv[2]
 with open(PARAMS_FILE_PATH, 'r') as stream:
-    HYPER_PARAMS = yaml.safe_load(stream)
+    PARAMS = yaml.safe_load(stream)
 
-# Корневая директория PersonalAI-проекта,
-# где лежит исходный код библиотеки (src-каталог)
-sys.path.insert(0, HYPER_PARAMS['BASE_PERSONALAI_DIR'])
+sys.path.insert(0, PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
 
-from src.pipelines.memorize import MemPipelineConfig, MemPipeline, LLMExtractorConfig, LLMUpdatorConfig
-from src.kg_model import KnowledgeGraphModel, EmbeddingsModelConfig, GraphModelConfig
-from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
-from src.db_drivers.vector_driver import VectorDriverConfig, VectorDBConnectionConfig, EmbedderModelConfig
-from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
-
-from src.pipelines.memorize.extractor.configs import AgentThesisExtrTaskConfigSelector, AgentTripletExtrTaskConfigSelector
-from src.pipelines.memorize.updator.configs import AgentReplSimpleTripletTaskConfigSelector, AgentReplThesisTripletTaskConfigSelector
-from src.agents import AgentDriverConfig
-from src.agents.utils import AgentConnectorConfig
-
-# gigachat key
-#GIGACHAT_CREDS = 'OWUwOGUzOWEtMjJiNi00YmMxLThmMmItNzMwNjM2MTI2YmYxOjg2ODdiOTVhLTZkNDctNGFjOC1iMmViLTEyNDA5MmFiN2Q5Mw=='
-# openai key
-#API_KEY = "'sk-861mINAavom2SSBqgrI82D4thMOfqT37knCof2o0H0T3BlbkFJ2gdVXJuVjNesNNP2aeUwPoBpZP3a3R1gn1kqv97CsA'"
+from src.pipelines.memorize import MemPipeline
+from src.kg_model import KnowledgeGraphModel
 
 gc.collect()
 
-########SETTING HYPERPARAMS###########
+######## SETTING HYPERPARAMS ###########
 
-DATASET_PATH = f"{HYPER_PARAMS['KGS_BASE_PATH']}/{HYPER_PARAMS['DATASET_NAME']}"
-KG_PATH = f"{DATASET_PATH}/{HYPER_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+DATASET_KGS_PATH = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
+SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
-VECTORIZED_DB_PATH = f"{KG_PATH}/{HYPER_PARAMS['KG_DIR_STRUCT']['embeddings_dir_name']}/"
-GRAPH_DB_PATH = f"{KG_PATH}/{HYPER_PARAMS['KG_DIR_STRUCT']['graph_dir_name']}/"
-KV_DB_PATH = f"{KG_PATH}/{HYPER_PARAMS['KG_DIR_STRUCT']['cache_dir_name']['base']}/"
-PERSISTENT_DB_PATH = KV_DB_PATH + f"{HYPER_PARAMS['KG_DIR_STRUCT']['cache_dir_name']['persistant']}/"
-RAM_DB_PATH = KV_DB_PATH + f"{HYPER_PARAMS['KG_DIR_STRUCT']['cache_dir_name']['ram']}/"
-TMP_EXTRACTED_TRIPLETS_PATH = f"{KG_PATH}/{HYPER_PARAMS['KG_DIR_STRUCT']['tmp_triplets_dir_name']}/"
+SAVE_PARAMS_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['hyperparameters']}"
 
-HYPER_PARAMS_PATH = f"{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['hyperparameters']}"
-EXTRACTED_TRIPLETS_PATH = f"{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['extracted_triplets']}"
-GRAPH_DRIVER_CONFIG_PATH = f"{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['graph_config']}"
-EMBEDDINGS_DRIVER_CONFIG_PATH = f"{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['embeddings_config']}"
-MEM_PIPELINE_CONFIG_PATH = f"{KG_PATH}/{HYPER_PARAMS['SAVE_CONFIGS_NAMES']['mem_pipeline_config']}"
+TMP_EXTRACTED_TRIPLETS_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['tmp_extracted_triplets']}"
+EXTRACTED_TRIPLETS_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['extracted_triplets']}"
 
-# if HYPER_PARAMS['need_to_clear']:
-#     u_answer = input("Are you sure is need to clear knowledge graph? (y/n): ")
-#     if u_answer == 'n':
-#         raise AssertionError
-#     elif u_answer == 'y':
-#         pass
-#     else:
-#         raise ValueError
-# else:
-#     u_answer = input("Are you sure is no need to clear knowledge graph? (y/n): ")
-#     if u_answer == 'n':
-#         raise AssertionError
-#     elif u_answer == 'y':
-#         pass
-#     else:
-#         raise ValueError
+GRAPH_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['graph_config']}"
+EMBEDDINGS_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['embeddings_config']}"
 
-########Setting knowledge graph######
+MEM_PIPELINE_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['mem_pipeline_config']}"
+CACHE_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['kvdriver_cache_config']}"
 
-# Graph model config
+######## Setting knowledge graph model ######
 
-graphdb_config = GraphDBConnectionConfig(
-    host=HYPER_PARAMS['KG_DB_CONFIGS']['graphdb_config']['host'],
-    port=HYPER_PARAMS['KG_DB_CONFIGS']['graphdb_config']['port'],
-    db_info=HYPER_PARAMS['KG_DB_CONFIGS']['graphdb_config']['db_info'],
-    params=HYPER_PARAMS['KG_DB_CONFIGS']['graphdb_config']['params'],
-    need_to_clear=HYPER_PARAMS['KG_DB_CONFIGS']['need_to_clear']
-)
-
-gmodel_config = GraphModelConfig(
-    driver_config=GraphDriverConfig(
-        db_vendor=HYPER_PARAMS['KG_DB_CONFIGS']['graphdb_config']['vendor'],
-        db_config=graphdb_config))
-
-# Vector model config
-
-nodesdb_config = VectorDBConnectionConfig(
-    db_info=HYPER_PARAMS['KG_DB_CONFIGS']['nodesdb_config']['db_info'],
-    path=VECTORIZED_DB_PATH,
-    need_to_clear=HYPER_PARAMS['KG_DB_CONFIGS']['need_to_clear']
-)
-
-tripletsdb_config = VectorDBConnectionConfig(
-    db_info=HYPER_PARAMS['KG_DB_CONFIGS']['tripletsdb_config']['db_info'],
-    path=VECTORIZED_DB_PATH,
-    need_to_clear=HYPER_PARAMS['KG_DB_CONFIGS']['need_to_clear']
-)
-
-embedder_config = EmbedderModelConfig(
-    model_name_or_path=HYPER_PARAMS['KG_DB_CONFIGS']['embedder_config']['model_name_or_path'],
-    prompts=HYPER_PARAMS['KG_DB_CONFIGS']['embedder_config']['prompts']
-)
-
-emodel_config = EmbeddingsModelConfig(
-    nodesdb_driver_config=VectorDriverConfig(
-        db_vendor=HYPER_PARAMS['KG_DB_CONFIGS']['nodesdb_config']['vendor'],
-        db_config=nodesdb_config),
-    tripletsdb_driver_config=VectorDriverConfig(
-        db_vendor=HYPER_PARAMS['KG_DB_CONFIGS']['tripletsdb_config']['vendor'],
-        db_config=tripletsdb_config),
-    embedder_config=embedder_config)
-
-# KG model
+gmodel_config = joblib.load(GRAPH_MODEL_CONFIG_PATH)
+emodel_config = joblib.load(EMBEDDINGS_MODEL_CONFIG_PATH)
 
 kg_model = KnowledgeGraphModel(
     graph_config=gmodel_config,
     embeddings_config=emodel_config)
 
-# print init info
-
+# checking knowledge graph size
 print(kg_model.embeddings_struct.vectordbs['nodes'].count_items())
 print(kg_model.embeddings_struct.vectordbs['triplets'].count_items())
 print(kg_model.graph_struct.db_conn.count_items())
 
-########SETTING MEMORIZE PIPELINE######
+######## SETTING MEMORIZE PIPELINE ######
 
-# agent driver config
-adriver_config = AgentDriverConfig(
-    name=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['agent_config']['vendor'],
-    agent_config=AgentConnectorConfig(
-        gen_strategy=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['agent_config']['gen_strategy'],
-        credentials=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['agent_config']['credentials'],
-        ext_params=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['agent_config']['ext_params']
-    )
-)
-
-# cache driver config
-if HYPER_PARAMS['MEM_PIPELINE_CONFIG']['llm_caching']:
-    kvdriver_config = KeyValueDriverConfig(
-        db_vendor='mixed_kv',
-        db_config=KVDBConnectionConfig(
-            db_info=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['cache_db_info'],
-            need_to_clear=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['cache_need_to_clear'],
-            params={
-                'redis_config': KVDBConnectionConfig(
-                    host=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['host'],
-                    port=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['port'],
-                    params=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['params']),
-                'mongo_config': KVDBConnectionConfig(
-                    host=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['host'],
-                    port=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['port'],
-                    params=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['params'])
-            }
-        )
-    )
-else:
-    kvdriver_config = None
-
-# extractor stage config
-extractor_config = LLMExtractorConfig(
-    lang=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['lang'],
-    adriver_config=adriver_config,
-    triplets_extraction_task_config=AgentTripletExtrTaskConfigSelector.select(
-        base_config_version=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['extractor_stage']['extract_triplets']['prompts_version']),
-    thesises_extraction_task_config=AgentThesisExtrTaskConfigSelector.select(
-        base_config_version=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['extractor_stage']['extract_thesises']['prompts_version']),
-)
-
-# updator stage config
-updator_config = LLMUpdatorConfig(
-    lang=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['lang'],
-    adriver_config=adriver_config,
-    replace_simple_task_config=AgentReplSimpleTripletTaskConfigSelector.select(
-        base_config_version=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['replace_simple_triplets']['prompts_version']),
-    replace_thesis_task_config= AgentReplThesisTripletTaskConfigSelector.select(
-        base_config_version=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['replace_thesis_triplets']['prompts_version']),
-    delete_obsolete_info=HYPER_PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['delete_obsolete_info']
-)
-
-# Setting Memorization Pipeline
-mem_config = MemPipelineConfig(
-    extractor_config=extractor_config,
-    updator_config=updator_config)
+mem_config = joblib.load(MEM_PIPELINE_CONFIG_PATH)
+kvdriver_config =  joblib.load(CACHE_CONFIG_PATH)
 
 mem_pipeline = MemPipeline(kg_model, mem_config, kvdriver_config)
 
 # checking caches status
-if HYPER_PARAMS['MEM_PIPELINE_CONFIG']['llm_caching']:
+if PARAMS['MEM_PIPELINE_CONFIG']['llm_caching']:
     print("extract_triples cached: ", mem_pipeline.extractor.triplets_extraction_solver.cachekv.kv_conn.count_items())
     print("extract_thesises cached: ", mem_pipeline.extractor.thesises_extraction_solver.cachekv.kv_conn.count_items())
     print("replace_simple cached: ", mem_pipeline.updator.replace_simple_solver.cachekv.kv_conn.count_items())
     print("replace_thesises cached: ", mem_pipeline.updator.replace_hyper_solver.cachekv.kv_conn.count_items())
 
-############SAVING HYPERPARAMS############
+############ SAVING HYPERPARAMS ############
 
-with open(HYPER_PARAMS_PATH, 'w') as fd:
-    yaml.dump(HYPER_PARAMS, fd, default_flow_style=False)
+with open(SAVE_PARAMS_PATH, 'w') as fd:
+    yaml.dump(PARAMS, fd, default_flow_style=False)
 
-joblib.dump(gmodel_config, GRAPH_DRIVER_CONFIG_PATH)
-joblib.dump(emodel_config, EMBEDDINGS_DRIVER_CONFIG_PATH)
-joblib.dump(mem_config, MEM_PIPELINE_CONFIG_PATH)
-
-########################
+############ LOADING DATASET ############
 
 def diaasqa_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
     with open(f"{dataset_path}/Augment_DiaASQ.json", 'r', encoding='utf-8') as fd:
@@ -243,26 +107,24 @@ CUSTOM_LOAD_FUNCS = {
     'hotpotqa_distractor_validation': hotpotqa_distractor_validation_cload,
     'triviaqa_rcwikipedia_validation': triviaqa_rcwikipedia_validation_cload
 }
-dataset = CUSTOM_LOAD_FUNCS[HYPER_PARAMS['DATASET_NAME']](HYPER_PARAMS['DATASET_PATH'])
+dataset = CUSTOM_LOAD_FUNCS[PARAMS['DATASET_NAME']](PARAMS['DATASET_PATH'])
 print(len(dataset))
 
-###########KG BUILDING#############
-
-# break point 5158 out of 18005 for hotpotqa_distractor_validation/qwen25_full
+########### KG BUILDING #############
 
 for i in tqdm(range(len(dataset))):
     text, time, properties = dataset[i][0], dataset[i][1], dataset[i][2]
     extracted_triplets, _ = mem_pipeline.remember(text, time, properties)
 
-    joblib.dump(extracted_triplets, TMP_EXTRACTED_TRIPLETS_PATH + f'item{i}')
+    joblib.dump(extracted_triplets, f'{TMP_EXTRACTED_TRIPLETS_PATH}/item{i}')
 
-###########ACCUMULATING EXTRACTED TRIPLETSs#############
+########### ACCUMULATING EXTRACTED TRIPLETSs #############
 
 accum_triplets = []
 extracted_t_files = os.listdir(TMP_EXTRACTED_TRIPLETS_PATH)
 for t_file in tqdm(extracted_t_files):
-    accum_triplets.append(joblib.load(TMP_EXTRACTED_TRIPLETS_PATH + t_file))
+    accum_triplets.append(joblib.load(f"{TMP_EXTRACTED_TRIPLETS_PATH}/{t_file}"))
 
 joblib.dump(accum_triplets, EXTRACTED_TRIPLETS_PATH)
 
-print("======== DONE ========")
+print("############ DONE ############")

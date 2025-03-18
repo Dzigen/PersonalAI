@@ -31,12 +31,12 @@ PERSISTENT_DB_PATH = f"{KV_DB_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir_name']['
 
 mongo_cnt_variables = {
     'MONGO_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['mongo_cntname'],
-    'MONGO_HOST': PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['host'],
+    'MONGO_HOST': PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['host'],
 
-    'MONGO_EXTERNAL_PORT': PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['port'],
+    'MONGO_EXTERNAL_PORT': PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['port'],
 
-    'MONGO_AUTH_USER': PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['params']['username'],
-    'MONGO_AUTH_PASS': PARAMS['MEM_PIPELINE_CONFIG']['persistent_cache_config']['params']['password'],
+    'MONGO_AUTH_USER': PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['params']['username'],
+    'MONGO_AUTH_PASS': PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['params']['password'],
 
     'MONGO_LOCAL_VOLUME': PERSISTENT_DB_PATH
 }
@@ -52,15 +52,15 @@ RAM_DB_PATH = f"{KV_DB_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir_name']['ram']}"
 
 redis_cnt_variables = {
     'REDIS_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['redis_cntname'],
-    'REDIS_HOST': PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['host'],
+    'REDIS_HOST': PARAMS['BASE_KGR_CONFIG']['ram_cache_config']['host'],
 
-    'REDIS_EXTERNAL_PORT': PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['port'],
+    'REDIS_EXTERNAL_PORT': PARAMS['BASE_KGR_CONFIG']['ram_cache_config']['port'],
 
-    'REDIS_AUTH_USER': PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['params']['username'],
-    'REDIS_AUTH_PASS': PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['params']['password'],
+    'REDIS_AUTH_USER': PARAMS['BASE_KGR_CONFIG']['ram_cache_config']['params']['username'],
+    'REDIS_AUTH_PASS': PARAMS['BASE_KGR_CONFIG']['ram_cache_config']['params']['password'],
 
     'REDIS_LOCAL_VOLUME': RAM_DB_PATH,
-    'REDIS_CONFIG': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['configs']}/{PARAMS['MEM_PIPELINE_CONFIG']['ram_cache_config']['db_configuration']}"
+    'REDIS_CONFIG': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['configs']}/{PARAMS['BASE_KGR_CONFIG']['ram_cache_config']['db_configuration']}"
 }
 
 redisui_cnt_variables = {
@@ -77,12 +77,14 @@ worksapce_cnt_variables = {
     'EXTERNAL_SPEC_KG_PATH': SPEC_KG_PATH,
     'EXTERNAL_SPEC_QADS_PATH': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['qa_datasets']}/{PARAMS['DATASET_NAME']}",
     'EXTERNAL_NOTEBOOKS_PATH': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['notebooks']}",
+    'EXTERNAL_EXPERIMENTS_PATH': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['experiments']}",
     'EXTERNAL_SRC_PATH': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['src']}",
     'EXTERNAL_MODELS_PATH': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['models']}",
 
     'INTERNAL_SPEC_KG_PATH': f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{PARAMS['DATASET_NAME']}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}",
     'INTERNAL_SPEC_QADS_PATH': f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['qa_datasets']}/{PARAMS['DATASET_NAME']}",
     'INTERNAL_NOTEBOOKS_PATH': f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['notebooks']}",
+    'INTERNAL_EXPERIMENTS_PATH': f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}",
     'INTERNAL_SRC_PATH': f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['src']}",
     'INTERNAL_MODELS_PATH': f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['models']}"
 }
@@ -90,8 +92,8 @@ worksapce_cnt_variables = {
 # параметры для контейнера с llm-моделями
 llmagents_cnt_variables = {
     'OLLAMA_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['agent_cntname'],
-    'OLLAMA_HOST': PARAMS['MEM_PIPELINE_CONFIG']['agent_config']['credentials']['host'],
-    'OLLAMA_EXTERNAL_PORT': PARAMS['MEM_PIPELINE_CONFIG']['agent_config']['credentials']['port'],
+    'OLLAMA_HOST': PARAMS['BASE_KGR_CONFIG']['agent_config']['credentials']['host'],
+    'OLLAMA_EXTERNAL_PORT': PARAMS['BASE_KGR_CONFIG']['agent_config']['credentials']['port'],
     'OLLAMA_LOCAL_VOLUME': PARAMS['OLLAMA_MODELS_PATH']
 }
 
@@ -105,7 +107,7 @@ env_variables = [neo4j_cnt_variables,
                  worksapce_cnt_variables, llmagents_cnt_variables]
 env_variables = '\n'.join(list(map(lambda vars: dictvar_to_string(vars), env_variables)))
 
-DC_ENV_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"
+DC_ENV_PATH = f"{PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"
 with open(DC_ENV_PATH, 'w', encoding='utf-8') as fd:
     fd.write(env_variables)
 

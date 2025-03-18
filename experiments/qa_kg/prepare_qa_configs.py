@@ -1,39 +1,29 @@
 # генерируем kg_reasoner конфиг на основании params.yaml файла
 
 import sys
-import os
 import yaml
-import json
 import joblib
-import copy
 
 # Read YAML file
 PARAMS_FILEP = sys.orig_argv[2]
 with open(PARAMS_FILEP, 'r') as stream:
     PARAMS = yaml.safe_load(stream)
 
-sys.path.insert(0, PARAMS['BASE_PERSONALAI_DIR'])
+sys.path.insert(0, PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
 
 from src.pipelines.qa.kg_reasoning.weak_reasoner import WeakKGReasonerConfig
 from src.pipelines.qa.kg_reasoning.weak_reasoner import QueryLLMParserConfig, KnowledgeComparatorConfig, \
     KnowledgeRetrieverConfig, QALLMGeneratorConfig
-
 from src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction import AgentKWETaskConfigSelector
 from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag import AgentAGTaskConfigSelector
-
 from src.agents import AgentDriverConfig
 from src.agents.utils import AgentConnectorConfig
 
 ################ hyperparams #####################
 
-KG_DIR_PATH = f"{PARAMS['KGS_BASE_PATH']}/{PARAMS['DATASET_NAME']}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
-MEM_PARAMS_FILEP = f"{KG_DIR_PATH}/{PARAMS['MEM_PIPELINE_HYPERP']}"
-with open(MEM_PARAMS_FILEP, 'r') as stream:
-    MEM_PARAMS = yaml.safe_load(stream)
-
-DS_EXPERIMENT_DIR = f"{PARAMS['EXPERIMENTS_BASE_DIR']}/{PARAMS['DATASET_NAME']}"
+DS_EXPERIMENT_DIR = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{PARAMS['DATASET_NAME']}"
 SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['EXPERIMENT_NAME']}"
-KG_REASONSER_CONFIG_SPATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_FILES_NAMES']['kg_reasoner_config']}"
+KG_REASONSER_CONFIG_SPATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_CONFIGS_NAMES']['kg_reasoner_config']}"
 
 ################ agent driver config #####################
 
@@ -44,7 +34,7 @@ adriver_config = AgentDriverConfig(
         credentials=PARAMS['BASE_KGR_CONFIG']['agent_config']['credentials'],
         ext_params=PARAMS['BASE_KGR_CONFIG']['agent_config']['ext_params']))
 
-################ KG REAONER ################
+################ KG REASONER ################
 
 if PARAMS['BASE_KGR_CONFIG']['name'] == 'weak':
 
@@ -91,3 +81,5 @@ print(kg_reasoner_config)
 # сохранить полученный конфиг в директорию соответствующего эксперимента
 with open(KG_REASONSER_CONFIG_SPATH, 'wb') as fd:
     joblib.dump(kg_reasoner_config, fd)
+
+print("############ DONE ############")
