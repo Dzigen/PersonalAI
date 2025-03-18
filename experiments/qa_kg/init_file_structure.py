@@ -7,7 +7,7 @@ PARAMS_FILEP = sys.orig_argv[2]
 with open(PARAMS_FILEP, 'r') as stream:
     PARAMS = yaml.safe_load(stream)
 
-DS_EXPERIMENT_DIR = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['DATASET_NAME']}"
+DS_EXPERIMENT_DIR = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{PARAMS['DATASET_NAME']}"
 SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['EXPERIMENT_NAME']}"
 
 TMP_GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['tmp_gen_answers_name']}"
@@ -17,9 +17,6 @@ TMP_JUDGES_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['tmp_judge
 JUDGES_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['judges_name']}"
 
 if PARAMS['INIT_STRUCT']:
-    print("Проверяем существование директории заданного графа знаний...")
-    if not os.path.exists(PARAMS['KGS_BASE_PATH']):
-        raise ValueError(f"Директории не существует: {PARAMS['KGS_BASE_PATH']}")
 
     print("Создаём директорию для сохранения результатов по эксперименту...")
     if not os.path.exists(DS_EXPERIMENT_DIR):

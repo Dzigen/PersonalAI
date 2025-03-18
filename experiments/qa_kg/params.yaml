@@ -1,9 +1,9 @@
-EXPERIMENT_NAME: "wc_v2_qwen25(e2.1.1)(v1.5.4)" # TO CHANGE
+EXPERIMENT_NAME: "nr_v2_qwen25(e2.6.1)(v1.5.4)" # TO CHANGE
 DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'qwen25_080325_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
-  max_samples_per_pack: -1
+  max_samples_per_pack: 5
 
 # SERVER PATHS
 BASE_PERSONALAI_PATH: '/home/dzigen/Desktop/PersonalAI/Personal-AI' # TO CHANGE
@@ -62,13 +62,15 @@ BASE_KGR_CONFIG:
       ss_name: 'sorted_node_pairs'
       hs_name: 'node_pairs'
       max_storage: 50000000
+      username: 'my_user'
+      password: 'my_user_password'
     db_configuration: 'redis' # DONT CHANGE
 
 WEAK_KG_REASONER:
 
-  query_parser_config:
-    kw_extraction_task:
-      prompts_version: 'v2' # 'v1' | 'v2'
+  query_parser_config: None
+    # kw_extraction_task:
+    #   prompts_version: 'v2' # 'v1' | 'v2'
 
   knowledge_comparator_config:
     threshold: 0.5
@@ -77,23 +79,24 @@ WEAK_KG_REASONER:
     k_compare: 5
 
   knowledge_retriever_config:
-    retriever_method: 'watercircles'
+    retriever_method: 'naive_retriever'
     retriever_config:
-      # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
-      strict_filter: True
-      hyper_num: 15
-      episodic_num: 15
-      chain_triplets_num: 25
-      other_triplets_num: 6
-      do_text_pruning: False
-      accepted_node_types: None
-        # - 'object'
-        # - 'hyper'
-        # - 'episodic'
-        # - 'time'
-    filter_method: 'naive' # CAN BE None
-    filter_config: # CAND BE None
       max_k: 50
+      # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
+      # strict_filter: True
+      # hyper_num: 15
+      # episodic_num: 15
+      # chain_triplets_num: 25
+      # other_triplets_num: 6
+      # do_text_pruning: False
+      # accepted_node_types: None
+      #   # - 'object'
+      #   # - 'hyper'
+      #   # - 'episodic'
+      #   # - 'time'
+    filter_method: None # CAN BE None
+    filter_config: None # CAND BE None
+    #  max_k: 50
 
   answer_generator_config:
     ag_task:
@@ -103,9 +106,9 @@ WEAK_KG_REASONER:
 
 QA_EVALUATION:
   bertscore_model_path: "google/electra-base-discriminator" # DONT CHANGE
-  meteor_path: 'experiments/qa_kg/metrics/meteor' # DONT CHANGE
-  exactmatch_path: 'experiments/qa_kg/metrics/exact_match' # DONT CHANGE
-  llm_as_a_judge_path: 'experiments/qa_kg/metrics/' # DONT CHANGE
+  meteor_path: 'experiments/metrics/meteor' # DONT CHANGE
+  exactmatch_path: 'experiments/metrics/exact_match' # DONT CHANGE
+  llm_as_a_judge_path: 'experiments/metrics/' # DONT CHANGE
 
   judge_llm_config:
     caching: True # DONT CHANGE
@@ -136,8 +139,17 @@ QA_EVALUATION:
 
 KG_DB_CONFIGS:
   graphdb_config:
-    host: 'personalai_mmenschikov_neo4j' # TO CHANGE
+    host: 'localhost' # TO CHANGE
     port: 7687 # TO CHANGE
+    params:
+      user: 'neo4j'
+      pwd: 'password'
+
+  embedder_config:
+    prompts:
+      query: "query: "
+      passage: "passage: "
+    model_name_or_path: 'intfloat/multilingual-e5-large'
 
 ########## CONTAINERS PARAMS ##########
 
@@ -182,6 +194,7 @@ PERSONALAI_REPO_DIRS:
   qa_datasets: data/qa_datasets
   experiments: experiments/qa_kg
   notebooks: notebooks
+  configs: configs
   src: src
   models: models
 
@@ -197,6 +210,7 @@ WORKSPACE_CONTAINER_DIRS:
 SAVE_CONFIGS_NAMES:
   graph_config: graph_config
   embeddings_config: embeddings_config
+  docker_compose_env: .env_qa
   qapipeline_config: qa_config
   kg_reasoner_config: kg_reasoner_config
 

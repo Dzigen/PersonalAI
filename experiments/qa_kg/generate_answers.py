@@ -30,6 +30,8 @@ SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 GRAPH_DRIVER_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['graph_config']}"
 EMBEDDINGS_DRIVER_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['embeddings_config']}"
 
+QA_DATASET_PATH = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['qa_datasets']}/{PARAMS['DATASET_NAME']}"
+
 DS_EXPERIMENT_DIR = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{PARAMS['DATASET_NAME']}"
 SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['EXPERIMENT_NAME']}"
 
@@ -37,10 +39,10 @@ TMP_GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']
 GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['gen_answers_name']}"
 METRICS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['metrics_name']}"
 
-KG_REASONER_CONFIG_PATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_FILES_NAMES']['kg_reasoner_config']}"
-QA_ELAPSED_TIME_SPATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_FILES_NAMES']['elapsed_time']}"
-HYPERPARAMS_SPATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_FILES_NAMES']['hyperparameters']}"
-QA_CONFIG_SPATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_FILES_NAMES']['qapipeline_config']}"
+KG_REASONER_CONFIG_PATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_CONFIGS_NAMES']['kg_reasoner_config']}"
+QA_ELAPSED_TIME_SPATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_CONFIGS_NAMES']['elapsed_time']}"
+HYPERPARAMS_SPATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_CONFIGS_NAMES']['hyperparameters']}"
+QA_CONFIG_SPATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_CONFIGS_NAMES']['qapipeline_config']}"
 
 ###################################
 
@@ -56,6 +58,9 @@ embed_config.tripletsdb_driver_config.db_config.need_to_clear = False
 
 graph_config.driver_config.db_config.host = PARAMS['KG_DB_CONFIGS']['graphdb_config']['host']
 graph_config.driver_config.db_config.port = PARAMS['KG_DB_CONFIGS']['graphdb_config']['port']
+embed_config.nodesdb_driver_config.db_config.path = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['embeddings_dir_name']}"
+embed_config.tripletsdb_driver_config.db_config.path = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['embeddings_dir_name']}"
+embed_config.embedder_config.model_name_or_path = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['models']}/{PARAMS['KG_DB_CONFIGS']['embedder_config']['model_name_or_path']}"
 
 # !!! IMPORTANT !!!
 
@@ -162,7 +167,7 @@ CUSTOM_LOAD_FUNCS = {
     'hotpotqa_distractor_validation': hotpotqa_distractor_validation_qa_load
 }
 
-question_packs = CUSTOM_LOAD_FUNCS[PARAMS['DATASET_NAME']](PARAMS['BASE_KGR_CONFIG']['qa_dataset_path'])
+question_packs = CUSTOM_LOAD_FUNCS[PARAMS['DATASET_NAME']](QA_DATASET_PATH)
 
 #################START_QA_PROCESS##################
 

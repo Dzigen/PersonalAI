@@ -21,7 +21,7 @@ from src.agents.utils import AgentConnectorConfig
 
 ################ hyperparams #####################
 
-DS_EXPERIMENT_DIR = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['DATASET_NAME']}"
+DS_EXPERIMENT_DIR = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{PARAMS['DATASET_NAME']}"
 SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['EXPERIMENT_NAME']}"
 KG_REASONSER_CONFIG_SPATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_CONFIGS_NAMES']['kg_reasoner_config']}"
 
