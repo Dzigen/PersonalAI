@@ -28,7 +28,7 @@ RUN python3 --version
 COPY requirements.txt .
 RUN python3 -m pip install -r requirements.txt
 
-#RUN useradd -rm -d /home/m.menschikov -s /bin/bash -g root -G sudo -u 4200235 m.menschikov
+#RUN useradd -rm -d /home/workspace -s /bin/bash -g root -G sudo -u 4200235 m.menschikov
 #RUN useradd -rm -d /home/workspace -s /bin/bash -g root -G sudo -u 1000 dzigen
 #ARG APP_DIR=/home/m.menschikov/workspace
 #ENV PYTHONPATH "${PYTHONPATH}:${APP_DIR}"
