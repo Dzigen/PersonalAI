@@ -64,7 +64,7 @@ services:
     #image: m.menschikov/agent_service:v1
     image: ollama/ollama:latest
     container_name: personalai_mmenschikov_ollama_service
-    hostname: ollamaservice
+    hostname: localhost
     ports:
       - "11434:11434"
     environment:
