@@ -76,7 +76,7 @@ services:
     environment:
       - OLLAMA_DEBUG=1
     volumes:
-      - ../ollama_volume:/root/.ollama
+      - ../../ollama_volume:/root/.ollama
     deploy:
       resources:
         limits:
