@@ -1,11 +1,11 @@
-DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'qwen25_080325_v2prompts' # TO CHANGE
+DATASET_NAME: 'trivia_qa_rcwikipedia_validation' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen25_110325_v2prompts' # TO CHANGE
 
 # SERVER PATHS
-BASE_PERSONALAI_PATH: '/home/dzigen/Desktop/PersonalAI/Personal-AI' # TO CHANGE
+BASE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
 OLLAMA_MODELS_PATH: '/home/dzigen/Desktop/PersonalAI/ollama_volume' # TO CHANGE
 
-INIT_STRUCT: True # !!! PAY ATTENTION !!!
+INIT_STRUCT: False # !!! PAY ATTENTION !!!
 
 MEM_PIPELINE_CONFIG:
   lang: 'en' # DONT CHANGE
@@ -46,7 +46,7 @@ MEM_PIPELINE_CONFIG:
 
   persistent_cache_config:
     vendor: 'mongo' # DONT CHANGE
-    host: 'personalai_mmenschikov_mongo_cache' # TO CHANGE
+    host: 'localhost' # TO CHANGE
     port: 27017 # TO CHANGE
     params:
       username: 'user'
@@ -55,7 +55,7 @@ MEM_PIPELINE_CONFIG:
 
   ram_cache_config:
     vendor: 'redis' # DONT CHANGE
-    host: 'personalai_mmenschikov_redis_cache' # TO CHANGE
+    host: 'localhost' # TO CHANGE
     port: 6379 # TO CHANGE
     params:
       ss_name: 'sorted_node_pairs'
@@ -66,11 +66,11 @@ MEM_PIPELINE_CONFIG:
     db_configuration: 'redis'
 
 KG_DB_CONFIGS:
-  need_to_clear: True # !!! PAY ATTENTION !!!
+  need_to_clear: False # !!! PAY ATTENTION !!!
 
   graphdb_config:
     vendor: 'neo4j' # DONT CHANGE
-    host: 'personalai_mmenschikov_neo4j' # TO CHANGE
+    host: 'localhost' # TO CHANGE
     port: 7687 # TO CHANGE
     params:
       user: 'neo4j'

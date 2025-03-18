@@ -25,6 +25,7 @@ data/qa_datasets/trivia_qa_rcwikipedia_validation/relevant_contexts.csv
 data/qa_datasets/trivia_qa_rcwikipedia_validation/tmp_triviaqa_cntx.csv
 
 notebooks/kg_building/create/crontab_log.txt
+experiments/qa_kg/qacron_log.txt
 
 experiments/qa_kg/diaasqa
 experiments/qa_kg/hotpotqa_distractor_validation/

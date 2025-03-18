@@ -1,9 +1,10 @@
+
 EXPERIMENT_NAME: "nr_v2_qwen25(e2.6.1)(v1.5.4)" # TO CHANGE
 DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'qwen25_080325_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
-  max_samples_per_pack: 5
+  max_samples_per_pack: -1
 
 # SERVER PATHS
 BASE_PERSONALAI_PATH: '/home/dzigen/Desktop/PersonalAI/Personal-AI' # TO CHANGE
@@ -72,11 +73,11 @@ WEAK_KG_REASONER:
     # kw_extraction_task:
     #   prompts_version: 'v2' # 'v1' | 'v2'
 
-  knowledge_comparator_config:
-    threshold: 0.5
-    fetch_n: 20
-    max_k: 1 # DONT CHANGE
-    k_compare: 5
+  knowledge_comparator_config: None
+    # threshold: 0.5
+    # fetch_n: 20
+    # max_k: 1 # DONT CHANGE
+    # k_compare: 5
 
   knowledge_retriever_config:
     retriever_method: 'naive_retriever'
