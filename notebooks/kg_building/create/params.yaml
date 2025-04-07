@@ -1,11 +1,11 @@
-DATASET_NAME: 'trivia_qa_rcwikipedia_validation' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'qwen25_110325_v2prompts' # TO CHANGE
+DATASET_NAME: 'diaasq' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen25_070325_v2prompts' # TO CHANGE
 
 # SERVER PATHS
 BASE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
 OLLAMA_MODELS_PATH: '/home/dzigen/Desktop/PersonalAI/ollama_volume' # TO CHANGE
 
-INIT_STRUCT: False # !!! PAY ATTENTION !!!
+INIT_STRUCT: True # !!! PAY ATTENTION !!!
 
 MEM_PIPELINE_CONFIG:
   lang: 'en' # DONT CHANGE

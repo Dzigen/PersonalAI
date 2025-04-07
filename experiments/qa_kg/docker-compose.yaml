@@ -15,11 +15,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '3'
-          memory: 10G
+          cpus: '8'
+          memory: 32G
         reservations:
-          cpus: '3'
-          memory: 5G
+          cpus: '4'
+          memory: 8G
 
   mongo_cache:
     image: mongo:latest
@@ -35,11 +35,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '3'
-          memory: 40G
+          cpus: '8'
+          memory: 32G
         reservations:
-          cpus: '2'
-          memory: 5G
+          cpus: '4'
+          memory: 8G
 
   mongo_ui:
     image: mongo-express:latest
@@ -72,11 +72,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '3'
-          memory: 10G
+          cpus: '8'
+          memory: 32G
         reservations:
-          cpus: '2'
-          memory: 5G
+          cpus: '4'
+          memory: 8G
 
   redis_ui:
     image: redis/redisinsight:latest
@@ -130,10 +130,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '3'
-          memory: 32G
+          cpus: '16'
+          memory: 48G
         reservations:
-          cpus: '2'
+          cpus: '8'
           memory: 24G
           devices:
             - driver: nvidia

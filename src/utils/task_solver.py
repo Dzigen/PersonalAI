@@ -43,6 +43,7 @@ class AgentTaskSolverConfig:
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
+    version: str
     suites: Dict[str, AgentTaskSuite]
     formate_context_func: object
     postprocess_answer_func: object

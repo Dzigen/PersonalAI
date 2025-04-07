@@ -36,8 +36,11 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             self.cachekv = None
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
-        return [self.config.max_k, self.kg_model.graph_struct.config,
-                self.kg_model.embeddings_struct.config, query_info]
+        return [self.config.max_k, query_info,
+                self.kg_model.graph_struct.config.driver_config,
+                self.kg_model.embeddings_struct.config.nodesdb_driver_config,
+                self.kg_model.embeddings_struct.config.tripletsdb_driver_config,
+                self.kg_model.embeddings_struct.config.embedder_config]
 
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:

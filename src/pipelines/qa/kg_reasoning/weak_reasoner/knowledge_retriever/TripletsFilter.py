@@ -53,8 +53,11 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
 
 
     def get_cache_key(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[object]:
-        return [self.config.max_k, self.kg_model.embeddings_struct.config,
-                self.kg_model.graph_struct.config, query_info, triplets]
+        return [self.config.max_k, query_info, triplets,
+                self.kg_model.graph_struct.config.driver_config,
+                self.kg_model.embeddings_struct.config.nodesdb_driver_config,
+                self.kg_model.embeddings_struct.config.tripletsdb_driver_config,
+                self.kg_model.embeddings_struct.config.embedder_config, ]
 
     @CacheUtils.cache_method_output
     def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:

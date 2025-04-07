@@ -54,7 +54,7 @@ class AnswersJudge(CacheUtils):
 
     def get_cache_key(self, question:str, ground_truth: str, predicted_response: str):
         return [question, ground_truth, predicted_response, self.config.adriver_config,
-                self.config.llmjudge_task_config]
+                self.config.llmjudge_task_config.version]
 
     @CacheUtils.cache_method_output
     def perform(self, question: str, ground_truth: str, predicted_response: str) -> Union[int, float]:

@@ -76,7 +76,10 @@ class KnowledgeRetriever(CacheUtils):
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
         return [self.config.retriever_method, self.config.retriever_config,
                 self.config.filter_method, self.config.filter_config,
-                self.kg_model.graph_struct.config, self.kg_model.embeddings_struct.config,
+                self.kg_model.graph_struct.config.driver_config,
+                self.kg_model.embeddings_struct.config.nodesdb_driver_config,
+                self.kg_model.embeddings_struct.config.tripletsdb_driver_config,
+                self.kg_model.embeddings_struct.config.embedder_config,
                 query_info]
 
     @CacheUtils.cache_method_output

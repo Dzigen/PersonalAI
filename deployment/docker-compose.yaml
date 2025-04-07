@@ -61,12 +61,11 @@ services:
 
 
   ollama_agent:
-    #image: m.menschikov/agent_service:v1
     image: ollama/ollama:latest
-    container_name: personalai_mmenschikov_ollama_service
+    container_name: personalai_mmenschikov_ollama_servicev3
     hostname: localhost
     ports:
-      - "11434:11434"
+      - "11436:11434"
     environment:
       - OLLAMA_DEBUG=1
     volumes:
@@ -74,10 +73,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
+          cpus: '8'
           memory: 8G
         reservations:
-          cpus: '1'
+          cpus: '4'
           memory: 4G
           devices:
             - driver: nvidia

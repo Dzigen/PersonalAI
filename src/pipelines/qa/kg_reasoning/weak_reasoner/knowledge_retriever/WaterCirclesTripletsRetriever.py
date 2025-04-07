@@ -134,8 +134,11 @@ class WaterCirclesRetriever(AbstractTripletsRetriever):
             self.cachekv = None
 
     def get_cache_key(self, query_info: QueryInfo, depth: int = 1):
-        return [self.kg_model.graph_struct.config, self.kg_model.embeddings_struct.config,
-                self.config, query_info, depth]
+        return [self.config, query_info, depth,
+                self.kg_model.graph_struct.config.driver_config,
+                self.kg_model.embeddings_struct.config.nodesdb_driver_config,
+                self.kg_model.embeddings_struct.config.tripletsdb_driver_config,
+                self.kg_model.embeddings_struct.config.embedder_config]
 
     def parse_triplet_output(
             self,

@@ -26,12 +26,16 @@ class CacheUtils:
                 if cstatus == 0:
                     self.log("Результат по заданной конфигурации гиперпараметров уже был получен.", verbose=self.verbose)
                     self.log(f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
+                    #self.log(f"* CACHE_KEY: {cache_key}.", verbose=self.verbose)
                     self.log(f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
 
                     cached_flag = True
                     output = cached_result
                 else:
                     self.log("Результата по заданной конфигурации гиперпараметров в кеше нет.", verbose=self.verbose)
+                    self.log(f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
+                    #self.log(f"* CACHE_KEY: {cache_key}.", verbose=self.verbose)
+                    self.log(f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
 
             if not cached_flag:
                 self.log("Получем результат с нуля...", verbose=self.verbose)
@@ -39,6 +43,8 @@ class CacheUtils:
 
                 if self.cachekv is not None:
                     self.log("Кешируем полученный результат.", verbose=self.verbose)
+                    self.log(f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
+                    self.log(f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
                     self.cachekv.save_value(value=output, key_hash=key_hash)
 
             return output

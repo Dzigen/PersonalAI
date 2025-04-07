@@ -1,5 +1,5 @@
-DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'qwen25_080325_v2prompts' # TO CHANGE
+DATASET_NAME: 'trivia_qa_rcwikipedia_validation' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen25_110325_v2prompts' # TO CHANGE
 
 ########## HARDCODED PARAMS ##########
 

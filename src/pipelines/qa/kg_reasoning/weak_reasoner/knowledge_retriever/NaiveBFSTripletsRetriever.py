@@ -46,9 +46,11 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
         return [self.config.max_depth, self.config.max_width,
-                self.config.max_passed_nodes, self.config.accepted_node_types,
-                self.kg_model.embeddings_struct.config,
-                self.kg_model.graph_struct.config, query_info]
+                self.config.max_passed_nodes, self.config.accepted_node_types, query_info,
+                self.kg_model.graph_struct.config.driver_config,
+                self.kg_model.embeddings_struct.config.nodesdb_driver_config,
+                self.kg_model.embeddings_struct.config.tripletsdb_driver_config,
+                self.kg_model.embeddings_struct.config.embedder_config]
 
     def search(self, node_id: str) -> List[Triplet]:
         traversed_triplets = []

@@ -62,8 +62,12 @@ class KnowledgeComparator(CacheUtils):
             self.cachekv = None
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
-        return [self.config, self.kg_model.graph_struct.config,
-                self.kg_model.embeddings_struct.config, query_info.entities]
+        return [self.config.threshold, self.config.fetch_n, self.config.max_k, self.config.k_compare, 
+                self.kg_model.graph_struct.config.driver_config,
+                self.kg_model.embeddings_struct.config.nodesdb_driver_config,
+                self.kg_model.embeddings_struct.config.tripletsdb_driver_config,
+                self.kg_model.embeddings_struct.config.embedder_config, 
+                query_info.entities]
 
     @CacheUtils.cache_method_output
     def link_kgnodes_to_query(self, query_info: QueryInfo) -> Tuple[List[object], List[object], ReturnInfo]:

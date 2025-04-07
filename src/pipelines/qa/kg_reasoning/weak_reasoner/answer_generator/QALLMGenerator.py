@@ -70,7 +70,7 @@ class QALLMGenerator(CacheUtils):
 
     def get_cache_key(self, query: str, context_triplets: List[Triplet]) -> List[object]:
         return [self.config.lang, self.config.adriver_config,
-                self.config.ag_task_config, self.config.relation_type,
+                self.config.ag_task_config.version, self.config.relation_type,
                 query, context_triplets]
 
     @CacheUtils.cache_method_output

@@ -19,6 +19,7 @@ class AgentKWETaskConfigSelector:
     @staticmethod
     def select(base_config_version:str='v1', cache_table_name:str="qa_agent_kwe_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
+            version=base_config_version,
             suites=AVAILABLE_KWE_TCONFIGS[base_config_version],
             formate_context_func=kwe_custom_formate, postprocess_answer_func=kwe_custom_postprocess,
             cache_table_name=cache_table_name,

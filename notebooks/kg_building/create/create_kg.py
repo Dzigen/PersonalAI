@@ -44,6 +44,9 @@ CACHE_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['kvdriver_cac
 gmodel_config = joblib.load(GRAPH_MODEL_CONFIG_PATH)
 emodel_config = joblib.load(EMBEDDINGS_MODEL_CONFIG_PATH)
 
+print("GMODEL_CONFIG:\n", gmodel_config)
+print("EMODEL_CONFIG:\n", emodel_config)
+
 kg_model = KnowledgeGraphModel(
     graph_config=gmodel_config,
     embeddings_config=emodel_config)
@@ -57,6 +60,9 @@ print(kg_model.graph_struct.db_conn.count_items())
 
 mem_config = joblib.load(MEM_PIPELINE_CONFIG_PATH)
 kvdriver_config =  joblib.load(CACHE_CONFIG_PATH)
+
+print("MEM_CONFIG:\n", mem_config)
+print("KVDRIVER_CONFIG:\n", kvdriver_config)
 
 mem_pipeline = MemPipeline(kg_model, mem_config, kvdriver_config)
 

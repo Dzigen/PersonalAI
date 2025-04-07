@@ -67,7 +67,8 @@ class QueryLLMParser(CacheUtils):
 
     def get_cache_key(self, query: str) -> List[object]:
         return [self.config.lang, self.config.adriver_config,
-                self.config.kw_extraction_task_config, query]
+                self.config.kw_extraction_task_config.version, 
+                query]
 
     @CacheUtils.cache_method_output
     def extract_entities(self, query: str) -> Tuple[List[str], ReturnInfo]:

@@ -97,6 +97,10 @@ llmagents_cnt_variables = {
     'OLLAMA_LOCAL_VOLUME': PARAMS['OLLAMA_MODELS_PATH']
 }
 
+compose_variables = {
+    'COMPOSE_PROJECT_NAME': f"{PARAMS['DATASET_NAME']}_{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+}
+
 #
 def dictvar_to_string(dict_variables) -> str:
     return '\n'.join(list(map(lambda item: f'{item[0]}="{item[1]}"', dict_variables.items())))
@@ -104,7 +108,7 @@ def dictvar_to_string(dict_variables) -> str:
 env_variables = [neo4j_cnt_variables,
                  mongo_cnt_variables, mongoui_cnt_variables,
                  redis_cnt_variables, redisui_cnt_variables,
-                 worksapce_cnt_variables, llmagents_cnt_variables]
+                 worksapce_cnt_variables, llmagents_cnt_variables, compose_variables]
 env_variables = '\n'.join(list(map(lambda vars: dictvar_to_string(vars), env_variables)))
 
 DC_ENV_PATH = f"{PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"

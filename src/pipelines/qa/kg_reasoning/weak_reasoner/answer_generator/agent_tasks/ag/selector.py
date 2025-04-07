@@ -19,6 +19,7 @@ class AgentAGTaskConfigSelector:
     @staticmethod
     def select(base_config_version:str = 'v1', cache_table_name:str="qa_agent_ag_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
+            version=base_config_version,
             suites=AVAILABLE_AG_TCONFIGS[base_config_version],
             formate_context_func=ag_custom_formate, postprocess_answer_func=ag_custom_postprocess,
             cache_table_name=cache_table_name,

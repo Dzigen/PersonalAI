@@ -1,13 +1,13 @@
 
-EXPERIMENT_NAME: "nr_v2_qwen25(e2.6.1)(v1.5.4)" # TO CHANGE
-DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'qwen25_080325_v2prompts' # TO CHANGE
+EXPERIMENT_NAME: "astar_v2_qwen25(e2.2.3)(v1.5.5)" # TO CHANGE
+DATASET_NAME: 'trivia_qa_rcwikipedia_validation' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen25_110325_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
   max_samples_per_pack: -1
 
 # SERVER PATHS
-BASE_PERSONALAI_PATH: '/home/dzigen/Desktop/PersonalAI/Personal-AI' # TO CHANGE
+BASE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
 OLLAMA_MODELS_PATH: '/home/dzigen/Desktop/PersonalAI/ollama_volume' # TO CHANGE
 
 INIT_STRUCT: True # !!! PAY ATTENTION !!!
@@ -43,7 +43,7 @@ BASE_KGR_CONFIG:
   persistent_cache_config:
     vendor: 'mongo' # DONT CHANGE
     host: 'localhost' # TO CHANGE
-    port: 27017 # TO CHANGE
+    port: 27019 # TO CHANGE
     db_info:
       db: 'qa_db'
       table: None
@@ -55,7 +55,7 @@ BASE_KGR_CONFIG:
   ram_cache_config:
     vendor: 'redis' # DONT CHANGE
     host: 'localhost' # TO CHANGE
-    port: 6379 # TO CHANGE
+    port: 6381 # TO CHANGE
     db_info:
       db: 1
       table: None
@@ -69,36 +69,57 @@ BASE_KGR_CONFIG:
 
 WEAK_KG_REASONER:
 
-  query_parser_config: None
-    # kw_extraction_task:
-    #   prompts_version: 'v2' # 'v1' | 'v2'
+  query_parser_config:
+    kw_extraction_task:
+      prompts_version: 'v2' # 'v1' | 'v2'
 
-  knowledge_comparator_config: None
-    # threshold: 0.5
-    # fetch_n: 20
-    # max_k: 1 # DONT CHANGE
-    # k_compare: 5
+  knowledge_comparator_config:
+    threshold: 0.5
+    fetch_n: 20
+    max_k: 1 # DONT CHANGE
+    k_compare: 5
 
   knowledge_retriever_config:
-    retriever_method: 'naive_retriever'
+    retriever_method: 'astar'
     retriever_config:
-      max_k: 50
       # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
-      # strict_filter: True
-      # hyper_num: 15
-      # episodic_num: 15
-      # chain_triplets_num: 25
-      # other_triplets_num: 6
-      # do_text_pruning: False
-      # accepted_node_types: None
-      #   # - 'object'
-      #   # - 'hyper'
-      #   # - 'episodic'
-      #   # - 'time'
-    filter_method: None # CAN BE None
-    filter_config: None # CAND BE None
-    #  max_k: 50
+      max_depth: 10
+      max_passed_nodes: 150
+      accepted_node_types:
+        - object
+        - episodic
+        - time
+      metrics_config:
+        h_metric_name: ip
+        kvdriver_config:
+          db_vendor: mixed_kv
+          db_config:
+            db_info:
+              db: qa_db
+              table: ''
+            need_to_clear: false
+            params:
+              mongo_config:
+                host: localhost
+                params:
+                  max_storage: -1
+                  password: pass
+                  username: user
+                port: 27019
+              redis_config:
+                host: localhost
+                params:
+                  hs_name: node_pairs
+                  max_storage: 50000000
+                  password: my_user_password
+                  ss_name: sorted_node_pairs
+                  username: my_user
+                port: 6381
 
+    filter_method: 'naive' # CAN BE None
+    filter_config: # CAN BE None
+      max_k: 50
+      
   answer_generator_config:
     ag_task:
       prompts_version: 'v2' # 'v1' | 'v2'
@@ -141,7 +162,7 @@ QA_EVALUATION:
 KG_DB_CONFIGS:
   graphdb_config:
     host: 'localhost' # TO CHANGE
-    port: 7687 # TO CHANGE
+    port: 7689 # TO CHANGE
     params:
       user: 'neo4j'
       pwd: 'password'
@@ -155,21 +176,21 @@ KG_DB_CONFIGS:
 ########## CONTAINERS PARAMS ##########
 
 CONTAINERS_ADDITIONAL_CONFIG:
-  workspace_cntname: 'personalai_mmenschikov_workspace'
-  workspace_host: 'personalai_mmenschikov_workspace' # TO CHANGE
+  workspace_cntname: 'personalai_mmenschikov_workspace_triviaqa'
+  workspace_host: 'personalai_mmenschikov_workspace_triviaqa' # TO CHANGE
 
-  redis_cntname: 'personalai_mmenschikov_redis'
-  redis_ui_cntname: 'personalai_mmenschikov_redis_ui'
-  redis_ui_host: 'personalai_mmenschikov_redis_ui' # TO CHANGE
-  redis_ui_port: 5540 # TO CHANGE
+  redis_cntname: 'personalai_mmenschikov_redis_triviaqa'
+  redis_ui_cntname: 'personalai_mmenschikov_redis_ui_triviaqa'
+  redis_ui_host: 'personalai_mmenschikov_redis_ui_triviaqa' # TO CHANGE
+  redis_ui_port: 5542 # TO CHANGE
 
-  mongo_cntname: 'personalai_mmenschikov_mongo'
-  mongo_ui_cntname: 'personalai_mmenschikov_mongo_ui' # TO CHANGE
-  mongo_ui_host: 'personalai_mmenschikov_mongo_ui' # TO CHANGE
-  mongo_ui_port: 8081 # TO CHANGE
+  mongo_cntname: 'personalai_mmenschikov_mongo_triviaqa'
+  mongo_ui_cntname: 'personalai_mmenschikov_mongo_ui_triviaqa' # TO CHANGE
+  mongo_ui_host: 'personalai_mmenschikov_mongo_ui_triviaqa' # TO CHANGE
+  mongo_ui_port: 8083 # TO CHANGE
 
-  neo4j_cntname: 'personalai_mmenschikov_neo4j'
-  neo4j_ui_port: 7474 # TO CHANGE
+  neo4j_cntname: 'personalai_mmenschikov_neo4j_triviaqa'
+  neo4j_ui_port: 7476 # TO CHANGE
 
   agent_cntname: 'personalai_mmenschikov_ollama_service'
 
@@ -211,7 +232,7 @@ WORKSPACE_CONTAINER_DIRS:
 SAVE_CONFIGS_NAMES:
   graph_config: graph_config
   embeddings_config: embeddings_config
-  docker_compose_env: .env_qa
+  docker_compose_env: .env_qa_triviaqa
   qapipeline_config: qa_config
   kg_reasoner_config: kg_reasoner_config
 

@@ -7,7 +7,7 @@ from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarTripletsRetriev
 from .WaterCirclesTripletsRetriever import WaterCirclesSearchConfig, WaterCirclesRetriever
 from .NaiveBFSTripletsRetriever import NaiveBFSTripletsRetriever
 from .BeamSearchTripletsRetriever import BeamSearchTripletsRetriever
-from ......utils.data_structs import QueryInfo, Triplet, create_id, NodeType
+from ......utils.data_structs import QueryInfo, Triplet, create_id, NodeType, NODES_TYPES_MAP
 from ......kg_model import KnowledgeGraphModel
 from ......utils import Logger
 from ......utils.cache_kv import CacheKV, CacheUtils
@@ -47,6 +47,8 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.verbose = verbose
 
         if type(search_config) is dict:
+            if 'accepted_node_types' in search_config:
+                search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
             search_config = MixturedGraphSearchConfig(**search_config)
         self.config = search_config
 
@@ -57,14 +59,14 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             'beamsearch': BeamSearchTripletsRetriever
         }
 
-        # accepted nodes
-        search_config.retriever1_config.accepted_node_types = search_config.accepted_node_types
-        search_config.retriever2_config.accepted_node_types = search_config.accepted_node_types
-
         self.retriever1 = self.available_retrievers[search_config.retriever1_name](
             kg_model, log, search_config.retriever1_config, cache_kvdriver_config, verbose)
         self.retriever2 = self.available_retrievers[search_config.retriever2_name](
             kg_model, log, search_config.retriever2_config, cache_kvdriver_config, verbose)
+
+        # accepted nodes
+        self.retriever1.config.accepted_node_types = search_config.accepted_node_types
+        self.retriever2.config.accepted_node_types = search_config.accepted_node_types
 
         if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
             cache_config = deepcopy(cache_kvdriver_config)
