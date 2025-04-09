@@ -10,7 +10,7 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from src.db_drivers.vector_driver import VectorDBInstance
 
 # TO CHANGE
-AVAILABLE_VECTOR_DBS = ['chroma']
+AVAILABLE_VECTOR_DBS = ['chroma', 'milvus'] # 'chroma', 'milvus'
 
 ###############################################################################################
 
@@ -121,25 +121,33 @@ for db_vendor in AVAILABLE_VECTOR_DBS:
 
 ###############################################################################################
 
+VECTORDB_UPDATE_TEST_CASES = [
+    # TODO
+]
+
+###############################################################################################
+
 VECTORDB_RETRIEVE_TEST_CASES = [
-    # 1. ретрив по одному квери
-    [[FULL_INSTANCE1,FULL_INSTANCE2], [FULL_INSTANCE1], 1, {'exception': False, 'output_size': 1}],
+    # 1.1 ретрив по одному квери
+    [[FULL_INSTANCE1,FULL_INSTANCE2], [FULL_INSTANCE1], 1, None, {'exception': False, 'output_size': 1}],
+    # 1.2 ретрив по одному квери (из подмножества)
+    [[FULL_INSTANCE1,FULL_INSTANCE2], [FULL_INSTANCE1], 2, [FULL_INSTANCE1.id], {'exception': False, 'output_size': 1}],
     # 2. ретрив по нескольким квери
-    [[FULL_INSTANCE1,FULL_INSTANCE2], [FULL_INSTANCE1, FULL_INSTANCE1], 1, {'exception': False, 'output_size': 1}],
+    [[FULL_INSTANCE1,FULL_INSTANCE2], [FULL_INSTANCE1, FULL_INSTANCE1], 1, None, {'exception': False, 'output_size': 1}],
     # 3. в бд меньше элементов, чем заданное количество
-    [[FULL_INSTANCE1], [FULL_INSTANCE1], 2, {'exception': False, 'output_size': 1}],
+    [[FULL_INSTANCE1], [FULL_INSTANCE1], 2, None, {'exception': False, 'output_size': 1}],
     # 4. torch-тип данных эмбеддинга
-    [[FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_TORCH_EMB], 2, {'exception': True, 'output_size': -1}],
+    [[FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_TORCH_EMB], 2, None, {'exception': True, 'output_size': -1}],
     # 5. numpy-тип данных эмбеддинга
-    [[FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_NUMPY_EMB], 2, {'exception': True, 'output_size': -1}],
+    [[FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_NUMPY_EMB], 2, None, {'exception': True, 'output_size': -1}],
     # 6. неверный формат ембеддинга квери # 1
-    [[FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_BAD_EMB1], 2, {'exception': True, 'output_size': -1}],
+    [[FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_BAD_EMB1], 2, None, {'exception': True, 'output_size': -1}],
     # 7. неверный формат ембеддинга квери # 2
-    [[FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_BAD_EMB2], 2, {'exception': True, 'output_size': -1}],
+    [[FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_BAD_EMB2], 2, None, {'exception': True, 'output_size': -1}],
     # 8. неверный формат ебмеддинга квери # 3
-    [[FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_BAD_EMB2], 2, {'exception': True, 'output_size': -1}],
+    [[FULL_INSTANCE1,FULL_INSTANCE2], [INSTANCE_WITH_BAD_EMB2], 2, None, {'exception': True, 'output_size': -1}],
     # 9. В векторной бд нуль объектов
-    [[], [FULL_INSTANCE1], 2, {'exception': False, 'output_size': 0}]
+    [[], [FULL_INSTANCE1], 2, None, {'exception': False, 'output_size': 0}]
 ]
 
 VECTORDB_POPULATED_RETRIEVE_TEST_CASES = []

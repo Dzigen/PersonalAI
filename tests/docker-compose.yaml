@@ -110,6 +110,41 @@ services:
     ports:
       - "5540:5540"
 
+  milvus:
+    image: milvusdb/milvus:v2.5.8
+    container_name: personalai_test_milvus
+    hostname: personalai_test_milvus
+    command: ["milvus", "run", "standalone"]
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - ETCD_USE_EMBED=true
+      - ETCD_DATA_DIR=/var/lib/milvus/etcd
+      - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
+      - COMMON_STORAGETYPE=local
+    ports:
+      - 19530:19530
+      - 2379:2379
+      - 9091:9091
+    volumes:
+      - ./volumes/milvus/data:/var/lib/milvus
+      - ../configs/milvus/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
+      - ../configs/milvus/user.yaml:/milvus/configs/user.yaml
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      start_period: 90s
+      timeout: 20s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
   isolated_environment:
     image: m.menschikov/empty_workspace:v1
     container_name: personalai_test_isolated_env
