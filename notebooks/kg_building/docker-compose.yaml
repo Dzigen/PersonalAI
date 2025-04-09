@@ -87,6 +87,41 @@ services:
     ports:
       - ${REDIS_UI_EXTERNAL_PORT}:5540
 
+  milvus:
+    image: milvusdb/milvus:v2.5.8
+    container_name: ${MILVUS_CNTNAME}
+    hostname: ${MILVUS_HOST}
+    command: ["milvus", "run", "standalone"]
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - ETCD_USE_EMBED=true
+      - ETCD_DATA_DIR=/var/lib/milvus/etcd
+      - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
+      - COMMON_STORAGETYPE=local
+    port:
+      - ${MILVUS_EXTERNAL_PORT1}:19530
+      - ${MILVUS_EXTERNAL_PORT2}:2379
+      - ${MILVUS_UI_EXTERNAL_PORT}:9091
+    volumes:
+      - ${MILVUS_LOCAL_VOLUME}/data:/var/lib/milvus
+      - ${MILVUS_CONFIG}/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
+      - ${MILVUS_CONFIG}/user.yaml:/milvus/configs/user.yaml
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      start_period: 90s
+      timeout: 20s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
   ollama_agent:
     image: ollama/ollama:latest
     container_name: ${OLLAMA_CNTNAME}
@@ -117,7 +152,7 @@ services:
     network_mode: "host"
     volumes:
       - ${EXTERNAL_SPEC_KG_PATH}:${INTERNAL_SPEC_KG_PATH}
-      - ${EXTERNAL_SPEC_QADS_PATH}:${INTERNAL_SPEC_QADS_PATH}
+      - ${EXTERNAL_SPEC_QAD_PATH}:${INTERNAL_SEPC_QAD_PATH}
       - ${EXTERNAL_NOTEBOOKS_PATH}:${INTERNAL_NOTEBOOKS_PATH}
       - ${EXTERNAL_SRC_PATH}:${INTERNAL_SRC_PATH}
       - ${EXTERNAL_MODELS_PATH}:${INTERNAL_MODELS_PATH}
@@ -125,7 +160,8 @@ services:
       - neo4j
       - mongo_cache
       - redis_cache
-    #  - ollama_agent
+      - milvus
+    #   - ollama_agent
     deploy:
       resources:
         limits:

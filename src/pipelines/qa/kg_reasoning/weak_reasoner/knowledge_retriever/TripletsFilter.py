@@ -82,7 +82,7 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
             relation_ids = list(unique_relations_map.keys())
 
             raw_relevant_triplets = self.kg_model.embeddings_struct.vectordbs['triplets'].retrieve(
-                [query_instance], self.config.max_k, where={"id": {"$in": relation_ids}})[0]
+                [query_instance], self.config.max_k, subset_ids=relation_ids)[0]
 
             accepted_relation_ids = list(map(lambda item: item[1].id, raw_relevant_triplets))
 

@@ -3,7 +3,7 @@ services:
   # Database - Neo4j
   neo4j:
     container_name: personalai_mmenschikov_neo4j
-    user: "4200235:4200235"
+    #user: "4200235:4200235"
     image: neo4j:5.21.0-enterprise
     hostname: personalai_mmenschikov_neo4j
     ports:
@@ -23,12 +23,45 @@ services:
           cpus: '1'
           memory: 4G
 
+  milvus:
+    image: milvusdb/milvus:v2.5.8
+    container_name: personalai_mmenschikov_milvus
+    hostname: personalai_mmenschikov_milvus
+    command: ["milvus", "run", "standalone"]
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - ETCD_USE_EMBED=true
+      - ETCD_DATA_DIR=/var/lib/milvus/etcd
+      - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
+      - COMMON_STORAGETYPE=local
+    ports:
+      - 19530:19530
+      - 2379:2379
+      - 9091:9091
+    volumes:
+      - ../../milvus_volume/data:/var/lib/milvus
+      - ../configs/milvus/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
+      - ../configs/milvus/user.yaml:/milvus/configs/user.yaml
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      start_period: 90s
+      timeout: 20s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
   workspace:
     image: m.menschikov/workspace:v1
     container_name: personalai_mmenschikov_worksapce
     hostname: worksapceservice
-    ports:
-      - "10888:10888"
     volumes:
       - ../:/home/m.menschikov/workspace/personal_ai
     deploy:
@@ -58,7 +91,6 @@ services:
         reservations:
           cpus: '1'
           memory: 4G
-
 
   ollama_agent:
     image: ollama/ollama:latest

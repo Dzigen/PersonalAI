@@ -1,0 +1,205 @@
+from typing import List, Dict, Tuple, Union
+from pymilvus.orm.connections import ConnectionNotExistException
+from pymilvus import MilvusClient, DataType
+from time import sleep
+
+from ..utils import AbstractVectorDatabaseConnection, VectorDBInstance, VectorDBConnectionConfig
+
+
+DEFAULT_MILVUS_CONFIG = VectorDBConnectionConfig(
+    conn={'host': 'localhost', 'port': 19530, 'user': 'root', 'pass': 'Milvus'},
+    db_info={'db': 'test_db', 'table': 'test_collection'},
+    params={'id_length': 32, 'vector_dim': 1024, 'document_max_length': 51200, 'load': True,
+            'flush': True, 'create_sleep': 1, 'search_metric': 'IP'})
+
+class MilvusConnector(AbstractVectorDatabaseConnection):
+    def __init__(self, config: VectorDBConnectionConfig):
+        self.config = config
+        self.client = None
+
+    def prepare_structure(self) -> None:
+        # создать бд
+        existing_dbs = self.client.list_databases()
+        if self.config.db_info['db'] not in existing_dbs:
+            self.client.create_database(db_name=self.config.db_info['db'])
+        self.client.using_database(db_name=self.config.db_info['db'])
+
+        # cоздать коллекцию
+        existing_collections = self.client.list_collections()
+        if self.config.db_info['table'] not in existing_collections:
+            self.create_collection()
+
+    def create_collection(self) -> None:
+        schema = MilvusClient.create_schema(auto_id=False)
+        schema.add_field(field_name="id", datatype=DataType.VARCHAR, max_length=self.config.params['id_length'], is_primary=True)
+        schema.add_field(field_name="embedding", datatype=DataType.FLOAT_VECTOR, dim=self.config.params['vector_dim'])
+        schema.add_field(field_name="document", datatype=DataType.VARCHAR, max_length=self.config.params['document_max_length'])
+        schema.add_field(field_name="metadata", datatype=DataType.JSON)
+
+        # создать индекс
+        index_params = self.client.prepare_index_params()
+        index_params.add_index(
+            field_name="id", index_name="id_index")
+        index_params.add_index(
+            field_name="embedding", index_type="IVF_FLAT",
+            index_name="embedding_index", metric_type=self.config.params['search_metric'])
+
+        self.client.create_collection(
+            collection_name=self.config.db_info['table'],
+            schema=schema,index_params=index_params)
+
+    def open_connection(self) -> None:
+        uri = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
+        auth = f"{self.config.conn['user']}:{self.config.conn['pass']}"
+        self.client = MilvusClient(uri=uri,token=auth)
+
+        self.prepare_structure()
+        if self.config.need_to_clear:
+            self.clear()
+
+        load_state = self.client.get_load_state(self.config.db_info['table'])['state'].value
+        if self.config.params['load'] and load_state != 3:
+            self.client.load_collection(
+                collection_name=self.config.db_info['table'],
+                skip_load_dynamic_field=True)
+
+    def close_connection(self) -> None:
+        load_state = self.client.get_load_state(self.config.db_info['table'])['state'].value
+        if self.config.params['load'] and load_state != 3:
+            self.client.release_collection(
+                collection_name=self.config.db_info['table'])
+        self.client.close()
+
+    def is_open(self) -> bool:
+        if self.client is None:
+            return False
+
+        try:
+            self.client.list_collections()
+            return True
+        except ConnectionNotExistException as e:
+            return False
+
+    def create(self, items: List[VectorDBInstance]) -> None:
+        # validation
+        for item in items:
+            if type(item.id) is not str:
+                raise ValueError
+        unique_ids = set(map(lambda item: item.id, items))
+        if len(items) != len(unique_ids):
+            raise ValueError
+
+        filtered_items = []
+        for item in items:
+            item_exists = self.item_exist(item.id)
+            if not item_exists:
+                filtered_items.append(item)
+
+        formated_data = list(map(lambda item: item.dict(), filtered_items))
+
+        print("items to add:", len(formated_data))
+
+        out = self.client.insert(
+            collection_name=self.config.db_info['table'],
+            data=formated_data)
+        print(out)
+
+        # костыль
+        if self.config.params['flush']:
+            self.client.flush(collection_name=self.config.db_info['table'])
+        else:
+            sleep(self.config.params['create_sleep'])
+
+    def read(self, ids: List[str], includes=["embedding", "document", "metadata"]) -> List[VectorDBInstance]:
+        # validation
+        for id in ids:
+            if (id is None) or (type(id) is not str):
+                raise ValueError
+        if len(ids) < 1:
+            return []
+
+        # костыль
+        f_includes = list(map(lambda f_name: f_name[:-1],includes))
+
+        raw_output = self.client.get(
+            collection_name=self.config.db_info['table'],
+            ids=ids,output_fields=f_includes)
+
+        formated_output = list(map(lambda raw_item: VectorDBInstance(**raw_item), raw_output))
+
+        return formated_output
+
+    def update(self, items: List[VectorDBInstance]) -> None:
+        # TODO
+        pass
+
+    def delete(self, ids: List[str]) -> None:
+        # validation
+        for id in ids:
+            if type(id) is not str:
+                raise ValueError
+
+        if len(ids):
+            filtered_ids = [id for id in ids if self.item_exist(id)]
+            self.client.delete(
+                collection_name=self.config.db_info['table'], ids=filtered_ids)
+
+        # TODO
+
+    def retrieve(
+            self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]]= None,
+            includes: List[str]  = ['embeddings', 'documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
+        if len(query_instances) < 1:
+            return ValueError
+
+        if n_results < 1:
+            return [[]*len(query_instances)]
+
+        # костыль
+        f_includes = list(map(lambda f_name: f_name[:-1],includes))
+
+        filtering_expr = dict()
+        if subset_ids is not None:
+            filtering_expr['search_params']={"hints": "iterative_filter"}
+            filtering_expr['filter']=f'id in {subset_ids}'
+
+        #
+        raw_output = self.client.search(
+            collection_name=self.config.db_info['table'],
+            search_params = {"metric_type": self.config.params['search_metric']},
+            data=[inst.embedding for inst in query_instances],
+            limit=n_results, output_fields=f_includes, **filtering_expr)
+
+        print(raw_output)
+
+        formated_output = []
+        for q_output in raw_output:
+            # CARE: работает только для COSINE и IP - метрик
+            # костыль: полученные значения близости векторов [similarity] приводит к шкале расстояний [distances]
+            f_items = list(map(lambda r_item: (1 - r_item['distance'], VectorDBInstance(id=r_item['id'], **r_item['entity'])), q_output))
+            formated_output.append(f_items)
+
+        print(formated_output)
+
+        return formated_output
+
+    def count_items(self) -> int:
+        return self.client.get_collection_stats(self.config.db_info['table'])['row_count']
+
+    def item_exist(self, id: str) -> bool:
+        # validation
+        if type(id) is not str:
+            raise ValueError
+
+        #
+        res = self.client.get(
+            collection_name=self.config.db_info['table'],
+            ids=[id],output_fields=[])
+
+        print(res)
+
+        return bool(len(res))
+
+    def clear(self) -> None:
+        self.client.drop_collection(collection_name=self.config.db_info['table'])
+        self.create_collection()

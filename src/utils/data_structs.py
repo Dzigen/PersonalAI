@@ -47,7 +47,7 @@ class Node:
     #: Тип вершины.
     type: NodeType
     #: Дополнительные свойства вершины.
-    prop: dict = field(default_factory=lambda: {})
+    prop: dict = field(default_factory=lambda: dict())
     #: Строковое представление вершины.
     stringified: str = None
     #: Идентификатор вершины, полученный на основе её строкового представления.
@@ -61,7 +61,7 @@ class Relation:
     # Тип связи.
     type: RelationType
     #: Дополнительные свойства связи.
-    prop: dict = field(default_factory=lambda: {})
+    prop: dict = field(default_factory=lambda: dict())
     #: Идентификатор связи, полученный на основе строкового представления триплета, в котором она (связь) находится.
     #: Данное значение отличается от значения в поле id объекта класса Triplet.
     id: str = None

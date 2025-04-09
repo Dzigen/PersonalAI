@@ -1,13 +1,12 @@
 from abc import  abstractmethod
-from dataclasses import dataclass, field
-from typing import Dict, List, Tuple
+from dataclasses import dataclass, field, asdict
+from typing import Dict, List, Tuple, Union
 
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
 @dataclass
 class VectorDBConnectionConfig(BaseDatabaseConfig):
-    path: str = None
-    params: Dict = field(default_factory=lambda: {"hnsw:space": "ip", "hnsw:M": 4096})
+    conn: Dict = field(default_factory=lambda: dict())
 
 @dataclass
 class VectorDBInstance:
@@ -16,9 +15,12 @@ class VectorDBInstance:
     embedding: List[float] = None
     metadata: Dict = field(default_factory=lambda: dict())
 
+    def dict(self):
+        return {k: v for k, v in asdict(self).items()}
+
 class AbstractVectorDatabaseConnection(AbstractDatabaseConnection):
     @abstractmethod
-    def retrieve(self, queries: List[VectorDBInstance], n_results: int = 50,
-                 includes: List[str] = ['embeddings', 'documents', 'metadatas'], **kwargs) -> List[List[Tuple[float, VectorDBInstance]]]:
+    def retrieve(self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
+                 includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
         # извлечение N ближайших сущностей к данной по заданной метрике
         pass

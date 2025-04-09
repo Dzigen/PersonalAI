@@ -12,8 +12,8 @@ sys.path.insert(0, PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
 from src.kg_model import EmbedderModelConfig
 from src.db_drivers.graph_driver import GraphDBConnectionConfig
 from src.db_drivers.vector_driver import VectorDBConnectionConfig
-from src.pipelines.memorize import MemPipelineConfig, MemPipeline, LLMExtractorConfig, LLMUpdatorConfig
-from src.kg_model import KnowledgeGraphModel, EmbeddingsModelConfig, GraphModelConfig
+from src.pipelines.memorize import MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
+from src.kg_model import EmbeddingsModelConfig, GraphModelConfig
 from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
 from src.db_drivers.vector_driver import VectorDriverConfig, VectorDBConnectionConfig, EmbedderModelConfig
 from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
@@ -27,8 +27,6 @@ from src.agents.utils import AgentConnectorConfig
 
 DATASET_KGS_PATH = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
 SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
-
-VECTORIZED_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['embeddings_part']}"
 
 GRAPH_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['graph_config']}"
 EMBEDDINGS_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['embeddings_config']}"
@@ -54,15 +52,15 @@ gmodel_config = GraphModelConfig(
 ########### Embeddings model ###########
 
 nodesdb_config=VectorDBConnectionConfig(
-    path=VECTORIZED_DB_PATH,
-    db_info={'db': PARAMS['KG_DB_CONFIGS']['nodesdb_config']['db_info']['db'],
-             'table': PARAMS['KG_DB_CONFIGS']['nodesdb_config']['db_info']['table']},
+    db_info=PARAMS['KG_DB_CONFIGS']['nodesdb_config']['db_info'],
+    params=PARAMS['KG_DB_CONFIGS']['nodesdb_config']['params'],
+    conn=PARAMS['KG_DB_CONFIGS']['nodesdb_config']['conn'],
     need_to_clear=PARAMS['KG_DB_CONFIGS']['need_to_clear'])
 
 tripletsdb_config=VectorDBConnectionConfig(
-    path=VECTORIZED_DB_PATH,
-    db_info={'db': PARAMS['KG_DB_CONFIGS']['tripletsdb_config']['db_info']['db'],
-             'table': PARAMS['KG_DB_CONFIGS']['tripletsdb_config']['db_info']['table']},
+    db_info=PARAMS['KG_DB_CONFIGS']['tripletsdb_config']['db_info'],
+    params=PARAMS['KG_DB_CONFIGS']['tripletsdb_config']['params'],
+    conn=PARAMS['KG_DB_CONFIGS']['tripletsdb_config']['conn'],
     need_to_clear=PARAMS['KG_DB_CONFIGS']['need_to_clear'])
 
 embedder_config=EmbedderModelConfig(
@@ -84,7 +82,6 @@ emodel_config = EmbeddingsModelConfig(
 #GIGACHAT_CREDS = 'OWUwOGUzOWEtMjJiNi00YmMxLThmMmItNzMwNjM2MTI2YmYxOjg2ODdiOTVhLTZkNDctNGFjOC1iMmViLTEyNDA5MmFiN2Q5Mw=='
 # openai key
 #API_KEY = "'sk-861mINAavom2SSBqgrI82D4thMOfqT37knCof2o0H0T3BlbkFJ2gdVXJuVjNesNNP2aeUwPoBpZP3a3R1gn1kqv97CsA'"
-
 
 adriver_config = AgentDriverConfig(
     name=PARAMS['MEM_PIPELINE_CONFIG']['agent_config']['vendor'],

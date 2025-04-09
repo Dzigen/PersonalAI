@@ -12,9 +12,8 @@ GIGACHAT_KEY = 'OWUwOGUzOWEtMjJiNi00YmMxLThmMmItNzMwNjM2MTI2YmYxOjg2ODdiOTVhLTZk
 
 DEFAULT_GIGACHAT_CONFIG = AgentConnectorConfig(
     gen_strategy={'top_k': 1, 'top_p': 0, 'temperature': 0},
-    credentials={'token': GIGACHAT_KEY, 'scope': 'GIGACHAT_API_CORP',
-                  'model': "GigaChat-Pro", 'verify_ssl_certs': False},
-    ext_params={'timeout': 560, 'trials': 5})
+    credentials={'token': GIGACHAT_KEY, 'scope': 'GIGACHAT_API_CORP', 'model': "GigaChat-Pro"},
+    ext_params={'timeout': 560, 'trials': 5, 'verify_ssl_certs': False})
 
 class GigaChatConnector(AbstractAgentConnector):
     def __init__(self, config: AgentConnectorConfig = DEFAULT_GIGACHAT_CONFIG) -> None:
@@ -26,7 +25,7 @@ class GigaChatConnector(AbstractAgentConnector):
     def open_connection(self):
         self.giga_model = GigaChat(
             credentials=self.config.credentials['token'], scope=self.config.credentials['scope'],
-            verify_ssl_certs=self.config.credentials['verify_ssl_certs'], model=self.config.credentials['model'],
+            verify_ssl_certs=self.config.ext_params['verify_ssl_certs'], model=self.config.credentials['model'],
             timeout=self.config.ext_params['timeout'])
 
     def check_connection(self):

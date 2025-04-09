@@ -44,6 +44,7 @@ mongo_cnt_variables = {
 mongoui_cnt_variables = {
     'MONGO_UI_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['mongo_ui_cntname'],
     'MONGO_UI_HOST': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['mongo_ui_host'],
+
     'MONGO_UI_EXTERNAL_PORT': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['mongo_ui_port']
 }
 
@@ -87,22 +88,51 @@ worksapce_cnt_variables = {
     'INTERNAL_MODELS_PATH': f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['models']}"
 }
 
+# параметры для milvus бд
+VECTOR_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['embeddings_part']}"
+
+milvus_cnt_variables = {
+    'MILVUS_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['milvus_cntname'],
+    'MILVUS_HOST': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['milvus_host'],
+
+    'MILVUS_EXTERNAL_PORT1': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['milvus_port1'],
+    'MILVUS_EXTERNAL_PORT2': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['milvus_port2'],
+    'MILVUS_UI_EXTERNAL_PORT': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['milvus_ui_port'],
+
+    'MILVUS_LOCAL_VOLUME': VECTOR_DB_PATH,
+    'MILVUS_CONFIG': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['configs']}/{PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['milvus_config']}"
+}
+
 # параметры для контейнера с llm-моделями
 llmagents_cnt_variables = {
-    'OLLAMA_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['agent_cntname'],
-    'OLLAMA_HOST': PARAMS['MEM_PIPELINE_CONFIG']['agent_config']['credentials']['host'],
+    'OLLAMA_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['ollama_cntname'],
+    'OLLAMA_HOST': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['ollama_host'],
+
     'OLLAMA_EXTERNAL_PORT': PARAMS['MEM_PIPELINE_CONFIG']['agent_config']['credentials']['port'],
+
     'OLLAMA_LOCAL_VOLUME': PARAMS['OLLAMA_MODELS_PATH']
+}
+
+compose_variables = {
+    'COMPOSE_PROJECT_NAME': f"{PARAMS['DATASET_NAME']}_{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 }
 
 #
 def dictvar_to_string(dict_variables) -> str:
     return '\n'.join(list(map(lambda item: f'{item[0]}="{item[1]}"', dict_variables.items())))
 
-env_variables = [neo4j_cnt_variables,
-                 mongo_cnt_variables, mongoui_cnt_variables,
-                 redis_cnt_variables, redisui_cnt_variables,
-                 worksapce_cnt_variables, llmagents_cnt_variables]
+def add_prefixes(dict_variables) -> None:
+    for k in dict_variables.keys():
+        if k.endswith("_CNTNAME") or k.endswith("_HOST"):
+            dict_variables[k] = f"{dict_variables[k]}_{PARAMS['DATASET_NAME']}_{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+
+env_variables = [
+    neo4j_cnt_variables, milvus_cnt_variables, mongo_cnt_variables, mongoui_cnt_variables,
+    redis_cnt_variables, redisui_cnt_variables, worksapce_cnt_variables]
+for variables in env_variables:
+    add_prefixes(variables)
+env_variables += [llmagents_cnt_variables, compose_variables]
+
 env_variables = '\n'.join(list(map(lambda vars: dictvar_to_string(vars), env_variables)))
 
 DC_ENV_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"

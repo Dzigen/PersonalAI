@@ -170,15 +170,15 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                            rids_to_tids_map: Dict[str, List[str]], batch_size:int=512) -> List[Tuple[str, str, float]]:
         r_ids = list(rids_to_tids_map.keys())
         extended_scores_info = []
-        
+
         batches = len(r_ids) // batch_size
         batches += 1 if len(r_ids) % batch_size != 0 else 0
 
         for step in range(batches):
             cur_rids_batch = r_ids[step * batch_size: (step+1)* batch_size]
-            
+
             scored_rels = self.kg_model.embeddings_struct.vectordbs['triplets'].retrieve(
-                [query_vinstance], n_results=len(cur_rids_batch), includes=[], where={"id": {"$in": cur_rids_batch}})[0]
+                [query_vinstance], n_results=len(cur_rids_batch), includes=[], subset_ids=cur_rids_batch)[0]
 
             for raw_score, triplet_info in scored_rels:
                 cur_r_id, cur_t_score = (triplet_info.id, BeamSearchTripletsRetriever.calculate_triplet_score(raw_score))
@@ -254,7 +254,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 # прекращаем построение путей, так как больше некуда двигаться
                 self.log(f"Больше некуда двигаться. Прекращаем обход графа", verbose=self.verbose)
                 break
-            
+
             opext_s_time = time()
             for i in range(len(traversing_paths)):
                 curp_s_time = time()
@@ -288,12 +288,12 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 self.log(f"Текущее количество путей-кандидатов: {len(path_candidates)}", verbose=self.verbose)
                 curp_e_time = time()
                 self.log(f"Затраченное время на расширение текущего пути: {curp_e_time - curp_s_time} сек.", verbose=self.verbose)
-                
+
             opext_e_time = time()
 
             self.log(f"Количество найденных путей-кандидатов (до урезаний): {len(path_candidates)}", verbose=self.verbose)
             self.log(f"Затраченное суммарное время на текущую итерацию: {opext_e_time-opext_s_time} сек.", verbose=self.verbose)
-            
+
             # Сортируем (по возрастанию) расширенный список путей
             # по их релевантности и выбираем 'max_paths' лучших
             ordered_candidates = sorted(path_candidates, key=lambda pinfo: pinfo.accum_score)

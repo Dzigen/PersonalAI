@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import List, Dict, Tuple
+from copy import deepcopy
 
 from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 from ....utils.errors import STATUS_MESSAGE
@@ -73,18 +74,20 @@ class LLMExtractor:
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         assert self.config.need_simple or self.config.need_thesises
-        assert 'time' not in properties
+        props = deepcopy(properties)
+        assert 'time' not in props.keys()
         new_triplets, info = [], ReturnInfo()
 
         if time != "No time":
-            properties["time"] = time
+            props["time"] = time
 
         self.log("START KNOWLEDGE EXTRACTION...", verbose=self.config.verbose)
         self.log(f"BASE_TEXT ID: {create_id(text)}", verbose=self.config.verbose)
 
         if self.config.need_simple:
             self.log("START SIMPLE-TRIPLETS EXTRACTION...", verbose=self.config.verbose)
-            tmp_triplets, status = self.triplets_extraction_solver.solve(lang=self.config.lang, text=text, rel_prop=properties)
+            tmp_triplets, status = self.triplets_extraction_solver.solve(
+                lang=self.config.lang, text=text, rel_prop=props)
             self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
 
             if status != ReturnStatus.success:
@@ -98,7 +101,8 @@ class LLMExtractor:
 
         if self.config.need_thesises:
             self.log("START HYPER-TRIPLETS EXTRACTION...", verbose=self.config.verbose)
-            tmp_triplets, status = self.thesises_extraction_solver.solve(lang=self.config.lang, text=text, node_prop=properties)
+            tmp_triplets, status = self.thesises_extraction_solver.solve(
+                lang=self.config.lang, text=text, node_prop=props)
             self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
 
             if status != ReturnStatus.success:
@@ -113,7 +117,7 @@ class LLMExtractor:
         if self.config.need_episodic:
             self.log("START EPISODIC-TRIPLETS BUILDING...", verbose=self.config.verbose)
             tmp_triplets = self.get_episodic_relationships(
-                text, self.get_entities_from_triplets(new_triplets), node_prop=properties)
+                text, self.get_entities_from_triplets(new_triplets), node_prop=props)
 
             self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
             for triplet in tmp_triplets:

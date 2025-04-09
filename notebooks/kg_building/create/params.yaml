@@ -1,9 +1,9 @@
 DATASET_NAME: 'diaasq' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'qwen25_070325_v2prompts' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'deepseek_090425_v2prompts' # TO CHANGE
 
 # SERVER PATHS
 BASE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
-OLLAMA_MODELS_PATH: '/home/dzigen/Desktop/PersonalAI/ollama_volume' # TO CHANGE
+OLLAMA_MODELS_PATH: '/home/m.menschikov/workspace/personal_ai/ollama_volume' # TO CHANGE
 
 INIT_STRUCT: True # !!! PAY ATTENTION !!!
 
@@ -16,26 +16,27 @@ MEM_PIPELINE_CONFIG:
       db: 'memorize_db'
       table: None
 
-  agent_config:
-    vendor: 'ollama' # DONT CHANGE
+  agent_config: # TO CHANGE
+    vendor: 'openai'
     gen_strategy:
-      num_predict: 2048 # DONT CHANGE
-      seed: 42  # DONT CHANGE
-      top_k: 1  # DONT CHANGE
-      temperature: 0.0  # DONT CHANGE
+      seed: 42
+      top_p: 0.00000000000000001
+      temperature: 0.0
+      frequency_penalty: 0
+      presence_penalty: 0
     credentials:
-      host: 'personalai_mmenschikov_ollama_service' # TO CHANGE
-      port: 11434 # TO CHANGE
+      token: 'sk-7114ae174a6142bf8b028e8bf6af9579'
+      model: 'deepseek-chat'
+      base_url: 'https://api.deepseek.com'
     ext_params:
-      model: 'qwen2.5:7b' # TO CHANGE
       timeout: 560
-      keep_alive: -1
+      max_retries: 5
 
   extractor_stage:
     extract_triplets:
-      prompts_version: 'v2' # TO CHANGE
+      prompts_version: 'v2'
     extract_thesises:
-      prompts_version: 'v2' # TO CHANGE
+      prompts_version: 'v2'
 
   updator_stage:
     delete_obsolete_info: False # DONT CHANGE
@@ -45,8 +46,8 @@ MEM_PIPELINE_CONFIG:
       prompts_version: 'v1' # DONT CHANGE
 
   persistent_cache_config:
-    vendor: 'mongo' # DONT CHANGE
-    host: 'localhost' # TO CHANGE
+    vendor: 'mongo'
+    host: 'localhost'
     port: 27017 # TO CHANGE
     params:
       username: 'user'
@@ -54,8 +55,8 @@ MEM_PIPELINE_CONFIG:
       max_storage: -1
 
   ram_cache_config:
-    vendor: 'redis' # DONT CHANGE
-    host: 'localhost' # TO CHANGE
+    vendor: 'redis'
+    host: 'localhost'
     port: 6379 # TO CHANGE
     params:
       ss_name: 'sorted_node_pairs'
@@ -69,8 +70,8 @@ KG_DB_CONFIGS:
   need_to_clear: False # !!! PAY ATTENTION !!!
 
   graphdb_config:
-    vendor: 'neo4j' # DONT CHANGE
-    host: 'localhost' # TO CHANGE
+    vendor: 'neo4j'
+    host: 'localhost'
     port: 7687 # TO CHANGE
     params:
       user: 'neo4j'
@@ -80,16 +81,42 @@ KG_DB_CONFIGS:
       table: 'knowledgegraphtable'
 
   nodesdb_config:
-    vendor: 'chroma' # DONT CHANGE
+    vendor: 'milvus'
+    conn:
+      host: 'localhost'
+      port: 19530 # TO CHANGE
+      user: 'root'
+      pass: 'Milvus'
     db_info:
       db: 'knowledgegraphdb'
       table: 'vectorized_nodes'
+    params:
+      id_length: 32
+      vector_dim: 1024
+      document_max_length: 51200
+      load: True
+      flush: True
+      create_sleep: 1
+      search_metric: 'IP'
 
   tripletsdb_config:
-      vendor: 'chroma' # DONT CHANGE
+      vendor: 'milvus'
+      conn:
+        host: 'localhost'
+        port: 19530 # TO CHANGE
+        user: 'root'
+        pass: 'Milvus'
       db_info:
         db: 'knowledgegraphdb'
         table: 'vectorized_triplets'
+      params:
+        id_length: 32
+        vector_dim: 1024
+        document_max_length: 51200
+        load: True
+        flush: True
+        create_sleep: 1
+        search_metric: 'IP'
 
   embedder_config:
     prompts:
@@ -99,22 +126,30 @@ KG_DB_CONFIGS:
 
 CONTAINERS_ADDITIONAL_CONFIG:
   workspace_cntname: 'personalai_mmenschikov_workspace'
-  workspace_host: 'personalai_mmenschikov_workspace' # TO CHANGE
+  workspace_host: 'personalai_mmenschikov_workspace'
 
   redis_cntname: 'personalai_mmenschikov_redis'
   redis_ui_cntname: 'personalai_mmenschikov_redis_ui'
-  redis_ui_host: 'personalai_mmenschikov_redis_ui' # TO CHANGE
+  redis_ui_host: 'personalai_mmenschikov_redis_ui'
   redis_ui_port: 5540 # TO CHANGE
 
   mongo_cntname: 'personalai_mmenschikov_mongo'
-  mongo_ui_cntname: 'personalai_mmenschikov_mongo_ui' # TO CHANGE
-  mongo_ui_host: 'personalai_mmenschikov_mongo_ui' # TO CHANGE
+  mongo_ui_cntname: 'personalai_mmenschikov_mongo_ui'
+  mongo_ui_host: 'personalai_mmenschikov_mongo_ui'
   mongo_ui_port: 8081 # TO CHANGE
+
+  milvus_cntname: 'personalai_mmenschikov_milvus'
+  milvus_host: 'personalai_mmenschikov_milvus'
+  milvus_port1: 19530 # TO CHANGE
+  milvus_port2: 2379 # TO CHANGE
+  milvus_ui_port: 9091 # TO CHANGE
+  milvus_config: milvus
 
   neo4j_cntname: 'personalai_mmenschikov_neo4j'
   neo4j_ui_port: 7474 # TO CHANGE
 
-  agent_cntname: 'personalai_mmenschikov_ollama_service'
+  ollama_cntname: 'personalai_mmenschikov_ollama'
+  ollama_host: 'personalai_mmenschikov_ollama'
 
 ########## HARDCODED PARAMS ##########
 

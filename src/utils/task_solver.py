@@ -131,7 +131,8 @@ class AgentTaskSolver:
             raw_answer = None
             gen_flag = True
             cache_key = [self.config.suites[detected_lang].system_prompt, enriched_user_prompt,
-                         self.config.suites[detected_lang].assistant_prompt,self.agent.config]
+                         self.config.suites[detected_lang].assistant_prompt, self.agent.config.gen_strategy,
+                         self.agent.config.credentials]
             key_hash = None
 
             if self.cachekv is not None:
