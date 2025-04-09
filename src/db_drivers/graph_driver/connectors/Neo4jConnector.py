@@ -12,19 +12,6 @@ class Neo4jConnector(AbstractGraphDatabaseConnection):
     def __init__(self, config: GraphDBConnectionConfig = DEFAULT_NEO4J_CONFIG):
         self.config = config
 
-        self.extract_node_type_template = 'MATCH (a:{type}) RETURN a'
-        self.extract_node_name_template = 'MATCH (a) WHERE a.name="{name}" RETURN a'
-        self.extract_node_type_name_template = 'MATCH (a:{type}) WHERE a.name="{name}" RETURN a'
-
-        # MATCH (a:User {username: 'user6'})-[r]-(b) RETURN r, a, b
-        self.extract_triplets_name1_template = 'MATCH (a)-[r]-(b) WHERE a.name="{name1}" RETURN a, r, b'
-        self.extract_triplets_name2_template = 'MATCH (a)-[r]-(b) WHERE b.name="{name2}" RETURN a, r, b'
-        self.extract_triplets_names_template = 'MATCH (a)-[r]-(b) WHERE a.name="{name1}" AND b.name="{name2}" RETURN a, r, b'
-        self.extract_triplets_name1_rel_template = 'MATCH (a)-[r:{rel}]-(b) WHERE a.name="{name1}" RETURN a, r, b'
-        self.extract_triplets_name2_rel_template = 'MATCH (a)-[r:{rel}]-(b) WHERE b.name="{name2}" RETURN a, r, b'
-        self.extract_triplets_rel_template = 'MATCH (a)-[r:{rel}]-(b) RETURN a, r, b'
-        self.extract_triplets_rel_prop_template = 'MATCH (a)-[r]-(b) WHERE r.{prop_name}="{prop_value}" RETURN a, r, b'
-
     def open_connection(self) -> None:
         self.driver = None
         try:
@@ -34,12 +21,29 @@ class Neo4jConnector(AbstractGraphDatabaseConnection):
         except Exception as e:
             print("Failed to create the driver:", e)
 
+        #
         self.execute_query(f'CREATE DATABASE {self.config.db_info["db"]} IF NOT EXISTS', db_flag=False)
-        self.create_node_template = 'CREATE (n:{type} {{ name: "{name}"}})'
-        self.create_rel_template0 = """MATCH (a:{type1}), (b:{type2}) WHERE a.name="{name1}" and b.name ="{name2}" CREATE (a)-[r:{rel_name}]->(b)"""
-        self.create_rel_template1 = """MATCH (a:{type1}), (b:{type2}) WHERE a.name="{name1}" and b.name ="{name2}" CREATE (a)-[r:{rel_name} {{{rel_prop_name}: "{rel_prop_value}"}}]->(b)"""
-        self.create_rel_template2 = """MATCH (a:{type1}), (b:{type2}) WHERE a.name="{name1}" and b.name ="{name2}" CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name2}: "{rel_prop_value2}"}}]->(b)"""
-        self.create_rel_template5 = """MATCH (a:{type1}), (b:{type2}) WHERE a.name="{name1}" and b.name ="{name2}" CREATE (a)-[r:{rel_name} {{{rel_prop_name1}: "{rel_prop_value1}", {rel_prop_name2}: "{rel_prop_value2}", {rel_prop_name3}: "{rel_prop_value3}", {rel_prop_name4}: "{rel_prop_value4}", {rel_prop_name5}: "{rel_prop_value5}"}}]->(b)"""
+
+        # Creating indexes
+        self.execute_query("CREATE INDEX name_object_node IF NOT EXISTS FOR (n:object) ON n.name")
+        self.execute_query("CREATE INDEX name_hyper_node IF NOT EXISTS FOR (n:hyper) ON n.name ")
+        self.execute_query("CREATE INDEX name_episodic_node IF NOT EXISTS FOR (n:episodic) ON n.name")
+
+        self.execute_query("CREATE INDEX strid_object_node IF NOT EXISTS FOR (n:object) ON n.str_id")
+        self.execute_query("CREATE INDEX strid_hyper_node IF NOT EXISTS FOR (n:hyper) ON n.str_id")
+        self.execute_query("CREATE INDEX strid_episodic_node IF NOT EXISTS FOR (n:episodic) ON n.str_id")
+
+        self.execute_query("CREATE INDEX strid_simple_relation IF NOT EXISTS FOR ()-[r:simple]->() ON r.str_id")
+        self.execute_query("CREATE INDEX strid_hyper_relation IF NOT EXISTS FOR ()-[r:hyper]->() ON r.str_id ")
+        self.execute_query("CREATE INDEX strid_episodic_relation IF NOT EXISTS FOR ()-[r:episodic]->() ON r.str_id")
+
+        self.execute_query("CREATE INDEX tid_simple_relation IF NOT EXISTS FOR ()-[r:simple]->() ON r.t_id")
+        self.execute_query("CREATE INDEX tid_hyper_relation IF NOT EXISTS FOR ()-[r:hyper]->() ON r.t_id")
+        self.execute_query("CREATE INDEX tid_episodic_relation IF NOT EXISTS FOR ()-[r:episodic]->() ON r.t_id")
+
+        self.execute_query("CREATE INDEX name_simple_relation IF NOT EXISTS FOR ()-[r:simple]->() ON r.name")
+        self.execute_query("CREATE INDEX name_hyper_relation IF NOT EXISTS FOR ()-[r:hyper]->() ON r.name")
+        self.execute_query("CREATE INDEX name_episodic_relation IF NOT EXISTS FOR ()-[r:episodic]->() ON r.name")
 
         if self.config.need_to_clear:
             self.clear()

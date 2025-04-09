@@ -13,7 +13,7 @@ services:
       - NEO4J_AUTH=neo4j/password
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
     volumes:
-      - ../neo4j_volume/data:/data
+      - ../../neo4j_volume/data:/data
     deploy:
       resources:
         limits:
