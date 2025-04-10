@@ -19,10 +19,20 @@ data/qa_datasets/hotpotqa_distractor_validation/qa_pairs.csv
 data/qa_datasets/hotpotqa_distractor_validation/relevant_contexts.csv
 data/qa_datasets/hotpotqa_distractor_validation/tmp_hotpotqa_cntx.csv
 
+data/qa_datasets/v2/hotpotqa_distractor_validation/original
+data/qa_datasets/v2/hotpotqa_distractor_validation/qa_pairs.csv
+data/qa_datasets/v2/hotpotqa_distractor_validation/relevant_contexts.csv
+data/qa_datasets/v2/hotpotqa_distractor_validation/tmp_hotpotqa_cntx.csv
+
 data/qa_datasets/trivia_qa_rcwikipedia_validation/original
 data/qa_datasets/trivia_qa_rcwikipedia_validation/qa_pairs.csv
 data/qa_datasets/trivia_qa_rcwikipedia_validation/relevant_contexts.csv
 data/qa_datasets/trivia_qa_rcwikipedia_validation/tmp_triviaqa_cntx.csv
+
+data/qa_datasets/v2/trivia_qa_rcwikipedia_validation/original
+data/qa_datasets/v2/trivia_qa_rcwikipedia_validation/qa_pairs.csv
+data/qa_datasets/v2/trivia_qa_rcwikipedia_validation/relevant_contexts.csv
+data/qa_datasets/v2/trivia_qa_rcwikipedia_validation/tmp_triviaqa_cntx.csv
 
 notebooks/kg_building/create/crontab_log.txt
 experiments/qa_kg/qacron_log.txt

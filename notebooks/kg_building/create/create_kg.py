@@ -80,7 +80,7 @@ with open(SAVE_PARAMS_PATH, 'w') as fd:
 
 ############ LOADING DATASET ############
 
-def diaasqa_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
+def diaasq_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
     with open(f"{dataset_path}/Augment_DiaASQ.json", 'r', encoding='utf-8') as fd:
         data = json.loads(fd.read())
 
@@ -97,7 +97,7 @@ def hotpotqa_distractor_validation_cload(dataset_path: str) -> List[Tuple[str, D
     for r_idx in range(contexts_df.shape[0]):
         formated_context = f"Title: {contexts_df['title'][r_idx]}\n{contexts_df['context'][r_idx]}"
         data_pair.append((formated_context, "No time", dict()))
-
+    print(len(data_pair), contexts_df.shape)
     return data_pair
 
 def triviaqa_rcwikipedia_validation_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
@@ -111,11 +111,12 @@ def triviaqa_rcwikipedia_validation_cload(dataset_path: str) -> List[Tuple[str, 
     return data_pair
 
 CUSTOM_LOAD_FUNCS = {
-    'diaasqa': diaasqa_cload,
+    'diaasq': diaasq_cload,
     'hotpotqa_distractor_validation': hotpotqa_distractor_validation_cload,
     'trivia_qa_rcwikipedia_validation': triviaqa_rcwikipedia_validation_cload
 }
 dataset = CUSTOM_LOAD_FUNCS[PARAMS['DATASET_NAME']](QA_DATASET_PATH)
+print(QA_DATASET_PATH)
 print(len(dataset))
 
 ########### KG BUILDING #############

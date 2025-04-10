@@ -99,7 +99,7 @@ services:
       - ETCD_DATA_DIR=/var/lib/milvus/etcd
       - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
       - COMMON_STORAGETYPE=local
-    port:
+    ports:
       - ${MILVUS_EXTERNAL_PORT1}:19530
       - ${MILVUS_EXTERNAL_PORT2}:2379
       - ${MILVUS_UI_EXTERNAL_PORT}:9091
@@ -116,10 +116,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
+          cpus: '8'
           memory: 10G
         reservations:
-          cpus: '1'
+          cpus: '4'
           memory: 5G
 
   ollama_agent:
@@ -152,7 +152,7 @@ services:
     network_mode: "host"
     volumes:
       - ${EXTERNAL_SPEC_KG_PATH}:${INTERNAL_SPEC_KG_PATH}
-      - ${EXTERNAL_SPEC_QAD_PATH}:${INTERNAL_SEPC_QAD_PATH}
+      - ${EXTERNAL_SPEC_QADS_PATH}:${INTERNAL_SPEC_QADS_PATH}
       - ${EXTERNAL_NOTEBOOKS_PATH}:${INTERNAL_NOTEBOOKS_PATH}
       - ${EXTERNAL_SRC_PATH}:${INTERNAL_SRC_PATH}
       - ${EXTERNAL_MODELS_PATH}:${INTERNAL_MODELS_PATH}
@@ -172,5 +172,5 @@ services:
           memory: 24G
           devices:
             - driver: nvidia
-              device_ids: ['1']
+              device_ids: ['0']
               capabilities: [gpu]

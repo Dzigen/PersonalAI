@@ -1,5 +1,5 @@
 DATASET_NAME: 'diaasq' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'deepseek_100425_v2prompts' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'gigachat_100425_v2prompts' # TO CHANGE
 
 # SERVER PATHS
 BASE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
@@ -17,20 +17,19 @@ MEM_PIPELINE_CONFIG:
       table: None
 
   agent_config: # TO CHANGE
-    vendor: 'openai'
+    vendor: 'gigachat'
     gen_strategy:
-      seed: 42
-      top_p: 0.00000000000000001
-      temperature: 0.0
-      frequency_penalty: 0
-      presence_penalty: 0
+      top_k: 1
+      top_p: 0
+      temperature: 0
     credentials:
-      token: 'sk-7114ae174a6142bf8b028e8bf6af9579'
-      model: 'deepseek-chat'
-      base_url: 'https://api.deepseek.com'
+      token: 'OWUwOGUzOWEtMjJiNi00YmMxLThmMmItNzMwNjM2MTI2YmYxOjg2ODdiOTVhLTZkNDctNGFjOC1iMmViLTEyNDA5MmFiN2Q5Mw=='
+      scope: 'GIGACHAT_API_CORP'
+      model: 'GigaChat-Pro'
     ext_params:
       timeout: 560
-      max_retries: 5
+      trials: 5
+      verify_ssl_certs: False
 
   extractor_stage:
     extract_triplets:
@@ -48,7 +47,7 @@ MEM_PIPELINE_CONFIG:
   persistent_cache_config:
     vendor: 'mongo'
     host: 'localhost'
-    port: 27017 # TO CHANGE
+    port: 27023 # TO CHANGE
     params:
       username: 'user'
       password: 'pass'
@@ -57,7 +56,7 @@ MEM_PIPELINE_CONFIG:
   ram_cache_config:
     vendor: 'redis'
     host: 'localhost'
-    port: 6379 # TO CHANGE
+    port: 6385 # TO CHANGE
     params:
       ss_name: 'sorted_node_pairs'
       hs_name: 'node_pairs'
@@ -72,7 +71,7 @@ KG_DB_CONFIGS:
   graphdb_config:
     vendor: 'neo4j'
     host: 'localhost'
-    port: 7687 # TO CHANGE
+    port: 7693 # TO CHANGE
     params:
       user: 'neo4j'
       pwd: 'password'
@@ -84,7 +83,7 @@ KG_DB_CONFIGS:
     vendor: 'milvus'
     conn:
       host: 'localhost'
-      port: 19530 # TO CHANGE
+      port: 19533 # TO CHANGE
       user: 'root'
       pass: 'Milvus'
     db_info:
@@ -103,7 +102,7 @@ KG_DB_CONFIGS:
       vendor: 'milvus'
       conn:
         host: 'localhost'
-        port: 19530 # TO CHANGE
+        port: 19533 # TO CHANGE
         user: 'root'
         pass: 'Milvus'
       db_info:
@@ -126,27 +125,27 @@ KG_DB_CONFIGS:
 
 CONTAINERS_ADDITIONAL_CONFIG:
   workspace_cntname: 'personalai_mmenschikov_workspace'
-  workspace_host: 'personalai_mmenschikov_workspace'
+  workspace_host: 'localhost'
 
   redis_cntname: 'personalai_mmenschikov_redis'
   redis_ui_cntname: 'personalai_mmenschikov_redis_ui'
   redis_ui_host: 'personalai_mmenschikov_redis_ui'
-  redis_ui_port: 5540 # TO CHANGE
+  redis_ui_port: 5546 # TO CHANGE
 
   mongo_cntname: 'personalai_mmenschikov_mongo'
   mongo_ui_cntname: 'personalai_mmenschikov_mongo_ui'
   mongo_ui_host: 'personalai_mmenschikov_mongo_ui'
-  mongo_ui_port: 8081 # TO CHANGE
+  mongo_ui_port: 8087 # TO CHANGE
 
   milvus_cntname: 'personalai_mmenschikov_milvus'
-  milvus_host: 'personalai_mmenschikov_milvus'
-  milvus_port1: 19530 # TO CHANGE
-  milvus_port2: 2379 # TO CHANGE
-  milvus_ui_port: 9091 # TO CHANGE
+  milvus_host: 'localhost'
+  milvus_port1: 19533 # TO CHANGE
+  milvus_port2: 2382 # TO CHANGE
+  milvus_ui_port: 9094 # TO CHANGE
   milvus_config: milvus
 
   neo4j_cntname: 'personalai_mmenschikov_neo4j'
-  neo4j_ui_port: 7474 # TO CHANGE
+  neo4j_ui_port: 7480 # TO CHANGE
 
   ollama_cntname: 'personalai_mmenschikov_ollama'
   ollama_host: 'personalai_mmenschikov_ollama'

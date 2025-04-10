@@ -1,0 +1,19 @@
+{
+ "contexts_amount": 3933,
+ "contexts_len": {
+  "median": 384.0,
+  "mean": 413.72616,
+  "std": 201.05291
+ },
+ "qa_pairs_amount": 2000,
+ "answers_len": {
+  "median": 13.0,
+  "mean": 15.295,
+  "std": 11.87228
+ },
+ "questions_len": {
+  "median": 87.0,
+  "mean": 92.9825,
+  "std": 32.62646
+ }
+}

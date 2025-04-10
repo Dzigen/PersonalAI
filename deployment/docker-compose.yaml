@@ -60,10 +60,10 @@ services:
 
   workspace:
     image: m.menschikov/workspace:v1
-    container_name: personalai_mmenschikov_worksapce
+    container_name: personalai_mmenschikov_workspace
     hostname: worksapceservice
     volumes:
-      - ../:/home/m.menschikov/workspace/personal_ai
+      - ../../:/home/m.menschikov/workspace/personal_ai
     deploy:
       resources:
         limits:

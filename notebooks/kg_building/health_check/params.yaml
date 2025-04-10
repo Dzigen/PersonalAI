@@ -14,7 +14,7 @@ KG_DIR_STRUCT:
 WORKSPACE_CONTAINER_DIRS:
   base_path: '/home/workspace'
   kg: 'data/knowledge_graphs'
-  qa_datasets: 'data/qa_datasets'
+  qa_datasets: 'data/qa_datasets/v2'
   notebooks: 'notebooks'
   src: 'src'
   models: 'models'

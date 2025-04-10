@@ -18,7 +18,7 @@ KV_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir']['base']}"
 PERSISTENT_DB_PATH = KV_DB_PATH + f"{PARAMS['KG_DIR_STRUCT']['cache_dir']['persistant']}"
 RAM_DB_PATH = KV_DB_PATH + f"{PARAMS['KG_DIR_STRUCT']['cache_dir']['ram']}"
 
-TMP_EXTRACTED_TRIPLETS_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['tmp_triplets_dir']}"
+TMP_EXTRACTED_TRIPLETS_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['tmp_extracted_triplets']}"
 
 if PARAMS['INIT_STRUCT']:
     if not os.path.exists(DATASET_KGS_PATH):

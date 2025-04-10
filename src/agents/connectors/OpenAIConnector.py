@@ -20,6 +20,9 @@ GPT4OMINI_CONFIG = AgentConnectorConfig(
 class OpenAIConnector(AbstractAgentConnector):
     def __init__(self, config: AgentConnectorConfig = GPT4OMINI_KEY) -> None:
         self.config = config
+        base_url = None if config.credentials['base_url'] == 'None' else config.credentials['base_url']
+        self.config.credentials['base_url'] = base_url
+        
         self.client = OpenAI(
             api_key=os.environ.get("OPENAI_API_KEY", config.credentials['token']),
             base_url=config.credentials['base_url'])

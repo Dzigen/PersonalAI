@@ -10,7 +10,7 @@ DATASET_KGS_PATH = f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_D
 SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
 # параметры для графовой бд (neo4j)
-GRAPH_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['graph_dir_name']}"
+GRAPH_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['graph_part']}"
 
 neo4j_cnt_variables = {
     'NEO4J_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['neo4j_cntname'],
@@ -26,8 +26,8 @@ neo4j_cnt_variables = {
 }
 
 # параметры для persistent бд (mongo)
-KV_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir_name']['base']}"
-PERSISTENT_DB_PATH = f"{KV_DB_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir_name']['persistant']}/"
+KV_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir']['base']}"
+PERSISTENT_DB_PATH = f"{KV_DB_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir']['persistant']}/"
 
 mongo_cnt_variables = {
     'MONGO_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['mongo_cntname'],
@@ -49,7 +49,7 @@ mongoui_cnt_variables = {
 }
 
 # параметры для ram бд (redis)
-RAM_DB_PATH = f"{KV_DB_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir_name']['ram']}"
+RAM_DB_PATH = f"{KV_DB_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir']['ram']}"
 
 redis_cnt_variables = {
     'REDIS_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['redis_cntname'],
@@ -71,7 +71,7 @@ redisui_cnt_variables = {
 }
 
 # параметры для workspace - окружения
-worksapce_cnt_variables = {
+workspace_cnt_variables = {
     'WORKSPACE_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['workspace_cntname'],
     'WORKSPACE_HOST': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['workspace_host'],
 
@@ -108,7 +108,7 @@ llmagents_cnt_variables = {
     'OLLAMA_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['ollama_cntname'],
     'OLLAMA_HOST': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['ollama_host'],
 
-    'OLLAMA_EXTERNAL_PORT': PARAMS['MEM_PIPELINE_CONFIG']['agent_config']['credentials']['port'],
+    'OLLAMA_EXTERNAL_PORT': PARAMS['MEM_PIPELINE_CONFIG']['agent_config']['credentials'].get('port', 11434),
 
     'OLLAMA_LOCAL_VOLUME': PARAMS['OLLAMA_MODELS_PATH']
 }
@@ -123,12 +123,12 @@ def dictvar_to_string(dict_variables) -> str:
 
 def add_prefixes(dict_variables) -> None:
     for k in dict_variables.keys():
-        if k.endswith("_CNTNAME") or k.endswith("_HOST"):
+        if k.endswith("_CNTNAME"):
             dict_variables[k] = f"{dict_variables[k]}_{PARAMS['DATASET_NAME']}_{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
 env_variables = [
     neo4j_cnt_variables, milvus_cnt_variables, mongo_cnt_variables, mongoui_cnt_variables,
-    redis_cnt_variables, redisui_cnt_variables, worksapce_cnt_variables]
+    redis_cnt_variables, redisui_cnt_variables, workspace_cnt_variables]
 for variables in env_variables:
     add_prefixes(variables)
 env_variables += [llmagents_cnt_variables, compose_variables]

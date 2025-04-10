@@ -97,12 +97,9 @@ class MilvusConnector(AbstractVectorDatabaseConnection):
 
         formated_data = list(map(lambda item: item.dict(), filtered_items))
 
-        print("items to add:", len(formated_data))
-
         out = self.client.insert(
             collection_name=self.config.db_info['table'],
             data=formated_data)
-        print(out)
 
         # костыль
         if self.config.params['flush']:
@@ -170,16 +167,12 @@ class MilvusConnector(AbstractVectorDatabaseConnection):
             data=[inst.embedding for inst in query_instances],
             limit=n_results, output_fields=f_includes, **filtering_expr)
 
-        print(raw_output)
-
         formated_output = []
         for q_output in raw_output:
             # CARE: работает только для COSINE и IP - метрик
             # костыль: полученные значения близости векторов [similarity] приводит к шкале расстояний [distances]
             f_items = list(map(lambda r_item: (1 - r_item['distance'], VectorDBInstance(id=r_item['id'], **r_item['entity'])), q_output))
             formated_output.append(f_items)
-
-        print(formated_output)
 
         return formated_output
 
@@ -195,8 +188,6 @@ class MilvusConnector(AbstractVectorDatabaseConnection):
         res = self.client.get(
             collection_name=self.config.db_info['table'],
             ids=[id],output_fields=[])
-
-        print(res)
 
         return bool(len(res))
 
