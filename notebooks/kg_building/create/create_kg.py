@@ -120,9 +120,7 @@ print(len(dataset))
 
 ########### KG BUILDING #############
 
-# triviaqa 8854 of 9975
-
-for i in tqdm(range(8854, len(dataset))):
+for i in tqdm(range(len(dataset))):
     text, time, properties = dataset[i][0], dataset[i][1], dataset[i][2]
     extracted_triplets, _ = mem_pipeline.remember(text, time, properties)
 
