@@ -41,12 +41,16 @@ class MilvusConnector(AbstractVectorDatabaseConnection):
         index_params.add_index(
             field_name="id", index_name="id_index")
         index_params.add_index(
-            field_name="embedding", index_type="IVF_FLAT",
-            index_name="embedding_index", metric_type=self.config.params['search_metric'])
+           field_name="embedding", index_type="IVF_FLAT",
+           index_name="embedding_index", metric_type=self.config.params['search_metric'])
 
         self.client.create_collection(
             collection_name=self.config.db_info['table'],
-            schema=schema,index_params=index_params)
+            schema=schema)
+
+        self.client.create_index(
+            collection_name=self.config.db_info['table'],
+            index_params=index_params)
 
     def open_connection(self) -> None:
         uri = f"http://{self.config.conn['host']}:{self.config.conn['port']}"

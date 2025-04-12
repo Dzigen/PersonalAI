@@ -15,6 +15,8 @@ MAIN_PARAMS_PATH="$MAIN_KGCREATE_PATH/params.yaml"
 
 PYTHON_CMD=/usr/bin/python3
 
+ENV_FILE_PATH="/mnt/data/m.menschikov/data/knowledge_graphs/$DATASET_NAME/$KG_NAME/.env"
+
 # поднять tmp workspace-контейнер
 cd $TMP_DEPLOYMENT_COMPOSE_PATH ; docker compose --env-file="$TMP_DEPLOYMENT_COMPOSE_PATH/.env_base" up -d workspace
 # инициализировать структуру графа
@@ -24,7 +26,7 @@ docker exec $TMP_WORKSPACE_CNTNAME $PYTHON_CMD "$TMP_KGCREATE_PATH/get_dc_envfil
 docker stop $TMP_WORKSPACE_CNTNAME ; docker rm $TMP_WORKSPACE_CNTNAME
 
 # создать окружение графа
-cd "$TMP_KGCREATE_PATH/.." ; docker compose --env-file="$TMP_KGS_PATH/$DATASET_NAME/$KG_NAME/.env" up -d workspace
+cd "$TMP_KGCREATE_PATH/.." ; docker compose --env-file=$ENV_FILE_PATH up -d workspace
 # сохранить конфигурационные файлы mem-пайплайна
 docker exec $MAIN_WORKSPACE_CNTNAME pip install pymilvus
 docker exec $MAIN_WORKSPACE_CNTNAME systemctl start cron

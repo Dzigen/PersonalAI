@@ -33,7 +33,7 @@ class KnowledgeGraphModel:
         assert gdb_count['triplets'] >= vdb_triplets_count
         #assert vdb_nodes_count > vdb_triplets_count
 
-    def add_knowledge(self, triplets: List[Triplet], check_consistency: bool = True, status_bar: bool = False) -> Dict[str, Dict[str,Set[str]]]:
+    def add_knowledge(self, triplets: List[Triplet], check_consistency: bool = False, status_bar: bool = False) -> Dict[str, Dict[str,Set[str]]]:
         """Метод предназначен для добавления информации в память (граф знаний) ассистента в виде списка триплетов.
 
         :param triplets: Список триплетов с информацией для добавления в память (граф знаний) ассистента.

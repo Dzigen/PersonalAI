@@ -63,19 +63,19 @@ services:
     container_name: personalai_mmenschikov_workspace
     hostname: worksapceservice
     volumes:
-      - ../../:/home/m.menschikov/workspace/personal_ai
-    deploy:
-      resources:
-        limits:
-          cpus: '16'
-          memory: 32G
-        reservations:
-          cpus: '8'
-          memory: 24G
-          devices:
-            - driver: nvidia
-              device_ids: ['1']
-              capabilities: [gpu]
+      - ../../:/home/dzigen/Desktop/PersonalAI/ #/home/m.menschikov/workspace/personal_ai
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '16'
+    #       memory: 32G
+    #     reservations:
+    #       cpus: '8'
+    #       memory: 24G
+    #       devices:
+    #         - driver: nvidia
+    #           device_ids: ['1']
+    #           capabilities: [gpu]
 
   empty_workspace:
     image: m.menschikov/empty_workspace:v1
