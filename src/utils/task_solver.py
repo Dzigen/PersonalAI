@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Tuple, Dict, Union
 import json
 from copy import deepcopy
+import hashlib 
 
 from .logger import Logger
 from .language_detector import detect_lang
@@ -130,9 +131,15 @@ class AgentTaskSolver:
 
             raw_answer = None
             gen_flag = True
-            cache_key = [self.config.suites[detected_lang].system_prompt, enriched_user_prompt,
-                         self.config.suites[detected_lang].assistant_prompt, self.agent.config.gen_strategy,
-                         self.agent.config.credentials]
+            
+            # preparing cache key
+            str_genstrat = ";".join(list(map(lambda p: f"{p[0]}={p[1]}", sorted([(k, str(v)) for k, v in self.agent.config.gen_strategy.items()], key=lambda p: p[0]))))
+            str_creds = ";".join(list(map(lambda p: f"{p[0]}={p[1]}", sorted([(k, str(v)) for k, v in self.agent.config.credentials.items()], key=lambda p: p[0]))))
+            sprompt_hash = hashlib.sha1(self.config.suites[detected_lang].system_prompt.encode()).hexdigest()
+            uprompt_hash = hashlib.sha1(enriched_user_prompt.encode()).hexdigest()
+            aprompt_hash = hashlib.sha1(self.config.suites[detected_lang].assistant_prompt.encode()).hexdigest()
+            cache_key = [sprompt_hash, uprompt_hash, aprompt_hash, str_genstrat, str_creds]
+
             key_hash = None
 
             if self.cachekv is not None:
@@ -141,12 +148,18 @@ class AgentTaskSolver:
                 if cstatus == 0:
                     self.log("Результат по заданной конфигурации гиперпараметров уже был получен.", verbose=self.config.verbose)
                     self.log(f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
-                    self.log(f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
+                    self.log(f"* CACHE_HASH_KEY: {key_hash}", verbose=self.verbose)
+                    formated_log_cachekey = '\n-'.join(cache_key)
+                    self.log(f"* HASH_SEEDS:\n-{formated_log_cachekey}", verbose=self.verbose)
 
                     gen_flag = False
                     raw_answer = cached_result
                 else:
                     self.log("Результата по заданной конфигурации гиперпараметров в кеше нет.", verbose=self.config.verbose)
+                    self.log(f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
+                    self.log(f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
+                    formated_log_cachekey = '\n-'.join(cache_key)
+                    self.log(f"* HASH_SEEDS:\n-{formated_log_cachekey }", verbose=self.verbose)
 
             if gen_flag:
                 self.log("Выполняем инференс llm...", verbose=self.config.verbose)

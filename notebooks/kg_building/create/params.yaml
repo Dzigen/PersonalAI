@@ -1,8 +1,9 @@
-DATASET_NAME: 'diaasq' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'gigachat_100425_v2prompts' # TO CHANGE
+DATASET_NAME: 'trivia_qa_rcwikipedia_validation' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'deepseek_120425_v2prompts' # TO CHANGE
 
 # SERVER PATHS
 BASE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
+BASE_DATA_PATH: '/mnt/data/m.menschikov'
 OLLAMA_MODELS_PATH: '/home/m.menschikov/workspace/personal_ai/ollama_volume' # TO CHANGE
 
 INIT_STRUCT: True # !!! PAY ATTENTION !!!
@@ -17,19 +18,20 @@ MEM_PIPELINE_CONFIG:
       table: None
 
   agent_config: # TO CHANGE
-    vendor: 'gigachat'
-    gen_strategy:
-      top_k: 1
-      top_p: 0
-      temperature: 0
+    vendor: openai
     credentials:
-      token: 'OWUwOGUzOWEtMjJiNi00YmMxLThmMmItNzMwNjM2MTI2YmYxOjg2ODdiOTVhLTZkNDctNGFjOC1iMmViLTEyNDA5MmFiN2Q5Mw=='
-      scope: 'GIGACHAT_API_CORP'
-      model: 'GigaChat-Pro'
+      base_url: https://api.deepseek.com
+      model: deepseek-chat
+      token: sk-7114ae174a6142bf8b028e8bf6af9579
     ext_params:
+      max_retries: 5
       timeout: 560
-      trials: 5
-      verify_ssl_certs: False
+    gen_strategy:
+      frequency_penalty: 0
+      presence_penalty: 0
+      seed: 42
+      temperature: 0.0
+      top_p: 1.0e-17
 
   extractor_stage:
     extract_triplets:
@@ -47,7 +49,7 @@ MEM_PIPELINE_CONFIG:
   persistent_cache_config:
     vendor: 'mongo'
     host: 'localhost'
-    port: 27023 # TO CHANGE
+    port: 27022 # TO CHANGE
     params:
       username: 'user'
       password: 'pass'
@@ -56,7 +58,7 @@ MEM_PIPELINE_CONFIG:
   ram_cache_config:
     vendor: 'redis'
     host: 'localhost'
-    port: 6385 # TO CHANGE
+    port: 6384 # TO CHANGE
     params:
       ss_name: 'sorted_node_pairs'
       hs_name: 'node_pairs'
@@ -71,7 +73,7 @@ KG_DB_CONFIGS:
   graphdb_config:
     vendor: 'neo4j'
     host: 'localhost'
-    port: 7693 # TO CHANGE
+    port: 7692 # TO CHANGE
     params:
       user: 'neo4j'
       pwd: 'password'
@@ -83,7 +85,7 @@ KG_DB_CONFIGS:
     vendor: 'milvus'
     conn:
       host: 'localhost'
-      port: 19533 # TO CHANGE
+      port: 19532 # TO CHANGE
       user: 'root'
       pass: 'Milvus'
     db_info:
@@ -102,7 +104,7 @@ KG_DB_CONFIGS:
       vendor: 'milvus'
       conn:
         host: 'localhost'
-        port: 19533 # TO CHANGE
+        port: 19532 # TO CHANGE
         user: 'root'
         pass: 'Milvus'
       db_info:
@@ -130,22 +132,22 @@ CONTAINERS_ADDITIONAL_CONFIG:
   redis_cntname: 'personalai_mmenschikov_redis'
   redis_ui_cntname: 'personalai_mmenschikov_redis_ui'
   redis_ui_host: 'personalai_mmenschikov_redis_ui'
-  redis_ui_port: 5546 # TO CHANGE
+  redis_ui_port: 5545 # TO CHANGE
 
   mongo_cntname: 'personalai_mmenschikov_mongo'
   mongo_ui_cntname: 'personalai_mmenschikov_mongo_ui'
   mongo_ui_host: 'personalai_mmenschikov_mongo_ui'
-  mongo_ui_port: 8087 # TO CHANGE
+  mongo_ui_port: 8086 # TO CHANGE
 
   milvus_cntname: 'personalai_mmenschikov_milvus'
   milvus_host: 'localhost'
-  milvus_port1: 19533 # TO CHANGE
-  milvus_port2: 2382 # TO CHANGE
-  milvus_ui_port: 9094 # TO CHANGE
+  milvus_port1: 19532 # TO CHANGE
+  milvus_port2: 2381 # TO CHANGE
+  milvus_ui_port: 9093 # TO CHANGE
   milvus_config: milvus
 
   neo4j_cntname: 'personalai_mmenschikov_neo4j'
-  neo4j_ui_port: 7480 # TO CHANGE
+  neo4j_ui_port: 7479 # TO CHANGE
 
   ollama_cntname: 'personalai_mmenschikov_ollama'
   ollama_host: 'personalai_mmenschikov_ollama'
@@ -162,7 +164,7 @@ KG_DIR_STRUCT:
 
 PERSONALAI_REPO_DIRS:
   kg: 'data/knowledge_graphs'
-  qa_datasets: 'data/qa_datasets'
+  qa_datasets: 'data/qa_datasets/v2'
   notebooks: 'notebooks'
   src: 'src'
   models: 'models'
@@ -171,7 +173,7 @@ PERSONALAI_REPO_DIRS:
 WORKSPACE_CONTAINER_DIRS:
   base_path: '/home/workspace'
   kg: 'data/knowledge_graphs'
-  qa_datasets: 'data/qa_datasets'
+  qa_datasets: 'data/qa_datasets/v2'
   notebooks: 'notebooks'
   src: 'src'
   models: 'models'

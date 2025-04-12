@@ -6,7 +6,7 @@ PARAMS_FILE_PATH = sys.orig_argv[2]
 with open(PARAMS_FILE_PATH, 'r') as stream:
     PARAMS = yaml.safe_load(stream)
 
-DATASET_KGS_PATH = f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
+DATASET_KGS_PATH = f"{PARAMS['BASE_DATA_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
 SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
 # параметры для графовой бд (neo4j)
@@ -135,7 +135,7 @@ env_variables += [llmagents_cnt_variables, compose_variables]
 
 env_variables = '\n'.join(list(map(lambda vars: dictvar_to_string(vars), env_variables)))
 
-DC_ENV_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"
+DC_ENV_PATH = f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['kg']}/{PARAMS['DATASET_NAME']}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}/{PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"
 with open(DC_ENV_PATH, 'w', encoding='utf-8') as fd:
     fd.write(env_variables)
 
