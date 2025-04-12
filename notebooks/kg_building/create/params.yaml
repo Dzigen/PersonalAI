@@ -3,6 +3,7 @@ KNOWLEDGE_GRAPH_NAME: 'gpt4omini_100425_v2prompts' # TO CHANGE
 
 # SERVER PATHS
 BASE_PERSONALAI_PATH: '/home/dzigen/Desktop/PersonalAI/Personal-AI' # TO CHANGE
+BASE_DATA_PATH: '/mnt/data/m.menschikov'
 OLLAMA_MODELS_PATH: '/home/dzigen/Desktop/PersonalAI/ollama_volume' # TO CHANGE
 
 INIT_STRUCT: True # !!! PAY ATTENTION !!!
@@ -29,9 +30,8 @@ MEM_PIPELINE_CONFIG:
       model: 'gpt-4o-mini'
       base_url: None
     ext_params:
+      max_retries: 5
       timeout: 560
-      trials: 5
-
   extractor_stage:
     extract_triplets:
       prompts_version: 'v2'

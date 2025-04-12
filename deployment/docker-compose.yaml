@@ -63,19 +63,23 @@ services:
     container_name: personalai_mmenschikov_workspace
     hostname: worksapceservice
     volumes:
-      - ../../:/home/dzigen/Desktop/PersonalAI/ #/home/m.menschikov/workspace/personal_ai
-    # deploy:
-    #   resources:
-    #     limits:
-    #       cpus: '16'
-    #       memory: 32G
-    #     reservations:
-    #       cpus: '8'
-    #       memory: 24G
-    #       devices:
-    #         - driver: nvidia
-    #           device_ids: ['1']
-    #           capabilities: [gpu]
+      - ../../Personal-AI/data/qa_datasets:/home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets
+      - ../../Personal-AI/src:/home/m.menschikov/workspace/personal_ai/Personal-AI/src
+      - ../../Personal-AI/experiments:/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments
+      - ../../Personal-AI/notebooks:/home/m.menschikov/workspace/personal_ai/Personal-AI/notebooks
+      - /mnt/data/m.menschikov/data/knowledge_graphs:/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs
+    deploy:
+      resources:
+        limits:
+          cpus: '16'
+          memory: 32G
+        reservations:
+          cpus: '8'
+          memory: 24G
+          devices:
+            - driver: nvidia
+              device_ids: ['1']
+              capabilities: [gpu]
 
   empty_workspace:
     image: m.menschikov/empty_workspace:v1
@@ -94,10 +98,10 @@ services:
 
   ollama_agent:
     image: ollama/ollama:latest
-    container_name: personalai_mmenschikov_ollama_servicev3
+    container_name: personalai_mmenschikov_ollama_servicev5
     hostname: localhost
     ports:
-      - "11436:11434"
+      - "11438:11434"
     environment:
       - OLLAMA_DEBUG=1
     volumes:
@@ -106,11 +110,11 @@ services:
       resources:
         limits:
           cpus: '8'
-          memory: 8G
+          memory: 32G
         reservations:
           cpus: '4'
           memory: 4G
           devices:
             - driver: nvidia
-              device_ids: ['2']
+              device_ids: ['0']
               capabilities: [gpu]
