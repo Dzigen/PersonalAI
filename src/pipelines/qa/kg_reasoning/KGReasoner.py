@@ -8,7 +8,6 @@ from .utils import BaseKGReasonerConfig
 from ....utils import ReturnInfo, Logger
 from ....kg_model import KnowledgeGraphModel
 from ....db_drivers.kv_driver import KeyValueDriverConfig
-from ....utils.cache_kv import CacheKV, CacheUtils
 
 @dataclass
 class KnowledgeGraphReasonerConfig:

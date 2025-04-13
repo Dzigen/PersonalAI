@@ -24,6 +24,11 @@ class WaterCirclesSearchConfig(BaseGraphSearchConfig):
     cache_table_name: str = 'qa_watercircles_t_retriever_cache'
     accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
 
+    def to_str(self):
+        str_accepted_nodes = ";".join(list(map(lambda v: v.value, self.accepted_node_types)))
+        str_values = f"{self.hyper_num};{self.episodic_num};{self.chain_triplets_num};{self.other_triplets_num}"
+        return f"{self.strict_filter}|{str_values}|{self.do_text_pruning}|{str_accepted_nodes}"
+
 def process_chain(
         chain: List[List[str]],
         chain_subj_obj: List[Tuple[str]],
@@ -134,11 +139,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever):
             self.cachekv = None
 
     def get_cache_key(self, query_info: QueryInfo, depth: int = 1):
-        return [self.config, query_info, depth,
-                self.kg_model.graph_struct.config.driver_config,
-                self.kg_model.embeddings_struct.config.nodesdb_driver_config,
-                self.kg_model.embeddings_struct.config.tripletsdb_driver_config,
-                self.kg_model.embeddings_struct.config.embedder_config]
+        return [self.config.to_str(), query_info.to_str(), str(depth)]
 
     def parse_triplet_output(
             self,

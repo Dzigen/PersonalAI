@@ -29,6 +29,9 @@ class AStarMetricsConfig:
     h_metric_name: str = 'ip'
     kvdriver_config: KeyValueDriverConfig = None
 
+    def to_str(self):
+        return f"{self.h_metric_name}"
+
 class AStarMetrics:
     """Класс предназначен для расчёта d- и h-метрик, используемых в рамках A*-алгоритма поиска.
 
@@ -265,6 +268,10 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
     cache_table_name: str = 'qa_astar_t_retriever_cache'
 
+    def to_str(self):
+        str_accepted_nodes = ";".join(list(map(lambda v: v.value, self.accepted_node_types)))
+        return f"{self.metrics_config.to_str()}|{self.max_depth}|{self.max_passed_nodes}|{str_accepted_nodes}"
+
 class AStarGraphSearch:
     """Класс предназначен для запуска A*-алгоритма с целью извлечения триплетов из графового хранилища триплетов.
 
@@ -370,7 +377,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                     **search_config['metrics_config'].kvdriver_config)
                 search_config['metrics_config'].kvdriver_config.db_config = KVDBConnectionConfig(
                     **search_config['metrics_config'].kvdriver_config.db_config)
-                
+
                 if search_config['metrics_config'].kvdriver_config.db_vendor == 'mixed_kv':
                     search_config['metrics_config'].kvdriver_config.db_config.params['redis_config'] = KVDBConnectionConfig(
                         **search_config['metrics_config'].kvdriver_config.db_config.params['redis_config'])
@@ -390,11 +397,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             self.cachekv = None
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
-        return [self.config, query_info,
-                self.kg_model.graph_struct.config.driver_config,
-                self.kg_model.embeddings_struct.config.nodesdb_driver_config,
-                self.kg_model.embeddings_struct.config.tripletsdb_driver_config,
-                self.kg_model.embeddings_struct.config.embedder_config, ]
+        return [self.config.to_str(), query_info.to_str()]
 
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:

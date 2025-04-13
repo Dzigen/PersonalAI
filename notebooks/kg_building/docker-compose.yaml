@@ -12,14 +12,14 @@ services:
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
     volumes:
       - ${NEO4J_LOCAL_VOLUME}:/data
-    deploy:
-      resources:
-        limits:
-          cpus: '8'
-          memory: 10G
-        reservations:
-          cpus: '4'
-          memory: 5G
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '8'
+    #       memory: 10G
+    #     reservations:
+    #       cpus: '4'
+    #       memory: 5G
 
   mongo_cache:
     image: mongo:latest
@@ -32,14 +32,14 @@ services:
       - "${MONGO_EXTERNAL_PORT}:27017"
     volumes:
       - ${MONGO_LOCAL_VOLUME}:/data/db/
-    deploy:
-      resources:
-        limits:
-          cpus: '8'
-          memory: 40G
-        reservations:
-          cpus: '4'
-          memory: 5G
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '8'
+    #       memory: 40G
+    #     reservations:
+    #       cpus: '4'
+    #       memory: 5G
 
   mongo_ui:
     image: mongo-express:latest
@@ -69,14 +69,14 @@ services:
     volumes:
       - ${REDIS_LOCAL_VOLUME}:/data
       - ${REDIS_CONFIG}:/usr/local/etc/redis
-    deploy:
-      resources:
-        limits:
-          cpus: '8'
-          memory: 10G
-        reservations:
-          cpus: '4'
-          memory: 5G
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '8'
+    #       memory: 10G
+    #     reservations:
+    #       cpus: '4'
+    #       memory: 5G
 
   redis_ui:
     image: redis/redisinsight:latest
@@ -113,14 +113,14 @@ services:
       start_period: 90s
       timeout: 20s
       retries: 3
-    deploy:
-      resources:
-        limits:
-          cpus: '8'
-          memory: 10G
-        reservations:
-          cpus: '4'
-          memory: 5G
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '8'
+    #       memory: 10G
+    #     reservations:
+    #       cpus: '4'
+    #       memory: 5G
 
   ollama_agent:
     image: ollama/ollama:latest
@@ -164,13 +164,13 @@ services:
     #   - ollama_agent
     deploy:
       resources:
-        limits:
-          cpus: '8'
-          memory: 32G
+        # limits:
+        #   cpus: '8'
+        #   memory: 32G
         reservations:
-          cpus: '4'
-          memory: 24G
+          # cpus: '4'
+          # memory: 24G
           devices:
             - driver: nvidia
-              device_ids: ['2']
+              device_ids: ['0']
               capabilities: [gpu]

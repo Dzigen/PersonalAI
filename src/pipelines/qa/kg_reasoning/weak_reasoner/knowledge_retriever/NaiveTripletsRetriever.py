@@ -16,6 +16,9 @@ class NaiveGraphSearchConfig(BaseGraphSearchConfig):
     max_k: int = 50
     cache_table_name: str = 'qa_naive_t_retriever_cache'
 
+    def to_str(self):
+        return f"{self.max_k}"
+
 class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[NaiveGraphSearchConfig,Dict] = NaiveGraphSearchConfig(),
@@ -36,11 +39,7 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             self.cachekv = None
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
-        return [self.config.max_k, query_info,
-                self.kg_model.graph_struct.config.driver_config,
-                self.kg_model.embeddings_struct.config.nodesdb_driver_config,
-                self.kg_model.embeddings_struct.config.tripletsdb_driver_config,
-                self.kg_model.embeddings_struct.config.embedder_config]
+        return [self.config.to_str(), query_info.to_str()]
 
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:

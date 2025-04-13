@@ -24,6 +24,10 @@ class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):
     accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
     cache_table_name: str = 'qa_bfs_t_retriver_cache'
 
+    def to_str(self):
+        str_accepted_nodes = ";".join(list(map(lambda v: v.value, self.accepted_node_types)))
+        return f"{self.max_depth}|{self.max_width}|{self.max_passed_nodes}|{str_accepted_nodes}"
+
 class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[NaiveBFSGraphSearchConfig, Dict] = NaiveBFSGraphSearchConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
@@ -45,12 +49,7 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             self.cachekv = None
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
-        return [self.config.max_depth, self.config.max_width,
-                self.config.max_passed_nodes, self.config.accepted_node_types, query_info,
-                self.kg_model.graph_struct.config.driver_config,
-                self.kg_model.embeddings_struct.config.nodesdb_driver_config,
-                self.kg_model.embeddings_struct.config.tripletsdb_driver_config,
-                self.kg_model.embeddings_struct.config.embedder_config]
+        return [self.config.to_str(), query_info.to_str()]
 
     def search(self, node_id: str) -> List[Triplet]:
         traversed_triplets = []
