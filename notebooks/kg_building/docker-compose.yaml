@@ -16,10 +16,10 @@ services:
       resources:
         limits:
           cpus: '8'
-          memory: 10G
+          memory: 24G
         reservations:
           cpus: '4'
-          memory: 5G
+          memory: 8G
 
   mongo_cache:
     image: mongo:latest
@@ -117,10 +117,10 @@ services:
       resources:
         limits:
           cpus: '8'
-          memory: 10G
+          memory: 24G
         reservations:
           cpus: '4'
-          memory: 5G
+          memory: 8G
 
   ollama_agent:
     image: ollama/ollama:latest
@@ -172,5 +172,5 @@ services:
           memory: 24G
           devices:
             - driver: nvidia
-              device_ids: ['2']
+              device_ids: ['1']
               capabilities: [gpu]

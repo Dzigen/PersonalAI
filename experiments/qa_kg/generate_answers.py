@@ -55,16 +55,6 @@ embed_config = joblib.load(EMBEDDINGS_DRIVER_CONFIG_PATH)
 graph_config.driver_config.db_config.need_to_clear = False
 embed_config.nodesdb_driver_config.db_config.need_to_clear = False
 embed_config.tripletsdb_driver_config.db_config.need_to_clear = False
-
-graph_config.driver_config.db_config.host = PARAMS['KG_DB_CONFIGS']['graphdb_config']['host']
-graph_config.driver_config.db_config.port = PARAMS['KG_DB_CONFIGS']['graphdb_config']['port']
-embed_config.nodesdb_driver_config.db_config.path = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['embeddings_dir_name']}"
-embed_config.nodesdb_driver_config.db_config.params["hnsw:M"] = 8192 
-embed_config.tripletsdb_driver_config.db_config.path = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['embeddings_dir_name']}"
-embed_config.tripletsdb_driver_config.db_config.params["hnsw:M"] = 8192
-
-embed_config.embedder_config.model_name_or_path = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['models']}/{PARAMS['KG_DB_CONFIGS']['embedder_config']['model_name_or_path']}"
-
 # !!! IMPORTANT !!!
 
 print("graph_config:", graph_config)

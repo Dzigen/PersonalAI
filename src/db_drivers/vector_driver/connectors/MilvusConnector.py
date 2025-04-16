@@ -36,21 +36,9 @@ class MilvusConnector(AbstractVectorDatabaseConnection):
         schema.add_field(field_name="document", datatype=DataType.VARCHAR, max_length=self.config.params['document_max_length'])
         schema.add_field(field_name="metadata", datatype=DataType.JSON)
 
-        # создать индекс
-        index_params = self.client.prepare_index_params()
-        index_params.add_index(
-            field_name="id", index_name="id_index")
-        index_params.add_index(
-           field_name="embedding", index_type="IVF_FLAT",
-           index_name="embedding_index", metric_type=self.config.params['search_metric'])
-
         self.client.create_collection(
             collection_name=self.config.db_info['table'],
             schema=schema)
-
-        self.client.create_index(
-            collection_name=self.config.db_info['table'],
-            index_params=index_params)
 
     def open_connection(self) -> None:
         uri = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
@@ -60,6 +48,20 @@ class MilvusConnector(AbstractVectorDatabaseConnection):
         self.prepare_structure()
         if self.config.need_to_clear:
             self.clear()
+
+        cur_indexes = self.client.list_indexes(collection_name=self.config.db_info['table'])
+        index_params = self.client.prepare_index_params()
+        if "id_index" not in cur_indexes:
+            # создать индекс
+            index_params.add_index(field_name="id", index_name="id_index")
+        if "embedding_index" not in cur_indexes:
+            index_params.add_index(
+                field_name="embedding", index_type="IVF_FLAT", 
+                index_name="embedding_index", metric_type=self.config.params['search_metric'])
+        if len(cur_indexes) != 2:
+            self.client.create_index(
+                collection_name=self.config.db_info['table'],
+                index_params=index_params)
 
         load_state = self.client.get_load_state(self.config.db_info['table'])['state'].value
         if self.config.params['load'] and load_state != 3:

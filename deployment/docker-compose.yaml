@@ -98,7 +98,7 @@ services:
 
   ollama_agent:
     image: ollama/ollama:latest
-    container_name: personalai_mmenschikov_ollama_servicev5
+    container_name: personalai_mmenschikov_ollama_servicev2
     hostname: localhost
     ports:
       - "11438:11434"
@@ -116,5 +116,5 @@ services:
           memory: 4G
           devices:
             - driver: nvidia
-              device_ids: ['0']
+              device_ids: ['2']
               capabilities: [gpu]

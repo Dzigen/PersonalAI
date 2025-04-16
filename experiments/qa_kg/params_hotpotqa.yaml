@@ -1,5 +1,5 @@
 
-EXPERIMENT_NAME: "astar_v2_qwen25(e2.2.2)(v1.5.5)" # TO CHANGE
+EXPERIMENT_NAME: "bs_v2_qwen25(e2.3.1)(v1.5.5)" # TO CHANGE
 DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'qwen25_080325_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:
@@ -8,6 +8,7 @@ QA_DATASET_HYPERP:
 
 # SERVER PATHS
 BASE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
+BASE_DATA_PATH: '/mnt/data/m.menschikov'
 OLLAMA_MODELS_PATH: '/home/dzigen/Desktop/PersonalAI/ollama_volume' # TO CHANGE
 
 INIT_STRUCT: True # !!! PAY ATTENTION !!!
@@ -26,19 +27,19 @@ BASE_KGR_CONFIG:
       table: None # DONT CHANGE
 
   agent_config:
-    vendor: 'ollama' # DONT CHANGE
-    gen_strategy:
-      num_predict: 2048 # DONT CHANGE
-      seed: 42  # DONT CHANGE
-      top_k: 1  # DONT CHANGE
-      temperature: 0.0  # DONT CHANGE
+    vendor: ollama
     credentials:
-      host: 'localhost' # TO CHANGE
-      port: 11436 # TO CHANGE
+      model: qwen2.5:7b
     ext_params:
-      model: 'qwen2.5:7b'
-      timeout: 560
+      host: localhost
       keep_alive: -1
+      port: 11434
+      timeout: 560
+    gen_strategy:
+      num_predict: 2048
+      seed: 42
+      temperature: 0.0
+      top_k: 1
 
   persistent_cache_config:
     vendor: 'mongo' # DONT CHANGE
@@ -80,44 +81,24 @@ WEAK_KG_REASONER:
     k_compare: 5
 
   knowledge_retriever_config:
-    retriever_method: 'astar'
+    retriever_method: 'beamsearch'
     retriever_config:
       # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
-      max_depth: 10
-      max_passed_nodes: 150
-      metrics_config:
-        h_metric_name: ip
-        kvdriver_config:
-          db_config:
-            db_info:
-              db: qa_db
-              table: ''
-            need_to_clear: false
-            params:
-              mongo_config:
-                host: localhost
-                params:
-                  max_storage: -1
-                  password: pass
-                  username: user
-                port: 27018
-              redis_config:
-                host: localhost
-                params:
-                  hs_name: node_pairs
-                  max_storage: 50000000
-                  password: my_user_password
-                  ss_name: sorted_node_pairs
-                  username: my_user
-                port: 6380
-          db_vendor: mixed_kv
+      max_depth: 5
+      max_paths: 10
+      same_path_intersection_by_node: False
+      diff_paths_intersection_by_node: False
+      diff_paths_intersection_by_rel: False
+      mean_alpha: 0.75
+      final_sorting_mode: 'mixed'
       accepted_node_types:
         - object
         - hyper
+        - episodic
         - time
 
     filter_method: 'naive' # CAN BE None
-    filter_config: # CAND BE None
+    filter_config: # CAN BE None
       max_k: 50
 
   answer_generator_config:
@@ -143,19 +124,19 @@ QA_EVALUATION:
     prompts_version: 'v1'
 
     agent_config:
-      vendor: 'ollama' # DONT CHANGE
-      gen_strategy:
-        num_predict: 2048 # DONT CHANGE
-        seed: 42  # DONT CHANGE
-        top_k: 1  # DONT CHANGE
-        temperature: 0.0  # DONT CHANGE
+      vendor: ollama
       credentials:
-        host: 'localhost' # TO CHANGE
-        port: 11436 # TO CHANGE
+        model: qwen2.5:7b
       ext_params:
-        model: 'qwen2.5:7b'
-        timeout: 560
+        host: localhost
         keep_alive: -1
+        port: 11434
+        timeout: 560
+      gen_strategy:
+        num_predict: 2048
+        seed: 42
+        temperature: 0.0
+        top_k: 1
 
 ########## KNOWLEDGE GRAPH PARAMS ##########
 
@@ -177,7 +158,7 @@ KG_DB_CONFIGS:
 
 CONTAINERS_ADDITIONAL_CONFIG:
   workspace_cntname: 'personalai_mmenschikov_workspace_hotpotqa'
-  workspace_host: 'personalai_mmenschikov_workspace_hotpotqa' # TO CHANGE
+  workspace_host: 'localhost' # TO CHANGE
 
   redis_cntname: 'personalai_mmenschikov_redis_hotpotqa'
   redis_ui_cntname: 'personalai_mmenschikov_redis_ui_hotpotqa'
@@ -189,10 +170,18 @@ CONTAINERS_ADDITIONAL_CONFIG:
   mongo_ui_host: 'personalai_mmenschikov_mongo_ui_hotpotqa' # TO CHANGE
   mongo_ui_port: 8082 # TO CHANGE
 
+  milvus_cntname: 'personalai_mmenschikov_milvus_hotpotqa'
+  milvus_host: 'localhost'
+  milvus_port1: 19528 # TO CHANGE
+  milvus_port2: 2377 # TO CHANGE
+  milvus_ui_port: 9089 # TO CHANGE
+  milvus_config: milvus
+
   neo4j_cntname: 'personalai_mmenschikov_neo4j_hotpotqa'
   neo4j_ui_port: 7475 # TO CHANGE
 
-  agent_cntname: 'personalai_mmenschikov_ollama_service'
+  ollama_cntname: 'personalai_mmenschikov_ollama'
+  ollama_host: 'personalai_mmenschikov_ollama'
 
 ########## HARDCODED PARAMS ##########
 
@@ -204,16 +193,16 @@ QA_EXP_DIR_STRUCT:
   gen_answers_name: answer_packs
 
 KG_DIR_STRUCT:
-  embeddings_dir_name: embeddings_part
-  graph_dir_name: graph_part
-  cache_dir_name:
+  embeddings_part: embeddings_part
+  graph_part: graph_part
+  cache_dir:
     base: kv_cache
     persistant: persistent_volume
     ram: ram_volume
 
 PERSONALAI_REPO_DIRS:
   kg: data/knowledge_graphs
-  qa_datasets: data/qa_datasets
+  qa_datasets: data/qa_datasets/v2
   experiments: experiments/qa_kg
   notebooks: notebooks
   configs: configs
@@ -223,7 +212,7 @@ PERSONALAI_REPO_DIRS:
 WORKSPACE_CONTAINER_DIRS:
   base_path: /home/workspace
   kg: data/knowledge_graphs
-  qa_datasets: data/qa_datasets
+  qa_datasets: data/qa_datasets/v2
   experiments: experiments
   notebooks: notebooks
   src: src
