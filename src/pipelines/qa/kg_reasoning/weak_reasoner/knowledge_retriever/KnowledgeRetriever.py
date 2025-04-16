@@ -74,13 +74,9 @@ class KnowledgeRetriever(CacheUtils):
                 kg_model, self.log, self.config.filter_config, cache_kvdriver_config, self.config.verbose)
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
-        return [self.config.retriever_method, self.config.retriever_config,
-                self.config.filter_method, self.config.filter_config,
-                self.kg_model.graph_struct.config.driver_config,
-                self.kg_model.embeddings_struct.config.nodesdb_driver_config,
-                self.kg_model.embeddings_struct.config.tripletsdb_driver_config,
-                self.kg_model.embeddings_struct.config.embedder_config,
-                query_info]
+        return [self.config.retriever_method, self.config.retriever_config.to_str(),
+                self.config.filter_method, self.config.filter_config.to_str(),
+                query_info.to_str()]
 
     @CacheUtils.cache_method_output
     def retrieve(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo]:

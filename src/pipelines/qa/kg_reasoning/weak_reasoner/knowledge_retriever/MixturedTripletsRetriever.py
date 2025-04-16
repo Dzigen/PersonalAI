@@ -77,7 +77,7 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
         return [self.config.retriever1_name] + self.retriever1.get_cache_key(query_info) + \
-            [self.config.retriever2_name] + self.retriever2.get_cache_key(query_info) + [query_info]
+            [self.config.retriever2_name] + self.retriever2.get_cache_key(query_info) + [query_info.to_str()]
 
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:

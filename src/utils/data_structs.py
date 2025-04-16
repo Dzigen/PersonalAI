@@ -3,6 +3,8 @@ from typing import List, Union, Tuple, Dict
 from enum import Enum
 import hashlib
 
+from src.db_drivers.vector_driver import VectorDBInstance
+
 class NodeType(Enum):
     """Доступные типы вершин."""
     #: Вершина хранит атомарную сущность.
@@ -325,5 +327,11 @@ class QueryInfo:
     """
     query: str
     entities: List[str] = None
-    linked_nodes: List[object] = None
-    linked_nodes_by_entities: List[object] = None
+    linked_nodes: List[VectorDBInstance] = None
+    linked_nodes_by_entities: List[VectorDBInstance] = None
+
+    def to_str(self):
+        str_entities = ';'.join(self.entities)
+        str_lnodes = ';'.join(list(map(lambda item: item.document, self.linked_nodes)))
+        str_lnodes_by_entities = ';'.join(list(map(lambda item: item.document, self.linked_nodes_by_entities)))
+        return f"{str_entities}|{str_lnodes}|{str_lnodes_by_entities}"

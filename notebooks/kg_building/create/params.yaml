@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 DATASET_NAME: 'diaasq' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'gpt4omini_120425_v2prompts' # TO CHANGE
 
@@ -5,6 +6,15 @@ KNOWLEDGE_GRAPH_NAME: 'gpt4omini_120425_v2prompts' # TO CHANGE
 BASE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
 BASE_DATA_PATH: '/mnt/data/m.menschikov'
 OLLAMA_MODELS_PATH: '/home/m.menschikov/workspace/personal_ai/ollama_volume' # TO CHANGE
+=======
+DATASET_NAME: 'trivia_qa_rcwikipedia_validation' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'gpt4omini_130425_v2prompts' # TO CHANGE
+
+# SERVER PATHS
+BASE_PERSONALAI_PATH: '/home/dzigen/Desktop/PersonalAI/Personal-AI' # TO CHANGE
+BASE_DATA_PATH: '/home/dzigen/Desktop/triviaqa_gpt4o'
+OLLAMA_MODELS_PATH: '/home/dzigen/Desktop/PersonalAI/ollama_volume' # TO CHANGE
+>>>>>>> ddd9458f219f9d1bb3f8784db4b273daf1bc2369
 
 INIT_STRUCT: True # !!! PAY ATTENTION !!!
 
@@ -48,7 +58,11 @@ MEM_PIPELINE_CONFIG:
   persistent_cache_config:
     vendor: 'mongo'
     host: 'localhost'
+<<<<<<< HEAD
     port: 27029 # TO CHANGE
+=======
+    port: 27031 # TO CHANGE
+>>>>>>> ddd9458f219f9d1bb3f8784db4b273daf1bc2369
     params:
       username: 'user'
       password: 'pass'
@@ -57,7 +71,11 @@ MEM_PIPELINE_CONFIG:
   ram_cache_config:
     vendor: 'redis'
     host: 'localhost'
+<<<<<<< HEAD
     port: 6391 # TO CHANGE
+=======
+    port: 6393 # TO CHANGE
+>>>>>>> ddd9458f219f9d1bb3f8784db4b273daf1bc2369
     params:
       ss_name: 'sorted_node_pairs'
       hs_name: 'node_pairs'
@@ -72,7 +90,11 @@ KG_DB_CONFIGS:
   graphdb_config:
     vendor: 'neo4j'
     host: 'localhost'
+<<<<<<< HEAD
     port: 7699 # TO CHANGE
+=======
+    port: 7701 # TO CHANGE
+>>>>>>> ddd9458f219f9d1bb3f8784db4b273daf1bc2369
     params:
       user: 'neo4j'
       pwd: 'password'
@@ -84,7 +106,11 @@ KG_DB_CONFIGS:
     vendor: 'milvus'
     conn:
       host: 'localhost'
+<<<<<<< HEAD
       port: 19539 # TO CHANGE
+=======
+      port: 19541 # TO CHANGE
+>>>>>>> ddd9458f219f9d1bb3f8784db4b273daf1bc2369
       user: 'root'
       pass: 'Milvus'
     db_info:
@@ -131,11 +157,16 @@ CONTAINERS_ADDITIONAL_CONFIG:
   redis_cntname: 'personalai_mmenschikov_redis'
   redis_ui_cntname: 'personalai_mmenschikov_redis_ui'
   redis_ui_host: 'personalai_mmenschikov_redis_ui'
+<<<<<<< HEAD
   redis_ui_port: 5552 # TO CHANGE
+=======
+  redis_ui_port: 5554 # TO CHANGE
+>>>>>>> ddd9458f219f9d1bb3f8784db4b273daf1bc2369
 
   mongo_cntname: 'personalai_mmenschikov_mongo'
   mongo_ui_cntname: 'personalai_mmenschikov_mongo_ui'
   mongo_ui_host: 'personalai_mmenschikov_mongo_ui'
+<<<<<<< HEAD
   mongo_ui_port: 8093 # TO CHANGE
 
   milvus_cntname: 'personalai_mmenschikov_milvus'
@@ -147,6 +178,19 @@ CONTAINERS_ADDITIONAL_CONFIG:
 
   neo4j_cntname: 'personalai_mmenschikov_neo4j'
   neo4j_ui_port: 7486 # TO CHANGE
+=======
+  mongo_ui_port: 8095 # TO CHANGE
+
+  milvus_cntname: 'personalai_mmenschikov_milvus'
+  milvus_host: 'localhost'
+  milvus_port1: 19541 # TO CHANGE
+  milvus_port2: 2390 # TO CHANGE
+  milvus_ui_port: 9102 # TO CHANGE
+  milvus_config: milvus
+
+  neo4j_cntname: 'personalai_mmenschikov_neo4j'
+  neo4j_ui_port: 7488 # TO CHANGE
+>>>>>>> ddd9458f219f9d1bb3f8784db4b273daf1bc2369
 
   ollama_cntname: 'personalai_mmenschikov_ollama'
   ollama_host: 'personalai_mmenschikov_ollama'
@@ -163,7 +207,7 @@ KG_DIR_STRUCT:
 
 PERSONALAI_REPO_DIRS:
   kg: 'data/knowledge_graphs'
-  qa_datasets: 'data/qa_datasets'
+  qa_datasets: 'data/qa_datasets/v2'
   notebooks: 'notebooks'
   src: 'src'
   models: 'models'
@@ -172,7 +216,7 @@ PERSONALAI_REPO_DIRS:
 WORKSPACE_CONTAINER_DIRS:
   base_path: '/home/workspace'
   kg: 'data/knowledge_graphs'
-  qa_datasets: 'data/qa_datasets'
+  qa_datasets: 'data/qa_datasets/v2'
   notebooks: 'notebooks'
   src: 'src'
   models: 'models'

@@ -63,6 +63,11 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     final_sorting_mode: str = 'mixed' # 'ended_first' | 'mixed' | 'continuous_first'
     cache_table_name: str = 'qa_beamsearch_t_retriever_cache'
 
+    def to_str(self):
+        str_bools = f"{self.same_path_intersection_by_node};{self.diff_paths_intersection_by_node};{self.diff_paths_intersection_by_rel}"
+        str_accepted_nodes = ";".join(list(map(lambda v: v.value, self.accepted_node_types)))
+        return f"{self.max_depth}|{self.max_paths}|{str_bools}|{self.mean_alpha}|{str_accepted_nodes}|{self.final_sorting_mode}"
+
 
 class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger,
@@ -86,11 +91,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             self.cachekv = None
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
-        return [self.config, query_info,
-                self.kg_model.graph_struct.config.driver_config,
-                self.kg_model.embeddings_struct.config.nodesdb_driver_config,
-                self.kg_model.embeddings_struct.config.tripletsdb_driver_config,
-                self.kg_model.embeddings_struct.config.embedder_config, ]
+        return [self.config.to_str(), query_info.to_str()]
 
     def calculate_path_score(self, path_len: int, accum_score: float) -> float:
         return accum_score / pow(path_len-1, self.config.mean_alpha)
