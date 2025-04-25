@@ -13,6 +13,7 @@ data/graph_structures/vectorized_nodes/testing
 data/graph_structures/vectorized_triplets/testing
 data/knowledge_graphs
 data/qa_datasets/diaasq
+experiments/qa_kg/results/
 
 data/qa_datasets/hotpotqa_distractor_validation/original
 data/qa_datasets/hotpotqa_distractor_validation/qa_pairs.csv

@@ -1,0 +1,5 @@
+CRONTAB_DIR=/home/workspace/experiments
+DATASET_NAME=hotpotqa_distractor_validation
+EXP_NAME="astar_v2_deepseek7b(e1.2.1)(v1.5.5)" 
+PARAMS_NAME=deepseek7b.yaml
+45 18 23 04 * bash $CRONTAB_DIR/run_experiment.sh $PARAMS_NAME "$EXP_NAME" $DATASET_NAME >> qa_log.txt 2>&1

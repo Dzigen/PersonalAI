@@ -161,15 +161,14 @@ class MilvusConnector(AbstractVectorDatabaseConnection):
         # костыль
         f_includes = list(map(lambda f_name: f_name[:-1],includes))
 
-        filtering_expr = dict()
+        filtering_expr = {'search_params': {"metric_type": self.config.params['search_metric']}}
         if subset_ids is not None:
-            filtering_expr['search_params']={"hints": "iterative_filter"}
+            filtering_expr['search_params']["hints"] = "iterative_filter"
             filtering_expr['filter']=f'id in {subset_ids}'
 
         #
         raw_output = self.client.search(
             collection_name=self.config.db_info['table'],
-            search_params = {"metric_type": self.config.params['search_metric']},
             data=[inst.embedding for inst in query_instances],
             limit=n_results, output_fields=f_includes, **filtering_expr)
 

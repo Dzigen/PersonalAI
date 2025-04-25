@@ -6,7 +6,7 @@ from typing import Dict, List, Set, Tuple, Union
 from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 
 from ......kg_model import KnowledgeGraphModel
-from ......utils.data_structs import QueryInfo, TripletCreator, create_id, Triplet, NodeCreator, RelationCreator, NodeType, RelationType
+from ......utils.data_structs import QueryInfo, TripletCreator, create_id, Triplet, NodeCreator, RelationCreator, NodeType, RelationType, NODES_TYPES_MAP
 from ......utils import Logger
 from ......utils.cache_kv import CacheKV
 from ......db_drivers.kv_driver import KeyValueDriverConfig
@@ -25,7 +25,7 @@ class WaterCirclesSearchConfig(BaseGraphSearchConfig):
     accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
 
     def to_str(self):
-        str_accepted_nodes = ";".join(list(map(lambda v: v.value, self.accepted_node_types)))
+        str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
         str_values = f"{self.hyper_num};{self.episodic_num};{self.chain_triplets_num};{self.other_triplets_num}"
         return f"{self.strict_filter}|{str_values}|{self.do_text_pruning}|{str_accepted_nodes}"
 
@@ -121,6 +121,8 @@ class WaterCirclesRetriever(AbstractTripletsRetriever):
         self.kg_model = kg_model
 
         if type(search_config) is dict:
+            if 'accepted_node_types' in search_config:
+                search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
             search_config = WaterCirclesSearchConfig(**search_config)
         self.config = search_config
 

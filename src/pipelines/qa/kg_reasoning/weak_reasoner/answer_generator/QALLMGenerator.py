@@ -74,7 +74,7 @@ class QALLMGenerator(CacheUtils):
             self.agent, self.config.ag_task_config, ag_task_cache_config)
 
     def get_cache_key(self, query: str, context_triplets: List[Triplet]) -> List[object]:
-        str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(triplet) for triplet in context_triplets])).encode()).hexdigest()
+        str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(triplet)[1] for triplet in context_triplets])).encode()).hexdigest()
         return [self.config.to_str(), query, str_triplets]
 
     @CacheUtils.cache_method_output

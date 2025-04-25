@@ -57,7 +57,7 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
 
 
     def get_cache_key(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[object]:
-        str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(triplet) for triplet in triplets])).encode()).hexdigest()
+        str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(triplet)[1] for triplet in triplets])).encode()).hexdigest()
         return [self.config.to_str(), query_info.to_str(), str_triplets]
 
     @CacheUtils.cache_method_output

@@ -28,6 +28,8 @@ class CacheUtils:
                     self.log(f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
                     self.log(f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
                     self.log(f"* HASH_SEEDS: {cache_key}.", verbose=self.verbose)
+                    self.log(f"* CACHED_VALUE: {cached_result}.", verbose=self.verbose)
+                    
 
                     cached_flag = True
                     output = cached_result

@@ -52,8 +52,8 @@ class AnswersJudge(CacheUtils):
             self.agent, self.config.llmjudge_task_config,
             llmjudge_task_cache_config)
 
-    def get_cache_key(self, question:str, ground_truth: str, predicted_response: str):
-        return [question, ground_truth, predicted_response, self.config.adriver_config,
+    def get_cache_key(self, question:str, ground_truth: str, predicted_response: Union[str,None]):
+        return [question, ground_truth, str(predicted_response), self.config.adriver_config.to_str(),
                 self.config.llmjudge_task_config.version]
 
     @CacheUtils.cache_method_output

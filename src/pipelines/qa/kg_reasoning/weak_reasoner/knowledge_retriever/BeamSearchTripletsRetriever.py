@@ -65,7 +65,7 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
 
     def to_str(self):
         str_bools = f"{self.same_path_intersection_by_node};{self.diff_paths_intersection_by_node};{self.diff_paths_intersection_by_rel}"
-        str_accepted_nodes = ";".join(list(map(lambda v: v.value, self.accepted_node_types)))
+        str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
         return f"{self.max_depth}|{self.max_paths}|{str_bools}|{self.mean_alpha}|{str_accepted_nodes}|{self.final_sorting_mode}"
 
 
@@ -90,8 +90,8 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         else:
             self.cachekv = None
 
-    def get_cache_key(self, query_info: QueryInfo) -> List[object]:
-        return [self.config.to_str(), query_info.to_str()]
+    def get_cache_key(self, query: str, node_id: str) -> List[object]:
+        return [self.config.to_str(), query, node_id]
 
     def calculate_path_score(self, path_len: int, accum_score: float) -> float:
         return accum_score / pow(path_len-1, self.config.mean_alpha)
@@ -315,6 +315,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
         return filtered_paths
 
+    @CacheUtils.cache_method_output
     def search(self, query: str, node_id: str) -> List[Triplet]:
         paths_info = self.graph_beamsearch(query, node_id)
 
@@ -329,7 +330,6 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         extracted_triplets = self.kg_model.graph_struct.db_conn.read(list(uniques_tids))
         return extracted_triplets
 
-    @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log("RETRIEVER: BeamSearchTripletsRetriever", verbose=self.verbose)

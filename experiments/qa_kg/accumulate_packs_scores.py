@@ -13,7 +13,7 @@ PARAMS_FILEP = sys.orig_argv[2]
 with open(PARAMS_FILEP, 'r') as stream:
     PARAMS = yaml.safe_load(stream)
 
-DS_EXPERIMENT_DIR = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{PARAMS['DATASET_NAME']}"
+DS_EXPERIMENT_DIR = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['exp_results']}/{PARAMS['DATASET_NAME']}"
 SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['EXPERIMENT_NAME']}"
 
 BASE_METRICS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['metrics_name']}"
@@ -42,7 +42,7 @@ def save_json(data: Dict[str, object], save_path: str):
 accumulated_scores = defaultdict(list)
 accumulated_base_meticnames = {
     'BLEU1': [], 'BLEU2': [], 'METEOR': [],
-    'RougeL': [], 'ExactMatch': [], 'NoneScore': [], 
+    'RougeL': [], 'ExactMatch': [], 'NoneScore': [], 'NoAnswerScore': [],
     'BertScore': ['f1', 'precision', 'recall']}
 
 accumulated_llm_meticnames = {

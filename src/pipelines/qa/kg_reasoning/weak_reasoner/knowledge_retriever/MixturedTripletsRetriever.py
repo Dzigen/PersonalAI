@@ -29,7 +29,15 @@ class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
     cache_table_name: str = 'qa_mixture_t_retriever_cache'
 
-class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
+    def to_str(self):
+        retriever1_pair = (self.retriever1_name, self.retriever1_config.to_str())
+        retriever2_pair = (self.retriever2_name, self.retriever2_config.to_str())
+        sorted_pretr = sorted([retriever1_pair, retriever2_pair], key=lambda p: p[0])
+
+        str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
+        return f"{sorted_pretr[0][0]};{sorted_pretr[0][1]};{sorted_pretr[1][0]};{sorted_pretr[1][1]};{str_accepted_nodes}"
+
+class MixturedTripletsRetriever(AbstractTripletsRetriever):
     """Класс предназначен для извлечения триплетов из графа знаний с помощью комбинации BFS- и A*-алгоритмов поиска.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -66,7 +74,10 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
         # accepted nodes
         self.retriever1.config.accepted_node_types = search_config.accepted_node_types
+        self.config.retriever1_config = self.retriever1.config
         self.retriever2.config.accepted_node_types = search_config.accepted_node_types
+        self.config.retriever2_config = self.retriever2.config
+
 
         if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
             cache_config = deepcopy(cache_kvdriver_config)
@@ -75,11 +86,6 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         else:
             self.cachekv = None
 
-    def get_cache_key(self, query_info: QueryInfo) -> List[object]:
-        return [self.config.retriever1_name] + self.retriever1.get_cache_key(query_info) + \
-            [self.config.retriever2_name] + self.retriever2.get_cache_key(query_info) + [query_info.to_str()]
-
-    @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log(f"RETRIEVER: MixturedTripletsRetriever ({self.config.retriever1_name} + {self.config.retriever2_name})", verbose=self.verbose)

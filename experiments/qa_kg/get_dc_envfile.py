@@ -105,12 +105,15 @@ milvus_cnt_variables = {
 }
 
 # параметры для контейнера с llm-моделями
-llmagents_cnt_variables = {
-    'OLLAMA_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['ollama_cntname'],
-    'OLLAMA_HOST': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['ollama_host'],
-    'OLLAMA_EXTERNAL_PORT': PARAMS['BASE_KGR_CONFIG']['agent_config']['ext_params']['port'],
-    'OLLAMA_LOCAL_VOLUME': PARAMS['OLLAMA_MODELS_PATH']
-}
+if PARAMS['BASE_KGR_CONFIG']['agent_config']['vendor'] == 'ollama':
+    llmagents_cnt_variables = {
+        'OLLAMA_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['ollama_cntname'],
+        'OLLAMA_HOST': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['ollama_host'],
+        'OLLAMA_EXTERNAL_PORT': PARAMS['BASE_KGR_CONFIG']['agent_config']['ext_params']['port'],
+        'OLLAMA_LOCAL_VOLUME': PARAMS['OLLAMA_MODELS_PATH']
+    }
+else:
+    llmagents_cnt_variables = dict()
 
 compose_variables = {
     'COMPOSE_PROJECT_NAME': f"{PARAMS['DATASET_NAME']}_{PARAMS['KNOWLEDGE_GRAPH_NAME']}"

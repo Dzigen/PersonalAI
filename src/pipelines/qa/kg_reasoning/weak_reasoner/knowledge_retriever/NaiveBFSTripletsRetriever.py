@@ -25,7 +25,7 @@ class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):
     cache_table_name: str = 'qa_bfs_t_retriver_cache'
 
     def to_str(self):
-        str_accepted_nodes = ";".join(list(map(lambda v: v.value, self.accepted_node_types)))
+        str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
         return f"{self.max_depth}|{self.max_width}|{self.max_passed_nodes}|{str_accepted_nodes}"
 
 class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):

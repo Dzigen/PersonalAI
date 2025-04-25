@@ -163,7 +163,7 @@ class AgentTaskSolver:
 
             if gen_flag:
                 self.log("Выполняем инференс llm...", verbose=self.config.verbose)
-
+                
                 raw_answer = self.agent.generate(
                     system_prompt=self.config.suites[detected_lang].system_prompt,
                     user_prompt=enriched_user_prompt,

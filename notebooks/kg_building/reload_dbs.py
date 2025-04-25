@@ -95,13 +95,27 @@ extracted_group_tripelts = joblib.load(EXTRACTED_TRIPLETS_PATH)
 
 ######## LOADING TRIPLETS TO VECTOR DB ########
 
-# diaasq qwen25 66 + 92
+# diaasq qwen25 66 + 92 + 1657 + 1533 | Done
 # hotpotqa qwen25 1510 + 1583 | Done
-# triviaqa qwen25 1237
+# triviaqa qwen25 1237 | Done | 151 + 764
 
-for triplets in tqdm(extracted_group_tripelts[66 + 92:]):
-    #mem_pipeline.updator.kg_model.graph_struct.create_triplets(triplets, status_bar=False)
+step = 100
+counter = 0
+for triplets in tqdm(extracted_group_tripelts[151 + 764:]):
+    mem_pipeline.updator.kg_model.graph_struct.create_triplets(triplets, status_bar=False)
     mem_pipeline.updator.kg_model.embeddings_struct.create_triplets(triplets, status_bar=False)
+    
+    #
+    if counter % step == 0:
+        print(kg_model.embeddings_struct.vectordbs['nodes'].count_items())
+        print(kg_model.embeddings_struct.vectordbs['triplets'].count_items())
+        print(kg_model.graph_struct.db_conn.count_items())
+    counter += 1
+
+print(kg_model.embeddings_struct.vectordbs['nodes'].count_items())
+print(kg_model.embeddings_struct.vectordbs['triplets'].count_items())
+print(kg_model.graph_struct.db_conn.count_items())
+
 
 ######## CHECKIN CONSISTENCY ########
 

@@ -269,7 +269,7 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     cache_table_name: str = 'qa_astar_t_retriever_cache'
 
     def to_str(self):
-        str_accepted_nodes = ";".join(list(map(lambda v: v.value, self.accepted_node_types)))
+        str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
         return f"{self.metrics_config.to_str()}|{self.max_depth}|{self.max_passed_nodes}|{str_accepted_nodes}"
 
 class AStarGraphSearch:

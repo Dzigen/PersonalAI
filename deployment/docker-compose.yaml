@@ -63,24 +63,24 @@ services:
     container_name: personalai_mmenschikov_workspace
     hostname: worksapceservice
     volumes:
-      - ../data/qa_datasets:/home/dzigen/Desktop/PersonalAI/Personal-AI/data/qa_datasets #/home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets
-      - ../src:/home/dzigen/Desktop/PersonalAI/Personal-AI/src #/home/m.menschikov/workspace/personal_ai/Personal-AI/src
-      - ../experiments:/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments #/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments
-      - ../notebooks:/home/dzigen/Desktop/PersonalAI/Personal-AI/notebooks #/home/m.menschikov/workspace/personal_ai/Personal-AI/notebooks
-      - /home/dzigen/Desktop/triviaqa_gpt4o/data/knowledge_graphs:/home/dzigen/Desktop/PersonalAI/Personal-AI/data/knowledge_graphs #/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs
-      #- /mnt/data/m.menschikov/data/knowledge_graphs:/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs
-    # deploy:
-    #   resources:
-    #     limits:
-    #       cpus: '16'
-    #       memory: 32G
-    #     reservations:
-    #       cpus: '8'
-    #       memory: 24G
-    #       devices:
-    #         - driver: nvidia
-    #           device_ids: ['1']
-    #           capabilities: [gpu]
+      - ../data/qa_datasets:/home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets #/home/dzigen/Desktop/PersonalAI/Personal-AI/data/qa_datasets | /home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets
+      - ../src:/home/m.menschikov/workspace/personal_ai/Personal-AI/src #/home/dzigen/Desktop/PersonalAI/Personal-AI/src | /home/m.menschikov/workspace/personal_ai/Personal-AI/src
+      - ../experiments:/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments #/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments | /home/m.menschikov/workspace/personal_ai/Personal-AI/experiments
+      - ../notebooks:/home/m.menschikov/workspace/personal_ai/Personal-AI/notebooks #/home/dzigen/Desktop/PersonalAI/Personal-AI/notebooks | /home/m.menschikov/workspace/personal_ai/Personal-AI/notebooks
+      #- /home/dzigen/Desktop/triviaqa_gpt4o/data/knowledge_graphs:/home/dzigen/Desktop/PersonalAI/Personal-AI/data/knowledge_graphs #/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs
+      - /mnt/data/m.menschikov/data/knowledge_graphs:/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs
+    deploy:
+      resources:
+        limits:
+          cpus: '16'
+          memory: 32G
+        reservations:
+          cpus: '8'
+          memory: 24G
+          devices:
+            - driver: nvidia
+              device_ids: ['1']
+              capabilities: [gpu]
 
   empty_workspace:
     image: m.menschikov/empty_workspace:v1

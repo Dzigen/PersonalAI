@@ -331,7 +331,7 @@ class QueryInfo:
     linked_nodes_by_entities: List[VectorDBInstance] = None
 
     def to_str(self):
-        str_entities = ';'.join(self.entities)
-        str_lnodes = ';'.join(list(map(lambda item: item.document, self.linked_nodes)))
-        str_lnodes_by_entities = ';'.join(list(map(lambda item: item.document, self.linked_nodes_by_entities)))
+        str_entities = ';'.join(sorted(self.entities))
+        str_lnodes = ';'.join(sorted(list(map(lambda item: item.document, self.linked_nodes)))) if self.linked_nodes is not None else "None"
+        str_lnodes_by_entities = ';'.join(sorted(list(map(lambda item: ';;'.join(item), self.linked_nodes_by_entities)))) if self.linked_nodes_by_entities is not None else "None"
         return f"{str_entities}|{str_lnodes}|{str_lnodes_by_entities}"

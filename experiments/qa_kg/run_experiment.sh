@@ -3,17 +3,21 @@
 EXP_BASE_PATH=/home/workspace/experiments
 PYTHON_CMD=/usr/bin/python3
 PARAMS_NAME=$1
-SPEC_EXP_PATH=$2
+EXP_NAME=$2
+DATASET_NAME=$3
 
-SPEC_EXP_PATH="$EXP_BASE_PATH/$SPEC_EXP_PATH"
-PARAMS_PATH="$EXP_BASE_PATH/$PARAMS_NAME"
+EXP_RESULTS=results
+PARAMS_DIR=params_files
+
+SPEC_EXP_PATH="$EXP_BASE_PATH/$EXP_RESULTS/$DATASET_NAME/$EXP_NAME"
+PARAMS_PATH="$EXP_BASE_PATH/$PARAMS_DIR/$DATASET_NAME/$PARAMS_NAME"
 
 INIT_EXP_SCIPT="$EXP_BASE_PATH/init_file_structure.py"
-PRE_QACONFIG_SCRIPT="$SPEC_EXP_PATH/../../prepare_qa_configs.py"
-GEN_ANSWERS_SCRIPT="$SPEC_EXP_PATH/../../generate_answers.py"
-EVAL_ANSWERS_SCIPT="$SPEC_EXP_PATH/../../evaluate_answers.py"
-LLM_EVAL_ANSWERS_SCRIPT="$SPEC_EXP_PATH/../../evaluate_llmjudge.py"
-ACCUMULATE_METRICS_SCRIPT="$SPEC_EXP_PATH/../../accumulate_packs_scores.py"
+PRE_QACONFIG_SCRIPT="$SPEC_EXP_PATH/../../../prepare_qa_configs.py"
+GEN_ANSWERS_SCRIPT="$SPEC_EXP_PATH/../../../generate_answers.py"
+EVAL_ANSWERS_SCIPT="$SPEC_EXP_PATH/../../../evaluate_answers.py"
+LLM_EVAL_ANSWERS_SCRIPT="$SPEC_EXP_PATH/../../../evaluate_llmjudge.py"
+ACCUMULATE_METRICS_SCRIPT="$SPEC_EXP_PATH/../../../accumulate_packs_scores.py"
 
 cd $EXP_BASE_PATH ; $PYTHON_CMD $INIT_EXP_SCIPT $PARAMS_PATH
 

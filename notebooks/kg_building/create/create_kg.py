@@ -127,12 +127,19 @@ print(len(dataset))
 
 ########### KG BUILDING #############
 
-# diaasq deepseekr17b 1459 + 1135
-# hotpotqa deepssekr17b 1554 + 716
-# diaasq gpt4omini 890
-# diaasq deepseek 2107
+# diaasq deepseekr17b 1459 + 1135 + 886 | Done
+# diaasq gpt4omini 890 + 721 + 1331 + 139 | Done
+# diaasq deepseek 2107 + 160 + 119 + 569
 
-for i in tqdm(range(1554+716, len(dataset))):
+# hotpotqa deepssekr17b 1554 + 716 + 679 + 449 | Done
+# hotpotqa deepseek 2712 | Done
+# hotpotqa gpt4omini 1064 + 2489 | Done
+
+# triviaqa deepseekr17b 656 + 2914 + 359 + 707 | Done
+# triviaqa deepseek 1917 + 1589 + 478 + 708
+# triviaqa gpt4omini 489 + 847 + 2547 | Done
+
+for i in tqdm(range(1917 + 1589 + 478 + 708, len(dataset))):
     text, time, properties = dataset[i][0], dataset[i][1], dataset[i][2]
     extracted_triplets, _ = mem_pipeline.remember(text, time, properties)
 
