@@ -1,4 +1,4 @@
-EXPERIMENT_NAME: "astar_v2_qwen25(e2.2.3)(v1.5.5)" # TO CHANGE
+EXPERIMENT_NAME: "bs_v2_qwen25(e2.3.2)(v1.5.5)" # TO CHANGE
 DATASET_NAME: 'trivia_qa_rcwikipedia_validation' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'qwen25_110325_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:
@@ -32,7 +32,7 @@ BASE_KGR_CONFIG:
     ext_params:
       host: localhost
       keep_alive: -1
-      port: 11434
+      port: 11437
       timeout: 560
     gen_strategy:
       num_predict: 2048
@@ -80,41 +80,21 @@ WEAK_KG_REASONER:
     k_compare: 5
 
   knowledge_retriever_config:
-    retriever_method: 'astar'
+    retriever_method: 'beamsearch'
     retriever_config:
       # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
-      max_depth: 10
-      max_passed_nodes: 150
       accepted_node_types:
         - object
-        - episodic
+        - hyper
+        #- episodic
         - time
-      metrics_config:
-        h_metric_name: ip
-        kvdriver_config:
-          db_vendor: mixed_kv
-          db_config:
-            db_info:
-              db: qa_db
-              table: ''
-            need_to_clear: false
-            params:
-              mongo_config:
-                host: localhost
-                params:
-                  max_storage: -1
-                  password: pass
-                  username: user
-                port: 27019
-              redis_config:
-                host: localhost
-                params:
-                  hs_name: node_pairs
-                  max_storage: 50000000
-                  password: my_user_password
-                  ss_name: sorted_node_pairs
-                  username: my_user
-                port: 6381
+      max_depth: 5
+      max_paths: 10
+      same_path_intersection_by_node: False
+      diff_paths_intersection_by_node: False
+      diff_paths_intersection_by_rel: False
+      mean_alpha: 0.75
+      final_sorting_mode: 'mixed'
 
     filter_method: 'naive' # CAN BE None
     filter_config: # CAN BE None
@@ -144,19 +124,19 @@ QA_EVALUATION:
     prompts_version: 'v1'
 
     agent_config:
-      vendor: 'ollama' # DONT CHANGE
-      gen_strategy:
-        num_predict: 2048 # DONT CHANGE
-        seed: 42  # DONT CHANGE
-        top_k: 1  # DONT CHANGE
-        temperature: 0.0  # DONT CHANGE
+      vendor: ollama
       credentials:
-        host: 'localhost' # TO CHANGE
-        port: 11437 # TO CHANGE
+        model: qwen2.5:7b
       ext_params:
-        model: 'qwen2.5:7b'
-        timeout: 560
+        host: localhost
         keep_alive: -1
+        port: 11437
+        timeout: 560
+      gen_strategy:
+        num_predict: 2048
+        seed: 42
+        temperature: 0.0
+        top_k: 1
 
 ########## KNOWLEDGE GRAPH PARAMS ##########
 

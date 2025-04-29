@@ -1,5 +1,5 @@
 
-EXPERIMENT_NAME: "astar_v2_qwen25(e2.2.1)(v1.5.5)" # TO CHANGE
+EXPERIMENT_NAME: "m_v2_qwen25(e2.6.4)(v1.5.5)" # TO CHANGE
 DATASET_NAME: 'diaasq' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'qwen25_070325_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:
@@ -70,56 +70,67 @@ BASE_KGR_CONFIG:
 
 WEAK_KG_REASONER:
 
-  query_parser_config:
+  query_parser_config: # CAN BE None
     kw_extraction_task:
       prompts_version: 'v2' # 'v1' | 'v2'
 
-  knowledge_comparator_config:
+  knowledge_comparator_config: # CAN BE None
     threshold: 0.5
     fetch_n: 20
     max_k: 1 # DONT CHANGE
     k_compare: 5
 
   knowledge_retriever_config:
-    retriever_method: 'astar'
+    retriever_method: mixture
     retriever_config:
-      # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
-      max_depth: 10
-      max_passed_nodes: 150
-      metrics_config:
-        h_metric_name: ip
-        kvdriver_config:
-          db_config:
-            db_info:
-              db: qa_db
-              table: ''
-            need_to_clear: false
-            params:
-              mongo_config:
-                host: localhost
-                params:
-                  max_storage: -1
-                  password: pass
-                  username: user
-                port: 27017
-              redis_config:
-                host: localhost
-                params:
-                  hs_name: node_pairs
-                  max_storage: 50000000
-                  password: my_user_password
-                  ss_name: sorted_node_pairs
-                  username: my_user
-                port: 6379
-          db_vendor: mixed_kv
       accepted_node_types:
-        - object
-        - hyper
-        - episodic
-        - time
-        
+      #- object
+      - hyper
+      - episodic
+      - time
+
+      retriever1_name: astar
+      retriever1_config:
+        max_depth: 10
+        max_passed_nodes: 150
+        metrics_config:
+          h_metric_name: ip
+          kvdriver_config:
+            db_config:
+              db_info:
+                db: qa_db
+                table: ''
+              need_to_clear: false
+              params:
+                mongo_config:
+                  host: localhost
+                  params:
+                    max_storage: -1
+                    password: pass
+                    username: user
+                  port: 27017
+                redis_config:
+                  host: localhost
+                  params:
+                    hs_name: node_pairs
+                    max_storage: 50000000
+                    password: my_user_password
+                    ss_name: sorted_node_pairs
+                    username: my_user
+                  port: 6379
+            db_vendor: mixed_kv
+
+      retriever2_name: watercircles
+      retriever2_config:
+        chain_triplets_num: 25
+        do_text_pruning: false
+        episodic_num: 15
+        hyper_num: 15
+        other_triplets_num: 6
+        strict_filter: true
+          
     filter_method: 'naive' # CAN BE None
-    filter_config: # CAND BE None
+    filter_config: # CAN BE None
       max_k: 50
 
   answer_generator_config:

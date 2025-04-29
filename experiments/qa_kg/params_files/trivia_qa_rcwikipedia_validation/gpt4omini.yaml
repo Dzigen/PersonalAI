@@ -145,19 +145,19 @@ QA_EVALUATION:
     prompts_version: 'v1'
 
     agent_config:
-      vendor: 'ollama' # DONT CHANGE
-      gen_strategy:
-        num_predict: 2048 # DONT CHANGE
-        seed: 42  # DONT CHANGE
-        top_k: 1  # DONT CHANGE
-        temperature: 0.0  # DONT CHANGE
+      vendor: ollama
       credentials:
-        host: 'localhost' # TO CHANGE
-        port: 11437 # TO CHANGE
+        model: qwen2.5:7b
       ext_params:
-        model: 'qwen2.5:7b'
-        timeout: 560
+        host: localhost
         keep_alive: -1
+        port: 11437
+        timeout: 560
+      gen_strategy:
+        num_predict: 2048
+        seed: 42
+        temperature: 0.0
+        top_k: 1
 
 ########## KNOWLEDGE GRAPH PARAMS ##########
 
