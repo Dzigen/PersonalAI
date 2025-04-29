@@ -16,6 +16,7 @@ class ReturnStatus(Enum):
     zero_retrieved_triplets = 10
     zero_triplets = 11
     bad_user_prompt_maping = 12
+    already_exist = 13
 
 STATUS_MESSAGE = {
     ReturnStatus.success: "Операция выполнена успешно.",
