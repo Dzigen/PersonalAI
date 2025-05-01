@@ -13,7 +13,7 @@ KG_MAIN_LOG_PATH = 'log/kg_model/main'
 class KnowledgeGraphModelConfig:
     graph_config: GraphModelConfig = field(default_factory=lambda: GraphModelConfig())
     embeddings_config: EmbeddingsModelConfig = field(default_factory=lambda: EmbeddingsModelConfig())
-    nodestree_config: NodesTreeModelConfig = field(default_factory=lambda: NodesTreeModelConfig())
+    #nodestree_config: NodesTreeModelConfig = field(default_factory=lambda: NodesTreeModelConfig())
 
     log: Logger = field(default_factory=lambda: Logger(KG_MAIN_LOG_PATH))
     verbose: bool = False
@@ -27,15 +27,15 @@ class KnowledgeGraphModel:
     :type embeddings_config: EmbeddingsModel
     """
 
-    def __init__(self, config: KnowledgeGraphModelConfig = KnowledgeGraphModelConfig()) -> None:
-        self.config = config
+    def __init__(self, graph_config: GraphModelConfig = GraphModelConfig(),
+                 embeddings_config: EmbeddingsModelConfig = EmbeddingsModelConfig()) -> None:
 
-        self.graph_struct = GraphModel(self.config.graph_config)
-        self.embeddings_struct =  EmbeddingsModel(self.config.embeddings_config)
-        self.nodestree_struct = NodesTreeModel(self.config.nodestree_config)
+        self.graph_struct = GraphModel(graph_config)
+        self.embeddings_struct =  EmbeddingsModel(embeddings_config)
+        #self.nodestree_struct = NodesTreeModel(self.config.nodestree_config)
 
-        self.log = self.config.log
-        self.verbose = self.config.verbose
+        #self.log = self.config.log
+        #self.verbose = self.config.verbose
 
     def check_consistency(self) -> None:
         gdb_count = self.graph_struct.db_conn.count_items()

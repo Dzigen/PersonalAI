@@ -1,5 +1,4 @@
-
-EXPERIMENT_NAME: "wc_v2_gpt4omini(e4.1.1)(v1.5.5)" # TO CHANGE
+EXPERIMENT_NAME: "m_v2_gpt4omini(e4.4.3)(v1.5.5)" # TO CHANGE
 DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'gpt4omini_120425_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:
@@ -82,20 +81,33 @@ WEAK_KG_REASONER:
     k_compare: 5
 
   knowledge_retriever_config:
-    retriever_method: 'watercircles'
+    retriever_method: 'mixture'
     retriever_config:
       # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
       accepted_node_types:
       - object
-      - hyper
+      #- hyper
       - episodic
       - time
-      strict_filter: True
-      hyper_num: 15
-      episodic_num: 15
-      chain_triplets_num: 25
-      other_triplets_num: 6
-      do_text_pruning: False
+
+      retriever1_name: beamsearch
+      retriever1_config:
+        max_depth: 5
+        max_paths: 10
+        same_path_intersection_by_node: False
+        diff_paths_intersection_by_node: False
+        diff_paths_intersection_by_rel: False
+        mean_alpha: 0.75
+        final_sorting_mode: mixed
+
+      retriever2_name: watercircles
+      retriever2_config:
+        chain_triplets_num: 25
+        do_text_pruning: false
+        episodic_num: 15
+        hyper_num: 15
+        other_triplets_num: 6
+        strict_filter: true
 
     filter_method: 'naive' # CAN BE None
     filter_config: # CAN BE None

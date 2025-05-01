@@ -7,27 +7,16 @@ from tqdm import tqdm
 import torch
 
 from .utils import TreeNodeType, TreeNode
+from .configs import DEFAULT_NSUMM_TASK_CONFIG, NODESTREE_MODEL_LOG_PATH, \
+    SUMMNODES_VDB_DEFAULT_DRIVER_CONFIG, BASE_VDB_DEFAULT_DRIVER_CONFIG, \
+        TREE_DB_DEFAULT_DRIVER_CONFIG
 from ...utils import Logger, AgentTaskSolver, AgentTaskSolverConfig, ReturnStatus
 from ...utils.data_structs import Triplet, NodeType
 from ...agents import AgentDriver, AgentDriverConfig
 from ...db_drivers.kv_driver import KeyValueDriverConfig
-from ...db_drivers.vector_driver import VectorDriver, VectorDriverConfig, VectorDBConnectionConfig, VectorDBInstance
+from ...db_drivers.vector_driver import VectorDriver, VectorDriverConfig, VectorDBInstance
 from ...db_drivers.tree_driver import TreeDriver, TreeDriverConfig
 from ...db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
-
-NODESTREE_MODEL_LOG_PATH = 'log/kg_model/nodes_tree'
-
-SUMMNODES_VDB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
-    db_vendor='chroma', db_config=VectorDBConnectionConfig(
-        conn={'path':"../data/graph_structures/vectorized_triplets/default_densedb"},
-        db_info={'db': 'default_db', 'table': "vectorized_summarizednodes"}))
-
-BASE_VDB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
-    db_vendor='chroma', db_config=VectorDBConnectionConfig(
-        conn={'path':"../data/graph_structures/vectorized_triplets/default_densedb"},
-        db_info={'db': 'default_db', 'table': "vectorized_nodes"}))
-
-TREE_DB_DEFAULT_DRIVER_CONFIG = TreeDriverConfig(db_vendor='neo4j', db_config=...)
 
 @dataclass
 class NodesTreeModelConfig:
@@ -38,7 +27,7 @@ class NodesTreeModelConfig:
     treedb_config: TreeDriverConfig = field(default_factory=lambda: TREE_DB_DEFAULT_DRIVER_CONFIG)
 
     adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    nodes_summarization_task_config: AgentTaskSolverConfig
+    nodes_summarization_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_NSUMM_TASK_CONFIG)
 
     e2n_dist_threshold: float = 0.5
     depth_temp: float = 0.3
@@ -49,7 +38,8 @@ class NodesTreeModelConfig:
 
 
 class NodesTreeModel:
-    def __init__(self, config: NodesTreeModelConfig = NodesTreeModelConfig(), cache_kvdriver_config: KeyValueDriverConfig = None):
+    def __init__(self, config: NodesTreeModelConfig = NodesTreeModelConfig(),
+                 cache_kvdriver_config: KeyValueDriverConfig = None):
         self.config = config
 
         self.treedb_conn = TreeDriver.connect(self.config.treedb_config)
@@ -131,7 +121,7 @@ class NodesTreeModel:
         stop_flag = False
         while not stop_flag:
             # Получаем child-вершины для текущей parent-вершины
-            child_nodes = self.traverse_tree.get_child_nodes(parent_node_id)
+            child_nodes = self.treedb_conn.get_child_nodes(parent_node_id)
 
             # Оцениваем семантическое расстояние между child-вершинами (с типом leaf) и newnode_text
             leaf_nodes = list(filter(lambda node: node.type == TreeNodeType.leaf, child_nodes))

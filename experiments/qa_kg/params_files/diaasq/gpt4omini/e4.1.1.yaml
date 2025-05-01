@@ -1,10 +1,9 @@
-
 EXPERIMENT_NAME: "wc_v2_gpt4omini(e4.1.1)(v1.5.5)" # TO CHANGE
-DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
+DATASET_NAME: 'diaasq' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'gpt4omini_120425_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
-  max_samples_per_pack: 100
+  max_samples_per_pack: 10
 
 # SERVER PATHS
 BASE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
@@ -45,7 +44,7 @@ BASE_KGR_CONFIG:
   persistent_cache_config:
     vendor: 'mongo' # DONT CHANGE
     host: 'localhost' # TO CHANGE
-    port: 27030 # TO CHANGE
+    port: 27029 # TO CHANGE
     db_info:
       db: 'qa_db'
       table: None
@@ -57,7 +56,7 @@ BASE_KGR_CONFIG:
   ram_cache_config:
     vendor: 'redis' # DONT CHANGE
     host: 'localhost' # TO CHANGE
-    port: 6392 # TO CHANGE
+    port: 6391 # TO CHANGE
     db_info:
       db: 1
       table: None
@@ -86,24 +85,24 @@ WEAK_KG_REASONER:
     retriever_config:
       # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
       accepted_node_types:
-      - object
-      - hyper
-      - episodic
-      - time
-      strict_filter: True
-      hyper_num: 15
-      episodic_num: 15
+        - object
+        - hyper
+        - episodic
+        - time
       chain_triplets_num: 25
+      do_text_pruning: false
+      episodic_num: 15
+      hyper_num: 15
       other_triplets_num: 6
-      do_text_pruning: False
+      strict_filter: true
 
     filter_method: 'naive' # CAN BE None
-    filter_config: # CAN BE None
+    filter_config: # CAND BE None
       max_k: 50
 
   answer_generator_config:
     ag_task:
-      prompts_version: 'v3' # 'v1' | 'v2' | 'v3'
+      prompts_version: 'v3' # 'v1' | 'v2'
 
 ########## EVALUATION PARAMS ##########
 
@@ -144,7 +143,7 @@ QA_EVALUATION:
 KG_DB_CONFIGS:
   graphdb_config:
     host: 'localhost' # TO CHANGE
-    port: 7700 # TO CHANGE
+    port: 7699 # TO CHANGE
     params:
       user: 'neo4j'
       pwd: 'password'
@@ -158,28 +157,28 @@ KG_DB_CONFIGS:
 ########## CONTAINERS PARAMS ##########
 
 CONTAINERS_ADDITIONAL_CONFIG:
-  workspace_cntname: 'personalai_mmenschikov_workspace_gpt4omini_hotpotqa'
-  workspace_host: 'localhost' # TO CHANGE
+  workspace_cntname: 'personalai_mmenschikov_workspace_gpt4omini_diaasq'
+  workspace_host: 'personalai_mmenschikov_workspace_gpt4omini_diaasq' # TO CHANGE
 
-  redis_cntname: 'personalai_mmenschikov_redis_gpt4omini_hotpotqa'
-  redis_ui_cntname: 'personalai_mmenschikov_redis_ui_gpt4omini_hotpotqa'
-  redis_ui_host: 'personalai_mmenschikov_redis_ui_gpt4omini_hotpotqa' # TO CHANGE
-  redis_ui_port: 5553 # TO CHANGE
+  redis_cntname: 'personalai_mmenschikov_redis_gpt4omini_diaasq'
+  redis_ui_cntname: 'personalai_mmenschikov_redis_ui_gpt4omini_diaasq'
+  redis_ui_host: 'personalai_mmenschikov_redis_ui_gpt4omini_diaasq' # TO CHANGE
+  redis_ui_port: 5552 # TO CHANGE
 
-  mongo_cntname: 'personalai_mmenschikov_mongo_gpt4omini_hotpotqa'
-  mongo_ui_cntname: 'personalai_mmenschikov_mongo_ui_gpt4omini_hotpotqa' # TO CHANGE
-  mongo_ui_host: 'personalai_mmenschikov_mongo_ui_gpt4omini_hotpotqa' # TO CHANGE
-  mongo_ui_port: 8094 # TO CHANGE
+  mongo_cntname: 'personalai_mmenschikov_mongo_gpt4omini_diaasq'
+  mongo_ui_cntname: 'personalai_mmenschikov_mongo_ui_gpt4omini_diaasq' # TO CHANGE
+  mongo_ui_host: 'personalai_mmenschikov_mongo_ui_gpt4omini_diaasq' # TO CHANGE
+  mongo_ui_port: 8093 # TO CHANGE
 
-  milvus_cntname: 'personalai_mmenschikov_milvus_gpt4omini_hotpotqa'
+  milvus_cntname: 'personalai_mmenschikov_milvus_gpt4omini_diaasq'
   milvus_host: 'localhost'
-  milvus_port1: 19540 # TO CHANGE
-  milvus_port2: 2389 # TO CHANGE
-  milvus_ui_port: 9101 # TO CHANGE
+  milvus_port1: 19539 # TO CHANGE
+  milvus_port2: 2388 # TO CHANGE
+  milvus_ui_port: 9100 # TO CHANGE
   milvus_config: milvus
 
-  neo4j_cntname: 'personalai_mmenschikov_neo4j_gpt4omini_hotpotqa'
-  neo4j_ui_port: 7487 # TO CHANGE
+  neo4j_cntname: 'personalai_mmenschikov_neo4j_gpt4omini_diaasq'
+  neo4j_ui_port: 7486 # TO CHANGE
 
   ollama_cntname: 'personalai_mmenschikov_ollama'
   ollama_host: 'personalai_mmenschikov_ollama'
@@ -203,7 +202,7 @@ KG_DIR_STRUCT:
 
 PERSONALAI_REPO_DIRS:
   kg: data/knowledge_graphs
-  qa_datasets: data/qa_datasets/v2
+  qa_datasets: data/qa_datasets
   experiments: experiments/qa_kg
   notebooks: notebooks
   configs: configs
@@ -213,7 +212,7 @@ PERSONALAI_REPO_DIRS:
 WORKSPACE_CONTAINER_DIRS:
   base_path: /home/workspace
   kg: data/knowledge_graphs
-  qa_datasets: data/qa_datasets/v2
+  qa_datasets: data/qa_datasets
   experiments: experiments
   exp_results: results
   notebooks: notebooks
@@ -223,7 +222,7 @@ WORKSPACE_CONTAINER_DIRS:
 SAVE_CONFIGS_NAMES:
   graph_config: graph_config
   embeddings_config: embeddings_config
-  docker_compose_env: env_files/hotpotqa_distractor_validation/.env_gpt4omini
+  docker_compose_env: env_files/diaasq/.env_gpt4omini
   qapipeline_config: qa_config
   kg_reasoner_config: kg_reasoner_config
 
