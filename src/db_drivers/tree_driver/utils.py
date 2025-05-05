@@ -1,10 +1,23 @@
 from typing import Dict, List, Union
-from dataclasses import dataclass
+from dataclasses import dataclass, field, asdict
 from abc import abstractmethod
+from enum import Enum
 
 from ...utils import ReturnInfo
 from ...utils.data_structs import Triplet, NodeType, RelationType, Node
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
+
+class TreeNodeType(Enum):
+    leaf = "leaf"
+    root = "root"
+    summarized = "summarized"
+
+@dataclass
+class TreeNode:
+    id: str
+    text: str
+    type: TreeNodeType
+    props: Dict[str, object]
 
 @dataclass
 class TreeDBConnectionConfig(BaseDatabaseConfig):
@@ -16,17 +29,25 @@ class AbstractTreeDatabaseConnection(AbstractDatabaseConnection):
     root_node_id: str = "ROOT_NODE"
 
     @abstractmethod
-    def leaf_exist():
+    def create(self, parent_id: str, new_node: TreeNode) -> None:
         pass
 
     @abstractmethod
-    def change_node_type_to_summarized():
+    def read(self, ids: List[str], type: str = 'leaf') -> List[TreeNode]:
         pass
 
     @abstractmethod
-    def count_items():
+    def update(self, items: List[TreeNode]) -> None:
         pass
 
     @abstractmethod
-    def get_child_nodes():
+    def delete(self, ids: List[str], type: str = 'leaf') -> None:
+        pass
+
+    @abstractmethod
+    def item_exist(self, id: str, type: str = 'leaf') -> bool:
+        pass
+
+    @abstractmethod
+    def get_child_nodes(parent_id: str) -> List[TreeNode]:
         pass

@@ -6,7 +6,7 @@ import math
 from tqdm import tqdm
 import torch
 
-from .utils import TreeNodeType, TreeNode
+from ...db_drivers.tree_driver.utils import TreeNodeType, TreeNode
 from .configs import DEFAULT_NSUMM_TASK_CONFIG, NODESTREE_MODEL_LOG_PATH, \
     SUMMNODES_VDB_DEFAULT_DRIVER_CONFIG, BASE_VDB_DEFAULT_DRIVER_CONFIG, \
         TREE_DB_DEFAULT_DRIVER_CONFIG
@@ -35,7 +35,6 @@ class NodesTreeModelConfig:
 
     log: Logger = field(default_factory=lambda: Logger(NODESTREE_MODEL_LOG_PATH))
     verbose: bool = False
-
 
 class NodesTreeModel:
     def __init__(self, config: NodesTreeModelConfig = NodesTreeModelConfig(),
@@ -89,7 +88,7 @@ class NodesTreeModel:
         status = ReturnStatus.success
 
         # проверка вершины, на существование в дереве
-        if self.treedb_conn.leaf_exist(new_node_strid):
+        if self.treedb_conn.item_exist(new_node_strid, type="leaf"):
             status = ReturnStatus.already_exist
             return status
 
@@ -100,13 +99,15 @@ class NodesTreeModel:
         nodes_new_summaries = self.summarize_path_nodes(traversed_nodes_ids, new_node_text)
 
         # обновление/добвавление summarize-вершин в соответствующую векторную бд
-        self.update_vectordb_info(traversed_nodes_ids, nodes_new_summaries)
+        self.update_vectordb_info('summnodes', traversed_nodes_ids, nodes_new_summaries)
 
         # обновить информацию в summarize-вершинах в соответствующей графовой бд
         self.update_treedb_info(traversed_nodes_ids, nodes_new_summaries,
                                 new_node_strid, parent_node)
 
-        # прикрепить новую child-вершину к выбранной parent-вершине в дереве
+        # обновление/добвавление leaf-вершин в соответствующую векторную бд
+        self.update_vectordb_info('leafnodes', [new_node_strid], [new_node_text])
+        # прикрепить новую leaf-вершину к выбранной parent-вершине в дереве
         self.attach_node_to_tree(parent_node.id, new_node_text, {'str_id': new_node_strid})
 
         return status
@@ -189,12 +190,18 @@ class NodesTreeModel:
             nodes_new_summaries.append((parent_descendants_num+1, summ_text))
         return nodes_new_summaries[::-1]
 
-    def update_vectordb_info(self, ids: List[str], new_texts: List[str]) -> None:
+    def update_vectordb_info(self, vecdb_name: str, ids: List[str], new_texts: List[str]) -> None:
         torch.cuda.empty_cache()
         embs = self.embedder.encode_passages(new_texts, batch_size=16)
         formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb, metadata={'id': id})
                             for id, doc, emb in zip(ids, new_texts, embs)]
-        self.vectordb_summnodes_conn.create(formated_instances)
+
+        if vecdb_name == 'summnodes':
+            self.vectordb_summnodes_conn.create(formated_instances)
+        elif vecdb_name == 'leafnodes':
+            self.vectordb_leafnodes_conn.create(formated_instances)
+        else:
+            raise KeyError
 
     def update_treedb_info(self, ids: List[str], texts: List[str], new_node_strid: str, parent_node: TreeNode) -> None:
         if len(ids) > 1:
@@ -209,19 +216,27 @@ class NodesTreeModel:
             # Eсли последняя вершина имеет тип leaf, то меняем её тип на summarized,
             # добавляем descendants_num-поле и удаляем str_id-поле
             if parent_node.type == TreeNodeType.leaf:
-                self.treedb_conn.change_node_type_to_summarized(id=ids[-1], new_text=texts[-1])
+                self.change_node_to_summarized(id=ids[-1], new_text=texts[-1])
 
                 # перевешиваем leaf-вершину, на переформатированную summarized-вершину
                 self.attach_node_to_tree(parent_node.id, parent_node.text, parent_node.props)
 
-    def attach_node_to_tree(id: str, node_text: str, props: Dict[str, object]) -> None:
-        # TODO
+    def attach_node_to_tree(self, pn_id: str, ln_text: str, ln_props: Dict[str, object]) -> None:
+        pass
+
+    def change_node_to_summarized(self):
+        # добавляем информацию в соответствующую векторную бд
+        # обновляем информацию в соответствующей графовой бд
         pass
 
     def match_entitie2nodes(self, entitie: str):
         pass
         # TODO
         # сущности сопоставляется общая вершина (информацией об обших подвершинах и базовых object-нодах)
+        # извлекается самя релевантная вершина из summarized-бд
+        # извлекается самая релевантная вершина из leaf-бд
+        # из них выбирвается самя релевантная
+        # в случае, если это summarized вершина, то ей сопоставляются все её вершиным-потомки
 
     def reduce_tree(self, triplets: List[Triplet], delete_info: Dict[int, Dict[str, bool]]):
         # TODO

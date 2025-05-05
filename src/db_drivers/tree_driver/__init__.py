@@ -1,1 +1,1 @@
-from .TreeDriver import TreeDriver, TreeDriverConfig
+from .TreeDriver import TreeDriver, TreeDriverConfig, TreeDBConnectionConfig
