@@ -5,7 +5,8 @@ import json
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NodeType, RelationCreator, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 
-DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(host='localhost', port=7687, params={'user': "neo4j", 'pwd': 'password'})
+DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(
+    host='localhost', port=7687, params={'user': "neo4j", 'pwd': 'password'})
 
 class Neo4jConnector(AbstractGraphDatabaseConnection):
 
