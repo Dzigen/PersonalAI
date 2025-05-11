@@ -118,6 +118,65 @@ KG_DB_CONFIGS:
         create_sleep: 1
         search_metric: 'IP'
 
+  nodestree_config:
+    vectordb_leafnodes_config:
+      vendor: 'milvus'
+      conn:
+        host: 'localhost'
+        port: 19542 # TO CHANGE
+        user: 'root'
+        pass: 'Milvus'
+      db_info:
+        db: 'knowledgegraphdb'
+        table: 'vectorized_leafnodes'
+      params:
+        id_length: 32
+        vector_dim: 1024
+        document_max_length: 51200
+        load: True
+        flush: True
+        create_sleep: 1
+        search_metric: 'IP'
+
+    vectordb_summnodes_config:
+      vendor: 'milvus'
+      conn:
+        host: 'localhost'
+        port: 19542 # TO CHANGE
+        user: 'root'
+        pass: 'Milvus'
+      db_info:
+        db: 'knowledgegraphdb'
+        table: 'vectorized_summnodes'
+      params:
+        id_length: 32
+        vector_dim: 1024
+        document_max_length: 51200
+        load: True
+        flush: True
+        create_sleep: 1
+        search_metric: 'IP'
+
+    treedb_config:
+      vendor: 'neo4j'
+      host: 'localhost'
+      port: 7702 # TO CHANGE
+      params:
+        user: 'neo4j'
+        pwd: 'password'
+      db_info:
+        db: 'kgtreemodeldb'
+        table: 'kgtreemodeltable'
+
+    nodes_summarization_task_config:
+      prompts_version: 'v1'
+
+    e2n_sim_threshold: 0.4
+    depth_rate: 0.5
+    nodes_aggregation_mechanism: "sequencial"
+
+    distance_threshold: 0.4
+
   embedder_config:
     prompts:
       query: "query: "
@@ -180,6 +239,7 @@ WORKSPACE_CONTAINER_DIRS:
 SAVE_CONFIGS_NAMES:
   graph_config: graph_config
   embeddings_config: embeddings_config
+  nodestree_config: nodestree_config
   mem_pipeline_config: mem_pipeline_config
   kvdriver_cache_config: kvdriver_cache_config
   docker_compose_env: .env
