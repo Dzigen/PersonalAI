@@ -16,6 +16,10 @@ AVAILABLE_VECTOR_DBS = ['chroma', 'milvus'] # 'chroma', 'milvus'
 
 FULL_INSTANCE1 = VectorDBInstance(id='123', document='qwerty', embedding=[0.1,0.2,0.3], metadata={'k1': 'v1'})
 FULL_INSTANCE2 = VectorDBInstance(id='456', document='ytrewq', embedding=[0.4,0.5,0.6], metadata={'k2': 'v2'})
+
+UPDATE_FULL_INSTANCE1 = VectorDBInstance(id='123', document='qwerty qwerty', embedding=[0.1,0.4,0.1], metadata={'k1new': 'v1new'})
+UPDATE_FULL_INSTANCE2 = VectorDBInstance(id='456', document='ytrewq ytrewq', embedding=[0.5,0.2,0.5], metadata={'k2new': 'v2new'})
+
 INSTANCE_WO_METADATA = VectorDBInstance(id='456', document='ytrewq', embedding=[0.4,0.5,0.6])
 INSTANCE_WO_ID = VectorDBInstance(document='ytrewq', embedding=[0.4,0.5,0.6])
 INSTANCE_WO_EMBEDDING = VectorDBInstance(id='456', document='ytrewq')
@@ -124,6 +128,23 @@ for db_vendor in AVAILABLE_VECTOR_DBS:
 VECTORDB_UPDATE_TEST_CASES = [
     # TODO
 ]
+
+###############################################################################################
+
+# init_instance, new_instances, exception, expected_count
+VECTORDB_UPSERT_TEST_CASES = [
+    # элемент добавляется с нуля
+    [[FULL_INSTANCE1],{FULL_INSTANCE2.id: FULL_INSTANCE2},False,2],
+    # элемент обновляется
+    [[FULL_INSTANCE1, FULL_INSTANCE2],{UPDATE_FULL_INSTANCE2.id: UPDATE_FULL_INSTANCE2},False,2],
+    # несколько элементов (один добавляется, другой обновляется)
+    [[FULL_INSTANCE1],{FULL_INSTANCE2.id: FULL_INSTANCE2, UPDATE_FULL_INSTANCE1.id: UPDATE_FULL_INSTANCE1},False,2]
+]
+
+VECTORDB_POPULATED_UPSERT_TEST_CASES = []
+for db_vendor in AVAILABLE_VECTOR_DBS:
+    for i in range(len(VECTORDB_UPSERT_TEST_CASES)):
+        VECTORDB_POPULATED_UPSERT_TEST_CASES.append(VECTORDB_UPSERT_TEST_CASES[i] + [db_vendor])
 
 ###############################################################################################
 

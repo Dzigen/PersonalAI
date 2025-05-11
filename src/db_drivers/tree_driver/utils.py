@@ -38,6 +38,10 @@ class AbstractTreeDatabaseConnection(AbstractDatabaseConnection):
     root_node_id: str = "ROOT_NODE_ID"
 
     @abstractmethod
+    def check_consistency(self) -> None:
+        pass
+
+    @abstractmethod
     def create(self, parent_id: str, new_node: TreeNode) -> None:
         pass
 
@@ -59,4 +63,8 @@ class AbstractTreeDatabaseConnection(AbstractDatabaseConnection):
 
     @abstractmethod
     def get_child_nodes(self, parent_id: str) -> List[TreeNode]:
+        pass
+
+    @abstractmethod
+    def get_tree_maxdepth(self):
         pass

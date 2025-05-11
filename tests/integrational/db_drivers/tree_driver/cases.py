@@ -35,6 +35,7 @@ INVALID_LEAF_TNODE5 = TreeNode(id="636", text="123", type=TreeNodeType.leaf, pro
 
 UPDATE_SUM_TNODE1 = TreeNode(id='123', text='qwe qwe', type=TreeNodeType.summarized, props={'p1new': 'k1new'})
 UPDATE_LEAF_TNODE1 = TreeNode(id='456', text='zxc zxc', type=TreeNodeType.leaf, props={'p1new': 'k1new', 'str_id': 'th5h6'})
+UPDATE_LEAF_TNODE1_TO_SUMM = TreeNode(id='456', text='zxc zxc rfv', type=TreeNodeType.summarized, props={'p1_1new': 'k1_1new'})
 
 UPDATE_INVALID_LEAF_TNODE1 = TreeNode(id='456', text='zxc zxc', type='leaf', props={'p1new': 'k1new', 'str_id': 'th5h6'})
 UPDATE_INVALID_LEAF_TNODE2 = TreeNode(id=456, text='zxc zxc', type='leaf', props={'p1new': 'k1new', 'str_id': 'th5h6'})
@@ -121,22 +122,25 @@ TREEDB_UPDATE_TEST_CASES = [
     # 1. позитивный случай (несколько items в списке)
     ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1]],
      [UPDATE_SUM_TNODE1, UPDATE_LEAF_TNODE1],False),
-    # 2. навалидный тип (несколько items в списке)
+    # 2. позитивный случай (меняем тип у вершины)
+    ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1]],
+     [UPDATE_LEAF_TNODE1_TO_SUMM], False),
+    # 3. навалидный тип (несколько items в списке)
     ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1]],
      [UPDATE_SUM_TNODE1, UPDATE_INVALID_LEAF_TNODE1], True),
-    # 3. навалидный id (несколько items в списке)
+    # 4. навалидный id (несколько items в списке)
     ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1]],
      [UPDATE_SUM_TNODE1, UPDATE_INVALID_LEAF_TNODE2], True),
-    # 4. навалидный text (несколько items в списке)
+    # 5. навалидный text (несколько items в списке)
     ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1]],
      [UPDATE_SUM_TNODE1, UPDATE_INVALID_LEAF_TNODE3], True),
-    # 5. навалидный props (несколько items в списке)
+    # 6. навалидный props (несколько items в списке)
     ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1]],
      [UPDATE_SUM_TNODE1, UPDATE_INVALID_LEAF_TNODE4], True),
-    # 6. зарезервированное поле в props (несколько items в списке)
+    # 7. зарезервированное поле в props (несколько items в списке)
     ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1]],
      [UPDATE_SUM_TNODE1, INVALID_LEAF_TNODE5], True),
-    # 7. элемента с таким id не существует (несколько items в списке)
+    # 8. элемента с таким id не существует (несколько items в списке)
     ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1]],
      [UPDATE_SUM_TNODE1, VALID_LEAF_TNODE2], True)
 ]

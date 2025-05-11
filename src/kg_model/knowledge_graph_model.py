@@ -81,7 +81,7 @@ class KnowledgeGraphModel:
         """
         graph_delete_info, embds_delete_info = self.graph_struct.delete_triplets(triplets)
         self.embeddings_struct.delete_triplets(triplets, delete_info=embds_delete_info)
-        tree_reduce_info = self.nodestree_struct.reduce_tree(triplets, delete_info=graph_delete_info) # TODO
+        tree_reduce_info = self.nodestree_struct.reduce_tree(triplets, delete_info=graph_delete_info)
 
         if check_consistency:
             self.check_consistency()
@@ -94,7 +94,8 @@ class KnowledgeGraphModel:
         # self.nodes_tree.matchentitie2nodes()
         # self.embeddings_struct.vectordbs['nodes'].retrieve()
         # уточнение набора сопоставленных вершин
-        pass
+        if use_tree:
+            matched_objects = self.nodestree_struct.match_entitie2objects(entitie)
 
     def count_items(self) -> Dict[str, Dict[str, int]]:
         return {
