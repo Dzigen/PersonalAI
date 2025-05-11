@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 
 from .graph_model import GraphModelConfig, GraphModel
 from .embeddings_model import EmbeddingsModelConfig, EmbeddingsModel
+from ..db_drivers.kv_driver import KeyValueDriverConfig
 from .nodestree_model import NodesTreeModelConfig, NodesTreeModel
 from ..utils import Triplet, Logger
 from ..utils.data_structs import Node
@@ -29,11 +30,15 @@ class KnowledgeGraphModel:
 
     def __init__(self, graph_config: GraphModelConfig = GraphModelConfig(),
                  embeddings_config: EmbeddingsModelConfig = EmbeddingsModelConfig(),
-                 nodestree_config: NodesTreeModelConfig = None) -> None:
+                 nodestree_config: NodesTreeModelConfig = None,
+                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
 
         self.graph_struct = GraphModel(graph_config)
         self.embeddings_struct =  EmbeddingsModel(embeddings_config)
-        #self.nodestree_struct = NodesTreeModel(self.config.nodestree_config)
+        if nodestree_config is not None:
+            self.nodestree_struct = NodesTreeModel(nodestree_config, cache_kvdriver_config)
+        else:
+            self.nodestree_struct = None
 
         #self.log = self.config.log
         #self.verbose = self.config.verbose
@@ -49,6 +54,9 @@ class KnowledgeGraphModel:
         assert gdb_count['triplets'] >= vdb_triplets_count
         #assert vdb_nodes_count > vdb_triplets_count
 
+        if self.nodestree_struct is not None:
+            self.nodestree_struct.check_consistency()
+
     def add_knowledge(self, triplets: List[Triplet], check_consistency: bool = True, status_bar: bool = False) -> Dict[str, Dict[str,Set[str]]]:
         """Метод предназначен для добавления информации в память (граф знаний) ассистента в виде списка триплетов.
 
@@ -61,7 +69,10 @@ class KnowledgeGraphModel:
         """
         graph_create_info = self.graph_struct.create_triplets(triplets, status_bar=status_bar)
         embd_create_info = self.embeddings_struct.create_triplets(triplets, status_bar=status_bar)
-        tree_expand_info = self.nodestree_struct.expand_tree(triplets, status_bar=status_bar)
+        if self.nodestree_struct is not None:
+            tree_expand_info = self.nodestree_struct.expand_tree(triplets, status_bar=status_bar)
+        else:
+            tree_expand_info = None
 
         if check_consistency:
             self.check_consistency()
@@ -82,7 +93,10 @@ class KnowledgeGraphModel:
         """
         graph_delete_info, embds_delete_info = self.graph_struct.delete_triplets(triplets)
         self.embeddings_struct.delete_triplets(triplets, delete_info=embds_delete_info)
-        tree_reduce_info = self.nodestree_struct.reduce_tree(triplets, delete_info=graph_delete_info)
+        if self.nodestree_struct is not None:
+            tree_reduce_info = self.nodestree_struct.reduce_tree(triplets, delete_info=graph_delete_info)
+        else:
+            tree_reduce_info = None
 
         if check_consistency:
             self.check_consistency()
@@ -97,6 +111,11 @@ class KnowledgeGraphModel:
         # уточнение набора сопоставленных вершин
         if use_tree:
             matched_objects = self.nodestree_struct.match_entitie2objects(entitie)
+        else:
+            # TODO
+            raise NotImplementedError
+
+        return matched_objects
 
     def count_items(self) -> Dict[str, Dict[str, int]]:
         return {
