@@ -44,7 +44,7 @@ AGENT_DRIVER_CONFIG = AgentDriverConfig(
     name='ollama',
     agent_config=AgentConnectorConfig(
         gen_strategy={"num_predict": 2048, "seed": 42, "top_k": 1, "temperature": 0.0},
-        credentials={"host": 'localhost', "port": 11434},
+        credentials={"host": 'localhost', "port": 11437},
         ext_params={"model": 'qwen2.5:7b', "timeout": 560, "keep_alive": -1}))
 
 KV_CACHE_CONFIG = KeyValueDriverConfig(

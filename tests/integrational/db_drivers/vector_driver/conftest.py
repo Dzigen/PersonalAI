@@ -23,7 +23,7 @@ def milvusdb_conn():
         conn={'host': 'localhost', 'port': 19530, 'user': 'root', 'pass': 'Milvus'},
         db_info={'db': 'testing', 'table': 'testing'}, need_to_clear=True,
         params={'id_length': 32, 'vector_dim': 3, 'document_max_length': 51200,
-                'load': True, 'flush': True, 'create_sleep': 1}))
+                'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}))
     return VectorDriver.connect(config)
 
 #------------------------------#

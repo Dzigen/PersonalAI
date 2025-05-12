@@ -17,6 +17,10 @@ from src.kg_model import EmbeddingsModelConfig, GraphModelConfig
 from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
 from src.db_drivers.vector_driver import VectorDriverConfig, VectorDBConnectionConfig, EmbedderModelConfig
 from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
+from src.db_drivers.tree_driver import TreeDriverConfig, TreeDBConnectionConfig
+
+from src.kg_model.nodestree_model import NodesTreeModelConfig
+from src.kg_model.nodestree_model.agent_tasks.nodes_summarization import AgentSummNTaskConfigSelector
 
 from src.pipelines.memorize.extractor.configs import AgentThesisExtrTaskConfigSelector, AgentTripletExtrTaskConfigSelector
 from src.pipelines.memorize.updator.configs import AgentReplSimpleTripletTaskConfigSelector, AgentReplThesisTripletTaskConfigSelector
@@ -30,6 +34,7 @@ SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
 GRAPH_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['graph_config']}"
 EMBEDDINGS_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['embeddings_config']}"
+NODESTREE_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['nodestree_config']}"
 
 MEM_PIPELINE_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['mem_pipeline_config']}"
 CACHE_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['kvdriver_cache_config']}"
@@ -138,15 +143,60 @@ mem_config = MemPipelineConfig(
     extractor_config=extractor_config,
     updator_config=updator_config)
 
+########### NodesTree model ###########
+
+leafs_vectordb_config=VectorDBConnectionConfig(
+    db_info=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_leafnodes_config']['db_info'],
+    params=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_leafnodes_config']['params'],
+    conn=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_leafnodes_config']['conn'],
+    need_to_clear=PARAMS['KG_DB_CONFIGS']['need_to_clear'])
+
+summ_vectordb_config=VectorDBConnectionConfig(
+    db_info=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_summnodes_config']['db_info'],
+    params=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_summnodes_config']['params'],
+    conn=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_summnodes_config']['conn'],
+    need_to_clear=PARAMS['KG_DB_CONFIGS']['need_to_clear'])
+
+tree_graphdb_config = TreeDBConnectionConfig(
+    host=PARAMS['KG_DB_CONFIGS']['nodestree_config']['treedb_config']['host'],
+    port=PARAMS['KG_DB_CONFIGS']['nodestree_config']['treedb_config']['port'],
+    db_info=PARAMS['KG_DB_CONFIGS']['nodestree_config']['treedb_config']['db_info'],
+    params=PARAMS['KG_DB_CONFIGS']['nodestree_config']['treedb_config']['params'],
+    need_to_clear=PARAMS['KG_DB_CONFIGS']['need_to_clear'])
+
+treemoddel_config = NodesTreeModelConfig(
+    vectordb_leafnodes_config=VectorDriverConfig(
+        db_vendor=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_leafnodes_config']['vendor'],
+        db_config=leafs_vectordb_config),
+    vectordb_summnodes_config=VectorDriverConfig(
+        db_vendor=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_summnodes_config']['vendor'],
+        db_config=summ_vectordb_config),
+    embedder_config=embedder_config,
+
+    treedb_config=TreeDriverConfig(
+        db_vendor=PARAMS['KG_DB_CONFIGS']['nodestree_config']['treedb_config']['vendor'],
+        db_config=tree_graphdb_config),
+
+    adriver_config=adriver_config,
+    nodes_summarization_task_config=AgentSummNTaskConfigSelector.select(
+        PARAMS['KG_DB_CONFIGS']['nodestree_config']['nodes_summarization_task_config']['prompts_version']),
+
+    e2n_sim_threshold=PARAMS['KG_DB_CONFIGS']['nodestree_config']['e2n_sim_threshold'],
+    depth_rate=PARAMS['KG_DB_CONFIGS']['nodestree_config']['depth_rate'],
+    nodes_aggregation_mechanism=PARAMS['KG_DB_CONFIGS']['nodestree_config']['nodes_aggregation_mechanism']
+)
+
 ############### SAVING CONFIGS ###############
 
 print("gmodle: ", gmodel_config)
 print("emodel: ", emodel_config)
+print("tmodel: ", treemoddel_config)
 print("mem: ", mem_config)
 print("kv_driver: ", kvdriver_config)
 
 joblib.dump(gmodel_config, GRAPH_MODEL_CONFIG_PATH)
 joblib.dump(emodel_config, EMBEDDINGS_MODEL_CONFIG_PATH)
+joblib.dump(treemoddel_config, NODESTREE_MODEL_CONFIG_PATH)
 joblib.dump(mem_config, MEM_PIPELINE_CONFIG_PATH)
 joblib.dump(kvdriver_config, CACHE_CONFIG_PATH)
 

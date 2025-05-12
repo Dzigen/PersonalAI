@@ -5,7 +5,8 @@ import json
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NodeType, RelationCreator, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 
-DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(host='localhost', port=7687, params={'user': "neo4j", 'pwd': 'password'})
+DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(
+    host='localhost', port=7687, params={'user': "neo4j", 'pwd': 'password'})
 
 class Neo4jConnector(AbstractGraphDatabaseConnection):
 
@@ -55,6 +56,9 @@ class Neo4jConnector(AbstractGraphDatabaseConnection):
     def close_connection(self) -> None:
         if self.driver is not None:
             self.driver.close()
+
+    def __del__(self):
+        self.close_connection()
 
     def create_node_query(self, node: Node) -> str:
         query_props = {}

@@ -53,6 +53,9 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         self.conn.close()
         self.db.close()
 
+    def __del__(self):
+        self.close_connection()
+
     def is_open(self) -> bool:
         return not self.conn.is_closed
 

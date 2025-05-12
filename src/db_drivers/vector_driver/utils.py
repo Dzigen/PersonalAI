@@ -24,3 +24,7 @@ class AbstractVectorDatabaseConnection(AbstractDatabaseConnection):
                  includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
         # извлечение N ближайших сущностей к данной по заданной метрике
         pass
+
+    @abstractmethod
+    def upsert(self, items: List[VectorDBInstance]) -> None:
+        pass

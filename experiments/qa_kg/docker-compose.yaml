@@ -175,3 +175,24 @@ services:
             - driver: nvidia
               device_ids: ['1']
               capabilities: [gpu]
+
+
+  workspace_localmachine:
+    image: m.menschikov/workspace:v1
+    container_name: workspace_localmachine
+    hostname: localhost
+    network_mode: "host"
+    volumes:
+      - /home/dzigen/Desktop/PersonalAI/Personal-AI/data/knowledge_graphs/diaasq/gpt4omini_120425_v2prompts:/home/workspace/data/knowledge_graphs/diaasq/gpt4omini_120425_v2prompts
+      - /home/dzigen/Desktop/PersonalAI/Personal-AI/data/qa_datasets/diaasq:/home/workspace/data/qa_datasets/diaasq
+      - /home/dzigen/Desktop/PersonalAI/Personal-AI/notebooks:/home/workspace/notebooks
+      - /home/dzigen/Desktop/PersonalAI/Personal-AI/experiments/qa_kg:/home/workspace/experiments
+      - /home/dzigen/Desktop/PersonalAI/Personal-AI/src:/home/workspace/src
+      - /home/dzigen/Desktop/PersonalAI/Personal-AI/models:/home/workspace/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
