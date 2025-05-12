@@ -1,5 +1,6 @@
 CRONTAB_DIR=/home/workspace/experiments
-DATASET_NAME=diaasq
-EXP_NAME="bs_v2_deepseek7b(e1.3.1)(v1.5.5)" 
-PARAMS_NAME=deepseek7b.yaml
-22 22 27 04 * bash $CRONTAB_DIR/run_experiment.sh $PARAMS_NAME "$EXP_NAME" $DATASET_NAME >> qa_log.txt 2>&1
+DATASET_NAME=trivia_qa_rcwikipedia_validation
+EXP_NAME="wc_v2_deepseek7b(e1.1.1)(v1.5.5)" 
+MODEL_NAME=deepseek7b
+PARAMS_NAME="e1.1.1.yaml"
+01 13 09 05 * bash $CRONTAB_DIR/run_experiment.sh $MODEL_NAME "$PARAMS_NAME" "$EXP_NAME" $DATASET_NAME >> qa_log.txt 2>&1

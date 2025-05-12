@@ -1,4 +1,4 @@
-EXPERIMENT_NAME: "bs_v2_qwen25(e2.3.2)(v1.5.5)" # TO CHANGE
+EXPERIMENT_NAME: "m_v2_qwen25(e2.4.1)(v1.5.5)" # TO CHANGE
 DATASET_NAME: 'trivia_qa_rcwikipedia_validation' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'qwen25_110325_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:
@@ -80,22 +80,34 @@ WEAK_KG_REASONER:
     k_compare: 5
 
   knowledge_retriever_config:
-    retriever_method: 'beamsearch'
+    retriever_method: 'mixture'
     retriever_config:
       # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
       accepted_node_types:
         - object
         - hyper
-        #- episodic
-        - time
-      max_depth: 5
-      max_paths: 10
-      same_path_intersection_by_node: False
-      diff_paths_intersection_by_node: False
-      diff_paths_intersection_by_rel: False
-      mean_alpha: 0.75
-      final_sorting_mode: 'mixed'
+        - episodic
+        - time 
 
+      retriever1_name: watercircles
+      retriever1_config:
+        chain_triplets_num: 25
+        do_text_pruning: false
+        episodic_num: 15
+        hyper_num: 15
+        other_triplets_num: 6
+        strict_filter: true
+        
+      retriever2_name: beamsearch    
+      retriever2_config:
+        diff_paths_intersection_by_node: false
+        diff_paths_intersection_by_rel: false
+        final_sorting_mode: mixed
+        max_depth: 5
+        max_paths: 10
+        mean_alpha: 0.75
+        same_path_intersection_by_node: false
+  
     filter_method: 'naive' # CAN BE None
     filter_config: # CAN BE None
       max_k: 50

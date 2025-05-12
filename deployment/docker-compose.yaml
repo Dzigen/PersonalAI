@@ -99,8 +99,8 @@ services:
 
   ollama_agent:
     image: ollama/ollama:latest
-    container_name: personalai_mmenschikov_ollama_servicev2
-    hostname: localhost
+    container_name: personalai_mmenschikov_ollama_servicev5
+    network_mode: "host"
     ports:
       - "11438:11434"
     environment:

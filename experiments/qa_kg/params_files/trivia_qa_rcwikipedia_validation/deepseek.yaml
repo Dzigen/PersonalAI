@@ -1,4 +1,4 @@
-EXPERIMENT_NAME: "astar_v2_qwen25(e2.2.3)(v1.5.5)" # TO CHANGE
+EXPERIMENT_NAME: "astar_v2_deepseek(e3.2.1)(v1.5.5)" # TO CHANGE
 DATASET_NAME: 'trivia_qa_rcwikipedia_validation' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'deepseek_120425_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:
@@ -88,6 +88,7 @@ WEAK_KG_REASONER:
       max_passed_nodes: 150
       accepted_node_types:
         - object
+        - hyper
         - episodic
         - time
       metrics_config:

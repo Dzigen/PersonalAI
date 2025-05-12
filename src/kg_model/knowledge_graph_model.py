@@ -13,7 +13,7 @@ KG_MAIN_LOG_PATH = 'log/kg_model/main'
 class KnowledgeGraphModelConfig:
     graph_config: GraphModelConfig = field(default_factory=lambda: GraphModelConfig())
     embeddings_config: EmbeddingsModelConfig = field(default_factory=lambda: EmbeddingsModelConfig())
-    nodestree_config: NodesTreeModelConfig = field(default_factory=lambda: NodesTreeModelConfig())
+    #nodestree_config: NodesTreeModelConfig = field(default_factory=lambda: NodesTreeModelConfig())
 
     log: Logger = field(default_factory=lambda: Logger(KG_MAIN_LOG_PATH))
     verbose: bool = False
@@ -27,15 +27,15 @@ class KnowledgeGraphModel:
     :type embeddings_config: EmbeddingsModel
     """
 
-    def __init__(self, config: KnowledgeGraphModelConfig = KnowledgeGraphModelConfig()) -> None:
-        self.config = config
+    def __init__(self, graph_config: GraphModelConfig = GraphModelConfig(), 
+                 embeddings_config: EmbeddingsModelConfig = EmbeddingsModelConfig()) -> None:
 
-        self.graph_struct = GraphModel(self.config.graph_config)
-        self.embeddings_struct =  EmbeddingsModel(self.config.embeddings_config)
-        self.nodestree_struct = NodesTreeModel(self.config.nodestree_config)
+        self.graph_struct = GraphModel(graph_config)
+        self.embeddings_struct =  EmbeddingsModel(embeddings_config)
+        #self.nodestree_struct = NodesTreeModel(self.config.nodestree_config)
 
-        self.log = self.config.log
-        self.verbose = self.config.verbose
+        self.log = Logger(KG_MAIN_LOG_PATH)
+        self.verbose = False
 
     def check_consistency(self) -> None:
         gdb_count = self.graph_struct.db_conn.count_items()
@@ -60,12 +60,13 @@ class KnowledgeGraphModel:
         """
         graph_create_info = self.graph_struct.create_triplets(triplets, status_bar=status_bar)
         embd_create_info = self.embeddings_struct.create_triplets(triplets, status_bar=status_bar)
-        tree_expand_info = self.nodestree_struct.expand_tree(triplets, status_bar=status_bar)
+        #tree_expand_info = self.nodestree_struct.expand_tree(triplets, status_bar=status_bar)
 
         if check_consistency:
             self.check_consistency()
 
-        return {'graph_info': graph_create_info, 'embeddings_info': embd_create_info, 'tree_info': tree_expand_info}
+        return {'graph_info': graph_create_info, 'embeddings_info': embd_create_info}
+        #, 'tree_info': tree_expand_info}
 
     def remove_knowledge(self, triplets: List[Triplet], check_consistency: bool = True) -> Dict[str, Dict[int,Dict[str,bool]]]:
         """Метод предназначен для удаления информации из памяти (графа знаний) ассистента.
@@ -81,12 +82,13 @@ class KnowledgeGraphModel:
         """
         graph_delete_info, embds_delete_info = self.graph_struct.delete_triplets(triplets)
         self.embeddings_struct.delete_triplets(triplets, delete_info=embds_delete_info)
-        tree_reduce_info = self.nodestree_struct.reduce_tree(triplets, delete_info=graph_delete_info) # TODO
+        #tree_reduce_info = self.nodestree_struct.reduce_tree(triplets, delete_info=graph_delete_info) # TODO
 
         if check_consistency:
             self.check_consistency()
 
-        return {'graph_info': graph_delete_info, 'embeddings_info': embds_delete_info, 'tree_info': tree_reduce_info}
+        return {'graph_info': graph_delete_info, 'embeddings_info': embds_delete_info}
+        #, 'tree_info': tree_reduce_info}
 
     def match_entitie2knowledge(self, entitie: str, use_tree: bool = False, clarify: bool = False) -> List[Node]:
         # TODO
@@ -99,8 +101,8 @@ class KnowledgeGraphModel:
     def count_items(self) -> Dict[str, Dict[str, int]]:
         return {
             'graph_info': self.graph_struct.count_items(),
-            'embeddings_info': self.embeddings_struct.count_items(),
-            'nodestree_info': self.nodestree_struct.count_items()
+            'embeddings_info': self.embeddings_struct.count_items()
+            #'nodestree_info': self.nodestree_struct.count_items()
         }
 
     def clear(self) -> None:
@@ -108,4 +110,4 @@ class KnowledgeGraphModel:
         """
         self.embeddings_struct.clear()
         self.graph_struct.clear()
-        self.nodestree_struct.clear()
+       # self.nodestree_struct.clear()

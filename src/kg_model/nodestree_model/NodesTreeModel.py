@@ -12,8 +12,16 @@ from ...utils.data_structs import Triplet, NodeType
 from ...agents import AgentDriver, AgentDriverConfig
 from ...db_drivers.kv_driver import KeyValueDriverConfig
 from ...db_drivers.vector_driver import VectorDriver, VectorDriverConfig, VectorDBConnectionConfig, VectorDBInstance
-from ...db_drivers.tree_driver import TreeDriver, TreeDriverConfig
+#from ...db_drivers.tree_driver import TreeDriver, TreeDriverConfig
 from ...db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
+
+class TreeDriver:
+    pass
+
+@dataclass
+class TreeDriverConfig:
+    db_vendor: str
+    db_config: None
 
 NODESTREE_MODEL_LOG_PATH = 'log/kg_model/nodes_tree'
 
@@ -38,7 +46,7 @@ class NodesTreeModelConfig:
     treedb_config: TreeDriverConfig = field(default_factory=lambda: TREE_DB_DEFAULT_DRIVER_CONFIG)
 
     adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    nodes_summarization_task_config: AgentTaskSolverConfig
+    #nodes_summarization_task_config: AgentTaskSolverConfig
 
     e2n_dist_threshold: float = 0.5
     depth_temp: float = 0.3
