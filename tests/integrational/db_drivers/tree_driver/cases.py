@@ -13,19 +13,19 @@ AVAILABLE_TREE_DBS = ['neo4j']
 
 ################################################################
 
-VALID_SUM_TNODE1 = TreeNode(id='123', text='qwe', type=TreeNodeType.summarized, props={'p1': 'k1'})
-VALID_SUM_TNODE2 = TreeNode(id='234', text='asd', type=TreeNodeType.summarized, props={'p2': 'k2'})
-VALID_SUM_TNODE3 = TreeNode(id='rgn', text='dggg', type=TreeNodeType.summarized, props={'p3': 'k3'})
-VALID_SUM_TNODE4 = TreeNode(id='ytjetmf', text='jrtdnf', type=TreeNodeType.summarized, props={'p4': 'k4'})
-VALID_SUM_TNODE5 = TreeNode(id='sthbsfd', text='tendg', type=TreeNodeType.summarized, props={'p5': 'k5'})
-VALID_SUM_TNODE6 = TreeNode(id='rthbdvae', text='sbfbsrga', type=TreeNodeType.summarized, props={'p6': 'k6'})
-VALID_SUM_TNODE7 = TreeNode(id='yurkjda', text='sdfzbnts', type=TreeNodeType.summarized, props={'p7': 'k7'})
-VALID_SUM_TNODE8 = TreeNode(id='dfvsdjtrtj', text='sxbfagrscv', type=TreeNodeType.summarized, props={'p8': 'k8'})
+VALID_SUM_TNODE1 = TreeNode(id='123', text='qwe', type=TreeNodeType.summarized, props={'p1': 'k1', 'depth': 1})
+VALID_SUM_TNODE2 = TreeNode(id='234', text='asd', type=TreeNodeType.summarized, props={'p2': 'k2', 'depth': 1})
+VALID_SUM_TNODE3 = TreeNode(id='rgn', text='dggg', type=TreeNodeType.summarized, props={'p3': 'k3', 'depth': 1})
+VALID_SUM_TNODE4 = TreeNode(id='ytjetmf', text='jrtdnf', type=TreeNodeType.summarized, props={'p4': 'k4', 'depth': 1})
+VALID_SUM_TNODE5 = TreeNode(id='sthbsfd', text='tendg', type=TreeNodeType.summarized, props={'p5': 'k5', 'depth': 2})
+VALID_SUM_TNODE6 = TreeNode(id='rthbdvae', text='sbfbsrga', type=TreeNodeType.summarized, props={'p6': 'k6', 'depth': 3})
+VALID_SUM_TNODE7 = TreeNode(id='yurkjda', text='sdfzbnts', type=TreeNodeType.summarized, props={'p7': 'k7', 'depth': 2})
+VALID_SUM_TNODE8 = TreeNode(id='dfvsdjtrtj', text='sxbfagrscv', type=TreeNodeType.summarized, props={'p8': 'k8', 'depth': 2})
 
-VALID_LEAF_TNODE1 = TreeNode(id='456', text='zxc', type=TreeNodeType.leaf, props={'p1': 'k1', 'str_id': 'th5h6'})
-VALID_LEAF_TNODE2 = TreeNode(id='756', text='wer', type=TreeNodeType.leaf, props={'p2': 'k2', 'str_id': 'ltutjgh'})
-VALID_LEAF_TNODE3 = TreeNode(id='hrtsfdb', text='agrdv', type=TreeNodeType.leaf, props={'p3': 'k3', 'str_id': 'sbdvfvaa'})
-VALID_LEAF_TNODE4 = TreeNode(id='hbtrvv', text='sdgdbar', type=TreeNodeType.leaf, props={'p4': 'k4', 'str_id': 'lagervfdbfd'})
+VALID_LEAF_TNODE1 = TreeNode(id='456', text='zxc', type=TreeNodeType.leaf, props={'p1': 'k1', 'str_id': 'th5h6', 'depth': 2})
+VALID_LEAF_TNODE2 = TreeNode(id='756', text='wer', type=TreeNodeType.leaf, props={'p2': 'k2', 'str_id': 'ltutjgh', 'depth': 2})
+VALID_LEAF_TNODE3 = TreeNode(id='hrtsfdb', text='agrdv', type=TreeNodeType.leaf, props={'p3': 'k3', 'str_id': 'sbdvfvaa', 'depth': 2})
+VALID_LEAF_TNODE4 = TreeNode(id='hbtrvv', text='sdgdbar', type=TreeNodeType.leaf, props={'p4': 'k4', 'str_id': 'lagervfdbfd', 'depth': 2})
 
 INVALID_LEAF_TNODE1 = TreeNode(id=123, text='dfhdf', type=TreeNodeType.leaf, props={'p3': 'k5'})
 INVALID_LEAF_TNODE2 = TreeNode(id="636", text='dfhdf', type="leaf", props={'p3': 'k5'})
@@ -290,3 +290,16 @@ TREEDB_POPULATED_GETCHILDS_TEST_CASES = []
 for db_vendor in AVAILABLE_TREE_DBS:
     for i in range(len(TREEDB_GETCHILDS_TEST_CASES)):
         TREEDB_POPULATED_GETCHILDS_TEST_CASES.append(TREEDB_GETCHILDS_TEST_CASES[i] + (db_vendor,))
+
+################################################################
+
+# create_pairs, expected_max_depth
+TREEDB_GETMAXDEPTH_TEST_CASES = [
+    # 1. позитивный случай
+    (TEST_TREE, 3),
+]
+
+TREEDB_POPULATED_GETMAXDEPTH_TEST_CASES = []
+for db_vendor in AVAILABLE_TREE_DBS:
+    for i in range(len(TREEDB_GETMAXDEPTH_TEST_CASES)):
+        TREEDB_POPULATED_GETMAXDEPTH_TEST_CASES.append(TREEDB_GETMAXDEPTH_TEST_CASES[i] + (db_vendor,))

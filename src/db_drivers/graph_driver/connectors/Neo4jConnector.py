@@ -57,6 +57,9 @@ class Neo4jConnector(AbstractGraphDatabaseConnection):
         if self.driver is not None:
             self.driver.close()
 
+    def __del__(self):
+        self.close_connection()
+
     def create_node_query(self, node: Node) -> str:
         query_props = {}
         for prop_name, prop_value in node.prop.items():
