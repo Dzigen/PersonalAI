@@ -1,14 +1,15 @@
 from ........utils import AgentTaskSolverConfig, Logger
-from ........db_drivers.kv_driver import KeyValueDriverConfig
 from .general_parsers import ag_custom_formate, ag_custom_postprocess
 from .v2 import ANSWER_GEN_SUITE_V2
 from .v1 import ANSWER_GEN_SUITE_V1
+from .v3 import ANSWER_GEN_SUITE_V3
 
 ANSWER_GENERATION_LOG_PATH = 'log/qa/kg_reasoner/weak/answer_generation/agent_tasks/ag'
 
 AVAILABLE_AG_TCONFIGS = {
     'v1': ANSWER_GEN_SUITE_V1,
-    'v2': ANSWER_GEN_SUITE_V2
+    'v2': ANSWER_GEN_SUITE_V2,
+    'v3': ANSWER_GEN_SUITE_V3
 }
 
 class AgentAGTaskConfigSelector:
@@ -19,6 +20,7 @@ class AgentAGTaskConfigSelector:
     @staticmethod
     def select(base_config_version:str = 'v1', cache_table_name:str="qa_agent_ag_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
+            version=base_config_version,
             suites=AVAILABLE_AG_TCONFIGS[base_config_version],
             formate_context_func=ag_custom_formate, postprocess_answer_func=ag_custom_postprocess,
             cache_table_name=cache_table_name,

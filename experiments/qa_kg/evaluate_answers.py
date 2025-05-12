@@ -26,7 +26,7 @@ PARAMS_FILEP = sys.orig_argv[2]
 with open(PARAMS_FILEP, 'r') as stream:
     PARAMS = yaml.safe_load(stream)
 
-DS_EXPERIMENT_DIR = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{PARAMS['DATASET_NAME']}"
+DS_EXPERIMENT_DIR = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['exp_results']}/{PARAMS['DATASET_NAME']}"
 SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['EXPERIMENT_NAME']}"
 
 GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['gen_answers_name']}"
@@ -154,8 +154,12 @@ for pack_name in gen_pack_names:
 
         print("Calculating BertScore...")
         bs_scores = METRICS.bertscore(generated_answers, filtered_target_answers)
+
+        print("Calculating 'NoAnswer'-score...")
+        noansw_scores  = sum(list(map(lambda gen_answer: gen_answer.strip() == PARAMS['QA_EVALUATION']['no_answer'], generated_answers))) / len(generated_answers)
+
     else:
-        b1_scores, b2_scores, rl_scores, m_scores, em_scores, bs_scores = 0,0,0,0,0,0
+        b1_scores, b2_scores, rl_scores, m_scores, em_scores, bs_scores, noansw_scores = 0,0,0,0,0,0,0
 
     none_score = round5(none_answers / len(generated_pack))
 
@@ -166,7 +170,8 @@ for pack_name in gen_pack_names:
         'RougeL': float(rl_scores),
         'ExactMatch': float(em_scores),
         'BertScore': bs_scores,
-        'NoneScore': float(none_score)
+        'NoneScore': float(none_score),
+        'NoAnswerScore': float(noansw_scores)
     }
 
     # сохраняем скоры по папку

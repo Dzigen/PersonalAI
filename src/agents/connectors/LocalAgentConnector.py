@@ -5,8 +5,8 @@ from ..utils import AbstractAgentConnector, AgentConnectorConfig
 
 DEFAULT_LOCALAGENT_CONFIG = AgentConnectorConfig(
     gen_strategy={'max_new_tokens': 2048, 'seed': 42, 'top_k': 1, 'temperature': 0.0},
-    credentials={'model_name_or_path': '../models/Undi95/Meta-Llama-3-8B-Instruct-hf'},
-    ext_params={'num_workers': 4, 'torch_dtype': torch.bfloat16})
+    credentials={'model_name_or_path': '../models/Undi95/Meta-Llama-3-8B-Instruct-hf', 'torch_dtype': torch.bfloat16},
+    ext_params={'num_workers': 4})
 
 class LocalAgentConnector(AbstractAgentConnector):
     def __init__(self, config: AgentConnectorConfig = DEFAULT_LOCALAGENT_CONFIG) -> None:
@@ -14,7 +14,7 @@ class LocalAgentConnector(AbstractAgentConnector):
         self.pipeline = pipeline(
             "text-generation",
             model=self.config.credentials['model_name_or_path'],
-            model_kwargs={"torch_dtype": self.config.ext_params['torch_dtype']},
+            model_kwargs={"torch_dtype": self.config.credentials['torch_dtype']},
             device_map="auto"
         )
 

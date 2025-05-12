@@ -27,11 +27,17 @@ class CacheUtils:
                     self.log("Результат по заданной конфигурации гиперпараметров уже был получен.", verbose=self.verbose)
                     self.log(f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
                     self.log(f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
+                    self.log(f"* HASH_SEEDS: {cache_key}.", verbose=self.verbose)
+                    self.log(f"* CACHED_VALUE: {cached_result}.", verbose=self.verbose)
+                    
 
                     cached_flag = True
                     output = cached_result
                 else:
                     self.log("Результата по заданной конфигурации гиперпараметров в кеше нет.", verbose=self.verbose)
+                    self.log(f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
+                    self.log(f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
+                    self.log(f"* HASH_SEEDS: {cache_key}.", verbose=self.verbose)
 
             if not cached_flag:
                 self.log("Получем результат с нуля...", verbose=self.verbose)
@@ -39,6 +45,8 @@ class CacheUtils:
 
                 if self.cachekv is not None:
                     self.log("Кешируем полученный результат.", verbose=self.verbose)
+                    self.log(f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
+                    self.log(f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
                     self.cachekv.save_value(value=output, key_hash=key_hash)
 
             return output
@@ -65,21 +73,20 @@ class CacheKV:
         return key_hash
 
     @staticmethod
-    def get_hash(key: List[object]) -> str:
+    def get_hash(key: List[str]) -> str:
         if not CacheKV.is_key_valid(key):
             raise ValueError
 
-        dumps = list(map(lambda key_part: pickle.dumps(key_part), key))
-        hashes = list(map(lambda dump: hashlib.sha1(dump).hexdigest(), dumps))
+        hashes = list(map(lambda k: hashlib.sha1(k.encode()).hexdigest(), key))
         concated_hashes = ''.join(hashes)
         key_hash = hashlib.sha1(concated_hashes.encode()).hexdigest()
         return key_hash
 
     @staticmethod
-    def is_key_valid(key: List[object]) -> bool:
+    def is_key_valid(key: List[str]) -> bool:
         return len(key) > 0
 
-    def load_value(self, key: List[object] = None, key_hash: str = None) -> Tuple[int, str, Union[str, object]]:
+    def load_value(self, key: List[str] = None, key_hash: str = None) -> Tuple[int, str, Union[str, object]]:
         key_hash = CacheKV.prepare_key(key, key_hash)
 
         output = self.kv_conn.read([key_hash])
@@ -92,7 +99,7 @@ class CacheKV:
         formated_value = pickle.loads(raw_value)
         return (0, key_hash, formated_value)
 
-    def save_value(self, value: object, key: List[object] = None, key_hash: str = None) -> str:
+    def save_value(self, value: object, key: List[str] = None, key_hash: str = None) -> str:
         key_hash = CacheKV.prepare_key(key, key_hash)
         if self.kv_conn.item_exist(key_hash):
             raise ValueError

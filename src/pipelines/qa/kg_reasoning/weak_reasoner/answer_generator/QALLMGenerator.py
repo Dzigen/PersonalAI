@@ -1,10 +1,11 @@
 from typing import List, Tuple, Union
 from dataclasses import dataclass, field
 from copy import deepcopy
+import hashlib
 
 from .configs import DEFAULT_AG_TASK_CONFIG, AG_MAIN_LOG_PATH
 
-from ......utils.data_structs import Triplet, RelationType, create_id
+from ......utils.data_structs import Triplet, RelationType, create_id, TripletCreator
 from ......utils.errors import STATUS_MESSAGE
 from ......agents import AgentDriver, AgentDriverConfig
 from ......utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
@@ -39,6 +40,10 @@ class QALLMGeneratorConfig:
     log: Logger = field(default_factory=lambda: Logger(AG_MAIN_LOG_PATH))
     verbose: bool = False
 
+    def to_str(self):
+        str_relations = ";".join(list(map(lambda v: v.value, self.relation_type)))
+        return f"{self.lang}|{self.adriver_config.to_str()}|{self.ag_task_config.version}|{str_relations}"
+
 class QALLMGenerator(CacheUtils):
     """Верхнеуровневый класс четвёртой стадии QA-конвейера для генерации ответа на user-вопрос,
     обусловленного извлечённой информацией из памяти (графа знаний) ассистента.
@@ -69,9 +74,8 @@ class QALLMGenerator(CacheUtils):
             self.agent, self.config.ag_task_config, ag_task_cache_config)
 
     def get_cache_key(self, query: str, context_triplets: List[Triplet]) -> List[object]:
-        return [self.config.lang, self.config.adriver_config,
-                self.config.ag_task_config, self.config.relation_type,
-                query, context_triplets]
+        str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(triplet)[1] for triplet in context_triplets])).encode()).hexdigest()
+        return [self.config.to_str(), query, str_triplets]
 
     @CacheUtils.cache_method_output
     def generate(self, query: str, context_triplets: List[Triplet]) -> Tuple[str, ReturnInfo]:

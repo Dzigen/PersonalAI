@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Set, Union
 import math
 from tqdm import tqdm
+import torch
 
 from ..db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriver, VectorDriverConfig, VectorDBInstance
 from ..db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
@@ -10,10 +11,12 @@ from ..utils import Logger
 
 NODES_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
     db_vendor='chroma', db_config=VectorDBConnectionConfig(
-        path="../data/graph_structures/vectorized_nodes/default_densedb", db_info={'db': 'default_db', 'table': "vectorized_nodes"}))
+        conn={'path':"../data/graph_structures/vectorized_nodes/default_densedb"},
+        db_info={'db': 'default_db', 'table': "vectorized_nodes"}))
 TRIPLETS_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
     db_vendor='chroma', db_config=VectorDBConnectionConfig(
-        path="../data/graph_structures/vectorized_triplets/default_densedb", db_info={'db': 'default_db', 'table': "vectorized_triplets"}))
+        conn={'path':"../data/graph_structures/vectorized_triplets/default_densedb"},
+        db_info={'db': 'default_db', 'table': "vectorized_triplets"}))
 
 EMBEDDINGS_MODEL_LOG_PATH = 'log/kg_model/embeddings'
 
@@ -179,7 +182,8 @@ class EmbeddingsModel:
         :param stringified_instances: Строковые представления объектов, которые будут сохранены в хранилище.
         :type stringified_instances: List[str]
         """
-        embs = self.embedder.encode_passages(stringified_instances)
+        torch.cuda.empty_cache()
+        embs = self.embedder.encode_passages(stringified_instances, batch_size=16)
         formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb, metadata={'id': id, **metad})
                             for id, doc, emb, metad in zip(ids, stringified_instances, embs, metadatas)]
         self.vectordbs[db_type].create(formated_instances)

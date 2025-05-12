@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 from typing import List, Union, Dict
 from copy import deepcopy
+import hashlib
 
 from .utils import AbstractTriplesFilter, BaseTripletsFilterConfig
-from ......utils.data_structs import Triplet, QueryInfo, create_id
+from ......utils.data_structs import Triplet, QueryInfo, create_id, TripletCreator
 from ......utils import Logger
 from ......kg_model import KnowledgeGraphModel
 from ......db_drivers.vector_driver import VectorDBInstance
@@ -20,6 +21,9 @@ class TripletsFilterConfig(BaseTripletsFilterConfig):
     """
     max_k: int = 50
     cache_table_name: str = 'qa_naive_t_filter_cache'
+
+    def to_str(self):
+        return f"{self.max_k}"
 
 
 class TripletsFilter(AbstractTriplesFilter, CacheUtils):
@@ -53,8 +57,8 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
 
 
     def get_cache_key(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[object]:
-        return [self.config.max_k, self.kg_model.embeddings_struct.config,
-                self.kg_model.graph_struct.config, query_info, triplets]
+        str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(triplet)[1] for triplet in triplets])).encode()).hexdigest()
+        return [self.config.to_str(), query_info.to_str(), str_triplets]
 
     @CacheUtils.cache_method_output
     def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
@@ -79,7 +83,7 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
             relation_ids = list(unique_relations_map.keys())
 
             raw_relevant_triplets = self.kg_model.embeddings_struct.vectordbs['triplets'].retrieve(
-                [query_instance], self.config.max_k, where={"id": {"$in": relation_ids}})[0]
+                [query_instance], self.config.max_k, subset_ids=relation_ids)[0]
 
             accepted_relation_ids = list(map(lambda item: item[1].id, raw_relevant_triplets))
 

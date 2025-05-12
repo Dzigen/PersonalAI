@@ -90,9 +90,9 @@ def graph_model(available_graph_models, request):
 def embeddings_chroma_config():
     config = EmbeddingsModelConfig(
         nodesdb_driver_config=VectorDriverConfig(db_config=VectorDBConnectionConfig(
-            path=f'{TEST_VOLUME_DIR}/chroma', db_info={'db': 'testing', 'table': 'vectorized_nodes'}, need_to_clear=True)),
+            conn={'path': f'{TEST_VOLUME_DIR}/chroma'}, db_info={'db': 'testing', 'table': 'vectorized_nodes'}, params={"hnsw:space": "ip","hnsw:M": 4096}, need_to_clear=True)),
         tripletsdb_driver_config=VectorDriverConfig(db_config=VectorDBConnectionConfig(
-            path=f'{TEST_VOLUME_DIR}/chroma', db_info={'db': 'testing', 'table': 'vectorized_triplets'}, need_to_clear=True)),
+            conn={'path': f'{TEST_VOLUME_DIR}/chroma'}, db_info={'db': 'testing', 'table': 'vectorized_triplets'}, params={"hnsw:space": "ip","hnsw:M": 4096}, need_to_clear=True)),
         embedder_config=EmbedderModelConfig(model_name_or_path=f'{PROJECT_BASE_DIR}/models/intfloat/multilingual-e5-small', device='cuda'))
     return config
 
@@ -121,7 +121,7 @@ def available_kg_models(available_embedding_configs, available_graph_configs):
     kg_configs = {}
     for vector_name, vector_config in available_embedding_configs.items():
         for graph_name, graph_config in available_graph_configs.items():
-            kg_configs[f"{vector_name}/{graph_name}"] = KnowledgeGraphModel(graph_config, vector_config, verbose=True)
+            kg_configs[f"{vector_name}/{graph_name}"] = KnowledgeGraphModel(graph_config, vector_config)
     return kg_configs
 
 @pytest.fixture(scope='function')

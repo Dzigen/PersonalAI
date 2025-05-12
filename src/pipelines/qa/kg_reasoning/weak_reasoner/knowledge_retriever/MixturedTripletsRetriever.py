@@ -7,7 +7,7 @@ from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarTripletsRetriev
 from .WaterCirclesTripletsRetriever import WaterCirclesSearchConfig, WaterCirclesRetriever
 from .NaiveBFSTripletsRetriever import NaiveBFSTripletsRetriever
 from .BeamSearchTripletsRetriever import BeamSearchTripletsRetriever
-from ......utils.data_structs import QueryInfo, Triplet, create_id, NodeType
+from ......utils.data_structs import QueryInfo, Triplet, create_id, NodeType, NODES_TYPES_MAP
 from ......kg_model import KnowledgeGraphModel
 from ......utils import Logger
 from ......utils.cache_kv import CacheKV, CacheUtils
@@ -29,7 +29,15 @@ class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
     cache_table_name: str = 'qa_mixture_t_retriever_cache'
 
-class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
+    def to_str(self):
+        retriever1_pair = (self.retriever1_name, self.retriever1_config.to_str())
+        retriever2_pair = (self.retriever2_name, self.retriever2_config.to_str())
+        sorted_pretr = sorted([retriever1_pair, retriever2_pair], key=lambda p: p[0])
+
+        str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
+        return f"{sorted_pretr[0][0]};{sorted_pretr[0][1]};{sorted_pretr[1][0]};{sorted_pretr[1][1]};{str_accepted_nodes}"
+
+class MixturedTripletsRetriever(AbstractTripletsRetriever):
     """Класс предназначен для извлечения триплетов из графа знаний с помощью комбинации BFS- и A*-алгоритмов поиска.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -47,6 +55,8 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.verbose = verbose
 
         if type(search_config) is dict:
+            if 'accepted_node_types' in search_config:
+                search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
             search_config = MixturedGraphSearchConfig(**search_config)
         self.config = search_config
 
@@ -57,14 +67,17 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             'beamsearch': BeamSearchTripletsRetriever
         }
 
-        # accepted nodes
-        search_config.retriever1_config.accepted_node_types = search_config.accepted_node_types
-        search_config.retriever2_config.accepted_node_types = search_config.accepted_node_types
-
         self.retriever1 = self.available_retrievers[search_config.retriever1_name](
             kg_model, log, search_config.retriever1_config, cache_kvdriver_config, verbose)
         self.retriever2 = self.available_retrievers[search_config.retriever2_name](
             kg_model, log, search_config.retriever2_config, cache_kvdriver_config, verbose)
+
+        # accepted nodes
+        self.retriever1.config.accepted_node_types = search_config.accepted_node_types
+        self.config.retriever1_config = self.retriever1.config
+        self.retriever2.config.accepted_node_types = search_config.accepted_node_types
+        self.config.retriever2_config = self.retriever2.config
+
 
         if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
             cache_config = deepcopy(cache_kvdriver_config)
@@ -73,11 +86,6 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         else:
             self.cachekv = None
 
-    def get_cache_key(self, query_info: QueryInfo) -> List[object]:
-        return [self.config.retriever1_name] + self.retriever1.get_cache_key(query_info) + \
-            [self.config.retriever2_name] + self.retriever2.get_cache_key(query_info) + [query_info]
-
-    @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log(f"RETRIEVER: MixturedTripletsRetriever ({self.config.retriever1_name} + {self.config.retriever2_name})", verbose=self.verbose)

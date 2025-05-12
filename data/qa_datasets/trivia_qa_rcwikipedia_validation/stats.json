@@ -1,19 +1,19 @@
 {
- "contexts_amount": 9975,
+ "contexts_amount": 4925,
  "contexts_len": {
-  "median": 811.0,
-  "mean": 767.119,
-  "std": 198.29088
+  "median": 807.0,
+  "mean": 765.1198,
+  "std": 196.32728
  },
- "qa_pairs_amount": 1110,
+ "qa_pairs_amount": 500,
  "answers_len": {
   "median": 9.0,
-  "mean": 10.53604,
-  "std": 5.58118
+  "mean": 10.178,
+  "std": 5.76388
  },
  "questions_len": {
-  "median": 64.5,
-  "mean": 72.91081,
-  "std": 35.58811
+  "median": 66.0,
+  "mean": 76.378,
+  "std": 39.46841
  }
 }

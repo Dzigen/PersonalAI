@@ -15,11 +15,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '3'
-          memory: 10G
+          cpus: '8'
+          memory: 24G
         reservations:
-          cpus: '3'
-          memory: 5G
+          cpus: '4'
+          memory: 8G
 
   mongo_cache:
     image: mongo:latest
@@ -35,11 +35,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '3'
-          memory: 40G
+          cpus: '8'
+          memory: 32G
         reservations:
-          cpus: '2'
-          memory: 5G
+          cpus: '4'
+          memory: 8G
 
   mongo_ui:
     image: mongo-express:latest
@@ -72,11 +72,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '3'
-          memory: 10G
+          cpus: '8'
+          memory: 32G
         reservations:
-          cpus: '2'
-          memory: 5G
+          cpus: '4'
+          memory: 8G
 
   redis_ui:
     image: redis/redisinsight:latest
@@ -87,28 +87,63 @@ services:
     ports:
       - ${REDIS_UI_EXTERNAL_PORT}:5540
 
-  ollama_agent:
-    image: ollama/ollama:latest
-    container_name: ${OLLAMA_CNTNAME}
-    hostname: ${OLLAMA_HOST}
-    ports:
-      - "${OLLAMA_EXTERNAL_PORT}:11434"
+  milvus:
+    image: milvusdb/milvus:v2.5.8
+    container_name: ${MILVUS_CNTNAME}
+    hostname: ${MILVUS_HOST}
+    command: ["milvus", "run", "standalone"]
+    security_opt:
+      - seccomp:unconfined
     environment:
-      - OLLAMA_DEBUG=1
+      - ETCD_USE_EMBED=true
+      - ETCD_DATA_DIR=/var/lib/milvus/etcd
+      - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
+      - COMMON_STORAGETYPE=local
+    ports:
+      - ${MILVUS_EXTERNAL_PORT1}:19530
+      - ${MILVUS_EXTERNAL_PORT2}:2379
+      - ${MILVUS_UI_EXTERNAL_PORT}:9091
     volumes:
-      - ${OLLAMA_LOCAL_VOLUME}:/root/.ollama
+      - ${MILVUS_LOCAL_VOLUME}/data:/var/lib/milvus
+      - ${MILVUS_CONFIG}/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
+      - ${MILVUS_CONFIG}/user.yaml:/milvus/configs/user.yaml
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      start_period: 90s
+      timeout: 20s
+      retries: 3
     deploy:
       resources:
         limits:
-          cpus: '2'
-          memory: 8G
+          cpus: '8'
+          memory: 24G
         reservations:
-          cpus: '1'
-          memory: 4G
-          devices:
-            - driver: nvidia
-              device_ids: ['1']
-              capabilities: [gpu]
+          cpus: '4'
+          memory: 8G
+
+  # ollama_agent:
+  #   image: ollama/ollama:latest
+  #   container_name: ${OLLAMA_CNTNAME}
+  #   hostname: ${OLLAMA_HOST}
+  #   ports:
+  #     - "${OLLAMA_EXTERNAL_PORT}:11434"
+  #   environment:
+  #     - OLLAMA_DEBUG=1
+  #   volumes:
+  #     - ${OLLAMA_LOCAL_VOLUME}:/root/.ollama
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '2'
+  #         memory: 8G
+  #       reservations:
+  #         cpus: '1'
+  #         memory: 4G
+  #         devices:
+  #           - driver: nvidia
+  #             device_ids: ['1']
+  #             capabilities: [gpu]
 
   workspace:
     image: m.menschikov/workspace:v1
@@ -126,15 +161,37 @@ services:
       - neo4j
       - mongo_cache
       - redis_cache
+      - milvus
      # - ollama_agent
     deploy:
       resources:
         limits:
-          cpus: '3'
-          memory: 32G
+          cpus: '16'
+          memory: 48G
         reservations:
-          cpus: '2'
+          cpus: '8'
           memory: 24G
+          devices:
+            - driver: nvidia
+              device_ids: ['1']
+              capabilities: [gpu]
+
+
+  workspace_localmachine:
+    image: m.menschikov/workspace:v1
+    container_name: workspace_localmachine
+    hostname: localhost
+    network_mode: "host"
+    volumes:
+      - /home/dzigen/Desktop/PersonalAI/Personal-AI/data/knowledge_graphs/diaasq/gpt4omini_120425_v2prompts:/home/workspace/data/knowledge_graphs/diaasq/gpt4omini_120425_v2prompts
+      - /home/dzigen/Desktop/PersonalAI/Personal-AI/data/qa_datasets/diaasq:/home/workspace/data/qa_datasets/diaasq
+      - /home/dzigen/Desktop/PersonalAI/Personal-AI/notebooks:/home/workspace/notebooks
+      - /home/dzigen/Desktop/PersonalAI/Personal-AI/experiments/qa_kg:/home/workspace/experiments
+      - /home/dzigen/Desktop/PersonalAI/Personal-AI/src:/home/workspace/src
+      - /home/dzigen/Desktop/PersonalAI/Personal-AI/models:/home/workspace/models
+    deploy:
+      resources:
+        reservations:
           devices:
             - driver: nvidia
               device_ids: ['0']

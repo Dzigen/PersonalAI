@@ -34,6 +34,9 @@ class QueryLLMParserConfig:
     log: Logger = field(default_factory=lambda: Logger(QP_MAIN_LOG_PATH))
     verbose: bool = False
 
+    def to_str(self):
+        return f"{self.adriver_config.to_str()}|{self.kw_extraction_task_config.version}|{self.lang}"
+
 class QueryLLMParser(CacheUtils):
     """Верхнеуровневый класс первой стадии QA-конвейера
     для извлечения сущностей из user-вопроса.
@@ -66,8 +69,7 @@ class QueryLLMParser(CacheUtils):
             kwe_task_cache_config)
 
     def get_cache_key(self, query: str) -> List[object]:
-        return [self.config.lang, self.config.adriver_config,
-                self.config.kw_extraction_task_config, query]
+        return [self.config.to_str(), query]
 
     @CacheUtils.cache_method_output
     def extract_entities(self, query: str) -> Tuple[List[str], ReturnInfo]:

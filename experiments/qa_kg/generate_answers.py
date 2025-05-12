@@ -32,7 +32,7 @@ EMBEDDINGS_DRIVER_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['
 
 QA_DATASET_PATH = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['qa_datasets']}/{PARAMS['DATASET_NAME']}"
 
-DS_EXPERIMENT_DIR = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{PARAMS['DATASET_NAME']}"
+DS_EXPERIMENT_DIR = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['exp_results']}/{PARAMS['DATASET_NAME']}"
 SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['EXPERIMENT_NAME']}"
 
 TMP_GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['tmp_gen_answers_name']}"
@@ -55,13 +55,6 @@ embed_config = joblib.load(EMBEDDINGS_DRIVER_CONFIG_PATH)
 graph_config.driver_config.db_config.need_to_clear = False
 embed_config.nodesdb_driver_config.db_config.need_to_clear = False
 embed_config.tripletsdb_driver_config.db_config.need_to_clear = False
-
-graph_config.driver_config.db_config.host = PARAMS['KG_DB_CONFIGS']['graphdb_config']['host']
-graph_config.driver_config.db_config.port = PARAMS['KG_DB_CONFIGS']['graphdb_config']['port']
-embed_config.nodesdb_driver_config.db_config.path = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['embeddings_dir_name']}"
-embed_config.tripletsdb_driver_config.db_config.path = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['embeddings_dir_name']}"
-embed_config.embedder_config.model_name_or_path = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['models']}/{PARAMS['KG_DB_CONFIGS']['embedder_config']['model_name_or_path']}"
-
 # !!! IMPORTANT !!!
 
 print("graph_config:", graph_config)
@@ -162,9 +155,24 @@ def hotpotqa_distractor_validation_qa_load(dataset_path: str) -> List[Tuple[str,
 
     return packs
 
+def trivia_qa_rcwikipedia_validation_qa_load(dataset_path: str) -> List[Tuple[str, List[str], List[str]]]:
+    qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
+
+    questions = qa_df['question'].tolist()
+    answers = qa_df['answer'].tolist()
+
+    if (PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack'] > 0):
+        questions = questions[:PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']]
+        answers = answers[:PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']]
+
+    packs = [['all', questions, answers]]
+
+    return packs
+
 CUSTOM_LOAD_FUNCS = {
-    'diaasqa': diaasqa_qa_load,
-    'hotpotqa_distractor_validation': hotpotqa_distractor_validation_qa_load
+    'diaasq': diaasqa_qa_load,
+    'hotpotqa_distractor_validation': hotpotqa_distractor_validation_qa_load,
+    'trivia_qa_rcwikipedia_validation': trivia_qa_rcwikipedia_validation_qa_load 
 }
 
 question_packs = CUSTOM_LOAD_FUNCS[PARAMS['DATASET_NAME']](QA_DATASET_PATH)

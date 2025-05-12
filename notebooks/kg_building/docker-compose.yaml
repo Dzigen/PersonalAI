@@ -15,11 +15,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
-          memory: 10G
+          cpus: '8'
+          memory: 24G
         reservations:
-          cpus: '1'
-          memory: 5G
+          cpus: '4'
+          memory: 8G
 
   mongo_cache:
     image: mongo:latest
@@ -32,14 +32,14 @@ services:
       - "${MONGO_EXTERNAL_PORT}:27017"
     volumes:
       - ${MONGO_LOCAL_VOLUME}:/data/db/
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 40G
-        reservations:
-          cpus: '1'
-          memory: 5G
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '8'
+    #       memory: 40G
+    #     reservations:
+    #       cpus: '4'
+    #       memory: 5G
 
   mongo_ui:
     image: mongo-express:latest
@@ -69,14 +69,14 @@ services:
     volumes:
       - ${REDIS_LOCAL_VOLUME}:/data
       - ${REDIS_CONFIG}:/usr/local/etc/redis
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 10G
-        reservations:
-          cpus: '1'
-          memory: 5G
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '8'
+    #       memory: 10G
+    #     reservations:
+    #       cpus: '4'
+    #       memory: 5G
 
   redis_ui:
     image: redis/redisinsight:latest
@@ -86,6 +86,41 @@ services:
       - redis_cache
     ports:
       - ${REDIS_UI_EXTERNAL_PORT}:5540
+
+  milvus:
+    image: milvusdb/milvus:v2.5.8
+    container_name: ${MILVUS_CNTNAME}
+    hostname: ${MILVUS_HOST}
+    command: ["milvus", "run", "standalone"]
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - ETCD_USE_EMBED=true
+      - ETCD_DATA_DIR=/var/lib/milvus/etcd
+      - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
+      - COMMON_STORAGETYPE=local
+    ports:
+      - ${MILVUS_EXTERNAL_PORT1}:19530
+      - ${MILVUS_EXTERNAL_PORT2}:2379
+      - ${MILVUS_UI_EXTERNAL_PORT}:9091
+    volumes:
+      - ${MILVUS_LOCAL_VOLUME}/data:/var/lib/milvus
+      - ${MILVUS_CONFIG}/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
+      - ${MILVUS_CONFIG}/user.yaml:/milvus/configs/user.yaml
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      start_period: 90s
+      timeout: 20s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '8'
+          memory: 24G
+        reservations:
+          cpus: '4'
+          memory: 8G
 
   ollama_agent:
     image: ollama/ollama:latest
@@ -114,6 +149,7 @@ services:
     image: m.menschikov/workspace:v1
     container_name: ${WORKSPACE_CNTNAME}
     hostname: ${WORKSPACE_HOST}
+    network_mode: "host"
     volumes:
       - ${EXTERNAL_SPEC_KG_PATH}:${INTERNAL_SPEC_KG_PATH}
       - ${EXTERNAL_SPEC_QADS_PATH}:${INTERNAL_SPEC_QADS_PATH}
@@ -122,18 +158,19 @@ services:
       - ${EXTERNAL_MODELS_PATH}:${INTERNAL_MODELS_PATH}
     depends_on:
       - neo4j
-      - mongo_ui
-      - redis_ui
-      - ollama_agent
+      - mongo_cache
+      - redis_cache
+      - milvus
+    #   - ollama_agent
     deploy:
       resources:
-        limits:
-          cpus: '2'
-          memory: 32G
+        # limits:
+        #   cpus: '8'
+        #   memory: 32G
         reservations:
-          cpus: '1'
-          memory: 24G
+          # cpus: '4'
+          # memory: 24G
           devices:
             - driver: nvidia
-              device_ids: ['0']
+              device_ids: ['1']
               capabilities: [gpu]

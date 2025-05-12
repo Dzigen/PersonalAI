@@ -3,6 +3,8 @@ from typing import List, Union, Tuple, Dict
 from enum import Enum
 import hashlib
 
+from src.db_drivers.vector_driver import VectorDBInstance
+
 class NodeType(Enum):
     """Доступные типы вершин."""
     #: Вершина хранит атомарную сущность.
@@ -47,7 +49,7 @@ class Node:
     #: Тип вершины.
     type: NodeType
     #: Дополнительные свойства вершины.
-    prop: dict = field(default_factory=lambda: {})
+    prop: dict = field(default_factory=lambda: dict())
     #: Строковое представление вершины.
     stringified: str = None
     #: Идентификатор вершины, полученный на основе её строкового представления.
@@ -61,7 +63,7 @@ class Relation:
     # Тип связи.
     type: RelationType
     #: Дополнительные свойства связи.
-    prop: dict = field(default_factory=lambda: {})
+    prop: dict = field(default_factory=lambda: dict())
     #: Идентификатор связи, полученный на основе строкового представления триплета, в котором она (связь) находится.
     #: Данное значение отличается от значения в поле id объекта класса Triplet.
     id: str = None
@@ -325,5 +327,11 @@ class QueryInfo:
     """
     query: str
     entities: List[str] = None
-    linked_nodes: List[object] = None
-    linked_nodes_by_entities: List[object] = None
+    linked_nodes: List[VectorDBInstance] = None
+    linked_nodes_by_entities: List[VectorDBInstance] = None
+
+    def to_str(self):
+        str_entities = ';'.join(sorted(self.entities)) if self.entities is not None else "None"
+        str_lnodes = ';'.join(sorted(list(map(lambda item: item.document, self.linked_nodes)))) if self.linked_nodes is not None else "None"
+        str_lnodes_by_entities = ';'.join(sorted(list(map(lambda item: ';;'.join(item), self.linked_nodes_by_entities)))) if self.linked_nodes_by_entities is not None else "None"
+        return f"{str_entities}|{str_lnodes}|{str_lnodes_by_entities}"

@@ -19,6 +19,7 @@ class AgentThesisExtrTaskConfigSelector:
     @staticmethod
     def select(base_config_version: str = 'v1', cache_table_name: str = "mem_agent_thesisextr_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
+            version=base_config_version,
             suites=AVAILABLE_THESIS_EXTRACT_TCONFIGS[base_config_version],
             formate_context_func=ethesises_custom_formate, postprocess_answer_func=ethesises_custom_postprocess,
             cache_table_name=cache_table_name,

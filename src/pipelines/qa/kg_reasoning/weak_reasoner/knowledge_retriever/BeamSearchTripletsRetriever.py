@@ -8,6 +8,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Tuple, Set, Union
 from collections import defaultdict
 from collections import Counter
+from time import time
 from copy import deepcopy, copy
 import numpy as np
 
@@ -62,6 +63,11 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     final_sorting_mode: str = 'mixed' # 'ended_first' | 'mixed' | 'continuous_first'
     cache_table_name: str = 'qa_beamsearch_t_retriever_cache'
 
+    def to_str(self):
+        str_bools = f"{self.same_path_intersection_by_node};{self.diff_paths_intersection_by_node};{self.diff_paths_intersection_by_rel}"
+        str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
+        return f"{self.max_depth}|{self.max_paths}|{str_bools}|{self.mean_alpha}|{str_accepted_nodes}|{self.final_sorting_mode}"
+
 
 class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger,
@@ -84,9 +90,8 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         else:
             self.cachekv = None
 
-    def get_cache_key(self, query_info: QueryInfo) -> List[object]:
-        return [self.config, self.kg_model.embeddings_struct.config,
-                self.kg_model.graph_struct.config, query_info]
+    def get_cache_key(self, query: str, node_id: str) -> List[object]:
+        return [self.config.to_str(), query, node_id]
 
     def calculate_path_score(self, path_len: int, accum_score: float) -> float:
         return accum_score / pow(path_len-1, self.config.mean_alpha)
@@ -163,16 +168,23 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         return shared_t_info, rids_to_tids_map
 
     def get_triplet_scores(self, query_vinstance: VectorDBInstance, shared_t_info: Dict[str, str],
-                           rids_to_tids_map: Dict[str, List[str]]) -> List[Tuple[str, str, float]]:
+                           rids_to_tids_map: Dict[str, List[str]], batch_size:int=512) -> List[Tuple[str, str, float]]:
         r_ids = list(rids_to_tids_map.keys())
-        scored_rels = self.kg_model.embeddings_struct.vectordbs['triplets'].retrieve(
-            [query_vinstance], n_results=len(r_ids), includes=[], where={"id": {"$in": r_ids}})[0]
-
         extended_scores_info = []
-        for raw_score, triplet_info in scored_rels:
-            cur_r_id, cur_t_score = (triplet_info.id, BeamSearchTripletsRetriever.calculate_triplet_score(raw_score))
-            for t_id in rids_to_tids_map[cur_r_id]:
-                extended_scores_info.append((t_id, shared_t_info[t_id], cur_t_score))
+
+        batches = len(r_ids) // batch_size
+        batches += 1 if len(r_ids) % batch_size != 0 else 0
+
+        for step in range(batches):
+            cur_rids_batch = r_ids[step * batch_size: (step+1)* batch_size]
+
+            scored_rels = self.kg_model.embeddings_struct.vectordbs['triplets'].retrieve(
+                [query_vinstance], n_results=len(cur_rids_batch), includes=[], subset_ids=cur_rids_batch)[0]
+
+            for raw_score, triplet_info in scored_rels:
+                cur_r_id, cur_t_score = (triplet_info.id, BeamSearchTripletsRetriever.calculate_triplet_score(raw_score))
+                for t_id in rids_to_tids_map[cur_r_id]:
+                    extended_scores_info.append((t_id, shared_t_info[t_id], cur_t_score))
 
         return extended_scores_info
 
@@ -244,13 +256,15 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 self.log(f"Больше некуда двигаться. Прекращаем обход графа", verbose=self.verbose)
                 break
 
+            opext_s_time = time()
             for i in range(len(traversing_paths)):
+                curp_s_time = time()
                 cur_path_info = traversing_paths[i]
                 prev_nid, tail_nid = cur_path_info.path[-1][0], cur_path_info.path[-1][2]
                 self.log(f"Информация по текущему пути:\n* номер: {i}\n* len: {len(cur_path_info.path)}\n* tail_nid: {tail_nid}\n* prev_nid: {prev_nid}", verbose=self.verbose)
 
                 adj_nids = self.get_available_nids(tail_nid, i, traversing_paths, prev_nid=prev_nid)
-                self.log(f"Смежные вершины: {len(adj_nids)}\n* nids: {adj_nids}", verbose=self.verbose)
+                self.log(f"Смежные вершины: {len(adj_nids)}\n", verbose=self.verbose)
 
                 if len(adj_nids) < 1:
                     self.log("У tail-вершины нет смежных вершин. Считаем путь завершившимся.", verbose=self.verbose)
@@ -269,10 +283,18 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
                 triplet_scores = self.get_triplet_scores(query_vinstance, shared_t_info, rids_to_tids_map)
                 new_tpaths = BeamSearchTripletsRetriever.extend_tpath(traversing_paths[i], triplet_scores)
-                self.log(f"Количество новых расширенных путей: {len(new_tpaths)}", verbose=self.verbose)
-                path_candidates += new_tpaths
+                self.log(f"Количество новых расширенных путей для текущего пути (до урезания): {len(new_tpaths)}", verbose=self.verbose)
+                sorted_new_tpaths = sorted(new_tpaths, key=lambda pinfo: pinfo.accum_score)
+                path_candidates += sorted_new_tpaths[:self.config.max_paths]
+                self.log(f"Текущее количество путей-кандидатов: {len(path_candidates)}", verbose=self.verbose)
+                curp_e_time = time()
+                self.log(f"Затраченное время на расширение текущего пути: {curp_e_time - curp_s_time} сек.", verbose=self.verbose)
+
+            opext_e_time = time()
 
             self.log(f"Количество найденных путей-кандидатов (до урезаний): {len(path_candidates)}", verbose=self.verbose)
+            self.log(f"Затраченное суммарное время на текущую итерацию: {opext_e_time-opext_s_time} сек.", verbose=self.verbose)
+
             # Сортируем (по возрастанию) расширенный список путей
             # по их релевантности и выбираем 'max_paths' лучших
             ordered_candidates = sorted(path_candidates, key=lambda pinfo: pinfo.accum_score)
@@ -280,16 +302,20 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
         self.log(f"Достигнут предел по глубине обхода графа: {self.config.max_depth}", verbose=self.verbose)
 
+        flt_s_time = time()
         continuous_paths = []
         for path_info in traversing_paths:
             continuous_paths.append(
                 TraversedPath(path=path_info.path, score=self.calculate_path_score(
                     len(path_info.path), path_info.accum_score)))
         filtered_paths = self.filter_paths(ended_paths, continuous_paths)
+        flt_e_time = time()
         self.log(f"Финальное количество найденных путей: {len(filtered_paths)}", verbose=self.verbose)
+        self.log(f"Затраченнное время на фильтрацию путей: {flt_e_time-flt_s_time} сек.", verbose=self.verbose)
 
         return filtered_paths
 
+    @CacheUtils.cache_method_output
     def search(self, query: str, node_id: str) -> List[Triplet]:
         paths_info = self.graph_beamsearch(query, node_id)
 
@@ -304,7 +330,6 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         extracted_triplets = self.kg_model.graph_struct.db_conn.read(list(uniques_tids))
         return extracted_triplets
 
-    @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log("RETRIEVER: BeamSearchTripletsRetriever", verbose=self.verbose)

@@ -6,11 +6,11 @@ PARAMS_FILE_PATH = sys.orig_argv[2]
 with open(PARAMS_FILE_PATH, 'r') as stream:
     PARAMS = yaml.safe_load(stream)
 
-DATASET_KGS_PATH = f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
+DATASET_KGS_PATH = f"{PARAMS['BASE_DATA_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
 SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
 # параметры для графовой бд (neo4j)
-GRAPH_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['graph_dir_name']}"
+GRAPH_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['graph_part']}"
 
 neo4j_cnt_variables = {
     'NEO4J_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['neo4j_cntname'],
@@ -26,8 +26,8 @@ neo4j_cnt_variables = {
 }
 
 # параметры для persistent бд (mongo)
-KV_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir_name']['base']}"
-PERSISTENT_DB_PATH = f"{KV_DB_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir_name']['persistant']}/"
+KV_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir']['base']}"
+PERSISTENT_DB_PATH = f"{KV_DB_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir']['persistant']}/"
 
 mongo_cnt_variables = {
     'MONGO_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['mongo_cntname'],
@@ -48,7 +48,7 @@ mongoui_cnt_variables = {
 }
 
 # параметры для ram бд (redis)
-RAM_DB_PATH = f"{KV_DB_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir_name']['ram']}"
+RAM_DB_PATH = f"{KV_DB_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir']['ram']}"
 
 redis_cnt_variables = {
     'REDIS_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['redis_cntname'],
@@ -89,22 +89,45 @@ worksapce_cnt_variables = {
     'INTERNAL_MODELS_PATH': f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['models']}"
 }
 
+# параметры для milvus бд
+VECTOR_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['embeddings_part']}"
+
+milvus_cnt_variables = {
+    'MILVUS_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['milvus_cntname'],
+    'MILVUS_HOST': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['milvus_host'],
+
+    'MILVUS_EXTERNAL_PORT1': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['milvus_port1'],
+    'MILVUS_EXTERNAL_PORT2': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['milvus_port2'],
+    'MILVUS_UI_EXTERNAL_PORT': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['milvus_ui_port'],
+
+    'MILVUS_LOCAL_VOLUME': VECTOR_DB_PATH,
+    'MILVUS_CONFIG': f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['configs']}/{PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['milvus_config']}"
+}
+
 # параметры для контейнера с llm-моделями
-llmagents_cnt_variables = {
-    'OLLAMA_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['agent_cntname'],
-    'OLLAMA_HOST': PARAMS['BASE_KGR_CONFIG']['agent_config']['credentials']['host'],
-    'OLLAMA_EXTERNAL_PORT': PARAMS['BASE_KGR_CONFIG']['agent_config']['credentials']['port'],
-    'OLLAMA_LOCAL_VOLUME': PARAMS['OLLAMA_MODELS_PATH']
+if PARAMS['BASE_KGR_CONFIG']['agent_config']['vendor'] == 'ollama':
+    llmagents_cnt_variables = {
+        'OLLAMA_CNTNAME': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['ollama_cntname'],
+        'OLLAMA_HOST': PARAMS['CONTAINERS_ADDITIONAL_CONFIG']['ollama_host'],
+        'OLLAMA_EXTERNAL_PORT': PARAMS['BASE_KGR_CONFIG']['agent_config']['ext_params']['port'],
+        'OLLAMA_LOCAL_VOLUME': PARAMS['OLLAMA_MODELS_PATH']
+    }
+else:
+    llmagents_cnt_variables = dict()
+
+compose_variables = {
+    'COMPOSE_PROJECT_NAME': f"{PARAMS['DATASET_NAME']}_{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 }
 
 #
 def dictvar_to_string(dict_variables) -> str:
     return '\n'.join(list(map(lambda item: f'{item[0]}="{item[1]}"', dict_variables.items())))
 
-env_variables = [neo4j_cnt_variables,
+env_variables = [neo4j_cnt_variables, milvus_cnt_variables,
                  mongo_cnt_variables, mongoui_cnt_variables,
                  redis_cnt_variables, redisui_cnt_variables,
-                 worksapce_cnt_variables, llmagents_cnt_variables]
+                 worksapce_cnt_variables, llmagents_cnt_variables, 
+                 compose_variables]
 env_variables = '\n'.join(list(map(lambda vars: dictvar_to_string(vars), env_variables)))
 
 DC_ENV_PATH = f"{PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"

@@ -8,6 +8,9 @@ class AgentDriverConfig:
     name: str = 'gigachat'
     agent_config: AgentConnectorConfig = field(default_factory=lambda: DEFAULT_AGENT_CONFIGS['gigachat'])
 
+    def to_str(self):
+        return f"{self.name}|{self.agent_config.to_str()}"
+
 class AgentDriver:
     @staticmethod
     def connect(config: AgentDriverConfig = AgentDriverConfig()) -> AbstractAgentConnector:

@@ -12,8 +12,8 @@ class BaseDatabaseConfig:
     :type db_info: Dict
     :param params: Набор дополнительных гиперпараметров, который необходим для подключения и настройки бд. Значения по умолчанию dict().
     :type params: Dict
-    :param params: Если True, то после успешного подключения к базе данных содержимое указанной таблицы будет удалено. Значения по умолчанию False.
-    :type params: bool
+    :param need_to_clear: Если True, то после успешного подключения к базе данных содержимое указанной таблицы будет удалено. Значения по умолчанию False.
+    :type need_to_clear: bool
     """
     db_info: Dict = field(default_factory=lambda: {'db': 'personalaidb', 'table': 'personalaitable'})
     params: Dict = field(default_factory=lambda: dict())

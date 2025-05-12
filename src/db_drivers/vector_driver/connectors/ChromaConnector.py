@@ -1,20 +1,32 @@
 from typing import List, Tuple
+
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 import chromadb
 import logging
+import gc
+import torch
+import numpy as np
 
 from ....utils.errors import ReturnInfo
 from ..utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
 logging.getLogger("chromadb").setLevel(logging.CRITICAL)
 
-DEFAULT_CHROMA_CONFIG = VectorDBConnectionConfig(path='../data/graph_structures/default_vectorstore')
+DEFAULT_CHROMA_CONFIG = VectorDBConnectionConfig(
+    params={"hnsw:space": "ip","hnsw:M": 4096},
+    conn={'path':'../data/graph_structures/default_vectorstore'})
 
 class ChromaConnection(AbstractVectorDatabaseConnection):
 
     def __init__(self, config: VectorDBConnectionConfig = DEFAULT_CHROMA_CONFIG) -> None:
         self.config = config
+        self.collection = None
+        self.client = None
 
     def open_connection(self) -> ReturnInfo:
-        self.client = chromadb.PersistentClient(path=self.config.path)
+        self.client = chromadb.PersistentClient(path=self.config.conn['path'])
         self.collection = self.client.get_or_create_collection(name=self.config.db_info['table'], metadata=self.config.params)
 
         if self.config.need_to_clear:
@@ -25,41 +37,44 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         pass
 
     def close_connection(self) -> ReturnInfo:
-        del self.collection
-        del self.client
+        self.collection = None
+        self.client = None
+        gc.collect()
 
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
-        # item-ids checking
+        # validating
         for item in items:
             if type(item.id) is not str:
+                raise ValueError
+            if type(item.embedding) in [torch.Tensor, np.ndarray]:
                 raise ValueError
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
             raise ValueError
 
         insts_idxs = list(range(len(items)))
-        insts_with_md = list(filter(lambda i: len(items[i].metadata), insts_idxs))
+        insts_with_md = list(filter(lambda i: len(items[i].metadata.keys()) > 0, insts_idxs))
         insts_wo_md = set(insts_idxs).difference(set(insts_with_md))
 
-        if len(insts_with_md):
+        if len(insts_with_md) > 0:
             self.collection.add(
                 documents=list(map(lambda idx: items[idx].document, insts_with_md)),
                 embeddings=list(map(lambda idx: items[idx].embedding, insts_with_md)),
                 metadatas=list(map(lambda idx: items[idx].metadata, insts_with_md)),
                 ids=list(map(lambda idx: items[idx].id, insts_with_md)))
 
-        if len(insts_wo_md):
+        if len(insts_wo_md) > 0:
             self.collection.add(
                 documents=list(map(lambda idx: items[idx].document, insts_wo_md)),
                 embeddings=list(map(lambda idx: items[idx].embedding, insts_wo_md)),
                 ids=list(map(lambda idx: items[idx].id, insts_wo_md)))
 
-    def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents'], **kwargs) -> List[VectorDBInstance]:
+    def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[VectorDBInstance]:
         formates_instances = []
         if len(ids):
             raw_instances = self.collection.get(
                 include=includes,
-                ids=ids, **kwargs)
+                ids=ids)
 
             for i in range(len(raw_instances['ids'])):
                 tmp_inst = {requested_field[:-1]: raw_instances[requested_field][i]
@@ -72,24 +87,55 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
         # TODO
         pass
 
-    def delete(self, ids: List[str], **kwargs) -> None:
+    def upsert(self, items: List[VectorDBInstance]) -> None:
+        # validation
+        for item in items:
+            if type(item.id) is not str:
+                raise ValueError
+        unique_ids = set(map(lambda item: item.id, items))
+        if len(items) != len(unique_ids):
+            raise ValueError
+
+        for item in items:
+            if self.item_exist(item.id):
+                self.delete([item.id])
+            self.create([item])
+
+    def delete(self, ids: List[str]) -> None:
+        # validation
+        for id in ids:
+            if type(id) is not str:
+                raise ValueError
+
         if len(ids):
-            self.collection.delete(ids=ids, **kwargs)
+            self.collection.delete(ids=ids)
 
     def retrieve(
-            self, query_instances: List[VectorDBInstance], n_results: int = 50,
-            includes: List[str]  = ['embeddings', 'documents', 'metadatas'], **kwargs) -> List[List[Tuple[float, VectorDBInstance]]]:
-        collection_size = self.collection.count()
+            self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids=None,
+            includes: List[str]  = ['embeddings', 'documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
+        # validating
+        if len(query_instances) < 1:
+            return ValueError
+        for inst in query_instances:
+            if type(inst.embedding) in [torch.Tensor, np.ndarray]:
+                raise ValueError
+
+        collection_size = self.count_items()
         n_results = collection_size if collection_size < n_results else n_results
-
-        # костыль
         if n_results < 1:
-            return [[]]
+            return [[]*len(query_instances)]
 
+        filtering_expr = dict()
+        if subset_ids is not None:
+            filtering_expr['ids'] = subset_ids
+
+        # Attention: в случае использования ip-метрики будут получены значения расстояний [distances] между векторами,
+        # а не значения их семантической блозости [similarity]
         raw_retrieved_instances = self.collection.query(
             query_embeddings=[inst.embedding for inst in query_instances],
-            include=includes + ['distances'], n_results=n_results, **kwargs)
+            include=includes + ['distances'], n_results=n_results, **filtering_expr)
 
+        #
         formated_instances = []
         for i in range(len(query_instances)):
             cur_formated_instances = []

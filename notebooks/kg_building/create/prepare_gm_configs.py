@@ -12,11 +12,15 @@ sys.path.insert(0, PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
 from src.kg_model import EmbedderModelConfig
 from src.db_drivers.graph_driver import GraphDBConnectionConfig
 from src.db_drivers.vector_driver import VectorDBConnectionConfig
-from src.pipelines.memorize import MemPipelineConfig, MemPipeline, LLMExtractorConfig, LLMUpdatorConfig
-from src.kg_model import KnowledgeGraphModel, EmbeddingsModelConfig, GraphModelConfig
+from src.pipelines.memorize import MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
+from src.kg_model import EmbeddingsModelConfig, GraphModelConfig
 from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
 from src.db_drivers.vector_driver import VectorDriverConfig, VectorDBConnectionConfig, EmbedderModelConfig
 from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
+from src.db_drivers.tree_driver import TreeDriverConfig, TreeDBConnectionConfig
+
+from src.kg_model.nodestree_model import NodesTreeModelConfig
+from src.kg_model.nodestree_model.agent_tasks.nodes_summarization import AgentSummNTaskConfigSelector
 
 from src.pipelines.memorize.extractor.configs import AgentThesisExtrTaskConfigSelector, AgentTripletExtrTaskConfigSelector
 from src.pipelines.memorize.updator.configs import AgentReplSimpleTripletTaskConfigSelector, AgentReplThesisTripletTaskConfigSelector
@@ -28,10 +32,9 @@ from src.agents.utils import AgentConnectorConfig
 DATASET_KGS_PATH = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
 SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
-VECTORIZED_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['embeddings_part']}"
-
 GRAPH_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['graph_config']}"
 EMBEDDINGS_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['embeddings_config']}"
+NODESTREE_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['nodestree_config']}"
 
 MEM_PIPELINE_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['mem_pipeline_config']}"
 CACHE_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['kvdriver_cache_config']}"
@@ -54,15 +57,15 @@ gmodel_config = GraphModelConfig(
 ########### Embeddings model ###########
 
 nodesdb_config=VectorDBConnectionConfig(
-    path=VECTORIZED_DB_PATH,
-    db_info={'db': PARAMS['KG_DB_CONFIGS']['nodesdb_config']['db_info']['db'],
-             'table': PARAMS['KG_DB_CONFIGS']['nodesdb_config']['db_info']['table']},
+    db_info=PARAMS['KG_DB_CONFIGS']['nodesdb_config']['db_info'],
+    params=PARAMS['KG_DB_CONFIGS']['nodesdb_config']['params'],
+    conn=PARAMS['KG_DB_CONFIGS']['nodesdb_config']['conn'],
     need_to_clear=PARAMS['KG_DB_CONFIGS']['need_to_clear'])
 
 tripletsdb_config=VectorDBConnectionConfig(
-    path=VECTORIZED_DB_PATH,
-    db_info={'db': PARAMS['KG_DB_CONFIGS']['tripletsdb_config']['db_info']['db'],
-             'table': PARAMS['KG_DB_CONFIGS']['tripletsdb_config']['db_info']['table']},
+    db_info=PARAMS['KG_DB_CONFIGS']['tripletsdb_config']['db_info'],
+    params=PARAMS['KG_DB_CONFIGS']['tripletsdb_config']['params'],
+    conn=PARAMS['KG_DB_CONFIGS']['tripletsdb_config']['conn'],
     need_to_clear=PARAMS['KG_DB_CONFIGS']['need_to_clear'])
 
 embedder_config=EmbedderModelConfig(
@@ -84,7 +87,6 @@ emodel_config = EmbeddingsModelConfig(
 #GIGACHAT_CREDS = 'OWUwOGUzOWEtMjJiNi00YmMxLThmMmItNzMwNjM2MTI2YmYxOjg2ODdiOTVhLTZkNDctNGFjOC1iMmViLTEyNDA5MmFiN2Q5Mw=='
 # openai key
 #API_KEY = "'sk-861mINAavom2SSBqgrI82D4thMOfqT37knCof2o0H0T3BlbkFJ2gdVXJuVjNesNNP2aeUwPoBpZP3a3R1gn1kqv97CsA'"
-
 
 adriver_config = AgentDriverConfig(
     name=PARAMS['MEM_PIPELINE_CONFIG']['agent_config']['vendor'],
@@ -141,15 +143,60 @@ mem_config = MemPipelineConfig(
     extractor_config=extractor_config,
     updator_config=updator_config)
 
+########### NodesTree model ###########
+
+leafs_vectordb_config=VectorDBConnectionConfig(
+    db_info=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_leafnodes_config']['db_info'],
+    params=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_leafnodes_config']['params'],
+    conn=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_leafnodes_config']['conn'],
+    need_to_clear=PARAMS['KG_DB_CONFIGS']['need_to_clear'])
+
+summ_vectordb_config=VectorDBConnectionConfig(
+    db_info=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_summnodes_config']['db_info'],
+    params=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_summnodes_config']['params'],
+    conn=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_summnodes_config']['conn'],
+    need_to_clear=PARAMS['KG_DB_CONFIGS']['need_to_clear'])
+
+tree_graphdb_config = TreeDBConnectionConfig(
+    host=PARAMS['KG_DB_CONFIGS']['nodestree_config']['treedb_config']['host'],
+    port=PARAMS['KG_DB_CONFIGS']['nodestree_config']['treedb_config']['port'],
+    db_info=PARAMS['KG_DB_CONFIGS']['nodestree_config']['treedb_config']['db_info'],
+    params=PARAMS['KG_DB_CONFIGS']['nodestree_config']['treedb_config']['params'],
+    need_to_clear=PARAMS['KG_DB_CONFIGS']['need_to_clear'])
+
+treemoddel_config = NodesTreeModelConfig(
+    vectordb_leafnodes_config=VectorDriverConfig(
+        db_vendor=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_leafnodes_config']['vendor'],
+        db_config=leafs_vectordb_config),
+    vectordb_summnodes_config=VectorDriverConfig(
+        db_vendor=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_summnodes_config']['vendor'],
+        db_config=summ_vectordb_config),
+    embedder_config=embedder_config,
+
+    treedb_config=TreeDriverConfig(
+        db_vendor=PARAMS['KG_DB_CONFIGS']['nodestree_config']['treedb_config']['vendor'],
+        db_config=tree_graphdb_config),
+
+    adriver_config=adriver_config,
+    nodes_summarization_task_config=AgentSummNTaskConfigSelector.select(
+        PARAMS['KG_DB_CONFIGS']['nodestree_config']['nodes_summarization_task_config']['prompts_version']),
+
+    e2n_sim_threshold=PARAMS['KG_DB_CONFIGS']['nodestree_config']['e2n_sim_threshold'],
+    depth_rate=PARAMS['KG_DB_CONFIGS']['nodestree_config']['depth_rate'],
+    nodes_aggregation_mechanism=PARAMS['KG_DB_CONFIGS']['nodestree_config']['nodes_aggregation_mechanism']
+)
+
 ############### SAVING CONFIGS ###############
 
 print("gmodle: ", gmodel_config)
 print("emodel: ", emodel_config)
+print("tmodel: ", treemoddel_config)
 print("mem: ", mem_config)
 print("kv_driver: ", kvdriver_config)
 
 joblib.dump(gmodel_config, GRAPH_MODEL_CONFIG_PATH)
 joblib.dump(emodel_config, EMBEDDINGS_MODEL_CONFIG_PATH)
+joblib.dump(treemoddel_config, NODESTREE_MODEL_CONFIG_PATH)
 joblib.dump(mem_config, MEM_PIPELINE_CONFIG_PATH)
 joblib.dump(kvdriver_config, CACHE_CONFIG_PATH)
 

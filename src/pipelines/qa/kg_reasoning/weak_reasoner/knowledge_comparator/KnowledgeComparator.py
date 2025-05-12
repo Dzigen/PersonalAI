@@ -38,6 +38,9 @@ class KnowledgeComparatorConfig:
     log: Logger = field(default_factory=lambda: Logger(KC_MAIN_LOG_PATH))
     verbose: bool = False
 
+    def to_str(self):
+        return f"{self.threshold};{self.fetch_n};{self.max_k}:{self.k_compare}"
+
 class KnowledgeComparator(CacheUtils):
     """Верхнеуровневый класс второй стадии QA-конвейера для сопоставления информации из user-вопроса
     с имеющейся информацией в памяти (графе знаний) ассистента.
@@ -62,8 +65,7 @@ class KnowledgeComparator(CacheUtils):
             self.cachekv = None
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
-        return [self.config, self.kg_model.graph_struct.config,
-                self.kg_model.embeddings_struct.config, query_info.entities]
+        return [self.config.to_str(), query_info.to_str()]
 
     @CacheUtils.cache_method_output
     def link_kgnodes_to_query(self, query_info: QueryInfo) -> Tuple[List[object], List[object], ReturnInfo]:
@@ -78,9 +80,10 @@ class KnowledgeComparator(CacheUtils):
         self.log("START MATCHING KEY WORDS ...", verbose=self.config.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.config.verbose)
+        self.log(f"ENTITIES: {query_info.entities}", verbose=self.config.verbose)
 
         info = ReturnInfo()
-        linked_nodes_by_entities, linked_nodes = [], []
+        linked_nodes_by_entities, linked_nodes, linked_scores = [], [], []
 
         for entity in query_info.entities:
             entity_embedding = self.kg_model.embeddings_struct.embedder.encode_queries([entity])[0]
@@ -91,6 +94,7 @@ class KnowledgeComparator(CacheUtils):
             filtered_nodes = list(filter(lambda node_item: node_item[0] < self.config.threshold, nodes_with_scores))
             cur_linked_nodes = list(map(lambda node_item: node_item[1], filtered_nodes))
             linked_nodes += cur_linked_nodes[:self.config.max_k]
+            linked_scores += list(map(lambda node_item: node_item[0], filtered_nodes))[:self.config.max_k]
 
             cur_documents = list(map(lambda item: item.document, cur_linked_nodes))
             cur_documents_lower = list(map(lambda document: document.lower(), cur_documents))
@@ -105,8 +109,8 @@ class KnowledgeComparator(CacheUtils):
             info.message = STATUS_MESSAGE[info.status]
 
         self.log(f"RESULT: {len(linked_nodes)}", verbose=self.config.verbose)
-        for node in linked_nodes:
-            self.log(f"*[{node.id}] {node.document}", verbose=self.config.verbose)
+        for score, node in zip(linked_scores,linked_nodes):
+            self.log(f"*[{node.id}] {score} | {node.document}", verbose=self.config.verbose)
 
         self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 

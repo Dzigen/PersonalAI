@@ -14,21 +14,21 @@ AVAILABLE_KV_DBS = ['inmemory_kv', 'redis', 'mongo', 'mixed_kv']
 
 KEY_EMPTY = list()
 
-KEY1 = [DEFAULT_OLLAMA_CONFIG, "123","asd", "asd"]
-KEY_HASH1 = hashlib.sha1((''.join([hashlib.sha1(pickle.dumps(v)).hexdigest() for v in KEY1])).encode()).hexdigest()
+KEY1 = [DEFAULT_OLLAMA_CONFIG.to_str(), "123","asd", "asd"]
+KEY_HASH1 = hashlib.sha1(''.join(list(map(lambda k: hashlib.sha1(k.encode()).hexdigest(), KEY1))).encode()).hexdigest()
 
-KEY1_ORDER_MODIF = ["123", DEFAULT_OLLAMA_CONFIG, "asd", "asd"]
-KEY_HASH1_ORDER_MODIF = hashlib.sha1((''.join([hashlib.sha1(pickle.dumps(v)).hexdigest() for v in KEY1_ORDER_MODIF])).encode()).hexdigest()
+KEY1_ORDER_MODIF = ["123", DEFAULT_OLLAMA_CONFIG.to_str(), "asd", "asd"]
+KEY_HASH1_ORDER_MODIF = hashlib.sha1(''.join(list(map(lambda k: hashlib.sha1(k.encode()).hexdigest(), KEY1_ORDER_MODIF))).encode()).hexdigest()
 
 MODIF_OBJECT1 = copy.deepcopy(DEFAULT_OLLAMA_CONFIG)
 MODIF_OBJECT1.credentials['host'] = 'http://localhost:11222'
-KEY1_OBJECT_MODIF1 = [MODIF_OBJECT1, "123","asd", "asd"]
-KEY_HASH1_OBJECT_MODIF1 = hashlib.sha1((''.join([hashlib.sha1(pickle.dumps(v)).hexdigest() for v in KEY1_OBJECT_MODIF1])).encode()).hexdigest()
+KEY1_OBJECT_MODIF1 = [MODIF_OBJECT1.to_str(), "123","asd", "asd"]
+KEY_HASH1_OBJECT_MODIF1 = hashlib.sha1(''.join(list(map(lambda k: hashlib.sha1(k.encode()).hexdigest(), KEY1_OBJECT_MODIF1))).encode()).hexdigest()
 
 MODIF_OBJECT2 = copy.deepcopy(DEFAULT_OLLAMA_CONFIG)
-MODIF_OBJECT2.ext_params['model'] = 'qwen2.5'
-KEY1_OBJECT_MODIF2 = [MODIF_OBJECT2, "123","asd", "asd"]
-KEY_HASH1_OBJECT_MODIF2 = hashlib.sha1((''.join([hashlib.sha1(pickle.dumps(v)).hexdigest() for v in KEY1_OBJECT_MODIF2])).encode()).hexdigest()
+MODIF_OBJECT2.credentials['model'] = 'qwen2.5'
+KEY1_OBJECT_MODIF2 = [MODIF_OBJECT2.to_str(), "123","asd", "asd"]
+KEY_HASH1_OBJECT_MODIF2 = hashlib.sha1(''.join(list(map(lambda k: hashlib.sha1(k.encode()).hexdigest(), KEY1_OBJECT_MODIF2))).encode()).hexdigest()
 
 VALUE1 = "Hello World!"
 VALUE1_DUMPED = pickle.dumps(VALUE1)

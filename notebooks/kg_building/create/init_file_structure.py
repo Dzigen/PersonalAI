@@ -12,13 +12,13 @@ with open(PARAMS_FILE_PATH, 'r') as stream:
 DATASET_KGS_PATH = f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
 SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
-VECTORIZED_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['embeddings_dir_name']}"
-GRAPH_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['graph_dir_name']}"
-KV_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir_name']['base']}"
-PERSISTENT_DB_PATH = KV_DB_PATH + f"{PARAMS['KG_DIR_STRUCT']['cache_dir_name']['persistant']}"
-RAM_DB_PATH = KV_DB_PATH + f"{PARAMS['KG_DIR_STRUCT']['cache_dir_name']['ram']}"
+VECTORIZED_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['embeddings_part']}"
+GRAPH_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['graph_part']}"
+KV_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir']['base']}"
+PERSISTENT_DB_PATH = f"{KV_DB_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir']['persistant']}"
+RAM_DB_PATH = f"{KV_DB_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir']['ram']}"
 
-TMP_EXTRACTED_TRIPLETS_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['tmp_triplets_dir_name']}"
+TMP_EXTRACTED_TRIPLETS_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['tmp_extracted_triplets']}"
 
 if PARAMS['INIT_STRUCT']:
     if not os.path.exists(DATASET_KGS_PATH):
