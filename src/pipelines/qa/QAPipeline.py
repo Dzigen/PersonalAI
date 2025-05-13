@@ -22,6 +22,7 @@ class QAPipelineConfig:
     """
     preprocessor_config: QueryPreprocessorConfig = field(default_factory=lambda: QueryPreprocessorConfig())
     reasoner_config: KnowledgeGraphReasonerConfig = field(default_factory=lambda: KnowledgeGraphReasonerConfig())
+    aggregator_config: KnowledgeAggregatorConfig = field(default_factory=lambda: KnowledgeAggregatorConfig())
 
     log: Logger = field(default_factory=lambda: Logger(QA_MAIN_LOG_PATH))
     verbose: bool = False
@@ -43,7 +44,7 @@ class QAPipeline:
 
         self.query_preprocessor = QueryPreprocessor(self.config.preprocessor_config, cache_kvdriver_config)
         self.kg_reasoner = KnowledgeGraphReasoner(kg_model, self.config.reasoner_config, cache_kvdriver_config)
-        self.knowledge_aggregator = ... # TODO
+        self.knowledge_aggregator = KnowledgeAggregator(self.config.aggregator_config, cache_kvdriver_config)
 
     def answer(self, query: str) -> Tuple[str, ReturnInfo]:
         """Метод предназначен для генерации ответа на user-вопрос. Ответ обуславливается на информацию из имеющегося графа знаний.
@@ -53,6 +54,44 @@ class QAPipeline:
         :return: Кортеж из двух объектов: (1) cгенерированный ответ; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
+        final_answer, info = None, [], ReturnInfo()
 
-        answer, info = self.kg_reasoner.perform(query)
-        return answer, info
+        # Preprocessing stage
+        query_info, prepr_info = self.query_preprocessor.perform(query)
+        if prepr_info.status != ReturnStatus.success:
+            info = prepr_info
+        else:
+            info.occurred_warning.append(prepr_info.occurred_warning)
+
+        # Reasoning Stage
+        if info.status == ReturnStatus.success:
+            sub_queries = []
+            if query_info.decomposed_query is not None and len(query_info.decomposed_query) > 0:
+                sub_queries = query_info.decomposed_query
+            elif query_info.enchanced_query is not None:
+                sub_queries = [query_info.enchanced_query]
+            elif query_info.denoised_query is not None:
+                sub_queries = [query_info.denoised_query]
+            elif query_info.base_query is not None:
+                sub_queries = [query_info.base_query]
+            else:
+                raise ValueError
+
+            for cur_sub_query in sub_queries:
+                cur_sub_answer, reasoner_info = self.kg_reasoner.perform(cur_sub_query)
+                if reasoner_info.status != ReturnStatus.success:
+                    info.status = reasoner_info.status
+                    info.message = reasoner_info.message
+                    break
+
+                info.occurred_warning.append(reasoner_info.occurred_warning)     
+                query_info.sub_answers.append(cur_sub_answer)
+        
+        # Answers Aggregation Stage
+        if info.status == ReturnStatus.success:
+            final_answer, kagg_info = self.knowledge_aggregator.perform(query_info)
+            if kagg_info != ReturnStatus.success:
+                info.status = kagg_info.status
+                info.message = kagg_info.message
+
+        return final_answer, info

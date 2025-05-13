@@ -2,7 +2,7 @@ from .......utils import AgentTaskSolverConfig, Logger
 from .general_parsers import qd_custom_formate, qd_custom_postprocess
 from .v1 import QUERY_DECOMP_SUITE_V1
 
-QUERY_DECOMPOSITION_LOG_PATH = "log/qa/query_preprocessing/agent_tasks/query_decomposition/main"
+QUERY_DECOMPOSITION_LOG_PATH = "log/qa/query_preprocessing/decomposition/agent_tasks/query_decompsition"
 
 AVAILABLE_QDECOMP_TCONFIGS = {
     'v1': QUERY_DECOMP_SUITE_V1

@@ -1,0 +1,1 @@
+from .suite import QUERY_DECOMP_SUITE_V1
