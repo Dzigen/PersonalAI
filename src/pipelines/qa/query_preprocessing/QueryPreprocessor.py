@@ -6,6 +6,7 @@ from .utils import QueryPreprocessingInfo
 from .config import QP_MAIN_LOG_PATH
 from .decomposition import QueryDecomposer, QueryDecomposerConfig
 from ....utils import ReturnInfo, Logger, ReturnStatus
+from ....utils.data_structs import create_id
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv import CacheKV, CacheUtils
 
@@ -40,24 +41,35 @@ class QueryPreprocessor(CacheUtils):
         else:
             self.cachekv = None
 
+        self.log = self.config.log
+        self.verbose = self.config.verbose
+
     def get_cache_key(self, query: str) -> List[object]:
         return [query, self.config.to_str()]
 
     @CacheUtils.cache_method_output
     def perform(self, query: str) -> Tuple[QueryPreprocessingInfo, ReturnInfo]:
+        self.log("START QUERY PREPROCESSING...", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
         q_info = QueryPreprocessingInfo(base_query=query)
         info = ReturnInfo()
 
-        # Удаление шума из запроса
         #if self.denoiser is not None:
+        #    self.log("Удаление шума из запроса...", verbose=self.verbose)
         #    q_info.denoised_query, info = self.denoiser.perform(q_info)
+        #    self.log(f"RESULT: {q_info.denoised_query}", verbose=self.verbose)
 
-        # Корректировка формата запроса        
         #if info.status == ReturnStatus.success and self.enhancer is not None:
+        #    self.log("Корректировка формата запроса...", verbose=self.verbose)
         #    q_info.enchanced_query, info = self.enhancer.perform(q_info)
+        #    self.log(f"RESULT: {q_info.enchanced_query}", verbose=self.verbose)
 
-        # Разбиение запроса на независимые части
         if info.status == ReturnStatus.success and self.decomposer is not None:
+            self.log("Разбиение запроса на независимые части...", verbose=self.verbose)
             q_info.decomposed_query, info = self.decomposer.perform(q_info)
+            self.log(f"RESULT: {q_info.decomposed_query}", verbose=self.verbose)
+
+        self.log(f"STATUS: {info.status}", verbose=self.verbose)
 
         return q_info, info

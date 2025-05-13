@@ -7,7 +7,6 @@ class QueryPreprocessingInfo:
     denoised_query: Union[str, None] = None
     enchanced_query: Union[str, None] = None
     decomposed_query: Union[List[str], None] = None
-    sub_answers: Union[List[str]] = field(default_factory=list())
 
     def to_str(self):
         str_denoised_query =  self.denoised_query if self.denoised_query is not None else "None"

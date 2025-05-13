@@ -92,7 +92,7 @@ class WeakKGReasoner(AbstractKGReasoner):
         :rtype: Tuple[str, ReturnInfo]
         """
 
-        self.log("START QUESTION ANSWERING...", verbose=self.config.verbose)
+        self.log("START WEAK KG-REASONING...", verbose=self.config.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
         self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
 
@@ -126,6 +126,6 @@ class WeakKGReasoner(AbstractKGReasoner):
             answer, info = self.answer_generator.generate(query_info.query, retrieved_triplets)
             self.log(f"RESULT:\n* ANSWER - {answer}", verbose=self.config.verbose)
 
-        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
+        self.log(f"STATUS: {info.status}", verbose=self.config.verbose)
 
         return answer, info

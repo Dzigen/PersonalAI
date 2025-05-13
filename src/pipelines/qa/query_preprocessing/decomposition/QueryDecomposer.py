@@ -6,6 +6,7 @@ from .config import QD_MAIN_LOG_PATH, DEFAULT_QD_TASK_CONFIG, DEFAULT_DC_TASK_CO
 from ..QueryPreprocessor import QueryPreprocessingInfo
 from .....utils.cache_kv import CacheKV, CacheUtils
 from .....utils.errors import STATUS_MESSAGE
+from .....utils.data_structs import create_id
 from .....agents import AgentDriverConfig, AgentDriver
 from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
 from .....db_drivers.kv_driver import KeyValueDriverConfig
@@ -37,15 +38,14 @@ class QueryDecomposer(CacheUtils):
             self.cachekv = None
 
         self.agent = AgentDriver.connect(config.adriver_config)
-        classify_task_cache_config, decompose_task_cache_config = None, None
+        agents_cache_config = None
         if cache_llm_inference:
-            classify_task_cache_config = deepcopy(cache_kvdriver_config)
-            decompose_task_cache_config = deepcopy(cache_kvdriver_config)
+            agents_cache_config = cache_kvdriver_config if cache_llm_inference else None
 
         self.decompose_classifier_solver = AgentTaskSolver(
-            self.agent, self.config.classify_agent_task_config, classify_task_cache_config)
+            self.agent, self.config.classify_agent_task_config, agents_cache_config)
         self.q_decomposition_solver = AgentTaskSolver(
-            self.agent, self.config.decompose_agent_task_config, decompose_task_cache_config)
+            self.agent, self.config.decompose_agent_task_config, agents_cache_config)
         
         self.log = self.config.log
         self.verbose = self.config.verbose
@@ -57,6 +57,7 @@ class QueryDecomposer(CacheUtils):
     def perform(self, query_info: QueryPreprocessingInfo) -> Tuple[str, ReturnInfo]:
         decomposed_query, info = None, ReturnInfo()
         self.log("START QUERY DECOMPOSITION...", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.config.verbose)
         self.log(f"QUERY INFO: {query_info}", verbose=self.config.verbose)
 
         if query_info.enchanced_query is not None:
@@ -88,7 +89,7 @@ class QueryDecomposer(CacheUtils):
             info.status = ReturnStatus.empty_answer
             info.message = STATUS_MESSAGE[info.status]
 
-        self.log(f"RESULT:\n* DECOMPOSED_QUERY - {decomposed_query}", verbose=self.config.verbose)
-        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
+        self.log(f"RESULT: {decomposed_query}", verbose=self.config.verbose)
+        self.log(f"STATUS: {info.status}", verbose=self.config.verbose)
 
         return decomposed_query, info

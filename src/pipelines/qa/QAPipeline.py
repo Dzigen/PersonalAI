@@ -1,20 +1,18 @@
+from dataclasses import dataclass, field
+from typing import Tuple, Union
+
 from .configs import QA_MAIN_LOG_PATH
 from .kg_reasoning import KnowledgeGraphReasonerConfig, KnowledgeGraphReasoner
 from .query_preprocessing import QueryPreprocessor, QueryPreprocessorConfig
+from .answers_aggregation import AnswersAggregator, AnswersAggregatorConfig
 from ...kg_model import KnowledgeGraphModel
 from ...utils import Logger, ReturnStatus, ReturnInfo
 from ...utils.data_structs import create_id
-from ...utils.errors import STATUS_MESSAGE
-from ...db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
-
-
-from dataclasses import dataclass, field
-from typing import Tuple, Union
+from ...db_drivers.kv_driver import KeyValueDriverConfig
 
 @dataclass
 class QAPipelineConfig:
     """
-
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
@@ -22,7 +20,7 @@ class QAPipelineConfig:
     """
     preprocessor_config: QueryPreprocessorConfig = field(default_factory=lambda: QueryPreprocessorConfig())
     reasoner_config: KnowledgeGraphReasonerConfig = field(default_factory=lambda: KnowledgeGraphReasonerConfig())
-    aggregator_config: KnowledgeAggregatorConfig = field(default_factory=lambda: KnowledgeAggregatorConfig())
+    aggregator_config: AnswersAggregatorConfig = field(default_factory=lambda: AnswersAggregatorConfig())
 
     log: Logger = field(default_factory=lambda: Logger(QA_MAIN_LOG_PATH))
     verbose: bool = False
@@ -44,7 +42,10 @@ class QAPipeline:
 
         self.query_preprocessor = QueryPreprocessor(self.config.preprocessor_config, cache_kvdriver_config)
         self.kg_reasoner = KnowledgeGraphReasoner(kg_model, self.config.reasoner_config, cache_kvdriver_config)
-        self.knowledge_aggregator = KnowledgeAggregator(self.config.aggregator_config, cache_kvdriver_config)
+        self.answers_aggregator = AnswersAggregator(self.config.aggregator_config, cache_kvdriver_config)
+
+        self.log = self.config.log
+        self.verbose = self.config.verbose
 
     def answer(self, query: str) -> Tuple[str, ReturnInfo]:
         """Метод предназначен для генерации ответа на user-вопрос. Ответ обуславливается на информацию из имеющегося графа знаний.
@@ -54,16 +55,23 @@ class QAPipeline:
         :return: Кортеж из двух объектов: (1) cгенерированный ответ; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
-        final_answer, info = None, [], ReturnInfo()
+        self.log("START QA-PIPELINE...", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
+
+        final_answer, sub_answers, info = None, [], ReturnInfo()
 
         # Preprocessing stage
+        self.log("Query Preprocesing...", verbose=self.config.verbose)
         query_info, prepr_info = self.query_preprocessor.perform(query)
+        self.log(f"RESULT: {query_info}", verbose=self.config.verbose)
         if prepr_info.status != ReturnStatus.success:
             info = prepr_info
         else:
             info.occurred_warning.append(prepr_info.occurred_warning)
 
-        # Reasoning Stage
+
+        self.log("Reasoning...", verbose=self.verbose)
         if info.status == ReturnStatus.success:
             sub_queries = []
             if query_info.decomposed_query is not None and len(query_info.decomposed_query) > 0:
@@ -85,13 +93,19 @@ class QAPipeline:
                     break
 
                 info.occurred_warning.append(reasoner_info.occurred_warning)     
-                query_info.sub_answers.append(cur_sub_answer)
-        
-        # Answers Aggregation Stage
+                sub_answers.append(cur_sub_answer)
+
+            self.log(f"RESULT: {'\n'.join([f'- [{q}] {a}' for q, a in zip(sub_queries, sub_answers)])}", verbose=self.verbose)
+            self.log(f"MISSED SUB-QUERIES: {len(sub_queries)-len(sub_answers)}", verbose=self.verbose)
+
+        self.log("Answers Aggregation...", verbose=self.verbose)
         if info.status == ReturnStatus.success:
-            final_answer, kagg_info = self.knowledge_aggregator.perform(query_info)
-            if kagg_info != ReturnStatus.success:
-                info.status = kagg_info.status
-                info.message = kagg_info.message
+            final_answer, aagg_info = self.answers_aggregator.perform(query_info, sub_answers)
+            self.log(f"RESULT: {final_answer}", verbose=self.verbose)
+            if aagg_info != ReturnStatus.success:
+                info.status = aagg_info.status
+                info.message = aagg_info.message
+
+        self.log(f"STATUS: {info.status}", verbose=self.verbose)
 
         return final_answer, info
