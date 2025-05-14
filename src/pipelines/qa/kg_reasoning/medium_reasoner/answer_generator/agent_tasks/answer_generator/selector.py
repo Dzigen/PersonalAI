@@ -2,7 +2,7 @@ from ........utils import AgentTaskSolverConfig, Logger
 from .general_parsers import answgen_custom_formate, answgen_custom_postprocess
 from .v1 import ANSWGEN_SUITE_V1
 
-ANSWGEN_LOG_PATH = "log/qa/kg_reasoner/medium/answer_generation//agent_tasks/answer_classifier"
+ANSWGEN_LOG_PATH = "log/qa/kg_reasoner/medium/answer_generation/agent_tasks/answer_generator"
 
 AVAILABLE_ANSWGEN_TCONFIGS = {
     'v1': ANSWGEN_SUITE_V1

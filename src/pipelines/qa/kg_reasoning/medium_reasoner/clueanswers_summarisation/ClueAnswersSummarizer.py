@@ -3,7 +3,7 @@ from typing import Tuple, Union, List, Dict
 from copy import deepcopy
 import json
 
-from .config import DEFAULT_CQSUMM_TASK_CONFIG, CQSUMM_MAIN_LOG_PATH
+from .config import DEFAULT_CASUMM_TASK_CONFIG, CQSUMM_MAIN_LOG_PATH
 from ......utils.data_structs import QueryInfo
 from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
 from ......agents import AgentDriver, AgentDriverConfig
@@ -16,7 +16,7 @@ from ......utils.cache_kv import CacheKV, CacheUtils
 class ClueAnswersSummarizerConfig:
     lang: str = 'auto'
     adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    canswers_summarisation_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_CQSUMM_TASK_CONFIG)
+    canswers_summarisation_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_CASUMM_TASK_CONFIG)
 
     cache_table_name: str = "medreasn_cquerysumm_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(CQSUMM_MAIN_LOG_PATH))

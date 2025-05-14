@@ -1,1 +1,1 @@
-from .suite import QGEN_SUITE_V1
+from .suite import CQGEN_SUITE_V1

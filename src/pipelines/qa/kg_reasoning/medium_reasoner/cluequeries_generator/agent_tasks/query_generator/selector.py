@@ -1,23 +1,23 @@
 from ........utils import AgentTaskSolverConfig, Logger
-from .general_parsers import qgen_custom_formate, qgen_custom_postprocess
-from .v1 import QGEN_SUITE_V1
+from .general_parsers import cqgen_custom_formate, cqgen_custom_postprocess
+from .v1 import CQGEN_SUITE_V1
 
-QGEN_LOG_PATH = "log/qa/kg_reasoner/medium/cluequeries_generator/agent_tasks/query_generator"
+CQGEN_LOG_PATH = "log/qa/kg_reasoner/medium/cluequeries_generator/agent_tasks/query_generator"
 
-AVAILABLE_QGEN_TCONFIGS = {
-    'v1': QGEN_SUITE_V1
+AVAILABLE_CQGEN_TCONFIGS = {
+    'v1': CQGEN_SUITE_V1
 }
 
 class AgentQueryGenTaskConfigSelector:
     @staticmethod
     def get_available_configs():
-        return AVAILABLE_QGEN_TCONFIGS
+        return AVAILABLE_CQGEN_TCONFIGS
 
     @staticmethod
-    def select(base_config_version:str = 'v1', cache_table_name:str="medreasn_qgen_agent_task_cache") -> AgentTaskSolverConfig:
+    def select(base_config_version:str = 'v1', cache_table_name:str="medreasn_cqgen_agent_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
-            suites=AVAILABLE_QGEN_TCONFIGS[base_config_version],
-            formate_context_func=qgen_custom_formate, postprocess_answer_func=qgen_custom_postprocess,
+            suites=AVAILABLE_CQGEN_TCONFIGS[base_config_version],
+            formate_context_func=cqgen_custom_formate, postprocess_answer_func=cqgen_custom_postprocess,
             cache_table_name=cache_table_name,
-            log=Logger(QGEN_LOG_PATH))
+            log=Logger(CQGEN_LOG_PATH))

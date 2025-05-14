@@ -3,5 +3,5 @@ from .agent_tasks.answer_trying_classifier import AgentAnswerClassifierTaskConfi
 
 ANSWGEN_MAIN_LOG_PATH = "log/qa/kg_reasoner/medium/answer_generation/main" 
 
-DEFAULT_ANSWCLASSIFY_TASK_CONFIG = AgentAnswerClassifierTaskConfigSelector.select(base_config_version='v1')
+DEFAULT_ANSWCLS_TASK_CONFIG = AgentAnswerClassifierTaskConfigSelector.select(base_config_version='v1')
 DEFAULT_ANSWGEN_TASK_CONFIG = AgentAnswerGeneratorTaskConfigSelector.select(base_config_version='v1')

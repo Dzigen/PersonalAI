@@ -1,1 +1,1 @@
-from .suite import DECOMP_CLS_SUITE_V1
+from .suite import DC_SUITE_V1

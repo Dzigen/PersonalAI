@@ -1,1 +1,1 @@
-from .selector import AgentQueryGenTaskConfigSelector
+from .selector import AgentCQueryGenTaskConfigSelector

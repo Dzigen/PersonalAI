@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Tuple, Union, List
 from copy import deepcopy
 
-from .config import DEFAULT_ANSWCLASSIFY_TASK_CONFIG, DEFAULT_ANSWGEN_TASK_CONFIG, ANSWGEN_MAIN_LOG_PATH
+from .config import DEFAULT_ANSWCLS_TASK_CONFIG, DEFAULT_ANSWGEN_TASK_CONFIG, ANSWGEN_MAIN_LOG_PATH
 from ..utils import SearchPlanInfo
 from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
 from ......utils.errors import ReturnStatus
@@ -15,7 +15,7 @@ from ......utils.cache_kv import CacheKV, CacheUtils
 class AnswerGeneratorConfig:
     lang: str = 'auto'
     adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    answer_classifier_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_ANSWCLASSIFY_TASK_CONFIG)
+    answer_classifier_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_ANSWCLS_TASK_CONFIG)
     answer_generator_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_ANSWGEN_TASK_CONFIG)
 
     cache_table_name: str = "medreasn_answgen_main_stage_cache"
