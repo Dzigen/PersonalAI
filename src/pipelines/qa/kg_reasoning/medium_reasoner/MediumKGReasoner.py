@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Tuple, List
 
 from .searchplan_enhancer import SearchPlanEnhancerConfig, SearchPlanEnhancer
+from .searchplan_enhancer.utils import SearchPlanInfo
 from .entities_extractor import EntitiesExtractorConfig, EntitiesExtractor
 from .cluequeries_generator import ClueQueriesGeneratorConfig, ClueQueriesGenerator
 from .clueanswers_summarisation import ClueAnswersSummarizerConfig, ClueAnswersSummarizer
@@ -14,12 +15,6 @@ from .....utils.data_structs import create_id
 from .....utils import Logger, ReturnInfo, ReturnStatus
 from .....kg_model import KnowledgeGraphModel
 from .....db_drivers.kv_driver import KeyValueDriverConfig
-
-@dataclass
-class SearchPlanInfo:
-    base_query: str 
-    search_steps: List[str] = field(default_factory=list())
-    steps_answers: List[str] = field(default_factory=list())
 
 @dataclass
 class MediumKGReasonerConfig(BaseKGReasonerConfig):
