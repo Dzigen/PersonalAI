@@ -1,0 +1,1 @@
+from .suite import QGEN_SUITE_V1

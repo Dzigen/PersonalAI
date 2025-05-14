@@ -2,8 +2,8 @@ from dataclasses import dataclass, field
 from typing import Tuple, Union, List
 from copy import deepcopy
 
-from .config import PLANENH_MAIN_LOG_PATH, DEFAULT_PLANINIT_TASK_CONFIG, DEFAULT_PLANENH_TASK_CONFIG
-from .utils import SearchPlanInfo
+from .config import PLANENH_MAIN_LOG_PATH, DEFAULT_PLANINIT_TASK_CONFIG, DEFAULT_PLANENH_TASK_CONFIG, DEFAUL_ENHCLASSIFY_TASK_CONFIG
+from ..utils import SearchPlanInfo
 from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
 from ......utils.errors import ReturnStatus
 from ......agents import AgentDriver, AgentDriverConfig
@@ -16,7 +16,7 @@ class SearchPlanEnhancerConfig:
     lang: str = 'auto'
     adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     plan_initing_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_PLANINIT_TASK_CONFIG)
-    enhance_classifier_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_ENHCLASSIFY_TASK_CONFIG)
+    enhance_classifier_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAUL_ENHCLASSIFY_TASK_CONFIG)
     plan_enhancing_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_PLANENH_TASK_CONFIG)
 
     cache_table_name = "medreasn_planenh_main_stage_cache"

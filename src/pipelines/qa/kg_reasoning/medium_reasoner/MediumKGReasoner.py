@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Tuple, List
 
 from .searchplan_enhancer import SearchPlanEnhancerConfig, SearchPlanEnhancer
-from .searchplan_enhancer.utils import SearchPlanInfo
+from .utils import SearchPlanInfo
 from .entities_extractor import EntitiesExtractorConfig, EntitiesExtractor
 from .cluequeries_generator import ClueQueriesGeneratorConfig, ClueQueriesGenerator
 from .clueanswers_summarisation import ClueAnswersSummarizerConfig, ClueAnswersSummarizer
@@ -91,7 +91,7 @@ class MediumKGReasoner(AbstractKGReasoner):
             self.log(f"RESULT:\n{'\n'.join(f'- [{entitie}][{len(objects)}] {', '.join(list(map(lambda obj: obj.document)))}' for entitie, objects in matched_kg_objects.items())}", verbose=self.config.verbose)
 
             self.log("STAGE#3 - CLUE-QUERIES GENERATION", verbose=self.config.verbose)
-            cluequeries, info = self.clueanswer_generator.perform(search_query, matched_kg_objects)
+            cluequeries, info = self.cluequeries_generator.perform(search_query, matched_kg_objects)
             self.log(f"RESULT: {len(cluequeries)}\n{'\n'.join([f'- [{list(map(lambda obj: obj.document, clueq.linked_nodes))}] {clueq.query}' for clueq in cluequeries])}", verbose=self.config.verbose)
             if info.status != ReturnStatus.success:
                 break
@@ -133,7 +133,7 @@ class MediumKGReasoner(AbstractKGReasoner):
                 search_plan.steps_answers.append(search_step_answer)
             
             self.log("STAGE#5 - ANSWER-GENERATION TRYING", verbose=self.config.verbose)
-            answer, info = self.answer_generator(query, search_plan)
+            answer, info = self.answer_generator(search_plan)
             self.log(f"RESULT: {answer}", verbose=self.config.verbose)
             if info.status != ReturnStatus.success:
                 break
