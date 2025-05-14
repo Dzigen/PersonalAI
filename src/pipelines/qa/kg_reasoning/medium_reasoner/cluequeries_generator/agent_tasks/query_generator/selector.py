@@ -2,7 +2,7 @@ from ........utils import AgentTaskSolverConfig, Logger
 from .general_parsers import cqgen_custom_formate, cqgen_custom_postprocess
 from .v1 import CQGEN_SUITE_V1
 
-CQGEN_LOG_PATH = "log/qa/kg_reasoner/medium/cluequeries_generator/agent_tasks/query_generator"
+CQGEN_LOG_PATH = "log/qa/kg_reasoner/medium/cluequeries_generator/agent_tasks/cquery_generator"
 
 AVAILABLE_CQGEN_TCONFIGS = {
     'v1': CQGEN_SUITE_V1
