@@ -1,27 +1,27 @@
 from ........utils import AgentTaskSolverConfig, Logger
-from .general_parsers import ag_custom_formate, ag_custom_postprocess
-from .v2 import ANSWER_GEN_SUITE_V2
-from .v1 import ANSWER_GEN_SUITE_V1
-from .v3 import ANSWER_GEN_SUITE_V3
+from .general_parsers import simpleag_custom_formate, simpleag_custom_postprocess
+from .v2 import SIMPLEAG_SUITE_V2
+from .v1 import SIMPLEAG_SUITE_V1
+from .v3 import SIMPLEAG_SUITE_V3
 
-ANSWER_GENERATION_LOG_PATH = 'log/qa/kg_reasoner/weak/answer_generation/agent_tasks/ag'
+SIMPLEAGERATION_LOG_PATH = 'log/qa/kg_reasoner/weak/answer_generation/agent_tasks/ag'
 
-AVAILABLE_AG_TCONFIGS = {
-    'v1': ANSWER_GEN_SUITE_V1,
-    'v2': ANSWER_GEN_SUITE_V2,
-    'v3': ANSWER_GEN_SUITE_V3
+AVAILABLE_SIMPLEAG_TCONFIGS = {
+    'v1': SIMPLEAG_SUITE_V1,
+    'v2': SIMPLEAG_SUITE_V2,
+    'v3': SIMPLEAG_SUITE_V3
 }
 
-class AgentAGTaskConfigSelector:
+class AgentSimpleAGTaskConfigSelector:
     @staticmethod
     def get_available_configs():
-        return AVAILABLE_AG_TCONFIGS
+        return AVAILABLE_SIMPLEAG_TCONFIGS
 
     @staticmethod
     def select(base_config_version:str = 'v1', cache_table_name:str="qa_agent_ag_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
-            suites=AVAILABLE_AG_TCONFIGS[base_config_version],
-            formate_context_func=ag_custom_formate, postprocess_answer_func=ag_custom_postprocess,
+            suites=AVAILABLE_SIMPLEAG_TCONFIGS[base_config_version],
+            formate_context_func=simpleag_custom_formate, postprocess_answer_func=simpleag_custom_postprocess,
             cache_table_name=cache_table_name,
-            log=Logger(ANSWER_GENERATION_LOG_PATH))
+            log=Logger(SIMPLEAGERATION_LOG_PATH))

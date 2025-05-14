@@ -1,8 +1,8 @@
 ### PROMPT IN ENGLISH ###
 
-EN_AG_SYSTEM_PROMPT = """You are a helpful assistant."""
+EN_SIMPLEAG_SYSTEM_PROMPT = """You are a helpful assistant."""
 
-EN_AG_USER_PROMPT = \
+EN_SIMPLEAG_USER_PROMPT = \
 """Answer the question, based on provided info by analogy with examples given. Generate chain of thought and then give the final answer in the following format:
 ### Answer
 Chain of thought: ... Final answer: ...
@@ -39,9 +39,9 @@ Info 3:
 
 ### PROMPT IN RUSSIAN ###
 
-RU_AG_SYSTEM_PROMPT = """Ты - ассистент, который умеет решать заданные задачи."""
+RU_SIMPLEAG_SYSTEM_PROMPT = """Ты - ассистент, который умеет решать заданные задачи."""
 
-RU_AG_USER_PROMPT = \
+RU_SIMPLEAG_USER_PROMPT = \
 """Ответь на вопрос, опираясь на приведенную информацию.
 Вопрос: {q}
 Информация для ответа: {c}

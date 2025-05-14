@@ -1,4 +1,4 @@
-def en_ag_custom_answer_parse(raw_response: str, **kwargs) -> str:
+def en_simpleag_custom_parse(raw_response: str, **kwargs) -> str:
     """Функция предназначена для разбора ответа LLM-агента, полученного в рамках условной QA-задачи на английском языке.
 
     :param raw_response: Исходный ответ LLM-агента.
@@ -25,7 +25,7 @@ def en_ag_custom_answer_parse(raw_response: str, **kwargs) -> str:
 
     return answer
 
-def ru_ag_custom_answer_parse(raw_response: str, **kwargs) -> str:
+def ru_simpleag_custom_parse(raw_response: str, **kwargs) -> str:
     """Функция предназначена для разбора ответа LLM-агента, полученного в рамках условной QA-задачи на русском языке.
 
     :param raw_response: Исходный ответ LLM-агента.

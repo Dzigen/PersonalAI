@@ -223,6 +223,16 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
             self.execute_query(f'MATCH (n) WHERE n.{ids_type.value} = "{id}" DELETE n;')
 
 
+    def get_leaf_descendants(self, id: str, id_type: str=TreeIdType.external) -> List[TreeNode]:
+        if type(id) is not str:
+            raise ValueError
+        if type(id_type) is not TreeIdType:
+            raise ValueError
+        
+        raw_output = self.execute_query(f'MATCH (parent)-[:relation*0..]->(n:leaf) WHERE parent.{id_type.value} = "{id}" RETURN n')
+        leaf_nodes = self.formate_nodes_output(raw_output)
+        return leaf_nodes
+
     def count_items(self) -> Dict[str, int]:
 
         leafs_amount = self.execute_query("MATCH (n:leaf) return COUNT(n) as l_amount")[0]['l_amount']

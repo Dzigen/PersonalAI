@@ -1,1 +1,1 @@
-from ClueQueriesGenerator import ClueQueriesGenerator, ClueQueriesGeneratorConfig
+from .ClueQueriesGenerator import ClueQueriesGenerator, ClueQueriesGeneratorConfig

@@ -20,7 +20,7 @@ class ClueQueriesGeneratorConfig:
     adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     cquerie_generator_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_CQGEN_TASK_CONFIG)
 
-    cache_table_name = "medreasn_cquerygen_main_stage_cache"
+    cache_table_name: str = "medreasn_cquerygen_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(CQGEN_MAIN_LOG_PATH))
     verbose: bool = False
 
@@ -59,7 +59,8 @@ class ClueQueriesGenerator(CacheUtils):
         self.log("START CLUE-QUERIES GENERATION...", verbose=self.config.verbose)
         self.log(f"SEARCH_QUERY ID: {create_id(search_query)}", verbose=self.config.verbose)
         self.log(f"SEARCH_QUERY: {search_query}", verbose=self.config.verbose)
-        self.log(f"MATCHED_KG_OBJECT: {';'.join([f'{k} - {[vv.document for vv in v]}' for k,v in matched_kg_objects.items()])}", verbose=self.config.verbose)
+        str_matchedobjects = ';'.join([f'{k} - {[vv.document for vv in v]}' for k,v in matched_kg_objects.items()])
+        self.log(f"MATCHED_KG_OBJECT: {str_matchedobjects}", verbose=self.config.verbose)
         clue_queries, info = [], ReturnInfo()
 
         if len(search_query) <= 0 or len(matched_kg_objects) <= 0:
@@ -69,7 +70,8 @@ class ClueQueriesGenerator(CacheUtils):
         base_entities = sorted(list(matched_kg_objects.keys()))
         objects_groups = product([matched_kg_objects[k] for k in base_entities])
 
-        self.log(f"RESULT:\n- всего сущностей: {len(base_entities)}\n- объектов для каждой сущности: {';'.join([f'[{k}] {len(v)}' for k, v in matched_kg_objects.items()])}\n - полученное количество комбинаций: {len(objects_groups)}", verbose=self.config.verbose)
+        str_objectspermuts = ';'.join([f'[{k}] {len(v)}' for k, v in matched_kg_objects.items()])
+        self.log(f"RESULT:\n- всего сущностей: {len(base_entities)}\n- объектов для каждой сущности: {str_objectspermuts}\n - полученное количество комбинаций: {len(objects_groups)}", verbose=self.config.verbose)
         self.log("Генерируем clue-queries...", verbose=self.config.verbose)
         for i, cur_group in enumerate(objects_groups):
             self.log(f"Текущий cleu-query #: {i} / {len(objects_groups)}")

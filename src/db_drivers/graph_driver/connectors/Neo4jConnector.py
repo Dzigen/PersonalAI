@@ -375,6 +375,14 @@ class Neo4jConnector(AbstractGraphDatabaseConnection):
 
         output = self.execute_query(query)
         return len(output) > 0
+    
+    def get_node_type(self, id: str) -> NodeType:
+        if not self.item_exist(id, id_type="node"):
+            raise ValueError
+        
+        raw_output = self.execute_query(f'MATCH (n) WHERE n.str_id = "{id}" RETURN n')
+        formated_node = self.parse_query_nodes_output(raw_output)[0]
+        return formated_node.type
 
     def clear(self) -> None:
         self.execute_query("MATCH (n)-[rel]->() DELETE n,rel")

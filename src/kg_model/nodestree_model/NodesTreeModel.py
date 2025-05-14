@@ -316,7 +316,7 @@ class NodesTreeModel:
 
         self.treedb_conn.update([summarized_node])
 
-    def match_entitie2objects(self, entitie: str, strategy: str = 'collapsed', distance_threshold: float = 0.4, fetch_k: int = 1) -> List[VectorDBInstance]:
+    def match_entitie2objects(self, entitie: str, strategy: str = 'collapsed', distance_threshold: float = 0.4, fetch_k: int = 1, max_n: int = 1) -> List[VectorDBInstance]:
         self.log("Старт алгоритма по сопоставлению заданной сущности (entitie) вершин из дерева", verbose=self.verbose)
         if strategy == 'collapsed':
             entitie_embedding = self.embedder.encode_queries([entitie])[0]
@@ -347,10 +347,9 @@ class NodesTreeModel:
                 # в случае, если summarized-вершина семантически ближе к entitie,
                 # то ей сопоставляются все её (summarized-вершины) вершиным-потомки
                 self.log(f"В качестве самой релевантной выбрана summarized-вершина: {best_summnode}", verbose=self.verbose)
-                summ_node = self.treedb_conn.read([best_summnode[1].id])[0]
-                #descendants_nodes_strids = summ_node.props['aggregated_str_ids']
-                descendants_nodes_strids = ... # TODO
-                matched_nodes = self.vectordb_leafnodes_conn.read(descendants_nodes_strids)
+                descendants_leaf_nodes = self.traverse_tree.get_leaf_descendants(best_summnode[1].id, id_type=TreeIdType.external)
+                descendants_leaf_strids = list(map(lambda node: node.id, descendants_leaf_nodes))
+                matched_nodes = self.vectordb_leafnodes_conn.read(descendants_leaf_strids)
                 self.log(f"Summarized-вершине соответствуют следующие leaf-вершины (потомки): количество - {len(matched_nodes)}", verbose=self.verbose)
                 for i in range(matched_nodes):
                     self.log(f"- [{matched_nodes[i].id}] {matched_nodes[i].document}", verbose=self.verbose)

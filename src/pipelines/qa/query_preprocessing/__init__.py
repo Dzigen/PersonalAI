@@ -1,1 +1,1 @@
-from QueryPreprocessor import QueryPreprocessor, QueryPreprocessorConfig
+from .QueryPreprocessor import QueryPreprocessor, QueryPreprocessorConfig

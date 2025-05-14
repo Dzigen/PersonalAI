@@ -19,7 +19,7 @@ class SearchPlanEnhancerConfig:
     enhance_classifier_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAUL_ENHCLASSIFY_TASK_CONFIG)
     plan_enhancing_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_PLANENH_TASK_CONFIG)
 
-    cache_table_name = "medreasn_planenh_main_stage_cache"
+    cache_table_name: str = "medreasn_planenh_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(PLANENH_MAIN_LOG_PATH))
     verbose: bool = False
 
@@ -69,7 +69,8 @@ class SearchPlanEnhancer(CacheUtils):
         if search_step == 0:
             self.log("Генерируем план поиска с нуля...",verbose=self.verbose)
             search_plan.search_steps, status = self.plan_initialing_solver.solve(lang=self.config.lang,query=search_plan.base_query)
-            self.log(f"RESULT: {len(search_plan.search_steps)}\n{"\n".join([f'{i}. {gen_step}' for i,gen_step in enumerate(search_plan.search_steps)])}", verbose=self.config.verbose)
+            str_searchplan = "\n".join([f'{i}. {gen_step}' for i,gen_step in enumerate(search_plan.search_steps)])
+            self.log(f"RESULT: {len(search_plan.search_steps)}\n{str_searchplan}", verbose=self.config.verbose)
         else:
             self.log("Выполняем проверку на необходимость улучшения следующих шагов поиска в плане...",verbose=self.verbose)
             need_enhance, status = self.enhance_classify_solver.solve(
@@ -84,7 +85,8 @@ class SearchPlanEnhancer(CacheUtils):
                         lang=self.config.lang, query=search_plan.base_query,
                         passed_steps=search_plan.search_steps[:search_step], 
                         steps_answers=search_plan.steps_answers[:search_step])
-                    self.log(f"RESULT: {len(enhanced_steps)}\n{"\n".join([f'{i}. {gen_step}' for i,gen_step in enumerate(enhanced_steps)])}", verbose=self.config.verbose)
+                    str_enhancedsteps = "\n".join([f'{i}. {gen_step}' for i,gen_step in enumerate(enhanced_steps)])
+                    self.log(f"RESULT: {len(enhanced_steps)}\n{str_enhancedsteps}", verbose=self.config.verbose)
                     
                     if status == ReturnStatus.success:
                         enhanced_search_plan = deepcopy(search_plan)

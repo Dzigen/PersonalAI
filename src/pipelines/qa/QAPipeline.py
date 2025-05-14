@@ -95,7 +95,8 @@ class QAPipeline:
                 info.occurred_warning.append(reasoner_info.occurred_warning)     
                 sub_answers.append(cur_sub_answer)
 
-            self.log(f"RESULT: {'\n'.join([f'- [{q}] {a}' for q, a in zip(sub_queries, sub_answers)])}", verbose=self.verbose)
+            str_subqueriesanswers = "\n".join([f"- [{q}] {a}" for q, a in zip(sub_queries, sub_answers)])
+            self.log(f"RESULT: {str_subqueriesanswers}", verbose=self.verbose)
             self.log(f"MISSED SUB-QUERIES: {len(sub_queries)-len(sub_answers)}", verbose=self.verbose)
 
         self.log("Answers Aggregation...", verbose=self.verbose)

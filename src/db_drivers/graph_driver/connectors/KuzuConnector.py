@@ -317,6 +317,11 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         unique_triplets = {triplet.id: triplet for triplet in formated_triplets}
         return list(unique_triplets.values())
 
+    def get_node_type(self, id: str) -> NodeType:
+        # TODO
+        raise NotImplementedError
+        
+
     def count_items(self, id: str = None, id_type: str = None) -> Union[Dict[str,int], int]:
         if id_type is None:
             n_output = self.conn.execute("MATCH (a) RETURN count(a) as n_count").get_as_df()['n_count'][0]

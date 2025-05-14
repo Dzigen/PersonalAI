@@ -2,11 +2,13 @@ from dataclasses import dataclass, field
 from typing import Tuple, List
 
 from .searchplan_enhancer import SearchPlanEnhancerConfig, SearchPlanEnhancer
-from .utils import SearchPlanInfo
 from .entities_extractor import EntitiesExtractorConfig, EntitiesExtractor
 from .cluequeries_generator import ClueQueriesGeneratorConfig, ClueQueriesGenerator
 from .clueanswers_summarisation import ClueAnswersSummarizerConfig, ClueAnswersSummarizer
 from .answer_generator import AnswerGeneratorConfig, AnswerGenerator
+from .entities2nodes_matching import Entities2NodesMatcher, Entities2NodesMatcherConfig
+
+from .utils import SearchPlanInfo
 from .config import MDGR_MAIN_LOG_PATH
 from ..utils import AbstractKGReasoner, BaseKGReasonerConfig
 from ..weak_reasoner.knowledge_retriever import KnowledgeRetrieverConfig, KnowledgeRetriever
@@ -19,15 +21,16 @@ from .....db_drivers.kv_driver import KeyValueDriverConfig
 @dataclass
 class MediumKGReasonerConfig(BaseKGReasonerConfig):
 
-    searchplan_enhancer_config: SearchPlanEnhancerConfig = field(default_factory=SearchPlanEnhancerConfig())
-    entities_extractor_config: EntitiesExtractorConfig = field(default_factory=EntitiesExtractorConfig())
+    searchplan_enhancer_config: SearchPlanEnhancerConfig = field(default_factory=lambda: SearchPlanEnhancerConfig())
+    entities_extractor_config: EntitiesExtractorConfig = field(default_factory=lambda: EntitiesExtractorConfig())
+    e2n_matcher_config: Entities2NodesMatcherConfig = field(default_factory=lambda: Entities2NodesMatcherConfig())
 
-    cluequeries_generator_config: ClueQueriesGeneratorConfig = field(default_factory=ClueQueriesGeneratorConfig())
-    knowledge_retriever_config: KnowledgeRetrieverConfig = field(default_factory=KnowledgeRetrieverConfig())
-    clueanswer_generator_config: QALLMGeneratorConfig = field(default_factory=QALLMGeneratorConfig())
-    clueanswers_summarizer_confif: ClueAnswersSummarizerConfig = field(default_factory=ClueAnswersSummarizerConfig())
+    cluequeries_generator_config: ClueQueriesGeneratorConfig = field(default_factory=lambda: ClueQueriesGeneratorConfig())
+    knowledge_retriever_config: KnowledgeRetrieverConfig = field(default_factory=lambda: KnowledgeRetrieverConfig())
+    clueanswer_generator_config: QALLMGeneratorConfig = field(default_factory=lambda: QALLMGeneratorConfig())
+    clueanswers_summarizer_confif: ClueAnswersSummarizerConfig = field(default_factory=lambda: ClueAnswersSummarizerConfig())
 
-    answer_generator_config: AnswerGeneratorConfig = field(default_factory=AnswerGeneratorConfig())
+    answer_generator_config: AnswerGeneratorConfig = field(default_factory=lambda: AnswerGeneratorConfig())
 
     max_searchplan_steps: int = 10
 
@@ -42,10 +45,12 @@ class MediumKGReasoner(AbstractKGReasoner):
         self.kg_model = kg_model
         
         self.searchplan_enhancer = SearchPlanEnhancer(self.config.searchplan_enhancer_config, cache_kvdriver_config)
+        
         self.entities_extractor = EntitiesExtractor(self.config.entities_extractor_config, cache_kvdriver_config)
-    
+        self.entities2nodes_matcher = Entities2NodesMatcher(self.kg_model, self.config.e2n_matcher_config, cache_kvdriver_config)
+
         self.cluequeries_generator = ClueQueriesGenerator(self.config.clueanswer_generator_config, cache_kvdriver_config)
-        self.knowledge_retriever = KnowledgeRetriever(self.config.knowledge_retriever_config, cache_kvdriver_config)
+        self.knowledge_retriever = KnowledgeRetriever(self.kg_model, self.config.knowledge_retriever_config, cache_kvdriver_config)
         self.clueanswer_generator = QALLMGenerator(self.config.clueanswer_generator_config, cache_kvdriver_config)
         self.clueanswers_summariser = ClueAnswersSummarizer(self.config.clueanswers_summarizer_confif, cache_kvdriver_config)
 
@@ -71,7 +76,8 @@ class MediumKGReasoner(AbstractKGReasoner):
 
             self.log("STAGE#1 - SEARCH PLAN INITING/ENHANCING", verbose=self.config.verbose)
             search_plan, info = self.searchplan_enhancer.perform(search_step, search_plan)
-            self.log(f"RESULT:\n{'\n'.join([ f'{i}. {step}' for i, step in enumerate(search_plan.search_steps)])}", verbose=self.config.verbose)
+            str_searchsteps = '\n'.join([ f'{i}. {step}' for i, step in enumerate(search_plan.search_steps)])
+            self.log(f"RESULT:\n{str_searchsteps}", verbose=self.config.verbose)
             if info.status != ReturnStatus.success:
                 break
             
@@ -85,14 +91,14 @@ class MediumKGReasoner(AbstractKGReasoner):
                 break
 
             self.log("STAGE#2.2 - ENTITIES-TO-KGOBJECTS MATCHING", verbose=self.config.verbose)
-            matched_kg_objects = dict()
-            for entitie in entities:
-                matched_kg_objects[entitie] = self.kg_model.match_entitie2knowledge(entitie)
-            self.log(f"RESULT:\n{'\n'.join(f'- [{entitie}][{len(objects)}] {', '.join(list(map(lambda obj: obj.document)))}' for entitie, objects in matched_kg_objects.items())}", verbose=self.config.verbose)
+            matched_kg_objects = self.entities2nodes_matcher.perform(entities)
+            str_matched_kgobject = '\n'.join([f'- [{entitie}][{len(objects)}] ' + ', '.join(list(map(lambda obj: obj.document))) for entitie, objects in matched_kg_objects.items()])
+            self.log(f"RESULT:\n{str_matched_kgobject}", verbose=self.config.verbose)
 
             self.log("STAGE#3 - CLUE-QUERIES GENERATION", verbose=self.config.verbose)
             cluequeries, info = self.cluequeries_generator.perform(search_query, matched_kg_objects)
-            self.log(f"RESULT: {len(cluequeries)}\n{'\n'.join([f'- [{list(map(lambda obj: obj.document, clueq.linked_nodes))}] {clueq.query}' for clueq in cluequeries])}", verbose=self.config.verbose)
+            str_cluequeries = '\n'.join([f'- [{list(map(lambda obj: obj.document, clueq.linked_nodes))}] {clueq.query}' for clueq in cluequeries])
+            self.log(f"RESULT: {len(cluequeries)}\n{str_cluequeries}", verbose=self.config.verbose)
             if info.status != ReturnStatus.success:
                 break
 

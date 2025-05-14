@@ -18,7 +18,7 @@ class ClueAnswersSummarizerConfig:
     adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     canswers_summarisation_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_CQSUMM_TASK_CONFIG)
 
-    cache_table_name = "medreasn_cquerysumm_main_stage_cache"
+    cache_table_name: str = "medreasn_cquerysumm_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(CQSUMM_MAIN_LOG_PATH))
     verbose: bool = False
 

@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-def entextr_custom_formate(query: str) -> Dict[str]:
+def entextr_custom_formate(query: str) -> Dict[str, str]:
     if len(query) < 1:
         raise ValueError
     

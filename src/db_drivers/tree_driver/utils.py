@@ -58,6 +58,10 @@ class AbstractTreeDatabaseConnection(AbstractDatabaseConnection):
         pass
 
     @abstractmethod
+    def get_leaf_descendants(id: str, id_type: str = TreeIdType.external) -> List[TreeNode]:
+        pass
+
+    @abstractmethod
     def item_exist(self, id: str, id_type: str = TreeIdType.external) -> bool:
         pass
 

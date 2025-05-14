@@ -15,7 +15,7 @@ class EntitiesExtractorConfig:
     adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     entities_extraction_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_ENT_EXTR_TASK_CONFIG)
 
-    cache_table_name = "medreasn_entextr_main_stage_cache"
+    cache_table_name: str = "medreasn_entextr_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(ENEXTR_MAIN_LOG_PATH))
     verbose: bool = False
 

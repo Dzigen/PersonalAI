@@ -14,8 +14,9 @@ KG_MAIN_LOG_PATH = 'log/kg_model/main'
 class KnowledgeGraphModelConfig:
     graph_config: GraphModelConfig = field(default_factory=lambda: GraphModelConfig())
     embeddings_config: EmbeddingsModelConfig = field(default_factory=lambda: EmbeddingsModelConfig())
-    #nodestree_config: NodesTreeModelConfig = field(default_factory=lambda: NodesTreeModelConfig())
+    nodestree_config: NodesTreeModelConfig = field(default_factory=lambda: NodesTreeModelConfig())
 
+    cache_table_name = "kgmodel_e2nmatcher_cache"
     log: Logger = field(default_factory=lambda: Logger(KG_MAIN_LOG_PATH))
     verbose: bool = False
 
@@ -104,20 +105,6 @@ class KnowledgeGraphModel:
             self.check_consistency()
 
         return {'graph_info': graph_delete_info, 'embeddings_info': embds_delete_info, 'tree_info': tree_reduce_info}
-
-    def match_entitie2knowledge(self, entitie: str, use_tree: bool = False, clarify: bool = False) -> List[Node]:
-        # TODO
-        # выполняем сопоставление только с object-вершинами
-        # self.nodes_tree.matchentitie2nodes()
-        # self.embeddings_struct.vectordbs['nodes'].retrieve()
-        # уточнение набора сопоставленных вершин
-        if use_tree:
-            matched_objects = self.nodestree_struct.match_entitie2objects(entitie)
-        else:
-            # TODO
-            raise NotImplementedError
-
-        return matched_objects
 
     def count_items(self) -> Dict[str, Dict[str, int]]:
         return {

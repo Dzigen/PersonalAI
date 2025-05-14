@@ -18,7 +18,7 @@ class AnswerGeneratorConfig:
     answer_classifier_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_ANSWCLASSIFY_TASK_CONFIG)
     answer_generator_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_ANSWGEN_TASK_CONFIG)
 
-    cache_table_name = "medreasn_answgen_main_stage_cache"
+    cache_table_name: str = "medreasn_answgen_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(ANSWGEN_MAIN_LOG_PATH))
     verbose: bool = False
 

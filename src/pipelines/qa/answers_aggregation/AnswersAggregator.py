@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Tuple, Union, List
 from copy import deepcopy
 
-from .config import AAGG_MAIN_LOG_PATH, DEFAULT_ASUMM_TASK_CONFIG
+from .config import AAGG_MAIN_LOG_PATH, DEFAULT_SUBASUMM_TASK_CONFIG
 from ..query_preprocessing.utils import QueryPreprocessingInfo
 from ....utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
 from ....agents import AgentDriver, AgentDriverConfig
@@ -14,7 +14,7 @@ from ....utils.cache_kv import CacheKV, CacheUtils
 class AnswersAggregatorConfig:
     lang: str = 'auto'
     adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    suba_summarisation_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_ASUMM_TASK_CONFIG)
+    suba_summarisation_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_SUBASUMM_TASK_CONFIG)
 
     cache_table_name = "answers_aggregation_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(AAGG_MAIN_LOG_PATH))
@@ -77,11 +77,12 @@ class AnswersAggregator(CacheUtils):
                 raise ValueError
 
             self.log("Выполнение суммаризации ответов с помощью LLM-агента...", verbose=self.config.verbose)
-            final_answer, info = self.subanswers_summarisation_solver.perform(
+            final_answer, status = self.subanswers_summarisation_solver.solve(
                 lang=self.config.lang, query=query, sub_queries=sub_queries, 
                 sub_answers=sub_answers)
             self.log(f"RESULT: {final_answer}", verbose=self.verbose)
 
+        info.status = status
         self.log(f"STATUS: {info.status}", verbose=self.verbose)
 
         return final_answer, info

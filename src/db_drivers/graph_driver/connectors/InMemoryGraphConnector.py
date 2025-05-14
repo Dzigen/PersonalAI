@@ -257,6 +257,10 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
                     triplets.append(triplet)
         return triplets
 
+    def get_node_type(self, id: str) -> NodeType:
+        # TODO
+        raise NotImplementedError
+
     def count_items(self, id: str = None, id_type: str = None) -> Union[Dict[str,int],int]:
         result = None
         if id_type is None:

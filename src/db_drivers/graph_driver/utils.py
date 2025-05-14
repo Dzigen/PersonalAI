@@ -39,6 +39,10 @@ class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
         pass
 
     @abstractmethod
+    def get_node_type(self, id: str) -> NodeType:
+        pass
+
+    @abstractmethod
     def count_items(self, id: str = None, id_type: str = None) -> Union[Dict[str,int],int]:
         pass
 

@@ -1,1 +1,1 @@
-from .suite import SUBA_SUMM_SUITE_V1
+from .suite import SUBASUMM_SUITE_V1
