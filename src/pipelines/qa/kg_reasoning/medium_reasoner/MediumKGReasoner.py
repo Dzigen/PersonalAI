@@ -1,14 +1,19 @@
 from dataclasses import dataclass, field
 from typing import Tuple, List
 
+from .searchplan_enhancer import SearchPlanEnhancerConfig, SearchPlanEnhancer
+from .entities_extractor import EntitiesExtractorConfig, EntitiesExtractor
+from .cluequeries_generator import ClueQueriesGeneratorConfig, ClueQueriesGenerator
+from .clueanswers_summarisation import ClueAnswersSummarizerConfig, ClueAnswersSummarizer
+from .answer_generator import AnswerGeneratorConfig, AnswerGenerator
 from .config import MDGR_MAIN_LOG_PATH
 from ..utils import AbstractKGReasoner, BaseKGReasonerConfig
+from ..weak_reasoner.knowledge_retriever import KnowledgeRetrieverConfig, KnowledgeRetriever
+from ..weak_reasoner.answer_generator import QALLMGeneratorConfig, QALLMGenerator
 from .....utils.data_structs import create_id
 from .....utils import Logger, ReturnInfo, ReturnStatus
 from .....kg_model import KnowledgeGraphModel
 from .....db_drivers.kv_driver import KeyValueDriverConfig
-from ..weak_reasoner.knowledge_retriever import KnowledgeRetrieverConfig, KnowledgeRetriever
-from ..weak_reasoner.answer_generator import QALLMGeneratorConfig, QALLMGenerator
 
 @dataclass
 class SearchPlanInfo:
@@ -19,16 +24,15 @@ class SearchPlanInfo:
 @dataclass
 class MediumKGReasonerConfig(BaseKGReasonerConfig):
 
-    searchplan_initializer_config: SearchPlanInitializerConfig() = field(default_factory=SearchPlanInitializerConfig())
-    entities_extractor_config: EntitiesExtractorConfig() = field(default_factory=EntitiesExtractorConfig())
+    searchplan_enhancer_config: SearchPlanEnhancerConfig = field(default_factory=SearchPlanEnhancerConfig())
+    entities_extractor_config: EntitiesExtractorConfig = field(default_factory=EntitiesExtractorConfig())
 
-    cluequeries_generator_config: ClueQueriesGeneratorConfig() = field(default_factory=ClueQueriesGeneratorConfig())
+    cluequeries_generator_config: ClueQueriesGeneratorConfig = field(default_factory=ClueQueriesGeneratorConfig())
     knowledge_retriever_config: KnowledgeRetrieverConfig = field(default_factory=KnowledgeRetrieverConfig())
     clueanswer_generator_config: QALLMGeneratorConfig = field(default_factory=QALLMGeneratorConfig())
-    clueanswers_summarizer_confif: ClueAnswersCummarisationConfig = field(default_factory=ClueAnswersSummarisationConfig())
+    clueanswers_summarizer_confif: ClueAnswersSummarizerConfig = field(default_factory=ClueAnswersSummarizerConfig())
 
     answer_generator_config: AnswerGeneratorConfig = field(default_factory=AnswerGeneratorConfig())
-    searchplan_enhancer_config: SearchPlanEnhancerConfig() = field(default_factory=SearchPlanEnhancerConfig())
 
     max_searchplan_steps: int = 10
 
