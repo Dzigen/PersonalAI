@@ -15,7 +15,7 @@ from src.db_drivers.vector_driver.embedders import EmbedderModelConfig
 from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
 from src.agents.AgentDriver import AgentDriverConfig, AgentConnectorConfig
 from src.pipelines.memorize import MemPipelineConfig
-from src.kg_model import KnowledgeGraphModel
+from src.kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig
 from src.agents.AgentDriver import AgentDriverConfig, AgentConnectorConfig
 from src.pipelines.memorize import MemPipeline, MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
 from src.pipelines.memorize.extractor.agent_tasks.thesis_extraction import AgentThesisExtrTaskConfigSelector
@@ -67,7 +67,8 @@ def mem_pipeline_config():
 
 @pytest.fixture(scope='package')
 def kg_model(graph_neo4j_config, embeddings_chroma_config):
-    kg_model = KnowledgeGraphModel(graph_neo4j_config, embeddings_chroma_config, verbose=True)
+    kg_config = KnowledgeGraphModelConfig(graph_config=graph_neo4j_config, embeddings_config=embeddings_chroma_config)
+    kg_model = KnowledgeGraphModel(kg_config)
     kg_model.clear()
     return kg_model
 

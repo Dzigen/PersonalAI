@@ -8,7 +8,7 @@ AVAILABLE_CQGEN_TCONFIGS = {
     'v1': CQGEN_SUITE_V1
 }
 
-class AgentQueryGenTaskConfigSelector:
+class AgentCQueryGenTaskConfigSelector:
     @staticmethod
     def get_available_configs():
         return AVAILABLE_CQGEN_TCONFIGS

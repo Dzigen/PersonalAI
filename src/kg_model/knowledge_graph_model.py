@@ -1,4 +1,4 @@
-from typing import List, Dict, Set
+from typing import List, Dict, Set, Union
 from dataclasses import dataclass, field
 
 from .graph_model import GraphModelConfig, GraphModel
@@ -14,9 +14,8 @@ KG_MAIN_LOG_PATH = 'log/kg_model/main'
 class KnowledgeGraphModelConfig:
     graph_config: GraphModelConfig = field(default_factory=lambda: GraphModelConfig())
     embeddings_config: EmbeddingsModelConfig = field(default_factory=lambda: EmbeddingsModelConfig())
-    nodestree_config: NodesTreeModelConfig = field(default_factory=lambda: NodesTreeModelConfig())
+    nodestree_config: Union[NodesTreeModelConfig,None] = None
 
-    cache_table_name = "kgmodel_e2nmatcher_cache"
     log: Logger = field(default_factory=lambda: Logger(KG_MAIN_LOG_PATH))
     verbose: bool = False
 
@@ -29,27 +28,25 @@ class KnowledgeGraphModel:
     :type embeddings_config: EmbeddingsModel
     """
 
-    def __init__(self, graph_config: GraphModelConfig = GraphModelConfig(),
-                 embeddings_config: EmbeddingsModelConfig = EmbeddingsModelConfig(),
-                 nodestree_config: NodesTreeModelConfig = None,
+    def __init__(self, config: KnowledgeGraphModelConfig = KnowledgeGraphModelConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
-
-        self.graph_struct = GraphModel(graph_config)
-        self.embeddings_struct =  EmbeddingsModel(embeddings_config)
-        if nodestree_config is not None:
-            self.nodestree_struct = NodesTreeModel(nodestree_config, cache_kvdriver_config)
+        self.config = config
+        self.graph_struct = GraphModel(self.config.graph_config)
+        self.embeddings_struct =  EmbeddingsModel(self.config.embeddings_config)
+        if self.config.nodestree_config is not None:
+            self.nodestree_struct = NodesTreeModel(self.config.nodestree_config, cache_kvdriver_config)
         else:
             self.nodestree_struct = None
 
-        #self.log = self.config.log
-        #self.verbose = self.config.verbose
+        self.log = self.config.log
+        self.verbose = self.config.verbose
 
     def check_consistency(self) -> None:
         gdb_count = self.graph_struct.db_conn.count_items()
-        #self.log(f"GRAPH DB STATUS: {gdb_count}", verbose=self.verbose)
+        self.log(f"GRAPH DB STATUS: {gdb_count}", verbose=self.verbose)
         vdb_nodes_count = self.embeddings_struct.vectordbs['nodes'].count_items()
         vdb_triplets_count = self.embeddings_struct.vectordbs['triplets'].count_items()
-        #self.log(f"VECTOR DB STATUS: {vdb_nodes_count} - nodes; {vdb_triplets_count} - triplets", verbose=self.verbose)
+        self.log(f"VECTOR DB STATUS: {vdb_nodes_count} - nodes; {vdb_triplets_count} - triplets", verbose=self.verbose)
 
         assert gdb_count['nodes'] == vdb_nodes_count
         assert gdb_count['triplets'] >= vdb_triplets_count
@@ -109,8 +106,8 @@ class KnowledgeGraphModel:
     def count_items(self) -> Dict[str, Dict[str, int]]:
         return {
             'graph_info': self.graph_struct.count_items(),
-            'embeddings_info': self.embeddings_struct.count_items()
-            #'nodestree_info': self.nodestree_struct.count_items()
+            'embeddings_info': self.embeddings_struct.count_items(),
+            'nodestree_info': self.nodestree_struct.count_items() if self.config.nodestree_config is not None else None
         }
 
     def clear(self) -> None:
@@ -118,4 +115,5 @@ class KnowledgeGraphModel:
         """
         self.embeddings_struct.clear()
         self.graph_struct.clear()
-       # self.nodestree_struct.clear()
+        if self.config.nodestree_config is not None:
+            self.nodestree_struct.clear()
