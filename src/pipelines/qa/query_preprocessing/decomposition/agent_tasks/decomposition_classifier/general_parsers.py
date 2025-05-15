@@ -10,12 +10,11 @@ def dc_custom_postprocess(parsed_response: str, **kwargs) -> bool:
     if len(parsed_response) < 1:
         raise ValueError
     
-    need_decompose = None
-    if parsed_response == '<|decomp|>':
-        need_decompose = True
-    elif parsed_response == '<|noneed|>':
-        need_decompose = False
+    if parsed_response.startswith("Yes"):
+        candecomp_sign = True
+    if parsed_response.startswith("No"):
+         candecomp_sign = False
     else:
-        raise ValueError
+        raise ValueError   
 
-    return need_decompose
+    return candecomp_sign

@@ -1,10 +1,18 @@
 from typing import List
+import re
 
 def casumm_custom_parse(raw_response: str, **kwargs) -> List[str]:
     if len(raw_response) < 1:
         raise ValueError
 
-    summ_answer = None
-    # TODO    
+    answer_pos = re.search(r"\[answer\]", raw_response, re.IGNORECASE)
 
-    return summ_answer
+    # Ответ не соответствует формату
+    if answer_pos is None:
+        raise ValueError
+
+    answer = raw_response[answer_pos.span(0)[1]:].strip()
+
+    # Пустой ответ
+    if len(answer) < 1:
+        raise ValueError

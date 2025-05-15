@@ -83,7 +83,7 @@ class SearchPlanEnhancer(CacheUtils):
                     self.log("Улучшаем следующие шаги поиска в плане...",verbose=self.verbose)
                     enhanced_steps, status = self.plan_enhancing_solver.solve(
                         lang=self.config.lang, query=search_plan.base_query,
-                        passed_steps=search_plan.search_steps[:search_step], 
+                        passed_steps=search_plan.search_steps, 
                         steps_answers=search_plan.steps_answers[:search_step])
                     str_enhancedsteps = "\n".join([f'{i}. {gen_step}' for i,gen_step in enumerate(enhanced_steps)])
                     self.log(f"RESULT: {len(enhanced_steps)}\n{str_enhancedsteps}", verbose=self.config.verbose)

@@ -1,23 +1,24 @@
 from typing import List, Dict
 
 def enhcls_custom_formate(query: str, search_steps: List[str], steps_answers: List[str]) -> Dict[str, str]:
-    if len(query) < 1 or len(search_steps) < 1 or len(steps_answers) != len(search_steps):
+    if len(query) < 1 or len(search_steps) < 1 or len(search_steps) >= len(steps_answers):
         raise ValueError
     
-    # TODO
-    
-    return ...
+    complited_squeries = '\n\n'.join([f"Search Query: {cs_step}\nFinded information:\n{answ_step}" for cs_step, answ_step in zip(search_steps, steps_answers)])
+    next_squeries = search_steps[len(steps_answers):]
+    next_squeries = '\n'.join(list(map(lambda pair: f'{pair[0]}. {pair[1]}', enumerate(next_squeries)))) if len(next_squeries) else "Search-plan is complited!" 
+
+    return {'query': query, 'complited_squeries': complited_squeries, 'next_squeries': next_squeries}
 
 def enhcls_custom_postprocess(parsed_response: str, **kwargs) -> bool:
     if len(parsed_response) < 1:
         raise ValueError
     
-    need_decompose = None
-    if parsed_response == '<|enhanc|>':
-        need_decompose = True
-    elif parsed_response == '<|noneed|>':
-        need_decompose = False
+    if parsed_response.startswith("Yes"):
+        needenhance_sign = True
+    if parsed_response.startswith("No"):
+        needenhance_sign = False
     else:
-        raise ValueError
+        raise ValueError   
 
-    return need_decompose
+    return needenhance_sign

@@ -7,10 +7,6 @@ def entextr_custom_parse(raw_response: str, **kwargs) -> List[str]:
         raise ValueError
 
     extracted_entities = list(map(lambda item: item.strip(), raw_response.split('|')))
+    filtered_entities = list(filter(lambda entitie: len(entitie) > 0, extracted_entities))
 
-    # Ошибка в формате ответа
-    for entitie in extracted_entities:
-        if len(entitie) < 1:
-            raise ValueError
-
-    return extracted_entities
+    return filtered_entities

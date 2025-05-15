@@ -3,21 +3,19 @@ from typing import List, Dict
 from ....utils import SearchPlanInfo
 
 def answcls_custom_formate(search_plan: SearchPlanInfo) -> Dict[str, str]:
+    search_info = '\n\n'.join(list(map(lambda i: f'[Search Query #{i}]\n{search_plan.search_steps[i]}\n[Finded Information]\n{search_plan.steps_answers[i]}', range(len(search_plan.steps_answers)))))
 
-    # TODO
-    
-    return ...
+    return {'query': search_plan.base_query, 'search_info': search_info}
 
 def answcls_custom_postprocess(parsed_response: str, **kwargs) -> bool:
     if len(parsed_response) < 1:
         raise ValueError
     
-    can_answer = None
-    if parsed_response == '<|can|>':
-        can_answer = True
-    elif parsed_response == '<|not|>':
-        can_answer = False
+    if parsed_response.startswith("Yes"):
+        cananswer_sign = True
+    if parsed_response.startswith("No"):
+         cananswer_sign = False
     else:
-        raise ValueError
+        raise ValueError   
 
-    return can_answer
+    return cananswer_sign

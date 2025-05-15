@@ -4,10 +4,17 @@ import re
 def dc_custom_answer_parse(raw_response: str, **kwargs) -> List[str]:
     if len(raw_response) < 1:
         raise ValueError
-    
-    sign = re.search("\<\|[\w]{6}\|\>", raw_response)
-    if sign is None:
-        raise ValueError
-    sign = sign.group(0)
 
-    return sign
+    answer_pos = re.search(r"\[answer\]", raw_response, re.IGNORECASE)
+
+    # Ответ не соответствует формату
+    if answer_pos is None:
+        raise ValueError
+
+    answer = raw_response[answer_pos.span(0)[1]:].strip()
+
+    # Пустой ответ
+    if len(answer) < 1:
+        raise ValueError
+
+    return answer
