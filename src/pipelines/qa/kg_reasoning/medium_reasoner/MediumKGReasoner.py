@@ -60,8 +60,37 @@ class MediumKGReasoner(AbstractKGReasoner):
         self.verbose = config.verbose
 
     def clear_kv_caches(self):
-        # TODO
-        pass
+        # planing
+        self.searchplan_enhancer.cachekv.kv_conn.clear()
+        self.searchplan_enhancer.plan_initialing_solver.cachekv.kv_conn.clear()
+        self.searchplan_enhancer.enhance_classify_solver.cachekv.kv_conn.clear()
+        self.searchplan_enhancer.plan_enhancing_solver.cachekv.kv_conn.clear()
+
+        # matching
+        self.entities_extractor.cachekv.kv_conn.clear()
+        self.entities_extractor.entities_extractor_solver.cachekv.kv_conn.clear()
+        #
+        self.entities2nodes_matcher.cachekv.kv_conn.clear()
+
+        # retrieving
+        self.cluequeries_generator.cachekv.kv_conn.clear()
+        self.cluequeries_generator.cluequery_gen_solver.cachekv.kv_conn.clear()
+        #
+        self.knowledge_retriever.cachekv.kv_conn.clear()
+        self.knowledge_retriever.graph_retriever.cachekv.kv_conn.clear()
+        if self.knowledge_retriever.triplets_filter is not None:
+            self.knowledge_retriever.triplets_filter.cachekv.kv_conn.clear()
+        #
+        self.clueanswer_generator.cachekv.kv_conn.clear()
+        self.clueanswer_generator.answer_generator_solver.cachekv.kv_conn.clear()
+        #
+        self.clueanswers_summariser.cachekv.kv_conn.clear()
+        self.clueanswers_summariser.clueanswers_summ_solver.cachekv.kv_conn.clear()
+
+        # answering
+        self.answer_generator.cachekv.kv_conn.clear()
+        self.answer_generator.answer_classify_solver.cachekv.kv_conn.clear()
+        self.answer_generator.answer_gen_solver.cachekv.kv_conn.clear()
 
     def perform(self, query: str) -> Tuple[str, ReturnInfo]:
         self.log("START MEDIUM KG-REASONING...", verbose=self.config.verbose)
@@ -72,7 +101,7 @@ class MediumKGReasoner(AbstractKGReasoner):
 
         self.log("Start iterative search...", verbose=self.verbose)
         for search_step in range(self.config.max_searchplan_steps):
-            self.log(f"CURRENT SEARCH ITERATION: {search_step} / {self.config.max_searchplan_steps}", verbose=self.verbose)
+            self.log(f"CURRENT SEARCH STEP: {search_step} / {self.config.max_searchplan_steps}", verbose=self.verbose)
 
             self.log("STAGE#1 - SEARCH PLAN INITING/ENHANCING", verbose=self.config.verbose)
             search_plan, info = self.searchplan_enhancer.perform(search_step, search_plan)
@@ -91,9 +120,11 @@ class MediumKGReasoner(AbstractKGReasoner):
                 break
 
             self.log("STAGE#2.2 - ENTITIES-TO-KGOBJECTS MATCHING", verbose=self.config.verbose)
-            matched_kg_objects = self.entities2nodes_matcher.perform(entities)
-            str_matched_kgobject = '\n'.join([f'- [{entitie}][{len(objects)}] ' + ', '.join(list(map(lambda obj: obj.document))) for entitie, objects in matched_kg_objects.items()])
+            matched_kg_objects, info = self.entities2nodes_matcher.perform(entities)
+            str_matched_kgobject = '\n'.join([f'- [{entitie}][{len(objects)}] ' + ', '.join(list(map(lambda obj: obj.document, objects))) for entitie, objects in matched_kg_objects.items()])
             self.log(f"RESULT:\n{str_matched_kgobject}", verbose=self.config.verbose)
+            if info.status != ReturnStatus.success:
+                break
 
             self.log("STAGE#3 - CLUE-QUERIES GENERATION", verbose=self.config.verbose)
             cluequeries, info = self.cluequeries_generator.perform(search_query, matched_kg_objects)
@@ -103,10 +134,9 @@ class MediumKGReasoner(AbstractKGReasoner):
                 break
 
             self.log("STAGE#4 - RETRIEVING INFORMATION FROM KG BASED ON CLUE-QUERIES", verbose=self.config.verbose)
-            clueanswers = []
-            error_occurred = False
-            for cur_cluequery in cluequeries:
-                self.log(f"Current clue-query: {cur_cluequery.query}", verbose=self.config.verbose)
+            clueanswers, error_occurred = [], False
+            for j, cur_cluequery in enumerate(cluequeries):
+                self.log(f"Current clue-query ({j} / {len(cluequeries)}): {cur_cluequery.query}", verbose=self.config.verbose)
                 self.log(f"Current clue-query id: {create_id(cur_cluequery.query)}", verbose=self.config.verbose)
             
                 self.log("STAGE#4.1 - KNOWLEDGE RETRIEVING", verbose=self.config.verbose)
@@ -139,14 +169,14 @@ class MediumKGReasoner(AbstractKGReasoner):
                 search_plan.steps_answers.append(search_step_answer)
             
             self.log("STAGE#5 - ANSWER-GENERATION TRYING", verbose=self.config.verbose)
-            answer, info = self.answer_generator(search_plan)
+            answer, info = self.answer_generator.perform(search_plan)
             self.log(f"RESULT: {answer}", verbose=self.config.verbose)
             if info.status != ReturnStatus.success:
                 break
 
             #
             if answer is not None:
-                self.log("Удалось сгененирвоать ответа на вовпрос. Завершаем поиск.")
+                self.log("Удалось сгененирвоать ответа на вопрос. Завершаем поиск.")
                 break
             else:
                 self.log("Недостаточно информации для генерации релевантного ответа на вопрос. Продолжаем поиск.")

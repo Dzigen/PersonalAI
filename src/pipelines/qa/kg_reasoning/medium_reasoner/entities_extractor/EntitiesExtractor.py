@@ -4,6 +4,7 @@ from copy import deepcopy
 
 from .config import ENEXTR_MAIN_LOG_PATH, DEFAULT_ENT_EXTR_TASK_CONFIG
 from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
+from ......utils import ReturnStatus 
 from ......agents import AgentDriver, AgentDriverConfig
 from ......utils.data_structs import create_id
 from ......db_drivers.kv_driver import KeyValueDriverConfig
@@ -39,7 +40,7 @@ class EntitiesExtractor(CacheUtils):
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config
 
-        self.subanswers_summarisation_solver = AgentTaskSolver(
+        self.entities_extractor_solver = AgentTaskSolver(
             self.agent, self.config.entities_extraction_agent_task_config, agents_cache_config)
         
         self.log = self.config.log
@@ -49,15 +50,18 @@ class EntitiesExtractor(CacheUtils):
         return [query, self.config.to_str()]
 
     @CacheUtils.cache_method_output
-    def perform(self, query: str) -> Tuple[str, ReturnInfo]:
+    def perform(self, query: str) -> Tuple[List[str], ReturnInfo]:
         self.log("START ENTITIES EXTRACTION...", verbose=self.config.verbose)
         info = ReturnInfo()
         self.log(f"QUERY ID: {create_id(query)}", verbose=self.config.verbose)
         self.log(f"QUERY: {query}", verbose=self.config.verbose)
         
         self.log("Выполнение извлечения сущностей из запроса с помощью LLM-агента...", verbose=self.config.verbose)
-        entities, info.status = self.subanswers_summarisation_solver.solve(lang=self.config.lang, query=query)
+        entities, info.status = self.entities_extractor_solver.solve(lang=self.config.lang, query=query)
         self.log(f"RESULT: {entities}", verbose=self.verbose)
         self.log(f"STATUS: {info.status}", verbose=self.verbose)
+
+        if entities is None or len(entities) < 1:
+            info.status = ReturnStatus.empty_answer
 
         return entities, info

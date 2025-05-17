@@ -57,7 +57,7 @@ class SearchPlanEnhancer(CacheUtils):
         return [str(search_step), search_plan.to_str(), self.config.to_str()]
 
     @CacheUtils.cache_method_output
-    def perform(self, search_step: int, search_plan: SearchPlanInfo) -> Tuple[str, ReturnInfo]:
+    def perform(self, search_step: int, search_plan: SearchPlanInfo) -> Tuple[SearchPlanInfo, ReturnInfo]:
         self.log("START SEARCH-PLAN INITING/ENHANCING...", verbose=self.config.verbose)
         enhanced_search_plan, info = None, ReturnInfo()
         self.log(f"QUERY ID: {create_id(search_plan.base_query)}", verbose=self.config.verbose)
@@ -68,7 +68,8 @@ class SearchPlanEnhancer(CacheUtils):
 
         if search_step == 0:
             self.log("Генерируем план поиска с нуля...",verbose=self.verbose)
-            search_plan.search_steps, status = self.plan_initialing_solver.solve(lang=self.config.lang,query=search_plan.base_query)
+            search_plan.search_steps, status = self.plan_initialing_solver.solve(lang=self.config.lang, query=search_plan.base_query)
+            search_plan.steps_answers = []
             str_searchplan = "\n".join([f'{i}. {gen_step}' for i,gen_step in enumerate(search_plan.search_steps)])
             self.log(f"RESULT: {len(search_plan.search_steps)}\n{str_searchplan}", verbose=self.config.verbose)
         else:
@@ -90,7 +91,8 @@ class SearchPlanEnhancer(CacheUtils):
                     
                     if status == ReturnStatus.success:
                         enhanced_search_plan = deepcopy(search_plan)
-                        enhanced_search_plan.search_steps = enhanced_steps
+                        enhanced_search_plan.search_steps = search_plan.search_steps[:search_step] + enhanced_steps
+                        enhanced_search_plan.steps_answers = search_plan.steps_answers[:search_step]
 
                 else:
                     self.log("Улучшение шагов поиска не требуется...",verbose=self.verbose)

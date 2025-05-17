@@ -61,7 +61,7 @@ class ClueAnswersSummarizer(CacheUtils):
         self.log(f"CLUE-ANSWERS: {clue_answers}", verbose=self.config.verbose)
         summ_answer, info = None, ReturnInfo()
 
-        if len(search_query) <= 0 or len(clue_queries) <= 0 or len(clue_answers) != len(clue_queries):
+        if len(search_query) < 1 or len(clue_queries) < 1 or len(clue_answers) != len(clue_queries):
             raise ValueError
 
         self.log("Выполненяем суммаризацию clue-answers с помощью LLM-агента...", verbose=self.config.verbose)

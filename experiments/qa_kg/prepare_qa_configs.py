@@ -71,6 +71,10 @@ if PARAMS['BASE_KGR_CONFIG']['name'] == 'weak':
             adriver_config=adriver_config,
             ag_task_config=AgentAGTaskConfigSelector.select(
                 base_config_version=PARAMS['WEAK_KG_REASONER']['answer_generator_config']['ag_task']['prompts_version'])))
+    
+elif PARAMS['BASE_KGR_CONFIG']['name'] == 'medium':
+    # TODO
+    pass
 else:
     raise ValueError
 

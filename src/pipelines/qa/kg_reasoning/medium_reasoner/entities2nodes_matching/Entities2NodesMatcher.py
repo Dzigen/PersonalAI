@@ -1,10 +1,11 @@
 from dataclasses import dataclass, field
-from typing import Tuple, Union, List
+from typing import Tuple, Union, List, Dict
 from copy import deepcopy
 
 from .config import E2NMATCHER_MAIN_LOG_PATH
 from ......kg_model import KnowledgeGraphModel
 from ......utils import ReturnInfo, Logger
+from ......utils.errors import ReturnStatus
 from ......utils.data_structs import create_id, NodeType
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......db_drivers.vector_driver import VectorDBInstance
@@ -40,7 +41,7 @@ class Entities2NodesMatcher(CacheUtils):
         self.log = self.config.log
         self.verbose = self.config.verbose
 
-    def get_cache_key(self, entitie: str) -> List[object]:
+    def get_cache_key(self, entitie: str, **kwargs) -> List[object]:
         return [entitie, self.config.to_str()]
 
     
@@ -63,10 +64,13 @@ class Entities2NodesMatcher(CacheUtils):
 
         return matched_objects
     
-    def perform(self, entities: List[str]) -> Tuple[List[str], ReturnInfo]:
+    def perform(self, entities: List[str]) -> Tuple[Dict[str,List[VectorDBInstance]], ReturnInfo]:
         self.log("START ENTITIES2NODES MATCHING...", verbose=self.config.verbose)
         info = ReturnInfo()
         self.log(f"ENTIITES: {entities}", verbose=self.config.verbose)
+        if len(entities) < 1:
+            raise ValueError
+        
         matched_kg_objects = dict()
         for i, entitie in enumerate(entities):
             self.log(f"Текушая сушность #{i}: {entitie}", verbose=self.verbose)
@@ -78,4 +82,8 @@ class Entities2NodesMatcher(CacheUtils):
 
         self.log(f"STATUS: {info.status}", verbose=self.verbose)
 
-        return entities, info
+        m_objects_amount = sum(list(map(lambda m_objects: len(m_objects), matched_kg_objects.values())))
+        if len(m_objects_amount) < 1:
+            info.status = ReturnStatus.empty_answer
+
+        return matched_kg_objects, info

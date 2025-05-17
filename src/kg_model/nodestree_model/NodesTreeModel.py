@@ -322,7 +322,7 @@ class NodesTreeModel:
             entitie_embedding = self.embedder.encode_queries([entitie])[0]
             entitie_vinstance = VectorDBInstance(embedding=entitie_embedding)
 
-            self.log("Извлечение самых релевантных к к entitie вершин из leaf-бд...", verbose=self.verbose)
+            self.log("Извлечение самых релевантных к entitie вершин из leaf-бд...", verbose=self.verbose)
             raw_scored_leafnodes = self.vectordb_leafnodes_conn.retrieve(
                     query_instances=[entitie_vinstance], n_results=fetch_k,
                     includes=['documents'])[0]
@@ -332,7 +332,7 @@ class NodesTreeModel:
                 best_leafnode = sorted(filtered_leafnodes, key=lambda pair: pair[0], reverse=False)[0]
             self.log(f"Извлечённые leaf-вершины:\n* количество - {len(filtered_leafnodes)}\n* вершины - {filtered_leafnodes}\n* семантически-близкая [distance] вершина - {best_leafnode}", verbose=self.verbose)
 
-            self.log("Извлечение самых релевантных к к entitie вершин из summarized-бд....", verbose=self.verbose)
+            self.log("Извлечение самых релевантных к entitie вершин из summarized-бд....", verbose=self.verbose)
             raw_scored_summnodes = self.vectordb_summnodes_conn.retrieve(
                     query_instances=[entitie_vinstance], n_results=fetch_k,
                     includes=['documents'])[0]
@@ -342,20 +342,23 @@ class NodesTreeModel:
                 best_summnode = sorted(filtered_summnodes, key=lambda pair: pair[0], reverse=False)[0]
             self.log(f"Извлечённые summarized-вершины:\n* количество - {len(filtered_summnodes)}\n* вершины - {filtered_summnodes}\n* семантически-близкая [distance] вершина - {best_summnode}", verbose=self.verbose)
 
+            if best_leafnode is None and best_summnode is None:
+                raise ValueError
+
             # из них выбирается самая релевантная
-            if best_summnode[0] < best_leafnode[0]:
+            if (best_summnode is not None) and (best_summnode[0] < best_leafnode[0]):
                 # в случае, если summarized-вершина семантически ближе к entitie,
                 # то ей сопоставляются все её (summarized-вершины) вершиным-потомки
                 self.log(f"В качестве самой релевантной выбрана summarized-вершина: {best_summnode}", verbose=self.verbose)
-                descendants_leaf_nodes = self.traverse_tree.get_leaf_descendants(best_summnode[1].id, id_type=TreeIdType.external)
+                descendants_leaf_nodes = self.treedb_conn.get_leaf_descendants(best_summnode[1].id, id_type=TreeIdType.external)
                 descendants_leaf_strids = list(map(lambda node: node.id, descendants_leaf_nodes))
-                matched_nodes = self.vectordb_leafnodes_conn.read(descendants_leaf_strids)
+                matched_nodes = self.vectordb_leafnodes_conn.read(descendants_leaf_strids, includes=["documents", "metadatas"])
                 self.log(f"Summarized-вершине соответствуют следующие leaf-вершины (потомки): количество - {len(matched_nodes)}", verbose=self.verbose)
                 for i in range(matched_nodes):
                     self.log(f"- [{matched_nodes[i].id}] {matched_nodes[i].document}", verbose=self.verbose)
             else:
                 self.log(f"В качестве самой релевантной выбрана leaf-вершина: {best_leafnode}", verbose=self.verbose)
-                matched_nodes = self.vectordb_leafnodes_conn.read([best_leafnode.id])
+                matched_nodes = self.vectordb_leafnodes_conn.read([best_leafnode.id], includes=["documents", "metadatas"])
                 self.log(f"- [{matched_nodes[0].id}] {matched_nodes[0].document}", verbose=self.verbose)
 
         elif strategy == 'traversal':

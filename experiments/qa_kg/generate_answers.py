@@ -18,7 +18,7 @@ with open(PARAMS_FILEP, 'r') as stream:
 
 sys.path.insert(0, PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
 
-from src.kg_model import KnowledgeGraphModel
+from src.kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig
 from src.pipelines.qa import QAPipelineConfig, QAPipeline
 from src.pipelines.qa.kg_reasoning import KnowledgeGraphReasonerConfig
 from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
@@ -60,9 +60,8 @@ embed_config.tripletsdb_driver_config.db_config.need_to_clear = False
 print("graph_config:", graph_config)
 print("embed_config:", embed_config)
 
-kg_model = KnowledgeGraphModel(
-    graph_config=graph_config,
-    embeddings_config=embed_config)
+kg_config = KnowledgeGraphModelConfig(graph_config=graph_config, embeddings_config=embed_config)
+kg_model = KnowledgeGraphModel(kg_config)
 
 print(kg_model.embeddings_struct.vectordbs['nodes'].count_items())
 print(kg_model.embeddings_struct.vectordbs['triplets'].count_items())
@@ -102,7 +101,7 @@ print("KG_REASONER-CONFIG:\n", kg_reasoner_config)
 qa_config = QAPipelineConfig(
     reasoner_config=KnowledgeGraphReasonerConfig(
         reasoner_name=PARAMS['BASE_KGR_CONFIG']['name'],
-        reasoner_hyperparameters=kg_reasoner_config ))
+        reasoner_hyperparameters=kg_reasoner_config))
 
 print("KG_PIPELINE-CONFIG:\n", qa_config)
 

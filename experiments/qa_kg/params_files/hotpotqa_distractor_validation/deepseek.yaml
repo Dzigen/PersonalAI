@@ -1,4 +1,4 @@
-EXPERIMENT_NAME: "m_v2_deepseek(e3.6.4)(v1.5.5)" # TO CHANGE
+EXPERIMENT_NAME: "medium_v2_deepseek(e6.1.1)(v1.5.7)" # TO CHANGE
 DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'deepseek_120425_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:
@@ -15,7 +15,7 @@ INIT_STRUCT: True # !!! PAY ATTENTION !!!
 ########## QA PARAMS ##########
 
 BASE_KGR_CONFIG:
-  name: 'weak' # DONT CHANGE
+  name: 'medium' # DONT CHANGE
 
   lang: 'en' # DONT CHANGE
   caching: True # DONT CHANGE
@@ -68,7 +68,7 @@ BASE_KGR_CONFIG:
       password: 'my_user_password'
     db_configuration: 'redis' # DONT CHANGE
 
-WEAK_KG_REASONER:
+MEDIUM_KG_REASONER:
 
   query_parser_config:
     kw_extraction_task:
