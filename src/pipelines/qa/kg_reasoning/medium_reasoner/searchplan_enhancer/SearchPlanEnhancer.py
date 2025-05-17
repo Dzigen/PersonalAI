@@ -76,7 +76,7 @@ class SearchPlanEnhancer(CacheUtils):
             self.log("Выполняем проверку на необходимость улучшения следующих шагов поиска в плане...",verbose=self.verbose)
             need_enhance, status = self.enhance_classify_solver.solve(
                 lang=self.config.lang, query=search_plan.base_query,
-                search_steps=search_plan.search_steps, steps_answers=search_plan.steps_answers)
+                search_steps=search_plan.search_steps, steps_answers=search_plan.steps_answers[:search_step])
             self.log(f"RESULT: {need_enhance}", verbose=self.config.verbose)
             
             if status == ReturnStatus.success:
