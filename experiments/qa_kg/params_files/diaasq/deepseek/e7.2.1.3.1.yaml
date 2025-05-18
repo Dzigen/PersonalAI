@@ -122,6 +122,22 @@ MEDIUM_KG_REASONER:
 
   max_searchplan_steps: 10
 
+########## KNOWLEDGE GRAPH PARAMS ##########
+
+KG_DB_CONFIGS:
+  graphdb_config:
+    host: 'localhost' # TO CHANGE
+    port: 7690 # TO CHANGE
+    params:
+      user: 'neo4j'
+      pwd: 'password'
+
+  embedder_config:
+    prompts:
+      query: "query: "
+      passage: "passage: "
+    model_name_or_path: 'intfloat/multilingual-e5-large'
+
 ########## EVALUATION PARAMS ##########
 
 QA_EVALUATION:

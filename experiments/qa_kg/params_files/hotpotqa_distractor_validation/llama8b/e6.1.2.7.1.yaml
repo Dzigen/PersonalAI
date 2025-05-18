@@ -146,6 +146,22 @@ QA_EVALUATION:
         temperature: 0.0
         top_k: 1
 
+########## KNOWLEDGE GRAPH PARAMS ##########
+
+KG_DB_CONFIGS:
+  graphdb_config:
+    host: 'localhost' # TO CHANGE
+    port: 7703 # TO CHANGE
+    params:
+      user: 'neo4j'
+      pwd: 'password'
+
+  embedder_config:
+    prompts:
+      query: "query: "
+      passage: "passage: "
+    model_name_or_path: 'intfloat/multilingual-e5-large'
+
 ########## CONTAINERS PARAMS ##########
 
 CONTAINERS_ADDITIONAL_CONFIG:
