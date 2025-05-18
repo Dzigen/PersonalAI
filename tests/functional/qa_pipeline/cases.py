@@ -25,7 +25,6 @@ from src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_ext
 from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag import AgentSimpleAGTaskConfigSelector
 
 #
-
 from src.pipelines.qa.answers_aggregation import AnswersAggregatorConfig
 from src.pipelines.qa.answers_aggregation.agent_tasks.answers_summarisation import AgentSubASummTaskConfigSelector
 
@@ -304,7 +303,7 @@ QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.clueanswers_summar
 QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.answer_generator_config.answer_classifier_agent_task_config = AgentAnswerClassifierTaskConfigSelector.select(base_config_version='v1')
 QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.answer_generator_config.answer_generator_agent_task_config = AgentAnswerGeneratorTaskConfigSelector.select(base_config_version='v1')
 
-QA_MEDIUM_V1_CONFIG1.aggregator_config.suba_summarisation_agent_task_config = ...
+QA_MEDIUM_V1_CONFIG1.aggregator_config.suba_summarisation_agent_task_config = AgentSubASummTaskConfigSelector.select(base_config_version='v1')
 
 def populate_configs_with_diff_accepted_nodes(config: QAPipelineConfig):
     anodes_packs = [[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time],

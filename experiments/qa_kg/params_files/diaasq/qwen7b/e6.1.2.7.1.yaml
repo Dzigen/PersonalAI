@@ -234,6 +234,8 @@ SAVE_CONFIGS_NAMES:
   docker_compose_env: env_files/diaasq/.env_qwen7b
   qapipeline_config: qa_config
   kg_reasoner_config: kg_reasoner_config
+  querypreproc_config: querypreproc_config
+  answeraggr_config: answeraggr_config
 
   hyperparameters: hyperparameters.yaml
   elapsed_time: elapsed_time.json
