@@ -2,7 +2,7 @@ services:
   neo4j:
     container_name: personalai_test_neo4j
     image: neo4j:5.21.0-enterprise
-    hostname: personalai_test_neo4j
+    hostname: localhost
     # networks:
     #   - tests_network
     ports:
@@ -47,7 +47,7 @@ services:
   mongo_cache:
     container_name: personalai_test_mongo
     image: mongo:7.0.9
-    hostname: personalai_test_mongo #personalai_test_mongo
+    hostname: localhost #personalai_test_mongo
     # networks:
     #   - tests_network
     environment:
@@ -88,7 +88,7 @@ services:
   redis_cache:
     container_name: personalai_test_redis
     image: redis:latest
-    hostname: personalai_test_redis #personalai_test_redis
+    hostname: localhost #personalai_test_redis
     # networks:
     #   - tests_network
     command: redis-server /usr/local/etc/redis/redis.conf
@@ -126,7 +126,7 @@ services:
   milvus:
     image: milvusdb/milvus:v2.5.8
     container_name: personalai_test_milvus
-    hostname: personalai_test_milvus
+    hostname: localhost
     # networks:
     #   - tests_network
     command: ["milvus", "run", "standalone"]
@@ -161,7 +161,7 @@ services:
           memory: 5G
 
   isolated_environment:
-    image: m.menschikov/empty_workspace:v1
+    image: m.menschikov/workspace:v2
     container_name: personalai_test_isolated_env
     hostname: test_isolated_env
     network_mode: "host"
@@ -176,21 +176,20 @@ services:
       - ../configs:/home/workspace/configs
     depends_on:
       - neo4j
-      #- aerospike
       - redis_ui
       - mongo_ui
       - milvus
     deploy:
       resources:
-        limits:
-          cpus: '16'
-          memory: 32G
+        # limits:
+        #   cpus: '16'
+        #   memory: 32G
         reservations:
-          cpus: '8'
-          memory: 24G
+          # cpus: '8'
+          # memory: 24G
           devices:
             - driver: nvidia
-              device_ids: ['1']
+              device_ids: ['0']
               capabilities: [gpu]
 
 # networks:

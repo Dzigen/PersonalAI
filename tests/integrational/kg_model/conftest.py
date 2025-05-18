@@ -6,7 +6,7 @@ PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.kg_model import EmbeddingsModel, EmbeddingsModelConfig, GraphModel, GraphModelConfig, KnowledgeGraphModel
+from src.kg_model import EmbeddingsModel, EmbeddingsModelConfig, GraphModel, GraphModelConfig, KnowledgeGraphModel, KnowledgeGraphModelConfig
 from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriverConfig
 from src.db_drivers.vector_driver.embedders import EmbedderModelConfig
 from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
@@ -93,7 +93,7 @@ def embeddings_chroma_config():
             conn={'path': f'{TEST_VOLUME_DIR}/chroma'}, db_info={'db': 'testing', 'table': 'vectorized_nodes'}, params={"hnsw:space": "ip","hnsw:M": 4096}, need_to_clear=True)),
         tripletsdb_driver_config=VectorDriverConfig(db_config=VectorDBConnectionConfig(
             conn={'path': f'{TEST_VOLUME_DIR}/chroma'}, db_info={'db': 'testing', 'table': 'vectorized_triplets'}, params={"hnsw:space": "ip","hnsw:M": 4096}, need_to_clear=True)),
-        embedder_config=EmbedderModelConfig(model_name_or_path=f'{PROJECT_BASE_DIR}/models/intfloat/multilingual-e5-small', device='cuda'))
+        embedder_config=EmbedderModelConfig(model_name_or_path=f'{PROJECT_BASE_DIR}models/intfloat/multilingual-e5-small', device='cuda'))
     return config
 
 #------------------------------#
@@ -121,7 +121,8 @@ def available_kg_models(available_embedding_configs, available_graph_configs):
     kg_configs = {}
     for vector_name, vector_config in available_embedding_configs.items():
         for graph_name, graph_config in available_graph_configs.items():
-            kg_configs[f"{vector_name}/{graph_name}"] = KnowledgeGraphModel(graph_config, vector_config)
+            cur_config = KnowledgeGraphModelConfig(graph_config=graph_config, embeddings_config=vector_config, nodestree_config=None)
+            kg_configs[f"{vector_name}/{graph_name}"] = KnowledgeGraphModel(cur_config)
     return kg_configs
 
 @pytest.fixture(scope='function')
