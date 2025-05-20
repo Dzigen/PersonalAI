@@ -231,6 +231,7 @@ WORKSPACE_CONTAINER_DIRS:
 SAVE_CONFIGS_NAMES:
   graph_config: graph_config
   embeddings_config: embeddings_config
+  nodestree_config: nodestree_config
   docker_compose_env: env_files/hotpotqa_distractor_validation/.env_deepseek
   qapipeline_config: qa_config
   kg_reasoner_config: kg_reasoner_config

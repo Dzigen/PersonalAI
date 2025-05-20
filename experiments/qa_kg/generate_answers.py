@@ -29,6 +29,7 @@ DATASET_KGS_PATH = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['
 SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 GRAPH_DRIVER_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['graph_config']}"
 EMBEDDINGS_DRIVER_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['embeddings_config']}"
+NODESTREE_DRIVER_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['nodestree_config']}"
 
 QA_DATASET_PATH = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['qa_datasets']}/{PARAMS['DATASET_NAME']}"
 
@@ -50,22 +51,28 @@ print("Инициализируем граф знаний...")
 
 graph_config = joblib.load(GRAPH_DRIVER_CONFIG_PATH)
 embed_config = joblib.load(EMBEDDINGS_DRIVER_CONFIG_PATH)
+nodestree_config = joblib.load(NODESTREE_DRIVER_CONFIG_PATH)
 
 # !!! IMPORTANT !!!
 graph_config.driver_config.db_config.need_to_clear = False
 embed_config.nodesdb_driver_config.db_config.need_to_clear = False
 embed_config.tripletsdb_driver_config.db_config.need_to_clear = False
+nodestree_config.vectordb_leafnodes_config.db_config.need_to_clear = False
+nodestree_config.vectordb_summnodes_config.db_config.need_to_clear = False
+nodestree_config.treedb_config.db_config.need_to_clear = False
 # !!! IMPORTANT !!!
 
 print("graph_config:", graph_config)
 print("embed_config:", embed_config)
+print("nodestree_config:", nodestree_config)
 
-kg_config = KnowledgeGraphModelConfig(graph_config=graph_config, embeddings_config=embed_config)
+kg_config = KnowledgeGraphModelConfig(graph_config=graph_config, embeddings_config=embed_config, nodestree_config=nodestree_config)
 kg_model = KnowledgeGraphModel(kg_config)
 
 print(kg_model.embeddings_struct.vectordbs['nodes'].count_items())
 print(kg_model.embeddings_struct.vectordbs['triplets'].count_items())
 print(kg_model.graph_struct.db_conn.count_items())
+print(kg_model.nodestree_struct.count_items())
 
 print("Готово.")
 
