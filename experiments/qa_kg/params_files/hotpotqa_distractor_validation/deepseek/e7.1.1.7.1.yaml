@@ -102,7 +102,7 @@ MEDIUM_KG_REASONER:
     filter_config: None
 
   clueanswer_generator_config:
-    cquerie_generator_agent_task_version: v3
+    canswer_generator_agent_task_version: v3
 
   clueanswers_summarizer_confif:
     canswers_summarisation_agent_task_version: v1

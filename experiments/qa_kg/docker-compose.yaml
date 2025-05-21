@@ -173,7 +173,7 @@ services:
           memory: 24G
           devices:
             - driver: nvidia
-              device_ids: ['1']
+              device_ids: ['2']
               capabilities: [gpu]
 
 
