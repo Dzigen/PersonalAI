@@ -37,6 +37,8 @@ Info 3:
 ### Answer 3
 """
 
+EN_SIMPLEAG_ASSISTANT_PROMPT = ""
+
 ### PROMPT IN RUSSIAN ###
 
 RU_SIMPLEAG_SYSTEM_PROMPT = """Ты - ассистент, который умеет решать заданные задачи."""
@@ -46,3 +48,5 @@ RU_SIMPLEAG_USER_PROMPT = \
 Вопрос: {q}
 Информация для ответа: {c}
 Ответ: """
+
+RU_SIMPLEAG_ASSISTANT_PROMPT = ""

@@ -72,10 +72,10 @@ class QAPipeline:
             query_info, prepr_info = self.query_preprocessor.perform(query)
             self.log(f"RESULT: {query_info}", verbose=self.config.verbose)
             if prepr_info.status != ReturnStatus.success:
-                self.log("Operation ended with error!")
+                self.log("Operation ended with error!", verbose=self.verbose)
                 info = prepr_info
             else:
-                self.log("Operation ended successfully")
+                self.log("Operation ended successfully", verbose=self.verbose)
                 info.occurred_warning.append(prepr_info.occurred_warning)
         else:
             self.log("Query Preprocesing-stage omited. Continue...", verbose=self.config.verbose)
@@ -100,30 +100,30 @@ class QAPipeline:
                 cur_sub_answer, reasoner_info = self.kg_reasoner.perform(cur_sub_query)
                 self.log(f"RESULT: {cur_sub_answer}", verbose=self.config.verbose)
                 if reasoner_info.status != ReturnStatus.success:
-                    self.log("Operation ended with error!")
+                    self.log("Operation ended with error!", verbose=self.verbose)
                     info = reasoner_info
                     break
                 else:
-                    self.log("Operation ended successfully")
+                    self.log("Operation ended successfully", verbose=self.verbose)
                     info.occurred_warning.append(reasoner_info.occurred_warning)     
                     sub_answers.append(cur_sub_answer)
 
             str_subqueriesanswers = "\n".join([f"- [{q}] {a}" for q, a in zip(sub_queries, sub_answers)])
-            self.log(f"RESULT: {str_subqueriesanswers}", verbose=self.verbose)
+            self.log(f"RESULT:\n{str_subqueriesanswers}", verbose=self.verbose)
         else:
-            self.log("During previous steps error occurs.")
+            self.log("During previous steps error occurs.", verbose=self.verbose)
 
         self.log("Answers Aggregation...", verbose=self.verbose)
         if info.status == ReturnStatus.success:
             final_answer, aagg_info = self.answers_aggregator.perform(query_info, sub_answers)
             self.log(f"RESULT: {final_answer}", verbose=self.verbose)
-            if aagg_info != ReturnStatus.success:
-                self.log("Operation ended with error!")
+            if aagg_info.status != ReturnStatus.success:
+                self.log("Operation ended with error!", verbose=self.verbose)
                 info = aagg_info
             else:
-                self.log("Operation ended successfully")
+                self.log("Operation ended successfully", verbose=self.verbose)
         else:
-            self.log("During previous steps error occurs.")
+            self.log("During previous steps error occurs.", verbose=self.verbose)
 
         self.log(f"STATUS: {info.status}", verbose=self.verbose)
 

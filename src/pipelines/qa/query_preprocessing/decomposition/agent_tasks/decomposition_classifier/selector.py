@@ -2,7 +2,7 @@ from .......utils import AgentTaskSolverConfig, Logger
 from .general_parsers import dc_custom_formate, dc_custom_postprocess
 from .v1 import DC_SUITE_V1
 
-DC_LOG_PATH = "qp_qdecomp_agent_task_cache"
+DC_LOG_PATH = "log/qa/query_preprocessing/decomposition/agent_tasks/decompose_classification"
 
 AVAILABLE_DC_TCONFIGS = {
     'v1': DC_SUITE_V1

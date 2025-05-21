@@ -14,7 +14,7 @@ from ......utils.cache_kv import CacheKV, CacheUtils
 @dataclass
 class Entities2NodesMatcherConfig:
     use_tree: bool = False
-    distance_threshold: float = 0.4,
+    distance_threshold: float = 0.4
     max_n: int = 3
     fetch_k: int = 50
 
@@ -56,7 +56,7 @@ class Entities2NodesMatcher(CacheUtils):
             entitie_vinstance = VectorDBInstance(embedding=entitie_embedding)
 
             raw_scored_nodes = self.kg_model.embeddings_struct.vectordbs['nodes'].retrieve(
-                query_instances=entitie_vinstance,n_results=fetch_k, includes=['documents'])
+                query_instances=[entitie_vinstance],n_results=fetch_k, includes=['documents'])[0]
             filtered_nodes = list(filter(lambda pair: pair[0] <= distance_threshold, raw_scored_nodes))
 
             object_nodes = list(filter(lambda pair: self.kg_model.graph_struct.db_conn.get_node_type(pair[1].id) == NodeType.object, filtered_nodes)) 
@@ -80,10 +80,9 @@ class Entities2NodesMatcher(CacheUtils):
             str_matchedobjects = ', '.join(list(map(lambda obj: obj.document, matched_kg_objects[entitie])))
             self.log(f"RESULT: {str_matchedobjects}", verbose=self.verbose)
 
-        self.log(f"STATUS: {info.status}", verbose=self.verbose)
-
         m_objects_amount = sum(list(map(lambda m_objects: len(m_objects), matched_kg_objects.values())))
-        if len(m_objects_amount) < 1:
+        if m_objects_amount < 1:
             info.status = ReturnStatus.empty_answer
+        self.log(f"STATUS: {info.status}", verbose=self.verbose)
 
         return matched_kg_objects, info

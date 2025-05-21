@@ -62,23 +62,23 @@ class ClueQueriesGenerator(CacheUtils):
         str_matchedobjects = ';'.join([f'{k} - {[vv.document for vv in v]}' for k,v in matched_kg_objects.items()])
         self.log(f"MATCHED_KG_OBJECT: {str_matchedobjects}", verbose=self.config.verbose)
         clue_queries, info = [], ReturnInfo()
-
+        unique_cqueries = set()
 
         if len(search_query) < 1 or len(matched_kg_objects) < 1:
             raise ValueError
         m_objects_amount = sum(list(map(lambda m_objects: len(m_objects), matched_kg_objects.values())))
-        if len(m_objects_amount) < 1:
+        if m_objects_amount < 1:
             raise ValueError
 
         self.log(f"Получаем декартово произведение всех комбинаций объектов (по сущностям)...", verbose=self.config.verbose)
         base_entities = sorted(list(filter(lambda entitie: len(matched_kg_objects[entitie]) > 0, matched_kg_objects.keys())))
-        objects_groups = product(*[matched_kg_objects[k] for k in base_entities])
+        objects_groups = list(product(*[matched_kg_objects[k] for k in base_entities]))
         str_objectspermuts = ';'.join([f'[{k}] {len(v)}' for k, v in matched_kg_objects.items()])
-        self.log(f"RESULT:\n- всего сущностей: {len(matched_kg_objects)}\n- после фильтрации: {len(base_entities)}\n- объектов для каждой сущности: {str_objectspermuts}\n - полученное количество комбинаций: {len(objects_groups)}", verbose=self.config.verbose)
+        self.log(f"RESULT:\n- всего сущностей: {len(matched_kg_objects)}\n- после фильтрации: {len(base_entities)}\n- объектов для каждой сущности: {str_objectspermuts}\n- полученное количество комбинаций: {len(objects_groups)}", verbose=self.config.verbose)
         
         self.log("Генерируем clue-queries...", verbose=self.config.verbose)
         for i, cur_group in enumerate(objects_groups):
-            self.log(f"Текущий cleu-query #: {i} / {len(objects_groups)}")
+            self.log(f"Текущий cleu-query #: {i} / {len(objects_groups)}", verbose=self.config.verbose)
             formated_objects_group = list(map(lambda item: item.document, cur_group))
 
             self.log("Выполняем генерацию clue-query с помощью LLM-агента...", verbose=self.config.verbose)
@@ -91,10 +91,17 @@ class ClueQueriesGenerator(CacheUtils):
                 info.status = status
                 break
             else:
-                clue_queries.append(QueryInfo(
-                    query=cur_cluequery, entities=base_entities, 
-                    linked_nodes=list(cur_group), linked_nodes_by_entities=list(map(lambda obj: [obj], cur_group))))
+                if cur_cluequery in unique_cqueries:
+                    self.log("Сгенерированное clue-query уже было получено ранее. Отбрасываем.", verbose=self.config.verbose)
+                    continue
+                else:
+                    self.log("Сгенерированое clue-query ещё получено не было. Сохраняем.", verbose=self.config.verbose)
+                    unique_cqueries.add(cur_cluequery)
+                    clue_queries.append(QueryInfo(
+                        query=cur_cluequery, entities=base_entities, linked_nodes=list(cur_group), 
+                        linked_nodes_by_entities=list(map(lambda pair: [base_entities[pair[0]],pair[1]], enumerate(formated_objects_group)))))
 
+        self.log(f"RESULT:\n- Количество clue-queries после фильтрации по строкоовму представлению: {len(clue_queries)}", verbose=self.verbose)
         self.log(f"STATUS: {info.status}", verbose=self.verbose)
 
         return clue_queries, info

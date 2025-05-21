@@ -123,7 +123,7 @@ MEDIUM_KG_REASONER:
     answer_classifier_agent_task_version: v1
     answer_generator_agent_task_version: v1
 
-  max_searchplan_steps: 10
+  max_searchplan_steps: 5
 
 ########## EVALUATION PARAMS ##########
 

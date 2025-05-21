@@ -70,14 +70,15 @@ RAW_TEXTS_EN = [
 EN_QUESTIONS = [
     "Do students living in a dormitory have 24-hour access to their accommodation?",
     "Can students contact the administration with questions?",
-    "Can students living in the dormitory take part in events organized by the administration of 'MSG'?"]
+    "Can students living in the dormitory take part in events organized by the administration of 'MSG'?"
+]
 
 AGENT_DRIVER_CONFIG = AgentDriverConfig(
     name='ollama',
     agent_config=AgentConnectorConfig(
         gen_strategy={"num_predict": 2048, "seed": 42, "top_k": 1, "temperature": 0.0},
-        credentials={"host": 'localhost', "port": 11437},
-        ext_params={"model": 'qwen2.5:7b', "timeout": 560, "keep_alive": -1}))
+        credentials={"model": 'qwen2.5:7b'},
+        ext_params={"host": 'localhost', "port": 11438, "timeout": 560, "keep_alive": -1}))
 
 KV_CACHE_CONFIG = KeyValueDriverConfig(
     db_vendor='mixed_kv',
@@ -85,12 +86,12 @@ KV_CACHE_CONFIG = KeyValueDriverConfig(
         need_to_clear=False,
         params={
             'mongo_config': KVDBConnectionConfig(
-                host='localhost', port=27017,
+                host='localhost', port=27010,
                 db_info={'db': 'memorize_db', 'table': None},
                 params={'username': 'user', 'password': 'pass', 'max_storage': -1},
                 need_to_clear=False),
             'redis_config': KVDBConnectionConfig(
-                host='localhost', port=6379,
+                host='localhost', port=6370,
                 db_info={'db': 0, 'table': None},
                 params={'ss_name': 'sorted_node_pairs', 'hs_name': 'node_pairs', 'max_storage': 50000000},
                 need_to_clear=False)}))
@@ -334,28 +335,32 @@ QA_V2_CONFIGS = reduce(lambda acc, v: acc + v,list(map(populate_configs_with_dif
 
 QA_MEDIUM_V1_CONFIGS = [QA_MEDIUM_V1_CONFIG1]
 
-POPULATED_QA_CONFIGS = []
-for i in range(len(QA_V1_CONFIGS)):
-    POPULATED_QA_CONFIGS.append((QA_V1_CONFIGS[i], EN_QUESTIONS, True, False, False))
-for i in range(len(QA_V1_CONFIGS)):
-    POPULATED_QA_CONFIGS.append((QA_V1_CONFIGS[i], EN_QUESTIONS, False, False, False))
-for i in range(len(QA_V1_CONFIGS)):
-    POPULATED_QA_CONFIGS.append((QA_V1_CONFIGS[i], [], True, True, False))
+# Adding Weak QA-configs
 
-for i in range(len(QA_V2_CONFIGS)):
-    POPULATED_QA_CONFIGS.append((QA_V2_CONFIGS[i], EN_QUESTIONS, True, False, False))
-for i in range(len(QA_V2_CONFIGS)):
-    POPULATED_QA_CONFIGS.append((QA_V2_CONFIGS[i], EN_QUESTIONS, False, False, False))
-for i in range(len(QA_V2_CONFIGS)):
-    POPULATED_QA_CONFIGS.append((QA_V2_CONFIGS[i], [], True, True, False))
+POPULATED_QA_CONFIGS = []
+#for i in range(len(QA_V1_CONFIGS)):
+#    POPULATED_QA_CONFIGS.append((QA_V1_CONFIGS[i], EN_QUESTIONS, True, False, False))
+#for i in range(len(QA_V1_CONFIGS)):
+#    POPULATED_QA_CONFIGS.append((QA_V1_CONFIGS[i], EN_QUESTIONS, False, False, False))
+#for i in range(len(QA_V1_CONFIGS)):
+#    POPULATED_QA_CONFIGS.append((QA_V1_CONFIGS[i], [], True, True, False))
+
+#for i in range(len(QA_V2_CONFIGS)):
+#    POPULATED_QA_CONFIGS.append((QA_V2_CONFIGS[i], EN_QUESTIONS, True, False, False))
+#for i in range(len(QA_V2_CONFIGS)):
+#    POPULATED_QA_CONFIGS.append((QA_V2_CONFIGS[i], EN_QUESTIONS, False, False, False))
+#for i in range(len(QA_V2_CONFIGS)):
+#    POPULATED_QA_CONFIGS.append((QA_V2_CONFIGS[i], [], True, True, False))
+
+# Adding Medium QA-configs
 
 for i in range(len(QA_MEDIUM_V1_CONFIGS)):
     POPULATED_QA_CONFIGS.append((QA_MEDIUM_V1_CONFIGS[i], EN_QUESTIONS, True, False, False))
-for i in range(len(QA_MEDIUM_V1_CONFIGS)):
-    POPULATED_QA_CONFIGS.append((QA_MEDIUM_V1_CONFIGS[i], EN_QUESTIONS, False, False, False))
+# for i in range(len(QA_MEDIUM_V1_CONFIGS)):
+#     POPULATED_QA_CONFIGS.append((QA_MEDIUM_V1_CONFIGS[i], EN_QUESTIONS, False, False, False))
 for i in range(len(QA_MEDIUM_V1_CONFIGS)):
     POPULATED_QA_CONFIGS.append((QA_MEDIUM_V1_CONFIGS[i], [], True, True, False))
 
-POPULATED_QA_CONFIGS.append((POPULATED_QA_CONFIGS[-1][0], POPULATED_QA_CONFIGS[-1][1], False, False, True))
+#POPULATED_QA_CONFIGS.append((POPULATED_QA_CONFIGS[-1][0], [], False, False, True))
 
 

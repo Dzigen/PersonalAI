@@ -48,12 +48,13 @@ class ClueAnswersSummarizer(CacheUtils):
         self.log = self.config.log
         self.verbose = self.config.verbose
 
-    def get_cache_key(self, search_query: str, matched_kg_objects: Dict[str, List[VectorDBInstance]]) -> List[object]:
-        str_matchedobject = json.dumps({k: list(map(lambda vv: vv.document, v))for k,v in matched_kg_objects.items()}, ensure_ascii=False)
-        return [search_query, str_matchedobject, self.config.to_str()]
+    def get_cache_key(self, search_query: str, clue_queries: List[str], clue_answers: List[str]) -> List[str]:
+        str_cluequeries = ';'.join(clue_queries)
+        str_clueanswers = ';'.join(clue_answers)
+        return [search_query, str_cluequeries, str_clueanswers]
 
     @CacheUtils.cache_method_output
-    def perform(self, search_query: str, clue_queries: List[QueryInfo], clue_answers: List[str]) -> Tuple[str, ReturnInfo]:
+    def perform(self, search_query: str, clue_queries: List[str], clue_answers: List[str]) -> Tuple[str, ReturnInfo]:
         self.log("START CLUE-QUERIES SUMMARISATION...", verbose=self.config.verbose)
         self.log(f"SEARCH_QUERY ID: {create_id(search_query)}", verbose=self.config.verbose)
         self.log(f"SEARCH_QUERY: {search_query}", verbose=self.config.verbose)
@@ -67,8 +68,7 @@ class ClueAnswersSummarizer(CacheUtils):
         self.log("Выполненяем суммаризацию clue-answers с помощью LLM-агента...", verbose=self.config.verbose)
         summ_answer, status = self.clueanswers_summ_solver.solve(
             lang=self.config.lang, search_query=search_query, 
-            clues_queries=[item.query for item in clue_queries], 
-            clue_answers=clue_answers)
+            clues_queries=clue_queries, clue_answers=clue_answers)
         self.log(f"RESULT: {summ_answer}", verbose=self.verbose)
 
         info.status = status
