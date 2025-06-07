@@ -81,8 +81,8 @@ class AnswersAggregator(CacheUtils):
                 lang=self.config.lang, query=query, sub_queries=sub_queries, 
                 sub_answers=sub_answers)
             self.log(f"RESULT: {final_answer}", verbose=self.verbose)
-
-        info.status = status
+            info.status = status
+            
         self.log(f"STATUS: {info.status}", verbose=self.verbose)
 
         return final_answer, info

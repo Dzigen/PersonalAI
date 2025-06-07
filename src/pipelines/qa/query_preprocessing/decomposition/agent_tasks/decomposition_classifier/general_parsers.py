@@ -12,7 +12,7 @@ def dc_custom_postprocess(parsed_response: str, **kwargs) -> bool:
     
     if parsed_response.startswith("Yes"):
         candecomp_sign = True
-    if parsed_response.startswith("No"):
+    elif parsed_response.startswith("No"):
          candecomp_sign = False
     else:
         raise ValueError   

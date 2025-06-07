@@ -47,7 +47,7 @@ class NodesTreeModel:
         self.treedb_conn = TreeDriver.connect(self.config.treedb_config)
         self.vectordb_leafnodes_conn = VectorDriver.connect(config.vectordb_leafnodes_config)
         self.vectordb_summnodes_conn = VectorDriver.connect(config.vectordb_summnodes_config)
-        self.embedder = EmbedderModel(config.embedder_config)
+        #self.embedder = EmbedderModel(config.embedder_config)
 
         self.agent = AgentDriver.connect(config.adriver_config)
         self.nodes_summarization_solver = AgentTaskSolver(

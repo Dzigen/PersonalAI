@@ -16,7 +16,7 @@ def enhcls_custom_postprocess(parsed_response: str, **kwargs) -> bool:
     
     if parsed_response.startswith("Yes"):
         needenhance_sign = True
-    if parsed_response.startswith("No"):
+    elif parsed_response.startswith("No"):
         needenhance_sign = False
     else:
         raise ValueError   

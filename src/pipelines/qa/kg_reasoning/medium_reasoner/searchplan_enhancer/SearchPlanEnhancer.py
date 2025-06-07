@@ -63,15 +63,19 @@ class SearchPlanEnhancer(CacheUtils):
         self.log(f"QUERY ID: {create_id(search_plan.base_query)}", verbose=self.config.verbose)
         self.log(f"CURRENT PLAN: {search_plan}", verbose=self.config.verbose)
         
-        if search_step < 1:
+        if search_step < 0:
             raise ValueError
 
         if search_step == 0:
             self.log("Генерируем план поиска с нуля...",verbose=self.verbose)
-            search_plan.search_steps, status = self.plan_initialing_solver.solve(lang=self.config.lang, query=search_plan.base_query)
-            search_plan.steps_answers = []
-            str_searchplan = "\n".join([f'{i}. {gen_step}' for i,gen_step in enumerate(search_plan.search_steps)])
-            self.log(f"RESULT: {len(search_plan.search_steps)}\n{str_searchplan}", verbose=self.config.verbose)
+            new_search_steps, status = self.plan_initialing_solver.solve(lang=self.config.lang, query=search_plan.base_query)
+            str_searchplan = "\n".join([f'{i}. {gen_step}' for i,gen_step in enumerate(new_search_steps)])
+            self.log(f"RESULT: {len(new_search_steps)}\n{str_searchplan}", verbose=self.config.verbose)
+
+            if status == ReturnStatus.success:
+                enhanced_search_plan = deepcopy(search_plan)
+                enhanced_search_plan.search_steps = new_search_steps
+                enhanced_search_plan.steps_answers = []
         else:
             self.log("Выполняем проверку на необходимость улучшения следующих шагов поиска в плане...",verbose=self.verbose)
             need_enhance, status = self.enhance_classify_solver.solve(
@@ -84,7 +88,7 @@ class SearchPlanEnhancer(CacheUtils):
                     self.log("Улучшаем следующие шаги поиска в плане...",verbose=self.verbose)
                     enhanced_steps, status = self.plan_enhancing_solver.solve(
                         lang=self.config.lang, query=search_plan.base_query,
-                        passed_steps=search_plan.search_steps, 
+                        search_steps=search_plan.search_steps,
                         steps_answers=search_plan.steps_answers[:search_step])
                     str_enhancedsteps = "\n".join([f'{i}. {gen_step}' for i,gen_step in enumerate(enhanced_steps)])
                     self.log(f"RESULT: {len(enhanced_steps)}\n{str_enhancedsteps}", verbose=self.config.verbose)

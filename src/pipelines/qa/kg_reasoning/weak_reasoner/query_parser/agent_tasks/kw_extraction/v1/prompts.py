@@ -17,6 +17,8 @@ Entities 4: people | opinion | video | Xiaomi 10Pro | 25.11.2020.
 Text: {text}
 Entities: '''
 
+EN_KWE_ASSISTANT_PROMPT = "" 
+
 ### PROMPT IN RUSSIAN ###
 
 RU_KWE_SYSTEM_PROMPT = \
@@ -35,3 +37,6 @@ RU_KWE_USER_PROMPT = \
 
 Текст: {text}
 Сущности: '''
+
+
+RU_KWE_ASSISTANT_PROMPT = ""

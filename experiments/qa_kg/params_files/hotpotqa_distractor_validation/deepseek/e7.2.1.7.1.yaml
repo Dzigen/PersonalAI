@@ -100,7 +100,7 @@ MEDIUM_KG_REASONER:
     filter_config: None
 
   clueanswer_generator_config:
-    cquerie_generator_agent_task_version: v3
+    canswer_generator_agent_task_version: v3
 
   clueanswers_summarizer_confif:
     canswers_summarisation_agent_task_version: v1
@@ -109,7 +109,7 @@ MEDIUM_KG_REASONER:
     answer_classifier_agent_task_version: v1
     answer_generator_agent_task_version: v1
 
-  max_searchplan_steps: 10
+  max_searchplan_steps: 5
 
 ########## EVALUATION PARAMS ##########
 
@@ -229,6 +229,7 @@ WORKSPACE_CONTAINER_DIRS:
 SAVE_CONFIGS_NAMES:
   graph_config: graph_config
   embeddings_config: embeddings_config
+  nodestree_config: nodestree_config
   docker_compose_env: env_files/hotpotqa_distractor_validation/.env_deepseek
   qapipeline_config: qa_config
   kg_reasoner_config: kg_reasoner_config

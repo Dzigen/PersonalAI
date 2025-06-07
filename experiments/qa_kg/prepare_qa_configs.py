@@ -135,20 +135,28 @@ elif PARAMS['BASE_KGR_CONFIG']['name'] == 'medium':
         filter_config = PARAMS['MEDIUM_KG_REASONER']['knowledge_retriever_config']['filter_config']
 
     k_retriever_config = KnowledgeRetrieverConfig(
-        retriever_method=PARAMS['WEAK_KG_REASONER']['knowledge_retriever_config']['retriever_method'],
-        retriever_config=PARAMS['WEAK_KG_REASONER']['knowledge_retriever_config']['retriever_config'],
+        retriever_method=PARAMS['MEDIUM_KG_REASONER']['knowledge_retriever_config']['retriever_method'],
+        retriever_config=PARAMS['MEDIUM_KG_REASONER']['knowledge_retriever_config']['retriever_config'],
         filter_method=filter_method, filter_config=filter_config)
 
     kg_reasoner_config = MediumKGReasonerConfig(
         searchplan_enhancer_config=SearchPlanEnhancerConfig(
             lang=PARAMS['BASE_KGR_CONFIG']['lang'], adriver_config=adriver_config,
-            plan_initing_agent_task_config=PARAMS['MEDIUM_KG_REASONER']['searchplan_enhancer_config']['plan_initing_agent_task_version'],
-            enhance_classifier_agent_task_config=PARAMS['MEDIUM_KG_REASONER']['searchplan_enhancer_config']['enhance_classifier_agent_task_version'],
-            plan_enhancing_agent_task_config=PARAMS['MEDIUM_KG_REASONER']['searchplan_enhancer_config']['plan_enhancing_agent_task_version']
+            plan_initing_agent_task_config=AgentPlanInitTaskConfigSelector.select(
+                base_config_version=PARAMS['MEDIUM_KG_REASONER']['searchplan_enhancer_config']['plan_initing_agent_task_version']
+            ),
+            enhance_classifier_agent_task_config=AgentEnhanceClassifierTaskConfigSelector.select(
+                base_config_version=PARAMS['MEDIUM_KG_REASONER']['searchplan_enhancer_config']['enhance_classifier_agent_task_version']
+            ),
+            plan_enhancing_agent_task_config=AgentPlanEnhancingTaskConfigSelector.select(
+                base_config_version=PARAMS['MEDIUM_KG_REASONER']['searchplan_enhancer_config']['plan_enhancing_agent_task_version']
+            )
         ),
         entities_extractor_config=EntitiesExtractorConfig(
             lang=PARAMS['BASE_KGR_CONFIG']['lang'], adriver_config=adriver_config,
-            entities_extraction_agent_task_config=PARAMS['MEDIUM_KG_REASONER']['entities_extractor_config']['entities_extraction_agent_task_version']
+            entities_extraction_agent_task_config=AgentEntitiesExtrTaskConfigSelector.select(
+                base_config_version=PARAMS['MEDIUM_KG_REASONER']['entities_extractor_config']['entities_extraction_agent_task_version']
+            )
         ),
         e2n_matcher_config=Entities2NodesMatcherConfig(
             use_tree=PARAMS['MEDIUM_KG_REASONER']['e2n_matcher_config']['use_tree'],
@@ -184,7 +192,7 @@ elif PARAMS['BASE_KGR_CONFIG']['name'] == 'medium':
                 base_config_version=PARAMS['MEDIUM_KG_REASONER']['answer_generator_config']['answer_generator_agent_task_version']
             )
         ),
-        max_searchplan_steps=PARAMS['MEDIUM_KG_REASONER'][' max_searchplan_steps']
+        max_searchplan_steps=PARAMS['MEDIUM_KG_REASONER']['max_searchplan_steps']
     )
 else:
     raise ValueError

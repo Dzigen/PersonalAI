@@ -33,7 +33,8 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig):
 
     answer_generator_config: AnswerGeneratorConfig = field(default_factory=lambda: AnswerGeneratorConfig())
 
-    max_searchplan_steps: int = 10
+    max_searchplan_steps: int = 5
+    answer_something: bool = True
 
     log: Logger = field(default_factory=lambda: Logger(MDGR_MAIN_LOG_PATH))
     verbose: bool = False
@@ -50,7 +51,7 @@ class MediumKGReasoner(AbstractKGReasoner):
         self.entities_extractor = EntitiesExtractor(self.config.entities_extractor_config, cache_kvdriver_config)
         self.entities2nodes_matcher = Entities2NodesMatcher(self.kg_model, self.config.e2n_matcher_config, cache_kvdriver_config)
 
-        self.cluequeries_generator = ClueQueriesGenerator(self.config.clueanswer_generator_config, cache_kvdriver_config)
+        self.cluequeries_generator = ClueQueriesGenerator(self.config.cluequeries_generator_config, cache_kvdriver_config)
         self.knowledge_retriever = KnowledgeRetriever(self.kg_model, self.config.knowledge_retriever_config, cache_kvdriver_config)
         self.clueanswer_generator = ClueAnswerGenerator(self.config.clueanswer_generator_config, cache_kvdriver_config)
         self.clueanswers_summariser = ClueAnswersSummarizer(self.config.clueanswers_summarizer_confif, cache_kvdriver_config)
@@ -106,13 +107,16 @@ class MediumKGReasoner(AbstractKGReasoner):
 
             self.log("STAGE#1 - SEARCH PLAN INITING/ENHANCING", verbose=self.config.verbose)
             search_plan, info = self.searchplan_enhancer.perform(search_step, search_plan)
-            str_searchsteps = '\n'.join([ f'{i}. {step}' for i, step in enumerate(search_plan.search_steps)])
-            self.log(f"RESULT:\n{str_searchsteps}", verbose=self.config.verbose)
             if info.status != ReturnStatus.success:
+                self.log(f"RESULT:\n- {info.status}\n- {search_plan}", verbose=self.config.verbose)
                 break
+            else:
+                str_searchsteps = '\n'.join([ f'{i}. {step}' for i, step in enumerate(search_plan.search_steps)])
+                self.log(f"RESULT:\n{str_searchsteps}", verbose=self.config.verbose)
+            
             
             search_query = search_plan.search_steps[search_step]
-            self.log(f"Current step #{search_step}: {search_query}")
+            self.log(f"Current step #{search_step}: {search_query}", verbose=self.config.verbose)
 
             self.log("STAGE#2.1 - ENTITIES EXTRACTION", verbose=self.config.verbose)
             entities, info = self.entities_extractor.perform(search_query)
@@ -161,15 +165,16 @@ class MediumKGReasoner(AbstractKGReasoner):
             if error_occurred:
                 break
             
-            self.log("STAGE#4 - CLUE-ANSWERS SUMMARISATION", verbose=self.config.verbose)
-            search_step_answer, info = self.clueanswers_summariser.perform(search_query, cluequeries, clueanswers)
+            self.log("STAGE#5 - CLUE-ANSWERS SUMMARISATION", verbose=self.config.verbose)
+            search_step_answer, info = self.clueanswers_summariser.perform(
+                search_query, list(map(lambda cq_info: cq_info.query, cluequeries)), clueanswers)
             self.log(f"RESULT: {search_step_answer}", verbose=self.config.verbose)
             if info.status != ReturnStatus.success:
                 break
             else:
                 search_plan.steps_answers.append(search_step_answer)
             
-            self.log("STAGE#5 - ANSWER-GENERATION TRYING", verbose=self.config.verbose)
+            self.log("STAGE#6 - ANSWER-GENERATION TRYING", verbose=self.config.verbose)
             answer, info = self.answer_generator.perform(search_plan)
             self.log(f"RESULT: {answer}", verbose=self.config.verbose)
             if info.status != ReturnStatus.success:
@@ -177,14 +182,20 @@ class MediumKGReasoner(AbstractKGReasoner):
 
             #
             if answer is not None:
-                self.log("Удалось сгененирвоать ответа на вопрос. Завершаем поиск.")
+                self.log("Удалось сгененирвоать ответа на вопрос. Завершаем поиск.", verbose=self.config.verbose)
                 break
             else:
-                self.log("Недостаточно информации для генерации релевантного ответа на вопрос. Продолжаем поиск.")
+                self.log("Недостаточно информации для генерации релевантного ответа на вопрос. Продолжаем поиск.", verbose=self.config.verbose)
 
+        self.log("Завершаем поиск.", verbose=self.config.verbose)
+        self.log(f"Информация по выполненному поиску: {search_plan}", verbose=self.config.verbose)
         if answer is None and info.status == ReturnStatus.success:
-            self.log("В рамках заданных ограничений поиска не удалось сгенерировать релевантный ответ.")
-            answer = "<|NotEnoughtInfo|>"
+            if self.config.answer_something:
+                self.log("Пытаемся сгенерировать ответа на основе имеющейся информации...", verbose=self.config.verbose)
+                answer, info.status = self.answer_generator.answer_gen_solver.solve(lang=self.answer_generator.config.lang, search_plan=search_plan)
+            else:
+                self.log("В рамках заданных ограничений поиска не удалось сгенерировать релевантный ответ.", verbose=self.config.verbose)
+                answer = "<|NotEnoughtInfo|>"
 
         self.log(f"RETURNED ANSWER: {answer}", verbose=self.config.verbose)
         self.log(f"STATUS: {info.status}", verbose=self.config.verbose)            

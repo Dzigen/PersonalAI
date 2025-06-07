@@ -50,8 +50,8 @@ class AnswerGenerator(CacheUtils):
         self.log = self.config.log
         self.verbose = self.config.verbose
 
-    def get_cache_key(self, query: str, search_plan: SearchPlanInfo) -> List[object]:
-        return [query, search_plan.to_str(), self.config.to_str()]
+    def get_cache_key(self, search_plan: SearchPlanInfo) -> List[object]:
+        return [search_plan.to_str(), self.config.to_str()]
 
     @CacheUtils.cache_method_output
     def perform(self, search_plan: SearchPlanInfo) -> Tuple[str, ReturnInfo]:
