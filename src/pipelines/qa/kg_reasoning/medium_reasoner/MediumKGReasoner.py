@@ -4,6 +4,7 @@ from typing import Tuple, List
 from .searchplan_enhancer import SearchPlanEnhancerConfig, SearchPlanEnhancer
 from .entities_extractor import EntitiesExtractorConfig, EntitiesExtractor
 from .cluequeries_generator import ClueQueriesGeneratorConfig, ClueQueriesGenerator
+from .clueanswer_generator import ClueAnswerGenerator, ClueAnswerGeneratorConfig
 from .clueanswers_summarisation import ClueAnswersSummarizerConfig, ClueAnswersSummarizer
 from .answer_generator import AnswerGeneratorConfig, AnswerGenerator
 from .entities2nodes_matching import Entities2NodesMatcher, Entities2NodesMatcherConfig
@@ -27,7 +28,7 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig):
 
     cluequeries_generator_config: ClueQueriesGeneratorConfig = field(default_factory=lambda: ClueQueriesGeneratorConfig())
     knowledge_retriever_config: KnowledgeRetrieverConfig = field(default_factory=lambda: KnowledgeRetrieverConfig())
-    clueanswer_generator_config: QALLMGeneratorConfig = field(default_factory=lambda: QALLMGeneratorConfig())
+    clueanswer_generator_config: ClueAnswerGeneratorConfig = field(default_factory=lambda: ClueAnswerGeneratorConfig())
     clueanswers_summarizer_confif: ClueAnswersSummarizerConfig = field(default_factory=lambda: ClueAnswersSummarizerConfig())
 
     answer_generator_config: AnswerGeneratorConfig = field(default_factory=lambda: AnswerGeneratorConfig())
@@ -51,7 +52,7 @@ class MediumKGReasoner(AbstractKGReasoner):
 
         self.cluequeries_generator = ClueQueriesGenerator(self.config.clueanswer_generator_config, cache_kvdriver_config)
         self.knowledge_retriever = KnowledgeRetriever(self.kg_model, self.config.knowledge_retriever_config, cache_kvdriver_config)
-        self.clueanswer_generator = QALLMGenerator(self.config.clueanswer_generator_config, cache_kvdriver_config)
+        self.clueanswer_generator = ClueAnswerGenerator(self.config.clueanswer_generator_config, cache_kvdriver_config)
         self.clueanswers_summariser = ClueAnswersSummarizer(self.config.clueanswers_summarizer_confif, cache_kvdriver_config)
 
         self.answer_generator = AnswerGenerator(self.config.answer_generator_config, cache_kvdriver_config)
@@ -82,7 +83,7 @@ class MediumKGReasoner(AbstractKGReasoner):
             self.knowledge_retriever.triplets_filter.cachekv.kv_conn.clear()
         #
         self.clueanswer_generator.cachekv.kv_conn.clear()
-        self.clueanswer_generator.answer_generator_solver.cachekv.kv_conn.clear()
+        self.clueanswer_generator.clueanswer_generator_solver.cachekv.kv_conn.clear()
         #
         self.clueanswers_summariser.cachekv.kv_conn.clear()
         self.clueanswers_summariser.clueanswers_summ_solver.cachekv.kv_conn.clear()
@@ -149,7 +150,7 @@ class MediumKGReasoner(AbstractKGReasoner):
                     break
 
                 self.log("STAGE#4.2 - CLUE-ANSWER GENERATION", verbose=self.config.verbose)
-                cur_clueanswer, info = self.clueanswer_generator.generate(cur_cluequery.query, retrieved_triplets)
+                cur_clueanswer, info = self.clueanswer_generator.perform(search_query, retrieved_triplets)
                 self.log(f"RESULT: {cur_clueanswer}", verbose=self.config.verbose)
                 if info.status != ReturnStatus.success:
                     error_occurred = True
