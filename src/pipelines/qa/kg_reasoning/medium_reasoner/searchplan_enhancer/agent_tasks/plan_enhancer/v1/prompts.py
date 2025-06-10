@@ -5,7 +5,8 @@ Generate enhanced next search-queries in the following format:
 1. <sub-query1>
 2. <sub-query2>
 ...
-3. <sub-queryN>'''
+N. <sub-queryN>
+'''
 
 EN_PLANENH_USER_PROMPT = '''
 [Question]

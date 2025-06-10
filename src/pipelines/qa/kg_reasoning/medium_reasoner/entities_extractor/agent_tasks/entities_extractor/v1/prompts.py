@@ -17,7 +17,8 @@ sentiment | connection | Apple
 [Question #3]
 What Jessica's opinion (positive, negative or neutral) about signal of Apple was dominant during using Apple?
 [Extracted entities]
-Jessic | opinion | signal | Apple'''
+Jessic | opinion | signal | Apple
+'''
 
 EN_ENTEXTR_USER_PROMPT = '''
 [Question]

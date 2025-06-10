@@ -6,7 +6,8 @@ The format you must match for generating response is presented below:
 <chain-of-thoughts>
 [Answer]
 <final-answer>
-,where <chain-of-thoughts> is your reasoning path based on given question, search-plan and finded information at now that concludes to the answer and <final-answer> is your Yes/No-answer.'''
+,where <chain-of-thoughts> is your reasoning path based on given question, search-plan and finded information at now that concludes to the answer and <final-answer> is your Yes/No-answer.
+'''
 
 EN_ENHCLS_USER_PROMPT = '''
 [Question]

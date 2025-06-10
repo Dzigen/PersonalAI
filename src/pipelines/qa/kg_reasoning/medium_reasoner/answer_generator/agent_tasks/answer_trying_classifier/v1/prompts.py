@@ -7,13 +7,11 @@ The format you must match for generating response is presented below:
 [Answer]
 <final-answer>
 ,where <chain-of-thoughts> is your reasoning path based on given question, search-queries and finded information that concludes to the answer and <final-answer> is your Yes/No-answer.
-
 '''
 
 EN_ANSWCLS_USER_PROMPT = '''
 [Question]
 {query}
-
 
 {search_info}
 '''

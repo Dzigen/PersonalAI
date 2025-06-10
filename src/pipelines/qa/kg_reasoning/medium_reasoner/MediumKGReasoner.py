@@ -13,7 +13,6 @@ from .utils import SearchPlanInfo
 from .config import MDGR_MAIN_LOG_PATH
 from ..utils import AbstractKGReasoner, BaseKGReasonerConfig
 from ..weak_reasoner.knowledge_retriever import KnowledgeRetrieverConfig, KnowledgeRetriever
-from ..weak_reasoner.answer_generator import QALLMGeneratorConfig, QALLMGenerator
 from .....utils.data_structs import create_id
 from .....utils import Logger, ReturnInfo, ReturnStatus
 from .....kg_model import KnowledgeGraphModel

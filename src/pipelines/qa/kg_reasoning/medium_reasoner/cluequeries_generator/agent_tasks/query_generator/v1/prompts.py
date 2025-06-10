@@ -25,7 +25,8 @@ EN_CQGEN_USER_PROMPT = '''
 [Base question]
 {query}
 [Matched entities]
-{matched_entities}'''
+{matched_entities}
+'''
 
 EN_CQGEN_ASSISTANT_PROMPT = '''
 [Specific question]

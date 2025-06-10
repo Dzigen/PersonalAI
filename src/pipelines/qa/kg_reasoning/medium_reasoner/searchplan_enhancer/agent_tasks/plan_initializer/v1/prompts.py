@@ -32,7 +32,8 @@ Whose opinions from Amanda and Arianna about manufacturers are most similar to J
 
 EN_PLANINIT_USER_PROMPT = '''
 [Base question]
-{query}'''
+{query}
+'''
 
 EN_PLANINIT_ASSISTANT_PROMPT = '''
 [Search-plan]

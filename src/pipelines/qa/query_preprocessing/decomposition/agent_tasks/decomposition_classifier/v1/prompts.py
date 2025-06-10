@@ -6,7 +6,8 @@ The format you must match for generating response is presented below:
 <chain-of-thoughts>
 [Answer]
 <final-answer>
-,where <chain-of-thoughts> is your reasoning path based on given question that concludes to the answer and <final-answer> is your Yes/No-answer.'''
+,where <chain-of-thoughts> is your reasoning path based on given question that concludes to the answer and <final-answer> is your Yes/No-answer.
+'''
 
 EN_DC_USER_PROMPT = '''
 [Base question]
