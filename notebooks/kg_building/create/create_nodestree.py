@@ -4,6 +4,7 @@ import joblib
 import gc
 import copy
 from tqdm import tqdm
+from time import time
 import yaml
 import os
 from typing import List, Dict, Tuple
@@ -21,12 +22,13 @@ from src.kg_model import KnowledgeGraphModel
 
 gc.collect()
 
-######## SETTING HYPERPARAMS ###########
+########  ###########
+print("SETTING HYPERPARAMS")
 
 DATASET_KGS_PATH = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
 SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
-SAVE_PARAMS_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['hyperparameters']}"
+SAVE_PARAMS_PATH = f"{SPEC_KG_PATH}/hyperparameters_updated.yaml"
 
 QA_DATASET_PATH = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['qa_datasets']}/{PARAMS['DATASET_NAME']}"
 
@@ -41,6 +43,7 @@ MEM_PIPELINE_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['mem_p
 CACHE_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['kvdriver_cache_config']}"
 
 ######## Setting nodes-tree model ######
+print("Setting nodes-tree model...")
 
 gmodel_config = joblib.load(GRAPH_MODEL_CONFIG_PATH)
 emodel_config = joblib.load(EMBEDDINGS_MODEL_CONFIG_PATH)
@@ -54,7 +57,12 @@ print("KVDRIVER_CONFIG:\n", kvdriver_config)
 
 kg_model = KnowledgeGraphModel(
     graph_config=gmodel_config, embeddings_config=emodel_config,
-    treemodel_config=treemodel_config, cache_kvdriver_config=kvdriver_config)
+    nodestree_config=treemodel_config, cache_kvdriver_config=kvdriver_config)
+
+kg_model.nodestree_struct.vectordb_leafnodes_conn.clear()
+kg_model.nodestree_struct.vectordb_summnodes_conn.clear()
+kg_model.nodestree_struct.treedb_conn.clear()
+#kg_model.nodestree_struct.nodes_summarization_solver.cachekv.kv_conn.clear()
 
 # checking knowledge graph size
 print("tree_struct: ", kg_model.nodestree_struct.count_items())
@@ -66,17 +74,28 @@ print("graph struct: ", kg_model.graph_struct.db_conn.count_items())
 if PARAMS['MEM_PIPELINE_CONFIG']['llm_caching']:
     print("summ_nodes cached: ", kg_model.nodestree_struct.nodes_summarization_solver.cachekv.kv_conn.count_items())
 
-######## LOADING EXTRACTED TRIPLETS ########
+############ ############
+print("SAVING HYPERPARAMS...")
+
+with open(SAVE_PARAMS_PATH, 'w') as fd:
+    yaml.dump(PARAMS, fd, default_flow_style=False)
+
+######## ########
+print("LOADING EXTRACTED TRIPLETS...")
 
 extracted_group_tripelts = joblib.load(EXTRACTED_TRIPLETS_PATH)
 
 ######## NODES-TREE BUILDING ########
+print("NODES-TREE BUILDING...")
 
-step = 100
+step = 10
 counter = 0
-process = tqdm(extracted_group_tripelts)
-for triplets in process:
-    operation_info = kg_model.nodestree_struct.expand_tree(triplets, status_bar=False)
+s_time = time()
+process = enumerate(extracted_group_tripelts)
+milestone_time = time()
+for i, triplets in process:
+    print(f"Triplets group #{i} / {len(extracted_group_tripelts)}")
+    operation_info = kg_model.nodestree_struct.expand_tree(triplets, status_bar=True)
     display_info = {
         'existed_nodes': len(operation_info['existed_nodes']),
         'added_nodes': len(operation_info['added_nodes'])}
@@ -85,15 +104,23 @@ for triplets in process:
     if counter % step == 0:
         ntree_count_info = kg_model.nodestree_struct.count_items()
         display_info.update(ntree_count_info)
-        process.set_postfix(display_info)
+        print(display_info)
 
         kg_model.nodestree_struct.check_consistency()
     else:
-        process.set_postfix(display_info)
+        print(display_info)
+
+    cur_time = time()
+    print(f"process_time: {(cur_time - milestone_time) / 60} min")
+    milestone_time = cur_time
 
     counter += 1
 
-######## CHECKIN CONSISTENCY ########
+e_time = time()
+print(f"ELAPSED TIME: {(e_time - s_time) / 60} min")
+
+######## ########
+print("CHECKIN CONSISTENCY...")
 
 kg_model.nodestree_struct.check_consistency()
 

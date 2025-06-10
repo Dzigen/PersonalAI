@@ -77,7 +77,7 @@ class AgentTaskSolver:
         else:
             self.cachekv = None
 
-    def solve(self, lang: str = 'auto', **kwargs) -> Tuple[object, ReturnStatus]:
+    def solve(self, lang: str = 'en', **kwargs) -> Tuple[object, ReturnStatus]:
         """Метод предназначен для запуска agent-солвера на заданных входных данных.
 
         :param lang: Язык промптов, которые будут использоваться на этапе инференса LLM-агента. Значение по умолчанию 'auto'.

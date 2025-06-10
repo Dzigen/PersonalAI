@@ -3,6 +3,8 @@ services:
     container_name: personalai_test_neo4j
     image: neo4j:5.21.0-enterprise
     hostname: personalai_test_neo4j
+    # networks:
+    #   - tests_network
     ports:
       - 7475:7474
       - 7688:7687
@@ -24,6 +26,8 @@ services:
     container_name: personalai_test_aerospike
     hostname: personalai_test_aerospike
     image: m.menschikov/aerospike:ee-7.1.0.6_1
+    # networks:
+    #   - tests_network
     ports:
       - 3000:3000
       - 3001:3001
@@ -43,7 +47,9 @@ services:
   mongo_cache:
     container_name: personalai_test_mongo
     image: mongo:7.0.9
-    hostname: personalai_test_mongo
+    hostname: personalai_test_mongo #personalai_test_mongo
+    # networks:
+    #   - tests_network
     environment:
       - MONGO_INITDB_ROOT_USERNAME=user
       - MONGO_INITDB_ROOT_PASSWORD=pass
@@ -64,8 +70,10 @@ services:
 
   mongo_ui:
     image: mongo-express:latest
-    container_name: personalai_mmenschikov_mongo_ui
-    hostname: personalai_mmenschikov_mongo_ui
+    container_name: personalai_mongo_ui
+    hostname: personalai_mongo_ui #personalai_mongo_ui
+    # networks:
+    #   - tests_network
     environment:
       ME_CONFIG_BASICAUTH_USERNAME: me_user
       ME_CONFIG_BASICAUTH_PASSWORD: me_pass
@@ -80,6 +88,9 @@ services:
   redis_cache:
     container_name: personalai_test_redis
     image: redis:latest
+    hostname: personalai_test_redis #personalai_test_redis
+    # networks:
+    #   - tests_network
     command: redis-server /usr/local/etc/redis/redis.conf
     environment:
       - REDIS_PASSWORD=my_redis_password
@@ -103,8 +114,10 @@ services:
 
   redis_ui:
     image: redis/redisinsight:latest
-    container_name: personalai_mmenschikov_redis_ui
-    hostname: redis_ui
+    container_name: personalai_redis_ui
+    hostname: personalai_redis_ui
+    # networks:
+    #   - tests_network
     depends_on:
       - redis_cache
     ports:
@@ -114,6 +127,8 @@ services:
     image: milvusdb/milvus:v2.5.8
     container_name: personalai_test_milvus
     hostname: personalai_test_milvus
+    # networks:
+    #   - tests_network
     command: ["milvus", "run", "standalone"]
     security_opt:
       - seccomp:unconfined
@@ -123,9 +138,9 @@ services:
       - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
       - COMMON_STORAGETYPE=local
     ports:
-      - 19530:19530
-      - 2379:2379
-      - 9091:9091
+      - 19520:19530
+      - 2370:2379
+      - 9080:9091
     volumes:
       - ./volumes/milvus/data:/var/lib/milvus
       - ../configs/milvus/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
@@ -149,14 +164,35 @@ services:
     image: m.menschikov/empty_workspace:v1
     container_name: personalai_test_isolated_env
     hostname: test_isolated_env
+    network_mode: "host"
+    # networks:
+    #   - tests_network
     volumes:
       - ../src:/home/workspace/src
       - ../data:/home/workspace/data
+      - ../deployment:/home/workspace/deployment
       - ../models:/home/workspace/models
       - ../tests:/home/workspace/tests
       - ../configs:/home/workspace/configs
     depends_on:
       - neo4j
-      - aerospike
+      #- aerospike
       - redis_ui
       - mongo_ui
+      - milvus
+    deploy:
+      resources:
+        limits:
+          cpus: '16'
+          memory: 32G
+        reservations:
+          cpus: '8'
+          memory: 24G
+          devices:
+            - driver: nvidia
+              device_ids: ['1']
+              capabilities: [gpu]
+
+# networks:
+#   tests_network:
+#    name: personalai_mmenschikov_tests_network

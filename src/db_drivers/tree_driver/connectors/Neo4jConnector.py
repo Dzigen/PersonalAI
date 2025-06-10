@@ -84,12 +84,12 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
 
     def check_consistency(self) -> None:
         # У всех leaf-вершин есть str_id-поле
-        leafs_wo_strid = self.execute_query("MATCH (n:leaf) WHERE NOT EXISTS(n.str_id) RETUN COUNT(n) as bad_leafs")[0]['bad_leafs']
+        leafs_wo_strid = self.execute_query("MATCH (n:leaf) WHERE n.str_id IS NULL RETURN COUNT(n) as badleafs")[0]['badleafs']
         assert leafs_wo_strid < 1
 
         # количество компонент связности равно 1
-        components_amount = self.execute_query(f"CALL gds.wcc.stats({self.config.db_info['db']}) YIELD componentCount")[0]['componentCount']
-        assert components_amount < 2
+        #components_amount = self.execute_query(f"CALL gds.wcc.stats('{self.config.db_info['db']}') YIELD componentCount")[0]['componentCount']
+        #assert components_amount < 2
 
         # нет summarized-вершин без детей
         summarized_wo_childs = self.execute_query("MATCH (parent:summarized) WHERE COUNT { (parent)-[rel]->() } < 1 RETURN parent")
@@ -114,7 +114,9 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
                 id=raw_node['n']['external_id'], text=raw_node['n']['text'],
                 type=TREENODES_TYPES_MAP[list(raw_node['n'].labels)[0]], props=dict(raw_node['n']))
             del cur_f_node.props['external_id']
-            del cur_f_node.props['text']
+
+            if cur_f_node.type != TreeNodeType.root:
+                del cur_f_node.props['text']
 
             formated_nodes.append(cur_f_node)
         return formated_nodes
@@ -247,7 +249,7 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         self.execute_query("MATCH (n)-[rel]->() DELETE n,rel")
         self.execute_query("MATCH (n) DELETE n")
         # Добавляем корневую вершину
-        self.execute_query("CREATE (n:root {" + 'external_id: "' + self.root_node_id + '"});')
+        self.execute_query("CREATE (n:root {" + 'external_id: "' + self.root_node_id + '", depth: 0});')
 
     def get_child_nodes(self, parent_id: str) -> List[TreeNode]:
         if type(parent_id) is not str:

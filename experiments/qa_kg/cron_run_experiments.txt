@@ -1,4 +1,3 @@
-CRONTAB_DIR=/home/workspace/experiments
 DATASET_NAME=hotpotqa_distractor_validation
 EXP_NAME="m_v2_gpt4omini(e4.5.1)(v1.5.5)"
 MODEL_NAME=gpt4omini

@@ -69,6 +69,7 @@ class KnowledgeGraphModel:
         """
         graph_create_info = self.graph_struct.create_triplets(triplets, status_bar=status_bar)
         embd_create_info = self.embeddings_struct.create_triplets(triplets, status_bar=status_bar)
+
         if self.nodestree_struct is not None:
             tree_expand_info = self.nodestree_struct.expand_tree(triplets, status_bar=status_bar)
         else:
@@ -93,6 +94,7 @@ class KnowledgeGraphModel:
         """
         graph_delete_info, embds_delete_info = self.graph_struct.delete_triplets(triplets)
         self.embeddings_struct.delete_triplets(triplets, delete_info=embds_delete_info)
+
         if self.nodestree_struct is not None:
             tree_reduce_info = self.nodestree_struct.reduce_tree(triplets, delete_info=graph_delete_info)
         else:
@@ -120,8 +122,8 @@ class KnowledgeGraphModel:
     def count_items(self) -> Dict[str, Dict[str, int]]:
         return {
             'graph_info': self.graph_struct.count_items(),
-            'embeddings_info': self.embeddings_struct.count_items(),
-            'nodestree_info': self.nodestree_struct.count_items()
+            'embeddings_info': self.embeddings_struct.count_items()
+            #'nodestree_info': self.nodestree_struct.count_items()
         }
 
     def clear(self) -> None:
@@ -129,4 +131,4 @@ class KnowledgeGraphModel:
         """
         self.embeddings_struct.clear()
         self.graph_struct.clear()
-        self.nodestree_struct.clear()
+       # self.nodestree_struct.clear()
