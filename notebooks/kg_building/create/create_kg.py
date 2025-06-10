@@ -54,7 +54,8 @@ print("EMODEL_CONFIG:\n", emodel_config)
 
 kg_model = KnowledgeGraphModel(
     graph_config=gmodel_config,
-    embeddings_config=emodel_config)
+    embeddings_config=emodel_config,
+    nodestree_config=None)
 
 # checking knowledge graph size
 print(kg_model.embeddings_struct.vectordbs['nodes'].count_items())
@@ -130,7 +131,7 @@ print(len(dataset))
 # diaasq deepseekr17b 1459 + 1135 + 886 | Done
 # diaasq gpt4omini 890 + 721 + 1331 + 139 | Done
 # diaasq deepseek 2107 + 160 + 119 + 569 | Done
-# diaasq llama3.1 8b 870
+# diaasq llama3.1 8b 870 | Done
 
 # hotpotqa deepssekr17b 1554 + 716 + 679 + 449 | Done
 # hotpotqa deepseek 2712 | Done
@@ -140,8 +141,9 @@ print(len(dataset))
 # triviaqa deepseekr17b 656 + 2914 + 359 + 707 | Done
 # triviaqa deepseek 1917 + 1589 + 478 + 708 | Done
 # triviaqa gpt4omini 489 + 847 + 2547 | Done
+# triviaqa llama318b 715 + 3435 + 76 | Done
 
-for i in tqdm(range(870, len(dataset))):
+for i in tqdm(range(len(dataset))):
     text, time, properties = dataset[i][0], dataset[i][1], dataset[i][2]
     extracted_triplets, _ = mem_pipeline.remember(text, time, properties)
 
