@@ -78,14 +78,18 @@ def graph_nodes_neighbours_counter(kg_model: KnowledgeGraphModel) -> Dict[str, o
     info = dict()
 
     templates = [
-        ['object', 'episodic', 'episodic'],
-        ['hyper', 'episodic', 'episodic'],
-        ['object', 'hyper', 'hyper'],
-        ['object', 'simple', 'object']]
+        ['object', '-', 'episodic', '->', 'episodic'],
+        ['object', '-', 'hyper', '->', 'hyper'],
+        ['object', '-', 'simple', '->', 'object'],
+        ['hyper', '-', 'episodic', '->', 'episodic'],
+        ['hyper', '<-', 'hyper', '-', 'object'],
+        ['episodic', '<-', 'episodic', '-', 'object'],
+        ['episodic', '<-', 'episodic', '-', 'hyper']
+        ]
 
     for template in templates:
         node_neighbours_to_node_count = kg_model.graph_struct.db_conn.execute_query(
-            f"MATCH (a:{template[0]})-[rel:{template[1]}]->(b:{template[2]}) RETURN count(a), elementId(b)")
+            f"MATCH (a:{template[0]}){template[1]}[rel:{template[2]}]{template[3]}(b:{template[4]}) RETURN count(a), elementId(b)")
         node_neighbours_to_node_count = list(map(lambda item: item['count(a)'], node_neighbours_to_node_count))
 
         info[f'{template[0]}_neighbours_to_{template[2]}'] = {
@@ -93,6 +97,7 @@ def graph_nodes_neighbours_counter(kg_model: KnowledgeGraphModel) -> Dict[str, o
             'max': max(node_neighbours_to_node_count),
             'mean': np.mean(node_neighbours_to_node_count),
             'median': np.median(node_neighbours_to_node_count),
+            'std': np.std(node_neighbours_to_node_count),
             'counts': node_neighbours_to_node_count
         }
 
@@ -148,6 +153,24 @@ GRAPH_STAT_METRICS = {
     # диаметр каждой компоненты
     # среднее/медианное/минимальное/максимальное (box-plot) значение длины кратчайших путей в каждой компоненте
     #"connectivity_components": graph_connectivity_counter
+
+    # Длина текстовых полей в вершинах
+    # - с типом object
+    # - с типом hyper
+    # - c типом episodic
+    # TODO
+
+    # Длина текстовых полей в связях
+    # - с типом simple
+    # TODO
+
+    # Длина строковых представлений триплетов
+    # - c типом связей simple
+    # - с типом связей hyper
+    # - с типом связей episodic
+    #   - с object стартовой вершиной
+    #   - с hyper стартовой вершиной
+    # TODO
 }
 
 ##################################
