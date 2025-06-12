@@ -8,7 +8,11 @@ experiments/qa_kg/results/**/tmp_answer_packs/
 experiments/qa_kg/results/**/answer_packs/
 experiments/qa_kg/results/**/judges_packs/
 experiments/qa_kg/results/**/tmp_judges_packs/
+experiments/qa_kg/results/**/metric_packs/
 experiments/qa_kg/results/**/log/
+experiments/qa_kg/results/**/aeval_cron.txt
+experiments/qa_kg/results/**/agen_cron.txt
+experiments/qa_kg/results/**/llm_aeval_cron.txt
 
 experiments/qa_kg/results/diaasq_legacy
 
