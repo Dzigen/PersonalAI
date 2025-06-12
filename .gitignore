@@ -3,6 +3,7 @@
 *.tar
 models/
 data/
+debug/
 
 experiments/qa_kg/results/**/tmp_answer_packs/
 experiments/qa_kg/results/**/answer_packs/
@@ -15,6 +16,8 @@ experiments/qa_kg/results/**/agen_cron.txt
 experiments/qa_kg/results/**/llm_aeval_cron.txt
 
 experiments/qa_kg/results/diaasq_legacy
+experiments/legacy
+experiments/qa_kg/legacy
 
 create_local_db/
 archives/
