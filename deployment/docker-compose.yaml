@@ -99,10 +99,9 @@ services:
 
   ollama_agent:
     image: ollama/ollama:latest
-    container_name: personalai_mmenschikov_ollama_servicev5
-    network_mode: "host"
+    container_name: personalai_mmenschikov_ollama_qwen7b
     ports:
-      - "11438:11434"
+      - "11437:11434"
     environment:
       - OLLAMA_DEBUG=1
     volumes:

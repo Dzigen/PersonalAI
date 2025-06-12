@@ -59,10 +59,11 @@ kg_model = KnowledgeGraphModel(
     graph_config=gmodel_config, embeddings_config=emodel_config,
     nodestree_config=treemodel_config, cache_kvdriver_config=kvdriver_config)
 
-kg_model.nodestree_struct.vectordb_leafnodes_conn.clear()
-kg_model.nodestree_struct.vectordb_summnodes_conn.clear()
-kg_model.nodestree_struct.treedb_conn.clear()
-#kg_model.nodestree_struct.nodes_summarization_solver.cachekv.kv_conn.clear()
+# !!! PAY ATTENTION !!!
+# kg_model.nodestree_struct.vectordb_leafnodes_conn.clear()
+# kg_model.nodestree_struct.vectordb_summnodes_conn.clear()
+# kg_model.nodestree_struct.treedb_conn.clear()
+# kg_model.nodestree_struct.nodes_summarization_solver.cachekv.kv_conn.clear()
 
 # checking knowledge graph size
 print("tree_struct: ", kg_model.nodestree_struct.count_items())
@@ -88,10 +89,14 @@ extracted_group_tripelts = joblib.load(EXTRACTED_TRIPLETS_PATH)
 ######## NODES-TREE BUILDING ########
 print("NODES-TREE BUILDING...")
 
-step = 10
+# hotpot deepseek 82+103+100+227+74
+# hotpot llama8b 590+1091+452+116+2+645+33+97+196+286+77 | Done
+# diaasq qwen7b 44+23+122+13+220+29+47+20+254+23+116+801+490
+
+step = 200
 counter = 0
 s_time = time()
-process = enumerate(extracted_group_tripelts)
+process = enumerate(extracted_group_tripelts[44+23+122+13+220+29+47+20+254+23+116+801+490:])
 milestone_time = time()
 for i, triplets in process:
     print(f"Triplets group #{i} / {len(extracted_group_tripelts)}")

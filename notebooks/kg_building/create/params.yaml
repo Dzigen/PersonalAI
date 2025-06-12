@@ -1,5 +1,5 @@
-DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'llama318b_040525_v2prompts' # TO CHANGE
+DATASET_NAME: 'trivia_qa_rcwikipedia_validation' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'llama318b_210525_v2prompts' # TO CHANGE
 
 # SERVER PATHS
 BASE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
@@ -24,7 +24,7 @@ MEM_PIPELINE_CONFIG:
     ext_params:
       host: localhost
       keep_alive: -1
-      port: 11437
+      port: 11439
       timeout: 560
     gen_strategy:
       num_predict: 2048
@@ -48,7 +48,7 @@ MEM_PIPELINE_CONFIG:
   persistent_cache_config:
     vendor: 'mongo'
     host: 'localhost'
-    port: 27033 # TO CHANGE
+    port: 27035 # TO CHANGE
     params:
       username: 'user'
       password: 'pass'
@@ -57,7 +57,7 @@ MEM_PIPELINE_CONFIG:
   ram_cache_config:
     vendor: 'redis'
     host: 'localhost'
-    port: 6395 # TO CHANGE
+    port: 6397 # TO CHANGE
     params:
       ss_name: 'sorted_node_pairs'
       hs_name: 'node_pairs'
@@ -72,7 +72,7 @@ KG_DB_CONFIGS:
   graphdb_config:
     vendor: 'neo4j'
     host: 'localhost'
-    port: 7703 # TO CHANGE
+    port: 7705 # TO CHANGE
     params:
       user: 'neo4j'
       pwd: 'password'
@@ -84,7 +84,7 @@ KG_DB_CONFIGS:
     vendor: 'milvus'
     conn:
       host: 'localhost'
-      port: 19543 # TO CHANGE
+      port: 19545 # TO CHANGE
       user: 'root'
       pass: 'Milvus'
     db_info:
@@ -103,7 +103,7 @@ KG_DB_CONFIGS:
       vendor: 'milvus'
       conn:
         host: 'localhost'
-        port: 19543 # TO CHANGE
+        port: 19545 # TO CHANGE
         user: 'root'
         pass: 'Milvus'
       db_info:
@@ -123,7 +123,7 @@ KG_DB_CONFIGS:
       vendor: 'milvus'
       conn:
         host: 'localhost'
-        port: 19543 # TO CHANGE
+        port: 19545 # TO CHANGE
         user: 'root'
         pass: 'Milvus'
       db_info:
@@ -142,7 +142,7 @@ KG_DB_CONFIGS:
       vendor: 'milvus'
       conn:
         host: 'localhost'
-        port: 19543 # TO CHANGE
+        port: 19545 # TO CHANGE
         user: 'root'
         pass: 'Milvus'
       db_info:
@@ -160,7 +160,7 @@ KG_DB_CONFIGS:
     treedb_config:
       vendor: 'neo4j'
       host: 'localhost'
-      port: 7703 # TO CHANGE
+      port: 7705 # TO CHANGE
       params:
         user: 'neo4j'
         pwd: 'password'
@@ -171,7 +171,7 @@ KG_DB_CONFIGS:
     nodes_summarization_task_config:
       prompts_version: 'v1'
 
-    e2n_sim_threshold: 0.4
+    e2n_sim_threshold: 0.6
     depth_rate: 0.5
     nodes_aggregation_mechanism: "sequencial"
 
@@ -188,22 +188,22 @@ CONTAINERS_ADDITIONAL_CONFIG:
   redis_cntname: 'personalai_mmenschikov_redis'
   redis_ui_cntname: 'personalai_mmenschikov_redis_ui'
   redis_ui_host: 'personalai_mmenschikov_redis_ui'
-  redis_ui_port: 5556 # TO CHANGE
+  redis_ui_port: 5558 # TO CHANGE
 
   mongo_cntname: 'personalai_mmenschikov_mongo'
   mongo_ui_cntname: 'personalai_mmenschikov_mongo_ui'
   mongo_ui_host: 'personalai_mmenschikov_mongo_ui'
-  mongo_ui_port: 8097 # TO CHANGE
+  mongo_ui_port: 8099 # TO CHANGE
 
   milvus_cntname: 'personalai_mmenschikov_milvus'
   milvus_host: 'localhost'
-  milvus_port1: 19543 # TO CHANGE
-  milvus_port2: 2392 # TO CHANGE
-  milvus_ui_port: 9104 # TO CHANGE
+  milvus_port1: 19545 # TO CHANGE
+  milvus_port2: 2394 # TO CHANGE
+  milvus_ui_port: 9106 # TO CHANGE
   milvus_config: milvus
 
   neo4j_cntname: 'personalai_mmenschikov_neo4j'
-  neo4j_ui_port: 7490 # TO CHANGE
+  neo4j_ui_port: 7492 # TO CHANGE
 
   ollama_cntname: 'personalai_mmenschikov_ollama'
   ollama_host: 'personalai_mmenschikov_ollama'

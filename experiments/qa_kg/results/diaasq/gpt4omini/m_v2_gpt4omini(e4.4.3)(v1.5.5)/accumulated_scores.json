@@ -1,0 +1,15 @@
+{
+ "BLEU1": 0.3364,
+ "BLEU2": 0.01514,
+ "METEOR": 0.24628,
+ "RougeL": 0.47202,
+ "ExactMatch": 0.44167,
+ "NoneScore": 0.0,
+ "NoAnswerScore": 0.16667,
+ "BertScore_f1": 0.7274,
+ "BertScore_precision": 0.71512,
+ "BertScore_recall": 0.74567,
+ "score_mean": 0.46667,
+ "score_median": 0.54167,
+ "elapsed_time": 1533.8431315422058
+}
