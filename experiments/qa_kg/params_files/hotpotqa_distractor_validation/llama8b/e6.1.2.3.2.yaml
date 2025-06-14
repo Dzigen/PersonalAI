@@ -21,7 +21,7 @@ BASE_KGR_CONFIG:
     decomposition_config:
       classify_agent_task_version: v1
       decompose_agent_task_version: v1
-    
+
   answers_aggregation:
     suba_summarisation_agent_task_version: v1
 
@@ -113,7 +113,7 @@ MEDIUM_KG_REASONER:
       max_k: 50
 
   clueanswer_generator_config:
-    canswer_generator_agent_task_version: v3
+    canswer_generator_agent_task_version: v1
 
   clueanswers_summarizer_confif:
     canswers_summarisation_agent_task_version: v1
@@ -122,7 +122,7 @@ MEDIUM_KG_REASONER:
     answer_classifier_agent_task_version: v1
     answer_generator_agent_task_version: v1
 
-  max_searchplan_steps: 10
+  max_searchplan_steps: 5
 
 ########## EVALUATION PARAMS ##########
 

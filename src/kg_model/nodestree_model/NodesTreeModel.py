@@ -227,7 +227,7 @@ class NodesTreeModel:
         self.log(f"4. Старт алгоритма по суммаризации текста...", verbose=self.verbose)
         self.log(f"4.1.1. Количество текстов для обновления: {len(traversed_nodes_ids)}", verbose=self.verbose)
         self.log(f"4.1.2. newnode_text: '{newnode_text}'", verbose=self.verbose)
-        
+
         new_text_summaries = []
         for node_id in traversed_nodes_ids[::-1]:
             curparent_node = self.treedb_conn.read([node_id], ids_type=TreeIdType.external)[0]
@@ -352,6 +352,15 @@ class NodesTreeModel:
                 self.log(f"В качестве самой релевантной выбрана summarized-вершина: {best_summnode}", verbose=self.verbose)
                 descendants_leaf_nodes = self.treedb_conn.get_leaf_descendants(best_summnode[1].id, id_type=TreeIdType.external)
                 descendants_leaf_strids = list(map(lambda node: node.id, descendants_leaf_nodes))
+
+                # Если задано ограничение на максимальное количество вершин,
+                # которое может быть сопоставлено summarized-вершине
+                if max_n > 0 and len(descendants_leaf_strids) > max_n:
+                    raw_matched_nodes = self.vectordb_leafnodes_conn.retrieve(
+                        query_instances=[entitie_vinstance], n_results=max_n,
+                        subset_ids=descendants_leaf_strids,includes=[])[0]
+                    descendants_leaf_strids = list(map(lambda item: item[1].id, raw_matched_nodes))
+
                 matched_nodes = self.vectordb_leafnodes_conn.read(descendants_leaf_strids, includes=["documents", "metadatas"])
                 self.log(f"Summarized-вершине соответствуют следующие leaf-вершины (потомки): количество - {len(matched_nodes)}", verbose=self.verbose)
                 for i in range(matched_nodes):

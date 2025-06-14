@@ -41,6 +41,8 @@ from src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching impor
 
 from src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator import ClueQueriesGeneratorConfig
 from src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator import AgentCQueryGenTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator import ClueAnswerGeneratorConfig
+from src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation import AgentClueAnswerGenTaskConfigSelector
 
 from src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation import ClueAnswersSummarizerConfig
 from src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation import AgentClueAnswersSummTaskConfigSelector
@@ -124,7 +126,7 @@ if PARAMS['BASE_KGR_CONFIG']['name'] == 'weak':
             adriver_config=adriver_config,
             ag_task_config=AgentSimpleAGTaskConfigSelector.select(
                 base_config_version=PARAMS['WEAK_KG_REASONER']['answer_generator_config']['ag_task']['prompts_version'])))
-    
+
 elif PARAMS['BASE_KGR_CONFIG']['name'] == 'medium':
 
     if PARAMS['MEDIUM_KG_REASONER']['knowledge_retriever_config']['filter_method'] == 'None':
@@ -171,9 +173,9 @@ elif PARAMS['BASE_KGR_CONFIG']['name'] == 'medium':
             )
         ),
         knowledge_retriever_config=k_retriever_config,
-        clueanswer_generator_config=QALLMGeneratorConfig(
+        clueanswer_generator_config=ClueAnswerGeneratorConfig(
             lang=PARAMS['BASE_KGR_CONFIG']['lang'], adriver_config=adriver_config,
-            ag_task_config=AgentSimpleAGTaskConfigSelector.select(
+            cagen_agent_task_config=AgentClueAnswerGenTaskConfigSelector.select(
                 base_config_version=PARAMS['MEDIUM_KG_REASONER']['clueanswer_generator_config']['canswer_generator_agent_task_version']
             )
         ),
