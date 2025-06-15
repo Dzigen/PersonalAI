@@ -24,11 +24,11 @@ EMBEDDINGS_MODEL_LOG_PATH = 'log/kg_model/embeddings'
 class EmbeddingsModelConfig:
     """Конфигурация векторной структуры данных.
 
-    :param nodesdb_driver_config: Конфигурация векторной базы данных, которая будет отвечать за хранение векторных представлений вершин из графовой структуры. Значение по умолчанию NODES_DB_DEFAULT_DRIVER_CONFIG.
+    :param nodesdb_driver_config: Конфигурация векторной базы данных, которая отвечает за хранение векторных представлений вершин из графовой структуры. Значение по умолчанию NODES_DB_DEFAULT_DRIVER_CONFIG.
     :type nodesdb_driver_config: VectorDriverConfig
-    :param tripletsdb_driver_config: Конфигурация векторной базы данных, которая будет отвечать за хранение векторных представлений триплетов из графовой структуры. Значение по умолчанию TRIPLETS_DB_DEFAULT_DRIVER_CONFIG.
+    :param tripletsdb_driver_config: Конфигурация векторной базы данных, которая отвечает за хранение векторных представлений триплетов из графовой структуры. Значение по умолчанию TRIPLETS_DB_DEFAULT_DRIVER_CONFIG.
     :type tripletsdb_driver_config: VectorDriverConfig
-    :param embedder_config: Конфигурация класса, отвечающего за приведения текста в его векторное представление с помощью embedder-модели. Значение по умолчанию EmbedderModelConfig().
+    :param embedder_config: Конфигурация класса, отвечающего за приведения текста в его векторное представление с помощью заданной embedder-модели. Значение по умолчанию EmbedderModelConfig().
     :type embedder_config: EmbedderModelConfig
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(EMBEDDINGS_MODEL_LOG_PATH).
     :type log: Logger
@@ -53,7 +53,7 @@ class EmbeddingsModel:
         self.vectordbs = {
             'nodes': VectorDriver.connect(config.nodesdb_driver_config),
             'triplets': VectorDriver.connect(config.tripletsdb_driver_config)}
-        
+
         #!!! PAY ATTENTION !!!
         #self.embedder = EmbedderModel(config.embedder_config)
 
@@ -220,7 +220,7 @@ class EmbeddingsModel:
         return {'nodes': nodes_count, 'triplets': triplets_count}
 
     def clear(self) -> None:
-        """Метод предназначен для удаления содержимого векторной структуры.
+        """Метод предназначен для удаления содержимого векторной структуры данных.
         """
         self.vectordbs['nodes'].clear()
         self.vectordbs['triplets'].clear()

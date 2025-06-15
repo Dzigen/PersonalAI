@@ -14,7 +14,7 @@ GRAPH_MODEL_LOG_PATH = 'log/kg_model/graph'
 class GraphModelConfig:
     """Конфигурация графовой структуры данных.
 
-    :param driver_config: Конфигурация графовой бд.
+    :param driver_config: Конфигурация графовой БД.
     :type driver_config: GraphDriverConfig
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(GRAPH_MODEL_LOG_PATH).
     :type log: Logger
@@ -41,8 +41,12 @@ class GraphModel:
 
         :param triplets: Набора триплетов для добавления в графовую структуру.
         :type triplets: List[Triplet]
-        :param batch_size: Количество триплетов, которое за одну create-операцию будет добавляться в структуру. Значение по умолчанию 64.
+        :param batch_size: Количество триплетов, которое будет сохраняться за одну create-операцию. Значение по умолчанию 64.
         :type batch_size: int, optional
+        :param status_bar: Если True, то во время исполнения операции в stdout будет выводиться статус её исполнения, иначе False. Значение по умолчанию True.
+        :type status_bar: bool, optional
+        :return: Словарь с информацией о триплетах, которые были добавлены в графовую структуру.
+        :rtype: Dict[str, Set[str]]
         """
         self.log("Adding triplets to graph-model...", verbose=self.config.verbose)
         unique_triplet_ids, unique_node_ids = set(), set()
@@ -112,7 +116,9 @@ class GraphModel:
 
         :param triplets: Набор триплетов на удаления из графовой структуры.
         :type triplets: List[Triplet]
-        :return: Информация для векторной структуры, чтобы удалить устаревшие вершины/триплеты и сохранить консистентность модели графа знаний.
+        :param status_bar: Если True, то во время исполнения операции в stdout будет выводиться статус её исполнения, иначе False. Значение по умолчанию True.
+        :type status_bar: bool, optional
+        :return: Информация для векторной структуры данных, чтобы удалить устаревшие вершины/триплеты и сохранить консистентность памяти ассистента.
         :rtype: List[Dict[str,bool]]
         """
 
@@ -154,5 +160,5 @@ class GraphModel:
         return self.db_conn.count_items()
 
     def clear(self) -> None:
-        """Метод предназначен для удаления содержимого графовой структуры."""
+        """Метод предназначен для удаления содержимого графовой структуры данных."""
         self.db_conn.clear()

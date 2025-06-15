@@ -380,7 +380,7 @@ class NodesTreeModel:
 
     def reduce_tree(self, triplets: List[Triplet], delete_info: Dict[int, Dict[str, bool]]):
         # TODO
-        pass
+        raise NotImplementedError
 
     def count_items(self):
         return {
