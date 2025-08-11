@@ -23,6 +23,36 @@ from ...db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelCo
 
 @dataclass
 class NodesTreeModelConfig:
+    """Конфигурация древовидной структуры данных для хранения object-вершин.
+
+    :param vectordb_leafnodes_config: ...
+    :type vectordb_leafnodes_config: VectorDriverConfig, optional
+    :param vectordb_summnodes_config: ...
+    :type vectordb_summnodes_config: VectorDriverConfig, optional
+    :param embedder_config: ...
+    :type embedder_config: EmbedderModelConfig, optional
+
+    :param treedb_config: ...
+    :type treedb_config: treedb_config, optional
+
+    :param adriver_config: ...
+    :type adriver_config: AgentDriverConfig, optional
+    :param nodes_summarization_task_config: ...
+    :type nodes_summarization_task_config: AgentTaskSolverConfig, optional
+
+    :param e2n_sim_threshold: ...
+    :type e2n_sim_threshold: float, optional
+    :param depth_rate: ...
+    :type depth_rate: float, optional
+    :param nodes_aggregation_mechanism: ...
+    :type nodes_aggregation_mechanism: str, optional
+
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(GRAPH_MODEL_LOG_PATH).
+    :type log: Logger
+    :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
+    """
+
     vectordb_leafnodes_config: VectorDriverConfig = field(default_factory=lambda: LEAFNODES_VDB_DEFAULT_DRIVER_CONFIG)
     vectordb_summnodes_config: VectorDriverConfig = field(default_factory=lambda: SUMMNODES_VDB_DEFAULT_DRIVER_CONFIG)
     embedder_config: EmbedderModelConfig = field(default_factory=lambda: EmbedderModelConfig())
@@ -40,14 +70,24 @@ class NodesTreeModelConfig:
     verbose: bool = False
 
 class NodesTreeModel:
+    """Класс предназначен для представления object-вершин из графовой структуры данных в виде дерева с целью
+    повышения эффективности сопоставления имеющихся занний с сущностями/запросами из поступающих user-вопросов.
+    """
     def __init__(self, config: NodesTreeModelConfig = NodesTreeModelConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None):
+                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
+        """_summary_
+
+        :param config: _description_, defaults to NodesTreeModelConfig()
+        :type config: NodesTreeModelConfig, optional
+        :param cache_kvdriver_config: _description_, defaults to None
+        :type cache_kvdriver_config: KeyValueDriverConfig, optional
+        """
         self.config = config
 
         self.treedb_conn = TreeDriver.connect(self.config.treedb_config)
         self.vectordb_leafnodes_conn = VectorDriver.connect(config.vectordb_leafnodes_config)
         self.vectordb_summnodes_conn = VectorDriver.connect(config.vectordb_summnodes_config)
-        #self.embedder = EmbedderModel(config.embedder_config)
+        self.embedder = EmbedderModel(config.embedder_config)
 
         self.agent = AgentDriver.connect(config.adriver_config)
         self.nodes_summarization_solver = AgentTaskSolver(
@@ -57,6 +97,8 @@ class NodesTreeModel:
         self.verbose = self.config.verbose
 
     def check_consistency(self):
+        """_summary_
+        """
         self.treedb_conn.check_consistency()
 
         leaf_vnodes_count = self.vectordb_leafnodes_conn.count_items()
@@ -69,6 +111,15 @@ class NodesTreeModel:
         assert summ_vnodes_count == tnodes_count['summarized']
 
     def expand_tree(self, triplets: List[Triplet], status_bar: bool = True) -> Dict[str, Set[str]]:
+        """_summary_
+
+        :param triplets: _description_
+        :type triplets: List[Triplet]
+        :param status_bar: _description_, defaults to True
+        :type status_bar: bool, optional
+        :return: _description_
+        :rtype: Dict[str, Set[str]]
+        """
         self.log("Старт операции по добавлению object-вершин из заданных триплетов в дерево...", verbose=self.verbose)
 
         self.log("1. Отбираем уникальные object-вершины...", verbose=self.verbose)
@@ -99,6 +150,15 @@ class NodesTreeModel:
         return {'existed_nodes': existed_node_ids, 'added_nodes': added_node_ids}
 
     def add_node(self, new_node_strid: str, new_node_text: str) -> ReturnStatus:
+        """_summary_
+
+        :param new_node_strid: _description_
+        :type new_node_strid: str
+        :param new_node_text: _description_
+        :type new_node_text: str
+        :return: _description_
+        :rtype: ReturnStatus
+        """
         status = ReturnStatus.success
         self.log(f"2.1. Информация по текущей вершине: (str_id) - {new_node_strid}; (node_text) - {new_node_text}", verbose=self.verbose)
 
@@ -145,6 +205,13 @@ class NodesTreeModel:
         return status
 
     def traverse_tree(self, newnode_text: str) -> Tuple[List[str], TreeNode]:
+        """_summary_
+
+        :param newnode_text: _description_
+        :type newnode_text: str
+        :return: _description_
+        :rtype: Tuple[List[str], TreeNode]
+        """
         self.log("3. Старт алгоритма обхода дерева...", verbose=self.verbose)
         parent_node, traversed_nodes_ids = None, []
         newnode_embedding = self.embedder.encode_queries([newnode_text])[0]
@@ -224,6 +291,16 @@ class NodesTreeModel:
         return traversed_nodes_ids, parent_node
 
     def summarize_path_nodes(self, traversed_nodes_ids: List[str], newnode_text: str) -> List[str]:
+        """_summary_
+
+        :param traversed_nodes_ids: _description_
+        :type traversed_nodes_ids: List[str]
+        :param newnode_text: _description_
+        :type newnode_text: str
+        :raises ValueError: _description_
+        :return: _description_
+        :rtype: List[str]
+        """
         self.log(f"4. Старт алгоритма по суммаризации текста...", verbose=self.verbose)
         self.log(f"4.1.1. Количество текстов для обновления: {len(traversed_nodes_ids)}", verbose=self.verbose)
         self.log(f"4.1.2. newnode_text: '{newnode_text}'", verbose=self.verbose)
@@ -262,6 +339,16 @@ class NodesTreeModel:
         return new_text_summaries[::-1]
 
     def update_vectordb_info(self, vecdb_type: TreeNodeType, ids: List[str], new_texts: List[str]) -> None:
+        """_summary_
+
+        :param vecdb_type: _description_
+        :type vecdb_type: TreeNodeType
+        :param ids: _description_
+        :type ids: List[str]
+        :param new_texts: _description_
+        :type new_texts: List[str]
+        :raises KeyError: _description_
+        """
         torch.cuda.empty_cache()
         embs = self.embedder.encode_passages(new_texts, batch_size=16)
         formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb, metadata={'id': id})
@@ -275,6 +362,17 @@ class NodesTreeModel:
             raise KeyError
 
     def update_treedb_info(self, ids: List[str], texts: List[str], new_node_strid: str, parent_node: TreeNode) -> None:
+        """_summary_
+
+        :param ids: _description_
+        :type ids: List[str]
+        :param texts: _description_
+        :type texts: List[str]
+        :param new_node_strid: _description_
+        :type new_node_strid: str
+        :param parent_node: _description_
+        :type parent_node: TreeNode
+        """
         # У всех summarized-вершин обновляем значения text- и других-полей
         for node_id, new_text in zip(ids[:-1],texts[:-1]):
             cur_node = self.treedb_conn.read([node_id], ids_type=TreeIdType.external)[0]
@@ -293,6 +391,15 @@ class NodesTreeModel:
             self.attach_node_to_tree(ids[-1], parent_node.text, updated_props)
 
     def attach_node_to_tree(self, pn_id: str, ln_text: str, ln_props: Dict[str, object]) -> None:
+        """_summary_
+
+        :param pn_id: _description_
+        :type pn_id: str
+        :param ln_text: _description_
+        :type ln_text: str
+        :param ln_props: _description_
+        :type ln_props: Dict[str, object]
+        """
         new_external_id = create_id(seed=str(time()))
         leaf_node = TreeNode(id=new_external_id, text=ln_text, type=TreeNodeType.leaf, props=ln_props)
         self.treedb_conn.create(pn_id, leaf_node)
@@ -304,6 +411,13 @@ class NodesTreeModel:
             self.treedb_conn.update([parent_node])
 
     def change_node_to_summarized(self, old_node: TreeNode, new_text: str) -> None:
+        """_summary_
+
+        :param old_node: _description_
+        :type old_node: TreeNode
+        :param new_text: _description_
+        :type new_text: str
+        """
         # обновляем информацию в соответствующей графовой бд
         node_copy = deepcopy(old_node)
 
@@ -316,7 +430,26 @@ class NodesTreeModel:
 
         self.treedb_conn.update([summarized_node])
 
-    def match_entitie2objects(self, entitie: str, strategy: str = 'collapsed', distance_threshold: float = 0.4, fetch_k: int = 1, max_n: int = 1) -> List[VectorDBInstance]:
+    def match_entitie2objects(self, entitie: str, strategy: str = 'collapsed', distance_threshold: float = 0.4,
+                              fetch_k: int = 1, max_n: int = 1) -> List[VectorDBInstance]:
+        """_summary_
+
+        :param entitie: _description_
+        :type entitie: str
+        :param strategy: _description_, defaults to 'collapsed'
+        :type strategy: str, optional
+        :param distance_threshold: _description_, defaults to 0.4
+        :type distance_threshold: float, optional
+        :param fetch_k: _description_, defaults to 1
+        :type fetch_k: int, optional
+        :param max_n: _description_, defaults to 1
+        :type max_n: int, optional
+        :raises ValueError: _description_
+        :raises NotImplementedError: _description_
+        :raises ValueError: _description_
+        :return: _description_
+        :rtype: List[VectorDBInstance]
+        """
         self.log("Старт алгоритма по сопоставлению заданной сущности (entitie) вершин из дерева", verbose=self.verbose)
         if strategy == 'collapsed':
             entitie_embedding = self.embedder.encode_queries([entitie])[0]
@@ -382,13 +515,20 @@ class NodesTreeModel:
         # TODO
         raise NotImplementedError
 
-    def count_items(self):
+    def count_items(self) -> Dict[str, Dict[str, int]]:
+        """_summary_
+
+        :return: _description_
+        :rtype: Dict[str, Dict[str, int]]
+        """
         return {
             'tree': self.treedb_conn.count_items(),
             'vector_leafnodes': self.vectordb_leafnodes_conn.count_items(),
             'vector_summnodes': self.vectordb_summnodes_conn.count_items()}
 
-    def clear(self):
+    def clear(self) -> None:
+        """_summary_
+        """
         self.vectordb_leafnodes_conn.clear()
         self.vectordb_summnodes_conn.clear()
         self.treedb_conn.clear()

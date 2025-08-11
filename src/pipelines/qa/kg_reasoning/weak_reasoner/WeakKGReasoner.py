@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Tuple
+from typing import Tuple, Union
 
 from .query_parser import QueryLLMParser, QueryLLMParserConfig
 from .knowledge_comparator import KnowledgeComparator, KnowledgeComparatorConfig
@@ -43,7 +43,16 @@ class WeakKGReasonerConfig(BaseKGReasonerConfig):
 class WeakKGReasoner(AbstractKGReasoner):
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: WeakKGReasonerConfig = WeakKGReasonerConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None):
+                 cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None):
+        """_summary_
+
+        :param kg_model: _description_
+        :type kg_model: KnowledgeGraphModel
+        :param config: _description_, defaults to WeakKGReasonerConfig()
+        :type config: WeakKGReasonerConfig, optional
+        :param cache_kvdriver_config: _description_, defaults to None
+        :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
+        """
         self.config = config
         self.kg_model = kg_model
         self.log = config.log
@@ -67,7 +76,7 @@ class WeakKGReasoner(AbstractKGReasoner):
             self.config.answer_generator_config,
             cache_kvdriver_config)
 
-    def clear_kv_caches(self):
+    def clear_kv_caches(self) -> None:
         if self.query_parser is not None:
             self.query_parser.cachekv.kv_conn.clear()
             self.query_parser.kw_extraction_solver.cachekv.kv_conn.clear()
@@ -84,14 +93,6 @@ class WeakKGReasoner(AbstractKGReasoner):
         self.answer_generator.answer_generator_solver.cachekv.kv_conn.clear()
 
     def perform(self, query: str) -> Tuple[str, ReturnInfo]:
-        """Метод предназначен для генерации ответа на user-вопрос. Ответ обуславливается на информацию из имеющегося графа знаний.
-
-        :param query: User-вопрос на естественном языке.
-        :type query: str
-        :return: Кортеж из двух объектов: (1) cгенерированный ответ; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[str, ReturnInfo]
-        """
-
         self.log("START WEAK KG-REASONING...", verbose=self.config.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
         self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)

@@ -12,6 +12,19 @@ KG_MAIN_LOG_PATH = 'log/kg_model/main'
 
 @dataclass
 class KnowledgeGraphModelConfig:
+    """Конфигурация памяти (граф знаний) ассистента.
+
+    :param graph_config: Конфигурация структуры данных, которая отвечает за хранение знаний ассистента в формате графа. Значение по умолчанию GraphModelConfig().
+    :type graph_struct: GraphModel, optional
+    :param embeddings_config:  Конфигурация структуры данных, которая отвечает за представление/хранение знаний ассистента в векторном формате. Значение по умолчанию EmbeddingsModelConfig().
+    :type embeddings_config: EmbeddingsModel, optional
+    :param nodestree_config: Конфигурация структуры данных, которая отвечает за представление/хранение знаний ассистента в формате дерева. Значение по умолчанию None.
+    :type nodestree_config: Union[NodesTreeModelConfig,None]
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(EMBEDDINGS_MODEL_LOG_PATH).
+    :type log: Logger
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
+    """
     graph_config: GraphModelConfig = field(default_factory=lambda: GraphModelConfig())
     embeddings_config: EmbeddingsModelConfig = field(default_factory=lambda: EmbeddingsModelConfig())
     nodestree_config: Union[NodesTreeModelConfig,None] = None
@@ -22,16 +35,14 @@ class KnowledgeGraphModelConfig:
 class KnowledgeGraphModel:
     """Модель памяти (граф знаний) ассистента.
 
-    :param graph_config: Конфигурация структуры данных, которая отвечает за хранение знаний ассистента в формате графа.
-    :type graph_struct: GraphModel
-    :param embeddings_config:  Конфигурация структуры данных, которая отвечает за представление/хранение знаний ассистента в векторном формате
-    :type embeddings_config: EmbeddingsModel
-    :param nodestree_config: Конфигурация структуры данных, которая отвечает за представление/хранение знаний ассистента в формате дерева.
-    :type nodestree_config: Union[NodesTreeModelConfig,None]
+    :param config: Конфигурация памяти (граф знаний) ассистента. Значение по умолчанию KnowledgeGraphModelConfig().
+    :type config: KnowledgeGraphModelConfig, optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежутчных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
 
     def __init__(self, config: KnowledgeGraphModelConfig = KnowledgeGraphModelConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
+                 cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None) -> None:
         self.config = config
         self.graph_struct = GraphModel(self.config.graph_config)
         self.embeddings_struct =  EmbeddingsModel(self.config.embeddings_config)

@@ -20,6 +20,38 @@ from .....db_drivers.kv_driver import KeyValueDriverConfig
 
 @dataclass
 class MediumKGReasonerConfig(BaseKGReasonerConfig):
+    """_summary_
+
+    :param searchplan_enhancer_config: ...
+    :type searchplan_enhancer_config: SearchPlanEnhancerConfig, optional
+    :param entities_extractor_config: ...
+    :type entities_extractor_config: EntitiesExtractorConfig, optional
+    :param e2n_matcher_config: ...
+    :type e2n_matcher_config: Entities2NodesMatcherConfig, optional
+
+    :param cluequeries_generator_config: ...
+    :type cluequeries_generator_config: ClueQueriesGeneratorConfig, optional
+    :param knowledge_retriever_config: ...
+    :type knowledge_retriever_config: KnowledgeRetrieverConfig, optional
+    :param clueanswer_generator_config: ...
+    :type clueanswer_generator_config: ClueAnswerGeneratorConfig, optional
+    :param clueanswers_summarizer_confif: ...
+    :type clueanswers_summarizer_confif: ClueAnswersSummarizerConfig, optional
+
+    :param answer_generator_config: ...
+    :type answer_generator_config: AnswerGeneratorConfig, optional
+
+    :param max_searchplan_steps: ...
+    :type max_searchplan_steps: int, optional
+
+    :param answer_something: ...
+    :type answer_something: bool, optional
+
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(LOG_PATH).
+    :type log: Logger
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool
+    """
 
     searchplan_enhancer_config: SearchPlanEnhancerConfig = field(default_factory=lambda: SearchPlanEnhancerConfig())
     entities_extractor_config: EntitiesExtractorConfig = field(default_factory=lambda: EntitiesExtractorConfig())
@@ -39,14 +71,25 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig):
     verbose: bool = False
 
 class MediumKGReasoner(AbstractKGReasoner):
+    """_summary_
+    """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: MediumKGReasonerConfig = MediumKGReasonerConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None):
+                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
+        """_summary_
+
+        :param kg_model: _description_
+        :type kg_model: KnowledgeGraphModel
+        :param config: _description_, defaults to MediumKGReasonerConfig()
+        :type config: MediumKGReasonerConfig, optional
+        :param cache_kvdriver_config: _description_, defaults to None
+        :type cache_kvdriver_config: KeyValueDriverConfig, optional
+        """
         self.config = config
         self.kg_model = kg_model
-        
+
         self.searchplan_enhancer = SearchPlanEnhancer(self.config.searchplan_enhancer_config, cache_kvdriver_config)
-        
+
         self.entities_extractor = EntitiesExtractor(self.config.entities_extractor_config, cache_kvdriver_config)
         self.entities2nodes_matcher = Entities2NodesMatcher(self.kg_model, self.config.e2n_matcher_config, cache_kvdriver_config)
 
@@ -112,8 +155,8 @@ class MediumKGReasoner(AbstractKGReasoner):
             else:
                 str_searchsteps = '\n'.join([ f'{i}. {step}' for i, step in enumerate(search_plan.search_steps)])
                 self.log(f"RESULT:\n{str_searchsteps}", verbose=self.config.verbose)
-            
-            
+
+
             search_query = search_plan.search_steps[search_step]
             self.log(f"Current step #{search_step}: {search_query}", verbose=self.config.verbose)
 
@@ -142,7 +185,7 @@ class MediumKGReasoner(AbstractKGReasoner):
             for j, cur_cluequery in enumerate(cluequeries):
                 self.log(f"Current clue-query ({j} / {len(cluequeries)}): {cur_cluequery.query}", verbose=self.config.verbose)
                 self.log(f"Current clue-query id: {create_id(cur_cluequery.query)}", verbose=self.config.verbose)
-            
+
                 self.log("STAGE#4.1 - KNOWLEDGE RETRIEVING", verbose=self.config.verbose)
                 retrieved_triplets, info = self.knowledge_retriever.retrieve(cur_cluequery)
                 self.log(f"RESULT: {len(retrieved_triplets)}", verbose=self.config.verbose)
@@ -158,12 +201,12 @@ class MediumKGReasoner(AbstractKGReasoner):
                 if info.status != ReturnStatus.success:
                     error_occurred = True
                     break
-                
+
                 clueanswers.append(cur_clueanswer)
 
             if error_occurred:
                 break
-            
+
             self.log("STAGE#5 - CLUE-ANSWERS SUMMARISATION", verbose=self.config.verbose)
             search_step_answer, info = self.clueanswers_summariser.perform(
                 search_query, list(map(lambda cq_info: cq_info.query, cluequeries)), clueanswers)
@@ -172,7 +215,7 @@ class MediumKGReasoner(AbstractKGReasoner):
                 break
             else:
                 search_plan.steps_answers.append(search_step_answer)
-            
+
             self.log("STAGE#6 - ANSWER-GENERATION TRYING", verbose=self.config.verbose)
             answer, info = self.answer_generator.perform(search_plan)
             self.log(f"RESULT: {answer}", verbose=self.config.verbose)
@@ -197,6 +240,6 @@ class MediumKGReasoner(AbstractKGReasoner):
                 answer = "<|NotEnoughtInfo|>"
 
         self.log(f"RETURNED ANSWER: {answer}", verbose=self.config.verbose)
-        self.log(f"STATUS: {info.status}", verbose=self.config.verbose)            
+        self.log(f"STATUS: {info.status}", verbose=self.config.verbose)
 
         return answer, info

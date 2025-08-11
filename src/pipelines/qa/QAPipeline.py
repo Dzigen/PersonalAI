@@ -14,6 +14,14 @@ from ...db_drivers.kv_driver import KeyValueDriverConfig
 @dataclass
 class QAPipelineConfig:
     """
+    _summary_
+
+    :param preprocessor_config: ... Значение по умолчанию None.
+    :type preprocessor_config: Union[QueryPreprocessorConfig, None], optional
+    :param reasoner_config: ... Значение по умолчанию KnowledgeGraphReasonerConfig().
+    :type reasoner_config: KnowledgeGraphReasonerConfig, optional
+    :param aggregator_config: ... Значение по умолчанию AnswersAggregatorConfig().
+    :type aggregator_config: AnswersAggregatorConfig, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
@@ -32,15 +40,17 @@ class QAPipeline:
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация QA-конвейера. Значение по умолчанию QAPipelineConfig().
-    :type config: QAPipelineConfig
+    :type config: QAPipelineConfig, optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежутчных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: QAPipelineConfig = QAPipelineConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
+                 cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None) -> None:
         self.config = config
         self.kg_model = kg_model
         self.log = config.log
-        
+
         if self.config.preprocessor_config is not None:
             self.query_preprocessor = QueryPreprocessor(self.config.preprocessor_config, cache_kvdriver_config)
         else:
@@ -51,6 +61,14 @@ class QAPipeline:
 
         self.log = self.config.log
         self.verbose = self.config.verbose
+
+    def clear_kv_caches(self) -> None:
+        """_summary_
+        """
+        if self.config.preprocessor_config is not None:
+            self.query_preprocessor.clear_kv_caches()
+        self.kg_reasoner.clear_kv_caches()
+        self.answers_aggregator.clear_kv_caches()
 
     def answer(self, query: str) -> Tuple[str, ReturnInfo]:
         """Метод предназначен для генерации ответа на user-вопрос. Ответ обуславливается на информацию из имеющегося графа знаний.
@@ -80,7 +98,7 @@ class QAPipeline:
         else:
             self.log("Query Preprocesing-stage omited. Continue...", verbose=self.config.verbose)
             query_info = QueryPreprocessingInfo(base_query=query)
-            
+
         self.log("Reasoning...", verbose=self.verbose)
         if info.status == ReturnStatus.success:
             sub_queries = []
@@ -105,7 +123,7 @@ class QAPipeline:
                     break
                 else:
                     self.log("Operation ended successfully", verbose=self.verbose)
-                    info.occurred_warning.append(reasoner_info.occurred_warning)     
+                    info.occurred_warning.append(reasoner_info.occurred_warning)
                     sub_answers.append(cur_sub_answer)
 
             str_subqueriesanswers = "\n".join([f"- [{q}] {a}" for q, a in zip(sub_queries, sub_answers)])
