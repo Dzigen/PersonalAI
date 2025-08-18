@@ -309,8 +309,6 @@ class TripletCreator(BaseCreator):
         converted_triplet = TripletCreator.create(start_node=subject, relation=relation, end_node=object)
         return converted_triplet
 
-#from ..embedding_functions import VectorDBInstance
-
 @dataclass
 class QueryInfo:
     """Класс предназначен для хранения промежуточных результатов по user-вопросу,

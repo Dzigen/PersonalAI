@@ -1,14 +1,13 @@
 from dataclasses import dataclass, field
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Union
 from copy import deepcopy
 
+from .configs import DEFAULT_THESISES_EXTR_TASK_CONFIG, DEFAULT_TRIPLETS_EXTR_TASK_CONFIG, MEM_EXTRACTOR_MAIN_LOG_PATH
 from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 from ....utils.errors import STATUS_MESSAGE
 from ....utils.data_structs import TripletCreator, NodeCreator, Node, Relation, RelationType, NodeType, Triplet, create_id
 from ....agents import AgentDriver, AgentDriverConfig
 from ....db_drivers.kv_driver import KeyValueDriverConfig
-
-from .configs import DEFAULT_THESISES_EXTR_TASK_CONFIG, DEFAULT_TRIPLETS_EXTR_TASK_CONFIG, MEM_EXTRACTOR_MAIN_LOG_PATH
 
 @dataclass
 class LLMExtractorConfig:
@@ -60,7 +59,7 @@ class LLMExtractor:
         self.thesises_extraction_solver = AgentTaskSolver(
             self.agent, self.config.thesises_extraction_task_config, cache_kvdriver_config)
 
-    def extract_knowledge(self, text: str, time: str = "No time", properties: Dict = {}) -> Tuple[List[Triplet], ReturnInfo]:
+    def extract_knowledge(self, text: str, time: Union[None,str] = None, properties: Dict = {}) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста
         на естественном языке.
 
@@ -78,7 +77,7 @@ class LLMExtractor:
         assert 'time' not in props.keys()
         new_triplets, info = [], ReturnInfo()
 
-        if time != "No time":
+        if time is not None:
             props["time"] = time
 
         self.log("START KNOWLEDGE EXTRACTION...", verbose=self.config.verbose)
@@ -158,7 +157,7 @@ class LLMExtractor:
         episodic_triplets = [TripletCreator.create(entity, episodic_rel, episodic_node) for entity in entities]
         return episodic_triplets
 
-    def get_time_triplets(self, triplets: List[Triplet], time: str):
+    def get_time_triplets(self, triplets: List[Triplet], time: str) -> List[Triplet]:
         time_node = NodeCreator.create(name=time, n_type=NodeType.time, prop={})
         time_rel = Relation(name=RelationType.time.value, type=RelationType.time, prop={})
         start_nodes, picked_ids = [], set()

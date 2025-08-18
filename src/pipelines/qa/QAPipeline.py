@@ -1,75 +1,138 @@
 from dataclasses import dataclass, field
-from typing import Tuple, Union
+from typing import Tuple, Union, List
 
 from .configs import QA_MAIN_LOG_PATH
+from .kg_reasoning.utils import QueryReasoningInfo
 from .kg_reasoning import KnowledgeGraphReasonerConfig, KnowledgeGraphReasoner
 from .query_preprocessing import QueryPreprocessor, QueryPreprocessorConfig
 from .query_preprocessing.utils import QueryPreprocessingInfo
 from .answers_aggregation import AnswersAggregator, AnswersAggregatorConfig
 from ...kg_model import KnowledgeGraphModel
-from ...utils import Logger, ReturnStatus, ReturnInfo
+from ...utils import Logger, ReturnStatus, ReturnInfo, update_rinfo
+from ...utils.cache_kv import CacheUtils
 from ...utils.data_structs import create_id
 from ...db_drivers.kv_driver import KeyValueDriverConfig
 
 @dataclass
 class QAPipelineConfig:
     """
-    _summary_
+    Конфигурация Question-Answering-конвейера.
 
-    :param preprocessor_config: ... Значение по умолчанию None.
-    :type preprocessor_config: Union[QueryPreprocessorConfig, None], optional
-    :param reasoner_config: ... Значение по умолчанию KnowledgeGraphReasonerConfig().
+    :param preprocessor_config: Конфигурация стадии по предобработке исходного user-вопроса. Значение по умолчанию QueryPreprocessorConfig.
+    :type preprocessor_config: QueryPreprocessorConfig, optional
+    :param reasoner_config: Конфигурация стадии по обходу/ризонингу на графе знаней с целью извлечения релевантой информации к user-вопросу. Значение по умолчанию KnowledgeGraphReasonerConfig().
     :type reasoner_config: KnowledgeGraphReasonerConfig, optional
-    :param aggregator_config: ... Значение по умолчанию AnswersAggregatorConfig().
+    :param aggregator_config: Конфигурация стадии по аггрегации/резюмированию информации, полученной в резльтате ризонинга на графе знаний (памяти). Значение по умолчанию AnswersAggregatorConfig().
     :type aggregator_config: AnswersAggregatorConfig, optional
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QAPipeline-класса.
+    :type cache_table_name: str
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
-    preprocessor_config: Union[QueryPreprocessorConfig, None] = None
+    preprocessor_config: QueryPreprocessorConfig = field(default_factory=lambda: QueryPreprocessorConfig())
     reasoner_config: KnowledgeGraphReasonerConfig = field(default_factory=lambda: KnowledgeGraphReasonerConfig())
     aggregator_config: AnswersAggregatorConfig = field(default_factory=lambda: AnswersAggregatorConfig())
 
+    cache_table_name: str = "qa_pipeline_cache"
     log: Logger = field(default_factory=lambda: Logger(QA_MAIN_LOG_PATH))
     verbose: bool = False
 
-class QAPipeline:
-    """Верхнеуровневый класс QA-конвейера, отвечающий за генерацию ответов на вопросы.
+    def to_str(self):
+        return f"{self.preprocessor_config.to_str()}|{self.reasoner_config.to_str()}|{self.aggregator_config.to_str()}"
+
+
+class QAPipeline(CacheUtils):
+    """Верхнеуровневый класс QA-конвейера, отвечающий за поиск информации в графе знаний и генерацию ответов на вопросы.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация QA-конвейера. Значение по умолчанию QAPipelineConfig().
     :type config: QAPipelineConfig, optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежутчных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: QAPipelineConfig = QAPipelineConfig(),
                  cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None) -> None:
-        self.config = config
-        self.kg_model = kg_model
+
+        self.query_preprocessor = QueryPreprocessor(config.preprocessor_config, cache_kvdriver_config)
+        self.kg_reasoner = KnowledgeGraphReasoner(kg_model, config.reasoner_config, cache_kvdriver_config)
+        self.answers_aggregator = AnswersAggregator(config.aggregator_config, cache_kvdriver_config)
+
+        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+
         self.log = config.log
+        self.verbose = config.verbose
 
-        if self.config.preprocessor_config is not None:
-            self.query_preprocessor = QueryPreprocessor(self.config.preprocessor_config, cache_kvdriver_config)
+    def clear_kv_caches(self, level: str = 'all') -> None:
+        if type(level) is not str:
+            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+        if level not in ['all', 'current', 'other']:
+            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+
+        if level in ['current', 'all']:
+            self.cachekv.clear()
+
+        if level in ['other', 'all']:
+            self.query_preprocessor.clear_kv_caches(level='all')
+            self.kg_reasoner.clear_kv_caches(level='all')
+            self.answers_aggregator.clear_kv_caches(level='all')
+
+    def preprocess_query(self, query: str) -> Tuple[QueryPreprocessingInfo, ReturnInfo]:
+        self.log("Preprocessing...", verbose=self.verbose)
+        query_info, prepr_info = self.query_preprocessor.perform(query)
+        self.log(f"RESULT: {query_info}", verbose=self.verbose)
+        if prepr_info.status != ReturnStatus.success:
+            self.log("Operation ended with error!", verbose=self.verbose)
         else:
-            self.query_preprocessor = None
+            self.log("Operation ended successfully", verbose=self.verbose)
 
-        self.kg_reasoner = KnowledgeGraphReasoner(kg_model, self.config.reasoner_config, cache_kvdriver_config)
-        self.answers_aggregator = AnswersAggregator(self.config.aggregator_config, cache_kvdriver_config)
+        return query_info, prepr_info
 
-        self.log = self.config.log
-        self.verbose = self.config.verbose
+    def process_query(self, query_info: QueryPreprocessingInfo) -> Tuple[QueryReasoningInfo, ReturnInfo]:
+        rinfo = ReturnInfo()
+        sub_queries, sub_answers = query_info.processed_query, []
 
-    def clear_kv_caches(self) -> None:
-        """_summary_
-        """
-        if self.config.preprocessor_config is not None:
-            self.query_preprocessor.clear_kv_caches()
-        self.kg_reasoner.clear_kv_caches()
-        self.answers_aggregator.clear_kv_caches()
+        self.log("Reasoning...", verbose=self.verbose)
+        for i, sub_query in enumerate(query_info.processed_query):
+            self.log(f"Processing sub_query #{i}: {sub_query}", verbose=self.verbose)
+            sub_answer, reasoner_info = self.kg_reasoner.perform(sub_query)
+            self.log(f"RESULT: {sub_answer}", verbose=self.verbose)
+            if reasoner_info.status != ReturnStatus.success:
+                self.log("Operation ended with error!", verbose=self.verbose)
+                rinfo = reasoner_info
+                break
+            else:
+                self.log("Operation ended successfully", verbose=self.verbose)
+                rinfo.occurred_warning.append(reasoner_info.occurred_warning)
+                sub_answers.append(sub_answer)
 
+        str_subqa = "\n".join([f"- [{q}] {a}" for q, a in zip(sub_queries, sub_answers)])
+        self.log(f"RESULT:\n{str_subqa}", verbose=self.verbose)
+        subq_info = QueryReasoningInfo(sub_queries=sub_queries, sub_answers=sub_answers)
+
+        return subq_info, rinfo
+
+    def postprocess_answer(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> Tuple[str, ReturnInfo]:
+        self.log("Aggregation...", verbose=self.verbose)
+        aggregated_answer, aagg_info = self.answers_aggregator.perform(query_info, subq_info)
+        self.log(f"RESULT: {aggregated_answer}", verbose=self.verbose)
+        if aagg_info.status != ReturnStatus.success:
+            self.log("Operation ended with error!", verbose=self.verbose)
+        else:
+            self.log("Operation ended successfully", verbose=self.verbose)
+
+        return aggregated_answer, aagg_info
+
+    def get_cache_key(self, query: str) -> List[str]:
+        str_qprep_config = self.query_preprocessor.config.to_str()
+        str_qreas_config = self.kg_reasoner.config.to_str()
+        str_aaggr_config = self.answers_aggregator.to_str()
+        return [str_qprep_config, str_qreas_config, str_aaggr_config, query]
+
+    @CacheUtils.cache_method_output
     def answer(self, query: str) -> Tuple[str, ReturnInfo]:
         """Метод предназначен для генерации ответа на user-вопрос. Ответ обуславливается на информацию из имеющегося графа знаний.
 
@@ -78,71 +141,27 @@ class QAPipeline:
         :return: Кортеж из двух объектов: (1) cгенерированный ответ; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
-        self.log("START QA-PIPELINE...", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
+        self.log("START QA-PIPELINE...", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
 
-        final_answer, sub_answers, info = None, [], ReturnInfo()
+        final_answer, rinfo = None, ReturnInfo()
 
-        # Preprocessing stage
-        if self.query_preprocessor is not None:
-            self.log("Query Preprocesing...", verbose=self.config.verbose)
-            query_info, prepr_info = self.query_preprocessor.perform(query)
-            self.log(f"RESULT: {query_info}", verbose=self.config.verbose)
-            if prepr_info.status != ReturnStatus.success:
-                self.log("Operation ended with error!", verbose=self.verbose)
-                info = prepr_info
-            else:
-                self.log("Operation ended successfully", verbose=self.verbose)
-                info.occurred_warning.append(prepr_info.occurred_warning)
-        else:
-            self.log("Query Preprocesing-stage omited. Continue...", verbose=self.config.verbose)
-            query_info = QueryPreprocessingInfo(base_query=query)
+        query_info, q_rinfo = self.preprocess_query(query)
+        update_rinfo(rinfo, q_rinfo)
 
-        self.log("Reasoning...", verbose=self.verbose)
-        if info.status == ReturnStatus.success:
-            sub_queries = []
-            if query_info.decomposed_query is not None and len(query_info.decomposed_query) > 1:
-                sub_queries = query_info.decomposed_query
-            elif query_info.enchanced_query is not None:
-                sub_queries = [query_info.enchanced_query]
-            elif query_info.denoised_query is not None:
-                sub_queries = [query_info.denoised_query]
-            elif query_info.base_query is not None:
-                sub_queries = [query_info.base_query]
-            else:
-                raise ValueError
-
-            for i, cur_sub_query in enumerate(sub_queries):
-                self.log(f"Processing sub_query #{i}: {cur_sub_query}", verbose=self.config.verbose)
-                cur_sub_answer, reasoner_info = self.kg_reasoner.perform(cur_sub_query)
-                self.log(f"RESULT: {cur_sub_answer}", verbose=self.config.verbose)
-                if reasoner_info.status != ReturnStatus.success:
-                    self.log("Operation ended with error!", verbose=self.verbose)
-                    info = reasoner_info
-                    break
-                else:
-                    self.log("Operation ended successfully", verbose=self.verbose)
-                    info.occurred_warning.append(reasoner_info.occurred_warning)
-                    sub_answers.append(cur_sub_answer)
-
-            str_subqueriesanswers = "\n".join([f"- [{q}] {a}" for q, a in zip(sub_queries, sub_answers)])
-            self.log(f"RESULT:\n{str_subqueriesanswers}", verbose=self.verbose)
+        if rinfo.status == ReturnStatus.success:
+            subq_info, sq_info = self.process_query(query_info)
+            update_rinfo(rinfo, sq_info)
         else:
             self.log("During previous steps error occurs.", verbose=self.verbose)
 
-        self.log("Answers Aggregation...", verbose=self.verbose)
-        if info.status == ReturnStatus.success:
-            final_answer, aagg_info = self.answers_aggregator.perform(query_info, sub_answers)
-            self.log(f"RESULT: {final_answer}", verbose=self.verbose)
-            if aagg_info.status != ReturnStatus.success:
-                self.log("Operation ended with error!", verbose=self.verbose)
-                info = aagg_info
-            else:
-                self.log("Operation ended successfully", verbose=self.verbose)
+        if sq_info.status == ReturnStatus.success:
+            final_answer, ag_info = self.postprocess_answer(query_info, subq_info)
+            update_rinfo(rinfo, ag_info)
         else:
             self.log("During previous steps error occurs.", verbose=self.verbose)
 
-        self.log(f"STATUS: {info.status}", verbose=self.verbose)
+        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
-        return final_answer, info
+        return final_answer, rinfo

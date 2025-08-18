@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 from .configs import MEMORIZE_MAIN_LOG_PATH
 from .extractor.LLMExtractor import LLMExtractor
@@ -48,7 +48,7 @@ class MemPipeline:
         self.extractor = LLMExtractor(config.extractor_config, cache_kvdriver_config)
         self.updator = LLMUpdator(kg_model, config.updator_config, cache_kvdriver_config)
 
-    def remember(self, text: str, time: str = "No time", properties: Dict = dict()) -> Tuple[List[Triplet], ReturnInfo]:
+    def remember(self, text: str, time: Union[None,str] = None, properties: Dict = dict()) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста и обновление/актуализацию знаний в памяти (графе знаний) ассистента.
 
         :param text: Слабоструктурированный текст на естественном языке.

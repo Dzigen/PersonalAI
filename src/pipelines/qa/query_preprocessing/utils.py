@@ -8,8 +8,11 @@ class QueryPreprocessingInfo:
     enchanced_query: Union[str, None] = None
     decomposed_query: Union[List[str], None] = None
 
+    processed_query: Union[List[str], None] = None
+
     def to_str(self):
         str_denoised_query =  self.denoised_query if self.denoised_query is not None else "None"
         str_enchanced_query = self.enchanced_query if self.enchanced_query is not None else "None"
         str_decomposed_query = ';'.join(self.decomposed_query) if self.decomposed_query is not None else "None"
-        return f"{self.base_query}|{str_denoised_query}|{str_enchanced_query}|{str_decomposed_query}"
+        str_processed_query = ';'.join(self.processed_query) if self.processed_query is not None else "None"
+        return f"{self.base_query}|{str_denoised_query}|{str_enchanced_query}|{str_decomposed_query}|{str_processed_query}"

@@ -1,8 +1,13 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Tuple, List
 
 from ....utils import ReturnInfo
+
+@dataclass
+class QueryReasoningInfo:
+    sub_queries: List[str]
+    sub_answers: List[str]
 
 class AbstractKGReasoner(ABC):
 
@@ -14,12 +19,6 @@ class AbstractKGReasoner(ABC):
         :type query: str
         :return: Кортеж из двух объектов: (1) cгенерированный ответ; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
-        """
-        pass
-
-    @abstractmethod
-    def clear_kv_caches(self) -> None:
-        """_summary_
         """
         pass
 

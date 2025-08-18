@@ -1,4 +1,5 @@
 from enum import Enum
+from copy import deepcopy
 from dataclasses import dataclass, field
 from typing import List
 
@@ -59,3 +60,9 @@ class ReturnInfo:
     occurred_warning: List[ReturnStatus] = field(default_factory=lambda: list())
     status: ReturnStatus = ReturnStatus.success
     message: str = ""
+
+
+def update_rinfo(modifying_rinfo: ReturnInfo, new_rinfo: ReturnInfo) -> None:
+    modifying_rinfo.occurred_warning.append(new_rinfo.occurred_warning)
+    modifying_rinfo.status = new_rinfo.status
+    modifying_rinfo.message = new_rinfo.message
