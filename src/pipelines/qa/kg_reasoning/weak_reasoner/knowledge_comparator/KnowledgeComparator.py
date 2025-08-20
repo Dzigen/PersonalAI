@@ -20,7 +20,7 @@ class KnowledgeComparatorConfig:
     :type fetch_n: int, optional
     :param max_k: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 1.
     :type max_k: int, optional
-    :param k_compare: Значение по умолчанию 5.
+    :param k_compare: Служебный гиперпараметр. Значение по умолчанию 5.
     :type k_compare: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы KnowledgeComparator-класса. Значение по умолчанию 'qa_kcomparator_stage_cache'.
     :type cache_table_name: str, optional
@@ -42,8 +42,7 @@ class KnowledgeComparatorConfig:
         return f"{self.threshold};{self.fetch_n};{self.max_k}:{self.k_compare}"
 
 class KnowledgeComparator(CacheUtils):
-    """Верхнеуровневый класс второй стадии QA-конвейера для сопоставления информации из user-вопроса
-    с имеющейся информацией в памяти (графе знаний) ассистента.
+    """Верхнеуровневый класс второй стадии QA-конвейера для сопоставления информации из user-вопроса с имеющейся информацией в памяти (графе знаний) ассистента.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel

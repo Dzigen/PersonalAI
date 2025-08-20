@@ -17,11 +17,11 @@ class QueryPreprocessorConfig:
     """Конфигурация QueryPreprocessor-стадии.
 
     :param denoising_config: Конфигурация шага предобработки user-вопроса, отвечающая за удаление лишних шумов/фрагментов информации. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию None.
-    :type denoising_config: Union[QueryDenoiserConfig, None], optional
+    :type denoising_config: Union[None, QueryDenoiserConfig], optional
     :param enhancing_config: Конфигурация шага предобработки user-вопроса, отвечающая за добавление дополнительных языковых конструкций и переформилирование user-вопроса, с целью упрощения процесса по распознаванию заложенного запроса/интента. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию None.
-    :type enhancing_config: Union[QueryEnhancerConfig, None], optional
+    :type enhancing_config: Union[None, QueryEnhancerConfig], optional
     :param decomposition_config: Конфигурация шага предобработки user-вопроса, отвечающая за разбиение сложных/составных user-вопрос на простые/независимые части (под-вопросы) для их параллельной обработки и ускорения процесса формирования финального ответа. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию QueryDecomposerConfig().
-    :type decomposition_config: Union[QueryDecomposerConfig, None], optional
+    :type decomposition_config: Union[None, QueryDecomposerConfig], optional
 
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryPreprocessor-класса.
     :type cache_table_name: str
@@ -50,10 +50,10 @@ class QueryPreprocessor(CacheUtils):
     :param config: Конфигурация QueryPreprocessor-стадии. Значение по умолчанию QueryPreprocessorConfig().
     :type config: QueryPreprocessorConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
-    :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
+    :type cache_kvdriver_config: Union[None, KeyValueDriverConfig], optional
     """
     def __init__(self, config: QueryPreprocessorConfig = QueryPreprocessorConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         self.config = config
 
         self.denoiser = QueryDenoiser(self.config.denoising_config, cache_kvdriver_config) if self.config.denoising_config is not None else None

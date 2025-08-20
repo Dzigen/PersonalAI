@@ -17,16 +17,15 @@ class QueryEnhancerConfig:
     """Конфигурация QueryEnhancer-операции.
 
     :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
-    :type lang: str
+    :type lang: str, optional
     :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной операции. Значение по умолчанию AgentDriverConfig().
-    :type adriver_config: AgentDriverConfig
-
-    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryEnhancer-класса.
-    :type cache_table_name: str
+    :type adriver_config: AgentDriverConfig, optional
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryEnhancer-класса. Значение по умолчанию 'qp_enhancing_stage_cache'.
+    :type cache_table_name: str, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(QE_MAIN_LOG_PATH).
-    :type log: Logger
+    :type log: Logger, optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :type verbose: bool, optional
     """
     lang: str = "auto"
     adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())

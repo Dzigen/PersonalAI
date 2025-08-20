@@ -15,20 +15,19 @@ class QueryDecomposerConfig:
     """Конфигурация QueryDecomposer-операции.
 
     :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
-    :type lang: str
+    :type lang: str, optional
     :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной операции. Значение по умолчанию AgentDriverConfig().
-    :type adriver_config: AgentDriverConfig
+    :type adriver_config: AgentDriverConfig, optional
     :param classify_agent_task_config: Конфигурация атомарной задачи для LLM-агента по классификации наличия независимых запросов (составности/сложности) в user-вопросе. Значение по умолчанию DEFAULT_DC_TASK_CONFIG.
-    :type classify_agent_task_config: AgentTaskSolverConfig
+    :type classify_agent_task_config: AgentTaskSolverConfig, optional
     :param decompose_agent_task_config: Конфигурация атомарной задачи для LLM-агента по разбиению user-вопроса на независимые/простые под-вопросы. Значение по умолчанию DEFAULT_QD_TASK_CONFIG.
-    :type decompose_agent_task_config: AgentTaskSolverConfig
-
-    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryDecomposer-класса.
-    :type cache_table_name: str
+    :type decompose_agent_task_config: AgentTaskSolverConfig, optional
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryDecomposer-класса. Значение по умолчанию 'qp_decomposition_stage_cache'.
+    :type cache_table_name: str, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(QD_MAIN_LOG_PATH).
-    :type log: Logger
+    :type log: Logger, optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :type verbose: bool, optional
     """
     lang: str = "auto"
     adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())

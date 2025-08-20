@@ -47,7 +47,7 @@ class KnowledgeRetriever(CacheUtils):
     :param kg_model: Модель памяти (графа знаний) ассистента. Значение по умолчанию 'astar'.
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация 'Knowledge Retriever'-стадии. Значение по умолчанию KnowledgeRetrieverConfig().
-    :type config: KnowledgeRetrieverConfig
+    :type config: KnowledgeRetrieverConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
