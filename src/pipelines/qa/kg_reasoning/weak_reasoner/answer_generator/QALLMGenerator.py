@@ -4,14 +4,12 @@ from copy import deepcopy
 import hashlib
 
 from .configs import DEFAULT_AG_TASK_CONFIG, AG_MAIN_LOG_PATH
-
 from ......utils.data_structs import Triplet, RelationType, create_id, TripletCreator
 from ......utils.errors import STATUS_MESSAGE
 from ......agents import AgentDriver, AgentDriverConfig
 from ......utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
-from ......utils.cache_kv import CacheKV, CacheUtils
+from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
-
 
 @dataclass
 class QALLMGeneratorConfig:
@@ -22,9 +20,11 @@ class QALLMGeneratorConfig:
     :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
     :type adriver_config: AgentDriverConfig
     :param ag_task_config: Конфигурация атомарной задачи для LLM-агента по условной генерации ответа на вопрос. Значение по умолчанию DEFAULT_AG_TASK_CONFIG.
-    :type ag_tasK_config: AgentTaskSolverConfig
+    :type ag_task_config: AgentTaskSolverConfig
     :param relation_type: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос. Значение по умолчанию [RelationType.simple, RelationType.hyper, RelationType.episodic].
     :type relation_type: List[RelationType]
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QALLMGenerator-класса.
+    :type cache_table_name: str
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(QA_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
@@ -35,8 +35,8 @@ class QALLMGeneratorConfig:
     ag_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_AG_TASK_CONFIG)
 
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
-    cache_table_name: Union[str, None] = 'qa_agenerator_stage_cache'
 
+    cache_table_name: Union[str, None] = 'qa_agenerator_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(AG_MAIN_LOG_PATH))
     verbose: bool = False
 
@@ -49,29 +49,28 @@ class QALLMGenerator(CacheUtils):
     обусловленного извлечённой информацией из памяти (графа знаний) ассистента.
 
     :param config: Конфигурация "Answer-generation"-стадии. Значение по умолчанию QALLMGeneratorConfig().
-    :type config: QALLMGeneratorConfig
+    :type config: QALLMGeneratorConfig, optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
+    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешировать, иначе False. Значение по умолчанию True.
+    :type cache_llm_inference: bool, optional
     """
     def __init__(self, config: QALLMGeneratorConfig = QALLMGeneratorConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None, cache_llm_inference: bool = True) -> None:
+                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None, cache_llm_inference: bool = True) -> None:
         self.config = config
-        self.log = self.config.log
-        self.verbose = self.config.verbose
 
-        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
-            cache_config = deepcopy(cache_kvdriver_config)
-            cache_config.db_config.db_info['table'] = self.config.cache_table_name
-            self.cachekv = CacheKV(cache_config)
-        else:
-            self.cachekv = None
+        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
 
         self.agent = AgentDriver.connect(config.adriver_config)
-
         ag_task_cache_config = None
         if cache_llm_inference:
             ag_task_cache_config = deepcopy(cache_kvdriver_config)
 
         self.answer_generator_solver = AgentTaskSolver(
             self.agent, self.config.ag_task_config, ag_task_cache_config)
+
+        self.log = self.config.log
+        self.verbose = self.config.verbose
 
     def get_cache_key(self, query: str, context_triplets: List[Triplet]) -> List[object]:
         str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(triplet)[1] for triplet in context_triplets])).encode()).hexdigest()
@@ -89,7 +88,7 @@ class QALLMGenerator(CacheUtils):
         :rtype: Tuple[str, ReturnInfo]
         """
 
-        info = ReturnInfo()
+        rinfo = ReturnInfo()
         self.log("START ANSWER GENERATION ...", verbose=self.config.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
         self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
@@ -101,13 +100,14 @@ class QALLMGenerator(CacheUtils):
         answer, status = self.answer_generator_solver.solve(lang=self.config.lang, query=query, triplets=context_triplets)
 
         if status != ReturnStatus.success:
-            info.occurred_warning.append(status)
+            rinfo.occurred_warning.append(status)
 
         if answer is None or len(answer) == 0:
-            info.status = ReturnStatus.empty_answer
-            info.message = STATUS_MESSAGE[info.status]
+            rinfo.status = ReturnStatus.empty_answer
+            rinfo.message = STATUS_MESSAGE[rinfo.status]
+        else:
+            self.log(f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.config.verbose)
 
-        self.log(f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.config.verbose)
-        self.log(f"STATUS: {info.status}", verbose=self.config.verbose)
+        self.log(f"STATUS: {rinfo.status}", verbose=self.config.verbose)
 
-        return answer, info
+        return answer, rinfo

@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Tuple, List
+from typing import Tuple, List, Union
 
 from .weak_reasoner import WeakKGReasonerConfig
 from .config import KGR_MAIN_LOG_PATH, AVAILABLE_KG_REASONERS
@@ -18,7 +18,6 @@ class KnowledgeGraphReasonerConfig:
     :type reasoner_name: str
     :param reasoner_hyperparameters: Конфигурация определённой версии обхода/ризонинга графа знаний по извлечению релевантной информации к user-вопросу. Значение по умолчанию WeakKGReasonerConfig().
     :type reasoner_hyperparameters: BaseKGReasonerConfig, optional
-
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы KnowledgeGraphReasoner-класса.
     :type cache_table_name: str
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(KGR_MAIN_LOG_PATH).
@@ -49,13 +48,14 @@ class KnowledgeGraphReasoner(CacheUtils):
 
     def __init__(self, kg_model: KnowledgeGraphModel,
                  config: KnowledgeGraphReasonerConfig = KnowledgeGraphReasonerConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None):
+                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None):
+        self.config = config
+
+        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
 
         self.reasoner_name = config.reasoner_name
         self.reasoner = AVAILABLE_KG_REASONERS[self.reasoner_name](
             kg_model, config.reasoner_hyperparameters, cache_kvdriver_config)
-
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
 
         self.log = config.log
         self.verbose = config.verbose
@@ -73,7 +73,7 @@ class KnowledgeGraphReasoner(CacheUtils):
             self.reasoner.clear_kv_caches(level='all')
 
     def get_cache_key(self, query: str) -> List[str]:
-        return [query, self.reasoner_name, self.reasoner.config.to_str()]
+        return [query, self.reasoner_name, self.config.to_str()]
 
     @CacheUtils.cache_method_output
     def perform(self, query: str) -> Tuple[str, ReturnInfo]:

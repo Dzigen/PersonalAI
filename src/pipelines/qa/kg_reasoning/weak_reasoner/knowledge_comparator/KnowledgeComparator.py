@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Union, List, Tuple
-from copy import deepcopy
+from typing import List, Tuple
 
 from .configs import KC_MAIN_LOG_PATH
 from ......utils import Logger, ReturnStatus, ReturnInfo
@@ -8,7 +7,7 @@ from ......utils.errors import STATUS_MESSAGE
 from ......utils.data_structs import QueryInfo, create_id
 from ......kg_model import KnowledgeGraphModel
 from ......db_drivers.vector_driver import VectorDBInstance
-from ......utils.cache_kv import CacheKV, CacheUtils
+from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 
 @dataclass
@@ -23,7 +22,9 @@ class KnowledgeComparatorConfig:
     :type max_k: int
     :param k_compare: Значение по умолчанию 5.
     :type k_compare: int
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(COMPARATOR_LOG_PATH).
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы KnowledgeComparator-класса.
+    :type cache_table_name: str
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(KC_MAIN_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
@@ -33,8 +34,7 @@ class KnowledgeComparatorConfig:
     max_k: int = 1
     k_compare: int = 5
 
-    cache_table_name: Union[str, None] = 'qa_kcomparator_stage_cache'
-
+    cache_table_name: str = 'qa_kcomparator_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(KC_MAIN_LOG_PATH))
     verbose: bool = False
 
@@ -48,21 +48,19 @@ class KnowledgeComparator(CacheUtils):
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация "Knowledge Comparator"-стадии. Значение по умолчанию KnowledgeComparatorConfig().
-    :type config: KnowledgeComparatorConfig
+    :type config: KnowledgeComparatorConfig, optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
     def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeComparatorConfig = KnowledgeComparatorConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
         self.config = config
-        self.log = self.config.log
-        self.verbose = self.config.verbose
         self.kg_model = kg_model
 
-        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
-            cache_config = deepcopy(cache_kvdriver_config)
-            cache_config.db_config.db_info['table'] = self.config.cache_table_name
-            self.cachekv = CacheKV(cache_config)
-        else:
-            self.cachekv = None
+        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+
+        self.log = self.config.log
+        self.verbose = self.config.verbose
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
         return [self.config.to_str(), query_info.to_str()]
@@ -107,10 +105,10 @@ class KnowledgeComparator(CacheUtils):
         if len(linked_nodes) == 0:
             info.status = ReturnStatus.zero_linked_nodes
             info.message = STATUS_MESSAGE[info.status]
-
-        self.log(f"RESULT: {len(linked_nodes)}", verbose=self.config.verbose)
-        for score, node in zip(linked_scores,linked_nodes):
-            self.log(f"*[{node.id}] {score} | {node.document}", verbose=self.config.verbose)
+        else:
+            self.log(f"RESULT: {len(linked_nodes)}", verbose=self.config.verbose)
+            for score, node in zip(linked_scores,linked_nodes):
+                self.log(f"*[{node.id}] {score} | {node.document}", verbose=self.config.verbose)
 
         self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 

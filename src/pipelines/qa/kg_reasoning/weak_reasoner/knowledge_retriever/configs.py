@@ -1,10 +1,10 @@
-from .WaterCirclesTripletsRetriever import WaterCirclesRetriever, WaterCirclesSearchConfig
-from .MixturedTripletsRetriever import MixturedTripletsRetriever, MixturedGraphSearchConfig
+from .traversal_methods import WaterCirclesRetriever, WaterCirclesSearchConfig
+from .traversal_methods import MixturedTripletsRetriever, MixturedGraphSearchConfig
+from .traversal_methods import AStarTripletsRetriever, AStarGraphSearchConfig
+from .traversal_methods import NaiveBFSTripletsRetriever, NaiveBFSGraphSearchConfig
+from .traversal_methods import NaiveTripletsRetriever, NaiveGraphSearchConfig
+from .traversal_methods import BeamSearchTripletsRetriever, GraphBeamSearchConfig
 from .TripletsFilter import TripletsFilter, TripletsFilterConfig
-from .AStarTripletsRetriever import AStarTripletsRetriever, AStarGraphSearchConfig
-from .NaiveBFSTripletsRetriever import NaiveBFSTripletsRetriever, NaiveBFSGraphSearchConfig
-from .NaiveTripletsRetriever import NaiveTripletsRetriever, NaiveGraphSearchConfig
-from .BeamSearchTripletsRetriever import BeamSearchTripletsRetriever, GraphBeamSearchConfig
 
 KR_MAIN_LOG_PATH = 'log/qa/kg_reasoner/weak/knowledge_retriever/main'
 

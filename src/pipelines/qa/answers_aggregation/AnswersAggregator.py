@@ -13,18 +13,17 @@ from ....utils.cache_kv import CacheKV, CacheUtils
 
 @dataclass
 class AnswersAggregatorConfig:
-    """_summary_
+    """Конфигурация AnswersAggregator-стадии.
 
-    :param lang: ...
-    :type lang: str, optional
-    :param adriver_config: ...
-    :type adriver_config:AgentDriverConfig, optional
-    :param suba_summarisation_agent_task_config: ...
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
+    :type lang: str
+    :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной операции. Значение по умолчанию AgentDriverConfig().
+    :type adriver_config: AgentDriverConfig
+    :param suba_summarisation_agent_task_config: Конфигурация атомарной задачи для LLM-агента по суммаризации/объединению независимых ответов на под-вопросы в один финальный ответ на исходный user-вопрос. Значение по умолчанию DEFAULT_SUBASUMM_TASK_CONFIG.
     :type suba_summarisation_agent_task_config: AgentTaskSolverConfig, optional
-
-    :param cache_table_name: ...
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы AnswersAggregator-класса.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(AAGG_MAIN_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
@@ -33,33 +32,28 @@ class AnswersAggregatorConfig:
     adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     suba_summarisation_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_SUBASUMM_TASK_CONFIG)
 
-    cache_table_name = "answers_aggregation_main_stage_cache"
+    cache_table_name: str = "answers_aggregation_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(AAGG_MAIN_LOG_PATH))
     verbose: bool = False
 
-    def to_str(self):
+    def to_str(self) -> str:
         return f"{self.lang}|{self.adriver_config.to_str()}|{self.suba_summarisation_agent_task_config.version}"
 
 class AnswersAggregator(CacheUtils):
-    def __init__(self, config: AnswersAggregatorConfig = AnswersAggregatorConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None, cache_llm_inference: bool = True) -> None:
-        """_summary_
+    """Верхнеуровневый класс QueryPreprocessor-стадии (точка входа), отвечающей за аггрегации/резюмированию информации, полученной в резльтате ризонинга на графе знаний (памяти), и генерацию финального ответа на user-вопрос.
 
-        :param config: _description_, defaults to AnswersAggregatorConfig()
-        :type config: AnswersAggregatorConfig, optional
-        :param cache_kvdriver_config: _description_, defaults to None
-        :type cache_kvdriver_config: KeyValueDriverConfig, optional
-        :param cache_llm_inference: _description_, defaults to True
-        :type cache_llm_inference: bool, optional
-        """
+    :param config: Конфигурация AnswersAggregator-стадии. Значение по умолчанию AnswersAggregatorConfig().
+    :type config: AnswersAggregatorConfig, optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
+    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешировать, иначе False. Значение по умолчанию True.
+    :type cache_llm_inference: bool, optional
+    """
+    def __init__(self, config: AnswersAggregatorConfig = AnswersAggregatorConfig(),
+                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None, cache_llm_inference: bool = True) -> None:
         self.config = config
 
-        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
-            cache_config = deepcopy(cache_kvdriver_config)
-            cache_config.db_config.db_info['table'] = self.config.cache_table_name
-            self.cachekv = CacheKV(cache_config)
-        else:
-            self.cachekv = None
+        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
 
         self.agent = AgentDriver.connect(config.adriver_config)
         agents_cache_config = None
@@ -72,22 +66,18 @@ class AnswersAggregator(CacheUtils):
         self.log = self.config.log
         self.verbose = self.config.verbose
 
-    def get_cache_key(self, query_info: QueryPreprocessingInfo, sub_answers: List[str]) -> List[object]:
-        str_sub_answers = "|".join(sub_answers)
-        return [query_info.to_str(), str_sub_answers, self.config.to_str()]
+    def get_cache_key(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> List[object]:
+        return [query_info.to_str(), subq_info.to_str(), self.config.to_str()]
 
     @CacheUtils.cache_method_output
     def perform(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> Tuple[str, ReturnInfo]:
-        """_summary_
+        """Метод предназначен для выполнения операции аггрегации/резюмирования информации, полученной в резльтате ризонинга на графе знаний (памяти), и генерации финального ответа на user-вопрос.
 
-        :param query_info: _description_
+        :param query_info: Струкутра данных с предобработанным user-вопросом и результами промежуточных операций по его форматированию.
         :type query_info: QueryPreprocessingInfo
-        :param subq_info: _description_
+        :param subq_info: Структура данных с извлечённой из графа знаний информацией по предобработанному user-вопросу для генерации ответа.
         :type subq_info: QueryReasoningInfo
-        :raises ValueError: _description_
-        :raises ValueError: _description_
-        :raises ValueError: _description_
-        :return: _description_
+        :return: Кортеж из двух объектов: (1) финальный ответ на user-вопрос; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
         self.log("START ANSWERS AGGREGATION...", verbose=self.config.verbose)

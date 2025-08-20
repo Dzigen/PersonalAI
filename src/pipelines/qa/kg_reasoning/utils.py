@@ -9,6 +9,11 @@ class QueryReasoningInfo:
     sub_queries: List[str]
     sub_answers: List[str]
 
+    def to_str(self) -> str:
+        str_sq = '|'.join(self.sub_queries)
+        str_sa = '|'.join(self.sub_answers)
+        return f"{str_sq};{str_sa}"
+
 class AbstractKGReasoner(ABC):
 
     @abstractmethod

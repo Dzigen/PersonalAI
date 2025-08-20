@@ -81,32 +81,30 @@ class QAPipeline(CacheUtils):
             self.answers_aggregator.clear_kv_caches(level='all')
 
     def preprocess_query(self, query: str) -> Tuple[QueryPreprocessingInfo, ReturnInfo]:
-        self.log("Preprocessing...", verbose=self.verbose)
-        query_info, prepr_info = self.query_preprocessor.perform(query)
+        query_info, rinfo = self.query_preprocessor.perform(query)
         self.log(f"RESULT: {query_info}", verbose=self.verbose)
-        if prepr_info.status != ReturnStatus.success:
+        if rinfo.status != ReturnStatus.success:
             self.log("Operation ended with error!", verbose=self.verbose)
         else:
             self.log("Operation ended successfully", verbose=self.verbose)
 
-        return query_info, prepr_info
+        return query_info, rinfo
 
     def process_query(self, query_info: QueryPreprocessingInfo) -> Tuple[QueryReasoningInfo, ReturnInfo]:
         rinfo = ReturnInfo()
         sub_queries, sub_answers = query_info.processed_query, []
 
-        self.log("Reasoning...", verbose=self.verbose)
         for i, sub_query in enumerate(query_info.processed_query):
             self.log(f"Processing sub_query #{i}: {sub_query}", verbose=self.verbose)
-            sub_answer, reasoner_info = self.kg_reasoner.perform(sub_query)
+            sub_answer, rinfo = self.kg_reasoner.perform(sub_query)
             self.log(f"RESULT: {sub_answer}", verbose=self.verbose)
-            if reasoner_info.status != ReturnStatus.success:
+            if rinfo.status != ReturnStatus.success:
                 self.log("Operation ended with error!", verbose=self.verbose)
-                rinfo = reasoner_info
+                rinfo = rinfo
                 break
             else:
                 self.log("Operation ended successfully", verbose=self.verbose)
-                rinfo.occurred_warning.append(reasoner_info.occurred_warning)
+                rinfo.occurred_warning.append(rinfo.occurred_warning)
                 sub_answers.append(sub_answer)
 
         str_subqa = "\n".join([f"- [{q}] {a}" for q, a in zip(sub_queries, sub_answers)])
@@ -116,20 +114,19 @@ class QAPipeline(CacheUtils):
         return subq_info, rinfo
 
     def postprocess_answer(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> Tuple[str, ReturnInfo]:
-        self.log("Aggregation...", verbose=self.verbose)
-        aggregated_answer, aagg_info = self.answers_aggregator.perform(query_info, subq_info)
+        aggregated_answer, rinfo = self.answers_aggregator.perform(query_info, subq_info)
         self.log(f"RESULT: {aggregated_answer}", verbose=self.verbose)
-        if aagg_info.status != ReturnStatus.success:
+        if rinfo.status != ReturnStatus.success:
             self.log("Operation ended with error!", verbose=self.verbose)
         else:
             self.log("Operation ended successfully", verbose=self.verbose)
 
-        return aggregated_answer, aagg_info
+        return aggregated_answer, rinfo
 
     def get_cache_key(self, query: str) -> List[str]:
         str_qprep_config = self.query_preprocessor.config.to_str()
         str_qreas_config = self.kg_reasoner.config.to_str()
-        str_aaggr_config = self.answers_aggregator.to_str()
+        str_aaggr_config = self.answers_aggregator.config.to_str()
         return [str_qprep_config, str_qreas_config, str_aaggr_config, query]
 
     @CacheUtils.cache_method_output
@@ -147,15 +144,18 @@ class QAPipeline(CacheUtils):
 
         final_answer, rinfo = None, ReturnInfo()
 
+        self.log("Preprocessing...", verbose=self.verbose)
         query_info, q_rinfo = self.preprocess_query(query)
         update_rinfo(rinfo, q_rinfo)
 
+        self.log("Reasoning...", verbose=self.verbose)
         if rinfo.status == ReturnStatus.success:
             subq_info, sq_info = self.process_query(query_info)
             update_rinfo(rinfo, sq_info)
         else:
             self.log("During previous steps error occurs.", verbose=self.verbose)
 
+        self.log("Aggregation...", verbose=self.verbose)
         if sq_info.status == ReturnStatus.success:
             final_answer, ag_info = self.postprocess_answer(query_info, subq_info)
             update_rinfo(rinfo, ag_info)

@@ -5,7 +5,7 @@ from typing import List, Tuple, Dict
 import sys
 sys.path.insert(0, "../")
 
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.BeamSearchTripletsRetriever import BeamSearchTripletsRetriever, \
+from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever import BeamSearchTripletsRetriever, \
     TraversingPath, GraphBeamSearchConfig, TraversedPath
 from src.kg_model import KnowledgeGraphModel
 from src.utils import Logger

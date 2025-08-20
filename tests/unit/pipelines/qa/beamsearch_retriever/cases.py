@@ -3,7 +3,7 @@ import numpy as np
 import sys
 sys.path.insert(0, "../")
 
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.BeamSearchTripletsRetriever import TraversingPath
+from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever import TraversingPath
 
 # raw_score, expected_value, exception
 CALCULATE_TRIPLET_SCORE_TEST_CASES = [

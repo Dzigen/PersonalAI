@@ -2,16 +2,16 @@ from dataclasses import dataclass, field
 from typing import List, Union, Dict
 from copy import deepcopy
 
-from .utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarTripletsRetriever
 from .WaterCirclesTripletsRetriever import WaterCirclesSearchConfig, WaterCirclesRetriever
 from .NaiveBFSTripletsRetriever import NaiveBFSTripletsRetriever
 from .BeamSearchTripletsRetriever import BeamSearchTripletsRetriever
-from ......utils.data_structs import QueryInfo, Triplet, create_id, NodeType, NODES_TYPES_MAP
-from ......kg_model import KnowledgeGraphModel
-from ......utils import Logger
-from ......utils.cache_kv import CacheKV, CacheUtils
-from ......db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
+from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
+from .......utils.data_structs import QueryInfo, Triplet, create_id, NodeType, NODES_TYPES_MAP
+from .......kg_model import KnowledgeGraphModel
+from .......utils import Logger
+from .......utils.cache_kv import CacheKV, CacheUtils
+from .......db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
 
 @dataclass
 class MixturedGraphSearchConfig(BaseGraphSearchConfig):

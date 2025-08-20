@@ -21,7 +21,9 @@ class QueryLLMParserConfig:
     :type adriver_config: AgentDriverConfig
     :param kw_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению ключевых сущностей из текста. Значение по умолчанию DEFAULT_KWE_TASK_CONFIG.
     :type kw_extraction_task_config: AgentTaskSolverConfig
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(QP_LOG_PATH).
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryLLMParser-класса.
+    :type cache_table_name: str
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(QP_MAIN_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
@@ -29,8 +31,8 @@ class QueryLLMParserConfig:
     lang: str = 'auto'
     adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
     kw_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_KWE_TASK_CONFIG)
-    cache_table_name: Union[str, None] = 'qa_queryparser_stage_cache'
 
+    cache_table_name: Union[str, None] = 'qa_queryparser_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(QP_MAIN_LOG_PATH))
     verbose: bool = False
 
@@ -38,28 +40,22 @@ class QueryLLMParserConfig:
         return f"{self.adriver_config.to_str()}|{self.kw_extraction_task_config.version}|{self.lang}"
 
 class QueryLLMParser(CacheUtils):
-    """Верхнеуровневый класс первой стадии QA-конвейера
-    для извлечения сущностей из user-вопроса.
+    """Верхнеуровневый класс первой стадии QA-конвейера для извлечения сущностей из запроса на естественном языке.
 
     :param config: Конфигурация "Query Parser"-стадии. Значение по умолчанию QueryLLMParserConfig().
-    :type config: QueryLLMParserConfig
+    :type config: QueryLLMParserConfig, optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
+    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешировать, иначе False. Значение по умолчанию True.
+    :type cache_llm_inference: bool, optional
     """
     def __init__(self, config: QueryLLMParserConfig = QueryLLMParserConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None,
+                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None,
                  cache_llm_inference: bool = True) -> None:
-        self.log = config.log
-        self.verbose = config.verbose
         self.config = config
-
-        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
-            cache_config = deepcopy(cache_kvdriver_config)
-            cache_config.db_config.db_info['table'] = self.config.cache_table_name
-            self.cachekv = CacheKV(cache_config)
-        else:
-            self.cachekv = None
+        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
 
         self.agent = AgentDriver.connect(config.adriver_config)
-
         kwe_task_cache_config = None
         if cache_llm_inference:
             kwe_task_cache_config = deepcopy(cache_kvdriver_config)
@@ -68,40 +64,42 @@ class QueryLLMParser(CacheUtils):
             self.agent, self.config.kw_extraction_task_config,
             kwe_task_cache_config)
 
+        self.log = config.log
+        self.verbose = config.verbose
+
     def get_cache_key(self, query: str) -> List[object]:
         return [self.config.to_str(), query]
 
     @CacheUtils.cache_method_output
-    def extract_entities(self, query: str) -> Tuple[List[str], ReturnInfo]:
+    def extract_entities(self, query_info: QueryInfo) -> Tuple[List[str], ReturnInfo]:
         """Метод предназначен для извлечения ключевых сущностей из query-текста.
 
-        :param query: Текст на естественном языке.
-        :type query: str
+        :param query_info: Структура данных с информацией об обрабатываемом запросе
+        :type query_info: QueryInfo
         :return: Кортеж из двух объектов: (1) структура данных со списком извлечённых ключевых сущностей из query; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[QueryInfo, ReturnInfo]
         """
 
-        info = ReturnInfo()
         self.log("START KEY WORD EXTRACTION...", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.config.verbose)
+        rinfo = ReturnInfo()
 
         self.log("Выполнение извлечения ключевых сущностей из запроса с помощью LLM-агента...", verbose=self.config.verbose)
-        extracted_entities, status = self.kw_extraction_solver.solve(lang=self.config.lang, query=query)
-
+        extracted_entities, status = self.kw_extraction_solver.solve(lang=self.config.lang, query=query_info.query)
         if status != ReturnStatus.success:
-            info.occurred_warning.append(status)
+            rinfo.occurred_warning.append(status)
 
         entities=[]
         if extracted_entities is None or len(extracted_entities) == 0:
-            info.status = ReturnStatus.zero_entities
-            info.message = STATUS_MESSAGE[info.status]
+            rinfo.status = ReturnStatus.zero_entities
+            rinfo.message = STATUS_MESSAGE[rinfo.status]
         else:
             entities=extracted_entities
+            self.log(f"RESULT: {len(entities)}", verbose=self.config.verbose)
+            for entity in entities:
+                self.log(f"* {entity}", verbose=self.config.verbose)
 
-        self.log(f"RESULT: {len(entities)}", verbose=self.config.verbose)
-        for entity in entities:
-            self.log(f"* {entity}", verbose=self.config.verbose)
-        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
+        self.log(f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.config.verbose)
 
-        return entities, info
+        return entities, rinfo

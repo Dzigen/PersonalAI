@@ -47,7 +47,7 @@ class QueryPreprocessorConfig:
 class QueryPreprocessor(CacheUtils):
     """Верхнеуровневый класс QueryPreprocessor-стадии (точка входа), отвечающей за предобработку исходного user-вопроса, с целью упрощения процесса поиска информации и повышения качества финального ответа системы.
 
-    :param config: Конфигурация QueryPreprocessorConfig-стадии. Значение по умолчанию QueryPreprocessorConfig().
+    :param config: Конфигурация QueryPreprocessor-стадии. Значение по умолчанию QueryPreprocessorConfig().
     :type config: QueryPreprocessorConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional

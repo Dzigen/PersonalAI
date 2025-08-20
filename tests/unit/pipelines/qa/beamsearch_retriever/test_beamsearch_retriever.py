@@ -5,7 +5,7 @@ from typing import List, Tuple
 import sys
 sys.path.insert(0, "../")
 
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.BeamSearchTripletsRetriever import BeamSearchTripletsRetriever, TraversingPath
+from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever import BeamSearchTripletsRetriever, TraversingPath
 
 from cases import CALCULATE_TRIPLET_SCORE_TEST_CASES, EXTEND_TPATH_TEST_CASES
 

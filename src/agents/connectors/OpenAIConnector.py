@@ -4,7 +4,7 @@ from openai import OpenAI
 from ..utils import AbstractAgentConnector, AgentConnectorConfig
 
 
-DEEPSEEK_KEY = 'sk-7114ae174a6142bf8b028e8bf6af9579'
+DEEPSEEK_KEY = 'sk-aa2371fe6326458bbd63bf91dcb6a4a4'
 DEEPSEEK_CONFIG = AgentConnectorConfig(
     gen_strategy={'seed': 42, 'top_p': 10e-16, 'temperature': 0.0, 'frequency_penalty':0, 'presence_penalty':0},
     credentials={'token': DEEPSEEK_KEY, 'model': 'deepseek-chat', 'base_url': 'https://api.deepseek.com'},
@@ -22,7 +22,7 @@ class OpenAIConnector(AbstractAgentConnector):
         self.config = config
         base_url = None if config.credentials['base_url'] == 'None' else config.credentials['base_url']
         self.config.credentials['base_url'] = base_url
-        
+
         self.client = OpenAI(
             api_key=os.environ.get("OPENAI_API_KEY", config.credentials['token']),
             base_url=config.credentials['base_url'])
