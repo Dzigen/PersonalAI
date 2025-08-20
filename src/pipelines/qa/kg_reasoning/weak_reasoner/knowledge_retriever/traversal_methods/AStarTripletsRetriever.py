@@ -8,13 +8,12 @@ from copy import deepcopy
 from collections import Counter
 
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig, get_nodes_path
-from .......utils.data_structs import QueryInfo, Triplet, NodeType
+from .......utils.data_structs import QueryInfo, Triplet, NodeType, create_id_for_node_pair, create_id, NODES_TYPES_MAP
 from .......kg_model import KnowledgeGraphModel
-from .......utils.data_structs import create_id_for_node_pair, create_id, NODES_TYPES_MAP
 from .......db_drivers.kv_driver.utils import KeyValueDBInstance
 from .......db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver, KVDBConnectionConfig
 from .......utils import Logger
-from .......utils.cache_kv import CacheKV, CacheUtils
+from .......utils.cache_kv import CacheUtils
 
 @dataclass
 class AStarMetricsConfig:
@@ -26,7 +25,7 @@ class AStarMetricsConfig:
     :type kvdriver_config: KeyValueDriverConfig
     """
     h_metric_name: str = 'ip'
-    kvdriver_config: KeyValueDriverConfig = None
+    kvdriver_config: Union[None,KeyValueDriverConfig] = None
 
     def to_str(self):
         return f"{self.h_metric_name}"
@@ -54,27 +53,15 @@ class AStarMetrics:
         self.log = log
         self.verbose = verbose
 
-        # костыль
-        if self.config.kvdriver_config is not None:
-            self.cache = dict()
-            if self.config.h_metric_name in ['ip', 'weight_with_short_path',  'avg_weighted_with_short_path']:
-                ip_config = deepcopy(config.kvdriver_config)
-                ip_config.db_config.db_info['table'] = 'astar_retriever_ip'
-                self.cache['ip'] = KeyValueDriver.connect(ip_config)
-            if self.config.h_metric_name in ['weight_with_short_path',  'avg_weighted_with_short_path']:
-                sp_config = deepcopy(config.kvdriver_config)
-                sp_config.db_config.db_info['table'] = 'astar_retriever_bfsshortpath'
-                self.cache['bfs_short_path'] = KeyValueDriver.connect(sp_config)
+        self.init_kv_caches()
 
-                sp_config = deepcopy(config.kvdriver_config)
-                sp_config.db_config.db_info['table'] = 'astar_retriever_weightwithshortpath'
-                self.cache['weight_with_short_path'] = KeyValueDriver.connect(sp_config)
+        self.metrics_map = {
+            'ip': self.embeddings_dist,
+            'weight_with_short_path': self.weighted_short_path,
+            'avg_weighted_with_short_path': self.avg_weighted_short_path,
+        }
 
-                sp_config = deepcopy(config.kvdriver_config)
-                sp_config.db_config.db_info['table'] = 'astar_retriever_avgweightedwithshortpath'
-                self.cache['avg_weighted_with_short_path'] = KeyValueDriver.connect(sp_config)
-
-
+    def init_caches_stats(self) -> None:
         self.cache_info = {
             'dist': {'exist': 0, 'calc': 0},
             'bfs_short_path': {'exist': 0, 'calc': 0},
@@ -82,11 +69,32 @@ class AStarMetrics:
             'avg_weighted_with_short_path': {'exist': 0, 'calc': 0}
         }
 
-        self.metrics_map = {
-            'ip': self.embeddings_dist,
-            'weight_with_short_path': self.weighted_short_path,
-            'avg_weighted_with_short_path': self.avg_weighted_short_path,
-        }
+    def init_kv_caches(self) -> None:
+        if self.config.kvdriver_config is not None:
+            self.cache = dict()
+            if self.config.h_metric_name in ['ip', 'weight_with_short_path',  'avg_weighted_with_short_path']:
+                ip_config = deepcopy(self.config.kvdriver_config)
+                ip_config.db_config.db_info['table'] = 'astar_retriever_ip'
+                self.cache['ip'] = KeyValueDriver.connect(ip_config)
+            if self.config.h_metric_name in ['weight_with_short_path',  'avg_weighted_with_short_path']:
+                sp_config = deepcopy(self.config.kvdriver_config)
+                sp_config.db_config.db_info['table'] = 'astar_retriever_bfsshortpath'
+                self.cache['bfs_short_path'] = KeyValueDriver.connect(sp_config)
+
+                sp_config = deepcopy(self.config.kvdriver_config)
+                sp_config.db_config.db_info['table'] = 'astar_retriever_weightwithshortpath'
+                self.cache['weight_with_short_path'] = KeyValueDriver.connect(sp_config)
+
+                sp_config = deepcopy(self.config.kvdriver_config)
+                sp_config.db_config.db_info['table'] = 'astar_retriever_avgweightedwithshortpath'
+                self.cache['avg_weighted_with_short_path'] = KeyValueDriver.connect(sp_config)
+
+        self.init_caches_stats()
+
+    def clear_kv_caches(self) -> None:
+        for key in self.cache.keys():
+            self.cache[key].clear()
+        self.init_caches_stats()
 
     def compute_h_metric(self, *args, **kwargs) -> float:
         return self.metrics_map[self.config.h_metric_name](*args, **kwargs)
@@ -353,19 +361,17 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
     :param search_config: Конфигурация A*-алгоритма поиска по графовому хранилищу триплетов. Значение по умолчанию AStarGraphSearchConfig().
-    :type search_config: AStarGraphSearchConfig
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(RETRIEVER_LOG_PATH).
+    :type search_config: Union[AStarGraphSearchConfig, Dict], optional
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
     :type log: Logger
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :type verbose: bool, optional
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[AStarGraphSearchConfig, Dict] = AStarGraphSearchConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
-        self.log = log
-        self.verbose = verbose
-        self.kg_model = kg_model
-
         if type(search_config) is dict:
             if 'accepted_node_types' in search_config:
                 search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
@@ -386,16 +392,28 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             search_config = AStarGraphSearchConfig(**search_config)
         self.config = search_config
 
+        self.kg_model = kg_model
+
         self.graph_searcher = AStarGraphSearch(kg_model, log, search_config, verbose)
 
-        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
-            cache_config = deepcopy(cache_kvdriver_config)
-            cache_config.db_config.db_info['table'] = self.config.cache_table_name
-            self.cachekv = CacheKV(cache_config)
-        else:
-            self.cachekv = None
+        self.cachekv = self.init_cachekv(cache_kvdriver_config, self.config.cache_table_name)
 
-    def get_cache_key(self, query_info: QueryInfo) -> List[object]:
+        self.log = log
+        self.verbose = verbose
+
+    def clear_kv_caches(self, level = 'all') -> None:
+        if type(level) is not str:
+            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+        if level not in ['all', 'current', 'other']:
+            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+
+        if level in ['current', 'all']:
+            self.cachekv.clear()
+
+        if level in ['all', 'other']:
+            self.graph_searcher.metrics.clear_kv_caches()
+
+    def get_cache_key(self, query_info: QueryInfo) -> List[str]:
         return [self.config.to_str(), query_info.to_str()]
 
     @CacheUtils.cache_method_output

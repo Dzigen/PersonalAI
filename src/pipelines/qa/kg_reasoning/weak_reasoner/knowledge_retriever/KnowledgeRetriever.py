@@ -16,20 +16,20 @@ from ......db_drivers.kv_driver import KeyValueDriverConfig
 class KnowledgeRetrieverConfig:
     """Конфигурация "Knowledge Retriever"-стадии.
 
-    :param retriever_method: Значение по умолчанию 'astar'.
-    :type retriever_method: str
-    :param retriever_config: Значение по умолчанию AStarGraphSearchConfig().
-    :type retriever_config: Union[BaseGraphSearchConfig, Dict]
-    :param filter_method: Значение по умолчанию 'naive'.
-    :type filter_method: str
-    :param filter_config: Значение по умолчанию TripletsFilterConfig().
-    :type filter_config: Union[BaseTripletsFilterConfig, Dict]
-    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы KnowledgeRetriever-класса.
-    :type cache_table_name: str
+    :param retriever_method: Наименование алгоритма для обхода вершин/рёбер графовой структуры данных (графа знаний) и извлечения релевантной информации. Значение по умолчанию 'astar'.
+    :type retriever_method: str, optional
+    :param retriever_config: Конфигурация выбранного алгоритма обхода графа. Значение по умолчанию AStarGraphSearchConfig().
+    :type retriever_config: Union[BaseGraphSearchConfig, Dict], optional
+    :param filter_method: Наименование алгоритма для фильтрации информации (триеплетов), извлечённой из графа знаний (в результате работы алгоритма обхода графа). Значение по умолчанию 'naive'.
+    :type filter_method: str, optional
+    :param filter_config: Конфигурация выбранного алгоритма фильтрации информации (триплетов). Значение по умолчанию TripletsFilterConfig().
+    :type filter_config: Union[BaseTripletsFilterConfig, Dict], optional
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы KnowledgeRetriever-класса. Значение по умолчанию 'qa_kretriever_stage_cache'.
+    :type cache_table_name: str, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(KR_MAIN_LOG_PATH).
-    :type log: Logger
+    :type log: Logger, optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :type verbose: bool, optional
     """
     retriever_method: str = 'water_circles'
     retriever_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: WaterCirclesSearchConfig())
@@ -69,6 +69,21 @@ class KnowledgeRetriever(CacheUtils):
 
         self.log = config.log
         self.verbose = config.verbose
+
+    def clear_kv_caches(self, level: str = 'all') -> None:
+        if type(level) is not str:
+            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+        if level not in ['all', 'current', 'other']:
+            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+
+        if level in ['current', 'all']:
+            self.cachekv.clear()
+
+        if level in ['other', 'all']:
+            self.graph_retriever.clear_kv_caches(level='all')
+            if self.triplets_filter is not None:
+                self.triplets_filter.clear_kv_caches(level='all')
+
 
     def validate_tripelts(self, triplets: List[Triplet]) -> List[Triplet]:
         self.log("Проверяем, что извлечённые триплеты являются валидными...", verbose=self.config.verbose)

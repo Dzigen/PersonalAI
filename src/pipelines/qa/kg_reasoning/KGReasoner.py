@@ -15,15 +15,15 @@ class KnowledgeGraphReasonerConfig:
     Конфигурация KnowledgeGraphReasoner-стадии.
 
     :param reasoner_name: Название версии алгоритма по обходу/ризонинга графа знаний. Значение по умолчанию 'weak'.
-    :type reasoner_name: str
+    :type reasoner_name: str, optional
     :param reasoner_hyperparameters: Конфигурация определённой версии обхода/ризонинга графа знаний по извлечению релевантной информации к user-вопросу. Значение по умолчанию WeakKGReasonerConfig().
     :type reasoner_hyperparameters: BaseKGReasonerConfig, optional
-    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы KnowledgeGraphReasoner-класса.
-    :type cache_table_name: str
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы KnowledgeGraphReasoner-класса. Значение по умолчанию 'kg_reasoning_main_stage_cache'.
+    :type cache_table_name: str, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(KGR_MAIN_LOG_PATH).
-    :type log: Logger
+    :type log: Logger, optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :type verbose: bool, optional
     """
     reasoner_name: str = 'weak'
     reasoner_hyperparameters: BaseKGReasonerConfig = field(default_factory=lambda: WeakKGReasonerConfig())

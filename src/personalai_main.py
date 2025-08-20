@@ -34,8 +34,8 @@ class PersonalAIConfig:
 class PersonalAI:
     """Верхнеуровневый класс (точка входа) персонального ассистента.
 
-    :param config: Конфигурация персонального ассистента.
-    :type config: PersonalAIConfig
+    :param config: Конфигурация персонального ассистента. Значение по умолчанию PersonalAIConfig().
+    :type config: PersonalAIConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования результатов промежуточных операций ассистента. Значение по умолчанию None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
     """

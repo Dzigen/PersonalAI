@@ -15,19 +15,19 @@ class KnowledgeComparatorConfig:
     """Конфигурация "Knowledge Comparator"-стадии QA-конвейера.
 
     :param threshold: Нижний порог близости между эмбеддингами сущностей и вершин для их сопоставления (matching). Значение по умолчанию 0.5.
-    :type threshold: float
+    :type threshold: float, optional
     :param fetch_n: Служебный гиперпараметр. Значение по умолчанию 20.
-    :type fetch_n: int
+    :type fetch_n: int, optional
     :param max_k: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 1.
-    :type max_k: int
+    :type max_k: int, optional
     :param k_compare: Значение по умолчанию 5.
-    :type k_compare: int
-    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы KnowledgeComparator-класса.
-    :type cache_table_name: str
+    :type k_compare: int, optional
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы KnowledgeComparator-класса. Значение по умолчанию 'qa_kcomparator_stage_cache'.
+    :type cache_table_name: str, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(KC_MAIN_LOG_PATH).
-    :type log: Logger
+    :type log: Logger, optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :type verbose: bool, optional
     """
     threshold: float = 0.5
     fetch_n: int = 20

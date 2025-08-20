@@ -24,18 +24,18 @@ class QAPipelineConfig:
     :type reasoner_config: KnowledgeGraphReasonerConfig, optional
     :param aggregator_config: Конфигурация стадии по аггрегации/резюмированию информации, полученной в резльтате ризонинга на графе знаний (памяти). Значение по умолчанию AnswersAggregatorConfig().
     :type aggregator_config: AnswersAggregatorConfig, optional
-    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QAPipeline-класса.
-    :type cache_table_name: str
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QAPipeline-класса. Значение по умолчанию 'qa_pipeline_cache'.
+    :type cache_table_name: str, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(LOG_PATH).
-    :type log: Logger
+    :type log: Logger, optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :type verbose: bool, optional
     """
     preprocessor_config: QueryPreprocessorConfig = field(default_factory=lambda: QueryPreprocessorConfig())
     reasoner_config: KnowledgeGraphReasonerConfig = field(default_factory=lambda: KnowledgeGraphReasonerConfig())
     aggregator_config: AnswersAggregatorConfig = field(default_factory=lambda: AnswersAggregatorConfig())
 
-    cache_table_name: str = "qa_pipeline_cache"
+    cache_table_name: str = 'qa_pipeline_cache'
     log: Logger = field(default_factory=lambda: Logger(QA_MAIN_LOG_PATH))
     verbose: bool = False
 

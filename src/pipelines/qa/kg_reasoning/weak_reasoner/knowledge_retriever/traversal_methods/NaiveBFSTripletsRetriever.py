@@ -1,22 +1,31 @@
 from dataclasses import dataclass, field
-from typing import Dict, List, Tuple, Union
-import numpy as np
-import heapq
-from time import time
+from typing import Dict, List, Union
 import collections
 from collections import Counter
-from copy import deepcopy
 
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......utils.data_structs import QueryInfo, Triplet, NodeType
 from .......kg_model import KnowledgeGraphModel
 from .......utils.data_structs import create_id, NODES_TYPES_MAP
 from .......utils import Logger
-from .......utils.cache_kv import CacheKV, CacheUtils
-from .......db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
+from .......utils.cache_kv import CacheUtils
+from .......db_drivers.kv_driver import KeyValueDriverConfig
 
 @dataclass
 class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):
+    """Конфигурация NaiveBFSTripletsRetriever-алгоритма обхода графа.
+
+    :param max_depth: Максимальная глубина обхода графа с помощью BFS-алгоритма. Значение по умолчанию 10.
+    :type max_depth: int, optional
+    :param max_width: Максимальная ширина обхода графа с помощью BFS-алгоритма. Значение по умолчанию 50.
+    :type max_width: int, optional
+    :param max_passed_nodes: Максимальное количество вершин, которое может пройдено в рамках работы BFS-алгоритма. Значение по умолчанию 1000.
+    :type max_passed_nodes: int, optional
+    :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извелчения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time].
+    :type accepted_node_types: List[NodeType], optional
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveBFSTripletsRetriever-класса. Значение по умолчанию 'qa_bfs_t_retriver_cache'.
+    :type cache_table_name: str, optional
+    """
     max_depth: int = 10
     max_width: int = 50
     max_passed_nodes: int = 1000
@@ -28,27 +37,45 @@ class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):
         return f"{self.max_depth}|{self.max_width}|{self.max_passed_nodes}|{str_accepted_nodes}"
 
 class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[NaiveBFSGraphSearchConfig, Dict] = NaiveBFSGraphSearchConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
-        self.log = log
-        self.verbose = verbose
-        self.kg_model = kg_model
+    """Класс предназначен для извлечения триплетов из графа знаний на основе BFS-алгоритма (обход в ширину) поиска.
 
+    :param kg_model: Модель памяти (графа знаний) ассистента.
+    :type kg_model: KnowledgeGraphModel
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
+    :type log: Logger
+    :param search_config: Конфигурация NaiveBFSTripletsRetriever-алгоритма. Значение по умолчанию  NaiveBFSGraphSearchConfig().
+    :type search_config: Union[NaiveBFSGraphSearchConfig, Dict], optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool, optional
+    """
+    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[NaiveBFSGraphSearchConfig, Dict] = NaiveBFSGraphSearchConfig(),
+                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None, verbose: bool = False) -> None:
         if type(search_config) is dict:
             if 'accepted_node_types' in search_config:
                 search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
             search_config = NaiveBFSGraphSearchConfig(**search_config)
         self.config = search_config
 
-        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
-            cache_config = deepcopy(cache_kvdriver_config)
-            cache_config.db_config.db_info['table'] = self.config.cache_table_name
-            self.cachekv = CacheKV(cache_config)
-        else:
-            self.cachekv = None
+        self.kg_model = kg_model
 
-    def get_cache_key(self, query_info: QueryInfo) -> List[object]:
-        return [self.config.to_str(), query_info.to_str()]
+        self.cachekv = self.init_cachekv(cache_kvdriver_config, self.config.cache_table_name)
+
+        self.log = log
+        self.verbose = verbose
+
+    def clear_kv_caches(self, level = 'all') -> None:
+        if type(level) is not str:
+            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+        if level not in ['all', 'current', 'other']:
+            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+
+        if level in ['current', 'all']:
+            self.cachekv.clear()
+
+        if level == 'other':
+            raise NotImplementedError
 
     def search(self, node_id: str) -> List[Triplet]:
         traversed_triplets = []
@@ -100,6 +127,9 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log(f"passed nodes counter: {passed_nodes_counter}", verbose=self.verbose)
 
         return traversed_triplets
+
+    def get_cache_key(self, query_info: QueryInfo) -> List[str]:
+        return [self.config.to_str(), query_info.to_str()]
 
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:

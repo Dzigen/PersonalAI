@@ -10,17 +10,25 @@ from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......utils.data_structs import QueryInfo, Triplet, create_id, NodeType, NODES_TYPES_MAP
 from .......kg_model import KnowledgeGraphModel
 from .......utils import Logger
-from .......utils.cache_kv import CacheKV, CacheUtils
-from .......db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
+from .......utils.cache_kv import CacheUtils
+from .......db_drivers.kv_driver import KeyValueDriverConfig
 
 @dataclass
 class MixturedGraphSearchConfig(BaseGraphSearchConfig):
-    """Конфигурация комбинированного алгоритма извлечения триплетов из графа знаний.
+    """Конфигурация смешанного алгоритма извлечения триплетов из графа знаний.
 
-    :param astar_config: Конфигурация A*-алгоритма поиска. Значение по умолчанию AStarGraphSearchConfig().
-    :type astar_config: AStarGraphSearchConfig
-    :param bfs_config: Конфигурация BFS-алгоритма поиска. Значение по умолчанию BFSSearchConfig().
-    :type bfs_config: BFSSearchConfig
+    :param retriever1_name: Наименование одного из алгоритмов (#1), который будет использоваться в комбинированном режиме для обхода вершин/рёбер графовой структуры данных (графа знаний) и извлечения релевантной информации. Значение по умолчанию 'astar'.
+    :type retriever1_name: str, optional
+    :param retriever1_config: Конфигурация выбранного алгоритма (#1) обхода графа. Значение по умолчанию AStarGraphSearchConfig().
+    :type retriever1_config: Union[BaseGraphSearchConfig, Dict], optional
+    :param retriever2_name: Наименование одного из алгоритмов (#2), который будет использоваться в комбинированном режиме для обхода вершин/рёбер графовой структуры данных (графа знаний) и извлечения релевантной информации. Значение по умолчанию 'watercircles'.
+    :type retriever2_name: str, optional
+    :param retriever2_config: Конфигурация выбранного алгоритма (#2) обхода графа. Значение по умолчанию WaterCirclesSearchConfig().
+    :type retriever2_config: Union[BaseGraphSearchConfig, Dict], optional
+    :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извелчения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time].
+    :type accepted_node_types: List[NodeType], optional
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveBFSTripletsRetriever-класса. Значение по умолчанию 'qa_bfs_t_retriver_cache'.
+    :type cache_table_name: str, optional
     """
     retriever1_name: str = 'astar'
     retriever1_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: AStarGraphSearchConfig())
@@ -37,28 +45,29 @@ class MixturedGraphSearchConfig(BaseGraphSearchConfig):
         str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
         return f"{sorted_pretr[0][0]};{sorted_pretr[0][1]};{sorted_pretr[1][0]};{sorted_pretr[1][1]};{str_accepted_nodes}"
 
-class MixturedTripletsRetriever(AbstractTripletsRetriever):
-    """Класс предназначен для извлечения триплетов из графа знаний с помощью комбинации BFS- и A*-алгоритмов поиска.
+class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
+    """Класс предназначен для извлечения триплетов из графа знаний на основе комбинации базовых алгоритмов обхода.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
-    :param config: Конфигурация комбинированного алгоритма поиска. Значение по умолчанию MixturedGraphSearchConfig().
-    :type config: MixturedGraphSearchConfig
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
     :type log: Logger
+    :param search_config: Конфигурация MixturedTripletsRetriever-алгоритма. Значение по умолчанию MixturedGraphSearchConfig().
+    :type search_config: Union[MixturedGraphSearchConfig, Dict], optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :type verbose: bool, optional
     """
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[MixturedGraphSearchConfig, Dict] = MixturedGraphSearchConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
-        self.log = log
-        self.verbose = verbose
-
         if type(search_config) is dict:
             if 'accepted_node_types' in search_config:
                 search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
             search_config = MixturedGraphSearchConfig(**search_config)
         self.config = search_config
+
+        self.cachekv = self.init_cachekv(cache_kvdriver_config, self.config.cache_table_name)
 
         self.available_retrievers = {
             'astar': AStarTripletsRetriever,
@@ -78,14 +87,25 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever):
         self.retriever2.config.accepted_node_types = search_config.accepted_node_types
         self.config.retriever2_config = self.retriever2.config
 
+        self.log = log
+        self.verbose = verbose
 
-        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
-            cache_config = deepcopy(cache_kvdriver_config)
-            cache_config.db_config.db_info['table'] = self.config.cache_table_name
-            self.cachekv = CacheKV(cache_config)
-        else:
-            self.cachekv = None
+    def clear_kv_caches(self, level = 'all') -> None:
+        if type(level) is not str:
+            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+        if level not in ['all', 'current', 'other']:
+            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
+        if level in ['current', 'all']:
+            self.cachekv.clear()
+
+        if level == 'other':
+            raise NotImplementedError
+
+    def get_cache_key(self, query_info: QueryInfo) -> List[str]:
+        return [self.config.to_str(), query_info.to_str()]
+
+    @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log(f"RETRIEVER: MixturedTripletsRetriever ({self.config.retriever1_name} + {self.config.retriever2_name})", verbose=self.verbose)

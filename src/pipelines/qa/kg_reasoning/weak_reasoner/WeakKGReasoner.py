@@ -19,26 +19,26 @@ class WeakKGReasonerConfig(BaseKGReasonerConfig):
     Конфигурация weak-версии пайплайна по ризонингу на графе знаний.
 
     :param query_parser_config: Конфигурация первой стадии QA-конвейера: извлечение сущностей из user-вопроса. Значение по умолчанию QueryLLMParserConfig().
-    :type query_parser_config: Union[None,QueryLLMParserConfig]
+    :type query_parser_config: Union[None,QueryLLMParserConfig], optional
     :param knowledge_comparator_config: Конфигурация второй стадии QA-конвейера: сопоставление (match) сущностей из user-вопроса с информацией в графе знаний. Значение по умолчанию KnowledgeComparatorConfig().
-    :type knowledge_comparator_config: Union[None,KnowledgeComparatorConfig]
+    :type knowledge_comparator_config: Union[None,KnowledgeComparatorConfig], optional
     :param knowledge_retriever_config: Конфигурация третьей стадии QA-конвейера: извлечение релевантной информации из графа знаний для user-вопроса. Значение по умолчанию KnowledgeRetrieverConfig().
-    :type knowledge_retriever_config: KnowledgeRetrieverConfig
+    :type knowledge_retriever_config: KnowledgeRetrieverConfig, optional
     :param answer_generator_config: Конфигурация четвёртой стадии QA-конвейера: условная генерация ответа на user-вопрос. Значение по умолчанию QALLMGeneratorConfig().
-    :type answer_generator_config: QALLMGeneratorConfig
-    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы WeakKGReasoner-класса.
-    :type cache_table_name: str
+    :type answer_generator_config: QALLMGeneratorConfig, optional
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы WeakKGReasoner-класса. Значение по умолчанию 'qa_weakreasoner_cache'.
+    :type cache_table_name: str, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(WKGR_MAIN_LOG_PATH).
-    :type log: Logger
+    :type log: Logger, optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :type verbose: bool, optional
     """
     query_parser_config: Union[None,QueryLLMParserConfig] = field(default_factory=lambda: QueryLLMParserConfig())
     knowledge_comparator_config: Union[None,KnowledgeComparatorConfig] = field(default_factory=lambda: KnowledgeComparatorConfig())
     knowledge_retriever_config: KnowledgeRetrieverConfig = field(default_factory=lambda: KnowledgeRetrieverConfig())
     answer_generator_config: QALLMGeneratorConfig = field(default_factory=lambda: QALLMGeneratorConfig())
 
-    cache_table_name: str = "qa_weakreasoner_cache"
+    cache_table_name: str = 'qa_weakreasoner_cache'
     log: Logger = field(default_factory=lambda: Logger(WKGR_MAIN_LOG_PATH))
     verbose: bool = False
 

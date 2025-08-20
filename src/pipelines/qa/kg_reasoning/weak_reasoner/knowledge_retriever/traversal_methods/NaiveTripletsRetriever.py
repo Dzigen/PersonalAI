@@ -1,18 +1,24 @@
 from typing import List, Dict, Union
 from dataclasses import dataclass
 from collections import Counter
-from copy import deepcopy
 
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......db_drivers.vector_driver import VectorDBInstance
 from .......kg_model import KnowledgeGraphModel
 from .......utils import Logger
-from .......utils.data_structs import QueryInfo, Triplet, create_id, NODES_TYPES_MAP
-from .......utils.cache_kv import CacheKV, CacheUtils
-from .......db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
+from .......utils.data_structs import QueryInfo, Triplet, create_id
+from .......utils.cache_kv import CacheUtils
+from .......db_drivers.kv_driver import KeyValueDriverConfig
 
 @dataclass
 class NaiveGraphSearchConfig(BaseGraphSearchConfig):
+    """Конфигурация NaiveRetrieval-алгоритма обхода графа.
+
+    :param max_k: Макисмальное количество трипелтов, которое может быть извлечено из графа. Значение по умолчанию 50.
+    :type max_k: int, optional
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveTripletsRetriever-класса. Значение по умолчанию 'qa_naive_t_retriever_cache'.
+    :type cache_table_name: str, optional
+    """
     max_k: int = 50
     cache_table_name: str = 'qa_naive_t_retriever_cache'
 
@@ -20,23 +26,43 @@ class NaiveGraphSearchConfig(BaseGraphSearchConfig):
         return f"{self.max_k}"
 
 class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
+    """Класс предназначен для извлечения триплетов из графа знаний на основе оценки семантической близости триплетов к запросу (стандартный retrieval).
 
+    :param kg_model: Модель памяти (графа знаний) ассистента.
+    :type kg_model: KnowledgeGraphModel
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
+    :type log: Logger
+    :param search_config: Конфигурация WaterCirclesRetriever-алгоритма. Значение по умолчанию  NaiveGraphSearchConfig().
+    :type search_config: Union[NaiveGraphSearchConfig,Dict], optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool, optional
+    """
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[NaiveGraphSearchConfig,Dict] = NaiveGraphSearchConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
-        self.log = log
-        self.verbose = verbose
-        self.kg_model = kg_model
-
+                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None, verbose: bool = False) -> None:
         if type(search_config) is dict:
             search_config = NaiveGraphSearchConfig(**search_config)
         self.config = search_config
 
-        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
-            cache_config = deepcopy(cache_kvdriver_config)
-            cache_config.db_config.db_info['table'] = self.config.cache_table_name
-            self.cachekv = CacheKV(cache_config)
-        else:
-            self.cachekv = None
+        self.kg_model = kg_model
+
+        self.cachekv = self.init_cachekv(cache_kvdriver_config, self.config.cache_table_name)
+
+        self.log = log
+        self.verbose = verbose
+
+    def clear_kv_caches(self, level = 'all') -> None:
+        if type(level) is not str:
+            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+        if level not in ['all', 'current', 'other']:
+            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+
+        if level in ['current', 'all']:
+            self.cachekv.clear()
+
+        if level == 'other':
+            raise NotImplementedError
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
         return [self.config.to_str(), query_info.to_str()]

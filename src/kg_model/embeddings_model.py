@@ -55,7 +55,7 @@ class EmbeddingsModel:
             'triplets': VectorDriver.connect(config.tripletsdb_driver_config)}
 
         #!!! PAY ATTENTION !!!
-        #self.embedder = EmbedderModel(config.embedder_config)
+        self.embedder = EmbedderModel(config.embedder_config)
 
     def create_triplets(self, triplets:List[Triplet], create_nodes:bool=True, batch_size:int=128, status_bar: bool = True)-> Dict[str, Set[str]]:
         """Метод предназначен для добавления информации, представленной в виде списка триплетов, в векторную структуру.

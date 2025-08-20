@@ -1,5 +1,4 @@
 import copy
-from copy import deepcopy
 from dataclasses import dataclass, field
 from typing import Dict, List, Set, Tuple, Union
 
@@ -7,12 +6,29 @@ from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......kg_model import KnowledgeGraphModel
 from .......utils.data_structs import QueryInfo, TripletCreator, create_id, Triplet, NodeCreator, RelationCreator, NodeType, RelationType, NODES_TYPES_MAP
 from .......utils import Logger
-from .......utils.cache_kv import CacheKV
+from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 
 @dataclass
 class WaterCirclesSearchConfig(BaseGraphSearchConfig):
-    """_summary_
+    """Конфигурация WaterCircles-алгоритма обхода графа.
+
+    :param strict_filter: _description_. Значение по умолчанию True.
+    :type strict_filter: bool, optional
+    :param hyper_num: _description_. Значение по умолчанию 15.
+    :type hyper_num: int, optional
+    :param episodic_num: _description_. Значение по умолчанию 15.
+    :type episodic_num: int, optional
+    :param chain_triplets_num: _description_. Значение по умолчанию 25.
+    :type chain_triplets_num: int, optional
+    :param other_triplets_num: _description_. Значение по умолчанию 6.
+    :type other_triplets_num: int, optional
+    :param do_text_pruning: _description_. Значение по умолчанию False.
+    :type do_text_pruning: bool, optional
+    :param accepted_node_types:Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извелчения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time].
+    :type accepted_node_types: List[NodeType], optional
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы WaterCirclesRetriever-класса. Значение по умолчанию 'qa_watercircles_t_retriever_cache'.
+    :type cache_table_name: str, optional
     """
     strict_filter: bool = True
     hyper_num: int = 15
@@ -20,12 +36,13 @@ class WaterCirclesSearchConfig(BaseGraphSearchConfig):
     chain_triplets_num: int = 25
     other_triplets_num: int = 6
     do_text_pruning: bool = False
-    cache_table_name: str = 'qa_watercircles_t_retriever_cache'
     accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
 
+    cache_table_name: str = 'qa_watercircles_t_retriever_cache'
+
     def to_str(self):
-        str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
         str_values = f"{self.hyper_num};{self.episodic_num};{self.chain_triplets_num};{self.other_triplets_num}"
+        str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
         return f"{self.strict_filter}|{str_values}|{self.do_text_pruning}|{str_accepted_nodes}"
 
 def process_chain(
@@ -101,29 +118,35 @@ def process_inters_chains2(inters_chains2: List[List[List[str]]]) -> List[List[s
     return chain_triplets2
 
 
-class WaterCirclesRetriever(AbstractTripletsRetriever):
-    """Класс с реализацией алгоритма BFS (поиск в ширину) по графу
+class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
+    """Класс с реализацией модифицированного BFS-алгоритма (поиск в ширину) по графу
 
-    :param kg_model: класс для извлечения триплетов из графа
+    :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
-    :param log: класс для логирования
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
     :type log: Logger
-    :param search_config: конфигурация поиска по графу
-    :type search_config: WaterCirclesSearchConfig, optional
+    :param search_config: Конфигурация WaterCirclesRetriever-алгоритма. Значение по умолчанию WaterCirclesSearchConfig().
+    :type search_config: Union[WaterCirclesSearchConfig, Dict], optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool, optional
     """
-
     def __init__(self,kg_model: KnowledgeGraphModel,
                  log: Logger, search_config: Union[WaterCirclesSearchConfig, Dict] = WaterCirclesSearchConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
-        self.log = log
-        self.verbose = verbose
-        self.kg_model = kg_model
-
+                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None, verbose: bool = False) -> None:
         if type(search_config) is dict:
             if 'accepted_node_types' in search_config:
                 search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
             search_config = WaterCirclesSearchConfig(**search_config)
         self.config = search_config
+
+        self.kg_model = kg_model
+
+        self.cachekv = self.init_cachekv(cache_kvdriver_config, self.config.cache_table_name)
+
+        self.log = log
+        self.verbose = verbose
 
         self.extract_triplets_name1_template = \
             'MATCH (a:object)-[r]-(b:object) WHERE a.name="{name1}" RETURN a, r, b'
@@ -131,16 +154,6 @@ class WaterCirclesRetriever(AbstractTripletsRetriever):
             'MATCH (a:object)-[r]-(b:object) WHERE b.name="{name2}" RETURN a, r, b'
         self.extract_triplets_rel_prop_template = \
             'MATCH (a:object)-[r]-(b:object) WHERE r.{prop_name}="{prop_value}" RETURN a, r, b'
-
-        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
-            cache_config = deepcopy(cache_kvdriver_config)
-            cache_config.db_config.db_info['table'] = self.config.cache_table_name
-            self.cachekv = CacheKV(cache_config)
-        else:
-            self.cachekv = None
-
-    def get_cache_key(self, query_info: QueryInfo, depth: int = 1):
-        return [self.config.to_str(), query_info.to_str(), str(depth)]
 
     def parse_triplet_output(
             self,
@@ -296,6 +309,22 @@ class WaterCirclesRetriever(AbstractTripletsRetriever):
         keys_rev = [obj_name, rel_type, subj_name] + rel_data_values
         return tuple(keys), tuple(keys_rev)
 
+    def clear_kv_caches(self, level = 'all') -> None:
+        if type(level) is not str:
+            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+        if level not in ['all', 'current', 'other']:
+            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+
+        if level in ['current', 'all']:
+            self.cachekv.clear()
+
+        if level == 'other':
+            raise NotImplementedError
+
+    def get_cache_key(self, query_info: QueryInfo, depth: int) -> List[str]:
+        return [self.config.to_str(), query_info.to_str(), str(depth)]
+
+    @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo, depth: int = 1) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log("RETRIEVER: WaterCirclesTripletsRetriever", verbose=self.verbose)

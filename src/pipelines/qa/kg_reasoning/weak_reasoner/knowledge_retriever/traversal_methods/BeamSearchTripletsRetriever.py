@@ -9,7 +9,7 @@ from typing import Dict, List, Tuple, Set, Union
 from collections import defaultdict
 from collections import Counter
 from time import time
-from copy import deepcopy, copy
+from copy import deepcopy
 import numpy as np
 
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
@@ -18,8 +18,8 @@ from .......kg_model import KnowledgeGraphModel
 from .......utils.data_structs import create_id, NODES_TYPES_MAP
 from .......utils import Logger
 from .......db_drivers.vector_driver.utils import VectorDBInstance
-from .......utils.cache_kv import CacheKV, CacheUtils
-from .......db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
+from .......utils.cache_kv import CacheUtils
+from .......db_drivers.kv_driver import KeyValueDriverConfig
 
 @dataclass
 class TraversingPath:
@@ -35,31 +35,36 @@ class TraversedPath:
 
 @dataclass
 class GraphBeamSearchConfig(BaseGraphSearchConfig):
-    # Максимальная глубина построенных путей
+    """Конфигурация BeamSearchTripletsRetriever-алгоритма обхода графа.
+
+    :param max_depth: Максимальная глубина построенных/пройденных путей. Значение по умолчанию 10.
+    :type max_depth: int, optional
+    :param max_paths: Максимальное количество построенных/пройденных путей. Значение по умолчанию 50.
+    :type max_paths: int, optional
+    :param same_path_intersection_by_node: Если True, то пути могут пересекаться сами с собой по вершинам, иначе False. Значение по умолчанию True.
+    :type same_path_intersection_by_node: bool, optional
+    :param diff_paths_intersection_by_node: Если True, то разные пути могут пересекаться по вершинам, иначе False. Значение по умолчанию True.
+    :type diff_paths_intersection_by_node: bool, optional
+    :param diff_paths_intersection_by_rel: Если True, то разные пути могут пересекаться по связям, иначе False. Значение по умолчанию True.
+    :type diff_paths_intersection_by_rel: bool, optional
+    :param mean_alpha: Гиперпараметр, отвечающий за учёт длины построенного пути при усреднении его ценности (релевантности). См. calculate_triplet_score- и calculate_path_score-методы.. Значение по умолчанию 0.75.
+    :type mean_alpha: float, optional
+    :param accepted_node_types: Типы вершины, которые можно обходить во время построения путей. Значение по умолчанию [NodeType.object , NodeType.hyper, NodeType.episodic].
+    :type accepted_node_types: List[NodeType], optional
+    :param final_sorting_mode: Способ финальной фильтрации полученного набора путей. В результате поиска будет сформировано два набора путей: (1) ended - пути, которые завершились до достижения заданного ограничения на глубину и (2) continious - пути, которые достигли заданного ограничения на глубину. У каждого такого пути есть оценка его суммарной релевантности. Если будет указано 'ended_first'-значение, то: ended-пути будут отсортированы по убыванию релевантности и выбраны первые 'max_paths'-путей. Если ended-путей меньше чем 'max_paths'-значения, то continious-пути будут отсортированы по релевантности и из них будут выбраны первые N недостающих путей. Если будет указано 'continuous_first'-значение, то пути будут выбираться по аналогии с 'ended_first'-значением, только сначала сортировка/выбор по continuous-путям, а потом по ended-путям. Если будет указано 'mixed'-значение, то ended- и continuous-пути будут объединены в один список, отсортированы по убыванию релевантности и из полученного списко будет выбрано первых 'max_paths'-путей.. Значение по умолчанию 'mixed'.
+    :type final_sorting_mode: str, optional
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveBFSTripletsRetriever-класса. Значение по умолчанию 'qa_beamsearch_t_retriever_cache'.
+    :type cache_table_name: str, optional
+    """
     max_depth: int = 10
-    # Максимальное количество построенных путей
     max_paths: int = 50
-    # Если True, то пути могут пересекаться сами с собой по вершинам, иначе False
     same_path_intersection_by_node: bool = True
-    # Если True, то разные пути могут пересекаться по вершинам, иначе False
     diff_paths_intersection_by_node: bool = True
-    # Если True, то разные пути могут пересекаться по связям, иначе False
     diff_paths_intersection_by_rel: bool = True
-    # Гиперпараметр, отвечающий за учёт длины построенного пути при усреднении его ценности (релевантности).
-    # См. calculate_triplet_score- и calculate_path_score-методы.
     mean_alpha: float = 0.75
-    # Типы вершины, которые можно обходить во время построения путей
     accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object , NodeType.hyper, NodeType.episodic])
-    # Способ финальной фильтрации полученного набора путей. В результате поиска будет сформировано два набора путей:
-    # (1) ended - пути, которые завершились до достижения заданного ограничения на глубину и (2) continious - пути,
-    # которые достигли заданного ограничения на глубину. У каждого такого пути есть оценка его суммарной релевантности.
-    # Если будет указано 'ended_first'-значение, то: ended-пути будут отсортированы по убыванию релевантности и выбраны
-    # первые 'max_paths'-путей. Если ended-путей меньше чем 'max_paths'-значения, то continious-пути будут отсортированы
-    # по релевантности и из них будут выбраны первые N недостающих путей. Если будет указано 'continuous_first'-значение,
-    # то пути будут выбираться по аналогии с 'ended_first'-значением, только сначала сортировка/выбор по continuous-путям,
-    # а потом по ended-путям. Если будет указано 'mixed'-значение, то ended- и continuous-пути будут объединены в один список,
-    # отсортированы по убыванию релевантности и из полученного списко будет выбрано первых 'max_paths'-путей.
     final_sorting_mode: str = 'mixed' # 'ended_first' | 'mixed' | 'continuous_first'
+
     cache_table_name: str = 'qa_beamsearch_t_retriever_cache'
 
     def to_str(self):
@@ -69,28 +74,46 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
 
 
 class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
+    """Класс предназначен для извлечения триплетов из графа знаний на основе BeamSeach-алгоритма обхода.
+
+    :param kg_model: Модель памяти (графа знаний) ассистента.
+    :type kg_model: KnowledgeGraphModel
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
+    :type log: Logger
+    :param search_config: Конфигурация BeamSearchTripletsRetriever-алгоритма. Значение по умолчанию GraphBeamSearchConfig().
+    :type search_config: Union[GraphBeamSearchConfig, Dict], optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool, optional
+    """
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger,
                  search_config: Union[GraphBeamSearchConfig, Dict] = GraphBeamSearchConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
-        self.log = log
-        self.verbose = verbose
-        self.kg_model = kg_model
-
         if type(search_config) is dict:
             if 'accepted_node_types' in search_config:
                 search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
             search_config = GraphBeamSearchConfig(**search_config)
         self.config = search_config
 
-        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
-            cache_config = deepcopy(cache_kvdriver_config)
-            cache_config.db_config.db_info['table'] = self.config.cache_table_name
-            self.cachekv = CacheKV(cache_config)
-        else:
-            self.cachekv = None
+        self.kg_model = kg_model
 
-    def get_cache_key(self, query: str, node_id: str) -> List[object]:
-        return [self.config.to_str(), query, node_id]
+        self.cachekv = self.init_cachekv(cache_kvdriver_config, self.config.cache_table_name)
+
+        self.log = log
+        self.verbose = verbose
+
+    def clear_kv_caches(self, level = 'all') -> None:
+        if type(level) is not str:
+            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+        if level not in ['all', 'current', 'other']:
+            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+
+        if level in ['current', 'all']:
+            self.cachekv.clear()
+
+        if level == 'other':
+            raise NotImplementedError
 
     def calculate_path_score(self, path_len: int, accum_score: float) -> float:
         return accum_score / pow(path_len-1, self.config.mean_alpha)
@@ -313,6 +336,9 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log(f"Затраченнное время на фильтрацию путей: {flt_e_time-flt_s_time} сек.", verbose=self.verbose)
 
         return filtered_paths
+
+    def get_cache_key(self, query: str, node_id: str) -> List[str]:
+        return [self.config.to_str(), query, node_id]
 
     @CacheUtils.cache_method_output
     def search(self, query: str, node_id: str) -> List[Triplet]:

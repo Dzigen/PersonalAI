@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Tuple, List
+from typing import Tuple, List, Union
 
 from .searchplan_enhancer import SearchPlanEnhancerConfig, SearchPlanEnhancer
 from .entities_extractor import EntitiesExtractorConfig, EntitiesExtractor
@@ -75,7 +75,7 @@ class MediumKGReasoner(AbstractKGReasoner):
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: MediumKGReasonerConfig = MediumKGReasonerConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
+                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None) -> None:
         """_summary_
 
         :param kg_model: _description_
