@@ -27,7 +27,7 @@ class LLMExtractorConfig:
     :type need_thesises: bool, optional
     :param need_episodic: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False. Значение по умолчанию True.
     :type need_episodic: bool, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(QA_LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(MEM_EXTRACTOR_MAIN_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
@@ -46,12 +46,13 @@ class LLMExtractor:
     """Верхнеуровневый класс первой стадии Memorize-конвейера для извлечения информации (и её приведения в triplet-формат) из слабоструктурированных данных.
 
     :param config: Конфигурация Exctrator-стадии. Значение по умолчанию LLMExtractorConfig().
-    :type config: LLMExtractorConfig
+    :type config: LLMExtractorConfig, optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
     def __init__(self, config: LLMExtractorConfig = LLMExtractorConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
+                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None) -> None:
         self.config = config
-        self.log = config.log
 
         self.agent = AgentDriver.connect(config.adriver_config)
         self.triplets_extraction_solver = AgentTaskSolver(
@@ -59,9 +60,26 @@ class LLMExtractor:
         self.thesises_extraction_solver = AgentTaskSolver(
             self.agent, self.config.thesises_extraction_task_config, cache_kvdriver_config)
 
+        self.log = self.config.log
+        self.verbose = self.config.verbose
+
+    def clear_kv_caches(self, level: str = 'other') -> None:
+        if type(level) is not str:
+            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+        if level not in ['all', 'current', 'other']:
+            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+
+        if level in ['current', 'all']:
+            raise NotImplementedError
+
+        if level in ['other']:
+            if self.triplets_extraction_solver.cachekv is not None:
+                self.triplets_extraction_solver.cachekv.clear()
+            if self.thesises_extraction_solver.cachekv is not None:
+                self.thesises_extraction_solver.cachekv.clear()
+
     def extract_knowledge(self, text: str, time: Union[None,str] = None, properties: Dict = {}) -> Tuple[List[Triplet], ReturnInfo]:
-        """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста
-        на естественном языке.
+        """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста на естественном языке.
 
         :param text: Слабоструктурированный текст.
         :type text: str
@@ -80,59 +98,59 @@ class LLMExtractor:
         if time is not None:
             props["time"] = time
 
-        self.log("START KNOWLEDGE EXTRACTION...", verbose=self.config.verbose)
-        self.log(f"BASE_TEXT ID: {create_id(text)}", verbose=self.config.verbose)
+        self.log("START KNOWLEDGE EXTRACTION...", verbose=self.verbose)
+        self.log(f"BASE_TEXT ID: {create_id(text)}", verbose=self.verbose)
 
         if self.config.need_simple:
-            self.log("START SIMPLE-TRIPLETS EXTRACTION...", verbose=self.config.verbose)
+            self.log("START SIMPLE-TRIPLETS EXTRACTION...", verbose=self.verbose)
             tmp_triplets, status = self.triplets_extraction_solver.solve(
                 lang=self.config.lang, text=text, rel_prop=props)
-            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
+            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.verbose)
 
             if status != ReturnStatus.success:
-                self.log(f"RESULT: None", verbose=self.config.verbose)
+                self.log(f"RESULT: None", verbose=self.verbose)
                 info.occurred_warning.append(status)
             else:
-                self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
+                self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.verbose)
                 for triplet in tmp_triplets:
-                    self.log(f"* {triplet}", verbose=self.config.verbose)
+                    self.log(f"* {triplet}", verbose=self.verbose)
                 new_triplets += tmp_triplets
 
         if self.config.need_thesises:
-            self.log("START HYPER-TRIPLETS EXTRACTION...", verbose=self.config.verbose)
+            self.log("START HYPER-TRIPLETS EXTRACTION...", verbose=self.verbose)
             tmp_triplets, status = self.thesises_extraction_solver.solve(
                 lang=self.config.lang, text=text, node_prop=props)
-            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
+            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.verbose)
 
             if status != ReturnStatus.success:
-                self.log(f"RESULT: None", verbose=self.config.verbose)
+                self.log(f"RESULT: None", verbose=self.verbose)
                 info.occurred_warning.append(status)
             else:
-                self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
+                self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.verbose)
                 for triplet in tmp_triplets:
-                    self.log(f"* {triplet}", verbose=self.config.verbose)
+                    self.log(f"* {triplet}", verbose=self.verbose)
                 new_triplets += tmp_triplets
 
         if self.config.need_episodic:
-            self.log("START EPISODIC-TRIPLETS BUILDING...", verbose=self.config.verbose)
+            self.log("START EPISODIC-TRIPLETS BUILDING...", verbose=self.verbose)
             tmp_triplets = self.get_episodic_relationships(
                 text, self.get_entities_from_triplets(new_triplets), node_prop=props)
 
-            self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
+            self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.verbose)
             for triplet in tmp_triplets:
-                self.log(f"* {triplet}", verbose=self.config.verbose)
-            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
+                self.log(f"* {triplet}", verbose=self.verbose)
+            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.verbose)
 
             new_triplets += tmp_triplets
 
         if time != "No time":
-            self.log("ADDING TIME...", verbose=self.config.verbose)
+            self.log("ADDING TIME...", verbose=self.verbose)
             tmp_triplets = self.get_time_triplets(new_triplets, time)
 
-            self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
+            self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.verbose)
             for triplet in tmp_triplets:
-                self.log(f"* {triplet}", verbose=self.config.verbose)
-            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
+                self.log(f"* {triplet}", verbose=self.verbose)
+            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.verbose)
 
             new_triplets += tmp_triplets
 
@@ -140,7 +158,7 @@ class LLMExtractor:
             info.status = ReturnStatus.zero_triplets
             info.message = STATUS_MESSAGE[info.status]
 
-        self.log(f"FINAL STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
+        self.log(f"FINAL STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.verbose)
 
         return new_triplets, info
 

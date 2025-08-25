@@ -1,14 +1,12 @@
 from typing import List, Dict, Set, Union
 from dataclasses import dataclass, field
 
-from .graph_model import GraphModelConfig, GraphModel
-from .embeddings_model import EmbeddingsModelConfig, EmbeddingsModel
-from ..db_drivers.kv_driver import KeyValueDriverConfig
+from .config import KG_MAIN_LOG_PATH
+from .graph_model.GraphModel import GraphModelConfig, GraphModel
+from .embeddings_model.EmbeddingsModel import EmbeddingsModelConfig, EmbeddingsModel
 from .nodestree_model import NodesTreeModelConfig, NodesTreeModel
+from ..db_drivers.kv_driver import KeyValueDriverConfig
 from ..utils import Triplet, Logger
-from ..utils.data_structs import Node
-
-KG_MAIN_LOG_PATH = 'log/kg_model/main'
 
 @dataclass
 class KnowledgeGraphModelConfig:
@@ -16,20 +14,20 @@ class KnowledgeGraphModelConfig:
 
     :param graph_config: Конфигурация структуры данных, которая отвечает за хранение знаний ассистента в формате графа. Значение по умолчанию GraphModelConfig().
     :type graph_struct: GraphModel, optional
-    :param embeddings_config:  Конфигурация структуры данных, которая отвечает за представление/хранение знаний ассистента в векторном формате. Значение по умолчанию EmbeddingsModelConfig().
+    :param embeddings_config: Конфигурация структуры данных, которая отвечает за представление/хранение знаний ассистента в векторном формате. Значение по умолчанию EmbeddingsModelConfig().
     :type embeddings_config: EmbeddingsModel, optional
     :param nodestree_config: Конфигурация структуры данных, которая отвечает за представление/хранение знаний ассистента в формате дерева. Значение по умолчанию None.
     :type nodestree_config: Union[NodesTreeModelConfig,None]
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(EMBEDDINGS_MODEL_LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(KG_MAIN_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
-    graph_config: GraphModelConfig = field(default_factory=lambda: GraphModelConfig())
-    embeddings_config: EmbeddingsModelConfig = field(default_factory=lambda: EmbeddingsModelConfig())
+    graph_config: GraphModelConfig = field(default_factory = lambda: GraphModelConfig())
+    embeddings_config: EmbeddingsModelConfig = field(default_factory = lambda: EmbeddingsModelConfig())
     nodestree_config: Union[NodesTreeModelConfig,None] = None
 
-    log: Logger = field(default_factory=lambda: Logger(KG_MAIN_LOG_PATH))
+    log: Logger = field(default_factory = lambda: Logger(KG_MAIN_LOG_PATH))
     verbose: bool = False
 
 class KnowledgeGraphModel:
@@ -43,16 +41,15 @@ class KnowledgeGraphModel:
 
     def __init__(self, config: KnowledgeGraphModelConfig = KnowledgeGraphModelConfig(),
                  cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None) -> None:
-        self.config = config
-        self.graph_struct = GraphModel(self.config.graph_config)
-        self.embeddings_struct =  EmbeddingsModel(self.config.embeddings_config)
-        if self.config.nodestree_config is not None:
-            self.nodestree_struct = NodesTreeModel(self.config.nodestree_config, cache_kvdriver_config)
-        else:
-            self.nodestree_struct = None
 
-        self.log = self.config.log
-        self.verbose = self.config.verbose
+        self.graph_struct = GraphModel(config.graph_config)
+        self.embeddings_struct =  EmbeddingsModel(config.embeddings_config)
+        self.nodestree_struct = None
+        if config.nodestree_config is not None:
+            self.nodestree_struct = NodesTreeModel(config.nodestree_config, cache_kvdriver_config)
+
+        self.log = config.log
+        self.verbose = config.verbose
 
     def check_consistency(self) -> None:
         gdb_count = self.graph_struct.db_conn.count_items()
@@ -122,7 +119,7 @@ class KnowledgeGraphModel:
         return {
             'graph_info': self.graph_struct.count_items(),
             'embeddings_info': self.embeddings_struct.count_items(),
-            'nodestree_info': self.nodestree_struct.count_items() if self.config.nodestree_config is not None else None
+            'nodestree_info': self.nodestree_struct.count_items() if self.nodestree_struct is not None else None
         }
 
     def clear(self) -> None:
@@ -130,5 +127,19 @@ class KnowledgeGraphModel:
         """
         self.embeddings_struct.clear()
         self.graph_struct.clear()
-        if self.config.nodestree_config is not None:
+        if self.nodestree_struct is not None:
             self.nodestree_struct.clear()
+
+
+    def clear_kv_caches(self, level: str = 'other') -> None:
+        if type(level) is not str:
+            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+        if level not in ['all', 'current', 'other']:
+            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+
+        if level in ['current', 'all']:
+            raise NotImplementedError
+
+        if level in ['other']:
+            if self.nodestree_struct is not None:
+                self.nodestree_struct.clear_kv_caches()

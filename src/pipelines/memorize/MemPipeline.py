@@ -20,7 +20,7 @@ class MemPipelineConfig:
     :type extractor_config: LLMExtractorConfig
     :param updator_config: Конфигурация второй стадии Memorize-конвейера: актуализация знаний в памяти ассистента. Значение по умолчанию LLMUpdatorConfig().
     :type updator_config: LLMUpdatorConfig
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(MEM_LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(MEMORIZE_MAIN_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
@@ -37,16 +37,31 @@ class MemPipeline:
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация Memorize-конвейера. Значение по умолчанию MemPipelineConfig().
-    :type config: MemPipelineConfig
+    :type config: MemPipelineConfig, optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
+                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None) -> None:
         self.config = config
         self.log = config.log
 
         self.extractor = LLMExtractor(config.extractor_config, cache_kvdriver_config)
         self.updator = LLMUpdator(kg_model, config.updator_config, cache_kvdriver_config)
+
+    def clear_kv_caches(self, level: str = 'all') -> None:
+        if type(level) is not str:
+            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+        if level not in ['all', 'current', 'other']:
+            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+
+        if level in ['current', 'all']:
+            raise NotImplementedError
+
+        if level in ['other']:
+            self.extractor.clear_kv_caches()
+            self.updator.clear_kv_caches()
 
     def remember(self, text: str, time: Union[None,str] = None, properties: Dict = dict()) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста и обновление/актуализацию знаний в памяти (графе знаний) ассистента.
@@ -55,7 +70,7 @@ class MemPipeline:
         :type text: str
         :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшая информация из памяти (графа знаний) ассистента, инчае False. Значение по умолчанию False.
         :type delete_obsolete_info: bool, optional
-        :param time: Время, с которым ассоциированы события текста
+        :param time: Время, с которым ассоциированы события текста.
         :type time: str, optional
         :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, Значение по умолчанию dict().
         :type properties: Dict, optional

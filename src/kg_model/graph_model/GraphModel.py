@@ -3,26 +3,24 @@ from typing import List, Dict, Set, Tuple
 import math
 from tqdm import tqdm
 
-from ..db_drivers.graph_driver import GraphDriver, GraphDriverConfig, DEFAULT_NEO4J_CONFIG
-from ..utils.data_structs import Triplet
-from ..utils import Logger
-
-GRAPH_DB_DEFAULT_DRIVER_CONFIG = GraphDriverConfig(db_vendor='neo4j', db_config=DEFAULT_NEO4J_CONFIG)
-GRAPH_MODEL_LOG_PATH = 'log/kg_model/graph'
+from .config import GRAPH_DB_DEFAULT_DRIVER_CONFIG, GRAPH_MODEL_LOG_PATH
+from ...db_drivers.graph_driver import GraphDriver, GraphDriverConfig
+from ...utils.data_structs import Triplet
+from ...utils import Logger
 
 @dataclass
 class GraphModelConfig:
     """Конфигурация графовой структуры данных.
 
-    :param driver_config: Конфигурация графовой БД.
-    :type driver_config: GraphDriverConfig
+    :param driver_config: Конфигурация графовой БД. Значение по умолчанию GRAPH_DB_DEFAULT_DRIVER_CONFIG.
+    :type driver_config: GraphDriverConfig, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(GRAPH_MODEL_LOG_PATH).
-    :type log: Logger
+    :type log: Logger, optional
     :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :type verbose: bool, optional
     """
-    driver_config: GraphDriverConfig = field(default_factory=lambda: GRAPH_DB_DEFAULT_DRIVER_CONFIG)
-    log: Logger = field(default_factory=lambda: Logger(GRAPH_MODEL_LOG_PATH))
+    driver_config: GraphDriverConfig = field(default_factory = lambda: GRAPH_DB_DEFAULT_DRIVER_CONFIG)
+    log: Logger = field(default_factory = lambda: Logger(GRAPH_MODEL_LOG_PATH))
     verbose: bool = False
 
 class GraphModel:
@@ -33,8 +31,11 @@ class GraphModel:
     """
     def __init__(self, config: GraphModelConfig = GraphModelConfig()) -> None:
         self.config = config
-        self.log = config.log
+
         self.db_conn = GraphDriver.connect(self.config.driver_config)
+
+        self.log = self.config.log
+        self.verbose = self.config.verbose
 
     def create_triplets(self, triplets: List[Triplet], batch_size: int = 64, status_bar: bool = True) -> Dict[str, Set[str]]:
         """Метод предназначен для сохранения информации, представленной в виде списка триплетов, в графовую структуру.
@@ -48,7 +49,7 @@ class GraphModel:
         :return: Словарь с информацией о триплетах, которые были добавлены в графовую структуру.
         :rtype: Dict[str, Set[str]]
         """
-        self.log("Adding triplets to graph-model...", verbose=self.config.verbose)
+        self.log("Adding triplets to graph-model...", verbose=self.verbose)
         unique_triplet_ids, unique_node_ids = set(), set()
         existed_triplet_ids, existed_node_ids = set(), set()
         created_triplet_ids, created_node_ids = set(), set()
@@ -105,9 +106,9 @@ class GraphModel:
 
             self.db_conn.create(triplets_to_create, creation_info)
 
-        self.log(f"all/unique/existed triplets - {len(triplets)}/{len(unique_triplet_ids)}/{len(existed_triplet_ids)}", verbose=self.config.verbose)
-        self.log(f"all/unique/existed nodes - {len(triplets)*2}/{len(unique_node_ids)}/{len(existed_node_ids)}", verbose=self.config.verbose)
-        self.log("Triplets added successfully!", verbose=self.config.verbose)
+        self.log(f"all/unique/existed triplets - {len(triplets)}/{len(unique_triplet_ids)}/{len(existed_triplet_ids)}", verbose=self.verbose)
+        self.log(f"all/unique/existed nodes - {len(triplets)*2}/{len(unique_node_ids)}/{len(existed_node_ids)}", verbose=self.verbose)
+        self.log("Triplets added successfully!", verbose=self.verbose)
 
         return {'triplets': created_triplet_ids, 'nodes': created_node_ids}
 

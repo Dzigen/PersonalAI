@@ -1,3 +1,7 @@
+from dataclasses import dataclass, field
+from typing import List, Union
+from tqdm import tqdm
+
 from .configs import MEM_UPDATOR_MAIN_LOG_PATH, DEFAULT_REPLACE_THESIS_TASK_CONFIG, DEFAULT_REPLACE_SIMPLE_TASK_CONFIG
 from ....utils import Logger, Triplet, AgentTaskSolverConfig, AgentTaskSolver
 from ....utils.data_structs import RelationType, NodeType, create_id
@@ -5,10 +9,6 @@ from ....utils.errors import ReturnInfo, ReturnStatus, STATUS_MESSAGE
 from ....agents import AgentDriver, AgentDriverConfig
 from ....kg_model import KnowledgeGraphModel
 from ....db_drivers.kv_driver import KeyValueDriverConfig
-
-from dataclasses import dataclass, field
-from typing import List
-from tqdm import tqdm
 
 @dataclass
 class LLMUpdatorConfig:
@@ -44,20 +44,39 @@ class LLMUpdator:
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация Updator-стадии. Значение по умолчанию LLMUpdatorConfig().
-    :type config: LLMUpdatorConfig
+    :type config: LLMUpdatorConfig, optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: LLMUpdatorConfig = LLMUpdatorConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
+                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None) -> None:
         self.config = config
         self.kg_model = kg_model
-        self.log = config.log
 
         self.agent = AgentDriver.connect(config.adriver_config)
         self.replace_simple_solver = AgentTaskSolver(
             self.agent, self.config.replace_simple_task_config, cache_kvdriver_config)
         self.replace_hyper_solver = AgentTaskSolver(
             self.agent, self.config.replace_thesis_task_config, cache_kvdriver_config)
+
+        self.log = self.config.log
+        self.verbose = self.config.verbose
+
+    def clear_kv_caches(self, level: str = 'other') -> None:
+        if type(level) is not str:
+            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+        if level not in ['all', 'current', 'other']:
+            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+
+        if level in ['current', 'all']:
+            raise NotImplementedError
+
+        if level in ['other']:
+            if self.replace_simple_solver.cachekv is not None:
+                self.replace_simple_solver.cachekv.clear()
+            if self.replace_hyper_solver.cachekv is not None:
+                self.replace_hyper_solver.cachekv.clear()
 
     def find_simple_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
         """Метод предназначен для поиска устаревших simple-триплетов в графе знаний по сравнению с указанным (base_triplet) simple-триплетом.
@@ -215,20 +234,20 @@ class LLMUpdator:
         """
         info = ReturnInfo()
 
-        self.log("START KNOWLEDGE UPDATING...", verbose=self.config.verbose)
-        self.log(f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.config.verbose)
+        self.log("START KNOWLEDGE UPDATING...", verbose=self.verbose)
+        self.log(f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.verbose)
 
         if self.config.delete_obsolete_info:
             obsolete_triplets_counter = 0
 
-            self.log(f"START SEARCH OF OBSOLETE TRIPLETS IN MEMORY...", verbose=self.config.verbose)
+            self.log(f"START SEARCH OF OBSOLETE TRIPLETS IN MEMORY...", verbose=self.verbose)
             # Note: обрабатываем каждый триплет по отдельности, так как в пуле триплетов могут быть такие,
             # которые заменяют одни и те же устаревшие триплеты. Соответсвенно, мы должны итеративно обновлять память и сохранить
             # только последнюю актуальную информацию.
             process = tqdm(new_triplets) if status_bar else new_triplets
             for triplet in process:
-                self.log(f"BASE_TRIPLET ID: {triplet.id}", verbose=self.config.verbose)
-                self.log(f"BASE_TRIPLET: {triplet}", verbose=self.config.verbose)
+                self.log(f"BASE_TRIPLET ID: {triplet.id}", verbose=self.verbose)
+                self.log(f"BASE_TRIPLET: {triplet}", verbose=self.verbose)
 
                 if triplet.relation.type == RelationType.simple:
                     obsolete_t_ids = self.find_simple_obsolete_triplet_ids(triplet)
@@ -241,35 +260,35 @@ class LLMUpdator:
                 else:
                     raise ValueError
 
-                self.log("RESULT:", verbose=self.config.verbose)
-                self.log(f"* OBSOLETE TRIPELTS AMOUNT - {len(obsolete_t_ids)}", verbose=self.config.verbose)
-                self.log(f"* OBSOLETE TRIPLET IDS - {obsolete_t_ids}", verbose=self.config.verbose)
+                self.log("RESULT:", verbose=self.verbose)
+                self.log(f"* OBSOLETE TRIPELTS AMOUNT - {len(obsolete_t_ids)}", verbose=self.verbose)
+                self.log(f"* OBSOLETE TRIPLET IDS - {obsolete_t_ids}", verbose=self.verbose)
                 obsolete_triplets_counter += len(obsolete_t_ids)
 
-                self.log(f"DELETING OBSOLETE TRIPLETS FROM MEMORY...", verbose=self.config.verbose)
+                self.log(f"DELETING OBSOLETE TRIPLETS FROM MEMORY...", verbose=self.verbose)
                 obsolete_triplets = self.kg_model.graph_struct.db_conn.read(obsolete_t_ids)
 
-                self.log(f"TRIPLETS TO DELETE: {len(obsolete_triplets)}", verbose=self.config.verbose)
+                self.log(f"TRIPLETS TO DELETE: {len(obsolete_triplets)}", verbose=self.verbose)
                 for obs_t in obsolete_triplets:
-                    self.log(f"* [{obs_t.id}] {obs_t}", verbose=self.config.verbose)
+                    self.log(f"* [{obs_t.id}] {obs_t}", verbose=self.verbose)
 
                 remove_info = self.kg_model.remove_knowledge(obsolete_triplets)
-                self.log(f"REMOVE INFO: {remove_info}", verbose=self.config.verbose)
+                self.log(f"REMOVE INFO: {remove_info}", verbose=self.verbose)
 
-                self.log(f"ADDING NEW TRIPLET TO MEMORY...", verbose=self.config.verbose)
+                self.log(f"ADDING NEW TRIPLET TO MEMORY...", verbose=self.verbose)
 
                 add_info = self.kg_model.add_knowledge([triplet])
-                self.log(f"ADD INFO: {add_info}", verbose=self.config.verbose)
+                self.log(f"ADD INFO: {add_info}", verbose=self.verbose)
 
-            self.log(f"FINAL RESULT:", verbose=self.config.verbose)
-            self.log(f"- SUM AMOUNT OF OBSOLETE TRIPELTS: {obsolete_triplets_counter}", verbose=self.config.verbose)
+            self.log(f"FINAL RESULT:", verbose=self.verbose)
+            self.log(f"- SUM AMOUNT OF OBSOLETE TRIPELTS: {obsolete_triplets_counter}", verbose=self.verbose)
 
         else:
-            self.log(f"ADDING TRIPLETS TO MEMORY...", verbose=self.config.verbose)
+            self.log(f"ADDING TRIPLETS TO MEMORY...", verbose=self.verbose)
 
             add_info = self.kg_model.add_knowledge(new_triplets, status_bar=status_bar)
-            self.log(f"ADD INFO: {add_info}", verbose=self.config.verbose)
+            self.log(f"ADD INFO: {add_info}", verbose=self.verbose)
 
-        self.log(f"FINAL STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
+        self.log(f"FINAL STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.verbose)
 
         return info

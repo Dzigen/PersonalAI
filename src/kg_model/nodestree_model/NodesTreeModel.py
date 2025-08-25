@@ -1,17 +1,23 @@
+####
+# Author:   Mikhail Menschikov
+# Email:    menshikov.mikhail.2001@gmail.com
+# Created:  22.04.2025
+# Source paper: https://arxiv.org/pdf/2410.14052
+####
+
 from dataclasses import dataclass
 from dataclasses import dataclass, field
 from typing import List, Dict, Set, Union, Tuple
 import numpy as np
-import math
 from tqdm import tqdm
 from copy import deepcopy
 import torch
 from time import time
 
-from ...db_drivers.tree_driver.utils import TreeNodeType, TreeNode, TreeIdType
 from .configs import DEFAULT_SUMMN_TASK_CONFIG, NODESTREE_MODEL_LOG_PATH, \
     SUMMNODES_VDB_DEFAULT_DRIVER_CONFIG, LEAFNODES_VDB_DEFAULT_DRIVER_CONFIG, \
         TREE_DB_DEFAULT_DRIVER_CONFIG
+from ...db_drivers.tree_driver.utils import TreeNodeType, TreeNode, TreeIdType
 from ...utils import Logger, AgentTaskSolver, AgentTaskSolverConfig, ReturnStatus
 from ...utils.data_structs import Triplet, NodeType, create_id
 from ...utils.errors import ReturnStatus
@@ -47,12 +53,11 @@ class NodesTreeModelConfig:
     :param nodes_aggregation_mechanism: ...
     :type nodes_aggregation_mechanism: str, optional
 
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(GRAPH_MODEL_LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(NODESTREE_MODEL_LOG_PATH).
     :type log: Logger
     :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
-
     vectordb_leafnodes_config: VectorDriverConfig = field(default_factory=lambda: LEAFNODES_VDB_DEFAULT_DRIVER_CONFIG)
     vectordb_summnodes_config: VectorDriverConfig = field(default_factory=lambda: SUMMNODES_VDB_DEFAULT_DRIVER_CONFIG)
     embedder_config: EmbedderModelConfig = field(default_factory=lambda: EmbedderModelConfig())
@@ -72,16 +77,14 @@ class NodesTreeModelConfig:
 class NodesTreeModel:
     """Класс предназначен для представления object-вершин из графовой структуры данных в виде дерева с целью
     повышения эффективности сопоставления имеющихся занний с сущностями/запросами из поступающих user-вопросов.
+
+    :param config: _description_, Значение по умолчанию NodesTreeModelConfig().
+    :type config: NodesTreeModelConfig, optional
+    :param cache_kvdriver_config: _description_, Значение по умолчанию None.
+    :type cache_kvdriver_config: KeyValueDriverConfig, optional
     """
     def __init__(self, config: NodesTreeModelConfig = NodesTreeModelConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
-        """_summary_
-
-        :param config: _description_, defaults to NodesTreeModelConfig()
-        :type config: NodesTreeModelConfig, optional
-        :param cache_kvdriver_config: _description_, defaults to None
-        :type cache_kvdriver_config: KeyValueDriverConfig, optional
-        """
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         self.config = config
 
         self.treedb_conn = TreeDriver.connect(self.config.treedb_config)
@@ -96,9 +99,20 @@ class NodesTreeModel:
         self.log = self.config.log
         self.verbose = self.config.verbose
 
+    def clear_kv_caches(self, level: str = 'other') -> None:
+        if type(level) is not str:
+            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+        if level not in ['all', 'current', 'other']:
+            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+
+        if level in ['current', 'all']:
+            raise NotImplementedError
+
+        if level in ['other']:
+            if self.nodes_summarization_solver.cachekv is not None:
+                self.nodes_summarization_solver.cachekv.clear()
+
     def check_consistency(self):
-        """_summary_
-        """
         self.treedb_conn.check_consistency()
 
         leaf_vnodes_count = self.vectordb_leafnodes_conn.count_items()
@@ -511,24 +525,17 @@ class NodesTreeModel:
 
         return matched_nodes
 
-    def reduce_tree(self, triplets: List[Triplet], delete_info: Dict[int, Dict[str, bool]]):
+    def reduce_tree(self, triplets: List[Triplet], delete_info: Dict[int, Dict[str, bool]]) -> object:
         # TODO
         raise NotImplementedError
 
     def count_items(self) -> Dict[str, Dict[str, int]]:
-        """_summary_
-
-        :return: _description_
-        :rtype: Dict[str, Dict[str, int]]
-        """
         return {
             'tree': self.treedb_conn.count_items(),
             'vector_leafnodes': self.vectordb_leafnodes_conn.count_items(),
             'vector_summnodes': self.vectordb_summnodes_conn.count_items()}
 
     def clear(self) -> None:
-        """_summary_
-        """
         self.vectordb_leafnodes_conn.clear()
         self.vectordb_summnodes_conn.clear()
         self.treedb_conn.clear()

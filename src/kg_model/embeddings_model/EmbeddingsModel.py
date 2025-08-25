@@ -4,52 +4,42 @@ import math
 from tqdm import tqdm
 import torch
 
-from ..db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriver, VectorDriverConfig, VectorDBInstance
-from ..db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
-from ..utils.data_structs import Triplet, TripletCreator, NodeCreator
-from ..utils import Logger
-
-NODES_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
-    db_vendor='chroma', db_config=VectorDBConnectionConfig(
-        conn={'path':"../data/graph_structures/vectorized_nodes/default_densedb"},
-        db_info={'db': 'default_db', 'table': "vectorized_nodes"}))
-TRIPLETS_DB_DEFAULT_DRIVER_CONFIG = VectorDriverConfig(
-    db_vendor='chroma', db_config=VectorDBConnectionConfig(
-        conn={'path':"../data/graph_structures/vectorized_triplets/default_densedb"},
-        db_info={'db': 'default_db', 'table': "vectorized_triplets"}))
-
-EMBEDDINGS_MODEL_LOG_PATH = 'log/kg_model/embeddings'
+from .config import NODES_DB_DEFAULT_DRIVER_CONFIG, TRIPLETS_DB_DEFAULT_DRIVER_CONFIG, EMBEDDINGS_MODEL_LOG_PATH
+from ...db_drivers.vector_driver import VectorDriver, VectorDriverConfig, VectorDBInstance
+from ...db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
+from ...utils.data_structs import Triplet, TripletCreator, NodeCreator
+from ...utils import Logger
 
 @dataclass
 class EmbeddingsModelConfig:
     """Конфигурация векторной структуры данных.
 
     :param nodesdb_driver_config: Конфигурация векторной базы данных, которая отвечает за хранение векторных представлений вершин из графовой структуры. Значение по умолчанию NODES_DB_DEFAULT_DRIVER_CONFIG.
-    :type nodesdb_driver_config: VectorDriverConfig
+    :type nodesdb_driver_config: VectorDriverConfig, optional
     :param tripletsdb_driver_config: Конфигурация векторной базы данных, которая отвечает за хранение векторных представлений триплетов из графовой структуры. Значение по умолчанию TRIPLETS_DB_DEFAULT_DRIVER_CONFIG.
-    :type tripletsdb_driver_config: VectorDriverConfig
+    :type tripletsdb_driver_config: VectorDriverConfig, optional
     :param embedder_config: Конфигурация класса, отвечающего за приведения текста в его векторное представление с помощью заданной embedder-модели. Значение по умолчанию EmbedderModelConfig().
-    :type embedder_config: EmbedderModelConfig
+    :type embedder_config: EmbedderModelConfig, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(EMBEDDINGS_MODEL_LOG_PATH).
-    :type log: Logger
+    :type log: Logger, optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :type verbose: bool, optional
     """
-    nodesdb_driver_config: VectorDriverConfig = field(default_factory=lambda: NODES_DB_DEFAULT_DRIVER_CONFIG)
-    tripletsdb_driver_config: VectorDriverConfig = field(default_factory=lambda: TRIPLETS_DB_DEFAULT_DRIVER_CONFIG)
-    embedder_config: EmbedderModelConfig = field(default_factory=lambda: EmbedderModelConfig())
-    log: Logger = field(default_factory=lambda: Logger(EMBEDDINGS_MODEL_LOG_PATH))
+    nodesdb_driver_config: VectorDriverConfig = field(default_factory = lambda: NODES_DB_DEFAULT_DRIVER_CONFIG)
+    tripletsdb_driver_config: VectorDriverConfig = field(default_factory = lambda: TRIPLETS_DB_DEFAULT_DRIVER_CONFIG)
+    embedder_config: EmbedderModelConfig = field(default_factory = lambda: EmbedderModelConfig())
+    log: Logger = field(default_factory = lambda: Logger(EMBEDDINGS_MODEL_LOG_PATH))
     verbose: bool = False
 
 class EmbeddingsModel:
     """Структура данных для хранения информации в векторном формате.
 
     :param config: Конфигурация векторной структуры данных. Значение по умолчанию EmbeddingsModelConfig().
-    :type config: EmbeddingsModelConfig
+    :type config: EmbeddingsModelConfig, optional
     """
     def __init__(self, config: EmbeddingsModelConfig = EmbeddingsModelConfig()):
         self.config = config
-        self.log = config.log
+
         self.vectordbs = {
             'nodes': VectorDriver.connect(config.nodesdb_driver_config),
             'triplets': VectorDriver.connect(config.tripletsdb_driver_config)}
@@ -57,7 +47,11 @@ class EmbeddingsModel:
         #!!! PAY ATTENTION !!!
         self.embedder = EmbedderModel(config.embedder_config)
 
-    def create_triplets(self, triplets:List[Triplet], create_nodes:bool=True, batch_size:int=128, status_bar: bool = True)-> Dict[str, Set[str]]:
+        self.log = self.config.log
+        self.verbose = self.config.verbose
+
+    def create_triplets(self, triplets: List[Triplet], create_nodes: bool = True,
+                        batch_size: int = 128, status_bar: bool = True)-> Dict[str, Set[str]]:
         """Метод предназначен для добавления информации, представленной в виде списка триплетов, в векторную структуру.
         Триплеты-дубликаты (по строковому представлению) в структуру не добавляются.
 
@@ -70,7 +64,7 @@ class EmbeddingsModel:
         :param status_bar: Если True, то в stdout будет записываться прогресс операции (количество обработанных триплетов), иначе False. Значение по умолчанию True.
         :type status_bar: boll, optional
         """
-        self.log("Adding triples to vector-model...", verbose=self.config.verbose)
+        self.log("Adding triples to vector-model...", verbose=self.verbose)
         unique_relation_ids, unique_node_ids = set(), set()
         existed_relation_ids, existed_node_ids = set(), set()
 
@@ -96,7 +90,7 @@ class EmbeddingsModel:
                         relation_metdatas.append({'t_id': cur_triplet.id})
 
                 if create_nodes:
-                    self.log("\t- Also adding triplet-nodes in vector-model", verbose=self.config.verbose)
+                    self.log("\t- Also adding triplet-nodes in vector-model", verbose=self.verbose)
                     for node in [cur_triplet.start_node, cur_triplet.end_node]:
                         if node.id not in unique_node_ids:
                             unique_node_ids.add(node.id)
@@ -111,9 +105,9 @@ class EmbeddingsModel:
                 relation_ids, relation_strs, relation_metdatas,
                 node_ids, node_strs, node_metadatas)
 
-        self.log(f"all/unique/existed relations - {len(triplets)}/{len(unique_relation_ids)}/{len(existed_relation_ids)}", verbose=self.config.verbose)
-        self.log(f"all/unique/existed nodes - {len(triplets)*2}/{len(unique_node_ids)}/{len(existed_node_ids)}", verbose=self.config.verbose)
-        self.log("Triples were successfully added to vector-model!", verbose=self.config.verbose)
+        self.log(f"all/unique/existed relations - {len(triplets)}/{len(unique_relation_ids)}/{len(existed_relation_ids)}", verbose=self.verbose)
+        self.log(f"all/unique/existed nodes - {len(triplets)*2}/{len(unique_node_ids)}/{len(existed_node_ids)}", verbose=self.verbose)
+        self.log("Triples were successfully added to vector-model!", verbose=self.verbose)
         return {'nodes': existed_node_ids, 'triplets': existed_relation_ids}
 
     def delete_triplets(self, triplets: List[Triplet], delete_info: Dict[int, Dict[str,bool]] = dict()) -> None:
@@ -174,7 +168,8 @@ class EmbeddingsModel:
         if nodes_ids is not None:
             self.delete_instances('nodes', nodes_ids)
 
-    def create_instances(self, db_type: str, ids: List[str], stringified_instances: List[str], metadatas: List[Dict[str,Union[str,int,float]]]) -> None:
+    def create_instances(self, db_type: str, ids: List[str], stringified_instances: List[str],
+                         metadatas: List[Dict[str,Union[str,int,float]]]) -> None:
         """Метод предназначен для добавления набора объектов в одно из хранилищ данных векторной структуры: для триплетов или вершин.
 
         :param db_type: Тип хранилища, в которое нужно добавить объекты. Принимает значение "triplets" или "nodes".

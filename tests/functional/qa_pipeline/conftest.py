@@ -8,8 +8,8 @@ PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.kg_model.graph_model import GraphModelConfig
-from src.kg_model.embeddings_model import EmbeddingsModelConfig
+from src.kg_model.graph_model.GraphModel import GraphModelConfig
+from src.kg_model.embeddings_model.EmbeddingsModel import EmbeddingsModelConfig
 from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriverConfig
 from src.db_drivers.vector_driver.embedders import EmbedderModelConfig
 from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
@@ -51,7 +51,7 @@ def mem_pipeline_config():
             gen_strategy={"num_predict": 2048, "seed": 42, "top_k": 1, "temperature": 0.0},
             credentials={"model": 'qwen2.5:7b'},
             ext_params={"host": 'localhost', "port": 11438, "timeout": 560, "keep_alive": -1}))
-    
+
     config = MemPipelineConfig(
         extractor_config=LLMExtractorConfig(
             lang='en', adriver_config=agent_driver_config,
