@@ -4,7 +4,7 @@ import pickle
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KeyValueDBInstance
+from src.db_drivers.kv_driver.utils import KeyValueDBInstance
 from src.utils.cache_kv import CacheKV
 import pytest
 from typing import List

@@ -7,7 +7,7 @@ from ......utils.data_structs import QueryInfo, create_id
 from ......utils.errors import STATUS_MESSAGE
 from ......utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 from ......agents import AgentDriver, AgentDriverConfig
-from ......utils.cache_kv import CacheKV, CacheUtils
+from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 
 

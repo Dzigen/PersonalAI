@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from typing import Tuple, Union, List
-from copy import deepcopy
 
 from .config import AAGG_MAIN_LOG_PATH, DEFAULT_SUBASUMM_TASK_CONFIG
 from ..query_preprocessing.utils import QueryPreprocessingInfo
@@ -9,7 +8,7 @@ from ....utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
 from ....agents import AgentDriver, AgentDriverConfig
 from ....utils.data_structs import create_id
 from ....db_drivers.kv_driver import KeyValueDriverConfig
-from ....utils.cache_kv import CacheKV, CacheUtils
+from ....utils.cache_kv import CacheUtils
 
 @dataclass
 class AnswersAggregatorConfig:
