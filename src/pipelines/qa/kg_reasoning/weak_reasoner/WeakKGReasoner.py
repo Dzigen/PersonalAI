@@ -15,16 +15,15 @@ from .....db_drivers.kv_driver import KeyValueDriverConfig
 
 @dataclass
 class WeakKGReasonerConfig(BaseKGReasonerConfig):
-    """
-    Конфигурация weak-версии пайплайна по ризонингу на графе знаний.
+    """Конфигурация weak-версии пайплайна по ризонингу на графе знаний.
 
-    :param query_parser_config: Конфигурация первой стадии QA-конвейера: извлечение сущностей из user-вопроса. Значение по умолчанию QueryLLMParserConfig().
+    :param query_parser_config: Конфигурация первой стадии reasoner-конвейера: извлечение сущностей из user-вопроса. Значение по умолчанию QueryLLMParserConfig().
     :type query_parser_config: Union[None,QueryLLMParserConfig], optional
-    :param knowledge_comparator_config: Конфигурация второй стадии QA-конвейера: сопоставление (match) сущностей из user-вопроса с информацией в графе знаний. Значение по умолчанию KnowledgeComparatorConfig().
+    :param knowledge_comparator_config: Конфигурация второй стадии reasoner-конвейера: сопоставление (match) сущностей из user-вопроса с информацией в графе знаний. Значение по умолчанию KnowledgeComparatorConfig().
     :type knowledge_comparator_config: Union[None,KnowledgeComparatorConfig], optional
-    :param knowledge_retriever_config: Конфигурация третьей стадии QA-конвейера: извлечение релевантной информации из графа знаний для user-вопроса. Значение по умолчанию KnowledgeRetrieverConfig().
+    :param knowledge_retriever_config: Конфигурация третьей стадии reasoner-конвейера: извлечение релевантной информации из графа знаний для user-вопроса. Значение по умолчанию KnowledgeRetrieverConfig().
     :type knowledge_retriever_config: KnowledgeRetrieverConfig, optional
-    :param answer_generator_config: Конфигурация четвёртой стадии QA-конвейера: условная генерация ответа на user-вопрос. Значение по умолчанию QALLMGeneratorConfig().
+    :param answer_generator_config: Конфигурация четвёртой стадии reasoner-конвейера: условная генерация ответа на user-вопрос. Значение по умолчанию QALLMGeneratorConfig().
     :type answer_generator_config: QALLMGeneratorConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы WeakKGReasoner-класса. Значение по умолчанию 'qa_weakreasoner_cache'.
     :type cache_table_name: str, optional
@@ -50,7 +49,7 @@ class WeakKGReasonerConfig(BaseKGReasonerConfig):
         return f"{str_qparser_config};{str_kcomp_config};{str_kretr_config};{str_answgen_config}"
 
 class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
-    """Weak-версия паплана по ризонигу на графе знаний с целью извлечения релевантной информации к запросу.
+    """Weak-версия пайплайна по ризонигу на графе знаний с целью извлечения релевантной информации к запросу.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel

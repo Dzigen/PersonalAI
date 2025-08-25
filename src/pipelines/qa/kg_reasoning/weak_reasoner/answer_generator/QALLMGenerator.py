@@ -52,7 +52,7 @@ class QALLMGenerator(CacheUtils):
     :type config: QALLMGeneratorConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
-    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешировать, иначе False. Значение по умолчанию True.
+    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
     """
     def __init__(self, config: QALLMGeneratorConfig = QALLMGeneratorConfig(),
@@ -71,6 +71,19 @@ class QALLMGenerator(CacheUtils):
 
         self.log = self.config.log
         self.verbose = self.config.verbose
+
+    def clear_kv_caches(self, level: str = 'all') -> None:
+        if type(level) is not str:
+            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+        if level not in ['all', 'current', 'other']:
+            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+
+        if level in ['current', 'all']:
+            self.cachekv.clear()
+
+        if level in ['other', 'all']:
+            if self.answer_generator_solver.cachekv is not None:
+                self.answer_generator_solver.cachekv.clear()
 
     def get_cache_key(self, query: str, context_triplets: List[Triplet]) -> List[object]:
         str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(triplet)[1] for triplet in context_triplets])).encode()).hexdigest()

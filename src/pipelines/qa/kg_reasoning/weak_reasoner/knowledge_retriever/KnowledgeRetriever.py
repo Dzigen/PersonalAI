@@ -58,7 +58,7 @@ class KnowledgeRetriever(CacheUtils):
 
         self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
 
-        self.graph_retriever = AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method]['class'](
+        self.triplets_retriever = AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method]['class'](
             kg_model, self.log, self.config.retriever_config, cache_kvdriver_config, self.config.verbose)
 
         if self.config.filter_method is None:
@@ -80,7 +80,7 @@ class KnowledgeRetriever(CacheUtils):
             self.cachekv.clear()
 
         if level in ['other', 'all']:
-            self.graph_retriever.clear_kv_caches(level='all')
+            self.triplets_retriever.clear_kv_caches(level='all')
             if self.triplets_filter is not None:
                 self.triplets_filter.clear_kv_caches(level='all')
 
@@ -109,7 +109,7 @@ class KnowledgeRetriever(CacheUtils):
         return valid_triplets
 
     def traverse_kg(self, query_info: QueryInfo) -> List[Triplet]:
-        triplets = self.graph_retriever.get_relevant_triplets(query_info)
+        triplets = self.triplets_retriever.get_relevant_triplets(query_info)
         self.log(f"RESULT: {len(triplets)}", verbose=self.config.verbose)
         for triplet in triplets:
             self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
@@ -134,7 +134,7 @@ class KnowledgeRetriever(CacheUtils):
 
     def get_cache_key(self, query_info: QueryInfo) -> List[str]:
         str_tfilter_config = self.triplets_filter.config.to_str() if self.triplets_filter is not None else "None"
-        return [self.config.retriever_method, self.graph_retriever.config.to_str(), str(self.config.filter_method),
+        return [self.config.retriever_method, self.triplets_retriever.config.to_str(), str(self.config.filter_method),
                 str_tfilter_config, query_info.to_str()]
 
     @CacheUtils.cache_method_output

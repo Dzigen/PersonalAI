@@ -48,7 +48,7 @@ class QueryDecomposer(CacheUtils):
     :type config: QueryDecomposerConfig, optional
     :param cache_kvdriver_config:Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
-    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешировать, иначе False. Значение по умолчанию True.
+    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
     """
     def __init__(self, config: QueryDecomposerConfig = QueryDecomposerConfig(),

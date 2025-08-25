@@ -62,7 +62,7 @@ class LLMUpdator:
     def find_simple_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
         """Метод предназначен для поиска устаревших simple-триплетов в графе знаний по сравнению с указанным (base_triplet) simple-триплетом.
 
-        :param base_triplet: Simple-триплет, на основании которого нужно искать устаревшие simple-триплеты в графе знаний.
+        :param base_triplet: Simple-триплет, на основе которого нужно искать устаревшие simple-триплеты в графе знаний.
         :type base_triplet: Triplet
         :return: Идентификаторы устаревших simple-триплетов.
         :rtype: List[str]
@@ -98,7 +98,7 @@ class LLMUpdator:
     def find_hyper_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
         """Метод предназначен для поиска устаревших hyper-триплетов в графе знаний по сравнению с указанным (base_triplet) hyper-триплетом.
 
-        :param base_triplet: Hyper-триплет, на основании которого нужно искать устаревшие hyper-триплеты в графе знаний.
+        :param base_triplet: Hyper-триплет, на основе которого нужно искать устаревшие hyper-триплеты в графе знаний.
         :type base_triplet: Triplet
         :return: Идентификаторы устаревших hyper-триплетов.
         :rtype: List[str]
@@ -135,7 +135,7 @@ class LLMUpdator:
     def find_episodic_o_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
         """Метод предназначен для поиска устаревших episodic-триплетов (с object-вершиной) в графе знаний по сравнению с указанным (base_triplet) episodic-триплетом.
 
-        :param base_triplet: Episodic-триплет (с object-вершиной), на основании которого нужно искать устаревшие episodic-триплеты в графе знаний.
+        :param base_triplet: Episodic-триплет (с object-вершиной), на основе которого нужно искать устаревшие episodic-триплеты в графе знаний.
         :type base_triplet: Triplet
         :return: Идентификаторы устаревших episodic-триплетов.
         :rtype: List[str]
@@ -177,7 +177,7 @@ class LLMUpdator:
     def find_episodic_h_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
         """Метод предназначен для поиска устаревших episodic-триплетов (c hyper-вершиной) в графе знаний по сравнению с указанным (base_triplet) episodic-триплетом.
 
-        :param base_triplet: Episodic-триплет (с hyper-вершиной), на основании которого нужно искать устаревшие episodic-триплеты в графе знаний.
+        :param base_triplet: Episodic-триплет (с hyper-вершиной), на основе которого нужно искать устаревшие episodic-триплеты в графе знаний.
         :type base_triplet: Triplet
         :return: Идентификаторы устаревших episodic-триплетов.
         :rtype: List[str]

@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Tuple, Dict, Union
 import json
 from copy import deepcopy
-import hashlib 
+import hashlib
 
 from .logger import Logger
 from .language_detector import detect_lang
@@ -57,18 +57,16 @@ class AgentTaskSolverConfig:
 class AgentTaskSolver:
     """Класс-обёртка, предназначенный для решения атомарной задачи на базе инференса LLM-агента.
 
-    :param agent: интерфейс взаимодействия с LLM-агеном.
+    :param agent: интерфейс взаимодействия с LLM-агентом.
     :type agent: AbstractAgentConnector
     :param config: Конфигурация решения конкретной атомарной задачи.
     :type config: AgentTaskSolverConfig
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: AgentTaskSolverConfig,
-                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
+                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None) -> None:
         self.config = config
         self.agent = agent
-        self.log = self.config.log
-        self.verbose = self.config.verbose
 
         if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
             cache_config = deepcopy(cache_kvdriver_config)
@@ -76,6 +74,9 @@ class AgentTaskSolver:
             self.cachekv = CacheKV(cache_config)
         else:
             self.cachekv = None
+
+        self.log = self.config.log
+        self.verbose = self.config.verbose
 
     def solve(self, lang: str = 'en', **kwargs) -> Tuple[object, ReturnStatus]:
         """Метод предназначен для запуска agent-солвера на заданных входных данных.
@@ -131,7 +132,7 @@ class AgentTaskSolver:
 
             raw_answer = None
             gen_flag = True
-            
+
             # preparing cache key
             str_genstrat = ";".join(list(map(lambda p: f"{p[0]}={p[1]}", sorted([(k, str(v)) for k, v in self.agent.config.gen_strategy.items()], key=lambda p: p[0]))))
             str_creds = ";".join(list(map(lambda p: f"{p[0]}={p[1]}", sorted([(k, str(v)) for k, v in self.agent.config.credentials.items()], key=lambda p: p[0]))))
@@ -163,7 +164,7 @@ class AgentTaskSolver:
 
             if gen_flag:
                 self.log("Выполняем инференс llm...", verbose=self.config.verbose)
-                
+
                 raw_answer = self.agent.generate(
                     system_prompt=self.config.suites[detected_lang].system_prompt,
                     user_prompt=enriched_user_prompt,

@@ -257,7 +257,7 @@ class NodesTreeModel:
             self.log(f"3.5. Оценки семантической близости [similarity] для summarized-вершин:\n* количество: {len(scored_summnodes)}\n* вершины: {scored_summnodes}", verbose=self.verbose)
 
 
-            # Выполняем фильтрацию child-вершин на основании их семантической близости к newnode_text
+            # Выполняем фильтрацию child-вершин на основе их семантической близости к newnode_text
             # по адаптивному пороговому значению
             cur_maxdepth = self.treedb_conn.get_tree_maxdepth()
             adaptive_coeff = 1 if cur_maxdepth < 1 else np.exp((self.config.depth_rate * cur_depth) / cur_maxdepth)
