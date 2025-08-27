@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Tuple, Union, List, Dict
+from typing import Tuple, List, Dict
 import json
 from itertools import product
 

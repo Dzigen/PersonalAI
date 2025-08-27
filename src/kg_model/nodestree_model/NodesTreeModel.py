@@ -31,26 +31,26 @@ from ...db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelCo
 class NodesTreeModelConfig:
     """Конфигурация древовидной структуры данных для хранения object-вершин.
 
-    :param vectordb_leafnodes_config: ...
+    :param vectordb_leafnodes_config: Конфигурация векторной базы данных для хранения векторных представлений leaf-объектов (object-вершин) дерева. Значение по умолчанию LEAFNODES_VDB_DEFAULT_DRIVER_CONFIG.
     :type vectordb_leafnodes_config: VectorDriverConfig, optional
-    :param vectordb_summnodes_config: ...
+    :param vectordb_summnodes_config: Конфигурация векторной базы данных для хранения векторных представлений parent-объектов (summarized-вершин) дерева. Значение по умолчанию SUMMNODES_VDB_DEFAULT_DRIVER_CONFIG.
     :type vectordb_summnodes_config: VectorDriverConfig, optional
-    :param embedder_config: ...
+    :param embedder_config: Конфигурация класса, отвечающего за приведения текста в его векторное представление с помощью заданной embedder-модели. Значение по умолчанию EmbedderModelConfig().
     :type embedder_config: EmbedderModelConfig, optional
 
-    :param treedb_config: ...
+    :param treedb_config: Конфигурация графовой базы данных для хранения древовидного представления object-вершин. Значение по умолчанию TREE_DB_DEFAULT_DRIVER_CONFIG.
     :type treedb_config: treedb_config, optional
 
-    :param adriver_config: ...
+    :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
     :type adriver_config: AgentDriverConfig, optional
-    :param nodes_summarization_task_config: ...
+    :param nodes_summarization_task_config: Конфигурация атомарной задачи для LLM-агента по резюмированию/суммаризации текстовых полей у заданного набора leaf-объектов (object-вершин) из дерева. Значение по умолчанию DEFAULT_SUMMN_TASK_CONFIG.
     :type nodes_summarization_task_config: AgentTaskSolverConfig, optional
 
-    :param e2n_sim_threshold: ...
+    :param e2n_sim_threshold: Служебный гиперпараметр; см. https://arxiv.org/pdf/2410.14052. Значение по умолчанию 0.4.
     :type e2n_sim_threshold: float, optional
-    :param depth_rate: ...
+    :param depth_rate: Служебный гиперпараметр; см. https://arxiv.org/pdf/2410.14052. Значение по умолчанию 0.5.
     :type depth_rate: float, optional
-    :param nodes_aggregation_mechanism: ...
+    :param nodes_aggregation_mechanism: Служебный гиперпараметр; см. https://arxiv.org/pdf/2410.14052. Значение по умолчанию 'sequencial'.
     :type nodes_aggregation_mechanism: str, optional
 
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(NODESTREE_MODEL_LOG_PATH).
@@ -69,7 +69,7 @@ class NodesTreeModelConfig:
 
     e2n_sim_threshold: float = 0.4
     depth_rate: float = 0.5
-    nodes_aggregation_mechanism: str = "sequencial" # "sequencial" | "parallel"
+    nodes_aggregation_mechanism: str = 'sequencial' # "sequencial" | "parallel"
 
     log: Logger = field(default_factory=lambda: Logger(NODESTREE_MODEL_LOG_PATH))
     verbose: bool = False
@@ -78,9 +78,9 @@ class NodesTreeModel:
     """Класс предназначен для представления object-вершин из графовой структуры данных в виде дерева с целью
     повышения эффективности сопоставления имеющихся занний с сущностями/запросами из поступающих user-вопросов.
 
-    :param config: _description_, Значение по умолчанию NodesTreeModelConfig().
+    :param config: Конфигурация NodesTree-модели. Значение по умолчанию NodesTreeModelConfig().
     :type config: NodesTreeModelConfig, optional
-    :param cache_kvdriver_config: _description_, Значение по умолчанию None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
     """
     def __init__(self, config: NodesTreeModelConfig = NodesTreeModelConfig(),
@@ -125,13 +125,13 @@ class NodesTreeModel:
         assert summ_vnodes_count == tnodes_count['summarized']
 
     def expand_tree(self, triplets: List[Triplet], status_bar: bool = True) -> Dict[str, Set[str]]:
-        """_summary_
+        """Метод предназначен для добавления object-вершин из заданнного набора триплетов в древовидную модель.
 
-        :param triplets: _description_
+        :param triplets: Набор триплетов, object-вершины из которых необходимо добавить в древовидную модель.
         :type triplets: List[Triplet]
-        :param status_bar: _description_, defaults to True
+        :param status_bar: Если True, то в stdout будет записываться прогресс выполнения данной операции, иначе False. Значение по умолчанию True.
         :type status_bar: bool, optional
-        :return: _description_
+        :return: Словарь с информацией об object-вершинах из заданных триплетов, которые были добавлены в деревовидной моделе и которые уже присутствовали в моделе (и повторно добавлены не были).
         :rtype: Dict[str, Set[str]]
         """
         self.log("Старт операции по добавлению object-вершин из заданных триплетов в дерево...", verbose=self.verbose)
@@ -164,13 +164,13 @@ class NodesTreeModel:
         return {'existed_nodes': existed_node_ids, 'added_nodes': added_node_ids}
 
     def add_node(self, new_node_strid: str, new_node_text: str) -> ReturnStatus:
-        """_summary_
+        """Метод предназначен для добавления новой вершины в дерево.
 
-        :param new_node_strid: _description_
+        :param new_node_strid: Идентификатор добавляемой вершины.
         :type new_node_strid: str
-        :param new_node_text: _description_
+        :param new_node_text: Значение текстового поля у добавляемой вершины.
         :type new_node_text: str
-        :return: _description_
+        :return: Статус завершения/выполнения данной операции.
         :rtype: ReturnStatus
         """
         status = ReturnStatus.success
@@ -187,7 +187,7 @@ class NodesTreeModel:
         s_time = time()
         traversed_nodes_ids, parent_node = self.traverse_tree(new_node_text)
         e_time = time()
-        self.log(f"2.3.1. Идентификаторы пройденных вершин (external_ids): {traversed_nodes_ids}", verbose=self.verbose)
+        self.log(f"2.3.1. Идентификаторы пройденных вершин (internal_ids): {traversed_nodes_ids}", verbose=self.verbose)
         self.log(f"2.3.2. Выбранная parent-вершина: {parent_node}", verbose=self.verbose)
         self.log(f"2.3.3. Затраченное время: {e_time - s_time} секунд", verbose=self.verbose)
 
@@ -219,11 +219,12 @@ class NodesTreeModel:
         return status
 
     def traverse_tree(self, newnode_text: str) -> Tuple[List[str], TreeNode]:
-        """_summary_
+        """Метод предназначен для получения вершины в древодиной моделе, к которой будет прикреплена новая leaf-вершина
+        с newnode_text-значением текстового поля.
 
-        :param newnode_text: _description_
+        :param newnode_text: Значение текстового поля, представляющее leaf-вершину, которому необходимо найти релевантную parent-вершину в дереве для последующего прикрепления к ней.
         :type newnode_text: str
-        :return: _description_
+        :return: Кортеж из двух объектов: (1) Путь (список идентификаторов вершин) в дереве от корня (корневой вершины) до вершины, к которой будет прикреплена новая leaf-вершина; (2) Структура данных с информацие по последней вершине в пройденном пути.
         :rtype: Tuple[List[str], TreeNode]
         """
         self.log("3. Старт алгоритма обхода дерева...", verbose=self.verbose)
@@ -270,7 +271,6 @@ class NodesTreeModel:
                 scored_summnodes = []
             self.log(f"3.5. Оценки семантической близости [similarity] для summarized-вершин:\n* количество: {len(scored_summnodes)}\n* вершины: {scored_summnodes}", verbose=self.verbose)
 
-
             # Выполняем фильтрацию child-вершин на основе их семантической близости к newnode_text
             # по адаптивному пороговому значению
             cur_maxdepth = self.treedb_conn.get_tree_maxdepth()
@@ -305,14 +305,15 @@ class NodesTreeModel:
         return traversed_nodes_ids, parent_node
 
     def summarize_path_nodes(self, traversed_nodes_ids: List[str], newnode_text: str) -> List[str]:
-        """_summary_
+        """Метод предназначен для обобщения текстовых полей у вершин в дереве,
+        пройденных при поиске релевантной parent-вершины для прикрепления у ней новой leaf-вершины,
+        c обуславливанием на newnode_text-значение новой вершины (предками которой они являются).
 
-        :param traversed_nodes_ids: _description_
+        :param traversed_nodes_ids: Список индетификаторов пройденных вершин, начиная от корня дерева.
         :type traversed_nodes_ids: List[str]
-        :param newnode_text: _description_
+        :param newnode_text: Значение текстового поля новой вершины, на которое нужно обуславиливаться при генерации более обобщённых текстовых значений у пройденных вершин в дереве.
         :type newnode_text: str
-        :raises ValueError: _description_
-        :return: _description_
+        :return: Список прегенерированных/обобщённых значений тексовых полей у пройденных traversed_nodes_ids-вершин.
         :rtype: List[str]
         """
         self.log(f"4. Старт алгоритма по суммаризации текста...", verbose=self.verbose)
@@ -353,15 +354,14 @@ class NodesTreeModel:
         return new_text_summaries[::-1]
 
     def update_vectordb_info(self, vecdb_type: TreeNodeType, ids: List[str], new_texts: List[str]) -> None:
-        """_summary_
+        """Метод предназначен для добавления/обновления векторных предтавлений вершин из дерева в векторной базе данных.
 
-        :param vecdb_type: _description_
+        :param vecdb_type: Тип вершин, по которым выполняется обновление информации в векторной бд.
         :type vecdb_type: TreeNodeType
-        :param ids: _description_
+        :param ids: Идентификаторы вершин из дерева, с которыми они будут сохранены в векторную бд.
         :type ids: List[str]
-        :param new_texts: _description_
+        :param new_texts: Значения текстовых полей, на основе которых будут получены векторные представления для соответствующих вершин.
         :type new_texts: List[str]
-        :raises KeyError: _description_
         """
         torch.cuda.empty_cache()
         embs = self.embedder.encode_passages(new_texts, batch_size=16)
@@ -376,15 +376,16 @@ class NodesTreeModel:
             raise KeyError
 
     def update_treedb_info(self, ids: List[str], texts: List[str], new_node_strid: str, parent_node: TreeNode) -> None:
-        """_summary_
+        """Метод предназначен для обновления информации (значений текстовых полей) в вершинах дерева,
+        пройденных в результате поиска релевантной parent-вершины для прикрепления новой new_node_strid-вершины к дереву.
 
-        :param ids: _description_
+        :param ids: Идентификаторые вершин в дереве (включая parent-вершину для новой/добавляемой new_node_strid-вершины), у которых необходимо изменить значения тексовых полей.
         :type ids: List[str]
-        :param texts: _description_
+        :param texts: Новые значения текстовых полей для заданных ids-вершин.
         :type texts: List[str]
-        :param new_node_strid: _description_
+        :param new_node_strid: Индентификатор новой вершины, которая в дальнейшей будет прикрепляться к parent_node-вершине.
         :type new_node_strid: str
-        :param parent_node: _description_
+        :param parent_node: Структура данных с информацией о последней пройденной parent-вершине в ids-списке, к которой в дальнейшем будет выполняться приелрепление ноаой new_node_strid-вершины.
         :type parent_node: TreeNode
         """
         # У всех summarized-вершин обновляем значения text- и других-полей
@@ -396,7 +397,8 @@ class NodesTreeModel:
             self.treedb_conn.update([cur_node])
 
         # Eсли последняя вершина имеет тип leaf, то меняем её тип на summarized,
-        # добавляем descendants_num-поле и удаляем str_id-поле
+        # добавляем descendants_num-поле и удаляем str_id-поле.
+        # Исходную leaf-вершину перевешиваем на полученную summarized-вершину.
         if parent_node.type == TreeNodeType.leaf:
             self.change_node_to_summarized(parent_node, new_text=texts[-1])
             self.log("Перевешиваем leaf-вершину, на переформатированную/последнюю summarized-вершину", verbose=self.verbose)
@@ -405,31 +407,31 @@ class NodesTreeModel:
             self.attach_node_to_tree(ids[-1], parent_node.text, updated_props)
 
     def attach_node_to_tree(self, pn_id: str, ln_text: str, ln_props: Dict[str, object]) -> None:
-        """_summary_
+        """Метод предназначен для создания новой вершины и прикреплению её к существующей pn_id-вершине в дереве.
 
-        :param pn_id: _description_
+        :param pn_id: Идентификатор существующей вершины в дереве.
         :type pn_id: str
-        :param ln_text: _description_
+        :param ln_text: Значение текстового поля у новой вершины.
         :type ln_text: str
-        :param ln_props: _description_
+        :param ln_props: Значение дополнительных полей у новой верщины.
         :type ln_props: Dict[str, object]
         """
-        new_external_id = create_id(seed=str(time()))
-        leaf_node = TreeNode(id=new_external_id, text=ln_text, type=TreeNodeType.leaf, props=ln_props)
+        new_internal_id = create_id(seed=str(time()))
+        leaf_node = TreeNode(id=new_internal_id, text=ln_text, type=TreeNodeType.leaf, props=ln_props)
         self.treedb_conn.create(pn_id, leaf_node)
 
         parent_node = self.treedb_conn.read([pn_id], ids_type=TreeIdType.external)[0]
         if parent_node.type != TreeNodeType.root:
             parent_node.props['descendants_num'] += 1
-            #parent_node.props['aggregated_str_ids'].append(new_external_id)
+            #parent_node.props['aggregated_str_ids'].append(new_internal_id)
             self.treedb_conn.update([parent_node])
 
     def change_node_to_summarized(self, old_node: TreeNode, new_text: str) -> None:
-        """_summary_
+        """Метод предназначен для изменения типа вершины в дереве на summarized.
 
-        :param old_node: _description_
+        :param old_node: Структура данных с исходной информации о вершину, тип которой необходимо изменить.
         :type old_node: TreeNode
-        :param new_text: _description_
+        :param new_text: Новое значение текстовго поля изменяемой вершины.
         :type new_text: str
         """
         # обновляем информацию в соответствующей графовой бд
@@ -446,22 +448,19 @@ class NodesTreeModel:
 
     def match_entitie2objects(self, entitie: str, strategy: str = 'collapsed', distance_threshold: float = 0.4,
                               fetch_k: int = 1, max_n: int = 1) -> List[VectorDBInstance]:
-        """_summary_
+        """Метод предназначен для сопоставления object-вершин (из построенного дерева) заданной сущности (на естественном языке).
 
-        :param entitie: _description_
-        :type entitie: str
-        :param strategy: _description_, defaults to 'collapsed'
+        :param entitie:
+        :type entitie: Сущность на естественном языке.
+        :param strategy: Стратегия обхода дерева для формирования релевантного (сопоставляемого заданной сущности) набора object-вершин. Значение по умолчанию 'collapsed'.
         :type strategy: str, optional
-        :param distance_threshold: _description_, defaults to 0.4
+        :param distance_threshold: Пороговое значение семантического расстояния [distance] между сущностью и object-вершинами в дереве, по которому выполняется отсечение нерелевантных объектов (вершин). Значение по умолчанию 0.4.
         :type distance_threshold: float, optional
-        :param fetch_k: _description_, defaults to 1
+        :param fetch_k: Служебный гиперпараметр. Значение по умолчанию 1.
         :type fetch_k: int, optional
-        :param max_n: _description_, defaults to 1
+        :param max_n: Максимальное количество object-вершин, которое может быть сопоставлено заданной сущности. Если указано отрицательное значение, то данное ограничение снимается. Значение по умолчанию 1.
         :type max_n: int, optional
-        :raises ValueError: _description_
-        :raises NotImplementedError: _description_
-        :raises ValueError: _description_
-        :return: _description_
+        :return: Список сопоставленных object-верщин (с их векторными представлениями).
         :rtype: List[VectorDBInstance]
         """
         self.log("Старт алгоритма по сопоставлению заданной сущности (entitie) вершин из дерева", verbose=self.verbose)

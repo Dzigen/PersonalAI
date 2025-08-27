@@ -7,7 +7,6 @@ from .config import DEFAULT_CACHEKV_CONFIG
 from ...db_drivers.kv_driver.KeyValueDriver import KeyValueDriver, KeyValueDriverConfig
 from ...db_drivers.kv_driver.utils import KeyValueDBInstance
 
-
 class CacheKV:
     def __init__(self, kvdriver_config: KeyValueDriverConfig = DEFAULT_CACHEKV_CONFIG):
         self.kv_conn = KeyValueDriver.connect(kvdriver_config)

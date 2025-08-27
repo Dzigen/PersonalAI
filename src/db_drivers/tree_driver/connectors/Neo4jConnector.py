@@ -171,10 +171,12 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
             self.execute_query(f'MATCH (n) WHERE n.{ids_type.value} = "{id}" DELETE n;')
 
 
-    def get_leaf_descendants(self, id: str, id_type: str=TreeIdType.external) -> List[TreeNode]:
+    def get_leaf_descendants(self, id: str, id_type: str = TreeIdType.external) -> List[TreeNode]:
         if type(id) is not str:
             raise ValueError
         if type(id_type) is not TreeIdType:
+            raise ValueError
+        if not self.item_exist(parent_id, id_type=id_type):
             raise ValueError
 
         raw_output = self.execute_query(f'MATCH (parent)-[:relation*0..]->(n:leaf) WHERE parent.{id_type.value} = "{id}" RETURN n')
@@ -203,13 +205,13 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         output = self.execute_query(query)
         return len(output) > 0
 
-    def get_child_nodes(self, parent_id: str) -> List[TreeNode]:
+    def get_child_nodes(self, parent_id: str, id_type: str = TreeIdType.external) -> List[TreeNode]:
         if type(parent_id) is not str:
             raise ValueError
-        if not self.item_exist(parent_id, id_type= TreeIdType.external):
+        if not self.item_exist(parent_id, id_type=id_type):
             raise ValueError
 
-        raw_nodes = self.execute_query(f'MATCH (parent)-[rel]->(n) WHERE parent.external_id = "{parent_id}" RETURN n')
+        raw_nodes = self.execute_query(f'MATCH (parent)-[rel]->(n) WHERE parent.{id_type.value} = "{id}" RETURN n')
         formated_nodes = self.formate_nodes_output(raw_nodes)
         return formated_nodes
 

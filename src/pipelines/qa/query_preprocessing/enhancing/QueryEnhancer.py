@@ -58,6 +58,9 @@ class QueryEnhancer(CacheUtils):
             agents_cache_config = cache_kvdriver_config if cache_llm_inference else None
 
         raise NotImplementedError
+        # добавление более понятных языковых конструкций
+        # добавление терминологии
+        # лингвистическая корректировка
 
         self.log = self.config.log
         self.verbose = self.config.verbose

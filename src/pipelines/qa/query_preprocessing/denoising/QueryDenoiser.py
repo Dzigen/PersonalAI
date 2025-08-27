@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Tuple, List
 
-from .config import QD_MAIN_LOG_PATH
+from .config import QD_MAIN_LOG_PATH, DEFAULT_SWREMV_TASK_CONFIG, DEFAULT_GRAMCHECK_TASK_CONFIG
 from ..QueryPreprocessor import QueryPreprocessingInfo
 from .....utils.cache_kv import CacheUtils
 from .....utils.errors import STATUS_MESSAGE
@@ -9,8 +9,6 @@ from .....utils.data_structs import create_id
 from .....agents import AgentDriverConfig, AgentDriver
 from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
 from .....db_drivers.kv_driver import KeyValueDriverConfig
-
-# TODO
 
 @dataclass
 class QueryDenoiserConfig:
@@ -20,6 +18,10 @@ class QueryDenoiserConfig:
     :type lang: str, optional
     :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной операции. Значение по умолчанию AgentDriverConfig().
     :type adriver_config: AgentDriverConfig, optional
+    :param swremoval_agent_task_config: Конфигурация атомарной задачи для LLM-агента по удалению излишней/ненужной информации из запроса. Значение по умолчанию DEFAULT_SWREMV_TASK_CONFIG.
+    :type swremoval_agent_task_config: AgentTaskSolverConfig, optional
+    :param grammarcheck_agent_task_config: Конфигурация атомарной задачи для LLM-агента по корректировке/переформулированию запроса в соответствии с грамматикой и синтаксисом используемого естественного языка. Значение по умолчанию DEFAULT_GRAMCHECK_TASK_CONFIG.
+    :type grammarcheck_agent_task_config: AgentTaskSolverConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryDenoiser-класса. Значение по умолчанию 'qp_denoising_stage_cache'.
     :type cache_table_name: str, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(QD_MAIN_LOG_PATH).
@@ -29,14 +31,15 @@ class QueryDenoiserConfig:
     """
     lang: str = "auto"
     adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
+    swremoval_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_SWREMV_TASK_CONFIG)
+    grammarcheck_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_GRAMCHECK_TASK_CONFIG)
 
     cache_table_name: str = 'qp_denoising_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(QD_MAIN_LOG_PATH))
     verbose: bool = False
 
     def to_str(self):
-        # TODO
-        raise NotImplementedError
+        return f"{self.lang}|{self.adriver_config.to_str()}|{self.swremoval_agent_task_config.version}|{self.grammarcheck_agent_task_config.version}"
 
 class QueryDenoiser(CacheUtils):
     """Класс, реализующий одну из операций по форматированию/предобработке user-вопроса в рамках QueryPreprocessor-стадии. Данный класс выполняет удаление лишних шумов/фрагментов информации из user-вопроса.
@@ -58,7 +61,10 @@ class QueryDenoiser(CacheUtils):
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config if cache_llm_inference else None
 
-        raise NotImplementedError
+        self.swremoval_solver = AgentTaskSolver(
+            self.agent, self.config.swremoval_agent_task_config, agents_cache_config)
+        self.grammar_check_solver = AgentTaskSolver(
+            self.agent, self.config.grammarcheck_agent_task_config, agents_cache_config)
 
         self.log = self.config.log
         self.verbose = self.config.verbose
@@ -75,4 +81,37 @@ class QueryDenoiser(CacheUtils):
         :return: Кортеж из двух объектов: (1) модифицированный user-вопрос без информации, зашумляющий основной запрос/интент; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
-        raise NotImplementedError
+        self.log("START QUERY DENOISING...", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.config.verbose)
+        self.log(f"QUERY INFO: {query_info}", verbose=self.config.verbose)
+        denoised_query, info = None, ReturnInfo()
+
+        if query_info.base_query is not None:
+            query = query_info.base_query
+        else:
+            raise ValueError
+
+        self.log("Выполнение удаление лишней информации/символов из запроса с помощью LLM-агента...", verbose=self.config.verbose)
+        query_wo_stopwords, status = self.swremoval_solver.solve(lang=self.config.lang, query=query)
+        if status != ReturnStatus.success:
+            info.occurred_warning.append(status)
+        else:
+            self.log(f"RESULT: {query_wo_stopwords}", verbose=self.config.verbose)
+
+        if status == ReturnStatus.success:
+            self.log("Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.config.verbose)
+            reformulated_query, status = self.grammar_check_solver(lang=self.config.lang, query=query_wo_stopwords)
+            if status != ReturnStatus.success:
+                info.occurred_warning.append(status)
+            else:
+                self.log(f"RESULT: {query_wo_stopwords}", verbose=self.config.verbose)
+                denoised_query = reformulated_query
+
+        if denoised_query is None:
+            info.status = ReturnStatus.empty_answer
+            info.message = STATUS_MESSAGE[info.status]
+
+        self.log(f"RESULT: {denoised_query}", verbose=self.config.verbose)
+        self.log(f"STATUS: {info.status}", verbose=self.config.verbose)
+
+        return denoised_query, info

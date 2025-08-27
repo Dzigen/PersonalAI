@@ -6,15 +6,14 @@ from .CacheKV import CacheKV
 from ...db_drivers.kv_driver.KeyValueDriver import KeyValueDriverConfig
 
 class CacheUtils(AbstractCacheUtils):
-    def init_cachekv(self, cache_kvdriver_config: Union[KeyValueDriverConfig, None], cache_table_name: Union[None,str] = None) -> Union[None, CacheKV]:
-        """_summary_
+    def init_cachekv(self, cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None, cache_table_name: Union[None,str] = None) -> Union[None, CacheKV]:
+        """Метод предназначен для создания базы данных с целью кеширования требуемых результатов.
 
-        :param cache_kvdriver_config: _description_
+        :param cache_kvdriver_config: Конфигурация базы данных для хранения кешируемых результатов. Значение по умолчанию None.
         :type cache_kvdriver_config: Union[KeyValueDriverConfig, None]
-        :param cache_table_name: _description_, defaults to None
+        :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) результаты. Значение по умолачанию None.
         :type cache_table_name: Union[None,str], optional
-        :raises ValueError: _description_
-        :return: _description_
+        :return: Если cache_kvdriver_config равен None, то будет возвращен None, иначе будет возвращен интерфейс взаимодействия с созданным кешем.
         :rtype: Union[None, CacheKV]
         """
         cachekv = None
@@ -28,10 +27,8 @@ class CacheUtils(AbstractCacheUtils):
         return cachekv
 
     def cache_method_output(function):
-        """_summary_
-
-        :param function: _description_
-        :type function: _type_
+        """Метод является декоратором для кеширования результатов, возвращаемой от соответсвующего (декорируемого) метода.
+        Реализация класса, метод которого декорируется, должена содержеать get_cache_key-метод для идентификации (генерации ключа) кешируемого результата.
         """
         def wrapper(self, *args, **kwargs):
             cached_flag = False
@@ -47,7 +44,6 @@ class CacheUtils(AbstractCacheUtils):
                     self.log(f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
                     self.log(f"* HASH_SEEDS: {cache_key}.", verbose=self.verbose)
                     self.log(f"* CACHED_VALUE: {cached_result}.", verbose=self.verbose)
-
 
                     cached_flag = True
                     output = cached_result
