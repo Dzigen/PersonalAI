@@ -4,7 +4,6 @@ from typing import List, Tuple, Dict, Union
 import sys
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
-TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
 from cases import TREEDB_POPULATED_CREATE_TEST_CASES, TREEDB_POPULATED_READ_TEST_CASES, \
@@ -13,8 +12,6 @@ from cases import TREEDB_POPULATED_CREATE_TEST_CASES, TREEDB_POPULATED_READ_TEST
             TREEDB_POPULATED_CLEAR_TEST_CASES, TREEDB_POPULATED_GETCHILDS_TEST_CASES, TREEDB_POPULATED_GETMAXDEPTH_TEST_CASES, \
                 TREEDB_POPULATED_GETLEAFDESCENDANTS_TEST_CASES
 
-from src.utils import Triplet, RelationType, NodeType
-from src.utils.data_structs import Node
 from src.db_drivers.tree_driver.utils import AbstractTreeDatabaseConnection, TreeNode, TreeIdType
 
 @pytest.mark.parametrize("parents_id, childs_data, exceptions, treedb_conn", TREEDB_POPULATED_CREATE_TEST_CASES, indirect=['treedb_conn'])

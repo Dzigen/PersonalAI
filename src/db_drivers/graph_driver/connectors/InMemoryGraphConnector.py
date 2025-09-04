@@ -4,11 +4,10 @@ import gc
 from time import time
 import hashlib
 
+from .configs import DEFAULT_INMEMORYGRAPH_CONFIG
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils import Triplet, NodeType
 from ....utils.data_structs import RelationType, Node
-
-DEFAULT_INMEMORYGRAPH_CONFIG = GraphDBConnectionConfig()
 
 class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 

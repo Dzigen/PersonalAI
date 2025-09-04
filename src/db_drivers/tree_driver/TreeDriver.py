@@ -5,8 +5,8 @@ from .configs import DEFAULT_TREEDB_CONFIGS, AVAILABLE_TREEDB_CONNECTORS
 
 @dataclass
 class TreeDriverConfig:
-    db_vendor: str = 'neo4j'
-    db_config: TreeDBConnectionConfig = field(default_factory=lambda: DEFAULT_TREEDB_CONFIGS['neo4j'])
+    db_vendor: str = 'kuzu'
+    db_config: TreeDBConnectionConfig = field(default_factory = lambda: DEFAULT_TREEDB_CONFIGS['kuzu'])
 
 class TreeDriver:
     @staticmethod

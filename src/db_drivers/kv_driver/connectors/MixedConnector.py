@@ -1,13 +1,9 @@
 from typing import Dict, List
 
-import sys
-sys.path.insert(0, "../")
-
-from .RedisConnector import DEFAULT_REDISKV_CONFIG, RedisKVConnector
-from .MongoConnector import DEFAULT_MONGOKV_CONFIG, MongoKVConnector
+from .configs import DEFAULT_MIXEDKV_CONFIG
+from .RedisConnector import RedisKVConnector
+from .MongoConnector import MongoKVConnector
 from ..utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
-
-DEFAULT_MIXEDKV_CONFIG = KVDBConnectionConfig(params={'redis_config': DEFAULT_REDISKV_CONFIG, 'mongo_config': DEFAULT_MONGOKV_CONFIG})
 
 class MixedKVConnector(AbstractKVDatabaseConnection):
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_MIXEDKV_CONFIG):

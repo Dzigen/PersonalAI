@@ -9,7 +9,7 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from src.db_drivers.tree_driver.utils import TreeNode, TreeNodeType, TreeIdType
 
 # TO CHANGE
-AVAILABLE_TREE_DBS = ['neo4j']
+AVAILABLE_TREE_DBS = ['kuzu'] # 'neo4j', 'kuzu'
 
 ################################################################
 
@@ -308,7 +308,7 @@ for db_vendor in AVAILABLE_TREE_DBS:
 
 # create_pairs, id, expected_descendants, exception
 TREEDB_GETLEAFDESCENDANTS_TEST_CASES = [
-    (TEST_TREE, 'ROOT_NODE_ID', {VALID_LEAF_TNODE1.id: VALID_LEAF_TNODE1, VALID_LEAF_TNODE2.id: VALID_LEAF_TNODE2, 
+    (TEST_TREE, 'ROOT_NODE_ID', {VALID_LEAF_TNODE1.id: VALID_LEAF_TNODE1, VALID_LEAF_TNODE2.id: VALID_LEAF_TNODE2,
         VALID_LEAF_TNODE3.id: VALID_LEAF_TNODE3, VALID_LEAF_TNODE4.id: VALID_LEAF_TNODE4}, False),
     (TEST_TREE, VALID_SUM_TNODE4.id, {VALID_LEAF_TNODE3.id: VALID_LEAF_TNODE3, VALID_LEAF_TNODE4.id: VALID_LEAF_TNODE4}, False),
     (TEST_TREE, VALID_SUM_TNODE3.id, {VALID_LEAF_TNODE2.id: VALID_LEAF_TNODE2}, False),

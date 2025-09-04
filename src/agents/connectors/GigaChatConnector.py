@@ -6,14 +6,8 @@ from httpx import ConnectError, RemoteProtocolError
 # https://github.com/VRSEN/agency-swarm/issues/99
 # https://github.com/ai-forever/gigachat/blob/main/src/gigachat/client.py#L182
 
+from .configs import DEFAULT_GIGACHAT_CONFIG
 from ..utils import AbstractAgentConnector, AgentConnectorConfig
-
-GIGACHAT_KEY = 'OWUwOGUzOWEtMjJiNi00YmMxLThmMmItNzMwNjM2MTI2YmYxOjg2ODdiOTVhLTZkNDctNGFjOC1iMmViLTEyNDA5MmFiN2Q5Mw=='
-
-DEFAULT_GIGACHAT_CONFIG = AgentConnectorConfig(
-    gen_strategy={'top_k': 1, 'top_p': 0, 'temperature': 0},
-    credentials={'token': GIGACHAT_KEY, 'scope': 'GIGACHAT_API_CORP', 'model': "GigaChat-Pro"},
-    ext_params={'timeout': 560, 'trials': 5, 'verify_ssl_certs': False})
 
 class GigaChatConnector(AbstractAgentConnector):
     def __init__(self, config: AgentConnectorConfig = DEFAULT_GIGACHAT_CONFIG) -> None:

@@ -5,19 +5,10 @@ import pickle
 import os
 import time
 import hashlib
-import numpy as np
 from collections import defaultdict
 
+from .configs import DEFAULT_INMEMORYKV_CONFIG
 from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection, KeyValueDBInstance
-
-DEFAULT_INMEMORYKV_CONFIG = KVDBConnectionConfig(
-    host='localhost',
-    params={
-        'kvstore_dump_name': 'inmemory_store',
-        'load_from_disk': False, 'load_dump_dir': '.',
-        'save_on_disk': True, 'save_dump_dir': '.',
-        'max_storage': 5e+8
-    })
 
 class InMemoryKVConnector(AbstractKVDatabaseConnection):
 

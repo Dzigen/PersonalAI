@@ -17,7 +17,7 @@ from .......utils.data_structs import QueryInfo, Triplet, NodeType
 from .......kg_model import KnowledgeGraphModel
 from .......utils.data_structs import create_id, NODES_TYPES_MAP
 from .......utils import Logger
-from .......db_drivers.vector_driver.utils import VectorDBInstance
+from .......db_drivers.vector_driver import VectorDBInstance
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 

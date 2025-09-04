@@ -84,7 +84,7 @@ class QueryDenoiser(CacheUtils):
         self.log("START QUERY DENOISING...", verbose=self.config.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.config.verbose)
         self.log(f"QUERY INFO: {query_info}", verbose=self.config.verbose)
-        denoised_query, info = None, ReturnInfo()
+        denoised_query, rinfo = None, ReturnInfo()
 
         if query_info.base_query is not None:
             query = query_info.base_query
@@ -94,24 +94,24 @@ class QueryDenoiser(CacheUtils):
         self.log("Выполнение удаление лишней информации/символов из запроса с помощью LLM-агента...", verbose=self.config.verbose)
         query_wo_stopwords, status = self.swremoval_solver.solve(lang=self.config.lang, query=query)
         if status != ReturnStatus.success:
-            info.occurred_warning.append(status)
+            rinfo.occurred_warning.append(status)
         else:
             self.log(f"RESULT: {query_wo_stopwords}", verbose=self.config.verbose)
 
         if status == ReturnStatus.success:
             self.log("Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.config.verbose)
-            reformulated_query, status = self.grammar_check_solver(lang=self.config.lang, query=query_wo_stopwords)
+            reformulated_query, status = self.grammar_check_solver.solve(lang=self.config.lang, query=query_wo_stopwords)
             if status != ReturnStatus.success:
-                info.occurred_warning.append(status)
+                rinfo.occurred_warning.append(status)
             else:
-                self.log(f"RESULT: {query_wo_stopwords}", verbose=self.config.verbose)
+                self.log(f"RESULT: {reformulated_query}", verbose=self.config.verbose)
                 denoised_query = reformulated_query
 
         if denoised_query is None:
-            info.status = ReturnStatus.empty_answer
-            info.message = STATUS_MESSAGE[info.status]
+            rinfo.status = ReturnStatus.empty_answer
+            rinfo.message = STATUS_MESSAGE[rinfo.status]
 
         self.log(f"RESULT: {denoised_query}", verbose=self.config.verbose)
-        self.log(f"STATUS: {info.status}", verbose=self.config.verbose)
+        self.log(f"STATUS: {rinfo.status}", verbose=self.config.verbose)
 
-        return denoised_query, info
+        return denoised_query, rinfo

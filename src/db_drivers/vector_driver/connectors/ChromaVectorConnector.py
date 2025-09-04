@@ -1,24 +1,20 @@
 from typing import List, Tuple
-
-__import__('pysqlite3')
 import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-
 import chromadb
 import logging
 import gc
 import torch
 import numpy as np
 
-from ....utils.errors import ReturnInfo
+from .configs import DEFAULT_CHROMA_CONFIG
 from ..utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
+from ....utils.errors import ReturnInfo
+
+__import__('pysqlite3')
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 logging.getLogger("chromadb").setLevel(logging.CRITICAL)
 
-DEFAULT_CHROMA_CONFIG = VectorDBConnectionConfig(
-    params={"hnsw:space": "ip","hnsw:M": 4096},
-    conn={'path':'../data/graph_structures/default_vectorstore'})
-
-class ChromaConnection(AbstractVectorDatabaseConnection):
+class ChromaVectorConnection(AbstractVectorDatabaseConnection):
 
     def __init__(self, config: VectorDBConnectionConfig = DEFAULT_CHROMA_CONFIG) -> None:
         self.config = config

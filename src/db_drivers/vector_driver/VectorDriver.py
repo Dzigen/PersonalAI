@@ -6,7 +6,7 @@ from .configs import DEFAULT_VECTORDB_CONFIGS, AVAILABLE_VECTORDB_CONNECTORS
 @dataclass
 class VectorDriverConfig:
     db_vendor: str = 'chroma'
-    db_config: VectorDBConnectionConfig = field(default_factory=lambda: DEFAULT_VECTORDB_CONFIGS['chroma'])
+    db_config: VectorDBConnectionConfig = field(default_factory = lambda: DEFAULT_VECTORDB_CONFIGS['chroma'])
 
 class VectorDriver:
     @staticmethod

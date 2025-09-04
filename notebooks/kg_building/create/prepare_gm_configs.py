@@ -10,12 +10,10 @@ with open(PARAMS_FILE_PATH, 'r') as stream:
 sys.path.insert(0, PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
 
 from src.kg_model import EmbedderModelConfig
-from src.db_drivers.graph_driver import GraphDBConnectionConfig
-from src.db_drivers.vector_driver import VectorDBConnectionConfig
 from src.pipelines.memorize import MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
 from src.kg_model import EmbeddingsModelConfig, GraphModelConfig
-from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
-from src.db_drivers.vector_driver import VectorDriverConfig, VectorDBConnectionConfig, EmbedderModelConfig
+from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig, GraphDBConnectionConfig
+from src.db_drivers.vector_driver import VectorDriverConfig, VectorDBConnectionConfig, EmbedderModelConfig, VectorDBConnectionConfig
 from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
 from src.db_drivers.tree_driver import TreeDriverConfig, TreeDBConnectionConfig
 

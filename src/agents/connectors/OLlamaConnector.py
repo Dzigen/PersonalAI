@@ -1,10 +1,7 @@
-from ..utils import AbstractAgentConnector, AgentConnectorConfig
 from ollama import Client
 
-DEFAULT_OLLAMA_CONFIG = AgentConnectorConfig(
-    gen_strategy={'num_predict': 2048, 'seed': 42, 'top_k': 1, 'temperature': 0.0},
-    credentials={'model': 'llama3.2'},
-    ext_params={'host': 'localhost', 'port': 11434, 'timeout': 560, 'keep_alive': -1})
+from .configs import DEFAULT_OLLAMA_CONFIG
+from ..utils import AbstractAgentConnector, AgentConnectorConfig
 
 # available models
 # llama3.2 (3B)

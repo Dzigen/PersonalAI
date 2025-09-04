@@ -2,13 +2,12 @@ from neo4j import GraphDatabase
 from typing import List, Dict, Union
 import json
 
+from .configs import DEFAULT_NEO4J_CONFIG
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
-from ....utils.data_structs import Triplet, Node, Relation, TripletCreator, NodeCreator, NodeType, RelationCreator, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
+from ....utils.data_structs import Triplet, Node, TripletCreator, NodeCreator, \
+    NodeType, RelationCreator, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 
-DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(
-    host='localhost', port=7687, params={'user': "neo4j", 'pwd': 'password'})
-
-class Neo4jConnector(AbstractGraphDatabaseConnection):
+class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
 
     def __init__(self, config: GraphDBConnectionConfig = DEFAULT_NEO4J_CONFIG):
         self.config = config
@@ -51,7 +50,7 @@ class Neo4jConnector(AbstractGraphDatabaseConnection):
 
     def is_open(self) -> None:
         # TODO
-        pass
+        raise NotImplementedError
 
     def close_connection(self) -> None:
         if self.driver is not None:
@@ -129,7 +128,7 @@ class Neo4jConnector(AbstractGraphDatabaseConnection):
 
     def update(self, items: List[Triplet]) -> None:
         # TODO
-        pass
+        raise NotImplementedError
 
     def delete(self, ids: List[str], delete_info: Dict[int,Dict[str,bool]] = dict()) -> None:
         for t_id in ids:
@@ -375,11 +374,11 @@ class Neo4jConnector(AbstractGraphDatabaseConnection):
 
         output = self.execute_query(query)
         return len(output) > 0
-    
+
     def get_node_type(self, id: str) -> NodeType:
         if not self.item_exist(id, id_type="node"):
             raise ValueError
-        
+
         raw_output = self.execute_query(f'MATCH (n) WHERE n.str_id = "{id}" RETURN n')
         formated_node = self.parse_query_nodes_output(raw_output)[0]
         return formated_node.type

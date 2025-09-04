@@ -3,35 +3,18 @@ import kuzu
 import json
 import os
 
-from ....utils.errors import ReturnInfo
-from ....utils.data_structs import Node, NodeCreator, NODES_TYPES_MAP, RelationCreator, TripletCreator, Relation, RELATIONS_TYPES_MAP, NodeType, RelationType
-
+from .configs import DEFAULT_KUZU_CONFIG
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
+from ....utils.errors import ReturnInfo
+from ....utils.data_structs import Node, NODES_TYPES_MAP, TripletCreator, Relation, RELATIONS_TYPES_MAP, NodeType, RelationType
 from ....utils import Triplet, NodeType
 
-DEFAULT_KUZU_CONFIG = GraphDBConnectionConfig(
-    params={'path': '../../kuzu_volume', 'buffer_pool_size': 1024**3,
-            'schema': [
-                "CREATE NODE TABLE IF NOT EXISTS object (id SERIAL, name STRING, prop MAP(STRING, STRING), str_id STRING, PRIMARY KEY(id));",
-                "CREATE NODE TABLE IF NOT EXISTS hyper (id SERIAL, name STRING, prop MAP(STRING, STRING), str_id STRING, PRIMARY KEY(id));",
-                "CREATE NODE TABLE IF NOT EXISTS episodic (id SERIAL, name STRING, prop MAP(STRING, STRING), str_id STRING, PRIMARY KEY(id));",
-                "CREATE REL TABLE IF NOT EXISTS simple (FROM object TO object, name STRING, t_id STRING, str_id STRING, prop MAP(STRING, STRING));",
-                "CREATE REL TABLE IF NOT EXISTS hyper_rel (FROM object TO hyper, name STRING, t_id STRING, str_id STRING, prop MAP(STRING, STRING));",
-                "CREATE REL TABLE GROUP IF NOT EXISTS episodic_rel (FROM object TO episodic, FROM hyper TO episodic, name STRING, t_id STRING, str_id STRING, prop MAP(STRING, STRING));"
-            ],
-            'table_type_map': {
-                'relations': {'forward': {RelationType.simple.value: 'simple', RelationType.hyper.value: 'hyper_rel', RelationType.episodic.value: 'episodic_rel'},},
-                'nodes': {'forward': {NodeType.object.value: 'object', NodeType.hyper.value: 'hyper', NodeType.episodic.value: 'episodic'}}
-            }
-    }
-)
-
-class KuzuConnector(AbstractGraphDatabaseConnection):
+class KuzuGraphConnector(AbstractGraphDatabaseConnection):
 
     def __init__(self, config: GraphDBConnectionConfig = DEFAULT_KUZU_CONFIG) -> None:
         self.config = config
 
-    def open_connection(self) -> ReturnInfo:
+    def open_connection(self) -> None:
         load_path = f"{self.config.params['path']}/{self.config.db_info['db']}"
 
         if not os.path.exists(load_path):
@@ -49,7 +32,7 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         self.config.params['table_type_map']['relations']['inverse'] = {v: k for k,v in self.config.params['table_type_map']['relations']['forward'].items()}
         self.config.params['table_type_map']['nodes']['inverse'] = {v: k for k,v in self.config.params['table_type_map']['nodes']['forward'].items()}
 
-    def close_connection(self) -> ReturnInfo:
+    def close_connection(self) -> None:
         self.conn.close()
         self.db.close()
 
@@ -69,7 +52,6 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
         fields['name'] = json.dumps(node.name, ensure_ascii=False)
         fields['str_id'] = json.dumps(node.id, ensure_ascii=False)
         fields['prop'] = f"map({prop_keys},{prop_values})"
-
         str_fields = ", ".join([f"{k}: {v}" for k, v in fields.items()])
 
         node_t = self.config.params['table_type_map']['nodes']['forward'][node.type.value]
@@ -320,7 +302,7 @@ class KuzuConnector(AbstractGraphDatabaseConnection):
     def get_node_type(self, id: str) -> NodeType:
         # TODO
         raise NotImplementedError
-        
+
 
     def count_items(self, id: str = None, id_type: str = None) -> Union[Dict[str,int], int]:
         if id_type is None:

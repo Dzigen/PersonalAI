@@ -1,9 +1,8 @@
 from collections import deque
 from typing import List
 
+from .configs import DEFAULT_STUBAGENT_CONFIG
 from ..utils import AbstractAgentConnector, AgentConnectorConfig
-
-DEFAULT_STUBAGENT_CONFIG = AgentConnectorConfig()
 
 class StubAgentConnector(AbstractAgentConnector):
     def __init__(self, config: AgentConnectorConfig = DEFAULT_STUBAGENT_CONFIG, stub_answers: List[str] = list()) -> None:

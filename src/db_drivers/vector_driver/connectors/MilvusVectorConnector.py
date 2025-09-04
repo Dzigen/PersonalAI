@@ -1,22 +1,15 @@
-from typing import List, Dict, Tuple, Union
+from typing import List, Tuple, Union
 from pymilvus.orm.connections import ConnectionNotExistException
 from pymilvus import MilvusClient, DataType
 from time import sleep
 import numpy as np
 import torch
-import ast
 
+from .configs import DEFAULT_MILVUS_CONFIG
 from ..utils import AbstractVectorDatabaseConnection, VectorDBInstance, VectorDBConnectionConfig
 
-
-DEFAULT_MILVUS_CONFIG = VectorDBConnectionConfig(
-    conn={'host': 'localhost', 'port': 19530, 'user': 'root', 'pass': 'Milvus'},
-    db_info={'db': 'test_db', 'table': 'test_collection'},
-    params={'id_length': 32, 'vector_dim': 1024, 'document_max_length': 51200, 'load': True,
-            'flush': True, 'create_sleep': 1, 'search_metric': 'IP'})
-
-class MilvusConnector(AbstractVectorDatabaseConnection):
-    def __init__(self, config: VectorDBConnectionConfig):
+class MilvusVectorConnector(AbstractVectorDatabaseConnection):
+    def __init__(self, config: VectorDBConnectionConfig = DEFAULT_MILVUS_CONFIG):
         self.config = config
         self.client = None
 

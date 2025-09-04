@@ -1,14 +1,10 @@
 import pymongo
 from typing import List, Dict
 from collections import defaultdict
-import numpy as np
 import pickle
 
-from src.db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
-
-DEFAULT_MONGOKV_CONFIG = KVDBConnectionConfig(host='localhost', port=27017,
-                                              db_info={'db': 'test_db', 'table': 'test_collection'},
-                                              params={'username': 'user', 'password': 'pass', 'max_storage': -1})
+from .configs import DEFAULT_MONGOKV_CONFIG
+from ..utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
 
 class MongoKVConnector(AbstractKVDatabaseConnection):
 

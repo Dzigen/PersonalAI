@@ -1,5 +1,4 @@
-from ...db_drivers.kv_driver.utils import KVDBConnectionConfig
-from ...db_drivers.kv_driver.KeyValueDriver import KeyValueDriverConfig
+from ...db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
 
 DEFAULT_CACHEKV_CONFIG = KeyValueDriverConfig(
     db_vendor='mongo',

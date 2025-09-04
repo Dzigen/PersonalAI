@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Union
 
 from .kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig
 from .pipelines.qa import QAPipeline, QAPipelineConfig
@@ -37,9 +37,9 @@ class PersonalAI:
     :param config: Конфигурация персонального ассистента. Значение по умолчанию PersonalAIConfig().
     :type config: PersonalAIConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования результатов промежуточных операций ассистента. Значение по умолчанию None.
-    :type cache_kvdriver_config: KeyValueDriverConfig, optional
+    :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
     """
-    def __init__(self, config: PersonalAIConfig = PersonalAIConfig(), cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
+    def __init__(self, config: PersonalAIConfig = PersonalAIConfig(), cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None) -> None:
         self.kg_model = KnowledgeGraphModel(config.kg_model_config, cache_kvdriver_config)
         self.qa_pipeline = QAPipeline(self.kg_model, config.qa_pipeline_config, cache_kvdriver_config)
         self.mem_pipeline = MemPipeline(self.kg_model, config.mem_pipeline_config, cache_kvdriver_config)

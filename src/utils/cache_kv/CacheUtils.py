@@ -3,7 +3,7 @@ from copy import deepcopy
 
 from .utils import AbstractCacheUtils
 from .CacheKV import CacheKV
-from ...db_drivers.kv_driver.KeyValueDriver import KeyValueDriverConfig
+from ...db_drivers.kv_driver import KeyValueDriverConfig
 
 class CacheUtils(AbstractCacheUtils):
     def init_cachekv(self, cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None, cache_table_name: Union[None,str] = None) -> Union[None, CacheKV]:

@@ -1,5 +1,4 @@
 from ......utils import AgentTaskSolverConfig, Logger
-from ......db_drivers.kv_driver import KeyValueDriverConfig
 from .general_parsers import etriplets_custom_postprocess, etriplets_custom_formate
 from .v2 import TRIPLET_EXTRACT_SUITE_V2
 from .v1 import TRIPLET_EXTRACT_SUITE_V1

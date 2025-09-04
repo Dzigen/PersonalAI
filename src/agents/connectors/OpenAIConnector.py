@@ -1,24 +1,11 @@
 import os
 from openai import OpenAI
 
+from .configs import DEEPSEEK_CONFIG, GPT4OMINI_CONFIG
 from ..utils import AbstractAgentConnector, AgentConnectorConfig
 
-
-DEEPSEEK_KEY = 'sk-aa2371fe6326458bbd63bf91dcb6a4a4'
-DEEPSEEK_CONFIG = AgentConnectorConfig(
-    gen_strategy={'seed': 42, 'top_p': 10e-16, 'temperature': 0.0, 'frequency_penalty':0, 'presence_penalty':0},
-    credentials={'token': DEEPSEEK_KEY, 'model': 'deepseek-chat', 'base_url': 'https://api.deepseek.com'},
-    ext_params={'timeout': 560, 'max_retries': 5})
-
-GPT4OMINI_KEY = "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"
-GPT4OMINI_CONFIG = AgentConnectorConfig(
-    gen_strategy={'seed': 42, 'top_p': 10e-16, 'temperature': 0.0, 'frequency_penalty':0, 'presence_penalty':0},
-    credentials={'token': GPT4OMINI_KEY, 'model': 'gpt-4o-mini', 'base_url': None},
-    ext_params={'timeout': 560, 'max_retries': 5})
-
-
 class OpenAIConnector(AbstractAgentConnector):
-    def __init__(self, config: AgentConnectorConfig = GPT4OMINI_KEY) -> None:
+    def __init__(self, config: AgentConnectorConfig = DEEPSEEK_CONFIG) -> None:
         self.config = config
         base_url = None if config.credentials['base_url'] == 'None' else config.credentials['base_url']
         self.config.credentials['base_url'] = base_url

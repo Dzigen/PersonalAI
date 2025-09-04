@@ -84,7 +84,7 @@ class QueryDecomposer(CacheUtils):
         self.log("START QUERY DECOMPOSITION...", verbose=self.config.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.config.verbose)
         self.log(f"QUERY INFO: {query_info}", verbose=self.config.verbose)
-        decomposed_query, info = None, ReturnInfo()
+        decomposed_query, rinfo = None, ReturnInfo()
 
         if query_info.enchanced_query is not None:
             query = query_info.enchanced_query
@@ -98,24 +98,24 @@ class QueryDecomposer(CacheUtils):
         self.log("Выполнение проверки на необходимость декомпозии вопроса с помощью LLM-агента...", verbose=self.config.verbose)
         need_to_decompose, status = self.decompose_classifier_solver.solve(lang=self.config.lang, query=query)
         if status != ReturnStatus.success:
-            info.occurred_warning.append(status)
+            rinfo.occurred_warning.append(status)
 
         if status == ReturnStatus.success:
             if need_to_decompose:
                 self.log("Выполнение разбиения вопроса на независимые под-вопросы с помощью LLM-агента...", verbose=self.config.verbose)
                 decomposed_query, status = self.q_decomposition_solver(lang=self.config.lang, query=query)
                 if status != ReturnStatus.success:
-                    info.occurred_warning.append(status)
+                    rinfo.occurred_warning.append(status)
             else:
                 self.log("Выполнение декомпозиции вопроса не требуется", verbose=self.config.verbose)
-                info.occurred_warning.append(ReturnStatus.decompose_noneed)
+                rinfo.occurred_warning.append(ReturnStatus.decompose_noneed)
                 decomposed_query = [query]
 
         if decomposed_query is None:
-            info.status = ReturnStatus.empty_answer
-            info.message = STATUS_MESSAGE[info.status]
+            rinfo.status = ReturnStatus.empty_answer
+            rinfo.message = STATUS_MESSAGE[rinfo.status]
 
         self.log(f"RESULT: {decomposed_query}", verbose=self.config.verbose)
-        self.log(f"STATUS: {info.status}", verbose=self.config.verbose)
+        self.log(f"STATUS: {rinfo.status}", verbose=self.config.verbose)
 
-        return decomposed_query, info
+        return decomposed_query, rinfo

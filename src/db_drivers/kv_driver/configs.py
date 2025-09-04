@@ -1,8 +1,7 @@
-from .connectors  import \
-    InMemoryKVConnector, DEFAULT_INMEMORYKV_CONFIG,\
-    MixedKVConnector, DEFAULT_MIXEDKV_CONFIG,\
-    RedisKVConnector, DEFAULT_REDISKV_CONFIG,\
-    MongoKVConnector, DEFAULT_MONGOKV_CONFIG
+from .connectors  import InMemoryKVConnector, MixedKVConnector, \
+    RedisKVConnector, MongoKVConnector
+from .connectors.configs import DEFAULT_INMEMORYKV_CONFIG, DEFAULT_REDISKV_CONFIG, \
+    DEFAULT_MONGOKV_CONFIG, DEFAULT_MIXEDKV_CONFIG
 
 DEFAULT_KVDB_CONFIGS = {
     #'aerospike': DEFAULT_AEROSPIKE_CONFIG,

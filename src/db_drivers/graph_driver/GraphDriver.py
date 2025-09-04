@@ -5,8 +5,8 @@ from .configs import DEFAULT_GRAPHDB_CONFIGS, AVAILABLE_GRAPHDB_CONNECTORS
 
 @dataclass
 class GraphDriverConfig:
-    db_vendor: str = 'neo4j'
-    db_config: GraphDBConnectionConfig = field(default_factory=lambda:DEFAULT_GRAPHDB_CONFIGS['neo4j'])
+    db_vendor: str = 'kuzu'
+    db_config: GraphDBConnectionConfig = field(default_factory = lambda: DEFAULT_GRAPHDB_CONFIGS['kuzu'])
 
 class GraphDriver:
     @staticmethod

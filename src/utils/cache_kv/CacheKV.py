@@ -4,8 +4,7 @@ import hashlib
 import pickle
 
 from .config import DEFAULT_CACHEKV_CONFIG
-from ...db_drivers.kv_driver.KeyValueDriver import KeyValueDriver, KeyValueDriverConfig
-from ...db_drivers.kv_driver.utils import KeyValueDBInstance
+from ...db_drivers.kv_driver import KeyValueDriver, KeyValueDriverConfig, KeyValueDBInstance
 
 class CacheKV:
     def __init__(self, kvdriver_config: KeyValueDriverConfig = DEFAULT_CACHEKV_CONFIG):

@@ -1,13 +1,10 @@
 import redis
 from typing import List, Dict
 from collections import defaultdict
-import numpy as np
 import pickle
 
-from src.db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
-
-DEFAULT_REDISKV_CONFIG = KVDBConnectionConfig(host='localhost', port=6380, need_to_clear=False, db_info={'db': 0, 'table': 'test_collection'},
-                                              params={'ss_name': 'sorted_node_pairs', 'hs_name': 'node_pairs', 'max_storage': 5e+8})
+from .configs import DEFAULT_REDISKV_CONFIG
+from ..utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
 
 class RedisKVConnector(AbstractKVDatabaseConnection):
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_REDISKV_CONFIG):

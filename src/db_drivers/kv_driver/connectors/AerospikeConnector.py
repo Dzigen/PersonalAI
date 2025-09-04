@@ -1,10 +1,8 @@
 from typing import List
 import aerospike
 
-from ..utils import KeyValueDBInstance
-from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
-
-DEFAULT_AEROSPIKE_CONFIG = KVDBConnectionConfig(host='localhost', port=3000)
+from .configs import DEFAULT_AEROSPIKE_CONFIG
+from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection, KeyValueDBInstance
 
 # !!! AEROSPIKE IS NOT SUPPORTING DUE TO A LACK OF DOCUMENTATION!!!
 
