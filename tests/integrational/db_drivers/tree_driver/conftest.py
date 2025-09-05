@@ -21,11 +21,12 @@ def neo4j_conn():
 @pytest.fixture(scope='package')
 def kuzu_conn():
     config = TreeDriverConfig(db_vendor='kuzu', db_config=TreeDBConnectionConfig(
-    params={'path': f'{TEST_VOLUME_DIR}/tree_kuzu', 'buffer_pool_size': 1024**3,
+    params={'path': f'{TEST_VOLUME_DIR}/kuzu', 'buffer_pool_size': 1024**3,
             'schema': [
-                "CREATE NODE TABLE IF NOT EXISTS leaf (id SERIAL, external_id STRING, str_id STRING, text STRING, props MAP(STRING, STRING), PRIMARY KEY(id));",
-                "CREATE NODE TABLE IF NOT EXISTS summarized (id SERIAL, external_id STRING, text STRING, props MAP(STRING, STRING), PRIMARY KEY(id));",
-                "CREATE NODE TABLE IF NOT EXISTS root (id SERIAL, external_id STRING, text STRING, props MAP(STRING, STRING), PRIMARY KEY(id));"
+                "CREATE NODE TABLE IF NOT EXISTS leaf (id SERIAL, external_id STRING, str_id STRING, text STRING, depth INT64, props MAP(STRING, STRING), PRIMARY KEY(id));",
+                "CREATE NODE TABLE IF NOT EXISTS summarized (id SERIAL, external_id STRING, text STRING, depth INT64, descendants_num INT64, props MAP(STRING, STRING), PRIMARY KEY(id));",
+                "CREATE NODE TABLE IF NOT EXISTS root (id SERIAL, external_id STRING, depth INT64, props MAP(STRING, STRING), PRIMARY KEY(id));",
+                "CREATE REL TABLE GROUP IF NOT EXISTS relation (FROM root TO summarized, FROM root TO leaf, FROM summarized TO summarized, FROM summarized TO leaf);"
             ],
             'table_type_map': {'nodes': {'forward': {TreeNodeType.root.value: 'root', TreeNodeType.leaf.value: 'leaf', TreeNodeType.summarized.value: 'summarized'}}}},
     need_to_clear=False))
@@ -35,7 +36,8 @@ def kuzu_conn():
 
 @pytest.fixture(scope='package')
 def available_tree_connections(
-    neo4j_conn, kuzu_conn
+    neo4j_conn,
+    kuzu_conn
 ):
     return {
         'neo4j': neo4j_conn,

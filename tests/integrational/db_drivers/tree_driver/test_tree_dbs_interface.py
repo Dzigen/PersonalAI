@@ -45,6 +45,7 @@ def test_read(
         assert not exception
         assert len(real_output) == len(expected.values())
         for real_node in real_output:
+            print(f"real: {real_node}\nexpected: {expected[real_node.id]}")
             assert real_node.id in expected
             assert real_node.text == expected[real_node.id].text
             assert real_node.type == expected[real_node.id].type
@@ -57,6 +58,7 @@ def test_update(
     exception: bool, treedb_conn: AbstractTreeDatabaseConnection):
 
     treedb_conn.clear()
+    print("after2:", treedb_conn.count_items())
     for pair in create_pairs:
         treedb_conn.create(pair[0], pair[1])
 
@@ -67,6 +69,7 @@ def test_update(
     else:
         assert not exception
         for expected_node in update_nodes:
+            print("HERE 2")
             real_node = treedb_conn.read([expected_node.id], ids_type=TreeIdType.external)[0]
             assert real_node.id in expected_node.id
             assert real_node.text == expected_node.text

@@ -9,7 +9,7 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from src.db_drivers.tree_driver.utils import TreeNode, TreeNodeType, TreeIdType
 
 # TO CHANGE
-AVAILABLE_TREE_DBS = ['kuzu'] # 'neo4j', 'kuzu'
+AVAILABLE_TREE_DBS = ['kuzu', 'neo4j'] # 'neo4j', 'kuzu'
 
 ################################################################
 
@@ -27,22 +27,21 @@ VALID_LEAF_TNODE2 = TreeNode(id='756', text='wer', type=TreeNodeType.leaf, props
 VALID_LEAF_TNODE3 = TreeNode(id='hrtsfdb', text='agrdv', type=TreeNodeType.leaf, props={'p3': 'k3', 'str_id': 'sbdvfvaa', 'depth': 2})
 VALID_LEAF_TNODE4 = TreeNode(id='hbtrvv', text='sdgdbar', type=TreeNodeType.leaf, props={'p4': 'k4', 'str_id': 'lagervfdbfd', 'depth': 2})
 
-INVALID_LEAF_TNODE1 = TreeNode(id=123, text='dfhdf', type=TreeNodeType.leaf, props={'p3': 'k5'})
-INVALID_LEAF_TNODE2 = TreeNode(id="636", text='dfhdf', type="leaf", props={'p3': 'k5'})
-INVALID_LEAF_TNODE3 = TreeNode(id="636", text=123, type=TreeNodeType.leaf, props={'p3': 'k5'})
-INVALID_LEAF_TNODE4 = TreeNode(id="636", text="123", type=TreeNodeType.leaf, props={123: 'k5'})
-INVALID_LEAF_TNODE5 = TreeNode(id="636", text="123", type=TreeNodeType.leaf, props={"external_id": '636'})
+INVALID_LEAF_TNODE1 = TreeNode(id=123, text='dfhdf', type=TreeNodeType.leaf, props={'p3': 'k5', 'depth': 2})
+INVALID_LEAF_TNODE2 = TreeNode(id="636", text='dfhdf', type="leaf", props={'p3': 'k5', 'depth': 2})
+INVALID_LEAF_TNODE3 = TreeNode(id="636", text=123, type=TreeNodeType.leaf, props={'p3': 'k5', 'depth': 2})
+INVALID_LEAF_TNODE4 = TreeNode(id="636", text="123", type=TreeNodeType.leaf, props={123: 'k5', 'depth': 2})
+INVALID_LEAF_TNODE5 = TreeNode(id="636", text="123", type=TreeNodeType.leaf, props={"external_id": '636', 'depth': 2})
 
-UPDATE_SUM_TNODE1 = TreeNode(id='123', text='qwe qwe', type=TreeNodeType.summarized, props={'p1new': 'k1new'})
-UPDATE_LEAF_TNODE1 = TreeNode(id='456', text='zxc zxc', type=TreeNodeType.leaf, props={'p1new': 'k1new', 'str_id': 'th5h6'})
-UPDATE_LEAF_TNODE1_TO_SUMM = TreeNode(id='456', text='zxc zxc rfv', type=TreeNodeType.summarized, props={'p1_1new': 'k1_1new'})
+UPDATE_SUM_TNODE1 = TreeNode(id='123', text='qwe qwe', type=TreeNodeType.summarized, props={'p1new': 'k1new', 'depth': 1})
+UPDATE_LEAF_TNODE1 = TreeNode(id='456', text='zxc zxc', type=TreeNodeType.leaf, props={'p1new': 'k1new', 'str_id': 'th5h6', 'depth': 2})
+UPDATE_LEAF_TNODE1_TO_SUMM = TreeNode(id='456', text='zxc zxc rfv', type=TreeNodeType.summarized, props={'p1_1new': 'k1_1new', 'depth': 2})
 
 UPDATE_INVALID_LEAF_TNODE1 = TreeNode(id='456', text='zxc zxc', type='leaf', props={'p1new': 'k1new', 'str_id': 'th5h6'})
 UPDATE_INVALID_LEAF_TNODE2 = TreeNode(id=456, text='zxc zxc', type='leaf', props={'p1new': 'k1new', 'str_id': 'th5h6'})
 UPDATE_INVALID_LEAF_TNODE3 = TreeNode(id='456', text=123, type='leaf', props={'p1new': 'k1new', 'str_id': 'th5h6'})
 UPDATE_INVALID_LEAF_TNODE4 = TreeNode(id='456', text='zxc zxc', type='leaf', props={123: 'k1new', 'str_id': 'th5h6'})
 UPDATE_INVALID_LEAF_TNODE5 = TreeNode(id='456', text='zxc zxc', type='leaf', props={'p1new': 'k1new', 'external_id': '456', 'str_id': 'th5h6'})
-
 
 ################################################################
 
@@ -52,7 +51,7 @@ TREEDB_CREATE_TEST_CASES = [
     # 1.1. одна новая вершина
     (["ROOT_NODE_ID"],[VALID_LEAF_TNODE1],[False]),
     # 1.2. несколько новых вершин
-    (["ROOT_NODE_ID", VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1.id, VALID_SUM_TNODE1.id],
+    (["ROOT_NODE_ID", VALID_SUM_TNODE1.id, VALID_SUM_TNODE1.id],
      [VALID_SUM_TNODE1, VALID_LEAF_TNODE1, VALID_LEAF_TNODE2],[False, False, False]),
     # 3. parent_id не существует
     (["ROOT_NODE_ID", VALID_SUM_TNODE1.id],[VALID_LEAF_TNODE1, VALID_LEAF_TNODE2],[False, True]),
@@ -71,7 +70,7 @@ TREEDB_CREATE_TEST_CASES = [
     # 9. у new_node в props присутствуют зарезервированные поля
     (["ROOT_NODE_ID"],[INVALID_LEAF_TNODE5],[True]),
     # 10. new_node с таким id уже существует
-    (["ROOT_NODE_ID", VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1.id, VALID_SUM_TNODE1.id],
+    (["ROOT_NODE_ID", VALID_SUM_TNODE1.id, VALID_SUM_TNODE1.id],
      [VALID_SUM_TNODE1, VALID_LEAF_TNODE1, VALID_LEAF_TNODE1],[False, False, True]),
 ]
 
