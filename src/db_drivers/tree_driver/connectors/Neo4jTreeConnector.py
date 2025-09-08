@@ -24,10 +24,14 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         self.execute_query(f'CREATE DATABASE {self.config.db_info["db"]} IF NOT EXISTS;', db_flag=False)
 
         # Creating indexes
-        self.execute_query("CREATE INDEX extid_leaf_node IF NOT EXISTS FOR (n:leaf) ON n.external_id;")
-        self.execute_query("CREATE INDEX strid_leaf_node IF NOT EXISTS FOR (n:leaf) ON n.str_id;")
-        self.execute_query("CREATE INDEX extid_summ_node IF NOT EXISTS FOR (n:summarized) ON n.external_id;")
-        self.execute_query("CREATE INDEX extid_root_node IF NOT EXISTS FOR (n:root) ON n.external_id;")
+        if self.config.create_index:
+            cquery_statements = [
+                "CREATE INDEX extid_leaf_node IF NOT EXISTS FOR (n:leaf) ON n.external_id;",
+                "CREATE INDEX strid_leaf_node IF NOT EXISTS FOR (n:leaf) ON n.str_id;",
+                "CREATE INDEX extid_summ_node IF NOT EXISTS FOR (n:summarized) ON n.external_id;",
+                "CREATE INDEX extid_root_node IF NOT EXISTS FOR (n:root) ON n.external_id;"]
+            for cqueru in cquery_statements:
+                self.execute_query(cqueru)
 
         # Добавляем корневую вершину
         if self.count_items()['root'] < 1:

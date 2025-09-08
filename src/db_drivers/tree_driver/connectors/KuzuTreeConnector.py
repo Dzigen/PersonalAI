@@ -31,10 +31,14 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
             self.conn.execute(schema_statement)
 
         # Creating indexes
-        # self.conn.execute("CREATE INDEX extid_leaf_node IF NOT EXISTS FOR (n:leaf) ON n.external_id;")
-        # self.conn.execute("CREATE INDEX strid_leaf_node IF NOT EXISTS FOR (n:leaf) ON n.str_id;")
-        # self.conn.execute("CREATE INDEX extid_summ_node IF NOT EXISTS FOR (n:summarized) ON n.external_id;")
-        # self.conn.execute("CREATE INDEX extid_root_node IF NOT EXISTS FOR (n:root) ON n.external_id;")
+        # if self.config.create_index:
+        #     cquery_statements = [
+        #         "CREATE INDEX extid_leaf_node IF NOT EXISTS FOR (n:leaf) ON n.external_id;",
+        #         "CREATE INDEX strid_leaf_node IF NOT EXISTS FOR (n:leaf) ON n.str_id;",
+        #         "CREATE INDEX extid_summ_node IF NOT EXISTS FOR (n:summarized) ON n.external_id;",
+        #         "CREATE INDEX extid_root_node IF NOT EXISTS FOR (n:root) ON n.external_id;"]
+        #     for cqueru in cquery_statements:
+        #         self.execute_query(cqueru)
 
         print("before: ",self.count_items())
 

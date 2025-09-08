@@ -12,12 +12,15 @@ class BaseDatabaseConfig:
     :type db_info: Dict
     :param params: Набор дополнительных гиперпараметров, который необходим для подключения и настройки бд. Значения по умолчанию dict().
     :type params: Dict
-    :param need_to_clear: Если True, то после успешного подключения к базе данных содержимое указанной таблицы будет удалено. Значения по умолчанию False.
+    :param need_to_clear: Если True, то после успешного подключения к базе данных содержимое указанной таблицы будет удалено, иначе False. Значения по умолчанию False.
     :type need_to_clear: bool
+    :param create_index: Если True, то для требуемых элементов в бд будет создан индекс с целью повышения производительности поиска, иначе False. Значения по умолчанию False.
+    :type create_index: bool
     """
     db_info: Dict = field(default_factory=lambda: {'db': 'defaultpersonalaidb', 'table': 'defaultpersonalaitable'})
     params: Dict = field(default_factory=lambda: dict())
     need_to_clear: bool = False
+    create_index: bool = False
 
 class AbstractDatabaseConnection(ABC):
     """Интерфейс, который должен поддерживать класс взаимодействия с определённой базой данных."""

@@ -25,25 +25,25 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
         self.execute_query(f'CREATE DATABASE {self.config.db_info["db"]} IF NOT EXISTS', db_flag=False)
 
         # Creating indexes
-        self.execute_query("CREATE INDEX name_object_node IF NOT EXISTS FOR (n:object) ON n.name")
-        self.execute_query("CREATE INDEX name_hyper_node IF NOT EXISTS FOR (n:hyper) ON n.name ")
-        self.execute_query("CREATE INDEX name_episodic_node IF NOT EXISTS FOR (n:episodic) ON n.name")
-
-        self.execute_query("CREATE INDEX strid_object_node IF NOT EXISTS FOR (n:object) ON n.str_id")
-        self.execute_query("CREATE INDEX strid_hyper_node IF NOT EXISTS FOR (n:hyper) ON n.str_id")
-        self.execute_query("CREATE INDEX strid_episodic_node IF NOT EXISTS FOR (n:episodic) ON n.str_id")
-
-        self.execute_query("CREATE INDEX strid_simple_relation IF NOT EXISTS FOR ()-[r:simple]->() ON r.str_id")
-        self.execute_query("CREATE INDEX strid_hyper_relation IF NOT EXISTS FOR ()-[r:hyper]->() ON r.str_id ")
-        self.execute_query("CREATE INDEX strid_episodic_relation IF NOT EXISTS FOR ()-[r:episodic]->() ON r.str_id")
-
-        self.execute_query("CREATE INDEX tid_simple_relation IF NOT EXISTS FOR ()-[r:simple]->() ON r.t_id")
-        self.execute_query("CREATE INDEX tid_hyper_relation IF NOT EXISTS FOR ()-[r:hyper]->() ON r.t_id")
-        self.execute_query("CREATE INDEX tid_episodic_relation IF NOT EXISTS FOR ()-[r:episodic]->() ON r.t_id")
-
-        self.execute_query("CREATE INDEX name_simple_relation IF NOT EXISTS FOR ()-[r:simple]->() ON r.name")
-        self.execute_query("CREATE INDEX name_hyper_relation IF NOT EXISTS FOR ()-[r:hyper]->() ON r.name")
-        self.execute_query("CREATE INDEX name_episodic_relation IF NOT EXISTS FOR ()-[r:episodic]->() ON r.name")
+        if self.config.create_index:
+            cquery_statements = [
+                "CREATE INDEX name_object_node IF NOT EXISTS FOR (n:object) ON n.nam;",
+                "CREATE INDEX name_hyper_node IF NOT EXISTS FOR (n:hyper) ON n.name;",
+                "CREATE INDEX name_episodic_node IF NOT EXISTS FOR (n:episodic) ON n.name;",
+                "CREATE INDEX strid_object_node IF NOT EXISTS FOR (n:object) ON n.str_id;",
+                "CREATE INDEX strid_hyper_node IF NOT EXISTS FOR (n:hyper) ON n.str_id;",
+                "CREATE INDEX strid_episodic_node IF NOT EXISTS FOR (n:episodic) ON n.str_id;",
+                "CREATE INDEX strid_simple_relation IF NOT EXISTS FOR ()-[r:simple]->() ON r.str_id;",
+                "CREATE INDEX strid_hyper_relation IF NOT EXISTS FOR ()-[r:hyper]->() ON r.str_id; ",
+                "CREATE INDEX strid_episodic_relation IF NOT EXISTS FOR ()-[r:episodic]->() ON r.str_id;",
+                "CREATE INDEX tid_simple_relation IF NOT EXISTS FOR ()-[r:simple]->() ON r.t_id",
+                "CREATE INDEX tid_hyper_relation IF NOT EXISTS FOR ()-[r:hyper]->() ON r.t_id",
+                "CREATE INDEX tid_episodic_relation IF NOT EXISTS FOR ()-[r:episodic]->() ON r.t_id",
+                "CREATE INDEX name_simple_relation IF NOT EXISTS FOR ()-[r:simple]->() ON r.name",
+                "CREATE INDEX name_hyper_relation IF NOT EXISTS FOR ()-[r:hyper]->() ON r.name",
+                "CREATE INDEX name_episodic_relation IF NOT EXISTS FOR ()-[r:episodic]->() ON r.name"]
+            for cqueru in cquery_statements:
+                self.execute_query(cqueru)
 
         if self.config.need_to_clear:
             self.clear()

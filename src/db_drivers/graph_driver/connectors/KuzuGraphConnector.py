@@ -33,6 +33,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         for schema_statement in schema:
             self.conn.execute(schema_statement)
 
+
         if self.config.need_to_clear:
             self.clear()
 
