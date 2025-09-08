@@ -6,7 +6,7 @@ DEFAULT_NEO4JTREE_CONFIG = TreeDBConnectionConfig(
     need_to_clear=False)
 
 DEFAULT_KUZUTREE_CONFIG = TreeDBConnectionConfig(
-    params={'path': '../../kuzu_volume', 'buffer_pool_size': 1024**3,
+    params={'path': './tmp/tree_store/kuzu', 'buffer_pool_size': 1024**3,
             'table_type_map': {
                 'nodes': {
                     'forward': {

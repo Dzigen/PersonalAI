@@ -13,23 +13,22 @@ from src.db_drivers.tree_driver.utils import TreeNodeType
 
 @pytest.fixture(scope='package')
 def neo4j_conn():
-    config = TreeDriverConfig(db_vendor='neo4j', db_config=TreeDBConnectionConfig(
+    config = TreeDriverConfig(
+        db_vendor='neo4j', db_config=TreeDBConnectionConfig(
         host="localhost", port="7680", db_info={'db': 'testingtree', 'table': 'testingtree'},
-        params={'user': "neo4j", 'pwd': 'password'}, need_to_clear=True))
+        params={'user': "neo4j", 'pwd': 'password'},
+        need_to_clear=True))
     return TreeDriver.connect(config)
 
 @pytest.fixture(scope='package')
 def kuzu_conn():
-    config = TreeDriverConfig(db_vendor='kuzu', db_config=TreeDBConnectionConfig(
-    params={'path': f'{TEST_VOLUME_DIR}/kuzu', 'buffer_pool_size': 1024**3,
-            'schema': [
-                "CREATE NODE TABLE IF NOT EXISTS leaf (id SERIAL, external_id STRING, str_id STRING, text STRING, depth INT64, props MAP(STRING, STRING), PRIMARY KEY(id));",
-                "CREATE NODE TABLE IF NOT EXISTS summarized (id SERIAL, external_id STRING, text STRING, depth INT64, descendants_num INT64, props MAP(STRING, STRING), PRIMARY KEY(id));",
-                "CREATE NODE TABLE IF NOT EXISTS root (id SERIAL, external_id STRING, depth INT64, props MAP(STRING, STRING), PRIMARY KEY(id));",
-                "CREATE REL TABLE GROUP IF NOT EXISTS relation (FROM root TO summarized, FROM root TO leaf, FROM summarized TO summarized, FROM summarized TO leaf);"
-            ],
+    config = TreeDriverConfig(
+        db_vendor='kuzu', db_config=TreeDBConnectionConfig(
+        db_info={'db': 'testingtree', 'table': 'testingtree'},
+        params={
+            'path': f'{TEST_VOLUME_DIR}/kuzu', 'buffer_pool_size': 1024**3,
             'table_type_map': {'nodes': {'forward': {TreeNodeType.root.value: 'root', TreeNodeType.leaf.value: 'leaf', TreeNodeType.summarized.value: 'summarized'}}}},
-    need_to_clear=False))
+        need_to_clear=False))
     return TreeDriver.connect(config)
 
 #------------------------------#
