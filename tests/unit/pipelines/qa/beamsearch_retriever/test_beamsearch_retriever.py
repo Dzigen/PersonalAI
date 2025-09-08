@@ -7,7 +7,7 @@ sys.path.insert(0, "../")
 
 from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever import BeamSearchTripletsRetriever, TraversingPath
 
-from cases import CALCULATE_TRIPLET_SCORE_TEST_CASES, EXTEND_TPATH_TEST_CASES
+from .cases import CALCULATE_TRIPLET_SCORE_TEST_CASES, EXTEND_TPATH_TEST_CASES
 
 @pytest.mark.parametrize("raw_score, expected_value, exception",
                          CALCULATE_TRIPLET_SCORE_TEST_CASES)

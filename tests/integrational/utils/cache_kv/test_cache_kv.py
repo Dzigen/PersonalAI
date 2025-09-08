@@ -9,7 +9,7 @@ from src.utils.cache_kv import CacheKV
 import pytest
 from typing import List
 
-from cases import CACHEKV_GETHASH_TEST_CASES, CACHEKV_POPULATED_LOAD_TEST_CASES,\
+from .cases import CACHEKV_GETHASH_TEST_CASES, CACHEKV_POPULATED_LOAD_TEST_CASES,\
     CACHEKV_POPULATED_SAVE_TEST_CASES
 
 @pytest.mark.parametrize("key, expected, exception, key2, expected2", CACHEKV_GETHASH_TEST_CASES)

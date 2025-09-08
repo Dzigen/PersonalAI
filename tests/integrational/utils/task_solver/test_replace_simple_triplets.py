@@ -7,7 +7,7 @@ from src.utils import Triplet, ReturnStatus
 from src.utils import AgentTaskSolver
 from typing import List
 
-from cases import EN_VALID_SIMPLE_TRIPLET1, EN_VALID_SIMPLE_TRIPLET2, EN_VALID_SIMPLE_TRIPLET3,\
+from .cases import EN_VALID_SIMPLE_TRIPLET1, EN_VALID_SIMPLE_TRIPLET2, EN_VALID_SIMPLE_TRIPLET3,\
       RU_VALID_SIMPLE_TRIPLET1, RU_VALID_SIMPLE_TRIPLET2, RU_VALID_SIMPLE_TRIPLET3
 
 RU_MATCHED_OBOSLETE_TRIPELET_2 = '[["фыв, епи, ячс" -> "йцу, епи, фыв"]]'

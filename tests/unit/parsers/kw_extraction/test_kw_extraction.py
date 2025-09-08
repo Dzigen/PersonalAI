@@ -5,10 +5,10 @@ import sys
 sys.path.insert(0, "../")
 
 from src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.general_parsers import kwe_custom_formate, kwe_custom_postprocess
-from general_tcases import KWE_FORMATE_TEST_CASE, KWE_POSTPROCESS_TEST_CASES
 
-from v1_tcases import KWE_PARSE_V1_TEST_CASES
-from v2_tcases import KWE_PARSE_V2_TEST_CASES
+from .general_tcases import KWE_FORMATE_TEST_CASE, KWE_POSTPROCESS_TEST_CASES
+from .v1_tcases import KWE_PARSE_V1_TEST_CASES
+from .v2_tcases import KWE_PARSE_V2_TEST_CASES
 
 AVAILABLE_KWE_VERSIONS = {
     'v1': KWE_PARSE_V1_TEST_CASES,

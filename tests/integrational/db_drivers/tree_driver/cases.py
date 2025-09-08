@@ -1,6 +1,5 @@
 import pytest
 from typing import List, Tuple, Dict, Union
-
 import sys
 # TO CHANGE
 PROJECT_BASE_DIR = '../'

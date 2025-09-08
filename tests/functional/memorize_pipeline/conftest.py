@@ -27,9 +27,9 @@ def graph_neo4j_config():
 def embeddings_chroma_config():
     config = EmbeddingsModelConfig(
         nodesdb_driver_config=VectorDriverConfig(db_config=VectorDBConnectionConfig(
-            path=f'{TEST_VOLUME_DIR}/chroma', db_info={'db': 'testing', 'table': 'vectorized_nodes'}, need_to_clear=True)),
+            conn={'path':f'{TEST_VOLUME_DIR}/chroma'}, db_info={'db': 'testing', 'table': 'vectorized_nodes'}, need_to_clear=True)),
         tripletsdb_driver_config=VectorDriverConfig(db_config=VectorDBConnectionConfig(
-            path=f'{TEST_VOLUME_DIR}/chroma', db_info={'db': 'testing', 'table': 'vectorized_triplets'}, need_to_clear=True)),
+            conn={'path':f'{TEST_VOLUME_DIR}/chroma'}, db_info={'db': 'testing', 'table': 'vectorized_triplets'}, need_to_clear=True)),
         embedder_config=EmbedderModelConfig(model_name_or_path=f'{PROJECT_BASE_DIR}/models/intfloat/multilingual-e5-small', device='cuda'))
     return config
 

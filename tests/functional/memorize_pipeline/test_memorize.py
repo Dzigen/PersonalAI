@@ -55,3 +55,4 @@ def test_mem_pipeline(mem_config: MemPipelineConfig, raw_texts: List[str],
 
     mem_pipeline.extractor.agent.close_connection()
     mem_pipeline.updator.agent.close_connection()
+    kg_model.clear()

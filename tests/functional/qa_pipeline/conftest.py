@@ -81,8 +81,8 @@ def kg_model(graph_neo4j_config, embeddings_milvus_config):
 @pytest.fixture(scope='package')
 def mem_pipeline(request, kg_model, mem_pipeline_config):
     mem_pipeline = MemPipeline(kg_model, mem_pipeline_config)
-    #for text in tqdm(RAW_TEXTS_EN):
-    #    _, status = mem_pipeline.remember(text)
+    for text in tqdm(RAW_TEXTS_EN):
+       mem_pipeline.remember(text)
 
     def teardown():
         print("Safely closing kg-model connection...")

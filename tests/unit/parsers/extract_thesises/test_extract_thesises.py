@@ -7,9 +7,9 @@ from src.utils.data_structs import Triplet
 from src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.general_parsers import \
     ethesises_custom_formate, ethesises_custom_postprocess
 
-from v1_tcases import ETHESISES_PARSE_V1_TEST_CASES
-from v2_tcases import ETHESISES_PARSE_V2_TEST_CASES
-from general_tcases import ETHESISES_FORMATE_TEST_CASES, ETHESISES_POSTPROCESS_TEST_CASES
+from .v1_tcases import ETHESISES_PARSE_V1_TEST_CASES
+from .v2_tcases import ETHESISES_PARSE_V2_TEST_CASES
+from .general_tcases import ETHESISES_FORMATE_TEST_CASES, ETHESISES_POSTPROCESS_TEST_CASES
 
 AVAILABLE_ETHESISES_VERSIONS = {
     'v1': ETHESISES_PARSE_V1_TEST_CASES,

@@ -10,10 +10,10 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from src.utils import AgentTaskSolver, Triplet
 from src.utils.errors import ReturnStatus
 
-from cases import NO_THESIS_REPL_AGENT_ANSWER, ONE_THESIS_REPL_AGENT_ANSWER,\
+from .cases import NO_THESIS_REPL_AGENT_ANSWER, ONE_THESIS_REPL_AGENT_ANSWER,\
     SEVERAL_THESIS_REPL_AGENT_ANSWER, BAD_THESIS_AGENT_ANSWER
 
-from cases import HYPER_TRIPLET1, HYPER_TRIPLET2, HYPER_TRIPLET3, HYPER_TRIPLET4, HYPER_TRIPLET5
+from .cases import HYPER_TRIPLET1, HYPER_TRIPLET2, HYPER_TRIPLET3, HYPER_TRIPLET4, HYPER_TRIPLET5
 
 @pytest.mark.parametrize("llm_stub_answer, base_triplet, lang, incident_triplets, expected_status, expected_output", [
     # нет замен

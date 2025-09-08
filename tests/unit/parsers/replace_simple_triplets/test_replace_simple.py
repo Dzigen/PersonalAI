@@ -6,8 +6,9 @@ sys.path.insert(0, "../")
 from src.utils import Triplet
 
 from src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.general_parsers import rs_custom_formate, rs_custom_postprocess
-from general_tcases import REPLACESIMPLE_FORMATE_TEST_CASE, REPLACESIMPLE_POSTPROCESS_TEST_CASE
-from v1_tcases import RSIMPLE_PARSE_V1_TEST_CASES
+
+from .general_tcases import REPLACESIMPLE_FORMATE_TEST_CASE, REPLACESIMPLE_POSTPROCESS_TEST_CASE
+from .v1_tcases import RSIMPLE_PARSE_V1_TEST_CASES
 
 AVAILABLE_RSIMPLE_VERSIONS = {
     'v1': RSIMPLE_PARSE_V1_TEST_CASES,

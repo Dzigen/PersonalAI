@@ -138,7 +138,10 @@ class AgentTaskSolver:
             str_creds = ";".join(list(map(lambda p: f"{p[0]}={p[1]}", sorted([(k, str(v)) for k, v in self.agent.config.credentials.items()], key=lambda p: p[0]))))
             sprompt_hash = hashlib.sha1(self.config.suites[detected_lang].system_prompt.encode()).hexdigest()
             uprompt_hash = hashlib.sha1(enriched_user_prompt.encode()).hexdigest()
-            aprompt_hash = hashlib.sha1(self.config.suites[detected_lang].assistant_prompt.encode()).hexdigest()
+            if self.config.suites[detected_lang].assistant_prompt is None:
+                aprompt_hash = hashlib.sha1("__<|None|>__".encode()).hexdigest()
+            else:
+                aprompt_hash = hashlib.sha1(self.config.suites[detected_lang].assistant_prompt.encode()).hexdigest()
             cache_key = [sprompt_hash, uprompt_hash, aprompt_hash, str_genstrat, str_creds]
 
             key_hash = None

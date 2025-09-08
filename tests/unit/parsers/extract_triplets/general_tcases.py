@@ -1,4 +1,4 @@
-from cases import VALID_SIMPLE_TRIPLET1, VALID_SIMPLE_TRIPLET2,\
+from .cases import VALID_SIMPLE_TRIPLET1, VALID_SIMPLE_TRIPLET2,\
       VALID_SIMPLE_TRIPLET7, VALID_SIMPLE_TRIPLET8
 
 # "text, expected_output, exception"

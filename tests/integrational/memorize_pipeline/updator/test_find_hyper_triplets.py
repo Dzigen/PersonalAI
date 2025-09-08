@@ -1,15 +1,13 @@
 import pytest
-
+from typing import List, Dict
 import sys
 sys.path.insert(0, "../")
 
 from src.utils import Triplet
 from src.pipelines.memorize import LLMUpdator
 
-from typing import List, Dict
-
-from cases import INIT_KNOWLEDGE_GRAPH
-from cases import TEST_HYPER_TRIPLET1, TEST_HYPER_TRIPLET2, TEST_HYPER_TRIPLET4,\
+from .cases import INIT_KNOWLEDGE_GRAPH
+from .cases import TEST_HYPER_TRIPLET1, TEST_HYPER_TRIPLET2, TEST_HYPER_TRIPLET4,\
     TEST_HYPER_TRIPLET5, TEST_HYPER_TRIPLET6, TRIPLET_EMPTY_ANSWER, HYPER_ANSWER1,\
     HYPER_TRIPLET2, HYPER_ANSWER2, HYPER_ANSWER3, BAD_HYPER_ANSWER, HYPER_TRIPLET3
 
@@ -50,3 +48,4 @@ def test_find_hyper(llm_updator: LLMUpdator, kg_triplets: List[Triplet], triplet
 
             llm_updator.kg_model.remove_knowledge(obsolete_triplets)
             llm_updator.kg_model.add_knowledge([triplet])
+    llm_updator.kg_model.clear()

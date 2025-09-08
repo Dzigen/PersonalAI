@@ -1,16 +1,14 @@
 import pytest
-
+from typing import List, Dict
 import sys
 sys.path.insert(0, "../")
 
 from src.utils import Triplet
 from src.pipelines.memorize import LLMUpdator
 
-from typing import List, Dict
-
-from cases import INIT_KNOWLEDGE_GRAPH
-from cases import TEST_O_EPISODIC1, TEST_O_EPISODIC2, TEST_DELETE_TRIPLETS1, TEST_DELETE_TRIPLETS2
-from cases import TEST_H_EPISODIC1, TEST_DELETE_TRIPLETS3, TEST_H_EPISODIC2,\
+from .cases import INIT_KNOWLEDGE_GRAPH
+from .cases import TEST_O_EPISODIC1, TEST_O_EPISODIC2, TEST_DELETE_TRIPLETS1, TEST_DELETE_TRIPLETS2
+from .cases import TEST_H_EPISODIC1, TEST_DELETE_TRIPLETS3, TEST_H_EPISODIC2,\
     TEST_DELETE_TRIPLETS4, TEST_H_EPISODIC3, EPISODIC_TRIPLET3, EPISODIC_TRIPLET13, EPISODIC_TRIPLET14, EPISODIC_TRIPLET1
 
 @pytest.mark.parametrize("kg_triplets, base_triplet, delete_tripelts, expected_obsolete_ids", [
@@ -34,6 +32,7 @@ def test_find_o_episodic(llm_updator: LLMUpdator, kg_triplets: List[Triplet],
     real_obsolete_ids  = llm_updator.find_episodic_o_obsolete_triplet_ids(base_triplet)
     assert len(real_obsolete_ids) == len(expected_obsolete_ids)
     assert expected_obsolete_ids == set(real_obsolete_ids)
+    llm_updator.kg_model.clear()
 
 @pytest.mark.parametrize("kg_triplets, base_triplet, delete_tripelts, expected_obsolete_ids", [
     # 1. не найдено устаревших трипелтов
@@ -57,3 +56,4 @@ def test_find_h_episodic(llm_updator: LLMUpdator, kg_triplets: List[Triplet],
 
     assert len(real_obsolete_ids) == len(expected_obsolete_ids)
     assert expected_obsolete_ids == set(real_obsolete_ids)
+    llm_updator.kg_model.clear()

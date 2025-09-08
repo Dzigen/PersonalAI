@@ -1,20 +1,17 @@
 import pytest
-
+from typing import List, Dict
 import sys
 sys.path.insert(0, "../")
 
 from src.utils import Triplet
 from src.pipelines.memorize import LLMUpdator
 
-from typing import List, Dict
-
-from cases import INIT_KNOWLEDGE_GRAPH,\
+from .cases import INIT_KNOWLEDGE_GRAPH,\
     TEST_SIMPLE_TRIPLET1, TEST_SIMPLE_TRIPLET2,\
     TRIPLET_EMPTY_ANSWER, TEST_SIMPLE_TRIPLET4, TEST_SIMPLE_TRIPLET5,\
     TEST_SIMPLE_TRIPLET6, TRIPLET_ANSWER1, TRIPLET_ANSWER2, TRIPLET_ANSWER3,\
     BAD_SIMPLE_ANSWER
-
-from cases import SIMPLE_TRIPLET1, SIMPLE_TRIPLET3
+from .cases import SIMPLE_TRIPLET1, SIMPLE_TRIPLET3
 
 @pytest.mark.parametrize("kg_triplets, triplets, agent_stub_answers, expected_obsolete_ids", [
     # 1. не найдено устаревших трипелтов
@@ -53,3 +50,4 @@ def test_find_simple(llm_updator: LLMUpdator, kg_triplets: List[Triplet], triple
 
             llm_updator.kg_model.remove_knowledge(obsolete_triplets)
             llm_updator.kg_model.add_knowledge([triplet])
+    llm_updator.kg_model.clear()

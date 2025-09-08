@@ -7,7 +7,7 @@ from src.utils import Triplet, ReturnStatus
 from src.utils import AgentTaskSolver
 from typing import List
 
-from cases import EN_VALID_HYPER_TRIPLET1, EN_VALID_HYPER_TRIPLET2, EN_VALID_HYPER_TRIPLET3,\
+from .cases import EN_VALID_HYPER_TRIPLET1, EN_VALID_HYPER_TRIPLET2, EN_VALID_HYPER_TRIPLET3,\
       RU_VALID_HYPER_TRIPLET1, RU_VALID_HYPER_TRIPLET2, RU_VALID_HYPER_TRIPLET3
 
 RU_MATCHED_OBOSLETE_TRIPELET_2 = '["кен <- апр"]'

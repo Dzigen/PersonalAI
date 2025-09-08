@@ -7,11 +7,11 @@ from collections import defaultdict
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
 from src.utils import Triplet
-from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.general_parsers import ag_custom_formate, ag_custom_postprocess
+from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.general_parsers import simpleag_custom_formate, simpleag_custom_postprocess
 
-from v1_tcases import AG_PARSE_V1_TEST_CASES
-from v2_tcases import AG_PARSE_V2_TEST_CASES
-from general_tcases import AG_FORMATE_TEST_CASES, AG_POSTPROCESS_TEST_CASES
+from .v1_tcases import AG_PARSE_V1_TEST_CASES
+from .v2_tcases import AG_PARSE_V2_TEST_CASES
+from .general_tcases import AG_FORMATE_TEST_CASES, AG_POSTPROCESS_TEST_CASES
 
 
 AVAILABLE_AG_VERSIONS = {
@@ -41,7 +41,7 @@ def test_qa_parse(raw_response: str, lang: str, expected_output: Dict[str, str],
 def test_qa_custom_formate(query: str, context_triplets: List[Triplet],
                            expected_output: Dict[str, str], exception: bool):
     try:
-        formated_output = ag_custom_formate(query, context_triplets)
+        formated_output = simpleag_custom_formate(query, context_triplets)
     except Exception:
         assert exception
     else:
@@ -55,7 +55,7 @@ def test_qa_custom_formate(query: str, context_triplets: List[Triplet],
 @pytest.mark.parametrize("parsed_response, expected_output, exception", AG_POSTPROCESS_TEST_CASES)
 def test_qa_postprocess(parsed_response: str, expected_output: str, exception: bool):
     try:
-        real_answer = ag_custom_postprocess(parsed_response)
+        real_answer = simpleag_custom_postprocess(parsed_response)
     except Exception:
         assert exception
     else:

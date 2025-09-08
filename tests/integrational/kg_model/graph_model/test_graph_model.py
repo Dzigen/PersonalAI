@@ -7,7 +7,7 @@ sys.path.insert(0, "../")
 from src.utils import Triplet
 from src.kg_model import GraphModel
 
-from cases import GM_POPULATED_CREATE_TEST_CASES, GM_POPULATED_DELETE_TEST_CASES
+from ..cases import GM_POPULATED_CREATE_TEST_CASES, GM_POPULATED_DELETE_TEST_CASES
 
 @pytest.mark.parametrize("init_triplets, expected_init_count, expected_create_info, graph_model", GM_POPULATED_CREATE_TEST_CASES, indirect=['graph_model'])
 def test_create_triplets(init_triplets: List[Triplet], expected_init_count: Dict[str, int],
@@ -30,6 +30,7 @@ def test_create_triplets(init_triplets: List[Triplet], expected_init_count: Dict
         assert graph_model.db_conn.item_exist(triplet.end_node.id, id_type='node')
         assert graph_model.db_conn.item_exist(triplet.id, id_type='triplet')
         assert graph_model.db_conn.item_exist(triplet.relation.id, id_type='relation')
+    graph_model.db_conn.clear()
 
 @pytest.mark.parametrize("init_triplets, expected_create_info, expected_init_count, triplets_to_delete, expected_delete_ginfo, expected_final_count, expected_delete_vinfo, graph_model", GM_POPULATED_DELETE_TEST_CASES, indirect=['graph_model'])
 def test_delete_triplets(init_triplets: List[Triplet], expected_create_info: Dict[str, Set[str]], expected_init_count: Dict[str, int],
@@ -57,3 +58,4 @@ def test_delete_triplets(init_triplets: List[Triplet], expected_create_info: Dic
             assert not graph_model.db_conn.item_exist(triplet.start_node.id, id_type='node')
         if real_gdb_dinfo[i]['e_node']:
             assert not graph_model.db_conn.item_exist(triplet.end_node.id, id_type='node')
+    graph_model.db_conn.clear()

@@ -7,7 +7,7 @@ sys.path.insert(0, "../")
 from src.utils import Triplet
 from src.kg_model import EmbeddingsModel
 
-from cases import EM_POPULATED_CREATE_TEST_CASES, EM_POPULATED_DELETE_TEST_CASES
+from ..cases import EM_POPULATED_CREATE_TEST_CASES, EM_POPULATED_DELETE_TEST_CASES
 
 @pytest.mark.parametrize("init_triplets, add_nodes_flag, expected_init_count, expected_creation_info, embeddings_model", EM_POPULATED_CREATE_TEST_CASES, indirect=['embeddings_model'])
 def test_create_triplets(init_triplets: List[Triplet], add_nodes_flag: bool, expected_init_count: Dict[str, int],
@@ -31,6 +31,7 @@ def test_create_triplets(init_triplets: List[Triplet], add_nodes_flag: bool, exp
         assert embeddings_model.vectordbs['triplets'].item_exist(triplet_id)
     for triplet in init_triplets:
         assert embeddings_model.vectordbs['triplets'].item_exist(triplet.relation.id)
+    embeddings_model.clear()
 
 
 @pytest.mark.parametrize("init_triplets, expected_creation_info, expected_init_count, triplets_to_delete, delete_info, expected_final_count, exception, embeddings_model", EM_POPULATED_DELETE_TEST_CASES, indirect=['embeddings_model'])
@@ -66,3 +67,4 @@ def test_delete_triplets(init_triplets: List[Triplet], expected_creation_info: D
     else:
         if not flag:
             assert False
+    embeddings_model.clear()
