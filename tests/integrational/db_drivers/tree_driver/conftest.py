@@ -5,7 +5,6 @@ PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
 TEST_VOLUME_DIR = './volumes'
 
-
 from src.db_drivers.tree_driver.utils import TreeNodeType
 from src.db_drivers.tree_driver import TreeDriver, TreeDriverConfig, TreeDBConnectionConfig
 
