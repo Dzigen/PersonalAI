@@ -6,6 +6,7 @@ from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
 @dataclass
 class VectorDBConnectionConfig(BaseDatabaseConfig):
+    db_info: Dict = field(default_factory=lambda : { 'db': 'defaultpersonalaivectordb','table': 'defaultpersonalaivectortable'})
     conn: Dict = field(default_factory=lambda: dict())
 
 @dataclass

@@ -1,5 +1,5 @@
 from typing import Dict, List
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from abc import abstractmethod
 from enum import Enum
 
@@ -34,6 +34,7 @@ class TreeNode:
 
 @dataclass
 class TreeDBConnectionConfig(BaseDatabaseConfig):
+    db_info: Dict = field(default_factory=lambda: {'db': 'defaultpersonalaitreedb', 'table': 'defaultpersonalaitreetable'})
     host: str = None
     port: str = None
 

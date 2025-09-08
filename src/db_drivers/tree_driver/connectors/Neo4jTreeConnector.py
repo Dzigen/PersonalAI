@@ -157,8 +157,7 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
                 raise ValueError
             # Проверка: у удаляемой вершины не должно быть детей
             if self.item_exist(id, id_type=ids_type):
-                cur_node = self.read([id], ids_type=ids_type)[0]
-                childs_amount = len(self.get_child_nodes(cur_node.id))
+                childs_amount = len(self.get_child_nodes(id, id_type=ids_type))
                 if childs_amount > 0:
                     raise ValueError
 
@@ -173,7 +172,7 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
 
         return {'leaf': leafs_amount, 'summarized': summarized_amount, 'root': root_amount}
 
-    def item_exist(self, id: str, id_type: str = TreeIdType.external) -> bool:
+    def item_exist(self, id: str, id_type: TreeIdType = TreeIdType.external) -> bool:
         if type(id) is not str:
             raise ValueError
 
@@ -187,25 +186,25 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         output = self.execute_query(query)
         return len(output) > 0
 
-    def get_leaf_descendants(self, id: str, id_type: str = TreeIdType.external) -> List[TreeNode]:
+    def get_leaf_descendants(self, id: str, id_type: TreeIdType = TreeIdType.external) -> List[TreeNode]:
         if type(id) is not str:
             raise ValueError
         if type(id_type) is not TreeIdType:
             raise ValueError
-        if not self.item_exist(parent_id, id_type=id_type):
+        if not self.item_exist(id, id_type=id_type):
             raise ValueError
 
         raw_output = self.execute_query(f'MATCH (parent)-[:relation*0..]->(n:leaf) WHERE parent.{id_type.value} = "{id}" RETURN n;')
         leaf_nodes = self.formate_nodes_output(raw_output)
         return leaf_nodes
 
-    def get_child_nodes(self, parent_id: str, id_type: str = TreeIdType.external) -> List[TreeNode]:
+    def get_child_nodes(self, parent_id: str, id_type: TreeIdType = TreeIdType.external) -> List[TreeNode]:
         if type(parent_id) is not str:
             raise ValueError
         if not self.item_exist(parent_id, id_type=id_type):
             raise ValueError
 
-        raw_nodes = self.execute_query(f'MATCH (parent)-[rel]->(n) WHERE parent.{id_type.value} = "{id}" RETURN n;')
+        raw_nodes = self.execute_query(f'MATCH (parent)-[rel]->(n) WHERE parent.{id_type.value} = "{parent_id}" RETURN n;')
         formated_nodes = self.formate_nodes_output(raw_nodes)
         return formated_nodes
 
@@ -243,11 +242,28 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         if type(node.props) is not dict:
             return False
 
-        for k in node.props.keys():
-            if type(k) is not str:
-                return False
+        # if node.type == TreeNodeType.summarized and 'descendants_num' not in node.props:
+        #     return False
+        # if node.type != TreeNodeType.summarized and 'descendants_num' in node.props:
+        #     return False
+        if 'depth' not in node.props:
+            return False
 
+        # все ключи и значения по ключам в props-поле
+        # должны иметь str-тип
+        for k,v in node.props.items():
+            if (node.type == TreeNodeType.summarized and k == 'descendants_num') or k == 'depth':
+                if type(v) is not int:
+                    raise ValueError
+            else:
+                if type(v) is not str:
+                    return False
+
+        # extrtnal_id-ключ зарезервирован
         if 'external_id' in node.props:
+            return False
+        # у веришин leaf-типа обязательное должно присутствовать str_id-значение
+        if node.type == TreeNodeType.leaf and 'str_id' not in node.props:
             return False
 
         return True

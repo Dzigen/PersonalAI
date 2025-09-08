@@ -1,10 +1,11 @@
 from typing import Dict, Union
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
 @dataclass
 class KVDBConnectionConfig(BaseDatabaseConfig):
+    db_info: Dict = field(default_factory=lambda : { 'db': 'defaultpersonalaikvdb','table': 'defaultpersonalaikvtable' })
     host: str = None
     port: str = None
 

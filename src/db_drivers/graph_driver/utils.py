@@ -1,5 +1,5 @@
 from typing import Dict, List, Union
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from abc import abstractmethod
 
 from ...utils import ReturnInfo
@@ -8,6 +8,7 @@ from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
 @dataclass
 class GraphDBConnectionConfig(BaseDatabaseConfig):
+    db_info: Dict = field(default_factory=lambda: {'db': 'defaultpersonalaigraphdb', 'table': 'defaultpersonalaigraphtable'})
     host: str = None
     port: str = None
 
