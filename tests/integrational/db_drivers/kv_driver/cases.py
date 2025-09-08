@@ -1,6 +1,7 @@
-from src.db_drivers.kv_driver import KeyValueDBInstance
 import sys
 sys.path.insert(0, "../")
+
+from src.db_drivers.kv_driver import KeyValueDBInstance
 
 # TO CHANGE
 # 'inmemory_kv', 'redis', 'mongo', 'mixed_kv', 'aerospike

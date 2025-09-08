@@ -1,11 +1,9 @@
-from src.db_drivers.tree_driver.utils import TreeNode, TreeNodeType, TreeIdType
-import pytest
-from typing import List, Tuple, Dict, Union
 import sys
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
+from src.db_drivers.tree_driver.utils import TreeNode, TreeNodeType, TreeIdType
 
 # TO CHANGE
 AVAILABLE_TREE_DBS = ['kuzu', 'neo4j']  # 'neo4j', 'kuzu'
@@ -184,32 +182,32 @@ for db_vendor in AVAILABLE_TREE_DBS:
 TREEDB_DELETE_TEST_CASES = [
     # 1. позитивный случай (несколько id в списке)
     # 1.1 external_id
-    ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id,  VALID_LEAF_TNODE1],
+    ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1],
       [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE2]], [VALID_LEAF_TNODE2.id, VALID_LEAF_TNODE1.id],
      TreeIdType.external, False),
     # 1.2 str_id
-    ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id,  VALID_LEAF_TNODE1],
+    ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1],
       [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE2]], [VALID_LEAF_TNODE2.props['str_id'], VALID_LEAF_TNODE1.props['str_id']],
      TreeIdType.str, False),
     # 2. невалидный тип
-    ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id,  VALID_LEAF_TNODE1],
+    ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1],
       [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE2]], [VALID_LEAF_TNODE2.id, VALID_LEAF_TNODE1.id],
      'external', True),
     # 3. невалидный id (несколько id в списке)
-    ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id,  VALID_LEAF_TNODE1],
+    ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1],
       [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE2]], [VALID_LEAF_TNODE2.id, 123],
      TreeIdType.external, True),
     # 4. id с таким типом не существует (несколько id в списке)
     # 4.1. external_id
-    ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id,  VALID_LEAF_TNODE1],
+    ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1],
       [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE2]], [VALID_LEAF_TNODE2.id, VALID_SUM_TNODE2.id],
      TreeIdType.external, False),
     # 4.2. str_id
-    ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id,  VALID_LEAF_TNODE1],
+    ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1],
       [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE2]], [VALID_LEAF_TNODE2.id, "not_existing_id"],
      TreeIdType.str, False),
     # 5. у вершины-родителя есть вершины-дети
-    ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id,  VALID_LEAF_TNODE1],
+    ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1],
       [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE2]], [VALID_SUM_TNODE1.id],
      TreeIdType.external, True)
 ]
@@ -234,7 +232,7 @@ TREEDB_COUNT_TEST_CASES = [
     ([], {'leaf': 0, 'summarized': 0, 'root': 1}),
     # 4. ненулевая графовая бд с leaf- и summed-элементами
     ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1],
-        [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE2]],  {'leaf': 2, 'summarized': 1, 'root': 1})
+        [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE2]], {'leaf': 2, 'summarized': 1, 'root': 1})
 ]
 
 TREEDB_POPULATED_COUNT_TEST_CASES = []
@@ -286,7 +284,7 @@ TREEDB_CLEAR_TEST_CASES = [
     ([], {'leaf': 0, 'summarized': 0, 'root': 1}),
     # 4. ненулевая графовая бд с leaf- и summed-элементами
     ([["ROOT_NODE_ID", VALID_SUM_TNODE1], [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1],
-        [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE2]],  {'leaf': 2, 'summarized': 1, 'root': 1})
+        [VALID_SUM_TNODE1.id, VALID_LEAF_TNODE2]], {'leaf': 2, 'summarized': 1, 'root': 1})
 ]
 
 TREEDB_POPULATED_CLEAR_TEST_CASES = []
@@ -297,10 +295,31 @@ for db_vendor in AVAILABLE_TREE_DBS:
 
 ################################################################
 
-TEST_TREE = [("ROOT_NODE_ID", VALID_SUM_TNODE1), ("ROOT_NODE_ID", VALID_SUM_TNODE2), ("ROOT_NODE_ID", VALID_SUM_TNODE3), ("ROOT_NODE_ID", VALID_SUM_TNODE4),
-             (VALID_SUM_TNODE1.id, VALID_LEAF_TNODE1), (VALID_SUM_TNODE1.id, VALID_SUM_TNODE5), (
-                 VALID_SUM_TNODE5.id, VALID_SUM_TNODE6), (VALID_SUM_TNODE2.id, VALID_SUM_TNODE7),
-             (VALID_SUM_TNODE2.id, VALID_SUM_TNODE8), (VALID_SUM_TNODE3.id, VALID_LEAF_TNODE2), (VALID_SUM_TNODE4.id, VALID_LEAF_TNODE3), (VALID_SUM_TNODE4.id, VALID_LEAF_TNODE4)]
+TEST_TREE = [
+    ("ROOT_NODE_ID",
+     VALID_SUM_TNODE1),
+    ("ROOT_NODE_ID",
+     VALID_SUM_TNODE2),
+    ("ROOT_NODE_ID",
+     VALID_SUM_TNODE3),
+    ("ROOT_NODE_ID",
+     VALID_SUM_TNODE4),
+    (VALID_SUM_TNODE1.id,
+     VALID_LEAF_TNODE1),
+    (VALID_SUM_TNODE1.id,
+     VALID_SUM_TNODE5),
+    (VALID_SUM_TNODE5.id,
+     VALID_SUM_TNODE6),
+    (VALID_SUM_TNODE2.id,
+     VALID_SUM_TNODE7),
+    (VALID_SUM_TNODE2.id,
+     VALID_SUM_TNODE8),
+    (VALID_SUM_TNODE3.id,
+     VALID_LEAF_TNODE2),
+    (VALID_SUM_TNODE4.id,
+     VALID_LEAF_TNODE3),
+    (VALID_SUM_TNODE4.id,
+     VALID_LEAF_TNODE4)]
 
 # create_pairs, parent_id, expected_cnodes, exception
 TREEDB_GETCHILDS_TEST_CASES = [

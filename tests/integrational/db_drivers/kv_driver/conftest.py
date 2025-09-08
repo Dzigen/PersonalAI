@@ -1,12 +1,11 @@
-from src.db_drivers.kv_driver import KeyValueDriver, KeyValueDriverConfig, KVDBConnectionConfig
 import pytest
-
 import sys
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
+from src.db_drivers.kv_driver import KeyValueDriver, KeyValueDriverConfig, KVDBConnectionConfig
 
 #!!!AVAILABLE KEYVALUE CONNECTIONS!!!#
 
@@ -14,8 +13,14 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 @pytest.fixture(scope='package')
 def inmemory_kv_conn():
     inmemorykv_config = KVDBConnectionConfig(
-        params={'kvstore_dump_name': 'inmemory_store', 'load_from_disk': False, 'max_storage': 5e+8,
-                'load_dump_dir': TEST_VOLUME_DIR, 'save_on_disk': True, 'save_dump_dir': TEST_VOLUME_DIR}, need_to_clear=True)
+        params={
+            'kvstore_dump_name': 'inmemory_store',
+            'load_from_disk': False,
+            'max_storage': 5e+8,
+            'load_dump_dir': TEST_VOLUME_DIR,
+            'save_on_disk': True,
+            'save_dump_dir': TEST_VOLUME_DIR},
+        need_to_clear=True)
 
     driver_config = KeyValueDriverConfig(
         db_vendor='inmemory_kv', db_config=inmemorykv_config)

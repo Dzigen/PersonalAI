@@ -1,13 +1,16 @@
-from .cases import KVDB_POPULATED_CREATE_TEST_CASES, KVDB_POPULATED_DELETE_TEST_CASES, \
-    KVDB_POPULATED_READ_TEST_CASES, KVDB_POPULATED_COUNT_TEST_CASES, KVDB_POPULATED_EXIST_TEST_CASES, \
-    KVDB_POPULATED_CLEAR_TEST_CASES
 import pytest
 from chromadb.errors import ChromaError
 import sys
 sys.path.insert(0, "../")
 
+from .cases import KVDB_POPULATED_CREATE_TEST_CASES, KVDB_POPULATED_DELETE_TEST_CASES, \
+    KVDB_POPULATED_READ_TEST_CASES, KVDB_POPULATED_COUNT_TEST_CASES, KVDB_POPULATED_EXIST_TEST_CASES, \
+    KVDB_POPULATED_CLEAR_TEST_CASES
 
-@pytest.mark.parametrize("input, expected, keyvaluedb_conn", KVDB_POPULATED_CREATE_TEST_CASES, indirect=['keyvaluedb_conn'])
+
+@pytest.mark.parametrize("input, expected, keyvaluedb_conn",
+                         KVDB_POPULATED_CREATE_TEST_CASES,
+                         indirect=['keyvaluedb_conn'])
 def test_create(input, expected, keyvaluedb_conn):
     keyvaluedb_conn.clear()
 
@@ -23,7 +26,8 @@ def test_create(input, expected, keyvaluedb_conn):
     assert keyvaluedb_conn.count_items() == expected['db_size']
 
 
-@pytest.mark.parametrize("instances, input, expected, keyvaluedb_conn", KVDB_POPULATED_DELETE_TEST_CASES, indirect=['keyvaluedb_conn'])
+@pytest.mark.parametrize("instances, input, expected, keyvaluedb_conn",
+                         KVDB_POPULATED_DELETE_TEST_CASES, indirect=['keyvaluedb_conn'])
 def test_delete(instances, input, expected, keyvaluedb_conn):
     keyvaluedb_conn.clear()
     keyvaluedb_conn.create(instances)
@@ -39,7 +43,8 @@ def test_delete(instances, input, expected, keyvaluedb_conn):
     assert keyvaluedb_conn.count_items() == expected['db_size']
 
 
-@pytest.mark.parametrize("instances, input, expected, keyvaluedb_conn", KVDB_POPULATED_READ_TEST_CASES, indirect=['keyvaluedb_conn'])
+@pytest.mark.parametrize("instances, input, expected, keyvaluedb_conn",
+                         KVDB_POPULATED_READ_TEST_CASES, indirect=['keyvaluedb_conn'])
 def test_read(instances, input, expected, keyvaluedb_conn):
     keyvaluedb_conn.clear()
     keyvaluedb_conn.create(instances)
@@ -57,7 +62,8 @@ def test_read(instances, input, expected, keyvaluedb_conn):
                     output)) == expected['output_ids']
 
 
-@pytest.mark.parametrize("instances, expected, keyvaluedb_conn", KVDB_POPULATED_COUNT_TEST_CASES, indirect=['keyvaluedb_conn'])
+@pytest.mark.parametrize("instances, expected, keyvaluedb_conn",
+                         KVDB_POPULATED_COUNT_TEST_CASES, indirect=['keyvaluedb_conn'])
 def test_count(instances, expected, keyvaluedb_conn):
     keyvaluedb_conn.clear()
     keyvaluedb_conn.create(instances)
@@ -65,7 +71,8 @@ def test_count(instances, expected, keyvaluedb_conn):
     assert keyvaluedb_conn.count_items() == expected
 
 
-@pytest.mark.parametrize("instances, input, expected, keyvaluedb_conn", KVDB_POPULATED_EXIST_TEST_CASES, indirect=['keyvaluedb_conn'])
+@pytest.mark.parametrize("instances, input, expected, keyvaluedb_conn",
+                         KVDB_POPULATED_EXIST_TEST_CASES, indirect=['keyvaluedb_conn'])
 def test_exist(instances, input, expected, keyvaluedb_conn):
     keyvaluedb_conn.clear()
     keyvaluedb_conn.create(instances)

@@ -1,9 +1,3 @@
-from .cases import VECTORDB_POPULATED_CREATE_TEST_CASES, VECTORDB_POPULATED_DELETE_TEST_CASES, \
-    VECTORDB_POPULATED_READ_TEST_CASES, VECTORDB_POPULATED_RETRIEVE_TEST_CASES, \
-    VECTORDB_POPULATED_COUNT_TEST_CASES, VECTORDB_POPULATED_EXIST_TEST_CASES, \
-    VECTORDB_POPULATED_CLEAR_TEST_CASES, VECTORDB_POPULATED_UPSERT_TEST_CASES
-from src.db_drivers.vector_driver.utils import AbstractVectorDatabaseConnection
-from src.db_drivers.vector_driver import VectorDBInstance
 import pytest
 from chromadb.errors import ChromaError
 from typing import Dict, List
@@ -12,8 +6,17 @@ from pymilvus.exceptions import DataNotMatchException, ParamError, MilvusExcepti
 import sys
 sys.path.insert(0, "../")
 
+from .cases import VECTORDB_POPULATED_CREATE_TEST_CASES, VECTORDB_POPULATED_DELETE_TEST_CASES, \
+    VECTORDB_POPULATED_READ_TEST_CASES, VECTORDB_POPULATED_RETRIEVE_TEST_CASES, \
+    VECTORDB_POPULATED_COUNT_TEST_CASES, VECTORDB_POPULATED_EXIST_TEST_CASES, \
+    VECTORDB_POPULATED_CLEAR_TEST_CASES, VECTORDB_POPULATED_UPSERT_TEST_CASES
+from src.db_drivers.vector_driver.utils import AbstractVectorDatabaseConnection
+from src.db_drivers.vector_driver import VectorDBInstance
 
-@pytest.mark.parametrize("input, expected, vectordb_conn", VECTORDB_POPULATED_CREATE_TEST_CASES, indirect=['vectordb_conn'])
+
+@pytest.mark.parametrize("input, expected, vectordb_conn",
+                         VECTORDB_POPULATED_CREATE_TEST_CASES,
+                         indirect=['vectordb_conn'])
 def test_create(input: List[List[VectorDBInstance]], expected: Dict[str, object],
                 vectordb_conn: AbstractVectorDatabaseConnection):
     vectordb_conn.clear()
@@ -32,7 +35,8 @@ def test_create(input: List[List[VectorDBInstance]], expected: Dict[str, object]
     assert vectordb_conn.count_items() == expected['db_size']
 
 
-@pytest.mark.parametrize("instances, input, expected, vectordb_conn", VECTORDB_POPULATED_READ_TEST_CASES, indirect=['vectordb_conn'])
+@pytest.mark.parametrize("instances, input, expected, vectordb_conn",
+                         VECTORDB_POPULATED_READ_TEST_CASES, indirect=['vectordb_conn'])
 def test_read(instances: List[VectorDBInstance], input: List[VectorDBInstance], expected: Dict[str, object],
               vectordb_conn: AbstractVectorDatabaseConnection):
     vectordb_conn.clear()
@@ -51,7 +55,8 @@ def test_read(instances: List[VectorDBInstance], input: List[VectorDBInstance], 
                     ) == expected['output_ids']
 
 
-@pytest.mark.parametrize("init_instance, new_instances, exception, expected_count, vectordb_conn", VECTORDB_POPULATED_UPSERT_TEST_CASES, indirect=['vectordb_conn'])
+@pytest.mark.parametrize("init_instance, new_instances, exception, expected_count, vectordb_conn",
+                         VECTORDB_POPULATED_UPSERT_TEST_CASES, indirect=['vectordb_conn'])
 def test_upsert(init_instance: List[VectorDBInstance], new_instances: Dict[str, VectorDBInstance],
                 exception: bool, expected_count: int, vectordb_conn: AbstractVectorDatabaseConnection):
     vectordb_conn.clear()
@@ -79,7 +84,8 @@ def test_upsert(init_instance: List[VectorDBInstance], new_instances: Dict[str, 
         assert real_count == expected_count
 
 
-@pytest.mark.parametrize("instances, delete_ids, expected, vectordb_conn", VECTORDB_POPULATED_DELETE_TEST_CASES, indirect=['vectordb_conn'])
+@pytest.mark.parametrize("instances, delete_ids, expected, vectordb_conn",
+                         VECTORDB_POPULATED_DELETE_TEST_CASES, indirect=['vectordb_conn'])
 def test_delete(instances, delete_ids, expected, vectordb_conn: AbstractVectorDatabaseConnection):
     vectordb_conn.clear()
     vectordb_conn.create(instances)
@@ -97,7 +103,8 @@ def test_delete(instances, delete_ids, expected, vectordb_conn: AbstractVectorDa
         assert vectordb_conn.count_items() == expected['db_size']
 
 
-@pytest.mark.parametrize("instances, queries, n_results, subset_ids, expected, vectordb_conn", VECTORDB_POPULATED_RETRIEVE_TEST_CASES, indirect=['vectordb_conn'])
+@pytest.mark.parametrize("instances, queries, n_results, subset_ids, expected, vectordb_conn",
+                         VECTORDB_POPULATED_RETRIEVE_TEST_CASES, indirect=['vectordb_conn'])
 def test_retrieve(instances: List[VectorDBInstance], queries: List[str], n_results: int, subset_ids: List[str],
                   expected: Dict[str, object], vectordb_conn: AbstractVectorDatabaseConnection):
     vectordb_conn.clear()
@@ -119,7 +126,9 @@ def test_retrieve(instances: List[VectorDBInstance], queries: List[str], n_resul
             assert expected['output_size'] == len(query_output)
 
 
-@pytest.mark.parametrize("instances, expected, vectordb_conn", VECTORDB_POPULATED_COUNT_TEST_CASES, indirect=['vectordb_conn'])
+@pytest.mark.parametrize("instances, expected, vectordb_conn",
+                         VECTORDB_POPULATED_COUNT_TEST_CASES,
+                         indirect=['vectordb_conn'])
 def test_count_items(instances: List[VectorDBInstance], expected: Dict[str, int],
                      vectordb_conn: AbstractVectorDatabaseConnection):
     vectordb_conn.clear()
@@ -128,7 +137,8 @@ def test_count_items(instances: List[VectorDBInstance], expected: Dict[str, int]
     assert vectordb_conn.count_items() == expected
 
 
-@pytest.mark.parametrize("instances, input_id, expected, vectordb_conn", VECTORDB_POPULATED_EXIST_TEST_CASES, indirect=['vectordb_conn'])
+@pytest.mark.parametrize("instances, input_id, expected, vectordb_conn",
+                         VECTORDB_POPULATED_EXIST_TEST_CASES, indirect=['vectordb_conn'])
 def test_item_exist(instances: List[VectorDBInstance], input_id: object, expected: Dict[str, object],
                     vectordb_conn: AbstractVectorDatabaseConnection):
     vectordb_conn.clear()
