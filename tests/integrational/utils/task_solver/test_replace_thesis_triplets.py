@@ -1,12 +1,13 @@
+import pytest
+
+import sys
+sys.path.insert(0, "../")
+
 from .cases import EN_VALID_HYPER_TRIPLET1, EN_VALID_HYPER_TRIPLET2, EN_VALID_HYPER_TRIPLET3, \
     RU_VALID_HYPER_TRIPLET1, RU_VALID_HYPER_TRIPLET2, RU_VALID_HYPER_TRIPLET3
 from typing import List
 from src.utils import AgentTaskSolver
 from src.utils import Triplet, ReturnStatus
-import pytest
-
-import sys
-sys.path.insert(0, "../")
 
 
 RU_MATCHED_OBOSLETE_TRIPELET_2 = '["кен <- апр"]'

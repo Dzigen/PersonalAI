@@ -1,10 +1,9 @@
-from src.utils import RelationType, NodeType, NodeCreator, RelationCreator, TripletCreator
 import sys
-
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
+from src.utils import RelationType, NodeType, NodeCreator, RelationCreator, TripletCreator
 
 OBJECT_NODE1 = NodeCreator.create(n_type=NodeType.object, name='qwe')
 OBJECT_NODE2 = NodeCreator.create(n_type=NodeType.object, name='asd')

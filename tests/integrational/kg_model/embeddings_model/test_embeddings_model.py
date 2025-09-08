@@ -1,12 +1,11 @@
-from ..cases import EM_POPULATED_CREATE_TEST_CASES, EM_POPULATED_DELETE_TEST_CASES
-from src.kg_model import EmbeddingsModel
-from src.utils import Triplet
 import pytest
 from typing import Dict, List, Set
-
 import sys
 sys.path.insert(0, "../")
 
+from ..cases import EM_POPULATED_CREATE_TEST_CASES, EM_POPULATED_DELETE_TEST_CASES
+from src.kg_model import EmbeddingsModel
+from src.utils import Triplet
 
 @pytest.mark.parametrize("init_triplets, add_nodes_flag, expected_init_count, expected_creation_info, embeddings_model", EM_POPULATED_CREATE_TEST_CASES, indirect=['embeddings_model'])
 def test_create_triplets(init_triplets: List[Triplet], add_nodes_flag: bool, expected_init_count: Dict[str, int],

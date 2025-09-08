@@ -1,11 +1,12 @@
-from src.utils.data_structs import TripletCreator, NodeCreator, RelationCreator, \
-    Node, Relation, Triplet, NodeType, RelationType, create_id
 import pytest
 import hashlib
 from typing import Dict
 
 import sys
 sys.path.insert(0, "../")
+
+from src.utils.data_structs import TripletCreator, NodeCreator, RelationCreator, \
+    Node, Relation, Triplet, NodeType, RelationType, create_id
 
 STRING_PROP_VALUE = 'string_value'
 INT_PROP_VALUE = 1001

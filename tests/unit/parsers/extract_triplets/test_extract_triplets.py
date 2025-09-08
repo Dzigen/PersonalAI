@@ -1,13 +1,14 @@
-from .general_tcases import ETRIPLETS_FORMATE_TEST_CASES, ETRIPLETS_POSTPROCESS_TEST_CASES
-from .v2_tcases import ETRIPLETS_PARSE_V2_TEST_CASES
-from .v1_tcases import ETRIPLETS_PARSE_V1_TEST_CASES
-from src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.general_parsers import etriplets_custom_formate, etriplets_custom_postprocess
-from src.utils import Triplet
 import pytest
 from typing import Dict, List, Tuple
 
 import sys
 sys.path.insert(0, "../")
+
+from .general_tcases import ETRIPLETS_FORMATE_TEST_CASES, ETRIPLETS_POSTPROCESS_TEST_CASES
+from .v2_tcases import ETRIPLETS_PARSE_V2_TEST_CASES
+from .v1_tcases import ETRIPLETS_PARSE_V1_TEST_CASES
+from src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.general_parsers import etriplets_custom_formate, etriplets_custom_postprocess
+from src.utils import Triplet
 
 
 AVAILABLE_ETRIPLETS_VERSIONS = {

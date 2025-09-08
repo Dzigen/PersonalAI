@@ -1,14 +1,15 @@
+import pytest
+from typing import Dict, List, Set, Tuple
+
+import sys
+sys.path.insert(0, "../")
+
 from .general_tcases import ETHESISES_FORMATE_TEST_CASES, ETHESISES_POSTPROCESS_TEST_CASES
 from .v2_tcases import ETHESISES_PARSE_V2_TEST_CASES
 from .v1_tcases import ETHESISES_PARSE_V1_TEST_CASES
 from src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.general_parsers import \
     ethesises_custom_formate, ethesises_custom_postprocess
 from src.utils.data_structs import Triplet
-import pytest
-from typing import Dict, List, Set, Tuple
-
-import sys
-sys.path.insert(0, "../")
 
 
 AVAILABLE_ETHESISES_VERSIONS = {

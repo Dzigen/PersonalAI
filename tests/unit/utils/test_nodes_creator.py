@@ -1,9 +1,10 @@
-from src.utils.data_structs import create_id
-from src.utils import NodeCreator, NodeType
 import pytest
 
 import sys
 sys.path.insert(0, "../")
+
+from src.utils.data_structs import create_id
+from src.utils import NodeCreator, NodeType
 
 
 TEST_NODE_NAME = 'abc'

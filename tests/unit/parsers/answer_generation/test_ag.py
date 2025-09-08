@@ -1,8 +1,3 @@
-from .general_tcases import AG_FORMATE_TEST_CASES, AG_POSTPROCESS_TEST_CASES
-from .v2_tcases import AG_PARSE_V2_TEST_CASES
-from .v1_tcases import AG_PARSE_V1_TEST_CASES
-from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.general_parsers import simpleag_custom_formate, simpleag_custom_postprocess
-from src.utils import Triplet
 import sys
 import pytest
 from typing import List, Dict
@@ -11,6 +6,12 @@ from collections import defaultdict
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
+
+from .general_tcases import AG_FORMATE_TEST_CASES, AG_POSTPROCESS_TEST_CASES
+from .v2_tcases import AG_PARSE_V2_TEST_CASES
+from .v1_tcases import AG_PARSE_V1_TEST_CASES
+from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.general_parsers import simpleag_custom_formate, simpleag_custom_postprocess
+from src.utils import Triplet
 
 
 AVAILABLE_AG_VERSIONS = {

@@ -1,9 +1,10 @@
-from src.utils import detect_lang, ReturnStatus
 import pytest
 
 import sys
 sys.path.insert(0, "../")
 
+
+from src.utils import detect_lang, ReturnStatus
 
 @pytest.mark.parametrize("text, expected", [
     ("Каждый охотник желает знать: где сидит фазан.",

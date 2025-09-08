@@ -1,14 +1,14 @@
+import pytest
+from typing import List, Dict
+import sys
+sys.path.insert(0, "../")
+
 from .cases import TEST_H_EPISODIC1, TEST_DELETE_TRIPLETS3, TEST_H_EPISODIC2, \
     TEST_DELETE_TRIPLETS4, TEST_H_EPISODIC3, EPISODIC_TRIPLET3, EPISODIC_TRIPLET13, EPISODIC_TRIPLET14, EPISODIC_TRIPLET1
 from .cases import TEST_O_EPISODIC1, TEST_O_EPISODIC2, TEST_DELETE_TRIPLETS1, TEST_DELETE_TRIPLETS2
 from .cases import INIT_KNOWLEDGE_GRAPH
 from src.pipelines.memorize import LLMUpdator
 from src.utils import Triplet
-import pytest
-from typing import List, Dict
-import sys
-sys.path.insert(0, "../")
-
 
 @pytest.mark.parametrize("kg_triplets, base_triplet, delete_tripelts, expected_obsolete_ids", [
     # 1. не найдено устаревших трипелтов

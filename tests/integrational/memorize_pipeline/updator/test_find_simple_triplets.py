@@ -1,3 +1,8 @@
+import pytest
+from typing import List, Dict
+import sys
+sys.path.insert(0, "../")
+
 from .cases import INIT_KNOWLEDGE_GRAPH, \
     TEST_SIMPLE_TRIPLET1, TEST_SIMPLE_TRIPLET2, \
     TRIPLET_EMPTY_ANSWER, TEST_SIMPLE_TRIPLET4, TEST_SIMPLE_TRIPLET5, \
@@ -6,10 +11,6 @@ from .cases import INIT_KNOWLEDGE_GRAPH, \
 from .cases import SIMPLE_TRIPLET1, SIMPLE_TRIPLET3
 from src.pipelines.memorize import LLMUpdator
 from src.utils import Triplet
-import pytest
-from typing import List, Dict
-import sys
-sys.path.insert(0, "../")
 
 
 @pytest.mark.parametrize("kg_triplets, triplets, agent_stub_answers, expected_obsolete_ids", [

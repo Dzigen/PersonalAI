@@ -1,9 +1,3 @@
-from cases import POPULATED_CALCULATE_PSCORE_TEST_CASES, POPULATED_GET_AVAILABLE_NIDS_TEST_CASES, \
-    POPULATED_GET_AVAILABLE_RINFO_TEST_CASES, POPULATED_GET_TRIPLET_SCORES_TEST_CASES, POPULATED_FILTER_PATHS_TEST_CASES
-from src.utils import Logger
-from src.kg_model import KnowledgeGraphModel
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever import BeamSearchTripletsRetriever, \
-    TraversingPath, GraphBeamSearchConfig, TraversedPath
 import pytest
 import numpy as np
 from typing import List, Tuple, Dict
@@ -11,6 +5,12 @@ from typing import List, Tuple, Dict
 import sys
 sys.path.insert(0, "../")
 
+from .cases import POPULATED_CALCULATE_PSCORE_TEST_CASES, POPULATED_GET_AVAILABLE_NIDS_TEST_CASES, \
+    POPULATED_GET_AVAILABLE_RINFO_TEST_CASES, POPULATED_GET_TRIPLET_SCORES_TEST_CASES, POPULATED_FILTER_PATHS_TEST_CASES
+from src.utils import Logger
+from src.kg_model import KnowledgeGraphModel
+from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever import BeamSearchTripletsRetriever, \
+    TraversingPath, GraphBeamSearchConfig, TraversedPath
 
 @pytest.mark.parametrize("path_len, accum_score, expected_score, exception, search_config, log, kg_model",
                          POPULATED_CALCULATE_PSCORE_TEST_CASES, indirect=['kg_model'])

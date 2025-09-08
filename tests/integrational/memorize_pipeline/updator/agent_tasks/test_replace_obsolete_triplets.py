@@ -1,17 +1,17 @@
+from typing import List, Dict
+from collections import deque
+import pytest
+import sys
+# TO CHANGE
+PROJECT_BASE_DIR = '../'
+sys.path.insert(0, PROJECT_BASE_DIR)
+
 from .cases import SIMPLE_TRIPLET1, SIMPLE_TRIPLET2, SIMPLE_TRIPLET3, \
     SIMPLE_TRIPLET4, SIMPLE_TRIPLET5, SIMPLE_TRIPLET6
 from .cases import NO_TRIPLET_REPL_AGENT_ANSWER, ONE_TRIPLET_REPL_AGENT_ANSWER, \
     SEVERAL_TRIPLET_REPL_AGENT_ANSWER, BAD_TRIPLET_AGENT_ANSWER
 from src.utils.errors import ReturnStatus
 from src.utils import AgentTaskSolver, Triplet
-from typing import List, Dict
-from collections import deque
-import pytest
-import sys
-
-# TO CHANGE
-PROJECT_BASE_DIR = '../'
-sys.path.insert(0, PROJECT_BASE_DIR)
 
 
 @pytest.mark.parametrize("llm_stub_answer, base_triplet, lang, incident_triplets, expected_status, expected_output", [

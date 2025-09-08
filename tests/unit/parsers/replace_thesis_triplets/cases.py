@@ -1,8 +1,9 @@
-from src.utils.data_structs import RelationCreator, RelationType, create_id
-from src.utils import TripletCreator, NodeCreator, NodeType
 import copy
 import sys
 sys.path.insert(0, "../")
+
+from src.utils.data_structs import RelationCreator, RelationType, create_id
+from src.utils import TripletCreator, NodeCreator, NodeType
 
 VALID_OBJECT_NODE1 = NodeCreator.create(
     n_type=NodeType.object,

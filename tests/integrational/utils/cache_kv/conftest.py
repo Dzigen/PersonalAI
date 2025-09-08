@@ -1,5 +1,3 @@
-from src.utils.cache_kv import CacheKV
-from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
 import pytest
 
 import sys
@@ -8,6 +6,8 @@ PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
+from src.utils.cache_kv import CacheKV
+from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
 
 @pytest.fixture(scope='package')
 def inmemory_kv_cache_conn():

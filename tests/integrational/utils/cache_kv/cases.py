@@ -1,5 +1,3 @@
-from src.db_drivers.kv_driver.utils import KeyValueDBInstance
-from src.agents.connectors.OLlamaConnector import DEFAULT_OLLAMA_CONFIG
 import sys
 import copy
 import pickle
@@ -8,6 +6,9 @@ import hashlib
 PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
+
+from src.db_drivers.kv_driver.utils import KeyValueDBInstance
+from src.agents.connectors.OLlamaConnector import DEFAULT_OLLAMA_CONFIG
 
 
 AVAILABLE_KV_DBS = ['inmemory_kv', 'redis', 'mongo', 'mixed_kv']

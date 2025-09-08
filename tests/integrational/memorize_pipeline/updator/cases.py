@@ -1,11 +1,10 @@
-from src.utils import TripletCreator, NodeCreator, RelationCreator, NodeType, RelationType
 import pytest
-
 import sys
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
+from src.utils import TripletCreator, NodeCreator, RelationCreator, NodeType, RelationType
 
 OBJECT_NODE1 = NodeCreator.create(n_type=NodeType.object, name='qw')
 OBJECT_NODE2 = NodeCreator.create(n_type=NodeType.object, name='er')

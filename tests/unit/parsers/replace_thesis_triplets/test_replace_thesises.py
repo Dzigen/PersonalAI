@@ -1,12 +1,13 @@
-from .v1_tcases import RTHESIS_PARSE_V1_TEST_CASES
-from .general_tcases import REPLACETHESIS_FORMATE_TEST_CASE, REPLACETHESIS_POSTPROCESS_TEST_CASE
-from src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.general_parsers import rt_custom_formate, rt_custom_postprocess
-from src.utils import Triplet
 import pytest
 from typing import Dict, Set, List
 
 import sys
 sys.path.insert(0, "../")
+
+from .v1_tcases import RTHESIS_PARSE_V1_TEST_CASES
+from .general_tcases import REPLACETHESIS_FORMATE_TEST_CASE, REPLACETHESIS_POSTPROCESS_TEST_CASE
+from src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.general_parsers import rt_custom_formate, rt_custom_postprocess
+from src.utils import Triplet
 
 
 AVAILABLE_RTHESIS_VERSIONS = {

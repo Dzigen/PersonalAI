@@ -1,10 +1,3 @@
-from src.db_drivers.vector_driver import VectorDriverConfig, VectorDBConnectionConfig, EmbedderModelConfig
-from src.db_drivers.graph_driver.configs import DEFAULT_INMEMORYGRAPH_CONFIG
-from src.db_drivers.graph_driver import GraphDriverConfig
-from src.kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig, GraphModelConfig, EmbeddingsModelConfig
-from src.agents.configs import DEFAULT_STUBAGENT_CONFIG
-from src.agents import AgentDriverConfig
-from src.pipelines.memorize.updator import LLMUpdator, LLMUpdatorConfig
 import pytest
 
 import sys
@@ -12,6 +5,13 @@ import sys
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
+from src.db_drivers.vector_driver import VectorDriverConfig, VectorDBConnectionConfig, EmbedderModelConfig
+from src.db_drivers.graph_driver.configs import DEFAULT_INMEMORYGRAPH_CONFIG
+from src.db_drivers.graph_driver import GraphDriverConfig
+from src.kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig, GraphModelConfig, EmbeddingsModelConfig
+from src.agents.configs import DEFAULT_STUBAGENT_CONFIG
+from src.agents import AgentDriverConfig
+from src.pipelines.memorize.updator import LLMUpdator, LLMUpdatorConfig
 
 @pytest.fixture(scope='package')
 def kg_model():

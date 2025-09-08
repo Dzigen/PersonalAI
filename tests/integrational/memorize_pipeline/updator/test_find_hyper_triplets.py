@@ -1,14 +1,14 @@
+import pytest
+from typing import List, Dict
+import sys
+sys.path.insert(0, "../")
+
 from .cases import TEST_HYPER_TRIPLET1, TEST_HYPER_TRIPLET2, TEST_HYPER_TRIPLET4, \
     TEST_HYPER_TRIPLET5, TEST_HYPER_TRIPLET6, TRIPLET_EMPTY_ANSWER, HYPER_ANSWER1, \
     HYPER_TRIPLET2, HYPER_ANSWER2, HYPER_ANSWER3, BAD_HYPER_ANSWER, HYPER_TRIPLET3
 from .cases import INIT_KNOWLEDGE_GRAPH
 from src.pipelines.memorize import LLMUpdator
 from src.utils import Triplet
-import pytest
-from typing import List, Dict
-import sys
-sys.path.insert(0, "../")
-
 
 @pytest.mark.parametrize("kg_triplets, triplets, agent_stub_answers, expected_obsolete_ids", [
     # 1. не найдено устаревших трипелтов

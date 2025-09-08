@@ -1,12 +1,11 @@
-from ..cases import GM_POPULATED_CREATE_TEST_CASES, GM_POPULATED_DELETE_TEST_CASES
-from src.kg_model import GraphModel
-from src.utils import Triplet
 import pytest
 from typing import List, Dict, Set
-
 import sys
 sys.path.insert(0, "../")
 
+from ..cases import GM_POPULATED_CREATE_TEST_CASES, GM_POPULATED_DELETE_TEST_CASES
+from src.kg_model import GraphModel
+from src.utils import Triplet
 
 @pytest.mark.parametrize("init_triplets, expected_init_count, expected_create_info, graph_model", GM_POPULATED_CREATE_TEST_CASES, indirect=['graph_model'])
 def test_create_triplets(init_triplets: List[Triplet], expected_init_count: Dict[str, int],
