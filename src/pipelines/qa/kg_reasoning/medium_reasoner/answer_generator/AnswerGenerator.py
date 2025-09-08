@@ -10,6 +10,7 @@ from ......utils.data_structs import create_id
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.cache_kv import CacheUtils
 
+
 @dataclass
 class AnswerGeneratorConfig:
     """Конфигурация AnswerGenerator-стадии MediumQA-ризонера.
@@ -30,9 +31,12 @@ class AnswerGeneratorConfig:
     :type verbose: bool, optional
     """
     lang: str = 'auto'
-    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    answer_classifier_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_ANSWCLS_TASK_CONFIG)
-    answer_generator_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_ANSWGEN_TASK_CONFIG)
+    adriver_config: AgentDriverConfig = field(
+        default_factory=lambda: AgentDriverConfig())
+    answer_classifier_agent_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_ANSWCLS_TASK_CONFIG)
+    answer_generator_agent_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_ANSWGEN_TASK_CONFIG)
 
     cache_table_name: str = 'medreasn_answgen_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(ANSWGEN_MAIN_LOG_PATH))
@@ -40,6 +44,7 @@ class AnswerGeneratorConfig:
 
     def to_str(self):
         return f"{self.lang}|{self.adriver_config.to_str()}|{self.answer_classifier_agent_task_config.version}|{self.answer_generator_agent_task_config.version}"
+
 
 class AnswerGenerator(CacheUtils):
     """Верхнеуровневый класс стадии #4 MediumQA-конвейера для генерации ответа на user-вопрос на основе информации,
@@ -52,11 +57,13 @@ class AnswerGenerator(CacheUtils):
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
     """
+
     def __init__(self, config: AnswerGeneratorConfig = AnswerGeneratorConfig(),
-                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None, cache_llm_inference: bool = True):
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True):
         self.config = config
 
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
 
         self.agent = AgentDriver.connect(config.adriver_config)
         agents_cache_config = None
@@ -73,9 +80,11 @@ class AnswerGenerator(CacheUtils):
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if type(level) is not str:
-            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             self.cachekv.clear()
@@ -90,7 +99,7 @@ class AnswerGenerator(CacheUtils):
         return [search_plan.to_str(), self.config.to_str()]
 
     @CacheUtils.cache_method_output
-    def perform(self, search_plan: SearchPlanInfo) -> Tuple[Union[None,str], ReturnInfo]:
+    def perform(self, search_plan: SearchPlanInfo) -> Tuple[Union[None, str], ReturnInfo]:
         """Метод предназначен для генерации ответа на user-вопрос на основе результатов (извлечённой из графа знаний информации),
         полученных в рамках выполнной последовательности поисковых запросов (шагов плана поиска). Если на основе имеющейся информации
         нельзя сгенерировать релевантный ответ на user-вопрос, то возвращается None.
@@ -101,24 +110,27 @@ class AnswerGenerator(CacheUtils):
         :rtype: Tuple[str, ReturnInfo]
         """
         self.log("START ANSWER-TRYING...", verbose=self.config.verbose)
-        self.log(f"QUERY ID: {create_id(search_plan.base_query)}", verbose=self.config.verbose)
+        self.log(
+            f"QUERY ID: {create_id(search_plan.base_query)}", verbose=self.config.verbose)
         self.log(f"CURRENT PLAN: {search_plan}", verbose=self.config.verbose)
         answer, info = None, ReturnInfo()
 
-        self.log("Выполняем проверку на возможность генерации релевантного ответа...",verbose=self.verbose)
+        self.log("Выполняем проверку на возможность генерации релевантного ответа...",
+                 verbose=self.verbose)
         can_answer, status = self.answer_classify_solver.solve(
             lang=self.config.lang, search_plan=search_plan)
         self.log(f"RESULT: {can_answer}", verbose=self.config.verbose)
 
         if status == ReturnStatus.success:
             if can_answer:
-                self.log("Выполняем генерацию ответа...",verbose=self.verbose)
+                self.log("Выполняем генерацию ответа...", verbose=self.verbose)
                 answer, status = self.answer_gen_solver.solve(
                     lang=self.config.lang, search_plan=search_plan)
                 self.log(f"RESULT: {answer}", verbose=self.config.verbose)
 
             else:
-                self.log("На основании информации, полученной по текущему плану нельзя сгенерировать релевантный ответ.",verbose=self.verbose)
+                self.log(
+                    "На основании информации, полученной по текущему плану нельзя сгенерировать релевантный ответ.", verbose=self.verbose)
 
         info.status = status
         self.log(f"STATUS: {info.status}", verbose=self.config.verbose)

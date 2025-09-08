@@ -8,13 +8,14 @@ AVAILABLE_PLANENH_TCONFIGS = {
     'v1': PLANENH_SUITE_V1
 }
 
+
 class AgentPlanEnhancingTaskConfigSelector:
     @staticmethod
     def get_available_configs():
         return AVAILABLE_PLANENH_TCONFIGS
 
     @staticmethod
-    def select(base_config_version:str = 'v1', cache_table_name:str="medreasn_planenh_agent_task_cache") -> AgentTaskSolverConfig:
+    def select(base_config_version: str = 'v1', cache_table_name: str = "medreasn_planenh_agent_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
             suites=AVAILABLE_PLANENH_TCONFIGS[base_config_version],

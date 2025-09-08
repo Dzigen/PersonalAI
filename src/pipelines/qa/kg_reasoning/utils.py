@@ -4,6 +4,7 @@ from typing import Tuple, List
 
 from ....utils import ReturnInfo
 
+
 @dataclass
 class QueryReasoningInfo:
     sub_queries: List[str]
@@ -13,6 +14,7 @@ class QueryReasoningInfo:
         str_sq = '|'.join(self.sub_queries)
         str_sa = '|'.join(self.sub_answers)
         return f"{str_sq};{str_sa}"
+
 
 class AbstractKGReasoner(ABC):
 
@@ -26,6 +28,7 @@ class AbstractKGReasoner(ABC):
         :rtype: Tuple[str, ReturnInfo]
         """
         pass
+
 
 @dataclass
 class BaseKGReasonerConfig:

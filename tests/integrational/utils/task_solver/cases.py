@@ -1,8 +1,8 @@
+from src.utils.data_structs import RelationCreator, RelationType, create_id
+from src.utils import ReturnStatus, TripletCreator, NodeCreator, NodeType
 import copy
 import sys
 sys.path.insert(0, "../")
-from src.utils import ReturnStatus, TripletCreator, NodeCreator, NodeType
-from src.utils.data_structs import RelationCreator, RelationType, create_id
 
 # data structures fro english language
 

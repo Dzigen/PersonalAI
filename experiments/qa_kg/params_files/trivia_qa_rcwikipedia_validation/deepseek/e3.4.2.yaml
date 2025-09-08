@@ -88,7 +88,7 @@ WEAK_KG_REASONER:
         - object
         - hyper
         #- episodic
-        - time 
+        - time
 
       retriever1_name: watercircles
       retriever1_config:
@@ -98,8 +98,8 @@ WEAK_KG_REASONER:
         hyper_num: 15
         other_triplets_num: 6
         strict_filter: true
-        
-      retriever2_name: beamsearch    
+
+      retriever2_name: beamsearch
       retriever2_config:
         diff_paths_intersection_by_node: false
         diff_paths_intersection_by_rel: false
@@ -112,7 +112,7 @@ WEAK_KG_REASONER:
     filter_method: 'naive' # CAN BE None
     filter_config: # CAN BE None
       max_k: 50
-      
+
   answer_generator_config:
     ag_task:
       prompts_version: 'v3' # 'v1' | 'v2'

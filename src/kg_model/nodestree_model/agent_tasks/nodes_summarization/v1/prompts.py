@@ -1,12 +1,12 @@
 ### PROMPT IN ENGLISH ###
 
 EN_SUMMN_SYSTEM_PROMPT = \
-'''
+    '''
 You are an expert system that can follow the rules and summarize given pices of information.
 '''
 
 EN_SUMMN_USER_PROMPT = \
-'''
+    '''
 You will receive two pieces of information: New Information is detailed, and Existing Information is a summary from {n_descendants} previous entries. Your task is to merge these
 into a single, cohesive summary that highlights the most important insights.
 - Focus on the key points from both inputs.
@@ -22,14 +22,14 @@ Output the summary directly.
 '''
 
 EN_SUMMN_ASSISTANT_PROMPT = \
-'''
+    '''
 [Output Summary]
 '''
 
 ### PROMPT IN RUSSIAN ###
 
-RU_SUMMN_SYSTEM_PROMPT = ... # TODO
+RU_SUMMN_SYSTEM_PROMPT = ...  # TODO
 
-RU_SUMMN_USER_PROMPT = ... # TODO
+RU_SUMMN_USER_PROMPT = ...  # TODO
 
-RU_SUMMN_ASSISTANT_PROMPT = ... # TODO
+RU_SUMMN_ASSISTANT_PROMPT = ...  # TODO

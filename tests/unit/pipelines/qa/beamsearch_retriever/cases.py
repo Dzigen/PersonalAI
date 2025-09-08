@@ -1,9 +1,9 @@
+from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever import TraversingPath
 import numpy as np
 
 import sys
 sys.path.insert(0, "../")
 
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever import TraversingPath
 
 # raw_score, expected_value, exception
 CALCULATE_TRIPLET_SCORE_TEST_CASES = [
@@ -45,13 +45,14 @@ SIMPLE_TPATH2 = TraversingPath(
     accum_score=0.3)
 
 SIMPLE_TPATH3 = TraversingPath(
-    path=[('n_id1', 't_id1', 'n_id2'),('n_id2', 't_id3', 'n_id4')],
+    path=[('n_id1', 't_id1', 'n_id2'), ('n_id2', 't_id3', 'n_id4')],
     unique_nids={'n_id1', 'n_id2', 'n_id4'},
     unique_tids={'t_id1', 't_id3'},
     accum_score=0.4)
 
 SIMPLE_TPATH3_N1 = TraversingPath(
-    path=[('n_id1', 't_id1', 'n_id2'),('n_id2', 't_id3', 'n_id4'),('n_id4', 't_id4', 'n_id2')],
+    path=[('n_id1', 't_id1', 'n_id2'), ('n_id2', 't_id3',
+                                        'n_id4'), ('n_id4', 't_id4', 'n_id2')],
     unique_nids={'n_id1', 'n_id2', 'n_id4'},
     unique_tids={'t_id1', 't_id3', 't_id4'},
     accum_score=0.7)

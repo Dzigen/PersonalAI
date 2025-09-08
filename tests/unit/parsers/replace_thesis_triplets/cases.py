@@ -1,8 +1,8 @@
+from src.utils.data_structs import RelationCreator, RelationType, create_id
+from src.utils import TripletCreator, NodeCreator, NodeType
 import copy
 import sys
 sys.path.insert(0, "../")
-from src.utils import TripletCreator, NodeCreator, NodeType
-from src.utils.data_structs import RelationCreator, RelationType, create_id
 
 VALID_OBJECT_NODE1 = NodeCreator.create(
     n_type=NodeType.object,
@@ -95,10 +95,11 @@ REPLACE_THESISES_PARSE_OUTPUT1 = {create_id("qwe rty"): {create_id("asd fgh")}}
 
 # валидный (несколько сопоставленных тезисов)
 REPLACE_THESISES_RAW_RESPONSE2 = '["qwe rty <- asd fgh", "qwe rty <- zxc vbn"]'
-REPLACE_THESISES_PARSE_OUTPUT2 = {create_id("qwe rty"): {create_id("asd fgh"), create_id("zxc vbn")}}
+REPLACE_THESISES_PARSE_OUTPUT2 = {
+    create_id("qwe rty"): {create_id("asd fgh"), create_id("zxc vbn")}}
 
 # невалидный (отсутствует стрелка)
-REPLACE_THESISES_RAW_RESPONSE3 =  '["qwe rty  asd fgh", "qwe rty <- zxc vbn"]'
+REPLACE_THESISES_RAW_RESPONSE3 = '["qwe rty  asd fgh", "qwe rty <- zxc vbn"]'
 
 # невалидный (отсутствует скобка)
 REPLACE_THESISES_RAW_RESPONSE4 = '"qwe rty <- asd fgh", "qwe rty <- zxc vbn"]'

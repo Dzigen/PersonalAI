@@ -10,6 +10,7 @@ from ....utils.data_structs import create_id
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv import CacheUtils
 
+
 @dataclass
 class AnswersAggregatorConfig:
     """Конфигурация AnswersAggregator-стадии.
@@ -28,8 +29,10 @@ class AnswersAggregatorConfig:
     :type verbose: bool, optional
     """
     lang: str = 'auto'
-    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    suba_summarisation_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_SUBASUMM_TASK_CONFIG)
+    adriver_config: AgentDriverConfig = field(
+        default_factory=lambda: AgentDriverConfig())
+    suba_summarisation_agent_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_SUBASUMM_TASK_CONFIG)
 
     cache_table_name: str = 'answers_aggregation_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(AAGG_MAIN_LOG_PATH))
@@ -37,6 +40,7 @@ class AnswersAggregatorConfig:
 
     def to_str(self) -> str:
         return f"{self.lang}|{self.adriver_config.to_str()}|{self.suba_summarisation_agent_task_config.version}"
+
 
 class AnswersAggregator(CacheUtils):
     """Верхнеуровневый класс QueryPreprocessor-стадии (точка входа), отвечающей за аггрегации/резюмированию информации, полученной в резльтате ризонинга на графе знаний (памяти), и генерацию финального ответа на user-вопрос.
@@ -48,11 +52,13 @@ class AnswersAggregator(CacheUtils):
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
     """
+
     def __init__(self, config: AnswersAggregatorConfig = AnswersAggregatorConfig(),
-                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None, cache_llm_inference: bool = True) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True) -> None:
         self.config = config
 
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
 
         self.agent = AgentDriver.connect(config.adriver_config)
         agents_cache_config = None
@@ -80,9 +86,11 @@ class AnswersAggregator(CacheUtils):
         :rtype: Tuple[str, ReturnInfo]
         """
         self.log("START ANSWERS AGGREGATION...", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.config.verbose)
+        self.log(
+            f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.config.verbose)
         self.log(f"QUERY_INFO: {query_info}", verbose=self.config.verbose)
-        self.log(f"SUB_ANSWERS: {subq_info.sub_answers}", verbose=self.config.verbose)
+        self.log(f"SUB_ANSWERS: {subq_info.sub_answers}",
+                 verbose=self.config.verbose)
         final_answer, info = None, ReturnInfo()
 
         if len(subq_info.sub_answers) < 0:
@@ -103,7 +111,8 @@ class AnswersAggregator(CacheUtils):
             if len(sub_queries) < 2 or len(subq_info.sub_answers) != len(sub_queries):
                 raise ValueError
 
-            self.log("Выполнение суммаризации ответов с помощью LLM-агента...", verbose=self.config.verbose)
+            self.log("Выполнение суммаризации ответов с помощью LLM-агента...",
+                     verbose=self.config.verbose)
             final_answer, status = self.subanswers_summarisation_solver.solve(
                 lang=self.config.lang, query=query, sub_queries=sub_queries,
                 sub_answers=subq_info.sub_answers)

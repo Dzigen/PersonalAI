@@ -29,8 +29,10 @@ class QueryLLMParserConfig:
     :type verbose: bool, optional
     """
     lang: str = 'auto'
-    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    kw_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_KWE_TASK_CONFIG)
+    adriver_config: AgentDriverConfig = field(
+        default_factory=lambda: AgentDriverConfig())
+    kw_extraction_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_KWE_TASK_CONFIG)
 
     cache_table_name: str = 'qa_queryparser_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(QP_MAIN_LOG_PATH))
@@ -38,6 +40,7 @@ class QueryLLMParserConfig:
 
     def to_str(self):
         return f"{self.adriver_config.to_str()}|{self.kw_extraction_task_config.version}|{self.lang}"
+
 
 class QueryLLMParser(CacheUtils):
     """Верхнеуровневый класс первой стадии QA-конвейера для извлечения сущностей из запроса на естественном языке.
@@ -49,11 +52,14 @@ class QueryLLMParser(CacheUtils):
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
     """
+
     def __init__(self, config: QueryLLMParserConfig = QueryLLMParserConfig(),
-                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None,
+                 cache_kvdriver_config: Union[None,
+                                              KeyValueDriverConfig] = None,
                  cache_llm_inference: bool = True) -> None:
         self.config = config
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
 
         self.agent = AgentDriver.connect(config.adriver_config)
         kwe_task_cache_config = None
@@ -69,9 +75,11 @@ class QueryLLMParser(CacheUtils):
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if type(level) is not str:
-            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             self.cachekv.clear()
@@ -94,25 +102,30 @@ class QueryLLMParser(CacheUtils):
         """
 
         self.log("START KEY WORD EXTRACTION...", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.config.verbose)
+        self.log(
+            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION: {query_info.query}",
+                 verbose=self.config.verbose)
         rinfo = ReturnInfo()
 
-        self.log("Выполнение извлечения ключевых сущностей из запроса с помощью LLM-агента...", verbose=self.config.verbose)
-        extracted_entities, status = self.kw_extraction_solver.solve(lang=self.config.lang, query=query_info.query)
+        self.log("Выполнение извлечения ключевых сущностей из запроса с помощью LLM-агента...",
+                 verbose=self.config.verbose)
+        extracted_entities, status = self.kw_extraction_solver.solve(
+            lang=self.config.lang, query=query_info.query)
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
 
-        entities=[]
+        entities = []
         if extracted_entities is None or len(extracted_entities) == 0:
             rinfo.status = ReturnStatus.zero_entities
             rinfo.message = STATUS_MESSAGE[rinfo.status]
         else:
-            entities=extracted_entities
+            entities = extracted_entities
             self.log(f"RESULT: {len(entities)}", verbose=self.config.verbose)
             for entity in entities:
                 self.log(f"* {entity}", verbose=self.config.verbose)
 
-        self.log(f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.config.verbose)
+        self.log(
+            f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.config.verbose)
 
         return entities, rinfo

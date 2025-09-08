@@ -10,6 +10,7 @@ AVAILABLE_TRIPLET_EXTRACT_TCONFIGS = {
     'v2': TRIPLET_EXTRACT_SUITE_V2
 }
 
+
 class AgentTripletExtrTaskConfigSelector:
     @staticmethod
     def get_available_configs():

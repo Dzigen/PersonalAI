@@ -9,6 +9,7 @@ from .utils.data_structs import create_id
 from .db_drivers.kv_driver import KeyValueDriverConfig
 from .config import PAI_MAIN_LOG_PATH
 
+
 @dataclass
 class PersonalAIConfig:
     """Конфигурация персонального ассистента.
@@ -24,12 +25,16 @@ class PersonalAIConfig:
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
     """
-    kg_model_config: KnowledgeGraphModelConfig = field(default_factory=lambda: KnowledgeGraphModelConfig())
-    qa_pipeline_config: QAPipelineConfig = field(default_factory=lambda: QAPipelineConfig())
-    mem_pipeline_config: MemPipelineConfig = field(default_factory=lambda: MemPipelineConfig())
+    kg_model_config: KnowledgeGraphModelConfig = field(
+        default_factory=lambda: KnowledgeGraphModelConfig())
+    qa_pipeline_config: QAPipelineConfig = field(
+        default_factory=lambda: QAPipelineConfig())
+    mem_pipeline_config: MemPipelineConfig = field(
+        default_factory=lambda: MemPipelineConfig())
 
     log: Logger = field(default_factory=lambda: Logger(PAI_MAIN_LOG_PATH))
     verbose: bool = False
+
 
 class PersonalAI:
     """Верхнеуровневый класс (точка входа) персонального ассистента.
@@ -39,10 +44,14 @@ class PersonalAI:
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования результатов промежуточных операций ассистента. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
     """
-    def __init__(self, config: PersonalAIConfig = PersonalAIConfig(), cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None) -> None:
-        self.kg_model = KnowledgeGraphModel(config.kg_model_config, cache_kvdriver_config)
-        self.qa_pipeline = QAPipeline(self.kg_model, config.qa_pipeline_config, cache_kvdriver_config)
-        self.mem_pipeline = MemPipeline(self.kg_model, config.mem_pipeline_config, cache_kvdriver_config)
+
+    def __init__(self, config: PersonalAIConfig = PersonalAIConfig(), cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
+        self.kg_model = KnowledgeGraphModel(
+            config.kg_model_config, cache_kvdriver_config)
+        self.qa_pipeline = QAPipeline(
+            self.kg_model, config.qa_pipeline_config, cache_kvdriver_config)
+        self.mem_pipeline = MemPipeline(
+            self.kg_model, config.mem_pipeline_config, cache_kvdriver_config)
 
         self.log = config.log
         self.verbose = config.verbose
@@ -57,7 +66,8 @@ class PersonalAI:
         :rtype: Tuple[str, ReturnInfo]
         """
         self.log("START ANSWER GENERATION...", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(question)}", verbose=self.verbose)
+        self.log(
+            f"BASE_QUESTION ID: {create_id(question)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {question}", verbose=self.verbose)
 
         answer, info = self.qa_pipeline.answer(question)
@@ -80,6 +90,7 @@ class PersonalAI:
         self.log(f"PROPERTIES: {text_properties}", verbose=self.verbose)
 
         triplets, info = self.mem_pipeline.remember(text, text_properties)
-        self.log(f"RESULT:\n* EXTRACTED_TRIPLETS AMOUNT - {len(triplets)}", verbose=self.verbose)
+        self.log(
+            f"RESULT:\n* EXTRACTED_TRIPLETS AMOUNT - {len(triplets)}", verbose=self.verbose)
 
         return triplets, info

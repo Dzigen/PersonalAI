@@ -12,6 +12,7 @@ from ...utils.data_structs import create_id
 from ...utils.errors import STATUS_MESSAGE
 from ...db_drivers.kv_driver import KeyValueDriverConfig
 
+
 @dataclass
 class MemPipelineConfig:
     """Конфигурация Memorize-конвейера.
@@ -25,11 +26,14 @@ class MemPipelineConfig:
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
-    extractor_config: LLMExtractorConfig = field(default_factory=lambda: LLMExtractorConfig())
-    updator_config: LLMUpdatorConfig = field(default_factory=lambda: LLMUpdatorConfig())
+    extractor_config: LLMExtractorConfig = field(
+        default_factory=lambda: LLMExtractorConfig())
+    updator_config: LLMUpdatorConfig = field(
+        default_factory=lambda: LLMUpdatorConfig())
 
     log: Logger = field(default_factory=lambda: Logger(MEMORIZE_MAIN_LOG_PATH))
     verbose: bool = False
+
 
 class MemPipeline:
     """Верхнеуровневый класс Memorize-конвейера, отвечающий за изменение знаний в памяти ассистента.
@@ -43,18 +47,22 @@ class MemPipeline:
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig(),
-                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         self.config = config
         self.log = config.log
 
-        self.extractor = LLMExtractor(config.extractor_config, cache_kvdriver_config)
-        self.updator = LLMUpdator(kg_model, config.updator_config, cache_kvdriver_config)
+        self.extractor = LLMExtractor(
+            config.extractor_config, cache_kvdriver_config)
+        self.updator = LLMUpdator(
+            kg_model, config.updator_config, cache_kvdriver_config)
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if type(level) is not str:
-            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             raise NotImplementedError
@@ -63,7 +71,7 @@ class MemPipeline:
             self.extractor.clear_kv_caches()
             self.updator.clear_kv_caches()
 
-    def remember(self, text: str, time: Union[None,str] = None, properties: Dict = dict()) -> Tuple[List[Triplet], ReturnInfo]:
+    def remember(self, text: str, time: Union[None, str] = None, properties: Dict = dict()) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста и обновление/актуализацию знаний в памяти (графе знаний) ассистента.
 
         :param text: Слабоструктурированный текст на естественном языке.
@@ -79,20 +87,26 @@ class MemPipeline:
         """
 
         self.log("START KNOWLEDGE REMEMBERING...", verbose=self.config.verbose)
-        self.log(f"BASE_TEXT ID: {create_id(text)}", verbose=self.config.verbose)
+        self.log(f"BASE_TEXT ID: {create_id(text)}",
+                 verbose=self.config.verbose)
 
-        self.log("STAGE#1 - 'Извлечение информации (в структурированном формате) из текста'", verbose=self.config.verbose)
-        new_triplets, info = self.extractor.extract_knowledge(text, time, properties)
+        self.log("STAGE#1 - 'Извлечение информации (в структурированном формате) из текста'",
+                 verbose=self.config.verbose)
+        new_triplets, info = self.extractor.extract_knowledge(
+            text, time, properties)
 
         self.log(f"RESULT: {len(new_triplets)}", verbose=self.config.verbose)
         for triplet in new_triplets:
             self.log(f"* {triplet}", verbose=self.config.verbose)
 
         if info.status == ReturnStatus.success:
-            self.log("STAGE#2 - 'Обновление информации в памяти (графе знаний) асситента'", verbose=self.config.verbose)
-            self.log(f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.config.verbose)
+            self.log("STAGE#2 - 'Обновление информации в памяти (графе знаний) асситента'",
+                     verbose=self.config.verbose)
+            self.log(
+                f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.config.verbose)
             info = self.updator.update_knowledge(new_triplets)
 
-        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
+        self.log(
+            f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
         return new_triplets, info

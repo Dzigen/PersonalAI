@@ -8,3 +8,7 @@ repos:
     -   id: end-of-file-fixer
     -   id: check-yaml
     -   id: check-added-large-files
+-   repo: https://github.com/pre-commit/mirrors-autopep8
+    rev: v2.0.4 # Use a specific version or tag, e.g., v2.0.4 or a recent one
+    hooks:
+    -   id: autopep8

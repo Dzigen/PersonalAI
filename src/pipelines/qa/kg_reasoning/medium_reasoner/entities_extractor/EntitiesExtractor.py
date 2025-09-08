@@ -9,6 +9,7 @@ from ......utils.data_structs import create_id
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.cache_kv import CacheUtils
 
+
 @dataclass
 class EntitiesExtractorConfig:
     """Конфигурация EntitiesExtractor-стадии MediumQA-ризонера.
@@ -27,8 +28,10 @@ class EntitiesExtractorConfig:
     :type verbose: bool, optional
     """
     lang: str = 'auto'
-    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    entities_extraction_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_ENT_EXTR_TASK_CONFIG)
+    adriver_config: AgentDriverConfig = field(
+        default_factory=lambda: AgentDriverConfig())
+    entities_extraction_agent_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_ENT_EXTR_TASK_CONFIG)
 
     cache_table_name: str = "medreasn_entextr_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(ENEXTR_MAIN_LOG_PATH))
@@ -36,6 +39,7 @@ class EntitiesExtractorConfig:
 
     def to_str(self):
         return f"{self.lang}|{self.adriver_config.to_str()}|{self.entities_extraction_agent_task_config.version}"
+
 
 class EntitiesExtractor(CacheUtils):
     """Верхнеуровневый класс стадии #2.1.1 MediumQA-конвейера для извлечения сущностей из поискового запроса.
@@ -47,11 +51,13 @@ class EntitiesExtractor(CacheUtils):
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
     """
+
     def __init__(self, config: EntitiesExtractorConfig = EntitiesExtractorConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True):
         self.config = config
 
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
 
         self.agent = AgentDriver.connect(config.adriver_config)
         agents_cache_config = None
@@ -66,9 +72,11 @@ class EntitiesExtractor(CacheUtils):
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if type(level) is not str:
-            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             self.cachekv.clear()
@@ -94,8 +102,10 @@ class EntitiesExtractor(CacheUtils):
         self.log(f"QUERY ID: {create_id(query)}", verbose=self.config.verbose)
         self.log(f"QUERY: {query}", verbose=self.config.verbose)
 
-        self.log("Выполнение извлечения сущностей из запроса с помощью LLM-агента...", verbose=self.config.verbose)
-        entities, info.status = self.entities_extractor_solver.solve(lang=self.config.lang, query=query)
+        self.log("Выполнение извлечения сущностей из запроса с помощью LLM-агента...",
+                 verbose=self.config.verbose)
+        entities, info.status = self.entities_extractor_solver.solve(
+            lang=self.config.lang, query=query)
         self.log(f"RESULT: {entities}", verbose=self.verbose)
         self.log(f"STATUS: {info.status}", verbose=self.verbose)
 

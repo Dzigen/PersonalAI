@@ -38,7 +38,8 @@ if PARAMS['INIT_STRUCT']:
         raise ValueError(f"Директория существует: {RAM_DB_PATH}")
 
     if os.path.exists(TMP_EXTRACTED_TRIPLETS_PATH):
-        raise ValueError(f"Директория существует: {TMP_EXTRACTED_TRIPLETS_PATH}")
+        raise ValueError(
+            f"Директория существует: {TMP_EXTRACTED_TRIPLETS_PATH}")
 
     os.mkdir(SPEC_KG_PATH)
 

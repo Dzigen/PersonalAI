@@ -1,8 +1,8 @@
+from src.utils import TripletCreator, NodeCreator, NodeType, \
+    RelationCreator, RelationType
 import copy
 import sys
 sys.path.insert(0, "../")
-from src.utils import TripletCreator, NodeCreator, NodeType,\
-      RelationCreator, RelationType
 
 VALID_OBJECT_NODE1 = NodeCreator.create(
     n_type=NodeType.object,

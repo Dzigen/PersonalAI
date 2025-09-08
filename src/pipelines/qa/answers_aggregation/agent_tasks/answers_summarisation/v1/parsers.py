@@ -1,5 +1,6 @@
 import re
 
+
 def en_subasumm_custom_answer_parse(raw_response: str, **kwargs) -> str:
 
     if len(raw_response) < 1:
@@ -18,6 +19,7 @@ def en_subasumm_custom_answer_parse(raw_response: str, **kwargs) -> str:
         raise ValueError
 
     return answer
+
 
 def ru_subasumm_custom_answer_parse(raw_response: str, **kwargs) -> str:
 

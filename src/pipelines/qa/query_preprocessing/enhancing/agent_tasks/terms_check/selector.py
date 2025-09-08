@@ -8,13 +8,14 @@ AVAILABLE_TCHECK_TCONFIGS = {
     'v1': TCHECK_SUITE_V1
 }
 
+
 class AgentQueryTermsCheckConfigSelector:
     @staticmethod
     def get_available_configs():
         return AVAILABLE_TCHECK_TCONFIGS
 
     @staticmethod
-    def select(base_config_version:str = 'v1', cache_table_name:str="qp_tcheck_agent_task_cache") -> AgentTaskSolverConfig:
+    def select(base_config_version: str = 'v1', cache_table_name: str = "qp_tcheck_agent_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
             suites=AVAILABLE_TCHECK_TCONFIGS[base_config_version],

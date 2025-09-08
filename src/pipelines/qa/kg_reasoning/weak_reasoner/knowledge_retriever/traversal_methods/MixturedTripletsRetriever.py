@@ -13,6 +13,7 @@ from .......utils import Logger
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 
+
 @dataclass
 class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     """Конфигурация смешанного алгоритма извлечения триплетов из графа знаний.
@@ -31,19 +32,27 @@ class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     :type cache_table_name: str, optional
     """
     retriever1_name: str = 'astar'
-    retriever1_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: AStarGraphSearchConfig())
+    retriever1_config: Union[BaseGraphSearchConfig, Dict] = field(
+        default_factory=lambda: AStarGraphSearchConfig())
     retriever2_name: str = 'watercircles'
-    retriever2_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: WaterCirclesSearchConfig())
-    accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
+    retriever2_config: Union[BaseGraphSearchConfig, Dict] = field(
+        default_factory=lambda: WaterCirclesSearchConfig())
+    accepted_node_types: List[NodeType] = field(default_factory=lambda: [
+                                                NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
     cache_table_name: str = 'qa_mixture_t_retriever_cache'
 
     def to_str(self):
-        retriever1_pair = (self.retriever1_name, self.retriever1_config.to_str())
-        retriever2_pair = (self.retriever2_name, self.retriever2_config.to_str())
-        sorted_pretr = sorted([retriever1_pair, retriever2_pair], key=lambda p: p[0])
+        retriever1_pair = (self.retriever1_name,
+                           self.retriever1_config.to_str())
+        retriever2_pair = (self.retriever2_name,
+                           self.retriever2_config.to_str())
+        sorted_pretr = sorted(
+            [retriever1_pair, retriever2_pair], key=lambda p: p[0])
 
-        str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
+        str_accepted_nodes = ";".join(
+            sorted(list(map(lambda v: v.value, self.accepted_node_types))))
         return f"{sorted_pretr[0][0]};{sorted_pretr[0][1]};{sorted_pretr[1][0]};{sorted_pretr[1][1]};{str_accepted_nodes}"
+
 
 class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     """Класс предназначен для извлечения триплетов из графа знаний на основе комбинации базовых алгоритмов обхода.
@@ -59,15 +68,18 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
     """
+
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[MixturedGraphSearchConfig, Dict] = MixturedGraphSearchConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
         if type(search_config) is dict:
             if 'accepted_node_types' in search_config:
-                search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
+                search_config['accepted_node_types'] = list(
+                    map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
             search_config = MixturedGraphSearchConfig(**search_config)
         self.config = search_config
 
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, self.config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, self.config.cache_table_name)
 
         self.available_retrievers = {
             'astar': AStarTripletsRetriever,
@@ -90,11 +102,13 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log = log
         self.verbose = verbose
 
-    def clear_kv_caches(self, level = 'all') -> None:
+    def clear_kv_caches(self, level='all') -> None:
         if type(level) is not str:
-            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             self.cachekv.clear()
@@ -108,8 +122,10 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
-        self.log(f"RETRIEVER: MixturedTripletsRetriever ({self.config.retriever1_name} + {self.config.retriever2_name})", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
+        self.log(
+            f"RETRIEVER: MixturedTripletsRetriever ({self.config.retriever1_name} + {self.config.retriever2_name})", verbose=self.verbose)
+        self.log(
+            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 
         triplets1 = self.retriever1.get_relevant_triplets(query_info)

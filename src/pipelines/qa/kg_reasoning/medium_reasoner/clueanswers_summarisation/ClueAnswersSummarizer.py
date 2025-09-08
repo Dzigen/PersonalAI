@@ -8,6 +8,7 @@ from ......utils.data_structs import create_id
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.cache_kv import CacheUtils
 
+
 @dataclass
 class ClueAnswersSummarizerConfig:
     """Конфигурация ClueQueriesGenerator-стадии MediumQA-ризонера.
@@ -26,8 +27,10 @@ class ClueAnswersSummarizerConfig:
     :type verbose: bool, optional
     """
     lang: str = 'auto'
-    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    canswers_summarisation_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_CASUMM_TASK_CONFIG)
+    adriver_config: AgentDriverConfig = field(
+        default_factory=lambda: AgentDriverConfig())
+    canswers_summarisation_agent_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_CASUMM_TASK_CONFIG)
 
     cache_table_name: str = "medreasn_cquerysumm_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(CQSUMM_MAIN_LOG_PATH))
@@ -35,6 +38,7 @@ class ClueAnswersSummarizerConfig:
 
     def to_str(self):
         return f"{self.lang}|{self.adriver_config.to_str()}|{self.canswers_summarisation_agent_task_config.version}"
+
 
 class ClueAnswersSummarizer(CacheUtils):
     """Верхнеуровневый класс стадии #3.2 MediumQA-конвейера для суммаризации/резюмирования информации, извлечённой из графа знаний (памяти ассистента) по search_query-шагу поиска.
@@ -46,11 +50,13 @@ class ClueAnswersSummarizer(CacheUtils):
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
     """
+
     def __init__(self, config: ClueAnswersSummarizerConfig = ClueAnswersSummarizerConfig(),
-                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None, cache_llm_inference: bool = True) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True) -> None:
         self.config = config
 
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
 
         self.agent = AgentDriver.connect(config.adriver_config)
         agents_cache_config = None
@@ -65,9 +71,11 @@ class ClueAnswersSummarizer(CacheUtils):
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if type(level) is not str:
-            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             self.cachekv.clear()
@@ -94,8 +102,10 @@ class ClueAnswersSummarizer(CacheUtils):
         :return: Кортеж из двух объектов: (1) резюмированный набор информации (в виде полносвязного текста на естественном языке), который является результатов поиска в графе знаний (памяти ассистента) по данному базовому шагу/запросу плана. (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
-        self.log("START CLUE-QUERIES SUMMARISATION...", verbose=self.config.verbose)
-        self.log(f"SEARCH_QUERY ID: {create_id(search_query)}", verbose=self.config.verbose)
+        self.log("START CLUE-QUERIES SUMMARISATION...",
+                 verbose=self.config.verbose)
+        self.log(
+            f"SEARCH_QUERY ID: {create_id(search_query)}", verbose=self.config.verbose)
         self.log(f"SEARCH_QUERY: {search_query}", verbose=self.config.verbose)
         self.log(f"CLUE-QUERIES: {clue_queries}", verbose=self.config.verbose)
         self.log(f"CLUE-ANSWERS: {clue_answers}", verbose=self.config.verbose)
@@ -104,7 +114,8 @@ class ClueAnswersSummarizer(CacheUtils):
         if len(search_query) < 1 or len(clue_queries) < 1 or len(clue_answers) != len(clue_queries):
             raise ValueError
 
-        self.log("Выполненяем суммаризацию clue-answers с помощью LLM-агента...", verbose=self.config.verbose)
+        self.log("Выполненяем суммаризацию clue-answers с помощью LLM-агента...",
+                 verbose=self.config.verbose)
         summ_answer, status = self.clueanswers_summ_solver.solve(
             lang=self.config.lang, search_query=search_query,
             clues_queries=clue_queries, clue_answers=clue_answers)

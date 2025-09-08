@@ -5,10 +5,11 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
 
-OPENAI_API_KEY=""
+OPENAI_API_KEY = ""
 
 model = "gpt-4o"
 client = OpenAI(api_key=OPENAI_API_KEY)
+
 
 def execute_prompt(prompt):
     if isinstance(prompt, str):
@@ -30,7 +31,8 @@ if os.path.exists("./diaasq_db"):
         embedding_function=OpenAIEmbeddings()
     )
 else:
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=50)
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=10000, chunk_overlap=50)
     documents = text_splitter.create_documents(utterances)
     print(len(documents))
     print(documents[0])
@@ -84,7 +86,8 @@ for question_type in ["simple_sentiment", "compare_devices", "compare_sentiment"
         for element in res:
             if element.page_content not in retr_elements:
                 retr_elements.append(element.page_content)
-        prompt = PROMPT_ANSWER.format(question=question, info="\n".join(retr_elements))
+        prompt = PROMPT_ANSWER.format(
+            question=question, info="\n".join(retr_elements))
         res = execute_prompt(prompt)
         qas.append([question, res])
 

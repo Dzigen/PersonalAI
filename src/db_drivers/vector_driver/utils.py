@@ -1,13 +1,16 @@
-from abc import  abstractmethod
+from abc import abstractmethod
 from dataclasses import dataclass, field, asdict
 from typing import Dict, List, Tuple, Union
 
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
+
 @dataclass
 class VectorDBConnectionConfig(BaseDatabaseConfig):
-    db_info: Dict = field(default_factory=lambda : { 'db': 'defaultpersonalaivectordb','table': 'defaultpersonalaivectortable'})
+    db_info: Dict = field(default_factory=lambda: {
+                          'db': 'defaultpersonalaivectordb', 'table': 'defaultpersonalaivectortable'})
     conn: Dict = field(default_factory=lambda: dict())
+
 
 @dataclass
 class VectorDBInstance:
@@ -18,6 +21,7 @@ class VectorDBInstance:
 
     def dict(self):
         return {k: v for k, v in asdict(self).items()}
+
 
 class AbstractVectorDatabaseConnection(AbstractDatabaseConnection):
     @abstractmethod

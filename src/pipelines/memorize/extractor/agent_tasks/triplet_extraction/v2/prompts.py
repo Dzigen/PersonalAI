@@ -1,7 +1,7 @@
 ### PROMPT IN ENGLISH ###
 
 EN_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
-'''Objective: The main goal is to meticulously gather information from the input [Text] and organize this data into a clear, structured knowledge graph. Knowledge graphs consists of a set of triplets. Each triplet contains two entities (subject and object) and one relation
+    '''Objective: The main goal is to meticulously gather information from the input [Text] and organize this data into a clear, structured knowledge graph. Knowledge graphs consists of a set of triplets. Each triplet contains two entities (subject and object) and one relation
 that connects these subject and object. The subject is the entity that takes or undergo the action expressed by the predicate. The object is the entity which is the factual object of the action. The information provided by each predicate can be summarized as a
 knowledge triplet of the form "subject | predicate | object".
 
@@ -33,13 +33,13 @@ Albert Einstein | developed | Theory of Relativity.
 # As a response generate only extracted triplets in the format, described above and do not include additional explanations of the obtained result.
 
 EN_TRIPLETS_EXTRACTION_USER_PROMPT = \
-'''
+    '''
 [Text]:
 {text}
 '''
 
 EN_TRIPLETS_ASSISTANT_PROMPT = \
-'''
+    '''
 [Extracted Triplets]:
 '''
 
@@ -47,7 +47,7 @@ EN_TRIPLETS_ASSISTANT_PROMPT = \
 
 # TODO
 RU_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
-'''Задача: Основная цель - скрупулезно собрать информацию из входного текста и организовать эти данные в четкий, структурированный граф знаний.
+    '''Задача: Основная цель - скрупулезно собрать информацию из входного текста и организовать эти данные в четкий, структурированный граф знаний.
 
 Рекомендации по построению графа знаний:
 
@@ -71,10 +71,10 @@ RU_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
 
 # TODO
 RU_TRIPLETS_EXTRACTION_USER_PROMPT = \
-'''Текст:
+    '''Текст:
 {text} '''
 
 # TODO
 RU_TRIPLETS_ASSISTANT_PROMPT = \
-'''
+    '''
 Извлеченные триплеты: '''

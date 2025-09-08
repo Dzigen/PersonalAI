@@ -1,3 +1,8 @@
+from .configs import DEFAULT_LLMJUDGE_TASK_CONFIG, EVAL_JUDGE_MAIN_LOG_PATH
+from src.db_drivers.kv_driver import KeyValueDriverConfig
+from src.utils.cache_kv import CacheKV, CacheUtils
+from src.agents import AgentDriver, AgentDriverConfig
+from src.utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 from dataclasses import dataclass, field
 from typing import Union
 from copy import deepcopy
@@ -6,24 +11,22 @@ import sys
 BASE_PATH = '../../'
 sys.path.insert(0, BASE_PATH)
 
-from src.utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
-from src.agents import AgentDriver, AgentDriverConfig
-from src.utils.cache_kv import CacheKV, CacheUtils
-from src.db_drivers.kv_driver import KeyValueDriverConfig
-
-from .configs import DEFAULT_LLMJUDGE_TASK_CONFIG, EVAL_JUDGE_MAIN_LOG_PATH
 
 @dataclass
 class AnswersJudgeConfig:
     lang: str = 'auto'
-    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    llmjudge_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_LLMJUDGE_TASK_CONFIG)
+    adriver_config: AgentDriverConfig = field(
+        default_factory=lambda: AgentDriverConfig())
+    llmjudge_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_LLMJUDGE_TASK_CONFIG)
     cache_table_name: Union[str, None] = 'qaeval_judge_cache'
 
-    log: Logger = field(default_factory=lambda: Logger(EVAL_JUDGE_MAIN_LOG_PATH))
+    log: Logger = field(
+        default_factory=lambda: Logger(EVAL_JUDGE_MAIN_LOG_PATH))
     verbose: bool = False
 
     cache_table_name: str = "qaeval_judge_cache"
+
 
 class AnswersJudge(CacheUtils):
 
@@ -52,7 +55,7 @@ class AnswersJudge(CacheUtils):
             self.agent, self.config.llmjudge_task_config,
             llmjudge_task_cache_config)
 
-    def get_cache_key(self, question:str, ground_truth: str, predicted_response: Union[str,None]):
+    def get_cache_key(self, question: str, ground_truth: str, predicted_response: Union[str, None]):
         return [question, ground_truth, str(predicted_response), self.config.adriver_config.to_str(),
                 self.config.llmjudge_task_config.version]
 
@@ -60,8 +63,10 @@ class AnswersJudge(CacheUtils):
     def perform(self, question: str, ground_truth: str, predicted_response: str) -> Union[int, float]:
         info = ReturnInfo()
         self.log("START JUDGING...", verbose=self.config.verbose)
-        self.log(f"* GROUND_TRUTH: {ground_truth}", verbose=self.config.verbose)
-        self.log(f"* PREDICTED: {predicted_response}", verbose=self.config.verbose)
+        self.log(f"* GROUND_TRUTH: {ground_truth}",
+                 verbose=self.config.verbose)
+        self.log(f"* PREDICTED: {predicted_response}",
+                 verbose=self.config.verbose)
 
         predicted_score, status = self.llmjudge_solver.solve(
             lang=self.config.lang, question=question,

@@ -10,6 +10,7 @@ from .....agents import AgentDriverConfig, AgentDriver
 from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
 from .....db_drivers.kv_driver import KeyValueDriverConfig
 
+
 @dataclass
 class QueryDenoiserConfig:
     """Конфигурация QueryDenoiser-операции.
@@ -30,9 +31,12 @@ class QueryDenoiserConfig:
     :type verbose: bool, optional
     """
     lang: str = "auto"
-    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    swremoval_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_SWREMV_TASK_CONFIG)
-    grammarcheck_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_GRAMCHECK_TASK_CONFIG)
+    adriver_config: AgentDriverConfig = field(
+        default_factory=lambda: AgentDriverConfig())
+    swremoval_agent_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_SWREMV_TASK_CONFIG)
+    grammarcheck_agent_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_GRAMCHECK_TASK_CONFIG)
 
     cache_table_name: str = 'qp_denoising_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(QD_MAIN_LOG_PATH))
@@ -40,6 +44,7 @@ class QueryDenoiserConfig:
 
     def to_str(self):
         return f"{self.lang}|{self.adriver_config.to_str()}|{self.swremoval_agent_task_config.version}|{self.grammarcheck_agent_task_config.version}"
+
 
 class QueryDenoiser(CacheUtils):
     """Класс, реализующий одну из операций по форматированию/предобработке user-вопроса в рамках QueryPreprocessor-стадии. Данный класс выполняет удаление лишних шумов/фрагментов информации из user-вопроса.
@@ -51,10 +56,12 @@ class QueryDenoiser(CacheUtils):
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
     """
+
     def __init__(self, config: QueryDenoiserConfig = QueryDenoiserConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None, cache_llm_inference: bool = True):
         self.config = config
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
 
         self.agent = AgentDriver.connect(config.adriver_config)
         agents_cache_config = None
@@ -82,7 +89,8 @@ class QueryDenoiser(CacheUtils):
         :rtype: Tuple[str, ReturnInfo]
         """
         self.log("START QUERY DENOISING...", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.config.verbose)
+        self.log(
+            f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.config.verbose)
         self.log(f"QUERY INFO: {query_info}", verbose=self.config.verbose)
         denoised_query, rinfo = None, ReturnInfo()
 
@@ -91,20 +99,25 @@ class QueryDenoiser(CacheUtils):
         else:
             raise ValueError
 
-        self.log("Выполнение удаление лишней информации/символов из запроса с помощью LLM-агента...", verbose=self.config.verbose)
-        query_wo_stopwords, status = self.swremoval_solver.solve(lang=self.config.lang, query=query)
+        self.log("Выполнение удаление лишней информации/символов из запроса с помощью LLM-агента...",
+                 verbose=self.config.verbose)
+        query_wo_stopwords, status = self.swremoval_solver.solve(
+            lang=self.config.lang, query=query)
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
         else:
-            self.log(f"RESULT: {query_wo_stopwords}", verbose=self.config.verbose)
+            self.log(f"RESULT: {query_wo_stopwords}",
+                     verbose=self.config.verbose)
 
         if status == ReturnStatus.success:
             self.log("Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.config.verbose)
-            reformulated_query, status = self.grammar_check_solver.solve(lang=self.config.lang, query=query_wo_stopwords)
+            reformulated_query, status = self.grammar_check_solver.solve(
+                lang=self.config.lang, query=query_wo_stopwords)
             if status != ReturnStatus.success:
                 rinfo.occurred_warning.append(status)
             else:
-                self.log(f"RESULT: {reformulated_query}", verbose=self.config.verbose)
+                self.log(f"RESULT: {reformulated_query}",
+                         verbose=self.config.verbose)
                 denoised_query = reformulated_query
 
         if denoised_query is None:

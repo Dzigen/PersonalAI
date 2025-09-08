@@ -87,7 +87,7 @@ WEAK_KG_REASONER:
       #- hyper
       - episodic
       - time
-      
+
       max_depth: 5
       max_paths: 10
       same_path_intersection_by_node: False
@@ -95,7 +95,7 @@ WEAK_KG_REASONER:
       diff_paths_intersection_by_rel: False
       mean_alpha: 0.75
       final_sorting_mode: mixed
-          
+
     filter_method: 'naive' # CAN BE None
     filter_config: # CAN BE None
       max_k: 50

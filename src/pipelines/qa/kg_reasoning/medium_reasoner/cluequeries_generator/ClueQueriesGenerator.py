@@ -13,6 +13,7 @@ from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......db_drivers.vector_driver import VectorDBInstance
 from ......utils.cache_kv import CacheUtils
 
+
 @dataclass
 class ClueQueriesGeneratorConfig:
     """Конфигурация ClueQueriesGenerator-стадии MediumQA-ризонера.
@@ -31,8 +32,10 @@ class ClueQueriesGeneratorConfig:
     :type verbose: bool, optional
     """
     lang: str = 'auto'
-    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    cquerie_generator_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_CQGEN_TASK_CONFIG)
+    adriver_config: AgentDriverConfig = field(
+        default_factory=lambda: AgentDriverConfig())
+    cquerie_generator_agent_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_CQGEN_TASK_CONFIG)
 
     cache_table_name: str = 'medreasn_cquerygen_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(CQGEN_MAIN_LOG_PATH))
@@ -40,6 +43,7 @@ class ClueQueriesGeneratorConfig:
 
     def to_str(self):
         return f"{self.lang}|{self.adriver_config.to_str()}|{self.cquerie_generator_agent_task_config.version}"
+
 
 class ClueQueriesGenerator(CacheUtils):
     """Верхнеуровневый класс стадии #2.2 MediumQA-конвейера для генерации clue-запросов поиска на графе знаний.
@@ -51,11 +55,13 @@ class ClueQueriesGenerator(CacheUtils):
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
     """
+
     def __init__(self, config: ClueQueriesGeneratorConfig = ClueQueriesGeneratorConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None, cache_llm_inference: bool = True):
         self.config = config
 
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
 
         self.agent = AgentDriver.connect(config.adriver_config)
         agents_cache_config = None
@@ -70,9 +76,11 @@ class ClueQueriesGenerator(CacheUtils):
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if type(level) is not str:
-            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             self.cachekv.clear()
@@ -82,7 +90,8 @@ class ClueQueriesGenerator(CacheUtils):
                 self.cluequery_gen_solver.cachekv.clear()
 
     def get_cache_key(self, search_query: str, matched_kg_objects: Dict[str, List[VectorDBInstance]]) -> List[object]:
-        str_matchedobject = json.dumps({k: list(map(lambda vv: vv.document, v))for k,v in matched_kg_objects.items()}, ensure_ascii=False)
+        str_matchedobject = json.dumps({k: list(map(lambda vv: vv.document, v))
+                                       for k, v in matched_kg_objects.items()}, ensure_ascii=False)
         return [search_query, str_matchedobject, self.config.to_str()]
 
     @CacheUtils.cache_method_output
@@ -101,32 +110,44 @@ class ClueQueriesGenerator(CacheUtils):
         :return: Кортеж из двух объектов: (1) список сформированных clue-запросов; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[QueryInfo], ReturnInfo]
         """
-        self.log("START CLUE-QUERIES GENERATION...", verbose=self.config.verbose)
-        self.log(f"SEARCH_QUERY ID: {create_id(search_query)}", verbose=self.config.verbose)
+        self.log("START CLUE-QUERIES GENERATION...",
+                 verbose=self.config.verbose)
+        self.log(
+            f"SEARCH_QUERY ID: {create_id(search_query)}", verbose=self.config.verbose)
         self.log(f"SEARCH_QUERY: {search_query}", verbose=self.config.verbose)
-        str_matchedobjects = ';'.join([f'{k} - {[vv.document for vv in v]}' for k,v in matched_kg_objects.items()])
-        self.log(f"MATCHED_KG_OBJECT: {str_matchedobjects}", verbose=self.config.verbose)
+        str_matchedobjects = ';'.join(
+            [f'{k} - {[vv.document for vv in v]}' for k, v in matched_kg_objects.items()])
+        self.log(
+            f"MATCHED_KG_OBJECT: {str_matchedobjects}", verbose=self.config.verbose)
         clue_queries, info = [], ReturnInfo()
         unique_cqueries = set()
 
         if len(search_query) < 1 or len(matched_kg_objects) < 1:
             raise ValueError
-        m_objects_amount = sum(list(map(lambda m_objects: len(m_objects), matched_kg_objects.values())))
+        m_objects_amount = sum(
+            list(map(lambda m_objects: len(m_objects), matched_kg_objects.values())))
         if m_objects_amount < 1:
             raise ValueError
 
-        self.log(f"Получаем декартово произведение всех комбинаций объектов (по сущностям)...", verbose=self.config.verbose)
-        base_entities = sorted(list(filter(lambda entitie: len(matched_kg_objects[entitie]) > 0, matched_kg_objects.keys())))
-        objects_groups = list(product(*[matched_kg_objects[k] for k in base_entities]))
-        str_objectspermuts = ';'.join([f'[{k}] {len(v)}' for k, v in matched_kg_objects.items()])
+        self.log(f"Получаем декартово произведение всех комбинаций объектов (по сущностям)...",
+                 verbose=self.config.verbose)
+        base_entities = sorted(list(filter(lambda entitie: len(
+            matched_kg_objects[entitie]) > 0, matched_kg_objects.keys())))
+        objects_groups = list(
+            product(*[matched_kg_objects[k] for k in base_entities]))
+        str_objectspermuts = ';'.join(
+            [f'[{k}] {len(v)}' for k, v in matched_kg_objects.items()])
         self.log(f"RESULT:\n- всего сущностей: {len(matched_kg_objects)}\n- после фильтрации: {len(base_entities)}\n- объектов для каждой сущности: {str_objectspermuts}\n- полученное количество комбинаций: {len(objects_groups)}", verbose=self.config.verbose)
 
         self.log("Генерируем clue-queries...", verbose=self.config.verbose)
         for i, cur_group in enumerate(objects_groups):
-            self.log(f"Текущий cleu-query #: {i} / {len(objects_groups)}", verbose=self.config.verbose)
-            formated_objects_group = list(map(lambda item: item.document, cur_group))
+            self.log(
+                f"Текущий cleu-query #: {i} / {len(objects_groups)}", verbose=self.config.verbose)
+            formated_objects_group = list(
+                map(lambda item: item.document, cur_group))
 
-            self.log("Выполняем генерацию clue-query с помощью LLM-агента...", verbose=self.config.verbose)
+            self.log("Выполняем генерацию clue-query с помощью LLM-агента...",
+                     verbose=self.config.verbose)
             cur_cluequery, status = self.cluequery_gen_solver.solve(
                 lang=self.config.lang, query=search_query, base_entities=base_entities,
                 matched_objects=formated_objects_group)
@@ -137,16 +158,20 @@ class ClueQueriesGenerator(CacheUtils):
                 break
             else:
                 if cur_cluequery in unique_cqueries:
-                    self.log("Сгенерированное clue-query уже было получено ранее. Отбрасываем.", verbose=self.config.verbose)
+                    self.log(
+                        "Сгенерированное clue-query уже было получено ранее. Отбрасываем.", verbose=self.config.verbose)
                     continue
                 else:
-                    self.log("Сгенерированое clue-query ещё получено не было. Сохраняем.", verbose=self.config.verbose)
+                    self.log(
+                        "Сгенерированое clue-query ещё получено не было. Сохраняем.", verbose=self.config.verbose)
                     unique_cqueries.add(cur_cluequery)
                     clue_queries.append(QueryInfo(
-                        query=cur_cluequery, entities=base_entities, linked_nodes=list(cur_group),
-                        linked_nodes_by_entities=list(map(lambda pair: [base_entities[pair[0]],pair[1]], enumerate(formated_objects_group)))))
+                        query=cur_cluequery, entities=base_entities, linked_nodes=list(
+                            cur_group),
+                        linked_nodes_by_entities=list(map(lambda pair: [base_entities[pair[0]], pair[1]], enumerate(formated_objects_group)))))
 
-        self.log(f"RESULT:\n- Количество clue-queries после фильтрации по строкоовму представлению: {len(clue_queries)}", verbose=self.verbose)
+        self.log(
+            f"RESULT:\n- Количество clue-queries после фильтрации по строкоовму представлению: {len(clue_queries)}", verbose=self.verbose)
         self.log(f"STATUS: {info.status}", verbose=self.verbose)
 
         return clue_queries, info

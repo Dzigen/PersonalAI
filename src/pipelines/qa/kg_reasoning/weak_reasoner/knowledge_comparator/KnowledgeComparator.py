@@ -10,6 +10,7 @@ from ......db_drivers.vector_driver import VectorDBInstance
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 
+
 @dataclass
 class KnowledgeComparatorConfig:
     """Конфигурация "Knowledge Comparator"-стадии QA-конвейера.
@@ -41,6 +42,7 @@ class KnowledgeComparatorConfig:
     def to_str(self):
         return f"{self.threshold};{self.fetch_n};{self.max_k}:{self.k_compare}"
 
+
 class KnowledgeComparator(CacheUtils):
     """Верхнеуровневый класс второй стадии QA-конвейера для сопоставления информации из user-вопроса с имеющейся информацией в памяти (графе знаний) ассистента.
 
@@ -51,28 +53,31 @@ class KnowledgeComparator(CacheUtils):
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
+
     def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeComparatorConfig = KnowledgeComparatorConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
         self.config = config
         self.kg_model = kg_model
 
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
 
         self.log = self.config.log
         self.verbose = self.config.verbose
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if type(level) is not str:
-            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             self.cachekv.clear()
 
         if level in ['other', 'all']:
             raise NotImplementedError
-
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
         return [self.config.to_str(), query_info.to_str()]
@@ -88,26 +93,35 @@ class KnowledgeComparator(CacheUtils):
         """
 
         self.log("START MATCHING KEY WORDS ...", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.config.verbose)
-        self.log(f"ENTITIES: {query_info.entities}", verbose=self.config.verbose)
+        self.log(
+            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION: {query_info.query}",
+                 verbose=self.config.verbose)
+        self.log(f"ENTITIES: {query_info.entities}",
+                 verbose=self.config.verbose)
 
         info = ReturnInfo()
         linked_nodes_by_entities, linked_nodes, linked_scores = [], [], []
 
         for entity in query_info.entities:
-            entity_embedding = self.kg_model.embeddings_struct.embedder.encode_queries([entity])[0]
+            entity_embedding = self.kg_model.embeddings_struct.embedder.encode_queries([
+                                                                                       entity])[0]
             entity_instance = VectorDBInstance(embedding=entity_embedding)
 
             nodes_with_scores = self.kg_model.embeddings_struct.vectordbs['nodes'].retrieve(
                 [entity_instance], n_results=self.config.fetch_n)[0]
-            filtered_nodes = list(filter(lambda node_item: node_item[0] < self.config.threshold, nodes_with_scores))
-            cur_linked_nodes = list(map(lambda node_item: node_item[1], filtered_nodes))
+            filtered_nodes = list(filter(
+                lambda node_item: node_item[0] < self.config.threshold, nodes_with_scores))
+            cur_linked_nodes = list(
+                map(lambda node_item: node_item[1], filtered_nodes))
             linked_nodes += cur_linked_nodes[:self.config.max_k]
-            linked_scores += list(map(lambda node_item: node_item[0], filtered_nodes))[:self.config.max_k]
+            linked_scores += list(map(lambda node_item: node_item[0], filtered_nodes))[
+                :self.config.max_k]
 
-            cur_documents = list(map(lambda item: item.document, cur_linked_nodes))
-            cur_documents_lower = list(map(lambda document: document.lower(), cur_documents))
+            cur_documents = list(
+                map(lambda item: item.document, cur_linked_nodes))
+            cur_documents_lower = list(
+                map(lambda document: document.lower(), cur_documents))
             if entity.lower() in cur_documents_lower[:self.config.k_compare]:
                 cur_unique_names = [entity]
             else:
@@ -118,10 +132,13 @@ class KnowledgeComparator(CacheUtils):
             info.status = ReturnStatus.zero_linked_nodes
             info.message = STATUS_MESSAGE[info.status]
         else:
-            self.log(f"RESULT: {len(linked_nodes)}", verbose=self.config.verbose)
-            for score, node in zip(linked_scores,linked_nodes):
-                self.log(f"*[{node.id}] {score} | {node.document}", verbose=self.config.verbose)
+            self.log(f"RESULT: {len(linked_nodes)}",
+                     verbose=self.config.verbose)
+            for score, node in zip(linked_scores, linked_nodes):
+                self.log(f"*[{node.id}] {score} | {node.document}",
+                         verbose=self.config.verbose)
 
-        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
+        self.log(
+            f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
         return linked_nodes, linked_nodes_by_entities, info

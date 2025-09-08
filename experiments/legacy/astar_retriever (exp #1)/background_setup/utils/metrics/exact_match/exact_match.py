@@ -122,7 +122,8 @@ class ExactMatch(evaluate.Metric):
             references = np.char.lower(references)
 
         if ignore_punctuation:
-            repl_table = string.punctuation.maketrans("", "", string.punctuation)
+            repl_table = string.punctuation.maketrans(
+                "", "", string.punctuation)
             predictions = np.char.translate(predictions, table=repl_table)
             references = np.char.translate(references, table=repl_table)
 

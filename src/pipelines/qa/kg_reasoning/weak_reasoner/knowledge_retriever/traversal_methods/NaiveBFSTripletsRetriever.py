@@ -11,6 +11,7 @@ from .......utils import Logger
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 
+
 @dataclass
 class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):
     """Конфигурация NaiveBFSTripletsRetriever-алгоритма обхода графа.
@@ -29,12 +30,15 @@ class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):
     max_depth: int = 10
     max_width: int = 50
     max_passed_nodes: int = 1000
-    accepted_node_types: List[NodeType] = field(default_factory=lambda:[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
+    accepted_node_types: List[NodeType] = field(default_factory=lambda: [
+                                                NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
     cache_table_name: str = 'qa_bfs_t_retriver_cache'
 
     def to_str(self):
-        str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
+        str_accepted_nodes = ";".join(
+            sorted(list(map(lambda v: v.value, self.accepted_node_types))))
         return f"{self.max_depth}|{self.max_width}|{self.max_passed_nodes}|{str_accepted_nodes}"
+
 
 class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     """Класс предназначен для извлечения триплетов из графа знаний на основе BFS-алгоритма (обход в ширину) поиска.
@@ -50,26 +54,31 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
     """
+
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[NaiveBFSGraphSearchConfig, Dict] = NaiveBFSGraphSearchConfig(),
-                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None, verbose: bool = False) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
         if type(search_config) is dict:
             if 'accepted_node_types' in search_config:
-                search_config['accepted_node_types'] = list(map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
+                search_config['accepted_node_types'] = list(
+                    map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
             search_config = NaiveBFSGraphSearchConfig(**search_config)
         self.config = search_config
 
         self.kg_model = kg_model
 
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, self.config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, self.config.cache_table_name)
 
         self.log = log
         self.verbose = verbose
 
-    def clear_kv_caches(self, level = 'all') -> None:
+    def clear_kv_caches(self, level='all') -> None:
         if type(level) is not str:
-            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             self.cachekv.clear()
@@ -95,7 +104,8 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 # ограничиваем глубину обхода
                 continue
 
-            neighbours = self.kg_model.graph_struct.db_conn.get_adjecent_nids(vertex, self.config.accepted_node_types)
+            neighbours = self.kg_model.graph_struct.db_conn.get_adjecent_nids(
+                vertex, self.config.accepted_node_types)
             neo4j_queries_counter += 1
 
             if self.config.max_width >= 0:
@@ -119,12 +129,15 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                     D[neighbour] = D[vertex] + 1
                     visited.add(neighbour)
 
-                    traversed_triplets += self.kg_model.graph_struct.db_conn.get_triplets(vertex, neighbour)
+                    traversed_triplets += self.kg_model.graph_struct.db_conn.get_triplets(
+                        vertex, neighbour)
                     neo4j_queries_counter += 1
                     queue.append(neighbour)
 
-        self.log(f"bfs graph-db queries: {neo4j_queries_counter}", verbose=self.verbose)
-        self.log(f"passed nodes counter: {passed_nodes_counter}", verbose=self.verbose)
+        self.log(
+            f"bfs graph-db queries: {neo4j_queries_counter}", verbose=self.verbose)
+        self.log(
+            f"passed nodes counter: {passed_nodes_counter}", verbose=self.verbose)
 
         return traversed_triplets
 
@@ -135,20 +148,27 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log("RETRIEVER: NaiveBFSTripletsRetriever", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
+        self.log(
+            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 
         node_ids = set([node.id for node in query_info.linked_nodes])
-        self.log(f"Вершины, для которых будет запущейн BFS: {node_ids}", verbose=self.verbose)
+        self.log(
+            f"Вершины, для которых будет запущейн BFS: {node_ids}", verbose=self.verbose)
 
         unique_triplets = dict()
         for node_id in node_ids:
-            self.log(f"Запускаем BFS по вершине с id: {node_id}", verbose=self.verbose)
+            self.log(
+                f"Запускаем BFS по вершине с id: {node_id}", verbose=self.verbose)
             tmp_triplets = self.search(node_id)
-            self.log(f"Количество извлечённых триплетов для данной вершины: {len(tmp_triplets)}", verbose=self.verbose)
-            unique_triplets.update({triplet.relation.id: triplet for triplet in tmp_triplets})
+            self.log(
+                f"Количество извлечённых триплетов для данной вершины: {len(tmp_triplets)}", verbose=self.verbose)
+            unique_triplets.update(
+                {triplet.relation.id: triplet for triplet in tmp_triplets})
 
-        self.log(f"Суммарное количество уникальных (по строковому представлению) извлечённых триплетов: {len(unique_triplets)}", verbose=self.verbose)
-        self.log(f"Распределение типов связей в наборе извлечённых триплетов: {Counter([triplet.relation.type for triplet in unique_triplets.values()])}", verbose=self.verbose)
+        self.log(
+            f"Суммарное количество уникальных (по строковому представлению) извлечённых триплетов: {len(unique_triplets)}", verbose=self.verbose)
+        self.log(
+            f"Распределение типов связей в наборе извлечённых триплетов: {Counter([triplet.relation.type for triplet in unique_triplets.values()])}", verbose=self.verbose)
 
         return list(unique_triplets.values())

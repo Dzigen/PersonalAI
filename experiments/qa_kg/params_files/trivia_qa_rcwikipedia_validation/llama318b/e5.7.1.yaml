@@ -78,10 +78,10 @@ WEAK_KG_REASONER:
     retriever_config:
       # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
       max_k: 50
-  
+
     filter_method: None
     filter_config: None
-      
+
   answer_generator_config:
     ag_task:
       prompts_version: 'v3' # 'v1' | 'v2'

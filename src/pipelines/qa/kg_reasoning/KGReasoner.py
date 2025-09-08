@@ -9,6 +9,7 @@ from ....kg_model import KnowledgeGraphModel
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv import CacheUtils
 
+
 @dataclass
 class KnowledgeGraphReasonerConfig:
     """
@@ -26,7 +27,8 @@ class KnowledgeGraphReasonerConfig:
     :type verbose: bool, optional
     """
     reasoner_name: str = 'weak'
-    reasoner_hyperparameters: BaseKGReasonerConfig = field(default_factory=lambda: WeakKGReasonerConfig())
+    reasoner_hyperparameters: BaseKGReasonerConfig = field(
+        default_factory=lambda: WeakKGReasonerConfig())
 
     cache_table_name: str = 'kg_reasoning_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(KGR_MAIN_LOG_PATH))
@@ -34,6 +36,7 @@ class KnowledgeGraphReasonerConfig:
 
     def to_str(self):
         return f"{self.reasoner_name}|{self.reasoner_hyperparameters.to_str()}"
+
 
 class KnowledgeGraphReasoner(CacheUtils):
     """Верхнеуровневый класс KnowledgeGraphReasoner-стадии (точка входа), отвечающей за поиск информации в графе знаний, релевантной для генерации ответа (на её основе) к user-вопросу.
@@ -48,10 +51,11 @@ class KnowledgeGraphReasoner(CacheUtils):
 
     def __init__(self, kg_model: KnowledgeGraphModel,
                  config: KnowledgeGraphReasonerConfig = KnowledgeGraphReasonerConfig(),
-                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None):
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None):
         self.config = config
 
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
 
         self.reasoner_name = config.reasoner_name
         self.reasoner = AVAILABLE_KG_REASONERS[self.reasoner_name](
@@ -62,9 +66,11 @@ class KnowledgeGraphReasoner(CacheUtils):
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if type(level) is not str:
-            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             self.cachekv.clear()

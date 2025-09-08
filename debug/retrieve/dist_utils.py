@@ -49,7 +49,8 @@ def varsize_gather_nograd(x: torch.Tensor):
     dist.all_gather(allsizes, size)
     max_size = max([size.cpu().max() for size in allsizes])
 
-    padded = torch.empty(max_size, *x.shape[1:], dtype=x.dtype, device=x.device)
+    padded = torch.empty(
+        max_size, *x.shape[1:], dtype=x.dtype, device=x.device)
     padded[: x.shape[0]] = x
     output = [torch.zeros_like(padded) for _ in range(dist.get_world_size())]
     dist.all_gather(output, padded)

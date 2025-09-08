@@ -19,7 +19,7 @@ import os
 import nltk
 nltk.download('wordnet')
 
-################LOADING_HYPERPARAMETERS###################
+################ LOADING_HYPERPARAMETERS###################
 
 # Read YAML file
 PARAMS_FILEP = sys.orig_argv[2]
@@ -34,22 +34,23 @@ METRICS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['metrics_name
 
 ####################################################
 
+
 class ReaderMetrics:
     # Source: https://amitness.com/2020/08/information-retrieval-evaluation/
 
-    #Retrieval metrics
+    # Retrieval metrics
     # - mAP
     # - MRR
     # - precision
     # - recall
     # - f1
-    #Reader metrics
+    # Reader metrics
     # - BLEU presision
     # - ROUGE recall
     # - METEOR f1
-    def __init__(self, model_path:str,
-                 meteor_filep:str="./metrics/meteor",
-                 em_filep:str="./metrics/exact_match"):
+    def __init__(self, model_path: str,
+                 meteor_filep: str = "./metrics/meteor",
+                 em_filep: str = "./metrics/exact_match"):
         self.rouge_obj = ROUGEScore()
         self.bleu1_obj = BLEUScore(n_gram=1)
         self.bleu2_obj = BLEUScore(n_gram=2)
@@ -71,45 +72,49 @@ class ReaderMetrics:
     def rougel(self, predicted: List[str], targets: List[str]):
         return [self.rouge_obj(
             predicted[i], targets[i])['rougeL_fmeasure']
-                 for i in tqdm(range(len(targets)))]
+            for i in tqdm(range(len(targets)))]
 
     def bleu1(self, predicted: List[str], targets: List[str]):
         return [self.bleu1_obj(
             [predicted[i]], [[targets[i]]])
-                 for i in tqdm(range(len(targets)))]
+            for i in tqdm(range(len(targets)))]
 
     def bleu2(self, predicted: List[str], targets: List[str]):
         return [self.bleu2_obj(
             [predicted[i]], [[targets[i]]])
-                 for i in tqdm(range(len(targets)))]
+            for i in tqdm(range(len(targets)))]
 
     def meteor(self, predicted: List[str], targets: List[str]):
         return [self.meteor_obj.compute(
             predictions=[predicted[i]], references=[targets[i]])['meteor']
-                 for i in tqdm(range(len(targets)))]
+            for i in tqdm(range(len(targets)))]
 
     def exact_match(self, predicted: List[str], targets: List[str]):
         return [self.em_obj.compute(
             predictions=[predicted[i]], references=[targets[i]], ignore_case=True, ignore_punctuation=True)["exact_match"]
-                for i in tqdm(range(len(targets)))]
+            for i in tqdm(range(len(targets)))]
 
     def levenshtain_score(self, predicted: List[str], targets: List[str]):
         return list(map(lambda pair: levenshtain_distance(pair[1], pair[0]), zip(predicted, targets)))
 
 ####################################################
 
-def loading_generated_pack(base_dir: str, pack_name) -> Dict[int,str]:
+
+def loading_generated_pack(base_dir: str, pack_name) -> Dict[int, str]:
     with open(f"{base_dir}/{pack_name}", 'r', encoding='utf-8') as fd:
         data = json.loads(fd.read())
     return data
 
+
 def round5(number: float) -> float:
     return round(number, 5)
+
 
 def save_json(data: Dict[str, object], save_path: str):
     dump = json.dumps(data, ensure_ascii=False, indent=1)
     with open(f"{save_path}", 'w', encoding='utf-8') as fd:
         fd.write(dump)
+
 
 METRICS = ReaderMetrics(
     model_path=f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['models']}/{PARAMS['QA_EVALUATION']['bertscore_model_path']}",
@@ -138,28 +143,35 @@ for pack_name in gen_pack_names:
 
     if len(generated_answers) > 0:
         print("Calculating BLEU1...")
-        b1_scores = round5(np.mean(METRICS.bleu1(generated_answers, filtered_target_answers)))
+        b1_scores = round5(np.mean(METRICS.bleu1(
+            generated_answers, filtered_target_answers)))
 
         print("Calculating BLEU2...")
-        b2_scores  = round5(np.mean(METRICS.bleu2(generated_answers, filtered_target_answers)))
+        b2_scores = round5(np.mean(METRICS.bleu2(
+            generated_answers, filtered_target_answers)))
 
         print("Calculating RougeL...")
-        rl_scores = round5(np.mean(METRICS.rougel(generated_answers, filtered_target_answers)))
+        rl_scores = round5(np.mean(METRICS.rougel(
+            generated_answers, filtered_target_answers)))
 
         print("Calculating Meteor...")
-        m_scores = round5(np.mean(METRICS.meteor(generated_answers, filtered_target_answers)))
+        m_scores = round5(np.mean(METRICS.meteor(
+            generated_answers, filtered_target_answers)))
 
         print("Calculating ExactMatch...")
-        em_scores = round5(np.mean(METRICS.exact_match(generated_answers, filtered_target_answers)))
+        em_scores = round5(np.mean(METRICS.exact_match(
+            generated_answers, filtered_target_answers)))
 
         print("Calculating BertScore...")
-        bs_scores = METRICS.bertscore(generated_answers, filtered_target_answers)
+        bs_scores = METRICS.bertscore(
+            generated_answers, filtered_target_answers)
 
         print("Calculating 'NoAnswer'-score...")
-        noansw_scores  = sum(list(map(lambda gen_answer: gen_answer.strip() == PARAMS['QA_EVALUATION']['no_answer'], generated_answers))) / len(generated_answers)
+        noansw_scores = sum(list(map(lambda gen_answer: gen_answer.strip(
+        ) == PARAMS['QA_EVALUATION']['no_answer'], generated_answers))) / len(generated_answers)
 
     else:
-        b1_scores, b2_scores, rl_scores, m_scores, em_scores, bs_scores, noansw_scores = 0,0,0,0,0,0,0
+        b1_scores, b2_scores, rl_scores, m_scores, em_scores, bs_scores, noansw_scores = 0, 0, 0, 0, 0, 0, 0
 
     none_score = round5(none_answers / len(generated_pack))
 

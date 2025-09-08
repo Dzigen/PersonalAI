@@ -95,7 +95,7 @@ WEAK_KG_REASONER:
         - hyper
         #- episodic
         - time
-        
+
     filter_method: 'naive' # CAN BE None
     filter_config: # CAND BE None
       max_k: 50

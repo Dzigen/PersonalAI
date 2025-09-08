@@ -8,6 +8,7 @@ from ..utils import AbstractAgentConnector, AgentConnectorConfig
 # mistral (7B)
 # gemma2 (9B)
 
+
 class OLlamaConnector(AbstractAgentConnector):
     def __init__(self, config: AgentConnectorConfig = DEFAULT_OLLAMA_CONFIG) -> None:
         self.config = config
@@ -26,9 +27,10 @@ class OLlamaConnector(AbstractAgentConnector):
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
 
-        msgs = [{'role':'system', 'content': system_prompt}, {'role':'user', 'content':user_prompt}]
+        msgs = [{'role': 'system', 'content': system_prompt},
+                {'role': 'user', 'content': user_prompt}]
         if assistant_prompt is not None:
-            msgs.append({'role':'assistant', 'content': assistant_prompt})
+            msgs.append({'role': 'assistant', 'content': assistant_prompt})
 
         raw_output = self.client.chat(
             model=self.config.credentials['model'],

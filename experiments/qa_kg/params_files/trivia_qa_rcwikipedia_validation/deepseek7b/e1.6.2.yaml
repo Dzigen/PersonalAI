@@ -87,7 +87,7 @@ WEAK_KG_REASONER:
         - object
         - hyper
         #- episodic
-        - time 
+        - time
 
       retriever1_name: astar
       retriever1_config:
@@ -119,8 +119,8 @@ WEAK_KG_REASONER:
                     username: my_user
                   port: 6394
             db_vendor: mixed_kv
-        
-      retriever2_name: watercircles   
+
+      retriever2_name: watercircles
       retriever2_config:
         chain_triplets_num: 25
         do_text_pruning: false
@@ -132,7 +132,7 @@ WEAK_KG_REASONER:
     filter_method: 'naive' # CAN BE None
     filter_config: # CAN BE None
       max_k: 50
-      
+
   answer_generator_config:
     ag_task:
       prompts_version: 'v3' # 'v1' | 'v2'

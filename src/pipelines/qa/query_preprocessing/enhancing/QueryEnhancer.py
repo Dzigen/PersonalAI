@@ -11,6 +11,7 @@ from .....agents import AgentDriverConfig, AgentDriver
 from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
 from .....db_drivers.kv_driver import KeyValueDriverConfig
 
+
 @dataclass
 class QueryEnhancerConfig:
     """Конфигурация QueryEnhancer-операции.
@@ -33,10 +34,14 @@ class QueryEnhancerConfig:
     :type verbose: bool, optional
     """
     lang: str = "auto"
-    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    qexpan_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_QEXPAN_TASK_CONFIG)
-    termscheck_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_TCHECK_TASK_CONFIG)
-    lingcheck_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_LCHECK_TASK_CONFIG)
+    adriver_config: AgentDriverConfig = field(
+        default_factory=lambda: AgentDriverConfig())
+    qexpan_agent_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_QEXPAN_TASK_CONFIG)
+    termscheck_agent_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_TCHECK_TASK_CONFIG)
+    lingcheck_agent_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_LCHECK_TASK_CONFIG)
 
     cache_table_name: str = 'qp_enhancing_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(QE_MAIN_LOG_PATH))
@@ -44,6 +49,7 @@ class QueryEnhancerConfig:
 
     def to_str(self):
         raise NotImplementedError
+
 
 class QueryEnhancer(CacheUtils):
     """Класс, реализующий одну из операций по форматированию/предобработке user-вопроса в рамках QueryPreprocessor-стадии. Данный класс выполняет добавление дополнительных языковых конструкций в user-вопрос, с целью упрощения процесса по распознаванию заложенного запроса/интента.
@@ -55,10 +61,12 @@ class QueryEnhancer(CacheUtils):
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
     """
+
     def __init__(self, config: QueryEnhancerConfig = QueryEnhancerConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None, cache_llm_inference: bool = True):
         self.config = config
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
 
         self.agent = AgentDriver.connect(config.adriver_config)
         agents_cache_config = None
@@ -91,7 +99,8 @@ class QueryEnhancer(CacheUtils):
         :rtype: Tuple[str, ReturnInfo]
         """
         self.log("START QUERY DENOISING...", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.config.verbose)
+        self.log(
+            f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.config.verbose)
         self.log(f"QUERY INFO: {query_info}", verbose=self.config.verbose)
         enhanced_query, rinfo = None, ReturnInfo()
 
@@ -102,28 +111,35 @@ class QueryEnhancer(CacheUtils):
         else:
             raise ValueError
 
-        self.log("Выполнение добавление более понятных языковых конструкций в запрос с помощью LLM-агента...", verbose=self.config.verbose)
-        expanded_query, status = self.queryexpansion_solver.solve(lang=self.config.lang, query=query)
+        self.log("Выполнение добавление более понятных языковых конструкций в запрос с помощью LLM-агента...",
+                 verbose=self.config.verbose)
+        expanded_query, status = self.queryexpansion_solver.solve(
+            lang=self.config.lang, query=query)
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
         else:
             self.log(f"RESULT: {expanded_query}", verbose=self.config.verbose)
 
         if status == ReturnStatus.success:
-            self.log("Выполнение замены слабоопределённых фраз в запросе на конкретную терминологии с помощью LLM-агента...", verbose=self.config.verbose)
-            defined_query, status = self.termscheck_solver.solve(lang=self.config.lang, query=expanded_query)
+            self.log("Выполнение замены слабоопределённых фраз в запросе на конкретную терминологии с помощью LLM-агента...",
+                     verbose=self.config.verbose)
+            defined_query, status = self.termscheck_solver.solve(
+                lang=self.config.lang, query=expanded_query)
             if status != ReturnStatus.success:
                 rinfo.occurred_warning.append(status)
             else:
-                self.log(f"RESULT: {defined_query}", verbose=self.config.verbose)
+                self.log(f"RESULT: {defined_query}",
+                         verbose=self.config.verbose)
 
         if status == ReturnStatus.success:
             self.log("Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.config.verbose)
-            reformulated_query, status = self.linguistcheck_solver.solve(lang=self.config.lang, query=defined_query)
+            reformulated_query, status = self.linguistcheck_solver.solve(
+                lang=self.config.lang, query=defined_query)
             if status != ReturnStatus.success:
                 rinfo.occurred_warning.append(status)
             else:
-                self.log(f"RESULT: {reformulated_query}", verbose=self.config.verbose)
+                self.log(f"RESULT: {reformulated_query}",
+                         verbose=self.config.verbose)
                 enhanced_query = reformulated_query
 
         if enhanced_query is None:

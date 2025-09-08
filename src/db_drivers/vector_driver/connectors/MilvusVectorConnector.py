@@ -8,6 +8,7 @@ import torch
 from .configs import DEFAULT_MILVUS_CONFIG
 from ..utils import AbstractVectorDatabaseConnection, VectorDBInstance, VectorDBConnectionConfig
 
+
 class MilvusVectorConnector(AbstractVectorDatabaseConnection):
     def __init__(self, config: VectorDBConnectionConfig = DEFAULT_MILVUS_CONFIG):
         self.config = config
@@ -27,9 +28,12 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
 
     def create_collection(self) -> None:
         schema = MilvusClient.create_schema(auto_id=False)
-        schema.add_field(field_name="id", datatype=DataType.VARCHAR, max_length=self.config.params['id_length'], is_primary=True)
-        schema.add_field(field_name="embedding", datatype=DataType.FLOAT_VECTOR, dim=self.config.params['vector_dim'])
-        schema.add_field(field_name="document", datatype=DataType.VARCHAR, max_length=self.config.params['document_max_length'])
+        schema.add_field(field_name="id", datatype=DataType.VARCHAR,
+                         max_length=self.config.params['id_length'], is_primary=True)
+        schema.add_field(field_name="embedding", datatype=DataType.FLOAT_VECTOR,
+                         dim=self.config.params['vector_dim'])
+        schema.add_field(field_name="document", datatype=DataType.VARCHAR,
+                         max_length=self.config.params['document_max_length'])
         schema.add_field(field_name="metadata", datatype=DataType.JSON)
 
         self.client.create_collection(
@@ -37,7 +41,8 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
             schema=schema, consistency_level="Strong")
 
     def create_index(self):
-        cur_indexes = self.client.list_indexes(collection_name=self.config.db_info['table'])
+        cur_indexes = self.client.list_indexes(
+            collection_name=self.config.db_info['table'])
         index_params = self.client.prepare_index_params()
         if "id_index" not in cur_indexes:
             # создать индекс
@@ -54,7 +59,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
     def open_connection(self) -> None:
         uri = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
         auth = f"{self.config.conn['user']}:{self.config.conn['pass']}"
-        self.client = MilvusClient(uri=uri,token=auth)
+        self.client = MilvusClient(uri=uri, token=auth)
 
         self.prepare_structure()
 
@@ -63,14 +68,16 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
 
         self.create_index()
 
-        load_state = self.client.get_load_state(self.config.db_info['table'])['state'].value
+        load_state = self.client.get_load_state(
+            self.config.db_info['table'])['state'].value
         if self.config.params['load'] and load_state != 3:
             self.client.load_collection(
                 collection_name=self.config.db_info['table'],
                 skip_load_dynamic_field=True)
 
     def close_connection(self) -> None:
-        load_state = self.client.get_load_state(self.config.db_info['table'])['state'].value
+        load_state = self.client.get_load_state(
+            self.config.db_info['table'])['state'].value
         if load_state != 3:
             self.client.release_collection(
                 collection_name=self.config.db_info['table'])
@@ -124,13 +131,14 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
             return []
 
         # костыль
-        f_includes = list(map(lambda f_name: f_name[:-1],includes))
+        f_includes = list(map(lambda f_name: f_name[:-1], includes))
 
         raw_output = self.client.get(
             collection_name=self.config.db_info['table'],
-            ids=ids,output_fields=f_includes)
+            ids=ids, output_fields=f_includes)
 
-        formated_output = list(map(lambda raw_item: VectorDBInstance(**raw_item), raw_output))
+        formated_output = list(
+            map(lambda raw_item: VectorDBInstance(**raw_item), raw_output))
 
         return formated_output
 
@@ -148,7 +156,8 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
             raise ValueError
 
         formated_data = list(map(lambda item: item.dict(), items))
-        self.client.upsert(collection_name=self.config.db_info['table'], data=formated_data)
+        self.client.upsert(
+            collection_name=self.config.db_info['table'], data=formated_data)
 
         # костыль
         if self.config.params['flush']:
@@ -165,17 +174,19 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         if len(ids):
             filtered_ids = [id for id in ids if self.item_exist(id)]
             if len(filtered_ids):
-                self.client.delete(collection_name=self.config.db_info['table'], ids=filtered_ids)
+                self.client.delete(
+                    collection_name=self.config.db_info['table'], ids=filtered_ids)
 
                 # костыль
                 if self.config.params['flush']:
-                    self.client.flush(collection_name=self.config.db_info['table'])
+                    self.client.flush(
+                        collection_name=self.config.db_info['table'])
                 else:
                     sleep(self.config.params['create_sleep'])
 
     def retrieve(
-            self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]]= None,
-            includes: List[str]  = ['embeddings', 'documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
+            self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
+            includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
         if len(query_instances) < 1:
             return ValueError
         for inst in query_instances:
@@ -186,12 +197,13 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
             return [[]*len(query_instances)]
 
         # костыль
-        f_includes = list(map(lambda f_name: f_name[:-1],includes))
+        f_includes = list(map(lambda f_name: f_name[:-1], includes))
 
-        filtering_expr = {'search_params': {"metric_type": self.config.params['search_metric']}}
+        filtering_expr = {'search_params': {
+            "metric_type": self.config.params['search_metric']}}
         if subset_ids is not None:
             filtering_expr['search_params']["hints"] = "iterative_filter"
-            filtering_expr['filter']=f'id in {subset_ids}'
+            filtering_expr['filter'] = f'id in {subset_ids}'
 
         #
         raw_output = self.client.search(
@@ -203,14 +215,16 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         for q_output in raw_output:
             # CARE: работает только для COSINE и IP - метрик
             # костыль: полученные значения семантической близости векторов [similarity] приводим к шкале расстояний [distances]
-            f_items = list(map(lambda r_item: (1 - r_item['distance'], VectorDBInstance(id=r_item['id'], **r_item['entity'])), q_output))
+            f_items = list(map(lambda r_item: (
+                1 - r_item['distance'], VectorDBInstance(id=r_item['id'], **r_item['entity'])), q_output))
             f_items = sorted(f_items, key=lambda v: v[0], reverse=False)
             formated_output.append(f_items)
 
         return formated_output
 
     def count_items(self) -> int:
-        raw_output = self.client.query(self.config.db_info['table'], filter='', output_fields=['count(*)'])
+        raw_output = self.client.query(
+            self.config.db_info['table'], filter='', output_fields=['count(*)'])
         return raw_output[0]['count(*)']
 
     def item_exist(self, id: str) -> bool:
@@ -221,16 +235,19 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         #
         res = self.client.get(
             collection_name=self.config.db_info['table'],
-            ids=[id],output_fields=[])
+            ids=[id], output_fields=[])
 
         return bool(len(res))
 
     def clear(self) -> None:
-        load_state = self.client.get_load_state(self.config.db_info['table'])['state'].value
+        load_state = self.client.get_load_state(
+            self.config.db_info['table'])['state'].value
         if load_state != 3:
-            self.client.release_collection(collection_name=self.config.db_info['table'])
+            self.client.release_collection(
+                collection_name=self.config.db_info['table'])
 
-        self.client.drop_collection(collection_name=self.config.db_info['table'])
+        self.client.drop_collection(
+            collection_name=self.config.db_info['table'])
         self.prepare_structure()
         self.create_index()
 

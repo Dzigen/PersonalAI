@@ -1,3 +1,7 @@
+from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
+from src.pipelines.qa.kg_reasoning import KnowledgeGraphReasonerConfig
+from src.pipelines.qa import QAPipelineConfig, QAPipeline
+from src.kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig
 import sys
 from tqdm import tqdm
 import yaml
@@ -18,12 +22,8 @@ with open(PARAMS_FILEP, 'r') as stream:
 
 sys.path.insert(0, PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
 
-from src.kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig
-from src.pipelines.qa import QAPipelineConfig, QAPipeline
-from src.pipelines.qa.kg_reasoning import KnowledgeGraphReasonerConfig
-from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
 
-################LOADING_HYPERPARAMETERS###################
+################ LOADING_HYPERPARAMETERS###################
 
 DATASET_KGS_PATH = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
 SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
@@ -66,7 +66,8 @@ print("graph_config:", graph_config)
 print("embed_config:", embed_config)
 print("nodestree_config:", nodestree_config)
 
-kg_config = KnowledgeGraphModelConfig(graph_config=graph_config, embeddings_config=embed_config, nodestree_config=nodestree_config)
+kg_config = KnowledgeGraphModelConfig(
+    graph_config=graph_config, embeddings_config=embed_config, nodestree_config=nodestree_config)
 kg_model = KnowledgeGraphModel(kg_config)
 
 print(kg_model.embeddings_struct.vectordbs['nodes'].count_items())
@@ -97,7 +98,7 @@ if PARAMS['BASE_KGR_CONFIG']['caching']:
 else:
     kvdriver_config = None
 
-###############INITING QA-PIPELINE####################
+############### INITING QA-PIPELINE####################
 
 print("Инициализируем QA-пайплайн...")
 
@@ -116,14 +117,15 @@ qa_pipeline = QAPipeline(kg_model, qa_config, kvdriver_config)
 
 print("Готово.")
 
-############SAVING HYPERPARAMS############
+############ SAVING HYPERPARAMS############
 
 with open(HYPERPARAMS_SPATH, 'w') as fd:
     yaml.dump(PARAMS, fd, default_flow_style=False)
 
 joblib.dump(qa_config, QA_CONFIG_SPATH)
 
-#################LOADING_QUESTIONS##################
+################# LOADING_QUESTIONS##################
+
 
 def diaasqa_qa_load(dataset_path: str) -> List[Tuple[str, List[str], List[str]]]:
     eval_dir_path = f"{dataset_path}/qa_eval"
@@ -139,8 +141,10 @@ def diaasqa_qa_load(dataset_path: str) -> List[Tuple[str, List[str], List[str]]]
         answers = list(map(lambda item: item['answer'], data))
 
         if (PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack'] > 0):
-            questions = questions[:PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']]
-            answers = answers[:PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']]
+            questions = questions[:PARAMS['QA_DATASET_HYPERP']
+                                  ['max_samples_per_pack']]
+            answers = answers[:PARAMS['QA_DATASET_HYPERP']
+                              ['max_samples_per_pack']]
 
         packs.append((pack_name, questions, answers))
 
@@ -154,12 +158,14 @@ def hotpotqa_distractor_validation_qa_load(dataset_path: str) -> List[Tuple[str,
     answers = qa_df['answer'].tolist()
 
     if (PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack'] > 0):
-        questions = questions[:PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']]
+        questions = questions[:PARAMS['QA_DATASET_HYPERP']
+                              ['max_samples_per_pack']]
         answers = answers[:PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']]
 
     packs = [['all', questions, answers]]
 
     return packs
+
 
 def trivia_qa_rcwikipedia_validation_qa_load(dataset_path: str) -> List[Tuple[str, List[str], List[str]]]:
     qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
@@ -168,22 +174,24 @@ def trivia_qa_rcwikipedia_validation_qa_load(dataset_path: str) -> List[Tuple[st
     answers = qa_df['answer'].tolist()
 
     if (PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack'] > 0):
-        questions = questions[:PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']]
+        questions = questions[:PARAMS['QA_DATASET_HYPERP']
+                              ['max_samples_per_pack']]
         answers = answers[:PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']]
 
     packs = [['all', questions, answers]]
 
     return packs
 
+
 CUSTOM_LOAD_FUNCS = {
     'diaasq': diaasqa_qa_load,
     'hotpotqa_distractor_validation': hotpotqa_distractor_validation_qa_load,
-    'trivia_qa_rcwikipedia_validation': trivia_qa_rcwikipedia_validation_qa_load 
+    'trivia_qa_rcwikipedia_validation': trivia_qa_rcwikipedia_validation_qa_load
 }
 
 question_packs = CUSTOM_LOAD_FUNCS[PARAMS['DATASET_NAME']](QA_DATASET_PATH)
 
-#################START_QA_PROCESS##################
+################# START_QA_PROCESS##################
 
 for pack_name, questions, _ in question_packs:
 
@@ -200,9 +208,10 @@ for pack_name, questions, _ in question_packs:
         e_time = time()
 
         answer_dump_file = f"{pack_tmp_dir}/answer_{i}"
-        joblib.dump({'answer': answer, 'info': info, 'elapsed_time': e_time - s_time}, answer_dump_file)
+        joblib.dump({'answer': answer, 'info': info,
+                    'elapsed_time': e_time - s_time}, answer_dump_file)
 
-#################accumulate generate answers#################
+################# accumulate generate answers#################
 
 elapsed_times = {}
 for pack_name, questions, gold_answers in question_packs:
@@ -227,11 +236,15 @@ for pack_name, questions, gold_answers in question_packs:
             'gen_answer': answer_info['answer']
         }
 
-        elapsed_times[pack_name]['per_question'].append(answer_info['elapsed_time'])
+        elapsed_times[pack_name]['per_question'].append(
+            answer_info['elapsed_time'])
 
-    elapsed_times[pack_name]['sum'] = sum(elapsed_times[pack_name]['per_question'])
-    elapsed_times[pack_name]['mean'] = np.mean(elapsed_times[pack_name]['per_question'])
-    elapsed_times[pack_name]['median'] = np.median(elapsed_times[pack_name]['per_question'])
+    elapsed_times[pack_name]['sum'] = sum(
+        elapsed_times[pack_name]['per_question'])
+    elapsed_times[pack_name]['mean'] = np.mean(
+        elapsed_times[pack_name]['per_question'])
+    elapsed_times[pack_name]['median'] = np.median(
+        elapsed_times[pack_name]['per_question'])
 
     answers_pack_path = f"{GENERATED_ANSWERS_DIR}/{pack_name}.json"
     with open(answers_pack_path, 'w', encoding='utf-8') as fd:

@@ -8,6 +8,7 @@ AVAILABLE_REPLACE_THESIS_TCONFIGS = {
     'v1': REPLACE_THESIS_SUITE_V1
 }
 
+
 class AgentReplThesisTripletTaskConfigSelector:
     @staticmethod
     def get_available_configs():

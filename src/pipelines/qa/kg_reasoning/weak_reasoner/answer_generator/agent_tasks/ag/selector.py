@@ -12,13 +12,14 @@ AVAILABLE_SIMPLEAG_TCONFIGS = {
     'v3': SIMPLEAG_SUITE_V3
 }
 
+
 class AgentSimpleAGTaskConfigSelector:
     @staticmethod
     def get_available_configs():
         return AVAILABLE_SIMPLEAG_TCONFIGS
 
     @staticmethod
-    def select(base_config_version:str = 'v1', cache_table_name:str="qa_agent_ag_task_cache") -> AgentTaskSolverConfig:
+    def select(base_config_version: str = 'v1', cache_table_name: str = "qa_agent_ag_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
             suites=AVAILABLE_SIMPLEAG_TCONFIGS[base_config_version],

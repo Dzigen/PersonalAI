@@ -1,3 +1,8 @@
+from src.knowledge_graph_model import KnowledgeGraphModel
+from src.db_models.embeddings_db.embedding_functions import EmbeddingsDatabaseConnection, EmbeddingsDatabaseConnectionConfig, VectorDBConnectionConfig
+from src.db_models.graph_db.neo4j_functions import Neo4jConnection
+from src.utils.data_structs import TripletCreator, NodeCreator, Relation, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
+from src.utils.data_structs import RelationType, NodeType
 import sys
 import json
 from tqdm import tqdm
@@ -16,14 +21,9 @@ BASEDIR = "/home/dzigen/Desktop/PersonalAI/Personal-AI/"
 
 sys.path.insert(0, BASEDIR)
 
-from src.utils.data_structs import RelationType, NodeType
-from src.utils.data_structs import TripletCreator, NodeCreator, Relation, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
-from src.db_models.graph_db.neo4j_functions import Neo4jConnection
-from src.db_models.embeddings_db.embedding_functions import EmbeddingsDatabaseConnection, EmbeddingsDatabaseConnectionConfig, VectorDBConnectionConfig
-from src.knowledge_graph_model import KnowledgeGraphModel
 
 # personalai_mmenschikov_neo4j
-NEO4J_URL ="bolt://localhost:7687"
+NEO4J_URL = "bolt://localhost:7687"
 NEO4J_USER = "neo4j"
 NEO4J_PWD = "password"
 
@@ -34,23 +34,24 @@ gc.collect()
 
 ###########
 
-graph_db = graph_db=Neo4jConnection(uri=NEO4J_URL, user=NEO4J_USER, pwd=NEO4J_PWD, db_name=GRAPH_DB_NAME)
+graph_db = graph_db = Neo4jConnection(
+    uri=NEO4J_URL, user=NEO4J_USER, pwd=NEO4J_PWD, db_name=GRAPH_DB_NAME)
 
 ###########
 
 print("loading structures..")
-#base_dialogs = json.loads(open(DATASET_PATH, 'r', encoding='utf-8').read())
-#raw_time = [dialogue['time'].split(', ')[0].strip() for dialogue in base_dialogs['data']]
-#print(len(raw_time))
+# base_dialogs = json.loads(open(DATASET_PATH, 'r', encoding='utf-8').read())
+# raw_time = [dialogue['time'].split(', ')[0].strip() for dialogue in base_dialogs['data']]
+# print(len(raw_time))
 
-#extracted_triplets = json.loads(open(LOAD_EXTRACTED_TRIPLETS_FILE, 'r', encoding='utf-8').read())
+# extracted_triplets = json.loads(open(LOAD_EXTRACTED_TRIPLETS_FILE, 'r', encoding='utf-8').read())
 extracted_triplets = joblib.load(LOAD_EXTRACTED_TRIPLETS_FILE)
 print(len(extracted_triplets))
 
-#print("adding time...")
-#not_str_counter = 0
-#all_items_counter = 0
-#for group_idx in tqdm(range(len(extracted_triplets))):
+# print("adding time...")
+# not_str_counter = 0
+# all_items_counter = 0
+# for group_idx in tqdm(range(len(extracted_triplets))):
 #    cur_time = raw_time[group_idx]
 #    for triplet_idx in range(len(extracted_triplets[group_idx])):
 #        for item_idx in range(len(extracted_triplets[group_idx][triplet_idx])):
@@ -65,7 +66,7 @@ print(len(extracted_triplets))
 #        else:
 #            extracted_triplets[group_idx][triplet_idx][2]['prop']['time'] = cur_time#
 #
-#print(f"not-str values in 'name'-field: {not_str_counter}/{all_items_counter}")
+# print(f"not-str values in 'name'-field: {not_str_counter}/{all_items_counter}")
 
 print("flat...")
 extracted_triplets = reduce(lambda acc, v: acc + v, extracted_triplets, [])
@@ -76,9 +77,9 @@ for triplet in tqdm(extracted_triplets):
     if type(triplet.relation.name) is not str:
         triplet.relation.name = triplet.relation.name.value
 
-#print("foramting triplets...")
-#formated_triplets = []
-#for raw_triplet in tqdm(extracted_triplets):
+# print("foramting triplets...")
+# formated_triplets = []
+# for raw_triplet in tqdm(extracted_triplets):
 #    formated_triplets.append(TripletCreator.create(
 #        NodeCreator.create(
 #            name=raw_triplet[0]['name'], type=NODES_TYPES_MAP[raw_triplet[0]['type']],

@@ -8,13 +8,14 @@ AVAILABLE_DC_TCONFIGS = {
     'v1': DC_SUITE_V1
 }
 
+
 class AgentDecompClsTaskConfigSelector:
     @staticmethod
     def get_available_configs():
         return AVAILABLE_DC_TCONFIGS
 
     @staticmethod
-    def select(base_config_version:str = 'v1', cache_table_name:str="qp_decompcls_agent_task_cache") -> AgentTaskSolverConfig:
+    def select(base_config_version: str = 'v1', cache_table_name: str = "qp_decompcls_agent_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
             suites=AVAILABLE_DC_TCONFIGS[base_config_version],

@@ -19,7 +19,7 @@ BASE_KGR_CONFIG:
 
   query_preprocessing:
     decomposition_config: None
-    
+
   answers_aggregation:
     suba_summarisation_agent_task_version: v1
 

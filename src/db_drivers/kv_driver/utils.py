@@ -3,16 +3,20 @@ from dataclasses import dataclass, field
 
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
+
 @dataclass
 class KVDBConnectionConfig(BaseDatabaseConfig):
-    db_info: Dict = field(default_factory=lambda : { 'db': 'defaultpersonalaikvdb','table': 'defaultpersonalaikvtable' })
+    db_info: Dict = field(default_factory=lambda: {
+                          'db': 'defaultpersonalaikvdb', 'table': 'defaultpersonalaikvtable'})
     host: str = None
     port: str = None
+
 
 @dataclass
 class KeyValueDBInstance:
     id: str
     value: Union[int, float, str, bytes]
+
 
 class AbstractKVDatabaseConnection(AbstractDatabaseConnection):
     def update_item_scores(self, mapping: Dict[str, int]) -> None:

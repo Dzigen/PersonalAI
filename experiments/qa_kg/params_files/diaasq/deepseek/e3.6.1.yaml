@@ -89,7 +89,7 @@ WEAK_KG_REASONER:
         - object
         - hyper
         - episodic
-        - time 
+        - time
 
       retriever1_name: watercircles
       retriever1_config:
@@ -99,7 +99,7 @@ WEAK_KG_REASONER:
         hyper_num: 15
         other_triplets_num: 6
         strict_filter: true
-        
+
       retriever2_name: astar
       retriever2_config:
         max_depth: 10
@@ -130,7 +130,7 @@ WEAK_KG_REASONER:
                     username: my_user
                   port: 6382
             db_vendor: mixed_kv
-        
+
     filter_method: 'naive' # CAN BE None
     filter_config: # CAND BE None
       max_k: 50

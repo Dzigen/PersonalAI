@@ -12,6 +12,7 @@ from ......utils.data_structs import create_id, QueryInfo, Triplet
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 
+
 @dataclass
 class KnowledgeRetrieverConfig:
     """Конфигурация "Knowledge Retriever"-стадии.
@@ -32,13 +33,16 @@ class KnowledgeRetrieverConfig:
     :type verbose: bool, optional
     """
     retriever_method: str = 'water_circles'
-    retriever_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: WaterCirclesSearchConfig())
+    retriever_config: Union[BaseGraphSearchConfig, Dict] = field(
+        default_factory=lambda: WaterCirclesSearchConfig())
     filter_method: str = 'naive'
-    filter_config: Union[BaseTripletsFilterConfig, Dict] = field(default_factory=lambda: TripletsFilterConfig())
+    filter_config: Union[BaseTripletsFilterConfig, Dict] = field(
+        default_factory=lambda: TripletsFilterConfig())
 
     cache_table_name: Union[str, None] = 'qa_kretriever_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(KR_MAIN_LOG_PATH))
     verbose: bool = False
+
 
 class KnowledgeRetriever(CacheUtils):
     """Верхнеуровневый класс третьей стадии QA-конвейера для извлечения
@@ -51,12 +55,14 @@ class KnowledgeRetriever(CacheUtils):
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
+
     def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeRetrieverConfig = KnowledgeRetrieverConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
         self.config = config
         self.kg_model = kg_model
 
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
 
         self.triplets_retriever = AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method]['class'](
             kg_model, self.log, self.config.retriever_config, cache_kvdriver_config, self.config.verbose)
@@ -72,9 +78,11 @@ class KnowledgeRetriever(CacheUtils):
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if type(level) is not str:
-            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             self.cachekv.clear()
@@ -84,27 +92,31 @@ class KnowledgeRetriever(CacheUtils):
             if self.triplets_filter is not None:
                 self.triplets_filter.clear_kv_caches(level='all')
 
-
     def validate_tripelts(self, triplets: List[Triplet]) -> List[Triplet]:
-        self.log("Проверяем, что извлечённые триплеты являются валидными...", verbose=self.config.verbose)
+        self.log("Проверяем, что извлечённые триплеты являются валидными...",
+                 verbose=self.config.verbose)
         self.log("Невалидные триплеты:", verbose=self.config.verbose)
         valid_triplets = []
         for triplet in triplets:
-            #t_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.id)
-            r_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.relation.id, id_type='relation')
-            #sn_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.start_node.id, id_type='node')
-            #en_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.end_node.id, id_type='node')
+            # t_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.id)
+            r_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(
+                triplet.relation.id, id_type='relation')
+            # sn_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.start_node.id, id_type='node')
+            # en_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.end_node.id, id_type='node')
 
-            r_vector_exists = self.kg_model.embeddings_struct.vectordbs['triplets'].item_exist(triplet.relation.id)
-            #sn_vector_exists = self.kg_model.embeddings_struct.vectordbs['nodes'].item_exist(triplet.start_node.id)
-            #en_vector_exists = self.kg_model.embeddings_struct.vectordbs['nodes'].item_exist(triplet.end_node.id)
+            r_vector_exists = self.kg_model.embeddings_struct.vectordbs['triplets'].item_exist(
+                triplet.relation.id)
+            # sn_vector_exists = self.kg_model.embeddings_struct.vectordbs['nodes'].item_exist(triplet.start_node.id)
+            # en_vector_exists = self.kg_model.embeddings_struct.vectordbs['nodes'].item_exist(triplet.end_node.id)
 
             if not (r_graph_exists and r_graph_exists):
-                self.log(f"* [graph - r:{r_graph_exists} | vector - r:{r_vector_exists}] {triplet}", verbose=self.config.verbose)
+                self.log(
+                    f"* [graph - r:{r_graph_exists} | vector - r:{r_vector_exists}] {triplet}", verbose=self.config.verbose)
             else:
                 valid_triplets.append(triplet)
 
-        self.log(f"RESULT:\n* валидных - {len(valid_triplets)} \n* невалидных - {len(triplets) - len(valid_triplets)}", verbose=self.config.verbose)
+        self.log(
+            f"RESULT:\n* валидных - {len(valid_triplets)} \n* невалидных - {len(triplets) - len(valid_triplets)}", verbose=self.config.verbose)
 
         return valid_triplets
 
@@ -115,17 +127,20 @@ class KnowledgeRetriever(CacheUtils):
             self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
 
         # косытль
-        #triplets = self.validate_tripelts(triplets)
+        # triplets = self.validate_tripelts(triplets)
 
         return triplets
 
     def filter_triplets(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
         filtered_triplets = None
         if self.triplets_filter is not None:
-            filtered_triplets = self.triplets_filter.apply_filter(query_info, triplets)
-            self.log(f"RESULT: {len(filtered_triplets)}", verbose=self.config.verbose)
+            filtered_triplets = self.triplets_filter.apply_filter(
+                query_info, triplets)
+            self.log(f"RESULT: {len(filtered_triplets)}",
+                     verbose=self.config.verbose)
             for triplet in filtered_triplets:
-                self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
+                self.log(f"*[{triplet.id}] {triplet}",
+                         verbose=self.config.verbose)
         else:
             filtered_triplets = triplets
             self.log("Stage was omited!", verbose=self.config.verbose)
@@ -133,7 +148,8 @@ class KnowledgeRetriever(CacheUtils):
         return filtered_triplets
 
     def get_cache_key(self, query_info: QueryInfo) -> List[str]:
-        str_tfilter_config = self.triplets_filter.config.to_str() if self.triplets_filter is not None else "None"
+        str_tfilter_config = self.triplets_filter.config.to_str(
+        ) if self.triplets_filter is not None else "None"
         return [self.config.retriever_method, self.triplets_retriever.config.to_str(), str(self.config.filter_method),
                 str_tfilter_config, query_info.to_str()]
 
@@ -147,20 +163,25 @@ class KnowledgeRetriever(CacheUtils):
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.config.verbose)
+        self.log(
+            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION: {query_info.query}",
+                 verbose=self.config.verbose)
 
         rinfo = ReturnInfo()
-        self.log("STAGE #3.1 - TRIPLETS EXTRACTION...", verbose=self.config.verbose)
+        self.log("STAGE #3.1 - TRIPLETS EXTRACTION...",
+                 verbose=self.config.verbose)
         triplets = self.traverse_kg(query_info)
 
-        self.log("STAGE #3.2 - TRIPLETS FILTERING...", verbose=self.config.verbose)
+        self.log("STAGE #3.2 - TRIPLETS FILTERING...",
+                 verbose=self.config.verbose)
         filtered_triplets = self.filter_triplets(query_info, triplets)
 
         if len(filtered_triplets) == 0:
             rinfo.status = ReturnStatus.zero_retrieved_triplets
             rinfo.message = STATUS_MESSAGE[rinfo.status]
 
-        self.log(f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.config.verbose)
+        self.log(
+            f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.config.verbose)
 
         return filtered_triplets, rinfo

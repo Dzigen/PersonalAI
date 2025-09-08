@@ -6,6 +6,7 @@ from .errors import ReturnStatus
 
 SUPPORTED_LANGUAGES = {'ru', 'en'}
 
+
 def detect_lang(text: str) -> Tuple[str, ReturnStatus]:
     """Функция предназначена для определения доминирующего языка, который используется во входном тексте.
 

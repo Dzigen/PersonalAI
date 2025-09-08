@@ -11,6 +11,7 @@ from .cache_kv import CacheKV
 from ..agents.utils import AbstractAgentConnector
 from ..db_drivers.kv_driver import KeyValueDriverConfig
 
+
 @dataclass
 class AgentTaskSuite:
     """Набор гиперпараметров для инференса и разбора ответа LLM-агента в рамках заданной атомарной задачи.
@@ -28,6 +29,7 @@ class AgentTaskSuite:
     user_prompt: str
     assistant_prompt: str
     parse_answer_func: object
+
 
 @dataclass
 class AgentTaskSolverConfig:
@@ -54,6 +56,7 @@ class AgentTaskSolverConfig:
     log: Logger
     verbose: bool = False
 
+
 class AgentTaskSolver:
     """Класс-обёртка, предназначенный для решения атомарной задачи на базе инференса LLM-агента.
 
@@ -64,7 +67,7 @@ class AgentTaskSolver:
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: AgentTaskSolverConfig,
-                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         self.config = config
         self.agent = agent
 
@@ -88,7 +91,8 @@ class AgentTaskSolver:
         """
         task_result, status = None, ReturnStatus.success
         self.log("="*20, verbose=self.config.verbose)
-        self.log("1. Предобработка данных для их дальнейшней вставки в user-prompt...", verbose=self.config.verbose)
+        self.log("1. Предобработка данных для их дальнейшней вставки в user-prompt...",
+                 verbose=self.config.verbose)
 
         try:
             formated_context = self.config.formate_context_func(**kwargs)
@@ -96,77 +100,105 @@ class AgentTaskSolver:
             self.log(str(e), verbose=self.config.verbose)
             status = ReturnStatus.bad_formater
         else:
-            self.log(f"Результат:\n{json.dumps(formated_context, indent=1, ensure_ascii=False)}.", verbose=self.config.verbose)
+            self.log(
+                f"Результат:\n{json.dumps(formated_context, indent=1, ensure_ascii=False)}.", verbose=self.config.verbose)
         finally:
-            self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
+            self.log("Статус: " +
+                     STATUS_MESSAGE[status], verbose=self.config.verbose)
 
         # Если удалось без ошибок привести данные в формат контекста
         # для вставки в user-prompt
         if status == ReturnStatus.success:
             self.log("-"*20, verbose=self.config.verbose)
-            self.log("2. Детекция используемого языка...", verbose=self.config.verbose)
+            self.log("2. Детекция используемого языка...",
+                     verbose=self.config.verbose)
             flatten_context = ' '.join(list(formated_context.values()))
-            detected_lang, status = detect_lang(flatten_context) if lang == 'auto' else (lang, ReturnStatus.success)
+            detected_lang, status = detect_lang(
+                flatten_context) if lang == 'auto' else (lang, ReturnStatus.success)
 
-            self.log(f"Результат:\n{detected_lang}.", verbose=self.config.verbose)
-            self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
+            self.log(f"Результат:\n{detected_lang}.",
+                     verbose=self.config.verbose)
+            self.log("Статус: " +
+                     STATUS_MESSAGE[status], verbose=self.config.verbose)
 
         # Если удалось определить язык (распознанный язык находится в списке доступных)
         if status == ReturnStatus.success:
             self.log("-"*20, verbose=self.config.verbose)
-            self.log("3. Добавление информации в user-prompt...", verbose=self.config.verbose)
+            self.log("3. Добавление информации в user-prompt...",
+                     verbose=self.config.verbose)
             try:
-                enriched_user_prompt = self.config.suites[detected_lang].user_prompt.format(**formated_context)
+                enriched_user_prompt = self.config.suites[detected_lang].user_prompt.format(
+                    **formated_context)
             except Exception as e:
                 self.log(str(e), verbose=self.config.verbose)
                 status = ReturnStatus.bad_user_prompt_maping
             else:
-                self.log(f"Результат:\n{enriched_user_prompt}", verbose=self.config.verbose)
+                self.log(
+                    f"Результат:\n{enriched_user_prompt}", verbose=self.config.verbose)
             finally:
-                self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
+                self.log("Статус: " +
+                         STATUS_MESSAGE[status], verbose=self.config.verbose)
 
         # Если удалось добавить дополнительную инофрмациб в user-prompt
         if status == ReturnStatus.success:
             self.log("-"*20, verbose=self.config.verbose)
-            self.log("4. Генерация ответа с помощью LLM-агента.", verbose=self.config.verbose)
+            self.log("4. Генерация ответа с помощью LLM-агента.",
+                     verbose=self.config.verbose)
 
             raw_answer = None
             gen_flag = True
 
             # preparing cache key
-            str_genstrat = ";".join(list(map(lambda p: f"{p[0]}={p[1]}", sorted([(k, str(v)) for k, v in self.agent.config.gen_strategy.items()], key=lambda p: p[0]))))
-            str_creds = ";".join(list(map(lambda p: f"{p[0]}={p[1]}", sorted([(k, str(v)) for k, v in self.agent.config.credentials.items()], key=lambda p: p[0]))))
-            sprompt_hash = hashlib.sha1(self.config.suites[detected_lang].system_prompt.encode()).hexdigest()
-            uprompt_hash = hashlib.sha1(enriched_user_prompt.encode()).hexdigest()
+            str_genstrat = ";".join(list(map(lambda p: f"{p[0]}={p[1]}", sorted(
+                [(k, str(v)) for k, v in self.agent.config.gen_strategy.items()], key=lambda p: p[0]))))
+            str_creds = ";".join(list(map(lambda p: f"{p[0]}={p[1]}", sorted(
+                [(k, str(v)) for k, v in self.agent.config.credentials.items()], key=lambda p: p[0]))))
+            sprompt_hash = hashlib.sha1(
+                self.config.suites[detected_lang].system_prompt.encode()).hexdigest()
+            uprompt_hash = hashlib.sha1(
+                enriched_user_prompt.encode()).hexdigest()
             if self.config.suites[detected_lang].assistant_prompt is None:
-                aprompt_hash = hashlib.sha1("__<|None|>__".encode()).hexdigest()
+                aprompt_hash = hashlib.sha1(
+                    "__<|None|>__".encode()).hexdigest()
             else:
-                aprompt_hash = hashlib.sha1(self.config.suites[detected_lang].assistant_prompt.encode()).hexdigest()
-            cache_key = [sprompt_hash, uprompt_hash, aprompt_hash, str_genstrat, str_creds]
+                aprompt_hash = hashlib.sha1(
+                    self.config.suites[detected_lang].assistant_prompt.encode()).hexdigest()
+            cache_key = [sprompt_hash, uprompt_hash,
+                         aprompt_hash, str_genstrat, str_creds]
 
             key_hash = None
 
             if self.cachekv is not None:
                 self.log("Поиск ответа в кеше...", verbose=self.config.verbose)
-                cstatus, key_hash, cached_result = self.cachekv.load_value(key=cache_key)
+                cstatus, key_hash, cached_result = self.cachekv.load_value(
+                    key=cache_key)
                 if cstatus == 0:
-                    self.log("Результат по заданной конфигурации гиперпараметров уже был получен.", verbose=self.config.verbose)
-                    self.log(f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
-                    self.log(f"* CACHE_HASH_KEY: {key_hash}", verbose=self.verbose)
+                    self.log(
+                        "Результат по заданной конфигурации гиперпараметров уже был получен.", verbose=self.config.verbose)
+                    self.log(
+                        f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
+                    self.log(
+                        f"* CACHE_HASH_KEY: {key_hash}", verbose=self.verbose)
                     formated_log_cachekey = '\n-'.join(cache_key)
-                    self.log(f"* HASH_SEEDS:\n-{formated_log_cachekey}", verbose=self.verbose)
+                    self.log(
+                        f"* HASH_SEEDS:\n-{formated_log_cachekey}", verbose=self.verbose)
 
                     gen_flag = False
                     raw_answer = cached_result
                 else:
-                    self.log("Результата по заданной конфигурации гиперпараметров в кеше нет.", verbose=self.config.verbose)
-                    self.log(f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
-                    self.log(f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
+                    self.log(
+                        "Результата по заданной конфигурации гиперпараметров в кеше нет.", verbose=self.config.verbose)
+                    self.log(
+                        f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
+                    self.log(
+                        f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
                     formated_log_cachekey = '\n-'.join(cache_key)
-                    self.log(f"* HASH_SEEDS:\n-{formated_log_cachekey }", verbose=self.verbose)
+                    self.log(
+                        f"* HASH_SEEDS:\n-{formated_log_cachekey }", verbose=self.verbose)
 
             if gen_flag:
-                self.log("Выполняем инференс llm...", verbose=self.config.verbose)
+                self.log("Выполняем инференс llm...",
+                         verbose=self.config.verbose)
 
                 raw_answer = self.agent.generate(
                     system_prompt=self.config.suites[detected_lang].system_prompt,
@@ -174,43 +206,55 @@ class AgentTaskSolver:
                     assistant_prompt=self.config.suites[detected_lang].assistant_prompt)
 
                 if self.cachekv is not None:
-                    self.log("Кешируем полученный результат.", verbose=self.config.verbose)
-                    self.cachekv.save_value(value=raw_answer, key_hash=key_hash)
+                    self.log("Кешируем полученный результат.",
+                             verbose=self.config.verbose)
+                    self.cachekv.save_value(
+                        value=raw_answer, key_hash=key_hash)
 
             self.log(f"Результат:\n{raw_answer}", verbose=self.config.verbose)
-            self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
+            self.log("Статус: " +
+                     STATUS_MESSAGE[status], verbose=self.config.verbose)
 
         # Если сгенрированная raw-строка не является пустой
         if status == ReturnStatus.success:
             self.log("-"*20, verbose=self.config.verbose)
-            self.log("5. Разбор ответа, сгенерированного LLM-агентом.", verbose=self.config.verbose)
+            self.log("5. Разбор ответа, сгенерированного LLM-агентом.",
+                     verbose=self.config.verbose)
 
             try:
-                formated_answer = self.config.suites[detected_lang].parse_answer_func(raw_answer, **kwargs)
+                formated_answer = self.config.suites[detected_lang].parse_answer_func(
+                    raw_answer, **kwargs)
             except (KeyError, ValueError) as e:
                 self.log(str(e), verbose=self.config.verbose)
                 status = ReturnStatus.bad_parser
             else:
-                self.log(f"Результат:\n{formated_answer}", verbose=self.config.verbose)
+                self.log(f"Результат:\n{formated_answer}",
+                         verbose=self.config.verbose)
             finally:
-                self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
+                self.log("Статус: " +
+                         STATUS_MESSAGE[status], verbose=self.config.verbose)
 
         #  Если не было ошибок при разборе raw-строки
         if status == ReturnStatus.success:
             self.log("-"*20, verbose=self.config.verbose)
-            self.log("6. Постобработка ответа от LLM-агента.", verbose=self.config.verbose)
+            self.log("6. Постобработка ответа от LLM-агента.",
+                     verbose=self.config.verbose)
 
             try:
-                task_result = self.config.postprocess_answer_func(formated_answer, **kwargs)
+                task_result = self.config.postprocess_answer_func(
+                    formated_answer, **kwargs)
             except Exception as e:
                 self.log(str(e), verbose=self.config.verbose)
                 status = ReturnStatus.bad_postprocessor
             else:
-                self.log(f"Результат:\n{task_result}", verbose=self.config.verbose)
+                self.log(f"Результат:\n{task_result}",
+                         verbose=self.config.verbose)
             finally:
-                self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
+                self.log("Статус: " +
+                         STATUS_MESSAGE[status], verbose=self.config.verbose)
 
         return task_result, status
+
 
 @dataclass
 class AgentTaskBaseConfig:

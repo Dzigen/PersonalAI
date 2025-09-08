@@ -6,6 +6,7 @@ import pickle
 from .configs import DEFAULT_REDISKV_CONFIG
 from ..utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
 
+
 class RedisKVConnector(AbstractKVDatabaseConnection):
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_REDISKV_CONFIG):
         self.config = config
@@ -36,7 +37,8 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
                 raise ValueError
 
             if type(item.id) is not str:
-                raise ValueError(f"id: t - {type(item.id)}; v - {item.id} value: t - {type(item.value)}; v - {item.value}")
+                raise ValueError(
+                    f"id: t - {type(item.id)}; v - {item.id} value: t - {type(item.value)}; v - {item.value}")
 
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
@@ -44,13 +46,15 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
 
         filtered_items = []
         for item in items:
-            item_exists = self.conn.hexists(self.config.params['hs_name'], item.id)
+            item_exists = self.conn.hexists(
+                self.config.params['hs_name'], item.id)
             if not item_exists:
                 filtered_items.append(item)
 
         # находимся в фиксированном размере хранилища
         if self.config.params['max_storage'] > 0:
-            n_items_to_delete = (self.count_items() + len(filtered_items)) - self.config.params['max_storage']
+            n_items_to_delete = (
+                self.count_items() + len(filtered_items)) - self.config.params['max_storage']
             if n_items_to_delete > 0:
                 self.delete_rare_items(n_items_to_delete)
 
@@ -63,8 +67,10 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
                     dumped_value = pickle.dumps((item.value, 'notbytes'))
                 formated_items.append((item.id, dumped_value))
 
-            self.conn.hset(self.config.params['hs_name'], mapping={item[0]: item[1] for item in formated_items})
-            self.conn.zadd(self.config.params['ss_name'], {item[0]: 0 for item in formated_items})
+            self.conn.hset(self.config.params['hs_name'], mapping={
+                           item[0]: item[1] for item in formated_items})
+            self.conn.zadd(self.config.params['ss_name'], {
+                           item[0]: 0 for item in formated_items})
 
     def read(self, ids: List[str]):
         for id in ids:
@@ -99,7 +105,8 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
             if type(item.id) is not str or type(item.value) not in [str, float, int]:
                 raise ValueError
 
-        filtered_items = [item for item in items if self.conn.hexists(self.config.params['hs_name'], item.id)]
+        filtered_items = [item for item in items if self.conn.hexists(
+            self.config.params['hs_name'], item.id)]
 
         if len(filtered_items) > 0:
             formated_items = []
@@ -110,30 +117,35 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
                     dumped_value = pickle.dumps((item.value, 'notbytes'))
                 formated_items.append((item.id, dumped_value))
 
-            self.conn.hset(self.config.params['hs_name'], mapping={item[0]: item[1] for item in formated_items})
-            self.conn.zadd(self.config.params['ss_name'], {item[0]: 0 for item in formated_items})
+            self.conn.hset(self.config.params['hs_name'], mapping={
+                           item[0]: item[1] for item in formated_items})
+            self.conn.zadd(self.config.params['ss_name'], {
+                           item[0]: 0 for item in formated_items})
 
     def delete(self, ids: List[str]):
         for id in ids:
             if type(id) is not str:
                 raise ValueError
 
-        filtered_ids = [id for id in ids if self.conn.hexists(self.config.params['hs_name'], id)]
+        filtered_ids = [id for id in ids if self.conn.hexists(
+            self.config.params['hs_name'], id)]
 
         if len(filtered_ids) > 0:
             self.conn.hdel(self.config.params['hs_name'], *filtered_ids)
             self.conn.zrem(self.config.params['ss_name'], *filtered_ids)
 
     def update_item_scores(self, mapping: Dict[str, int]) -> None:
-        existed_keys = [id for id in list(mapping.keys()) if self.conn.hexists(self.config.params['hs_name'], id)]
+        existed_keys = [id for id in list(mapping.keys()) if self.conn.hexists(
+            self.config.params['hs_name'], id)]
         filtered_mapping = {k: mapping[k] for k in existed_keys}
 
         if len(existed_keys) > 0:
-            for k,v in filtered_mapping.items():
+            for k, v in filtered_mapping.items():
                 self.conn.zincrby(self.config.params['ss_name'], v, k)
 
     def delete_rare_items(self, num: int) -> None:
-        rarest_values = self.conn.zrangebyscore(self.config.params['ss_name'], 0, "+inf", start=0, num=num)
+        rarest_values = self.conn.zrangebyscore(
+            self.config.params['ss_name'], 0, "+inf", start=0, num=num)
         if len(rarest_values) > 0:
             self.conn.zrem(self.config.params['ss_name'], *rarest_values)
             self.conn.hdel(self.config.params['hs_name'], *rarest_values)

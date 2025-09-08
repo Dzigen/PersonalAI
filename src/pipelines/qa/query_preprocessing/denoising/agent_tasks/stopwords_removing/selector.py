@@ -8,13 +8,14 @@ AVAILABLE_SWREMV_TCONFIGS = {
     'v1': SWREMV_SUITE_V1
 }
 
+
 class AgentStopWordsRemovingTaskConfigSelector:
     @staticmethod
     def get_available_configs():
         return AVAILABLE_SWREMV_TCONFIGS
 
     @staticmethod
-    def select(base_config_version:str = 'v1', cache_table_name:str="qp_swremv_agent_task_cache") -> AgentTaskSolverConfig:
+    def select(base_config_version: str = 'v1', cache_table_name: str = "qp_swremv_agent_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
             suites=AVAILABLE_SWREMV_TCONFIGS[base_config_version],

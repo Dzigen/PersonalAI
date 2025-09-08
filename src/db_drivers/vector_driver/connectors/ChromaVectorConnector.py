@@ -14,6 +14,7 @@ __import__('pysqlite3')
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 logging.getLogger("chromadb").setLevel(logging.CRITICAL)
 
+
 class ChromaVectorConnection(AbstractVectorDatabaseConnection):
 
     def __init__(self, config: VectorDBConnectionConfig = DEFAULT_CHROMA_CONFIG) -> None:
@@ -23,7 +24,8 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
 
     def open_connection(self) -> ReturnInfo:
         self.client = chromadb.PersistentClient(path=self.config.conn['path'])
-        self.collection = self.client.get_or_create_collection(name=self.config.db_info['table'], metadata=self.config.params)
+        self.collection = self.client.get_or_create_collection(
+            name=self.config.db_info['table'], metadata=self.config.params)
 
         if self.config.need_to_clear:
             self.clear()
@@ -49,20 +51,26 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
             raise ValueError
 
         insts_idxs = list(range(len(items)))
-        insts_with_md = list(filter(lambda i: len(items[i].metadata.keys()) > 0, insts_idxs))
+        insts_with_md = list(filter(lambda i: len(
+            items[i].metadata.keys()) > 0, insts_idxs))
         insts_wo_md = set(insts_idxs).difference(set(insts_with_md))
 
         if len(insts_with_md) > 0:
             self.collection.add(
-                documents=list(map(lambda idx: items[idx].document, insts_with_md)),
-                embeddings=list(map(lambda idx: items[idx].embedding, insts_with_md)),
-                metadatas=list(map(lambda idx: items[idx].metadata, insts_with_md)),
+                documents=list(
+                    map(lambda idx: items[idx].document, insts_with_md)),
+                embeddings=list(
+                    map(lambda idx: items[idx].embedding, insts_with_md)),
+                metadatas=list(
+                    map(lambda idx: items[idx].metadata, insts_with_md)),
                 ids=list(map(lambda idx: items[idx].id, insts_with_md)))
 
         if len(insts_wo_md) > 0:
             self.collection.add(
-                documents=list(map(lambda idx: items[idx].document, insts_wo_md)),
-                embeddings=list(map(lambda idx: items[idx].embedding, insts_wo_md)),
+                documents=list(
+                    map(lambda idx: items[idx].document, insts_wo_md)),
+                embeddings=list(
+                    map(lambda idx: items[idx].embedding, insts_wo_md)),
                 ids=list(map(lambda idx: items[idx].id, insts_wo_md)))
 
     def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[VectorDBInstance]:
@@ -108,7 +116,7 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
 
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids=None,
-            includes: List[str]  = ['embeddings', 'documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
+            includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
         # validating
         if len(query_instances) < 1:
             return ValueError
@@ -137,12 +145,14 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
             cur_formated_instances = []
             for j in range(len(raw_retrieved_instances['ids'][i])):
                 tmp_inst = {requested_field[:-1]: raw_retrieved_instances[requested_field][i][j]
-                        for requested_field in includes + ['ids']}
+                            for requested_field in includes + ['ids']}
                 cur_distance = raw_retrieved_instances['distances'][i][j]
 
-                cur_formated_instances.append((cur_distance, VectorDBInstance(**tmp_inst)))
+                cur_formated_instances.append(
+                    (cur_distance, VectorDBInstance(**tmp_inst)))
 
-            cur_formated_instances = sorted(cur_formated_instances, key=lambda v: v[0], reverse=False)
+            cur_formated_instances = sorted(
+                cur_formated_instances, key=lambda v: v[0], reverse=False)
             formated_instances.append(cur_formated_instances)
 
         return formated_instances

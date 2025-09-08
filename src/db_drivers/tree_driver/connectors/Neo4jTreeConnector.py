@@ -6,6 +6,7 @@ from .configs import DEFAULT_NEO4JTREE_CONFIG
 from ..utils import AbstractTreeDatabaseConnection, TreeDBConnectionConfig, \
     TreeNode, TreeNodeType, TreeIdType, TREENODES_TYPES_MAP
 
+
 class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
 
     def __init__(self, config: TreeDBConnectionConfig = DEFAULT_NEO4JTREE_CONFIG):
@@ -21,7 +22,8 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
             print("Failed to create the driver:", e)
 
         #
-        self.execute_query(f'CREATE DATABASE {self.config.db_info["db"]} IF NOT EXISTS;', db_flag=False)
+        self.execute_query(
+            f'CREATE DATABASE {self.config.db_info["db"]} IF NOT EXISTS;', db_flag=False)
 
         # Creating indexes
         if self.config.create_index:
@@ -35,7 +37,8 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
 
         # Добавляем корневую вершину
         if self.count_items()['root'] < 1:
-            self.execute_query("CREATE (n:root {" + 'external_id: "' + self.root_node_id + '", depth: 0});')
+            self.execute_query(
+                "CREATE (n:root {" + 'external_id: "' + self.root_node_id + '", depth: 0});')
 
         if self.config.need_to_clear:
             self.clear()
@@ -50,18 +53,21 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
 
     def check_consistency(self) -> None:
         # У всех leaf-вершин есть str_id-поле
-        leafs_wo_strid = self.execute_query("MATCH (n:leaf) WHERE n.str_id IS NULL RETURN COUNT(n) as badleafs;")[0]['badleafs']
+        leafs_wo_strid = self.execute_query(
+            "MATCH (n:leaf) WHERE n.str_id IS NULL RETURN COUNT(n) as badleafs;")[0]['badleafs']
         assert leafs_wo_strid < 1
 
         # количество компонент связности равно 1
-        #components_amount = self.execute_query(f"CALL gds.wcc.stats('{self.config.db_info['db']}') YIELD componentCount")[0]['componentCount']
-        #assert components_amount < 2
+        # components_amount = self.execute_query(f"CALL gds.wcc.stats('{self.config.db_info['db']}') YIELD componentCount")[0]['componentCount']
+        # assert components_amount < 2
 
         # нет summarized-вершин без детей
-        summarized_wo_childs = self.execute_query("MATCH (parent:summarized) WHERE COUNT { (parent)-[rel]->() } < 1 RETURN parent;")
+        summarized_wo_childs = self.execute_query(
+            "MATCH (parent:summarized) WHERE COUNT { (parent)-[rel]->() } < 1 RETURN parent;")
         assert len(summarized_wo_childs) < 1
         # нет leaf-вершин c детьми
-        leafs_with_childs = self.execute_query("MATCH (parent:leaf) WHERE COUNT { (parent)-[rel]->() } > 1 RETURN parent;")
+        leafs_with_childs = self.execute_query(
+            "MATCH (parent:leaf) WHERE COUNT { (parent)-[rel]->() } > 1 RETURN parent;")
         assert len(leafs_with_childs) < 1
 
         nodes_count = self.count_items()
@@ -88,12 +94,15 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         # добавляем новую вершину
         query_props = {}
         for p_name, p_value in new_node.props.items():
-            p_name, p_value = p_name.replace(" ", "_"), json.dumps(p_value, ensure_ascii=False)
+            p_name, p_value = p_name.replace(
+                " ", "_"), json.dumps(p_value, ensure_ascii=False)
             query_props[p_name] = p_value
-        query_props['external_id'] = json.dumps(new_node.id, ensure_ascii=False)
+        query_props['external_id'] = json.dumps(
+            new_node.id, ensure_ascii=False)
         query_props['text'] = json.dumps(new_node.text, ensure_ascii=False)
         str_props = ", ".join([f"{k}: {v}" for k, v in query_props.items()])
-        query = f"CREATE (n:{new_node.type.value} " + "{" + str_props + "}) RETURN elementId(n) as node_id;"
+        query = f"CREATE (n:{new_node.type.value} " + \
+            "{" + str_props + "}) RETURN elementId(n) as node_id;"
         self.execute_query(query)
 
         # добавляем связь между parent- и её новой child-вершиной
@@ -109,7 +118,8 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
             if type(id) is not str:
                 raise ValueError
 
-        formated_ids = '['+', '.join(list(map(lambda id: f'"{id}"', ids))) + ']'
+        formated_ids = '[' + \
+            ', '.join(list(map(lambda id: f'"{id}"', ids))) + ']'
         query = f"MATCH (n) WHERE any(id IN {formated_ids} WHERE n.{ids_type.value} = id) RETURN n;"
         raw_nodes = self.execute_query(query)
 
@@ -132,25 +142,32 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
             cur_new_item = new_items_map[cur_old_item.id]
 
             # Получаем набор полей, которые нужно удалить из текущей вершины
-            props_to_delete = set(set(cur_old_item.props.keys())).difference(set(cur_new_item.props.keys()))
+            props_to_delete = set(set(cur_old_item.props.keys())).difference(
+                set(cur_new_item.props.keys()))
 
             # Формируем строковое представление полей для удаления из и добавления в текущую вершину
-            formated_delete_props = list(map(lambda p_name: f"n.{p_name} = null", props_to_delete))
+            formated_delete_props = list(
+                map(lambda p_name: f"n.{p_name} = null", props_to_delete))
             formated_set_props = []
-            for k,v in cur_new_item.props.items():
-                formated_set_props.append(f"n.{k} = {json.dumps(v, ensure_ascii=False)}")
-            formated_set_props.append(f"n.text = {json.dumps(cur_new_item.text, ensure_ascii=False)}")
+            for k, v in cur_new_item.props.items():
+                formated_set_props.append(
+                    f"n.{k} = {json.dumps(v, ensure_ascii=False)}")
+            formated_set_props.append(
+                f"n.text = {json.dumps(cur_new_item.text, ensure_ascii=False)}")
             formated_set_props.append(f"n:{cur_new_item.type.value}")
 
-            formated_props = ', '.join(formated_delete_props + formated_set_props)
+            formated_props = ', '.join(
+                formated_delete_props + formated_set_props)
 
             # Модифицируем содержание полей в текущей вершине
-            query = "MATCH (n {external_id: '" + cur_old_item.id + "'}) SET " + formated_props + ";"
+            query = "MATCH (n {external_id: '" + cur_old_item.id + \
+                "'}) SET " + formated_props + ";"
             self.execute_query(query)
 
             # Меняем тип вершины, если необходимо
             if cur_new_item.type != cur_old_item.type:
-                query = "MATCH (n {external_id: '" + cur_old_item.id + "'})" + f"REMOVE n:{cur_old_item.type.value} SET n:{cur_new_item.type.value};"
+                query = "MATCH (n {external_id: '" + cur_old_item.id + "'})" + \
+                    f"REMOVE n:{cur_old_item.type.value} SET n:{cur_new_item.type.value};"
                 self.execute_query(query)
 
     def delete(self, ids: List[str], ids_type: TreeIdType = TreeIdType.external) -> None:
@@ -166,13 +183,18 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
                     raise ValueError
 
         for id in ids:
-            self.execute_query(f'MATCH (grand_p)-[rel]->(parent) WHERE parent.{ids_type.value} = "{id}" DELETE rel;')
-            self.execute_query(f'MATCH (n) WHERE n.{ids_type.value} = "{id}" DELETE n;')
+            self.execute_query(
+                f'MATCH (grand_p)-[rel]->(parent) WHERE parent.{ids_type.value} = "{id}" DELETE rel;')
+            self.execute_query(
+                f'MATCH (n) WHERE n.{ids_type.value} = "{id}" DELETE n;')
 
     def count_items(self) -> Dict[str, int]:
-        leafs_amount = self.execute_query("MATCH (n:leaf) return COUNT(n) as l_amount;")[0]['l_amount']
-        summarized_amount = self.execute_query("MATCH (n:summarized) return COUNT(n) as s_amount;")[0]['s_amount']
-        root_amount = self.execute_query("MATCH (n:root) return COUNT(n) as r_amount;")[0]['r_amount']
+        leafs_amount = self.execute_query(
+            "MATCH (n:leaf) return COUNT(n) as l_amount;")[0]['l_amount']
+        summarized_amount = self.execute_query(
+            "MATCH (n:summarized) return COUNT(n) as s_amount;")[0]['s_amount']
+        root_amount = self.execute_query(
+            "MATCH (n:root) return COUNT(n) as r_amount;")[0]['r_amount']
 
         return {'leaf': leafs_amount, 'summarized': summarized_amount, 'root': root_amount}
 
@@ -198,7 +220,8 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         if not self.item_exist(id, id_type=id_type):
             raise ValueError
 
-        raw_output = self.execute_query(f'MATCH (parent)-[:relation*0..]->(n:leaf) WHERE parent.{id_type.value} = "{id}" RETURN n;')
+        raw_output = self.execute_query(
+            f'MATCH (parent)-[:relation*0..]->(n:leaf) WHERE parent.{id_type.value} = "{id}" RETURN n;')
         leaf_nodes = self.formate_nodes_output(raw_output)
         return leaf_nodes
 
@@ -208,7 +231,8 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         if not self.item_exist(parent_id, id_type=id_type):
             raise ValueError
 
-        raw_nodes = self.execute_query(f'MATCH (parent)-[rel]->(n) WHERE parent.{id_type.value} = "{parent_id}" RETURN n;')
+        raw_nodes = self.execute_query(
+            f'MATCH (parent)-[rel]->(n) WHERE parent.{id_type.value} = "{parent_id}" RETURN n;')
         formated_nodes = self.formate_nodes_output(raw_nodes)
         return formated_nodes
 
@@ -219,14 +243,16 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         self.execute_query("MATCH (n)-[rel]->() DELETE n,rel;")
         self.execute_query("MATCH (n) DELETE n;")
         # Добавляем корневую вершину
-        self.execute_query("CREATE (n:root {" + 'external_id: "' + self.root_node_id + '", depth: 0});')
+        self.execute_query(
+            "CREATE (n:root {" + 'external_id: "' + self.root_node_id + '", depth: 0});')
 
     def execute_query(self, query: str, db_flag: bool = True) -> List[object]:
         assert self.driver is not None, "Driver not initialized!"
         session = None
         response = None
         try:
-            session = self.driver.session(database=self.config.db_info['db']) if db_flag else self.driver.session()
+            session = self.driver.session(
+                database=self.config.db_info['db']) if db_flag else self.driver.session()
             response = list(session.run(query))
         except Exception as e:
             print("Query failed:", e)
@@ -255,7 +281,7 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
 
         # все ключи и значения по ключам в props-поле
         # должны иметь str-тип
-        for k,v in node.props.items():
+        for k, v in node.props.items():
             if (node.type == TreeNodeType.summarized and k == 'descendants_num') or k == 'depth':
                 if type(v) is not int:
                     raise ValueError

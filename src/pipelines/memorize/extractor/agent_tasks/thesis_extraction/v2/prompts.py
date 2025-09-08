@@ -1,7 +1,7 @@
 ### PROMPT IN ENGLISH ###
 
 EN_THESISES_EXTRACTION_SYSTEM_PROMPT = \
-'''
+    '''
 Objective: The main goal is to meticulously gather information from input [Text] and organize this data into a clear, structured knowledge graph.
 
 Requirements for building a knowledge graph:
@@ -23,13 +23,13 @@ thesis_n | [list of entites for thesis_n].
 # As a response generate only extracted thesises in the format, described above and do not include additional explanations of the obtained result.
 
 EN_THESISES_EXTRACTION_USER_PROMPT = \
-'''
+    '''
 [Text]:
 {text}
 '''
 
 EN_THESISES_EXTRACTION_ASSISTANT_PROMPT = \
-'''
+    '''
 [Extracted thesises]:
 '''
 
@@ -37,7 +37,7 @@ EN_THESISES_EXTRACTION_ASSISTANT_PROMPT = \
 
 # TODO
 RU_THESISES_EXTRACTION_SYSTEM_PROMPT = \
-'''
+    '''
 Задача: Основная цель - тщательно собрать информацию из входного текста и организовать эти данные в четкий, структурированный граф знаний.
 
 Руководство по построению графа знаний:
@@ -63,13 +63,13 @@ RU_THESISES_EXTRACTION_SYSTEM_PROMPT = \
 
 # TODO
 RU_THESISES_EXTRACTION_USER_PROMPT = \
-'''
+    '''
 Текст:
 {text}
 '''
 
 # TODO
 RU_THESISES_EXTRACTION_ASSISTANT_PROMPT = \
-'''
+    '''
 Извлечённые тезисы:
 '''

@@ -1,6 +1,7 @@
 from neo4j_functions import Neo4jConnection
 
-conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
+conn = Neo4jConnection(uri="bolt://31.207.47.254:7687",
+                       user="neo4j", pwd="password")
 
 # Geoffrey has positive, negative or neutral opinion about 1080 processor of X70Pro?
 # Jaden has positive, negative or neutral opinion about battery life of K20Pro?

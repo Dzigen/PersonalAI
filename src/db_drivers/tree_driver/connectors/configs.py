@@ -16,6 +16,6 @@ DEFAULT_KUZUTREE_CONFIG = TreeDBConnectionConfig(
                     }
                 }
             }
-    },
+            },
     need_to_clear=False
 )

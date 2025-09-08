@@ -10,13 +10,14 @@ AVAILABLE_KWE_TCONFIGS = {
     'v2': KWE_SUITE_V2
 }
 
+
 class AgentKWETaskConfigSelector:
     @staticmethod
     def get_available_configs():
         return AVAILABLE_KWE_TCONFIGS
 
     @staticmethod
-    def select(base_config_version:str='v1', cache_table_name:str="qa_agent_kwe_task_cache") -> AgentTaskSolverConfig:
+    def select(base_config_version: str = 'v1', cache_table_name: str = "qa_agent_kwe_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
             suites=AVAILABLE_KWE_TCONFIGS[base_config_version],

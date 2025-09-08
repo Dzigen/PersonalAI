@@ -8,7 +8,7 @@ from .TripletsFilter import TripletsFilter, TripletsFilterConfig
 
 KR_MAIN_LOG_PATH = 'log/qa/kg_reasoner/weak/knowledge_retriever/main'
 
-AVAILABLE_TRIPLETS_RETRIEVERS  = {
+AVAILABLE_TRIPLETS_RETRIEVERS = {
     'astar': {
         'config': AStarGraphSearchConfig,
         'class': AStarTripletsRetriever},

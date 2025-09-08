@@ -8,13 +8,14 @@ AVAILABLE_LCHECK_TCONFIGS = {
     'v1': LCHECK_SUITE_V1
 }
 
+
 class AgentQueryLinguistCheckConfigSelector:
     @staticmethod
     def get_available_configs():
         return AVAILABLE_LCHECK_TCONFIGS
 
     @staticmethod
-    def select(base_config_version:str = 'v1', cache_table_name:str="qp_lcheck_agent_task_cache") -> AgentTaskSolverConfig:
+    def select(base_config_version: str = 'v1', cache_table_name: str = "qp_lcheck_agent_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
             suites=AVAILABLE_LCHECK_TCONFIGS[base_config_version],

@@ -3,13 +3,15 @@ from transformers import pipeline
 from .configs import DEFAULT_LOCALAGENT_CONFIG
 from ..utils import AbstractAgentConnector, AgentConnectorConfig
 
+
 class LocalAgentConnector(AbstractAgentConnector):
     def __init__(self, config: AgentConnectorConfig = DEFAULT_LOCALAGENT_CONFIG) -> None:
         self.config = config
         self.pipeline = pipeline(
             "text-generation",
             model=self.config.credentials['model_name_or_path'],
-            model_kwargs={"torch_dtype": self.config.credentials['torch_dtype']},
+            model_kwargs={
+                "torch_dtype": self.config.credentials['torch_dtype']},
             device_map="auto"
         )
 
@@ -23,10 +25,11 @@ class LocalAgentConnector(AbstractAgentConnector):
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
         messages = [
             {"role": "system", "content": system_prompt},
-            {"role": "user","content": user_prompt}]
+            {"role": "user", "content": user_prompt}]
 
         if assistant_prompt is not None:
-            messages.insert(1, {"role": "assistant", "content": assistant_prompt})
+            messages.insert(
+                1, {"role": "assistant", "content": assistant_prompt})
 
         prompt = self.pipeline.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True)

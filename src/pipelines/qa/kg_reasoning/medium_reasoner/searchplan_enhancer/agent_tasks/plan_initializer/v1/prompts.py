@@ -3,7 +3,7 @@ You are an assistant that providing a search-plan for collecting information bas
 
 The format you must match for generating response is presented below:
 [Search-plan]
-1. <search-query1> 
+1. <search-query1>
 2. <search-query2>
 ...
 N. <search-queryN>
@@ -39,6 +39,6 @@ EN_PLANINIT_ASSISTANT_PROMPT = '''
 [Search-plan]
 '''
 
-RU_PLANINIT_SYSTEM_PROMPT = ... # TODO
-RU_PLANINIT_USER_PROMPT = ... # TODO 
-RU_PLANINIT_ASSISTANT_PROMPT = ... # TODO
+RU_PLANINIT_SYSTEM_PROMPT = ...  # TODO
+RU_PLANINIT_USER_PROMPT = ...  # TODO
+RU_PLANINIT_ASSISTANT_PROMPT = ...  # TODO

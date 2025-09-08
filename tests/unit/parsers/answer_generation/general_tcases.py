@@ -1,13 +1,14 @@
+from .cases import VALID_SIMPLE_TRIPLET1, VALID_HYPER_TRIPLET1
+from src.utils import TripletCreator
 import sys
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
-from src.utils import TripletCreator
 
-from .cases import VALID_SIMPLE_TRIPLET1, VALID_HYPER_TRIPLET1
 
 AG_ONE_CONTEXT = f'- {TripletCreator.stringify(VALID_SIMPLE_TRIPLET1)[1]}'
-AG_SEVERAL_CONTEXTS = '\n'.join(list(map(lambda triplet: f'- {TripletCreator.stringify(triplet)[1]}', [VALID_SIMPLE_TRIPLET1, VALID_HYPER_TRIPLET1])))
+AG_SEVERAL_CONTEXTS = '\n'.join(list(map(
+    lambda triplet: f'- {TripletCreator.stringify(triplet)[1]}', [VALID_SIMPLE_TRIPLET1, VALID_HYPER_TRIPLET1])))
 
 # "query, context_triplets, expected_output, exception"
 AG_FORMATE_TEST_CASES = [

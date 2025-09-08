@@ -13,6 +13,7 @@ from .....utils.cache_kv import CacheUtils
 from .....kg_model import KnowledgeGraphModel
 from .....db_drivers.kv_driver import KeyValueDriverConfig
 
+
 @dataclass
 class WeakKGReasonerConfig(BaseKGReasonerConfig):
     """Конфигурация weak-версии пайплайна по ризонингу на графе знаний.
@@ -32,21 +33,28 @@ class WeakKGReasonerConfig(BaseKGReasonerConfig):
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
     """
-    query_parser_config: Union[None,QueryLLMParserConfig] = field(default_factory=lambda: QueryLLMParserConfig())
-    knowledge_comparator_config: Union[None,KnowledgeComparatorConfig] = field(default_factory=lambda: KnowledgeComparatorConfig())
-    knowledge_retriever_config: KnowledgeRetrieverConfig = field(default_factory=lambda: KnowledgeRetrieverConfig())
-    answer_generator_config: QALLMGeneratorConfig = field(default_factory=lambda: QALLMGeneratorConfig())
+    query_parser_config: Union[None, QueryLLMParserConfig] = field(
+        default_factory=lambda: QueryLLMParserConfig())
+    knowledge_comparator_config: Union[None, KnowledgeComparatorConfig] = field(
+        default_factory=lambda: KnowledgeComparatorConfig())
+    knowledge_retriever_config: KnowledgeRetrieverConfig = field(
+        default_factory=lambda: KnowledgeRetrieverConfig())
+    answer_generator_config: QALLMGeneratorConfig = field(
+        default_factory=lambda: QALLMGeneratorConfig())
 
     cache_table_name: str = 'qa_weakreasoner_cache'
     log: Logger = field(default_factory=lambda: Logger(WKGR_MAIN_LOG_PATH))
     verbose: bool = False
 
     def to_str(self) -> str:
-        str_qparser_config = self.query_parser_config.to_str() if self.query_parser_config is not None else "None"
-        str_kcomp_config = self.knowledge_comparator_config.to_str() if self.knowledge_comparator_config is not None else "None"
+        str_qparser_config = self.query_parser_config.to_str(
+        ) if self.query_parser_config is not None else "None"
+        str_kcomp_config = self.knowledge_comparator_config.to_str(
+        ) if self.knowledge_comparator_config is not None else "None"
         str_kretr_config = self.knowledge_retriever_config.to_str()
         str_answgen_config = self.answer_generator_config.to_str()
         return f"{str_qparser_config};{str_kcomp_config};{str_kretr_config};{str_answgen_config}"
+
 
 class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
     """Weak-версия пайплайна по ризонигу на графе знаний с целью извлечения релевантной информации к запросу.
@@ -63,7 +71,8 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
                  cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None):
         self.config = config
 
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
 
         if self.config.query_parser_config is None:
             self.query_parser = None
@@ -84,9 +93,11 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if type(level) is not str:
-            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             self.cachekv.clear()
@@ -111,7 +122,8 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
                 self.log("Operation ended with error!", verbose=self.verbose)
             else:
                 self.log("Operation ended successfully", verbose=self.verbose)
-                self.log(f"RESULT:\n* EXTRACTED ENTITIES AMOUNT - {len(entities)}\n* EXTRACTED ENTITIES - {entities}", verbose=self.config.verbose)
+                self.log(
+                    f"RESULT:\n* EXTRACTED ENTITIES AMOUNT - {len(entities)}\n* EXTRACTED ENTITIES - {entities}", verbose=self.config.verbose)
 
         return entities, rinfo
 
@@ -120,36 +132,43 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         if self.query_parser is None:
             self.log("Stage #2 was omited!", verbose=self.config.verbose)
         else:
-            linked_nodes, linked_nodes_by_entities, rinfo = self.knowledge_comparator.link_kgnodes_to_query(query_info)
+            linked_nodes, linked_nodes_by_entities, rinfo = self.knowledge_comparator.link_kgnodes_to_query(
+                query_info)
             if rinfo.status != ReturnStatus.success:
                 self.log("Operation ended with error!", verbose=self.verbose)
             else:
                 self.log("Operation ended successfully", verbose=self.verbose)
-                self.log(f"RESULT: {len(query_info.linked_nodes)}", verbose=self.config.verbose)
+                self.log(
+                    f"RESULT: {len(query_info.linked_nodes)}", verbose=self.config.verbose)
                 for node in query_info.linked_nodes:
-                    self.log(f"*[{node.id}] {node.document}", verbose=self.config.verbose)
+                    self.log(f"*[{node.id}] {node.document}",
+                             verbose=self.config.verbose)
 
         return linked_nodes, linked_nodes_by_entities, rinfo
 
-    def traverse_knowledge_graph(self, query_info: QueryInfo) -> Tuple[Union[None,List[Triplet]], ReturnInfo]:
-        retrieved_triplets, rinfo = self.knowledge_retriever.retrieve(query_info)
+    def traverse_knowledge_graph(self, query_info: QueryInfo) -> Tuple[Union[None, List[Triplet]], ReturnInfo]:
+        retrieved_triplets, rinfo = self.knowledge_retriever.retrieve(
+            query_info)
         if rinfo.status != ReturnStatus.success:
             self.log("Operation ended with error!", verbose=self.verbose)
         else:
             self.log("Operation ended successfully", verbose=self.verbose)
-            self.log(f"RESULT: {len(retrieved_triplets)}", verbose=self.config.verbose)
+            self.log(f"RESULT: {len(retrieved_triplets)}",
+                     verbose=self.config.verbose)
             for triplet in retrieved_triplets:
                 self.log(f"* {triplet}", verbose=self.config.verbose)
 
         return retrieved_triplets, rinfo
 
-    def generate_answer(self, query_info: QueryInfo, retrieved_triplets: List[Triplet]) -> Tuple[Union[None,str], ReturnInfo]:
-        answer, rinfo = self.answer_generator.generate(query_info.query, retrieved_triplets)
+    def generate_answer(self, query_info: QueryInfo, retrieved_triplets: List[Triplet]) -> Tuple[Union[None, str], ReturnInfo]:
+        answer, rinfo = self.answer_generator.generate(
+            query_info.query, retrieved_triplets)
         if rinfo.status != ReturnStatus.success:
             self.log("Operation ended with error!", verbose=self.verbose)
         else:
             self.log("Operation ended successfully", verbose=self.verbose)
-            self.log(f"RESULT:\n* ANSWER - {answer}", verbose=self.config.verbose)
+            self.log(f"RESULT:\n* ANSWER - {answer}",
+                     verbose=self.config.verbose)
 
         return answer, rinfo
 
@@ -166,7 +185,8 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         :rtype: Tuple[str, ReturnInfo]
         """
         self.log("START WEAK KG-REASONING...", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
+        self.log(
+            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
         self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
 
         answer, rinfo = None, ReturnInfo()
@@ -176,27 +196,34 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         query_info.entities, ee_rinfo = self.extract_entities(self, query_info)
         update_rinfo(rinfo, ee_rinfo)
 
-
-        self.log("STAGE#2 - MATCHING KEY WORDS TO KG-NODES", verbose=self.config.verbose)
+        self.log("STAGE#2 - MATCHING KEY WORDS TO KG-NODES",
+                 verbose=self.config.verbose)
         if rinfo.status == ReturnStatus.success:
-            query_info.linked_nodes, query_info.linked_nodes_by_entities, me_rinfo = self.match_entities_to_kgnodes(query_info)
+            query_info.linked_nodes, query_info.linked_nodes_by_entities, me_rinfo = self.match_entities_to_kgnodes(
+                query_info)
             update_rinfo(rinfo, me_rinfo)
         else:
-            self.log("During previous steps error occurs.", verbose=self.verbose)
+            self.log("During previous steps error occurs.",
+                     verbose=self.verbose)
 
-        self.log("STAGE#3 - RETRIEVING RELEVANT TRIPLETS FROM KG", verbose=self.config.verbose)
+        self.log("STAGE#3 - RETRIEVING RELEVANT TRIPLETS FROM KG",
+                 verbose=self.config.verbose)
         if rinfo.status == ReturnStatus.success:
-            retrieved_triplets, tkg_rinfo = self.traverse_knowledge_graph(query_info)
+            retrieved_triplets, tkg_rinfo = self.traverse_knowledge_graph(
+                query_info)
             update_rinfo(rinfo, tkg_rinfo)
         else:
-            self.log("During previous steps error occurs.", verbose=self.verbose)
+            self.log("During previous steps error occurs.",
+                     verbose=self.verbose)
 
         self.log("STAGE#4 - ANSWER GENERATION", verbose=self.config.verbose)
         if rinfo.status == ReturnStatus.success:
-            answer, ag_rinfo = self.answer_generator(query_info, retrieved_triplets)
+            answer, ag_rinfo = self.answer_generator(
+                query_info, retrieved_triplets)
             update_rinfo(rinfo, ag_rinfo)
         else:
-            self.log("During previous steps error occurs.", verbose=self.verbose)
+            self.log("During previous steps error occurs.",
+                     verbose=self.verbose)
 
         self.log(f"STATUS: {rinfo.status}", verbose=self.config.verbose)
 

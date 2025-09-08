@@ -6,7 +6,7 @@ from typing import Dict
 import numpy as np
 import os
 
-################LOADING_HYPERPARAMETERS###################
+################ LOADING_HYPERPARAMETERS###################
 
 # Read YAML file
 PARAMS_FILEP = sys.orig_argv[2]
@@ -24,13 +24,16 @@ ACCUMULATED_SCORES_SAVE_FILE = 'accumulated_scores.json'
 
 #################
 
+
 def load_json(load_path: str) -> Dict:
     with open(load_path, 'r', encoding='utf-8') as fd:
         data = json.loads(fd.read())
     return data
 
+
 def round5(number: float) -> float:
     return round(number, 5)
+
 
 def save_json(data: Dict[str, object], save_path: str):
     dump = json.dumps(data, ensure_ascii=False, indent=1)
@@ -38,6 +41,7 @@ def save_json(data: Dict[str, object], save_path: str):
         fd.write(dump)
 
 ##################
+
 
 accumulated_scores = defaultdict(list)
 accumulated_base_meticnames = {
@@ -59,8 +63,9 @@ for pack_name in base_packs:
             accumulated_scores[m_name].append(metrics_info[m_name])
         else:
             for sub_m_name in accumulated_base_meticnames[m_name]:
-                accumulated_scores[f"{m_name}_{sub_m_name}"].append(metrics_info[m_name][sub_m_name])
-    
+                accumulated_scores[f"{m_name}_{sub_m_name}"].append(
+                    metrics_info[m_name][sub_m_name])
+
 ##################
 
 llm_packs = os.listdir(LLM_METRICS_DIR)
@@ -72,7 +77,8 @@ for pack_name in llm_packs:
             accumulated_scores[m_name].append(metrics_info[m_name])
         else:
             for sub_m_name in accumulated_llm_meticnames[m_name]:
-                accumulated_scores[f"{m_name}_{sub_m_name}"].append(metrics_info[m_name][sub_m_name])
+                accumulated_scores[f"{m_name}_{sub_m_name}"].append(
+                    metrics_info[m_name][sub_m_name])
 
 ##################
 
@@ -84,7 +90,8 @@ for key in accumulated_scores.keys():
 times_info = load_json(ELAPSED_TIME_FILE_PATH)
 for pack_name in times_info.keys():
     accumulated_scores['elapsed_time'].append(times_info[pack_name]['sum'])
-accumulated_scores['elapsed_time'] = sum(accumulated_scores['elapsed_time']) 
+accumulated_scores['elapsed_time'] = sum(accumulated_scores['elapsed_time'])
 
 accumulated_scores = dict(accumulated_scores)
-save_json(accumulated_scores, f"{SPEC_EXPERIMENT_DIR}/{ACCUMULATED_SCORES_SAVE_FILE}")
+save_json(accumulated_scores,
+          f"{SPEC_EXPERIMENT_DIR}/{ACCUMULATED_SCORES_SAVE_FILE}")

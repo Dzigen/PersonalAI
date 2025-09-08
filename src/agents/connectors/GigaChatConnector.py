@@ -9,6 +9,7 @@ from httpx import ConnectError, RemoteProtocolError
 from .configs import DEFAULT_GIGACHAT_CONFIG
 from ..utils import AbstractAgentConnector, AgentConnectorConfig
 
+
 class GigaChatConnector(AbstractAgentConnector):
     def __init__(self, config: AgentConnectorConfig = DEFAULT_GIGACHAT_CONFIG) -> None:
         self.gen_strategy = config.gen_strategy
@@ -30,7 +31,8 @@ class GigaChatConnector(AbstractAgentConnector):
         self.giga_model.close()
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
-        msgs = [Messages(role='system', content=system_prompt), Messages(role='user', content=user_prompt)]
+        msgs = [Messages(role='system', content=system_prompt),
+                Messages(role='user', content=user_prompt)]
         if assistant_prompt is not None:
             msgs.append(Messages(role='assistant', content=assistant_prompt))
 

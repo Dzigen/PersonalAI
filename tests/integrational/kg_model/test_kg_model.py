@@ -1,3 +1,6 @@
+from .cases import KG_POPULATED_CREATE_TEST_CASES, KG_POPULATED_DELETE_TEST_CASES, KG_POPULATED_CLEAR_TEST_CASES
+from src.utils import Triplet
+from src.kg_model import KnowledgeGraphModel
 import pytest
 from typing import List, Dict
 
@@ -6,14 +9,10 @@ import sys
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.kg_model import KnowledgeGraphModel
-from src.utils import Triplet
-
-from .cases import KG_POPULATED_CREATE_TEST_CASES, KG_POPULATED_DELETE_TEST_CASES, KG_POPULATED_CLEAR_TEST_CASES
 
 @pytest.mark.parametrize("triplets, expected_count, expected_graph_cinfo, expected_vector_cinfo, kg_model", KG_POPULATED_CREATE_TEST_CASES, indirect=['kg_model'])
 def test_add_knowledge(triplets: List[Triplet], expected_count: Dict[str, Dict[str, int]],
-                       expected_graph_cinfo: Dict[str,List[str]], expected_vector_cinfo: Dict[str, List[str]],
+                       expected_graph_cinfo: Dict[str, List[str]], expected_vector_cinfo: Dict[str, List[str]],
                        kg_model: KnowledgeGraphModel):
     kg_model.clear()
 
@@ -28,10 +27,11 @@ def test_add_knowledge(triplets: List[Triplet], expected_count: Dict[str, Dict[s
     assert real_count['embeddings_info']['triplets'] == expected_count['embeddings_info']['triplets']
     assert real_count['nodestree_info'] == expected_count['nodestree_info']
 
+
 @pytest.mark.parametrize("init_triplets, expected_init_count, delete_triplets, expected_final_count, expected_graph_dinfo, expected_vector_dinfo, kg_model", KG_POPULATED_DELETE_TEST_CASES, indirect=['kg_model'])
 def test_remove_knowledge(init_triplets: List[Triplet], expected_init_count: Dict[str, Dict[str, int]],
                           delete_triplets: List[Triplet], expected_final_count: Dict[str, Dict[str, int]],
-                          expected_graph_dinfo: Dict[int,Dict[str,bool]], expected_vector_dinfo: Dict[int,Dict[str,bool]],
+                          expected_graph_dinfo: Dict[int, Dict[str, bool]], expected_vector_dinfo: Dict[int, Dict[str, bool]],
                           kg_model: KnowledgeGraphModel):
     kg_model.clear()
 
@@ -49,8 +49,9 @@ def test_remove_knowledge(init_triplets: List[Triplet], expected_init_count: Dic
     assert real_count['embeddings_info']['triplets'] == expected_final_count['embeddings_info']['triplets']
     assert real_count['nodestree_info'] == expected_final_count['nodestree_info']
 
+
 @pytest.mark.parametrize("init_triplets, expected_init_count, kg_model", KG_POPULATED_CLEAR_TEST_CASES, indirect=['kg_model'])
-def test_clear(init_triplets: List[Triplet], expected_init_count: Dict[str, Dict[str,int]], kg_model: KnowledgeGraphModel):
+def test_clear(init_triplets: List[Triplet], expected_init_count: Dict[str, Dict[str, int]], kg_model: KnowledgeGraphModel):
     kg_model.clear()
     _ = kg_model.add_knowledge(init_triplets)
 

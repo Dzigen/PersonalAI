@@ -8,6 +8,7 @@ AVAILABLE_REPLACE_SIMPLE_TCONFIGS = {
     'v1': REPLACE_SIMPLE_SUITE_V1
 }
 
+
 class AgentReplSimpleTripletTaskConfigSelector:
     @staticmethod
     def get_available_configs():

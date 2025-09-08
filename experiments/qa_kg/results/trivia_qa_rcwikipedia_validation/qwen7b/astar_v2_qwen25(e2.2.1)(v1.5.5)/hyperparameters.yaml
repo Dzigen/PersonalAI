@@ -204,4 +204,3 @@ WORKSPACE_CONTAINER_DIRS:
   notebooks: notebooks
   qa_datasets: data/qa_datasets/v2
   src: src
-

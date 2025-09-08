@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 
 from ..utils.errors import ReturnInfo
 
+
 @dataclass
 class BaseDatabaseConfig:
     """Базовая конфигурация для подключения к базе данных.
@@ -17,10 +18,12 @@ class BaseDatabaseConfig:
     :param create_index: Если True, то для требуемых элементов в бд будет создан индекс с целью повышения производительности поиска, иначе False. Значения по умолчанию False.
     :type create_index: bool
     """
-    db_info: Dict = field(default_factory=lambda: {'db': 'defaultpersonalaidb', 'table': 'defaultpersonalaitable'})
+    db_info: Dict = field(default_factory=lambda: {
+                          'db': 'defaultpersonalaidb', 'table': 'defaultpersonalaitable'})
     params: Dict = field(default_factory=lambda: dict())
     need_to_clear: bool = False
     create_index: bool = False
+
 
 class AbstractDatabaseConnection(ABC):
     """Интерфейс, который должен поддерживать класс взаимодействия с определённой базой данных."""

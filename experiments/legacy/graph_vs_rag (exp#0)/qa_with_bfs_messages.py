@@ -3,7 +3,8 @@ import transformers
 import torch
 from neo4j_functions import Neo4jConnection
 
-conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
+conn = Neo4jConnection(uri="bolt://31.207.47.254:7687",
+                       user="neo4j", pwd="password")
 
 model_name = "Undi95/Meta-Llama-3-8B-Instruct-hf"
 
@@ -21,9 +22,11 @@ terminators = [
 ]
 
 messages_extract = [
-    {"role": "system", "content": """Extract entities (names and surnames, device names, company names) from the question and define the types of entities ("person", "device", "manufacturer")."""},
+    {"role": "system",
+        "content": """Extract entities (names and surnames, device names, company names) from the question and define the types of entities ("person", "device", "manufacturer")."""},
     {"role": "user", "content": "Question: Kayla has positive, negative or neutral opinion about video of Xiaomi 10Pro?"},
-    {"role": "assistant", "content": """Entities: {"Kayla": "person", "Xiaomi 10Pro": "device"}"""},
+    {"role": "assistant",
+        "content": """Entities: {"Kayla": "person", "Xiaomi 10Pro": "device"}"""},
     {"role": "user", "content": "Question: Which device is better in battery life: Apple or k30u?"},
     {"role": "assistant", "content": """Entities: {"Apple": "device", "k30u": "device"}"""},
     {"role": "user", "content": "Question: The majority of speakers have positive, neutral or negative sentiment about screen of Samsung?"},
@@ -62,6 +65,7 @@ Final answer: Positive"""},
 Info: {info}"""}
 ]
 
+
 def generate(messages):
     prompt = pipeline.tokenizer.apply_chat_template(
         messages,
@@ -80,15 +84,15 @@ def generate(messages):
 
 
 for flname, depth in [
-        #["compare_questions.json", 1],
-        #["compare_sentiment.json", 1],
-        #["device_sentiment.json", 1],
-        #["same_devices.json", 1],
-        #["same_manufacturer.json", 2],
-        #["similar_device_opinions.json", 1],
-        #["similar_manf_opinions.json", 2],
-        ["which_people_about_device.json", 1]
-    ]:
+    # ["compare_questions.json", 1],
+    # ["compare_sentiment.json", 1],
+    # ["device_sentiment.json", 1],
+    # ["same_devices.json", 1],
+    # ["same_manufacturer.json", 2],
+    # ["similar_device_opinions.json", 1],
+    # ["similar_manf_opinions.json", 2],
+    ["which_people_about_device.json", 1]
+]:
     with open(f"questions/{flname}", 'r') as inp:
         dataset = json.load(inp)
     if depth == 1:
@@ -101,7 +105,8 @@ for flname, depth in [
         answer = element["answer"]
         print(f"question: {question}")
         print(f"answer: {answer}")
-        messages_extract[-1]["content"] = messages_extract[-1]["content"].format(question=question)
+        messages_extract[-1]["content"] = messages_extract[-1]["content"].format(
+            question=question)
         res = generate(messages_extract)
         raw_entities = res.split("\n")[0].strip()
         print("raw_entities", raw_entities)
@@ -118,27 +123,38 @@ for flname, depth in [
         triplets_formatted = []
         for entity, tp in entities.items():
             if tp == "person":
-                triplets_dict = conn.bfs(entity, prop_name="person", entity_type="rel_prop", subj_labels=["device"], db="testdb")
+                triplets_dict = conn.bfs(
+                    entity, prop_name="person", entity_type="rel_prop", subj_labels=["device"], db="testdb")
             else:
-                triplets_dict = conn.bfs(entity, subj_labels=["device"], db="testdb")
+                triplets_dict = conn.bfs(entity, subj_labels=[
+                                         "device"], db="testdb")
             for (step, direction, rel), triplets in triplets_dict.items():
                 for subj, rel, rel_props, obj in triplets[:thres]:
-                    subj = {key.replace("_", " "): value.replace("_", " ") for key, value in subj.items()}
-                    obj = {key.replace("_", " "): value.replace("_", " ") for key, value in obj.items()}
-                    rel_props = {key.replace("_", " "): value.replace("_", " ") for key, value in rel_props.items()}
-                    subj_str = ", ".join([f"{key}: {value}" for key, value in subj.items()])
-                    obj_str = ", ".join([f"{key}: {value}" for key, value in obj.items()])
+                    subj = {key.replace("_", " "): value.replace(
+                        "_", " ") for key, value in subj.items()}
+                    obj = {key.replace("_", " "): value.replace(
+                        "_", " ") for key, value in obj.items()}
+                    rel_props = {key.replace("_", " "): value.replace(
+                        "_", " ") for key, value in rel_props.items()}
+                    subj_str = ", ".join(
+                        [f"{key}: {value}" for key, value in subj.items()])
+                    obj_str = ", ".join(
+                        [f"{key}: {value}" for key, value in obj.items()])
                     if rel_props:
-                        rel_props_str = ", ".join([f"{key}: {value}" for key, value in rel_props.items()])
-                        triplets_formatted.append(f"{rel_props_str}, {subj_str}, {obj_str}")
+                        rel_props_str = ", ".join(
+                            [f"{key}: {value}" for key, value in rel_props.items()])
+                        triplets_formatted.append(
+                            f"{rel_props_str}, {subj_str}, {obj_str}")
                     else:
-                        triplets_formatted.append(f"{subj_str} {rel} {obj_str}")
+                        triplets_formatted.append(
+                            f"{subj_str} {rel} {obj_str}")
 
         triplets_str = "\n".join(triplets_formatted)
         with open("qa_bfs_log.txt", 'a') as out:
             out.write(f"triplets: {triplets_str}"+'\n\n')
 
-        messages_answer[-1]["content"] = messages_answer[-1]["content"].format(question=question, info=triplets_str)
+        messages_answer[-1]["content"] = messages_answer[-1]["content"].format(
+            question=question, info=triplets_str)
         res = generate(messages_answer)
         pred_answer = ""
         found_line = ""
@@ -155,6 +171,7 @@ for flname, depth in [
             out.write("_"*70+'\n\n')
 
         print("pred_answer", pred_answer)
-        results.append({"question": question, "triplets": triplets_formatted, "gold_answer": answer, "pred_answer": pred_answer})
+        results.append({"question": question, "triplets": triplets_formatted,
+                       "gold_answer": answer, "pred_answer": pred_answer})
         with open(f"answers/{flname}", 'w') as out:
             json.dump(results, out, indent=2)

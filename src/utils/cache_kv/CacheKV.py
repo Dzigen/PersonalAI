@@ -6,6 +6,7 @@ import pickle
 from .config import DEFAULT_CACHEKV_CONFIG
 from ...db_drivers.kv_driver import KeyValueDriver, KeyValueDriverConfig, KeyValueDBInstance
 
+
 class CacheKV:
     def __init__(self, kvdriver_config: KeyValueDriverConfig = DEFAULT_CACHEKV_CONFIG):
         self.kv_conn = KeyValueDriver.connect(kvdriver_config)
@@ -40,7 +41,7 @@ class CacheKV:
     def is_key_valid(key: List[str]) -> bool:
         return len(key) > 0
 
-    def load_value(self, key: Union[None,List[str]] = None, key_hash: Union[None,str] = None) -> Tuple[int, str, Union[str, object]]:
+    def load_value(self, key: Union[None, List[str]] = None, key_hash: Union[None, str] = None) -> Tuple[int, str, Union[str, object]]:
         key_hash = CacheKV.prepare_key(key, key_hash)
 
         output = self.kv_conn.read([key_hash])
@@ -53,7 +54,7 @@ class CacheKV:
         formated_value = pickle.loads(raw_value)
         return (0, key_hash, formated_value)
 
-    def save_value(self, value: object, key: Union[None, List[str]] = None, key_hash: Union[None,str] = None) -> str:
+    def save_value(self, value: object, key: Union[None, List[str]] = None, key_hash: Union[None, str] = None) -> str:
         key_hash = CacheKV.prepare_key(key, key_hash)
         if self.kv_conn.item_exist(key_hash):
             raise ValueError

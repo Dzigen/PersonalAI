@@ -79,7 +79,7 @@ WEAK_KG_REASONER:
       # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
       max_k: 50
 
-        
+
     filter_method: None # CAN BE None
     filter_config: None # CAND BE None
 

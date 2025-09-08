@@ -10,6 +10,7 @@ from ....agents import AgentDriver, AgentDriverConfig
 from ....kg_model import KnowledgeGraphModel
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 
+
 @dataclass
 class LLMUpdatorConfig:
     """Конфигурация Updator-стадии Memorize-конвейера.
@@ -30,13 +31,18 @@ class LLMUpdatorConfig:
     :type verbose: bool
     """
     lang: str = "auto"
-    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    replace_simple_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_REPLACE_SIMPLE_TASK_CONFIG)
-    replace_thesis_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_REPLACE_THESIS_TASK_CONFIG)
+    adriver_config: AgentDriverConfig = field(
+        default_factory=lambda: AgentDriverConfig())
+    replace_simple_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_REPLACE_SIMPLE_TASK_CONFIG)
+    replace_thesis_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_REPLACE_THESIS_TASK_CONFIG)
     delete_obsolete_info: bool = False
 
-    log: Logger = field(default_factory=lambda: Logger(MEM_UPDATOR_MAIN_LOG_PATH))
+    log: Logger = field(default_factory=lambda: Logger(
+        MEM_UPDATOR_MAIN_LOG_PATH))
     verbose: bool = False
+
 
 class LLMUpdator:
     """Верхнеуровневый класс первой стадии Memorize-конвейера для актуализации знаний в памяти ассистента.
@@ -50,7 +56,7 @@ class LLMUpdator:
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: LLMUpdatorConfig = LLMUpdatorConfig(),
-                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         self.config = config
         self.kg_model = kg_model
 
@@ -65,9 +71,11 @@ class LLMUpdator:
 
     def clear_kv_caches(self, level: str = 'other') -> None:
         if type(level) is not str:
-            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             raise NotImplementedError
@@ -98,10 +106,13 @@ class LLMUpdator:
                 name=base_node.name,  object_type=NodeType.object, object='node')
 
             for m_node in matched_nodes:
-                neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(m_node.id, [NodeType.object])
+                neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(
+                    m_node.id, [NodeType.object])
                 for neighbour_id in neighbour_node_ids:
-                    shared_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_node.id, neighbour_id)
-                    incident_triplets.update({item.id: item for item in shared_triplets})
+                    shared_triplets = self.kg_model.graph_struct.db_conn.get_triplets(
+                        m_node.id, neighbour_id)
+                    incident_triplets.update(
+                        {item.id: item for item in shared_triplets})
 
         incident_triplets = list(incident_triplets.values())
 
@@ -133,12 +144,15 @@ class LLMUpdator:
             name=base_triplet.start_node.name,  object_type=NodeType.object, object='node')
 
         for m_node in matched_nodes:
-            neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(m_node.id, [NodeType.hyper])
+            neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(
+                m_node.id, [NodeType.hyper])
 
             for neighbour_id in neighbour_node_ids:
-                shared_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_node.id, neighbour_id)
+                shared_triplets = self.kg_model.graph_struct.db_conn.get_triplets(
+                    m_node.id, neighbour_id)
 
-                incident_triplets.update({item.id: item for item in shared_triplets})
+                incident_triplets.update(
+                    {item.id: item for item in shared_triplets})
 
         incident_triplets = list(incident_triplets.values())
 
@@ -163,30 +177,35 @@ class LLMUpdator:
 
         # Сопоставляем object-сущность из триплета вершинам в графе знаний
         matched_object_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-                name=base_triplet.start_node.name,  object_type=NodeType.object, object='node')
+            name=base_triplet.start_node.name,  object_type=NodeType.object, object='node')
 
         if len(matched_object_nodes) == 0:
             return obsolete_triplet_ids
 
         for m_object_n in matched_object_nodes:
             # Для object-вершины ищем смежные episodic-вершины
-            object_adj_episodic_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(m_object_n.id, [NodeType.episodic])
+            object_adj_episodic_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(
+                m_object_n.id, [NodeType.episodic])
 
             if len(object_adj_episodic_ids) < 1:
                 continue
 
             # Для object-вершины ищем смежные hyper-вершины
-            object_adj_hyper_ids = set(self.kg_model.graph_struct.db_conn.get_adjecent_nids(m_object_n.id, [NodeType.hyper]))
+            object_adj_hyper_ids = set(self.kg_model.graph_struct.db_conn.get_adjecent_nids(
+                m_object_n.id, [NodeType.hyper]))
 
             for episodic_id in object_adj_episodic_ids:
                 # Для episodic-вершины, смежной с текущей object-вершиной, ищем смежные hyper-вершины
-                episodic_adj_hyper_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(episodic_id, [NodeType.hyper])
+                episodic_adj_hyper_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(
+                    episodic_id, [NodeType.hyper])
 
-                shared_hyper_ids = object_adj_hyper_ids.intersection(set(episodic_adj_hyper_ids))
+                shared_hyper_ids = object_adj_hyper_ids.intersection(
+                    set(episodic_adj_hyper_ids))
                 if len(shared_hyper_ids) < 1:
                     # Если у данных object-вершины и episodic-вершины нет общей hyper-вершины, значит данный episodic-триплет устрел
                     # и его нужно добавить в список на удаление
-                    episodic_triplet = self.kg_model.graph_struct.db_conn.get_triplets(m_object_n.id, episodic_id)
+                    episodic_triplet = self.kg_model.graph_struct.db_conn.get_triplets(
+                        m_object_n.id, episodic_id)
                     assert len(episodic_triplet) == 1
 
                     obsolete_triplet_ids.append(episodic_triplet[0].id)
@@ -205,7 +224,7 @@ class LLMUpdator:
 
         # Сопоставляем hyper-сущность из триплета вершинам в графе знаний
         matched_hyper_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-                name=base_triplet.start_node.name,  object_type=NodeType.hyper, object='node')
+            name=base_triplet.start_node.name,  object_type=NodeType.hyper, object='node')
 
         if len(matched_hyper_nodes) == 0:
             return obsolete_triplet_ids
@@ -213,12 +232,15 @@ class LLMUpdator:
         for m_hyper_n in matched_hyper_nodes:
 
             # Проверям: с каким количеством object-вершин смежна данная hyper-вершина
-            hyper_adj_object_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(m_hyper_n.id, [NodeType.object])
+            hyper_adj_object_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(
+                m_hyper_n.id, [NodeType.object])
             if len(hyper_adj_object_ids) < 1:
                 # Если у hyper-вершины нет смежных object-вершин, то связи со всеми episodic-вершинами являются устаревшими
-                hyper_adj_episodic_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(m_hyper_n.id, [NodeType.episodic])
+                hyper_adj_episodic_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(
+                    m_hyper_n.id, [NodeType.episodic])
                 for episodic_id in hyper_adj_episodic_ids:
-                    episodic_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_hyper_n.id, episodic_id)
+                    episodic_triplets = self.kg_model.graph_struct.db_conn.get_triplets(
+                        m_hyper_n.id, episodic_id)
                     assert len(episodic_triplets) == 1
                     obsolete_triplet_ids.append(episodic_triplets[0].id)
 
@@ -235,60 +257,76 @@ class LLMUpdator:
         info = ReturnInfo()
 
         self.log("START KNOWLEDGE UPDATING...", verbose=self.verbose)
-        self.log(f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.verbose)
+        self.log(
+            f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.verbose)
 
         if self.config.delete_obsolete_info:
             obsolete_triplets_counter = 0
 
-            self.log(f"START SEARCH OF OBSOLETE TRIPLETS IN MEMORY...", verbose=self.verbose)
+            self.log(f"START SEARCH OF OBSOLETE TRIPLETS IN MEMORY...",
+                     verbose=self.verbose)
             # Note: обрабатываем каждый триплет по отдельности, так как в пуле триплетов могут быть такие,
             # которые заменяют одни и те же устаревшие триплеты. Соответсвенно, мы должны итеративно обновлять память и сохранить
             # только последнюю актуальную информацию.
             process = tqdm(new_triplets) if status_bar else new_triplets
             for triplet in process:
-                self.log(f"BASE_TRIPLET ID: {triplet.id}", verbose=self.verbose)
+                self.log(
+                    f"BASE_TRIPLET ID: {triplet.id}", verbose=self.verbose)
                 self.log(f"BASE_TRIPLET: {triplet}", verbose=self.verbose)
 
                 if triplet.relation.type == RelationType.simple:
-                    obsolete_t_ids = self.find_simple_obsolete_triplet_ids(triplet)
+                    obsolete_t_ids = self.find_simple_obsolete_triplet_ids(
+                        triplet)
                 elif triplet.relation.type == RelationType.hyper:
-                    obsolete_t_ids = self.find_hyper_obsolete_triplet_ids(triplet)
+                    obsolete_t_ids = self.find_hyper_obsolete_triplet_ids(
+                        triplet)
                 elif (triplet.relation.type == RelationType.episodic) and (triplet.start_node.type == NodeType.object):
-                    obsolete_t_ids = self.find_episodic_o_obsolete_triplet_ids(triplet)
+                    obsolete_t_ids = self.find_episodic_o_obsolete_triplet_ids(
+                        triplet)
                 elif (triplet.relation.type == RelationType.episodic) and (triplet.start_node.type == NodeType.hyper):
-                    obsolete_t_ids = self.find_episodic_h_obsolete_triplet_ids(triplet)
+                    obsolete_t_ids = self.find_episodic_h_obsolete_triplet_ids(
+                        triplet)
                 else:
                     raise ValueError
 
                 self.log("RESULT:", verbose=self.verbose)
-                self.log(f"* OBSOLETE TRIPELTS AMOUNT - {len(obsolete_t_ids)}", verbose=self.verbose)
-                self.log(f"* OBSOLETE TRIPLET IDS - {obsolete_t_ids}", verbose=self.verbose)
+                self.log(
+                    f"* OBSOLETE TRIPELTS AMOUNT - {len(obsolete_t_ids)}", verbose=self.verbose)
+                self.log(
+                    f"* OBSOLETE TRIPLET IDS - {obsolete_t_ids}", verbose=self.verbose)
                 obsolete_triplets_counter += len(obsolete_t_ids)
 
-                self.log(f"DELETING OBSOLETE TRIPLETS FROM MEMORY...", verbose=self.verbose)
-                obsolete_triplets = self.kg_model.graph_struct.db_conn.read(obsolete_t_ids)
+                self.log(f"DELETING OBSOLETE TRIPLETS FROM MEMORY...",
+                         verbose=self.verbose)
+                obsolete_triplets = self.kg_model.graph_struct.db_conn.read(
+                    obsolete_t_ids)
 
-                self.log(f"TRIPLETS TO DELETE: {len(obsolete_triplets)}", verbose=self.verbose)
+                self.log(
+                    f"TRIPLETS TO DELETE: {len(obsolete_triplets)}", verbose=self.verbose)
                 for obs_t in obsolete_triplets:
                     self.log(f"* [{obs_t.id}] {obs_t}", verbose=self.verbose)
 
                 remove_info = self.kg_model.remove_knowledge(obsolete_triplets)
                 self.log(f"REMOVE INFO: {remove_info}", verbose=self.verbose)
 
-                self.log(f"ADDING NEW TRIPLET TO MEMORY...", verbose=self.verbose)
+                self.log(f"ADDING NEW TRIPLET TO MEMORY...",
+                         verbose=self.verbose)
 
                 add_info = self.kg_model.add_knowledge([triplet])
                 self.log(f"ADD INFO: {add_info}", verbose=self.verbose)
 
             self.log(f"FINAL RESULT:", verbose=self.verbose)
-            self.log(f"- SUM AMOUNT OF OBSOLETE TRIPELTS: {obsolete_triplets_counter}", verbose=self.verbose)
+            self.log(
+                f"- SUM AMOUNT OF OBSOLETE TRIPELTS: {obsolete_triplets_counter}", verbose=self.verbose)
 
         else:
             self.log(f"ADDING TRIPLETS TO MEMORY...", verbose=self.verbose)
 
-            add_info = self.kg_model.add_knowledge(new_triplets, status_bar=status_bar)
+            add_info = self.kg_model.add_knowledge(
+                new_triplets, status_bar=status_bar)
             self.log(f"ADD INFO: {add_info}", verbose=self.verbose)
 
-        self.log(f"FINAL STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.verbose)
+        self.log(
+            f"FINAL STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.verbose)
 
         return info

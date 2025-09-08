@@ -3,7 +3,7 @@ from .........utils import AgentTaskSuite
 from .parsers import cagen_custom_parse
 
 from .prompts import EN_CAGEN_SYSTEM_PROMPT, EN_CAGEN_USER_PROMPT, EN_CAGEN_ASSISTANT_PROMPT, \
-        RU_CAGEN_SYSTEM_PROMPT, RU_CAGEN_USER_PROMPT, RU_CAGEN_ASSISTANT_PROMPT
+    RU_CAGEN_SYSTEM_PROMPT, RU_CAGEN_USER_PROMPT, RU_CAGEN_ASSISTANT_PROMPT
 
 EN_CAGEN_SUITE = AgentTaskSuite(
     system_prompt=EN_CAGEN_SYSTEM_PROMPT,

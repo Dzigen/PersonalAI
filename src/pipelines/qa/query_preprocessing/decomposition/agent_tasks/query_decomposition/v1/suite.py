@@ -3,7 +3,7 @@ from ........utils import AgentTaskSuite
 from .parsers import qd_custom_parse
 
 from .prompts import EN_QD_SYSTEM_PROMPT, EN_QD_USER_PROMPT, EN_QD_ASSISTANT_PROMPT, \
-        RU_QD_SYSTEM_PROMPT, RU_QD_USER_PROMPT, RU_QD_ASSISTANT_PROMPT
+    RU_QD_SYSTEM_PROMPT, RU_QD_USER_PROMPT, RU_QD_ASSISTANT_PROMPT
 
 EN_QD_SUITE = AgentTaskSuite(
     system_prompt=EN_QD_SYSTEM_PROMPT,

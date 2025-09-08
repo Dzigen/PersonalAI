@@ -82,7 +82,7 @@ WEAK_KG_REASONER:
 
     filter_method: None # CAN BE None
     filter_config: None # CAN BE None
-      
+
   answer_generator_config:
     ag_task:
       prompts_version: 'v3' # 'v1' | 'v2'

@@ -2,7 +2,7 @@ from .........utils import AgentTaskSuite
 
 from .parsers import cqgen_custom_parse
 from .prompts import EN_CQGEN_SYSTEM_PROMPT, EN_CQGEN_USER_PROMPT, EN_CQGEN_ASSISTANT_PROMPT, \
-        RU_CQGEN_SYSTEM_PROMPT, RU_CQGEN_USER_PROMPT, RU_CQGEN_ASSISTANT_PROMPT
+    RU_CQGEN_SYSTEM_PROMPT, RU_CQGEN_USER_PROMPT, RU_CQGEN_ASSISTANT_PROMPT
 
 EN_CQGEN_SUITE = AgentTaskSuite(
     system_prompt=EN_CQGEN_SYSTEM_PROMPT,

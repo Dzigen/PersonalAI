@@ -89,7 +89,7 @@ WEAK_KG_REASONER:
       - hyper
       - episodic
       - time
-      
+
       retriever1_name: astar
       retriever1_config:
         max_depth: 10

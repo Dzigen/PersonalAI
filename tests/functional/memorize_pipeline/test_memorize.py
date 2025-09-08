@@ -1,3 +1,6 @@
+from cases import MEM_CONFIG1, MEM_CONFIG2, KV_CACHE_CONFIG, RAW_TEXTS_EN
+from src.kg_model import KnowledgeGraphModel
+from src.pipelines.memorize import MemPipeline, MemPipelineConfig
 import pytest
 from typing import List, Dict
 from tqdm import tqdm
@@ -7,10 +10,6 @@ import sys
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.pipelines.memorize import MemPipeline, MemPipelineConfig
-from src.kg_model import KnowledgeGraphModel
-
-from cases import MEM_CONFIG1, MEM_CONFIG2, KV_CACHE_CONFIG, RAW_TEXTS_EN
 
 @pytest.mark.parametrize("mem_config, raw_texts, use_kv_cache, clear_kv_cache", [
     [MEM_CONFIG1, RAW_TEXTS_EN, True, False],
@@ -38,8 +37,10 @@ def test_mem_pipeline(mem_config: MemPipelineConfig, raw_texts: List[str],
         assert status.status.value == 0
 
     mem_pipeline.updator.kg_model.graph_struct.db_conn.close_connection()
-    mem_pipeline.updator.kg_model.embeddings_struct.vectordbs['nodes'].close_connection()
-    mem_pipeline.updator.kg_model.embeddings_struct.vectordbs['triplets'].close_connection()
+    mem_pipeline.updator.kg_model.embeddings_struct.vectordbs['nodes'].close_connection(
+    )
+    mem_pipeline.updator.kg_model.embeddings_struct.vectordbs['triplets'].close_connection(
+    )
 
     if use_kv_cache:
         if clear_kv_cache:

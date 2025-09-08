@@ -11,6 +11,7 @@ from ......utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolverConfig,
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 
+
 @dataclass
 class QALLMGeneratorConfig:
     """Конфигурация "Question Answering"-стадии QA-конвейера.
@@ -31,18 +32,23 @@ class QALLMGeneratorConfig:
     :type verbose: bool, optional
     """
     lang: str = "auto"
-    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    ag_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_AG_TASK_CONFIG)
+    adriver_config: AgentDriverConfig = field(
+        default_factory=lambda: AgentDriverConfig())
+    ag_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_AG_TASK_CONFIG)
 
-    relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.simple, RelationType.hyper, RelationType.episodic])
+    relation_type: List[RelationType] = field(default_factory=lambda: [
+                                              RelationType.simple, RelationType.hyper, RelationType.episodic])
 
     cache_table_name: Union[str, None] = 'qa_agenerator_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(AG_MAIN_LOG_PATH))
     verbose: bool = False
 
     def to_str(self):
-        str_relations = ";".join(list(map(lambda v: v.value, self.relation_type)))
+        str_relations = ";".join(
+            list(map(lambda v: v.value, self.relation_type)))
         return f"{self.lang}|{self.adriver_config.to_str()}|{self.ag_task_config.version}|{str_relations}"
+
 
 class QALLMGenerator(CacheUtils):
     """Верхнеуровневый класс четвёртой стадии QA-конвейера для генерации ответа на user-вопрос,
@@ -55,11 +61,13 @@ class QALLMGenerator(CacheUtils):
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
     """
+
     def __init__(self, config: QALLMGeneratorConfig = QALLMGeneratorConfig(),
-                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None, cache_llm_inference: bool = True) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True) -> None:
         self.config = config
 
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
 
         self.agent = AgentDriver.connect(config.adriver_config)
         ag_task_cache_config = None
@@ -74,9 +82,11 @@ class QALLMGenerator(CacheUtils):
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if type(level) is not str:
-            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             self.cachekv.clear()
@@ -86,7 +96,8 @@ class QALLMGenerator(CacheUtils):
                 self.answer_generator_solver.cachekv.clear()
 
     def get_cache_key(self, query: str, context_triplets: List[Triplet]) -> List[object]:
-        str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(triplet)[1] for triplet in context_triplets])).encode()).hexdigest()
+        str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(
+            triplet)[1] for triplet in context_triplets])).encode()).hexdigest()
         return [self.config.to_str(), query, str_triplets]
 
     @CacheUtils.cache_method_output
@@ -103,14 +114,17 @@ class QALLMGenerator(CacheUtils):
 
         rinfo = ReturnInfo()
         self.log("START ANSWER GENERATION ...", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
+        self.log(
+            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
         self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
-        self.log(f"CONTEXT_TRIPLETS:",verbose=self.config.verbose)
+        self.log(f"CONTEXT_TRIPLETS:", verbose=self.config.verbose)
         for triplet in context_triplets:
             self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
 
-        self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...", verbose=self.config.verbose)
-        answer, status = self.answer_generator_solver.solve(lang=self.config.lang, query=query, triplets=context_triplets)
+        self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...",
+                 verbose=self.config.verbose)
+        answer, status = self.answer_generator_solver.solve(
+            lang=self.config.lang, query=query, triplets=context_triplets)
 
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
@@ -119,7 +133,8 @@ class QALLMGenerator(CacheUtils):
             rinfo.status = ReturnStatus.empty_answer
             rinfo.message = STATUS_MESSAGE[rinfo.status]
         else:
-            self.log(f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.config.verbose)
+            self.log(
+                f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.config.verbose)
 
         self.log(f"STATUS: {rinfo.status}", verbose=self.config.verbose)
 

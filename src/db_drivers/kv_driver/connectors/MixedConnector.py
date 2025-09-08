@@ -5,6 +5,7 @@ from .RedisConnector import RedisKVConnector
 from .MongoConnector import MongoKVConnector
 from ..utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
 
+
 class MixedKVConnector(AbstractKVDatabaseConnection):
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_MIXEDKV_CONFIG):
         self.config = config
@@ -39,11 +40,13 @@ class MixedKVConnector(AbstractKVDatabaseConnection):
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
         # находим элементы, которых нет в оперативной памяти
         ram_items = self.redis_conn.read(ids)
-        not_cached_item_ids = [ids[i] for i, item in enumerate(ram_items) if item is None]
+        not_cached_item_ids = [ids[i]
+                               for i, item in enumerate(ram_items) if item is None]
 
         # получаем элементы из дискового хранилища
         persistent_items = self.mongo_conn.read(not_cached_item_ids)
-        existing_p_items = [item for item in persistent_items if item is not None]
+        existing_p_items = [
+            item for item in persistent_items if item is not None]
 
         # существующие элементы кешируем в оперативную память
         self.redis_conn.create(existing_p_items)

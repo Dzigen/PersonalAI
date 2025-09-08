@@ -1,3 +1,8 @@
+from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
+from src.pipelines.memorize.extractor.agent_tasks.triplet_extraction import AgentTripletExtrTaskConfigSelector
+from src.pipelines.memorize.extractor.agent_tasks.thesis_extraction import AgentThesisExtrTaskConfigSelector
+from src.pipelines.memorize import MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
+from src.agents.AgentDriver import AgentDriverConfig, AgentConnectorConfig
 import pytest
 
 import sys
@@ -6,11 +11,6 @@ PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.agents.AgentDriver import AgentDriverConfig, AgentConnectorConfig
-from src.pipelines.memorize import MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
-from src.pipelines.memorize.extractor.agent_tasks.thesis_extraction import AgentThesisExtrTaskConfigSelector
-from src.pipelines.memorize.extractor.agent_tasks.triplet_extraction import AgentTripletExtrTaskConfigSelector
-from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
 
 # RAW_TEXTS_RU = [
 #     "Проживающие в общежитии студенты имеют право rруглосуточного доступа к месту проживания.",
@@ -67,7 +67,8 @@ RAW_TEXTS_EN = [
 AGENT_DRIVER_CONFIG = AgentDriverConfig(
     name='ollama',
     agent_config=AgentConnectorConfig(
-        gen_strategy={"num_predict": 2048, "seed": 42, "top_k": 1, "temperature": 0.0},
+        gen_strategy={"num_predict": 2048, "seed": 42,
+                      "top_k": 1, "temperature": 0.0},
         credentials={"host": 'localhost', "port": 11438},
         ext_params={"model": 'qwen2.5:7b', "timeout": 560, "keep_alive": -1}))
 
@@ -79,12 +80,14 @@ KV_CACHE_CONFIG = KeyValueDriverConfig(
             'mongo_config': KVDBConnectionConfig(
                 host='localhost', port=27017,
                 db_info={'db': 'memorize_db', 'table': None},
-                params={'username': 'user', 'password': 'pass', 'max_storage': -1},
+                params={'username': 'user',
+                        'password': 'pass', 'max_storage': -1},
                 need_to_clear=False),
             'redis_config': KVDBConnectionConfig(
                 host='localhost', port=6379,
                 db_info={'db': 0, 'table': None},
-                params={'ss_name': 'sorted_node_pairs', 'hs_name': 'node_pairs', 'max_storage': 50000000},
+                params={'ss_name': 'sorted_node_pairs',
+                        'hs_name': 'node_pairs', 'max_storage': 50000000},
                 need_to_clear=False)}))
 
 MEM_CONFIG1 = MemPipelineConfig(

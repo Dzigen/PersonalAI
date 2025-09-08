@@ -87,7 +87,7 @@ WEAK_KG_REASONER:
       - hyper
       - episodic
       - time
-      
+
       retriever1_name: astar
       retriever1_config:
         max_depth: 10
@@ -118,8 +118,8 @@ WEAK_KG_REASONER:
                     username: my_user
                   port: 6395
             db_vendor: mixed_kv
-        
-      retriever2_name: beamsearch    
+
+      retriever2_name: beamsearch
       retriever2_config:
         diff_paths_intersection_by_node: false
         diff_paths_intersection_by_rel: false

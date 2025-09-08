@@ -13,6 +13,7 @@ from ...utils.cache_kv import CacheUtils
 from ...utils.data_structs import create_id
 from ...db_drivers.kv_driver import KeyValueDriverConfig
 
+
 @dataclass
 class QAPipelineConfig:
     """
@@ -31,9 +32,12 @@ class QAPipelineConfig:
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
     """
-    preprocessor_config: QueryPreprocessorConfig = field(default_factory=lambda: QueryPreprocessorConfig())
-    reasoner_config: KnowledgeGraphReasonerConfig = field(default_factory=lambda: KnowledgeGraphReasonerConfig())
-    aggregator_config: AnswersAggregatorConfig = field(default_factory=lambda: AnswersAggregatorConfig())
+    preprocessor_config: QueryPreprocessorConfig = field(
+        default_factory=lambda: QueryPreprocessorConfig())
+    reasoner_config: KnowledgeGraphReasonerConfig = field(
+        default_factory=lambda: KnowledgeGraphReasonerConfig())
+    aggregator_config: AnswersAggregatorConfig = field(
+        default_factory=lambda: AnswersAggregatorConfig())
 
     cache_table_name: str = 'qa_pipeline_cache'
     log: Logger = field(default_factory=lambda: Logger(QA_MAIN_LOG_PATH))
@@ -57,20 +61,26 @@ class QAPipeline(CacheUtils):
     def __init__(self, kg_model: KnowledgeGraphModel, config: QAPipelineConfig = QAPipelineConfig(),
                  cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None) -> None:
 
-        self.query_preprocessor = QueryPreprocessor(config.preprocessor_config, cache_kvdriver_config)
-        self.kg_reasoner = KnowledgeGraphReasoner(kg_model, config.reasoner_config, cache_kvdriver_config)
-        self.answers_aggregator = AnswersAggregator(config.aggregator_config, cache_kvdriver_config)
+        self.query_preprocessor = QueryPreprocessor(
+            config.preprocessor_config, cache_kvdriver_config)
+        self.kg_reasoner = KnowledgeGraphReasoner(
+            kg_model, config.reasoner_config, cache_kvdriver_config)
+        self.answers_aggregator = AnswersAggregator(
+            config.aggregator_config, cache_kvdriver_config)
 
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
 
         self.log = config.log
         self.verbose = config.verbose
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if type(level) is not str:
-            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             self.cachekv.clear()
@@ -95,7 +105,8 @@ class QAPipeline(CacheUtils):
         sub_queries, sub_answers = query_info.processed_query, []
 
         for i, sub_query in enumerate(query_info.processed_query):
-            self.log(f"Processing sub_query #{i}: {sub_query}", verbose=self.verbose)
+            self.log(
+                f"Processing sub_query #{i}: {sub_query}", verbose=self.verbose)
             sub_answer, rinfo = self.kg_reasoner.perform(sub_query)
             self.log(f"RESULT: {sub_answer}", verbose=self.verbose)
             if rinfo.status != ReturnStatus.success:
@@ -107,14 +118,17 @@ class QAPipeline(CacheUtils):
                 rinfo.occurred_warning.append(rinfo.occurred_warning)
                 sub_answers.append(sub_answer)
 
-        str_subqa = "\n".join([f"- [{q}] {a}" for q, a in zip(sub_queries, sub_answers)])
+        str_subqa = "\n".join(
+            [f"- [{q}] {a}" for q, a in zip(sub_queries, sub_answers)])
         self.log(f"RESULT:\n{str_subqa}", verbose=self.verbose)
-        subq_info = QueryReasoningInfo(sub_queries=sub_queries, sub_answers=sub_answers)
+        subq_info = QueryReasoningInfo(
+            sub_queries=sub_queries, sub_answers=sub_answers)
 
         return subq_info, rinfo
 
     def postprocess_answer(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> Tuple[str, ReturnInfo]:
-        aggregated_answer, rinfo = self.answers_aggregator.perform(query_info, subq_info)
+        aggregated_answer, rinfo = self.answers_aggregator.perform(
+            query_info, subq_info)
         self.log(f"RESULT: {aggregated_answer}", verbose=self.verbose)
         if rinfo.status != ReturnStatus.success:
             self.log("Operation ended with error!", verbose=self.verbose)
@@ -153,14 +167,17 @@ class QAPipeline(CacheUtils):
             subq_info, sq_info = self.process_query(query_info)
             update_rinfo(rinfo, sq_info)
         else:
-            self.log("During previous steps error occurs.", verbose=self.verbose)
+            self.log("During previous steps error occurs.",
+                     verbose=self.verbose)
 
         self.log("Aggregation...", verbose=self.verbose)
         if sq_info.status == ReturnStatus.success:
-            final_answer, ag_info = self.postprocess_answer(query_info, subq_info)
+            final_answer, ag_info = self.postprocess_answer(
+                query_info, subq_info)
             update_rinfo(rinfo, ag_info)
         else:
-            self.log("During previous steps error occurs.", verbose=self.verbose)
+            self.log("During previous steps error occurs.",
+                     verbose=self.verbose)
 
         self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 

@@ -5,6 +5,7 @@ from enum import Enum
 
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
+
 class TreeNodeType(Enum):
     #: Вершина, у которой нет child- и descendants- вершин.
     leaf = "leaf"
@@ -13,17 +14,20 @@ class TreeNodeType(Enum):
     # Вершина, у которой есть минимум одна child- или descendants-вершина типа 'leaf'.
     summarized = "summarized"
 
+
 TREENODES_TYPES_MAP = {
     'leaf': TreeNodeType.leaf,
     'root': TreeNodeType.root,
     'summarized': TreeNodeType.summarized
 }
 
+
 class TreeIdType(Enum):
     #: Уникальное значение, выдаваемое каждой новой вершине для её идентификации.
     external = "external_id"
     #: Значение, полученный на основе срокового представления (значения в строковом поле) соответствующей вершины.
     str = "str_id"
+
 
 @dataclass
 class TreeNode:
@@ -32,11 +36,14 @@ class TreeNode:
     type: TreeNodeType
     props: Dict[str, object]
 
+
 @dataclass
 class TreeDBConnectionConfig(BaseDatabaseConfig):
-    db_info: Dict = field(default_factory=lambda: {'db': 'defaultpersonalaitreedb', 'table': 'defaultpersonalaitreetable'})
+    db_info: Dict = field(default_factory=lambda: {
+                          'db': 'defaultpersonalaitreedb', 'table': 'defaultpersonalaitreetable'})
     host: str = None
     port: str = None
+
 
 class AbstractTreeDatabaseConnection(AbstractDatabaseConnection):
 

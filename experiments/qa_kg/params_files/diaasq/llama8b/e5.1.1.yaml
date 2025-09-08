@@ -94,7 +94,7 @@ WEAK_KG_REASONER:
       hyper_num: 15
       other_triplets_num: 6
       strict_filter: true
-          
+
     filter_method: 'naive' # CAN BE None
     filter_config: # CAN BE None
       max_k: 50

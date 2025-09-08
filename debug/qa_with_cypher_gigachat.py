@@ -10,9 +10,11 @@ CLIENT_SECRET = "cde75b76-43a3-45fa-a704-985d297d1a95"
 AUTH_DATA = "Yzk4MTMzZDMtYjQzMy00Yjg0LWE5MzctNGU5YzEwMDhlNzA2OmNkZTc1Yjc2LTQzYTMtNDVmYS1hNzA0LTk4NWQyOTdkMWE5NQ=="
 GIGACHAT_API = "YTMwNDM1NGMtNmMwZi00OGZjLTllNzctMmU0NmI3Y2JlNzRkOjVhNjU5ZjU0LTgzMjItNDhlZC1hMGQ4LWM2YjA1OTU3YzY5ZA=="
 
-giga = GigaChat(credentials=AUTH_DATA, model="GigaChat-Pro", scope="GIGACHAT_API_PERS", verify_ssl_certs=False)
+giga = GigaChat(credentials=AUTH_DATA, model="GigaChat-Pro",
+                scope="GIGACHAT_API_PERS", verify_ssl_certs=False)
 
-conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
+conn = Neo4jConnection(uri="bolt://31.207.47.254:7687",
+                       user="neo4j", pwd="password")
 
 retriever = Retriever(device="cuda")
 print("retriever loaded")
@@ -88,17 +90,17 @@ log_flname = "gigachat_log2.txt"
 num_in_cont = 3
 
 for flname in [
-        #"compare_questions.json",
-        #"compare_sentiment.json",
-        #"device_sentiment.json",
-        #"same_devices.json",
-        #"same_manufacturer.json",
-        "similar_device_opinions.json",
-        #"similar_manf_opinions.json",
-        "which_people_about_device.json",
-        "dominant_opinion.json",
-        "last_opinion.json"
-    ]:
+    # "compare_questions.json",
+    # "compare_sentiment.json",
+    # "device_sentiment.json",
+    # "same_devices.json",
+    # "same_manufacturer.json",
+    "similar_device_opinions.json",
+    # "similar_manf_opinions.json",
+    "which_people_about_device.json",
+    "dominant_opinion.json",
+    "last_opinion.json"
+]:
     with open(f"questions/{flname}", 'r') as inp:
         questions = json.load(inp)
     qas = []
@@ -122,7 +124,8 @@ for flname in [
         with open(log_flname, 'a') as out:
             out.write(f"{n} --- {question}"+'\n')
             out.write(f"gold_answer: {gold_answer}"+'\n')
-        prompt = prompt_query_templates[flname.replace(".json", "")].format(question=question)
+        prompt = prompt_query_templates[flname.replace(
+            ".json", "")].format(question=question)
         try:
             res = giga.chat(prompt)
             queries_info = res.choices[0].message.content
@@ -147,7 +150,8 @@ for flname in [
                 for entity in entities:
                     entity_clean = entity.strip('"').replace("_", " ")
                     if entity_clean not in question and entity_clean.replace(" ", "") in question:
-                        query = query.replace(entity.strip('"'), entity_clean.replace(" ", ""))
+                        query = query.replace(entity.strip(
+                            '"'), entity_clean.replace(" ", ""))
                 res = conn.execute_query(query, db="testdb")
                 print(f"query: {query} --- res: {res}")
                 with open(log_flname, 'a') as out:
@@ -180,7 +184,8 @@ Final answer {e_num}: {final_answer}"""
             in_cont_str_list.append(in_cont_str)
         in_cont_examples_str = "\n".join(in_cont_str_list)
 
-        prompt = prompt_answer_template.format(examples=in_cont_examples_str, n=num_in_cont+1, question=question, info=info_str)
+        prompt = prompt_answer_template.format(
+            examples=in_cont_examples_str, n=num_in_cont+1, question=question, info=info_str)
         with open(log_flname, 'a') as out:
             out.write('\n')
             out.write(f"prompt_answer: {prompt}"+'\n')
@@ -199,7 +204,8 @@ Final answer {e_num}: {final_answer}"""
             found_line = res[fnd:]
 
         if found_line:
-            pred_answer = found_line.split(f"Final answer {num_in_cont + 1}: ")[-1]
+            pred_answer = found_line.split(
+                f"Final answer {num_in_cont + 1}: ")[-1]
         elif len(res.split("\n")) > 1:
             pred_answer = res.split("\n")[1]
         else:
@@ -215,7 +221,7 @@ Final answer {e_num}: {final_answer}"""
                     "info": info_str,
                     "gold_answer": gold_answer,
                     "pred_answer": pred_answer
-        })
+                    })
         with open(f"answers_gigachat/{flname.replace('.json', '')}_gigachat_test.json", 'w') as out:
             json.dump(qas, out, indent=2)
         print("gold_answer", gold_answer)

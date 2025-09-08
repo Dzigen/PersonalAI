@@ -8,6 +8,7 @@ from ...db_drivers.graph_driver import GraphDriver, GraphDriverConfig
 from ...utils.data_structs import Triplet
 from ...utils import Logger
 
+
 @dataclass
 class GraphModelConfig:
     """Конфигурация графовой структуры данных.
@@ -19,9 +20,11 @@ class GraphModelConfig:
     :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
     """
-    driver_config: GraphDriverConfig = field(default_factory = lambda: GRAPH_DB_DEFAULT_DRIVER_CONFIG)
-    log: Logger = field(default_factory = lambda: Logger(GRAPH_MODEL_LOG_PATH))
+    driver_config: GraphDriverConfig = field(
+        default_factory=lambda: GRAPH_DB_DEFAULT_DRIVER_CONFIG)
+    log: Logger = field(default_factory=lambda: Logger(GRAPH_MODEL_LOG_PATH))
     verbose: bool = False
+
 
 class GraphModel:
     """Структура данных, предназначенная для хранения информации в формате графа.
@@ -29,6 +32,7 @@ class GraphModel:
     :param config: Конфигурация графовой структуры. Значение по умолчанию GraphModelConfig().
     :type config: GraphModelConfig
     """
+
     def __init__(self, config: GraphModelConfig = GraphModelConfig()) -> None:
         self.config = config
 
@@ -59,10 +63,10 @@ class GraphModel:
         for batch_idx in process:
             # if n1 rel n2
             # else empty
-                # n1 _ _
-                # _ _ n2
-                # n1 _ n2
-                # _ _ _
+            # n1 _ _
+            # _ _ n2
+            # n1 _ n2
+            # _ _ _
 
             creation_info = dict()
             triplets_to_create = list()
@@ -83,7 +87,8 @@ class GraphModel:
                 else:
                     triplets_to_create.append(cur_triplet)
                     info_counter += 1
-                    creation_info[info_counter] = {'s_node': False, 'e_node': False}
+                    creation_info[info_counter] = {
+                        's_node': False, 'e_node': False}
                     created_triplet_ids.add(cur_triplet.id)
 
                 s_node_id = cur_triplet.start_node.id
@@ -106,13 +111,15 @@ class GraphModel:
 
             self.db_conn.create(triplets_to_create, creation_info)
 
-        self.log(f"all/unique/existed triplets - {len(triplets)}/{len(unique_triplet_ids)}/{len(existed_triplet_ids)}", verbose=self.verbose)
-        self.log(f"all/unique/existed nodes - {len(triplets)*2}/{len(unique_node_ids)}/{len(existed_node_ids)}", verbose=self.verbose)
+        self.log(
+            f"all/unique/existed triplets - {len(triplets)}/{len(unique_triplet_ids)}/{len(existed_triplet_ids)}", verbose=self.verbose)
+        self.log(
+            f"all/unique/existed nodes - {len(triplets)*2}/{len(unique_node_ids)}/{len(existed_node_ids)}", verbose=self.verbose)
         self.log("Triplets added successfully!", verbose=self.verbose)
 
         return {'triplets': created_triplet_ids, 'nodes': created_node_ids}
 
-    def delete_triplets(self, triplets: List[Triplet], status_bar: bool = False) -> Tuple[Dict[int,Dict[str,bool]], Dict[int,Dict[str,bool]]]:
+    def delete_triplets(self, triplets: List[Triplet], status_bar: bool = False) -> Tuple[Dict[int, Dict[str, bool]], Dict[int, Dict[str, bool]]]:
         """Метод предназначен для удаления информации, представленной в виде списка триплетов, из графовой структуры.
 
         :param triplets: Набор триплетов на удаления из графовой структуры.
@@ -124,21 +131,25 @@ class GraphModel:
         """
 
         vdb_delete_info, gdb_delete_info = dict(), dict()
-        process = tqdm(enumerate(triplets)) if status_bar else enumerate(triplets)
+        process = tqdm(enumerate(triplets)
+                       ) if status_bar else enumerate(triplets)
         for i, triplet in process:
-            vector_delete_info = {'s_node': False, 'triplet': False, 'e_node': False}
+            vector_delete_info = {'s_node': False,
+                                  'triplet': False, 'e_node': False}
             graph_delete_info = {'s_node': False, 'e_node': False}
 
             # Если в триплете у стартовой вершины только одно инцидентное ребро,
             # то готовим его к удалению из графовой и векторной структур данных
-            s_node_neighbours = self.db_conn.get_adjecent_nids(triplet.start_node.id)
+            s_node_neighbours = self.db_conn.get_adjecent_nids(
+                triplet.start_node.id)
             if len(s_node_neighbours) == 1 and s_node_neighbours[0] == triplet.end_node.id:
                 graph_delete_info['s_node'] = True
                 vector_delete_info['s_node'] = True
 
             # Если в триплете у конечной вершины только одно инцидентное ребро,
             # то готовим его к удалению из графовой и векторной структур данных
-            e_node_neighbours = self.db_conn.get_adjecent_nids(triplet.end_node.id)
+            e_node_neighbours = self.db_conn.get_adjecent_nids(
+                triplet.end_node.id)
             if len(e_node_neighbours) == 1 and e_node_neighbours[0] == triplet.start_node.id:
                 graph_delete_info['e_node'] = True
                 vector_delete_info['e_node'] = True
@@ -146,7 +157,8 @@ class GraphModel:
             # Если в графовой структуре данных содержиться только один триплет с таким-же строковым представлением (как у текущего triplet),
             # то готовим его к удалению как из графовой, так и из векторной структур данных. Если триплетов с таким же
             # строковым представлением несколько (>=2), то готовим его к удалению только из графовой структуры.
-            same_str_id_count = self.db_conn.count_items(id=triplet.relation.id, id_type='relation')
+            same_str_id_count = self.db_conn.count_items(
+                id=triplet.relation.id, id_type='relation')
             if same_str_id_count == 1:
                 vector_delete_info['triplet'] = True
 

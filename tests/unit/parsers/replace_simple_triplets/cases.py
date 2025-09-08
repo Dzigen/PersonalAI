@@ -1,8 +1,8 @@
+from src.utils.data_structs import RelationCreator, RelationType, create_id
+from src.utils import TripletCreator, NodeCreator, NodeType
 import copy
 import sys
 sys.path.insert(0, "../")
-from src.utils import TripletCreator, NodeCreator, NodeType
-from src.utils.data_structs import RelationCreator, RelationType, create_id
 
 VALID_OBJECT_NODE1 = NodeCreator.create(
     n_type=NodeType.object,
@@ -85,10 +85,12 @@ REPLACE_SIMPLE_2 = f'"{VALID_SIMPLE_TRIPLET2.start_node.name}, {VALID_SIMPLE_TRI
 #
 
 REPLACE_SIMPLE_RAW_RESPONSE1 = '[["qwe, rty, uio" -> "asd, fgh, jkl"]]'
-REPLACE_SIMPLE_PARSE_OUTPUT1 = {create_id("asd, fgh, jkl"): {create_id("qwe, rty, uio")}}
+REPLACE_SIMPLE_PARSE_OUTPUT1 = {
+    create_id("asd, fgh, jkl"): {create_id("qwe, rty, uio")}}
 
 REPLACE_SIMPLE_RAW_RESPONSE2 = '[["qwe, rty, uio" -> "asd, fgh, jkl"],["zxc, vbn, jkl" -> "asd, fgh, jkl"]]'
-REPLACE_SIMPLE_PARSE_OUTPUT2 = {create_id("asd, fgh, jkl"): {create_id("qwe, rty, uio"), create_id("zxc, vbn, jkl")}}
+REPLACE_SIMPLE_PARSE_OUTPUT2 = {create_id(
+    "asd, fgh, jkl"): {create_id("qwe, rty, uio"), create_id("zxc, vbn, jkl")}}
 
 REPLACE_SIMPLE_RAW_RESPONSE3 = '[["qwe, rty, uio" "asd, fgh, jkl"],["zxc, vbn, jkl" -> "asd, fgh, jkl"]]'
 

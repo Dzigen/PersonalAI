@@ -12,6 +12,7 @@ from ......utils.data_structs import create_id
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.cache_kv import CacheUtils
 
+
 @dataclass
 class SearchPlanEnhancerConfig:
     """Конфигурация SearchPlanEnhancer-стадии MediumQA-ризонера.
@@ -34,10 +35,14 @@ class SearchPlanEnhancerConfig:
     :type verbose: bool, optional
     """
     lang: str = 'auto'
-    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    plan_initing_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_PLANINIT_TASK_CONFIG)
-    enhance_classifier_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAUL_ENHCLASSIFY_TASK_CONFIG)
-    plan_enhancing_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_PLANENH_TASK_CONFIG)
+    adriver_config: AgentDriverConfig = field(
+        default_factory=lambda: AgentDriverConfig())
+    plan_initing_agent_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_PLANINIT_TASK_CONFIG)
+    enhance_classifier_agent_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAUL_ENHCLASSIFY_TASK_CONFIG)
+    plan_enhancing_agent_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_PLANENH_TASK_CONFIG)
 
     cache_table_name: str = 'medreasn_planenh_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(PLANENH_MAIN_LOG_PATH))
@@ -49,6 +54,7 @@ class SearchPlanEnhancerConfig:
         str_pe_config = self.plan_enhancing_agent_task_config.version
         return f"{self.lang}|{self.adriver_config.to_str()}|{str_pi_config}|{str_ec_config}|{str_pe_config}"
 
+
 class SearchPlanEnhancer(CacheUtils):
     """Верхнеуровневый класс стадии #1 medium QA-конвейера для выполнения генерации/модификации плана поиска/извлечения информации из графа знаний.
 
@@ -59,12 +65,15 @@ class SearchPlanEnhancer(CacheUtils):
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
     """
+
     def __init__(self, config: SearchPlanEnhancerConfig = SearchPlanEnhancerConfig(),
-                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None,
+                 cache_kvdriver_config: Union[None,
+                                              KeyValueDriverConfig] = None,
                  cache_llm_inference: bool = True):
         self.config = config
 
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
 
         self.agent = AgentDriver.connect(config.adriver_config)
         agents_cache_config = None
@@ -83,9 +92,11 @@ class SearchPlanEnhancer(CacheUtils):
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if type(level) is not str:
-            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             self.cachekv.clear()
@@ -97,7 +108,6 @@ class SearchPlanEnhancer(CacheUtils):
                 self.enhance_classify_solver.cachekv.clear()
             if self.plan_enhancing_solver.cachekv is not None:
                 self.plan_enhancing_solver.cachekv.clear()
-
 
     def get_cache_key(self, search_step: int, search_plan: SearchPlanInfo) -> List[str]:
         return [str(search_step), search_plan.to_str(), self.config.to_str()]
@@ -115,8 +125,10 @@ class SearchPlanEnhancer(CacheUtils):
         :return: Кортеж из двух объектов: (1) Модифиицированный план поиска; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[SearchPlanInfo, ReturnInfo]
         """
-        self.log("START SEARCH-PLAN INITING/ENHANCING...", verbose=self.config.verbose)
-        self.log(f"QUERY ID: {create_id(search_plan.base_query)}", verbose=self.config.verbose)
+        self.log("START SEARCH-PLAN INITING/ENHANCING...",
+                 verbose=self.config.verbose)
+        self.log(
+            f"QUERY ID: {create_id(search_plan.base_query)}", verbose=self.config.verbose)
         self.log(f"CURRENT PLAN: {search_plan}", verbose=self.config.verbose)
         enhanced_search_plan, rinfo = None, ReturnInfo()
 
@@ -124,17 +136,21 @@ class SearchPlanEnhancer(CacheUtils):
             raise ValueError
 
         if search_step == 0:
-            self.log("Генерируем план поиска с нуля...",verbose=self.verbose)
-            new_search_steps, status = self.plan_initialing_solver.solve(lang=self.config.lang, query=search_plan.base_query)
-            str_searchplan = "\n".join([f'{i}. {gen_step}' for i,gen_step in enumerate(new_search_steps)])
-            self.log(f"RESULT: {len(new_search_steps)}\n{str_searchplan}", verbose=self.config.verbose)
+            self.log("Генерируем план поиска с нуля...", verbose=self.verbose)
+            new_search_steps, status = self.plan_initialing_solver.solve(
+                lang=self.config.lang, query=search_plan.base_query)
+            str_searchplan = "\n".join(
+                [f'{i}. {gen_step}' for i, gen_step in enumerate(new_search_steps)])
+            self.log(
+                f"RESULT: {len(new_search_steps)}\n{str_searchplan}", verbose=self.config.verbose)
 
             if status == ReturnStatus.success:
                 enhanced_search_plan = deepcopy(search_plan)
                 enhanced_search_plan.search_steps = new_search_steps
                 enhanced_search_plan.steps_answers = []
         else:
-            self.log("Выполняем проверку на необходимость улучшения следующих шагов поиска в плане...",verbose=self.verbose)
+            self.log(
+                "Выполняем проверку на необходимость улучшения следующих шагов поиска в плане...", verbose=self.verbose)
             need_enhance, status = self.enhance_classify_solver.solve(
                 lang=self.config.lang, query=search_plan.base_query,
                 search_steps=search_plan.search_steps, steps_answers=search_plan.steps_answers[:search_step])
@@ -142,21 +158,26 @@ class SearchPlanEnhancer(CacheUtils):
 
             if status == ReturnStatus.success:
                 if need_enhance:
-                    self.log("Улучшаем следующие шаги поиска в плане...",verbose=self.verbose)
+                    self.log("Улучшаем следующие шаги поиска в плане...",
+                             verbose=self.verbose)
                     enhanced_steps, status = self.plan_enhancing_solver.solve(
                         lang=self.config.lang, query=search_plan.base_query,
                         search_steps=search_plan.search_steps,
                         steps_answers=search_plan.steps_answers[:search_step])
-                    str_enhancedsteps = "\n".join([f'{i}. {gen_step}' for i,gen_step in enumerate(enhanced_steps)])
-                    self.log(f"RESULT: {len(enhanced_steps)}\n{str_enhancedsteps}", verbose=self.config.verbose)
+                    str_enhancedsteps = "\n".join(
+                        [f'{i}. {gen_step}' for i, gen_step in enumerate(enhanced_steps)])
+                    self.log(
+                        f"RESULT: {len(enhanced_steps)}\n{str_enhancedsteps}", verbose=self.config.verbose)
 
                     if status == ReturnStatus.success:
                         enhanced_search_plan = deepcopy(search_plan)
-                        enhanced_search_plan.search_steps = search_plan.search_steps[:search_step] + enhanced_steps
+                        enhanced_search_plan.search_steps = search_plan.search_steps[
+                            :search_step] + enhanced_steps
                         enhanced_search_plan.steps_answers = search_plan.steps_answers[:search_step]
 
                 else:
-                    self.log("Улучшение шагов поиска не требуется...",verbose=self.verbose)
+                    self.log("Улучшение шагов поиска не требуется...",
+                             verbose=self.verbose)
                     enhanced_search_plan = deepcopy(search_plan)
 
         rinfo.status = status

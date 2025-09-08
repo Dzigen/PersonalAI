@@ -1,3 +1,14 @@
+from src.pipelines.memorize.extractor.agent_tasks.triplet_extraction import AgentTripletExtrTaskConfigSelector
+from src.pipelines.memorize.extractor.agent_tasks.thesis_extraction import AgentThesisExtrTaskConfigSelector
+from src.pipelines.memorize import MemPipeline, MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
+from src.kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig
+from src.pipelines.memorize import MemPipelineConfig
+from src.agents.AgentDriver import AgentDriverConfig, AgentConnectorConfig
+from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
+from src.db_drivers.vector_driver.embedders import EmbedderModelConfig
+from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriverConfig
+from src.kg_model.embeddings_model.EmbeddingsModel import EmbeddingsModelConfig
+from src.kg_model.graph_model.GraphModel import GraphModelConfig
 import pytest
 from tqdm import tqdm
 from cases import RAW_TEXTS_EN
@@ -8,18 +19,6 @@ PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.kg_model.graph_model.GraphModel import GraphModelConfig
-from src.kg_model.embeddings_model.EmbeddingsModel import EmbeddingsModelConfig
-from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriverConfig
-from src.db_drivers.vector_driver.embedders import EmbedderModelConfig
-from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
-from src.agents.AgentDriver import AgentDriverConfig, AgentConnectorConfig
-from src.pipelines.memorize import MemPipelineConfig
-from src.kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig
-from src.agents.AgentDriver import AgentDriverConfig, AgentConnectorConfig
-from src.pipelines.memorize import MemPipeline, MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
-from src.pipelines.memorize.extractor.agent_tasks.thesis_extraction import AgentThesisExtrTaskConfigSelector
-from src.pipelines.memorize.extractor.agent_tasks.triplet_extraction import AgentTripletExtrTaskConfigSelector
 
 @pytest.fixture(scope='package')
 def graph_neo4j_config():
@@ -30,6 +29,7 @@ def graph_neo4j_config():
                 host="localhost", port="7680", db_info={'db': 'testing', 'table': 'testing'},
                 params={'user': "neo4j", 'pwd': 'password'}, need_to_clear=True)))
     return config
+
 
 @pytest.fixture(scope='package')
 def embeddings_milvus_config():
@@ -43,12 +43,14 @@ def embeddings_milvus_config():
         embedder_config=EmbedderModelConfig(model_name_or_path=f'{PROJECT_BASE_DIR}models/intfloat/multilingual-e5-small', device='cuda'))
     return config
 
+
 @pytest.fixture(scope='package')
 def mem_pipeline_config():
     agent_driver_config = AgentDriverConfig(
         name='ollama',
         agent_config=AgentConnectorConfig(
-            gen_strategy={"num_predict": 2048, "seed": 42, "top_k": 1, "temperature": 0.0},
+            gen_strategy={"num_predict": 2048, "seed": 42,
+                          "top_k": 1, "temperature": 0.0},
             credentials={"model": 'qwen2.5:7b'},
             ext_params={"host": 'localhost', "port": 11438, "timeout": 560, "keep_alive": -1}))
 
@@ -65,7 +67,8 @@ def mem_pipeline_config():
 
     return config
 
-#------------------------------#
+# ------------------------------#
+
 
 @pytest.fixture(scope='package')
 def kg_model(graph_neo4j_config, embeddings_milvus_config):
@@ -73,22 +76,26 @@ def kg_model(graph_neo4j_config, embeddings_milvus_config):
     embeddings_milvus_config.nodesdb_driver_config.db_config.need_to_clear = False
     embeddings_milvus_config.tripletsdb_driver_config.db_config.need_to_clear = False
 
-    kg_config = KnowledgeGraphModelConfig(graph_config=graph_neo4j_config, embeddings_config=embeddings_milvus_config)
+    kg_config = KnowledgeGraphModelConfig(
+        graph_config=graph_neo4j_config, embeddings_config=embeddings_milvus_config)
     kg_model = KnowledgeGraphModel(kg_config)
-    #kg_model.clear()
+    # kg_model.clear()
     return kg_model
+
 
 @pytest.fixture(scope='package')
 def mem_pipeline(request, kg_model, mem_pipeline_config):
     mem_pipeline = MemPipeline(kg_model, mem_pipeline_config)
     for text in tqdm(RAW_TEXTS_EN):
-       mem_pipeline.remember(text)
+        mem_pipeline.remember(text)
 
     def teardown():
         print("Safely closing kg-model connection...")
         mem_pipeline.updator.kg_model.graph_struct.db_conn.close_connection()
-        mem_pipeline.updator.kg_model.embeddings_struct.vectordbs['nodes'].close_connection()
-        mem_pipeline.updator.kg_model.embeddings_struct.vectordbs['triplets'].close_connection()
+        mem_pipeline.updator.kg_model.embeddings_struct.vectordbs['nodes'].close_connection(
+        )
+        mem_pipeline.updator.kg_model.embeddings_struct.vectordbs['triplets'].close_connection(
+        )
     request.addfinalizer(teardown)
 
     return mem_pipeline

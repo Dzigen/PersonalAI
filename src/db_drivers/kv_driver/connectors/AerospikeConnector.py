@@ -6,6 +6,7 @@ from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection, KeyValue
 
 # !!! AEROSPIKE IS NOT SUPPORTING DUE TO A LACK OF DOCUMENTATION!!!
 
+
 class AerospikeKVConnector(AbstractKVDatabaseConnection):
 
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_AEROSPIKE_CONFIG):
@@ -37,7 +38,8 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
                 raise ValueError
 
         for item in items:
-            key = (self.config.db_info['db'], self.config.db_info['table'], item.id)
+            key = (self.config.db_info['db'],
+                   self.config.db_info['table'], item.id)
             self.client.put(key, {'v': item.value})
 
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
@@ -45,9 +47,12 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
             if (id is None) or (type(id) is not str):
                 raise ValueError
 
-        keys = list(map(lambda id: (self.config.db_info['db'], self.config.db_info['table'], id), ids))
-        mixed_records = self.client.get_many(keys, policy={'total_timeout': 10000})
-        records = [None if record[2] is None else KeyValueDBInstance(id=record[0][2], value=record[2]['v']) for record in mixed_records]
+        keys = list(map(lambda id: (
+            self.config.db_info['db'], self.config.db_info['table'], id), ids))
+        mixed_records = self.client.get_many(
+            keys, policy={'total_timeout': 10000})
+        records = [None if record[2] is None else KeyValueDBInstance(
+            id=record[0][2], value=record[2]['v']) for record in mixed_records]
         return records
 
     def update(self, items: List[KeyValueDBInstance]) -> None:
@@ -59,8 +64,10 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
             if type(id) is not str:
                 raise ValueError
 
-        keys = list(map(lambda id: (self.config.db_info['db'], self.config.db_info['table'], id), ids))
-        self.client.batch_remove(keys, policy_batch_remove= {'durable_delete': durable_delete})
+        keys = list(map(lambda id: (
+            self.config.db_info['db'], self.config.db_info['table'], id), ids))
+        self.client.batch_remove(keys, policy_batch_remove={
+                                 'durable_delete': durable_delete})
 
     def clear(self) -> None:
         # TODO

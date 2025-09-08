@@ -77,7 +77,7 @@ WEAK_KG_REASONER:
     retriever_method: 'naive_retriever'
     retriever_config:
       max_k: 50
-          
+
     filter_method: None
     filter_config: None
 

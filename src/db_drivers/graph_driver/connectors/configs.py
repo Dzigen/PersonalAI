@@ -8,7 +8,7 @@ DEFAULT_KUZU_CONFIG = GraphDBConnectionConfig(
     params={
         'path': './tmp/graph_store/kuzu', 'buffer_pool_size': 1024**3,
         'table_type_map': {
-            'relations': {'forward': {RelationType.simple.value: 'simple', RelationType.hyper.value: 'hyper_rel', RelationType.episodic.value: 'episodic_rel'},},
+            'relations': {'forward': {RelationType.simple.value: 'simple', RelationType.hyper.value: 'hyper_rel', RelationType.episodic.value: 'episodic_rel'}, },
             'nodes': {'forward': {NodeType.object.value: 'object', NodeType.hyper.value: 'hyper', NodeType.episodic.value: 'episodic'}}
         }
     }

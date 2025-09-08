@@ -9,6 +9,7 @@ from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils import Triplet, NodeType
 from ....utils.data_structs import RelationType, Node
 
+
 class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
     def __init__(self, config: GraphDBConnectionConfig = DEFAULT_INMEMORYGRAPH_CONFIG) -> None:
@@ -49,7 +50,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
     def generate_id(self, seed: str = None) -> str:
         return hashlib.md5((str(time()) if seed is None else seed).encode()).hexdigest()
 
-    def create(self, triplets: List[Triplet], creation_info: Dict[int,Dict[str,bool]] = dict()) -> None:
+    def create(self, triplets: List[Triplet], creation_info: Dict[int, Dict[str, bool]] = dict()) -> None:
         # triplet-ids checking
         for triplet in triplets:
             if type(triplet.id) is not str:
@@ -97,21 +98,21 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
                     self.edges[en_id].add(t_id)
                     self.adjacent_nodes[en_id].add(sn_id)
 
-
     def read(self, ids: List[str]) -> List[Triplet]:
         triplets = []
         for id in ids:
             if type(id) is not str:
                 raise ValueError
             t_ids = self.tid_triplets_index[id]
-            triplets += list(map(lambda t_id: self.triplets[t_id], list(t_ids)))
+            triplets += list(
+                map(lambda t_id: self.triplets[t_id], list(t_ids)))
         return triplets
 
     def update(self, items: List[Triplet]) -> None:
         # TODO
         pass
 
-    def delete(self, ids: List[str], delete_info: Dict[int,Dict[str,bool]] = dict()) -> None:
+    def delete(self, ids: List[str], delete_info: Dict[int, Dict[str, bool]] = dict()) -> None:
         for id in ids:
             if type(id) is not str:
                 raise ValueError
@@ -124,42 +125,47 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
             for internal_t_id in internal_t_ids:
                 matched_triplet = self.triplets[internal_t_id]
 
-                internal_snode_ids = list(self.strid_nodes_index[matched_triplet.start_node.id])
-                internal_enode_ids = list(self.strid_nodes_index[matched_triplet.end_node.id])
+                internal_snode_ids = list(
+                    self.strid_nodes_index[matched_triplet.start_node.id])
+                internal_enode_ids = list(
+                    self.strid_nodes_index[matched_triplet.end_node.id])
 
                 nodes_id_to_delete = set()
                 for sn_id in internal_snode_ids:
                     self.edges[sn_id].remove(internal_t_id)
-                    self.adjacent_nodes[sn_id].difference_update(internal_enode_ids)
+                    self.adjacent_nodes[sn_id].difference_update(
+                        internal_enode_ids)
 
                     if (cur_info is None) or cur_info['s_node']:
-                        #assert len(self.edges[sn_id]) == 0
-                        #assert self.adjacent_nodes[sn_id] == 0
+                        # assert len(self.edges[sn_id]) == 0
+                        # assert self.adjacent_nodes[sn_id] == 0
                         del self.nodes[sn_id]
                         nodes_id_to_delete.add(sn_id)
 
                 if ((cur_info is None) or cur_info['s_node']) and len(nodes_id_to_delete):
-                    self.strid_nodes_index[matched_triplet.start_node.id].difference_update(nodes_id_to_delete)
+                    self.strid_nodes_index[matched_triplet.start_node.id].difference_update(
+                        nodes_id_to_delete)
 
                 nodes_id_to_delete = set()
                 for en_id in internal_enode_ids:
                     self.edges[en_id].remove(internal_t_id)
-                    self.adjacent_nodes[en_id].difference_update(internal_snode_ids)
+                    self.adjacent_nodes[en_id].difference_update(
+                        internal_snode_ids)
 
                     if (cur_info is None) or cur_info['e_node']:
-                        #assert len(self.edges[en_id]) == 0
-                        #assert self.adjacent_nodes[en_id] == 0
+                        # assert len(self.edges[en_id]) == 0
+                        # assert self.adjacent_nodes[en_id] == 0
                         del self.nodes[en_id]
                         nodes_id_to_delete.add(en_id)
 
                 if ((cur_info is None) or cur_info['e_node']) and len(nodes_id_to_delete):
-                    self.strid_nodes_index[matched_triplet.end_node.id].difference_update(nodes_id_to_delete)
+                    self.strid_nodes_index[matched_triplet.end_node.id].difference_update(
+                        nodes_id_to_delete)
 
                 self.strid_relation_index[matched_triplet.relation.id].pop()
                 del self.triplets[internal_t_id]
 
             del self.tid_triplets_index[t_id]
-
 
     def read_by_name(self, name: str, object_type: Union[RelationType, NodeType], object: str = 'relation') -> List[Union[Triplet, Node]]:
         # Note: Реализован наивный способ поиска элементов в графе
@@ -175,16 +181,18 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
             raise ValueError
 
         if object == 'relation':
-            formated_output =  [triplet for triplet in self.triplets.values() if triplet.relation.type == object_type and triplet.relation.name == name]
+            formated_output = [triplet for triplet in self.triplets.values(
+            ) if triplet.relation.type == object_type and triplet.relation.name == name]
         elif object == 'node':
-            formated_output =  [node for node in self.nodes.values() if node.type == object_type and node.name == name]
+            formated_output = [node for node in self.nodes.values(
+            ) if node.type == object_type and node.name == name]
         else:
             raise ValueError
 
         return formated_output
 
     def get_adjecent_nids(self, base_node_id: str,
-            accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[str]:
+                          accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[str]:
         if type(base_node_id) is not str:
             raise ValueError
 
@@ -193,11 +201,13 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         for node_id in node_db_ids:
             adjanced_nodes_db_ids += list(self.adjacent_nodes[node_id])
 
-        filtered_adj_n_dbids = list(filter(lambda n_db_id: self.nodes[n_db_id].type in accepted_n_types, adjanced_nodes_db_ids))
-        nodes_str_ids = list(map(lambda db_n_id: self.nodes[db_n_id].id, filtered_adj_n_dbids))
+        filtered_adj_n_dbids = list(filter(
+            lambda n_db_id: self.nodes[n_db_id].type in accepted_n_types, adjanced_nodes_db_ids))
+        nodes_str_ids = list(
+            map(lambda db_n_id: self.nodes[db_n_id].id, filtered_adj_n_dbids))
         return nodes_str_ids
 
-    def get_nodes_shared_ids(self, node1_id: str, node2_id: str, id_type: str = 'both') -> List[Dict[str,str]]:
+    def get_nodes_shared_ids(self, node1_id: str, node2_id: str, id_type: str = 'both') -> List[Dict[str, str]]:
         if (type(node1_id) is not str) or (type(node2_id) is not str):
             raise ValueError(node1_id, node2_id)
         if type(id_type) is not str or id_type not in ['triplet', 'relation', 'both']:
@@ -209,16 +219,19 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         n2_internal_ids = self.strid_nodes_index[node2_id]
         for n1 in n1_internal_ids:
             for n2 in n2_internal_ids:
-                shared_internal_tids = self.edges[n1].intersection(self.edges[n2])
+                shared_internal_tids = self.edges[n1].intersection(
+                    self.edges[n2])
 
                 for internal_tid in shared_internal_tids:
                     if id_type == 'triplet':
-                        formated_info.append({'t_id': self.triplets[internal_tid].id})
+                        formated_info.append(
+                            {'t_id': self.triplets[internal_tid].id})
                     elif id_type == 'relation':
-                        formated_info.append({'r_id': self.triplets[internal_tid].relation.id})
+                        formated_info.append(
+                            {'r_id': self.triplets[internal_tid].relation.id})
                     elif id_type == 'both':
                         formated_info.append({'t_id': self.triplets[internal_tid].id,
-                            'r_id':self.triplets[internal_tid].relation.id})
+                                              'r_id': self.triplets[internal_tid].relation.id})
                     else:
                         raise ValueError(id_type)
 
@@ -260,7 +273,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         # TODO
         raise NotImplementedError
 
-    def count_items(self, id: str = None, id_type: str = None) -> Union[Dict[str,int],int]:
+    def count_items(self, id: str = None, id_type: str = None) -> Union[Dict[str, int], int]:
         result = None
         if id_type is None:
             result = {'triplets': len(self.triplets), 'nodes': len(self.nodes)}
@@ -279,7 +292,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
         return result
 
-    def item_exist(self, item_id: str, id_type: str ='triplet') -> bool:
+    def item_exist(self, item_id: str, id_type: str = 'triplet') -> bool:
         if type(item_id) is not str:
             raise ValueError
 

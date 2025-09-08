@@ -10,6 +10,7 @@ from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......db_drivers.vector_driver import VectorDBInstance
 from ......utils.cache_kv import CacheUtils
 
+
 @dataclass
 class Entities2NodesMatcherConfig:
     """Конфигурация Entities2NodesMatcher-стадии MediumQA-ризонера.
@@ -35,11 +36,13 @@ class Entities2NodesMatcherConfig:
     fetch_k: int = 50
 
     cache_table_name: str = "medreasn_e2nmatcher_main_stage_cache"
-    log: Logger = field(default_factory=lambda: Logger(E2NMATCHER_MAIN_LOG_PATH))
+    log: Logger = field(
+        default_factory=lambda: Logger(E2NMATCHER_MAIN_LOG_PATH))
     verbose: bool = False
 
     def to_str(self):
         return f"{self.use_tree}|{self.distance_threshold}|{self.max_n}|{self.fetch_k}"
+
 
 class Entities2NodesMatcher(CacheUtils):
     """Верхнеуровневый класс стадии #2.1.2 medium QA-конвейера для выполнения сопоставоения сущностей из user-вопроса с вершинами в графе знаний.
@@ -51,21 +54,25 @@ class Entities2NodesMatcher(CacheUtils):
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
+
     def __init__(self, kg_model: KnowledgeGraphModel, config: Entities2NodesMatcherConfig = Entities2NodesMatcherConfig(),
-                 cache_kvdriver_config: Union[None,KeyValueDriverConfig] = None):
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None):
         self.config = config
         self.kg_model = kg_model
 
-        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
 
         self.log = self.config.log
         self.verbose = self.config.verbose
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if type(level) is not str:
-            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             self.cachekv.clear()
@@ -83,26 +90,31 @@ class Entities2NodesMatcher(CacheUtils):
                 entitie, distance_threshold=self.config.distance_threshold, fetch_k=self.config.fetch_k,
                 max_n=self.config.max_n)
         else:
-            entitie_embedding = self.kg_model.embeddings_struct.embedder.encode_queries([entitie])[0]
+            entitie_embedding = self.kg_model.embeddings_struct.embedder.encode_queries([
+                                                                                        entitie])[0]
             entitie_vinstance = VectorDBInstance(embedding=entitie_embedding)
 
             raw_scored_nodes = self.kg_model.embeddings_struct.vectordbs['nodes'].retrieve(
-                query_instances=[entitie_vinstance],n_results=self.config.fetch_k, includes=['documents'])[0]
-            filtered_nodes = list(filter(lambda pair: pair[0] <= self.config.distance_threshold, raw_scored_nodes))
+                query_instances=[entitie_vinstance], n_results=self.config.fetch_k, includes=['documents'])[0]
+            filtered_nodes = list(filter(
+                lambda pair: pair[0] <= self.config.distance_threshold, raw_scored_nodes))
 
-            object_nodes = list(filter(lambda pair: self.kg_model.graph_struct.db_conn.get_node_type(pair[1].id) == NodeType.object, filtered_nodes))
-            matched_objects = list(map(lambda pair: pair[1], sorted(object_nodes, key=lambda p: p[0], reverse=False)))[:self.config.max_n]
+            object_nodes = list(filter(lambda pair: self.kg_model.graph_struct.db_conn.get_node_type(
+                pair[1].id) == NodeType.object, filtered_nodes))
+            matched_objects = list(map(lambda pair: pair[1], sorted(
+                object_nodes, key=lambda p: p[0], reverse=False)))[:self.config.max_n]
 
         return matched_objects
 
-    def perform(self, entities: List[str]) -> Tuple[Dict[str,List[VectorDBInstance]], ReturnInfo]:
+    def perform(self, entities: List[str]) -> Tuple[Dict[str, List[VectorDBInstance]], ReturnInfo]:
         """Метод предназначен для сопоставления заданных сущностей (на естественном языке) с вершинами из графа знаний.
 
         :param entities: Список сущностей.
         :type entities: List[str]
         :rtype: Tuple[Dict[str,List[VectorDBInstance]], ReturnInfo]
         """
-        self.log("START ENTITIES2NODES MATCHING...", verbose=self.config.verbose)
+        self.log("START ENTITIES2NODES MATCHING...",
+                 verbose=self.config.verbose)
         self.log(f"ENTIITES: {entities}", verbose=self.config.verbose)
         if len(entities) < 1:
             raise ValueError
@@ -112,12 +124,14 @@ class Entities2NodesMatcher(CacheUtils):
         for i, entitie in enumerate(entities):
             self.log(f"Текушая сушность #{i}: {entitie}", verbose=self.verbose)
             matched_kg_objects[entitie] = self.match_entitie2knowledge(entitie, use_tree=self.config.use_tree,
-                distance_threshold=self.config.distance_threshold,
-                max_n=self.config.max_n, fetch_k=self.config.fetch_k)
-            str_matchedobjects = ', '.join(list(map(lambda obj: obj.document, matched_kg_objects[entitie])))
+                                                                       distance_threshold=self.config.distance_threshold,
+                                                                       max_n=self.config.max_n, fetch_k=self.config.fetch_k)
+            str_matchedobjects = ', '.join(
+                list(map(lambda obj: obj.document, matched_kg_objects[entitie])))
             self.log(f"RESULT: {str_matchedobjects}", verbose=self.verbose)
 
-        m_objects_amount = sum(list(map(lambda m_objects: len(m_objects), matched_kg_objects.values())))
+        m_objects_amount = sum(
+            list(map(lambda m_objects: len(m_objects), matched_kg_objects.values())))
         if m_objects_amount < 1:
             rinfo.status = ReturnStatus.empty_answer
         self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
