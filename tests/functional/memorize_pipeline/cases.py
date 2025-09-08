@@ -1,16 +1,14 @@
-from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
-from src.pipelines.memorize.extractor.agent_tasks.triplet_extraction import AgentTripletExtrTaskConfigSelector
-from src.pipelines.memorize.extractor.agent_tasks.thesis_extraction import AgentThesisExtrTaskConfigSelector
-from src.pipelines.memorize import MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
-from src.agents.AgentDriver import AgentDriverConfig, AgentConnectorConfig
-import pytest
-
 import sys
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
+from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
+from src.pipelines.memorize.extractor.agent_tasks.triplet_extraction import AgentTripletExtrTaskConfigSelector
+from src.pipelines.memorize.extractor.agent_tasks.thesis_extraction import AgentThesisExtrTaskConfigSelector
+from src.pipelines.memorize import MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
+from src.agents.AgentDriver import AgentDriverConfig, AgentConnectorConfig
 
 # RAW_TEXTS_RU = [
 #     "Проживающие в общежитии студенты имеют право rруглосуточного доступа к месту проживания.",
@@ -61,8 +59,7 @@ RAW_TEXTS_EN = [
     "Students living in the dormitory have the right to participate (make proposals) through the MSG Student Council and the youth policy department of the FSBI 'MSG' in resolving issues of improving housing and living conditions, organizing educational work and leisure.",
     "Students living in the dormitory have the right to take part in social, sports and cultural and leisure events organized by the administration of the FSBI 'MSG' and the MSG Student Council.",
     "Students living in the dormitory have the right to use permitted household appliances in compliance with safety regulations and fire safety regulations.",
-    "Students living in the dormitory have the right to visit the Interuniversity Educational and Sports Center free of charge at a time approved by the administration of the FSBI 'MSG' and agreed upon with the MSG Student Council."
-]
+    "Students living in the dormitory have the right to visit the Interuniversity Educational and Sports Center free of charge at a time approved by the administration of the FSBI 'MSG' and agreed upon with the MSG Student Council."]
 
 AGENT_DRIVER_CONFIG = AgentDriverConfig(
     name='ollama',
