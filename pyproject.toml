@@ -1,5 +1,5 @@
 [tool.autopep8]
-max_line_length = 180
+max_line_length = 320
 ignore = "E402"  # or ["E4026"]
 in-place = true
 recursive = true
