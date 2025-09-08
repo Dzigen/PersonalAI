@@ -1,15 +1,14 @@
-from cases import MEM_CONFIG1, MEM_CONFIG2, KV_CACHE_CONFIG, RAW_TEXTS_EN
-from src.kg_model import KnowledgeGraphModel
-from src.pipelines.memorize import MemPipeline, MemPipelineConfig
 import pytest
 from typing import List, Dict
 from tqdm import tqdm
-
 import sys
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
+from src.kg_model import KnowledgeGraphModel
+from src.pipelines.memorize import MemPipeline, MemPipelineConfig
+from .cases import MEM_CONFIG1, MEM_CONFIG2, KV_CACHE_CONFIG, RAW_TEXTS_EN
 
 @pytest.mark.parametrize("mem_config, raw_texts, use_kv_cache, clear_kv_cache", [
     [MEM_CONFIG1, RAW_TEXTS_EN, True, False],

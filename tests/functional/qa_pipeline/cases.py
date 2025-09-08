@@ -1,3 +1,11 @@
+import sys
+from copy import deepcopy
+from functools import reduce
+# TO CHANGE
+PROJECT_BASE_DIR = '../'
+TEST_VOLUME_DIR = './volumes'
+sys.path.insert(0, PROJECT_BASE_DIR)
+
 from src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier import AgentAnswerClassifierTaskConfigSelector
 from src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator import AgentAnswerGeneratorTaskConfigSelector
 from src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator import AnswerGeneratorConfig
@@ -33,18 +41,6 @@ from src.utils.data_structs import NodeType
 from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
 from src.agents.AgentDriver import AgentDriverConfig, AgentConnectorConfig
 from src.pipelines.qa import QAPipelineConfig
-import sys
-from copy import deepcopy
-from functools import reduce
-
-# TO CHANGE
-PROJECT_BASE_DIR = '../'
-TEST_VOLUME_DIR = './volumes'
-sys.path.insert(0, PROJECT_BASE_DIR)
-
-
-#
-
 
 ####################
 

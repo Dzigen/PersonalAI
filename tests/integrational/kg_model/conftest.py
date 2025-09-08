@@ -1,16 +1,15 @@
-from src.utils.data_structs import NodeType, RelationType
-from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
-from src.db_drivers.vector_driver.embedders import EmbedderModelConfig
-from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriverConfig
-from src.kg_model import EmbeddingsModel, EmbeddingsModelConfig, GraphModel, GraphModelConfig, KnowledgeGraphModel, KnowledgeGraphModelConfig
 import pytest
-
 import sys
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
+from src.utils.data_structs import NodeType, RelationType
+from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
+from src.db_drivers.vector_driver.embedders import EmbedderModelConfig
+from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriverConfig
+from src.kg_model import EmbeddingsModel, EmbeddingsModelConfig, GraphModel, GraphModelConfig, KnowledgeGraphModel, KnowledgeGraphModelConfig
 
 #!!!AVAILABLE GRAPH MODELS!!!#
 

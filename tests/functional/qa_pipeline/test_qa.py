@@ -1,15 +1,14 @@
-from cases import POPULATED_QA_CONFIGS, KV_CACHE_CONFIG
-from src.pipelines.memorize import MemPipeline
-from src.pipelines.qa import QAPipeline, QAPipelineConfig
 import pytest
 from typing import List, Dict
 from tqdm import tqdm
-
 import sys
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
+from src.pipelines.memorize import MemPipeline
+from src.pipelines.qa import QAPipeline, QAPipelineConfig
+from .cases import POPULATED_QA_CONFIGS, KV_CACHE_CONFIG
 
 @pytest.mark.parametrize("qa_config, questions, use_kv_cache, clear_cache, clear_memory", POPULATED_QA_CONFIGS)
 def test_qa_pipeline(qa_config: QAPipelineConfig, questions: List[str], use_kv_cache: bool, clear_cache: bool, clear_memory: bool, mem_pipeline: MemPipeline):

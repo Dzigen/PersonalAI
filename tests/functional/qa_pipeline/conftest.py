@@ -1,3 +1,11 @@
+import pytest
+from tqdm import tqdm
+import sys
+# TO CHANGE
+PROJECT_BASE_DIR = '../'
+TEST_VOLUME_DIR = './volumes'
+sys.path.insert(0, PROJECT_BASE_DIR)
+
 from src.pipelines.memorize.extractor.agent_tasks.triplet_extraction import AgentTripletExtrTaskConfigSelector
 from src.pipelines.memorize.extractor.agent_tasks.thesis_extraction import AgentThesisExtrTaskConfigSelector
 from src.pipelines.memorize import MemPipeline, MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
@@ -9,16 +17,8 @@ from src.db_drivers.vector_driver.embedders import EmbedderModelConfig
 from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriverConfig
 from src.kg_model.embeddings_model.EmbeddingsModel import EmbeddingsModelConfig
 from src.kg_model.graph_model.GraphModel import GraphModelConfig
-import pytest
-from tqdm import tqdm
-from cases import RAW_TEXTS_EN
 
-import sys
-# TO CHANGE
-PROJECT_BASE_DIR = '../'
-TEST_VOLUME_DIR = './volumes'
-sys.path.insert(0, PROJECT_BASE_DIR)
-
+from .cases import RAW_TEXTS_EN
 
 @pytest.fixture(scope='package')
 def graph_neo4j_config():
