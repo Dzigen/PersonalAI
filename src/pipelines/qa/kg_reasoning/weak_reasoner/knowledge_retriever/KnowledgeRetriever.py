@@ -32,7 +32,7 @@ class KnowledgeRetrieverConfig:
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
     """
-    retriever_method: str = 'water_circles'
+    retriever_method: str = 'watercircles'
     retriever_config: Union[BaseGraphSearchConfig, Dict] = field(
         default_factory=lambda: WaterCirclesSearchConfig())
     filter_method: str = 'naive'
@@ -65,19 +65,19 @@ class KnowledgeRetriever(CacheUtils):
             cache_kvdriver_config, config.cache_table_name)
 
         self.triplets_retriever = AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method]['class'](
-            kg_model, self.log, self.config.retriever_config, cache_kvdriver_config, self.config.verbose)
+            kg_model, config.log, self.config.retriever_config, cache_kvdriver_config, self.config.verbose)
 
         if self.config.filter_method is None:
             self.triplets_filter = None
         else:
             self.triplets_filter = AVAILABLE_TRIPLETS_FILTERS[self.config.filter_method]['class'](
-                kg_model, self.log, self.config.filter_config, cache_kvdriver_config, self.config.verbose)
+                kg_model, config.log, self.config.filter_config, cache_kvdriver_config, self.config.verbose)
 
         self.log = config.log
         self.verbose = config.verbose
 
     def clear_kv_caches(self, level: str = 'all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:

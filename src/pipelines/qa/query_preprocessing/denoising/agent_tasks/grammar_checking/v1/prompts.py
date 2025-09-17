@@ -16,8 +16,16 @@ EN_GRAMCHECK_ASSISTANT_PROMPT = '''
 
 # == Prompts in Russian ==
 
-RU_GRAMCHECK_SYSTEM_PROMPT = ...  # TODO
+RU_GRAMCHECK_SYSTEM_PROMPT = '''
+Вы — лингвист, который обрабатывает вопросы (queries) для их последующей отправки в поисковую QA-систему. Иногда эти вопросы на естественном языке содержат грамматические ошибки. Ваша задача — исправить их, если они есть. В результате вы должны вернуть вопрос с правильной/проверенной грамматикой.
+Возвращайте только изменённый (с грамматической точки зрения) вопрос; ничего больше не генерируйте.
+'''
 
-RU_GRAMCHECK_USER_PROMPT = ...  # TODO
+RU_GRAMCHECK_USER_PROMPT = '''
+[Исходный вопрос]
+{query}
+'''
 
-RU_GRAMCHECK_ASSISTANT_PROMPT = ...  # TODO
+RU_GRAMCHECK_ASSISTANT_PROMPT = '''
+[Модифицированный вопрос]
+'''

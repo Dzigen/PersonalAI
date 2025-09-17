@@ -78,6 +78,10 @@ class QueryDenoiser(CacheUtils):
         self.log = self.config.log
         self.verbose = self.config.verbose
 
+    def clear_kv_caches(self, level: str = 'all') -> None:
+        # TODO
+        pass
+
     def get_cache_key(self, query_info: QueryPreprocessingInfo) -> List[object]:
         return [query_info.to_str(), self.config.to_str()]
 
