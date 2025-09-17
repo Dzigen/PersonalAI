@@ -31,8 +31,8 @@ class QueryPreprocessorConfig:
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
-    denoising_config: Union[None, QueryDenoiserConfig] = None
-    enhancing_config: Union[None, QueryEnhancerConfig] = None
+    denoising_config: Union[None, QueryDenoiserConfig] = None  # field(default_factory=lambda: QueryDenoiserConfig())
+    enhancing_config: Union[None, QueryEnhancerConfig] = None  # field(default_factory=lambda: QueryEnhancerConfig())
     decomposition_config: Union[None, QueryDecomposerConfig] = field(
         default_factory=lambda: QueryDecomposerConfig())
 
@@ -77,7 +77,7 @@ class QueryPreprocessor(CacheUtils):
         self.verbose = config.verbose
 
     def clear_kv_caches(self, level: str = 'all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:

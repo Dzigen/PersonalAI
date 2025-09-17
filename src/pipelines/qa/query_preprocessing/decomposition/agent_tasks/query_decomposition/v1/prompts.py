@@ -1,5 +1,7 @@
+# == Prompts in English ==
+
 EN_QD_SYSTEM_PROMPT = '''
-You are a helpful assistant that prepares queries that will be sent to a search component. Sometimes, these queries are very complex. Your job is to simplify complex queries into multiple queries that can be answered in isolation to eachother.
+You are a helpful assistant that prepares queries that will be sent to a search component. Sometimes, these queries are complex: contains multiple independent intents/requests. Your job is to simplify complex queries into multiple queries that can be answered in isolation to eachother.
 
 Generate decomposed questions in the following format:
 - <sub-query1>
@@ -21,6 +23,8 @@ EN_QD_USER_PROMPT = '''
 EN_QD_ASSISTANT_PROMPT = '''
 [Decomposed questions]
 '''
+
+# == Prompts in Russian ==
 
 RU_QD_SYSTEM_PROMPT = ...  # TODO
 RU_QD_USER_PROMPT = ...  # TODO

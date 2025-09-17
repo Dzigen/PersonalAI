@@ -1,3 +1,5 @@
+# == Prompts in English ==
+
 EN_DC_SYSTEM_PROMPT = '''
 Given a question you are asked to determine whether it can be decomposed on several independent questions that can be answered in isolation to eachother. Answer 'Yes' or 'No'. Before generating the answer you should present your chain of thoughts.
 
@@ -16,6 +18,8 @@ EN_DC_USER_PROMPT = '''
 EN_DC_ASSISTANT_PROMPT = '''
 [Chain of thoughts]
 '''
+
+# == Prompts in Russian ==
 
 RU_DC_SYSTEM_PROMPT = ...  # TODO
 RU_DC_USER_PROMPT = ...  # TODO

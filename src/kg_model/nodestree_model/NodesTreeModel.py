@@ -254,14 +254,13 @@ class NodesTreeModel:
                  verbose=self.verbose)
         return status
 
-    def get_leafnodes_sim_scores(self, newnode_vinstance: VectorDBInstance, leaf_nodes: List[TreeNode]) -> List[Tuple[float, str]]:
+    def get_leafnodes_sim_scores(self, anchor_vinstance: VectorDBInstance, leaf_nodes: List[TreeNode]) -> List[Tuple[float, str]]:
         strid2leafid_map = {
             node.props['str_id']: node.id for node in leaf_nodes}
         leaf_nodes_strids = list(strid2leafid_map.keys())
         if len(leaf_nodes_strids) > 0:
             raw_scored_leafnodes = self.vectordb_leafnodes_conn.retrieve(
-                query_instances=[newnode_vinstance], n_results=len(
-                    leaf_nodes_strids),
+                query_instances=[anchor_vinstance], n_results=len(leaf_nodes_strids),
                 subset_ids=leaf_nodes_strids, includes=[])[0]
             # переводим значения семантического расстояния [distance] в семантическую близость [similarity]
             scored_leafnodes = list(map(lambda pair: (
@@ -270,12 +269,11 @@ class NodesTreeModel:
             scored_leafnodes = []
         return scored_leafnodes
 
-    def get_summnodes_sim_scores(self, newnode_vinstance: VectorDBInstance, summ_nodes: List[TreeNode]) -> List[Tuple[float, str]]:
+    def get_summnodes_sim_scores(self, anchor_vinstance: VectorDBInstance, summ_nodes: List[TreeNode]) -> List[Tuple[float, str]]:
         summ_nodes_ids = list(map(lambda node: node.id, summ_nodes))
         if len(summ_nodes_ids) > 0:
             raw_scored_summnodes = self.vectordb_summnodes_conn.retrieve(
-                query_instances=[newnode_vinstance], n_results=len(
-                    summ_nodes_ids),
+                query_instances=[anchor_vinstance], n_results=len(summ_nodes_ids),
                 subset_ids=summ_nodes_ids, includes=[])[0]
             # переводим значения семантического расстояния [distance] в семантическую близость [similarity]
             scored_summnodes = list(

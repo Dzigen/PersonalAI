@@ -68,8 +68,10 @@ class QueryDenoiser(CacheUtils):
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config if cache_llm_inference else None
 
+        # удаление слов/знаков, мешающих/усложняющих пониманию/анализу основного смысла/намерения
         self.swremoval_solver = AgentTaskSolver(
             self.agent, self.config.swremoval_agent_task_config, agents_cache_config)
+        # лингвистическая корректировка
         self.grammar_check_solver = AgentTaskSolver(
             self.agent, self.config.grammarcheck_agent_task_config, agents_cache_config)
 
