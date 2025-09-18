@@ -18,6 +18,22 @@ EN_CAGEN_ASSISTANT_PROMPT = \
 [Relevant Summary]:
 """
 
-RU_CAGEN_SYSTEM_PROMPT = ...  # TODO
-RU_CAGEN_USER_PROMPT = ...  # TODO
-RU_CAGEN_ASSISTANT_PROMPT = ...  # TODO
+### PROMPT IN RUSSIAN ###
+
+RU_CAGEN_SYSTEM_PROMPT = \
+    """
+На основе вопроса и найденной по нему информации вам предлагается определить и обобщить всю релевантную информацию, которая может быть использована в качестве части контекста для формирования ответа на данный вопрос. Если в найденной информации нет релевантной, следует сгенерировать следующее: "<|NoRelevantInfo|>".
+"""
+
+RU_CAGEN_USER_PROMPT = \
+    """
+[Question]:
+{q}
+[Finded Information]:
+{c}
+"""
+
+RU_CAGEN_ASSISTANT_PROMPT = \
+    """
+[Relevant Summary]:
+"""

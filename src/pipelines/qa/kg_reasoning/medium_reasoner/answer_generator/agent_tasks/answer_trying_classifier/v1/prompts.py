@@ -1,3 +1,5 @@
+### PROMPT IN ENGLISH ###
+
 EN_ANSWCLS_SYSTEM_PROMPT = \
     '''
 Given a question, associated search-queries and finded information based on them, you are asked to determine whether it’s sufficient for you to answer this question based on a given knowledge. Answer 'Yes' or 'No'. Before generating the answer you should present your chain of thoughts.
@@ -22,6 +24,8 @@ EN_ANSWCLS_ASSISTANT_PROMPT = \
     '''
 [Chain of thoughts]
 '''
+
+### PROMPT IN RUSSIAN ###
 
 RU_ANSWCLS_SYSTEM_PROMPT = \
     '''
