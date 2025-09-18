@@ -1,4 +1,4 @@
-### PROMPT IN ENGLISH ###
+# == Prompts in English ==
 
 EN_THESISES_EXTRACTION_SYSTEM_PROMPT = \
     '''
@@ -33,9 +33,8 @@ EN_THESISES_EXTRACTION_ASSISTANT_PROMPT = \
 [Extracted thesises]:
 '''
 
-### PROMPT IN RUSSIAN ###
+# == Prompts in Russian ==
 
-# TODO
 RU_THESISES_EXTRACTION_SYSTEM_PROMPT = \
     '''
 Задача: Основная цель - тщательно собрать информацию из входного текста и организовать эти данные в четкий, структурированный граф знаний.
@@ -61,15 +60,13 @@ RU_THESISES_EXTRACTION_SYSTEM_PROMPT = \
 В качестве ответа сгенерируй только извлеченные тезисы в формате, описанном выше, и не включай дополнительные пояснений результата.
 '''
 
-# TODO
 RU_THESISES_EXTRACTION_USER_PROMPT = \
     '''
-Текст:
+[Текст]:
 {text}
 '''
 
-# TODO
 RU_THESISES_EXTRACTION_ASSISTANT_PROMPT = \
     '''
-Извлечённые тезисы:
+[Извлечённые тезисы]:
 '''

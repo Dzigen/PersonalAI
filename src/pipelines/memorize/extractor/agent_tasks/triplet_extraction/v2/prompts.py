@@ -1,4 +1,4 @@
-### PROMPT IN ENGLISH ###
+# == Prompts in English ==
 
 EN_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
     '''Objective: The main goal is to meticulously gather information from the input [Text] and organize this data into a clear, structured knowledge graph. Knowledge graphs consists of a set of triplets. Each triplet contains two entities (subject and object) and one relation
@@ -43,7 +43,7 @@ EN_TRIPLETS_ASSISTANT_PROMPT = \
 [Extracted Triplets]:
 '''
 
-### PROMPT IN RUSSIAN ###
+# == Prompts in Russian ==
 
 # TODO
 RU_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
@@ -69,12 +69,13 @@ RU_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
 
 В качестве ответа сгенерируй только извлеченные триплеты в формате, описанном выше, и не включай дополнительные пояснений результата.'''
 
-# TODO
 RU_TRIPLETS_EXTRACTION_USER_PROMPT = \
-    '''Текст:
-{text} '''
+    '''
+[Текст]:
+{text}
+'''
 
-# TODO
 RU_TRIPLETS_ASSISTANT_PROMPT = \
     '''
-Извлеченные триплеты: '''
+[Извлечённые триплеты]:
+'''
