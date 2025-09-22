@@ -81,16 +81,18 @@ class AgentTaskSolver:
         self.log = self.config.log
         self.verbose = self.config.verbose
 
-    def solve(self, lang: str = 'en', **kwargs) -> Tuple[object, ReturnStatus]:
+    def solve(self, lang: str = 'en', gen_strategy: Union[None, Dict[str, str]] = None, **kwargs) -> Tuple[object, ReturnStatus]:
         """Метод предназначен для запуска agent-солвера на заданных входных данных.
 
         :param lang: Язык промптов, которые будут использоваться на этапе инференса LLM-агента. Значение по умолчанию 'auto'.
         :type lang: str, optional
+        :param gen_strategy: ... .
+        :type gen_strategy: Union[None,Dict[str, str]], optional
         :return: Кортеж из двух объектов: (1) результат работы agent-солвера; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[object, ReturnStatus]
         """
         task_result, status = None, ReturnStatus.success
-        self.log("="*20, verbose=self.config.verbose)
+        self.log("=" * 20, verbose=self.config.verbose)
         self.log("1. Предобработка данных для их дальнейшней вставки в user-prompt...",
                  verbose=self.config.verbose)
 
@@ -109,10 +111,11 @@ class AgentTaskSolver:
         # Если удалось без ошибок привести данные в формат контекста
         # для вставки в user-prompt
         if status == ReturnStatus.success:
-            self.log("-"*20, verbose=self.config.verbose)
+            self.log("-" * 20, verbose=self.config.verbose)
             self.log("2. Детекция используемого языка...",
                      verbose=self.config.verbose)
-            flatten_context = ' '.join(list(formated_context.values()))
+            flatten_context = ', '.join(list(formated_context.values()))
+
             detected_lang, status = detect_lang(
                 flatten_context) if lang == 'auto' else (lang, ReturnStatus.success)
 
@@ -123,7 +126,7 @@ class AgentTaskSolver:
 
         # Если удалось определить язык (распознанный язык находится в списке доступных)
         if status == ReturnStatus.success:
-            self.log("-"*20, verbose=self.config.verbose)
+            self.log("-" * 20, verbose=self.config.verbose)
             self.log("3. Добавление информации в user-prompt...",
                      verbose=self.config.verbose)
             try:
@@ -141,7 +144,7 @@ class AgentTaskSolver:
 
         # Если удалось добавить дополнительную инофрмациб в user-prompt
         if status == ReturnStatus.success:
-            self.log("-"*20, verbose=self.config.verbose)
+            self.log("-" * 20, verbose=self.config.verbose)
             self.log("4. Генерация ответа с помощью LLM-агента.",
                      verbose=self.config.verbose)
 
@@ -149,8 +152,9 @@ class AgentTaskSolver:
             gen_flag = True
 
             # preparing cache key
+            gen_strategy = self.agent.config.gen_strategy if gen_strategy is None else gen_strategy
             str_genstrat = ";".join(list(map(lambda p: f"{p[0]}={p[1]}", sorted(
-                [(k, str(v)) for k, v in self.agent.config.gen_strategy.items()], key=lambda p: p[0]))))
+                [(k, str(v)) for k, v in gen_strategy.items()], key=lambda p: p[0]))))
             str_creds = ";".join(list(map(lambda p: f"{p[0]}={p[1]}", sorted(
                 [(k, str(v)) for k, v in self.agent.config.credentials.items()], key=lambda p: p[0]))))
             sprompt_hash = hashlib.sha1(
@@ -203,7 +207,8 @@ class AgentTaskSolver:
                 raw_answer = self.agent.generate(
                     system_prompt=self.config.suites[detected_lang].system_prompt,
                     user_prompt=enriched_user_prompt,
-                    assistant_prompt=self.config.suites[detected_lang].assistant_prompt)
+                    assistant_prompt=self.config.suites[detected_lang].assistant_prompt,
+                    gen_strategy=gen_strategy)
 
                 if self.cachekv is not None:
                     self.log("Кешируем полученный результат.",
@@ -217,7 +222,7 @@ class AgentTaskSolver:
 
         # Если сгенрированная raw-строка не является пустой
         if status == ReturnStatus.success:
-            self.log("-"*20, verbose=self.config.verbose)
+            self.log("-" * 20, verbose=self.config.verbose)
             self.log("5. Разбор ответа, сгенерированного LLM-агентом.",
                      verbose=self.config.verbose)
 
@@ -236,7 +241,7 @@ class AgentTaskSolver:
 
         #  Если не было ошибок при разборе raw-строки
         if status == ReturnStatus.success:
-            self.log("-"*20, verbose=self.config.verbose)
+            self.log("-" * 20, verbose=self.config.verbose)
             self.log("6. Постобработка ответа от LLM-агента.",
                      verbose=self.config.verbose)
 

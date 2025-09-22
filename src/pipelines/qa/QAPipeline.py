@@ -61,12 +61,14 @@ class QAPipeline(CacheUtils):
     def __init__(self, kg_model: KnowledgeGraphModel, config: QAPipelineConfig = QAPipelineConfig(),
                  cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None) -> None:
 
+        agent = kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP['QAPipeline']['general']]
+
         self.query_preprocessor = QueryPreprocessor(
-            config.preprocessor_config, cache_kvdriver_config)
+            agent, config.preprocessor_config, cache_kvdriver_config)
         self.kg_reasoner = KnowledgeGraphReasoner(
             kg_model, config.reasoner_config, cache_kvdriver_config)
         self.answers_aggregator = AnswersAggregator(
-            config.aggregator_config, cache_kvdriver_config)
+            agent, config.aggregator_config, cache_kvdriver_config)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -75,7 +77,7 @@ class QAPipeline(CacheUtils):
         self.verbose = config.verbose
 
     def clear_kv_caches(self, level: str = 'all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:

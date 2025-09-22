@@ -1,1 +1,1 @@
-from .EmbeddingsModel import EmbeddingsModel, EmbedderModelConfig
+from .EmbeddingsModel import EmbeddingsModel, EmbeddingsModelConfig

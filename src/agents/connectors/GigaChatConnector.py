@@ -1,3 +1,4 @@
+from typing import Union, Dict
 from gigachat import GigaChat
 from gigachat.exceptions import ResponseError
 from gigachat.models import Chat, Messages
@@ -30,13 +31,14 @@ class GigaChatConnector(AbstractAgentConnector):
     def close_connection(self):
         self.giga_model.close()
 
-    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
+    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None, gen_strategy: Union[None, Dict[str, str]] = None) -> str:
         msgs = [Messages(role='system', content=system_prompt),
                 Messages(role='user', content=user_prompt)]
         if assistant_prompt is not None:
             msgs.append(Messages(role='assistant', content=assistant_prompt))
 
-        chat = Chat(messages=msgs, **self.gen_strategy)
+        gen_strategy = self.gen_strategy if gen_strategy is None else gen_strategy
+        chat = Chat(messages=msgs, **gen_strategy)
 
         flag, counter = True, 0
         while flag:
@@ -51,3 +53,6 @@ class GigaChatConnector(AbstractAgentConnector):
                     self.open_connection()
 
         return response.choices[0].message.content
+
+    def __del__(self):
+        self.close_connection()

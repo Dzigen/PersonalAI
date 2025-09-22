@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from dataclasses import dataclass, field
-from typing import Dict
+from typing import Dict, Union
 
 
 @dataclass
@@ -23,7 +23,7 @@ class AbstractAgentConnector:
         pass
 
     @abstractmethod
-    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
+    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None, gen_strategy: Union[None, Dict[str, str]] = None) -> str:
         pass
 
     @abstractmethod

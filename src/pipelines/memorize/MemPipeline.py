@@ -52,12 +52,13 @@ class MemPipeline:
         self.log = config.log
 
         self.extractor = LLMExtractor(
+            kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP['MemPipeline']['general']],
             config.extractor_config, cache_kvdriver_config)
         self.updator = LLMUpdator(
             kg_model, config.updator_config, cache_kvdriver_config)
 
     def clear_kv_caches(self, level: str = 'all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:

@@ -2,13 +2,13 @@ from dataclasses import dataclass
 from typing import List, Union, Dict
 import hashlib
 
-from .utils import AbstractTriplesFilter, BaseTripletsFilterConfig
-from ......utils.data_structs import Triplet, QueryInfo, create_id, TripletCreator
-from ......utils import Logger
-from ......kg_model import KnowledgeGraphModel
-from ......db_drivers.vector_driver import VectorDBInstance
-from ......utils.cache_kv import CacheUtils
-from ......db_drivers.kv_driver import KeyValueDriverConfig
+from ..utils import AbstractTriplesFilter, BaseTripletsFilterConfig
+from .......utils.data_structs import Triplet, QueryInfo, create_id, TripletCreator
+from .......utils import Logger
+from .......kg_model import KnowledgeGraphModel
+from .......db_drivers.vector_driver import VectorDBInstance
+from .......utils.cache_kv import CacheUtils
+from .......db_drivers.kv_driver import KeyValueDriverConfig
 
 
 @dataclass
@@ -44,7 +44,7 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, config: Union[TripletsFilterConfig, Dict] = TripletsFilterConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
-        if type(config) is dict:
+        if isinstance(config, dict):
             config = TripletsFilterConfig(**config)
         self.config = config
         self.kg_model = kg_model
@@ -56,7 +56,7 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
         self.verbose = verbose
 
     def clear_kv_caches(self, level='all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:

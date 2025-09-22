@@ -3,7 +3,7 @@ from typing import List, Tuple, Union, Dict
 
 from .configs import KR_MAIN_LOG_PATH, AVAILABLE_TRIPLETS_FILTERS, AVAILABLE_TRIPLETS_RETRIEVERS
 from .utils import BaseGraphSearchConfig, BaseTripletsFilterConfig
-from .TripletsFilter import TripletsFilterConfig
+from .filtering_methods.TripletsFilter import TripletsFilterConfig
 from .traversal_methods.WaterCirclesTripletsRetriever import WaterCirclesSearchConfig
 from ......kg_model import KnowledgeGraphModel
 from ......utils import Logger, ReturnStatus, ReturnInfo
@@ -57,7 +57,7 @@ class KnowledgeRetriever(CacheUtils):
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeRetrieverConfig = KnowledgeRetrieverConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         self.config = config
         self.kg_model = kg_model
 

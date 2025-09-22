@@ -7,6 +7,7 @@ from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTa
 from ....utils.errors import STATUS_MESSAGE
 from ....utils.data_structs import TripletCreator, NodeCreator, Node, Relation, RelationType, NodeType, Triplet, create_id
 from ....agents import AgentDriver, AgentDriverConfig
+from ....agents.utils import AbstractAgentConnector
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 
 
@@ -16,8 +17,8 @@ class LLMExtractorConfig:
 
     :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str
-    :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
-    :type adriver_config: AgentDriverConfig
+    :param agent_gen_stategy: ... .
+    :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]]
     :param triplets_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению триплетов с информацией типа 'simple' из слабоструктурированных текстов на естественном языке. Значение по умолчанию DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG.
     :type triplets_extraction_task_config: AgentTaskSolverConfig
     :param thesises_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению триплетов с информацией типа 'hyper' из слабоструктурированных текстов на естественном языке. Значение по умолчанию DEFAULT_EXTRACT_THESISES_TASK_CONFIG.
@@ -34,34 +35,32 @@ class LLMExtractorConfig:
     :type verbose: bool
     """
     lang: str = "auto"
-    adriver_config: AgentDriverConfig = field(
-        default_factory=lambda: AgentDriverConfig())
-    triplets_extraction_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_TRIPLETS_EXTR_TASK_CONFIG)
-    thesises_extraction_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_THESISES_EXTR_TASK_CONFIG)
+    agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
+    triplets_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_TRIPLETS_EXTR_TASK_CONFIG)
+    thesises_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_THESISES_EXTR_TASK_CONFIG)
     need_simple: bool = True
     need_thesises: bool = True
     need_episodic: bool = True
-    log: Logger = field(default_factory=lambda: Logger(
-        MEM_EXTRACTOR_MAIN_LOG_PATH))
+    log: Logger = field(default_factory=lambda: Logger(MEM_EXTRACTOR_MAIN_LOG_PATH))
     verbose: bool = False
 
 
 class LLMExtractor:
     """Верхнеуровневый класс первой стадии Memorize-конвейера для извлечения информации (и её приведения в triplet-формат) из слабоструктурированных данных.
 
+    :param agent: ... .
+    :type agent: AbstractAgentConnector
     :param config: Конфигурация Exctrator-стадии. Значение по умолчанию LLMExtractorConfig().
     :type config: LLMExtractorConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
 
-    def __init__(self, config: LLMExtractorConfig = LLMExtractorConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: LLMExtractorConfig = LLMExtractorConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         self.config = config
 
-        self.agent = AgentDriver.connect(config.adriver_config)
+        self.agent = agent
         self.triplets_extraction_solver = AgentTaskSolver(
             self.agent, self.config.triplets_extraction_task_config, cache_kvdriver_config)
         self.thesises_extraction_solver = AgentTaskSolver(
@@ -71,7 +70,7 @@ class LLMExtractor:
         self.verbose = self.config.verbose
 
     def clear_kv_caches(self, level: str = 'other') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
@@ -114,7 +113,8 @@ class LLMExtractor:
             self.log("START SIMPLE-TRIPLETS EXTRACTION...",
                      verbose=self.verbose)
             tmp_triplets, status = self.triplets_extraction_solver.solve(
-                lang=self.config.lang, text=text, rel_prop=props)
+                lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
+                text=text, rel_prop=props)
             self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.verbose)
 
             if status != ReturnStatus.success:
@@ -130,7 +130,8 @@ class LLMExtractor:
             self.log("START HYPER-TRIPLETS EXTRACTION...",
                      verbose=self.verbose)
             tmp_triplets, status = self.thesises_extraction_solver.solve(
-                lang=self.config.lang, text=text, node_prop=props)
+                lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
+                text=text, node_prop=props)
             self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.verbose)
 
             if status != ReturnStatus.success:

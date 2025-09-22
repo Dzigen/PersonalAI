@@ -51,24 +51,16 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig):
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
     """
-    searchplan_enhancer_config: SearchPlanEnhancerConfig = field(
-        default_factory=lambda: SearchPlanEnhancerConfig())
-    entities_extractor_config: EntitiesExtractorConfig = field(
-        default_factory=lambda: EntitiesExtractorConfig())
-    e2n_matcher_config: Entities2NodesMatcherConfig = field(
-        default_factory=lambda: Entities2NodesMatcherConfig())
+    searchplan_enhancer_config: SearchPlanEnhancerConfig = field(default_factory=lambda: SearchPlanEnhancerConfig())
+    entities_extractor_config: EntitiesExtractorConfig = field(default_factory=lambda: EntitiesExtractorConfig())
+    e2n_matcher_config: Entities2NodesMatcherConfig = field(default_factory=lambda: Entities2NodesMatcherConfig())
 
-    cluequeries_generator_config: ClueQueriesGeneratorConfig = field(
-        default_factory=lambda: ClueQueriesGeneratorConfig())
-    knowledge_retriever_config: KnowledgeRetrieverConfig = field(
-        default_factory=lambda: KnowledgeRetrieverConfig())
-    clueanswer_generator_config: ClueAnswerGeneratorConfig = field(
-        default_factory=lambda: ClueAnswerGeneratorConfig())
-    clueanswers_summarizer_config: ClueAnswersSummarizerConfig = field(
-        default_factory=lambda: ClueAnswersSummarizerConfig())
+    cluequeries_generator_config: ClueQueriesGeneratorConfig = field(default_factory=lambda: ClueQueriesGeneratorConfig())
+    knowledge_retriever_config: KnowledgeRetrieverConfig = field(default_factory=lambda: KnowledgeRetrieverConfig())
+    clueanswer_generator_config: ClueAnswerGeneratorConfig = field(default_factory=lambda: ClueAnswerGeneratorConfig())
+    clueanswers_summarizer_config: ClueAnswersSummarizerConfig = field(default_factory=lambda: ClueAnswersSummarizerConfig())
 
-    answer_generator_config: AnswerGeneratorConfig = field(
-        default_factory=lambda: AnswerGeneratorConfig())
+    answer_generator_config: AnswerGeneratorConfig = field(default_factory=lambda: AnswerGeneratorConfig())
 
     max_searchplan_steps: int = 5
     answer_something: bool = True
@@ -132,7 +124,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         self.verbose = config.verbose
 
     def clear_kv_caches(self, level: str = 'all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:

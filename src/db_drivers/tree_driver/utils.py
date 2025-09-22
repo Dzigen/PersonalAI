@@ -34,7 +34,7 @@ class TreeNode:
     id: str
     text: str
     type: TreeNodeType
-    props: Dict[str, object]
+    props: Dict[str, object] = field(default_factory=lambda: dict())
 
 
 @dataclass

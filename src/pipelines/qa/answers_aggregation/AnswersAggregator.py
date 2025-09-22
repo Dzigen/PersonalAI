@@ -29,10 +29,8 @@ class AnswersAggregatorConfig:
     :type verbose: bool, optional
     """
     lang: str = 'auto'
-    adriver_config: AgentDriverConfig = field(
-        default_factory=lambda: AgentDriverConfig())
-    suba_summarisation_agent_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_SUBASUMM_TASK_CONFIG)
+    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
+    suba_summarisation_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_SUBASUMM_TASK_CONFIG)
 
     cache_table_name: str = 'answers_aggregation_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(AAGG_MAIN_LOG_PATH))

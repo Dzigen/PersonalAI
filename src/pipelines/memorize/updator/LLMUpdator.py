@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Union
+from typing import List, Union, Dict
 from tqdm import tqdm
 
 from .configs import MEM_UPDATOR_MAIN_LOG_PATH, DEFAULT_REPLACE_THESIS_TASK_CONFIG, DEFAULT_REPLACE_SIMPLE_TASK_CONFIG
@@ -17,8 +17,8 @@ class LLMUpdatorConfig:
 
     :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если указано значение 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str
-    :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии.
-    :type adriver_config: AgentDriverConfig
+    :param agent_gen_stategy: ... .
+    :type agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]], optional
     :param replace_simple_task_config: Конфигурация атомарной задачи для LLM-агента по поиску устаревших триплетов типа "simple". Значение по умолчанию DEFAULT_REPLACE_SIMPLE_TASK_CONFIG.
     :type replace_simple_task_config: AgentTaskSolverConfig
     :param replace_thesis_task_config: Конфигурация атомарной задачи для LLM-агента по поиску устаревших триплетов типа "hyper". Значение по умолчанию DEFAULT_REPLACE_THESIS_TASK_CONFIG.
@@ -31,8 +31,7 @@ class LLMUpdatorConfig:
     :type verbose: bool
     """
     lang: str = "auto"
-    adriver_config: AgentDriverConfig = field(
-        default_factory=lambda: AgentDriverConfig())
+    agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     replace_simple_task_config: AgentTaskSolverConfig = field(
         default_factory=lambda: DEFAULT_REPLACE_SIMPLE_TASK_CONFIG)
     replace_thesis_task_config: AgentTaskSolverConfig = field(
@@ -60,17 +59,18 @@ class LLMUpdator:
         self.config = config
         self.kg_model = kg_model
 
-        self.agent = AgentDriver.connect(config.adriver_config)
         self.replace_simple_solver = AgentTaskSolver(
-            self.agent, self.config.replace_simple_task_config, cache_kvdriver_config)
+            kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP['MemPipeline']['general']],
+            self.config.replace_simple_task_config, cache_kvdriver_config)
         self.replace_hyper_solver = AgentTaskSolver(
-            self.agent, self.config.replace_thesis_task_config, cache_kvdriver_config)
+            kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP['MemPipeline']['general']],
+            self.config.replace_thesis_task_config, cache_kvdriver_config)
 
         self.log = self.config.log
         self.verbose = self.config.verbose
 
     def clear_kv_caches(self, level: str = 'other') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
@@ -103,7 +103,7 @@ class LLMUpdator:
 
             # сопоставляем ноду из триплета нодам в графе знаний по полю name
             matched_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-                name=base_node.name,  object_type=NodeType.object, object='node')
+                name=base_node.name, object_type=NodeType.object, object='node')
 
             for m_node in matched_nodes:
                 neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(
@@ -118,7 +118,8 @@ class LLMUpdator:
 
         # Выполняем поиск устаревших триплетов
         tmp_obsolete_triplet_ids, status = self.replace_simple_solver.solve(
-            lang=self.config.lang, base_triplet=base_triplet, incident_triplets=incident_triplets)
+            lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
+            base_triplet=base_triplet, incident_triplets=incident_triplets)
 
         if status == ReturnStatus.success:
             obsolete_triplet_ids += tmp_obsolete_triplet_ids
@@ -141,7 +142,7 @@ class LLMUpdator:
 
         # сопоставляем ноду из триплета нодам в графе знаний по полю name
         matched_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-            name=base_triplet.start_node.name,  object_type=NodeType.object, object='node')
+            name=base_triplet.start_node.name, object_type=NodeType.object, object='node')
 
         for m_node in matched_nodes:
             neighbour_node_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(
@@ -158,7 +159,8 @@ class LLMUpdator:
 
         # Выполняем поиск устаревших триплетов
         tmp_obsolete_triplet_ids, status = self.replace_hyper_solver.solve(
-            lang=self.config.lang, base_triplet=base_triplet, incident_triplets=incident_triplets)
+            lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
+            base_triplet=base_triplet, incident_triplets=incident_triplets)
 
         if status == ReturnStatus.success:
             obsolete_triplet_ids += tmp_obsolete_triplet_ids
@@ -177,7 +179,7 @@ class LLMUpdator:
 
         # Сопоставляем object-сущность из триплета вершинам в графе знаний
         matched_object_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-            name=base_triplet.start_node.name,  object_type=NodeType.object, object='node')
+            name=base_triplet.start_node.name, object_type=NodeType.object, object='node')
 
         if len(matched_object_nodes) == 0:
             return obsolete_triplet_ids
@@ -224,7 +226,7 @@ class LLMUpdator:
 
         # Сопоставляем hyper-сущность из триплета вершинам в графе знаний
         matched_hyper_nodes = self.kg_model.graph_struct.db_conn.read_by_name(
-            name=base_triplet.start_node.name,  object_type=NodeType.hyper, object='node')
+            name=base_triplet.start_node.name, object_type=NodeType.hyper, object='node')
 
         if len(matched_hyper_nodes) == 0:
             return obsolete_triplet_ids

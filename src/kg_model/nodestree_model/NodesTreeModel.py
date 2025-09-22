@@ -21,7 +21,7 @@ from ...db_drivers.tree_driver.utils import TreeNodeType, TreeNode, TreeIdType
 from ...utils import Logger, AgentTaskSolver, AgentTaskSolverConfig, ReturnStatus
 from ...utils.data_structs import Triplet, NodeType, create_id, Node
 from ...utils.errors import ReturnStatus
-from ...agents import AgentDriver, AgentDriverConfig
+from ...agents.utils import AbstractAgentConnector
 from ...db_drivers.kv_driver import KeyValueDriverConfig
 from ...db_drivers.vector_driver import VectorDriver, VectorDriverConfig, VectorDBInstance
 from ...db_drivers.tree_driver import TreeDriver, TreeDriverConfig
@@ -36,8 +36,6 @@ class NodesTreeModelConfig:
     :type vectordb_leafnodes_config: VectorDriverConfig, optional
     :param vectordb_summnodes_config: Конфигурация векторной базы данных для хранения векторных представлений parent-объектов (summarized-вершин) дерева. Значение по умолчанию SUMMNODES_VDB_DEFAULT_DRIVER_CONFIG.
     :type vectordb_summnodes_config: VectorDriverConfig, optional
-    :param embedder_config: Конфигурация класса, отвечающего за приведения текста в его векторное представление с помощью заданной embedder-модели. Значение по умолчанию EmbedderModelConfig().
-    :type embedder_config: EmbedderModelConfig, optional
 
     :param treedb_config: Конфигурация графовой базы данных для хранения древовидного представления object-вершин. Значение по умолчанию TREE_DB_DEFAULT_DRIVER_CONFIG.
     :type treedb_config: treedb_config, optional
@@ -47,6 +45,10 @@ class NodesTreeModelConfig:
     :param nodes_summarization_task_config: Конфигурация атомарной задачи для LLM-агента по резюмированию/суммаризации текстовых полей у заданного набора leaf-объектов (object-вершин) из дерева. Значение по умолчанию DEFAULT_SUMMN_TASK_CONFIG.
     :type nodes_summarization_task_config: AgentTaskSolverConfig, optional
 
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
+    :type lang: str
+    :param agent_gen_stategy: ... .
+    :type agent_gen_stategy: Union[None,Dict[str, str]], optional
     :param e2n_sim_threshold: Служебный гиперпараметр; см. https://arxiv.org/pdf/2410.14052. Значение по умолчанию 0.4.
     :type e2n_sim_threshold: float, optional
     :param depth_rate: Служебный гиперпараметр; см. https://arxiv.org/pdf/2410.14052. Значение по умолчанию 0.5.
@@ -63,14 +65,12 @@ class NodesTreeModelConfig:
         default_factory=lambda: LEAFNODES_VDB_DEFAULT_DRIVER_CONFIG)
     vectordb_summnodes_config: VectorDriverConfig = field(
         default_factory=lambda: SUMMNODES_VDB_DEFAULT_DRIVER_CONFIG)
-    embedder_config: EmbedderModelConfig = field(
-        default_factory=lambda: EmbedderModelConfig())
 
     treedb_config: TreeDriverConfig = field(
         default_factory=lambda: TREE_DB_DEFAULT_DRIVER_CONFIG)
 
-    adriver_config: AgentDriverConfig = field(
-        default_factory=lambda: AgentDriverConfig())
+    lang: str = "auto"
+    agent_gen_stategy: Union[None, Dict[str, str]] = None
     nodes_summarization_task_config: AgentTaskSolverConfig = field(
         default_factory=lambda: DEFAULT_SUMMN_TASK_CONFIG)
 
@@ -87,24 +87,28 @@ class NodesTreeModel:
     """Класс предназначен для представления object-вершин из графовой структуры данных в виде дерева с целью
     повышения эффективности сопоставления имеющихся занний с сущностями/запросами из поступающих user-вопросов.
 
+    :param agent: ... .
+    :type agent: AbstractAgentConnector
+    :param embedder: ... .
+    :type embedder: EmbedderModel
     :param config: Конфигурация NodesTree-модели. Значение по умолчанию NodesTreeModelConfig().
     :type config: NodesTreeModelConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
     """
 
-    def __init__(self, config: NodesTreeModelConfig = NodesTreeModelConfig(),
+    def __init__(self, agent: AbstractAgentConnector, embedder: EmbedderModel,
+                 config: NodesTreeModelConfig = NodesTreeModelConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         self.config = config
 
         self.treedb_conn = TreeDriver.connect(self.config.treedb_config)
-        self.vectordb_leafnodes_conn = VectorDriver.connect(
-            config.vectordb_leafnodes_config)
-        self.vectordb_summnodes_conn = VectorDriver.connect(
-            config.vectordb_summnodes_config)
-        self.embedder = EmbedderModel(config.embedder_config)
 
-        self.agent = AgentDriver.connect(config.adriver_config)
+        self.embedder = embedder
+        self.vectordb_leafnodes_conn = VectorDriver.connect(config.vectordb_leafnodes_config)
+        self.vectordb_summnodes_conn = VectorDriver.connect(config.vectordb_summnodes_config)
+
+        self.agent = agent
         self.nodes_summarization_solver = AgentTaskSolver(
             self.agent, self.config.nodes_summarization_task_config, cache_kvdriver_config)
 
@@ -126,7 +130,7 @@ class NodesTreeModel:
             if self.nodes_summarization_solver.cachekv is not None:
                 self.nodes_summarization_solver.cachekv.clear()
 
-    def check_consistency(self):
+    def check_consistency(self) -> bool:
         self.treedb_conn.check_consistency()
 
         leaf_vnodes_count = self.vectordb_leafnodes_conn.count_items()
@@ -137,6 +141,8 @@ class NodesTreeModel:
         # соответствовала вершина из графовой бд)
         assert leaf_vnodes_count == tnodes_count['leaf']
         assert summ_vnodes_count == tnodes_count['summarized']
+
+        return True
 
     def extract_unique_nodes(self, triplets: List[Triplet]) -> List[Node]:
         unique_object_nodes = dict()
@@ -405,11 +411,13 @@ class NodesTreeModel:
                 prev_summ_text = newnode_text if len(
                     new_text_summaries) < 1 else new_text_summaries[-1]
                 summ_text, solve_status = self.nodes_summarization_solver.solve(
+                    lang=self.config.lang,
                     current_content=parent_text, new_content=prev_summ_text,
                     n_descendants=str(parent_descendants_num))
 
             elif self.config.nodes_aggregation_mechanism == 'parallel':
                 summ_text, solve_status = self.nodes_summarization_solver.solve(
+                    lang=self.config.lang,
                     current_content=parent_text, new_content=newnode_text,
                     n_descendants=str(parent_descendants_num))
 
@@ -558,7 +566,7 @@ class NodesTreeModel:
         descendants_leaf_nodes = self.treedb_conn.get_leaf_descendants(
             best_summnode_id, id_type=TreeIdType.external)
         descendants_leaf_strids = list(
-            map(lambda node: node.id, descendants_leaf_nodes))
+            map(lambda node: node.props['str_id'], descendants_leaf_nodes))
 
         # Если задано ограничение на максимальное количество вершин,
         # которое может быть сопоставлено summarized-вершине
@@ -590,7 +598,7 @@ class NodesTreeModel:
         :return: Список сопоставленных object-верщин (с их векторными представлениями).
         :rtype: List[VectorDBInstance]
         """
-        self.log("Старт алгоритма по сопоставлению заданной сущности (entitie) вершин из дерева",
+        self.log(f"Старт алгоритма по сопоставлению заданной '{entitie}'-сущности c вершинами из дерева",
                  verbose=self.verbose)
         if strategy == 'collapsed':
             entitie_embedding = self.embedder.encode_queries([entitie])[0]
@@ -611,13 +619,13 @@ class NodesTreeModel:
                 self.log(f"В качестве самой релевантной выбрана summarized-вершина: {best_summnode}", verbose=self.verbose)
                 matched_nodes = self.get_leafdescendants_for_summnode(entitie_vinstance, best_summnode[1].id, max_n)
                 self.log(f"Summarized-вершине соответствуют следующие leaf-вершины (потомки): количество - {len(matched_nodes)}", verbose=self.verbose)
-                for i in range(matched_nodes):
+                for i in range(len(matched_nodes)):
                     self.log(
                         f"- [{matched_nodes[i].id}] {matched_nodes[i].document}", verbose=self.verbose)
             else:
                 self.log(f"В качестве самой релевантной выбрана leaf-вершина: {best_leafnode}", verbose=self.verbose)
                 matched_nodes = self.vectordb_leafnodes_conn.read(
-                    [best_leafnode.id], includes=["documents", "metadatas"])
+                    [best_leafnode[1].id], includes=["documents", "metadatas"])
                 self.log(f"- [{matched_nodes[0].id}] {matched_nodes[0].document}", verbose=self.verbose)
 
         elif strategy == 'traversal':
@@ -642,3 +650,8 @@ class NodesTreeModel:
         self.vectordb_leafnodes_conn.clear()
         self.vectordb_summnodes_conn.clear()
         self.treedb_conn.clear()
+
+    def __del__(self):
+        self.treedb_conn.close_connection()
+        self.vectordb_leafnodes_conn.close_connection()
+        self.vectordb_summnodes_conn.close_connection()

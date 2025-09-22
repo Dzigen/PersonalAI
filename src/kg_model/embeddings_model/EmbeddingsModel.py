@@ -30,29 +30,27 @@ class EmbeddingsModelConfig:
         default_factory=lambda: NODES_DB_DEFAULT_DRIVER_CONFIG)
     tripletsdb_driver_config: VectorDriverConfig = field(
         default_factory=lambda: TRIPLETS_DB_DEFAULT_DRIVER_CONFIG)
-    embedder_config: EmbedderModelConfig = field(
-        default_factory=lambda: EmbedderModelConfig())
-    log: Logger = field(default_factory=lambda: Logger(
-        EMBEDDINGS_MODEL_LOG_PATH))
+    log: Logger = field(default_factory=lambda: Logger(EMBEDDINGS_MODEL_LOG_PATH))
     verbose: bool = False
 
 
 class EmbeddingsModel:
     """Структура данных для хранения информации в векторном формате.
 
+    :param embedder: ...
+    :type embedder: EmbedderModel
     :param config: Конфигурация векторной структуры данных. Значение по умолчанию EmbeddingsModelConfig().
     :type config: EmbeddingsModelConfig, optional
     """
 
-    def __init__(self, config: EmbeddingsModelConfig = EmbeddingsModelConfig()):
+    def __init__(self, embedder: EmbedderModel, config: EmbeddingsModelConfig = EmbeddingsModelConfig()):
         self.config = config
 
         self.vectordbs = {
             'nodes': VectorDriver.connect(config.nodesdb_driver_config),
             'triplets': VectorDriver.connect(config.tripletsdb_driver_config)}
 
-        #!!! PAY ATTENTION !!!
-        self.embedder = EmbedderModel(config.embedder_config)
+        self.embedder = embedder
 
         self.log = self.config.log
         self.verbose = self.config.verbose
@@ -82,7 +80,7 @@ class EmbeddingsModel:
             relation_ids, relation_strs, relation_metdatas = list(), list(), list()
             node_ids, node_strs, node_metadatas = list(), list(), list()
 
-            for triplet_idx in range(batch_idx*batch_size, (batch_idx+1)*batch_size):
+            for triplet_idx in range(batch_idx * batch_size, (batch_idx + 1) * batch_size):
                 if triplet_idx >= len(triplets):
                     break
 
@@ -237,3 +235,7 @@ class EmbeddingsModel:
         """
         self.vectordbs['nodes'].clear()
         self.vectordbs['triplets'].clear()
+
+    def __del__(self):
+        self.vectordbs['nodes'].close_connection()
+        self.vectordbs['triplets'].close_connection()

@@ -6,4 +6,4 @@ from .traversal_methods.NaiveBFSTripletsRetriever import NaiveBFSGraphSearchConf
 from .traversal_methods.NaiveTripletsRetriever import NaiveGraphSearchConfig
 from .traversal_methods.BeamSearchTripletsRetriever import GraphBeamSearchConfig
 
-from .TripletsFilter import TripletsFilterConfig
+from .filtering_methods.TripletsFilter import TripletsFilterConfig

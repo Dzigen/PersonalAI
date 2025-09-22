@@ -11,6 +11,7 @@ from ....utils import ReturnInfo, Logger, ReturnStatus, update_rinfo
 from ....utils.data_structs import create_id
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv import CacheUtils
+from ....agents.utils import AbstractAgentConnector
 
 
 @dataclass
@@ -23,7 +24,6 @@ class QueryPreprocessorConfig:
     :type enhancing_config: Union[None, QueryEnhancerConfig], optional
     :param decomposition_config: Конфигурация шага предобработки user-вопроса, отвечающая за разбиение сложных/составных user-вопрос на простые/независимые части (под-вопросы) для их параллельной обработки и ускорения процесса формирования финального ответа. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию QueryDecomposerConfig().
     :type decomposition_config: Union[None, QueryDecomposerConfig], optional
-
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryPreprocessor-класса.
     :type cache_table_name: str
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(QP_MAIN_LOG_PATH).
@@ -33,20 +33,16 @@ class QueryPreprocessorConfig:
     """
     denoising_config: Union[None, QueryDenoiserConfig] = None  # field(default_factory=lambda: QueryDenoiserConfig())
     enhancing_config: Union[None, QueryEnhancerConfig] = None  # field(default_factory=lambda: QueryEnhancerConfig())
-    decomposition_config: Union[None, QueryDecomposerConfig] = field(
-        default_factory=lambda: QueryDecomposerConfig())
+    decomposition_config: Union[None, QueryDecomposerConfig] = field(default_factory=lambda: QueryDecomposerConfig())
 
     cache_table_name: str = "query_preprocessing_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(QP_MAIN_LOG_PATH))
     verbose: bool = False
 
     def to_str(self):
-        str_denois_config = self.denoising_config.to_str(
-        ) if self.denoising_config is not None else 'None'
-        str_enh_config = self.enhancing_config.to_str(
-        ) if self.enhancing_config is not None else 'None'
-        str_decomp_config = self.decomposition_config.to_str(
-        ) if self.decomposition_config is not None else 'None'
+        str_denois_config = self.denoising_config.to_str() if self.denoising_config is not None else 'None'
+        str_enh_config = self.enhancing_config.to_str() if self.enhancing_config is not None else 'None'
+        str_decomp_config = self.decomposition_config.to_str() if self.decomposition_config is not None else 'None'
         return f"{str_denois_config}|{str_enh_config}|{str_decomp_config}"
 
 
@@ -59,16 +55,16 @@ class QueryPreprocessor(CacheUtils):
     :type cache_kvdriver_config: Union[None, KeyValueDriverConfig], optional
     """
 
-    def __init__(self, config: QueryPreprocessorConfig = QueryPreprocessorConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: QueryPreprocessorConfig = QueryPreprocessorConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         self.config = config
 
-        self.denoiser = QueryDenoiser(
-            self.config.denoising_config, cache_kvdriver_config) if self.config.denoising_config is not None else None
-        self.enhancer = QueryEnhancer(
-            self.config.enhancing_config, cache_kvdriver_config) if self.config.enhancing_config is not None else None
-        self.decomposer = QueryDecomposer(
-            self.config.decomposition_config, cache_kvdriver_config) if self.config.decomposition_config is not None else None
+        self.denoiser = QueryDenoiser(agent,
+                                      self.config.denoising_config, cache_kvdriver_config) if self.config.denoising_config is not None else None
+        self.enhancer = QueryEnhancer(agent,
+                                      self.config.enhancing_config, cache_kvdriver_config) if self.config.enhancing_config is not None else None
+        self.decomposer = QueryDecomposer(agent,
+                                          self.config.decomposition_config, cache_kvdriver_config) if self.config.decomposition_config is not None else None
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)

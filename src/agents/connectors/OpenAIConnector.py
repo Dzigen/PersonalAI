@@ -1,5 +1,6 @@
 import os
 from openai import OpenAI
+from typing import Dict, Union
 
 from .configs import DEEPSEEK_CONFIG, GPT4OMINI_CONFIG
 from ..utils import AbstractAgentConnector, AgentConnectorConfig
@@ -23,14 +24,18 @@ class OpenAIConnector(AbstractAgentConnector):
     def close_connection(self):
         self.client.close()
 
-    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
+    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None, gen_strategy: Union[None, Dict[str, str]] = None) -> str:
         msgs = [{"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}]
         if assistant_prompt is not None:
             msgs.append({"role": "assistant", "content": assistant_prompt})
 
+        gen_strategy = self.config.gen_strategy if gen_strategy is None else gen_strategy
         completion = self.client.chat.completions.create(
             model=self.config.credentials['model'],
-            messages=msgs, **self.config.gen_strategy)
+            messages=msgs, **gen_strategy)
 
         return completion.choices[0].message.content
+
+    def __del__(self):
+        self.close_connection()

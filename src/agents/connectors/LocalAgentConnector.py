@@ -1,4 +1,6 @@
 from transformers import pipeline
+from typing import Union, Dict
+import gc
 
 from .configs import DEFAULT_LOCALAGENT_CONFIG
 from ..utils import AbstractAgentConnector, AgentConnectorConfig
@@ -20,9 +22,10 @@ class LocalAgentConnector(AbstractAgentConnector):
         pass
 
     def close_connection(self):
-        pass
+        del self.pipeline
+        gc.collect()
 
-    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
+    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None, gen_strategy: Union[None, Dict[str, str]] = None) -> str:
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}]
@@ -49,3 +52,6 @@ class LocalAgentConnector(AbstractAgentConnector):
         )
 
         return outputs[0]["generated_text"]
+
+    def __del__(self):
+        self.close_connection()

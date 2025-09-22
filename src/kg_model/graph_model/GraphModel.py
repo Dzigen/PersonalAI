@@ -71,7 +71,7 @@ class GraphModel:
             creation_info = dict()
             triplets_to_create = list()
             info_counter = -1
-            for triplet_idx in range(batch_idx*batch_size, (batch_idx+1)*batch_size, 1):
+            for triplet_idx in range(batch_idx * batch_size, (batch_idx + 1) * batch_size, 1):
                 if triplet_idx >= len(triplets):
                     break
 
@@ -175,3 +175,6 @@ class GraphModel:
     def clear(self) -> None:
         """Метод предназначен для удаления содержимого графовой структуры данных."""
         self.db_conn.clear()
+
+    def __del__(self):
+        self.db_conn.close_connection()
