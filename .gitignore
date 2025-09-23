@@ -4,6 +4,7 @@
 models/
 data/
 debug/
+.env_secret_llmkeys
 
 experiments/legacy
 experiments/qa_kg/legacy
