@@ -62,6 +62,7 @@ class QAPipeline(CacheUtils):
                  cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None) -> None:
 
         agent = kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP['QAPipeline']['general']]
+        self.using_agent_info = {'kw': agent.CONNECTOR_KW, 'config': agent.config}
 
         self.query_preprocessor = QueryPreprocessor(
             agent, config.preprocessor_config, cache_kvdriver_config)
@@ -140,10 +141,11 @@ class QAPipeline(CacheUtils):
         return aggregated_answer, rinfo
 
     def get_cache_key(self, query: str) -> List[str]:
+        str_using_agent_config = f"{self.using_agent_info['kw']}:{self.using_agent_info['config'].to_str()}"
         str_qprep_config = self.query_preprocessor.config.to_str()
         str_qreas_config = self.kg_reasoner.config.to_str()
         str_aaggr_config = self.answers_aggregator.config.to_str()
-        return [str_qprep_config, str_qreas_config, str_aaggr_config, query]
+        return [str_qprep_config, str_qreas_config, str_aaggr_config, str_using_agent_config, query]
 
     @CacheUtils.cache_method_output
     def answer(self, query: str) -> Tuple[str, ReturnInfo]:

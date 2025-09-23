@@ -15,6 +15,7 @@ class OLlamaConnector(AbstractAgentConnector):
     def __init__(self, config: AgentConnectorConfig = DEFAULT_OLLAMA_CONFIG) -> None:
         self.config = config
         self.open_connection()
+        self.CONNECTOR_KW = 'ollama'
 
     def open_connection(self):
         self.client = Client(

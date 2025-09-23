@@ -16,6 +16,7 @@ class LocalAgentConnector(AbstractAgentConnector):
                 "torch_dtype": self.config.credentials['torch_dtype']},
             device_map="auto"
         )
+        self.CONNECTOR_KW = 'local'
 
     def check_connection(self):
         # TODO

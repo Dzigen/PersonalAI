@@ -77,6 +77,7 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
             cache_kvdriver_config, config.cache_table_name)
 
         agent = kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP['QAPipeline']['general']]
+        self.using_agent_info = {'kw': agent.CONNECTOR_KW, 'config': agent.config}
 
         if self.config.query_parser_config is None:
             self.query_parser = None
@@ -177,7 +178,8 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         return answer, rinfo
 
     def get_cache_key(self, query: str) -> List[str]:
-        return [self.config.to_str(), query]
+        str_using_agent_config = f"{self.using_agent_info['kw']}:{self.using_agent_info['config'].to_str()}"
+        return [self.config.to_str(), str_using_agent_config, query]
 
     @CacheUtils.cache_method_output
     def perform(self, query: str) -> Tuple[str, ReturnInfo]:

@@ -92,7 +92,8 @@ class ClueQueriesGenerator(CacheUtils):
     def get_cache_key(self, search_query: str, matched_kg_objects: Dict[str, List[VectorDBInstance]]) -> List[object]:
         str_matchedobject = json.dumps({k: list(map(lambda vv: vv.document, v))
                                        for k, v in matched_kg_objects.items()}, ensure_ascii=False)
-        return [search_query, str_matchedobject, self.config.to_str()]
+        str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
+        return [search_query, str_matchedobject, self.config.to_str(), str_using_agent_info]
 
     @CacheUtils.cache_method_output
     def perform(self, search_query: str, matched_kg_objects: Dict[str, List[VectorDBInstance]]) -> Tuple[List[QueryInfo], ReturnInfo]:

@@ -87,7 +87,8 @@ class ClueAnswersSummarizer(CacheUtils):
     def get_cache_key(self, search_query: str, clue_queries: List[str], clue_answers: List[str]) -> List[str]:
         str_cluequeries = ';'.join(clue_queries)
         str_clueanswers = ';'.join(clue_answers)
-        return [search_query, str_cluequeries, str_clueanswers]
+        str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
+        return [search_query, str_cluequeries, str_clueanswers, str_using_agent_info]
 
     @CacheUtils.cache_method_output
     def perform(self, search_query: str, clue_queries: List[str], clue_answers: List[str]) -> Tuple[str, ReturnInfo]:

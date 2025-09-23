@@ -104,8 +104,9 @@ class QueryEnhancer(CacheUtils):
         elif level == 'other':
             raise NotImplementedError
 
-    def get_cache_key(self, query_info: QueryPreprocessingInfo) -> List[object]:
-        return [query_info.to_str(), self.config.to_str()]
+    def get_cache_key(self, query_info: QueryPreprocessingInfo) -> List[str]:
+        str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
+        return [query_info.to_str(), self.config.to_str(), str_using_agent_info]
 
     @CacheUtils.cache_method_output
     def perform(self, query_info: QueryPreprocessingInfo) -> Tuple[str, ReturnInfo]:

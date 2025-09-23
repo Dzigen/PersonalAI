@@ -60,6 +60,7 @@ class QueryPreprocessor(CacheUtils):
     def __init__(self, agent: AbstractAgentConnector, config: QueryPreprocessorConfig = QueryPreprocessorConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         self.config = config
+        self.using_agent_info = {'kw': agent.CONNECTOR_KW, 'config': agent.config}
 
         if self.config.denoising_config is not None:
             self.denoiser = QueryDenoiser(agent, self.config.denoising_config, cache_kvdriver_config)
@@ -102,7 +103,8 @@ class QueryPreprocessor(CacheUtils):
                 self.decomposer.clear_kv_caches(level='all')
 
     def get_cache_key(self, query: str) -> List[str]:
-        return [query, self.config.to_str()]
+        str_using_agent_config = f"{self.using_agent_info['kw']}:{self.using_agent_info['config'].to_str()}"
+        return [query, self.config.to_str(), str_using_agent_config]
 
     @CacheUtils.cache_method_output
     def perform(self, query: str) -> Tuple[QueryPreprocessingInfo, ReturnInfo]:

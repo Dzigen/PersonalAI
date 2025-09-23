@@ -94,8 +94,9 @@ class AnswerGenerator(CacheUtils):
             self.answer_classify_solver.cachekv.clear()
             self.answer_gen_solver.cachekv.clear()
 
-    def get_cache_key(self, search_plan: SearchPlanInfo) -> List[object]:
-        return [search_plan.to_str(), self.config.to_str()]
+    def get_cache_key(self, search_plan: SearchPlanInfo) -> List[str]:
+        str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
+        return [search_plan.to_str(), self.config.to_str(), str_using_agent_info]
 
     @CacheUtils.cache_method_output
     def perform(self, search_plan: SearchPlanInfo) -> Tuple[Union[None, str], ReturnInfo]:

@@ -18,6 +18,9 @@ class AgentConnectorConfig:
 
 
 class AbstractAgentConnector:
+    CONNECTOR_KW: Union[None, str] = None
+    config: Union[None, AgentConnectorConfig] = None
+
     @abstractmethod
     def check_connection(self) -> bool:
         pass

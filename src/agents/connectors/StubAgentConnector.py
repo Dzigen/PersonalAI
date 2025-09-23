@@ -9,6 +9,7 @@ class StubAgentConnector(AbstractAgentConnector):
     def __init__(self, config: AgentConnectorConfig = DEFAULT_STUBAGENT_CONFIG, stub_answers: List[str] = list()) -> None:
         self.config = config
         self.looped_answers = deque(stub_answers)
+        self.CONNECTOR_KW = 'stub'
 
     def check_connection(self) -> bool:
         return True

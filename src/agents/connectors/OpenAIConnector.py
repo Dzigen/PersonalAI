@@ -17,6 +17,8 @@ class OpenAIConnector(AbstractAgentConnector):
                 "OPENAI_API_KEY", config.credentials['token']),
             base_url=config.credentials['base_url'])
 
+        self.CONNECTOR_KW = 'openai'
+
     def check_connection(self):
         # TODO
         pass

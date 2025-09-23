@@ -17,6 +17,7 @@ class GigaChatConnector(AbstractAgentConnector):
         self.trials = config.ext_params['trials']
         self.config = config
         self.open_connection()
+        self.CONNECTOR_KW = 'gigachat'
 
     def open_connection(self):
         self.giga_model = GigaChat(

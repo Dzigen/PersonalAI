@@ -85,8 +85,9 @@ class EntitiesExtractor(CacheUtils):
         if level in ['other', 'all']:
             self.entities_extractor_solver.cachekv.clear()
 
-    def get_cache_key(self, query: str) -> List[object]:
-        return [query, self.config.to_str()]
+    def get_cache_key(self, query: str) -> List[str]:
+        str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
+        return [query, self.config.to_str(), str_using_agent_info]
 
     @CacheUtils.cache_method_output
     def perform(self, query: str) -> Tuple[List[str], ReturnInfo]:

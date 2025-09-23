@@ -87,7 +87,8 @@ class QueryLLMParser(CacheUtils):
             self.kw_extraction_solver.cachekv.clear()
 
     def get_cache_key(self, query: str) -> List[object]:
-        return [self.config.to_str(), query]
+        str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
+        return [self.config.to_str(), str_using_agent_info, query]
 
     @CacheUtils.cache_method_output
     def extract_entities(self, query_info: QueryInfo) -> Tuple[List[str], ReturnInfo]:
