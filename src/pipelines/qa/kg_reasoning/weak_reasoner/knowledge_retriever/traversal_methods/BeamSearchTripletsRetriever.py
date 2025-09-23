@@ -97,7 +97,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                  search_config: Union[GraphBeamSearchConfig,
                                       Dict] = GraphBeamSearchConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
-        if type(search_config) is dict:
+        if isinstance(search_config, dict):
             if 'accepted_node_types' in search_config:
                 search_config['accepted_node_types'] = list(
                     map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
@@ -113,7 +113,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.verbose = verbose
 
     def clear_kv_caches(self, level='all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
@@ -127,7 +127,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             raise NotImplementedError
 
     def calculate_path_score(self, path_len: int, accum_score: float) -> float:
-        return accum_score / pow(path_len-1, self.config.mean_alpha)
+        return accum_score / pow(path_len - 1, self.config.mean_alpha)
 
     @staticmethod
     def calculate_triplet_score(raw_score: float, max_score_value: float = 10e+5) -> float:
@@ -150,14 +150,14 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     def get_available_nids(self, base_nid: str, cur_path_idx: int,
                            traversing_paths: List[TraversingPath], prev_nid: str = None) -> List[str]:
-        if type(base_nid) is not str:
+        if not isinstance(base_nid, str):
             raise ValueError(f"base_nid: {base_nid} {type(base_nid)}")
 
         adj_nids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(
             base_nid, self.config.accepted_node_types)
         adj_nids = set(adj_nids)
         if prev_nid is not None:
-            if type(prev_nid) is not str:
+            if not isinstance(prev_nid, str):
                 raise ValueError(f"prev_nid: {prev_nid} {type(prev_nid)}")
             adj_nids.discard(prev_nid)
 
@@ -177,7 +177,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def get_available_rinfo(
             self, base_nid: str, adj_nids: List[str], cur_path_idx: int,
             traversing_paths: List[TraversingPath]) -> Tuple[Dict[str, str], Dict[str, List[str]]]:
-        if type(base_nid) is not str:
+        if not isinstance(base_nid, str):
             raise ValueError(f"base_nid: {base_nid} {type(base_nid)}")
 
         shared_t_info = dict()
@@ -215,9 +215,9 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         batches += 1 if len(r_ids) % batch_size != 0 else 0
 
         for step in range(batches):
-            cur_rids_batch = r_ids[step * batch_size: (step+1) * batch_size]
+            cur_rids_batch = r_ids[step * batch_size: (step + 1) * batch_size]
 
-            scored_rels = self.kg_model.embeddings_struct.vectordbs['triplets'].retrieve(
+            scored_rels = self.kg_model.graph_embeddings.vectordbs['triplets'].retrieve(
                 [query_vinstance], n_results=len(cur_rids_batch), includes=[], subset_ids=cur_rids_batch)[0]
 
             for raw_score, triplet_info in scored_rels:
@@ -290,7 +290,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             unique_tids=set(), accum_score=0.0)]
         ended_paths = []
 
-        query_emb = self.kg_model.embeddings_struct.embedder.encode_queries([query])[
+        query_emb = self.kg_model.graph_embeddings.embedder.encode_queries([query])[
             0]
         query_vinstance = VectorDBInstance(embedding=query_emb)
 

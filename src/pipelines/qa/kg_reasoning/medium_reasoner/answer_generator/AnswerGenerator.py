@@ -1,11 +1,11 @@
 from dataclasses import dataclass, field
-from typing import Tuple, Union, List
+from typing import Tuple, Union, List, Dict
 
 from .config import DEFAULT_ANSWCLS_TASK_CONFIG, DEFAULT_ANSWGEN_TASK_CONFIG, ANSWGEN_MAIN_LOG_PATH
 from ..utils import SearchPlanInfo
 from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
 from ......utils.errors import ReturnStatus
-from ......agents import AgentDriver, AgentDriverConfig
+from ......agents.utils import AbstractAgentConnector
 from ......utils.data_structs import create_id
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.cache_kv import CacheUtils
@@ -17,8 +17,8 @@ class AnswerGeneratorConfig:
 
     :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str, optional
-    :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
-    :type adriver_config: AgentDriverConfig, optional
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param answer_classifier_agent_task_config: Конфигурация атомарной задачи для LLM-агента по определению наличия необходимой информации для генерации релевантного ответа на вопрос. Значение по умолчанию DEFAULT_ANSWCLS_TASK_CONFIG.
     :type answer_classifier_agent_task_config: AgentTaskSolverConfig, optional
     :param answer_generator_agent_task_config: Конфигурация атомарной задачи для LLM-агента по выполнению условной генарции овтета на заданный user-вопрос. Значение по умолчанию DEFAULT_ANSWGEN_TASK_CONFIG.
@@ -31,8 +31,7 @@ class AnswerGeneratorConfig:
     :type verbose: bool, optional
     """
     lang: str = 'auto'
-    adriver_config: AgentDriverConfig = field(
-        default_factory=lambda: AgentDriverConfig())
+    agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     answer_classifier_agent_task_config: AgentTaskSolverConfig = field(
         default_factory=lambda: DEFAULT_ANSWCLS_TASK_CONFIG)
     answer_generator_agent_task_config: AgentTaskSolverConfig = field(
@@ -43,13 +42,15 @@ class AnswerGeneratorConfig:
     verbose: bool = False
 
     def to_str(self):
-        return f"{self.lang}|{self.adriver_config.to_str()}|{self.answer_classifier_agent_task_config.version}|{self.answer_generator_agent_task_config.version}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.answer_classifier_agent_task_config.version}|{self.answer_generator_agent_task_config.version}"
 
 
 class AnswerGenerator(CacheUtils):
     """Верхнеуровневый класс стадии #4 MediumQA-конвейера для генерации ответа на user-вопрос на основе информации,
     извлечённой из графа знаний с помощью плана/последовательности поисковых запросов.
 
+    :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
+    :type agent: AbstractAgentConnector
     :param config: Конфигурация AnswerGenerator-стадии. Значение по умолчанию AnswerGeneratorConfig().
     :type config:AnswerGeneratorConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
@@ -58,14 +59,14 @@ class AnswerGenerator(CacheUtils):
     :type cache_llm_inference: bool, optional
     """
 
-    def __init__(self, config: AnswerGeneratorConfig = AnswerGeneratorConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: AnswerGeneratorConfig = AnswerGeneratorConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True):
         self.config = config
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
-        self.agent = AgentDriver.connect(config.adriver_config)
+        self.agent = agent
         agents_cache_config = None
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config
@@ -79,7 +80,7 @@ class AnswerGenerator(CacheUtils):
         self.verbose = self.config.verbose
 
     def clear_kv_caches(self, level: str = 'all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
@@ -118,14 +119,16 @@ class AnswerGenerator(CacheUtils):
         self.log("Выполняем проверку на возможность генерации релевантного ответа...",
                  verbose=self.verbose)
         can_answer, status = self.answer_classify_solver.solve(
-            lang=self.config.lang, search_plan=search_plan)
+            lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
+            search_plan=search_plan)
         self.log(f"RESULT: {can_answer}", verbose=self.config.verbose)
 
         if status == ReturnStatus.success:
             if can_answer:
                 self.log("Выполняем генерацию ответа...", verbose=self.verbose)
                 answer, status = self.answer_gen_solver.solve(
-                    lang=self.config.lang, search_plan=search_plan)
+                    lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
+                    search_plan=search_plan)
                 self.log(f"RESULT: {answer}", verbose=self.config.verbose)
 
             else:

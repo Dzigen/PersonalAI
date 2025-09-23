@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Tuple, List, Dict
+from typing import Tuple, List, Dict, Union, Dict
 import json
 from itertools import product
 
@@ -7,7 +7,7 @@ from .config import DEFAULT_CQGEN_TASK_CONFIG, CQGEN_MAIN_LOG_PATH
 from ......utils.data_structs import QueryInfo
 from ......utils.errors import ReturnStatus
 from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
-from ......agents import AgentDriver, AgentDriverConfig
+from ......agents.utils import AbstractAgentConnector
 from ......utils.data_structs import create_id
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......db_drivers.vector_driver import VectorDBInstance
@@ -20,8 +20,8 @@ class ClueQueriesGeneratorConfig:
 
     :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str, optional
-    :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
-    :type adriver_config: AgentDriverConfig, optional
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param plan_initing_agent_task_config: Конфигурация атомарной задачи для LLM-агента по генерации clue-запросов. Значение по умолчанию DEFAULT_CQGEN_TASK_CONFIG.
     :type plan_initing_agent_task_config: AgentTaskSolverConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы ClueQueriesGenerator-класса. Значение по умолчанию 'medreasn_cquerygen_main_stage_cache'.
@@ -32,8 +32,7 @@ class ClueQueriesGeneratorConfig:
     :type verbose: bool, optional
     """
     lang: str = 'auto'
-    adriver_config: AgentDriverConfig = field(
-        default_factory=lambda: AgentDriverConfig())
+    agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     cquerie_generator_agent_task_config: AgentTaskSolverConfig = field(
         default_factory=lambda: DEFAULT_CQGEN_TASK_CONFIG)
 
@@ -48,6 +47,8 @@ class ClueQueriesGeneratorConfig:
 class ClueQueriesGenerator(CacheUtils):
     """Верхнеуровневый класс стадии #2.2 MediumQA-конвейера для генерации clue-запросов поиска на графе знаний.
 
+    :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
+    :type agent: AbstractAgentConnector
     :param config: Конфигурация ClueQueriesGenerator-стадии. Значение по умолчанию ClueQueriesGeneratorConfig().
     :type config: ClueQueriesGeneratorConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
@@ -56,14 +57,14 @@ class ClueQueriesGenerator(CacheUtils):
     :type cache_llm_inference: bool, optional
     """
 
-    def __init__(self, config: ClueQueriesGeneratorConfig = ClueQueriesGeneratorConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: ClueQueriesGeneratorConfig = ClueQueriesGeneratorConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None, cache_llm_inference: bool = True):
         self.config = config
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
-        self.agent = AgentDriver.connect(config.adriver_config)
+        self.agent = agent
         agents_cache_config = None
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config
@@ -75,7 +76,7 @@ class ClueQueriesGenerator(CacheUtils):
         self.verbose = self.config.verbose
 
     def clear_kv_caches(self, level: str = 'all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
@@ -149,8 +150,8 @@ class ClueQueriesGenerator(CacheUtils):
             self.log("Выполняем генерацию clue-query с помощью LLM-агента...",
                      verbose=self.config.verbose)
             cur_cluequery, status = self.cluequery_gen_solver.solve(
-                lang=self.config.lang, query=search_query, base_entities=base_entities,
-                matched_objects=formated_objects_group)
+                lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
+                query=search_query, base_entities=base_entities, matched_objects=formated_objects_group)
             self.log(f"RESULT: {cur_cluequery}", verbose=self.verbose)
 
             if status != ReturnStatus.success:

@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Dict
 from dataclasses import dataclass, field
 from copy import deepcopy
 import hashlib
@@ -6,7 +6,7 @@ import hashlib
 from .configs import DEFAULT_AG_TASK_CONFIG, AG_MAIN_LOG_PATH
 from ......utils.data_structs import Triplet, RelationType, create_id, TripletCreator
 from ......utils.errors import STATUS_MESSAGE
-from ......agents import AgentDriver, AgentDriverConfig
+from ......agents.utils import AbstractAgentConnector
 from ......utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
@@ -18,8 +18,8 @@ class QALLMGeneratorConfig:
 
     :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str, optional
-    :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
-    :type adriver_config: AgentDriverConfig, optional
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param ag_task_config: Конфигурация атомарной задачи для LLM-агента по условной генерации ответа на вопрос. Значение по умолчанию DEFAULT_AG_TASK_CONFIG.
     :type ag_task_config: AgentTaskSolverConfig, optional
     :param relation_type: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос. Значение по умолчанию [RelationType.simple, RelationType.hyper, RelationType.episodic].
@@ -32,8 +32,7 @@ class QALLMGeneratorConfig:
     :type verbose: bool, optional
     """
     lang: str = "auto"
-    adriver_config: AgentDriverConfig = field(
-        default_factory=lambda: AgentDriverConfig())
+    agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     ag_task_config: AgentTaskSolverConfig = field(
         default_factory=lambda: DEFAULT_AG_TASK_CONFIG)
 
@@ -47,13 +46,15 @@ class QALLMGeneratorConfig:
     def to_str(self):
         str_relations = ";".join(
             list(map(lambda v: v.value, self.relation_type)))
-        return f"{self.lang}|{self.adriver_config.to_str()}|{self.ag_task_config.version}|{str_relations}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.ag_task_config.version}|{str_relations}"
 
 
 class QALLMGenerator(CacheUtils):
     """Верхнеуровневый класс четвёртой стадии QA-конвейера для генерации ответа на user-вопрос,
     обусловленного извлечённой информацией из памяти (графа знаний) ассистента.
 
+    :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
+    :type agent: AbstractAgentConnector
     :param config: Конфигурация "Answer-generation"-стадии. Значение по умолчанию QALLMGeneratorConfig().
     :type config: QALLMGeneratorConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
@@ -62,14 +63,14 @@ class QALLMGenerator(CacheUtils):
     :type cache_llm_inference: bool, optional
     """
 
-    def __init__(self, config: QALLMGeneratorConfig = QALLMGeneratorConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: QALLMGeneratorConfig = QALLMGeneratorConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True) -> None:
         self.config = config
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
-        self.agent = AgentDriver.connect(config.adriver_config)
+        self.agent = agent
         ag_task_cache_config = None
         if cache_llm_inference:
             ag_task_cache_config = deepcopy(cache_kvdriver_config)
@@ -81,7 +82,7 @@ class QALLMGenerator(CacheUtils):
         self.verbose = self.config.verbose
 
     def clear_kv_caches(self, level: str = 'all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
@@ -124,7 +125,8 @@ class QALLMGenerator(CacheUtils):
         self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...",
                  verbose=self.config.verbose)
         answer, status = self.answer_generator_solver.solve(
-            lang=self.config.lang, query=query, triplets=context_triplets)
+            lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
+            query=query, triplets=context_triplets)
 
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)

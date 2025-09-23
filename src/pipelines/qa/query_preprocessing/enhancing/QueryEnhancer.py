@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Tuple, List
+from typing import Tuple, List, Union, Dict
 
 from .config import QE_MAIN_LOG_PATH, DEFAULT_QEXPAN_TASK_CONFIG, \
     DEFAULT_TCHECK_TASK_CONFIG, DEFAULT_LCHECK_TASK_CONFIG
@@ -7,7 +7,7 @@ from ..QueryPreprocessor import QueryPreprocessingInfo
 from .....utils.cache_kv import CacheUtils
 from .....utils.errors import STATUS_MESSAGE
 from .....utils.data_structs import create_id
-from .....agents import AgentDriverConfig, AgentDriver
+from .....agents.utils import AbstractAgentConnector
 from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
 from .....db_drivers.kv_driver import KeyValueDriverConfig
 
@@ -18,8 +18,8 @@ class QueryEnhancerConfig:
 
     :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str, optional
-    :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной операции. Значение по умолчанию AgentDriverConfig().
-    :type adriver_config: AgentDriverConfig, optional
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param qexpan_agent_task_config: Конфигурация атомарной задачи для LLM-агента по добавлению более понятных языковых конструкций в запроc. Значение по умолчанию DEFAULT_QEXPAN_TASK_CONFIG.
     :type qexpan_agent_task_config: AgentTaskSolverConfig, optional
     :param termscheck_agent_task_config: Конфигурация атомарной задачи для LLM-агента по замене слабоопределённых фраз в запросе на конкретные термины. Значение по умолчанию DEFAULT_TCHECK_TASK_CONFIG.
@@ -34,8 +34,7 @@ class QueryEnhancerConfig:
     :type verbose: bool, optional
     """
     lang: str = "auto"
-    adriver_config: AgentDriverConfig = field(
-        default_factory=lambda: AgentDriverConfig())
+    agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     qexpan_agent_task_config: AgentTaskSolverConfig = field(
         default_factory=lambda: DEFAULT_QEXPAN_TASK_CONFIG)
     termscheck_agent_task_config: AgentTaskSolverConfig = field(
@@ -48,12 +47,14 @@ class QueryEnhancerConfig:
     verbose: bool = False
 
     def to_str(self):
-        raise NotImplementedError
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.qexpan_agent_task_config.version}|{self.termscheck_agent_task_config.version}|{self.lingcheck_agent_task_config.version}"
 
 
 class QueryEnhancer(CacheUtils):
     """Класс, реализующий одну из операций по форматированию/предобработке user-вопроса в рамках QueryPreprocessor-стадии. Данный класс выполняет добавление дополнительных языковых конструкций в user-вопрос, с целью упрощения процесса по распознаванию заложенного запроса/интента.
 
+    :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
+    :type agent: AbstractAgentConnector
     :param config: Конфигурация QueryEnhancer-операции. Значение по умолчанию QueryEnhancerConfig().
     :type config: QueryEnhancerConfig, optional
     :param cache_kvdriver_config:Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
@@ -62,13 +63,13 @@ class QueryEnhancer(CacheUtils):
     :type cache_llm_inference: bool, optional
     """
 
-    def __init__(self, config: QueryEnhancerConfig = QueryEnhancerConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: QueryEnhancerConfig = QueryEnhancerConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None, cache_llm_inference: bool = True):
         self.config = config
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
-        self.agent = AgentDriver.connect(config.adriver_config)
+        self.agent = agent
         agents_cache_config = None
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config if cache_llm_inference else None
@@ -118,7 +119,7 @@ class QueryEnhancer(CacheUtils):
         self.log("Выполнение добавление более понятных языковых конструкций в запрос с помощью LLM-агента...",
                  verbose=self.config.verbose)
         expanded_query, status = self.queryexpansion_solver.solve(
-            lang=self.config.lang, query=query)
+            lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
         else:
@@ -128,7 +129,8 @@ class QueryEnhancer(CacheUtils):
             self.log("Выполнение замены слабоопределённых фраз в запросе на конкретную терминологии с помощью LLM-агента...",
                      verbose=self.config.verbose)
             defined_query, status = self.termscheck_solver.solve(
-                lang=self.config.lang, query=expanded_query)
+                lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
+                query=expanded_query)
             if status != ReturnStatus.success:
                 rinfo.occurred_warning.append(status)
             else:
@@ -138,7 +140,8 @@ class QueryEnhancer(CacheUtils):
         if status == ReturnStatus.success:
             self.log("Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.config.verbose)
             reformulated_query, status = self.linguistcheck_solver.solve(
-                lang=self.config.lang, query=defined_query)
+                lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
+                query=defined_query)
             if status != ReturnStatus.success:
                 rinfo.occurred_warning.append(status)
             else:

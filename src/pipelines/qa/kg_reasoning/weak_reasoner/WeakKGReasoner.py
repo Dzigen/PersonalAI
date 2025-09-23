@@ -59,6 +59,8 @@ class WeakKGReasonerConfig(BaseKGReasonerConfig):
 class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
     """Weak-версия пайплайна по ризонигу на графе знаний с целью извлечения релевантной информации к запросу.
 
+    :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
+    :type agent: AbstractAgentConnector
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация WeakKGReasoner-пайплайна. Значение по умолчанию WeakKGReasonerConfig().
@@ -74,25 +76,27 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
+        agent = kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP['QAPipeline']['general']]
+
         if self.config.query_parser_config is None:
             self.query_parser = None
             self.knowledge_comparator = None
         else:
             self.query_parser = QueryLLMParser(
-                self.config.query_parser_config, cache_kvdriver_config)
+                agent, self.config.query_parser_config, cache_kvdriver_config)
             self.knowledge_comparator = KnowledgeComparator(
                 kg_model, self.config.knowledge_comparator_config, cache_kvdriver_config)
 
         self.knowledge_retriever = KnowledgeRetriever(
             kg_model, self.config.knowledge_retriever_config, cache_kvdriver_config)
         self.answer_generator = QALLMGenerator(
-            self.config.answer_generator_config, cache_kvdriver_config)
+            agent, self.config.answer_generator_config, cache_kvdriver_config)
 
         self.log = config.log
         self.verbose = config.verbose
 
     def clear_kv_caches(self, level: str = 'all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
@@ -139,8 +143,8 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
             else:
                 self.log("Operation ended successfully", verbose=self.verbose)
                 self.log(
-                    f"RESULT: {len(query_info.linked_nodes)}", verbose=self.config.verbose)
-                for node in query_info.linked_nodes:
+                    f"RESULT: {len(linked_nodes)}", verbose=self.config.verbose)
+                for node in linked_nodes:
                     self.log(f"*[{node.id}] {node.document}",
                              verbose=self.config.verbose)
 
@@ -193,7 +197,7 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         query_info = QueryInfo(query=query)
 
         self.log("STAGE#1 - KEY WORDS EXTRACTION", verbose=self.config.verbose)
-        query_info.entities, ee_rinfo = self.extract_entities(self, query_info)
+        query_info.entities, ee_rinfo = self.extract_entities(query_info)
         update_rinfo(rinfo, ee_rinfo)
 
         self.log("STAGE#2 - MATCHING KEY WORDS TO KG-NODES",
@@ -218,7 +222,7 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
 
         self.log("STAGE#4 - ANSWER GENERATION", verbose=self.config.verbose)
         if rinfo.status == ReturnStatus.success:
-            answer, ag_rinfo = self.answer_generator(
+            answer, ag_rinfo = self.generate_answer(
                 query_info, retrieved_triplets)
             update_rinfo(rinfo, ag_rinfo)
         else:

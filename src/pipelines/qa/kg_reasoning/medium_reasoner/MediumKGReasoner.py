@@ -103,22 +103,24 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
+        agent = kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP['QAPipeline']['general']]
+
         self.searchplan_enhancer = SearchPlanEnhancer(
-            self.config.searchplan_enhancer_config, cache_kvdriver_config)
+            agent, self.config.searchplan_enhancer_config, cache_kvdriver_config)
         self.entities_extractor = EntitiesExtractor(
-            self.config.entities_extractor_config, cache_kvdriver_config)
+            agent, self.config.entities_extractor_config, cache_kvdriver_config)
         self.entities2nodes_matcher = Entities2NodesMatcher(
-            self.kg_model, self.config.e2n_matcher_config, cache_kvdriver_config)
+            agent, self.kg_model, self.config.e2n_matcher_config, cache_kvdriver_config)
         self.cluequeries_generator = ClueQueriesGenerator(
-            self.config.cluequeries_generator_config, cache_kvdriver_config)
+            agent, self.config.cluequeries_generator_config, cache_kvdriver_config)
         self.knowledge_retriever = KnowledgeRetriever(
-            self.kg_model, self.config.knowledge_retriever_config, cache_kvdriver_config)
+            agent, self.kg_model, self.config.knowledge_retriever_config, cache_kvdriver_config)
         self.clueanswer_generator = ClueAnswerGenerator(
-            self.config.clueanswer_generator_config, cache_kvdriver_config)
+            agent, self.config.clueanswer_generator_config, cache_kvdriver_config)
         self.clueanswers_summariser = ClueAnswersSummarizer(
-            self.config.clueanswers_summarizer_config, cache_kvdriver_config)
+            agent, self.config.clueanswers_summarizer_config, cache_kvdriver_config)
         self.answer_generator = AnswerGenerator(
-            self.config.answer_generator_config, cache_kvdriver_config)
+            agent, self.config.answer_generator_config, cache_kvdriver_config)
 
         self.log = config.log
         self.verbose = config.verbose

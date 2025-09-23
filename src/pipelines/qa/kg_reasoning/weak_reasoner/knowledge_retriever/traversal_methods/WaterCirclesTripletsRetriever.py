@@ -146,7 +146,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
     def __init__(self, kg_model: KnowledgeGraphModel,
                  log: Logger, search_config: Union[WaterCirclesSearchConfig, Dict] = WaterCirclesSearchConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
-        if type(search_config) is dict:
+        if isinstance(search_config, dict):
             if 'accepted_node_types' in search_config:
                 search_config['accepted_node_types'] = list(
                     map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
@@ -333,7 +333,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
         return tuple(keys), tuple(keys_rev)
 
     def clear_kv_caches(self, level='all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
@@ -346,7 +346,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
         if level == 'other':
             raise NotImplementedError
 
-    def get_cache_key(self, query_info: QueryInfo, depth: int) -> List[str]:
+    def get_cache_key(self, query_info: QueryInfo, depth: int = 1) -> List[str]:
         return [self.config.to_str(), query_info.to_str(), str(depth)]
 
     @CacheUtils.cache_method_output

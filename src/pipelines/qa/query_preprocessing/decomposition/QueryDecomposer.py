@@ -1,12 +1,12 @@
 from dataclasses import dataclass, field
-from typing import Tuple, List
+from typing import Tuple, List, Union, Dict
 
 from .config import QD_MAIN_LOG_PATH, DEFAULT_QD_TASK_CONFIG, DEFAULT_DC_TASK_CONFIG
 from ..QueryPreprocessor import QueryPreprocessingInfo
 from .....utils.cache_kv import CacheUtils
 from .....utils.errors import STATUS_MESSAGE
 from .....utils.data_structs import create_id
-from .....agents import AgentDriverConfig, AgentDriver
+from .....agents.utils import AbstractAgentConnector
 from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
 from .....db_drivers.kv_driver import KeyValueDriverConfig
 
@@ -17,8 +17,8 @@ class QueryDecomposerConfig:
 
     :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str, optional
-    :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной операции. Значение по умолчанию AgentDriverConfig().
-    :type adriver_config: AgentDriverConfig, optional
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param classify_agent_task_config: Конфигурация атомарной задачи для LLM-агента по классификации наличия независимых запросов (составности/сложности) в user-вопросе. Значение по умолчанию DEFAULT_DC_TASK_CONFIG.
     :type classify_agent_task_config: AgentTaskSolverConfig, optional
     :param decompose_agent_task_config: Конфигурация атомарной задачи для LLM-агента по разбиению user-вопроса на независимые/простые под-вопросы. Значение по умолчанию DEFAULT_QD_TASK_CONFIG.
@@ -31,8 +31,7 @@ class QueryDecomposerConfig:
     :type verbose: bool, optional
     """
     lang: str = "auto"
-    adriver_config: AgentDriverConfig = field(
-        default_factory=lambda: AgentDriverConfig())
+    agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     classify_agent_task_config: AgentTaskSolverConfig = field(
         default_factory=lambda: DEFAULT_DC_TASK_CONFIG)
     decompose_agent_task_config: AgentTaskSolverConfig = field(
@@ -43,12 +42,14 @@ class QueryDecomposerConfig:
     verbose: bool = False
 
     def to_str(self):
-        return f"{self.lang}|{self.adriver_config.to_str()}|{self.classify_agent_task_config.version}|{self.decompose_agent_task_config.version}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.classify_agent_task_config.version}|{self.decompose_agent_task_config.version}"
 
 
 class QueryDecomposer(CacheUtils):
     """Класс, реализующий одну из операций по форматированию/предобработке user-вопроса в рамках QueryPreprocessor-стадии. Данный класс выполняет декомпозицию сложного/составного user-вопроса на независимые/простые под-вопросы.
 
+    :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
+    :type agent: AbstractAgentConnector
     :param config: Конфигурация QueryDecomposer-операции. Значение по умолчанию QueryDecomposerConfig().
     :type config: QueryDecomposerConfig, optional
     :param cache_kvdriver_config:Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
@@ -57,13 +58,13 @@ class QueryDecomposer(CacheUtils):
     :type cache_llm_inference: bool, optional
     """
 
-    def __init__(self, config: QueryDecomposerConfig = QueryDecomposerConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: QueryDecomposerConfig = QueryDecomposerConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None, cache_llm_inference: bool = True):
         self.config = config
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
-        self.agent = AgentDriver.connect(config.adriver_config)
+        self.agent = agent
         agents_cache_config = None
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config if cache_llm_inference else None
@@ -110,7 +111,8 @@ class QueryDecomposer(CacheUtils):
         self.log("Выполнение проверки на необходимость декомпозии вопроса с помощью LLM-агента...",
                  verbose=self.config.verbose)
         need_to_decompose, status = self.decompose_classifier_solver.solve(
-            lang=self.config.lang, query=query)
+            lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
+            query=query)
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
 
@@ -118,8 +120,8 @@ class QueryDecomposer(CacheUtils):
             if need_to_decompose:
                 self.log("Выполнение разбиения вопроса на независимые под-вопросы с помощью LLM-агента...",
                          verbose=self.config.verbose)
-                decomposed_query, status = self.q_decomposition_solver(
-                    lang=self.config.lang, query=query)
+                decomposed_query, status = self.q_decomposition_solver.solve(
+                    lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
                 if status != ReturnStatus.success:
                     rinfo.occurred_warning.append(status)
             else:

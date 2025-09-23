@@ -74,11 +74,11 @@ class AStarMetrics:
     def init_kv_caches(self) -> None:
         if self.config.kvdriver_config is not None:
             self.cache = dict()
-            if self.config.h_metric_name in ['ip', 'weight_with_short_path',  'avg_weighted_with_short_path']:
+            if self.config.h_metric_name in ['ip', 'weight_with_short_path', 'avg_weighted_with_short_path']:
                 ip_config = deepcopy(self.config.kvdriver_config)
                 ip_config.db_config.db_info['table'] = 'astar_retriever_ip'
                 self.cache['ip'] = KeyValueDriver.connect(ip_config)
-            if self.config.h_metric_name in ['weight_with_short_path',  'avg_weighted_with_short_path']:
+            if self.config.h_metric_name in ['weight_with_short_path', 'avg_weighted_with_short_path']:
                 sp_config = deepcopy(self.config.kvdriver_config)
                 sp_config.db_config.db_info['table'] = 'astar_retriever_bfsshortpath'
                 self.cache['bfs_short_path'] = KeyValueDriver.connect(
@@ -107,7 +107,7 @@ class AStarMetrics:
     def calculate_ip_distance(self, node1_id: str, node2_id: str) -> float:
         dist = 0
         if node1_id != node2_id:
-            instances = self.kg_model.embeddings_struct.vectordbs['nodes'].read(
+            instances = self.kg_model.graph_embeddings.vectordbs['nodes'].read(
                 [node1_id, node2_id], includes=['embeddings'])
             # calculation ip distance
             try:
@@ -187,9 +187,9 @@ class AStarMetrics:
             # print("calculated")
             nodes_path = get_nodes_path(parent, node1_id)
             acc_dist = 0
-            for i in range(len(nodes_path)-1):
+            for i in range(len(nodes_path) - 1):
                 acc_dist += self.embeddings_dist(
-                    nodes_path[i], nodes_path[i+1])
+                    nodes_path[i], nodes_path[i + 1])
             acc_dist += self.embeddings_dist(node1_id, node2_id)
 
             short_path_len = self.compute_short_path(node1_id, node2_id)
@@ -253,7 +253,7 @@ class AStarMetrics:
                         # кешируем кратчайшие bfs-пути от e_node_id-вершины до вершин,
                         # которые были в кратчайшем пути между s_node_id- и e_node_id-вершинами
                         reverse_nodes_path = get_nodes_path(parent, neighbour)
-                        for i in range(1, len(reverse_nodes_path)-1):
+                        for i in range(1, len(reverse_nodes_path) - 1):
                             pair_id = create_id_for_node_pair(
                                 reverse_nodes_path[i], neighbour)
                             if not self.cache['bfs_short_path'].item_exist(pair_id):
@@ -408,7 +408,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[AStarGraphSearchConfig, Dict] = AStarGraphSearchConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
-        if type(search_config) is dict:
+        if isinstance(search_config, dict):
             if 'accepted_node_types' in search_config:
                 search_config['accepted_node_types'] = list(
                     map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
@@ -442,7 +442,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.verbose = verbose
 
     def clear_kv_caches(self, level='all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
@@ -476,9 +476,9 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         pair_nodes_counter = 0
         if len(nodes_ids) > 1:
             self.log("pair nodes calculation...", verbose=self.verbose)
-            for i in range(len(nodes_ids)-1):
+            for i in range(len(nodes_ids) - 1):
                 start_node = nodes_ids[i]
-                for j in range(i+1, len(nodes_ids)):
+                for j in range(i + 1, len(nodes_ids)):
                     pair_nodes_counter += 1
                     self.log(
                         f"{all_pair_nodes_counter} / {pair_nodes_counter}", verbose=self.verbose)
@@ -498,8 +498,8 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
                     # Сохраняем только уникальные пары вершин (по их идентификаторам)
                     s_time = time()
-                    unique_nodes_pairs.update([(nodes_path[i], nodes_path[i+1])
-                                              for i in range(len(nodes_path)-1)] if len(nodes_path) > 1 else [])
+                    unique_nodes_pairs.update([(nodes_path[i], nodes_path[i + 1])
+                                              for i in range(len(nodes_path) - 1)] if len(nodes_path) > 1 else [])
                     self.log(
                         f"saving_nodes elapsed_time: {time() - s_time}", verbose=self.verbose)
 

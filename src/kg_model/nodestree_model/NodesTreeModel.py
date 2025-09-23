@@ -47,7 +47,7 @@ class NodesTreeModelConfig:
 
     :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str
-    :param agent_gen_stategy: ... .
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, str]], optional
     :param e2n_sim_threshold: Служебный гиперпараметр; см. https://arxiv.org/pdf/2410.14052. Значение по умолчанию 0.4.
     :type e2n_sim_threshold: float, optional
@@ -87,7 +87,7 @@ class NodesTreeModel:
     """Класс предназначен для представления object-вершин из графовой структуры данных в виде дерева с целью
     повышения эффективности сопоставления имеющихся занний с сущностями/запросами из поступающих user-вопросов.
 
-    :param agent: ... .
+    :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
     :type agent: AbstractAgentConnector
     :param embedder: ... .
     :type embedder: EmbedderModel

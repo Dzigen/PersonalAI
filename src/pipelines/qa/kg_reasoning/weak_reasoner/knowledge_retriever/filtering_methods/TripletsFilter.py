@@ -95,13 +95,13 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
         if len(unique_relations_map) <= self.config.max_k:
             filtered_triplets = list(unique_relations_map.values())
         else:
-            query_embd = self.kg_model.embeddings_struct.embedder.encode_queries([
-                                                                                 query_info.query])[0]
+            query_embd = self.kg_model.graph_embeddings.embedder.encode_queries([
+                query_info.query])[0]
             query_instance = VectorDBInstance(embedding=query_embd)
 
             relation_ids = list(unique_relations_map.keys())
 
-            raw_relevant_triplets = self.kg_model.embeddings_struct.vectordbs['triplets'].retrieve(
+            raw_relevant_triplets = self.kg_model.graph_embeddings.vectordbs['triplets'].retrieve(
                 [query_instance], self.config.max_k, subset_ids=relation_ids)[0]
 
             accepted_relation_ids = list(

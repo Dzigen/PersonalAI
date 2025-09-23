@@ -49,6 +49,8 @@ class QueryPreprocessorConfig:
 class QueryPreprocessor(CacheUtils):
     """Верхнеуровневый класс QueryPreprocessor-стадии (точка входа), отвечающей за предобработку исходного user-вопроса, с целью упрощения процесса поиска информации и повышения качества финального ответа системы.
 
+    :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
+    :type agent: AbstractAgentConnector
     :param config: Конфигурация QueryPreprocessor-стадии. Значение по умолчанию QueryPreprocessorConfig().
     :type config: QueryPreprocessorConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
@@ -59,12 +61,20 @@ class QueryPreprocessor(CacheUtils):
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         self.config = config
 
-        self.denoiser = QueryDenoiser(agent,
-                                      self.config.denoising_config, cache_kvdriver_config) if self.config.denoising_config is not None else None
-        self.enhancer = QueryEnhancer(agent,
-                                      self.config.enhancing_config, cache_kvdriver_config) if self.config.enhancing_config is not None else None
-        self.decomposer = QueryDecomposer(agent,
-                                          self.config.decomposition_config, cache_kvdriver_config) if self.config.decomposition_config is not None else None
+        if self.config.denoising_config is not None:
+            self.denoiser = QueryDenoiser(agent, self.config.denoising_config, cache_kvdriver_config)
+        else:
+            self.denoiser = None
+
+        if self.config.enhancing_config:
+            self.enhancer = QueryEnhancer(agent, self.config.enhancing_config, cache_kvdriver_config)
+        else:
+            self.enhancer = None
+
+        if self.config.decomposition_config:
+            self.decomposer = QueryDecomposer(agent, self.config.decomposition_config, cache_kvdriver_config)
+        else:
+            self.decomposer = None
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -144,7 +154,7 @@ class QueryPreprocessor(CacheUtils):
         elif query_info.denoised_query is not None:
             query_info.processed_query = [copy(query_info.denoised_query)]
         elif query_info.base_query is not None:
-            query_info.processed_query = query_info.base_query
+            query_info.processed_query = [copy(query_info.base_query)]
         else:
             raise ValueError
 

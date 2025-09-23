@@ -43,6 +43,9 @@ class KnowledgeRetrieverConfig:
     log: Logger = field(default_factory=lambda: Logger(KR_MAIN_LOG_PATH))
     verbose: bool = False
 
+    def to_str(self) -> str:
+        return f"{self.retriever_method};{self.retriever_config.to_str()};{self.filter_method};{self.filter_config.to_str()}"
+
 
 class KnowledgeRetriever(CacheUtils):
     """Верхнеуровневый класс третьей стадии QA-конвейера для извлечения
@@ -104,10 +107,10 @@ class KnowledgeRetriever(CacheUtils):
             # sn_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.start_node.id, id_type='node')
             # en_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.end_node.id, id_type='node')
 
-            r_vector_exists = self.kg_model.embeddings_struct.vectordbs['triplets'].item_exist(
+            r_vector_exists = self.kg_model.graph_embeddings.vectordbs['triplets'].item_exist(
                 triplet.relation.id)
-            # sn_vector_exists = self.kg_model.embeddings_struct.vectordbs['nodes'].item_exist(triplet.start_node.id)
-            # en_vector_exists = self.kg_model.embeddings_struct.vectordbs['nodes'].item_exist(triplet.end_node.id)
+            # sn_vector_exists = self.kg_model.graph_embeddings.vectordbs['nodes'].item_exist(triplet.start_node.id)
+            # en_vector_exists = self.kg_model.graph_embeddings.vectordbs['nodes'].item_exist(triplet.end_node.id)
 
             if not (r_graph_exists and r_graph_exists):
                 self.log(

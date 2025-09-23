@@ -173,7 +173,7 @@ class QAPipeline(CacheUtils):
                      verbose=self.verbose)
 
         self.log("Aggregation...", verbose=self.verbose)
-        if sq_info.status == ReturnStatus.success:
+        if rinfo.status == ReturnStatus.success:
             final_answer, ag_info = self.postprocess_answer(
                 query_info, subq_info)
             update_rinfo(rinfo, ag_info)

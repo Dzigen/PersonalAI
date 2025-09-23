@@ -1,12 +1,12 @@
 from dataclasses import dataclass, field
-from typing import Union, Tuple, List
+from typing import Union, Tuple, List, Dict
 from copy import deepcopy
 
 from .configs import DEFAULT_KWE_TASK_CONFIG, QP_MAIN_LOG_PATH
 from ......utils.data_structs import QueryInfo, create_id
 from ......utils.errors import STATUS_MESSAGE
 from ......utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
-from ......agents import AgentDriver, AgentDriverConfig
+from ......agents.utils import AbstractAgentConnector
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 
@@ -17,8 +17,8 @@ class QueryLLMParserConfig:
 
     :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str, optional
-    :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
-    :type adriver_config: AgentDriverConfig, optional
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param kw_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению ключевых сущностей из текста. Значение по умолчанию DEFAULT_KWE_TASK_CONFIG.
     :type kw_extraction_task_config: AgentTaskSolverConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryLLMParser-класса. Значение по умолчанию 'qa_queryparser_stage_cache'.
@@ -29,8 +29,7 @@ class QueryLLMParserConfig:
     :type verbose: bool, optional
     """
     lang: str = 'auto'
-    adriver_config: AgentDriverConfig = field(
-        default_factory=lambda: AgentDriverConfig())
+    agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     kw_extraction_task_config: AgentTaskSolverConfig = field(
         default_factory=lambda: DEFAULT_KWE_TASK_CONFIG)
 
@@ -39,12 +38,14 @@ class QueryLLMParserConfig:
     verbose: bool = False
 
     def to_str(self):
-        return f"{self.adriver_config.to_str()}|{self.kw_extraction_task_config.version}|{self.lang}"
+        return f"{self.agent_gen_stategy}|{self.kw_extraction_task_config.version}|{self.lang}"
 
 
 class QueryLLMParser(CacheUtils):
     """Верхнеуровневый класс первой стадии QA-конвейера для извлечения сущностей из запроса на естественном языке.
 
+    :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
+    :type agent: AbstractAgentConnector
     :param config: Конфигурация "Query Parser"-стадии. Значение по умолчанию QueryLLMParserConfig().
     :type config: QueryLLMParserConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
@@ -53,15 +54,13 @@ class QueryLLMParser(CacheUtils):
     :type cache_llm_inference: bool, optional
     """
 
-    def __init__(self, config: QueryLLMParserConfig = QueryLLMParserConfig(),
-                 cache_kvdriver_config: Union[None,
-                                              KeyValueDriverConfig] = None,
-                 cache_llm_inference: bool = True) -> None:
+    def __init__(self, agent: AbstractAgentConnector, config: QueryLLMParserConfig = QueryLLMParserConfig(),
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True) -> None:
         self.config = config
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
-        self.agent = AgentDriver.connect(config.adriver_config)
+        self.agent = agent
         kwe_task_cache_config = None
         if cache_llm_inference:
             kwe_task_cache_config = deepcopy(cache_kvdriver_config)
@@ -74,7 +73,7 @@ class QueryLLMParser(CacheUtils):
         self.verbose = config.verbose
 
     def clear_kv_caches(self, level: str = 'all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
@@ -111,7 +110,8 @@ class QueryLLMParser(CacheUtils):
         self.log("Выполнение извлечения ключевых сущностей из запроса с помощью LLM-агента...",
                  verbose=self.config.verbose)
         extracted_entities, status = self.kw_extraction_solver.solve(
-            lang=self.config.lang, query=query_info.query)
+            lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
+            query=query_info.query)
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
 

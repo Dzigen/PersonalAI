@@ -67,7 +67,7 @@ class Entities2NodesMatcher(CacheUtils):
         self.verbose = self.config.verbose
 
     def clear_kv_caches(self, level: str = 'all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
@@ -90,11 +90,11 @@ class Entities2NodesMatcher(CacheUtils):
                 entitie, distance_threshold=self.config.distance_threshold, fetch_k=self.config.fetch_k,
                 max_n=self.config.max_n)
         else:
-            entitie_embedding = self.kg_model.embeddings_struct.embedder.encode_queries([
-                                                                                        entitie])[0]
+            entitie_embedding = self.kg_model.graph_embeddings.embedder.encode_queries([
+                entitie])[0]
             entitie_vinstance = VectorDBInstance(embedding=entitie_embedding)
 
-            raw_scored_nodes = self.kg_model.embeddings_struct.vectordbs['nodes'].retrieve(
+            raw_scored_nodes = self.kg_model.graph_embeddings.vectordbs['nodes'].retrieve(
                 query_instances=[entitie_vinstance], n_results=self.config.fetch_k, includes=['documents'])[0]
             filtered_nodes = list(filter(
                 lambda pair: pair[0] <= self.config.distance_threshold, raw_scored_nodes))

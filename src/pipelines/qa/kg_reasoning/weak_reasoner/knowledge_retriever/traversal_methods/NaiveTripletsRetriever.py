@@ -44,7 +44,7 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[NaiveGraphSearchConfig, Dict] = NaiveGraphSearchConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
-        if type(search_config) is dict:
+        if isinstance(search_config, dict):
             search_config = NaiveGraphSearchConfig(**search_config)
         self.config = search_config
 
@@ -57,7 +57,7 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.verbose = verbose
 
     def clear_kv_caches(self, level='all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
@@ -81,11 +81,11 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 
-        query_embd = self.kg_model.embeddings_struct.embedder.encode_queries([
-                                                                             query_info.query])[0]
+        query_embd = self.kg_model.graph_embeddings.embedder.encode_queries([
+            query_info.query])[0]
         query_instance = VectorDBInstance(embedding=query_embd)
 
-        raw_relevant_triplets = self.kg_model.embeddings_struct.vectordbs['triplets'].retrieve(
+        raw_relevant_triplets = self.kg_model.graph_embeddings.vectordbs['triplets'].retrieve(
             [query_instance], self.config.max_k, includes=['metadatas'])[0]
 
         triplet_ids = list(
