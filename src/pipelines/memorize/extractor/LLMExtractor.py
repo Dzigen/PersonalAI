@@ -156,7 +156,7 @@ class LLMExtractor:
 
             new_triplets += tmp_triplets
 
-        if time != "No time":
+        if time is not None:
             self.log("ADDING TIME...", verbose=self.verbose)
             tmp_triplets = self.get_time_triplets(new_triplets, time)
 
