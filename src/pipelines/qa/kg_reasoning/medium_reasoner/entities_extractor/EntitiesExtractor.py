@@ -83,8 +83,7 @@ class EntitiesExtractor(CacheUtils):
             self.cachekv.clear()
 
         if level in ['other', 'all']:
-            if self.entities_extractor_solver.cachekv is not None:
-                self.entities_extractor_solver.cachekv.clear()
+            self.entities_extractor_solver.cachekv.clear()
 
     def get_cache_key(self, query: str) -> List[object]:
         return [query, self.config.to_str()]

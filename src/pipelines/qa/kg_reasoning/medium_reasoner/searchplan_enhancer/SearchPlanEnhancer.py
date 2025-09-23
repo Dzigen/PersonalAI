@@ -101,12 +101,9 @@ class SearchPlanEnhancer(CacheUtils):
             self.cachekv.clear()
 
         if level in ['other', 'all']:
-            if self.plan_initialing_solver.cachekv is not None:
-                self.plan_initialing_solver.cachekv.clear()
-            if self.enhance_classify_solver.cachekv is not None:
-                self.enhance_classify_solver.cachekv.clear()
-            if self.plan_enhancing_solver.cachekv is not None:
-                self.plan_enhancing_solver.cachekv.clear()
+            self.plan_initialing_solver.cachekv.clear()
+            self.enhance_classify_solver.cachekv.clear()
+            self.plan_enhancing_solver.cachekv.clear()
 
     def get_cache_key(self, search_step: int, search_plan: SearchPlanInfo) -> List[str]:
         return [str(search_step), search_plan.to_str(), self.config.to_str()]

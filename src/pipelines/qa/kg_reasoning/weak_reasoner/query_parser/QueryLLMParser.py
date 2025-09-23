@@ -84,8 +84,7 @@ class QueryLLMParser(CacheUtils):
             self.cachekv.clear()
 
         if level in ['other', 'all']:
-            if self.kw_extraction_solver.cachekv is not None:
-                self.kw_extraction_solver.cachekv.clear()
+            self.kw_extraction_solver.cachekv.clear()
 
     def get_cache_key(self, query: str) -> List[object]:
         return [self.config.to_str(), query]

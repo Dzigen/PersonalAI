@@ -81,10 +81,8 @@ class LLMExtractor:
             raise NotImplementedError
 
         if level in ['other']:
-            if self.triplets_extraction_solver.cachekv is not None:
-                self.triplets_extraction_solver.cachekv.clear()
-            if self.thesises_extraction_solver.cachekv is not None:
-                self.thesises_extraction_solver.cachekv.clear()
+            self.triplets_extraction_solver.cachekv.clear()
+            self.thesises_extraction_solver.cachekv.clear()
 
     def extract_knowledge(self, text: str, time: Union[None, str] = None, properties: Dict = {}) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста на естественном языке.

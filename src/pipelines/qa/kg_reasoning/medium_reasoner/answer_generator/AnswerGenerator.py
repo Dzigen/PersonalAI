@@ -91,10 +91,8 @@ class AnswerGenerator(CacheUtils):
             self.cachekv.clear()
 
         if level in ['other', 'all']:
-            if self.answer_classify_solver.cachekv is not None:
-                self.answer_classify_solver.cachekv.clear()
-            if self.answer_gen_solver.cachekv is not None:
-                self.answer_gen_solver.cachekv.clear()
+            self.answer_classify_solver.cachekv.clear()
+            self.answer_gen_solver.cachekv.clear()
 
     def get_cache_key(self, search_plan: SearchPlanInfo) -> List[object]:
         return [search_plan.to_str(), self.config.to_str()]

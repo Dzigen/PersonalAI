@@ -76,7 +76,7 @@ class KnowledgeComparator(CacheUtils):
         if level in ['current', 'all']:
             self.cachekv.clear()
 
-        if level in ['other', 'all']:
+        if level == 'other':
             raise NotImplementedError
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:

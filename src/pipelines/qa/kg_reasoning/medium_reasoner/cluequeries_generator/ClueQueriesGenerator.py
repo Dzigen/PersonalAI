@@ -87,8 +87,7 @@ class ClueQueriesGenerator(CacheUtils):
             self.cachekv.clear()
 
         if level in ['other', 'all']:
-            if self.cluequery_gen_solver.cachekv is not None:
-                self.cluequery_gen_solver.cachekv.clear()
+            self.cluequery_gen_solver.cachekv.clear()
 
     def get_cache_key(self, search_query: str, matched_kg_objects: Dict[str, List[VectorDBInstance]]) -> List[object]:
         str_matchedobject = json.dumps({k: list(map(lambda vv: vv.document, v))

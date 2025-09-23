@@ -82,8 +82,7 @@ class ClueAnswersSummarizer(CacheUtils):
             self.cachekv.clear()
 
         if level in ['other', 'all']:
-            if self.clueanswers_summ_solver.cachekv is not None:
-                self.clueanswers_summ_solver.cachekv.clear()
+            self.clueanswers_summ_solver.cachekv.clear()
 
     def get_cache_key(self, search_query: str, clue_queries: List[str], clue_answers: List[str]) -> List[str]:
         str_cluequeries = ';'.join(clue_queries)

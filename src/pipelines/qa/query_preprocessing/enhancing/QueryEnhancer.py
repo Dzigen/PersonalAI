@@ -88,8 +88,21 @@ class QueryEnhancer(CacheUtils):
         self.verbose = self.config.verbose
 
     def clear_kv_caches(self, level: str = 'all') -> None:
-        # TODO
-        pass
+        if not isinstance(level, str):
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+        if level not in ['all', 'current', 'other']:
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+
+        if level in ['all', 'current']:
+            self.cachekv.clear()
+            self.queryexpansion_solver.cachekv.clear()
+            self.termscheck_solver.cachekv.clear()
+            self.linguistcheck_solver.cachekv.clear()
+
+        elif level == 'other':
+            raise NotImplementedError
 
     def get_cache_key(self, query_info: QueryPreprocessingInfo) -> List[object]:
         return [query_info.to_str(), self.config.to_str()]

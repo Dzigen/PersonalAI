@@ -85,8 +85,7 @@ class ClueAnswerGenerator(CacheUtils):
             self.cachekv.clear()
 
         if level in ['other', 'all']:
-            if self.cagen_solver.cachekv is not None:
-                self.cagen_solver.cachekv.clear()
+            self.cagen_solver.cachekv.clear()
 
     def get_cache_key(self, query: str, context_triplets: List[Triplet]) -> List[str]:
         str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(

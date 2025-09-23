@@ -81,10 +81,8 @@ class LLMUpdator:
             raise NotImplementedError
 
         if level in ['other']:
-            if self.replace_simple_solver.cachekv is not None:
-                self.replace_simple_solver.cachekv.clear()
-            if self.replace_hyper_solver.cachekv is not None:
-                self.replace_hyper_solver.cachekv.clear()
+            self.replace_simple_solver.cachekv.clear()
+            self.replace_hyper_solver.cachekv.clear()
 
     def find_simple_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
         """Метод предназначен для поиска устаревших simple-триплетов в графе знаний по сравнению с указанным (base_triplet) simple-триплетом.
