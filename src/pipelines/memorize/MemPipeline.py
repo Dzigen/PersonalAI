@@ -57,6 +57,10 @@ class MemPipeline:
         self.updator = LLMUpdator(
             kg_model, config.updator_config, cache_kvdriver_config)
 
+    def get_cache_stat(self):
+        # TODO
+        raise NotImplementedError
+
     def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
             raise TypeError(

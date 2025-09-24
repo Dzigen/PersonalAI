@@ -111,11 +111,11 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         self.entities_extractor = EntitiesExtractor(
             agent, self.config.entities_extractor_config, cache_kvdriver_config)
         self.entities2nodes_matcher = Entities2NodesMatcher(
-            agent, self.kg_model, self.config.e2n_matcher_config, cache_kvdriver_config)
+            self.kg_model, self.config.e2n_matcher_config, cache_kvdriver_config)
         self.cluequeries_generator = ClueQueriesGenerator(
             agent, self.config.cluequeries_generator_config, cache_kvdriver_config)
         self.knowledge_retriever = KnowledgeRetriever(
-            agent, self.kg_model, self.config.knowledge_retriever_config, cache_kvdriver_config)
+            self.kg_model, self.config.knowledge_retriever_config, cache_kvdriver_config)
         self.clueanswer_generator = ClueAnswerGenerator(
             agent, self.config.clueanswer_generator_config, cache_kvdriver_config)
         self.clueanswers_summariser = ClueAnswersSummarizer(

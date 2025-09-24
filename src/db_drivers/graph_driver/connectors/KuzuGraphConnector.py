@@ -1,4 +1,5 @@
 from typing import List, Dict, Union
+from kuzu.query_result import QueryResult
 import kuzu
 import json
 import os
@@ -94,7 +95,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
     def create(self, triplets: List[Triplet], creation_info: Dict[int, Dict[str, bool]] = dict()) -> ReturnInfo:
         # triplet-ids checking
         for triplet in triplets:
-            if type(triplet.id) is not str:
+            if not isinstance(triplet.id, str):
                 raise ValueError
         unique_ids = set(map(lambda triplet: triplet.id, triplets))
         if len(triplets) != len(unique_ids):
@@ -115,10 +116,10 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
 
     def read(self, ids: List[str]) -> List[Triplet]:
         for t_id in ids:
-            if type(t_id) is not str:
+            if not isinstance(t_id, str):
                 raise ValueError
 
-        str_ids = '['+', '.join(list(map(lambda id: f'"{id}"', ids))) + ']'
+        str_ids = '[' + ', '.join(list(map(lambda id: f'"{id}"', ids))) + ']'
         query = f"MATCH (n1)-[rel]->(n2) WHERE rel.t_id IN {str_ids} RETURN n1, rel, n2;"
         raw_output = self.conn.execute(query)
         triplets = self.parse_query_triplets_output(raw_output)
@@ -130,7 +131,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
 
     def delete(self, ids: List[str], delete_info: Dict[int, Dict[str, bool]] = dict()) -> None:
         for t_id in ids:
-            if type(t_id) is not str:
+            if not isinstance(t_id, str):
                 raise ValueError
 
         for i, t_id in enumerate(ids):
@@ -166,7 +167,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         if type(object_type) not in [RelationType, NodeType]:
             raise ValueError
 
-        if type(name) is not str:
+        if not isinstance(name, str):
             raise ValueError
 
         if len(name) < 1:
@@ -192,7 +193,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
 
         return formated_output
 
-    def parse_query_nodes_output(self, output: List[object]) -> List[Node]:
+    def parse_query_nodes_output(self, output: QueryResult) -> List[Node]:
         formated_nodes = []
         output = output.get_as_df()
         triplets_count = len(output['n'])
@@ -207,7 +208,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
 
         return formated_nodes
 
-    def parse_query_triplets_output(self, output: List[object]) -> List[Triplet]:
+    def parse_query_triplets_output(self, output: QueryResult) -> List[Triplet]:
         formated_triplets = []
         output = output.get_as_df()
         triplets_count = len(output['rel'])
@@ -240,7 +241,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
 
     def get_adjecent_nids(self, base_node_id: str,
                           accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[str]:
-        if type(base_node_id) is not str:
+        if not isinstance(base_node_id, str):
             raise ValueError
 
         str_accepted_nodes = ''.join(
@@ -253,9 +254,9 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         return formated_nodes
 
     def get_nodes_shared_ids(self, node1_id: str, node2_id: str, id_type: str = 'both') -> List[Dict[str, str]]:
-        if (type(node1_id) is not str) or (type(node2_id) is not str):
+        if (not isinstance(node1_id, str)) or (not isinstance(node2_id, str)):
             raise ValueError(node1_id, node2_id)
-        if type(id_type) is not str:
+        if not isinstance(id_type, str):
             raise ValueError(id_type)
 
         if id_type == 'triplet':
@@ -303,7 +304,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         return formatted_triplets
 
     def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
-        if (type(node1_id) is not str) or (type(node2_id) is not str):
+        if (not isinstance(node1_id, str)) or (not isinstance(node2_id, str)):
             raise ValueError
         if (not self.item_exist(node1_id, id_type='node')) or (not self.item_exist(node2_id, id_type='node')):
             raise ValueError
@@ -317,8 +318,13 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         return list(unique_triplets.values())
 
     def get_node_type(self, id: str) -> NodeType:
-        # TODO
-        raise NotImplementedError
+        if not self.item_exist(id, id_type="node"):
+            raise ValueError
+
+        raw_output = self.conn.execute(
+            f'MATCH (n) WHERE n.str_id = "{id}" RETURN n')
+        formated_node = self.parse_query_nodes_output(raw_output)[0]
+        return formated_node.type
 
     def count_items(self, id: str = None, id_type: str = None) -> Union[Dict[str, int], int]:
         if id_type is None:
@@ -349,7 +355,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         return result
 
     def item_exist(self, id: str, id_type: str = 'triplet') -> bool:
-        if type(id) is not str:
+        if not isinstance(id, str):
             raise ValueError
 
         if id_type == 'node':

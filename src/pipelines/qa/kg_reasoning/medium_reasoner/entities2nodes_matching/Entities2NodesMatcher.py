@@ -86,7 +86,7 @@ class Entities2NodesMatcher(CacheUtils):
     @CacheUtils.cache_method_output
     def match_entitie2knowledge(self, entitie: str) -> List[VectorDBInstance]:
         if self.config.use_tree:
-            matched_objects = self.kg_model.nodestree_struct.match_entitie2objects(
+            matched_objects = self.kg_model.nodestree_model.match_entitie2objects(
                 entitie, distance_threshold=self.config.distance_threshold, fetch_k=self.config.fetch_k,
                 max_n=self.config.max_n)
         else:
@@ -123,9 +123,7 @@ class Entities2NodesMatcher(CacheUtils):
         matched_kg_objects = dict()
         for i, entitie in enumerate(entities):
             self.log(f"Текушая сушность #{i}: {entitie}", verbose=self.verbose)
-            matched_kg_objects[entitie] = self.match_entitie2knowledge(entitie, use_tree=self.config.use_tree,
-                                                                       distance_threshold=self.config.distance_threshold,
-                                                                       max_n=self.config.max_n, fetch_k=self.config.fetch_k)
+            matched_kg_objects[entitie] = self.match_entitie2knowledge(entitie)
             str_matchedobjects = ', '.join(
                 list(map(lambda obj: obj.document, matched_kg_objects[entitie])))
             self.log(f"RESULT: {str_matchedobjects}", verbose=self.verbose)

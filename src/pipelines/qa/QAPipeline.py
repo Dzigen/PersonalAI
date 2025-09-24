@@ -77,6 +77,10 @@ class QAPipeline(CacheUtils):
         self.log = config.log
         self.verbose = config.verbose
 
+    def get_cache_stat(self):
+        # TODO
+        raise NotImplementedError
+
     def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
             raise TypeError(

@@ -1,1 +1,9 @@
 from .MediumKGReasoner import MediumKGReasoner, MediumKGReasonerConfig
+
+from .answer_generator import AnswerGeneratorConfig
+from .clueanswer_generator import ClueAnswerGeneratorConfig
+from .clueanswers_summarisation import ClueAnswersSummarizerConfig
+from .cluequeries_generator import ClueQueriesGeneratorConfig
+from .entities_extractor import EntitiesExtractorConfig
+from .entities2nodes_matching import Entities2NodesMatcherConfig
+from .searchplan_enhancer import SearchPlanEnhancerConfig

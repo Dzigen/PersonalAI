@@ -67,6 +67,6 @@ class ReturnInfo:
 
 
 def update_rinfo(modifying_rinfo: ReturnInfo, new_rinfo: ReturnInfo) -> None:
-    modifying_rinfo.occurred_warning.append(new_rinfo.occurred_warning)
+    modifying_rinfo.occurred_warning += deepcopy(new_rinfo.occurred_warning)
     modifying_rinfo.status = new_rinfo.status
     modifying_rinfo.message = new_rinfo.message

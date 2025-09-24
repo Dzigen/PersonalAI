@@ -41,7 +41,7 @@ class ClueQueriesGeneratorConfig:
     verbose: bool = False
 
     def to_str(self):
-        return f"{self.lang}|{self.adriver_config.to_str()}|{self.cquerie_generator_agent_task_config.version}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.cquerie_generator_agent_task_config.version}"
 
 
 class ClueQueriesGenerator(CacheUtils):
