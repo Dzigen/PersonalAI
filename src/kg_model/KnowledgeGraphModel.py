@@ -22,17 +22,15 @@ class KnowledgeGraphModelConfig:
     :param graph_embeddings_config: Конфигурация структуры данных, которая отвечает за представление/хранение знаний ассистента в векторном формате. Значение по умолчанию EmbeddingsModelConfig().
     :type graph_embeddings_config: EmbeddingsModelConfig, optional
     :param nodestree_config: Конфигурация структуры данных, которая отвечает за представление/хранение знаний ассистента в формате дерева. Значение по умолчанию None.
-    :type nodestree_config: Union[NodesTreeModelConfig,None]
-
-    :param embedders_configs: ...
-    :type embedders_configs: Dict[str, EmbedderModelConfig]
-    :param agents_configs: ...
-    :type agents_configs: Dict[str, AgentDriverConfig]
-    :param embedders_map: ...
-    :type embedders_map: Dict[str, str]
-    :param agents_map: ...
-    :type agents_map: Dict[str, str]
-
+    :type nodestree_config: Union[NodesTreeModelConfig,None], optional
+    :param embedders_configs: Словарь с именованными (ключи) конфигурациями embedder-моделей (значения) для векторизации текста, которые будут использоваться в рамках Memorize- и QA-пайплайнов для построения графа знаний и осуществления поиска. Значение по умолчанию DEFAULT_EMBEDDERS_CONFIG.
+    :type embedders_configs: Dict[str, EmbedderModelConfig], optional
+    :param agents_configs: Словарь с именованными (ключи) конфигурациями LLM-агентов (значения) для выполнения inferece-операций, которые будут использоваться в рамках Memorize- и QA-пайплайнов для построения графа знаний и осуществления поиска. Значение по умолчанию DEFAULT_AGENTS_CONFIG.
+    :type agents_configs: Dict[str, AgentDriverConfig], optional
+    :param embedders_map: Вложенный именованный словарь с указанием PersonalAI-компоненты и её подчастей (ключ) и ключевого слова/имени (значение) embedder-конфигурации, которая будет использоваться в её рамках. Значение по умолчанию DEFAULT_EMBEDDERS_MAP.
+    :type embedders_map: Dict[str, Dict], optional
+    :param agents_map: Вложенный именованный словарь с указанием PersonalAI-компоненты и её подчастей (ключ) и ключевого слова/имени (значение) конфигураци LLM-агента, которая будет использоваться в её рамках. Значение по умолчанию DEFAULT_AGENTS_MAP.
+    :type agents_map: Dict[str, Dict], optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(KG_MAIN_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
@@ -47,8 +45,8 @@ class KnowledgeGraphModelConfig:
 
     embedders_config: Dict[str, EmbedderModelConfig] = field(default_factory=lambda: DEFAULT_EMBEDDERS_CONFIG)
     agents_config: Dict[str, AgentDriverConfig] = field(default_factory=lambda: DEFAULT_AGENTS_CONFIG)
-    embedders_map: Dict[str, str] = field(default_factory=lambda: DEFAULT_EMBEDDERS_MAP)
-    agents_map: Dict[str, str] = field(default_factory=lambda: DEFAULT_AGENTS_MAP)
+    embedders_map: Dict[str, Dict] = field(default_factory=lambda: DEFAULT_EMBEDDERS_MAP)
+    agents_map: Dict[str, Dict] = field(default_factory=lambda: DEFAULT_AGENTS_MAP)
 
     log: Logger = field(default_factory=lambda: Logger(KG_MAIN_LOG_PATH))
     verbose: bool = False

@@ -133,6 +133,4 @@ class AbstractDatabaseConnection(ABC):
         pass
 
     def __del__(self):
-        # TODO
-        # self.close_connection()
-        pass
+        self.close_connection()
