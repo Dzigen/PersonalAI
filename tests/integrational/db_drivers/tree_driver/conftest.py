@@ -12,7 +12,7 @@ from src.db_drivers.tree_driver import TreeDriver, TreeDriverConfig, TreeDBConne
 @pytest.fixture(scope='package')
 def neo4j_conn():
     config = TreeDriverConfig(db_vendor='neo4j', db_config=TreeDBConnectionConfig(
-        host="localhost", port="7688", db_info={'db': 'testingtree', 'table': 'testingtree'},
+        host="localhost", port="7680", db_info={'db': 'testingtree', 'table': 'testingtree'},
         params={'user': "neo4j", 'pwd': 'password'}, need_to_clear=True))
     return TreeDriver.connect(config)
 

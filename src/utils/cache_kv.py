@@ -12,7 +12,16 @@ DEFAULT_CACHEKV_CONFIG = KeyValueDriverConfig(
         host='localhost', port=27018, params={'username': 'user', 'password': 'pass', 'max_storage': -1},
         need_to_clear=False))
 
-class CacheUtils:
+from abc import ABC, abstractmethod
+from typing import Tuple
+
+
+class AbstractCacheUtils(ABC):
+    @abstractmethod
+    def get_cache_key(self, *args, **kwargs):
+        pass
+
+class CacheUtils(AbstractCacheUtils):
 
     def cache_method_output(function):
         def wrapper(self, *args, **kwargs):
@@ -29,7 +38,7 @@ class CacheUtils:
                     self.log(f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
                     self.log(f"* HASH_SEEDS: {cache_key}.", verbose=self.verbose)
                     self.log(f"* CACHED_VALUE: {cached_result}.", verbose=self.verbose)
-                    
+
 
                     cached_flag = True
                     output = cached_result

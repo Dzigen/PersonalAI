@@ -15,7 +15,7 @@ from src.db_drivers.vector_driver.embedders import EmbedderModelConfig
 from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
 from src.agents.AgentDriver import AgentDriverConfig, AgentConnectorConfig
 from src.pipelines.memorize import MemPipelineConfig
-from src.kg_model import KnowledgeGraphModel
+from src.kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig
 from src.agents.AgentDriver import AgentDriverConfig, AgentConnectorConfig
 from src.pipelines.memorize import MemPipeline, MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
 from src.pipelines.memorize.extractor.agent_tasks.thesis_extraction import AgentThesisExtrTaskConfigSelector
@@ -27,18 +27,20 @@ def graph_neo4j_config():
         driver_config=GraphDriverConfig(
             db_vendor='neo4j',
             db_config=GraphDBConnectionConfig(
-                host="localhost", port="7688", db_info={'db': 'testing', 'table': 'testing'},
+                host="localhost", port="7680", db_info={'db': 'testing', 'table': 'testing'},
                 params={'user': "neo4j", 'pwd': 'password'}, need_to_clear=True)))
     return config
 
 @pytest.fixture(scope='package')
-def embeddings_chroma_config():
+def embeddings_milvus_config():
     config = EmbeddingsModelConfig(
-        nodesdb_driver_config=VectorDriverConfig(db_config=VectorDBConnectionConfig(
-            path=f'{TEST_VOLUME_DIR}/chroma', db_info={'db': 'testing', 'table': 'vectorized_nodes'}, need_to_clear=True)),
-        tripletsdb_driver_config=VectorDriverConfig(db_config=VectorDBConnectionConfig(
-            path=f'{TEST_VOLUME_DIR}/chroma', db_info={'db': 'testing', 'table': 'vectorized_triplets'}, need_to_clear=True)),
-        embedder_config=EmbedderModelConfig(model_name_or_path=f'{PROJECT_BASE_DIR}/models/intfloat/multilingual-e5-small', device='cuda'))
+        nodesdb_driver_config=VectorDriverConfig(db_vendor='milvus', db_config=VectorDBConnectionConfig(
+            conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'}, db_info={'db': 'testing', 'table': 'vectorized_nodes'}, need_to_clear=True,
+            params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'})),
+        tripletsdb_driver_config=VectorDriverConfig(db_vendor='milvus', db_config=VectorDBConnectionConfig(
+            conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'}, db_info={'db': 'testing', 'table': 'vectorized_triplets'}, need_to_clear=True,
+            params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'})),
+        embedder_config=EmbedderModelConfig(model_name_or_path=f'{PROJECT_BASE_DIR}models/intfloat/multilingual-e5-small', device='cuda'))
     return config
 
 @pytest.fixture(scope='package')
@@ -47,9 +49,9 @@ def mem_pipeline_config():
         name='ollama',
         agent_config=AgentConnectorConfig(
             gen_strategy={"num_predict": 2048, "seed": 42, "top_k": 1, "temperature": 0.0},
-            credentials={"host": 'localhost', "port": 11434},
-            ext_params={"model": 'qwen2.5:7b', "timeout": 560, "keep_alive": -1}))
-
+            credentials={"model": 'qwen2.5:7b'},
+            ext_params={"host": 'localhost', "port": 11438, "timeout": 560, "keep_alive": -1}))
+    
     config = MemPipelineConfig(
         extractor_config=LLMExtractorConfig(
             lang='en', adriver_config=agent_driver_config,
@@ -66,16 +68,21 @@ def mem_pipeline_config():
 #------------------------------#
 
 @pytest.fixture(scope='package')
-def kg_model(graph_neo4j_config, embeddings_chroma_config):
-    kg_model = KnowledgeGraphModel(graph_neo4j_config, embeddings_chroma_config, verbose=True)
-    kg_model.clear()
+def kg_model(graph_neo4j_config, embeddings_milvus_config):
+    graph_neo4j_config.driver_config.db_config.need_to_clear = False
+    embeddings_milvus_config.nodesdb_driver_config.db_config.need_to_clear = False
+    embeddings_milvus_config.tripletsdb_driver_config.db_config.need_to_clear = False
+
+    kg_config = KnowledgeGraphModelConfig(graph_config=graph_neo4j_config, embeddings_config=embeddings_milvus_config)
+    kg_model = KnowledgeGraphModel(kg_config)
+    #kg_model.clear()
     return kg_model
 
 @pytest.fixture(scope='package')
 def mem_pipeline(request, kg_model, mem_pipeline_config):
     mem_pipeline = MemPipeline(kg_model, mem_pipeline_config)
-    for text in tqdm(RAW_TEXTS_EN):
-        _, status = mem_pipeline.remember(text)
+    #for text in tqdm(RAW_TEXTS_EN):
+    #    _, status = mem_pipeline.remember(text)
 
     def teardown():
         print("Safely closing kg-model connection...")

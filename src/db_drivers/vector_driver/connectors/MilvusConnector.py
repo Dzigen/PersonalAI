@@ -211,6 +211,7 @@ class MilvusConnector(AbstractVectorDatabaseConnection):
             # CARE: работает только для COSINE и IP - метрик
             # костыль: полученные значения семантической близости векторов [similarity] приводим к шкале расстояний [distances]
             f_items = list(map(lambda r_item: (1 - r_item['distance'], VectorDBInstance(id=r_item['id'], **r_item['entity'])), q_output))
+            f_items = sorted(f_items, key=lambda v: v[0], reverse=False)
             formated_output.append(f_items)
 
         return formated_output

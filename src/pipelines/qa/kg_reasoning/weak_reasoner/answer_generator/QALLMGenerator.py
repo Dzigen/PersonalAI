@@ -108,6 +108,6 @@ class QALLMGenerator(CacheUtils):
             info.message = STATUS_MESSAGE[info.status]
 
         self.log(f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.config.verbose)
-        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
+        self.log(f"STATUS: {info.status}", verbose=self.config.verbose)
 
         return answer, info

@@ -1,14 +1,14 @@
 from ........utils import AgentTaskSolverConfig, Logger
 from ........db_drivers.kv_driver import KeyValueDriverConfig
 from .general_parsers import kwe_custom_formate, kwe_custom_postprocess
-from .v1 import KWE_GEN_SUITE_V1
-from .v2 import KWE_GEN_SUITE_V2
+from .v1 import KWE_SUITE_V1
+from .v2 import KWE_SUITE_V2
 
-KW_EXTRACTION_LOG_PATH = 'log/qa/kg_reasoner/weak/query_parser/agent_tasks/kw_extraction'
+KWE_LOG_PATH = 'log/qa/kg_reasoner/weak/query_parser/agent_tasks/kwe'
 
 AVAILABLE_KWE_TCONFIGS = {
-    'v1': KWE_GEN_SUITE_V1,
-    'v2': KWE_GEN_SUITE_V2
+    'v1': KWE_SUITE_V1,
+    'v2': KWE_SUITE_V2
 }
 
 class AgentKWETaskConfigSelector:
@@ -23,4 +23,4 @@ class AgentKWETaskConfigSelector:
             suites=AVAILABLE_KWE_TCONFIGS[base_config_version],
             formate_context_func=kwe_custom_formate, postprocess_answer_func=kwe_custom_postprocess,
             cache_table_name=cache_table_name,
-            log=Logger(KW_EXTRACTION_LOG_PATH))
+            log=Logger(KWE_LOG_PATH))

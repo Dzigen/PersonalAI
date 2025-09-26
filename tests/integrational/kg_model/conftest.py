@@ -6,7 +6,7 @@ PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.kg_model import EmbeddingsModel, EmbeddingsModelConfig, GraphModel, GraphModelConfig, KnowledgeGraphModel
+from src.kg_model import EmbeddingsModel, EmbeddingsModelConfig, GraphModel, GraphModelConfig, KnowledgeGraphModel, KnowledgeGraphModelConfig
 from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriverConfig
 from src.db_drivers.vector_driver.embedders import EmbedderModelConfig
 from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
@@ -20,7 +20,7 @@ def graph_neo4j_config():
         driver_config=GraphDriverConfig(
             db_vendor='neo4j',
             db_config=GraphDBConnectionConfig(
-                host="localhost", port="7688", db_info={'db': 'testing', 'table': 'testing'},
+                host="localhost", port="7680", db_info={'db': 'testing', 'table': 'testing'},
                 params={'user': "neo4j", 'pwd': 'password'}, need_to_clear=True)))
     return config
 
@@ -89,21 +89,34 @@ def graph_model(available_graph_models, request):
 @pytest.fixture(scope='package')
 def embeddings_chroma_config():
     config = EmbeddingsModelConfig(
-        nodesdb_driver_config=VectorDriverConfig(db_config=VectorDBConnectionConfig(
+        nodesdb_driver_config=VectorDriverConfig(db_vendor='chroma', db_config=VectorDBConnectionConfig(
             conn={'path': f'{TEST_VOLUME_DIR}/chroma'}, db_info={'db': 'testing', 'table': 'vectorized_nodes'}, params={"hnsw:space": "ip","hnsw:M": 4096}, need_to_clear=True)),
-        tripletsdb_driver_config=VectorDriverConfig(db_config=VectorDBConnectionConfig(
+        tripletsdb_driver_config=VectorDriverConfig(db_vendor='chroma', db_config=VectorDBConnectionConfig(
             conn={'path': f'{TEST_VOLUME_DIR}/chroma'}, db_info={'db': 'testing', 'table': 'vectorized_triplets'}, params={"hnsw:space": "ip","hnsw:M": 4096}, need_to_clear=True)),
-        embedder_config=EmbedderModelConfig(model_name_or_path=f'{PROJECT_BASE_DIR}/models/intfloat/multilingual-e5-small', device='cuda'))
+        embedder_config=EmbedderModelConfig(model_name_or_path=f'{PROJECT_BASE_DIR}models/intfloat/multilingual-e5-small', device='cuda'))
+    return config
+
+@pytest.fixture(scope='package')
+def embeddings_milvus_config():
+    config = EmbeddingsModelConfig(
+        nodesdb_driver_config=VectorDriverConfig(db_vendor='milvus', db_config=VectorDBConnectionConfig(
+            conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'}, db_info={'db': 'testing', 'table': 'vectorized_nodes'}, need_to_clear=True,
+            params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'})),
+        tripletsdb_driver_config=VectorDriverConfig(db_vendor='milvus', db_config=VectorDBConnectionConfig(
+            conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'}, db_info={'db': 'testing', 'table': 'vectorized_triplets'}, need_to_clear=True,
+            params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'})),
+        embedder_config=EmbedderModelConfig(model_name_or_path=f'{PROJECT_BASE_DIR}models/intfloat/multilingual-e5-small', device='cuda'))
     return config
 
 #------------------------------#
 
 @pytest.fixture(scope='package')
 def available_embedding_configs(
-    embeddings_chroma_config
+    embeddings_chroma_config, embeddings_milvus_config
 ):
     return {
-        'chroma': embeddings_chroma_config
+        'chroma': embeddings_chroma_config,
+        'milvus': embeddings_milvus_config
     }
 
 @pytest.fixture(scope='package')
@@ -121,7 +134,8 @@ def available_kg_models(available_embedding_configs, available_graph_configs):
     kg_configs = {}
     for vector_name, vector_config in available_embedding_configs.items():
         for graph_name, graph_config in available_graph_configs.items():
-            kg_configs[f"{vector_name}/{graph_name}"] = KnowledgeGraphModel(graph_config, vector_config)
+            cur_config = KnowledgeGraphModelConfig(graph_config=graph_config, embeddings_config=vector_config, nodestree_config=None)
+            kg_configs[f"{vector_name}/{graph_name}"] = KnowledgeGraphModel(cur_config)
     return kg_configs
 
 @pytest.fixture(scope='function')

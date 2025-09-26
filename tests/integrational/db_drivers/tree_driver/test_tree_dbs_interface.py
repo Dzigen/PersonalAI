@@ -10,7 +10,8 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from cases import TREEDB_POPULATED_CREATE_TEST_CASES, TREEDB_POPULATED_READ_TEST_CASES, \
     TREEDB_POPULATED_UPDATE_TEST_CASES, TREEDB_POPULATED_DELETE_TEST_CASES, \
         TREEDB_POPULATED_COUNT_TEST_CASES, TREEDB_POPULATED_EXIST_TEST_CASES, \
-            TREEDB_POPULATED_CLEAR_TEST_CASES, TREEDB_POPULATED_GETCHILDS_TEST_CASES, TREEDB_POPULATED_GETMAXDEPTH_TEST_CASES
+            TREEDB_POPULATED_CLEAR_TEST_CASES, TREEDB_POPULATED_GETCHILDS_TEST_CASES, TREEDB_POPULATED_GETMAXDEPTH_TEST_CASES, \
+                TREEDB_POPULATED_GETLEAFDESCENDANTS_TEST_CASES
 
 from src.utils import Triplet, RelationType, NodeType
 from src.utils.data_structs import Node
@@ -189,3 +190,24 @@ def test_getmaxdepth(
 
     real_maxdepth = treedb_conn.get_tree_maxdepth()
     assert real_maxdepth == expected_max_depth
+
+@pytest.mark.parametrize("create_pairs, id, expected_descendants, exception, treedb_conn", TREEDB_POPULATED_GETLEAFDESCENDANTS_TEST_CASES, indirect=['treedb_conn'])
+def test_getleafdescendants(create_pairs: List[Tuple[str, TreeNode]], id: str, expected_descendants: Dict[str, TreeNode], exception: bool, treedb_conn: AbstractTreeDatabaseConnection):
+    treedb_conn.clear()
+    for pair in create_pairs:
+        treedb_conn.create(pair[0], pair[1])
+
+    try:
+        real_descendants = treedb_conn.get_leaf_descendants(id, id_type=TreeIdType.external)
+    except ValueError:
+        assert exception
+    else:
+        assert not exception
+        assert len(real_descendants) == len(expected_descendants.values())
+        for real_node in real_descendants:
+            assert real_node.id in expected_descendants
+            assert real_node.text == expected_descendants[real_node.id].text
+            assert real_node.type == expected_descendants[real_node.id].type
+            assert real_node.props == expected_descendants[real_node.id].props
+            for k,v in expected_descendants[real_node.id].props.items():
+                assert v == real_node.props[k]

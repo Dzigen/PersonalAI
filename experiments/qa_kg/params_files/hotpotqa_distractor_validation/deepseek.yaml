@@ -1,4 +1,4 @@
-EXPERIMENT_NAME: "m_v2_deepseek(e3.6.4)(v1.5.5)" # TO CHANGE
+EXPERIMENT_NAME: "m_v2_deepseek(e5.6.4)(v1.5.4)" # TO CHANGE
 DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'deepseek_120425_v2prompts' # TO CHANGE
 QA_DATASET_HYPERP:

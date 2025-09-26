@@ -6,7 +6,7 @@ PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.kg_model import EmbeddingsModel, EmbeddingsModelConfig, GraphModel, GraphModelConfig, KnowledgeGraphModel
+from src.kg_model import EmbeddingsModel, EmbeddingsModelConfig, GraphModel, GraphModelConfig, KnowledgeGraphModel, KnowledgeGraphModelConfig
 from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriverConfig
 from src.db_drivers.vector_driver.embedders import EmbedderModelConfig
 from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
@@ -37,4 +37,5 @@ def embeddings_chroma_config():
 
 @pytest.fixture(scope='function')
 def kg_model(graph_neo4j_config, embeddings_chroma_config):
-    return KnowledgeGraphModel(graph_neo4j_config, embeddings_chroma_config, verbose=True)
+    config = KnowledgeGraphModelConfig(graph_config=graph_neo4j_config, embeddings_config=embeddings_chroma_config)
+    return KnowledgeGraphModel(config)

@@ -145,6 +145,8 @@ class ChromaConnection(AbstractVectorDatabaseConnection):
                 cur_distance = raw_retrieved_instances['distances'][i][j]
 
                 cur_formated_instances.append((cur_distance, VectorDBInstance(**tmp_inst)))
+
+            cur_formated_instances = sorted(cur_formated_instances, key=lambda v: v[0], reverse=False)
             formated_instances.append(cur_formated_instances)
 
         return formated_instances

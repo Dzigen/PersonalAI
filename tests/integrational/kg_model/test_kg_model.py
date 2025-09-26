@@ -18,12 +18,15 @@ def test_add_knowledge(triplets: List[Triplet], expected_count: Dict[str, Dict[s
     kg_model.clear()
 
     real_create_info = kg_model.add_knowledge(triplets)
-    real_count = kg_model.count_items()
-    assert real_count['graph_info'] == expected_count['graph_info']
-    assert real_count['embeddings_info'] == expected_count['embeddings_info']
-
     assert real_create_info['graph_info'] == expected_graph_cinfo
     assert real_create_info['embeddings_info'] == expected_vector_cinfo
+
+    real_count = kg_model.count_items()
+    assert real_count['graph_info']['nodes'] == expected_count['graph_info']['nodes']                                 
+    assert real_count['graph_info']['triplets'] == expected_count['graph_info']['triplets']
+    assert real_count['embeddings_info']['nodes'] == expected_count['embeddings_info']['nodes']                                 
+    assert real_count['embeddings_info']['triplets'] == expected_count['embeddings_info']['triplets']
+    assert real_count['nodestree_info'] == expected_count['nodestree_info']
 
 @pytest.mark.parametrize("init_triplets, expected_init_count, delete_triplets, expected_final_count, expected_graph_dinfo, expected_vector_dinfo, kg_model", KG_POPULATED_DELETE_TEST_CASES, indirect=['kg_model'])
 def test_remove_knowledge(init_triplets: List[Triplet], expected_init_count: Dict[str, Dict[str, int]],
@@ -36,11 +39,15 @@ def test_remove_knowledge(init_triplets: List[Triplet], expected_init_count: Dic
     assert kg_model.count_items() == expected_init_count
 
     real_delete_info = kg_model.remove_knowledge(delete_triplets)
-
-    assert kg_model.count_items() == expected_final_count
     assert real_delete_info['graph_info'] == expected_graph_dinfo
     assert real_delete_info['embeddings_info'] == expected_vector_dinfo
 
+    real_count = kg_model.count_items()
+    assert real_count['graph_info']['nodes'] == expected_final_count['graph_info']['nodes']                                 
+    assert real_count['graph_info']['triplets'] == expected_final_count['graph_info']['triplets']
+    assert real_count['embeddings_info']['nodes'] == expected_final_count['embeddings_info']['nodes']                                 
+    assert real_count['embeddings_info']['triplets'] == expected_final_count['embeddings_info']['triplets']
+    assert real_count['nodestree_info'] == expected_final_count['nodestree_info']
 
 @pytest.mark.parametrize("init_triplets, expected_init_count, kg_model", KG_POPULATED_CLEAR_TEST_CASES, indirect=['kg_model'])
 def test_clear(init_triplets: List[Triplet], expected_init_count: Dict[str, Dict[str,int]], kg_model: KnowledgeGraphModel):
@@ -48,8 +55,16 @@ def test_clear(init_triplets: List[Triplet], expected_init_count: Dict[str, Dict
     _ = kg_model.add_knowledge(init_triplets)
 
     real_count = kg_model.count_items()
-    assert real_count['graph_info'] == expected_init_count['graph_info']
-    assert real_count['embeddings_info'] == expected_init_count['embeddings_info']
+    assert real_count['graph_info']['nodes'] == expected_init_count['graph_info']['nodes']
+    assert real_count['graph_info']['triplets'] == expected_init_count['graph_info']['triplets']
+    assert real_count['embeddings_info']['nodes'] == expected_init_count['embeddings_info']['nodes']
+    assert real_count['embeddings_info']['triplets'] == expected_init_count['embeddings_info']['triplets']
+    assert real_count['nodestree_info'] == None
 
     kg_model.clear()
-    assert kg_model.count_items() == {'graph_info': {'nodes': 0, 'triplets': 0}, 'embeddings_info': {'nodes': 0, 'triplets': 0}}
+    real_count = kg_model.count_items()
+    assert real_count['graph_info']['nodes'] == 0                               
+    assert real_count['graph_info']['triplets'] == 0
+    assert real_count['embeddings_info']['nodes'] == 0                                
+    assert real_count['embeddings_info']['triplets'] == 0
+    assert real_count['nodestree_info'] == None

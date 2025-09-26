@@ -2,12 +2,12 @@ services:
   neo4j:
     container_name: personalai_test_neo4j
     image: neo4j:5.21.0-enterprise
-    hostname: personalai_test_neo4j
+    hostname: localhost
     # networks:
     #   - tests_network
     ports:
-      - 7475:7474
-      - 7688:7687
+      - 7470:7474
+      - 7680:7687
     environment:
       - NEO4J_AUTH=neo4j/password
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
@@ -47,14 +47,14 @@ services:
   mongo_cache:
     container_name: personalai_test_mongo
     image: mongo:7.0.9
-    hostname: personalai_test_mongo #personalai_test_mongo
+    hostname: localhost #personalai_test_mongo
     # networks:
     #   - tests_network
     environment:
       - MONGO_INITDB_ROOT_USERNAME=user
       - MONGO_INITDB_ROOT_PASSWORD=pass
     ports:
-      - 27017:27017
+      - 27010:27017
     volumes:
       - ./volumes/mongo:/data/db
     deploy:
@@ -88,7 +88,7 @@ services:
   redis_cache:
     container_name: personalai_test_redis
     image: redis:latest
-    hostname: personalai_test_redis #personalai_test_redis
+    hostname: localhost #personalai_test_redis
     # networks:
     #   - tests_network
     command: redis-server /usr/local/etc/redis/redis.conf
@@ -97,7 +97,7 @@ services:
       - REDIS_USER=my_user
       - REDIS_USER_PASSWORD=my_user_password
     ports:
-      - 6379:6379
+      - 6370:6379
     volumes:
       - ../configs/redis/redis.conf:/usr/local/etc/redis/redis.conf
       - ./volumes/redis:/data
@@ -126,7 +126,7 @@ services:
   milvus:
     image: milvusdb/milvus:v2.5.8
     container_name: personalai_test_milvus
-    hostname: personalai_test_milvus
+    hostname: localhost
     # networks:
     #   - tests_network
     command: ["milvus", "run", "standalone"]
@@ -161,7 +161,7 @@ services:
           memory: 5G
 
   isolated_environment:
-    image: m.menschikov/empty_workspace:v1
+    image: m.menschikov/workspace:v2
     container_name: personalai_test_isolated_env
     hostname: test_isolated_env
     network_mode: "host"
@@ -173,12 +173,11 @@ services:
       - ../deployment:/home/workspace/deployment
       - ../models:/home/workspace/models
       - ../tests:/home/workspace/tests
-      - ../configs:/home/workspace/configs
+      #- ../configs:/home/workspace/configs
     depends_on:
       - neo4j
-      #- aerospike
-      - redis_ui
-      - mongo_ui
+      - redis_cache
+      - mongo_cache
       - milvus
     deploy:
       resources:
@@ -190,7 +189,7 @@ services:
           memory: 24G
           devices:
             - driver: nvidia
-              device_ids: ['1']
+              device_ids: ['2']
               capabilities: [gpu]
 
 # networks:

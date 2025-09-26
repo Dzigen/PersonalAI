@@ -14,21 +14,6 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
     def __init__(self, config: TreeDBConnectionConfig = DEFAULT_NEO4JTREE_CONFIG):
         self.config = config
 
-    def execute_query(self, query: str, db_flag: bool = True) -> List[object]:
-        assert self.driver is not None, "Driver not initialized!"
-        session = None
-        response = None
-        try:
-            session = self.driver.session(database=self.config.db_info['db']) if db_flag else self.driver.session()
-            response = list(session.run(query))
-        except Exception as e:
-            print("Query failed:", e)
-            print("Error query: ", query)
-        finally:
-            if session is not None:
-                session.close()
-        return response
-
     def open_connection(self) -> None:
         self.driver = None
         try:
@@ -53,26 +38,6 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
 
         if self.config.need_to_clear:
             self.clear()
-
-    def is_node_valid(self, node: TreeNode) -> bool:
-        if type(node.type) is not TreeNodeType:
-            return False
-        if type(node.id) is not str:
-            return False
-        if type(node.text) is not str:
-            return False
-        if type(node.props) is not dict:
-            return False
-
-        for k in node.props.keys():
-            if type(k) is not str:
-                return False
-
-        if 'external_id' in node.props:
-            return False
-
-        return True
-
 
     def is_open(self) -> bool:
         # TODO
@@ -103,23 +68,6 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         assert nodes_count['root'] < 2 and nodes_count['root'] > 0
         # summarized-вершин <= leaf-вершин
         assert nodes_count['summarized'] <= nodes_count['leaf']
-
-    def __del__(self):
-        self.close_connection()
-
-    def formate_nodes_output(self, raw_nodes: object) -> List[TreeNode]:
-        formated_nodes = []
-        for raw_node in raw_nodes:
-            cur_f_node = TreeNode(
-                id=raw_node['n']['external_id'], text=raw_node['n']['text'],
-                type=TREENODES_TYPES_MAP[list(raw_node['n'].labels)[0]], props=dict(raw_node['n']))
-            del cur_f_node.props['external_id']
-
-            if cur_f_node.type != TreeNodeType.root:
-                del cur_f_node.props['text']
-
-            formated_nodes.append(cur_f_node)
-        return formated_nodes
 
     def create(self, parent_id: str, new_node: TreeNode) -> None:
         # Подвешиваем новую вершину к уже существующей
@@ -223,6 +171,16 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
             self.execute_query(f'MATCH (n) WHERE n.{ids_type.value} = "{id}" DELETE n;')
 
 
+    def get_leaf_descendants(self, id: str, id_type: str=TreeIdType.external) -> List[TreeNode]:
+        if type(id) is not str:
+            raise ValueError
+        if type(id_type) is not TreeIdType:
+            raise ValueError
+
+        raw_output = self.execute_query(f'MATCH (parent)-[:relation*0..]->(n:leaf) WHERE parent.{id_type.value} = "{id}" RETURN n')
+        leaf_nodes = self.formate_nodes_output(raw_output)
+        return leaf_nodes
+
     def count_items(self) -> Dict[str, int]:
 
         leafs_amount = self.execute_query("MATCH (n:leaf) return COUNT(n) as l_amount")[0]['l_amount']
@@ -245,12 +203,6 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         output = self.execute_query(query)
         return len(output) > 0
 
-    def clear(self) -> None:
-        self.execute_query("MATCH (n)-[rel]->() DELETE n,rel")
-        self.execute_query("MATCH (n) DELETE n")
-        # Добавляем корневую вершину
-        self.execute_query("CREATE (n:root {" + 'external_id: "' + self.root_node_id + '", depth: 0});')
-
     def get_child_nodes(self, parent_id: str) -> List[TreeNode]:
         if type(parent_id) is not str:
             raise ValueError
@@ -261,5 +213,86 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         formated_nodes = self.formate_nodes_output(raw_nodes)
         return formated_nodes
 
-    def get_tree_maxdepth(self):
+    def get_tree_maxdepth(self) -> int:
         return self.execute_query("MATCH (n) RETURN MAX(n.depth) as max_depth")[0]['max_depth']
+
+    def clear(self) -> None:
+        self.execute_query("MATCH (n)-[rel]->() DELETE n,rel")
+        self.execute_query("MATCH (n) DELETE n")
+        # Добавляем корневую вершину
+        self.execute_query("CREATE (n:root {" + 'external_id: "' + self.root_node_id + '", depth: 0});')
+
+
+    def execute_query(self, query: str, db_flag: bool = True) -> List[object]:
+        """_summary_
+
+        :param query: _description_
+        :type query: str
+        :param db_flag: _description_, defaults to True
+        :type db_flag: bool, optional
+        :return: _description_
+        :rtype: List[object]
+        """
+        assert self.driver is not None, "Driver not initialized!"
+        session = None
+        response = None
+        try:
+            session = self.driver.session(database=self.config.db_info['db']) if db_flag else self.driver.session()
+            response = list(session.run(query))
+        except Exception as e:
+            print("Query failed:", e)
+            print("Error query: ", query)
+        finally:
+            if session is not None:
+                session.close()
+        return response
+
+    def is_node_valid(self, node: TreeNode) -> bool:
+        """_summary_
+
+        :param node: _description_
+        :type node: TreeNode
+        :return: _description_
+        :rtype: bool
+        """
+        if type(node.type) is not TreeNodeType:
+            return False
+        if type(node.id) is not str:
+            return False
+        if type(node.text) is not str:
+            return False
+        if type(node.props) is not dict:
+            return False
+
+        for k in node.props.keys():
+            if type(k) is not str:
+                return False
+
+        if 'external_id' in node.props:
+            return False
+
+        return True
+
+    def formate_nodes_output(self, raw_nodes: object) -> List[TreeNode]:
+        """_summary_
+
+        :param raw_nodes: _description_
+        :type raw_nodes: object
+        :return: _description_
+        :rtype: List[TreeNode]
+        """
+        formated_nodes = []
+        for raw_node in raw_nodes:
+            cur_f_node = TreeNode(
+                id=raw_node['n']['external_id'], text=raw_node['n']['text'],
+                type=TREENODES_TYPES_MAP[list(raw_node['n'].labels)[0]], props=dict(raw_node['n']))
+            del cur_f_node.props['external_id']
+
+            if cur_f_node.type != TreeNodeType.root:
+                del cur_f_node.props['text']
+
+            formated_nodes.append(cur_f_node)
+        return formated_nodes
+
+    def __del__(self):
+        self.close_connection()
