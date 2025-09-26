@@ -99,7 +99,7 @@ services:
 
   ollama_agent:
     image: ollama/ollama:latest
-    container_name: personalai_mmenschikov_ollama_qwen7b
+    container_name: personalai_mmenschikov_ollama
     ports:
       - "11437:11434"
     environment:
@@ -116,5 +116,5 @@ services:
           memory: 4G
           devices:
             - driver: nvidia
-              device_ids: ['0']
+              device_ids: ['2']
               capabilities: [gpu]
