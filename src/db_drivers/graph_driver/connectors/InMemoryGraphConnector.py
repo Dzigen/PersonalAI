@@ -39,20 +39,20 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         try:
             del self.edges
             del self.adjacent_nodes
-        except AttributeError:
+        except AttributeError as e:
             pass
 
         try:
             del self.nodes
             del self.triplets
-        except AttributeError:
+        except AttributeError as e:
             pass
 
         try:
             del self.strid_nodes_index
             del self.strid_relation_index
             del self.tid_triplets_index
-        except AttributeError:
+        except AttributeError as e:
             pass
 
         gc.collect()

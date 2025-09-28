@@ -17,7 +17,7 @@ from src.utils.data_structs import RelationType, NodeType
 @pytest.fixture(scope='package')
 def kg_model():
     #
-    graph_driver_config = GraphModelConfig(
+    graph_struct_config = GraphModelConfig(
         driver_config=GraphDriverConfig(
             db_vendor='kuzu',
             db_config=GraphDBConnectionConfig(
@@ -32,7 +32,6 @@ def kg_model():
             )
         )
     )
-    graph_struct_config = GraphModelConfig(driver_config=graph_driver_config)
 
     #
     graph_embeddings_config = EmbeddingsModelConfig(

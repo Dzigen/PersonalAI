@@ -41,8 +41,8 @@ def test_find_simple(llm_updator: LLMUpdator, kg_triplets: List[Triplet], triple
 
     for triplet, stub_answer, expected_output in zip(triplets, agent_stub_answers, expected_obsolete_ids):
 
-        llm_updator.agent.looped_answers.clear()
-        llm_updator.agent.looped_answers += stub_answer
+        llm_updator.kg_model.AVAILABLE_AGENTS['stub'].looped_answers.clear()
+        llm_updator.kg_model.AVAILABLE_AGENTS['stub'].looped_answers += stub_answer
 
         real_obsolete_ids = llm_updator.find_simple_obsolete_triplet_ids(
             triplet)

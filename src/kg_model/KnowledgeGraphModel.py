@@ -40,9 +40,6 @@ class KnowledgeGraphModelConfig:
     graph_embeddings_config: EmbeddingsModelConfig = field(default_factory=lambda: EmbeddingsModelConfig())
     nodestree_config: Union[NodesTreeModelConfig, None] = None
 
-    # :param embedder_config: Конфигурация класса, отвечающего за приведения текста в его векторное представление с помощью заданной embedder-модели. Значение по умолчанию EmbedderModelConfig().
-    # :type embedder_config: EmbedderModelConfig, optional
-
     embedders_config: Dict[str, EmbedderModelConfig] = field(default_factory=lambda: DEFAULT_EMBEDDERS_CONFIG)
     agents_config: Dict[str, AgentDriverConfig] = field(default_factory=lambda: DEFAULT_AGENTS_CONFIG)
     embedders_map: Dict[str, Dict] = field(default_factory=lambda: DEFAULT_EMBEDDERS_MAP)
@@ -190,10 +187,6 @@ class KnowledgeGraphModel:
                 self.nodestree_model.clear_kv_caches()
 
     def __del__(self):
-        del self.graph_struct
-        del self.graph_embeddings
-        if self.nodestree_model is not None:
-            del self.nodestree_model
         for a_name in self.AVAILABLE_AGENTS.keys():
             self.AVAILABLE_AGENTS[a_name].close_connection()
 

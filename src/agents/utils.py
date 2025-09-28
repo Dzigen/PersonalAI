@@ -32,3 +32,6 @@ class AbstractAgentConnector:
     @abstractmethod
     def close_connection(self) -> None:
         pass
+
+    def __del__(self) -> None:
+        self.close_connection()

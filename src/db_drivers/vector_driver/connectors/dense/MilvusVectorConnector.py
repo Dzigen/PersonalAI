@@ -1,5 +1,5 @@
 from typing import List, Tuple, Union
-from pymilvus.orm.connections import ConnectionNotExistException
+from pymilvus.exceptions import ConnectionNotExistException
 from pymilvus import MilvusClient, DataType
 from time import sleep
 import numpy as np
@@ -76,12 +76,16 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
                 skip_load_dynamic_field=True)
 
     def close_connection(self) -> None:
-        load_state = self.client.get_load_state(
-            self.config.db_info['table'])['state'].value
-        if load_state != 3:
-            self.client.release_collection(
-                collection_name=self.config.db_info['table'])
-        self.client.close()
+        try:
+            load_state = self.client.get_load_state(
+                self.config.db_info['table'])['state'].value
+        except ConnectionNotExistException:
+            pass
+        else:
+            if load_state != 3:
+                self.client.release_collection(
+                    collection_name=self.config.db_info['table'])
+            self.client.close()
 
     def is_open(self) -> bool:
         if self.client is None:
