@@ -1,6 +1,7 @@
 from typing import List
 import re
 
+
 def summn_custom_parse(raw_response: str, **kwargs) -> List[str]:
     # Пустой ответ
     raw_response = raw_response.strip(' .')

@@ -1,3 +1,5 @@
+from src.kg_model import KnowledgeGraphModel
+from src.kg_model.nodestree_model import NodesTreeModel
 import sys
 import json
 import joblib
@@ -17,8 +19,6 @@ with open(PARAMS_FILE_PATH, 'r') as stream:
 
 sys.path.insert(0, PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
 
-from src.kg_model.nodestree_model import NodesTreeModel
-from src.kg_model import KnowledgeGraphModel
 
 gc.collect()
 
@@ -48,7 +48,7 @@ print("Setting nodes-tree model...")
 gmodel_config = joblib.load(GRAPH_MODEL_CONFIG_PATH)
 emodel_config = joblib.load(EMBEDDINGS_MODEL_CONFIG_PATH)
 treemodel_config = joblib.load(NODESTREE_MODEL_CONFIG_PATH)
-kvdriver_config =  joblib.load(CACHE_CONFIG_PATH)
+kvdriver_config = joblib.load(CACHE_CONFIG_PATH)
 
 print("GMODEL_CONFIG:\n", gmodel_config)
 print("EMODEL_CONFIG:\n", emodel_config)
@@ -67,13 +67,16 @@ kg_model = KnowledgeGraphModel(
 
 # checking knowledge graph size
 print("tree_struct: ", kg_model.nodestree_struct.count_items())
-print("vector_struct (nodes): " ,kg_model.embeddings_struct.vectordbs['nodes'].count_items())
-print("vector_struct (triplets): ", kg_model.embeddings_struct.vectordbs['triplets'].count_items())
+print("vector_struct (nodes): ",
+      kg_model.embeddings_struct.vectordbs['nodes'].count_items())
+print("vector_struct (triplets): ",
+      kg_model.embeddings_struct.vectordbs['triplets'].count_items())
 print("graph struct: ", kg_model.graph_struct.db_conn.count_items())
 
 # checking caches status
 if PARAMS['MEM_PIPELINE_CONFIG']['llm_caching']:
-    print("summ_nodes cached: ", kg_model.nodestree_struct.nodes_summarization_solver.cachekv.kv_conn.count_items())
+    print("summ_nodes cached: ",
+          kg_model.nodestree_struct.nodes_summarization_solver.cachekv.kv_conn.count_items())
 
 ############ ############
 print("SAVING HYPERPARAMS...")
@@ -96,11 +99,13 @@ print("NODES-TREE BUILDING...")
 step = 200
 counter = 0
 s_time = time()
-process = enumerate(extracted_group_tripelts[44+23+122+13+220+29+47+20+254+23+116+801+490:])
+process = enumerate(
+    extracted_group_tripelts[44+23+122+13+220+29+47+20+254+23+116+801+490:])
 milestone_time = time()
 for i, triplets in process:
     print(f"Triplets group #{i} / {len(extracted_group_tripelts)}")
-    operation_info = kg_model.nodestree_struct.expand_tree(triplets, status_bar=True)
+    operation_info = kg_model.nodestree_struct.expand_tree(
+        triplets, status_bar=True)
     display_info = {
         'existed_nodes': len(operation_info['existed_nodes']),
         'added_nodes': len(operation_info['added_nodes'])}

@@ -1,6 +1,7 @@
 from typing import List
 import re
 
+
 def casumm_custom_parse(raw_response: str, **kwargs) -> str:
     if len(raw_response) < 1:
         raise ValueError
@@ -15,7 +16,7 @@ def casumm_custom_parse(raw_response: str, **kwargs) -> str:
     # Пустой ответ
     if len(answer1) < 1:
         raise ValueError
-    
+
     answer2 = re.sub("<final-answer>", "", answer1).strip()
     # Пустой ответ
     if len(answer2) < 1:

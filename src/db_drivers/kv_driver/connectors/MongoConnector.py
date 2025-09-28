@@ -1,14 +1,11 @@
 import pymongo
 from typing import List, Dict
 from collections import defaultdict
-import numpy as np
 import pickle
 
-from src.db_drivers.kv_driver.utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
+from .configs import DEFAULT_MONGOKV_CONFIG
+from ..utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
 
-DEFAULT_MONGOKV_CONFIG = KVDBConnectionConfig(host='localhost', port=27017,
-                                              db_info={'db': 'test_db', 'table': 'test_collection'},
-                                              params={'username': 'user', 'password': 'pass', 'max_storage': -1})
 
 class MongoKVConnector(AbstractKVDatabaseConnection):
 
@@ -26,7 +23,8 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
     def open_connection(self) -> None:
         self._client = pymongo.MongoClient(f'mongodb://{self.config.host}:{self.config.port}',
                                            username=self.config.params['username'], password=self.config.params['password'])
-        self._collection = self._client[self.config.db_info['db']][self.config.db_info['table']]
+        self._collection = self._client[self.config.db_info['db']
+                                        ][self.config.db_info['table']]
 
         if self.config.need_to_clear:
             self.clear()
@@ -53,11 +51,13 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
                     dumped_value = pickle.dumps((item.value, 'bytes'))
                 else:
                     dumped_value = pickle.dumps((item.value, 'notbytes'))
-                filtered_items.append({'_id': item.id, 'value': dumped_value, 'score': 0})
+                filtered_items.append(
+                    {'_id': item.id, 'value': dumped_value, 'score': 0})
 
         # находимся в фиксированном размере хранилища
         if self.config.params['max_storage'] > 0:
-            n_items_to_delete = (self.count_items() + len(filtered_items)) - self.config.params['max_storage']
+            n_items_to_delete = (
+                self.count_items() + len(filtered_items)) - self.config.params['max_storage']
             if n_items_to_delete > 0:
                 self.delete_rare_items(n_items_to_delete)
 
@@ -110,7 +110,8 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
         if len(items) < 1:
             return
 
-        existig_items = self._collection.find({"_id": {"$in": [item.id for item in items]}})
+        existig_items = self._collection.find(
+            {"_id": {"$in": [item.id for item in items]}})
         items_dict = {item.id: item for item in items}
 
         for exist_item in existig_items:
@@ -122,8 +123,8 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
                 else:
                     dumped_value = pickle.dumps((cur_item.value, 'notbytes'))
 
-                self._collection.update_one({'_id': cur_item.id}, {"$set": { "value": dumped_value}})
-
+                self._collection.update_one({'_id': cur_item.id}, {
+                                            "$set": {"value": dumped_value}})
 
     def delete(self, ids: List[str]) -> None:
         for id in ids:

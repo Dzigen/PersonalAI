@@ -5,19 +5,11 @@ import pickle
 import os
 import time
 import hashlib
-import numpy as np
 from collections import defaultdict
 
+from .configs import DEFAULT_INMEMORYKV_CONFIG
 from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection, KeyValueDBInstance
 
-DEFAULT_INMEMORYKV_CONFIG = KVDBConnectionConfig(
-    host='localhost',
-    params={
-        'kvstore_dump_name': 'inmemory_store',
-        'load_from_disk': False, 'load_dump_dir': '.',
-        'save_on_disk': True, 'save_dump_dir': '.',
-        'max_storage': 5e+8
-    })
 
 class InMemoryKVConnector(AbstractKVDatabaseConnection):
 
@@ -30,7 +22,8 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
             if os.path.exists(load_path):
                 self.kv_store = joblib.load(load_path)
             else:
-                print(f"warning: kvstore-dump '{load_path}' doesnt exists. creating empty kv-store")
+                print(
+                    f"warning: kvstore-dump '{load_path}' doesnt exists. creating empty kv-store")
                 self.kv_store = dict()
         else:
             self.kv_store = dict()
@@ -60,17 +53,20 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
                 raise ValueError
 
             if type(item.id) is not str:
-                raise ValueError(f"id: t - {type(item.id)}; v - {item.id} value: t - {type(item.value)}; v - {item.value}")
+                raise ValueError(
+                    f"id: t - {type(item.id)}; v - {item.id} value: t - {type(item.value)}; v - {item.value}")
 
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
             raise ValueError
 
-        filtered_items = [item for item in items if not self.item_exist(item.id)]
+        filtered_items = [
+            item for item in items if not self.item_exist(item.id)]
 
         # находимся в фиксированном размере хранилища
         if self.config.params['max_storage'] > 0:
-            n_items_to_delete = (self.count_items() + len(filtered_items)) - self.config.params['max_storage']
+            n_items_to_delete = (
+                self.count_items() + len(filtered_items)) - self.config.params['max_storage']
             if n_items_to_delete > 0:
                 self.delete_rare_items(n_items_to_delete)
 

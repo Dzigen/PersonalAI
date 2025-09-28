@@ -1,6 +1,5 @@
-from .connectors.Neo4jConnector import Neo4jConnector, DEFAULT_NEO4J_CONFIG
-from .connectors.InMemoryGraphConnector import InMemoryGraphConnector, DEFAULT_INMEMORYGRAPH_CONFIG
-from .connectors.KuzuConnector import KuzuConnector, DEFAULT_KUZU_CONFIG
+from .connectors import Neo4jGraphConnector, InMemoryGraphConnector, KuzuGraphConnector
+from .connectors.configs import DEFAULT_INMEMORYGRAPH_CONFIG, DEFAULT_KUZU_CONFIG, DEFAULT_NEO4J_CONFIG
 
 DEFAULT_GRAPHDB_CONFIGS = {
     'neo4j': DEFAULT_NEO4J_CONFIG,
@@ -9,7 +8,7 @@ DEFAULT_GRAPHDB_CONFIGS = {
 }
 
 AVAILABLE_GRAPHDB_CONNECTORS = {
-    'neo4j': Neo4jConnector,
+    'neo4j': Neo4jGraphConnector,
     'inmemory_graph': InMemoryGraphConnector,
-    'kuzu': KuzuConnector
+    'kuzu': KuzuGraphConnector
 }

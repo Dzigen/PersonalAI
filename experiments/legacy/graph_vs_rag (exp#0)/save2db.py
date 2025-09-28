@@ -10,7 +10,8 @@ print(len(data["data"]))
 samples = [element for element in data["data"] if "_" not in element["doc_id"]]
 print(len(samples))
 
-conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
+conn = Neo4jConnection(uri="bolt://31.207.47.254:7687",
+                       user="neo4j", pwd="password")
 
 insert = True
 total_triplets = []
@@ -42,9 +43,11 @@ for sample in samples:
             tr2sp[(subj, rel, obj)] = speaker
 
         sentences = sample["sentences"]
-        sentences = [f"{speaker}: {sentence}" for speaker, sentence in zip(new_sample["speakers_names"], sentences)]
+        sentences = [f"{speaker}: {sentence}" for speaker,
+                     sentence in zip(new_sample["speakers_names"], sentences)]
         new_sample["sentences"] = sentences
-        new_sample["speakers"] = ", ".join([str(element) for element in new_sample["speakers"]])
+        new_sample["speakers"] = ", ".join(
+            [str(element) for element in new_sample["speakers"]])
         clean_triplets = []
         tr2sent = {}
         for triplet in new_sample["triplets"]:
@@ -84,12 +87,16 @@ for sample in samples:
                 obj = obj.replace(" ", "_")
                 print(triplet, subj, rel, obj, sentiment, speaker)
                 if len(rel) > 1:
-                    res1 = conn.extract_node(node_type="device", node_name=subj, db="testdb")
+                    res1 = conn.extract_node(
+                        node_type="device", node_name=subj, db="testdb")
                     if not res1:
-                        conn.create_node(node_type="device", node_name=subj, db="testdb")
-                    res2 = conn.extract_node(node_type="feature", node_name=obj, db="testdb")
+                        conn.create_node(node_type="device",
+                                         node_name=subj, db="testdb")
+                    res2 = conn.extract_node(
+                        node_type="feature", node_name=obj, db="testdb")
                     if not res2:
-                        conn.create_node(node_type="feature", node_name=obj, db="testdb")
+                        conn.create_node(node_type="feature",
+                                         node_name=obj, db="testdb")
                     conn.create_relationship_2props(
                         type1="device",
                         type2="feature",
@@ -113,11 +120,13 @@ for subj, rel, obj, sent in total_triplets:
         stats2[obj] = []
     stats2[obj].append((subj, rel, sent))
 
-stats1 = {subj_obj: rel_sent for subj_obj, rel_sent in stats1.items() if len(rel_sent) > 1}
+stats1 = {subj_obj: rel_sent for subj_obj,
+          rel_sent in stats1.items() if len(rel_sent) > 1}
 stats1 = list(stats1.items())
 stats1 = sorted(stats1, key=lambda x: len(x[1]), reverse=True)
 
-stats2 = {obj: subj_rel for obj, subj_rel in stats2.items() if len(subj_rel) > 1}
+stats2 = {obj: subj_rel for obj,
+          subj_rel in stats2.items() if len(subj_rel) > 1}
 stats2 = list(stats2.items())
 stats2 = sorted(stats2, key=lambda x: len(x[1]), reverse=True)
 

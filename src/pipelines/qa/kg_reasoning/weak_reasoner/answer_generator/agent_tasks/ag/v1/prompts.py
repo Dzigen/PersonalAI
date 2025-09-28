@@ -3,7 +3,7 @@
 EN_SIMPLEAG_SYSTEM_PROMPT = """You are a helpful assistant."""
 
 EN_SIMPLEAG_USER_PROMPT = \
-"""Answer the question, based on provided info by analogy with examples given. Generate chain of thought and then give the final answer in the following format:
+    """Answer the question, based on provided info by analogy with examples given. Generate chain of thought and then give the final answer in the following format:
 ### Answer
 Chain of thought: ... Final answer: ...
 Question 1: Whose opinions from Anthony and Grace about devices are most similar to Faith's?
@@ -44,7 +44,7 @@ EN_SIMPLEAG_ASSISTANT_PROMPT = ""
 RU_SIMPLEAG_SYSTEM_PROMPT = """Ты - ассистент, который умеет решать заданные задачи."""
 
 RU_SIMPLEAG_USER_PROMPT = \
-"""Ответь на вопрос, опираясь на приведенную информацию.
+    """Ответь на вопрос, опираясь на приведенную информацию.
 Вопрос: {q}
 Информация для ответа: {c}
 Ответ: """

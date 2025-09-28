@@ -1,19 +1,19 @@
 from typing import Dict, List
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from abc import abstractmethod
 from enum import Enum
 
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
+
 class TreeNodeType(Enum):
-    """_summary_
-    """
-    #
+    #: Вершина, у которой нет child- и descendants- вершин.
     leaf = "leaf"
-    #
+    #: Корневая вершина дерева.
     root = "root"
-    #
+    # Вершина, у которой есть минимум одна child- или descendants-вершина типа 'leaf'.
     summarized = "summarized"
+
 
 TREENODES_TYPES_MAP = {
     'leaf': TreeNodeType.leaf,
@@ -23,163 +23,87 @@ TREENODES_TYPES_MAP = {
 
 
 class TreeIdType(Enum):
-    """_summary_
-    """
-    #
+    #: Уникальное значение, выдаваемое каждой новой вершине для её идентификации.
     external = "external_id"
-    #
+    #: Значение, полученный на основе срокового представления (значения в строковом поле) соответствующей вершины.
     str = "str_id"
+
 
 @dataclass
 class TreeNode:
-    """_summary_
-    """
-    #
     id: str
-    #
     text: str
-    #
     type: TreeNodeType
-    #
-    props: Dict[str, object]
+    props: Dict[str, object] = field(default_factory=lambda: dict())
+
 
 @dataclass
 class TreeDBConnectionConfig(BaseDatabaseConfig):
+    db_info: Dict = field(default_factory=lambda: {
+                          'db': 'defaultpersonalaitreedb', 'table': 'defaultpersonalaitreetable'})
     host: str = None
     port: str = None
+
 
 class AbstractTreeDatabaseConnection(AbstractDatabaseConnection):
 
     root_node_id: str = "ROOT_NODE_ID"
 
     @abstractmethod
-    def open_connection(self) -> None:
-        """_summary_
-        """
-        pass
-
-    @abstractmethod
-    def is_open(self) -> bool:
-        """_summary_
-
-        :return: _description_
-        :rtype: bool
-        """
-        pass
-
-    @abstractmethod
-    def close_connection(self) -> None:
-        """_summary_
-        """
-        pass
-
-    @abstractmethod
     def check_consistency(self) -> None:
-        """_summary_
-        """
         pass
 
     @abstractmethod
     def create(self, parent_id: str, new_node: TreeNode) -> None:
-        """_summary_
-
-        :param parent_id: _description_
-        :type parent_id: str
-        :param new_node: _description_
-        :type new_node: TreeNode
-        """
         pass
 
     @abstractmethod
     def read(self, ids: List[str], ids_type: TreeIdType = TreeIdType.external) -> List[TreeNode]:
-        """_summary_
-
-        :param ids: _description_
-        :type ids: List[str]
-        :param ids_type: _description_, defaults to TreeIdType.external
-        :type ids_type: TreeIdType, optional
-        :return: _description_
-        :rtype: List[TreeNode]
-        """
         pass
 
     @abstractmethod
     def update(self, items: List[TreeNode]) -> None:
-        """_summary_
-
-        :param items: _description_
-        :type items: List[TreeNode]
-        """
         pass
 
     @abstractmethod
     def delete(self, ids: List[str], ids_type: TreeIdType = TreeIdType.external) -> None:
-        """_summary_
-
-        :param ids: _description_
-        :type ids: List[str]
-        :param ids_type: _description_, defaults to TreeIdType.external
-        :type ids_type: TreeIdType, optional
-        """
         pass
 
     @abstractmethod
-    def get_leaf_descendants(self, id: str, id_type: str=TreeIdType.external) -> List[TreeNode]:
-        """_summary_
+    def item_exist(self, id: str, id_type: str = TreeIdType.external) -> bool:
+        pass
 
-        :param id: _description_
-        :type id: str
-        :param id_type: _description_, defaults to TreeIdType.external
+    @abstractmethod
+    def get_leaf_descendants(self, ancestor_id: str, id_type: str = TreeIdType.external) -> List[TreeNode]:
+        """Метод предназначен для получения всех leaf-вершин/потомков для вершины-предка с заданным ancestor_id-идентификатором.
+
+        :param ancestor_id: Идентификатор вершины-предка.
+        :type ancestor_id: str
+        :param id_type: Тип идентификатора, по которому осуществляется поиск/выбор вершины-предка, Значение по умолчанию TreeIdType.external.
         :type id_type: str, optional
-        :return: _description_
+        :return: Список leaf-вершин, которые являются потомками заданной ancestor_id-вершины.
         :rtype: List[TreeNode]
         """
         pass
 
     @abstractmethod
-    def item_exist(self, id: str, id_type: str = TreeIdType.external) -> bool:
-        """_summary_
+    def get_child_nodes(self, parent_id: str, id_type: str = TreeIdType.external) -> List[TreeNode]:
+        """Метод предназначен для получения всех leaf-вершин у parent-вершини с заданным id.
 
-        :param id: _description_
-        :type id: str
-        :param id_type: _description_, defaults to TreeIdType.external
-        :type id_type: str, optional
-        :return: _description_
-        :rtype: bool
-        """
-        pass
-
-    @abstractmethod
-    def count_items(self) -> Dict[str, int]:
-        """_summary_
-
-        :return: _description_
-        :rtype: Dict[str, int]
-        """
-        pass
-
-    @abstractmethod
-    def get_child_nodes(self, parent_id: str) -> List[TreeNode]:
-        """_summary_
-
-        :param parent_id: _description_
+        :param parent_id: Идентификатор parent-вершины.
         :type parent_id: str
-        :return: _description_
+        :param id_type: Тип идентификатора, по которому осуществляется поиск/выбор parent-вершины, Значение по умолчанию TreeIdType.external.
+        :type id_type: str, optional
+        :return: Список child-вершин, принадлежаших заданной parent-вершине.
         :rtype: List[TreeNode]
         """
         pass
 
     @abstractmethod
     def get_tree_maxdepth(self) -> int:
-        """_summary_
+        """Метод предназначен для получения глубины хранящегося дерева вершин.
 
-        :return: _description_
+        :return: Значение глубины дерева.
         :rtype: int
-        """
-        pass
-
-    @abstractmethod
-    def clear(self) -> None:
-        """_summary_
         """
         pass

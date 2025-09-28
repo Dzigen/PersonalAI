@@ -1,5 +1,35 @@
 # генерируем kg_reasoner конфиг на основании params.yaml файла
 
+from src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier import AgentAnswerClassifierTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator import AgentAnswerGeneratorTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator import AnswerGeneratorConfig
+from src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation import AgentClueAnswersSummTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation import ClueAnswersSummarizerConfig
+from src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation import AgentClueAnswerGenTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator import ClueAnswerGeneratorConfig
+from src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator import AgentCQueryGenTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator import ClueQueriesGeneratorConfig
+from src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching import Entities2NodesMatcherConfig
+from src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor import AgentEntitiesExtrTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor import EntitiesExtractorConfig
+from src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer import AgentPlanInitTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer import AgentPlanEnhancingTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier import AgentEnhanceClassifierTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer import SearchPlanEnhancerConfig
+from src.pipelines.qa.kg_reasoning.medium_reasoner import MediumKGReasonerConfig
+from src.pipelines.qa.query_preprocessing.decomposition.agent_tasks.query_decomposition import AgentQueryDecompTaskConfigSelector
+from src.pipelines.qa.query_preprocessing.decomposition.agent_tasks.decomposition_classifier import AgentDecompClsTaskConfigSelector
+from src.pipelines.qa.query_preprocessing.decomposition import QueryDecomposerConfig
+from src.pipelines.qa.query_preprocessing import QueryPreprocessorConfig
+from src.pipelines.qa.answers_aggregation.agent_tasks.answers_summarisation import AgentSubASummTaskConfigSelector
+from src.pipelines.qa.answers_aggregation import AnswersAggregatorConfig
+from src.agents.utils import AgentConnectorConfig
+from src.agents import AgentDriverConfig
+from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag import AgentSimpleAGTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction import AgentKWETaskConfigSelector
+from src.pipelines.qa.kg_reasoning.weak_reasoner import QueryLLMParserConfig, KnowledgeComparatorConfig, \
+    KnowledgeRetrieverConfig, QALLMGeneratorConfig
+from src.pipelines.qa.kg_reasoning.weak_reasoner import WeakKGReasonerConfig
 import sys
 import yaml
 import joblib
@@ -11,45 +41,9 @@ with open(PARAMS_FILEP, 'r') as stream:
 
 sys.path.insert(0, PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
 
-from src.pipelines.qa.kg_reasoning.weak_reasoner import WeakKGReasonerConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner import QueryLLMParserConfig, KnowledgeComparatorConfig, \
-    KnowledgeRetrieverConfig, QALLMGeneratorConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction import AgentKWETaskConfigSelector
-from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag import AgentSimpleAGTaskConfigSelector
-from src.agents import AgentDriverConfig
-from src.agents.utils import AgentConnectorConfig
 
 #
-from src.pipelines.qa.answers_aggregation import AnswersAggregatorConfig
-from src.pipelines.qa.answers_aggregation.agent_tasks.answers_summarisation import AgentSubASummTaskConfigSelector
 
-from src.pipelines.qa.query_preprocessing import QueryPreprocessorConfig
-from src.pipelines.qa.query_preprocessing.decomposition import QueryDecomposerConfig
-from src.pipelines.qa.query_preprocessing.decomposition.agent_tasks.decomposition_classifier import AgentDecompClsTaskConfigSelector
-from src.pipelines.qa.query_preprocessing.decomposition.agent_tasks.query_decomposition import AgentQueryDecompTaskConfigSelector
-
-from src.pipelines.qa.kg_reasoning.medium_reasoner import MediumKGReasonerConfig
-from src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer import SearchPlanEnhancerConfig
-from src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier import AgentEnhanceClassifierTaskConfigSelector
-from src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer import AgentPlanEnhancingTaskConfigSelector
-from src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer import AgentPlanInitTaskConfigSelector
-
-from src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor import EntitiesExtractorConfig
-from src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor import AgentEntitiesExtrTaskConfigSelector
-
-from src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching import Entities2NodesMatcherConfig
-
-from src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator import ClueQueriesGeneratorConfig
-from src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator import AgentCQueryGenTaskConfigSelector
-from src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator import ClueAnswerGeneratorConfig
-from src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation import AgentClueAnswerGenTaskConfigSelector
-
-from src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation import ClueAnswersSummarizerConfig
-from src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation import AgentClueAnswersSummTaskConfigSelector
-
-from src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator import AnswerGeneratorConfig
-from src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator import AgentAnswerGeneratorTaskConfigSelector
-from src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier import AgentAnswerClassifierTaskConfigSelector
 
 ################ hyperparams #####################
 
@@ -148,7 +142,8 @@ elif PARAMS['BASE_KGR_CONFIG']['name'] == 'medium':
                 base_config_version=PARAMS['MEDIUM_KG_REASONER']['searchplan_enhancer_config']['plan_initing_agent_task_version']
             ),
             enhance_classifier_agent_task_config=AgentEnhanceClassifierTaskConfigSelector.select(
-                base_config_version=PARAMS['MEDIUM_KG_REASONER']['searchplan_enhancer_config']['enhance_classifier_agent_task_version']
+                base_config_version=PARAMS['MEDIUM_KG_REASONER'][
+                    'searchplan_enhancer_config']['enhance_classifier_agent_task_version']
             ),
             plan_enhancing_agent_task_config=AgentPlanEnhancingTaskConfigSelector.select(
                 base_config_version=PARAMS['MEDIUM_KG_REASONER']['searchplan_enhancer_config']['plan_enhancing_agent_task_version']
@@ -157,7 +152,8 @@ elif PARAMS['BASE_KGR_CONFIG']['name'] == 'medium':
         entities_extractor_config=EntitiesExtractorConfig(
             lang=PARAMS['BASE_KGR_CONFIG']['lang'], adriver_config=adriver_config,
             entities_extraction_agent_task_config=AgentEntitiesExtrTaskConfigSelector.select(
-                base_config_version=PARAMS['MEDIUM_KG_REASONER']['entities_extractor_config']['entities_extraction_agent_task_version']
+                base_config_version=PARAMS['MEDIUM_KG_REASONER'][
+                    'entities_extractor_config']['entities_extraction_agent_task_version']
             )
         ),
         e2n_matcher_config=Entities2NodesMatcherConfig(
@@ -169,20 +165,23 @@ elif PARAMS['BASE_KGR_CONFIG']['name'] == 'medium':
         cluequeries_generator_config=ClueQueriesGeneratorConfig(
             lang=PARAMS['BASE_KGR_CONFIG']['lang'], adriver_config=adriver_config,
             cquerie_generator_agent_task_config=AgentCQueryGenTaskConfigSelector.select(
-                base_config_version=PARAMS['MEDIUM_KG_REASONER']['cluequeries_generator_config']['cquerie_generator_agent_task_version']
+                base_config_version=PARAMS['MEDIUM_KG_REASONER'][
+                    'cluequeries_generator_config']['cquerie_generator_agent_task_version']
             )
         ),
         knowledge_retriever_config=k_retriever_config,
         clueanswer_generator_config=ClueAnswerGeneratorConfig(
             lang=PARAMS['BASE_KGR_CONFIG']['lang'], adriver_config=adriver_config,
             cagen_agent_task_config=AgentClueAnswerGenTaskConfigSelector.select(
-                base_config_version=PARAMS['MEDIUM_KG_REASONER']['clueanswer_generator_config']['canswer_generator_agent_task_version']
+                base_config_version=PARAMS['MEDIUM_KG_REASONER'][
+                    'clueanswer_generator_config']['canswer_generator_agent_task_version']
             )
         ),
         clueanswers_summarizer_confif=ClueAnswersSummarizerConfig(
             lang=PARAMS['BASE_KGR_CONFIG']['lang'], adriver_config=adriver_config,
             canswers_summarisation_agent_task_config=AgentClueAnswersSummTaskConfigSelector.select(
-                base_config_version=PARAMS['MEDIUM_KG_REASONER']['clueanswers_summarizer_confif']['canswers_summarisation_agent_task_version']
+                base_config_version=PARAMS['MEDIUM_KG_REASONER'][
+                    'clueanswers_summarizer_confif']['canswers_summarisation_agent_task_version']
             )
         ),
         answer_generator_config=AnswerGeneratorConfig(

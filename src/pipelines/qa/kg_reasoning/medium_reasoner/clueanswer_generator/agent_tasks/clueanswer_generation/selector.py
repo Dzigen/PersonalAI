@@ -8,13 +8,14 @@ AVAILABLE_CAGEN_TCONFIGS = {
     'v1': CAGEN_SUITE_V1
 }
 
+
 class AgentClueAnswerGenTaskConfigSelector:
     @staticmethod
     def get_available_configs():
         return AVAILABLE_CAGEN_TCONFIGS
 
     @staticmethod
-    def select(base_config_version:str = 'v1', cache_table_name:str="medreasn_cagen_agent_task_cache") -> AgentTaskSolverConfig:
+    def select(base_config_version: str = 'v1', cache_table_name: str = "medreasn_cagen_agent_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
             suites=AVAILABLE_CAGEN_TCONFIGS[base_config_version],

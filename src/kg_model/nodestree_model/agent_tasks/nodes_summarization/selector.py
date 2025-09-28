@@ -8,13 +8,14 @@ AVAILABLE_SUMMN_TCONFIGS = {
     'v1': SUMMN_SUITE_V1,
 }
 
+
 class AgentSummNTaskConfigSelector:
     @staticmethod
     def get_available_configs():
         return AVAILABLE_SUMMN_TCONFIGS
 
     @staticmethod
-    def select(base_config_version:str='v1', cache_table_name:str="qa_agent_summn_task_cache") -> AgentTaskSolverConfig:
+    def select(base_config_version: str = 'v1', cache_table_name: str = "qa_agent_summn_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
             suites=AVAILABLE_SUMMN_TCONFIGS[base_config_version],

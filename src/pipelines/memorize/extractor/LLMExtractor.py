@@ -1,14 +1,15 @@
 from dataclasses import dataclass, field
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Union
 from copy import deepcopy
 
+from .configs import DEFAULT_THESISES_EXTR_TASK_CONFIG, DEFAULT_TRIPLETS_EXTR_TASK_CONFIG, MEM_EXTRACTOR_MAIN_LOG_PATH
 from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 from ....utils.errors import STATUS_MESSAGE
 from ....utils.data_structs import TripletCreator, NodeCreator, Node, Relation, RelationType, NodeType, Triplet, create_id
 from ....agents import AgentDriver, AgentDriverConfig
+from ....agents.utils import AbstractAgentConnector
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 
-from .configs import DEFAULT_THESISES_EXTR_TASK_CONFIG, DEFAULT_TRIPLETS_EXTR_TASK_CONFIG, MEM_EXTRACTOR_MAIN_LOG_PATH
 
 @dataclass
 class LLMExtractorConfig:
@@ -16,8 +17,8 @@ class LLMExtractorConfig:
 
     :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str
-    :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
-    :type adriver_config: AgentDriverConfig
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param triplets_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению триплетов с информацией типа 'simple' из слабоструктурированных текстов на естественном языке. Значение по умолчанию DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG.
     :type triplets_extraction_task_config: AgentTaskSolverConfig
     :param thesises_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению триплетов с информацией типа 'hyper' из слабоструктурированных текстов на естественном языке. Значение по умолчанию DEFAULT_EXTRACT_THESISES_TASK_CONFIG.
@@ -28,13 +29,13 @@ class LLMExtractorConfig:
     :type need_thesises: bool, optional
     :param need_episodic: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False. Значение по умолчанию True.
     :type need_episodic: bool, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(QA_LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(MEM_EXTRACTOR_MAIN_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
     lang: str = "auto"
-    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
+    agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     triplets_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_TRIPLETS_EXTR_TASK_CONFIG)
     thesises_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_THESISES_EXTR_TASK_CONFIG)
     need_simple: bool = True
@@ -43,26 +44,48 @@ class LLMExtractorConfig:
     log: Logger = field(default_factory=lambda: Logger(MEM_EXTRACTOR_MAIN_LOG_PATH))
     verbose: bool = False
 
+
 class LLMExtractor:
     """Верхнеуровневый класс первой стадии Memorize-конвейера для извлечения информации (и её приведения в triplet-формат) из слабоструктурированных данных.
 
+    :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
+    :type agent: AbstractAgentConnector
     :param config: Конфигурация Exctrator-стадии. Значение по умолчанию LLMExtractorConfig().
-    :type config: LLMExtractorConfig
+    :type config: LLMExtractorConfig, optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
-    def __init__(self, config: LLMExtractorConfig = LLMExtractorConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
-        self.config = config
-        self.log = config.log
 
-        self.agent = AgentDriver.connect(config.adriver_config)
+    def __init__(self, agent: AbstractAgentConnector, config: LLMExtractorConfig = LLMExtractorConfig(),
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
+        self.config = config
+
+        self.agent = agent
         self.triplets_extraction_solver = AgentTaskSolver(
             self.agent, self.config.triplets_extraction_task_config, cache_kvdriver_config)
         self.thesises_extraction_solver = AgentTaskSolver(
             self.agent, self.config.thesises_extraction_task_config, cache_kvdriver_config)
 
-    def extract_knowledge(self, text: str, time: str = "No time", properties: Dict = {}) -> Tuple[List[Triplet], ReturnInfo]:
-        """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста
-        на естественном языке.
+        self.log = self.config.log
+        self.verbose = self.config.verbose
+
+    def clear_kv_caches(self, level: str = 'other') -> None:
+        if not isinstance(level, str):
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+        if level not in ['all', 'current', 'other']:
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+
+        if level in ['current', 'all']:
+            raise NotImplementedError
+
+        if level in ['other']:
+            self.triplets_extraction_solver.cachekv.clear()
+            self.thesises_extraction_solver.cachekv.clear()
+
+    def extract_knowledge(self, text: str, time: Union[None, str] = None, properties: Dict = {}) -> Tuple[List[Triplet], ReturnInfo]:
+        """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста на естественном языке.
 
         :param text: Слабоструктурированный текст.
         :type text: str
@@ -78,62 +101,67 @@ class LLMExtractor:
         assert 'time' not in props.keys()
         new_triplets, info = [], ReturnInfo()
 
-        if time != "No time":
+        if time is not None:
             props["time"] = time
 
-        self.log("START KNOWLEDGE EXTRACTION...", verbose=self.config.verbose)
-        self.log(f"BASE_TEXT ID: {create_id(text)}", verbose=self.config.verbose)
+        self.log("START KNOWLEDGE EXTRACTION...", verbose=self.verbose)
+        self.log(f"BASE_TEXT ID: {create_id(text)}", verbose=self.verbose)
 
         if self.config.need_simple:
-            self.log("START SIMPLE-TRIPLETS EXTRACTION...", verbose=self.config.verbose)
+            self.log("START SIMPLE-TRIPLETS EXTRACTION...",
+                     verbose=self.verbose)
             tmp_triplets, status = self.triplets_extraction_solver.solve(
-                lang=self.config.lang, text=text, rel_prop=props)
-            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
+                lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
+                text=text, rel_prop=props)
+            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.verbose)
 
             if status != ReturnStatus.success:
-                self.log(f"RESULT: None", verbose=self.config.verbose)
+                self.log(f"RESULT: None", verbose=self.verbose)
                 info.occurred_warning.append(status)
             else:
-                self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
+                self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.verbose)
                 for triplet in tmp_triplets:
-                    self.log(f"* {triplet}", verbose=self.config.verbose)
+                    self.log(f"* {triplet}", verbose=self.verbose)
                 new_triplets += tmp_triplets
 
         if self.config.need_thesises:
-            self.log("START HYPER-TRIPLETS EXTRACTION...", verbose=self.config.verbose)
+            self.log("START HYPER-TRIPLETS EXTRACTION...",
+                     verbose=self.verbose)
             tmp_triplets, status = self.thesises_extraction_solver.solve(
-                lang=self.config.lang, text=text, node_prop=props)
-            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
+                lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
+                text=text, node_prop=props)
+            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.verbose)
 
             if status != ReturnStatus.success:
-                self.log(f"RESULT: None", verbose=self.config.verbose)
+                self.log(f"RESULT: None", verbose=self.verbose)
                 info.occurred_warning.append(status)
             else:
-                self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
+                self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.verbose)
                 for triplet in tmp_triplets:
-                    self.log(f"* {triplet}", verbose=self.config.verbose)
+                    self.log(f"* {triplet}", verbose=self.verbose)
                 new_triplets += tmp_triplets
 
         if self.config.need_episodic:
-            self.log("START EPISODIC-TRIPLETS BUILDING...", verbose=self.config.verbose)
+            self.log("START EPISODIC-TRIPLETS BUILDING...",
+                     verbose=self.verbose)
             tmp_triplets = self.get_episodic_relationships(
                 text, self.get_entities_from_triplets(new_triplets), node_prop=props)
 
-            self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
+            self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.verbose)
             for triplet in tmp_triplets:
-                self.log(f"* {triplet}", verbose=self.config.verbose)
-            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
+                self.log(f"* {triplet}", verbose=self.verbose)
+            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.verbose)
 
             new_triplets += tmp_triplets
 
-        if time != "No time":
-            self.log("ADDING TIME...", verbose=self.config.verbose)
+        if time is not None:
+            self.log("ADDING TIME...", verbose=self.verbose)
             tmp_triplets = self.get_time_triplets(new_triplets, time)
 
-            self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.config.verbose)
+            self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.verbose)
             for triplet in tmp_triplets:
-                self.log(f"* {triplet}", verbose=self.config.verbose)
-            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.config.verbose)
+                self.log(f"* {triplet}", verbose=self.verbose)
+            self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.verbose)
 
             new_triplets += tmp_triplets
 
@@ -141,7 +169,8 @@ class LLMExtractor:
             info.status = ReturnStatus.zero_triplets
             info.message = STATUS_MESSAGE[info.status]
 
-        self.log(f"FINAL STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
+        self.log(
+            f"FINAL STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.verbose)
 
         return new_triplets, info
 
@@ -153,14 +182,19 @@ class LLMExtractor:
         return list(entities.values())
 
     def get_episodic_relationships(self, text: str, entities: List[Node], node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
-        episodic_node = NodeCreator.create(name=text, n_type=NodeType.episodic, prop={**node_prop})
-        episodic_rel = Relation(name=RelationType.episodic.value, type=RelationType.episodic, prop={**rel_prop})
-        episodic_triplets = [TripletCreator.create(entity, episodic_rel, episodic_node) for entity in entities]
+        episodic_node = NodeCreator.create(
+            name=text, n_type=NodeType.episodic, prop={**node_prop})
+        episodic_rel = Relation(
+            name=RelationType.episodic.value, type=RelationType.episodic, prop={**rel_prop})
+        episodic_triplets = [TripletCreator.create(
+            entity, episodic_rel, episodic_node) for entity in entities]
         return episodic_triplets
 
-    def get_time_triplets(self, triplets: List[Triplet], time: str):
-        time_node = NodeCreator.create(name=time, n_type=NodeType.time, prop={})
-        time_rel = Relation(name=RelationType.time.value, type=RelationType.time, prop={})
+    def get_time_triplets(self, triplets: List[Triplet], time: str) -> List[Triplet]:
+        time_node = NodeCreator.create(
+            name=time, n_type=NodeType.time, prop={})
+        time_rel = Relation(name=RelationType.time.value,
+                            type=RelationType.time, prop={})
         start_nodes, picked_ids = [], set()
         for triplet in triplets:
             if (triplet.start_node.type == NodeType.episodic or triplet.start_node.type == NodeType.hyper) and triplet.start_node.id not in picked_ids:
@@ -169,5 +203,6 @@ class LLMExtractor:
             if (triplet.end_node.type == NodeType.episodic or triplet.end_node.type == NodeType.hyper) and triplet.end_node.id not in picked_ids:
                 picked_ids.add(triplet.end_node.id)
                 start_nodes.append(triplet.end_node)
-        time_triplets = [TripletCreator.create(time_node, time_rel, node) for node in start_nodes]
+        time_triplets = [TripletCreator.create(
+            time_node, time_rel, node) for node in start_nodes]
         return time_triplets

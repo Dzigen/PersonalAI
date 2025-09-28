@@ -1,71 +1,124 @@
 from dataclasses import dataclass, field
-from typing import Tuple, Union, List
-from copy import deepcopy
+from typing import Tuple, Union, List, Dict
 import hashlib
 
 from .config import CAGEN_MAIN_LOG_PATH, DEFAULT_CAGEN_TASK_CONFIG
 from ......utils.errors import STATUS_MESSAGE
 from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
-from ......agents import AgentDriver, AgentDriverConfig
+from ......agents.utils import AbstractAgentConnector
 from ......utils.data_structs import create_id, Triplet, TripletCreator
 from ......db_drivers.kv_driver import KeyValueDriverConfig
-from ......utils.cache_kv import CacheKV, CacheUtils
-from ......utils import ReturnStatus 
+from ......utils.cache_kv import CacheUtils
+from ......utils import ReturnStatus
+
 
 @dataclass
 class ClueAnswerGeneratorConfig:
-    lang: str = 'auto'
-    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
-    cagen_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_CAGEN_TASK_CONFIG)
+    """Конфигурация ClueAnswerGenerator-стадии MediumQA-ризонера.
 
-    cache_table_name: str = "medreasn_cagen_main_stage_cache"
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
+    :type lang: str, optional
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
+    :param cagen_agent_task_config: Конфигурация атомарной задачи для LLM-агента по резюмированию информации, извлечённой по заданному clue-заросу из графа знаний. Значение по умолчанию DEFAULT_CAGEN_TASK_CONFIG.
+    :type cagen_agent_task_config: AgentTaskSolverConfig, optional
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы ClueAnswersSummarizer-класса. Значение по умолчанию 'medreasn_cagen_main_stage_cache'.
+    :type cache_table_name: str, optional
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(CAGEN_MAIN_LOG_PATH).
+    :type log: Logger, optional
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool, optional
+    """
+    lang: str = 'auto'
+    agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
+    cagen_agent_task_config: AgentTaskSolverConfig = field(
+        default_factory=lambda: DEFAULT_CAGEN_TASK_CONFIG)
+
+    cache_table_name: str = 'medreasn_cagen_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(CAGEN_MAIN_LOG_PATH))
     verbose: bool = False
 
     def to_str(self):
-        return f"{self.lang}|{self.adriver_config.to_str()}|{self.cagen_agent_task_config.version}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.cagen_agent_task_config.version}"
+
 
 class ClueAnswerGenerator(CacheUtils):
-    def __init__(self, config: ClueAnswerGeneratorConfig = ClueAnswerGeneratorConfig(), 
-                 cache_kvdriver_config: KeyValueDriverConfig = None, cache_llm_inference: bool = True):
+    """Верхнеуровневый класс стадии #3.1.2 MediumQA-конвейера для суммаризации/резюмирования информации, извлечённой из графа знаний (памяти ассистента) по clue-запросу.
+
+    :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
+    :type agent: AbstractAgentConnector
+    :param config: Конфигурация ClueAnswerGenerator-стадии. Значение по умолчанию ClueAnswerGeneratorConfig().
+    :type config: ClueAnswerGeneratorConfig, optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
+    :type cache_kvdriver_config: KeyValueDriverConfig, optional
+    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
+    :type cache_llm_inference: bool, optional
+    """
+
+    def __init__(self, agent: AbstractAgentConnector, config: ClueAnswerGeneratorConfig = ClueAnswerGeneratorConfig(),
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True) -> None:
         self.config = config
 
-        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
-            cache_config = deepcopy(cache_kvdriver_config)
-            cache_config.db_config.db_info['table'] = self.config.cache_table_name
-            self.cachekv = CacheKV(cache_config)
-        else:
-            self.cachekv = None
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
 
-        self.agent = AgentDriver.connect(config.adriver_config)
+        self.agent = agent
         agents_cache_config = None
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config
 
         self.cagen_solver = AgentTaskSolver(
             self.agent, self.config.cagen_agent_task_config, agents_cache_config)
-        
+
         self.log = self.config.log
         self.verbose = self.config.verbose
 
-    def get_cache_key(self, query: str, context_triplets: List[Triplet]) -> List[object]:
-        str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(triplet)[1] for triplet in context_triplets])).encode()).hexdigest()
-        return [self.config.to_str(), query, str_triplets]
+    def clear_kv_caches(self, level: str = 'all') -> None:
+        if not isinstance(level, str):
+            raise TypeError(
+                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+        if level not in ['all', 'current', 'other']:
+            raise ValueError(
+                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+
+        if level in ['current', 'all']:
+            self.cachekv.clear()
+
+        if level in ['other', 'all']:
+            self.cagen_solver.cachekv.clear()
+
+    def get_cache_key(self, query: str, context_triplets: List[Triplet]) -> List[str]:
+        str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(
+            triplet)[1] for triplet in context_triplets])).encode()).hexdigest()
+        str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
+        return [self.config.to_str(), query, str_triplets, str_using_agent_info]
 
     @CacheUtils.cache_method_output
-    def perform(self, query: str, context_triplets: List[Triplet]) -> Tuple[List[str], ReturnInfo]:
-        info = ReturnInfo()
-        self.log("START CLUE-ANSWER GENRATION ...", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
+    def perform(self, query: str, context_triplets: List[Triplet]) -> Tuple[str, ReturnInfo]:
+        """Метод предназначен для генерации clue-ответа на clue-запрос, на основе информации, извлечённой из графа знаний.
+
+        :param query: Clue-запрос на естественном языке.
+        :type query: str
+        :param context_triplets: Набор релевантной информации (в виде триплетов), извлечённой по заданному clue-запросу.
+        :type context_triplets: List[Triplet]
+        :return: Кортеж из двух объектов: (1) Резюмированный/сформированный ответ на clue-запрос; (2) статус завершения операции с пояснительной информацией.
+        :rtype: Tuple[str, ReturnInfo]
+        """
+        self.log("START CLUE-ANSWER GENRATION ...",
+                 verbose=self.config.verbose)
+        self.log(
+            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
         self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
-        self.log(f"CONTEXT_TRIPLETS:",verbose=self.config.verbose)
+        self.log(f"CONTEXT_TRIPLETS:", verbose=self.config.verbose)
         for triplet in context_triplets:
             self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
+        info = ReturnInfo()
 
-        self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...", verbose=self.config.verbose)
+        self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...",
+                 verbose=self.config.verbose)
         answer, status = self.cagen_solver.solve(
-            lang=self.config.lang, query=query, 
-            triplets=context_triplets)
+            lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
+            query=query, triplets=context_triplets)
 
         if status != ReturnStatus.success:
             info.occurred_warning.append(status)
@@ -74,7 +127,8 @@ class ClueAnswerGenerator(CacheUtils):
             info.status = ReturnStatus.empty_answer
             info.message = STATUS_MESSAGE[info.status]
 
-        self.log(f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.config.verbose)
+        self.log(
+            f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.config.verbose)
         self.log(f"STATUS: {info.status}", verbose=self.config.verbose)
 
         return answer, info

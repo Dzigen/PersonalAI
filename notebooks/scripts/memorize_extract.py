@@ -1,3 +1,7 @@
+import os.path
+from src.agents.private import GigaChatAgent
+from src.memorize_pipeline.extractor.LLMExtractor import LLMExtractor
+from src.utils.data_structs import RelationType, NodeType
 import sys
 import json
 from tqdm import tqdm
@@ -26,15 +30,11 @@ BASEDIR = "/home/dzigen/Desktop/PersonalAI/Personal-AI/"
 # TO CHNAGE
 
 sys.path.insert(0, BASEDIR)
-from src.utils.data_structs import RelationType, NodeType
-from src.memorize_pipeline.extractor.LLMExtractor import LLMExtractor
-from src.agents.private import GigaChatAgent
 
 DATASET_PATH = '../../data/Augment_DiaASQ.json'
 SAVE_EXTRACTED_TRIPLETS_FILE = f"./extract_parts/tmp_extracted_gigachat_triplets_batch{args.batch}.dump"
 gc.collect()
 
-import os.path
 if os.path.exists(SAVE_EXTRACTED_TRIPLETS_FILE):
     print("File exists")
     raise ValueError

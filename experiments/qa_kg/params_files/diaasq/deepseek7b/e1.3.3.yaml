@@ -96,7 +96,7 @@ WEAK_KG_REASONER:
       diff_paths_intersection_by_rel: False
       mean_alpha: 0.75
       final_sorting_mode: mixed
-        
+
     filter_method: 'naive' # CAN BE None
     filter_config: # CAND BE None
       max_k: 50

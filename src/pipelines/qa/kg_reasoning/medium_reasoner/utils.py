@@ -1,9 +1,10 @@
 from dataclasses import dataclass, field
 from typing import List
 
+
 @dataclass
 class SearchPlanInfo:
-    base_query: str 
+    base_query: str
     search_steps: List[str] = field(default_factory=lambda: list())
     steps_answers: List[str] = field(default_factory=lambda: list())
 

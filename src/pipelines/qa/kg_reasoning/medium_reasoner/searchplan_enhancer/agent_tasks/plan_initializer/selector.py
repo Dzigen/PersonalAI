@@ -8,13 +8,14 @@ AVAILABLE_PLANINIT_TCONFIGS = {
     'v1': PLANINIT_SUITE_V1
 }
 
+
 class AgentPlanInitTaskConfigSelector:
     @staticmethod
     def get_available_configs():
         return AVAILABLE_PLANINIT_TCONFIGS
 
     @staticmethod
-    def select(base_config_version:str = 'v1', cache_table_name:str="medreasn_planinit_agent_task_cache") -> AgentTaskSolverConfig:
+    def select(base_config_version: str = 'v1', cache_table_name: str = "medreasn_planinit_agent_task_cache") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
             suites=AVAILABLE_PLANINIT_TCONFIGS[base_config_version],

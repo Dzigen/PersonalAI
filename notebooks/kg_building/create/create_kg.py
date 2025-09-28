@@ -1,3 +1,5 @@
+from src.kg_model import KnowledgeGraphModel
+from src.pipelines.memorize import MemPipeline
 import sys
 import json
 import joblib
@@ -18,8 +20,6 @@ with open(PARAMS_FILE_PATH, 'r') as stream:
 
 print("Loading Library...")
 sys.path.insert(0, PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
-from src.pipelines.memorize import MemPipeline
-from src.kg_model import KnowledgeGraphModel
 
 gc.collect()
 
@@ -66,7 +66,7 @@ print(kg_model.graph_struct.db_conn.count_items())
 print("Loading Mem-configs...")
 
 mem_config = joblib.load(MEM_PIPELINE_CONFIG_PATH)
-kvdriver_config =  joblib.load(CACHE_CONFIG_PATH)
+kvdriver_config = joblib.load(CACHE_CONFIG_PATH)
 
 print("MEM_CONFIG:\n", mem_config)
 print("KVDRIVER_CONFIG:\n", kvdriver_config)
@@ -75,10 +75,14 @@ mem_pipeline = MemPipeline(kg_model, mem_config, kvdriver_config)
 
 # checking caches status
 if PARAMS['MEM_PIPELINE_CONFIG']['llm_caching']:
-    print("extract_triples cached: ", mem_pipeline.extractor.triplets_extraction_solver.cachekv.kv_conn.count_items())
-    print("extract_thesises cached: ", mem_pipeline.extractor.thesises_extraction_solver.cachekv.kv_conn.count_items())
-    print("replace_simple cached: ", mem_pipeline.updator.replace_simple_solver.cachekv.kv_conn.count_items())
-    print("replace_thesises cached: ", mem_pipeline.updator.replace_hyper_solver.cachekv.kv_conn.count_items())
+    print("extract_triples cached: ",
+          mem_pipeline.extractor.triplets_extraction_solver.cachekv.kv_conn.count_items())
+    print("extract_thesises cached: ",
+          mem_pipeline.extractor.thesises_extraction_solver.cachekv.kv_conn.count_items())
+    print("replace_simple cached: ",
+          mem_pipeline.updator.replace_simple_solver.cachekv.kv_conn.count_items())
+    print("replace_thesises cached: ",
+          mem_pipeline.updator.replace_hyper_solver.cachekv.kv_conn.count_items())
 
 ############ SAVING HYPERPARAMS ############
 
@@ -87,15 +91,18 @@ with open(SAVE_PARAMS_PATH, 'w') as fd:
 
 ############ LOADING DATASET ############
 
+
 def diaasq_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
     with open(f"{dataset_path}/Augment_DiaASQ.json", 'r', encoding='utf-8') as fd:
         data = json.loads(fd.read())
 
     data_pairs = []
     for item in data['data']:
-        data_pairs.append((item['text_dialog'], item['time'].split(',')[0], dict()))
+        data_pairs.append(
+            (item['text_dialog'], item['time'].split(',')[0], dict()))
 
     return data_pairs
+
 
 def hotpotqa_distractor_validation_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
     contexts_df = pd.read_csv(f"{dataset_path}/relevant_contexts.csv")
@@ -107,6 +114,7 @@ def hotpotqa_distractor_validation_cload(dataset_path: str) -> List[Tuple[str, D
     print(len(data_pair), contexts_df.shape)
     return data_pair
 
+
 def triviaqa_rcwikipedia_validation_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
     contexts_df = pd.read_csv(f"{dataset_path}/relevant_contexts.csv")
 
@@ -116,6 +124,7 @@ def triviaqa_rcwikipedia_validation_cload(dataset_path: str) -> List[Tuple[str, 
         data_pair.append((formated_context, "No time", dict()))
 
     return data_pair
+
 
 CUSTOM_LOAD_FUNCS = {
     'diaasq': diaasq_cload,
@@ -154,7 +163,8 @@ for i in tqdm(range(len(dataset))):
 accum_triplets = []
 extracted_t_files = os.listdir(TMP_EXTRACTED_TRIPLETS_PATH)
 for t_file in tqdm(extracted_t_files):
-    accum_triplets.append(joblib.load(f"{TMP_EXTRACTED_TRIPLETS_PATH}/{t_file}"))
+    accum_triplets.append(joblib.load(
+        f"{TMP_EXTRACTED_TRIPLETS_PATH}/{t_file}"))
 
 joblib.dump(accum_triplets, EXTRACTED_TRIPLETS_PATH)
 

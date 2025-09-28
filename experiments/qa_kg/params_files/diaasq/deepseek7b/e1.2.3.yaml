@@ -117,7 +117,7 @@ WEAK_KG_REASONER:
                   username: my_user
                 port: 6389
           db_vendor: mixed_kv
-        
+
     filter_method: 'naive' # CAN BE None
     filter_config: # CAND BE None
       max_k: 50

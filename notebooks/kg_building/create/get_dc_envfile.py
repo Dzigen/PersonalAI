@@ -118,13 +118,17 @@ compose_variables = {
 }
 
 #
+
+
 def dictvar_to_string(dict_variables) -> str:
     return '\n'.join(list(map(lambda item: f'{item[0]}="{item[1]}"', dict_variables.items())))
+
 
 def add_prefixes(dict_variables) -> None:
     for k in dict_variables.keys():
         if k.endswith("_CNTNAME"):
             dict_variables[k] = f"{dict_variables[k]}_{PARAMS['DATASET_NAME']}_{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+
 
 env_variables = [
     neo4j_cnt_variables, milvus_cnt_variables, mongo_cnt_variables, mongoui_cnt_variables,
@@ -133,7 +137,8 @@ for variables in env_variables:
     add_prefixes(variables)
 env_variables += [llmagents_cnt_variables, compose_variables]
 
-env_variables = '\n'.join(list(map(lambda vars: dictvar_to_string(vars), env_variables)))
+env_variables = '\n'.join(
+    list(map(lambda vars: dictvar_to_string(vars), env_variables)))
 
 DC_ENV_PATH = f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['kg']}/{PARAMS['DATASET_NAME']}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}/{PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"
 with open(DC_ENV_PATH, 'w', encoding='utf-8') as fd:

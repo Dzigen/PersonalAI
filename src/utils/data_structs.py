@@ -5,6 +5,7 @@ import hashlib
 
 from src.db_drivers.vector_driver import VectorDBInstance
 
+
 class NodeType(Enum):
     """Доступные типы вершин."""
     #: Вершина хранит атомарную сущность.
@@ -16,12 +17,14 @@ class NodeType(Enum):
     #: Вершина хранит временную информацию.
     time = "time"
 
+
 NODES_TYPES_MAP = {
     'object': NodeType.object,
     'hyper': NodeType.hyper,
     'episodic': NodeType.episodic,
     'time': NodeType.time,
 }
+
 
 class RelationType(Enum):
     """Доступные типы связей/триплетов."""
@@ -34,12 +37,14 @@ class RelationType(Enum):
     #: Связывает пары вершин ('episodic', 'time') и ('hyper', 'time').
     time = "time"
 
+
 RELATIONS_TYPES_MAP = {
     'simple': RelationType.simple,
     'hyper': RelationType.hyper,
     'episodic': RelationType.episodic,
     'time': RelationType.time,
 }
+
 
 @dataclass
 class Node:
@@ -55,6 +60,7 @@ class Node:
     #: Идентификатор вершины, полученный на основе её строкового представления.
     id: str = None
 
+
 @dataclass
 class Relation:
     "Струкура данных связи."
@@ -67,6 +73,7 @@ class Relation:
     #: Идентификатор связи, полученный на основе строкового представления триплета, в котором она (связь) находится.
     #: Данное значение отличается от значения в поле id объекта класса Triplet.
     id: str = None
+
 
 @dataclass
 class Triplet:
@@ -83,6 +90,7 @@ class Triplet:
     #: Данное значение отличается от значения в поле id объекта класса Relation.
     id: str = None
 
+
 class BaseCreator:
     @staticmethod
     def add_str_props(obj: Union[Relation, Node], obj_str: str) -> str:
@@ -95,10 +103,12 @@ class BaseCreator:
         :return: Обогащённое строковое представление объекта.
         :rtype: str
         """
-        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in ['name', 'type', 'raw_time', 'time', 'str_id', 't_id']])
+        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in [
+                             'name', 'type', 'raw_time', 'time', 'str_id', 't_id']])
         if str_prop:
             obj_str += f" ({str_prop})"
         return obj_str
+
 
 class RelationCreator(BaseCreator):
     @staticmethod
@@ -130,6 +140,7 @@ class RelationCreator(BaseCreator):
 
         rel = Relation(name=name, type=r_type, prop=prop)
         return rel
+
 
 class NodeCreator(BaseCreator):
     @staticmethod
@@ -164,7 +175,7 @@ class NodeCreator(BaseCreator):
         return node
 
     @staticmethod
-    def stringify(node: Node) -> Tuple[str,str]:
+    def stringify(node: Node) -> Tuple[str, str]:
         """Метод предназначен для приведения структуры данных вершины в её строковое представление.
 
         :param triplet: Структура данных вершины.
@@ -178,6 +189,7 @@ class NodeCreator(BaseCreator):
         str_node += NodeCreator.add_str_props(node, str(node.name))
         return node.id, str_node
 
+
 def create_id_for_node_pair(node1_id: str, node2_id: str) -> str:
     """Метод предназначен для условной генерации идентификатора к паре вершин. Вершины представлены в виде их собственных идентификаторов.
     При указании такой же пары вершин, но в другом порядке, полученный идентификатор не изменится: инвариант относительно перестановок.
@@ -189,16 +201,19 @@ def create_id_for_node_pair(node1_id: str, node2_id: str) -> str:
     :return: Идентификатор пары вершин.
     :rtype: str
     """
-    start_id, end_id = (node1_id, node2_id) if node1_id > node2_id else (node2_id, node1_id)
+    start_id, end_id = (node1_id, node2_id) if node1_id > node2_id else (
+        node2_id, node1_id)
     return hashlib.md5((start_id+end_id).encode()).hexdigest()
+
 
 def create_id(seed: str) -> str:
     return hashlib.md5(seed.encode()).hexdigest()
 
+
 class TripletCreator(BaseCreator):
     @staticmethod
     def create(start_node: Node, relation: Relation, end_node: Node,
-            add_stringified_triplet: bool = True, t_id: str = None) -> Triplet:
+               add_stringified_triplet: bool = True, t_id: str = None) -> Triplet:
         """Метод предназначен для создания структуры данных триплета с указанным содержанием.
         Триплет является ориентированным: у связи между вершинами (парой subject/object) есть направление.
 
@@ -225,14 +240,14 @@ class TripletCreator(BaseCreator):
 
         if t_id is None:
             triplet.id = create_id(''.join(
-                [triplet.start_node.id,triplet.relation.id,triplet.end_node.id]))
+                [triplet.start_node.id, triplet.relation.id, triplet.end_node.id]))
         else:
             triplet.id = t_id
 
         return triplet
 
     @staticmethod
-    def stringify(triplet: Triplet) -> Tuple[str,str]:
+    def stringify(triplet: Triplet) -> Tuple[str, str]:
         """Метод предназначен для приведения Triplet-структуры данных в её строковое представление. Строковое представление зависит от типа триплета (Triplet.relation.type):
         (1) simple - используется информация из обеих вершин и связи; (2) hyper/episodic - используется информация только из конечной (object) вершины.
 
@@ -247,17 +262,19 @@ class TripletCreator(BaseCreator):
             str_triplet = ""
             if "time" in triplet.end_node.prop.keys():
                 str_triplet += triplet.end_node.prop["time"] + ": "
-            str_triplet += TripletCreator.add_str_props(triplet.end_node, str(triplet.end_node.name))
+            str_triplet += TripletCreator.add_str_props(
+                triplet.end_node, str(triplet.end_node.name))
 
         elif rel_type == RelationType.simple:
             str_triplet = ""
             if "time" in triplet.relation.prop.keys():
                 str_triplet += triplet.relation.prop["time"] + ": "
             str_triplet += " ".join([
-                TripletCreator.add_str_props(triplet.start_node, str(triplet.start_node.name)),
-                TripletCreator.add_str_props(triplet.relation, str(triplet.relation.name)),
+                TripletCreator.add_str_props(
+                    triplet.start_node, str(triplet.start_node.name)),
+                TripletCreator.add_str_props(
+                    triplet.relation, str(triplet.relation.name)),
                 TripletCreator.add_str_props(triplet.end_node, str(triplet.end_node.name))])
-
 
         else:
             raise KeyError
@@ -306,10 +323,10 @@ class TripletCreator(BaseCreator):
             n_type=json_triplet['object']['type'],
             prop=json_triplet['object'].get('prop', None))
 
-        converted_triplet = TripletCreator.create(start_node=subject, relation=relation, end_node=object)
+        converted_triplet = TripletCreator.create(
+            start_node=subject, relation=relation, end_node=object)
         return converted_triplet
 
-#from ..embedding_functions import VectorDBInstance
 
 @dataclass
 class QueryInfo:
@@ -331,7 +348,10 @@ class QueryInfo:
     linked_nodes_by_entities: List[VectorDBInstance] = None
 
     def to_str(self):
-        str_entities = ';'.join(sorted(self.entities)) if self.entities is not None else "None"
-        str_lnodes = ';'.join(sorted(list(map(lambda item: item.document, self.linked_nodes)))) if self.linked_nodes is not None else "None"
-        str_lnodes_by_entities = ';'.join(sorted(list(map(lambda item: ';;'.join(item), self.linked_nodes_by_entities)))) if self.linked_nodes_by_entities is not None else "None"
+        str_entities = ';'.join(sorted(self.entities)
+                                ) if self.entities is not None else "None"
+        str_lnodes = ';'.join(sorted(list(map(lambda item: item.document,
+                              self.linked_nodes)))) if self.linked_nodes is not None else "None"
+        str_lnodes_by_entities = ';'.join(sorted(list(map(lambda item: ';;'.join(
+            item), self.linked_nodes_by_entities)))) if self.linked_nodes_by_entities is not None else "None"
         return f"{str_entities}|{str_lnodes}|{str_lnodes_by_entities}"

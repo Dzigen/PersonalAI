@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from ......utils.data_structs import QueryInfo, Triplet
 from .errors import NOT_VALID_ID_ERROR_MSG, NO_START_NODE_IN_PARENT_ERROR_MSG, EMPTY_PARENT_ERROR_MSG
 
+
 def get_nodes_path(parent: Dict[str, str], end_node_id: str) -> List[str]:
     """Метод предназначен для получения пути обхода графа, заканчивая заданной конечной end_node_id вершиной.
     Путь должен быть ацикличным: есть стартовая вершин, у которой нет родителя.
@@ -33,6 +34,7 @@ def get_nodes_path(parent: Dict[str, str], end_node_id: str) -> List[str]:
             cur_n = next_n
     return path
 
+
 class AbstractTriplesFilter(ABC):
     """Интерфейс алгоритмов фильтрации/ранжирования триплетов."""
     @abstractmethod
@@ -48,6 +50,7 @@ class AbstractTriplesFilter(ABC):
         """
         pass
 
+
 class AbstractTripletsRetriever(ABC):
     """Интерфейс алгоритмов извлечения триплетов из графа знаний."""
     @abstractmethod
@@ -61,10 +64,12 @@ class AbstractTripletsRetriever(ABC):
         """
         pass
 
+
 @dataclass
 class BaseGraphSearchConfig:
     """Базовая конфигурация алгоритмов по извлечению триплетов из графа знаний."""
     pass
+
 
 @dataclass
 class BaseTripletsFilterConfig:

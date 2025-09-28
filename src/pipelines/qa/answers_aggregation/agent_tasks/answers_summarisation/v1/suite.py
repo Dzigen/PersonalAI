@@ -3,7 +3,7 @@ from .......utils import AgentTaskSuite
 from .parsers import en_subasumm_custom_answer_parse, ru_subasumm_custom_answer_parse
 
 from .prompts import EN_SUBASUMM_SYSTEM_PROMPT, EN_SUBASUMM_USER_PROMPT, EN_SUBASUMM_ASSISTANT_PROMPT, \
-        RU_SUBASUMM_SYSTEM_PROMPT, RU_SUBASUMM_USER_PROMPT, RU_SUBASUMM_ASSISTANT_PROMPT
+    RU_SUBASUMM_SYSTEM_PROMPT, RU_SUBASUMM_USER_PROMPT, RU_SUBASUMM_ASSISTANT_PROMPT
 
 EN_SUBASUMM_SUITE = AgentTaskSuite(
     system_prompt=EN_SUBASUMM_SYSTEM_PROMPT,

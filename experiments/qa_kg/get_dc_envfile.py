@@ -120,15 +120,19 @@ compose_variables = {
 }
 
 #
+
+
 def dictvar_to_string(dict_variables) -> str:
     return '\n'.join(list(map(lambda item: f'{item[0]}="{item[1]}"', dict_variables.items())))
+
 
 env_variables = [neo4j_cnt_variables, milvus_cnt_variables,
                  mongo_cnt_variables, mongoui_cnt_variables,
                  redis_cnt_variables, redisui_cnt_variables,
-                 worksapce_cnt_variables, llmagents_cnt_variables, 
+                 worksapce_cnt_variables, llmagents_cnt_variables,
                  compose_variables]
-env_variables = '\n'.join(list(map(lambda vars: dictvar_to_string(vars), env_variables)))
+env_variables = '\n'.join(
+    list(map(lambda vars: dictvar_to_string(vars), env_variables)))
 
 DC_ENV_PATH = f"{PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"
 with open(DC_ENV_PATH, 'w', encoding='utf-8') as fd:

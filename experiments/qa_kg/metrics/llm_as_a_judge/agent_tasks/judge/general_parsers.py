@@ -1,10 +1,12 @@
 from typing import Dict, List
 
+
 def llmjudge_custom_formate(question: str, gold_answer: str, generated_answer: str) -> Dict[str, str]:
     if len(generated_answer) < 1:
         raise ValueError
 
     return {'q': question, 'gold_answer': gold_answer, 'gen_answer': generated_answer}
+
 
 def llmjudge_custom_postprocess(parsed_response: str, **kwargs) -> int:
     if len(parsed_response) < 1:

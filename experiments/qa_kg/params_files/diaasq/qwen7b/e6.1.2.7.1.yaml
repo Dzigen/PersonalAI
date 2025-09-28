@@ -21,7 +21,7 @@ BASE_KGR_CONFIG:
     decomposition_config:
       classify_agent_task_version: v1
       decompose_agent_task_version: v1
-    
+
   answers_aggregation:
     suba_summarisation_agent_task_version: v1
 

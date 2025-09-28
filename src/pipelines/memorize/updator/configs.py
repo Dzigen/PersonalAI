@@ -2,5 +2,7 @@ from .agent_tasks.replace_simple_triplets import AgentReplSimpleTripletTaskConfi
 from .agent_tasks.replace_thesis_triplets import AgentReplThesisTripletTaskConfigSelector
 
 MEM_UPDATOR_MAIN_LOG_PATH = "log/memorize/updator/main"
-DEFAULT_REPLACE_SIMPLE_TASK_CONFIG =  AgentReplSimpleTripletTaskConfigSelector.select(base_config_version='v1')
-DEFAULT_REPLACE_THESIS_TASK_CONFIG =  AgentReplThesisTripletTaskConfigSelector.select(base_config_version='v1')
+DEFAULT_REPLACE_SIMPLE_TASK_CONFIG = AgentReplSimpleTripletTaskConfigSelector.select(
+    base_config_version='v1')
+DEFAULT_REPLACE_THESIS_TASK_CONFIG = AgentReplThesisTripletTaskConfigSelector.select(
+    base_config_version='v1')

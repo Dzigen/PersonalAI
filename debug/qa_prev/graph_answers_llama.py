@@ -7,7 +7,8 @@ from src.db_models.graph_db.neo4j_functions import Neo4jConnection
 
 os.environ['HF_HOME'] = '/archive/evseev.cache'
 
-conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
+conn = Neo4jConnection(uri="bolt://31.207.47.254:7687",
+                       user="neo4j", pwd="password")
 
 model_name = "Undi95/Meta-Llama-3-8B-Instruct-hf"
 
@@ -62,9 +63,10 @@ Information from the database: {info}
 Answer: """
 
 q_info = [
-    #["questions_for_test.json", "subj_obj_person", "answers_simple.json", PROMPT_ANSWER],
-    ["compare_questions.json", "compare", "answers_compare3.json", PROMPT_ANSWER_COMPARE]
-    #["compare_sentiment.json", "subj_obj", "answers_sentiment.json", PROMPT_ANSWER]
+    # ["questions_for_test.json", "subj_obj_person", "answers_simple.json", PROMPT_ANSWER],
+    ["compare_questions.json", "compare",
+        "answers_compare3.json", PROMPT_ANSWER_COMPARE]
+    # ["compare_sentiment.json", "subj_obj", "answers_sentiment.json", PROMPT_ANSWER]
 ]
 
 for q_flname, pr_name, a_flname, prompt_template in q_info:
@@ -78,7 +80,8 @@ for q_flname, pr_name, a_flname, prompt_template in q_info:
         try:
             prompt = PROMPT_TEMPLATES[pr_name].format(question=question)
             res = pipeline(prompt)
-            queries_info = res[0]["generated_text"].split(prompt)[-1].split("\n")[0].strip()
+            queries_info = res[0]["generated_text"].split(
+                prompt)[-1].split("\n")[0].strip()
             if ";" in queries_info:
                 queries = queries_info.split(";")
                 queries = [query.strip() for query in queries]
@@ -90,7 +93,8 @@ for q_flname, pr_name, a_flname, prompt_template in q_info:
                 for entity in entities:
                     entity_clean = entity.strip('"').replace("_", " ")
                     if entity_clean not in question and entity_clean.replace(" ", "") in question:
-                        query = query.replace(entity.strip('"'), entity_clean.replace(" ", ""))
+                        query = query.replace(entity.strip(
+                            '"'), entity_clean.replace(" ", ""))
                 res = conn.execute_query(query, db="testdb")
                 print(f"query: {query} --- res: {res}")
                 with open("graph_answers_log.txt", 'a') as out:
@@ -109,12 +113,13 @@ for q_flname, pr_name, a_flname, prompt_template in q_info:
             res = pipeline(prompt)
             with open("res_log.txt", 'a') as out:
                 out.write(res[0]["generated_text"]+'\n\n')
-            pred_answer = res[0]["generated_text"].split(prompt)[-1].split("Final answer")[1].split("\n")[0].strip()
+            pred_answer = res[0]["generated_text"].split(
+                prompt)[-1].split("Final answer")[1].split("\n")[0].strip()
             qas.append({"question": question,
                         "info": info_str,
                         "gold_answer": gold_answer,
                         "pred_answer": pred_answer
-            })
+                        })
             with open(a_flname, 'w') as out:
                 json.dump(qas, out, indent=2)
             print("gold_answer", gold_answer)

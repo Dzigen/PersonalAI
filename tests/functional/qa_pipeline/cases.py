@@ -1,58 +1,46 @@
 import sys
 from copy import deepcopy
 from functools import reduce
-
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.pipelines.qa import QAPipelineConfig
-from src.agents.AgentDriver import AgentDriverConfig, AgentConnectorConfig
-from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
-from src.utils.data_structs import NodeType
-
-from src.pipelines.qa.kg_reasoning.KGReasoner import KnowledgeGraphReasonerConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner import WeakKGReasonerConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser import QueryLLMParserConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator import KnowledgeComparatorConfig
+from src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier import AgentAnswerClassifierTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator import AgentAnswerGeneratorTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator import AnswerGeneratorConfig
+from src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation import AgentClueAnswersSummTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation import ClueAnswersSummarizerConfig
+from src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator import AgentCQueryGenTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator import ClueQueriesGeneratorConfig
+from src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching import Entities2NodesMatcherConfig
+from src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor import AgentEntitiesExtrTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor import EntitiesExtractorConfig
+from src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer import AgentPlanInitTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer import AgentPlanEnhancingTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier import AgentEnhanceClassifierTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer import SearchPlanEnhancerConfig
+from src.pipelines.qa.kg_reasoning.medium_reasoner import MediumKGReasonerConfig
+from src.pipelines.qa.query_preprocessing.decomposition.agent_tasks.query_decomposition import AgentQueryDecompTaskConfigSelector
+from src.pipelines.qa.query_preprocessing.decomposition.agent_tasks.decomposition_classifier import AgentDecompClsTaskConfigSelector
+from src.pipelines.qa.query_preprocessing.decomposition import QueryDecomposerConfig
+from src.pipelines.qa.query_preprocessing import QueryPreprocessorConfig
+from src.pipelines.qa.answers_aggregation.agent_tasks.answers_summarisation import AgentSubASummTaskConfigSelector
+from src.pipelines.qa.answers_aggregation import AnswersAggregatorConfig
+from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag import AgentSimpleAGTaskConfigSelector
+from src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction import AgentKWETaskConfigSelector
+from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator import QALLMGeneratorConfig
 from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever import KnowledgeRetrieverConfig, AStarGraphSearchConfig, \
     AStarMetricsConfig, WaterCirclesSearchConfig,  MixturedGraphSearchConfig, NaiveBFSGraphSearchConfig, \
-        NaiveGraphSearchConfig, GraphBeamSearchConfig, TripletsFilterConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator import QALLMGeneratorConfig
-
-from src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction import AgentKWETaskConfigSelector
-from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag import AgentSimpleAGTaskConfigSelector
-
-#
-from src.pipelines.qa.answers_aggregation import AnswersAggregatorConfig
-from src.pipelines.qa.answers_aggregation.agent_tasks.answers_summarisation import AgentSubASummTaskConfigSelector
-
-from src.pipelines.qa.query_preprocessing import QueryPreprocessorConfig
-from src.pipelines.qa.query_preprocessing.decomposition import QueryDecomposerConfig
-from src.pipelines.qa.query_preprocessing.decomposition.agent_tasks.decomposition_classifier import AgentDecompClsTaskConfigSelector
-from src.pipelines.qa.query_preprocessing.decomposition.agent_tasks.query_decomposition import AgentQueryDecompTaskConfigSelector
-
-from src.pipelines.qa.kg_reasoning.medium_reasoner import MediumKGReasonerConfig
-from src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer import SearchPlanEnhancerConfig
-from src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier import AgentEnhanceClassifierTaskConfigSelector
-from src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer import AgentPlanEnhancingTaskConfigSelector
-from src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer import AgentPlanInitTaskConfigSelector
-
-from src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor import EntitiesExtractorConfig
-from src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor import AgentEntitiesExtrTaskConfigSelector
-
-from src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching import Entities2NodesMatcherConfig
-
-from src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator import ClueQueriesGeneratorConfig
-from src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator import AgentCQueryGenTaskConfigSelector
-
-from src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation import ClueAnswersSummarizerConfig
-from src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation import AgentClueAnswersSummTaskConfigSelector
-
-from src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator import AnswerGeneratorConfig
-from src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator import AgentAnswerGeneratorTaskConfigSelector
-from src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier import AgentAnswerClassifierTaskConfigSelector
+    NaiveGraphSearchConfig, GraphBeamSearchConfig, TripletsFilterConfig
+from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator import KnowledgeComparatorConfig
+from src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser import QueryLLMParserConfig
+from src.pipelines.qa.kg_reasoning.weak_reasoner import WeakKGReasonerConfig
+from src.pipelines.qa.kg_reasoning.KGReasoner import KnowledgeGraphReasonerConfig
+from src.utils.data_structs import NodeType
+from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
+from src.agents.AgentDriver import AgentDriverConfig, AgentConnectorConfig
+from src.pipelines.qa import QAPipelineConfig
 
 ####################
 
@@ -76,7 +64,8 @@ EN_QUESTIONS = [
 AGENT_DRIVER_CONFIG = AgentDriverConfig(
     name='ollama',
     agent_config=AgentConnectorConfig(
-        gen_strategy={"num_predict": 2048, "seed": 42, "top_k": 1, "temperature": 0.0},
+        gen_strategy={"num_predict": 2048, "seed": 42,
+                      "top_k": 1, "temperature": 0.0},
         credentials={"model": 'qwen2.5:7b'},
         ext_params={"host": 'localhost', "port": 11438, "timeout": 560, "keep_alive": -1}))
 
@@ -88,12 +77,14 @@ KV_CACHE_CONFIG = KeyValueDriverConfig(
             'mongo_config': KVDBConnectionConfig(
                 host='localhost', port=27010,
                 db_info={'db': 'memorize_db', 'table': None},
-                params={'username': 'user', 'password': 'pass', 'max_storage': -1},
+                params={'username': 'user',
+                        'password': 'pass', 'max_storage': -1},
                 need_to_clear=False),
             'redis_config': KVDBConnectionConfig(
                 host='localhost', port=6370,
                 db_info={'db': 0, 'table': None},
-                params={'ss_name': 'sorted_node_pairs', 'hs_name': 'node_pairs', 'max_storage': 50000000},
+                params={'ss_name': 'sorted_node_pairs',
+                        'hs_name': 'node_pairs', 'max_storage': 50000000},
                 need_to_clear=False)}))
 
 ###########################
@@ -128,7 +119,7 @@ MEDIUM_QA_CONFIG = QAPipelineConfig(
         reasoner_name='medium',
         reasoner_hyperparameters=MediumKGReasonerConfig(
             searchplan_enhancer_config=SearchPlanEnhancerConfig(
-                lang='en', adriver_config=AGENT_DRIVER_CONFIG, 
+                lang='en', adriver_config=AGENT_DRIVER_CONFIG,
                 plan_initing_agent_task_config=...,
                 enhance_classifier_agent_task_config=...,
                 plan_enhancing_agent_task_config=...
@@ -145,7 +136,7 @@ MEDIUM_QA_CONFIG = QAPipelineConfig(
             knowledge_retriever_config=KnowledgeRetrieverConfig(
                 retriever_method='beamsearch',
                 retriever_config=GraphBeamSearchConfig(
-                    max_depth=2, max_paths=50, 
+                    max_depth=2, max_paths=50,
                     accepted_node_types=[NodeType.object, NodeType.hyper, NodeType.episodic]),
                 filter_method='naive',
                 filter_config=TripletsFilterConfig()
@@ -179,132 +170,175 @@ MEDIUM_QA_CONFIG = QAPipelineConfig(
 
 # astar (w and w/o caching)
 QA_V1_CONFIG1 = deepcopy(WEAK_QA_CONFIG)
-QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v1')
-QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method='astar'
-QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config=AStarGraphSearchConfig()
-QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method='naive'
-QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config=TripletsFilterConfig()
-QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentSimpleAGTaskConfigSelector.select(base_config_version='v1')
+QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config = AgentKWETaskConfigSelector.select(
+    base_config_version='v1')
+QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method = 'astar'
+QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config = AStarGraphSearchConfig()
+QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method = 'naive'
+QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config = TripletsFilterConfig()
+QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(
+    base_config_version='v1')
 
 QA_V2_CONFIG1 = deepcopy(QA_V1_CONFIG1)
-QA_V2_CONFIG1.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v2')
-QA_V2_CONFIG1.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentSimpleAGTaskConfigSelector.select(base_config_version='v2')
+QA_V2_CONFIG1.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config = AgentKWETaskConfigSelector.select(
+    base_config_version='v2')
+QA_V2_CONFIG1.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(
+    base_config_version='v2')
 
 # beamsearch (w and w/o caching)
 QA_V1_CONFIG2 = deepcopy(WEAK_QA_CONFIG)
-QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v1')
-QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method='beamsearch'
-QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config=GraphBeamSearchConfig()
-QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method='naive'
-QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config=TripletsFilterConfig()
-QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentSimpleAGTaskConfigSelector.select(base_config_version='v1')
+QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config = AgentKWETaskConfigSelector.select(
+    base_config_version='v1')
+QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method = 'beamsearch'
+QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config = GraphBeamSearchConfig()
+QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method = 'naive'
+QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config = TripletsFilterConfig()
+QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(
+    base_config_version='v1')
 
 QA_V2_CONFIG2 = deepcopy(QA_V1_CONFIG2)
-QA_V2_CONFIG2.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v2')
-QA_V2_CONFIG2.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentSimpleAGTaskConfigSelector.select(base_config_version='v2')
+QA_V2_CONFIG2.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config = AgentKWETaskConfigSelector.select(
+    base_config_version='v2')
+QA_V2_CONFIG2.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(
+    base_config_version='v2')
 
 
 # water circles (w and w/o caching)
 QA_V1_CONFIG3 = deepcopy(WEAK_QA_CONFIG)
-QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v1')
-QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method='watercircles'
-QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config=WaterCirclesSearchConfig()
-QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method='naive'
-QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config=TripletsFilterConfig()
-QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentSimpleAGTaskConfigSelector.select(base_config_version='v1')
+QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config = AgentKWETaskConfigSelector.select(
+    base_config_version='v1')
+QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method = 'watercircles'
+QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config = WaterCirclesSearchConfig()
+QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method = 'naive'
+QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config = TripletsFilterConfig()
+QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(
+    base_config_version='v1')
 
 QA_V2_CONFIG3 = deepcopy(QA_V1_CONFIG3)
-QA_V2_CONFIG3.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v2')
-QA_V2_CONFIG3.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentSimpleAGTaskConfigSelector.select(base_config_version='v2')
+QA_V2_CONFIG3.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config = AgentKWETaskConfigSelector.select(
+    base_config_version='v2')
+QA_V2_CONFIG3.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(
+    base_config_version='v2')
 
 # naive rag (w and w/o caching)
 QA_V1_CONFIG4 = deepcopy(WEAK_QA_CONFIG)
-QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.query_parser_config =None
-QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method='naive_retriever'
-QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config=NaiveGraphSearchConfig()
-QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method=None
-QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config=None
-QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentSimpleAGTaskConfigSelector.select(base_config_version='v1')
+QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.query_parser_config = None
+QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method = 'naive_retriever'
+QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config = NaiveGraphSearchConfig()
+QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method = None
+QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config = None
+QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(
+    base_config_version='v1')
 
 QA_V2_CONFIG4 = deepcopy(QA_V1_CONFIG4)
-QA_V2_CONFIG4.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentSimpleAGTaskConfigSelector.select(base_config_version='v2')
+QA_V2_CONFIG4.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(
+    base_config_version='v2')
 
 # bfs (w and w/o caching)
 QA_V1_CONFIG5 = deepcopy(WEAK_QA_CONFIG)
-QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v1')
-QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method='naive_bfs'
-QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config=NaiveBFSGraphSearchConfig()
-QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method='naive'
-QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config=TripletsFilterConfig()
-QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentSimpleAGTaskConfigSelector.select(base_config_version='v1')
+QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config = AgentKWETaskConfigSelector.select(
+    base_config_version='v1')
+QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method = 'naive_bfs'
+QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config = NaiveBFSGraphSearchConfig()
+QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method = 'naive'
+QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config = TripletsFilterConfig()
+QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(
+    base_config_version='v1')
 
 QA_V2_CONFIG5 = deepcopy(QA_V1_CONFIG5)
-QA_V2_CONFIG5.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v2')
-QA_V2_CONFIG5.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentSimpleAGTaskConfigSelector.select(base_config_version='v2')
+QA_V2_CONFIG5.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config = AgentKWETaskConfigSelector.select(
+    base_config_version='v2')
+QA_V2_CONFIG5.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(
+    base_config_version='v2')
 
 # mixture (astar + beamsearch) (w and w/o caching)
 QA_V1_CONFIG6 = deepcopy(WEAK_QA_CONFIG)
-QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v1')
-QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method='mixture'
-QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config=MixturedGraphSearchConfig(
+QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config = AgentKWETaskConfigSelector.select(
+    base_config_version='v1')
+QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method = 'mixture'
+QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config = MixturedGraphSearchConfig(
     retriever1_name='astar', retriever1_config=AStarGraphSearchConfig(),
     retriever2_name='beamsearch', retriever2_config=GraphBeamSearchConfig())
-QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method='naive'
-QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config=TripletsFilterConfig()
-QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentSimpleAGTaskConfigSelector.select(base_config_version='v1')
+QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method = 'naive'
+QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config = TripletsFilterConfig()
+QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(
+    base_config_version='v1')
 
 QA_V2_CONFIG6 = deepcopy(QA_V1_CONFIG6)
-QA_V2_CONFIG6.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v2')
-QA_V2_CONFIG6.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentSimpleAGTaskConfigSelector.select(base_config_version='v2')
+QA_V2_CONFIG6.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config = AgentKWETaskConfigSelector.select(
+    base_config_version='v2')
+QA_V2_CONFIG6.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(
+    base_config_version='v2')
 
 # mixture (astar + watercircles) (w and w/o caching)
 QA_V1_CONFIG7 = deepcopy(WEAK_QA_CONFIG)
-QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v1')
-QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method='mixture'
-QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config=MixturedGraphSearchConfig(
+QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config = AgentKWETaskConfigSelector.select(
+    base_config_version='v1')
+QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method = 'mixture'
+QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config = MixturedGraphSearchConfig(
     retriever1_name='astar', retriever1_config=AStarGraphSearchConfig(),
     retriever2_name='watercircles', retriever2_config=WaterCirclesSearchConfig())
-QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method='naive'
-QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config=TripletsFilterConfig()
-QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentSimpleAGTaskConfigSelector.select(base_config_version='v1')
+QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method = 'naive'
+QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config = TripletsFilterConfig()
+QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(
+    base_config_version='v1')
 
 QA_V2_CONFIG7 = deepcopy(QA_V1_CONFIG7)
-QA_V2_CONFIG7.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v2')
-QA_V2_CONFIG7.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentSimpleAGTaskConfigSelector.select(base_config_version='v2')
+QA_V2_CONFIG7.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config = AgentKWETaskConfigSelector.select(
+    base_config_version='v2')
+QA_V2_CONFIG7.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(
+    base_config_version='v2')
 
 # mixture (watercircles + beamsearch) (w and w/o caching)
 QA_V1_CONFIG8 = deepcopy(WEAK_QA_CONFIG)
-QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v1')
-QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method='mixture'
-QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config=MixturedGraphSearchConfig(
+QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config = AgentKWETaskConfigSelector.select(
+    base_config_version='v1')
+QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method = 'mixture'
+QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config = MixturedGraphSearchConfig(
     retriever1_name='beamsearch', retriever1_config=GraphBeamSearchConfig(),
     retriever2_name='watercircles', retriever2_config=WaterCirclesSearchConfig())
-QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method='naive'
-QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config=TripletsFilterConfig()
-QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentSimpleAGTaskConfigSelector.select(base_config_version='v1')
+QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method = 'naive'
+QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config = TripletsFilterConfig()
+QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(
+    base_config_version='v1')
 
 QA_V2_CONFIG8 = deepcopy(QA_V1_CONFIG8)
-QA_V2_CONFIG8.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v2')
-QA_V2_CONFIG8.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentSimpleAGTaskConfigSelector.select(base_config_version='v2')
+QA_V2_CONFIG8.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config = AgentKWETaskConfigSelector.select(
+    base_config_version='v2')
+QA_V2_CONFIG8.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(
+    base_config_version='v2')
 
 # Различные конфиги medium qa-пайплайна
 
 QA_MEDIUM_V1_CONFIG1 = deepcopy(MEDIUM_QA_CONFIG)
-QA_MEDIUM_V1_CONFIG1.preprocessor_config.decomposition_config.classify_agent_task_config = AgentDecompClsTaskConfigSelector.select(base_config_version='v1')
-QA_MEDIUM_V1_CONFIG1.preprocessor_config.decomposition_config.decompose_agent_task_config = AgentQueryDecompTaskConfigSelector.select(base_config_version='v1')
+QA_MEDIUM_V1_CONFIG1.preprocessor_config.decomposition_config.classify_agent_task_config = AgentDecompClsTaskConfigSelector.select(
+    base_config_version='v1')
+QA_MEDIUM_V1_CONFIG1.preprocessor_config.decomposition_config.decompose_agent_task_config = AgentQueryDecompTaskConfigSelector.select(
+    base_config_version='v1')
 
-QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.searchplan_enhancer_config.plan_initing_agent_task_config = AgentPlanInitTaskConfigSelector.select(base_config_version='v1')
-QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.searchplan_enhancer_config.enhance_classifier_agent_task_config = AgentEnhanceClassifierTaskConfigSelector.select(base_config_version='v1')
-QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.searchplan_enhancer_config.plan_enhancing_agent_task_config = AgentPlanEnhancingTaskConfigSelector.select(base_config_version='v1')
+QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.searchplan_enhancer_config.plan_initing_agent_task_config = AgentPlanInitTaskConfigSelector.select(
+    base_config_version='v1')
+QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.searchplan_enhancer_config.enhance_classifier_agent_task_config = AgentEnhanceClassifierTaskConfigSelector.select(
+    base_config_version='v1')
+QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.searchplan_enhancer_config.plan_enhancing_agent_task_config = AgentPlanEnhancingTaskConfigSelector.select(
+    base_config_version='v1')
 
-QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.entities_extractor_config.entities_extraction_agent_task_config = AgentEntitiesExtrTaskConfigSelector.select(base_config_version='v1')
-QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.cluequeries_generator_config.cquerie_generator_agent_task_config = AgentCQueryGenTaskConfigSelector.select(base_config_version='v1')
-QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.clueanswer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(base_config_version='v3')
-QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.clueanswers_summarizer_confif.canswers_summarisation_agent_task_config = AgentClueAnswersSummTaskConfigSelector.select(base_config_version='v1')
-QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.answer_generator_config.answer_classifier_agent_task_config = AgentAnswerClassifierTaskConfigSelector.select(base_config_version='v1')
-QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.answer_generator_config.answer_generator_agent_task_config = AgentAnswerGeneratorTaskConfigSelector.select(base_config_version='v1')
+QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.entities_extractor_config.entities_extraction_agent_task_config = AgentEntitiesExtrTaskConfigSelector.select(
+    base_config_version='v1')
+QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.cluequeries_generator_config.cquerie_generator_agent_task_config = AgentCQueryGenTaskConfigSelector.select(
+    base_config_version='v1')
+QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.clueanswer_generator_config.ag_task_config = AgentSimpleAGTaskConfigSelector.select(
+    base_config_version='v3')
+QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.clueanswers_summarizer_confif.canswers_summarisation_agent_task_config = AgentClueAnswersSummTaskConfigSelector.select(
+    base_config_version='v1')
+QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.answer_generator_config.answer_classifier_agent_task_config = AgentAnswerClassifierTaskConfigSelector.select(
+    base_config_version='v1')
+QA_MEDIUM_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.answer_generator_config.answer_generator_agent_task_config = AgentAnswerGeneratorTaskConfigSelector.select(
+    base_config_version='v1')
 
-QA_MEDIUM_V1_CONFIG1.aggregator_config.suba_summarisation_agent_task_config = AgentSubASummTaskConfigSelector.select(base_config_version='v1')
+QA_MEDIUM_V1_CONFIG1.aggregator_config.suba_summarisation_agent_task_config = AgentSubASummTaskConfigSelector.select(
+    base_config_version='v1')
+
 
 def populate_configs_with_diff_accepted_nodes(config: QAPipelineConfig):
     anodes_packs = [[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time],
@@ -325,42 +359,43 @@ def populate_configs_with_diff_accepted_nodes(config: QAPipelineConfig):
 
 #############################
 
-QA_V1_CONFIGS = reduce(lambda acc, v: acc + v,list(map(populate_configs_with_diff_accepted_nodes,[
-    QA_V1_CONFIG1, QA_V1_CONFIG2, QA_V1_CONFIG3, QA_V1_CONFIG4,
-    QA_V1_CONFIG5, QA_V1_CONFIG6, QA_V1_CONFIG7, QA_V1_CONFIG8])),[])
 
-QA_V2_CONFIGS = reduce(lambda acc, v: acc + v,list(map(populate_configs_with_diff_accepted_nodes,[
+QA_V1_CONFIGS = reduce(lambda acc, v: acc + v, list(map(populate_configs_with_diff_accepted_nodes, [
+    QA_V1_CONFIG1, QA_V1_CONFIG2, QA_V1_CONFIG3, QA_V1_CONFIG4,
+    QA_V1_CONFIG5, QA_V1_CONFIG6, QA_V1_CONFIG7, QA_V1_CONFIG8])), [])
+
+QA_V2_CONFIGS = reduce(lambda acc, v: acc + v, list(map(populate_configs_with_diff_accepted_nodes, [
     QA_V2_CONFIG1, QA_V2_CONFIG2, QA_V2_CONFIG3, QA_V2_CONFIG4,
-    QA_V2_CONFIG5, QA_V2_CONFIG6, QA_V2_CONFIG7, QA_V2_CONFIG8])),[])
+    QA_V2_CONFIG5, QA_V2_CONFIG6, QA_V2_CONFIG7, QA_V2_CONFIG8])), [])
 
 QA_MEDIUM_V1_CONFIGS = [QA_MEDIUM_V1_CONFIG1]
 
 # Adding Weak QA-configs
 
 POPULATED_QA_CONFIGS = []
-#for i in range(len(QA_V1_CONFIGS)):
+# for i in range(len(QA_V1_CONFIGS)):
 #    POPULATED_QA_CONFIGS.append((QA_V1_CONFIGS[i], EN_QUESTIONS, True, False, False))
-#for i in range(len(QA_V1_CONFIGS)):
+# for i in range(len(QA_V1_CONFIGS)):
 #    POPULATED_QA_CONFIGS.append((QA_V1_CONFIGS[i], EN_QUESTIONS, False, False, False))
-#for i in range(len(QA_V1_CONFIGS)):
+# for i in range(len(QA_V1_CONFIGS)):
 #    POPULATED_QA_CONFIGS.append((QA_V1_CONFIGS[i], [], True, True, False))
 
-#for i in range(len(QA_V2_CONFIGS)):
+# for i in range(len(QA_V2_CONFIGS)):
 #    POPULATED_QA_CONFIGS.append((QA_V2_CONFIGS[i], EN_QUESTIONS, True, False, False))
-#for i in range(len(QA_V2_CONFIGS)):
+# for i in range(len(QA_V2_CONFIGS)):
 #    POPULATED_QA_CONFIGS.append((QA_V2_CONFIGS[i], EN_QUESTIONS, False, False, False))
-#for i in range(len(QA_V2_CONFIGS)):
+# for i in range(len(QA_V2_CONFIGS)):
 #    POPULATED_QA_CONFIGS.append((QA_V2_CONFIGS[i], [], True, True, False))
 
 # Adding Medium QA-configs
 
 for i in range(len(QA_MEDIUM_V1_CONFIGS)):
-    POPULATED_QA_CONFIGS.append((QA_MEDIUM_V1_CONFIGS[i], EN_QUESTIONS, True, False, False))
+    POPULATED_QA_CONFIGS.append(
+        (QA_MEDIUM_V1_CONFIGS[i], EN_QUESTIONS, True, False, False))
 # for i in range(len(QA_MEDIUM_V1_CONFIGS)):
 #     POPULATED_QA_CONFIGS.append((QA_MEDIUM_V1_CONFIGS[i], EN_QUESTIONS, False, False, False))
 for i in range(len(QA_MEDIUM_V1_CONFIGS)):
-    POPULATED_QA_CONFIGS.append((QA_MEDIUM_V1_CONFIGS[i], [], True, True, False))
+    POPULATED_QA_CONFIGS.append(
+        (QA_MEDIUM_V1_CONFIGS[i], [], True, True, False))
 
-#POPULATED_QA_CONFIGS.append((POPULATED_QA_CONFIGS[-1][0], [], False, False, True))
-
-
+# POPULATED_QA_CONFIGS.append((POPULATED_QA_CONFIGS[-1][0], [], False, False, True))

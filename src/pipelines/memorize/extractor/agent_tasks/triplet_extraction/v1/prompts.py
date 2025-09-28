@@ -1,7 +1,7 @@
 ### PROMPT IN ENGLISH ###
 
 EN_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
-'''Objective: The main goal is to meticulously gather information from the text and organize this data into a clear, structured knowledge graph.
+    '''Objective: The main goal is to meticulously gather information from the text and organize this data into a clear, structured knowledge graph.
 
 Guidelines for Building the Knowledge Graph:
 
@@ -22,7 +22,7 @@ Do not use 'none' as one of the objects.
 If there is information that you read something, do not forget to incluse triplets that state that entitie that you read contains information that you extract.'''
 
 EN_TRIPLETS_EXTRACTION_USER_PROMPT = \
-'''Text: {text}
+    '''Text: {text}
 
 Remember that triplets must be extracted in format: "subject_1, relation_1, object_1; subject_2, relation_2, object_2; ..."
 This is important
@@ -35,7 +35,7 @@ Extracted triplets: '''
 ### PROMPT IN RUSSIAN ###
 
 RU_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
-'''Задача: Основная цель - скрупулезно собрать информацию из текста и организовать эти данные в четкий, структурированный граф знаний.
+    '''Задача: Основная цель - скрупулезно собрать информацию из текста и организовать эти данные в четкий, структурированный граф знаний.
 
 Рекомендации по построению графа знаний:
 
@@ -52,7 +52,7 @@ RU_TRIPLETS_EXTRACTION_SYSTEM_PROMPT = \
 Не используй 'none' в качестве одной из сущностей.'''
 
 RU_TRIPLETS_EXTRACTION_USER_PROMPT = \
-'''Текст: {text}
+    '''Текст: {text}
 
 Помни, что триплеты должны быть извлечены в формате: "субъект_1, отношение_1, объект_1; субъект_2, отношение_2, объект_2; ...».
 

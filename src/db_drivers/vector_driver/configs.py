@@ -1,5 +1,6 @@
-from .connectors import ChromaConnection, DEFAULT_CHROMA_CONFIG
-from .connectors import MilvusConnector, DEFAULT_MILVUS_CONFIG
+from src.db_drivers.vector_driver.connectors.dense import ChromaVectorConnection
+from .connectors.dense import MilvusVectorConnector
+from .connectors.dense.configs import DEFAULT_CHROMA_CONFIG, DEFAULT_MILVUS_CONFIG
 
 
 DEFAULT_VECTORDB_CONFIGS = {
@@ -8,6 +9,6 @@ DEFAULT_VECTORDB_CONFIGS = {
 }
 
 AVAILABLE_VECTORDB_CONNECTORS = {
-    'chroma': ChromaConnection,
-    'milvus': MilvusConnector
+    'chroma': ChromaVectorConnection,
+    'milvus': MilvusVectorConnector
 }

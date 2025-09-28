@@ -3,17 +3,23 @@
  "contexts_len": {
   "median": 807.0,
   "mean": 765.1198,
-  "std": 196.32728
+  "std": 196.32728,
+  "min": 70,
+  "max": 1024
  },
  "qa_pairs_amount": 500,
  "answers_len": {
   "median": 9.0,
   "mean": 10.178,
-  "std": 5.76388
+  "std": 5.76388,
+  "min": 1,
+  "max": 48
  },
  "questions_len": {
   "median": 66.0,
   "mean": 76.378,
-  "std": 39.46841
+  "std": 39.46841,
+  "min": 27,
+  "max": 294
  }
 }

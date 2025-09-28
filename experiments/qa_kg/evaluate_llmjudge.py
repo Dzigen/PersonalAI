@@ -1,3 +1,8 @@
+from llm_as_a_judge import AgentLLMJudgeTaskConfigSelector
+from llm_as_a_judge.AnswersJudge import AnswersJudgeConfig, AnswersJudge
+from src.agents.utils import AgentConnectorConfig
+from src.agents import AgentDriverConfig
+from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
 import sys
 from tqdm import tqdm
 import yaml
@@ -18,15 +23,11 @@ with open(PARAMS_FILEP, 'r') as stream:
     PARAMS = yaml.safe_load(stream)
 
 sys.path.insert(0, PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
-from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
-from src.agents import AgentDriverConfig
-from src.agents.utils import AgentConnectorConfig
 
-sys.path.insert(0, f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['QA_EVALUATION']['llm_as_a_judge_path']}")
-from llm_as_a_judge.AnswersJudge import AnswersJudgeConfig, AnswersJudge
-from llm_as_a_judge import AgentLLMJudgeTaskConfigSelector
+sys.path.insert(
+    0, f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['QA_EVALUATION']['llm_as_a_judge_path']}")
 
-################LOADING_HYPERPARAMETERS###################
+################ LOADING_HYPERPARAMETERS###################
 
 DS_EXPERIMENT_DIR = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['exp_results']}/{PARAMS['DATASET_NAME']}"
 SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['EXPERIMENT_NAME']}"
@@ -76,13 +77,16 @@ judge = AnswersJudge(judge_config, kvdriver_config)
 
 ##################################################
 
+
 def load_json(load_path: str) -> Dict:
     with open(load_path, 'r', encoding='utf-8') as fd:
         data = json.loads(fd.read())
     return data
 
+
 def round5(number: float) -> float:
     return round(number, 5)
+
 
 def save_json(data: Dict[str, object], save_path: str):
     dump = json.dumps(data, ensure_ascii=False, indent=1)
@@ -90,6 +94,7 @@ def save_json(data: Dict[str, object], save_path: str):
         fd.write(dump)
 
 ################# START JUDGING ##################
+
 
 answers_pack_names = os.listdir(GENERATED_ANSWERS_DIR)
 for pack_name in answers_pack_names:
@@ -103,13 +108,14 @@ for pack_name in answers_pack_names:
     for a_idx, a_info in process:
         process.set_postfix_str(pack_name)
         s_time = time()
-        score, info = judge.perform(a_info['question'], a_info['gold_answer'], a_info['gen_answer'])
+        score, info = judge.perform(
+            a_info['question'], a_info['gold_answer'], a_info['gen_answer'])
         e_time = time()
 
         llmj_dump_file = f"{pack_tmp_dir}/judge_{a_idx}"
         joblib.dump({'judge_score': score,
-            'info': info, 'elapsed_time': e_time - s_time},
-            llmj_dump_file)
+                     'info': info, 'elapsed_time': e_time - s_time},
+                    llmj_dump_file)
 
 ################# ACCUMULATE SCORES ################
 
@@ -134,15 +140,20 @@ for pack_name in judges_pack_names:
         accum_score['answer_time_map'][answer_num] = answer_info['elapsed_time']
         accum_score['answer_score_map'][answer_num] = answer_info['judge_score']
 
-    accum_score['elapsed_time']['sum'] = sum(list(accum_score['answer_time_map'].values()))
-    accum_score['elapsed_time']['mean'] = np.mean(list(accum_score['answer_time_map'].values()))
-    accum_score['elapsed_time']['median'] = np.median(list(accum_score['answer_time_map'].values()))
+    accum_score['elapsed_time']['sum'] = sum(
+        list(accum_score['answer_time_map'].values()))
+    accum_score['elapsed_time']['mean'] = np.mean(
+        list(accum_score['answer_time_map'].values()))
+    accum_score['elapsed_time']['median'] = np.median(
+        list(accum_score['answer_time_map'].values()))
 
-    filtered_scores = list(filter(lambda score: score is not None, list(accum_score['answer_score_map'].values())))
+    filtered_scores = list(filter(lambda score: score is not None, list(
+        accum_score['answer_score_map'].values())))
     accum_score['score']['mean'] = np.mean(filtered_scores)
     accum_score['score']['median'] = np.median(filtered_scores)
 
-    accum_score['score']['frequency'] = dict(Counter(list(accum_score['answer_score_map'].values())))
+    accum_score['score']['frequency'] = dict(
+        Counter(list(accum_score['answer_score_map'].values())))
 
     save_json(accum_score, f"{METRICS_DIR}/{pack_name}.json")
 

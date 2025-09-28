@@ -4,9 +4,12 @@
 models/
 data/
 debug/
+.env_secret_llmkeys
 
 experiments/legacy
 experiments/qa_kg/legacy
+personalai_tmp/
+tests/log
 
 experiments/qa_kg/results/**/tmp_answer_packs/
 experiments/qa_kg/results/**/answer_packs/

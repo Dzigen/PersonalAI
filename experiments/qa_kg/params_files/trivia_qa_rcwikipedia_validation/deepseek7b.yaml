@@ -119,7 +119,7 @@ WEAK_KG_REASONER:
     filter_method: 'naive' # CAN BE None
     filter_config: # CAN BE None
       max_k: 50
-      
+
   answer_generator_config:
     ag_task:
       prompts_version: 'v3' # 'v1' | 'v2'

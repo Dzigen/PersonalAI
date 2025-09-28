@@ -11,6 +11,7 @@ AVAILABLE_THESIS_EXTRACT_TCONFIGS = {
     'v2': THESIS_EXTRACT_SUITE_V2
 }
 
+
 class AgentThesisExtrTaskConfigSelector:
     @staticmethod
     def get_available_configs():

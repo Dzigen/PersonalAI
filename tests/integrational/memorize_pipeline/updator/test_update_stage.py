@@ -1,12 +1,11 @@
 import pytest
-
+from typing import List, Dict
 import sys
 sys.path.insert(0, "../")
 
-from src.utils import Triplet
-from src.pipelines.memorize import LLMUpdator
 
-from typing import List, Dict
+from src.pipelines.memorize import LLMUpdator
+from src.utils import Triplet
 
 # @pytest.mark.parametrize("kg_triplets, new_triplets, agent_stub_answers, obsolete_flag, expected_kg", [
 #     # TODO

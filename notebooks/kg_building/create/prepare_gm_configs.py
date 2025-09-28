@@ -1,3 +1,16 @@
+from src.agents.utils import AgentConnectorConfig
+from src.agents import AgentDriverConfig
+from src.pipelines.memorize.updator.configs import AgentReplSimpleTripletTaskConfigSelector, AgentReplThesisTripletTaskConfigSelector
+from src.pipelines.memorize.extractor.configs import AgentThesisExtrTaskConfigSelector, AgentTripletExtrTaskConfigSelector
+from src.kg_model.nodestree_model.agent_tasks.nodes_summarization import AgentSummNTaskConfigSelector
+from src.kg_model.nodestree_model import NodesTreeModelConfig
+from src.db_drivers.tree_driver import TreeDriverConfig, TreeDBConnectionConfig
+from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
+from src.db_drivers.vector_driver import VectorDriverConfig, VectorDBConnectionConfig, EmbedderModelConfig, VectorDBConnectionConfig
+from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig, GraphDBConnectionConfig
+from src.kg_model import EmbeddingsModelConfig, GraphModelConfig
+from src.pipelines.memorize import MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
+from src.kg_model import EmbedderModelConfig
 import sys
 import joblib
 import yaml
@@ -9,23 +22,6 @@ with open(PARAMS_FILE_PATH, 'r') as stream:
 
 sys.path.insert(0, PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
 
-from src.kg_model import EmbedderModelConfig
-from src.db_drivers.graph_driver import GraphDBConnectionConfig
-from src.db_drivers.vector_driver import VectorDBConnectionConfig
-from src.pipelines.memorize import MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
-from src.kg_model import EmbeddingsModelConfig, GraphModelConfig
-from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
-from src.db_drivers.vector_driver import VectorDriverConfig, VectorDBConnectionConfig, EmbedderModelConfig
-from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
-from src.db_drivers.tree_driver import TreeDriverConfig, TreeDBConnectionConfig
-
-from src.kg_model.nodestree_model import NodesTreeModelConfig
-from src.kg_model.nodestree_model.agent_tasks.nodes_summarization import AgentSummNTaskConfigSelector
-
-from src.pipelines.memorize.extractor.configs import AgentThesisExtrTaskConfigSelector, AgentTripletExtrTaskConfigSelector
-from src.pipelines.memorize.updator.configs import AgentReplSimpleTripletTaskConfigSelector, AgentReplThesisTripletTaskConfigSelector
-from src.agents import AgentDriverConfig
-from src.agents.utils import AgentConnectorConfig
 
 ###################################
 
@@ -56,19 +52,19 @@ gmodel_config = GraphModelConfig(
 
 ########### Embeddings model ###########
 
-nodesdb_config=VectorDBConnectionConfig(
+nodesdb_config = VectorDBConnectionConfig(
     db_info=PARAMS['KG_DB_CONFIGS']['nodesdb_config']['db_info'],
     params=PARAMS['KG_DB_CONFIGS']['nodesdb_config']['params'],
     conn=PARAMS['KG_DB_CONFIGS']['nodesdb_config']['conn'],
     need_to_clear=PARAMS['KG_DB_CONFIGS']['need_to_clear'])
 
-tripletsdb_config=VectorDBConnectionConfig(
+tripletsdb_config = VectorDBConnectionConfig(
     db_info=PARAMS['KG_DB_CONFIGS']['tripletsdb_config']['db_info'],
     params=PARAMS['KG_DB_CONFIGS']['tripletsdb_config']['params'],
     conn=PARAMS['KG_DB_CONFIGS']['tripletsdb_config']['conn'],
     need_to_clear=PARAMS['KG_DB_CONFIGS']['need_to_clear'])
 
-embedder_config=EmbedderModelConfig(
+embedder_config = EmbedderModelConfig(
     model_name_or_path=f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['models']}/{PARAMS['KG_DB_CONFIGS']['embedder_config']['model_name_or_path']}",
     prompts=PARAMS['KG_DB_CONFIGS']['embedder_config']['prompts'])
 
@@ -84,9 +80,9 @@ emodel_config = EmbeddingsModelConfig(
 ########### Memorize-pipeline config ###########
 
 # gigachat key
-#GIGACHAT_CREDS = 'OWUwOGUzOWEtMjJiNi00YmMxLThmMmItNzMwNjM2MTI2YmYxOjg2ODdiOTVhLTZkNDctNGFjOC1iMmViLTEyNDA5MmFiN2Q5Mw=='
+# GIGACHAT_CREDS = 'OWUwOGUzOWEtMjJiNi00YmMxLThmMmItNzMwNjM2MTI2YmYxOjg2ODdiOTVhLTZkNDctNGFjOC1iMmViLTEyNDA5MmFiN2Q5Mw=='
 # openai key
-#API_KEY = "'sk-861mINAavom2SSBqgrI82D4thMOfqT37knCof2o0H0T3BlbkFJ2gdVXJuVjNesNNP2aeUwPoBpZP3a3R1gn1kqv97CsA'"
+# API_KEY = "'sk-861mINAavom2SSBqgrI82D4thMOfqT37knCof2o0H0T3BlbkFJ2gdVXJuVjNesNNP2aeUwPoBpZP3a3R1gn1kqv97CsA'"
 
 adriver_config = AgentDriverConfig(
     name=PARAMS['MEM_PIPELINE_CONFIG']['agent_config']['vendor'],
@@ -133,7 +129,7 @@ updator_config = LLMUpdatorConfig(
     adriver_config=adriver_config,
     replace_simple_task_config=AgentReplSimpleTripletTaskConfigSelector.select(
         base_config_version=PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['replace_simple_triplets']['prompts_version']),
-    replace_thesis_task_config= AgentReplThesisTripletTaskConfigSelector.select(
+    replace_thesis_task_config=AgentReplThesisTripletTaskConfigSelector.select(
         base_config_version=PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['replace_thesis_triplets']['prompts_version']),
     delete_obsolete_info=PARAMS['MEM_PIPELINE_CONFIG']['updator_stage']['delete_obsolete_info']
 )
@@ -145,13 +141,13 @@ mem_config = MemPipelineConfig(
 
 ########### NodesTree model ###########
 
-leafs_vectordb_config=VectorDBConnectionConfig(
+leafs_vectordb_config = VectorDBConnectionConfig(
     db_info=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_leafnodes_config']['db_info'],
     params=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_leafnodes_config']['params'],
     conn=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_leafnodes_config']['conn'],
     need_to_clear=PARAMS['KG_DB_CONFIGS']['need_to_clear'])
 
-summ_vectordb_config=VectorDBConnectionConfig(
+summ_vectordb_config = VectorDBConnectionConfig(
     db_info=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_summnodes_config']['db_info'],
     params=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_summnodes_config']['params'],
     conn=PARAMS['KG_DB_CONFIGS']['nodestree_config']['vectordb_summnodes_config']['conn'],

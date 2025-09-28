@@ -87,7 +87,7 @@ WEAK_KG_REASONER:
       #- hyper
       - episodic
       - time
-      
+
       retriever1_name: watercircles
       retriever1_config:
         chain_triplets_num: 25
@@ -96,8 +96,8 @@ WEAK_KG_REASONER:
         hyper_num: 15
         other_triplets_num: 6
         strict_filter: true
-        
-      retriever2_name: beamsearch    
+
+      retriever2_name: beamsearch
       retriever2_config:
         diff_paths_intersection_by_node: false
         diff_paths_intersection_by_rel: false

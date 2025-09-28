@@ -89,7 +89,7 @@ WEAK_KG_REASONER:
         #- hyper
         - episodic
         - time
-    
+
       max_depth: 10
       max_passed_nodes: 150
       metrics_config:
@@ -122,7 +122,7 @@ WEAK_KG_REASONER:
     filter_method: 'naive' # CAN BE None
     filter_config: # CAN BE None
       max_k: 50
-      
+
   answer_generator_config:
     ag_task:
       prompts_version: 'v3' # 'v1' | 'v2'
