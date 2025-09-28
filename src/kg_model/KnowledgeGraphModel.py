@@ -194,4 +194,7 @@ class KnowledgeGraphModel:
         del self.graph_embeddings
         if self.nodestree_model is not None:
             del self.nodestree_model
+        for a_name in self.AVAILABLE_AGENTS.keys():
+            self.AVAILABLE_AGENTS[a_name].close_connection()
+
         gc.collect()

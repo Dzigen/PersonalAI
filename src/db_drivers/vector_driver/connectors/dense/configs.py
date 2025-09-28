@@ -1,4 +1,4 @@
-from ..utils import VectorDBConnectionConfig
+from ...utils import VectorDBConnectionConfig
 
 DEFAULT_CHROMA_CONFIG = VectorDBConnectionConfig(
     params={"hnsw:space": "ip", "hnsw:M": 4096},

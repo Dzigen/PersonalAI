@@ -11,6 +11,9 @@ class CacheKV:
     def __init__(self, kvdriver_config: KeyValueDriverConfig = DEFAULT_CACHEKV_CONFIG):
         self.kv_conn = KeyValueDriver.connect(kvdriver_config)
 
+    def __dell__(self):
+        self.kv_conn.close_connection()
+
     @staticmethod
     def prepare_key(key: List[object] = None, key_hash: str = None) -> str:
         # либо key- либо key_hash-значение должно быть указано,

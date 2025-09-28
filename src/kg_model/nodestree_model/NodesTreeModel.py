@@ -89,7 +89,7 @@ class NodesTreeModel:
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
     :type agent: AbstractAgentConnector
-    :param embedder: ... .
+    :param embedder: Коннектор к конкретной embedder-моделе для получения векторных представлений текста.
     :type embedder: EmbedderModel
     :param config: Конфигурация NodesTree-модели. Значение по умолчанию NodesTreeModelConfig().
     :type config: NodesTreeModelConfig, optional

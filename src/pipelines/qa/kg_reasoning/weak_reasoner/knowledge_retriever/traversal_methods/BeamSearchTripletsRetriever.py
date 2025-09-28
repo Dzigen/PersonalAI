@@ -50,7 +50,7 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     :type diff_paths_intersection_by_node: bool, optional
     :param diff_paths_intersection_by_rel: Если True, то разные пути могут пересекаться по связям, иначе False. Значение по умолчанию True.
     :type diff_paths_intersection_by_rel: bool, optional
-    :param mean_alpha: Гиперпараметр, отвечающий за учёт длины построенного пути при усреднении его ценности (релевантности). См. calculate_triplet_score- и calculate_path_score-методы.. Значение по умолчанию 0.75.
+    :param mean_alpha: Гиперпараметр, отвечающий за учёт длины построенного пути при усреднении его ценности (релевантности). См. calculate_triplet_score- и calculate_path_score-методы. Значение по умолчанию 0.75.
     :type mean_alpha: float, optional
     :param accepted_node_types: Типы вершины, которые можно обходить во время построения путей. Значение по умолчанию [NodeType.object , NodeType.hyper, NodeType.episodic].
     :type accepted_node_types: List[NodeType], optional

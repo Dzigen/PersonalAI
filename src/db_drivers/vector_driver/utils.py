@@ -19,7 +19,7 @@ class VectorDBInstance:
     embedding: List[float] = None
     metadata: Dict = field(default_factory=lambda: dict())
 
-    def dict(self):
+    def to_dict(self):
         return {k: v for k, v in asdict(self).items()}
 
 

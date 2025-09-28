@@ -6,7 +6,7 @@ import numpy as np
 import torch
 
 from .configs import DEFAULT_MILVUS_CONFIG
-from ..utils import AbstractVectorDatabaseConnection, VectorDBInstance, VectorDBConnectionConfig
+from ...utils import AbstractVectorDatabaseConnection, VectorDBInstance, VectorDBConnectionConfig
 
 
 class MilvusVectorConnector(AbstractVectorDatabaseConnection):
@@ -96,7 +96,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
     def create(self, items: List[VectorDBInstance]) -> None:
         # validation
         for item in items:
-            if type(item.id) is not str:
+            if not isinstance(item.id, str):
                 raise ValueError
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
                 raise ValueError
@@ -110,7 +110,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
             if not item_exists:
                 filtered_items.append(item)
 
-        formated_data = list(map(lambda item: item.dict(), filtered_items))
+        formated_data = list(map(lambda item: item.to_dict(), filtered_items))
 
         out = self.client.insert(
             collection_name=self.config.db_info['table'],
@@ -125,7 +125,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
     def read(self, ids: List[str], includes=["embeddings", "documents", "metadatas"]) -> List[VectorDBInstance]:
         # validation
         for id in ids:
-            if (id is None) or (type(id) is not str):
+            if (id is None) or (not isinstance(id, str)):
                 raise ValueError
         if len(ids) < 1:
             return []
@@ -149,13 +149,13 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
     def upsert(self, items: List[VectorDBInstance]) -> None:
         # validation
         for item in items:
-            if type(item.id) is not str:
+            if not isinstance(item.id, str):
                 raise ValueError
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
             raise ValueError
 
-        formated_data = list(map(lambda item: item.dict(), items))
+        formated_data = list(map(lambda item: item.to_dict(), items))
         self.client.upsert(
             collection_name=self.config.db_info['table'], data=formated_data)
 
@@ -168,7 +168,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
     def delete(self, ids: List[str]) -> None:
         # validation
         for id in ids:
-            if type(id) is not str:
+            if not isinstance(id, str):
                 raise ValueError
 
         if len(ids):
@@ -194,7 +194,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
                 raise ValueError
 
         if n_results < 1:
-            return [[]*len(query_instances)]
+            return [[] * len(query_instances)]
 
         # костыль
         f_includes = list(map(lambda f_name: f_name[:-1], includes))
@@ -229,7 +229,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
 
     def item_exist(self, id: str) -> bool:
         # validation
-        if type(id) is not str:
+        if not isinstance(id, str):
             raise ValueError
 
         #

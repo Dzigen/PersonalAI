@@ -1,2 +1,0 @@
-from .ChromaVectorConnector import ChromaVectorConnection
-from .MilvusVectorConnector import MilvusVectorConnector

@@ -36,15 +36,25 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         return condition
 
     def close_connection(self) -> None:
-        del self.edges
-        del self.adjacent_nodes
+        try:
+            del self.edges
+            del self.adjacent_nodes
+        except AttributeError:
+            pass
 
-        del self.nodes
-        del self.triplets
+        try:
+            del self.nodes
+            del self.triplets
+        except AttributeError:
+            pass
 
-        del self.strid_nodes_index
-        del self.strid_relation_index
-        del self.tid_triplets_index
+        try:
+            del self.strid_nodes_index
+            del self.strid_relation_index
+            del self.tid_triplets_index
+        except AttributeError:
+            pass
+
         gc.collect()
 
     def generate_id(self, seed: str = None) -> str:
@@ -53,7 +63,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
     def create(self, triplets: List[Triplet], creation_info: Dict[int, Dict[str, bool]] = dict()) -> None:
         # triplet-ids checking
         for triplet in triplets:
-            if type(triplet.id) is not str:
+            if not isinstance(triplet.id, str):
                 raise ValueError
         unique_ids = set(map(lambda triplet: triplet.id, triplets))
         if len(triplets) != len(unique_ids):
@@ -101,7 +111,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
     def read(self, ids: List[str]) -> List[Triplet]:
         triplets = []
         for id in ids:
-            if type(id) is not str:
+            if not isinstance(id, str):
                 raise ValueError
             t_ids = self.tid_triplets_index[id]
             triplets += list(
@@ -114,7 +124,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
     def delete(self, ids: List[str], delete_info: Dict[int, Dict[str, bool]] = dict()) -> None:
         for id in ids:
-            if type(id) is not str:
+            if not isinstance(id, str):
                 raise ValueError
 
         for i, t_id in enumerate(ids):
@@ -174,7 +184,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         if type(object_type) not in [RelationType, NodeType]:
             raise ValueError
 
-        if type(name) is not str:
+        if not isinstance(name, str):
             raise ValueError
 
         if len(name) < 1:
@@ -193,7 +203,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
     def get_adjecent_nids(self, base_node_id: str,
                           accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[str]:
-        if type(base_node_id) is not str:
+        if not isinstance(base_node_id, str):
             raise ValueError
 
         node_db_ids = self.strid_nodes_index.get(base_node_id, [])
@@ -208,9 +218,9 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         return nodes_str_ids
 
     def get_nodes_shared_ids(self, node1_id: str, node2_id: str, id_type: str = 'both') -> List[Dict[str, str]]:
-        if (type(node1_id) is not str) or (type(node2_id) is not str):
+        if (not isinstance(node1_id, str)) or (not isinstance(node2_id, str)):
             raise ValueError(node1_id, node2_id)
-        if type(id_type) is not str or id_type not in ['triplet', 'relation', 'both']:
+        if not isinstance(id_type, str) or id_type not in ['triplet', 'relation', 'both']:
             raise ValueError(id_type)
 
         formated_info = []
@@ -238,7 +248,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         return formated_info
 
     def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
-        if (type(node1_id) is not str) or (type(node2_id) is not str):
+        if (not isinstance(node1_id, str)) or (not isinstance(node2_id, str)):
             raise ValueError
 
         start_n_db_ids = self.strid_nodes_index[node1_id]
@@ -293,7 +303,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         return result
 
     def item_exist(self, item_id: str, id_type: str = 'triplet') -> bool:
-        if type(item_id) is not str:
+        if not isinstance(item_id, str):
             raise ValueError
 
         output = None

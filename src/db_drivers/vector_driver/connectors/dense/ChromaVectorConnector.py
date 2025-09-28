@@ -7,8 +7,8 @@ import torch
 import numpy as np
 
 from .configs import DEFAULT_CHROMA_CONFIG
-from ..utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
-from ....utils.errors import ReturnInfo
+from ...utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
+from .....utils.errors import ReturnInfo
 
 __import__('pysqlite3')
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
@@ -42,7 +42,7 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
         # validating
         for item in items:
-            if type(item.id) is not str:
+            if not isinstance(item.id, str):
                 raise ValueError
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
                 raise ValueError
@@ -94,7 +94,7 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
     def upsert(self, items: List[VectorDBInstance]) -> None:
         # validation
         for item in items:
-            if type(item.id) is not str:
+            if not isinstance(item.id, str):
                 raise ValueError
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
@@ -108,7 +108,7 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
     def delete(self, ids: List[str]) -> None:
         # validation
         for id in ids:
-            if type(id) is not str:
+            if not isinstance(id, str):
                 raise ValueError
 
         if len(ids):
@@ -127,7 +127,7 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
         collection_size = self.count_items()
         n_results = collection_size if collection_size < n_results else n_results
         if n_results < 1:
-            return [[]*len(query_instances)]
+            return [[] * len(query_instances)]
 
         filtering_expr = dict()
         if subset_ids is not None:

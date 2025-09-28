@@ -37,7 +37,7 @@ class EmbeddingsModelConfig:
 class EmbeddingsModel:
     """Структура данных для хранения информации в векторном формате.
 
-    :param embedder: ...
+    :param embedder: Коннектор к конкретной embedder-моделе для получения векторных представлений текста.
     :type embedder: EmbedderModel
     :param config: Конфигурация векторной структуры данных. Значение по умолчанию EmbeddingsModelConfig().
     :type config: EmbeddingsModelConfig, optional
