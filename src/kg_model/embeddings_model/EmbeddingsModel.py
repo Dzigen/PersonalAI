@@ -21,6 +21,8 @@ class EmbeddingsModelConfig:
     :type tripletsdb_driver_config: VectorDriverConfig, optional
     :param embedder_config: Конфигурация класса, отвечающего за приведения текста в его векторное представление с помощью заданной embedder-модели. Значение по умолчанию EmbedderModelConfig().
     :type embedder_config: EmbedderModelConfig, optional
+    :param embedder_encode_batchsize: ... . Значение по умолчанию 16.
+    :type embedder_encode_batchsize: int, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(EMBEDDINGS_MODEL_LOG_PATH).
     :type log: Logger, optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
@@ -30,6 +32,7 @@ class EmbeddingsModelConfig:
         default_factory=lambda: NODES_DB_DEFAULT_DRIVER_CONFIG)
     tripletsdb_driver_config: VectorDriverConfig = field(
         default_factory=lambda: TRIPLETS_DB_DEFAULT_DRIVER_CONFIG)
+    embedder_encode_batchsize: int = 16
     log: Logger = field(default_factory=lambda: Logger(EMBEDDINGS_MODEL_LOG_PATH))
     verbose: bool = False
 
@@ -196,7 +199,7 @@ class EmbeddingsModel:
         """
         torch.cuda.empty_cache()
         embs = self.embedder.encode_passages(
-            stringified_instances, batch_size=16)
+            stringified_instances, batch_size=self.config.embedder_encode_batchsize)
         formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb, metadata={'id': id, **metad})
                               for id, doc, emb, metad in zip(ids, stringified_instances, embs, metadatas)]
         self.vectordbs[db_type].create(formated_instances)

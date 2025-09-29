@@ -1,0 +1,7 @@
+from ...utils import VectorDBConnectionConfig
+
+DEFAULT_ELASTICSEARCH_BM25_CONFIG = ...  # TODO
+
+DEFAULT_INMEMORY_BM25_CONFIG = ...  # TODO
+
+DEFAULT_OPENSEARCH_BM25_CONFIG = ...  # TODO

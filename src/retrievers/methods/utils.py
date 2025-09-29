@@ -3,7 +3,9 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 
 
-@dataclass
-class BaseRetrieverModuleConfig:
-    # TODO
-    pass
+class AbstractRetriverModule(ABC):
+
+    @abstractmethod
+    def run(self):
+        # TODO
+        pass
