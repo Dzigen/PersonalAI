@@ -11,16 +11,18 @@ DEFAULT_VECTORDB_CONFIGS = {
         'milvus': DEFAULT_MILVUS_CONFIG
     },
     'sparse_bm25': {
-        'opensearch': ...,  # TODO
-        'elasticsearch': ...,  # TODO
-        'inmemory': ...  # TODO
+        'opensearch': DEFAULT_OPENSEARCH_BM25_CONFIG,
+        'elasticsearch': DEFAULT_ELASTICSEARCH_BM25_CONFIG,
+        # 'weaviate': DEFAULT_WEAVIATE_BM25_CONFIG,
+        'inmemory': DEFAULT_INMEMORY_BM25_CONFIG
     }
 }
 
 AVAILABLE_VECTORDB_CONNECTORS = {
     'chroma': ChromaVectorConnection,
     'milvus': MilvusVectorConnector,
-    'opensearch_bm25': OpenSeachBM25Connector,  # TODO
-    'elasticsearch_bm25': ElasticSearchBM25Connector,  # TODO
-    'inmemory_bm25': InMemoryBM25Connector  # TODO
+    'opensearch_bm25': OpenSeachBM25Connector,
+    'elasticsearch_bm25': ElasticSearchBM25Connector,
+    'inmemory_bm25': InMemoryBM25Connector,
+    # 'weaviate_bm25': WeaviateBM25Connector
 }

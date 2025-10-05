@@ -1,12 +1,15 @@
-from typing import List, Tuple
+from typing import List, Tuple, Union
 import sys
 import chromadb
+from chromadb.config import Settings
 import logging
 import gc
 import torch
 import numpy as np
+from copy import deepcopy
 
 from .configs import DEFAULT_CHROMA_CONFIG
+from ...embedders import EmbedderModel
 from ...utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
 from .....utils.errors import ReturnInfo
 
@@ -15,12 +18,26 @@ sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 logging.getLogger("chromadb").setLevel(logging.CRITICAL)
 
 
+settings = Settings(
+    chroma_segment_cache_policy="LRU",
+    chroma_memory_limit_bytes=50000000000  # ~50GB
+)
+
+
 class ChromaVectorConnection(AbstractVectorDatabaseConnection):
 
-    def __init__(self, config: VectorDBConnectionConfig = DEFAULT_CHROMA_CONFIG) -> None:
+    def __init__(self, config: VectorDBConnectionConfig = DEFAULT_CHROMA_CONFIG,
+                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16) -> None:
         self.config = config
+        self.embedder = embedder
+        self.encode_batchsize = encode_batchsize
         self.collection = None
         self.client = None
+
+        # self.settings = Settings(
+        #     chroma_segment_cache_policy="LRU",
+        #     chroma_memory_limit_bytes=50000000000  # ~50GB
+        # )
 
     def open_connection(self) -> ReturnInfo:
         self.client = chromadb.PersistentClient(path=self.config.conn['path'])
@@ -50,28 +67,46 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
         if len(items) != len(unique_ids):
             raise ValueError
 
-        insts_idxs = list(range(len(items)))
+        # Если в классе указан embedder, то используем его
+        # для векторизации входящих документов
+        if self.embedder is not None:
+            for item in items:
+                if item.embedding is not None:
+                    raise ValueError
+
+            item_documents = list(map(lambda itm: itm.document, items))
+            document_embeddings = self.embedder.encode_passages(item_documents, batch_size=self.encode_batchsize)
+            updated_items = []
+            for i in range(len(items)):
+                updated_item = deepcopy(items[i])
+                updated_item.embedding = document_embeddings[i]
+                updated_items.append(updated_item)
+
+        else:
+            updated_items = items
+        #
+        insts_idxs = list(range(len(updated_items)))
         insts_with_md = list(filter(lambda i: len(
-            items[i].metadata.keys()) > 0, insts_idxs))
+            updated_items[i].metadata.keys()) > 0, insts_idxs))
         insts_wo_md = set(insts_idxs).difference(set(insts_with_md))
 
         if len(insts_with_md) > 0:
             self.collection.add(
                 documents=list(
-                    map(lambda idx: items[idx].document, insts_with_md)),
+                    map(lambda idx: updated_items[idx].document, insts_with_md)),
                 embeddings=list(
-                    map(lambda idx: items[idx].embedding, insts_with_md)),
+                    map(lambda idx: updated_items[idx].embedding, insts_with_md)),
                 metadatas=list(
-                    map(lambda idx: items[idx].metadata, insts_with_md)),
-                ids=list(map(lambda idx: items[idx].id, insts_with_md)))
+                    map(lambda idx: updated_items[idx].metadata, insts_with_md)),
+                ids=list(map(lambda idx: updated_items[idx].id, insts_with_md)))
 
         if len(insts_wo_md) > 0:
             self.collection.add(
                 documents=list(
-                    map(lambda idx: items[idx].document, insts_wo_md)),
+                    map(lambda idx: updated_items[idx].document, insts_wo_md)),
                 embeddings=list(
-                    map(lambda idx: items[idx].embedding, insts_wo_md)),
-                ids=list(map(lambda idx: items[idx].id, insts_wo_md)))
+                    map(lambda idx: updated_items[idx].embedding, insts_wo_md)),
+                ids=list(map(lambda idx: updated_items[idx].id, insts_wo_md)))
 
     def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[VectorDBInstance]:
         formates_instances = []
@@ -115,7 +150,7 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
             self.collection.delete(ids=ids)
 
     def retrieve(
-            self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids=None,
+            self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
             includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
         # validating
         if len(query_instances) < 1:
@@ -132,6 +167,19 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
         filtering_expr = dict()
         if subset_ids is not None:
             filtering_expr['ids'] = subset_ids
+
+        # Если в классе указан embedder, то используем его
+        # для векторизации входящих запросов
+        if self.embedder is not None:
+            for item in query_instances:
+                if item.embedding is not None:
+                    raise ValueError
+
+            query_documents = list(map(lambda itm: itm.document, query_instances))
+            document_embeddings = self.embedder.encode_queries(
+                query_documents, batch_size=self.encode_batchsize)
+            for i in range(len(query_instances)):
+                query_instances[i].embedding = document_embeddings[i]
 
         # Attention: в случае использования ip-метрики будут получены значения расстояний [distances] между векторами,
         # а не значения их семантической блозости [similarity]

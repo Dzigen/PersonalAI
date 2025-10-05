@@ -2,16 +2,21 @@ from typing import List, Tuple, Union
 from pymilvus.exceptions import ConnectionNotExistException
 from pymilvus import MilvusClient, DataType
 from time import sleep
+from copy import deepcopy
 import numpy as np
 import torch
 
 from .configs import DEFAULT_MILVUS_CONFIG
+from ...embedders import EmbedderModel
 from ...utils import AbstractVectorDatabaseConnection, VectorDBInstance, VectorDBConnectionConfig
 
 
 class MilvusVectorConnector(AbstractVectorDatabaseConnection):
-    def __init__(self, config: VectorDBConnectionConfig = DEFAULT_MILVUS_CONFIG):
+    def __init__(self, config: VectorDBConnectionConfig = DEFAULT_MILVUS_CONFIG,
+                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16):
         self.config = config
+        self.embedder = embedder
+        self.encode_batchsize = encode_batchsize
         self.client = None
 
     def prepare_structure(self) -> None:
@@ -108,8 +113,25 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         if len(items) != len(unique_ids):
             raise ValueError
 
+        # Если в классе указан embedder, то используем его
+        # для векторизации входящих документов
+        if self.embedder is not None:
+            for item in items:
+                if item.embedding is not None:
+                    raise ValueError
+
+            item_documents = list(map(lambda itm: itm.document, items))
+            document_embeddings = self.embedder.encode_passages(item_documents, batch_size=self.encode_batchsize)
+            updated_items = []
+            for i in range(len(items)):
+                updated_item = deepcopy(items[i])
+                updated_item.embedding = document_embeddings[i]
+                updated_items.append(updated_item)
+        else:
+            updated_items = items
+
         filtered_items = []
-        for item in items:
+        for item in updated_items:
             item_exists = self.item_exist(item.id)
             if not item_exists:
                 filtered_items.append(item)
@@ -159,6 +181,19 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         if len(items) != len(unique_ids):
             raise ValueError
 
+        # Если в классе указан embedder, то используем его
+        # для векторизации входящих документов
+        if self.embedder is not None:
+            for item in items:
+                if item.embedding is not None:
+                    raise ValueError
+
+            item_documents = list(map(lambda itm: itm.document, items))
+            document_embeddings = self.embedder.encode_passages(
+                item_documents, batch_size=self.encode_batchsize)
+            for i in range(len(items)):
+                items[i].embedding = document_embeddings[i]
+
         formated_data = list(map(lambda item: item.to_dict(), items))
         self.client.upsert(
             collection_name=self.config.db_info['table'], data=formated_data)
@@ -199,6 +234,19 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
 
         if n_results < 1:
             return [[] * len(query_instances)]
+
+        # Если в классе указан embedder, то используем его
+        # для векторизации входящих запросов
+        if self.embedder is not None:
+            for item in query_instances:
+                if item.embedding is not None:
+                    raise ValueError
+
+            query_documents = list(map(lambda itm: itm.document, query_instances))
+            document_embeddings = self.embedder.encode_queries(
+                query_documents, batch_size=self.encode_batchsize)
+            for i in range(len(query_instances)):
+                query_instances[i].embedding = document_embeddings[i]
 
         # костыль
         f_includes = list(map(lambda f_name: f_name[:-1], includes))

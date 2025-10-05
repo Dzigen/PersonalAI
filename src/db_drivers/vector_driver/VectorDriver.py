@@ -1,7 +1,9 @@
 from dataclasses import dataclass, field
+from typing import Union
 
 from .utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection
 from .configs import DEFAULT_VECTORDB_CONFIGS, AVAILABLE_VECTORDB_CONNECTORS
+from .embedders import EmbedderModel
 
 
 @dataclass
@@ -14,13 +16,12 @@ class VectorDriverConfig:
 
 class VectorDriver:
     @staticmethod
-    def connect(config: VectorDriverConfig = VectorDriverConfig()) -> AbstractVectorDatabaseConnection:
+    def connect(config: VectorDriverConfig = VectorDriverConfig(), embedder: Union[None, EmbedderModel] = None) -> AbstractVectorDatabaseConnection:
 
         connector_kw = config.db_vendor
         if config.vector_category.startswith("sparse"):
-            connector_kw = f"{config.db_vendor}_{config.vector_category.split("_")[1]}"
+            connector_kw = f"{config.db_vendor}_{config.vector_category.split('_')[1]}"
 
-        vector_conn = AVAILABLE_VECTORDB_CONNECTORS[connector_kw](
-            config.db_config)
+        vector_conn = AVAILABLE_VECTORDB_CONNECTORS[connector_kw](config=config.db_config, embedder=embedder)
         vector_conn.open_connection()
         return vector_conn

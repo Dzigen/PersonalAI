@@ -462,8 +462,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log("RETRIEVER: AStarTripletsRetriever", verbose=self.verbose)
-        self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 
         nodes_ids = []

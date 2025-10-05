@@ -132,6 +132,7 @@ def test_retrieve(instances: List[VectorDBInstance], queries: List[str], n_resul
 def test_count_items(instances: List[VectorDBInstance], expected: Dict[str, int],
                      vectordb_conn: AbstractVectorDatabaseConnection):
     vectordb_conn.clear()
+    assert vectordb_conn.count_items() == 0
     vectordb_conn.create(instances)
 
     assert vectordb_conn.count_items() == expected

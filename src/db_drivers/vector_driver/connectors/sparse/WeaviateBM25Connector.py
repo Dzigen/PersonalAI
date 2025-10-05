@@ -1,44 +1,35 @@
 from typing import List, Tuple, Union
-import sys
-import gc
-import numpy as np
 from time import sleep
-
-from haystack_integrations.components.retrievers.opensearch import OpenSearchBM25Retriever
-from haystack_integrations.document_stores.opensearch import OpenSearchDocumentStore
+from haystack_integrations.document_stores.weaviate import WeaviateDocumentStore
+from haystack_integrations.components.retrievers.weaviate import WeaviateBM25Retriever
 from haystack.document_stores.types import DuplicatePolicy
 from haystack import Document
 
-from .configs import DEFAULT_OPENSEARCH_BM25_CONFIG
+from .configs import DEFAULT_WEAVIATE_BM25_CONFIG
 from ...utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
 from .....utils.errors import ReturnInfo
 
 
-class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
+class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
 
-    def __init__(self, config: VectorDBConnectionConfig = DEFAULT_OPENSEARCH_BM25_CONFIG, **kwargs) -> None:
+    def __init__(self, config: VectorDBConnectionConfig = DEFAULT_WEAVIATE_BM25_CONFIG, **kwargs) -> None:
         self.config = config
         self.db_conn = None
         self.retriever = None
 
     def open_connection(self) -> ReturnInfo:
-        host = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
-        http_auth = (self.config.conn['user'], self.config.conn['pass'])
-        index = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
-        self.db_conn = OpenSearchDocumentStore(
-            hosts=host, http_auth=http_auth, index=index, use_ssl=True,
-            verify_certs=False,  # Disables certificate verification
-            ssl_assert_hostname=False,
-            ssl_show_warn=False
-        )
-        self.retriever = OpenSearchBM25Retriever(document_store=self.db_conn)
+        url = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
+        collection_name = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
+        self.db_conn = WeaviateDocumentStore(url=url, collection_settings={'class': collection_name})
+        self.retriever = WeaviateBM25Retriever(document_store=self.db_conn)
 
     def is_open(self) -> bool:
         # TODO
         pass
 
-    def close_connection(self) -> None:
-        self.db_conn._client.transport.close()
+    def close_connection(self) -> ReturnInfo:
+        # TODO
+        pass
 
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
         # validating
@@ -101,9 +92,8 @@ class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
         if len(ids):
             self.db_conn.delete_documents(document_ids=ids)
 
-    def retrieve(
-            self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
-            includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
+    def retrieve(self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
+                 includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
         if len(query_instances) < 1:
             return ValueError
         for inst in query_instances:
@@ -147,13 +137,9 @@ class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
         return bool(len(res))
 
     def clear(self) -> None:
-        if self.db_conn._client is None:
-            self.count_items()
-
-        self.db_conn._client.indices.delete(index=self.db_conn._index)
-        # assert not self.db_conn._client.indices.exists(index=self.db_conn._index)
-
-        self.db_conn.create_index(index=self.db_conn._index)
-        self.db_conn._client.indices.forcemerge(index=self.db_conn._index, only_expunge_deletes=True)
-        # assert self.db_conn._client.indices.exists(index=self.db_conn._index)
-        # self.db_conn._client.indices.refresh(index=self.db_conn._index)
+        if self.db_conn.collection is not None:
+            collection_name = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
+            self.db_conn.collection.delete(collection_name)
+            sleep(1)
+            self.db_conn.collection.create(collection_name)
+            sleep(1)

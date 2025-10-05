@@ -5,7 +5,7 @@ services:
     container_name: personalai_mmenschikov_neo4j
     #user: "4200235:4200235"
     image: neo4j:5.21.0-enterprise
-    hostname: personalai_mmenschikov_neo4j
+    hostname: localhost
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -26,7 +26,7 @@ services:
   milvus:
     image: milvusdb/milvus:v2.5.8
     container_name: personalai_mmenschikov_milvus
-    hostname: personalai_mmenschikov_milvus
+    hostname: localhost
     command: ["milvus", "run", "standalone"]
     security_opt:
       - seccomp:unconfined
@@ -57,6 +57,81 @@ services:
         reservations:
           cpus: '1'
           memory: 5G
+
+  opensearch:
+    container_name: personalai_mmenschikov_opensearch
+    image: opensearchproject/opensearch:2.11.0
+    hostname: localhost
+    ports:
+      - 9200:9200
+      - 9600:9600
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+    volumes:
+      - ../../opensearch_volume/data:/usr/share/opensearch/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
+  elasticsearch:
+    container_name: personalai_mmenschikov_elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    hostname: localhost
+    ports:
+      - 9201:9200
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+      - xpack.security.enabled=false
+    volumes:
+      - ../../elasticsearch_volume/data:/usr/share/elasticsearch/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
+  weaviate:
+      container_name: personalai_mmenschikov_weaviate
+      image: semitechnologies/weaviate:1.30.17
+      hostname: localhost
+      ports:
+      - 8083:8080
+      - 50051:50051
+      command:
+      - --host
+      - 0.0.0.0
+      - --port
+      - '8080'
+      - --scheme
+      - http
+      volumes:
+        - weaviate_data:/var/lib/weaviate
+      restart: 'no'
+      environment:
+        QUERY_DEFAULTS_LIMIT: 25
+        AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+        PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+        DEFAULT_VECTORIZER_MODULE: 'none'
+        ENABLE_MODULES: ''
+        CLUSTER_HOSTNAME: 'node1'
+      deploy:
+        resources:
+          limits:
+            cpus: '2'
+            memory: 10G
+          reservations:
+            cpus: '1'
+            memory: 5G
 
   workspace:
     image: m.menschikov/workspace:v1

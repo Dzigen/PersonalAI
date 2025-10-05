@@ -1,8 +1,8 @@
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 from dataclasses import dataclass, field, asdict
 from typing import Dict, List, Tuple, Union
 
-from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
+from ..utils import AbstractDatabaseConnection, AbstractDatabaseConnection, BaseDatabaseConfig
 
 
 @dataclass
@@ -14,9 +14,9 @@ class VectorDBConnectionConfig(BaseDatabaseConfig):
 
 @dataclass
 class VectorDBInstance:
-    id: str = None
-    document: str = None
-    embedding: List[float] = None
+    id: Union[None, str] = None
+    document: Union[None, str] = None
+    embedding: Union[None, List[float]] = None
     metadata: Dict = field(default_factory=lambda: dict())
 
     def to_dict(self):
@@ -32,4 +32,11 @@ class AbstractVectorDatabaseConnection(AbstractDatabaseConnection):
 
     @abstractmethod
     def upsert(self, items: List[VectorDBInstance]) -> None:
+        pass
+
+
+class AbstractVectorDatabaseComposer(AbstractDatabaseConnection):
+
+    @abstractmethod
+    def check_consistency(self) -> bool:
         pass

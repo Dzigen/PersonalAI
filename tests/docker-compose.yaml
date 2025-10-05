@@ -24,7 +24,7 @@ services:
 
   aerospike:
     container_name: personalai_test_aerospike
-    hostname: personalai_test_aerospike
+    hostname: localhost
     image: m.menschikov/aerospike:ee-7.1.0.6_1
     # networks:
     #   - tests_network
@@ -71,7 +71,7 @@ services:
   mongo_ui:
     image: mongo-express:latest
     container_name: personalai_mongo_ui
-    hostname: personalai_mongo_ui #personalai_mongo_ui
+    hostname: localhost #personalai_mongo_ui
     # networks:
     #   - tests_network
     environment:
@@ -115,7 +115,7 @@ services:
   redis_ui:
     image: redis/redisinsight:latest
     container_name: personalai_redis_ui
-    hostname: personalai_redis_ui
+    hostname: localhost
     # networks:
     #   - tests_network
     depends_on:
@@ -159,6 +159,82 @@ services:
         reservations:
           cpus: '1'
           memory: 5G
+
+  opensearch:
+    container_name: personalai_mmenschikov_test_opensearch
+    image: opensearchproject/opensearch:2.11.0
+    hostname: localhost
+    ports:
+      - 9200:9200
+      - 9600:9600
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+    volumes:
+      - ./volumes/opensearch/data:/usr/share/opensearch/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
+  elasticsearch:
+    container_name: personalai_mmenschikov_test_elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    hostname: localhost
+    ports:
+      - 9201:9200
+      - 9300:9300
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+    volumes:
+      - ./volumes/elasticsearch/data:/usr/share/elasticsearch/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
+  weaviate:
+      container_name: personalai_mmenschikov_test_weaviate
+      image: semitechnologies/weaviate:1.30.17
+      hostname: localhost
+      ports:
+      - 8083:8080
+      - 50051:50051
+      command:
+      - --host
+      - 0.0.0.0
+      - --port
+      - '8080'
+      - --scheme
+      - http
+      volumes:
+        - ./volumes/weaviate/data:/var/lib/weaviate
+      restart: 'no'
+      environment:
+        QUERY_DEFAULTS_LIMIT: 25
+        AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+        PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+        DEFAULT_VECTORIZER_MODULE: 'none'
+        ENABLE_MODULES: ''
+        CLUSTER_HOSTNAME: 'node1'
+      deploy:
+        resources:
+          limits:
+            cpus: '2'
+            memory: 10G
+          reservations:
+            cpus: '1'
+            memory: 5G
 
   isolated_environment:
     image: m.menschikov/workspace:v2
