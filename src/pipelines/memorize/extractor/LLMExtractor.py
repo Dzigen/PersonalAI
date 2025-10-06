@@ -84,7 +84,7 @@ class LLMExtractor:
             self.triplets_extraction_solver.cachekv.clear()
             self.thesises_extraction_solver.cachekv.clear()
 
-    def extract_knowledge(self, text: str, time: Union[None, str] = None, properties: Dict = {}) -> Tuple[List[Triplet], ReturnInfo]:
+    def extract_knowledge(self, text: str, time: Union[None, str] = None, properties: Union[None, Dict] = None) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста на естественном языке.
 
         :param text: Слабоструктурированный текст.
@@ -97,7 +97,7 @@ class LLMExtractor:
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         assert self.config.need_simple or self.config.need_thesises
-        props = deepcopy(properties)
+        props = deepcopy(dict() if properties is None else properties)
         assert 'time' not in props.keys()
         new_triplets, info = [], ReturnInfo()
 

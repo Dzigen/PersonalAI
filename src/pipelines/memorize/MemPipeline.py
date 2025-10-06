@@ -76,7 +76,7 @@ class MemPipeline:
             self.extractor.clear_kv_caches()
             self.updator.clear_kv_caches()
 
-    def remember(self, text: str, time: Union[None, str] = None, properties: Dict = dict()) -> Tuple[List[Triplet], ReturnInfo]:
+    def remember(self, text: str, time: Union[None, str] = None, properties: Union[None, Dict] = None) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста и обновление/актуализацию знаний в памяти (графе знаний) ассистента.
 
         :param text: Слабоструктурированный текст на естественном языке.
