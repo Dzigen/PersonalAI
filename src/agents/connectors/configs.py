@@ -24,7 +24,7 @@ DEFAULT_OLLAMA_CONFIG = AgentConnectorConfig(
     gen_strategy={'num_predict': 2048, 'seed': 42,
                   'top_k': 1, 'temperature': 0.0},
     credentials={'model': 'llama3.1:8b'},
-    ext_params={'host': 'localhost', 'port': 11434, 'timeout': 560, 'keep_alive': -1})
+    ext_params={'host': 'localhost', 'port': 11437, 'timeout': 560, 'keep_alive': -1})
 
 DEEPSEEK_KEY = os.getenv("DEEPSEEK_KEY")
 DEEPSEEK_CONFIG = AgentConnectorConfig(
