@@ -13,6 +13,14 @@ from .......kg_model import KnowledgeGraphModel
 from .......db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver, KVDBConnectionConfig, KeyValueDBInstance
 from .......utils import Logger
 from .......utils.cache_kv import CacheUtils
+from .......db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
+from .......db_drivers.vector_driver import VectorDBInstance
+
+
+@dataclass
+class NodeInfo:
+    id: str
+    type: NodeType
 
 
 @dataclass
@@ -25,6 +33,7 @@ class AStarMetricsConfig:
     :type kvdriver_config: KeyValueDriverConfig
     """
     h_metric_name: str = 'ip'
+    nodes_vdb_name: str = 'nodes_dense'
     kvdriver_config: Union[None, KeyValueDriverConfig] = None
 
     def to_str(self):
@@ -49,6 +58,12 @@ class AStarMetrics:
     def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: List[NodeType], log: Logger,
                  config: AStarMetricsConfig = AStarMetricsConfig(), verbose: bool = False):
         self.config = config
+
+        # проверка: в указанной бд должны содержатся плотные (dense) векторные предаставления вершин, иначе вызываем исключение
+        for n_type, v_composer in self.kg_model.graph_embeddings.nodes_vectordbs.items():
+            if not hasattr(v_composer.vdb_conn_mapping[self.config.nodes_vdb_name], 'embedder'):
+                raise ValueError
+
         self.accepted_node_types = accepted_node_types
         self.kg_model = kg_model
 
@@ -73,7 +88,7 @@ class AStarMetrics:
 
     def init_kv_caches(self) -> None:
         if self.config.kvdriver_config is not None:
-            self.cache = dict()
+            self.cache: Dict[str, AbstractKVDatabaseConnection] = dict()
             if self.config.h_metric_name in ['ip', 'weight_with_short_path', 'avg_weighted_with_short_path']:
                 ip_config = deepcopy(self.config.kvdriver_config)
                 ip_config.db_config.db_info['table'] = 'astar_retriever_ip'
@@ -104,36 +119,37 @@ class AStarMetrics:
     def compute_h_metric(self, *args, **kwargs) -> float:
         return self.metrics_map[self.config.h_metric_name](*args, **kwargs)
 
-    def calculate_ip_distance(self, node1_id: str, node2_id: str) -> float:
+    def calculate_ip_distance(self, node1: NodeInfo, node2: NodeInfo) -> float:
         dist = 0
-        if node1_id != node2_id:
-            instances = self.kg_model.graph_embeddings.vectordbs['nodes'].read(
-                [node1_id, node2_id], includes=['embeddings'])
+        if node1.id != node2.id:
+            instances: List[VectorDBInstance] = []
+            for node in [node1, node2]:
+                instances.append(self.kg_model.graph_embeddings.nodes_vectordbs[node.type].read(
+                    [node.id], vdb_name=self.config.nodes_vdb_name, includes=['embeddings'])[0])
             # calculation ip distance
             try:
-                dist = 1 - np.dot(instances[0].embedding,
-                                  instances[1].embedding)
+                dist = 1 - np.dot(instances[0].embedding, instances[1].embedding)
             except IndexError:
-                print(instances)
+                print(f"Error instances:\n- {instances[0]}\n- {instances[1]}")
                 raise IndexError
 
         return dist
 
-    def embeddings_dist(self, node1_id: str, node2_id: str, *args, **kwargs) -> float:
+    def embeddings_dist(self, node1: NodeInfo, node2: NodeInfo, *args, **kwargs) -> float:
         if self.config.kvdriver_config is not None:
-            pair_id = create_id_for_node_pair(node1_id, node2_id)
+            pair_id = create_id_for_node_pair(node1.id, node2.id)
             if self.cache['ip'].item_exist(pair_id):
                 # print("exists")
                 dist = self.cache['ip'].read([pair_id])[0].value
                 self.cache_info['dist']['exist'] += 1
             else:
                 # print("calculating")
-                dist = self.calculate_ip_distance(node1_id, node2_id)
+                dist = self.calculate_ip_distance(node1, node2)
                 self.cache['ip'].create(
                     [KeyValueDBInstance(id=pair_id, value=dist)])
                 self.cache_info['dist']['calc'] += 1
         else:
-            dist = self.calculate_ip_distance(node1_id, node2_id)
+            dist = self.calculate_ip_distance(node1, node2)
             self.cache_info['dist']['calc'] += 1
 
         return dist
@@ -143,8 +159,7 @@ class AStarMetrics:
             pair_id = create_id_for_node_pair(node1_id, node2_id)
             if self.cache['bfs_short_path'].item_exist(pair_id):
                 # print("exists")
-                short_path = self.cache['bfs_short_path'].read([pair_id])[
-                    0].value
+                short_path = self.cache['bfs_short_path'].read([pair_id])[0].value
                 self.cache_info['bfs_short_path']['exist'] += 1
             else:
                 # print("calculating")
@@ -158,41 +173,37 @@ class AStarMetrics:
 
         return short_path
 
-    def weighted_short_path(self, node1_id: str, node2_id: str, *args, **kwargs) -> float:
-        pair_id = create_id_for_node_pair(node1_id, node2_id)
+    def weighted_short_path(self, node1: NodeInfo, node2: NodeInfo, *args, **kwargs) -> float:
+        pair_id = create_id_for_node_pair(node1.id, node2.id)
         if (self.config.kvdriver_config is not None) and (self.cache['weight_with_short_path'].item_exist(pair_id)):
             # print("exists")
-            w_short_path = self.cache['weight_with_short_path'].read([pair_id])[
-                0].value
+            w_short_path = self.cache['weight_with_short_path'].read([pair_id])[0].value
             self.cache_info['weight_with_short_path']['exist'] += 1
         else:
             # print("calculated")
-            short_path_len = self.compute_short_path(node1_id, node2_id)
-            w = self.embeddings_dist(node1_id, node2_id)
+            short_path_len = self.compute_short_path(node1.id, node2.id)
+            w = self.embeddings_dist(node1, node2)
             w_short_path = w * short_path_len
-            self.cache['weight_with_short_path'].create(
-                [KeyValueDBInstance(id=pair_id, value=w_short_path)])
+            self.cache['weight_with_short_path'].create([KeyValueDBInstance(id=pair_id, value=w_short_path)])
             self.cache_info['weight_with_short_path']['calc'] += 1
 
         return w_short_path
 
-    def avg_weighted_short_path(self, node1_id: str, node2_id: str, parent: Dict[str, str]) -> float:
-        pair_id = create_id_for_node_pair(node1_id, node2_id)
+    def avg_weighted_short_path(self, node1: NodeInfo, node2: NodeInfo, parent: Dict[str, Union[None, NodeInfo]]) -> float:
+        pair_id = create_id_for_node_pair(node1.id, node2.id)
         if (self.config.kvdriver_config is not None) and (self.cache['avg_weighted_with_short_path'].item_exist(pair_id)):
             # print("exists")
-            avg_w_short_path = self.cache['avg_weighted_with_short_path'].read([pair_id])[
-                0].value
+            avg_w_short_path = self.cache['avg_weighted_with_short_path'].read([pair_id])[0].value
             self.cache_info['avg_weighted_with_short_path']['exist'] += 1
         else:
             # print("calculated")
-            nodes_path = get_nodes_path(parent, node1_id)
+            nodes_path = get_nodes_path(parent, node1)
             acc_dist = 0
             for i in range(len(nodes_path) - 1):
-                acc_dist += self.embeddings_dist(
-                    nodes_path[i], nodes_path[i + 1])
-            acc_dist += self.embeddings_dist(node1_id, node2_id)
+                acc_dist += self.embeddings_dist(nodes_path[i], nodes_path[i + 1])
+            acc_dist += self.embeddings_dist(node1, node2)
 
-            short_path_len = self.compute_short_path(node1_id, node2_id)
+            short_path_len = self.compute_short_path(node1.id, node2.id)
             avg_w_short_path = np.mean(acc_dist) * short_path_len
 
             self.cache['avg_weighted_with_short_path'].create(
@@ -242,10 +253,8 @@ class AStarMetrics:
 
                     if neighbour == e_node_id:
                         self.log(f"bfs end-node found!", verbose=self.verbose)
-                        self.log(
-                            f"bfs graph-db queries: {neo4j_queries_counter}", verbose=self.verbose)
-                        self.log(
-                            f"passed nodes: {passed_nodes_counter}", verbose=self.verbose)
+                        self.log(f"bfs graph-db queries: {neo4j_queries_counter}", verbose=self.verbose)
+                        self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.verbose)
 
                         # костыль
                         self.cache_info['bfs_short_path']['calc'] -= 1
@@ -331,64 +340,65 @@ class AStarGraphSearch:
             kg_model=kg_model, accepted_node_types=self.config.accepted_node_types,
             log=self.log, config=self.config.metrics_config, verbose=verbose)
 
-    def search_path(self, start_node_id: str, end_node_id: str) -> Tuple[List[str], List[str], Dict[str, int], Dict[str, str], str]:
+    def search_path(self, start_node: NodeInfo, end_node: NodeInfo) -> Tuple[List[str], List[NodeInfo], Dict[str, int], Dict[str, NodeInfo], NodeInfo]:
         """Реализация A*-алгоритма. Источник: https://www.redblobgames.com/pathfinding/a-star/implementation.html."""
-        frontier = []
-        heapq.heappush(frontier, (0, start_node_id))
-        parent = {start_node_id: None}
-        cost_so_far = {start_node_id: 0}
-        D = {start_node_id: 0}
+        frontier: List[int, NodeInfo] = []
+        heapq.heappush(frontier, (0, start_node))
+        parent: Dict[str, Union[None, NodeInfo]] = {start_node.id: None}
+        cost_so_far: Dict[str, int] = {start_node.id: 0}
+        D: Dict[str, int] = {start_node.id: 0}
 
-        spare_closest_node_id = start_node_id
+        spare_closest_node = start_node
         passed_nodes_counter = 0
         while len(frontier):
-            current_node_id = heapq.heappop(frontier)[1]
+            current_node: NodeInfo = heapq.heappop(frontier)[1]
             passed_nodes_counter += 1
 
             if (self.config.max_passed_nodes >= 0) and (passed_nodes_counter >= self.config.max_passed_nodes):
                 self.log("PASSED LIMIT OF MAX NODES", verbose=self.verbose)
                 break
 
-            if (self.config.max_depth >= 0) and (D[current_node_id] >= self.config.max_depth):
+            if (self.config.max_depth >= 0) and (D[current_node.id] >= self.config.max_depth):
                 self.log("PASSED MAX DEPTH LIMIT", verbose=self.verbose)
                 continue
 
             # Сохраняем промежуточную вершину, до которой есть путь.
             # Если не будет найден путь до end_node, то будет использован путь до spare_closest_node
-            spare_closest_node_id = current_node_id
+            spare_closest_node = current_node
 
             #
-            if current_node_id == end_node_id:
+            if current_node.id == end_node.id:
                 self.log("FOUND END-NODE", verbose=self.verbose)
                 break
 
             adj_nodes = self.kg_model.graph_struct.db_conn.get_adjecent_nids(
-                current_node_id, self.config.accepted_node_types)
+                current_node.id, self.config.accepted_node_types)
             # self.log(f"adjenced nodes: {len(adj_nodes)}", verbose=self.verbose)
 
             for adj_n_id in adj_nodes:
 
-                if adj_n_id == parent[current_node_id]:
+                if adj_n_id == (None if parent[current_node.id] is None else parent[current_node.id].id):
                     # пропускаем вершину, из которой пришли
                     continue
 
                 # работаем с невзвешенным графом
-                new_cost = cost_so_far[current_node_id] + 1
+                new_cost = cost_so_far[current_node.id] + 1
                 if (adj_n_id not in cost_so_far) or (new_cost < cost_so_far[adj_n_id]):
-                    parent[adj_n_id] = current_node_id
-                    D[adj_n_id] = D[current_node_id] + 1
+                    parent[adj_n_id] = current_node
+                    D[adj_n_id] = D[current_node.id] + 1
 
                     cost_so_far[adj_n_id] = new_cost
-                    priority = new_cost + \
-                        self.metrics.compute_h_metric(
-                            adj_n_id, end_node_id, parent)
+                    adj_n = NodeInfo(
+                        id=adj_n_id,
+                        type=self.kg_model.graph_struct.db_conn.get_node_type(adj_n_id)
+                    )
+                    priority = new_cost + self.metrics.compute_h_metric(adj_n, end_node, parent)
                     heapq.heappush(frontier, (priority, adj_n_id))
 
         self.log(
-            f"start-spare node path len: {D[spare_closest_node_id]}" if end_node_id not in parent else f"start-end node path len: {D[end_node_id]}", verbose=self.verbose)
-        self.log(
-            f"astar queries: {passed_nodes_counter}", verbose=self.verbose)
-        return cost_so_far, frontier, D, parent, spare_closest_node_id
+            f"start-spare node path len: {D[spare_closest_node.id]}" if end_node.id not in parent else f"start-end node path len: {D[end_node.id]}", verbose=self.verbose)
+        self.log(f"astar queries: {passed_nodes_counter}", verbose=self.verbose)
+        return cost_so_far, frontier, D, parent, spare_closest_node.id
 
 
 class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
@@ -441,6 +451,14 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log = log
         self.verbose = verbose
 
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return None
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        return {
+            'AStarTripletsRetriever': None if self.cachekv is None else self.cachekv.kv_conn.count_items()
+        }
+
     def clear_kv_caches(self, level='all') -> None:
         if not isinstance(level, str):
             raise TypeError(
@@ -465,63 +483,56 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 
-        nodes_ids = []
+        #
+        nodes = []
+        unique_node_ids = set()
         for node in query_info.linked_nodes:
-            if node.id not in nodes_ids:
-                nodes_ids.append(node.id)
+            if node.id not in unique_node_ids:
+                unique_node_ids.add(node.id)
+                nodes.append(
+                    NodeInfo(id=node.id, type=self.kg_model.graph_struct.db_conn.get_node_type(node.id))
+                )
+
+        #
         unique_nodes_pairs = set()
-
-        all_pair_nodes_counter = sum(list(range(len(nodes_ids))))
+        all_pair_nodes_counter = sum(list(range(len(nodes))))
         pair_nodes_counter = 0
-        if len(nodes_ids) > 1:
+        if len(nodes) > 1:
             self.log("pair nodes calculation...", verbose=self.verbose)
-            for i in range(len(nodes_ids) - 1):
-                start_node = nodes_ids[i]
-                for j in range(i + 1, len(nodes_ids)):
+            for i in range(len(nodes) - 1):
+                start_node = nodes[i]
+                for j in range(i + 1, len(nodes)):
                     pair_nodes_counter += 1
-                    self.log(
-                        f"{all_pair_nodes_counter} / {pair_nodes_counter}", verbose=self.verbose)
-                    end_node = nodes_ids[j]
+                    self.log(f"{all_pair_nodes_counter} / {pair_nodes_counter}", verbose=self.verbose)
+                    end_node = nodes[j]
 
                     s_time = time()
-                    _, _, _, parent, spare_closest_node = self.graph_searcher.search_path(
-                        start_node, end_node)
-                    self.log(
-                        f"search elapsed_time: {time() - s_time}", verbose=self.verbose)
+                    _, _, _, parent, spare_closest_node = self.graph_searcher.search_path(start_node, end_node)
+                    self.log(f"search elapsed_time: {time() - s_time}", verbose=self.verbose)
 
                     s_time = time()
-                    nodes_path = get_nodes_path(
-                        parent, spare_closest_node if end_node not in parent else end_node)
-                    self.log(
-                        f"get_path elapsed_time: {time() - s_time}", verbose=self.verbose)
+                    nodes_path = get_nodes_path(parent, spare_closest_node if end_node not in parent else end_node)
+                    self.log(f"get_path elapsed_time: {time() - s_time}", verbose=self.verbose)
 
                     # Сохраняем только уникальные пары вершин (по их идентификаторам)
                     s_time = time()
-                    unique_nodes_pairs.update([(nodes_path[i], nodes_path[i + 1])
-                                              for i in range(len(nodes_path) - 1)] if len(nodes_path) > 1 else [])
-                    self.log(
-                        f"saving_nodes elapsed_time: {time() - s_time}", verbose=self.verbose)
+                    unique_nodes_pairs.update([(nodes_path[i].id, nodes_path[i + 1].id) for i in range(len(nodes_path) - 1)] if len(nodes_path) > 1 else [])
+                    self.log(f"saving_nodes elapsed_time: {time() - s_time}", verbose=self.verbose)
 
-                    self.log(self.graph_searcher.metrics.cache_info,
-                             verbose=self.verbose)
+                    self.log(self.graph_searcher.metrics.cache_info, verbose=self.verbose)
 
         # Сохраняем только уникальные триплеты (по их строковым представлениям)
         self.log("pair nodes formating...", verbose=self.verbose)
         s_time = time()
-        unique_triplets = dict()
+        unique_triplets: Dict[str, Triplet] = dict()
         for nodes_pair in unique_nodes_pairs:
-            triplets = self.kg_model.graph_struct.db_conn.get_triplets(
-                *nodes_pair)
+            triplets = self.kg_model.graph_struct.db_conn.get_triplets(*nodes_pair)
             for triplet in triplets:
                 unique_triplets[triplet.relation.id] = triplet
+        unique_triplets: List[Triplet] = list(unique_triplets.values())
 
-        unique_triplets = list(unique_triplets.values())
-
-        self.log(
-            f"Распределение типов связей в наборе извлечённых триплетов: {Counter([triplet.relation.type for triplet in unique_triplets])}", verbose=self.verbose)
-        self.log(
-            f"foramting queries: {len(unique_nodes_pairs)}", verbose=self.verbose)
-        self.log(
-            f"formating elapsed_time: {time() - s_time}", verbose=self.verbose)
+        self.log(f"Распределение типов связей в наборе извлечённых триплетов: {Counter([triplet.relation.type for triplet in unique_triplets])}", verbose=self.verbose)
+        self.log(f"foramting queries: {len(unique_nodes_pairs)}", verbose=self.verbose)
+        self.log(f"formating elapsed_time: {time() - s_time}", verbose=self.verbose)
 
         return unique_triplets

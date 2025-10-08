@@ -109,6 +109,7 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
 
         formated_outputs = []
         for query in query_instances:
+            # Attention: Будут получены значения семантической близости [similarity], а не значения их расстояния [distance]
             raw_output = self.retriever.run(query=query.document, top_k=n_results, filters=filters, scale_score=True)
 
             formated_output = []

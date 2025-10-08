@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Tuple, Union, List
+from typing import Tuple, Union, List, Dict
 
 from .config import WKGR_MAIN_LOG_PATH
 from .query_parser import QueryLLMParser, QueryLLMParserConfig
@@ -95,6 +95,23 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
 
         self.log = config.log
         self.verbose = config.verbose
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return {
+            'query_parser': None if self.query_parser is None else self.query_parser.get_agent_tgen_stat(),
+            'knowledge_comparator': None if self.knowledge_comparator is None else self.knowledge_comparator.get_agent_tgen_stat(),
+            'knowledge_retriever': None if self.knowledge_retriever is None else self.knowledge_retriever.get_agent_tgen_stat(),
+            'answer_generator': None if self.answer_generator is None else self.answer_generator.get_agent_tgen_stat(),
+        }
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        return {
+            'WeakKGReasoner': None if self.cachekv is None else self.cachekv.kv_conn.count_items(),
+            'query_parser': None if self.query_parser is None else self.query_parser.get_agent_tgen_stat(),
+            'knowledge_comparator': None if self.knowledge_comparator is None else self.knowledge_comparator.get_agent_tgen_stat(),
+            'knowledge_retriever': None if self.knowledge_retriever is None else self.knowledge_retriever.get_agent_tgen_stat(),
+            'answer_generator': None if self.answer_generator is None else self.answer_generator.get_agent_tgen_stat(),
+        }
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):

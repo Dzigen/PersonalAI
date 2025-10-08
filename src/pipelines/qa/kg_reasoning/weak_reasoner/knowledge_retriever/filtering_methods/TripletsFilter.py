@@ -1,7 +1,8 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Union, Dict
 import hashlib
 
+from .configs import KRFILTER_RERANKDRIVER_DEFAULT_CONFIG
 from ..utils import AbstractTriplesFilter, BaseTripletsFilterConfig
 from .......utils.data_structs import Triplet, QueryInfo, create_id, TripletCreator
 from .......utils import Logger
@@ -9,17 +10,21 @@ from .......kg_model import KnowledgeGraphModel
 from .......db_drivers.vector_driver import VectorDBInstance
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
+from .......rerankers import RerankerDriver, RerankerDriverConfig
 
 
 @dataclass
 class TripletsFilterConfig(BaseTripletsFilterConfig):
     """Конфигурация наивного алгоритма ранжирования/фильтрации триплетов.
 
+    :param reranker_driver_config: ... . Значение по умолчанию KRFILTER_RERANKDRIVER_DEFAULT_CONFIG.
+    :param RerankerDriverConfig, optional
     :param max_k: Первые k (по релевантности) триплетов, которые будут возвращены в результате операции ранжирования. Значение по умолчанию 50.
     :type max_k: int
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы TripletsFilter-класса. Значение по умолчанию 'qa_naive_t_filter_cache'.
     :type cache_table_name: str
     """
+    reranker_driver_config: RerankerDriverConfig = field(default_factory=lambda: KRFILTER_RERANKDRIVER_DEFAULT_CONFIG)
     max_k: int = 50
     cache_table_name: str = 'qa_naive_t_filter_cache'
 
@@ -52,16 +57,25 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
+        self.reranker = RerankerDriver.specify(
+            self.config.reranker_driver_config,
+            kg_model.graph_embeddings.triplets_vectordbs
+        )
+
         self.log = log
         self.verbose = verbose
 
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return None
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        return {'TripletsFilter': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
+
     def clear_kv_caches(self, level='all') -> None:
         if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
+            raise TypeError(f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
+            raise ValueError(f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
         if level in ['current', 'all']:
             self.cachekv.clear()
@@ -70,54 +84,37 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
             raise NotImplementedError
 
     def get_cache_key(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[str]:
-        str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(triplet)[
-                                    1] for triplet in triplets])).encode()).hexdigest()
+        str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(triplet)[1] for triplet in triplets])).encode()).hexdigest()
         return [self.config.to_str(), query_info.to_str(), str_triplets]
 
     @CacheUtils.cache_method_output
     def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
         self.log("START KNOWLEDGE FILTERING...", verbose=self.verbose)
         self.log("FILTER: NaiveTripletFilter", verbose=self.verbose)
-        self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 
-        unique_relations_map = {
-            triplet.relation.id: triplet for triplet in triplets}
+        unique_relations_map = {triplet.relation.id: triplet for triplet in triplets}
         filtered_triplets = []
 
         self.log(f"Всего триплетов: {len(triplets)}", verbose=self.verbose)
-        self.log(
-            f"Количество уникальных триплетов (по строковому представлению): {len(set(unique_relations_map))}", verbose=self.verbose)
-        self.log(
-            f"base ids: {list(unique_relations_map.keys())}", verbose=self.verbose)
+        self.log(f"Количество уникальных триплетов (по строковому представлению): {len(set(unique_relations_map))}", verbose=self.verbose)
+        self.log(f"base ids: {list(unique_relations_map.keys())}", verbose=self.verbose)
 
         if len(unique_relations_map) <= self.config.max_k:
             filtered_triplets = list(unique_relations_map.values())
         else:
-            query_embd = self.kg_model.graph_embeddings.embedder.encode_queries([
-                query_info.query])[0]
-            query_instance = VectorDBInstance(embedding=query_embd)
 
             relation_ids = list(unique_relations_map.keys())
+            relevant_triplets = self.reranker.run(query_info.query, top_k=self.config.max_k, subset_ids=relation_ids)
+            accepted_relation_ids = list(map(lambda item: item.id, relevant_triplets))
 
-            raw_relevant_triplets = self.kg_model.graph_embeddings.vectordbs['triplets'].retrieve(
-                [query_instance], self.config.max_k, subset_ids=relation_ids)[0]
+            self.log(f"Количество accepted ids: {len(accepted_relation_ids)}", verbose=self.verbose)
+            self.log(f"Количество уникальных accepted ids: {len(set(accepted_relation_ids))}", verbose=self.verbose)
+            self.log(f"accepted ids: {accepted_relation_ids}", verbose=self.verbose)
 
-            accepted_relation_ids = list(
-                map(lambda item: item[1].id, raw_relevant_triplets))
+            filtered_triplets = list(map(lambda rel_id: unique_relations_map[rel_id], accepted_relation_ids))
 
-            self.log(
-                f"Количество accepted ids: {len(accepted_relation_ids)}", verbose=self.verbose)
-            self.log(
-                f"Количество уникальных accepted ids: {len(set(accepted_relation_ids))}", verbose=self.verbose)
-            self.log(
-                f"accepted ids: {accepted_relation_ids}", verbose=self.verbose)
-
-            filtered_triplets = list(
-                map(lambda rel_id: unique_relations_map[rel_id], accepted_relation_ids))
-
-        self.log(
-            f"Количество триплето после фильтрации: {len(filtered_triplets)}", verbose=self.verbose)
+        self.log(f"Количество триплето после фильтрации: {len(filtered_triplets)}", verbose=self.verbose)
 
         return filtered_triplets

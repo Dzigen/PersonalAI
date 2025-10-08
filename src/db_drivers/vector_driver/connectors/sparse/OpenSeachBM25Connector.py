@@ -1,8 +1,6 @@
 from typing import List, Tuple, Union
-import sys
-import gc
-import numpy as np
-from time import sleep
+import urllib3
+urllib3.disable_warnings()
 
 from haystack_integrations.components.retrievers.opensearch import OpenSearchBM25Retriever
 from haystack_integrations.document_stores.opensearch import OpenSearchDocumentStore
@@ -119,6 +117,7 @@ class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
 
         formated_outputs = []
         for query in query_instances:
+            # Attention: Будут получены значения семантической близости [similarity], а не значения их расстояния [distance]
             raw_output = self.retriever.run(query=query.document, top_k=n_results, filters=filters, scale_score=True)
 
             formated_output = []

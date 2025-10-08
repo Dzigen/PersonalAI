@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Tuple, Union, List
+from typing import Tuple, Union, List, Dict
 
 from .configs import QA_MAIN_LOG_PATH
 from .kg_reasoning.utils import QueryReasoningInfo
@@ -12,6 +12,7 @@ from ...utils import Logger, ReturnStatus, ReturnInfo, update_rinfo
 from ...utils.cache_kv import CacheUtils
 from ...utils.data_structs import create_id
 from ...db_drivers.kv_driver import KeyValueDriverConfig
+from ...utils.cache_kv.utils import AbstractCacheInfo
 
 
 @dataclass
@@ -47,7 +48,7 @@ class QAPipelineConfig:
         return f"{self.preprocessor_config.to_str()}|{self.reasoner_config.to_str()}|{self.aggregator_config.to_str()}"
 
 
-class QAPipeline(CacheUtils):
+class QAPipeline(CacheUtils, AbstractCacheInfo):
     """Верхнеуровневый класс QA-конвейера, отвечающий за поиск информации в графе знаний и генерацию ответов на вопросы.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -77,9 +78,20 @@ class QAPipeline(CacheUtils):
         self.log = config.log
         self.verbose = config.verbose
 
-    def get_cache_stat(self):
-        # TODO
-        raise NotImplementedError
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        return {
+            'QAPipeline': None if self.cachekv is None else self.cachekv.kv_conn.count_items(),
+            'query_preprocessor': self.query_preprocessor.get_cache_stat(),
+            'kg_reasoner': self.kg_reasoner.get_cache_stat(),
+            'answers_aggregator': self.answers_aggregator.get_cache_stat(),
+        }
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return {
+            'query_preprocessor': self.query_preprocessor.get_agent_tgen_stat(),
+            'kg_reasoner': self.kg_reasoner.get_agent_tgen_stat(),
+            'answers_aggregator': self.answers_aggregator.get_agent_tgen_stat(),
+        }
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):

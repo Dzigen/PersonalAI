@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Tuple, Union, List
+from typing import Tuple, Union, List, Dict
 from copy import copy
 
 from .utils import QueryPreprocessingInfo
@@ -12,6 +12,7 @@ from ....utils.data_structs import create_id
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv import CacheUtils
 from ....agents.utils import AbstractAgentConnector
+from ....utils.cache_kv.utils import AbstractCacheInfo
 
 
 @dataclass
@@ -46,7 +47,7 @@ class QueryPreprocessorConfig:
         return f"{str_denois_config}|{str_enh_config}|{str_decomp_config}"
 
 
-class QueryPreprocessor(CacheUtils):
+class QueryPreprocessor(CacheUtils, AbstractCacheInfo):
     """Верхнеуровневый класс QueryPreprocessor-стадии (точка входа), отвечающей за предобработку исходного user-вопроса, с целью упрощения процесса поиска информации и повышения качества финального ответа системы.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -82,6 +83,21 @@ class QueryPreprocessor(CacheUtils):
 
         self.log = config.log
         self.verbose = config.verbose
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return {
+            'denoiser': None if self.denoiser is None else self.denoiser.get_agent_tgen_stat(),
+            'enhancer': None if self.enhancer is None else self.enhancer.get_agent_tgen_stat(),
+            'decomposer': None if self.decomposer is None else self.decomposer.get_agent_tgen_stat(),
+        }
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        return {
+            'QueryPreprocessor': None if self.cachekv is None else self.cachekv.kv_conn.count_items(),
+            'denoiser': None if self.denoiser is None else self.denoiser.get_cache_stat(),
+            'enhancer': None if self.enhancer is None else self.enhancer.get_cache_stat(),
+            'decomposer': None if self.decomposer is None else self.decomposer.get_cache_stat(),
+        }
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):

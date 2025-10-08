@@ -15,17 +15,18 @@ import torch
 from time import time
 
 from .configs import DEFAULT_SUMMN_TASK_CONFIG, NODESTREE_MODEL_LOG_PATH, \
-    SUMMNODES_VDB_DEFAULT_DRIVER_CONFIG, LEAFNODES_VDB_DEFAULT_DRIVER_CONFIG, \
-    TREE_DB_DEFAULT_DRIVER_CONFIG
+    LEAFNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING, SUMMNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING, \
+    TREE_DB_DEFAULT_DRIVER_CONFIG, LNT_RERANKDRIVER_DEFAULT_CONFIG, SNT_RERANKDRIVER_DEFAULT_CONFIG
 from ...db_drivers.tree_driver.utils import TreeNodeType, TreeNode, TreeIdType
 from ...utils import Logger, AgentTaskSolver, AgentTaskSolverConfig, ReturnStatus
 from ...utils.data_structs import Triplet, NodeType, create_id, Node
 from ...utils.errors import ReturnStatus
 from ...agents.utils import AbstractAgentConnector
 from ...db_drivers.kv_driver import KeyValueDriverConfig
-from ...db_drivers.vector_driver import VectorDriver, VectorDriverConfig, VectorDBInstance
+from ...db_drivers.vector_driver import VectorDriver, VectorDriverConfig, VectorDBInstance, VectorComposer
 from ...db_drivers.tree_driver import TreeDriver, TreeDriverConfig
 from ...db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
+from ...rerankers import RerankerDriver, RerankerDriverConfig
 
 
 @dataclass
@@ -36,19 +37,16 @@ class NodesTreeModelConfig:
     :type vectordb_leafnodes_config: VectorDriverConfig, optional
     :param vectordb_summnodes_config: Конфигурация векторной базы данных для хранения векторных представлений parent-объектов (summarized-вершин) дерева. Значение по умолчанию SUMMNODES_VDB_DEFAULT_DRIVER_CONFIG.
     :type vectordb_summnodes_config: VectorDriverConfig, optional
-
     :param treedb_config: Конфигурация графовой базы данных для хранения древовидного представления object-вершин. Значение по умолчанию TREE_DB_DEFAULT_DRIVER_CONFIG.
     :type treedb_config: treedb_config, optional
-
-    :param adriver_config: Конфигурация LLM-агента, который будет использоваться в рамках данной стадии. Значение по умолчанию AgentDriverConfig().
-    :type adriver_config: AgentDriverConfig, optional
-    :param nodes_summarization_task_config: Конфигурация атомарной задачи для LLM-агента по резюмированию/суммаризации текстовых полей у заданного набора leaf-объектов (object-вершин) из дерева. Значение по умолчанию DEFAULT_SUMMN_TASK_CONFIG.
-    :type nodes_summarization_task_config: AgentTaskSolverConfig, optional
 
     :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
     :type lang: str
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, str]], optional
+    :param nodes_summarization_task_config: Конфигурация атомарной задачи для LLM-агента по резюмированию/суммаризации текстовых полей у заданного набора leaf-объектов (object-вершин) из дерева. Значение по умолчанию DEFAULT_SUMMN_TASK_CONFIG.
+    :type nodes_summarization_task_config: AgentTaskSolverConfig, optional
+
     :param e2n_sim_threshold: Служебный гиперпараметр; см. https://arxiv.org/pdf/2410.14052. Значение по умолчанию 0.4.
     :type e2n_sim_threshold: float, optional
     :param depth_rate: Служебный гиперпараметр; см. https://arxiv.org/pdf/2410.14052. Значение по умолчанию 0.5.
@@ -61,10 +59,16 @@ class NodesTreeModelConfig:
     :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
-    vectordb_leafnodes_config: VectorDriverConfig = field(
-        default_factory=lambda: LEAFNODES_VDB_DEFAULT_DRIVER_CONFIG)
-    vectordb_summnodes_config: VectorDriverConfig = field(
-        default_factory=lambda: SUMMNODES_VDB_DEFAULT_DRIVER_CONFIG)
+
+    leafnodes_vdb_driver_configs_mapping: Dict[str, VectorDriverConfig] = field(
+        default_factory=lambda: LEAFNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING)
+    leafnodes_reranker_driver_config: RerankerDriverConfig = field(
+        default_factory=lambda: LNT_RERANKDRIVER_DEFAULT_CONFIG)
+
+    summnodes_vdb_driver_configs_mapping: Dict[str, VectorDriverConfig] = field(
+        default_factory=lambda: SUMMNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING)
+    summnodes_reranker_driver_config: RerankerDriverConfig = field(
+        default_factory=lambda: SNT_RERANKDRIVER_DEFAULT_CONFIG)
 
     treedb_config: TreeDriverConfig = field(
         default_factory=lambda: TREE_DB_DEFAULT_DRIVER_CONFIG)
@@ -74,12 +78,12 @@ class NodesTreeModelConfig:
     nodes_summarization_task_config: AgentTaskSolverConfig = field(
         default_factory=lambda: DEFAULT_SUMMN_TASK_CONFIG)
 
+    # expanding-tree params
     e2n_sim_threshold: float = 0.4
     depth_rate: float = 0.5
     nodes_aggregation_mechanism: str = 'sequencial'  # "sequencial" | "parallel"
 
-    log: Logger = field(
-        default_factory=lambda: Logger(NODESTREE_MODEL_LOG_PATH))
+    log: Logger = field(default_factory=lambda: Logger(NODESTREE_MODEL_LOG_PATH))
     verbose: bool = False
 
 
@@ -97,20 +101,34 @@ class NodesTreeModel:
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
     """
 
-    def __init__(self, agent: AbstractAgentConnector, embedder: EmbedderModel,
+    def __init__(self, agent: AbstractAgentConnector, embedders_mapping: Dict[str, EmbedderModel],
                  config: NodesTreeModelConfig = NodesTreeModelConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         self.config = config
 
         self.treedb_conn = TreeDriver.connect(self.config.treedb_config)
 
-        self.embedder = embedder
-        self.vectordb_leafnodes_conn = VectorDriver.connect(config.vectordb_leafnodes_config)
-        self.vectordb_summnodes_conn = VectorDriver.connect(config.vectordb_summnodes_config)
+        #
+        self.leafnodes_vectordbs = VectorComposer(
+            self.config.leafnodes_vdb_driver_configs_mapping,
+            embedders_mapping)
+        self.leafnodes_retriever = RerankerDriver.specify(
+            self.config.leafnodes_reranker_driver_config,
+            self.leafnodes_vectordbs)
 
+        #
+        self.summnodes_vectordbs = VectorComposer(
+            self.config.summnodes_vdb_driver_configs_mapping,
+            embedders_mapping)
+        self.summnodes_retriever = RerankerDriver.specify(
+            self.config.summnodes_reranker_driver_config,
+            self.summnodes_vectordbs)
+
+        #
         self.agent = agent
         self.nodes_summarization_solver = AgentTaskSolver(
-            self.agent, self.config.nodes_summarization_task_config, cache_kvdriver_config)
+            self.agent, self.config.nodes_summarization_task_config,
+            cache_kvdriver_config)
 
         self.log = self.config.log
         self.verbose = self.config.verbose
@@ -133,8 +151,8 @@ class NodesTreeModel:
     def check_consistency(self) -> bool:
         self.treedb_conn.check_consistency()
 
-        leaf_vnodes_count = self.vectordb_leafnodes_conn.count_items()
-        summ_vnodes_count = self.vectordb_summnodes_conn.count_items()
+        leaf_vnodes_count = self.leafnodes_vectordbs.count_items()
+        summ_vnodes_count = self.summnodes_vectordbs.count_items()
         tnodes_count = self.treedb_conn.count_items()
 
         # грубая проверка (нужно, чтобы каждому элементу из векторных бд
@@ -167,11 +185,9 @@ class NodesTreeModel:
         :return: Словарь с информацией об object-вершинах из заданных триплетов, которые были добавлены в деревовидной моделе и которые уже присутствовали в моделе (и повторно добавлены не были).
         :rtype: Dict[str, Set[str]]
         """
-        self.log("Старт операции по добавлению object-вершин из заданных триплетов в дерево...",
-                 verbose=self.verbose)
+        self.log("Старт операции по добавлению object-вершин из заданных триплетов в дерево...", verbose=self.verbose)
 
-        self.log("1. Отбираем уникальные object-вершины...",
-                 verbose=self.verbose)
+        self.log("1. Отбираем уникальные object-вершины...", verbose=self.verbose)
         object_nodes = self.extract_unique_nodes(triplets)
         self.log(f"1.final | В {len(triplets)} триплетах (всего {len(triplets)*2} вершин) содержится {len(object_nodes)} уникальных (по строковому представлению) object-вершин.", verbose=self.verbose)
 
@@ -186,8 +202,7 @@ class NodesTreeModel:
             else:
                 added_node_ids.append(node.id)
 
-        self.log(
-            f"final | all/unique/existed/added nodes - {len(triplets)*2}/{len(object_nodes)}/{len(existed_node_ids)}/{len(added_node_ids)}", verbose=self.config.verbose)
+        self.log(f"final | all/unique/existed/added nodes - {len(triplets)*2}/{len(object_nodes)}/{len(existed_node_ids)}/{len(added_node_ids)}", verbose=self.config.verbose)
         return {'existed_nodes': existed_node_ids, 'added_nodes': added_node_ids}
 
     def add_node(self, new_node_strid: str, new_node_text: str) -> ReturnStatus:
@@ -204,18 +219,14 @@ class NodesTreeModel:
         self.log(f"2.1. Информация по текущей вершине: (str_id) - {new_node_strid}; (node_text) - {new_node_text}",
                  verbose=self.verbose)
 
-        self.log(f"2.2. Проверка вершины на существование в дереве...",
-                 verbose=self.verbose)
+        self.log(f"2.2. Проверка вершины на существование в дереве...", verbose=self.verbose)
         if self.treedb_conn.item_exist(new_node_strid, id_type=TreeIdType.str):
-            self.log("2.final | Текущая вершина в дереве существует. Завершение операции.",
-                     verbose=self.verbose)
+            self.log("2.final | Текущая вершина в дереве существует. Завершение операции.", verbose=self.verbose)
             status = ReturnStatus.already_exist
             return status
-        self.log(f"2.2.1. Текущей вершины в дереве не существует. Продолжение операции...",
-                 verbose=self.verbose)
+        self.log(f"2.2.1. Текущей вершины в дереве не существует. Продолжение операции...", verbose=self.verbose)
 
-        self.log("2.3. Поиск parent-вершины, к которой будет добавлена новая child-вершина...",
-                 verbose=self.verbose)
+        self.log("2.3. Поиск parent-вершины, к которой будет добавлена новая child-вершина...", verbose=self.verbose)
         s_time = time()
         traversed_nodes_ids, parent_node = self.traverse_tree(new_node_text)
         e_time = time()
@@ -223,70 +234,61 @@ class NodesTreeModel:
         self.log(f"2.3.2. Выбранная parent-вершина: {parent_node}", verbose=self.verbose)
         self.log(f"2.3.3. Затраченное время: {e_time - s_time} секунд", verbose=self.verbose)
 
-        self.log("2.4. Вызов llm для перегенерации text-полей у пройденных вершин в дереве...",
-                 verbose=self.verbose)
+        self.log("2.4. Вызов llm для перегенерации text-полей у пройденных вершин в дереве...", verbose=self.verbose)
         s_time = time()
-        new_text_summaries = self.summarize_path_nodes(
-            traversed_nodes_ids, new_node_text)
+        new_text_summaries = self.summarize_path_nodes(traversed_nodes_ids, new_node_text)
         e_time = time()
         self.log(f"2.4.1. Обновлённые варианты text-полей у пройдённых вершин: {new_text_summaries}", verbose=self.verbose)
         self.log(f"2.4.2. Затраченное время: {e_time - s_time} секунд", verbose=self.verbose)
 
         self.log("2.5. Обновление/добвавление summarize-вершин в векторной бд...", verbose=self.verbose)
         s_time = time()
-        self.update_vectordb_info(
-            TreeNodeType.summarized, traversed_nodes_ids, new_text_summaries)
+        self.update_vectordb_info(TreeNodeType.summarized, traversed_nodes_ids, new_text_summaries)
         e_time = time()
-        self.log(
-            f"2.5.1. Затраченное время: {e_time - s_time} секунд", verbose=self.verbose)
+        self.log(f"2.5.1. Затраченное время: {e_time - s_time} секунд", verbose=self.verbose)
 
-        self.log("2.6. Обновление информации в summarize-вершинах в графовой бд...",
-                 verbose=self.verbose)
+        self.log("2.6. Обновление информации в summarize-вершинах в графовой бд...", verbose=self.verbose)
         s_time = time()
-        self.update_treedb_info(
-            traversed_nodes_ids, new_text_summaries, new_node_strid, parent_node)
+        self.update_treedb_info(traversed_nodes_ids, new_text_summaries, new_node_strid, parent_node)
         e_time = time()
-        self.log(
-            f"2.6.1. Затраченное время: {e_time - s_time} секунд", verbose=self.verbose)
+        self.log(f"2.6.1. Затраченное время: {e_time - s_time} секунд", verbose=self.verbose)
 
-        self.log("2.7. Обновление/добвавление leaf-вершин в векторной бд...",
-                 verbose=self.verbose)
+        self.log("2.7. Обновление/добвавление leaf-вершин в векторной бд...", verbose=self.verbose)
         self.update_vectordb_info(TreeNodeType.leaf, [new_node_strid], [new_node_text])
-        self.log("2.8. Прикрепление новой leaf-вершины к выбранной parent-вершине в дереве...",
-                 verbose=self.verbose)
+        self.log("2.8. Прикрепление новой leaf-вершины к выбранной parent-вершине в дереве...", verbose=self.verbose)
         self.attach_node_to_tree(parent_node.id, new_node_text, {'str_id': new_node_strid, 'depth': len(traversed_nodes_ids) + 1})
 
-        self.log("2.final | Операция по добавлению новой вершины завершена успешно!",
-                 verbose=self.verbose)
+        self.log("2.final | Операция по добавлению новой вершины завершена успешно!", verbose=self.verbose)
         return status
 
     def get_leafnodes_sim_scores(self, anchor_vinstance: VectorDBInstance, leaf_nodes: List[TreeNode]) -> List[Tuple[float, str]]:
-        strid2leafid_map = {
-            node.props['str_id']: node.id for node in leaf_nodes}
-        leaf_nodes_strids = list(strid2leafid_map.keys())
-        if len(leaf_nodes_strids) > 0:
-            raw_scored_leafnodes = self.vectordb_leafnodes_conn.retrieve(
-                query_instances=[anchor_vinstance], n_results=len(leaf_nodes_strids),
-                subset_ids=leaf_nodes_strids, includes=[])[0]
-            # переводим значения семантического расстояния [distance] в семантическую близость [similarity]
-            scored_leafnodes = list(map(lambda pair: (
-                1 - pair[0], strid2leafid_map[pair[1].id]), raw_scored_leafnodes))
+        strid2leafid_map = {node.props['str_id']: node.id for node in leaf_nodes}
+        leafnodes_strids = list(strid2leafid_map.keys())
+        if len(leafnodes_strids) > 0:
+            # получаем значения семантической близости [similarity]
+            scored_leafnodes = self.leafnodes_retriever.run(
+                query=anchor_vinstance.document, top_k=len(leafnodes_strids),
+                subset_ids=leafnodes_strids, return_with_scores=True, includes=[])
+
+            leafnodes_info = list(map(lambda pair: (pair[0], strid2leafid_map[pair[1].id]), scored_leafnodes))
         else:
-            scored_leafnodes = []
-        return scored_leafnodes
+            leafnodes_info = []
+
+        return leafnodes_info
 
     def get_summnodes_sim_scores(self, anchor_vinstance: VectorDBInstance, summ_nodes: List[TreeNode]) -> List[Tuple[float, str]]:
         summ_nodes_ids = list(map(lambda node: node.id, summ_nodes))
         if len(summ_nodes_ids) > 0:
-            raw_scored_summnodes = self.vectordb_summnodes_conn.retrieve(
-                query_instances=[anchor_vinstance], n_results=len(summ_nodes_ids),
-                subset_ids=summ_nodes_ids, includes=[])[0]
-            # переводим значения семантического расстояния [distance] в семантическую близость [similarity]
-            scored_summnodes = list(
-                map(lambda pair: (1 - pair[0], pair[1].id), raw_scored_summnodes))
+            # получаем значения семантической близости [similarity]
+            scored_summnodes = self.summnodes_retriever.run(
+                query=anchor_vinstance.document, top_k=len(summ_nodes_ids),
+                subset_ids=summ_nodes_ids, return_with_scores=True, includes=[])
+
+            summnodes_info = list(map(lambda pair: (pair[0], pair[1].id), scored_summnodes))
         else:
-            scored_summnodes = []
-        return scored_summnodes
+            summnodes_info = []
+
+        return summnodes_info
 
     def calculate_adaptive_threshold(self, cur_depth: int) -> float:
         cur_maxdepth = self.treedb_conn.get_tree_maxdepth()
@@ -308,39 +310,31 @@ class NodesTreeModel:
         """
         self.log("3. Старт алгоритма обхода дерева...", verbose=self.verbose)
         parent_node, traversed_nodes_ids = None, []
-        newnode_embedding = self.embedder.encode_queries([newnode_text])[0]
-        newnode_vinstance = VectorDBInstance(embedding=newnode_embedding)
+        newnode_vinstance = VectorDBInstance(document=newnode_text)
         parent_node_id = self.treedb_conn.root_node_id
         cur_depth = 0
 
         stop_flag = False
         while not stop_flag:
-            self.log(
-                f"3.1. Идентификатор текущей parent-вершины (external_id): {parent_node_id}", verbose=self.verbose)
-            self.log(
-                f"3.2. Текущая глубина: {cur_depth}", verbose=self.verbose)
+            self.log(f"3.1. Идентификатор текущей parent-вершины (external_id): {parent_node_id}", verbose=self.verbose)
+            self.log(f"3.2. Текущая глубина: {cur_depth}", verbose=self.verbose)
             # Получаем child-вершины для текущей parent-вершины
             child_nodes = self.treedb_conn.get_child_nodes(parent_node_id)
-            self.log(
-                f"3.3. Child-вершины для текущей parent-вершины:\n* количество: {len(child_nodes)}\n* вершины: {child_nodes}", verbose=self.verbose)
+            self.log(f"3.3. Child-вершины для текущей parent-вершины:\n* количество: {len(child_nodes)}\n* вершины: {child_nodes}", verbose=self.verbose)
 
             # Оцениваем семантическую близость [similarity] между child-вершинами (с типом leaf)
             # у текущей parent-вершины и newnode_text
-            leaf_nodes = list(filter(lambda node: node.type ==
-                              TreeNodeType.leaf, child_nodes))
+            leaf_nodes = list(filter(lambda node: node.type == TreeNodeType.leaf, child_nodes))
             scored_leafnodes = self.get_leafnodes_sim_scores(newnode_vinstance, leaf_nodes)
-            self.log(
-                f"3.4. Оценки семантической близости [similarity] для leaf-вершин:\n* количество: {len(scored_leafnodes)}\n* вершины: {scored_leafnodes}",
-                verbose=self.verbose)
+            self.log(f"3.4. Оценки семантической близости [similarity] для leaf-вершин:\n* количество: {len(scored_leafnodes)}\n* вершины: {scored_leafnodes}",
+                     verbose=self.verbose)
 
             # Оцениваем семантическую близость [similarity] между child-вершинами (с типом summarized)
             # у текущей parent-вершины и newnode_text
-            summ_nodes = list(filter(lambda node: node.type ==
-                              TreeNodeType.summarized, child_nodes))
+            summ_nodes = list(filter(lambda node: node.type == TreeNodeType.summarized, child_nodes))
             scored_summnodes = self.get_summnodes_sim_scores(newnode_vinstance, summ_nodes)
-            self.log(
-                f"3.5. Оценки семантической близости [similarity] для summarized-вершин:\n* количество: {len(scored_summnodes)}\n* вершины: {scored_summnodes}",
-                verbose=self.verbose)
+            self.log(f"3.5. Оценки семантической близости [similarity] для summarized-вершин:\n* количество: {len(scored_summnodes)}\n* вершины: {scored_summnodes}",
+                     verbose=self.verbose)
 
             # Получем адаптивный порог для фильтрации child-вершин
             adaptive_threshold = self.calculate_adaptive_threshold(cur_depth)
@@ -348,24 +342,19 @@ class NodesTreeModel:
 
             # Выполняем фильтрацию child-вершин на основе их семантической близости к newnode_text
             # по адаптивному пороговому значению
-            filtered_child_nodes = list(filter(
-                lambda scored_node: scored_node[0] >= adaptive_threshold, scored_leafnodes + scored_summnodes))
-            self.log(
-                f"3.7. Оставшиеся summarized- и leaf-вершины в результате фильтрации:\n* количество: {len(filtered_child_nodes)}\n* вершины: {filtered_child_nodes}", verbose=self.verbose)
+            filtered_child_nodes = list(filter(lambda scored_node: scored_node[0] >= adaptive_threshold, scored_leafnodes + scored_summnodes))
+            self.log(f"3.7. Оставшиеся summarized- и leaf-вершины в результате фильтрации:\n* количество: {len(filtered_child_nodes)}\n* вершины: {filtered_child_nodes}", verbose=self.verbose)
 
             # Если после фильтрации не осталось ни одной вершины, в которую можно выполнить переход,
             # то завершаем обход дерева, иначе выбираем самую семантически-близкую [similarity] вершину в качестве
             # следующей parent-вершины.
             if len(filtered_child_nodes) < 1:
-                self.log(
-                    "3.8. Больше некуда спускаться по дереву. Завершаем операцию.", verbose=self.verbose)
+                self.log("3.8. Больше некуда спускаться по дереву. Завершаем операцию.", verbose=self.verbose)
                 parent_node = self.treedb_conn.read([parent_node_id])[0]
-                self.log(
-                    f"3.8.1 Последняя parent-вершина: {parent_node}", verbose=self.verbose)
+                self.log(f"3.8.1 Последняя parent-вершина: {parent_node}", verbose=self.verbose)
                 stop_flag = True
             else:
-                sorted_child_nodes = sorted(
-                    filtered_child_nodes, key=lambda p: p[0], reverse=True)
+                sorted_child_nodes = sorted(filtered_child_nodes, key=lambda p: p[0], reverse=True)
                 parent_node_id = sorted_child_nodes[0][1]
 
                 self.log("3.8. Спускаемся на вершину вниз по дереву.", verbose=self.verbose)
@@ -374,8 +363,7 @@ class NodesTreeModel:
                 traversed_nodes_ids.append(parent_node_id)
                 cur_depth += 1
 
-        self.log("3.final | Обход дерева выполнен успешно.",
-                 verbose=self.verbose)
+        self.log("3.final | Обход дерева выполнен успешно.", verbose=self.verbose)
         return traversed_nodes_ids, parent_node
 
     def summarize_path_nodes(self, traversed_nodes_ids: List[str], newnode_text: str) -> List[str]:
@@ -390,22 +378,17 @@ class NodesTreeModel:
         :return: Список прегенерированных/обобщённых значений тексовых полей у пройденных traversed_nodes_ids-вершин.
         :rtype: List[str]
         """
-        self.log(f"4. Старт алгоритма по суммаризации текста...",
-                 verbose=self.verbose)
-        self.log(
-            f"4.1.1. Количество текстов для обновления: {len(traversed_nodes_ids)}", verbose=self.verbose)
-        self.log(
-            f"4.1.2. newnode_text: '{newnode_text}'", verbose=self.verbose)
+        self.log(f"4. Старт алгоритма по суммаризации текста...", verbose=self.verbose)
+        self.log(f"4.1.1. Количество текстов для обновления: {len(traversed_nodes_ids)}", verbose=self.verbose)
+        self.log(f"4.1.2. newnode_text: '{newnode_text}'", verbose=self.verbose)
 
         new_text_summaries = []
         for node_id in traversed_nodes_ids[::-1]:
             curparent_node = self.treedb_conn.read(
                 [node_id], ids_type=TreeIdType.external)[0]
             parent_text = curparent_node.text
-            parent_descendants_num = curparent_node.props.get(
-                'descendants_num', 0)
-            self.log(
-                f"4.2. Текущая вершина для суммаризациии с newnode_text: {curparent_node}", verbose=self.verbose)
+            parent_descendants_num = curparent_node.props.get('descendants_num', 0)
+            self.log(f"4.2. Текущая вершина для суммаризациии с newnode_text: {curparent_node}", verbose=self.verbose)
 
             if self.config.nodes_aggregation_mechanism == 'sequencial':
                 prev_summ_text = newnode_text if len(
@@ -427,16 +410,13 @@ class NodesTreeModel:
             # Если в процессе парсинга ответа llm-агента возникла ошибка,
             # то выполняем наивную суммаризацию
             if solve_status != ReturnStatus.success:
-                self.log(
-                    "При решении задачи-суммаризации возникла ошибка!", verbose=self.verbose)
+                self.log("При решении задачи-суммаризации возникла ошибка!", verbose=self.verbose)
                 summ_text = f"{parent_text}, {newnode_text}"
 
-            self.log(
-                f"4.3. Новое значение text-поля для текущей вершины: {summ_text}", verbose=self.verbose)
+            self.log(f"4.3. Новое значение text-поля для текущей вершины: {summ_text}", verbose=self.verbose)
             new_text_summaries.append(summ_text)
 
-        self.log("4.final | Сумаризаация текста выполнена успешно",
-                 verbose=self.verbose)
+        self.log("4.final | Сумаризаация текста выполнена успешно", verbose=self.verbose)
         return new_text_summaries[::-1]
 
     def update_vectordb_info(self, vecdb_type: TreeNodeType, ids: List[str], new_texts: List[str]) -> None:
@@ -449,15 +429,12 @@ class NodesTreeModel:
         :param new_texts: Значения текстовых полей, на основе которых будут получены векторные представления для соответствующих вершин.
         :type new_texts: List[str]
         """
-        torch.cuda.empty_cache()
-        embs = self.embedder.encode_passages(new_texts, batch_size=16)
-        formated_instances = [VectorDBInstance(id=id, document=doc, embedding=emb, metadata={'id': id})
-                              for id, doc, emb in zip(ids, new_texts, embs)]
+        formated_instances = [VectorDBInstance(id=id, document=doc, metadata={'id': id}) for id, doc in zip(ids, new_texts)]
 
         if vecdb_type == TreeNodeType.summarized:
-            self.vectordb_summnodes_conn.upsert(formated_instances)
+            self.summnodes_vectordbs.upsert(formated_instances)
         elif vecdb_type == TreeNodeType.leaf:
-            self.vectordb_leafnodes_conn.create(formated_instances)
+            self.leafnodes_vectordbs.upsert(formated_instances)
         else:
             raise KeyError
 
@@ -536,63 +513,54 @@ class NodesTreeModel:
 
         self.treedb_conn.update([summarized_node])
 
-    def retrieve_relevant_leafnode(self, entitie_vinstance: VectorDBInstance, fetch_k: int, distance_threshold: float) -> Tuple[float, VectorDBInstance]:
-        raw_scored_leafnodes = self.vectordb_leafnodes_conn.retrieve(
-            query_instances=[entitie_vinstance], n_results=fetch_k,
-            includes=['documents'])[0]
-        filtered_leafnodes = list(
-            filter(lambda pair: pair[0] <= distance_threshold, raw_scored_leafnodes))
+    def retrieve_relevant_leafnode(self, entitie_vinstance: VectorDBInstance) -> Union[None, Tuple[float, VectorDBInstance]]:
+        raw_best_leafnode = self.leafnodes_retriever.run(
+            query=entitie_vinstance.document, top_k=1,
+            includes=['documents', 'metadatas'], return_with_scores=True)
+
         best_leafnode = None
-        if len(filtered_leafnodes) > 0:
-            best_leafnode = sorted(
-                filtered_leafnodes, key=lambda pair: pair[0], reverse=False)[0]
-        self.log(f"Извлечённые leaf-вершины:\n* количество - {len(filtered_leafnodes)}\n* вершины - {filtered_leafnodes}\n* семантически-близкая [distance] вершина - {best_leafnode}", verbose=self.verbose)
+        if len(best_leafnode) > 0:
+            best_leafnode = raw_best_leafnode[0]
+
+        self.log(f"Семантически-близкая [similarity] leaf-вершина: {best_leafnode}", verbose=self.verbose)
         return best_leafnode
 
-    def retrieve_relevant_summnode(self, entitie_vinstance: VectorDBInstance, fetch_k: int, distance_threshold: float) -> Tuple[float, VectorDBInstance]:
-        raw_scored_summnodes = self.vectordb_summnodes_conn.retrieve(
-            query_instances=[entitie_vinstance], n_results=fetch_k,
-            includes=['documents'])[0]
-        filtered_summnodes = list(
-            filter(lambda pair: pair[0] <= distance_threshold, raw_scored_summnodes))
+    def retrieve_relevant_summnode(self, entitie_vinstance: VectorDBInstance) -> Union[None, Tuple[float, VectorDBInstance]]:
+        raw_best_summnode = self.summnodes_retriever.run(
+            query=entitie_vinstance.document, top_k=1,
+            includes=[], return_with_scores=True)
+
         best_summnode = None
-        if len(filtered_summnodes) > 0:
-            best_summnode = sorted(
-                filtered_summnodes, key=lambda pair: pair[0], reverse=False)[0]
-        self.log(f"Извлечённые summarized-вершины:\n* количество - {len(filtered_summnodes)}\n* вершины - {filtered_summnodes}\n* семантически-близкая [distance] вершина - {best_summnode}", verbose=self.verbose)
+        if len(best_summnode) > 0:
+            best_summnode = raw_best_summnode[0]
+
+        self.log(f"Семантически-близкая [similarity] summ-вершина: {best_summnode}", verbose=self.verbose)
         return best_summnode
 
     def get_leafdescendants_for_summnode(self, entitie_vinstance: VectorDBInstance, best_summnode_id: str, max_n: int) -> List[VectorDBInstance]:
         descendants_leaf_nodes = self.treedb_conn.get_leaf_descendants(
             best_summnode_id, id_type=TreeIdType.external)
-        descendants_leaf_strids = list(
-            map(lambda node: node.props['str_id'], descendants_leaf_nodes))
+        descendants_leaf_strids = list(map(lambda node: node.props['str_id'], descendants_leaf_nodes))
 
         # Если задано ограничение на максимальное количество вершин,
         # которое может быть сопоставлено summarized-вершине
         if max_n > 0 and len(descendants_leaf_strids) > max_n:
-            raw_matched_nodes = self.vectordb_leafnodes_conn.retrieve(
-                query_instances=[entitie_vinstance], n_results=max_n,
-                subset_ids=descendants_leaf_strids, includes=[])[0]
-            descendants_leaf_strids = list(
-                map(lambda item: item[1].id, raw_matched_nodes))
+            matched_leafnodes = self.leafnodes_retriever.run(
+                query=entitie_vinstance.document, top_k=max_n,
+                subset_ids=descendants_leaf_strids, includes=[])
+            descendants_leaf_strids = list(map(lambda item: item.id, matched_leafnodes))
 
-        matched_nodes = self.vectordb_leafnodes_conn.read(
+        matched_nodes = self.leafnodes_vectordbs.read(
             descendants_leaf_strids, includes=["documents", "metadatas"])
         return matched_nodes
 
-    def match_entitie2objects(self, entitie: str, strategy: str = 'collapsed', distance_threshold: float = 0.4,
-                              fetch_k: int = 1, max_n: int = 1) -> List[VectorDBInstance]:
+    def match_entitie2objects(self, entitie: str, strategy: str = 'collapsed', max_n: int = 1) -> List[VectorDBInstance]:
         """Метод предназначен для сопоставления object-вершин (из построенного дерева) заданной сущности (на естественном языке).
 
         :param entitie:
         :type entitie: Сущность на естественном языке.
         :param strategy: Стратегия обхода дерева для формирования релевантного (сопоставляемого заданной сущности) набора object-вершин. Значение по умолчанию 'collapsed'.
         :type strategy: str, optional
-        :param distance_threshold: Пороговое значение семантического расстояния [distance] между сущностью и object-вершинами в дереве, по которому выполняется отсечение нерелевантных объектов (вершин). Значение по умолчанию 0.4.
-        :type distance_threshold: float, optional
-        :param fetch_k: Служебный гиперпараметр. Значение по умолчанию 1.
-        :type fetch_k: int, optional
         :param max_n: Максимальное количество object-вершин, которое может быть сопоставлено заданной сущности. Если указано отрицательное значение, то данное ограничение снимается. Значение по умолчанию 1.
         :type max_n: int, optional
         :return: Список сопоставленных object-верщин (с их векторными представлениями).
@@ -601,14 +569,13 @@ class NodesTreeModel:
         self.log(f"Старт алгоритма по сопоставлению заданной '{entitie}'-сущности c вершинами из дерева",
                  verbose=self.verbose)
         if strategy == 'collapsed':
-            entitie_embedding = self.embedder.encode_queries([entitie])[0]
-            entitie_vinstance = VectorDBInstance(embedding=entitie_embedding)
+            entitie_vinstance = VectorDBInstance(document=entitie)
 
             self.log("Извлечение самых релевантных к entitie вершин из leaf-бд...", verbose=self.verbose)
-            best_leafnode = self.retrieve_relevant_leafnode(entitie_vinstance, fetch_k, distance_threshold)
+            best_leafnode = self.retrieve_relevant_leafnode(entitie_vinstance)
 
             self.log("Извлечение самых релевантных к entitie вершин из summarized-бд....", verbose=self.verbose)
-            best_summnode = self.retrieve_relevant_summnode(entitie_vinstance, fetch_k, distance_threshold)
+            best_summnode = self.retrieve_relevant_summnode(entitie_vinstance)
             if best_leafnode is None and best_summnode is None:
                 raise ValueError
 
@@ -620,12 +587,10 @@ class NodesTreeModel:
                 matched_nodes = self.get_leafdescendants_for_summnode(entitie_vinstance, best_summnode[1].id, max_n)
                 self.log(f"Summarized-вершине соответствуют следующие leaf-вершины (потомки): количество - {len(matched_nodes)}", verbose=self.verbose)
                 for i in range(len(matched_nodes)):
-                    self.log(
-                        f"- [{matched_nodes[i].id}] {matched_nodes[i].document}", verbose=self.verbose)
+                    self.log(f"- [{matched_nodes[i].id}] {matched_nodes[i].document}", verbose=self.verbose)
             else:
                 self.log(f"В качестве самой релевантной выбрана leaf-вершина: {best_leafnode}", verbose=self.verbose)
-                matched_nodes = self.vectordb_leafnodes_conn.read(
-                    [best_leafnode[1].id], includes=["documents", "metadatas"])
+                matched_nodes: List[VectorDBInstance] = [best_leafnode[1]]
                 self.log(f"- [{matched_nodes[0].id}] {matched_nodes[0].document}", verbose=self.verbose)
 
         elif strategy == 'traversal':
@@ -643,15 +608,15 @@ class NodesTreeModel:
     def count_items(self) -> Dict[str, Dict[str, int]]:
         return {
             'tree': self.treedb_conn.count_items(),
-            'vector_leafnodes': self.vectordb_leafnodes_conn.count_items(),
-            'vector_summnodes': self.vectordb_summnodes_conn.count_items()}
+            'vector_leafnodes': self.leafnodes_vectordbs.count_items(),
+            'vector_summnodes': self.summnodes_vectordbs.count_items()}
 
     def clear(self) -> None:
-        self.vectordb_leafnodes_conn.clear()
-        self.vectordb_summnodes_conn.clear()
+        self.leafnodes_vectordbs.clear()
+        self.summnodes_vectordbs.clear()
         self.treedb_conn.clear()
 
     def __del__(self):
         self.treedb_conn.close_connection()
-        self.vectordb_leafnodes_conn.close_connection()
-        self.vectordb_summnodes_conn.close_connection()
+        self.leafnodes_vectordbs.close_connection()
+        self.summnodes_vectordbs.close_connection()

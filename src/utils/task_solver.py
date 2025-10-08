@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Tuple, Dict, Union
+from typing import Tuple, Dict, Union, List
 import json
 from copy import deepcopy
 import hashlib
@@ -8,7 +8,8 @@ from .logger import Logger
 from .language_detector import detect_lang
 from .errors import ReturnStatus, STATUS_MESSAGE
 from .cache_kv import CacheKV
-from ..agents.utils import AbstractAgentConnector
+from .cache_kv.utils import AbstractCacheInfo
+from ..agents.utils import AbstractAgentConnector, LLMInferenceStat
 from ..db_drivers.kv_driver import KeyValueDriverConfig
 
 
@@ -56,8 +57,10 @@ class AgentTaskSolverConfig:
     log: Logger
     verbose: bool = False
 
+    collect_inference_stat: bool = False
 
-class AgentTaskSolver:
+
+class AgentTaskSolver(AbstractCacheInfo):
     """Класс-обёртка, предназначенный для решения атомарной задачи на базе инференса LLM-агента.
 
     :param agent: интерфейс взаимодействия с LLM-агентом.
@@ -78,8 +81,25 @@ class AgentTaskSolver:
         else:
             self.cachekv = None
 
+        # TODO
+        # костыль
+        if self.config.collect_inference_stat:
+            self.inference_stat_cache: List[LLMInferenceStat] = []
+        else:
+            self.inference_stat_cache = None
+
         self.log = self.config.log
         self.verbose = self.config.verbose
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[int, float]]]:
+        if self.cachekv is not None:
+            # TODO
+            raise NotImplementedError
+        else:
+            return None
+
+    def get_cache_stat(self) -> Union[None, int]:
+        return self.cachekv.kv_conn.count_items() if self.cachekv is not None else None
 
     def solve(self, lang: str = 'en', gen_strategy: Union[None, Dict[str, str]] = None, **kwargs) -> Tuple[object, ReturnStatus]:
         """Метод предназначен для запуска agent-солвера на заданных входных данных.
@@ -204,11 +224,16 @@ class AgentTaskSolver:
                 self.log("Выполняем инференс llm...",
                          verbose=self.config.verbose)
 
-                raw_answer = self.agent.generate(
+                raw_answer, inference_info = self.agent.generate(
                     system_prompt=self.config.suites[detected_lang].system_prompt,
                     user_prompt=enriched_user_prompt,
                     assistant_prompt=self.config.suites[detected_lang].assistant_prompt,
                     gen_strategy=gen_strategy)
+
+                # TODO
+                # костыль
+                if self.config.collect_inference_stat:
+                    self.inference_stat_cache.append(inference_info)
 
                 if self.cachekv is not None:
                     self.log("Кешируем полученный результат.",

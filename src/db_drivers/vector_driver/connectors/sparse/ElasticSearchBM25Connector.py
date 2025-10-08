@@ -1,12 +1,11 @@
 from typing import List, Tuple, Union
-import sys
-import gc
-import numpy as np
-from time import sleep
 from haystack_integrations.document_stores.elasticsearch import ElasticsearchDocumentStore
 from haystack_integrations.components.retrievers.elasticsearch import ElasticsearchBM25Retriever
 from haystack.document_stores.types import DuplicatePolicy
 from haystack import Document
+
+import urllib3
+urllib3.disable_warnings()
 
 from .configs import DEFAULT_ELASTICSEARCH_BM25_CONFIG
 from ...utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
@@ -114,6 +113,7 @@ class ElasticSearchBM25Connector(AbstractVectorDatabaseConnection):
 
         formated_outputs = []
         for query in query_instances:
+            # Attention: Будут получены значения семантической близости [similarity], а не значения их расстояния [distance]
             raw_output = self.retriever.run(query=query.document, top_k=n_results, filters=filters)
 
             formated_output = []

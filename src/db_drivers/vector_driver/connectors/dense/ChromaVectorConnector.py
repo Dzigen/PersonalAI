@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Dict
 import sys
 import chromadb
 from chromadb.config import Settings
@@ -151,7 +151,7 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
 
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
-            includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
+            includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
         # validating
         if len(query_instances) < 1:
             return ValueError
@@ -171,15 +171,15 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
         # Если в классе указан embedder, то используем его
         # для векторизации входящих запросов
         if self.embedder is not None:
-            for item in query_instances:
-                if item.embedding is not None:
-                    raise ValueError
+            items_wo_embeddings: List[Tuple[str, str]] = list()
+            for idx, item in enumerate(query_instances):
+                if item.embedding is None:
+                    items_wo_embeddings.append((idx, item.document))
 
-            query_documents = list(map(lambda itm: itm.document, query_instances))
-            document_embeddings = self.embedder.encode_queries(
-                query_documents, batch_size=self.encode_batchsize)
-            for i in range(len(query_instances)):
-                query_instances[i].embedding = document_embeddings[i]
+            doc_wo_embeddings = list(map(lambda itm: itm[1], items_wo_embeddings))
+            new_doc_embeddings = self.embedder.encode_queries(doc_wo_embeddings, batch_size=self.encode_batchsize)
+            for doc_info, doc_emb in zip(items_wo_embeddings, new_doc_embeddings):
+                query_instances[doc_info[0]].embedding = doc_emb
 
         # Attention: в случае использования ip-метрики будут получены значения расстояний [distances] между векторами,
         # а не значения их семантической блозости [similarity]
@@ -196,8 +196,9 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
                             for requested_field in includes + ['ids']}
                 cur_distance = raw_retrieved_instances['distances'][i][j]
 
+                # Attention: переводим значение расстояния [distance] между векторами к значению их семантической блозости [similarity]
                 cur_formated_instances.append(
-                    (cur_distance, VectorDBInstance(**tmp_inst)))
+                    (1 - cur_distance, VectorDBInstance(**tmp_inst)))
 
             cur_formated_instances = sorted(
                 cur_formated_instances, key=lambda v: v[0], reverse=False)

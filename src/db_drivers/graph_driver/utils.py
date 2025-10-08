@@ -47,7 +47,7 @@ class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
         pass
 
     @abstractmethod
-    def count_items(self, id: str = None, id_type: str = None) -> Union[Dict[str, int], int]:
+    def count_items(self, id: str = None, id_type: str = None, detailed: bool = False) -> Union[Dict[str, Dict[str, int]], Dict[str, int], int]:
         pass
 
     @abstractmethod

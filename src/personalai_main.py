@@ -74,7 +74,7 @@ class PersonalAI:
         self.log(f"RESULT:\n* FINAL ANSWER - {answer}", verbose=self.verbose)
         return answer, info
 
-    def update_memory(self, text: str, text_properties: Dict) -> Tuple[List[Triplet], ReturnInfo]:
+    def update_memory(self, text: str, text_properties: Union[None, Dict] = None) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для добавления новой информации в память (граф знаний) и её актуализацию.
 
         :param text: Слабоструктурированный текст на естественном языке.

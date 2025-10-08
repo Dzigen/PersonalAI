@@ -1,6 +1,6 @@
 services:
   neo4j:
-    container_name: personalai_test_neo4j
+    container_name: personalai_mmenschikov_test_neo4j
     image: neo4j:5.21.0-enterprise
     hostname: localhost
     # networks:
@@ -23,7 +23,7 @@ services:
           memory: 4G
 
   aerospike:
-    container_name: personalai_test_aerospike
+    container_name: personalai_mmenschikov_test_aerospike
     hostname: localhost
     image: m.menschikov/aerospike:ee-7.1.0.6_1
     # networks:
@@ -45,7 +45,7 @@ services:
           memory: 4G
 
   mongo_cache:
-    container_name: personalai_test_mongo
+    container_name: personalai_mmenschikov_test_mongo
     image: mongo:7.0.9
     hostname: localhost #personalai_test_mongo
     # networks:
@@ -70,7 +70,7 @@ services:
 
   mongo_ui:
     image: mongo-express:latest
-    container_name: personalai_mongo_ui
+    container_name: personalai_mmenschikov_mongo_ui
     hostname: localhost #personalai_mongo_ui
     # networks:
     #   - tests_network
@@ -86,7 +86,7 @@ services:
       - "8081:8081"
 
   redis_cache:
-    container_name: personalai_test_redis
+    container_name: personalai_mmenschikov_test_redis
     image: redis:latest
     hostname: localhost #personalai_test_redis
     # networks:
@@ -114,7 +114,7 @@ services:
 
   redis_ui:
     image: redis/redisinsight:latest
-    container_name: personalai_redis_ui
+    container_name: personalai_mmenschikov_redis_ui
     hostname: localhost
     # networks:
     #   - tests_network
@@ -125,7 +125,7 @@ services:
 
   milvus:
     image: milvusdb/milvus:v2.5.8
-    container_name: personalai_test_milvus
+    container_name: personalai_mmenschikov_test_milvus
     hostname: localhost
     # networks:
     #   - tests_network

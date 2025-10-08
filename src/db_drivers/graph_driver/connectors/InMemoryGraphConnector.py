@@ -283,10 +283,18 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         # TODO
         raise NotImplementedError
 
-    def count_items(self, id: str = None, id_type: str = None) -> Union[Dict[str, int], int]:
+    def count_items(self, id: str = None, id_type: str = None, detailed: bool = False) -> Union[Dict[str, Dict[str, int]], Dict[str, int], int]:
         result = None
         if id_type is None:
-            result = {'triplets': len(self.triplets), 'nodes': len(self.nodes)}
+            if detailed:
+                result = {'triplets': {'simple': 0, 'hyper': 0, 'episodic': 0}, 'nodes': {'object': 0, 'hyper': 0, 'episodic': 0}}
+                for triplet in self.triplets.values():
+                    result['triplets'][triplet.relation.type.value] += 1
+                for node in self.nodes.values():
+                    result['nodes'][node.type.value] += 1
+                result = {k: dict(v) for k, v in result.items()}
+            else:
+                result = {'triplets': len(self.triplets), 'nodes': len(self.nodes)}
 
         elif id_type == 'node':
             result = len(self.strid_nodes_index[id])

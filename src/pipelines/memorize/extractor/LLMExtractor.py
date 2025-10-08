@@ -6,9 +6,9 @@ from .configs import DEFAULT_THESISES_EXTR_TASK_CONFIG, DEFAULT_TRIPLETS_EXTR_TA
 from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 from ....utils.errors import STATUS_MESSAGE
 from ....utils.data_structs import TripletCreator, NodeCreator, Node, Relation, RelationType, NodeType, Triplet, create_id
-from ....agents import AgentDriver, AgentDriverConfig
 from ....agents.utils import AbstractAgentConnector
 from ....db_drivers.kv_driver import KeyValueDriverConfig
+from ....utils.cache_kv.utils import AbstractCacheInfo
 
 
 @dataclass
@@ -45,7 +45,7 @@ class LLMExtractorConfig:
     verbose: bool = False
 
 
-class LLMExtractor:
+class LLMExtractor(AbstractCacheInfo):
     """Верхнеуровневый класс первой стадии Memorize-конвейера для извлечения информации (и её приведения в triplet-формат) из слабоструктурированных данных.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -61,13 +61,20 @@ class LLMExtractor:
         self.config = config
 
         self.agent = agent
-        self.triplets_extraction_solver = AgentTaskSolver(
+        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
+        self.tasks_solvers['triplets_extraction_solver'] = AgentTaskSolver(
             self.agent, self.config.triplets_extraction_task_config, cache_kvdriver_config)
-        self.thesises_extraction_solver = AgentTaskSolver(
+        self.tasks_solvers['thesises_extraction_solver'] = AgentTaskSolver(
             self.agent, self.config.thesises_extraction_task_config, cache_kvdriver_config)
 
         self.log = self.config.log
         self.verbose = self.config.verbose
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        return {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
 
     def clear_kv_caches(self, level: str = 'other') -> None:
         if not isinstance(level, str):
@@ -77,14 +84,10 @@ class LLMExtractor:
             raise ValueError(
                 f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
-        if level in ['current', 'all']:
-            raise NotImplementedError
+        self.tasks_solvers['triplets_extraction_solver'].cachekv.clear()
+        self.tasks_solvers['thesises_extraction_solver'].cachekv.clear()
 
-        if level in ['other']:
-            self.triplets_extraction_solver.cachekv.clear()
-            self.thesises_extraction_solver.cachekv.clear()
-
-    def extract_knowledge(self, text: str, time: Union[None, str] = None, properties: Dict = {}) -> Tuple[List[Triplet], ReturnInfo]:
+    def extract_knowledge(self, text: str, time: Union[None, str] = None, properties: Union[None, Dict] = None) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста на естественном языке.
 
         :param text: Слабоструктурированный текст.
@@ -97,7 +100,7 @@ class LLMExtractor:
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         assert self.config.need_simple or self.config.need_thesises
-        props = deepcopy(properties)
+        props = dict() if properties is None else deepcopy(properties)
         assert 'time' not in props.keys()
         new_triplets, info = [], ReturnInfo()
 
@@ -110,7 +113,7 @@ class LLMExtractor:
         if self.config.need_simple:
             self.log("START SIMPLE-TRIPLETS EXTRACTION...",
                      verbose=self.verbose)
-            tmp_triplets, status = self.triplets_extraction_solver.solve(
+            tmp_triplets, status = self.tasks_solvers['triplets_extraction_solver'].solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                 text=text, rel_prop=props)
             self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.verbose)
@@ -127,7 +130,7 @@ class LLMExtractor:
         if self.config.need_thesises:
             self.log("START HYPER-TRIPLETS EXTRACTION...",
                      verbose=self.verbose)
-            tmp_triplets, status = self.thesises_extraction_solver.solve(
+            tmp_triplets, status = self.tasks_solvers['thesises_extraction_solver'].solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                 text=text, node_prop=props)
             self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.verbose)

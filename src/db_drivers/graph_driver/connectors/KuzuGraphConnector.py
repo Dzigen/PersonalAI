@@ -105,13 +105,15 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
             cur_info = creation_info.get(i, None)
             if cur_info is None or cur_info['s_node']:
                 insert_subj_query = self.create_node_query(triplet.start_node)
+                # print(insert_subj_query)
                 self.conn.execute(insert_subj_query)
             if cur_info is None or cur_info['e_node']:
                 insert_obj_query = self.create_node_query(triplet.end_node)
+                # print(insert_obj_query)
                 self.conn.execute(insert_obj_query)
 
             insert_rel_query = self.create_rel_query(triplet)
-
+            # print(insert_rel_query)
             self.conn.execute(insert_rel_query)
 
     def read(self, ids: List[str]) -> List[Triplet]:
@@ -326,13 +328,29 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         formated_node = self.parse_query_nodes_output(raw_output)[0]
         return formated_node.type
 
-    def count_items(self, id: str = None, id_type: str = None) -> Union[Dict[str, int], int]:
+    def count_items(self, id: str = None, id_type: str = None, detailed: bool = False) -> Union[Dict[str, Dict[str, int]], Dict[str, int], int]:
         if id_type is None:
-            n_output = self.conn.execute(
-                "MATCH (a) RETURN count(a) as n_count").get_as_df()['n_count'][0]
-            r_output = self.conn.execute(
-                "MATCH (a)-[rel]->(b) RETURN count(rel) as r_count").get_as_df()['r_count'][0]
-            result = {'triplets': int(r_output), 'nodes': int(n_output)}
+            if detailed:
+                result = {
+                    'triplets': {r_type: 0 for r_type in self.config.params['table_type_map']['relations']['forward'].keys()},
+                    'nodes': {n_type: 0 for n_type in self.config.params['table_type_map']['nodes']['forward'].keys()}
+                }
+
+                r_output = self.conn.execute(
+                    "MATCH ()-[rel]->() RETURN LABEL(rel) AS rel_type, count(rel) AS relCount").get_as_df()
+                n_output = self.conn.execute(
+                    "MATCH (n) RETURN LABEL(n) AS label, count(n) AS nodeCount").get_as_df()
+
+                result['triplets'].update({self.config.params['table_type_map']['relations']['inverse'][r_output['rel_type'][i]]: r_output['relCount'][i] for i in range(r_output.shape[0])})
+                result['nodes'].update({n_output['label'][i]: n_output['nodeCount'][i] for i in range(n_output.shape[0])})
+
+                # print(result)
+            else:
+                n_output = self.conn.execute(
+                    "MATCH (a) RETURN count(a) as n_count").get_as_df()['n_count'][0]
+                r_output = self.conn.execute(
+                    "MATCH (a)-[rel]->(b) RETURN count(rel) as r_count").get_as_df()['r_count'][0]
+                result = {'triplets': int(r_output), 'nodes': int(n_output)}
 
         elif id_type == 'node':
             n_output = self.conn.execute(

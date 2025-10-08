@@ -1,7 +1,8 @@
 from typing import List, Dict, Union
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from collections import Counter
 
+from .configs import NGS_RERANKDRIVER_DEFAULT_CONFIG
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......db_drivers.vector_driver import VectorDBInstance
 from .......kg_model import KnowledgeGraphModel
@@ -9,17 +10,21 @@ from .......utils import Logger
 from .......utils.data_structs import QueryInfo, Triplet, create_id
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
+from .......rerankers import RerankerDriver, RerankerDriverConfig
 
 
 @dataclass
 class NaiveGraphSearchConfig(BaseGraphSearchConfig):
     """Конфигурация NaiveRetrieval-алгоритма обхода графа.
 
+    :param reranker_driver_config: ... . Значение по умолчанию GS_RERANKDRIVER_DEFAULT_CONFIG.
+    :param RerankerDriverConfig, optional
     :param max_k: Макисмальное количество трипелтов, которое может быть извлечено из графа. Значение по умолчанию 50.
     :type max_k: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveTripletsRetriever-класса. Значение по умолчанию 'qa_naive_t_retriever_cache'.
     :type cache_table_name: str, optional
     """
+    reranker_driver_config: RerankerDriverConfig = field(default_factory=lambda: NGS_RERANKDRIVER_DEFAULT_CONFIG)
     max_k: int = 50
     cache_table_name: str = 'qa_naive_t_retriever_cache'
 
@@ -53,8 +58,19 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, self.config.cache_table_name)
 
+        self.retriever = RerankerDriver.specify(
+            self.config.reranker_driver_config,
+            kg_model.graph_embeddings.triplets_vectordbs
+        )
+
         self.log = log
         self.verbose = verbose
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return None
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        return {'NaiveTripletsRetriever': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
 
     def clear_kv_caches(self, level='all') -> None:
         if not isinstance(level, str):
@@ -77,26 +93,15 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log("RETRIEVER: NaiveTripletsRetriever", verbose=self.verbose)
-        self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 
-        query_embd = self.kg_model.graph_embeddings.embedder.encode_queries([
-            query_info.query])[0]
-        query_instance = VectorDBInstance(embedding=query_embd)
+        relevant_triplets: List[VectorDBInstance] = self.retriever.run(query_info.query, top_k=self.config.max_k)
+        triplet_ids = list(map(lambda item: item.metadata['t_id'], relevant_triplets))
+        self.log(f"Количество извлечённых объектов из векторной бд (triplets): {len(triplet_ids)}", verbose=self.verbose)
 
-        raw_relevant_triplets = self.kg_model.graph_embeddings.vectordbs['triplets'].retrieve(
-            [query_instance], self.config.max_k, includes=['metadatas'])[0]
-
-        triplet_ids = list(
-            map(lambda item: item[1].metadata['t_id'], raw_relevant_triplets))
-        self.log(
-            f"Количество извлечённых объектов из векторной бд (triplets): {len(triplet_ids)}", verbose=self.verbose)
-
-        triplets = self.kg_model.graph_struct.db_conn.read(triplet_ids)
-        self.log(
-            f"Количество полученных трипелтов из графовой бд: {len(triplets)}", verbose=self.verbose)
-        self.log(
-            f"Распределение типов связей в наборе извлечённых триплетов: {Counter([triplet.relation.type for triplet in triplets])}", verbose=self.verbose)
+        triplets: List[Triplet] = self.kg_model.graph_struct.db_conn.read(triplet_ids)
+        self.log(f"Количество полученных трипелтов из графовой бд: {len(triplets)}", verbose=self.verbose)
+        self.log(f"Распределение типов связей в наборе извлечённых триплетов: {Counter([triplet.relation.type for triplet in triplets])}", verbose=self.verbose)
 
         return triplets

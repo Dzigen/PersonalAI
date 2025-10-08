@@ -72,14 +72,23 @@ def test_delete(instances, create_info, inputs, delete_info, expected, graphdb_c
     assert items_info['nodes'] == expected['nodes_count']
 
 
-@pytest.mark.parametrize("instances, create_info, expected, graphdb_conn", GRAPHDB_POPULATED_COUNT_TEST_CASES, indirect=['graphdb_conn'])
-def test_count(instances, create_info, expected, graphdb_conn):
+@pytest.mark.parametrize("instances, create_info, expected, detailed, graphdb_conn", GRAPHDB_POPULATED_COUNT_TEST_CASES, indirect=['graphdb_conn'])
+def test_count(instances, create_info, expected, graphdb_conn: AbstractGraphDatabaseConnection, detailed: bool):
     graphdb_conn.clear()
     graphdb_conn.create(instances, create_info)
 
-    items_info = graphdb_conn.count_items()
-    assert items_info['triplets'] == expected['triplets_count']
-    assert items_info['nodes'] == expected['nodes_count']
+    items_info = graphdb_conn.count_items(detailed=detailed)
+    if detailed:
+        assert items_info['triplets'].keys() == expected['triplets_count'].keys()
+        for t_type in expected['triplets_count'].keys():
+            assert items_info['triplets'][t_type] == expected['triplets_count'][t_type]
+
+        assert items_info['nodes'].keys() == expected['nodes_count'].keys()
+        for t_type in expected['nodes_count'].keys():
+            assert items_info['nodes'][t_type] == expected['nodes_count'][t_type]
+    else:
+        assert items_info['triplets'] == expected['triplets_count']
+        assert items_info['nodes'] == expected['nodes_count']
 
 
 @pytest.mark.parametrize("instances, inputs, expected, graphdb_conn", GRAPHDB_POPULATED_EXIST_TEST_CASES, indirect=['graphdb_conn'])

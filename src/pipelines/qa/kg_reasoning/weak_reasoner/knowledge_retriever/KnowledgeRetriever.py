@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Tuple, Union, Dict
 
 from .configs import KR_MAIN_LOG_PATH, AVAILABLE_TRIPLETS_FILTERS, AVAILABLE_TRIPLETS_RETRIEVERS
-from .utils import BaseGraphSearchConfig, BaseTripletsFilterConfig
+from .utils import BaseGraphSearchConfig, BaseTripletsFilterConfig, AbstractTriplesFilter, AbstractTripletsRetriever
 from .filtering_methods.TripletsFilter import TripletsFilterConfig
 from .traversal_methods.WaterCirclesTripletsRetriever import WaterCirclesSearchConfig
 from ......kg_model import KnowledgeGraphModel
@@ -11,6 +11,7 @@ from ......utils.errors import STATUS_MESSAGE
 from ......utils.data_structs import create_id, QueryInfo, Triplet
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
+from ......utils.cache_kv.utils import AbstractCacheInfo
 
 
 @dataclass
@@ -33,21 +34,21 @@ class KnowledgeRetrieverConfig:
     :type verbose: bool, optional
     """
     retriever_method: str = 'watercircles'
-    retriever_config: Union[BaseGraphSearchConfig, Dict] = field(
-        default_factory=lambda: WaterCirclesSearchConfig())
+    retriever_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: WaterCirclesSearchConfig())
     filter_method: str = 'naive'
-    filter_config: Union[BaseTripletsFilterConfig, Dict] = field(
-        default_factory=lambda: TripletsFilterConfig())
+    filter_config: Union[BaseTripletsFilterConfig, Dict] = field(default_factory=lambda: TripletsFilterConfig())
 
     cache_table_name: Union[str, None] = 'qa_kretriever_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(KR_MAIN_LOG_PATH))
     verbose: bool = False
 
     def to_str(self) -> str:
-        return f"{self.retriever_method};{self.retriever_config.to_str()};{self.filter_method};{self.filter_config.to_str()}"
+        str_r_config = [f"{k}:{v}" for k, v in self.retriever_config.items()] if isinstance(self.retriever_config, dict) else self.retriever_config.to_str()
+        str_f_config = [f"{k}:{v}" for k, v in self.filter_config.items()] if isinstance(self.filter_config, dict) else self.filter_config.to_str()
+        return f"{self.retriever_method};{str_r_config};{self.filter_method};{str_f_config}"
 
 
-class KnowledgeRetriever(CacheUtils):
+class KnowledgeRetriever(CacheUtils, AbstractCacheInfo):
     """Верхнеуровневый класс третьей стадии QA-конвейера для извлечения
     релевантной к user-вопросу информации из памяти (графа знаний) ассистента.
 
@@ -67,17 +68,27 @@ class KnowledgeRetriever(CacheUtils):
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
-        self.triplets_retriever = AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method]['class'](
+        self.triplets_retriever: AbstractTripletsRetriever = AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method]['class'](
             kg_model, config.log, self.config.retriever_config, cache_kvdriver_config, self.config.verbose)
 
         if self.config.filter_method is None:
             self.triplets_filter = None
         else:
-            self.triplets_filter = AVAILABLE_TRIPLETS_FILTERS[self.config.filter_method]['class'](
+            self.triplets_filter: AbstractTriplesFilter = AVAILABLE_TRIPLETS_FILTERS[self.config.filter_method]['class'](
                 kg_model, config.log, self.config.filter_config, cache_kvdriver_config, self.config.verbose)
 
         self.log = config.log
         self.verbose = config.verbose
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return None
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        return {
+            'KnowledgeRetriever': None if self.cachekv is None else self.cachekv.kv_conn.count_items(),
+            'triplets_retriever': self.triplets_retriever.get_cache_stat(),
+            'triplets_filter': None if self.triplets_filter is None else self.triplets_filter.get_cache_stat()
+        }
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
@@ -107,10 +118,10 @@ class KnowledgeRetriever(CacheUtils):
             # sn_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.start_node.id, id_type='node')
             # en_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.end_node.id, id_type='node')
 
-            r_vector_exists = self.kg_model.graph_embeddings.vectordbs['triplets'].item_exist(
+            r_vector_exists = self.kg_model.graph_embeddings.triplets_vectordbs.item_exist(
                 triplet.relation.id)
-            # sn_vector_exists = self.kg_model.graph_embeddings.vectordbs['nodes'].item_exist(triplet.start_node.id)
-            # en_vector_exists = self.kg_model.graph_embeddings.vectordbs['nodes'].item_exist(triplet.end_node.id)
+            # sn_vector_exists = self.kg_model.graph_embeddings.nodes_vectordbs.item_exist(triplet.start_node.id)
+            # en_vector_exists = self.kg_model.graph_embeddings.nodes_vectordbs.item_exist(triplet.end_node.id)
 
             if not (r_graph_exists and r_graph_exists):
                 self.log(

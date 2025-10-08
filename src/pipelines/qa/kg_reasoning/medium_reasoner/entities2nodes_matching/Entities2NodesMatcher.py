@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Tuple, List, Dict, Union
 
-from .config import E2NMATCHER_MAIN_LOG_PATH
+from .config import E2NMATCHER_MAIN_LOG_PATH, E2NM_RERANKDRIVER_DEFAULT_CONFIG
 from ......kg_model import KnowledgeGraphModel
 from ......utils import ReturnInfo, Logger
 from ......utils.errors import ReturnStatus
@@ -9,6 +9,7 @@ from ......utils.data_structs import NodeType
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......db_drivers.vector_driver import VectorDBInstance
 from ......utils.cache_kv import CacheUtils
+from ......rerankers import RerankerDriverConfig, RerankerDriver
 
 
 @dataclass
@@ -17,12 +18,10 @@ class Entities2NodesMatcherConfig:
 
     :param use_tree: _description_. Значение по умолчанию False.
     :type use_tree: str, optional
-    :param distance_threshold: Пороговое значение семантического расстояния [distance] между сущностью и вершинами в графе, по которому выполняется отсечение нерелевантных объектов (вершин). Значение по умолчанию 0.4.
-    :type distance_threshold: float, optional
+    :param reranker_driver_config: ... . Значение по умолчанию KC_RERANKDRIVER_DEFAULT_CONFIG.
+    :param reranker_driver_config: RerankerDriverConfig, optional
     :param max_n: Максимальное количество вершин из графа знаний, которе может быть сопоставлено одной сущности. Значение по умолчанию 3.
     :type max_n: int, optional
-    :param fetch_k: Служебный гиперпараметр. Значение по умолчанию 50.
-    :type fetch_k: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы Entities2NodesMatcher-класса. Значение по умолчанию 'medreasn_e2nmatcher_main_stage_cache'.
     :type cache_table_name: str, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(E2NMATCHER_MAIN_LOG_PATH).
@@ -31,9 +30,8 @@ class Entities2NodesMatcherConfig:
     :type verbose: bool, optional
     """
     use_tree: bool = False
-    distance_threshold: float = 0.4
+    reranker_driver_config: RerankerDriverConfig = field(default_factory=lambda: E2NM_RERANKDRIVER_DEFAULT_CONFIG)
     max_n: int = 3
-    fetch_k: int = 50
 
     cache_table_name: str = "medreasn_e2nmatcher_main_stage_cache"
     log: Logger = field(
@@ -41,7 +39,7 @@ class Entities2NodesMatcherConfig:
     verbose: bool = False
 
     def to_str(self):
-        return f"{self.use_tree}|{self.distance_threshold}|{self.max_n}|{self.fetch_k}"
+        return f"{self.use_tree}|{self.max_n}|{self.reranker_driver_config.to_str()}"
 
 
 class Entities2NodesMatcher(CacheUtils):
@@ -63,8 +61,20 @@ class Entities2NodesMatcher(CacheUtils):
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
+        self.retriever = RerankerDriver.specify(
+            self.config.reranker_driver_config,
+            kg_model.graph_embeddings.nodes_vectordbs[NodeType.object])
+
         self.log = self.config.log
         self.verbose = self.config.verbose
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return None
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        return {
+            'EntitiesExtractor': None if self.cachekv is None else self.cachekv.kv_conn.count_items()
+        }
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
@@ -86,23 +96,9 @@ class Entities2NodesMatcher(CacheUtils):
     @CacheUtils.cache_method_output
     def match_entitie2knowledge(self, entitie: str) -> List[VectorDBInstance]:
         if self.config.use_tree:
-            matched_objects = self.kg_model.nodestree_model.match_entitie2objects(
-                entitie, distance_threshold=self.config.distance_threshold, fetch_k=self.config.fetch_k,
-                max_n=self.config.max_n)
+            matched_objects = self.kg_model.nodestree_model.match_entitie2objects(entitie, max_n=self.config.max_n)
         else:
-            entitie_embedding = self.kg_model.graph_embeddings.embedder.encode_queries([
-                entitie])[0]
-            entitie_vinstance = VectorDBInstance(embedding=entitie_embedding)
-
-            raw_scored_nodes = self.kg_model.graph_embeddings.vectordbs['nodes'].retrieve(
-                query_instances=[entitie_vinstance], n_results=self.config.fetch_k, includes=['documents'])[0]
-            filtered_nodes = list(filter(
-                lambda pair: pair[0] <= self.config.distance_threshold, raw_scored_nodes))
-
-            object_nodes = list(filter(lambda pair: self.kg_model.graph_struct.db_conn.get_node_type(
-                pair[1].id) == NodeType.object, filtered_nodes))
-            matched_objects = list(map(lambda pair: pair[1], sorted(
-                object_nodes, key=lambda p: p[0], reverse=False)))[:self.config.max_n]
+            matched_objects = self.retriever.run(entitie, top_k=self.config.max_n, includes=['documents'])
 
         return matched_objects
 
@@ -120,7 +116,7 @@ class Entities2NodesMatcher(CacheUtils):
             raise ValueError
         rinfo = ReturnInfo()
 
-        matched_kg_objects = dict()
+        matched_kg_objects: Dict[str, List[VectorDBInstance]] = dict()
         for i, entitie in enumerate(entities):
             self.log(f"Текушая сушность #{i}: {entitie}", verbose=self.verbose)
             matched_kg_objects[entitie] = self.match_entitie2knowledge(entitie)

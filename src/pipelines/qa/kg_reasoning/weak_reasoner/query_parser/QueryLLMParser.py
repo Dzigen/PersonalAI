@@ -9,6 +9,7 @@ from ......utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, Agent
 from ......agents.utils import AbstractAgentConnector
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
+from ......utils.cache_kv.utils import AbstractCacheInfo
 
 
 @dataclass
@@ -41,7 +42,7 @@ class QueryLLMParserConfig:
         return f"{self.agent_gen_stategy}|{self.kw_extraction_task_config.version}|{self.lang}"
 
 
-class QueryLLMParser(CacheUtils):
+class QueryLLMParser(CacheUtils, AbstractCacheInfo):
     """Верхнеуровневый класс первой стадии QA-конвейера для извлечения сущностей из запроса на естественном языке.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -65,12 +66,22 @@ class QueryLLMParser(CacheUtils):
         if cache_llm_inference:
             kwe_task_cache_config = deepcopy(cache_kvdriver_config)
 
-        self.kw_extraction_solver = AgentTaskSolver(
+        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
+        self.tasks_solvers['kw_extraction_solver'] = AgentTaskSolver(
             self.agent, self.config.kw_extraction_task_config,
             kwe_task_cache_config)
 
         self.log = config.log
         self.verbose = config.verbose
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        cache_stat = {'QueryLLMParser': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
+        tasks_caches = {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
+        cache_stat.update(tasks_caches)
+        return cache_stat
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
@@ -84,7 +95,7 @@ class QueryLLMParser(CacheUtils):
             self.cachekv.clear()
 
         if level in ['other', 'all']:
-            self.kw_extraction_solver.cachekv.clear()
+            self.tasks_solvers['kw_extraction_solver'].cachekv.clear()
 
     def get_cache_key(self, query: str) -> List[object]:
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
@@ -109,7 +120,7 @@ class QueryLLMParser(CacheUtils):
 
         self.log("Выполнение извлечения ключевых сущностей из запроса с помощью LLM-агента...",
                  verbose=self.config.verbose)
-        extracted_entities, status = self.kw_extraction_solver.solve(
+        extracted_entities, status = self.tasks_solvers['kw_extraction_solver'].solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             query=query_info.query)
         if status != ReturnStatus.success:

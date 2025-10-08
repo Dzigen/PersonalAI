@@ -10,7 +10,7 @@ from src.kg_model import KnowledgeGraphModel
 from src.pipelines.memorize import MemPipeline, MemPipelineConfig
 from .cases import KV_CACHE_CONFIG, MEM_POPULATED_TEST_CASES
 
-@pytest.mark.parametrize("mem_config, raw_texts, use_kv_cache, clear_kv_cache", MEM_POPULATED_TEST_CASES, indirect=['kg_model'])
+@pytest.mark.parametrize("mem_config, raw_texts, use_kv_cache, clear_kv_cache, kg_model", MEM_POPULATED_TEST_CASES, indirect=['kg_model'])
 def test_mem_pipeline(mem_config: MemPipelineConfig, raw_texts: List[str],
                       use_kv_cache: bool, clear_kv_cache: bool, kg_model: KnowledgeGraphModel):
     kg_model.clear()

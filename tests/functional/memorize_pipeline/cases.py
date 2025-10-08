@@ -72,13 +72,13 @@ KV_CACHE_CONFIG = KeyValueDriverConfig(
         need_to_clear=False,
         params={
             'mongo_config': KVDBConnectionConfig(
-                host='localhost', port=27017,
+                host='localhost', port=27010,
                 db_info={'db': 'memorize_db', 'table': None},
                 params={'username': 'user',
                         'password': 'pass', 'max_storage': -1},
                 need_to_clear=False),
             'redis_config': KVDBConnectionConfig(
-                host='localhost', port=6379,
+                host='localhost', port=6370,
                 db_info={'db': 0, 'table': None},
                 params={'ss_name': 'sorted_node_pairs',
                         'hs_name': 'node_pairs', 'max_storage': 50000000},

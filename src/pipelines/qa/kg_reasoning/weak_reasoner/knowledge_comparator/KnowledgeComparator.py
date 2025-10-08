@@ -1,25 +1,23 @@
 from dataclasses import dataclass, field
-from typing import List, Tuple
+from typing import List, Tuple, Dict, Union
 
-from .configs import KC_MAIN_LOG_PATH
+from .configs import KC_MAIN_LOG_PATH, KC_RERANKDRIVER_DEFAULT_CONFIG
 from ......utils import Logger, ReturnStatus, ReturnInfo
 from ......utils.errors import STATUS_MESSAGE
-from ......utils.data_structs import QueryInfo, create_id
+from ......utils.data_structs import QueryInfo, create_id, NodeType
 from ......kg_model import KnowledgeGraphModel
 from ......db_drivers.vector_driver import VectorDBInstance
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
+from ......rerankers import RerankerDriver, RerankerDriverConfig
 
 
 @dataclass
 class KnowledgeComparatorConfig:
     """Конфигурация "Knowledge Comparator"-стадии QA-конвейера.
-
-    :param threshold: Нижний порог близости между эмбеддингами сущностей и вершин для их сопоставления (matching). Значение по умолчанию 0.5.
-    :type threshold: float, optional
-    :param fetch_n: Служебный гиперпараметр. Значение по умолчанию 20.
-    :type fetch_n: int, optional
-    :param max_k: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 1.
+    :param reranker_driver_config: ... . Значение по умолчанию KC_RERANKDRIVER_DEFAULT_CONFIG.
+    :param RerankerDriverConfig, optional
+    :param max_K: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 1.
     :type max_k: int, optional
     :param k_compare: Служебный гиперпараметр. Значение по умолчанию 5.
     :type k_compare: int, optional
@@ -30,8 +28,7 @@ class KnowledgeComparatorConfig:
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
     """
-    threshold: float = 0.5
-    fetch_n: int = 20
+    reranker_driver_config: RerankerDriverConfig = field(default_factory=lambda: KC_RERANKDRIVER_DEFAULT_CONFIG)
     max_k: int = 1
     k_compare: int = 5
 
@@ -40,7 +37,7 @@ class KnowledgeComparatorConfig:
     verbose: bool = False
 
     def to_str(self):
-        return f"{self.threshold};{self.fetch_n};{self.max_k}:{self.k_compare}"
+        return f"{self.reranker_driver_config.to_str()};{self.max_k}:{self.k_compare}"
 
 
 class KnowledgeComparator(CacheUtils):
@@ -62,8 +59,20 @@ class KnowledgeComparator(CacheUtils):
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
+        self.retriever = RerankerDriver.specify(
+            self.config.reranker_driver_config,
+            kg_model.graph_embeddings.nodes_vectordbs[NodeType.object])
+
         self.log = self.config.log
         self.verbose = self.config.verbose
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return None
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        return {
+            'KnowledgeComparator': None if self.cachekv is None else self.cachekv.kv_conn.count_items(),
+        }
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
@@ -83,7 +92,7 @@ class KnowledgeComparator(CacheUtils):
         return [self.config.to_str(), query_info.to_str()]
 
     @CacheUtils.cache_method_output
-    def link_kgnodes_to_query(self, query_info: QueryInfo) -> Tuple[List[object], List[object], ReturnInfo]:
+    def link_kgnodes_to_query(self, query_info: QueryInfo) -> Tuple[List[VectorDBInstance], List[object], ReturnInfo]:
         """Метод предназначен для сопоставления (матчинга) сущностей, извлечённых из user-вопроса, с вершинами из графа знаний ассистента.
 
         :param query_structure: Структура данных, которая хранит user-вопрос и извлечённые из него сущности.
@@ -101,27 +110,16 @@ class KnowledgeComparator(CacheUtils):
                  verbose=self.config.verbose)
 
         info = ReturnInfo()
-        linked_nodes_by_entities, linked_nodes, linked_scores = [], [], []
+        linked_nodes: List[VectorDBInstance] = []
+        linked_nodes_by_entities = []
 
         for entity in query_info.entities:
-            entity_embedding = self.kg_model.graph_embeddings.embedder.encode_queries([
-                entity])[0]
-            entity_instance = VectorDBInstance(embedding=entity_embedding)
 
-            nodes_with_scores = self.kg_model.graph_embeddings.vectordbs['nodes'].retrieve(
-                [entity_instance], n_results=self.config.fetch_n)[0]
-            filtered_nodes = list(filter(
-                lambda node_item: node_item[0] < self.config.threshold, nodes_with_scores))
-            cur_linked_nodes = list(
-                map(lambda node_item: node_item[1], filtered_nodes))
-            linked_nodes += cur_linked_nodes[:self.config.max_k]
-            linked_scores += list(map(lambda node_item: node_item[0], filtered_nodes))[
-                :self.config.max_k]
+            nodes_with_scores: List[Tuple[float, VectorDBInstance]] = self.retriever.run(entity, top_k=self.config.max_k)
+            linked_nodes += list(map(lambda node_item: node_item[1], nodes_with_scores))
 
-            cur_documents = list(
-                map(lambda item: item.document, cur_linked_nodes))
-            cur_documents_lower = list(
-                map(lambda document: document.lower(), cur_documents))
+            cur_documents = list(map(lambda item: item[1].document, nodes_with_scores))
+            cur_documents_lower = list(map(lambda document: document.lower(), cur_documents))
             if entity.lower() in cur_documents_lower[:self.config.k_compare]:
                 cur_unique_names = [entity]
             else:
@@ -132,11 +130,9 @@ class KnowledgeComparator(CacheUtils):
             info.status = ReturnStatus.zero_linked_nodes
             info.message = STATUS_MESSAGE[info.status]
         else:
-            self.log(f"RESULT: {len(linked_nodes)}",
-                     verbose=self.config.verbose)
-            for score, node in zip(linked_scores, linked_nodes):
-                self.log(f"*[{node.id}] {score} | {node.document}",
-                         verbose=self.config.verbose)
+            self.log(f"RESULT: {len(linked_nodes)}", verbose=self.config.verbose)
+            for i, node in enumerate(linked_nodes):
+                self.log(f"{i}. {node.document}", verbose=self.config.verbose)
 
         self.log(
             f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)

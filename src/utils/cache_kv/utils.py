@@ -12,5 +12,12 @@ class AbstractCacheUtils(ABC):
         # 'current' | 'other' | 'all'
         pass
 
-    def get_cache_stat(self) -> Dict[str, Union[int, Dict]]:
+
+class AbstractCacheInfo(ABC):
+    @abstractmethod
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        pass
+
+    @abstractmethod
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
         pass

@@ -75,11 +75,21 @@ class QALLMGenerator(CacheUtils):
         if cache_llm_inference:
             ag_task_cache_config = deepcopy(cache_kvdriver_config)
 
-        self.answer_generator_solver = AgentTaskSolver(
+        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
+        self.tasks_solvers['answer_generator_solver'] = AgentTaskSolver(
             self.agent, self.config.ag_task_config, ag_task_cache_config)
 
         self.log = self.config.log
         self.verbose = self.config.verbose
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        cache_stat = {'QALLMGenerator': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
+        tasks_caches = {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
+        cache_stat.update(tasks_caches)
+        return cache_stat
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
@@ -93,8 +103,7 @@ class QALLMGenerator(CacheUtils):
             self.cachekv.clear()
 
         if level in ['other', 'all']:
-            if self.answer_generator_solver.cachekv is not None:
-                self.answer_generator_solver.cachekv.clear()
+            self.tasks_solvers['answer_generator_solver'].cachekv.clear()
 
     def get_cache_key(self, query: str, context_triplets: List[Triplet]) -> List[object]:
         str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(
@@ -125,7 +134,7 @@ class QALLMGenerator(CacheUtils):
 
         self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...",
                  verbose=self.config.verbose)
-        answer, status = self.answer_generator_solver.solve(
+        answer, status = self.tasks_solvers['answer_generator_solver'].solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             query=query, triplets=context_triplets)
 

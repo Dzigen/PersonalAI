@@ -67,11 +67,21 @@ class ClueAnswerGenerator(CacheUtils):
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config
 
-        self.cagen_solver = AgentTaskSolver(
+        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
+        self.tasks_solvers['cagen_solver'] = AgentTaskSolver(
             self.agent, self.config.cagen_agent_task_config, agents_cache_config)
 
         self.log = self.config.log
         self.verbose = self.config.verbose
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        cache_stat = {'ClueAnswerGenerator': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
+        tasks_caches = {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
+        cache_stat.update(tasks_caches)
+        return cache_stat
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
@@ -85,7 +95,7 @@ class ClueAnswerGenerator(CacheUtils):
             self.cachekv.clear()
 
         if level in ['other', 'all']:
-            self.cagen_solver.cachekv.clear()
+            self.tasks_solvers['cagen_solver'].cachekv.clear()
 
     def get_cache_key(self, query: str, context_triplets: List[Triplet]) -> List[str]:
         str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(
@@ -116,7 +126,7 @@ class ClueAnswerGenerator(CacheUtils):
 
         self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...",
                  verbose=self.config.verbose)
-        answer, status = self.cagen_solver.solve(
+        answer, status = self.tasks_solvers['cagen_solver'].solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             query=query, triplets=context_triplets)
 

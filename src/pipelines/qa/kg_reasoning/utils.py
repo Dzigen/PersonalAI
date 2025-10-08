@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import Tuple, List
 
 from ....utils import ReturnInfo
+from ....utils.cache_kv.utils import AbstractCacheInfo
 
 
 @dataclass
@@ -16,7 +17,7 @@ class QueryReasoningInfo:
         return f"{str_sq};{str_sa}"
 
 
-class AbstractKGReasoner(ABC):
+class AbstractKGReasoner(AbstractCacheInfo):
 
     @abstractmethod
     def perform(self, query: str) -> Tuple[str, ReturnInfo]:

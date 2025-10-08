@@ -168,6 +168,14 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
         self.extract_triplets_rel_prop_template = \
             'MATCH (a:object)-[r]-(b:object) WHERE r.{prop_name}="{prop_value}" RETURN a, r, b'
 
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return None
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        return {
+            'WaterCirclesRetriever': None if self.cachekv is None else self.cachekv.kv_conn.count_items()
+        }
+
     def parse_triplet_output(
         self,
         direction: str,

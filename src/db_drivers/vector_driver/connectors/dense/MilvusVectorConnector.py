@@ -225,7 +225,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
 
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
-            includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
+            includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
         if len(query_instances) < 1:
             return ValueError
         for inst in query_instances:
@@ -238,15 +238,15 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         # Если в классе указан embedder, то используем его
         # для векторизации входящих запросов
         if self.embedder is not None:
-            for item in query_instances:
-                if item.embedding is not None:
-                    raise ValueError
+            items_wo_embeddings: List[Tuple[str, str]] = list()
+            for idx, item in enumerate(query_instances):
+                if item.embedding is None:
+                    items_wo_embeddings.append((idx, item.document))
 
-            query_documents = list(map(lambda itm: itm.document, query_instances))
-            document_embeddings = self.embedder.encode_queries(
-                query_documents, batch_size=self.encode_batchsize)
-            for i in range(len(query_instances)):
-                query_instances[i].embedding = document_embeddings[i]
+            doc_wo_embeddings = list(map(lambda itm: itm[1], items_wo_embeddings))
+            new_doc_embeddings = self.embedder.encode_queries(doc_wo_embeddings, batch_size=self.encode_batchsize)
+            for doc_info, doc_emb in zip(items_wo_embeddings, new_doc_embeddings):
+                query_instances[doc_info[0]].embedding = doc_emb
 
         # костыль
         f_includes = list(map(lambda f_name: f_name[:-1], includes))
@@ -257,7 +257,8 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
             filtering_expr['search_params']["hints"] = "iterative_filter"
             filtering_expr['filter'] = f'id in {subset_ids}'
 
-        #
+        # Attention: в случае использования IP-метрики будут получены значения семантической близости [similarity] между векторами,
+        # а не значения их расстояния [distance]
         raw_output = self.client.search(
             collection_name=self.config.db_info['table'],
             data=[inst.embedding for inst in query_instances],
@@ -265,10 +266,8 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
 
         formated_output = []
         for q_output in raw_output:
-            # CARE: работает только для COSINE и IP - метрик
-            # костыль: полученные значения семантической близости векторов [similarity] приводим к шкале расстояний [distances]
             f_items = list(map(lambda r_item: (
-                1 - r_item['distance'], VectorDBInstance(id=r_item['id'], **r_item['entity'])), q_output))
+                r_item['distance'], VectorDBInstance(id=r_item['id'], **r_item['entity'])), q_output))
             f_items = sorted(f_items, key=lambda v: v[0], reverse=False)
             formated_output.append(f_items)
 

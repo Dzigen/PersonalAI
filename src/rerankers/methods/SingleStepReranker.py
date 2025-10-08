@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List, Union, Tuple
+from copy import deepcopy
 from .utils import AbstractRerankerModule
 from ..utils import BaseRerankerModuleConfig
 from ...db_drivers.vector_driver import VectorComposer, VectorDBInstance
@@ -10,6 +11,9 @@ class SingleStepRerankerConfig(BaseRerankerModuleConfig):
     vdb_name: str
     threshold: Union[None, float] = 0.5
     fetch_n: int = 10
+
+    def to_str(self) -> str:
+        return f"{self.vdb_name}:{self.threshold}:{self.fetch_n}"
 
 
 class SingleStepReranker(AbstractRerankerModule):
@@ -32,7 +36,9 @@ class SingleStepReranker(AbstractRerankerModule):
 
         return True
 
-    def validate_run_arguments(self, query: str, top_k: int = 1, return_with_embeddings: bool = False) -> bool:
+    def validate_run_arguments(self, query: str, top_k: int = 1, subset_ids: Union[None, List[str]] = None,
+                               includes: List[str] = ['documents', 'metadatas'], return_with_embeddings: bool = False,
+                               return_with_scores: bool = False) -> bool:
         if not isinstance(query, str):
             raise TypeError
         if len(query) < 1:
@@ -43,27 +49,37 @@ class SingleStepReranker(AbstractRerankerModule):
             raise ValueError
         if not isinstance(return_with_embeddings, bool):
             return TypeError
+        if not isinstance(return_with_scores, bool):
+            return TypeError
         return True
 
-    def run(self, query: str, top_k: int = 1, return_with_embeddings: bool = False) -> List[VectorDBInstance]:
+    def run(self, query: str, top_k: int = 1, subset_ids: Union[None, List[str]] = None,
+            includes: List[str] = ['documents', 'metadatas'], return_with_embeddings: bool = False,
+            return_with_scores: bool = False) -> Union[List[Tuple[float, VectorDBInstance]], List[VectorDBInstance]]:
         # self.validate_config(self.vdb_composer)
-        self.validate_run_arguments(query, top_k, return_with_embeddings)
+        self.validate_run_arguments(
+            query, top_k, subset_ids, includes,
+            return_with_embeddings, return_with_scores
+        )
+
+        include_fields = deepcopy(includes)
+        if return_with_embeddings:
+            include_fields.append('embeddings')
 
         q_instance = VectorDBInstance(document=query)
 
-        instances_includes = ['documents', 'metadatas']
-        if return_with_embeddings:
-            instances_includes.append('embeddings')
-
         raw_instances = self.vdb_composer.vdb_conn_mapping[self.config.vdb_name].retrieve(
-            [q_instance], n_results=self.config.fetch_n, includes=instances_includes)[0]
+            [q_instance], n_results=self.config.fetch_n, subset_ids=subset_ids, includes=include_fields)[0]
         print(raw_instances)
 
         if self.config.threshold is not None:
-            filtered_instances = list(filter(lambda inst: inst[0] > self.config.threshold, raw_instances))
+            filtered_instances = list(filter(lambda inst: inst[0] >= self.config.threshold, raw_instances))
         else:
             filtered_instances = raw_instances
 
-        formated_instances = list(map(lambda inst: inst[1], filtered_instances))
+        if return_with_scores:
+            formated_instances = filtered_instances[:top_k]
+        else:
+            formated_instances = list(map(lambda inst: inst[1], filtered_instances[:top_k]))
 
-        return formated_instances[:top_k]
+        return formated_instances

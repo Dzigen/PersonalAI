@@ -11,6 +11,7 @@ from ...utils import Logger, Triplet, ReturnStatus, ReturnInfo
 from ...utils.data_structs import create_id
 from ...utils.errors import STATUS_MESSAGE
 from ...db_drivers.kv_driver import KeyValueDriverConfig
+from ...utils.cache_kv.utils import AbstractCacheInfo
 
 
 @dataclass
@@ -35,7 +36,7 @@ class MemPipelineConfig:
     verbose: bool = False
 
 
-class MemPipeline:
+class MemPipeline(AbstractCacheInfo):
     """Верхнеуровневый класс Memorize-конвейера, отвечающий за изменение знаний в памяти ассистента.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -52,14 +53,22 @@ class MemPipeline:
         self.log = config.log
 
         self.extractor = LLMExtractor(
-            kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP['MemPipeline']['general']],
+            kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.mem_pipeline],
             config.extractor_config, cache_kvdriver_config)
         self.updator = LLMUpdator(
             kg_model, config.updator_config, cache_kvdriver_config)
 
-    def get_cache_stat(self):
-        # TODO
-        raise NotImplementedError
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        return {
+            'extractor': self.extractor.get_cache_stat(),
+            'updator': self.updator.get_cache_stat(),
+        }
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return {
+            'extractor': self.extractor.get_agent_tgen_stat(),
+            'updator': self.updator.get_agent_tgen_stat(),
+        }
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
@@ -69,14 +78,10 @@ class MemPipeline:
             raise ValueError(
                 f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
-        if level in ['current', 'all']:
-            raise NotImplementedError
+        self.extractor.clear_kv_caches()
+        self.updator.clear_kv_caches()
 
-        if level in ['other']:
-            self.extractor.clear_kv_caches()
-            self.updator.clear_kv_caches()
-
-    def remember(self, text: str, time: Union[None, str] = None, properties: Dict = dict()) -> Tuple[List[Triplet], ReturnInfo]:
+    def remember(self, text: str, time: Union[None, str] = None, properties: Union[None, Dict] = None) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста и обновление/актуализацию знаний в памяти (графе знаний) ассистента.
 
         :param text: Слабоструктурированный текст на естественном языке.

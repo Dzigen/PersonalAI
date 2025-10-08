@@ -118,13 +118,38 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
             self.kg_model, self.config.knowledge_retriever_config, cache_kvdriver_config)
         self.clueanswer_generator = ClueAnswerGenerator(
             agent, self.config.clueanswer_generator_config, cache_kvdriver_config)
-        self.clueanswers_summariser = ClueAnswersSummarizer(
+        self.clueanswers_summarizer = ClueAnswersSummarizer(
             agent, self.config.clueanswers_summarizer_config, cache_kvdriver_config)
         self.answer_generator = AnswerGenerator(
             agent, self.config.answer_generator_config, cache_kvdriver_config)
 
         self.log = config.log
         self.verbose = config.verbose
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return {
+            'searchplan_enhancer': self.searchplan_enhancer.get_agent_tgen_stat(),
+            'entities_extractor': self.entities_extractor.get_agent_tgen_stat(),
+            'entities2nodes_matcher': self.entities2nodes_matcher.get_agent_tgen_stat(),
+            'cluequeries_generator': self.cluequeries_generator.get_agent_tgen_stat(),
+            'knowledge_retriever': self.knowledge_retriever.get_agent_tgen_stat(),
+            'clueanswer_generator': self.clueanswer_generator.get_agent_tgen_stat(),
+            'clueanswers_summarizer': self.clueanswers_summarizer.get_agent_tgen_stat(),
+            'answer_generator': self.answer_generator.get_agent_tgen_stat(),
+        }
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        return {
+            'MediumKGReasoner': None if self.cachekv is None else self.cachekv.kv_conn.count_items(),
+            'searchplan_enhancer': self.searchplan_enhancer.get_cache_stat(self),
+            'entities_extractor': self.entities_extractor.get_cache_stat(self),
+            'entities2nodes_matcher': self.entities2nodes_matcher.get_cache_stat(self),
+            'cluequeries_generator': self.cluequeries_generator.get_cache_stat(self),
+            'knowledge_retriever': self.knowledge_retriever.get_cache_stat(self),
+            'clueanswer_generator': self.clueanswer_generator.get_cache_stat(self),
+            'clueanswers_summarizer': self.clueanswers_summarizer.get_cache_stat(self),
+            'answer_generator': self.answer_generator.get_cache_stat(self),
+        }
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
@@ -144,7 +169,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
             self.cluequeries_generator.clear_kv_caches(level='all')
             self.knowledge_retriever.clear_kv_caches(level='all')
             self.clueanswer_generator.clear_kv_caches(level='all')
-            self.clueanswers_summariser.clear_kv_caches(level='all')
+            self.clueanswers_summarizer.clear_kv_caches(level='all')
             self.answer_generator.clear_kv_caches(level='all')
 
     def update_searchplan(self, search_step: int, search_plan: SearchPlanInfo) -> Tuple[SearchPlanInfo, ReturnInfo]:
@@ -252,7 +277,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         return clueanswers, rinfo
 
     def summarize_clueanswers(self, search_query: str, cluequeries: List[QueryInfo], clueanswers: List[str]) -> Tuple[str, ReturnInfo]:
-        search_step_answer, rinfo = self.clueanswers_summariser.perform(
+        search_step_answer, rinfo = self.clueanswers_summarizer.perform(
             search_query, list(map(lambda cq_info: cq_info.query, cluequeries)), clueanswers)
         if rinfo.status == ReturnStatus.success:
             self.log("Operation ended successfully", verbose=self.verbose)

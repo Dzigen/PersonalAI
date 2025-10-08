@@ -169,8 +169,8 @@ class GraphModel:
 
         return gdb_delete_info, vdb_delete_info
 
-    def count_items(self) -> Dict[str, int]:
-        return self.db_conn.count_items()
+    def count_items(self, detailed: bool = False) -> Dict[str, int]:
+        return self.db_conn.count_items(detailed=detailed)
 
     def clear(self) -> None:
         """Метод предназначен для удаления содержимого графовой структуры данных."""

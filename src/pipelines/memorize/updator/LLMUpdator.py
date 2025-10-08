@@ -9,6 +9,7 @@ from ....utils.errors import ReturnInfo, ReturnStatus, STATUS_MESSAGE
 from ....agents import AgentDriver, AgentDriverConfig
 from ....kg_model import KnowledgeGraphModel
 from ....db_drivers.kv_driver import KeyValueDriverConfig
+from ....utils.cache_kv.utils import AbstractCacheInfo
 
 
 @dataclass
@@ -43,7 +44,7 @@ class LLMUpdatorConfig:
     verbose: bool = False
 
 
-class LLMUpdator:
+class LLMUpdator(AbstractCacheInfo):
     """Верхнеуровневый класс первой стадии Memorize-конвейера для актуализации знаний в памяти ассистента.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -59,15 +60,22 @@ class LLMUpdator:
         self.config = config
         self.kg_model = kg_model
 
-        self.replace_simple_solver = AgentTaskSolver(
-            kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP['MemPipeline']['general']],
+        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
+        self.tasks_solvers['replace_simple_solver'] = AgentTaskSolver(
+            kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.mem_pipeline],
             self.config.replace_simple_task_config, cache_kvdriver_config)
-        self.replace_hyper_solver = AgentTaskSolver(
-            kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP['MemPipeline']['general']],
+        self.tasks_solvers['replace_hyper_solver'] = AgentTaskSolver(
+            kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.mem_pipeline],
             self.config.replace_thesis_task_config, cache_kvdriver_config)
 
         self.log = self.config.log
         self.verbose = self.config.verbose
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        return {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
 
     def clear_kv_caches(self, level: str = 'other') -> None:
         if not isinstance(level, str):
@@ -77,12 +85,8 @@ class LLMUpdator:
             raise ValueError(
                 f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
 
-        if level in ['current', 'all']:
-            raise NotImplementedError
-
-        if level in ['other']:
-            self.replace_simple_solver.cachekv.clear()
-            self.replace_hyper_solver.cachekv.clear()
+        self.tasks_solvers['replace_simple_solver'].cachekv.clear()
+        self.tasks_solvers['replace_hyper_solver'].cachekv.clear()
 
     def find_simple_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
         """Метод предназначен для поиска устаревших simple-триплетов в графе знаний по сравнению с указанным (base_triplet) simple-триплетом.
@@ -115,7 +119,7 @@ class LLMUpdator:
         incident_triplets = list(incident_triplets.values())
 
         # Выполняем поиск устаревших триплетов
-        tmp_obsolete_triplet_ids, status = self.replace_simple_solver.solve(
+        tmp_obsolete_triplet_ids, status = self.tasks_solvers['replace_simple_solver'].solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             base_triplet=base_triplet, incident_triplets=incident_triplets)
 
@@ -156,7 +160,7 @@ class LLMUpdator:
         incident_triplets = list(incident_triplets.values())
 
         # Выполняем поиск устаревших триплетов
-        tmp_obsolete_triplet_ids, status = self.replace_hyper_solver.solve(
+        tmp_obsolete_triplet_ids, status = self.tasks_solvers['replace_hyper_solver'].solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             base_triplet=base_triplet, incident_triplets=incident_triplets)
 

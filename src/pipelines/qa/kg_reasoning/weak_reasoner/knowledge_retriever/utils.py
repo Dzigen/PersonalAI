@@ -2,11 +2,13 @@ from typing import List, Dict
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from ......utils.data_structs import QueryInfo, Triplet
 from .errors import NOT_VALID_ID_ERROR_MSG, NO_START_NODE_IN_PARENT_ERROR_MSG, EMPTY_PARENT_ERROR_MSG
+from .traversal_methods.AStarTripletsRetriever import NodeInfo
+from ......utils.data_structs import QueryInfo, Triplet
+from ......utils.cache_kv.utils import AbstractCacheInfo
 
 
-def get_nodes_path(parent: Dict[str, str], end_node_id: str) -> List[str]:
+def get_nodes_path(parent: Dict[str, NodeInfo], end_node: NodeInfo) -> List[NodeInfo]:
     """Метод предназначен для получения пути обхода графа, заканчивая заданной конечной end_node_id вершиной.
     Путь должен быть ацикличным: есть стартовая вершин, у которой нет родителя.
 
@@ -17,16 +19,16 @@ def get_nodes_path(parent: Dict[str, str], end_node_id: str) -> List[str]:
     :return: Последовательность посещённых вершин: от конечной до стартовой (в обратном порядке).
     :rtype: List[str]
     """
-    if type(end_node_id) is not str:
+    if not isinstance(end_node.id, str):
         raise ValueError(NOT_VALID_ID_ERROR_MSG)
     if None not in parent.values():
         raise ValueError(NO_START_NODE_IN_PARENT_ERROR_MSG)
     if len(parent) == 0:
         raise ValueError(EMPTY_PARENT_ERROR_MSG)
 
-    path, end_flag, cur_n = [end_node_id], False, end_node_id
+    path, end_flag, cur_n = [end_node], False, end_node
     while not end_flag:
-        next_n = parent[cur_n]
+        next_n = parent[cur_n.id]
         if next_n is None:
             end_flag = True
         else:
@@ -35,7 +37,7 @@ def get_nodes_path(parent: Dict[str, str], end_node_id: str) -> List[str]:
     return path
 
 
-class AbstractTriplesFilter(ABC):
+class AbstractTriplesFilter(AbstractCacheInfo):
     """Интерфейс алгоритмов фильтрации/ранжирования триплетов."""
     @abstractmethod
     def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
@@ -51,7 +53,7 @@ class AbstractTriplesFilter(ABC):
         pass
 
 
-class AbstractTripletsRetriever(ABC):
+class AbstractTripletsRetriever(AbstractCacheInfo):
     """Интерфейс алгоритмов извлечения триплетов из графа знаний."""
     @abstractmethod
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
@@ -68,10 +70,14 @@ class AbstractTripletsRetriever(ABC):
 @dataclass
 class BaseGraphSearchConfig:
     """Базовая конфигурация алгоритмов по извлечению триплетов из графа знаний."""
-    pass
+
+    def to_str(self) -> str:
+        pass
 
 
 @dataclass
 class BaseTripletsFilterConfig:
     """Базовая конфигурация алгоритмов по ранжированию/фильтрации триплетов."""
-    pass
+
+    def to_str(self) -> str:
+        pass

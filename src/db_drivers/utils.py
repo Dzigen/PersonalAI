@@ -37,7 +37,7 @@ class AbstractDatabaseCRUD(ABC):
         pass
 
     @abstractmethod
-    def read(self, ids: List[str]) -> List[object]:
+    def read(self, ids: List[str], **kwargs) -> List[object]:
         """Метод предназначен для получения объектов из бд по их идентификаторам. Если такого идентификатора
         не существует, то он будет пропущен.
 

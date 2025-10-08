@@ -40,3 +40,7 @@ class AbstractVectorDatabaseComposer(AbstractDatabaseConnection):
     @abstractmethod
     def check_consistency(self) -> bool:
         pass
+
+    @abstractmethod
+    def upsert(self, items: List[VectorDBInstance]) -> None:
+        pass

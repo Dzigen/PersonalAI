@@ -9,7 +9,7 @@ from src.utils.data_structs import NodeCreator, Relation, RelationType, NodeType
 
 # TO CHANGE
 # 'neo4j', 'kuzu', 'inmemory_graph'
-AVAILABLE_GRAPH_DBS = ['neo4j', 'kuzu', 'inmemory_graph']
+AVAILABLE_GRAPH_DBS = ['neo4j', 'kuzu', 'inmemory_graph'] # 'neo4j', 'kuzu', 'inmemory_graph'
 
 ###############################################################################################
 
@@ -272,15 +272,20 @@ for db_vendor in AVAILABLE_GRAPH_DBS:
 
 GRAPHDB_COUNT_TEST_CASES = [
     # 1. нуль элементов
-    [[], {}, {'triplets_count': 0, 'nodes_count': 0}],
+    [[], {}, {'triplets_count': 0, 'nodes_count': 0}, False],
     # 2. один элемент
-    [[SIMPLE_TRIPLET1], {}, {'triplets_count': 1, 'nodes_count': 2}],
+    [[SIMPLE_TRIPLET1], {}, {'triplets_count': 1, 'nodes_count': 2}, False],
     # 3. несколько элементов с creation_info = None
     [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {}, {
-        'triplets_count': 3, 'nodes_count': 4}],
+        'triplets_count': 3, 'nodes_count': 4}, False],
     # 4. несколько элементов с меками объектов-дубликатов (creation_info != None)
     [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, {
-        'triplets_count': 2, 'nodes_count': 3}]
+        'triplets_count': 2, 'nodes_count': 3}, False],
+    # 5. детальный вывод (нуль элементов)
+    [[], {}, {'triplets_count': {'simple': 0, 'hyper': 0, 'episodic': 0}, 'nodes_count': {'object': 0, 'hyper': 0, 'episodic': 0}}, True],
+    # 5. детальный вывод (несколько элементов)
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2, THESIS_TRIPLET1, EPISODIC_TRIPLET1], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO, 2: WO_SN_CREATION_INFO, 3: WO_SN_CREATION_INFO}, {
+        'triplets_count': {'simple': 2, 'hyper': 1, 'episodic': 1}, 'nodes_count': {'object': 3, 'hyper': 1, 'episodic': 1}}, True]
 ]
 
 GRAPHDB_POPULATED_COUNT_TEST_CASES = []

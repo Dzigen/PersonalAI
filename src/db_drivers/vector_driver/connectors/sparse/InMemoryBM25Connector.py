@@ -1,8 +1,4 @@
 from typing import List, Tuple, Union
-import sys
-import gc
-import numpy as np
-
 from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack.components.retrievers.in_memory import InMemoryBM25Retriever
 from haystack.document_stores.types import DuplicatePolicy
@@ -111,6 +107,7 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
 
         formated_outputs = []
         for query in query_instances:
+            # Attention: Будут получены значения семантической близости [similarity], а не значения их расстояния [distance]
             raw_output = self.retriever.run(query=query.document, top_k=n_results, filters=filters, scale_score=True)
 
             formated_output = []

@@ -7,10 +7,10 @@ from src.utils.data_structs import NodeCreator, Relation, RelationType, NodeType
 
 
 # TO CHANGE
-AVAILABLE_GRAPH_MODELS = ['inmemory_graph', 'neo4j', 'kuzu']  # 'inmemory_graph', 'neo4j', 'kuzu'
+AVAILABLE_GRAPH_MODELS = ['neo4j']  # 'inmemory_graph', 'neo4j', 'kuzu'
 
 # TO CHANGE
-AVAILABLE_EMBEDDING_MODELS = ['chroma', 'milvus']  # 'chroma', 'milvus'
+AVAILABLE_EMBEDDING_MODELS = ['milvus']  # 'chroma', 'milvus'
 
 ###############################################################################################
 

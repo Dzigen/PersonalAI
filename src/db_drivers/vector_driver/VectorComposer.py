@@ -51,6 +51,13 @@ class VectorComposer(AbstractVectorDatabaseComposer):
     def update(self) -> None:
         raise NotImplementedError
 
+    def upsert(self, items: List[VectorDBInstance], check_consistency: bool = False) -> None:
+        for db_conn in self.vdb_conn_mapping.values():
+            db_conn.upsert(items)
+
+        if check_consistency:
+            self.check_consistency()
+
     def delete(self, ids: List[str], check_consistency: bool = False) -> None:
         for db_conn in self.vdb_conn_mapping.values():
             db_conn.delete(ids)

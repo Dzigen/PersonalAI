@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Tuple, List, Union
+from typing import Tuple, List, Union, Dict
 
 from .weak_reasoner import WeakKGReasonerConfig
 from .config import KGR_MAIN_LOG_PATH, AVAILABLE_KG_REASONERS
@@ -8,6 +8,8 @@ from ....utils import ReturnInfo, Logger
 from ....kg_model import KnowledgeGraphModel
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv import CacheUtils
+from ....utils.cache_kv.utils import AbstractCacheInfo
+from .utils import AbstractKGReasoner
 
 
 @dataclass
@@ -38,7 +40,7 @@ class KnowledgeGraphReasonerConfig:
         return f"{self.reasoner_name}|{self.reasoner_hyperparameters.to_str()}"
 
 
-class KnowledgeGraphReasoner(CacheUtils):
+class KnowledgeGraphReasoner(CacheUtils, AbstractCacheInfo):
     """Верхнеуровневый класс KnowledgeGraphReasoner-стадии (точка входа), отвечающей за поиск информации в графе знаний, релевантной для генерации ответа (на её основе) к user-вопросу.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -58,14 +60,25 @@ class KnowledgeGraphReasoner(CacheUtils):
             cache_kvdriver_config, config.cache_table_name)
 
         self.reasoner_name = config.reasoner_name
-        self.reasoner = AVAILABLE_KG_REASONERS[self.reasoner_name](
+        self.reasoner: AbstractKGReasoner = AVAILABLE_KG_REASONERS[self.reasoner_name](
             kg_model, config.reasoner_hyperparameters, cache_kvdriver_config)
 
         self.log = config.log
         self.verbose = config.verbose
 
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return {
+            'reasoner': self.reasoner.get_agent_tgen_stat()
+        }
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        return {
+            'KnowledgeGraphReasoner': None if self.cachekv is None else self.cachekv.kv_conn.count_items(),
+            'reasoner': self.reasoner.get_cache_stat()
+        }
+
     def clear_kv_caches(self, level: str = 'all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:

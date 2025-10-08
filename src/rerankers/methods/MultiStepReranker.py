@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Union, Dict
+from typing import List, Union, Dict, Tuple
+from copy import deepcopy
+
 from .utils import AbstractRerankerModule
 from ..utils import BaseRerankerModuleConfig
 from ..filters.configs import AVAILABLE_FILTER_METHODS
@@ -20,6 +22,10 @@ class RerankStep:
     fetch_n: Union[None, int] = 10
     extended_params: Union[None, Dict] = None
 
+    def to_str(self) -> str:
+        str_extended_params = [f"{k}:{v}" for k, v in self.extended_params.items()]
+        return f"{self.type}:{self.name}:{self.fetch_n}:{str_extended_params}"
+
 
 @dataclass
 class MultiStepRerankerConfig(BaseRerankerModuleConfig):
@@ -27,7 +33,8 @@ class MultiStepRerankerConfig(BaseRerankerModuleConfig):
 
 
 class MultiStepReranker(AbstractRerankerModule):
-    def __init__(self, config: MultiStepRerankerConfig, vdb_composer: VectorComposer, availabel_agents: Union[None, Dict[str, AbstractAgentConnector]] = None):
+    def __init__(self, config: MultiStepRerankerConfig, vdb_composer: VectorComposer,
+                 availabel_agents: Union[None, Dict[str, AbstractAgentConnector]] = None):
         self.config = config
         self.validate_config(vdb_composer)
 
@@ -62,7 +69,8 @@ class MultiStepReranker(AbstractRerankerModule):
 
         return True
 
-    def validate_run_arguments(self, query: str, top_k: int = 1, return_with_embeddings: bool = False) -> bool:
+    def validate_run_arguments(self, query: str, top_k: int, subset_ids: Union[None, List[str]], includes: List[str],
+                               return_with_embeddings: Union[str, bool], return_with_scores: Union[str, bool]) -> bool:
         if not isinstance(query, str):
             raise TypeError
         if len(query) < 1:
@@ -82,25 +90,28 @@ class MultiStepReranker(AbstractRerankerModule):
 
         return True
 
-    def run(self, query: str, top_k: int = 1, return_with_embeddings: Union[str, bool] = False) -> List[VectorDBInstance]:
+    def run(self, query: str, top_k: int = 1, subset_ids: Union[None, List[str]] = None,
+            includes: List[str] = ['documents', 'metadatas'], return_with_embeddings: Union[str, bool] = False,
+            return_with_scores: bool = False) -> Union[List[Tuple[float, VectorDBInstance]], List[VectorDBInstance]]:
         # self.validate_config(self.vdb_composer)
-        self.validate_run_arguments(query, top_k, return_with_embeddings)
+        self.validate_run_arguments(
+            query, top_k, subset_ids, includes,
+            return_with_embeddings, return_with_scores)
 
         q_instance = VectorDBInstance(document=query)
-        sorted_subset_ids = None
         for r_config in self.config.reranking_sequence:
             if r_config.type == RerankingType.retriever:
                 fetch_n, threshold = r_config.fetch_n, None if r_config.extended_params is None else r_config.extended_params.get('threshold', None)
                 vdb_name = r_config.name
 
-                instances = self.vdb_composer.vdb_conn_mapping[vdb_name].retrieve([q_instance], n_results=fetch_n, subset_ids=sorted_subset_ids)[0]
+                instances = self.vdb_composer.vdb_conn_mapping[vdb_name].retrieve([q_instance], n_results=fetch_n, subset_ids=subset_ids, includes=[])[0]
 
                 if threshold is not None:
-                    filtered_instances = list(filter(lambda inst: inst[0] > threshold, instances))
+                    filtered_instances = list(filter(lambda inst: inst[0] >= threshold, instances))
                 else:
                     filtered_instances = instances
 
-                sorted_subset_ids = list(map(lambda inst: inst[1].id, filtered_instances))
+                subset_ids = list(map(lambda inst: inst[1].id, filtered_instances))
 
             elif r_config.type == RerankingType.filter:
                 # TODO
@@ -108,13 +119,20 @@ class MultiStepReranker(AbstractRerankerModule):
             else:
                 raise ValueError
 
-        sorted_subset_ids = sorted_subset_ids[:top_k]
-        includes = ['documents', 'metadatas']
+        include_fields = deepcopy(includes)
         if isinstance(return_with_embeddings, str):
             vdb_name = return_with_embeddings
-            includes.append('embeddings')
+            include_fields.append('embeddings')
         else:
             vdb_name = None
-        final_instances = self.vdb_composer.read(sorted_subset_ids, vdb_name=vdb_name, includes=includes)
+        final_instances = self.vdb_composer.read(subset_ids, vdb_name=vdb_name, includes=include_fields)
+
+        if isinstance(return_with_scores, str):
+            vdb_name = return_with_scores
+            instances_w_scores = self.vdb_composer.vdb_conn_mapping[vdb_name].retrieve(
+                [q_instance], n_results=len(subset_ids), subset_ids=subset_ids, includes=[])[0]
+            id_to_score_map = {inst[1].id: inst[0] for inst in instances_w_scores}
+
+            final_instances = [(id_to_score_map[instance.id], instance) for instance in final_instances]
 
         return final_instances

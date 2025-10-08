@@ -71,7 +71,7 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[MixturedGraphSearchConfig, Dict] = MixturedGraphSearchConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
-        if type(search_config) is dict:
+        if isinstance(search_config, dict):
             if 'accepted_node_types' in search_config:
                 search_config['accepted_node_types'] = list(
                     map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
@@ -88,9 +88,9 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             'beamsearch': BeamSearchTripletsRetriever
         }
 
-        self.retriever1 = self.available_retrievers[search_config.retriever1_name](
+        self.retriever1: AbstractTripletsRetriever = self.available_retrievers[search_config.retriever1_name](
             kg_model, log, search_config.retriever1_config, cache_kvdriver_config, verbose)
-        self.retriever2 = self.available_retrievers[search_config.retriever2_name](
+        self.retriever2: AbstractTripletsRetriever = self.available_retrievers[search_config.retriever2_name](
             kg_model, log, search_config.retriever2_config, cache_kvdriver_config, verbose)
 
         # accepted nodes
@@ -102,8 +102,18 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log = log
         self.verbose = verbose
 
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return None
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        return {
+            'MixturedTripletsRetriever': None if self.cachekv is None else self.cachekv.kv_conn.count_items(),
+            'retriever1': self.retriever1.get_cache_stat(),
+            'retriever2': self.retriever2.get_cache_stat()
+        }
+
     def clear_kv_caches(self, level='all') -> None:
-        if type(level) is not str:
+        if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
         if level not in ['all', 'current', 'other']:

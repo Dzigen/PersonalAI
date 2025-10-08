@@ -7,9 +7,10 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 
 from src.utils.data_structs import NodeType, RelationType
 from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig
-from src.db_drivers.vector_driver.embedders import EmbedderModelConfig, EmbedderModel
+from src.db_drivers.vector_driver.embedders import EmbedderModelConfig
 from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriverConfig
-from src.kg_model import EmbeddingsModel, EmbeddingsModelConfig, GraphModel, GraphModelConfig, KnowledgeGraphModel, KnowledgeGraphModelConfig
+from src.kg_model import EmbeddingsModelConfig, GraphModelConfig, KnowledgeGraphModel, KnowledgeGraphModelConfig
+from src.kg_model.utils import AgentsMapping, KGEmbeddersMapping
 
 #!!!AVAILABLE GRAPH MODELS!!!#
 
@@ -86,10 +87,25 @@ def available_graph_configs(
 @pytest.fixture(scope='package')
 def embeddings_chroma_config():
     config = EmbeddingsModelConfig(
-        nodesdb_driver_config=VectorDriverConfig(db_vendor='chroma', db_config=VectorDBConnectionConfig(
-            conn={'path': f'{TEST_VOLUME_DIR}/chroma'}, db_info={'db': 'testing', 'table': 'vectorized_nodes'}, params={"hnsw:space": "ip", "hnsw:M": 4096}, need_to_clear=True)),
-        tripletsdb_driver_config=VectorDriverConfig(db_vendor='chroma', db_config=VectorDBConnectionConfig(
-            conn={'path': f'{TEST_VOLUME_DIR}/chroma'}, db_info={'db': 'testing', 'table': 'vectorized_triplets'}, params={"hnsw:space": "ip", "hnsw:M": 4096}, need_to_clear=True)))
+        nodesdb_driver_configs_mapping={
+            'nodes_dense': VectorDriverConfig(
+                db_vendor='chroma', db_config=VectorDBConnectionConfig(
+                    conn={'path': f'{TEST_VOLUME_DIR}/chroma'},
+                    db_info={'db': 'testing', 'table': 'vectorized_nodes'},
+                      params={"hnsw:space": "ip", "hnsw:M": 4096}, need_to_clear=True
+                )
+            )
+        },
+        tripletsdb_driver_configs_mapping={
+            'triplets_dense': VectorDriverConfig(
+                db_vendor='chroma', db_config=VectorDBConnectionConfig(
+                    conn={'path': f'{TEST_VOLUME_DIR}/chroma'},
+                    db_info={'db': 'testing', 'table': 'vectorized_triplets'},
+                    params={"hnsw:space": "ip", "hnsw:M": 4096}, need_to_clear=True
+                )
+            )
+        }
+    )
     return config
 
 
@@ -97,12 +113,26 @@ def embeddings_chroma_config():
 def embeddings_milvus_config():
 
     config = EmbeddingsModelConfig(
-        nodesdb_driver_config=VectorDriverConfig(db_vendor='milvus', db_config=VectorDBConnectionConfig(
-            conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'}, db_info={'db': 'testing', 'table': 'vectorized_nodes'}, need_to_clear=True,
-            params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'})),
-        tripletsdb_driver_config=VectorDriverConfig(db_vendor='milvus', db_config=VectorDBConnectionConfig(
-            conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'}, db_info={'db': 'testing', 'table': 'vectorized_triplets'}, need_to_clear=True,
-            params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'})))
+        nodesdb_driver_configs_mapping={
+            'nodes_dense': VectorDriverConfig(
+                db_vendor='milvus', db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
+                    db_info={'db': 'testing', 'table': 'vectorized_nodes'}, need_to_clear=True,
+                    params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
+                )
+            )
+        },
+        tripletsdb_driver_configs_mapping={
+            'triplets_dense': VectorDriverConfig(
+                db_vendor='milvus', db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
+                    db_info={'db': 'testing', 'table': 'vectorized_triplets'}, need_to_clear=True,
+                    params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
+                )
+            )
+        }
+    )
+
     return config
 
 # ------------------------------#
@@ -137,12 +167,11 @@ def available_embedding_configs(
 def available_kg_models(available_embedding_configs, available_graph_configs):
 
     e5small_config = EmbedderModelConfig(model_name_or_path=f'{PROJECT_BASE_DIR}models/intfloat/multilingual-e5-small', device='cuda')
-    embedders_map = {
-        'KnowledgeGraphModel': {
-            'EmbeddingsModel': 'm-e5-small',
-        }
-    }
-    embedders_config = {'m-e5-small': e5small_config}
+    embedders_map = KGEmbeddersMapping(
+        embeddings_model={'nodes_dense': 'm-e5-small', 'triplets_dense': 'm-e5-small'},
+        nodestree_model=None
+    )
+    embedders_configs = {'m-e5-small': e5small_config}
 
     kg_configs = {}
     for vector_name, vector_config in available_embedding_configs.items():
@@ -151,7 +180,7 @@ def available_kg_models(available_embedding_configs, available_graph_configs):
                 graph_struct_config=graph_config,
                 graph_embeddings_config=vector_config,
                 nodestree_config=None,
-                embedders_config=embedders_config,
+                embedders_configs=embedders_configs,
                 embedders_map=embedders_map)
             kg_configs[f"{vector_name}/{graph_name}"] = KnowledgeGraphModel(
                 cur_config)

@@ -9,6 +9,7 @@ from ....agents.utils import AbstractAgentConnector
 from ....utils.data_structs import create_id
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv import CacheUtils
+from ....utils.cache_kv.utils import AbstractCacheInfo
 
 
 @dataclass
@@ -40,7 +41,7 @@ class AnswersAggregatorConfig:
         return f"{self.lang}|{self.agent_gen_stategy}|{self.suba_summarisation_agent_task_config.version}"
 
 
-class AnswersAggregator(CacheUtils):
+class AnswersAggregator(CacheUtils, AbstractCacheInfo):
     """Верхнеуровневый класс QueryPreprocessor-стадии (точка входа), отвечающей за аггрегации/резюмированию информации, полученной в резльтате ризонинга на графе знаний (памяти), и генерацию финального ответа на user-вопрос.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -65,11 +66,21 @@ class AnswersAggregator(CacheUtils):
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config
 
-        self.subanswers_summarisation_solver = AgentTaskSolver(
+        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
+        self.tasks_solvers['subanswers_summarisation_solver'] = AgentTaskSolver(
             self.agent, self.config.suba_summarisation_agent_task_config, agents_cache_config)
 
         self.log = self.config.log
         self.verbose = self.config.verbose
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        cache_stat = {'AnswersAggregator': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
+        tasks_caches = {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
+        cache_stat.update(tasks_caches)
+        return cache_stat
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
@@ -81,7 +92,7 @@ class AnswersAggregator(CacheUtils):
 
         if level in ['all', 'current']:
             self.cachekv.clear()
-            self.subanswers_summarisation_solver.cachekv.clear()
+            self.tasks_solvers['subanswers_summarisation_solver'].cachekv.clear()
         elif level == 'other':
             raise NotImplementedError
 
@@ -128,7 +139,7 @@ class AnswersAggregator(CacheUtils):
 
             self.log("Выполнение суммаризации ответов с помощью LLM-агента...",
                      verbose=self.config.verbose)
-            final_answer, status = self.subanswers_summarisation_solver.solve(
+            final_answer, status = self.tasks_solvers['subanswers_summarisation_solver'].solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                 query=query, sub_queries=sub_queries,
                 sub_answers=subq_info.sub_answers)

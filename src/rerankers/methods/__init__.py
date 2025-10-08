@@ -1,3 +1,3 @@
-from .MultiStepReranker import MultiStepReranker, MultiStepRerankerConfig
-from .EnsembleFusionReranker import EnsembleFusionReranker, EnsembleFusionRerankerConfig
+from .MultiStepReranker import MultiStepReranker, MultiStepRerankerConfig, RerankStep, RerankingType
+from .EnsembleFusionReranker import EnsembleFusionReranker, EnsembleFusionRerankerConfig, RetrieverConfig
 from .SingleStepReranker import SingleStepReranker, SingleStepRerankerConfig

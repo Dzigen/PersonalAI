@@ -7,6 +7,7 @@ from .config import KG_MAIN_LOG_PATH, DEFAULT_AGENTS_MAP, DEFAULT_EMBEDDERS_MAP,
 from .graph_model.GraphModel import GraphModelConfig, GraphModel
 from .embeddings_model.EmbeddingsModel import EmbeddingsModelConfig, EmbeddingsModel
 from .nodestree_model import NodesTreeModelConfig, NodesTreeModel
+from .utils import AgentsMapping, KGEmbeddersMapping
 from ..db_drivers.kv_driver import KeyValueDriverConfig
 from ..db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
 from ..agents import AgentDriverConfig, AgentDriver
@@ -21,16 +22,16 @@ class KnowledgeGraphModelConfig:
     :type graph_struct_config: GraphModelConfig, optional
     :param graph_embeddings_config: Конфигурация структуры данных, которая отвечает за представление/хранение знаний ассистента в векторном формате. Значение по умолчанию EmbeddingsModelConfig().
     :type graph_embeddings_config: EmbeddingsModelConfig, optional
-    :param nodestree_config: Конфигурация структуры данных, которая отвечает за представление/хранение знаний ассистента в формате дерева. Значение по умолчанию None.
+    :param nodestree_config: Конфигурация структуры данных, которая отвечает за представление/хранение знаний (object-вершин) ассистента в формате дерева. Значение по умолчанию None.
     :type nodestree_config: Union[NodesTreeModelConfig,None], optional
     :param embedders_configs: Словарь с именованными (ключи) конфигурациями embedder-моделей (значения) для векторизации текста, которые будут использоваться в рамках Memorize- и QA-пайплайнов для построения графа знаний и осуществления поиска. Значение по умолчанию DEFAULT_EMBEDDERS_CONFIG.
     :type embedders_configs: Dict[str, EmbedderModelConfig], optional
+    :param embedders_map: Вложенный именованный словарь с указанием PersonalAI-компоненты (ключ) и ключевого слова/имени (значение) embedder-конфигурации из embedders_configs-поля, которая будет использоваться в её рамках. Значение по умолчанию DEFAULT_EMBEDDERS_MAP.
+    :type embedders_map: KGEmbeddersMapping, optional
     :param agents_configs: Словарь с именованными (ключи) конфигурациями LLM-агентов (значения) для выполнения inferece-операций, которые будут использоваться в рамках Memorize- и QA-пайплайнов для построения графа знаний и осуществления поиска. Значение по умолчанию DEFAULT_AGENTS_CONFIG.
     :type agents_configs: Dict[str, AgentDriverConfig], optional
-    :param embedders_map: Вложенный именованный словарь с указанием PersonalAI-компоненты и её подчастей (ключ) и ключевого слова/имени (значение) embedder-конфигурации, которая будет использоваться в её рамках. Значение по умолчанию DEFAULT_EMBEDDERS_MAP.
-    :type embedders_map: Dict[str, Dict], optional
-    :param agents_map: Вложенный именованный словарь с указанием PersonalAI-компоненты и её подчастей (ключ) и ключевого слова/имени (значение) конфигураци LLM-агента, которая будет использоваться в её рамках. Значение по умолчанию DEFAULT_AGENTS_MAP.
-    :type agents_map: Dict[str, Dict], optional
+    :param agents_map: Вложенный именованный словарь с указанием PersonalAI-компоненты и её подчастей (ключ) и ключевого слова/имени (значение) конфигураци LLM-агента из agents_configs-поля, которая будет использоваться в её рамках. Значение по умолчанию DEFAULT_AGENTS_MAP.
+    :type agents_map: AgentsMapping, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(KG_MAIN_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
@@ -40,10 +41,11 @@ class KnowledgeGraphModelConfig:
     graph_embeddings_config: EmbeddingsModelConfig = field(default_factory=lambda: EmbeddingsModelConfig())
     nodestree_config: Union[NodesTreeModelConfig, None] = None
 
-    embedders_config: Dict[str, EmbedderModelConfig] = field(default_factory=lambda: DEFAULT_EMBEDDERS_CONFIG)
-    agents_config: Dict[str, AgentDriverConfig] = field(default_factory=lambda: DEFAULT_AGENTS_CONFIG)
-    embedders_map: Dict[str, Dict] = field(default_factory=lambda: DEFAULT_EMBEDDERS_MAP)
-    agents_map: Dict[str, Dict] = field(default_factory=lambda: DEFAULT_AGENTS_MAP)
+    embedders_configs: Dict[str, EmbedderModelConfig] = field(default_factory=lambda: DEFAULT_EMBEDDERS_CONFIG)
+    embedders_map: KGEmbeddersMapping = field(default_factory=lambda: DEFAULT_EMBEDDERS_MAP)
+
+    agents_configs: Dict[str, AgentDriverConfig] = field(default_factory=lambda: DEFAULT_AGENTS_CONFIG)
+    agents_map: AgentsMapping = field(default_factory=lambda: DEFAULT_AGENTS_MAP)
 
     log: Logger = field(default_factory=lambda: Logger(KG_MAIN_LOG_PATH))
     verbose: bool = False
@@ -61,39 +63,46 @@ class KnowledgeGraphModel:
     def __init__(self, config: KnowledgeGraphModelConfig = KnowledgeGraphModelConfig(),
                  cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None) -> None:
 
-        self.AVAILABLE_EMBEDDERS = {emb_name: EmbedderModel(emb_config) for emb_name, emb_config in config.embedders_config.items()}
-        self.AVAILABLE_AGENTS = {agent_name: AgentDriver.connect(agent_config) for agent_name, agent_config in config.agents_config.items()}
-
-        self.EMBEDDERS_MAP = config.embedders_map
-        self.AGENTS_MAP = config.agents_map
+        self.AVAILABLE_EMBEDDERS = {emb_name: EmbedderModel(emb_config) for emb_name, emb_config in config.embedders_configs.items()}
+        self.AVAILABLE_AGENTS = {agent_name: AgentDriver.connect(agent_config) for agent_name, agent_config in config.agents_configs.items()}
+        self.KG_EMBEDDERS_MAP: KGEmbeddersMapping = config.embedders_map
+        self.AGENTS_MAP: AgentsMapping = config.agents_map
 
         self.graph_struct = GraphModel(config.graph_struct_config)
 
         self.graph_embeddings = EmbeddingsModel(
-            self.AVAILABLE_EMBEDDERS[self.EMBEDDERS_MAP['KnowledgeGraphModel']['EmbeddingsModel']],
+            {db_name: self.AVAILABLE_EMBEDDERS[emb_name] for db_name, emb_name in self.KG_EMBEDDERS_MAP.embeddings_model.items()},
             config.graph_embeddings_config)
 
         self.nodestree_model = None
         if config.nodestree_config is not None:
             self.nodestree_model = NodesTreeModel(
-                self.AVAILABLE_AGENTS[self.AGENTS_MAP['KnowledgeGraphModel']['NodesTreeModel']],
-                self.AVAILABLE_EMBEDDERS[self.EMBEDDERS_MAP['KnowledgeGraphModel']['NodesTreeModel']],
+                self.AVAILABLE_AGENTS[self.AGENTS_MAP.kg_nodestree_model],
+                {db_name: self.AVAILABLE_EMBEDDERS[emb_name] for db_name, emb_name in self.KG_EMBEDDERS_MAP.nodestree_model.items()},
                 config.nodestree_config, cache_kvdriver_config)
 
         self.log = config.log
         self.verbose = config.verbose
 
     def check_consistency(self) -> bool:
-        gdb_count = self.graph_struct.db_conn.count_items()
-        self.log(f"GRAPH DB STATUS: {gdb_count}", verbose=self.verbose)
-        vdb_nodes_count = self.graph_embeddings.vectordbs['nodes'].count_items()
-        vdb_triplets_count = self.graph_embeddings.vectordbs['triplets'].count_items()
-        self.log(
-            f"VECTOR DB STATUS: {vdb_nodes_count} - nodes; {vdb_triplets_count} - triplets", verbose=self.verbose)
+        self.graph_embeddings.check_consistency()
 
-        assert gdb_count['nodes'] == vdb_nodes_count
-        assert gdb_count['triplets'] >= vdb_triplets_count
-        # assert vdb_nodes_count > vdb_triplets_count
+        gdb_count = self.graph_struct.db_conn.count_items(detailed=True)
+        self.log(f"GRAPH DB STATUS: {gdb_count}", verbose=self.verbose)
+
+        vdb_nodes_count: Dict[str, Dict[str, int]] = dict()
+        for node_type, v_composer in self.graph_embeddings.nodes_vectordbs.items():
+            vdb_nodes_count[node_type.value] = v_composer.count_items()
+        vdb_triplets_count = self.graph_embeddings.triplets_vectordbs.count_items()
+        self.log(f"VECTOR NODES DB STATUS: {vdb_nodes_count}", verbose=self.verbose)
+        self.log(f"VECTOR TRIPLETS DB STATUS: {vdb_triplets_count}", verbose=self.verbose)
+
+        for n_type, graph_n_count in gdb_count['nodes'].items():
+            for _, vector_n_count in vdb_nodes_count[n_type].items():
+                assert graph_n_count == vector_n_count
+
+        for _, vector_t_count in vdb_triplets_count.items():
+            assert sum(gdb_count['triplets'].values()) >= vector_t_count
 
         if self.nodestree_model is not None:
             self.nodestree_model.check_consistency()
@@ -187,7 +196,10 @@ class KnowledgeGraphModel:
                 self.nodestree_model.clear_kv_caches()
 
     def __del__(self):
-        for a_name in self.AVAILABLE_AGENTS.keys():
-            self.AVAILABLE_AGENTS[a_name].close_connection()
+        try:
+            for a_name in self.AVAILABLE_AGENTS.keys():
+                self.AVAILABLE_AGENTS[a_name].close_connection()
+        except AttributeError:
+            pass
 
         gc.collect()

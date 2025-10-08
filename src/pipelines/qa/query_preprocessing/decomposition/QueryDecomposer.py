@@ -9,6 +9,7 @@ from .....utils.data_structs import create_id
 from .....agents.utils import AbstractAgentConnector
 from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
 from .....db_drivers.kv_driver import KeyValueDriverConfig
+from .....utils.cache_kv.utils import AbstractCacheInfo
 
 
 @dataclass
@@ -45,7 +46,7 @@ class QueryDecomposerConfig:
         return f"{self.lang}|{self.agent_gen_stategy}|{self.classify_agent_task_config.version}|{self.decompose_agent_task_config.version}"
 
 
-class QueryDecomposer(CacheUtils):
+class QueryDecomposer(CacheUtils, AbstractCacheInfo):
     """Класс, реализующий одну из операций по форматированию/предобработке user-вопроса в рамках QueryPreprocessor-стадии. Данный класс выполняет декомпозицию сложного/составного user-вопроса на независимые/простые под-вопросы.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -69,13 +70,23 @@ class QueryDecomposer(CacheUtils):
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config if cache_llm_inference else None
 
-        self.decompose_classifier_solver = AgentTaskSolver(
+        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
+        self.tasks_solvers['decompose_classifier_solver'] = AgentTaskSolver(
             self.agent, self.config.classify_agent_task_config, agents_cache_config)
-        self.q_decomposition_solver = AgentTaskSolver(
+        self.tasks_solvers['q_decomposition_solver'] = AgentTaskSolver(
             self.agent, self.config.decompose_agent_task_config, agents_cache_config)
 
         self.log = self.config.log
         self.verbose = self.config.verbose
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        cache_stat = {'QueryDecomposer': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
+        tasks_caches = {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
+        cache_stat.update(tasks_caches)
+        return cache_stat
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
@@ -87,8 +98,8 @@ class QueryDecomposer(CacheUtils):
 
         if level in ['all', 'current']:
             self.cachekv.clear()
-            self.decompose_classifier_solver.cachekv.clear()
-            self.q_decomposition_solver.cachekv.clear()
+            self.tasks_solvers['decompose_classifier_solver'].cachekv.clear()
+            self.tasks_solvers['q_decomposition_solver'].cachekv.clear()
 
         elif level == 'other':
             raise NotImplementedError
@@ -123,7 +134,7 @@ class QueryDecomposer(CacheUtils):
 
         self.log("Выполнение проверки на необходимость декомпозии вопроса с помощью LLM-агента...",
                  verbose=self.config.verbose)
-        need_to_decompose, status = self.decompose_classifier_solver.solve(
+        need_to_decompose, status = self.tasks_solvers['decompose_classifier_solver'].solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             query=query)
         if status != ReturnStatus.success:
@@ -133,7 +144,7 @@ class QueryDecomposer(CacheUtils):
             if need_to_decompose:
                 self.log("Выполнение разбиения вопроса на независимые под-вопросы с помощью LLM-агента...",
                          verbose=self.config.verbose)
-                decomposed_query, status = self.q_decomposition_solver.solve(
+                decomposed_query, status = self.tasks_solvers['q_decomposition_solver'].solve(
                     lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
                 if status != ReturnStatus.success:
                     rinfo.occurred_warning.append(status)

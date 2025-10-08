@@ -9,6 +9,7 @@ from ......agents.utils import AbstractAgentConnector
 from ......utils.data_structs import create_id
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.cache_kv import CacheUtils
+from ......utils.cache_kv.utils import AbstractCacheInfo
 
 
 @dataclass
@@ -45,7 +46,7 @@ class AnswerGeneratorConfig:
         return f"{self.lang}|{self.agent_gen_stategy}|{self.answer_classifier_agent_task_config.version}|{self.answer_generator_agent_task_config.version}"
 
 
-class AnswerGenerator(CacheUtils):
+class AnswerGenerator(CacheUtils, AbstractCacheInfo):
     """Верхнеуровневый класс стадии #4 MediumQA-конвейера для генерации ответа на user-вопрос на основе информации,
     извлечённой из графа знаний с помощью плана/последовательности поисковых запросов.
 
@@ -71,13 +72,23 @@ class AnswerGenerator(CacheUtils):
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config
 
-        self.answer_classify_solver = AgentTaskSolver(
+        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
+        self.tasks_solvers['answer_classify_solver'] = AgentTaskSolver(
             self.agent, self.config.answer_classifier_agent_task_config, agents_cache_config)
-        self.answer_gen_solver = AgentTaskSolver(
+        self.tasks_solvers['answer_gen_solver'] = AgentTaskSolver(
             self.agent, self.config.answer_generator_agent_task_config, agents_cache_config)
 
         self.log = self.config.log
         self.verbose = self.config.verbose
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        cache_stat = {'AnswerGenerator': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
+        tasks_caches = {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
+        cache_stat.update(tasks_caches)
+        return cache_stat
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
@@ -91,8 +102,8 @@ class AnswerGenerator(CacheUtils):
             self.cachekv.clear()
 
         if level in ['other', 'all']:
-            self.answer_classify_solver.cachekv.clear()
-            self.answer_gen_solver.cachekv.clear()
+            self.tasks_solvers['answer_classify_solver'].cachekv.clear()
+            self.tasks_solvers['answer_gen_solver'].cachekv.clear()
 
     def get_cache_key(self, search_plan: SearchPlanInfo) -> List[str]:
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
@@ -117,7 +128,7 @@ class AnswerGenerator(CacheUtils):
 
         self.log("Выполняем проверку на возможность генерации релевантного ответа...",
                  verbose=self.verbose)
-        can_answer, status = self.answer_classify_solver.solve(
+        can_answer, status = self.tasks_solvers['answer_classify_solver'].solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             search_plan=search_plan)
         self.log(f"RESULT: {can_answer}", verbose=self.config.verbose)
@@ -125,7 +136,7 @@ class AnswerGenerator(CacheUtils):
         if status == ReturnStatus.success:
             if can_answer:
                 self.log("Выполняем генерацию ответа...", verbose=self.verbose)
-                answer, status = self.answer_gen_solver.solve(
+                answer, status = self.tasks_solvers['answer_gen_solver'].solve(
                     lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                     search_plan=search_plan)
                 self.log(f"RESULT: {answer}", verbose=self.config.verbose)

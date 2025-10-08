@@ -64,11 +64,21 @@ class ClueAnswersSummarizer(CacheUtils):
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config
 
-        self.clueanswers_summ_solver = AgentTaskSolver(
+        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
+        self.tasks_solvers['clueanswers_summ_solver'] = AgentTaskSolver(
             self.agent, self.config.canswers_summarisation_agent_task_config, agents_cache_config)
 
         self.log = self.config.log
         self.verbose = self.config.verbose
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
+
+    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        cache_stat = {'ClueAnswersSummarizer': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
+        tasks_caches = {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
+        cache_stat.update(tasks_caches)
+        return cache_stat
 
     def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
@@ -82,7 +92,7 @@ class ClueAnswersSummarizer(CacheUtils):
             self.cachekv.clear()
 
         if level in ['other', 'all']:
-            self.clueanswers_summ_solver.cachekv.clear()
+            self.tasks_solvers['clueanswers_summ_solver'].cachekv.clear()
 
     def get_cache_key(self, search_query: str, clue_queries: List[str], clue_answers: List[str]) -> List[str]:
         str_cluequeries = ';'.join(clue_queries)
@@ -117,7 +127,7 @@ class ClueAnswersSummarizer(CacheUtils):
 
         self.log("Выполненяем суммаризацию clue-answers с помощью LLM-агента...",
                  verbose=self.config.verbose)
-        summ_answer, status = self.clueanswers_summ_solver.solve(
+        summ_answer, status = self.tasks_solvers['clueanswers_summ_solver'].solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, search_query=search_query,
             clues_queries=clue_queries, clue_answers=clue_answers)
         self.log(f"RESULT: {summ_answer}", verbose=self.verbose)
