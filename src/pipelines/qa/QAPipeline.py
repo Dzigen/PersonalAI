@@ -20,7 +20,7 @@ class QAPipelineConfig:
     """
     Конфигурация Question-Answering-конвейера.
 
-    :param preprocessor_config: Конфигурация стадии по предобработке исходного user-вопроса. Значение по умолчанию QueryPreprocessorConfig.
+    :param preprocessor_config: Конфигурация стадии по предобработке исходного user-вопроса. Значение по умолчанию QueryPreprocessorConfig().
     :type preprocessor_config: QueryPreprocessorConfig, optional
     :param reasoner_config: Конфигурация стадии по обходу/ризонингу на графе знаней с целью извлечения релевантой информации к user-вопросу. Значение по умолчанию KnowledgeGraphReasonerConfig().
     :type reasoner_config: KnowledgeGraphReasonerConfig, optional

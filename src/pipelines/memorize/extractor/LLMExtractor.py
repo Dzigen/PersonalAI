@@ -30,9 +30,9 @@ class LLMExtractorConfig:
     :param need_episodic: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False. Значение по умолчанию True.
     :type need_episodic: bool, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(MEM_EXTRACTOR_MAIN_LOG_PATH).
-    :type log: Logger
+    :type log: Logger, optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :type verbose: bool, optional
     """
     lang: str = "auto"
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
@@ -92,8 +92,8 @@ class LLMExtractor(AbstractCacheInfo):
 
         :param text: Слабоструктурированный текст.
         :type text: str
-        :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, Значение по умолчанию dict().
-        :type properties: Dict, optional
+        :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, Значение по умолчанию None.
+        :type properties: Union[None, Dict], optional
         :param time: Время, с которым ассоциированы события текста
         :type time: str, optional
         :return: Кортеж из двух объектов: (1) список извлечённой из текста информации (в виде триплетов); (2) статус завершения операции с пояснительной информацией.

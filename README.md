@@ -48,3 +48,7 @@ dvc tutorial:
 
 pytest tutorial:
 * https://realpython.com/pytest-python-testing/#parametrization-combining-tests
+
+--------------------------------
+
+Тех. поддержка: [Telegram](https://t.me/mmenscshikov), [Email](m.menschikov@skoltech.ru)

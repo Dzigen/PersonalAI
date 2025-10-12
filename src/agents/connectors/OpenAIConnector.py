@@ -27,7 +27,8 @@ class OpenAIConnector(AbstractAgentConnector):
     def close_connection(self):
         self.client.close()
 
-    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None, gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
+    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
+                 gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
         pp_start_time = time()
         msgs = [{"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}]

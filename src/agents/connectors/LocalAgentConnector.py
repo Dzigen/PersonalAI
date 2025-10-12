@@ -27,7 +27,8 @@ class LocalAgentConnector(AbstractAgentConnector):
         del self.pipeline
         gc.collect()
 
-    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None, gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
+    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
+                 gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
         pp_start_time = time()
         messages = [
             {"role": "system", "content": system_prompt},

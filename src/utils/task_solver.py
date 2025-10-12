@@ -1,5 +1,5 @@
-from dataclasses import dataclass, field
-from typing import Tuple, Dict, Union, List
+from dataclasses import dataclass
+from typing import Tuple, Dict, Union
 import json
 from copy import deepcopy
 import hashlib
@@ -10,7 +10,7 @@ from .errors import ReturnStatus, STATUS_MESSAGE
 from .cache_kv import CacheKV
 from .cache_kv.utils import AbstractCacheInfo
 from .agent_stat_analyzer import AgentStatAnalyzerConfig, AgentStatAnalyzer
-from ..agents.utils import AbstractAgentConnector, LLMInferenceStat
+from ..agents.utils import AbstractAgentConnector
 from ..db_drivers.kv_driver import KeyValueDriverConfig
 
 
@@ -37,16 +37,22 @@ class AgentTaskSuite:
 class AgentTaskSolverConfig:
     """Конфигурация agent-солвера.
 
+    :param version: Версия набора промптов/парсеров для решения некоторой LLM-задачи.
+    :type version: str
     :param suites: Набор гиперпараметров для инференса и разбора ответа LLM-агента в рамках заданной атомарной задачи.
     :type suites: Dict[str, AgentTaskSuite]
     :param formate_context_func: Кастомная функция, приводящая входной (в agent-солвер) набор данных в строковый формат (в виде словаря со строковыми значениями), который далее будет добавляться в user-prompt для LLM-агента.
     :type formate_context_func: object
     :param postprocess_answer_func: Кастомная функция, приводящая разобранный ответ от LLM-агента к формату, который требуется для данной атомарной задачи.
     :type postprocess_answer_func: object
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы AgentTaskSolver-класса.
+    :type cache_table_name: str
+    :param inferencestat_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться мета-информация/статистика по inference-операции.
+    :type inferencestat_table_name: str
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(RKG_LOG_PATH).
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :type verbose: bool, optional
     """
     version: str
     suites: Dict[str, AgentTaskSuite]
@@ -61,12 +67,16 @@ class AgentTaskSolverConfig:
 
 
 class AgentTaskSolver(AbstractCacheInfo):
-    """Класс-обёртка, предназначенный для решения атомарной задачи на базе инференса LLM-агента.
+    """Класс-обёртка, предназначенный для решения атомарной задачи на базе inference-операции LLM-агента.
 
     :param agent: интерфейс взаимодействия с LLM-агентом.
     :type agent: AbstractAgentConnector
     :param config: Конфигурация решения конкретной атомарной задачи.
     :type config: AgentTaskSolverConfig
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования результатов inference-операции. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[None, KeyValueDriverConfig], optional
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках заданной LLM-задачи. Значение по умолчанию None.
+    :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: AgentTaskSolverConfig,
@@ -107,7 +117,7 @@ class AgentTaskSolver(AbstractCacheInfo):
 
         :param lang: Язык промптов, которые будут использоваться на этапе инференса LLM-агента. Значение по умолчанию 'auto'.
         :type lang: str, optional
-        :param gen_strategy: ... .
+        :param gen_strategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
         :type gen_strategy: Union[None,Dict[str, str]], optional
         :return: Кортеж из двух объектов: (1) результат работы agent-солвера; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[object, ReturnStatus]

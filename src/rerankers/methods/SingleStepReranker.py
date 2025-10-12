@@ -8,15 +8,33 @@ from ...db_drivers.vector_driver import VectorComposer, VectorDBInstance
 
 @dataclass
 class SingleStepRerankerConfig(BaseRerankerModuleConfig):
+    """Конфигурация одностадийного Retrieve/Rerank-оператора
+
+    :param vdb_name: Название (ключевое слово) определённого коннектора к бд с векторными представлениями извлекаемых (retrieved) элементов, которое будут использоваться при оценке их релевантности к входящим запросам.
+    :type vdb_name: str
+    :param fetch_n: Базовое количество релевантных элементов к запросу (query), которое извлекается перед выполнением filter-операций. Значение по умолчанию 10.
+    :type fetch_n: int
+    :param threshold: Пороговое/минимальное значение similarity-метрики, по которому выполняется дополнительная фильтрация извлечённых элементов. Если задано None-значение, то фильтрация пропускается. Значение по умолчаниб 0.5.
+    :type threshold: Union[None, float]
+    """
     vdb_name: str
-    threshold: Union[None, float] = 0.5
     fetch_n: int = 10
+    threshold: Union[None, float] = 0.5
 
     def to_str(self) -> str:
         return f"{self.vdb_name}:{self.threshold}:{self.fetch_n}"
 
 
 class SingleStepReranker(AbstractRerankerModule):
+    """Класс реализует логику одностадийного Retrieve/Rerank-оператора для поиска релевантных элементов в заданной бд к запросу
+    с помощью оценки семантической близости их векторных представлений.
+
+    :param config: Конфигурация Retrieve/Rerank-оператора.
+    :type config: EnsembleFusionRerankerConfig
+    :param vdb_composer: Компоновщий нескольких наборов векторных представлений для одной группы элементов, из которой будет выполняться извлечение (retrieve-операция).
+    :type vdb_composer: VectorComposer
+    """
+
     def __init__(self, config: SingleStepRerankerConfig, vdb_composer: VectorComposer):
         self.config = config
         self.validate_config(vdb_composer)

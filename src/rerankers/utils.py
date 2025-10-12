@@ -6,5 +6,4 @@ class BaseRerankerModuleConfig:
     pass
 
     def to_str(self) -> str:
-        # TODO
         pass

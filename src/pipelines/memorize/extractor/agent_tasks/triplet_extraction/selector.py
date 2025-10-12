@@ -23,7 +23,8 @@ class AgentTripletExtrTaskConfigSelector:
         return AgentTaskSolverConfig(
             version=base_config_version,
             suites=AVAILABLE_TRIPLET_EXTRACT_TCONFIGS[base_config_version],
-            formate_context_func=etriplets_custom_formate, postprocess_answer_func=etriplets_custom_postprocess,
+            formate_context_func=etriplets_custom_formate,
+            postprocess_answer_func=etriplets_custom_postprocess,
             cache_table_name=cache_table_name,
             inferencestat_table_name=inferencestat_table_name,
             log=Logger(TRIPLET_EXTR_LOG_PATH))

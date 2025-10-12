@@ -13,10 +13,10 @@ from ...db_drivers.vector_driver import VectorComposer, VectorDBInstance
 @dataclass
 class RetrieverConfig:
     """
-    :param fetch_n: Служебный гиперпараметр. Значение по умолчанию 15.
+    :param fetch_n: Базовое количество релевантных элементов к запросу (query), которое извлекается перед выполнением filter-операций. Значение по умолчанию 15.
     :type fetch_n: int, optional
-    :param threshold: Нижний порог близости между эмбеддингами сущностей и вершин для их сопоставления (matching). Значение по умолчанию 0.5.
-    :type threshold: float, optional
+    :param threshold: Пороговое/минимальное значение similarity-метрики, по которому выполняется дополнительная фильтрация извлечённых элементов. Если задано None-значение, то фильтрация пропускается. Значение по умолчаниб 0.5.
+    :type threshold: Union[None, float], optional
     """
     fetch_n: int = 15
     threshold: Union[None, float] = 0.5
@@ -27,6 +27,17 @@ class RetrieverConfig:
 
 @dataclass
 class EnsembleFusionRerankerConfig(BaseRerankerModuleConfig):
+    """Конфигурация ансамблевого Retrieve/Rerank-оператора.
+
+    :param vdb_names: Набор названий (ключевых слов) коннекторов к различным векторным представлениям заданного набора элементов из Vector-компоновщика, которые будут использоваться в ансамбле для получения базовых групп элементов (retrieve) и их similarity-оценок.
+    :type vdb_names: List[str]
+    :param retriever_configs: Конфигурации для соотвествующих retrieve-компонент в ансамбле.
+    :type retriever_configs: Union[None, List[RetrieverConfig]]
+    :param weights: Значения приоритета similarity-оценок соотвествующих retrieve-компонент в ансамбле для переранжирования извлечённых элементов в рамках RRF-алгоритма. В сумме значения должны давать 1.0. Если будет задан None, то значение приоритета будет равномерно распределено между заданными retrieve-компонентами в ансамбле.
+    :type weights: Union[None, List[float]]
+    :param c: Служебный гиперпараметр для weighted RRF-алгоритма.
+    :type c: int
+    """
     vdb_names: List[str]
     retriever_configs: Union[None, List[RetrieverConfig]] = None
     weights: Union[None, List[float]] = None
@@ -38,6 +49,15 @@ class EnsembleFusionRerankerConfig(BaseRerankerModuleConfig):
 
 
 class EnsembleFusionReranker(AbstractRerankerModule):
+    """Класс реализует логику ансамблевого Retrieve/Rerank-оператора для поиска релевантных элементов в заданном наборе к запросу
+    с помощью оценки семантической близости их раличных вариантов векторных представлений и дополнительного переранжирования элементов с помощью RRF-алгоритма.
+
+    :param config: Конфигурация Retrieve/Rerank-оператора.
+    :type config: EnsembleFusionRerankerConfig
+    :param vdb_composer: Компоновщий нескольких наборов векторных представлений для одной группы элементов, из которой будет выполняться извлечение (retrieve/rerank-операция).
+    :type vdb_composer: VectorComposer
+    """
+
     def __init__(self, config: EnsembleFusionRerankerConfig, vdb_composer: VectorComposer):
         self.config = config
         if self.config.weights is None:
@@ -141,17 +161,12 @@ class EnsembleFusionReranker(AbstractRerankerModule):
         return fused_instances
 
     def weighted_reciprocal_rank(self, doc_lists: List[List[VectorDBInstance]]) -> List[VectorDBInstance]:
-        """Perform weighted Reciprocal Rank Fusion on multiple rank lists.
+        """Perform weighted Reciprocal Rank Fusion on multiple rank lists. You can find more details about RRF here: https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf.
 
-        You can find more details about RRF here:
-        https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf.
-
-        Args:
-            doc_lists: A list of rank lists, where each rank list contains unique items.
-
-        Returns:
-            list: The final aggregated list of items sorted by their weighted EnsembleF
-                    scores in descending order.
+        :param doc_list: A list of rank lists, where each rank list contains unique items.
+        :type doc_list: List[List[VectorDBInstance]]
+        :return: The final aggregated list of items sorted by their weighted scores in descending order.
+        :rtype: List[VectorDBInstance]
         """
         if len(doc_lists) != len(self.config.weights):
             msg = "Number of rank lists must be equal to the number of weights."

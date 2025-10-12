@@ -19,13 +19,13 @@ class MemPipelineConfig:
     """Конфигурация Memorize-конвейера.
 
     :param extractor_config: Конфигурация первой стадии Memorize-конвейера: извлечение информации из текстовых данных и приведение их в triplet-формат. Значение по умолчанию LLMExtractorConfig().
-    :type extractor_config: LLMExtractorConfig
+    :type extractor_config: LLMExtractorConfig, optional
     :param updator_config: Конфигурация второй стадии Memorize-конвейера: актуализация знаний в памяти ассистента. Значение по умолчанию LLMUpdatorConfig().
-    :type updator_config: LLMUpdatorConfig
+    :type updator_config: LLMUpdatorConfig, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(MEMORIZE_MAIN_LOG_PATH).
-    :type log: Logger
+    :type log: Logger, optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :type verbose: bool, optional
     """
     extractor_config: LLMExtractorConfig = field(
         default_factory=lambda: LLMExtractorConfig())

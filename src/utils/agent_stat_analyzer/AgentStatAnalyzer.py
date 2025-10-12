@@ -16,7 +16,6 @@ class AgentStatAnalyzerConfig:
 
 
 class AgentStatAnalyzer:
-
     def __init__(self, config: AgentStatAnalyzerConfig = AgentStatAnalyzerConfig()):
         self.config = config
 

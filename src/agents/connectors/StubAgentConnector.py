@@ -17,7 +17,8 @@ class StubAgentConnector(AbstractAgentConnector):
     def close_connection(self):
         pass
 
-    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None, gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
+    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
+                 gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
         answer = ''
         if len(self.looped_answers):
             answer = self.looped_answers.popleft()
