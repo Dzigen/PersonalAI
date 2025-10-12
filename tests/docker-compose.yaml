@@ -17,10 +17,10 @@ services:
       resources:
         limits:
           cpus: '2'
-          memory: 8G
+          memory: 10G
         reservations:
           cpus: '1'
-          memory: 4G
+          memory: 5G
 
   aerospike:
     container_name: personalai_mmenschikov_test_aerospike
@@ -39,12 +39,12 @@ services:
       resources:
         limits:
           cpus: '2'
-          memory: 8G
+          memory: 10G
         reservations:
           cpus: '1'
-          memory: 4G
+          memory: 5G
 
-  mongo_cache:
+  mongo:
     container_name: personalai_mmenschikov_test_mongo
     image: mongo:7.0.9
     hostname: localhost #personalai_test_mongo
@@ -61,10 +61,10 @@ services:
       resources:
         limits:
           cpus: '2'
-          memory: 8G
+          memory: 10G
         reservations:
           cpus: '1'
-          memory: 4G
+          memory: 5G
     tty: true
     stdin_open: true
 
@@ -81,9 +81,9 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: pass
       ME_CONFIG_MONGODB_SERVER: personalai_test_mongo
     depends_on:
-      - mongo_cache
+      - mongo
     ports:
-      - "8081:8081"
+      - 8081:8081
 
   redis_cache:
     container_name: personalai_mmenschikov_test_redis
@@ -219,7 +219,6 @@ services:
       - http
       volumes:
         - ./volumes/weaviate/data:/var/lib/weaviate
-      restart: 'no'
       environment:
         QUERY_DEFAULTS_LIMIT: 25
         AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
@@ -235,6 +234,52 @@ services:
           reservations:
             cpus: '1'
             memory: 5G
+
+  mysql:
+    image: mysql:8.0
+    container_name: personalai_mmenschikov_test_mysql
+    hostname: localhost
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: personalai_test
+      MYSQL_USER: personalai
+      MYSQL_PASSWORD: personalai
+    volumes:
+      - ./volumes/mysql:/var/lib/mysql
+      - ../configs/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 3306:3306
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
+  postgresql:
+    image: postgres:16
+    container_name: personalai_mmenschikov_test_postgresql
+    hostname: localhost
+    environment:
+      POSTGRES_DB: personalai_test
+      POSTGRES_USER: personalai
+      POSTGRES_PASSWORD: personalai
+    volumes:
+      - ./volumes/postgresql:/var/lib/postgresql/data # Mounts a host directory for persistent data storage
+      - ../configs/postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 5432:5432
+    shm_size: 128mb
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
 
   isolated_environment:
     image: m.menschikov/workspace:v2
@@ -253,7 +298,7 @@ services:
     depends_on:
       - neo4j
       - redis_cache
-      - mongo_cache
+      - mongo
       - milvus
     deploy:
       resources:

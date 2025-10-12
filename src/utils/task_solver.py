@@ -9,6 +9,7 @@ from .language_detector import detect_lang
 from .errors import ReturnStatus, STATUS_MESSAGE
 from .cache_kv import CacheKV
 from .cache_kv.utils import AbstractCacheInfo
+from .agent_stat_analyzer import AgentStatAnalyzerConfig, AgentStatAnalyzer
 from ..agents.utils import AbstractAgentConnector, LLMInferenceStat
 from ..db_drivers.kv_driver import KeyValueDriverConfig
 
@@ -53,11 +54,10 @@ class AgentTaskSolverConfig:
     postprocess_answer_func: object
 
     cache_table_name: str
+    inferencestat_table_name: str
 
     log: Logger
     verbose: bool = False
-
-    collect_inference_stat: bool = False
 
 
 class AgentTaskSolver(AbstractCacheInfo):
@@ -70,7 +70,8 @@ class AgentTaskSolver(AbstractCacheInfo):
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: AgentTaskSolverConfig,
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
         self.config = config
         self.agent = agent
 
@@ -81,10 +82,10 @@ class AgentTaskSolver(AbstractCacheInfo):
         else:
             self.cachekv = None
 
-        # TODO
-        # костыль
-        if self.config.collect_inference_stat:
-            self.inference_stat_cache: List[LLMInferenceStat] = []
+        if inferencestat_config is not None and self.config.inferencestat_table_name is not None:
+            astat_config = deepcopy(inferencestat_config)
+            astat_config.table_driver_config.db_config.db_info['table'] = self.config.inferencestat_table_name
+            self.inference_stat_cache = AgentStatAnalyzer(astat_config)
         else:
             self.inference_stat_cache = None
 
@@ -221,8 +222,7 @@ class AgentTaskSolver(AbstractCacheInfo):
                         f"* HASH_SEEDS:\n-{formated_log_cachekey }", verbose=self.verbose)
 
             if gen_flag:
-                self.log("Выполняем инференс llm...",
-                         verbose=self.config.verbose)
+                self.log("Выполняем инференс llm...", verbose=self.config.verbose)
 
                 raw_answer, inference_info = self.agent.generate(
                     system_prompt=self.config.suites[detected_lang].system_prompt,
@@ -230,20 +230,15 @@ class AgentTaskSolver(AbstractCacheInfo):
                     assistant_prompt=self.config.suites[detected_lang].assistant_prompt,
                     gen_strategy=gen_strategy)
 
-                # TODO
-                # костыль
-                if self.config.collect_inference_stat:
-                    self.inference_stat_cache.append(inference_info)
+                if self.inference_stat_cache is not None:
+                    self.inference_stat_cache.add_values([inference_info])
 
                 if self.cachekv is not None:
-                    self.log("Кешируем полученный результат.",
-                             verbose=self.config.verbose)
-                    self.cachekv.save_value(
-                        value=raw_answer, key_hash=key_hash)
+                    self.log("Кешируем полученный результат.", verbose=self.config.verbose)
+                    self.cachekv.save_value(value=raw_answer, key_hash=key_hash)
 
             self.log(f"Результат:\n{raw_answer}", verbose=self.config.verbose)
-            self.log("Статус: " +
-                     STATUS_MESSAGE[status], verbose=self.config.verbose)
+            self.log("Статус: " + STATUS_MESSAGE[status], verbose=self.config.verbose)
 
         # Если сгенрированная raw-строка не является пустой
         if status == ReturnStatus.success:

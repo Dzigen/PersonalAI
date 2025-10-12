@@ -3,9 +3,14 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from .errors import NOT_VALID_ID_ERROR_MSG, NO_START_NODE_IN_PARENT_ERROR_MSG, EMPTY_PARENT_ERROR_MSG
-from .traversal_methods.AStarTripletsRetriever import NodeInfo
-from ......utils.data_structs import QueryInfo, Triplet
+from ......utils.data_structs import QueryInfo, Triplet, NodeType
 from ......utils.cache_kv.utils import AbstractCacheInfo
+
+
+@dataclass
+class NodeInfo:
+    id: str
+    type: NodeType
 
 
 def get_nodes_path(parent: Dict[str, NodeInfo], end_node: NodeInfo) -> List[NodeInfo]:

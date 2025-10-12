@@ -15,10 +15,13 @@ class AgentReplThesisTripletTaskConfigSelector:
         return AVAILABLE_REPLACE_THESIS_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v1', cache_table_name: str = "mem_agent_replthesis_task_cache") -> AgentTaskSolverConfig:
+    def select(base_config_version: str = 'v1',
+               cache_table_name: str = "mem_agent_replthesis_task_cache",
+               inferencestat_table_name: str = "mem_agent_replthesis_task_stat") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
             suites=AVAILABLE_REPLACE_THESIS_TCONFIGS[base_config_version],
             formate_context_func=rt_custom_formate, postprocess_answer_func=rt_custom_postprocess,
             cache_table_name=cache_table_name,
+            inferencestat_table_name=inferencestat_table_name,
             log=Logger(REPLACE_THESIS_LOG_PATH))

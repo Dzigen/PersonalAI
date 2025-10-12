@@ -5,11 +5,12 @@ import pickle
 
 from .config import DEFAULT_CACHEKV_CONFIG
 from ...db_drivers.kv_driver import KeyValueDriver, KeyValueDriverConfig, KeyValueDBInstance
+from ...db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
 
 
 class CacheKV:
     def __init__(self, kvdriver_config: KeyValueDriverConfig = DEFAULT_CACHEKV_CONFIG):
-        self.kv_conn = KeyValueDriver.connect(kvdriver_config)
+        self.kv_conn: AbstractKVDatabaseConnection = KeyValueDriver.connect(kvdriver_config)
 
     def __del__(self):
         self.kv_conn.close_connection()

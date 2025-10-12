@@ -15,10 +15,13 @@ class AgentQueryDecompTaskConfigSelector:
         return AVAILABLE_QD_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v1', cache_table_name: str = "qp_qdecomp_agent_task_cache") -> AgentTaskSolverConfig:
+    def select(base_config_version: str = 'v1',
+               cache_table_name: str = "qp_qdecomp_agent_task_cache",
+               inferencestat_table_name: str = "qp_qdecomp_agent_task_stat") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
             suites=AVAILABLE_QD_TCONFIGS[base_config_version],
             formate_context_func=qd_custom_formate, postprocess_answer_func=qd_custom_postprocess,
             cache_table_name=cache_table_name,
+            inferencestat_table_name=inferencestat_table_name,
             log=Logger(QD_LOG_PATH))

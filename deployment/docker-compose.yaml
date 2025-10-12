@@ -7,13 +7,13 @@ services:
     image: neo4j:5.21.0-enterprise
     hostname: localhost
     ports:
-      - "7474:7474"
-      - "7687:7687"
+      - 7474:7474
+      - 7687:7687
     environment:
       - NEO4J_AUTH=neo4j/password
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
     volumes:
-      - ../../neo4j_volume/data:/data
+      - ../../personalai_volumes/neo4j:/data
     deploy:
       resources:
         limits:
@@ -40,7 +40,7 @@ services:
       - 2379:2379
       - 9091:9091
     volumes:
-      - ../../milvus_volume/data:/var/lib/milvus
+      - ../../personalai_volumes/milvus:/var/lib/milvus
       - ../configs/milvus/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
       - ../configs/milvus/user.yaml:/milvus/configs/user.yaml
     healthcheck:
@@ -69,7 +69,7 @@ services:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
     volumes:
-      - ../../opensearch_volume/data:/usr/share/opensearch/data
+      - ../../personalai_volumes/opensearch:/usr/share/opensearch/data
     deploy:
       resources:
         limits:
@@ -90,7 +90,7 @@ services:
       - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
       - xpack.security.enabled=false
     volumes:
-      - ../../elasticsearch_volume/data:/usr/share/elasticsearch/data
+      - ../../personalai_volumes/elasticsearch:/usr/share/elasticsearch/data
     deploy:
       resources:
         limits:
@@ -115,8 +115,7 @@ services:
       - --scheme
       - http
       volumes:
-        - weaviate_data:/var/lib/weaviate
-      restart: 'no'
+        - ../../personalai_volumes/weaviate:/var/lib/weaviate
       environment:
         QUERY_DEFAULTS_LIMIT: 25
         AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
@@ -132,6 +131,52 @@ services:
           reservations:
             cpus: '1'
             memory: 5G
+
+  mysql:
+    image: mysql:8.0
+    container_name: personalai_mmenschikov_mysql
+    hostname: localhost
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: personalai
+      MYSQL_USER: personalai
+      MYSQL_PASSWORD: personalai
+    volumes:
+      - ../../personalai_volumes/mysql:/var/lib/mysql
+      - ../configs/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 3306:3306
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
+  postgresql:
+    image: postgres:16
+    container_name: personalai_mmenschikov_test_postgresql
+    hostname: localhost
+    environment:
+      POSTGRES_DB: personalai_test
+      POSTGRES_USER: personalai
+      POSTGRES_PASSWORD: personalai
+    volumes:
+      - ../../personalai_volumes/postgresql:/var/lib/postgresql/data # Mounts a host directory for persistent data storage
+      - ../configs/postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 5432:5432
+    shm_size: 128mb
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
 
   workspace:
     image: m.menschikov/workspace:v1

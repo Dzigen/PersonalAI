@@ -19,10 +19,13 @@ class AgentSimpleAGTaskConfigSelector:
         return AVAILABLE_SIMPLEAG_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v1', cache_table_name: str = "qa_agent_ag_task_cache") -> AgentTaskSolverConfig:
+    def select(base_config_version: str = 'v1',
+               cache_table_name: str = "qa_agent_ag_task_cache",
+               inferencestat_table_name: str = 'qa_agent_ag_task_stat') -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
             suites=AVAILABLE_SIMPLEAG_TCONFIGS[base_config_version],
             formate_context_func=simpleag_custom_formate, postprocess_answer_func=simpleag_custom_postprocess,
             cache_table_name=cache_table_name,
+            inferencestat_table_name=inferencestat_table_name,
             log=Logger(SIMPLEAGERATION_LOG_PATH))

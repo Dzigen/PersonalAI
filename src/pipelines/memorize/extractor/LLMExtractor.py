@@ -101,6 +101,7 @@ class LLMExtractor(AbstractCacheInfo):
         """
         assert self.config.need_simple or self.config.need_thesises
         props = dict() if properties is None else deepcopy(properties)
+
         assert 'time' not in props.keys()
         new_triplets, info = [], ReturnInfo()
 
