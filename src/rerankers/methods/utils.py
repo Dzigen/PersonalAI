@@ -9,21 +9,21 @@ class AbstractRerankerModule(ABC):
     def run(self, query: str, top_k: int = 1, subset_ids: Union[None, List[str]] = None,
             includes: List[str] = ['documents', 'metadatas'], return_with_embeddings: bool = False,
             return_with_scores: bool = False) -> Union[List[Tuple[float, VectorDBInstance]], List[VectorDBInstance]]:
-        """_summary_
+        """Метод предназначен для запуска/выполнения логики заданного Retrieve/Rerank-оператора.
 
-        :param query: _description_
+        :param query: Текст/запрос на естественном языке для извлечения релевантных элементов на его основе.
         :type query: str
-        :param top_k: _description_, defaults to 1
+        :param top_k: Максимальное количество извлекаемых элементов. Значение по умочланию 1.
         :type top_k: int, optional
-        :param subset_ids: _description_, defaults to None
+        :param subset_ids: Подмножество идентификаторов элементов, в рамках которого нужно искать релевантные элементы. Значение по умолчанию None.
         :type subset_ids: Union[None, List[str]], optional
-        :param includes: _description_, defaults to ['documents', 'metadatas']
+        :param includes: Названия полей в возвращаемых релевантных элементах, которые должны быть заполнены. Значения по умолчанию ['documents', 'metadatas'].
         :type includes: List[str], optional
-        :param return_with_embeddings: _description_, defaults to False
+        :param return_with_embeddings: Если True, то в структурах данных возвращаемых релевантных элементов будет содержаться их векторные представления. Значение по умолчанию False.
         :type return_with_embeddings: Union[str, bool], optional
-        :param return_with_scores: _description_, defaults to False
+        :param return_with_scores: Если True, то возвращаемым релевантным элементам будет сопоставлена их similarity-оценка к запросу, иначе False. Значение по умолчанию False.
         :type return_with_scores: Union[str, bool], optional
-        :return: _description_
+        :return: Релевантный набор элементов к заданному запросу.
         :rtype: Union[List[Tuple[float, VectorDBInstance]], List[VectorDBInstance]]
         """
         pass
