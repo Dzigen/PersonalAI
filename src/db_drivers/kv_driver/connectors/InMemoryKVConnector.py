@@ -1,6 +1,5 @@
-from typing import List, Dict
+from typing import List, Dict, Union
 import gc
-import joblib
 import pickle
 import os
 import time
@@ -15,15 +14,21 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
 
     def __init__(self, config: KVDBConnectionConfig = DEFAULT_INMEMORYKV_CONFIG) -> None:
         self.config = config
+        self.kv_store: Union[None, Dict[str, object]] = None
 
     def open_connection(self) -> None:
+        # print("opening kv connection...")
         if self.config.params['load_from_disk']:
-            load_path = f"{self.config.params['load_dump_dir']}/{self.config.params['kvstore_dump_name']}.dump"
+            load_path = f"{self.config.params['load_dump_dir']}/{self.config.db_info['table']}.pkl"
             if os.path.exists(load_path):
-                self.kv_store = joblib.load(load_path)
+                try:
+                    with open(load_path, 'rb') as fd:
+                        self.kv_store = pickle.load(fd)
+                except EOFError:
+                    print(f"The pickle file '{load_path}' is empty or corrupted.")
+                    self.kv_store = dict()
             else:
-                print(
-                    f"warning: kvstore-dump '{load_path}' doesnt exists. creating empty kv-store")
+                print(f"warning: kvstore-dump '{load_path}' doesnt exists. creating empty kv-store")
                 self.kv_store = dict()
         else:
             self.kv_store = dict()
@@ -31,20 +36,33 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         if self.config.need_to_clear:
             self.clear()
 
+        # print("kv-store type check: ", type(self.kv_store))
+        # print("kv-store is not None:", self.kv_store is not None)
+
     def is_open(self) -> bool:
         return hasattr(self, 'kv_store')
 
     def close_connection(self) -> None:
+        if self.kv_store is None:
+            return
+        # print("closing kv connection...")
+        # print("kv-store type check: ", type(self.kv_store))
+        # print("kv-store is not None:", self.kv_store is not None)
         if self.config.params['save_on_disk']:
-            save_path = f"{self.config.params['save_dump_dir']}/{self.config.params['kvstore_dump_name']}"
+            os.makedirs(self.config.params['save_dump_dir'], exist_ok=True)
+            save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['table']}"
             if os.path.exists(save_path):
                 print("warning: file on that path is already exists")
                 postfix = hashlib.md5(str(time.time()).encode()).hexdigest()
-                save_path += postfix
-            save_path += '.dump'
+                save_path += f"({postfix})"
+            save_path += '.pkl'
 
-            joblib.dump(self.kv_store, save_path)
-        del self.kv_store
+            with open(save_path, 'wb') as fd:
+                pickle.dump(self.kv_store, fd)
+
+            # print(f"kv-store saved in: {save_path}")
+
+        self.kv_store = None
         gc.collect()
 
     def create(self, items: List[KeyValueDBInstance]) -> None:
@@ -52,7 +70,7 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
             if item is None or item.id is None or item.value is None:
                 raise ValueError
 
-            if type(item.id) is not str:
+            if not isinstance(item.id, str):
                 raise ValueError(
                     f"id: t - {type(item.id)}; v - {item.id} value: t - {type(item.value)}; v - {item.value}")
 
@@ -71,7 +89,7 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
                 self.delete_rare_items(n_items_to_delete)
 
         for item in filtered_items:
-            if type(item.value) is bytes:
+            if isinstance(item.value, bytes):
                 dumped_value = pickle.dumps((item.value, 'bytes'))
             else:
                 dumped_value = pickle.dumps((item.value, 'notbytes'))
@@ -84,7 +102,7 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
 
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
         for id in ids:
-            if (id is None) or (type(id) is not str):
+            if (id is None) or (not isinstance(id, str)):
                 raise ValueError
 
         items = []
@@ -112,7 +130,7 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
 
     def delete(self, ids: List[str]):
         for id in ids:
-            if type(id) is not str:
+            if not isinstance(id, str):
                 raise ValueError
 
         for id in ids:
@@ -128,6 +146,6 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         return len(self.kv_store)
 
     def item_exist(self, id: str):
-        if type(id) is not str:
+        if not isinstance(id, str):
             raise ValueError
         return id in self.kv_store

@@ -17,8 +17,8 @@ from .......rerankers import RerankerDriver, RerankerDriverConfig
 class NaiveGraphSearchConfig(BaseGraphSearchConfig):
     """Конфигурация NaiveRetrieval-алгоритма обхода графа.
 
-    :param reranker_driver_config: ... . Значение по умолчанию GS_RERANKDRIVER_DEFAULT_CONFIG.
-    :param RerankerDriverConfig, optional
+    :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию NGS_RERANKDRIVER_DEFAULT_CONFIG.
+    :type reranker_driver_config: RerankerDriverConfig, optional
     :param max_k: Макисмальное количество трипелтов, которое может быть извлечено из графа. Значение по умолчанию 50.
     :type max_k: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveTripletsRetriever-класса. Значение по умолчанию 'qa_naive_t_retriever_cache'.
@@ -60,7 +60,7 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
         self.retriever = RerankerDriver.specify(
             self.config.reranker_driver_config,
-            kg_model.graph_embeddings.triplets_vectordbs
+            kg_model.graph_embeddings.triplets_vcomposer
         )
 
         self.log = log
@@ -72,7 +72,7 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
         return {'NaiveTripletsRetriever': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
 
-    def clear_kv_caches(self, level='all') -> None:
+    def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")

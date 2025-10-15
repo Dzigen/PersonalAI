@@ -112,7 +112,7 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             'retriever2': self.retriever2.get_cache_stat()
         }
 
-    def clear_kv_caches(self, level='all') -> None:
+    def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")

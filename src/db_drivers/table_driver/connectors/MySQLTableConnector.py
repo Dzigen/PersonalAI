@@ -26,7 +26,7 @@ class MySQLTableConnector(AbstractTableDatabaseConnection):
         self.cursor = self.conn.cursor()
 
         if self.config.db_info.get('create_table_query', None) is not None:
-            self.create_table(self.config.db_info['create_table_query'])
+            self.create_table(self.config.db_info['create_table_query'].format(table_name=self.config.db_info['table']))
 
     def close_connection(self) -> None:
         self.cursor.close()

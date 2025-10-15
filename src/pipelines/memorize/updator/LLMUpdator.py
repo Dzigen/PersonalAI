@@ -9,6 +9,7 @@ from ....utils.errors import ReturnInfo, ReturnStatus, STATUS_MESSAGE
 from ....kg_model import KnowledgeGraphModel
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv.utils import AbstractCacheInfo
+from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
@@ -52,20 +53,23 @@ class LLMUpdator(AbstractCacheInfo):
     :type config: LLMUpdatorConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: LLMUpdatorConfig = LLMUpdatorConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
         self.config = config
         self.kg_model = kg_model
 
         self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
         self.tasks_solvers['replace_simple_solver'] = AgentTaskSolver(
             kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.mem_pipeline],
-            self.config.replace_simple_task_config, cache_kvdriver_config)
+            self.config.replace_simple_task_config, cache_kvdriver_config, inferencestat_config)
         self.tasks_solvers['replace_hyper_solver'] = AgentTaskSolver(
             kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.mem_pipeline],
-            self.config.replace_thesis_task_config, cache_kvdriver_config)
+            self.config.replace_thesis_task_config, cache_kvdriver_config, inferencestat_config)
 
         self.log = self.config.log
         self.verbose = self.config.verbose

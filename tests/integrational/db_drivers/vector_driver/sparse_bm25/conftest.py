@@ -44,7 +44,15 @@ def elasticsearch_bm25_conn():
 def inmemory_bm25_conn():
     config = VectorDriverConfig(
         db_vendor='inmemory', vector_category='sparse_bm25',
-        db_config=VectorDBConnectionConfig())
+        db_config=VectorDBConnectionConfig(
+            params={
+                'store_dump_name': 'inmemory_bm25',
+                'load_from_disk': False,
+                'load_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_bm25",
+                'save_on_disk': False,
+                'save_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_bm25"
+            }
+        ))
     return VectorDriver.connect(config)
 
 # ------------------------------#

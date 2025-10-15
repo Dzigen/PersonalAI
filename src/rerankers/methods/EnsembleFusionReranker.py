@@ -75,7 +75,7 @@ class EnsembleFusionReranker(AbstractRerankerModule):
         else:
             for vdb_name in self.config.vdb_names:
                 if vdb_name not in vdb_composer.vdb_conn_mapping.keys():
-                    raise ValueError
+                    raise ValueError(f"{vdb_name} not in {vdb_composer.vdb_conn_mapping.keys()}")
 
         if self.config.weights is not None:
             if not isinstance(self.config.weights, list):
@@ -98,7 +98,7 @@ class EnsembleFusionReranker(AbstractRerankerModule):
 
         return True
 
-    def validate_run_arguments(self, query: str, top_k: int, subset_ids: Union[None, List[str]],
+    def validate_run_arguments(self, query: str, top_k: int, subset_ids: Union[None, List[str]], includes: List[str],
                                return_with_embeddings: Union[str, bool], return_with_scores: Union[bool, str]) -> bool:
         if not isinstance(query, str):
             raise TypeError
@@ -127,6 +127,7 @@ class EnsembleFusionReranker(AbstractRerankerModule):
 
         q_instance = VectorDBInstance(document=query)
         doc_lists = []
+        docid_to_scores = defaultdict(lambda: {v_name: None for v_name in self.config.vdb_names})
         for i, vdb_name in enumerate(self.config.vdb_names):
             fetch_n, threshold = self.config.retriever_configs[i].fetch_n, self.config.retriever_configs[i].threshold
 
@@ -137,11 +138,16 @@ class EnsembleFusionReranker(AbstractRerankerModule):
             else:
                 filtered_instances = instances
 
-            formated_instances = list(map(lambda inst: inst[1], filtered_instances))
+            formated_instances = []
+            for raw_instance in filtered_instances:
+                formated_instances.append(raw_instance[1])
+                docid_to_scores[raw_instance[1].id][vdb_name] = raw_instance[0]
+
             doc_lists.append(formated_instances)
 
         fused_instances = self.weighted_reciprocal_rank(doc_lists)[:top_k]
 
+        #
         include_fields = deepcopy(includes)
         if isinstance(return_with_embeddings, str):
             vdb_name = return_with_embeddings
@@ -149,14 +155,17 @@ class EnsembleFusionReranker(AbstractRerankerModule):
             inst_ids = list(map(lambda inst: inst.id, fused_instances))
             fused_instances = self.vdb_composer.read(inst_ids, vdb_name=vdb_name, includes=include_fields)
 
+        #
         if isinstance(return_with_scores, str):
             vdb_name = return_with_scores
-            inst_ids = list(map(lambda inst: inst.id, fused_instances))
-            instances_w_scores = self.vdb_composer.vdb_conn_mapping[vdb_name].retrieve(
-                [q_instance], n_results=len(inst_ids), subset_ids=inst_ids, includes=[])[0]
-            id_to_score_map = {inst[1].id: inst[0] for inst in instances_w_scores}
+            fused_instances = [(float(docid_to_scores[instance.id][vdb_name]), instance) for instance in fused_instances]
 
-            fused_instances = [(id_to_score_map[instance.id], instance) for instance in fused_instances]
+        elif return_with_scores:
+            tmp_instances = []
+            for instance in fused_instances:
+                weighted_score = float(sum([docid_to_scores[instance.id][vdb_name] * self.config.weights[i] for i, vdb_name in enumerate(self.config.vdb_names)]))
+                tmp_instances.append((weighted_score, instance))
+            fused_instances = tmp_instances
 
         return fused_instances
 

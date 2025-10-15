@@ -27,7 +27,6 @@ class StubAgentConnector(AbstractAgentConnector):
         inference_info = LLMInferenceStat(
             prompt_tokens_amount=0,
             generated_tokens_amount=0,
-            preparation_elapsed_time=0,
             inference_elapsed_time=0
         )
 

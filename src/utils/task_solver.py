@@ -92,6 +92,7 @@ class AgentTaskSolver(AbstractCacheInfo):
         else:
             self.cachekv = None
 
+        # print(self.config.cache_table_name, inferencestat_config is not None, self.config.inferencestat_table_name is not None)
         if inferencestat_config is not None and self.config.inferencestat_table_name is not None:
             astat_config = deepcopy(inferencestat_config)
             astat_config.table_driver_config.db_config.db_info['table'] = self.config.inferencestat_table_name
@@ -103,9 +104,8 @@ class AgentTaskSolver(AbstractCacheInfo):
         self.verbose = self.config.verbose
 
     def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[int, float]]]:
-        if self.cachekv is not None:
-            # TODO
-            raise NotImplementedError
+        if self.inference_stat_cache is not None:
+            return self.inference_stat_cache.calculate_stat()
         else:
             return None
 

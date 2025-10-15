@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Union
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
@@ -42,8 +42,19 @@ def get_nodes_path(parent: Dict[str, NodeInfo], end_node: NodeInfo) -> List[Node
     return path
 
 
+@dataclass
+class BaseTripletsFilterConfig:
+    """Базовая конфигурация алгоритмов по ранжированию/фильтрации триплетов."""
+
+    def to_str(self) -> str:
+        pass
+
+
 class AbstractTriplesFilter(AbstractCacheInfo):
     """Интерфейс алгоритмов фильтрации/ранжирования триплетов."""
+
+    config: Union[None, BaseTripletsFilterConfig] = None
+
     @abstractmethod
     def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
         """Метод предназначен для применения операциии ранжирования/фильтрации к набору триплетов на основе меры их релевантности к user-вопросу.
@@ -57,18 +68,8 @@ class AbstractTriplesFilter(AbstractCacheInfo):
         """
         pass
 
-
-class AbstractTripletsRetriever(AbstractCacheInfo):
-    """Интерфейс алгоритмов извлечения триплетов из графа знаний."""
     @abstractmethod
-    def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
-        """Метод предназначен для извлечения триплетов из графа знаний на основе информации из user-вопроса. Возвращаемый список триплетов не содержит дубликатов (по строковому представлению).
-
-        :param query_info: Структура данных с информацией о user-вопросе.
-        :type query_info: QueryInfo
-        :return: Набор триплетов, извлечённый из графа знаний.
-        :rtype: List[Triplet]
-        """
+    def clear_kv_caches(self, level: str = 'all') -> None:
         pass
 
 
@@ -80,9 +81,22 @@ class BaseGraphSearchConfig:
         pass
 
 
-@dataclass
-class BaseTripletsFilterConfig:
-    """Базовая конфигурация алгоритмов по ранжированию/фильтрации триплетов."""
+class AbstractTripletsRetriever(AbstractCacheInfo):
+    """Интерфейс алгоритмов извлечения триплетов из графа знаний."""
 
-    def to_str(self) -> str:
+    config: Union[None, BaseGraphSearchConfig] = None
+
+    @abstractmethod
+    def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
+        """Метод предназначен для извлечения триплетов из графа знаний на основе информации из user-вопроса. Возвращаемый список триплетов не содержит дубликатов (по строковому представлению).
+
+        :param query_info: Структура данных с информацией о user-вопросе.
+        :type query_info: QueryInfo
+        :return: Набор триплетов, извлечённый из графа знаний.
+        :rtype: List[Triplet]
+        """
+        pass
+
+    @abstractmethod
+    def clear_kv_caches(self, level: str = 'all') -> None:
         pass

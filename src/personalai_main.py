@@ -7,7 +7,8 @@ from .pipelines.memorize import MemPipeline, MemPipelineConfig
 from .utils import Logger, ReturnInfo, Triplet
 from .utils.data_structs import create_id
 from .db_drivers.kv_driver import KeyValueDriverConfig
-from .config import PAI_MAIN_LOG_PATH
+from .config import PAI_MAIN_LOG_PATH, DEFAULT_PERSONALAI_KVCACHE_CONFIG
+from .utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
@@ -43,15 +44,21 @@ class PersonalAI:
     :type config: PersonalAIConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования результатов промежуточных операций ассистента. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
-    def __init__(self, config: PersonalAIConfig = PersonalAIConfig(), cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
+    def __init__(self, config: PersonalAIConfig = PersonalAIConfig(),
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = DEFAULT_PERSONALAI_KVCACHE_CONFIG,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = AgentStatAnalyzerConfig()) -> None:
         self.kg_model = KnowledgeGraphModel(
             config.kg_model_config, cache_kvdriver_config)
         self.qa_pipeline = QAPipeline(
-            self.kg_model, config.qa_pipeline_config, cache_kvdriver_config)
+            self.kg_model, config.qa_pipeline_config,
+            cache_kvdriver_config, inferencestat_config)
         self.mem_pipeline = MemPipeline(
-            self.kg_model, config.mem_pipeline_config, cache_kvdriver_config)
+            self.kg_model, config.mem_pipeline_config,
+            cache_kvdriver_config, inferencestat_config)
 
         self.log = config.log
         self.verbose = config.verbose
@@ -94,3 +101,9 @@ class PersonalAI:
             f"RESULT:\n* EXTRACTED_TRIPLETS AMOUNT - {len(triplets)}", verbose=self.verbose)
 
         return triplets, info
+
+    def __del__(self):
+        # print("deleting PersonalAI-class")
+        del self.kg_model
+        del self.qa_pipeline
+        del self.mem_pipeline

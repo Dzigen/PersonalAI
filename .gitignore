@@ -6,25 +6,25 @@ data/
 debug/
 .env_secret_llmkeys
 
-experiments/legacy
-experiments/qa_kg/legacy
 personalai_tmp/
 tests/log
 
-experiments/qa_kg/results/**/tmp_answer_packs/
-experiments/qa_kg/results/**/answer_packs/
-experiments/qa_kg/results/**/judges_packs/
-experiments/qa_kg/results/**/tmp_judges_packs/
-experiments/qa_kg/results/**/metric_packs/
-experiments/qa_kg/results/**/log/
-experiments/qa_kg/results/**/aeval_cron.txt
-experiments/qa_kg/**/qacron_log.txt
-experiments/qa_kg/results/**/agen_cron.txt
-experiments/qa_kg/results/**/llm_aeval_cron.txt
+experiments/qa/weak/results/**/tmp_answer_packs/
+experiments/qa/weak/results/**/answer_packs/
+experiments/qa/weak/results/**/judges_packs/
+experiments/qa/weak/results/**/tmp_judges_packs/
+experiments/qa/weak/results/**/metric_packs/
+experiments/qa/weak/results/**/log/
+experiments/qa/weak/results/**/aeval_cron.txt
+experiments/qa/weak/**/qacron_log.txt
+experiments/qa/weak/results/**/agen_cron.txt
+experiments/qa/results/**/llm_aeval_cron.txt
+experiments/qa/results/**/kg_reasoner_config
+experiments/qa/results/**/qa_config
 
-experiments/qa_kg/results/diaasq_legacy
+experiments/qa/weak/results/diaasq_legacy
 experiments/legacy
-experiments/qa_kg/legacy
+experiments/qa/weak/legacy
 
 create_local_db/
 archives/

@@ -10,6 +10,7 @@ from ......agents.utils import AbstractAgentConnector
 from ......utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
+from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
@@ -61,10 +62,13 @@ class QALLMGenerator(CacheUtils):
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: QALLMGeneratorConfig = QALLMGeneratorConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
         self.config = config
 
         self.cachekv = self.init_cachekv(
@@ -77,7 +81,8 @@ class QALLMGenerator(CacheUtils):
 
         self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
         self.tasks_solvers['answer_generator_solver'] = AgentTaskSolver(
-            self.agent, self.config.ag_task_config, ag_task_cache_config)
+            self.agent, self.config.ag_task_config,
+            ag_task_cache_config, inferencestat_config)
 
         self.log = self.config.log
         self.verbose = self.config.verbose

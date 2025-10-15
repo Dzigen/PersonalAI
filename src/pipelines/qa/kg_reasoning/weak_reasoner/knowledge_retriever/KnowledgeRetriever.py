@@ -4,7 +4,7 @@ from typing import List, Tuple, Union, Dict
 from .configs import KR_MAIN_LOG_PATH, AVAILABLE_TRIPLETS_FILTERS, AVAILABLE_TRIPLETS_RETRIEVERS
 from .utils import BaseGraphSearchConfig, BaseTripletsFilterConfig, AbstractTriplesFilter, AbstractTripletsRetriever
 from .filtering_methods.TripletsFilter import TripletsFilterConfig
-from .traversal_methods.WaterCirclesTripletsRetriever import WaterCirclesSearchConfig
+from .traversal_methods.BeamSearchTripletsRetriever import GraphBeamSearchConfig
 from ......kg_model import KnowledgeGraphModel
 from ......utils import Logger, ReturnStatus, ReturnInfo
 from ......utils.errors import STATUS_MESSAGE
@@ -33,8 +33,8 @@ class KnowledgeRetrieverConfig:
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
     """
-    retriever_method: str = 'watercircles'
-    retriever_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: WaterCirclesSearchConfig())
+    retriever_method: str = 'beamsearch'
+    retriever_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: GraphBeamSearchConfig())
     filter_method: str = 'naive'
     filter_config: Union[BaseTripletsFilterConfig, Dict] = field(default_factory=lambda: TripletsFilterConfig())
 
@@ -118,10 +118,10 @@ class KnowledgeRetriever(CacheUtils, AbstractCacheInfo):
             # sn_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.start_node.id, id_type='node')
             # en_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.end_node.id, id_type='node')
 
-            r_vector_exists = self.kg_model.graph_embeddings.triplets_vectordbs.item_exist(
+            r_vector_exists = self.kg_model.graph_embeddings.triplets_vcomposer.item_exist(
                 triplet.relation.id)
-            # sn_vector_exists = self.kg_model.graph_embeddings.nodes_vectordbs.item_exist(triplet.start_node.id)
-            # en_vector_exists = self.kg_model.graph_embeddings.nodes_vectordbs.item_exist(triplet.end_node.id)
+            # sn_vector_exists = self.kg_model.graph_embeddings.nodes_vcomposers.item_exist(triplet.start_node.id)
+            # en_vector_exists = self.kg_model.graph_embeddings.nodes_vcomposers.item_exist(triplet.end_node.id)
 
             if not (r_graph_exists and r_graph_exists):
                 self.log(

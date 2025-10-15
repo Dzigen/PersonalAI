@@ -14,6 +14,6 @@ class KeyValueDriverConfig:
 class KeyValueDriver:
     @staticmethod
     def connect(config: KeyValueDriverConfig = KeyValueDriverConfig()) -> AbstractKVDatabaseConnection:
-        kv_conn = AVAILABLE_KVDB_CONNECTORS[config.db_vendor](config.db_config)
+        kv_conn: AbstractKVDatabaseConnection = AVAILABLE_KVDB_CONNECTORS[config.db_vendor](config.db_config)
         kv_conn.open_connection()
         return kv_conn

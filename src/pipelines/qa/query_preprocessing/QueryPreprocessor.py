@@ -13,6 +13,7 @@ from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv import CacheUtils
 from ....agents.utils import AbstractAgentConnector
 from ....utils.cache_kv.utils import AbstractCacheInfo
+from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
@@ -56,25 +57,37 @@ class QueryPreprocessor(CacheUtils, AbstractCacheInfo):
     :type config: QueryPreprocessorConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[None, KeyValueDriverConfig], optional
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: QueryPreprocessorConfig = QueryPreprocessorConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
         self.config = config
         self.using_agent_info = {'kw': agent.CONNECTOR_KW, 'config': agent.config}
 
         if self.config.denoising_config is not None:
-            self.denoiser = QueryDenoiser(agent, self.config.denoising_config, cache_kvdriver_config)
+            self.denoiser = QueryDenoiser(
+                agent, self.config.denoising_config,
+                cache_kvdriver_config,
+                inferencestat_config=inferencestat_config)
         else:
             self.denoiser = None
 
         if self.config.enhancing_config:
-            self.enhancer = QueryEnhancer(agent, self.config.enhancing_config, cache_kvdriver_config)
+            self.enhancer = QueryEnhancer(
+                agent, self.config.enhancing_config,
+                cache_kvdriver_config,
+                inferencestat_config=inferencestat_config)
         else:
             self.enhancer = None
 
         if self.config.decomposition_config:
-            self.decomposer = QueryDecomposer(agent, self.config.decomposition_config, cache_kvdriver_config)
+            self.decomposer = QueryDecomposer(
+                agent, self.config.decomposition_config,
+                cache_kvdriver_config,
+                inferencestat_config=inferencestat_config)
         else:
             self.decomposer = None
 

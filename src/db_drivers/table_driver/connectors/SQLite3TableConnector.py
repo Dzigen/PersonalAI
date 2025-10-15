@@ -3,7 +3,6 @@ from typing import List, Dict, Tuple, Union
 from collections import defaultdict
 from dataclasses import fields, asdict
 import os
-import joblib
 import gc
 from time import time
 import hashlib
@@ -23,12 +22,14 @@ class SQLite3TableConnector(AbstractTableDatabaseConnection):
         raise NotImplementedError
 
     def open_connection(self) -> None:
-        database_path = f"{self.config.params.get('database_dname', '.')}/{self.config.db_info['table']}.db"
-        self.conn = sqlite3.connect(database_path)
+        if self.config.params.get('database_path', None) is not None:
+            os.makedirs(self.config.params['database_path'], exist_ok=True)
+        table_path = f"{self.config.params.get('database_path', '.')}/{self.config.db_info['table']}.db"
+        self.conn = sqlite3.connect(table_path)
         self.cursor = self.conn.cursor()
 
         if self.config.db_info.get('create_table_query', None) is not None:
-            self.create_table(self.config.db_info['create_table_query'])
+            self.create_table(self.config.db_info['create_table_query'].format(table_name=self.config.db_info['table']))
 
     def close_connection(self) -> None:
         self.cursor.close()

@@ -2,7 +2,6 @@ from typing import Dict, List, Union
 from dataclasses import dataclass, field
 from abc import abstractmethod
 
-from ...utils import ReturnInfo
 from ...utils.data_structs import Triplet, NodeType, RelationType, Node
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
@@ -18,7 +17,7 @@ class GraphDBConnectionConfig(BaseDatabaseConfig):
 class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
 
     @abstractmethod
-    def create(self, triplets: List[Triplet], creation_info: Dict = dict()) -> ReturnInfo:
+    def create(self, triplets: List[Triplet], creation_info: Dict = dict()) -> None:
         pass
 
     @abstractmethod

@@ -16,6 +16,6 @@ def answcls_custom_parse(raw_response: str, **kwargs) -> List[str]:
 
     # Пустой ответ
     if len(answer) < 1:
-        raise ValueError
+        raise ValueError(f"raw_response: '{raw_response}'")
 
     return answer

@@ -49,25 +49,25 @@ class EmbeddingsModel:
     def __init__(self, embedders_mapping: Dict[str, EmbedderModel], config: EmbeddingsModelConfig = EmbeddingsModelConfig()):
         self.config = config
 
-        self.triplets_vectordbs: VectorComposer = VectorComposer(
+        self.triplets_vcomposer: VectorComposer = VectorComposer(
             self.config.tripletsdb_driver_configs_mapping, embedders_mapping)
 
         # Создаём наборй векторных бд для вершины каждого типа в отдельности
-        self.nodes_vectordbs: Dict[NodeType, VectorComposer] = {}
+        self.nodes_vcomposers: Dict[NodeType, VectorComposer] = dict()
         nodes_types = [NodeType.object, NodeType.hyper, NodeType.episodic]
         for node_type in nodes_types:
             modified_configs: Dict[str, VectorDriverConfig] = deepcopy(self.config.nodesdb_driver_configs_mapping)
             for m_config in modified_configs.values():
                 m_config.db_config.db_info['table'] += f"_{node_type.value}"
-            self.nodes_vectordbs[node_type] = VectorComposer(modified_configs, embedders_mapping)
+            self.nodes_vcomposers[node_type] = VectorComposer(modified_configs, embedders_mapping)
 
         self.log = self.config.log
         self.verbose = self.config.verbose
 
     def check_consistency(self) -> bool:
-        for v_composer in self.nodes_vectordbs.values():
+        for v_composer in self.nodes_vcomposers.values():
             v_composer.check_consistency()
-        self.triplets_vectordbs.check_consistency()
+        self.triplets_vcomposer.check_consistency()
 
     def create_triplets(self, triplets: List[Triplet], create_nodes: bool = True,
                         batch_size: int = 128, status_bar: bool = True) -> Dict[str, Set[str]]:
@@ -104,7 +104,7 @@ class EmbeddingsModel:
                     cur_triplet) if cur_triplet.stringified is None else (None, cur_triplet.stringified)
                 if cur_rel_id not in unique_relation_ids:
                     unique_relation_ids.add(cur_rel_id)
-                    if ((cur_rel_id not in existed_relation_ids) and (not self.triplets_vectordbs.item_exist(cur_rel_id))):
+                    if ((cur_rel_id not in existed_relation_ids) and (not self.triplets_vcomposer.item_exist(cur_rel_id))):
                         existed_relation_ids.add(cur_rel_id)
                         relations_info.append(VectorDBInstance(
                             id=cur_triplet.relation.id, document=triplet_str,
@@ -118,7 +118,7 @@ class EmbeddingsModel:
                             unique_node_ids.add(node.id)
                             _, node_str = NodeCreator.stringify(
                                 node) if node.stringified is None else (None, node.stringified)
-                            if ((node.id not in existed_node_ids) and (not self.nodes_vectordbs[node.type].item_exist(node.id))):
+                            if ((node.id not in existed_node_ids) and (not self.nodes_vcomposers[node.type].item_exist(node.id))):
                                 existed_node_ids.add(node.id)
                                 grouped_nodes_info[node.type].append(VectorDBInstance(
                                     id=node.id, document=node_str, metadata={'id': node.id}))
@@ -164,9 +164,9 @@ class EmbeddingsModel:
         """
         torch.cuda.empty_cache()
         if db_type == 'nodes':
-            self.nodes_vectordbs[cat_type].create(instances)
+            self.nodes_vcomposers[cat_type].create(instances)
         elif db_type == 'relations':
-            self.triplets_vectordbs.create(instances)
+            self.triplets_vcomposer.create(instances)
         else:
             raise ValueError
 
@@ -226,9 +226,9 @@ class EmbeddingsModel:
         :type cat_type: Union[NodeType, None], optional
         """
         if db_type == 'nodes':
-            self.nodes_vectordbs[cat_type].delete(ids)
+            self.nodes_vcomposers[cat_type].delete(ids)
         elif db_type == 'relations':
-            self.triplets_vectordbs.delete(ids)
+            self.triplets_vcomposer.delete(ids)
 
     def read_embbeddings(self, db_type: str, ids: List[str], cat_type: Union[None, NodeType] = None) -> List[List[float]]:
         """Метод предназначен для получения векторных представлений объектов из определённой бд векторной структуры: из бд с триплетами или вершинами.
@@ -243,9 +243,9 @@ class EmbeddingsModel:
         :type cat_type: Union[NodeType, None], optional
         """
         if db_type == 'nodes':
-            instances = self.nodes_vectordbs[cat_type].read(ids, includes=['embeddings'])
+            instances = self.nodes_vcomposers[cat_type].read(ids, includes=['embeddings'])
         elif db_type == 'triplets':
-            instances = self.triplets_vectordbs.read(ids, includes=['embeddings'])
+            instances = self.triplets_vcomposer.read(ids, includes=['embeddings'])
         else:
             raise ValueError
 
@@ -253,12 +253,12 @@ class EmbeddingsModel:
         return embeddings
 
     def count_items(self, detailed: bool = False) -> Dict[str, int]:
-        self.check_consistency()
-        nodes_count = {n_type.value: v_composer.count_items() for n_type, v_composer in self.nodes_vectordbs.items()}
+        # self.check_consistency()
+        nodes_count = {n_type.value: v_composer.count_items() for n_type, v_composer in self.nodes_vcomposers.items()}
         if not detailed:
             nodes_count = sum([list(v_counts.values())[0] for _, v_counts in nodes_count.items()])
 
-        triplets_count = self.triplets_vectordbs.count_items()
+        triplets_count = self.triplets_vcomposer.count_items()
         if not detailed:
             triplets_count = list(triplets_count.values())[0]
 
@@ -267,11 +267,18 @@ class EmbeddingsModel:
     def clear(self) -> None:
         """Метод предназначен для удаления содержимого векторной структуры данных.
         """
-        for n_type in self.nodes_vectordbs.keys():
-            self.nodes_vectordbs[n_type].clear()
-        self.triplets_vectordbs.clear()
+        for n_type in self.nodes_vcomposers.keys():
+            self.nodes_vcomposers[n_type].clear()
+        self.triplets_vcomposer.clear()
 
     def __del__(self):
-        for n_type in self.nodes_vectordbs.keys():
-            self.nodes_vectordbs[n_type].close_connection()
-        self.triplets_vectordbs.close_connection()
+
+        for n_type in self.nodes_vcomposers.keys():
+            try:
+                self.nodes_vcomposers[n_type].close_connection()
+            except AttributeError:
+                pass
+        try:
+            self.triplets_vcomposer.close_connection()
+        except AttributeError:
+            pass

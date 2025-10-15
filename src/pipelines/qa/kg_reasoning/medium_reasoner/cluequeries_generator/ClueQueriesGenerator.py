@@ -12,6 +12,7 @@ from ......utils.data_structs import create_id
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......db_drivers.vector_driver import VectorDBInstance
 from ......utils.cache_kv import CacheUtils
+from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
@@ -24,6 +25,8 @@ class ClueQueriesGeneratorConfig:
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param plan_initing_agent_task_config: Конфигурация атомарной задачи для LLM-агента по генерации clue-запросов. Значение по умолчанию DEFAULT_CQGEN_TASK_CONFIG.
     :type plan_initing_agent_task_config: AgentTaskSolverConfig, optional
+    :param max_cqueries_amount: Максимальное количество clue-запросов, которое может быть сгенерировано. Значение по умолчанию 4.
+    :type max_cqueries_amount: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы ClueQueriesGenerator-класса. Значение по умолчанию 'medreasn_cquerygen_main_stage_cache'.
     :type cache_table_name: str, optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(CQGEN_MAIN_LOG_PATH).
@@ -35,13 +38,14 @@ class ClueQueriesGeneratorConfig:
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     cquerie_generator_agent_task_config: AgentTaskSolverConfig = field(
         default_factory=lambda: DEFAULT_CQGEN_TASK_CONFIG)
+    max_cqueries_amount: int = 4
 
     cache_table_name: str = 'medreasn_cquerygen_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(CQGEN_MAIN_LOG_PATH))
     verbose: bool = False
 
     def to_str(self):
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.cquerie_generator_agent_task_config.version}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.cquerie_generator_agent_task_config.version}|{self.max_cqueries_amount}"
 
 
 class ClueQueriesGenerator(CacheUtils):
@@ -55,10 +59,13 @@ class ClueQueriesGenerator(CacheUtils):
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: ClueQueriesGeneratorConfig = ClueQueriesGeneratorConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None, cache_llm_inference: bool = True):
+                 cache_kvdriver_config: KeyValueDriverConfig = None, cache_llm_inference: bool = True,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None):
         self.config = config
 
         self.cachekv = self.init_cachekv(
@@ -71,7 +78,8 @@ class ClueQueriesGenerator(CacheUtils):
 
         self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
         self.tasks_solvers['cluequery_gen_solver'] = AgentTaskSolver(
-            self.agent, self.config.cquerie_generator_agent_task_config, agents_cache_config)
+            self.agent, self.config.cquerie_generator_agent_task_config,
+            agents_cache_config, inferencestat_config)
 
         self.log = self.config.log
         self.verbose = self.config.verbose
@@ -144,8 +152,7 @@ class ClueQueriesGenerator(CacheUtils):
                  verbose=self.config.verbose)
         base_entities = sorted(list(filter(lambda entitie: len(
             matched_kg_objects[entitie]) > 0, matched_kg_objects.keys())))
-        objects_groups = list(
-            product(*[matched_kg_objects[k] for k in base_entities]))
+        objects_groups = list(product(*[matched_kg_objects[k] for k in base_entities]))[:self.config.max_cqueries_amount]
         str_objectspermuts = ';'.join(
             [f'[{k}] {len(v)}' for k, v in matched_kg_objects.items()])
         self.log(f"RESULT:\n- всего сущностей: {len(matched_kg_objects)}\n- после фильтрации: {len(base_entities)}\n- объектов для каждой сущности: {str_objectspermuts}\n- полученное количество комбинаций: {len(objects_groups)}", verbose=self.config.verbose)

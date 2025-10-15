@@ -2,7 +2,7 @@ from ...db_drivers.table_driver import TableDBConnectionConfig, TableDriverConfi
 from .utils import LLMInferenceStat
 
 CREATE_TABLE_SQLQUERY = '''
-CREATE TABLE IF NOT EXISTS llminference_stat (
+CREATE TABLE IF NOT EXISTS {table_name} (
     id SERIAL PRIMARY KEY,
     prompt_tokens_amount INT NULL,
     generated_tokens_amount INT NULL,
@@ -20,7 +20,7 @@ DEFAULT_AGENTSTAT_TABLEDB_DRIVER_CONFIG = TableDriverConfig(
             'create_table_query': CREATE_TABLE_SQLQUERY
         },
         params={
-            'database_dname': './personalai_tmp/volumes/sqlite3'
+            'database_path': './personalai_tmp/stat/agent/sqlite3'
         },
         need_to_clear=False
     )

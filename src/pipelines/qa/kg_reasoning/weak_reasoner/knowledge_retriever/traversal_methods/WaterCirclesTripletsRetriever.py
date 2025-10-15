@@ -340,7 +340,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
         keys_rev = [obj_name, rel_type, subj_name] + rel_data_values
         return tuple(keys), tuple(keys_rev)
 
-    def clear_kv_caches(self, level='all') -> None:
+    def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")

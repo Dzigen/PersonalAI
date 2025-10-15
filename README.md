@@ -51,4 +51,4 @@ pytest tutorial:
 
 --------------------------------
 
-Тех. поддержка: [Telegram](https://t.me/mmenscshikov), [Email](m.menschikov@skoltech.ru)
+Тех. поддержка: [Telegram](https://t.me/mmenscshikov), <m.menschikov@skoltech.ru>

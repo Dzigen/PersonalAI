@@ -126,7 +126,10 @@ class AbstractDatabaseInit(ABC):
         pass
 
     def __del__(self):
-        self.close_connection()
+        try:
+            self.close_connection()
+        except AttributeError:
+            pass
 
 
 class AbstractDatabaseConnection(AbstractDatabaseCRUD, AbstractDatabaseExtendedOpt, AbstractDatabaseInit):

@@ -29,7 +29,6 @@ class LocalAgentConnector(AbstractAgentConnector):
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
                  gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
-        pp_start_time = time()
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}]
@@ -46,7 +45,6 @@ class LocalAgentConnector(AbstractAgentConnector):
             self.pipeline.tokenizer.convert_tokens_to_ids("<|eot_id|>")
         ]
         gen_strategy = self.config.gen_strategy if gen_strategy is None else gen_strategy
-        pp_end_time = time()
 
         ai_start_time = time()
         outputs = self.pipeline(
@@ -61,7 +59,6 @@ class LocalAgentConnector(AbstractAgentConnector):
         inference_info = LLMInferenceStat(
             prompt_tokens_amount=len(self.pipeline.tokenizer.tokenize(prompt)),
             generated_tokens_amount=len(self.pipeline.tokenizer.tokenize(outputs[0]["generated_text"])),
-            preparation_elapsed_time=round(pp_end_time - pp_start_time, 2),
             inference_elapsed_time=round(ai_end_time - ai_start_time, 2)
         )
 

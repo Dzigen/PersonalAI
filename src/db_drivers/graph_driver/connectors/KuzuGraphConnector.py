@@ -17,6 +17,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         self.config = config
 
     def open_connection(self) -> None:
+        os.makedirs(self.config.params['path'], exist_ok=True)
         load_path = f"{self.config.params['path']}/{self.config.db_info['db']}"
 
         if not os.path.exists(load_path):
@@ -341,8 +342,8 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
                 n_output = self.conn.execute(
                     "MATCH (n) RETURN LABEL(n) AS label, count(n) AS nodeCount").get_as_df()
 
-                result['triplets'].update({self.config.params['table_type_map']['relations']['inverse'][r_output['rel_type'][i]]: r_output['relCount'][i] for i in range(r_output.shape[0])})
-                result['nodes'].update({n_output['label'][i]: n_output['nodeCount'][i] for i in range(n_output.shape[0])})
+                result['triplets'].update({self.config.params['table_type_map']['relations']['inverse'][r_output['rel_type'][i]]: int(r_output['relCount'][i]) for i in range(r_output.shape[0])})
+                result['nodes'].update({n_output['label'][i]: int(n_output['nodeCount'][i]) for i in range(n_output.shape[0])})
 
                 # print(result)
             else:

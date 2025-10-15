@@ -12,6 +12,7 @@ from ...utils.data_structs import create_id
 from ...utils.errors import STATUS_MESSAGE
 from ...db_drivers.kv_driver import KeyValueDriverConfig
 from ...utils.cache_kv.utils import AbstractCacheInfo
+from ...utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
@@ -45,18 +46,21 @@ class MemPipeline(AbstractCacheInfo):
     :type config: MemPipelineConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
         self.config = config
         self.log = config.log
 
         self.extractor = LLMExtractor(
             kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.mem_pipeline],
-            config.extractor_config, cache_kvdriver_config)
+            config.extractor_config, cache_kvdriver_config, inferencestat_config)
         self.updator = LLMUpdator(
-            kg_model, config.updator_config, cache_kvdriver_config)
+            kg_model, config.updator_config, cache_kvdriver_config, inferencestat_config)
 
     def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
         return {
@@ -120,3 +124,8 @@ class MemPipeline(AbstractCacheInfo):
             f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
         return new_triplets, info
+
+    def __del__(self):
+        # print("deleting Mem-class")
+        del self.extractor
+        del self.updator

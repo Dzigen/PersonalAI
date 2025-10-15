@@ -198,7 +198,7 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         root_amount = self.execute_query(
             "MATCH (n:root) return COUNT(n) as r_amount;")[0]['r_amount']
 
-        return {'leaf': leafs_amount, 'summarized': summarized_amount, 'root': root_amount}
+        return {'leaf': int(leafs_amount), 'summarized': int(summarized_amount), 'root': int(root_amount)}
 
     def item_exist(self, id: str, id_type: TreeIdType = TreeIdType.external) -> bool:
         if not isinstance(id, str):

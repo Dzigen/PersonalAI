@@ -34,3 +34,6 @@ class AbstractKGReasoner(AbstractCacheInfo):
 @dataclass
 class BaseKGReasonerConfig:
     pass
+
+    def to_str(self):
+        pass

@@ -79,7 +79,7 @@ class MultiStepReranker(AbstractRerankerModule):
 
                 if r_config.type == RerankingType.retriever:
                     if r_config.name not in vdb_composer.vdb_conn_mapping.keys():
-                        raise ValueError
+                        raise ValueError(f"{r_config.namee} not in {vdb_composer.vdb_conn_mapping.keys()}")
                     if r_config.extended_params is not None:
                         if ('threshold' in r_config.extended_params) and (isinstance(r_config.extended_params['threshold'], float)):
                             if r_config.extended_params['threshold'] < 0 or r_config.extended_params['threshold'] > 1:

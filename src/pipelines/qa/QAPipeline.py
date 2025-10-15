@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Tuple, Union, List, Dict
+import gc
 
 from .configs import QA_MAIN_LOG_PATH
 from .kg_reasoning.utils import QueryReasoningInfo
@@ -13,6 +14,7 @@ from ...utils.cache_kv import CacheUtils
 from ...utils.data_structs import create_id
 from ...db_drivers.kv_driver import KeyValueDriverConfig
 from ...utils.cache_kv.utils import AbstractCacheInfo
+from ...utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
@@ -57,20 +59,24 @@ class QAPipeline(CacheUtils, AbstractCacheInfo):
     :type config: QAPipelineConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: QAPipelineConfig = QAPipelineConfig(),
-                 cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None) -> None:
+                 cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
 
-        agent = kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP['QAPipeline']['general']]
+        agent = kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.qa_pipeline]
         self.using_agent_info = {'kw': agent.CONNECTOR_KW, 'config': agent.config}
 
         self.query_preprocessor = QueryPreprocessor(
-            agent, config.preprocessor_config, cache_kvdriver_config)
+            agent, config.preprocessor_config, cache_kvdriver_config, inferencestat_config)
         self.kg_reasoner = KnowledgeGraphReasoner(
-            kg_model, config.reasoner_config, cache_kvdriver_config)
+            kg_model, config.reasoner_config, cache_kvdriver_config, inferencestat_config)
         self.answers_aggregator = AnswersAggregator(
-            agent, config.aggregator_config, cache_kvdriver_config)
+            agent, config.aggregator_config, cache_kvdriver_config,
+            inferencestat_config=inferencestat_config)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -84,13 +90,6 @@ class QAPipeline(CacheUtils, AbstractCacheInfo):
             'query_preprocessor': self.query_preprocessor.get_cache_stat(),
             'kg_reasoner': self.kg_reasoner.get_cache_stat(),
             'answers_aggregator': self.answers_aggregator.get_cache_stat(),
-        }
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return {
-            'query_preprocessor': self.query_preprocessor.get_agent_tgen_stat(),
-            'kg_reasoner': self.kg_reasoner.get_agent_tgen_stat(),
-            'answers_aggregator': self.answers_aggregator.get_agent_tgen_stat(),
         }
 
     def clear_kv_caches(self, level: str = 'all') -> None:
@@ -108,6 +107,13 @@ class QAPipeline(CacheUtils, AbstractCacheInfo):
             self.query_preprocessor.clear_kv_caches(level='all')
             self.kg_reasoner.clear_kv_caches(level='all')
             self.answers_aggregator.clear_kv_caches(level='all')
+
+    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+        return {
+            'query_preprocessor': self.query_preprocessor.get_agent_tgen_stat(),
+            'kg_reasoner': self.kg_reasoner.get_agent_tgen_stat(),
+            'answers_aggregator': self.answers_aggregator.get_agent_tgen_stat(),
+        }
 
     def preprocess_query(self, query: str) -> Tuple[QueryPreprocessingInfo, ReturnInfo]:
         query_info, rinfo = self.query_preprocessor.perform(query)
@@ -202,3 +208,10 @@ class QAPipeline(CacheUtils, AbstractCacheInfo):
         self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
         return final_answer, rinfo
+
+    def __del__(self):
+        # print("deleting QA-class")
+        del self.query_preprocessor
+        del self.kg_reasoner
+        del self.answers_aggregator
+        gc.collect()

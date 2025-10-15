@@ -358,8 +358,8 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
                 r_output = self.execute_query(
                     "MATCH (a)-[rel]->(b) UNWIND type(rel) AS rel_type RETURN rel_type, count(rel) AS relCount")
 
-                result['triplets'].update({item['rel_type']: item['relCount'] for item in r_output})
-                result['nodes'].update({item['label']: item['nodeCount'] for item in n_output})
+                result['triplets'].update({item['rel_type']: int(item['relCount']) for item in r_output})
+                result['nodes'].update({item['label']: int(item['nodeCount']) for item in n_output})
 
             else:
                 n_output = self.execute_query(

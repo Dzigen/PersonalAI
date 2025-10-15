@@ -9,7 +9,7 @@ from .clueanswers_summarisation import ClueAnswersSummarizerConfig, ClueAnswersS
 from .answer_generator import AnswerGeneratorConfig, AnswerGenerator
 from .entities2nodes_matching import Entities2NodesMatcher, Entities2NodesMatcherConfig
 from .utils import SearchPlanInfo
-from .config import MDGR_MAIN_LOG_PATH, CONTINUE_SEARCH_MESSAGE, ANSWER_IS_GENERATED_MESSAGE
+from .config import MDGR_MAIN_LOG_PATH, CONTINUE_SEARCH_MESSAGE, ANSWER_IS_GENERATED_MESSAGE, MEDIUM_KG_RETRIEVER_CONFIG
 from ..utils import AbstractKGReasoner, BaseKGReasonerConfig
 from ..weak_reasoner.knowledge_retriever import KnowledgeRetrieverConfig, KnowledgeRetriever
 from .....utils.data_structs import create_id, QueryInfo
@@ -18,6 +18,7 @@ from .....utils.cache_kv import CacheUtils
 from .....kg_model import KnowledgeGraphModel
 from .....db_drivers.kv_driver import KeyValueDriverConfig
 from .....db_drivers.vector_driver import VectorDBInstance
+from .....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
@@ -32,7 +33,7 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig):
     :type e2n_matcher_config: Entities2NodesMatcherConfig, optional
     :param cluequeries_generator_config: Конфигурация стадии #2.2 reasoner-конвейера: выполняется генерация детализированных/уточнённых clue-запросов на основе линейной комбинации отобранных object–вершин для текущего запроса (шага поиска). Значение по умолчанию ClueQueriesGeneratorConfig().
     :type cluequeries_generator_config: ClueQueriesGeneratorConfig, optional
-    :param knowledge_retriever_config: Конфигурация стадии #3.1.1 reasoner-конвейера: выполняется обход графа знаний, извлечение триплетов, релевантных к текущему clue-запросу, и их фильтрация для формирования концентрированного множества информации. Значение по умолчанию KnowledgeRetrieverConfig().
+    :param knowledge_retriever_config: Конфигурация стадии #3.1.1 reasoner-конвейера: выполняется обход графа знаний, извлечение триплетов, релевантных к текущему clue-запросу, и их фильтрация для формирования концентрированного множества информации. Значение по умолчанию MEDIUM_KG_RETRIEVER_CONFIG.
     :type knowledge_retriever_config: KnowledgeRetrieverConfig, optional
     :param clueanswer_generator_config: Конфигурация стадии #3.1.2 reasoner-конвейера:выполняется резюмирование информации, найденной/извлечённой по каждому clue-запросу в отдельности. Значение по умолчанию ClueAnswerGeneratorConfig().
     :type clueanswer_generator_config: ClueAnswerGeneratorConfig, optional
@@ -56,13 +57,13 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig):
     e2n_matcher_config: Entities2NodesMatcherConfig = field(default_factory=lambda: Entities2NodesMatcherConfig())
 
     cluequeries_generator_config: ClueQueriesGeneratorConfig = field(default_factory=lambda: ClueQueriesGeneratorConfig())
-    knowledge_retriever_config: KnowledgeRetrieverConfig = field(default_factory=lambda: KnowledgeRetrieverConfig())
+    knowledge_retriever_config: KnowledgeRetrieverConfig = field(default_factory=lambda: MEDIUM_KG_RETRIEVER_CONFIG)
     clueanswer_generator_config: ClueAnswerGeneratorConfig = field(default_factory=lambda: ClueAnswerGeneratorConfig())
     clueanswers_summarizer_config: ClueAnswersSummarizerConfig = field(default_factory=lambda: ClueAnswersSummarizerConfig())
 
     answer_generator_config: AnswerGeneratorConfig = field(default_factory=lambda: AnswerGeneratorConfig())
 
-    max_searchplan_steps: int = 5
+    max_searchplan_steps: int = 3
     answer_something: bool = True
 
     cache_table_name: str = 'qa_mediumreasoner_cache'
@@ -93,35 +94,46 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
     :type config: MediumKGReasonerConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: MediumKGReasonerConfig = MediumKGReasonerConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
         self.config = config
         self.kg_model = kg_model
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
-        agent = kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP['QAPipeline']['general']]
+        agent = kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.qa_pipeline]
         self.using_agent_info = {'kw': agent.CONNECTOR_KW, 'config': agent.config}
 
         self.searchplan_enhancer = SearchPlanEnhancer(
-            agent, self.config.searchplan_enhancer_config, cache_kvdriver_config)
+            agent, self.config.searchplan_enhancer_config,
+            cache_kvdriver_config, inferencestat_config=inferencestat_config)
         self.entities_extractor = EntitiesExtractor(
-            agent, self.config.entities_extractor_config, cache_kvdriver_config)
+            agent, self.config.entities_extractor_config,
+            cache_kvdriver_config, inferencestat_config=inferencestat_config)
         self.entities2nodes_matcher = Entities2NodesMatcher(
-            self.kg_model, self.config.e2n_matcher_config, cache_kvdriver_config)
+            self.kg_model, self.config.e2n_matcher_config,
+            cache_kvdriver_config)
         self.cluequeries_generator = ClueQueriesGenerator(
-            agent, self.config.cluequeries_generator_config, cache_kvdriver_config)
+            agent, self.config.cluequeries_generator_config,
+            cache_kvdriver_config, inferencestat_config=inferencestat_config)
         self.knowledge_retriever = KnowledgeRetriever(
-            self.kg_model, self.config.knowledge_retriever_config, cache_kvdriver_config)
+            self.kg_model, self.config.knowledge_retriever_config,
+            cache_kvdriver_config)
         self.clueanswer_generator = ClueAnswerGenerator(
-            agent, self.config.clueanswer_generator_config, cache_kvdriver_config)
+            agent, self.config.clueanswer_generator_config,
+            cache_kvdriver_config, inferencestat_config=inferencestat_config)
         self.clueanswers_summarizer = ClueAnswersSummarizer(
-            agent, self.config.clueanswers_summarizer_config, cache_kvdriver_config)
+            agent, self.config.clueanswers_summarizer_config,
+            cache_kvdriver_config, inferencestat_config=inferencestat_config)
         self.answer_generator = AnswerGenerator(
-            agent, self.config.answer_generator_config, cache_kvdriver_config)
+            agent, self.config.answer_generator_config,
+            cache_kvdriver_config, inferencestat_config=inferencestat_config)
 
         self.log = config.log
         self.verbose = config.verbose
@@ -141,14 +153,14 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
     def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
         return {
             'MediumKGReasoner': None if self.cachekv is None else self.cachekv.kv_conn.count_items(),
-            'searchplan_enhancer': self.searchplan_enhancer.get_cache_stat(self),
-            'entities_extractor': self.entities_extractor.get_cache_stat(self),
-            'entities2nodes_matcher': self.entities2nodes_matcher.get_cache_stat(self),
-            'cluequeries_generator': self.cluequeries_generator.get_cache_stat(self),
-            'knowledge_retriever': self.knowledge_retriever.get_cache_stat(self),
-            'clueanswer_generator': self.clueanswer_generator.get_cache_stat(self),
-            'clueanswers_summarizer': self.clueanswers_summarizer.get_cache_stat(self),
-            'answer_generator': self.answer_generator.get_cache_stat(self),
+            'searchplan_enhancer': self.searchplan_enhancer.get_cache_stat(),
+            'entities_extractor': self.entities_extractor.get_cache_stat(),
+            'entities2nodes_matcher': self.entities2nodes_matcher.get_cache_stat(),
+            'cluequeries_generator': self.cluequeries_generator.get_cache_stat(),
+            'knowledge_retriever': self.knowledge_retriever.get_cache_stat(),
+            'clueanswer_generator': self.clueanswer_generator.get_cache_stat(),
+            'clueanswers_summarizer': self.clueanswers_summarizer.get_cache_stat(),
+            'answer_generator': self.answer_generator.get_cache_stat(),
         }
 
     def clear_kv_caches(self, level: str = 'all') -> None:
@@ -301,7 +313,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         if self.config.answer_something:
             self.log("Пытаемся сгенерировать ответа на основе имеющейся информации...",
                      verbose=self.config.verbose)
-            answer, rinfo.status = self.answer_generator.answer_gen_solver.solve(
+            answer, rinfo.status = self.answer_generator.tasks_solvers['answer_gen_solver'].solve(
                 lang=self.answer_generator.config.lang, search_plan=search_plan)
         else:
             self.log("В рамках заданных ограничений поиска не удалось сгенерировать релевантный ответ.",

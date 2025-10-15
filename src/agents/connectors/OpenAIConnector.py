@@ -29,12 +29,10 @@ class OpenAIConnector(AbstractAgentConnector):
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
                  gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
-        pp_start_time = time()
         msgs = [{"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}]
         if assistant_prompt is not None:
             msgs.append({"role": "assistant", "content": assistant_prompt})
-        pp_end_time = time()
 
         ai_start_time = time()
         gen_strategy = self.config.gen_strategy if gen_strategy is None else gen_strategy
@@ -46,7 +44,6 @@ class OpenAIConnector(AbstractAgentConnector):
         inference_info = LLMInferenceStat(
             prompt_tokens_amount=response.usage.prompt_tokens,
             generated_tokens_amount=response.usage.completion_tokens,
-            preparation_elapsed_time=round(pp_end_time - pp_start_time, 2),
             inference_elapsed_time=round(ai_end_time - ai_start_time, 2)
         )
 

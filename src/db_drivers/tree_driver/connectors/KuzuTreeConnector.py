@@ -16,6 +16,7 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
         self.config = config
 
     def open_connection(self) -> None:
+        os.makedirs(self.config.params['path'], exist_ok=True)
         load_path = f"{self.config.params['path']}/{self.config.db_info['db']}"
 
         if not os.path.exists(load_path):
@@ -269,7 +270,7 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
         root_amount = self.conn.execute(
             "MATCH (n:root) return COUNT(n) as r_amount;").get_as_df()['r_amount'][0]
 
-        return {'leaf': leafs_amount, 'summarized': summarized_amount, 'root': root_amount}
+        return {'leaf': int(leafs_amount), 'summarized': int(summarized_amount), 'root': int(root_amount)}
 
     def item_exist(self, id: str, id_type: str = TreeIdType.external) -> bool:
         if not isinstance(id, str):

@@ -7,6 +7,7 @@ from ...db_drivers.kv_driver import KeyValueDriverConfig
 
 
 class CacheUtils(AbstractCacheUtils):
+
     def init_cachekv(self, cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None, cache_table_name: Union[None, str] = None) -> Union[None, CacheKV]:
         """Метод предназначен для создания базы данных с целью кеширования требуемых результатов.
 

@@ -21,7 +21,6 @@ class CalculateMetrics:
 class LLMInferenceStat(BaseTableStucture):
     prompt_tokens_amount: int
     generated_tokens_amount: int
-    preparation_elapsed_time: float  # in seconds
     inference_elapsed_time: float  # in seconds
     timestamp: Union[None, str] = None
 

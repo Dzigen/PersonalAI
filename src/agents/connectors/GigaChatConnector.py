@@ -35,7 +35,6 @@ class GigaChatConnector(AbstractAgentConnector):
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
                  gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
-        pp_start_time = time()
         msgs = [Messages(role='system', content=system_prompt),
                 Messages(role='user', content=user_prompt)]
         if assistant_prompt is not None:
@@ -43,7 +42,6 @@ class GigaChatConnector(AbstractAgentConnector):
 
         gen_strategy = self.gen_strategy if gen_strategy is None else gen_strategy
         chat = Chat(messages=msgs, **gen_strategy)
-        pp_end_time = time()
 
         ai_start_time = time()
         flag, counter = True, 0
@@ -62,7 +60,6 @@ class GigaChatConnector(AbstractAgentConnector):
         inference_info = LLMInferenceStat(
             prompt_tokens_amount=response.usage.prompt_tokens,
             generated_tokens_amount=response.usage.completion_tokens,
-            preparation_elapsed_time=round(pp_end_time - pp_start_time, 2),
             inference_elapsed_time=round(ai_end_time - ai_start_time, 2)
         )
 

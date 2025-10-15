@@ -10,6 +10,7 @@ from ......agents.utils import AbstractAgentConnector
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.cache_kv.utils import AbstractCacheInfo
+from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
@@ -53,10 +54,13 @@ class QueryLLMParser(CacheUtils, AbstractCacheInfo):
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: QueryLLMParserConfig = QueryLLMParserConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
         self.config = config
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -69,7 +73,7 @@ class QueryLLMParser(CacheUtils, AbstractCacheInfo):
         self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
         self.tasks_solvers['kw_extraction_solver'] = AgentTaskSolver(
             self.agent, self.config.kw_extraction_task_config,
-            kwe_task_cache_config)
+            kwe_task_cache_config, inferencestat_config)
 
         self.log = config.log
         self.verbose = config.verbose
@@ -97,9 +101,9 @@ class QueryLLMParser(CacheUtils, AbstractCacheInfo):
         if level in ['other', 'all']:
             self.tasks_solvers['kw_extraction_solver'].cachekv.clear()
 
-    def get_cache_key(self, query: str) -> List[object]:
+    def get_cache_key(self, query_info: QueryInfo) -> List[object]:
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
-        return [self.config.to_str(), str_using_agent_info, query]
+        return [self.config.to_str(), str_using_agent_info, query_info.to_str()]
 
     @CacheUtils.cache_method_output
     def extract_entities(self, query_info: QueryInfo) -> Tuple[List[str], ReturnInfo]:

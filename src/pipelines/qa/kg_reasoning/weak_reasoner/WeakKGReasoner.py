@@ -12,6 +12,7 @@ from .....utils import Logger, ReturnInfo, ReturnStatus, update_rinfo
 from .....utils.cache_kv import CacheUtils
 from .....kg_model import KnowledgeGraphModel
 from .....db_drivers.kv_driver import KeyValueDriverConfig
+from .....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
@@ -67,16 +68,19 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
     :type config: WeakKGReasonerConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, config: WeakKGReasonerConfig = WeakKGReasonerConfig(),
-                 cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None):
+                 cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None):
         self.config = config
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
-        agent = kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP['QAPipeline']['general']]
+        agent = kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.qa_pipeline]
         self.using_agent_info = {'kw': agent.CONNECTOR_KW, 'config': agent.config}
 
         if self.config.query_parser_config is None:
@@ -84,14 +88,18 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
             self.knowledge_comparator = None
         else:
             self.query_parser = QueryLLMParser(
-                agent, self.config.query_parser_config, cache_kvdriver_config)
+                agent, self.config.query_parser_config,
+                cache_kvdriver_config, inferencestat_config=inferencestat_config)
             self.knowledge_comparator = KnowledgeComparator(
-                kg_model, self.config.knowledge_comparator_config, cache_kvdriver_config)
+                kg_model, self.config.knowledge_comparator_config,
+                cache_kvdriver_config)
 
         self.knowledge_retriever = KnowledgeRetriever(
-            kg_model, self.config.knowledge_retriever_config, cache_kvdriver_config)
+            kg_model, self.config.knowledge_retriever_config,
+            cache_kvdriver_config)
         self.answer_generator = QALLMGenerator(
-            agent, self.config.answer_generator_config, cache_kvdriver_config)
+            agent, self.config.answer_generator_config,
+            cache_kvdriver_config, inferencestat_config=inferencestat_config)
 
         self.log = config.log
         self.verbose = config.verbose
@@ -107,10 +115,10 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
     def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
         return {
             'WeakKGReasoner': None if self.cachekv is None else self.cachekv.kv_conn.count_items(),
-            'query_parser': None if self.query_parser is None else self.query_parser.get_agent_tgen_stat(),
-            'knowledge_comparator': None if self.knowledge_comparator is None else self.knowledge_comparator.get_agent_tgen_stat(),
-            'knowledge_retriever': None if self.knowledge_retriever is None else self.knowledge_retriever.get_agent_tgen_stat(),
-            'answer_generator': None if self.answer_generator is None else self.answer_generator.get_agent_tgen_stat(),
+            'query_parser': None if self.query_parser is None else self.query_parser.get_cache_stat(),
+            'knowledge_comparator': None if self.knowledge_comparator is None else self.knowledge_comparator.get_cache_stat(),
+            'knowledge_retriever': None if self.knowledge_retriever is None else self.knowledge_retriever.get_cache_stat(),
+            'answer_generator': None if self.answer_generator is None else self.answer_generator.get_cache_stat(),
         }
 
     def clear_kv_caches(self, level: str = 'all') -> None:

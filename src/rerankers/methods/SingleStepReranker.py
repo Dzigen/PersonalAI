@@ -43,7 +43,7 @@ class SingleStepReranker(AbstractRerankerModule):
 
     def validate_config(self, vdb_composer: VectorComposer) -> bool:
         if self.config.vdb_name not in vdb_composer.vdb_conn_mapping.keys():
-            raise ValueError
+            raise ValueError(f"{self.config.vdb_name} not in {vdb_composer.vdb_conn_mapping.keys()}")
         if isinstance(self.config.threshold, float):
             if self.config.threshold < 0 or self.config.threshold > 1:
                 raise ValueError
@@ -88,7 +88,7 @@ class SingleStepReranker(AbstractRerankerModule):
 
         raw_instances = self.vdb_composer.vdb_conn_mapping[self.config.vdb_name].retrieve(
             [q_instance], n_results=self.config.fetch_n, subset_ids=subset_ids, includes=include_fields)[0]
-        print(raw_instances)
+        # print(raw_instances)
 
         if self.config.threshold is not None:
             filtered_instances = list(filter(lambda inst: inst[0] >= self.config.threshold, raw_instances))

@@ -112,7 +112,7 @@ class BaseCreator:
 
 class RelationCreator(BaseCreator):
     @staticmethod
-    def create(r_type: Union[str, RelationType], name: str = None,  prop: Dict = None) -> Relation:
+    def create(r_type: Union[str, RelationType], name: str = None, prop: Dict = None) -> Relation:
         """Метод предназначен для создания структуры данных связи с указанным содержанием.
 
         :param r_type: Тип создаваемой связи в строковой- или Enum-структуре данных.
@@ -124,7 +124,7 @@ class RelationCreator(BaseCreator):
         :return: Созданная структура данных связи.
         :rtype: Relation
         """
-        if type(r_type) is not RelationType:
+        if not isinstance(r_type, RelationType):
             formated_r_type = RELATIONS_TYPES_MAP.get(r_type, None)
             if formated_r_type is None:
                 raise ValueError
@@ -158,7 +158,7 @@ class NodeCreator(BaseCreator):
         :return: Созданная структура данных вершины.
         :rtype: Node
         """
-        if type(n_type) is not NodeType:
+        if not isinstance(n_type, NodeType):
             formated_n_type = NODES_TYPES_MAP.get(n_type, None)
             if formated_n_type is None:
                 raise ValueError
@@ -203,7 +203,7 @@ def create_id_for_node_pair(node1_id: str, node2_id: str) -> str:
     """
     start_id, end_id = (node1_id, node2_id) if node1_id > node2_id else (
         node2_id, node1_id)
-    return hashlib.md5((start_id+end_id).encode()).hexdigest()
+    return hashlib.md5((start_id + end_id).encode()).hexdigest()
 
 
 def create_id(seed: str) -> str:
@@ -354,4 +354,4 @@ class QueryInfo:
                               self.linked_nodes)))) if self.linked_nodes is not None else "None"
         str_lnodes_by_entities = ';'.join(sorted(list(map(lambda item: ';;'.join(
             item), self.linked_nodes_by_entities)))) if self.linked_nodes_by_entities is not None else "None"
-        return f"{str_entities}|{str_lnodes}|{str_lnodes_by_entities}"
+        return f"{self.query}|{str_entities}|{str_lnodes}|{str_lnodes_by_entities}"

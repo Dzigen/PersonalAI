@@ -10,6 +10,7 @@ from .....agents.utils import AbstractAgentConnector
 from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
 from .....db_drivers.kv_driver import KeyValueDriverConfig
 from .....utils.cache_kv.utils import AbstractCacheInfo
+from .....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
@@ -57,10 +58,13 @@ class QueryDecomposer(CacheUtils, AbstractCacheInfo):
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: QueryDecomposerConfig = QueryDecomposerConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None, cache_llm_inference: bool = True):
+                 cache_kvdriver_config: KeyValueDriverConfig = None, cache_llm_inference: bool = True,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None):
         self.config = config
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -72,9 +76,11 @@ class QueryDecomposer(CacheUtils, AbstractCacheInfo):
 
         self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
         self.tasks_solvers['decompose_classifier_solver'] = AgentTaskSolver(
-            self.agent, self.config.classify_agent_task_config, agents_cache_config)
+            self.agent, self.config.classify_agent_task_config,
+            agents_cache_config, inferencestat_config)
         self.tasks_solvers['q_decomposition_solver'] = AgentTaskSolver(
-            self.agent, self.config.decompose_agent_task_config, agents_cache_config)
+            self.agent, self.config.decompose_agent_task_config,
+            agents_cache_config, inferencestat_config)
 
         self.log = self.config.log
         self.verbose = self.config.verbose

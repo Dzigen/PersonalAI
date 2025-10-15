@@ -47,8 +47,8 @@ class NodesTreeModelConfig:
     :param nodes_summarization_task_config: Конфигурация атомарной задачи для LLM-агента по резюмированию/суммаризации текстовых полей у заданного набора leaf-объектов (object-вершин) из дерева. Значение по умолчанию DEFAULT_SUMMN_TASK_CONFIG.
     :type nodes_summarization_task_config: AgentTaskSolverConfig, optional
 
-    :param e2n_sim_threshold: Служебный гиперпараметр; см. https://arxiv.org/pdf/2410.14052. Значение по умолчанию 0.4.
-    :type e2n_sim_threshold: float, optional
+    :param e2n_base_threshold: Служебный гиперпараметр; см. https://arxiv.org/pdf/2410.14052. Значение по умолчанию 0.4.
+    :type e2n_base_threshold: float, optional
     :param depth_rate: Служебный гиперпараметр; см. https://arxiv.org/pdf/2410.14052. Значение по умолчанию 0.5.
     :type depth_rate: float, optional
     :param nodes_aggregation_mechanism: Служебный гиперпараметр; см. https://arxiv.org/pdf/2410.14052. Значение по умолчанию 'sequencial'.
@@ -79,7 +79,7 @@ class NodesTreeModelConfig:
         default_factory=lambda: DEFAULT_SUMMN_TASK_CONFIG)
 
     # expanding-tree params
-    e2n_sim_threshold: float = 0.4
+    e2n_base_threshold: float = 0.4
     depth_rate: float = 0.5
     nodes_aggregation_mechanism: str = 'sequencial'  # "sequencial" | "parallel"
 
@@ -109,20 +109,20 @@ class NodesTreeModel:
         self.treedb_conn = TreeDriver.connect(self.config.treedb_config)
 
         #
-        self.leafnodes_vectordbs = VectorComposer(
+        self.leafnodes_vcomposer = VectorComposer(
             self.config.leafnodes_vdb_driver_configs_mapping,
             embedders_mapping)
         self.leafnodes_retriever = RerankerDriver.specify(
             self.config.leafnodes_reranker_driver_config,
-            self.leafnodes_vectordbs)
+            self.leafnodes_vcomposer)
 
         #
-        self.summnodes_vectordbs = VectorComposer(
+        self.summnodes_vcomposer = VectorComposer(
             self.config.summnodes_vdb_driver_configs_mapping,
             embedders_mapping)
         self.summnodes_retriever = RerankerDriver.specify(
             self.config.summnodes_reranker_driver_config,
-            self.summnodes_vectordbs)
+            self.summnodes_vcomposer)
 
         #
         self.agent = agent
@@ -150,15 +150,15 @@ class NodesTreeModel:
 
     def check_consistency(self) -> bool:
         self.treedb_conn.check_consistency()
+        self.leafnodes_vcomposer.check_consistency()
+        self.summnodes_vcomposer.check_consistency()
 
-        leaf_vnodes_count = self.leafnodes_vectordbs.count_items()
-        summ_vnodes_count = self.summnodes_vectordbs.count_items()
-        tnodes_count = self.treedb_conn.count_items()
+        leaf_vnodes_counts = self.leafnodes_vcomposer.count_items()
+        summ_vnodes_counts = self.summnodes_vcomposer.count_items()
+        tnodes_counts = self.treedb_conn.count_items()
 
-        # грубая проверка (нужно, чтобы каждому элементу из векторных бд
-        # соответствовала вершина из графовой бд)
-        assert leaf_vnodes_count == tnodes_count['leaf']
-        assert summ_vnodes_count == tnodes_count['summarized']
+        assert list(leaf_vnodes_counts.values())[0] == tnodes_counts['leaf']
+        assert list(summ_vnodes_counts.values())[0] == tnodes_counts['summarized']
 
         return True
 
@@ -294,7 +294,7 @@ class NodesTreeModel:
         cur_maxdepth = self.treedb_conn.get_tree_maxdepth()
         adaptive_coeff = 1 if cur_maxdepth < 1 else np.exp(
             (self.config.depth_rate * cur_depth) / cur_maxdepth)
-        adaptive_threshold = self.config.e2n_sim_threshold * adaptive_coeff
+        adaptive_threshold = self.config.e2n_base_threshold * adaptive_coeff
         if adaptive_threshold > 1:
             adaptive_threshold = 0.98
         return adaptive_threshold
@@ -432,9 +432,9 @@ class NodesTreeModel:
         formated_instances = [VectorDBInstance(id=id, document=doc, metadata={'id': id}) for id, doc in zip(ids, new_texts)]
 
         if vecdb_type == TreeNodeType.summarized:
-            self.summnodes_vectordbs.upsert(formated_instances)
+            self.summnodes_vcomposer.upsert(formated_instances)
         elif vecdb_type == TreeNodeType.leaf:
-            self.leafnodes_vectordbs.upsert(formated_instances)
+            self.leafnodes_vcomposer.upsert(formated_instances)
         else:
             raise KeyError
 
@@ -519,7 +519,7 @@ class NodesTreeModel:
             includes=['documents', 'metadatas'], return_with_scores=True)
 
         best_leafnode = None
-        if len(best_leafnode) > 0:
+        if len(raw_best_leafnode) > 0:
             best_leafnode = raw_best_leafnode[0]
 
         self.log(f"Семантически-близкая [similarity] leaf-вершина: {best_leafnode}", verbose=self.verbose)
@@ -531,7 +531,7 @@ class NodesTreeModel:
             includes=[], return_with_scores=True)
 
         best_summnode = None
-        if len(best_summnode) > 0:
+        if len(raw_best_summnode) > 0:
             best_summnode = raw_best_summnode[0]
 
         self.log(f"Семантически-близкая [similarity] summ-вершина: {best_summnode}", verbose=self.verbose)
@@ -550,7 +550,7 @@ class NodesTreeModel:
                 subset_ids=descendants_leaf_strids, includes=[])
             descendants_leaf_strids = list(map(lambda item: item.id, matched_leafnodes))
 
-        matched_nodes = self.leafnodes_vectordbs.read(
+        matched_nodes = self.leafnodes_vcomposer.read(
             descendants_leaf_strids, includes=["documents", "metadatas"])
         return matched_nodes
 
@@ -605,18 +605,31 @@ class NodesTreeModel:
         # TODO
         raise NotImplementedError
 
-    def count_items(self) -> Dict[str, Dict[str, int]]:
+    def count_items(self, detailed: bool = False) -> Dict[str, int]:
+        # self.check_consistency()
+        vector_lnodes_count = self.leafnodes_vcomposer.count_items()
+        if not detailed:
+            vector_lnodes_count = list(vector_lnodes_count.values())[0]
+
+        vector_snodes_count = self.summnodes_vcomposer.count_items()
+        if not detailed:
+            vector_snodes_count = list(vector_snodes_count.values())[0]
+
+        tree_nodes_count = self.treedb_conn.count_items()
+        if not detailed:
+            tree_nodes_count = sum(tree_nodes_count.values())
+
         return {
-            'tree': self.treedb_conn.count_items(),
-            'vector_leafnodes': self.leafnodes_vectordbs.count_items(),
-            'vector_summnodes': self.summnodes_vectordbs.count_items()}
+            'tree': tree_nodes_count,
+            'vector_leafnodes': vector_lnodes_count,
+            'vector_summnodes': vector_snodes_count}
 
     def clear(self) -> None:
-        self.leafnodes_vectordbs.clear()
-        self.summnodes_vectordbs.clear()
+        self.leafnodes_vcomposer.clear()
+        self.summnodes_vcomposer.clear()
         self.treedb_conn.clear()
 
     def __del__(self):
         self.treedb_conn.close_connection()
-        self.leafnodes_vectordbs.close_connection()
-        self.summnodes_vectordbs.close_connection()
+        self.leafnodes_vcomposer.close_connection()
+        self.summnodes_vcomposer.close_connection()

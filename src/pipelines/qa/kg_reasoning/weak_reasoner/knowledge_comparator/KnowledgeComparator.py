@@ -15,8 +15,8 @@ from ......rerankers import RerankerDriver, RerankerDriverConfig
 @dataclass
 class KnowledgeComparatorConfig:
     """Конфигурация "Knowledge Comparator"-стадии QA-конвейера.
-    :param reranker_driver_config: ... . Значение по умолчанию KC_RERANKDRIVER_DEFAULT_CONFIG.
-    :param RerankerDriverConfig, optional
+    :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию KC_RERANKDRIVER_DEFAULT_CONFIG.
+    :type reranker_driver_config: RerankerDriverConfig, optional
     :param max_K: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 1.
     :type max_k: int, optional
     :param k_compare: Служебный гиперпараметр. Значение по умолчанию 5.
@@ -61,7 +61,7 @@ class KnowledgeComparator(CacheUtils):
 
         self.retriever = RerankerDriver.specify(
             self.config.reranker_driver_config,
-            kg_model.graph_embeddings.nodes_vectordbs[NodeType.object])
+            kg_model.graph_embeddings.nodes_vcomposers[NodeType.object])
 
         self.log = self.config.log
         self.verbose = self.config.verbose
@@ -115,7 +115,8 @@ class KnowledgeComparator(CacheUtils):
 
         for entity in query_info.entities:
 
-            nodes_with_scores: List[Tuple[float, VectorDBInstance]] = self.retriever.run(entity, top_k=self.config.max_k)
+            nodes_with_scores: List[Tuple[float, VectorDBInstance]] = self.retriever.run(
+                entity, top_k=self.config.max_k, return_with_scores=True)
             linked_nodes += list(map(lambda node_item: node_item[1], nodes_with_scores))
 
             cur_documents = list(map(lambda item: item[1].document, nodes_with_scores))

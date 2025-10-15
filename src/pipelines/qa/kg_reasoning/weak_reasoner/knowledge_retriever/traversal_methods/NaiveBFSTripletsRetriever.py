@@ -80,7 +80,7 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             'NaiveBFSTripletsRetriever': None if self.cachekv is None else self.cachekv.kv_conn.count_items()
         }
 
-    def clear_kv_caches(self, level='all') -> None:
+    def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")

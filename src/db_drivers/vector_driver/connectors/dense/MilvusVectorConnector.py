@@ -235,6 +235,8 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         if n_results < 1:
             return [[] * len(query_instances)]
 
+        query_instances = deepcopy(query_instances)
+
         # Если в классе указан embedder, то используем его
         # для векторизации входящих запросов
         if self.embedder is not None:
@@ -268,7 +270,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         for q_output in raw_output:
             f_items = list(map(lambda r_item: (
                 r_item['distance'], VectorDBInstance(id=r_item['id'], **r_item['entity'])), q_output))
-            f_items = sorted(f_items, key=lambda v: v[0], reverse=False)
+            f_items = sorted(f_items, key=lambda v: v[0], reverse=True)
             formated_output.append(f_items)
 
         return formated_output

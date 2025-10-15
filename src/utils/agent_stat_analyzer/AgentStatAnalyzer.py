@@ -12,7 +12,7 @@ from .configs import DEFAULT_AGENTSTAT_TABLEDB_DRIVER_CONFIG
 class AgentStatAnalyzerConfig:
     table_driver_config: TableDriverConfig = field(default_factory=lambda: DEFAULT_AGENTSTAT_TABLEDB_DRIVER_CONFIG)
     metrics_info: CalculateMetrics = field(default_factory=lambda: CalculateMetrics())
-    column_info: List[str] = field(default_factory=lambda: ['prompt_tokens_amount', 'generated_tokens_amount', 'preparation_elapsed_time', 'inference_elapsed_time'])
+    column_info: List[str] = field(default_factory=lambda: ['prompt_tokens_amount', 'generated_tokens_amount', 'inference_elapsed_time'])
 
 
 class AgentStatAnalyzer:

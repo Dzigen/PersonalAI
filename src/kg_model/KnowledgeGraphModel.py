@@ -91,9 +91,9 @@ class KnowledgeGraphModel:
         self.log(f"GRAPH DB STATUS: {gdb_count}", verbose=self.verbose)
 
         vdb_nodes_count: Dict[str, Dict[str, int]] = dict()
-        for node_type, v_composer in self.graph_embeddings.nodes_vectordbs.items():
+        for node_type, v_composer in self.graph_embeddings.nodes_vcomposers.items():
             vdb_nodes_count[node_type.value] = v_composer.count_items()
-        vdb_triplets_count = self.graph_embeddings.triplets_vectordbs.count_items()
+        vdb_triplets_count = self.graph_embeddings.triplets_vcomposer.count_items()
         self.log(f"VECTOR NODES DB STATUS: {vdb_nodes_count}", verbose=self.verbose)
         self.log(f"VECTOR TRIPLETS DB STATUS: {vdb_triplets_count}", verbose=self.verbose)
 
@@ -165,11 +165,11 @@ class KnowledgeGraphModel:
 
         return {'graph_info': graph_delete_info, 'embeddings_info': embds_delete_info, 'tree_info': tree_reduce_info}
 
-    def count_items(self) -> Dict[str, Dict[str, int]]:
+    def count_items(self, detailed: bool = False) -> Dict[str, Dict[str, int]]:
         return {
-            'graph_info': self.graph_struct.count_items(),
-            'embeddings_info': self.graph_embeddings.count_items(),
-            'nodestree_info': self.nodestree_model.count_items() if self.nodestree_model is not None else None
+            'graph_info': self.graph_struct.count_items(detailed),
+            'embeddings_info': self.graph_embeddings.count_items(detailed),
+            'nodestree_info': self.nodestree_model.count_items(detailed) if self.nodestree_model is not None else None
         }
 
     def clear(self) -> None:
@@ -201,5 +201,10 @@ class KnowledgeGraphModel:
                 self.AVAILABLE_AGENTS[a_name].close_connection()
         except AttributeError:
             pass
+
+        self.graph_embeddings.__del__()
+        self.graph_struct.__del__()
+        if self.nodestree_model is not None:
+            self.nodestree_model.__del__()
 
         gc.collect()

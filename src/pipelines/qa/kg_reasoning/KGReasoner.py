@@ -2,14 +2,15 @@ from dataclasses import dataclass, field
 from typing import Tuple, List, Union, Dict
 
 from .weak_reasoner import WeakKGReasonerConfig
+from .medium_reasoner import MediumKGReasonerConfig
 from .config import KGR_MAIN_LOG_PATH, AVAILABLE_KG_REASONERS
-from .utils import BaseKGReasonerConfig
+from .utils import BaseKGReasonerConfig, AbstractKGReasoner
 from ....utils import ReturnInfo, Logger
 from ....kg_model import KnowledgeGraphModel
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv import CacheUtils
 from ....utils.cache_kv.utils import AbstractCacheInfo
-from .utils import AbstractKGReasoner
+from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
@@ -28,9 +29,9 @@ class KnowledgeGraphReasonerConfig:
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
     """
-    reasoner_name: str = 'weak'
+    reasoner_name: str = 'medium'  # 'weak' | 'medium'
     reasoner_hyperparameters: BaseKGReasonerConfig = field(
-        default_factory=lambda: WeakKGReasonerConfig())
+        default_factory=lambda: MediumKGReasonerConfig())
 
     cache_table_name: str = 'kg_reasoning_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(KGR_MAIN_LOG_PATH))
@@ -49,11 +50,14 @@ class KnowledgeGraphReasoner(CacheUtils, AbstractCacheInfo):
     :type config: KnowledgeGraphReasonerConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel,
                  config: KnowledgeGraphReasonerConfig = KnowledgeGraphReasonerConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None):
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None):
         self.config = config
 
         self.cachekv = self.init_cachekv(
@@ -61,7 +65,7 @@ class KnowledgeGraphReasoner(CacheUtils, AbstractCacheInfo):
 
         self.reasoner_name = config.reasoner_name
         self.reasoner: AbstractKGReasoner = AVAILABLE_KG_REASONERS[self.reasoner_name](
-            kg_model, config.reasoner_hyperparameters, cache_kvdriver_config)
+            kg_model, config.reasoner_hyperparameters, cache_kvdriver_config, inferencestat_config)
 
         self.log = config.log
         self.verbose = config.verbose

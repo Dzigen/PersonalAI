@@ -3,6 +3,11 @@ from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack.components.retrievers.in_memory import InMemoryBM25Retriever
 from haystack.document_stores.types import DuplicatePolicy
 from haystack import Document
+import pickle
+import os
+import hashlib
+import time
+import gc
 
 from .configs import DEFAULT_INMEMORY_BM25_CONFIG
 from ...utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
@@ -18,15 +23,40 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
 
     def open_connection(self) -> ReturnInfo:
         self.db_conn = InMemoryDocumentStore()
+
+        if self.config.params['load_from_disk']:
+            load_path = f"{self.config.params['load_dump_dir']}/{self.config.db_info['table']}.json"
+            if os.path.exists(load_path):
+                self.db_conn = self.db_conn.load_from_disk(load_path)
+            else:
+                print(f"warning: inmemory_sparse-dump '{load_path}' doesnt exists. creating empty store")
+
         self.retriever = InMemoryBM25Retriever(document_store=self.db_conn)
+
+        if self.config.need_to_clear:
+            self.clear()
 
     def is_open(self) -> bool:
         # TODO
         pass
 
     def close_connection(self) -> ReturnInfo:
-        # TODO
-        pass
+        # print("closing bm25 connection...")
+        if self.config.params['save_on_disk']:
+            os.makedirs(self.config.params['save_dump_dir'], exist_ok=True)
+            save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['table']}"
+            if os.path.exists(save_path):
+                print("warning: file on that path is already exists")
+                postfix = hashlib.md5(str(time.time()).encode()).hexdigest()
+                save_path += f'({postfix})'
+            save_path += '.json'
+
+            self.db_conn.save_to_disk(save_path)
+            # print(f"bm25-store saved in: {save_path}")
+
+        self.retriever = None
+        self.db_conn = None
+        gc.collect()
 
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
         # validating
@@ -105,6 +135,8 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
         if subset_ids is not None:
             filters = {"field": "id", "operator": "in", "value": subset_ids}
 
+        # print(query_instances)
+
         formated_outputs = []
         for query in query_instances:
             # Attention: Будут получены значения семантической близости [similarity], а не значения их расстояния [distance]
@@ -112,6 +144,7 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
 
             formated_output = []
             for raw_item in raw_output["documents"]:
+                # print(raw_item)
                 formated_item = VectorDBInstance(id=raw_item.id)
                 if 'documents' in includes:
                     formated_item.document = raw_item.content
@@ -138,5 +171,6 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
     def clear(self) -> None:
         del self.db_conn
         del self.retriever
+        gc.collect()
         self.db_conn = InMemoryDocumentStore()
         self.retriever = InMemoryBM25Retriever(document_store=self.db_conn)

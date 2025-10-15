@@ -2,7 +2,7 @@ from ...utils import VectorDBConnectionConfig
 
 DEFAULT_CHROMA_CONFIG = VectorDBConnectionConfig(
     params={"hnsw:space": "ip", "hnsw:M": 4096},
-    conn={'path': './tmp/vector_store/chroma'})
+    conn={'path': "./personalai_tmp/volumes/chroma"})
 
 DEFAULT_MILVUS_CONFIG = VectorDBConnectionConfig(
     conn={'host': 'localhost', 'port': 19530,

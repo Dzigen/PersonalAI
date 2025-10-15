@@ -1,6 +1,6 @@
 from typing import List, Dict, Tuple, Union
 import os
-import joblib
+import pickle
 import gc
 from time import time
 import hashlib
@@ -21,9 +21,14 @@ class InMemoryTableConnector(AbstractTableDatabaseConnection):
 
     def open_connection(self) -> None:
         if self.config.params['load_from_disk']:
-            load_path = f"{self.config.params['load_dump_dir']}/{self.config.params['tablestore_dump_name']}.dump"
+            load_path = f"{self.config.params['load_dump_dir']}/{self.config.params['tablestore_dump_name']}.pkl"
             if os.path.exists(load_path):
-                self.table_store = joblib.load(load_path)
+                try:
+                    with open(load_path, 'rb') as fd:
+                        self.table_store = pickle.load(fd)
+                except EOFError:
+                    print(f"The pickle file '{load_path}' is empty or corrupted.")
+                    self.create_table()
             else:
                 print(f"warning: tablestore-dump '{load_path}' doesnt exists. creating empty table-store")
                 self.create_table()
@@ -34,15 +39,19 @@ class InMemoryTableConnector(AbstractTableDatabaseConnection):
             self.clear()
 
     def close_connection(self) -> None:
+        # print("closing inmemory-table connection...")
         if self.config.params['save_on_disk']:
-            save_path = f"{self.config.params['save_dump_dir']}/{self.config.params['tablestore_dump_name']}"
+            os.makedirs(self.config.params['save_dump_dir'], exist_ok=True)
+            save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['table']}"
             if os.path.exists(save_path):
                 print("warning: file on that path is already exists")
                 postfix = hashlib.md5(str(time.time()).encode()).hexdigest()
                 save_path += postfix
-            save_path += '.dump'
+            save_path += '.pkl'
+            with open(save_path, 'wb') as fd:
+                pickle.dump(self.table_store, fd)
+            # print(f"table-store saved in: {save_path}")
 
-            joblib.dump(self.table_store, save_path)
         self.table_store = None
         gc.collect()
 

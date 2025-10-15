@@ -19,6 +19,6 @@ def answcls_custom_postprocess(parsed_response: str, **kwargs) -> bool:
     if parsed_response.startswith("No"):
         cananswer_sign = False
     else:
-        raise ValueError
+        raise ValueError(f"parsed_response: '{parsed_response}'")
 
     return cananswer_sign

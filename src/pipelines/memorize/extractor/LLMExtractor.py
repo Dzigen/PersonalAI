@@ -9,6 +9,7 @@ from ....utils.data_structs import TripletCreator, NodeCreator, Node, Relation, 
 from ....agents.utils import AbstractAgentConnector
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv.utils import AbstractCacheInfo
+from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
@@ -54,18 +55,21 @@ class LLMExtractor(AbstractCacheInfo):
     :type config: LLMExtractorConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: LLMExtractorConfig = LLMExtractorConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
         self.config = config
 
         self.agent = agent
         self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
         self.tasks_solvers['triplets_extraction_solver'] = AgentTaskSolver(
-            self.agent, self.config.triplets_extraction_task_config, cache_kvdriver_config)
+            self.agent, self.config.triplets_extraction_task_config, cache_kvdriver_config, inferencestat_config)
         self.tasks_solvers['thesises_extraction_solver'] = AgentTaskSolver(
-            self.agent, self.config.thesises_extraction_task_config, cache_kvdriver_config)
+            self.agent, self.config.thesises_extraction_task_config, cache_kvdriver_config, inferencestat_config)
 
         self.log = self.config.log
         self.verbose = self.config.verbose

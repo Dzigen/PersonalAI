@@ -159,6 +159,8 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
             if type(inst.embedding) in [torch.Tensor, np.ndarray]:
                 raise ValueError
 
+        query_instances = deepcopy(query_instances)
+
         collection_size = self.count_items()
         n_results = collection_size if collection_size < n_results else n_results
         if n_results < 1:
@@ -201,7 +203,7 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
                     (1 - cur_distance, VectorDBInstance(**tmp_inst)))
 
             cur_formated_instances = sorted(
-                cur_formated_instances, key=lambda v: v[0], reverse=False)
+                cur_formated_instances, key=lambda v: v[0], reverse=True)
             formated_instances.append(cur_formated_instances)
 
         return formated_instances

@@ -43,8 +43,8 @@ class TraversedPath:
 class GraphBeamSearchConfig(BaseGraphSearchConfig):
     """Конфигурация BeamSearchTripletsRetriever-алгоритма обхода графа.
 
-    :param reranker_driver_config: ... . Значение по умолчанию GS_RERANKDRIVER_DEFAULT_CONFIG.
-    :param RerankerDriverConfig, optional
+    :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию BSGS_RERANKDRIVER_DEFAULT_CONFIG.
+    :type reranker_driver_config: RerankerDriverConfig, optional
     :param max_depth: Максимальная глубина построенных/пройденных путей. Значение по умолчанию 10.
     :type max_depth: int, optional
     :param max_paths: Максимальное количество построенных/пройденных путей. Значение по умолчанию 50.
@@ -114,7 +114,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
         self.scorer = RerankerDriver.specify(
             self.config.reranker_driver_config,
-            kg_model.graph_embeddings.triplets_vectordbs
+            kg_model.graph_embeddings.triplets_vcomposer
         )
         if not isinstance(self.scorer, SingleStepReranker):
             raise TypeError
@@ -133,7 +133,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             'BeamSearchTripletsRetriever': None if self.cachekv is None else self.cachekv.kv_conn.count_items()
         }
 
-    def clear_kv_caches(self, level='all') -> None:
+    def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")

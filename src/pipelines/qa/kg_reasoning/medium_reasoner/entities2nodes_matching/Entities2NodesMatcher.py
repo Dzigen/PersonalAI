@@ -16,10 +16,10 @@ from ......rerankers import RerankerDriverConfig, RerankerDriver
 class Entities2NodesMatcherConfig:
     """Конфигурация Entities2NodesMatcher-стадии MediumQA-ризонера.
 
-    :param use_tree: _description_. Значение по умолчанию False.
+    :param use_tree: Если True, то для сопоставления сущностей с object-вершинами из графа будет использована древовидная модель представления вершин из графа знаний, иначе для matching-операции будет использован Retrieve/Rerank-оператор. Значение по умолчанию False.
     :type use_tree: str, optional
-    :param reranker_driver_config: ... . Значение по умолчанию KC_RERANKDRIVER_DEFAULT_CONFIG.
-    :param reranker_driver_config: RerankerDriverConfig, optional
+    :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию E2NM_RERANKDRIVER_DEFAULT_CONFIG.
+    :type reranker_driver_config: RerankerDriverConfig, optional
     :param max_n: Максимальное количество вершин из графа знаний, которе может быть сопоставлено одной сущности. Значение по умолчанию 3.
     :type max_n: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы Entities2NodesMatcher-класса. Значение по умолчанию 'medreasn_e2nmatcher_main_stage_cache'.
@@ -63,7 +63,7 @@ class Entities2NodesMatcher(CacheUtils):
 
         self.retriever = RerankerDriver.specify(
             self.config.reranker_driver_config,
-            kg_model.graph_embeddings.nodes_vectordbs[NodeType.object])
+            kg_model.graph_embeddings.nodes_vcomposers[NodeType.object])
 
         self.log = self.config.log
         self.verbose = self.config.verbose

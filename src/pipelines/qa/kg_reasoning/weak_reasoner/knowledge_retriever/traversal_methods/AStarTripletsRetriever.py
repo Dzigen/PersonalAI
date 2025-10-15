@@ -54,7 +54,7 @@ class AStarMetrics:
         self.config = config
 
         # проверка: в указанной бд должны содержатся плотные (dense) векторные предаставления вершин, иначе вызываем исключение
-        for n_type, v_composer in self.kg_model.graph_embeddings.nodes_vectordbs.items():
+        for n_type, v_composer in self.kg_model.graph_embeddings.nodes_vcomposers.items():
             if not hasattr(v_composer.vdb_conn_mapping[self.config.nodes_vdb_name], 'embedder'):
                 raise ValueError
 
@@ -118,7 +118,7 @@ class AStarMetrics:
         if node1.id != node2.id:
             instances: List[VectorDBInstance] = []
             for node in [node1, node2]:
-                instances.append(self.kg_model.graph_embeddings.nodes_vectordbs[node.type].read(
+                instances.append(self.kg_model.graph_embeddings.nodes_vcomposers[node.type].read(
                     [node.id], vdb_name=self.config.nodes_vdb_name, includes=['embeddings'])[0])
             # calculation ip distance
             try:
@@ -453,7 +453,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             'AStarTripletsRetriever': None if self.cachekv is None else self.cachekv.kv_conn.count_items()
         }
 
-    def clear_kv_caches(self, level='all') -> None:
+    def clear_kv_caches(self, level: str = 'all') -> None:
         if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
