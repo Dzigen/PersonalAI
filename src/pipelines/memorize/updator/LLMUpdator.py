@@ -3,13 +3,15 @@ from typing import List, Union, Dict
 from tqdm import tqdm
 
 from .configs import MEM_UPDATOR_MAIN_LOG_PATH, DEFAULT_REPLACE_THESIS_TASK_CONFIG, DEFAULT_REPLACE_SIMPLE_TASK_CONFIG
+from .utils import MemUpdatorTaskSolvers
 from ....utils import Logger, Triplet, AgentTaskSolverConfig, AgentTaskSolver
 from ....utils.data_structs import RelationType, NodeType, create_id
 from ....utils.errors import ReturnInfo, ReturnStatus, STATUS_MESSAGE
 from ....kg_model import KnowledgeGraphModel
 from ....db_drivers.kv_driver import KeyValueDriverConfig
-from ....utils.cache_kv.utils import AbstractCacheInfo
+from ....utils.cache_kv.CacheOperations import CacheOperations
 from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
+from ....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 
 
 @dataclass
@@ -44,7 +46,7 @@ class LLMUpdatorConfig:
     verbose: bool = False
 
 
-class LLMUpdator(AbstractCacheInfo):
+class LLMUpdator(CacheOperations, AgentStatOperations):
     """Верхнеуровневый класс первой стадии Memorize-конвейера для актуализации знаний в памяти ассистента.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -63,33 +65,17 @@ class LLMUpdator(AbstractCacheInfo):
         self.config = config
         self.kg_model = kg_model
 
-        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
-        self.tasks_solvers['replace_simple_solver'] = AgentTaskSolver(
-            kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.mem_pipeline],
-            self.config.replace_simple_task_config, cache_kvdriver_config, inferencestat_config)
-        self.tasks_solvers['replace_hyper_solver'] = AgentTaskSolver(
-            kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.mem_pipeline],
-            self.config.replace_thesis_task_config, cache_kvdriver_config, inferencestat_config)
+        self.tasks_solvers: MemUpdatorTaskSolvers = MemUpdatorTaskSolvers(
+            replace_simple_solver=AgentTaskSolver(
+                kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.mem_pipeline],
+                self.config.replace_simple_task_config, cache_kvdriver_config, inferencestat_config),
+            replace_hyper_solver=AgentTaskSolver(
+                kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.mem_pipeline],
+                self.config.replace_thesis_task_config, cache_kvdriver_config, inferencestat_config)
+        )
 
         self.log = self.config.log
         self.verbose = self.config.verbose
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
-
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        return {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
-
-    def clear_kv_caches(self, level: str = 'other') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        self.tasks_solvers['replace_simple_solver'].cachekv.clear()
-        self.tasks_solvers['replace_hyper_solver'].cachekv.clear()
 
     def find_simple_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
         """Метод предназначен для поиска устаревших simple-триплетов в графе знаний по сравнению с указанным (base_triplet) simple-триплетом.
@@ -122,7 +108,7 @@ class LLMUpdator(AbstractCacheInfo):
         incident_triplets = list(incident_triplets.values())
 
         # Выполняем поиск устаревших триплетов
-        tmp_obsolete_triplet_ids, status = self.tasks_solvers['replace_simple_solver'].solve(
+        tmp_obsolete_triplet_ids, status = self.tasks_solvers.replace_simple_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             base_triplet=base_triplet, incident_triplets=incident_triplets)
 
@@ -163,7 +149,7 @@ class LLMUpdator(AbstractCacheInfo):
         incident_triplets = list(incident_triplets.values())
 
         # Выполняем поиск устаревших триплетов
-        tmp_obsolete_triplet_ids, status = self.tasks_solvers['replace_hyper_solver'].solve(
+        tmp_obsolete_triplet_ids, status = self.tasks_solvers.replace_hyper_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             base_triplet=base_triplet, incident_triplets=incident_triplets)
 

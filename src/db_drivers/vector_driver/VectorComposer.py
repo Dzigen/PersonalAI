@@ -93,3 +93,10 @@ class VectorComposer(AbstractVectorDatabaseComposer):
 
         if check_consistency:
             self.check_consistency()
+
+    def __del__(self):
+        for v_conn in self.vdb_conn_mapping.values():
+            try:
+                v_conn.close_connection()
+            except AttributeError:
+                pass

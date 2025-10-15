@@ -3,17 +3,18 @@ from typing import Tuple, Union, List, Dict
 import gc
 
 from .configs import QA_MAIN_LOG_PATH
+from .utils import QAPipelineStages
 from .kg_reasoning.utils import QueryReasoningInfo
 from .kg_reasoning import KnowledgeGraphReasonerConfig, KnowledgeGraphReasoner
 from .query_preprocessing import QueryPreprocessor, QueryPreprocessorConfig
-from .query_preprocessing.utils import QueryPreprocessingInfo
 from .answers_aggregation import AnswersAggregator, AnswersAggregatorConfig
 from ...kg_model import KnowledgeGraphModel
 from ...utils import Logger, ReturnStatus, ReturnInfo, update_rinfo
 from ...utils.cache_kv import CacheUtils
-from ...utils.data_structs import create_id
+from ...utils.data_structs import create_id, QueryPreprocessingInfo
 from ...db_drivers.kv_driver import KeyValueDriverConfig
-from ...utils.cache_kv.utils import AbstractCacheInfo
+from ...utils.cache_kv.CacheOperations import CacheOperations
+from ...utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 from ...utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
@@ -50,7 +51,7 @@ class QAPipelineConfig:
         return f"{self.preprocessor_config.to_str()}|{self.reasoner_config.to_str()}|{self.aggregator_config.to_str()}"
 
 
-class QAPipeline(CacheUtils, AbstractCacheInfo):
+class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
     """Верхнеуровневый класс QA-конвейера, отвечающий за поиск информации в графе знаний и генерацию ответов на вопросы.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -70,13 +71,14 @@ class QAPipeline(CacheUtils, AbstractCacheInfo):
         agent = kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.qa_pipeline]
         self.using_agent_info = {'kw': agent.CONNECTOR_KW, 'config': agent.config}
 
-        self.query_preprocessor = QueryPreprocessor(
-            agent, config.preprocessor_config, cache_kvdriver_config, inferencestat_config)
-        self.kg_reasoner = KnowledgeGraphReasoner(
-            kg_model, config.reasoner_config, cache_kvdriver_config, inferencestat_config)
-        self.answers_aggregator = AnswersAggregator(
-            agent, config.aggregator_config, cache_kvdriver_config,
-            inferencestat_config=inferencestat_config)
+        self.stages: QAPipelineStages = QAPipelineStages(
+            query_preprocessor=QueryPreprocessor(
+                agent, config.preprocessor_config, cache_kvdriver_config, inferencestat_config),
+            kg_reasoner=KnowledgeGraphReasoner(
+                kg_model, config.reasoner_config, cache_kvdriver_config, inferencestat_config),
+            answers_aggregator=AnswersAggregator(
+                agent, config.aggregator_config, cache_kvdriver_config, inferencestat_config=inferencestat_config)
+        )
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -84,39 +86,8 @@ class QAPipeline(CacheUtils, AbstractCacheInfo):
         self.log = config.log
         self.verbose = config.verbose
 
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        return {
-            'QAPipeline': None if self.cachekv is None else self.cachekv.kv_conn.count_items(),
-            'query_preprocessor': self.query_preprocessor.get_cache_stat(),
-            'kg_reasoner': self.kg_reasoner.get_cache_stat(),
-            'answers_aggregator': self.answers_aggregator.get_cache_stat(),
-        }
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            self.cachekv.clear()
-
-        if level in ['other', 'all']:
-            self.query_preprocessor.clear_kv_caches(level='all')
-            self.kg_reasoner.clear_kv_caches(level='all')
-            self.answers_aggregator.clear_kv_caches(level='all')
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return {
-            'query_preprocessor': self.query_preprocessor.get_agent_tgen_stat(),
-            'kg_reasoner': self.kg_reasoner.get_agent_tgen_stat(),
-            'answers_aggregator': self.answers_aggregator.get_agent_tgen_stat(),
-        }
-
     def preprocess_query(self, query: str) -> Tuple[QueryPreprocessingInfo, ReturnInfo]:
-        query_info, rinfo = self.query_preprocessor.perform(query)
+        query_info, rinfo = self.stages.query_preprocessor.perform(query)
         self.log(f"RESULT: {query_info}", verbose=self.verbose)
         if rinfo.status != ReturnStatus.success:
             self.log("Operation ended with error!", verbose=self.verbose)
@@ -132,7 +103,7 @@ class QAPipeline(CacheUtils, AbstractCacheInfo):
         for i, sub_query in enumerate(query_info.processed_query):
             self.log(
                 f"Processing sub_query #{i}: {sub_query}", verbose=self.verbose)
-            sub_answer, rinfo = self.kg_reasoner.perform(sub_query)
+            sub_answer, rinfo = self.stages.kg_reasoner.perform(sub_query)
             self.log(f"RESULT: {sub_answer}", verbose=self.verbose)
             if rinfo.status != ReturnStatus.success:
                 self.log("Operation ended with error!", verbose=self.verbose)
@@ -152,7 +123,7 @@ class QAPipeline(CacheUtils, AbstractCacheInfo):
         return subq_info, rinfo
 
     def postprocess_answer(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> Tuple[str, ReturnInfo]:
-        aggregated_answer, rinfo = self.answers_aggregator.perform(
+        aggregated_answer, rinfo = self.stages.answers_aggregator.perform(
             query_info, subq_info)
         self.log(f"RESULT: {aggregated_answer}", verbose=self.verbose)
         if rinfo.status != ReturnStatus.success:
@@ -164,9 +135,9 @@ class QAPipeline(CacheUtils, AbstractCacheInfo):
 
     def get_cache_key(self, query: str) -> List[str]:
         str_using_agent_config = f"{self.using_agent_info['kw']}:{self.using_agent_info['config'].to_str()}"
-        str_qprep_config = self.query_preprocessor.config.to_str()
-        str_qreas_config = self.kg_reasoner.config.to_str()
-        str_aaggr_config = self.answers_aggregator.config.to_str()
+        str_qprep_config = self.stages.query_preprocessor.config.to_str()
+        str_qreas_config = self.stages.kg_reasoner.config.to_str()
+        str_aaggr_config = self.stages.answers_aggregator.config.to_str()
         return [str_qprep_config, str_qreas_config, str_aaggr_config, str_using_agent_config, query]
 
     @CacheUtils.cache_method_output
@@ -211,7 +182,5 @@ class QAPipeline(CacheUtils, AbstractCacheInfo):
 
     def __del__(self):
         # print("deleting QA-class")
-        del self.query_preprocessor
-        del self.kg_reasoner
-        del self.answers_aggregator
+        del self.stages
         gc.collect()

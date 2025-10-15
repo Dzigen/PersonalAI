@@ -8,7 +8,6 @@ from .logger import Logger
 from .language_detector import detect_lang
 from .errors import ReturnStatus, STATUS_MESSAGE
 from .cache_kv import CacheKV
-from .cache_kv.utils import AbstractCacheInfo
 from .agent_stat_analyzer import AgentStatAnalyzerConfig, AgentStatAnalyzer
 from ..agents.utils import AbstractAgentConnector
 from ..db_drivers.kv_driver import KeyValueDriverConfig
@@ -66,7 +65,7 @@ class AgentTaskSolverConfig:
     verbose: bool = False
 
 
-class AgentTaskSolver(AbstractCacheInfo):
+class AgentTaskSolver:
     """Класс-обёртка, предназначенный для решения атомарной задачи на базе inference-операции LLM-агента.
 
     :param agent: интерфейс взаимодействия с LLM-агентом.
@@ -78,6 +77,8 @@ class AgentTaskSolver(AbstractCacheInfo):
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках заданной LLM-задачи. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
+    cachekv: CacheKV
+    inference_stat_cache: AgentStatAnalyzer
 
     def __init__(self, agent: AbstractAgentConnector, config: AgentTaskSolverConfig,
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
@@ -102,15 +103,6 @@ class AgentTaskSolver(AbstractCacheInfo):
 
         self.log = self.config.log
         self.verbose = self.config.verbose
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[int, float]]]:
-        if self.inference_stat_cache is not None:
-            return self.inference_stat_cache.calculate_stat()
-        else:
-            return None
-
-    def get_cache_stat(self) -> Union[None, int]:
-        return self.cachekv.kv_conn.count_items() if self.cachekv is not None else None
 
     def solve(self, lang: str = 'en', gen_strategy: Union[None, Dict[str, str]] = None, **kwargs) -> Tuple[object, ReturnStatus]:
         """Метод предназначен для запуска agent-солвера на заданных входных данных.

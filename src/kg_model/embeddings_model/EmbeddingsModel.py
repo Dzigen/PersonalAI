@@ -3,6 +3,7 @@ from typing import List, Dict, Set, Union, Tuple
 import math
 from tqdm import tqdm
 from copy import deepcopy
+import gc
 from collections import defaultdict
 import torch
 
@@ -272,13 +273,6 @@ class EmbeddingsModel:
         self.triplets_vcomposer.clear()
 
     def __del__(self):
-
-        for n_type in self.nodes_vcomposers.keys():
-            try:
-                self.nodes_vcomposers[n_type].close_connection()
-            except AttributeError:
-                pass
-        try:
-            self.triplets_vcomposer.close_connection()
-        except AttributeError:
-            pass
+        del self.nodes_vcomposers
+        del self.triplets_vcomposer
+        gc.collect()

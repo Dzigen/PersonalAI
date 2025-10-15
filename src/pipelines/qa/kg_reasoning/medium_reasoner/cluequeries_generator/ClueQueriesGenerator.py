@@ -4,6 +4,7 @@ import json
 from itertools import product
 
 from .config import DEFAULT_CQGEN_TASK_CONFIG, CQGEN_MAIN_LOG_PATH
+from .utils import MediumCQGeneratorTaskSolvers
 from ......utils.data_structs import QueryInfo
 from ......utils.errors import ReturnStatus
 from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
@@ -13,6 +14,8 @@ from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......db_drivers.vector_driver import VectorDBInstance
 from ......utils.cache_kv import CacheUtils
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
+from ......utils.cache_kv.CacheOperations import CacheOperations
+from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 
 
 @dataclass
@@ -48,7 +51,7 @@ class ClueQueriesGeneratorConfig:
         return f"{self.lang}|{self.agent_gen_stategy}|{self.cquerie_generator_agent_task_config.version}|{self.max_cqueries_amount}"
 
 
-class ClueQueriesGenerator(CacheUtils):
+class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     """Верхнеуровневый класс стадии #2.2 MediumQA-конвейера для генерации clue-запросов поиска на графе знаний.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -57,15 +60,16 @@ class ClueQueriesGenerator(CacheUtils):
     :type config: ClueQueriesGeneratorConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
-    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
-    :type cache_llm_inference: bool, optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
+    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
+    :type cache_llm_inference: bool, optional
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: ClueQueriesGeneratorConfig = ClueQueriesGeneratorConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None, cache_llm_inference: bool = True,
-                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None):
+                 cache_kvdriver_config: KeyValueDriverConfig = None,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
+                 cache_llm_inference: bool = True):
         self.config = config
 
         self.cachekv = self.init_cachekv(
@@ -76,36 +80,13 @@ class ClueQueriesGenerator(CacheUtils):
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config
 
-        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
-        self.tasks_solvers['cluequery_gen_solver'] = AgentTaskSolver(
-            self.agent, self.config.cquerie_generator_agent_task_config,
-            agents_cache_config, inferencestat_config)
+        self.tasks_solvers: MediumCQGeneratorTaskSolvers = MediumCQGeneratorTaskSolvers(
+            cluequery_gen_solver=AgentTaskSolver(
+                self.agent, self.config.cquerie_generator_agent_task_config, agents_cache_config, inferencestat_config)
+        )
 
         self.log = self.config.log
         self.verbose = self.config.verbose
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
-
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        cache_stat = {'ClueQueriesGenerator': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
-        tasks_caches = {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
-        cache_stat.update(tasks_caches)
-        return cache_stat
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            self.cachekv.clear()
-
-        if level in ['other', 'all']:
-            self.tasks_solvers['cluequery_gen_solver'].cachekv.clear()
 
     def get_cache_key(self, search_query: str, matched_kg_objects: Dict[str, List[VectorDBInstance]]) -> List[object]:
         str_matchedobject = json.dumps({k: list(map(lambda vv: vv.document, v))
@@ -166,7 +147,7 @@ class ClueQueriesGenerator(CacheUtils):
 
             self.log("Выполняем генерацию clue-query с помощью LLM-агента...",
                      verbose=self.config.verbose)
-            cur_cluequery, status = self.tasks_solvers['cluequery_gen_solver'].solve(
+            cur_cluequery, status = self.tasks_solvers.cluequery_gen_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                 query=search_query, base_entities=base_entities, matched_objects=formated_objects_group)
             self.log(f"RESULT: {cur_cluequery}", verbose=self.verbose)

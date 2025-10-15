@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Tuple, Union, Dict
 
 from .configs import KR_MAIN_LOG_PATH, AVAILABLE_TRIPLETS_FILTERS, AVAILABLE_TRIPLETS_RETRIEVERS
-from .utils import BaseGraphSearchConfig, BaseTripletsFilterConfig, AbstractTriplesFilter, AbstractTripletsRetriever
+from .utils import BaseGraphSearchConfig, BaseTripletsFilterConfig, KnowledgeRetrieverStages
 from .filtering_methods.TripletsFilter import TripletsFilterConfig
 from .traversal_methods.BeamSearchTripletsRetriever import GraphBeamSearchConfig
 from ......kg_model import KnowledgeGraphModel
@@ -11,7 +11,7 @@ from ......utils.errors import STATUS_MESSAGE
 from ......utils.data_structs import create_id, QueryInfo, Triplet
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
-from ......utils.cache_kv.utils import AbstractCacheInfo
+from ......utils.cache_kv.CacheOperations import CacheOperations
 
 
 @dataclass
@@ -35,8 +35,8 @@ class KnowledgeRetrieverConfig:
     """
     retriever_method: str = 'beamsearch'
     retriever_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: GraphBeamSearchConfig())
-    filter_method: str = 'naive'
-    filter_config: Union[BaseTripletsFilterConfig, Dict] = field(default_factory=lambda: TripletsFilterConfig())
+    filter_method: Union[None, str] = 'naive'
+    filter_config: Union[BaseTripletsFilterConfig, Dict, None] = field(default_factory=lambda: TripletsFilterConfig())
 
     cache_table_name: Union[str, None] = 'qa_kretriever_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(KR_MAIN_LOG_PATH))
@@ -48,7 +48,7 @@ class KnowledgeRetrieverConfig:
         return f"{self.retriever_method};{str_r_config};{self.filter_method};{str_f_config}"
 
 
-class KnowledgeRetriever(CacheUtils, AbstractCacheInfo):
+class KnowledgeRetriever(CacheUtils, CacheOperations):
     """Верхнеуровневый класс третьей стадии QA-конвейера для извлечения
     релевантной к user-вопросу информации из памяти (графа знаний) ассистента.
 
@@ -68,43 +68,17 @@ class KnowledgeRetriever(CacheUtils, AbstractCacheInfo):
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
-        self.triplets_retriever: AbstractTripletsRetriever = AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method]['class'](
-            kg_model, config.log, self.config.retriever_config, cache_kvdriver_config, self.config.verbose)
+        self.stages: KnowledgeRetrieverStages = KnowledgeRetrieverStages(
+            triplets_retriever=AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method]['class'](
+                kg_model, config.log, self.config.retriever_config, cache_kvdriver_config, self.config.verbose),
+        )
 
-        if self.config.filter_method is None:
-            self.triplets_filter = None
-        else:
-            self.triplets_filter: AbstractTriplesFilter = AVAILABLE_TRIPLETS_FILTERS[self.config.filter_method]['class'](
+        if self.config.filter_method is not None:
+            self.stages.triplets_filter = AVAILABLE_TRIPLETS_FILTERS[self.config.filter_method]['class'](
                 kg_model, config.log, self.config.filter_config, cache_kvdriver_config, self.config.verbose)
 
         self.log = config.log
         self.verbose = config.verbose
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return None
-
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        return {
-            'KnowledgeRetriever': None if self.cachekv is None else self.cachekv.kv_conn.count_items(),
-            'triplets_retriever': self.triplets_retriever.get_cache_stat(),
-            'triplets_filter': None if self.triplets_filter is None else self.triplets_filter.get_cache_stat()
-        }
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            self.cachekv.clear()
-
-        if level in ['other', 'all']:
-            self.triplets_retriever.clear_kv_caches(level='all')
-            if self.triplets_filter is not None:
-                self.triplets_filter.clear_kv_caches(level='all')
 
     def validate_tripelts(self, triplets: List[Triplet]) -> List[Triplet]:
         self.log("Проверяем, что извлечённые триплеты являются валидными...",
@@ -135,7 +109,7 @@ class KnowledgeRetriever(CacheUtils, AbstractCacheInfo):
         return valid_triplets
 
     def traverse_kg(self, query_info: QueryInfo) -> List[Triplet]:
-        triplets = self.triplets_retriever.get_relevant_triplets(query_info)
+        triplets = self.stages.triplets_retriever.get_relevant_triplets(query_info)
         self.log(f"RESULT: {len(triplets)}", verbose=self.config.verbose)
         for triplet in triplets:
             self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
@@ -147,9 +121,8 @@ class KnowledgeRetriever(CacheUtils, AbstractCacheInfo):
 
     def filter_triplets(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
         filtered_triplets = None
-        if self.triplets_filter is not None:
-            filtered_triplets = self.triplets_filter.apply_filter(
-                query_info, triplets)
+        if self.stages.triplets_filter is not None:
+            filtered_triplets = self.stages.triplets_filter.apply_filter(query_info, triplets)
             self.log(f"RESULT: {len(filtered_triplets)}",
                      verbose=self.config.verbose)
             for triplet in filtered_triplets:
@@ -162,9 +135,8 @@ class KnowledgeRetriever(CacheUtils, AbstractCacheInfo):
         return filtered_triplets
 
     def get_cache_key(self, query_info: QueryInfo) -> List[str]:
-        str_tfilter_config = self.triplets_filter.config.to_str(
-        ) if self.triplets_filter is not None else "None"
-        return [self.config.retriever_method, self.triplets_retriever.config.to_str(), str(self.config.filter_method),
+        str_tfilter_config = self.stages.triplets_filter.config.to_str() if self.stages.triplets_filter is not None else "None"
+        return [self.config.retriever_method, self.stages.triplets_retriever.config.to_str(), str(self.config.filter_method),
                 str_tfilter_config, query_info.to_str()]
 
     @CacheUtils.cache_method_output

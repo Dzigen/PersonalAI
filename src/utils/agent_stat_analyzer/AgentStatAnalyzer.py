@@ -48,3 +48,6 @@ class AgentStatAnalyzer:
         formated_instances = [TableDBInstance(values=value) for value in values]
         self.db_conn.create(formated_instances)
         return [str(inst.id) for inst in formated_instances]
+
+    def clear(self) -> None:
+        self.db_conn.clear()

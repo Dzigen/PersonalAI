@@ -3,13 +3,15 @@ from typing import Union, Tuple, List, Dict
 from copy import deepcopy
 
 from .configs import DEFAULT_KWE_TASK_CONFIG, QP_MAIN_LOG_PATH
+from .utils import WeakQueryParserTaskSolvers
 from ......utils.data_structs import QueryInfo, create_id
 from ......utils.errors import STATUS_MESSAGE
 from ......utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 from ......agents.utils import AbstractAgentConnector
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
-from ......utils.cache_kv.utils import AbstractCacheInfo
+from ......utils.cache_kv.CacheOperations import CacheOperations
+from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
@@ -43,7 +45,7 @@ class QueryLLMParserConfig:
         return f"{self.agent_gen_stategy}|{self.kw_extraction_task_config.version}|{self.lang}"
 
 
-class QueryLLMParser(CacheUtils, AbstractCacheInfo):
+class QueryLLMParser(CacheUtils, CacheOperations, AgentStatOperations):
     """Верхнеуровневый класс первой стадии QA-конвейера для извлечения сущностей из запроса на естественном языке.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -52,15 +54,16 @@ class QueryLLMParser(CacheUtils, AbstractCacheInfo):
     :type config: QueryLLMParserConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
-    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
-    :type cache_llm_inference: bool, optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
+    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
+    :type cache_llm_inference: bool, optional
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: QueryLLMParserConfig = QueryLLMParserConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True,
-                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
+                 cache_llm_inference: bool = True) -> None:
         self.config = config
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -70,36 +73,14 @@ class QueryLLMParser(CacheUtils, AbstractCacheInfo):
         if cache_llm_inference:
             kwe_task_cache_config = deepcopy(cache_kvdriver_config)
 
-        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
-        self.tasks_solvers['kw_extraction_solver'] = AgentTaskSolver(
-            self.agent, self.config.kw_extraction_task_config,
-            kwe_task_cache_config, inferencestat_config)
+        self.tasks_solvers: WeakQueryParserTaskSolvers = WeakQueryParserTaskSolvers(
+            kw_extraction_solver=AgentTaskSolver(
+                self.agent, self.config.kw_extraction_task_config,
+                kwe_task_cache_config, inferencestat_config)
+        )
 
         self.log = config.log
         self.verbose = config.verbose
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
-
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        cache_stat = {'QueryLLMParser': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
-        tasks_caches = {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
-        cache_stat.update(tasks_caches)
-        return cache_stat
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            self.cachekv.clear()
-
-        if level in ['other', 'all']:
-            self.tasks_solvers['kw_extraction_solver'].cachekv.clear()
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
@@ -124,7 +105,7 @@ class QueryLLMParser(CacheUtils, AbstractCacheInfo):
 
         self.log("Выполнение извлечения ключевых сущностей из запроса с помощью LLM-агента...",
                  verbose=self.config.verbose)
-        extracted_entities, status = self.tasks_solvers['kw_extraction_solver'].solve(
+        extracted_entities, status = self.tasks_solvers.kw_extraction_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             query=query_info.query)
         if status != ReturnStatus.success:

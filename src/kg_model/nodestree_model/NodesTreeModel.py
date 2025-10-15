@@ -11,6 +11,7 @@ from typing import List, Dict, Set, Union, Tuple
 import numpy as np
 from tqdm import tqdm
 from copy import deepcopy
+import gc
 import torch
 from time import time
 
@@ -631,5 +632,8 @@ class NodesTreeModel:
 
     def __del__(self):
         self.treedb_conn.close_connection()
-        self.leafnodes_vcomposer.close_connection()
-        self.summnodes_vcomposer.close_connection()
+        del self.treedb_conn
+
+        del self.leafnodes_vcomposer
+        del self.summnodes_vcomposer
+        gc.collect()

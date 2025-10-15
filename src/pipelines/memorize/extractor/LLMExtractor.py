@@ -3,13 +3,15 @@ from typing import List, Dict, Tuple, Union
 from copy import deepcopy
 
 from .configs import DEFAULT_THESISES_EXTR_TASK_CONFIG, DEFAULT_TRIPLETS_EXTR_TASK_CONFIG, MEM_EXTRACTOR_MAIN_LOG_PATH
+from .utils import MemExtractorTaskSolvers
 from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 from ....utils.errors import STATUS_MESSAGE
 from ....utils.data_structs import TripletCreator, NodeCreator, Node, Relation, RelationType, NodeType, Triplet, create_id
 from ....agents.utils import AbstractAgentConnector
 from ....db_drivers.kv_driver import KeyValueDriverConfig
-from ....utils.cache_kv.utils import AbstractCacheInfo
+from ....utils.cache_kv.CacheOperations import CacheOperations
 from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
+from ....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 
 
 @dataclass
@@ -46,7 +48,7 @@ class LLMExtractorConfig:
     verbose: bool = False
 
 
-class LLMExtractor(AbstractCacheInfo):
+class LLMExtractor(CacheOperations, AgentStatOperations):
     """Верхнеуровневый класс первой стадии Memorize-конвейера для извлечения информации (и её приведения в triplet-формат) из слабоструктурированных данных.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -65,31 +67,17 @@ class LLMExtractor(AbstractCacheInfo):
         self.config = config
 
         self.agent = agent
-        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
-        self.tasks_solvers['triplets_extraction_solver'] = AgentTaskSolver(
-            self.agent, self.config.triplets_extraction_task_config, cache_kvdriver_config, inferencestat_config)
-        self.tasks_solvers['thesises_extraction_solver'] = AgentTaskSolver(
-            self.agent, self.config.thesises_extraction_task_config, cache_kvdriver_config, inferencestat_config)
+        self.tasks_solvers: MemExtractorTaskSolvers = MemExtractorTaskSolvers(
+            triplets_extraction_solver=AgentTaskSolver(
+                self.agent, self.config.triplets_extraction_task_config,
+                cache_kvdriver_config, inferencestat_config),
+            thesises_extraction_solver=AgentTaskSolver(
+                self.agent, self.config.thesises_extraction_task_config,
+                cache_kvdriver_config, inferencestat_config)
+        )
 
         self.log = self.config.log
         self.verbose = self.config.verbose
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
-
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        return {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
-
-    def clear_kv_caches(self, level: str = 'other') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        self.tasks_solvers['triplets_extraction_solver'].cachekv.clear()
-        self.tasks_solvers['thesises_extraction_solver'].cachekv.clear()
 
     def extract_knowledge(self, text: str, time: Union[None, str] = None, properties: Union[None, Dict] = None) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста на естественном языке.
@@ -118,7 +106,7 @@ class LLMExtractor(AbstractCacheInfo):
         if self.config.need_simple:
             self.log("START SIMPLE-TRIPLETS EXTRACTION...",
                      verbose=self.verbose)
-            tmp_triplets, status = self.tasks_solvers['triplets_extraction_solver'].solve(
+            tmp_triplets, status = self.tasks_solvers.triplets_extraction_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                 text=text, rel_prop=props)
             self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.verbose)
@@ -135,7 +123,7 @@ class LLMExtractor(AbstractCacheInfo):
         if self.config.need_thesises:
             self.log("START HYPER-TRIPLETS EXTRACTION...",
                      verbose=self.verbose)
-            tmp_triplets, status = self.tasks_solvers['thesises_extraction_solver'].solve(
+            tmp_triplets, status = self.tasks_solvers.thesises_extraction_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                 text=text, node_prop=props)
             self.log(f"STATUS: {STATUS_MESSAGE[status]}", verbose=self.verbose)

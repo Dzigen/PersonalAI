@@ -2,14 +2,15 @@ from dataclasses import dataclass, field
 from typing import Tuple, List, Union, Dict
 
 from .config import QD_MAIN_LOG_PATH, DEFAULT_SWREMV_TASK_CONFIG, DEFAULT_GRAMCHECK_TASK_CONFIG
-from ..QueryPreprocessor import QueryPreprocessingInfo
+from .utils import QueryDenoiserTaskSolvers
 from .....utils.cache_kv import CacheUtils
 from .....utils.errors import STATUS_MESSAGE
-from .....utils.data_structs import create_id
+from .....utils.data_structs import create_id, QueryPreprocessingInfo
 from .....agents.utils import AbstractAgentConnector
 from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
 from .....db_drivers.kv_driver import KeyValueDriverConfig
-from .....utils.cache_kv.utils import AbstractCacheInfo
+from .....utils.cache_kv.CacheOperations import CacheOperations
+from .....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 from .....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
@@ -47,7 +48,7 @@ class QueryDenoiserConfig:
         return f"{self.lang}|{self.agent_gen_stategy}|{self.swremoval_agent_task_config.version}|{self.grammarcheck_agent_task_config.version}"
 
 
-class QueryDenoiser(CacheUtils, AbstractCacheInfo):
+class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
     """Класс, реализующий одну из операций по форматированию/предобработке user-вопроса в рамках QueryPreprocessor-стадии. Данный класс выполняет удаление лишних шумов/фрагментов информации из user-вопроса.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -63,8 +64,9 @@ class QueryDenoiser(CacheUtils, AbstractCacheInfo):
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: QueryDenoiserConfig = QueryDenoiserConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None, cache_llm_inference: bool = True,
-                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None):
+                 cache_kvdriver_config: KeyValueDriverConfig = None,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
+                 cache_llm_inference: bool = True,):
         self.config = config
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -74,43 +76,19 @@ class QueryDenoiser(CacheUtils, AbstractCacheInfo):
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config if cache_llm_inference else None
 
-        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
-        # удаление слов/знаков, мешающих/усложняющих пониманию/анализу основного смысла/намерения
-        self.tasks_solvers['swremoval_solver'] = AgentTaskSolver(
-            self.agent, self.config.swremoval_agent_task_config,
-            agents_cache_config, inferencestat_config)
-        # лингвистическая корректировка
-        self.tasks_solvers['grammar_check_solver'] = AgentTaskSolver(
-            self.agent, self.config.grammarcheck_agent_task_config,
-            agents_cache_config, inferencestat_config)
+        self.tasks_solvers: QueryDenoiserTaskSolvers = QueryDenoiserTaskSolvers(
+            # удаление слов/знаков, мешающих/усложняющих пониманию/анализу основного смысла/намерения
+            swremoval_solver=AgentTaskSolver(
+                self.agent, self.config.swremoval_agent_task_config, agents_cache_config, inferencestat_config
+            ),
+            # лингвистическая корректировка
+            grammar_check_solver=AgentTaskSolver(
+                self.agent, self.config.grammarcheck_agent_task_config, agents_cache_config, inferencestat_config
+            )
+        )
 
         self.log = self.config.log
         self.verbose = self.config.verbose
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
-
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        cache_stat = {'QueryDenoiser': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
-        tasks_caches = {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
-        cache_stat.update(tasks_caches)
-        return cache_stat
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['all', 'current']:
-            self.cachekv.clear()
-            self.tasks_solvers['swremoval_solver'].cachekv.clear()
-            self.tasks_solvers['grammar_check_solver'].cachekv.clear()
-
-        elif level == 'other':
-            raise NotImplementedError
 
     def get_cache_key(self, query_info: QueryPreprocessingInfo) -> List[object]:
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
@@ -138,7 +116,7 @@ class QueryDenoiser(CacheUtils, AbstractCacheInfo):
 
         self.log("Выполнение удаление лишней информации/символов из запроса с помощью LLM-агента...",
                  verbose=self.config.verbose)
-        query_wo_stopwords, status = self.tasks_solvers['swremoval_solver'].solve(
+        query_wo_stopwords, status = self.tasks_solvers.swremoval_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
@@ -148,7 +126,7 @@ class QueryDenoiser(CacheUtils, AbstractCacheInfo):
 
         if status == ReturnStatus.success:
             self.log("Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.config.verbose)
-            reformulated_query, status = self.tasks_solvers['grammar_check_solver'].solve(
+            reformulated_query, status = self.tasks_solvers.grammar_check_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                 query=query_wo_stopwords)
             if status != ReturnStatus.success:

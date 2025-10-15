@@ -9,8 +9,10 @@ from ...db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
 
 
 class CacheKV:
+    kv_conn: AbstractKVDatabaseConnection
+
     def __init__(self, kvdriver_config: KeyValueDriverConfig = DEFAULT_CACHEKV_CONFIG):
-        self.kv_conn: AbstractKVDatabaseConnection = KeyValueDriver.connect(kvdriver_config)
+        self.kv_conn = KeyValueDriver.connect(kvdriver_config)
 
     def __del__(self):
         self.kv_conn.close_connection()
@@ -70,6 +72,9 @@ class CacheKV:
     def check_key_exist(self, key: List[object] = None, key_hash: str = None) -> bool:
         key_hash = CacheKV.prepare_key(key, key_hash)
         return self.kv_conn.item_exist(key_hash)
+
+    def count_items(self) -> int:
+        return self.kv_conn.count_items()
 
     def clear(self) -> None:
         self.kv_conn.clear()

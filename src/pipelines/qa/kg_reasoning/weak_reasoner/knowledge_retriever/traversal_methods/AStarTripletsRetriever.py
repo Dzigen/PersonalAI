@@ -48,21 +48,19 @@ class AStarMetrics:
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool
     """
+    cache: Union[None, Dict[str, AbstractKVDatabaseConnection]] = None
 
     def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: List[NodeType], log: Logger,
                  config: AStarMetricsConfig = AStarMetricsConfig(), verbose: bool = False):
         self.config = config
 
         # проверка: в указанной бд должны содержатся плотные (dense) векторные предаставления вершин, иначе вызываем исключение
-        for n_type, v_composer in self.kg_model.graph_embeddings.nodes_vcomposers.items():
+        for _, v_composer in self.kg_model.graph_embeddings.nodes_vcomposers.items():
             if not hasattr(v_composer.vdb_conn_mapping[self.config.nodes_vdb_name], 'embedder'):
                 raise ValueError
 
         self.accepted_node_types = accepted_node_types
         self.kg_model = kg_model
-
-        self.log = log
-        self.verbose = verbose
 
         self.init_kv_caches()
 
@@ -71,6 +69,9 @@ class AStarMetrics:
             'weight_with_short_path': self.weighted_short_path,
             'avg_weighted_with_short_path': self.avg_weighted_short_path,
         }
+
+        self.log = log
+        self.verbose = verbose
 
     def init_caches_stats(self) -> None:
         self.cache_info = {
@@ -326,13 +327,13 @@ class AStarGraphSearch:
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
                  verbose: bool = False) -> None:
-        self.log = log
-        self.verbose = verbose
         self.config = search_config
         self.kg_model = kg_model
-        self.metrics = AStarMetrics(
-            kg_model=kg_model, accepted_node_types=self.config.accepted_node_types,
-            log=self.log, config=self.config.metrics_config, verbose=verbose)
+        self.metrics = AStarMetrics(kg_model=kg_model, accepted_node_types=self.config.accepted_node_types,
+                                    log=self.log, config=self.config.metrics_config, verbose=verbose)
+
+        self.log = log
+        self.verbose = verbose
 
     def search_path(self, start_node: NodeInfo, end_node: NodeInfo) -> Tuple[List[str], List[NodeInfo], Dict[str, int], Dict[str, NodeInfo], NodeInfo]:
         """Реализация A*-алгоритма. Источник: https://www.redblobgames.com/pathfinding/a-star/implementation.html."""
@@ -445,27 +446,17 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log = log
         self.verbose = verbose
 
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return None
+    def clear_traversal_cache(self) -> None:
+        self.graph_searcher.metrics.clear_kv_caches()
 
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+    def get_traversal_cache(self) -> Dict[str, Union[None, Dict[str, int]]]:
+        cache_info = None
+        if self.graph_searcher.metrics.cache is not None:
+            cache_info = {cache_name: cache_obj.count_items() for cache_name, cache_obj in self.graph_searcher.metrics.cache.items()}
+
         return {
-            'AStarTripletsRetriever': None if self.cachekv is None else self.cachekv.kv_conn.count_items()
+            'AStarMetrics': cache_info
         }
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            self.cachekv.clear()
-
-        if level in ['all', 'other']:
-            self.graph_searcher.metrics.clear_kv_caches()
 
     def get_cache_key(self, query_info: QueryInfo) -> List[str]:
         return [self.config.to_str(), query_info.to_str()]

@@ -4,7 +4,8 @@ from dataclasses import dataclass
 
 from .errors import NOT_VALID_ID_ERROR_MSG, NO_START_NODE_IN_PARENT_ERROR_MSG, EMPTY_PARENT_ERROR_MSG
 from ......utils.data_structs import QueryInfo, Triplet, NodeType
-from ......utils.cache_kv.utils import AbstractCacheInfo
+from ......utils.cache_kv.CacheOperations import CacheOperations, TraversalMethodCacheOpearions
+from .....utils import BaseStages
 
 
 @dataclass
@@ -50,7 +51,7 @@ class BaseTripletsFilterConfig:
         pass
 
 
-class AbstractTriplesFilter(AbstractCacheInfo):
+class AbstractTriplesFilter(CacheOperations):
     """Интерфейс алгоритмов фильтрации/ранжирования триплетов."""
 
     config: Union[None, BaseTripletsFilterConfig] = None
@@ -68,10 +69,6 @@ class AbstractTriplesFilter(AbstractCacheInfo):
         """
         pass
 
-    @abstractmethod
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        pass
-
 
 @dataclass
 class BaseGraphSearchConfig:
@@ -81,10 +78,10 @@ class BaseGraphSearchConfig:
         pass
 
 
-class AbstractTripletsRetriever(AbstractCacheInfo):
+class AbstractTripletsRetriever(CacheOperations, TraversalMethodCacheOpearions):
     """Интерфейс алгоритмов извлечения триплетов из графа знаний."""
 
-    config: Union[None, BaseGraphSearchConfig] = None
+    config: BaseGraphSearchConfig
 
     @abstractmethod
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
@@ -97,6 +94,8 @@ class AbstractTripletsRetriever(AbstractCacheInfo):
         """
         pass
 
-    @abstractmethod
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        pass
+
+@dataclass
+class KnowledgeRetrieverStages:
+    triplets_retriever: AbstractTripletsRetriever
+    triplets_filter: Union[None, AbstractTriplesFilter] = None

@@ -102,29 +102,15 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log = log
         self.verbose = verbose
 
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return None
+    def clear_traversal_cache(self) -> None:
+        self.retriever1.clear_traversal_cache()
+        self.retriever2.clear_traversal_cache()
 
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+    def get_traversal_cache(self) -> Dict[str, Union[None, Dict, int]]:
         return {
-            'MixturedTripletsRetriever': None if self.cachekv is None else self.cachekv.kv_conn.count_items(),
-            'retriever1': self.retriever1.get_cache_stat(),
-            'retriever2': self.retriever2.get_cache_stat()
+            self.retriever1.__class__.__name__: self.retriever1.get_traversal_cache(),
+            self.retriever2.__class__.__name__: self.retriever2.get_traversal_cache()
         }
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            self.cachekv.clear()
-
-        if level == 'other':
-            raise NotImplementedError
 
     def get_cache_key(self, query_info: QueryInfo) -> List[str]:
         return [self.config.to_str(), query_info.to_str()]

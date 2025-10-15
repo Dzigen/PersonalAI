@@ -2,14 +2,15 @@ from dataclasses import dataclass, field
 from typing import Tuple, Union, List, Dict
 
 from .config import DEFAULT_ANSWCLS_TASK_CONFIG, DEFAULT_ANSWGEN_TASK_CONFIG, ANSWGEN_MAIN_LOG_PATH
-from ..utils import SearchPlanInfo
+from .utils import MediumAGeneratorTaskSolvers
 from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
 from ......utils.errors import ReturnStatus
 from ......agents.utils import AbstractAgentConnector
-from ......utils.data_structs import create_id
+from ......utils.data_structs import create_id, SearchPlanInfo
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.cache_kv import CacheUtils
-from ......utils.cache_kv.utils import AbstractCacheInfo
+from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
+from ......utils.cache_kv.CacheOperations import CacheOperations
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
@@ -47,7 +48,7 @@ class AnswerGeneratorConfig:
         return f"{self.lang}|{self.agent_gen_stategy}|{self.answer_classifier_agent_task_config.version}|{self.answer_generator_agent_task_config.version}"
 
 
-class AnswerGenerator(CacheUtils, AbstractCacheInfo):
+class AnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     """Верхнеуровневый класс стадии #4 MediumQA-конвейера для генерации ответа на user-вопрос на основе информации,
     извлечённой из графа знаний с помощью плана/последовательности поисковых запросов.
 
@@ -57,10 +58,10 @@ class AnswerGenerator(CacheUtils, AbstractCacheInfo):
     :type config:AnswerGeneratorConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
-    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
-    :type cache_llm_inference: bool, optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
+    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
+    :type cache_llm_inference: bool, optional
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: AnswerGeneratorConfig = AnswerGeneratorConfig(),
@@ -76,40 +77,15 @@ class AnswerGenerator(CacheUtils, AbstractCacheInfo):
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config
 
-        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
-        self.tasks_solvers['answer_classify_solver'] = AgentTaskSolver(
-            self.agent, self.config.answer_classifier_agent_task_config,
-            agents_cache_config, inferencestat_config)
-        self.tasks_solvers['answer_gen_solver'] = AgentTaskSolver(
-            self.agent, self.config.answer_generator_agent_task_config,
-            agents_cache_config, inferencestat_config)
+        self.tasks_solvers: MediumAGeneratorTaskSolvers = MediumAGeneratorTaskSolvers(
+            answer_classify_solver=AgentTaskSolver(
+                self.agent, self.config.answer_classifier_agent_task_config, agents_cache_config, inferencestat_config),
+            answer_gen_solver=AgentTaskSolver(
+                self.agent, self.config.answer_generator_agent_task_config, agents_cache_config, inferencestat_config)
+        )
 
         self.log = self.config.log
         self.verbose = self.config.verbose
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
-
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        cache_stat = {'AnswerGenerator': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
-        tasks_caches = {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
-        cache_stat.update(tasks_caches)
-        return cache_stat
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            self.cachekv.clear()
-
-        if level in ['other', 'all']:
-            self.tasks_solvers['answer_classify_solver'].cachekv.clear()
-            self.tasks_solvers['answer_gen_solver'].cachekv.clear()
 
     def get_cache_key(self, search_plan: SearchPlanInfo) -> List[str]:
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
@@ -134,7 +110,7 @@ class AnswerGenerator(CacheUtils, AbstractCacheInfo):
 
         self.log("Выполняем проверку на возможность генерации релевантного ответа...",
                  verbose=self.verbose)
-        can_answer, status = self.tasks_solvers['answer_classify_solver'].solve(
+        can_answer, status = self.tasks_solvers.answer_classify_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             search_plan=search_plan)
         self.log(f"RESULT: {can_answer}", verbose=self.config.verbose)
@@ -142,7 +118,7 @@ class AnswerGenerator(CacheUtils, AbstractCacheInfo):
         if status == ReturnStatus.success:
             if can_answer:
                 self.log("Выполняем генерацию ответа...", verbose=self.verbose)
-                answer, status = self.tasks_solvers['answer_gen_solver'].solve(
+                answer, status = self.tasks_solvers.answer_gen_solver.solve(
                     lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                     search_plan=search_plan)
                 self.log(f"RESULT: {answer}", verbose=self.config.verbose)

@@ -59,6 +59,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         return condition
 
     def close_connection(self) -> None:
+        print("closing inmemory graph connection...")
         if self.strcuture is None:
             return
         if self.config.params['save_on_disk']:
@@ -71,6 +72,9 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
             with open(save_path, 'wb') as fd:
                 pickle.dump(self.strcuture, fd)
+
+            print(f"inmemory graph-store saved in: {save_path}")
+
         self.strcuture = None
         gc.collect()
 

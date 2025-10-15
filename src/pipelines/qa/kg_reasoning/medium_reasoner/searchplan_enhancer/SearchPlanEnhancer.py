@@ -4,14 +4,16 @@ from copy import deepcopy
 
 from .config import PLANENH_MAIN_LOG_PATH, DEFAULT_PLANINIT_TASK_CONFIG, \
     DEFAULT_PLANENH_TASK_CONFIG, DEFAUL_ENHCLASSIFY_TASK_CONFIG
-from ..utils import SearchPlanInfo
+from .utils import MediumPlanEnhancerTaskSolvers
 from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
 from ......utils.errors import ReturnStatus
 from ......agents.utils import AbstractAgentConnector
-from ......utils.data_structs import create_id
+from ......utils.data_structs import create_id, SearchPlanInfo
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.cache_kv import CacheUtils
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
+from ......utils.cache_kv.CacheOperations import CacheOperations
+from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 
 
 @dataclass
@@ -55,7 +57,7 @@ class SearchPlanEnhancerConfig:
         return f"{self.lang}|{self.agent_gen_stategy}|{str_pi_config}|{str_ec_config}|{str_pe_config}"
 
 
-class SearchPlanEnhancer(CacheUtils):
+class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
     """Верхнеуровневый класс стадии #1 medium QA-конвейера для выполнения генерации/модификации плана поиска/извлечения информации из графа знаний.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -64,15 +66,16 @@ class SearchPlanEnhancer(CacheUtils):
     :type config: SearchPlanEnhancerConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
-    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
-    :type cache_llm_inference: bool, optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
+    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
+    :type cache_llm_inference: bool, optional
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: SearchPlanEnhancerConfig = SearchPlanEnhancerConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True,
-                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None):
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
+                 cache_llm_inference: bool = True):
         self.config = config
 
         self.cachekv = self.init_cachekv(
@@ -83,44 +86,20 @@ class SearchPlanEnhancer(CacheUtils):
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config
 
-        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
-        self.tasks_solvers['plan_initialing_solver'] = AgentTaskSolver(
-            self.agent, self.config.plan_initing_agent_task_config,
-            agents_cache_config, inferencestat_config)
-        self.tasks_solvers['enhance_classify_solver'] = AgentTaskSolver(
-            self.agent, self.config.enhance_classifier_agent_task_config,
-            agents_cache_config, inferencestat_config)
-        self.tasks_solvers['plan_enhancing_solver'] = AgentTaskSolver(
-            self.agent, self.config.plan_enhancing_agent_task_config,
-            agents_cache_config, inferencestat_config)
+        self.tasks_solvers: MediumPlanEnhancerTaskSolvers = MediumPlanEnhancerTaskSolvers(
+            plan_initialing_solver=AgentTaskSolver(
+                self.agent, self.config.plan_initing_agent_task_config,
+                agents_cache_config, inferencestat_config),
+            enhance_classify_solver=AgentTaskSolver(
+                self.agent, self.config.enhance_classifier_agent_task_config,
+                agents_cache_config, inferencestat_config),
+            plan_enhancing_solver=AgentTaskSolver(
+                self.agent, self.config.plan_enhancing_agent_task_config,
+                agents_cache_config, inferencestat_config)
+        )
 
         self.log = self.config.log
         self.verbose = self.config.verbose
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
-
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        cache_stat = {'SearchPlanEnhancer': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
-        tasks_caches = {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
-        cache_stat.update(tasks_caches)
-        return cache_stat
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            self.cachekv.clear()
-
-        if level in ['other', 'all']:
-            self.tasks_solvers['plan_initialing_solver'].cachekv.clear()
-            self.tasks_solvers['enhance_classify_solver'].cachekv.clear()
-            self.tasks_solvers['plan_enhancing_solver'].cachekv.clear()
 
     def get_cache_key(self, search_step: int, search_plan: SearchPlanInfo) -> List[str]:
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
@@ -151,7 +130,7 @@ class SearchPlanEnhancer(CacheUtils):
 
         if search_step == 0:
             self.log("Генерируем план поиска с нуля...", verbose=self.verbose)
-            new_search_steps, status = self.tasks_solvers['plan_initialing_solver'].solve(
+            new_search_steps, status = self.tasks_solvers.plan_initialing_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=search_plan.base_query)
             str_searchplan = "\n".join(
                 [f'{i}. {gen_step}' for i, gen_step in enumerate(new_search_steps)])
@@ -165,7 +144,7 @@ class SearchPlanEnhancer(CacheUtils):
         else:
             self.log(
                 "Выполняем проверку на необходимость улучшения следующих шагов поиска в плане...", verbose=self.verbose)
-            need_enhance, status = self.tasks_solvers['enhance_classify_solver'].solve(
+            need_enhance, status = self.tasks_solvers.enhance_classify_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=search_plan.base_query,
                 search_steps=search_plan.search_steps, steps_answers=search_plan.steps_answers[:search_step])
             self.log(f"RESULT: {need_enhance}", verbose=self.config.verbose)
@@ -174,7 +153,7 @@ class SearchPlanEnhancer(CacheUtils):
                 if need_enhance:
                     self.log("Улучшаем следующие шаги поиска в плане...",
                              verbose=self.verbose)
-                    enhanced_steps, status = self.tasks_solvers['plan_enhancing_solver'].solve(
+                    enhanced_steps, status = self.tasks_solvers.plan_enhancing_solver.solve(
                         lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=search_plan.base_query,
                         search_steps=search_plan.search_steps,
                         steps_answers=search_plan.steps_answers[:search_step])

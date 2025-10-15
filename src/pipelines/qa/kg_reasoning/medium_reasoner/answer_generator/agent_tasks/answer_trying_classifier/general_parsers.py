@@ -1,6 +1,6 @@
 from typing import List, Dict
 
-from ....utils import SearchPlanInfo
+from ........utils.data_structs import SearchPlanInfo
 
 
 def answcls_custom_formate(search_plan: SearchPlanInfo) -> Dict[str, str]:

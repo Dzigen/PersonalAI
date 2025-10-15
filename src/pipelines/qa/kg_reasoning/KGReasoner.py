@@ -4,12 +4,13 @@ from typing import Tuple, List, Union, Dict
 from .weak_reasoner import WeakKGReasonerConfig
 from .medium_reasoner import MediumKGReasonerConfig
 from .config import KGR_MAIN_LOG_PATH, AVAILABLE_KG_REASONERS
-from .utils import BaseKGReasonerConfig, AbstractKGReasoner
+from .utils import BaseKGReasonerConfig, AbstractKGReasoner, KGReasonserStages
 from ....utils import ReturnInfo, Logger
 from ....kg_model import KnowledgeGraphModel
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv import CacheUtils
-from ....utils.cache_kv.utils import AbstractCacheInfo
+from ....utils.cache_kv.CacheOperations import CacheOperations
+from ....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
@@ -41,7 +42,7 @@ class KnowledgeGraphReasonerConfig:
         return f"{self.reasoner_name}|{self.reasoner_hyperparameters.to_str()}"
 
 
-class KnowledgeGraphReasoner(CacheUtils, AbstractCacheInfo):
+class KnowledgeGraphReasoner(CacheUtils, AbstractKGReasoner, CacheOperations, AgentStatOperations):
     """Верхнеуровневый класс KnowledgeGraphReasoner-стадии (точка входа), отвечающей за поиск информации в графе знаний, релевантной для генерации ответа (на её основе) к user-вопросу.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -64,36 +65,14 @@ class KnowledgeGraphReasoner(CacheUtils, AbstractCacheInfo):
             cache_kvdriver_config, config.cache_table_name)
 
         self.reasoner_name = config.reasoner_name
-        self.reasoner: AbstractKGReasoner = AVAILABLE_KG_REASONERS[self.reasoner_name](
-            kg_model, config.reasoner_hyperparameters, cache_kvdriver_config, inferencestat_config)
+        self.stages: KGReasonserStages = KGReasonserStages(
+            reasoner=AVAILABLE_KG_REASONERS[self.reasoner_name](
+                kg_model, config.reasoner_hyperparameters, cache_kvdriver_config, inferencestat_config
+            )
+        )
 
         self.log = config.log
         self.verbose = config.verbose
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return {
-            'reasoner': self.reasoner.get_agent_tgen_stat()
-        }
-
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        return {
-            'KnowledgeGraphReasoner': None if self.cachekv is None else self.cachekv.kv_conn.count_items(),
-            'reasoner': self.reasoner.get_cache_stat()
-        }
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            self.cachekv.clear()
-
-        if level in ['other', 'all']:
-            self.reasoner.clear_kv_caches(level='all')
 
     def get_cache_key(self, query: str) -> List[str]:
         return [query, self.reasoner_name, self.config.to_str()]
@@ -107,5 +86,5 @@ class KnowledgeGraphReasoner(CacheUtils, AbstractCacheInfo):
         :return: Кортеж из двух объектов: (1) cгенерированный ответ; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
-        answer, info = self.reasoner.perform(query)
+        answer, info = self.stages.reasoner.perform(query)
         return answer, info

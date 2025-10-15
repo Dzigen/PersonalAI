@@ -45,7 +45,7 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
     def close_connection(self) -> None:
         if self.kv_store is None:
             return
-        # print("closing kv connection...")
+        print("closing inmemory kv connection...")
         # print("kv-store type check: ", type(self.kv_store))
         # print("kv-store is not None:", self.kv_store is not None)
         if self.config.params['save_on_disk']:
@@ -60,7 +60,7 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
             with open(save_path, 'wb') as fd:
                 pickle.dump(self.kv_store, fd)
 
-            # print(f"kv-store saved in: {save_path}")
+            print(f"inmemory kv-store saved in: {save_path}")
 
         self.kv_store = None
         gc.collect()

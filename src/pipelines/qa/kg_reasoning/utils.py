@@ -2,8 +2,10 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Tuple, List
 
+from ...utils import BaseStages
 from ....utils import ReturnInfo
-from ....utils.cache_kv.utils import AbstractCacheInfo
+from ....utils.cache_kv.CacheOperations import CacheOperations
+from ....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 
 
 @dataclass
@@ -17,7 +19,7 @@ class QueryReasoningInfo:
         return f"{str_sq};{str_sa}"
 
 
-class AbstractKGReasoner(AbstractCacheInfo):
+class AbstractKGReasoner(CacheOperations, AgentStatOperations):
 
     @abstractmethod
     def perform(self, query: str) -> Tuple[str, ReturnInfo]:
@@ -37,3 +39,8 @@ class BaseKGReasonerConfig:
 
     def to_str(self):
         pass
+
+
+@dataclass
+class KGReasonserStages(BaseStages):
+    reasoner: AbstractKGReasoner

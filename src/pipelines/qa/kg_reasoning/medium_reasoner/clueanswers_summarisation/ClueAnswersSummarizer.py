@@ -2,12 +2,15 @@ from dataclasses import dataclass, field
 from typing import Tuple, Union, List, Dict
 
 from .config import DEFAULT_CASUMM_TASK_CONFIG, CQSUMM_MAIN_LOG_PATH
+from .utils import MediumASummarizerTaskSolvers
 from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
 from ......agents.utils import AbstractAgentConnector
 from ......utils.data_structs import create_id
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.cache_kv import CacheUtils
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
+from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
+from ......utils.cache_kv.CacheOperations import CacheOperations
 
 
 @dataclass
@@ -40,7 +43,7 @@ class ClueAnswersSummarizerConfig:
         return f"{self.lang}|{self.agent_gen_stategy}|{self.canswers_summarisation_agent_task_config.version}"
 
 
-class ClueAnswersSummarizer(CacheUtils):
+class ClueAnswersSummarizer(CacheUtils, AgentStatOperations, CacheOperations):
     """Верхнеуровневый класс стадии #3.2 MediumQA-конвейера для суммаризации/резюмирования информации, извлечённой из графа знаний (памяти ассистента) по search_query-шагу поиска.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -49,15 +52,16 @@ class ClueAnswersSummarizer(CacheUtils):
     :type config: ClueAnswersSummarizerConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
-    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
-    :type cache_llm_inference: bool, optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
+    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
+    :type cache_llm_inference: bool, optional
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: ClueAnswersSummarizerConfig = ClueAnswersSummarizerConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True,
-                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
+                 cache_llm_inference: bool = True,) -> None:
         self.config = config
 
         self.cachekv = self.init_cachekv(
@@ -68,36 +72,13 @@ class ClueAnswersSummarizer(CacheUtils):
         if cache_llm_inference:
             agents_cache_config = cache_kvdriver_config
 
-        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
-        self.tasks_solvers['clueanswers_summ_solver'] = AgentTaskSolver(
-            self.agent, self.config.canswers_summarisation_agent_task_config,
-            agents_cache_config, inferencestat_config)
+        self.tasks_solvers: MediumASummarizerTaskSolvers = MediumASummarizerTaskSolvers(
+            clueanswers_summ_solver=AgentTaskSolver(
+                self.agent, self.config.canswers_summarisation_agent_task_config, agents_cache_config, inferencestat_config)
+        )
 
         self.log = self.config.log
         self.verbose = self.config.verbose
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
-
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        cache_stat = {'ClueAnswersSummarizer': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
-        tasks_caches = {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
-        cache_stat.update(tasks_caches)
-        return cache_stat
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            self.cachekv.clear()
-
-        if level in ['other', 'all']:
-            self.tasks_solvers['clueanswers_summ_solver'].cachekv.clear()
 
     def get_cache_key(self, search_query: str, clue_queries: List[str], clue_answers: List[str]) -> List[str]:
         str_cluequeries = ';'.join(clue_queries)
@@ -132,7 +113,7 @@ class ClueAnswersSummarizer(CacheUtils):
 
         self.log("Выполненяем суммаризацию clue-answers с помощью LLM-агента...",
                  verbose=self.config.verbose)
-        summ_answer, status = self.tasks_solvers['clueanswers_summ_solver'].solve(
+        summ_answer, status = self.tasks_solvers.clueanswers_summ_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, search_query=search_query,
             clues_queries=clue_queries, clue_answers=clue_answers)
         self.log(f"RESULT: {summ_answer}", verbose=self.verbose)

@@ -100,8 +100,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger,
-                 search_config: Union[GraphBeamSearchConfig,
-                                      Dict] = GraphBeamSearchConfig(),
+                 search_config: Union[GraphBeamSearchConfig, Dict] = GraphBeamSearchConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
         if isinstance(search_config, dict):
             if 'accepted_node_types' in search_config:
@@ -125,27 +124,11 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log = log
         self.verbose = verbose
 
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+    def clear_traversal_cache(self) -> None:
         return None
 
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        return {
-            'BeamSearchTripletsRetriever': None if self.cachekv is None else self.cachekv.kv_conn.count_items()
-        }
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            self.cachekv.clear()
-
-        if level == 'other':
-            raise NotImplementedError
+    def get_traversal_cache(self) -> None:
+        return None
 
     def calculate_path_score(self, path_len: int, accum_score: float) -> float:
         return accum_score / pow(path_len - 1, self.config.mean_alpha)

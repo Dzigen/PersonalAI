@@ -41,7 +41,7 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
         pass
 
     def close_connection(self) -> ReturnInfo:
-        # print("closing bm25 connection...")
+        print("closing inmemory bm25 connection...")
         if self.config.params['save_on_disk']:
             os.makedirs(self.config.params['save_dump_dir'], exist_ok=True)
             save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['table']}"
@@ -52,7 +52,7 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
             save_path += '.json'
 
             self.db_conn.save_to_disk(save_path)
-            # print(f"bm25-store saved in: {save_path}")
+            print(f"inmemory bm25-store saved in: {save_path}")
 
         self.retriever = None
         self.db_conn = None

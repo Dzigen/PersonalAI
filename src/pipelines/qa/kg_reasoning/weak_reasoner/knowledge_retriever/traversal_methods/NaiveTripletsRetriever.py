@@ -66,25 +66,11 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log = log
         self.verbose = verbose
 
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
+    def get_traversal_cache(self) -> None:
         return None
 
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        return {'NaiveTripletsRetriever': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            self.cachekv.clear()
-
-        if level == 'other':
-            raise NotImplementedError
+    def clear_traversal_cache(self) -> None:
+        pass
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
         return [self.config.to_str(), query_info.to_str()]

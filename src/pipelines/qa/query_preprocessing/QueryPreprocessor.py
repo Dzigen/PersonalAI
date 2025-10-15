@@ -2,17 +2,18 @@ from dataclasses import dataclass, field
 from typing import Tuple, Union, List, Dict
 from copy import copy
 
-from .utils import QueryPreprocessingInfo
+from .utils import QueryPreprocessingStages
 from .config import QP_MAIN_LOG_PATH
 from .decomposition import QueryDecomposer, QueryDecomposerConfig
 from .denoising import QueryDenoiser, QueryDenoiserConfig
 from .enhancing import QueryEnhancer, QueryEnhancerConfig
 from ....utils import ReturnInfo, Logger, ReturnStatus, update_rinfo
-from ....utils.data_structs import create_id
+from ....utils.data_structs import create_id, QueryPreprocessingInfo
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv import CacheUtils
 from ....agents.utils import AbstractAgentConnector
-from ....utils.cache_kv.utils import AbstractCacheInfo
+from ....utils.cache_kv.CacheOperations import CacheOperations
+from ....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
@@ -48,7 +49,7 @@ class QueryPreprocessorConfig:
         return f"{str_denois_config}|{str_enh_config}|{str_decomp_config}"
 
 
-class QueryPreprocessor(CacheUtils, AbstractCacheInfo):
+class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
     """Верхнеуровневый класс QueryPreprocessor-стадии (точка входа), отвечающей за предобработку исходного user-вопроса, с целью упрощения процесса поиска информации и повышения качества финального ответа системы.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -67,69 +68,25 @@ class QueryPreprocessor(CacheUtils, AbstractCacheInfo):
         self.config = config
         self.using_agent_info = {'kw': agent.CONNECTOR_KW, 'config': agent.config}
 
+        self.stages: QueryPreprocessingStages = QueryPreprocessingStages()
+
         if self.config.denoising_config is not None:
-            self.denoiser = QueryDenoiser(
-                agent, self.config.denoising_config,
-                cache_kvdriver_config,
-                inferencestat_config=inferencestat_config)
-        else:
-            self.denoiser = None
+            self.stages.denoiser = QueryDenoiser(
+                agent, self.config.denoising_config, cache_kvdriver_config, inferencestat_config)
 
         if self.config.enhancing_config:
-            self.enhancer = QueryEnhancer(
-                agent, self.config.enhancing_config,
-                cache_kvdriver_config,
-                inferencestat_config=inferencestat_config)
-        else:
-            self.enhancer = None
+            self.stages.enhancer = QueryEnhancer(
+                agent, self.config.enhancing_config, cache_kvdriver_config, inferencestat_config)
 
         if self.config.decomposition_config:
-            self.decomposer = QueryDecomposer(
-                agent, self.config.decomposition_config,
-                cache_kvdriver_config,
-                inferencestat_config=inferencestat_config)
-        else:
-            self.decomposer = None
+            self.stages.decomposer = QueryDecomposer(
+                agent, self.config.decomposition_config, cache_kvdriver_config, inferencestat_config)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
         self.log = config.log
         self.verbose = config.verbose
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return {
-            'denoiser': None if self.denoiser is None else self.denoiser.get_agent_tgen_stat(),
-            'enhancer': None if self.enhancer is None else self.enhancer.get_agent_tgen_stat(),
-            'decomposer': None if self.decomposer is None else self.decomposer.get_agent_tgen_stat(),
-        }
-
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        return {
-            'QueryPreprocessor': None if self.cachekv is None else self.cachekv.kv_conn.count_items(),
-            'denoiser': None if self.denoiser is None else self.denoiser.get_cache_stat(),
-            'enhancer': None if self.enhancer is None else self.enhancer.get_cache_stat(),
-            'decomposer': None if self.decomposer is None else self.decomposer.get_cache_stat(),
-        }
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            self.cachekv.clear()
-
-        if level in ['other', 'all']:
-            if self.denoiser is not None:
-                self.denoiser.clear_kv_caches(level='all')
-            if self.enhancer is not None:
-                self.enhancer.clear_kv_caches(level='all')
-            if self.decomposer is not None:
-                self.decomposer.clear_kv_caches(level='all')
 
     def get_cache_key(self, query: str) -> List[str]:
         str_using_agent_config = f"{self.using_agent_info['kw']}:{self.using_agent_info['config'].to_str()}"
@@ -151,26 +108,26 @@ class QueryPreprocessor(CacheUtils, AbstractCacheInfo):
         query_info = QueryPreprocessingInfo(base_query=query)
         rinfo = ReturnInfo()
 
-        if self.denoiser is not None:
+        if self.stages.denoiser is not None:
             self.log("Удаление шума из запроса...", verbose=self.verbose)
-            query_info.denoised_query, den_rinfo = self.denoiser.perform(
+            query_info.denoised_query, den_rinfo = self.stages.denoiser.perform(
                 query_info)
             self.log(f"RESULT: {query_info.denoised_query}",
                      verbose=self.verbose)
             update_rinfo(rinfo, den_rinfo)
 
-        if rinfo.status == ReturnStatus.success and self.enhancer is not None:
+        if (rinfo.status == ReturnStatus.success) and (self.stages.enhancer is not None):
             self.log("Корректировка формата запроса...", verbose=self.verbose)
-            query_info.enchanced_query, enh_rinfo = self.enhancer.perform(
+            query_info.enchanced_query, enh_rinfo = self.stages.enhancer.perform(
                 query_info)
             self.log(f"RESULT: {query_info.enchanced_query}",
                      verbose=self.verbose)
             update_rinfo(rinfo, enh_rinfo)
 
-        if rinfo.status == ReturnStatus.success and self.decomposer is not None:
+        if (rinfo.status == ReturnStatus.success) and (self.stages.decomposer is not None):
             self.log(
                 "Разбиение запроса на независимые части (простые запросы)...", verbose=self.verbose)
-            query_info.decomposed_query, dec_rinfo = self.decomposer.perform(
+            query_info.decomposed_query, dec_rinfo = self.stages.decomposer.perform(
                 query_info)
             self.log(f"RESULT: {query_info.decomposed_query}",
                      verbose=self.verbose)

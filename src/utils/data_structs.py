@@ -343,9 +343,9 @@ class QueryInfo:
     :type  linked_nodes_by_entities: List[object]
     """
     query: str
-    entities: List[str] = None
-    linked_nodes: List[VectorDBInstance] = None
-    linked_nodes_by_entities: List[VectorDBInstance] = None
+    entities: Union[None, List[str]] = None
+    linked_nodes: Union[None, List[VectorDBInstance]] = None
+    linked_nodes_by_entities: Union[None, List[VectorDBInstance]] = None
 
     def to_str(self):
         str_entities = ';'.join(sorted(self.entities)
@@ -355,3 +355,32 @@ class QueryInfo:
         str_lnodes_by_entities = ';'.join(sorted(list(map(lambda item: ';;'.join(
             item), self.linked_nodes_by_entities)))) if self.linked_nodes_by_entities is not None else "None"
         return f"{self.query}|{str_entities}|{str_lnodes}|{str_lnodes_by_entities}"
+
+
+@dataclass
+class SearchPlanInfo:
+    base_query: str
+    search_steps: List[str] = field(default_factory=lambda: list())
+    steps_answers: List[str] = field(default_factory=lambda: list())
+
+    def to_str(self):
+        return f"{self.base_query}|{self.search_steps}|{self.steps_answers}"
+
+
+@dataclass
+class QueryPreprocessingInfo:
+    base_query: str
+    denoised_query: Union[str, None] = None
+    enchanced_query: Union[str, None] = None
+    decomposed_query: Union[List[str], None] = None
+
+    processed_query: Union[List[str], None] = None
+
+    def to_str(self):
+        str_denoised_query = self.denoised_query if self.denoised_query is not None else "None"
+        str_enchanced_query = self.enchanced_query if self.enchanced_query is not None else "None"
+        str_decomposed_query = ';'.join(
+            self.decomposed_query) if self.decomposed_query is not None else "None"
+        str_processed_query = ';'.join(
+            self.processed_query) if self.processed_query is not None else "None"
+        return f"{self.base_query}|{str_denoised_query}|{str_enchanced_query}|{str_decomposed_query}|{str_processed_query}"

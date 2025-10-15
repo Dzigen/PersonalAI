@@ -10,6 +10,8 @@ from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......db_drivers.vector_driver import VectorDBInstance
 from ......utils.cache_kv import CacheUtils
 from ......rerankers import RerankerDriverConfig, RerankerDriver
+from ......utils.cache_kv.CacheOperations import CacheOperations
+from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 
 
 @dataclass
@@ -42,7 +44,7 @@ class Entities2NodesMatcherConfig:
         return f"{self.use_tree}|{self.max_n}|{self.reranker_driver_config.to_str()}"
 
 
-class Entities2NodesMatcher(CacheUtils):
+class Entities2NodesMatcher(CacheUtils, CacheOperations):
     """Верхнеуровневый класс стадии #2.1.2 medium QA-конвейера для выполнения сопоставоения сущностей из user-вопроса с вершинами в графе знаний.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -67,28 +69,6 @@ class Entities2NodesMatcher(CacheUtils):
 
         self.log = self.config.log
         self.verbose = self.config.verbose
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return None
-
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        return {
-            'EntitiesExtractor': None if self.cachekv is None else self.cachekv.kv_conn.count_items()
-        }
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            self.cachekv.clear()
-
-        if level in ['other']:
-            raise NotImplementedError
 
     def get_cache_key(self, entitie: str) -> List[object]:
         return [entitie, self.config.to_str()]

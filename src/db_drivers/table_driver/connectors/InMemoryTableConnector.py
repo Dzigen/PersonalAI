@@ -39,7 +39,7 @@ class InMemoryTableConnector(AbstractTableDatabaseConnection):
             self.clear()
 
     def close_connection(self) -> None:
-        # print("closing inmemory-table connection...")
+        print("closing inmemory table connection...")
         if self.config.params['save_on_disk']:
             os.makedirs(self.config.params['save_dump_dir'], exist_ok=True)
             save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['table']}"
@@ -50,7 +50,8 @@ class InMemoryTableConnector(AbstractTableDatabaseConnection):
             save_path += '.pkl'
             with open(save_path, 'wb') as fd:
                 pickle.dump(self.table_store, fd)
-            # print(f"table-store saved in: {save_path}")
+
+            print(f"inmemory table-store saved in: {save_path}")
 
         self.table_store = None
         gc.collect()

@@ -4,6 +4,7 @@ from copy import deepcopy
 import hashlib
 
 from .configs import DEFAULT_AG_TASK_CONFIG, AG_MAIN_LOG_PATH
+from .utils import WeakAGeneratorTaskSolvers
 from ......utils.data_structs import Triplet, RelationType, create_id, TripletCreator
 from ......utils.errors import STATUS_MESSAGE
 from ......agents.utils import AbstractAgentConnector
@@ -11,6 +12,8 @@ from ......utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolverConfig,
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
+from ......utils.cache_kv.CacheOperations import CacheOperations
+from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 
 
 @dataclass
@@ -23,7 +26,7 @@ class QALLMGeneratorConfig:
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param ag_task_config: Конфигурация атомарной задачи для LLM-агента по условной генерации ответа на вопрос. Значение по умолчанию DEFAULT_AG_TASK_CONFIG.
     :type ag_task_config: AgentTaskSolverConfig, optional
-    :param relation_type: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос. Значение по умолчанию [RelationType.simple, RelationType.hyper, RelationType.episodic].
+    :param relation_type: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос. Значение по умолчанию [RelationType.hyper].
     :type relation_type: List[RelationType], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QALLMGenerator-класса. Значение по умолчанию 'qa_agenerator_stage_cache'.
     :type cache_table_name: str, optional
@@ -37,8 +40,7 @@ class QALLMGeneratorConfig:
     ag_task_config: AgentTaskSolverConfig = field(
         default_factory=lambda: DEFAULT_AG_TASK_CONFIG)
 
-    relation_type: List[RelationType] = field(default_factory=lambda: [
-                                              RelationType.simple, RelationType.hyper, RelationType.episodic])
+    relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.hyper, RelationType.simple])
 
     cache_table_name: Union[str, None] = 'qa_agenerator_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(AG_MAIN_LOG_PATH))
@@ -50,7 +52,7 @@ class QALLMGeneratorConfig:
         return f"{self.lang}|{self.agent_gen_stategy}|{self.ag_task_config.version}|{str_relations}"
 
 
-class QALLMGenerator(CacheUtils):
+class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     """Верхнеуровневый класс четвёртой стадии QA-конвейера для генерации ответа на user-вопрос,
     обусловленного извлечённой информацией из памяти (графа знаний) ассистента.
 
@@ -60,15 +62,16 @@ class QALLMGenerator(CacheUtils):
     :type config: QALLMGeneratorConfig, optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
-    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
-    :type cache_llm_inference: bool, optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
+    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
+    :type cache_llm_inference: bool, optional
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: QALLMGeneratorConfig = QALLMGeneratorConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True,
-                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
+                 cache_llm_inference: bool = True) -> None:
         self.config = config
 
         self.cachekv = self.init_cachekv(
@@ -79,36 +82,13 @@ class QALLMGenerator(CacheUtils):
         if cache_llm_inference:
             ag_task_cache_config = deepcopy(cache_kvdriver_config)
 
-        self.tasks_solvers: Dict[str, AgentTaskSolver] = dict()
-        self.tasks_solvers['answer_generator_solver'] = AgentTaskSolver(
-            self.agent, self.config.ag_task_config,
-            ag_task_cache_config, inferencestat_config)
+        self.tasks_solvers: WeakAGeneratorTaskSolvers = WeakAGeneratorTaskSolvers(
+            answer_generator_solver=AgentTaskSolver(
+                self.agent, self.config.ag_task_config, ag_task_cache_config, inferencestat_config)
+        )
 
         self.log = self.config.log
         self.verbose = self.config.verbose
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return {name: solver.get_agent_tgen_stat() for name, solver in self.tasks_solvers.items()}
-
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        cache_stat = {'QALLMGenerator': None if self.cachekv is None else self.cachekv.kv_conn.count_items()}
-        tasks_caches = {name: solver.get_cache_stat() for name, solver in self.tasks_solvers.items()}
-        cache_stat.update(tasks_caches)
-        return cache_stat
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            self.cachekv.clear()
-
-        if level in ['other', 'all']:
-            self.tasks_solvers['answer_generator_solver'].cachekv.clear()
 
     def get_cache_key(self, query: str, context_triplets: List[Triplet]) -> List[object]:
         str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(
@@ -137,9 +117,8 @@ class QALLMGenerator(CacheUtils):
         for triplet in context_triplets:
             self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
 
-        self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...",
-                 verbose=self.config.verbose)
-        answer, status = self.tasks_solvers['answer_generator_solver'].solve(
+        self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...", verbose=self.config.verbose)
+        answer, status = self.tasks_solvers.answer_generator_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             query=query, triplets=context_triplets)
 

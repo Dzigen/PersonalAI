@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Tuple, Union, List, Dict
 
 from .config import WKGR_MAIN_LOG_PATH
+from .utils import WeakKGReasonerStages
 from .query_parser import QueryLLMParser, QueryLLMParserConfig
 from .knowledge_comparator import KnowledgeComparator, KnowledgeComparatorConfig
 from .knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
@@ -48,10 +49,8 @@ class WeakKGReasonerConfig(BaseKGReasonerConfig):
     verbose: bool = False
 
     def to_str(self) -> str:
-        str_qparser_config = self.query_parser_config.to_str(
-        ) if self.query_parser_config is not None else "None"
-        str_kcomp_config = self.knowledge_comparator_config.to_str(
-        ) if self.knowledge_comparator_config is not None else "None"
+        str_qparser_config = self.query_parser_config.to_str() if self.query_parser_config is not None else "None"
+        str_kcomp_config = self.knowledge_comparator_config.to_str() if self.knowledge_comparator_config is not None else "None"
         str_kretr_config = self.knowledge_retriever_config.to_str()
         str_answgen_config = self.answer_generator_config.to_str()
         return f"{str_qparser_config};{str_kcomp_config};{str_kretr_config};{str_answgen_config}"
@@ -83,71 +82,31 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         agent = kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.qa_pipeline]
         self.using_agent_info = {'kw': agent.CONNECTOR_KW, 'config': agent.config}
 
-        if self.config.query_parser_config is None:
-            self.query_parser = None
-            self.knowledge_comparator = None
-        else:
-            self.query_parser = QueryLLMParser(
+        self.stages: WeakKGReasonerStages = WeakKGReasonerStages(
+            knowledge_retriever=KnowledgeRetriever(
+                kg_model, self.config.knowledge_retriever_config, cache_kvdriver_config),
+            answer_generator=QALLMGenerator(
+                agent, self.config.answer_generator_config, cache_kvdriver_config, inferencestat_config)
+        )
+
+        if self.config.query_parser_config is not None:
+            self.stages.query_parser = QueryLLMParser(
                 agent, self.config.query_parser_config,
-                cache_kvdriver_config, inferencestat_config=inferencestat_config)
-            self.knowledge_comparator = KnowledgeComparator(
+                cache_kvdriver_config, inferencestat_config)
+            self.stages.knowledge_comparator = KnowledgeComparator(
                 kg_model, self.config.knowledge_comparator_config,
                 cache_kvdriver_config)
-
-        self.knowledge_retriever = KnowledgeRetriever(
-            kg_model, self.config.knowledge_retriever_config,
-            cache_kvdriver_config)
-        self.answer_generator = QALLMGenerator(
-            agent, self.config.answer_generator_config,
-            cache_kvdriver_config, inferencestat_config=inferencestat_config)
 
         self.log = config.log
         self.verbose = config.verbose
 
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return {
-            'query_parser': None if self.query_parser is None else self.query_parser.get_agent_tgen_stat(),
-            'knowledge_comparator': None if self.knowledge_comparator is None else self.knowledge_comparator.get_agent_tgen_stat(),
-            'knowledge_retriever': None if self.knowledge_retriever is None else self.knowledge_retriever.get_agent_tgen_stat(),
-            'answer_generator': None if self.answer_generator is None else self.answer_generator.get_agent_tgen_stat(),
-        }
-
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        return {
-            'WeakKGReasoner': None if self.cachekv is None else self.cachekv.kv_conn.count_items(),
-            'query_parser': None if self.query_parser is None else self.query_parser.get_cache_stat(),
-            'knowledge_comparator': None if self.knowledge_comparator is None else self.knowledge_comparator.get_cache_stat(),
-            'knowledge_retriever': None if self.knowledge_retriever is None else self.knowledge_retriever.get_cache_stat(),
-            'answer_generator': None if self.answer_generator is None else self.answer_generator.get_cache_stat(),
-        }
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            self.cachekv.clear()
-
-        if level in ['other', 'all']:
-            if self.query_parser is not None:
-                self.query_parser.clear_kv_caches(level='all')
-            if self.knowledge_comparator is not None:
-                self.knowledge_comparator.clear_kv_caches(level='all')
-
-            self.knowledge_retriever.clear_kv_caches(level='all')
-            self.answer_generator.clear_kv_caches(level='all')
-
     def extract_entities(self, query_info: QueryInfo) -> Tuple[Union[None, List[str]], ReturnInfo]:
         entities, rinfo = None, ReturnInfo()
 
-        if self.query_parser is None:
+        if self.stages.query_parser is None:
             self.log("Stage #1 was omited!", verbose=self.config.verbose)
         else:
-            entities, rinfo = self.query_parser.extract_entities(query_info)
+            entities, rinfo = self.stages.query_parser.extract_entities(query_info)
             if rinfo.status != ReturnStatus.success:
                 self.log("Operation ended with error!", verbose=self.verbose)
             else:
@@ -159,10 +118,10 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
 
     def match_entities_to_kgnodes(self, query_info: QueryInfo) -> Tuple[Union[None, List[object]], Union[None, List[object]], ReturnInfo]:
         linked_nodes, linked_nodes_by_entities, rinfo = None, None, ReturnInfo()
-        if self.query_parser is None:
+        if self.stages.query_parser is None:
             self.log("Stage #2 was omited!", verbose=self.config.verbose)
         else:
-            linked_nodes, linked_nodes_by_entities, rinfo = self.knowledge_comparator.link_kgnodes_to_query(
+            linked_nodes, linked_nodes_by_entities, rinfo = self.stages.knowledge_comparator.link_kgnodes_to_query(
                 query_info)
             if rinfo.status != ReturnStatus.success:
                 self.log("Operation ended with error!", verbose=self.verbose)
@@ -177,7 +136,7 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         return linked_nodes, linked_nodes_by_entities, rinfo
 
     def traverse_knowledge_graph(self, query_info: QueryInfo) -> Tuple[Union[None, List[Triplet]], ReturnInfo]:
-        retrieved_triplets, rinfo = self.knowledge_retriever.retrieve(
+        retrieved_triplets, rinfo = self.stages.knowledge_retriever.retrieve(
             query_info)
         if rinfo.status != ReturnStatus.success:
             self.log("Operation ended with error!", verbose=self.verbose)
@@ -191,7 +150,7 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         return retrieved_triplets, rinfo
 
     def generate_answer(self, query_info: QueryInfo, retrieved_triplets: List[Triplet]) -> Tuple[Union[None, str], ReturnInfo]:
-        answer, rinfo = self.answer_generator.generate(
+        answer, rinfo = self.stages.answer_generator.generate(
             query_info.query, retrieved_triplets)
         if rinfo.status != ReturnStatus.success:
             self.log("Operation ended with error!", verbose=self.verbose)

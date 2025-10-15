@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Set, Tuple
 import math
 from tqdm import tqdm
+import gc
 
 from .config import GRAPH_DB_DEFAULT_DRIVER_CONFIG, GRAPH_MODEL_LOG_PATH
 from ...db_drivers.graph_driver import GraphDriver, GraphDriverConfig
@@ -178,3 +179,5 @@ class GraphModel:
 
     def __del__(self):
         self.db_conn.close_connection()
+        del self.db_conn
+        gc.collect()

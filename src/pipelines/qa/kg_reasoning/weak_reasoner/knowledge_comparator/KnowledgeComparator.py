@@ -10,6 +10,8 @@ from ......db_drivers.vector_driver import VectorDBInstance
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......rerankers import RerankerDriver, RerankerDriverConfig
+from ......utils.cache_kv.CacheOperations import CacheOperations
+from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 
 
 @dataclass
@@ -40,7 +42,7 @@ class KnowledgeComparatorConfig:
         return f"{self.reranker_driver_config.to_str()};{self.max_k}:{self.k_compare}"
 
 
-class KnowledgeComparator(CacheUtils):
+class KnowledgeComparator(CacheUtils, CacheOperations):
     """Верхнеуровневый класс второй стадии QA-конвейера для сопоставления информации из user-вопроса с имеющейся информацией в памяти (графе знаний) ассистента.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -65,28 +67,6 @@ class KnowledgeComparator(CacheUtils):
 
         self.log = self.config.log
         self.verbose = self.config.verbose
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return None
-
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        return {
-            'KnowledgeComparator': None if self.cachekv is None else self.cachekv.kv_conn.count_items(),
-        }
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            self.cachekv.clear()
-
-        if level == 'other':
-            raise NotImplementedError
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
         return [self.config.to_str(), query_info.to_str()]

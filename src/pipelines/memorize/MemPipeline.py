@@ -6,13 +6,15 @@ from .extractor.LLMExtractor import LLMExtractor
 from .updator.LLMUpdator import LLMUpdator
 from .extractor import LLMExtractorConfig
 from .updator import LLMUpdatorConfig
+from .utils import MemPipelineStages
 from ...kg_model import KnowledgeGraphModel
 from ...utils import Logger, Triplet, ReturnStatus, ReturnInfo
 from ...utils.data_structs import create_id
 from ...utils.errors import STATUS_MESSAGE
 from ...db_drivers.kv_driver import KeyValueDriverConfig
-from ...utils.cache_kv.utils import AbstractCacheInfo
+from ...utils.cache_kv.CacheOperations import CacheOperations
 from ...utils.agent_stat_analyzer import AgentStatAnalyzerConfig
+from ...utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 
 
 @dataclass
@@ -37,7 +39,7 @@ class MemPipelineConfig:
     verbose: bool = False
 
 
-class MemPipeline(AbstractCacheInfo):
+class MemPipeline(CacheOperations, AgentStatOperations):
     """Верхнеуровневый класс Memorize-конвейера, отвечающий за изменение знаний в памяти ассистента.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -56,34 +58,13 @@ class MemPipeline(AbstractCacheInfo):
         self.config = config
         self.log = config.log
 
-        self.extractor = LLMExtractor(
-            kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.mem_pipeline],
-            config.extractor_config, cache_kvdriver_config, inferencestat_config)
-        self.updator = LLMUpdator(
-            kg_model, config.updator_config, cache_kvdriver_config, inferencestat_config)
-
-    def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
-        return {
-            'extractor': self.extractor.get_cache_stat(),
-            'updator': self.updator.get_cache_stat(),
-        }
-
-    def get_agent_tgen_stat(self) -> Union[None, Dict[str, Union[None, Dict]]]:
-        return {
-            'extractor': self.extractor.get_agent_tgen_stat(),
-            'updator': self.updator.get_agent_tgen_stat(),
-        }
-
-    def clear_kv_caches(self, level: str = 'all') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        self.extractor.clear_kv_caches()
-        self.updator.clear_kv_caches()
+        self.stages: MemPipelineStages = MemPipelineStages(
+            extractor=LLMExtractor(
+                kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.mem_pipeline],
+                config.extractor_config, cache_kvdriver_config, inferencestat_config),
+            updator=LLMUpdator(
+                kg_model, config.updator_config, cache_kvdriver_config, inferencestat_config)
+        )
 
     def remember(self, text: str, time: Union[None, str] = None, properties: Union[None, Dict] = None) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста и обновление/актуализацию знаний в памяти (графе знаний) ассистента.
@@ -106,7 +87,7 @@ class MemPipeline(AbstractCacheInfo):
 
         self.log("STAGE#1 - 'Извлечение информации (в структурированном формате) из текста'",
                  verbose=self.config.verbose)
-        new_triplets, info = self.extractor.extract_knowledge(
+        new_triplets, info = self.stages.extractor.extract_knowledge(
             text, time, properties)
 
         self.log(f"RESULT: {len(new_triplets)}", verbose=self.config.verbose)
@@ -118,7 +99,7 @@ class MemPipeline(AbstractCacheInfo):
                      verbose=self.config.verbose)
             self.log(
                 f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.config.verbose)
-            info = self.updator.update_knowledge(new_triplets)
+            info = self.stages.updator.update_knowledge(new_triplets)
 
         self.log(
             f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
@@ -127,5 +108,5 @@ class MemPipeline(AbstractCacheInfo):
 
     def __del__(self):
         # print("deleting Mem-class")
-        del self.extractor
-        del self.updator
+        del self.stages.extractor
+        del self.stages.updator
