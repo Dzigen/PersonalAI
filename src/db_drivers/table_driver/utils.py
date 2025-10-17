@@ -6,7 +6,7 @@ from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
 @dataclass
 class TableDBConnectionConfig(BaseDatabaseConfig):
-    db_info: Dict = field(default_factory=lambda: {'db': 'defaultpersonalaitabledb', 'table': 'defaultpersonalaitable'})
+    db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAITableDB', 'table': 'DefaultPersonalAITable'})
     host: str = None
     port: str = None
 

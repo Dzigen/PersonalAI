@@ -40,7 +40,7 @@ class TreeNode:
 @dataclass
 class TreeDBConnectionConfig(BaseDatabaseConfig):
     db_info: Dict = field(default_factory=lambda: {
-                          'db': 'defaultpersonalaitreedb', 'table': 'defaultpersonalaitreetable'})
+                          'db': 'DefaultPersonalAITreeDB', 'table': 'DefaultPersonalAITreeTable'})
     host: str = None
     port: str = None
 

@@ -21,7 +21,11 @@ class InMemoryTableConnector(AbstractTableDatabaseConnection):
 
     def open_connection(self) -> None:
         if self.config.params['load_from_disk']:
-            load_path = f"{self.config.params['load_dump_dir']}/{self.config.params['tablestore_dump_name']}.pkl"
+            if self.config.params['load_dump_name'] is None:
+                load_path = f"{self.config.params['load_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
+            else:
+                load_path = f"{self.config.params['load_dump_dir']}/{self.config.params['load_dump_name']}"
+
             if os.path.exists(load_path):
                 try:
                     with open(load_path, 'rb') as fd:
@@ -31,8 +35,10 @@ class InMemoryTableConnector(AbstractTableDatabaseConnection):
                     self.create_table()
             else:
                 print(f"warning: tablestore-dump '{load_path}' doesnt exists. creating empty table-store")
+                os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
                 self.create_table()
         else:
+            os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
             self.create_table()
 
         if self.config.need_to_clear:
@@ -42,7 +48,7 @@ class InMemoryTableConnector(AbstractTableDatabaseConnection):
         print("closing inmemory table connection...")
         if self.config.params['save_on_disk']:
             os.makedirs(self.config.params['save_dump_dir'], exist_ok=True)
-            save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['table']}"
+            save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
             if os.path.exists(save_path):
                 print("warning: file on that path is already exists")
                 postfix = hashlib.md5(str(time.time()).encode()).hexdigest()

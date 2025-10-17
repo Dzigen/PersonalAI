@@ -9,7 +9,7 @@ from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 @dataclass
 class GraphDBConnectionConfig(BaseDatabaseConfig):
     db_info: Dict = field(default_factory=lambda: {
-                          'db': 'defaultpersonalaigraphdb', 'table': 'defaultpersonalaigraphtable'})
+                          'db': 'DefaultPersonalAIGraphDB', 'table': 'DefaultPersonalAIGraphTable'})
     host: str = None
     port: str = None
 

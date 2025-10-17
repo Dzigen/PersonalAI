@@ -159,15 +159,13 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
                  verbose=self.config.verbose)
         triplets = self.traverse_kg(query_info)
 
-        self.log("STAGE #3.2 - TRIPLETS FILTERING...",
-                 verbose=self.config.verbose)
+        self.log("STAGE #3.2 - TRIPLETS FILTERING...", verbose=self.config.verbose)
         filtered_triplets = self.filter_triplets(query_info, triplets)
 
-        if len(filtered_triplets) == 0:
+        if len(triplets) == 0:
             rinfo.status = ReturnStatus.zero_retrieved_triplets
             rinfo.message = STATUS_MESSAGE[rinfo.status]
 
-        self.log(
-            f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.config.verbose)
+        self.log(f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.config.verbose)
 
         return filtered_triplets, rinfo

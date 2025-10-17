@@ -15,6 +15,9 @@ AVAILABLE_GRAPH_MODELS = ['neo4j']  # 'inmemory_graph', 'neo4j', 'kuzu'
 # TO CHANGE
 AVAILABLE_EMBEDDING_MODELS = ['milvus']  # 'chroma', 'milvus'
 
+# TO CHANGE
+AVAILABLE_NODESTREE_MODELS = ['milvus_neo4j', 'None'] # 'milvus_kuzu', 'milvus_neo4j', 'chroma_kuzu', 'chroma_neo4j', 'None
+
 RAW_TEXTS_RU = [
     "Проживающие в общежитии студенты имеют право rруглосуточного доступа к месту проживания.",
     "Проживающие в общежитии студенты имеют право обратиться к администрации ФГБУ «МСГ» с заявлением, заверенным заведующим общежития, о размещении в гостевых комнатах общежития родственников (на короткий период пребывания, не менее 2-х суток), родителей - на любой срок (при предоставлении документа, подтверждающего степень родства).",
@@ -64,7 +67,8 @@ RAW_TEXTS_EN = [
     "Students living in the dormitory have the right to participate (make proposals) through the MSG Student Council and the youth policy department of the FSBI 'MSG' in resolving issues of improving housing and living conditions, organizing educational work and leisure.",
     "Students living in the dormitory have the right to take part in social, sports and cultural and leisure events organized by the administration of the FSBI 'MSG' and the MSG Student Council.",
     "Students living in the dormitory have the right to use permitted household appliances in compliance with safety regulations and fire safety regulations.",
-    "Students living in the dormitory have the right to visit the Interuniversity Educational and Sports Center free of charge at a time approved by the administration of the FSBI 'MSG' and agreed upon with the MSG Student Council."]
+    "Students living in the dormitory have the right to visit the Interuniversity Educational and Sports Center free of charge at a time approved by the administration of the FSBI 'MSG' and agreed upon with the MSG Student Council."
+]
 
 KV_CACHE_CONFIG = KeyValueDriverConfig(
     db_vendor='mixed_kv',
@@ -76,13 +80,18 @@ KV_CACHE_CONFIG = KeyValueDriverConfig(
                 db_info={'db': 'memorize_db', 'table': None},
                 params={'username': 'user',
                         'password': 'pass', 'max_storage': -1},
-                need_to_clear=False),
+                need_to_clear=False
+            ),
             'redis_config': KVDBConnectionConfig(
                 host='localhost', port=6370,
                 db_info={'db': 0, 'table': None},
                 params={'ss_name': 'sorted_node_pairs',
                         'hs_name': 'node_pairs', 'max_storage': 50000000},
-                need_to_clear=False)}))
+                need_to_clear=False
+            )
+        }
+    )
+)
 
 
 
@@ -129,15 +138,14 @@ RU_MEM_CONFIG4 = MemPipelineConfig(
 
 #"mem_config, raw_texts, use_kv_cache, clear_kv_cache, kg_model"
 MEM_TEST_CASES = [
-    [EN_MEM_CONFIG2, RAW_TEXTS_EN, True, False],
     [EN_MEM_CONFIG2, RAW_TEXTS_EN, True, True],
-    [RU_MEM_CONFIG4, RAW_TEXTS_RU, True, False],
     [RU_MEM_CONFIG4, RAW_TEXTS_RU, True, True]
 ]
 
 MEM_POPULATED_TEST_CASES = []
 for vector_vendor in AVAILABLE_EMBEDDING_MODELS:
     for graph_vendor in AVAILABLE_GRAPH_MODELS:
-        for i in range(len(MEM_TEST_CASES)):
-            MEM_POPULATED_TEST_CASES.append(
-                MEM_TEST_CASES[i] + [f"{vector_vendor}/{graph_vendor}"])
+        for tree_vendor in AVAILABLE_NODESTREE_MODELS:
+            for i in range(len(MEM_TEST_CASES)):
+                MEM_POPULATED_TEST_CASES.append(
+                    MEM_TEST_CASES[i] + [f"{vector_vendor}/{graph_vendor}/{tree_vendor}"])

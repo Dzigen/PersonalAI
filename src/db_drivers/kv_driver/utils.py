@@ -7,7 +7,7 @@ from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 @dataclass
 class KVDBConnectionConfig(BaseDatabaseConfig):
     db_info: Dict = field(default_factory=lambda: {
-                          'db': 'defaultpersonalaikvdb', 'table': 'defaultpersonalaikvtable'})
+                          'db': 'DefaultPersonalAIKVDB', 'table': 'DefaultPersonalAIKVTable'})
     host: str = None
     port: str = None
 

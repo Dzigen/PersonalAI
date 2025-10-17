@@ -19,7 +19,7 @@ class BaseDatabaseConfig:
     :type create_index: bool
     """
     db_info: Dict = field(default_factory=lambda: {
-                          'db': 'defaultpersonalaidb', 'table': 'defaultpersonalaitable'})
+                          'db': 'DefaultPersonalAIDB', 'table': 'DefaultPersonalAITable'})
     params: Dict = field(default_factory=lambda: dict())
     need_to_clear: bool = False
     create_index: bool = False

@@ -1,4 +1,5 @@
 from typing import List, Dict
+import re
 
 from ........utils.data_structs import SearchPlanInfo
 
@@ -14,9 +15,12 @@ def answcls_custom_postprocess(parsed_response: str, **kwargs) -> bool:
     if len(parsed_response) < 1:
         raise ValueError
 
-    if parsed_response.startswith("Yes"):
+    true_matches = re.findall(r"[^\w]*True[^\w]*", parsed_response)
+    false_matches = re.findall(r"[^\w]*False[^\w]*", parsed_response)
+
+    if len(true_matches) > 0:
         cananswer_sign = True
-    if parsed_response.startswith("No"):
+    elif len(false_matches) > 0:
         cananswer_sign = False
     else:
         raise ValueError(f"parsed_response: '{parsed_response}'")

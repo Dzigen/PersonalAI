@@ -19,7 +19,10 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
     def open_connection(self) -> None:
         # print("opening kv connection...")
         if self.config.params['load_from_disk']:
-            load_path = f"{self.config.params['load_dump_dir']}/{self.config.db_info['table']}.pkl"
+            if self.config.params['load_dump_name'] is None:
+                load_path = f"{self.config.params['load_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}.pkl"
+            else:
+                load_path = f"{self.config.params['load_dump_dir']}/{self.config.params['load_dump_name']}"
             if os.path.exists(load_path):
                 try:
                     with open(load_path, 'rb') as fd:
@@ -29,8 +32,10 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
                     self.kv_store = dict()
             else:
                 print(f"warning: kvstore-dump '{load_path}' doesnt exists. creating empty kv-store")
+                os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
                 self.kv_store = dict()
         else:
+            os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
             self.kv_store = dict()
 
         if self.config.need_to_clear:
@@ -50,7 +55,7 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         # print("kv-store is not None:", self.kv_store is not None)
         if self.config.params['save_on_disk']:
             os.makedirs(self.config.params['save_dump_dir'], exist_ok=True)
-            save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['table']}"
+            save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
             if os.path.exists(save_path):
                 print("warning: file on that path is already exists")
                 postfix = hashlib.md5(str(time.time()).encode()).hexdigest()

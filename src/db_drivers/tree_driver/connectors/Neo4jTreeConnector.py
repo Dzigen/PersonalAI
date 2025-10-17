@@ -23,7 +23,7 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
 
         #
         self.execute_query(
-            f'CREATE DATABASE {self.config.db_info["db"]} IF NOT EXISTS;', db_flag=False)
+            f'CREATE DATABASE {self.config.db_info["db"]}{self.config.db_info["table"]} IF NOT EXISTS;', db_flag=False)
 
         # Creating indexes
         if self.config.create_index:
@@ -254,7 +254,7 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         response = None
         try:
             session = self.driver.session(
-                database=self.config.db_info['db']) if db_flag else self.driver.session()
+                database=f"{self.config.db_info['db']}{self.config.db_info['table']}") if db_flag else self.driver.session()
             response = list(session.run(query))
         except Exception as e:
             print("Query failed:", e)

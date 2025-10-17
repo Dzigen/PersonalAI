@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Creating volume dirs..."
-mkdir volumes/redis volumes/chroma volumes/kuzu volumes/mongo volumes/neo4j volumes/milvus/data volumes/opensearch/data volumes/elasticsearch/data volumes/weaviate/data
+mkdir -p volumes/redis volumes/chroma volumes/kuzu volumes/mongo volumes/neo4j volumes/milvus/data volumes/opensearch/data volumes/elasticsearch/data volumes/weaviate/data
 
 echo "Creating containers for testing..."
 docker-compose up -d neo4j redis_cache mongo_cache milvus opensearch elasticsearch

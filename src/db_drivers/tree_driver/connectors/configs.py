@@ -1,7 +1,7 @@
 from ..utils import TreeDBConnectionConfig, TreeNodeType
 
 DEFAULT_NEO4JTREE_CONFIG = TreeDBConnectionConfig(
-    host="localhost", port="7688",
+    host="localhost", port="7680",
     params={'user': "neo4j", 'pwd': 'password'},
     need_to_clear=False)
 

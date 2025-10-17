@@ -24,8 +24,8 @@ class SQLite3TableConnector(AbstractTableDatabaseConnection):
     def open_connection(self) -> None:
         if self.config.params.get('database_path', None) is not None:
             os.makedirs(self.config.params['database_path'], exist_ok=True)
-        table_path = f"{self.config.params.get('database_path', '.')}/{self.config.db_info['table']}.db"
-        self.conn = sqlite3.connect(table_path)
+        db_path = f"{self.config.params.get('database_path', '.')}/{self.config.db_info['db']}.db"
+        self.conn = sqlite3.connect(db_path)
         self.cursor = self.conn.cursor()
 
         if self.config.db_info.get('create_table_query', None) is not None:

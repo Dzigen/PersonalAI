@@ -6,7 +6,7 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from src.db_drivers.tree_driver.utils import TreeNode, TreeNodeType, TreeIdType
 
 # TO CHANGE
-AVAILABLE_TREE_DBS = ['kuzu', 'neo4j']  # 'neo4j', 'kuzu'
+AVAILABLE_TREE_DBS = ['neo4j', 'kuzu']  # 'neo4j', 'kuzu'
 
 ################################################################
 

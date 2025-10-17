@@ -23,8 +23,7 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
     def open_connection(self) -> None:
         self._client = pymongo.MongoClient(f'mongodb://{self.config.host}:{self.config.port}',
                                            username=self.config.params['username'], password=self.config.params['password'])
-        self._collection = self._client[self.config.db_info['db']
-                                        ][self.config.db_info['table']]
+        self._collection = self._client[self.config.db_info['db']][self.config.db_info['table']]
 
         if self.config.need_to_clear:
             self.clear()
@@ -37,7 +36,7 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
             if item is None or item.id is None or item.value is None:
                 raise ValueError
 
-            if type(item.id) is not str:
+            if not isinstance(item.id, str):
                 raise ValueError(f"{item} {type(item.id)} {type(item.value)}")
 
         unique_ids = set(map(lambda item: item.id, items))
@@ -47,7 +46,7 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
         filtered_items = []
         for item in items:
             if self._collection.find_one({'_id': item.id}) is None:
-                if type(item.value) is bytes:
+                if isinstance(item.value, bytes):
                     dumped_value = pickle.dumps((item.value, 'bytes'))
                 else:
                     dumped_value = pickle.dumps((item.value, 'notbytes'))
@@ -70,7 +69,7 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
 
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
         for id in ids:
-            if (id is None) or (type(id) is not str):
+            if (id is None) or (not isinstance(id, str)):
                 raise ValueError
 
         if len(ids) < 1:
@@ -104,7 +103,7 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
             if item is None or item.id is None or item.value is None:
                 raise ValueError
 
-            if type(item.id) is not str or type(item.value) not in [str, float, int]:
+            if not isinstance(item.id, str) or type(item.value) not in [str, float, int]:
                 raise ValueError
 
         if len(items) < 1:
@@ -118,7 +117,7 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
             if items_dict[exist_item['_id']] is not None:
                 cur_item = items_dict[exist_item['_id']]
 
-                if type(item.value) is bytes:
+                if isinstance(item.value, bytes):
                     dumped_value = pickle.dumps((cur_item.value, 'bytes'))
                 else:
                     dumped_value = pickle.dumps((cur_item.value, 'notbytes'))
@@ -128,7 +127,7 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
 
     def delete(self, ids: List[str]) -> None:
         for id in ids:
-            if type(id) is not str:
+            if not isinstance(id, str):
                 raise ValueError
 
         if len(ids) > 0:
@@ -138,7 +137,7 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
         return self._collection.count_documents({})
 
     def item_exist(self, id: str) -> bool:
-        if type(id) is not str:
+        if not isinstance(id, str):
             raise ValueError
 
         item = self._collection.find_one({'_id': id})

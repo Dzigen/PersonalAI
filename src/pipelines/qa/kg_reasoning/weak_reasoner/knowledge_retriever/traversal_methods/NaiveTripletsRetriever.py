@@ -51,7 +51,7 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
         if isinstance(search_config, dict):
             search_config = NaiveGraphSearchConfig(**search_config)
-        self.config = search_config
+        self.config: NaiveGraphSearchConfig = search_config
 
         self.kg_model = kg_model
 

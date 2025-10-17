@@ -11,14 +11,11 @@ AVAILABLE_TABLE_DBS = ['inmemory_table', 'mongo', 'sqlite3', 'postgresql', 'mysq
 ###############################################################################################
 
 STAT_VALUES1 = LLMInferenceStat(
-    prompt_tokens_amount=10, generated_tokens_amount=20,
-    preparation_elapsed_time=5, inference_elapsed_time=10)
+    prompt_tokens_amount=10, generated_tokens_amount=20, inference_elapsed_time=10)
 STAT_VALUES2 = LLMInferenceStat(
-    prompt_tokens_amount=10, generated_tokens_amount=20,
-    preparation_elapsed_time=5, inference_elapsed_time=10)
+    prompt_tokens_amount=10, generated_tokens_amount=20, inference_elapsed_time=10)
 STAT_VALUES3 = LLMInferenceStat(
-    prompt_tokens_amount=10, generated_tokens_amount=20,
-    preparation_elapsed_time=5, inference_elapsed_time=10)
+    prompt_tokens_amount=10, generated_tokens_amount=20, inference_elapsed_time=10)
 
 INSTANCE1 = TableDBInstance(id='1', values=STAT_VALUES1)
 INSTANCE1_2 = TableDBInstance(id='2', values=STAT_VALUES1)

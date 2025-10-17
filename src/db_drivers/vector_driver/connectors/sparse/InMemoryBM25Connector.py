@@ -25,11 +25,18 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
         self.db_conn = InMemoryDocumentStore()
 
         if self.config.params['load_from_disk']:
-            load_path = f"{self.config.params['load_dump_dir']}/{self.config.db_info['table']}.json"
+            if self.config.params['load_dump_name'] is None:
+                load_path = f"{self.config.params['load_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}.json"
+            else:
+                load_path = f"{self.config.params['load_dump_dir']}/{self.config.params['load_dump_name']}"
+
             if os.path.exists(load_path):
                 self.db_conn = self.db_conn.load_from_disk(load_path)
             else:
                 print(f"warning: inmemory_sparse-dump '{load_path}' doesnt exists. creating empty store")
+                os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
+        else:
+            os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
 
         self.retriever = InMemoryBM25Retriever(document_store=self.db_conn)
 
@@ -43,8 +50,7 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
     def close_connection(self) -> ReturnInfo:
         print("closing inmemory bm25 connection...")
         if self.config.params['save_on_disk']:
-            os.makedirs(self.config.params['save_dump_dir'], exist_ok=True)
-            save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['table']}"
+            save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
             if os.path.exists(save_path):
                 print("warning: file on that path is already exists")
                 postfix = hashlib.md5(str(time.time()).encode()).hexdigest()

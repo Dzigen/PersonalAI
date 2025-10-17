@@ -273,6 +273,9 @@ class EmbeddingsModel:
         self.triplets_vcomposer.clear()
 
     def __del__(self):
-        del self.nodes_vcomposers
-        del self.triplets_vcomposer
+        try:
+            del self.nodes_vcomposers
+            del self.triplets_vcomposer
+        except AttributeError:
+            pass
         gc.collect()

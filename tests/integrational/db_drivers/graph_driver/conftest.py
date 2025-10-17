@@ -16,7 +16,14 @@ import pytest
 def inmemory_graph_conn():
     config = GraphDriverConfig(
         db_vendor='inmemory_graph', db_config=GraphDBConnectionConfig(
-            db_info={'db': 'testing', 'table': 'testing'}, need_to_clear=True))
+        params={
+            'load_dump_name': None,
+            'load_from_disk': False,
+            'load_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_graph",
+            'save_on_disk': True,
+            'save_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_graph"
+        },
+        db_info={'db': 'testing', 'table': 'testing'}, need_to_clear=True))
     return GraphDriver.connect(config)
 
 

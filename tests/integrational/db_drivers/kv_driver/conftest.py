@@ -14,12 +14,13 @@ from src.db_drivers.kv_driver import KeyValueDriver, KeyValueDriverConfig, KVDBC
 def inmemory_kv_conn():
     inmemorykv_config = KVDBConnectionConfig(
         params={
-            'kvstore_dump_name': 'inmemory_store',
+            'load_dump_name': 'inmemory_store',
             'load_from_disk': False,
             'max_storage': 5e+8,
-            'load_dump_dir': TEST_VOLUME_DIR,
+            'load_dump_dir': "{TEST_VOLUME_DIR}/inmemory_kv",
             'save_on_disk': True,
-            'save_dump_dir': TEST_VOLUME_DIR},
+            'save_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_kv"
+        },
         need_to_clear=True)
 
     driver_config = KeyValueDriverConfig(

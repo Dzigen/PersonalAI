@@ -4,7 +4,9 @@ from ....utils.data_structs import NodeType, RelationType
 
 DEFAULT_INMEMORYGRAPH_CONFIG = GraphDBConnectionConfig(
     params={
-        'load_from_disk': False, 'load_dump_dir': "./personalai_tmp/volumes/inmemory_graph",
+        'load_from_disk': False,
+        'load_dump_name': None,
+        'load_dump_dir': "./personalai_tmp/volumes/inmemory_graph",
         'save_on_disk': True, 'save_dump_dir': "./personalai_tmp/volumes/inmemory_graph",
     }
 )

@@ -202,9 +202,12 @@ class KnowledgeGraphModel:
         except AttributeError:
             pass
 
-        del self.graph_embeddings
-        del self.graph_struct
-        if self.nodestree_model is not None:
-            del self.nodestree_model
+        try:
+            del self.graph_embeddings
+            del self.graph_struct
+            if self.nodestree_model is not None:
+                del self.nodestree_model
+        except AttributeError:
+            pass
 
         gc.collect()

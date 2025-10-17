@@ -6,7 +6,9 @@ DEFAULT_AEROSPIKE_CONFIG = KVDBConnectionConfig(
 DEFAULT_INMEMORYKV_CONFIG = KVDBConnectionConfig(
     host='localhost',
     params={
-        'load_from_disk': False, 'load_dump_dir': "./personalai_tmp/volumes/inmemory_kv",
+        'load_from_disk': False,
+        'load_dump_name': None,
+        'load_dump_dir': "./personalai_tmp/volumes/inmemory_kv",
         'save_on_disk': True, 'save_dump_dir': "./personalai_tmp/volumes/inmemory_kv",
         'max_storage': 5e+8
     })

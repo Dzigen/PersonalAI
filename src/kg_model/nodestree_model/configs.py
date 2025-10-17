@@ -13,6 +13,7 @@ NODESTREE_MODEL_LOG_PATH = 'log/kg_model/nodes_tree'
 TREE_DB_DEFAULT_DRIVER_CONFIG = TreeDriverConfig(
     db_vendor='kuzu',
     db_config=TreeDBConnectionConfig(
+        db_info={'db': 'DefaultDB', 'table': 'KuzuTree'},
         params={'path': './personalai_tmp/memory_parts/tree_model/tree_struct/kuzu', 'buffer_pool_size': 1024**3,
                 'table_type_map': {
                     'nodes': {

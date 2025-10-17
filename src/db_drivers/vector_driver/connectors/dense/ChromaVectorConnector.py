@@ -40,7 +40,7 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
         # )
 
     def open_connection(self) -> ReturnInfo:
-        self.client = chromadb.PersistentClient(path=self.config.conn['path'])
+        self.client = chromadb.PersistentClient(path=f"{self.config.conn['path']}/{self.config.db_info['db']}")
         self.collection = self.client.get_or_create_collection(
             name=self.config.db_info['table'], metadata=self.config.params)
 

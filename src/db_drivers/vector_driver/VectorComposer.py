@@ -27,7 +27,7 @@ class VectorComposer(AbstractVectorDatabaseComposer):
         sizes_info = self.count_items()
         unique_values = set(list(sizes_info.values()))
         if len(unique_values) > 1:
-            raise AssertionError
+            raise AssertionError(f"vcomposer-db sizes: {sizes_info}")
 
         return True
 

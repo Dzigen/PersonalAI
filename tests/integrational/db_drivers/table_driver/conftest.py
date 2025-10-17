@@ -28,7 +28,7 @@ def inmemory_table_conn():
             'table_info': LLMInferenceStat
         },
         params={
-            'tablestore_dump_name': 'inmemory_table_store',
+            'load_dump_name': 'inmemory_table_store',
             'load_from_disk': False,
             'max_storage': 5e+8,
             'load_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_table",

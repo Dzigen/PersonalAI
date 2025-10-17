@@ -8,7 +8,6 @@ from src.utils.data_structs import NodeType, RelationType
 from src.utils.data_structs import NodeCreator, Relation, RelationType, NodeType, TripletCreator
 
 # TO CHANGE
-# 'neo4j', 'kuzu', 'inmemory_graph'
 AVAILABLE_GRAPH_DBS = ['neo4j', 'kuzu', 'inmemory_graph'] # 'neo4j', 'kuzu', 'inmemory_graph'
 
 ###############################################################################################

@@ -17,12 +17,10 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         self.config = config
 
     def open_connection(self) -> None:
-        os.makedirs(self.config.params['path'], exist_ok=True)
-        load_path = f"{self.config.params['path']}/{self.config.db_info['db']}"
-
+        load_path = f"{self.config.params['path']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
         if not os.path.exists(load_path):
-            print(
-                f"warning: graph-dump '{load_path}' doesnt exists. creating empty graph-store")
+            print(f"warning: graph-dump '{load_path}' doesnt exists. creating empty graph-store")
+            os.makedirs(f"{self.config.params['path']}/{self.config.db_info['db']}", exist_ok=True)
 
         self.db = kuzu.Database(
             load_path, buffer_pool_size=self.config.params['buffer_pool_size'])

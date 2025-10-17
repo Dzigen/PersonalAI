@@ -24,9 +24,9 @@ from ...utils.data_structs import Triplet, NodeType, create_id, Node
 from ...utils.errors import ReturnStatus
 from ...agents.utils import AbstractAgentConnector
 from ...db_drivers.kv_driver import KeyValueDriverConfig
-from ...db_drivers.vector_driver import VectorDriver, VectorDriverConfig, VectorDBInstance, VectorComposer
+from ...db_drivers.vector_driver import VectorDriverConfig, VectorDBInstance, VectorComposer
 from ...db_drivers.tree_driver import TreeDriver, TreeDriverConfig
-from ...db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
+from ...db_drivers.vector_driver.embedders import EmbedderModel
 from ...rerankers import RerankerDriver, RerankerDriverConfig
 
 
@@ -34,10 +34,16 @@ from ...rerankers import RerankerDriver, RerankerDriverConfig
 class NodesTreeModelConfig:
     """Конфигурация древовидной структуры данных для хранения object-вершин.
 
-    :param vectordb_leafnodes_config: Конфигурация векторной базы данных для хранения векторных представлений leaf-объектов (object-вершин) дерева. Значение по умолчанию LEAFNODES_VDB_DEFAULT_DRIVER_CONFIG.
-    :type vectordb_leafnodes_config: VectorDriverConfig, optional
-    :param vectordb_summnodes_config: Конфигурация векторной базы данных для хранения векторных представлений parent-объектов (summarized-вершин) дерева. Значение по умолчанию SUMMNODES_VDB_DEFAULT_DRIVER_CONFIG.
-    :type vectordb_summnodes_config: VectorDriverConfig, optional
+    :param leafnodes_vdb_driver_configs_mapping: Именованные конфигурации баз данных для хранения различных векторных представлений leaf-объектов (object-вершин) дерева. Значение по умолчанию LEAFNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING.
+    :type leafnodes_vdb_driver_configs_mapping: Dict[str, VectorDriverConfig], optional
+    :param leafnodes_reranker_driver_config: ... . Значение по умолчанию LNT_RERANKDRIVER_DEFAULT_CONFIG.
+    :type leafnodes_reranker_driver_config: RerankerDriverConfig, optional
+
+    :param summnodes_vdb_driver_configs_mapping: Именованные конфигурации баз данных для хранения различных векторных представлений parent-объектов (summarized-вершин) дерева. Значение по умолчанию SUMMNODES_VDB_DEFAULT_DRIVER_CONFIG.
+    :type summnodes_vdb_driver_configs_mapping: Dict[str, VectorDriverConfig], optional
+    :param summnodes_reranker_driver_config: ... . Значение по умолчанию SNT_RERANKDRIVER_DEFAULT_CONFIG.
+    :type summnodes_reranker_driver_config: RerankerDriverConfig, optional
+
     :param treedb_config: Конфигурация графовой базы данных для хранения древовидного представления object-вершин. Значение по умолчанию TREE_DB_DEFAULT_DRIVER_CONFIG.
     :type treedb_config: treedb_config, optional
 
@@ -80,8 +86,8 @@ class NodesTreeModelConfig:
         default_factory=lambda: DEFAULT_SUMMN_TASK_CONFIG)
 
     # expanding-tree params
-    e2n_base_threshold: float = 0.4
-    depth_rate: float = 0.5
+    e2n_base_threshold: float = 0.3
+    depth_rate: float = 0.4
     nodes_aggregation_mechanism: str = 'sequencial'  # "sequencial" | "parallel"
 
     log: Logger = field(default_factory=lambda: Logger(NODESTREE_MODEL_LOG_PATH))
@@ -631,9 +637,12 @@ class NodesTreeModel:
         self.treedb_conn.clear()
 
     def __del__(self):
-        self.treedb_conn.close_connection()
-        del self.treedb_conn
+        try:
+            self.treedb_conn.close_connection()
+            del self.treedb_conn
 
-        del self.leafnodes_vcomposer
-        del self.summnodes_vcomposer
+            del self.leafnodes_vcomposer
+            del self.summnodes_vcomposer
+        except AttributeError:
+            pass
         gc.collect()
