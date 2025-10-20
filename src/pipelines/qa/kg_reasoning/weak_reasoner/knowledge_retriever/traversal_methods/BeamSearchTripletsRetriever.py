@@ -65,6 +65,7 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     :type cache_table_name: str, optional
     """
     reranker_driver_config: RerankerDriverConfig = field(default_factory=lambda: BSGS_RERANKDRIVER_DEFAULT_CONFIG)
+    vdbname_for_scores: str = 'triplets_dense'
     max_depth: int = 10
     max_paths: int = 50
     same_path_intersection_by_node: bool = True
@@ -72,7 +73,7 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     diff_paths_intersection_by_rel: bool = True
     mean_alpha: float = 0.75
     accepted_node_types: List[NodeType] = field(
-        default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic])
+        default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
     final_sorting_mode: str = 'mixed'  # 'ended_first' | 'mixed' | 'continuous_first'
 
     cache_table_name: str = 'qa_beamsearch_t_retriever_cache'
@@ -107,7 +108,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 search_config['accepted_node_types'] = list(
                     map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
             search_config = GraphBeamSearchConfig(**search_config)
-        self.config = search_config
+        self.config: GraphBeamSearchConfig = search_config
 
         self.kg_model = kg_model
 
@@ -223,7 +224,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
             scored_rels = self.scorer.run(
                 query=query, top_k=len(cur_rids_batch), includes=[],
-                subset_ids=cur_rids_batch, return_with_scores=True
+                subset_ids=cur_rids_batch, return_with_scores=self.config.vdbname_for_scores
             )
 
             for raw_score, triplet_info in scored_rels:
@@ -406,8 +407,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 
         node_ids = set([node.id for node in query_info.linked_nodes])
-        self.log(
-            f"Вершины, для которых будет запущейн BeamSearch: {node_ids}", verbose=self.verbose)
+        self.log(f"Вершины, для которых будет запущейн BeamSearch: {node_ids}", verbose=self.verbose)
 
         unique_triplets = dict()
         for node_id in node_ids:

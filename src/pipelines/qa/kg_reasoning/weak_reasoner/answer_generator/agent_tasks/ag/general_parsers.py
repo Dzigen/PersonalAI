@@ -14,6 +14,6 @@ def simpleag_custom_formate(query: str, triplets: List[Triplet]) -> str:
 
 def simpleag_custom_postprocess(parsed_response: str, **kwargs) -> str:
     if len(parsed_response) < 1:
-        raise ValueError
+        raise ValueError(f"parsed_response: '{parsed_response}'")
 
     return parsed_response

@@ -94,12 +94,9 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
 
     def retrieve(self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
                  includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
-        if len(query_instances) < 1:
-            return ValueError
-        for inst in query_instances:
-            if inst.embedding is not None:
-                raise ValueError
-
+        self.validate_retrieve_arguments(query_instances, n_results, subset_ids, includes)
+        if subset_ids is not None and len(subset_ids) < 1:
+            return [[] * len * query_instances]
         if n_results < 1:
             return [[] * len(query_instances)]
 
@@ -119,7 +116,7 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
                     formated_item.document = raw_item.content
                 if 'metadatas' in includes:
                     formated_item.metadata = raw_item.meta
-                formated_output.append((raw_item.score, formated_item))
+                formated_output.append((float(raw_item.score), formated_item))
 
             formated_outputs.append(formated_output)
 

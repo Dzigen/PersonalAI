@@ -55,7 +55,7 @@ class EmbeddingsModel:
 
         # Создаём наборй векторных бд для вершины каждого типа в отдельности
         self.nodes_vcomposers: Dict[NodeType, VectorComposer] = dict()
-        nodes_types = [NodeType.object, NodeType.hyper, NodeType.episodic]
+        nodes_types = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time]
         for node_type in nodes_types:
             modified_configs: Dict[str, VectorDriverConfig] = deepcopy(self.config.nodesdb_driver_configs_mapping)
             for m_config in modified_configs.values():
@@ -85,8 +85,9 @@ class EmbeddingsModel:
         :type status_bar: boll, optional
         """
         self.log("Adding triples to vector-model...", verbose=self.verbose)
-        unique_relation_ids, unique_node_ids = set(), set()
-        existed_relation_ids, existed_node_ids = set(), set()
+        self.log("\t- Also adding triplet-nodes in vector-model", verbose=self.verbose)
+        unique_relation_ids, unique_node_ids = set(), defaultdict(set)
+        existed_relation_ids, existed_node_ids = set(), defaultdict(set)
 
         batch_count = math.ceil(len(triplets) / batch_size)
         process = tqdm(range(batch_count)
@@ -112,15 +113,12 @@ class EmbeddingsModel:
                             metadata={'t_id': cur_triplet.id, 'id': cur_triplet.relation.id}))
 
                 if create_nodes:
-                    self.log(
-                        "\t- Also adding triplet-nodes in vector-model", verbose=self.verbose)
                     for node in [cur_triplet.start_node, cur_triplet.end_node]:
-                        if node.id not in unique_node_ids:
-                            unique_node_ids.add(node.id)
-                            _, node_str = NodeCreator.stringify(
-                                node) if node.stringified is None else (None, node.stringified)
-                            if ((node.id not in existed_node_ids) and (not self.nodes_vcomposers[node.type].item_exist(node.id))):
-                                existed_node_ids.add(node.id)
+                        if node.id not in unique_node_ids[node.type]:
+                            unique_node_ids[node.type].add(node.id)
+                            _, node_str = NodeCreator.stringify(node) if node.stringified is None else (None, node.stringified)
+                            if ((node.id not in existed_node_ids[node.type]) and (not self.nodes_vcomposers[node.type].item_exist(node.id))):
+                                existed_node_ids[node.type].add(node.id)
                                 grouped_nodes_info[node.type].append(VectorDBInstance(
                                     id=node.id, document=node_str, metadata={'id': node.id}))
 
@@ -130,13 +128,12 @@ class EmbeddingsModel:
 
             self.create_stringified_triplets(relations_info, grouped_nodes_info)
 
-        self.log(
-            f"all/unique/existed relations - {len(triplets)}/{len(unique_relation_ids)}/{len(existed_relation_ids)}", verbose=self.verbose)
-        self.log(
-            f"all/unique/existed nodes - {len(triplets)*2}/{len(unique_node_ids)}/{len(existed_node_ids)}", verbose=self.verbose)
-        self.log("Triples were successfully added to vector-model!",
-                 verbose=self.verbose)
-        return {'nodes': existed_node_ids, 'triplets': existed_relation_ids}
+        self.log(f"relations info (all/unique/existed count) - {len(triplets)}/{len(unique_relation_ids)}/{len(existed_relation_ids)}", verbose=self.verbose)
+        unique_nodes_count = {k: len(v) for k, v in unique_node_ids.items()}
+        existed_nodes_count = {k: len(v) for k, v in existed_node_ids.items()}
+        self.log(f"nodes info (all/unique/existed count) - {len(triplets)*2}/{unique_nodes_count}/{existed_nodes_count}", verbose=self.verbose)
+        self.log("Triples were successfully added to vector-model!", verbose=self.verbose)
+        return {'nodes': dict(existed_node_ids), 'triplets': existed_relation_ids}
 
     def create_stringified_triplets(self, relations_info: List[VectorDBInstance],
                                     grouped_nodes_info: Union[None, Dict[NodeType, List[VectorDBInstance]]] = None) -> None:

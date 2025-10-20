@@ -16,6 +16,6 @@ def planenh_custom_formate(query: str, search_steps: List[str], steps_answers: L
 
 def planenh_custom_postprocess(parsed_response: List[str], **kwargs) -> List[str]:
     if len(parsed_response) < 1:
-        raise ValueError
+        raise ValueError(f"parsed_response: '{parsed_response}'")
 
     return parsed_response

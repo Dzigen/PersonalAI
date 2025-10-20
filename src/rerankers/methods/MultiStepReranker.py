@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 from typing import List, Union, Dict, Tuple
+from collections import defaultdict
 from copy import deepcopy
 
 from .utils import AbstractRerankerModule
@@ -79,7 +80,7 @@ class MultiStepReranker(AbstractRerankerModule):
 
                 if r_config.type == RerankingType.retriever:
                     if r_config.name not in vdb_composer.vdb_conn_mapping.keys():
-                        raise ValueError(f"{r_config.namee} not in {vdb_composer.vdb_conn_mapping.keys()}")
+                        raise ValueError(f"{r_config.name} not in {vdb_composer.vdb_conn_mapping.keys()}")
                     if r_config.extended_params is not None:
                         if ('threshold' in r_config.extended_params) and (isinstance(r_config.extended_params['threshold'], float)):
                             if r_config.extended_params['threshold'] < 0 or r_config.extended_params['threshold'] > 1:
@@ -115,6 +116,24 @@ class MultiStepReranker(AbstractRerankerModule):
         elif return_with_embeddings:
             raise ValueError
 
+        if isinstance(return_with_scores, str):
+            vdb_name = return_with_scores
+            if vdb_name not in self.vdb_composer.vdb_conn_mapping.keys():
+                raise ValueError
+        elif return_with_scores:
+            raise ValueError
+
+        if subset_ids is not None:
+            for cur_id in subset_ids:
+                assert isinstance(cur_id, str)
+
+        if isinstance(includes, list):
+            for name in includes:
+                if not ((isinstance(name, str)) and (name in ['documents', 'metadatas'])):
+                    raise ValueError
+        else:
+            raise ValueError
+
         return True
 
     def run(self, query: str, top_k: int = 1, subset_ids: Union[None, List[str]] = None,
@@ -126,19 +145,27 @@ class MultiStepReranker(AbstractRerankerModule):
             return_with_embeddings, return_with_scores)
 
         q_instance = VectorDBInstance(document=query)
-        for r_config in self.config.reranking_sequence:
+        sorted_subset_ids = deepcopy(subset_ids)
+        id_to_score: Dict[str, Dict[str, Union[float]]] = defaultdict(
+            lambda: {r_config.name: None for r_config in self.config.reranking_sequence if r_config.type == RerankingType.retriever})
+        for i, r_config in enumerate(self.config.reranking_sequence):
             if r_config.type == RerankingType.retriever:
                 fetch_n, threshold = r_config.fetch_n, None if r_config.extended_params is None else r_config.extended_params.get('threshold', None)
                 vdb_name = r_config.name
 
-                instances = self.vdb_composer.vdb_conn_mapping[vdb_name].retrieve([q_instance], n_results=fetch_n, subset_ids=subset_ids, includes=[])[0]
+                instances = self.vdb_composer.vdb_conn_mapping[vdb_name].retrieve(
+                    [q_instance], n_results=fetch_n, subset_ids=sorted_subset_ids, includes=[])[0]
+                # print(f"{i}. {instances}")
 
                 if threshold is not None:
                     filtered_instances = list(filter(lambda inst: inst[0] >= threshold, instances))
                 else:
                     filtered_instances = instances
 
-                subset_ids = list(map(lambda inst: inst[1].id, filtered_instances))
+                sorted_subset_ids = []
+                for raw_inst in filtered_instances:
+                    id_to_score[raw_inst[1].id][r_config.name] = raw_inst[0]
+                    sorted_subset_ids.append(raw_inst[1].id)
 
             elif r_config.type == RerankingType.filter:
                 # TODO
@@ -146,20 +173,26 @@ class MultiStepReranker(AbstractRerankerModule):
             else:
                 raise ValueError
 
+        sorted_subset_ids = sorted_subset_ids[:top_k]
+
+        #
         include_fields = deepcopy(includes)
         if isinstance(return_with_embeddings, str):
             vdb_name = return_with_embeddings
             include_fields.append('embeddings')
         else:
             vdb_name = None
-        final_instances = self.vdb_composer.read(subset_ids, vdb_name=vdb_name, includes=include_fields)
+        filled_instances = self.vdb_composer.read(sorted_subset_ids, vdb_name=vdb_name, includes=include_fields)
+        id_to_finst = {inst.id: inst for inst in filled_instances}
+        filled_instances = [id_to_finst[inst_id] for inst_id in sorted_subset_ids]
+        # print(filled_instances)
 
+        #
         if isinstance(return_with_scores, str):
             vdb_name = return_with_scores
-            instances_w_scores = self.vdb_composer.vdb_conn_mapping[vdb_name].retrieve(
-                [q_instance], n_results=len(subset_ids), subset_ids=subset_ids, includes=[])[0]
-            id_to_score_map = {inst[1].id: inst[0] for inst in instances_w_scores}
+            scored_instances = [(float(id_to_score[inst.id][vdb_name]), inst) for inst in filled_instances]
+        else:
+            scored_instances = filled_instances
+        # print(scored_instances)
 
-            final_instances = [(id_to_score_map[instance.id], instance) for instance in final_instances]
-
-        return final_instances
+        return scored_instances

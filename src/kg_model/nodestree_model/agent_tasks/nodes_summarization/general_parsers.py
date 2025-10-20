@@ -14,5 +14,5 @@ def summn_custom_formate(n_descendants: str, new_content: str,
 
 def summn_custom_postprocess(parsed_summary: str, **kwargs) -> str:
     if len(parsed_summary) < 1:
-        raise ValueError
+        raise ValueError(f"parsed_response: '{parsed_summary}'")
     return parsed_summary

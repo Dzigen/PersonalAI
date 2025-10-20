@@ -226,12 +226,9 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
             includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
-        if len(query_instances) < 1:
-            return ValueError
-        for inst in query_instances:
-            if type(inst.embedding) in [torch.Tensor, np.ndarray]:
-                raise ValueError
-
+        self.validate_retrieve_arguments(query_instances, n_results, subset_ids, includes)
+        if subset_ids is not None and len(subset_ids) < 1:
+            return [[] * len(query_instances)]
         if n_results < 1:
             return [[] * len(query_instances)]
 
@@ -269,7 +266,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         formated_output = []
         for q_output in raw_output:
             f_items = list(map(lambda r_item: (
-                r_item['distance'], VectorDBInstance(id=r_item['id'], **r_item['entity'])), q_output))
+                float(r_item['distance']), VectorDBInstance(id=r_item['id'], **r_item['entity'])), q_output))
             f_items = sorted(f_items, key=lambda v: v[0], reverse=True)
             formated_output.append(f_items)
 

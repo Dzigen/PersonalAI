@@ -117,6 +117,24 @@ class EnsembleFusionReranker(AbstractRerankerModule):
         elif return_with_embeddings:
             raise ValueError
 
+        if isinstance(return_with_scores, str):
+            vdb_name = return_with_scores
+            if vdb_name not in self.vdb_composer.vdb_conn_mapping.keys():
+                raise ValueError
+        elif return_with_scores:
+            raise ValueError
+
+        if subset_ids is not None:
+            for cur_id in subset_ids:
+                assert isinstance(cur_id, str)
+
+        if isinstance(includes, list):
+            for name in includes:
+                if not ((isinstance(name, str)) and (name in ['documents', 'metadatas'])):
+                    raise ValueError
+        else:
+            raise ValueError
+
         return True
 
     def run(self, query: str, top_k: int = 1, subset_ids: Union[None, List[str]] = None,
@@ -126,76 +144,79 @@ class EnsembleFusionReranker(AbstractRerankerModule):
         self.validate_run_arguments(query, top_k, subset_ids, includes, return_with_embeddings, return_with_scores)
 
         q_instance = VectorDBInstance(document=query)
-        doc_lists = []
-        docid_to_scores = defaultdict(lambda: {v_name: None for v_name in self.config.vdb_names})
+        doc_lists_ids = []
         for i, vdb_name in enumerate(self.config.vdb_names):
             fetch_n, threshold = self.config.retriever_configs[i].fetch_n, self.config.retriever_configs[i].threshold
 
-            instances = self.vdb_composer.vdb_conn_mapping[vdb_name].retrieve([q_instance], n_results=fetch_n, subset_ids=subset_ids)[0]
+            instances = self.vdb_composer.vdb_conn_mapping[vdb_name].retrieve(
+                [q_instance], n_results=fetch_n, subset_ids=subset_ids, includes=[])[0]
+            # print(f"{i}. {instances}")
 
             if threshold is not None:
                 filtered_instances = list(filter(lambda inst: inst[0] >= threshold, instances))
             else:
                 filtered_instances = instances
 
-            formated_instances = []
+            doc_ids = []
             for raw_instance in filtered_instances:
-                formated_instances.append(raw_instance[1])
-                docid_to_scores[raw_instance[1].id][vdb_name] = raw_instance[0]
+                doc_ids.append(raw_instance[1].id)
+            doc_lists_ids.append(doc_ids)
 
-            doc_lists.append(formated_instances)
-
-        fused_instances = self.weighted_reciprocal_rank(doc_lists)[:top_k]
+        fused_ids = self.weighted_reciprocal_rank(doc_lists_ids)[:top_k]
+        # print(fused_ids)
 
         #
         include_fields = deepcopy(includes)
         if isinstance(return_with_embeddings, str):
             vdb_name = return_with_embeddings
             include_fields.append('embeddings')
-            inst_ids = list(map(lambda inst: inst.id, fused_instances))
-            fused_instances = self.vdb_composer.read(inst_ids, vdb_name=vdb_name, includes=include_fields)
+        else:
+            vdb_name = None
+        filled_instances = self.vdb_composer.read(fused_ids, vdb_name=vdb_name, includes=include_fields)
+        id_to_finst = {inst.id: inst for inst in filled_instances}
+        filled_instances = [id_to_finst[inst_id] for inst_id in fused_ids]
+        # print(filled_instances)
 
         #
         if isinstance(return_with_scores, str):
             vdb_name = return_with_scores
-            fused_instances = [(float(docid_to_scores[instance.id][vdb_name]), instance) for instance in fused_instances]
+            scored_instances = self.vdb_composer.vdb_conn_mapping[vdb_name].retrieve(
+                [q_instance], n_results=len(fused_ids), subset_ids=fused_ids, includes=[])[0]
+            id_to_score = {inst[1].id: inst[0] for inst in scored_instances}
+            scored_instances = [(float(id_to_score[inst.id]), inst) for inst in filled_instances]
+        else:
+            scored_instances = filled_instances
+        # print(scored_instances)
 
-        elif return_with_scores:
-            tmp_instances = []
-            for instance in fused_instances:
-                weighted_score = float(sum([docid_to_scores[instance.id][vdb_name] * self.config.weights[i] for i, vdb_name in enumerate(self.config.vdb_names)]))
-                tmp_instances.append((weighted_score, instance))
-            fused_instances = tmp_instances
+        return scored_instances
 
-        return fused_instances
-
-    def weighted_reciprocal_rank(self, doc_lists: List[List[VectorDBInstance]]) -> List[VectorDBInstance]:
+    def weighted_reciprocal_rank(self, doc_lists_ids: List[List[str]]) -> List[str]:
         """Perform weighted Reciprocal Rank Fusion on multiple rank lists. You can find more details about RRF here: https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf.
 
-        :param doc_list: A list of rank lists, where each rank list contains unique items.
-        :type doc_list: List[List[VectorDBInstance]]
+        :param doc_lists_ids: A list of rank lists, where each rank list contains unique items.
+        :type doc_lists_ids: List[List[str]]
         :return: The final aggregated list of items sorted by their weighted scores in descending order.
-        :rtype: List[VectorDBInstance]
+        :rtype: List[str]
         """
-        if len(doc_lists) != len(self.config.weights):
+        if len(doc_lists_ids) != len(self.config.weights):
             msg = "Number of rank lists must be equal to the number of weights."
             raise ValueError(msg)
 
         # Associate each doc's content with its RRF score for later sorting by it
         # Duplicated contents across retrievers are collapsed & scored cumulatively
         rrf_score: Dict[str, float] = defaultdict(float)
-        for doc_list, weight in zip(doc_lists, self.config.weights):
-            for rank, doc in enumerate(doc_list, start=1):
-                rrf_score[doc.id] += weight / (rank + self.config.c)
+        for list_ids, weight in zip(doc_lists_ids, self.config.weights):
+            for rank, doc_id in enumerate(list_ids, start=1):
+                rrf_score[doc_id] += weight / (rank + self.config.c)
 
         # Docs are deduplicated by their contents
-        all_docs = chain.from_iterable(doc_lists)
-        unique_docs = []
+        all_doc_ids = chain.from_iterable(doc_lists_ids)
+        unique_ids = []
         seen_docids = set()
-        for doc in all_docs:
-            if doc.id not in seen_docids:
-                unique_docs.append(doc)
-                seen_docids.add(doc.id)
+        for doc_id in all_doc_ids:
+            if doc_id not in seen_docids:
+                unique_ids.append(doc_id)
+                seen_docids.add(doc_id)
 
         # then sorted by their scores
-        return sorted(unique_docs, reverse=True, key=lambda doc: rrf_score[doc.id])
+        return sorted(unique_ids, reverse=True, key=lambda doc_id: rrf_score[doc_id])

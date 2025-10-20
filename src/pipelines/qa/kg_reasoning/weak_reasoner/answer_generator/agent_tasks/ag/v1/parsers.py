@@ -8,7 +8,7 @@ def en_simpleag_custom_parse(raw_response: str, **kwargs) -> str:
     """
 
     if len(raw_response) < 1:
-        raise ValueError
+        raise ValueError(f"raw_response: '{raw_response}'")
 
     found_line = ""
     for line in raw_response.strip().split("\n"):
@@ -21,7 +21,7 @@ def en_simpleag_custom_parse(raw_response: str, **kwargs) -> str:
         answer = raw_response.strip()
 
     if len(answer) < 1:
-        raise ValueError
+        raise ValueError(f"raw_response: '{raw_response}'")
 
     return answer
 
@@ -35,11 +35,11 @@ def ru_simpleag_custom_parse(raw_response: str, **kwargs) -> str:
     :rtype: str
     """
     if len(raw_response) < 1:
-        raise ValueError
+        raise ValueError(f"raw_response: '{raw_response}'")
 
     answer = raw_response.strip()
 
     if len(answer) < 1:
-        raise ValueError
+        raise ValueError(f"raw_response: '{raw_response}'")
 
     return answer

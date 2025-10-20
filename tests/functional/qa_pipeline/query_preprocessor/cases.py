@@ -46,4 +46,4 @@ QUERY_PREPROC_TEST_CASES = [
 QP_POPULATED_TEST_CASES = []
 for query in QUERIES:
     for qpp_config in QUERY_PREPROC_TEST_CASES:
-        QP_POPULATED_TEST_CASES.append([query, qpp_config, 'agent_conn'])
+        QP_POPULATED_TEST_CASES.append([query, qpp_config])

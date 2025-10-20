@@ -16,8 +16,10 @@ GNAMES_PASSAGES = ['Olivia', 'Amelia', 'Emma', 'Sophia', 'Mia']
 BNAMES_PASSAGES = ['Noah', 'Liam', 'Oliver', 'Elijah', 'James']
 
 PASSAGES = FLOWERS_PASSAGES + WANIMALS_PASSAGES + DANIMALS_PASSAGES + GNAMES_PASSAGES + BNAMES_PASSAGES
+ITEMS = [VectorDBInstance(id=create_id(text), document=text) for text in PASSAGES]
+ITEM_IDS = list(map(lambda item: item.id, ITEMS))
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='package')
 def e5_small_embedder():
     config = EmbedderModelConfig(
         model_name_or_path=f'{PROJECT_BASE_DIR}models/intfloat/multilingual-e5-small',
@@ -25,7 +27,7 @@ def e5_small_embedder():
     )
     return EmbedderModel(config)
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='package')
 def vector_composer(e5_small_embedder):
     # dense
     chroma_dense_config = VectorDriverConfig(db_vendor='chroma', db_config=VectorDBConnectionConfig(
@@ -52,7 +54,12 @@ def vector_composer(e5_small_embedder):
 
     inmemory_bm25_config = VectorDriverConfig(
         db_vendor='inmemory', vector_category='sparse_bm25',
-        db_config=VectorDBConnectionConfig())
+        db_config=VectorDBConnectionConfig(params={
+            'load_from_disk': False, 'load_dump_name': None,
+            'load_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_bm25", 'save_on_disk': True,
+            'save_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_bm25"}
+        )
+    )
 
     vdb_config_mapping = {
         'dense_chroma': chroma_dense_config,
@@ -71,8 +78,7 @@ def vector_composer(e5_small_embedder):
     composer.clear()
     print("before: ",composer.count_items())
 
-    items = [VectorDBInstance(id=create_id(text), document=text) for text in PASSAGES]
-    composer.create(items=items)
+    composer.create(items=ITEMS)
     print("after: ", composer.count_items())
     composer.check_consistency()
 

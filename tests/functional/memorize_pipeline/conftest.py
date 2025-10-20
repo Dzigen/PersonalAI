@@ -40,7 +40,11 @@ def graph_inmemory_config():
             db_vendor='inmemory_graph',
             db_config=GraphDBConnectionConfig(
                 db_info={'db': 'testing', 'table': 'testing'},
-                params=dict(), need_to_clear=True
+                params={
+                    'load_from_disk': False, 'load_dump_name': None, 'save_on_disk': True,
+                    'load_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_graph",
+                    'save_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_graph"},
+                need_to_clear=True
             )
         )
     )
@@ -375,7 +379,8 @@ def available_kg_configs(
                 kg_configs[f"{vector_name}/{graph_name}/{nodestree_name}"] = cur_config
     return kg_configs
 
-
 @pytest.fixture(scope='function')
 def kg_model(available_kg_configs, request):
-    return KnowledgeGraphModel(available_kg_configs[request.param])
+    kg_model = KnowledgeGraphModel(available_kg_configs[request.param])
+
+    return kg_model

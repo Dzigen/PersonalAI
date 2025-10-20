@@ -13,7 +13,7 @@ from src.utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 from .cases import RAW_TEXTS_EN, RAW_TEXTS_RU
 
 @pytest.fixture(scope='package')
-def personaai_ru(request):
+def personaai_ru():
     config = PersonalAIConfig()
     config.kg_model_config.graph_struct_config.driver_config.db_config.db_info['table'] += 'RU'
     for nodes_vstruct_config in config.kg_model_config.graph_embeddings_config.nodesdb_driver_configs_mapping.values():
@@ -43,7 +43,7 @@ def personaai_ru(request):
     return personal_ai
 
 @pytest.fixture(scope='package')
-def personaai_en(request):
+def personaai_en():
     config = PersonalAIConfig()
     config.kg_model_config.graph_struct_config.driver_config.db_config.db_info['table'] += 'EN'
     for nodes_vstruct_config in config.kg_model_config.graph_embeddings_config.nodesdb_driver_configs_mapping.values():

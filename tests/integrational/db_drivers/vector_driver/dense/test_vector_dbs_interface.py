@@ -125,6 +125,10 @@ def test_retrieve(instances: List[VectorDBInstance], queries: List[str], n_resul
         for query_output in output:
             assert expected['output_size'] == len(query_output)
 
+            real_scores = list(map(lambda item: item[0], query_output))
+            sorted_scores = sorted(real_scores, reverse=True)
+            assert real_scores == sorted_scores
+
 
 @pytest.mark.parametrize("instances, expected, vectordb_conn",
                          VECTORDB_POPULATED_COUNT_TEST_CASES,

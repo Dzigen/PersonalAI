@@ -53,14 +53,13 @@ class AStarMetrics:
     def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: List[NodeType], log: Logger,
                  config: AStarMetricsConfig = AStarMetricsConfig(), verbose: bool = False):
         self.config = config
+        self.accepted_node_types = accepted_node_types
+        self.kg_model = kg_model
 
         # проверка: в указанной бд должны содержатся плотные (dense) векторные предаставления вершин, иначе вызываем исключение
         for _, v_composer in self.kg_model.graph_embeddings.nodes_vcomposers.items():
             if not hasattr(v_composer.vdb_conn_mapping[self.config.nodes_vdb_name], 'embedder'):
                 raise ValueError
-
-        self.accepted_node_types = accepted_node_types
-        self.kg_model = kg_model
 
         self.init_kv_caches()
 
@@ -330,7 +329,7 @@ class AStarGraphSearch:
         self.config = search_config
         self.kg_model = kg_model
         self.metrics = AStarMetrics(kg_model=kg_model, accepted_node_types=self.config.accepted_node_types,
-                                    log=self.log, config=self.config.metrics_config, verbose=verbose)
+                                    log=log, config=self.config.metrics_config, verbose=verbose)
 
         self.log = log
         self.verbose = verbose
@@ -388,7 +387,7 @@ class AStarGraphSearch:
                         type=self.kg_model.graph_struct.db_conn.get_node_type(adj_n_id)
                     )
                     priority = new_cost + self.metrics.compute_h_metric(adj_n, end_node, parent)
-                    heapq.heappush(frontier, (priority, adj_n_id))
+                    heapq.heappush(frontier, (priority, adj_n))
 
         self.log(
             f"start-spare node path len: {D[spare_closest_node.id]}" if end_node.id not in parent else f"start-end node path len: {D[end_node.id]}", verbose=self.verbose)
@@ -469,7 +468,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 
         #
-        nodes = []
+        nodes: List[NodeInfo] = []
         unique_node_ids = set()
         for node in query_info.linked_nodes:
             if node.id not in unique_node_ids:
@@ -477,6 +476,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 nodes.append(
                     NodeInfo(id=node.id, type=self.kg_model.graph_struct.db_conn.get_node_type(node.id))
                 )
+        self.log(f"unique nodes: {nodes}")
 
         #
         unique_nodes_pairs = set()
@@ -496,7 +496,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                     self.log(f"search elapsed_time: {time() - s_time}", verbose=self.verbose)
 
                     s_time = time()
-                    nodes_path = get_nodes_path(parent, spare_closest_node if end_node not in parent else end_node)
+                    nodes_path = get_nodes_path(parent, spare_closest_node if end_node.id not in parent else end_node)
                     self.log(f"get_path elapsed_time: {time() - s_time}", verbose=self.verbose)
 
                     # Сохраняем только уникальные пары вершин (по их идентификаторам)
@@ -509,12 +509,12 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         # Сохраняем только уникальные триплеты (по их строковым представлениям)
         self.log("pair nodes formating...", verbose=self.verbose)
         s_time = time()
-        unique_triplets: Dict[str, Triplet] = dict()
+        unique_triplets_map: Dict[str, Triplet] = dict()
         for nodes_pair in unique_nodes_pairs:
             triplets = self.kg_model.graph_struct.db_conn.get_triplets(*nodes_pair)
             for triplet in triplets:
-                unique_triplets[triplet.relation.id] = triplet
-        unique_triplets: List[Triplet] = list(unique_triplets.values())
+                unique_triplets_map[triplet.relation.id] = triplet
+        unique_triplets: List[Triplet] = list(unique_triplets_map.values())
 
         self.log(f"Распределение типов связей в наборе извлечённых триплетов: {Counter([triplet.relation.type for triplet in unique_triplets])}", verbose=self.verbose)
         self.log(f"foramting queries: {len(unique_nodes_pairs)}", verbose=self.verbose)

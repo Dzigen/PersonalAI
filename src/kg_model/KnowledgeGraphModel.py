@@ -1,6 +1,7 @@
 from typing import List, Dict, Set, Union
 from dataclasses import dataclass, field
 import gc
+from functools import reduce
 
 from .config import KG_MAIN_LOG_PATH, DEFAULT_AGENTS_MAP, DEFAULT_EMBEDDERS_MAP, \
     DEFAULT_AGENTS_CONFIG, DEFAULT_EMBEDDERS_CONFIG
@@ -62,7 +63,6 @@ class KnowledgeGraphModel:
 
     def __init__(self, config: KnowledgeGraphModelConfig = KnowledgeGraphModelConfig(),
                  cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None) -> None:
-
         self.AVAILABLE_EMBEDDERS = {emb_name: EmbedderModel(emb_config) for emb_name, emb_config in config.embedders_configs.items()}
         self.AVAILABLE_AGENTS = {agent_name: AgentDriver.connect(agent_config) for agent_name, agent_config in config.agents_configs.items()}
         self.KG_EMBEDDERS_MAP: KGEmbeddersMapping = config.embedders_map
@@ -81,6 +81,7 @@ class KnowledgeGraphModel:
                 {db_name: self.AVAILABLE_EMBEDDERS[emb_name] for db_name, emb_name in self.KG_EMBEDDERS_MAP.nodestree_model.items()},
                 config.nodestree_config, cache_kvdriver_config)
 
+        self.cache_config = cache_kvdriver_config
         self.log = config.log
         self.verbose = config.verbose
 
@@ -125,6 +126,8 @@ class KnowledgeGraphModel:
             triplets, status_bar=status_bar)
         embd_create_info = self.graph_embeddings.create_triplets(
             triplets, status_bar=status_bar)
+
+        embd_create_info['nodes'] = reduce(lambda acc, v: acc.union(v), list(embd_create_info['nodes'].values()), set())  # костыль
 
         if self.nodestree_model is not None:
             tree_expand_info = self.nodestree_model.expand_tree(

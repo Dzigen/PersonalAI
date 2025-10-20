@@ -17,7 +17,7 @@ def ethesises_custom_postprocess(parsed_response: List[Tuple[str, List[str]]], n
         thesis, entities = triplet
 
         if len(thesis) < 1:
-            raise ValueError
+            raise ValueError(f"parsed_response: '{parsed_response}'")
 
         thesis_node = NodeCreator.create(
             name=str(thesis), n_type=NodeType.hyper, prop={**node_prop})
@@ -25,7 +25,7 @@ def ethesises_custom_postprocess(parsed_response: List[Tuple[str, List[str]]], n
             name=RelationType.hyper.value, r_type=RelationType.hyper, prop={**rel_prop})
         for entity in entities:
             if len(entity) < 1:
-                raise ValueError
+                raise ValueError(f"parsed_response: '{parsed_response}'")
 
             formated_triplets.append(TripletCreator.create(
                 start_node=NodeCreator.create(

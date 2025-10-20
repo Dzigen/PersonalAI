@@ -118,6 +118,9 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
             for i in range(len(raw_instances['ids'])):
                 tmp_inst = {requested_field[:-1]: raw_instances[requested_field][i]
                             for requested_field in includes + ['ids']}
+                if ('metadata' in list(tmp_inst.keys())) and (tmp_inst['metadata'] is None):
+                    tmp_inst['metadata'] = dict()
+
                 formates_instances.append(VectorDBInstance(**tmp_inst))
 
         return formates_instances
@@ -152,12 +155,11 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
             includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
-        # validating
-        if len(query_instances) < 1:
-            return ValueError
-        for inst in query_instances:
-            if type(inst.embedding) in [torch.Tensor, np.ndarray]:
-                raise ValueError
+        self.validate_retrieve_arguments(query_instances, n_results, subset_ids, includes)
+        if subset_ids is not None and len(subset_ids) < 1:
+            return [[] * len(query_instances)]
+        if n_results < 1:
+            return [[] * len(query_instances)]
 
         query_instances = deepcopy(query_instances)
 
@@ -168,7 +170,11 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
 
         filtering_expr = dict()
         if subset_ids is not None:
-            filtering_expr['ids'] = subset_ids
+            results = self.collection.get(ids=subset_ids, include=[])
+            returned_ids = results['ids']
+            if len(returned_ids) < 1:
+                return [[] * len(query_instances)]
+            filtering_expr['ids'] = returned_ids
 
         # Если в классе указан embedder, то используем его
         # для векторизации входящих запросов
@@ -196,7 +202,10 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
             for j in range(len(raw_retrieved_instances['ids'][i])):
                 tmp_inst = {requested_field[:-1]: raw_retrieved_instances[requested_field][i][j]
                             for requested_field in includes + ['ids']}
-                cur_distance = raw_retrieved_instances['distances'][i][j]
+                cur_distance = float(raw_retrieved_instances['distances'][i][j])
+
+                if ('metadata' in list(tmp_inst.keys())) and (tmp_inst['metadata'] is None):
+                    tmp_inst['metadata'] = dict()
 
                 # Attention: переводим значение расстояния [distance] между векторами к значению их семантической блозости [similarity]
                 cur_formated_instances.append(

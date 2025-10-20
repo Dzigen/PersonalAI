@@ -20,7 +20,7 @@ def rt_custom_formate(base_triplet: Triplet, incident_triplets: List[Triplet]) -
 
 def rt_custom_postprocess(parsed_response: Dict[str, Set[str]], base_triplet: Triplet, incident_triplets: List[Triplet]) -> List[str]:
     if len(incident_triplets) < 1:
-        raise ValueError
+        raise ValueError(f"parsed_response: '{parsed_response}'")
 
     def _custom_thesis_stringify(triplet: Triplet) -> str:
         return triplet.end_node.name

@@ -25,7 +25,6 @@ RAW_INSTANCES1_COUNT = 0
 RAW_CREATE_INSTANCES1 = {
     'prompt_tokens_amount': [],
     'generated_tokens_amount': [],
-    'preparation_elapsed_time': [],
     'inference_elapsed_time': [],
 }
 CREATE_INSTANCES1 = [
@@ -40,7 +39,6 @@ RAW_INSTANCES2_COUNT = 6
 RAW_CREATE_INSTANCES2 = {
     'prompt_tokens_amount': [1,None,3,4,5,6],
     'generated_tokens_amount': [7,8,9,None,11,12],
-    'preparation_elapsed_time': [0.5,1.0,None,2.0,2.5,3.0],
     'inference_elapsed_time': [3.5,4.0,4.5,5.0,None,7.0],
 }
 CREATE_INSTANCES2 = [
@@ -55,7 +53,6 @@ RAW_INSTANCES3_COUNT = 6
 RAW_CREATE_INSTANCES3 = {
     'prompt_tokens_amount': [1,2,3,4,5,6],
     'generated_tokens_amount': [7,8,9,10,11,12],
-    'preparation_elapsed_time': [0.5,1.0,1.5,2.0,2.5,3.0],
     'inference_elapsed_time': [3.5,4.0,4.5,5.0,6.5,7.0],
 }
 CREATE_INSTANCES3 = [

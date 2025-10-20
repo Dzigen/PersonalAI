@@ -7,7 +7,7 @@ from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......db_drivers.vector_driver import VectorDBInstance
 from .......kg_model import KnowledgeGraphModel
 from .......utils import Logger
-from .......utils.data_structs import QueryInfo, Triplet, create_id
+from .......utils.data_structs import QueryInfo, Triplet, create_id, NodeType
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 from .......rerankers import RerankerDriver, RerankerDriverConfig
@@ -26,6 +26,8 @@ class NaiveGraphSearchConfig(BaseGraphSearchConfig):
     """
     reranker_driver_config: RerankerDriverConfig = field(default_factory=lambda: NGS_RERANKDRIVER_DEFAULT_CONFIG)
     max_k: int = 50
+    accepted_node_types: List[NodeType] = field(
+        default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])  # NOT SUPPORTED
     cache_table_name: str = 'qa_naive_t_retriever_cache'
 
     def to_str(self):

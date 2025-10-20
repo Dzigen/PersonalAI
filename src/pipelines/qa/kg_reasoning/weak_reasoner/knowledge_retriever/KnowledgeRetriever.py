@@ -44,7 +44,7 @@ class KnowledgeRetrieverConfig:
 
     def to_str(self) -> str:
         str_r_config = [f"{k}:{v}" for k, v in self.retriever_config.items()] if isinstance(self.retriever_config, dict) else self.retriever_config.to_str()
-        str_f_config = [f"{k}:{v}" for k, v in self.filter_config.items()] if isinstance(self.filter_config, dict) else self.filter_config.to_str()
+        str_f_config = [f"{k}:{v}" for k, v in self.filter_config.items()] if isinstance(self.filter_config, dict) else (None if self.filter_config is None else self.filter_config.to_str())
         return f"{self.retriever_method};{str_r_config};{self.filter_method};{str_f_config}"
 
 

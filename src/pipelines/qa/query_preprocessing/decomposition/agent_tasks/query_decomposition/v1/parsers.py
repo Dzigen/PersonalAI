@@ -3,7 +3,7 @@ from typing import List
 
 def qd_custom_parse(raw_response: str, **kwargs) -> List[str]:
     if len(raw_response) < 1:
-        raise ValueError
+        raise ValueError(f"raw_response: '{raw_response}'")
 
     parsed_subq = list(
         filter(lambda sub_q: len(sub_q), raw_response.split("\n")))
@@ -11,6 +11,6 @@ def qd_custom_parse(raw_response: str, **kwargs) -> List[str]:
     formated_subq = list(map(lambda subq: subq.strip("- "), parsed_subq))
     formated_subq = list(filter(lambda sub_q: len(sub_q), formated_subq))
     if len(formated_subq) < 2:
-        raise ValueError
+        raise ValueError(f"raw_response: '{raw_response}'")
 
     return formated_subq

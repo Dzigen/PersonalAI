@@ -96,12 +96,9 @@ class ElasticSearchBM25Connector(AbstractVectorDatabaseConnection):
 
     def retrieve(self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
                  includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
-        if len(query_instances) < 1:
-            return ValueError
-        for inst in query_instances:
-            if inst.embedding is not None:
-                raise ValueError
-
+        self.validate_retrieve_arguments(query_instances, n_results, subset_ids, includes)
+        if subset_ids is not None and len(subset_ids) < 1:
+            return [[] * len(query_instances)]
         if n_results < 1:
             return [[] * len(query_instances)]
 
@@ -114,7 +111,9 @@ class ElasticSearchBM25Connector(AbstractVectorDatabaseConnection):
         formated_outputs = []
         for query in query_instances:
             # Attention: Будут получены значения семантической близости [similarity], а не значения их расстояния [distance]
+            # print("query: ", query)
             raw_output = self.retriever.run(query=query.document, top_k=n_results, filters=filters)
+            # print('output: ',raw_output)
 
             formated_output = []
             for raw_item in raw_output["documents"]:
@@ -123,7 +122,18 @@ class ElasticSearchBM25Connector(AbstractVectorDatabaseConnection):
                     formated_item.document = raw_item.content
                 if 'metadatas' in includes:
                     formated_item.metadata = raw_item.meta
-                formated_output.append((raw_item.score, formated_item))
+                formated_output.append((float(raw_item.score), formated_item))
+
+            if (subset_ids is not None) and (len(formated_output) < n_results):
+                containing_ids = set(map(lambda item: item[1].id, formated_output))
+                extended_ids = set()
+                for sub_id in subset_ids:
+                    if len(containing_ids) + len(extended_ids) >= n_results:
+                        break
+                    elif sub_id not in containing_ids:
+                        extended_ids.add(sub_id)
+                extended_output = self.read(list(extended_ids), includes=includes)
+                formated_output += [(0.5, item) for item in extended_output]
 
             formated_outputs.append(formated_output)
 

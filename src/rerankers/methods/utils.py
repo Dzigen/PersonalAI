@@ -7,7 +7,7 @@ class AbstractRerankerModule(ABC):
 
     @abstractmethod
     def run(self, query: str, top_k: int = 1, subset_ids: Union[None, List[str]] = None,
-            includes: List[str] = ['documents', 'metadatas'], return_with_embeddings: bool = False,
+            includes: List[str] = ['documents', 'metadatas'], return_with_embeddings: Union[bool, str] = False,
             return_with_scores: bool = False) -> Union[List[Tuple[float, VectorDBInstance]], List[VectorDBInstance]]:
         """Метод предназначен для запуска/выполнения логики заданного Retrieve/Rerank-оператора.
 

@@ -13,6 +13,6 @@ def casumm_custom_formate(search_query: str, clues_queries: List[str], clue_answ
 
 def casumm_custom_postprocess(parsed_response: str, **kwargs) -> List[str]:
     if len(parsed_response) < 1:
-        raise ValueError
+        raise ValueError(f"parsed_response: '{parsed_response}'")
 
     return parsed_response

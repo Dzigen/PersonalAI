@@ -41,10 +41,10 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
                     with open(load_path, 'rb') as fd:
                         self.strcuture = pickle.load(fd)
                 except EOFError:
-                    print(f"The pickle file '{load_path}' is empty or corrupted.")
+                    # print(f"The pickle file '{load_path}' is empty or corrupted.")
                     self.strcuture = InMemoryGraphStructure()
             else:
-                print(f"warning: graph-dump '{load_path}' doesnt exists. creating empty graph-store")
+                # print(f"warning: graph-dump '{load_path}' doesnt exists. creating empty graph-store")
                 os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
                 self.strcuture = InMemoryGraphStructure()
         else:
@@ -64,13 +64,13 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         return condition
 
     def close_connection(self) -> None:
-        print("closing inmemory graph connection...")
+        # print("closing inmemory graph connection...")
         if self.strcuture is None:
             return
         if self.config.params['save_on_disk']:
             save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
             if os.path.exists(save_path):
-                print("warning: file on that path is already exists")
+                # print("warning: file on that path is already exists")
                 postfix = hashlib.md5(str(time.time()).encode()).hexdigest()
                 save_path += postfix
             save_path += '.pkl'
@@ -78,7 +78,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
             with open(save_path, 'wb') as fd:
                 pickle.dump(self.strcuture, fd)
 
-            print(f"inmemory graph-store saved in: {save_path}")
+            # print(f"inmemory graph-store saved in: {save_path}")
 
         self.strcuture = None
         gc.collect()

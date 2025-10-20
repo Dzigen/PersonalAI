@@ -10,7 +10,7 @@ def etriplets_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, str, 
     :rtype: List[Tuple[str, str, str]]
     """
     if len(raw_response) < 1:
-        raise ValueError
+        ValueError(f"raw_response: '{raw_response}'")
 
     if ":" in raw_response:
         raw_response = raw_response.split(":")[-1]
@@ -25,7 +25,7 @@ def etriplets_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, str, 
         subj, rel, obj = subj.split(":")[-1].split(".")[-1].strip(
             ''' \n'".,/\\'''), rel.strip(''' \n'".,/\\'''), obj.strip(''' \n'".,/\\''')
         if len(subj) == 0 or len(rel) == 0 or len(obj) == 0:
-            raise ValueError
+            ValueError(f"raw_response: '{raw_response}'; \n error-triple: {triplet}")
         else:
             raw_triplets.append((subj, rel, obj))
 

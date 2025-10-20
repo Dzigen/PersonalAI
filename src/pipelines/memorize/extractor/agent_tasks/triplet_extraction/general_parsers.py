@@ -11,14 +11,14 @@ def etriplets_custom_formate(text: str, **kwargs) -> Dict[str, str]:
     return {'text': text}
 
 
-def etriplets_custom_postprocess(parsed_response: List[Tuple[str, str, str]],  node_prop: Dict[str, object] = dict(),
+def etriplets_custom_postprocess(parsed_response: List[Tuple[str, str, str]], node_prop: Dict[str, object] = dict(),
                                  rel_prop: Dict[str, object] = dict(), **kwargs) -> List[Triplet]:
     formated_triplets = []
     for triplet in parsed_response:
         subj, rel, obj = triplet
 
         if len(subj) < 1 or len(rel) < 1 or len(obj) < 1:
-            raise ValueError
+            raise ValueError(f"parsed_response: '{parsed_response}'")
 
         formated_triplets.append(TripletCreator.create(
             start_node=NodeCreator.create(

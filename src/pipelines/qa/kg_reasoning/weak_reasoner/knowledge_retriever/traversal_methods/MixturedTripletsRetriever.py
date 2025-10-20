@@ -6,6 +6,7 @@ from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarTripletsRetriev
 from .WaterCirclesTripletsRetriever import WaterCirclesSearchConfig, WaterCirclesRetriever
 from .NaiveBFSTripletsRetriever import NaiveBFSTripletsRetriever
 from .BeamSearchTripletsRetriever import BeamSearchTripletsRetriever
+from .NaiveTripletsRetriever import NaiveTripletsRetriever
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......utils.data_structs import QueryInfo, Triplet, create_id, NodeType, NODES_TYPES_MAP
 from .......kg_model import KnowledgeGraphModel
@@ -85,7 +86,8 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             'astar': AStarTripletsRetriever,
             'watercircles': WaterCirclesRetriever,
             'naive_bfs': NaiveBFSTripletsRetriever,
-            'beamsearch': BeamSearchTripletsRetriever
+            'beamsearch': BeamSearchTripletsRetriever,
+            'naive_retriever': NaiveTripletsRetriever
         }
 
         self.retriever1: AbstractTripletsRetriever = self.available_retrievers[search_config.retriever1_name](

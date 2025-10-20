@@ -8,8 +8,8 @@ from src.db_drivers.vector_driver import VectorComposer
 
 from .cases import SINGLESTEP_POPULATED_RUN_TEST_CASES
 
-@pytest.mark.parametrize("reranker_config, query, top_k, approximate_texts, exception, vector_composer",
-                         SINGLESTEP_POPULATED_RUN_TEST_CASES, indirect=['vector_composer'])
+@pytest.mark.parametrize("reranker_config, query, top_k, approximate_texts, exception",
+                         SINGLESTEP_POPULATED_RUN_TEST_CASES)
 def test_run(reranker_config: SingleStepRerankerConfig, query: str, top_k: int,
               approximate_texts: List[str], exception: bool, vector_composer: VectorComposer):
 

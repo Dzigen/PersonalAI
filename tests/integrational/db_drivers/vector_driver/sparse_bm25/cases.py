@@ -16,7 +16,7 @@ AVAILABLE_BM25_DBS = ['opensearch', 'elasticsearch', 'inmemory']  # 'opensearch'
 FULL_INSTANCE1 = VectorDBInstance(id='123', document='qwerty' , metadata={'k1': 'v1'})
 FULL_INSTANCE2 = VectorDBInstance(id='456', document='ytrewq', metadata={'k2': 'v2'})
 
-INSTANSE_W_BAD_EMB = VectorDBInstance(id='789', document='echjfs', embedding=[0.1,0.4,0.7], metadata={'k3': 'v3'})
+INSTANSE_W_BAD_EMB = VectorDBInstance(id='789', document='ytrewq', embedding=[0.1,0.4,0.7], metadata={'k3': 'v3'}) # !!! CARE !!!
 
 UPDATE_FULL_INSTANCE1 = VectorDBInstance(id='123', document='qwerty qwerty', metadata={'k1new': 'v1new'})
 UPDATE_FULL_INSTANCE2 = VectorDBInstance(id='456', document='ytrewq ytrewq', metadata={'k2new': 'v2new'})
@@ -172,7 +172,7 @@ BM25_RETRIEVE_TEST_CASES = [
     # 3. в бд меньше элементов, чем заданное количество
     [[FULL_INSTANCE1], [FULL_INSTANCE1], 2, None, {'exception': False, 'output_size': 1}],
     # 4. embedding-поле не пустое
-    [[FULL_INSTANCE1, FULL_INSTANCE2], [INSTANSE_W_BAD_EMB], 1, None, {'exception': True, 'output_size': 0}],
+    [[FULL_INSTANCE1, FULL_INSTANCE2], [INSTANSE_W_BAD_EMB], 1, None, {'exception': False, 'output_size': 1}],
     # 5. В векторной бд нуль объектов
     [[], [FULL_INSTANCE1], 2, None, {'exception': False, 'output_size': 0}]
 ]

@@ -17,7 +17,7 @@ def enhcls_custom_formate(query: str, search_steps: List[str], steps_answers: Li
 
 def enhcls_custom_postprocess(parsed_response: str, **kwargs) -> bool:
     if len(parsed_response) < 1:
-        raise ValueError
+        raise ValueError(f"parsed_response: '{parsed_response}'")
 
     true_matches = re.findall(r"[^\w]*True[^\w]*", parsed_response)
     false_matches = re.findall(r"[^\w]*False[^\w]*", parsed_response)

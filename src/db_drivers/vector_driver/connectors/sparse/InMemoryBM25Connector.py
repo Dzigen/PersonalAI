@@ -33,7 +33,7 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
             if os.path.exists(load_path):
                 self.db_conn = self.db_conn.load_from_disk(load_path)
             else:
-                print(f"warning: inmemory_sparse-dump '{load_path}' doesnt exists. creating empty store")
+                # print(f"warning: inmemory_sparse-dump '{load_path}' doesnt exists. creating empty store")
                 os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
         else:
             os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
@@ -48,17 +48,17 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
         pass
 
     def close_connection(self) -> ReturnInfo:
-        print("closing inmemory bm25 connection...")
+        # print("closing inmemory bm25 connection...")
         if self.config.params['save_on_disk']:
             save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
             if os.path.exists(save_path):
-                print("warning: file on that path is already exists")
+                # print("warning: file on that path is already exists")
                 postfix = hashlib.md5(str(time.time()).encode()).hexdigest()
                 save_path += f'({postfix})'
             save_path += '.json'
 
             self.db_conn.save_to_disk(save_path)
-            print(f"inmemory bm25-store saved in: {save_path}")
+            # print(f"inmemory bm25-store saved in: {save_path}")
 
         self.retriever = None
         self.db_conn = None
@@ -128,12 +128,9 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
             includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
-        if len(query_instances) < 1:
-            return ValueError
-        for inst in query_instances:
-            if inst.embedding is not None:
-                raise ValueError
-
+        self.validate_retrieve_arguments(query_instances, n_results, subset_ids, includes)
+        if subset_ids is not None and len(subset_ids) < 1:
+            return [[] * len(query_instances)]
         if n_results < 1:
             return [[] * len(query_instances)]
 
@@ -146,7 +143,9 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
         formated_outputs = []
         for query in query_instances:
             # Attention: Будут получены значения семантической близости [similarity], а не значения их расстояния [distance]
+            # print("query: ", query)
             raw_output = self.retriever.run(query=query.document, top_k=n_results, filters=filters, scale_score=True)
+            # print("output: ", raw_output)
 
             formated_output = []
             for raw_item in raw_output["documents"]:
@@ -156,7 +155,7 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
                     formated_item.document = raw_item.content
                 if 'metadatas' in includes:
                     formated_item.metadata = raw_item.meta
-                formated_output.append((raw_item.score, formated_item))
+                formated_output.append((float(raw_item.score), formated_item))
 
             formated_outputs.append(formated_output)
 

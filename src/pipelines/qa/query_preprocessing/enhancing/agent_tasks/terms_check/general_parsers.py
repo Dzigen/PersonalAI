@@ -10,6 +10,6 @@ def tcheck_custom_formate(query: str) -> str:
 
 def tcheck_custom_postprocess(parsed_response: List[str], **kwargs) -> str:
     if len(parsed_response) < 1:
-        raise ValueError
+        raise ValueError(f"parsed_response: '{parsed_response}'")
 
     return parsed_response

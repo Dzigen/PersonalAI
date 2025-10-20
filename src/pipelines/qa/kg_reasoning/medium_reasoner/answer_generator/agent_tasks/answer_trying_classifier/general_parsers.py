@@ -13,7 +13,7 @@ def answcls_custom_formate(search_plan: SearchPlanInfo) -> Dict[str, str]:
 
 def answcls_custom_postprocess(parsed_response: str, **kwargs) -> bool:
     if len(parsed_response) < 1:
-        raise ValueError
+        raise ValueError(f"parsed_response: '{parsed_response}'")
 
     true_matches = re.findall(r"[^\w]*True[^\w]*", parsed_response)
     false_matches = re.findall(r"[^\w]*False[^\w]*", parsed_response)

@@ -14,16 +14,22 @@ AVAILABLE_VECTORDB_NAMES = [
     'bm25_opensearch', 'bm25_elasticsearch', 'bm25_inmemory'
 ]
 
+SINGLESTEP_RERANKER_CONFIGS = []
+for name in AVAILABLE_VECTORDB_NAMES:
+    SINGLESTEP_RERANKER_CONFIGS.append(
+        SingleStepRerankerConfig(vdb_name=name, threshold=None, fetch_n=5)
+    )
+
 # reranker_config, query, topk_k, approximate_output, exception
 SINGLESTEP_RUN_TEST_CASES = [
     # 1. полное совпадение query и passage-значения в бд
-    [SingleStepRerankerConfig(vdb_name=..., threshold=None, fetch_n=1), 'Rose', 1, ['Rose'], False],
+    [..., 'Rose', 1, ['Rose'], False],
     # 2. query- и существующее passage-значение отличаются только регистром
-    [SingleStepRerankerConfig(vdb_name=..., threshold=None, fetch_n=1), 'elephant', 1, ['Elephant'], False],
+    [..., 'elephant', 1, ['Elephant'], False],
     # 3. извлекается несколько "wild animals"-объектов
-    [SingleStepRerankerConfig(vdb_name=..., threshold=None, fetch_n=3), 'wild animals', 3, ['Lion', 'Tiger', 'Elephant', 'Giraffe', 'Zebra', 'Wild cat'], False],
+    [..., 'wild animals', 3, ['Lion', 'Tiger', 'Elephant', 'Giraffe', 'Zebra', 'Wild cat'], False],
     # 4. извлекается несколько "domestic animals"-объектов
-    [SingleStepRerankerConfig(vdb_name=..., threshold=None, fetch_n=3), 'domestic animals', 3, ['Dog', 'Cat', 'Horse', 'Cow', 'Sheep', 'Rabbit', 'Pig', 'Domestic wolf'], False],
+    [..., 'domestic animals', 3, ['Dog', 'Cat', 'Horse', 'Cow', 'Sheep', 'Rabbit', 'Pig', 'Domestic wolf'], False]
     # 5. threshold = 0
     # TODO
     # 6. threshold = 1 and out-of-scope query
@@ -45,10 +51,9 @@ SINGLESTEP_RUN_TEST_CASES = [
 ]
 
 SINGLESTEP_POPULATED_RUN_TEST_CASES = []
-for db_name in AVAILABLE_VECTORDB_NAMES:
-    for i in range(len(SINGLESTEP_RUN_TEST_CASES)):
-        modif_testcase = deepcopy(SINGLESTEP_RUN_TEST_CASES[i])
-        modif_testcase[0].vdb_name = db_name
-        modif_testcase.append('vector_composer')
+for reranker_config in SINGLESTEP_RERANKER_CONFIGS:
+    for test_case in SINGLESTEP_RUN_TEST_CASES:
+        modif_testcase = deepcopy(test_case)
+        modif_testcase[0] = reranker_config
 
         SINGLESTEP_POPULATED_RUN_TEST_CASES.append(modif_testcase)

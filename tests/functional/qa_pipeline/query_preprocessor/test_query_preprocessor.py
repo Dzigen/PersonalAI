@@ -13,7 +13,7 @@ from src.agents.utils import AbstractAgentConnector
 from .cases import QP_POPULATED_TEST_CASES
 from .conftest import KV_CACHE_CONFIG, INFSTAT_CONFIG
 
-@pytest.mark.parametrize("query, qp_config, agent_conn", QP_POPULATED_TEST_CASES, indirect=['agent_conn'])
+@pytest.mark.parametrize("query, qp_config", QP_POPULATED_TEST_CASES)
 def test_query_preprocessor(query: str, qp_config: QueryPreprocessorConfig, agent_conn: AbstractAgentConnector):
 
     qp_stage = QueryPreprocessor(

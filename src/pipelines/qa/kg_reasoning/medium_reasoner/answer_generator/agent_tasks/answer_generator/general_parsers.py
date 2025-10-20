@@ -12,6 +12,6 @@ def answgen_custom_formate(search_plan: SearchPlanInfo) -> Dict[str, str]:
 
 def answgen_custom_postprocess(parsed_response: str, **kwargs) -> bool:
     if len(parsed_response) < 1:
-        raise ValueError
+        raise ValueError(f"parsed_response: '{parsed_response}'")
 
     return parsed_response

@@ -4,7 +4,7 @@ import re
 
 def planinit_custom_parse(raw_response: str, **kwargs) -> List[str]:
     if len(raw_response) < 1:
-        raise ValueError
+        raise ValueError(f"raw_response: '{raw_response}'")
 
     parsed_steps = list(map(lambda raw_step: re.search(
         r"[\d]{,2}. (.*)", raw_step), raw_response.split("\n")))
@@ -12,6 +12,6 @@ def planinit_custom_parse(raw_response: str, **kwargs) -> List[str]:
     try:
         formated_steps = list(map(lambda step: step.group(1), filtered_steps))
     except IndexError:
-        raise ValueError
+        raise ValueError(f"raw_response: '{raw_response}'")
 
     return formated_steps

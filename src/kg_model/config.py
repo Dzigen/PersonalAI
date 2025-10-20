@@ -6,12 +6,12 @@ KG_MAIN_LOG_PATH = 'log/kg_model/main'
 
 
 DEFAULT_EMBEDDERS_CONFIG = {
-    'm-e5-small': EmbedderModelConfig()  # по умолчанию в EmbedderModelConfig стоит m-e5-small
+    'm-e5-base': EmbedderModelConfig()  # по умолчанию в EmbedderModelConfig стоит m-e5-base
 }
 
 DEFAULT_EMBEDDERS_MAP = KGEmbeddersMapping(
-    embeddings_model={'nodes_dense': 'm-e5-small', 'triplets_dense': 'm-e5-small'},
-    nodestree_model={'leaf_dense_nodes': 'm-e5-small', 'summ_dense_nodes': 'm-e5-small'}
+    embeddings_model={'nodes_dense': 'm-e5-base', 'triplets_dense': 'm-e5-base'},
+    nodestree_model={'leaf_dense_nodes': 'm-e5-base', 'summ_dense_nodes': 'm-e5-base'}
 )
 
 

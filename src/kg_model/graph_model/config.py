@@ -6,8 +6,8 @@ GRAPH_DB_DEFAULT_DRIVER_CONFIG = GraphDriverConfig(db_vendor='kuzu', db_config=G
     db_info={'db': 'DefaultDB', 'table': 'KuzuGraph'},
     params={'path': './personalai_tmp/memory_parts/graph_model/kuzu', 'buffer_pool_size': 1024**3,
             'table_type_map': {
-                'relations': {'forward': {RelationType.simple.value: 'simple', RelationType.hyper.value: 'hyper_rel', RelationType.episodic.value: 'episodic_rel'}, },
-                'nodes': {'forward': {NodeType.object.value: 'object', NodeType.hyper.value: 'hyper', NodeType.episodic.value: 'episodic'}}
+                'relations': {'forward': {RelationType.simple.value: 'simple', RelationType.hyper.value: 'hyper_rel', RelationType.episodic.value: 'episodic_rel', RelationType.time.value: 'time_rel'}, },
+                'nodes': {'forward': {NodeType.object.value: 'object', NodeType.hyper.value: 'hyper', NodeType.episodic.value: 'episodic', NodeType.time.value: 'time'}}
             }
             },
     need_to_clear=False

@@ -84,10 +84,8 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
         self.log("START MATCHING KEY WORDS ...", verbose=self.config.verbose)
         self.log(
             f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}",
-                 verbose=self.config.verbose)
-        self.log(f"ENTITIES: {query_info.entities}",
-                 verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.config.verbose)
+        self.log(f"ENTITIES: {query_info.entities}", verbose=self.config.verbose)
 
         info = ReturnInfo()
         linked_nodes: List[VectorDBInstance] = []
@@ -95,17 +93,16 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
 
         for entity in query_info.entities:
 
-            nodes_with_scores: List[Tuple[float, VectorDBInstance]] = self.retriever.run(
-                entity, top_k=self.config.max_k, return_with_scores=True)
-            linked_nodes += list(map(lambda node_item: node_item[1], nodes_with_scores))
+            cur_linked_nodes: List[VectorDBInstance] = self.retriever.run(entity, top_k=self.config.max_k)
 
-            cur_documents = list(map(lambda item: item[1].document, nodes_with_scores))
+            cur_documents = list(map(lambda item: item.document, cur_linked_nodes))
             cur_documents_lower = list(map(lambda document: document.lower(), cur_documents))
             if entity.lower() in cur_documents_lower[:self.config.k_compare]:
                 cur_unique_names = [entity]
             else:
                 cur_unique_names = [entity] + cur_documents[:self.config.max_k]
             linked_nodes_by_entities.append(cur_unique_names)
+            linked_nodes += cur_linked_nodes
 
         if len(linked_nodes) == 0:
             info.status = ReturnStatus.zero_linked_nodes
@@ -115,7 +112,6 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
             for i, node in enumerate(linked_nodes):
                 self.log(f"{i}. {node.document}", verbose=self.config.verbose)
 
-        self.log(
-            f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
+        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
 
         return linked_nodes, linked_nodes_by_entities, info

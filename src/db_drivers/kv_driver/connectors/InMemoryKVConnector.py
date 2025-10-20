@@ -28,10 +28,10 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
                     with open(load_path, 'rb') as fd:
                         self.kv_store = pickle.load(fd)
                 except EOFError:
-                    print(f"The pickle file '{load_path}' is empty or corrupted.")
+                    # print(f"The pickle file '{load_path}' is empty or corrupted.")
                     self.kv_store = dict()
             else:
-                print(f"warning: kvstore-dump '{load_path}' doesnt exists. creating empty kv-store")
+                # print(f"warning: kvstore-dump '{load_path}' doesnt exists. creating empty kv-store")
                 os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
                 self.kv_store = dict()
         else:
@@ -50,14 +50,14 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
     def close_connection(self) -> None:
         if self.kv_store is None:
             return
-        print("closing inmemory kv connection...")
+        # print("closing inmemory kv connection...")
         # print("kv-store type check: ", type(self.kv_store))
         # print("kv-store is not None:", self.kv_store is not None)
         if self.config.params['save_on_disk']:
             os.makedirs(self.config.params['save_dump_dir'], exist_ok=True)
             save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
             if os.path.exists(save_path):
-                print("warning: file on that path is already exists")
+                # print("warning: file on that path is already exists")
                 postfix = hashlib.md5(str(time.time()).encode()).hexdigest()
                 save_path += f"({postfix})"
             save_path += '.pkl'
@@ -65,7 +65,7 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
             with open(save_path, 'wb') as fd:
                 pickle.dump(self.kv_store, fd)
 
-            print(f"inmemory kv-store saved in: {save_path}")
+            # print(f"inmemory kv-store saved in: {save_path}")
 
         self.kv_store = None
         gc.collect()

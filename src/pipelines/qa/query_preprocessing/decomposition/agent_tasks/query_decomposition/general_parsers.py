@@ -10,6 +10,6 @@ def qd_custom_formate(query: str) -> str:
 
 def qd_custom_postprocess(parsed_response: List[str], **kwargs) -> List[str]:
     if len(parsed_response) < 1:
-        raise ValueError
+        raise ValueError(f"parsed_response: '{parsed_response}'")
 
     return list(map(lambda subq: subq.strip(), parsed_response))

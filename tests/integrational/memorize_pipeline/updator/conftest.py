@@ -16,7 +16,7 @@ from src.utils.data_structs import RelationType, NodeType
 from src.kg_model.utils import AgentsMapping, KGEmbeddersMapping
 
 @pytest.fixture(scope='package')
-def kg_model():
+def llm_updator():
     #
     graph_struct_config = GraphModelConfig(
         driver_config=GraphDriverConfig(
@@ -47,7 +47,12 @@ def kg_model():
             'nodes_bm25': VectorDriverConfig(
                 db_vendor='inmemory', vector_category='sparse_bm25',
                 db_config= VectorDBConnectionConfig(
-                    db_info={'db': 'testing', 'table': 'vectorized_bm25_nodes'}
+                    db_info={'db': 'testing', 'table': 'vectorized_bm25_nodes'},
+                    params={
+                        'load_from_disk': False, 'load_dump_name': None, 'save_on_disk': True,
+                        'load_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_bm25",
+                        'save_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_bm25"
+                    }
                 )
             )
         },
@@ -89,11 +94,8 @@ def kg_model():
         agents_map=agents_map
     )
 
-    return KnowledgeGraphModel(
+    kg_model = KnowledgeGraphModel(
         config=kg_config)
 
-
-@pytest.fixture(scope='function')
-def llm_updator(kg_model):
     updator_config = LLMUpdatorConfig(lang='en')
     return LLMUpdator(kg_model, updator_config)

@@ -54,9 +54,9 @@ class SingleStepReranker(AbstractRerankerModule):
 
         return True
 
-    def validate_run_arguments(self, query: str, top_k: int = 1, subset_ids: Union[None, List[str]] = None,
-                               includes: List[str] = ['documents', 'metadatas'], return_with_embeddings: bool = False,
-                               return_with_scores: bool = False) -> bool:
+    def validate_run_arguments(self, query: str, top_k: int, subset_ids: Union[None, List[str]],
+                               includes: List[str], return_with_embeddings: bool,
+                               return_with_scores: bool) -> bool:
         if not isinstance(query, str):
             raise TypeError
         if len(query) < 1:
@@ -69,6 +69,17 @@ class SingleStepReranker(AbstractRerankerModule):
             return TypeError
         if not isinstance(return_with_scores, bool):
             return TypeError
+        if subset_ids is not None:
+            for cur_id in subset_ids:
+                assert isinstance(cur_id, str)
+
+        if isinstance(includes, list):
+            for name in includes:
+                if not ((isinstance(name, str)) and (name in ['documents', 'metadatas'])):
+                    raise ValueError
+        else:
+            raise ValueError
+
         return True
 
     def run(self, query: str, top_k: int = 1, subset_ids: Union[None, List[str]] = None,
@@ -96,8 +107,10 @@ class SingleStepReranker(AbstractRerankerModule):
             filtered_instances = raw_instances
 
         if return_with_scores:
-            formated_instances = filtered_instances[:top_k]
+            scored_instances = filtered_instances
         else:
-            formated_instances = list(map(lambda inst: inst[1], filtered_instances[:top_k]))
+            scored_instances = list(map(lambda inst: inst[1], filtered_instances))
 
-        return formated_instances
+        # print(scored_instances[:top_k])
+
+        return scored_instances[:top_k]

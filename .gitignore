@@ -8,6 +8,8 @@ debug/
 
 personalai_tmp/
 tests/log
+docs/legacy/notebooks/log/
+notebooks/download_models/.env
 
 experiments/qa/weak/results/**/tmp_answer_packs/
 experiments/qa/weak/results/**/answer_packs/
