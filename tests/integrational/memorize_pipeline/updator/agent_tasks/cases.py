@@ -1,5 +1,4 @@
 import sys
-
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
@@ -18,18 +17,18 @@ SIMPLE_REL2 = RelationCreator.create(r_type=RelationType.simple, name='jkl')
 SIMPLE_REL3 = RelationCreator.create(r_type=RelationType.simple, name='bnm')
 
 SIMPLE_TRIPLET1 = TripletCreator.create(
-    start_node=OBJECT_NODE1,relation=SIMPLE_REL1,end_node=OBJECT_NODE2)
+    start_node=OBJECT_NODE1, relation=SIMPLE_REL1, end_node=OBJECT_NODE2)
 SIMPLE_TRIPLET2 = TripletCreator.create(
-    start_node=OBJECT_NODE3,relation=SIMPLE_REL2,end_node=OBJECT_NODE4)
+    start_node=OBJECT_NODE3, relation=SIMPLE_REL2, end_node=OBJECT_NODE4)
 SIMPLE_TRIPLET3 = TripletCreator.create(
-    start_node=OBJECT_NODE5,relation=SIMPLE_REL3,end_node=OBJECT_NODE6)
+    start_node=OBJECT_NODE5, relation=SIMPLE_REL3, end_node=OBJECT_NODE6)
 
 SIMPLE_TRIPLET4 = TripletCreator.create(
     start_node=OBJECT_NODE3, relation=SIMPLE_REL3, end_node=OBJECT_NODE4)
 SIMPLE_TRIPLET5 = TripletCreator.create(
     start_node=OBJECT_NODE5, relation=SIMPLE_REL1, end_node=OBJECT_NODE6)
 SIMPLE_TRIPLET6 = TripletCreator.create(
-    start_node=OBJECT_NODE5,relation=SIMPLE_REL2,end_node=OBJECT_NODE6)
+    start_node=OBJECT_NODE5, relation=SIMPLE_REL2, end_node=OBJECT_NODE6)
 
 NO_TRIPLET_REPL_AGENT_ANSWER = '[]'
 ONE_TRIPLET_REPL_AGENT_ANSWER = f'[["{SIMPLE_TRIPLET4.start_node.name}, {SIMPLE_TRIPLET4.relation.name}, {SIMPLE_TRIPLET4.end_node.name}" -> "{SIMPLE_TRIPLET2.start_node.name}, {SIMPLE_TRIPLET2.relation.name}, {SIMPLE_TRIPLET2.end_node.name}"]'
@@ -45,7 +44,7 @@ HYPER_NODE5 = NodeCreator.create(n_type=NodeType.hyper, name='tgbnhy')
 HYPER_REL = RelationCreator.create(r_type=RelationType.hyper)
 
 HYPER_TRIPLET1 = TripletCreator.create(
-    start_node=OBJECT_NODE1,relation=HYPER_REL,
+    start_node=OBJECT_NODE1, relation=HYPER_REL,
     end_node=HYPER_NODE1)
 HYPER_TRIPLET2 = TripletCreator.create(
     start_node=OBJECT_NODE2, relation=HYPER_REL, end_node=HYPER_NODE2)

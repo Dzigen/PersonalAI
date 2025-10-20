@@ -1,0 +1,262 @@
+EXPERIMENT_NAME: "m_v2_llama318b(e5.6.1)(v1.5.5)" # TO CHANGE
+DATASET_NAME: 'diaasq' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'llama318b_050525_v2prompts' # TO CHANGE
+QA_DATASET_HYPERP:
+  # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
+  max_samples_per_pack: 10
+
+# SERVER PATHS
+BASE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
+BASE_DATA_PATH: '/mnt/data/m.menschikov'
+OLLAMA_MODELS_PATH: '/home/dzigen/Desktop/PersonalAI/ollama_volume' # TO CHANGE
+
+INIT_STRUCT: True # !!! PAY ATTENTION !!!
+
+########## QA PARAMS ##########
+
+BASE_KGR_CONFIG:
+  name: 'weak' # DONT CHANGE
+
+  lang: 'en' # DONT CHANGE
+  caching: True # DONT CHANGE
+  cache_need_to_clear: False # !!! PAY ATTENTION !!!
+
+  cache_db_info:
+      db: 'qa_db' # DONT CHANGE
+      table: None # DONT CHANGE
+
+  agent_config:
+    vendor: ollama
+    credentials:
+      model: llama3.1:8b
+    ext_params:
+      host: localhost
+      keep_alive: -1
+      port: 11437
+      timeout: 560
+    gen_strategy:
+      num_predict: 2048
+      seed: 42
+      temperature: 0.0
+      top_k: 1
+
+  persistent_cache_config:
+    vendor: 'mongo' # DONT CHANGE
+    host: 'localhost' # TO CHANGE
+    port: 27034 # TO CHANGE
+    db_info:
+      db: 'qa_db'
+      table: None
+    params:
+      username: 'user'
+      password: 'pass'
+      max_storage: -1
+
+  ram_cache_config:
+    vendor: 'redis' # DONT CHANGE
+    host: 'localhost' # TO CHANGE
+    port: 6396 # TO CHANGE
+    db_info:
+      db: 1
+      table: None
+    params:
+      ss_name: 'sorted_node_pairs'
+      hs_name: 'node_pairs'
+      max_storage: 50000000
+      username: 'my_user'
+      password: 'my_user_password'
+    db_configuration: 'redis' # DONT CHANGE
+
+WEAK_KG_REASONER:
+
+  query_parser_config: # CAN BE None
+    kw_extraction_task:
+      prompts_version: 'v2' # 'v1' | 'v2'
+
+  knowledge_comparator_config: # CAN BE None
+    threshold: 0.5
+    fetch_n: 20
+    max_k: 1 # DONT CHANGE
+    k_compare: 5
+
+  knowledge_retriever_config:
+    retriever_method: mixture
+    retriever_config:
+      accepted_node_types:
+      - object
+      - hyper
+      - episodic
+      - time
+
+      retriever1_name: astar
+      retriever1_config:
+        max_depth: 10
+        max_passed_nodes: 150
+        metrics_config:
+          h_metric_name: ip
+          kvdriver_config:
+            db_config:
+              db_info:
+                db: qa_db
+                table: ''
+              need_to_clear: false
+              params:
+                mongo_config:
+                  host: localhost
+                  params:
+                    max_storage: -1
+                    password: pass
+                    username: user
+                  port: 27034
+                redis_config:
+                  host: localhost
+                  params:
+                    hs_name: node_pairs
+                    max_storage: 50000000
+                    password: my_user_password
+                    ss_name: sorted_node_pairs
+                    username: my_user
+                  port: 6396
+            db_vendor: mixed_kv
+
+      retriever2_name: watercircles
+      retriever2_config:
+        chain_triplets_num: 25
+        do_text_pruning: false
+        episodic_num: 15
+        hyper_num: 15
+        other_triplets_num: 6
+        strict_filter: true
+
+    filter_method: 'naive' # CAN BE None
+    filter_config: # CAN BE None
+      max_k: 50
+
+  answer_generator_config:
+    ag_task:
+      prompts_version: 'v3' # 'v1' | 'v2'
+
+########## EVALUATION PARAMS ##########
+
+QA_EVALUATION:
+  bertscore_model_path: "google/electra-base-discriminator" # DONT CHANGE
+  meteor_path: 'experiments/metrics/meteor' # DONT CHANGE
+  exactmatch_path: 'experiments/metrics/exact_match' # DONT CHANGE
+  llm_as_a_judge_path: 'experiments/metrics/' # DONT CHANGE
+  no_answer: '<|NotEnoughtInfo|>'
+
+  judge_llm_config:
+    caching: True # DONT CHANGE
+    cache_need_to_clear: False # !!! PAY ATTENTION !!!
+    cache_db_info:
+      db: 'qaeval_db' # DONT CHANGE
+      table: None # DONT CHANGE
+
+    lang: 'en'
+    prompts_version: 'v1'
+
+    agent_config:
+      vendor: ollama
+      credentials:
+        model: qwen2.5:7b
+      ext_params:
+        host: localhost
+        keep_alive: -1
+        port: 11437
+        timeout: 560
+      gen_strategy:
+        num_predict: 2048
+        seed: 42
+        temperature: 0.0
+        top_k: 1
+
+########## KNOWLEDGE GRAPH PARAMS ##########
+
+KG_DB_CONFIGS:
+  graphdb_config:
+    host: 'localhost' # TO CHANGE
+    port: 7704 # TO CHANGE
+    params:
+      user: 'neo4j'
+      pwd: 'password'
+
+  embedder_config:
+    prompts:
+      query: "query: "
+      passage: "passage: "
+    model_name_or_path: 'intfloat/multilingual-e5-large'
+
+########## CONTAINERS PARAMS ##########
+
+CONTAINERS_ADDITIONAL_CONFIG:
+  workspace_cntname: 'personalai_mmenschikov_workspace_qwen7b_diaasq'
+  workspace_host: 'personalai_mmenschikov_workspace_qwen7b_diaasq' # TO CHANGE
+
+  redis_cntname: 'personalai_mmenschikov_redis_qwen7b_diaasq'
+  redis_ui_cntname: 'personalai_mmenschikov_redis_ui_qwen7b_diaasq'
+  redis_ui_host: 'personalai_mmenschikov_redis_ui_qwen7b_diaasq' # TO CHANGE
+  redis_ui_port: 5557 # TO CHANGE
+
+  mongo_cntname: 'personalai_mmenschikov_mongo_qwen7b_diaasq'
+  mongo_ui_cntname: 'personalai_mmenschikov_mongo_ui_qwen7b_diaasq' # TO CHANGE
+  mongo_ui_host: 'personalai_mmenschikov_mongo_ui_qwen7b_diaasq' # TO CHANGE
+  mongo_ui_port: 8098 # TO CHANGE
+
+  milvus_cntname: 'personalai_mmenschikov_milvus_qwen7b_diaasq'
+  milvus_host: 'localhost'
+  milvus_port1: 19544 # TO CHANGE
+  milvus_port2: 2393 # TO CHANGE
+  milvus_ui_port: 9105 # TO CHANGE
+  milvus_config: milvus
+
+  neo4j_cntname: 'personalai_mmenschikov_neo4j_qwen7b_diaasq'
+  neo4j_ui_port: 7491 # TO CHANGE
+
+  ollama_cntname: 'personalai_mmenschikov_ollama'
+  ollama_host: 'personalai_mmenschikov_ollama'
+
+########## HARDCODED PARAMS ##########
+
+QA_EXP_DIR_STRUCT:
+  metrics_name: metric_packs
+  tmp_judges_name: tmp_judges_packs
+  judges_name: judges_packs
+  tmp_gen_answers_name: tmp_answer_packs
+  gen_answers_name: answer_packs
+
+KG_DIR_STRUCT:
+  embeddings_part: embeddings_part
+  graph_part: graph_part
+  cache_dir:
+    base: kv_cache
+    persistant: persistent_volume
+    ram: ram_volume
+
+PERSONALAI_REPO_DIRS:
+  kg: data/knowledge_graphs
+  qa_datasets: data/qa_datasets
+  experiments: experiments/qa_kg
+  notebooks: notebooks
+  configs: configs
+  src: src
+  models: models
+
+WORKSPACE_CONTAINER_DIRS:
+  base_path: /home/workspace
+  kg: data/knowledge_graphs
+  qa_datasets: data/qa_datasets
+  experiments: experiments
+  exp_results: results
+  notebooks: notebooks
+  src: src
+  models: models
+
+SAVE_CONFIGS_NAMES:
+  graph_config: graph_config
+  embeddings_config: embeddings_config
+  docker_compose_env: env_files/diaasq/.env_llama318b
+  qapipeline_config: qa_config
+  kg_reasoner_config: kg_reasoner_config
+
+  hyperparameters: hyperparameters.yaml
+  elapsed_time: elapsed_time.json

@@ -6,7 +6,7 @@ EN_BAD_RESPONSE2 = '[Chain of thoughts]: bla bla bla\n[answer]: simple answer'
 AG_PARSE_V2_TEST_CASES = [
     # пустая строка
     ('', 'en', None, True),
-    # валидный формат + есть ответ\
+    # валидный формат + есть ответ
     (EN_GOOD_RESPONSE1, 'en', 'simple answer', False),
     # валидный формат + пустой ответ
     (EN_BAD_RESPONSE1, 'en', None, True),

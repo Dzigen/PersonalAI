@@ -1,6 +1,10 @@
-RU_REPLACE_SIMPLE_SYSTEM_PROMPT = """Ты - ассистент, который умеет решать заданные задачи."""
+# == Prompts in Russian ==
 
-RU_REPLACE_SIMPLE_USER_PROMPT = """Тебе будет предоставлен список существующих и список новых триплетов. Тройки имеют следующий формат: «субъект, отношение, объект».
+RU_REPLACE_SIMPLE_SYSTEM_PROMPT = \
+    '''Ты - ассистент, который умеет решать заданные задачи.'''
+
+RU_REPLACE_SIMPLE_USER_PROMPT = \
+    """Тебе будет предоставлен список существующих и список новых триплетов. Тройки имеют следующий формат: «субъект, отношение, объект».
 Триплеты обозначают факты о мире. Окружение меняется, поэтому некоторые триплеты из списка существующих триплетов могут быть заменены одним из новых триплетов. Например, игрок взял предмет из шкафчика, и существующая тройка «предмет, находится в, шкафчик» должна быть заменена на новую тройку «предмет, находится в, инвентарь».
 
 Иногда триплеты для замены отсутствуют:
@@ -34,7 +38,10 @@ RU_REPLACE_SIMPLE_USER_PROMPT = """Тебе будет предоставлен 
 Внимание! Замены должны формироваться строго в следующем формате: [[устаревший_триплет_1 -> актуальный_триплет_1], [устаревший_триплет_2 -> актуальный_триплет_2], ...], вы НЕ ДОЛЖНЫ включать в ответ никаких описаний.
 Замена: """
 
-EN_REPLACE_SIMPLE_USER_PROMPT = """You will be provided with list of existing triplets and list of new triplets. Triplets are in the following format: "subject, relation, object".
+# == Prompts in English ==
+
+EN_REPLACE_SIMPLE_USER_PROMPT = \
+    """You will be provided with list of existing triplets and list of new triplets. Triplets are in the following format: "subject, relation, object".
 The triplets denote facts about the environment where the player moves. The player takes actions and the environment changes, so some triplets from the list of existing triplets can be replaced with one of the new triplets. For example, the player took the item from the locker and the existing triplet "item, is in, locker" should be replaced with the new triplet "item, is in, inventory".
 
 Sometimes there are no triplets to replace:
@@ -68,4 +75,5 @@ New triplets: {new_triplets}.
 Warning! Replacing must be generated strictly in following format: [[outdated_triplet_1 -> actual_triplet_1], [outdated_triplet_2 -> actual_triplet_2], ...], you MUST NOT include any descriptions in answer.
 Replacing: """
 
-EN_REPLACE_SIMPLE_SYSTEM_PROMPT = """You are a helpful assistant."""
+EN_REPLACE_SIMPLE_SYSTEM_PROMPT = \
+    """You are a helpful assistant."""

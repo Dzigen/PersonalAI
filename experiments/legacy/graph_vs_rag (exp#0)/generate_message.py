@@ -17,9 +17,11 @@ terminators = [
 ]
 
 messages_extract = [
-    {"role": "system", "content": """Extract entities (names and surnames, device names, company names) from the question and define the types of entities ("person", "device", "manufacturer")."""},
+    {"role": "system",
+        "content": """Extract entities (names and surnames, device names, company names) from the question and define the types of entities ("person", "device", "manufacturer")."""},
     {"role": "user", "content": "Question: Kayla has positive, negative or neutral opinion about video of Xiaomi 10Pro?"},
-    {"role": "assistant", "content": """Entities: {{"Kayla": "person", "Xiaomi 10Pro": "device"}}"""},
+    {"role": "assistant",
+        "content": """Entities: {{"Kayla": "person", "Xiaomi 10Pro": "device"}}"""},
     {"role": "user", "content": "Question: Which device is better in battery life: Apple or k30u?"},
     {"role": "assistant", "content": """Entities: {{"Apple": "device", "k30u": "device"}}"""},
     {"role": "user", "content": "Question: {question}"}
@@ -29,9 +31,9 @@ question = "Which device is better in battery life: iPhone11 Pro Max or Xiaomi 1
 messages_extract[-1]["content"].format(question=question)
 
 prompt = pipeline.tokenizer.apply_chat_template(
-        messages_extract,
-        tokenize=False,
-        add_generation_prompt=True
+    messages_extract,
+    tokenize=False,
+    add_generation_prompt=True
 )
 
 outputs = pipeline(

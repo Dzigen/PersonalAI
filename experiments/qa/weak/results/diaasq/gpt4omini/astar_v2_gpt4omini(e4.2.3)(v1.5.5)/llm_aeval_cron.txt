@@ -1,0 +1,116 @@
+Traceback (most recent call last):
+  File "/home/workspace/experiments/results/diaasq/astar_v2_gpt4omini(e4.2.3)(v1.5.5)/../../../evaluate_llmjudge.py", line 17, in <module>
+    with open(PARAMS_FILEP, 'r') as stream:
+FileNotFoundError: [Errno 2] No such file or directory: '/home/workspace/experiments/results/diaasq/astar_v2_gpt4omini(e4.2.3)(v1.5.5)/hyperparameters.yaml'
+Traceback (most recent call last):
+  File "/home/workspace/experiments/results/diaasq/astar_v2_gpt4omini(e4.2.3)(v1.5.5)/../../../evaluate_llmjudge.py", line 17, in <module>
+    with open(PARAMS_FILEP, 'r') as stream:
+FileNotFoundError: [Errno 2] No such file or directory: '/home/workspace/experiments/results/diaasq/astar_v2_gpt4omini(e4.2.3)(v1.5.5)/hyperparameters.yaml'
+############ DONE ############
+############ DONE ############
+############ DONE ############
+Traceback (most recent call last):
+  File "/home/workspace/experiments/results/diaasq/astar_v2_gpt4omini(e4.2.3)(v1.5.5)/../../../evaluate_llmjudge.py", line 21, in <module>
+    from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
+  File "/home/workspace/src/__init__.py", line 1, in <module>
+    from .personalai_main import PersonalAI, PersonalAIConfig
+  File "/home/workspace/src/personalai_main.py", line 5, in <module>
+    from .kg_model import GraphModelConfig, EmbeddingsModelConfig, KnowledgeGraphModel
+  File "/home/workspace/src/kg_model/__init__.py", line 1, in <module>
+    from .embeddings_model import EmbedderModel, EmbedderModelConfig, EmbeddingsModel, EmbeddingsModelConfig
+  File "/home/workspace/src/kg_model/embeddings_model.py", line 5, in <module>
+    import torch
+  File "/usr/local/lib/python3.10/dist-packages/torch/__init__.py", line 290, in <module>
+    from torch._C import *  # noqa: F403
+KeyboardInterrupt
+############ DONE ############
+Traceback (most recent call last):
+  File "/home/workspace/experiments/results/diaasq/astar_v2_gpt4omini(e4.2.3)(v1.5.5)/../../../evaluate_llmjudge.py", line 21, in <module>
+    from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
+  File "/home/workspace/src/__init__.py", line 1, in <module>
+    from .personalai_main import PersonalAI, PersonalAIConfig
+  File "/home/workspace/src/personalai_main.py", line 5, in <module>
+    from .kg_model import GraphModelConfig, EmbeddingsModelConfig, KnowledgeGraphModel
+  File "/home/workspace/src/kg_model/__init__.py", line 1, in <module>
+    from .embeddings_model import EmbedderModel, EmbedderModelConfig, EmbeddingsModel, EmbeddingsModelConfig
+  File "/home/workspace/src/kg_model/embeddings_model.py", line 7, in <module>
+    from ..db_drivers.vector_driver import VectorDBConnectionConfig, VectorDriver, VectorDriverConfig, VectorDBInstance
+  File "/home/workspace/src/db_drivers/__init__.py", line 1, in <module>
+    from .graph_driver import GraphDriverConfig
+  File "/home/workspace/src/db_drivers/graph_driver/__init__.py", line 1, in <module>
+    from .connectors.Neo4jConnector import Neo4jConnector, DEFAULT_NEO4J_CONFIG
+  File "/home/workspace/src/db_drivers/graph_driver/connectors/Neo4jConnector.py", line 5, in <module>
+    from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
+  File "/home/workspace/src/db_drivers/graph_driver/utils.py", line 5, in <module>
+    from ...utils import ReturnInfo
+  File "/home/workspace/src/utils/__init__.py", line 2, in <module>
+    from .data_structs import Triplet, TripletCreator, NodeCreator, NodeType, RelationCreator, RelationType
+  File "/home/workspace/src/utils/data_structs.py", line 6, in <module>
+    from src.db_drivers.vector_driver import VectorDBInstance
+  File "/home/workspace/src/db_drivers/vector_driver/__init__.py", line 1, in <module>
+    from .connectors import ChromaConnection, DEFAULT_CHROMA_CONFIG
+  File "/home/workspace/src/db_drivers/vector_driver/connectors/__init__.py", line 1, in <module>
+    from .ChromaConnector import ChromaConnection, DEFAULT_CHROMA_CONFIG
+  File "/home/workspace/src/db_drivers/vector_driver/connectors/ChromaConnector.py", line 2, in <module>
+    import chromadb
+  File "/usr/local/lib/python3.10/dist-packages/chromadb/__init__.py", line 5, in <module>
+    from chromadb.api.async_client import AsyncClient as AsyncClientCreator
+  File "/usr/local/lib/python3.10/dist-packages/chromadb/api/async_client.py", line 1, in <module>
+    import httpx
+  File "/usr/local/lib/python3.10/dist-packages/httpx/__init__.py", line 15, in <module>
+    from ._main import main
+  File "/usr/local/lib/python3.10/dist-packages/httpx/_main.py", line 12, in <module>
+    import rich.console
+  File "/usr/local/lib/python3.10/dist-packages/rich/console.py", line 59, in <module>
+    from .pretty import Pretty, is_expandable
+  File "/usr/local/lib/python3.10/dist-packages/rich/pretty.py", line 33, in <module>
+    import attr as _attr_module
+  File "/usr/local/lib/python3.10/dist-packages/attr/__init__.py", line 10, in <module>
+    from . import converters, exceptions, filters, setters, validators
+  File "/usr/local/lib/python3.10/dist-packages/attr/validators.py", line 91, in <module>
+    class _InstanceOfValidator:
+  File "/usr/local/lib/python3.10/dist-packages/attr/_make.py", line 1459, in wrap
+    return builder.build_class()
+  File "/usr/local/lib/python3.10/dist-packages/attr/_make.py", line 755, in build_class
+    cls = self._create_slots_class()
+  File "/usr/local/lib/python3.10/dist-packages/attr/_make.py", line 911, in _create_slots_class
+    cls = type(self._cls)(self._cls.__name__, self._cls.__bases__, cd)
+KeyboardInterrupt
+############ DONE ############
+  0%|          | 0/10 [00:00<?, ?it/s]  0%|          | 0/10 [00:00<?, ?it/s, which_people_about_device.json] 10%|█         | 1/10 [00:00<00:01,  4.53it/s, which_people_about_device.json] 10%|█         | 1/10 [00:00<00:01,  4.53it/s, which_people_about_device.json] 10%|█         | 1/10 [00:00<00:01,  4.53it/s, which_people_about_device.json] 30%|███       | 3/10 [02:07<05:30, 47.27s/it, which_people_about_device.json] 30%|███       | 3/10 [02:07<05:30, 47.27s/it, which_people_about_device.json] 30%|███       | 3/10 [02:07<05:30, 47.27s/it, which_people_about_device.json] 50%|█████     | 5/10 [02:07<01:55, 23.01s/it, which_people_about_device.json] 50%|█████     | 5/10 [02:07<01:55, 23.01s/it, which_people_about_device.json] 50%|█████     | 5/10 [02:07<01:55, 23.01s/it, which_people_about_device.json] 70%|███████   | 7/10 [02:08<00:39, 13.30s/it, which_people_about_device.json] 70%|███████   | 7/10 [02:08<00:39, 13.30s/it, which_people_about_device.json] 70%|███████   | 7/10 [02:08<00:39, 13.30s/it, which_people_about_device.json] 70%|███████   | 7/10 [02:20<00:39, 13.30s/it, which_people_about_device.json] 90%|█████████ | 9/10 [03:18<00:21, 21.65s/it, which_people_about_device.json] 90%|█████████ | 9/10 [03:18<00:21, 21.65s/it, which_people_about_device.json]100%|██████████| 10/10 [03:19<00:00, 19.90s/it, which_people_about_device.json]
+  0%|          | 0/10 [00:00<?, ?it/s]  0%|          | 0/10 [00:00<?, ?it/s, compare_questions.json]  0%|          | 0/10 [00:00<?, ?it/s, compare_questions.json] 20%|██        | 2/10 [00:00<00:00, 12.22it/s, compare_questions.json] 20%|██        | 2/10 [00:00<00:00, 12.22it/s, compare_questions.json] 20%|██        | 2/10 [00:00<00:00, 12.22it/s, compare_questions.json] 40%|████      | 4/10 [00:00<00:00, 12.26it/s, compare_questions.json] 40%|████      | 4/10 [00:00<00:00, 12.26it/s, compare_questions.json] 40%|████      | 4/10 [00:00<00:00, 12.26it/s, compare_questions.json] 60%|██████    | 6/10 [00:00<00:00, 12.34it/s, compare_questions.json] 60%|██████    | 6/10 [00:00<00:00, 12.34it/s, compare_questions.json] 60%|██████    | 6/10 [00:00<00:00, 12.34it/s, compare_questions.json] 80%|████████  | 8/10 [00:00<00:00, 12.38it/s, compare_questions.json] 80%|████████  | 8/10 [00:00<00:00, 12.38it/s, compare_questions.json] 80%|████████  | 8/10 [00:00<00:00, 12.38it/s, compare_questions.json]100%|██████████| 10/10 [00:00<00:00, 12.39it/s, compare_questions.json]100%|██████████| 10/10 [00:00<00:00, 12.35it/s, compare_questions.json]
+  0%|          | 0/10 [00:00<?, ?it/s]  0%|          | 0/10 [00:00<?, ?it/s, same_manufacturer.json] 10%|█         | 1/10 [01:46<15:56, 106.31s/it, same_manufacturer.json] 10%|█         | 1/10 [01:46<15:56, 106.31s/it, same_manufacturer.json] 10%|█         | 1/10 [01:46<15:56, 106.31s/it, same_manufacturer.json] 30%|███       | 3/10 [01:46<03:13, 27.62s/it, same_manufacturer.json]  30%|███       | 3/10 [01:46<03:13, 27.62s/it, same_manufacturer.json] 30%|███       | 3/10 [01:46<03:13, 27.62s/it, same_manufacturer.json] 30%|███       | 3/10 [02:00<03:13, 27.62s/it, same_manufacturer.json] 50%|█████     | 5/10 [03:16<03:02, 36.59s/it, same_manufacturer.json] 50%|█████     | 5/10 [03:16<03:02, 36.59s/it, same_manufacturer.json] 60%|██████    | 6/10 [04:20<02:55, 43.87s/it, same_manufacturer.json] 60%|██████    | 6/10 [04:20<02:55, 43.87s/it, same_manufacturer.json] 60%|██████    | 6/10 [04:20<02:55, 43.87s/it, same_manufacturer.json] 80%|████████  | 8/10 [04:20<00:49, 24.86s/it, same_manufacturer.json] 80%|████████  | 8/10 [04:20<00:49, 24.86s/it, same_manufacturer.json] 80%|████████  | 8/10 [04:20<00:49, 24.86s/it, same_manufacturer.json]100%|██████████| 10/10 [04:20<00:00, 15.38s/it, same_manufacturer.json]100%|██████████| 10/10 [04:20<00:00, 26.07s/it, same_manufacturer.json]
+  0%|          | 0/10 [00:00<?, ?it/s]  0%|          | 0/10 [00:00<?, ?it/s, similar_device_opinions.json]  0%|          | 0/10 [00:00<?, ?it/s, similar_device_opinions.json] 20%|██        | 2/10 [00:00<00:00,  9.93it/s, similar_device_opinions.json] 20%|██        | 2/10 [00:00<00:00,  9.93it/s, similar_device_opinions.json] 30%|███       | 3/10 [01:10<03:26, 29.45s/it, similar_device_opinions.json] 30%|███       | 3/10 [01:10<03:26, 29.45s/it, similar_device_opinions.json] 30%|███       | 3/10 [01:10<03:26, 29.45s/it, similar_device_opinions.json] 50%|█████     | 5/10 [01:10<01:07, 13.49s/it, similar_device_opinions.json] 50%|█████     | 5/10 [01:10<01:07, 13.49s/it, similar_device_opinions.json] 50%|█████     | 5/10 [01:11<01:07, 13.49s/it, similar_device_opinions.json] 70%|███████   | 7/10 [01:11<00:22,  7.64s/it, similar_device_opinions.json] 70%|███████   | 7/10 [01:11<00:22,  7.64s/it, similar_device_opinions.json] 70%|███████   | 7/10 [01:11<00:22,  7.64s/it, similar_device_opinions.json] 90%|█████████ | 9/10 [01:11<00:04,  4.73s/it, similar_device_opinions.json] 90%|█████████ | 9/10 [01:11<00:04,  4.73s/it, similar_device_opinions.json]100%|██████████| 10/10 [01:11<00:00,  7.14s/it, similar_device_opinions.json]
+  0%|          | 0/10 [00:00<?, ?it/s]  0%|          | 0/10 [00:00<?, ?it/s, compare_sentiment_synonims.json] 10%|█         | 1/10 [01:20<12:07, 80.86s/it, compare_sentiment_synonims.json] 10%|█         | 1/10 [01:20<12:07, 80.86s/it, compare_sentiment_synonims.json] 10%|█         | 1/10 [01:20<12:07, 80.86s/it, compare_sentiment_synonims.json] 30%|███       | 3/10 [01:21<02:27, 21.02s/it, compare_sentiment_synonims.json] 30%|███       | 3/10 [01:21<02:27, 21.02s/it, compare_sentiment_synonims.json] 30%|███       | 3/10 [01:21<02:27, 21.02s/it, compare_sentiment_synonims.json] 50%|█████     | 5/10 [01:21<00:51, 10.26s/it, compare_sentiment_synonims.json] 50%|█████     | 5/10 [01:21<00:51, 10.26s/it, compare_sentiment_synonims.json] 50%|█████     | 5/10 [01:21<00:51, 10.26s/it, compare_sentiment_synonims.json] 70%|███████   | 7/10 [01:21<00:17,  5.95s/it, compare_sentiment_synonims.json] 70%|███████   | 7/10 [01:21<00:17,  5.95s/it, compare_sentiment_synonims.json] 70%|███████   | 7/10 [01:21<00:17,  5.95s/it, compare_sentiment_synonims.json] 90%|█████████ | 9/10 [01:21<00:03,  3.74s/it, compare_sentiment_synonims.json] 90%|█████████ | 9/10 [01:21<00:03,  3.74s/it, compare_sentiment_synonims.json]100%|██████████| 10/10 [01:21<00:00,  8.16s/it, compare_sentiment_synonims.json]
+  0%|          | 0/10 [00:00<?, ?it/s]  0%|          | 0/10 [00:00<?, ?it/s, similar_manf_opinions.json] 10%|█         | 1/10 [00:00<00:01,  8.25it/s, similar_manf_opinions.json] 10%|█         | 1/10 [00:00<00:01,  8.25it/s, similar_manf_opinions.json] 10%|█         | 1/10 [00:00<00:01,  8.25it/s, similar_manf_opinions.json] 30%|███       | 3/10 [01:14<03:14, 27.71s/it, similar_manf_opinions.json] 30%|███       | 3/10 [01:14<03:14, 27.71s/it, similar_manf_opinions.json] 30%|███       | 3/10 [01:14<03:14, 27.71s/it, similar_manf_opinions.json] 50%|█████     | 5/10 [01:15<01:07, 13.51s/it, similar_manf_opinions.json] 50%|█████     | 5/10 [01:15<01:07, 13.51s/it, similar_manf_opinions.json] 50%|█████     | 5/10 [01:15<01:07, 13.51s/it, similar_manf_opinions.json] 70%|███████   | 7/10 [01:15<00:23,  7.82s/it, similar_manf_opinions.json] 70%|███████   | 7/10 [01:15<00:23,  7.82s/it, similar_manf_opinions.json] 70%|███████   | 7/10 [01:15<00:23,  7.82s/it, similar_manf_opinions.json] 90%|█████████ | 9/10 [01:15<00:04,  4.90s/it, similar_manf_opinions.json] 90%|█████████ | 9/10 [01:15<00:04,  4.90s/it, similar_manf_opinions.json]100%|██████████| 10/10 [01:15<00:00,  7.54s/it, similar_manf_opinions.json]
+  0%|          | 0/10 [00:00<?, ?it/s]  0%|          | 0/10 [00:00<?, ?it/s, last_opinion.json]  0%|          | 0/10 [00:00<?, ?it/s, last_opinion.json] 20%|██        | 2/10 [00:00<00:00, 12.54it/s, last_opinion.json] 20%|██        | 2/10 [00:00<00:00, 12.54it/s, last_opinion.json] 20%|██        | 2/10 [00:00<00:00, 12.54it/s, last_opinion.json] 20%|██        | 2/10 [00:11<00:00, 12.54it/s, last_opinion.json] 40%|████      | 4/10 [01:36<02:50, 28.35s/it, last_opinion.json] 40%|████      | 4/10 [01:36<02:50, 28.35s/it, last_opinion.json] 50%|█████     | 5/10 [03:19<04:11, 50.35s/it, last_opinion.json] 50%|█████     | 5/10 [03:19<04:11, 50.35s/it, last_opinion.json] 50%|█████     | 5/10 [03:19<04:11, 50.35s/it, last_opinion.json] 70%|███████   | 7/10 [03:19<01:21, 27.32s/it, last_opinion.json] 70%|███████   | 7/10 [03:19<01:21, 27.32s/it, last_opinion.json] 70%|███████   | 7/10 [03:31<01:21, 27.32s/it, last_opinion.json] 80%|████████  | 8/10 [04:30<01:16, 38.05s/it, last_opinion.json] 80%|████████  | 8/10 [04:30<01:16, 38.05s/it, last_opinion.json] 80%|████████  | 8/10 [04:30<01:16, 38.05s/it, last_opinion.json]100%|██████████| 10/10 [04:30<00:00, 22.37s/it, last_opinion.json]100%|██████████| 10/10 [04:30<00:00, 27.04s/it, last_opinion.json]
+  0%|          | 0/10 [00:00<?, ?it/s]  0%|          | 0/10 [00:00<?, ?it/s, compare_sentiment.json]  0%|          | 0/10 [00:00<?, ?it/s, compare_sentiment.json] 20%|██        | 2/10 [00:00<00:00, 12.48it/s, compare_sentiment.json] 20%|██        | 2/10 [00:00<00:00, 12.48it/s, compare_sentiment.json] 20%|██        | 2/10 [00:00<00:00, 12.48it/s, compare_sentiment.json] 40%|████      | 4/10 [00:00<00:00, 12.49it/s, compare_sentiment.json] 40%|████      | 4/10 [00:00<00:00, 12.49it/s, compare_sentiment.json] 40%|████      | 4/10 [00:00<00:00, 12.49it/s, compare_sentiment.json] 60%|██████    | 6/10 [00:00<00:00, 11.13it/s, compare_sentiment.json] 60%|██████    | 6/10 [00:00<00:00, 11.13it/s, compare_sentiment.json] 60%|██████    | 6/10 [00:00<00:00, 11.13it/s, compare_sentiment.json] 80%|████████  | 8/10 [00:00<00:00, 10.73it/s, compare_sentiment.json] 80%|████████  | 8/10 [00:00<00:00, 10.73it/s, compare_sentiment.json] 80%|████████  | 8/10 [00:10<00:00, 10.73it/s, compare_sentiment.json] 90%|█████████ | 9/10 [01:15<00:16, 16.45s/it, compare_sentiment.json] 90%|█████████ | 9/10 [01:15<00:16, 16.45s/it, compare_sentiment.json]100%|██████████| 10/10 [01:15<00:00,  7.53s/it, compare_sentiment.json]
+  0%|          | 0/10 [00:00<?, ?it/s]  0%|          | 0/10 [00:00<?, ?it/s, which_people_about_device_synonims.json]  0%|          | 0/10 [00:00<?, ?it/s, which_people_about_device_synonims.json] 20%|██        | 2/10 [00:00<00:00, 10.14it/s, which_people_about_device_synonims.json] 20%|██        | 2/10 [00:00<00:00, 10.14it/s, which_people_about_device_synonims.json] 20%|██        | 2/10 [00:00<00:00, 10.14it/s, which_people_about_device_synonims.json] 40%|████      | 4/10 [00:00<00:00, 11.41it/s, which_people_about_device_synonims.json] 40%|████      | 4/10 [00:00<00:00, 11.41it/s, which_people_about_device_synonims.json] 40%|████      | 4/10 [00:00<00:00, 11.41it/s, which_people_about_device_synonims.json] 60%|██████    | 6/10 [00:00<00:00, 11.84it/s, which_people_about_device_synonims.json] 60%|██████    | 6/10 [00:00<00:00, 11.84it/s, which_people_about_device_synonims.json] 60%|██████    | 6/10 [00:00<00:00, 11.84it/s, which_people_about_device_synonims.json] 80%|████████  | 8/10 [00:00<00:00, 11.99it/s, which_people_about_device_synonims.json] 80%|████████  | 8/10 [00:00<00:00, 11.99it/s, which_people_about_device_synonims.json] 80%|████████  | 8/10 [00:00<00:00, 11.99it/s, which_people_about_device_synonims.json]100%|██████████| 10/10 [00:00<00:00, 12.09it/s, which_people_about_device_synonims.json]100%|██████████| 10/10 [00:00<00:00, 11.83it/s, which_people_about_device_synonims.json]
+  0%|          | 0/10 [00:00<?, ?it/s]  0%|          | 0/10 [00:00<?, ?it/s, same_devices.json] 10%|█         | 1/10 [01:53<16:58, 113.17s/it, same_devices.json] 10%|█         | 1/10 [01:53<16:58, 113.17s/it, same_devices.json] 10%|█         | 1/10 [01:53<16:58, 113.17s/it, same_devices.json] 30%|███       | 3/10 [01:53<03:25, 29.40s/it, same_devices.json]  30%|███       | 3/10 [01:53<03:25, 29.40s/it, same_devices.json] 30%|███       | 3/10 [01:53<03:25, 29.40s/it, same_devices.json] 50%|█████     | 5/10 [01:53<01:11, 14.33s/it, same_devices.json] 50%|█████     | 5/10 [01:53<01:11, 14.33s/it, same_devices.json] 50%|█████     | 5/10 [02:04<01:11, 14.33s/it, same_devices.json] 60%|██████    | 6/10 [03:08<02:02, 30.67s/it, same_devices.json] 60%|██████    | 6/10 [03:08<02:02, 30.67s/it, same_devices.json] 60%|██████    | 6/10 [03:08<02:02, 30.67s/it, same_devices.json] 80%|████████  | 8/10 [03:08<00:34, 17.39s/it, same_devices.json] 80%|████████  | 8/10 [03:08<00:34, 17.39s/it, same_devices.json] 80%|████████  | 8/10 [03:24<00:34, 17.39s/it, same_devices.json] 90%|█████████ | 9/10 [04:39<00:34, 34.80s/it, same_devices.json] 90%|█████████ | 9/10 [04:39<00:34, 34.80s/it, same_devices.json]100%|██████████| 10/10 [04:39<00:00, 27.98s/it, same_devices.json]
+  0%|          | 0/10 [00:00<?, ?it/s]  0%|          | 0/10 [00:00<?, ?it/s, dominant_opinion.json] 10%|█         | 1/10 [00:00<00:01,  8.21it/s, dominant_opinion.json] 10%|█         | 1/10 [00:00<00:01,  8.21it/s, dominant_opinion.json] 10%|█         | 1/10 [00:00<00:01,  8.21it/s, dominant_opinion.json] 30%|███       | 3/10 [00:00<00:00,  9.39it/s, dominant_opinion.json] 30%|███       | 3/10 [00:00<00:00,  9.39it/s, dominant_opinion.json] 30%|███       | 3/10 [00:00<00:00,  9.39it/s, dominant_opinion.json] 50%|█████     | 5/10 [00:00<00:00,  9.69it/s, dominant_opinion.json] 50%|█████     | 5/10 [00:00<00:00,  9.69it/s, dominant_opinion.json] 50%|█████     | 5/10 [00:00<00:00,  9.69it/s, dominant_opinion.json] 70%|███████   | 7/10 [00:00<00:00, 10.59it/s, dominant_opinion.json] 70%|███████   | 7/10 [00:00<00:00, 10.59it/s, dominant_opinion.json] 70%|███████   | 7/10 [00:00<00:00, 10.59it/s, dominant_opinion.json] 90%|█████████ | 9/10 [00:00<00:00, 11.25it/s, dominant_opinion.json] 90%|█████████ | 9/10 [00:00<00:00, 11.25it/s, dominant_opinion.json]100%|██████████| 10/10 [00:00<00:00, 10.76it/s, dominant_opinion.json]
+  0%|          | 0/10 [00:00<?, ?it/s]  0%|          | 0/10 [00:00<?, ?it/s, device_sentiment.json]  0%|          | 0/10 [00:00<?, ?it/s, device_sentiment.json] 20%|██        | 2/10 [00:00<00:00,  9.72it/s, device_sentiment.json] 20%|██        | 2/10 [00:00<00:00,  9.72it/s, device_sentiment.json] 20%|██        | 2/10 [00:00<00:00,  9.72it/s, device_sentiment.json] 40%|████      | 4/10 [00:00<00:00, 11.16it/s, device_sentiment.json] 40%|████      | 4/10 [00:00<00:00, 11.16it/s, device_sentiment.json] 40%|████      | 4/10 [00:00<00:00, 11.16it/s, device_sentiment.json] 60%|██████    | 6/10 [00:00<00:00, 11.83it/s, device_sentiment.json] 60%|██████    | 6/10 [00:00<00:00, 11.83it/s, device_sentiment.json] 60%|██████    | 6/10 [00:00<00:00, 11.83it/s, device_sentiment.json] 80%|████████  | 8/10 [00:00<00:00, 12.08it/s, device_sentiment.json] 80%|████████  | 8/10 [00:00<00:00, 12.08it/s, device_sentiment.json] 80%|████████  | 8/10 [00:00<00:00, 12.08it/s, device_sentiment.json]100%|██████████| 10/10 [00:00<00:00, 12.23it/s, device_sentiment.json]100%|██████████| 10/10 [00:00<00:00, 11.85it/s, device_sentiment.json]
+compare_sentiment
+  0%|          | 0/10 [00:00<?, ?it/s]100%|██████████| 10/10 [00:00<00:00, 6048.02it/s]
+dominant_opinion
+  0%|          | 0/10 [00:00<?, ?it/s]100%|██████████| 10/10 [00:00<00:00, 6483.70it/s]
+same_devices
+  0%|          | 0/10 [00:00<?, ?it/s]100%|██████████| 10/10 [00:00<00:00, 10925.51it/s]
+compare_questions
+  0%|          | 0/10 [00:00<?, ?it/s]100%|██████████| 10/10 [00:00<00:00, 11040.55it/s]
+which_people_about_device_synonims
+  0%|          | 0/10 [00:00<?, ?it/s]100%|██████████| 10/10 [00:00<00:00, 11014.45it/s]
+similar_manf_opinions
+  0%|          | 0/10 [00:00<?, ?it/s]100%|██████████| 10/10 [00:00<00:00, 10894.30it/s]
+last_opinion
+  0%|          | 0/10 [00:00<?, ?it/s]100%|██████████| 10/10 [00:00<00:00, 11104.86it/s]
+similar_device_opinions
+  0%|          | 0/10 [00:00<?, ?it/s]100%|██████████| 10/10 [00:00<00:00, 10956.91it/s]
+which_people_about_device
+  0%|          | 0/10 [00:00<?, ?it/s]100%|██████████| 10/10 [00:00<00:00, 10988.48it/s]
+compare_sentiment_synonims
+  0%|          | 0/10 [00:00<?, ?it/s]100%|██████████| 10/10 [00:00<00:00, 11020.24it/s]
+device_sentiment
+  0%|          | 0/10 [00:00<?, ?it/s]100%|██████████| 10/10 [00:00<00:00, 11087.24it/s]
+same_manufacturer
+  0%|          | 0/10 [00:00<?, ?it/s]100%|██████████| 10/10 [00:00<00:00, 10982.73it/s]
+############ DONE ############

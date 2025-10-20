@@ -61,11 +61,12 @@ LOG_SCORES_DIRNAME = 'scores'
 
 LLM_URL = "https://985f-109-252-76-222.ngrok-free.app/llama"
 
+
 def generate(prompt: str) -> str:
     flag = True
     while flag:
         try:
-            response = requests.post(LLM_URL, params = {"prompt": prompt})
+            response = requests.post(LLM_URL, params={"prompt": prompt})
             resp = response.json()["response"]
             flag = False
         except (requests.ConnectionError, requests.ReadTimeout) as e:
@@ -74,6 +75,7 @@ def generate(prompt: str) -> str:
 
     return resp
 
+
 def check_create_dir(new_dir_path: str):
     if os.path.exists(new_dir_path):
         print("Директория существует")
@@ -81,20 +83,24 @@ def check_create_dir(new_dir_path: str):
     else:
         os.mkdir(new_dir_path)
 
+
 def save_json(data: Dict[str, object], save_path: str):
     dump = json.dumps(data, ensure_ascii=False, indent=1)
     with open(save_path, 'w', encoding='utf-8') as fd:
         fd.write(dump)
 
-def load_json(load_path: str) -> Dict[str,object]:
+
+def load_json(load_path: str) -> Dict[str, object]:
     with open(load_path, 'r', encoding='utf-8') as fd:
         data = json.loads(fd.read())
     return data
+
 
 def round5(number: float) -> float:
     return round(number, 5)
 
 ###############
+
 
 def preproc_tripletes(raw_triplets: List[List[str]], META) -> str:
     formated_triplets = []
@@ -103,30 +109,37 @@ def preproc_tripletes(raw_triplets: List[List[str]], META) -> str:
         return "empty."
 
     for triplete in raw_triplets:
-        #print(len(triplete))
+        # print(len(triplete))
 
         if triplete[1]["type"] == "manufacturer":
-            device_node, company_node = (triplete[0], triplete[2]) if 'device' in triplete[0]["labels"] else (triplete[2], triplete[0])
-            formated_triplete = META["TRPLETE_PROMPT_TEMPLATES"]["manufacturer"].format(d=device_node['name'], c=company_node['name'])
+            device_node, company_node = (
+                triplete[0], triplete[2]) if 'device' in triplete[0]["labels"] else (triplete[2], triplete[0])
+            formated_triplete = META["TRPLETE_PROMPT_TEMPLATES"]["manufacturer"].format(
+                d=device_node['name'], c=company_node['name'])
 
         elif triplete[1]["type"] == "opinion":
-            device_node, feature_node = (triplete[0], triplete[2]) if 'device' in triplete[0]["labels"] else (triplete[2], triplete[0])
+            device_node, feature_node = (
+                triplete[0], triplete[2]) if 'device' in triplete[0]["labels"] else (triplete[2], triplete[0])
             relation = triplete[1]
             formated_triplete = META["TRPLETE_PROMPT_TEMPLATES"]["opinion"].format(
                 p=relation["person"], o=relation["opinion"].replace('_', ' '),
-                t=relation["time"], f=feature_node['name'],d=device_node['name'])
+                t=relation["time"], f=feature_node['name'], d=device_node['name'])
 
         elif triplete[1]["type"] == "has_device":
-            device_node, person_node = (triplete[0], triplete[2]) if 'device' in triplete[0]["labels"] else (triplete[2], triplete[0])
-            formated_triplete = META["TRPLETE_PROMPT_TEMPLATES"]['has_device'].format(d=device_node['name'], p=person_node['name'])
+            device_node, person_node = (
+                triplete[0], triplete[2]) if 'device' in triplete[0]["labels"] else (triplete[2], triplete[0])
+            formated_triplete = META["TRPLETE_PROMPT_TEMPLATES"]['has_device'].format(
+                d=device_node['name'], p=person_node['name'])
 
         else:
             raise ValueError
 
         formated_triplets.append(formated_triplete)
 
-    str_triplets = "\n".join(formated_triplets[:META["MAX_LIST_LEN"]] if META["MAX_LIST_LEN"] > 0 else formated_triplets)
+    str_triplets = "\n".join(
+        formated_triplets[:META["MAX_LIST_LEN"]] if META["MAX_LIST_LEN"] > 0 else formated_triplets)
     return str_triplets
+
 
 def generate_answers_from_triplets_file(qa_file: str, load_log_tmpdata_dir: str, save_log_tmpdata_dir: str, META: Dict, EVAL_DATADIR: str):
     print(qa_file)
@@ -139,8 +152,8 @@ def generate_answers_from_triplets_file(qa_file: str, load_log_tmpdata_dir: str,
         question = quiestion_item['question']
         prompt = META["QUESTION_PROMPT_TEMPLATE"].format(q=question, c=context)
 
-        #print()
-        #print(prompt)
+        # print()
+        # print(prompt)
 
         found_line = ""
         raw_answer = generate(prompt).strip()
@@ -153,24 +166,28 @@ def generate_answers_from_triplets_file(qa_file: str, load_log_tmpdata_dir: str,
         else:
             answer = raw_answer.split("\n")[1]
 
-        #print(answer)
+        # print(answer)
 
-        generated_answers.append({'generated_answer': answer, 'used_prompt': prompt})
+        generated_answers.append(
+            {'generated_answer': answer, 'used_prompt': prompt})
 
     save_json(generated_answers, f"{save_log_tmpdata_dir}/{qa_file}")
 
 ##############
+
 
 def measure_quality_from_answers_file(qa_file: str, gen_answers_dir: str, save_log_tmpdata_dir: str, EVAL_DATADIR, METRICS):
     print(qa_file)
     generated_answers_data = load_json(f"{gen_answers_dir}/{qa_file}")
     target_answers_data = load_json(f"{EVAL_DATADIR}/{qa_file}")
 
-    gen_answers = list(map(lambda item: item['generated_answer'], generated_answers_data))
-    trgt_answers = list(map(lambda item: item['answer'], target_answers_data))[:len(gen_answers)]
+    gen_answers = list(
+        map(lambda item: item['generated_answer'], generated_answers_data))
+    trgt_answers = list(map(lambda item: item['answer'], target_answers_data))[
+        :len(gen_answers)]
 
     b1_scores = METRICS.bleu1(gen_answers, trgt_answers)
-    b2_scores  = METRICS.bleu2(gen_answers, trgt_answers)
+    b2_scores = METRICS.bleu2(gen_answers, trgt_answers)
     rl_scores = METRICS.rougel(gen_answers, trgt_answers)
     m_scores = METRICS.meteor(gen_answers, trgt_answers)
     em_scores = METRICS.exact_match(gen_answers, trgt_answers)

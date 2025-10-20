@@ -3,12 +3,14 @@ from collections import defaultdict
 
 from .......utils.data_structs import create_id
 
+
 def rs_custom_parse(raw_response: str, **kwargs) -> Dict[str, object]:
     if len(raw_response) < 1:
-        raise ValueError
+        ValueError(f"raw_response: '{raw_response}'")
 
     raw_replacements = raw_response.lower()
-    raw_replacements = raw_replacements.split("[[")[-1] if "[[" in raw_replacements else raw_replacements.split("[\n[")[-1]
+    raw_replacements = raw_replacements.split(
+        "[[")[-1] if "[[" in raw_replacements else raw_replacements.split("[\n[")[-1]
     pairs = raw_replacements.replace("[", "").strip("]").split("],")
     triplets_to_remove = defaultdict(set)
     for pair in pairs:
@@ -26,6 +28,7 @@ def rs_custom_parse(raw_response: str, **kwargs) -> Dict[str, object]:
             continue
         str_new_triplet = splitted_pair[1].strip(''' \n'".,/''')
 
-        triplets_to_remove[create_id(str_new_triplet)].add(create_id(str_existing_triplet))
+        triplets_to_remove[create_id(str_new_triplet)].add(
+            create_id(str_existing_triplet))
 
     return triplets_to_remove

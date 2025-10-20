@@ -6,15 +6,16 @@
 import sys
 import os
 
-sys.path.insert(0, os.path.abspath("../../../.pai_venv/lib/python3.10/site-packages/"))
+sys.path.insert(0, os.path.abspath(
+    "../../../.pai_venv/lib/python3.10/site-packages/"))
 sys.path.insert(1, os.path.abspath("../../"))
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'Personal AI'
-copyright = '2024, Skoltech Applied AI Lab'
-author = 'Skoltech Applied AI Lab'
+copyright = '2025, Skoltech AI Center'
+author = 'Skoltech AI Center'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -34,33 +35,33 @@ extensions = [
 autodoc_typehints = "signature"
 autodoc_class_signature = "mixed"
 autodoc_member_order = 'bysource'
-#numpydoc_show_class_members = False
+# numpydoc_show_class_members = False
 
 # xelatex to solve Unicode problems https://github.com/sphinx-doc/sphinx/issues/4159
 latex_engine = 'xelatex'
 
 latex_elements = {
     'fontpkg': '''
-\setmainfont{FreeSerif}[
+\\setmainfont{FreeSerif}[
   UprightFont    = *,
   ItalicFont     = *Italic,
   BoldFont       = *Bold,
   BoldItalicFont = *BoldItalic
 ]
-\setsansfont{FreeSans}[
+\\setsansfont{FreeSans}[
   UprightFont    = *,
   ItalicFont     = *Oblique,
   BoldFont       = *Bold,
   BoldItalicFont = *BoldOblique,
 ]
-\setmonofont{FreeMono}[
+\\setmonofont{FreeMono}[
   UprightFont    = *,
   ItalicFont     = *Oblique,
   BoldFont       = *Bold,
   BoldItalicFont = *BoldOblique,
 ]
 ''',
- }
+}
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']

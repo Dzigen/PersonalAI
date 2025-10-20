@@ -1,20 +1,16 @@
+from typing import Union, Dict, Tuple
 from gigachat import GigaChat
 from gigachat.exceptions import ResponseError
+from time import time
 from gigachat.models import Chat, Messages
 from httpx import ConnectError, RemoteProtocolError
 
 # https://github.com/VRSEN/agency-swarm/issues/99
 # https://github.com/ai-forever/gigachat/blob/main/src/gigachat/client.py#L182
 
-from ..utils import AbstractAgentConnector, AgentConnectorConfig
+from .configs import DEFAULT_GIGACHAT_CONFIG
+from ..utils import AbstractAgentConnector, AgentConnectorConfig, LLMInferenceStat
 
-GIGACHAT_KEY = 'OWUwOGUzOWEtMjJiNi00YmMxLThmMmItNzMwNjM2MTI2YmYxOjg2ODdiOTVhLTZkNDctNGFjOC1iMmViLTEyNDA5MmFiN2Q5Mw=='
-
-DEFAULT_GIGACHAT_CONFIG = AgentConnectorConfig(
-    gen_strategy={'top_k': 1, 'temperature': 0.0},
-    credentials={'token': GIGACHAT_KEY, 'scope': 'GIGACHAT_API_CORP',
-                  'model': "GigaChat-Pro", 'verify_ssl_certs': False},
-    ext_params={'timeout': 560, 'trials': 5})
 
 class GigaChatConnector(AbstractAgentConnector):
     def __init__(self, config: AgentConnectorConfig = DEFAULT_GIGACHAT_CONFIG) -> None:
@@ -22,11 +18,12 @@ class GigaChatConnector(AbstractAgentConnector):
         self.trials = config.ext_params['trials']
         self.config = config
         self.open_connection()
+        self.CONNECTOR_KW = 'gigachat'
 
     def open_connection(self):
         self.giga_model = GigaChat(
             credentials=self.config.credentials['token'], scope=self.config.credentials['scope'],
-            verify_ssl_certs=self.config.credentials['verify_ssl_certs'], model=self.config.credentials['model'],
+            verify_ssl_certs=self.config.ext_params['verify_ssl_certs'], model=self.config.credentials['model'],
             timeout=self.config.ext_params['timeout'])
 
     def check_connection(self):
@@ -36,13 +33,17 @@ class GigaChatConnector(AbstractAgentConnector):
     def close_connection(self):
         self.giga_model.close()
 
-    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
-        msgs = [Messages(role='system', content=system_prompt), Messages(role='user', content=user_prompt)]
+    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
+                 gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
+        msgs = [Messages(role='system', content=system_prompt),
+                Messages(role='user', content=user_prompt)]
         if assistant_prompt is not None:
             msgs.append(Messages(role='assistant', content=assistant_prompt))
 
-        chat = Chat(messages=msgs, **self.gen_strategy)
+        gen_strategy = self.gen_strategy if gen_strategy is None else gen_strategy
+        chat = Chat(messages=msgs, **gen_strategy)
 
+        ai_start_time = time()
         flag, counter = True, 0
         while flag:
             try:
@@ -54,5 +55,15 @@ class GigaChatConnector(AbstractAgentConnector):
                     raise ConnectError
                 else:
                     self.open_connection()
+        ai_end_time = time()
 
-        return response.choices[0].message.content
+        inference_info = LLMInferenceStat(
+            prompt_tokens_amount=response.usage.prompt_tokens,
+            generated_tokens_amount=response.usage.completion_tokens,
+            inference_elapsed_time=round(ai_end_time - ai_start_time, 2)
+        )
+
+        return response.choices[0].message.content, inference_info
+
+    def __del__(self):
+        self.close_connection()

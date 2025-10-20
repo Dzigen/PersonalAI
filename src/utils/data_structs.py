@@ -3,6 +3,9 @@ from typing import List, Union, Tuple, Dict
 from enum import Enum
 import hashlib
 
+from src.db_drivers.vector_driver import VectorDBInstance
+
+
 class NodeType(Enum):
     """Доступные типы вершин."""
     #: Вершина хранит атомарную сущность.
@@ -14,12 +17,14 @@ class NodeType(Enum):
     #: Вершина хранит временную информацию.
     time = "time"
 
+
 NODES_TYPES_MAP = {
     'object': NodeType.object,
     'hyper': NodeType.hyper,
     'episodic': NodeType.episodic,
     'time': NodeType.time,
 }
+
 
 class RelationType(Enum):
     """Доступные типы связей/триплетов."""
@@ -32,12 +37,14 @@ class RelationType(Enum):
     #: Связывает пары вершин ('episodic', 'time') и ('hyper', 'time').
     time = "time"
 
+
 RELATIONS_TYPES_MAP = {
     'simple': RelationType.simple,
     'hyper': RelationType.hyper,
     'episodic': RelationType.episodic,
     'time': RelationType.time,
 }
+
 
 @dataclass
 class Node:
@@ -47,11 +54,12 @@ class Node:
     #: Тип вершины.
     type: NodeType
     #: Дополнительные свойства вершины.
-    prop: dict = field(default_factory=lambda: {})
+    prop: dict = field(default_factory=lambda: dict())
     #: Строковое представление вершины.
     stringified: str = None
     #: Идентификатор вершины, полученный на основе её строкового представления.
     id: str = None
+
 
 @dataclass
 class Relation:
@@ -61,10 +69,11 @@ class Relation:
     # Тип связи.
     type: RelationType
     #: Дополнительные свойства связи.
-    prop: dict = field(default_factory=lambda: {})
+    prop: dict = field(default_factory=lambda: dict())
     #: Идентификатор связи, полученный на основе строкового представления триплета, в котором она (связь) находится.
     #: Данное значение отличается от значения в поле id объекта класса Triplet.
     id: str = None
+
 
 @dataclass
 class Triplet:
@@ -81,6 +90,7 @@ class Triplet:
     #: Данное значение отличается от значения в поле id объекта класса Relation.
     id: str = None
 
+
 class BaseCreator:
     @staticmethod
     def add_str_props(obj: Union[Relation, Node], obj_str: str) -> str:
@@ -93,14 +103,16 @@ class BaseCreator:
         :return: Обогащённое строковое представление объекта.
         :rtype: str
         """
-        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in ['name', 'type', 'raw_time', 'time', 'str_id', 't_id']])
+        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in [
+                             'name', 'type', 'raw_time', 'time', 'str_id', 't_id']])
         if str_prop:
             obj_str += f" ({str_prop})"
         return obj_str
 
+
 class RelationCreator(BaseCreator):
     @staticmethod
-    def create(r_type: Union[str, RelationType], name: str = None,  prop: Dict = None) -> Relation:
+    def create(r_type: Union[str, RelationType], name: str = None, prop: Dict = None) -> Relation:
         """Метод предназначен для создания структуры данных связи с указанным содержанием.
 
         :param r_type: Тип создаваемой связи в строковой- или Enum-структуре данных.
@@ -112,7 +124,7 @@ class RelationCreator(BaseCreator):
         :return: Созданная структура данных связи.
         :rtype: Relation
         """
-        if type(r_type) is not RelationType:
+        if not isinstance(r_type, RelationType):
             formated_r_type = RELATIONS_TYPES_MAP.get(r_type, None)
             if formated_r_type is None:
                 raise ValueError
@@ -128,6 +140,7 @@ class RelationCreator(BaseCreator):
 
         rel = Relation(name=name, type=r_type, prop=prop)
         return rel
+
 
 class NodeCreator(BaseCreator):
     @staticmethod
@@ -145,7 +158,7 @@ class NodeCreator(BaseCreator):
         :return: Созданная структура данных вершины.
         :rtype: Node
         """
-        if type(n_type) is not NodeType:
+        if not isinstance(n_type, NodeType):
             formated_n_type = NODES_TYPES_MAP.get(n_type, None)
             if formated_n_type is None:
                 raise ValueError
@@ -162,7 +175,7 @@ class NodeCreator(BaseCreator):
         return node
 
     @staticmethod
-    def stringify(node: Node) -> Tuple[str,str]:
+    def stringify(node: Node) -> Tuple[str, str]:
         """Метод предназначен для приведения структуры данных вершины в её строковое представление.
 
         :param triplet: Структура данных вершины.
@@ -176,6 +189,7 @@ class NodeCreator(BaseCreator):
         str_node += NodeCreator.add_str_props(node, str(node.name))
         return node.id, str_node
 
+
 def create_id_for_node_pair(node1_id: str, node2_id: str) -> str:
     """Метод предназначен для условной генерации идентификатора к паре вершин. Вершины представлены в виде их собственных идентификаторов.
     При указании такой же пары вершин, но в другом порядке, полученный идентификатор не изменится: инвариант относительно перестановок.
@@ -187,16 +201,19 @@ def create_id_for_node_pair(node1_id: str, node2_id: str) -> str:
     :return: Идентификатор пары вершин.
     :rtype: str
     """
-    start_id, end_id = (node1_id, node2_id) if node1_id > node2_id else (node2_id, node1_id)
-    return hashlib.md5((start_id+end_id).encode()).hexdigest()
+    start_id, end_id = (node1_id, node2_id) if node1_id > node2_id else (
+        node2_id, node1_id)
+    return hashlib.md5((start_id + end_id).encode()).hexdigest()
+
 
 def create_id(seed: str) -> str:
     return hashlib.md5(seed.encode()).hexdigest()
 
+
 class TripletCreator(BaseCreator):
     @staticmethod
     def create(start_node: Node, relation: Relation, end_node: Node,
-            add_stringified_triplet: bool = True, t_id: str = None) -> Triplet:
+               add_stringified_triplet: bool = True, t_id: str = None) -> Triplet:
         """Метод предназначен для создания структуры данных триплета с указанным содержанием.
         Триплет является ориентированным: у связи между вершинами (парой subject/object) есть направление.
 
@@ -223,14 +240,14 @@ class TripletCreator(BaseCreator):
 
         if t_id is None:
             triplet.id = create_id(''.join(
-                [triplet.start_node.id,triplet.relation.id,triplet.end_node.id]))
+                [triplet.start_node.id, triplet.relation.id, triplet.end_node.id]))
         else:
             triplet.id = t_id
 
         return triplet
 
     @staticmethod
-    def stringify(triplet: Triplet) -> Tuple[str,str]:
+    def stringify(triplet: Triplet) -> Tuple[str, str]:
         """Метод предназначен для приведения Triplet-структуры данных в её строковое представление. Строковое представление зависит от типа триплета (Triplet.relation.type):
         (1) simple - используется информация из обеих вершин и связи; (2) hyper/episodic - используется информация только из конечной (object) вершины.
 
@@ -245,17 +262,19 @@ class TripletCreator(BaseCreator):
             str_triplet = ""
             if "time" in triplet.end_node.prop.keys():
                 str_triplet += triplet.end_node.prop["time"] + ": "
-            str_triplet += TripletCreator.add_str_props(triplet.end_node, str(triplet.end_node.name))
+            str_triplet += TripletCreator.add_str_props(
+                triplet.end_node, str(triplet.end_node.name))
 
         elif rel_type == RelationType.simple:
             str_triplet = ""
             if "time" in triplet.relation.prop.keys():
                 str_triplet += triplet.relation.prop["time"] + ": "
             str_triplet += " ".join([
-                TripletCreator.add_str_props(triplet.start_node, str(triplet.start_node.name)),
-                TripletCreator.add_str_props(triplet.relation, str(triplet.relation.name)),
+                TripletCreator.add_str_props(
+                    triplet.start_node, str(triplet.start_node.name)),
+                TripletCreator.add_str_props(
+                    triplet.relation, str(triplet.relation.name)),
                 TripletCreator.add_str_props(triplet.end_node, str(triplet.end_node.name))])
-
 
         else:
             raise KeyError
@@ -304,10 +323,10 @@ class TripletCreator(BaseCreator):
             n_type=json_triplet['object']['type'],
             prop=json_triplet['object'].get('prop', None))
 
-        converted_triplet = TripletCreator.create(start_node=subject, relation=relation, end_node=object)
+        converted_triplet = TripletCreator.create(
+            start_node=subject, relation=relation, end_node=object)
         return converted_triplet
 
-#from ..embedding_functions import VectorDBInstance
 
 @dataclass
 class QueryInfo:
@@ -324,6 +343,44 @@ class QueryInfo:
     :type  linked_nodes_by_entities: List[object]
     """
     query: str
-    entities: List[str] = None
-    linked_nodes: List[object] = None
-    linked_nodes_by_entities: List[object] = None
+    entities: Union[None, List[str]] = None
+    linked_nodes: Union[None, List[VectorDBInstance]] = None
+    linked_nodes_by_entities: Union[None, List[VectorDBInstance]] = None
+
+    def to_str(self):
+        str_entities = ';'.join(sorted(self.entities)
+                                ) if self.entities is not None else "None"
+        str_lnodes = ';'.join(sorted(list(map(lambda item: item.document,
+                              self.linked_nodes)))) if self.linked_nodes is not None else "None"
+        str_lnodes_by_entities = ';'.join(sorted(list(map(lambda item: ';;'.join(
+            item), self.linked_nodes_by_entities)))) if self.linked_nodes_by_entities is not None else "None"
+        return f"{self.query}|{str_entities}|{str_lnodes}|{str_lnodes_by_entities}"
+
+
+@dataclass
+class SearchPlanInfo:
+    base_query: str
+    search_steps: List[str] = field(default_factory=lambda: list())
+    steps_answers: List[str] = field(default_factory=lambda: list())
+
+    def to_str(self):
+        return f"{self.base_query}|{self.search_steps}|{self.steps_answers}"
+
+
+@dataclass
+class QueryPreprocessingInfo:
+    base_query: str
+    denoised_query: Union[str, None] = None
+    enchanced_query: Union[str, None] = None
+    decomposed_query: Union[List[str], None] = None
+
+    processed_query: Union[List[str], None] = None
+
+    def to_str(self):
+        str_denoised_query = self.denoised_query if self.denoised_query is not None else "None"
+        str_enchanced_query = self.enchanced_query if self.enchanced_query is not None else "None"
+        str_decomposed_query = ';'.join(
+            self.decomposed_query) if self.decomposed_query is not None else "None"
+        str_processed_query = ';'.join(
+            self.processed_query) if self.processed_query is not None else "None"
+        return f"{self.base_query}|{str_denoised_query}|{str_enchanced_query}|{str_decomposed_query}|{str_processed_query}"

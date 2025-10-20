@@ -1,1 +1,1 @@
-from .suite import KWE_GEN_SUITE_V2
+from .suite import KWE_SUITE_V2

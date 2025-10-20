@@ -1,5 +1,4 @@
 import pytest
-
 import sys
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
@@ -21,11 +20,11 @@ SIMPLE_REL2 = RelationCreator.create(r_type=RelationType.simple, name='wsx')
 SIMPLE_REL3 = RelationCreator.create(r_type=RelationType.simple, name='edc')
 
 SIMPLE_TRIPLET1 = TripletCreator.create(
-    start_node=OBJECT_NODE1,relation=SIMPLE_REL1,end_node=OBJECT_NODE2)
+    start_node=OBJECT_NODE1, relation=SIMPLE_REL1, end_node=OBJECT_NODE2)
 SIMPLE_TRIPLET2 = TripletCreator.create(
-    start_node=OBJECT_NODE6,relation=SIMPLE_REL2,end_node=OBJECT_NODE7)
+    start_node=OBJECT_NODE6, relation=SIMPLE_REL2, end_node=OBJECT_NODE7)
 SIMPLE_TRIPLET3 = TripletCreator.create(
-    start_node=OBJECT_NODE6,relation=SIMPLE_REL3,end_node=OBJECT_NODE8)
+    start_node=OBJECT_NODE6, relation=SIMPLE_REL3, end_node=OBJECT_NODE8)
 
 HYPER_NODE1 = NodeCreator.create(n_type=NodeType.hyper, name="qqq www eee")
 HYPER_NODE2 = NodeCreator.create(n_type=NodeType.hyper, name="aaa sss ddd")
@@ -56,7 +55,7 @@ HYPER_TRIPLET6 = TripletCreator.create(
 HYPER_TRIPLET7 = TripletCreator.create(
     start_node=OBJECT_NODE8, relation=HYPER_REL, end_node=HYPER_NODE4)
 HYPER_TRIPLET8 = TripletCreator.create(
-    start_node=OBJECT_NODE7,relation=HYPER_REL,end_node=HYPER_NODE4)
+    start_node=OBJECT_NODE7, relation=HYPER_REL, end_node=HYPER_NODE4)
 HYPER_TRIPLET9 = TripletCreator.create(
     start_node=OBJECT_NODE6, relation=HYPER_REL, end_node=HYPER_NODE5)
 HYPER_TRIPLET10 = TripletCreator.create(
@@ -141,7 +140,8 @@ TRIPLET_ANSWER2 = f'[["{SIMPLE_TRIPLET3.start_node.name}, {SIMPLE_TRIPLET3.relat
 # 6. найдено несколько устаревших триплетов (итеративная замена того же ребра)
 TEST_SIMPLE_TRIPLET6 = TripletCreator.create(
     start_node=OBJECT_NODE1,
-    relation=RelationCreator.create(r_type=RelationType.simple, name='pkn pppp'),
+    relation=RelationCreator.create(
+        r_type=RelationType.simple, name='pkn pppp'),
     end_node=OBJECT_NODE2
 )
 TRIPLET_ANSWER3 = f'[["{SIMPLE_TRIPLET1.start_node.name}, {SIMPLE_TRIPLET1.relation.name}, {SIMPLE_TRIPLET1.end_node.name}" -> "{TEST_SIMPLE_TRIPLET4.start_node.name}, {TEST_SIMPLE_TRIPLET4.relation.name}, {TEST_SIMPLE_TRIPLET4.end_node.name}"], ["{TEST_SIMPLE_TRIPLET4.start_node.name}, {TEST_SIMPLE_TRIPLET4.relation.name}, {TEST_SIMPLE_TRIPLET4.end_node.name}" -> "{TEST_SIMPLE_TRIPLET6.start_node.name}, {TEST_SIMPLE_TRIPLET6.relation.name}, {TEST_SIMPLE_TRIPLET6.end_node.name}"]]'
@@ -198,7 +198,8 @@ BAD_HYPER_ANSWER = f'[{TEST_HYPER_TRIPLET4.end_node.name} {HYPER_NODE1.name}]'
 
 # 1.1. нуль сопоставленных object-вершин
 TEST_O_EPISODIC1 = TripletCreator.create(
-    start_node=NodeCreator.create(n_type=NodeType.object, name='iiii jjjj nnn'),
+    start_node=NodeCreator.create(
+        n_type=NodeType.object, name='iiii jjjj nnn'),
     relation=EPISODIC_REL,
     end_node=EPISODIC_NODE1)
 
@@ -230,8 +231,8 @@ TEST_H_EPISODIC2 = TripletCreator.create(
 )
 
 # 1.3. найден один устаревший триплет
-TEST_DELETE_TRIPLETS3 = [HYPER_TRIPLET1,HYPER_TRIPLET2,HYPER_TRIPLET3,
-                        EPISODIC_TRIPLET1, EPISODIC_TRIPLET2, EPISODIC_TRIPLET4]
+TEST_DELETE_TRIPLETS3 = [HYPER_TRIPLET1, HYPER_TRIPLET2, HYPER_TRIPLET3,
+                         EPISODIC_TRIPLET1, EPISODIC_TRIPLET2, EPISODIC_TRIPLET4]
 
 # 2. найдено несколько устаревших триплетов
 

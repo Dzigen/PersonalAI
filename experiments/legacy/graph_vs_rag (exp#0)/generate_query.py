@@ -21,5 +21,6 @@ Question: Leonars has positive, negative or neutral opinion about Front camera o
 Query: """
 
 res = pipeline(prompt)
-queries_info = res[0]["generated_text"].split(prompt)[-1].split("\n")[0].strip()
+queries_info = res[0]["generated_text"].split(
+    prompt)[-1].split("\n")[0].strip()
 print(queries_info)

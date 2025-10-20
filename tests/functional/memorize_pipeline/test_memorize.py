@@ -1,32 +1,45 @@
 import pytest
 from typing import List, Dict
 from tqdm import tqdm
-
 import sys
+import flatdict
+
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.pipelines.memorize import MemPipeline, MemPipelineConfig
 from src.kg_model import KnowledgeGraphModel
+from src.pipelines.memorize import MemPipeline, MemPipelineConfig
+from .cases import KV_CACHE_CONFIG, MEM_POPULATED_TEST_CASES
 
-from cases import MEM_CONFIG1, MEM_CONFIG2, KV_CACHE_CONFIG, RAW_TEXTS_EN
+def assert_kgmodel_count(kg_model: KnowledgeGraphModel, func):
+    count = kg_model.count_items(detailed=True)
+    print(count)
+    real_counts = dict(flatdict.FlatDict(count, delimiter='.'))
+    for c_name, c_value in real_counts.items():
+        if kg_model.nodestree_model is None and c_name.startswith('nodestree_info'):
+            continue
+        else:
+            if c_name.endswith('root'):
+                assert c_value == 1
+            else:
+                assert func(c_value,0)
 
-@pytest.mark.parametrize("mem_config, raw_texts, use_kv_cache, clear_kv_cache", [
-    [MEM_CONFIG1, RAW_TEXTS_EN, True, False],
-    [MEM_CONFIG1, RAW_TEXTS_EN, True, True],
-    [MEM_CONFIG2, RAW_TEXTS_EN, True, False],
-    [MEM_CONFIG2, RAW_TEXTS_EN, True, True]])
+def assert_cache_count(mem_pipeline: MemPipeline, func):
+    count = mem_pipeline.get_cache_stat()
+    print(count)
+    real_counts = dict(flatdict.FlatDict(count, delimiter='.'))
+    for c_name, c_value in real_counts.items():
+        if c_name.startswith("updator"):
+            assert c_value in [None, 0]
+        assert func(c_value, 0)
+
+@pytest.mark.parametrize("mem_config, raw_texts, use_kv_cache, clear_kv_cache, kg_model", MEM_POPULATED_TEST_CASES, indirect=['kg_model'])
 def test_mem_pipeline(mem_config: MemPipelineConfig, raw_texts: List[str],
                       use_kv_cache: bool, clear_kv_cache: bool, kg_model: KnowledgeGraphModel):
     kg_model.clear()
-
-    g_items_count = kg_model.graph_struct.count_items()
-    assert g_items_count['triplets'] == 0
-    assert g_items_count['nodes'] == 0
-    e_items_count = kg_model.embeddings_struct.count_items()
-    assert e_items_count['nodes'] == 0
-    assert e_items_count['triplets'] == 0
+    assert_kgmodel_count(kg_model, lambda a,b: a == b)
+    kg_model.check_consistency()
 
     kv_cache_config = None
     if use_kv_cache:
@@ -36,22 +49,14 @@ def test_mem_pipeline(mem_config: MemPipelineConfig, raw_texts: List[str],
     for text in tqdm(raw_texts):
         _, status = mem_pipeline.remember(text)
         assert status.status.value == 0
+    kg_model.check_consistency()
 
-    mem_pipeline.updator.kg_model.graph_struct.db_conn.close_connection()
-    mem_pipeline.updator.kg_model.embeddings_struct.vectordbs['nodes'].close_connection()
-    mem_pipeline.updator.kg_model.embeddings_struct.vectordbs['triplets'].close_connection()
-
+    assert_kgmodel_count(kg_model, lambda a,b: a > b)
     if use_kv_cache:
-        if clear_kv_cache:
-            mem_pipeline.extractor.thesises_extraction_solver.cachekv.kv_conn.clear()
-            mem_pipeline.extractor.triplets_extraction_solver.cachekv.kv_conn.clear()
-            mem_pipeline.updator.replace_hyper_solver.cachekv.kv_conn.clear()
-            mem_pipeline.updator.replace_simple_solver.cachekv.kv_conn.clear()
+        assert_cache_count(mem_pipeline, lambda a,b: (a is None) or (a > b))
 
-        mem_pipeline.extractor.thesises_extraction_solver.cachekv.kv_conn.close_connection()
-        mem_pipeline.extractor.triplets_extraction_solver.cachekv.kv_conn.close_connection()
-        mem_pipeline.updator.replace_hyper_solver.cachekv.kv_conn.close_connection()
-        mem_pipeline.updator.replace_simple_solver.cachekv.kv_conn.close_connection()
+    if use_kv_cache and clear_kv_cache:
+        mem_pipeline.clear_kv_caches()
+        assert_cache_count(mem_pipeline, lambda a,b: (a is None) or (a == b))
 
-    mem_pipeline.extractor.agent.close_connection()
-    mem_pipeline.updator.agent.close_connection()
+    kg_model.clear()

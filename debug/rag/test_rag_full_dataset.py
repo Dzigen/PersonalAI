@@ -15,11 +15,13 @@ def test(n_u, n_d, utt_emb, dialogs_emb, dataset, utterances, dialogs, add_manf_
         retrieved = ""
         if n_u > 0:
             retrieved += "\nRelevant utterances:\n"
-            best_ids = (utt_emb @ task["embedding"]).topk(n_u).indices.cpu().detach().numpy()
+            best_ids = (utt_emb @ task["embedding"]
+                        ).topk(n_u).indices.cpu().detach().numpy()
             retrieved += "\n".join(utterances[best_ids])
         if n_d > 0:
             retrieved += "\n\nRelevant dialogs:\n\n"
-            best_ids = (dialogs_emb @ task["embedding"]).topk(n_d).indices.cpu().detach().numpy()
+            best_ids = (dialogs_emb @ task["embedding"]
+                        ).topk(n_d).indices.cpu().detach().numpy()
             retrieved += "\n\n".join(dialogs[best_ids])
 
         question = task["question"]
@@ -43,7 +45,8 @@ Answer: '''
         log("==" * 30 + "\n")
 
 
-n_utt, n_dia, n_utt_mix, n_dia_mix = [5, 10, 15, 20, 25], [3, 5, 7, 10, 15], [5, 7, 10, 12, 15], [2, 3, 5, 7, 10]
+n_utt, n_dia, n_utt_mix, n_dia_mix = [5, 10, 15, 20, 25], [
+    3, 5, 7, 10, 15], [5, 7, 10, 12, 15], [2, 3, 5, 7, 10]
 log_path = "test_rag/full_1"
 batch_size = 16
 
@@ -62,13 +65,15 @@ for dialog in data["data"]:
 utterances, dialogs = list(utterances), list(dialogs)
 utt_emb = []
 for i in tqdm(range(len(utterances) // batch_size), "batches of utterances"):
-    utt_emb.append(embedder.embed(utterances[i * batch_size : (i + 1) * batch_size]))
-utt_emb = torch.cat(utt_emb, axis = 0)
+    utt_emb.append(embedder.embed(
+        utterances[i * batch_size: (i + 1) * batch_size]))
+utt_emb = torch.cat(utt_emb, axis=0)
 
 dialogs_emb = []
 for i in tqdm(range(len(dialogs) // batch_size), "batches of dialogs"):
-    dialogs_emb.append(embedder.embed(dialogs[i * batch_size : (i + 1) * batch_size]))
-dialogs_emb = torch.cat(dialogs_emb, axis = 0)
+    dialogs_emb.append(embedder.embed(
+        dialogs[i * batch_size: (i + 1) * batch_size]))
+dialogs_emb = torch.cat(dialogs_emb, axis=0)
 
 utterances, dialogs = np.array(utterances), np.array(dialogs)
 
@@ -90,18 +95,21 @@ names = list(dataset.keys())
 
 for n_u in n_utt:
     for question_type in names:
-        log.__init__(log_path + f"/utt_only_{n_u}_{question_type}" )
+        log.__init__(log_path + f"/utt_only_{n_u}_{question_type}")
         add_manf_info = question_type in for_manufactured_info
-        test(n_u, 0, utt_emb, dialogs_emb, dataset[question_type], utterances, dialogs, add_manf_info, agent, log)
+        test(n_u, 0, utt_emb, dialogs_emb,
+             dataset[question_type], utterances, dialogs, add_manf_info, agent, log)
 
 for n_d in n_dia:
     for question_type in names:
-        log.__init__(log_path + f"/dia_only_{n_d}_{question_type}" )
+        log.__init__(log_path + f"/dia_only_{n_d}_{question_type}")
         add_manf_info = question_type in for_manufactured_info
-        test(0, n_d, utt_emb, dialogs_emb, dataset[question_type], utterances, dialogs, add_manf_info, agent, log)
+        test(0, n_d, utt_emb, dialogs_emb,
+             dataset[question_type], utterances, dialogs, add_manf_info, agent, log)
 
 for n_u, n_d in zip(n_utt_mix, n_dia_mix):
     for question_type in names:
-        log.__init__(log_path + f"/mix_{n_u}_{n_d}_{question_type}" )
+        log.__init__(log_path + f"/mix_{n_u}_{n_d}_{question_type}")
         add_manf_info = question_type in for_manufactured_info
-        test(n_u, n_d, utt_emb, dialogs_emb, dataset[question_type], utterances, dialogs, add_manf_info, agent, log)
+        test(n_u, n_d, utt_emb, dialogs_emb,
+             dataset[question_type], utterances, dialogs, add_manf_info, agent, log)

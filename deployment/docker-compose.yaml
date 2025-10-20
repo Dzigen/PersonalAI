@@ -3,17 +3,17 @@ services:
   # Database - Neo4j
   neo4j:
     container_name: personalai_mmenschikov_neo4j
-    user: "4200235:4200235"
+    #user: "4200235:4200235"
     image: neo4j:5.21.0-enterprise
-    hostname: personalai_mmenschikov_neo4j
+    hostname: localhost
     ports:
-      - "7474:7474"
-      - "7687:7687"
+      - 7474:7474
+      - 7680:7687
     environment:
       - NEO4J_AUTH=neo4j/password
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
     volumes:
-      - ../neo4j_volume/data:/data
+      - ../../personalai_volumes/neo4j:/data
     deploy:
       resources:
         limits:
@@ -23,14 +23,172 @@ services:
           cpus: '1'
           memory: 4G
 
+  milvus:
+    image: milvusdb/milvus:v2.5.8
+    container_name: personalai_mmenschikov_milvus
+    hostname: localhost
+    command: ["milvus", "run", "standalone"]
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - ETCD_USE_EMBED=true
+      - ETCD_DATA_DIR=/var/lib/milvus/etcd
+      - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
+      - COMMON_STORAGETYPE=local
+    ports:
+      - 19530:19530
+      - 2379:2379
+      - 9091:9091
+    volumes:
+      - ../../personalai_volumes/milvus:/var/lib/milvus
+      - ../configs/milvus/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
+      - ../configs/milvus/user.yaml:/milvus/configs/user.yaml
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      start_period: 90s
+      timeout: 20s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
+  opensearch:
+    container_name: personalai_mmenschikov_opensearch
+    image: opensearchproject/opensearch:2.11.0
+    hostname: localhost
+    ports:
+      - 9200:9200
+      - 9600:9600
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+    volumes:
+      - ../../personalai_volumes/opensearch:/usr/share/opensearch/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
+  elasticsearch:
+    container_name: personalai_mmenschikov_elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    hostname: localhost
+    ports:
+      - 9201:9200
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+      - xpack.security.enabled=false
+    volumes:
+      - ../../personalai_volumes/elasticsearch:/usr/share/elasticsearch/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
+  weaviate:
+      container_name: personalai_mmenschikov_weaviate
+      image: semitechnologies/weaviate:1.30.17
+      hostname: localhost
+      ports:
+      - 8083:8080
+      - 50051:50051
+      command:
+      - --host
+      - 0.0.0.0
+      - --port
+      - '8080'
+      - --scheme
+      - http
+      volumes:
+        - ../../personalai_volumes/weaviate:/var/lib/weaviate
+      environment:
+        QUERY_DEFAULTS_LIMIT: 25
+        AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+        PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+        DEFAULT_VECTORIZER_MODULE: 'none'
+        ENABLE_MODULES: ''
+        CLUSTER_HOSTNAME: 'node1'
+      deploy:
+        resources:
+          limits:
+            cpus: '2'
+            memory: 10G
+          reservations:
+            cpus: '1'
+            memory: 5G
+
+  mysql:
+    image: mysql:8.0
+    container_name: personalai_mmenschikov_mysql
+    hostname: localhost
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: personalai
+      MYSQL_USER: personalai
+      MYSQL_PASSWORD: personalai
+    volumes:
+      - ../../personalai_volumes/mysql:/var/lib/mysql
+      - ../configs/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 3306:3306
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
+  postgresql:
+    image: postgres:16
+    container_name: personalai_mmenschikov_test_postgresql
+    hostname: localhost
+    environment:
+      POSTGRES_DB: personalai_test
+      POSTGRES_USER: personalai
+      POSTGRES_PASSWORD: personalai
+    volumes:
+      - ../../personalai_volumes/postgresql:/var/lib/postgresql/data # Mounts a host directory for persistent data storage
+      - ../configs/postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 5432:5432
+    shm_size: 128mb
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
   workspace:
     image: m.menschikov/workspace:v1
-    container_name: personalai_mmenschikov_worksapce
+    container_name: personalai_mmenschikov_workspace
     hostname: worksapceservice
-    ports:
-      - "10888:10888"
     volumes:
-      - ../:/home/m.menschikov/workspace/personal_ai
+      - ../data/qa_datasets:/home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets #/home/dzigen/Desktop/PersonalAI/Personal-AI/data/qa_datasets | /home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets
+      - ../src:/home/m.menschikov/workspace/personal_ai/Personal-AI/src #/home/dzigen/Desktop/PersonalAI/Personal-AI/src | /home/m.menschikov/workspace/personal_ai/Personal-AI/src
+      - ../experiments:/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments #/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments | /home/m.menschikov/workspace/personal_ai/Personal-AI/experiments
+      - ../notebooks:/home/m.menschikov/workspace/personal_ai/Personal-AI/notebooks #/home/dzigen/Desktop/PersonalAI/Personal-AI/notebooks | /home/m.menschikov/workspace/personal_ai/Personal-AI/notebooks
+      #- /home/dzigen/Desktop/triviaqa_gpt4o/data/knowledge_graphs:/home/dzigen/Desktop/PersonalAI/Personal-AI/data/knowledge_graphs #/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs
+      - /mnt/data/m.menschikov/data/knowledge_graphs:/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs
     deploy:
       resources:
         limits:
@@ -59,25 +217,22 @@ services:
           cpus: '1'
           memory: 4G
 
-
   ollama_agent:
-    #image: m.menschikov/agent_service:v1
     image: ollama/ollama:latest
-    container_name: personalai_mmenschikov_ollama_service
-    hostname: ollamaservice
+    container_name: personalai_mmenschikov_ollama
     ports:
-      - "11434:11434"
+      - "11437:11434"
     environment:
       - OLLAMA_DEBUG=1
     volumes:
-      - ../ollama_volume:/root/.ollama
+      - ../../ollama_volume:/root/.ollama
     deploy:
       resources:
         limits:
-          cpus: '2'
-          memory: 8G
+          cpus: '8'
+          memory: 32G
         reservations:
-          cpus: '1'
+          cpus: '4'
           memory: 4G
           devices:
             - driver: nvidia

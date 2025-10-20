@@ -1,6 +1,7 @@
 import re
 
-def en_ag_custom_answer_parse(raw_response: str, **kwargs) -> str:
+
+def en_simpleag_custom_parse(raw_response: str, **kwargs) -> str:
     """Функция предназначена для разбора ответа LLM-агента, полученного в рамках условной QA-задачи на английском языке.
 
     :param raw_response: Исходный ответ LLM-агента.
@@ -10,23 +11,24 @@ def en_ag_custom_answer_parse(raw_response: str, **kwargs) -> str:
     """
 
     if len(raw_response) < 1:
-        raise ValueError
+        raise ValueError(f"raw_response: '{raw_response}'")
 
-    answer_pos = re.search("\[answer\]: ", raw_response, re.IGNORECASE)
+    answer_pos = re.search(r"\[answer\]", raw_response, re.IGNORECASE)
 
     # Ответ не соответствует формату
     if answer_pos is None:
-        raise ValueError
+        raise ValueError(f"raw_response: '{raw_response}'")
 
     answer = raw_response[answer_pos.span(0)[1]:]
 
     # Пустой ответ
     if len(answer) < 1:
-        raise ValueError
+        raise ValueError(f"raw_response: '{raw_response}'")
 
     return answer
 
-def ru_ag_custom_answer_parse(raw_response: str, **kwargs) -> str:
+
+def ru_simpleag_custom_parse(raw_response: str, **kwargs) -> str:
     """Функция предназначена для разбора ответа LLM-агента, полученного в рамках условной QA-задачи на русском языке.
 
     :param raw_response: Исходный ответ LLM-агента.
@@ -35,18 +37,18 @@ def ru_ag_custom_answer_parse(raw_response: str, **kwargs) -> str:
     :rtype: str
     """
     if len(raw_response) < 1:
-        raise ValueError
+        raise ValueError(f"raw_response: '{raw_response}'")
 
-    answer_pos = re.search("\[ответ\]: ", raw_response, re.IGNORECASE)
+    answer_pos = re.search(r"\[ответ\]: ", raw_response, re.IGNORECASE)
 
     # Ответ не соответствует формату
     if answer_pos is None:
-        raise ValueError
+        raise ValueError(f"raw_response: '{raw_response}'")
 
     answer = raw_response[answer_pos.span(0)[0]:]
 
     # Пустой ответ
     if len(answer) < 1:
-        raise ValueError
+        raise ValueError(f"raw_response: '{raw_response}'")
 
     return answer

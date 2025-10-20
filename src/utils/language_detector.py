@@ -1,10 +1,10 @@
-from polyglot.detect import Detector
-from polyglot.detect.base import UnknownLanguage
+from langdetect import detect
 from typing import Tuple
 
 from .errors import ReturnStatus
 
 SUPPORTED_LANGUAGES = {'ru', 'en'}
+
 
 def detect_lang(text: str) -> Tuple[str, ReturnStatus]:
     """Функция предназначена для определения доминирующего языка, который используется во входном тексте.
@@ -19,10 +19,7 @@ def detect_lang(text: str) -> Tuple[str, ReturnStatus]:
         status = ReturnStatus.empty_input_text
 
     if status == ReturnStatus.success:
-        try:
-            lang = Detector(text).languages[0].code
-        except UnknownLanguage as e:
-            status = ReturnStatus.unknown_lang
+        lang = detect(text)
 
     if (status == ReturnStatus.success) and (lang not in SUPPORTED_LANGUAGES):
         lang, status = None, ReturnStatus.not_supported_lang

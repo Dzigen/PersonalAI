@@ -1,14 +1,17 @@
-from .WaterCirclesTripletsRetriever import WaterCirclesRetriever, WaterCirclesSearchConfig
-from .MixturedTripletsRetriever import MixturedTripletsRetriever, MixturedGraphSearchConfig
-from .TripletsFilter import TripletsFilter, TripletsFilterConfig
-from .AStarTripletsRetriever import AStarTripletsRetriever, AStarGraphSearchConfig
-from .NaiveBFSTripletsRetriever import NaiveBFSTripletsRetriever, NaiveBFSGraphSearchConfig
-from .NaiveTripletsRetriever import NaiveTripletsRetriever, NaiveGraphSearchConfig
-from .BeamSearchTripletsRetriever import BeamSearchTripletsRetriever, GraphBeamSearchConfig
+from typing import Dict, Union
+from .utils import AbstractTripletsRetriever, AbstractTriplesFilter, BaseGraphSearchConfig, BaseTripletsFilterConfig
+
+from .traversal_methods import WaterCirclesRetriever, WaterCirclesSearchConfig
+from .traversal_methods import MixturedTripletsRetriever, MixturedGraphSearchConfig
+from .traversal_methods import AStarTripletsRetriever, AStarGraphSearchConfig
+from .traversal_methods import NaiveBFSTripletsRetriever, NaiveBFSGraphSearchConfig
+from .traversal_methods import NaiveTripletsRetriever, NaiveGraphSearchConfig
+from .traversal_methods import BeamSearchTripletsRetriever, GraphBeamSearchConfig
+from .filtering_methods import TripletsFilter, TripletsFilterConfig
 
 KR_MAIN_LOG_PATH = 'log/qa/kg_reasoner/weak/knowledge_retriever/main'
 
-AVAILABLE_TRIPLETS_RETRIEVERS  = {
+AVAILABLE_TRIPLETS_RETRIEVERS: Dict[str, Dict[str, Union[BaseGraphSearchConfig, AbstractTripletsRetriever]]] = {
     'astar': {
         'config': AStarGraphSearchConfig,
         'class': AStarTripletsRetriever},
@@ -34,7 +37,7 @@ AVAILABLE_TRIPLETS_RETRIEVERS  = {
         'class': BeamSearchTripletsRetriever}
 }
 
-AVAILABLE_TRIPLETS_FILTERS = {
+AVAILABLE_TRIPLETS_FILTERS: Dict[str, Dict[str, Union[BaseTripletsFilterConfig, AbstractTriplesFilter]]] = {
     'naive': {
         'config': TripletsFilterConfig,
         'class': TripletsFilter}

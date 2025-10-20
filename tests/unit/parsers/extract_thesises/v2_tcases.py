@@ -10,9 +10,9 @@ ETHESISES_PARSE_V2_TEST_CASES = [
     # пустая строка
     ("", 'en', None, True),
     # валидный формат (один триплет)
-    (GOOD_RESPONSE1, 'en', [('a', ['b','c'])], False),
+    (GOOD_RESPONSE1, 'en', [('a', ['b', 'c'])], False),
     # валидный формат (несколько триплетов)
-    (GOOD_RESPONSE2, 'en', [('a',['b','c']), ('d',['e','f'])], False),
+    (GOOD_RESPONSE2, 'en', [('a', ['b', 'c']), ('d', ['e', 'f'])], False),
     # невалидный формат (|)
     (BAD_RESPONSE1, 'en', None, True),
     # невалидный формат (,)

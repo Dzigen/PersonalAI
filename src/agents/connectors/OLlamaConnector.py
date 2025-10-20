@@ -1,20 +1,22 @@
-from ..utils import AbstractAgentConnector, AgentConnectorConfig
 from ollama import Client
+from typing import Union, Dict, Tuple
+import gc
+from time import time
 
-DEFAULT_OLLAMA_CONFIG = AgentConnectorConfig(
-    gen_strategy={'num_predict': 2048, 'seed': 42, 'top_k': 1, 'temperature': 0.0},
-    credentials={'host': 'localhost', 'port': 11434},
-    ext_params={'model': 'llama3.2', 'timeout': 560, 'keep_alive': -1})
+from .configs import DEFAULT_OLLAMA_CONFIG
+from ..utils import AbstractAgentConnector, AgentConnectorConfig, LLMInferenceStat
 
 # available models
 # llama3.2 (3B)
 # mistral (7B)
 # gemma2 (9B)
 
+
 class OLlamaConnector(AbstractAgentConnector):
     def __init__(self, config: AgentConnectorConfig = DEFAULT_OLLAMA_CONFIG) -> None:
         self.config = config
         self.open_connection()
+        self.CONNECTOR_KW = 'ollama'
 
     def open_connection(self):
         self.client = Client(
@@ -25,19 +27,36 @@ class OLlamaConnector(AbstractAgentConnector):
         pass
 
     def close_connection(self):
-        del self.client
+        try:
+            del self.client
+        except AttributeError:
+            pass
+        gc.collect()
 
-    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
-
-        msgs = [{'role':'system', 'content': system_prompt}, {'role':'user', 'content':user_prompt}]
+    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
+                 gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
+        msgs = [{'role': 'system', 'content': system_prompt},
+                {'role': 'user', 'content': user_prompt}]
         if assistant_prompt is not None:
-            msgs.append({'role':'assistant', 'content': assistant_prompt})
+            msgs.append({'role': 'assistant', 'content': assistant_prompt})
+        gen_strategy = self.config.gen_strategy if gen_strategy is None else gen_strategy
 
+        ai_start_time = time()
         raw_output = self.client.chat(
-            model=self.config.ext_params['model'],
-            options=self.config.gen_strategy,
+            model=self.config.credentials['model'],
+            options=gen_strategy,
             messages=msgs,
             keep_alive=self.config.ext_params['keep_alive'])
+        ai_end_time = time()
+
+        inference_info = LLMInferenceStat(
+            prompt_tokens_amount=raw_output['prompt_eval_count'],
+            generated_tokens_amount=raw_output['eval_count'],
+            inference_elapsed_time=round(ai_end_time - ai_start_time, 2)
+        )
 
         response = raw_output['message']['content']
-        return response
+        return response, inference_info
+
+    def __del__(self):
+        self.close_connection()

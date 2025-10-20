@@ -1,9 +1,9 @@
 from .KnowledgeRetriever import KnowledgeRetriever, KnowledgeRetrieverConfig
-from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarMetricsConfig
-from .WaterCirclesTripletsRetriever import WaterCirclesSearchConfig
-from .MixturedTripletsRetriever import MixturedGraphSearchConfig
-from .NaiveBFSTripletsRetriever import NaiveBFSGraphSearchConfig
-from .NaiveTripletsRetriever import NaiveGraphSearchConfig
-from .BeamSearchTripletsRetriever import GraphBeamSearchConfig
+from .traversal_methods.AStarTripletsRetriever import AStarGraphSearchConfig, AStarMetricsConfig
+from .traversal_methods.WaterCirclesTripletsRetriever import WaterCirclesSearchConfig
+from .traversal_methods.MixturedTripletsRetriever import MixturedGraphSearchConfig
+from .traversal_methods.NaiveBFSTripletsRetriever import NaiveBFSGraphSearchConfig
+from .traversal_methods.NaiveTripletsRetriever import NaiveGraphSearchConfig
+from .traversal_methods.BeamSearchTripletsRetriever import GraphBeamSearchConfig
 
-from .TripletsFilter import TripletsFilterConfig
+from .filtering_methods.TripletsFilter import TripletsFilterConfig

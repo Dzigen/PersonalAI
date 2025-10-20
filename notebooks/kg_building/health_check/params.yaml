@@ -1,5 +1,5 @@
-DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'qwen25_080325_v2prompts' # TO CHANGE
+DATASET_NAME: 'trivia_qa_rcwikipedia_validation' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen25_110325_v2prompts' # TO CHANGE
 
 ########## HARDCODED PARAMS ##########
 
@@ -14,7 +14,7 @@ KG_DIR_STRUCT:
 WORKSPACE_CONTAINER_DIRS:
   base_path: '/home/workspace'
   kg: 'data/knowledge_graphs'
-  qa_datasets: 'data/qa_datasets'
+  qa_datasets: 'data/qa_datasets/v2'
   notebooks: 'notebooks'
   src: 'src'
   models: 'models'
@@ -22,6 +22,7 @@ WORKSPACE_CONTAINER_DIRS:
 SAVE_CONFIGS_NAMES:
   graph_config: graph_config
   embeddings_config: embeddings_config
+  nodestree_config: nodestree_config
   mem_pipeline_config: mem_pipeline_config
   kvdriver_cache_config: kvdriver_cache_config
   docker_compose_env: .env

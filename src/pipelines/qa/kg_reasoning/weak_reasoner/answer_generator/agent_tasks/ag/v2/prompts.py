@@ -1,7 +1,7 @@
 ### PROMPT IN ENGLISH ###
 
-EN_AG_SYSTEM_PROMPT = \
-"""
+EN_SIMPLEAG_SYSTEM_PROMPT = \
+    """
 You are a system that is trying to generate an [Answer] for a given [Question], based on provided [Contexts] in a list format. If there is no relevant information in a given [Contexts] for generating the suitable answer or the [Contexts] is "<|Empty|>", then you should generate the following: "<|NotEnoughtInfo|>". Before generating the final answer you should present your [Chain of thoughts] that lead to the [Answer].
 
 The format you must match for generating response is presented below:
@@ -51,31 +51,31 @@ Examples of [Questions], [Contexts] and expected [Answers] are presented in a li
 [Answer]: Positive
 """
 
-EN_AG_USER_PROMPT = \
-"""
+EN_SIMPLEAG_USER_PROMPT = \
+    """
 Generate [Answer] for the [Question] based on provided [Contexts].
 
 [Question]: {q}
 [Contexts]:
 {c}"""
 
-EN_AG_ASSISTANT_PROMPT = \
-"""
+EN_SIMPLEAG_ASSISTANT_PROMPT = \
+    """
 [Chain of thoughts]: """
 
 ### PROMPT IN RUSSIAN ###
 
 # TODO
-RU_AG_SYSTEM_PROMPT = \
-"""
+RU_SIMPLEAG_SYSTEM_PROMPT = \
+    """
 """
 
-RU_AG_USER_PROMPT = \
-"""Сгенерируй [Ответ] на [Вопрос], опираясь на приведенную информацию в [Контексте].
+RU_SIMPLEAG_USER_PROMPT = \
+    """Сгенерируй [Ответ] на [Вопрос], опираясь на приведенную информацию в [Контексте].
 [Вопрос]: {q}
 [Контекст]:
 {c}"""
 
-RU_AG_ASSISTANT_PROMPT = \
-"""
+RU_SIMPLEAG_ASSISTANT_PROMPT = \
+    """
 [Цепочка рассуждений]: """

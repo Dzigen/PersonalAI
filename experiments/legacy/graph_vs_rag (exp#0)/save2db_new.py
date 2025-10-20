@@ -7,10 +7,12 @@ with open("Augment_DiaASQ.json", 'r') as inp:
     data = json.load(inp)
 
 print(len(data["data"]))
-samples = [element for element in data["data"] if "_" not in element.get("doc_id", "")]
+samples = [element for element in data["data"]
+           if "_" not in element.get("doc_id", "")]
 print(len(samples))
 
-conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
+conn = Neo4jConnection(uri="bolt://31.207.47.254:7687",
+                       user="neo4j", pwd="password")
 
 all_devices = set()
 insert = False
@@ -54,9 +56,11 @@ for n, sample in list(enumerate(samples)):
         }
 
         sentences = sample["sentences"]
-        sentences = [f"{speaker}: {sentence}" for speaker, sentence in zip(speakers_names, sentences)]
+        sentences = [f"{speaker}: {sentence}" for speaker,
+                     sentence in zip(speakers_names, sentences)]
         new_sample["sentences"] = sentences
-        new_sample["speakers"] = ", ".join([str(element) for element in new_sample["speakers"]])
+        new_sample["speakers"] = ", ".join(
+            [str(element) for element in new_sample["speakers"]])
 
         new_sample["clean_triplets"] = f_triplets
         new_sample["questions"] = [question for question in new_sample["questions"]
@@ -85,12 +89,16 @@ for n, sample in list(enumerate(samples)):
                 all_devices.add(subj)
                 if insert:
                     print(n, subj, rel, obj, sentiment, speaker)
-                    res1 = conn.extract_node(node_type="device", node_name=subj, db="testdb")
+                    res1 = conn.extract_node(
+                        node_type="device", node_name=subj, db="testdb")
                     if not res1:
-                        conn.create_node(node_type="device", node_name=subj, db="testdb")
-                    res2 = conn.extract_node(node_type="feature", node_name=obj, db="testdb")
+                        conn.create_node(node_type="device",
+                                         node_name=subj, db="testdb")
+                    res2 = conn.extract_node(
+                        node_type="feature", node_name=obj, db="testdb")
                     if not res2:
-                        conn.create_node(node_type="feature", node_name=obj, db="testdb")
+                        conn.create_node(node_type="feature",
+                                         node_name=obj, db="testdb")
                     all_devices.add(subj)
                     conn.create_relationship_5props(
                         type1="device",
@@ -115,13 +123,15 @@ person_tr_cnt = 0
 for subj, rel, person in person_triplets:
     entities.add((person, "person"))
     if [{"person": person}, "has device", {"device": subj}, {}] not in total_triplets:
-        #print(subj, rel, person)
-        total_triplets.append([{"person": person}, "has device", {"device": subj}, {}])
+        # print(subj, rel, person)
+        total_triplets.append(
+            [{"person": person}, "has device", {"device": subj}, {}])
         person_tr_cnt += 1
     if insert:
         subj = subj.lower()
         person = person.lower()
-        res1 = conn.extract_node(node_type="person", node_name=person, db="testdb")
+        res1 = conn.extract_node(
+            node_type="person", node_name=person, db="testdb")
         if not res1:
             conn.create_node(node_type="person", node_name=person, db="testdb")
         conn.create_relationship_no_props(
@@ -162,7 +172,8 @@ for device in all_devices:
             found_manf = manf_dict[manf]
     if found_manf:
         if [{"device": device}, "manufacturer", {"manufacturer": found_manf}, {}] not in total_triplets:
-            total_triplets.append([{"device": device}, "manufacturer", {"manufacturer": found_manf}, {}])
+            total_triplets.append([{"device": device}, "manufacturer", {
+                                  "manufacturer": found_manf}, {}])
         manf_triplets += 1
         if insert:
             device = device.lower()
@@ -191,11 +202,13 @@ for raw_subj, rel, raw_obj, rel_data in total_triplets:
             stats2[obj] = []
         stats2[obj].append((subj, rel, sent))
 
-stats1 = {subj_obj: rel_sent for subj_obj, rel_sent in stats1.items() if len(rel_sent) > 1}
+stats1 = {subj_obj: rel_sent for subj_obj,
+          rel_sent in stats1.items() if len(rel_sent) > 1}
 stats1 = list(stats1.items())
 stats1 = sorted(stats1, key=lambda x: len(x[1]), reverse=True)
 
-stats2 = {obj: subj_rel for obj, subj_rel in stats2.items() if len(subj_rel) > 1}
+stats2 = {obj: subj_rel for obj,
+          subj_rel in stats2.items() if len(subj_rel) > 1}
 stats2 = list(stats2.items())
 stats2 = sorted(stats2, key=lambda x: len(x[1]), reverse=True)
 
@@ -243,7 +256,8 @@ f_total_triplets = []
 for subj, rel, obj, rel_data in total_triplets:
     subj = {key: value.replace("_", " ") for key, value in subj.items()}
     obj = {key: value.replace("_", " ") for key, value in obj.items()}
-    rel_data = {key: value.replace("_", " ") for key, value in rel_data.items()}
+    rel_data = {key: value.replace("_", " ")
+                for key, value in rel_data.items()}
     f_total_triplets.append([subj, rel, obj, rel_data])
 print("total triplets", len(f_total_triplets))
 
