@@ -1,0 +1,18 @@
+С опозданием отправляю материалы для запуска экспериментов по оценке качества qa-пайплайна.
+
+У меня уже построены два графа знаний на DiaASQ-датасете (v1- и v2-версиями промптов; QWEN2.5). В качестве embedder-модели использовалась e5-large. Разархивируй их в каталог "data/knowledge_graphs/diaasqa" (пути указываются от корневой директории репозитория):
+* diaasq_qwen25_060325_v1prompts (https://drive.google.com/file/d/1_s8doUkZNRgj2DyvrCFr1Eon1z0r4lnt/view?usp=drive_link);
+* diaasq_qwen25_070325_v2prompts (https://drive.google.com/file/d/1AAbqyHAwAdPdHXhc3jC0lvBrzhetE-e7/view?usp=drive_link).
+
+Датасет разархивируй в каталог "data/qa_datasets/diaasqa": DiaASQ-датасет (https://drive.google.com/file/d/1tT6EbjvdxDQ9R5H9-eqgDcLArWEDCqaw/view?usp=drive_link). Конфигурации экспериментов нужно брать из этой таблицы (https://docs.google.com/spreadsheets/d/1pE2-fkUiS5FcGM-d--hxfjCoHgxIG0CTqxCsdKdu21A/edit?gid=1427098908#gid=1427098908). В неё же и вносить полученные значения метрик. Если есть замечания по конфигурациям, то сообщай.
+
+Скрипты для оценки качества qa-конфигураций лежат в каталоге "experiments/qa_kg" (https://github.com/zer0o0ne/Personal-AI/tree/dev/experiments/qa_kg). Последовательность запуска скриптов следующая:
+0. Указать конфигурацию эксперимента в params.yaml- (https://github.com/zer0o0ne/Personal-AI/blob/dev/experiments/qa_kg/params.yaml)файле.
+1. Запустить init_file_structure.py (https://github.com/zer0o0ne/Personal-AI/blob/dev/experiments/qa_kg/init_file_structure.py) с указанием пути до полученного params.yaml (с шага 0). В результате будет инициализирована директория, куда будут сохраняться сгенерированные ответы + метрики.
+2. Запустить prepare_qa_configs.py (https://github.com/zer0o0ne/Personal-AI/blob/dev/experiments/qa_kg/prepare_qa_configs.py) с указанием пути до полученного params.yaml (с шага 0). В результате будет создан/сохранён дамп QA-конфигурации (в dataclass-структуре) на основе указанных значений гиперпараметров в params.yaml-файле.
+3. Поднять контейнеры с привязкой (mount) на соответствующую директорию с графом знаний.
+3.1. Указать конфигурацию графа знаний в params.yam (https://github.com/zer0o0ne/Personal-AI/blob/dev/notebooks/kg_building/create/params.yaml)l-файле из каталога "notebooks/kg_building/create".
+3.2. Запустить get_dc_envfile.py (https://github.com/zer0o0ne/Personal-AI/blob/dev/notebooks/kg_building/create/get_dc_envfile.py) с указанием пути до полученного params.yaml (с шага 3.1). В результате будет получен файл с зависимостями ".env_*" для запуска контейнеров.
+3.3. С помощью docker-compose (https://github.com/zer0o0ne/Personal-AI/blob/dev/notebooks/kg_building/docker-compose.yaml)-файла в "notebooks/kg_building/"-каталоге и ".env_*"-файла (с шага 3.2), который лежит в корне каталога с соответствующим графом поднять контейнеры: docker-compose --env-file="путь до .env" up mongo_ui redis_ui ollama_agent neo4j.
+4. Запустить generate_answers.py (https://github.com/zer0o0ne/Personal-AI/blob/dev/experiments/qa_kg/generate_answers.py) с указанием пути до полученного params.yaml (с шага 0). Будет запущен QA-пайплайн на указанном датасете. В результате будут получены/cохранены json-файлы с сгенерированными ответами.
+5. Запустить evaluate_answers.py (https://github.com/zer0o0ne/Personal-AI/blob/dev/experiments/qa_kg/evaluate_answers.py) с указанием пути до полученного params.yaml (с шага 0). Будет выполнена оценка качества сгенерированных ответов с помощью следующих метрик: BLEU1, BLEU2, METEOR, RougeL, ExactMatch, BertScore, NoneScore. В результате будут получены/сохранены json-файлы со значениями метрик.
