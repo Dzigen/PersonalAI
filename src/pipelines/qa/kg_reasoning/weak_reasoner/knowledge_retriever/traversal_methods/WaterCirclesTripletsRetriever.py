@@ -10,45 +10,6 @@ from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 
 
-@dataclass
-class WaterCirclesSearchConfig(BaseGraphSearchConfig):
-    """Конфигурация WaterCircles-алгоритма обхода графа.
-
-    :param strict_filter: _description_. Значение по умолчанию True.
-    :type strict_filter: bool, optional
-    :param hyper_num: _description_. Значение по умолчанию 15.
-    :type hyper_num: int, optional
-    :param episodic_num: _description_. Значение по умолчанию 15.
-    :type episodic_num: int, optional
-    :param chain_triplets_num: _description_. Значение по умолчанию 25.
-    :type chain_triplets_num: int, optional
-    :param other_triplets_num: _description_. Значение по умолчанию 6.
-    :type other_triplets_num: int, optional
-    :param do_text_pruning: _description_. Значение по умолчанию False.
-    :type do_text_pruning: bool, optional
-    :param accepted_node_types:Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извелчения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time].
-    :type accepted_node_types: List[NodeType], optional
-    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы WaterCirclesRetriever-класса. Значение по умолчанию 'qa_watercircles_t_retriever_cache'.
-    :type cache_table_name: str, optional
-    """
-    strict_filter: bool = True
-    hyper_num: int = 15
-    episodic_num: int = 15
-    chain_triplets_num: int = 25
-    other_triplets_num: int = 6
-    do_text_pruning: bool = False
-    accepted_node_types: List[NodeType] = field(default_factory=lambda: [
-                                                NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
-
-    cache_table_name: str = 'qa_watercircles_t_retriever_cache'
-
-    def to_str(self):
-        str_values = f"{self.hyper_num};{self.episodic_num};{self.chain_triplets_num};{self.other_triplets_num}"
-        str_accepted_nodes = ";".join(
-            sorted(list(map(lambda v: v.value, self.accepted_node_types))))
-        return f"{self.strict_filter}|{str_values}|{self.do_text_pruning}|{str_accepted_nodes}"
-
-
 def process_chain(
     chain: List[List[str]],
     chain_subj_obj: List[Tuple[str]],
@@ -128,6 +89,44 @@ def process_inters_chains2(inters_chains2: List[List[List[str]]]) -> List[List[s
     return chain_triplets2
 
 
+@dataclass
+class WaterCirclesSearchConfig(BaseGraphSearchConfig):
+    """Конфигурация WaterCircles-алгоритма обхода графа.
+
+    :param strict_filter: _description_. Значение по умолчанию True.
+    :type strict_filter: bool, optional
+    :param hyper_num: _description_. Значение по умолчанию 25.
+    :type hyper_num: int, optional
+    :param episodic_num: _description_. Значение по умолчанию 15.
+    :type episodic_num: int, optional
+    :param chain_triplets_num: _description_. Значение по умолчанию 25.
+    :type chain_triplets_num: int, optional
+    :param other_triplets_num: _description_. Значение по умолчанию 6.
+    :type other_triplets_num: int, optional
+    :param do_text_pruning: _description_. Значение по умолчанию False.
+    :type do_text_pruning: bool, optional
+    :param accepted_node_types:Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извелчения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time].
+    :type accepted_node_types: List[NodeType], optional
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы WaterCirclesRetriever-класса. Значение по умолчанию 'qa_watercircles_t_retriever_cache'.
+    :type cache_table_name: str, optional
+    """
+    strict_filter: bool = True
+    hyper_num: int = 25
+    episodic_num: int = 15
+    chain_triplets_num: int = 25
+    other_triplets_num: int = 6
+    do_text_pruning: bool = False
+    accepted_node_types: List[NodeType] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
+
+    cache_table_name: str = 'qa_watercircles_t_retriever_cache'
+
+    def to_str(self):
+        str_values = f"{self.hyper_num};{self.episodic_num};{self.chain_triplets_num};{self.other_triplets_num}"
+        str_accepted_nodes = ";".join(
+            sorted(list(map(lambda v: v.value, self.accepted_node_types))))
+        return f"{self.strict_filter}|{str_values}|{self.do_text_pruning}|{str_accepted_nodes}"
+
+
 class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
     """Класс с реализацией модифицированного BFS-алгоритма (поиск в ширину) по графу
 
@@ -151,7 +150,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
                 search_config['accepted_node_types'] = list(
                     map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
             search_config = WaterCirclesSearchConfig(**search_config)
-        self.config = search_config
+        self.config: WaterCirclesSearchConfig = search_config
 
         self.kg_model = kg_model
 
@@ -329,8 +328,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
         rel_data_items = [(key.replace("_", " "), value.replace("_", " ")) for key, value in rel_data_items
                           if key not in ["raw_time", "time", "sentiment"]]
         rel_data_items = sorted(rel_data_items, key=lambda x: x[0])
-        rel_data_values = [element[1].lower().replace("_", " ")
-                           for element in rel_data_items]
+        rel_data_values = [element[1].lower().replace("_", " ") for element in rel_data_items]
         subj_name = [subj["name"].replace("_", " ")]
         obj_name = [obj["name"].replace("_", " ")]
         rel_type = rel["type"].replace("_", " ")
@@ -504,8 +502,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
         self,
         seed_entities: List[List[Tuple[str]]],
         entities_list: List[Tuple[str]],
-        entity_type: str,
-        texts_set: Set[str]
+        entity_type: str
     ) -> Tuple[List[Tuple[str, str, Dict[str, str], Dict[str, str], int, str]], Set[str]]:
         """_summary_
 
@@ -520,13 +517,14 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
         :return: извлеченные тексты из триплетов типа hyper и episodic
         :rtype: Tuple[List[Tuple[str, str, Dict[str], Dict[str], int, str]], Set[str]]
         """
+        texts_set = set()
+        rus_alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
         cur_texts = []
         for seed_entity, *_ in entities_list:
             another_entities_list = [entities_list2 for entities_list2 in seed_entities
                                      if entities_list2 != entities_list]
             res = self.kg_model.graph_struct.db_conn.get_triplets_by_name(
-                [seed_entity, seed_entity.lower(), seed_entity.replace(
-                    " ", "_"), seed_entity.lower().replace(" ", "_")],
+                [seed_entity, seed_entity.lower(), seed_entity.replace(" ", "_"), seed_entity.lower().replace(" ", "_")],
                 [],
                 entity_type
             )
@@ -536,8 +534,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
                 rel_dict = element.relation.prop
                 rel_id = element.relation.id
                 text = element.end_node.name
-                obj_props = {key: value for key,
-                             value in obj_dict.items() if key != "name"}
+                obj_props = {key: value for key, value in obj_dict.items() if key != "name"}
                 if self.config.do_text_pruning:
                     text = text.strip()
                     text_chunks = text.split("\n")
@@ -547,32 +544,65 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
                     init_text_chunk = copy.deepcopy(text_chunk)
                     text_chunk = text_chunk.strip()
                     if text_chunk not in texts_set:
-                        num_inters = 0
+                        found_inters = []
+                        num_inters = 0.0
+                        found_same_proper = False
+                        found_same_common = False
+                        found_inters2 = False
+                        found_any = False
                         for entities_list2 in another_entities_list:
-                            found = False
+                            found_proper = False
+                            found_common = False
                             for ent, *_ in entities_list2:
-                                if ent.lower() in text_chunk.lower() \
-                                        or ent.lower() in obj_props.values() \
-                                        or ent.lower() in rel_dict.values():
-                                    found = True
+                                if ent.lower() in obj_props.values() or ent.lower() in rel_dict.values():
+                                    found_inters2 = True
+                                if seed_entity.lower() in text_chunk.lower():
+                                    if seed_entity[0].isupper() or seed_entity[1].isupper() \
+                                            or any(symb.isdigit() for symb in seed_entity):
+                                        found_same_proper = True
+                                    else:
+                                        found_same_common = True
+                                if ent.lower() in text_chunk.lower():
+                                    if ent[0].isupper() or ent[1].isupper() or ent[0].isdigit() or ent[1].isdigit():
+                                        found_proper = True
+                                    else:
+                                        found_common = True
+                                    found_inters.append(ent)
                                 else:
                                     words = ent.lower().split()
                                     words_no_end = []
                                     for word in words:
-                                        if len(word) > 4:
-                                            words_no_end.append(word[:-2])
-                                        elif len(word) == 4:
-                                            words_no_end.append(word[:-1])
+                                        if word[0].lower() in rus_alphabet:
+                                            if len(word) > 4:
+                                                words_no_end.append(word[:-2])
+                                            elif len(word) == 4:
+                                                words_no_end.append(word[:-1])
+                                            else:
+                                                words_no_end.append(word)
                                         else:
                                             words_no_end.append(word)
                                     if all([word in text_chunk.lower() for word in words_no_end]):
-                                        found = True
-                            if found:
-                                num_inters += 1
-                        cur_texts.append(
-                            [init_text_chunk, seed_entity, subj_dict, obj_props, rel_dict, num_inters, rel_id])
+                                        if ent[0].isupper() or ent[0].isdigit():
+                                            found_proper = True
+                                        else:
+                                            found_common = True
+                                        found_inters.append(ent)
+                                    elif any([word in text_chunk.lower() for word in words_no_end if len(word) > 3]):
+                                        found_any = True
+                            if found_proper:
+                                num_inters += 1.0
+                            elif found_common:
+                                num_inters += 0.5
+                        if found_same_proper:
+                            num_inters += 0.7
+                        if self.config.do_text_pruning:
+                            cur_texts.append(
+                                [text_chunk, seed_entity, subj_dict, obj_props, rel_dict, num_inters, int(found_inters2), rel_id])
+                        else:
+                            cur_texts.append(
+                                [init_text_chunk, seed_entity, subj_dict, obj_props, rel_dict, num_inters, int(found_inters2), rel_id])
                         texts_set.add(text_chunk)
-        return cur_texts, texts_set
+        return cur_texts
 
     def extract_thesis(self, seed_entities: List[List[Tuple[str]]], same_types: bool) -> List[str]:
         """_summary_
@@ -585,22 +615,17 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
         :rtype: List[str]
         """
         output_texts = {"hyper": [], "episodic": []}
-        retr_texts = {"hyper": {ne: [] for ne in range(len(seed_entities))},
-                      "episodic": {ne: [] for ne in range(len(seed_entities))}
-                      }
-        texts_set = set()
+        retr_texts = {ne: [] for ne in range(len(seed_entities))}
         for ne, entities_list in enumerate(seed_entities):
-            cur_texts1, texts_set = self.extract_thesis_for_entities(
-                seed_entities, entities_list, "hyper", texts_set)
-            cur_texts2, texts_set = self.extract_thesis_for_entities(
-                seed_entities, entities_list, "episodic", texts_set)
-            retr_texts["hyper"][ne] = cur_texts1
-            retr_texts["episodic"][ne] = cur_texts2
+            cur_texts1 = self.extract_thesis_for_entities(seed_entities, entities_list, "hyper")
+            cur_texts2 = self.extract_thesis_for_entities(seed_entities, entities_list, "episodic")
+            for text, seed_entity, subj_props, obj_props, rel_props, cnt, cnt2, e_id in cur_texts1:
+                retr_texts[ne].append([text, seed_entity, subj_props, obj_props, rel_props, cnt, cnt2, "hyper", e_id])
+            for text, seed_entity, subj_props, obj_props, rel_props, cnt, cnt2, e_id in cur_texts2:
+                retr_texts[ne].append([text, seed_entity, subj_props, obj_props, rel_props, cnt, cnt2, "episodic", e_id])
 
-        for tr_type in ["hyper", "episodic"]:
-            for key in retr_texts[tr_type]:
-                retr_texts[tr_type][key] = sorted(
-                    retr_texts[tr_type][key], key=lambda x: x[-2], reverse=True)
+        for key in retr_texts:
+            retr_texts[key] = sorted(retr_texts[key], key=lambda x: x[-4], reverse=True)
 
         thres = {}
         if self.config.strict_filter:
@@ -612,29 +637,75 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
                 thres["episodic"] = int(0.67 * self.config.episodic_num)
             else:
                 thres["hyper"] = int(0.5 * self.config.hyper_num)
-                thres["episodic"] = int(0.67 * self.config.episodic_num)
+                thres["episodic"] = int(0.5 * self.config.episodic_num)
         else:
             thres["hyper"] = int(0.67 * self.config.hyper_num)
             thres["episodic"] = int(0.67 * self.config.episodic_num)
 
-        for tr_type in ["hyper", "episodic"]:
-            if same_types:
-                for key in retr_texts[tr_type]:
-                    cur_texts = [[text, seed_entity, subj_props, obj_props, rel_props, e_id]
-                                 for text, seed_entity, subj_props, obj_props, rel_props, _, e_id in retr_texts[tr_type][key]]
-                    output_texts[tr_type] += cur_texts[:thres[tr_type]]
+        texts_set = set()
+        if same_types:
+            for key in retr_texts:
+                cur_texts_hyper = [
+                    [text, seed_entity, subj_props, obj_props, rel_props, e_id]
+                    for text, seed_entity, subj_props, obj_props, rel_props, *_, tr_type, e_id in retr_texts[key]
+                    if tr_type == "hyper"
+                ]
+                cur_texts_episodic = [
+                    [text, seed_entity, subj_props, obj_props, rel_props, e_id]
+                    for text, seed_entity, subj_props, obj_props, rel_props, *_, tr_type, e_id in retr_texts[key]
+                    if tr_type == "episodic"
+                ]
+                output_texts["hyper"] += cur_texts_hyper[:thres["hyper"]]
+                output_texts["episodic"] += cur_texts_episodic[:thres["episodic"]]
+        else:
+            cur_texts = []
+            for cur_thres in [2.0, 1.9, 1.4, 1.1, 0.9, 0.8, 0.6, 0]:
+                if len(cur_texts) > 1 or (cur_thres == 0.6 and cur_texts):
+                    break
+                else:
+                    for key in retr_texts:
+                        for text, seed_entity, subj_props, obj_props, rel_props, cnt, cnt2, tr_type, e_id in retr_texts[key]:
+                            if cnt > cur_thres and cnt2 > 0 and text not in texts_set:
+                                cur_texts.append([text, seed_entity, subj_props, obj_props, rel_props, e_id, tr_type])
+                                texts_set.add(text)
+            if cur_texts:
+                cur_texts_hyper = [element[:-1] for element in cur_texts if element[-1] == "hyper"]
+                cur_texts_episodic = [element[:-1] for element in cur_texts if element[-1] == "episodic"]
+                output_texts["hyper"] += cur_texts_hyper[:thres["hyper"]]
+                output_texts["episodic"] += cur_texts_episodic[:thres["episodic"]]
             else:
-                for key in retr_texts[tr_type]:
-                    cur_texts = [[text, seed_entity, subj_props, obj_props, rel_props, e_id]
-                                 for text, seed_entity, subj_props, obj_props, rel_props, cnt, e_id in retr_texts[tr_type][key]
-                                 if cnt > 0]
-                    output_texts[tr_type] += cur_texts[:thres[tr_type]]
-                if not output_texts[tr_type]:
-                    for key in retr_texts[tr_type]:
-                        cur_texts = [[text, seed_entity, subj_props, obj_props, rel_props, e_id]
-                                     for text, seed_entity, subj_props, obj_props, rel_props, _, e_id in retr_texts[tr_type][key]]
-                        output_texts[tr_type] += cur_texts[:thres[tr_type]]
-        return output_texts["hyper"], output_texts["episodic"]
+                for key in retr_texts:
+                    cur_texts = []
+                    cur_se = seed_entities[key][0][0]
+                    if cur_se[0].isupper() or cur_se[1].isupper() or any(symb.isdigit() for symb in cur_se):
+                        for cur_thres in [1.1, 0.9, 0.8, 0.6, 0]:
+                            if len(cur_texts) > 1 or (cur_thres == 0.6 and cur_texts):
+                                break
+                            else:
+                                for text, seed_entity, subj_props, obj_props, rel_props, cnt, cnt2, tr_type, e_id \
+                                        in retr_texts[key]:
+                                    new_text = [text, seed_entity, subj_props, obj_props, rel_props, e_id, tr_type]
+                                    if cnt > cur_thres and text not in texts_set:
+                                        cur_texts.append(new_text)
+                                        texts_set.add(text)
+                    cur_texts_hyper = [element[:-1] for element in cur_texts if element[-1] == "hyper"]
+                    cur_texts_episodic = [element[:-1] for element in cur_texts if element[-1] == "episodic"]
+                    output_texts["hyper"] += cur_texts_hyper[:thres["hyper"]]
+                    output_texts["episodic"] += cur_texts_episodic[:thres["episodic"]]
+            if not output_texts["hyper"] and not output_texts["episodic"]:
+                cur_texts_hyper = [
+                    [text, seed_entity, subj_props, obj_props, rel_props, e_id]
+                    for text, seed_entity, subj_props, obj_props, rel_props, *_, tr_type, e_id in retr_texts[key]
+                    if tr_type == "hyper"
+                ]
+                cur_texts_episodic = [
+                    [text, seed_entity, subj_props, obj_props, rel_props, e_id]
+                    for text, seed_entity, subj_props, obj_props, rel_props, *_, tr_type, e_id in retr_texts[key]
+                    if tr_type == "episodic"
+                ]
+                output_texts["hyper"] += cur_texts_hyper[:thres["hyper"]]
+                output_texts["episodic"] += cur_texts_episodic[:thres["episodic"]]
+        return output_texts["hyper"][:self.config.hyper_num], output_texts["episodic"][:self.config.episodic_num]
 
     def bfs(
             self,
@@ -682,8 +753,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
                     seed_entity = seed_entity.lower()
                     if step == 0:
                         used_entities[(seed_entity, ne)] = set()
-                        entities[(seed_entity, ne)] = [
-                            (seed_entity, prop_name, entity_type, [])]
+                        entities[(seed_entity, ne)] = [(seed_entity, prop_name, entity_type, [])]
                     for (cur_seed_entity, cur_ne), entities_info in entities.items():
                         if cur_ne != ne:
                             for entity, *_, chain in entities_info:
@@ -697,34 +767,27 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
                             if tp == "node":
                                 cur_triplets_info, cur_inters_chains1, cur_inters_chains2 = self.parse_triplet_output(
                                     "forw",
-                                    [[entity, entity.replace(" ", "_")], [
-                                    ], "object"],
+                                    [[entity, entity.replace(" ", "_")], [], "object"],
                                     another_entities1,
                                     another_entities2,
                                     chain
                                 )
                                 ent_inters_chains1, ent_inters_chains2 = \
-                                    self.add_chains(
-                                        ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)
+                                    self.add_chains(ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)
                                 for triplet in cur_triplets_info:
-                                    triplets_info.append(
-                                        [(step, "forw", seed_entity, triplet[0][1]["type"])] + triplet)
+                                    triplets_info.append([(step, "forw", seed_entity, triplet[0][1]["type"])] + triplet)
                                 cur_triplets_info, cur_inters_chains1, cur_inters_chains2 = self.parse_triplet_output(
                                     "backw",
-                                    [[], [entity, entity.replace(
-                                        " ", "_")], "object"],
+                                    [[], [entity, entity.replace(" ", "_")], "object"],
                                     another_entities1,
                                     another_entities2,
                                     chain
                                 )
                                 ent_inters_chains1, ent_inters_chains2 = \
-                                    self.add_chains(
-                                        ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)
+                                    self.add_chains(ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)
                                 for triplet in cur_triplets_info:
-                                    triplets_info.append(
-                                        [(step, "backw", seed_entity, triplet[0][1]["type"])] + triplet)
-                                used_entities[(seed_entity, ne)].add(
-                                    (entity, prop_name, tp))
+                                    triplets_info.append([(step, "backw", seed_entity, triplet[0][1]["type"])] + triplet)
+                                used_entities[(seed_entity, ne)].add((entity, prop_name, tp))
                             elif tp == "rel_prop" and use_rel_props:
                                 query = self.extract_triplets_rel_prop_template.format(
                                     prop_name=prop_name,
@@ -734,19 +797,15 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
                                     "forw/backw", query, another_entities1, another_entities2, chain, subj_labels, obj_labels
                                 )
                                 ent_inters_chains1, ent_inters_chains2 = \
-                                    self.add_chains(
-                                        ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)
+                                    self.add_chains(ent_inters_chains1, ent_inters_chains2, cur_inters_chains1, cur_inters_chains2)
                                 for triplet in cur_triplets_info:
-                                    triplets_info.append(
-                                        [(step, "forw", seed_entity, triplet[0][1]["type"])] + triplet)
-                                used_entities[(seed_entity, ne)].add(
-                                    (entity, prop_name, tp))
+                                    triplets_info.append([(step, "forw", seed_entity, triplet[0][1]["type"])] + triplet)
+                                used_entities[(seed_entity, ne)].add((entity, prop_name, tp))
 
                     for step_dir_seed_rel, triplet, cur_entities, new_chain in triplets_info:
                         for (cur_ent, cur_prop_name, cur_prop_type) in cur_entities:
                             if (cur_ent, cur_prop_name, cur_prop_type, new_chain) not in new_entities:
-                                new_entities.append(
-                                    (cur_ent, cur_prop_name, cur_prop_type, new_chain))
+                                new_entities.append((cur_ent, cur_prop_name, cur_prop_type, new_chain))
                         if step_dir_seed_rel not in triplets_dict:
                             triplets_dict[step_dir_seed_rel] = []
                         triplets_dict[step_dir_seed_rel].append(triplet)
