@@ -1,96 +1,87 @@
-from src.kg_model import KnowledgeGraphModel
-from src.pipelines.memorize import MemPipeline
+print("Start Knowledge Graph creation ...")
 import sys
 import json
 import joblib
 import gc
-import copy
 from tqdm import tqdm
 import yaml
+from pprint import pprint
 import os
 from typing import List, Dict, Tuple
 import pandas as pd
 
-# Read YAML file
-print("Loading Params...")
-PARAMS_FILE_PATH = sys.orig_argv[2]
-with open(PARAMS_FILE_PATH, 'r') as stream:
-    PARAMS = yaml.safe_load(stream)
+####################################################
+print("1. Loading hyperparameters from .yaml files")
 
+KGCONN_FILE_PATH = sys.orig_argv[2]
+with open(KGCONN_FILE_PATH, 'r') as stream:
+    KGCONN_PARAMS = yaml.safe_load(stream)
+
+KGENV_FILE_PATH = sys.orig_argv[3]
+with open(KGENV_FILE_PATH, 'r') as stream:
+    KGENV_PARAMS = yaml.safe_load(stream)
+
+KGHYPERP_FILE_PATH = sys.orig_argv[4]
+with open(KGHYPERP_FILE_PATH, 'r') as stream:
+    KGHYPERP_PARAMS = yaml.safe_load(stream)
 
 print("Loading Library...")
-sys.path.insert(0, PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
+sys.path.insert(0, KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
+
+from src.kg_model import KnowledgeGraphModel
+from src.pipelines.memorize import MemPipeline
 
 gc.collect()
 
-######## SETTING HYPERPARAMS ###########
+####################################################
+print("2. Setting paths")
 
-print("Setting paths...")
+DATASET_KGS_PATH = f"{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{KGHYPERP_PARAMS['DATASET_NAME']}"
+SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{KGHYPERP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
-DATASET_KGS_PATH = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
-SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+QA_DATASET_PATH = f"{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['qa_datasets']}/{KGENV_PARAMS['DATASET_NAME']}"
 
-SAVE_PARAMS_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['hyperparameters']}"
+TMP_EXTRACTED_TRIPLETS_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['tmp_extracted_triplets']}"
+EXTRACTED_TRIPLETS_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['extracted_triplets']}"
 
-QA_DATASET_PATH = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['qa_datasets']}/{PARAMS['DATASET_NAME']}"
+KG_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kg_config']}"
+MEM_PIPELINE_CONFIG_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['mem_pipeline_config']}"
+CACHE_CONFIG_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kvdriver_cache_config']}"
+INFSTAT_CONFIG_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['inference_stat_config']}"
 
-TMP_EXTRACTED_TRIPLETS_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['tmp_extracted_triplets']}"
-EXTRACTED_TRIPLETS_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['extracted_triplets']}"
+####################################################
+print("3. Loading configs")
 
-GRAPH_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['graph_config']}"
-EMBEDDINGS_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['embeddings_config']}"
+kgmodel_config = joblib.load(KG_MODEL_CONFIG_PATH)
+mempipeline_config = joblib.load(MEM_PIPELINE_CONFIG_PATH)
+kvdriver_config = joblib.load(CACHE_CONFIG_PATH)
+llmstat_config = joblib.load(INFSTAT_CONFIG_PATH )
 
-MEM_PIPELINE_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['mem_pipeline_config']}"
-CACHE_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['kvdriver_cache_config']}"
+print("KG MODEL_CONFIG:\n", kgmodel_config)
+print("MEM PIPELINE CONFIG: \n", mempipeline_config)
+print("KVCACHE CONFIG:\n", kvdriver_config)
+print("LLMSTAT CONFIG:\n", llmstat_config)
 
-######## Setting knowledge graph model ######
-print("Loading KG-configs...")
+####################################################
+print("4. Setting KG Model")
 
-gmodel_config = joblib.load(GRAPH_MODEL_CONFIG_PATH)
-emodel_config = joblib.load(EMBEDDINGS_MODEL_CONFIG_PATH)
-
-print("GMODEL_CONFIG:\n", gmodel_config)
-print("EMODEL_CONFIG:\n", emodel_config)
-
-kg_model = KnowledgeGraphModel(
-    graph_config=gmodel_config,
-    embeddings_config=emodel_config,
-    nodestree_config=None)
+kg_model = KnowledgeGraphModel(kgmodel_config, kvdriver_config)
 
 # checking knowledge graph size
-print(kg_model.embeddings_struct.vectordbs['nodes'].count_items())
-print(kg_model.embeddings_struct.vectordbs['triplets'].count_items())
-print(kg_model.graph_struct.db_conn.count_items())
+pprint(kg_model.count_items(detailed=True))
 
-######## SETTING MEMORIZE PIPELINE ######
-print("Loading Mem-configs...")
+####################################################
+print("5. Setting Memorize Pipeline")
 
-mem_config = joblib.load(MEM_PIPELINE_CONFIG_PATH)
-kvdriver_config = joblib.load(CACHE_CONFIG_PATH)
+mem_pipeline = MemPipeline(kg_model, mempipeline_config, kvdriver_config, llmstat_config)
 
-print("MEM_CONFIG:\n", mem_config)
-print("KVDRIVER_CONFIG:\n", kvdriver_config)
+print("llmstat cache:")
+pprint(mem_pipeline.get_agent_tgen_stat())
+print("kv cache: ")
+pprint(mem_pipeline.get_cache_stat())
 
-mem_pipeline = MemPipeline(kg_model, mem_config, kvdriver_config)
-
-# checking caches status
-if PARAMS['MEM_PIPELINE_CONFIG']['llm_caching']:
-    print("extract_triples cached: ",
-          mem_pipeline.extractor.triplets_extraction_solver.cachekv.kv_conn.count_items())
-    print("extract_thesises cached: ",
-          mem_pipeline.extractor.thesises_extraction_solver.cachekv.kv_conn.count_items())
-    print("replace_simple cached: ",
-          mem_pipeline.updator.replace_simple_solver.cachekv.kv_conn.count_items())
-    print("replace_thesises cached: ",
-          mem_pipeline.updator.replace_hyper_solver.cachekv.kv_conn.count_items())
-
-############ SAVING HYPERPARAMS ############
-
-with open(SAVE_PARAMS_PATH, 'w') as fd:
-    yaml.dump(PARAMS, fd, default_flow_style=False)
-
-############ LOADING DATASET ############
-
+####################################################
+print("7. Loading dataset")
 
 def diaasq_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
     with open(f"{dataset_path}/Augment_DiaASQ.json", 'r', encoding='utf-8') as fd:
@@ -131,26 +122,12 @@ CUSTOM_LOAD_FUNCS = {
     'hotpotqa_distractor_validation': hotpotqa_distractor_validation_cload,
     'trivia_qa_rcwikipedia_validation': triviaqa_rcwikipedia_validation_cload
 }
-dataset = CUSTOM_LOAD_FUNCS[PARAMS['DATASET_NAME']](QA_DATASET_PATH)
+dataset = CUSTOM_LOAD_FUNCS[KGHYPERP_PARAMS['DATASET_NAME']](QA_DATASET_PATH)
 print(QA_DATASET_PATH)
 print(len(dataset))
 
-########### KG BUILDING #############
-
-# diaasq deepseekr17b 1459 + 1135 + 886 | Done
-# diaasq gpt4omini 890 + 721 + 1331 + 139 | Done
-# diaasq deepseek 2107 + 160 + 119 + 569 | Done
-# diaasq llama3.1 8b 870 | Done
-
-# hotpotqa deepssekr17b 1554 + 716 + 679 + 449 | Done
-# hotpotqa deepseek 2712 | Done
-# hotpotqa gpt4omini 1064 + 2489 | Done
-# hotpot llama3.1:8b 2763 +285 | Done
-
-# triviaqa deepseekr17b 656 + 2914 + 359 + 707 | Done
-# triviaqa deepseek 1917 + 1589 + 478 + 708 | Done
-# triviaqa gpt4omini 489 + 847 + 2547 | Done
-# triviaqa llama318b 715 + 3435 + 76 | Done
+####################################################
+print("8. Run KG build process")
 
 for i in tqdm(range(len(dataset))):
     text, time, properties = dataset[i][0], dataset[i][1], dataset[i][2]
@@ -158,7 +135,15 @@ for i in tqdm(range(len(dataset))):
 
     joblib.dump(extracted_triplets, f'{TMP_EXTRACTED_TRIPLETS_PATH}/item{i}')
 
-########### ACCUMULATING EXTRACTED TRIPLETSs #############
+print("kg size:")
+pprint(kg_model.count_items(detailed=True))
+print("llmstat cache:")
+pprint(mem_pipeline.get_agent_tgen_stat())
+print("kv cache: ")
+pprint(mem_pipeline.get_cache_stat())
+
+####################################################
+print("9. Accumulating extracted triplets")
 
 accum_triplets = []
 extracted_t_files = os.listdir(TMP_EXTRACTED_TRIPLETS_PATH)

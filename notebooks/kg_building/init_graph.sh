@@ -6,7 +6,10 @@ TMP_CREATE_DIR=/home/m.menschikov/workspace/personal_ai/Personal-AI/notebooks/kg
 TMP_WORKSPACE_CNTNAME=personalai_mmenschikov_workspace
 TMP_BASE_DIR=/home/m.menschikov/workspace/personal_ai/Personal-AI #/home/dzigen/Desktop/PersonalAI/Personal-AI/ | /home/m.menschikov/workspace/personal_ai/Personal-AI/
 TMP_KGCREATE_PATH="$TMP_BASE_DIR/notebooks/kg_building/create"
-TMP_PARAMS_PATH="$TMP_KGCREATE_PATH/params.yaml"
+
+KGCONN_PARAMS_PATH="$TMP_KGCREATE_PATH/kgconn_params.yaml"
+KGENV_PARAMS_PATH="$TMP_KGCREATE_PATH/kgenv_params.yaml"
+KGHYPERP_PARAMS_PATH="$TMP_KGCREATE_PATH/kghyperp_params.yaml"
 
 DATASET_NAME=$1
 KG_NAME=$2
@@ -19,17 +22,21 @@ PYTHON_CMD=/usr/bin/python3
 ENV_FILE_PATH="/mnt/data/m.menschikov/data/knowledge_graphs/$DATASET_NAME/$KG_NAME/.env"
 
 # поднять tmp workspace-контейнер
-cd $TMP_DEPLOYMENT_COMPOSE_PATH ; docker compose --env-file="$TMP_DEPLOYMENT_COMPOSE_PATH/.env_base" up -d workspace
+cd $TMP_DEPLOYMENT_COMPOSE_PATH ; docker compose --env-file=".env_base" up -d workspace
 # инициализировать структуру графа
-docker exec $TMP_WORKSPACE_CNTNAME $PYTHON_CMD "$TMP_KGCREATE_PATH/init_file_structure.py" $TMP_PARAMS_PATH
+docker exec $TMP_WORKSPACE_CNTNAME $PYTHON_CMD "$TMP_KGCREATE_PATH/init_file_structure.py" $KGENV_PARAMS_PATH $KGHYPERP_PARAMS_PATH
 # создать env-файл
-docker exec $TMP_WORKSPACE_CNTNAME $PYTHON_CMD "$TMP_KGCREATE_PATH/get_dc_envfile.py" $TMP_PARAMS_PATH
+docker exec $TMP_WORKSPACE_CNTNAME $PYTHON_CMD "$TMP_KGCREATE_PATH/get_dc_envfile.py" $KGCONN_PARAMS_PATH $KGENV_PARAMS_PATH $KGHYPERP_PARAMS_PATH
+# удалить tmp-конейнер
 docker stop $TMP_WORKSPACE_CNTNAME ; docker rm $TMP_WORKSPACE_CNTNAME
 
 # создать окружение графа
 cd $TMP_CREATE_DIR ; docker compose --env-file=$ENV_FILE_PATH up -d workspace
-# сохранить конфигурационные файлы mem-пайплайна
-docker exec $MAIN_WORKSPACE_CNTNAME pip install pymilvus
 docker exec $MAIN_WORKSPACE_CNTNAME systemctl start cron
-# сохранить конфигурационные файлы mem-пайплайна
-docker exec $MAIN_WORKSPACE_CNTNAME $PYTHON_CMD "$MAIN_KGCREATE_PATH/prepare_gm_configs.py" $MAIN_PARAMS_PATH
+
+# создать конфигурационный файл kg-модели
+docker exec $MAIN_WORKSPACE_CNTNAME $PYTHON_CMD "$MAIN_KGCREATE_PATH/prepare_kg_config.py" $KGCONN_PARAMS_PATH $KGENV_PARAMS_PATH $KGHYPERP_PARAMS_PATH
+# создать конфигурационный файл mem-пайплайна
+docker exec $MAIN_WORKSPACE_CNTNAME $PYTHON_CMD "$MAIN_KGCREATE_PATH/prepare_mem_config.py" $KGENV_PARAMS_PATH $KGHYPERP_PARAMS_PATH
+# создать конфигурационные файлы кешей
+docker exec $MAIN_WORKSPACE_CNTNAME $PYTHON_CMD "$MAIN_KGCREATE_PATH/prepare_cache_configs.py" $KGCONN_PARAMS_PATH $KGENV_PARAMS_PATH $KGHYPERP_PARAMS_PATH

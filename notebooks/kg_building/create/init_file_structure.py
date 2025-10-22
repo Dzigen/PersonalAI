@@ -1,54 +1,87 @@
+print("Creating Knowledge Graph file structure...")
 import yaml
 import os
 import sys
 
-######## SETTING PARAMS ###########
+####################################################
+print("1. Loading hyperparameters from .yaml files")
 
-# Read YAML file
-PARAMS_FILE_PATH = sys.orig_argv[2]
-with open(PARAMS_FILE_PATH, 'r') as stream:
-    PARAMS = yaml.safe_load(stream)
+# Read YAML file (kgenv-file)
+KGENV_FILE_PATH = sys.orig_argv[2]
+with open(KGENV_FILE_PATH, 'r') as stream:
+    KGENV_PARAMS = yaml.safe_load(stream)
 
-DATASET_KGS_PATH = f"{PARAMS['BASE_PERSONALAI_PATH']}/{PARAMS['PERSONALAI_REPO_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
-SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+# Read YAML file (kghyperp-file)
+KGHYPERP_FILE_PATH = sys.orig_argv[3]
+with open(KGHYPERP_FILE_PATH, 'r') as stream:
+    KGHYPERP_PARAMS = yaml.safe_load(stream)
 
-VECTORIZED_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['embeddings_part']}"
-GRAPH_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['graph_part']}"
-KV_DB_PATH = f"{SPEC_KG_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir']['base']}"
-PERSISTENT_DB_PATH = f"{KV_DB_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir']['persistant']}"
-RAM_DB_PATH = f"{KV_DB_PATH}/{PARAMS['KG_DIR_STRUCT']['cache_dir']['ram']}"
+####################################################
+print("2. Setting paths")
 
-TMP_EXTRACTED_TRIPLETS_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['tmp_extracted_triplets']}"
+#
+DATASET_KGS_PATH = f"{KGENV_PARAMS['BASE_KG_PATH']}/{KGHYPERP_PARAMS['DATASET_NAME']}"
+SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{KGHYPERP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
-if PARAMS['INIT_STRUCT']:
+# embeddings-part
+EMBEDDINGS_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['embeddings_dir']['name']}"
+DENSE_EMBEDDINGS_PATH = f"{EMBEDDINGS_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['embeddings_dir']['dense_part']}"
+SPARSE_EMBEDDINGS_PATH = f"{EMBEDDINGS_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['embeddings_dir']['sparse_part']}"
+
+# graph-part
+GRAPH_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['graph_dir']['name']}/{KGENV_PARAMS['KG_DIR_STRUCT']['graph_dir']['volume_name']}"
+
+# kv-cache
+CACHE_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['cache_dir']['name']}"
+RAM_CACHE_PATH = f"{CACHE_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['cache_dir']['ram_part']}"
+PERSISTENT_CACHE_PATH = f"{CACHE_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['cache_dir']['persistant_part']}"
+
+# inference stat
+STAT_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['stat_dir']['name']}/{KGENV_PARAMS['KG_DIR_STRUCT']['stat_dir']['inference']}"
+
+SAVE_PARAMS_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kg_setting']['name']}"
+
+# tmp results
+TMP_EXTRACTED_TRIPLETS_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['tmp_extracted_triplets']}"
+
+####################################################
+print("3. Creating directories")
+
+if KGENV_PARAMS['INIT_STRUCT']:
     if not os.path.exists(DATASET_KGS_PATH):
         raise ValueError(f"Директории не существует: {DATASET_KGS_PATH}")
 
     if os.path.exists(SPEC_KG_PATH):
         raise ValueError(f"Директория существует: {SPEC_KG_PATH}")
-    if os.path.exists(GRAPH_DB_PATH):
-        raise ValueError(f"Директория существует: {GRAPH_DB_PATH}")
-    if os.path.exists(VECTORIZED_DB_PATH):
-        raise ValueError(f"Директория существует: {VECTORIZED_DB_PATH}")
-    if os.path.exists(KV_DB_PATH):
-        raise ValueError(f"Директория существует: {KV_DB_PATH}")
-    if os.path.exists(PERSISTENT_DB_PATH):
-        raise ValueError(f"Директория существует: {PERSISTENT_DB_PATH}")
-    if os.path.exists(RAM_DB_PATH):
-        raise ValueError(f"Директория существует: {RAM_DB_PATH}")
+    if os.path.exists(GRAPH_PATH):
+        raise ValueError(f"Директория существует: {GRAPH_PATH}")
+    if os.path.exists(DENSE_EMBEDDINGS_PATH):
+        raise ValueError(f"Директория существует: {DENSE_EMBEDDINGS_PATH}")
+    if os.path.exists(SPARSE_EMBEDDINGS_PATH):
+        raise ValueError(f"Директория существует: {SPARSE_EMBEDDINGS_PATH}")
+    if os.path.exists(RAM_CACHE_PATH):
+        raise ValueError(f"Директория существует: {RAM_CACHE_PATH}")
+    if os.path.exists(PERSISTENT_CACHE_PATH):
+        raise ValueError(f"Директория существует: {PERSISTENT_CACHE_PATH}")
+    if os.path.exists(STAT_PATH):
+        raise ValueError(f"Директория существует: {STAT_PATH}")
+    if os.path.exists(SAVE_PARAMS_PATH):
+        raise ValueError(f"Директория существует: {SAVE_PARAMS_PATH}")
 
     if os.path.exists(TMP_EXTRACTED_TRIPLETS_PATH):
-        raise ValueError(
-            f"Директория существует: {TMP_EXTRACTED_TRIPLETS_PATH}")
+        raise ValueError(f"Директория существует: {TMP_EXTRACTED_TRIPLETS_PATH}")
 
     os.mkdir(SPEC_KG_PATH)
 
-    os.mkdir(VECTORIZED_DB_PATH)
-    os.mkdir(GRAPH_DB_PATH)
+    os.makedirs(GRAPH_PATH, exist_ok=True)
 
-    os.mkdir(KV_DB_PATH)
-    os.mkdir(PERSISTENT_DB_PATH)
-    os.mkdir(RAM_DB_PATH)
+    os.makedirs(DENSE_EMBEDDINGS_PATH, exist_ok=True)
+    os.makedirs(SPARSE_EMBEDDINGS_PATH, exist_ok=True)
+
+    os.makedirs(RAM_CACHE_PATH, exist_ok=True)
+    os.makedirs(PERSISTENT_CACHE_PATH, exist_ok=True)
+
+    os.makedirs(STAT_PATH, exist_ok=True)
 
     os.mkdir(TMP_EXTRACTED_TRIPLETS_PATH)
 

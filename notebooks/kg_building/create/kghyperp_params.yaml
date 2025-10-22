@@ -1,0 +1,42 @@
+DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'llama318b_221025_v2prompts' # TO CHANGE
+
+KG_CONFIG:
+  embedder_configs:
+    default:
+      prompts:
+        query: "query: "
+        passage: "passage: "
+      model_name_or_path: 'intfloat/multilingual-e5-large'
+  embedders_mapping:
+    dense_nodes: default
+    dense_triplets: default
+
+  agent_configs:
+    default:
+      vendor: ollama
+      credentials:
+        model: llama3.1:8b # TO CHANGE
+      ext_params:
+        host: localhost # TO CHANGE
+        keep_alive: -1
+        port: 11437 # TO CHANGE
+        timeout: 560
+      gen_strategy:
+        num_predict: 2048
+        seed: 42
+        temperature: 0.0
+        top_k: 1
+  agents_mapping:
+    qa_pipeline: default
+    mem_pipeline: default
+    kg_nodestree_model: default
+
+MEM_PIPELINE_CONFIG:
+  lang: 'en' # DONT CHANGE
+
+  extractor_stage:
+    extract_triplets:
+      prompts_version: 'v2'
+    extract_thesises:
+      prompts_version: 'v2'

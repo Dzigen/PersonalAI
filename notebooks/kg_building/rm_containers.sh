@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-EXISTING_CONTAINERS=$(docker container ls -q --filter name="personalai_mmenschikov")
+EXISTING_CONTAINERS=$(docker container ls -q --filter name="personalai_mmenschikov_kgbuild")
 
 echo "Stoping containers..."
 docker container stop ${EXISTING_CONTAINERS}
