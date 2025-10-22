@@ -19,7 +19,7 @@ RUN apt-get --assume-yes install wsl
 RUN systemctl enable cron
 RUN systemctl start cron
 
-WORKDIR /home
+WORKDIR /home/workspace
 
 RUN apt-get --assume-yes install python3.10
 RUN apt-get --assume-yes install libicu-dev python3-icu pkg-config
