@@ -20,7 +20,7 @@ with open(KGHYPERP_FILE_PATH, 'r') as stream:
 print("2. Setting paths")
 
 #
-DATASET_KGS_PATH = f"{KGENV_PARAMS['BASE_KG_PATH']}/{KGHYPERP_PARAMS['DATASET_NAME']}"
+DATASET_KGS_PATH = f"{KGENV_PARAMS['BASE_PERSONALAI_PATH']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{KGHYPERP_PARAMS['DATASET_NAME']}"
 SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{KGHYPERP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
 # embeddings-part
@@ -82,6 +82,7 @@ if KGENV_PARAMS['INIT_STRUCT']:
     os.makedirs(PERSISTENT_CACHE_PATH, exist_ok=True)
 
     os.makedirs(STAT_PATH, exist_ok=True)
+    os.makedirs(SAVE_PARAMS_PATH, exist_ok=True)
 
     os.mkdir(TMP_EXTRACTED_TRIPLETS_PATH)
 

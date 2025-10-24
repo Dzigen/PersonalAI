@@ -28,13 +28,14 @@ from src.db_drivers.vector_driver import VectorDBConnectionConfig, VectorDBConne
 from src.db_drivers.graph_driver import GraphDriverConfig, GraphDBConnectionConfig, GraphDBConnectionConfig
 from src.kg_model import EmbeddingsModelConfig, GraphModelConfig, KnowledgeGraphModelConfig
 from src.agents import AgentDriverConfig
+from src.kg_model.utils import AgentsMapping, KGEmbeddersMapping
 from src.agents.utils import AgentConnectorConfig
 
 ####################################################
 print("2. Setting paths")
 
-DATASET_KGS_PATH = f"{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}{KGENV_PARAMS['DATASET_NAME']}"
-SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{KGENV_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+DATASET_KGS_PATH = f"{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{KGHYPERP_PARAMS['DATASET_NAME']}"
+SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{KGHYPERP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
 KG_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kg_config']}"
 
@@ -78,7 +79,7 @@ sparse_nodesdb_config = VectorDBConnectionConfig(
     conn=SPARSE_NODESDB_CONFIG['conn']
 )
 sparse_ndbdriver_config = VectorDriverConfig(
-    db_vendor='elasticsearch',
+    db_vendor='opensearch',
     vector_category='sparse_bm25',
     db_config=sparse_nodesdb_config
 )
@@ -103,7 +104,7 @@ sparse_tripletsdb_config = VectorDBConnectionConfig(
     conn=SPARSE_TRIPLETSDB_CONFIG['conn']
 )
 sparse_tdbdriver_config = VectorDriverConfig(
-    db_vendor='elasticsearch',
+    db_vendor='opensearch',
     vector_category='sparse_bm25',
     db_config=sparse_tripletsdb_config
 )
@@ -128,7 +129,7 @@ embedders_configs = {
         prompts=DEFAULT_EMBEDDER_CONFIG ['prompts']
     )
 }
-embedders_map = KGHYPERP_PARAMS['KG_CONFIG']['embedders_mapping']
+embedders_map = KGEmbeddersMapping(**KGHYPERP_PARAMS['KG_CONFIG']['embedders_mapping'])
 
 DEFAULT_AGENT_CONFIG = KGHYPERP_PARAMS['KG_CONFIG']['agent_configs']['default']
 agents_configs = {
@@ -141,7 +142,7 @@ agents_configs = {
         )
     )
 }
-agents_map = KGHYPERP_PARAMS['KG_CONFIG']['agents_mapping']
+agents_map = AgentsMapping(**KGHYPERP_PARAMS['KG_CONFIG']['agents_mapping'])
 
 ####################################################
 print("5. Setting KG Config")

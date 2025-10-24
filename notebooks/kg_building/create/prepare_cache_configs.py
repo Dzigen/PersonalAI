@@ -26,12 +26,13 @@ sys.path.insert(0, KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
 from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
 from src.utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 from src.db_drivers.table_driver import TableDBConnectionConfig, TableDriverConfig
+from src.utils.agent_stat_analyzer.configs import CREATE_TABLE_SQLQUERY, LLMInferenceStat
 
 ####################################################
 print("2. Setting paths")
 
-DATASET_KGS_PATH = f"{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}{KGENV_PARAMS['DATASET_NAME']}"
-SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{KGENV_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+DATASET_KGS_PATH = f"{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{KGHYPERP_PARAMS['DATASET_NAME']}"
+SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{KGHYPERP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
 CACHE_CONFIG_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kvdriver_cache_config']}"
 INFSTAT_CONFIG_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['inference_stat_config']}"
@@ -74,13 +75,15 @@ LLMSTAT_TABLE_CONFIG = KGCONN_PARAMS['MEM_PIPELINE_CONNECTORS']['inference_stat_
 llmstat_table_config = TableDBConnectionConfig(
     db_info=LLMSTAT_TABLE_CONFIG['db_info'],
     params=LLMSTAT_TABLE_CONFIG['params'],
-    host=LLMSTAT_TABLE_CONFIG['host'],
-    port=LLMSTAT_TABLE_CONFIG['port']
 )
+llmstat_table_config.params['database_path'] = f"{SPEC_KG_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['stat_dir']['name']}/{KGENV_PARAMS['KG_DIR_STRUCT']['stat_dir']['inference']}"
+llmstat_table_config.db_info['table_info'] = LLMInferenceStat
+llmstat_table_config.db_info['create_table_query'] = CREATE_TABLE_SQLQUERY
+
 
 infstat_config = AgentStatAnalyzerConfig(
     table_driver_config=TableDriverConfig(
-        db_vendor='mongo',
+        db_vendor='sqlite3',
         db_config=llmstat_table_config
     )
 )

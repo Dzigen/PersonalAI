@@ -3,6 +3,8 @@ import sys
 import json
 import joblib
 import gc
+
+import datetime
 from tqdm import tqdm
 import yaml
 from pprint import pprint
@@ -39,7 +41,7 @@ print("2. Setting paths")
 DATASET_KGS_PATH = f"{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{KGHYPERP_PARAMS['DATASET_NAME']}"
 SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{KGHYPERP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
-QA_DATASET_PATH = f"{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['qa_datasets']}/{KGENV_PARAMS['DATASET_NAME']}"
+QA_DATASET_PATH = f"{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['qa_datasets']}/{KGHYPERP_PARAMS['DATASET_NAME']}"
 
 TMP_EXTRACTED_TRIPLETS_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['tmp_extracted_triplets']}"
 EXTRACTED_TRIPLETS_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['extracted_triplets']}"
@@ -55,7 +57,7 @@ print("3. Loading configs")
 kgmodel_config = joblib.load(KG_MODEL_CONFIG_PATH)
 mempipeline_config = joblib.load(MEM_PIPELINE_CONFIG_PATH)
 kvdriver_config = joblib.load(CACHE_CONFIG_PATH)
-llmstat_config = joblib.load(INFSTAT_CONFIG_PATH )
+llmstat_config = joblib.load(INFSTAT_CONFIG_PATH)
 
 print("KG MODEL_CONFIG:\n", kgmodel_config)
 print("MEM PIPELINE CONFIG: \n", mempipeline_config)
@@ -67,6 +69,11 @@ print("4. Setting KG Model")
 
 kg_model = KnowledgeGraphModel(kgmodel_config, kvdriver_config)
 
+NEED_TO_CLEAR_KG = True
+if NEED_TO_CLEAR_KG:
+    print("Cleaning KG-model")
+    kg_model.clear()
+
 # checking knowledge graph size
 pprint(kg_model.count_items(detailed=True))
 
@@ -74,6 +81,12 @@ pprint(kg_model.count_items(detailed=True))
 print("5. Setting Memorize Pipeline")
 
 mem_pipeline = MemPipeline(kg_model, mempipeline_config, kvdriver_config, llmstat_config)
+
+NEED_TO_CLEAR_CACHE = True
+if NEED_TO_CLEAR_CACHE:
+    print("Cleaing Mem-cache")
+    mem_pipeline.clear_agent_tgen_stat()
+    mem_pipeline.clear_kv_caches()
 
 print("llmstat cache:")
 pprint(mem_pipeline.get_agent_tgen_stat())
@@ -128,12 +141,20 @@ print(len(dataset))
 
 ####################################################
 print("8. Run KG build process")
+print(f"start time: {datetime.datetime.now()}") 
+CONSISTENCY_STEP = 100
 
 for i in tqdm(range(len(dataset))):
     text, time, properties = dataset[i][0], dataset[i][1], dataset[i][2]
     extracted_triplets, _ = mem_pipeline.remember(text, time, properties)
+    
+    if i % CONSISTENCY_STEP == 0:
+        kg_model.check_consistency()
 
     joblib.dump(extracted_triplets, f'{TMP_EXTRACTED_TRIPLETS_PATH}/item{i}')
+
+print(f"end time: {datetime.datetime.now()}") 
+kg_model.check_consistency()
 
 print("kg size:")
 pprint(kg_model.count_items(detailed=True))

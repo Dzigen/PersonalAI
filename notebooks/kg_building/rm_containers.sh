@@ -9,3 +9,4 @@ echo "Done."
 echo "Removing containers..."
 docker container rm ${EXISTING_CONTAINERS}
 echo "Done."
+

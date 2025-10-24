@@ -24,17 +24,21 @@ with open(KGHYPERP_FILE_PATH, 'r') as stream:
 print("2. Setting paths")
 
 #
-DATASET_KGS_PATH = f"{KGENV_PARAMS['BASE_KG_PATH']}/{KGHYPERP_PARAMS['DATASET_NAME']}"
-SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{KGHYPERP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 ADDITIONAL_DC_PARAMS = KGCONN_PARAMS['CONTAINERS_ADDITIONAL_CONFIG']
 
-SAVE_PARAMS_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kg_setting']['name']}"
+
+DATASET_KGS_PATH = f"{KGENV_PARAMS['BASE_KG_PATH']}/{KGHYPERP_PARAMS['DATASET_NAME']}"
+SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{KGHYPERP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+
+
+CONTAINER_KG_PATH = f"{KGENV_PARAMS['BASE_PERSONALAI_PATH']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{KGHYPERP_PARAMS['DATASET_NAME']}/{KGHYPERP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+SAVE_PARAMS_PATH = f"{CONTAINER_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kg_setting']['name']}"
 
 ####################################################
 print("3. Setting dotenv variables")
 
 # параметры для графовой бд (neo4j)
-GRAPH_DB_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['graph_part']['name']}/{KGENV_PARAMS['KG_DIR_STRUCT']['graph_part']['volume_name']}"
+GRAPH_DB_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['graph_dir']['name']}/{KGENV_PARAMS['KG_DIR_STRUCT']['graph_dir']['volume_name']}"
 GRAPH_CONN_PARAMS = KGCONN_PARAMS['KG_MODEL_CONNECTORS']['graph_struc_connection']
 neo4j_cnt_variables = {
     'NEO4J_CNTNAME': ADDITIONAL_DC_PARAMS['neo4j_cntname'],
@@ -59,7 +63,7 @@ mongo_cnt_variables = {
 
     'MONGO_EXTERNAL_PORT': PERSISTENT_CACHE_PARAMS['port'],
     'MONGO_AUTH_USER': PERSISTENT_CACHE_PARAMS['params']['username'],
-    'MONGO_AUTH_PASS': PERSISTENT_CACHE_PARAMS['password'],
+    'MONGO_AUTH_PASS': PERSISTENT_CACHE_PARAMS['params']['password'],
 
     'MONGO_LOCAL_VOLUME': PERSISTENT_CACHE_PATH
 }
@@ -94,14 +98,14 @@ redisui_cnt_variables = {
 
 
 # параметры для milvus бд
-DENSE_DB_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['embeddings_dir']}/{KGENV_PARAMS['KG_DIR_STRUCT']['dense_part']}"
+DENSE_DB_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['embeddings_dir']['name']}/{KGENV_PARAMS['KG_DIR_STRUCT']['embeddings_dir']['dense_part']}"
 DENSE_CONNECTOR_PARAMS = KGCONN_PARAMS['KG_MODEL_CONNECTORS']['embeddings_struc_connection']['nodesdb_config']['dense_connector']
 
 milvus_cnt_variables = {
     'MILVUS_CNTNAME': ADDITIONAL_DC_PARAMS['milvus_cntname'],
     'MILVUS_HOST': ADDITIONAL_DC_PARAMS['milvus_host'],
 
-    'MILVUS_EXTERNAL_PORT1':DENSE_CONNECTOR_PARAMS['port'],
+    'MILVUS_EXTERNAL_PORT1': DENSE_CONNECTOR_PARAMS['conn']['port'],
     'MILVUS_EXTERNAL_PORT2': ADDITIONAL_DC_PARAMS['milvus_port2'],
     'MILVUS_UI_EXTERNAL_PORT': ADDITIONAL_DC_PARAMS['milvus_ui_port'],
 
@@ -109,17 +113,18 @@ milvus_cnt_variables = {
     'MILVUS_CONFIG': f"{KGENV_PARAMS['BASE_PERSONALAI_PATH']}/{KGENV_PARAMS['PERSONALAI_REPO_DIRS']['configs']}/{ADDITIONAL_DC_PARAMS['milvus_config_name']}"
 }
 
-# elastic search
-SPARSE_DB_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['embeddings_dir']}/{KGENV_PARAMS['KG_DIR_STRUCT']['sparse_part']}"
+# open search
+SPARSE_DB_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['embeddings_dir']['name']}/{KGENV_PARAMS['KG_DIR_STRUCT']['embeddings_dir']['sparse_part']}"
 SPARSE_CONNECTOR_PARAMS = KGCONN_PARAMS['KG_MODEL_CONNECTORS']['embeddings_struc_connection']['nodesdb_config']['sparse_connector']
 
-elasticsearch_cnt_variables = {
-    'ELASTICSEARCH_CNTNAME': ADDITIONAL_DC_PARAMS['elasticsearch_cntname'],
-    'ELASTICSEARCH_HOST': ADDITIONAL_DC_PARAMS['elasticsearch_host'],
+opensearch_cnt_variables = {
+    'OPENSEARCH_CNTNAME': ADDITIONAL_DC_PARAMS['opensearch_cntname'],
+    'OPENSEARCH_HOST': ADDITIONAL_DC_PARAMS['opensearch_host'],
 
-    'ELASTICSEARCH_EXTERNAL_PORT': SPARSE_CONNECTOR_PARAMS['port'],
+    'OPENSEARCH_PORT': SPARSE_CONNECTOR_PARAMS['conn']['port'],
+    'OPENSEARCH_PORT2': ADDITIONAL_DC_PARAMS['opensearch_port2'],
 
-    'ELASTICSEARCH_LOCAL_VOLUME': SPARSE_DB_PATH,
+    'OPENSEARCH_LOCAL_VOLUME': SPARSE_DB_PATH,
 }
 
 # параметры для контейнера с llm-моделями
@@ -127,7 +132,7 @@ llmagents_cnt_variables = {
     'OLLAMA_CNTNAME': ADDITIONAL_DC_PARAMS['ollama_cntname'],
     'OLLAMA_HOST': ADDITIONAL_DC_PARAMS['ollama_host'],
 
-    'OLLAMA_EXTERNAL_PORT': KGHYPERP_PARAMS['KG_CONFIG']['agent_configs']['default']['ext_params']['port'].get('port', 11437),
+    'OLLAMA_EXTERNAL_PORT': KGHYPERP_PARAMS['KG_CONFIG']['agent_configs']['default']['ext_params'].get('port', 11437),
     'OLLAMA_DEVICE_ID': KGCONN_PARAMS['GPUS_CONFIG']['ollama_device_id'],
 
     'OLLAMA_LOCAL_VOLUME': KGENV_PARAMS['OLLAMA_MODELS_PATH']
@@ -145,7 +150,7 @@ workspace_cnt_variables = {
     'EXTERNAL_SPEC_QADS_PATH': f"{EXT_PA_PATH}/{KGENV_PARAMS['PERSONALAI_REPO_DIRS']['qa_datasets']}/{KGHYPERP_PARAMS['DATASET_NAME']}",
     'EXTERNAL_NOTEBOOKS_PATH': f"{EXT_PA_PATH}/{KGENV_PARAMS['PERSONALAI_REPO_DIRS']['notebooks']}",
     'EXTERNAL_SRC_PATH': f"{EXT_PA_PATH}/{KGENV_PARAMS['PERSONALAI_REPO_DIRS']['src']}",
-    'EXTERNAL_MODELS_PATH': f"{EXT_PA_PATH}/{KGENV_PARAMS['PERSONALAI_REPO_DIRS']['models']}",
+    'EXTERNAL_MODELS_PATH': f"{KGENV_PARAMS['BASE_KG_PATH']}/../{KGENV_PARAMS['PERSONALAI_REPO_DIRS']['models']}",
 
     'INTERNAL_SPEC_KG_PATH': f"{INT_PA_PATH}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{KGHYPERP_PARAMS['DATASET_NAME']}/{KGHYPERP_PARAMS['KNOWLEDGE_GRAPH_NAME']}",
     'INTERNAL_SPEC_QADS_PATH': f"{INT_PA_PATH}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['qa_datasets']}/{KGHYPERP_PARAMS['DATASET_NAME']}",
@@ -155,7 +160,7 @@ workspace_cnt_variables = {
 }
 
 compose_variables = {
-    'COMPOSE_PROJECT_NAME': f"{KGHYPERP_PARAMS['DATASET_NAME']}_{KGHYPERP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+    'COMPOSE_PROJECT_NAME': f"personalai_mmenshikov_{KGHYPERP_PARAMS['DATASET_NAME']}_{KGHYPERP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 }
 
 ####################################################
@@ -173,7 +178,7 @@ def add_prefixes(dict_variables) -> None:
 
 env_variables = [
     neo4j_cnt_variables, milvus_cnt_variables, mongo_cnt_variables, mongoui_cnt_variables,
-    redis_cnt_variables, redisui_cnt_variables, elasticsearch_cnt_variables, workspace_cnt_variables]
+    redis_cnt_variables, redisui_cnt_variables, opensearch_cnt_variables, workspace_cnt_variables]
 for variables in env_variables:
     add_prefixes(variables)
 env_variables += [llmagents_cnt_variables, compose_variables]
@@ -184,14 +189,14 @@ env_variables = '\n'.join(
 ####################################################
 print("5. Saving dotenv-file")
 
-DC_ENV_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"
+DC_ENV_PATH = f"{CONTAINER_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['docker_compose_env']}"
 with open(DC_ENV_PATH, 'w', encoding='utf-8') as fd:
     fd.write(env_variables)
 
 ####################################################
 print("6. Saving Used .yaml files")
 
-SAVE_PARAMS_CONFIG = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kg_setting']}"
+SAVE_PARAMS_CONFIG = KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kg_setting']
 
 with open(f"{SAVE_PARAMS_PATH}/{SAVE_PARAMS_CONFIG['kgconn']}.yaml", 'w') as fd:
     yaml.dump(KGCONN_PARAMS, fd, default_flow_style=False)

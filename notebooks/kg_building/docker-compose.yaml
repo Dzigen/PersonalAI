@@ -14,10 +14,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: 8
+          cpus: '8'
           memory: 24G
         reservations:
-          cpus: 4
+          cpus: '4'
           memory: 8G
 
   mongo:
@@ -51,7 +51,7 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_AUTH_PASS}
       ME_CONFIG_MONGODB_SERVER: ${MONGO_HOST}
     depends_on:
-      - mongo_cache
+      - mongo
     ports:
       - ${MONGO_UI_EXTERNAL_PORT}:8081
 
@@ -82,7 +82,7 @@ services:
     container_name: ${REDIS_UI_CNTNAME}
     hostname: ${REDIS_UI_HOST}
     depends_on:
-      - redis_cache
+      - redis
     ports:
       - ${REDIS_UI_EXTERNAL_PORT}:5540
 
@@ -115,31 +115,31 @@ services:
     deploy:
       resources:
         limits:
-          cpus: 8
+          cpus: '8'
           memory: 24G
         reservations:
-          cpus: 4
+          cpus: '4'
           memory: 8G
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
-    container_name: ${ELASTICSEARCH_CNTNAME}
-    hostname: ${ELASTICSEARCH_HOST}
+  opensearch:
+    container_name: ${OPENSEARCH_CNTNAME}
+    image: opensearchproject/opensearch:2.11.0
+    hostname: ${OPENSEARCH_HOST}
     ports:
-      - ${ELASTICSEARCH_PORT}:9200
+      - ${OPENSEARCH_PORT}:9200
+      - ${OPENSEARCH_PORT2}:9600
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
-      - xpack.security.enabled=false
     volumes:
-      - ${ELASTICSEARCH_LOCAL_VOLUME}:/usr/share/elasticsearch/data
+      - ${OPENSEARCH_LOCAL_VOLUME}:/usr/share/opensearch/data
     deploy:
       resources:
         limits:
-          cpus: 8
+          cpus: '8'
           memory: 24G
         reservations:
-          cpus: 4
+          cpus: '4'
           memory: 8G
 
   ollama_agent:
@@ -155,10 +155,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: 4
+          cpus: '4'
           memory: 8G
         reservations:
-          cpus: 2
+          cpus: '2'
           memory: 4G
           devices:
             - driver: nvidia
@@ -166,7 +166,7 @@ services:
               capabilities: [gpu]
 
   workspace:
-    image: m.menschikov/workspace:v3
+    image: m.menschikov/workspace:v2
     container_name: ${WORKSPACE_CNTNAME}
     hostname: ${WORKSPACE_HOST}
     network_mode: "host"
@@ -179,17 +179,17 @@ services:
     depends_on:
       - neo4j
       - milvus
-      - elasticsearch
+      - opensearch
       - mongo
       - redis
     #   - ollama_agent
     deploy:
       resources:
         limits:
-          cpus: 8
+          cpus: '8'
           memory: 32G
         reservations:
-          cpus: 4
+          cpus: '4'
           memory: 24G
           devices:
             - driver: nvidia

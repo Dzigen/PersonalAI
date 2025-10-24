@@ -10,26 +10,34 @@ import os
 from typing import List, Dict, Tuple
 import yaml
 
-# Read YAML file
-PARAMS_FILE_PATH = sys.orig_argv[2]
-with open(PARAMS_FILE_PATH, 'r') as stream:
-    PARAMS = yaml.safe_load(stream)
+KGCONN_FILE_PATH = sys.orig_argv[2]
+with open(KGCONN_FILE_PATH, 'r') as stream:
+    KGCONN_PARAMS = yaml.safe_load(stream)
 
-sys.path.insert(0, PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
+KGENV_FILE_PATH = sys.orig_argv[3]
+with open(KGENV_FILE_PATH, 'r') as stream:
+    KGENV_PARAMS = yaml.safe_load(stream)
 
-gc.collect()
+KGHYPERP_FILE_PATH = sys.orig_argv[4]
+with open(KGHYPERP_FILE_PATH, 'r') as stream:
+    KGHYPERP_PARAMS = yaml.safe_load(stream)
+
+print("Loading Library...")
+sys.path.insert(0, KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
+
+from src.utils.data_structs import NODES_TYPES_MAP
+from src.utils.data_structs import NodeType, RelationType, Triplet
 
 ############### Loading hyperparams###################
 
-DATASET_KGS_PATH = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
-SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+DATASET_KGS_PATH = f"{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{KGHYPERP_PARAMS['DATASET_NAME']}"
+SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{KGHYPERP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
-GRAPH_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['graph_config']}"
-EMBEDDINGS_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['embeddings_config']}"
+KG_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kg_config']}"
 
-GRAPH_STATS_DIR = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['graph_statistics_dir']}"
-GRAPH_STATS_INFO = f"{GRAPH_STATS_DIR}/{PARAMS['SAVE_CONFIGS_NAMES']['kg_stats']}"
-GRAPH_HEALTH_CHECKS_PATH = f"{GRAPH_STATS_DIR}/{PARAMS['SAVE_CONFIGS_NAMES']['kg_health_checks']}"
+GRAPH_STATS_DIR = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['graph_statistics_dir']}"
+GRAPH_STATS_INFO = f"{GRAPH_STATS_DIR}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kg_stats']}"
+GRAPH_HEALTH_CHECKS_PATH = f"{GRAPH_STATS_DIR}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kg_health_checks']}"
 
 ##################################
 
@@ -43,7 +51,7 @@ if os.path.exists(GRAPH_STATS_DIR):
 if os.path.exists(GRAPH_HEALTH_CHECKS_PATH):
     raise ValueError(f"Файл существует: {GRAPH_HEALTH_CHECKS_PATH}")
 
-os.mkdir(GRAPH_STATS_DIR)
+os.makedirs(GRAPH_STATS_DIR, exist_ok=True)
 
 ############### Computing KG statistics###################
 
@@ -54,7 +62,7 @@ def graph_nodes_counter(kg_model: KnowledgeGraphModel) -> Dict[str, object]:
         "MATCH (a) RETURN count(a) as count_nodes")[0]['count_nodes']
     info['nodes_amount'] = nodes_count
 
-    for node_tpe in ['object', 'hyper', 'episodic']:
+    for node_tpe in ['object', 'hyper', 'episodic', 'time']:
         spec_nodes_count = kg_model.graph_struct.db_conn.execute_query(
             f"MATCH (a:{node_tpe}) RETURN count(a) as count_nodes")[0]['count_nodes']
         info[f'{node_tpe}_nodes_count'] = spec_nodes_count
@@ -68,7 +76,7 @@ def graph_relations_counter(kg_model: KnowledgeGraphModel) -> Dict[str, object]:
         "MATCH (a)-[rel]->(b) RETURN count(rel) as count_rels")[0]['count_rels']
     info['relations_amount'] = rels_count
 
-    for rel_tpe in ['simple', 'hyper', 'episodic']:
+    for rel_tpe in ['simple', 'hyper', 'episodic', 'time']:
         spec_rels_count = kg_model.graph_struct.db_conn.execute_query(
             f"MATCH (a)-[rel:{rel_tpe}]->(b) RETURN count(a) as count_rels")[0]['count_rels']
         info[f'{rel_tpe}_rels_count'] = spec_rels_count
@@ -77,8 +85,14 @@ def graph_relations_counter(kg_model: KnowledgeGraphModel) -> Dict[str, object]:
         "MATCH (a:object)-[rel:episodic]->(b) RETURN count(a) as count_rels")[0]['count_rels']
     epi_rels_with_hyper_nodes_count = kg_model.graph_struct.db_conn.execute_query(
         "MATCH (a:hyper)-[rel:episodic]->(b) RETURN count(a) as count_rels")[0]['count_rels']
+    time_rels_with_hyper_nodes_count = kg_model.graph_struct.db_conn.execute_query(
+        "MATCH (a:time)-[rel:time]->(b:hyper) RETURN count(a) as count_rels")[0]['count_rels']
+    time_rels_with_episodic_nodes_count = kg_model.graph_struct.db_conn.execute_query(
+        "MATCH (a:time)-[rel:time]->(b:episodic) RETURN count(a) as count_rels")[0]['count_rels']
     info['episodic_with_object_rels_count'] = epi_rels_with_objec_nodes_count
     info['episodic_with_hyper_rels_count'] = epi_rels_with_hyper_nodes_count
+    info['hyper_with_time_rels_count'] = time_rels_with_hyper_nodes_count
+    info['episodic_with_time_rels_count'] = time_rels_with_episodic_nodes_count
 
     return info
 
@@ -87,13 +101,24 @@ def graph_nodes_neighbours_counter(kg_model: KnowledgeGraphModel) -> Dict[str, o
     info = dict()
 
     templates = [
+        #
         ['object', '-', 'episodic', '->', 'episodic'],
         ['object', '-', 'hyper', '->', 'hyper'],
         ['object', '-', 'simple', '->', 'object'],
+
+        #
         ['hyper', '-', 'episodic', '->', 'episodic'],
         ['hyper', '<-', 'hyper', '-', 'object'],
+        ['hyper', '<-', 'time', '-', 'time'],
+
+        #
         ['episodic', '<-', 'episodic', '-', 'object'],
-        ['episodic', '<-', 'episodic', '-', 'hyper']
+        ['episodic', '<-', 'episodic', '-', 'hyper'],
+        ['episodic', '<-', 'time', '-', 'time'],
+
+        #
+        ['time', '-', 'time', '->', 'hyper'],
+        ['time', '-', 'time', '->', 'episodic']
     ]
 
     for template in templates:
@@ -101,15 +126,34 @@ def graph_nodes_neighbours_counter(kg_model: KnowledgeGraphModel) -> Dict[str, o
             f"MATCH (a:{template[0]}){template[1]}[rel:{template[2]}]{template[3]}(b:{template[4]}) RETURN count(a), elementId(b)")
         node_neighbours_to_node_count = list(
             map(lambda item: item['count(a)'], node_neighbours_to_node_count))
+        
+        cur_info_name = f'({template[0]})_neighbours_to_({template[4]})_via_[{template[2]}]'
+        if len(node_neighbours_to_node_count) > 0:
+            info[f'({template[0]})_neighbours_to_({template[4]})_via_[{template[2]}]'] = {
+                'min': min(node_neighbours_to_node_count),
+                'max': max(node_neighbours_to_node_count),
+                'mean': np.mean(node_neighbours_to_node_count),
+                'median': np.median(node_neighbours_to_node_count),
+                'std': np.std(node_neighbours_to_node_count)
+                #'counts': node_neighbours_to_node_count
+            }
+        else:
+            info[cur_info_name] = None
 
-        info[f'{template[0]}_neighbours_to_{template[2]}'] = {
-            'min': min(node_neighbours_to_node_count),
-            'max': max(node_neighbours_to_node_count),
-            'mean': np.mean(node_neighbours_to_node_count),
-            'median': np.median(node_neighbours_to_node_count),
-            'std': np.std(node_neighbours_to_node_count),
-            'counts': node_neighbours_to_node_count
-        }
+    node_neighbours_to_node_count = kg_model.graph_struct.db_conn.execute_query(f"MATCH (a)-[rel]->(b) RETURN count(a), elementId(b)")
+    node_neighbours_to_node_count = list(map(lambda item: item['count(a)'], node_neighbours_to_node_count))
+    cur_info_name = f'((any)_neighbours_to_(any)_via_[any]'
+    if len(node_neighbours_to_node_count) > 0:
+        info[cur_info_name] = {
+                'min': min(node_neighbours_to_node_count),
+                'max': max(node_neighbours_to_node_count),
+                'mean': np.mean(node_neighbours_to_node_count),
+                'median': np.median(node_neighbours_to_node_count),
+                'std': np.std(node_neighbours_to_node_count)
+                #'counts': node_neighbours_to_node_count
+            }
+    else:
+        info[cur_info_name] = None
 
     return info
 
@@ -127,13 +171,51 @@ def graph_connectivity_counter(kg_model: KnowledgeGraphModel) -> Dict[str, objec
 
 
 def get_general_stat(kg_model: KnowledgeGraphModel):
+    return kg_model.count_items(detailed=True)
 
-    info = {
-        'vector_node': kg_model.embeddings_struct.vectordbs['nodes'].count_items(),
-        'vector_triplets': kg_model.embeddings_struct.vectordbs['triplets'].count_items(),
-        'graph_counters': kg_model.graph_struct.db_conn.count_items()
-    }
-    return info
+
+def nodes_texts_len(kg_model: KnowledgeGraphModel):
+    node_types = [NodeType.episodic, NodeType.hyper, NodeType.object, NodeType.time]
+    info = dict()
+    for n_type in node_types:
+        nodes_texts = kg_model.graph_struct.db_conn.execute_query(
+            f"MATCH (a:{n_type.value}) RETURN a.name as name")
+        texts_len = list(map(lambda item: len(item['name']), nodes_texts))
+        if len(texts_len) > 0:
+            info[n_type.value] = {
+                'min': min(texts_len),
+                'max': max(texts_len),
+                'mean': np.mean(texts_len),
+                'median': np.median(texts_len),
+                'std': np.std(texts_len)
+                #'counts': texts_len
+            }
+        else:
+            info[n_type.value] = None
+
+
+def relations_texts_len(kg_model: KnowledgeGraphModel):
+    relation_types = [RelationType.episodic, RelationType.hyper, RelationType.simple, RelationType.time]
+    info = dict()
+    for r_type in relation_types:
+        relations_texts = kg_model.graph_struct.db_conn.execute_query(
+            f"MATCH (a)-[rel:{r_type.value}]->(b) RETURN rel.name as name")
+        texts_len = list(map(lambda item: len(item['name']), relations_texts))
+        if len(texts_len) > 0:
+            info[r_type.value] = {
+                'min': min(texts_len),
+                'max': max(texts_len),
+                'mean': np.mean(texts_len),
+                'median': np.median(texts_len),
+                'std': np.std(texts_len)
+                #'counts': texts_len
+            }
+        else:
+            info[r_type.value] = None
+
+def stringified_triplets_len(kg_model: KnowledgeGraphModel):
+    # TODO
+    pass
 
 ##################################
 
@@ -166,17 +248,17 @@ GRAPH_STAT_METRICS = {
     # количество компонент связности
     # диаметр каждой компоненты
     # среднее/медианное/минимальное/максимальное (box-plot) значение длины кратчайших путей в каждой компоненте
-    # "connectivity_components": graph_connectivity_counter
+    "connectivity_components": graph_connectivity_counter,
 
     # Длина текстовых полей в вершинах
     # - с типом object
     # - с типом hyper
     # - c типом episodic
-    # TODO
+    "nodes_texts_len": nodes_texts_len,
 
     # Длина текстовых полей в связях
     # - с типом simple
-    # TODO
+    "relations_texts_len": relations_texts_len,
 
     # Длина строковых представлений триплетов
     # - c типом связей simple
@@ -184,32 +266,20 @@ GRAPH_STAT_METRICS = {
     # - с типом связей episodic
     #   - с object стартовой вершиной
     #   - с hyper стартовой вершиной
-    # TODO
+    #"stringified_triplets_len": stringified_triplets_len,
 }
 
 ##################################
 
-graph_config = joblib.load(GRAPH_MODEL_CONFIG_PATH)
-embed_config = joblib.load(EMBEDDINGS_MODEL_CONFIG_PATH)
-
-# !!! IMPORTANT !!!
-graph_config.driver_config.db_config.need_to_clear = False
-embed_config.nodesdb_driver_config.db_config.need_to_clear = False
-embed_config.tripletsdb_driver_config.db_config.need_to_clear = False
-# !!! IMPORTANT !!!
+kgmodel_config = joblib.load(KG_MODEL_CONFIG_PATH)
 
 ##################################
 
-print("graph config: ", graph_config)
-print("embeddings config: ", embed_config)
+print("kgmodel config: ", kgmodel_config)
 
-kg_model = KnowledgeGraphModel(
-    graph_config=graph_config,
-    embeddings_config=embed_config)
+kg_model = KnowledgeGraphModel(kgmodel_config)
 
-print(kg_model.embeddings_struct.vectordbs['nodes'].count_items())
-print(kg_model.embeddings_struct.vectordbs['triplets'].count_items())
-print(kg_model.graph_struct.db_conn.count_items())
+print(kg_model.count_items(detailed=True))
 
 ##################################
 
@@ -229,15 +299,15 @@ def get_relations_count_per_node(kg_model: KnowledgeGraphModel):
 
     values = list(
         map(lambda item: item['count(a)'], node_neighbours_to_node_count))
-    items = list(map(lambda item: (
-        item['count(a)'], item['elementId(b)']), node_neighbours_to_node_count))
+    # items = list(map(lambda item: (
+    #     item['count(a)'], item['elementId(b)']), node_neighbours_to_node_count))
 
     info = {
         'min': min(values),
         'max': max(values),
         'mean': np.mean(values),
         'median': np.median(values),
-        'items': items
+        #'items': items
     }
 
     return info
@@ -249,15 +319,15 @@ def get_episodic_nodes_per_hyper_node(kg_model: KnowledgeGraphModel):
 
     values = list(
         map(lambda item: item['count(b)'], node_neighbours_to_node_count))
-    items = list(map(lambda item: (
-        item['count(b)'], item['elementId(a)']), node_neighbours_to_node_count))
+    # items = list(map(lambda item: (
+    #     item['count(b)'], item['elementId(a)']), node_neighbours_to_node_count))
 
     info = {
         'min': min(values),
         'max': max(values),
         'mean': np.mean(values),
         'median': np.median(values),
-        'counts': items
+        #'counts': items
     }
 
     return info
@@ -269,15 +339,15 @@ def get_object_nodes_per_episodic_node(kg_model: KnowledgeGraphModel):
 
     values = list(
         map(lambda item: item['count(a)'], node_neighbours_to_node_count))
-    items = list(map(lambda item: (
-        item['count(a)'], item['elementId(b)']), node_neighbours_to_node_count))
+    # items = list(map(lambda item: (
+    #     item['count(a)'], item['elementId(b)']), node_neighbours_to_node_count))
 
     info = {
         'min': min(values),
         'max': max(values),
         'mean': np.mean(values),
         'median': np.median(values),
-        'counts': items
+        #'counts': items
     }
 
     return info
@@ -289,15 +359,15 @@ def get_object_nodes_per_hyper_node(kg_model: KnowledgeGraphModel):
 
     values = list(
         map(lambda item: item['count(a)'], node_neighbours_to_node_count))
-    items = list(map(lambda item: (
-        item['count(a)'], item['elementId(b)']), node_neighbours_to_node_count))
+    # items = list(map(lambda item: (
+    #     item['count(a)'], item['elementId(b)']), node_neighbours_to_node_count))
 
     info = {
         'min': min(values),
         'max': max(values),
         'mean': np.mean(values),
         'median': np.median(values),
-        'counts': items
+        #'counts': items
     }
 
     return info
@@ -315,7 +385,7 @@ def get_triplet_embds_match(kg_model: KnowledgeGraphModel):
     not_matched_embds = defaultdict(lambda: 0)
     for item in tqdm(uniques_graph_t_items):
         str_id, t_type = item
-        is_t_exists = kg_model.embeddings_struct.vectordbs['triplets'].item_exist(
+        is_t_exists = kg_model.graph_embeddings.triplets_vcomposer.item_exist(
             str_id)
 
         embds_exist_t_ids.append(is_t_exists)
@@ -331,7 +401,6 @@ def get_triplet_embds_match(kg_model: KnowledgeGraphModel):
 
     return info
 
-
 def get_node_embds_match(kg_model: KnowledgeGraphModel):
     graph_n_items = kg_model.graph_struct.db_conn.execute_query(
         "MATCH (a) RETURN a.str_id as str_id, a")
@@ -343,8 +412,8 @@ def get_node_embds_match(kg_model: KnowledgeGraphModel):
     not_matched_embds = defaultdict(lambda: 0)
     for item in tqdm(uniques_graph_n_items):
         str_id, n_tpe = item
-        is_n_exists = kg_model.embeddings_struct.vectordbs['nodes'].item_exist(
-            str_id)
+        is_n_exists = kg_model.graph_embeddings.nodes_vcomposers[
+            NODES_TYPES_MAP[n_tpe]].item_exist(str_id)
 
         embds_exist_n_ids.append(is_n_exists)
         if not is_n_exists:

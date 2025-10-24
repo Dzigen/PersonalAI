@@ -179,7 +179,7 @@ services:
           memory: 5G
 
   workspace:
-    image: m.menschikov/workspace:v1
+    image: m.menschikov/workspace:v2
     container_name: personalai_mmenschikov_workspace
     hostname: worksapceservice
     volumes:
@@ -187,8 +187,7 @@ services:
       - ../src:/home/m.menschikov/workspace/personal_ai/Personal-AI/src #/home/dzigen/Desktop/PersonalAI/Personal-AI/src | /home/m.menschikov/workspace/personal_ai/Personal-AI/src
       - ../experiments:/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments #/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments | /home/m.menschikov/workspace/personal_ai/Personal-AI/experiments
       - ../notebooks:/home/m.menschikov/workspace/personal_ai/Personal-AI/notebooks #/home/dzigen/Desktop/PersonalAI/Personal-AI/notebooks | /home/m.menschikov/workspace/personal_ai/Personal-AI/notebooks
-      #- /home/dzigen/Desktop/triviaqa_gpt4o/data/knowledge_graphs:/home/dzigen/Desktop/PersonalAI/Personal-AI/data/knowledge_graphs #/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs
-      - /mnt/data/m.menschikov/data/knowledge_graphs:/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs
+      - /mnt/data/m.menschikov/personalai/knowledge_graphs:/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs
     deploy:
       resources:
         limits:
@@ -199,7 +198,7 @@ services:
           memory: 24G
           devices:
             - driver: nvidia
-              device_ids: ['1']
+              device_ids: ['0']
               capabilities: [gpu]
 
   empty_workspace:
