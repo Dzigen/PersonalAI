@@ -36,6 +36,7 @@
 
 ##### Команды для тестироваания
 * pytest --cov=src --cov-report=html ...
+* pygount src/ --suffix=py --format=summary
 
 pre-commit:
 * https://pre-commit.com/#pre-commit-configyaml---repos

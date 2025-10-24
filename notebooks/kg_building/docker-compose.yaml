@@ -1,5 +1,4 @@
 services:
-
   neo4j:
     image: neo4j:5.21.0-enterprise
     container_name: ${NEO4J_CNTNAME}
@@ -15,13 +14,13 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '8'
+          cpus: 8
           memory: 24G
         reservations:
-          cpus: '4'
+          cpus: 4
           memory: 8G
 
-  mongo_cache:
+  mongo:
     image: mongo:latest
     container_name: ${MONGO_CNTNAME}
     hostname: ${MONGO_HOST}
@@ -56,7 +55,7 @@ services:
     ports:
       - ${MONGO_UI_EXTERNAL_PORT}:8081
 
-  redis_cache:
+  redis:
     image: redis:latest
     container_name: ${REDIS_CNTNAME}
     hostname: ${REDIS_HOST}
@@ -116,10 +115,31 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '8'
+          cpus: 8
           memory: 24G
         reservations:
-          cpus: '4'
+          cpus: 4
+          memory: 8G
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    container_name: ${ELASTICSEARCH_CNTNAME}
+    hostname: ${ELASTICSEARCH_HOST}
+    ports:
+      - ${ELASTICSEARCH_PORT}:9200
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+      - xpack.security.enabled=false
+    volumes:
+      - ${ELASTICSEARCH_LOCAL_VOLUME}:/usr/share/elasticsearch/data
+    deploy:
+      resources:
+        limits:
+          cpus: 8
+          memory: 24G
+        reservations:
+          cpus: 4
           memory: 8G
 
   ollama_agent:
@@ -135,18 +155,18 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '4'
+          cpus: 4
           memory: 8G
         reservations:
-          cpus: '2'
+          cpus: 2
           memory: 4G
           devices:
             - driver: nvidia
-              device_ids: ['1']
+              device_ids: ['${OLLAMA_DEVICE_ID}']
               capabilities: [gpu]
 
   workspace:
-    image: m.menschikov/workspace:v2
+    image: m.menschikov/workspace:v3
     container_name: ${WORKSPACE_CNTNAME}
     hostname: ${WORKSPACE_HOST}
     network_mode: "host"
@@ -158,19 +178,20 @@ services:
       - ${EXTERNAL_MODELS_PATH}:${INTERNAL_MODELS_PATH}
     depends_on:
       - neo4j
-      - mongo_cache
-      - redis_cache
       - milvus
+      - elasticsearch
+      - mongo
+      - redis
     #   - ollama_agent
     deploy:
       resources:
         limits:
-          cpus: '8'
+          cpus: 8
           memory: 32G
         reservations:
-          cpus: '4'
+          cpus: 4
           memory: 24G
           devices:
             - driver: nvidia
-              device_ids: ['1']
+              device_ids: ['${WORKSPACE_DEVICE_ID}']
               capabilities: [gpu]

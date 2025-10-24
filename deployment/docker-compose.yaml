@@ -229,12 +229,12 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '8'
+          cpus: '4'
           memory: 32G
         reservations:
-          cpus: '4'
+          cpus: '2'
           memory: 4G
           devices:
             - driver: nvidia
-              device_ids: ['2']
+              device_ids: ['0']
               capabilities: [gpu]
