@@ -1,5 +1,5 @@
-SPEC_KG_RELNAME=hotpotqa_distractor_validation/deepseek_231025_v2prompts
+SPEC_KG_RELNAME=hotpotqa_distractor_validation/qwen38b_261025_v2prompts # TO CHANGE
 BASE_DIR=/home/workspace/data/knowledge_graphs/$SPEC_KG_RELNAME
 NOTEBOOKS_BASE_PATH=/home/workspace/notebooks/kg_building
 
-49 09 23 10 * cd $BASE_DIR ; bash $NOTEBOOKS_BASE_PATH/build_graph.sh $SPEC_KG_RELNAME
+45 20 26 10 * cd $BASE_DIR ; bash $NOTEBOOKS_BASE_PATH/build_graph.sh $SPEC_KG_RELNAME

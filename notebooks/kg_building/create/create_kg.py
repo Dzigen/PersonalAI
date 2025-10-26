@@ -114,7 +114,7 @@ def hotpotqa_distractor_validation_cload(dataset_path: str) -> List[Tuple[str, D
     data_pair = []
     for r_idx in range(contexts_df.shape[0]):
         formated_context = f"Title: {contexts_df['title'][r_idx]}\n{contexts_df['context'][r_idx]}"
-        data_pair.append((formated_context, "No time", dict()))
+        data_pair.append((formated_context, None, dict()))
     print(len(data_pair), contexts_df.shape)
     return data_pair
 
@@ -125,7 +125,7 @@ def triviaqa_rcwikipedia_validation_cload(dataset_path: str) -> List[Tuple[str, 
     data_pair = []
     for r_idx in range(contexts_df.shape[0]):
         formated_context = f"Title: {contexts_df['title'][r_idx]}\n{contexts_df['context'][r_idx]}"
-        data_pair.append((formated_context, "No time", dict()))
+        data_pair.append((formated_context, None, dict()))
 
     return data_pair
 

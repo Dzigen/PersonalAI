@@ -1,4 +1,4 @@
-experiment_name: 'e5large_frida_bm25(e1_ensamble_rubqdev)' # TO CHANGE
+experiment_name: 'e5large_frida_bm25(e1_ensemble_rubqdev)' # TO CHANGE
 
 vcomposer_name: 'rubqdev241025' # TO CHANGE
 dataset_name: 'rubq_dev' # TO CHANGE
@@ -18,4 +18,6 @@ ensemble_fusion_config: # TO CHANGE
   c: 60
 
 WORKSPACE_CONTAINER_DIRS:
+  base_path: /home/workspace
   retrieved_cntx_ids: retrieved_cntx_ids.json
+  results_base_dir: experiments/rerankers/results

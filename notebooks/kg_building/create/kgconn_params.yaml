@@ -6,7 +6,7 @@ KG_MODEL_CONNECTORS:
 
   graph_struc_connection: # neo4j vendor
     host: 'localhost'
-    port: 7709 # TO CHANGE
+    port: 7707 # TO CHANGE
     params:
       user: 'neo4j'
       pwd: 'password'
@@ -20,7 +20,7 @@ KG_MODEL_CONNECTORS:
         name: dense_nodes
         conn:
           host: 'localhost'
-          port: 19549 # TO CHANGE
+          port: 19547 # TO CHANGE
           user: 'root'
           pass: 'Milvus'
         db_info:
@@ -39,7 +39,7 @@ KG_MODEL_CONNECTORS:
         name: bm25_nodes
         conn:
           host: 'localhost'
-          port: 9205 # TO CHANGE
+          port: 9203 # TO CHANGE
           user: 'admin'
           pass: 'admin'
         db_info:
@@ -51,7 +51,7 @@ KG_MODEL_CONNECTORS:
         name: dense_triplets
         conn:
           host: 'localhost'
-          port: 19549 # TO CHANGE
+          port: 19547 # TO CHANGE
           user: 'root'
           pass: 'Milvus'
         db_info:
@@ -70,7 +70,7 @@ KG_MODEL_CONNECTORS:
         name: bm25_triplets
         conn:
           host: 'localhost'
-          port: 9205 # TO CHANGE
+          port: 9203 # TO CHANGE
           user: 'admin'
           pass: 'admin'
         db_info:
@@ -81,7 +81,7 @@ MEM_PIPELINE_CONNECTORS:
   kv_cache_connections:
     persistent_cache_config: # mongo vendor
       host: 'localhost'
-      port: 27039 # TO CHANGE
+      port: 27037 # TO CHANGE
       db_info:
           db: 'personalaikvdb'
           table: 'kvtable'
@@ -92,7 +92,7 @@ MEM_PIPELINE_CONNECTORS:
 
     ram_cache_config: # redis vendor
       host: 'localhost'
-      port: 6401 # TO CHANGE
+      port: 6399 # TO CHANGE
       db_info:
           db: 'personalaikvdb'
           table: 'kvtable'
@@ -119,7 +119,7 @@ CONTAINERS_ADDITIONAL_CONFIG:
 
   redis_ui_cntname: 'personalai_mmenschikov_kgbuild_redis_ui'
   redis_ui_host: 'personalai_mmenschikov_kgbuild_redis_ui'
-  redis_ui_port: 5562 # TO CHANGE
+  redis_ui_port: 5560 # TO CHANGE
   redis_config_name: 'redis'
 
   mongo_cntname: 'personalai_mmenschikov_kgbuild_mongo'
@@ -127,21 +127,21 @@ CONTAINERS_ADDITIONAL_CONFIG:
 
   mongo_ui_cntname: 'personalai_mmenschikov_kgbuild_mongo_ui'
   mongo_ui_host: 'personalai_mmenschikov_kgbuild_mongo_ui'
-  mongo_ui_port: 8103 # TO CHANGE
+  mongo_ui_port: 8101 # TO CHANGE
 
   milvus_cntname: 'personalai_mmenschikov_kgbuild_milvus'
   milvus_host: 'localhost'
-  milvus_port2: 2398 # TO CHANGE
-  milvus_ui_port: 9110 # TO CHANGE
+  milvus_port2: 2396 # TO CHANGE
+  milvus_ui_port: 9108 # TO CHANGE
   milvus_config_name: 'milvus'
 
   opensearch_cntname: 'personalai_mmenschikov_kgbuild_opensearch'
   opensearch_host: 'localhost'
-  opensearch_port2: 9603 # TO CHANGE
+  opensearch_port2: 9601 # TO CHANGE
 
   neo4j_cntname: 'personalai_mmenschikov_kgbuild_neo4j'
   neo4j_host: 'localhost'
-  neo4j_ui_port: 7496 # TO CHANGE
+  neo4j_ui_port: 7494 # TO CHANGE
 
   ollama_cntname: 'personalai_mmenschikov_ollama'
   ollama_host: 'personalai_mmenschikov_ollama'

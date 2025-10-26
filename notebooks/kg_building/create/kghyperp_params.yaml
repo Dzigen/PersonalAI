@@ -1,5 +1,5 @@
 DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'deepseek_231025_v2prompts' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen38b_261025_v2prompts' # TO CHANGE
 
 KG_CONFIG:
   embedder_configs:
@@ -15,20 +15,19 @@ KG_CONFIG:
 
   agent_configs:
     default: # TO CHANGE
-      vendor: openai
+      vendor: ollama
       credentials:
-        token: # !!! SECRET !!!
-        model: 'deepseek-chat'
-        base_url: 'https://api.deepseek.com'
-      gen_strategy:
-        seed: 42
-        top_p: 0.000000000000001
-        temperature: 0.0
-        frequency_penalty: 0
-        presence_penalty: 0
+        host: localhost
+        model: qwen3:8b
+        port: 11437
       ext_params:
+        keep_alive: -1
         timeout: 560
-        max_retries: 5
+      gen_strategy:
+        num_predict: 2048
+        seed: 42
+        temperature: 0.0
+        top_k: 1
 
   agents_mapping:
     qa_pipeline: default

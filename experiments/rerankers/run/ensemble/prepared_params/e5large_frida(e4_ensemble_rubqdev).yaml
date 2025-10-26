@@ -1,4 +1,4 @@
-experiment_name: 'e5large_frida_bm25(e1_ensamble_rubqdev)' # TO CHANGE
+experiment_name: 'e5large_frida(e4_ensemble_rubqdev)' # TO CHANGE
 
 vcomposer_name: 'rubqdev241025' # TO CHANGE
 dataset_name: 'rubq_dev' # TO CHANGE
@@ -6,16 +6,16 @@ dataset_name: 'rubq_dev' # TO CHANGE
 top_K: 10 # TO CHANGE
 
 ensemble_fusion_config: # TO CHANGE
-  vdb_names: ['dense_e5large', 'dense_frida', 'sparse_bm25']
+  vdb_names: ['dense_e5large', 'dense_frida']
   retriever_configs:
     - fetch_n: 20
       threshold: 0.5
     - fetch_n: 20
       threshold: 0.5 
-    - fetch_n: 20
-      threshold: 0.5 
-  weights: [0.35, 0.35, 0.3]
+  weights: [0.5, 0.5]
   c: 60
 
 WORKSPACE_CONTAINER_DIRS:
+  base_path: /home/workspace
   retrieved_cntx_ids: retrieved_cntx_ids.json
+  results_base_dir: experiments/rerankers/results

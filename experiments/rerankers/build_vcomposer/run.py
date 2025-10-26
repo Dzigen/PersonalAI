@@ -8,6 +8,7 @@ import datetime
 from time import time
 import numpy as np
 import pandas as pd
+import hashlib
 from tqdm import tqdm
 from typing import List, Dict, Tuple
 
@@ -36,12 +37,17 @@ VDB_CONFIGS_SAVE_PATH = f"{VCOMPOSER_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['vdb_co
 EMBEDDER_CONFIGS_SAVE_PATH = f"{VCOMPOSER_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['embedder_configs']}"
 ELAPSED_TIME_SAVE_PATH = f"{VCOMPOSER_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['elapsed_time']}"
 
+BASE_MODELS_PATH = f"{WORKSPACE_PATH}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['models']}"
+
 ####################################################
 print("3. Creating VCompose directory")
 
-if os.path.exists(VCOMPOSER_PATH):
-    raise ValueError(f"Директория существует: {VCOMPOSER_PATH}")
-os.mkdir(VCOMPOSER_PATH)
+CREATE_DIR = False
+
+if CREATE_DIR:
+    if os.path.exists(VCOMPOSER_PATH):
+        raise ValueError(f"Директория существует: {VCOMPOSER_PATH}")
+    os.mkdir(VCOMPOSER_PATH)
 
 ####################################################
 print("4. Preparing configs")
@@ -59,16 +65,20 @@ for vdb_name, raw_config in PARAMS['vdb_configs'].items():
     )
     vdb_config_mapping[vdb_name] = cur_vdriver_config
 
+print(vdb_config_mapping)
+
 #
 embedder_configs_mapping = dict()
 for emb_name, raw_config in PARAMS['embedder_configs'].items():
     cur_emb_confog = EmbedderModelConfig(
-        model_name_or_path=raw_config['model_name_or_path'],
+        model_name_or_path=f"{BASE_MODELS_PATH}/{raw_config['model_name_or_path']}",
         prompts=raw_config.get('prompts', None),
         query_prompt_name=raw_config.get('query_prompt_name', None),
         passage_prompt_name=raw_config.get('passage_prompt_name', None)
     )
     embedder_configs_mapping[emb_name] = cur_emb_confog
+
+print(embedder_configs_mapping)
 
 ####################################################
 print("5. Saving configs")
@@ -109,18 +119,7 @@ def hotpotqa_distractor_validation_cload(dataset_path: str) -> List[Tuple[str, D
     contexts = []
     for r_idx in range(contexts_df.shape[0]):
         formated_context = f"Title: {contexts_df['title'][r_idx]}\n{contexts_df['context'][r_idx]}"
-        contexts.append((formated_context, {'cnt_idx': contexts_df['cnt_idx'][r_idx]}))
-    print(len(contexts), contexts_df.shape)
-    return contexts
-
-
-def triviaqa_rcwikipedia_validation_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
-    contexts_df = pd.read_csv(f"{dataset_path}/relevant_contexts.csv")
-
-    contexts = []
-    for r_idx in range(contexts_df.shape[0]):
-        formated_context = f"Title: {contexts_df['title'][r_idx]}\n{contexts_df['context'][r_idx]}"
-        contexts.append((formated_context, {'cnt_idx': contexts_df['cnt_idx'][r_idx]}))
+        contexts.append((formated_context, {'cntx_idx': int(contexts_df['cntx_idx'][r_idx])}))
     print(len(contexts), contexts_df.shape)
     return contexts
 
@@ -129,15 +128,14 @@ def rubq_dev_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
 
     contexts = []
     for r_idx in range(contexts_df.shape[0]):
-        formated_context = {contexts_df['context'][r_idx]}
-        contexts.append((formated_context, {'cnt_idx': contexts_df['cnt_idx'][r_idx]}))
+        formated_context = contexts_df['context'][r_idx]
+        contexts.append((formated_context, {'cntx_idx': int(contexts_df['cntx_idx'][r_idx])}))
     print(len(contexts), contexts_df.shape)
     return contexts
 
 CUSTOM_LOAD_FUNCS = {
     'rubq_dev': rubq_dev_cload,
-    'hotpotqa_distractor_validation': hotpotqa_distractor_validation_cload,
-    'trivia_qa_rcwikipedia_validation': triviaqa_rcwikipedia_validation_cload
+    'hotpotqa_distractor_validation': hotpotqa_distractor_validation_cload
 }
 dataset = CUSTOM_LOAD_FUNCS[PARAMS['dataset_name']](DATASET_PATH)
 print(DATASET_PATH)
@@ -149,13 +147,13 @@ print("9. Filling VComposer")
 time_stat = dict()
 time_store = list()
 
-time_stat['start_run'] = datetime.datetime.now()
+time_stat['start_run'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 print(f"start time: {time_stat['start_run']}")
-CONSISTENCY_STEP = 100
+CONSISTENCY_STEP = 20
 BATCH_SIZE = PARAMS['batch_size']
 
 STEPS = None
-if len(dataset) % BATCH_SIZE:
+if len(dataset) % BATCH_SIZE == 0:
     STEPS = int(len(dataset) // BATCH_SIZE)
 else:
     STEPS = int(len(dataset) // BATCH_SIZE) + 1
@@ -164,8 +162,10 @@ for cur_step in tqdm(range(STEPS)):
     items = []
     for raw_item in dataset[cur_step*BATCH_SIZE:(cur_step+1)*BATCH_SIZE]:
         context, metadata = raw_item[0], raw_item[1]
-        item = VectorDBInstance(document=context, metadata=metadata)
+        item_id = hashlib.md5(str(time()).encode()).hexdigest()
+        item = VectorDBInstance(id=item_id, document=context, metadata=metadata)
         items.append(item)
+    #print(items)
 
     s_time = time()
     vcompser.create(items)
@@ -175,7 +175,7 @@ for cur_step in tqdm(range(STEPS)):
     if cur_step % CONSISTENCY_STEP == 0:
         vcompser.check_consistency()
 
-time_stat['end_run'] = datetime.datetime.now()
+time_stat['end_run'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 print(f"end time: {time_stat['end_run']}")
 
 print(vcompser.count_items())
@@ -183,11 +183,11 @@ print(vcompser.count_items())
 time_stat['detailed(sec)'] = {
     'count': len(time_store),
     'sum': round(sum(time_store), 3),
-    'mean': round(np.mean(time_store), 3),
-    'median': round(np.median(time_store), 3),
-    'std': round(np.std(time_store), 3),
-    'min': round(np.min(time_store), 3),
-    'max': round(np.max(time_store), 3)
+    'mean': float(round(np.mean(time_store), 3)),
+    'median': float(round(np.median(time_store), 3)),
+    'std': float(round(np.std(time_store), 3)),
+    'min': float(round(np.min(time_store), 3)),
+    'max': float(round(np.max(time_store), 3))
 }
 
 print("time stat:")

@@ -1,3 +1,4 @@
+services:
   workspace:
     image: m.menschikov/workspace:v2
     container_name: ${WORKSPACE_CNTNAME}
@@ -7,6 +8,7 @@
       - ${EXTERNAL_VCOMPOSERS_PATH}:${INTERNAL_VCOMPOSERS_PATH}
       - ${EXTERNAL_SPEC_QADS_PATH}:${INTERNAL_SPEC_QADS_PATH}
       - ${EXTERNAL_EXP_PATH}:${INTERNAL_EXP_PATH}
+      - ${EXTERNAL_NOTEBOOKS_PATH}:${INTERNAL_NOTEBOOKS_PATH}
       - ${EXTERNAL_SRC_PATH}:${INTERNAL_SRC_PATH}
       - ${EXTERNAL_MODELS_PATH}:${INTERNAL_MODELS_PATH}
     deploy:

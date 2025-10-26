@@ -1,4 +1,3 @@
-from src.kg_model import KnowledgeGraphModel
 import sys
 import json
 import joblib
@@ -27,6 +26,7 @@ sys.path.insert(0, KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
 
 from src.utils.data_structs import NODES_TYPES_MAP
 from src.utils.data_structs import NodeType, RelationType, Triplet
+from src.kg_model import KnowledgeGraphModel
 
 ############### Loading hyperparams###################
 
@@ -57,6 +57,7 @@ os.makedirs(GRAPH_STATS_DIR, exist_ok=True)
 
 
 def graph_nodes_counter(kg_model: KnowledgeGraphModel) -> Dict[str, object]:
+    print("calculating nodes_count...")
     info = dict()
     nodes_count = kg_model.graph_struct.db_conn.execute_query(
         "MATCH (a) RETURN count(a) as count_nodes")[0]['count_nodes']
@@ -71,6 +72,7 @@ def graph_nodes_counter(kg_model: KnowledgeGraphModel) -> Dict[str, object]:
 
 
 def graph_relations_counter(kg_model: KnowledgeGraphModel) -> Dict[str, object]:
+    print("calculating relations_count...")
     info = dict()
     rels_count = kg_model.graph_struct.db_conn.execute_query(
         "MATCH (a)-[rel]->(b) RETURN count(rel) as count_rels")[0]['count_rels']
@@ -98,6 +100,7 @@ def graph_relations_counter(kg_model: KnowledgeGraphModel) -> Dict[str, object]:
 
 
 def graph_nodes_neighbours_counter(kg_model: KnowledgeGraphModel) -> Dict[str, object]:
+    print("calculating nodes_neighbours_count...")
     info = dict()
 
     templates = [
@@ -164,17 +167,18 @@ def graph_connectivity_counter(kg_model: KnowledgeGraphModel) -> Dict[str, objec
     components_info = kg_model.graph_struct.db_conn.execute_query(
         "CALL algo.unionFind.stream('', '', {}) YIELD nodeId,setId RETURN setId, count(nodeId) as count")
 
-    info['components'] = {item['setId']: item['count']
-                          for item in components_info}
+    info['components'] = {item['setId']: item['count'] for item in components_info}
 
     return info
 
 
 def get_general_stat(kg_model: KnowledgeGraphModel):
+    print("calculating general_stat...")
     return kg_model.count_items(detailed=True)
 
 
 def nodes_texts_len(kg_model: KnowledgeGraphModel):
+    print("calculating nodes_texts_len...")
     node_types = [NodeType.episodic, NodeType.hyper, NodeType.object, NodeType.time]
     info = dict()
     for n_type in node_types:
@@ -193,8 +197,11 @@ def nodes_texts_len(kg_model: KnowledgeGraphModel):
         else:
             info[n_type.value] = None
 
+    return info
+
 
 def relations_texts_len(kg_model: KnowledgeGraphModel):
+    print("calculating relations_texts_len...")
     relation_types = [RelationType.episodic, RelationType.hyper, RelationType.simple, RelationType.time]
     info = dict()
     for r_type in relation_types:
@@ -212,6 +219,8 @@ def relations_texts_len(kg_model: KnowledgeGraphModel):
             }
         else:
             info[r_type.value] = None
+
+    return info
 
 def stringified_triplets_len(kg_model: KnowledgeGraphModel):
     # TODO
@@ -248,7 +257,7 @@ GRAPH_STAT_METRICS = {
     # количество компонент связности
     # диаметр каждой компоненты
     # среднее/медианное/минимальное/максимальное (box-plot) значение длины кратчайших путей в каждой компоненте
-    "connectivity_components": graph_connectivity_counter,
+    # "connectivity_components": graph_connectivity_counter,
 
     # Длина текстовых полей в вершинах
     # - с типом object
@@ -283,6 +292,7 @@ print(kg_model.count_items(detailed=True))
 
 ##################################
 
+print("Calculating statistics about memory:")
 GRAPH_INFO = dict()
 for stat_name, method in tqdm(GRAPH_STAT_METRICS.items()):
     GRAPH_INFO[stat_name] = method(kg_model)
@@ -294,6 +304,7 @@ with open(GRAPH_STATS_INFO, 'w', encoding='utf-8') as fd:
 
 
 def get_relations_count_per_node(kg_model: KnowledgeGraphModel):
+    print("Calculating relations_count_per_node...")
     node_neighbours_to_node_count = kg_model.graph_struct.db_conn.execute_query(
         "MATCH (a)-[rel]-(b) RETURN count(a), elementId(b)")
 
@@ -314,6 +325,7 @@ def get_relations_count_per_node(kg_model: KnowledgeGraphModel):
 
 
 def get_episodic_nodes_per_hyper_node(kg_model: KnowledgeGraphModel):
+    print("Calculating episodic_nodes_per_hyper_node...")
     node_neighbours_to_node_count = kg_model.graph_struct.db_conn.execute_query(
         "MATCH (a:hyper)-[rel:episodic]->(b:episodic) RETURN count(b), elementId(a)")
 
@@ -334,6 +346,7 @@ def get_episodic_nodes_per_hyper_node(kg_model: KnowledgeGraphModel):
 
 
 def get_object_nodes_per_episodic_node(kg_model: KnowledgeGraphModel):
+    print("Calculating object_nodes_per_episodic_node...")
     node_neighbours_to_node_count = kg_model.graph_struct.db_conn.execute_query(
         "MATCH (a:object)-[rel:episodic]->(b:episodic) RETURN count(a), elementId(b)")
 
@@ -354,6 +367,7 @@ def get_object_nodes_per_episodic_node(kg_model: KnowledgeGraphModel):
 
 
 def get_object_nodes_per_hyper_node(kg_model: KnowledgeGraphModel):
+    print("Calculating object_nodes_per_hyper_node...")
     node_neighbours_to_node_count = kg_model.graph_struct.db_conn.execute_query(
         "MATCH (a:object)-[rel:hyper]->(b:hyper) RETURN count(a), elementId(b)")
 
@@ -374,6 +388,7 @@ def get_object_nodes_per_hyper_node(kg_model: KnowledgeGraphModel):
 
 
 def get_triplet_embds_match(kg_model: KnowledgeGraphModel):
+    print("Calculating triplet_embds_match...")
     graph_t_items = kg_model.graph_struct.db_conn.execute_query(
         "MATCH (a)-[rel]->(b) RETURN rel.str_id as str_id, rel")
     graph_t_items = list(
@@ -402,6 +417,7 @@ def get_triplet_embds_match(kg_model: KnowledgeGraphModel):
     return info
 
 def get_node_embds_match(kg_model: KnowledgeGraphModel):
+    print("Calculating node_embds_match...")
     graph_n_items = kg_model.graph_struct.db_conn.execute_query(
         "MATCH (a) RETURN a.str_id as str_id, a")
     graph_n_items = list(
@@ -440,15 +456,16 @@ GRAPH_HEALTH_CHECKS = {
     # c episodic вершиной связано >= 1 object-вершин
     'objects_per_episodic': get_object_nodes_per_episodic_node,
     # c hyper вершиной связано >= 1 object-вершин
-    'objects_per_hyper': get_object_nodes_per_hyper_node,
+    'objects_per_hyper': get_object_nodes_per_hyper_node
     # для всех трипетов в графе есть векторное представление
-    'triplet_embds_count': get_triplet_embds_match,
+    #'triplet_embds_count': get_triplet_embds_match,
     # для всех вершин в графе есть векторное представление
-    'node_embds_count': get_node_embds_match
+    #'node_embds_count': get_node_embds_match
 }
 
 ##################################
 
+print("Healt-checking builded memory model:")
 HEALTH_CHECKS_INFO = {}
 for check_name, method in tqdm(GRAPH_HEALTH_CHECKS.items()):
     HEALTH_CHECKS_INFO[check_name] = method(kg_model)

@@ -1,0 +1,2 @@
+experiment_name: 'e5large_frida_bm25(e1_ensamble_rubqdev)' # TO CHANGE
+dataset_name: 'rubq_dev' # TO CHANGE

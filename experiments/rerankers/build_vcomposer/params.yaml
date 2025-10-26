@@ -1,7 +1,7 @@
-vcomposer_name: 'hotpotqa241025' # TO CHANGE
-dataset_name: 'hotpotqa_distractor_validation'
-batch_size: 16
-need_clear: False # !!! ATTENTION !!!
+vcomposer_name: 'rubqdev241025' # TO CHANGE
+dataset_name: 'rubq_dev'
+batch_size: 32
+need_clear: True # !!! ATTENTION !!!
 
 vdb_configs: # TO CHANGE
   dense_e5large:
@@ -14,7 +14,7 @@ vdb_configs: # TO CHANGE
       hnsw:space: ip
       hnsw:M: 4096
     conn:
-      path: "{{ vcomposer_save_dir }}/{{ vcomposer_name }}/chroma_e5large"
+      path: "/home/workspace/data/reranker_exps/rubqdev241025/chroma_e5large"
 
   dense_frida:
     vendor: chroma
@@ -26,7 +26,7 @@ vdb_configs: # TO CHANGE
       hnsw:space: ip
       hnsw:M: 4096
     conn:
-      path: "{{ vcomposer_save_dir }}/{{ vcomposer_name }}/chroma_frida"
+      path: "/home/workspace/data/reranker_exps/rubqdev241025/chroma_frida"
 
   sparse_bm25:
     vendor: inmemory
@@ -35,11 +35,11 @@ vdb_configs: # TO CHANGE
       db: 'rerankerexps'
       table: 'bm25'
     params:
-        load_from_disk: False
-        load_dump_name: None
-        load_dump_dir: "{{ vcomposer_save_dir }}/{{ vcomposer_name }}/inmemory_bm25"
+        load_from_disk: True
+        load_dump_name: null
+        load_dump_dir: "/home/workspace/data/reranker_exps/rubqdev241025/inmemory_bm25"
         save_on_disk: True
-        save_dump_dir: "{{ vcomposer_save_dir }}/{{ vcomposer_name }}/inmemory_bm25"
+        save_dump_dir: "/home/workspace/data/reranker_exps/rubqdev241025/inmemory_bm25"
 
 embedder_configs: # TO CHANGE
   e5large:
@@ -51,6 +51,9 @@ embedder_configs: # TO CHANGE
     model_name_or_path: 'intfloat/multilingual-e5-large'
 
   frida:
+    prompts:
+      search_query: "search_query: "
+      search_document: "search_document: "
     query_prompt_name: 'search_query'
     passage_prompt_name: 'search_document'
     model_name_or_path: 'ai-forever/FRIDA'
