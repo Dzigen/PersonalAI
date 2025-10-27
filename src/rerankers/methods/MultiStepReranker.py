@@ -15,6 +15,11 @@ class RerankingType(Enum):
     filter = 'filter'  # sorting with tail-cuting; relevance-scores are not returning
     retriever = 'retriever'  # retrieve from ids-subset; relevance-scores are returning
 
+MS_RERANKING_TYPES_MAP = {
+    'filter': RerankingType.filter,
+    'retriever': RerankingType.retriever
+}
+
 
 @dataclass
 class RerankStep:

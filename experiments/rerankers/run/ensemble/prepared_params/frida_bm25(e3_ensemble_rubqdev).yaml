@@ -3,7 +3,7 @@ experiment_name: 'frida_bm25(e3_ensemble_rubqdev)' # TO CHANGE
 vcomposer_name: 'rubqdev241025' # TO CHANGE
 dataset_name: 'rubq_dev' # TO CHANGE
 
-top_K: 10 # TO CHANGE
+top_k: 10 # TO CHANGE
 
 ensemble_fusion_config: # TO CHANGE
   vdb_names: ['dense_frida', 'sparse_bm25']
@@ -15,7 +15,24 @@ ensemble_fusion_config: # TO CHANGE
   weights: [0.6, 0.4]
   c: 60
 
+SAVE_CONFIGS_NAMES:
+  params: params.yaml
+  elapsed_time: elapsed_time.json
+  retrieved_cntx_ids: retrieved_cntx_ids.csv
+  reranker_config: reranker_config
+
 WORKSPACE_CONTAINER_DIRS:
+  category: ensemble
   base_path: /home/workspace
-  retrieved_cntx_ids: retrieved_cntx_ids.json
-  results_base_dir: experiments/rerankers/results
+  models: models
+  qa_datasets: data/qa_datasets/v3
+  src: src
+  vcomposers_data: data/reranker_exps
+  experiments: experiments/rerankers
+  run_dir: 'run'
+  evaluate_dir: 'evaluate'
+  results_dir: 'results'
+  
+
+VCOMPOSER_INFO:
+  params_name: params.yaml

@@ -1,0 +1,20 @@
+BASE_DIR=/home/workspace/experiments/rerankers
+RERANKER_CATEGORY=singlestep
+
+ENSEMBLE_RUN_PATH="$BASE_DIR/run/$RERANKER_CATEGORY"
+PREPARED_PARAMS_DIR="$ENSEMBLE_RUN_PATH/prepared_params"
+ENSEMBLE_LOG_PATH="$BASE_DIR/results/$RERANKER_CATEGORY/run_log.txt"
+
+PYTHON_CMD=/usr/bin/python3
+ENSEMBLE_RUN_SCRIPT="$ENSEMBLE_RUN_PATH/run.py"
+
+EXISTING_PARAM_FILES=$(ls $PREPARED_PARAMS_DIR)
+echo "Existing param-files: $EXISTING_PARAM_FILES"
+
+for param_file in $EXISTING_PARAM_FILES; 
+do
+    echo "Current param_file: $param_file"
+    ABSOLUTE_PARAM_PATH="$PREPARED_PARAMS_DIR/$param_file"
+    cd $ENSEMBLE_RUN_PATH ; $PYTHON_CMD $ENSEMBLE_RUN_SCRIPT $ABSOLUTE_PARAM_PATH >> $ENSEMBLE_LOG_PATH 2>&1
+done
+

@@ -1,2 +1,18 @@
-experiment_name: 'e5large_frida_bm25(e1_ensamble_rubqdev)' # TO CHANGE
+experiment_name: 'frida(e1_singlestep_rubqdev)' # TO CHANGE
+category: singlestep # TO CHANGE
 dataset_name: 'rubq_dev' # TO CHANGE
+  
+SAVE_CONFIGS_NAMES:
+  retrieved_cntx_ids: retrieved_cntx_ids.csv
+  scores: scores.json
+  
+WORKSPACE_CONTAINER_DIRS:
+  base_path: /home/workspace
+  models: models
+  qa_datasets: data/qa_datasets/v3
+  src: src
+  vcomposers_data: data/reranker_exps
+  experiments: experiments/rerankers
+  run_dir: 'run'
+  evaluate_dir: 'evaluate'
+  results_dir: 'results'

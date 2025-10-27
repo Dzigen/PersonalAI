@@ -1,0 +1,18 @@
+Existing param-files: e5large_bm25(e2_ensemble_hotpotqa).yaml
+e5large_bm25(e2_ensemble_rubqdev).yaml
+e5large_frida(e4_ensemble_hotpotqa).yaml
+e5large_frida(e4_ensemble_rubqdev).yaml
+e5large_frida_bm25(e1_ensemble_hotpotqa).yaml
+e5large_frida_bm25(e1_ensemble_rubqdev).yaml
+frida_bm25(e3_ensemble_hotpotqa).yaml
+frida_bm25(e3_ensemble_rubqdev).yaml
+Current param_file: e5large_bm25(e2_ensemble_hotpotqa).yaml
+Current param_file: e5large_bm25(e2_ensemble_rubqdev).yaml
+Current param_file: e5large_frida(e4_ensemble_hotpotqa).yaml
+Current param_file: e5large_frida(e4_ensemble_rubqdev).yaml
+Current param_file: e5large_frida_bm25(e1_ensemble_hotpotqa).yaml
+Current param_file: e5large_frida_bm25(e1_ensemble_rubqdev).yaml
+Current param_file: frida_bm25(e3_ensemble_hotpotqa).yaml
+Current param_file: frida_bm25(e3_ensemble_rubqdev).yaml
+run_prepared_params.sh: line 19: syntax error near unexpected token `done'
+run_prepared_params.sh: line 19: `done'
