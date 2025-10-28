@@ -21,3 +21,4 @@ mysql-connector-python
 psycopg2
 gigachat
 ollama
+faiss-cpu
