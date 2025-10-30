@@ -13,7 +13,7 @@ from src.pipelines.memorize import MemPipelineConfig, LLMExtractorConfig, LLMUpd
 AVAILABLE_GRAPH_MODELS = ['neo4j']  # 'inmemory_graph', 'neo4j', 'kuzu'
 
 # TO CHANGE
-AVAILABLE_EMBEDDING_MODELS = ['milvus']  # 'chroma', 'milvus'
+AVAILABLE_EMBEDDING_MODELS = ['inmemory', 'opensearch']  # 'chroma', 'milvus', 'inmemory', 'opensearch'
 
 # TO CHANGE
 AVAILABLE_NODESTREE_MODELS = ['None'] # 'milvus_kuzu', 'milvus_neo4j', 'chroma_kuzu', 'chroma_neo4j', 'None

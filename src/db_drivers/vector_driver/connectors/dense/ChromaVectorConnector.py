@@ -221,6 +221,10 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
         return self.collection.count()
 
     def item_exist(self, id: str) -> bool:
+        # validation
+        if not isinstance(id, str):
+            raise ValueError
+
         output = self.collection.get(ids=[id])
         return len(output['ids']) > 0
 

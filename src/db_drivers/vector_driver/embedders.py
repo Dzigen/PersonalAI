@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from sentence_transformers import SentenceTransformer
+from langchain_core.embeddings.embeddings import Embeddings
 from typing import Dict, List
 
 
@@ -12,7 +13,7 @@ class EmbedderModelConfig:
     normalize_embeddings: bool = True
 
 
-class EmbedderModel:
+class EmbedderModel(Embeddings):
 
     def __init__(self, config: EmbedderModelConfig = None) -> None:
         self.config = EmbedderModelConfig() if config is None else config
@@ -21,9 +22,9 @@ class EmbedderModel:
             prompts=config.prompts
         )
 
-    def encode(self, queries: List[str], **kwargs) -> List[List[float]]:
+    def encode(self, text: List[str], **kwargs) -> List[List[float]]:
         output = self.model.encode(
-            queries, normalize_embeddings=self.config.normalize_embeddings, **kwargs)
+            text, normalize_embeddings=self.config.normalize_embeddings, **kwargs)
         return [list(obj.astype(float)) for obj in output]
 
     def encode_queries(self, queries: List[str], **kwargs) -> List[List[float]]:
@@ -31,8 +32,14 @@ class EmbedderModel:
                                    normalize_embeddings=self.config.normalize_embeddings, **kwargs)
         return [list(obj.astype(float)) for obj in output]
 
+    def embed_query(self, text: str) -> List[float]:
+        return self.encode_queries([text])
+
     def encode_passages(self, passages: List[str], **kwargs) -> List[List[float]]:
         output = self.model.encode(passages, prompt_name='passage',
                                    normalize_embeddings=self.config.normalize_embeddings,
                                    **kwargs)
         return [list(obj.astype(float)) for obj in output]
+
+    def embed_documents(self, texts: list[str]) -> List[List[float]]:
+        return self.encode_passages(texts)

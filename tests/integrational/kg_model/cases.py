@@ -10,7 +10,7 @@ from .instances import SIMPLE_TRIPLET2, SIMPLE_TRIPLET1_2, SIMPLE_TRIPLET1, \
 AVAILABLE_GRAPH_MODELS = ['inmemory_graph', 'neo4j', 'kuzu']  # 'inmemory_graph', 'neo4j', 'kuzu'
 
 # TO CHANGE
-AVAILABLE_EMBEDDING_MODELS = ['chroma', 'milvus']  # 'chroma', 'milvus'
+AVAILABLE_EMBEDDING_MODELS = ['inmemory', 'opensearch']  # 'chroma', 'milvus', 'inmemory', 'opensearch'
 
 ###############################################################################################
 

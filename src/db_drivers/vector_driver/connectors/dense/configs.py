@@ -16,10 +16,11 @@ DEFAULT_INMEMORY_CONFIG = VectorDBConnectionConfig(
         'load_dump_name': None,
         'load_dump_dir': "./personalai_tmp/volumes/inmemory_dense",
         'save_on_disk': True,
-        'save_dump_dir': "./personalai_tmp/volumes/inmemory_dense"
+        'save_dump_dir': "./personalai_tmp/volumes/inmemory_dense",
+        'vector_dim': 1024
     }
 )
 
-DEFAULT_OPENSEARCH_CONFIG = VectorDBConnectionConfig(
-    conn={'host': 'localhost', 'port': 9200, 'user': 'admin', 'pass': 'admin'}
+DEFAULT_ELASTICSEARCH_CONFIG = VectorDBConnectionConfig(
+    conn={'host': 'localhost', 'port': 9201}
 )

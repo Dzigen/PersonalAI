@@ -152,10 +152,8 @@ class KnowledgeGraphModel:
         :return: Словарь с информацией о триплетах, которые были удалены (значение True, иначе False) из памяти ассистента.
         :rtype: Dict[str, Dict[int,Dict[str,bool]]]
         """
-        graph_delete_info, embds_delete_info = self.graph_struct.delete_triplets(
-            triplets)
-        self.graph_embeddings.delete_triplets(
-            triplets, delete_info=embds_delete_info)
+        graph_delete_info, embds_delete_info = self.graph_struct.delete_triplets(triplets)
+        self.graph_embeddings.delete_triplets(triplets, delete_info=embds_delete_info)
 
         if self.nodestree_model is not None:
             tree_reduce_info = self.nodestree_model.reduce_tree(

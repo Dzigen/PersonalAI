@@ -24,8 +24,35 @@ def milvusdb_conn():
         conn={'host': 'localhost', 'port': 19520,
               'user': 'root', 'pass': 'Milvus'},
         db_info={'db': 'testing', 'table': 'testing'}, need_to_clear=True,
-        params={'id_length': 32, 'vector_dim': 3, 'document_max_length': 51200,
+        params={'id_length': 32, 'vector_dim': 130, 'document_max_length': 51200,
                 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}))
+    return VectorDriver.connect(config)
+
+
+@pytest.fixture(scope='package')
+def inmemory_conn():
+    config = VectorDriverConfig(
+        db_vendor='inmemory',
+        db_config=VectorDBConnectionConfig(
+            params={
+                'store_dump_name': 'inmemory_dense',
+                'load_from_disk': False,
+                'load_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_dense",
+                'save_on_disk': False,
+                'save_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_dense",
+                'vector_dim': 130
+            }
+        ))
+    return VectorDriver.connect(config)
+
+@pytest.fixture(scope='package')
+def elasticsearch_conn():
+    config = VectorDriverConfig(
+        db_vendor='elasticsearch',
+        db_config=VectorDBConnectionConfig(
+            conn={'host': 'localhost', 'port': 9201}
+        )
+    )
     return VectorDriver.connect(config)
 
 # ------------------------------#
@@ -33,10 +60,13 @@ def milvusdb_conn():
 
 @pytest.fixture(scope='package')
 def available_vector_connections(
-        chromadb_conn, milvusdb_conn):
+        chromadb_conn, milvusdb_conn, inmemory_conn, elasticsearch_conn):
     return {
         'chroma': chromadb_conn,
-        'milvus': milvusdb_conn}
+        'milvus': milvusdb_conn,
+        'inmemory': inmemory_conn,
+        'elasticsearch': elasticsearch_conn
+    }
 
 
 @pytest.fixture(scope='function')
