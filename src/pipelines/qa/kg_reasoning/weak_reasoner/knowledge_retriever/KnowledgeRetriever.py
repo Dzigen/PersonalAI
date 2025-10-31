@@ -86,16 +86,10 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         self.log("Невалидные триплеты:", verbose=self.config.verbose)
         valid_triplets = []
         for triplet in triplets:
-            # t_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.id)
             r_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(
-                triplet.relation.id, id_type='relation')
-            # sn_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.start_node.id, id_type='node')
-            # en_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(triplet.end_node.id, id_type='node')
-
+                triplet.relation.id, id_type='relation', object_type=triplet.relation.type)
             r_vector_exists = self.kg_model.graph_embeddings.triplets_vcomposer.item_exist(
                 triplet.relation.id)
-            # sn_vector_exists = self.kg_model.graph_embeddings.nodes_vcomposers.item_exist(triplet.start_node.id)
-            # en_vector_exists = self.kg_model.graph_embeddings.nodes_vcomposers.item_exist(triplet.end_node.id)
 
             if not (r_graph_exists and r_graph_exists):
                 self.log(

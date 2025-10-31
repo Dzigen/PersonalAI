@@ -5,7 +5,8 @@ import json
 from .configs import DEFAULT_NEO4J_CONFIG
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils.data_structs import Triplet, Node, TripletCreator, NodeCreator, \
-    NodeType, RelationCreator, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
+    NodeType, RelationCreator, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP, \
+        NodeInfo, from_str_to_nodeinfo, RelationInfo, from_str_to_relationinfo
 
 
 class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
@@ -146,13 +147,14 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
             nodes_to_delete = []
 
             if cur_info is None or cur_info['s_node']:
-                nodes_to_delete.append('sn_id')
+                nodes_to_delete.append('sn')
 
             if cur_info is None or cur_info['e_node']:
-                nodes_to_delete.append('en_id')
+                nodes_to_delete.append('en')
 
             output = self.execute_query(
-                f'MATCH (s_node)-[rel]->(e_node) WHERE rel.t_id = "{t_id}" DELETE rel RETURN elementId(s_node) as sn_id, elementId(e_node) as en_id')
+                f'MATCH (s_node)-[rel]->(e_node) WHERE rel.t_id = "{t_id}" DELETE rel \
+                    RETURN elementId(s_node) as sn_id, labels(s_node) as sn_labels, elementId(e_node) as en_id, labels(e_node) as en_labels')
             if len(output) < 1:
                 continue
 
@@ -162,10 +164,9 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
                 where_statement = []
                 for n_name in nodes_to_delete:
                     where_statement.append(
-                        f'elementId(n) = "{output[0][n_name]}"')
+                        f'(elementId(n) = "{output[0][f"{n_name}_id"]}" and n:{list(output[0][f"{n_name}_labels"])[0]})')
                 where_statement = ' or '.join(where_statement)
-                self.execute_query(
-                    f'MATCH (n) WHERE {where_statement} DELETE n')
+                self.execute_query(f'MATCH (n) WHERE {where_statement} DELETE n')
 
     def read_by_name(self, name: str, object_type: Union[RelationType, NodeType], object: str = 'relation') -> List[Union[Triplet, Node]]:
         if type(object_type) not in [RelationType, NodeType]:
@@ -207,22 +208,21 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
                 session.close()
         return response
 
-    def get_adjecent_nids(self, base_node_id: str,
-                          accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[str]:
-        if not isinstance(base_node_id, str):
+    def get_adjecent_nodes(self, base_node: NodeInfo,
+                          accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[NodeInfo]:
+        if not isinstance(base_node.id, str):
             raise ValueError
 
-        str_accepted_nodes = ', '.join(
-            list(map(lambda tpe: f'"{tpe.value}"', accepted_n_types)))
+        str_accepted_nodes = ', '.join(list(map(lambda tpe: f'"{tpe.value}"', accepted_n_types)))
 
         raw_nodes = self.execute_query(
-            f'MATCH (a)-[r]-(b) WHERE a.str_id = "{base_node_id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(b)) RETURN b')
-        formated_nodes = [node['b']['str_id'] for node in raw_nodes]
+            f'MATCH (a:{base_node.type.value})-[r]-(b) WHERE a.str_id = "{base_node.id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(b)) RETURN b')
+        formated_nodes = [NodeInfo(id=node['b']['str_id'], type=NODES_TYPES_MAP[list(node['b'].labels)[0]]) for node in raw_nodes]
         return formated_nodes
 
-    def get_nodes_shared_ids(self, node1_id: str, node2_id: str, id_type: str = 'both') -> List[Dict[str, str]]:
-        if (not isinstance(node1_id, str)) or (not isinstance(node2_id, str)):
-            raise ValueError(node1_id, node2_id)
+    def get_nodes_shared_ids(self, node1: NodeInfo, node2: NodeInfo, id_type: str = 'both') -> List[Dict[str, str]]:
+        if (not isinstance(node1.id, str)) or (not isinstance(node2.id, str)):
+            raise ValueError(node1, node2)
         if not isinstance(id_type, str):
             raise ValueError(id_type)
 
@@ -236,7 +236,7 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
             raise ValueError(id_type)
 
         raw_rels = self.execute_query(
-            f'MATCH (a)-[r]-(b) WHERE a.str_id = "{node1_id}" AND b.str_id = "{node2_id}" RETURN {str_return_info};')
+            f'MATCH (a:{node1.type.value})-[r]-(b:{node2.type.value}) WHERE a.str_id = "{node1.id}" AND b.str_id = "{node2.id}" RETURN {str_return_info};')
 
         formated_info = []
         for raw_rel in raw_rels:
@@ -315,14 +315,14 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
 
         return formated_triplets
 
-    def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
-        if (not isinstance(node1_id, str)) or (not isinstance(node2_id, str)):
+    def get_triplets(self, node1: NodeInfo, node2: NodeInfo) -> List[Triplet]:
+        if (not isinstance(node1.id, str)) or (not isinstance(node2.id, str)):
             raise ValueError
-        if (not self.item_exist(node1_id, id_type='node')) or (not self.item_exist(node2_id, id_type='node')):
+        if (not self.item_exist(node1.id, 'node', node1.type)) or (not self.item_exist(node2.id, 'node', node2.type)):
             raise ValueError
 
         output = self.execute_query(
-            f'MATCH (n1)-[rel]-(n2) WHERE n1.str_id = "{node1_id}" AND n2.str_id = "{node2_id}" RETURN n1, rel, n2')
+            f'MATCH (n1:{node1.type.value})-[rel]-(n2:{node2.type.value}) WHERE n1.str_id = "{node1.id}" AND n2.str_id = "{node2.id}" RETURN n1, rel, n2')
 
         formated_triplets = self.parse_query_triplets_output(output)
         return formated_triplets
@@ -348,7 +348,8 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
 
         return formated_triplets
 
-    def count_items(self, id: Union[None, str] = None, id_type: Union[None, str] = None, detailed: bool = False) -> Union[Dict[str, Dict[str, int]], Dict[str, int], int]:
+    def count_items(self, item_id: Union[None, str, NodeInfo, RelationInfo] = None, 
+                    id_type: str = None, detailed: bool = False) -> Union[Dict[str, Dict[str, int]], Dict[str, int], int]:
         if id_type is None:
             if detailed:
                 result = {'triplets': {'simple': 0, 'hyper': 0, 'episodic': 0}, 'nodes': {'object': 0, 'hyper': 0, 'episodic': 0}}
@@ -371,17 +372,17 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
 
         elif id_type == 'node':
             n_output = self.execute_query(
-                f'MATCH (a) WHERE a.str_id = "{id}" RETURN COUNT(a) as n_count')[0]
+                f'MATCH (a:{item_id.type.value}) WHERE a.str_id = "{item_id.id}" RETURN COUNT(a) as n_count')[0]
             result = n_output['n_count']
 
         elif id_type == 'relation':
             r_output = self.execute_query(
-                f'MATCH (a)-[rel]->(b) WHERE rel.str_id = "{id}" RETURN COUNT(rel) as r_count')[0]
+                f'MATCH (a)-[rel:{item_id.type.value}]->(b) WHERE rel.str_id = "{item_id.id}" RETURN COUNT(rel) as r_count')[0]
             result = r_output['r_count']
 
         elif id_type == 'triplet':
             r_output = self.execute_query(
-                f'MATCH (a)-[rel]->(b) WHERE rel.t_id = "{id}" RETURN COUNT(rel) as r_count')[0]
+                f'MATCH (a)-[rel]->(b) WHERE rel.t_id = "{item_id}" RETURN COUNT(rel) as r_count')[0]
             result = r_output['r_count']
 
         else:
@@ -389,30 +390,21 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
 
         return result
 
-    def item_exist(self, id: str, id_type='triplet') -> bool:
+    def item_exist(self, item_id: Union[str, NodeInfo, RelationInfo], id_type: str = 'triplet') -> bool:
         if not isinstance(id, str):
             raise ValueError
 
         if id_type == 'node':
-            query = f'MATCH (n) WHERE n.str_id = "{id}" RETURN n'
+            query = f'MATCH (n:{item_id.type.value}) WHERE n.str_id = "{item_id.id}" RETURN n'
         elif id_type == 'relation':
-            query = f'MATCH (n1)-[rel]-(n2) WHERE rel.str_id = "{id}" RETURN rel'
+            query = f'MATCH (n1)-[rel:{item_id.type.value}]-(n2) WHERE rel.str_id = "{item_id.id}" RETURN rel'
         elif id_type == 'triplet':
-            query = f'MATCH (n1)-[rel]-(n2) WHERE rel.t_id = "{id}" RETURN rel'
+            query = f'MATCH (n1)-[rel]-(n2) WHERE rel.t_id = "{item_id}" RETURN rel'
         else:
             raise ValueError
 
         output = self.execute_query(query)
         return len(output) > 0
-
-    def get_node_type(self, id: str) -> NodeType:
-        if not self.item_exist(id, id_type="node"):
-            raise ValueError
-
-        raw_output = self.execute_query(
-            f'MATCH (n) WHERE n.str_id = "{id}" RETURN n')
-        formated_node = self.parse_query_nodes_output(raw_output)[0]
-        return formated_node.type
 
     def clear(self) -> None:
         self.execute_query("MATCH (n)-[rel]->() DELETE n,rel")

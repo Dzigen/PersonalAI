@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import List, Dict, Set, Tuple
 import math
+from collections import defaultdict
 from tqdm import tqdm
 import gc
 
@@ -55,9 +56,9 @@ class GraphModel:
         :rtype: Dict[str, Set[str]]
         """
         self.log("Adding triplets to graph-model...", verbose=self.verbose)
-        unique_triplet_ids, unique_node_ids = set(), set()
-        existed_triplet_ids, existed_node_ids = set(), set()
-        created_triplet_ids, created_node_ids = set(), set()
+        unique_triplet_ids, unique_node_ids = defaultdict(set), defaultdict(set)
+        existed_triplet_ids, existed_node_ids = defaultdict(set), defaultdict(set)
+        created_triplet_ids, created_node_ids = defaultdict(set), defaultdict(set)
 
         batches = math.ceil(len(triplets) / batch_size)
         process = tqdm(range(batches)) if status_bar else range(batches)
@@ -77,45 +78,53 @@ class GraphModel:
                     break
 
                 cur_triplet = triplets[triplet_idx]
-                if cur_triplet.id in unique_triplet_ids:
+                if cur_triplet.id in unique_triplet_ids[cur_triplet.relation.type]:
                     continue
                 else:
-                    unique_triplet_ids.add(cur_triplet.id)
+                    unique_triplet_ids[cur_triplet.relation.type].add(cur_triplet.id)
 
-                if self.db_conn.item_exist(cur_triplet.id, id_type='triplet'):
-                    existed_triplet_ids.add(cur_triplet.id)
+                if self.db_conn.item_exist(cur_triplet.id, id_type='triplet', object_type=cur_triplet.relation.type):
+                    existed_triplet_ids[cur_triplet.relation.type].add(cur_triplet.id)
                     continue
                 else:
                     triplets_to_create.append(cur_triplet)
                     info_counter += 1
                     creation_info[info_counter] = {
                         's_node': False, 'e_node': False}
-                    created_triplet_ids.add(cur_triplet.id)
+                    created_triplet_ids[cur_triplet.relation.type].add(cur_triplet.id)
 
                 s_node_id = cur_triplet.start_node.id
-                if (s_node_id not in unique_node_ids):
-                    unique_node_ids.add(s_node_id)
-                    if not self.db_conn.item_exist(s_node_id, id_type='node'):
+                if (s_node_id not in unique_node_ids[cur_triplet.start_node.type]):
+                    unique_node_ids[cur_triplet.start_node.type].add(s_node_id)
+                    if not self.db_conn.item_exist(s_node_id, id_type='node', object_type=cur_triplet.start_node.type):
                         creation_info[info_counter]['s_node'] = True
-                        created_node_ids.add(s_node_id)
+                        created_node_ids[cur_triplet.start_node.type].add(s_node_id)
                     else:
-                        existed_node_ids.add(s_node_id)
+                        existed_node_ids[cur_triplet.start_node.type].add(s_node_id)
 
                 e_node_id = cur_triplet.end_node.id
-                if (e_node_id not in unique_node_ids):
-                    unique_node_ids.add(e_node_id)
-                    if not self.db_conn.item_exist(e_node_id, id_type='node'):
+                if (e_node_id not in unique_node_ids[cur_triplet.end_node.type]):
+                    unique_node_ids[cur_triplet.end_node.type].add(e_node_id)
+                    if not self.db_conn.item_exist(e_node_id, id_type='node', object_type=cur_triplet.end_node.type):
                         creation_info[info_counter]['e_node'] = True
-                        created_node_ids.add(e_node_id)
+                        created_node_ids[cur_triplet.end_node.type].add(e_node_id)
                     else:
-                        existed_node_ids.add(e_node_id)
+                        existed_node_ids[cur_triplet.end_node.type].add(e_node_id)
 
             self.db_conn.create(triplets_to_create, creation_info)
 
-        self.log(
-            f"all/unique/existed triplets - {len(triplets)}/{len(unique_triplet_ids)}/{len(existed_triplet_ids)}", verbose=self.verbose)
-        self.log(
-            f"all/unique/existed nodes - {len(triplets)*2}/{len(unique_node_ids)}/{len(existed_node_ids)}", verbose=self.verbose)
+        self.log(f"Triplets info (all - {len(triplets)}):", verbose=self.verbose)
+        utriples_count = {k: len(v) for k,v in unique_triplet_ids}
+        self.log(f"- unique ({utriples_count}): {unique_triplet_ids}", verbose=self.verbose)
+        etriples_count = {k: len(v) for k,v in existed_triplet_ids}
+        self.log(f"- existed ({etriples_count}): {existed_triplet_ids}", verbose=self.verbose)
+
+        self.log(f"Nodes info (all - {len(triplets)*2}):", verbose=self.verbose)
+        unode_count = {k: len(v) for k,v in unique_node_ids}
+        self.log(f"- unique ({unode_count}): {unique_node_ids}", verbose=self.verbose)
+        enode_count = {k: len(v) for k,v in existed_node_ids}
+        self.log(f"- existed ({enode_count}): {existed_node_ids}", verbose=self.verbose)
+
         self.log("Triplets added successfully!", verbose=self.verbose)
 
         return {'triplets': created_triplet_ids, 'nodes': created_node_ids}
@@ -141,17 +150,15 @@ class GraphModel:
 
             # Если в триплете у стартовой вершины только одно инцидентное ребро,
             # то готовим его к удалению из графовой и векторной структур данных
-            s_node_neighbours = self.db_conn.get_adjecent_nids(
-                triplet.start_node.id)
-            if len(s_node_neighbours) == 1 and s_node_neighbours[0] == triplet.end_node.id:
+            s_node_neighbours = self.db_conn.get_adjecent_nodes(triplet.start_node.id)
+            if len(s_node_neighbours) == 1 and s_node_neighbours[0].id == triplet.end_node.id:
                 graph_delete_info['s_node'] = True
                 vector_delete_info['s_node'] = True
 
             # Если в триплете у конечной вершины только одно инцидентное ребро,
             # то готовим его к удалению из графовой и векторной структур данных
-            e_node_neighbours = self.db_conn.get_adjecent_nids(
-                triplet.end_node.id)
-            if len(e_node_neighbours) == 1 and e_node_neighbours[0] == triplet.start_node.id:
+            e_node_neighbours = self.db_conn.get_adjecent_nodes(triplet.end_node.id)
+            if len(e_node_neighbours) == 1 and e_node_neighbours[0].id == triplet.start_node.id:
                 graph_delete_info['e_node'] = True
                 vector_delete_info['e_node'] = True
 

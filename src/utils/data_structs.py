@@ -5,7 +5,6 @@ import hashlib
 
 from src.db_drivers.vector_driver import VectorDBInstance
 
-
 class NodeType(Enum):
     """Доступные типы вершин."""
     #: Вершина хранит атомарную сущность.
@@ -17,7 +16,14 @@ class NodeType(Enum):
     #: Вершина хранит временную информацию.
     time = "time"
 
+@dataclass
+class NodeInfo:
+    id: str
+    type: NodeType
 
+    def to_str(self):
+        return f"{self.type.value}:{self.id}" 
+    
 NODES_TYPES_MAP = {
     'object': NodeType.object,
     'hyper': NodeType.hyper,
@@ -25,6 +31,9 @@ NODES_TYPES_MAP = {
     'time': NodeType.time,
 }
 
+def from_str_to_nodeinfo(str_nodeinfo: str) -> NodeInfo:
+    nid, ntype = str_nodeinfo.split(":")
+    return NodeInfo(id=nid, type=NODES_TYPES_MAP[ntype])
 
 class RelationType(Enum):
     """Доступные типы связей/триплетов."""
@@ -45,6 +54,17 @@ RELATIONS_TYPES_MAP = {
     'time': RelationType.time,
 }
 
+@dataclass
+class RelationInfo:
+    id: str
+    type: RelationType
+
+    def to_str(self):
+        return f"{self.type.value}:{self.id}" 
+
+def from_str_to_relationinfo(str_relationinfo: str) -> RelationInfo:
+    rid, rtype = str_relationinfo.split(":")
+    return RelationInfo(id=rid, type=RELATIONS_TYPES_MAP[rtype])
 
 @dataclass
 class Node:
@@ -60,6 +80,12 @@ class Node:
     #: Идентификатор вершины, полученный на основе её строкового представления.
     id: str = None
 
+    def get_typedid(self):
+        return NodeInfo(id=self.id, type=self.type).to_str()
+
+    def get_info(self):
+        return NodeInfo(id=self.id, type=self.type)
+
 
 @dataclass
 class Relation:
@@ -74,6 +100,11 @@ class Relation:
     #: Данное значение отличается от значения в поле id объекта класса Triplet.
     id: str = None
 
+    def get_typedid(self):
+        return RelationInfo(id=self.id, type=self.type).to_str()
+
+    def get_info(self):
+        return RelationInfo(id=self.id, type=self.type)
 
 @dataclass
 class Triplet:
@@ -240,7 +271,9 @@ class TripletCreator(BaseCreator):
 
         if t_id is None:
             triplet.id = create_id(''.join(
-                [triplet.start_node.id, triplet.relation.id, triplet.end_node.id]))
+                [triplet.start_node.type.value, triplet.start_node.id, 
+                 triplet.relation.type.value, triplet.relation.id, 
+                 triplet.end_node.type.value, triplet.end_node.id]))
         else:
             triplet.id = t_id
 

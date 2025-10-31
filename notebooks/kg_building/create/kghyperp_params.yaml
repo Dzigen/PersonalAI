@@ -1,5 +1,5 @@
 DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'qwen38b_261025_v2prompts' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'gigachatmax_281025_v2prompts' # TO CHANGE
 
 KG_CONFIG:
   embedder_configs:
@@ -15,19 +15,19 @@ KG_CONFIG:
 
   agent_configs:
     default: # TO CHANGE
-      vendor: ollama
-      credentials:
-        host: localhost
-        model: qwen3:8b
-        port: 11437
-      ext_params:
-        keep_alive: -1
-        timeout: 560
+      vendor: gigachat
       gen_strategy:
-        num_predict: 2048
-        seed: 42
-        temperature: 0.0
         top_k: 1
+        top_p: 0
+        temperature: 0
+      credentials:
+        token: YzJkNmU4MmEtYTdhYi00ZmY3LTk3NTItMTgwNGFhYTM5MzAwOjcxYjI2YjQzLThjYWUtNGQ5NS04N2ZhLTUxYzE2NTE4NDUzZQ==
+        scope: GIGACHAT_API_PERS
+        model: GigaChat-Max
+      ext_params:
+        timeout: 560
+        trials: 5
+        verify_ssl_certs: False
 
   agents_mapping:
     qa_pipeline: default

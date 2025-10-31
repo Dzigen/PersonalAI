@@ -4,8 +4,7 @@ PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.utils.data_structs import NodeType, RelationType
-from src.utils.data_structs import NodeCreator, Relation, RelationType, NodeType, TripletCreator
+from src.utils.data_structs import NodeCreator, Relation, RelationType, NodeType, TripletCreator, NodeInfo, RelationInfo
 
 # TO CHANGE
 AVAILABLE_GRAPH_DBS = ['neo4j', 'kuzu', 'inmemory_graph'] # 'neo4j', 'kuzu', 'inmemory_graph'
@@ -312,10 +311,10 @@ GRAPHDB_EXIST_TEST_CASES = [
     [[SIMPLE_TRIPLET1, EPISODIC_TRIPLET3], None, {
         'exception': True, 'exist': False, 'type': 'triplet'}],
     # 6. Вершина существует
-    [[SIMPLE_TRIPLET1, EPISODIC_TRIPLET3], OBJECT_NODE1.id, {
+    [[SIMPLE_TRIPLET1, EPISODIC_TRIPLET3], NodeInfo(id=OBJECT_NODE1.id, type=OBJECT_NODE1.type), {
         'exception': False, 'exist': True, 'type': 'node'}],
     # 7. Вершины не существует
-    [[SIMPLE_TRIPLET1, EPISODIC_TRIPLET3], OBJECT_NODE4.id, {
+    [[SIMPLE_TRIPLET1, EPISODIC_TRIPLET3], NodeInfo(id=OBJECT_NODE4.id, type=OBJECT_NODE4.type), {
         'exception': False, 'exist': False, 'type': 'node'}]
 ]
 
@@ -355,22 +354,22 @@ for db_vendor in AVAILABLE_GRAPH_DBS:
 GRAPHDB_GET_ADJECENT_TEST_CASES = [
     # 1. одна смежная вершина
     [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO},
-        OBJECT_NODE1.id, ALL_N_TYPES, {'exception': False, 'output_ids': {OBJECT_NODE2.id}}],
+        OBJECT_NODE1.get_info(), ALL_N_TYPES, {'exception': False, 'output_ids': {OBJECT_NODE2.get_typedid()}}],
     # 2. несколько смежных вершин
-    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, OBJECT_NODE2.id, ALL_N_TYPES, {
-        'exception': False, 'output_ids': {OBJECT_NODE1.id, OBJECT_NODE3.id}}],
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, OBJECT_NODE2.get_info(), 
+     ALL_N_TYPES, {'exception': False, 'output_ids': {OBJECT_NODE1.get_typedid(), OBJECT_NODE3.get_typedid()}}],
     # 3. несуществующий идентифкатор
     [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO},
-        OBJECT_NODE4.id, ALL_N_TYPES, {'exception': False, 'output_ids': set()}],
+        OBJECT_NODE4.get_info(), ALL_N_TYPES, {'exception': False, 'output_ids': set()}],
     # 4. неверный формат идентификатора 1
-    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, 123, ALL_N_TYPES, {
-        'exception': True, 'output_ids': set()}],
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, 
+     NodeInfo(id=123,type=NodeType.object), ALL_N_TYPES, {'exception': True, 'output_ids': set()}],
     # 5. неверный формат идентификатора 2
-    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, True, ALL_N_TYPES, {
-        'exception': True, 'output_ids': set()}],
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, 
+     NodeInfo(id=True,type=NodeType.object), ALL_N_TYPES, {'exception': True, 'output_ids': set()}],
     # 6. неверный формат идентификатора 3
-    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, None, ALL_N_TYPES, {
-        'exception': True, 'output_ids': set()}]
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, 
+     NodeInfo(id=None,type=NodeType.object), ALL_N_TYPES, {'exception': True, 'output_ids': set()}]
 ]
 
 GRAPHDB_POPULATED_GET_ADJECENT_TEST_CASES = []
@@ -383,37 +382,37 @@ for db_vendor in AVAILABLE_GRAPH_DBS:
 
 GRAPHDB_GET_TRIPLETS_TEST_CASES = [
     # 1. между нодами нет связей
-    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET4], {0: FULL_CREATION_INFO, 1: FULL_CREATION_INFO}, (OBJECT_NODE1.id, OBJECT_NODE3.id), {
-        'exception': False, 'exist': [True, True], 'output_ids': set(), 'count': 0, 'triplets': 2, 'nodes': 4}],
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET4], {0: FULL_CREATION_INFO, 1: FULL_CREATION_INFO}, (OBJECT_NODE1.get_info(), OBJECT_NODE3.get_info()), 
+     {'exception': False, 'exist': [True, True], 'output_ids': set(), 'count': 0, 'triplets': 2, 'nodes': 4}],
     # 2.между нодами одна связь
     # 2.1 циклическая связь
-    [[SIMPLE_TRIPLET5], {0: WO_EN_CREATION_INFO}, (OBJECT_NODE1.id, OBJECT_NODE1.id), {
-        'exception': False, 'exist': [True, True], 'output_ids': {SIMPLE_TRIPLET5.id}, 'count': 1, 'triplets': 1, 'nodes': 1}],
+    [[SIMPLE_TRIPLET5], {0: WO_EN_CREATION_INFO}, (OBJECT_NODE1.get_info(), OBJECT_NODE1.get_info()), 
+     {'exception': False, 'exist': [True, True], 'output_ids': {SIMPLE_TRIPLET5.id}, 'count': 1, 'triplets': 1, 'nodes': 1}],
     # 2.2 между разными вершинами
-    [[SIMPLE_TRIPLET1], {0: FULL_CREATION_INFO}, (OBJECT_NODE1.id, OBJECT_NODE2.id), {
-        'exception': False, 'exist': [True, True], 'output_ids': {SIMPLE_TRIPLET1.id}, 'count': 1, 'triplets': 1, 'nodes': 2}],
+    [[SIMPLE_TRIPLET1], {0: FULL_CREATION_INFO}, (OBJECT_NODE1.get_info(), OBJECT_NODE2.get_info()), 
+     {'exception': False, 'exist': [True, True], 'output_ids': {SIMPLE_TRIPLET1.id}, 'count': 1, 'triplets': 1, 'nodes': 2}],
     # 3.между нодами несколько связей
-    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET1_2], {0: FULL_CREATION_INFO, 1: ONLY_REL_CREATION_INFO}, (OBJECT_NODE1.id, OBJECT_NODE2.id), {
-        'exception': False, 'exist': [True, True], 'output_ids': {SIMPLE_TRIPLET1.id, SIMPLE_TRIPLET1_2.id}, 'count': 2, 'triplets': 2, 'nodes': 2}],
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET1_2], {0: FULL_CREATION_INFO, 1: ONLY_REL_CREATION_INFO}, (OBJECT_NODE1.get_info(), OBJECT_NODE2.get_info()), 
+     {'exception': False, 'exist': [True, True], 'output_ids': {SIMPLE_TRIPLET1.id, SIMPLE_TRIPLET1_2.id}, 'count': 2, 'triplets': 2, 'nodes': 2}],
     # 4.несуществующий идентифкатор
     # 4.1 стартовый
-    [[SIMPLE_TRIPLET1], {0: FULL_CREATION_INFO}, ('unkown_id', OBJECT_NODE1.id), {
-        'exception': True, 'exist': [False, True], 'output_ids': {}, 'count': 0, 'triplets': 1, 'nodes': 2}],
+    [[SIMPLE_TRIPLET1], {0: FULL_CREATION_INFO}, (NodeInfo(id='unkown_id', type=NodeType.object), OBJECT_NODE1.get_info()), 
+     {'exception': True, 'exist': [False, True], 'output_ids': {}, 'count': 0, 'triplets': 1, 'nodes': 2}],
     # 4.2 конечный
-    [[SIMPLE_TRIPLET1], {0: FULL_CREATION_INFO}, (OBJECT_NODE1.id, 'unknown_id'), {
-        'exception': True, 'exist': [True, False], 'output_ids': {}, 'count': 0, 'triplets': 1, 'nodes': 2}],
+    [[SIMPLE_TRIPLET1], {0: FULL_CREATION_INFO}, (OBJECT_NODE1.get_info(), NodeInfo(id='unkown_id', type=NodeType.object)), 
+     {'exception': True, 'exist': [True, False], 'output_ids': {}, 'count': 0, 'triplets': 1, 'nodes': 2}],
     # 4.3 оба
-    [[SIMPLE_TRIPLET1], {0: FULL_CREATION_INFO}, ('unknown_id', 'unknown_id'), {
-        'exception': True, 'exist': [False, False], 'output_ids': {}, 'count': 0, 'triplets': 1, 'nodes': 2}],
+    [[SIMPLE_TRIPLET1], {0: FULL_CREATION_INFO}, (NodeInfo(id='unkown_id', type=NodeType.object), NodeInfo(id='unkown_id', type=NodeType.object)), 
+     {'exception': True, 'exist': [False, False], 'output_ids': {}, 'count': 0, 'triplets': 1, 'nodes': 2}],
     # 5.неверный формат идентификатора 1
-    [[SIMPLE_TRIPLET1], {0: FULL_CREATION_INFO}, (OBJECT_NODE1.id, 123), {
-        'exception': True, 'exist': [True, None], 'output_ids': {}, 'count': 0, 'triplets': 1, 'nodes': 2}],
+    [[SIMPLE_TRIPLET1], {0: FULL_CREATION_INFO}, (OBJECT_NODE1.get_info(), NodeInfo(id=123, type=NodeType.object)), 
+     {'exception': True, 'exist': [True, None], 'output_ids': {}, 'count': 0, 'triplets': 1, 'nodes': 2}],
     # 6.неверный формат идентификатора 2
-    [[SIMPLE_TRIPLET1], {0: FULL_CREATION_INFO}, (OBJECT_NODE1.id, True), {
-        'exception': True, 'exist': [True, None], 'output_ids': {}, 'count': 0, 'triplets': 1, 'nodes': 2}],
+    [[SIMPLE_TRIPLET1], {0: FULL_CREATION_INFO}, (OBJECT_NODE1.get_info(), NodeInfo(id=None, type=NodeType.object)), 
+     {'exception': True, 'exist': [True, None], 'output_ids': {}, 'count': 0, 'triplets': 1, 'nodes': 2}],
     # 7.неверный формат идентификатора 3
-    [[SIMPLE_TRIPLET1], {0: FULL_CREATION_INFO}, (OBJECT_NODE1.id, None), {
-        'exception': True, 'exist': [True, None], 'output_ids': {}, 'count': 0, 'triplets': 1, 'nodes': 2}]
+    [[SIMPLE_TRIPLET1], {0: FULL_CREATION_INFO}, (OBJECT_NODE1.get_info(), NodeInfo(id=True, type=NodeType.object)), 
+     {'exception': True, 'exist': [True, None], 'output_ids': {}, 'count': 0, 'triplets': 1, 'nodes': 2}]
 ]
 
 GRAPHDB_POPULATED_GET_TRIPLETS_TEST_CASES = []

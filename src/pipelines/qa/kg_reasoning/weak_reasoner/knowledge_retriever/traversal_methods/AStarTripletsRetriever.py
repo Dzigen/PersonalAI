@@ -8,7 +8,7 @@ from copy import deepcopy
 from collections import Counter
 
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig, get_nodes_path, NodeInfo
-from .......utils.data_structs import QueryInfo, Triplet, NodeType, create_id_for_node_pair, create_id, NODES_TYPES_MAP
+from .......utils.data_structs import QueryInfo, Triplet, NodeType, create_id_for_node_pair, create_id, NODES_TYPES_MAP, NodeInfo
 from .......kg_model import KnowledgeGraphModel
 from .......db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver, KVDBConnectionConfig, KeyValueDBInstance
 from .......utils import Logger
@@ -215,7 +215,7 @@ class AStarMetrics:
         while queue:
             # print(len(queue))
             vertex = queue.popleft()
-            neighbours = self.kg_model.graph_struct.db_conn.get_adjecent_nids(
+            neighbours = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(
                 vertex, self.accepted_node_types)
             neo4j_queries_counter += 1
             for neighbour in neighbours:
@@ -365,7 +365,7 @@ class AStarGraphSearch:
                 self.log("FOUND END-NODE", verbose=self.verbose)
                 break
 
-            adj_nodes = self.kg_model.graph_struct.db_conn.get_adjecent_nids(
+            adj_nodes = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(
                 current_node.id, self.config.accepted_node_types)
             # self.log(f"adjenced nodes: {len(adj_nodes)}", verbose=self.verbose)
 

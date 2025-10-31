@@ -158,7 +158,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         if not isinstance(base_nid, str):
             raise ValueError(f"base_nid: {base_nid} {type(base_nid)}")
 
-        adj_nids = self.kg_model.graph_struct.db_conn.get_adjecent_nids(
+        adj_nids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(
             base_nid, self.config.accepted_node_types)
         adj_nids = set(adj_nids)
         if prev_nid is not None:

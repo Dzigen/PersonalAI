@@ -69,29 +69,41 @@ print("4. Setting KG Model")
 
 kg_model = KnowledgeGraphModel(kgmodel_config, kvdriver_config)
 
-NEED_TO_CLEAR_KG = True
+# checking knowledge graph size
+print("before:")
+pprint(kg_model.count_items(detailed=True))
+
+NEED_TO_CLEAR_KG = True # !!! PAY Attention !!!
 if NEED_TO_CLEAR_KG:
     print("Cleaning KG-model")
     kg_model.clear()
 
-# checking knowledge graph size
-pprint(kg_model.count_items(detailed=True))
+    # checking knowledge graph size
+    print("after:")
+    pprint(kg_model.count_items(detailed=True))
 
 ####################################################
 print("5. Setting Memorize Pipeline")
 
 mem_pipeline = MemPipeline(kg_model, mempipeline_config, kvdriver_config, llmstat_config)
 
-NEED_TO_CLEAR_CACHE = True
+print("before:")
+print("llmstat cache:")
+pprint(mem_pipeline.get_agent_tgen_stat())
+print("kv cache: ")
+pprint(mem_pipeline.get_cache_stat())
+
+NEED_TO_CLEAR_CACHE = False # !!! PAY Attention !!!
 if NEED_TO_CLEAR_CACHE:
     print("Cleaing Mem-cache")
     mem_pipeline.clear_agent_tgen_stat()
     mem_pipeline.clear_kv_caches()
 
-print("llmstat cache:")
-pprint(mem_pipeline.get_agent_tgen_stat())
-print("kv cache: ")
-pprint(mem_pipeline.get_cache_stat())
+    print("after:")
+    print("llmstat cache:")
+    pprint(mem_pipeline.get_agent_tgen_stat())
+    print("kv cache: ")
+    pprint(mem_pipeline.get_cache_stat())
 
 ####################################################
 print("7. Loading dataset")
@@ -129,9 +141,20 @@ def triviaqa_rcwikipedia_validation_cload(dataset_path: str) -> List[Tuple[str, 
 
     return data_pair
 
+def rubqdev_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
+    contexts_df = pd.read_csv(f"{dataset_path}/relevant_contexts.csv")
+
+    data_pair = []
+    for r_idx in range(contexts_df.shape[0]):
+        formated_context = contexts_df['context'][r_idx]
+        data_pair.append((formated_context, None, dict()))
+
+    return data_pair
+
 
 CUSTOM_LOAD_FUNCS = {
     'diaasq': diaasq_cload,
+    'rubq_dev': rubqdev_cload,
     'hotpotqa_distractor_validation': hotpotqa_distractor_validation_cload,
     'trivia_qa_rcwikipedia_validation': triviaqa_rcwikipedia_validation_cload
 }
@@ -142,14 +165,21 @@ print(len(dataset))
 ####################################################
 print("8. Run KG build process")
 print(f"start time: {datetime.datetime.now()}") 
-CONSISTENCY_STEP = 100
 
-for i in tqdm(range(len(dataset))):
+# hotpotqa | deepseek_231025_v2prompts | 379
+# rubqdev | gigachatmax_281025_v2prompts | 385
+
+process = tqdm(range(385, len(dataset)))
+for i in process:
     text, time, properties = dataset[i][0], dataset[i][1], dataset[i][2]
-    extracted_triplets, _ = mem_pipeline.remember(text, time, properties)
-    
-    if i % CONSISTENCY_STEP == 0:
-        kg_model.check_consistency()
+    try:
+        extracted_triplets, _ = mem_pipeline.remember(text, time, properties)
+    except AssertionError:
+        pprint(kg_model.count_items(detailed=True))
+        print(f"end time: {datetime.datetime.now()}") 
+        raise AssertionError
+    else:
+        process.set_postfix_str(f"kg_info: {kg_model.count_items()}")
 
     joblib.dump(extracted_triplets, f'{TMP_EXTRACTED_TRIPLETS_PATH}/item{i}')
 
