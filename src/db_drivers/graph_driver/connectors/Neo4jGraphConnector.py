@@ -6,7 +6,7 @@ from .configs import DEFAULT_NEO4J_CONFIG
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils.data_structs import Triplet, Node, TripletCreator, NodeCreator, \
     NodeType, RelationCreator, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP, \
-        NodeInfo, from_str_to_nodeinfo, RelationInfo, from_str_to_relationinfo
+    NodeInfo, from_str_to_nodeinfo, RelationInfo, from_str_to_relationinfo
 
 
 class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
@@ -209,7 +209,7 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
         return response
 
     def get_adjecent_nodes(self, base_node: NodeInfo,
-                          accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[NodeInfo]:
+                           accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[NodeInfo]:
         if not isinstance(base_node.id, str):
             raise ValueError
 
@@ -318,7 +318,7 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
     def get_triplets(self, node1: NodeInfo, node2: NodeInfo) -> List[Triplet]:
         if (not isinstance(node1.id, str)) or (not isinstance(node2.id, str)):
             raise ValueError
-        if (not self.item_exist(node1.id, 'node', node1.type)) or (not self.item_exist(node2.id, 'node', node2.type)):
+        if (not self.item_exist(node1, 'node')) or (not self.item_exist(node2, 'node')):
             raise ValueError
 
         output = self.execute_query(
@@ -348,7 +348,7 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
 
         return formated_triplets
 
-    def count_items(self, item_id: Union[None, str, NodeInfo, RelationInfo] = None, 
+    def count_items(self, item_id: Union[None, str, NodeInfo, RelationInfo] = None,
                     id_type: str = None, detailed: bool = False) -> Union[Dict[str, Dict[str, int]], Dict[str, int], int]:
         if id_type is None:
             if detailed:
@@ -391,8 +391,12 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
         return result
 
     def item_exist(self, item_id: Union[str, NodeInfo, RelationInfo], id_type: str = 'triplet') -> bool:
-        if not isinstance(id, str):
-            raise ValueError
+        if not isinstance(item_id, str):
+            if type(item_id) in [NodeInfo, RelationInfo]:
+                if not isinstance(item_id.id, str):
+                    raise ValueError
+            else:
+                raise ValueError
 
         if id_type == 'node':
             query = f'MATCH (n:{item_id.type.value}) WHERE n.str_id = "{item_id.id}" RETURN n'
