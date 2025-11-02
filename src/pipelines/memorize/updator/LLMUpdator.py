@@ -97,15 +97,13 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
                 name=base_node.name, object_type=NodeType.object, object='node')
 
             for m_node in matched_nodes:
-                neighbour_node_ids = list(map(
-                    lambda ninfo: ninfo.id, 
-                    self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_node.id, [NodeType.object])
-                ))
-                for neighbour_id in neighbour_node_ids:
+                neighbour_nodes = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(
+                    m_node.get_info(), [NodeType.object])
+
+                for neighbour_node in neighbour_nodes:
                     shared_triplets = self.kg_model.graph_struct.db_conn.get_triplets(
-                        m_node.id, neighbour_id)
-                    incident_triplets.update(
-                        {item.id: item for item in shared_triplets})
+                        m_node.get_info(), neighbour_node)
+                    incident_triplets.update({item.id: item for item in shared_triplets})
 
         incident_triplets = list(incident_triplets.values())
 
@@ -138,17 +136,13 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
             name=base_triplet.start_node.name, object_type=NodeType.object, object='node')
 
         for m_node in matched_nodes:
-            neighbour_node_ids = list(map(
-                lambda ninfo: ninfo.id, 
-                self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_node.id, [NodeType.hyper])
-            ))
+            neighbour_nodes = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_node.get_info(), [NodeType.hyper])
 
-            for neighbour_id in neighbour_node_ids:
+            for neighbour_node in neighbour_nodes:
                 shared_triplets = self.kg_model.graph_struct.db_conn.get_triplets(
-                    m_node.id, neighbour_id)
+                    m_node.get_info(), neighbour_node)
 
-                incident_triplets.update(
-                    {item.id: item for item in shared_triplets})
+                incident_triplets.update({item.id: item for item in shared_triplets})
 
         incident_triplets = list(incident_triplets.values())
 
@@ -181,28 +175,30 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
 
         for m_object_n in matched_object_nodes:
             # Для object-вершины ищем смежные episodic-вершины
-            object_adj_episodic_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(
-                m_object_n.id, [NodeType.episodic])
+            object_adj_episodic = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(
+                m_object_n.get_info(), [NodeType.episodic])
 
-            if len(object_adj_episodic_ids) < 1:
+            if len(object_adj_episodic) < 1:
                 continue
 
             # Для object-вершины ищем смежные hyper-вершины
-            object_adj_hyper_ids = set(self.kg_model.graph_struct.db_conn.get_adjecent_nodes(
-                m_object_n.id, [NodeType.hyper]))
+            object_adj_hyper_typedids = set(map(
+                lambda node_info: node_info.to_str(),
+                self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_object_n.get_info(), [NodeType.hyper])
+            ))
 
-            for episodic_id in object_adj_episodic_ids:
+            for episodic_node in object_adj_episodic:
                 # Для episodic-вершины, смежной с текущей object-вершиной, ищем смежные hyper-вершины
-                episodic_adj_hyper_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(
-                    episodic_id, [NodeType.hyper])
+                episodic_adj_hyper_typedids = set(map(
+                    lambda node_info: node_info.to_str(),
+                    self.kg_model.graph_struct.db_conn.get_adjecent_nodes(episodic_node, [NodeType.hyper])
+                ))
 
-                shared_hyper_ids = object_adj_hyper_ids.intersection(
-                    set(episodic_adj_hyper_ids))
+                shared_hyper_ids = object_adj_hyper_typedids.intersection(episodic_adj_hyper_typedids)
                 if len(shared_hyper_ids) < 1:
                     # Если у данных object-вершины и episodic-вершины нет общей hyper-вершины, значит данный episodic-триплет устрел
                     # и его нужно добавить в список на удаление
-                    episodic_triplet = self.kg_model.graph_struct.db_conn.get_triplets(
-                        m_object_n.id, episodic_id)
+                    episodic_triplet = self.kg_model.graph_struct.db_conn.get_triplets(m_object_n.get_info(), episodic_node)
                     assert len(episodic_triplet) == 1
 
                     obsolete_triplet_ids.append(episodic_triplet[0].id)
@@ -229,15 +225,12 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
         for m_hyper_n in matched_hyper_nodes:
 
             # Проверям: с каким количеством object-вершин смежна данная hyper-вершина
-            hyper_adj_object_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(
-                m_hyper_n.id, [NodeType.object])
-            if len(hyper_adj_object_ids) < 1:
+            hyper_adj_object = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_hyper_n.get_info(), [NodeType.object])
+            if len(hyper_adj_object) < 1:
                 # Если у hyper-вершины нет смежных object-вершин, то связи со всеми episodic-вершинами являются устаревшими
-                hyper_adj_episodic_ids = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(
-                    m_hyper_n.id, [NodeType.episodic])
-                for episodic_id in hyper_adj_episodic_ids:
-                    episodic_triplets = self.kg_model.graph_struct.db_conn.get_triplets(
-                        m_hyper_n.id, episodic_id)
+                hyper_adj_episodic = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(m_hyper_n.get_info(), [NodeType.episodic])
+                for episodic_node in hyper_adj_episodic:
+                    episodic_triplets = self.kg_model.graph_struct.db_conn.get_triplets(m_hyper_n.get_info(), episodic_node)
                     assert len(episodic_triplets) == 1
                     obsolete_triplet_ids.append(episodic_triplets[0].id)
 

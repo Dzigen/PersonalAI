@@ -9,7 +9,7 @@ from ......utils.data_structs import QueryInfo
 from ......utils.errors import ReturnStatus
 from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
 from ......agents.utils import AbstractAgentConnector
-from ......utils.data_structs import create_id
+from ......utils.data_structs import create_id, NodeInfo
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......db_drivers.vector_driver import VectorDBInstance
 from ......utils.cache_kv import CacheUtils
@@ -88,14 +88,14 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         self.log = self.config.log
         self.verbose = self.config.verbose
 
-    def get_cache_key(self, search_query: str, matched_kg_objects: Dict[str, List[VectorDBInstance]]) -> List[object]:
-        str_matchedobject = json.dumps({k: list(map(lambda vv: vv.document, v))
+    def get_cache_key(self, search_query: str, matched_kg_objects: Dict[str, List[NodeInfo]]) -> List[object]:
+        str_matchedobject = json.dumps({k: list(map(lambda vv: vv.text, v))
                                        for k, v in matched_kg_objects.items()}, ensure_ascii=False)
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [search_query, str_matchedobject, self.config.to_str(), str_using_agent_info]
 
     @CacheUtils.cache_method_output
-    def perform(self, search_query: str, matched_kg_objects: Dict[str, List[VectorDBInstance]]) -> Tuple[List[QueryInfo], ReturnInfo]:
+    def perform(self, search_query: str, matched_kg_objects: Dict[str, List[NodeInfo]]) -> Tuple[List[QueryInfo], ReturnInfo]:
         """Метод предназначен для генерации/формирования clue-запросов к заданному шагу поиска (в рамках текущего плана).
         Clue-запросы генерируются по следующему алгоритму:
         (1) На основе matched_kg_objects-словаря формируется линейная комбинация сопоставленных вершин из графа знаний. Каждый sample
@@ -106,19 +106,16 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         :param search_query: Базовый поисковый запрос на естественном языке (один из шагов поиска в рамках текущего плана).
         :type search_query: str
         :param matched_kg_objects: Набор сущностей их заданного поискового запроса, сопоставленный с релевантными вершинами из графа знаний.
-        :type matched_kg_objects: Dict[str, List[VectorDBInstance]]
+        :type matched_kg_objects: Dict[str, List[NodeInfo]]
         :return: Кортеж из двух объектов: (1) список сформированных clue-запросов; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[QueryInfo], ReturnInfo]
         """
-        self.log("START CLUE-QUERIES GENERATION...",
-                 verbose=self.config.verbose)
-        self.log(
-            f"SEARCH_QUERY ID: {create_id(search_query)}", verbose=self.config.verbose)
+        self.log("START CLUE-QUERIES GENERATION...", verbose=self.config.verbose)
+        self.log(f"SEARCH_QUERY ID: {create_id(search_query)}", verbose=self.config.verbose)
         self.log(f"SEARCH_QUERY: {search_query}", verbose=self.config.verbose)
         str_matchedobjects = ';'.join(
-            [f'{k} - {[vv.document for vv in v]}' for k, v in matched_kg_objects.items()])
-        self.log(
-            f"MATCHED_KG_OBJECT: {str_matchedobjects}", verbose=self.config.verbose)
+            [f'{k} - {[vv.text for vv in v]}' for k, v in matched_kg_objects.items()])
+        self.log(f"MATCHED_KG_OBJECT: {str_matchedobjects}", verbose=self.config.verbose)
         clue_queries, info = [], ReturnInfo()
         unique_cqueries = set()
 
@@ -134,19 +131,15 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         base_entities = sorted(list(filter(lambda entitie: len(
             matched_kg_objects[entitie]) > 0, matched_kg_objects.keys())))
         objects_groups = list(product(*[matched_kg_objects[k] for k in base_entities]))[:self.config.max_cqueries_amount]
-        str_objectspermuts = ';'.join(
-            [f'[{k}] {len(v)}' for k, v in matched_kg_objects.items()])
+        str_objectspermuts = ';'.join([f'[{k}] {len(v)}' for k, v in matched_kg_objects.items()])
         self.log(f"RESULT:\n- всего сущностей: {len(matched_kg_objects)}\n- после фильтрации: {len(base_entities)}\n- объектов для каждой сущности: {str_objectspermuts}\n- полученное количество комбинаций: {len(objects_groups)}", verbose=self.config.verbose)
 
         self.log("Генерируем clue-queries...", verbose=self.config.verbose)
         for i, cur_group in enumerate(objects_groups):
-            self.log(
-                f"Текущий cleu-query #: {i} / {len(objects_groups)}", verbose=self.config.verbose)
-            formated_objects_group = list(
-                map(lambda item: item.document, cur_group))
+            self.log(f"Текущий cleu-query #: {i} / {len(objects_groups)}", verbose=self.config.verbose)
+            formated_objects_group = list(map(lambda item: item.text, cur_group))
 
-            self.log("Выполняем генерацию clue-query с помощью LLM-агента...",
-                     verbose=self.config.verbose)
+            self.log("Выполняем генерацию clue-query с помощью LLM-агента...", verbose=self.config.verbose)
             cur_cluequery, status = self.tasks_solvers.cluequery_gen_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                 query=search_query, base_entities=base_entities, matched_objects=formated_objects_group)
@@ -165,8 +158,7 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
                         "Сгенерированое clue-query ещё получено не было. Сохраняем.", verbose=self.config.verbose)
                     unique_cqueries.add(cur_cluequery)
                     clue_queries.append(QueryInfo(
-                        query=cur_cluequery, entities=base_entities, linked_nodes=list(
-                            cur_group),
+                        query=cur_cluequery, entities=base_entities, linked_nodes=list(cur_group),
                         linked_nodes_by_entities=list(map(lambda pair: [base_entities[pair[0]], pair[1]], enumerate(formated_objects_group)))))
 
         self.log(

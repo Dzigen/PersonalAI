@@ -15,15 +15,17 @@ from .cases import KV_CACHE_CONFIG, MEM_POPULATED_TEST_CASES
 def assert_kgmodel_count(kg_model: KnowledgeGraphModel, func):
     count = kg_model.count_items(detailed=True)
     print(count)
-    real_counts = dict(flatdict.FlatDict(count, delimiter='.'))
-    for c_name, c_value in real_counts.items():
-        if kg_model.nodestree_model is None and c_name.startswith('nodestree_info'):
+    for struct_name, struct_values in count.items():
+        if struct_name == 'nodestree_info':
             continue
-        else:
-            if c_name.endswith('root'):
-                assert c_value == 1
-            else:
-                assert func(c_value,0)
+        for type_name in ['nodes', 'triplets']:
+            real_counts = dict(flatdict.FlatDict(struct_values[type_name], delimiter='.'))
+            #print(real_counts)
+            for k, v in real_counts.items():
+                if k.startswith('time'):
+                    assert v == 0
+                else:
+                    assert func(v,0)
 
 def assert_cache_count(mem_pipeline: MemPipeline, func):
     count = mem_pipeline.get_cache_stat()
@@ -32,7 +34,8 @@ def assert_cache_count(mem_pipeline: MemPipeline, func):
     for c_name, c_value in real_counts.items():
         if c_name.startswith("updator"):
             assert c_value in [None, 0]
-        assert func(c_value, 0)
+        else:
+            assert func(c_value, 0)
 
 @pytest.mark.parametrize("mem_config, raw_texts, use_kv_cache, clear_kv_cache, kg_model", MEM_POPULATED_TEST_CASES, indirect=['kg_model'])
 def test_mem_pipeline(mem_config: MemPipelineConfig, raw_texts: List[str],

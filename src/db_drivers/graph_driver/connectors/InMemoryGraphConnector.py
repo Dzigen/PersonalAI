@@ -18,13 +18,13 @@ from ....utils.data_structs import RelationType, Node, \
 class InMemoryGraphStructure:
     edges: Dict[str, str] = field(default_factory=lambda: defaultdict(set))
     adjacent_nodes: Dict[str, Set[str]] = field(default_factory=lambda: defaultdict(set))
-    
+
     nodes: Dict[str, Node] = field(default_factory=lambda: dict())
     triplets: Dict[str, Triplet] = field(default_factory=lambda: dict())
 
     typed_strid_relation_index: Dict[str, Set[str]] = field(default_factory=lambda: defaultdict(set))
     typed_strid_node_index: Dict[str, Set[str]] = field(default_factory=lambda: defaultdict(set))
-    
+
     tid_triplets_index: Dict[str, Set[str]] = field(default_factory=lambda: defaultdict(set))
 
 
@@ -132,7 +132,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
                     self.strcuture.triplets[t_id] = triplet
 
                     r_id = self.generate_id()
-                    rel_typedid = RelationInfo(id=triplet.relation.id, type=triplet.relation.type)
+                    rel_typedid = RelationInfo(id=triplet.relation.id, type=triplet.relation.type).to_str()
                     self.strcuture.typed_strid_relation_index[rel_typedid].add(r_id)
 
                     self.strcuture.edges[sn_id].add(t_id)
@@ -233,22 +233,22 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         return formated_output
 
     def get_adjecent_nodes(self, base_node: NodeInfo,
-                          accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[NodeInfo]:
+                           accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[NodeInfo]:
         if not isinstance(base_node.id, str):
             raise ValueError
 
-        node_typedids = self.strcuture.typed_strid_node_index.get(base_node.to_str(), [])
-        adjanced_nodes_typedids = []
-        for node_typedid in node_typedids:
-            adjanced_nodes_typedids += list(self.strcuture.adjacent_nodes[node_typedid])
+        node_ids = self.strcuture.typed_strid_node_index.get(base_node.to_str(), [])
+        adjanced_nodes_ids = []
+        for node_typedid in node_ids:
+            adjanced_nodes_ids += list(self.strcuture.adjacent_nodes[node_typedid])
 
-        filtered_nodes_typedids = list(filter(
-            lambda n_db_id: self.strcuture.nodes[n_db_id].type in accepted_n_types, 
-            adjanced_nodes_typedids
+        filtered_nodes_ids = list(filter(
+            lambda n_db_id: self.strcuture.nodes[n_db_id].type in accepted_n_types,
+            adjanced_nodes_ids
         ))
         nodes = list(map(
-            lambda typedid: from_str_to_nodeinfo(typedid), 
-            filtered_nodes_typedids
+            lambda id: self.strcuture.nodes[id].get_info(),
+            filtered_nodes_ids
         ))
         return nodes
 
@@ -314,17 +314,19 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
                     triplets.append(triplet)
         return triplets
 
-    def count_items(self, item_id: Union[None, str, NodeInfo, RelationInfo] = None, 
+    def count_items(self, item_id: Union[None, str, NodeInfo, RelationInfo] = None,
                     id_type: str = None, detailed: bool = False) -> Union[Dict[str, Dict[str, int]], Dict[str, int], int]:
         result = None
         if id_type is None:
             if detailed:
-                result = {'triplets': {'simple': 0, 'hyper': 0, 'episodic': 0}, 'nodes': {'object': 0, 'hyper': 0, 'episodic': 0}}
+                result = {
+                    'triplets': {'simple': 0, 'hyper': 0, 'episodic': 0, 'time': 0},
+                    'nodes': {'object': 0, 'hyper': 0, 'episodic': 0, 'time': 0}
+                }
                 for triplet in self.strcuture.triplets.values():
                     result['triplets'][triplet.relation.type.value] += 1
                 for node in self.strcuture.nodes.values():
                     result['nodes'][node.type.value] += 1
-                result = {k: dict(v) for k, v in result.items()}
             else:
                 result = {'triplets': len(self.strcuture.triplets), 'nodes': len(self.strcuture.nodes)}
 
@@ -344,7 +346,11 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
     def item_exist(self, item_id: Union[str, NodeInfo, RelationInfo], id_type: str = 'triplet') -> bool:
         if not isinstance(item_id, str):
-            raise ValueError
+            if type(item_id) in [NodeInfo, RelationInfo]:
+                if not isinstance(item_id.id, str):
+                    raise ValueError
+            else:
+                raise ValueError
 
         output = None
         if id_type == 'node':

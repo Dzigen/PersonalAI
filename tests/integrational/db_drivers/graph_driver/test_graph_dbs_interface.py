@@ -15,8 +15,6 @@ from src.db_drivers.graph_driver.utils import AbstractGraphDatabaseConnection
 from src.utils.data_structs import Node, NodeInfo, RelationInfo
 from src.utils import Triplet, RelationType, NodeType
 
-
-
 @pytest.mark.parametrize("inputs, create_info, expected, graphdb_conn", GRAPHDB_POPULATED_CREATE_TEST_CASES, indirect=['graphdb_conn'])
 def test_create(inputs: List[Triplet], create_info: Dict, expected: Dict, graphdb_conn: AbstractGraphDatabaseConnection):
     graphdb_conn.clear()
@@ -93,7 +91,7 @@ def test_count(instances: List[Triplet], create_info: Dict, expected: Dict, grap
 
 
 @pytest.mark.parametrize("instances, inputs, expected, graphdb_conn", GRAPHDB_POPULATED_EXIST_TEST_CASES, indirect=['graphdb_conn'])
-def test_exist(instances: List[Triplet], inputs: Union[str, NodeInfo, RelationInfo], 
+def test_exist(instances: List[Triplet], inputs: Union[str, NodeInfo, RelationInfo],
                expected: Dict, graphdb_conn: AbstractGraphDatabaseConnection):
     graphdb_conn.clear()
     graphdb_conn.create(instances)
@@ -127,7 +125,7 @@ def test_clear(instances: List[Triplet], base_info: Dict, graphdb_conn: Abstract
 
 
 @pytest.mark.parametrize("instances, create_info, node, accepted_n_types, expected, graphdb_conn", GRAPHDB_POPULATED_GET_ADJECENT_TEST_CASES, indirect=['graphdb_conn'])
-def test_get_adjecent_nodes(instances: List[Triplet], create_info: Dict, node: NodeInfo, accepted_n_types: List[NodeType], 
+def test_get_adjecent_nodes(instances: List[Triplet], create_info: Dict, node: NodeInfo, accepted_n_types: List[NodeType],
                            expected: Dict, graphdb_conn: AbstractGraphDatabaseConnection):
     graphdb_conn.clear()
     graphdb_conn.create(instances, create_info)
@@ -211,7 +209,7 @@ def test_read_by_name(instances: List[Triplet], create_info: Dict, init_count: D
             raise ValueError
 
 
-@pytest.mark.parametrize("instances, create_info, graph_info, node1_id, node2_id, id_type, expected_output, exception, graphdb_conn",
+@pytest.mark.parametrize("instances, create_info, graph_info, node1, node2, id_type, expected_output, exception, graphdb_conn",
                          GRAPHDB_POPULATED_GET_NSHARED_IDS_TEST_CASES, indirect=['graphdb_conn'])
 def test_get_nodes_shared_ids(
         instances: List[Triplet], create_info: Dict, graph_info: Tuple[int], node1: NodeInfo, node2: NodeInfo, id_type: str,

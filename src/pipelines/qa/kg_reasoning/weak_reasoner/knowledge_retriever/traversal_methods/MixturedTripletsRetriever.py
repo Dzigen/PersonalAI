@@ -43,15 +43,11 @@ class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     cache_table_name: str = 'qa_mixture_t_retriever_cache'
 
     def to_str(self):
-        retriever1_pair = (self.retriever1_name,
-                           self.retriever1_config.to_str())
-        retriever2_pair = (self.retriever2_name,
-                           self.retriever2_config.to_str())
-        sorted_pretr = sorted(
-            [retriever1_pair, retriever2_pair], key=lambda p: p[0])
+        retriever1_pair = (self.retriever1_name, self.retriever1_config.to_str())
+        retriever2_pair = (self.retriever2_name, self.retriever2_config.to_str())
+        sorted_pretr = sorted([retriever1_pair, retriever2_pair], key=lambda p: p[0])
 
-        str_accepted_nodes = ";".join(
-            sorted(list(map(lambda v: v.value, self.accepted_node_types))))
+        str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
         return f"{sorted_pretr[0][0]};{sorted_pretr[0][1]};{sorted_pretr[1][0]};{sorted_pretr[1][1]};{str_accepted_nodes}"
 
 
@@ -77,7 +73,7 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 search_config['accepted_node_types'] = list(
                     map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
             search_config = MixturedGraphSearchConfig(**search_config)
-        self.config = search_config
+        self.config: MixturedGraphSearchConfig = search_config
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, self.config.cache_table_name)
@@ -120,10 +116,8 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
-        self.log(
-            f"RETRIEVER: MixturedTripletsRetriever ({self.config.retriever1_name} + {self.config.retriever2_name})", verbose=self.verbose)
-        self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
+        self.log(f"RETRIEVER: MixturedTripletsRetriever ({self.config.retriever1_name} + {self.config.retriever2_name})", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 
         triplets1 = self.retriever1.get_relevant_triplets(query_info)
@@ -133,8 +127,9 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                  verbose=self.verbose)
 
         # отбираем только уникальные триплеты (по их идентификаторам)
-        unique_triplets = dict()
+        unique_triplets_map: Dict[str, Triplet] = dict()
         for triplet in triplets1 + triplets2:
-            unique_triplets[triplet.id] = deepcopy(triplet)
+            unique_triplets_map[triplet.relation.get_typedid()] = deepcopy(triplet)
+        unique_triplets: List[Triplet] = list(unique_triplets_map.values())
 
-        return list(unique_triplets.values())
+        return unique_triplets

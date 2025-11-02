@@ -5,6 +5,7 @@ import hashlib
 
 from src.db_drivers.vector_driver import VectorDBInstance
 
+
 class NodeType(Enum):
     """Доступные типы вершин."""
     #: Вершина хранит атомарную сущность.
@@ -16,14 +17,17 @@ class NodeType(Enum):
     #: Вершина хранит временную информацию.
     time = "time"
 
+
 @dataclass
 class NodeInfo:
     id: str
     type: NodeType
+    text: Union[None, str] = None
 
     def to_str(self):
-        return f"{self.type.value}:{self.id}" 
-    
+        return f"{self.type.value}:{self.id}"
+
+
 NODES_TYPES_MAP = {
     'object': NodeType.object,
     'hyper': NodeType.hyper,
@@ -31,9 +35,11 @@ NODES_TYPES_MAP = {
     'time': NodeType.time,
 }
 
+
 def from_str_to_nodeinfo(str_nodeinfo: str) -> NodeInfo:
-    nid, ntype = str_nodeinfo.split(":")
+    ntype, nid = str_nodeinfo.split(":")
     return NodeInfo(id=nid, type=NODES_TYPES_MAP[ntype])
+
 
 class RelationType(Enum):
     """Доступные типы связей/триплетов."""
@@ -54,17 +60,20 @@ RELATIONS_TYPES_MAP = {
     'time': RelationType.time,
 }
 
+
 @dataclass
 class RelationInfo:
     id: str
     type: RelationType
 
     def to_str(self):
-        return f"{self.type.value}:{self.id}" 
+        return f"{self.type.value}:{self.id}"
+
 
 def from_str_to_relationinfo(str_relationinfo: str) -> RelationInfo:
-    rid, rtype = str_relationinfo.split(":")
+    rtype, rid = str_relationinfo.split(":")
     return RelationInfo(id=rid, type=RELATIONS_TYPES_MAP[rtype])
+
 
 @dataclass
 class Node:
@@ -105,6 +114,7 @@ class Relation:
 
     def get_info(self):
         return RelationInfo(id=self.id, type=self.type)
+
 
 @dataclass
 class Triplet:
@@ -271,8 +281,8 @@ class TripletCreator(BaseCreator):
 
         if t_id is None:
             triplet.id = create_id(''.join(
-                [triplet.start_node.type.value, triplet.start_node.id, 
-                 triplet.relation.type.value, triplet.relation.id, 
+                [triplet.start_node.type.value, triplet.start_node.id,
+                 triplet.relation.type.value, triplet.relation.id,
                  triplet.end_node.type.value, triplet.end_node.id]))
         else:
             triplet.id = t_id
@@ -377,16 +387,13 @@ class QueryInfo:
     """
     query: str
     entities: Union[None, List[str]] = None
-    linked_nodes: Union[None, List[VectorDBInstance]] = None
+    linked_nodes: Union[None, List[NodeInfo]] = None
     linked_nodes_by_entities: Union[None, List[VectorDBInstance]] = None
 
     def to_str(self):
-        str_entities = ';'.join(sorted(self.entities)
-                                ) if self.entities is not None else "None"
-        str_lnodes = ';'.join(sorted(list(map(lambda item: item.document,
-                              self.linked_nodes)))) if self.linked_nodes is not None else "None"
-        str_lnodes_by_entities = ';'.join(sorted(list(map(lambda item: ';;'.join(
-            item), self.linked_nodes_by_entities)))) if self.linked_nodes_by_entities is not None else "None"
+        str_entities = ';'.join(sorted(self.entities)) if self.entities is not None else "None"
+        str_lnodes = ';'.join(sorted(list(map(lambda item: item.to_str(), self.linked_nodes)))) if self.linked_nodes is not None else "None"
+        str_lnodes_by_entities = ';'.join(sorted(list(map(lambda item: ';;'.join(item), self.linked_nodes_by_entities)))) if self.linked_nodes_by_entities is not None else "None"
         return f"{self.query}|{str_entities}|{str_lnodes}|{str_lnodes_by_entities}"
 
 
