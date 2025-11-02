@@ -4,18 +4,17 @@ from typing import List, Tuple, Dict, Union
 from .configs import KC_MAIN_LOG_PATH, KC_RERANKDRIVER_DEFAULT_CONFIG
 from ......utils import Logger, ReturnStatus, ReturnInfo
 from ......utils.errors import STATUS_MESSAGE
-from ......utils.data_structs import QueryInfo, create_id, NodeType
+from ......utils.data_structs import QueryInfo, create_id, NodeType, BaseComponentConfig
 from ......kg_model import KnowledgeGraphModel
 from ......db_drivers.vector_driver import VectorDBInstance
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......rerankers import RerankerDriver, RerankerDriverConfig
 from ......utils.cache_kv.CacheOperations import CacheOperations
-from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 
 
 @dataclass
-class KnowledgeComparatorConfig:
+class KnowledgeComparatorConfig(BaseComponentConfig):
     """Конфигурация "Knowledge Comparator"-стадии QA-конвейера.
     :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию KC_RERANKDRIVER_DEFAULT_CONFIG.
     :type reranker_driver_config: RerankerDriverConfig, optional
@@ -25,10 +24,6 @@ class KnowledgeComparatorConfig:
     :type k_compare: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы KnowledgeComparator-класса. Значение по умолчанию 'qa_kcomparator_stage_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(KC_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
     reranker_driver_config: RerankerDriverConfig = field(default_factory=lambda: KC_RERANKDRIVER_DEFAULT_CONFIG)
     max_k: int = 1
@@ -36,7 +31,6 @@ class KnowledgeComparatorConfig:
 
     cache_table_name: str = 'qa_kcomparator_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(KC_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self):
         return f"{self.reranker_driver_config.to_str()};{self.max_k}:{self.k_compare}"

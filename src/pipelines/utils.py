@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
+from typing import Union
 from ..utils import Logger
 
 
@@ -10,14 +11,3 @@ class BaseStages:
 @dataclass
 class BaseTaskSolvers:
     pass
-
-
-@dataclass
-class BasePipelineComponentConfig:
-    lang: str
-    verbose: bool
-    log: Logger
-
-    def synchronize_language(self):
-        # TODO
-        pass

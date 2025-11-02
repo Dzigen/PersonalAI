@@ -8,7 +8,7 @@ from .decomposition import QueryDecomposer, QueryDecomposerConfig
 from .denoising import QueryDenoiser, QueryDenoiserConfig
 from .enhancing import QueryEnhancer, QueryEnhancerConfig
 from ....utils import ReturnInfo, Logger, ReturnStatus, update_rinfo
-from ....utils.data_structs import create_id, QueryPreprocessingInfo
+from ....utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv import CacheUtils
 from ....agents.utils import AbstractAgentConnector
@@ -18,7 +18,7 @@ from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
-class QueryPreprocessorConfig:
+class QueryPreprocessorConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация QueryPreprocessor-стадии.
 
     :param denoising_config: Конфигурация шага предобработки user-вопроса, отвечающая за удаление лишних шумов/фрагментов информации. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию QueryDenoiserConfig().
@@ -29,10 +29,6 @@ class QueryPreprocessorConfig:
     :type decomposition_config: Union[None, QueryDecomposerConfig], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryPreprocessor-класса. Значение по умолчанию "query_preprocessing_main_stage_cache".
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(QP_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
     denoising_config: Union[None, QueryDenoiserConfig] = field(default_factory=lambda: QueryDenoiserConfig())
     enhancing_config: Union[None, QueryEnhancerConfig] = field(default_factory=lambda: QueryEnhancerConfig())
@@ -40,7 +36,6 @@ class QueryPreprocessorConfig:
 
     cache_table_name: str = "query_preprocessing_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(QP_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self):
         str_denois_config = self.denoising_config.to_str() if self.denoising_config is not None else 'None'

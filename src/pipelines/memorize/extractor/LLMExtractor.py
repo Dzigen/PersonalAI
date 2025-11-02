@@ -6,7 +6,8 @@ from .configs import DEFAULT_THESISES_EXTR_TASK_CONFIG, DEFAULT_TRIPLETS_EXTR_TA
 from .utils import MemExtractorTaskSolvers
 from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 from ....utils.errors import STATUS_MESSAGE
-from ....utils.data_structs import TripletCreator, NodeCreator, Node, Relation, RelationType, NodeType, Triplet, create_id
+from ....utils.data_structs import TripletCreator, NodeCreator, Node, Relation, \
+    RelationType, NodeType, Triplet, create_id, BaseComponentConfig, LanguageConfig
 from ....agents.utils import AbstractAgentConnector
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv.CacheOperations import CacheOperations
@@ -15,11 +16,9 @@ from ....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperation
 
 
 @dataclass
-class LLMExtractorConfig:
+class LLMExtractorConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация Extractor-стадии Memorize-конвейера.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
-    :type lang: str
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param triplets_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению триплетов с информацией типа 'simple' из слабоструктурированных текстов на естественном языке. Значение по умолчанию DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG.
@@ -32,20 +31,15 @@ class LLMExtractorConfig:
     :type need_thesises: bool, optional
     :param need_episodic: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False. Значение по умолчанию True.
     :type need_episodic: bool, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(MEM_EXTRACTOR_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
-    lang: str = "auto"
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     triplets_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_TRIPLETS_EXTR_TASK_CONFIG)
     thesises_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_THESISES_EXTR_TASK_CONFIG)
     need_simple: bool = True
     need_thesises: bool = True
     need_episodic: bool = True
+
     log: Logger = field(default_factory=lambda: Logger(MEM_EXTRACTOR_MAIN_LOG_PATH))
-    verbose: bool = False
 
 
 class LLMExtractor(CacheOperations, AgentStatOperations):

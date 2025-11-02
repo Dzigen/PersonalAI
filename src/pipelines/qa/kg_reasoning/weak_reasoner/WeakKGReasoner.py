@@ -8,7 +8,7 @@ from .knowledge_comparator import KnowledgeComparator, KnowledgeComparatorConfig
 from .knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
 from .answer_generator import QALLMGenerator, QALLMGeneratorConfig
 from ..utils import AbstractKGReasoner, BaseKGReasonerConfig
-from .....utils.data_structs import create_id, QueryInfo, Triplet
+from .....utils.data_structs import create_id, QueryInfo, Triplet, BaseComponentConfig, LanguageConfig
 from .....utils import Logger, ReturnInfo, ReturnStatus, update_rinfo
 from .....utils.cache_kv import CacheUtils
 from .....kg_model import KnowledgeGraphModel
@@ -17,7 +17,7 @@ from .....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
-class WeakKGReasonerConfig(BaseKGReasonerConfig):
+class WeakKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, LanguageConfig):
     """Конфигурация weak-версии пайплайна по ризонингу на графе знаний.
 
     :param query_parser_config: Конфигурация первой стадии reasoner-конвейера: извлечение сущностей из user-вопроса. Значение по умолчанию QueryLLMParserConfig().
@@ -30,10 +30,6 @@ class WeakKGReasonerConfig(BaseKGReasonerConfig):
     :type answer_generator_config: QALLMGeneratorConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы WeakKGReasoner-класса. Значение по умолчанию 'qa_weakreasoner_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(WKGR_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
     query_parser_config: Union[None, QueryLLMParserConfig] = field(
         default_factory=lambda: QueryLLMParserConfig())
@@ -46,7 +42,6 @@ class WeakKGReasonerConfig(BaseKGReasonerConfig):
 
     cache_table_name: str = 'qa_weakreasoner_cache'
     log: Logger = field(default_factory=lambda: Logger(WKGR_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self) -> str:
         str_qparser_config = self.query_parser_config.to_str() if self.query_parser_config is not None else "None"

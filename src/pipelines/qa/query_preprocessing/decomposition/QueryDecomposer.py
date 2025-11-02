@@ -5,7 +5,7 @@ from .config import QD_MAIN_LOG_PATH, DEFAULT_QD_TASK_CONFIG, DEFAULT_DC_TASK_CO
 from .utils import QueryDecomposerTaskSolvers
 from .....utils.cache_kv import CacheUtils
 from .....utils.errors import STATUS_MESSAGE
-from .....utils.data_structs import create_id, QueryPreprocessingInfo
+from .....utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
 from .....agents.utils import AbstractAgentConnector
 from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
 from .....db_drivers.kv_driver import KeyValueDriverConfig
@@ -15,11 +15,9 @@ from .....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperatio
 
 
 @dataclass
-class QueryDecomposerConfig:
+class QueryDecomposerConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация QueryDecomposer-операции.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
-    :type lang: str, optional
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param classify_agent_task_config: Конфигурация атомарной задачи для LLM-агента по классификации наличия независимых запросов (составности/сложности) в user-вопросе. Значение по умолчанию DEFAULT_DC_TASK_CONFIG.
@@ -28,12 +26,7 @@ class QueryDecomposerConfig:
     :type decompose_agent_task_config: AgentTaskSolverConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryDecomposer-класса. Значение по умолчанию 'qp_decomposition_stage_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(QD_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
-    lang: str = "auto"
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     classify_agent_task_config: AgentTaskSolverConfig = field(
         default_factory=lambda: DEFAULT_DC_TASK_CONFIG)
@@ -42,7 +35,6 @@ class QueryDecomposerConfig:
 
     cache_table_name: str = 'qp_decomposition_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(QD_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.classify_agent_task_config.version}|{self.decompose_agent_task_config.version}"

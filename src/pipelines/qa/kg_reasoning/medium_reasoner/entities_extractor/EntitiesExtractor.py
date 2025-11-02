@@ -6,7 +6,7 @@ from .utils import MediumEntitiesExtractorTaskSolvers
 from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
 from ......utils import ReturnStatus
 from ......agents.utils import AbstractAgentConnector
-from ......utils.data_structs import create_id
+from ......utils.data_structs import create_id, BaseComponentConfig, LanguageConfig
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.cache_kv import CacheUtils
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
@@ -15,30 +15,22 @@ from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperati
 
 
 @dataclass
-class EntitiesExtractorConfig:
+class EntitiesExtractorConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация EntitiesExtractor-стадии MediumQA-ризонера.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
-    :type lang: str, optional
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param entities_extraction_agent_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению сущностей из поискового запроса. Значение по умолчанию DEFAULT_ENT_EXTR_TASK_CONFIG.
     :type entities_extraction_agent_task_config: AgentTaskSolverConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы EntitiesExtractor-класса. Значение по умолчанию 'medreasn_entextr_main_stage_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(ENEXTR_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
-    lang: str = 'auto'
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     entities_extraction_agent_task_config: AgentTaskSolverConfig = field(
         default_factory=lambda: DEFAULT_ENT_EXTR_TASK_CONFIG)
 
     cache_table_name: str = "medreasn_entextr_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(ENEXTR_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.entities_extraction_agent_task_config.version}"

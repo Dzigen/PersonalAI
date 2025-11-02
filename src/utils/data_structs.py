@@ -1,9 +1,10 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from typing import List, Union, Tuple, Dict
 from enum import Enum
 import hashlib
 
-from src.db_drivers.vector_driver import VectorDBInstance
+from ..db_drivers.vector_driver import VectorDBInstance
+from .logger import Logger
 
 
 class NodeType(Enum):
@@ -384,3 +385,35 @@ class QueryPreprocessingInfo:
         str_processed_query = ';'.join(
             self.processed_query) if self.processed_query is not None else "None"
         return f"{self.base_query}|{str_denoised_query}|{str_enchanced_query}|{str_decomposed_query}|{str_processed_query}"
+
+
+@dataclass
+class BaseComponentConfig:
+    """
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты.
+    :type log: Logger, optional
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool, optional
+    """
+    log: Logger
+    verbose: bool = False
+
+
+@dataclass
+class LanguageConfig:
+    """
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при решении задач LLM-агентом. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
+    :type lang: str, optional
+    """
+    lang: str = 'auto'
+
+    def synchronize_language(self, lang: Union[None, str] = None):
+        if lang is not None:
+            self.lang = lang
+
+        fields_iterator = fields(self)
+        for field_object in fields_iterator:
+            field_value = getattr(self, field_object.name)
+
+            if isinstance(field_value, LanguageConfig):
+                field_value.synchronize_language(self.lang)

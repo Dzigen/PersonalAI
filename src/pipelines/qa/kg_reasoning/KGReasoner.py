@@ -12,10 +12,11 @@ from ....utils.cache_kv import CacheUtils
 from ....utils.cache_kv.CacheOperations import CacheOperations
 from ....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
+from ....utils.data_structs import BaseComponentConfig, LanguageConfig
 
 
 @dataclass
-class KnowledgeGraphReasonerConfig:
+class KnowledgeGraphReasonerConfig(BaseComponentConfig, LanguageConfig):
     """
     Конфигурация KnowledgeGraphReasoner-стадии.
 
@@ -25,10 +26,6 @@ class KnowledgeGraphReasonerConfig:
     :type reasoner_hyperparameters: BaseKGReasonerConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы KnowledgeGraphReasoner-класса. Значение по умолчанию 'kg_reasoning_main_stage_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(KGR_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
     reasoner_name: str = 'medium'  # 'weak' | 'medium'
     reasoner_hyperparameters: BaseKGReasonerConfig = field(
@@ -36,7 +33,6 @@ class KnowledgeGraphReasonerConfig:
 
     cache_table_name: str = 'kg_reasoning_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(KGR_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self):
         return f"{self.reasoner_name}|{self.reasoner_hyperparameters.to_str()}"

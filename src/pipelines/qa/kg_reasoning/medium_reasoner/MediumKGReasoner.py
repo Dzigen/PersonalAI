@@ -12,7 +12,7 @@ from .utils import MediumKGReasonerStages
 from .config import MDGR_MAIN_LOG_PATH, CONTINUE_SEARCH_MESSAGE, ANSWER_IS_GENERATED_MESSAGE, MEDIUM_KG_RETRIEVER_CONFIG
 from ..utils import AbstractKGReasoner, BaseKGReasonerConfig
 from ..weak_reasoner.knowledge_retriever import KnowledgeRetrieverConfig, KnowledgeRetriever
-from .....utils.data_structs import create_id, QueryInfo, SearchPlanInfo
+from .....utils.data_structs import create_id, QueryInfo, SearchPlanInfo, BaseComponentConfig, LanguageConfig
 from .....utils import Logger, ReturnInfo, ReturnStatus, update_rinfo
 from .....utils.cache_kv import CacheUtils
 from .....kg_model import KnowledgeGraphModel
@@ -22,7 +22,7 @@ from .....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
-class MediumKGReasonerConfig(BaseKGReasonerConfig):
+class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, LanguageConfig):
     """Конфигурация medium-версии пайплайна по ризонингу на графе знаний.
 
     :param searchplan_enhancer_config: Конфигурация стадии #1 reasoner-конвейера: выполняется генерация/модификация плана поиска/извлечения информации (в виде списка запросов на естественном языке) из графа знаний. Значение по умолчанию SearchPlanEnhancerConfig().
@@ -47,10 +47,6 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig):
     :type answer_something: bool, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы MediumKGReasoner-класса. Значение по умолчанию 'qa_mediumreasoner_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(MDGR_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
     searchplan_enhancer_config: SearchPlanEnhancerConfig = field(default_factory=lambda: SearchPlanEnhancerConfig())
     entities_extractor_config: EntitiesExtractorConfig = field(default_factory=lambda: EntitiesExtractorConfig())
@@ -68,7 +64,6 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig):
 
     cache_table_name: str = 'qa_mediumreasoner_cache'
     log: Logger = field(default_factory=lambda: Logger(MDGR_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self) -> str:
         str_spe_config = self.searchplan_enhancer_config.to_str()
