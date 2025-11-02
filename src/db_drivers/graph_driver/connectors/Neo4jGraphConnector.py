@@ -352,7 +352,10 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
                     id_type: str = None, detailed: bool = False) -> Union[Dict[str, Dict[str, int]], Dict[str, int], int]:
         if id_type is None:
             if detailed:
-                result = {'triplets': {'simple': 0, 'hyper': 0, 'episodic': 0}, 'nodes': {'object': 0, 'hyper': 0, 'episodic': 0}}
+                result = {
+                    'triplets': {'simple': 0, 'hyper': 0, 'episodic': 0, 'time': 0},
+                    'nodes': {'object': 0, 'hyper': 0, 'episodic': 0, 'time': 0}
+                }
 
                 n_output = self.execute_query(
                     "MATCH (n) UNWIND labels(n) AS label RETURN label, count(n) AS nodeCount")

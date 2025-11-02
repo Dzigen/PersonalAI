@@ -356,13 +356,15 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
                 result = {'triplets': int(r_output), 'nodes': int(n_output)}
 
         elif id_type == 'node':
+            formated_node_type = self.config.params['table_type_map']['nodes']['forward'][item_id.type.value]
             n_output = self.conn.execute(
-                f'MATCH (a:{item_id.type.value}) WHERE a.str_id = "{item_id.id}" RETURN COUNT(a) as n_count').get_as_df()['n_count'][0]
+                f'MATCH (a:{formated_node_type}) WHERE a.str_id = "{item_id.id}" RETURN COUNT(a) as n_count').get_as_df()['n_count'][0]
             result = int(n_output)
 
         elif id_type == 'relation':
+            formated_relation_type = self.config.params['table_type_map']['relations']['forward'][item_id.type.value]
             r_output = self.conn.execute(
-                f'MATCH (a)-[rel:{item_id.type.value}]->(b) WHERE rel.str_id = "{item_id.id}" RETURN COUNT(rel) as r_count').get_as_df()['r_count'][0]
+                f'MATCH (a)-[rel:{formated_relation_type}]->(b) WHERE rel.str_id = "{item_id.id}" RETURN COUNT(rel) as r_count').get_as_df()['r_count'][0]
             result = int(r_output)
 
         elif id_type == 'triplet':
@@ -384,9 +386,11 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
                 raise ValueError
 
         if id_type == 'node':
-            query = f'MATCH (n:{item_id.type.value}) WHERE n.str_id = "{item_id.id}" RETURN n;'
+            formated_node_type = self.config.params['table_type_map']['nodes']['forward'][item_id.type.value]
+            query = f'MATCH (n:{formated_node_type}) WHERE n.str_id = "{item_id.id}" RETURN n;'
         elif id_type == 'relation':
-            query = f'MATCH (n1)-[rel:{item_id.type.value}]-(n2) WHERE rel.str_id = "{item_id.id}" RETURN rel;'
+            formated_relation_type = self.config.params['table_type_map']['relations']['forward'][item_id.type.value]
+            query = f'MATCH (n1)-[rel:{formated_relation_type}]-(n2) WHERE rel.str_id = "{item_id.id}" RETURN rel;'
         elif id_type == 'triplet':
             query = f'MATCH (n1)-[rel]-(n2) WHERE rel.t_id = "{item_id}" RETURN rel;'
         else:

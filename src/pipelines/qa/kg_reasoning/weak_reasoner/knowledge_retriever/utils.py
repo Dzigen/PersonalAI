@@ -7,6 +7,7 @@ from ......utils.data_structs import QueryInfo, Triplet, NodeType, NodeInfo
 from ......utils.cache_kv.CacheOperations import CacheOperations, TraversalMethodCacheOpearions
 from .....utils import BaseStages
 
+
 def get_nodes_path(parent: Dict[str, NodeInfo], end_node: NodeInfo) -> List[NodeInfo]:
     """Метод предназначен для получения пути обхода графа, заканчивая заданной конечной end_node_id вершиной.
     Путь должен быть ацикличным: есть стартовая вершин, у которой нет родителя.
@@ -27,7 +28,7 @@ def get_nodes_path(parent: Dict[str, NodeInfo], end_node: NodeInfo) -> List[Node
 
     path, end_flag, cur_n = [end_node], False, end_node
     while not end_flag:
-        next_n = parent[cur_n.id]
+        next_n = parent[cur_n.to_str()]
         if next_n is None:
             end_flag = True
         else:

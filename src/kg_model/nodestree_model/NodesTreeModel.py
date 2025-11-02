@@ -20,7 +20,7 @@ from .configs import DEFAULT_SUMMN_TASK_CONFIG, NODESTREE_MODEL_LOG_PATH, \
     TREE_DB_DEFAULT_DRIVER_CONFIG, LNT_RERANKDRIVER_DEFAULT_CONFIG, SNT_RERANKDRIVER_DEFAULT_CONFIG
 from ...db_drivers.tree_driver.utils import TreeNodeType, TreeNode, TreeIdType
 from ...utils import Logger, AgentTaskSolver, AgentTaskSolverConfig, ReturnStatus
-from ...utils.data_structs import Triplet, NodeType, create_id, Node
+from ...utils.data_structs import Triplet, NodeType, create_id, Node, NodeInfo
 from ...utils.errors import ReturnStatus
 from ...agents.utils import AbstractAgentConnector
 from ...db_drivers.kv_driver import KeyValueDriverConfig
@@ -561,7 +561,7 @@ class NodesTreeModel:
             descendants_leaf_strids, includes=["documents", "metadatas"])
         return matched_nodes
 
-    def match_entitie2objects(self, entitie: str, strategy: str = 'collapsed', max_n: int = 1) -> List[VectorDBInstance]:
+    def match_entitie2objects(self, entitie: str, strategy: str = 'collapsed', max_n: int = 1) -> List[NodeInfo]:
         """Метод предназначен для сопоставления object-вершин (из построенного дерева) заданной сущности (на естественном языке).
 
         :param entitie:
@@ -591,14 +591,17 @@ class NodesTreeModel:
                 # в случае, если summarized-вершина семантически ближе к entitie,
                 # то ей сопоставляются все её (leaf-вершины) вершиным-потомки
                 self.log(f"В качестве самой релевантной выбрана summarized-вершина: {best_summnode}", verbose=self.verbose)
-                matched_nodes = self.get_leafdescendants_for_summnode(entitie_vinstance, best_summnode[1].id, max_n)
+                matched_nodes = list(map(
+                    lambda vnode: NodeInfo(id=vnode.id, type=NodeType.object, text=vnode.document),
+                    self.get_leafdescendants_for_summnode(entitie_vinstance, best_summnode[1].id, max_n)
+                ))
                 self.log(f"Summarized-вершине соответствуют следующие leaf-вершины (потомки): количество - {len(matched_nodes)}", verbose=self.verbose)
                 for i in range(len(matched_nodes)):
-                    self.log(f"- [{matched_nodes[i].id}] {matched_nodes[i].document}", verbose=self.verbose)
+                    self.log(f"- {matched_nodes[i]}", verbose=self.verbose)
             else:
                 self.log(f"В качестве самой релевантной выбрана leaf-вершина: {best_leafnode}", verbose=self.verbose)
-                matched_nodes: List[VectorDBInstance] = [best_leafnode[1]]
-                self.log(f"- [{matched_nodes[0].id}] {matched_nodes[0].document}", verbose=self.verbose)
+                matched_nodes: List[NodeInfo] = [NodeInfo(id=best_leafnode[1].id, type=NodeType.object, text=best_leafnode[1].document)]
+                self.log(f"- {matched_nodes}", verbose=self.verbose)
 
         elif strategy == 'traversal':
             # TODO

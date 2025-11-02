@@ -5,7 +5,7 @@ from .config import E2NMATCHER_MAIN_LOG_PATH, E2NM_RERANKDRIVER_DEFAULT_CONFIG
 from ......kg_model import KnowledgeGraphModel
 from ......utils import ReturnInfo, Logger
 from ......utils.errors import ReturnStatus
-from ......utils.data_structs import NodeType
+from ......utils.data_structs import NodeType, NodeInfo
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......db_drivers.vector_driver import VectorDBInstance
 from ......utils.cache_kv import CacheUtils
@@ -74,38 +74,38 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
         return [entitie, self.config.to_str()]
 
     @CacheUtils.cache_method_output
-    def match_entitie2knowledge(self, entitie: str) -> List[VectorDBInstance]:
+    def match_entitie2knowledge(self, entitie: str) -> List[NodeInfo]:
         if self.config.use_tree:
             matched_objects = self.kg_model.nodestree_model.match_entitie2objects(entitie, max_n=self.config.max_n)
         else:
-            matched_objects = self.retriever.run(entitie, top_k=self.config.max_n, includes=['documents'])
+            matched_objects = list(map(
+                lambda node: NodeInfo(id=node.id, text=node.document, type=NodeType.object),
+                self.retriever.run(entitie, top_k=self.config.max_n, includes=['documents'])
+            ))
 
         return matched_objects
 
-    def perform(self, entities: List[str]) -> Tuple[Dict[str, List[VectorDBInstance]], ReturnInfo]:
+    def perform(self, entities: List[str]) -> Tuple[Dict[str, List[NodeInfo]], ReturnInfo]:
         """Метод предназначен для сопоставления заданных сущностей (на естественном языке) с вершинами из графа знаний.
 
         :param entities: Список сущностей.
         :type entities: List[str]
-        :rtype: Tuple[Dict[str,List[VectorDBInstance]], ReturnInfo]
+        :rtype: Tuple[Dict[str,List[NodeInfo]], ReturnInfo]
         """
-        self.log("START ENTITIES2NODES MATCHING...",
-                 verbose=self.config.verbose)
+        self.log("START ENTITIES2NODES MATCHING...", verbose=self.config.verbose)
         self.log(f"ENTIITES: {entities}", verbose=self.config.verbose)
         if len(entities) < 1:
             raise ValueError
         rinfo = ReturnInfo()
 
-        matched_kg_objects: Dict[str, List[VectorDBInstance]] = dict()
+        matched_kg_objects: Dict[str, List[NodeInfo]] = dict()
         for i, entitie in enumerate(entities):
             self.log(f"Текушая сушность #{i}: {entitie}", verbose=self.verbose)
             matched_kg_objects[entitie] = self.match_entitie2knowledge(entitie)
-            str_matchedobjects = ', '.join(
-                list(map(lambda obj: obj.document, matched_kg_objects[entitie])))
+            str_matchedobjects = ', '.join(list(map(lambda obj: obj.text, matched_kg_objects[entitie])))
             self.log(f"RESULT: {str_matchedobjects}", verbose=self.verbose)
 
-        m_objects_amount = sum(
-            list(map(lambda m_objects: len(m_objects), matched_kg_objects.values())))
+        m_objects_amount = sum(list(map(lambda m_objects: len(m_objects), matched_kg_objects.values())))
         if m_objects_amount < 1:
             rinfo.status = ReturnStatus.empty_answer
         self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)

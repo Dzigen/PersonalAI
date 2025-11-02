@@ -12,7 +12,7 @@ from .config import NODES_DB_DEFAULT_DRIVER_CONFIGS_MAPPING, TRIPLETS_DB_DEFAULT
 from ...db_drivers.vector_driver import VectorDriverConfig, VectorDBInstance
 from ...db_drivers.vector_driver.embedders import EmbedderModel
 from ...db_drivers.vector_driver.VectorComposer import VectorComposer
-from ...utils.data_structs import Triplet, TripletCreator, NodeCreator
+from ...utils.data_structs import Triplet, TripletCreator, NodeCreator, NODES_TYPES_MAP
 from ...utils import Logger, NodeType
 
 
@@ -86,8 +86,8 @@ class EmbeddingsModel:
         """
         self.log("Adding triples to vector-model...", verbose=self.verbose)
         self.log("\t- Also adding triplet-nodes in vector-model", verbose=self.verbose)
-        unique_relation_ids, unique_node_ids = set(), defaultdict(set)
-        existed_relation_ids, existed_node_ids = set(), defaultdict(set)
+        unique_relation_ids, unique_node_ids = set(), {n_type: set() for n_type in NODES_TYPES_MAP.values()}
+        existed_relation_ids, existed_node_ids = set(), {n_type: set() for n_type in NODES_TYPES_MAP.values()}
 
         batch_count = math.ceil(len(triplets) / batch_size)
         process = tqdm(range(batch_count)
@@ -133,7 +133,7 @@ class EmbeddingsModel:
         existed_nodes_count = {k: len(v) for k, v in existed_node_ids.items()}
         self.log(f"nodes info (all/unique/existed count) - {len(triplets)*2}/{unique_nodes_count}/{existed_nodes_count}", verbose=self.verbose)
         self.log("Triples were successfully added to vector-model!", verbose=self.verbose)
-        return {'nodes': dict(existed_node_ids), 'triplets': existed_relation_ids}
+        return {'nodes': existed_node_ids, 'triplets': existed_relation_ids}
 
     def create_stringified_triplets(self, relations_info: List[VectorDBInstance],
                                     grouped_nodes_info: Union[None, Dict[NodeType, List[VectorDBInstance]]] = None) -> None:

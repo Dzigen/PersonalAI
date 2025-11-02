@@ -280,10 +280,10 @@ GRAPHDB_COUNT_TEST_CASES = [
     [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, {
         'triplets_count': 2, 'nodes_count': 3}, False],
     # 5. детальный вывод (нуль элементов)
-    [[], {}, {'triplets_count': {'simple': 0, 'hyper': 0, 'episodic': 0}, 'nodes_count': {'object': 0, 'hyper': 0, 'episodic': 0}}, True],
+    [[], {}, {'triplets_count': {'simple': 0, 'hyper': 0, 'episodic': 0, 'time': 0}, 'nodes_count': {'object': 0, 'hyper': 0, 'episodic': 0, 'time': 0}}, True],
     # 5. детальный вывод (несколько элементов)
     [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2, THESIS_TRIPLET1, EPISODIC_TRIPLET1], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO, 2: WO_SN_CREATION_INFO, 3: WO_SN_CREATION_INFO}, {
-        'triplets_count': {'simple': 2, 'hyper': 1, 'episodic': 1}, 'nodes_count': {'object': 3, 'hyper': 1, 'episodic': 1}}, True]
+        'triplets_count': {'simple': 2, 'hyper': 1, 'episodic': 1, 'time': 0}, 'nodes_count': {'object': 3, 'hyper': 1, 'episodic': 1, 'time': 0}}, True]
 ]
 
 GRAPHDB_POPULATED_COUNT_TEST_CASES = []

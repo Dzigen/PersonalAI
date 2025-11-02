@@ -12,7 +12,7 @@ from .utils import MediumKGReasonerStages
 from .config import MDGR_MAIN_LOG_PATH, CONTINUE_SEARCH_MESSAGE, ANSWER_IS_GENERATED_MESSAGE, MEDIUM_KG_RETRIEVER_CONFIG
 from ..utils import AbstractKGReasoner, BaseKGReasonerConfig
 from ..weak_reasoner.knowledge_retriever import KnowledgeRetrieverConfig, KnowledgeRetriever
-from .....utils.data_structs import create_id, QueryInfo, SearchPlanInfo
+from .....utils.data_structs import create_id, QueryInfo, SearchPlanInfo, NodeInfo
 from .....utils import Logger, ReturnInfo, ReturnStatus, update_rinfo
 from .....utils.cache_kv import CacheUtils
 from .....kg_model import KnowledgeGraphModel
@@ -165,14 +165,11 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         if rinfo.status == ReturnStatus.success:
             self.log("STAGE#2.1.2 - ENTITIES-TO-KGOBJECTS MATCHING",
                      verbose=self.config.verbose)
-            matched_kg_objects, e2nm_rinfo = self.stages.entities2nodes_matcher.perform(
-                entities)
+            matched_kg_objects, e2nm_rinfo = self.stages.entities2nodes_matcher.perform(entities)
             if e2nm_rinfo.status == ReturnStatus.success:
                 self.log("Operation ended successfully", verbose=self.verbose)
-                str_matched_kgobject = '\n'.join([f'- [{entitie}][{len(objects)}] ' + ', '.join(list(map(
-                    lambda obj: obj.document, objects))) for entitie, objects in matched_kg_objects.items()])
-                self.log(f"RESULT:\n{str_matched_kgobject}",
-                         verbose=self.config.verbose)
+                str_matched_kgobject = '\n'.join([f'- [{entitie}][{len(objects)}] ' + ', '.join(list(map(lambda obj: obj.text, objects))) for entitie, objects in matched_kg_objects.items()])
+                self.log(f"RESULT:\n{str_matched_kgobject}", verbose=self.config.verbose)
             else:
                 self.log("Operation ended with error!", verbose=self.verbose)
             update_rinfo(rinfo, e2nm_rinfo)
@@ -182,11 +179,11 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
 
         return matched_kg_objects, rinfo
 
-    def get_cluequeries(self, search_query: str, matched_kg_objects: Dict[str, List[VectorDBInstance]]) -> Tuple[List[QueryInfo], ReturnInfo]:
+    def get_cluequeries(self, search_query: str, matched_kg_objects: Dict[str, List[NodeInfo]]) -> Tuple[List[QueryInfo], ReturnInfo]:
         cluequeries, rinfo = self.stages.cluequeries_generator.perform(
             search_query, matched_kg_objects)
         str_cluequeries = '\n'.join(
-            [f'- [{list(map(lambda obj: obj.document, clueq.linked_nodes))}] {clueq.query}' for clueq in cluequeries])
+            [f'- [{list(map(lambda obj: obj.text, clueq.linked_nodes))}] {clueq.query}' for clueq in cluequeries])
         if rinfo.status == ReturnStatus.success:
             self.log("Operation ended successfully", verbose=self.verbose)
             self.log(

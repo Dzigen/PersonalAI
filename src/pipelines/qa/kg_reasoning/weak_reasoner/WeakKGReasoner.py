@@ -130,7 +130,7 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
                 self.log(
                     f"RESULT: {len(linked_nodes)}", verbose=self.config.verbose)
                 for node in linked_nodes:
-                    self.log(f"*[{node.id}] {node.document}",
+                    self.log(f"*[{node.id}] {node.text}",
                              verbose=self.config.verbose)
 
         return linked_nodes, linked_nodes_by_entities, rinfo
@@ -186,25 +186,20 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         query_info.entities, ee_rinfo = self.extract_entities(query_info)
         update_rinfo(rinfo, ee_rinfo)
 
-        self.log("STAGE#2 - MATCHING KEY WORDS TO KG-NODES",
-                 verbose=self.config.verbose)
+        self.log("STAGE#2 - MATCHING KEY WORDS TO KG-NODES", verbose=self.config.verbose)
         if rinfo.status == ReturnStatus.success:
-            query_info.linked_nodes, query_info.linked_nodes_by_entities, me_rinfo = self.match_entities_to_kgnodes(
-                query_info)
+            query_info.linked_nodes, query_info.linked_nodes_by_entities, me_rinfo = \
+                self.match_entities_to_kgnodes(query_info)
             update_rinfo(rinfo, me_rinfo)
         else:
-            self.log("During previous steps error occurs.",
-                     verbose=self.verbose)
+            self.log("During previous steps error occurs.", verbose=self.verbose)
 
-        self.log("STAGE#3 - RETRIEVING RELEVANT TRIPLETS FROM KG",
-                 verbose=self.config.verbose)
+        self.log("STAGE#3 - RETRIEVING RELEVANT TRIPLETS FROM KG", verbose=self.config.verbose)
         if rinfo.status == ReturnStatus.success:
-            retrieved_triplets, tkg_rinfo = self.traverse_knowledge_graph(
-                query_info)
+            retrieved_triplets, tkg_rinfo = self.traverse_knowledge_graph(query_info)
             update_rinfo(rinfo, tkg_rinfo)
         else:
-            self.log("During previous steps error occurs.",
-                     verbose=self.verbose)
+            self.log("During previous steps error occurs.", verbose=self.verbose)
 
         self.log("STAGE#4 - ANSWER GENERATION", verbose=self.config.verbose)
         if rinfo.status == ReturnStatus.success:
@@ -212,8 +207,7 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
                 query_info, retrieved_triplets)
             update_rinfo(rinfo, ag_rinfo)
         else:
-            self.log("During previous steps error occurs.",
-                     verbose=self.verbose)
+            self.log("During previous steps error occurs.", verbose=self.verbose)
 
         self.log(f"STATUS: {rinfo.status}", verbose=self.config.verbose)
 

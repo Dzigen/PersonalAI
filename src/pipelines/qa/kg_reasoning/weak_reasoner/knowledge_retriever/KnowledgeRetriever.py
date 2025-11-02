@@ -87,7 +87,7 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         valid_triplets = []
         for triplet in triplets:
             r_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(
-                triplet.relation.id, id_type='relation', object_type=triplet.relation.type)
+                triplet.relation.get_info(), id_type='relation')
             r_vector_exists = self.kg_model.graph_embeddings.triplets_vcomposer.item_exist(
                 triplet.relation.id)
 
@@ -143,14 +143,11 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.config.verbose)
-        self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}",
-                 verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
+        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.config.verbose)
 
         rinfo = ReturnInfo()
-        self.log("STAGE #3.1 - TRIPLETS EXTRACTION...",
-                 verbose=self.config.verbose)
+        self.log("STAGE #3.1 - TRIPLETS EXTRACTION...", verbose=self.config.verbose)
         triplets = self.traverse_kg(query_info)
 
         self.log("STAGE #3.2 - TRIPLETS FILTERING...", verbose=self.config.verbose)

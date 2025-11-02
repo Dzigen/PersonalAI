@@ -319,12 +319,14 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         result = None
         if id_type is None:
             if detailed:
-                result = {'triplets': {'simple': 0, 'hyper': 0, 'episodic': 0}, 'nodes': {'object': 0, 'hyper': 0, 'episodic': 0}}
+                result = {
+                    'triplets': {'simple': 0, 'hyper': 0, 'episodic': 0, 'time': 0},
+                    'nodes': {'object': 0, 'hyper': 0, 'episodic': 0, 'time': 0}
+                }
                 for triplet in self.strcuture.triplets.values():
                     result['triplets'][triplet.relation.type.value] += 1
                 for node in self.strcuture.nodes.values():
                     result['nodes'][node.type.value] += 1
-                result = {k: dict(v) for k, v in result.items()}
             else:
                 result = {'triplets': len(self.strcuture.triplets), 'nodes': len(self.strcuture.nodes)}
 

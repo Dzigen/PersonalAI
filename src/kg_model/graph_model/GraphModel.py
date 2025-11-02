@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Dict, Set, Tuple
+from typing import List, Dict, Set, Tuple, Union
 import math
 from collections import defaultdict
 from tqdm import tqdm
@@ -7,7 +7,7 @@ import gc
 
 from .config import GRAPH_DB_DEFAULT_DRIVER_CONFIG, GRAPH_MODEL_LOG_PATH
 from ...db_drivers.graph_driver import GraphDriver, GraphDriverConfig
-from ...utils.data_structs import Triplet
+from ...utils.data_structs import Triplet, RelationType, NodeType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 from ...utils import Logger
 
 
@@ -43,7 +43,7 @@ class GraphModel:
         self.log = self.config.log
         self.verbose = self.config.verbose
 
-    def create_triplets(self, triplets: List[Triplet], batch_size: int = 64, status_bar: bool = True) -> Dict[str, Set[str]]:
+    def create_triplets(self, triplets: List[Triplet], batch_size: int = 64, status_bar: bool = True) -> Dict[str, Dict[Union[RelationType, NodeType], Set[str]]]:
         """Метод предназначен для сохранения информации, представленной в виде списка триплетов, в графовую структуру.
 
         :param triplets: Набора триплетов для добавления в графовую структуру.
@@ -56,9 +56,12 @@ class GraphModel:
         :rtype: Dict[str, Set[str]]
         """
         self.log("Adding triplets to graph-model...", verbose=self.verbose)
-        unique_triplet_ids, unique_node_ids = defaultdict(set), defaultdict(set)
-        existed_triplet_ids, existed_node_ids = defaultdict(set), defaultdict(set)
-        created_triplet_ids, created_node_ids = defaultdict(set), defaultdict(set)
+        def ntype_mapping(): return {n_type: set() for n_type in NODES_TYPES_MAP.values()}
+        def reltype_mapping(): return {r_type: set() for r_type in RELATIONS_TYPES_MAP.values()}
+
+        unique_triplet_ids, unique_node_ids = reltype_mapping(), ntype_mapping()
+        existed_triplet_ids, existed_node_ids = reltype_mapping(), ntype_mapping()
+        created_triplet_ids, created_node_ids = reltype_mapping(), ntype_mapping()
 
         batches = math.ceil(len(triplets) / batch_size)
         process = tqdm(range(batches)) if status_bar else range(batches)
@@ -83,46 +86,45 @@ class GraphModel:
                 else:
                     unique_triplet_ids[cur_triplet.relation.type].add(cur_triplet.id)
 
-                if self.db_conn.item_exist(cur_triplet.id, id_type='triplet', object_type=cur_triplet.relation.type):
+                if self.db_conn.item_exist(cur_triplet.id, 'triplet'):
                     existed_triplet_ids[cur_triplet.relation.type].add(cur_triplet.id)
                     continue
                 else:
                     triplets_to_create.append(cur_triplet)
                     info_counter += 1
-                    creation_info[info_counter] = {
-                        's_node': False, 'e_node': False}
+                    creation_info[info_counter] = {'s_node': False, 'e_node': False}
                     created_triplet_ids[cur_triplet.relation.type].add(cur_triplet.id)
 
-                s_node_id = cur_triplet.start_node.id
-                if (s_node_id not in unique_node_ids[cur_triplet.start_node.type]):
-                    unique_node_ids[cur_triplet.start_node.type].add(s_node_id)
-                    if not self.db_conn.item_exist(s_node_id, id_type='node', object_type=cur_triplet.start_node.type):
+                sn_id, sn_type = cur_triplet.start_node.id, cur_triplet.start_node.type
+                if (sn_id not in unique_node_ids[sn_type]):
+                    unique_node_ids[sn_type].add(sn_id)
+                    if not self.db_conn.item_exist(cur_triplet.start_node.get_info(), 'node'):
                         creation_info[info_counter]['s_node'] = True
-                        created_node_ids[cur_triplet.start_node.type].add(s_node_id)
+                        created_node_ids[sn_type].add(sn_id)
                     else:
-                        existed_node_ids[cur_triplet.start_node.type].add(s_node_id)
+                        existed_node_ids[sn_type].add(sn_id)
 
-                e_node_id = cur_triplet.end_node.id
-                if (e_node_id not in unique_node_ids[cur_triplet.end_node.type]):
-                    unique_node_ids[cur_triplet.end_node.type].add(e_node_id)
-                    if not self.db_conn.item_exist(e_node_id, id_type='node', object_type=cur_triplet.end_node.type):
+                en_id, en_type = cur_triplet.end_node.id, cur_triplet.end_node.type
+                if (en_id not in unique_node_ids[en_type]):
+                    unique_node_ids[en_type].add(en_id)
+                    if not self.db_conn.item_exist(cur_triplet.end_node.get_info(), 'node'):
                         creation_info[info_counter]['e_node'] = True
-                        created_node_ids[cur_triplet.end_node.type].add(e_node_id)
+                        created_node_ids[en_type].add(en_id)
                     else:
-                        existed_node_ids[cur_triplet.end_node.type].add(e_node_id)
+                        existed_node_ids[en_type].add(en_id)
 
             self.db_conn.create(triplets_to_create, creation_info)
 
         self.log(f"Triplets info (all - {len(triplets)}):", verbose=self.verbose)
-        utriples_count = {k: len(v) for k,v in unique_triplet_ids}
+        utriples_count = {k: len(v) for k, v in unique_triplet_ids.items()}
         self.log(f"- unique ({utriples_count}): {unique_triplet_ids}", verbose=self.verbose)
-        etriples_count = {k: len(v) for k,v in existed_triplet_ids}
+        etriples_count = {k: len(v) for k, v in existed_triplet_ids.items()}
         self.log(f"- existed ({etriples_count}): {existed_triplet_ids}", verbose=self.verbose)
 
         self.log(f"Nodes info (all - {len(triplets)*2}):", verbose=self.verbose)
-        unode_count = {k: len(v) for k,v in unique_node_ids}
+        unode_count = {k: len(v) for k, v in unique_node_ids.items()}
         self.log(f"- unique ({unode_count}): {unique_node_ids}", verbose=self.verbose)
-        enode_count = {k: len(v) for k,v in existed_node_ids}
+        enode_count = {k: len(v) for k, v in existed_node_ids.items()}
         self.log(f"- existed ({enode_count}): {existed_node_ids}", verbose=self.verbose)
 
         self.log("Triplets added successfully!", verbose=self.verbose)
@@ -144,29 +146,27 @@ class GraphModel:
         process = tqdm(enumerate(triplets)
                        ) if status_bar else enumerate(triplets)
         for i, triplet in process:
-            vector_delete_info = {'s_node': False,
-                                  'triplet': False, 'e_node': False}
+            vector_delete_info = {'s_node': False, 'triplet': False, 'e_node': False}
             graph_delete_info = {'s_node': False, 'e_node': False}
 
             # Если в триплете у стартовой вершины только одно инцидентное ребро,
             # то готовим его к удалению из графовой и векторной структур данных
-            s_node_neighbours = self.db_conn.get_adjecent_nodes(triplet.start_node.id)
-            if len(s_node_neighbours) == 1 and s_node_neighbours[0].id == triplet.end_node.id:
+            s_node_neighbours = self.db_conn.get_adjecent_nodes(triplet.start_node.get_info())
+            if len(s_node_neighbours) == 1 and s_node_neighbours[0].to_str() == triplet.end_node.get_typedid():
                 graph_delete_info['s_node'] = True
                 vector_delete_info['s_node'] = True
 
             # Если в триплете у конечной вершины только одно инцидентное ребро,
             # то готовим его к удалению из графовой и векторной структур данных
-            e_node_neighbours = self.db_conn.get_adjecent_nodes(triplet.end_node.id)
-            if len(e_node_neighbours) == 1 and e_node_neighbours[0].id == triplet.start_node.id:
+            e_node_neighbours = self.db_conn.get_adjecent_nodes(triplet.end_node.get_info())
+            if len(e_node_neighbours) == 1 and e_node_neighbours[0].to_str() == triplet.start_node.get_typedid():
                 graph_delete_info['e_node'] = True
                 vector_delete_info['e_node'] = True
 
             # Если в графовой структуре данных содержиться только один триплет с таким-же строковым представлением (как у текущего triplet),
             # то готовим его к удалению как из графовой, так и из векторной структур данных. Если триплетов с таким же
             # строковым представлением несколько (>=2), то готовим его к удалению только из графовой структуры.
-            same_str_id_count = self.db_conn.count_items(
-                id=triplet.relation.id, id_type='relation')
+            same_str_id_count = self.db_conn.count_items(triplet.relation.get_info(), id_type='relation')
             if same_str_id_count == 1:
                 vector_delete_info['triplet'] = True
 
