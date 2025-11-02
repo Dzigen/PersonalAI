@@ -425,7 +425,6 @@ for db_vendor in AVAILABLE_GRAPH_DBS:
 
 # instances, create_info, init_count, name, type, object, expected_output, exception
 
-
 GRAPHDB_READ_BY_NAME_TEST_CASES = [
     # 1. NODE - OBJECT
     # объектов с таким именем (name) не существует
