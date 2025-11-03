@@ -73,7 +73,7 @@ kg_model = KnowledgeGraphModel(kgmodel_config, kvdriver_config)
 print("before:")
 pprint(kg_model.count_items(detailed=True))
 
-NEED_TO_CLEAR_KG = True # !!! PAY Attention !!!
+NEED_TO_CLEAR_KG = False # !!! PAY Attention !!!
 if NEED_TO_CLEAR_KG:
     print("Cleaning KG-model")
     kg_model.clear()
@@ -166,10 +166,10 @@ print(len(dataset))
 print("8. Run KG build process")
 print(f"start time: {datetime.datetime.now()}") 
 
-# hotpotqa | deepseek_231025_v2prompts | 379
-# rubqdev | gigachatmax_281025_v2prompts | 385
+# hotpotqa | qwen38b_261025_v2prompts | 379
+# rubqdev | gigachatmax_281025_v2prompts | ...
 
-process = tqdm(range(385, len(dataset)))
+process = tqdm(range(len(dataset)))
 for i in process:
     text, time, properties = dataset[i][0], dataset[i][1], dataset[i][2]
     try:

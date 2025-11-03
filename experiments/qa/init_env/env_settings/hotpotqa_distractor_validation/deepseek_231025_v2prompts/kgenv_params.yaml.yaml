@@ -1,0 +1,48 @@
+BASE_KG_PATH: /mnt/data/m.menschikov/personalai/knowledge_graphs
+BASE_PERSONALAI_PATH: /home/m.menschikov/workspace/personal_ai/Personal-AI
+INIT_STRUCT: true
+KG_DIR_STRUCT:
+  cache_dir:
+    name: kv_cache
+    persistant_part: persistent_volume
+    ram_part: ram_volume
+  embeddings_dir:
+    dense_part: dense_vectors_volume
+    name: embeddings_part
+    sparse_part: sparse_vectors_volume
+  graph_dir:
+    name: graph_part
+    volume_name: graph_volume
+  stat_dir:
+    inference: llm_inference_volume
+    name: stat
+OLLAMA_MODELS_PATH: /mnt/data/m.menschikov/ollama_volume
+PERSONALAI_REPO_DIRS:
+  configs: configs
+  models: models
+  notebooks: notebooks
+  qa_datasets: data/qa_datasets/v2
+  src: src
+SAVE_CONFIGS_NAMES:
+  docker_compose_env: .env
+  extracted_triplets: extracted_triplets
+  graph_statistics_dir: graph_statistics
+  inference_stat_config: inference_stat_config
+  kg_config: kg_config
+  kg_health_checks: health_checks.json
+  kg_setting:
+    kgconn: kgconn_params
+    kgenv: kgenv_params
+    kghyperp: kghyperp_params
+    name: settings
+  kg_stats: stats_info.json
+  kvdriver_cache_config: kvdriver_cache_config
+  mem_pipeline_config: mem_pipeline_config
+  tmp_extracted_triplets: tmp_extracted_triplets
+WORKSPACE_CONTAINER_DIRS:
+  base_path: /home/workspace
+  kg: data/knowledge_graphs
+  models: models
+  notebooks: notebooks
+  qa_datasets: data/qa_datasets/v2
+  src: src

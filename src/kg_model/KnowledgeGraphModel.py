@@ -189,7 +189,7 @@ class KnowledgeGraphModel:
         # TODO
         pass
 
-    def add_knowledge(self, triplets: List[Triplet], check_consistency: bool = True, check_createinfo: bool = True, status_bar: bool = False) -> Dict[str, Dict[str, Set[str]]]:
+    def add_knowledge(self, triplets: List[Triplet], check_consistency: bool = True, check_createinfo: bool = False, status_bar: bool = False) -> Dict[str, Dict[str, Set[str]]]:
         """Метод предназначен для добавления информации в память ассистента в виде списка триплетов.
 
         :param triplets: Список триплетов с информацией для добавления в память ассистента.
