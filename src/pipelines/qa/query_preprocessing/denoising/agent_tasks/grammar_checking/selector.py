@@ -1,4 +1,5 @@
 from .......utils import AgentTaskSolverConfig, Logger
+from ......utils import BaseAgentTaskConfigSelector
 from .general_parsers import gramcheck_custom_formate, gramcheck_custom_postprocess
 from .v1 import GRAMCHECK_SUITE_V1
 
@@ -9,7 +10,7 @@ AVAILABLE_GRAMCHECK_TCONFIGS = {
 }
 
 
-class AgentQueryGrammarCheckConfigSelector:
+class AgentQueryGrammarCheckConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_GRAMCHECK_TCONFIGS

@@ -1,13 +1,13 @@
 from dataclasses import dataclass, field
 from typing import Tuple, List, Union, Dict
 
-from .config import QD_MAIN_LOG_PATH, DEFAULT_QD_TASK_CONFIG, DEFAULT_DC_TASK_CONFIG
-from .utils import QueryDecomposerTaskSolvers
+from .config import QD_MAIN_LOG_PATH
+from .utils import QueryDecomposerTaskSolvers, QueryDecomposerAgentTasksConfig
 from .....utils.cache_kv import CacheUtils
 from .....utils.errors import STATUS_MESSAGE
 from .....utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
 from .....agents.utils import AbstractAgentConnector
-from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
+from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolver
 from .....db_drivers.kv_driver import KeyValueDriverConfig
 from .....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 from .....utils.cache_kv.CacheOperations import CacheOperations
@@ -20,24 +20,18 @@ class QueryDecomposerConfig(BaseComponentConfig, LanguageConfig):
 
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param classify_agent_task_config: Конфигурация атомарной задачи для LLM-агента по классификации наличия независимых запросов (составности/сложности) в user-вопросе. Значение по умолчанию DEFAULT_DC_TASK_CONFIG.
-    :type classify_agent_task_config: AgentTaskSolverConfig, optional
-    :param decompose_agent_task_config: Конфигурация атомарной задачи для LLM-агента по разбиению user-вопроса на независимые/простые под-вопросы. Значение по умолчанию DEFAULT_QD_TASK_CONFIG.
-    :type decompose_agent_task_config: AgentTaskSolverConfig, optional
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию QueryDecomposerAgentTasksConfig().
+    :type agent_tasks_config: QueryDecomposerAgentTasksConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryDecomposer-класса. Значение по умолчанию 'qp_decomposition_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    classify_agent_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_DC_TASK_CONFIG)
-    decompose_agent_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_QD_TASK_CONFIG)
-
+    agent_tasks_config: QueryDecomposerAgentTasksConfig = field(default_factory=lambda: QueryDecomposerAgentTasksConfig())
     cache_table_name: str = 'qp_decomposition_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(QD_MAIN_LOG_PATH))
 
     def to_str(self):
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.classify_agent_task_config.version}|{self.decompose_agent_task_config.version}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
 
 
 class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
@@ -60,8 +54,8 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
                  cache_llm_inference: bool = True):
         self.config = config
-        self.cachekv = self.init_cachekv(
-            cache_kvdriver_config, config.cache_table_name)
+        self.config.agent_tasks_config.versions_to_configs()
+        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
 
         self.agent = agent
         agents_cache_config = None
@@ -70,10 +64,10 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
 
         self.tasks_solvers: QueryDecomposerTaskSolvers = QueryDecomposerTaskSolvers(
             decompose_classifier_solver=AgentTaskSolver(
-                self.agent, self.config.classify_agent_task_config, agents_cache_config, inferencestat_config
+                self.agent, self.config.agent_tasks_config.classify, agents_cache_config, inferencestat_config
             ),
             q_decomposition_solver=AgentTaskSolver(
-                self.agent, self.config.decompose_agent_task_config, agents_cache_config, inferencestat_config
+                self.agent, self.config.agent_tasks_config.decompose, agents_cache_config, inferencestat_config
             )
         )
 

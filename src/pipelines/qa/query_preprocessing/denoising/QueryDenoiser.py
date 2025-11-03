@@ -1,13 +1,13 @@
 from dataclasses import dataclass, field
 from typing import Tuple, List, Union, Dict
 
-from .config import QD_MAIN_LOG_PATH, DEFAULT_SWREMV_TASK_CONFIG, DEFAULT_GRAMCHECK_TASK_CONFIG
-from .utils import QueryDenoiserTaskSolvers
+from .config import QD_MAIN_LOG_PATH
+from .utils import QueryDenoiserTaskSolvers, QueryDenoiserAgentTasksConfig
 from .....utils.cache_kv import CacheUtils
 from .....utils.errors import STATUS_MESSAGE
 from .....utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
 from .....agents.utils import AbstractAgentConnector
-from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
+from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolver
 from .....db_drivers.kv_driver import KeyValueDriverConfig
 from .....utils.cache_kv.CacheOperations import CacheOperations
 from .....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
@@ -20,24 +20,19 @@ class QueryDenoiserConfig(BaseComponentConfig, LanguageConfig):
 
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param swremoval_agent_task_config: Конфигурация атомарной задачи для LLM-агента по удалению излишней/ненужной информации из запроса. Значение по умолчанию DEFAULT_SWREMV_TASK_CONFIG.
-    :type swremoval_agent_task_config: AgentTaskSolverConfig, optional
-    :param grammarcheck_agent_task_config: Конфигурация атомарной задачи для LLM-агента по корректировке/переформулированию запроса в соответствии с грамматикой и синтаксисом используемого естественного языка. Значение по умолчанию DEFAULT_GRAMCHECK_TASK_CONFIG.
-    :type grammarcheck_agent_task_config: AgentTaskSolverConfig, optional
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию QueryDenoiserAgentTasksConfig().
+    :type agent_tasks_config: QueryDenoiserAgentTasksConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryDenoiser-класса. Значение по умолчанию 'qp_denoising_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    swremoval_agent_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_SWREMV_TASK_CONFIG)
-    grammarcheck_agent_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_GRAMCHECK_TASK_CONFIG)
+    agent_tasks_config: QueryDenoiserAgentTasksConfig = field(default_factory=lambda: QueryDenoiserAgentTasksConfig())
 
     cache_table_name: str = 'qp_denoising_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(QD_MAIN_LOG_PATH))
 
     def to_str(self):
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.swremoval_agent_task_config.version}|{self.grammarcheck_agent_task_config.version}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
 
 
 class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
@@ -60,8 +55,8 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
                  cache_llm_inference: bool = True,):
         self.config = config
-        self.cachekv = self.init_cachekv(
-            cache_kvdriver_config, config.cache_table_name)
+        self.config.agent_tasks_config.versions_to_configs()
+        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
 
         self.agent = agent
         agents_cache_config = None
@@ -71,11 +66,11 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
         self.tasks_solvers: QueryDenoiserTaskSolvers = QueryDenoiserTaskSolvers(
             # удаление слов/знаков, мешающих/усложняющих пониманию/анализу основного смысла/намерения
             swremoval_solver=AgentTaskSolver(
-                self.agent, self.config.swremoval_agent_task_config, agents_cache_config, inferencestat_config
+                self.agent, self.config.agent_tasks_config.swremoval, agents_cache_config, inferencestat_config
             ),
             # лингвистическая корректировка
             grammar_check_solver=AgentTaskSolver(
-                self.agent, self.config.grammarcheck_agent_task_config, agents_cache_config, inferencestat_config
+                self.agent, self.config.agent_tasks_config.grammarcheck, agents_cache_config, inferencestat_config
             )
         )
 

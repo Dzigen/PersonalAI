@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Union, Dict
 from tqdm import tqdm
 
-from .configs import MEM_UPDATOR_MAIN_LOG_PATH, DEFAULT_REPLACE_THESIS_TASK_CONFIG, DEFAULT_REPLACE_SIMPLE_TASK_CONFIG
+from .configs import MEM_UPDATOR_MAIN_LOG_PATH, MemUpdatorAgentTasksConfig
 from .utils import MemUpdatorTaskSolvers
 from ....utils import Logger, Triplet, AgentTaskSolverConfig, AgentTaskSolver
 from ....utils.data_structs import RelationType, NodeType, create_id, BaseComponentConfig, LanguageConfig
@@ -20,18 +20,13 @@ class LLMUpdatorConfig(BaseComponentConfig, LanguageConfig):
 
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]], optional
-    :param replace_simple_task_config: Конфигурация атомарной задачи для LLM-агента по поиску устаревших триплетов типа "simple". Значение по умолчанию DEFAULT_REPLACE_SIMPLE_TASK_CONFIG.
-    :type replace_simple_task_config: AgentTaskSolverConfig, optional
-    :param replace_thesis_task_config: Конфигурация атомарной задачи для LLM-агента по поиску устаревших триплетов типа "hyper". Значение по умолчанию DEFAULT_REPLACE_THESIS_TASK_CONFIG.
-    :type replace_thesis_task_config: AgentTaskSolverConfig, optional
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию MemUpdatorAgentTasksConfig().
+    :type agent_tasks_config: MemUpdatorAgentTasksConfig, optional
     :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшие знания из памяти (графа знаний) ассистента, иначе False. Значение по умолчанию False.
     :type delete_obsolete_info: bool, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    replace_simple_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_REPLACE_SIMPLE_TASK_CONFIG)
-    replace_thesis_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_REPLACE_THESIS_TASK_CONFIG)
+    agent_tasks_config: MemUpdatorAgentTasksConfig = field(default_factory=lambda: MemUpdatorAgentTasksConfig())
     delete_obsolete_info: bool = False
 
     log: Logger = field(default_factory=lambda: Logger(MEM_UPDATOR_MAIN_LOG_PATH))
@@ -54,15 +49,16 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
         self.config = config
+        self.config.agent_tasks_config.versions_to_configs()
         self.kg_model = kg_model
 
         self.tasks_solvers: MemUpdatorTaskSolvers = MemUpdatorTaskSolvers(
             replace_simple_solver=AgentTaskSolver(
                 kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.mem_pipeline],
-                self.config.replace_simple_task_config, cache_kvdriver_config, inferencestat_config),
+                self.config.agent_tasks_config.replace_simple, cache_kvdriver_config, inferencestat_config),
             replace_hyper_solver=AgentTaskSolver(
                 kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.mem_pipeline],
-                self.config.replace_thesis_task_config, cache_kvdriver_config, inferencestat_config)
+                self.config.agent_tasks_config.replace_thesis, cache_kvdriver_config, inferencestat_config)
         )
 
         self.log = self.config.log

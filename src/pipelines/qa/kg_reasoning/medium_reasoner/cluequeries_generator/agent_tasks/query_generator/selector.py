@@ -1,4 +1,5 @@
 from ........utils import AgentTaskSolverConfig, Logger
+from .......utils import BaseAgentTaskConfigSelector
 from .general_parsers import cqgen_custom_formate, cqgen_custom_postprocess
 from .v1 import CQGEN_SUITE_V1
 
@@ -9,7 +10,7 @@ AVAILABLE_CQGEN_TCONFIGS = {
 }
 
 
-class AgentCQueryGenTaskConfigSelector:
+class AgentCQueryGenTaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_CQGEN_TCONFIGS

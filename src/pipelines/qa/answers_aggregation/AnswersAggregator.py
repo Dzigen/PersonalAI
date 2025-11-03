@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field
 from typing import Tuple, Union, List, Dict
 
-from .config import AAGG_MAIN_LOG_PATH, DEFAULT_SUBASUMM_TASK_CONFIG
-from .utils import AnswerAggregatorTaskSolvers
+from .config import AAGG_MAIN_LOG_PATH
+from .utils import AnswerAggregatorTaskSolvers, AnswersAggregatorAgentTasksConfig
 from ..kg_reasoning.utils import QueryReasoningInfo
-from ....utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
+from ....utils import ReturnInfo, Logger, AgentTaskSolver
 from ....agents.utils import AbstractAgentConnector
 from ....utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
 from ....db_drivers.kv_driver import KeyValueDriverConfig
@@ -20,19 +20,19 @@ class AnswersAggregatorConfig(BaseComponentConfig, LanguageConfig):
 
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param suba_summarisation_agent_task_config: Конфигурация атомарной задачи для LLM-агента по суммаризации/объединению независимых ответов на под-вопросы в один финальный ответ на исходный user-вопрос. Значение по умолчанию DEFAULT_SUBASUMM_TASK_CONFIG.
-    :type suba_summarisation_agent_task_config: AgentTaskSolverConfig, optional
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию AnswersAggregatorAgentTasksConfig().
+    :type agent_tasks_config: AnswersAggregatorAgentTasksConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы AnswersAggregator-класса. Значение по умолчанию 'answers_aggregation_main_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    suba_summarisation_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_SUBASUMM_TASK_CONFIG)
+    agent_tasks_config: AnswersAggregatorAgentTasksConfig = field(default_factory=lambda: AnswersAggregatorAgentTasksConfig())
 
     cache_table_name: str = 'answers_aggregation_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(AAGG_MAIN_LOG_PATH))
 
     def to_str(self) -> str:
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.suba_summarisation_agent_task_config.version}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
 
 
 class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
@@ -54,6 +54,7 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
         self.config = config
+        self.config.agent_tasks_config.versions_to_configs()
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -65,7 +66,7 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
 
         self.tasks_solvers: AnswerAggregatorTaskSolvers = AnswerAggregatorTaskSolvers(
             subanswers_summarisation_solver=AgentTaskSolver(
-                self.agent, self.config.suba_summarisation_agent_task_config, agents_cache_config, inferencestat_config
+                self.agent, self.config.agent_tasks_config.suba_summarisation, agents_cache_config, inferencestat_config
             )
         )
 

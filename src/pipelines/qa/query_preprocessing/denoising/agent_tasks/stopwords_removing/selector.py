@@ -1,4 +1,5 @@
 from .......utils import AgentTaskSolverConfig, Logger
+from ......utils import BaseAgentTaskConfigSelector
 from .general_parsers import swremv_custom_formate, swremv_custom_postprocess
 from .v1 import SWREMV_SUITE_V1
 
@@ -9,7 +10,7 @@ AVAILABLE_SWREMV_TCONFIGS = {
 }
 
 
-class AgentStopWordsRemovingTaskConfigSelector:
+class AgentStopWordsRemovingTaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_SWREMV_TCONFIGS

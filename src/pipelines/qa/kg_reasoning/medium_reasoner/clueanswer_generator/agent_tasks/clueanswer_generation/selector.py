@@ -1,4 +1,5 @@
 from ........utils import AgentTaskSolverConfig, Logger
+from .......utils import BaseAgentTaskConfigSelector
 from .general_parsers import cagen_custom_formate, cagen_custom_postprocess
 from .v1 import CAGEN_SUITE_V1
 
@@ -9,7 +10,7 @@ AVAILABLE_CAGEN_TCONFIGS = {
 }
 
 
-class AgentClueAnswerGenTaskConfigSelector:
+class AgentClueAnswerGenTaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_CAGEN_TCONFIGS

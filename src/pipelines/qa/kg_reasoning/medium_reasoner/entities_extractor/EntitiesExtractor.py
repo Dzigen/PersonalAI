@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Tuple, List, Union, Dict
 
-from .config import ENEXTR_MAIN_LOG_PATH, DEFAULT_ENT_EXTR_TASK_CONFIG
-from .utils import MediumEntitiesExtractorTaskSolvers
+from .config import ENEXTR_MAIN_LOG_PATH
+from .utils import MediumEntitiesExtractorTaskSolvers, EntitiesExtractorAgentTasksConfig
 from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
 from ......utils import ReturnStatus
 from ......agents.utils import AbstractAgentConnector
@@ -20,20 +20,19 @@ class EntitiesExtractorConfig(BaseComponentConfig, LanguageConfig):
 
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param entities_extraction_agent_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению сущностей из поискового запроса. Значение по умолчанию DEFAULT_ENT_EXTR_TASK_CONFIG.
-    :type entities_extraction_agent_task_config: AgentTaskSolverConfig, optional
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию EntitiesExtractorAgentTasksConfig().
+    :type agent_tasks_config: EntitiesExtractorAgentTasksConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы EntitiesExtractor-класса. Значение по умолчанию 'medreasn_entextr_main_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    entities_extraction_agent_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_ENT_EXTR_TASK_CONFIG)
+    agent_tasks_config: EntitiesExtractorAgentTasksConfig = field(default_factory=lambda: EntitiesExtractorAgentTasksConfig())
 
     cache_table_name: str = "medreasn_entextr_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(ENEXTR_MAIN_LOG_PATH))
 
     def to_str(self):
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.entities_extraction_agent_task_config.version}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
 
 
 class EntitiesExtractor(CacheUtils, CacheOperations, AgentStatOperations):
@@ -56,6 +55,7 @@ class EntitiesExtractor(CacheUtils, CacheOperations, AgentStatOperations):
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
                  cache_llm_inference: bool = True):
         self.config = config
+        self.config.agent_tasks_config.versions_to_configs()
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -67,7 +67,7 @@ class EntitiesExtractor(CacheUtils, CacheOperations, AgentStatOperations):
 
         self.tasks_solvers: MediumEntitiesExtractorTaskSolvers = MediumEntitiesExtractorTaskSolvers(
             entities_extractor_solver=AgentTaskSolver(
-                self.agent, self.config.entities_extraction_agent_task_config, agents_cache_config, inferencestat_config)
+                self.agent, self.config.agent_tasks_config.entities_extraction, agents_cache_config, inferencestat_config)
         )
 
         self.log = self.config.log

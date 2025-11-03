@@ -1,4 +1,5 @@
 from .......utils import AgentTaskSolverConfig, Logger
+from ......utils import BaseAgentTaskConfigSelector
 from .general_parsers import qexpan_custom_formate, qexpan_custom_postprocess
 from .v1 import QEXPAN_SUITE_V1
 
@@ -9,7 +10,7 @@ AVAILABLE_QEXPAN_TCONFIGS = {
 }
 
 
-class AgentQueryExpansionCheckConfigSelector:
+class AgentQueryExpansionCheckConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_QEXPAN_TCONFIGS

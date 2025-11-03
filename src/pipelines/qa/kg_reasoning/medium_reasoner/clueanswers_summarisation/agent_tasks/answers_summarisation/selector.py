@@ -1,4 +1,5 @@
 from ........utils import AgentTaskSolverConfig, Logger
+from .......utils import BaseAgentTaskConfigSelector
 from .general_parsers import casumm_custom_formate, casumm_custom_postprocess
 from .v1 import CASUMM_SUITE_V1
 
@@ -9,7 +10,7 @@ AVAILABLE_CASUMM_TCONFIGS = {
 }
 
 
-class AgentClueAnswersSummTaskConfigSelector:
+class AgentClueAnswersSummTaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_CASUMM_TCONFIGS

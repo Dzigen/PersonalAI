@@ -1,5 +1,5 @@
 from ......utils import AgentTaskSolverConfig, Logger
-from ......db_drivers.kv_driver import KeyValueDriverConfig
+from .....utils import BaseAgentTaskConfigSelector
 from .general_parsers import ethesises_custom_formate, ethesises_custom_postprocess
 from .v1 import THESIS_EXTRACT_SUITE_V1
 from .v2 import THESIS_EXTRACT_SUITE_V2
@@ -12,7 +12,7 @@ AVAILABLE_THESIS_EXTRACT_TCONFIGS = {
 }
 
 
-class AgentThesisExtrTaskConfigSelector:
+class AgentThesisExtrTaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_THESIS_EXTRACT_TCONFIGS

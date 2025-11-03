@@ -1,14 +1,13 @@
 from dataclasses import dataclass, field
 from typing import Tuple, List, Union, Dict
 
-from .config import QE_MAIN_LOG_PATH, DEFAULT_QEXPAN_TASK_CONFIG, \
-    DEFAULT_TCHECK_TASK_CONFIG, DEFAULT_LCHECK_TASK_CONFIG
-from .utils import QueryEnhancerTaskSolvers
+from .config import QE_MAIN_LOG_PATH
+from .utils import QueryEnhancerTaskSolvers, QueryEnhancerAgentTasksConfig
 from .....utils.cache_kv import CacheUtils
 from .....utils.errors import STATUS_MESSAGE
 from .....utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
 from .....agents.utils import AbstractAgentConnector
-from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
+from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolver
 from .....db_drivers.kv_driver import KeyValueDriverConfig
 from .....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 from .....utils.cache_kv.CacheOperations import CacheOperations
@@ -21,28 +20,19 @@ class QueryEnhancerConfig(BaseComponentConfig, LanguageConfig):
 
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param qexpan_agent_task_config: Конфигурация атомарной задачи для LLM-агента по добавлению более понятных языковых конструкций в запроc. Значение по умолчанию DEFAULT_QEXPAN_TASK_CONFIG.
-    :type qexpan_agent_task_config: AgentTaskSolverConfig, optional
-    :param termscheck_agent_task_config: Конфигурация атомарной задачи для LLM-агента по замене слабоопределённых фраз в запросе на конкретные термины. Значение по умолчанию DEFAULT_TCHECK_TASK_CONFIG.
-    :type termscheck_agent_task_config: AgentTaskSolverConfig, optional
-    :param lingcheck_agent_task_config: Конфигурация атомарной задачи для LLM-агента по перефразированию запроса с соблюдением грамматики и синтаксиса используемого естественного языке. Значение по умолчанию DEFAULT_LCHECK_TASK_CONFIG.
-    :type lingcheck_agent_task_config: AgentTaskSolverConfig, optional
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию QueryEnhancerAgentTasksConfig().
+    :type agent_tasks_config: QueryEnhancerAgentTasksConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryEnhancer-класса. Значение по умолчанию 'qp_enhancing_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    qexpan_agent_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_QEXPAN_TASK_CONFIG)
-    termscheck_agent_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_TCHECK_TASK_CONFIG)
-    lingcheck_agent_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_LCHECK_TASK_CONFIG)
+    agent_tasks_config: QueryEnhancerAgentTasksConfig = field(default_factory=lambda: QueryEnhancerAgentTasksConfig())
 
     cache_table_name: str = 'qp_enhancing_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(QE_MAIN_LOG_PATH))
 
     def to_str(self):
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.qexpan_agent_task_config.version}|{self.termscheck_agent_task_config.version}|{self.lingcheck_agent_task_config.version}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
 
 
 class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
@@ -65,8 +55,8 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
                  cache_llm_inference: bool = True):
         self.config = config
-        self.cachekv = self.init_cachekv(
-            cache_kvdriver_config, config.cache_table_name)
+        self.config.agent_tasks_config.versions_to_configs()
+        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
 
         self.agent = agent
         agents_cache_config = None
@@ -76,15 +66,15 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         self.tasks_solvers: QueryEnhancerTaskSolvers = QueryEnhancerTaskSolvers(
             # добавление более понятных языковых конструкций
             queryexpansion_solver=AgentTaskSolver(
-                self.agent, self.config.qexpan_agent_task_config, agents_cache_config, inferencestat_config
+                self.agent, self.config.agent_tasks_config.qexpan, agents_cache_config, inferencestat_config
             ),
             # добавление терминологии
             termscheck_solver=AgentTaskSolver(
-                self.agent, self.config.termscheck_agent_task_config, agents_cache_config, inferencestat_config
+                self.agent, self.config.agent_tasks_config.termscheck, agents_cache_config, inferencestat_config
             ),
             # лингвистическая корректировка
             linguistcheck_solver=AgentTaskSolver(
-                self.agent, self.config.lingcheck_agent_task_config, agents_cache_config, inferencestat_config
+                self.agent, self.config.agent_tasks_config.lingcheck, agents_cache_config, inferencestat_config
             )
         )
 

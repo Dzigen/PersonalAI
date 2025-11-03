@@ -1,7 +1,9 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Dict, Union
 
-from ....utils import BaseTaskSolvers
-from .....utils.task_solver import AgentTaskSolver
+from .config import QUERYENH_AGENTASKS_SELECTORS_MAPPING
+from ....utils import BaseTaskSolvers, BaseAgentTasksConfig, BaseAgentTaskConfigSelector
+from .....utils.task_solver import AgentTaskSolver, AgentTaskSolverConfig
 
 
 @dataclass
@@ -9,3 +11,19 @@ class QueryEnhancerTaskSolvers(BaseTaskSolvers):
     queryexpansion_solver: AgentTaskSolver
     termscheck_solver: AgentTaskSolver
     linguistcheck_solver: AgentTaskSolver
+
+@dataclass
+class QueryEnhancerAgentTasksConfig(BaseAgentTasksConfig):
+    """
+    :param qexpan: Конфигурация атомарной задачи для LLM-агента по добавлению более понятных языковых конструкций в запроc. Значение по умолчанию 'v1'.
+    :type qexpan: Union[AgentTaskSolverConfig, str], optional
+    :param termscheck: Конфигурация атомарной задачи для LLM-агента по замене слабоопределённых фраз в запросе на конкретные термины. Значение по умолчанию 'v1'.
+    :type termscheck: Union[AgentTaskSolverConfig, str], optional
+    :param lingcheck: Конфигурация атомарной задачи для LLM-агента по перефразированию запроса с соблюдением грамматики и синтаксиса используемого естественного языке. Значение по умолчанию 'v1'.
+    :type lingcheck: Union[AgentTaskSolverConfig, str], optional
+    """
+    qexpan: Union[AgentTaskSolverConfig, str] = 'v1'
+    termscheck: Union[AgentTaskSolverConfig, str] = 'v1'
+    lingcheck: Union[AgentTaskSolverConfig, str] = 'v1'
+
+    task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: QUERYENH_AGENTASKS_SELECTORS_MAPPING)

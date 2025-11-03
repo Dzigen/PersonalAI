@@ -1,4 +1,5 @@
 from ........utils import AgentTaskSolverConfig, Logger
+from .......utils import BaseAgentTaskConfigSelector
 from .general_parsers import kwe_custom_formate, kwe_custom_postprocess
 from .v1 import KWE_SUITE_V1
 from .v2 import KWE_SUITE_V2
@@ -11,7 +12,7 @@ AVAILABLE_KWE_TCONFIGS = {
 }
 
 
-class AgentKWETaskConfigSelector:
+class AgentKWETaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_KWE_TCONFIGS

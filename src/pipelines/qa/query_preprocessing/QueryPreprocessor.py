@@ -69,11 +69,11 @@ class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
             self.stages.denoiser = QueryDenoiser(
                 agent, self.config.denoising_config, cache_kvdriver_config, inferencestat_config)
 
-        if self.config.enhancing_config:
+        if self.config.enhancing_config is not None:
             self.stages.enhancer = QueryEnhancer(
                 agent, self.config.enhancing_config, cache_kvdriver_config, inferencestat_config)
 
-        if self.config.decomposition_config:
+        if self.config.decomposition_config is not None:
             self.stages.decomposer = QueryDecomposer(
                 agent, self.config.decomposition_config, cache_kvdriver_config, inferencestat_config)
 

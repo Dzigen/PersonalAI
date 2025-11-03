@@ -1,6 +1,10 @@
+from typing import Dict
+
 from .agent_tasks.answers_summarisation import AgentSubASummTaskConfigSelector
+from ...utils import BaseAgentTaskConfigSelector
 
 AAGG_MAIN_LOG_PATH = "log/qa/answers_aggregation/main"
 
-DEFAULT_SUBASUMM_TASK_CONFIG = AgentSubASummTaskConfigSelector.select(
-    base_config_version='v1')
+ANSWAGGR_AGENTASKS_SELECTORS_MAPPING: Dict[str, BaseAgentTaskConfigSelector] = {
+    'suba_summarisation': AgentSubASummTaskConfigSelector
+}

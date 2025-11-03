@@ -1,4 +1,5 @@
 from .......utils import AgentTaskSolverConfig, Logger
+from ......utils import BaseAgentTaskConfigSelector
 from .general_parsers import dc_custom_formate, dc_custom_postprocess
 from .v1 import DC_SUITE_V1
 
@@ -9,7 +10,7 @@ AVAILABLE_DC_TCONFIGS = {
 }
 
 
-class AgentDecompClsTaskConfigSelector:
+class AgentDecompClsTaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_DC_TCONFIGS

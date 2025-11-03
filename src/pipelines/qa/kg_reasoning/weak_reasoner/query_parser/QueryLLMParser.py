@@ -2,11 +2,11 @@ from dataclasses import dataclass, field
 from typing import Union, Tuple, List, Dict
 from copy import deepcopy
 
-from .configs import DEFAULT_KWE_TASK_CONFIG, QP_MAIN_LOG_PATH
-from .utils import WeakQueryParserTaskSolvers
+from .configs import QP_MAIN_LOG_PATH
+from .utils import WeakQueryParserTaskSolvers, QueryLLMParserAgentTasksConfig
 from ......utils.data_structs import QueryInfo, create_id, BaseComponentConfig, LanguageConfig
 from ......utils.errors import STATUS_MESSAGE
-from ......utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
+from ......utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver
 from ......agents.utils import AbstractAgentConnector
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
@@ -21,21 +21,19 @@ class QueryLLMParserConfig(BaseComponentConfig, LanguageConfig):
 
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param kw_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению ключевых сущностей из текста. Значение по умолчанию DEFAULT_KWE_TASK_CONFIG.
-    :type kw_extraction_task_config: AgentTaskSolverConfig, optional
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию QueryLLMParserAgentTasksConfig().
+    :type agent_tasks_config: QueryLLMParserAgentTasksConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryLLMParser-класса. Значение по умолчанию 'qa_queryparser_stage_cache'.
     :type cache_table_name: str, optional
     """
-    lang: str = 'auto'
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    kw_extraction_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_KWE_TASK_CONFIG)
+    agent_tasks_config: QueryLLMParserAgentTasksConfig = field(default_factory=lambda: QueryLLMParserAgentTasksConfig())
 
     cache_table_name: str = 'qa_queryparser_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(QP_MAIN_LOG_PATH))
 
     def to_str(self):
-        return f"{self.agent_gen_stategy}|{self.kw_extraction_task_config.version}|{self.lang}"
+        return f"{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{self.lang}"
 
 
 class QueryLLMParser(CacheUtils, CacheOperations, AgentStatOperations):
@@ -58,6 +56,7 @@ class QueryLLMParser(CacheUtils, CacheOperations, AgentStatOperations):
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
                  cache_llm_inference: bool = True) -> None:
         self.config = config
+        self.config.agent_tasks_config.versions_to_configs()
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
@@ -68,7 +67,7 @@ class QueryLLMParser(CacheUtils, CacheOperations, AgentStatOperations):
 
         self.tasks_solvers: WeakQueryParserTaskSolvers = WeakQueryParserTaskSolvers(
             kw_extraction_solver=AgentTaskSolver(
-                self.agent, self.config.kw_extraction_task_config,
+                self.agent, self.config.agent_tasks_config.kw_extraction,
                 kwe_task_cache_config, inferencestat_config)
         )
 

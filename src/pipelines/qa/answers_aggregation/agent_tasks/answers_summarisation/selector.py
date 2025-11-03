@@ -1,4 +1,5 @@
 from ......utils import AgentTaskSolverConfig, Logger
+from .....utils import BaseAgentTaskConfigSelector
 from .general_parsers import subasumm_custom_formate, subasumm_custom_postprocess
 from .v1 import SUBASUMM_SUITE_V1
 
@@ -9,7 +10,7 @@ AVAILABLE_SUBASUMM_TCONFIGS = {
 }
 
 
-class AgentSubASummTaskConfigSelector:
+class AgentSubASummTaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_SUBASUMM_TCONFIGS

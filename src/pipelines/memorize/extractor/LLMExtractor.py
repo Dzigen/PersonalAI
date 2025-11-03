@@ -2,8 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Tuple, Union
 from copy import deepcopy
 
-from .configs import DEFAULT_THESISES_EXTR_TASK_CONFIG, DEFAULT_TRIPLETS_EXTR_TASK_CONFIG, MEM_EXTRACTOR_MAIN_LOG_PATH, \
-    AgentThesisExtrTaskConfigSelector, AgentTripletExtrTaskConfigSelector
+from .configs import MemExtractorAgentTasksConfig, MEM_EXTRACTOR_MAIN_LOG_PATH
 from .utils import MemExtractorTaskSolvers
 from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 from ....utils.errors import STATUS_MESSAGE
@@ -22,10 +21,8 @@ class LLMExtractorConfig(BaseComponentConfig, LanguageConfig):
 
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param triplets_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению триплетов с информацией типа 'simple' из слабоструктурированных текстов на естественном языке. Значение по умолчанию DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG.
-    :type triplets_extraction_task_config: AgentTaskSolverConfig
-    :param thesises_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению триплетов с информацией типа 'hyper' из слабоструктурированных текстов на естественном языке. Значение по умолчанию DEFAULT_EXTRACT_THESISES_TASK_CONFIG.
-    :type thesises_extraction_task_config: AgentTaskSolverConfig
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию MemExtractorAgentTasksConfig().
+    :type agent_tasks_config: MemExtractorAgentTasksConfig, optional
     :param need_simple: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'simple', иначе False. Значение по умолчанию True.
     :type need_simple: bool, optional
     :param need_thesises: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'hyper', иначе False. Значение по умолчанию True.
@@ -34,8 +31,7 @@ class LLMExtractorConfig(BaseComponentConfig, LanguageConfig):
     :type need_episodic: bool, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    triplets_extraction_task_config: Union[AgentTaskSolverConfig, str] = field(default_factory=lambda: DEFAULT_TRIPLETS_EXTR_TASK_CONFIG)
-    thesises_extraction_task_config: Union[AgentTaskSolverConfig, str] = field(default_factory=lambda: DEFAULT_THESISES_EXTR_TASK_CONFIG)
+    agent_tasks_config: MemExtractorAgentTasksConfig = field(default_factory=lambda: MemExtractorAgentTasksConfig())
     need_simple: bool = True
     need_thesises: bool = True
     need_episodic: bool = True
@@ -60,24 +56,15 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
         self.config = config
-
-        if type(self.config.thesises_extraction_task_config) is str:
-            thesises_extraction_version = self.config.thesises_extraction_task_config
-            self.config.thesises_extraction_task_config = AgentThesisExtrTaskConfigSelector.select(
-                base_config_version=thesises_extraction_version)
-        
-        if type(self.config.triplets_extraction_task_config) is str:
-            triplets_extraction_version = self.config.triplets_extraction_task_config
-            self.config.triplets_extraction_task_config = AgentTripletExtrTaskConfigSelector.select(
-                base_config_version=triplets_extraction_version)
+        self.config.agent_tasks_config.versions_to_configs()
 
         self.agent = agent
         self.tasks_solvers: MemExtractorTaskSolvers = MemExtractorTaskSolvers(
             triplets_extraction_solver=AgentTaskSolver(
-                self.agent, self.config.triplets_extraction_task_config,
+                self.agent, self.config.agent_tasks_config.triplets_extraction,
                 cache_kvdriver_config, inferencestat_config),
             thesises_extraction_solver=AgentTaskSolver(
-                self.agent, self.config.thesises_extraction_task_config,
+                self.agent, self.config.agent_tasks_config.thesises_extraction,
                 cache_kvdriver_config, inferencestat_config)
         )
 

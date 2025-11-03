@@ -1,4 +1,5 @@
 from ........utils import AgentTaskSolverConfig, Logger
+from .......utils import BaseAgentTaskConfigSelector
 from .general_parsers import answcls_custom_formate, answcls_custom_postprocess
 from .v1 import ANSWCLS_SUITE_V1
 
@@ -9,7 +10,7 @@ AVAILABLE_ANSWCLS_TCONFIGS = {
 }
 
 
-class AgentAnswerClassifierTaskConfigSelector:
+class AgentAnswerClassifierTaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_ANSWCLS_TCONFIGS

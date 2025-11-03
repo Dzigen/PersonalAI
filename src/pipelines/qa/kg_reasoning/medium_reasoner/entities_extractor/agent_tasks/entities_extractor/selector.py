@@ -1,4 +1,5 @@
 from ........utils import AgentTaskSolverConfig, Logger
+from .......utils import BaseAgentTaskConfigSelector
 from .general_parsers import entextr_custom_formate, entextr_custom_postprocess
 from .v1 import ENTEXTR_SUITE_V1
 
@@ -9,7 +10,7 @@ AVAILABLE_ENTEXTR_TCONFIGS = {
 }
 
 
-class AgentEntitiesExtrTaskConfigSelector:
+class AgentEntitiesExtrTaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_ENTEXTR_TCONFIGS

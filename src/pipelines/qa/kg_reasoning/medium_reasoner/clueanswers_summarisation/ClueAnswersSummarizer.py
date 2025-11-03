@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
 from typing import Tuple, Union, List, Dict
 
-from .config import DEFAULT_CASUMM_TASK_CONFIG, CQSUMM_MAIN_LOG_PATH
-from .utils import MediumASummarizerTaskSolvers
-from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
+from .config import CQSUMM_MAIN_LOG_PATH
+from .utils import MediumASummarizerTaskSolvers, ClueAnswersSummarizerAgentTasksConfig
+from ......utils import ReturnInfo, Logger, AgentTaskSolver
 from ......agents.utils import AbstractAgentConnector
 from ......utils.data_structs import create_id, BaseComponentConfig, LanguageConfig
 from ......db_drivers.kv_driver import KeyValueDriverConfig
@@ -19,20 +19,19 @@ class ClueAnswersSummarizerConfig(BaseComponentConfig, LanguageConfig):
 
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param canswers_summarisation_agent_task_config: Конфигурация атомарной задачи для LLM-агента по резюмированию информации, извлечённой из графа знаний по заданному search_query-шагу поиска. Значение по умолчанию DEFAULT_CASUMM_TASK_CONFIG.
-    :type canswers_summarisation_agent_task_config: AgentTaskSolverConfig, optional
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию ClueAnswersSummarizerAgentTasksConfig().
+    :type agent_tasks_config: ClueAnswersSummarizerAgentTasksConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы ClueAnswersSummarizer-класса. Значение по умолчанию 'medreasn_cquerysumm_main_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    canswers_summarisation_agent_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_CASUMM_TASK_CONFIG)
+    agent_tasks_config: ClueAnswersSummarizerAgentTasksConfig = field(default_factory=lambda: ClueAnswersSummarizerAgentTasksConfig())
 
     cache_table_name: str = "medreasn_cquerysumm_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(CQSUMM_MAIN_LOG_PATH))
 
     def to_str(self):
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.canswers_summarisation_agent_task_config.version}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
 
 
 class ClueAnswersSummarizer(CacheUtils, AgentStatOperations, CacheOperations):
@@ -55,6 +54,7 @@ class ClueAnswersSummarizer(CacheUtils, AgentStatOperations, CacheOperations):
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
                  cache_llm_inference: bool = True,) -> None:
         self.config = config
+        self.config.agent_tasks_config.versions_to_configs()
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -66,7 +66,7 @@ class ClueAnswersSummarizer(CacheUtils, AgentStatOperations, CacheOperations):
 
         self.tasks_solvers: MediumASummarizerTaskSolvers = MediumASummarizerTaskSolvers(
             clueanswers_summ_solver=AgentTaskSolver(
-                self.agent, self.config.canswers_summarisation_agent_task_config, agents_cache_config, inferencestat_config)
+                self.agent, self.config.agent_tasks_config.canswers_summarisation, agents_cache_config, inferencestat_config)
         )
 
         self.log = self.config.log

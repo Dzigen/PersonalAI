@@ -1,4 +1,5 @@
 from ........utils import AgentTaskSolverConfig, Logger
+from .......utils import BaseAgentTaskConfigSelector
 from .general_parsers import simpleag_custom_formate, simpleag_custom_postprocess
 from .v2 import SIMPLEAG_SUITE_V2
 from .v1 import SIMPLEAG_SUITE_V1
@@ -13,7 +14,7 @@ AVAILABLE_SIMPLEAG_TCONFIGS = {
 }
 
 
-class AgentSimpleAGTaskConfigSelector:
+class AgentSimpleAGTaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_SIMPLEAG_TCONFIGS

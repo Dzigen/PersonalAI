@@ -3,12 +3,12 @@ from dataclasses import dataclass, field
 from copy import deepcopy
 import hashlib
 
-from .configs import DEFAULT_AG_TASK_CONFIG, AG_MAIN_LOG_PATH
-from .utils import WeakAGeneratorTaskSolvers
+from .configs import AG_MAIN_LOG_PATH
+from .utils import WeakAGeneratorTaskSolvers, QALLMGeneratorAgentTasksConfig
 from ......utils.data_structs import Triplet, RelationType, create_id, TripletCreator, BaseComponentConfig, LanguageConfig
 from ......utils.errors import STATUS_MESSAGE
 from ......agents.utils import AbstractAgentConnector
-from ......utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
+from ......utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolver
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
@@ -22,15 +22,15 @@ class QALLMGeneratorConfig(BaseComponentConfig, LanguageConfig):
 
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param ag_task_config: Конфигурация атомарной задачи для LLM-агента по условной генерации ответа на вопрос. Значение по умолчанию DEFAULT_AG_TASK_CONFIG.
-    :type ag_task_config: AgentTaskSolverConfig, optional
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию QALLMGeneratorAgentTasksConfig().
+    :type agent_tasks_config: QALLMGeneratorAgentTasksConfig, optional
     :param relation_type: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос. Значение по умолчанию [RelationType.hyper].
     :type relation_type: List[RelationType], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QALLMGenerator-класса. Значение по умолчанию 'qa_agenerator_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    ag_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_AG_TASK_CONFIG)
+    agent_tasks_config: QALLMGeneratorAgentTasksConfig = field(default_factory=lambda: QALLMGeneratorAgentTasksConfig())
 
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.hyper, RelationType.simple])
 
@@ -40,7 +40,7 @@ class QALLMGeneratorConfig(BaseComponentConfig, LanguageConfig):
     def to_str(self):
         str_relations = ";".join(
             list(map(lambda v: v.value, self.relation_type)))
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.ag_task_config.version}|{str_relations}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{str_relations}"
 
 
 class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
@@ -64,6 +64,7 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
                  cache_llm_inference: bool = True) -> None:
         self.config = config
+        self.config.agent_tasks_config.versions_to_configs()
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -75,7 +76,7 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
 
         self.tasks_solvers: WeakAGeneratorTaskSolvers = WeakAGeneratorTaskSolvers(
             answer_generator_solver=AgentTaskSolver(
-                self.agent, self.config.ag_task_config, ag_task_cache_config, inferencestat_config)
+                self.agent, self.config.agent_tasks_config.ag, ag_task_cache_config, inferencestat_config)
         )
 
         self.log = self.config.log

@@ -1,4 +1,5 @@
 from ........utils import AgentTaskSolverConfig, Logger
+from .......utils import BaseAgentTaskConfigSelector
 from .general_parsers import enhcls_custom_formate, enhcls_custom_postprocess
 from .v1 import ENHCLS_SUITE_V1
 
@@ -9,7 +10,7 @@ AVAILABLE_ENHCLS_TCONFIGS = {
 }
 
 
-class AgentEnhanceClassifierTaskConfigSelector:
+class AgentEnhanceClassifierTaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_ENHCLS_TCONFIGS

@@ -3,15 +3,14 @@ from typing import Tuple, List, Dict, Union, Dict
 import json
 from itertools import product
 
-from .config import DEFAULT_CQGEN_TASK_CONFIG, CQGEN_MAIN_LOG_PATH
-from .utils import MediumCQGeneratorTaskSolvers
+from .config import CQGEN_MAIN_LOG_PATH
+from .utils import MediumCQGeneratorTaskSolvers, ClueQueriesGeneratorAgentTasksConfig
 from ......utils.data_structs import QueryInfo
 from ......utils.errors import ReturnStatus
-from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
+from ......utils import ReturnInfo, Logger, AgentTaskSolver
 from ......agents.utils import AbstractAgentConnector
 from ......utils.data_structs import create_id, BaseComponentConfig, LanguageConfig, NodeInfo
 from ......db_drivers.kv_driver import KeyValueDriverConfig
-from ......db_drivers.vector_driver import VectorDBInstance
 from ......utils.cache_kv import CacheUtils
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 from ......utils.cache_kv.CacheOperations import CacheOperations
@@ -24,23 +23,22 @@ class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
 
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param plan_initing_agent_task_config: Конфигурация атомарной задачи для LLM-агента по генерации clue-запросов. Значение по умолчанию DEFAULT_CQGEN_TASK_CONFIG.
-    :type plan_initing_agent_task_config: AgentTaskSolverConfig, optional
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию ClueQueriesGeneratorAgentTasksConfig().
+    :type agent_tasks_config: ClueQueriesGeneratorAgentTasksConfig, optional
     :param max_cqueries_amount: Максимальное количество clue-запросов, которое может быть сгенерировано. Значение по умолчанию 4.
     :type max_cqueries_amount: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы ClueQueriesGenerator-класса. Значение по умолчанию 'medreasn_cquerygen_main_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    cquerie_generator_agent_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_CQGEN_TASK_CONFIG)
+    agent_tasks_config: ClueQueriesGeneratorAgentTasksConfig = field(default_factory=lambda: ClueQueriesGeneratorAgentTasksConfig())
     max_cqueries_amount: int = 4
 
     cache_table_name: str = 'medreasn_cquerygen_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(CQGEN_MAIN_LOG_PATH))
 
     def to_str(self):
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.cquerie_generator_agent_task_config.version}|{self.max_cqueries_amount}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{self.max_cqueries_amount}"
 
 
 class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
@@ -63,6 +61,7 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
                  cache_llm_inference: bool = True):
         self.config = config
+        self.config.agent_tasks_config.versions_to_configs()
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -74,7 +73,7 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
 
         self.tasks_solvers: MediumCQGeneratorTaskSolvers = MediumCQGeneratorTaskSolvers(
             cluequery_gen_solver=AgentTaskSolver(
-                self.agent, self.config.cquerie_generator_agent_task_config, agents_cache_config, inferencestat_config)
+                self.agent, self.config.agent_tasks_config.cquerie_generator, agents_cache_config, inferencestat_config)
         )
 
         self.log = self.config.log
