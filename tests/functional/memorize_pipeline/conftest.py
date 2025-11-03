@@ -139,15 +139,79 @@ def embeddings_milvus_config():
 
     return config
 
+@pytest.fixture(scope='package')
+def embeddings_inmemory_config():
+    config = EmbeddingsModelConfig(
+        nodesdb_driver_configs_mapping={
+            'nodes_dense': VectorDriverConfig(
+                db_vendor='inmemory',
+                db_config=VectorDBConnectionConfig(
+                    db_info={'db': 'testing', 'table': 'vectorized_nodes'},
+                    params={
+                        'store_dump_name': 'inmemory_dense',
+                        'load_from_disk': False,
+                        'load_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_dense",
+                        'save_on_disk': False,
+                        'save_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_dense",
+                        'vector_dim': 384
+                    }
+                )
+            )
+        },
+        tripletsdb_driver_configs_mapping={
+            'triplets_dense': VectorDriverConfig(
+                db_vendor='inmemory',
+                db_config=VectorDBConnectionConfig(
+                    db_info={'db': 'testing', 'table': 'vectorized_triplets'},
+                    params={
+                        'store_dump_name': 'inmemory_dense',
+                        'load_from_disk': False,
+                        'load_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_dense",
+                        'save_on_disk': False,
+                        'save_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_dense",
+                        'vector_dim': 384
+                    }
+                )
+            )
+        }
+    )
+    return config
+
+@pytest.fixture(scope='package')
+def embeddings_opensearch_config():
+    config = EmbeddingsModelConfig(
+        nodesdb_driver_configs_mapping={
+            'nodes_dense': VectorDriverConfig(
+                db_vendor='elasticsearch',
+                db_config=VectorDBConnectionConfig(
+                    db_info={'db': 'testing', 'table': 'vectorized_nodes'},
+                    conn={'host': 'localhost', 'port': 9201}
+                )
+            )
+        },
+        tripletsdb_driver_configs_mapping={
+            'triplets_dense': VectorDriverConfig(
+                db_vendor='elasticsearch',
+                db_config=VectorDBConnectionConfig(
+                    db_info={'db': 'testing', 'table': 'vectorized_triplets'},
+                    conn={'host': 'localhost', 'port': 9201}
+                )
+            )
+        }
+    )
+    return config
+
 # ------------------------------#
 
 @pytest.fixture(scope='package')
 def available_embedding_configs(
-    embeddings_chroma_config, embeddings_milvus_config
+    embeddings_chroma_config, embeddings_milvus_config, embeddings_inmemory_config, embeddings_opensearch_config
 ):
     return {
         'chroma': embeddings_chroma_config,
-        'milvus': embeddings_milvus_config
+        'milvus': embeddings_milvus_config,
+        'inmemory': embeddings_inmemory_config,
+        'opensearch': embeddings_opensearch_config
     }
 
 

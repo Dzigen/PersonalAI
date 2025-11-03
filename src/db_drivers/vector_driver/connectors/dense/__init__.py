@@ -1,2 +1,4 @@
 from .ChromaVectorConnector import ChromaVectorConnection
 from .MilvusVectorConnector import MilvusVectorConnector
+from .InMemoryVectorConnector import InMemoryVectorConnector
+from .ElasticSearchVectorConnector import ElasticSearchVectorConnector

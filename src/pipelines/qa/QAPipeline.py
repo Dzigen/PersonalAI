@@ -11,7 +11,7 @@ from .answers_aggregation import AnswersAggregator, AnswersAggregatorConfig
 from ...kg_model import KnowledgeGraphModel
 from ...utils import Logger, ReturnStatus, ReturnInfo, update_rinfo
 from ...utils.cache_kv import CacheUtils
-from ...utils.data_structs import create_id, QueryPreprocessingInfo
+from ...utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
 from ...db_drivers.kv_driver import KeyValueDriverConfig
 from ...utils.cache_kv.CacheOperations import CacheOperations
 from ...utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
@@ -19,7 +19,7 @@ from ...utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
-class QAPipelineConfig:
+class QAPipelineConfig(BaseComponentConfig, LanguageConfig):
     """
     Конфигурация Question-Answering-конвейера.
 
@@ -31,10 +31,6 @@ class QAPipelineConfig:
     :type aggregator_config: AnswersAggregatorConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QAPipeline-класса. Значение по умолчанию 'qa_pipeline_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(QA_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
     preprocessor_config: QueryPreprocessorConfig = field(
         default_factory=lambda: QueryPreprocessorConfig())
@@ -45,7 +41,6 @@ class QAPipelineConfig:
 
     cache_table_name: str = 'qa_pipeline_cache'
     log: Logger = field(default_factory=lambda: Logger(QA_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self):
         return f"{self.preprocessor_config.to_str()}|{self.reasoner_config.to_str()}|{self.aggregator_config.to_str()}"

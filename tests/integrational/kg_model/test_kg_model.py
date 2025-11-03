@@ -5,6 +5,7 @@ import pytest
 from typing import List, Dict, Union
 from functools import reduce
 
+
 import sys
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
@@ -46,6 +47,9 @@ def test_add_knowledge(triplets: List[Triplet], expected_count: Dict[str, Dict[s
     assert real_count['embeddings_info']['triplets'] == expected_count['embeddings_info']['triplets']
     assert real_count['nodestree_info'] == expected_count['nodestree_info']
 
+    # torch.cuda.empty_cache()
+    # gc.collect()
+
 
 @pytest.mark.parametrize("init_triplets, expected_init_count, delete_triplets, expected_final_count, expected_graph_dinfo, expected_vector_dinfo, kg_model", KG_POPULATED_DELETE_TEST_CASES, indirect=['kg_model'])
 def test_remove_knowledge(init_triplets: List[Triplet], expected_init_count: Dict[str, Dict[str, int]],
@@ -75,6 +79,8 @@ def test_remove_knowledge(init_triplets: List[Triplet], expected_init_count: Dic
     assert real_count['embeddings_info']['triplets'] == expected_final_count['embeddings_info']['triplets']
     assert real_count['nodestree_info'] == expected_final_count['nodestree_info']
 
+    # torch.cuda.empty_cache()
+    # gc.collect()
 
 @pytest.mark.parametrize("init_triplets, expected_init_count, kg_model", KG_POPULATED_CLEAR_TEST_CASES, indirect=['kg_model'])
 def test_clear(init_triplets: List[Triplet], expected_init_count: Dict[str, Dict[str, int]], kg_model: KnowledgeGraphModel):
@@ -95,3 +101,6 @@ def test_clear(init_triplets: List[Triplet], expected_init_count: Dict[str, Dict
     assert real_count['embeddings_info']['nodes'] == 0
     assert real_count['embeddings_info']['triplets'] == 0
     assert real_count['nodestree_info'] == None
+
+    # torch.cuda.empty_cache()
+    # gc.collect()

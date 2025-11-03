@@ -5,14 +5,14 @@ from .kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig
 from .pipelines.qa import QAPipeline, QAPipelineConfig
 from .pipelines.memorize import MemPipeline, MemPipelineConfig
 from .utils import Logger, ReturnInfo, Triplet
-from .utils.data_structs import create_id
+from .utils.data_structs import create_id, BaseComponentConfig, LanguageConfig
 from .db_drivers.kv_driver import KeyValueDriverConfig
 from .config import PAI_MAIN_LOG_PATH, DEFAULT_PERSONALAI_KVCACHE_CONFIG
 from .utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
-class PersonalAIConfig:
+class PersonalAIConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация персонального ассистента.
 
     :param kg_model_config: Конфигурация памяти ассистента. Значение по умолчанию KnowledgeGraphModelConfig().
@@ -21,10 +21,6 @@ class PersonalAIConfig:
     :type qa_pipeline_config: QAPipelineConfig, optional
     :param mem_pipeline_config: Конфигурация конвейера, который выполняет изменение/обновление информации/знаний в памяти ассистента. Значение по умолчанию MemPipelineConfig().
     :type mem_pipeline_config: MemPipelineConfig, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(PAI_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
     kg_model_config: KnowledgeGraphModelConfig = field(
         default_factory=lambda: KnowledgeGraphModelConfig())
@@ -34,7 +30,6 @@ class PersonalAIConfig:
         default_factory=lambda: MemPipelineConfig())
 
     log: Logger = field(default_factory=lambda: Logger(PAI_MAIN_LOG_PATH))
-    verbose: bool = False
 
 
 class PersonalAI:
@@ -51,6 +46,9 @@ class PersonalAI:
     def __init__(self, config: PersonalAIConfig = PersonalAIConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = DEFAULT_PERSONALAI_KVCACHE_CONFIG,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = AgentStatAnalyzerConfig()) -> None:
+
+        config.synchronize_language()
+
         self.kg_model = KnowledgeGraphModel(
             config.kg_model_config, cache_kvdriver_config)
         self.qa_pipeline = QAPipeline(

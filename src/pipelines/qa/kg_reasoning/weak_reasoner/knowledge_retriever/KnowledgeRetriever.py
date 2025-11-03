@@ -8,14 +8,14 @@ from .traversal_methods.BeamSearchTripletsRetriever import GraphBeamSearchConfig
 from ......kg_model import KnowledgeGraphModel
 from ......utils import Logger, ReturnStatus, ReturnInfo
 from ......utils.errors import STATUS_MESSAGE
-from ......utils.data_structs import create_id, QueryInfo, Triplet
+from ......utils.data_structs import create_id, QueryInfo, Triplet, BaseComponentConfig
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.cache_kv.CacheOperations import CacheOperations
 
 
 @dataclass
-class KnowledgeRetrieverConfig:
+class KnowledgeRetrieverConfig(BaseComponentConfig):
     """Конфигурация "Knowledge Retriever"-стадии.
 
     :param retriever_method: Наименование алгоритма для обхода вершин/рёбер графовой структуры данных (графа знаний) и извлечения релевантной информации. Значение по умолчанию 'astar'.
@@ -28,10 +28,6 @@ class KnowledgeRetrieverConfig:
     :type filter_config: Union[BaseTripletsFilterConfig, Dict], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы KnowledgeRetriever-класса. Значение по умолчанию 'qa_kretriever_stage_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(KR_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
     retriever_method: str = 'beamsearch'
     retriever_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: GraphBeamSearchConfig())
@@ -40,7 +36,6 @@ class KnowledgeRetrieverConfig:
 
     cache_table_name: Union[str, None] = 'qa_kretriever_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(KR_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self) -> str:
         str_r_config = [f"{k}:{v}" for k, v in self.retriever_config.items()] if isinstance(self.retriever_config, dict) else self.retriever_config.to_str()

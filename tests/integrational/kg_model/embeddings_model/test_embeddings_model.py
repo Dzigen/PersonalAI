@@ -1,6 +1,8 @@
 import pytest
+import torch
 from typing import Dict, List, Set
 from functools import reduce
+import gc
 import sys
 sys.path.insert(0, "../")
 
@@ -46,6 +48,8 @@ def test_create_triplets(init_triplets: List[Triplet], add_nodes_flag: bool, exp
         assert embeddings_model.triplets_vcomposer.item_exist(triplet.relation.id)
 
     embeddings_model.clear()
+    torch.cuda.empty_cache()
+    gc.collect()
 
 
 @pytest.mark.parametrize("init_triplets, expected_creation_info, expected_init_count, triplets_to_delete, delete_info, expected_final_count, exception, embeddings_model", EM_POPULATED_DELETE_TEST_CASES, indirect=['embeddings_model'])
@@ -102,3 +106,5 @@ def test_delete_triplets(init_triplets: List[Triplet], expected_creation_info: D
             assert False
 
     embeddings_model.clear()
+    torch.cuda.empty_cache()
+    gc.collect()

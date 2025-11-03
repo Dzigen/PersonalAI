@@ -6,7 +6,7 @@ from .utils import MediumAGeneratorTaskSolvers
 from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
 from ......utils.errors import ReturnStatus
 from ......agents.utils import AbstractAgentConnector
-from ......utils.data_structs import create_id, SearchPlanInfo
+from ......utils.data_structs import create_id, SearchPlanInfo, BaseComponentConfig, LanguageConfig
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.cache_kv import CacheUtils
 from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
@@ -15,11 +15,9 @@ from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
-class AnswerGeneratorConfig:
+class AnswerGeneratorConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация AnswerGenerator-стадии MediumQA-ризонера.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
-    :type lang: str, optional
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param answer_classifier_agent_task_config: Конфигурация атомарной задачи для LLM-агента по определению наличия необходимой информации для генерации релевантного ответа на вопрос. Значение по умолчанию DEFAULT_ANSWCLS_TASK_CONFIG.
@@ -28,12 +26,7 @@ class AnswerGeneratorConfig:
     :type answer_generator_agent_task_config: AgentTaskSolverConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы ClueAnswersSummarizer-класса. Значение по умолчанию 'medreasn_answgen_main_stage_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(ANSWGEN_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
-    lang: str = 'auto'
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     answer_classifier_agent_task_config: AgentTaskSolverConfig = field(
         default_factory=lambda: DEFAULT_ANSWCLS_TASK_CONFIG)
@@ -42,7 +35,6 @@ class AnswerGeneratorConfig:
 
     cache_table_name: str = 'medreasn_answgen_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(ANSWGEN_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.answer_classifier_agent_task_config.version}|{self.answer_generator_agent_task_config.version}"

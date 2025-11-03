@@ -5,17 +5,16 @@ from .config import E2NMATCHER_MAIN_LOG_PATH, E2NM_RERANKDRIVER_DEFAULT_CONFIG
 from ......kg_model import KnowledgeGraphModel
 from ......utils import ReturnInfo, Logger
 from ......utils.errors import ReturnStatus
-from ......utils.data_structs import NodeType, NodeInfo
+from ......utils.data_structs import NodeType, BaseComponentConfig, NodeInfo
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......db_drivers.vector_driver import VectorDBInstance
 from ......utils.cache_kv import CacheUtils
 from ......rerankers import RerankerDriverConfig, RerankerDriver
 from ......utils.cache_kv.CacheOperations import CacheOperations
-from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 
 
 @dataclass
-class Entities2NodesMatcherConfig:
+class Entities2NodesMatcherConfig(BaseComponentConfig):
     """Конфигурация Entities2NodesMatcher-стадии MediumQA-ризонера.
 
     :param use_tree: Если True, то для сопоставления сущностей с object-вершинами из графа будет использована древовидная модель представления вершин из графа знаний, иначе для matching-операции будет использован Retrieve/Rerank-оператор. Значение по умолчанию False.
@@ -26,10 +25,6 @@ class Entities2NodesMatcherConfig:
     :type max_n: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы Entities2NodesMatcher-класса. Значение по умолчанию 'medreasn_e2nmatcher_main_stage_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(E2NMATCHER_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
     use_tree: bool = False
     reranker_driver_config: RerankerDriverConfig = field(default_factory=lambda: E2NM_RERANKDRIVER_DEFAULT_CONFIG)
@@ -38,7 +33,6 @@ class Entities2NodesMatcherConfig:
     cache_table_name: str = "medreasn_e2nmatcher_main_stage_cache"
     log: Logger = field(
         default_factory=lambda: Logger(E2NMATCHER_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self):
         return f"{self.use_tree}|{self.max_n}|{self.reranker_driver_config.to_str()}"

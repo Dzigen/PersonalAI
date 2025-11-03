@@ -5,7 +5,7 @@ import hashlib
 
 from .configs import DEFAULT_AG_TASK_CONFIG, AG_MAIN_LOG_PATH
 from .utils import WeakAGeneratorTaskSolvers
-from ......utils.data_structs import Triplet, RelationType, create_id, TripletCreator
+from ......utils.data_structs import Triplet, RelationType, create_id, TripletCreator, BaseComponentConfig, LanguageConfig
 from ......utils.errors import STATUS_MESSAGE
 from ......agents.utils import AbstractAgentConnector
 from ......utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
@@ -17,11 +17,9 @@ from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperati
 
 
 @dataclass
-class QALLMGeneratorConfig:
+class QALLMGeneratorConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация "Question Answering"-стадии QA-конвейера.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
-    :type lang: str, optional
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param ag_task_config: Конфигурация атомарной задачи для LLM-агента по условной генерации ответа на вопрос. Значение по умолчанию DEFAULT_AG_TASK_CONFIG.
@@ -30,21 +28,14 @@ class QALLMGeneratorConfig:
     :type relation_type: List[RelationType], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QALLMGenerator-класса. Значение по умолчанию 'qa_agenerator_stage_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(AG_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
-    lang: str = "auto"
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    ag_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_AG_TASK_CONFIG)
+    ag_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_AG_TASK_CONFIG)
 
     relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.hyper, RelationType.simple])
 
     cache_table_name: Union[str, None] = 'qa_agenerator_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(AG_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self):
         str_relations = ";".join(

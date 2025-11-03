@@ -6,7 +6,7 @@ from .config import QE_MAIN_LOG_PATH, DEFAULT_QEXPAN_TASK_CONFIG, \
 from .utils import QueryEnhancerTaskSolvers
 from .....utils.cache_kv import CacheUtils
 from .....utils.errors import STATUS_MESSAGE
-from .....utils.data_structs import create_id, QueryPreprocessingInfo
+from .....utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
 from .....agents.utils import AbstractAgentConnector
 from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
 from .....db_drivers.kv_driver import KeyValueDriverConfig
@@ -16,11 +16,9 @@ from .....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperatio
 
 
 @dataclass
-class QueryEnhancerConfig:
+class QueryEnhancerConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация QueryEnhancer-операции.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
-    :type lang: str, optional
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param qexpan_agent_task_config: Конфигурация атомарной задачи для LLM-агента по добавлению более понятных языковых конструкций в запроc. Значение по умолчанию DEFAULT_QEXPAN_TASK_CONFIG.
@@ -31,12 +29,7 @@ class QueryEnhancerConfig:
     :type lingcheck_agent_task_config: AgentTaskSolverConfig, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryEnhancer-класса. Значение по умолчанию 'qp_enhancing_stage_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(QE_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
-    lang: str = "auto"
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     qexpan_agent_task_config: AgentTaskSolverConfig = field(
         default_factory=lambda: DEFAULT_QEXPAN_TASK_CONFIG)
@@ -47,7 +40,6 @@ class QueryEnhancerConfig:
 
     cache_table_name: str = 'qp_enhancing_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(QE_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.qexpan_agent_task_config.version}|{self.termscheck_agent_task_config.version}|{self.lingcheck_agent_task_config.version}"

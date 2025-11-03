@@ -23,3 +23,5 @@ gigachat
 ollama
 ranx
 langdetect
+faiss-cpu
+langchain_community
