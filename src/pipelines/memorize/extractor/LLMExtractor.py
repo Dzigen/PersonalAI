@@ -2,7 +2,8 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Tuple, Union
 from copy import deepcopy
 
-from .configs import DEFAULT_THESISES_EXTR_TASK_CONFIG, DEFAULT_TRIPLETS_EXTR_TASK_CONFIG, MEM_EXTRACTOR_MAIN_LOG_PATH
+from .configs import DEFAULT_THESISES_EXTR_TASK_CONFIG, DEFAULT_TRIPLETS_EXTR_TASK_CONFIG, MEM_EXTRACTOR_MAIN_LOG_PATH, \
+    AgentThesisExtrTaskConfigSelector, AgentTripletExtrTaskConfigSelector
 from .utils import MemExtractorTaskSolvers
 from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 from ....utils.errors import STATUS_MESSAGE
@@ -39,8 +40,8 @@ class LLMExtractorConfig:
     """
     lang: str = "auto"
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    triplets_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_TRIPLETS_EXTR_TASK_CONFIG)
-    thesises_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_THESISES_EXTR_TASK_CONFIG)
+    triplets_extraction_task_config: Union[AgentTaskSolverConfig, str] = field(default_factory=lambda: DEFAULT_TRIPLETS_EXTR_TASK_CONFIG)
+    thesises_extraction_task_config: Union[AgentTaskSolverConfig, str] = field(default_factory=lambda: DEFAULT_THESISES_EXTR_TASK_CONFIG)
     need_simple: bool = True
     need_thesises: bool = True
     need_episodic: bool = True
@@ -65,6 +66,16 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
         self.config = config
+
+        if type(self.config.thesises_extraction_task_config) is str:
+            thesises_extraction_version = self.config.thesises_extraction_task_config
+            self.config.thesises_extraction_task_config = AgentThesisExtrTaskConfigSelector.select(
+                base_config_version=thesises_extraction_version)
+        
+        if type(self.config.triplets_extraction_task_config) is str:
+            triplets_extraction_version = self.config.triplets_extraction_task_config
+            self.config.triplets_extraction_task_config = AgentTripletExtrTaskConfigSelector.select(
+                base_config_version=triplets_extraction_version)
 
         self.agent = agent
         self.tasks_solvers: MemExtractorTaskSolvers = MemExtractorTaskSolvers(

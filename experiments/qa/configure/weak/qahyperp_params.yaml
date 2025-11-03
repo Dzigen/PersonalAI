@@ -1,0 +1,79 @@
+EXPERIMENT_NAME: "wc_v2_qwen25(e2.1.1)(v1.5.4)" # TO CHANGE
+DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen25_080325_v2prompts' # TO CHANGE
+
+QA_DATASET_HYPERP:
+  # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
+  max_samples_per_pack: 5
+  lang: 'ru'
+
+query_preprocessor: # TO CHANGE
+  denoising_config: null
+    # swremoval_agent_task_config:
+    #   prompts_version: 'v2'
+    # grammarcheck_agent_task_config:
+    #   prompts_version: 'v2'
+
+  enhancing_config: null
+    # qexpan_agent_task_config:
+    #   prompts_version: 'v2'
+    # termscheck_agent_task_config:
+    #   prompts_version: 'v2'
+    # lingcheck_agent_task_config:
+    #   prompts_version: 'v2'
+
+  decomposition_config: # null
+    classify_agent_task_config:
+      prompts_version: 'v2'
+    decompose_agent_task_config:
+      prompts_version: 'v2'
+
+kg_reasoner: # TO CHANGE
+  name: "weak" # DONT CHANGE
+  query_parser_config:
+    kw_extraction_task:
+      prompts_version: 'v2' # 'v1' | 'v2'
+
+  knowledge_comparator_config:
+    max_k: 3 
+    k_compare: 5
+    reranker_driver_config:
+      name: 'ensemble_fusion'
+      strategy_config:
+        vdb_names: ['dense_nodes', 'bm25_nodes']
+        retriever_configs:
+          - fetch_n: 20
+            threshold: 0.5
+          - fetch_n: 20
+            threshold: 0.5
+        weights: [0.6, 0.4]
+        c: 60
+
+  knowledge_retriever_config:
+    retriever_method: 'watercircles'
+    retriever_config:
+      # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
+      strict_filter: True
+      hyper_num: 15
+      episodic_num: 15
+      chain_triplets_num: 25
+      other_triplets_num: 6
+      do_text_pruning: False
+      accepted_node_types: None
+        # - 'object'
+        # - 'hyper'
+        # - 'episodic'
+        # - 'time'
+    filter_method: 'naive' # CAN BE None
+    filter_config: # CAND BE None
+      max_k: 50
+
+  answer_generator_config: # TO CHANGE
+    ag_task_config:
+      prompts_version: 'v2' # 'v1' | 'v2'
+    relation_type: ['simple', 'hyper']
+
+answer_aggregator:
+  suba_summarisation_agent_task_config:
+    prompts_version: 'v2'
+

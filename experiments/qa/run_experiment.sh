@@ -15,7 +15,9 @@ PARAMS_PATH="$EXP_BASE_PATH/$PARAMS_DIR/$DATASET_NAME/$MODEL_NAME/$PARAMS_NAME"
 
 INIT_EXP_SCIPT="$EXP_BASE_PATH/init_file_structure.py"
 PRE_QACONFIG_SCRIPT="$SPEC_EXP_PATH/../../../prepare_qa_configs.py"
+
 GEN_ANSWERS_SCRIPT="$SPEC_EXP_PATH/../../../generate_answers.py"
+
 EVAL_ANSWERS_SCIPT="$SPEC_EXP_PATH/../../../evaluate_answers.py"
 LLM_EVAL_ANSWERS_SCRIPT="$SPEC_EXP_PATH/../../../evaluate_llmjudge.py"
 ACCUMULATE_METRICS_SCRIPT="$SPEC_EXP_PATH/../../../accumulate_packs_scores.py"

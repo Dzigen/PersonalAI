@@ -43,6 +43,10 @@ docs/build
 
 experiments/qa/2025-03-11 18-25-04.mp4
 experiments/qa/instruction.mp4
+<<<<<<< HEAD
 experiments/qa_kg/
 .secrets
 experiments/qa/guide/
+=======
+experiments/qa_kg/
+>>>>>>> dev
