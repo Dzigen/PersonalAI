@@ -1,0 +1,33 @@
+SAVE_CONFIGS_NAMES:
+  elapsed_time: elapsed_time.json
+  params: params.yaml
+  reranker_config: reranker_config
+  retrieved_cntx_ids: retrieved_cntx_ids.csv
+VCOMPOSER_INFO:
+  params_name: params.yaml
+WORKSPACE_CONTAINER_DIRS:
+  base_path: /home/workspace
+  category: multistep
+  evaluate_dir: evaluate
+  experiments: experiments/rerankers
+  models: models
+  qa_datasets: data/qa_datasets/v3
+  results_dir: results
+  run_dir: run
+  src: src
+  vcomposers_data: data/reranker_exps
+dataset_name: hotpotqa_distractor_validation
+experiment_name: frida_e5large(e2_multistep_hotpotqa)
+multistep_config:
+- extended_params:
+    threshold: 0.6
+  fetch_n: 10
+  name: dense_frida
+  type: retriever
+- extended_params:
+    threshold: 0.6
+  fetch_n: 25
+  name: dense_e5large
+  type: retriever
+top_k: 10
+vcomposer_name: hotpotqa241025

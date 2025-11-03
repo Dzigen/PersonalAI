@@ -1,0 +1,26 @@
+SAVE_CONFIGS_NAMES:
+  elapsed_time: elapsed_time.json
+  params: params.yaml
+  reranker_config: reranker_config
+  retrieved_cntx_ids: retrieved_cntx_ids.csv
+VCOMPOSER_INFO:
+  params_name: params.yaml
+WORKSPACE_CONTAINER_DIRS:
+  base_path: /home/workspace
+  category: singlestep
+  evaluate_dir: evaluate
+  experiments: experiments/rerankers
+  models: models
+  qa_datasets: data/qa_datasets/v3
+  results_dir: results
+  run_dir: run
+  src: src
+  vcomposers_data: data/reranker_exps
+dataset_name: hotpotqa_distractor_validation
+experiment_name: bm25(e1_singlestep_hotpotqa)
+singlestep_config:
+  fetch_n: 50
+  threshold: 0.53
+  vdb_name: sparse_bm25
+top_k: 10
+vcomposer_name: hotpotqa241025
