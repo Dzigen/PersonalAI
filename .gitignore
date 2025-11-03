@@ -11,22 +11,24 @@ tests/log
 docs/legacy/notebooks/log/
 notebooks/download_models/.env
 
-experiments/qa/weak/results/**/tmp_answer_packs/
-experiments/qa/weak/results/**/answer_packs/
-experiments/qa/weak/results/**/judges_packs/
-experiments/qa/weak/results/**/tmp_judges_packs/
-experiments/qa/weak/results/**/metric_packs/
-experiments/qa/weak/results/**/log/
-experiments/qa/weak/results/**/aeval_cron.txt
-experiments/qa/weak/**/qacron_log.txt
-experiments/qa/weak/results/**/agen_cron.txt
-experiments/qa/results/**/llm_aeval_cron.txt
-experiments/qa/results/**/kg_reasoner_config
-experiments/qa/results/**/qa_config
+experiments/qa/configuring_exp/weak/legacy
 
-experiments/qa/weak/results/diaasq_legacy
+# experiments/qa/weak/results/**/tmp_answer_packs/
+# experiments/qa/weak/results/**/answer_packs/
+# experiments/qa/weak/results/**/judges_packs/
+# experiments/qa/weak/results/**/tmp_judges_packs/
+# experiments/qa/weak/results/**/metric_packs/
+# experiments/qa/weak/results/**/log/
+# experiments/qa/weak/results/**/aeval_cron.txt
+# experiments/qa/weak/**/qacron_log.txt
+# experiments/qa/weak/results/**/agen_cron.txt
+# experiments/qa/results/**/llm_aeval_cron.txt
+# experiments/qa/results/**/kg_reasoner_config
+# experiments/qa/results/**/qa_config
+
+# experiments/qa/weak/results/diaasq_legacy
 experiments/legacy
-experiments/qa/weak/legacy
+# experiments/qa/weak/legacy
 
 create_local_db/
 archives/
