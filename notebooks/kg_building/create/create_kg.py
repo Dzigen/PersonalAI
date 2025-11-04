@@ -166,10 +166,10 @@ print(len(dataset))
 print("8. Run KG build process")
 print(f"start time: {datetime.datetime.now()}") 
 
-# hotpotqa | qwen38b_261025_v2prompts | 379
-# rubqdev | gigachatmax_281025_v2prompts | ...
+# hotpotqa | qwen38b_261025_v2prompts | 379+1131
+# rubqdev | gigachatmax_281025_v2prompts | 1997
 
-process = tqdm(range(len(dataset)))
+process = tqdm(range(1997, len(dataset)))
 for i in process:
     text, time, properties = dataset[i][0], dataset[i][1], dataset[i][2]
     try:

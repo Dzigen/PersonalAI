@@ -19,7 +19,6 @@ with open(KGHYPERP_FILE_PATH, 'r') as stream:
 sys.path.insert(0, KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
 
 from src.pipelines.memorize import MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
-from src.pipelines.memorize.extractor.configs import AgentThesisExtrTaskConfigSelector, AgentTripletExtrTaskConfigSelector
 
 ####################################################
 print("2. Setting paths")
@@ -37,11 +36,12 @@ MEMPIPE_CONFIG = KGHYPERP_PARAMS['MEM_PIPELINE_CONFIG']
 # extractor stage config
 extractor_config = LLMExtractorConfig(
     lang=MEMPIPE_CONFIG['lang'],
-    triplets_extraction_task_config=AgentTripletExtrTaskConfigSelector.select(
-        base_config_version=MEMPIPE_CONFIG['extractor_stage']['extract_triplets']['prompts_version']),
-    thesises_extraction_task_config=AgentThesisExtrTaskConfigSelector.select(
-        base_config_version=MEMPIPE_CONFIG['extractor_stage']['extract_thesises']['prompts_version']),
 )
+
+extractor_config.agent_tasks_config.thesises_extraction = \
+    MEMPIPE_CONFIG['extractor_stage']['extract_thesises']['prompts_version']
+extractor_config.agent_tasks_config.triplets_extraction = \
+    MEMPIPE_CONFIG['extractor_stage']['extract_triplets']['prompts_version']
 
 # Setting Memorization Pipeline
 mem_config = MemPipelineConfig(

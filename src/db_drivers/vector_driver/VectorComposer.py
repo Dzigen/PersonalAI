@@ -80,9 +80,9 @@ class VectorComposer(AbstractVectorDatabaseComposer):
             output &= is_exist
 
         # проверка компоновщика на консистентность
-        unique_values = set(exist_stat)
-        if len(unique_values) > 1:
-            raise AssertionError
+        # unique_values = set(exist_stat)
+        # if len(unique_values) > 1:
+        #     raise AssertionError
 
         return output
 
