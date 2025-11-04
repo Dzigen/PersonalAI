@@ -5,6 +5,8 @@ models/
 data/
 debug/
 .env_secret_llmkeys
+.DS_Store
+**/.DS_Store
 
 personalai_tmp/
 tests/log
