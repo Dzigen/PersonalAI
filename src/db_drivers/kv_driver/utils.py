@@ -6,10 +6,22 @@ from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
 @dataclass
 class KVDBConnectionConfig(BaseDatabaseConfig):
-    db_info: Dict = field(default_factory=lambda: {
-                          'db': 'DefaultPersonalAIKVDB', 'table': 'DefaultPersonalAIKVTable'})
+    db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAIKVDB', 'table': 'DefaultPersonalAIKVTable'})
     host: str = None
     port: str = None
+
+    def from_dict(dict_config) -> BaseDatabaseConfig:
+        formated_config = KVDBConnectionConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        raw_redis_config = self.params.get('redis_config', None)
+        if isinstance(raw_redis_config, Dict):
+            self.params['redis_config'] = KVDBConnectionConfig.from_dict(self.params['redis_config'])
+        raw_mongo_config = self.params.get('mongo_config', None)
+        if isinstance(raw_mongo_config, Dict):
+            self.params['mongo_config'] = KVDBConnectionConfig.from_dict(self.params['mongo_config'])
 
 
 @dataclass

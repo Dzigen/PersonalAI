@@ -1,3 +1,4 @@
+print("Scoring generated answers with base metrics")
 import sys
 from tqdm import tqdm
 import yaml
@@ -19,21 +20,44 @@ import os
 import nltk
 nltk.download('wordnet')
 
-################ LOADING_HYPERPARAMETERS###################
+####################################################
+print("1. Loading hyperparameters from .yaml files")
 
-# Read YAML file
-PARAMS_FILEP = sys.orig_argv[2]
-with open(PARAMS_FILEP, 'r') as stream:
-    PARAMS = yaml.safe_load(stream)
+# Read YAML file (specexp-params)
+SPECEXP_PARAMS_FILEP = sys.orig_argv[2]
+with open(SPECEXP_PARAMS_FILEP, 'r') as stream:
+    SPECEXP_PARAMS = yaml.safe_load(stream)
 
-DS_EXPERIMENT_DIR = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['exp_results']}/{PARAMS['DATASET_NAME']}"
-SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['EXPERIMENT_NAME']}"
+# Read YAML file (expdir-params)
+EXPDIR_PARAMS_FILEP = sys.orig_argv[3]
+with open(EXPDIR_PARAMS_FILEP, 'r') as stream:
+    EXPDIR_PARAMS = yaml.safe_load(stream)
 
-GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['gen_answers_name']}"
-METRICS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['metrics_name']}"
+# Read YAML file (eval-params)
+EVAL_PARAMS_FILEP = sys.orig_argv[4]
+with open(EVAL_PARAMS_FILEP, 'r') as stream:
+    EVAL_PARAMS = yaml.safe_load(stream)
 
 ####################################################
+print("2. Setting paths")
 
+EXP_RESULTS_DIR = f"{EXPDIR_PARAMS['BASE_PERSONALAI_PATH']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['results']}"
+EXP_KG_PATH = f"{EXP_RESULTS_DIR}/{SPECEXP_PARAMS['DATASET_NAME']}/{SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+SPEC_EXPERIMENT_DIR = f"{EXP_KG_PATH}/{EXPDIR_PARAMS['EXPERIMENT_NAME']}"
+
+GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['gen_answers_name']}"
+METRICS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['metrics_name']}"
+
+EXP_DIR = f'{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}'
+ENCODER_MODEL_PATH = f"{EXP_DIR}/{EVAL_PARAMS['bertscore_model_path']}"
+METEOR_METRIC_PATH = f"{EXP_DIR}/{EVAL_PARAMS['meteor_path']}"
+EM_METRIC_PATH = f"{EXP_DIR}/{EVAL_PARAMS['exactmatch_path']}"
+
+SETTINGS_PATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['settings_name']}"
+EVAL_PARAMS_SPATH = f"{SETTINGS_PATH}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['eval']}"
+
+####################################################
+print("3. Declaring Metrics-class")
 
 class ReaderMetrics:
     # Source: https://amitness.com/2020/08/information-retrieval-evaluation/
@@ -98,7 +122,7 @@ class ReaderMetrics:
         return list(map(lambda pair: levenshtain_distance(pair[1], pair[0]), zip(predicted, targets)))
 
 ####################################################
-
+print("4. Setting Metrics-class")
 
 def loading_generated_pack(base_dir: str, pack_name) -> Dict[int, str]:
     with open(f"{base_dir}/{pack_name}", 'r', encoding='utf-8') as fd:
@@ -117,11 +141,12 @@ def save_json(data: Dict[str, object], save_path: str):
 
 
 METRICS = ReaderMetrics(
-    model_path=f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['models']}/{PARAMS['QA_EVALUATION']['bertscore_model_path']}",
-    meteor_filep=f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['QA_EVALUATION']['meteor_path']}",
-    em_filep=f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['QA_EVALUATION']['exactmatch_path']}")
+    model_path=ENCODER_MODEL_PATH, meteor_filep=METEOR_METRIC_PATH,
+    em_filep=EM_METRIC_PATH
+)
 
 ####################################################
+print("5. Evaluating answers")
 
 #
 gen_pack_names = os.listdir(GENERATED_ANSWERS_DIR)
@@ -168,7 +193,7 @@ for pack_name in gen_pack_names:
 
         print("Calculating 'NoAnswer'-score...")
         noansw_scores = sum(list(map(lambda gen_answer: gen_answer.strip(
-        ) == PARAMS['QA_EVALUATION']['no_answer'], generated_answers))) / len(generated_answers)
+        ) == EVAL_PARAMS['no_answer'], generated_answers))) / len(generated_answers)
 
     else:
         b1_scores, b2_scores, rl_scores, m_scores, em_scores, bs_scores, noansw_scores = 0, 0, 0, 0, 0, 0, 0
@@ -188,5 +213,11 @@ for pack_name in gen_pack_names:
 
     # сохраняем скоры по папку
     save_json(scores, f"{METRICS_DIR}/{pack_name}")
+
+####################################################
+print("6. Saving eval params")
+
+with open(EVAL_PARAMS_SPATH, 'w') as fd:
+    yaml.dump(EVAL_PARAMS, fd, default_flow_style=False)
 
 print("############ DONE ############")

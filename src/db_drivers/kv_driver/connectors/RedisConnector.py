@@ -1,5 +1,5 @@
 import redis
-from typing import List, Dict
+from typing import List, Dict, Union
 from collections import defaultdict
 import pickle
 
@@ -8,8 +8,13 @@ from ..utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValue
 
 
 class RedisKVConnector(AbstractKVDatabaseConnection):
-    def __init__(self, config: KVDBConnectionConfig = DEFAULT_REDISKV_CONFIG):
-        self.config = config
+    def __init__(self, config: Union[Dict, KVDBConnectionConfig] = DEFAULT_REDISKV_CONFIG):
+        if isinstance(config, dict):
+            config = KVDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
+        self.config: KVDBConnectionConfig = config
+
         self.config.params['ss_name'] = f"{self.config.db_info['table']}_{self.config.params['ss_name']}"
         self.config.params['hs_name'] = f"{self.config.db_info['table']}_{self.config.params['hs_name']}"
 
@@ -36,7 +41,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
             if item is None or item.id is None or item.value is None:
                 raise ValueError
 
-            if type(item.id) is not str:
+            if not isinstance(item.id, str):
                 raise ValueError(
                     f"id: t - {type(item.id)}; v - {item.id} value: t - {type(item.value)}; v - {item.value}")
 
@@ -61,7 +66,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
         if len(filtered_items) > 0:
             formated_items = []
             for item in filtered_items:
-                if type(item.value) is bytes:
+                if isinstance(item.value, bytes):
                     dumped_value = pickle.dumps((item.value, 'bytes'))
                 else:
                     dumped_value = pickle.dumps((item.value, 'notbytes'))
@@ -74,7 +79,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
 
     def read(self, ids: List[str]):
         for id in ids:
-            if type(id) is not str:
+            if not isinstance(id, str):
                 raise ValueError
         if len(ids) < 1:
             return []
@@ -102,7 +107,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
             if item is None or item.id is None or item.value is None:
                 raise ValueError
 
-            if type(item.id) is not str or type(item.value) not in [str, float, int]:
+            if not isinstance(item.id, str) or type(item.value) not in [str, float, int]:
                 raise ValueError
 
         filtered_items = [item for item in items if self.conn.hexists(
@@ -111,7 +116,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
         if len(filtered_items) > 0:
             formated_items = []
             for item in filtered_items:
-                if type(item.value) is bytes:
+                if isinstance(item.value, bytes):
                     dumped_value = pickle.dumps((item.value, 'bytes'))
                 else:
                     dumped_value = pickle.dumps((item.value, 'notbytes'))
@@ -124,7 +129,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
 
     def delete(self, ids: List[str]):
         for id in ids:
-            if type(id) is not str:
+            if not isinstance(id, str):
                 raise ValueError
 
         filtered_ids = [id for id in ids if self.conn.hexists(
@@ -154,7 +159,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
         return self.conn.hlen(self.config.params['hs_name'])
 
     def item_exist(self, id: str):
-        if type(id) is not str:
+        if not isinstance(id, str):
             raise ValueError
         return self.conn.hexists(self.config.params['hs_name'], id)
 

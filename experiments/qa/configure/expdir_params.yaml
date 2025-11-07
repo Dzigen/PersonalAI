@@ -8,16 +8,31 @@ EXP_DIRS:
   metrics_name: metric_packs
   tmp_judges_name: tmp_judges_packs
   judges_name: judges_packs
+  settings_name: settings
+  configs_name: configs
+
+KG_SETTING_DIR:
+  name: settings
+  kgconn: kgconn_params
+  kgenv: kgenv_params
 
 WORKSPACE_CONTAINER_DIRS:
   base_path: /home/workspace
   experiments: experiments/qa
+  kg: data/knowledge_graphs
+  qa_datasets: data/qa_datasets/v2
   results: results
+  llmasajudge_kv_dir: evaluate/llmasajudge_cache
 
 EXP_SAVE_FILES:
-  qpreproc_config: 'qpreproc_config'
-  kgreasoner_config: 'kgreasoner_config'
-  aaggregator_config: 'aaggregator_config'
+  qa_config: qa_config
+  qpreproc_config: qpreproc_config
+  kgreasoner_config: kgreasoner_config
+  aaggregator_config: aaggregator_config
 
   qahyperp: qahyperp_params.yaml
+  expdir: expdir_params.yaml
+  eval: eval_params.yaml
+
   elapsed_time: elapsed_time.json
+  accumulated_scores: 'accumulated_scores.json'

@@ -21,18 +21,28 @@ class AnswerGeneratorConfig(BaseComponentConfig, LanguageConfig):
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию AnswerGeneratorAgentTasksConfig().
-    :type agent_tasks_config: AnswerGeneratorAgentTasksConfig, optional
+    :type agent_tasks_config: Union[AnswerGeneratorAgentTasksConfig,Dict], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы ClueAnswersSummarizer-класса. Значение по умолчанию 'medreasn_answgen_main_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    agent_tasks_config: AnswerGeneratorAgentTasksConfig = field(default_factory=lambda: AnswerGeneratorAgentTasksConfig())
+    agent_tasks_config: Union[Dict, AnswerGeneratorAgentTasksConfig] = field(default_factory=lambda: AnswerGeneratorAgentTasksConfig())
 
     cache_table_name: str = 'medreasn_answgen_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(ANSWGEN_MAIN_LOG_PATH))
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = AnswerGeneratorConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.agent_tasks_config, dict):
+            self.agent_tasks_config = AnswerGeneratorAgentTasksConfig.from_dict(self.agent_tasks_config)
 
 
 class AnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
@@ -42,7 +52,7 @@ class AnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
     :type agent: AbstractAgentConnector
     :param config: Конфигурация AnswerGenerator-стадии. Значение по умолчанию AnswerGeneratorConfig().
-    :type config:AnswerGeneratorConfig, optional
+    :type config: Union[AnswerGeneratorConfig,Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
@@ -51,9 +61,13 @@ class AnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     :type cache_llm_inference: bool, optional
     """
 
-    def __init__(self, agent: AbstractAgentConnector, config: AnswerGeneratorConfig = AnswerGeneratorConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: Union[AnswerGeneratorConfig, Dict] = AnswerGeneratorConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None):
+        if isinstance(config, dict):
+            config: AnswerGeneratorConfig = AnswerGeneratorConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
         self.config.agent_tasks_config.versions_to_configs()
 

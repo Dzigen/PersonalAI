@@ -15,57 +15,102 @@ from ..db_drivers.kv_driver import KeyValueDriverConfig
 from ..db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
 from ..agents import AgentDriverConfig, AgentDriver
 from ..utils import Triplet, Logger
-from ..utils.data_structs import RelationType, NodeType, NodeInfo
+from ..utils.data_structs import RelationType, NodeType, NodeInfo, BaseComponentConfig
 
 
 @dataclass
-class KnowledgeGraphModelConfig:
+class KnowledgeGraphModelConfig(BaseComponentConfig):
     """Конфигурация памяти (граф знаний) ассистента.
 
     :param graph_struct_config: Конфигурация структуры данных, которая отвечает за хранение знаний ассистента в формате графа. Значение по умолчанию GraphModelConfig().
-    :type graph_struct_config: GraphModelConfig, optional
+    :type graph_struct_config: Union[Dict,GraphModelConfig], optional
     :param graph_embeddings_config: Конфигурация структуры данных, которая отвечает за представление/хранение знаний ассистента в векторном формате. Значение по умолчанию EmbeddingsModelConfig().
-    :type graph_embeddings_config: EmbeddingsModelConfig, optional
+    :type graph_embeddings_config: Union[Dict,EmbeddingsModelConfig], optional
     :param nodestree_config: Конфигурация структуры данных, которая отвечает за представление/хранение знаний (object-вершин) ассистента в формате дерева. Значение по умолчанию None.
-    :type nodestree_config: Union[NodesTreeModelConfig,None], optional
+    :type nodestree_config: Union[NodesTreeModelConfig,Dict,None], optional
     :param embedders_configs: Словарь с именованными (ключи) конфигурациями embedder-моделей (значения) для векторизации текста, которые будут использоваться в рамках Memorize- и QA-пайплайнов для построения графа знаний и осуществления поиска. Значение по умолчанию DEFAULT_EMBEDDERS_CONFIG.
-    :type embedders_configs: Dict[str, EmbedderModelConfig], optional
+    :type embedders_configs: Dict[str, Union[Dict,EmbedderModelConfig]], optional
     :param embedders_map: Вложенный именованный словарь с указанием PersonalAI-компоненты (ключ) и ключевого слова/имени (значение) embedder-конфигурации из embedders_configs-поля, которая будет использоваться в её рамках. Значение по умолчанию DEFAULT_EMBEDDERS_MAP.
-    :type embedders_map: KGEmbeddersMapping, optional
+    :type embedders_map: Union[Dict,KGEmbeddersMapping], optional
     :param agents_configs: Словарь с именованными (ключи) конфигурациями LLM-агентов (значения) для выполнения inferece-операций, которые будут использоваться в рамках Memorize- и QA-пайплайнов для построения графа знаний и осуществления поиска. Значение по умолчанию DEFAULT_AGENTS_CONFIG.
-    :type agents_configs: Dict[str, AgentDriverConfig], optional
+    :type agents_configs: Dict[str, Union[Dict,AgentDriverConfig]], optional
     :param agents_map: Вложенный именованный словарь с указанием PersonalAI-компоненты и её подчастей (ключ) и ключевого слова/имени (значение) конфигураци LLM-агента из agents_configs-поля, которая будет использоваться в её рамках. Значение по умолчанию DEFAULT_AGENTS_MAP.
-    :type agents_map: AgentsMapping, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(KG_MAIN_LOG_PATH).
-    :type log: Logger
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :type agents_map: Union[Dict,AgentsMapping], optional
     """
-    graph_struct_config: GraphModelConfig = field(default_factory=lambda: GraphModelConfig())
-    graph_embeddings_config: EmbeddingsModelConfig = field(default_factory=lambda: EmbeddingsModelConfig())
-    nodestree_config: Union[NodesTreeModelConfig, None] = None
+    graph_struct_config: Union[Dict, GraphModelConfig] = field(default_factory=lambda: GraphModelConfig())
+    graph_embeddings_config: Union[Dict, EmbeddingsModelConfig] = field(default_factory=lambda: EmbeddingsModelConfig())
+    nodestree_config: Union[NodesTreeModelConfig, Dict, None] = None
 
-    embedders_configs: Dict[str, EmbedderModelConfig] = field(default_factory=lambda: DEFAULT_EMBEDDERS_CONFIG)
-    embedders_map: KGEmbeddersMapping = field(default_factory=lambda: DEFAULT_EMBEDDERS_MAP)
+    embedders_configs: Dict[str, Union[Dict, EmbedderModelConfig]] = field(default_factory=lambda: DEFAULT_EMBEDDERS_CONFIG)
+    embedders_map: Union[Dict, KGEmbeddersMapping] = field(default_factory=lambda: DEFAULT_EMBEDDERS_MAP)
 
-    agents_configs: Dict[str, AgentDriverConfig] = field(default_factory=lambda: DEFAULT_AGENTS_CONFIG)
-    agents_map: AgentsMapping = field(default_factory=lambda: DEFAULT_AGENTS_MAP)
+    agents_configs: Dict[str, Union[Dict, AgentDriverConfig]] = field(default_factory=lambda: DEFAULT_AGENTS_CONFIG)
+    agents_map: Union[Dict, AgentsMapping] = field(default_factory=lambda: DEFAULT_AGENTS_MAP)
 
     log: Logger = field(default_factory=lambda: Logger(KG_MAIN_LOG_PATH))
     verbose: bool = False
+
+    def to_str(self):
+        # TODO
+        raise NotImplementedError
+
+    @staticmethod
+    def from_dict(dict_config):
+        formated_config = KnowledgeGraphModelConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.graph_struct_config, dict):
+            self.graph_struct_config = GraphModelConfig.from_dict(self.graph_struct_config)
+        else:
+            self.graph_struct_config.formate_fields()
+
+        if isinstance(self.graph_embeddings_config, dict):
+            self.graph_embeddings_config = EmbeddingsModelConfig.from_dict(self.graph_embeddings_config)
+        else:
+            self.graph_embeddings_config.formate_fields()
+
+        if isinstance(self.nodestree_config, dict):
+            self.nodestree_config = NodesTreeModelConfig.from_dict(self.nodestree_config)
+        elif self.nodestree_config is not None:
+            self.nodestree_config.formate_fields()
+
+        for emb_name, emb_config in self.embedders_configs.items():
+            if isinstance(emb_config, dict):
+                self.embedders_configs[emb_name] = EmbedderModelConfig.from_dict(emb_config)
+            else:
+                self.embedders_configs[emb_name].formate_fields()
+
+        if isinstance(self.embedders_map, dict):
+            self.embedders_map = KGEmbeddersMapping(**self.embedders_map)
+
+        for agent_name, agent_config in self.agents_configs.items():
+            if isinstance(agent_config, dict):
+                self.agents_configs[agent_name] = AgentDriverConfig.from_dict(agent_config)
+            else:
+                self.agents_configs[agent_name].formate_fields()
+
+        if isinstance(self.agents_map, dict):
+            self.agents_map = AgentsMapping(**self.agents_map)
 
 
 class KnowledgeGraphModel:
     """Модель памяти (граф знаний) ассистента.
 
     :param config: Конфигурация памяти (граф знаний) ассистента. Значение по умолчанию KnowledgeGraphModelConfig().
-    :type config: KnowledgeGraphModelConfig, optional
+    :type config: Union[Dict,KnowledgeGraphModelConfig], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежутчных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
 
-    def __init__(self, config: KnowledgeGraphModelConfig = KnowledgeGraphModelConfig(),
+    def __init__(self, config: Union[Dict, KnowledgeGraphModelConfig] = KnowledgeGraphModelConfig(),
                  cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None) -> None:
+        if isinstance(config, dict):
+            config: KnowledgeGraphModelConfig = KnowledgeGraphModelConfig.from_dict(config)
+        else:
+            config.formate_fields()
+
         self.AVAILABLE_EMBEDDERS = {emb_name: EmbedderModel(emb_config) for emb_name, emb_config in config.embedders_configs.items()}
         self.AVAILABLE_AGENTS = {agent_name: AgentDriver.connect(agent_config) for agent_name, agent_config in config.agents_configs.items()}
         self.KG_EMBEDDERS_MAP: KGEmbeddersMapping = config.embedders_map

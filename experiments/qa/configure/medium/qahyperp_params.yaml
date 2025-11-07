@@ -27,15 +27,23 @@ query_preprocessor: # TO CHANGE
 
 # STAGE # 2
 kg_reasoner: # TO CHANGE
-  reasoner_name: "weak" # DONT CHANGE
+  reasoner_name: "medium" # DONT CHANGE
   reasoner_config:
-    query_parser_config: # CAN BE null
-      agent_tasks_config:
-        kw_extraction: 'v2' # 'v1' | 'v2'
+    max_searchplan_steps: 3
+    answer_something: True
 
-    knowledge_comparator_config: # CAN BE null
-      max_k: 3
-      k_compare: 5
+    searchplan_enhancer_config:
+      agent_tasks_config:
+        plan_initing: 'v1'
+        enhance_classifier: 'v1'
+        plan_enhancing: 'v1'
+
+    entities_extractor_config:
+      agent_tasks_config:
+        entities_extraction: 'v1'
+
+    e2n_matcher_config:
+      max_n: 3
       reranker_driver_config:
         name: 'ensemble_fusion' # DONT CHANGE
         strategy_config:
@@ -48,10 +56,14 @@ kg_reasoner: # TO CHANGE
           weights: [0.6, 0.4]
           c: 60
 
-    knowledge_retriever_config:
-      # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
-      retriever_method: 'beamsearch'
+    cluequeries_generator_config:
+      max_cqueries_amount: 4
+      agent_tasks_config:
+        cquerie_generator: 'v1'
 
+    knowledge_retriever_config:
+      retriever_method: 'beamsearch'
+      # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
       retriever_config:
         reranker_driver_config:
           name: 'single_step'
@@ -93,14 +105,18 @@ kg_reasoner: # TO CHANGE
           #- 'episodic'
           #- 'time'
 
-    answer_generator_config: # TO CHANGE
+    clueanswer_generator_config:
       agent_tasks_config:
-        ag: 'v2' # 'v1' | 'v2'
-      relation_type:
-        - 'simple'
-        - 'hyper'
-        #- 'episodic'
-        #- 'time'
+        cagen: 'v1'
+
+    clueanswers_summarizer_config:
+      agent_tasks_config:
+        canswers_summarisation: 'v1'
+
+    answer_generator_config:
+      agent_tasks_config:
+        answer_classifier: 'v1'
+        answer_generator: 'v1'
 
 # STAGE # 3
 answer_aggregator:

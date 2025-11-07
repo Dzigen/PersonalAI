@@ -2,9 +2,9 @@ from dataclasses import dataclass, field
 from typing import List, Union, Dict
 from tqdm import tqdm
 
-from .configs import MEM_UPDATOR_MAIN_LOG_PATH, MemUpdatorAgentTasksConfig
-from .utils import MemUpdatorTaskSolvers
-from ....utils import Logger, Triplet, AgentTaskSolverConfig, AgentTaskSolver
+from .config import MEM_UPDATOR_MAIN_LOG_PATH
+from .utils import MemUpdatorTaskSolvers, MemUpdatorAgentTasksConfig
+from ....utils import Logger, Triplet, AgentTaskSolver
 from ....utils.data_structs import RelationType, NodeType, create_id, BaseComponentConfig, LanguageConfig
 from ....utils.errors import ReturnInfo, ReturnStatus, STATUS_MESSAGE
 from ....kg_model import KnowledgeGraphModel
@@ -21,15 +21,31 @@ class LLMUpdatorConfig(BaseComponentConfig, LanguageConfig):
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]], optional
     :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию MemUpdatorAgentTasksConfig().
-    :type agent_tasks_config: MemUpdatorAgentTasksConfig, optional
+    :type agent_tasks_config: Union[Dict,MemUpdatorAgentTasksConfig], optional
     :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшие знания из памяти (графа знаний) ассистента, иначе False. Значение по умолчанию False.
     :type delete_obsolete_info: bool, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    agent_tasks_config: MemUpdatorAgentTasksConfig = field(default_factory=lambda: MemUpdatorAgentTasksConfig())
+    agent_tasks_config: Union[Dict, MemUpdatorAgentTasksConfig] = field(default_factory=lambda: MemUpdatorAgentTasksConfig())
     delete_obsolete_info: bool = False
 
     log: Logger = field(default_factory=lambda: Logger(MEM_UPDATOR_MAIN_LOG_PATH))
+
+    def to_str(self):
+        # TODO
+        raise NotImplementedError
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = LLMUpdatorConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.agent_tasks_config, dict):
+            self.agent_tasks_config = MemUpdatorAgentTasksConfig.from_dict(self.agent_tasks_config)
+        else:
+            self.agent_tasks_config.formate_fields()
 
 
 class LLMUpdator(CacheOperations, AgentStatOperations):
@@ -38,18 +54,23 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация Updator-стадии. Значение по умолчанию LLMUpdatorConfig().
-    :type config: LLMUpdatorConfig, optional
+    :type config: Union[Dict,LLMUpdatorConfig], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, config: LLMUpdatorConfig = LLMUpdatorConfig(),
+    def __init__(self, kg_model: KnowledgeGraphModel, config: Union[Dict, LLMUpdatorConfig] = LLMUpdatorConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
+        if isinstance(config, dict):
+            config: LLMUpdatorConfig = LLMUpdatorConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
         self.config.agent_tasks_config.versions_to_configs()
+
         self.kg_model = kg_model
 
         self.tasks_solvers: MemUpdatorTaskSolvers = MemUpdatorTaskSolvers(

@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Dict
 from time import sleep
 from haystack_integrations.document_stores.weaviate import WeaviateDocumentStore
 from haystack_integrations.components.retrievers.weaviate import WeaviateBM25Retriever
@@ -12,8 +12,13 @@ from .....utils.errors import ReturnInfo
 
 class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
 
-    def __init__(self, config: VectorDBConnectionConfig = DEFAULT_WEAVIATE_BM25_CONFIG, **kwargs) -> None:
+    def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_WEAVIATE_BM25_CONFIG, **kwargs) -> None:
+        if isinstance(config, dict):
+            config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+
         self.db_conn = None
         self.retriever = None
 

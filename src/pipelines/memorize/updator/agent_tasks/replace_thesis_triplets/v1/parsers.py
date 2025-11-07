@@ -6,7 +6,7 @@ from .......utils.data_structs import create_id
 
 def rt_custom_parse(raw_response: str, **kwargs) -> Dict[str, object]:
     if len(raw_response) < 1:
-        ValueError(f"raw_response: '{raw_response}'")
+        raise ValueError(f"raw_response: '{raw_response}'")
 
     raw_replacements = raw_response.lower()
     predicted_outdated = raw_replacements.split(

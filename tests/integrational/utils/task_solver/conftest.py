@@ -8,8 +8,8 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 
 from src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.configs import DEFAULT_KWE_TASK_CONFIG
 from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.configs import DEFAULT_AG_TASK_CONFIG
-from src.pipelines.memorize.updator.configs import DEFAULT_REPLACE_SIMPLE_TASK_CONFIG, DEFAULT_REPLACE_THESIS_TASK_CONFIG
-from src.pipelines.memorize.extractor.configs import DEFAULT_THESISES_EXTR_TASK_CONFIG, DEFAULT_TRIPLETS_EXTR_TASK_CONFIG
+from src.pipelines.memorize.updator.config import DEFAULT_REPLACE_SIMPLE_TASK_CONFIG, DEFAULT_REPLACE_THESIS_TASK_CONFIG
+from src.pipelines.memorize.extractor.config import DEFAULT_THESISES_EXTR_TASK_CONFIG, DEFAULT_TRIPLETS_EXTR_TASK_CONFIG
 from src.agents.connectors.StubAgentConnector import DEFAULT_STUBAGENT_CONFIG
 from src.agents import AgentDriver, AgentDriverConfig
 from src.utils import AgentTaskSolver

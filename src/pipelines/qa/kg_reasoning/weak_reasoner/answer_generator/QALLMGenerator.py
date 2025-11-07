@@ -5,7 +5,8 @@ import hashlib
 
 from .configs import AG_MAIN_LOG_PATH
 from .utils import WeakAGeneratorTaskSolvers, QALLMGeneratorAgentTasksConfig
-from ......utils.data_structs import Triplet, RelationType, create_id, TripletCreator, BaseComponentConfig, LanguageConfig
+from ......utils.data_structs import Triplet, RelationType, create_id, TripletCreator, \
+    BaseComponentConfig, LanguageConfig, RELATIONS_TYPES_MAP
 from ......utils.errors import STATUS_MESSAGE
 from ......agents.utils import AbstractAgentConnector
 from ......utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolver
@@ -23,24 +24,38 @@ class QALLMGeneratorConfig(BaseComponentConfig, LanguageConfig):
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию QALLMGeneratorAgentTasksConfig().
-    :type agent_tasks_config: QALLMGeneratorAgentTasksConfig, optional
+    :type agent_tasks_config: Union[QALLMGeneratorAgentTasksConfig,Dict], optional
     :param relation_type: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос. Значение по умолчанию [RelationType.hyper].
     :type relation_type: List[RelationType], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QALLMGenerator-класса. Значение по умолчанию 'qa_agenerator_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    agent_tasks_config: QALLMGeneratorAgentTasksConfig = field(default_factory=lambda: QALLMGeneratorAgentTasksConfig())
+    agent_tasks_config: Union[QALLMGeneratorAgentTasksConfig, Dict] = field(default_factory=lambda: QALLMGeneratorAgentTasksConfig())
 
-    relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.hyper, RelationType.simple])
+    relation_type: List[Union[str, RelationType]] = field(default_factory=lambda: [RelationType.hyper, RelationType.simple])
 
     cache_table_name: Union[str, None] = 'qa_agenerator_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(AG_MAIN_LOG_PATH))
 
     def to_str(self):
         str_relations = ";".join(
-            list(map(lambda v: v.value, self.relation_type)))
+            list(map(lambda v: v.value if isinstance(v, RelationType) else v, self.relation_type)))
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{str_relations}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = QALLMGeneratorConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self) -> None:
+        for i, rel_type in enumerate(self.relation_type):
+            if not isinstance(rel_type, RelationType):
+                self.relation_type[i] = RELATIONS_TYPES_MAP[rel_type]
+
+        if isinstance(self.agent_tasks_config, dict):
+            self.agent_tasks_config = QALLMGeneratorAgentTasksConfig.from_dict(self.agent_tasks_config)
 
 
 class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
@@ -50,7 +65,7 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
     :type agent: AbstractAgentConnector
     :param config: Конфигурация "Answer-generation"-стадии. Значение по умолчанию QALLMGeneratorConfig().
-    :type config: QALLMGeneratorConfig, optional
+    :type config: Union[QALLMGeneratorConfig,Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
@@ -59,10 +74,14 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     :type cache_llm_inference: bool, optional
     """
 
-    def __init__(self, agent: AbstractAgentConnector, config: QALLMGeneratorConfig = QALLMGeneratorConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: Union[QALLMGeneratorConfig, Dict] = QALLMGeneratorConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
                  cache_llm_inference: bool = True) -> None:
+        if isinstance(config, dict):
+            config: QALLMGeneratorConfig = QALLMGeneratorConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
         self.config.agent_tasks_config.versions_to_configs()
 

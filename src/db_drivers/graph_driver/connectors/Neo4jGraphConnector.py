@@ -6,13 +6,17 @@ from .configs import DEFAULT_NEO4J_CONFIG
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils.data_structs import Triplet, Node, TripletCreator, NodeCreator, \
     NodeType, RelationCreator, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP, \
-    NodeInfo, from_str_to_nodeinfo, RelationInfo, from_str_to_relationinfo
+    NodeInfo, RelationInfo
 
 
 class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
 
-    def __init__(self, config: GraphDBConnectionConfig = DEFAULT_NEO4J_CONFIG):
-        self.config = config
+    def __init__(self, config: Union[Dict, GraphDBConnectionConfig] = DEFAULT_NEO4J_CONFIG):
+        if isinstance(config, dict):
+            config = GraphDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
+        self.config: GraphDBConnectionConfig = config
 
     def open_connection(self) -> None:
         self.driver = None
@@ -303,7 +307,9 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
                 raise ValueError
 
             triplet = TripletCreator.create(
-                start_node, relation, end_node, add_stringified_triplet=True)
+                start_node, relation, end_node,
+                add_stringified_triplet=True, t_id=relation.prop['t_id']
+            )
             formated_triplets.append(triplet)
 
         # print("PARSED_TRIPLETS: ")

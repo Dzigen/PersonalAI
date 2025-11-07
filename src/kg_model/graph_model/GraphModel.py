@@ -1,41 +1,56 @@
 from dataclasses import dataclass, field
 from typing import List, Dict, Set, Tuple, Union
 import math
-from collections import defaultdict
 from tqdm import tqdm
 import gc
 
 from .config import GRAPH_DB_DEFAULT_DRIVER_CONFIG, GRAPH_MODEL_LOG_PATH
 from ...db_drivers.graph_driver import GraphDriver, GraphDriverConfig
-from ...utils.data_structs import Triplet, RelationType, NodeType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
+from ...utils.data_structs import Triplet, RelationType, NodeType, NODES_TYPES_MAP, \
+    RELATIONS_TYPES_MAP, BaseComponentConfig
 from ...utils import Logger
 
 
 @dataclass
-class GraphModelConfig:
+class GraphModelConfig(BaseComponentConfig):
     """Конфигурация графовой структуры данных.
 
     :param driver_config: Конфигурация графовой БД. Значение по умолчанию GRAPH_DB_DEFAULT_DRIVER_CONFIG.
-    :type driver_config: GraphDriverConfig, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(GRAPH_MODEL_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
+    :type driver_config: Union[Dict,GraphDriverConfig], optional
     """
-    driver_config: GraphDriverConfig = field(
-        default_factory=lambda: GRAPH_DB_DEFAULT_DRIVER_CONFIG)
+    driver_config: Union[Dict, GraphDriverConfig] = field(default_factory=lambda: GRAPH_DB_DEFAULT_DRIVER_CONFIG)
     log: Logger = field(default_factory=lambda: Logger(GRAPH_MODEL_LOG_PATH))
     verbose: bool = False
+
+    def to_str(self):
+        # TODO
+        raise NotImplementedError
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = GraphModelConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.driver_config, dict):
+            self.driver_config = GraphDriverConfig.from_dict(self.driver_config)
+        else:
+            self.driver_config.formate_fields()
 
 
 class GraphModel:
     """Структура данных, предназначенная для хранения информации в формате графа.
 
     :param config: Конфигурация графовой структуры. Значение по умолчанию GraphModelConfig().
-    :type config: GraphModelConfig
+    :type config: Union[Dict,GraphModelConfig], optional
     """
 
-    def __init__(self, config: GraphModelConfig = GraphModelConfig()) -> None:
+    def __init__(self, config: Union[Dict, GraphModelConfig] = GraphModelConfig()) -> None:
+        if isinstance(config, dict):
+            config: GraphModelConfig = GraphModelConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
 
         self.db_conn = GraphDriver.connect(self.config.driver_config)

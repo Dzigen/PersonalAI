@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 
 from ...utils import BaseStages
 from ....utils import ReturnInfo
 from ....utils.cache_kv.CacheOperations import CacheOperations
 from ....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
+from ....utils.data_structs import BaseConfigOperations
 
 
 @dataclass
@@ -34,10 +35,10 @@ class AbstractKGReasoner(CacheOperations, AgentStatOperations):
 
 
 @dataclass
-class BaseKGReasonerConfig:
-    pass
+class BaseKGReasonerConfig(BaseConfigOperations):
 
-    def to_str(self):
+    @staticmethod
+    def from_dict(dict_config: Dict):
         pass
 
 

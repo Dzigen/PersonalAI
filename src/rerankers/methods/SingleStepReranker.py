@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Union, Tuple
+from typing import List, Union, Tuple, Dict
 from copy import deepcopy
 from .utils import AbstractRerankerModule
 from ..utils import BaseRerankerModuleConfig
@@ -24,19 +24,33 @@ class SingleStepRerankerConfig(BaseRerankerModuleConfig):
     def to_str(self) -> str:
         return f"{self.vdb_name}:{self.threshold}:{self.fetch_n}"
 
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = SingleStepRerankerConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def from_dict(dict_config: Dict):
+        pass
+
 
 class SingleStepReranker(AbstractRerankerModule):
     """Класс реализует логику одностадийного Retrieve/Rerank-оператора для поиска релевантных элементов в заданной бд к запросу
     с помощью оценки семантической близости их векторных представлений.
 
     :param config: Конфигурация Retrieve/Rerank-оператора.
-    :type config: EnsembleFusionRerankerConfig
+    :type config: Union[Dict, SingleStepRerankerConfig]
     :param vdb_composer: Компоновщий нескольких наборов векторных представлений для одной группы элементов, из которой будет выполняться извлечение (retrieve-операция).
     :type vdb_composer: VectorComposer
     """
 
-    def __init__(self, config: SingleStepRerankerConfig, vdb_composer: VectorComposer):
+    def __init__(self, config: Union[Dict, SingleStepRerankerConfig], vdb_composer: VectorComposer):
+        if isinstance(config, dict):
+            config: SingleStepRerankerConfig = SingleStepRerankerConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+
         self.validate_config(vdb_composer)
 
         self.vdb_composer = vdb_composer

@@ -23,13 +23,13 @@ class ClueAnswerGeneratorConfig(BaseComponentConfig, LanguageConfig):
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию ClueAnswerGeneratorAgentTasksConfig().
-    :type agent_tasks_config: ClueAnswerGeneratorAgentTasksConfig, optional
+    :type agent_tasks_config: Union[ClueAnswerGeneratorAgentTasksConfig, Dict], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы ClueAnswersSummarizer-класса. Значение по умолчанию 'medreasn_cagen_main_stage_cache'.
     :type cache_table_name: str, optional
     """
     lang: str = 'auto'
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    agent_tasks_config: ClueAnswerGeneratorAgentTasksConfig = field(default_factory=lambda: ClueAnswerGeneratorAgentTasksConfig())
+    agent_tasks_config: Union[ClueAnswerGeneratorAgentTasksConfig, Dict] = field(default_factory=lambda: ClueAnswerGeneratorAgentTasksConfig())
 
     cache_table_name: str = 'medreasn_cagen_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(CAGEN_MAIN_LOG_PATH))
@@ -38,6 +38,16 @@ class ClueAnswerGeneratorConfig(BaseComponentConfig, LanguageConfig):
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
 
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = ClueAnswerGeneratorConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.agent_tasks_config, dict):
+            self.agent_tasks_config = ClueAnswerGeneratorAgentTasksConfig.from_dict(self.agent_tasks_config)
+
 
 class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     """Верхнеуровневый класс стадии #3.1.2 MediumQA-конвейера для суммаризации/резюмирования информации, извлечённой из графа знаний (памяти ассистента) по clue-запросу.
@@ -45,7 +55,7 @@ class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
     :type agent: AbstractAgentConnector
     :param config: Конфигурация ClueAnswerGenerator-стадии. Значение по умолчанию ClueAnswerGeneratorConfig().
-    :type config: ClueAnswerGeneratorConfig, optional
+    :type config: Union[ClueAnswerGeneratorConfig,Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
@@ -54,10 +64,14 @@ class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     :type cache_llm_inference: bool, optional
     """
 
-    def __init__(self, agent: AbstractAgentConnector, config: ClueAnswerGeneratorConfig = ClueAnswerGeneratorConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: Union[ClueAnswerGeneratorConfig, Dict] = ClueAnswerGeneratorConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
                  cache_llm_inference: bool = True,) -> None:
+        if isinstance(config, dict):
+            config: ClueAnswerGeneratorConfig = ClueAnswerGeneratorConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
         self.config.agent_tasks_config.versions_to_configs()
 

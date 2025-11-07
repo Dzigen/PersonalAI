@@ -12,6 +12,7 @@ class QueryEnhancerTaskSolvers(BaseTaskSolvers):
     termscheck_solver: AgentTaskSolver
     linguistcheck_solver: AgentTaskSolver
 
+
 @dataclass
 class QueryEnhancerAgentTasksConfig(BaseAgentTasksConfig):
     """
@@ -27,3 +28,9 @@ class QueryEnhancerAgentTasksConfig(BaseAgentTasksConfig):
     lingcheck: Union[AgentTaskSolverConfig, str] = 'v1'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: QUERYENH_AGENTASKS_SELECTORS_MAPPING)
+
+    @staticmethod
+    def from_dict(dict_config):
+        formated_config = QueryEnhancerAgentTasksConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config

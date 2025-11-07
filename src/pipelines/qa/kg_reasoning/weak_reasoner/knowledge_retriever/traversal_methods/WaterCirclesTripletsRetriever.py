@@ -4,7 +4,8 @@ from typing import Dict, List, Set, Tuple, Union
 
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......kg_model import KnowledgeGraphModel
-from .......utils.data_structs import QueryInfo, TripletCreator, create_id, Triplet, NodeCreator, RelationCreator, NodeType, RelationType, NODES_TYPES_MAP
+from .......utils.data_structs import QueryInfo, TripletCreator, create_id, Triplet, NodeCreator, \
+    RelationCreator, NodeType, RelationType, NODES_TYPES_MAP
 from .......utils import Logger
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
@@ -106,7 +107,7 @@ class WaterCirclesSearchConfig(BaseGraphSearchConfig):
     :param do_text_pruning: _description_. Значение по умолчанию False.
     :type do_text_pruning: bool, optional
     :param accepted_node_types:Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извелчения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time].
-    :type accepted_node_types: List[NodeType], optional
+    :type accepted_node_types: List[Union[str,NodeType]], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы WaterCirclesRetriever-класса. Значение по умолчанию 'qa_watercircles_t_retriever_cache'.
     :type cache_table_name: str, optional
     """
@@ -116,15 +117,25 @@ class WaterCirclesSearchConfig(BaseGraphSearchConfig):
     chain_triplets_num: int = 25
     other_triplets_num: int = 6
     do_text_pruning: bool = False
-    accepted_node_types: List[NodeType] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
+    accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
 
     cache_table_name: str = 'qa_watercircles_t_retriever_cache'
 
     def to_str(self):
         str_values = f"{self.hyper_num};{self.episodic_num};{self.chain_triplets_num};{self.other_triplets_num}"
-        str_accepted_nodes = ";".join(
-            sorted(list(map(lambda v: v.value, self.accepted_node_types))))
+        str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
         return f"{self.strict_filter}|{str_values}|{self.do_text_pruning}|{str_accepted_nodes}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = WaterCirclesSearchConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self) -> None:
+        for i, node_type in enumerate(self.accepted_node_types):
+            if not isinstance(node_type, NodeType):
+                self.accepted_node_types[i] = NODES_TYPES_MAP[node_type]
 
 
 class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
@@ -146,10 +157,9 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
                  log: Logger, search_config: Union[WaterCirclesSearchConfig, Dict] = WaterCirclesSearchConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
         if isinstance(search_config, dict):
-            if 'accepted_node_types' in search_config:
-                search_config['accepted_node_types'] = list(
-                    map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
-            search_config = WaterCirclesSearchConfig(**search_config)
+            search_config = WaterCirclesSearchConfig.from_dict(search_config)
+        else:
+            search_config.formate_fields()
         self.config: WaterCirclesSearchConfig = search_config
 
         self.kg_model = kg_model

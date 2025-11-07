@@ -5,9 +5,11 @@ from .configs import KWEXTR_AGENTASKS_SELECTORS_MAPPING
 from .....utils import BaseTaskSolvers, BaseAgentTaskConfigSelector, BaseAgentTasksConfig
 from ......utils import AgentTaskSolver, AgentTaskSolverConfig
 
+
 @dataclass
 class WeakQueryParserTaskSolvers(BaseTaskSolvers):
     kw_extraction_solver: AgentTaskSolver
+
 
 @dataclass
 class QueryLLMParserAgentTasksConfig(BaseAgentTasksConfig):
@@ -18,3 +20,9 @@ class QueryLLMParserAgentTasksConfig(BaseAgentTasksConfig):
     kw_extraction: Union[AgentTaskSolverConfig, str] = 'v2'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: KWEXTR_AGENTASKS_SELECTORS_MAPPING)
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = QueryLLMParserAgentTasksConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config

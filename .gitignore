@@ -41,18 +41,9 @@ tmp/
 tests/volumes
 docs/build
 
+experiments/qa/configure/weak/legacy
 experiments/qa/2025-03-11 18-25-04.mp4
 experiments/qa/instruction.mp4
-<<<<<<< HEAD
-<<<<<<< HEAD
-experiments/qa_kg/
 .secrets
 experiments/qa/guide/
-=======
 experiments/qa_kg/
->>>>>>> dev
-=======
-.secrets
-experiments/qa_kg/
-experiments/qa/guide/
->>>>>>> dev

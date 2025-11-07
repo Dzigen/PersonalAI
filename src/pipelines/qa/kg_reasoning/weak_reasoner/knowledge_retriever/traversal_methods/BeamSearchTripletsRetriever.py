@@ -18,7 +18,6 @@ from .......utils.data_structs import QueryInfo, Triplet, NodeType, NodeInfo, fr
 from .......kg_model import KnowledgeGraphModel
 from .......utils.data_structs import create_id, NODES_TYPES_MAP
 from .......utils import Logger
-from .......db_drivers.vector_driver import VectorDBInstance
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 from .......rerankers import RerankerDriver, RerankerDriverConfig
@@ -27,15 +26,15 @@ from .......rerankers.methods import SingleStepReranker
 
 @dataclass
 class TraversingPath:
-    path: List[Tuple[str, str, str]]
-    unique_nids: Set[str]
+    path: List[Tuple[NodeInfo, str, NodeInfo]]
+    unique_ntypedids: Set[str]
     unique_tids: Set[str]
     accum_score: float
 
 
 @dataclass
 class TraversedPath:
-    path: List[Tuple[str, str, str]]
+    path: List[Tuple[NodeInfo, str, NodeInfo]]
     score: float
 
 
@@ -44,7 +43,9 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     """Конфигурация BeamSearchTripletsRetriever-алгоритма обхода графа.
 
     :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию BSGS_RERANKDRIVER_DEFAULT_CONFIG.
-    :type reranker_driver_config: RerankerDriverConfig, optional
+    :type reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
+    :param vdbname_for_scores: ... . Значение по умолчанию 'triplets_dense'.
+    :type vdbname_for_scores: str, optional
     :param max_depth: Максимальная глубина построенных/пройденных путей. Значение по умолчанию 10.
     :type max_depth: int, optional
     :param max_paths: Максимальное количество построенных/пройденных путей. Значение по умолчанию 50.
@@ -64,7 +65,7 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveBFSTripletsRetriever-класса. Значение по умолчанию 'qa_beamsearch_t_retriever_cache'.
     :type cache_table_name: str, optional
     """
-    reranker_driver_config: RerankerDriverConfig = field(default_factory=lambda: BSGS_RERANKDRIVER_DEFAULT_CONFIG)
+    reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(default_factory=lambda: BSGS_RERANKDRIVER_DEFAULT_CONFIG)
     vdbname_for_scores: str = 'triplets_dense'
     max_depth: int = 10
     max_paths: int = 50
@@ -79,10 +80,28 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     cache_table_name: str = 'qa_beamsearch_t_retriever_cache'
 
     def to_str(self):
+        str_reranker = f"{self.vdbname_for_scores};{self.reranker_driver_config.to_str()}"
+        str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
+        str_values = f"{self.max_depth};{self.max_paths};{self.mean_alpha};{str_accepted_nodes};{self.final_sorting_mode}"
         str_bools = f"{self.same_path_intersection_by_node};{self.diff_paths_intersection_by_node};{self.diff_paths_intersection_by_rel}"
-        str_accepted_nodes = ";".join(
-            sorted(list(map(lambda v: v.value, self.accepted_node_types))))
-        return f"{self.max_depth}|{self.max_paths}|{str_bools}|{self.mean_alpha}|{str_accepted_nodes}|{self.final_sorting_mode}"
+
+        return f"{str_values};{str_bools};{str_reranker}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = GraphBeamSearchConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self) -> None:
+        for i, node_type in enumerate(self.accepted_node_types):
+            if isinstance(node_type, str):
+                self.accepted_node_types[i] = NODES_TYPES_MAP[node_type]
+
+        if self.reranker_driver_config is dict:
+            self.reranker_driver_config = RerankerDriverConfig.from_dict(self.reranker_driver_config)
+        else:
+            self.reranker_driver_config.formate_fields()
 
 
 class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
@@ -104,10 +123,9 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                  search_config: Union[GraphBeamSearchConfig, Dict] = GraphBeamSearchConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
         if isinstance(search_config, dict):
-            if 'accepted_node_types' in search_config:
-                search_config['accepted_node_types'] = list(
-                    map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
-            search_config = GraphBeamSearchConfig(**search_config)
+            search_config = GraphBeamSearchConfig.from_dict(search_config)
+        else:
+            search_config.formate_fields()
         self.config: GraphBeamSearchConfig = search_config
 
         self.kg_model = kg_model
@@ -165,13 +183,13 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         if not self.config.same_path_intersection_by_node:
             # Удаляем вершины, которые уже есть в текущем пути из числа смежных
             adj_nodes_typedids.difference_update(
-                traversing_paths[cur_path_idx].unique_nids)
+                traversing_paths[cur_path_idx].unique_ntypedids)
 
         if not self.config.diff_paths_intersection_by_node:
             # Удаляем вершины, которые есть в других путях из числа смежных для текущего пути
             for i in range(len(traversing_paths)):
                 if i != cur_path_idx:
-                    adj_nodes_typedids.difference_update(traversing_paths[i].unique_nids)
+                    adj_nodes_typedids.difference_update(traversing_paths[i].unique_ntypedids)
         filtered_adjenced_nodes = list(map(lambda n_typedid: from_str_to_nodeinfo(n_typedid), list(adj_nodes_typedids)))
         return filtered_adjenced_nodes
 
@@ -238,7 +256,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             ext_trpath = deepcopy(pinfo)
 
             ext_trpath.path.append((ext_trpath.path[-1][2], t_id, new_node))
-            ext_trpath.unique_nids.add(new_node.to_str())
+            ext_trpath.unique_ntypedids.add(new_node.to_str())
 
             if t_id in ext_trpath.unique_tids:
                 raise ValueError(f"Триплет с id '{t_id}' уже существует в пути {ext_trpath}. Все триплеты должны быть уникальными.")
@@ -276,7 +294,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     def graph_beamsearch(self, query: str, node: NodeInfo) -> List[TraversedPath]:
         traversing_paths = [TraversingPath(
-            path=[(None, None, node)], unique_nids={node.to_str()},
+            path=[(None, None, node)], unique_ntypedids={node.to_str()},
             unique_tids=set(), accum_score=0.0)]
         ended_paths = []
 

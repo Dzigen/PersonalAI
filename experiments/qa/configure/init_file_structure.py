@@ -21,6 +21,8 @@ GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['gen_
 METRICS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['metrics_name']}"
 TMP_JUDGES_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['tmp_judges_name']}"
 JUDGES_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['judges_name']}"
+SETTINGS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['settings_name']}"
+CONFIGS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['configs_name']}"
 
 if EXPDIR_PARAMS['INIT_STRUCT']:
 
@@ -40,6 +42,10 @@ if EXPDIR_PARAMS['INIT_STRUCT']:
         raise ValueError(f"Директории существует: {TMP_JUDGES_DIR}")
     if os.path.exists(JUDGES_DIR):
         raise ValueError(f"Директории существует: {JUDGES_DIR}")
+    if os.path.exists(SETTINGS_DIR):
+        raise ValueError(f"Директории существует: {SETTINGS_DIR}")
+    if os.path.exists(CONFIGS_DIR):
+        raise ValueError(f"Директории существует: {CONFIGS_DIR}")
 
     os.mkdir(SPEC_EXPERIMENT_DIR)
     os.mkdir(TMP_JUDGES_DIR)
@@ -47,5 +53,7 @@ if EXPDIR_PARAMS['INIT_STRUCT']:
     os.mkdir(TMP_GENERATED_ANSWERS_DIR)
     os.mkdir(GENERATED_ANSWERS_DIR)
     os.mkdir(METRICS_DIR)
+    os.mkdir(SETTINGS_DIR)
+    os.mkdir(CONFIGS_DIR)
 
     print("############ DONE ############")

@@ -9,9 +9,9 @@ from collections import Counter
 
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig, get_nodes_path, NodeInfo
 from .......utils.data_structs import QueryInfo, Triplet, NodeType, create_id_for_node_pair, create_id, \
-    NODES_TYPES_MAP, NodeInfo, RelationInfo, from_str_to_nodeinfo
+    NODES_TYPES_MAP, NodeInfo, from_str_to_nodeinfo, BaseConfigOperations
 from .......kg_model import KnowledgeGraphModel
-from .......db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver, KVDBConnectionConfig, KeyValueDBInstance
+from .......db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver, KeyValueDBInstance
 from .......utils import Logger
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
@@ -19,20 +19,34 @@ from .......db_drivers.vector_driver import VectorDBInstance
 
 
 @dataclass
-class AStarMetricsConfig:
+class AStarMetricsConfig(BaseConfigOperations):
     """Конфигурация класса для расчёта метрик, используемых в рамках A*-алгоритма.
 
     :param h_metric_name: Эвристическая метрика, которая будет использоваться для оценки расстояния между текущей и конечной вершинами. Данное поле может принимать следующие значения: (1) 'ip' - косинусное расстояние между эмбеддингами текущей и конечной вершин; (2) 'weight_with_short_path' - кратчайшее расстояние между текущей и конечной вершинами (полученное с помощью bfs-алгоритма), домноженное на 'ip'-метрику; (3) 'avg_weighted_with_short_path' - кратчайшее расстояние между текущей и конечной вершинами (полученное с помощью bfs-алгоритма), домноженное на усреднённое значение 'ip'-метрики между парами вершин в пути от начальной до текущей вершины + пара из текущей и конечной вершин. Значение по умолчанию 'ip'.
-    :type h_metric_name: str
-    :param kvdriver_config: Конфигурация кеша для хранения рассчитанных h-оценок между вершинами. Значение по умолчанию None (кеширование не используется).
-    :type kvdriver_config: KeyValueDriverConfig
+    :type h_metric_name: str, optional
+    :param nodes_vdb_name: ... . Значение по умолчанию 'nodes_dense'.
+    :type nodes_vdb_name: str, optional
+    :param kvdriver_config: Конфигурация кеша для хранения рассчитанных h-оценок между вершинами. Значение по умолчанию None (кеширование не используется). Значение по умолчанию None.
+    :type kvdriver_config: Union[None, KeyValueDriverConfig, Dict], optional
     """
     h_metric_name: str = 'ip'
     nodes_vdb_name: str = 'nodes_dense'
-    kvdriver_config: Union[None, KeyValueDriverConfig] = None
+    kvdriver_config: Union[None, KeyValueDriverConfig, Dict] = None
 
     def to_str(self):
         return f"{self.h_metric_name}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = AStarMetricsConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.kvdriver_config, dict):
+            self.kvdriver_config = KeyValueDriverConfig.from_dict(self.kvdriver_config)
+        elif self.kvdriver_config is not None:
+            self.kvdriver_config.formate_fields()
 
 
 class AStarMetrics:
@@ -292,26 +306,41 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     """Конфигурация класса, реализующего логику A*-алгоритма поиска по графу знаний.
 
     :param metrics_config: Конфигурация класса, выполняющая расчёт необходимых метрик для A*-алгоритма. Значение по умолчанию AStarMetricsConfig().
-    :type metrics_config: AStarMetricsConfig
+    :type metrics_config: Union[Dict,AStarMetricsConfig]
     :param max_depth: Максимальная глубина обхода графа для поиска заданной вершины. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 10.
     :type max_depth: int
     :param max_passed_nodes: Максимальное количество вершин, которое можно обойти для поиска заданной вершины в графе. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 500.
     :type max_passed_nodes: int
     :param accepted_node_types: Типы вершин, которые можно обходить во время поиска заданной вершины. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic].
-    :type accepted_node_types: List[NodeType]
+    :type accepted_node_types: List[Union[str,NodeType]]
     """
-    metrics_config: AStarMetricsConfig = field(
-        default_factory=lambda: AStarMetricsConfig())
+    metrics_config: Union[Dict, AStarMetricsConfig] = field(default_factory=lambda: AStarMetricsConfig())
     max_depth: int = 10
     max_passed_nodes: int = 500
-    accepted_node_types: List[NodeType] = field(default_factory=lambda: [
-                                                NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
+    accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [
+        NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
     cache_table_name: str = 'qa_astar_t_retriever_cache'
 
     def to_str(self):
         str_accepted_nodes = ";".join(
             sorted(list(map(lambda v: v.value, self.accepted_node_types))))
         return f"{self.metrics_config.to_str()}|{self.max_depth}|{self.max_passed_nodes}|{str_accepted_nodes}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = AStarGraphSearchConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self) -> None:
+        for i, node_type in enumerate(self.accepted_node_types):
+            if not isinstance(node_type, NodeType):
+                self.accepted_node_types[i] = NODES_TYPES_MAP[node_type]
+
+        if self.metrics_config is dict:
+            self.metrics_config = AStarMetricsConfig.from_dict(self.metrics_config)
+        else:
+            self.metrics_config.formate_fields()
 
 
 class AStarGraphSearch:
@@ -418,31 +447,14 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[AStarGraphSearchConfig, Dict] = AStarGraphSearchConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
         if isinstance(search_config, dict):
-            if 'accepted_node_types' in search_config:
-                search_config['accepted_node_types'] = list(
-                    map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
-
-            if 'metrics_config' in search_config:
-                search_config['metrics_config'] = AStarMetricsConfig(
-                    **search_config['metrics_config'])
-                search_config['metrics_config'].kvdriver_config = KeyValueDriverConfig(
-                    **search_config['metrics_config'].kvdriver_config)
-                search_config['metrics_config'].kvdriver_config.db_config = KVDBConnectionConfig(
-                    **search_config['metrics_config'].kvdriver_config.db_config)
-
-                if search_config['metrics_config'].kvdriver_config.db_vendor == 'mixed_kv':
-                    search_config['metrics_config'].kvdriver_config.db_config.params['redis_config'] = KVDBConnectionConfig(
-                        **search_config['metrics_config'].kvdriver_config.db_config.params['redis_config'])
-                    search_config['metrics_config'].kvdriver_config.db_config.params['mongo_config'] = KVDBConnectionConfig(
-                        **search_config['metrics_config'].kvdriver_config.db_config.params['mongo_config'])
-
-            search_config = AStarGraphSearchConfig(**search_config)
-        self.config = search_config
+            search_config = AStarGraphSearchConfig.from_dict(search_config)
+        else:
+            search_config.formate_fields()
+        self.config: AStarGraphSearchConfig = search_config
 
         self.kg_model = kg_model
 
-        self.graph_searcher = AStarGraphSearch(
-            kg_model, log, search_config, verbose)
+        self.graph_searcher = AStarGraphSearch(kg_model, log, search_config, verbose)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, self.config.cache_table_name)

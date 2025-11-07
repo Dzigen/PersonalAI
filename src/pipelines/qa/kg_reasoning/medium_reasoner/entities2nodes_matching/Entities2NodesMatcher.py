@@ -7,7 +7,6 @@ from ......utils import ReturnInfo, Logger
 from ......utils.errors import ReturnStatus
 from ......utils.data_structs import NodeType, BaseComponentConfig, NodeInfo
 from ......db_drivers.kv_driver import KeyValueDriverConfig
-from ......db_drivers.vector_driver import VectorDBInstance
 from ......utils.cache_kv import CacheUtils
 from ......rerankers import RerankerDriverConfig, RerankerDriver
 from ......utils.cache_kv.CacheOperations import CacheOperations
@@ -20,22 +19,33 @@ class Entities2NodesMatcherConfig(BaseComponentConfig):
     :param use_tree: Если True, то для сопоставления сущностей с object-вершинами из графа будет использована древовидная модель представления вершин из графа знаний, иначе для matching-операции будет использован Retrieve/Rerank-оператор. Значение по умолчанию False.
     :type use_tree: str, optional
     :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию E2NM_RERANKDRIVER_DEFAULT_CONFIG.
-    :type reranker_driver_config: RerankerDriverConfig, optional
+    :type reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
     :param max_n: Максимальное количество вершин из графа знаний, которе может быть сопоставлено одной сущности. Значение по умолчанию 3.
     :type max_n: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы Entities2NodesMatcher-класса. Значение по умолчанию 'medreasn_e2nmatcher_main_stage_cache'.
     :type cache_table_name: str, optional
     """
     use_tree: bool = False
-    reranker_driver_config: RerankerDriverConfig = field(default_factory=lambda: E2NM_RERANKDRIVER_DEFAULT_CONFIG)
+    reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(default_factory=lambda: E2NM_RERANKDRIVER_DEFAULT_CONFIG)
     max_n: int = 3
 
     cache_table_name: str = "medreasn_e2nmatcher_main_stage_cache"
-    log: Logger = field(
-        default_factory=lambda: Logger(E2NMATCHER_MAIN_LOG_PATH))
+    log: Logger = field(default_factory=lambda: Logger(E2NMATCHER_MAIN_LOG_PATH))
 
     def to_str(self):
         return f"{self.use_tree}|{self.max_n}|{self.reranker_driver_config.to_str()}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = Entities2NodesMatcherConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.reranker_driver_config, dict):
+            self.reranker_driver_config = RerankerDriverConfig.from_dict(self.reranker_driver_config)
+        else:
+            self.reranker_driver_config.formate_fields()
 
 
 class Entities2NodesMatcher(CacheUtils, CacheOperations):
@@ -44,14 +54,19 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация Entities2NodesMatcher-стадии. Значение по умолчанию Entities2NodesMatcherConfig().
-    :type config: Entities2NodesMatcherConfig, optional
+    :type config: Union[Entities2NodesMatcherConfig. Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, config: Entities2NodesMatcherConfig = Entities2NodesMatcherConfig(),
+    def __init__(self, kg_model: KnowledgeGraphModel, config: Union[Entities2NodesMatcherConfig, Dict] = Entities2NodesMatcherConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None):
+        if isinstance(config, dict):
+            config: Entities2NodesMatcherConfig = Entities2NodesMatcherConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+
         self.kg_model = kg_model
 
         self.cachekv = self.init_cachekv(

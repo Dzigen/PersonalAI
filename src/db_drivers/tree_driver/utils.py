@@ -39,10 +39,20 @@ class TreeNode:
 
 @dataclass
 class TreeDBConnectionConfig(BaseDatabaseConfig):
-    db_info: Dict = field(default_factory=lambda: {
-                          'db': 'DefaultPersonalAITreeDB', 'table': 'DefaultPersonalAITreeTable'})
+    db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAITreeDB', 'table': 'DefaultPersonalAITreeTable'})
     host: str = None
     port: str = None
+
+    def to_str(self):
+        str_hostport = f"{self.host};{self.port}"
+        str_needto = f"{self.need_to_clear};{self.create_index}"
+        return f"{self.db_info};{str_hostport};{str_needto};{self.params}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = TreeDBConnectionConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
 
 
 class AbstractTreeDatabaseConnection(AbstractDatabaseConnection):

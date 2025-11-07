@@ -10,6 +10,7 @@ from ....utils.task_solver import AgentTaskSolver, AgentTaskSolverConfig
 class AnswerAggregatorTaskSolvers(BaseTaskSolvers):
     subanswers_summarisation_solver: AgentTaskSolver
 
+
 @dataclass
 class AnswersAggregatorAgentTasksConfig(BaseAgentTasksConfig):
     """
@@ -19,3 +20,9 @@ class AnswersAggregatorAgentTasksConfig(BaseAgentTasksConfig):
     suba_summarisation: Union[AgentTaskSolverConfig, str] = 'v1'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: ANSWAGGR_AGENTASKS_SELECTORS_MAPPING)
+
+    @staticmethod
+    def from_dict(dict_config):
+        formated_config = AnswersAggregatorAgentTasksConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config

@@ -28,6 +28,7 @@ DEFAULT_INMEMORYTABLE_CONFIG = TableDBConnectionConfig(
         'max_storage': 5e+8,
         'load_dump_dir': "./personalai_tmp/volumes/inmemory_table",
         'save_on_disk': True,
-        'save_dump_dir': "./personalai_tmp/volumes/inmemory_table"
+        'save_dump_dir': "./personalai_tmp/volumes/inmemory_table",
+        'rewrite': False
     }
 )

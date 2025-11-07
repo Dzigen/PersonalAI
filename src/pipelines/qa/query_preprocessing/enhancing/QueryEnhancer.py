@@ -21,18 +21,28 @@ class QueryEnhancerConfig(BaseComponentConfig, LanguageConfig):
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию QueryEnhancerAgentTasksConfig().
-    :type agent_tasks_config: QueryEnhancerAgentTasksConfig, optional
+    :type agent_tasks_config: Union[Dict,QueryEnhancerAgentTasksConfig], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryEnhancer-класса. Значение по умолчанию 'qp_enhancing_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    agent_tasks_config: QueryEnhancerAgentTasksConfig = field(default_factory=lambda: QueryEnhancerAgentTasksConfig())
+    agent_tasks_config: Union[Dict, QueryEnhancerAgentTasksConfig] = field(default_factory=lambda: QueryEnhancerAgentTasksConfig())
 
     cache_table_name: str = 'qp_enhancing_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(QE_MAIN_LOG_PATH))
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
+
+    @staticmethod
+    def from_dict(dict_config):
+        formated_config = QueryEnhancerConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.agent_tasks_config, dict):
+            self.agent_tasks_config = QueryEnhancerAgentTasksConfig.from_dict(self.agent_tasks_config)
 
 
 class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
@@ -41,8 +51,8 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
     :type agent: AbstractAgentConnector
     :param config: Конфигурация QueryEnhancer-операции. Значение по умолчанию QueryEnhancerConfig().
-    :type config: QueryEnhancerConfig, optional
-    :param cache_kvdriver_config:Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type config: Union[Dict,QueryEnhancerConfig], optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
@@ -50,12 +60,17 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
-    def __init__(self, agent: AbstractAgentConnector, config: QueryEnhancerConfig = QueryEnhancerConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: Union[Dict, QueryEnhancerConfig] = QueryEnhancerConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
                  cache_llm_inference: bool = True):
+        if isinstance(config, dict):
+            config: QueryEnhancerConfig = QueryEnhancerConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
         self.config.agent_tasks_config.versions_to_configs()
+
         self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
 
         self.agent = agent

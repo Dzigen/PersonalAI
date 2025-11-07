@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Dict
 import faiss
 from langchain_community.vectorstores import FAISS
 from langchain_community.docstore.in_memory import InMemoryDocstore
@@ -21,9 +21,14 @@ from .....utils.errors import ReturnInfo
 class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
     # https://python.langchain.com/api_reference/community/vectorstores/langchain_community.vectorstores.faiss.FAISS.html#langchain_community.vectorstores.faiss.FAISS.delete
 
-    def __init__(self, config: VectorDBConnectionConfig = DEFAULT_INMEMORY_CONFIG,
+    def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_INMEMORY_CONFIG,
                  embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16) -> None:
+        if isinstance(config, dict):
+            config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+
         self.embedder = embedder
         self.encode_batchsize = encode_batchsize
 
@@ -77,7 +82,7 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
         if self.config.params['save_on_disk']:
             save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}"
             save_fname = self.config.db_info['table']
-            if os.path.exists(f"{save_path}/{save_fname}"):
+            if os.path.exists(f"{save_path}/{save_fname}") and not self.config.params['rewrite']:
                 # print("warning: file on that path is already exists")
                 postfix = hashlib.md5(str(time.time()).encode()).hexdigest()
                 save_fname += postfix

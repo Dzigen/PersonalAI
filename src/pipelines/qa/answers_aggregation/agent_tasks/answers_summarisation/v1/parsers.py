@@ -32,7 +32,7 @@ def ru_subasumm_custom_answer_parse(raw_response: str, **kwargs) -> str:
     if answer_pos is None:
         raise ValueError(f"raw_response (format error): '{raw_response}'")
 
-    answer = raw_response[answer_pos.span(0)[0]:].strip()
+    answer = raw_response[answer_pos.span(0)[1]:].strip()
 
     # Пустой ответ
     if len(answer) < 1:

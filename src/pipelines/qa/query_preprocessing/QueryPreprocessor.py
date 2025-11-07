@@ -21,18 +21,18 @@ from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 class QueryPreprocessorConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация QueryPreprocessor-стадии.
 
-    :param denoising_config: Конфигурация шага предобработки user-вопроса, отвечающая за удаление лишних шумов/фрагментов информации. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию QueryDenoiserConfig().
-    :type denoising_config: Union[None, QueryDenoiserConfig], optional
-    :param enhancing_config: Конфигурация шага предобработки user-вопроса, отвечающая за добавление дополнительных языковых конструкций и переформилирование user-вопроса, с целью упрощения процесса по распознаванию заложенного запроса/интента. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию QueryEnhancerConfig().
-    :type enhancing_config: Union[None, QueryEnhancerConfig], optional
+    :param denoising_config: Конфигурация шага предобработки user-вопроса, отвечающая за удаление лишних шумов/фрагментов информации. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию None.
+    :type denoising_config: Union[None, Dict, QueryDenoiserConfig], optional
+    :param enhancing_config: Конфигурация шага предобработки user-вопроса, отвечающая за добавление дополнительных языковых конструкций и переформилирование user-вопроса, с целью упрощения процесса по распознаванию заложенного запроса/интента. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию None.
+    :type enhancing_config: Union[None, Dict, QueryEnhancerConfig], optional
     :param decomposition_config: Конфигурация шага предобработки user-вопроса, отвечающая за разбиение сложных/составных user-вопрос на простые/независимые части (под-вопросы) для их параллельной обработки и ускорения процесса формирования финального ответа. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию QueryDecomposerConfig().
-    :type decomposition_config: Union[None, QueryDecomposerConfig], optional
+    :type decomposition_config: Union[None, Dict, QueryDecomposerConfig], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryPreprocessor-класса. Значение по умолчанию "query_preprocessing_main_stage_cache".
     :type cache_table_name: str, optional
     """
-    denoising_config: Union[None, QueryDenoiserConfig] = field(default_factory=lambda: QueryDenoiserConfig())
-    enhancing_config: Union[None, QueryEnhancerConfig] = field(default_factory=lambda: QueryEnhancerConfig())
-    decomposition_config: Union[None, QueryDecomposerConfig] = field(default_factory=lambda: QueryDecomposerConfig())
+    denoising_config: Union[None, Dict, QueryDenoiserConfig] = None
+    enhancing_config: Union[None, Dict, QueryEnhancerConfig] = None
+    decomposition_config: Union[None, Dict, QueryDecomposerConfig] = field(default_factory=lambda: QueryDecomposerConfig())
 
     cache_table_name: str = "query_preprocessing_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(QP_MAIN_LOG_PATH))
@@ -43,6 +43,28 @@ class QueryPreprocessorConfig(BaseComponentConfig, LanguageConfig):
         str_decomp_config = self.decomposition_config.to_str() if self.decomposition_config is not None else 'None'
         return f"{str_denois_config}|{str_enh_config}|{str_decomp_config}"
 
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_dict = QueryPreprocessorConfig(**dict_config)
+        formated_dict.formate_fields()
+        return formated_dict
+
+    def formate_fields(self):
+        if isinstance(self.denoising_config, dict):
+            self.denoising_config = QueryDenoiserConfig.from_dict(self.denoising_config)
+        elif self.denoising_config is not None:
+            self.denoising_config.formate_fields()
+
+        if isinstance(self.enhancing_config, dict):
+            self.enhancing_config = QueryEnhancerConfig.from_dict(self.enhancing_config)
+        elif self.enhancing_config is not None:
+            self.enhancing_config.formate_fields()
+
+        if isinstance(self.decomposition_config, dict):
+            self.decomposition_config = QueryDecomposerConfig.from_dict(self.decomposition_config)
+        elif self.decomposition_config is not None:
+            self.decomposition_config.formate_fields()
+
 
 class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
     """Верхнеуровневый класс QueryPreprocessor-стадии (точка входа), отвечающей за предобработку исходного user-вопроса, с целью упрощения процесса поиска информации и повышения качества финального ответа системы.
@@ -50,17 +72,22 @@ class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
     :type agent: AbstractAgentConnector
     :param config: Конфигурация QueryPreprocessor-стадии. Значение по умолчанию QueryPreprocessorConfig().
-    :type config: QueryPreprocessorConfig, optional
+    :type config: Union[Dict,QueryPreprocessorConfig], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[None, KeyValueDriverConfig], optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
-    def __init__(self, agent: AbstractAgentConnector, config: QueryPreprocessorConfig = QueryPreprocessorConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: Union[Dict, QueryPreprocessorConfig] = QueryPreprocessorConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
+        if isinstance(config, dict):
+            config: QueryPreprocessorConfig = QueryPreprocessorConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+
         self.using_agent_info = {'kw': agent.CONNECTOR_KW, 'config': agent.config}
 
         self.stages: QueryPreprocessingStages = QueryPreprocessingStages()

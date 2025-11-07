@@ -29,7 +29,7 @@ def ethesises_custom_postprocess(parsed_response: List[Tuple[str, List[str]]], n
 
             formated_triplets.append(TripletCreator.create(
                 start_node=NodeCreator.create(
-                    name=str(entity), n_type=NodeType.object),
+                    name=str(entity), n_type=NodeType.object, prop={**node_prop}),
                 relation=thesis_rel, end_node=thesis_node))
 
     return formated_triplets

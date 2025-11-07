@@ -20,3 +20,9 @@ class EntitiesExtractorAgentTasksConfig(BaseAgentTasksConfig):
     entities_extraction: Union[AgentTaskSolverConfig, str] = 'v1'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: ENTEXTR_AGENTASKS_SELECTORS_MAPPING)
+
+    @staticmethod
+    def from_dict(dict_config):
+        formated_config = EntitiesExtractorAgentTasksConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config

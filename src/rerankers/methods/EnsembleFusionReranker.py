@@ -32,14 +32,14 @@ class EnsembleFusionRerankerConfig(BaseRerankerModuleConfig):
     :param vdb_names: Набор названий (ключевых слов) коннекторов к различным векторным представлениям заданного набора элементов из Vector-компоновщика, которые будут использоваться в ансамбле для получения базовых групп элементов (retrieve) и их similarity-оценок.
     :type vdb_names: List[str]
     :param retriever_configs: Конфигурации для соотвествующих retrieve-компонент в ансамбле.
-    :type retriever_configs: Union[None, List[RetrieverConfig]]
+    :type retriever_configs: Union[None, List[Union[Dict,RetrieverConfig]]]
     :param weights: Значения приоритета similarity-оценок соотвествующих retrieve-компонент в ансамбле для переранжирования извлечённых элементов в рамках RRF-алгоритма. В сумме значения должны давать 1.0. Если будет задан None, то значение приоритета будет равномерно распределено между заданными retrieve-компонентами в ансамбле.
     :type weights: Union[None, List[float]]
     :param c: Служебный гиперпараметр для weighted RRF-алгоритма.
     :type c: int
     """
     vdb_names: List[str]
-    retriever_configs: Union[None, List[RetrieverConfig]] = None
+    retriever_configs: Union[None, List[Union[Dict, RetrieverConfig]]] = None
     weights: Union[None, List[float]] = None
     c: int = 60
 
@@ -47,19 +47,36 @@ class EnsembleFusionRerankerConfig(BaseRerankerModuleConfig):
         str_retriever_config = None if self.retriever_configs is None else [item.to_str() for item in self.retriever_configs]
         return f"{self.vdb_names}:{str_retriever_config}:{self.weights}:{self.c}"
 
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = EnsembleFusionRerankerConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.retriever_configs, list):
+            for i, r_config in enumerate(self.retriever_configs):
+                if isinstance(r_config, dict):
+                    self.retriever_configs[i] = RetrieverConfig(**r_config)
+
 
 class EnsembleFusionReranker(AbstractRerankerModule):
     """Класс реализует логику ансамблевого Retrieve/Rerank-оператора для поиска релевантных элементов в заданном наборе к запросу
     с помощью оценки семантической близости их раличных вариантов векторных представлений и дополнительного переранжирования элементов с помощью RRF-алгоритма.
 
     :param config: Конфигурация Retrieve/Rerank-оператора.
-    :type config: EnsembleFusionRerankerConfig
+    :type config: Union[EnsembleFusionRerankerConfig, Dict]
     :param vdb_composer: Компоновщий нескольких наборов векторных представлений для одной группы элементов, из которой будет выполняться извлечение (retrieve/rerank-операция).
     :type vdb_composer: VectorComposer
     """
 
-    def __init__(self, config: EnsembleFusionRerankerConfig, vdb_composer: VectorComposer):
+    def __init__(self, config: Union[EnsembleFusionRerankerConfig, Dict], vdb_composer: VectorComposer):
+        if isinstance(config, dict):
+            config: EnsembleFusionRerankerConfig = EnsembleFusionRerankerConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+
         if self.config.weights is None:
             self.config.weights = [1 / len(self.config.vdb_names)] * len(self.config.vdb_names)
         if self.config.retriever_configs is None:

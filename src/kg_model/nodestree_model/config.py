@@ -1,14 +1,18 @@
+from typing import Dict
+
+from .agent_tasks.nodes_summarization import AgentSummNTaskConfigSelector
 from ...db_drivers.tree_driver import TreeDriverConfig, TreeDBConnectionConfig
 from ...db_drivers.tree_driver.utils import TreeNodeType
 from ...db_drivers.vector_driver import VectorDriverConfig, VectorDBConnectionConfig
-from .agent_tasks.nodes_summarization import AgentSummNTaskConfigSelector
-from ...rerankers import RerankerDriver, RerankerDriverConfig
+from ...rerankers import RerankerDriverConfig
 from ...rerankers.methods import EnsembleFusionRerankerConfig
-from ...rerankers.methods.EnsembleFusionReranker import RetrieverConfig
-
-DEFAULT_SUMMN_TASK_CONFIG = AgentSummNTaskConfigSelector.select(base_config_version='v1')
+from ...pipelines.utils import BaseAgentTaskConfigSelector
 
 NODESTREE_MODEL_LOG_PATH = 'log/kg_model/nodes_tree'
+
+NODESTREEM_AGENTASKS_SELECTORS_MAPPING: Dict[str, BaseAgentTaskConfigSelector] = {
+    'nodes_summarization': AgentSummNTaskConfigSelector,
+}
 
 TREE_DB_DEFAULT_DRIVER_CONFIG = TreeDriverConfig(
     db_vendor='kuzu',

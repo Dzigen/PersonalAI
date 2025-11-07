@@ -30,14 +30,24 @@ class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):
     max_depth: int = 10
     max_width: int = 50
     max_passed_nodes: int = 1000
-    accepted_node_types: List[NodeType] = field(default_factory=lambda: [
-                                                NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
+    accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
     cache_table_name: str = 'qa_bfs_t_retriver_cache'
 
     def to_str(self):
         str_accepted_nodes = ";".join(
             sorted(list(map(lambda v: v.value, self.accepted_node_types))))
         return f"{self.max_depth}|{self.max_width}|{self.max_passed_nodes}|{str_accepted_nodes}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = NaiveBFSGraphSearchConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self) -> None:
+        for i, node_type in enumerate(self.accepted_node_types):
+            if not isinstance(node_type, NodeType):
+                self.accepted_node_types[i] = NODES_TYPES_MAP[node_type]
 
 
 class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
@@ -58,10 +68,9 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[NaiveBFSGraphSearchConfig, Dict] = NaiveBFSGraphSearchConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
         if isinstance(search_config, dict):
-            if 'accepted_node_types' in search_config:
-                search_config['accepted_node_types'] = list(
-                    map(lambda k: NODES_TYPES_MAP[k], search_config['accepted_node_types']))
-            search_config = NaiveBFSGraphSearchConfig(**search_config)
+            search_config = NaiveBFSGraphSearchConfig.from_dict(search_config)
+        else:
+            search_config.formate_fields()
         self.config: NaiveBFSGraphSearchConfig = search_config
 
         self.kg_model = kg_model

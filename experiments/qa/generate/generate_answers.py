@@ -1,131 +1,98 @@
-from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
-from src.pipelines.qa.kg_reasoning import KnowledgeGraphReasonerConfig
-from src.pipelines.qa import QAPipelineConfig, QAPipeline
-from src.kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig
+print("Start QA-pipeline inferencing...")
 import sys
-from tqdm import tqdm
 import yaml
-import os
-import json
-import numpy as np
 import joblib
-from time import time
-from typing import List, Dict, Tuple
+from typing import List, Tuple, Dict
+from pprint import pprint
+import os
+import numpy as np
 import pandas as pd
+from time import time
+from tqdm import tqdm
+import json
 
-# Read YAML file
-PARAMS_FILEP = sys.orig_argv[2]
-with open(PARAMS_FILEP, 'r') as stream:
-    PARAMS = yaml.safe_load(stream)
+####################################################
+print("1. Loading hyperparameters from .yaml files")
 
-###################################
+# Read YAML file (specexp-params)
+SPECEXP_PARAMS_FILEP = sys.orig_argv[2]
+with open(SPECEXP_PARAMS_FILEP, 'r') as stream:
+    SPECEXP_PARAMS = yaml.safe_load(stream)
 
-sys.path.insert(0, PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
+# Read YAML file (expdir-params)
+EXPDIR_PARAMS_FILEP = sys.orig_argv[3]
+with open(EXPDIR_PARAMS_FILEP, 'r') as stream:
+    EXPDIR_PARAMS = yaml.safe_load(stream)
 
+CONTAINER_KG_PATH = f"{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{SPECEXP_PARAMS['DATASET_NAME']}/{SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
-################ LOADING_HYPERPARAMETERS###################
+# Read YAML file (kgenv-file)
+KGENV_FILE_PATH = f"{CONTAINER_KG_PATH}/{EXPDIR_PARAMS['KG_SETTING_DIR']['name']}/{EXPDIR_PARAMS['KG_SETTING_DIR']['kgenv']}.yaml"
+with open(KGENV_FILE_PATH, 'r') as stream:
+    KGENV_PARAMS = yaml.safe_load(stream)
 
-DATASET_KGS_PATH = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{PARAMS['DATASET_NAME']}"
-SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{PARAMS['KNOWLEDGE_GRAPH_NAME']}"
-GRAPH_DRIVER_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['graph_config']}"
-EMBEDDINGS_DRIVER_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['embeddings_config']}"
-NODESTREE_DRIVER_CONFIG_PATH = f"{SPEC_KG_PATH}/{PARAMS['SAVE_CONFIGS_NAMES']['nodestree_config']}"
+sys.path.insert(0, EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
 
-QA_DATASET_PATH = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['qa_datasets']}/{PARAMS['DATASET_NAME']}"
+from src.kg_model import KnowledgeGraphModel
+from src.pipelines.qa import QAPipeline
 
-DS_EXPERIMENT_DIR = f"{PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{PARAMS['WORKSPACE_CONTAINER_DIRS']['exp_results']}/{PARAMS['DATASET_NAME']}"
-SPEC_EXPERIMENT_DIR = f"{DS_EXPERIMENT_DIR}/{PARAMS['EXPERIMENT_NAME']}"
+####################################################
+print("2. Setting paths")
 
-TMP_GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['tmp_gen_answers_name']}"
-GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['gen_answers_name']}"
-METRICS_DIR = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['QA_EXP_DIR_STRUCT']['metrics_name']}"
+# EXP PATHS
+EXPS_PATH = f"{EXPDIR_PARAMS['BASE_PERSONALAI_PATH']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}"
+EXP_RESULTS_DIR = f"{EXPS_PATH}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['results']}"
+EXP_KG_PATH = f"{EXP_RESULTS_DIR}/{SPECEXP_PARAMS['DATASET_NAME']}/{SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+SPEC_EXPERIMENT_DIR = f"{EXP_KG_PATH}/{EXPDIR_PARAMS['EXPERIMENT_NAME']}"
 
-KG_REASONER_CONFIG_PATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_CONFIGS_NAMES']['kg_reasoner_config']}"
-QA_ELAPSED_TIME_SPATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_CONFIGS_NAMES']['elapsed_time']}"
-HYPERPARAMS_SPATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_CONFIGS_NAMES']['hyperparameters']}"
-QA_CONFIG_SPATH = f"{SPEC_EXPERIMENT_DIR}/{PARAMS['SAVE_CONFIGS_NAMES']['qapipeline_config']}"
+CONFIGS_PATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['configs_name']}"
+QA_CONFIG_PATH = f"{CONFIGS_PATH}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['qa_config']}"
 
-###################################
+QA_DATASET_PATH = f"{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['qa_datasets']}/{SPECEXP_PARAMS['DATASET_NAME']}"
 
-print("Инициализируем граф знаний...")
+TMP_GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['tmp_gen_answers_name']}"
+GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['gen_answers_name']}"
 
-graph_config = joblib.load(GRAPH_DRIVER_CONFIG_PATH)
-embed_config = joblib.load(EMBEDDINGS_DRIVER_CONFIG_PATH)
-nodestree_config = joblib.load(NODESTREE_DRIVER_CONFIG_PATH)
+QA_ELAPSED_TIME_SPATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['elapsed_time']}"
 
-# !!! IMPORTANT !!!
-graph_config.driver_config.db_config.need_to_clear = False
-embed_config.nodesdb_driver_config.db_config.need_to_clear = False
-embed_config.tripletsdb_driver_config.db_config.need_to_clear = False
-nodestree_config.vectordb_leafnodes_config.db_config.need_to_clear = False
-nodestree_config.vectordb_summnodes_config.db_config.need_to_clear = False
-nodestree_config.treedb_config.db_config.need_to_clear = False
-# !!! IMPORTANT !!!
+# KG PATHS
+DATASET_KGS_PATH = f"{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{SPECEXP_PARAMS['DATASET_NAME']}"
+SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
-print("graph_config:", graph_config)
-print("embed_config:", embed_config)
-print("nodestree_config:", nodestree_config)
+KG_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kg_config']}"
+CACHE_CONFIG_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kvdriver_cache_config']}"
+INFSTAT_CONFIG_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['inference_stat_config']}"
 
-kg_config = KnowledgeGraphModelConfig(
-    graph_config=graph_config, embeddings_config=embed_config, nodestree_config=nodestree_config)
-kg_model = KnowledgeGraphModel(kg_config)
+####################################################
+print("3. Loading configs")
 
-print(kg_model.embeddings_struct.vectordbs['nodes'].count_items())
-print(kg_model.embeddings_struct.vectordbs['triplets'].count_items())
-print(kg_model.graph_struct.db_conn.count_items())
-print(kg_model.nodestree_struct.count_items())
+kgmodel_config = joblib.load(KG_MODEL_CONFIG_PATH)
+kvdriver_config = joblib.load(CACHE_CONFIG_PATH)
+llmstat_config = joblib.load(INFSTAT_CONFIG_PATH)
 
-print("Готово.")
+print("KG MODEL_CONFIG:\n", kgmodel_config)
+print("KVCACHE CONFIG:\n", kvdriver_config)
+print("LLMSTAT CONFIG:\n", llmstat_config)
 
-################ cache driver config ################
+####################################################
+print("4. Setting KG Model")
 
-if PARAMS['BASE_KGR_CONFIG']['caching']:
-    kvdriver_config = KeyValueDriverConfig(
-        db_vendor='mixed_kv',
-        db_config=KVDBConnectionConfig(
-            need_to_clear=PARAMS['BASE_KGR_CONFIG']['cache_need_to_clear'],
-            db_info=PARAMS['BASE_KGR_CONFIG']['cache_db_info'],
-            params={
-                'redis_config': KVDBConnectionConfig(
-                    host=PARAMS['BASE_KGR_CONFIG']['ram_cache_config']['host'],
-                    port=PARAMS['BASE_KGR_CONFIG']['ram_cache_config']['port'],
-                    params=PARAMS['BASE_KGR_CONFIG']['ram_cache_config']['params']),
-                'mongo_config': KVDBConnectionConfig(
-                    host=PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['host'],
-                    port=PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['port'],
-                    params=PARAMS['BASE_KGR_CONFIG']['persistent_cache_config']['params'])}))
+kg_model = KnowledgeGraphModel(kgmodel_config, kvdriver_config)
 
-else:
-    kvdriver_config = None
+# checking knowledge graph size
+print("before:")
+pprint(kg_model.count_items(detailed=True))
 
-############### INITING QA-PIPELINE####################
+####################################################
+print("5. Setting QA pipeline")
 
-print("Инициализируем QA-пайплайн...")
-
-kg_reasoner_config = joblib.load(KG_REASONER_CONFIG_PATH)
-
-print("KG_REASONER-CONFIG:\n", kg_reasoner_config)
-
-qa_config = QAPipelineConfig(
-    reasoner_config=KnowledgeGraphReasonerConfig(
-        reasoner_name=PARAMS['BASE_KGR_CONFIG']['name'],
-        reasoner_hyperparameters=kg_reasoner_config))
-
-print("KG_PIPELINE-CONFIG:\n", qa_config)
+qa_config = joblib.load(QA_CONFIG_PATH)
+print("QA-CONFIG:\n", qa_config)
 
 qa_pipeline = QAPipeline(kg_model, qa_config, kvdriver_config)
 
-print("Готово.")
-
-############ SAVING HYPERPARAMS############
-
-with open(HYPERPARAMS_SPATH, 'w') as fd:
-    yaml.dump(PARAMS, fd, default_flow_style=False)
-
-joblib.dump(qa_config, QA_CONFIG_SPATH)
-
-################# LOADING_QUESTIONS##################
-
+####################################################
+print("6. Loading QA-dataset")
 
 def diaasqa_qa_load(dataset_path: str) -> List[Tuple[str, List[str], List[str]]]:
     eval_dir_path = f"{dataset_path}/qa_eval"
@@ -140,16 +107,14 @@ def diaasqa_qa_load(dataset_path: str) -> List[Tuple[str, List[str], List[str]]]
         questions = list(map(lambda item: item['question'], data))
         answers = list(map(lambda item: item['answer'], data))
 
-        if (PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack'] > 0):
-            questions = questions[:PARAMS['QA_DATASET_HYPERP']
-                                  ['max_samples_per_pack']]
-            answers = answers[:PARAMS['QA_DATASET_HYPERP']
-                              ['max_samples_per_pack']]
+        max_samples = SPECEXP_PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']
+        if (max_samples > 0):
+            questions = questions[:max_samples]
+            answers = answers[:max_samples]
 
         packs.append((pack_name, questions, answers))
 
     return packs
-
 
 def hotpotqa_distractor_validation_qa_load(dataset_path: str) -> List[Tuple[str, List[str], List[str]]]:
     qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
@@ -157,15 +122,14 @@ def hotpotqa_distractor_validation_qa_load(dataset_path: str) -> List[Tuple[str,
     questions = qa_df['question'].tolist()
     answers = qa_df['answer'].tolist()
 
-    if (PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack'] > 0):
-        questions = questions[:PARAMS['QA_DATASET_HYPERP']
-                              ['max_samples_per_pack']]
-        answers = answers[:PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']]
+    max_samples = SPECEXP_PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']
+    if (max_samples > 0):
+        questions = questions[:max_samples]
+        answers = answers[:max_samples]
 
     packs = [['all', questions, answers]]
 
     return packs
-
 
 def trivia_qa_rcwikipedia_validation_qa_load(dataset_path: str) -> List[Tuple[str, List[str], List[str]]]:
     qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
@@ -173,25 +137,41 @@ def trivia_qa_rcwikipedia_validation_qa_load(dataset_path: str) -> List[Tuple[st
     questions = qa_df['question'].tolist()
     answers = qa_df['answer'].tolist()
 
-    if (PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack'] > 0):
-        questions = questions[:PARAMS['QA_DATASET_HYPERP']
-                              ['max_samples_per_pack']]
-        answers = answers[:PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']]
+    max_samples = SPECEXP_PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']
+    if (max_samples > 0):
+        questions = questions[:max_samples]
+        answers = answers[:max_samples]
 
     packs = [['all', questions, answers]]
 
     return packs
 
+def rubqdev_qa_load(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
+    qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
+
+    questions = qa_df['question'].tolist()
+    answers = qa_df['answer'].tolist()
+
+    max_samples = SPECEXP_PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']
+    if (max_samples > 0):
+        questions = questions[:max_samples]
+        answers = answers[:max_samples]
+
+    packs = [['all', questions, answers]]
+
+    return packs
 
 CUSTOM_LOAD_FUNCS = {
     'diaasq': diaasqa_qa_load,
+    'rubq_dev': rubqdev_qa_load,
     'hotpotqa_distractor_validation': hotpotqa_distractor_validation_qa_load,
     'trivia_qa_rcwikipedia_validation': trivia_qa_rcwikipedia_validation_qa_load
 }
 
-question_packs = CUSTOM_LOAD_FUNCS[PARAMS['DATASET_NAME']](QA_DATASET_PATH)
+question_packs = CUSTOM_LOAD_FUNCS[SPECEXP_PARAMS['DATASET_NAME']](QA_DATASET_PATH)
 
-################# START_QA_PROCESS##################
+####################################################
+print("7. Start inferencing")
 
 for pack_name, questions, _ in question_packs:
 
@@ -211,9 +191,10 @@ for pack_name, questions, _ in question_packs:
         joblib.dump({'answer': answer, 'info': info,
                     'elapsed_time': e_time - s_time}, answer_dump_file)
 
-################# accumulate generate answers#################
+####################################################
+print("8. Accumulating generated answers")
 
-elapsed_times = {}
+elapsed_times: Dict[str,Dict[str, float]] = dict()
 for pack_name, questions, gold_answers in question_packs:
     print(pack_name)
 
@@ -225,7 +206,7 @@ for pack_name, questions, gold_answers in question_packs:
 
     tmp_answer_dumps = os.listdir(pack_tmp_dir)
 
-    accum_answers = dict()
+    accum_answers: Dict[str,Dict[str, str]] = dict()
     elapsed_times[pack_name] = {'per_question': []}
     for tmp_dump in tqdm(tmp_answer_dumps):
         answer_info = joblib.load(f"{pack_tmp_dir}/{tmp_dump}")

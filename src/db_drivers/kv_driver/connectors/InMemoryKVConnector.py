@@ -12,8 +12,13 @@ from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection, KeyValue
 
 class InMemoryKVConnector(AbstractKVDatabaseConnection):
 
-    def __init__(self, config: KVDBConnectionConfig = DEFAULT_INMEMORYKV_CONFIG) -> None:
-        self.config = config
+    def __init__(self, config: Union[Dict, KVDBConnectionConfig] = DEFAULT_INMEMORYKV_CONFIG) -> None:
+        if isinstance(config, dict):
+            config = KVDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
+        self.config: KVDBConnectionConfig = config
+
         self.kv_store: Union[None, Dict[str, object]] = None
 
     def open_connection(self) -> None:
@@ -56,7 +61,7 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         if self.config.params['save_on_disk']:
             os.makedirs(self.config.params['save_dump_dir'], exist_ok=True)
             save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
-            if os.path.exists(save_path):
+            if os.path.exists(save_path) and not self.config.params['rewrite']:
                 # print("warning: file on that path is already exists")
                 postfix = hashlib.md5(str(time.time()).encode()).hexdigest()
                 save_path += f"({postfix})"

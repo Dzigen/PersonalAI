@@ -10,6 +10,7 @@ from ......utils import AgentTaskSolver, AgentTaskSolverConfig
 class MediumCQGeneratorTaskSolvers(BaseTaskSolvers):
     cluequery_gen_solver: AgentTaskSolver
 
+
 @dataclass
 class ClueQueriesGeneratorAgentTasksConfig(BaseAgentTasksConfig):
     """
@@ -20,4 +21,8 @@ class ClueQueriesGeneratorAgentTasksConfig(BaseAgentTasksConfig):
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: CQGEN_AGENTASKS_SELECTORS_MAPPING)
 
-
+    @staticmethod
+    def from_dict(dict_config):
+        formated_config = ClueQueriesGeneratorAgentTasksConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config

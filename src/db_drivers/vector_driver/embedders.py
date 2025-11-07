@@ -3,9 +3,11 @@ from sentence_transformers import SentenceTransformer
 from typing import Dict, List, Union
 from langchain_core.embeddings.embeddings import Embeddings
 
+from ...utils.data_structs import BaseConfigOperations
+
 
 @dataclass
-class EmbedderModelConfig:
+class EmbedderModelConfig(BaseConfigOperations):
     model_name_or_path: str = '../models/intfloat/multilingual-e5-small'
     prompts: Union[None, Dict] = field(default_factory=lambda: {
         "query": "query: ", "passage": "passage: "})
@@ -14,11 +16,29 @@ class EmbedderModelConfig:
     device: str = 'cuda'
     normalize_embeddings: bool = True
 
+    def to_str(self):
+        # TODO
+        raise NotImplementedError
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = EmbedderModelConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        pass
+
 
 class EmbedderModel(Embeddings):
 
-    def __init__(self, config: EmbedderModelConfig = None) -> None:
+    def __init__(self, config: Union[EmbedderModelConfig, Dict, None] = None) -> None:
+        if isinstance(config, dict):
+            config: EmbedderModelConfig = EmbedderModelConfig.from_dict(config)
+        elif config is not None:
+            config.formate_fields()
         self.config = EmbedderModelConfig() if config is None else config
+
         parameters = {
             'model_name_or_path': config.model_name_or_path,
             'device': config.device,

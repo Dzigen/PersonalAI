@@ -11,6 +11,7 @@ class MediumAGeneratorTaskSolvers(BaseTaskSolvers):
     answer_classify_solver: AgentTaskSolver
     answer_gen_solver: AgentTaskSolver
 
+
 @dataclass
 class AnswerGeneratorAgentTasksConfig(BaseAgentTasksConfig):
     """
@@ -23,3 +24,9 @@ class AnswerGeneratorAgentTasksConfig(BaseAgentTasksConfig):
     answer_generator: Union[AgentTaskSolverConfig, str] = 'v1'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: ANSWGEN_AGENTASKS_SELECTORS_MAPPING)
+
+    @staticmethod
+    def from_dict(dict_config):
+        formated_config = AnswerGeneratorAgentTasksConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config

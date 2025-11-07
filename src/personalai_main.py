@@ -16,37 +16,66 @@ class PersonalAIConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация персонального ассистента.
 
     :param kg_model_config: Конфигурация памяти ассистента. Значение по умолчанию KnowledgeGraphModelConfig().
-    :type kg_model_config: KnowledgeGraphModelConfig, optional
+    :type kg_model_config: Union[KnowledgeGraphModelConfig, Dict], optional
     :param qa_pipeline_config: Конфигурация конвейера, который выполняет обработку входящих user-вопросов, поиск релевантной информации в памяти асситента и генерацию ответов. Значение по умолчанию QAPipelineConfig().
-    :type qa_pipeline_config: QAPipelineConfig, optional
+    :type qa_pipeline_config: Union[QAPipelineConfig, Dict], optional
     :param mem_pipeline_config: Конфигурация конвейера, который выполняет изменение/обновление информации/знаний в памяти ассистента. Значение по умолчанию MemPipelineConfig().
-    :type mem_pipeline_config: MemPipelineConfig, optional
+    :type mem_pipeline_config: Union[MemPipelineConfig, Dict], optional
     """
-    kg_model_config: KnowledgeGraphModelConfig = field(
+    kg_model_config: Union[KnowledgeGraphModelConfig, Dict] = field(
         default_factory=lambda: KnowledgeGraphModelConfig())
-    qa_pipeline_config: QAPipelineConfig = field(
+    qa_pipeline_config: Union[QAPipelineConfig, Dict] = field(
         default_factory=lambda: QAPipelineConfig())
-    mem_pipeline_config: MemPipelineConfig = field(
+    mem_pipeline_config: Union[MemPipelineConfig, Dict] = field(
         default_factory=lambda: MemPipelineConfig())
 
     log: Logger = field(default_factory=lambda: Logger(PAI_MAIN_LOG_PATH))
+
+    def to_str(self):
+        # TODO
+        raise NotImplementedError
+
+    @staticmethod
+    def from_dict(dict_config):
+        formated_config = PersonalAIConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.kg_model_config, dict):
+            self.kg_model_config = KnowledgeGraphModelConfig.from_dict(self.kg_model_config)
+        else:
+            self.kg_model_config.formate_fields()
+
+        if isinstance(self.qa_pipeline_config, dict):
+            self.qa_pipeline_config = QAPipelineConfig.from_dict(self.qa_pipeline_config)
+        else:
+            self.qa_pipeline_config.formate_fields()
+
+        if isinstance(self.mem_pipeline_config, dict):
+            self.mem_pipeline_config = MemPipelineConfig.from_dict(self.mem_pipeline_config)
+        else:
+            self.mem_pipeline_config.formate_fields()
 
 
 class PersonalAI:
     """Верхнеуровневый класс (точка входа) персонального ассистента.
 
     :param config: Конфигурация персонального ассистента. Значение по умолчанию PersonalAIConfig().
-    :type config: PersonalAIConfig, optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования результатов промежуточных операций ассистента. Значение по умолчанию None.
+    :type config: Union[Dict,PersonalAIConfig], optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования результатов промежуточных операций ассистента. Значение по умолчанию DEFAULT_PERSONALAI_KVCACHE_CONFIG.
     :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию AgentStatAnalyzerConfig().
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
-    def __init__(self, config: PersonalAIConfig = PersonalAIConfig(),
+    def __init__(self, config: Union[Dict, PersonalAIConfig] = PersonalAIConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = DEFAULT_PERSONALAI_KVCACHE_CONFIG,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = AgentStatAnalyzerConfig()) -> None:
-
+        if isinstance(config, dict):
+            config: PersonalAIConfig = PersonalAIConfig.from_dict(config)
+        else:
+            config.formate_fields()
         config.synchronize_language()
 
         self.kg_model = KnowledgeGraphModel(

@@ -2,10 +2,11 @@ from abc import abstractmethod
 from dataclasses import dataclass, field
 from typing import Dict, Union, Tuple
 from ..utils.agent_stat_analyzer.utils import LLMInferenceStat
+from ..utils.data_structs import BaseConfigOperations
 
 
 @dataclass
-class AgentConnectorConfig:
+class AgentConnectorConfig(BaseConfigOperations):
     gen_strategy: Dict = field(default_factory=lambda: dict())
     credentials: Dict = field(default_factory=lambda: dict())
     ext_params: Dict = field(default_factory=lambda: dict())
@@ -16,6 +17,12 @@ class AgentConnectorConfig:
         str_creds = ";".join(list(map(lambda p: f"{p[0]}={p[1]}", sorted(
             [(k, str(v)) for k, v in self.credentials.items()], key=lambda p: p[0]))))
         return f"{str_genstrat}|{str_creds}"
+
+    @staticmethod
+    def from_dict(dict_config):
+        formated_config = AgentConnectorConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
 
 
 class AbstractAgentConnector:
