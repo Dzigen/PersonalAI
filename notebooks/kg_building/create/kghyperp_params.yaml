@@ -1,5 +1,5 @@
 DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'gigachatmax_281025_v2prompts' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'gigachatmax_051125_v2prompts' # TO CHANGE
 
 KG_CONFIG:
   embedder_configs:

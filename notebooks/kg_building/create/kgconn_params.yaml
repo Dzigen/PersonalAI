@@ -1,6 +1,6 @@
 GPUS_CONFIG:
     ollama_device_id: '0'
-    workspace_device_id: '1'
+    workspace_device_id: '2'
 
 KG_MODEL_CONNECTORS:
 
