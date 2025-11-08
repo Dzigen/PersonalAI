@@ -472,3 +472,6 @@ for check_name, method in tqdm(GRAPH_HEALTH_CHECKS.items()):
 
 with open(GRAPH_HEALTH_CHECKS_PATH, 'w', encoding='utf-8') as fd:
     fd.write(json.dumps(HEALTH_CHECKS_INFO, ensure_ascii=False, indent=1))
+
+
+print("############ DONE ############")

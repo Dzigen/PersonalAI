@@ -45,6 +45,9 @@ docker stop $TMP_WORKSPACE_CNTNAME ; docker rm $TMP_WORKSPACE_CNTNAME
 cd $TMP_CREATE_DIR ; docker compose --env-file=$ENV_FILE_PATH up -d workspace
 docker exec -u root $MAIN_WORKSPACE_CNTNAME systemctl start cron
 
+# скачиваем недостащие библиотеки (костыль)
+docker exec -u root $MAIN_WORKSPACE_CNTNAME pip install ranx langdetect faiss-cpu langchain_community
+
 # создать конфигурационный файл kg-модели
 docker exec -u root $MAIN_WORKSPACE_CNTNAME $PYTHON_CMD "$MAIN_KGCREATE_PATH/prepare_kg_config.py" $KGCONN_PARAMS_PATH $KGENV_PARAMS_PATH $KGHYPERP_PARAMS_PATH
 # создать конфигурационный файл mem-пайплайна
