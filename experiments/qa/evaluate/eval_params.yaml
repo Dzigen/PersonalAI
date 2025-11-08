@@ -1,8 +1,8 @@
 
 bertscore_model_path: "google/electra-base-discriminator"
-meteor_path: 'evaluate/metrics/meteor' # TO CHANGE
-exactmatch_path: 'evaluate/metrics/exact_match' # TO CHANGE
-llm_as_a_judge_path: 'evaluate/metrics/llm_as_a_judge' # TO CHANGE
+meteor_path: 'evaluate/metrics/meteor'
+exactmatch_path: 'evaluate/metrics/exact_match'
+llm_as_a_judge_path: 'evaluate/metrics/llm_as_a_judge'
 no_answer: '<|NotEnoughtInfo|>'
 
 judge_llm_config:
@@ -12,7 +12,7 @@ judge_llm_config:
     db: 'qaeval_db' # DONT CHANGE
     table: 'llmasajudge' # DONT CHANGE
 
-  lang: 'en'
+  lang: 'en' # 'en' | 'ru' # TO CHANGE
   prompts_version: 'v1'
 
   agent_driver_config:

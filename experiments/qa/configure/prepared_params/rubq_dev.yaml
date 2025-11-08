@@ -20,7 +20,7 @@ WORKSPACE_CONTAINER_DIRS:
   base_path: /home/workspace
   experiments: experiments/qa
   kg: data/knowledge_graphs
-  qa_datasets: data/qa_datasets/v2 # !!! PAY ATTENTION !!!
+  qa_datasets: data/qa_datasets/v3 # !!! PAY ATTENTION !!!
   results: results
   llmasajudge_kv_dir: evaluate/llmasajudge_cache
   kg_env_path: init_env/env_settings
