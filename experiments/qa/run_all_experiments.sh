@@ -19,13 +19,11 @@ QAPIPELINE_KW="weak" # TO CHANGE
 
 # EXP_NAME
 declare -A exp_names # TO CHANGE
-exp_names[0]="m_v2_gpt4omini(e4.4.1)(v1.5.5)"
-exp_names[1]="m_v2_gpt4omini(e4.4.2)(v1.5.5)"
+exp_names[0]="weak_bs_deepseek(e1)(v2.1.0)"
 
 # QAHYPERP_PARAMS_PATH
 declare -A exp_hyperp # TO CHANGE
-exp_hyperp[0]="m_v2_gpt4omini(e4.4.1)(v1.5.5)"
-exp_hyperp[1]="m_v2_gpt4omini(e4.4.2)(v1.5.5)"
+exp_hyperp[0]="exp1.yaml"
 
 EXPDIR_PARAMS_PATH="$CONFIGURE_BASE_DIR/$PREPARED_PARAMS_NAME/hotpotqa_distractor_validation.yaml" # TO CHANGE
 
@@ -35,12 +33,15 @@ EVAL_PARAMS_PATH="$EVALUATE_BASE_DIR/eval_params.yaml" # TO CHANGE
 
 for exp_idx in "${!exp_names[@]}";
 do
-    echo "$KNOWLEDGEGRAPH_NAME | $DATASET_NAME | ${exp_names[$exp_idx]}"
-    echo "qahyperp params-path: ${exp_hyperp[$exp_idx]}"
+    EXP_NAME="${exp_names[$exp_idx]}"
+    echo "$KNOWLEDGEGRAPH_NAME | $DATASET_NAME | $EXP_NAME"
+
+    QAHYPERP_PARAMS_PATH="$CONFIGURE_BASE_DIR/$QAPIPELINE_KW/$PREPARED_PARAMS_NAME/$DATASET_NAME/$KNOWLEDGEGRAPH_NAME"
+    echo "qahyperp params-path: $QAHYPERP_PARAMS_PATH"
     echo "expdir params-path: $EXPDIR_PARAMS_PATH"
     echo "eval params-path: $EVAL_PARAMS_PATH"
 
-    bash $EXP_BASE_DIR/run_experiment.sh $KNOWLEDGEGRAPH_NAME $DATASET_NAME "${exp_names[$exp_idx]}" "${exp_hyperp[$exp_idx]}" $EXPDIR_PARAMS_PATH $EVAL_PARAMS_PATH  >> $RUNEXP_LOG_PATH 2>&1
+    bash $EXP_BASE_DIR/run_experiment.sh $KNOWLEDGEGRAPH_NAME $DATASET_NAME $EXP_NAME $QAHYPERP_PARAMS_PATH $EXPDIR_PARAMS_PATH $EVAL_PARAMS_PATH  >> $RUNEXP_LOG_PATH 2>&1
 done
 
 echo "=== Done (run_all_experiments.sh) ==="
