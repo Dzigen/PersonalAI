@@ -178,7 +178,7 @@ def embeddings_inmemory_config():
     return config
 
 @pytest.fixture(scope='package')
-def embeddings_opensearch_config():
+def embeddings_elasticsearch_config():
     config = EmbeddingsModelConfig(
         nodesdb_driver_configs_mapping={
             'nodes_dense': VectorDriverConfig(
@@ -205,13 +205,13 @@ def embeddings_opensearch_config():
 
 @pytest.fixture(scope='package')
 def available_embedding_configs(
-    embeddings_chroma_config, embeddings_milvus_config, embeddings_inmemory_config, embeddings_opensearch_config
+    embeddings_chroma_config, embeddings_milvus_config, embeddings_inmemory_config, embeddings_elasticsearch_config
 ):
     return {
         'chroma': embeddings_chroma_config,
         'milvus': embeddings_milvus_config,
         'inmemory': embeddings_inmemory_config,
-        'opensearch': embeddings_opensearch_config
+        'elasticsearch': embeddings_elasticsearch_config
     }
 
 

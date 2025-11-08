@@ -9,7 +9,11 @@ from ..utils import AbstractTableDatabaseConnection, TableDBConnectionConfig, Ta
 
 class MySQLTableConnector(AbstractTableDatabaseConnection):
 
-    def __init__(self, config: TableDBConnectionConfig = DEFAULT_MYSQLTABLE_CONFIG) -> None:
+    def __init__(self, config: Union[Dict, TableDBConnectionConfig] = DEFAULT_MYSQLTABLE_CONFIG) -> None:
+        if isinstance(config, dict):
+            config: TableDBConnectionConfig = TableDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
 
     def is_open(self) -> bool:

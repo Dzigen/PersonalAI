@@ -14,8 +14,12 @@ from ....utils import Triplet, NodeType
 
 class KuzuGraphConnector(AbstractGraphDatabaseConnection):
 
-    def __init__(self, config: GraphDBConnectionConfig = DEFAULT_KUZU_CONFIG) -> None:
-        self.config = config
+    def __init__(self, config: Union[Dict, GraphDBConnectionConfig] = DEFAULT_KUZU_CONFIG) -> None:
+        if isinstance(config, dict):
+            config = GraphDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
+        self.config: GraphDBConnectionConfig = config
 
     def open_connection(self) -> None:
         load_path = f"{self.config.params['path']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
@@ -238,10 +242,11 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
                                 type=RELATIONS_TYPES_MAP[rel_type], prop=dict(cur_rel['prop']))
 
             start_node_id = cur_rel['_src']
-            start_node, end_node = (
-                node1, node2) if start_node_id == cur_n1['_id'] else (node2, node1)
+            start_node, end_node = (node1, node2) if start_node_id == cur_n1['_id'] else (node2, node1)
             triplet = TripletCreator.create(
-                start_node, relation, end_node, add_stringified_triplet=False, t_id=cur_rel['t_id'])
+                start_node, relation, end_node,
+                add_stringified_triplet=False, t_id=cur_rel['t_id']
+            )
             formated_triplets.append(triplet)
         return formated_triplets
 

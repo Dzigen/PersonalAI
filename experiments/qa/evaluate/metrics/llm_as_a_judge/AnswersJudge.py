@@ -15,14 +15,11 @@ sys.path.insert(0, BASE_PATH)
 @dataclass
 class AnswersJudgeConfig:
     lang: str = 'auto'
-    adriver_config: AgentDriverConfig = field(
-        default_factory=lambda: AgentDriverConfig())
-    llmjudge_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_LLMJUDGE_TASK_CONFIG)
+    adriver_config: AgentDriverConfig = field(default_factory=lambda: AgentDriverConfig())
+    llmjudge_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_LLMJUDGE_TASK_CONFIG)
     cache_table_name: Union[str, None] = 'qaeval_judge_cache'
 
-    log: Logger = field(
-        default_factory=lambda: Logger(EVAL_JUDGE_MAIN_LOG_PATH))
+    log: Logger = field(default_factory=lambda: Logger(EVAL_JUDGE_MAIN_LOG_PATH))
     verbose: bool = False
 
     cache_table_name: str = "qaeval_judge_cache"

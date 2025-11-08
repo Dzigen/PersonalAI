@@ -11,6 +11,7 @@ class QueryDecomposerTaskSolvers(BaseTaskSolvers):
     decompose_classifier_solver: AgentTaskSolver
     q_decomposition_solver: AgentTaskSolver
 
+
 @dataclass
 class QueryDecomposerAgentTasksConfig(BaseAgentTasksConfig):
     """
@@ -23,3 +24,9 @@ class QueryDecomposerAgentTasksConfig(BaseAgentTasksConfig):
     decompose: Union[AgentTaskSolverConfig, str] = 'v1'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: QUERYDECOMP_AGENTASKS_SELECTORS_MAPPING)
+
+    @staticmethod
+    def from_dict(dict_config):
+        formated_config = QueryDecomposerAgentTasksConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config

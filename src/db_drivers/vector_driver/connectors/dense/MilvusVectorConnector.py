@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Dict
 from pymilvus.exceptions import ConnectionNotExistException
 from pymilvus import MilvusClient, DataType
 from time import sleep
@@ -12,9 +12,14 @@ from ...utils import AbstractVectorDatabaseConnection, VectorDBInstance, VectorD
 
 
 class MilvusVectorConnector(AbstractVectorDatabaseConnection):
-    def __init__(self, config: VectorDBConnectionConfig = DEFAULT_MILVUS_CONFIG,
+    def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_MILVUS_CONFIG,
                  embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16):
+        if isinstance(config, dict):
+            config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+
         self.embedder = embedder
         self.encode_batchsize = encode_batchsize
         self.client = None

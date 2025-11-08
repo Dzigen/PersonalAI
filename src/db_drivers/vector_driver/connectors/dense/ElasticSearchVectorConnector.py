@@ -16,9 +16,14 @@ from .....utils.errors import ReturnInfo
 
 class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
 
-    def __init__(self, config: VectorDBConnectionConfig = DEFAULT_ELASTICSEARCH_CONFIG,
+    def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_ELASTICSEARCH_CONFIG,
                  embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16) -> None:
+        if isinstance(config, dict):
+            config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+
         self.embedder = embedder
         self.encode_batchsize = encode_batchsize
         self.db_conn = None
@@ -27,7 +32,10 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
     def open_connection(self) -> ReturnInfo:
         host = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
         index = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
-        self.db_conn = ElasticsearchDocumentStore(hosts=host, index=index, embedding_similarity_function='dot_product')
+        self.db_conn = ElasticsearchDocumentStore(
+            hosts=host, index=index, embedding_similarity_function='dot_product',
+            request_timeout=10, retry_on_timeout=10
+        )
         self.retriever = ElasticsearchEmbeddingRetriever(document_store=self.db_conn)
 
     def is_open(self) -> bool:

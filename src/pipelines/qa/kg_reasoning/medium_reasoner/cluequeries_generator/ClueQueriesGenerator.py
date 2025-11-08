@@ -24,14 +24,14 @@ class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию ClueQueriesGeneratorAgentTasksConfig().
-    :type agent_tasks_config: ClueQueriesGeneratorAgentTasksConfig, optional
+    :type agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict], optional
     :param max_cqueries_amount: Максимальное количество clue-запросов, которое может быть сгенерировано. Значение по умолчанию 4.
     :type max_cqueries_amount: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы ClueQueriesGenerator-класса. Значение по умолчанию 'medreasn_cquerygen_main_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    agent_tasks_config: ClueQueriesGeneratorAgentTasksConfig = field(default_factory=lambda: ClueQueriesGeneratorAgentTasksConfig())
+    agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict] = field(default_factory=lambda: ClueQueriesGeneratorAgentTasksConfig())
     max_cqueries_amount: int = 4
 
     cache_table_name: str = 'medreasn_cquerygen_main_stage_cache'
@@ -40,6 +40,16 @@ class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{self.max_cqueries_amount}"
 
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = ClueQueriesGeneratorConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.agent_tasks_config, dict):
+            self.agent_tasks_config = ClueQueriesGeneratorAgentTasksConfig.from_dict(self.agent_tasks_config)
+
 
 class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     """Верхнеуровневый класс стадии #2.2 MediumQA-конвейера для генерации clue-запросов поиска на графе знаний.
@@ -47,7 +57,7 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
     :type agent: AbstractAgentConnector
     :param config: Конфигурация ClueQueriesGenerator-стадии. Значение по умолчанию ClueQueriesGeneratorConfig().
-    :type config: ClueQueriesGeneratorConfig, optional
+    :type config: Union[ClueQueriesGeneratorConfig,Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
@@ -56,10 +66,14 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     :type cache_llm_inference: bool, optional
     """
 
-    def __init__(self, agent: AbstractAgentConnector, config: ClueQueriesGeneratorConfig = ClueQueriesGeneratorConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: Union[ClueQueriesGeneratorConfig, Dict] = ClueQueriesGeneratorConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
                  cache_llm_inference: bool = True):
+        if isinstance(config, dict):
+            config: ClueQueriesGeneratorConfig = ClueQueriesGeneratorConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
         self.config.agent_tasks_config.versions_to_configs()
 

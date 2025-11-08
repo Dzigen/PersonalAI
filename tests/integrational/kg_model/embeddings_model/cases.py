@@ -9,7 +9,7 @@ from ..instances import SIMPLE_TRIPLET1, THESIS_TRIPLET2, EPISODIC_TRIPLET1, \
             SIMPLE_TRIPLET1_2, OBJECT_NODE1, OBJECT_NODE2, OBJECT_NODE3
 
 # TO CHANGE
-AVAILABLE_EMBEDDING_MODELS = ['inmemory', 'opensearch']  # 'chroma', 'milvus', 'inmemory', 'opensearch'
+AVAILABLE_EMBEDDING_MODELS = ['chroma', 'milvus', 'inmemory', 'elasticsearch']  # 'chroma', 'milvus', 'inmemory', 'elasticsearch'
 
 # embeddings-model tests
 # init_triplets, add_nodes_flag, expected_init_count, expected_creation_info

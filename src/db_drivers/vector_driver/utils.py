@@ -9,9 +9,18 @@ from ..utils import AbstractDatabaseConnection, AbstractDatabaseConnection, Base
 
 @dataclass
 class VectorDBConnectionConfig(BaseDatabaseConfig):
-    db_info: Dict = field(default_factory=lambda: {
-                          'db': 'defaultpersonalaivectordb', 'table': 'defaultpersonalaivectortable'})
+    db_info: Dict = field(default_factory=lambda: {'db': 'defaultpersonalaivectordb', 'table': 'defaultpersonalaivectortable'})
     conn: Dict = field(default_factory=lambda: dict())
+
+    def to_str(self):
+        str_needto = f"{self.need_to_clear};{self.create_index}"
+        return f"{self.db_info};{str_needto};{self.params};{self.conn}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = VectorDBConnectionConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
 
 
 @dataclass

@@ -26,21 +26,21 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
     """Конфигурация medium-версии пайплайна по ризонингу на графе знаний.
 
     :param searchplan_enhancer_config: Конфигурация стадии #1 reasoner-конвейера: выполняется генерация/модификация плана поиска/извлечения информации (в виде списка запросов на естественном языке) из графа знаний. Значение по умолчанию SearchPlanEnhancerConfig().
-    :type searchplan_enhancer_config: SearchPlanEnhancerConfig, optional
+    :type searchplan_enhancer_config: Union[SearchPlanEnhancerConfig, Dict], optional
     :param entities_extractor_config: Конфигурация стадии #2.1.1 reasoner-конвейера: выполняется извлечение ключевых сущностей из текущего шага/запроса (из плана) поиска. Значение по умолчанию EntitiesExtractorConfig().
-    :type entities_extractor_config: EntitiesExtractorConfig, optional
+    :type entities_extractor_config: Union[EntitiesExtractorConfig, Dict], optional
     :param e2n_matcher_config: Конфигурация стадии #2.1.2 reasoner-конвейера: выполняется сопоставление (matching) сущностей из запроса (шага поиска) с объектами в графе знаний. Значение по умолчанию Entities2NodesMatcherConfig().
-    :type e2n_matcher_config: Entities2NodesMatcherConfig, optional
+    :type e2n_matcher_config: Union[Entities2NodesMatcherConfig, Dict], optional
     :param cluequeries_generator_config: Конфигурация стадии #2.2 reasoner-конвейера: выполняется генерация детализированных/уточнённых clue-запросов на основе линейной комбинации отобранных object–вершин для текущего запроса (шага поиска). Значение по умолчанию ClueQueriesGeneratorConfig().
-    :type cluequeries_generator_config: ClueQueriesGeneratorConfig, optional
+    :type cluequeries_generator_config: Union[ClueQueriesGeneratorConfig, Dict], optional
     :param knowledge_retriever_config: Конфигурация стадии #3.1.1 reasoner-конвейера: выполняется обход графа знаний, извлечение триплетов, релевантных к текущему clue-запросу, и их фильтрация для формирования концентрированного множества информации. Значение по умолчанию MEDIUM_KG_RETRIEVER_CONFIG.
-    :type knowledge_retriever_config: KnowledgeRetrieverConfig, optional
+    :type knowledge_retriever_config: Union[KnowledgeRetrieverConfig, Dict], optional
     :param clueanswer_generator_config: Конфигурация стадии #3.1.2 reasoner-конвейера:выполняется резюмирование информации, найденной/извлечённой по каждому clue-запросу в отдельности. Значение по умолчанию ClueAnswerGeneratorConfig().
-    :type clueanswer_generator_config: ClueAnswerGeneratorConfig, optional
+    :type clueanswer_generator_config: Union[ClueAnswerGeneratorConfig, Dict], optional
     :param clueanswers_summarizer_config: Конфигурация стадии #3.2 reasoner-конвейера: выполняется резюмирование информации, полученной врамках обхода графа по clue-запросам, для текущего шага/запроса (в рамках плана) поиска. Значение по умолчанию ClueAnswersSummarizerConfig().
-    :type clueanswers_summarizer_config: ClueAnswersSummarizerConfig, optional
+    :type clueanswers_summarizer_config: Union[ClueAnswersSummarizerConfig, Dict], optional
     :param answer_generator_config: Конфигурация стадии #4 reasoner-конвейера: выполняется генерация ответа на исходный вопрос, на основании информации, извлечённой из графа знаний по шагам/запросам плана поиска. Значение по умолчанию AnswerGeneratorConfig().
-    :type answer_generator_config: AnswerGeneratorConfig, optional
+    :type answer_generator_config: Union[AnswerGeneratorConfig, Dict], optional
     :param max_searchplan_steps: Максимальное количество шагов плана поиска, по которым может быть выполнен обход/излвечение информации из графа знаний. По достижению заданного предела поиск завершается. Значение по умолчанию 5.
     :type max_searchplan_steps: int, optional
     :param answer_something: Если True, то по достижении предела по количеству выполненных шагов плана будет произведена принудительная генерация ответа на вопрос по извлечённому набору информации (даже если в неё не содержится релевантных материалов для получения правильного ответа); иначе (по достижению предела обработанных шагов поиска) в качества ответа будет сформировна/возвращена NoAnswer-заглушка в качества результата работы reasoner-пайплайна. Значение по умолчанию True.
@@ -48,16 +48,16 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы MediumKGReasoner-класса. Значение по умолчанию 'qa_mediumreasoner_cache'.
     :type cache_table_name: str, optional
     """
-    searchplan_enhancer_config: SearchPlanEnhancerConfig = field(default_factory=lambda: SearchPlanEnhancerConfig())
-    entities_extractor_config: EntitiesExtractorConfig = field(default_factory=lambda: EntitiesExtractorConfig())
-    e2n_matcher_config: Entities2NodesMatcherConfig = field(default_factory=lambda: Entities2NodesMatcherConfig())
+    searchplan_enhancer_config: Union[SearchPlanEnhancerConfig, Dict] = field(default_factory=lambda: SearchPlanEnhancerConfig())
+    entities_extractor_config: Union[EntitiesExtractorConfig, Dict] = field(default_factory=lambda: EntitiesExtractorConfig())
+    e2n_matcher_config: Union[Entities2NodesMatcherConfig, Dict] = field(default_factory=lambda: Entities2NodesMatcherConfig())
 
-    cluequeries_generator_config: ClueQueriesGeneratorConfig = field(default_factory=lambda: ClueQueriesGeneratorConfig())
-    knowledge_retriever_config: KnowledgeRetrieverConfig = field(default_factory=lambda: MEDIUM_KG_RETRIEVER_CONFIG)
-    clueanswer_generator_config: ClueAnswerGeneratorConfig = field(default_factory=lambda: ClueAnswerGeneratorConfig())
-    clueanswers_summarizer_config: ClueAnswersSummarizerConfig = field(default_factory=lambda: ClueAnswersSummarizerConfig())
+    cluequeries_generator_config: Union[ClueQueriesGeneratorConfig, Dict] = field(default_factory=lambda: ClueQueriesGeneratorConfig())
+    knowledge_retriever_config: Union[KnowledgeRetrieverConfig, Dict] = field(default_factory=lambda: MEDIUM_KG_RETRIEVER_CONFIG)
+    clueanswer_generator_config: Union[ClueAnswerGeneratorConfig, Dict] = field(default_factory=lambda: ClueAnswerGeneratorConfig())
+    clueanswers_summarizer_config: Union[ClueAnswersSummarizerConfig, Dict] = field(default_factory=lambda: ClueAnswersSummarizerConfig())
 
-    answer_generator_config: AnswerGeneratorConfig = field(default_factory=lambda: AnswerGeneratorConfig())
+    answer_generator_config: Union[AnswerGeneratorConfig, Dict] = field(default_factory=lambda: AnswerGeneratorConfig())
 
     max_searchplan_steps: int = 3
     answer_something: bool = True
@@ -79,6 +79,48 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
         str_proc_configs = f"{str_cqg_config}|{str_kr_config}|{str_cag_config}|{str_cas_config}"
         return f"{str_init_configs}|{str_proc_configs}|{str_ag_config}|{self.max_searchplan_steps}|{self.answer_something}"
 
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = MediumKGReasonerConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.searchplan_enhancer_config, dict):
+            self.searchplan_enhancer_config = SearchPlanEnhancerConfig.from_dict(self.searchplan_enhancer_config)
+        else:
+            self.searchplan_enhancer_config.formate_fields()
+        if isinstance(self.entities_extractor_config, dict):
+            self.entities_extractor_config = EntitiesExtractorConfig.from_dict(self.entities_extractor_config)
+        else:
+            self.entities_extractor_config.formate_fields()
+        if isinstance(self.e2n_matcher_config, dict):
+            self.e2n_matcher_config = Entities2NodesMatcherConfig.from_dict(self.e2n_matcher_config)
+        else:
+            self.e2n_matcher_config.formate_fields()
+
+        if isinstance(self.cluequeries_generator_config, dict):
+            self.cluequeries_generator_config = ClueQueriesGeneratorConfig.from_dict(self.cluequeries_generator_config)
+        else:
+            self.cluequeries_generator_config.formate_fields()
+        if isinstance(self.knowledge_retriever_config, dict):
+            self.knowledge_retriever_config = KnowledgeRetrieverConfig.from_dict(self.knowledge_retriever_config)
+        else:
+            self.knowledge_retriever_config.formate_fields()
+        if isinstance(self.clueanswer_generator_config, dict):
+            self.clueanswer_generator_config = ClueAnswerGeneratorConfig.from_dict(self.clueanswer_generator_config)
+        else:
+            self.clueanswer_generator_config.formate_fields()
+        if isinstance(self.clueanswers_summarizer_config, dict):
+            self.clueanswers_summarizer_config = ClueAnswersSummarizerConfig.from_dict(self.clueanswers_summarizer_config)
+        else:
+            self.clueanswers_summarizer_config.formate_fields()
+
+        if isinstance(self.answer_generator_config, dict):
+            self.answer_generator_config = AnswerGeneratorConfig.from_dict(self.answer_generator_config)
+        else:
+            self.answer_generator_config.formate_fields()
+
 
 class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
     """Medium-версия пайплайна по ризонигу на графе знаний с целью извлечения релевантной информации к запросу.
@@ -86,17 +128,22 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация MediumKGReasoner-пайплайна. Значение по умолчанию MediumKGReasonerConfig().
-    :type config: MediumKGReasonerConfig, optional
+    :type config: Union[MediumKGReasonerConfig,Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, config: MediumKGReasonerConfig = MediumKGReasonerConfig(),
+    def __init__(self, kg_model: KnowledgeGraphModel, config: Union[MediumKGReasonerConfig, Dict] = MediumKGReasonerConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
+        if isinstance(config, dict):
+            config: MediumKGReasonerConfig = MediumKGReasonerConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+
         self.kg_model = kg_model
 
         self.cachekv = self.init_cachekv(

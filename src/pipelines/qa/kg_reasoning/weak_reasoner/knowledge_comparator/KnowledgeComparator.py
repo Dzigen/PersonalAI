@@ -17,7 +17,7 @@ from ......utils.cache_kv.CacheOperations import CacheOperations
 class KnowledgeComparatorConfig(BaseComponentConfig):
     """Конфигурация "Knowledge Comparator"-стадии QA-конвейера.
     :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию KC_RERANKDRIVER_DEFAULT_CONFIG.
-    :type reranker_driver_config: RerankerDriverConfig, optional
+    :type reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
     :param max_K: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 1.
     :type max_k: int, optional
     :param k_compare: Служебный гиперпараметр. Значение по умолчанию 5.
@@ -25,7 +25,7 @@ class KnowledgeComparatorConfig(BaseComponentConfig):
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы KnowledgeComparator-класса. Значение по умолчанию 'qa_kcomparator_stage_cache'.
     :type cache_table_name: str, optional
     """
-    reranker_driver_config: RerankerDriverConfig = field(default_factory=lambda: KC_RERANKDRIVER_DEFAULT_CONFIG)
+    reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(default_factory=lambda: KC_RERANKDRIVER_DEFAULT_CONFIG)
     max_k: int = 1
     k_compare: int = 5
 
@@ -35,6 +35,18 @@ class KnowledgeComparatorConfig(BaseComponentConfig):
     def to_str(self):
         return f"{self.reranker_driver_config.to_str()};{self.max_k}:{self.k_compare}"
 
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = KnowledgeComparatorConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.reranker_driver_config, dict):
+            self.reranker_driver_config = RerankerDriverConfig.from_dict(self.reranker_driver_config)
+        else:
+            self.reranker_driver_config.formate_fields()
+
 
 class KnowledgeComparator(CacheUtils, CacheOperations):
     """Верхнеуровневый класс второй стадии QA-конвейера для сопоставления информации из user-вопроса с имеющейся информацией в памяти (графе знаний) ассистента.
@@ -42,14 +54,19 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация "Knowledge Comparator"-стадии. Значение по умолчанию KnowledgeComparatorConfig().
-    :type config: KnowledgeComparatorConfig, optional
+    :type config: Union[KnowledgeComparatorConfig,Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeComparatorConfig = KnowledgeComparatorConfig(),
+    def __init__(self, kg_model: KnowledgeGraphModel, config: Union[KnowledgeComparatorConfig, Dict] = KnowledgeComparatorConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
+        if isinstance(config, dict):
+            config: KnowledgeComparatorConfig = KnowledgeComparatorConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+
         self.kg_model = kg_model
 
         self.cachekv = self.init_cachekv(

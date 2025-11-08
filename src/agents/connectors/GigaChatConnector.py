@@ -13,12 +13,18 @@ from ..utils import AbstractAgentConnector, AgentConnectorConfig, LLMInferenceSt
 
 
 class GigaChatConnector(AbstractAgentConnector):
-    def __init__(self, config: AgentConnectorConfig = DEFAULT_GIGACHAT_CONFIG) -> None:
+    def __init__(self, config: Union[Dict, AgentConnectorConfig] = DEFAULT_GIGACHAT_CONFIG) -> None:
+        if isinstance(config, dict):
+            config = AgentConnectorConfig.from_dict(config)
+        else:
+            config.formate_fields()
+        self.config: AgentConnectorConfig = config
+
         self.gen_strategy = config.gen_strategy
         self.trials = config.ext_params['trials']
-        self.config = config
-        self.open_connection()
         self.CONNECTOR_KW = 'gigachat'
+
+        self.open_connection()
 
     def open_connection(self):
         self.giga_model = GigaChat(

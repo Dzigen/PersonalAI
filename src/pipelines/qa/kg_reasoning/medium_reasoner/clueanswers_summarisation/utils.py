@@ -10,6 +10,7 @@ from ......utils import AgentTaskSolver, AgentTaskSolverConfig
 class MediumASummarizerTaskSolvers(BaseTaskSolvers):
     clueanswers_summ_solver: AgentTaskSolver
 
+
 @dataclass
 class ClueAnswersSummarizerAgentTasksConfig(BaseAgentTasksConfig):
     """
@@ -19,3 +20,9 @@ class ClueAnswersSummarizerAgentTasksConfig(BaseAgentTasksConfig):
     canswers_summarisation: Union[AgentTaskSolverConfig, str] = 'v1'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: CQSUMM_AGENTASKS_SELECTORS_MAPPING)
+
+    @staticmethod
+    def from_dict(dict_config):
+        formated_config = ClueAnswersSummarizerAgentTasksConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config

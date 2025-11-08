@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Union
 from neo4j import GraphDatabase
 import json
 
@@ -9,7 +9,11 @@ from ..utils import AbstractTreeDatabaseConnection, TreeDBConnectionConfig, \
 
 class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
 
-    def __init__(self, config: TreeDBConnectionConfig = DEFAULT_NEO4JTREE_CONFIG):
+    def __init__(self, config: Union[Dict, TreeDBConnectionConfig] = DEFAULT_NEO4JTREE_CONFIG):
+        if isinstance(config, dict):
+            config: TreeDBConnectionConfig = TreeDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
 
     def open_connection(self) -> None:

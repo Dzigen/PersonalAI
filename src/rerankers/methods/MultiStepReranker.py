@@ -15,6 +15,7 @@ class RerankingType(Enum):
     filter = 'filter'  # sorting with tail-cuting; relevance-scores are not returning
     retriever = 'retriever'  # retrieve from ids-subset; relevance-scores are returning
 
+
 MS_RERANKING_TYPES_MAP = {
     'filter': RerankingType.filter,
     'retriever': RerankingType.retriever
@@ -26,7 +27,7 @@ class RerankStep:
     """Конфигурация отдельной стадии в рамках многостадийного Retrieve/Rerank-оператора
 
     :param type: Тип стадии: (1) 'retriever' - выполняется извлечение релевантных элементов к запросу на основе семантической их векторных представлений, которые заранее подготовлены доступны через соответствующий коннектор к векторной бд; (2) 'filter' - выполняется переранжирование/фильтрация ранее извлечённых элементов без использования коннекторов к БД с заранее посчитанных векторныъ представлений элементов.
-    :type type: RerankingType
+    :type type: Union[str,RerankingType]
     :param name: Название (ключевое слово) набора логики для выполнения на данной стадии. В случае 'retrieve'-значения в type-поле данное название должно отсылать к vectordb-коннектору из заданного Vector-компоновщика при инициализации MultiStepReranker-класса. В случае 'filter'-значения в type-поле название отсылает к одному из реализованных/поддерживаемых filter-операторов в библиотеке.
     :type name: str
     :param fetch_n: Базовое количество релевантных элементов к запросу (query), которое извлекается перед выполнением filter-операций. Значение по умолчанию 10.
@@ -34,7 +35,7 @@ class RerankStep:
     :param extended_params: Дополнительные параметры стадии. Значение по умолчанию None.
     :type extended_params: Union[None, Dict], optional
     """
-    type: RerankingType
+    type: Union[str, RerankingType]
     name: str
     fetch_n: Union[None, int] = 10
     extended_params: Union[None, Dict] = None
@@ -43,15 +44,34 @@ class RerankStep:
         str_extended_params = [f"{k}:{v}" for k, v in self.extended_params.items()]
         return f"{self.type}:{self.name}:{self.fetch_n}:{str_extended_params}"
 
+    def formate_fields(self):
+        if isinstance(self.type, str):
+            self.type = MS_RERANKING_TYPES_MAP[self.type]
+
 
 @dataclass
 class MultiStepRerankerConfig(BaseRerankerModuleConfig):
     """Конфигурация многостадийного Retrieve/Rerank-оператора
 
     :param reranking_sequence: Последовательность вызова и конфигурации стадий для извлечения и переранжирования.
-    :type reranking_sequence: List[RerankStep]
+    :type reranking_sequence: List[Union[Dict,RerankStep]]
     """
-    reranking_sequence: List[RerankStep]
+    reranking_sequence: List[Union[Dict, RerankStep]]
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = MultiStepRerankerConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        for i, rstep_config in enumerate(self.reranking_sequence):
+            if isinstance(rstep_config, dict):
+                formated_rstep_config = RerankStep(**rstep_config)
+                formated_rstep_config.formate_fields()
+                self.reranking_sequence[i] = formated_rstep_config
+            else:
+                rstep_config.formate_fields()
 
 
 class MultiStepReranker(AbstractRerankerModule):
@@ -59,16 +79,21 @@ class MultiStepReranker(AbstractRerankerModule):
     с помощью оценки семантической близости их раличных вариантов векторных представлений.
 
     :param config: Конфигурация Retrieve/Rerank-оператора.
-    :type config: EnsembleFusionRerankerConfig
+    :type config: Union[Dict, MultiStepRerankerConfig]
     :param vdb_composer: Компоновщий нескольких наборов векторных представлений для одной группы элементов, из которой будет выполняться извлечение (retrieve/rerank-операция).
     :type vdb_composer: VectorComposer
     :param availabel_agents: Достпные именованные коннекторы к LLM-агентам для использования в рамках обозначенных retrieve/filter-стадий. Значение по умолчанию None.
     :type availabel_agents: Union[None, Dict[str, AbstractAgentConnector]], optional
     """
 
-    def __init__(self, config: MultiStepRerankerConfig, vdb_composer: VectorComposer,
+    def __init__(self, config: Union[Dict, MultiStepRerankerConfig], vdb_composer: VectorComposer,
                  availabel_agents: Union[None, Dict[str, AbstractAgentConnector]] = None):
+        if isinstance(config, dict):
+            config: MultiStepRerankerConfig = MultiStepRerankerConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+
         self.validate_config(vdb_composer)
 
         self.vdb_composer = vdb_composer

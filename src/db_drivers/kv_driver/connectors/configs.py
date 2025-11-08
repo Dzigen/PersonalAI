@@ -10,7 +10,8 @@ DEFAULT_INMEMORYKV_CONFIG = KVDBConnectionConfig(
         'load_dump_name': None,
         'load_dump_dir': "./personalai_tmp/volumes/inmemory_kv",
         'save_on_disk': True, 'save_dump_dir': "./personalai_tmp/volumes/inmemory_kv",
-        'max_storage': 5e+8
+        'max_storage': 5e+8,
+        'rewrite': False
     })
 
 DEFAULT_MONGOKV_CONFIG = KVDBConnectionConfig(

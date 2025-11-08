@@ -1,9 +1,7 @@
 import psycopg2
 from typing import List, Dict, Tuple, Union
-from time import time
 from dataclasses import fields, asdict
 from collections import defaultdict
-import hashlib
 
 from .configs import DEFAULT_POSTGRESQLTABLE_CONFIG
 from ..utils import AbstractTableDatabaseConnection, TableDBConnectionConfig, TableDBInstance, BaseTableStucture
@@ -11,7 +9,11 @@ from ..utils import AbstractTableDatabaseConnection, TableDBConnectionConfig, Ta
 
 class PostgreSQLTableConnector(AbstractTableDatabaseConnection):
 
-    def __init__(self, config: TableDBConnectionConfig = DEFAULT_POSTGRESQLTABLE_CONFIG) -> None:
+    def __init__(self, config: Union[Dict, TableDBConnectionConfig] = DEFAULT_POSTGRESQLTABLE_CONFIG) -> None:
+        if isinstance(config, dict):
+            config: TableDBConnectionConfig = TableDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
 
     def is_open(self) -> bool:

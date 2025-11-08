@@ -1,3 +1,5 @@
+from typing import Dict
+
 from .connectors.dense import MilvusVectorConnector, ChromaVectorConnection, InMemoryVectorConnector, ElasticSearchVectorConnector
 from .connectors.dense.configs import DEFAULT_CHROMA_CONFIG, DEFAULT_MILVUS_CONFIG, DEFAULT_INMEMORY_CONFIG, DEFAULT_ELASTICSEARCH_CONFIG
 
@@ -5,7 +7,9 @@ from .connectors.sparse import OpenSeachBM25Connector, ElasticSearchBM25Connecto
 from .connectors.sparse.configs import DEFAULT_INMEMORY_BM25_CONFIG, DEFAULT_ELASTICSEARCH_BM25_CONFIG, \
     DEFAULT_OPENSEARCH_BM25_CONFIG
 
-DEFAULT_VECTORDB_CONFIGS = {
+from .utils import AbstractVectorDatabaseConnection, VectorDBConnectionConfig
+
+DEFAULT_VECTORDB_CONFIGS: Dict[str, Dict[str, VectorDBConnectionConfig]] = {
     'dense': {
         'chroma': DEFAULT_CHROMA_CONFIG,
         'milvus': DEFAULT_MILVUS_CONFIG,
@@ -20,7 +24,7 @@ DEFAULT_VECTORDB_CONFIGS = {
     }
 }
 
-AVAILABLE_VECTORDB_CONNECTORS = {
+AVAILABLE_VECTORDB_CONNECTORS: Dict[str, AbstractVectorDatabaseConnection] = {
     'chroma': ChromaVectorConnection,
     'milvus': MilvusVectorConnector,
     'inmemory': InMemoryVectorConnector,

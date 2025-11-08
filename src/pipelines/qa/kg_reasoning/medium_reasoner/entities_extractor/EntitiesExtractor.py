@@ -3,7 +3,7 @@ from typing import Tuple, List, Union, Dict
 
 from .config import ENEXTR_MAIN_LOG_PATH
 from .utils import MediumEntitiesExtractorTaskSolvers, EntitiesExtractorAgentTasksConfig
-from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
+from ......utils import ReturnInfo, Logger, AgentTaskSolver
 from ......utils import ReturnStatus
 from ......agents.utils import AbstractAgentConnector
 from ......utils.data_structs import create_id, BaseComponentConfig, LanguageConfig
@@ -21,18 +21,28 @@ class EntitiesExtractorConfig(BaseComponentConfig, LanguageConfig):
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию EntitiesExtractorAgentTasksConfig().
-    :type agent_tasks_config: EntitiesExtractorAgentTasksConfig, optional
+    :type agent_tasks_config: Union[EntitiesExtractorAgentTasksConfig, Dict], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы EntitiesExtractor-класса. Значение по умолчанию 'medreasn_entextr_main_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    agent_tasks_config: EntitiesExtractorAgentTasksConfig = field(default_factory=lambda: EntitiesExtractorAgentTasksConfig())
+    agent_tasks_config: Union[EntitiesExtractorAgentTasksConfig, Dict] = field(default_factory=lambda: EntitiesExtractorAgentTasksConfig())
 
     cache_table_name: str = "medreasn_entextr_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(ENEXTR_MAIN_LOG_PATH))
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = EntitiesExtractorConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.agent_tasks_config, dict):
+            self.agent_tasks_config = EntitiesExtractorAgentTasksConfig.from_dict(self.agent_tasks_config)
 
 
 class EntitiesExtractor(CacheUtils, CacheOperations, AgentStatOperations):
@@ -41,7 +51,7 @@ class EntitiesExtractor(CacheUtils, CacheOperations, AgentStatOperations):
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
     :type agent: AbstractAgentConnector
     :param config: Конфигурация EntitiesExtractor-стадии. Значение по умолчанию EntitiesExtractorConfig().
-    :type config: EntitiesExtractorConfig, optional
+    :type config: Union[EntitiesExtractorConfig, Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
@@ -50,10 +60,14 @@ class EntitiesExtractor(CacheUtils, CacheOperations, AgentStatOperations):
     :type cache_llm_inference: bool, optional
     """
 
-    def __init__(self, agent: AbstractAgentConnector, config: EntitiesExtractorConfig = EntitiesExtractorConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: Union[EntitiesExtractorConfig, Dict] = EntitiesExtractorConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
                  cache_llm_inference: bool = True):
+        if isinstance(config, dict):
+            config: EntitiesExtractorConfig = EntitiesExtractorConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
         self.config.agent_tasks_config.versions_to_configs()
 

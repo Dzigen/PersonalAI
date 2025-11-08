@@ -164,7 +164,7 @@ print(len(dataset))
 
 ####################################################
 print("8. Run KG build process")
-print(f"start time: {datetime.datetime.now()}") 
+print(f"start time: {datetime.datetime.now()}")
 
 # hotpotqa | qwen38b_261025_v2prompts | 379+1131+1523
 # rubqdev | gigachatmax_281025_v2prompts | 1997 Done
@@ -177,14 +177,14 @@ for i in process:
         extracted_triplets, _ = mem_pipeline.remember(text, time, properties)
     except AssertionError:
         pprint(kg_model.count_items(detailed=True))
-        print(f"end time: {datetime.datetime.now()}") 
+        print(f"end time: {datetime.datetime.now()}")
         raise AssertionError
     else:
         process.set_postfix_str(f"kg_info: {kg_model.count_items()}")
 
     joblib.dump(extracted_triplets, f'{TMP_EXTRACTED_TRIPLETS_PATH}/item{i}')
 
-print(f"end time: {datetime.datetime.now()}") 
+print(f"end time: {datetime.datetime.now()}")
 kg_model.check_consistency()
 
 print("kg size:")

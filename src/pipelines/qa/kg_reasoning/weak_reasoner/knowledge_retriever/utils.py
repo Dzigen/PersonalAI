@@ -3,9 +3,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from .errors import NOT_VALID_ID_ERROR_MSG, NO_START_NODE_IN_PARENT_ERROR_MSG, EMPTY_PARENT_ERROR_MSG
-from ......utils.data_structs import QueryInfo, Triplet, NodeType, NodeInfo
+from ......utils.data_structs import QueryInfo, Triplet, NodeInfo, BaseConfigOperations, NodeType
 from ......utils.cache_kv.CacheOperations import CacheOperations, TraversalMethodCacheOpearions
-from .....utils import BaseStages
 
 
 def get_nodes_path(parent: Dict[str, NodeInfo], end_node: NodeInfo) -> List[NodeInfo]:
@@ -38,11 +37,8 @@ def get_nodes_path(parent: Dict[str, NodeInfo], end_node: NodeInfo) -> List[Node
 
 
 @dataclass
-class BaseTripletsFilterConfig:
+class BaseTripletsFilterConfig(BaseConfigOperations):
     """Базовая конфигурация алгоритмов по ранжированию/фильтрации триплетов."""
-
-    def to_str(self) -> str:
-        pass
 
 
 class AbstractTriplesFilter(CacheOperations):
@@ -65,11 +61,9 @@ class AbstractTriplesFilter(CacheOperations):
 
 
 @dataclass
-class BaseGraphSearchConfig:
+class BaseGraphSearchConfig(BaseConfigOperations):
     """Базовая конфигурация алгоритмов по извлечению триплетов из графа знаний."""
-
-    def to_str(self) -> str:
-        pass
+    accepted_node_types: Union[List[NodeType], None] = None
 
 
 class AbstractTripletsRetriever(CacheOperations, TraversalMethodCacheOpearions):

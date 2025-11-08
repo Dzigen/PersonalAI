@@ -1,9 +1,10 @@
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever import TraversingPath
 import numpy as np
 
 import sys
 sys.path.insert(0, "../")
 
+from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever import TraversingPath
+from src.utils.data_structs import NodeInfo, NodeType
 
 # raw_score, expected_value, exception
 CALCULATE_TRIPLET_SCORE_TEST_CASES = [
@@ -29,45 +30,54 @@ CALCULATE_TRIPLET_SCORE_TEST_CASES = [
 ]
 
 EMPTY_TPATH = TraversingPath(
-    path=[], unique_nids=set(),
+    path=[], unique_ntypedids=set(),
     unique_tids=set(), accum_score=0.0)
 
+OBJECT_NODEINFO1 = NodeInfo(id='n_id1', type=NodeType.object)
+OBJECT_NODEINFO2 = NodeInfo(id='n_id2', type=NodeType.object)
+OBJECT_NODEINFO3 = NodeInfo(id='n_id3', type=NodeType.object)
+OBJECT_NODEINFO4 = NodeInfo(id='n_id4', type=NodeType.object)
+
 SIMPLE_TPATH1 = TraversingPath(
-    path=[('n_id1', 't_id1', 'n_id2')],
-    unique_nids={'n_id1', 'n_id2'},
+    path=[(OBJECT_NODEINFO1, 't_id1', OBJECT_NODEINFO2)],
+    unique_ntypedids={OBJECT_NODEINFO1.to_str(), OBJECT_NODEINFO2.to_str()},
     unique_tids={'t_id1'},
     accum_score=0.2)
 
 SIMPLE_TPATH2 = TraversingPath(
-    path=[('n_id1', 't_id1', 'n_id2'), ('n_id2', 't_id2', 'n_id3')],
-    unique_nids={'n_id1', 'n_id2', 'n_id3'},
+    path=[(OBJECT_NODEINFO1, 't_id1', OBJECT_NODEINFO2),
+          (OBJECT_NODEINFO2, 't_id2', OBJECT_NODEINFO3)],
+    unique_ntypedids={OBJECT_NODEINFO1.to_str(), OBJECT_NODEINFO2.to_str(), OBJECT_NODEINFO3.to_str()},
     unique_tids={'t_id1', 't_id2'},
     accum_score=0.3)
 
 SIMPLE_TPATH3 = TraversingPath(
-    path=[('n_id1', 't_id1', 'n_id2'), ('n_id2', 't_id3', 'n_id4')],
-    unique_nids={'n_id1', 'n_id2', 'n_id4'},
+    path=[(OBJECT_NODEINFO1, 't_id1', OBJECT_NODEINFO2),
+          (OBJECT_NODEINFO2, 't_id3', OBJECT_NODEINFO4)],
+    unique_ntypedids={OBJECT_NODEINFO1.to_str(), OBJECT_NODEINFO2.to_str(), OBJECT_NODEINFO4.to_str()},
     unique_tids={'t_id1', 't_id3'},
     accum_score=0.4)
 
 SIMPLE_TPATH3_N1 = TraversingPath(
-    path=[('n_id1', 't_id1', 'n_id2'), ('n_id2', 't_id3',
-                                        'n_id4'), ('n_id4', 't_id4', 'n_id2')],
-    unique_nids={'n_id1', 'n_id2', 'n_id4'},
+    path=[(OBJECT_NODEINFO1, 't_id1', OBJECT_NODEINFO2),
+          (OBJECT_NODEINFO2, 't_id3', OBJECT_NODEINFO4),
+          (OBJECT_NODEINFO4, 't_id4', OBJECT_NODEINFO2)],
+    unique_ntypedids={OBJECT_NODEINFO1.to_str(), OBJECT_NODEINFO2.to_str(), OBJECT_NODEINFO4.to_str()},
     unique_tids={'t_id1', 't_id3', 't_id4'},
     accum_score=0.7)
 
 # pinfo, triplet_scores, expected_new_tpaths, exception
 EXTEND_TPATH_TEST_CASES = [
     # пустой базовый путь
-    (EMPTY_TPATH, [("t_id1", 'n_id1', 0.2)], None, True),
+    (EMPTY_TPATH, [("t_id1", OBJECT_NODEINFO1, 0.2)], None, True),
     # несколько разных вершин для добавления в путь
-    (SIMPLE_TPATH1, [("t_id2", 'n_id3', 0.1), ("t_id3", "n_id4", 0.2)],
-     [SIMPLE_TPATH2, SIMPLE_TPATH3], False),
+    (SIMPLE_TPATH1, [
+        ("t_id2", OBJECT_NODEINFO3, 0.1),
+        ("t_id3", OBJECT_NODEINFO4, 0.2)], [SIMPLE_TPATH2, SIMPLE_TPATH3], False),
     # добавляемая вершина уже есть в пути
-    (SIMPLE_TPATH3, [("t_id4", "n_id2", 0.3)], [SIMPLE_TPATH3_N1], False),
+    (SIMPLE_TPATH3, [("t_id4", OBJECT_NODEINFO2, 0.3)], [SIMPLE_TPATH3_N1], False),
     # добавляемый триплет уже есть в пути
-    (SIMPLE_TPATH3_N1, [("t_id3", "n_id4", 0.3)], None, True),
+    (SIMPLE_TPATH3_N1, [("t_id3", OBJECT_NODEINFO4, 0.3)], None, True),
     # нуль новых триплетов для добавления в путь
     (SIMPLE_TPATH3, [], [], False)
 ]

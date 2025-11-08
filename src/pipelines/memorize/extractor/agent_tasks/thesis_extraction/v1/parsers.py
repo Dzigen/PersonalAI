@@ -12,7 +12,7 @@ def ethesises_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, List[
     :rtype: List[Tuple[str, str]]
     """
     if len(raw_response) < 1:
-        ValueError(f"raw_response: '{raw_response}'")
+        raise ValueError(f"raw_response: '{raw_response}'")
 
     if ":" in raw_response:
         raw_response = raw_response.split(":")[-1]

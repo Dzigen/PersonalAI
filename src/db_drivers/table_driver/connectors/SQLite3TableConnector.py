@@ -1,20 +1,19 @@
 import sqlite3
-from typing import List, Dict, Tuple, Union
-from collections import defaultdict
+from typing import List, Dict, Union
 from dataclasses import fields, asdict
 import os
-import gc
-from time import time
-import hashlib
 
 from .configs import DEFAULT_SQLITE3TABLE_CONFIG
 from ..utils import AbstractTableDatabaseConnection, TableDBConnectionConfig, TableDBInstance, BaseTableStucture
-from ....utils.data_structs import create_id
 
 
 class SQLite3TableConnector(AbstractTableDatabaseConnection):
 
-    def __init__(self, config: TableDBConnectionConfig = DEFAULT_SQLITE3TABLE_CONFIG) -> None:
+    def __init__(self, config: Union[Dict, TableDBConnectionConfig] = DEFAULT_SQLITE3TABLE_CONFIG) -> None:
+        if isinstance(config, dict):
+            config: TableDBConnectionConfig = TableDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
 
     def is_open(self) -> bool:

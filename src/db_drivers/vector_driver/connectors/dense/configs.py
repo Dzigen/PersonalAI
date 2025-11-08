@@ -17,7 +17,8 @@ DEFAULT_INMEMORY_CONFIG = VectorDBConnectionConfig(
         'load_dump_dir': "./personalai_tmp/volumes/inmemory_dense",
         'save_on_disk': True,
         'save_dump_dir': "./personalai_tmp/volumes/inmemory_dense",
-        'vector_dim': 1024
+        'vector_dim': 1024,
+        'rewrite': False
     }
 )
 

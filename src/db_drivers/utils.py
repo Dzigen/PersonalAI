@@ -3,10 +3,11 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 
 from ..utils.errors import ReturnInfo
+from ..utils.data_structs import BaseConfigOperations
 
 
 @dataclass
-class BaseDatabaseConfig:
+class BaseDatabaseConfig(BaseConfigOperations):
     """Базовая конфигурация для подключения к базе данных.
 
     :param db_info: Словарь, который должен хранить название базы данных и таблицы, к которой нужно подключиться. Значение по умолчанию {'db': 'personalaidb', 'table': 'personalaitable'}.
@@ -18,11 +19,14 @@ class BaseDatabaseConfig:
     :param create_index: Если True, то для требуемых элементов в бд будет создан индекс с целью повышения производительности поиска, иначе False. Значения по умолчанию False.
     :type create_index: bool
     """
-    db_info: Dict = field(default_factory=lambda: {
-                          'db': 'DefaultPersonalAIDB', 'table': 'DefaultPersonalAITable'})
+    db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAIDB', 'table': 'DefaultPersonalAITable'})
     params: Dict = field(default_factory=lambda: dict())
     need_to_clear: bool = False
     create_index: bool = False
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        pass
 
 
 class AbstractDatabaseCRUD(ABC):

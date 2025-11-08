@@ -66,8 +66,10 @@ def test_create_simple_triplet(params, expected):
     if params['id'] is not None:
         assert triplet.id == params['id']
     else:
-        assert triplet.id == create_id(
-            ''.join([triplet.start_node.id, triplet.relation.id, triplet.end_node.id]))
+        assert triplet.id == create_id(''.join(
+                [triplet.start_node.type.value, triplet.start_node.id,
+                 triplet.relation.type.value, triplet.relation.id,
+                 triplet.end_node.type.value, triplet.end_node.id]))
 
     assert triplet.relation.id == create_id(
         TripletCreator.stringify(triplet)[1])
@@ -128,8 +130,10 @@ def test_create_hyper_triplet(params, expected):
     if params['id'] is not None:
         assert triplet.id == params['id']
     else:
-        assert triplet.id == create_id(
-            ''.join([triplet.start_node.id, triplet.relation.id, triplet.end_node.id]))
+        assert triplet.id == create_id(''.join(
+                [triplet.start_node.type.value, triplet.start_node.id,
+                 triplet.relation.type.value, triplet.relation.id,
+                 triplet.end_node.type.value, triplet.end_node.id]))
 
     assert triplet.relation.id == create_id(
         TripletCreator.stringify(triplet)[1])
@@ -190,8 +194,10 @@ def test_create_episodic_triplet(params, expected):
     if params['id'] is not None:
         assert triplet.id == params['id']
     else:
-        assert triplet.id == create_id(
-            ''.join([triplet.start_node.id, triplet.relation.id, triplet.end_node.id]))
+        assert triplet.id == create_id(''.join(
+                [triplet.start_node.type.value, triplet.start_node.id,
+                 triplet.relation.type.value, triplet.relation.id,
+                 triplet.end_node.type.value, triplet.end_node.id]))
 
     assert triplet.relation.id == create_id(
         TripletCreator.stringify(triplet)[1])

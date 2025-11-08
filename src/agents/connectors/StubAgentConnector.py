@@ -6,10 +6,16 @@ from ..utils import AbstractAgentConnector, AgentConnectorConfig, LLMInferenceSt
 
 
 class StubAgentConnector(AbstractAgentConnector):
-    def __init__(self, config: AgentConnectorConfig = DEFAULT_STUBAGENT_CONFIG, stub_answers: List[str] = list()) -> None:
-        self.config = config
-        self.looped_answers = deque(stub_answers)
+    def __init__(self, config: Union[Dict, AgentConnectorConfig] = DEFAULT_STUBAGENT_CONFIG, stub_answers: List[str] = list()) -> None:
+        if isinstance(config, dict):
+            config = AgentConnectorConfig.from_dict(config)
+        else:
+            config.formate_fields()
+        self.config: AgentConnectorConfig = config
+
         self.CONNECTOR_KW = 'stub'
+
+        self.looped_answers = deque(stub_answers)
 
     def check_connection(self) -> bool:
         return True

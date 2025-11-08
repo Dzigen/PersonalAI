@@ -10,6 +10,7 @@ from ......utils import AgentTaskSolver, AgentTaskSolverConfig
 class MediumCAGeneratorTaskSolvers(BaseTaskSolvers):
     cagen_solver: AgentTaskSolver
 
+
 @dataclass
 class ClueAnswerGeneratorAgentTasksConfig(BaseAgentTasksConfig):
     """
@@ -19,3 +20,9 @@ class ClueAnswerGeneratorAgentTasksConfig(BaseAgentTasksConfig):
     cagen: Union[AgentTaskSolverConfig, str] = 'v1'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: CAGEN_AGENTASKS_SELECTORS_MAPPING)
+
+    @staticmethod
+    def from_dict(dict_config):
+        formated_config = ClueAnswerGeneratorAgentTasksConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config

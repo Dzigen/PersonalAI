@@ -13,10 +13,16 @@ from ..utils import AbstractAgentConnector, AgentConnectorConfig, LLMInferenceSt
 
 
 class OLlamaConnector(AbstractAgentConnector):
-    def __init__(self, config: AgentConnectorConfig = DEFAULT_OLLAMA_CONFIG) -> None:
-        self.config = config
-        self.open_connection()
+    def __init__(self, config: Union[Dict, AgentConnectorConfig] = DEFAULT_OLLAMA_CONFIG) -> None:
+        if isinstance(config, dict):
+            config = AgentConnectorConfig.from_dict(config)
+        else:
+            config.formate_fields()
+        self.config: AgentConnectorConfig = config
+
         self.CONNECTOR_KW = 'ollama'
+
+        self.open_connection()
 
     def open_connection(self):
         self.client = Client(

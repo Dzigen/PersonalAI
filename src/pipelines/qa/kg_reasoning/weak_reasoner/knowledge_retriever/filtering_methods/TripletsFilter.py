@@ -4,10 +4,10 @@ import hashlib
 
 from .configs import KRFILTER_RERANKDRIVER_DEFAULT_CONFIG
 from ..utils import AbstractTriplesFilter, BaseTripletsFilterConfig
-from .......utils.data_structs import Triplet, QueryInfo, create_id, TripletCreator, RelationType
+from .......utils.data_structs import Triplet, QueryInfo, create_id, \
+    TripletCreator, RelationType, RELATIONS_TYPES_MAP
 from .......utils import Logger
 from .......kg_model import KnowledgeGraphModel
-from .......db_drivers.vector_driver import VectorDBInstance
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 from .......rerankers import RerankerDriver, RerankerDriverConfig
@@ -18,21 +18,37 @@ class TripletsFilterConfig(BaseTripletsFilterConfig):
     """Конфигурация наивного алгоритма ранжирования/фильтрации триплетов.
 
     :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию KRFILTER_RERANKDRIVER_DEFAULT_CONFIG.
-    :type reranker_driver_config: RerankerDriverConfig, optional
+    :type reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
     :param accepted_triplets_types: Допустимые типы триплетов, которые не будут отфильтрованы (по типу). Значение по умолчанию [RelationType.hyper].
-    :type accepted_triplets_types: List[RelationType]
+    :type accepted_triplets_types: List[Union[str,RelationType]]
     :param max_k: Первые k (по релевантности) триплетов, которые будут возвращены в результате операции ранжирования. Значение по умолчанию 50.
     :type max_k: int
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы TripletsFilter-класса. Значение по умолчанию 'qa_naive_t_filter_cache'.
     :type cache_table_name: str
     """
-    reranker_driver_config: RerankerDriverConfig = field(default_factory=lambda: KRFILTER_RERANKDRIVER_DEFAULT_CONFIG)
-    accepted_triplets_types: List[RelationType] = field(default_factory=lambda: [RelationType.hyper, RelationType.simple])
+    reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(default_factory=lambda: KRFILTER_RERANKDRIVER_DEFAULT_CONFIG)
+    accepted_triplets_types: List[Union[str, RelationType]] = field(default_factory=lambda: [RelationType.hyper, RelationType.simple])
     max_k: int = 50
     cache_table_name: str = 'qa_naive_t_filter_cache'
 
     def to_str(self):
-        return f"{self.max_k}|{self.accepted_triplets_types}"
+        return f"{self.max_k}|{self.accepted_triplets_types}|{self.reranker_driver_config.to_str()}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict) -> BaseTripletsFilterConfig:
+        formated_config = TripletsFilterConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self) -> None:
+        if isinstance(self.reranker_driver_config, Dict):
+            self.reranker_driver_config = RerankerDriverConfig.from_dict(self.reranker_driver_config)
+        else:
+            self.reranker_driver_config.formate_fields()
+
+        for i, rel_type in enumerate(self.accepted_triplets_types):
+            if not isinstance(rel_type, RelationType):
+                self.accepted_triplets_types[i] = RELATIONS_TYPES_MAP[rel_type]
 
 
 class TripletsFilter(AbstractTriplesFilter, CacheUtils):
@@ -53,8 +69,11 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, config: Union[TripletsFilterConfig, Dict] = TripletsFilterConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
         if isinstance(config, dict):
-            config = TripletsFilterConfig(**config)
+            config = TripletsFilterConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config: TripletsFilterConfig = config
+
         self.kg_model = kg_model
 
         self.cachekv = self.init_cachekv(

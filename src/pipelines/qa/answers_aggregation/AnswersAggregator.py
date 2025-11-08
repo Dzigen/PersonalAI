@@ -21,18 +21,28 @@ class AnswersAggregatorConfig(BaseComponentConfig, LanguageConfig):
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию AnswersAggregatorAgentTasksConfig().
-    :type agent_tasks_config: AnswersAggregatorAgentTasksConfig, optional
+    :type agent_tasks_config: Union[Dict, AnswersAggregatorAgentTasksConfig], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы AnswersAggregator-класса. Значение по умолчанию 'answers_aggregation_main_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    agent_tasks_config: AnswersAggregatorAgentTasksConfig = field(default_factory=lambda: AnswersAggregatorAgentTasksConfig())
+    agent_tasks_config: Union[Dict, AnswersAggregatorAgentTasksConfig] = field(default_factory=lambda: AnswersAggregatorAgentTasksConfig())
 
     cache_table_name: str = 'answers_aggregation_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(AAGG_MAIN_LOG_PATH))
 
     def to_str(self) -> str:
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
+
+    @staticmethod
+    def from_dict(dict_config):
+        formated_config = AnswersAggregatorConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.agent_tasks_config, dict):
+            self.agent_tasks_config = AnswersAggregatorAgentTasksConfig.from_dict(self.agent_tasks_config)
 
 
 class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
@@ -50,9 +60,13 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
-    def __init__(self, agent: AbstractAgentConnector, config: AnswersAggregatorConfig = AnswersAggregatorConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: Union[Dict, AnswersAggregatorConfig] = AnswersAggregatorConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
+        if isinstance(config, dict):
+            config: AnswersAggregatorConfig = AnswersAggregatorConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
         self.config.agent_tasks_config.versions_to_configs()
 

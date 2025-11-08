@@ -1,35 +1,35 @@
 #!/usr/bin/bash
 
-EXP_BASE_PATH=/home/workspace/experiments
+EXP_BASE_DIR=/home/workspace/experiments/qa
 PYTHON_CMD=/usr/bin/python3
-MODEL_NAME=$1
-PARAMS_NAME=$2
+
+# --------------------------------------------------------
+
+KNOWLEDGEGRAPH_NAME=$1
+DATASET_NAME=$2
 EXP_NAME=$3
-DATASET_NAME=$4
 
-EXP_RESULTS=results
-PARAMS_DIR=params_files
+QAHYPERP_PARAMS_PATH=$4
+EXPDIR_PARAMS_PATH=$5
+EVAL_PARAMS_PATH=$6
 
-SPEC_EXP_PATH="$EXP_BASE_PATH/$EXP_RESULTS/$DATASET_NAME/$EXP_NAME"
-PARAMS_PATH="$EXP_BASE_PATH/$PARAMS_DIR/$DATASET_NAME/$MODEL_NAME/$PARAMS_NAME"
+echo "$KNOWLEDGEGRAPH_NAME | $DATASET_NAME | $EXP_NAME"
+echo "qahyperp params-path: $QAHYPERP_PARAMS_PATH"
+echo "expdir params-path: $EXPDIR_PARAMS_PATH"
+echo "eval params-path: $EVAL_PARAMS_PATH"
 
-INIT_EXP_SCIPT="$EXP_BASE_PATH/init_file_structure.py"
-PRE_QACONFIG_SCRIPT="$SPEC_EXP_PATH/../../../prepare_qa_configs.py"
+# --------------------------------------------------------
 
-GEN_ANSWERS_SCRIPT="$SPEC_EXP_PATH/../../../generate_answers.py"
+CONFIGURE_SCRIPT="$EXP_BASE_DIR/configure/init_exp_environment.sh"
+GENERATE_SCRIPT="$EXP_BASE_DIR/generate/generate.sh"
+EVALUATE_SCRIPT="$EXP_BASE_DIR/evaluate/evaluate.sh"
 
-EVAL_ANSWERS_SCIPT="$SPEC_EXP_PATH/../../../evaluate_answers.py"
-LLM_EVAL_ANSWERS_SCRIPT="$SPEC_EXP_PATH/../../../evaluate_llmjudge.py"
-ACCUMULATE_METRICS_SCRIPT="$SPEC_EXP_PATH/../../../accumulate_packs_scores.py"
+# --------------------------------------------------------
 
-cd $EXP_BASE_PATH ; $PYTHON_CMD $INIT_EXP_SCIPT $PARAMS_PATH
+bash $CONFIGURE_SCRIPT $EXPDIR_PARAMS_PATH $QAHYPERP_PARAMS_PATH
 
-cd $SPEC_EXP_PATH ; $PYTHON_CMD $PRE_QACONFIG_SCRIPT $PARAMS_PATH
+bash $GENERATE_SCRIPT $EXPDIR_PARAMS_PATH $QAHYPERP_PARAMS_PATH $KNOWLEDGEGRAPH_NAME $DATASET_NAME $EXP_NAME
 
-cd $SPEC_EXP_PATH ; $PYTHON_CMD $GEN_ANSWERS_SCRIPT $PARAMS_PATH >> "$SPEC_EXP_PATH/agen_cron.txt" 2>&1
+bash $EVALUATE_SCRIPT $EXPDIR_PARAMS_PATH $QAHYPERP_PARAMS_PATH $EVAL_PARAMS_PATH $KNOWLEDGEGRAPH_NAME $DATASET_NAME $EXP_NAME
 
-cd $SPEC_EXP_PATH ; $PYTHON_CMD $EVAL_ANSWERS_SCIPT "$SPEC_EXP_PATH/hyperparameters.yaml" >> "$SPEC_EXP_PATH/aeval_cron.txt" 2>&1
-
-cd $SPEC_EXP_PATH ; $PYTHON_CMD $LLM_EVAL_ANSWERS_SCRIPT "$SPEC_EXP_PATH/hyperparameters.yaml" >> "$SPEC_EXP_PATH/llm_aeval_cron.txt" 2>&1
-
-cd $SPEC_EXP_PATH ; $PYTHON_CMD $ACCUMULATE_METRICS_SCRIPT "$SPEC_EXP_PATH/hyperparameters.yaml"
+echo "=== Done (run_experiment.sh) ==="

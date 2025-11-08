@@ -6,17 +6,41 @@ from ...db_drivers.table_driver import TableDriverConfig, TableDriver
 from .supported_dbvendors import SUPPORTED_VENDORS
 from .utils import AbstractTableStatOperations, LLMInferenceStat, CalculateMetrics
 from .configs import DEFAULT_AGENTSTAT_TABLEDB_DRIVER_CONFIG
+from ..data_structs import BaseConfigOperations
 
 
 @dataclass
-class AgentStatAnalyzerConfig:
+class AgentStatAnalyzerConfig(BaseConfigOperations):
     table_driver_config: TableDriverConfig = field(default_factory=lambda: DEFAULT_AGENTSTAT_TABLEDB_DRIVER_CONFIG)
     metrics_info: CalculateMetrics = field(default_factory=lambda: CalculateMetrics())
     column_info: List[str] = field(default_factory=lambda: ['prompt_tokens_amount', 'generated_tokens_amount', 'inference_elapsed_time'])
 
+    def to_str(self):
+        # TODO
+        raise NotImplementedError
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = AgentStatAnalyzerConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.table_driver_config, dict):
+            self.table_driver_config = TableDriverConfig.from_dict(self.table_driver_config)
+        else:
+            self.table_driver_config.formate_fields()
+
+        if isinstance(self.metrics_info, dict):
+            self.metrics_info = CalculateMetrics(**self.metrics_info)
+
 
 class AgentStatAnalyzer:
-    def __init__(self, config: AgentStatAnalyzerConfig = AgentStatAnalyzerConfig()):
+    def __init__(self, config: Union[Dict, AgentStatAnalyzerConfig] = AgentStatAnalyzerConfig()):
+        if isinstance(config, dict):
+            config: AgentStatAnalyzerConfig = AgentStatAnalyzerConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
 
         self.db_conn: AbstractTableDatabaseConnection = TableDriver.connect(self.config.table_driver_config)

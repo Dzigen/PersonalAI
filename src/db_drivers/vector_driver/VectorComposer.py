@@ -8,9 +8,16 @@ from .embedders import EmbedderModel
 
 class VectorComposer(AbstractVectorDatabaseComposer):
 
-    def __init__(self, vdb_config_mapping: Dict[str, VectorDriverConfig], embedders_mapping: Dict[str, EmbedderModel] = dict()) -> None:
-        self.vdb_config_mapping = vdb_config_mapping
+    def __init__(self, vdb_config_mapping: Dict[str, Union[Dict, VectorDriverConfig]], embedders_mapping: Dict[str, EmbedderModel] = dict()) -> None:
+        for vdb_name, vdb_config in vdb_config_mapping.items():
+            if isinstance(vdb_config, dict):
+                vdb_config_mapping[vdb_name] = VectorDriverConfig.from_dict(vdb_config)
+            else:
+                vdb_config_mapping[vdb_name].formate_fields()
+        self.vdb_config_mapping: Dict[str, VectorDriverConfig] = vdb_config_mapping
+
         self.vdb_conn_mapping: Dict[str, AbstractVectorDatabaseConnection] = dict()
+
         self.open_connection(embedders_mapping)
 
     def is_open(self):

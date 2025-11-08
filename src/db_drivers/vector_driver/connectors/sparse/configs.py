@@ -10,7 +10,8 @@ DEFAULT_INMEMORY_BM25_CONFIG = VectorDBConnectionConfig(
         'load_dump_name': None,
         'load_dump_dir': "./personalai_tmp/volumes/inmemory_bm25",
         'save_on_disk': True,
-        'save_dump_dir': "./personalai_tmp/volumes/inmemory_bm25"
+        'save_dump_dir': "./personalai_tmp/volumes/inmemory_bm25",
+        'rewrite': False
     }
 )
 

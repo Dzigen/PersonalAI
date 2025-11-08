@@ -24,13 +24,13 @@ for language in LANGUAGES:
         weak_config = QAPipelineConfig(
             reasoner_config=KnowledgeGraphReasonerConfig(
                 reasoner_name='weak',
-                reasoner_hyperparameters=WeakKGReasonerConfig()
+                reasoner_config=WeakKGReasonerConfig()
             )
         )
         medium_config = QAPipelineConfig(
             reasoner_config=KnowledgeGraphReasonerConfig(
                 reasoner_name='medium',
-                reasoner_hyperparameters=MediumKGReasonerConfig()
+                reasoner_config=MediumKGReasonerConfig()
             )
         )
         POPULATED_QAPIPELINE_TEST_CASES.append([weak_config, question, language])

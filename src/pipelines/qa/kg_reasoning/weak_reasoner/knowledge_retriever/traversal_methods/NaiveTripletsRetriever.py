@@ -7,7 +7,7 @@ from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......db_drivers.vector_driver import VectorDBInstance
 from .......kg_model import KnowledgeGraphModel
 from .......utils import Logger
-from .......utils.data_structs import QueryInfo, Triplet, create_id, NodeType
+from .......utils.data_structs import QueryInfo, Triplet, create_id
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 from .......rerankers import RerankerDriver, RerankerDriverConfig
@@ -18,20 +18,30 @@ class NaiveGraphSearchConfig(BaseGraphSearchConfig):
     """Конфигурация NaiveRetrieval-алгоритма обхода графа.
 
     :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию NGS_RERANKDRIVER_DEFAULT_CONFIG.
-    :type reranker_driver_config: RerankerDriverConfig, optional
+    :type reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
     :param max_k: Макисмальное количество трипелтов, которое может быть извлечено из графа. Значение по умолчанию 50.
     :type max_k: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveTripletsRetriever-класса. Значение по умолчанию 'qa_naive_t_retriever_cache'.
     :type cache_table_name: str, optional
     """
-    reranker_driver_config: RerankerDriverConfig = field(default_factory=lambda: NGS_RERANKDRIVER_DEFAULT_CONFIG)
+    reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(default_factory=lambda: NGS_RERANKDRIVER_DEFAULT_CONFIG)
     max_k: int = 50
-    accepted_node_types: List[NodeType] = field(
-        default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])  # NOT SUPPORTED
     cache_table_name: str = 'qa_naive_t_retriever_cache'
 
     def to_str(self):
-        return f"{self.max_k}"
+        return f"{self.max_k};{self.reranker_driver_config.to_str()}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        formated_config = NaiveGraphSearchConfig(**dict_config)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self) -> None:
+        if isinstance(self.reranker_driver_config, dict):
+            self.reranker_driver_config = RerankerDriverConfig.from_dict(self.reranker_driver_config)
+        else:
+            self.reranker_driver_config.formate_fields()
 
 
 class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
@@ -52,7 +62,9 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[NaiveGraphSearchConfig, Dict] = NaiveGraphSearchConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
         if isinstance(search_config, dict):
-            search_config = NaiveGraphSearchConfig(**search_config)
+            search_config = NaiveGraphSearchConfig.from_dict(search_config)
+        else:
+            search_config.formate_fields()
         self.config: NaiveGraphSearchConfig = search_config
 
         self.kg_model = kg_model

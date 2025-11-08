@@ -45,7 +45,7 @@ def ru_simpleag_custom_parse(raw_response: str, **kwargs) -> str:
     if answer_pos is None:
         raise ValueError(f"raw_response: '{raw_response}'")
 
-    answer = raw_response[answer_pos.span(0)[0]:]
+    answer = raw_response[answer_pos.span(0)[1]:]
 
     # Пустой ответ
     if len(answer) < 1:

@@ -28,6 +28,7 @@ def personaai_ru():
     stat_config.table_driver_config.db_config.db_info['db'] += 'RU'
 
     personal_ai = PersonalAI(config, kv_cache_config, stat_config)
+    personal_ai.kg_model.clear()
     for text in RAW_TEXTS_RU:
         personal_ai.update_memory(text)
     personal_ai.kg_model.check_consistency()
@@ -58,6 +59,7 @@ def personaai_en():
     stat_config.table_driver_config.db_config.db_info['db'] += 'EN'
 
     personal_ai = PersonalAI(config, kv_cache_config, stat_config)
+    personal_ai.kg_model.clear()
     for text in RAW_TEXTS_EN:
         personal_ai.update_memory(text)
     personal_ai.kg_model.check_consistency()

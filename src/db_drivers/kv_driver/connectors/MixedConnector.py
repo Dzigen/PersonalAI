@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from .configs import DEFAULT_MIXEDKV_CONFIG
 from .RedisConnector import RedisKVConnector
@@ -7,8 +7,12 @@ from ..utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValue
 
 
 class MixedKVConnector(AbstractKVDatabaseConnection):
-    def __init__(self, config: KVDBConnectionConfig = DEFAULT_MIXEDKV_CONFIG):
-        self.config = config
+    def __init__(self, config: Union[Dict, KVDBConnectionConfig] = DEFAULT_MIXEDKV_CONFIG):
+        if isinstance(config, dict):
+            config = KVDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
+        self.config: KVDBConnectionConfig = config
 
         self.config.params['mongo_config'].db_info['db'] = self.config.db_info['db']
         self.config.params['mongo_config'].db_info['table'] = self.config.db_info['table']
@@ -80,7 +84,7 @@ class MixedKVConnector(AbstractKVDatabaseConnection):
             raise ValueError
 
     def item_exist(self, id: str, storage_type: int = 0) -> bool:
-        if type(id) is not str:
+        if not isinstance(id, str):
             raise ValueError
 
         if storage_type == 0:

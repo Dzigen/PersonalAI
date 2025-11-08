@@ -3,7 +3,6 @@ from typing import List, Union, Tuple, Dict
 from enum import Enum
 import hashlib
 
-from ..db_drivers.vector_driver import VectorDBInstance
 from .logger import Logger
 
 
@@ -154,15 +153,15 @@ class BaseCreator:
 
 class RelationCreator(BaseCreator):
     @staticmethod
-    def create(r_type: Union[str, RelationType], name: str = None, prop: Dict = None) -> Relation:
+    def create(r_type: Union[str, RelationType], name: Union[None, str] = None, prop: Union[None, Dict] = None) -> Relation:
         """Метод предназначен для создания структуры данных связи с указанным содержанием.
 
         :param r_type: Тип создаваемой связи в строковой- или Enum-структуре данных.
         :type r_type: Union[str, RelationType]
         :param name: Главная смысловая информация, которая будет добавлена в связь. Значение по умолчанию None.
-        :type name: str, optional
+        :type name: Union[None,str], optional
         :param prop: Дополнительные свойства создаваемой связи. Значение по умолчанию None.
-        :type prop: Dict, optional
+        :type prop: Union[None,Dict], optional
         :return: Созданная структура данных связи.
         :rtype: Relation
         """
@@ -186,7 +185,7 @@ class RelationCreator(BaseCreator):
 
 class NodeCreator(BaseCreator):
     @staticmethod
-    def create(n_type: Union[str, NodeType], name: str, prop: Dict = None, add_stringified_node: bool = True) -> Node:
+    def create(n_type: Union[str, NodeType], name: str, prop: Union[None, Dict] = None, add_stringified_node: bool = True) -> Node:
         """Метод предназначен для создания структуры данных вершины с указанным содержанием.
 
         :param n_type: Тип создаваемой вершины в строковой- или Enum-структуре данных.
@@ -194,7 +193,7 @@ class NodeCreator(BaseCreator):
         :param name: Главная смысловая информация, которая будет добавлена в вершину.
         :type name: str
         :param prop: Дополнительные свойства создаваемой вершины. Значение по умолчанию None.
-        :type prop: Dict, optional
+        :type prop: Union[None,Dict], optional
         :param add_stringified_node: Если True, то в структуру данных вершины будет сохранено её строковое представление, иначе соответствующее поле будет хранить None. Значение по умолчанию True.
         :type add_stringified_node: bool, optional
         :return: Созданная структура данных вершины.
@@ -255,7 +254,7 @@ def create_id(seed: str) -> str:
 class TripletCreator(BaseCreator):
     @staticmethod
     def create(start_node: Node, relation: Relation, end_node: Node,
-               add_stringified_triplet: bool = True, t_id: str = None) -> Triplet:
+               add_stringified_triplet: bool = True, t_id: Union[None, str] = None) -> Triplet:
         """Метод предназначен для создания структуры данных триплета с указанным содержанием.
         Триплет является ориентированным: у связи между вершинами (парой subject/object) есть направление.
 
@@ -268,7 +267,7 @@ class TripletCreator(BaseCreator):
         :param add_stringified_triplet: Если True, то в структуру данных триплета будет сохранено его строковое представление, иначе соответствующее поле будет хранить None. Значение по умолчанию True.
         :type add_stringified_triplet: bool, optional
         :param t_id: Идентификатор, который будет назначен триплету вручную. Если идентификатор не указан (None), то он будет назначен триплету автоматически. Значение по умолчанию None.
-        :type t_id: str, optional
+        :type t_id: Union[None,str], optional
         :return: Созданная структура данных триплета.
         :rtype: Triplet
         """
@@ -380,16 +379,16 @@ class QueryInfo:
     :param query: Исходный user-вопрос.
     :type query: str
     :param entities: Набор сущностей, который был извлечён из user-вопроса. Значение по умолчанию None.
-    :type entities: List[str]
+    :type entities: Union[None, List[str]]
     :param linked_nodes: Набор объектов (вершин) из памяти (графа знаний) ассистента, который был сопоставлен сущностям из user-вопроса. Значение по умолчанию None.
-    :type linked_nodes: List[object]
+    :type linked_nodes: Union[None, List[NodeInfo]]
     :param linked_nodes_by_entities: Значение по умолчанию None.
-    :type  linked_nodes_by_entities: List[object]
+    :type linked_nodes_by_entities: Union[None, List[object]]
     """
     query: str
     entities: Union[None, List[str]] = None
     linked_nodes: Union[None, List[NodeInfo]] = None
-    linked_nodes_by_entities: Union[None, List[VectorDBInstance]] = None
+    linked_nodes_by_entities: Union[None, List[object]] = None
 
     def to_str(self):
         str_entities = ';'.join(sorted(self.entities)) if self.entities is not None else "None"
@@ -428,7 +427,26 @@ class QueryPreprocessingInfo:
 
 
 @dataclass
-class BaseComponentConfig:
+class BaseConfigOperations:
+
+    def to_str(self) -> str:
+        pass
+
+    def formate_fields(self) -> None:
+        fields_iterator = fields(self)
+        for field_object in fields_iterator:
+            field_value = getattr(self, field_object.name)
+
+            if isinstance(field_value, BaseConfigOperations):
+                field_value.formate_fields()
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        pass
+
+
+@dataclass
+class BaseComponentConfig(BaseConfigOperations):
     """
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты.
     :type log: Logger, optional
@@ -437,6 +455,10 @@ class BaseComponentConfig:
     """
     log: Logger
     verbose: bool = False
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        pass
 
 
 @dataclass

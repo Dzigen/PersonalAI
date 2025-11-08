@@ -16,7 +16,7 @@ from ....utils.data_structs import RelationType, Node, \
 
 @dataclass
 class InMemoryGraphStructure:
-    edges: Dict[str, str] = field(default_factory=lambda: defaultdict(set))
+    edges: Dict[str, Set[str]] = field(default_factory=lambda: defaultdict(set))
     adjacent_nodes: Dict[str, Set[str]] = field(default_factory=lambda: defaultdict(set))
 
     nodes: Dict[str, Node] = field(default_factory=lambda: dict())
@@ -30,8 +30,13 @@ class InMemoryGraphStructure:
 
 class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
-    def __init__(self, config: GraphDBConnectionConfig = DEFAULT_INMEMORYGRAPH_CONFIG) -> None:
-        self.config = config
+    def __init__(self, config: Union[Dict, GraphDBConnectionConfig] = DEFAULT_INMEMORYGRAPH_CONFIG) -> None:
+        if isinstance(config, dict):
+            config = GraphDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
+        self.config: GraphDBConnectionConfig = config
+
         self.strcuture: Union[None, InMemoryGraphStructure] = None
 
     def open_connection(self) -> None:
@@ -73,7 +78,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
             return
         if self.config.params['save_on_disk']:
             save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
-            if os.path.exists(save_path):
+            if os.path.exists(save_path) and not self.config.params['rewrite']:
                 # print("warning: file on that path is already exists")
                 postfix = hashlib.md5(str(time.time()).encode()).hexdigest()
                 save_path += postfix
