@@ -3,6 +3,7 @@ import torch
 import numpy as np
 from dataclasses import dataclass, field, asdict
 from typing import Dict, List, Tuple, Union
+from copy import deepcopy
 
 from ..utils import AbstractDatabaseConnection, AbstractDatabaseConnection, BaseDatabaseConfig
 
@@ -18,7 +19,8 @@ class VectorDBConnectionConfig(BaseDatabaseConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = VectorDBConnectionConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = VectorDBConnectionConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

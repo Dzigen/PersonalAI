@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import List, Union, Dict
 from tqdm import tqdm
+from copy import deepcopy
 
 from .config import MEM_UPDATOR_MAIN_LOG_PATH
 from .utils import MemUpdatorTaskSolvers, MemUpdatorAgentTasksConfig
@@ -37,7 +38,8 @@ class LLMUpdatorConfig(BaseComponentConfig, LanguageConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = LLMUpdatorConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = LLMUpdatorConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

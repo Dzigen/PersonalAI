@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Tuple, List, Union, Dict
+from copy import deepcopy
 
 from .searchplan_enhancer import SearchPlanEnhancerConfig, SearchPlanEnhancer
 from .entities_extractor import EntitiesExtractorConfig, EntitiesExtractor
@@ -81,7 +82,8 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = MediumKGReasonerConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = MediumKGReasonerConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

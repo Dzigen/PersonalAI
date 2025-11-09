@@ -2,6 +2,7 @@ from typing import Dict, List
 from dataclasses import dataclass, field
 from abc import abstractmethod
 from enum import Enum
+from copy import deepcopy
 
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
@@ -50,7 +51,8 @@ class TreeDBConnectionConfig(BaseDatabaseConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = TreeDBConnectionConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = TreeDBConnectionConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

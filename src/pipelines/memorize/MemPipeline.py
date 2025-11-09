@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Dict, List, Tuple, Union
+from copy import deepcopy
 
 from .configs import MEMORIZE_MAIN_LOG_PATH
 from .extractor.LLMExtractor import LLMExtractor
@@ -39,7 +40,8 @@ class MemPipelineConfig(BaseComponentConfig, LanguageConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = MemPipelineConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = MemPipelineConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Dict, Union
+from copy import deepcopy
 
 from .config import CQGEN_AGENTASKS_SELECTORS_MAPPING
 from .....utils import BaseTaskSolvers, BaseAgentTaskConfigSelector, BaseAgentTasksConfig
@@ -23,6 +24,7 @@ class ClueQueriesGeneratorAgentTasksConfig(BaseAgentTasksConfig):
 
     @staticmethod
     def from_dict(dict_config):
-        formated_config = ClueQueriesGeneratorAgentTasksConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = ClueQueriesGeneratorAgentTasksConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config

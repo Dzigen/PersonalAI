@@ -1,5 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Dict, Union
+from copy import deepcopy
+
 from .utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from .configs import DEFAULT_GRAPHDB_CONFIGS, AVAILABLE_GRAPHDB_CONNECTORS
 from ...utils.data_structs import BaseConfigOperations
@@ -20,7 +22,8 @@ class GraphDriverConfig(BaseConfigOperations):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = GraphDriverConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = GraphDriverConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

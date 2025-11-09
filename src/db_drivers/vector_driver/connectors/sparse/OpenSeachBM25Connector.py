@@ -41,7 +41,10 @@ class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
         pass
 
     def close_connection(self) -> None:
-        self.db_conn._client.transport.close()
+        try:
+            self.db_conn._client.transport.close()
+        except TypeError:
+            pass
 
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
         # validating

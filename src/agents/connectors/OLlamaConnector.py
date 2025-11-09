@@ -35,9 +35,9 @@ class OLlamaConnector(AbstractAgentConnector):
     def close_connection(self):
         try:
             del self.client
-        except AttributeError:
+            gc.collect()
+        except (AttributeError, TypeError):
             pass
-        gc.collect()
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
                  gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:

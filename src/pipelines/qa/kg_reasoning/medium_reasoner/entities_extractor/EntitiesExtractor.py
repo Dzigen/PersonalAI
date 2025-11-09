@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Tuple, List, Union, Dict
+from copy import deepcopy
 
 from .config import ENEXTR_MAIN_LOG_PATH
 from .utils import MediumEntitiesExtractorTaskSolvers, EntitiesExtractorAgentTasksConfig
@@ -36,7 +37,8 @@ class EntitiesExtractorConfig(BaseComponentConfig, LanguageConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = EntitiesExtractorConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = EntitiesExtractorConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

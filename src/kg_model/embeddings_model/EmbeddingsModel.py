@@ -39,7 +39,8 @@ class EmbeddingsModelConfig(BaseComponentConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = EmbeddingsModelConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = EmbeddingsModelConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

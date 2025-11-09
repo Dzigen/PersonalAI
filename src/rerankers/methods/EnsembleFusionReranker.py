@@ -49,7 +49,8 @@ class EnsembleFusionRerankerConfig(BaseRerankerModuleConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = EnsembleFusionRerankerConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = EnsembleFusionRerankerConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

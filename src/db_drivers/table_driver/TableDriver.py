@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Dict, Union
+from copy import deepcopy
 
 from .utils import TableDBConnectionConfig, AbstractTableDatabaseConnection
 from .configs import DEFAULT_TABLEDB_CONFIGS, AVAILABLE_TABLEDB_CONNECTORS
@@ -21,7 +22,8 @@ class TableDriverConfig(BaseConfigOperations):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = TableDriverConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = TableDriverConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

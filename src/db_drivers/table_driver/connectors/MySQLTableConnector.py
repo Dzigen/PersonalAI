@@ -33,8 +33,11 @@ class MySQLTableConnector(AbstractTableDatabaseConnection):
             self.create_table(self.config.db_info['create_table_query'].format(table_name=self.config.db_info['table']))
 
     def close_connection(self) -> None:
-        self.cursor.close()
-        self.conn.close()
+        try:
+            self.cursor.close()
+            self.conn.close()
+        except TypeError:
+            pass
 
     def create_table(self, query: str) -> None:
         self.TABLE_STRUCTURE: Union[None, BaseTableStucture] = self.config.db_info.get('table_info', None)

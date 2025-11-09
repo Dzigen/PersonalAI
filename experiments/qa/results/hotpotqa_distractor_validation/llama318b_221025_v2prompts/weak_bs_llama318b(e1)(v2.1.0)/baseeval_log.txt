@@ -1,0 +1,13 @@
+[nltk_data] Downloading package wordnet to /root/nltk_data...
+[nltk_data]   Package wordnet is already up-to-date!
+Scoring generated answers with base metrics
+1. Loading hyperparameters from .yaml files
+2. Setting paths
+3. Declaring Metrics-class
+4. Setting Metrics-class
+Loading Meteor...
+Loading ExactMatch
+Loading BertScore
+5. Evaluating answers
+6. Saving eval params
+############ DONE ############

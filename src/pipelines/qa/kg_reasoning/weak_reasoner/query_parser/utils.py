@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Union, Dict
+from copy import deepcopy
 
 from .configs import KWEXTR_AGENTASKS_SELECTORS_MAPPING
 from .....utils import BaseTaskSolvers, BaseAgentTaskConfigSelector, BaseAgentTasksConfig
@@ -23,6 +24,7 @@ class QueryLLMParserAgentTasksConfig(BaseAgentTasksConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = QueryLLMParserAgentTasksConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = QueryLLMParserAgentTasksConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config

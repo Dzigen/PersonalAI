@@ -52,8 +52,11 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
             v: k for k, v in self.config.params['table_type_map']['nodes']['forward'].items()}
 
     def close_connection(self) -> None:
-        self.conn.close()
-        self.db.close()
+        try:
+            self.conn.close()
+            self.db.close()
+        except TypeError:
+            pass
 
     def __del__(self):
         self.close_connection()

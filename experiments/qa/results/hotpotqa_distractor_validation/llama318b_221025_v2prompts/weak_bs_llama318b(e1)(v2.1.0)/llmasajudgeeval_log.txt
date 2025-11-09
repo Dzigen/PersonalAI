@@ -1,0 +1,9 @@
+Scoring generated answers with llm-as-a-judge
+1. Loading hyperparameters from .yaml files
+2. Setting paths
+3. Setting Caching mechanism
+4. Setting Judge
+5. Start scoring answers with Judge
+6. Accumulating Judge scores
+7. Saving eval params
+############ DONE ############

@@ -2,6 +2,7 @@ print("Start QA-config generation...")
 import sys
 import yaml
 import joblib
+from copy import deepcopy
 from pprint import pprint
 
 ####################################################
@@ -45,19 +46,22 @@ SPECEXP_PARAMS_SPATH = f"{SETTINGS_PATH}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['qahyp
 ####################################################
 print("3. Configuring Query Preprocessor stage")
 
-querypreproc_config = QueryPreprocessorConfig(**SPECEXP_PARAMS['query_preprocessor'])
+qprep_config = deepcopy(SPECEXP_PARAMS['query_preprocessor'])
+querypreproc_config = QueryPreprocessorConfig(**qprep_config)
 querypreproc_config.formate_fields()
 
 ####################################################
 print("4. Configuring Answer Aggregation stage")
 
-answeraggr_config = AnswersAggregatorConfig(**SPECEXP_PARAMS['answer_aggregator'])
+answagg_config = deepcopy(SPECEXP_PARAMS['answer_aggregator'])
+answeraggr_config = AnswersAggregatorConfig(**answagg_config)
 answeraggr_config.formate_fields()
 
 ####################################################
 print("5. Configuring KG Reasoner stage")
 
-kg_reasoner_config = KnowledgeGraphReasonerConfig(**SPECEXP_PARAMS['kg_reasoner'])
+kgreason_config = deepcopy(SPECEXP_PARAMS['kg_reasoner'])
+kg_reasoner_config = KnowledgeGraphReasonerConfig(**kgreason_config)
 kg_reasoner_config.formate_fields()
 
 ####################################################

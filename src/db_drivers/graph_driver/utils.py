@@ -1,6 +1,7 @@
 from typing import Dict, List, Union
 from dataclasses import dataclass, field
 from abc import abstractmethod
+from copy import deepcopy
 
 from ...utils.data_structs import Triplet, NodeType, RelationType, Node, NodeInfo, RelationInfo
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
@@ -19,7 +20,8 @@ class GraphDBConnectionConfig(BaseDatabaseConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = GraphDBConnectionConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = GraphDBConnectionConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

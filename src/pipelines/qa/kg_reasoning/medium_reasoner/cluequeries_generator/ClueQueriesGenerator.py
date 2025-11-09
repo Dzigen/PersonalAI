@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Tuple, List, Dict, Union, Dict
 import json
 from itertools import product
+from copy import deepcopy
 
 from .config import CQGEN_MAIN_LOG_PATH
 from .utils import MediumCQGeneratorTaskSolvers, ClueQueriesGeneratorAgentTasksConfig
@@ -42,7 +43,8 @@ class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = ClueQueriesGeneratorConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = ClueQueriesGeneratorConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

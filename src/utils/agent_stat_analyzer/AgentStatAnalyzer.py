@@ -1,5 +1,6 @@
 from dataclasses import dataclass, asdict, field
 from typing import Dict, Union, List
+from copy import deepcopy
 
 from ...db_drivers.table_driver.utils import AbstractTableDatabaseConnection, TableDBInstance
 from ...db_drivers.table_driver import TableDriverConfig, TableDriver
@@ -21,7 +22,8 @@ class AgentStatAnalyzerConfig(BaseConfigOperations):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = AgentStatAnalyzerConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = AgentStatAnalyzerConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

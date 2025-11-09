@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Tuple, Union, List, Dict
-from copy import copy
+from copy import copy, deepcopy
 
 from .utils import QueryPreprocessingStages
 from .config import QP_MAIN_LOG_PATH
@@ -45,7 +45,8 @@ class QueryPreprocessorConfig(BaseComponentConfig, LanguageConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_dict = QueryPreprocessorConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_dict = QueryPreprocessorConfig(**dictconfig_copy)
         formated_dict.formate_fields()
         return formated_dict
 

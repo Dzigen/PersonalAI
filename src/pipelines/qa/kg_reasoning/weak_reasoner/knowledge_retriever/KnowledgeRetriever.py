@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import List, Tuple, Union, Dict
+from copy import deepcopy
 
 from .configs import KR_MAIN_LOG_PATH, AVAILABLE_TRIPLETS_FILTERS, AVAILABLE_TRIPLETS_RETRIEVERS, \
     AVAILABLE_TFILTERS_CONFIGS, AVAILABLE_TRETRIEVERS_CONFIGS
@@ -45,7 +46,8 @@ class KnowledgeRetrieverConfig(BaseComponentConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = KnowledgeRetrieverConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = KnowledgeRetrieverConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

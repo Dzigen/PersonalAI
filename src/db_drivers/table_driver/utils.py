@@ -1,8 +1,8 @@
 from typing import Dict, Union, Tuple, List
 from dataclasses import dataclass, field
+from copy import deepcopy
 
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
-
 
 @dataclass
 class TableDBConnectionConfig(BaseDatabaseConfig):
@@ -17,7 +17,8 @@ class TableDBConnectionConfig(BaseDatabaseConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = TableDBConnectionConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = TableDBConnectionConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

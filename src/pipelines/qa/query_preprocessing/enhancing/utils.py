@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Dict, Union
+from copy import deepcopy
 
 from .config import QUERYENH_AGENTASKS_SELECTORS_MAPPING
 from ....utils import BaseTaskSolvers, BaseAgentTasksConfig, BaseAgentTaskConfigSelector
@@ -30,7 +31,8 @@ class QueryEnhancerAgentTasksConfig(BaseAgentTasksConfig):
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: QUERYENH_AGENTASKS_SELECTORS_MAPPING)
 
     @staticmethod
-    def from_dict(dict_config):
-        formated_config = QueryEnhancerAgentTasksConfig(**dict_config)
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = QueryEnhancerAgentTasksConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config

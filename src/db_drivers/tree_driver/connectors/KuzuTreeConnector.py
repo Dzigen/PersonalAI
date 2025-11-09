@@ -68,8 +68,11 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
         pass
 
     def close_connection(self) -> None:
-        self.conn.close()
-        self.db.close()
+        try:
+            self.conn.close()
+            self.db.close()
+        except TypeError:
+            pass
 
     def __del__(self):
         self.close_connection()

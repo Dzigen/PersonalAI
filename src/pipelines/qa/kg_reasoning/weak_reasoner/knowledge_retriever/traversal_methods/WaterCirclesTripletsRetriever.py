@@ -1,6 +1,7 @@
 import copy
 from dataclasses import dataclass, field
 from typing import Dict, List, Set, Tuple, Union
+from copy import deepcopy
 
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......kg_model import KnowledgeGraphModel
@@ -128,7 +129,8 @@ class WaterCirclesSearchConfig(BaseGraphSearchConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = WaterCirclesSearchConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = WaterCirclesSearchConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

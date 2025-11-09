@@ -25,3 +25,7 @@ ranx
 langdetect
 faiss-cpu
 langchain_community
+torchmetrics
+evaluate
+levenshtein
+nltk

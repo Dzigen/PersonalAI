@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Union
 import collections
 from collections import Counter
+from copy import deepcopy
 
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......utils.data_structs import QueryInfo, Triplet, NodeType
@@ -40,7 +41,8 @@ class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = NaiveBFSGraphSearchConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = NaiveBFSGraphSearchConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

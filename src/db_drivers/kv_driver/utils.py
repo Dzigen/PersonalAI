@@ -1,5 +1,6 @@
 from typing import Dict, Union
 from dataclasses import dataclass, field
+from copy import deepcopy
 
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
@@ -11,7 +12,8 @@ class KVDBConnectionConfig(BaseDatabaseConfig):
     port: str = None
 
     def from_dict(dict_config) -> BaseDatabaseConfig:
-        formated_config = KVDBConnectionConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = KVDBConnectionConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

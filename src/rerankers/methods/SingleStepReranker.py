@@ -26,12 +26,10 @@ class SingleStepRerankerConfig(BaseRerankerModuleConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = SingleStepRerankerConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = SingleStepRerankerConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
-
-    def from_dict(dict_config: Dict):
-        pass
 
 
 class SingleStepReranker(AbstractRerankerModule):

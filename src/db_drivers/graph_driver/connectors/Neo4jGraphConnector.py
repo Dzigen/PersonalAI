@@ -60,8 +60,10 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
         raise NotImplementedError
 
     def close_connection(self) -> None:
-        if self.driver is not None:
+        try:
             self.driver.close()
+        except TypeError:
+            pass
 
     def __del__(self):
         self.close_connection()
@@ -289,14 +291,17 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
             node1 = NodeCreator.create(
                 n_type=NODES_TYPES_MAP[list(raw_triplet['n1'].labels)[0]],
                 name=n1_dict['name'], prop=n1_dict, add_stringified_node=False)
+            del node1.prop['name']
 
             node2 = NodeCreator.create(
                 n_type=NODES_TYPES_MAP[list(raw_triplet['n2'].labels)[0]],
                 name=n2_dict['name'], prop=n2_dict, add_stringified_node=False)
+            del node2.prop['name']
 
             relation = RelationCreator.create(
                 r_type=RELATIONS_TYPES_MAP[raw_triplet['rel'].type],
                 name=rel_dict['name'], prop=rel_dict)
+            del relation.prop['name']
 
             start_node_id = raw_triplet['rel'].nodes[0].element_id
             if start_node_id == raw_triplet['n1'].element_id:

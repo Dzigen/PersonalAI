@@ -1,0 +1,12 @@
+Start Score-packs accumulation...
+1. Loading hyperparameters from .yaml files
+2. Setting paths
+3. Accumulating base scores
+4. Accumulating llm-as-a-judge scores
+5. Saving accumulated scores
+Traceback (most recent call last):
+  File "/home/workspace/experiments/qa/evaluate/accumulate_packs_scores.py", line 99, in <module>
+    times_info = load_json(ELAPSED_TIME_FILE_PATH)
+  File "/home/workspace/experiments/qa/evaluate/accumulate_packs_scores.py", line 39, in load_json
+    with open(load_path, 'r', encoding='utf-8') as fd:
+FileNotFoundError: [Errno 2] No such file or directory: '/home/workspace/experiments/qa/results/hotpotqa_distractor_validation/llama318b_221025_v2prompts/weak_bs_llama318b(e1)(v2.1.0)/elapsed_time.json'

@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Dict, Union
+from copy import deepcopy
 
 from .config import MEMEXTRACTOR_AGENTASKS_SELECTORS_MAPPING
 from ...utils import BaseTaskSolvers, BaseAgentTaskConfigSelector, BaseAgentTasksConfig
@@ -26,7 +27,8 @@ class MemExtractorAgentTasksConfig(BaseAgentTasksConfig):
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: MEMEXTRACTOR_AGENTASKS_SELECTORS_MAPPING)
 
     @staticmethod
-    def from_dict(dict_config):
-        formated_config = MemExtractorAgentTasksConfig(**dict_config)
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = MemExtractorAgentTasksConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config

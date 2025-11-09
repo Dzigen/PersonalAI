@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Union, Dict
+from copy import deepcopy
 
 from .utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection
 from .configs import DEFAULT_VECTORDB_CONFIGS, AVAILABLE_VECTORDB_CONNECTORS
@@ -22,7 +23,8 @@ class VectorDriverConfig:
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = VectorDriverConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = VectorDriverConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

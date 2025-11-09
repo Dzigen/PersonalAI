@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from sentence_transformers import SentenceTransformer
 from typing import Dict, List, Union
 from langchain_core.embeddings.embeddings import Embeddings
+from copy import deepcopy
 
 from ...utils.data_structs import BaseConfigOperations
 
@@ -22,7 +23,8 @@ class EmbedderModelConfig(BaseConfigOperations):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = EmbedderModelConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = EmbedderModelConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

@@ -71,9 +71,12 @@ kgmodel_config = joblib.load(KG_MODEL_CONFIG_PATH)
 kvdriver_config = joblib.load(CACHE_CONFIG_PATH)
 llmstat_config = joblib.load(INFSTAT_CONFIG_PATH)
 
-print("KG MODEL_CONFIG:\n", kgmodel_config)
-print("KVCACHE CONFIG:\n", kvdriver_config)
-print("LLMSTAT CONFIG:\n", llmstat_config)
+print("KG MODEL_CONFIG:")
+pprint(kgmodel_config)
+print("KVCACHE CONFIG:")
+pprint(kvdriver_config)
+print("LLMSTAT CONFIG:")
+pprint(llmstat_config)
 
 ####################################################
 print("4. Setting KG Model")
@@ -88,7 +91,8 @@ pprint(kg_model.count_items(detailed=True))
 print("5. Setting QA pipeline")
 
 qa_config = joblib.load(QA_CONFIG_PATH)
-print("QA-CONFIG:\n", qa_config)
+print("QA-CONFIG:")
+pprint(qa_config)
 
 qa_pipeline = QAPipeline(kg_model, qa_config, kvdriver_config)
 

@@ -3,6 +3,7 @@ from typing import List, Dict, Set, Tuple, Union
 import math
 from tqdm import tqdm
 import gc
+from copy import deepcopy
 
 from .config import GRAPH_DB_DEFAULT_DRIVER_CONFIG, GRAPH_MODEL_LOG_PATH
 from ...db_drivers.graph_driver import GraphDriver, GraphDriverConfig
@@ -28,7 +29,8 @@ class GraphModelConfig(BaseComponentConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = GraphModelConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = GraphModelConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

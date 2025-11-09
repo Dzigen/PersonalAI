@@ -34,7 +34,10 @@ class MongoTableConnector(AbstractTableDatabaseConnection):
             self.clear()
 
     def close_connection(self) -> None:
-        self._client.close()
+        try:
+            self._client.close()
+        except TypeError:
+            pass
 
     def create_table(self) -> None:
         self.TABLE_STRUCTURE: Union[None, BaseTableStucture] = self.config.db_info.get('table_info', None)

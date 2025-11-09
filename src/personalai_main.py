@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import List, Dict, Tuple, Union
+from copy import deepcopy
 
 from .kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig
 from .pipelines.qa import QAPipeline, QAPipelineConfig
@@ -36,8 +37,9 @@ class PersonalAIConfig(BaseComponentConfig, LanguageConfig):
         raise NotImplementedError
 
     @staticmethod
-    def from_dict(dict_config):
-        formated_config = PersonalAIConfig(**dict_config)
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = PersonalAIConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

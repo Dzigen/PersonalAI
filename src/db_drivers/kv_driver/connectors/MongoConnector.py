@@ -33,7 +33,10 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
             self.clear()
 
     def close_connection(self) -> None:
-        self._client.close()
+        try:
+            self._client.close()
+        except TypeError:
+            pass
 
     def create(self, items: List[KeyValueDBInstance]) -> None:
         for item in items:

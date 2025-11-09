@@ -93,7 +93,8 @@ class NodesTreeModelConfig(BaseComponentConfig, LanguageConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = NodesTreeModelConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = NodesTreeModelConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

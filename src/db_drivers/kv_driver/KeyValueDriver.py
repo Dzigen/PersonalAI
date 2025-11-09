@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Dict, Union
+from copy import deepcopy
 
 from .utils import KVDBConnectionConfig, AbstractKVDatabaseConnection
 from .configs import DEFAULT_KVDB_CONFIGS, AVAILABLE_KVDB_CONNECTORS
@@ -17,7 +18,8 @@ class KeyValueDriverConfig(BaseConfigOperations):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = KeyValueDriverConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = KeyValueDriverConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

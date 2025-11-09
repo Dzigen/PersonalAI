@@ -1,2 +1,54 @@
 Создаём директорию для сохранения результатов по эксперименту...
 ############ DONE ############
+Traceback (most recent call last):
+  File "/home/workspace/experiments/qa/configure/init_file_structure.py", line 6, in <module>
+    SPECEXP_PARAMS_FILEP = sys.orig_argv[2]
+IndexError: list index out of range
+Создаём директорию для сохранения результатов по эксперименту...
+############ DONE ############
+Создаём директорию для сохранения результатов по эксперименту...
+############ DONE ############
+Создаём директорию для сохранения результатов по эксперименту...
+Traceback (most recent call last):
+  File "/home/workspace/experiments/qa/configure/init_file_structure.py", line 34, in <module>
+    raise ValueError(f"Директории существует: {SPEC_EXPERIMENT_DIR}")
+ValueError: Директории существует: /home/workspace/experiments/qa/results/hotpotqa_distractor_validation/llama318b_221025_v2prompts/weak_bs_llama318b(e1)(v2.1.0)
+Создаём директорию для сохранения результатов по эксперименту...
+Traceback (most recent call last):
+  File "/home/workspace/experiments/qa/configure/init_file_structure.py", line 34, in <module>
+    raise ValueError(f"Директории существует: {SPEC_EXPERIMENT_DIR}")
+ValueError: Директории существует: /home/workspace/experiments/qa/results/hotpotqa_distractor_validation/llama318b_221025_v2prompts/weak_bs_llama318b(e1)(v2.1.0)
+Создаём директорию для сохранения результатов по эксперименту...
+############ DONE ############
+Создаём директорию для сохранения результатов по эксперименту...
+############ DONE ############
+Создаём директорию для сохранения результатов по эксперименту...
+############ DONE ############
+Создаём директорию для сохранения результатов по эксперименту...
+Traceback (most recent call last):
+  File "/home/workspace/experiments/qa/configure/init_file_structure.py", line 34, in <module>
+    raise ValueError(f"Директории существует: {SPEC_EXPERIMENT_DIR}")
+ValueError: Директории существует: /home/workspace/experiments/qa/results/hotpotqa_distractor_validation/llama318b_221025_v2prompts/weak_bs_llama318b(e1)(v2.1.0)
+Создаём директорию для сохранения результатов по эксперименту...
+Traceback (most recent call last):
+  File "/home/workspace/experiments/qa/configure/init_file_structure.py", line 34, in <module>
+    raise ValueError(f"Директории существует: {SPEC_EXPERIMENT_DIR}")
+ValueError: Директории существует: /home/workspace/experiments/qa/results/hotpotqa_distractor_validation/llama318b_221025_v2prompts/weak_bs_llama318b(e1)(v2.1.0)
+Traceback (most recent call last):
+  File "/home/workspace/experiments/qa/configure/init_file_structure.py", line 15, in <module>
+    EXP_RESULTS_DIR = f"{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['results']}"
+KeyError: 'WORKSPACE_CONTAINER_DIRS'
+Traceback (most recent call last):
+  File "/home/workspace/experiments/qa/configure/init_file_structure.py", line 15, in <module>
+    EXP_RESULTS_DIR = f"{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['results']}"
+KeyError: 'WORKSPACE_CONTAINER_DIRS'
+Traceback (most recent call last):
+  File "/home/workspace/experiments/qa/configure/init_file_structure.py", line 15, in <module>
+    EXP_RESULTS_DIR = f"{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['results']}"
+KeyError: 'WORKSPACE_CONTAINER_DIRS'
+Создаём директорию для сохранения результатов по эксперименту...
+############ DONE ############
+Создаём директорию для сохранения результатов по эксперименту...
+############ DONE ############
+Создаём директорию для сохранения результатов по эксперименту...
+############ DONE ############

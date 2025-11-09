@@ -1,6 +1,7 @@
 from typing import List, Dict, Union
 from dataclasses import dataclass, field
 from collections import Counter
+from copy import deepcopy
 
 from .configs import NGS_RERANKDRIVER_DEFAULT_CONFIG
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
@@ -33,7 +34,8 @@ class NaiveGraphSearchConfig(BaseGraphSearchConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = NaiveGraphSearchConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = NaiveGraphSearchConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

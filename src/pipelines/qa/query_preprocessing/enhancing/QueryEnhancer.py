@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Tuple, List, Union, Dict
+from copy import deepcopy
 
 from .config import QE_MAIN_LOG_PATH
 from .utils import QueryEnhancerTaskSolvers, QueryEnhancerAgentTasksConfig
@@ -35,8 +36,9 @@ class QueryEnhancerConfig(BaseComponentConfig, LanguageConfig):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
 
     @staticmethod
-    def from_dict(dict_config):
-        formated_config = QueryEnhancerConfig(**dict_config)
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = QueryEnhancerConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

@@ -1,5 +1,7 @@
 from abc import abstractmethod
 from dataclasses import dataclass, field
+from copy import deepcopy
+
 from typing import Dict, Union, Tuple
 from ..utils.agent_stat_analyzer.utils import LLMInferenceStat
 from ..utils.data_structs import BaseConfigOperations
@@ -19,8 +21,9 @@ class AgentConnectorConfig(BaseConfigOperations):
         return f"{str_genstrat}|{str_creds}"
 
     @staticmethod
-    def from_dict(dict_config):
-        formated_config = AgentConnectorConfig(**dict_config)
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = AgentConnectorConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

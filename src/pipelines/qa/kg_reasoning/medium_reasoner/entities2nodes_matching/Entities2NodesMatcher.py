@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Tuple, List, Dict, Union
+from copy import deepcopy
 
 from .config import E2NMATCHER_MAIN_LOG_PATH, E2NM_RERANKDRIVER_DEFAULT_CONFIG
 from ......kg_model import KnowledgeGraphModel
@@ -37,7 +38,8 @@ class Entities2NodesMatcherConfig(BaseComponentConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = Entities2NodesMatcherConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = Entities2NodesMatcherConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

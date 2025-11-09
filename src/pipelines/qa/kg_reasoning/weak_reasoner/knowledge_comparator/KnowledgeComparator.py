@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import List, Tuple, Dict, Union
+from copy import deepcopy
 
 from .configs import KC_MAIN_LOG_PATH, KC_RERANKDRIVER_DEFAULT_CONFIG
 from ......utils import Logger, ReturnStatus, ReturnInfo
@@ -37,7 +38,8 @@ class KnowledgeComparatorConfig(BaseComponentConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = KnowledgeComparatorConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = KnowledgeComparatorConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

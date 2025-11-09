@@ -54,7 +54,9 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
 
     def close_connection(self) -> ReturnInfo:
         # print("closing inmemory bm25 connection...")
-        if self.config.params['save_on_disk']:
+        if self.db_conn is None:
+            return
+        elif self.config.params['save_on_disk']:
             save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
             if os.path.exists(save_path) and not self.config.params['rewrite']:
                 # print("warning: file on that path is already exists")

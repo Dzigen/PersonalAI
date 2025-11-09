@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-# Оценка качества сгенерированных ответов в рамках заданного QA-эксперимента
+echo "Оценка качества сгенерированных ответов в рамках заданного QA-эксперимента"
 
 EXP_BASE_DIR=/home/workspace/experiments/qa
 PYTHON_CMD=/usr/bin/python3

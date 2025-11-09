@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Dict, Union
+from copy import deepcopy
 
 from .utils import TreeDBConnectionConfig, AbstractTreeDatabaseConnection
 from .configs import DEFAULT_TREEDB_CONFIGS, AVAILABLE_TREEDB_CONNECTORS
@@ -20,7 +21,8 @@ class TreeDriverConfig:
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = TreeDriverConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = TreeDriverConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

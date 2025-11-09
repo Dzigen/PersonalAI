@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import List, Union, Dict
 import hashlib
+from copy import deepcopy
 
 from .configs import KRFILTER_RERANKDRIVER_DEFAULT_CONFIG
 from ..utils import AbstractTriplesFilter, BaseTripletsFilterConfig
@@ -36,7 +37,8 @@ class TripletsFilterConfig(BaseTripletsFilterConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict) -> BaseTripletsFilterConfig:
-        formated_config = TripletsFilterConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = TripletsFilterConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

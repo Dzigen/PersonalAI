@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Tuple, Union, List, Dict
 import hashlib
+from copy import deepcopy
 
 from .config import CAGEN_MAIN_LOG_PATH
 from .utils import MediumCAGeneratorTaskSolvers, ClueAnswerGeneratorAgentTasksConfig
@@ -40,7 +41,8 @@ class ClueAnswerGeneratorConfig(BaseComponentConfig, LanguageConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = ClueAnswerGeneratorConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = ClueAnswerGeneratorConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

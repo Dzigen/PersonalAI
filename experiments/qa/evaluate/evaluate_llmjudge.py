@@ -56,8 +56,8 @@ GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['gen_
 TMP_JUDGES_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['tmp_judges_name']}"
 JUDGES_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['judges_name']}"
 
-EXP_DIR = f'{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}'
-EVALUATE_DIR = f'{EXP_DIR}/{EXPDIR_PARAMS['llmasajudge_kv_dir']}'
+EXP_DIR = f"{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}"
+EVALUATE_DIR = f"{EXP_DIR}/{EVAL_PARAMS['llmasajudge_kv_dir']}"
 
 SETTINGS_PATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['settings_name']}"
 EVAL_PARAMS_SPATH = f"{SETTINGS_PATH}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['eval']}"
@@ -65,7 +65,7 @@ EVAL_PARAMS_SPATH = f"{SETTINGS_PATH}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['eval']}"
 ####################################################
 print("3. Setting Caching mechanism")
 
-llmasajudge_raw_config = EVAL_PARAMS['QA_EVALUATION']['judge_llm_config']
+llmasajudge_raw_config = EVAL_PARAMS['judge_llm_config']
 
 if llmasajudge_raw_config['caching']:
     kvdriver_config = KeyValueDriverConfig(
@@ -187,5 +187,7 @@ print("7. Saving eval params")
 
 with open(EVAL_PARAMS_SPATH, 'w') as fd:
     yaml.dump(EVAL_PARAMS, fd, default_flow_style=False)
+
+judge.cachekv.kv_conn.close_connection()
 
 print("############ DONE ############")

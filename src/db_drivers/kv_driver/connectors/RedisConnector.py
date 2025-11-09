@@ -34,7 +34,10 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
             return False
 
     def close_connection(self):
-        self.conn.close()
+        try:
+            self.conn.close()
+        except TypeError:
+            pass
 
     def create(self, items: List[KeyValueDBInstance]):
         for item in items:

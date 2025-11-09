@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Tuple, Union, List, Dict
 import gc
+from copy import deepcopy
 
 from .configs import QA_MAIN_LOG_PATH
 from .utils import QAPipelineStages
@@ -47,7 +48,8 @@ class QAPipelineConfig(BaseComponentConfig, LanguageConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = QAPipelineConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = QAPipelineConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

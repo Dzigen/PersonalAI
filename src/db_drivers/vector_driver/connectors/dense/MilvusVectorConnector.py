@@ -89,7 +89,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         try:
             load_state = self.client.get_load_state(
                 self.config.db_info['table'])['state'].value
-        except ConnectionNotExistException:
+        except (TypeError, ConnectionNotExistException):
             pass
         else:
             if load_state != 3:

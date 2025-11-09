@@ -1,5 +1,6 @@
 from typing import Dict, Union
 from dataclasses import dataclass
+from copy import deepcopy
 
 from .utils import BaseRerankerModuleConfig
 from .methods.utils import AbstractRerankerModule
@@ -19,7 +20,8 @@ class RerankerDriverConfig(BaseConfigOperations):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = RerankerDriverConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = RerankerDriverConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 

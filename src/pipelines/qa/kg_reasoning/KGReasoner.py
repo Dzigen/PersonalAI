@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Tuple, List, Union, Dict
+from copy import deepcopy
 
 from .weak_reasoner import WeakKGReasonerConfig
 from .medium_reasoner import MediumKGReasonerConfig
@@ -38,7 +39,8 @@ class KnowledgeGraphReasonerConfig(BaseComponentConfig, LanguageConfig):
 
     @staticmethod
     def from_dict(dict_config: Dict):
-        formated_config = KnowledgeGraphReasonerConfig(**dict_config)
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = KnowledgeGraphReasonerConfig(**dictconfig_copy)
         formated_config.formate_fields()
         return formated_config
 
