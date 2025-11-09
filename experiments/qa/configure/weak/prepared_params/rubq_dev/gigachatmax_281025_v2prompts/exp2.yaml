@@ -1,4 +1,4 @@
-EXPERIMENT_NAME: "weak_bs_gigachat(e1)(v2.1.0)" # TO CHANGE
+EXPERIMENT_NAME: "weak_nr_gigachat(e2)(v2.1.0)" # TO CHANGE
 DATASET_NAME: 'rubq_dev' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'gigachatmax_281025_v2prompts' # TO CHANGE
 
@@ -50,7 +50,7 @@ kg_reasoner: # TO CHANGE
 
     knowledge_retriever_config:
       # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
-      retriever_method: 'beamsearch'
+      retriever_method: 'naive_retriever'
 
       retriever_config:
         reranker_driver_config:
@@ -59,19 +59,7 @@ kg_reasoner: # TO CHANGE
             vdb_name: dense_triplets
             threshold: 0.5
             fetch_n: 25
-        max_depth: 5
-        max_paths: 15
-        same_path_intersection_by_node: True
-        diff_paths_intersection_by_node: True
-        diff_paths_intersection_by_rel: True
-        mean_alpha: 0.75
-        final_sorting_mode: 'mixed'
-
-        accepted_node_types:
-          - 'object'
-          - 'hyper'
-          - 'episodic'
-          #- 'time'
+        max_k: 50
 
       filter_method: 'naive' # CAN BE null
       filter_config: # CAN BE null

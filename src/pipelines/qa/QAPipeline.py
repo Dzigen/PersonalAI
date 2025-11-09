@@ -205,5 +205,8 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
 
     def __del__(self):
         # print("deleting QA-class")
-        del self.stages
-        gc.collect()
+        try:
+            del self.stages
+            gc.collect()
+        except TypeError:
+            pass

@@ -53,8 +53,9 @@ def save_json(data: Dict[str, object], save_path: str):
 accumulated_scores = defaultdict(list)
 accumulated_base_meticnames = {
     'BLEU1': [], 'BLEU2': [], 'METEOR': [],
-    'RougeL': [], 'ExactMatch': [], 'NoneScore': [], 'NoAnswerScore': [],
-    'BertScore': ['f1', 'precision', 'recall']}
+    'RougeL': [], 'ExactMatch': [], 'NoneScore': [], 'NoAnswerScore': []#,
+#    'BertScore': ['f1', 'precision', 'recall']
+}
 
 accumulated_llm_meticnames = {'llm-as-a-judge': ['mean', 'median']}
 

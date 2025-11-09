@@ -187,9 +187,9 @@ for pack_name in gen_pack_names:
         em_scores = round5(np.mean(METRICS.exact_match(
             generated_answers, filtered_target_answers)))
 
-        print("Calculating BertScore...")
-        bs_scores = METRICS.bertscore(
-            generated_answers, filtered_target_answers)
+        # print("Calculating BertScore...")
+        # bs_scores = METRICS.bertscore(
+        #     generated_answers, filtered_target_answers)
 
         print("Calculating 'NoAnswer'-score...")
         noansw_scores = sum(list(map(lambda gen_answer: gen_answer.strip(
@@ -206,7 +206,7 @@ for pack_name in gen_pack_names:
         'METEOR': float(m_scores),
         'RougeL': float(rl_scores),
         'ExactMatch': float(em_scores),
-        'BertScore': bs_scores,
+        #'BertScore': bs_scores,
         'NoneScore': float(none_score),
         'NoAnswerScore': float(noansw_scores)
     }

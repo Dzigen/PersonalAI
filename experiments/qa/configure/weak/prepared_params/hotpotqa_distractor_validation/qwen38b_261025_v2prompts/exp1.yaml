@@ -1,10 +1,10 @@
-EXPERIMENT_NAME: "weak_bs_llama318b(e1)(v2.1.0)" # TO CHANGE
+EXPERIMENT_NAME: "weak_bs_qwen38b(e1)(v2.1.0)" # TO CHANGE
 DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'llama318b_221025_v2prompts' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen38b_261025_v2prompts' # TO CHANGE
 
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
-  max_samples_per_pack: 5
+  max_samples_per_pack: 100
   lang: 'en'
 
 # STAGE # 1
@@ -34,7 +34,7 @@ kg_reasoner: # TO CHANGE
         kw_extraction: 'v2' # 'v1' | 'v2'
 
     knowledge_comparator_config: # CAN BE null
-      max_k: 1
+      max_k: 2
       k_compare: 5
       reranker_driver_config:
         name: 'ensemble_fusion' # DONT CHANGE
@@ -60,7 +60,7 @@ kg_reasoner: # TO CHANGE
             threshold: 0.5
             fetch_n: 25
         max_depth: 5
-        max_paths: 5
+        max_paths: 15
         same_path_intersection_by_node: True
         diff_paths_intersection_by_node: True
         diff_paths_intersection_by_rel: True

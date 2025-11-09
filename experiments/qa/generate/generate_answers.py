@@ -55,6 +55,8 @@ TMP_GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['
 GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['gen_answers_name']}"
 
 QA_ELAPSED_TIME_SPATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['elapsed_time']}"
+AGENT_STAT_SPATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['agent_stat']}"
+CACHE_STAT_SPATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['cache_stat']}"
 
 # KG PATHS
 DATASET_KGS_PATH = f"{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{SPECEXP_PARAMS['DATASET_NAME']}"
@@ -82,9 +84,7 @@ pprint(llmstat_config)
 print("4. Setting KG Model")
 
 kg_model = KnowledgeGraphModel(kgmodel_config, kvdriver_config)
-
-# checking knowledge graph size
-print("before:")
+print("kg_model:")
 pprint(kg_model.count_items(detailed=True))
 
 ####################################################
@@ -94,25 +94,15 @@ qa_config = joblib.load(QA_CONFIG_PATH)
 print("QA-CONFIG:")
 pprint(qa_config)
 
-qa_pipeline = QAPipeline(kg_model, qa_config, kvdriver_config)
+qa_pipeline = QAPipeline(kg_model, qa_config, kvdriver_config, llmstat_config)
 
-print("before:")
 print("llmstat cache:")
+qa_pipeline.clear_agent_tgen_stat()
 pprint(qa_pipeline.get_agent_tgen_stat())
+
 print("kv cache: ")
+qa_pipeline.clear_kv_caches()
 pprint(qa_pipeline.get_cache_stat())
-
-NEED_TO_CLEAR_CACHE = False # !!! PAY Attention !!!
-if NEED_TO_CLEAR_CACHE:
-    print("Cleaing QA-cache")
-    qa_pipeline.clear_agent_tgen_stat()
-    qa_pipeline.clear_kv_caches()
-
-    print("after:")
-    print("llmstat cache:")
-    pprint(qa_pipeline.get_agent_tgen_stat())
-    print("kv cache: ")
-    pprint(qa_pipeline.get_cache_stat())
 
 ####################################################
 print("6. Loading QA-dataset")
@@ -256,5 +246,22 @@ for pack_name, questions, gold_answers in question_packs:
 
 with open(QA_ELAPSED_TIME_SPATH, 'w', encoding='utf-8') as fd:
     fd.write(json.dumps(elapsed_times, indent=1, ensure_ascii=False))
+
+####################################################
+print("9. Saving Cache Info")
+
+print("agent stats after qa-inferencing:")
+agent_stats = qa_pipeline.get_agent_tgen_stat()
+pprint(agent_stats)
+with open(AGENT_STAT_SPATH, 'w', encoding='utf-8') as fd:
+    fd.write(json.dumps(agent_stats, indent=1, ensure_ascii=False))
+qa_pipeline.clear_agent_tgen_stat()
+
+print("cache stat after qa-inferencing:")
+cache_stats = qa_pipeline.get_cache_stat()
+pprint(cache_stats)
+with open(CACHE_STAT_SPATH, 'w', encoding='utf-8') as fd:
+    fd.write(json.dumps(cache_stats, indent=1, ensure_ascii=False))
+qa_pipeline.clear_kv_caches()
 
 print("############ DONE ############")

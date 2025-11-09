@@ -34,5 +34,7 @@ EXP_SAVE_FILES:
   expdir: expdir_params.yaml
   eval: eval_params.yaml
 
+  cache_stat: cache_stat.json
+  agent_stat: agent_stat.json
   elapsed_time: elapsed_time.json
   accumulated_scores: 'accumulated_scores.json'
