@@ -202,6 +202,9 @@ class GraphModel:
         self.db_conn.clear()
 
     def __del__(self):
-        self.db_conn.close_connection()
-        del self.db_conn
-        gc.collect()
+        try:
+            self.db_conn.close_connection()
+            del self.db_conn
+            gc.collect()
+        except (TypeError, AttributeError):
+            pass

@@ -297,6 +297,6 @@ class EmbeddingsModel:
         try:
             del self.nodes_vcomposers
             del self.triplets_vcomposer
-        except AttributeError:
+            gc.collect()
+        except (TypeError, AttributeError):
             pass
-        gc.collect()

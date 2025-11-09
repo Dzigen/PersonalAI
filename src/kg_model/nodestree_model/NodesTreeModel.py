@@ -690,6 +690,6 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
 
             del self.leafnodes_vcomposer
             del self.summnodes_vcomposer
-        except AttributeError:
+            gc.collect()
+        except (TypeError, AttributeError):
             pass
-        gc.collect()

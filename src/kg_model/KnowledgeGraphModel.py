@@ -342,7 +342,8 @@ class KnowledgeGraphModel:
         try:
             for a_name in self.AVAILABLE_AGENTS.keys():
                 self.AVAILABLE_AGENTS[a_name].close_connection()
-        except AttributeError:
+            gc.collect()
+        except (TypeError, AttributeError):
             pass
 
         try:
@@ -350,7 +351,7 @@ class KnowledgeGraphModel:
             del self.graph_struct
             if self.nodestree_model is not None:
                 del self.nodestree_model
-        except AttributeError:
+            gc.collect()
+        except (TypeError, AttributeError):
             pass
 
-        gc.collect()
