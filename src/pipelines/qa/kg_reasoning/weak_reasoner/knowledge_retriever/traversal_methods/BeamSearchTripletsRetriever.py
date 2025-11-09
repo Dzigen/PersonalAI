@@ -98,7 +98,7 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
             if isinstance(node_type, str):
                 self.accepted_node_types[i] = NODES_TYPES_MAP[node_type]
 
-        if self.reranker_driver_config is dict:
+        if isinstance(self.reranker_driver_config, dict):
             self.reranker_driver_config = RerankerDriverConfig.from_dict(self.reranker_driver_config)
         else:
             self.reranker_driver_config.formate_fields()

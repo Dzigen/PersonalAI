@@ -179,7 +179,7 @@ services:
           memory: 5G
 
   workspace:
-    image: m.menschikov/workspace:v2
+    image: m.menschikov/workspace:v3
     container_name: personalai_mmenschikov_workspace
     hostname: worksapceservice
     volumes:

@@ -1,0 +1,24 @@
+Start QA-config generation...
+1. Loading hyperparameters from .yaml files
+2. Setting paths
+3. Configuring Query Preprocessor stage
+4. Configuring Answer Aggregation stage
+5. Configuring KG Reasoner stage
+Traceback (most recent call last):
+  File "/home/workspace/experiments/qa/configure/prepare_qa_configs.py", line 61, in <module>
+    kg_reasoner_config.formate_fields()
+  File "/home/workspace/src/pipelines/qa/kg_reasoning/KGReasoner.py", line 47, in formate_fields
+    self.reasoner_config = AVAILABLE_KGR_CONFIGS[self.reasoner_name].from_dict(self.reasoner_config)
+  File "/home/workspace/src/pipelines/qa/kg_reasoning/weak_reasoner/WeakKGReasoner.py", line 56, in from_dict
+    formated_config.formate_fields()
+  File "/home/workspace/src/pipelines/qa/kg_reasoning/weak_reasoner/WeakKGReasoner.py", line 71, in formate_fields
+    self.knowledge_retriever_config = KnowledgeRetrieverConfig.from_dict(self.knowledge_retriever_config)
+  File "/home/workspace/src/pipelines/qa/kg_reasoning/weak_reasoner/knowledge_retriever/KnowledgeRetriever.py", line 49, in from_dict
+    formated_config.formate_fields()
+  File "/home/workspace/src/pipelines/qa/kg_reasoning/weak_reasoner/knowledge_retriever/KnowledgeRetriever.py", line 54, in formate_fields
+    self.retriever_config = AVAILABLE_TRETRIEVERS_CONFIGS[self.retriever_method].from_dict(self.retriever_config)
+  File "/home/workspace/src/pipelines/qa/kg_reasoning/weak_reasoner/knowledge_retriever/traversal_methods/BeamSearchTripletsRetriever.py", line 93, in from_dict
+    formated_config.formate_fields()
+  File "/home/workspace/src/pipelines/qa/kg_reasoning/weak_reasoner/knowledge_retriever/traversal_methods/BeamSearchTripletsRetriever.py", line 104, in formate_fields
+    self.reranker_driver_config.formate_fields()
+AttributeError: 'dict' object has no attribute 'formate_fields'

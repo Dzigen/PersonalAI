@@ -2,33 +2,33 @@ CONTAINERS_ADDITIONAL_CONFIG:
   milvus_cntname: personalai_mmenschikov_kgbuild_milvus
   milvus_config_name: milvus
   milvus_host: localhost
-  milvus_port2: 2395
-  milvus_ui_port: 9107
+  milvus_port2: 2397
+  milvus_ui_port: 9109
   mongo_cntname: personalai_mmenschikov_kgbuild_mongo
   mongo_host: localhost
   mongo_ui_cntname: personalai_mmenschikov_kgbuild_mongo_ui
   mongo_ui_host: personalai_mmenschikov_kgbuild_mongo_ui
-  mongo_ui_port: 8100
+  mongo_ui_port: 8102
   neo4j_cntname: personalai_mmenschikov_kgbuild_neo4j
   neo4j_host: localhost
-  neo4j_ui_port: 7493
+  neo4j_ui_port: 7495
   ollama_cntname: personalai_mmenschikov_ollama
   ollama_host: personalai_mmenschikov_ollama
   ollama_port: 11437
   opensearch_cntname: personalai_mmenschikov_kgbuild_opensearch
   opensearch_host: localhost
-  opensearch_port2: 9600
+  opensearch_port2: 9602
   redis_cntname: personalai_mmenschikov_kgbuild_redis
   redis_config_name: redis
   redis_host: localhost
   redis_ui_cntname: personalai_mmenschikov_kgbuild_redis_ui
   redis_ui_host: personalai_mmenschikov_kgbuild_redis_ui
-  redis_ui_port: 5559
+  redis_ui_port: 5561
   workspace_cntname: personalai_mmenschikov_kgbuild_workspace
   workspace_host: localhost
 GPUS_CONFIG:
   ollama_device_id: '0'
-  workspace_device_id: '0'
+  workspace_device_id: '2'
 KG_MODEL_CONNECTORS:
   embeddings_struc_connection:
     nodesdb_config:
@@ -36,7 +36,7 @@ KG_MODEL_CONNECTORS:
         conn:
           host: localhost
           pass: Milvus
-          port: 19546
+          port: 19548
           user: root
         db_info:
           db: personalaiembeddb
@@ -54,7 +54,7 @@ KG_MODEL_CONNECTORS:
         conn:
           host: localhost
           pass: admin
-          port: 9202
+          port: 9204
           user: admin
         db_info:
           db: personalaiembeddb
@@ -65,7 +65,7 @@ KG_MODEL_CONNECTORS:
         conn:
           host: localhost
           pass: Milvus
-          port: 19546
+          port: 19548
           user: root
         db_info:
           db: personalaiembeddb
@@ -83,7 +83,7 @@ KG_MODEL_CONNECTORS:
         conn:
           host: localhost
           pass: admin
-          port: 9202
+          port: 9204
           user: admin
         db_info:
           db: personalaiembeddb
@@ -97,7 +97,7 @@ KG_MODEL_CONNECTORS:
     params:
       pwd: password
       user: neo4j
-    port: 7706
+    port: 7708
 MEM_PIPELINE_CONNECTORS:
   inference_stat_connection:
     db_info:
@@ -115,7 +115,7 @@ MEM_PIPELINE_CONNECTORS:
         max_storage: -1
         password: pass
         username: user
-      port: 27036
+      port: 27038
     ram_cache_config:
       db_info:
         db: personalaikvdb
@@ -127,4 +127,4 @@ MEM_PIPELINE_CONNECTORS:
         password: my_user_password
         ss_name: sorted_node_pairs
         username: my_user
-      port: 6398
+      port: 6400

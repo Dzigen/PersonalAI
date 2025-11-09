@@ -1,5 +1,3 @@
-BASE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
-
 INIT_STRUCT: True # !!! PAY ATTENTION !!!
 
 EXP_DIRS:

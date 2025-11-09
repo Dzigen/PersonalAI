@@ -1,0 +1,104 @@
+EXPERIMENT_NAME: "weak_bs_gigachat(e1)(v2.1.0)" # TO CHANGE
+DATASET_NAME: 'rubq_dev' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'gigachatmax_281025_v2prompts' # TO CHANGE
+
+QA_DATASET_HYPERP:
+  # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
+  max_samples_per_pack: 5
+  lang: 'ru'
+
+# STAGE # 1
+query_preprocessor: # TO CHANGE
+  denoising_config: null # CAN BE null
+    # agent_tasks_config:
+    #   swremoval: 'v1'
+    #   grammarcheck: 'v1'
+
+  enhancing_config: null # CAN BE null
+    # agent_tasks_config:
+    #   qexpan: 'v1'
+    #   termscheck: 'v1'
+    #   lingcheck: 'v1'
+
+  decomposition_config: # CAN BE null
+    agent_tasks_config:
+      classify: 'v1'
+      decompose: 'v1'
+
+# STAGE # 2
+kg_reasoner: # TO CHANGE
+  reasoner_name: "weak" # DONT CHANGE
+  reasoner_config:
+    query_parser_config: # CAN BE null
+      agent_tasks_config:
+        kw_extraction: 'v2' # 'v1' | 'v2'
+
+    knowledge_comparator_config: # CAN BE null
+      max_k: 3
+      k_compare: 5
+      reranker_driver_config:
+        name: 'ensemble_fusion' # DONT CHANGE
+        strategy_config:
+          vdb_names: ['dense_nodes', 'bm25_nodes']
+          retriever_configs:
+            - fetch_n: 20
+              threshold: 0.5
+            - fetch_n: 20
+              threshold: 0.5
+          weights: [0.6, 0.4]
+          c: 60
+
+    knowledge_retriever_config:
+      # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
+      retriever_method: 'beamsearch'
+
+      retriever_config:
+        reranker_driver_config:
+          name: 'single_step'
+          strategy_config:
+            vdb_name: dense_triplets
+            threshold: 0.5
+            fetch_n: 25
+        max_depth: 10
+        max_paths: 50
+        same_path_intersection_by_node: True
+        diff_paths_intersection_by_node: True
+        diff_paths_intersection_by_rel: True
+        mean_alpha: 0.75
+        final_sorting_mode: 'mixed'
+
+        accepted_node_types:
+          - 'object'
+          - 'hyper'
+          - 'episodic'
+          #- 'time'
+
+      filter_method: 'naive' # CAN BE null
+      filter_config: # CAN BE null
+        max_k: 50
+        reranker_driver_config:
+          name: 'single_step' # DONT CHANGE
+          strategy_config:
+            vdb_name: 'dense_triplets'
+            fetch_n: 50
+            threshold: 0.5
+            
+        accepted_triplets_types:
+          - 'simple'
+          - 'hyper'
+          #- 'episodic'
+          #- 'time'
+
+    answer_generator_config: # TO CHANGE
+      agent_tasks_config:
+        ag: 'v2' # 'v1' | 'v2'
+      relation_type:
+        - 'simple'
+        - 'hyper'
+        #- 'episodic'
+        #- 'time'
+
+# STAGE # 3
+answer_aggregator:
+  agent_tasks_config:
+    suba_summarisation: 'v1'

@@ -19,15 +19,15 @@ CONTAINERS_ADDITIONAL_CONFIG:
   redis_ui_host: personalai_mmenschikov_qaexp_redis_ui
   workspace_cntname: personalai_mmenschikov_qaexp_workspace
   workspace_host: localhost
-DATASET_NAME: hotpotqa_distractor_validation
+DATASET_NAME: rubq_dev
 GPUS_CONFIG:
   ollama_device_id: '0'
-  workspace_device_id: '1'
+  workspace_device_id: '2'
 KG_SETTING_DIR:
   kgconn: kgconn_params
   kgenv: kgenv_params
   name: settings
-KNOWLEDGE_GRAPH_NAME: llama318b_221025_v2prompts
+KNOWLEDGE_GRAPH_NAME: gigachatmax_281025_v2prompts
 OLLAMA_EXT_PORT: 11437
 OLLAMA_MODELS_PATH: /mnt/data/m.menschikov/ollama_volume
 PERSONALAI_REPO_DIRS:
@@ -37,7 +37,7 @@ SAVE_PARAMS_CONFIG:
   env_file: .qaexp_env
   kgconn: kgconn_params.yaml
   kgenv: kgenv_params.yaml
-  qaenv: qaenv_params.taml
+  qaenv: qaenv_params.yaml
 WORKSPACE_CONTAINER_DIRS:
   experiments: experiments/qa
   kg: data/knowledge_graphs

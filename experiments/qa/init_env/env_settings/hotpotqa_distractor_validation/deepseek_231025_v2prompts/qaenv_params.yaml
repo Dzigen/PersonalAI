@@ -22,7 +22,7 @@ CONTAINERS_ADDITIONAL_CONFIG:
 DATASET_NAME: hotpotqa_distractor_validation
 GPUS_CONFIG:
   ollama_device_id: '0'
-  workspace_device_id: '1'
+  workspace_device_id: '2'
 KG_SETTING_DIR:
   kgconn: kgconn_params
   kgenv: kgenv_params
@@ -37,7 +37,7 @@ SAVE_PARAMS_CONFIG:
   env_file: .qaexp_env
   kgconn: kgconn_params.yaml
   kgenv: kgenv_params.yaml
-  qaenv: qaenv_params.taml
+  qaenv: qaenv_params.yaml
 WORKSPACE_CONTAINER_DIRS:
   experiments: experiments/qa
   kg: data/knowledge_graphs
