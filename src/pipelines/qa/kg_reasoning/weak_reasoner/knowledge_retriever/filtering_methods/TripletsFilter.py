@@ -41,7 +41,7 @@ class TripletsFilterConfig(BaseTripletsFilterConfig):
         return formated_config
 
     def formate_fields(self) -> None:
-        if isinstance(self.reranker_driver_config, Dict):
+        if isinstance(self.reranker_driver_config, dict):
             self.reranker_driver_config = RerankerDriverConfig.from_dict(self.reranker_driver_config)
         else:
             self.reranker_driver_config.formate_fields()
