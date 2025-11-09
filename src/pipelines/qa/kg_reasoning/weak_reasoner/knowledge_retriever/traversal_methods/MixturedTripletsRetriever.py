@@ -63,7 +63,7 @@ class MixturedGraphSearchConfig(BaseGraphSearchConfig):
 
     def formate_fields(self) -> None:
         for i, node_type in enumerate(self.accepted_node_types):
-            if isinstance(node_type, str):
+            if not isinstance(node_type, NodeType):
                 self.accepted_node_types[i] = NODES_TYPES_MAP[node_type]
 
         if isinstance(self.retriever1_config, dict):

@@ -55,7 +55,7 @@ class AStarMetrics:
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация класса. Значение по умолчанию AStarMetricsConfig().
-    :type config: AStarMetricsConfig
+    :type config: Union[Dict,AStarMetricsConfig], optional
     :param accepted_node_types: Типы вершин, которые можно использовать при расчёте метрик.
     :type accepted_node_types: List[NodeType]
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(RETRIEVER_LOG_PATH).
@@ -66,8 +66,13 @@ class AStarMetrics:
     cache: Union[None, Dict[str, AbstractKVDatabaseConnection]] = None
 
     def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: List[NodeType], log: Logger,
-                 config: AStarMetricsConfig = AStarMetricsConfig(), verbose: bool = False):
+                 config: Union[Dict, AStarMetricsConfig] = AStarMetricsConfig(), verbose: bool = False):
+        if isinstance(config, dict):
+            config = AStarMetricsConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+
         self.accepted_node_types = accepted_node_types
         self.kg_model = kg_model
 
@@ -322,8 +327,7 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     cache_table_name: str = 'qa_astar_t_retriever_cache'
 
     def to_str(self):
-        str_accepted_nodes = ";".join(
-            sorted(list(map(lambda v: v.value, self.accepted_node_types))))
+        str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
         return f"{self.metrics_config.to_str()}|{self.max_depth}|{self.max_passed_nodes}|{str_accepted_nodes}"
 
     @staticmethod
@@ -337,7 +341,7 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
             if not isinstance(node_type, NodeType):
                 self.accepted_node_types[i] = NODES_TYPES_MAP[node_type]
 
-        if self.metrics_config is dict:
+        if isinstance(self.metrics_config, dict):
             self.metrics_config = AStarMetricsConfig.from_dict(self.metrics_config)
         else:
             self.metrics_config.formate_fields()
