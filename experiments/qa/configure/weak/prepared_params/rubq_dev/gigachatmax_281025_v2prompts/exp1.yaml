@@ -45,7 +45,7 @@ kg_reasoner: # TO CHANGE
               threshold: 0.5
             - fetch_n: 20
               threshold: 0.5
-          weights: [0.6, 0.4]
+          weights: [0.2, 0.8]
           c: 60
 
     knowledge_retriever_config:
@@ -59,8 +59,8 @@ kg_reasoner: # TO CHANGE
             vdb_name: dense_triplets
             threshold: 0.5
             fetch_n: 25
-        max_depth: 10
-        max_paths: 50
+        max_depth: 3
+        max_paths: 10
         same_path_intersection_by_node: True
         diff_paths_intersection_by_node: True
         diff_paths_intersection_by_rel: True

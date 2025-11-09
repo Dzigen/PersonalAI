@@ -37,7 +37,10 @@ class GigaChatConnector(AbstractAgentConnector):
         pass
 
     def close_connection(self):
-        self.giga_model.close()
+        try:
+            self.giga_model.close()
+        except TypeError:
+            pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
                  gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:

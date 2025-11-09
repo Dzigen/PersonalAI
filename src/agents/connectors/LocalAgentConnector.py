@@ -29,8 +29,11 @@ class LocalAgentConnector(AbstractAgentConnector):
         pass
 
     def close_connection(self):
-        del self.pipeline
-        gc.collect()
+        try:
+            del self.pipeline
+            gc.collect()
+        except (AttributeError,TypeError):
+            pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
                  gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:

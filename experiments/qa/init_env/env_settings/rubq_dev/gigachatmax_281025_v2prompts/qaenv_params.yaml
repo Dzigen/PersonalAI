@@ -22,7 +22,7 @@ CONTAINERS_ADDITIONAL_CONFIG:
 DATASET_NAME: rubq_dev
 GPUS_CONFIG:
   ollama_device_id: '0'
-  workspace_device_id: '2'
+  workspace_device_id: '0'
 KG_SETTING_DIR:
   kgconn: kgconn_params
   kgenv: kgenv_params

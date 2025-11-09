@@ -52,3 +52,9 @@ KeyError: 'WORKSPACE_CONTAINER_DIRS'
 ############ DONE ############
 Создаём директорию для сохранения результатов по эксперименту...
 ############ DONE ############
+Traceback (most recent call last):
+  File "/home/workspace/experiments/qa/configure/init_file_structure.py", line 7, in <module>
+    with open(SPECEXP_PARAMS_FILEP, 'r') as stream:
+IsADirectoryError: [Errno 21] Is a directory: '/home/workspace/experiments/qa/configure/weak/prepared_params/rubq_dev/gigachatmax_281025_v2prompts'
+Создаём директорию для сохранения результатов по эксперименту...
+############ DONE ############

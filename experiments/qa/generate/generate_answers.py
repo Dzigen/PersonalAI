@@ -96,6 +96,24 @@ pprint(qa_config)
 
 qa_pipeline = QAPipeline(kg_model, qa_config, kvdriver_config)
 
+print("before:")
+print("llmstat cache:")
+pprint(qa_pipeline.get_agent_tgen_stat())
+print("kv cache: ")
+pprint(qa_pipeline.get_cache_stat())
+
+NEED_TO_CLEAR_CACHE = False # !!! PAY Attention !!!
+if NEED_TO_CLEAR_CACHE:
+    print("Cleaing QA-cache")
+    qa_pipeline.clear_agent_tgen_stat()
+    qa_pipeline.clear_kv_caches()
+
+    print("after:")
+    print("llmstat cache:")
+    pprint(qa_pipeline.get_agent_tgen_stat())
+    print("kv cache: ")
+    pprint(qa_pipeline.get_cache_stat())
+
 ####################################################
 print("6. Loading QA-dataset")
 

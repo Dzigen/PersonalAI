@@ -29,7 +29,10 @@ class OpenAIConnector(AbstractAgentConnector):
         pass
 
     def close_connection(self):
-        self.client.close()
+        try:
+            self.client.close()
+        except (AttributeError,TypeError):
+            pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
                  gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:

@@ -13,21 +13,20 @@ EVALUATE_BASE_DIR="$EXP_BASE_DIR/evaluate"
 
 # --------------------------------------------------------
 
-KNOWLEDGEGRAPH_NAME=deepseek_231025_v2prompts # TO CHANGE
-DATASET_NAME=hotpotqa_distractor_validation # TO CHANGE
-QAPIPELINE_KW="weak" # TO CHANGE
+KNOWLEDGEGRAPH_NAME=gigachatmax_281025_v2prompts # TO CHANGE
+DATASET_NAME=rubq_dev # TO CHANGE
+QAPIPELINE_KW=weak # TO CHANGE
 
 # EXP_NAME
 declare -A exp_names # TO CHANGE
-exp_names[0]="weak_bs_deepseek(e1)(v2.1.0)"
+exp_names[0]="weak_bs_gigachat(e1)(v2.1.0)"
 
 # QAHYPERP_PARAMS_PATH
 declare -A exp_hyperp # TO CHANGE
 exp_hyperp[0]="exp1.yaml"
 
-EXPDIR_PARAMS_PATH="$CONFIGURE_BASE_DIR/$PREPARED_PARAMS_NAME/hotpotqa_distractor_validation.yaml" # TO CHANGE
-
-EVAL_PARAMS_PATH="$EVALUATE_BASE_DIR/eval_params.yaml" # TO CHANGE
+EXPDIR_PARAMS_PATH="$CONFIGURE_BASE_DIR/$PREPARED_PARAMS_NAME/rubq_dev.yaml" # TO CHANGE
+EVAL_PARAMS_PATH="$EVALUATE_BASE_DIR/$PREPARED_PARAMS_NAME/rubqdev.yaml" # TO CHANGE
 
 # --------------------------------------------------------
 
@@ -36,7 +35,7 @@ do
     EXP_NAME="${exp_names[$exp_idx]}"
     echo "$KNOWLEDGEGRAPH_NAME | $DATASET_NAME | $EXP_NAME"
 
-    QAHYPERP_PARAMS_PATH="$CONFIGURE_BASE_DIR/$QAPIPELINE_KW/$PREPARED_PARAMS_NAME/$DATASET_NAME/$KNOWLEDGEGRAPH_NAME"
+    QAHYPERP_PARAMS_PATH="$CONFIGURE_BASE_DIR/$QAPIPELINE_KW/$PREPARED_PARAMS_NAME/$DATASET_NAME/$KNOWLEDGEGRAPH_NAME/${exp_hyperp[$exp_idx]}"
     echo "qahyperp params-path: $QAHYPERP_PARAMS_PATH"
     echo "expdir params-path: $EXPDIR_PARAMS_PATH"
     echo "eval params-path: $EVAL_PARAMS_PATH"

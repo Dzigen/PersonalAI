@@ -47,3 +47,7 @@ experiments/qa/instruction.mp4
 .secrets
 experiments/qa/guide/
 experiments/qa_kg/
+
+experiments/qa/runexperiment_log.txt
+experiments/qa/configure/initdir_log.txt
+experiments/qa/configure/genconfigs_log.txt

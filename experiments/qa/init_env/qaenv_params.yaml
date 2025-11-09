@@ -1,5 +1,5 @@
-DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'llama318b_221025_v2prompts' # TO CHANGE
+DATASET_NAME: 'rubq_dev' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'gigachatmax_281025_v2prompts' # TO CHANGE
 
 BASE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
 BASE_KG_PATH: '/mnt/data/m.menschikov/personalai/knowledge_graphs' # TO CHANGE
