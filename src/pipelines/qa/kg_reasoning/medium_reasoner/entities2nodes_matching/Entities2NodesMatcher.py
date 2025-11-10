@@ -103,8 +103,8 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
         :type entities: List[str]
         :rtype: Tuple[Dict[str,List[NodeInfo]], ReturnInfo]
         """
-        self.log("START ENTITIES2NODES MATCHING...", verbose=self.config.verbose)
-        self.log(f"ENTIITES: {entities}", verbose=self.config.verbose)
+        self.log("START ENTITIES2NODES MATCHING...", verbose=self.verbose)
+        self.log(f"ENTIITES: {entities}", verbose=self.verbose)
         if len(entities) < 1:
             raise ValueError
         rinfo = ReturnInfo()

@@ -104,15 +104,15 @@ class QueryLLMParser(CacheUtils, CacheOperations, AgentStatOperations):
         :rtype: Tuple[QueryInfo, ReturnInfo]
         """
 
-        self.log("START KEY WORD EXTRACTION...", verbose=self.config.verbose)
+        self.log("START KEY WORD EXTRACTION...", verbose=self.verbose)
         self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
+            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
         rinfo = ReturnInfo()
 
         self.log("Выполнение извлечения ключевых сущностей из запроса с помощью LLM-агента...",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
         extracted_entities, status = self.tasks_solvers.kw_extraction_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             query=query_info.query)
@@ -125,11 +125,11 @@ class QueryLLMParser(CacheUtils, CacheOperations, AgentStatOperations):
             rinfo.message = STATUS_MESSAGE[rinfo.status]
         else:
             entities = extracted_entities
-            self.log(f"RESULT: {len(entities)}", verbose=self.config.verbose)
+            self.log(f"RESULT: {len(entities)}", verbose=self.verbose)
             for entity in entities:
-                self.log(f"* {entity}", verbose=self.config.verbose)
+                self.log(f"* {entity}", verbose=self.verbose)
 
         self.log(
-            f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.config.verbose)
+            f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.verbose)
 
         return entities, rinfo

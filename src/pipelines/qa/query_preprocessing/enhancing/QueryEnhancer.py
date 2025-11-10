@@ -111,10 +111,10 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         :return: Кортеж из двух объектов: (1) модифицированный user-вопрос с добавленными языковыми конструкциями для выделения запроса/интента; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
-        self.log("START QUERY DENOISING...", verbose=self.config.verbose)
+        self.log("START QUERY DENOISING...", verbose=self.verbose)
         self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.config.verbose)
-        self.log(f"QUERY INFO: {query_info}", verbose=self.config.verbose)
+            f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.verbose)
+        self.log(f"QUERY INFO: {query_info}", verbose=self.verbose)
         enhanced_query, rinfo = None, ReturnInfo()
 
         if query_info.denoised_query is not None:
@@ -125,17 +125,17 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
             raise ValueError
 
         self.log("Выполнение добавление более понятных языковых конструкций в запрос с помощью LLM-агента...",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
         expanded_query, status = self.tasks_solvers.queryexpansion_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
         else:
-            self.log(f"RESULT: {expanded_query}", verbose=self.config.verbose)
+            self.log(f"RESULT: {expanded_query}", verbose=self.verbose)
 
         if status == ReturnStatus.success:
             self.log("Выполнение замены слабоопределённых фраз в запросе на конкретную терминологии с помощью LLM-агента...",
-                     verbose=self.config.verbose)
+                     verbose=self.verbose)
             defined_query, status = self.tasks_solvers.termscheck_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                 query=expanded_query)
@@ -143,10 +143,10 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
                 rinfo.occurred_warning.append(status)
             else:
                 self.log(f"RESULT: {defined_query}",
-                         verbose=self.config.verbose)
+                         verbose=self.verbose)
 
         if status == ReturnStatus.success:
-            self.log("Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.config.verbose)
+            self.log("Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.verbose)
             reformulated_query, status = self.tasks_solvers.linguistcheck_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                 query=defined_query)
@@ -154,14 +154,14 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
                 rinfo.occurred_warning.append(status)
             else:
                 self.log(f"RESULT: {reformulated_query}",
-                         verbose=self.config.verbose)
+                         verbose=self.verbose)
                 enhanced_query = reformulated_query
 
         if enhanced_query is None:
             rinfo.status = ReturnStatus.empty_answer
             rinfo.message = STATUS_MESSAGE[rinfo.status]
 
-        self.log(f"RESULT: {enhanced_query}", verbose=self.config.verbose)
-        self.log(f"STATUS: {rinfo.status}", verbose=self.config.verbose)
+        self.log(f"RESULT: {enhanced_query}", verbose=self.verbose)
+        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
         return enhanced_query, rinfo

@@ -104,10 +104,10 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
         :return: Кортеж из двух объектов: (1) список простых под-вопросов для исходного/сложного user-вопроса; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
-        self.log("START QUERY DECOMPOSITION...", verbose=self.config.verbose)
+        self.log("START QUERY DECOMPOSITION...", verbose=self.verbose)
         self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.config.verbose)
-        self.log(f"QUERY INFO: {query_info}", verbose=self.config.verbose)
+            f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.verbose)
+        self.log(f"QUERY INFO: {query_info}", verbose=self.verbose)
         decomposed_query, rinfo = None, ReturnInfo()
 
         if query_info.enchanced_query is not None:
@@ -120,7 +120,7 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
             raise ValueError
 
         self.log("Выполнение проверки на необходимость декомпозии вопроса с помощью LLM-агента...",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
         need_to_decompose, status = self.tasks_solvers.decompose_classifier_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             query=query)
@@ -130,14 +130,14 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
         if status == ReturnStatus.success:
             if need_to_decompose:
                 self.log("Выполнение разбиения вопроса на независимые под-вопросы с помощью LLM-агента...",
-                         verbose=self.config.verbose)
+                         verbose=self.verbose)
                 decomposed_query, status = self.tasks_solvers.q_decomposition_solver.solve(
                     lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
                 if status != ReturnStatus.success:
                     rinfo.occurred_warning.append(status)
             else:
                 self.log("Выполнение декомпозиции вопроса не требуется",
-                         verbose=self.config.verbose)
+                         verbose=self.verbose)
                 rinfo.occurred_warning.append(ReturnStatus.decompose_noneed)
                 decomposed_query = [query]
 
@@ -145,7 +145,7 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
             rinfo.status = ReturnStatus.empty_answer
             rinfo.message = STATUS_MESSAGE[rinfo.status]
 
-        self.log(f"RESULT: {decomposed_query}", verbose=self.config.verbose)
-        self.log(f"STATUS: {rinfo.status}", verbose=self.config.verbose)
+        self.log(f"RESULT: {decomposed_query}", verbose=self.verbose)
+        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
         return decomposed_query, rinfo

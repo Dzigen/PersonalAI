@@ -1,6 +1,0 @@
-SPEC_KG_RELNAME=hotpotqa_distractor_validation/gigachatmax_051125_v2prompts # TO CHANGE
-BASE_DIR=/home/workspace/data/knowledge_graphs/$SPEC_KG_RELNAME
-NOTEBOOKS_BASE_PATH=/home/workspace/notebooks/kg_building
-
-46 08 09 11 * cd $BASE_DIR ; bash $NOTEBOOKS_BASE_PATH/build_graph.sh $SPEC_KG_RELNAME
-

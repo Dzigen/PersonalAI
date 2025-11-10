@@ -72,7 +72,7 @@ kg_reasoner: # TO CHANGE
             threshold: 0.5
             fetch_n: 25
         max_depth: 2
-        max_paths: 15
+        max_paths: 10
         same_path_intersection_by_node: True
         diff_paths_intersection_by_node: True
         diff_paths_intersection_by_rel: True

@@ -104,11 +104,11 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
         :return: Кортеж из двух объектов: (1) финальный ответ на user-вопрос; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
-        self.log("START ANSWERS AGGREGATION...", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.config.verbose)
-        self.log(f"QUERY_INFO: {query_info}", verbose=self.config.verbose)
+        self.log("START ANSWERS AGGREGATION...", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.verbose)
+        self.log(f"QUERY_INFO: {query_info}", verbose=self.verbose)
         self.log(f"SUB_ANSWERS: {subq_info.sub_answers}",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
         final_answer, info = None, ReturnInfo()
 
         if len(subq_info.sub_answers) < 0:
@@ -130,7 +130,7 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
                 raise ValueError
 
             self.log("Выполнение суммаризации ответов с помощью LLM-агента...",
-                     verbose=self.config.verbose)
+                     verbose=self.verbose)
             final_answer, status = self.tasks_solvers.subanswers_summarisation_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                 query=query, sub_queries=sub_queries,

@@ -113,11 +113,9 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         :return: Кортеж из двух объектов: (1) Модифиицированный план поиска; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[SearchPlanInfo, ReturnInfo]
         """
-        self.log("START SEARCH-PLAN INITING/ENHANCING...",
-                 verbose=self.config.verbose)
-        self.log(
-            f"QUERY ID: {create_id(search_plan.base_query)}", verbose=self.config.verbose)
-        self.log(f"CURRENT PLAN: {search_plan}", verbose=self.config.verbose)
+        self.log("START SEARCH-PLAN INITING/ENHANCING...", verbose=self.verbose)
+        self.log(f"QUERY ID: {create_id(search_plan.base_query)}", verbose=self.verbose)
+        self.log(f"CURRENT PLAN: {search_plan}", verbose=self.verbose)
         enhanced_search_plan, rinfo = None, ReturnInfo()
 
         if search_step < 0:
@@ -130,7 +128,7 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
             str_searchplan = "\n".join(
                 [f'{i}. {gen_step}' for i, gen_step in enumerate(new_search_steps)])
             self.log(
-                f"RESULT: {len(new_search_steps)}\n{str_searchplan}", verbose=self.config.verbose)
+                f"RESULT: {len(new_search_steps)}\n{str_searchplan}", verbose=self.verbose)
 
             if status == ReturnStatus.success:
                 enhanced_search_plan = deepcopy(search_plan)
@@ -142,7 +140,7 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
             need_enhance, status = self.tasks_solvers.enhance_classify_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=search_plan.base_query,
                 search_steps=search_plan.search_steps, steps_answers=search_plan.steps_answers[:search_step])
-            self.log(f"RESULT: {need_enhance}", verbose=self.config.verbose)
+            self.log(f"RESULT: {need_enhance}", verbose=self.verbose)
 
             if status == ReturnStatus.success:
                 if need_enhance:
@@ -155,7 +153,7 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
                     str_enhancedsteps = "\n".join(
                         [f'{i}. {gen_step}' for i, gen_step in enumerate(enhanced_steps)])
                     self.log(
-                        f"RESULT: {len(enhanced_steps)}\n{str_enhancedsteps}", verbose=self.config.verbose)
+                        f"RESULT: {len(enhanced_steps)}\n{str_enhancedsteps}", verbose=self.verbose)
 
                     if status == ReturnStatus.success:
                         enhanced_search_plan = deepcopy(search_plan)
@@ -169,6 +167,6 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
                     enhanced_search_plan = deepcopy(search_plan)
 
         rinfo.status = status
-        self.log(f"STATUS: {rinfo.status}", verbose=self.config.verbose)
+        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
         return enhanced_search_plan, rinfo

@@ -1,6 +1,6 @@
 EXPERIMENT_NAME: "medium_bs_qwen38b(e1)(v2.1.0)" # TO CHANGE
 DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'qwen25_080325_v2prompts' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'qwen38b_261025_v2prompts' # TO CHANGE
 
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
@@ -72,7 +72,7 @@ kg_reasoner: # TO CHANGE
             threshold: 0.5
             fetch_n: 25
         max_depth: 2
-        max_paths: 15
+        max_paths: 10
         same_path_intersection_by_node: True
         diff_paths_intersection_by_node: True
         diff_paths_intersection_by_rel: True

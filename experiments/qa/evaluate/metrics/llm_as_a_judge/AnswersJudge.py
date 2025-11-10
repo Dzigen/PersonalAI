@@ -59,11 +59,11 @@ class AnswersJudge(CacheUtils):
     @CacheUtils.cache_method_output
     def perform(self, question: str, ground_truth: str, predicted_response: str) -> Union[int, float]:
         info = ReturnInfo()
-        self.log("START JUDGING...", verbose=self.config.verbose)
+        self.log("START JUDGING...", verbose=self.verbose)
         self.log(f"* GROUND_TRUTH: {ground_truth}",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
         self.log(f"* PREDICTED: {predicted_response}",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
 
         predicted_score, status = self.llmjudge_solver.solve(
             lang=self.config.lang, question=question,
@@ -71,6 +71,6 @@ class AnswersJudge(CacheUtils):
 
         if status != ReturnStatus.success:
             info.occurred_warning.append(status)
-        self.log(f"RESULT: {predicted_score}", verbose=self.config.verbose)
+        self.log(f"RESULT: {predicted_score}", verbose=self.verbose)
 
         return predicted_score, info

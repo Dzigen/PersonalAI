@@ -55,3 +55,5 @@ experiments/qa/configure/initdir_log.txt
 experiments/qa/configure/genconfigs_log.txt
 experiments/qa/crontab_log.txt
 experiments/qa/results
+
+notebooks/kg_building/cron_buildgraph.txt

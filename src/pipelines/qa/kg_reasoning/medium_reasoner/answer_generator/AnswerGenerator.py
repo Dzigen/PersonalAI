@@ -106,10 +106,10 @@ class AnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         :return: Кортеж из двух объектов: (1) Ответ на user-вопрос; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
-        self.log("START ANSWER-TRYING...", verbose=self.config.verbose)
+        self.log("START ANSWER-TRYING...", verbose=self.verbose)
         self.log(
-            f"QUERY ID: {create_id(search_plan.base_query)}", verbose=self.config.verbose)
-        self.log(f"CURRENT PLAN: {search_plan}", verbose=self.config.verbose)
+            f"QUERY ID: {create_id(search_plan.base_query)}", verbose=self.verbose)
+        self.log(f"CURRENT PLAN: {search_plan}", verbose=self.verbose)
         answer, info = None, ReturnInfo()
 
         self.log("Выполняем проверку на возможность генерации релевантного ответа...",
@@ -117,7 +117,7 @@ class AnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         can_answer, status = self.tasks_solvers.answer_classify_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             search_plan=search_plan)
-        self.log(f"RESULT: {can_answer}", verbose=self.config.verbose)
+        self.log(f"RESULT: {can_answer}", verbose=self.verbose)
 
         if status == ReturnStatus.success:
             if can_answer:
@@ -125,13 +125,13 @@ class AnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
                 answer, status = self.tasks_solvers.answer_gen_solver.solve(
                     lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                     search_plan=search_plan)
-                self.log(f"RESULT: {answer}", verbose=self.config.verbose)
+                self.log(f"RESULT: {answer}", verbose=self.verbose)
 
             else:
                 self.log(
                     "На основании информации, полученной по текущему плану нельзя сгенерировать релевантный ответ.", verbose=self.verbose)
 
         info.status = status
-        self.log(f"STATUS: {info.status}", verbose=self.config.verbose)
+        self.log(f"STATUS: {info.status}", verbose=self.verbose)
 
         return answer, info

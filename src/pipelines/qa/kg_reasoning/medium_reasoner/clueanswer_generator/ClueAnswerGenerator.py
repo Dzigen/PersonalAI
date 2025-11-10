@@ -111,17 +111,17 @@ class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         :rtype: Tuple[str, ReturnInfo]
         """
         self.log("START CLUE-ANSWER GENRATION ...",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
         self.log(
-            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
-        self.log(f"CONTEXT_TRIPLETS:", verbose=self.config.verbose)
+            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
+        self.log(f"CONTEXT_TRIPLETS:", verbose=self.verbose)
         for triplet in context_triplets:
-            self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
+            self.log(f"*[{triplet.id}] {triplet}", verbose=self.verbose)
         info = ReturnInfo()
 
         self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
         answer, status = self.tasks_solvers.cagen_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             query=query, triplets=context_triplets)
@@ -134,7 +134,7 @@ class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
             info.message = STATUS_MESSAGE[info.status]
 
         self.log(
-            f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.config.verbose)
-        self.log(f"STATUS: {info.status}", verbose=self.config.verbose)
+            f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.verbose)
+        self.log(f"STATUS: {info.status}", verbose=self.verbose)
 
         return answer, info

@@ -107,20 +107,18 @@ class ClueAnswersSummarizer(CacheUtils, AgentStatOperations, CacheOperations):
         :return: Кортеж из двух объектов: (1) резюмированный набор информации (в виде полносвязного текста на естественном языке), который является результатов поиска в графе знаний (памяти ассистента) по данному базовому шагу/запросу плана. (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
-        self.log("START CLUE-QUERIES SUMMARISATION...",
-                 verbose=self.config.verbose)
-        self.log(
-            f"SEARCH_QUERY ID: {create_id(search_query)}", verbose=self.config.verbose)
-        self.log(f"SEARCH_QUERY: {search_query}", verbose=self.config.verbose)
-        self.log(f"CLUE-QUERIES: {clue_queries}", verbose=self.config.verbose)
-        self.log(f"CLUE-ANSWERS: {clue_answers}", verbose=self.config.verbose)
+        self.log("START CLUE-QUERIES SUMMARISATION...", verbose=self.verbose)
+        self.log(f"SEARCH_QUERY ID: {create_id(search_query)}", verbose=self.verbose)
+        self.log(f"SEARCH_QUERY: {search_query}", verbose=self.verbose)
+        self.log(f"CLUE-QUERIES: {clue_queries}", verbose=self.verbose)
+        self.log(f"CLUE-ANSWERS: {clue_answers}", verbose=self.verbose)
         summ_answer, info = None, ReturnInfo()
 
         if len(search_query) < 1 or len(clue_queries) < 1 or len(clue_answers) != len(clue_queries):
             raise ValueError
 
         self.log("Выполненяем суммаризацию clue-answers с помощью LLM-агента...",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
         summ_answer, status = self.tasks_solvers.clueanswers_summ_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, search_query=search_query,
             clues_queries=clue_queries, clue_answers=clue_answers)

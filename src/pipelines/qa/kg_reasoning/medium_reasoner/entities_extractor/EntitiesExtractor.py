@@ -102,13 +102,13 @@ class EntitiesExtractor(CacheUtils, CacheOperations, AgentStatOperations):
         :return: Кортеж из двух объектов: (1) извлечённый список сущностей; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[str], ReturnInfo]
         """
-        self.log("START ENTITIES EXTRACTION...", verbose=self.config.verbose)
+        self.log("START ENTITIES EXTRACTION...", verbose=self.verbose)
         info = ReturnInfo()
-        self.log(f"QUERY ID: {create_id(query)}", verbose=self.config.verbose)
-        self.log(f"QUERY: {query}", verbose=self.config.verbose)
+        self.log(f"QUERY ID: {create_id(query)}", verbose=self.verbose)
+        self.log(f"QUERY: {query}", verbose=self.verbose)
 
         self.log("Выполнение извлечения сущностей из запроса с помощью LLM-агента...",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
         entities, info.status = self.tasks_solvers.entities_extractor_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
         self.log(f"RESULT: {entities}", verbose=self.verbose)

@@ -121,15 +121,15 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         """
 
         rinfo = ReturnInfo()
-        self.log("START ANSWER GENERATION ...", verbose=self.config.verbose)
+        self.log("START ANSWER GENERATION ...", verbose=self.verbose)
         self.log(
-            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
-        self.log(f"CONTEXT_TRIPLETS:", verbose=self.config.verbose)
+            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
+        self.log(f"CONTEXT_TRIPLETS:", verbose=self.verbose)
         for triplet in context_triplets:
-            self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
+            self.log(f"*[{triplet.id}] {triplet}", verbose=self.verbose)
 
-        self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...", verbose=self.config.verbose)
+        self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...", verbose=self.verbose)
         answer, status = self.tasks_solvers.answer_generator_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             query=query, triplets=context_triplets)
@@ -142,8 +142,8 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
             rinfo.message = STATUS_MESSAGE[rinfo.status]
         else:
             self.log(
-                f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.config.verbose)
+                f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.verbose)
 
-        self.log(f"STATUS: {rinfo.status}", verbose=self.config.verbose)
+        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
         return answer, rinfo

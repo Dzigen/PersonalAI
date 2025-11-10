@@ -124,10 +124,10 @@ class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
         :return: Кортеж из двух объектов: (1) Струкутра данных с предобработанным user-вопросом и результами промежуточных операций; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[QueryPreprocessingInfo, ReturnInfo]
         """
-        self.log("START QUERY PREPROCESSING...", verbose=self.config.verbose)
+        self.log("START QUERY PREPROCESSING...", verbose=self.verbose)
         self.log(
-            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
+            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
         query_info = QueryPreprocessingInfo(base_query=query)
         rinfo = ReturnInfo()
 

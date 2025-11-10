@@ -253,7 +253,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
             else:
                 added_node_ids.append(node.id)
 
-        self.log(f"final | all/unique/existed/added nodes - {len(triplets)*2}/{len(object_nodes)}/{len(existed_node_ids)}/{len(added_node_ids)}", verbose=self.config.verbose)
+        self.log(f"final | all/unique/existed/added nodes - {len(triplets)*2}/{len(object_nodes)}/{len(existed_node_ids)}/{len(added_node_ids)}", verbose=self.verbose)
         return {'existed_nodes': existed_node_ids, 'added_nodes': added_node_ids}
 
     def add_node(self, new_node_strid: str, new_node_text: str) -> ReturnStatus:

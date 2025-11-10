@@ -94,11 +94,11 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
         :rtype: ReturnInfo
         """
 
-        self.log("START MATCHING KEY WORDS ...", verbose=self.config.verbose)
+        self.log("START MATCHING KEY WORDS ...", verbose=self.verbose)
         self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.config.verbose)
-        self.log(f"ENTITIES: {query_info.entities}", verbose=self.config.verbose)
+            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
+        self.log(f"ENTITIES: {query_info.entities}", verbose=self.verbose)
 
         info = ReturnInfo()
         linked_nodes: List[NodeInfo] = []
@@ -124,10 +124,10 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
             info.status = ReturnStatus.zero_linked_nodes
             info.message = STATUS_MESSAGE[info.status]
         else:
-            self.log(f"RESULT: {len(linked_nodes)}", verbose=self.config.verbose)
+            self.log(f"RESULT: {len(linked_nodes)}", verbose=self.verbose)
             for i, node in enumerate(linked_nodes):
-                self.log(f"{i}. {node}", verbose=self.config.verbose)
+                self.log(f"{i}. {node}", verbose=self.verbose)
 
-        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
+        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.verbose)
 
         return linked_nodes, linked_nodes_by_entities, info

@@ -107,10 +107,10 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
         :return: Кортеж из двух объектов: (1) модифицированный user-вопрос без информации, зашумляющий основной запрос/интент; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
-        self.log("START QUERY DENOISING...", verbose=self.config.verbose)
+        self.log("START QUERY DENOISING...", verbose=self.verbose)
         self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.config.verbose)
-        self.log(f"QUERY INFO: {query_info}", verbose=self.config.verbose)
+            f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.verbose)
+        self.log(f"QUERY INFO: {query_info}", verbose=self.verbose)
         denoised_query, rinfo = None, ReturnInfo()
 
         if query_info.base_query is not None:
@@ -119,17 +119,17 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
             raise ValueError
 
         self.log("Выполнение удаление лишней информации/символов из запроса с помощью LLM-агента...",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
         query_wo_stopwords, status = self.tasks_solvers.swremoval_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
         else:
             self.log(f"RESULT: {query_wo_stopwords}",
-                     verbose=self.config.verbose)
+                     verbose=self.verbose)
 
         if status == ReturnStatus.success:
-            self.log("Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.config.verbose)
+            self.log("Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.verbose)
             reformulated_query, status = self.tasks_solvers.grammar_check_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                 query=query_wo_stopwords)
@@ -137,14 +137,14 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
                 rinfo.occurred_warning.append(status)
             else:
                 self.log(f"RESULT: {reformulated_query}",
-                         verbose=self.config.verbose)
+                         verbose=self.verbose)
                 denoised_query = reformulated_query
 
         if denoised_query is None:
             rinfo.status = ReturnStatus.empty_answer
             rinfo.message = STATUS_MESSAGE[rinfo.status]
 
-        self.log(f"RESULT: {denoised_query}", verbose=self.config.verbose)
-        self.log(f"STATUS: {rinfo.status}", verbose=self.config.verbose)
+        self.log(f"RESULT: {denoised_query}", verbose=self.verbose)
+        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
         return denoised_query, rinfo
