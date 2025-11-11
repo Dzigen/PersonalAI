@@ -18,7 +18,7 @@ class AgentKWETaskConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_KWE_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v1',
+    def select(base_config_version: str = 'v2',
                cache_table_name: str = "qa_agent_kwe_task_cache",
                inferencestat_table_name: str = "qa_agent_kwe_task_stat") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
