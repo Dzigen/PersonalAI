@@ -19,8 +19,11 @@ class GigaChatConnector(AbstractAgentConnector):
         else:
             config.formate_fields()
         self.config: AgentConnectorConfig = config
+        
+        # костыль
+        if 'top_p' in self.config.gen_strategy:
+            self.config.gen_strategy['top_p'] = float(self.config.gen_strategy['top_p'])
 
-        self.gen_strategy = config.gen_strategy
         self.trials = config.ext_params['trials']
         self.CONNECTOR_KW = 'gigachat'
 
@@ -49,7 +52,7 @@ class GigaChatConnector(AbstractAgentConnector):
         if assistant_prompt is not None:
             msgs.append(Messages(role='assistant', content=assistant_prompt))
 
-        gen_strategy = self.gen_strategy if gen_strategy is None else gen_strategy
+        gen_strategy = self.config.gen_strategy if gen_strategy is None else gen_strategy
         chat = Chat(messages=msgs, **gen_strategy)
 
         ai_start_time = time()

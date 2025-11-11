@@ -1,5 +1,5 @@
 DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'qwen38b_261025_v2prompts' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'deepseek_231025_v2prompts' # TO CHANGE
 
 BASE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
 BASE_KG_PATH: '/mnt/data/m.menschikov/personalai/knowledge_graphs' # TO CHANGE
@@ -14,7 +14,7 @@ KG_SETTING_DIR:
 
 GPUS_CONFIG:
   ollama_device_id: '0' # TO CHANGE
-  workspace_device_id: '2' # TO CHANGE
+  workspace_device_id: '1' # TO CHANGE
 
 PERSONALAI_REPO_DIRS:
   experiments: experiments/qa

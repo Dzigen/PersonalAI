@@ -15,6 +15,10 @@ class LocalAgentConnector(AbstractAgentConnector):
             config.formate_fields()
         self.config: AgentConnectorConfig = config
 
+        # костыль
+        if 'top_p' in self.config.gen_strategy:
+            self.config.gen_strategy['top_p'] = float(self.config.gen_strategy['top_p'])
+
         self.CONNECTOR_KW = 'local'
 
         self.pipeline = pipeline(

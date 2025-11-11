@@ -57,3 +57,5 @@ experiments/qa/crontab_log.txt
 experiments/qa/results
 
 notebooks/kg_building/cron_buildgraph.txt
+
+experiments/qa/init_env/env_settings

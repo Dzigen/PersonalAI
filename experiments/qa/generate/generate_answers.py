@@ -97,11 +97,11 @@ pprint(qa_config)
 qa_pipeline = QAPipeline(kg_model, qa_config, kvdriver_config, llmstat_config)
 
 print("llmstat cache:")
-qa_pipeline.clear_agent_tgen_stat()
+#qa_pipeline.clear_agent_tgen_stat() # !!! PAY ATTENTION !!!
 pprint(qa_pipeline.get_agent_tgen_stat())
 
 print("kv cache: ")
-qa_pipeline.clear_kv_caches()
+#qa_pipeline.clear_kv_caches() # !!! PAY ATTENTION !!!
 pprint(qa_pipeline.get_cache_stat())
 
 ####################################################
@@ -255,13 +255,13 @@ agent_stats = qa_pipeline.get_agent_tgen_stat()
 pprint(agent_stats)
 with open(AGENT_STAT_SPATH, 'w', encoding='utf-8') as fd:
     fd.write(json.dumps(agent_stats, indent=1, ensure_ascii=False))
-qa_pipeline.clear_agent_tgen_stat()
+qa_pipeline.clear_agent_tgen_stat() # !!! PAY ATTENTION !!!
 
 print("cache stat after qa-inferencing:")
 cache_stats = qa_pipeline.get_cache_stat()
 pprint(cache_stats)
 with open(CACHE_STAT_SPATH, 'w', encoding='utf-8') as fd:
     fd.write(json.dumps(cache_stats, indent=1, ensure_ascii=False))
-qa_pipeline.clear_kv_caches()
+qa_pipeline.clear_kv_caches() # !!! PAY ATTENTION !!!
 
 print("############ DONE ############")

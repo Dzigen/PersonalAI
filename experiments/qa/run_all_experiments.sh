@@ -13,15 +13,15 @@ EVALUATE_BASE_DIR="$EXP_BASE_DIR/evaluate"
 
 # --------------------------------------------------------
 
-KNOWLEDGEGRAPH_NAME=qwen38b_261025_v2prompts # TO CHANGE
+KNOWLEDGEGRAPH_NAME=deepseek_231025_v2prompts # TO CHANGE
 DATASET_NAME=hotpotqa_distractor_validation # TO CHANGE
 
 # EXP_NAME
 declare -A exp_names # TO CHANGE
-exp_names[0]="medium_nr_qwen38b(e2)(v2.1.0)"
+exp_names[0]="weak_nr_deepseek(e2)(v2.1.0)"
 
 declare -A exp_qapipe_kw # TO CHANGE
-exp_qapipe_kw[0]="medium"
+exp_qapipe_kw[0]="weak"
 
 # QAHYPERP_PARAMS_PATH
 declare -A exp_hyperp # TO CHANGE

@@ -225,7 +225,7 @@ services:
     environment:
       - OLLAMA_DEBUG=1
     volumes:
-      - ../../ollama_volume:/root/.ollama
+      - /mnt/data/m.menschikov/ollama_volume:/root/.ollama
     deploy:
       resources:
         limits:

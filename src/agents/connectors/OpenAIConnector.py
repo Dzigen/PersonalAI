@@ -15,6 +15,10 @@ class OpenAIConnector(AbstractAgentConnector):
             config.formate_fields()
         self.config: AgentConnectorConfig = config
 
+        # костыль
+        if 'top_p' in self.config.gen_strategy:
+            self.config.gen_strategy['top_p'] = float(self.config.gen_strategy['top_p'])
+
         base_url = None if config.credentials['base_url'] == 'None' else config.credentials['base_url']
         self.config.credentials['base_url'] = base_url
         self.CONNECTOR_KW = 'openai'
