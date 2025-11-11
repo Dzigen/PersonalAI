@@ -66,7 +66,7 @@ class BaseGraphSearchConfig(BaseConfigOperations):
     accepted_node_types: Union[List[NodeType], None] = None
 
 
-class AbstractTripletsRetriever(CacheOperations, TraversalMethodCacheOpearions):
+class AbstractTripletsRetriever(TraversalMethodCacheOpearions):
     """Интерфейс алгоритмов извлечения триплетов из графа знаний."""
 
     config: BaseGraphSearchConfig
