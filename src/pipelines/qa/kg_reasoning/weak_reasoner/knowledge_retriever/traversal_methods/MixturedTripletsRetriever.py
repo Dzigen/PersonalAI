@@ -101,7 +101,7 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     }
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[MixturedGraphSearchConfig, Dict] = MixturedGraphSearchConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
         if isinstance(search_config, dict):
             search_config = MixturedGraphSearchConfig.from_dict(search_config)
         else:

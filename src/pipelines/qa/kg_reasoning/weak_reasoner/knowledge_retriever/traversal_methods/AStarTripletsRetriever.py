@@ -26,12 +26,9 @@ class AStarMetricsConfig(BaseConfigOperations):
     :type h_metric_name: str, optional
     :param nodes_vdb_name: ... . Значение по умолчанию 'nodes_dense'.
     :type nodes_vdb_name: str, optional
-    :param kvdriver_config: Конфигурация кеша для хранения рассчитанных h-оценок между вершинами. Значение по умолчанию None (кеширование не используется). Значение по умолчанию None.
-    :type kvdriver_config: Union[None, KeyValueDriverConfig, Dict], optional
     """
     h_metric_name: str = 'ip'
     nodes_vdb_name: str = 'nodes_dense'
-    kvdriver_config: Union[None, KeyValueDriverConfig, Dict] = None
 
     def to_str(self):
         return f"{self.h_metric_name}"
@@ -44,10 +41,7 @@ class AStarMetricsConfig(BaseConfigOperations):
         return formated_config
 
     def formate_fields(self):
-        if isinstance(self.kvdriver_config, dict):
-            self.kvdriver_config = KeyValueDriverConfig.from_dict(self.kvdriver_config)
-        elif self.kvdriver_config is not None:
-            self.kvdriver_config.formate_fields()
+        pass
 
 
 class AStarMetrics:
@@ -55,19 +49,23 @@ class AStarMetrics:
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
-    :param config: Конфигурация класса. Значение по умолчанию AStarMetricsConfig().
-    :type config: Union[Dict,AStarMetricsConfig], optional
     :param accepted_node_types: Типы вершин, которые можно использовать при расчёте метрик.
     :type accepted_node_types: List[NodeType]
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(RETRIEVER_LOG_PATH).
-    :type log: Logger
+    :type log: Logger, optional
+    :param config: Конфигурация класса. Значение по умолчанию AStarMetricsConfig().
+    :type config: Union[Dict,AStarMetricsConfig], optional
+    :param cache_kvdriver_config: Конфигурация кеша для хранения рассчитанных h-оценок между вершинами. Значение по умолчанию None (кеширование не используется). Значение по умолчанию None.
+    :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :type verbose: bool, optional
     """
     cache: Union[None, Dict[str, AbstractKVDatabaseConnection]] = None
 
     def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: List[NodeType], log: Logger,
-                 config: Union[Dict, AStarMetricsConfig] = AStarMetricsConfig(), verbose: bool = False):
+                 config: Union[Dict, AStarMetricsConfig] = AStarMetricsConfig(),
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
+                 verbose: bool = False):
         if isinstance(config, dict):
             config = AStarMetricsConfig.from_dict(config)
         else:
@@ -82,7 +80,8 @@ class AStarMetrics:
             if not hasattr(v_composer.vdb_conn_mapping[self.config.nodes_vdb_name], 'embedder'):
                 raise ValueError
 
-        self.init_kv_caches()
+        self.cache: Dict[str, AbstractKVDatabaseConnection] = dict()
+        self.init_kv_caches(cache_kvdriver_config)
 
         self.metrics_map = {
             'ip': self.embeddings_dist,
@@ -101,25 +100,25 @@ class AStarMetrics:
             'avg_weighted_with_short_path': {'exist': 0, 'calc': 0}
         }
 
-    def init_kv_caches(self) -> None:
-        if self.config.kvdriver_config is not None:
+    def init_kv_caches(self, kvdriver_config: Union[None, KeyValueDriverConfig]) -> None:
+        if kvdriver_config is not None:
             self.cache: Dict[str, AbstractKVDatabaseConnection] = dict()
             if self.config.h_metric_name in ['ip', 'weight_with_short_path', 'avg_weighted_with_short_path']:
-                ip_config = deepcopy(self.config.kvdriver_config)
+                ip_config = deepcopy(kvdriver_config)
                 ip_config.db_config.db_info['table'] = 'astar_retriever_ip'
                 self.cache['ip'] = KeyValueDriver.connect(ip_config)
             if self.config.h_metric_name in ['weight_with_short_path', 'avg_weighted_with_short_path']:
-                sp_config = deepcopy(self.config.kvdriver_config)
+                sp_config = deepcopy(kvdriver_config)
                 sp_config.db_config.db_info['table'] = 'astar_retriever_bfsshortpath'
                 self.cache['bfs_short_path'] = KeyValueDriver.connect(
                     sp_config)
 
-                sp_config = deepcopy(self.config.kvdriver_config)
+                sp_config = deepcopy(kvdriver_config)
                 sp_config.db_config.db_info['table'] = 'astar_retriever_weightwithshortpath'
                 self.cache['weight_with_short_path'] = KeyValueDriver.connect(
                     sp_config)
 
-                sp_config = deepcopy(self.config.kvdriver_config)
+                sp_config = deepcopy(kvdriver_config)
                 sp_config.db_config.db_info['table'] = 'astar_retriever_avgweightedwithshortpath'
                 self.cache['avg_weighted_with_short_path'] = KeyValueDriver.connect(
                     sp_config)
@@ -151,7 +150,7 @@ class AStarMetrics:
         return dist
 
     def embeddings_dist(self, node1: NodeInfo, node2: NodeInfo, *args, **kwargs) -> float:
-        if self.config.kvdriver_config is not None:
+        if len(self.cache) > 0:
             pair_id = create_id_for_node_pair(node1.to_str(), node2.to_str())
             if self.cache['ip'].item_exist(pair_id):
                 # print("exists")
@@ -170,7 +169,7 @@ class AStarMetrics:
         return dist
 
     def compute_short_path(self, node1: NodeInfo, node2: NodeInfo) -> float:
-        if self.config.kvdriver_config is not None:
+        if len(self.cache) > 0:
             pair_id = create_id_for_node_pair(node1.to_str(), node2.to_str())
             if self.cache['bfs_short_path'].item_exist(pair_id):
                 # print("exists")
@@ -189,7 +188,7 @@ class AStarMetrics:
 
     def weighted_short_path(self, node1: NodeInfo, node2: NodeInfo, *args, **kwargs) -> float:
         pair_id = create_id_for_node_pair(node1.to_str(), node2.to_str())
-        if (self.config.kvdriver_config is not None) and (self.cache['weight_with_short_path'].item_exist(pair_id)):
+        if (len(self.cache) > 0) and (self.cache['weight_with_short_path'].item_exist(pair_id)):
             # print("exists")
             w_short_path = self.cache['weight_with_short_path'].read([pair_id])[0].value
             self.cache_info['weight_with_short_path']['exist'] += 1
@@ -205,7 +204,7 @@ class AStarMetrics:
 
     def avg_weighted_short_path(self, node1: NodeInfo, node2: NodeInfo, parent: Dict[str, Union[None, NodeInfo]]) -> float:
         pair_id = create_id_for_node_pair(node1.to_str(), node2.to_str())
-        if (self.config.kvdriver_config is not None) and (self.cache['avg_weighted_with_short_path'].item_exist(pair_id)):
+        if (len(self.cache) > 0) and (self.cache['avg_weighted_with_short_path'].item_exist(pair_id)):
             # print("exists")
             avg_w_short_path = self.cache['avg_weighted_with_short_path'].read([pair_id])[0].value
             self.cache_info['avg_weighted_with_short_path']['exist'] += 1
@@ -255,7 +254,7 @@ class AStarMetrics:
                     D[neighbour_typedid] = D[vertex_typedid] + 1
                     visited.add(neighbour_typedid)
 
-                    if self.config.kvdriver_config is not None:
+                    if len(self.cache) > 0:
                         # кешируем кратчайший bfs-путь от s_node_id-стартовой до текущей вершины
                         pair_id = create_id_for_node_pair(sn_typedid, neighbour_typedid)
                         if not self.cache['bfs_short_path'].item_exist(pair_id):
@@ -299,7 +298,7 @@ class AStarMetrics:
         self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.verbose)
 
         INF_VALUE = 1000001  # специальное значение, которое говорит, что между вершинами нет пути
-        if self.config.kvdriver_config is not None:
+        if len(self.cache) > 0:
             pair_id = create_id_for_node_pair(sn_typedid, en_typedid)
             if not self.cache['bfs_short_path'].item_exist(pair_id):
                 self.cache['bfs_short_path'].create([KeyValueDBInstance(id=pair_id, value=INF_VALUE)])
@@ -354,20 +353,23 @@ class AStarGraphSearch:
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
-    :param search_config: Конфигурация A*-алгоритма поиска по графовому хранилищу триплетов. Значение по умолчанию AStarGraphSearchConfig().
-    :type search_config: AStarGraphSearchConfig
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(RETRIEVER_LOG_PATH).
     :type log: Logger
+    :param search_config: Конфигурация A*-алгоритма поиска по графовому хранилищу триплетов. Значение по умолчанию AStarGraphSearchConfig().
+    :type search_config: AStarGraphSearchConfig, optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :type verbose: bool, optional
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
-                 verbose: bool = False) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
         self.config = search_config
         self.kg_model = kg_model
-        self.metrics = AStarMetrics(kg_model=kg_model, accepted_node_types=self.config.accepted_node_types,
-                                    log=log, config=self.config.metrics_config, verbose=verbose)
+        self.metrics = AStarMetrics(
+            kg_model, self.config.accepted_node_types, log,
+            self.config.metrics_config, cache_kvdriver_config, verbose)
 
         self.log = log
         self.verbose = verbose
@@ -451,7 +453,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[AStarGraphSearchConfig, Dict] = AStarGraphSearchConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
         if isinstance(search_config, dict):
             search_config = AStarGraphSearchConfig.from_dict(search_config)
         else:
@@ -460,7 +462,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
         self.kg_model = kg_model
 
-        self.graph_searcher = AStarGraphSearch(kg_model, log, search_config, verbose)
+        self.graph_searcher = AStarGraphSearch(kg_model, log, search_config, cache_kvdriver_config, verbose)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, self.config.cache_table_name)
@@ -480,10 +482,13 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             'AStarMetrics': cache_info
         }
 
-    def get_cache_key(self, query_info: QueryInfo) -> List[str]:
-        return [self.config.to_str(), query_info.to_str()]
+    def get_cache_key(self, start_node: NodeInfo, end_node: NodeInfo) -> List[str]:
+        return [self.config.to_str(), start_node.to_str(), end_node.to_str()]
 
     @CacheUtils.cache_method_output
+    def search_path(self, start_node: NodeInfo, end_node: NodeInfo) -> Tuple[List[str], List[NodeInfo], Dict[str, int], Dict[str, NodeInfo], NodeInfo]:
+        return self.graph_searcher.search_path(start_node, end_node)
+
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log("RETRIEVER: AStarTripletsRetriever", verbose=self.verbose)
@@ -514,7 +519,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                     end_node = nodes[j]
 
                     s_time = time()
-                    _, _, _, parent, spare_closest_node = self.graph_searcher.search_path(start_node, end_node)
+                    _, _, _, parent, spare_closest_node = self.search_path(start_node, end_node)
                     self.log(f"search elapsed_time: {time() - s_time}", verbose=self.verbose)
 
                     s_time = time()

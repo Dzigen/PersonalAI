@@ -5,18 +5,6 @@ from dataclasses import fields
 from .CacheKV import CacheKV
 from ..task_solver import AgentTaskSolver
 from ...pipelines.utils import BaseStages, BaseTaskSolvers
-from ...pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.utils import AbstractTripletsRetriever
-
-
-class TraversalMethodCacheOpearions(ABC):
-
-    @abstractmethod
-    def clear_traversal_cache(self):
-        pass
-
-    @abstractmethod
-    def get_traversal_cache(self):
-        pass
 
 
 class AbstractCacheOperations(ABC):
@@ -29,7 +17,7 @@ class AbstractCacheOperations(ABC):
         pass
 
     @abstractmethod
-    def clear_kv_caches(self, level: str = 'all') -> None:
+    def clear_kv_caches(self, clear_traversal_cache: bool, clear_retrieval_cache: bool) -> None:
         pass
 
 
@@ -54,7 +42,7 @@ class CacheOperations(AbstractCacheOperations):
                     getattr(self.stages, field.name)
                 cur_cache = None
                 if stage is not None:
-                    if issubclass(type(stage), AbstractTripletsRetriever):
+                    if isinstance(stage, TraversalMethodCacheOpearions):
                         traversal_method = stage.__class__.__name__
                         cur_cache: Dict[str, Dict] = dict()
                         cur_cache[traversal_method] = stage.get_cache_stat()
@@ -75,19 +63,30 @@ class CacheOperations(AbstractCacheOperations):
             for field in fields(self.stages):
                 stage: Union[None, CacheOperations, TraversalMethodCacheOpearions] = \
                     getattr(self.stages, field.name)
-                
+
                 if stage is not None:
-                    
-                    if issubclass(type(stage), AbstractTripletsRetriever):
+
+                    if isinstance(stage, TraversalMethodCacheOpearions):
                         if clear_traversal_cache:
                             stage.clear_traversal_cache()
                         if clear_retrieval_cache:
-                            stage.clear_kv_caches()
+                            stage.clear_kv_caches(clear_traversal_cache, clear_retrieval_cache)
                     else:
-                        stage.clear_kv_caches()
+                        stage.clear_kv_caches(clear_traversal_cache, clear_retrieval_cache)
 
         if self.tasks_solvers is not None:
             for field in fields(self.tasks_solvers):
                 task_solver: AgentTaskSolver = getattr(self.tasks_solvers, field.name)
                 if task_solver.cachekv is not None:
                     task_solver.cachekv.clear()
+
+
+class TraversalMethodCacheOpearions(CacheOperations):
+
+    @abstractmethod
+    def clear_traversal_cache(self):
+        pass
+
+    @abstractmethod
+    def get_traversal_cache(self):
+        pass
