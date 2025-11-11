@@ -1,13 +1,14 @@
 from dataclasses import dataclass, field
 from typing import Tuple, Union, List, Dict
 import hashlib
+from copy import deepcopy
 
-from .config import CAGEN_MAIN_LOG_PATH, DEFAULT_CAGEN_TASK_CONFIG
-from .utils import MediumCAGeneratorTaskSolvers
+from .config import CAGEN_MAIN_LOG_PATH
+from .utils import MediumCAGeneratorTaskSolvers, ClueAnswerGeneratorAgentTasksConfig
 from ......utils.errors import STATUS_MESSAGE
-from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
+from ......utils import ReturnInfo, Logger, AgentTaskSolver
 from ......agents.utils import AbstractAgentConnector
-from ......utils.data_structs import create_id, Triplet, TripletCreator
+from ......utils.data_structs import create_id, Triplet, TripletCreator, BaseComponentConfig, LanguageConfig
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.cache_kv import CacheUtils
 from ......utils import ReturnStatus
@@ -17,33 +18,37 @@ from ......utils.cache_kv.CacheOperations import CacheOperations
 
 
 @dataclass
-class ClueAnswerGeneratorConfig:
+class ClueAnswerGeneratorConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация ClueAnswerGenerator-стадии MediumQA-ризонера.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
-    :type lang: str, optional
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param cagen_agent_task_config: Конфигурация атомарной задачи для LLM-агента по резюмированию информации, извлечённой по заданному clue-заросу из графа знаний. Значение по умолчанию DEFAULT_CAGEN_TASK_CONFIG.
-    :type cagen_agent_task_config: AgentTaskSolverConfig, optional
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию ClueAnswerGeneratorAgentTasksConfig().
+    :type agent_tasks_config: Union[ClueAnswerGeneratorAgentTasksConfig, Dict], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы ClueAnswersSummarizer-класса. Значение по умолчанию 'medreasn_cagen_main_stage_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(CAGEN_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
     lang: str = 'auto'
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    cagen_agent_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_CAGEN_TASK_CONFIG)
+    agent_tasks_config: Union[ClueAnswerGeneratorAgentTasksConfig, Dict] = field(default_factory=lambda: ClueAnswerGeneratorAgentTasksConfig())
 
     cache_table_name: str = 'medreasn_cagen_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(CAGEN_MAIN_LOG_PATH))
     verbose: bool = False
 
     def to_str(self):
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.cagen_agent_task_config.version}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = ClueAnswerGeneratorConfig(**dictconfig_copy)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.agent_tasks_config, dict):
+            self.agent_tasks_config = ClueAnswerGeneratorAgentTasksConfig.from_dict(self.agent_tasks_config)
 
 
 class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
@@ -52,7 +57,7 @@ class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
     :type agent: AbstractAgentConnector
     :param config: Конфигурация ClueAnswerGenerator-стадии. Значение по умолчанию ClueAnswerGeneratorConfig().
-    :type config: ClueAnswerGeneratorConfig, optional
+    :type config: Union[ClueAnswerGeneratorConfig,Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
@@ -61,11 +66,16 @@ class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     :type cache_llm_inference: bool, optional
     """
 
-    def __init__(self, agent: AbstractAgentConnector, config: ClueAnswerGeneratorConfig = ClueAnswerGeneratorConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: Union[ClueAnswerGeneratorConfig, Dict] = ClueAnswerGeneratorConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
                  cache_llm_inference: bool = True,) -> None:
+        if isinstance(config, dict):
+            config: ClueAnswerGeneratorConfig = ClueAnswerGeneratorConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+        self.config.agent_tasks_config.versions_to_configs()
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -77,7 +87,7 @@ class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
 
         self.tasks_solvers: MediumCAGeneratorTaskSolvers = MediumCAGeneratorTaskSolvers(
             cagen_solver=AgentTaskSolver(
-                self.agent, self.config.cagen_agent_task_config, agents_cache_config, inferencestat_config)
+                self.agent, self.config.agent_tasks_config.cagen, agents_cache_config, inferencestat_config)
         )
 
         self.log = self.config.log
@@ -101,17 +111,17 @@ class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         :rtype: Tuple[str, ReturnInfo]
         """
         self.log("START CLUE-ANSWER GENRATION ...",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
         self.log(
-            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
-        self.log(f"CONTEXT_TRIPLETS:", verbose=self.config.verbose)
+            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
+        self.log(f"CONTEXT_TRIPLETS:", verbose=self.verbose)
         for triplet in context_triplets:
-            self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
+            self.log(f"*[{triplet.id}] {triplet}", verbose=self.verbose)
         info = ReturnInfo()
 
         self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
         answer, status = self.tasks_solvers.cagen_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             query=query, triplets=context_triplets)
@@ -124,7 +134,7 @@ class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
             info.message = STATUS_MESSAGE[info.status]
 
         self.log(
-            f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.config.verbose)
-        self.log(f"STATUS: {info.status}", verbose=self.config.verbose)
+            f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.verbose)
+        self.log(f"STATUS: {info.status}", verbose=self.verbose)
 
         return answer, info

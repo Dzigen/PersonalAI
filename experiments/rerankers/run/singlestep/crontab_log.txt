@@ -1,0 +1,13 @@
+Existing param-files: bm25(e3_singlestep_hotpotqa).yaml
+bm25(e3_singlestep_rubqdev).yaml
+e5large(e1_singlestep_hotpotqa).yaml
+e5large(e1_singlestep_rubqdev).yaml
+frida(e2_singlestep_hotpotqa).yaml
+frida(e2_singlestep_rubqdev) copy.yaml
+Current param_file: bm25(e3_singlestep_hotpotqa).yaml
+Current param_file: bm25(e3_singlestep_rubqdev).yaml
+Current param_file: e5large(e1_singlestep_hotpotqa).yaml
+Current param_file: e5large(e1_singlestep_rubqdev).yaml
+Current param_file: frida(e2_singlestep_hotpotqa).yaml
+Current param_file: frida(e2_singlestep_rubqdev)
+Current param_file: copy.yaml

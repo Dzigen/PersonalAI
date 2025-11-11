@@ -8,24 +8,36 @@ from ..utils import AbstractAgentConnector, AgentConnectorConfig, LLMInferenceSt
 
 
 class LocalAgentConnector(AbstractAgentConnector):
-    def __init__(self, config: AgentConnectorConfig = DEFAULT_LOCALAGENT_CONFIG) -> None:
-        self.config = config
+    def __init__(self, config: Union[Dict, AgentConnectorConfig] = DEFAULT_LOCALAGENT_CONFIG) -> None:
+        if isinstance(config, dict):
+            config = AgentConnectorConfig.from_dict(config)
+        else:
+            config.formate_fields()
+        self.config: AgentConnectorConfig = config
+
+        # костыль
+        if 'top_p' in self.config.gen_strategy:
+            self.config.gen_strategy['top_p'] = float(self.config.gen_strategy['top_p'])
+
+        self.CONNECTOR_KW = 'local'
+
         self.pipeline = pipeline(
             "text-generation",
             model=self.config.credentials['model_name_or_path'],
-            model_kwargs={
-                "torch_dtype": self.config.credentials['torch_dtype']},
+            model_kwargs={"torch_dtype": self.config.credentials['torch_dtype']},
             device_map="auto"
         )
-        self.CONNECTOR_KW = 'local'
 
     def check_connection(self):
         # TODO
         pass
 
     def close_connection(self):
-        del self.pipeline
-        gc.collect()
+        try:
+            del self.pipeline
+            gc.collect()
+        except (AttributeError,TypeError):
+            pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
                  gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:

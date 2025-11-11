@@ -3,15 +3,26 @@ import torch
 import numpy as np
 from dataclasses import dataclass, field, asdict
 from typing import Dict, List, Tuple, Union
+from copy import deepcopy
 
 from ..utils import AbstractDatabaseConnection, AbstractDatabaseConnection, BaseDatabaseConfig
 
 
 @dataclass
 class VectorDBConnectionConfig(BaseDatabaseConfig):
-    db_info: Dict = field(default_factory=lambda: {
-                          'db': 'defaultpersonalaivectordb', 'table': 'defaultpersonalaivectortable'})
+    db_info: Dict = field(default_factory=lambda: {'db': 'defaultpersonalaivectordb', 'table': 'defaultpersonalaivectortable'})
     conn: Dict = field(default_factory=lambda: dict())
+
+    def to_str(self):
+        str_needto = f"{self.need_to_clear};{self.create_index}"
+        return f"{self.db_info};{str_needto};{self.params};{self.conn}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = VectorDBConnectionConfig(**dictconfig_copy)
+        formated_config.formate_fields()
+        return formated_config
 
 
 @dataclass

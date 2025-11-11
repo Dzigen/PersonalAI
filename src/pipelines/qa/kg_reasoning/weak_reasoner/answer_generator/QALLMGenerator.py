@@ -3,12 +3,13 @@ from dataclasses import dataclass, field
 from copy import deepcopy
 import hashlib
 
-from .configs import DEFAULT_AG_TASK_CONFIG, AG_MAIN_LOG_PATH
-from .utils import WeakAGeneratorTaskSolvers
-from ......utils.data_structs import Triplet, RelationType, create_id, TripletCreator
+from .configs import AG_MAIN_LOG_PATH
+from .utils import WeakAGeneratorTaskSolvers, QALLMGeneratorAgentTasksConfig
+from ......utils.data_structs import Triplet, RelationType, create_id, TripletCreator, \
+    BaseComponentConfig, LanguageConfig, RELATIONS_TYPES_MAP
 from ......utils.errors import STATUS_MESSAGE
 from ......agents.utils import AbstractAgentConnector
-from ......utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
+from ......utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolver
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
@@ -17,39 +18,45 @@ from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperati
 
 
 @dataclass
-class QALLMGeneratorConfig:
+class QALLMGeneratorConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация "Question Answering"-стадии QA-конвейера.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
-    :type lang: str, optional
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param ag_task_config: Конфигурация атомарной задачи для LLM-агента по условной генерации ответа на вопрос. Значение по умолчанию DEFAULT_AG_TASK_CONFIG.
-    :type ag_task_config: AgentTaskSolverConfig, optional
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию QALLMGeneratorAgentTasksConfig().
+    :type agent_tasks_config: Union[QALLMGeneratorAgentTasksConfig,Dict], optional
     :param relation_type: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос. Значение по умолчанию [RelationType.hyper].
     :type relation_type: List[RelationType], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QALLMGenerator-класса. Значение по умолчанию 'qa_agenerator_stage_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(AG_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
-    lang: str = "auto"
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    ag_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_AG_TASK_CONFIG)
+    agent_tasks_config: Union[QALLMGeneratorAgentTasksConfig, Dict] = field(default_factory=lambda: QALLMGeneratorAgentTasksConfig())
 
-    relation_type: List[RelationType] = field(default_factory=lambda: [RelationType.hyper, RelationType.simple])
+    relation_type: List[Union[str, RelationType]] = field(default_factory=lambda: [RelationType.hyper, RelationType.simple])
 
     cache_table_name: Union[str, None] = 'qa_agenerator_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(AG_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self):
         str_relations = ";".join(
-            list(map(lambda v: v.value, self.relation_type)))
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.ag_task_config.version}|{str_relations}"
+            list(map(lambda v: v.value if isinstance(v, RelationType) else v, self.relation_type)))
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{str_relations}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = QALLMGeneratorConfig(**dictconfig_copy)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self) -> None:
+        for i, rel_type in enumerate(self.relation_type):
+            if not isinstance(rel_type, RelationType):
+                self.relation_type[i] = RELATIONS_TYPES_MAP[rel_type]
+
+        if isinstance(self.agent_tasks_config, dict):
+            self.agent_tasks_config = QALLMGeneratorAgentTasksConfig.from_dict(self.agent_tasks_config)
 
 
 class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
@@ -59,7 +66,7 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
     :type agent: AbstractAgentConnector
     :param config: Конфигурация "Answer-generation"-стадии. Значение по умолчанию QALLMGeneratorConfig().
-    :type config: QALLMGeneratorConfig, optional
+    :type config: Union[QALLMGeneratorConfig,Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
@@ -68,11 +75,16 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     :type cache_llm_inference: bool, optional
     """
 
-    def __init__(self, agent: AbstractAgentConnector, config: QALLMGeneratorConfig = QALLMGeneratorConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: Union[QALLMGeneratorConfig, Dict] = QALLMGeneratorConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
                  cache_llm_inference: bool = True) -> None:
+        if isinstance(config, dict):
+            config: QALLMGeneratorConfig = QALLMGeneratorConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+        self.config.agent_tasks_config.versions_to_configs()
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -84,7 +96,7 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
 
         self.tasks_solvers: WeakAGeneratorTaskSolvers = WeakAGeneratorTaskSolvers(
             answer_generator_solver=AgentTaskSolver(
-                self.agent, self.config.ag_task_config, ag_task_cache_config, inferencestat_config)
+                self.agent, self.config.agent_tasks_config.ag, ag_task_cache_config, inferencestat_config)
         )
 
         self.log = self.config.log
@@ -109,15 +121,15 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         """
 
         rinfo = ReturnInfo()
-        self.log("START ANSWER GENERATION ...", verbose=self.config.verbose)
+        self.log("START ANSWER GENERATION ...", verbose=self.verbose)
         self.log(
-            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION: {query}", verbose=self.config.verbose)
-        self.log(f"CONTEXT_TRIPLETS:", verbose=self.config.verbose)
+            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
+        self.log(f"CONTEXT_TRIPLETS:", verbose=self.verbose)
         for triplet in context_triplets:
-            self.log(f"*[{triplet.id}] {triplet}", verbose=self.config.verbose)
+            self.log(f"*[{triplet.id}] {triplet}", verbose=self.verbose)
 
-        self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...", verbose=self.config.verbose)
+        self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...", verbose=self.verbose)
         answer, status = self.tasks_solvers.answer_generator_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             query=query, triplets=context_triplets)
@@ -130,8 +142,8 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
             rinfo.message = STATUS_MESSAGE[rinfo.status]
         else:
             self.log(
-                f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.config.verbose)
+                f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.verbose)
 
-        self.log(f"STATUS: {rinfo.status}", verbose=self.config.verbose)
+        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
         return answer, rinfo

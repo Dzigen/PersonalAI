@@ -12,30 +12,50 @@ from .config import NODES_DB_DEFAULT_DRIVER_CONFIGS_MAPPING, TRIPLETS_DB_DEFAULT
 from ...db_drivers.vector_driver import VectorDriverConfig, VectorDBInstance
 from ...db_drivers.vector_driver.embedders import EmbedderModel
 from ...db_drivers.vector_driver.VectorComposer import VectorComposer
-from ...utils.data_structs import Triplet, TripletCreator, NodeCreator
+from ...utils.data_structs import Triplet, TripletCreator, NodeCreator, NODES_TYPES_MAP, BaseComponentConfig
 from ...utils import Logger, NodeType
 
 
 @dataclass
-class EmbeddingsModelConfig:
+class EmbeddingsModelConfig(BaseComponentConfig):
     """Конфигурация векторной структуры данных.
 
     :param nodesdb_driver_configs_mapping: Словарь с именованными конфигурациями коннекторов к векторным базам данных, которые отвечают за хранение различных векторных представлений вершин из графовой структуры. Значение по умолчанию NODES_DB_DEFAULT_DRIVER_CONFIGS_MAPPING.
-    :type nodesdb_driver_configs_mapping: Dict[str, VectorDriverConfig], optional
+    :type nodesdb_driver_configs_mapping: Dict[str, Union[Dict,VectorDriverConfig]], optional
     :param tripletsdb_driver_configs_mapping: Словарь с именованными конфигурациями коннекторов к векторным базам данных, которые отвечают за хранение различных векторных представлений триплетов из графовой структуры.  Значение по умолчанию TRIPLETS_DB_DEFAULT_DRIVER_CONFIGS_MAPPING.
-    :type tripletsdb_driver_configs_mapping: Dict[str, VectorDriverConfig], optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(EMBEDDINGS_MODEL_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
+    :type tripletsdb_driver_configs_mapping: Dict[str, Union[Dict,VectorDriverConfig]], optional
     """
-    nodesdb_driver_configs_mapping: Dict[str, VectorDriverConfig] = field(
+    nodesdb_driver_configs_mapping: Dict[str, Union[Dict, VectorDriverConfig]] = field(
         default_factory=lambda: NODES_DB_DEFAULT_DRIVER_CONFIGS_MAPPING)
-    tripletsdb_driver_configs_mapping: Dict[str, VectorDriverConfig] = field(
+    tripletsdb_driver_configs_mapping: Dict[str, Union[Dict, VectorDriverConfig]] = field(
         default_factory=lambda: TRIPLETS_DB_DEFAULT_DRIVER_CONFIGS_MAPPING)
 
     log: Logger = field(default_factory=lambda: Logger(EMBEDDINGS_MODEL_LOG_PATH))
     verbose: bool = False
+
+    def to_str(self):
+        # TODO
+        raise NotImplementedError
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = EmbeddingsModelConfig(**dictconfig_copy)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        for vdb_name, vdb_config in self.nodesdb_driver_configs_mapping.items():
+            if isinstance(vdb_config, dict):
+                self.nodesdb_driver_configs_mapping[vdb_name] = VectorDriverConfig.from_dict(vdb_config)
+            else:
+                self.nodesdb_driver_configs_mapping[vdb_name].formate_fields()
+
+        for vdb_name, vdb_config in self.tripletsdb_driver_configs_mapping.items():
+            if isinstance(vdb_config, dict):
+                self.tripletsdb_driver_configs_mapping[vdb_name] = VectorDriverConfig.from_dict(vdb_config)
+            else:
+                self.tripletsdb_driver_configs_mapping[vdb_name].formate_fields()
 
 
 class EmbeddingsModel:
@@ -47,7 +67,11 @@ class EmbeddingsModel:
     :type config: EmbeddingsModelConfig, optional
     """
 
-    def __init__(self, embedders_mapping: Dict[str, EmbedderModel], config: EmbeddingsModelConfig = EmbeddingsModelConfig()):
+    def __init__(self, embedders_mapping: Dict[str, EmbedderModel], config: Union[Dict, EmbeddingsModelConfig] = EmbeddingsModelConfig()):
+        if isinstance(config, dict):
+            config: EmbeddingsModelConfig = EmbeddingsModelConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
 
         self.triplets_vcomposer: VectorComposer = VectorComposer(
@@ -86,8 +110,8 @@ class EmbeddingsModel:
         """
         self.log("Adding triples to vector-model...", verbose=self.verbose)
         self.log("\t- Also adding triplet-nodes in vector-model", verbose=self.verbose)
-        unique_relation_ids, unique_node_ids = set(), defaultdict(set)
-        existed_relation_ids, existed_node_ids = set(), defaultdict(set)
+        unique_relation_ids, unique_node_ids = set(), {n_type: set() for n_type in NODES_TYPES_MAP.values()}
+        existed_relation_ids, existed_node_ids = set(), {n_type: set() for n_type in NODES_TYPES_MAP.values()}
 
         batch_count = math.ceil(len(triplets) / batch_size)
         process = tqdm(range(batch_count)
@@ -133,7 +157,7 @@ class EmbeddingsModel:
         existed_nodes_count = {k: len(v) for k, v in existed_node_ids.items()}
         self.log(f"nodes info (all/unique/existed count) - {len(triplets)*2}/{unique_nodes_count}/{existed_nodes_count}", verbose=self.verbose)
         self.log("Triples were successfully added to vector-model!", verbose=self.verbose)
-        return {'nodes': dict(existed_node_ids), 'triplets': existed_relation_ids}
+        return {'nodes': existed_node_ids, 'triplets': existed_relation_ids}
 
     def create_stringified_triplets(self, relations_info: List[VectorDBInstance],
                                     grouped_nodes_info: Union[None, Dict[NodeType, List[VectorDBInstance]]] = None) -> None:
@@ -273,6 +297,6 @@ class EmbeddingsModel:
         try:
             del self.nodes_vcomposers
             del self.triplets_vcomposer
-        except AttributeError:
+            gc.collect()
+        except (TypeError, AttributeError):
             pass
-        gc.collect()

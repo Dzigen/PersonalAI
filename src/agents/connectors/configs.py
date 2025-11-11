@@ -4,13 +4,13 @@ import os
 
 from ..utils import AgentConnectorConfig
 
-load_dotenv(".env_secret_llmkeys")
+load_dotenv(".secrets")
 
 GIGACHAT_KEY = os.getenv("GIGACHAT_KEY")
 DEFAULT_GIGACHAT_CONFIG = AgentConnectorConfig(
     gen_strategy={'top_k': 1, 'top_p': 0, 'temperature': 0},
     credentials={'token': GIGACHAT_KEY,
-                 'scope': 'GIGACHAT_API_CORP', 'model': "GigaChat-Pro"},
+                 'scope': 'GIGACHAT_API_PERS', 'model': "GigaChat-Max"},
     ext_params={'timeout': 560, 'trials': 5, 'verify_ssl_certs': False})
 
 DEFAULT_LOCALAGENT_CONFIG = AgentConnectorConfig(

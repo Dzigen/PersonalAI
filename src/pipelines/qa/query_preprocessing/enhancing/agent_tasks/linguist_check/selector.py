@@ -1,4 +1,5 @@
 from .......utils import AgentTaskSolverConfig, Logger
+from ......utils import BaseAgentTaskConfigSelector
 from .general_parsers import lcheck_custom_formate, lcheck_custom_postprocess
 from .v1 import LCHECK_SUITE_V1
 
@@ -9,7 +10,7 @@ AVAILABLE_LCHECK_TCONFIGS = {
 }
 
 
-class AgentQueryLinguistCheckConfigSelector:
+class AgentQueryLinguistCheckConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_LCHECK_TCONFIGS

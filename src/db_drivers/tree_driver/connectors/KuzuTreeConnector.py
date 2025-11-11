@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Union
 import kuzu
 import json
 import os
@@ -12,7 +12,11 @@ from ..utils import AbstractTreeDatabaseConnection, TreeDBConnectionConfig, \
 
 class KuzuTreeConnector(AbstractTreeDatabaseConnection):
 
-    def __init__(self, config: TreeDBConnectionConfig = DEFAULT_KUZUTREE_CONFIG):
+    def __init__(self, config: Union[Dict, TreeDBConnectionConfig] = DEFAULT_KUZUTREE_CONFIG):
+        if isinstance(config, dict):
+            config: TreeDBConnectionConfig = TreeDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
 
     def open_connection(self) -> None:
@@ -64,8 +68,11 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
         pass
 
     def close_connection(self) -> None:
-        self.conn.close()
-        self.db.close()
+        try:
+            self.conn.close()
+            self.db.close()
+        except TypeError:
+            pass
 
     def __del__(self):
         self.close_connection()

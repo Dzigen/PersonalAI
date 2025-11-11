@@ -1,5 +1,4 @@
 services:
-
   neo4j:
     image: neo4j:5.21.0-enterprise
     container_name: ${NEO4J_CNTNAME}
@@ -21,7 +20,7 @@ services:
           cpus: '4'
           memory: 8G
 
-  mongo_cache:
+  mongo:
     image: mongo:latest
     container_name: ${MONGO_CNTNAME}
     hostname: ${MONGO_HOST}
@@ -52,11 +51,11 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_AUTH_PASS}
       ME_CONFIG_MONGODB_SERVER: ${MONGO_HOST}
     depends_on:
-      - mongo_cache
+      - mongo
     ports:
       - ${MONGO_UI_EXTERNAL_PORT}:8081
 
-  redis_cache:
+  redis:
     image: redis:latest
     container_name: ${REDIS_CNTNAME}
     hostname: ${REDIS_HOST}
@@ -83,7 +82,7 @@ services:
     container_name: ${REDIS_UI_CNTNAME}
     hostname: ${REDIS_UI_HOST}
     depends_on:
-      - redis_cache
+      - redis
     ports:
       - ${REDIS_UI_EXTERNAL_PORT}:5540
 
@@ -122,6 +121,27 @@ services:
           cpus: '4'
           memory: 8G
 
+  opensearch:
+    container_name: ${OPENSEARCH_CNTNAME}
+    image: opensearchproject/opensearch:2.11.0
+    hostname: ${OPENSEARCH_HOST}
+    ports:
+      - ${OPENSEARCH_PORT}:9200
+      - ${OPENSEARCH_PORT2}:9600
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+    volumes:
+      - ${OPENSEARCH_LOCAL_VOLUME}:/usr/share/opensearch/data
+    deploy:
+      resources:
+        limits:
+          cpus: '8'
+          memory: 24G
+        reservations:
+          cpus: '4'
+          memory: 8G
+
   ollama_agent:
     image: ollama/ollama:latest
     container_name: ${OLLAMA_CNTNAME}
@@ -142,11 +162,11 @@ services:
           memory: 4G
           devices:
             - driver: nvidia
-              device_ids: ['1']
+              device_ids: ['${OLLAMA_DEVICE_ID}']
               capabilities: [gpu]
 
   workspace:
-    image: m.menschikov/workspace:v2
+    image: m.menschikov/workspace:v4
     container_name: ${WORKSPACE_CNTNAME}
     hostname: ${WORKSPACE_HOST}
     network_mode: "host"
@@ -158,9 +178,10 @@ services:
       - ${EXTERNAL_MODELS_PATH}:${INTERNAL_MODELS_PATH}
     depends_on:
       - neo4j
-      - mongo_cache
-      - redis_cache
       - milvus
+      - opensearch
+      - mongo
+      - redis
     #   - ollama_agent
     deploy:
       resources:
@@ -172,5 +193,5 @@ services:
           memory: 24G
           devices:
             - driver: nvidia
-              device_ids: ['1']
+              device_ids: ['${WORKSPACE_DEVICE_ID}']
               capabilities: [gpu]

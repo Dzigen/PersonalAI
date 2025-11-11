@@ -1,4 +1,5 @@
 from ......utils import AgentTaskSolverConfig, Logger
+from .....utils import BaseAgentTaskConfigSelector
 from .general_parsers import rs_custom_formate, rs_custom_postprocess
 from .v1 import REPLACE_SIMPLE_SUITE_V1
 
@@ -9,7 +10,7 @@ AVAILABLE_REPLACE_SIMPLE_TCONFIGS = {
 }
 
 
-class AgentReplSimpleTripletTaskConfigSelector:
+class AgentReplSimpleTripletTaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_REPLACE_SIMPLE_TCONFIGS

@@ -1,14 +1,26 @@
 from typing import Dict, Union, Tuple, List
 from dataclasses import dataclass, field
+from copy import deepcopy
 
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
-
 
 @dataclass
 class TableDBConnectionConfig(BaseDatabaseConfig):
     db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAITableDB', 'table': 'DefaultPersonalAITable'})
     host: str = None
     port: str = None
+
+    def to_str(self):
+        str_hostport = f"{self.host};{self.port}"
+        str_needto = f"{self.need_to_clear};{self.create_index}"
+        return f"{self.db_info};{str_hostport};{str_needto};{self.params}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = TableDBConnectionConfig(**dictconfig_copy)
+        formated_config.formate_fields()
+        return formated_config
 
 
 @dataclass

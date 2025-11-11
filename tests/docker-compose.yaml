@@ -85,7 +85,7 @@ services:
     ports:
       - 8081:8081
 
-  redis_cache:
+  redis:
     container_name: personalai_mmenschikov_test_redis
     image: redis:latest
     hostname: localhost #personalai_test_redis
@@ -119,7 +119,7 @@ services:
     # networks:
     #   - tests_network
     depends_on:
-      - redis_cache
+      - redis
     ports:
       - "5540:5540"
 
@@ -297,7 +297,7 @@ services:
       #- ../configs:/home/workspace/configs
     depends_on:
       - neo4j
-      - redis_cache
+      - redis
       - mongo
       - milvus
     deploy:

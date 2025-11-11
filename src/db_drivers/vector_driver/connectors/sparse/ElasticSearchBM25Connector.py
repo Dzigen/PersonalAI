@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Dict
 from haystack_integrations.document_stores.elasticsearch import ElasticsearchDocumentStore
 from haystack_integrations.components.retrievers.elasticsearch import ElasticsearchBM25Retriever
 from haystack.document_stores.types import DuplicatePolicy
@@ -14,8 +14,13 @@ from .....utils.errors import ReturnInfo
 
 class ElasticSearchBM25Connector(AbstractVectorDatabaseConnection):
 
-    def __init__(self, config: VectorDBConnectionConfig = DEFAULT_ELASTICSEARCH_BM25_CONFIG, **kwargs) -> None:
+    def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_ELASTICSEARCH_BM25_CONFIG, **kwargs) -> None:
+        if isinstance(config, dict):
+            config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+
         self.db_conn = None
         self.retriever = None
 

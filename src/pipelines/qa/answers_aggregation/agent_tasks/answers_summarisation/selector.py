@@ -1,21 +1,24 @@
 from ......utils import AgentTaskSolverConfig, Logger
+from .....utils import BaseAgentTaskConfigSelector
 from .general_parsers import subasumm_custom_formate, subasumm_custom_postprocess
 from .v1 import SUBASUMM_SUITE_V1
+from .v2 import SUBASUMM_SUITE_V2
 
 SUBASUMM_LOG_PATH = "log/qa/answers_aggregation/agent_tasks/answers_summarisation"
 
 AVAILABLE_SUBASUMM_TCONFIGS = {
-    'v1': SUBASUMM_SUITE_V1
+    'v1': SUBASUMM_SUITE_V1,
+    'v2': SUBASUMM_SUITE_V2
 }
 
 
-class AgentSubASummTaskConfigSelector:
+class AgentSubASummTaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_SUBASUMM_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v1',
+    def select(base_config_version: str = 'v2',
                cache_table_name: str = "aagg_subasumm_agent_task_cache",
                inferencestat_table_name: str = "aagg_subasumm_agent_task_stat") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(

@@ -1,13 +1,14 @@
 from dataclasses import dataclass, field
 from typing import Tuple, List, Union, Dict
+from copy import deepcopy
 
-from .config import QD_MAIN_LOG_PATH, DEFAULT_SWREMV_TASK_CONFIG, DEFAULT_GRAMCHECK_TASK_CONFIG
-from .utils import QueryDenoiserTaskSolvers
+from .config import QD_MAIN_LOG_PATH
+from .utils import QueryDenoiserTaskSolvers, QueryDenoiserAgentTasksConfig
 from .....utils.cache_kv import CacheUtils
 from .....utils.errors import STATUS_MESSAGE
-from .....utils.data_structs import create_id, QueryPreprocessingInfo
+from .....utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
 from .....agents.utils import AbstractAgentConnector
-from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolverConfig, AgentTaskSolver
+from .....utils import ReturnInfo, Logger, ReturnStatus, AgentTaskSolver
 from .....db_drivers.kv_driver import KeyValueDriverConfig
 from .....utils.cache_kv.CacheOperations import CacheOperations
 from .....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
@@ -15,37 +16,35 @@ from .....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
-class QueryDenoiserConfig:
+class QueryDenoiserConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация QueryDenoiser-операции.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
-    :type lang: str, optional
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param swremoval_agent_task_config: Конфигурация атомарной задачи для LLM-агента по удалению излишней/ненужной информации из запроса. Значение по умолчанию DEFAULT_SWREMV_TASK_CONFIG.
-    :type swremoval_agent_task_config: AgentTaskSolverConfig, optional
-    :param grammarcheck_agent_task_config: Конфигурация атомарной задачи для LLM-агента по корректировке/переформулированию запроса в соответствии с грамматикой и синтаксисом используемого естественного языка. Значение по умолчанию DEFAULT_GRAMCHECK_TASK_CONFIG.
-    :type grammarcheck_agent_task_config: AgentTaskSolverConfig, optional
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию QueryDenoiserAgentTasksConfig().
+    :type agent_tasks_config: Union[Dict,QueryDenoiserAgentTasksConfig], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryDenoiser-класса. Значение по умолчанию 'qp_denoising_stage_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(QD_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
-    lang: str = "auto"
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    swremoval_agent_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_SWREMV_TASK_CONFIG)
-    grammarcheck_agent_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_GRAMCHECK_TASK_CONFIG)
+    agent_tasks_config: Union[Dict, QueryDenoiserAgentTasksConfig] = field(default_factory=lambda: QueryDenoiserAgentTasksConfig())
 
     cache_table_name: str = 'qp_denoising_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(QD_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self):
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.swremoval_agent_task_config.version}|{self.grammarcheck_agent_task_config.version}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = QueryDenoiserConfig(**dictconfig_copy)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.agent_tasks_config, dict):
+            self.agent_tasks_config = QueryDenoiserAgentTasksConfig.from_dict(self.agent_tasks_config)
 
 
 class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
@@ -56,20 +55,25 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
     :param config: Конфигурация QueryDenoiser-операции. Значение по умолчанию QueryDenoiserConfig().
     :type config: QueryDenoiserConfig, optional
     :param cache_kvdriver_config:Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
-    :type cache_kvdriver_config: KeyValueDriverConfig, optional
+    :type cache_kvdriver_config: Union[None, KeyValueDriverConfig], optional
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
-    def __init__(self, agent: AbstractAgentConnector, config: QueryDenoiserConfig = QueryDenoiserConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None,
+    def __init__(self, agent: AbstractAgentConnector, config: Union[Dict, QueryDenoiserConfig] = QueryDenoiserConfig(),
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
-                 cache_llm_inference: bool = True,):
+                 cache_llm_inference: bool = True):
+        if isinstance(config, dict):
+            config: QueryDenoiserConfig = QueryDenoiserConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
-        self.cachekv = self.init_cachekv(
-            cache_kvdriver_config, config.cache_table_name)
+        self.config.agent_tasks_config.versions_to_configs()
+
+        self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
 
         self.agent = agent
         agents_cache_config = None
@@ -79,11 +83,11 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
         self.tasks_solvers: QueryDenoiserTaskSolvers = QueryDenoiserTaskSolvers(
             # удаление слов/знаков, мешающих/усложняющих пониманию/анализу основного смысла/намерения
             swremoval_solver=AgentTaskSolver(
-                self.agent, self.config.swremoval_agent_task_config, agents_cache_config, inferencestat_config
+                self.agent, self.config.agent_tasks_config.swremoval, agents_cache_config, inferencestat_config
             ),
             # лингвистическая корректировка
             grammar_check_solver=AgentTaskSolver(
-                self.agent, self.config.grammarcheck_agent_task_config, agents_cache_config, inferencestat_config
+                self.agent, self.config.agent_tasks_config.grammarcheck, agents_cache_config, inferencestat_config
             )
         )
 
@@ -103,10 +107,10 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
         :return: Кортеж из двух объектов: (1) модифицированный user-вопрос без информации, зашумляющий основной запрос/интент; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
-        self.log("START QUERY DENOISING...", verbose=self.config.verbose)
+        self.log("START QUERY DENOISING...", verbose=self.verbose)
         self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.config.verbose)
-        self.log(f"QUERY INFO: {query_info}", verbose=self.config.verbose)
+            f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.verbose)
+        self.log(f"QUERY INFO: {query_info}", verbose=self.verbose)
         denoised_query, rinfo = None, ReturnInfo()
 
         if query_info.base_query is not None:
@@ -115,17 +119,17 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
             raise ValueError
 
         self.log("Выполнение удаление лишней информации/символов из запроса с помощью LLM-агента...",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
         query_wo_stopwords, status = self.tasks_solvers.swremoval_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
         else:
             self.log(f"RESULT: {query_wo_stopwords}",
-                     verbose=self.config.verbose)
+                     verbose=self.verbose)
 
         if status == ReturnStatus.success:
-            self.log("Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.config.verbose)
+            self.log("Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.verbose)
             reformulated_query, status = self.tasks_solvers.grammar_check_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                 query=query_wo_stopwords)
@@ -133,14 +137,14 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
                 rinfo.occurred_warning.append(status)
             else:
                 self.log(f"RESULT: {reformulated_query}",
-                         verbose=self.config.verbose)
+                         verbose=self.verbose)
                 denoised_query = reformulated_query
 
         if denoised_query is None:
             rinfo.status = ReturnStatus.empty_answer
             rinfo.message = STATUS_MESSAGE[rinfo.status]
 
-        self.log(f"RESULT: {denoised_query}", verbose=self.config.verbose)
-        self.log(f"STATUS: {rinfo.status}", verbose=self.config.verbose)
+        self.log(f"RESULT: {denoised_query}", verbose=self.verbose)
+        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
         return denoised_query, rinfo

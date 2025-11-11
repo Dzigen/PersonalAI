@@ -1,12 +1,13 @@
 from dataclasses import dataclass, field
 from typing import Tuple, Union, List, Dict
+from copy import deepcopy
 
-from .config import AAGG_MAIN_LOG_PATH, DEFAULT_SUBASUMM_TASK_CONFIG
-from .utils import AnswerAggregatorTaskSolvers
+from .config import AAGG_MAIN_LOG_PATH
+from .utils import AnswerAggregatorTaskSolvers, AnswersAggregatorAgentTasksConfig
 from ..kg_reasoning.utils import QueryReasoningInfo
-from ....utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
+from ....utils import ReturnInfo, Logger, AgentTaskSolver
 from ....agents.utils import AbstractAgentConnector
-from ....utils.data_structs import create_id, QueryPreprocessingInfo
+from ....utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv import CacheUtils
 from ....utils.cache_kv.CacheOperations import CacheOperations
@@ -15,32 +16,35 @@ from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
-class AnswersAggregatorConfig:
+class AnswersAggregatorConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация AnswersAggregator-стадии.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
-    :type lang: str, optional
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param suba_summarisation_agent_task_config: Конфигурация атомарной задачи для LLM-агента по суммаризации/объединению независимых ответов на под-вопросы в один финальный ответ на исходный user-вопрос. Значение по умолчанию DEFAULT_SUBASUMM_TASK_CONFIG.
-    :type suba_summarisation_agent_task_config: AgentTaskSolverConfig, optional
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию AnswersAggregatorAgentTasksConfig().
+    :type agent_tasks_config: Union[Dict, AnswersAggregatorAgentTasksConfig], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы AnswersAggregator-класса. Значение по умолчанию 'answers_aggregation_main_stage_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(AAGG_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
-    lang: str = 'auto'
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    suba_summarisation_agent_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_SUBASUMM_TASK_CONFIG)
+    agent_tasks_config: Union[Dict, AnswersAggregatorAgentTasksConfig] = field(default_factory=lambda: AnswersAggregatorAgentTasksConfig())
 
     cache_table_name: str = 'answers_aggregation_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(AAGG_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self) -> str:
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.suba_summarisation_agent_task_config.version}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = AnswersAggregatorConfig(**dictconfig_copy)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.agent_tasks_config, dict):
+            self.agent_tasks_config = AnswersAggregatorAgentTasksConfig.from_dict(self.agent_tasks_config)
 
 
 class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
@@ -58,10 +62,15 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
-    def __init__(self, agent: AbstractAgentConnector, config: AnswersAggregatorConfig = AnswersAggregatorConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: Union[Dict, AnswersAggregatorConfig] = AnswersAggregatorConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
+        if isinstance(config, dict):
+            config: AnswersAggregatorConfig = AnswersAggregatorConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+        self.config.agent_tasks_config.versions_to_configs()
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -73,7 +82,7 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
 
         self.tasks_solvers: AnswerAggregatorTaskSolvers = AnswerAggregatorTaskSolvers(
             subanswers_summarisation_solver=AgentTaskSolver(
-                self.agent, self.config.suba_summarisation_agent_task_config, agents_cache_config, inferencestat_config
+                self.agent, self.config.agent_tasks_config.suba_summarisation, agents_cache_config, inferencestat_config
             )
         )
 
@@ -95,11 +104,11 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
         :return: Кортеж из двух объектов: (1) финальный ответ на user-вопрос; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
-        self.log("START ANSWERS AGGREGATION...", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.config.verbose)
-        self.log(f"QUERY_INFO: {query_info}", verbose=self.config.verbose)
+        self.log("START ANSWERS AGGREGATION...", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.verbose)
+        self.log(f"QUERY_INFO: {query_info}", verbose=self.verbose)
         self.log(f"SUB_ANSWERS: {subq_info.sub_answers}",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
         final_answer, info = None, ReturnInfo()
 
         if len(subq_info.sub_answers) < 0:
@@ -121,7 +130,7 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
                 raise ValueError
 
             self.log("Выполнение суммаризации ответов с помощью LLM-агента...",
-                     verbose=self.config.verbose)
+                     verbose=self.verbose)
             final_answer, status = self.tasks_solvers.subanswers_summarisation_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                 query=query, sub_queries=sub_queries,

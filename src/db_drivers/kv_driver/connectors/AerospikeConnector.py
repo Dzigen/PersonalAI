@@ -1,16 +1,20 @@
-from typing import List
+from typing import List, Union, Dict
 import aerospike
 
 from .configs import DEFAULT_AEROSPIKE_CONFIG
 from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection, KeyValueDBInstance
 
-# !!! AEROSPIKE IS NOT SUPPORTING DUE TO A LACK OF DOCUMENTATION!!!
+# !!! AEROSPIKE IS NOT SUPPORTING DUE TO THE LACK OF DOCUMENTATION!!!
 
 
 class AerospikeKVConnector(AbstractKVDatabaseConnection):
 
-    def __init__(self, config: KVDBConnectionConfig = DEFAULT_AEROSPIKE_CONFIG):
-        self.config = config
+    def __init__(self, config: Union[Dict, KVDBConnectionConfig] = DEFAULT_AEROSPIKE_CONFIG):
+        if isinstance(config, dict):
+            config = KVDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
+        self.config: KVDBConnectionConfig = config
 
     def open_connection(self) -> None:
         db_config = {'hosts': [(self.config.host, self.config.port)]}
@@ -34,7 +38,7 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
             if item is None or item.id is None or item.value is None:
                 raise ValueError
 
-            if type(item.id) is not str or type(item.value) not in [str, float, int]:
+            if not isinstance(item.id, str) or type(item.value) not in [str, float, int]:
                 raise ValueError
 
         for item in items:
@@ -44,7 +48,7 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
 
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
         for id in ids:
-            if (id is None) or (type(id) is not str):
+            if (id is None) or (not isinstance(id, str)):
                 raise ValueError
 
         keys = list(map(lambda id: (
@@ -61,7 +65,7 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
 
     def delete(self, ids: List[str], durable_delete: bool = False) -> None:
         for id in ids:
-            if type(id) is not str:
+            if not isinstance(id, str):
                 raise ValueError
 
         keys = list(map(lambda id: (
@@ -74,7 +78,7 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
         pass
 
     def item_exist(self, id: str) -> bool:
-        if type(id) is not str:
+        if not isinstance(id, str):
             raise ValueError
 
         key = (self.config.db_info['db'], self.config.db_info['table'], id)

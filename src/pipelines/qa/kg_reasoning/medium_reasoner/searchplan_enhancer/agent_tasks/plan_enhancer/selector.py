@@ -1,4 +1,5 @@
 from ........utils import AgentTaskSolverConfig, Logger
+from .......utils import BaseAgentTaskConfigSelector
 from .general_parsers import planenh_custom_formate, planenh_custom_postprocess
 from .v1 import PLANENH_SUITE_V1
 
@@ -9,7 +10,7 @@ AVAILABLE_PLANENH_TCONFIGS = {
 }
 
 
-class AgentPlanEnhancingTaskConfigSelector:
+class AgentPlanEnhancingTaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_PLANENH_TCONFIGS

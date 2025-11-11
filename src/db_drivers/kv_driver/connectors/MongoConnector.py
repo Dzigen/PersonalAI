@@ -1,5 +1,5 @@
 import pymongo
-from typing import List, Dict
+from typing import List, Dict, Union
 from collections import defaultdict
 import pickle
 
@@ -9,8 +9,12 @@ from ..utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValue
 
 class MongoKVConnector(AbstractKVDatabaseConnection):
 
-    def __init__(self, config: KVDBConnectionConfig = DEFAULT_MONGOKV_CONFIG) -> None:
-        self.config = config
+    def __init__(self, config: Union[Dict, KVDBConnectionConfig] = DEFAULT_MONGOKV_CONFIG) -> None:
+        if isinstance(config, dict):
+            config = KVDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
+        self.config: KVDBConnectionConfig = config
 
     def is_open(self) -> bool:
         try:
@@ -29,7 +33,10 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
             self.clear()
 
     def close_connection(self) -> None:
-        self._client.close()
+        try:
+            self._client.close()
+        except TypeError:
+            pass
 
     def create(self, items: List[KeyValueDBInstance]) -> None:
         for item in items:

@@ -26,9 +26,14 @@ settings = Settings(
 
 class ChromaVectorConnection(AbstractVectorDatabaseConnection):
 
-    def __init__(self, config: VectorDBConnectionConfig = DEFAULT_CHROMA_CONFIG,
+    def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_CHROMA_CONFIG,
                  embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16) -> None:
+        if isinstance(config, dict):
+            config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+
         self.embedder = embedder
         self.encode_batchsize = encode_batchsize
         self.collection = None
@@ -221,6 +226,10 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
         return self.collection.count()
 
     def item_exist(self, id: str) -> bool:
+        # validation
+        if not isinstance(id, str):
+            raise ValueError
+
         output = self.collection.get(ids=[id])
         return len(output['ids']) > 0
 

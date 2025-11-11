@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Tuple, Union, List, Dict
 import gc
+from copy import deepcopy
 
 from .configs import QA_MAIN_LOG_PATH
 from .utils import QAPipelineStages
@@ -11,7 +12,7 @@ from .answers_aggregation import AnswersAggregator, AnswersAggregatorConfig
 from ...kg_model import KnowledgeGraphModel
 from ...utils import Logger, ReturnStatus, ReturnInfo, update_rinfo
 from ...utils.cache_kv import CacheUtils
-from ...utils.data_structs import create_id, QueryPreprocessingInfo
+from ...utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
 from ...db_drivers.kv_driver import KeyValueDriverConfig
 from ...utils.cache_kv.CacheOperations import CacheOperations
 from ...utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
@@ -19,36 +20,54 @@ from ...utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 
 @dataclass
-class QAPipelineConfig:
+class QAPipelineConfig(BaseComponentConfig, LanguageConfig):
     """
     Конфигурация Question-Answering-конвейера.
 
     :param preprocessor_config: Конфигурация стадии по предобработке исходного user-вопроса. Значение по умолчанию QueryPreprocessorConfig().
-    :type preprocessor_config: QueryPreprocessorConfig, optional
+    :type preprocessor_config: Union[QueryPreprocessorConfig, Dict], optional
     :param reasoner_config: Конфигурация стадии по обходу/ризонингу на графе знаней с целью извлечения релевантой информации к user-вопросу. Значение по умолчанию KnowledgeGraphReasonerConfig().
-    :type reasoner_config: KnowledgeGraphReasonerConfig, optional
+    :type reasoner_config: Union[KnowledgeGraphReasonerConfig, Dict], optional
     :param aggregator_config: Конфигурация стадии по аггрегации/резюмированию информации, полученной в резльтате ризонинга на графе знаний (памяти). Значение по умолчанию AnswersAggregatorConfig().
-    :type aggregator_config: AnswersAggregatorConfig, optional
+    :type aggregator_config: Union[AnswersAggregatorConfig, Dict], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QAPipeline-класса. Значение по умолчанию 'qa_pipeline_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(QA_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
-    preprocessor_config: QueryPreprocessorConfig = field(
+    preprocessor_config: Union[QueryPreprocessorConfig, Dict] = field(
         default_factory=lambda: QueryPreprocessorConfig())
-    reasoner_config: KnowledgeGraphReasonerConfig = field(
+    reasoner_config: Union[KnowledgeGraphReasonerConfig, Dict] = field(
         default_factory=lambda: KnowledgeGraphReasonerConfig())
-    aggregator_config: AnswersAggregatorConfig = field(
+    aggregator_config: Union[AnswersAggregatorConfig, Dict] = field(
         default_factory=lambda: AnswersAggregatorConfig())
 
     cache_table_name: str = 'qa_pipeline_cache'
     log: Logger = field(default_factory=lambda: Logger(QA_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self):
         return f"{self.preprocessor_config.to_str()}|{self.reasoner_config.to_str()}|{self.aggregator_config.to_str()}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = QAPipelineConfig(**dictconfig_copy)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.preprocessor_config, dict):
+            self.preprocessor_config = QueryPreprocessorConfig.from_dict(self.preprocessor_config)
+        else:
+            self.preprocessor_config.formate_fields()
+
+        if isinstance(self.reasoner_config, dict):
+            self.reasoner_config = KnowledgeGraphReasonerConfig.from_dict(self.reasoner_config)
+        else:
+            self.reasoner_config.formate_fields()
+
+        if isinstance(self.aggregator_config, dict):
+            self.aggregator_config = AnswersAggregatorConfig.from_dict(self.aggregator_config)
+        else:
+            self.aggregator_config.formate_fields()
 
 
 class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
@@ -57,16 +76,20 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация QA-конвейера. Значение по умолчанию QAPipelineConfig().
-    :type config: QAPipelineConfig, optional
+    :type config: Union[QAPipelineConfig, Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, config: QAPipelineConfig = QAPipelineConfig(),
+    def __init__(self, kg_model: KnowledgeGraphModel, config: Union[QAPipelineConfig, Dict] = QAPipelineConfig(),
                  cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
+        if isinstance(config, dict):
+            config: QAPipelineConfig = QAPipelineConfig.from_dict(config)
+        else:
+            config.formate_fields()
 
         agent = kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.qa_pipeline]
         self.using_agent_info = {'kw': agent.CONNECTOR_KW, 'config': agent.config}
@@ -182,5 +205,8 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
 
     def __del__(self):
         # print("deleting QA-class")
-        del self.stages
-        gc.collect()
+        try:
+            del self.stages
+            gc.collect()
+        except TypeError:
+            pass

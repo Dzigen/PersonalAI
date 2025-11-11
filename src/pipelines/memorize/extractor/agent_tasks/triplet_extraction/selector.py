@@ -1,4 +1,5 @@
 from ......utils import AgentTaskSolverConfig, Logger
+from .....utils import BaseAgentTaskConfigSelector
 from .general_parsers import etriplets_custom_postprocess, etriplets_custom_formate
 from .v2 import TRIPLET_EXTRACT_SUITE_V2
 from .v1 import TRIPLET_EXTRACT_SUITE_V1
@@ -11,7 +12,7 @@ AVAILABLE_TRIPLET_EXTRACT_TCONFIGS = {
 }
 
 
-class AgentTripletExtrTaskConfigSelector:
+class AgentTripletExtrTaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_TRIPLET_EXTRACT_TCONFIGS

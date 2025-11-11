@@ -1,11 +1,7 @@
 import pymongo
 from typing import List, Dict, Tuple, Union
-from collections import defaultdict
 from dataclasses import asdict
-import os
-import gc
 from time import time
-import hashlib
 
 from .configs import DEFAULT_MONGOTABLE_CONFIG
 from ..utils import AbstractTableDatabaseConnection, TableDBConnectionConfig, TableDBInstance, BaseTableStucture
@@ -14,7 +10,11 @@ from ....utils.data_structs import create_id
 
 class MongoTableConnector(AbstractTableDatabaseConnection):
 
-    def __init__(self, config: TableDBConnectionConfig = DEFAULT_MONGOTABLE_CONFIG) -> None:
+    def __init__(self, config: Union[Dict, TableDBConnectionConfig] = DEFAULT_MONGOTABLE_CONFIG) -> None:
+        if isinstance(config, dict):
+            config: TableDBConnectionConfig = TableDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
 
     def is_open(self) -> bool:
@@ -34,7 +34,10 @@ class MongoTableConnector(AbstractTableDatabaseConnection):
             self.clear()
 
     def close_connection(self) -> None:
-        self._client.close()
+        try:
+            self._client.close()
+        except TypeError:
+            pass
 
     def create_table(self) -> None:
         self.TABLE_STRUCTURE: Union[None, BaseTableStucture] = self.config.db_info.get('table_info', None)

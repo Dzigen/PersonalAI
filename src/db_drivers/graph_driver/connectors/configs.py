@@ -8,6 +8,7 @@ DEFAULT_INMEMORYGRAPH_CONFIG = GraphDBConnectionConfig(
         'load_dump_name': None,
         'load_dump_dir': "./personalai_tmp/volumes/inmemory_graph",
         'save_on_disk': True, 'save_dump_dir': "./personalai_tmp/volumes/inmemory_graph",
+        'rewrite': False
     }
 )
 

@@ -1,7 +1,0 @@
-CRONTAB_DIR=/home/workspace/experiments
-DATASET_NAME=hotpotqa_distractor_validation
-EXP_NAME="bs_medium_v2_deepseek(e7.1.2.3.1)(v1.5.7)"
-MODEL_NAME=deepseek
-PARAMS_NAME="e7.1.2.3.1.yaml"
-
-29 07 21 05 * bash $CRONTAB_DIR/run_experiment.sh $MODEL_NAME "$PARAMS_NAME" "$EXP_NAME" $DATASET_NAME >> qa_log.txt 2>&1

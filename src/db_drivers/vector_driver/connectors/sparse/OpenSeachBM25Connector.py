@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Dict
 import urllib3
 urllib3.disable_warnings()
 
@@ -14,8 +14,13 @@ from .....utils.errors import ReturnInfo
 
 class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
 
-    def __init__(self, config: VectorDBConnectionConfig = DEFAULT_OPENSEARCH_BM25_CONFIG, **kwargs) -> None:
+    def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_OPENSEARCH_BM25_CONFIG, **kwargs) -> None:
+        if isinstance(config, dict):
+            config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+
         self.db_conn = None
         self.retriever = None
 
@@ -36,7 +41,10 @@ class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
         pass
 
     def close_connection(self) -> None:
-        self.db_conn._client.transport.close()
+        try:
+            self.db_conn._client.transport.close()
+        except TypeError:
+            pass
 
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
         # validating

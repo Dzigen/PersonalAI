@@ -1,21 +1,24 @@
 from ........utils import AgentTaskSolverConfig, Logger
+from .......utils import BaseAgentTaskConfigSelector
 from .general_parsers import cqgen_custom_formate, cqgen_custom_postprocess
 from .v1 import CQGEN_SUITE_V1
+from .v2 import CQGEN_SUITE_V2
 
 CQGEN_LOG_PATH = "log/qa/kg_reasoner/medium/cluequeries_generator/agent_tasks/cquery_generator"
 
 AVAILABLE_CQGEN_TCONFIGS = {
-    'v1': CQGEN_SUITE_V1
+    'v1': CQGEN_SUITE_V1,
+    'v2': CQGEN_SUITE_V2
 }
 
 
-class AgentCQueryGenTaskConfigSelector:
+class AgentCQueryGenTaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_CQGEN_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v1',
+    def select(base_config_version: str = 'v2',
                cache_table_name: str = "medreasn_cqgen_agent_task_cache",
                inferencestat_table_name: str = "medreasn_cqgen_agent_task_stat") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(

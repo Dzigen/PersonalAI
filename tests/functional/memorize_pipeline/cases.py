@@ -5,15 +5,14 @@ TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
 from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
-from src.pipelines.memorize.extractor.agent_tasks.triplet_extraction import AgentTripletExtrTaskConfigSelector
-from src.pipelines.memorize.extractor.agent_tasks.thesis_extraction import AgentThesisExtrTaskConfigSelector
+from src.pipelines.memorize.extractor.utils import MemExtractorAgentTasksConfig
 from src.pipelines.memorize import MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
 
 # TO CHANGE
 AVAILABLE_GRAPH_MODELS = ['neo4j']  # 'inmemory_graph', 'neo4j', 'kuzu'
 
 # TO CHANGE
-AVAILABLE_EMBEDDING_MODELS = ['milvus']  # 'chroma', 'milvus'
+AVAILABLE_EMBEDDING_MODELS = ['elasticsearch']  # 'chroma', 'milvus', 'inmemory', 'elasticsearch'
 
 # TO CHANGE
 AVAILABLE_NODESTREE_MODELS = ['None'] # 'milvus_kuzu', 'milvus_neo4j', 'chroma_kuzu', 'chroma_neo4j', 'None
@@ -94,7 +93,6 @@ KV_CACHE_CONFIG = KeyValueDriverConfig(
 )
 
 
-
 # EN_MEM_CONFIG1 = MemPipelineConfig(
 #     extractor_config=LLMExtractorConfig(
 #         lang='en',
@@ -108,12 +106,15 @@ KV_CACHE_CONFIG = KeyValueDriverConfig(
 EN_MEM_CONFIG2 = MemPipelineConfig(
     extractor_config=LLMExtractorConfig(
         lang='en',
-        triplets_extraction_task_config=AgentTripletExtrTaskConfigSelector.select(
-            base_config_version='v2'),
-        thesises_extraction_task_config=AgentThesisExtrTaskConfigSelector.select(
-            base_config_version='v2')),
+        agent_tasks_config=MemExtractorAgentTasksConfig(
+            triplets_extraction='v2',
+            thesises_extraction='v2'
+        )
+    ),
     updator_config=LLMUpdatorConfig(
-        lang='en', delete_obsolete_info=False))
+        lang='en', delete_obsolete_info=False
+    )
+)
 
 # RU_MEM_CONFIG3 = MemPipelineConfig(
 #     extractor_config=LLMExtractorConfig(
@@ -128,12 +129,15 @@ EN_MEM_CONFIG2 = MemPipelineConfig(
 RU_MEM_CONFIG4 = MemPipelineConfig(
     extractor_config=LLMExtractorConfig(
         lang='ru',
-        triplets_extraction_task_config=AgentTripletExtrTaskConfigSelector.select(
-            base_config_version='v2'),
-        thesises_extraction_task_config=AgentThesisExtrTaskConfigSelector.select(
-            base_config_version='v2')),
+        agent_tasks_config=MemExtractorAgentTasksConfig(
+            triplets_extraction='v2',
+            thesises_extraction='v2'
+        )
+    ),
     updator_config=LLMUpdatorConfig(
-        lang='ru', delete_obsolete_info=False))
+        lang='ru', delete_obsolete_info=False
+    )
+)
 
 
 #"mem_config, raw_texts, use_kv_cache, clear_kv_cache, kg_model"

@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Dict, List, Tuple, Union
+from copy import deepcopy
 
 from .configs import MEMORIZE_MAIN_LOG_PATH
 from .extractor.LLMExtractor import LLMExtractor
@@ -9,7 +10,7 @@ from .updator import LLMUpdatorConfig
 from .utils import MemPipelineStages
 from ...kg_model import KnowledgeGraphModel
 from ...utils import Logger, Triplet, ReturnStatus, ReturnInfo
-from ...utils.data_structs import create_id
+from ...utils.data_structs import create_id, BaseComponentConfig, LanguageConfig
 from ...utils.errors import STATUS_MESSAGE
 from ...db_drivers.kv_driver import KeyValueDriverConfig
 from ...utils.cache_kv.CacheOperations import CacheOperations
@@ -18,25 +19,42 @@ from ...utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 
 
 @dataclass
-class MemPipelineConfig:
+class MemPipelineConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация Memorize-конвейера.
 
     :param extractor_config: Конфигурация первой стадии Memorize-конвейера: извлечение информации из текстовых данных и приведение их в triplet-формат. Значение по умолчанию LLMExtractorConfig().
-    :type extractor_config: LLMExtractorConfig, optional
+    :type extractor_config: Union[Dict,LLMExtractorConfig], optional
     :param updator_config: Конфигурация второй стадии Memorize-конвейера: актуализация знаний в памяти ассистента. Значение по умолчанию LLMUpdatorConfig().
-    :type updator_config: LLMUpdatorConfig, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(MEMORIZE_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
+    :type updator_config: Union[Dict,LLMUpdatorConfig], optional
     """
-    extractor_config: LLMExtractorConfig = field(
+    extractor_config: Union[Dict, LLMExtractorConfig] = field(
         default_factory=lambda: LLMExtractorConfig())
-    updator_config: LLMUpdatorConfig = field(
+    updator_config: Union[Dict, LLMUpdatorConfig] = field(
         default_factory=lambda: LLMUpdatorConfig())
 
     log: Logger = field(default_factory=lambda: Logger(MEMORIZE_MAIN_LOG_PATH))
-    verbose: bool = False
+
+    def to_str(self):
+        # TODO
+        raise NotImplementedError
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = MemPipelineConfig(**dictconfig_copy)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.extractor_config, dict):
+            self.extractor_config = LLMExtractorConfig.from_dict(self.extractor_config)
+        else:
+            self.extractor_config.formate_fields()
+
+        if isinstance(self.updator_config, dict):
+            self.updator_config = LLMUpdatorConfig.from_dict(self.extractor_config)
+        else:
+            self.updator_config.formate_fields()
 
 
 class MemPipeline(CacheOperations, AgentStatOperations):
@@ -45,18 +63,20 @@ class MemPipeline(CacheOperations, AgentStatOperations):
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация Memorize-конвейера. Значение по умолчанию MemPipelineConfig().
-    :type config: MemPipelineConfig, optional
+    :type config: Union[Dict,MemPipelineConfig], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, config: MemPipelineConfig = MemPipelineConfig(),
+    def __init__(self, kg_model: KnowledgeGraphModel, config: Union[Dict, MemPipelineConfig] = MemPipelineConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
-        self.config = config
-        self.log = config.log
+        if isinstance(config, dict):
+            config: MemPipelineConfig = MemPipelineConfig.from_dict(config)
+        else:
+            config.formate_fields()
 
         self.stages: MemPipelineStages = MemPipelineStages(
             extractor=LLMExtractor(
@@ -65,6 +85,9 @@ class MemPipeline(CacheOperations, AgentStatOperations):
             updator=LLMUpdator(
                 kg_model, config.updator_config, cache_kvdriver_config, inferencestat_config)
         )
+
+        self.log = config.log
+        self.verbose = config.verbose
 
     def remember(self, text: str, time: Union[None, str] = None, properties: Union[None, Dict] = None) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста и обновление/актуализацию знаний в памяти (графе знаний) ассистента.
@@ -81,28 +104,28 @@ class MemPipeline(CacheOperations, AgentStatOperations):
         :rtype: Tuple[List[Triplet], ReturnInfo]
         """
 
-        self.log("START KNOWLEDGE REMEMBERING...", verbose=self.config.verbose)
+        self.log("START KNOWLEDGE REMEMBERING...", verbose=self.verbose)
         self.log(f"BASE_TEXT ID: {create_id(text)}",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
 
         self.log("STAGE#1 - 'Извлечение информации (в структурированном формате) из текста'",
-                 verbose=self.config.verbose)
+                 verbose=self.verbose)
         new_triplets, info = self.stages.extractor.extract_knowledge(
             text, time, properties)
 
-        self.log(f"RESULT: {len(new_triplets)}", verbose=self.config.verbose)
+        self.log(f"RESULT: {len(new_triplets)}", verbose=self.verbose)
         for triplet in new_triplets:
-            self.log(f"* {triplet}", verbose=self.config.verbose)
+            self.log(f"* {triplet}", verbose=self.verbose)
 
         if info.status == ReturnStatus.success:
             self.log("STAGE#2 - 'Обновление информации в памяти (графе знаний) асситента'",
-                     verbose=self.config.verbose)
+                     verbose=self.verbose)
             self.log(
-                f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.config.verbose)
+                f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.verbose)
             info = self.stages.updator.update_knowledge(new_triplets)
 
         self.log(
-            f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
+            f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.verbose)
 
         return new_triplets, info
 

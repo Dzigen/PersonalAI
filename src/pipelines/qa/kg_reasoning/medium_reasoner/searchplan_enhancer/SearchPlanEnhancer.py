@@ -2,13 +2,12 @@ from dataclasses import dataclass, field
 from typing import Tuple, Union, List, Dict
 from copy import deepcopy
 
-from .config import PLANENH_MAIN_LOG_PATH, DEFAULT_PLANINIT_TASK_CONFIG, \
-    DEFAULT_PLANENH_TASK_CONFIG, DEFAUL_ENHCLASSIFY_TASK_CONFIG
-from .utils import MediumPlanEnhancerTaskSolvers
+from .config import PLANENH_MAIN_LOG_PATH
+from .utils import MediumPlanEnhancerTaskSolvers, SearchPlanEnhancerAgentTasksConfig
 from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
 from ......utils.errors import ReturnStatus
 from ......agents.utils import AbstractAgentConnector
-from ......utils.data_structs import create_id, SearchPlanInfo
+from ......utils.data_structs import create_id, SearchPlanInfo, BaseComponentConfig, LanguageConfig
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.cache_kv import CacheUtils
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
@@ -17,44 +16,35 @@ from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperati
 
 
 @dataclass
-class SearchPlanEnhancerConfig:
+class SearchPlanEnhancerConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация SearchPlanEnhancer-стадии MediumQA-ризонера.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при инференсе LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
-    :type lang: str, optional
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param plan_initing_agent_task_config: Конфигурация атомарной задачи для LLM-агента по генерации базового/стартового плана поиска. Значение по умолчанию DEFAULT_PLANINIT_TASK_CONFIG.
-    :type plan_initing_agent_task_config: AgentTaskSolverConfig, optional
-    :param enhance_classifier_agent_task_config: Конфигурация атомарной задачи для LLM-агента по определению необходимости (бинарная классификация) модификации существующего плана поиска. Значение по умолчанию DEFAUL_ENHCLASSIFY_TASK_CONFIG.
-    :type enhance_classifier_agent_task_config: AgentTaskSolverConfig, optional
-    :param plan_enhancing_agent_task_config: Конфигурация атомарной задачи для LLM-агента по подификации/перегенерации не пройденных шагов поиска в рамках существующего плана. Значение по умолчанию DEFAULT_PLANENH_TASK_CONFIG.
-    :type plan_enhancing_agent_task_config: AgentTaskSolverConfig, optional
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию SearchPlanEnhancerAgentTasksConfig().
+    :type agent_tasks_config: Union[SearchPlanEnhancerAgentTasksConfig, Dict], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы SearchPlanEnhancer-класса. Значение по умолчанию 'medreasn_planenh_main_stage_cache'.
     :type cache_table_name: str, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты. Значение по умолчанию Logger(PLANENH_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
-    lang: str = 'auto'
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    plan_initing_agent_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_PLANINIT_TASK_CONFIG)
-    enhance_classifier_agent_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAUL_ENHCLASSIFY_TASK_CONFIG)
-    plan_enhancing_agent_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_PLANENH_TASK_CONFIG)
+    agent_tasks_config: Union[SearchPlanEnhancerAgentTasksConfig, Dict] = field(default_factory=lambda: SearchPlanEnhancerAgentTasksConfig())
 
     cache_table_name: str = 'medreasn_planenh_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(PLANENH_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self):
-        str_pi_config = self.plan_initing_agent_task_config.version
-        str_ec_config = self.enhance_classifier_agent_task_config.version
-        str_pe_config = self.plan_enhancing_agent_task_config.version
-        return f"{self.lang}|{self.agent_gen_stategy}|{str_pi_config}|{str_ec_config}|{str_pe_config}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = SearchPlanEnhancerConfig(**dictconfig_copy)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.agent_tasks_config, dict):
+            self.agent_tasks_config = SearchPlanEnhancerAgentTasksConfig.from_dict(self.agent_tasks_config)
 
 
 class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
@@ -63,7 +53,7 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
     :type agent: AbstractAgentConnector
     :param config: Конфигурация SearchPlanEnhancer-стадии. Значение по умолчанию SearchPlanEnhancerConfig().
-    :type config: SearchPlanEnhancerConfig, optional
+    :type config: Union[SearchPlanEnhancerConfig,Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
@@ -72,11 +62,16 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
     :type cache_llm_inference: bool, optional
     """
 
-    def __init__(self, agent: AbstractAgentConnector, config: SearchPlanEnhancerConfig = SearchPlanEnhancerConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: Union[SearchPlanEnhancerConfig, Dict] = SearchPlanEnhancerConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
                  cache_llm_inference: bool = True):
+        if isinstance(config, dict):
+            config: SearchPlanEnhancerConfig = SearchPlanEnhancerConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+        self.config.agent_tasks_config.versions_to_configs()
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -88,13 +83,13 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
 
         self.tasks_solvers: MediumPlanEnhancerTaskSolvers = MediumPlanEnhancerTaskSolvers(
             plan_initialing_solver=AgentTaskSolver(
-                self.agent, self.config.plan_initing_agent_task_config,
+                self.agent, self.config.agent_tasks_config.plan_initing,
                 agents_cache_config, inferencestat_config),
             enhance_classify_solver=AgentTaskSolver(
-                self.agent, self.config.enhance_classifier_agent_task_config,
+                self.agent, self.config.agent_tasks_config.enhance_classifier,
                 agents_cache_config, inferencestat_config),
             plan_enhancing_solver=AgentTaskSolver(
-                self.agent, self.config.plan_enhancing_agent_task_config,
+                self.agent, self.config.agent_tasks_config.plan_enhancing,
                 agents_cache_config, inferencestat_config)
         )
 
@@ -118,11 +113,9 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         :return: Кортеж из двух объектов: (1) Модифиицированный план поиска; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[SearchPlanInfo, ReturnInfo]
         """
-        self.log("START SEARCH-PLAN INITING/ENHANCING...",
-                 verbose=self.config.verbose)
-        self.log(
-            f"QUERY ID: {create_id(search_plan.base_query)}", verbose=self.config.verbose)
-        self.log(f"CURRENT PLAN: {search_plan}", verbose=self.config.verbose)
+        self.log("START SEARCH-PLAN INITING/ENHANCING...", verbose=self.verbose)
+        self.log(f"QUERY ID: {create_id(search_plan.base_query)}", verbose=self.verbose)
+        self.log(f"CURRENT PLAN: {search_plan}", verbose=self.verbose)
         enhanced_search_plan, rinfo = None, ReturnInfo()
 
         if search_step < 0:
@@ -135,7 +128,7 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
             str_searchplan = "\n".join(
                 [f'{i}. {gen_step}' for i, gen_step in enumerate(new_search_steps)])
             self.log(
-                f"RESULT: {len(new_search_steps)}\n{str_searchplan}", verbose=self.config.verbose)
+                f"RESULT: {len(new_search_steps)}\n{str_searchplan}", verbose=self.verbose)
 
             if status == ReturnStatus.success:
                 enhanced_search_plan = deepcopy(search_plan)
@@ -147,7 +140,7 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
             need_enhance, status = self.tasks_solvers.enhance_classify_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=search_plan.base_query,
                 search_steps=search_plan.search_steps, steps_answers=search_plan.steps_answers[:search_step])
-            self.log(f"RESULT: {need_enhance}", verbose=self.config.verbose)
+            self.log(f"RESULT: {need_enhance}", verbose=self.verbose)
 
             if status == ReturnStatus.success:
                 if need_enhance:
@@ -160,7 +153,7 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
                     str_enhancedsteps = "\n".join(
                         [f'{i}. {gen_step}' for i, gen_step in enumerate(enhanced_steps)])
                     self.log(
-                        f"RESULT: {len(enhanced_steps)}\n{str_enhancedsteps}", verbose=self.config.verbose)
+                        f"RESULT: {len(enhanced_steps)}\n{str_enhancedsteps}", verbose=self.verbose)
 
                     if status == ReturnStatus.success:
                         enhanced_search_plan = deepcopy(search_plan)
@@ -174,6 +167,6 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
                     enhanced_search_plan = deepcopy(search_plan)
 
         rinfo.status = status
-        self.log(f"STATUS: {rinfo.status}", verbose=self.config.verbose)
+        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
         return enhanced_search_plan, rinfo

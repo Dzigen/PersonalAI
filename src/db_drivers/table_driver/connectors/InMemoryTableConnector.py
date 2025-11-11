@@ -12,8 +12,13 @@ from ....utils.data_structs import create_id
 
 class InMemoryTableConnector(AbstractTableDatabaseConnection):
 
-    def __init__(self, config: TableDBConnectionConfig = DEFAULT_INMEMORYTABLE_CONFIG) -> None:
+    def __init__(self, config: Union[Dict, TableDBConnectionConfig] = DEFAULT_INMEMORYTABLE_CONFIG) -> None:
+        if isinstance(config, dict):
+            config: TableDBConnectionConfig = TableDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+
         self.table_store = None
 
     def is_open(self) -> bool:
@@ -49,7 +54,7 @@ class InMemoryTableConnector(AbstractTableDatabaseConnection):
         if self.config.params['save_on_disk']:
             os.makedirs(self.config.params['save_dump_dir'], exist_ok=True)
             save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
-            if os.path.exists(save_path):
+            if os.path.exists(save_path) and not self.config.params['rewrite']:
                 # print("warning: file on that path is already exists")
                 postfix = hashlib.md5(str(time.time()).encode()).hexdigest()
                 save_path += postfix

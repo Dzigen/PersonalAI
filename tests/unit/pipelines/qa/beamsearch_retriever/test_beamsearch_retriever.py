@@ -38,7 +38,7 @@ def test_update_path_candidates(
 
         for i, c_path in enumerate(real_new_tpaths):
             assert c_path.path == expected_new_tpaths[i].path
-            assert c_path.unique_nids == expected_new_tpaths[i].unique_nids
+            assert c_path.unique_ntypedids == expected_new_tpaths[i].unique_ntypedids
             assert c_path.unique_tids == expected_new_tpaths[i].unique_tids
             assert np.abs(c_path.accum_score -
                           expected_new_tpaths[i].accum_score) < 10e-8

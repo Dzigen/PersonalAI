@@ -13,10 +13,20 @@ from ..utils import AbstractAgentConnector, AgentConnectorConfig, LLMInferenceSt
 
 
 class OLlamaConnector(AbstractAgentConnector):
-    def __init__(self, config: AgentConnectorConfig = DEFAULT_OLLAMA_CONFIG) -> None:
-        self.config = config
-        self.open_connection()
+    def __init__(self, config: Union[Dict, AgentConnectorConfig] = DEFAULT_OLLAMA_CONFIG) -> None:
+        if isinstance(config, dict):
+            config = AgentConnectorConfig.from_dict(config)
+        else:
+            config.formate_fields()
+        self.config: AgentConnectorConfig = config
+
+        # костыль
+        if 'top_p' in self.config.gen_strategy:
+            self.config.gen_strategy['top_p'] = float(self.config.gen_strategy['top_p'])
+
         self.CONNECTOR_KW = 'ollama'
+
+        self.open_connection()
 
     def open_connection(self):
         self.client = Client(
@@ -29,9 +39,9 @@ class OLlamaConnector(AbstractAgentConnector):
     def close_connection(self):
         try:
             del self.client
-        except AttributeError:
+            gc.collect()
+        except (AttributeError, TypeError):
             pass
-        gc.collect()
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
                  gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:

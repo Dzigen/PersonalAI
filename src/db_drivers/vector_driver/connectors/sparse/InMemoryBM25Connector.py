@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Dict
 from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack.components.retrievers.in_memory import InMemoryBM25Retriever
 from haystack.document_stores.types import DuplicatePolicy
@@ -16,8 +16,13 @@ from .....utils.errors import ReturnInfo
 
 class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
 
-    def __init__(self, config: VectorDBConnectionConfig = DEFAULT_INMEMORY_BM25_CONFIG, **kwargs) -> None:
+    def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_INMEMORY_BM25_CONFIG, **kwargs) -> None:
+        if isinstance(config, dict):
+            config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+
         self.db_conn = None
         self.retriever = None
 
@@ -49,9 +54,11 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
 
     def close_connection(self) -> ReturnInfo:
         # print("closing inmemory bm25 connection...")
-        if self.config.params['save_on_disk']:
+        if self.db_conn is None:
+            return
+        elif self.config.params['save_on_disk']:
             save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
-            if os.path.exists(save_path):
+            if os.path.exists(save_path) and not self.config.params['rewrite']:
                 # print("warning: file on that path is already exists")
                 postfix = hashlib.md5(str(time.time()).encode()).hexdigest()
                 save_path += f'({postfix})'

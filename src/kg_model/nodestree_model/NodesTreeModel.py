@@ -12,47 +12,48 @@ import numpy as np
 from tqdm import tqdm
 from copy import deepcopy
 import gc
-import torch
 from time import time
 
-from .configs import DEFAULT_SUMMN_TASK_CONFIG, NODESTREE_MODEL_LOG_PATH, \
+from .utils import NodesTreeModelAgentTasksConfig, NodesTreeModelTaskSolvers
+from .config import NODESTREE_MODEL_LOG_PATH, \
     LEAFNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING, SUMMNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING, \
     TREE_DB_DEFAULT_DRIVER_CONFIG, LNT_RERANKDRIVER_DEFAULT_CONFIG, SNT_RERANKDRIVER_DEFAULT_CONFIG
 from ...db_drivers.tree_driver.utils import TreeNodeType, TreeNode, TreeIdType
-from ...utils import Logger, AgentTaskSolver, AgentTaskSolverConfig, ReturnStatus
-from ...utils.data_structs import Triplet, NodeType, create_id, Node
+from ...utils import Logger, AgentTaskSolver, ReturnStatus
+from ...utils.data_structs import Triplet, NodeType, create_id, Node, NodeInfo, BaseComponentConfig, LanguageConfig
 from ...utils.errors import ReturnStatus
+from ...utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 from ...agents.utils import AbstractAgentConnector
 from ...db_drivers.kv_driver import KeyValueDriverConfig
 from ...db_drivers.vector_driver import VectorDriverConfig, VectorDBInstance, VectorComposer
 from ...db_drivers.tree_driver import TreeDriver, TreeDriverConfig
 from ...db_drivers.vector_driver.embedders import EmbedderModel
 from ...rerankers import RerankerDriver, RerankerDriverConfig
+from ...utils.cache_kv.CacheOperations import CacheOperations
+from ...utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 
 
 @dataclass
-class NodesTreeModelConfig:
+class NodesTreeModelConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация древовидной структуры данных для хранения object-вершин.
 
     :param leafnodes_vdb_driver_configs_mapping: Именованные конфигурации баз данных для хранения различных векторных представлений leaf-объектов (object-вершин) дерева. Значение по умолчанию LEAFNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING.
-    :type leafnodes_vdb_driver_configs_mapping: Dict[str, VectorDriverConfig], optional
-    :param leafnodes_reranker_driver_config: ... . Значение по умолчанию LNT_RERANKDRIVER_DEFAULT_CONFIG.
-    :type leafnodes_reranker_driver_config: RerankerDriverConfig, optional
+    :type leafnodes_vdb_driver_configs_mapping: Dict[str, Union[Dict,VectorDriverConfig]], optional
+    :param leafnodes_reranker_driver_config: Конфигурация Retrieve/Rerank-оператора для векторной бд с leaf-вершинами (вершинами типа object из графовой структуры данных). Значение по умолчанию LNT_RERANKDRIVER_DEFAULT_CONFIG.
+    :type leafnodes_reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
 
     :param summnodes_vdb_driver_configs_mapping: Именованные конфигурации баз данных для хранения различных векторных представлений parent-объектов (summarized-вершин) дерева. Значение по умолчанию SUMMNODES_VDB_DEFAULT_DRIVER_CONFIG.
-    :type summnodes_vdb_driver_configs_mapping: Dict[str, VectorDriverConfig], optional
-    :param summnodes_reranker_driver_config: ... . Значение по умолчанию SNT_RERANKDRIVER_DEFAULT_CONFIG.
-    :type summnodes_reranker_driver_config: RerankerDriverConfig, optional
+    :type summnodes_vdb_driver_configs_mapping: Dict[str, Union[Dict,VectorDriverConfig]], optional
+    :param summnodes_reranker_driver_config: Конфигурация Retrieve/Rerank-оператора для векторной бд с summarized-вершинами. Значение по умолчанию SNT_RERANKDRIVER_DEFAULT_CONFIG.
+    :type summnodes_reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
 
     :param treedb_config: Конфигурация графовой базы данных для хранения древовидного представления object-вершин. Значение по умолчанию TREE_DB_DEFAULT_DRIVER_CONFIG.
-    :type treedb_config: treedb_config, optional
+    :type treedb_config: Union[Dict,TreeDriverConfig], optional
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
-    :type lang: str
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, str]], optional
-    :param nodes_summarization_task_config: Конфигурация атомарной задачи для LLM-агента по резюмированию/суммаризации текстовых полей у заданного набора leaf-объектов (object-вершин) из дерева. Значение по умолчанию DEFAULT_SUMMN_TASK_CONFIG.
-    :type nodes_summarization_task_config: AgentTaskSolverConfig, optional
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию NodesTreeModelAgentTasksConfig().
+    :type agent_tasks_config: Union[Dict,NodesTreeModelAgentTasksConfig], optional
 
     :param e2n_base_threshold: Служебный гиперпараметр; см. https://arxiv.org/pdf/2410.14052. Значение по умолчанию 0.4.
     :type e2n_base_threshold: float, optional
@@ -60,30 +61,23 @@ class NodesTreeModelConfig:
     :type depth_rate: float, optional
     :param nodes_aggregation_mechanism: Служебный гиперпараметр; см. https://arxiv.org/pdf/2410.14052. Значение по умолчанию 'sequencial'.
     :type nodes_aggregation_mechanism: str, optional
-
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(NODESTREE_MODEL_LOG_PATH).
-    :type log: Logger
-    :param verbose: Если, True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
     """
 
-    leafnodes_vdb_driver_configs_mapping: Dict[str, VectorDriverConfig] = field(
+    leafnodes_vdb_driver_configs_mapping: Dict[str, Union[Dict, VectorDriverConfig]] = field(
         default_factory=lambda: LEAFNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING)
-    leafnodes_reranker_driver_config: RerankerDriverConfig = field(
+    leafnodes_reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(
         default_factory=lambda: LNT_RERANKDRIVER_DEFAULT_CONFIG)
 
-    summnodes_vdb_driver_configs_mapping: Dict[str, VectorDriverConfig] = field(
+    summnodes_vdb_driver_configs_mapping: Dict[str, Union[Dict, VectorDriverConfig]] = field(
         default_factory=lambda: SUMMNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING)
-    summnodes_reranker_driver_config: RerankerDriverConfig = field(
+    summnodes_reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(
         default_factory=lambda: SNT_RERANKDRIVER_DEFAULT_CONFIG)
 
-    treedb_config: TreeDriverConfig = field(
+    treedb_config: Union[Dict, TreeDriverConfig] = field(
         default_factory=lambda: TREE_DB_DEFAULT_DRIVER_CONFIG)
 
-    lang: str = "auto"
     agent_gen_stategy: Union[None, Dict[str, str]] = None
-    nodes_summarization_task_config: AgentTaskSolverConfig = field(
-        default_factory=lambda: DEFAULT_SUMMN_TASK_CONFIG)
+    agent_tasks_config: Union[Dict, NodesTreeModelAgentTasksConfig] = field(default_factory=lambda: NodesTreeModelAgentTasksConfig())
 
     # expanding-tree params
     e2n_base_threshold: float = 0.3
@@ -93,8 +87,52 @@ class NodesTreeModelConfig:
     log: Logger = field(default_factory=lambda: Logger(NODESTREE_MODEL_LOG_PATH))
     verbose: bool = False
 
+    def to_str(self):
+        # TODO
+        raise NotImplementedError
 
-class NodesTreeModel:
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = NodesTreeModelConfig(**dictconfig_copy)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        for vdb_name, vdb_config in self.leafnodes_vdb_driver_configs_mapping.items():
+            if isinstance(vdb_config, dict):
+                self.leafnodes_vdb_driver_configs_mapping[vdb_name] = VectorDriverConfig.from_dict(vdb_config)
+            else:
+                self.leafnodes_vdb_driver_configs_mapping[vdb_name].formate_fields()
+
+        if isinstance(self.leafnodes_reranker_driver_config, dict):
+            self.leafnodes_reranker_driver_config = RerankerDriverConfig.from_dict(self.leafnodes_reranker_driver_config)
+        else:
+            self.leafnodes_reranker_driver_config.formate_fields()
+
+        for vdb_name, vdb_config in self.summnodes_vdb_driver_configs_mapping.items():
+            if isinstance(vdb_config, dict):
+                self.summnodes_vdb_driver_configs_mapping[vdb_name] = VectorDriverConfig.from_dict(vdb_config)
+            else:
+                self.summnodes_vdb_driver_configs_mapping[vdb_name].formate_fields()
+
+        if isinstance(self.summnodes_reranker_driver_config, dict):
+            self.summnodes_reranker_driver_config = RerankerDriverConfig.from_dict(self.summnodes_reranker_driver_config)
+        else:
+            self.summnodes_reranker_driver_config.formate_fields()
+
+        if isinstance(self.treedb_config, dict):
+            self.treedb_config = TreeDriverConfig.from_dict(self.treedb_config)
+        else:
+            self.treedb_config.formate_fields()
+
+        if isinstance(self.agent_tasks_config, dict):
+            self.agent_tasks_config = NodesTreeModelAgentTasksConfig.from_dict(self.agent_tasks_config)
+        else:
+            self.agent_tasks_config.formate_fields()
+
+
+class NodesTreeModel(CacheOperations, AgentStatOperations):
     """Класс предназначен для представления object-вершин из графовой структуры данных в виде дерева с целью
     повышения эффективности сопоставления имеющихся занний с сущностями/запросами из поступающих user-вопросов.
 
@@ -103,15 +141,26 @@ class NodesTreeModel:
     :param embedder: Коннектор к конкретной embedder-моделе для получения векторных представлений текста.
     :type embedder: EmbedderModel
     :param config: Конфигурация NodesTree-модели. Значение по умолчанию NodesTreeModelConfig().
-    :type config: NodesTreeModelConfig, optional
+    :type config: Union[Dict,NodesTreeModelConfig], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
+    :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
+    :type cache_llm_inference: bool, optional
     """
 
     def __init__(self, agent: AbstractAgentConnector, embedders_mapping: Dict[str, EmbedderModel],
-                 config: NodesTreeModelConfig = NodesTreeModelConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
+                 config: Union[Dict, NodesTreeModelConfig] = NodesTreeModelConfig(),
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
+                 cache_llm_inference: bool = True) -> None:
+        if isinstance(config, dict):
+            config: NodesTreeModelConfig = NodesTreeModelConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+        self.config.agent_tasks_config.versions_to_configs()
 
         self.treedb_conn = TreeDriver.connect(self.config.treedb_config)
 
@@ -133,27 +182,22 @@ class NodesTreeModel:
 
         #
         self.agent = agent
-        self.nodes_summarization_solver = AgentTaskSolver(
-            self.agent, self.config.nodes_summarization_task_config,
-            cache_kvdriver_config)
+        agents_cache_config = None
+        if cache_llm_inference:
+            agents_cache_config = cache_kvdriver_config if cache_llm_inference else None
+
+        self.tasks_solvers: NodesTreeModelTaskSolvers = NodesTreeModelTaskSolvers(
+            decompose_classifier_solver=AgentTaskSolver(
+                self.agent, self.config.agent_tasks_config.nodes_summarization,
+                agents_cache_config, inferencestat_config
+            )
+        )
+
+        self.stages = None
+        self.cachekv = None
 
         self.log = self.config.log
         self.verbose = self.config.verbose
-
-    def clear_kv_caches(self, level: str = 'other') -> None:
-        if not isinstance(level, str):
-            raise TypeError(
-                f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")
-        if level not in ['all', 'current', 'other']:
-            raise ValueError(
-                f"Аргумент переменной 'level' должен принимать одно из трёх значенией: 'all', 'current' или 'other'. Полученное значение: '{level}'")
-
-        if level in ['current', 'all']:
-            raise NotImplementedError
-
-        if level in ['other']:
-            if self.nodes_summarization_solver.cachekv is not None:
-                self.nodes_summarization_solver.cachekv.clear()
 
     def check_consistency(self) -> bool:
         self.treedb_conn.check_consistency()
@@ -209,7 +253,7 @@ class NodesTreeModel:
             else:
                 added_node_ids.append(node.id)
 
-        self.log(f"final | all/unique/existed/added nodes - {len(triplets)*2}/{len(object_nodes)}/{len(existed_node_ids)}/{len(added_node_ids)}", verbose=self.config.verbose)
+        self.log(f"final | all/unique/existed/added nodes - {len(triplets)*2}/{len(object_nodes)}/{len(existed_node_ids)}/{len(added_node_ids)}", verbose=self.verbose)
         return {'existed_nodes': existed_node_ids, 'added_nodes': added_node_ids}
 
     def add_node(self, new_node_strid: str, new_node_text: str) -> ReturnStatus:
@@ -400,13 +444,13 @@ class NodesTreeModel:
             if self.config.nodes_aggregation_mechanism == 'sequencial':
                 prev_summ_text = newnode_text if len(
                     new_text_summaries) < 1 else new_text_summaries[-1]
-                summ_text, solve_status = self.nodes_summarization_solver.solve(
+                summ_text, solve_status = self.tasks_solvers.nodes_summarization_solver.solve(
                     lang=self.config.lang,
                     current_content=parent_text, new_content=prev_summ_text,
                     n_descendants=str(parent_descendants_num))
 
             elif self.config.nodes_aggregation_mechanism == 'parallel':
-                summ_text, solve_status = self.nodes_summarization_solver.solve(
+                summ_text, solve_status = self.tasks_solvers.nodes_summarization_solver.solve(
                     lang=self.config.lang,
                     current_content=parent_text, new_content=newnode_text,
                     n_descendants=str(parent_descendants_num))
@@ -561,7 +605,7 @@ class NodesTreeModel:
             descendants_leaf_strids, includes=["documents", "metadatas"])
         return matched_nodes
 
-    def match_entitie2objects(self, entitie: str, strategy: str = 'collapsed', max_n: int = 1) -> List[VectorDBInstance]:
+    def match_entitie2objects(self, entitie: str, strategy: str = 'collapsed', max_n: int = 1) -> List[NodeInfo]:
         """Метод предназначен для сопоставления object-вершин (из построенного дерева) заданной сущности (на естественном языке).
 
         :param entitie:
@@ -591,14 +635,17 @@ class NodesTreeModel:
                 # в случае, если summarized-вершина семантически ближе к entitie,
                 # то ей сопоставляются все её (leaf-вершины) вершиным-потомки
                 self.log(f"В качестве самой релевантной выбрана summarized-вершина: {best_summnode}", verbose=self.verbose)
-                matched_nodes = self.get_leafdescendants_for_summnode(entitie_vinstance, best_summnode[1].id, max_n)
+                matched_nodes = list(map(
+                    lambda vnode: NodeInfo(id=vnode.id, type=NodeType.object, text=vnode.document),
+                    self.get_leafdescendants_for_summnode(entitie_vinstance, best_summnode[1].id, max_n)
+                ))
                 self.log(f"Summarized-вершине соответствуют следующие leaf-вершины (потомки): количество - {len(matched_nodes)}", verbose=self.verbose)
                 for i in range(len(matched_nodes)):
-                    self.log(f"- [{matched_nodes[i].id}] {matched_nodes[i].document}", verbose=self.verbose)
+                    self.log(f"- {matched_nodes[i]}", verbose=self.verbose)
             else:
                 self.log(f"В качестве самой релевантной выбрана leaf-вершина: {best_leafnode}", verbose=self.verbose)
-                matched_nodes: List[VectorDBInstance] = [best_leafnode[1]]
-                self.log(f"- [{matched_nodes[0].id}] {matched_nodes[0].document}", verbose=self.verbose)
+                matched_nodes: List[NodeInfo] = [NodeInfo(id=best_leafnode[1].id, type=NodeType.object, text=best_leafnode[1].document)]
+                self.log(f"- {matched_nodes}", verbose=self.verbose)
 
         elif strategy == 'traversal':
             # TODO
@@ -643,6 +690,6 @@ class NodesTreeModel:
 
             del self.leafnodes_vcomposer
             del self.summnodes_vcomposer
-        except AttributeError:
+            gc.collect()
+        except (TypeError, AttributeError):
             pass
-        gc.collect()

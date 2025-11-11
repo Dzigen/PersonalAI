@@ -8,24 +8,35 @@ from ..utils import AbstractAgentConnector, AgentConnectorConfig, LLMInferenceSt
 
 
 class OpenAIConnector(AbstractAgentConnector):
-    def __init__(self, config: AgentConnectorConfig = DEEPSEEK_CONFIG) -> None:
-        self.config = config
+    def __init__(self, config: Union[Dict, AgentConnectorConfig] = DEEPSEEK_CONFIG) -> None:
+        if isinstance(config, dict):
+            config = AgentConnectorConfig.from_dict(config)
+        else:
+            config.formate_fields()
+        self.config: AgentConnectorConfig = config
+
+        # костыль
+        if 'top_p' in self.config.gen_strategy:
+            self.config.gen_strategy['top_p'] = float(self.config.gen_strategy['top_p'])
+
         base_url = None if config.credentials['base_url'] == 'None' else config.credentials['base_url']
         self.config.credentials['base_url'] = base_url
+        self.CONNECTOR_KW = 'openai'
 
         self.client = OpenAI(
-            api_key=os.environ.get(
-                "OPENAI_API_KEY", config.credentials['token']),
-            base_url=config.credentials['base_url'])
-
-        self.CONNECTOR_KW = 'openai'
+            api_key=os.environ.get("OPENAI_API_KEY", config.credentials['token']),
+            base_url=config.credentials['base_url']
+        )
 
     def check_connection(self):
         # TODO
         pass
 
     def close_connection(self):
-        self.client.close()
+        try:
+            self.client.close()
+        except (AttributeError,TypeError):
+            pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
                  gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:

@@ -2,11 +2,12 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Tuple, Union
 from copy import deepcopy
 
-from .configs import DEFAULT_THESISES_EXTR_TASK_CONFIG, DEFAULT_TRIPLETS_EXTR_TASK_CONFIG, MEM_EXTRACTOR_MAIN_LOG_PATH
-from .utils import MemExtractorTaskSolvers
-from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
+from .config import MEM_EXTRACTOR_MAIN_LOG_PATH
+from .utils import MemExtractorTaskSolvers, MemExtractorAgentTasksConfig
+from ....utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver
 from ....utils.errors import STATUS_MESSAGE
-from ....utils.data_structs import TripletCreator, NodeCreator, Node, Relation, RelationType, NodeType, Triplet, create_id
+from ....utils.data_structs import TripletCreator, NodeCreator, Node, Relation, \
+    RelationType, NodeType, Triplet, create_id, BaseComponentConfig, LanguageConfig
 from ....agents.utils import AbstractAgentConnector
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv.CacheOperations import CacheOperations
@@ -15,37 +16,44 @@ from ....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperation
 
 
 @dataclass
-class LLMExtractorConfig:
+class LLMExtractorConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация Extractor-стадии Memorize-конвейера.
 
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты для инференса LLM-агента. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
-    :type lang: str
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param triplets_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению триплетов с информацией типа 'simple' из слабоструктурированных текстов на естественном языке. Значение по умолчанию DEFAULT_EXTRACT_TRIPLETS_TASK_CONFIG.
-    :type triplets_extraction_task_config: AgentTaskSolverConfig
-    :param thesises_extraction_task_config: Конфигурация атомарной задачи для LLM-агента по извлечению триплетов с информацией типа 'hyper' из слабоструктурированных текстов на естественном языке. Значение по умолчанию DEFAULT_EXTRACT_THESISES_TASK_CONFIG.
-    :type thesises_extraction_task_config: AgentTaskSolverConfig
+    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию MemExtractorAgentTasksConfig().
+    :type agent_tasks_config: Union[Dict,MemExtractorAgentTasksConfig], optional
     :param need_simple: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'simple', иначе False. Значение по умолчанию True.
     :type need_simple: bool, optional
     :param need_thesises: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'hyper', иначе False. Значение по умолчанию True.
     :type need_thesises: bool, optional
     :param need_episodic: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'episodic', иначе False. Значение по умолчанию True.
     :type need_episodic: bool, optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(MEM_EXTRACTOR_MAIN_LOG_PATH).
-    :type log: Logger, optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
-    lang: str = "auto"
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
-    triplets_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_TRIPLETS_EXTR_TASK_CONFIG)
-    thesises_extraction_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_THESISES_EXTR_TASK_CONFIG)
+    agent_tasks_config: Union[Dict, MemExtractorAgentTasksConfig] = field(default_factory=lambda: MemExtractorAgentTasksConfig())
     need_simple: bool = True
     need_thesises: bool = True
     need_episodic: bool = True
+
     log: Logger = field(default_factory=lambda: Logger(MEM_EXTRACTOR_MAIN_LOG_PATH))
-    verbose: bool = False
+
+    def to_str(self):
+        # TODO
+        raise NotImplementedError
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = LLMExtractorConfig(**dictconfig_copy)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.agent_tasks_config, dict):
+            self.agent_tasks_config = MemExtractorAgentTasksConfig.from_dict(self.agent_tasks_config)
+        else:
+            self.agent_tasks_config.formate_fields()
 
 
 class LLMExtractor(CacheOperations, AgentStatOperations):
@@ -54,25 +62,30 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
     :type agent: AbstractAgentConnector
     :param config: Конфигурация Exctrator-стадии. Значение по умолчанию LLMExtractorConfig().
-    :type config: LLMExtractorConfig, optional
+    :type config: Union[Dict,LLMExtractorConfig], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
-    def __init__(self, agent: AbstractAgentConnector, config: LLMExtractorConfig = LLMExtractorConfig(),
+    def __init__(self, agent: AbstractAgentConnector, config: Union[Dict, LLMExtractorConfig] = LLMExtractorConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
                  inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None) -> None:
+        if isinstance(config, dict):
+            config: LLMExtractorConfig = LLMExtractorConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
+        self.config.agent_tasks_config.versions_to_configs()
 
         self.agent = agent
         self.tasks_solvers: MemExtractorTaskSolvers = MemExtractorTaskSolvers(
             triplets_extraction_solver=AgentTaskSolver(
-                self.agent, self.config.triplets_extraction_task_config,
+                self.agent, self.config.agent_tasks_config.triplets_extraction,
                 cache_kvdriver_config, inferencestat_config),
             thesises_extraction_solver=AgentTaskSolver(
-                self.agent, self.config.thesises_extraction_task_config,
+                self.agent, self.config.agent_tasks_config.thesises_extraction,
                 cache_kvdriver_config, inferencestat_config)
         )
 

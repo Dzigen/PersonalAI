@@ -1,6 +1,7 @@
 import torch
 import numpy
 import sys
+import numpy as np
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
@@ -9,43 +10,42 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from src.db_drivers.vector_driver import VectorDBInstance
 
 # TO CHANGE
-AVAILABLE_VECTOR_DBS = ['chroma', 'milvus']  # 'chroma', 'milvus'
+AVAILABLE_VECTOR_DBS = ['chroma', 'milvus', 'inmemory', 'elasticsearch']  # 'chroma', 'milvus', 'inmemory', 'elasticsearch'
 
 ###############################################################################################
 
-FULL_INSTANCE1 = VectorDBInstance(id='123', document='qwerty', embedding=[
-                                  0.1, 0.2, 0.3], metadata={'k1': 'v1'})
-FULL_INSTANCE2 = VectorDBInstance(id='456', document='ytrewq', embedding=[
-                                  0.4, 0.5, 0.6], metadata={'k2': 'v2'})
+VECTORS = np.random.rand(5, 130).tolist()
 
-UPDATE_FULL_INSTANCE1 = VectorDBInstance(id='123', document='qwerty qwerty', embedding=[
-                                         0.1, 0.4, 0.1], metadata={'k1new': 'v1new'})
-UPDATE_FULL_INSTANCE2 = VectorDBInstance(id='456', document='ytrewq ytrewq', embedding=[
-                                         0.5, 0.2, 0.5], metadata={'k2new': 'v2new'})
+
+FULL_INSTANCE1 = VectorDBInstance(id='123', document='qwerty', embedding=VECTORS[0], metadata={'k1': 'v1'})
+FULL_INSTANCE2 = VectorDBInstance(id='456', document='ytrewq', embedding=VECTORS[1], metadata={'k2': 'v2'})
+
+UPDATE_FULL_INSTANCE1 = VectorDBInstance(id='123', document='qwerty qwerty', embedding=VECTORS[2], metadata={'k1new': 'v1new'})
+UPDATE_FULL_INSTANCE2 = VectorDBInstance(id='456', document='ytrewq ytrewq', embedding=VECTORS[3], metadata={'k2new': 'v2new'})
 
 INSTANCE_WO_METADATA = VectorDBInstance(
-    id='456', document='ytrewq', embedding=[0.4, 0.5, 0.6])
-INSTANCE_WO_ID = VectorDBInstance(document='ytrewq', embedding=[0.4, 0.5, 0.6])
+    id='456', document='ytrewq', embedding=VECTORS[1])
+INSTANCE_WO_ID = VectorDBInstance(document='ytrewq', embedding=VECTORS[1])
 INSTANCE_WO_EMBEDDING = VectorDBInstance(id='456', document='ytrewq')
 
 INSTANCE_WITH_BAD_ID1 = VectorDBInstance(
-    id=123, document='qwerty', embedding=[0.1, 0.2, 0.3])
+    id=123, document='qwerty', embedding=VECTORS[0])
 INSTANCE_WITH_BAD_ID2 = VectorDBInstance(
-    id=True, document='qwerty', embedding=[0.1, 0.2, 0.3])
+    id=True, document='qwerty', embedding=VECTORS[0])
 INSTANCE_WITH_BAD_ID3 = VectorDBInstance(
-    id=None, document='qwerty', embedding=[0.1, 0.2, 0.3])
+    id=None, document='qwerty', embedding=VECTORS[0])
 
 INSTANCE_WITH_TORCH_EMB = VectorDBInstance(
-    id='123', document='qwerty', embedding=torch.tensor([0.1, 0.2, 0.3]), metadata={'k1': 'v1'})
+    id='123', document='qwerty', embedding=torch.tensor(VECTORS[0]), metadata={'k1': 'v1'})
 INSTANCE_WITH_NUMPY_EMB = VectorDBInstance(
-    id='123', document='qwerty', embedding=numpy.array([0.1, 0.2, 0.3]), metadata={'k1': 'v1'})
+    id='123', document='qwerty', embedding=numpy.array(VECTORS[0]), metadata={'k1': 'v1'})
 
 INSTANCE_WITH_BAD_EMB1 = VectorDBInstance(
     id='456', document='ytrewq', embedding="[0.4,0.5,0.6]")
 INSTANCE_WITH_BAD_EMB2 = VectorDBInstance(
     id='456', document='ytrewq', embedding=None)
 INSTANCE_WITH_BAD_EMB3 = VectorDBInstance(
-    id='456', document='ytrewq', embedding=[[0.4, 0.5, 0.6]])
+    id='456', document='ytrewq', embedding=[VECTORS[1]])
 
 ###############################################################################################
 
