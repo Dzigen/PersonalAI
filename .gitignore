@@ -49,3 +49,13 @@ experiments/qa/instruction.mp4
 .secrets
 experiments/qa/guide/
 experiments/qa_kg/
+
+experiments/qa/evaluate/metrics/qaeval_db/qaeval_judge_cache.pkl
+experiments/qa/cron_run_experiments.txt
+experiments/qa/runexperiment_log.txt
+experiments/qa/configure/initdir_log.txt
+experiments/qa/configure/genconfigs_log.txt
+experiments/qa/crontab_log.txt
+experiments/qa/results
+
+notebooks/kg_building/cron_buildgraph.txt
