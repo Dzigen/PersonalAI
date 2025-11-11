@@ -20,7 +20,7 @@ class AgentSimpleAGTaskConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_SIMPLEAG_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v1',
+    def select(base_config_version: str = 'v3',
                cache_table_name: str = "qa_agent_ag_task_cache",
                inferencestat_table_name: str = 'qa_agent_ag_task_stat') -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(

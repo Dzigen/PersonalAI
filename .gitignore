@@ -5,6 +5,8 @@ models/
 data/
 debug/
 .env_secret_llmkeys
+.DS_Store
+**/.DS_Store
 
 personalai_tmp/
 tests/log
@@ -57,5 +59,4 @@ experiments/qa/crontab_log.txt
 experiments/qa/results
 
 notebooks/kg_building/cron_buildgraph.txt
-
 experiments/qa/init_env/env_settings
