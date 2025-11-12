@@ -1,0 +1,39 @@
+SAVE_CONFIGS_NAMES:
+  elapsed_time: elapsed_time.json
+  params: params.yaml
+  reranker_config: reranker_config
+  retrieved_cntx_ids: retrieved_cntx_ids.csv
+VCOMPOSER_INFO:
+  params_name: params.yaml
+WORKSPACE_CONTAINER_DIRS:
+  base_path: /home/workspace
+  category: ensemble
+  evaluate_dir: evaluate
+  experiments: experiments/rerankers
+  models: models
+  qa_datasets: data/qa_datasets/v3
+  results_dir: results
+  run_dir: run
+  src: src
+  vcomposers_data: data/reranker_exps
+dataset_name: rubq_dev
+ensemble_fusion_config:
+  c: 60
+  retriever_configs:
+  - fetch_n: 20
+    threshold: 0.5
+  - fetch_n: 20
+    threshold: 0.5
+  - fetch_n: 20
+    threshold: 0.5
+  vdb_names:
+  - dense_e5large
+  - dense_frida
+  - sparse_bm25
+  weights:
+  - 0.35
+  - 0.35
+  - 0.3
+experiment_name: e5large_frida_bm25(e1_ensemble_rubqdev)
+top_k: 10
+vcomposer_name: rubqdev241025
