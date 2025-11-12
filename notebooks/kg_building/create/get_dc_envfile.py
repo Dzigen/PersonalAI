@@ -199,10 +199,10 @@ print("6. Saving Used .yaml files")
 SAVE_PARAMS_CONFIG = KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kg_setting']
 
 with open(f"{SAVE_PARAMS_PATH}/{SAVE_PARAMS_CONFIG['kgconn']}.yaml", 'w') as fd:
-    yaml.dump(KGCONN_PARAMS, fd, default_flow_style=False)
+    yaml.dump(KGCONN_PARAMS, fd, default_flow_style=False, sort_keys=False)
 with open(f"{SAVE_PARAMS_PATH}/{SAVE_PARAMS_CONFIG['kgenv']}.yaml", 'w') as fd:
-    yaml.dump(KGENV_PARAMS, fd, default_flow_style=False)
+    yaml.dump(KGENV_PARAMS, fd, default_flow_style=False, sort_keys=False)
 with open(f"{SAVE_PARAMS_PATH}/{SAVE_PARAMS_CONFIG['kghyperp']}.yaml", 'w') as fd:
-    yaml.dump(KGHYPERP_PARAMS, fd, default_flow_style=False)
+    yaml.dump(KGHYPERP_PARAMS, fd, default_flow_style=False, sort_keys=False)
 
 print("############ DONE ############")

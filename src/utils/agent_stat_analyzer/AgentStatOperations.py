@@ -25,8 +25,8 @@ class AgentStatOperations(AbstractAgentStatOperations):
 
         if self.stages is not None:
             for field in fields(self.stages):
-                stage = getattr(self.stages, field.name)
-                if issubclass(type(stage), AbstractAgentStatOperations):
+                stage: Union[object, None, AbstractAgentStatOperations] = getattr(self.stages, field.name)
+                if (stage is not None) and issubclass(type(stage), AbstractAgentStatOperations):
                     cache_info[field.name] = stage.get_agent_tgen_stat()
 
         if self.tasks_solvers is not None:
@@ -42,7 +42,7 @@ class AgentStatOperations(AbstractAgentStatOperations):
     def clear_agent_tgen_stat(self) -> None:
         if self.stages is not None:
             for field in fields(self.stages):
-                stage = getattr(self.stages, field.name)
+                stage: Union[object, None, AbstractAgentStatOperations] = getattr(self.stages, field.name)
                 if (stage is not None) and (issubclass(type(stage), AbstractAgentStatOperations)):
                     stage.clear_agent_tgen_stat()
 

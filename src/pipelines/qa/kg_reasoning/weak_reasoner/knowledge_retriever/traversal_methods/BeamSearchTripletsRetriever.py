@@ -122,7 +122,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger,
                  search_config: Union[GraphBeamSearchConfig, Dict] = GraphBeamSearchConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None, verbose: bool = False) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
         if isinstance(search_config, dict):
             search_config = GraphBeamSearchConfig.from_dict(search_config)
         else:

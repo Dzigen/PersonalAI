@@ -13,22 +13,43 @@ EVALUATE_BASE_DIR="$EXP_BASE_DIR/evaluate"
 
 # --------------------------------------------------------
 
-KNOWLEDGEGRAPH_NAME=deepseek_231025_v2prompts # TO CHANGE
-DATASET_NAME=hotpotqa_distractor_validation # TO CHANGE
+KNOWLEDGEGRAPH_NAME=gigachatmax_281025_v2prompts # TO CHANGE
+DATASET_NAME=rubq_dev # TO CHANGE
 
 # EXP_NAME
 declare -A exp_names # TO CHANGE
-exp_names[0]="weak_nr_deepseek(e2)(v2.1.0)"
+exp_names[0]="rubq_gigachatmax_weak_naiveretriever(#58544fcf)(v2.1.1)"
+exp_names[1]="rubq_gigachatmax_weak_naiveretriever(#61355b7b)(v2.1.1)"
+exp_names[2]="rubq_gigachatmax_weak_naiveretriever(#22756819)(v2.1.1)"
+exp_names[3]="rubq_gigachatmax_weak_naiveretriever(#b3e1181a)(v2.1.1)"
+exp_names[4]="rubq_gigachatmax_weak_naiveretriever(#dbb13109)(v2.1.1)"
+exp_names[5]="rubq_gigachatmax_weak_naiveretriever(#dbc060c3)(v2.1.1)"
+exp_names[6]="rubq_gigachatmax_weak_naiveretriever(#f8316f00)(v2.1.1)"
+exp_names[7]="rubq_gigachatmax_weak_naiveretriever(#f950164e)(v2.1.1)"
 
 declare -A exp_qapipe_kw # TO CHANGE
 exp_qapipe_kw[0]="weak"
+exp_qapipe_kw[1]="weak"
+exp_qapipe_kw[2]="weak"
+exp_qapipe_kw[3]="weak"
+exp_qapipe_kw[4]="weak"
+exp_qapipe_kw[5]="weak"
+exp_qapipe_kw[6]="weak"
+exp_qapipe_kw[7]="weak"
 
 # QAHYPERP_PARAMS_PATH
 declare -A exp_hyperp # TO CHANGE
-exp_hyperp[0]="exp2.yaml"
+exp_hyperp[0]="rubq_gigachatmax_weak_naiveretriever(#58544fcf)(v2.1.1).yaml"
+exp_hyperp[1]="rubq_gigachatmax_weak_naiveretriever(#61355b7b)(v2.1.1).yaml"
+exp_hyperp[2]="rubq_gigachatmax_weak_naiveretriever(#22756819)(v2.1.1).yaml"
+exp_hyperp[3]="rubq_gigachatmax_weak_naiveretriever(#b3e1181a)(v2.1.1).yaml"
+exp_hyperp[4]="rubq_gigachatmax_weak_naiveretriever(#dbb13109)(v2.1.1).yaml"
+exp_hyperp[5]="rubq_gigachatmax_weak_naiveretriever(#dbc060c3)(v2.1.1).yaml"
+exp_hyperp[6]="rubq_gigachatmax_weak_naiveretriever(#f8316f00)(v2.1.1).yaml"
+exp_hyperp[7]="rubq_gigachatmax_weak_naiveretriever(#f950164e)(v2.1.1).yaml"
 
-EXPDIR_PARAMS_PATH="$CONFIGURE_BASE_DIR/$PREPARED_PARAMS_NAME/hotpotqa_distractor_validation.yaml" # TO CHANGE
-EVAL_PARAMS_PATH="$EVALUATE_BASE_DIR/$PREPARED_PARAMS_NAME/hotpotqa.yaml" # TO CHANGE
+EXPDIR_PARAMS_PATH="$CONFIGURE_BASE_DIR/$PREPARED_PARAMS_NAME/rubq_dev.yaml" # TO CHANGE
+EVAL_PARAMS_PATH="$EVALUATE_BASE_DIR/$PREPARED_PARAMS_NAME/rubqdev.yaml" # TO CHANGE
 
 # --------------------------------------------------------
 

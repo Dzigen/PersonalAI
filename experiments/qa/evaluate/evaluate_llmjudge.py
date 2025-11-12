@@ -186,7 +186,7 @@ for pack_name in judges_pack_names:
 print("7. Saving eval params")
 
 with open(EVAL_PARAMS_SPATH, 'w') as fd:
-    yaml.dump(EVAL_PARAMS, fd, default_flow_style=False)
+    yaml.dump(EVAL_PARAMS, fd, default_flow_style=False, sort_keys=False)
 
 judge.cachekv.kv_conn.close_connection()
 
