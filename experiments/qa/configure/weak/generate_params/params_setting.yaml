@@ -109,7 +109,8 @@ kg_reasoner: # TO CHANGE
             - 'hyper'
             - 'episodic'
 
-      filter_method: ['naive'] # CAN BE null
+      filter_method: # CAN BE null
+        - 'naive'
       filter_config: # CAN BE null
         - max_k: 50
           reranker_driver_config:
@@ -145,13 +146,21 @@ kg_reasoner: # TO CHANGE
             - 'episodic'
 
     answer_generator_config: # TO CHANGE
-      agent_tasks_config:
-        ag: ['v2'] # 'v1' | 'v2'
-      relation_type:
-        - ['simple', 'hyper'] # 'simple', 'hyper', 'episodic', 'time' 
-        - ['simple', 'hyper', 'episodic']
-        
+      - agent_tasks_config:
+          ag: 'v2'
+        relation_type:
+          - 'simple'
+          - 'hyper'
+
+      - agent_tasks_config:
+          ag: 'v2'
+        relation_type:
+          - 'simple'
+          - 'hyper'
+          - 'episodic'
+
 # STAGE # 3
 answer_aggregator:
   agent_tasks_config:
-    suba_summarisation: ['v2']
+    suba_summarisation:
+      - 'v2'

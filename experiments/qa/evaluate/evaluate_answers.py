@@ -218,6 +218,6 @@ for pack_name in gen_pack_names:
 print("6. Saving eval params")
 
 with open(EVAL_PARAMS_SPATH, 'w') as fd:
-    yaml.dump(EVAL_PARAMS, fd, default_flow_style=False)
+    yaml.dump(EVAL_PARAMS, fd, default_flow_style=False, sort_keys=False)
 
 print("############ DONE ############")
