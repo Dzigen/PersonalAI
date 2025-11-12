@@ -3,12 +3,12 @@ import pytest
 import sys
 sys.path.insert(0, "../")
 
-from src.utils import Triplet, ReturnStatus
-from src.utils import AgentTaskSolver
+from .cases import EN_VALID_HYPER_TRIPLET1, EN_VALID_HYPER_TRIPLET2, EN_VALID_HYPER_TRIPLET3, \
+    RU_VALID_HYPER_TRIPLET1, RU_VALID_HYPER_TRIPLET2, RU_VALID_HYPER_TRIPLET3
 from typing import List
+from src.utils import AgentTaskSolver
+from src.utils import Triplet, ReturnStatus
 
-from cases import EN_VALID_HYPER_TRIPLET1, EN_VALID_HYPER_TRIPLET2, EN_VALID_HYPER_TRIPLET3,\
-      RU_VALID_HYPER_TRIPLET1, RU_VALID_HYPER_TRIPLET2, RU_VALID_HYPER_TRIPLET3
 
 RU_MATCHED_OBOSLETE_TRIPELET_2 = '["кен <- апр"]'
 RU_MATCHED_OBSOLETE_TRIPLET_2AND3 = '["кен <- апр", "кен <- мит"]'
@@ -20,15 +20,19 @@ EN_MATCHED_OBSOLETE_TRIPLET_2AND3 = '["rty <- fgh", "rty <- jkl"]'
 EN_ZERO_MATCHED_OBSOLETE_TRIPLETS = '[]'
 EN_BAD_REPONSE_TRIPLET_2AND3 = '["rty fgh", "rty jkl"'
 
+
 @pytest.mark.parametrize("lang, base_thesis, incident_thesises, agent_stub_answers, expected_thesis_ids, expected_status", [
     # 1. русский язык
     # 1.1. позитивный тест
     # 1.1.1 найдена одна устаревшая связь
-    ('ru', RU_VALID_HYPER_TRIPLET1, [RU_VALID_HYPER_TRIPLET2, RU_VALID_HYPER_TRIPLET3], [RU_MATCHED_OBOSLETE_TRIPELET_2], [RU_VALID_HYPER_TRIPLET2.id], ReturnStatus.success),
+    ('ru', RU_VALID_HYPER_TRIPLET1, [RU_VALID_HYPER_TRIPLET2, RU_VALID_HYPER_TRIPLET3], [
+     RU_MATCHED_OBOSLETE_TRIPELET_2], [RU_VALID_HYPER_TRIPLET2.id], ReturnStatus.success),
     # 1.1.2 найдена несколько устаревших связей
-    ('ru', RU_VALID_HYPER_TRIPLET1, [RU_VALID_HYPER_TRIPLET2, RU_VALID_HYPER_TRIPLET3], [RU_MATCHED_OBSOLETE_TRIPLET_2AND3], [RU_VALID_HYPER_TRIPLET2.id, RU_VALID_HYPER_TRIPLET3.id], ReturnStatus.success),
+    ('ru', RU_VALID_HYPER_TRIPLET1, [RU_VALID_HYPER_TRIPLET2, RU_VALID_HYPER_TRIPLET3], [
+     RU_MATCHED_OBSOLETE_TRIPLET_2AND3], [RU_VALID_HYPER_TRIPLET2.id, RU_VALID_HYPER_TRIPLET3.id], ReturnStatus.success),
     # 1.1.3 устаревший связей не найдено
-    ('ru', RU_VALID_HYPER_TRIPLET1, [RU_VALID_HYPER_TRIPLET2, RU_VALID_HYPER_TRIPLET3], [RU_ZERO_MATCHED_OBSOLETE_TRIPLETS], [], ReturnStatus.success),
+    ('ru', RU_VALID_HYPER_TRIPLET1, [RU_VALID_HYPER_TRIPLET2, RU_VALID_HYPER_TRIPLET3], [
+     RU_ZERO_MATCHED_OBSOLETE_TRIPLETS], [], ReturnStatus.success),
     # 1.2. ошибка в formater-функции (пустой список existing-триплетов)
     ('ru', RU_VALID_HYPER_TRIPLET1, [], [], None, ReturnStatus.bad_formater),
     # 1.3. ошибка мапинга значений в user-prompt
@@ -36,17 +40,21 @@ EN_BAD_REPONSE_TRIPLET_2AND3 = '["rty fgh", "rty jkl"'
     # 1.4. ошибка генерации
     # TODO
     # 1.5. ошибка в parser-функции
-    ('ru', RU_VALID_HYPER_TRIPLET1, [RU_VALID_HYPER_TRIPLET2, RU_VALID_HYPER_TRIPLET3], [RU_BAD_REPONSE_TRIPLET_2AND3], None, ReturnStatus.bad_parser),
+    ('ru', RU_VALID_HYPER_TRIPLET1, [RU_VALID_HYPER_TRIPLET2, RU_VALID_HYPER_TRIPLET3], [
+     RU_BAD_REPONSE_TRIPLET_2AND3], None, ReturnStatus.bad_parser),
     # 1.6. ошибка в postprocessor-функции
     # TODO
     # 2. английский язык
     # 2.1. позитивный тест
     # 2.1.1 найдена одна устаревшая связь
-    ('en', EN_VALID_HYPER_TRIPLET1, [EN_VALID_HYPER_TRIPLET2, EN_VALID_HYPER_TRIPLET3], [EN_MATCHED_OBOSLETE_TRIPELET_2], [EN_VALID_HYPER_TRIPLET2.id], ReturnStatus.success),
+    ('en', EN_VALID_HYPER_TRIPLET1, [EN_VALID_HYPER_TRIPLET2, EN_VALID_HYPER_TRIPLET3], [
+     EN_MATCHED_OBOSLETE_TRIPELET_2], [EN_VALID_HYPER_TRIPLET2.id], ReturnStatus.success),
     # 2.1.2 найдена несколько устаревших связей
-    ('en', EN_VALID_HYPER_TRIPLET1, [EN_VALID_HYPER_TRIPLET2, EN_VALID_HYPER_TRIPLET3], [EN_MATCHED_OBSOLETE_TRIPLET_2AND3], [EN_VALID_HYPER_TRIPLET2.id, EN_VALID_HYPER_TRIPLET3.id], ReturnStatus.success),
+    ('en', EN_VALID_HYPER_TRIPLET1, [EN_VALID_HYPER_TRIPLET2, EN_VALID_HYPER_TRIPLET3], [
+     EN_MATCHED_OBSOLETE_TRIPLET_2AND3], [EN_VALID_HYPER_TRIPLET2.id, EN_VALID_HYPER_TRIPLET3.id], ReturnStatus.success),
     # 2.1.3 устаревший связей не найдено
-    ('en', EN_VALID_HYPER_TRIPLET1, [EN_VALID_HYPER_TRIPLET2, EN_VALID_HYPER_TRIPLET3], [EN_ZERO_MATCHED_OBSOLETE_TRIPLETS], [], ReturnStatus.success),
+    ('en', EN_VALID_HYPER_TRIPLET1, [EN_VALID_HYPER_TRIPLET2, EN_VALID_HYPER_TRIPLET3], [
+     EN_ZERO_MATCHED_OBSOLETE_TRIPLETS], [], ReturnStatus.success),
     # 2.2. ошибка в formater-функции (пустой список existing-триплетов)
     ('en', EN_VALID_HYPER_TRIPLET1, [], [], None, ReturnStatus.bad_formater),
     # 2.3. ошибка мапинга значений в user-prompt
@@ -54,7 +62,8 @@ EN_BAD_REPONSE_TRIPLET_2AND3 = '["rty fgh", "rty jkl"'
     # 2.4. ошибка генерации
     # TODO
     # 2.5. ошибка в parser-функции
-    ('en', EN_VALID_HYPER_TRIPLET1, [EN_VALID_HYPER_TRIPLET2, EN_VALID_HYPER_TRIPLET3], [EN_BAD_REPONSE_TRIPLET_2AND3], None, ReturnStatus.bad_parser),
+    ('en', EN_VALID_HYPER_TRIPLET1, [EN_VALID_HYPER_TRIPLET2, EN_VALID_HYPER_TRIPLET3], [
+     EN_BAD_REPONSE_TRIPLET_2AND3], None, ReturnStatus.bad_parser),
     # 2.6. ошибка в postprocessor-функции
     # TODO
     # 3. ошибка при распознавании языка

@@ -12,6 +12,7 @@ from src.utils.utils2 import Logger
 # def generate(query):
 #     return "Just: just"
 
+
 def compute_time(time):
     months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     year = time // 8760 + 2018
@@ -29,12 +30,13 @@ def compute_time(time):
         day = months[month - 1]
     return f"{day}.{month}.{year}, {hour} hour"
 
+
 pipeline = transformers.pipeline(
-            "text-generation",
-            model="Undi95/Meta-Llama-3-70B-Instruct-hf",
-            model_kwargs={"torch_dtype": torch.bfloat16},
-            device_map="auto"
-        )
+    "text-generation",
+    model="Undi95/Meta-Llama-3-70B-Instruct-hf",
+    model_kwargs={"torch_dtype": torch.bfloat16},
+    device_map="auto"
+)
 agent = LLaMAagent("You are a helpful assistant", pipeline)
 
 log_path = "augment_DiaASQ_big/1"
@@ -69,7 +71,7 @@ for dialog in data["data"]:
                 break
 n = 0
 while n < 1000:
-    log("Step " + str(n + 1), verbose = False)
+    log("Step " + str(n + 1), verbose=False)
     l = randint(5, 8)
     support = triplets[np.random.choice(list(range(len(triplets))))]
     candidates = [support]
@@ -82,7 +84,7 @@ while n < 1000:
     if len(candidates) > 8:
         ids = np.random.permutation(len(candidates))[:l - 1]
         candidates = [candidates[i] for i in ids]
-    log("SOURCE: " + str(candidates), verbose = False)
+    log("SOURCE: " + str(candidates), verbose=False)
 
     raw_time = max([triplet[2]["raw_time"] for triplet in candidates]) + 24 * 7
     if raw_time > 26279:
@@ -93,7 +95,8 @@ while n < 1000:
     n_rep = randint(2, 5)
     for_rep_ids = np.random.permutation(len(candidates))[:n_rep]
     for i in for_rep_ids:
-        candidates[i][2]['sentiment'] = np.random.choice(list({"neg", "pos", "neu"} - {candidates[i][2]['sentiment']}))
+        candidates[i][2]['sentiment'] = np.random.choice(
+            list({"neg", "pos", "neu"} - {candidates[i][2]['sentiment']}))
 
     statements = []
     decode = {"neg": "negative", "pos": "positive", "neu": "neutral"}
@@ -103,12 +106,13 @@ while n < 1000:
         if candidate[2]["sentiment"] not in decode or candidate[2]["speaker"] == "Unidentified":
             flag = False
             break
-        statement = candidate[2]["speaker"] + " has " + decode[candidate[2]["sentiment"]] + " opinion about " + str(candidate[1]) + " of " + str(candidate[0])
+        statement = candidate[2]["speaker"] + " has " + decode[candidate[2]["sentiment"]
+                                                               ] + " opinion about " + str(candidate[1]) + " of " + str(candidate[0])
         statements.append(statement)
     if not flag:
         continue
     statements = "\n".join(statements)
-    log("STATEMENTS: " + statements, verbose = False)
+    log("STATEMENTS: " + statements, verbose=False)
 
     prompt = f'''EXAMPLE:
 STATEMENTS: Matthew has positive opinion about screen of Mi 10pro
@@ -150,12 +154,13 @@ Dialog must not contain words "positive", "negative", "neutral".
 You must write only dialog and nothing else.
 DIALOG: '''
     dialog = agent.generate(prompt)[0].strip()
-    log("DIALOG: " + dialog, verbose = False)
+    log("DIALOG: " + dialog, verbose=False)
     utterances = dialog.split("\n")
     # if np.any([":" not in utterance for utterance in utterances]):
     #     log("INCORRECT DIALOG", verbose = False)
     #     continue
-    dialog = "\n".join([utterance for utterance in utterances if ":" in utterance])
+    dialog = "\n".join(
+        [utterance for utterance in utterances if ":" in utterance])
 
     for triplet in candidates:
         name, target, option = triplet[2]["speaker"], triplet[0], triplet[1]
@@ -171,7 +176,7 @@ What did {name} said about {option} of {target}? Just cite with no more than 3 w
         # if "sentiment" in triplet[2]:
         #     triplet[2].pop("sentiment")
 
-    log("NEW TRIPLETS: " + str(candidates), verbose = False)
+    log("NEW TRIPLETS: " + str(candidates), verbose=False)
     data["data"].append({
         "text_dialog": dialog,
         "raw_time": raw_time,

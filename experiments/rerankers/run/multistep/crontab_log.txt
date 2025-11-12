@@ -1,0 +1,24 @@
+Existing param-files: bm25_e5large(e5_multistep_hotpotqa).yaml
+bm25_e5large(e5_multistep_rubqdev).yaml
+bm25_e5large_frida(e2_multistep_hotpotqa).yaml
+bm25_e5large_frida(e2_multistep_rubqdev).yaml
+bm25_frida(e6_multistep_hotpotqa).yaml
+bm25_frida(e6_multistep_rubqdev).yaml
+bm25_frida_e5large(e1_multistep_hotpotqa).yaml
+bm25_frida_e5large(e1_multistep_rubqdev).yaml
+e5large_frida(e3_multistep_hotpotqa).yaml
+e5large_frida(e3_multistep_rubqdev).yaml
+frida_e5large(e4_multistep_hotpotqa).yaml
+frida_e5large(e4_multistep_rubqdev).yaml
+Current param_file: bm25_e5large(e5_multistep_hotpotqa).yaml
+Current param_file: bm25_e5large(e5_multistep_rubqdev).yaml
+Current param_file: bm25_e5large_frida(e2_multistep_hotpotqa).yaml
+Current param_file: bm25_e5large_frida(e2_multistep_rubqdev).yaml
+Current param_file: bm25_frida(e6_multistep_hotpotqa).yaml
+Current param_file: bm25_frida(e6_multistep_rubqdev).yaml
+Current param_file: bm25_frida_e5large(e1_multistep_hotpotqa).yaml
+Current param_file: bm25_frida_e5large(e1_multistep_rubqdev).yaml
+Current param_file: e5large_frida(e3_multistep_hotpotqa).yaml
+Current param_file: e5large_frida(e3_multistep_rubqdev).yaml
+Current param_file: frida_e5large(e4_multistep_hotpotqa).yaml
+Current param_file: frida_e5large(e4_multistep_rubqdev).yaml

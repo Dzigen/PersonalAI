@@ -1,74 +1,91 @@
 from dataclasses import dataclass, field
-from typing import Union, List, Tuple
+from typing import List, Tuple, Dict, Union
 from copy import deepcopy
 
-from .configs import KC_MAIN_LOG_PATH
+from .configs import KC_MAIN_LOG_PATH, KC_RERANKDRIVER_DEFAULT_CONFIG
 from ......utils import Logger, ReturnStatus, ReturnInfo
 from ......utils.errors import STATUS_MESSAGE
-from ......utils.data_structs import QueryInfo, create_id
+from ......utils.data_structs import QueryInfo, create_id, NodeType, BaseComponentConfig, NodeInfo
 from ......kg_model import KnowledgeGraphModel
 from ......db_drivers.vector_driver import VectorDBInstance
-from ......utils.cache_kv import CacheKV, CacheUtils
+from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
+from ......rerankers import RerankerDriver, RerankerDriverConfig
+from ......utils.cache_kv.CacheOperations import CacheOperations
+
 
 @dataclass
-class KnowledgeComparatorConfig:
+class KnowledgeComparatorConfig(BaseComponentConfig):
     """Конфигурация "Knowledge Comparator"-стадии QA-конвейера.
-
-    :param threshold: Нижний порог близости между эмбеддингами сущностей и вершин для их сопоставления (matching). Значение по умолчанию 0.5.
-    :type threshold: float
-    :param fetch_n: Служебный гиперпараметр. Значение по умолчанию 20.
-    :type fetch_n: int
-    :param max_k: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 1.
-    :type max_k: int
-    :param k_compare: Значение по умолчанию 5.
-    :type k_compare: int
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(COMPARATOR_LOG_PATH).
-    :type log: Logger
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool
+    :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию KC_RERANKDRIVER_DEFAULT_CONFIG.
+    :type reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
+    :param max_K: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 1.
+    :type max_k: int, optional
+    :param k_compare: Служебный гиперпараметр. Значение по умолчанию 5.
+    :type k_compare: int, optional
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы KnowledgeComparator-класса. Значение по умолчанию 'qa_kcomparator_stage_cache'.
+    :type cache_table_name: str, optional
     """
-    threshold: float = 0.5
-    fetch_n: int = 20
+    reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(default_factory=lambda: KC_RERANKDRIVER_DEFAULT_CONFIG)
     max_k: int = 1
     k_compare: int = 5
 
-    cache_table_name: Union[str, None] = 'qa_kcomparator_stage_cache'
-
+    cache_table_name: str = 'qa_kcomparator_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(KC_MAIN_LOG_PATH))
-    verbose: bool = False
 
     def to_str(self):
-        return f"{self.threshold};{self.fetch_n};{self.max_k}:{self.k_compare}"
+        return f"{self.reranker_driver_config.to_str()};{self.max_k}:{self.k_compare}"
 
-class KnowledgeComparator(CacheUtils):
-    """Верхнеуровневый класс второй стадии QA-конвейера для сопоставления информации из user-вопроса
-    с имеющейся информацией в памяти (графе знаний) ассистента.
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = KnowledgeComparatorConfig(**dictconfig_copy)
+        formated_config.formate_fields()
+        return formated_config
+
+    def formate_fields(self):
+        if isinstance(self.reranker_driver_config, dict):
+            self.reranker_driver_config = RerankerDriverConfig.from_dict(self.reranker_driver_config)
+        else:
+            self.reranker_driver_config.formate_fields()
+
+
+class KnowledgeComparator(CacheUtils, CacheOperations):
+    """Верхнеуровневый класс второй стадии QA-конвейера для сопоставления информации из user-вопроса с имеющейся информацией в памяти (графе знаний) ассистента.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация "Knowledge Comparator"-стадии. Значение по умолчанию KnowledgeComparatorConfig().
-    :type config: KnowledgeComparatorConfig
+    :type config: Union[KnowledgeComparatorConfig,Dict], optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
-    def __init__(self, kg_model: KnowledgeGraphModel, config: KnowledgeComparatorConfig = KnowledgeComparatorConfig(),
+
+    def __init__(self, kg_model: KnowledgeGraphModel, config: Union[KnowledgeComparatorConfig, Dict] = KnowledgeComparatorConfig(),
                  cache_kvdriver_config: KeyValueDriverConfig = None) -> None:
+        if isinstance(config, dict):
+            config: KnowledgeComparatorConfig = KnowledgeComparatorConfig.from_dict(config)
+        else:
+            config.formate_fields()
         self.config = config
-        self.log = self.config.log
-        self.verbose = self.config.verbose
+
         self.kg_model = kg_model
 
-        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
-            cache_config = deepcopy(cache_kvdriver_config)
-            cache_config.db_config.db_info['table'] = self.config.cache_table_name
-            self.cachekv = CacheKV(cache_config)
-        else:
-            self.cachekv = None
+        self.cachekv = self.init_cachekv(
+            cache_kvdriver_config, config.cache_table_name)
+
+        self.retriever = RerankerDriver.specify(
+            self.config.reranker_driver_config,
+            kg_model.graph_embeddings.nodes_vcomposers[NodeType.object])
+
+        self.log = self.config.log
+        self.verbose = self.config.verbose
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
         return [self.config.to_str(), query_info.to_str()]
 
     @CacheUtils.cache_method_output
-    def link_kgnodes_to_query(self, query_info: QueryInfo) -> Tuple[List[object], List[object], ReturnInfo]:
+    def link_kgnodes_to_query(self, query_info: QueryInfo) -> Tuple[List[NodeInfo], List[object], ReturnInfo]:
         """Метод предназначен для сопоставления (матчинга) сущностей, извлечённых из user-вопроса, с вершинами из графа знаний ассистента.
 
         :param query_structure: Структура данных, которая хранит user-вопрос и извлечённые из него сущности.
@@ -77,24 +94,23 @@ class KnowledgeComparator(CacheUtils):
         :rtype: ReturnInfo
         """
 
-        self.log("START MATCHING KEY WORDS ...", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.config.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.config.verbose)
-        self.log(f"ENTITIES: {query_info.entities}", verbose=self.config.verbose)
+        self.log("START MATCHING KEY WORDS ...", verbose=self.verbose)
+        self.log(
+            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
+        self.log(f"ENTITIES: {query_info.entities}", verbose=self.verbose)
 
         info = ReturnInfo()
-        linked_nodes_by_entities, linked_nodes, linked_scores = [], [], []
+        linked_nodes: List[NodeInfo] = []
+        linked_nodes_by_entities = []
 
         for entity in query_info.entities:
-            entity_embedding = self.kg_model.embeddings_struct.embedder.encode_queries([entity])[0]
-            entity_instance = VectorDBInstance(embedding=entity_embedding)
 
-            nodes_with_scores = self.kg_model.embeddings_struct.vectordbs['nodes'].retrieve(
-                [entity_instance], n_results=self.config.fetch_n)[0]
-            filtered_nodes = list(filter(lambda node_item: node_item[0] < self.config.threshold, nodes_with_scores))
-            cur_linked_nodes = list(map(lambda node_item: node_item[1], filtered_nodes))
-            linked_nodes += cur_linked_nodes[:self.config.max_k]
-            linked_scores += list(map(lambda node_item: node_item[0], filtered_nodes))[:self.config.max_k]
+            cur_linked_nodes: List[VectorDBInstance] = self.retriever.run(entity, top_k=self.config.max_k)
+            linked_nodes += list(map(
+                lambda node: NodeInfo(id=node.id, type=NodeType.object, text=node.document),
+                cur_linked_nodes
+            ))
 
             cur_documents = list(map(lambda item: item.document, cur_linked_nodes))
             cur_documents_lower = list(map(lambda document: document.lower(), cur_documents))
@@ -107,11 +123,11 @@ class KnowledgeComparator(CacheUtils):
         if len(linked_nodes) == 0:
             info.status = ReturnStatus.zero_linked_nodes
             info.message = STATUS_MESSAGE[info.status]
+        else:
+            self.log(f"RESULT: {len(linked_nodes)}", verbose=self.verbose)
+            for i, node in enumerate(linked_nodes):
+                self.log(f"{i}. {node}", verbose=self.verbose)
 
-        self.log(f"RESULT: {len(linked_nodes)}", verbose=self.config.verbose)
-        for score, node in zip(linked_scores,linked_nodes):
-            self.log(f"*[{node.id}] {score} | {node.document}", verbose=self.config.verbose)
-
-        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.config.verbose)
+        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.verbose)
 
         return linked_nodes, linked_nodes_by_entities, info

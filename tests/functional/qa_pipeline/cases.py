@@ -1,237 +1,40 @@
-import sys
-from copy import deepcopy
-from functools import reduce
 
-# TO CHANGE
-PROJECT_BASE_DIR = '../'
-TEST_VOLUME_DIR = './volumes'
-sys.path.insert(0, PROJECT_BASE_DIR)
+RAW_TEXTS = {
+    'en': [
+        "Students living in the dormitory have the right to 24-hour access to their place of residence.",
+        "Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship).",
+        "Students living in the dormitory have the right to use the rooms for independent study and cultural and household premises, equipment, inventory of the dormitory.",
+        "Students living in the dormitory have the right to contact the administration of the building with requests for timely repairs, replacement of equipment and inventory that failed through no fault of theirs.",
+        "Students living in the dormitory have the right to move from one room to another in the same building, as well as to move from one building to another if there are vacancies, with the consent of the administration buildings.",
+        "Students living in the dormitory have the right to participate in the formation and election of the MSG Student Council and to be elected to its composition.",
+        "Students living in the dormitory have the right to participate (make proposals) through the MSG Student Council and the youth policy department of the FSBI 'MSG' in resolving issues of improving housing and living conditions, organizing educational work and leisure.",
+        "Students living in the dormitory have the right to take part in social, sports and cultural and leisure events organized by the administration of the FSBI 'MSG' and the MSG Student Council.",
+        "Students living in the dormitory have the right to use permitted household appliances in compliance with safety regulations and fire safety regulations.",
+        "Students living in the dormitory have the right to visit the Interuniversity Educational and Sports Center free of charge at a time approved by the administration of the FSBI 'MSG' and agreed upon with the MSG Student Council."
+    ],
+    'ru': [
+        "Проживающие в общежитии студенты имеют право rруглосуточного доступа к месту проживания.",
+        "Проживающие в общежитии студенты имеют право обратиться к администрации ФГБУ «МСГ» с заявлением, заверенным заведующим общежития, о размещении в гостевых комнатах общежития родственников (на короткий период пребывания, не менее 2-х суток), родителей - на любой срок (при предоставлении документа, подтверждающего степень родства).",
+        "Проживающие в общежитии студенты имеют право пользоваться помещениями для самостоятельных занятий и помещениями культурно-бытового назначения, оборудованием, инвентарем общежития.",
+        "Проживающие в общежитии студенты имеют право обращаться к администрации корпуса с просьбами о своевременном ремонте, замене оборудования и инвентаря, вышедшего из строя не по их вине.",
+        "Проживающие в общежитии студенты имеют право на переселение из одного помещения в другое в том же корпусе, а также на переселение из одного корпуса в другой при наличии свободных мест, с согласия администрации корпуса.",
+        "Проживающие в общежитии студенты имеют право участвовать в формировании и выборах Студенческого совета МСГ и быть избранным в его состав.",
+        "Проживающие в общежитии студенты имеют право участвовать (вносить предложения) через Студенческий совет МСГ и отдел по молодежной политике ФГБУ «МСГ» в решении вопросов совершенствования жилищно-бытовых условий, организации воспитательной работы и досуга.",
+        "Проживающие в общежитии студенты имеют право принимать участие в общественных, спортивных и культурно-досуговых мероприятиях, организованных администрацией ФГБУ «МСГ» и Студенческим советом МСГ.",
+        "Проживающие в общежитии студенты имеют право пользоваться разрешенной бытовой техникой с соблюдением правил техники безопасности и правил пожарной безопасности.",
+        "Проживающие в общежитии студенты имеют право бесплатно посещать Межвузовский  учебно-спортивный центр в утвержденное администрацией ФГБУ «МСГ» и согласованное со Студенческим советом МСГ время.",
+        "Проживающие в общежитии студенты имеют право бесплатно посещать душевой комплекс с сауной ФГБУ «МСГ» в отведенное администрацией ФГБУ «МСГ» время.",
+    ]
 
-from src.pipelines.qa import QAPipelineConfig
-from src.agents.AgentDriver import AgentDriverConfig, AgentConnectorConfig
-from src.db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
-from src.utils.data_structs import NodeType
+}
 
-from src.pipelines.qa.kg_reasoning.KGReasoner import KnowledgeGraphReasonerConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner import WeakKGReasonerConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser import QueryLLMParserConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator import KnowledgeComparatorConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever import KnowledgeRetrieverConfig, AStarGraphSearchConfig, \
-    AStarMetricsConfig, WaterCirclesSearchConfig,  MixturedGraphSearchConfig, NaiveBFSGraphSearchConfig, \
-        NaiveGraphSearchConfig, GraphBeamSearchConfig, TripletsFilterConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator import QALLMGeneratorConfig
-
-from src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction import AgentKWETaskConfigSelector
-from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag import AgentAGTaskConfigSelector
-
-RAW_TEXTS_EN = [
-    "Students living in the dormitory have the right to 24-hour access to their place of residence.",
-    "Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship).",
-    "Students living in the dormitory have the right to use the rooms for independent study and cultural and household premises, equipment, inventory of the dormitory.",
-    "Students living in the dormitory have the right to contact the administration of the building with requests for timely repairs, replacement of equipment and inventory that failed through no fault of theirs.",
-    "Students living in the dormitory have the right to move from one room to another in the same building, as well as to move from one building to another if there are vacancies, with the consent of the administration buildings.",
-    "Students living in the dormitory have the right to participate in the formation and election of the MSG Student Council and to be elected to its composition.",
-    "Students living in the dormitory have the right to participate (make proposals) through the MSG Student Council and the youth policy department of the FSBI 'MSG' in resolving issues of improving housing and living conditions, organizing educational work and leisure.",
-    "Students living in the dormitory have the right to take part in social, sports and cultural and leisure events organized by the administration of the FSBI 'MSG' and the MSG Student Council.",
-]
-
-EN_QUESTIONS = [
-    "Do students living in a dormitory have 24-hour access to their accommodation?",
-    "Can students contact the administration with questions?",
-    "Can students living in the dormitory take part in events organized by the administration of 'MSG'?"]
-
-AGENT_DRIVER_CONFIG = AgentDriverConfig(
-    name='ollama',
-    agent_config=AgentConnectorConfig(
-        gen_strategy={"num_predict": 2048, "seed": 42, "top_k": 1, "temperature": 0.0},
-        credentials={"host": 'localhost', "port": 11437},
-        ext_params={"model": 'qwen2.5:7b', "timeout": 560, "keep_alive": -1}))
-
-KV_CACHE_CONFIG = KeyValueDriverConfig(
-    db_vendor='mixed_kv',
-    db_config=KVDBConnectionConfig(
-        need_to_clear=False,
-        params={
-            'mongo_config': KVDBConnectionConfig(
-                host='localhost', port=27017,
-                db_info={'db': 'memorize_db', 'table': None},
-                params={'username': 'user', 'password': 'pass', 'max_storage': -1},
-                need_to_clear=False),
-            'redis_config': KVDBConnectionConfig(
-                host='localhost', port=6379,
-                db_info={'db': 0, 'table': None},
-                params={'ss_name': 'sorted_node_pairs', 'hs_name': 'node_pairs', 'max_storage': 50000000},
-                need_to_clear=False)}))
-
-BASE_QA_CONFIG = QAPipelineConfig(
-    reasoner_config=KnowledgeGraphReasonerConfig(
-        reasoner_name='weak',
-        reasoner_hyperparameters=WeakKGReasonerConfig(
-            query_parser_config=QueryLLMParserConfig(
-                lang='en', adriver_config=AGENT_DRIVER_CONFIG,
-                kw_extraction_task_config=...),
-            knowledge_comparator_config=KnowledgeComparatorConfig(),
-            knowledge_retriever_config=KnowledgeRetrieverConfig(
-                retriever_method=...,
-                retriever_config=...,
-                filter_method=...,
-                filter_config=...),
-            answer_generator_config=QALLMGeneratorConfig(
-                lang='en',
-                adriver_config=AGENT_DRIVER_CONFIG,
-                ag_task_config=...))))
-
-# Различные конфиги qa-пайплайна
-
-# astar (w and w/o caching)
-QA_V1_CONFIG1 = deepcopy(BASE_QA_CONFIG)
-QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v1')
-QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method='astar'
-QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config=AStarGraphSearchConfig()
-QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method='naive'
-QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config=TripletsFilterConfig()
-QA_V1_CONFIG1.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentAGTaskConfigSelector.select(base_config_version='v1')
-
-QA_V2_CONFIG1 = deepcopy(QA_V1_CONFIG1)
-QA_V2_CONFIG1.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v2')
-QA_V2_CONFIG1.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentAGTaskConfigSelector.select(base_config_version='v2')
-
-# beamsearch (w and w/o caching)
-QA_V1_CONFIG2 = deepcopy(BASE_QA_CONFIG)
-QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v1')
-QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method='beamsearch'
-QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config=GraphBeamSearchConfig()
-QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method='naive'
-QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config=TripletsFilterConfig()
-QA_V1_CONFIG2.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentAGTaskConfigSelector.select(base_config_version='v1')
-
-QA_V2_CONFIG2 = deepcopy(QA_V1_CONFIG2)
-QA_V2_CONFIG2.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v2')
-QA_V2_CONFIG2.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentAGTaskConfigSelector.select(base_config_version='v2')
-
-
-# water circles (w and w/o caching)
-QA_V1_CONFIG3 = deepcopy(BASE_QA_CONFIG)
-QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v1')
-QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method='watercircles'
-QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config=WaterCirclesSearchConfig()
-QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method='naive'
-QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config=TripletsFilterConfig()
-QA_V1_CONFIG3.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentAGTaskConfigSelector.select(base_config_version='v1')
-
-QA_V2_CONFIG3 = deepcopy(QA_V1_CONFIG3)
-QA_V2_CONFIG3.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v2')
-QA_V2_CONFIG3.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentAGTaskConfigSelector.select(base_config_version='v2')
-
-# naive rag (w and w/o caching)
-QA_V1_CONFIG4 = deepcopy(BASE_QA_CONFIG)
-QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.query_parser_config =None
-QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method='naive_retriever'
-QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config=NaiveGraphSearchConfig()
-QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method=None
-QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config=None
-QA_V1_CONFIG4.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentAGTaskConfigSelector.select(base_config_version='v1')
-
-QA_V2_CONFIG4 = deepcopy(QA_V1_CONFIG4)
-QA_V2_CONFIG4.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentAGTaskConfigSelector.select(base_config_version='v2')
-
-# bfs (w and w/o caching)
-QA_V1_CONFIG5 = deepcopy(BASE_QA_CONFIG)
-QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v1')
-QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method='naive_bfs'
-QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config=NaiveBFSGraphSearchConfig()
-QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method='naive'
-QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config=TripletsFilterConfig()
-QA_V1_CONFIG5.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentAGTaskConfigSelector.select(base_config_version='v1')
-
-QA_V2_CONFIG5 = deepcopy(QA_V1_CONFIG5)
-QA_V2_CONFIG5.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v2')
-QA_V2_CONFIG5.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentAGTaskConfigSelector.select(base_config_version='v2')
-
-# mixture (astar + beamsearch) (w and w/o caching)
-QA_V1_CONFIG6 = deepcopy(BASE_QA_CONFIG)
-QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v1')
-QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method='mixture'
-QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config=MixturedGraphSearchConfig(
-    retriever1_name='astar', retriever1_config=AStarGraphSearchConfig(),
-    retriever2_name='beamsearch', retriever2_config=GraphBeamSearchConfig())
-QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method='naive'
-QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config=TripletsFilterConfig()
-QA_V1_CONFIG6.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentAGTaskConfigSelector.select(base_config_version='v1')
-
-QA_V2_CONFIG6 = deepcopy(QA_V1_CONFIG6)
-QA_V2_CONFIG6.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v2')
-QA_V2_CONFIG6.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentAGTaskConfigSelector.select(base_config_version='v2')
-
-# mixture (astar + watercircles) (w and w/o caching)
-QA_V1_CONFIG7 = deepcopy(BASE_QA_CONFIG)
-QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v1')
-QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method='mixture'
-QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config=MixturedGraphSearchConfig(
-    retriever1_name='astar', retriever1_config=AStarGraphSearchConfig(),
-    retriever2_name='watercircles', retriever2_config=WaterCirclesSearchConfig())
-QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method='naive'
-QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config=TripletsFilterConfig()
-QA_V1_CONFIG7.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentAGTaskConfigSelector.select(base_config_version='v1')
-
-QA_V2_CONFIG7 = deepcopy(QA_V1_CONFIG7)
-QA_V2_CONFIG7.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v2')
-QA_V2_CONFIG7.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentAGTaskConfigSelector.select(base_config_version='v2')
-
-# mixture (watercircles + beamsearch) (w and w/o caching)
-QA_V1_CONFIG8 = deepcopy(BASE_QA_CONFIG)
-QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v1')
-QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method='mixture'
-QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config=MixturedGraphSearchConfig(
-    retriever1_name='beamsearch', retriever1_config=GraphBeamSearchConfig(),
-    retriever2_name='watercircles', retriever2_config=WaterCirclesSearchConfig())
-QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_method='naive'
-QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.filter_config=TripletsFilterConfig()
-QA_V1_CONFIG8.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentAGTaskConfigSelector.select(base_config_version='v1')
-
-QA_V2_CONFIG8 = deepcopy(QA_V1_CONFIG8)
-QA_V2_CONFIG8.reasoner_config.reasoner_hyperparameters.query_parser_config.kw_extraction_task_config= AgentKWETaskConfigSelector.select(base_config_version='v2')
-QA_V2_CONFIG8.reasoner_config.reasoner_hyperparameters.answer_generator_config.ag_task_config=AgentAGTaskConfigSelector.select(base_config_version='v2')
-
-
-def populate_configs_with_diff_accepted_nodes(config: QAPipelineConfig):
-    anodes_packs = [[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time],
-                    [NodeType.object, NodeType.hyper, NodeType.time],
-                    [NodeType.object, NodeType.episodic, NodeType.time],
-                    [NodeType.hyper, NodeType.episodic, NodeType.time]]
-
-    populated_configs = []
-    if config.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_method == 'naive_retriever':
-        populated_configs = [config]
-    else:
-        for n_pack in anodes_packs:
-            modif_config = deepcopy(config)
-            modif_config.reasoner_config.reasoner_hyperparameters.knowledge_retriever_config.retriever_config.accepted_node_types = n_pack
-            populated_configs.append(modif_config)
-
-    return populated_configs
-
-
-QA_V1_CONFIGS = reduce(lambda acc, v: acc + v,list(map(populate_configs_with_diff_accepted_nodes,[
-    QA_V1_CONFIG1, QA_V1_CONFIG2, QA_V1_CONFIG3, QA_V1_CONFIG4,
-    QA_V1_CONFIG5, QA_V1_CONFIG6, QA_V1_CONFIG7, QA_V1_CONFIG8])),[])
-
-QA_V2_CONFIGS = reduce(lambda acc, v: acc + v,list(map(populate_configs_with_diff_accepted_nodes,[
-    QA_V2_CONFIG1, QA_V2_CONFIG2, QA_V2_CONFIG3, QA_V2_CONFIG4,
-    QA_V2_CONFIG5, QA_V2_CONFIG6, QA_V2_CONFIG7, QA_V2_CONFIG8])),[])
-
-POPULATED_QA_CONFIGS = []
-for i in range(len(QA_V1_CONFIGS)):
-    POPULATED_QA_CONFIGS.append((QA_V1_CONFIGS[i], EN_QUESTIONS, True, False, False))
-for i in range(len(QA_V1_CONFIGS)):
-    POPULATED_QA_CONFIGS.append((QA_V1_CONFIGS[i], EN_QUESTIONS, False, False, False))
-for i in range(len(QA_V1_CONFIGS)):
-    POPULATED_QA_CONFIGS.append((QA_V1_CONFIGS[i], [], True, True, False))
-
-for i in range(len(QA_V2_CONFIGS)):
-    POPULATED_QA_CONFIGS.append((QA_V2_CONFIGS[i], EN_QUESTIONS, True, False, False))
-for i in range(len(QA_V2_CONFIGS)):
-    POPULATED_QA_CONFIGS.append((QA_V2_CONFIGS[i], EN_QUESTIONS, False, False, False))
-for i in range(len(QA_V2_CONFIGS)):
-    POPULATED_QA_CONFIGS.append((QA_V2_CONFIGS[i], [], True, True, False))
-POPULATED_QA_CONFIGS.append((POPULATED_QA_CONFIGS[-1][0], POPULATED_QA_CONFIGS[-1][1], False, False, True))
+QUESTIONS = {
+    'ru': [
+        "Какими помещениями разрешено пользоваться студентам, проживающем в общещитии МСГ?",
+        "Разрешено ли студентами, проживающим в общежитии МСГ пользоваться бытовой техникой?",
+    ],
+    'en': [
+        "What facilities are students allowed to use while living in the MSG dormitory?",
+        "Are students living in the MSG dormitory allowed to use household appliances?",
+    ]
+}

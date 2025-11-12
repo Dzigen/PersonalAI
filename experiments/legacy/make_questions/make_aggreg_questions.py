@@ -13,7 +13,8 @@ for obj, subj_rel_data in data:
             subj_rel_dict[subj] = []
         subj_rel_dict[subj].append((rel, sent))
     subj_rel_list = list(subj_rel_dict.items())
-    subj_rel_list = [element for element in subj_rel_list if len(element[1]) > 1]
+    subj_rel_list = [
+        element for element in subj_rel_list if len(element[1]) > 1]
     for subj1, rel_sent_data1 in subj_rel_list:
         for subj2, rel_sent_data2 in subj_rel_list:
             if subj1 != subj2:
@@ -29,7 +30,8 @@ for obj, subj_rel_data in data:
                     if sent == "neg":
                         neg2 += 1
                 if pos1 != pos2 and abs((pos1 - neg1) - (pos2 - neg2)) > 1 and abs((pos1 + neg1) - (pos2 + neg2)) < 3:
-                    question = question_compare_template.format(feature=obj, device1=subj1, device2=subj2)
+                    question = question_compare_template.format(
+                        feature=obj, device1=subj1, device2=subj2)
                     if pos1 > pos2:
                         answer = subj1
                     else:

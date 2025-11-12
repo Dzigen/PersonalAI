@@ -18,11 +18,13 @@ db_name = "testMem"
 neo4j_conn.execute_query(f"CREATE DATABASE {db_name} IF NOT EXISTS")
 neo4j_conn.execute_query(f"MATCH (n) DETACH DELETE n", db_name)
 
-triplets_db_config = VectorDBConnectionConfig("test_path_triplets", "test_db_triplets")
+triplets_db_config = VectorDBConnectionConfig(
+    "test_path_triplets", "test_db_triplets")
 nodes_db_config = VectorDBConnectionConfig("test_path_nodes", "test_db_nodes")
-emb_config = EmbedderModelConfig(device = "cpu")
+emb_config = EmbedderModelConfig(device="cpu")
 
-vectordb_config = EmbeddingsDatabaseConnectionConfig(nodes_db_config, triplets_db_config, emb_config)
+vectordb_config = EmbeddingsDatabaseConnectionConfig(
+    nodes_db_config, triplets_db_config, emb_config)
 
 vectordb_conn = EmbeddingsDatabaseConnection(vectordb_config)
 
@@ -30,11 +32,13 @@ kg_model = KnowledgeGraphModel(neo4j_conn, vectordb_conn)
 
 bfs = BFSRetriever(kg_model)
 
-mem_pipe = MemPipeline(mem_pipe_config, llm_agent, bfs, neo4j_conn, vectordb_conn, db_name)
+mem_pipe = MemPipeline(mem_pipe_config, llm_agent, bfs,
+                       neo4j_conn, vectordb_conn, db_name)
 
 with open("Augment_DiaASQ.json") as f:
     data = json.load(f)
 
 facts = [dialog["text_dialog"] for dialog in data["data"]][:15]
 for fact in facts:
-    mem_pipe.remember(fact, node_prop={}, rel_prop = {"time": 1}, need_thesises=True, need_simple=False)
+    mem_pipe.remember(fact, node_prop={}, rel_prop={"time": 1},
+                      need_thesises=True, need_simple=False)

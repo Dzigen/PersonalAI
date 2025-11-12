@@ -21,7 +21,8 @@ def init_logger(args, stdout_only=False):
     stdout_handler = logging.StreamHandler(sys.stdout)
     handlers = [stdout_handler]
     if not stdout_only:
-        file_handler = logging.FileHandler(filename=os.path.join(args.output_dir, "run.log"))
+        file_handler = logging.FileHandler(
+            filename=os.path.join(args.output_dir, "run.log"))
         handlers.append(file_handler)
     logging.basicConfig(
         datefmt="%m/%d/%Y %H:%M:%S",
@@ -85,7 +86,7 @@ def load(model_class, dir_path, opt, reset_params=False):
     return model, optimizer, scheduler, opt_checkpoint, step
 
 
-############ OPTIM
+# OPTIM
 
 
 class WarmupLinearScheduler(torch.optim.lr_scheduler.LambdaLR):
@@ -93,7 +94,8 @@ class WarmupLinearScheduler(torch.optim.lr_scheduler.LambdaLR):
         self.warmup = warmup
         self.total = total
         self.ratio = ratio
-        super(WarmupLinearScheduler, self).__init__(optimizer, self.lr_lambda, last_epoch=last_epoch)
+        super(WarmupLinearScheduler, self).__init__(
+            optimizer, self.lr_lambda, last_epoch=last_epoch)
 
     def lr_lambda(self, step):
         if step < self.warmup:
@@ -101,7 +103,8 @@ class WarmupLinearScheduler(torch.optim.lr_scheduler.LambdaLR):
 
         return max(
             0.0,
-            1.0 + (self.ratio - 1) * (step - self.warmup) / float(max(1.0, self.total - self.warmup)),
+            1.0 + (self.ratio - 1) * (step - self.warmup) /
+            float(max(1.0, self.total - self.warmup)),
         )
 
 
@@ -110,7 +113,8 @@ class CosineScheduler(torch.optim.lr_scheduler.LambdaLR):
         self.warmup = warmup
         self.total = total
         self.ratio = ratio
-        super(CosineScheduler, self).__init__(optimizer, self.lr_lambda, last_epoch=last_epoch)
+        super(CosineScheduler, self).__init__(
+            optimizer, self.lr_lambda, last_epoch=last_epoch)
 
     def lr_lambda(self, step):
         if step < self.warmup:
@@ -146,7 +150,8 @@ def get_parameters(net, verbose=False):
     num_params = 0
     for param in net.parameters():
         num_params += param.numel()
-    message = "[Network] Total number of parameters : %.6f M" % (num_params / 1e6)
+    message = "[Network] Total number of parameters : %.6f M" % (
+        num_params / 1e6)
     return message
 
 

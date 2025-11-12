@@ -1,18 +1,20 @@
 import pytest
 import sys
-
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.pipelines.memorize.updator.configs import DEFAULT_REPLACE_THESIS_TASK_CONFIG, DEFAULT_REPLACE_SIMPLE_TASK_CONFIG
-from src.agents.connectors.StubAgentConnector import StubAgentConnector
 from src.utils import AgentTaskSolver
+from src.agents.connectors.StubAgentConnector import StubAgentConnector
+from src.pipelines.memorize.updator.config import MEMUPDATOR_AGENTASKS_SELECTORS_MAPPING
 
 @pytest.fixture(scope='package')
 def replace_simple_agent_solver():
-    return AgentTaskSolver(agent=StubAgentConnector(), config=DEFAULT_REPLACE_SIMPLE_TASK_CONFIG)
+    atask_config = MEMUPDATOR_AGENTASKS_SELECTORS_MAPPING['replace_simple'].select(base_config_version='v1')
+    return AgentTaskSolver(agent=StubAgentConnector(), config=atask_config)
+
 
 @pytest.fixture(scope='package')
 def replace_thesis_agent_solver():
-    return AgentTaskSolver(agent=StubAgentConnector(), config=DEFAULT_REPLACE_THESIS_TASK_CONFIG)
+    atask_config = MEMUPDATOR_AGENTASKS_SELECTORS_MAPPING['replace_thesis'].select(base_config_version='v1')
+    return AgentTaskSolver(agent=StubAgentConnector(), config= atask_config)

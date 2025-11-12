@@ -19,14 +19,16 @@ else:
     triplet_str_list = []
     triplet_keys_list = []
     for subj, rel, obj, rel_data in total_triplets:
-        subj_str = ", ".join([f"{key}: {value}" for key, value in subj.items()])
+        subj_str = ", ".join(
+            [f"{key}: {value}" for key, value in subj.items()])
         obj_str = ", ".join([f"{key}: {value}" for key, value in obj.items()])
         rel_data_items = list(rel_data.items())
         rel_data_items = [(key, value) for key, value in rel_data_items
                           if key not in ["raw_time", "time", "sentiment"]]
         rel_data_items = sorted(rel_data_items, key=lambda x: x[0])
         rel_data_values = [element[1].lower() for element in rel_data_items]
-        rel_data_str = ", ".join([f"{key}: {value}" for key, value in rel_data_items])
+        rel_data_str = ", ".join(
+            [f"{key}: {value}" for key, value in rel_data_items])
         triplet_str = f"{subj_str}, {rel}, {obj_str}, {rel_data_str}"
         subj_values = [val.lower() for val in subj.values()]
         obj_values = [val.lower() for val in obj.values()]
@@ -34,7 +36,8 @@ else:
         triplet_keys_list.append(tuple(keys))
         triplet_str_list.append(triplet_str)
 
-    print("triplet_keys_list", len(triplet_keys_list), "triplet_str_list", len(triplet_str_list))
+    print("triplet_keys_list", len(triplet_keys_list),
+          "triplet_str_list", len(triplet_str_list))
     with open("triplet_keys.txt", 'w') as out:
         for keys, triplet_str in zip(triplet_keys_list, triplet_str_list):
             out.write(f"{keys} --- {triplet_str}"+'\n')
@@ -43,7 +46,8 @@ else:
 
     triplet_embs_dict = {}
     chunk_size = 1000
-    num_chunks = len(triplet_str_list) // chunk_size + int(len(triplet_str_list) % chunk_size > 0)
+    num_chunks = len(triplet_str_list) // chunk_size + \
+        int(len(triplet_str_list) % chunk_size > 0)
     for i in range(num_chunks):
         keys_chunk = triplet_keys_list[i*chunk_size:(i+1)*chunk_size]
         str_chunk = triplet_str_list[i*chunk_size:(i+1)*chunk_size]
@@ -56,7 +60,8 @@ else:
     with open("triplet_embs.pickle", 'wb') as out:
         pickle.dump(triplet_embs_dict, out)
 
-conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password", embs_dict=triplet_embs_dict)
+conn = Neo4jConnection(uri="bolt://31.207.47.254:7687",
+                       user="neo4j", pwd="password", embs_dict=triplet_embs_dict)
 
 use_embs = True
 if use_embs:
@@ -90,6 +95,7 @@ pipeline = transformers.pipeline(
     max_new_tokens=200
 )
 
+
 def process_chain(chain, chain_subj_obj, chain_triplets):
     for triplet in chain:
         subj = triplet[0].items()
@@ -99,7 +105,8 @@ def process_chain(chain, chain_subj_obj, chain_triplets):
         subj = str(subj)
         obj = str(obj)
         rel_props = triplet[2].items()
-        rel_props = [(key, value) for key, value in rel_props if key not in ["raw_time", "time"]]
+        rel_props = [(key, value)
+                     for key, value in rel_props if key not in ["raw_time", "time"]]
         rel_props = sorted(rel_props, key=lambda x: x[0])
         rel_props = str(rel_props)
         if (subj, obj, rel_props) not in chain_subj_obj and (obj, subj, rel_props) not in chain_subj_obj \
@@ -113,7 +120,8 @@ def process_inters_chains1(inters_chains1):
     chain_triplets1 = []
     chain_subj_obj1 = set()
     for chain in inters_chains1:
-        chain_subj_obj1, chain_triplets1 = process_chain(chain, chain_subj_obj1, chain_triplets1)
+        chain_subj_obj1, chain_triplets1 = process_chain(
+            chain, chain_subj_obj1, chain_triplets1)
     return chain_triplets1
 
 
@@ -121,8 +129,10 @@ def process_inters_chains2(inters_chains2):
     chain_triplets2 = []
     chain_subj_obj2 = set()
     for chain1, chain2, *_ in inters_chains2:
-        chain_subj_obj2, chain_triplets2 = process_chain(chain1, chain_subj_obj2, chain_triplets2)
-        chain_subj_obj2, chain_triplets2 = process_chain(chain2, chain_subj_obj2, chain_triplets2)
+        chain_subj_obj2, chain_triplets2 = process_chain(
+            chain1, chain_subj_obj2, chain_triplets2)
+        chain_subj_obj2, chain_triplets2 = process_chain(
+            chain2, chain_subj_obj2, chain_triplets2)
     return chain_triplets2
 
 
@@ -158,19 +168,19 @@ in_cont_embs = retriever.embed(in_context_questions)
 num_in_cont = 3
 
 for flname, depth in [
-        #["compare_questions.json", 1],
-        ["compare_sentiment.json", 1],
-        #["compare_sentiment_synonims.json", 1],
-        #["device_sentiment.json", 1],
-        ["same_devices.json", 1],
-        #["same_manufacturer.json", 2]
-        #["similar_device_opinions.json", 2],
-        ["similar_manf_opinions.json", 2]
-        #["which_people_about_device.json", 1],
-        #["which_people_about_device_synonims.json", 1],
-        #["dominant_opinion.json", 1],
-        #["last_opinion.json", 1]
-    ]:
+    # ["compare_questions.json", 1],
+    ["compare_sentiment.json", 1],
+    # ["compare_sentiment_synonims.json", 1],
+    # ["device_sentiment.json", 1],
+    ["same_devices.json", 1],
+    # ["same_manufacturer.json", 2]
+    # ["similar_device_opinions.json", 2],
+    ["similar_manf_opinions.json", 2]
+    # ["which_people_about_device.json", 1],
+    # ["which_people_about_device_synonims.json", 1],
+    # ["dominant_opinion.json", 1],
+    # ["last_opinion.json", 1]
+]:
     with open(f"questions/{flname}", 'r') as inp:
         dataset = json.load(inp)
     if depth == 1:
@@ -195,7 +205,8 @@ for flname, depth in [
 
         prompt = prompt_extract_template.format(question=question)
         res = pipeline(prompt)
-        raw_entities = res[0]["generated_text"].split(prompt)[-1].split("\n")[0].strip()
+        raw_entities = res[0]["generated_text"].split(
+            prompt)[-1].split("\n")[0].strip()
         entities = {}
         try:
             entities = json.loads(raw_entities)
@@ -213,7 +224,8 @@ for flname, depth in [
             if use_embs and tp in emb_dict:
                 query = [entity]
                 query_embs = retriever.embed(query)
-                result = retriever.search_in_embeds(emb_dict[tp], query_embs, 30)
+                result = retriever.search_in_embeds(
+                    emb_dict[tp], query_embs, 30)
                 idx = result["idx"][0]
                 retr_entities = [entities_dict[tp][ind] for ind in idx]
                 sorted_entities_str = ""
@@ -221,12 +233,15 @@ for flname, depth in [
                     pass
                 else:
                     phrases_list = ", ".join(retr_entities)
-                    prompt = prompt_similar_template.format(phrase=entity, sentence=question, phrases_list=phrases_list)
+                    prompt = prompt_similar_template.format(
+                        phrase=entity, sentence=question, phrases_list=phrases_list)
                     res = pipeline(prompt)
-                    sorted_entities_str = res[0]["generated_text"].split(prompt)[-1].split("\n")[0]
+                    sorted_entities_str = res[0]["generated_text"].split(
+                        prompt)[-1].split("\n")[0]
                     if "1." in sorted_entities_str:
                         sorted_entities = sorted_entities_str.split(",")
-                        sorted_entities = [" ".join(s_ent.split()[1:]).strip() for s_ent in sorted_entities]
+                        sorted_entities = [
+                            " ".join(s_ent.split()[1:]).strip() for s_ent in sorted_entities]
                         for s_ent in sorted_entities[:3]:
                             if s_ent.lower() != entity.lower():
                                 cur_entities_input.append((s_ent, "", "node"))
@@ -247,7 +262,8 @@ for flname, depth in [
         triplets_dict, inters_chains1, inters_chains2 = conn.bfs(
             entities_input, depth, question=question, retriever=retriever, db="testdb"
         )
-        inters_chains1 = sorted(inters_chains1, key=lambda x: x[1], reverse=True)
+        inters_chains1 = sorted(
+            inters_chains1, key=lambda x: x[1], reverse=True)
         inters_chains1_more = [ch for ch, cnt in inters_chains1 if cnt > 1]
         inters_chains1_less = [ch for ch, cnt in inters_chains1 if cnt == 1]
         chain_triplets1_more = process_inters_chains1(inters_chains1_more)
@@ -255,7 +271,8 @@ for flname, depth in [
         chain_triplets2 = process_inters_chains2(inters_chains2)
         prob_tr = False
         if inters_chains1_more:
-            chain_triplets = chain_triplets1_more + chain_triplets1_less[:3] + chain_triplets2[:3]
+            chain_triplets = chain_triplets1_more + \
+                chain_triplets1_less[:3] + chain_triplets2[:3]
             prob_tr = True
         else:
             chain_triplets = chain_triplets1_less + chain_triplets2
@@ -263,12 +280,17 @@ for flname, depth in [
         def format_triplet(triplet):
             formatted_triplet = ""
             subj, rel, rel_props, obj, *_ = triplet
-            subj = {key.replace("_", " "): value.replace("_", " ") for key, value in subj.items()}
-            obj = {key.replace("_", " "): value.replace("_", " ") for key, value in obj.items()}
+            subj = {key.replace("_", " "): value.replace("_", " ")
+                    for key, value in subj.items()}
+            obj = {key.replace("_", " "): value.replace("_", " ")
+                   for key, value in obj.items()}
             rel = rel.replace("_", " ")
-            rel_props = {key.replace("_", " "): value.replace("_", " ") for key, value in rel_props.items()}
-            subj_str = ", ".join([f"{key}: {value}" for key, value in subj.items()])
-            obj_str = ", ".join([f"{key}: {value}" for key, value in obj.items()])
+            rel_props = {key.replace("_", " "): value.replace(
+                "_", " ") for key, value in rel_props.items()}
+            subj_str = ", ".join(
+                [f"{key}: {value}" for key, value in subj.items()])
+            obj_str = ", ".join(
+                [f"{key}: {value}" for key, value in obj.items()])
             if rel_props:
                 rel_props_list = []
                 for key, value in rel_props.items():
@@ -295,7 +317,8 @@ for flname, depth in [
             for (step, direction, seed_entity, rel), triplets in triplets_dict.items():
                 f_triplets = []
                 for triplet in triplets:
-                    reverse_triplet = [triplet[-1]] + triplet[1:-1] + [triplet[0]]
+                    reverse_triplet = [triplet[-1]] + \
+                        triplet[1:-1] + [triplet[0]]
                     if triplet not in total_f_triplets and reverse_triplet not in total_f_triplets:
                         f_triplets.append(triplet)
                         total_f_triplets.append(triplet)
@@ -322,8 +345,9 @@ Final answer {e_num}: {final_answer}"""
             in_cont_str_list.append(in_cont_str)
         in_cont_examples_str = "\n".join(in_cont_str_list)
 
-        prompt = prompt_answer_template.format(examples=in_cont_examples_str, n=num_in_cont+1, question=question, info=triplets_str)
-        #with open("qa_bfs_log.txt", 'a') as out:
+        prompt = prompt_answer_template.format(
+            examples=in_cont_examples_str, n=num_in_cont+1, question=question, info=triplets_str)
+        # with open("qa_bfs_log.txt", 'a') as out:
         #    out.write(f"prompt: {prompt}"+'\n\n')
         res = pipeline(prompt)
 
@@ -343,7 +367,8 @@ Final answer {e_num}: {final_answer}"""
             out.write(f"found_line: {found_line}"+'\n\n')
 
         if found_line:
-            pred_answer = found_line.split(f"Final answer {num_in_cont + 1}: ")[-1]
+            pred_answer = found_line.split(
+                f"Final answer {num_in_cont + 1}: ")[-1]
         elif len(res.split("\n")) > 1:
             pred_answer = res.split("\n")[1]
         else:
@@ -355,7 +380,8 @@ Final answer {e_num}: {final_answer}"""
             out.write("_"*70+'\n\n')
 
         print("pred_answer", pred_answer)
-        results.append({"question": question, "triplets": triplets_formatted, "gold_answer": answer, "pred_answer": pred_answer})
+        results.append({"question": question, "triplets": triplets_formatted,
+                       "gold_answer": answer, "pred_answer": pred_answer})
         if use_embs:
             with open(f"answers/{flname.replace('.json', '')}_bfs_emb.json", 'w') as out:
                 json.dump(results, out, indent=2)

@@ -57,7 +57,7 @@ person: Jane, time: 30.12.2020, opinion: Nice pictures taken, device: Huawei, fe
 person: Tom, time: 30.12.2020, opinion: good, device: Huawei, feature: signal
 person: Max, time: 30.12.2020, opinion: Not bad, device: Huawei, feature: configuration of other processors"""
 
-#prompt = prompt_answer_template.format(question=question, info=info)
+# prompt = prompt_answer_template.format(question=question, info=info)
 prompt = prompt_extract_template.format(question=question)
 res = pipeline(prompt)
 raw_answer = res[0]["generated_text"].split(prompt)[-1]

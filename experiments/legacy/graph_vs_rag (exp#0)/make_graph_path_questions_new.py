@@ -5,7 +5,8 @@ random.seed(1)
 
 with open("Augment_DiaASQ.json", 'r') as inp:
     data = json.load(inp)
-samples = [element for element in data["data"] if "_" not in element.get("doc_id", "")]
+samples = [element for element in data["data"]
+           if "_" not in element.get("doc_id", "")]
 
 total_triplets = []
 for sample in samples:
@@ -192,7 +193,8 @@ for speaker1 in sp2tr:
             inters = set(sp2tr[speaker1]).intersection(set(sp2tr[speaker2]))
             inters_info.append([speaker2, len(inters)])
     inters_info = sorted(inters_info, key=lambda x: x[1], reverse=True)
-    print("inters_info", inters_info[0], round(0.2 * max(len(sp2tr[speaker1]), len(sp2tr[inters_info[0][0]])), 3))
+    print("inters_info", inters_info[0], round(
+        0.2 * max(len(sp2tr[speaker1]), len(sp2tr[inters_info[0][0]])), 3))
     if inters_info[0][1] >= 0.2 * max(len(sp2tr[speaker1]), len(sp2tr[inters_info[0][0]])):
         question = f"Whose opinions from {inters_info[0][0]} and {inters_info[-1][0]} about " + \
             f"devices are most similar to {speaker1}'s?"

@@ -1,7 +1,7 @@
 ### PROMPT IN ENGLISH ###
 
 EN_THESISES_EXTRACTION_SYSTEM_PROMPT = \
-'''Objective: The main goal is to meticulously gather information from input text and organize this data into a clear, structured knowledge graph.
+    '''Objective: The main goal is to meticulously gather information from input text and organize this data into a clear, structured knowledge graph.
 
 Guidelines for Building the Knowledge Graph:
 
@@ -26,7 +26,7 @@ Entities must not include verbs and any other words which described motion, prop
 All the entities must be the real world objects or abstract concept.'''
 
 EN_THESISES_EXTRACTION_USER_PROMPT = \
-'''Text: {text}
+    '''Text: {text}
 Remember that thesises must be extracted in format: "thesis_1; [list of entites for thesis_1]. thesis2; [list of entites for thesis_2]. etc.
 This is important
 Remember that thesises must be extracted in format: "thesis_1; [list of entites for thesis_1]. thesis2; [list of entites for thesis_2]. etc.
@@ -38,7 +38,7 @@ Extracted thesises: '''
 ### PROMPT IN RUSSIAN ###
 
 RU_THESISES_EXTRACTION_SYSTEM_PROMPT = \
-'''Задача: Основная цель - тщательно собрать информацию из входного текста и организовать эти данные в четкий, структурированный граф знаний.
+    '''Задача: Основная цель - тщательно собрать информацию из входного текста и организовать эти данные в четкий, структурированный граф знаний.
 
 Руководство по построению графа знаний:
 
@@ -58,5 +58,5 @@ RU_THESISES_EXTRACTION_SYSTEM_PROMPT = \
 потому что без контекста кухни "северный выход заблокирован дверью» может относиться к любой комнате дома.'''
 
 RU_THESISES_EXTRACTION_USER_PROMPT = \
-'''Текст: {text}
+    '''Текст: {text}
 Помни, что тезисы должны быть извлечены в формате: 'тезис_1; [список объектов для тезиса_1]. тезис2; [список объектов для тезиса_2].' и т. д.'''

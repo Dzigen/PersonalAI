@@ -1,0 +1,45 @@
+experiment_name: 'bm25_frida_e5large(e1_multistep_hotpotqa)' # TO CHANGE
+
+vcomposer_name: 'hotpotqa241025' # TO CHANGE
+dataset_name: 'hotpotqa_distractor_validation' # TO CHANGE
+
+top_k: 10 # TO CHANGE
+
+multistep_config: # TO CHANGE
+  - type: 'retriever'
+    name: sparse_bm25
+    fetch_n: 50
+    extended_params: 
+      threshold: 0.55
+  - type: 'retriever'
+    name: dense_frida
+    fetch_n: 25
+    extended_params: 
+      threshold: 0.6
+  - type: 'retriever'
+    name: dense_e5large
+    fetch_n: 10
+    extended_params: 
+      threshold: 0.6
+
+SAVE_CONFIGS_NAMES:
+  params: params.yaml
+  elapsed_time: elapsed_time.json
+  retrieved_cntx_ids: retrieved_cntx_ids.csv
+  reranker_config: reranker_config
+
+WORKSPACE_CONTAINER_DIRS:
+  category: multistep
+  base_path: /home/workspace
+  models: models
+  qa_datasets: data/qa_datasets/v3
+  src: src
+  vcomposers_data: data/reranker_exps
+  experiments: experiments/rerankers
+  run_dir: 'run'
+  evaluate_dir: 'evaluate'
+  results_dir: 'results'
+  
+
+VCOMPOSER_INFO:
+  params_name: params.yaml

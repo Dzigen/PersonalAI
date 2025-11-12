@@ -20,10 +20,14 @@ class QAPipeline:
         self.llama_agent = llm_agent
         self.config = config
 
-        self.query_parser = QueryLLMParser(self.config.query_parser_config, llm_agent)
-        self.knowledge_comparator = KnowledgeComparator(self.config.knowledge_comparator_config)
-        self.knowledge_retriever = KnowledgeRetriever(self.config.knowledge_retriever_config)
-        self.answer_generator = QALLMGenerator(llm_agent, self.config.answer_generator_config)
+        self.query_parser = QueryLLMParser(
+            self.config.query_parser_config, llm_agent)
+        self.knowledge_comparator = KnowledgeComparator(
+            self.config.knowledge_comparator_config)
+        self.knowledge_retriever = KnowledgeRetriever(
+            self.config.knowledge_retriever_config)
+        self.answer_generator = QALLMGenerator(
+            llm_agent, self.config.answer_generator_config)
 
     def answer(self, query: str) -> str:
         # stage 1
@@ -39,9 +43,11 @@ class QAPipeline:
         return answer
 
 
-neo4j_conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
+neo4j_conn = Neo4jConnection(
+    uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
 nodes_db_config = VectorDBConnectionConfig(path="./nodes", db_name="nodes")
-triplets_db_config = VectorDBConnectionConfig(path="./triplets", db_name="triplets")
+triplets_db_config = VectorDBConnectionConfig(
+    path="./triplets", db_name="triplets")
 emb_config = EmbedderModelConfig()
 emb_model = EmbedderModel(config=emb_config)
 emb_db_config = EmbeddingsDatabaseConnectionConfig(

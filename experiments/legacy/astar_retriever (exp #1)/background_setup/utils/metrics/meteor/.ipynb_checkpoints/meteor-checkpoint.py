@@ -109,7 +109,8 @@ class Meteor(evaluate.Metric):
                     }
                 ),
             ],
-            codebase_urls=["https://github.com/nltk/nltk/blob/develop/nltk/translate/meteor_score.py"],
+            codebase_urls=[
+                "https://github.com/nltk/nltk/blob/develop/nltk/translate/meteor_score.py"],
             reference_urls=[
                 "https://www.nltk.org/api/nltk.translate.html#module-nltk.translate.meteor_score",
                 "https://en.wikipedia.org/wiki/METEOR",
@@ -119,10 +120,10 @@ class Meteor(evaluate.Metric):
     def _download_and_prepare(self, dl_manager):
         import nltk
 
-        #nltk.download("wordnet")
-        #if NLTK_VERSION >= version.Version("3.6.5"):
+        # nltk.download("wordnet")
+        # if NLTK_VERSION >= version.Version("3.6.5"):
         #    nltk.download("punkt")
-        #if NLTK_VERSION >= version.Version("3.6.6"):
+        # if NLTK_VERSION >= version.Version("3.6.6"):
         #    nltk.download("omw-1.4")
 
     def _compute(self, predictions, references, alpha=0.9, beta=3, gamma=0.5):
@@ -151,7 +152,8 @@ class Meteor(evaluate.Metric):
             if multiple_refs:
                 scores = [
                     meteor_score.meteor_score(
-                        [[word_tokenize(ref) for ref in group] for group in references][0],
+                        [[word_tokenize(ref) for ref in group]
+                         for group in references][0],
                         word_tokenize(pred),
                         alpha=alpha,
                         beta=beta,
@@ -161,7 +163,8 @@ class Meteor(evaluate.Metric):
                 ]
             else:
                 scores = [
-                    meteor_score.single_meteor_score(ref, pred, alpha=alpha, beta=beta, gamma=gamma)
+                    meteor_score.single_meteor_score(
+                        ref, pred, alpha=alpha, beta=beta, gamma=gamma)
                     for ref, pred in zip(references, predictions)
                 ]
 

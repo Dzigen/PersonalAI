@@ -1,5 +1,5 @@
 from ......utils import AgentTaskSolverConfig, Logger
-from ......db_drivers.kv_driver import KeyValueDriverConfig
+from .....utils import BaseAgentTaskConfigSelector
 from .general_parsers import etriplets_custom_postprocess, etriplets_custom_formate
 from .v2 import TRIPLET_EXTRACT_SUITE_V2
 from .v1 import TRIPLET_EXTRACT_SUITE_V1
@@ -11,16 +11,21 @@ AVAILABLE_TRIPLET_EXTRACT_TCONFIGS = {
     'v2': TRIPLET_EXTRACT_SUITE_V2
 }
 
-class AgentTripletExtrTaskConfigSelector:
+
+class AgentTripletExtrTaskConfigSelector(BaseAgentTaskConfigSelector):
     @staticmethod
     def get_available_configs():
         return AVAILABLE_TRIPLET_EXTRACT_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v1', cache_table_name: str = "mem_agent_tripletextr_task_cache") -> AgentTaskSolverConfig:
+    def select(base_config_version: str = 'v1',
+               cache_table_name: str = "mem_agent_tripletextr_task_cache",
+               inferencestat_table_name: str = "mem_agent_tripletextr_task_stat") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
             suites=AVAILABLE_TRIPLET_EXTRACT_TCONFIGS[base_config_version],
-            formate_context_func=etriplets_custom_formate, postprocess_answer_func=etriplets_custom_postprocess,
+            formate_context_func=etriplets_custom_formate,
+            postprocess_answer_func=etriplets_custom_postprocess,
             cache_table_name=cache_table_name,
+            inferencestat_table_name=inferencestat_table_name,
             log=Logger(TRIPLET_EXTR_LOG_PATH))

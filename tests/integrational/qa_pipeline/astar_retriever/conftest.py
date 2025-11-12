@@ -7,9 +7,9 @@ import pytest
 # aerospike_kv
 
 # kg_model
-    # neo4j + chroma
-    # kuzu  + chroma
-    # inmemory_graph + chroma
+# neo4j + chroma
+# kuzu  + chroma
+# inmemory_graph + chroma
 
 # a star metrics
 

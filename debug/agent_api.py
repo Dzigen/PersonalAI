@@ -13,9 +13,11 @@ class RemoteAgentRequestBody(BaseModel):
     assistant_prompt: str = Field(default=None)
     gen_strategy: Dict = Field(default=None)
 
+
 agent = AgentModel()
 
 app = FastAPI()
+
 
 @app.post("/generate")
 async def generate(body: RemoteAgentRequestBody):
@@ -26,10 +28,11 @@ async def generate(body: RemoteAgentRequestBody):
         system_prompt=body.system_prompt
 
     )
-    #torch.cuda.empty_cache()
-    #gc.collect()
+    # torch.cuda.empty_cache()
+    # gc.collect()
 
     return {'generated_output': output}
+
 
 @app.get("/")
 async def info():

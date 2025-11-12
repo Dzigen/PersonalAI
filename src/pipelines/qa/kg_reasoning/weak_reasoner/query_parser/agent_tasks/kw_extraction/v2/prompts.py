@@ -1,7 +1,7 @@
 ### PROMPT IN ENGLISH ###
 
-EN_KW_EXTRACTION_SYSTEM_PROMPT = \
-'''
+EN_KWE_SYSTEM_PROMPT = \
+    '''
 You are an expert system that can extract [Key entities] from a given [Text]. [Key entities] is a noun or an object like persone, device, company and etc. Extracted entities must be presented in the following format: "<entitie1> | <entitie2> | ... | <entitieN>", where <entitie...> is extracted [Key entities]. Your response only must contains extracted entities and do not include additional explanations of the obtained result.
 
 Examples of [Texts] and their corresponding extracted [Key entities] are listed below:
@@ -19,20 +19,20 @@ Examples of [Texts] and their corresponding extracted [Key entities] are listed 
 [Key entites]: people | opinion | video | Xiaomi 10Pro | 25.11.2020
 '''
 
-EN_KW_EXTRACTION_USER_PROMPT = \
-'''
+EN_KWE_USER_PROMPT = \
+    '''
 Extract [Key entites] from the given [Text].
 
 [Text]: {text}'''
 
-EN_KW_EXTRACTION_ASSISTANT_PROMPT = \
-'''
+EN_KWE_ASSISTANT_PROMPT = \
+    '''
 [Key entites]: '''
 
 ### PROMPT IN RUSSIAN ###
 
-RU_KW_EXTRACTION_SYSTEM_PROMPT = \
-'''
+RU_KWE_SYSTEM_PROMPT = \
+    '''
 Ты экспертная система, которая может извлекать [Ключевые сущности] из заданного [Текста]. [Ключевые сущности] — это существительное или объект, например персона, устройство, компания и т.п. Извлечённые сущности должны быть представлены в следующем формате: "<entitie1> | <entitie2> | ... | <entitieN>", где <entitie...> это извлечённые [Ключевые сущности]. Твой ответ должен содежать только извлечённые сущности и не включать дополнительных пояснений полученного результата.
 
 Примеры [Текстов] и соответствующих им извлеченных [Ключевых сущностей] приведены ниже.
@@ -50,12 +50,12 @@ RU_KW_EXTRACTION_SYSTEM_PROMPT = \
 [Ключевые сущности]: люди | мнение | видео | Xiaomi 10Pro | 25.11.2020
 '''
 
-RU_KW_EXTRACTION_USER_PROMPT = \
-'''
+RU_KWE_USER_PROMPT = \
+    '''
 Извлеки [Ключевые сущности] из данного [Текста].
 
 [Текст]: {text}'''
 
-RU_KW_EXTRACTION_ASSISTANT_PROMPT = \
-'''
+RU_KWE_ASSISTANT_PROMPT = \
+    '''
 [Ключевые сущности]: '''

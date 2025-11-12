@@ -1,9 +1,10 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from typing import List, Union, Tuple, Dict
 from enum import Enum
 import hashlib
 
-from src.db_drivers.vector_driver import VectorDBInstance
+from .logger import Logger
+
 
 class NodeType(Enum):
     """Доступные типы вершин."""
@@ -16,12 +17,29 @@ class NodeType(Enum):
     #: Вершина хранит временную информацию.
     time = "time"
 
+
+@dataclass
+class NodeInfo:
+    id: str
+    type: NodeType
+    text: Union[None, str] = None
+
+    def to_str(self):
+        return f"{self.type.value}:{self.id}"
+
+
 NODES_TYPES_MAP = {
     'object': NodeType.object,
     'hyper': NodeType.hyper,
     'episodic': NodeType.episodic,
     'time': NodeType.time,
 }
+
+
+def from_str_to_nodeinfo(str_nodeinfo: str) -> NodeInfo:
+    ntype, nid = str_nodeinfo.split(":")
+    return NodeInfo(id=nid, type=NODES_TYPES_MAP[ntype])
+
 
 class RelationType(Enum):
     """Доступные типы связей/триплетов."""
@@ -34,12 +52,28 @@ class RelationType(Enum):
     #: Связывает пары вершин ('episodic', 'time') и ('hyper', 'time').
     time = "time"
 
+
 RELATIONS_TYPES_MAP = {
     'simple': RelationType.simple,
     'hyper': RelationType.hyper,
     'episodic': RelationType.episodic,
     'time': RelationType.time,
 }
+
+
+@dataclass
+class RelationInfo:
+    id: str
+    type: RelationType
+
+    def to_str(self):
+        return f"{self.type.value}:{self.id}"
+
+
+def from_str_to_relationinfo(str_relationinfo: str) -> RelationInfo:
+    rtype, rid = str_relationinfo.split(":")
+    return RelationInfo(id=rid, type=RELATIONS_TYPES_MAP[rtype])
+
 
 @dataclass
 class Node:
@@ -55,6 +89,13 @@ class Node:
     #: Идентификатор вершины, полученный на основе её строкового представления.
     id: str = None
 
+    def get_typedid(self):
+        return NodeInfo(id=self.id, type=self.type).to_str()
+
+    def get_info(self):
+        return NodeInfo(id=self.id, type=self.type)
+
+
 @dataclass
 class Relation:
     "Струкура данных связи."
@@ -67,6 +108,13 @@ class Relation:
     #: Идентификатор связи, полученный на основе строкового представления триплета, в котором она (связь) находится.
     #: Данное значение отличается от значения в поле id объекта класса Triplet.
     id: str = None
+
+    def get_typedid(self):
+        return RelationInfo(id=self.id, type=self.type).to_str()
+
+    def get_info(self):
+        return RelationInfo(id=self.id, type=self.type)
+
 
 @dataclass
 class Triplet:
@@ -83,6 +131,7 @@ class Triplet:
     #: Данное значение отличается от значения в поле id объекта класса Relation.
     id: str = None
 
+
 class BaseCreator:
     @staticmethod
     def add_str_props(obj: Union[Relation, Node], obj_str: str) -> str:
@@ -95,26 +144,28 @@ class BaseCreator:
         :return: Обогащённое строковое представление объекта.
         :rtype: str
         """
-        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in ['name', 'type', 'raw_time', 'time', 'str_id', 't_id']])
+        str_prop = '; '.join([f"{k}: {v}" for k, v in obj.prop.items() if k not in [
+                             'name', 'type', 'raw_time', 'time', 'str_id', 't_id']])
         if str_prop:
             obj_str += f" ({str_prop})"
         return obj_str
 
+
 class RelationCreator(BaseCreator):
     @staticmethod
-    def create(r_type: Union[str, RelationType], name: str = None,  prop: Dict = None) -> Relation:
+    def create(r_type: Union[str, RelationType], name: Union[None, str] = None, prop: Union[None, Dict] = None) -> Relation:
         """Метод предназначен для создания структуры данных связи с указанным содержанием.
 
         :param r_type: Тип создаваемой связи в строковой- или Enum-структуре данных.
         :type r_type: Union[str, RelationType]
         :param name: Главная смысловая информация, которая будет добавлена в связь. Значение по умолчанию None.
-        :type name: str, optional
+        :type name: Union[None,str], optional
         :param prop: Дополнительные свойства создаваемой связи. Значение по умолчанию None.
-        :type prop: Dict, optional
+        :type prop: Union[None,Dict], optional
         :return: Созданная структура данных связи.
         :rtype: Relation
         """
-        if type(r_type) is not RelationType:
+        if not isinstance(r_type, RelationType):
             formated_r_type = RELATIONS_TYPES_MAP.get(r_type, None)
             if formated_r_type is None:
                 raise ValueError
@@ -131,9 +182,10 @@ class RelationCreator(BaseCreator):
         rel = Relation(name=name, type=r_type, prop=prop)
         return rel
 
+
 class NodeCreator(BaseCreator):
     @staticmethod
-    def create(n_type: Union[str, NodeType], name: str, prop: Dict = None, add_stringified_node: bool = True) -> Node:
+    def create(n_type: Union[str, NodeType], name: str, prop: Union[None, Dict] = None, add_stringified_node: bool = True) -> Node:
         """Метод предназначен для создания структуры данных вершины с указанным содержанием.
 
         :param n_type: Тип создаваемой вершины в строковой- или Enum-структуре данных.
@@ -141,13 +193,13 @@ class NodeCreator(BaseCreator):
         :param name: Главная смысловая информация, которая будет добавлена в вершину.
         :type name: str
         :param prop: Дополнительные свойства создаваемой вершины. Значение по умолчанию None.
-        :type prop: Dict, optional
+        :type prop: Union[None,Dict], optional
         :param add_stringified_node: Если True, то в структуру данных вершины будет сохранено её строковое представление, иначе соответствующее поле будет хранить None. Значение по умолчанию True.
         :type add_stringified_node: bool, optional
         :return: Созданная структура данных вершины.
         :rtype: Node
         """
-        if type(n_type) is not NodeType:
+        if not isinstance(n_type, NodeType):
             formated_n_type = NODES_TYPES_MAP.get(n_type, None)
             if formated_n_type is None:
                 raise ValueError
@@ -164,7 +216,7 @@ class NodeCreator(BaseCreator):
         return node
 
     @staticmethod
-    def stringify(node: Node) -> Tuple[str,str]:
+    def stringify(node: Node) -> Tuple[str, str]:
         """Метод предназначен для приведения структуры данных вершины в её строковое представление.
 
         :param triplet: Структура данных вершины.
@@ -178,6 +230,7 @@ class NodeCreator(BaseCreator):
         str_node += NodeCreator.add_str_props(node, str(node.name))
         return node.id, str_node
 
+
 def create_id_for_node_pair(node1_id: str, node2_id: str) -> str:
     """Метод предназначен для условной генерации идентификатора к паре вершин. Вершины представлены в виде их собственных идентификаторов.
     При указании такой же пары вершин, но в другом порядке, полученный идентификатор не изменится: инвариант относительно перестановок.
@@ -189,16 +242,19 @@ def create_id_for_node_pair(node1_id: str, node2_id: str) -> str:
     :return: Идентификатор пары вершин.
     :rtype: str
     """
-    start_id, end_id = (node1_id, node2_id) if node1_id > node2_id else (node2_id, node1_id)
-    return hashlib.md5((start_id+end_id).encode()).hexdigest()
+    start_id, end_id = (node1_id, node2_id) if node1_id > node2_id else (
+        node2_id, node1_id)
+    return hashlib.md5((start_id + end_id).encode()).hexdigest()
+
 
 def create_id(seed: str) -> str:
     return hashlib.md5(seed.encode()).hexdigest()
 
+
 class TripletCreator(BaseCreator):
     @staticmethod
     def create(start_node: Node, relation: Relation, end_node: Node,
-            add_stringified_triplet: bool = True, t_id: str = None) -> Triplet:
+               add_stringified_triplet: bool = True, t_id: Union[None, str] = None) -> Triplet:
         """Метод предназначен для создания структуры данных триплета с указанным содержанием.
         Триплет является ориентированным: у связи между вершинами (парой subject/object) есть направление.
 
@@ -211,7 +267,7 @@ class TripletCreator(BaseCreator):
         :param add_stringified_triplet: Если True, то в структуру данных триплета будет сохранено его строковое представление, иначе соответствующее поле будет хранить None. Значение по умолчанию True.
         :type add_stringified_triplet: bool, optional
         :param t_id: Идентификатор, который будет назначен триплету вручную. Если идентификатор не указан (None), то он будет назначен триплету автоматически. Значение по умолчанию None.
-        :type t_id: str, optional
+        :type t_id: Union[None,str], optional
         :return: Созданная структура данных триплета.
         :rtype: Triplet
         """
@@ -225,14 +281,16 @@ class TripletCreator(BaseCreator):
 
         if t_id is None:
             triplet.id = create_id(''.join(
-                [triplet.start_node.id,triplet.relation.id,triplet.end_node.id]))
+                [triplet.start_node.type.value, triplet.start_node.id,
+                 triplet.relation.type.value, triplet.relation.id,
+                 triplet.end_node.type.value, triplet.end_node.id]))
         else:
             triplet.id = t_id
 
         return triplet
 
     @staticmethod
-    def stringify(triplet: Triplet) -> Tuple[str,str]:
+    def stringify(triplet: Triplet) -> Tuple[str, str]:
         """Метод предназначен для приведения Triplet-структуры данных в её строковое представление. Строковое представление зависит от типа триплета (Triplet.relation.type):
         (1) simple - используется информация из обеих вершин и связи; (2) hyper/episodic - используется информация только из конечной (object) вершины.
 
@@ -247,17 +305,19 @@ class TripletCreator(BaseCreator):
             str_triplet = ""
             if "time" in triplet.end_node.prop.keys():
                 str_triplet += triplet.end_node.prop["time"] + ": "
-            str_triplet += TripletCreator.add_str_props(triplet.end_node, str(triplet.end_node.name))
+            str_triplet += TripletCreator.add_str_props(
+                triplet.end_node, str(triplet.end_node.name))
 
         elif rel_type == RelationType.simple:
             str_triplet = ""
             if "time" in triplet.relation.prop.keys():
                 str_triplet += triplet.relation.prop["time"] + ": "
             str_triplet += " ".join([
-                TripletCreator.add_str_props(triplet.start_node, str(triplet.start_node.name)),
-                TripletCreator.add_str_props(triplet.relation, str(triplet.relation.name)),
+                TripletCreator.add_str_props(
+                    triplet.start_node, str(triplet.start_node.name)),
+                TripletCreator.add_str_props(
+                    triplet.relation, str(triplet.relation.name)),
                 TripletCreator.add_str_props(triplet.end_node, str(triplet.end_node.name))])
-
 
         else:
             raise KeyError
@@ -306,10 +366,10 @@ class TripletCreator(BaseCreator):
             n_type=json_triplet['object']['type'],
             prop=json_triplet['object'].get('prop', None))
 
-        converted_triplet = TripletCreator.create(start_node=subject, relation=relation, end_node=object)
+        converted_triplet = TripletCreator.create(
+            start_node=subject, relation=relation, end_node=object)
         return converted_triplet
 
-#from ..embedding_functions import VectorDBInstance
 
 @dataclass
 class QueryInfo:
@@ -319,19 +379,103 @@ class QueryInfo:
     :param query: Исходный user-вопрос.
     :type query: str
     :param entities: Набор сущностей, который был извлечён из user-вопроса. Значение по умолчанию None.
-    :type entities: List[str]
+    :type entities: Union[None, List[str]]
     :param linked_nodes: Набор объектов (вершин) из памяти (графа знаний) ассистента, который был сопоставлен сущностям из user-вопроса. Значение по умолчанию None.
-    :type linked_nodes: List[object]
+    :type linked_nodes: Union[None, List[NodeInfo]]
     :param linked_nodes_by_entities: Значение по умолчанию None.
-    :type  linked_nodes_by_entities: List[object]
+    :type linked_nodes_by_entities: Union[None, List[object]]
     """
     query: str
-    entities: List[str] = None
-    linked_nodes: List[VectorDBInstance] = None
-    linked_nodes_by_entities: List[VectorDBInstance] = None
+    entities: Union[None, List[str]] = None
+    linked_nodes: Union[None, List[NodeInfo]] = None
+    linked_nodes_by_entities: Union[None, List[object]] = None
 
     def to_str(self):
         str_entities = ';'.join(sorted(self.entities)) if self.entities is not None else "None"
-        str_lnodes = ';'.join(sorted(list(map(lambda item: item.document, self.linked_nodes)))) if self.linked_nodes is not None else "None"
+        str_lnodes = ';'.join(sorted(list(map(lambda item: item.to_str(), self.linked_nodes)))) if self.linked_nodes is not None else "None"
         str_lnodes_by_entities = ';'.join(sorted(list(map(lambda item: ';;'.join(item), self.linked_nodes_by_entities)))) if self.linked_nodes_by_entities is not None else "None"
-        return f"{str_entities}|{str_lnodes}|{str_lnodes_by_entities}"
+        return f"{self.query}|{str_entities}|{str_lnodes}|{str_lnodes_by_entities}"
+
+
+@dataclass
+class SearchPlanInfo:
+    base_query: str
+    search_steps: List[str] = field(default_factory=lambda: list())
+    steps_answers: List[str] = field(default_factory=lambda: list())
+
+    def to_str(self):
+        return f"{self.base_query}|{self.search_steps}|{self.steps_answers}"
+
+
+@dataclass
+class QueryPreprocessingInfo:
+    base_query: str
+    denoised_query: Union[str, None] = None
+    enchanced_query: Union[str, None] = None
+    decomposed_query: Union[List[str], None] = None
+
+    processed_query: Union[List[str], None] = None
+
+    def to_str(self):
+        str_denoised_query = self.denoised_query if self.denoised_query is not None else "None"
+        str_enchanced_query = self.enchanced_query if self.enchanced_query is not None else "None"
+        str_decomposed_query = ';'.join(
+            self.decomposed_query) if self.decomposed_query is not None else "None"
+        str_processed_query = ';'.join(
+            self.processed_query) if self.processed_query is not None else "None"
+        return f"{self.base_query}|{str_denoised_query}|{str_enchanced_query}|{str_decomposed_query}|{str_processed_query}"
+
+
+@dataclass
+class BaseConfigOperations:
+
+    def to_str(self) -> str:
+        pass
+
+    def formate_fields(self) -> None:
+        fields_iterator = fields(self)
+        for field_object in fields_iterator:
+            field_value = getattr(self, field_object.name)
+
+            if isinstance(field_value, BaseConfigOperations):
+                field_value.formate_fields()
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        pass
+
+
+@dataclass
+class BaseComponentConfig(BaseConfigOperations):
+    """
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты.
+    :type log: Logger, optional
+    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
+    :type verbose: bool, optional
+    """
+    log: Logger
+    verbose: bool = False
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        pass
+
+
+@dataclass
+class LanguageConfig:
+    """
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при решении задач LLM-агентом. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
+    :type lang: str, optional
+    """
+    lang: str = 'auto'
+
+    def synchronize_language(self, lang: Union[None, str] = None):
+        if lang is not None:
+            self.lang = lang
+
+        fields_iterator = fields(self)
+        for field_object in fields_iterator:
+            field_value = getattr(self, field_object.name)
+
+            if isinstance(field_value, LanguageConfig):
+                field_value.synchronize_language(self.lang)

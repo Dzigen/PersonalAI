@@ -1,6 +1,8 @@
 from enum import Enum
+from copy import deepcopy
 from dataclasses import dataclass, field
 from typing import List
+
 
 class ReturnStatus(Enum):
     success = 0
@@ -17,6 +19,8 @@ class ReturnStatus(Enum):
     zero_triplets = 11
     bad_user_prompt_maping = 12
     already_exist = 13
+    decompose_noneed = 14
+
 
 STATUS_MESSAGE = {
     ReturnStatus.success: "Операция выполнена успешно.",
@@ -43,6 +47,7 @@ STATUS_MESSAGE = {
     # TODO
 }
 
+
 @dataclass
 class ReturnInfo:
     """Класс предназначен для хранения пояснительной информации к полученному результату в рамках
@@ -55,6 +60,13 @@ class ReturnInfo:
     :param  message: Пояснительное сообщение к статусу возврата.
     :type  message: str
     """
-    occurred_warning: List[ReturnStatus] = field(default_factory=lambda: list())
+    occurred_warning: List[ReturnStatus] = field(
+        default_factory=lambda: list())
     status: ReturnStatus = ReturnStatus.success
     message: str = ""
+
+
+def update_rinfo(modifying_rinfo: ReturnInfo, new_rinfo: ReturnInfo) -> None:
+    modifying_rinfo.occurred_warning += deepcopy(new_rinfo.occurred_warning)
+    modifying_rinfo.status = new_rinfo.status
+    modifying_rinfo.message = new_rinfo.message

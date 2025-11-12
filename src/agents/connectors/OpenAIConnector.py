@@ -1,46 +1,64 @@
 import os
 from openai import OpenAI
+from typing import Dict, Union, Tuple
+from time import time
 
-from ..utils import AbstractAgentConnector, AgentConnectorConfig
-
-
-DEEPSEEK_KEY = 'sk-7114ae174a6142bf8b028e8bf6af9579'
-DEEPSEEK_CONFIG = AgentConnectorConfig(
-    gen_strategy={'seed': 42, 'top_p': 10e-16, 'temperature': 0.0, 'frequency_penalty':0, 'presence_penalty':0},
-    credentials={'token': DEEPSEEK_KEY, 'model': 'deepseek-chat', 'base_url': 'https://api.deepseek.com'},
-    ext_params={'timeout': 560, 'max_retries': 5})
-
-GPT4OMINI_KEY = "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"
-GPT4OMINI_CONFIG = AgentConnectorConfig(
-    gen_strategy={'seed': 42, 'top_p': 10e-16, 'temperature': 0.0, 'frequency_penalty':0, 'presence_penalty':0},
-    credentials={'token': GPT4OMINI_KEY, 'model': 'gpt-4o-mini', 'base_url': None},
-    ext_params={'timeout': 560, 'max_retries': 5})
+from .configs import DEEPSEEK_CONFIG, GPT4OMINI_CONFIG
+from ..utils import AbstractAgentConnector, AgentConnectorConfig, LLMInferenceStat
 
 
 class OpenAIConnector(AbstractAgentConnector):
-    def __init__(self, config: AgentConnectorConfig = GPT4OMINI_KEY) -> None:
-        self.config = config
+    def __init__(self, config: Union[Dict, AgentConnectorConfig] = DEEPSEEK_CONFIG) -> None:
+        if isinstance(config, dict):
+            config = AgentConnectorConfig.from_dict(config)
+        else:
+            config.formate_fields()
+        self.config: AgentConnectorConfig = config
+
+        # костыль
+        if 'top_p' in self.config.gen_strategy:
+            self.config.gen_strategy['top_p'] = float(self.config.gen_strategy['top_p'])
+
         base_url = None if config.credentials['base_url'] == 'None' else config.credentials['base_url']
         self.config.credentials['base_url'] = base_url
-        
+        self.CONNECTOR_KW = 'openai'
+
         self.client = OpenAI(
             api_key=os.environ.get("OPENAI_API_KEY", config.credentials['token']),
-            base_url=config.credentials['base_url'])
+            base_url=config.credentials['base_url']
+        )
 
     def check_connection(self):
         # TODO
         pass
 
     def close_connection(self):
-        self.client.close()
+        try:
+            self.client.close()
+        except (AttributeError,TypeError):
+            pass
 
-    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None) -> str:
-        msgs = [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}]
+    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
+                 gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
+        msgs = [{"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}]
         if assistant_prompt is not None:
             msgs.append({"role": "assistant", "content": assistant_prompt})
 
-        completion = self.client.chat.completions.create(
+        ai_start_time = time()
+        gen_strategy = self.config.gen_strategy if gen_strategy is None else gen_strategy
+        response = self.client.chat.completions.create(
             model=self.config.credentials['model'],
-            messages=msgs, **self.config.gen_strategy)
+            messages=msgs, **gen_strategy)
+        ai_end_time = time()
 
-        return completion.choices[0].message.content
+        inference_info = LLMInferenceStat(
+            prompt_tokens_amount=response.usage.prompt_tokens,
+            generated_tokens_amount=response.usage.completion_tokens,
+            inference_elapsed_time=round(ai_end_time - ai_start_time, 2)
+        )
+
+        return response.choices[0].message.content, inference_info
+
+    def __del__(self):
+        self.close_connection()

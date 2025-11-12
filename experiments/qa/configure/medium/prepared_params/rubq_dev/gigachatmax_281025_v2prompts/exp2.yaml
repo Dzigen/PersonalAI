@@ -1,0 +1,113 @@
+EXPERIMENT_NAME: "medium_nr_gigachatmax(e2)(v2.1.0)" # TO CHANGE
+DATASET_NAME: 'rubq_dev' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'gigachatmax_281025_v2prompts' # TO CHANGE
+
+QA_DATASET_HYPERP:
+  # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
+  max_samples_per_pack: 100
+  lang: 'ru'
+
+# STAGE # 1
+query_preprocessor: # TO CHANGE
+  denoising_config: null # CAN BE null
+    # agent_tasks_config:
+    #   swremoval: 'v1'
+    #   grammarcheck: 'v1'
+
+  enhancing_config: null # CAN BE null
+    # agent_tasks_config:
+    #   qexpan: 'v1'
+    #   termscheck: 'v1'
+    #   lingcheck: 'v1'
+
+  decomposition_config: # CAN BE null
+    agent_tasks_config:
+      classify: 'v1'
+      decompose: 'v1'
+
+# STAGE # 2
+kg_reasoner: # TO CHANGE
+  reasoner_name: "medium" # DONT CHANGE
+  reasoner_config:
+    max_searchplan_steps: 3
+    answer_something: True
+
+    searchplan_enhancer_config:
+      agent_tasks_config:
+        plan_initing: 'v1'
+        enhance_classifier: 'v1'
+        plan_enhancing: 'v1'
+
+    entities_extractor_config:
+      agent_tasks_config:
+        entities_extraction: 'v1'
+
+    e2n_matcher_config:
+      max_n: 2
+      reranker_driver_config:
+        name: 'ensemble_fusion' # DONT CHANGE
+        strategy_config:
+          vdb_names: ['dense_nodes', 'bm25_nodes']
+          retriever_configs:
+            - fetch_n: 20
+              threshold: 0.5
+            - fetch_n: 20
+              threshold: 0.5
+          weights: [0.2, 0.8]
+          c: 60
+
+    cluequeries_generator_config:
+      max_cqueries_amount: 4
+      agent_tasks_config:
+        cquerie_generator: 'v1'
+
+    knowledge_retriever_config:
+      # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
+      retriever_method: 'naive_retriever'
+
+      retriever_config:
+        reranker_driver_config:
+          name: 'single_step'
+          strategy_config:
+            vdb_name: dense_triplets
+            threshold: 0.5
+            fetch_n: 25
+        max_k: 50
+
+      filter_method: 'naive' # CAN BE null
+      filter_config: # CAN BE null
+        max_k: 5
+        reranker_driver_config:
+          name: 'ensemble_fusion' # DONT CHANGE
+          strategy_config:
+            vdb_names: ['dense_triplets', 'bm25_triplets']
+            retriever_configs:
+              - fetch_n: 50
+                threshold: 0.5
+              - fetch_n: 50
+                threshold: 0.5
+            weights: [0.7, 0.3]
+            c: 60
+        accepted_triplets_types:
+          - 'simple'
+          - 'hyper'
+          - 'episodic'
+          #- 'time'
+
+    clueanswer_generator_config:
+      agent_tasks_config:
+        cagen: 'v1'
+
+    clueanswers_summarizer_config:
+      agent_tasks_config:
+        canswers_summarisation: 'v1'
+
+    answer_generator_config:
+      agent_tasks_config:
+        answer_classifier: 'v1'
+        answer_generator: 'v1'
+
+# STAGE # 3
+answer_aggregator:
+  agent_tasks_config:
+    suba_summarisation: 'v1'

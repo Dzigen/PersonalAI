@@ -49,7 +49,8 @@ def varsize_gather_nograd(x: torch.Tensor):
     dist.all_gather(allsizes, size)
     max_size = max([size.cpu().max() for size in allsizes])
 
-    padded = torch.empty(max_size, *x.shape[1:], dtype=x.dtype, device=x.device)
+    padded = torch.empty(
+        max_size, *x.shape[1:], dtype=x.dtype, device=x.device)
     padded[: x.shape[0]] = x
     output = [torch.zeros_like(padded) for _ in range(dist.get_world_size())]
     dist.all_gather(output, padded)
@@ -128,8 +129,6 @@ def weighted_average(x, count):
     return (t_loss / t_total).item(), t_total.item()
 
 
-
-
 def symlink_force(target, link_name):
     try:
         os.symlink(target, link_name)
@@ -183,7 +182,7 @@ def load(model_class, dir_path, opt, reset_params=False):
     return model, optimizer, scheduler, opt_checkpoint, step
 
 
-############ OPTIM
+# OPTIM
 
 
 class WarmupLinearScheduler(torch.optim.lr_scheduler.LambdaLR):
@@ -191,7 +190,8 @@ class WarmupLinearScheduler(torch.optim.lr_scheduler.LambdaLR):
         self.warmup = warmup
         self.total = total
         self.ratio = ratio
-        super(WarmupLinearScheduler, self).__init__(optimizer, self.lr_lambda, last_epoch=last_epoch)
+        super(WarmupLinearScheduler, self).__init__(
+            optimizer, self.lr_lambda, last_epoch=last_epoch)
 
     def lr_lambda(self, step):
         if step < self.warmup:
@@ -199,7 +199,8 @@ class WarmupLinearScheduler(torch.optim.lr_scheduler.LambdaLR):
 
         return max(
             0.0,
-            1.0 + (self.ratio - 1) * (step - self.warmup) / float(max(1.0, self.total - self.warmup)),
+            1.0 + (self.ratio - 1) * (step - self.warmup) /
+            float(max(1.0, self.total - self.warmup)),
         )
 
 
@@ -208,7 +209,8 @@ class CosineScheduler(torch.optim.lr_scheduler.LambdaLR):
         self.warmup = warmup
         self.total = total
         self.ratio = ratio
-        super(CosineScheduler, self).__init__(optimizer, self.lr_lambda, last_epoch=last_epoch)
+        super(CosineScheduler, self).__init__(
+            optimizer, self.lr_lambda, last_epoch=last_epoch)
 
     def lr_lambda(self, step):
         if step < self.warmup:
@@ -244,7 +246,8 @@ def get_parameters(net, verbose=False):
     num_params = 0
     for param in net.parameters():
         num_params += param.numel()
-    message = "[Network] Total number of parameters : %.6f M" % (num_params / 1e6)
+    message = "[Network] Total number of parameters : %.6f M" % (
+        num_params / 1e6)
     return message
 
 

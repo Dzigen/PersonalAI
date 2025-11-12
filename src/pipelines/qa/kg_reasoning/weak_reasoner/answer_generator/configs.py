@@ -1,4 +1,10 @@
-from .agent_tasks.ag import AgentAGTaskConfigSelector
+from typing import Dict
+
+from .agent_tasks.ag import AgentSimpleAGTaskConfigSelector
+from .....utils import BaseAgentTaskConfigSelector
 
 AG_MAIN_LOG_PATH = 'log/qa/kg_reasoner/weak/answer_generation/main'
-DEFAULT_AG_TASK_CONFIG =  AgentAGTaskConfigSelector.select(base_config_version='v2')
+
+ANSWGEN_AGENTASKS_SELECTORS_MAPPING: Dict[str, BaseAgentTaskConfigSelector] = {
+    'ag': AgentSimpleAGTaskConfigSelector
+}

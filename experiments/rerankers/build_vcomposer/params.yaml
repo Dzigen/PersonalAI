@@ -1,0 +1,76 @@
+vcomposer_name: 'rubqdev241025' # TO CHANGE
+dataset_name: 'rubq_dev'
+batch_size: 32
+need_clear: True # !!! ATTENTION !!!
+
+vdb_configs: # TO CHANGE
+  dense_e5large:
+    vendor: chroma
+    db_category: 'dense'
+    db_info:
+      db: 'rerankerexps'
+      table: 'e5large'
+    params:
+      hnsw:space: ip
+      hnsw:M: 4096
+    conn:
+      path: "/home/workspace/data/reranker_exps/rubqdev241025/chroma_e5large"
+
+  dense_frida:
+    vendor: chroma
+    db_category: 'dense'
+    db_info:
+      db: 'rerankerexps'
+      table: 'frida'
+    params:
+      hnsw:space: ip
+      hnsw:M: 4096
+    conn:
+      path: "/home/workspace/data/reranker_exps/rubqdev241025/chroma_frida"
+
+  sparse_bm25:
+    vendor: inmemory
+    db_category: 'sparse_bm25'
+    db_info:
+      db: 'rerankerexps'
+      table: 'bm25'
+    params:
+        load_from_disk: True
+        load_dump_name: null
+        load_dump_dir: "/home/workspace/data/reranker_exps/rubqdev241025/inmemory_bm25"
+        save_on_disk: True
+        save_dump_dir: "/home/workspace/data/reranker_exps/rubqdev241025/inmemory_bm25"
+
+embedder_configs: # TO CHANGE
+  e5large:
+    prompts:
+      query: "query: "
+      passage: "passage: "
+    query_prompt_name: 'query'
+    passage_prompt_name: 'passage'
+    model_name_or_path: 'intfloat/multilingual-e5-large'
+
+  frida:
+    prompts:
+      search_query: "search_query: "
+      search_document: "search_document: "
+    query_prompt_name: 'search_query'
+    passage_prompt_name: 'search_document'
+    model_name_or_path: 'ai-forever/FRIDA'
+
+vdb_to_embedder_mapping: # TO CHANGE
+  dense_e5large: e5large
+  dense_frida: frida
+
+WORKSPACE_CONTAINER_DIRS:
+  base_path: '/home/workspace'
+  vcomposers_data: 'data/reranker_exps'
+  qa_datasets: 'data/qa_datasets/v3'
+  src: 'src'
+  models: 'models'
+
+SAVE_CONFIGS_NAMES:
+  elapsed_time: elapsed_time.json
+  vdb_configs: vdb_configs
+  embedder_configs: embedder_configs
+  params: params.yaml

@@ -1,3 +1,4 @@
+from src.qa_pipeline.knowledge_retriever.cache import KeyValueStore
 import sys
 import aerospike
 
@@ -7,7 +8,6 @@ BASEDIR = "/workspace"
 
 sys.path.insert(0, BASEDIR)
 
-from src.qa_pipeline.knowledge_retriever.cache import KeyValueStore
 
 kv_store = KeyValueStore()
 

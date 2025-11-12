@@ -2,6 +2,7 @@ import copy
 from neo4j import GraphDatabase
 import torch
 
+
 class Neo4jConnection:
     def __init__(self, uri, user, pwd, embs_dict=None):
         self.triplet_embs_dict = embs_dict
@@ -57,7 +58,8 @@ CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
         session = None
         response = None
         try:
-            session = self.driver.session(database=db) if db is not None else self.driver.session()
+            session = self.driver.session(
+                database=db) if db is not None else self.driver.session()
             response = list(session.run(query))
         except Exception as e:
             print("Query failed:", e)
@@ -67,11 +69,13 @@ CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
         return response
 
     def create_node(self, node_type, node_name, db=None):
-        query = self.create_node_template.format(type=node_type, name=node_name)
+        query = self.create_node_template.format(
+            type=node_type, name=node_name)
         self.execute_query(query, db=db)
 
     def create_entity(self, node_type, node_name, db=None):
-        query = self.create_entity_template.format(type=node_type, name=node_name)
+        query = self.create_entity_template.format(
+            type=node_type, name=node_name)
         self.execute_query(query, db=db)
 
     def create_relationship_no_props(self, type1, type2, name1, name2, rel_name, db=None):
@@ -127,7 +131,7 @@ CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
         self.execute_query(query, db=db)
 
     def create_relationship_2props(self, type1, type2, name1, name2, rel_name, rel_prop_name1, rel_prop_value1,
-                                         rel_prop_name2, rel_prop_value2, db=None):
+                                   rel_prop_name2, rel_prop_value2, db=None):
         query = self.create_rel_template2.format(
             type1=type1,
             type2=type2,
@@ -168,7 +172,8 @@ CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
 
     def extract_node(self, node_type=None, node_name=None, db=None):
         if node_type and node_name:
-            query = self.extract_node_type_name_template.format(type=node_type, name=node_name)
+            query = self.extract_node_type_name_template.format(
+                type=node_type, name=node_name)
         elif node_type:
             query = self.extract_node_type_template.format(type=node_type)
         elif node_name:
@@ -177,17 +182,21 @@ CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
         return res
 
     def extract_entity(self, node_type, node_name, db=None):
-        query = self.extract_entity_template.format(type=node_type, name=node_name)
+        query = self.extract_entity_template.format(
+            type=node_type, name=node_name)
         res = self.execute_query(query, db=db)
         return res
 
     def extract_triplets(self, name1=None, name2=None, rel=None, db=None):
         if name1 and name2:
-            query = self.extract_triplets_names_template.format(name1=name1, name2=name2)
+            query = self.extract_triplets_names_template.format(
+                name1=name1, name2=name2)
         elif name1 and rel:
-            query = self.extract_triplets_name1_rel_template.format(rel=rel, name1=name1)
+            query = self.extract_triplets_name1_rel_template.format(
+                rel=rel, name1=name1)
         elif name2 and rel:
-            query = self.extract_triplets_name2_rel_template.format(rel=rel, name2=name2)
+            query = self.extract_triplets_name2_rel_template.format(
+                rel=rel, name2=name2)
         elif name1:
             query = self.extract_triplets_name1_template.format(name1=name1)
         elif name2:
@@ -205,18 +214,19 @@ CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
             res = self.execute_query(query, db=db)
             for element in res:
                 rel_props = dict(element["r"])
-                rel_props = {key: value for key, value in rel_props.items() if key not in ["raw_time", "sentiment"]}
+                rel_props = {key: value for key, value in rel_props.items() if key not in [
+                    "raw_time", "sentiment"]}
                 if (subj_labels is None or set(element["a"].labels).intersection(set(subj_labels))) \
                         and (obj_labels is None or set(element["b"].labels).intersection(set(obj_labels))):
                     triplet = [{list(element["a"].labels)[0]: element["a"]["name"]},
                                element["r"].type,
                                rel_props,
-                               {list(element["b"].labels)[0]: element["b"]["name"]},
+                               {list(element["b"].labels)[0]                                : element["b"]["name"]},
                                direction]
                     new_chain = copy.deepcopy(chain)
 
                     def count_persons(new_chain, second_chain):
-                        persons  = set()
+                        persons = set()
                         for cur_chain in [new_chain, second_chain]:
                             for tr in cur_chain:
                                 for ent in tr:
@@ -227,7 +237,8 @@ CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
                     if triplet not in new_chain:
                         subj = list(triplet[0].values())[0].replace("_", " ")
                         obj = list(triplet[-2].values())[0].replace("_", " ")
-                        prop_values = [val.lower() for val in triplet[2].values()]
+                        prop_values = [val.lower()
+                                       for val in triplet[2].values()]
                         cnt1 = 0
                         if subj.lower() in another_entities1:
                             cnt1 += 1
@@ -242,24 +253,29 @@ CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
                             new_chain.append(triplet)
                             second_chain = another_entities2[subj.lower()]
                             persons = count_persons(new_chain, second_chain)
-                            if not ([ch[-1] for ch in new_chain] == ["forw", "backw"] \
+                            if not ([ch[-1] for ch in new_chain] == ["forw", "backw"]
                                     and [ch[-1] for ch in second_chain] == ["forw", "backw"]) and len(persons) < 3:
-                                inters_chains2.append([new_chain, second_chain, ["backw", subj]])
+                                inters_chains2.append(
+                                    [new_chain, second_chain, ["backw", subj]])
                         elif "forw" in direction and obj.lower() in another_entities2:
                             new_chain.append(triplet)
                             second_chain = another_entities2[obj.lower()]
                             persons = count_persons(new_chain, second_chain)
-                            if not ([ch[-1] for ch in new_chain] == ["forw", "backw"] \
+                            if not ([ch[-1] for ch in new_chain] == ["forw", "backw"]
                                     and [ch[-1] for ch in second_chain] == ["forw", "backw"]) and len(persons) < 3:
-                                inters_chains2.append([new_chain, second_chain, ["forw", obj]])
+                                inters_chains2.append(
+                                    [new_chain, second_chain, ["forw", obj]])
                         elif any([prop_value.lower() in another_entities2 for prop_value in prop_values]):
                             for prop_value in triplet[2].values():
                                 if prop_value.lower() in another_entities2:
                                     new_chain.append(triplet)
-                                    second_chain = another_entities2[prop_value.lower()]
-                                    persons = count_persons(new_chain, second_chain)
+                                    second_chain = another_entities2[prop_value.lower(
+                                    )]
+                                    persons = count_persons(
+                                        new_chain, second_chain)
                                     if len(persons) < 3:
-                                        inters_chains2.append([new_chain, second_chain, ["prop", prop_value]])
+                                        inters_chains2.append(
+                                            [new_chain, second_chain, ["prop", prop_value]])
                         else:
                             new_chain.append(triplet)
                     else:
@@ -289,7 +305,8 @@ CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
         rel_data_items = [(key.replace("_", " "), value.replace("_", " ")) for key, value in rel_data_items
                           if key not in ["raw_time", "time", "sentiment"]]
         rel_data_items = sorted(rel_data_items, key=lambda x: x[0])
-        rel_data_values = [element[1].lower().replace("_", " ") for element in rel_data_items]
+        rel_data_values = [element[1].lower().replace("_", " ")
+                           for element in rel_data_items]
         subj_values = [word.replace("_", " ") for word in subj.values()]
         obj_values = [word.replace("_", " ") for word in obj.values()]
         rel = rel.replace("_", " ")
@@ -307,7 +324,7 @@ CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
             for ne, entities_list in enumerate(seed_entities):
                 for seed_entity, prop_name, entity_type in entities_list:
                     another_entities_list = [entities_list2 for entities_list2 in seed_entities
-                                            if entities_list2 != entities_list]
+                                             if entities_list2 != entities_list]
                     another_entities1, another_entities2 = [], {}
                     for entities_list2 in another_entities_list:
                         for ent, *_ in entities_list2:
@@ -315,7 +332,8 @@ CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
                     seed_entity = seed_entity.replace(" ", "_").lower()
                     if step == 0:
                         used_entities[(seed_entity, ne)] = set()
-                        entities[(seed_entity, ne)] = [(seed_entity, prop_name, entity_type, [])]
+                        entities[(seed_entity, ne)] = [
+                            (seed_entity, prop_name, entity_type, [])]
                     for (cur_seed_entity, cur_ne), entities_info in entities.items():
                         if cur_ne != ne:
                             for entity, *_, chain in entities_info:
@@ -328,23 +346,30 @@ CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
                     for entity, prop_name, tp, chain in entities[(seed_entity, ne)]:
                         if (entity, prop_name, tp) not in used_entities[(seed_entity, ne)]:
                             if tp == "node":
-                                query = self.extract_triplets_name1_template.format(name1=entity)
+                                query = self.extract_triplets_name1_template.format(
+                                    name1=entity)
                                 cur_triplets_info, cur_inters_chains1, cur_inters_chains2 = self.parse_triplet_output(
                                     "forw", query, another_entities1, another_entities2, chain, subj_labels, obj_labels, db
                                 )
                                 inters_chains1, inters_chains2 = \
-                                    self.add_chains(inters_chains1, inters_chains2, cur_inters_chains1, cur_inters_chains2)
+                                    self.add_chains(
+                                        inters_chains1, inters_chains2, cur_inters_chains1, cur_inters_chains2)
                                 for triplet in cur_triplets_info:
-                                    triplets_info.append([(step, "forw", seed_entity, triplet[0][1])] + triplet)
-                                query = self.extract_triplets_name2_template.format(name2=entity)
+                                    triplets_info.append(
+                                        [(step, "forw", seed_entity, triplet[0][1])] + triplet)
+                                query = self.extract_triplets_name2_template.format(
+                                    name2=entity)
                                 cur_triplets_info, cur_inters_chains1, cur_inters_chains2 = self.parse_triplet_output(
                                     "backw", query, another_entities1, another_entities2, chain, subj_labels, obj_labels, db
                                 )
                                 inters_chains1, inters_chains2 = \
-                                    self.add_chains(inters_chains1, inters_chains2, cur_inters_chains1, cur_inters_chains2)
+                                    self.add_chains(
+                                        inters_chains1, inters_chains2, cur_inters_chains1, cur_inters_chains2)
                                 for triplet in cur_triplets_info:
-                                    triplets_info.append([(step, "backw", seed_entity, triplet[0][1])] + triplet)
-                                used_entities[(seed_entity, ne)].add((entity, prop_name, tp))
+                                    triplets_info.append(
+                                        [(step, "backw", seed_entity, triplet[0][1])] + triplet)
+                                used_entities[(seed_entity, ne)].add(
+                                    (entity, prop_name, tp))
                             elif tp == "rel_prop":
                                 query = self.extract_triplets_rel_prop_template.format(
                                     prop_name=prop_name,
@@ -354,15 +379,20 @@ CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
                                     "forw/backw", query, another_entities1, another_entities2, chain, subj_labels, obj_labels, db
                                 )
                                 inters_chains1, inters_chains2 = \
-                                    self.add_chains(inters_chains1, inters_chains2, cur_inters_chains1, cur_inters_chains2)
+                                    self.add_chains(
+                                        inters_chains1, inters_chains2, cur_inters_chains1, cur_inters_chains2)
                                 for triplet in cur_triplets_info:
-                                    triplets_info.append([(step, "forw", seed_entity, triplet[0][1])] + triplet)
-                                used_entities[(seed_entity, ne)].add((entity, prop_name, tp))
+                                    triplets_info.append(
+                                        [(step, "forw", seed_entity, triplet[0][1])] + triplet)
+                                used_entities[(seed_entity, ne)].add(
+                                    (entity, prop_name, tp))
                     if question and step > 0:
-                        triplets_for_rank = [triplet[1] for triplet in triplets_info]
+                        triplets_for_rank = [triplet[1]
+                                             for triplet in triplets_info]
                         cur_embs = []
                         for triplet in triplets_for_rank:
-                            triplet_key, triplet_key_rev = self.make_triplet_key(triplet)
+                            triplet_key, triplet_key_rev = self.make_triplet_key(
+                                triplet)
                             if triplet_key in self.triplet_embs_dict:
                                 emb = self.triplet_embs_dict[triplet_key]
                             else:
@@ -371,14 +401,16 @@ CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
                         if cur_embs:
                             embs_for_rank = torch.Tensor(cur_embs).to("cuda")
                             query_embs = retriever.embed([question])
-                            result = retriever.search_in_embeds(embs_for_rank, query_embs, 5)
+                            result = retriever.search_in_embeds(
+                                embs_for_rank, query_embs, 5)
                             idx = result["idx"][0][:top_n]
                             triplets_info = [triplets_info[ind] for ind in idx]
 
                     for step_dir_seed_rel, triplet, cur_entities, new_chain in triplets_info:
                         for (cur_ent, cur_prop_name, cur_prop_type) in cur_entities:
                             if (cur_ent, cur_prop_name, cur_prop_type, new_chain) not in new_entities:
-                                new_entities.append((cur_ent, cur_prop_name, cur_prop_type, new_chain))
+                                new_entities.append(
+                                    (cur_ent, cur_prop_name, cur_prop_type, new_chain))
                         if step_dir_seed_rel not in triplets_dict:
                             triplets_dict[step_dir_seed_rel] = []
                         triplets_dict[step_dir_seed_rel].append(triplet)
@@ -387,7 +419,8 @@ CREATE (a)-[r:{rel_type} {{{props_dict}}}]->(b)"""
 
 
 if __name__ == "__main__":
-    conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
+    conn = Neo4jConnection(uri="bolt://31.207.47.254:7687",
+                           user="neo4j", pwd="password")
 
     # создание базы данных
 
@@ -395,7 +428,8 @@ if __name__ == "__main__":
 
     # Создание узлов графа
 
-    conn.create_node(node_type="smartphone", node_name="Xiaomi 11", db="testdb")
+    conn.create_node(node_type="smartphone",
+                     node_name="Xiaomi 11", db="testdb")
     conn.create_node(node_type="feature", node_name="WiFi module", db="testdb")
 
     # Создание relation между узлами (rel_prop_name - название property для связи между узлами)
@@ -420,7 +454,8 @@ if __name__ == "__main__":
     res = conn.extract_node(node_type="smartphone", db="testdb")
     print(res)
 
-    res = conn.extract_node(node_type="smartphone", node_name="Xiaomi 11", db="testdb")
+    res = conn.extract_node(node_type="smartphone",
+                            node_name="Xiaomi 11", db="testdb")
     print(res)
 
     # извлечение триплетов

@@ -1,1 +1,1 @@
-from .suite import ANSWER_GEN_SUITE_V2
+from .suite import SIMPLEAG_SUITE_V2

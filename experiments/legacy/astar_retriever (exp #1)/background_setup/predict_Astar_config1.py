@@ -50,6 +50,7 @@ check_create_dir(save_log_tmpdata_dir)
 
 qa_files = os.listdir(EVAL_DATADIR)
 for qa_file in tqdm(qa_files):
-    measure_quality_from_answers_file(qa_file, gen_answers_dir, save_log_tmpdata_dir, EVAL_DATADIR, METRICS)
+    measure_quality_from_answers_file(
+        qa_file, gen_answers_dir, save_log_tmpdata_dir, EVAL_DATADIR, METRICS)
 
 save_json(SF_META, save_log_metafile)

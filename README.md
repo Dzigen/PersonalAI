@@ -36,6 +36,7 @@
 
 ##### Команды для тестироваания
 * pytest --cov=src --cov-report=html ...
+* pygount src/ --suffix=py --format=summary
 
 pre-commit:
 * https://pre-commit.com/#pre-commit-configyaml---repos
@@ -49,29 +50,6 @@ dvc tutorial:
 pytest tutorial:
 * https://realpython.com/pytest-python-testing/#parametrization-combining-tests
 
+--------------------------------
 
-Построенные графы знаний:
-1. (testdb) - golden-граф
-    * vectorized nodes = 8
-    * vectorized triplets = 4
-2. (diaasq2) - build-грфа (c добавленным полем time)
-    * vectorized nodes = 10
-    * vectorized triplets = 6
-3. (diaasq_gpt4omini) - build-граф (diaasq2 с добавленным полем name для realtions)
-    * vectorized nodes = 11
-    * vectorized triplets = 7
-4. (diaasq_gigachat) - build-граф (diaasq2 с добавленным полем name для realtions)
-    * vectorized nodes = 12
-    * vectorized triplets = 8
-5. (testdb_v2) -  testdb-граф, который был перестроен по обновлённому алгоритму (более строгий контроль за дубликатами вершин и связей)
-    * vectorized nodes = 13
-    * vectorized triplets = 9
-    * graph-creation info: all/created_relations - 10355/10296; all/created_nodes - 20710/1434
-6. (diaasq_gpt4omini_v2) -  diaasq_gpt4omini-граф, который был перестроен по обновлённому алгоритму (более строгий контроль за дубликатами вершин и связей)
-    * vectorized nodes = 14
-    * vectorized triplets = 10
-    * graph-creation info: all/created_relations - 283268/72789; all/created_nodes - 566536/71254
-7. (diaasq_gigachat_v2) -  diaasq_gigachat-граф, который был перестроен по обновлённому алгоритму (более строгий контроль за дубликатами вершин и связей)
-    * vectorized nodes = 15
-    * vectorized triplets = 11
-    * graph-creation info: all/created_relations - 211542/50917; all/created_nodes - 423084/54051
+Тех. поддержка: [Telegram](https://t.me/mmenscshikov), <m.menschikov@skoltech.ru>

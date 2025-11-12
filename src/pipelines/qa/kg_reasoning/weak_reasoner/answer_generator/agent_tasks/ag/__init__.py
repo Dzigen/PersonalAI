@@ -1,1 +1,1 @@
-from .selector import AgentAGTaskConfigSelector
+from .selector import AgentSimpleAGTaskConfigSelector

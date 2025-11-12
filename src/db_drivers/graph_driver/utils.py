@@ -1,28 +1,43 @@
 from typing import Dict, List, Union
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from abc import abstractmethod
+from copy import deepcopy
 
-from ...utils import ReturnInfo
-from ...utils.data_structs import Triplet, NodeType, RelationType, Node
+from ...utils.data_structs import Triplet, NodeType, RelationType, Node, NodeInfo, RelationInfo
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
+
 
 @dataclass
 class GraphDBConnectionConfig(BaseDatabaseConfig):
+    db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAIGraphDB', 'table': 'DefaultPersonalAIGraphTable'})
     host: str = None
     port: str = None
+
+    def to_str(self):
+        str_hostport = f"{self.host};{self.port}"
+        str_needto = f"{self.need_to_clear};{self.create_index}"
+        return f"{self.db_info};{str_hostport};{str_needto};{self.params}"
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        dictconfig_copy = deepcopy(dict_config)
+        formated_config = GraphDBConnectionConfig(**dictconfig_copy)
+        formated_config.formate_fields()
+        return formated_config
+
 
 class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
 
     @abstractmethod
-    def create(self, triplets: List[Triplet], creation_info: Dict = dict()) -> ReturnInfo:
+    def create(self, triplets: List[Triplet], creation_info: Dict = dict()) -> None:
         pass
 
     @abstractmethod
-    def get_adjecent_nids(self, base_node_id: str, accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[str]:
+    def get_adjecent_nodes(self, base_node: NodeInfo, accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[NodeInfo]:
         pass
 
     @abstractmethod
-    def get_nodes_shared_ids(self, node1_id: str, node2_id: str, id_type: str = 'both') -> List[Dict[str,str]]:
+    def get_nodes_shared_ids(self, node1: NodeInfo, node2: NodeInfo, id_type: str = 'both') -> List[Dict[str, str]]:
         pass
 
     @abstractmethod
@@ -30,18 +45,19 @@ class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
         pass
 
     @abstractmethod
-    def get_triplets(self, node1_id: str, node2_id: str) -> List[Triplet]:
+    def get_triplets(self, node1: NodeInfo, node2: NodeInfo) -> List[Triplet]:
         pass
 
     @abstractmethod
-    def read_by_name(self, name: str, object_type: Union[RelationType,NodeType],
+    def read_by_name(self, name: str, object_type: Union[RelationType, NodeType],
                      object: str = 'triplet') -> List[Union[Triplet, Node]]:
         pass
 
     @abstractmethod
-    def count_items(self, id: str = None, id_type: str = None) -> Union[Dict[str,int],int]:
+    def count_items(self, item_id: Union[None, str, NodeInfo, RelationInfo] = None,
+                    id_type: str = None, detailed: bool = False) -> Union[Dict[str, Dict[str, int]], Dict[str, int], int]:
         pass
 
     @abstractmethod
-    def item_exist(self, id: str, id_type: str='triplet') -> bool:
+    def item_exist(self, item_id: Union[str, NodeInfo, RelationInfo], id_type: str = 'triplet') -> bool:
         pass

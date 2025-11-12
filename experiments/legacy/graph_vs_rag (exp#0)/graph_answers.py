@@ -2,12 +2,14 @@ import json
 from openai import OpenAI
 from neo4j_functions import Neo4jConnection
 
-conn = Neo4jConnection(uri="bolt://31.207.47.254:7687", user="neo4j", pwd="password")
+conn = Neo4jConnection(uri="bolt://31.207.47.254:7687",
+                       user="neo4j", pwd="password")
 
-OPENAI_API_KEY=""
+OPENAI_API_KEY = ""
 
 model = "gpt-4o"
 client = OpenAI(api_key=OPENAI_API_KEY)
+
 
 def execute_prompt(prompt):
     if isinstance(prompt, str):
@@ -17,6 +19,7 @@ def execute_prompt(prompt):
     response = client.chat.completions.create(model=model, messages=content)
     response = response.choices[0].message.content
     return response
+
 
 PROMPT_TEMPLATE = """Generate Cypher query (or several queries, if necessary) from the question by analogy with examples given.
 Question example 1: Which device is better in battery life: k30u or 13promax?
@@ -117,7 +120,8 @@ for question_type in ["simple_sentiment"]:
     for n, question in enumerate(questions_dict[question_type]):
         if n in [1, 3]:
             try:
-                prompt = PROMPT_TEMPLATES[question_type].format(question=question)
+                prompt = PROMPT_TEMPLATES[question_type].format(
+                    question=question)
                 res = execute_prompt(prompt)
                 if ";" in res:
                     queries = res.split(";")
@@ -133,7 +137,8 @@ for question_type in ["simple_sentiment"]:
                         out.write(f"query: {query} --- res: {res}"+'\n\n')
                     for element in res:
                         info_element = element.data()
-                        info_element = [f"{key}: {value}" for key, value in info_element.items()]
+                        info_element = [
+                            f"{key}: {value}" for key, value in info_element.items()]
                         info += info_element
                 info_str = ", ".join(info)
                 prompt = PROMPT_ANSWER.format(

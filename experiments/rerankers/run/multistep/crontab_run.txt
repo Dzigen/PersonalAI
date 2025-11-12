@@ -1,0 +1,3 @@
+BASE_DIR=/home/workspace/experiments/rerankers/run/multistep
+
+05 02 27 10 * cd $BASE_DIR ; bash run_prepared_params.sh >> crontab_log.txt 2>&1

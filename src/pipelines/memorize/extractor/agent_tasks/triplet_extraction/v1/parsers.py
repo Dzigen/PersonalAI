@@ -1,5 +1,6 @@
 from typing import List, Tuple
 
+
 def etriplets_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, str, str]]:
     """Функция предназначена для разбора ответа LLM-агента, полученного в рамках задачи по извлечению триплетов типа "simple" из текста на естественном языке.
 
@@ -9,7 +10,7 @@ def etriplets_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, str, 
     :rtype: List[Tuple[str, str, str]]
     """
     if len(raw_response) < 1:
-        raise ValueError
+        raise ValueError(f"raw_response: '{raw_response}'")
 
     if ":" in raw_response:
         raw_response = raw_response.split(":")[-1]
@@ -19,11 +20,12 @@ def etriplets_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, str, 
     for triplet in raw_response:
         if len(triplet.split(",")) != 3:
             continue
-            #raise ValueError
+            # raise ValueError
         subj, rel, obj = triplet.split(",")
-        subj, rel, obj = subj.split(":")[-1].split(".")[-1].strip(''' \n'".,/\\'''), rel.strip(''' \n'".,/\\'''), obj.strip(''' \n'".,/\\''')
+        subj, rel, obj = subj.split(":")[-1].split(".")[-1].strip(
+            ''' \n'".,/\\'''), rel.strip(''' \n'".,/\\'''), obj.strip(''' \n'".,/\\''')
         if len(subj) == 0 or len(rel) == 0 or len(obj) == 0:
-            raise ValueError
+            raise ValueError(f"raw_response: '{raw_response}'; \n error-triple: {triplet}")
         else:
             raw_triplets.append((subj, rel, obj))
 

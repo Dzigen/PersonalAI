@@ -1,22 +1,22 @@
 from .........utils import AgentTaskSuite
 
-from .parsers import ru_ag_custom_answer_parse, en_ag_custom_answer_parse
+from .parsers import ru_simpleag_custom_parse, en_simpleag_custom_parse
 
-from .prompts import EN_AG_SYSTEM_PROMPT, EN_AG_USER_PROMPT, EN_AG_ASSISTANT_PROMPT, \
-        RU_AG_SYSTEM_PROMPT, RU_AG_USER_PROMPT, RU_AG_ASSISTANT_PROMPT
+from .prompts import EN_SIMPLEAG_SYSTEM_PROMPT, EN_SIMPLEAG_USER_PROMPT, EN_SIMPLEAG_ASSISTANT_PROMPT, \
+    RU_SIMPLEAG_SYSTEM_PROMPT, RU_SIMPLEAG_USER_PROMPT, RU_SIMPLEAG_ASSISTANT_PROMPT
 
-EN_ANSWER_GEN_SUITE = AgentTaskSuite(
-    system_prompt=EN_AG_SYSTEM_PROMPT,
-    user_prompt=EN_AG_USER_PROMPT,
-    assistant_prompt=EN_AG_ASSISTANT_PROMPT,
-    parse_answer_func=en_ag_custom_answer_parse
+EN_SIMPLEAG_SUITE = AgentTaskSuite(
+    system_prompt=EN_SIMPLEAG_SYSTEM_PROMPT,
+    user_prompt=EN_SIMPLEAG_USER_PROMPT,
+    assistant_prompt=EN_SIMPLEAG_ASSISTANT_PROMPT,
+    parse_answer_func=en_simpleag_custom_parse
 )
 
-RU_ANSWER_GEN_SUITE = AgentTaskSuite(
-    system_prompt=RU_AG_SYSTEM_PROMPT,
-    user_prompt=RU_AG_USER_PROMPT,
-    assistant_prompt=RU_AG_ASSISTANT_PROMPT,
-    parse_answer_func=ru_ag_custom_answer_parse
+RU_SIMPLEAG_SUITE = AgentTaskSuite(
+    system_prompt=RU_SIMPLEAG_SYSTEM_PROMPT,
+    user_prompt=RU_SIMPLEAG_USER_PROMPT,
+    assistant_prompt=RU_SIMPLEAG_ASSISTANT_PROMPT,
+    parse_answer_func=ru_simpleag_custom_parse
 )
 
-ANSWER_GEN_SUITE_V3 = {'ru': RU_ANSWER_GEN_SUITE, 'en': EN_ANSWER_GEN_SUITE}
+SIMPLEAG_SUITE_V3 = {'ru': RU_SIMPLEAG_SUITE, 'en': EN_SIMPLEAG_SUITE}
