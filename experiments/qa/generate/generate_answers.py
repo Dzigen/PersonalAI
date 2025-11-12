@@ -251,19 +251,19 @@ with open(QA_ELAPSED_TIME_SPATH, 'w', encoding='utf-8') as fd:
     fd.write(json.dumps(elapsed_times, indent=1, ensure_ascii=False))
 
 ####################################################
-print("9. Saving Cache Info")
+# print("9. Saving Cache Info")
 
-print("agent stats after qa-inferencing:")
-agent_stats = qa_pipeline.get_agent_tgen_stat()
-pprint(agent_stats)
-with open(AGENT_STAT_SPATH, 'w', encoding='utf-8') as fd:
-    fd.write(json.dumps(agent_stats, indent=1, ensure_ascii=False))
+# print("agent stats after qa-inferencing:")
+# agent_stats = qa_pipeline.get_agent_tgen_stat()
+# pprint(agent_stats)
+# with open(AGENT_STAT_SPATH, 'w', encoding='utf-8') as fd:
+#     fd.write(json.dumps(agent_stats, indent=1, ensure_ascii=False))
 
-print("cache stat after qa-inferencing:")
-cache_stats = qa_pipeline.get_cache_stat()
-pprint(cache_stats)
-with open(CACHE_STAT_SPATH, 'w', encoding='utf-8') as fd:
-    fd.write(json.dumps(cache_stats, indent=1, ensure_ascii=False))
+# print("cache stat after qa-inferencing:")
+# cache_stats = qa_pipeline.get_cache_stat()
+# pprint(cache_stats)
+# with open(CACHE_STAT_SPATH, 'w', encoding='utf-8') as fd:
+#     fd.write(json.dumps(cache_stats, indent=1, ensure_ascii=False))
 
 # qa_pipeline.clear_agent_tgen_stat() # !!! PAY ATTENTION !!!
 # qa_pipeline.clear_kv_caches( # !!! PAY ATTENTION !!!

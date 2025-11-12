@@ -122,17 +122,22 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
 
         rinfo = ReturnInfo()
         self.log("START ANSWER GENERATION ...", verbose=self.verbose)
-        self.log(
-            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
+
+        self.log(f"Исходное количество триплетов: {len(context_triplets)}", verbose=self.verbose)
+        filtered_triplets = [triplet for triplet in context_triplets if triplet.relation.type in self.config.relation_type]
+        self.log(f"Количество оставшихся триплетов после фильтрации по типу: {len(filtered_triplets)}", verbose=self.verbose)
+
+
         self.log(f"CONTEXT_TRIPLETS:", verbose=self.verbose)
-        for triplet in context_triplets:
+        for triplet in filtered_triplets:
             self.log(f"*[{triplet.id}] {triplet}", verbose=self.verbose)
 
         self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...", verbose=self.verbose)
         answer, status = self.tasks_solvers.answer_generator_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
-            query=query, triplets=context_triplets)
+            query=query, triplets=filtered_triplets)
 
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
