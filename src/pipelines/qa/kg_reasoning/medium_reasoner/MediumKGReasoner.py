@@ -368,8 +368,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         :rtype: Tuple[str, ReturnInfo]
         """
         self.log("START MEDIUM KG-REASONING...", verbose=self.verbose)
-        self.log(
-            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
         answer, rinfo = None, ReturnInfo()
         search_plan = SearchPlanInfo(base_query=query)
@@ -377,59 +376,51 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         self.log("Start iterative search...", verbose=self.verbose)
         for search_step in range(self.config.max_searchplan_steps):
 
-            self.log("STAGE#1 - SEARCH PLAN INITING/ENHANCING",
-                     verbose=self.verbose)
-            search_plan, usp_rinfo = self.update_searchplan(
-                search_step, search_plan)
+            self.log("STAGE#1 - SEARCH PLAN INITING/ENHANCING", verbose=self.verbose)
+            search_plan, usp_rinfo = self.update_searchplan(search_step, search_plan)
             update_rinfo(rinfo, usp_rinfo)
 
-            self.log("STAGE#2 - QUERIES PREPARATION FOR KG TRAVERSAL",
-                     verbose=self.verbose)
+            if search_step >= len(search_plan.search_steps):
+                self.log("No more search-steps in the plan!", verbose=self.verbose)
+                break
+
+            self.log("STAGE#2 - QUERIES PREPARATION FOR KG TRAVERSAL", verbose=self.verbose)
             if rinfo.status == ReturnStatus.success:
                 search_query = search_plan.search_steps[search_step]
-                cluequeries, psq_rinfo = self.prepare_searchqueries(
-                    search_query, search_step)
+                cluequeries, psq_rinfo = self.prepare_searchqueries(search_query, search_step)
                 update_rinfo(rinfo, psq_rinfo)
             else:
-                self.log("During previous steps error occurs.",
-                         verbose=self.verbose)
+                self.log("During previous steps error occurs.", verbose=self.verbose)
                 break
 
             self.log("STAGE#3 - KG TRAVERSAL FOR RELEVANT KNOWLEDGE EXTRACTION",
                      verbose=self.verbose)
             if rinfo.status == ReturnStatus.success:
-                search_step_answer, tkg_rinfo = self.traverse_kg(
-                    search_query, cluequeries)
+                search_step_answer, tkg_rinfo = self.traverse_kg(search_query, cluequeries)
                 update_rinfo(rinfo, tkg_rinfo)
 
                 if rinfo.status == ReturnStatus.success:
                     search_plan.steps_answers.append(search_step_answer)
             else:
-                self.log("During previous steps error occurs.",
-                         verbose=self.verbose)
+                self.log("During previous steps error occurs.", verbose=self.verbose)
                 break
 
-            self.log("STAGE#4 - ANSWER-GENERATION TRYING",
-                     verbose=self.verbose)
+            self.log("STAGE#4 - ANSWER-GENERATION TRYING", verbose=self.verbose)
             if rinfo.status == ReturnStatus.success:
                 answer, agt_rinfo = self.answer_generation_trying(search_plan)
                 update_rinfo(rinfo, agt_rinfo)
 
                 if answer is not None:
-                    self.log(ANSWER_IS_GENERATED_MESSAGE,
-                             verbose=self.verbose)
+                    self.log(ANSWER_IS_GENERATED_MESSAGE, verbose=self.verbose)
                     break
                 else:
-                    self.log(CONTINUE_SEARCH_MESSAGE,
-                             verbose=self.verbose)
+                    self.log(CONTINUE_SEARCH_MESSAGE, verbose=self.verbose)
             else:
-                self.log("During previous steps error occurs.",
-                         verbose=self.verbose)
+                self.log("During previous steps error occurs.", verbose=self.verbose)
                 break
 
         self.log("Завершаем поиск.", verbose=self.verbose)
-        self.log(
-            f"Информация по выполненному поиску: {search_plan}", verbose=self.verbose)
+        self.log(f"Информация по выполненному поиску: {search_plan}", verbose=self.verbose)
         if answer is None and rinfo.status == ReturnStatus.success:
             answer, fag_rinfo = self.forced_answer_generation(search_plan)
             update_rinfo(rinfo, fag_rinfo)

@@ -16,7 +16,7 @@ with open(SETTINGS_PARAMS_FILEP, 'r') as stream:
 REPO_BASE_PATH = '/home/workspace'
 GEN_PARAMS_PATH = f'{REPO_BASE_PATH}/experiments/qa/configure/medium/generate_params'
 SAVE_PARAMS_PATH = f'{GEN_PARAMS_PATH}/tmp_params'
-PERSONALAI_VERSION = 'v2.1.2'
+PERSONALAI_VERSION = 'v2.1.3'
 
 #############################################################
 
@@ -31,7 +31,9 @@ AVAIL_SSTEPS = KGREAS_CONFIGS['max_searchplan_steps']
 AVAIL_ANSWSOME = KGREAS_CONFIGS['answer_something']
 
 AVAIL_SEARCHENCH_CONFIGS = KGREAS_CONFIGS['searchplan_enhancer_config']
-AVAIL_ENTEXTR_CONFIGS = KGREAS_CONFIGS['e2n_matcher_config']
+
+AVAIL_ENTEXTR_CONFIGS = KGREAS_CONFIGS['entities_extractor_config']
+AVAIL_E2NMATCHER_CONFIGS = KGREAS_CONFIGS['e2n_matcher_config']
 
 AVAIL_CQUERIES = KGREAS_CONFIGS['cluequeries_generator_config']['max_cqueries_amount']
 AVAIL_CQUERIESGEN_PVERSIONS = KGREAS_CONFIGS['cluequeries_generator_config']['agent_tasks_config']['cquerie_generator']
@@ -59,21 +61,22 @@ GENERAL_QAPIPE_CONFIGS = list(product(
     
     AVAIL_SEARCHENCH_CONFIGS, # 5
     AVAIL_ENTEXTR_CONFIGS, # 6
+    AVAIL_E2NMATCHER_CONFIGS, # 7
     
-    AVAIL_CQUERIES, # 7
-    AVAIL_CQUERIESGEN_PVERSIONS, # 8
+    AVAIL_CQUERIES, # 8
+    AVAIL_CQUERIESGEN_PVERSIONS, # 9
     
-    AVAIL_KRETR_CONFIGS, # 9
-    AVAIL_KFILTR_CONFIGS, # 10
+    AVAIL_KRETR_CONFIGS, # 10
+    AVAIL_KFILTR_CONFIGS, # 11
     
-    AVAIL_CANSWGEN_PVERSIONS, # 11
+    AVAIL_CANSWGEN_PVERSIONS, # 12
     
-    AVAIL_CANSWSUM_PVERSIONS, # 12
+    AVAIL_CANSWSUM_PVERSIONS, # 13
 
-    AVAIL_ANSWCLS_PVERSIONS, # 13
-    AVAIL_ANSWGEN_PVERSIONS, # 14
+    AVAIL_ANSWCLS_PVERSIONS, # 14
+    AVAIL_ANSWGEN_PVERSIONS, # 15
     
-    AVAIL_ANSWAGG_PVERSIONS # 15
+    AVAIL_ANSWAGG_PVERSIONS # 16
 ))
 
 #############################################################
@@ -109,24 +112,25 @@ for ds_idx, dataset in enumerate(AVAILABLE_DATASET_NAMES):
 
             SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['searchplan_enhancer_config'] = spec_raw_params[5]
             SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['entities_extractor_config'] = spec_raw_params[6]
+            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['e2n_matcher_config'] = spec_raw_params[7]
 
-            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['cluequeries_generator_config']['max_cqueries_amount'] = spec_raw_params[7]
-            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['cluequeries_generator_config']['agent_tasks_config']['cquerie_generator'] = spec_raw_params[8]
+            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['cluequeries_generator_config']['max_cqueries_amount'] = spec_raw_params[8]
+            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['cluequeries_generator_config']['agent_tasks_config']['cquerie_generator'] = spec_raw_params[9]
 
-            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['knowledge_retriever_config']['retriever_method'] = spec_raw_params[9][0]
-            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['knowledge_retriever_config']['retriever_config'] = spec_raw_params[9][1]
+            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['knowledge_retriever_config']['retriever_method'] = spec_raw_params[10][0]
+            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['knowledge_retriever_config']['retriever_config'] = spec_raw_params[10][1]
             
-            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['knowledge_retriever_config']['filter_method'] = spec_raw_params[10][0]
-            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['knowledge_retriever_config']['filter_config'] = spec_raw_params[10][1]
+            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['knowledge_retriever_config']['filter_method'] = spec_raw_params[11][0]
+            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['knowledge_retriever_config']['filter_config'] = spec_raw_params[11][1]
 
-            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['clueanswer_generator_config']['agent_tasks_config']['cagen'] = spec_raw_params[11]
+            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['clueanswer_generator_config']['agent_tasks_config']['cagen'] = spec_raw_params[12]
 
-            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['clueanswers_summarizer_config']['agent_tasks_config']['canswers_summarisation'] = spec_raw_params[12]
+            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['clueanswers_summarizer_config']['agent_tasks_config']['canswers_summarisation'] = spec_raw_params[13]
 
-            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['answer_generator_config']['agent_tasks_config']['answer_classifier'] = spec_raw_params[13]
-            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['answer_generator_config']['agent_tasks_config']['answer_generator'] = spec_raw_params[14]
+            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['answer_generator_config']['agent_tasks_config']['answer_classifier'] = spec_raw_params[14]
+            SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['answer_generator_config']['agent_tasks_config']['answer_generator'] = spec_raw_params[15]
 
-            SPECIFIC_QA_PARAMS['answer_aggregator']['agent_tasks_config']['suba_summarisation'] = spec_raw_params[15]
+            SPECIFIC_QA_PARAMS['answer_aggregator']['agent_tasks_config']['suba_summarisation'] = spec_raw_params[16]
 
             # creating name for experiment
             short_ds_name = dataset.split('_')[0]
