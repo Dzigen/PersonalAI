@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Union, Dict
 import hashlib
 from copy import deepcopy
+from collections import Counter
 
 from .configs import KRFILTER_RERANKDRIVER_DEFAULT_CONFIG
 from ..utils import AbstractTriplesFilter, BaseTripletsFilterConfig
@@ -103,6 +104,8 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
         self.log(f"Всего триплетов: {len(triplets)}", verbose=self.verbose)
         unique_relations_map: Dict[str, Triplet] = {triplet.relation.id: triplet for triplet in triplets}
         self.log(f"Количество уникальных триплетов (по строковому представлению): {len(unique_relations_map)}", verbose=self.verbose)
+        triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in triplets]))
+        self.log(f"Количество уникальных триплетов (по строковому представлению): {len(unique_relations_map)} | {triplet_types_freq}", verbose=self.verbose)
 
         type_filtered_relations = {rel_id: triplet for rel_id, triplet in unique_relations_map.items() if triplet.relation.type in self.config.accepted_triplets_types}
         self.log(f"Количество оставшихся триплетов после фильтрации по типу: {len(type_filtered_relations)}", verbose=self.verbose)

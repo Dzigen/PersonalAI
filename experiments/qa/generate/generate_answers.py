@@ -96,15 +96,16 @@ pprint(qa_config)
 
 qa_pipeline = QAPipeline(kg_model, qa_config, kvdriver_config, llmstat_config)
 
-print("llmstat cache:")
 # qa_pipeline.clear_agent_tgen_stat() # !!! PAY ATTENTION !!!
-pprint(qa_pipeline.get_agent_tgen_stat())
-
-print("kv cache: ")
 # qa_pipeline.clear_kv_caches( # !!! PAY ATTENTION !!!
 #     clear_traversal_cache = False,
 #     clear_retrieval_cache = False
 # )
+
+print("llmstat cache:")
+pprint(qa_pipeline.get_agent_tgen_stat())
+
+print("kv cache: ")
 pprint(qa_pipeline.get_cache_stat())
 
 ####################################################

@@ -1,0 +1,76 @@
+DATASET_NAME: hotpotqa_distractor_validation
+KNOWLEDGE_GRAPH_NAME: llama318b_221025_v2prompts
+QA_DATASET_HYPERP:
+  max_samples_per_pack: 100
+  lang: en
+query_preprocessor:
+  denoising_config: null
+  enhancing_config: null
+  decomposition_config: null
+kg_reasoner:
+  reasoner_name: weak
+  reasoner_config:
+    query_parser_config:
+      agent_tasks_config:
+        kw_extraction: v2
+    knowledge_comparator_config:
+      max_k: 2
+      k_compare: 5
+      reranker_driver_config:
+        name: ensemble_fusion
+        strategy_config:
+          vdb_names:
+          - dense_nodes
+          - bm25_nodes
+          retriever_configs:
+          - fetch_n: 20
+            threshold: 0.5
+          - fetch_n: 20
+            threshold: 0.5
+          weights:
+          - 0.2
+          - 0.8
+          c: 60
+    knowledge_retriever_config:
+      retriever_method: naive_retriever
+      retriever_config:
+        max_k: 50
+        reranker_driver_config:
+          name: single_step
+          strategy_config:
+            vdb_name: dense_triplets
+            threshold: 0.5
+            fetch_n: 50
+      filter_method: naive
+      filter_config:
+        max_k: 50
+        reranker_driver_config:
+          name: ensemble_fusion
+          strategy_config:
+            vdb_names:
+            - dense_triplets
+            - bm25_triplets
+            retriever_configs:
+            - fetch_n: 50
+              threshold: 0.5
+            - fetch_n: 50
+              threshold: 0.5
+            weights:
+            - 0.7
+            - 0.3
+            c: 60
+        accepted_triplets_types:
+        - simple
+        - hyper
+        - episodic
+    answer_generator_config:
+      agent_tasks_config:
+        ag: v2
+      relation_type:
+      - simple
+      - hyper
+      - episodic
+answer_aggregator:
+  agent_tasks_config:
+    suba_summarisation: v2
+EXPERIMENT_NAME: hotpotqa_llama318b_weak_naiveretriever(#211492c9)(v2.1.2)

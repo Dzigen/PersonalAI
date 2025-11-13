@@ -1,0 +1,112 @@
+DATASET_NAME: hotpotqa_distractor_validation
+KNOWLEDGE_GRAPH_NAME: gigachatmax_051125_v2prompts
+QA_DATASET_HYPERP:
+  max_samples_per_pack: 100
+  lang: en
+query_preprocessor:
+  denoising_config: null
+  enhancing_config: null
+  decomposition_config: null
+kg_reasoner:
+  reasoner_name: medium
+  reasoner_config:
+    max_searchplan_steps: 3
+    answer_something: true
+    searchplan_enhancer_config:
+      agent_tasks_config:
+        plan_initing: v1
+        enhance_classifier: v1
+        plan_enhancing: v1
+    entities_extractor_config:
+      max_n: 2
+      reranker_driver_config:
+        name: ensemble_fusion
+        strategy_config:
+          vdb_names:
+          - dense_nodes
+          - bm25_nodes
+          retriever_configs:
+          - fetch_n: 20
+            threshold: 0.5
+          - fetch_n: 20
+            threshold: 0.5
+          weights:
+          - 0.2
+          - 0.8
+          c: 60
+    e2n_matcher_config:
+    - max_n: 2
+      reranker_driver_config:
+        name: ensemble_fusion
+        strategy_config:
+          vdb_names:
+          - dense_nodes
+          - bm25_nodes
+          retriever_configs:
+          - fetch_n: 20
+            threshold: 0.5
+          - fetch_n: 20
+            threshold: 0.5
+          weights:
+          - 0.2
+          - 0.8
+          c: 60
+    cluequeries_generator_config:
+      max_cqueries_amount: 3
+      agent_tasks_config:
+        cquerie_generator: v2
+    knowledge_retriever_config:
+      retriever_method: beamsearch
+      retriever_config:
+        reranker_driver_config:
+          name: single_step
+          strategy_config:
+            vdb_name: dense_triplets
+            threshold: 0.5
+            fetch_n: 25
+        max_depth: 2
+        max_paths: 20
+        same_path_intersection_by_node: true
+        diff_paths_intersection_by_node: true
+        diff_paths_intersection_by_rel: true
+        mean_alpha: 0.75
+        final_sorting_mode: mixed
+        accepted_node_types:
+        - object
+        - hyper
+        - episodic
+      filter_method: naive
+      filter_config:
+        max_k: 50
+        reranker_driver_config:
+          name: ensemble_fusion
+          strategy_config:
+            vdb_names:
+            - dense_triplets
+            - bm25_triplets
+            retriever_configs:
+            - fetch_n: 50
+              threshold: 0.5
+            - fetch_n: 50
+              threshold: 0.5
+            weights:
+            - 0.7
+            - 0.3
+            c: 60
+        accepted_triplets_types:
+        - simple
+        - hyper
+    clueanswer_generator_config:
+      agent_tasks_config:
+        cagen: v2
+    clueanswers_summarizer_config:
+      agent_tasks_config:
+        canswers_summarisation: v2
+    answer_generator_config:
+      agent_tasks_config:
+        answer_classifier: v2
+        answer_generator: v2
+answer_aggregator:
+  agent_tasks_config:
+    suba_summarisation: v2
+EXPERIMENT_NAME: hotpotqa_gigachatmax_medium_beamsearch(#f344d125)(v2.1.2)
