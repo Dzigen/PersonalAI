@@ -16,7 +16,7 @@ with open(SETTINGS_PARAMS_FILEP, 'r') as stream:
 REPO_BASE_PATH = '/home/workspace'
 GEN_PARAMS_PATH = f'{REPO_BASE_PATH}/experiments/qa/configure/weak/generate_params'
 SAVE_PARAMS_PATH = f'{GEN_PARAMS_PATH}/tmp_params'
-PERSONALAI_VERSION = 'v2.1.2'
+PERSONALAI_VERSION = 'v2.1.3'
 
 #############################################################
 

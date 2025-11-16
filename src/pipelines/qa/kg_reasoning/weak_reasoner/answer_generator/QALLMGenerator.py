@@ -2,6 +2,7 @@ from typing import List, Tuple, Union, Dict
 from dataclasses import dataclass, field
 from copy import deepcopy
 import hashlib
+from collections import Counter
 
 from .configs import AG_MAIN_LOG_PATH
 from .utils import WeakAGeneratorTaskSolvers, QALLMGeneratorAgentTasksConfig
@@ -124,10 +125,12 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         self.log("START ANSWER GENERATION ...", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
-
-        self.log(f"Исходное количество триплетов: {len(context_triplets)}", verbose=self.verbose)
+        
+        triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in context_triplets]))
+        self.log(f"Исходное количество триплетов: {len(context_triplets)} | {triplet_types_freq}", verbose=self.verbose)
         filtered_triplets = [triplet for triplet in context_triplets if triplet.relation.type in self.config.relation_type]
-        self.log(f"Количество оставшихся триплетов после фильтрации по типу: {len(filtered_triplets)}", verbose=self.verbose)
+        triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in filtered_triplets]))
+        self.log(f"Количество оставшихся триплетов после фильтрации по типу: {len(filtered_triplets)} | {triplet_types_freq}", verbose=self.verbose)
 
 
         self.log(f"CONTEXT_TRIPLETS:", verbose=self.verbose)

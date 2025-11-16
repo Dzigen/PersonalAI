@@ -59,8 +59,8 @@ kg_reasoner: # TO CHANGE
             vdb_name: dense_triplets
             threshold: 0.5
             fetch_n: 25
-        max_depth: 10
-        max_paths: 50
+        max_depth: 5
+        max_paths: 10
         same_path_intersection_by_node: True
         diff_paths_intersection_by_node: True
         diff_paths_intersection_by_rel: True
