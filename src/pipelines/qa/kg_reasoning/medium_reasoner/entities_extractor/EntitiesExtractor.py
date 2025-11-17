@@ -8,6 +8,7 @@ from ......utils import ReturnInfo, Logger, AgentTaskSolver
 from ......utils import ReturnStatus
 from ......agents.utils import AbstractAgentConnector
 from ......utils.data_structs import create_id, BaseComponentConfig, LanguageConfig
+from ......utils.errors import STATUS_MESSAGE
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.cache_kv import CacheUtils
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
@@ -23,17 +24,20 @@ class EntitiesExtractorConfig(BaseComponentConfig, LanguageConfig):
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию EntitiesExtractorAgentTasksConfig().
     :type agent_tasks_config: Union[EntitiesExtractorAgentTasksConfig, Dict], optional
+    :param max_entities: Макимальное количество сущностей, которое может быть извлечено из заданного текста на естественном языке. Значение по кмолчанию 20.
+    :type max_entities: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы EntitiesExtractor-класса. Значение по умолчанию 'medreasn_entextr_main_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     agent_tasks_config: Union[EntitiesExtractorAgentTasksConfig, Dict] = field(default_factory=lambda: EntitiesExtractorAgentTasksConfig())
+    max_entities: int = 20
 
     cache_table_name: str = "medreasn_entextr_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(ENEXTR_MAIN_LOG_PATH))
 
     def to_str(self):
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.max_entities}|{self.agent_tasks_config.to_str()}"
 
     @staticmethod
     def from_dict(dict_config: Dict):
@@ -103,18 +107,26 @@ class EntitiesExtractor(CacheUtils, CacheOperations, AgentStatOperations):
         :rtype: Tuple[List[str], ReturnInfo]
         """
         self.log("START ENTITIES EXTRACTION...", verbose=self.verbose)
-        info = ReturnInfo()
+        rinfo = ReturnInfo()
         self.log(f"QUERY ID: {create_id(query)}", verbose=self.verbose)
         self.log(f"QUERY: {query}", verbose=self.verbose)
 
-        self.log("Выполнение извлечения сущностей из запроса с помощью LLM-агента...",
-                 verbose=self.verbose)
-        entities, info.status = self.tasks_solvers.entities_extractor_solver.solve(
+        self.log("Выполнение извлечения сущностей из запроса с помощью LLM-агента...", verbose=self.verbose)
+        extracted_entities, rinfo.status = self.tasks_solvers.entities_extractor_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
-        self.log(f"RESULT: {entities}", verbose=self.verbose)
-        self.log(f"STATUS: {info.status}", verbose=self.verbose)
 
-        if entities is None or len(entities) < 1:
-            info.status = ReturnStatus.empty_answer
+        entities = []
+        if extracted_entities is None or len(extracted_entities) == 0:
+            rinfo.status = ReturnStatus.zero_entities
+            rinfo.message = STATUS_MESSAGE[rinfo.status]
+        else:
+            self.log(f"Количество извлечённых сущностей, до урезания: {len(extracted_entities)}", verbose=self.verbose)
+            self.log(f"TMP_RESULT: {extracted_entities}", verbose=self.verbose)
+            entities = extracted_entities[:self.config.max_entities]
+            self.log(f"RESULT: {len(entities)}", verbose=self.verbose)
+            for entity in entities:
+                self.log(f"* {entity}", verbose=self.verbose)
 
-        return entities, info
+        self.log(f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.verbose)
+
+        return entities, rinfo

@@ -98,8 +98,8 @@ with open(QA_CONFIG_SPATH, 'wb') as fd:
     joblib.dump(qa_config, fd)
 
 with open(SPECEXP_PARAMS_SPATH, 'w') as fd:
-    yaml.dump(SPECEXP_PARAMS, fd, default_flow_style=False)
+    yaml.dump(SPECEXP_PARAMS, fd, default_flow_style=False, sort_keys=False)
 with open(EXPDIR_PARAMS_SPATH, 'w') as fd:
-    yaml.dump(EXPDIR_PARAMS, fd, default_flow_style=False)
+    yaml.dump(EXPDIR_PARAMS, fd, default_flow_style=False, sort_keys=False)
 
 print("############ DONE ############")

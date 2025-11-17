@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import List, Tuple, Union, Dict
 from copy import deepcopy
+from collections import Counter
 
 from .configs import KR_MAIN_LOG_PATH, AVAILABLE_TRIPLETS_FILTERS, AVAILABLE_TRIPLETS_RETRIEVERS, \
     AVAILABLE_TFILTERS_CONFIGS, AVAILABLE_TRETRIEVERS_CONFIGS
@@ -169,9 +170,15 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         rinfo = ReturnInfo()
         self.log("STAGE #3.1 - TRIPLETS EXTRACTION...", verbose=self.verbose)
         triplets = self.traverse_kg(query_info)
+        
+        triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in triplets]))
+        self.log(f"Респределение количества типов триплетов: {triplet_types_freq}", verbose=self.verbose)
 
         self.log("STAGE #3.2 - TRIPLETS FILTERING...", verbose=self.verbose)
         filtered_triplets = self.filter_triplets(query_info, triplets)
+
+        triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in filtered_triplets]))
+        self.log(f"Респределение количества типов триплетов: {triplet_types_freq}", verbose=self.verbose)
 
         if len(triplets) == 0:
             rinfo.status = ReturnStatus.zero_retrieved_triplets

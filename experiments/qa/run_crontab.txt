@@ -1,0 +1,3 @@
+CRONTAB_DIR="/home/workspace/experiments/qa"
+
+10 00 16 11 * bash $CRONTAB_DIR/run_all_experiments2.sh >> $CRONTAB_DIR/crontab2_log.txt 2>&1

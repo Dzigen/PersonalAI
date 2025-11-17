@@ -23,17 +23,20 @@ class QueryLLMParserConfig(BaseComponentConfig, LanguageConfig):
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию QueryLLMParserAgentTasksConfig().
     :type agent_tasks_config: Union[QueryLLMParserAgentTasksConfig,Dict], optional
+    :param max_entities: Макимальное количество сущностей, которое может быть извлечено из заданного текста на естественном языке. Значение по кмолчанию 20.
+    :type max_entities: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryLLMParser-класса. Значение по умолчанию 'qa_queryparser_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     agent_tasks_config: Union[QueryLLMParserAgentTasksConfig, Dict] = field(default_factory=lambda: QueryLLMParserAgentTasksConfig())
+    max_entities: int = 20
 
     cache_table_name: str = 'qa_queryparser_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(QP_MAIN_LOG_PATH))
 
     def to_str(self):
-        return f"{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{self.lang}"
+        return f"{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{self.max_entities}|{self.lang}"
 
     @staticmethod
     def from_dict(dict_config: Dict):
@@ -105,10 +108,8 @@ class QueryLLMParser(CacheUtils, CacheOperations, AgentStatOperations):
         """
 
         self.log("START KEY WORD EXTRACTION...", verbose=self.verbose)
-        self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}",
-                 verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
         rinfo = ReturnInfo()
 
         self.log("Выполнение извлечения ключевых сущностей из запроса с помощью LLM-агента...",
@@ -124,12 +125,13 @@ class QueryLLMParser(CacheUtils, CacheOperations, AgentStatOperations):
             rinfo.status = ReturnStatus.zero_entities
             rinfo.message = STATUS_MESSAGE[rinfo.status]
         else:
-            entities = extracted_entities
+            self.log(f"Количество извлечённых сущностей, до урезания: {len(extracted_entities)}", verbose=self.verbose)
+            self.log(f"TMP_RESULT: {extracted_entities}", verbose=self.verbose)
+            entities = extracted_entities[:self.config.max_entities]
             self.log(f"RESULT: {len(entities)}", verbose=self.verbose)
             for entity in entities:
                 self.log(f"* {entity}", verbose=self.verbose)
 
-        self.log(
-            f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.verbose)
+        self.log(f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.verbose)
 
         return entities, rinfo
