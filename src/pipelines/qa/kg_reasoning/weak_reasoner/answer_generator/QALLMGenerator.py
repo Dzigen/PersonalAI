@@ -128,6 +128,7 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         
         triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in context_triplets]))
         self.log(f"Исходное количество триплетов: {len(context_triplets)} | {triplet_types_freq}", verbose=self.verbose)
+        
         filtered_triplets = [triplet for triplet in context_triplets if triplet.relation.type in self.config.relation_type]
         triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in filtered_triplets]))
         self.log(f"Количество оставшихся триплетов после фильтрации по типу: {len(filtered_triplets)} | {triplet_types_freq}", verbose=self.verbose)
