@@ -68,7 +68,11 @@ notebooks/kg_building/cron_buildgraph.txt
 experiments/qa/init_env/env_settings
 
 experiments/qa/configure/weak/prepared_params
+experiments/qa/configure/weak/generate_params/tmp_params
+
 experiments/qa/configure/medium/prepared_params
+experiments/qa/configure/medium/generate_params/tmp_params
+
 experiments/qa/params_to_run
 experiments/qa/params_to_run2
 experiments/qa/params_to_run3
