@@ -14,6 +14,8 @@ from tqdm import tqdm
 from typing import List, Dict, Tuple
 from ranx import Qrels, Run, evaluate
 
+# https://amenra.github.io/ranx/metrics/#hits
+
 FILE_PATH = sys.orig_argv[2]
 
 ####################################################
@@ -45,7 +47,7 @@ def hotpotqa_distractor_validation_qaload(dataset_path: str):
     qaid_cntxids_mapping = dict()
     for r_idx in range(qa_pairs_df.shape[0]):
         formated_cntx_ids = {str(cntx_idx): 1 for cntx_idx in qa_pairs_df['cntx_ids'][r_idx]}
-        qaid_cntxids_mapping[str(qa_pairs_df['qa_idx'][r_idx])] = formated_cntx_ids  
+        qaid_cntxids_mapping[str(qa_pairs_df['qa_idx'][r_idx])] = formated_cntx_ids
     print(len(qaid_cntxids_mapping), qa_pairs_df.shape)
     return qaid_cntxids_mapping
 
@@ -56,7 +58,7 @@ def rubq_dev_qaload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
     qaid_cntxids_mapping = dict()
     for r_idx in range(qa_pairs_df.shape[0]):
         formated_cntx_ids = {str(cntx_idx): 1 for cntx_idx in qa_pairs_df['cntx_ids'][r_idx]}
-        qaid_cntxids_mapping[str(qa_pairs_df['qa_idx'][r_idx])] = formated_cntx_ids  
+        qaid_cntxids_mapping[str(qa_pairs_df['qa_idx'][r_idx])] = formated_cntx_ids
     print(len(qaid_cntxids_mapping), qa_pairs_df.shape)
     return qaid_cntxids_mapping
 
@@ -78,7 +80,7 @@ predicted_qaidx_cntxids_mapping = dict()
 for r_idx in range(predicted_cntxids_df.shape[0]):
     cntxs_amount = len(predicted_cntxids_df['retrieved_cntx_ids'][r_idx])
     formated_cntx_ids = {str(cntx_idx): cntxs_amount - i for i, cntx_idx in enumerate(predicted_cntxids_df['retrieved_cntx_ids'][r_idx])}
-    predicted_qaidx_cntxids_mapping[str(predicted_cntxids_df['qa_idx'][r_idx])] = formated_cntx_ids  
+    predicted_qaidx_cntxids_mapping[str(predicted_cntxids_df['qa_idx'][r_idx])] = formated_cntx_ids
 
 ####################################################
 print("4. Initializing metrics for results scoring")
