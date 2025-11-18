@@ -59,6 +59,7 @@ experiments/qa/configure/genconfigs_log.txt
 experiments/qa/crontab_log.txt
 experiments/qa/crontab2_log.txt
 experiments/qa/crontab_log3.txt
+experiments/qa/crontab4_log.txt
 
 experiments/qa/results
 experiments/qa/run_crontab.txt
@@ -76,6 +77,8 @@ experiments/qa/configure/medium/generate_params/tmp_params
 experiments/qa/params_to_run
 experiments/qa/params_to_run2
 experiments/qa/params_to_run3
+experiments/qa/params_to_run4
 
 experiments/qa/run_all_experiments2.sh
 experiments/qa/run_all_experiments3.sh
+experiments/qa/run_all_experiments4.sh

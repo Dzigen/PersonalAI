@@ -50,6 +50,9 @@ dvc tutorial:
 pytest tutorial:
 * https://realpython.com/pytest-python-testing/#parametrization-combining-tests
 
+archive experiments:
+* tar -czvf  deepseek_231025_v2prompts.tar.gz --exclude="configs" --exclude="judge_packs" --exclude="metric_packs" --exclude="tmp_answer_packs" --exclude="tmp_judges_packs" --exclude="inference_log.txt"  deepseek_231025_v2prompts/
+
 --------------------------------
 
 Тех. поддержка: [Telegram](https://t.me/mmenscshikov), <m.menschikov@skoltech.ru>

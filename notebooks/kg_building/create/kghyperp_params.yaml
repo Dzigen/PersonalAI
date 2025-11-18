@@ -21,7 +21,7 @@ KG_CONFIG:
         top_p: 0
         temperature: 0
       credentials:
-        token: YzJkNmU4MmEtYTdhYi00ZmY3LTk3NTItMTgwNGFhYTM5MzAwOjcxYjI2YjQzLThjYWUtNGQ5NS04N2ZhLTUxYzE2NTE4NDUzZQ==
+        token: secret_key # !!! PAY ATTENTION !!!
         scope: GIGACHAT_API_PERS
         model: GigaChat-Max
       ext_params:
