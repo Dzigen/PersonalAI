@@ -1,50 +1,61 @@
 from typing import List, Tuple, Union, Dict
-from haystack_integrations.document_stores.elasticsearch import ElasticsearchDocumentStore
-from haystack_integrations.components.retrievers.elasticsearch import ElasticsearchEmbeddingRetriever
-import elasticsearch
-from haystack import Document
 import torch
-from haystack.document_stores.types import DuplicatePolicy
 import numpy as np
 from copy import deepcopy
+from qdrant_client import QdrantClient
+from qdrant_client.models import Distance, VectorParams, PointStruct, PointIdsList, Filter, FieldCondition, MatchAny
 
-from .configs import DEFAULT_ELASTICSEARCH_CONFIG
+from .configs import DEFAULT_QDRANT_CONFIG
 from ...embedders import EmbedderModel
 from ...utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
 from .....utils.errors import ReturnInfo
 
+QD_DISTANCE_KW_MAPPING = {
+    'Dot': Distance.DOT
+}
 
-class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
 
-    def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_ELASTICSEARCH_CONFIG,
+class QdrantVectorConnector(AbstractVectorDatabaseConnection):
+
+    def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_QDRANT_CONFIG,
                  embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16) -> None:
         if isinstance(config, dict):
             config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
         else:
             config.formate_fields()
         self.config = config
+        self.collection_name = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
 
         self.embedder = embedder
         self.encode_batchsize = encode_batchsize
         self.db_conn = None
-        self.retriever = None
+
+    def create_collection(self):
+        vectors_config = VectorParams(
+            size=self.config.params['vector_dim'],
+            distance=QD_DISTANCE_KW_MAPPING[self.config.params['search_metric']]
+        )
+
+        if not self.db_conn.collection_exists(collection_name=self.collection_name):
+            self.db_conn.client.create_collection(
+                collection_name=self.collection_name,
+                vectors_config=vectors_config
+            )
 
     def open_connection(self) -> ReturnInfo:
-        host = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
-        index = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
-        self.db_conn = ElasticsearchDocumentStore(
-            hosts=host, index=index, embedding_similarity_function='dot_product',
-            request_timeout=10, retry_on_timeout=10
-        )
-        self.retriever = ElasticsearchEmbeddingRetriever(document_store=self.db_conn)
+        url = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
+        self.db_conn = QdrantClient(url=url)
+        self.create_collection()
 
     def is_open(self) -> bool:
         # TODO
         pass
 
     def close_connection(self) -> ReturnInfo:
-        # TODO
-        pass
+        try:
+            self.db_conn.close()
+        except TypeError:
+            pass
 
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
         # validation
@@ -80,9 +91,15 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
                     raise ValueError
             updated_items = items
 
-        formated_items = list(map(lambda item: Document(
-            id=item.id, content=item.document, meta=item.metadata, embedding=item.embedding), updated_items))
-        self.db_conn.write_documents(formated_items, policy=DuplicatePolicy.SKIP)
+        filtered_items = []
+        for item in updated_items:
+            item_exists = self.item_exist(item.id)
+            if not item_exists:
+                filtered_items.append(item)
+
+        formated_items = list(map(lambda item: PointStruct(
+            id=item.id, payload=item.metadata | {'_document': item.document}, vector=item.embedding), filtered_items))
+        self.db_conn.upsert(collection_name=self.collection_name, points=formated_items)
 
     def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[VectorDBInstance]:
         # validation
@@ -92,17 +109,23 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
         if len(ids) < 1:
             return []
 
-        raw_output = self.db_conn.filter_documents(
-            filters={"field": "id", "operator": "in", "value": ids})
+        raw_output = self.db_conn.retrieve(
+            collection_name=self.collection_name,
+            ids=[ids],
+            with_payload=('documents' in includes) or ('metadatas' in includes),
+            with_vectors='embeddings' in includes
+        )
 
         formated_output = []
         for raw_item in raw_output:
             formated_item = VectorDBInstance(
                 id=raw_item.id,
-                document=raw_item.content if 'documents' in includes else None,
-                metadata=raw_item.meta if 'metadatas' in includes else None,
-                embedding=raw_item.embedding if 'embeddings' in includes else None
+                document=raw_item.payload['_document'] if 'documents' in includes else None,
+                metadata=raw_item.payload if 'metadatas' in includes else None,
+                embedding=raw_item.vector if 'embeddings' in includes else None
             )
+            if formated_item.metadata is not None:
+                del formated_item.metadata['_document']
             formated_output.append(formated_item)
 
         return formated_output
@@ -125,10 +148,12 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
         if len(items) != len(unique_ids):
             raise ValueError
 
-        for item in items:
-            if self.item_exist(item.id):
-                self.delete([item.id])
-            self.create([item])
+        self.db_conn.delete(
+            collection_name=self.collection_name,
+            points_selector=PointIdsList(points=list(map(lambda item: item.id, items))),
+            wait=True  # Optional: Wait for the operation to complete
+        )
+        self.create(items)
 
     def delete(self, ids: List[str]) -> None:
         # validation
@@ -137,7 +162,11 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
                 raise ValueError
 
         if len(ids):
-            self.db_conn.delete_documents(document_ids=ids)
+            self.db_conn.delete(
+                collection_name=self.collection_name,
+                points_selector=PointIdsList(points=ids),
+                wait=True  # Optional: Wait for the operation to complete
+            )
 
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
@@ -167,48 +196,58 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
 
         filters = None
         if subset_ids is not None:
-            filters = {"field": "id", "operator": "in", "value": subset_ids}
+            filters = Filter(
+                must=[
+                    FieldCondition(key="id", match=MatchAny(any=subset_ids))
+                ]
+            )
 
         formated_outputs = []
         for query in query_instances:
             # Attention: Будут получены значения семантической близости [similarity], а не значения их расстояния [distance]
             # print("query: ", query.embedding)
-            try:
-                raw_output = self.retriever.run(query_embedding=query.embedding, top_k=n_results, filters=filters)
-            except elasticsearch.BadRequestError as e:
-                raise ValueError(str(e))
+            # try:
+            raw_output = self.db_conn.search(
+                collection_name=self.collection_name,
+                query_vector=query.embedding,
+                query_filter=filters,
+                with_payload=('documents' in includes) or ('metadatas' in includes),
+                with_vectors='embeddings' in includes,
+                limit=n_results
+            )
+            # except RequestError as e:
+            #    raise ValueError(str(e))
             # print('output: ',raw_output)
 
             formated_output = []
             for raw_item in raw_output["documents"]:
                 formated_item = VectorDBInstance(
                     id=raw_item.id,
-                    document=raw_item.content if 'documents' in includes else None,
-                    metadata=raw_item.meta if 'metadatas' in includes else None,
-                    embedding=raw_item.embedding if 'embeddings' in includes else None
+                    document=raw_item.payload['_document'] if 'documents' in includes else None,
+                    metadata=raw_item.payload if 'metadatas' in includes else None,
+                    embedding=raw_item.vector if 'embeddings' in includes else None
                 )
+                if formated_item.metadata is not None:
+                    del formated_item.metadata['_document']
                 formated_output.append((float(raw_item.score), formated_item))
 
             formated_outputs.append(formated_output)
 
         return formated_outputs
 
-    def count_items(self) -> int:
-        return self.db_conn.count_documents()
+    def count_items(self, exact: bool = True) -> int:
+        amount = self.db_conn.count(
+            collection_name=self.collection_name,
+            exact=exact)
+        return amount
 
     def item_exist(self, id: str) -> bool:
-        # validation
-        if not isinstance(id, str):
-            raise ValueError
-
-        res = self.db_conn.filter_documents(filters={"field": "id", "operator": "==", "value": id})
-
-        return bool(len(res))
+        retrieved_points = self.db_conn.retrieve(
+            collection_name=self.collection_name,
+            ids=[id], with_payload=False, with_vectors=False)
+        return len(retrieved_points) > 0
 
     def clear(self) -> None:
-        if self.db_conn._client is None:
-            self.count_items()
-
-        self.db_conn._client.indices.delete(index=self.db_conn._index)
-        self.db_conn._client.indices.create(index=self.db_conn._index)
-        self.db_conn._client.indices.forcemerge(index=self.db_conn._index, only_expunge_deletes=True)
+        if self.db_conn.collection_exists(collection_name=self.collection_name):
+            self.db_conn.delete_collection(collection_name=self.collection_name)
+            self.create_collection()

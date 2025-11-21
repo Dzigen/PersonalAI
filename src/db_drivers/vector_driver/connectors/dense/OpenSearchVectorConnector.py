@@ -1,22 +1,25 @@
 from typing import List, Tuple, Union, Dict
-from haystack_integrations.document_stores.elasticsearch import ElasticsearchDocumentStore
-from haystack_integrations.components.retrievers.elasticsearch import ElasticsearchEmbeddingRetriever
-import elasticsearch
-from haystack import Document
+import urllib3
 import torch
-from haystack.document_stores.types import DuplicatePolicy
 import numpy as np
 from copy import deepcopy
+urllib3.disable_warnings()
 
-from .configs import DEFAULT_ELASTICSEARCH_CONFIG
+from opensearchpy.exceptions import RequestError
+from haystack_integrations.components.retrievers.opensearch import OpenSearchEmbeddingRetriever
+from haystack_integrations.document_stores.opensearch import OpenSearchDocumentStore
+from haystack.document_stores.types import DuplicatePolicy
+from haystack import Document
+
+from .configs import DEFAULT_OPENSEARCH_CONFIG
 from ...embedders import EmbedderModel
 from ...utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
 from .....utils.errors import ReturnInfo
 
 
-class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
+class OpenSeachVectorConnector(AbstractVectorDatabaseConnection):
 
-    def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_ELASTICSEARCH_CONFIG,
+    def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_OPENSEARCH_CONFIG,
                  embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16) -> None:
         if isinstance(config, dict):
             config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
@@ -31,20 +34,29 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
 
     def open_connection(self) -> ReturnInfo:
         host = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
+        http_auth = (self.config.conn['user'], self.config.conn['pass'])
         index = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
-        self.db_conn = ElasticsearchDocumentStore(
-            hosts=host, index=index, embedding_similarity_function='dot_product',
-            request_timeout=10, retry_on_timeout=10
+        method_setting = {"name": "hnsw", "space_type": self.config.params['search_metric'], "engine": "nmslib"}
+        self.db_conn = OpenSearchDocumentStore(
+            hosts=host, http_auth=http_auth, index=index, use_ssl=True,
+            verify_certs=False,  # Disables certificate verification
+            ssl_assert_hostname=False,
+            ssl_show_warn=False,
+            embedding_dim=self.config.params['vector_dim'],
+            return_embedding=True,
+            method=method_setting
         )
-        self.retriever = ElasticsearchEmbeddingRetriever(document_store=self.db_conn)
+        self.retriever = OpenSearchEmbeddingRetriever(document_store=self.db_conn)
 
     def is_open(self) -> bool:
         # TODO
         pass
 
-    def close_connection(self) -> ReturnInfo:
-        # TODO
-        pass
+    def close_connection(self) -> None:
+        try:
+            self.db_conn._client.transport.close()
+        except TypeError:
+            pass
 
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
         # validation
@@ -175,7 +187,7 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
             # print("query: ", query.embedding)
             try:
                 raw_output = self.retriever.run(query_embedding=query.embedding, top_k=n_results, filters=filters)
-            except elasticsearch.BadRequestError as e:
+            except RequestError as e:
                 raise ValueError(str(e))
             # print('output: ',raw_output)
 
@@ -210,5 +222,9 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
             self.count_items()
 
         self.db_conn._client.indices.delete(index=self.db_conn._index)
-        self.db_conn._client.indices.create(index=self.db_conn._index)
+        # assert not self.db_conn._client.indices.exists(index=self.db_conn._index)
+
+        self.db_conn.create_index(index=self.db_conn._index)
         self.db_conn._client.indices.forcemerge(index=self.db_conn._index, only_expunge_deletes=True)
+        # assert self.db_conn._client.indices.exists(index=self.db_conn._index)
+        # self.db_conn._client.indices.refresh(index=self.db_conn._index)

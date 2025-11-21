@@ -99,6 +99,9 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
         for item in items:
             if not isinstance(item.id, str):
                 raise ValueError
+            for k, v in item.metadata.items():
+                if v is None:
+                    raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
                 raise ValueError
         unique_ids = set(map(lambda item: item.id, items))
@@ -131,8 +134,6 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
             if not item_exists:
                 item.metadata['id'] = item.id
                 filtered_items.append(item)
-
-        print(filtered_items)
 
         if len(filtered_items) > 0:
             self.structure.add_embeddings(
@@ -177,6 +178,11 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
         for item in items:
             if not isinstance(item.id, str):
                 raise ValueError
+            if type(item.embedding) in [torch.Tensor, np.ndarray]:
+                raise ValueError
+            for k, v in item.metadata.items():
+                if v is None:
+                    raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
             raise ValueError

@@ -29,3 +29,5 @@ torchmetrics
 evaluate
 levenshtein
 nltk
+protobuf
+qdrant-client

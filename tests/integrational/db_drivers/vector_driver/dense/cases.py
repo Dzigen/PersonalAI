@@ -10,7 +10,7 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from src.db_drivers.vector_driver import VectorDBInstance
 
 # TO CHANGE
-AVAILABLE_VECTOR_DBS = ['chroma', 'milvus', 'inmemory', 'elasticsearch']  # 'chroma', 'milvus', 'inmemory', 'elasticsearch'
+AVAILABLE_VECTOR_DBS = ['qdrant']  # 'chroma', 'milvus', 'inmemory', 'elasticsearch', 'weaviate', 'opensearch', 'qdrant'
 
 ###############################################################################################
 
@@ -210,7 +210,9 @@ VECTORDB_RETRIEVE_TEST_CASES = [
     [[FULL_INSTANCE1, FULL_INSTANCE2], [INSTANCE_WITH_BAD_EMB2],
         2, None, {'exception': True, 'output_size': -1}],
     # 9. В векторной бд нуль объектов
-    [[], [FULL_INSTANCE1], 2, None, {'exception': False, 'output_size': 0}]
+    [[], [FULL_INSTANCE1], 2, None, {'exception': False, 'output_size': 0}],
+    # 10. Проверка: используется dot-product (в бд хранятся нормализованные вектора) + similarity
+    [[FULL_INSTANCE1, FULL_INSTANCE2], [FULL_INSTANCE1], 1, None, {'exception': False, 'output_size': 1, 'sim_check': True}]
 ]
 
 VECTORDB_POPULATED_RETRIEVE_TEST_CASES = []

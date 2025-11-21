@@ -235,6 +235,24 @@ services:
             cpus: '1'
             memory: 5G
 
+  qdrant:
+    container_name: personalai_mmenschikov_test_qdrant
+    image: qdrant/qdrant:dev
+    hostname: localhost
+    ports:
+      - 6333:6333
+      - 6334:6334
+    volumes:
+        - ./volumes/qdrant/data:/qdrant/storage:z
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
   mysql:
     image: mysql:8.0
     container_name: personalai_mmenschikov_test_mysql

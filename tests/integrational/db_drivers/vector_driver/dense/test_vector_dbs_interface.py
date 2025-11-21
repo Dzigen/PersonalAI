@@ -105,7 +105,7 @@ def test_delete(instances, delete_ids, expected, vectordb_conn: AbstractVectorDa
 
 @pytest.mark.parametrize("instances, queries, n_results, subset_ids, expected, vectordb_conn",
                          VECTORDB_POPULATED_RETRIEVE_TEST_CASES, indirect=['vectordb_conn'])
-def test_retrieve(instances: List[VectorDBInstance], queries: List[str], n_results: int, subset_ids: List[str],
+def test_retrieve(instances: List[VectorDBInstance], queries: List[VectorDBInstance], n_results: int, subset_ids: List[str],
                   expected: Dict[str, object], vectordb_conn: AbstractVectorDatabaseConnection):
     vectordb_conn.clear()
     vectordb_conn.create(instances)
@@ -128,6 +128,9 @@ def test_retrieve(instances: List[VectorDBInstance], queries: List[str], n_resul
             real_scores = list(map(lambda item: item[0], query_output))
             sorted_scores = sorted(real_scores, reverse=True)
             assert real_scores == sorted_scores
+
+            if 'sim_check' in expected:
+                assert (1.0 - real_scores[0]) < 1e-5
 
 
 @pytest.mark.parametrize("instances, expected, vectordb_conn",

@@ -1,33 +1,43 @@
 from typing import List, Tuple, Union, Dict
 from time import sleep
+from copy import deepcopy
+import torch
+import numpy as np
+
+from weaviate.exceptions import WeaviateInvalidInputError
 from haystack_integrations.document_stores.weaviate import WeaviateDocumentStore
 from haystack_integrations.document_stores.weaviate.document_store import generate_uuid5
-from haystack_integrations.components.retrievers.weaviate import WeaviateBM25Retriever
+from haystack_integrations.components.retrievers.weaviate import WeaviateEmbeddingRetriever
 from haystack.document_stores.types import DuplicatePolicy
 from haystack import Document
 
-from .configs import DEFAULT_WEAVIATE_BM25_CONFIG
+from .configs import DEFAULT_WEAVIATE_CONFIG
+from ...embedders import EmbedderModel
 from ...utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
 from .....utils.errors import ReturnInfo
 
 
-class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
+class WeaviateVectorConnector(AbstractVectorDatabaseConnection):
 
-    def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_WEAVIATE_BM25_CONFIG, **kwargs) -> None:
+    def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_WEAVIATE_CONFIG,
+                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16) -> None:
         if isinstance(config, dict):
             config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
         else:
             config.formate_fields()
         self.config = config
 
+        self.embedder = embedder
+        self.encode_batchsize = encode_batchsize
         self.db_conn = None
         self.retriever = None
 
     def open_connection(self) -> ReturnInfo:
         url = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
         collection_name = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
-        self.db_conn = WeaviateDocumentStore(url=url, collection_settings={'class': collection_name})
-        self.retriever = WeaviateBM25Retriever(document_store=self.db_conn)
+        collection_settings = {'class': collection_name, "vectorIndexConfig": {"distance": "dot"}}
+        self.db_conn = WeaviateDocumentStore(url=url, collection_settings=collection_settings)
+        self.retriever = WeaviateEmbeddingRetriever(document_store=self.db_conn)
 
     def is_open(self) -> bool:
         # TODO
@@ -40,11 +50,11 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
             pass
 
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
-        # validating
+        # validation
         for item in items:
             if not isinstance(item.id, str):
                 raise ValueError
-            if item.embedding is not None:
+            if type(item.embedding) in [torch.Tensor, np.ndarray]:
                 raise ValueError
             for k, v in item.metadata.items():
                 if v is None:
@@ -53,10 +63,31 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
         if len(items) != len(unique_ids):
             raise ValueError
 
-        formated_items = list(map(lambda item: Document(id=item.id, content=item.document, meta=item.metadata), items))
+        # Если в классе указан embedder, то используем его
+        # для векторизации входящих документов
+        if self.embedder is not None:
+            for item in items:
+                if item.embedding is not None:
+                    raise ValueError
+
+            item_documents = list(map(lambda itm: itm.document, items))
+            document_embeddings = self.embedder.encode_passages(item_documents, batch_size=self.encode_batchsize)
+            updated_items = []
+            for i in range(len(items)):
+                updated_item = deepcopy(items[i])
+                updated_item.embedding = document_embeddings[i]
+                updated_items.append(updated_item)
+        else:
+            for item in items:
+                if item.embedding is None:
+                    raise ValueError
+            updated_items = items
+
+        formated_items = list(map(lambda item: Document(
+            id=item.id, content=item.document, meta=item.metadata, embedding=item.embedding), updated_items))
         self.db_conn.write_documents(formated_items, policy=DuplicatePolicy.SKIP)
 
-    def read(self, ids: List[str], includes: List[str] = ['documents', 'metadatas']) -> List[VectorDBInstance]:
+    def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[VectorDBInstance]:
         # validation
         for id in ids:
             if (id is None) or (not isinstance(id, str)):
@@ -69,12 +100,12 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
 
         formated_output = []
         for raw_item in raw_output:
-            formated_item = VectorDBInstance(id=raw_item.id)
-            if 'documents' in includes:
-                formated_item.document = raw_item.content
-            if 'metadatas' in includes:
-                formated_item.metadata = {k: v for k, v in raw_item.meta.items() if v is not None}
-
+            formated_item = VectorDBInstance(
+                id=raw_item.id,
+                document=raw_item.content if 'documents' in includes else None,
+                metadata={k: v for k, v in raw_item.meta.items() if v is not None} if 'metadatas' in includes else None,
+                embedding=raw_item.embedding if 'embeddings' in includes else None
+            )
             formated_output.append(formated_item)
 
         return formated_output
@@ -84,11 +115,11 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
         pass
 
     def upsert(self, items: List[VectorDBInstance]) -> None:
-        # validating
+        # validation
         for item in items:
             if not isinstance(item.id, str):
                 raise ValueError
-            if item.embedding is not None:
+            if type(item.embedding) in [torch.Tensor, np.ndarray]:
                 raise ValueError
             for k, v in item.metadata.items():
                 if v is None:
@@ -117,6 +148,23 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
             return [[] * len(query_instances)]
         if n_results < 1:
             return [[] * len(query_instances)]
+        if self.count_items() < 1:
+            return [[] * len(query_instances)]
+
+        query_instances: List[VectorDBInstance] = deepcopy(query_instances)
+
+        # Если в классе указан embedder, то используем его
+        # для векторизации входящих запросов
+        if self.embedder is not None:
+            items_wo_embeddings: List[Tuple[str, str]] = list()
+            for idx, item in enumerate(query_instances):
+                if item.embedding is None:
+                    items_wo_embeddings.append((idx, item.document))
+
+            doc_wo_embeddings = list(map(lambda itm: itm[1], items_wo_embeddings))
+            new_doc_embeddings = self.embedder.encode_queries(doc_wo_embeddings, batch_size=self.encode_batchsize)
+            for doc_info, doc_emb in zip(items_wo_embeddings, new_doc_embeddings):
+                query_instances[doc_info[0]].embedding = doc_emb
 
         filters = None
         if subset_ids is not None:
@@ -125,29 +173,23 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
         formated_outputs = []
         for query in query_instances:
             # Attention: Будут получены значения семантической близости [similarity], а не значения их расстояния [distance]
-            # print("query: ", query)
-            raw_output = self.retriever.run(query=query.document, top_k=n_results, filters=filters)
-            # print('output: ',raw_output)
+            # print("query: ", query.embedding)
+            try:
+                raw_output = self.retriever.run(query_embedding=query.embedding, top_k=n_results, filters=filters)
+                # print('output: ',raw_output)
+            except WeaviateInvalidInputError as e:
+                raise ValueError(str(e))
 
             formated_output = []
             for raw_item in raw_output["documents"]:
-                formated_item = VectorDBInstance(id=raw_item.id)
-                if 'documents' in includes:
-                    formated_item.document = raw_item.content
-                if 'metadatas' in includes:
-                    formated_item.metadata = raw_item.meta
+                # print(raw_item.score)
+                formated_item = VectorDBInstance(
+                    id=raw_item.id,
+                    document=raw_item.content if 'documents' in includes else None,
+                    metadata={k: v for k, v in raw_item.meta.items() if v is not None} if 'metadatas' in includes else None,
+                    embedding=raw_item.embedding if 'embeddings' in includes else None
+                )
                 formated_output.append((float(raw_item.score), formated_item))
-
-            if (subset_ids is not None) and (len(formated_output) < n_results):
-                containing_ids = set(map(lambda item: item[1].id, formated_output))
-                extended_ids = set()
-                for sub_id in subset_ids:
-                    if len(containing_ids) + len(extended_ids) >= n_results:
-                        break
-                    elif sub_id not in containing_ids:
-                        extended_ids.add(sub_id)
-                extended_output = self.read(list(extended_ids), includes=includes)
-                formated_output += [(0.5, item) for item in extended_output]
 
             formated_outputs.append(formated_output)
 

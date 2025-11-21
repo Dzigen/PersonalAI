@@ -114,6 +114,9 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
                 raise ValueError
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
                 raise ValueError
+            for k, v in item.metadata.items():
+                if v is None:
+                    raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
             raise ValueError
@@ -143,7 +146,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
 
         formated_data = list(map(lambda item: item.to_dict(), filtered_items))
 
-        out = self.client.insert(
+        self.client.insert(
             collection_name=self.config.db_info['table'],
             data=formated_data)
 
@@ -182,6 +185,11 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         for item in items:
             if not isinstance(item.id, str):
                 raise ValueError
+            if type(item.embedding) in [torch.Tensor, np.ndarray]:
+                raise ValueError
+            for k, v in item.metadata.items():
+                if v is None:
+                    raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
             raise ValueError

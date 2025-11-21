@@ -127,6 +127,9 @@ def test_retrieve(instances: List[VectorDBInstance], queries: List[str], n_resul
             sorted_scores = sorted(real_scores, reverse=True)
             assert real_scores == sorted_scores
 
+            for real_score in real_scores:
+                assert real_score < 1.0
+
 
 @pytest.mark.parametrize("instances, expected, bm25_conn",
                          BM25_POPULATED_COUNT_TEST_CASES,

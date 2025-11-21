@@ -55,17 +55,54 @@ def elasticsearch_conn():
     )
     return VectorDriver.connect(config)
 
+# @pytest.fixture(scope='package')
+# def weaviate_conn():
+#     config = VectorDriverConfig(
+#         db_vendor='weaviate',
+#         db_config=VectorDBConnectionConfig(
+#             conn={'host': 'localhost', 'port': 8083}
+#         )
+#     )
+#     return VectorDriver.connect(config)
+
+@pytest.fixture(scope='package')
+def opensearch_conn():
+    config = VectorDriverConfig(
+        db_vendor='opensearch',
+        db_config=VectorDBConnectionConfig(
+            conn={'host': 'localhost', 'port': 9200, 'user': 'admin', 'pass': 'admin'},
+            params={'vector_dim': 130, 'search_metric': 'innerproduct'}
+        )
+    )
+    return VectorDriver.connect(config)
+
+@pytest.fixture(scope='package')
+def qdrant_conn():
+    config = VectorDriverConfig(
+        db_vendor='qdrant',
+        db_config=VectorDBConnectionConfig(
+            conn={'host': 'localhost', 'port': 6333},
+            params={'vector_dim': 130, 'search_metric': 'Dot'}
+        )
+    )
+    return VectorDriver.connect(config)
+
 # ------------------------------#
 
 
 @pytest.fixture(scope='package')
 def available_vector_connections(
-        chromadb_conn, milvusdb_conn, inmemory_conn, elasticsearch_conn):
+        chromadb_conn, milvusdb_conn, inmemory_conn, elasticsearch_conn, opensearch_conn, qdrant_conn
+        #, weaviate_conn
+    ):
     return {
         'chroma': chromadb_conn,
         'milvus': milvusdb_conn,
         'inmemory': inmemory_conn,
-        'elasticsearch': elasticsearch_conn
+        'elasticsearch': elasticsearch_conn,
+        'opensearch': opensearch_conn,
+        'qdrant': qdrant_conn
+        #'weaviate': weaviate_conn
     }
 
 
