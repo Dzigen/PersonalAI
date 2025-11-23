@@ -7,12 +7,12 @@ DEFAULT_GRAPHDB_CONFIGS: Dict[str, GraphDBConnectionConfig] = {
     'neo4j': DEFAULT_NEO4J_CONFIG,
     'inmemory_graph': DEFAULT_INMEMORYGRAPH_CONFIG,
     'kuzu': DEFAULT_KUZU_CONFIG,
-    'blaze': DEFAULT_BLAZE_CONFIG
+    'blazegraph': DEFAULT_BLAZE_CONFIG
 }
 
 AVAILABLE_GRAPHDB_CONNECTORS: Dict[str, AbstractGraphDatabaseConnection] = {
     'neo4j': Neo4jGraphConnector,
     'inmemory_graph': InMemoryGraphConnector,
     'kuzu': KuzuGraphConnector,
-    'blaze': BlazeGraphConnector
+    'blazegraph': BlazeGraphConnector
 }

@@ -1,9 +1,9 @@
 from typing import Dict
 
 from .connectors.dense import MilvusVectorConnector, ChromaVectorConnection, InMemoryVectorConnector, \
-    ElasticSearchVectorConnector, WeaviateVectorConnector, OpenSeachVectorConnector, QdrantVectorConnector
+    ElasticSearchVectorConnector, OpenSeachVectorConnector  # , WeaviateVectorConnector, QdrantVectorConnector
 from .connectors.dense.configs import DEFAULT_CHROMA_CONFIG, DEFAULT_MILVUS_CONFIG, DEFAULT_INMEMORY_CONFIG, \
-    DEFAULT_ELASTICSEARCH_CONFIG, DEFAULT_WEAVIATE_CONFIG, DEFAULT_OPENSEARCH_CONFIG, DEFAULT_QDRANT_CONFIG
+    DEFAULT_ELASTICSEARCH_CONFIG, DEFAULT_OPENSEARCH_CONFIG  # , DEFAULT_WEAVIATE_CONFIG, DEFAULT_QDRANT_CONFIG
 
 from .connectors.sparse import OpenSeachBM25Connector, ElasticSearchBM25Connector, InMemoryBM25Connector, WeaviateBM25Connector
 from .connectors.sparse.configs import DEFAULT_INMEMORY_BM25_CONFIG, DEFAULT_ELASTICSEARCH_BM25_CONFIG, \

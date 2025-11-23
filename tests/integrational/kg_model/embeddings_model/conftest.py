@@ -125,17 +125,43 @@ def embeddings_elasticsearch_config():
     )
     return config
 
+@pytest.fixture(scope='package')
+def embeddings_opensearch_config():
+    config = EmbeddingsModelConfig(
+        nodesdb_driver_configs_mapping={
+            'nodes_dense': VectorDriverConfig(
+                db_vendor='opensearch',
+                db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 9200, 'user': 'admin', 'pass': 'admin'},
+                    params={'vector_dim': 384, 'search_metric': 'innerproduct'}
+                )
+            )
+        },
+        tripletsdb_driver_configs_mapping={
+            'triplets_dense': VectorDriverConfig(
+                db_vendor='opensearch',
+                db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 9200, 'user': 'admin', 'pass': 'admin'},
+                    params={'vector_dim': 384, 'search_metric': 'innerproduct'}
+                )
+            )
+        }
+    )
+    return config
+
 # ------------------------------#
 
 @pytest.fixture(scope='package')
 def available_embedding_configs(
-    embeddings_chroma_config, embeddings_milvus_config, embeddings_inmemory_config, embeddings_elasticsearch_config
+    embeddings_chroma_config, embeddings_milvus_config, embeddings_inmemory_config, embeddings_elasticsearch_config,
+    embeddings_opensearch_config
 ):
     return {
         'chroma': embeddings_chroma_config,
         'milvus': embeddings_milvus_config,
         'inmemory': embeddings_inmemory_config,
-        'elasticsearch': embeddings_elasticsearch_config
+        'elasticsearch': embeddings_elasticsearch_config,
+        'opensearch': embeddings_opensearch_config
     }
 
 @pytest.fixture(scope='module')
