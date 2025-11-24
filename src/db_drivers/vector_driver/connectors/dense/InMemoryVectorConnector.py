@@ -248,8 +248,8 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
 
             if 'embeddings' in includes:
                 docstore_to_index_ids = {docstore_id: index_id for index_id, docstore_id in self.structure.index_to_docstore_id.items()}
-                for item in cur_fitmes:
-                    item.embedding = self.structure.index.reconstruct(docstore_to_index_ids[item.id]).astype(float)
+                for item_tuple in cur_fitmes:
+                    item_tuple[1].embedding = self.structure.index.reconstruct(docstore_to_index_ids[item_tuple[1].id]).astype(float)
 
             formated_items.append(cur_fitmes)
 

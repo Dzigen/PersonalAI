@@ -6,8 +6,10 @@ import numpy as np
 
 from weaviate.exceptions import WeaviateInvalidInputError
 from haystack_integrations.document_stores.weaviate import WeaviateDocumentStore
+from haystack_integrations.document_stores.weaviate._filters import convert_filters
 from haystack_integrations.document_stores.weaviate.document_store import generate_uuid5
 from haystack_integrations.components.retrievers.weaviate import WeaviateEmbeddingRetriever
+from haystack.document_stores.types.filter_policy import apply_filter_policy
 from haystack.document_stores.types import DuplicatePolicy
 from haystack import Document
 
@@ -166,22 +168,39 @@ class WeaviateVectorConnector(AbstractVectorDatabaseConnection):
             for doc_info, doc_emb in zip(items_wo_embeddings, new_doc_embeddings):
                 query_instances[doc_info[0]].embedding = doc_emb
 
-        filters = None
+        formate_filters = None
         if subset_ids is not None:
             filters = {"field": "_original_id", "operator": "in", "value": subset_ids}
+            formate_filters = apply_filter_policy(self.retriever._filter_policy, self.retriever._filters, filters)
 
         formated_outputs = []
         for query in query_instances:
             # Attention: Будут получены значения семантической близости [similarity], а не значения их расстояния [distance]
             # print("query: ", query.embedding)
             try:
-                raw_output = self.retriever.run(query_embedding=query.embedding, top_k=n_results, filters=filters)
-                # print('output: ',raw_output)
+                properties = [p.name for p in self.db_conn.collection.config.get().properties]
+                raw_output = self.db_conn.collection.query.near_vector(
+                    near_vector=query.embedding,
+                    distance=None,
+                    certainty=None,
+                    include_vector=True,
+                    filters=convert_filters(formate_filters) if formate_filters else None,
+                    limit=n_results,
+                    return_properties=properties,
+                    return_metadata=["distance"],
+                )
+                formated_documents = [self.db_conn._to_document(doc) for doc in raw_output.objects]
+                for form_doc, raw_doc in zip(formated_documents, raw_output.objects):
+                    form_doc.score = -raw_doc.metadata.distance
+                    # print("raw doc: ", raw_doc)
             except WeaviateInvalidInputError as e:
                 raise ValueError(str(e))
 
+            # print('retrieved docs:',formated_documents)
+            # print("using distnace metric: ", self.db_conn.collection.config.get().vector_index_config)
+
             formated_output = []
-            for raw_item in raw_output["documents"]:
+            for raw_item in formated_documents:
                 # print(raw_item.score)
                 formated_item = VectorDBInstance(
                     id=raw_item.id,

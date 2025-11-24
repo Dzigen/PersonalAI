@@ -31,7 +31,8 @@ def inmemory_conn():
                 'save_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_dense",
                 'vector_dim': 130
             }
-        ))
+        )
+    )
     return VectorDriver.connect(config)
 
 @pytest.fixture(scope='package')
@@ -66,15 +67,15 @@ def qdrant_conn():
     )
     return VectorDriver.connect(config)
 
-# @pytest.fixture(scope='package')
-# def weaviate_conn():
-#     config = VectorDriverConfig(
-#         db_vendor='weaviate',
-#         db_config=VectorDBConnectionConfig(
-#             conn={'host': 'localhost', 'port': 8083}
-#         )
-#     )
-#     return VectorDriver.connect(config)
+@pytest.fixture(scope='package')
+def weaviate_conn():
+    config = VectorDriverConfig(
+        db_vendor='weaviate',
+        db_config=VectorDBConnectionConfig(
+            conn={'host': 'localhost', 'port': 8083}
+        )
+    )
+    return VectorDriver.connect(config)
 
 # @pytest.fixture(scope='package')
 # def milvusdb_conn():
@@ -90,8 +91,8 @@ def qdrant_conn():
 
 @pytest.fixture(scope='package')
 def available_vector_connections(
-        chromadb_conn, inmemory_conn, elasticsearch_conn, opensearch_conn, qdrant_conn
-        #, weaviate_conn, qdrant_conn, milvusdb_conn
+        chromadb_conn, inmemory_conn, elasticsearch_conn, opensearch_conn, qdrant_conn, weaviate_conn
+        #, milvusdb_conn
     ):
     return {
         'chroma': chromadb_conn,
@@ -99,8 +100,8 @@ def available_vector_connections(
         'inmemory': inmemory_conn,
         'elasticsearch': elasticsearch_conn,
         'opensearch': opensearch_conn,
-        'qdrant': qdrant_conn
-        #'weaviate': weaviate_conn
+        'qdrant': qdrant_conn,
+        'weaviate': weaviate_conn
     }
 
 

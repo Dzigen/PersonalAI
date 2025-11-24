@@ -186,9 +186,9 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         if self.count_items() < 1:
             return [[] * len(query_instances)]
         for q_inst in query_instances:
-            if isinstance(q_inst.embedding, None) and self.embedder is None:
+            if q_inst.embedding is None and self.embedder is None:
                 raise ValueError
-            elif not isinstance(q_inst.embedding, None):
+            elif q_inst.embedding is not None:
                 if (not isinstance(q_inst.embedding, list)) or (not isinstance(q_inst.embedding[0], float)):
                     raise ValueError
 

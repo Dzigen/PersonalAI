@@ -22,6 +22,28 @@ services:
           cpus: '1'
           memory: 5G
 
+  blazegraph:
+    container_name: personalai_mmenschikov_test_blazegraph
+    image: lyrasis/blazegraph:2.1.4
+    hostname: localhost
+    ports:
+      - 8889:8080
+      - 9999:9999
+    environment:
+      - Djetty.port=9999
+      - ES_JAVA_OPTS=-server -Xmx4g
+    volumes:
+      - ../configs/blazegraph/RWStore.properties:/RWStore.properties
+      - ./volumes/blazegraph:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 8G
+        reservations:
+          cpus: '1'
+          memory: 4G
+
   aerospike:
     container_name: personalai_mmenschikov_test_aerospike
     hostname: localhost

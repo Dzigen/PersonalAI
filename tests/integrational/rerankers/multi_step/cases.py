@@ -9,8 +9,8 @@ from copy import deepcopy
 from src.rerankers.methods import MultiStepRerankerConfig
 from src.rerankers.methods.MultiStepReranker import RerankStep, RerankingType
 
-AVAILABLE_DENSEDB_NAMES = ['dense_chroma', 'dense_milvus']
-AVAILABLE_SPARSEDB_NAMES = ['bm25_opensearch', 'bm25_elasticsearch', 'bm25_inmemory']
+AVAILABLE_DENSEDB_NAMES = ['dense_chroma', 'dense_inmemory', 'dense_elasticsearch', 'dense_weaviate', 'dense_qdrant'] # 'dense_opensearch',
+AVAILABLE_SPARSEDB_NAMES = ['bm25_opensearch', 'bm25_elasticsearch', 'bm25_inmemory', 'bm25_weaviate']
 
 MULTISTEP_RERANKER_CONFIGS = []
 for dense_name in AVAILABLE_DENSEDB_NAMES:

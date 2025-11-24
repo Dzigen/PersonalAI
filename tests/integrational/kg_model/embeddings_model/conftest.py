@@ -173,12 +173,34 @@ def embeddings_qdrant_config():
     )
     return config
 
+@pytest.fixture(scope='package')
+def embeddings_weaviate_config():
+    config = EmbeddingsModelConfig(
+        nodesdb_driver_configs_mapping={
+            'nodes_dense': VectorDriverConfig(
+                db_vendor='weaviate',
+                db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 8083}
+                )
+            )
+        },
+        tripletsdb_driver_configs_mapping={
+            'triplets_dense': VectorDriverConfig(
+                db_vendor='weaviate',
+                db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 8083}
+                )
+            )
+        }
+    )
+    return config
+
 # ------------------------------#
 
 @pytest.fixture(scope='package')
 def available_embedding_configs(
     embeddings_chroma_config, embeddings_inmemory_config, embeddings_elasticsearch_config,
-    embeddings_opensearch_config, embeddings_qdrant_config, #embeddings_milvus_config
+    embeddings_opensearch_config, embeddings_qdrant_config, embeddings_weaviate_config #embeddings_milvus_config
 ):
     return {
         'chroma': embeddings_chroma_config,
@@ -186,7 +208,8 @@ def available_embedding_configs(
         'inmemory': embeddings_inmemory_config,
         'elasticsearch': embeddings_elasticsearch_config,
         'opensearch': embeddings_opensearch_config,
-        'qdrant': embeddings_qdrant_config
+        'qdrant': embeddings_qdrant_config,
+        'weaviate': embeddings_weaviate_config
     }
 
 @pytest.fixture(scope='module')

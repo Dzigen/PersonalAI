@@ -3,5 +3,5 @@ from .ChromaVectorConnector import ChromaVectorConnection
 from .InMemoryVectorConnector import InMemoryVectorConnector
 from .ElasticSearchVectorConnector import ElasticSearchVectorConnector
 from .OpenSearchVectorConnector import OpenSeachVectorConnector
-# from .WeaviateVectorConnector import WeaviateVectorConnector
+from .WeaviateVectorConnector import WeaviateVectorConnector
 from .QdrantVectorConnector import QdrantVectorConnector

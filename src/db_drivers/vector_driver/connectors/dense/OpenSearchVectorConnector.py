@@ -2,6 +2,7 @@ from typing import List, Tuple, Union, Dict
 import urllib3
 import torch
 import numpy as np
+import gc
 from copy import deepcopy
 urllib3.disable_warnings()
 
@@ -224,7 +225,13 @@ class OpenSeachVectorConnector(AbstractVectorDatabaseConnection):
         self.db_conn._client.indices.delete(index=self.db_conn._index)
         # assert not self.db_conn._client.indices.exists(index=self.db_conn._index)
 
-        self.db_conn.create_index(index=self.db_conn._index)
+        # self.close_connection()
+        # self.open_connection()
+        # gc.collect()
+
+        self.db_conn.create_index(index=self.db_conn._index, mappings=self.db_conn._get_default_mappings())
         self.db_conn._client.indices.forcemerge(index=self.db_conn._index, only_expunge_deletes=True)
+        # print("mapping: ", self.db_conn._get_default_mappings())
+
         # assert self.db_conn._client.indices.exists(index=self.db_conn._index)
         # self.db_conn._client.indices.refresh(index=self.db_conn._index)

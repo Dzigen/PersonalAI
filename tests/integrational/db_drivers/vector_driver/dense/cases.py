@@ -10,11 +10,11 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from src.db_drivers.vector_driver import VectorDBInstance
 
 # TO CHANGE
-AVAILABLE_VECTOR_DBS = ['qdrant']  # 'chroma', 'milvus', 'inmemory', 'opensearch', 'elasticsearch', 'opensearch', 'weaviate', 'qdrant'
+AVAILABLE_VECTOR_DBS = ['weaviate']  # 'chroma', 'inmemory', 'opensearch', 'elasticsearch', 'opensearch', 'weaviate', 'qdrant' | 'milvus'
 
 ###############################################################################################
 
-VECTORS = np.random.rand(5, 130).tolist()
+VECTORS = [(vector / np.linalg.norm(vector)).tolist() for vector in np.random.rand(5, 130).tolist()]
 
 
 FULL_INSTANCE1 = VectorDBInstance(id='123', document='qwerty', embedding=VECTORS[0], metadata={'k1': 'v1'})
