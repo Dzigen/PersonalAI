@@ -133,7 +133,7 @@ pydantic==2.12.1
 pydantic_core==2.41.3
 Pygments==2.19.2
 pyicu==2.15.3
-pymilvus==2.6.2
+#pymilvus==2.6.2
 pymongo==4.15.3
 PyPika==0.48.9
 pyproject_hooks==1.2.0
