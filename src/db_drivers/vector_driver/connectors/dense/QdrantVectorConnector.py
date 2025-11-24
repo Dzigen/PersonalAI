@@ -3,7 +3,9 @@ import torch
 import numpy as np
 from copy import deepcopy
 from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, VectorParams, PointStruct, PointIdsList, Filter, FieldCondition, MatchAny
+from qdrant_client.models import Distance, VectorParams, PointStruct, PointIdsList, Filter, HasIdCondition
+from qdrant_client.http.exceptions import UnexpectedResponse
+from haystack_integrations.document_stores.weaviate.document_store import generate_uuid5
 
 from .configs import DEFAULT_QDRANT_CONFIG
 from ...embedders import EmbedderModel
@@ -37,7 +39,7 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         )
 
         if not self.db_conn.collection_exists(collection_name=self.collection_name):
-            self.db_conn.client.create_collection(
+            self.db_conn._client.create_collection(
                 collection_name=self.collection_name,
                 vectors_config=vectors_config
             )
@@ -91,15 +93,16 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
                     raise ValueError
             updated_items = items
 
-        filtered_items = []
+        filtered_items: List[VectorDBInstance] = []
         for item in updated_items:
             item_exists = self.item_exist(item.id)
             if not item_exists:
                 filtered_items.append(item)
 
-        formated_items = list(map(lambda item: PointStruct(
-            id=item.id, payload=item.metadata | {'_document': item.document}, vector=item.embedding), filtered_items))
-        self.db_conn.upsert(collection_name=self.collection_name, points=formated_items)
+        if len(filtered_items) > 0:
+            formated_items = list(map(lambda item: PointStruct(
+                id=generate_uuid5(item.id), payload=item.metadata | {'_document': item.document, '_original_id': item.id}, vector=item.embedding), filtered_items))
+            self.db_conn.upsert(collection_name=self.collection_name, points=formated_items)
 
     def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[VectorDBInstance]:
         # validation
@@ -109,23 +112,25 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         if len(ids) < 1:
             return []
 
+        formated_ids = list(map(generate_uuid5, ids))
         raw_output = self.db_conn.retrieve(
             collection_name=self.collection_name,
-            ids=[ids],
-            with_payload=('documents' in includes) or ('metadatas' in includes),
+            ids=formated_ids,
+            with_payload=True,
             with_vectors='embeddings' in includes
         )
 
         formated_output = []
         for raw_item in raw_output:
             formated_item = VectorDBInstance(
-                id=raw_item.id,
+                id=raw_item.payload['_original_id'],
                 document=raw_item.payload['_document'] if 'documents' in includes else None,
                 metadata=raw_item.payload if 'metadatas' in includes else None,
                 embedding=raw_item.vector if 'embeddings' in includes else None
             )
             if formated_item.metadata is not None:
                 del formated_item.metadata['_document']
+                del formated_item.metadata['_original_id']
             formated_output.append(formated_item)
 
         return formated_output
@@ -148,9 +153,10 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         if len(items) != len(unique_ids):
             raise ValueError
 
+        formated_ids = list(map(lambda item: generate_uuid5(item.id), items))
         self.db_conn.delete(
             collection_name=self.collection_name,
-            points_selector=PointIdsList(points=list(map(lambda item: item.id, items))),
+            points_selector=PointIdsList(points=formated_ids),
             wait=True  # Optional: Wait for the operation to complete
         )
         self.create(items)
@@ -162,9 +168,10 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
                 raise ValueError
 
         if len(ids):
+            formated_ids = list(map(generate_uuid5, ids))
             self.db_conn.delete(
                 collection_name=self.collection_name,
-                points_selector=PointIdsList(points=ids),
+                points_selector=PointIdsList(points=formated_ids),
                 wait=True  # Optional: Wait for the operation to complete
             )
 
@@ -178,6 +185,12 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
             return [[] * len(query_instances)]
         if self.count_items() < 1:
             return [[] * len(query_instances)]
+        for q_inst in query_instances:
+            if isinstance(q_inst.embedding, None) and self.embedder is None:
+                raise ValueError
+            elif not isinstance(q_inst.embedding, None):
+                if (not isinstance(q_inst.embedding, list)) or (not isinstance(q_inst.embedding[0], float)):
+                    raise ValueError
 
         query_instances: List[VectorDBInstance] = deepcopy(query_instances)
 
@@ -196,9 +209,10 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
 
         filters = None
         if subset_ids is not None:
+            formated_subsetids = list(map(generate_uuid5, subset_ids))
             filters = Filter(
                 must=[
-                    FieldCondition(key="id", match=MatchAny(any=subset_ids))
+                    HasIdCondition(has_id=formated_subsetids)
                 ]
             )
 
@@ -206,29 +220,30 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         for query in query_instances:
             # Attention: Будут получены значения семантической близости [similarity], а не значения их расстояния [distance]
             # print("query: ", query.embedding)
-            # try:
-            raw_output = self.db_conn.search(
-                collection_name=self.collection_name,
-                query_vector=query.embedding,
-                query_filter=filters,
-                with_payload=('documents' in includes) or ('metadatas' in includes),
-                with_vectors='embeddings' in includes,
-                limit=n_results
-            )
-            # except RequestError as e:
-            #    raise ValueError(str(e))
-            # print('output: ',raw_output)
+            try:
+                raw_output = self.db_conn.query_points(
+                    collection_name=self.collection_name,
+                    query=query.embedding,
+                    query_filter=filters,
+                    with_payload=True,
+                    with_vectors='embeddings' in includes,
+                    limit=n_results
+                )
+            except UnexpectedResponse as e:
+                raise ValueError(str(e))
+            print('output: ', raw_output)
 
             formated_output = []
-            for raw_item in raw_output["documents"]:
+            for raw_item in raw_output.points:
                 formated_item = VectorDBInstance(
-                    id=raw_item.id,
+                    id=raw_item.payload['_original_id'],
                     document=raw_item.payload['_document'] if 'documents' in includes else None,
                     metadata=raw_item.payload if 'metadatas' in includes else None,
                     embedding=raw_item.vector if 'embeddings' in includes else None
                 )
                 if formated_item.metadata is not None:
                     del formated_item.metadata['_document']
+                    del formated_item.metadata['_original_id']
                 formated_output.append((float(raw_item.score), formated_item))
 
             formated_outputs.append(formated_output)
@@ -236,15 +251,20 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         return formated_outputs
 
     def count_items(self, exact: bool = True) -> int:
-        amount = self.db_conn.count(
+        raw_response = self.db_conn.count(
             collection_name=self.collection_name,
             exact=exact)
-        return amount
+        return raw_response.count
 
     def item_exist(self, id: str) -> bool:
+        # validation
+        if not isinstance(id, str):
+            raise ValueError
+
+        formated_id = generate_uuid5(id)
         retrieved_points = self.db_conn.retrieve(
             collection_name=self.collection_name,
-            ids=[id], with_payload=False, with_vectors=False)
+            ids=[formated_id], with_payload=False, with_vectors=False)
         return len(retrieved_points) > 0
 
     def clear(self) -> None:

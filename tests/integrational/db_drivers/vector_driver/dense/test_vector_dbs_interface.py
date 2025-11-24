@@ -2,7 +2,7 @@ import pytest
 from chromadb.errors import ChromaError
 from typing import Dict, List
 import numpy as np
-from pymilvus.exceptions import DataNotMatchException, ParamError, MilvusException
+#from pymilvus.exceptions import DataNotMatchException, ParamError, MilvusException
 import sys
 sys.path.insert(0, "../")
 
@@ -24,7 +24,7 @@ def test_create(input: List[List[VectorDBInstance]], expected: Dict[str, object]
     try:
         for inp in input:
             vectordb_conn.create(inp)
-    except (ChromaError, ValueError, AssertionError, DataNotMatchException) as e:
+    except (ChromaError, ValueError, AssertionError, ConnectionError) as e:
         print(str(e))
         assert expected['exception']
     else:
@@ -116,7 +116,7 @@ def test_retrieve(instances: List[VectorDBInstance], queries: List[VectorDBInsta
     try:
         output = vectordb_conn.retrieve(
             queries, n_results=n_results, subset_ids=subset_ids)
-    except (ValueError, AssertionError, ParamError, MilvusException) as e:
+    except (ValueError, AssertionError, ConnectionError) as e:
         print(str(e))
         assert expected['exception']
     else:

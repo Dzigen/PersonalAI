@@ -1,7 +1,7 @@
 from .ChromaVectorConnector import ChromaVectorConnection
-from .MilvusVectorConnector import MilvusVectorConnector
+# from .MilvusVectorConnector import MilvusVectorConnector
 from .InMemoryVectorConnector import InMemoryVectorConnector
 from .ElasticSearchVectorConnector import ElasticSearchVectorConnector
 from .OpenSearchVectorConnector import OpenSeachVectorConnector
 # from .WeaviateVectorConnector import WeaviateVectorConnector
-# from .QdrantVectorConnector import QdrantVectorConnector
+from .QdrantVectorConnector import QdrantVectorConnector

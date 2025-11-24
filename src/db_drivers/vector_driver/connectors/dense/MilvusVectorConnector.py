@@ -1,5 +1,5 @@
 from typing import List, Tuple, Union, Dict
-from pymilvus.exceptions import ConnectionNotExistException
+# from pymilvus.exceptions import ConnectionNotExistException
 from pymilvus import MilvusClient, DataType
 from time import sleep
 from copy import deepcopy
@@ -89,7 +89,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         try:
             load_state = self.client.get_load_state(
                 self.config.db_info['table'])['state'].value
-        except (TypeError, ConnectionNotExistException):
+        except (TypeError, ConnectionError):
             pass
         else:
             if load_state != 3:
@@ -104,7 +104,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         try:
             self.client.list_collections()
             return True
-        except ConnectionNotExistException as e:
+        except ConnectionError as e:
             return False
 
     def create(self, items: List[VectorDBInstance]) -> None:

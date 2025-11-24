@@ -237,13 +237,13 @@ services:
 
   qdrant:
     container_name: personalai_mmenschikov_test_qdrant
-    image: qdrant/qdrant:dev
+    image: qdrant/qdrant
     hostname: localhost
     ports:
       - 6333:6333
       - 6334:6334
     volumes:
-        - ./volumes/qdrant/data:/qdrant/storage:z
+        - ./volumes/qdrant/data:/qdrant/storage
     deploy:
       resources:
         limits:
