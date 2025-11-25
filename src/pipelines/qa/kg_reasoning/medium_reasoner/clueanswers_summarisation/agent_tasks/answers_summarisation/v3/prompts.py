@@ -64,24 +64,24 @@ Only information about the season and nearby sites is found.
 <|NotEnoughtInfo|>
 
 [Question #3]
-What is Scott Derrickson's nationality?
+What is Sir Alex Ferguson's nationality?
 [Search info #3]
 [Search Query]
-Scott Derrickson nationality
+Sir Alex Ferguson nationality
 [Finded Information]
-Scott Derrickson was born in Colorado, USA.
+Sir Alex Ferguson was born in Glasgow, Scotland.
 
 [Search Query]
-Christian Eriksen nationality
+Tony Ferguson nationality
 [Finded Information]
 <|NoRelevantInfo|>
 
 [Chain of thoughts]
-The original question concerns only Scott Derrickson.
-Based on the first auxiliary question and the information found for it, we can conclude that Scott Derrickson is American.
+The original question concerns only Sir Alex Ferguson.
+Based on the first auxiliary question and the information found for it, we can conclude that Sir Alex Ferguson is from Skotland.
 The lack of information for the second auxiliary question does not prevent answering the original question.
 [Answer]
-Scott Derrickson is American.
+Sir Alex Ferguson is Skottish.
 '''
 
 EN_CASUMM_USER_PROMPT = \
@@ -163,24 +163,24 @@ RU_CASUMM_SYSTEM_PROMPT = \
 <|NotEnoughtInfo|>
 
 [Question #3]
-Какая национальность у Скотта Дерриксона?
+Какая национальность у Сэра Алекса Фергюсона?
 [Search info #3]
 [Search Query]
-Национальность Скотта Дерриксона?
+Национальность Алекса Фергюсона?
 [Finded Information]
-Скотт Дерриксона родился в Колорадо, США.
+Сэр Алекс Фергюсон родился в Глазго, Шотландия.
 
 [Search Query]
-Национальность Кристиана Эриксона?
+Национальность Тони Фергюсона?
 [Finded Information]
 <|NoRelevantInfo|>
 
 [Chain of thoughts]
-Исходный вопрос касается только Скотта Дерриксона.
-На основе первого вспомогательного вопроса и найденной на него информации можно сделать вывод, что Скотт Дерриксон - американец.
+Исходный вопрос касается только Сэра Алекса Фергюсона.
+На основе первого вспомогательного вопроса и найденной на него информации можно сделать вывод, что Сэр Алекс Фергюсон - шотландец.
 Отсутствие информации на второй вспомогательный вопрос не препятствует ответу на исходный.
 [Answer]
-Скотт Дерриксон - американец.
+Сэр Алекс Фергюсон - шотландец.
 '''
 
 RU_CASUMM_USER_PROMPT = \

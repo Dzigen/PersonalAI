@@ -21,25 +21,25 @@ Output format (two sections):
 
 Examples:
 [Base question #1]
-Are Giuseppe Verdi and Ambroise Thomas opera composers?
+Are Luciano Pavarotti and Domingo Placido opera singers?
 
 [Chain of thoughts]
-To answer this question, we first need to understand who Giuseppe Verdi is and what he is known for.
-Then we need to identify the second person, Ambroise Thomas, and find out what he is known for.
+To answer this question, we first need to understand who Luciano Pavarotti is and what he is known for.
+Then we need to identify the second person, Domingo Placido, and find out what he is known for.
 As a result, the question is clearly decomposed into independent sub-questions:
-1. Who is Giuseppe Verdi and what is he known for?
-2. Who is Ambroise Thomas and what is he known for?
+1. Who is Luciano Pavarotti and what is he known for?
+2. Who is Domingo Placido and what is he known for?
 [Answer]
 True
 
 [Base question #2]
-Who was the author of the song "These Boots Are Made for Walkin'" who died in 2007?
+Who was the author of the song "Stranger in Moscow" who died in 20079?
 
 [Chain of thoughts]
 This question is a composite one.
-First, the user asks who wrote the song "These Boots Are Made for Walkin'".
-Second, they specify that the author of this song died in 2007.
-This question should not be split into 2 sub-questions, because in that case the second sub-question, "Who died in 2007?", is too abstract.
+First, the user asks who wrote the song "Stranger in Moscow".
+Second, they specify that the author of this song died in 2009.
+This question should not be split into 2 sub-questions, because in that case the second sub-question, "Who died in 2009?", is too abstract.
 The answer to it may introduce noise and ultimately confuse the model.
 [Answer]
 False
@@ -79,25 +79,25 @@ RU_DC_SYSTEM_PROMPT = \
 
 Примеры:
 [Base question #1]
-Являются ли Джузеппе Верди и Амбруаз Тома оперными композиторами?
+Являются ли Лучано Паваротти и Пласидо Доминго оперными певцами?
 
 [Chain of thoughts]
-Для ответа на данный вопрос нужно сначала понять, кто такой Джузеппе Верди и чем он знаменит.
-Затем требуется установить личность второго человека Амбруаза Тома и выяснить, чем он известен.
+Для ответа на данный вопрос нужно сначала понять, кто такой Лучано Паваротти и чем он знаменит.
+Затем требуется установить личность второго человека Пласидо Доминго и выяснить, чем он известен.
 В итоге вопрос явно разбивается на независимые подвопросы:
-1. Кто такой Джузеппе Верди и чем он знаменит?
-2. Кто такой Амбруаз Тома и чем он знаменит?
+1. Кто такой Лучано Паваротти и чем он знаменит?
+2. Кто такой Пласидо Доминго и чем он знаменит?
 [Answer]
 True
 
 [Base question #2]
-Кто был автором песни "These Boots Are Made for Walkin'", который умер в 2007 году?
+Кто был автором песни "Stranger in Moscow", который умер в 2009 году?
 
 [Chain of thoughts]
 Данный вопрос является составным.
-Во-первых, пользователь спрашивает, кто написал песню "These Boots Are Made for Walkin'".
-Во-вторых, он уточняет, что автор этой песни умер в 2007 году.
-Этот вопрос не стоит разбивать на 2 под-вопроса, так как в этом случае второй подвопрос "Кто умер в 2007 году?" является слишком абстрактным.
+Во-первых, пользователь спрашивает, кто написал песню "Stranger in Moscow".
+Во-вторых, он уточняет, что автор этой песни умер в 2009 году.
+Этот вопрос не стоит разбивать на 2 под-вопроса, так как в этом случае второй подвопрос "Кто умер в 2009 году?" является слишком абстрактным.
 Ответ на него может добавить шум и в итоге запутать модель.
 [Answer]
 False

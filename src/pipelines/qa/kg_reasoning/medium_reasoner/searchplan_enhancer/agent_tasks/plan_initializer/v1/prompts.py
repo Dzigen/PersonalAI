@@ -23,7 +23,7 @@ Do Jane and Jonathan have any common devices (which Jane and Jonathan both use)?
 1. What devices Jane have?
 2. What devices Jonathan have?
 
-[Base question #2]
+[Base question #3]
 Whose opinions from Amanda and Arianna about manufacturers are most similar to Joshua's?
 [Search-plan]
 1. Which opinion Amanda have about manufacturers?
@@ -67,7 +67,7 @@ N. <поисковый запросN>
 1. Какие мобильные устройства есть у Джейн?
 2. Какие мобильные устройства есть у Джонатана?
 
-[Base question №2]
+[Base question №3]
 Чьи мнения Аманды и Арианны о производителях мобильных телефонов наиболее схожи с мнением Джошуа?
 [Search-plan]
 1. Какое мнение Аманды о производителях мобильных телефонов?

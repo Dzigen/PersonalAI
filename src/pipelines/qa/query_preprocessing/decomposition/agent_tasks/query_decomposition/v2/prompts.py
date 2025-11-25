@@ -13,14 +13,14 @@ Rules:
 Input format:
 [Base question] - the original question.
 
-Output format (two sections):
+Output format:
 [Decomposed questions] - a set of simple sub-questions in the following format:
 - <sub-question #1>
 - <sub-question #2>
 - <sub-question ...>
 - <sub-question #N>
 
-Example:
+Examples:
 [Base question #1]
 Did Microsoft or Google make more money last year?
 
@@ -29,11 +29,11 @@ Did Microsoft or Google make more money last year?
 - How much profit did Google make last year?
 
 [Base question #2]
-Are Giuseppe Verdi and Ambroise Thomas opera composers?
+Are Luciano Pavarotti and Domingo Placido opera singers?
 
 [Decomposed questions]
-- Who is Giuseppe Verdi and what is he known for?
-- Who is Ambroise Thomas and what is he known for?
+- Who is Luciano Pavarotti and what is he known for?
+- Who is Domingo Placido and what is he known for?
 '''
 
 EN_QD_USER_PROMPT = \
@@ -61,14 +61,14 @@ RU_QD_SYSTEM_PROMPT = \
 Формат ввода:
 [Base question] - исходный вопрос.
 
-Формат вывода (две секции):
+Формат вывода:
 [Decomposed questions] - набор простых подвопросов в ​​следующем формате:
 - <под-вопрос #1>
 - <под-вопрос #2>
 - <под-вопрос...>
 - <под-вопрос #N>
 
-Пример:
+Примеры:
 [Base question #1]
 Кто заработал больше: Microsoft или Google — в прошлом году?
 
@@ -77,11 +77,11 @@ RU_QD_SYSTEM_PROMPT = \
 - Какую прибыль Google получила в прошлом году?
 
 [Base question #2]
-Являются ли Джузеппе Верди и Амбруаз Тома оперными композиторами?
+Являются ли Лучано Паваротти и Пласидо Доминго оперными певцами?
 
 [Decomposed questions]
-- Кто такой Джузеппе Верди и чем он знаменит?
-- Кто такой Амбруаз Тома и чем он знаменит?
+- Кто такой Лучано Паваротти и чем он знаменит?
+- Кто такой Пласидо Доминго и чем он знаменит?
 '''
 
 RU_QD_USER_PROMPT = \
