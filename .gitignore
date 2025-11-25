@@ -79,3 +79,4 @@ experiments/qa/params_to_run3
 
 experiments/qa/run_all_experiments2.sh
 experiments/qa/run_all_experiments3.sh
+configs/blazegraph/authoritieschildrensSubjects.nt
