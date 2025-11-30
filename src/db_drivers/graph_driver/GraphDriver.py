@@ -9,6 +9,13 @@ from ...utils.data_structs import BaseConfigOperations
 
 @dataclass
 class GraphDriverConfig(BaseConfigOperations):
+    """Конфигурация драйвера графовой базы данных.
+
+    :param db_vendor: Идентификатор типа графовой БД.
+    :type db_vendor: str
+    :param db_config: Конфигурация подключения к графовой БД, либо словарь с параметрами, который будет преобразован в GraphDBConnectionConfig.
+    :type db_config: Union[Dict, GraphDBConnectionConfig]
+    """
     db_vendor: str = 'kuzu'
     db_config: Union[Dict, GraphDBConnectionConfig] = field(default_factory=lambda: DEFAULT_GRAPHDB_CONFIGS['kuzu'])
 
@@ -29,8 +36,16 @@ class GraphDriverConfig(BaseConfigOperations):
 
 
 class GraphDriver:
+    """Компонента для инициализации подключения к графовой базе данных."""
     @staticmethod
     def connect(config: Union[Dict, GraphDriverConfig] = GraphDriverConfig()) -> AbstractGraphDatabaseConnection:
+        """Метод предназначен для создания и открытия подключения к графовой БД.
+
+        :param config: Конфигурация драйвера (GraphDriverConfig) либо словарь с её параметрами.
+        :type config: Union[Dict, GraphDriverConfig]
+        :return: Открытое соединение с графовой базой данных, реализующее интерфейс AbstractGraphDatabaseConnection.
+        :rtype: AbstractGraphDatabaseConnection
+        """
         if isinstance(config, dict):
             config: GraphDriverConfig = GraphDriverConfig.from_dict(config)
         else:

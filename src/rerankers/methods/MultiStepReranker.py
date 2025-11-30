@@ -12,7 +12,7 @@ from ...agents.utils import AbstractAgentConnector
 
 
 class RerankingType(Enum):
-    filter = 'filter'  # sorting with tail-cuting; relevance-scores are not returning
+    filter = 'filter'  # sorting with tail-cutting; relevance-scores are not returning
     retriever = 'retriever'  # retrieve from ids-subset; relevance-scores are returning
 
 
@@ -26,7 +26,7 @@ MS_RERANKING_TYPES_MAP = {
 class RerankStep:
     """Конфигурация отдельной стадии в рамках многостадийного Retrieve/Rerank-оператора
 
-    :param type: Тип стадии: (1) 'retriever' - выполняется извлечение релевантных элементов к запросу на основе семантической их векторных представлений, которые заранее подготовлены доступны через соответствующий коннектор к векторной бд; (2) 'filter' - выполняется переранжирование/фильтрация ранее извлечённых элементов без использования коннекторов к БД с заранее посчитанных векторныъ представлений элементов.
+    :param type: Тип стадии: (1) 'retriever' - выполняется извлечение релевантных элементов к запросу на основе семантической близости их векторных представлений, которые заранее подготовлены и доступны через соответствующий коннектор к векторной бд; (2) 'filter' - выполняется переранжирование/фильтрацию ранее извлечённых элементов без использования коннекторов к БД с заранее посчитанных векторных представлений элементов.
     :type type: Union[str,RerankingType]
     :param name: Название (ключевое слово) набора логики для выполнения на данной стадии. В случае 'retrieve'-значения в type-поле данное название должно отсылать к vectordb-коннектору из заданного Vector-компоновщика при инициализации MultiStepReranker-класса. В случае 'filter'-значения в type-поле название отсылает к одному из реализованных/поддерживаемых filter-операторов в библиотеке.
     :type name: str
@@ -77,18 +77,18 @@ class MultiStepRerankerConfig(BaseRerankerModuleConfig):
 
 class MultiStepReranker(AbstractRerankerModule):
     """Класс реализует логику многостадийного Retrieve/Rerank-оператора для поиска релевантных элементов в заданном наборе к запросу
-    с помощью оценки семантической близости их раличных вариантов векторных представлений.
+    с помощью оценки семантической близости их различных вариантов векторных представлений.
 
     :param config: Конфигурация Retrieve/Rerank-оператора.
     :type config: Union[Dict, MultiStepRerankerConfig]
-    :param vdb_composer: Компоновщий нескольких наборов векторных представлений для одной группы элементов, из которой будет выполняться извлечение (retrieve/rerank-операция).
+    :param vdb_composer: Компоновщик нескольких наборов векторных представлений для одной группы элементов, из которой будет выполняться извлечение (retrieve/rerank-операция).
     :type vdb_composer: VectorComposer
-    :param availabel_agents: Достпные именованные коннекторы к LLM-агентам для использования в рамках обозначенных retrieve/filter-стадий. Значение по умолчанию None.
-    :type availabel_agents: Union[None, Dict[str, AbstractAgentConnector]], optional
+    :param available_agents: Доступные именованные коннекторы к LLM-агентам для использования в рамках обозначенных retrieve/filter-стадий. Значение по умолчанию None.
+    :type available_agents: Union[None, Dict[str, AbstractAgentConnector]], optional
     """
 
     def __init__(self, config: Union[Dict, MultiStepRerankerConfig], vdb_composer: VectorComposer,
-                 availabel_agents: Union[None, Dict[str, AbstractAgentConnector]] = None):
+                 available_agents: Union[None, Dict[str, AbstractAgentConnector]] = None):
         if isinstance(config, dict):
             config: MultiStepRerankerConfig = MultiStepRerankerConfig.from_dict(config)
         else:

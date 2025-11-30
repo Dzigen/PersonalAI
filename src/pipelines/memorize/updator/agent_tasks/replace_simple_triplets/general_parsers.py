@@ -5,6 +5,15 @@ from ......utils.data_structs import create_id
 
 
 def rs_custom_formate(base_triplet: Triplet, incident_triplets: List[Triplet]) -> Dict[str, str]:
+    """Функция формирует словарь контекста для LLM-задачи по замене simple-триплетов.
+
+    :param base_triplet: Базовый simple-триплет, относительно которого определяется устаревшая информация.
+    :type base_triplet: Triplet
+    :param incident_triplets: Список триплетов, инцидентных базовому триплету и рассматриваемых как кандидаты на устаревание.
+    :type incident_triplets: List[Triplet]
+    :return: Словарь с контекстом, передаваемый в LLM-подзадачу.
+    :rtype: Dict[str, str]
+    """
     if len(incident_triplets) < 1:
         raise ValueError
 
@@ -19,6 +28,17 @@ def rs_custom_formate(base_triplet: Triplet, incident_triplets: List[Triplet]) -
 
 
 def rs_custom_postprocess(parsed_response: Dict[str, Set[str]], base_triplet: Triplet, incident_triplets: List[Triplet]) -> List[str]:
+    """Функция предназначена для постобработки ответа LLM-агента в задаче замены simple-триплетов.
+
+    :param parsed_response: Результат парсинга ответа LLM-агента: соответствие идентификаторов новых триплетов и множеств идентификаторов устаревших триплетов.
+    :type parsed_response: Dict[str, Set[str]]
+    :param base_triplet: Базовый триплет, относительно которого строился контекст.
+    :type base_triplet: Triplet
+    :param incident_triplets: Список триплетов-кандидатов на устаревание.
+    :type incident_triplets: List[Triplet]
+    :return: Список идентификаторов триплетов, подлежащих удалению из графа знаний.
+    :rtype: List[str]
+    """
     if len(incident_triplets) < 1:
         raise ValueError(f"parsed_response: '{parsed_response}'")
 

@@ -23,7 +23,7 @@ class QueryPreprocessorConfig(BaseComponentConfig, LanguageConfig):
 
     :param denoising_config: Конфигурация шага предобработки user-вопроса, отвечающая за удаление лишних шумов/фрагментов информации. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию None.
     :type denoising_config: Union[None, Dict, QueryDenoiserConfig], optional
-    :param enhancing_config: Конфигурация шага предобработки user-вопроса, отвечающая за добавление дополнительных языковых конструкций и переформилирование user-вопроса, с целью упрощения процесса по распознаванию заложенного запроса/интента. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию None.
+    :param enhancing_config: Конфигурация шага предобработки user-вопроса, отвечающая за добавление дополнительных языковых конструкций и переформулирование user-вопроса, с целью упрощения процесса по распознаванию заложенного запроса/интента. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию None.
     :type enhancing_config: Union[None, Dict, QueryEnhancerConfig], optional
     :param decomposition_config: Конфигурация шага предобработки user-вопроса, отвечающая за разбиение сложных/составных user-вопрос на простые/независимые части (под-вопросы) для их параллельной обработки и ускорения процесса формирования финального ответа. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию QueryDecomposerConfig().
     :type decomposition_config: Union[None, Dict, QueryDecomposerConfig], optional
@@ -117,11 +117,11 @@ class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
 
     @CacheUtils.cache_method_output
     def perform(self, query: str) -> Tuple[QueryPreprocessingInfo, ReturnInfo]:
-        """Метод предназначен для предобработки (удаления шумов, повышения полноты, декомпозии) исходного user-вопроса.
+        """Метод предназначен для предобработки (удаления шумов, повышения полноты, декомпозиции) исходного user-вопроса.
 
         :param query: User-вопрос на естественном языке.
         :type query: str
-        :return: Кортеж из двух объектов: (1) Струкутра данных с предобработанным user-вопросом и результами промежуточных операций; (2) статус завершения операции с пояснительной информацией.
+        :return: Кортеж из двух объектов: (1) Струкутра данных с предобработанным user-вопросом и результатами промежуточных операций; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[QueryPreprocessingInfo, ReturnInfo]
         """
         self.log("START QUERY PREPROCESSING...", verbose=self.verbose)

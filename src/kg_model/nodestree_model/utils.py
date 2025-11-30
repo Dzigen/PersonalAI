@@ -9,6 +9,11 @@ from ...utils.task_solver import AgentTaskSolver, AgentTaskSolverConfig
 
 @dataclass
 class NodesTreeModelTaskSolvers(BaseTaskSolvers):
+    """Набор решателей задач, используемых в NodesTree-модели.
+
+    :param nodes_summarization_solver: Решатель атомарной задачи по суммаризации информации (вершин) из дерева.
+    :type nodes_summarization_solver: AgentTaskSolver
+    """
     nodes_summarization_solver: AgentTaskSolver
 
 
@@ -17,6 +22,8 @@ class NodesTreeModelAgentTasksConfig(BaseAgentTasksConfig):
     """
     :param nodes_summarization: Конфигурация атомарной задачи для LLM-агента по резюмированию/суммаризации текстовых полей у заданного набора leaf-объектов (object-вершин) из дерева. Значение по умолчанию DEFAULT_SUMMN_TASK_CONFIG.
     :type nodes_summarization: AgentTaskSolverConfig, optional
+    :param task_to_selector_mapping: Отображение идентификаторов задач в соответствующие селекторы конфигураций.
+    :type task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector]
     """
     nodes_summarization: Union[AgentTaskSolverConfig, str] = 'v1'
 

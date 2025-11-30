@@ -54,7 +54,7 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
     :type agent: AbstractAgentConnector
     :param config: Конфигурация QueryDenoiser-операции. Значение по умолчанию QueryDenoiserConfig().
     :type config: QueryDenoiserConfig, optional
-    :param cache_kvdriver_config:Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: Union[None, KeyValueDriverConfig], optional
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
@@ -104,7 +104,7 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
 
         :param query_info: Струкутра данных с результатами предыдущих операций предобратки/форматирования исходного user-вопроса.
         :type query_info: QueryPreprocessingInfo
-        :return: Кортеж из двух объектов: (1) модифицированный user-вопрос без информации, зашумляющий основной запрос/интент; (2) статус завершения операции с пояснительной информацией.
+        :return: Кортеж из двух объектов: (1) модифицированный user-вопрос без информации, зашумляющей основной запрос/интент; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
         self.log("START QUERY DENOISING...", verbose=self.verbose)

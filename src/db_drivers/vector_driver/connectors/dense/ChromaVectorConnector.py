@@ -195,7 +195,7 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
                 query_instances[doc_info[0]].embedding = doc_emb
 
         # Attention: в случае использования ip-метрики будут получены значения расстояний [distances] между векторами,
-        # а не значения их семантической блозости [similarity]
+        # а не значения их семантической близости [similarity]
         raw_retrieved_instances = self.collection.query(
             query_embeddings=[inst.embedding for inst in query_instances],
             include=includes + ['distances'], n_results=n_results, **filtering_expr)

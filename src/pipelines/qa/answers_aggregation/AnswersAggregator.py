@@ -48,7 +48,7 @@ class AnswersAggregatorConfig(BaseComponentConfig, LanguageConfig):
 
 
 class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
-    """Верхнеуровневый класс QueryPreprocessor-стадии (точка входа), отвечающей за аггрегации/резюмированию информации, полученной в резльтате ризонинга на графе знаний (памяти), и генерацию финального ответа на user-вопрос.
+    """Верхнеуровневый класс QueryPreprocessor-стадии (точка входа), отвечающей за аггрегацию/резюмирование информации, полученной в резльтате ризонинга на графе знаний (памяти), и генерацию финального ответа на user-вопрос.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
     :type agent: AbstractAgentConnector
@@ -97,7 +97,7 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
     def perform(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> Tuple[str, ReturnInfo]:
         """Метод предназначен для выполнения операции аггрегации/резюмирования информации, полученной в резльтате ризонинга на графе знаний (памяти), и генерации финального ответа на user-вопрос.
 
-        :param query_info: Струкутра данных с предобработанным user-вопросом и результами промежуточных операций по его форматированию.
+        :param query_info: Структура данных с предобработанным user-вопросом и результатами промежуточных операций по его форматированию.
         :type query_info: QueryPreprocessingInfo
         :param subq_info: Структура данных с извлечённой из графа знаний информацией по предобработанному user-вопросу для генерации ответа.
         :type subq_info: QueryReasoningInfo

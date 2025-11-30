@@ -15,7 +15,7 @@ class RetrieverConfig:
     """
     :param fetch_n: Базовое количество релевантных элементов к запросу (query), которое извлекается перед выполнением filter-операций. Значение по умолчанию 15.
     :type fetch_n: int, optional
-    :param threshold: Пороговое/минимальное значение similarity-метрики, по которому выполняется дополнительная фильтрация извлечённых элементов. Если задано None-значение, то фильтрация пропускается. Значение по умолчаниб 0.5.
+    :param threshold: Пороговое/минимальное значение similarity-метрики, по которому выполняется дополнительная фильтрация извлечённых элементов. Если задано None-значение, то фильтрация пропускается. Значение по умолчанию 0.5.
     :type threshold: Union[None, float], optional
     """
     fetch_n: int = 15
@@ -33,7 +33,7 @@ class EnsembleFusionRerankerConfig(BaseRerankerModuleConfig):
     :type vdb_names: List[str]
     :param retriever_configs: Конфигурации для соотвествующих retrieve-компонент в ансамбле.
     :type retriever_configs: Union[None, List[Union[Dict,RetrieverConfig]]]
-    :param weights: Значения приоритета similarity-оценок соотвествующих retrieve-компонент в ансамбле для переранжирования извлечённых элементов в рамках RRF-алгоритма. В сумме значения должны давать 1.0. Если будет задан None, то значение приоритета будет равномерно распределено между заданными retrieve-компонентами в ансамбле.
+    :param weights: Значения приоритета similarity-оценок соответствующих retrieve-компонент в ансамбле для переранжирования извлечённых элементов в рамках RRF-алгоритма. В сумме значения должны давать 1.0. Если будет задан None, то значение приоритета будет равномерно распределено между заданными retrieve-компонентами в ансамбле.
     :type weights: Union[None, List[float]]
     :param c: Служебный гиперпараметр для weighted RRF-алгоритма.
     :type c: int
@@ -63,11 +63,11 @@ class EnsembleFusionRerankerConfig(BaseRerankerModuleConfig):
 
 class EnsembleFusionReranker(AbstractRerankerModule):
     """Класс реализует логику ансамблевого Retrieve/Rerank-оператора для поиска релевантных элементов в заданном наборе к запросу
-    с помощью оценки семантической близости их раличных вариантов векторных представлений и дополнительного переранжирования элементов с помощью RRF-алгоритма.
+    с помощью оценки семантической близости их различных вариантов векторных представлений и дополнительного переранжирования элементов с помощью RRF-алгоритма.
 
     :param config: Конфигурация Retrieve/Rerank-оператора.
     :type config: Union[EnsembleFusionRerankerConfig, Dict]
-    :param vdb_composer: Компоновщий нескольких наборов векторных представлений для одной группы элементов, из которой будет выполняться извлечение (retrieve/rerank-операция).
+    :param vdb_composer: Компоновщик нескольких наборов векторных представлений для одной группы элементов, из которой будет выполняться извлечение (retrieve/rerank-операция).
     :type vdb_composer: VectorComposer
     """
 
@@ -209,11 +209,11 @@ class EnsembleFusionReranker(AbstractRerankerModule):
         return scored_instances
 
     def weighted_reciprocal_rank(self, doc_lists_ids: List[List[str]]) -> List[str]:
-        """Perform weighted Reciprocal Rank Fusion on multiple rank lists. You can find more details about RRF here: https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf.
+        """Метод выполняет взвешенный алгоритм RRF для нескольких списков с рангами. Больше деталей о RRF содержится тут: https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf.
 
-        :param doc_lists_ids: A list of rank lists, where each rank list contains unique items.
+        :param doc_lists_ids: Список списков с рангами, где каждый отдельный список содержит уникальные элементы.
         :type doc_lists_ids: List[List[str]]
-        :return: The final aggregated list of items sorted by their weighted scores in descending order.
+        :return: Финальный агрегированный список элементов, отсортированных по их взвешенному скору в порядке убывания.
         :rtype: List[str]
         """
         if len(doc_lists_ids) != len(self.config.weights):

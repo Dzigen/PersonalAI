@@ -26,9 +26,9 @@ class QAPipelineConfig(BaseComponentConfig, LanguageConfig):
 
     :param preprocessor_config: Конфигурация стадии по предобработке исходного user-вопроса. Значение по умолчанию QueryPreprocessorConfig().
     :type preprocessor_config: Union[QueryPreprocessorConfig, Dict], optional
-    :param reasoner_config: Конфигурация стадии по обходу/ризонингу на графе знаней с целью извлечения релевантой информации к user-вопросу. Значение по умолчанию KnowledgeGraphReasonerConfig().
+    :param reasoner_config: Конфигурация стадии по обходу/ризонингу на графе знаний с целью извлечения релевантой информации к user-вопросу. Значение по умолчанию KnowledgeGraphReasonerConfig().
     :type reasoner_config: Union[KnowledgeGraphReasonerConfig, Dict], optional
-    :param aggregator_config: Конфигурация стадии по аггрегации/резюмированию информации, полученной в резльтате ризонинга на графе знаний (памяти). Значение по умолчанию AnswersAggregatorConfig().
+    :param aggregator_config: Конфигурация стадии по аггрегации/резюмированию информации, полученной в результате ризонинга на графе знаний (памяти). Значение по умолчанию AnswersAggregatorConfig().
     :type aggregator_config: Union[AnswersAggregatorConfig, Dict], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QAPipeline-класса. Значение по умолчанию 'qa_pipeline_cache'.
     :type cache_table_name: str, optional
@@ -120,6 +120,12 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
         return query_info, rinfo
 
     def process_query(self, query_info: QueryPreprocessingInfo) -> Tuple[QueryReasoningInfo, ReturnInfo]:
+        """Метод предназначен для обхода графа знаний с целью извлечения релевантной информации по под-запросу.
+        :param query_info: Класс с информацией по предобработанному вопросу.
+        :type query_info: QueryPreprocessingInfo
+        :return: Кортеж из двух объектов: (1) класс с под-запросами и ответами на них; (2) статус завершения операции с пояснительной информацией.
+        :rtype: Tuple[QueryReasoningInfo, ReturnInfo]
+        """
         rinfo = ReturnInfo()
         sub_queries, sub_answers = query_info.processed_query, []
 

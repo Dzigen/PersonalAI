@@ -12,6 +12,15 @@ from ..data_structs import BaseConfigOperations
 
 @dataclass
 class AgentStatAnalyzerConfig(BaseConfigOperations):
+    """Конфигурация компоненты для хранения и анализа статистики LLM-инференса.
+
+    :param table_driver_config: Конфигурация подключения к табличной БД, в которой хранятся записи статистики.
+    :type table_driver_config: TableDriverConfig
+    :param metrics_info: Набор флагов, определяющих, какие агрегирующие метрики необходимо рассчитывать.
+    :type metrics_info: CalculateMetrics
+    :param column_info: Список имен столбцов, по которым будут рассчитываться метрики. По умолчанию включает число токенов и время инференса.
+    :type column_info: List[str]
+    """
     table_driver_config: TableDriverConfig = field(default_factory=lambda: DEFAULT_AGENTSTAT_TABLEDB_DRIVER_CONFIG)
     metrics_info: CalculateMetrics = field(default_factory=lambda: CalculateMetrics())
     column_info: List[str] = field(default_factory=lambda: ['prompt_tokens_amount', 'generated_tokens_amount', 'inference_elapsed_time'])
@@ -38,6 +47,14 @@ class AgentStatAnalyzerConfig(BaseConfigOperations):
 
 
 class AgentStatAnalyzer:
+    """Компонента для записи и агрегирования статистики LLM-инференса.
+
+    Отвечает за:
+     - подключение к табличному хранилищу;
+     - добавление новых записей о вызовах LLM (add_values);
+     - расчёт агрегирующих метрик по заданным колонкам (calculate_stat);
+     - очистку таблицы статистики (clear).
+    """
     def __init__(self, config: Union[Dict, AgentStatAnalyzerConfig] = AgentStatAnalyzerConfig()):
         if isinstance(config, dict):
             config: AgentStatAnalyzerConfig = AgentStatAnalyzerConfig.from_dict(config)
@@ -60,6 +77,11 @@ class AgentStatAnalyzer:
         }
 
     def calculate_stat(self) -> Dict[str, Dict[str, Union[float, int]]]:
+        """Вычисляет агрегирующие метрики по колонкам, указанным в конфигурации.
+
+        :return: Словарь, где ключами являются имена колонок, а значениями — словари, в которых ключами являются имена метрик, а значениями — вычисленные агрегированные значения.
+        :rtype: Dict[str, Dict[str, Union[float, int]]]
+        """
         stats: Dict[str, Dict[str, Union[None, float, int]]] = dict()
         for cname in self.config.column_info:
             tmp_results = dict()

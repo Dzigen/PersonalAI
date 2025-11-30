@@ -9,7 +9,7 @@ def ethesises_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, List[
     :param raw_response: Исходный ответ LLM-агента.
     :type raw_response: str
     :return: Разобранный список 'тезисных' триплетов из ответа LLM-агента.
-    :rtype: List[Tuple[str, str]]
+    :rtype: List[Tuple[str, List[str]]]
     """
     if len(raw_response) < 1:
         raise ValueError(f"raw_response: '{raw_response}'")

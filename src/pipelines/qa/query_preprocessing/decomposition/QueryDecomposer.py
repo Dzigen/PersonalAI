@@ -53,7 +53,7 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
     :type agent: AbstractAgentConnector
     :param config: Конфигурация QueryDecomposer-операции. Значение по умолчанию QueryDecomposerConfig().
     :type config: Union[Dict,QueryDecomposerConfig], optional
-    :param cache_kvdriver_config:Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
@@ -99,7 +99,7 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
     def perform(self, query_info: QueryPreprocessingInfo) -> Tuple[List[str], ReturnInfo]:
         """Метод предназначен для выполнения операции форматирования/предобработки user-вопроса: декомпозиции сложных/составных user-вопросов на независимые/простые под-вопросы.
 
-        :param query_info: Струкутра данных с результатами предыдущих операций предобратки/форматирования исходного user-вопроса.
+        :param query_info: Структутра данных с результатами предыдущих операций предобратки/форматирования исходного user-вопроса.
         :type query_info: QueryPreprocessingInfo
         :return: Кортеж из двух объектов: (1) список простых под-вопросов для исходного/сложного user-вопроса; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
@@ -119,7 +119,7 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             raise ValueError
 
-        self.log("Выполнение проверки на необходимость декомпозии вопроса с помощью LLM-агента...",
+        self.log("Выполнение проверки на необходимость декомпозиции вопроса с помощью LLM-агента...",
                  verbose=self.verbose)
         need_to_decompose, status = self.tasks_solvers.decompose_classifier_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,

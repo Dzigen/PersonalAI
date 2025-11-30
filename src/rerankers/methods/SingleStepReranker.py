@@ -14,7 +14,7 @@ class SingleStepRerankerConfig(BaseRerankerModuleConfig):
     :type vdb_name: str
     :param fetch_n: Базовое количество релевантных элементов к запросу (query), которое извлекается перед выполнением filter-операций. Значение по умолчанию 10.
     :type fetch_n: int
-    :param threshold: Пороговое/минимальное значение similarity-метрики, по которому выполняется дополнительная фильтрация извлечённых элементов. Если задано None-значение, то фильтрация пропускается. Значение по умолчаниб 0.5.
+    :param threshold: Пороговое/минимальное значение similarity-метрики, по которому выполняется дополнительная фильтрация извлечённых элементов. Если задано None-значение, то фильтрация пропускается. Значение по умолчанию 0.5.
     :type threshold: Union[None, float]
     """
     vdb_name: str
@@ -38,7 +38,7 @@ class SingleStepReranker(AbstractRerankerModule):
 
     :param config: Конфигурация Retrieve/Rerank-оператора.
     :type config: Union[Dict, SingleStepRerankerConfig]
-    :param vdb_composer: Компоновщий нескольких наборов векторных представлений для одной группы элементов, из которой будет выполняться извлечение (retrieve-операция).
+    :param vdb_composer: Компоновщик нескольких наборов векторных представлений для одной группы элементов, из которой будет выполняться извлечение (retrieve-операция).
     :type vdb_composer: VectorComposer
     """
 
