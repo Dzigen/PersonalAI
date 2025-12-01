@@ -156,13 +156,12 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
                 break
             else:
                 if cur_cluequery in unique_cqueries:
-                    self.log(
-                        "Сгенерированное clue-query уже было получено ранее. Отбрасываем.", verbose=self.verbose)
+                    self.log("Сгенерированное clue-query уже было получено ранее. Отбрасываем.", verbose=self.verbose)
                     continue
                 else:
-                    self.log(
-                        "Сгенерированое clue-query ещё получено не было. Сохраняем.", verbose=self.verbose)
+                    self.log("Сгенерированое clue-query ещё получено не было. Сохраняем.", verbose=self.verbose)
                     unique_cqueries.add(cur_cluequery)
+
                     clue_queries.append(QueryInfo(
                         query=cur_cluequery, entities=base_entities, linked_nodes=list(cur_group),
                         linked_nodes_by_entities=list(map(lambda pair: [base_entities[pair[0]], pair[1]], enumerate(formated_objects_group)))))

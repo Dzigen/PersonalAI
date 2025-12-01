@@ -1,7 +1,8 @@
 import os
-from openai import OpenAI
+from openai import OpenAI, APITimeoutError
 from typing import Dict, Union, Tuple
-from time import time
+from time import time, sleep
+from httpcore import ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout
 
 from .configs import DEEPSEEK_CONFIG, GPT4OMINI_CONFIG
 from ..utils import AbstractAgentConnector, AgentConnectorConfig, LLMInferenceStat
@@ -21,11 +22,15 @@ class OpenAIConnector(AbstractAgentConnector):
 
         base_url = None if config.credentials['base_url'] == 'None' else config.credentials['base_url']
         self.config.credentials['base_url'] = base_url
+        self.trials = config.ext_params.get('max_retries', 5)
         self.CONNECTOR_KW = 'openai'
 
+        self.open_connection()
+    
+    def open_connection(self):
         self.client = OpenAI(
-            api_key=os.environ.get("OPENAI_API_KEY", config.credentials['token']),
-            base_url=config.credentials['base_url']
+            api_key=os.environ.get("OPENAI_API_KEY", self.config.credentials['token']),
+            base_url=self.config.credentials['base_url']
         )
 
     def check_connection(self):
@@ -47,9 +52,20 @@ class OpenAIConnector(AbstractAgentConnector):
 
         ai_start_time = time()
         gen_strategy = self.config.gen_strategy if gen_strategy is None else gen_strategy
-        response = self.client.chat.completions.create(
-            model=self.config.credentials['model'],
-            messages=msgs, **gen_strategy)
+        flag, counter = True, 0
+        while flag:
+            try:
+                response = self.client.chat.completions.create(
+                    model=self.config.credentials['model'], messages=msgs, **gen_strategy)
+                flag = False
+            except (ConnectError, RemoteProtocolError, ConnectTimeout, APITimeoutError, ReadTimeout) as e:
+                counter += 1
+                if counter > self.trials:
+                    raise ConnectError(str(e))
+                else:
+                    self.close_connection()
+                    sleep(1)
+                    self.open_connection()
         ai_end_time = time()
 
         inference_info = LLMInferenceStat(

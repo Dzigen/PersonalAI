@@ -131,8 +131,8 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     def get_traversal_cache(self) -> Dict[str, Union[None, Dict, int]]:
         return {
-            self.retriever1.__class__.__name__: self.retriever1.get_traversal_cache(),
-            self.retriever2.__class__.__name__: self.retriever2.get_traversal_cache()
+            self.retriever1.__class__.__name__: self.retriever1.get_cache_stat(get_traversal_cache = True),
+            self.retriever2.__class__.__name__: self.retriever2.get_cache_stat(get_traversal_cache = True)
         }
 
     def get_cache_key(self, query_info: QueryInfo) -> List[str]:

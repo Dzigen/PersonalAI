@@ -1,16 +1,15 @@
 from typing import Union, Dict, Tuple
 from gigachat import GigaChat
 from gigachat.exceptions import ResponseError
-from time import time
+from time import time, sleep
 from gigachat.models import Chat, Messages
-from httpx import ConnectError, RemoteProtocolError
+from httpx import ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout
 
 # https://github.com/VRSEN/agency-swarm/issues/99
 # https://github.com/ai-forever/gigachat/blob/main/src/gigachat/client.py#L182
 
 from .configs import DEFAULT_GIGACHAT_CONFIG
 from ..utils import AbstractAgentConnector, AgentConnectorConfig, LLMInferenceStat
-
 
 class GigaChatConnector(AbstractAgentConnector):
     def __init__(self, config: Union[Dict, AgentConnectorConfig] = DEFAULT_GIGACHAT_CONFIG) -> None:
@@ -24,7 +23,7 @@ class GigaChatConnector(AbstractAgentConnector):
         if 'top_p' in self.config.gen_strategy:
             self.config.gen_strategy['top_p'] = float(self.config.gen_strategy['top_p'])
 
-        self.trials = config.ext_params['trials']
+        self.trials = config.ext_params.get('trials', 5)
         self.CONNECTOR_KW = 'gigachat'
 
         self.open_connection()
@@ -61,11 +60,13 @@ class GigaChatConnector(AbstractAgentConnector):
             try:
                 response = self.giga_model.chat(chat)
                 flag = False
-            except (ConnectError, RemoteProtocolError, ResponseError) as e:
+            except (ConnectError, RemoteProtocolError, ResponseError, ConnectTimeout, ReadTimeout) as e:
                 counter += 1
                 if counter > self.trials:
                     raise ConnectError
                 else:
+                    self.close_connection()
+                    sleep(1)
                     self.open_connection()
         ai_end_time = time()
 
