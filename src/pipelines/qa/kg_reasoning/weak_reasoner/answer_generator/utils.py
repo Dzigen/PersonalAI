@@ -9,6 +9,11 @@ from ......utils import AgentTaskSolver, AgentTaskSolverConfig
 
 @dataclass
 class WeakAGeneratorTaskSolvers(BaseTaskSolvers):
+    """Контейнер атомарных LLM-задач для генерации ответа.
+
+    :param answer_generator_solver: Задача по условной генерации ответа.
+    :type answer_generator_solver: AgentTaskSolver
+    """
     answer_generator_solver: AgentTaskSolver
 
 
@@ -16,7 +21,7 @@ class WeakAGeneratorTaskSolvers(BaseTaskSolvers):
 class QALLMGeneratorAgentTasksConfig(BaseAgentTasksConfig):
     """
     :param ag: Конфигурация атомарной задачи для LLM-агента по условной генерации ответа на вопрос. Значение по умолчанию 'v3'.
-    :type ag: AgentTaskSolverConfig, optional
+    :type ag:Union[AgentTaskSolverConfig, str], optional
     """
     ag: Union[AgentTaskSolverConfig, str] = 'v3'
 

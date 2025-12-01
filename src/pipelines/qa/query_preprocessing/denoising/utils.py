@@ -9,6 +9,13 @@ from .....utils.task_solver import AgentTaskSolver, AgentTaskSolverConfig
 
 @dataclass
 class QueryDenoiserTaskSolvers(BaseTaskSolvers):
+    """Набор атомарных LLM-задач, осуществляемых в рамках QueryDenoiser.
+
+    :param swremoval_solver: Задача по удалению стоп-слов и лишней информации.
+    :type swremoval_solver: AgentTaskSolver
+    :param grammar_check_solver: Задача по грамматической проверке и исправлению запроса.
+    :type grammar_check_solver: AgentTaskSolver
+    """
     swremoval_solver: AgentTaskSolver
     grammar_check_solver: AgentTaskSolver
 

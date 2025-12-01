@@ -19,9 +19,9 @@ from .....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperatio
 class QueryEnhancerConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация QueryEnhancer-операции.
 
-    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значения будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию QueryEnhancerAgentTasksConfig().
+    :param agent_tasks_config: Конфигурации LLM-промптов для решения заданных задач с помощью LLM-агента. Значение по умолчанию QueryEnhancerAgentTasksConfig().
     :type agent_tasks_config: Union[Dict,QueryEnhancerAgentTasksConfig], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryEnhancer-класса. Значение по умолчанию 'qp_enhancing_stage_cache'.
     :type cache_table_name: str, optional
@@ -54,11 +54,11 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
     :type agent: AbstractAgentConnector
     :param config: Конфигурация QueryEnhancer-операции. Значение по умолчанию QueryEnhancerConfig().
     :type config: Union[Dict,QueryEnhancerConfig], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операций в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
@@ -99,19 +99,27 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         self.verbose = self.config.verbose
 
     def get_cache_key(self, query_info: QueryPreprocessingInfo) -> List[str]:
+        """Формирует ключ кеша для результата операции обогащения.
+        В ключ включаются строковое представление входной структуры QueryPreprocessingInfo, строковое представление конфигурации и идентификатор используемого LLM-агента.
+
+        :param query_info: Класс с информацией о предобработанном запросе.
+        :type query_info: QueryPreprocessingInfo
+        :return: Список строк, используемый как составной ключ кеша.
+        :rtype: List[str]
+        """
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [query_info.to_str(), self.config.to_str(), str_using_agent_info]
 
     @CacheUtils.cache_method_output
     def perform(self, query_info: QueryPreprocessingInfo) -> Tuple[str, ReturnInfo]:
-        """Метод предназначен для выполнения операции форматирования/предобработки user-вопроса: переформилирование user-вопроса для выделения запроса/интента.
+        """Метод предназначен для выполнения операции форматирования/предобработки user-вопроса: переформулирование user-вопроса для выделения запроса/интента.
 
-        :param query_info: Струкутра данных с результатами предыдущих операций предобратки/форматирования исходного user-вопроса.
+        :param query_info: Структура данных с результатами предыдущих операций предобратки/форматирования исходного user-вопроса.
         :type query_info: QueryPreprocessingInfo
         :return: Кортеж из двух объектов: (1) модифицированный user-вопрос с добавленными языковыми конструкциями для выделения запроса/интента; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
-        self.log("START QUERY DENOISING...", verbose=self.verbose)
+        self.log("START QUERY ENHANCING...", verbose=self.verbose)
         self.log(
             f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.verbose)
         self.log(f"QUERY INFO: {query_info}", verbose=self.verbose)

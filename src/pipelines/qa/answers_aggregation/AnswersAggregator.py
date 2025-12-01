@@ -19,9 +19,9 @@ from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 class AnswersAggregatorConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация AnswersAggregator-стадии.
 
-    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значения будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию AnswersAggregatorAgentTasksConfig().
+    :param agent_tasks_config: Конфигурации LLM-промптов для решения заданных задач с помощью LLM-агента. Значение по умолчанию AnswersAggregatorAgentTasksConfig().
     :type agent_tasks_config: Union[Dict, AnswersAggregatorAgentTasksConfig], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы AnswersAggregator-класса. Значение по умолчанию 'answers_aggregation_main_stage_cache'.
     :type cache_table_name: str, optional
@@ -48,17 +48,17 @@ class AnswersAggregatorConfig(BaseComponentConfig, LanguageConfig):
 
 
 class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
-    """Верхнеуровневый класс QueryPreprocessor-стадии (точка входа), отвечающей за аггрегацию/резюмирование информации, полученной в резльтате ризонинга на графе знаний (памяти), и генерацию финального ответа на user-вопрос.
+    """Верхнеуровневый класс AnswersAggregator-стадии (точка входа), отвечающей за аггрегацию/резюмирование информации, полученной в результате ризонинга на графе знаний (памяти), и генерацию финального ответа на user-вопрос.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
     :type agent: AbstractAgentConnector
     :param config: Конфигурация AnswersAggregator-стадии. Значение по умолчанию AnswersAggregatorConfig().
     :type config: AnswersAggregatorConfig, optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операций в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
@@ -90,12 +90,23 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
         self.verbose = self.config.verbose
 
     def get_cache_key(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> List[str]:
+        """Формирует ключ кэша для результатов агрегации ответов.
+
+        В ключ включается сериализованное представление предобработанного запроса, сериализованное представление под-вопросов и их ответов, строковое представление конфигурации агрегатора, идентификатор и конфигурацию используемого LLM-агента.
+
+        :param query_info: Структура с предобработанным user-вопросом.
+        :type query_info: QueryPreprocessingInfo
+        :param subq_info: Структура с под-вопросами и их ответами.
+        :type subq_info: QueryReasoningInfo
+        :return: Список строк, используемый как составной ключ кеша.
+        :rtype: List[str]
+        """
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [query_info.to_str(), subq_info.to_str(), self.config.to_str(), str_using_agent_info]
 
     @CacheUtils.cache_method_output
     def perform(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> Tuple[str, ReturnInfo]:
-        """Метод предназначен для выполнения операции аггрегации/резюмирования информации, полученной в резльтате ризонинга на графе знаний (памяти), и генерации финального ответа на user-вопрос.
+        """Метод предназначен для выполнения операции аггрегации/резюмирования информации, полученной в результате ризонинга на графе знаний (памяти), и генерации финального ответа на user-вопрос.
 
         :param query_info: Структура данных с предобработанным user-вопросом и результатами промежуточных операций по его форматированию.
         :type query_info: QueryPreprocessingInfo

@@ -21,7 +21,7 @@ class Entities2NodesMatcherConfig(BaseComponentConfig):
     :type use_tree: str, optional
     :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию E2NM_RERANKDRIVER_DEFAULT_CONFIG.
     :type reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
-    :param max_n: Максимальное количество вершин из графа знаний, которе может быть сопоставлено одной сущности. Значение по умолчанию 3.
+    :param max_n: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 3.
     :type max_n: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы Entities2NodesMatcher-класса. Значение по умолчанию 'medreasn_e2nmatcher_main_stage_cache'.
     :type cache_table_name: str, optional
@@ -51,7 +51,7 @@ class Entities2NodesMatcherConfig(BaseComponentConfig):
 
 
 class Entities2NodesMatcher(CacheUtils, CacheOperations):
-    """Верхнеуровневый класс стадии #2.1.2 medium QA-конвейера для выполнения сопоставоения сущностей из user-вопроса с вершинами в графе знаний.
+    """Верхнеуровневый класс стадии #2.1.2 medium QA-конвейера для выполнения сопоставления сущностей из user-вопроса с вершинами в графе знаний.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel

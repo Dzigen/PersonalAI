@@ -27,8 +27,8 @@ class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     :type retriever2_name: str, optional
     :param retriever2_config: Конфигурация выбранного алгоритма (#2) обхода графа. Значение по умолчанию WaterCirclesSearchConfig().
     :type retriever2_config: Union[BaseGraphSearchConfig, Dict], optional
-    :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извелчения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time].
-    :type accepted_node_types: List[NodeType], optional
+    :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извлечения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time].
+    :type accepted_node_types: List[Union[str, NodeType]], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveBFSTripletsRetriever-класса. Значение по умолчанию 'qa_bfs_t_retriver_cache'.
     :type cache_table_name: str, optional
     """
@@ -87,8 +87,8 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     :type log: Logger
     :param search_config: Конфигурация MixturedTripletsRetriever-алгоритма. Значение по умолчанию MixturedGraphSearchConfig().
     :type search_config: Union[MixturedGraphSearchConfig, Dict], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
-    :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
+    :type cache_kvdriver_config: Union[None, KeyValueDriverConfig], optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
     """

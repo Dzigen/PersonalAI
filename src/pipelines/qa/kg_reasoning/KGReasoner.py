@@ -56,9 +56,9 @@ class KnowledgeGraphReasoner(CacheUtils, AbstractKGReasoner, CacheOperations, Ag
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация KnowledgeGraphReasoner-стадии. Значение по умолчанию KnowledgeGraphReasonerConfig().
     :type config: Union[Dict,KnowledgeGraphReasonerConfig], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операций в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
@@ -86,6 +86,15 @@ class KnowledgeGraphReasoner(CacheUtils, AbstractKGReasoner, CacheOperations, Ag
         self.verbose = config.verbose
 
     def get_cache_key(self, query: str) -> List[str]:
+        """Формирует ключ кеша для результата работы стадии обхода графа знаний.
+
+        В ключ включается текст исходного запроса, название используемой версии reasoner'а и строковое представление конфигурации KnowledgeGraphReasoner.
+
+        :param query: Исходный user-вопрос.
+        :type query: str
+        :return: Список строк, используемый как составной ключ кеша.
+        :rtype: List[str]
+        """
         return [query, self.reasoner_name, self.config.to_str()]
 
     @CacheUtils.cache_method_output

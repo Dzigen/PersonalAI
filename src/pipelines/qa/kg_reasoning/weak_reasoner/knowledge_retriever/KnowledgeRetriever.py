@@ -21,9 +21,9 @@ from ......utils.cache_kv.CacheOperations import CacheOperations
 class KnowledgeRetrieverConfig(BaseComponentConfig):
     """Конфигурация "Knowledge Retriever"-стадии.
 
-    :param retriever_method: Наименование алгоритма для обхода вершин/рёбер графовой структуры данных (графа знаний) и извлечения релевантной информации. Значение по умолчанию 'astar'.
+    :param retriever_method: Наименование алгоритма для обхода вершин/рёбер графовой структуры данных (графа знаний) и извлечения релевантной информации. Значение по умолчанию 'beamsearch'.
     :type retriever_method: str, optional
-    :param retriever_config: Конфигурация выбранного алгоритма обхода графа. Значение по умолчанию AStarGraphSearchConfig().
+    :param retriever_config: Конфигурация выбранного алгоритма обхода графа. Значение по умолчанию GraphBeamSearchConfig().
     :type retriever_config: Union[BaseGraphSearchConfig, Dict], optional
     :param filter_method: Наименование алгоритма для фильтрации информации (триеплетов), извлечённой из графа знаний (в результате работы алгоритма обхода графа). Значение по умолчанию 'naive'.
     :type filter_method: Union[str, None], optional
@@ -72,7 +72,7 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация 'Knowledge Retriever'-стадии. Значение по умолчанию KnowledgeRetrieverConfig().
     :type config: Union[KnowledgeRetrieverConfig,Dict], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
 
@@ -124,6 +124,13 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         return valid_triplets
 
     def traverse_kg(self, query_info: QueryInfo) -> List[Triplet]:
+        """Метод реализует извлечение релевантных триплетов из графа знаний.
+
+        :param query_info: Структура с user-вопросом и дополнительными полями.
+        :type query_info: QueryInfo
+        :return: Список извлечённых триплетов.
+        :rtype: List[Triplet]
+        """
         triplets = self.stages.triplets_retriever.get_relevant_triplets(query_info)
         self.log(f"RESULT: {len(triplets)}", verbose=self.verbose)
         for triplet in triplets:
@@ -135,6 +142,15 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         return triplets
 
     def filter_triplets(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
+        """Метод фильтрует/ранжирует триплеты, извлечённые из графа.
+
+        :param query_info: Структура с user-вопросом и дополнительными полями.
+        :type query_info: QueryInfo
+        :param triplets: Список триплетов, подлежащих фильтрации/ранжированию.
+        :type triplets: List[Triplet]
+        :return: Отфильтрованный/ранжированный список триплетов.
+        :rtype: List[Triplet]
+        """
         filtered_triplets = None
         if self.stages.triplets_filter is not None:
             filtered_triplets = self.stages.triplets_filter.apply_filter(query_info, triplets)
@@ -150,6 +166,15 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         return filtered_triplets
 
     def get_cache_key(self, query_info: QueryInfo) -> List[str]:
+        """Формирует ключ кэша для для результатов извлечения/фильтрации.
+
+        В ключ включается метод и конфигурация извлечения триплетов, метод и конфигурацию фильтра, сериализованное представление входного QueryInfo.
+
+        :param query_info: Структура с исходным запросом и дополнительными полями.
+        :type query_info: QueryInfo
+        :return: Список строк, используемый как составной ключ кеша.
+        :rtype: List[str]
+        """
         str_tfilter_config = self.stages.triplets_filter.config.to_str() if self.stages.triplets_filter is not None else "None"
         return [self.config.retriever_method, self.stages.triplets_retriever.config.to_str(), str(self.config.filter_method),
                 str_tfilter_config, query_info.to_str()]

@@ -18,7 +18,7 @@ class AnswerGeneratorAgentTasksConfig(BaseAgentTasksConfig):
     """
     :param answer_classifier: Конфигурация атомарной задачи для LLM-агента по определению наличия необходимой информации для генерации релевантного ответа на вопрос. Значение по умолчанию 'v1'.
     :type answer_classifier: AgentTaskSolverConfig, optional
-    :param answer_generator: Конфигурация атомарной задачи для LLM-агента по выполнению условной генарции овтета на заданный user-вопрос. Значение по умолчанию 'v1'.
+    :param answer_generator: Конфигурация атомарной задачи для LLM-агента по выполнению условной генерации овтета на заданный user-вопрос. Значение по умолчанию 'v1'.
     :type answer_generator: AgentTaskSolverConfig, optional
     """
     answer_classifier: Union[AgentTaskSolverConfig, str] = 'v1'

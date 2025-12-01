@@ -19,8 +19,8 @@ class NaiveGraphSearchConfig(BaseGraphSearchConfig):
     """Конфигурация NaiveRetrieval-алгоритма обхода графа.
 
     :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию NGS_RERANKDRIVER_DEFAULT_CONFIG.
-    :type reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
-    :param max_k: Макисмальное количество трипелтов, которое может быть извлечено из графа. Значение по умолчанию 50.
+    :type reranker_driver_config: Union[Dict, RerankerDriverConfig], optional
+    :param max_k: Максимальное количество триплетов, которое может быть извлечено из графа. Значение по умолчанию 50.
     :type max_k: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveTripletsRetriever-класса. Значение по умолчанию 'qa_naive_t_retriever_cache'.
     :type cache_table_name: str, optional
@@ -55,8 +55,8 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     :type log: Logger
     :param search_config: Конфигурация WaterCirclesRetriever-алгоритма. Значение по умолчанию  NaiveGraphSearchConfig().
     :type search_config: Union[NaiveGraphSearchConfig,Dict], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
-    :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
+    :type cache_kvdriver_config: Union[None, KeyValueDriverConfig], optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
     """

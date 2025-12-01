@@ -74,9 +74,9 @@ class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
     :type agent: AbstractAgentConnector
     :param config: Конфигурация QueryPreprocessor-стадии. Значение по умолчанию QueryPreprocessorConfig().
     :type config: Union[Dict,QueryPreprocessorConfig], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[None, KeyValueDriverConfig], optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операций в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
@@ -112,6 +112,14 @@ class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
         self.verbose = config.verbose
 
     def get_cache_key(self, query: str) -> List[str]:
+        """Метод формирует ключ кеша для результата предобработки вопроса.
+        В ключ включаются текст исходного запроса, строковое представление конфигурации и идентификатор используемого LLM-агента.
+
+        :param query: Исходный user-вопрос.
+        :type query: str
+        :return: Список строк, используемый как составной ключ кеша.
+        :rtype: List[str]
+        """
         str_using_agent_config = f"{self.using_agent_info['kw']}:{self.using_agent_info['config'].to_str()}"
         return [query, self.config.to_str(), str_using_agent_config]
 
@@ -121,7 +129,7 @@ class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
 
         :param query: User-вопрос на естественном языке.
         :type query: str
-        :return: Кортеж из двух объектов: (1) Струкутра данных с предобработанным user-вопросом и результатами промежуточных операций; (2) статус завершения операции с пояснительной информацией.
+        :return: Кортеж из двух объектов: (1) Структура данных с предобработанным user-вопросом и результатами промежуточных операций; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[QueryPreprocessingInfo, ReturnInfo]
         """
         self.log("START QUERY PREPROCESSING...", verbose=self.verbose)
