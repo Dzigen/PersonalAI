@@ -42,7 +42,7 @@ LEAFNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING = {
     'leaf_bm25_nodes': VectorDriverConfig(
         db_vendor='inmemory', vector_category='sparse_bm25', db_config=VectorDBConnectionConfig(
             db_info={'db': 'default_db', 'table': "sparsebm25_lnodes"},
-            params={'store_dump_name': 'inmemory_bm25', 'load_from_disk': True,
+            params={'store_dump_name': 'inmemory_bm25', 'load_from_disk': True, 'load_dump_name': None,
                     'load_dump_dir': "./personalai_tmp/graph_structures/tree_model/vectorized_leaf_nodes/inmemory_bm25", 'save_on_disk': True,
                     'save_dump_dir': "./personalai_tmp/graph_structures/tree_model/vectorized_leaf_nodes/inmemory_bm25"},
             need_to_clear=False
@@ -72,7 +72,7 @@ SUMMNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING = {
     'summ_bm25_nodes': VectorDriverConfig(
         db_vendor='inmemory', vector_category='sparse_bm25', db_config=VectorDBConnectionConfig(
             db_info={'db': 'default_db', 'table': "sparsebm25_snodes"},
-            params={'store_dump_name': 'inmemory_bm25', 'load_from_disk': True,
+            params={'store_dump_name': 'inmemory_bm25', 'load_from_disk': True, 'load_dump_name': None,
                     'load_dump_dir': "./personalai_tmp/graph_structures/tree_model/vectorized_summ_nodes/inmemory_bm25", 'save_on_disk': True,
                     'save_dump_dir': "./personalai_tmp/graph_structures/tree_model/vectorized_summ_nodes/inmemory_bm25"},
             need_to_clear=False

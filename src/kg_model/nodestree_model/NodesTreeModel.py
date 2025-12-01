@@ -67,11 +67,13 @@ class NodesTreeModelConfig(BaseComponentConfig, LanguageConfig):
         default_factory=lambda: LEAFNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING)
     leafnodes_reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(
         default_factory=lambda: LNT_RERANKDRIVER_DEFAULT_CONFIG)
+    leafnodes_scores_vdbname: Union[str, None] = 'leaf_dense_nodes'
 
     summnodes_vdb_driver_configs_mapping: Dict[str, Union[Dict, VectorDriverConfig]] = field(
         default_factory=lambda: SUMMNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING)
     summnodes_reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(
         default_factory=lambda: SNT_RERANKDRIVER_DEFAULT_CONFIG)
+    summnodes_scores_vdbname: Union[str, None] = 'summ_dense_nodes'
 
     treedb_config: Union[Dict, TreeDriverConfig] = field(
         default_factory=lambda: TREE_DB_DEFAULT_DRIVER_CONFIG)
@@ -187,7 +189,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
             agents_cache_config = cache_kvdriver_config if cache_llm_inference else None
 
         self.tasks_solvers: NodesTreeModelTaskSolvers = NodesTreeModelTaskSolvers(
-            decompose_classifier_solver=AgentTaskSolver(
+            nodes_summarization_solver=AgentTaskSolver(
                 self.agent, self.config.agent_tasks_config.nodes_summarization,
                 agents_cache_config, inferencestat_config
             )
@@ -319,7 +321,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
             # получаем значения семантической близости [similarity]
             scored_leafnodes = self.leafnodes_retriever.run(
                 query=anchor_vinstance.document, top_k=len(leafnodes_strids),
-                subset_ids=leafnodes_strids, return_with_scores=True, includes=[])
+                subset_ids=leafnodes_strids, return_with_scores=self.config.leafnodes_scores_vdbname, includes=[])
 
             leafnodes_info = list(map(lambda pair: (pair[0], strid2leafid_map[pair[1].id]), scored_leafnodes))
         else:
@@ -333,7 +335,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
             # получаем значения семантической близости [similarity]
             scored_summnodes = self.summnodes_retriever.run(
                 query=anchor_vinstance.document, top_k=len(summ_nodes_ids),
-                subset_ids=summ_nodes_ids, return_with_scores=True, includes=[])
+                subset_ids=summ_nodes_ids, return_with_scores=self.config.summnodes_scores_vdbname, includes=[])
 
             summnodes_info = list(map(lambda pair: (pair[0], pair[1].id), scored_summnodes))
         else:
@@ -567,7 +569,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
     def retrieve_relevant_leafnode(self, entitie_vinstance: VectorDBInstance) -> Union[None, Tuple[float, VectorDBInstance]]:
         raw_best_leafnode = self.leafnodes_retriever.run(
             query=entitie_vinstance.document, top_k=1,
-            includes=['documents', 'metadatas'], return_with_scores=True)
+            includes=['documents', 'metadatas'], return_with_scores=self.config.leafnodes_scores_vdbname)
 
         best_leafnode = None
         if len(raw_best_leafnode) > 0:
@@ -579,7 +581,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
     def retrieve_relevant_summnode(self, entitie_vinstance: VectorDBInstance) -> Union[None, Tuple[float, VectorDBInstance]]:
         raw_best_summnode = self.summnodes_retriever.run(
             query=entitie_vinstance.document, top_k=1,
-            includes=[], return_with_scores=True)
+            includes=[], return_with_scores=self.config.summnodes_scores_vdbname)
 
         best_summnode = None
         if len(raw_best_summnode) > 0:
