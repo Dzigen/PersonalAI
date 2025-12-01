@@ -15,85 +15,85 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
 
     def __init__(self, config: Union[Dict, GraphDBConnectionConfig] = DEFAULT_BLAZE_CONFIG) -> None:
         # TODO
-        pass
+        raise NotImplementedError
 
     def open_connection(self) -> None:
         # TODO
-        pass
+        raise NotImplementedError
 
     def close_connection(self) -> None:
         # TODO
-        pass
+        raise NotImplementedError
 
     def __del__(self):
         self.close_connection()
 
     def is_open(self) -> bool:
         # TODO
-        pass
+        raise NotImplementedError
 
     def create_node_query(self, node: Node) -> str:
         # TODO
-        pass
+        raise NotImplementedError
 
     def create_rel_query(self, triplet: Triplet) -> str:
         # TODO
-        pass
+        raise NotImplementedError
 
     def create(self, triplets: List[Triplet], creation_info: Dict[int, Dict[str, bool]] = dict()) -> ReturnInfo:
         # TODO
-        pass
+        raise NotImplementedError
 
     def read(self, ids: List[str]) -> List[Triplet]:
         # TODO
-        pass
+        raise NotImplementedError
 
     def update(self, items: List[Triplet]) -> ReturnInfo:
         # TODO
-        pass
+        raise NotImplementedError
 
     def delete(self, ids: List[str], delete_info: Dict[int, Dict[str, bool]] = dict()) -> None:
         # TODO
-        pass
+        raise NotImplementedError
 
     def read_by_name(self, name: str, object_type: Union[RelationType, NodeType], object: str = 'relation') -> List[Union[Triplet, Node]]:
         # TODO
-        pass
+        raise NotImplementedError
 
     def parse_query_nodes_output(self, output: QueryResult) -> List[Node]:
         # TODO
-        pass
+        raise NotImplementedError
 
     def parse_query_triplets_output(self, output: QueryResult) -> List[Triplet]:
         # TODO
-        pass
+        raise NotImplementedError
 
     def get_adjecent_nodes(self, base_node: NodeInfo,
                            accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[NodeInfo]:
         # TODO
-        pass
+        raise NotImplementedError
 
     def get_nodes_shared_ids(self, node1: NodeInfo, node2: NodeInfo, id_type: str = 'both') -> List[Dict[str, str]]:
         # TODO
-        pass
+        raise NotImplementedError
 
     def get_triplets_by_name(self, subj_names: List[str], obj_names: List[str], obj_type: str) -> List[Triplet]:
         # TODO
-        pass
+        raise NotImplementedError
 
     def get_triplets(self, node1: NodeInfo, node2: NodeInfo) -> List[Triplet]:
         # TODO
-        pass
+        raise NotImplementedError
 
     def count_items(self, item_id: Union[None, str, NodeInfo, RelationInfo] = None,
                     id_type: str = None, detailed: bool = False) -> Union[Dict[str, Dict[str, int]], Dict[str, int], int]:
         # TODO
-        pass
+        raise NotImplementedError
 
     def item_exist(self, item_id: Union[str, NodeInfo, RelationInfo], id_type: str = 'triplet') -> bool:
         # TODO
-        pass
+        raise NotImplementedError
 
     def clear(self) -> None:
         # TODO
-        pass
+        raise NotImplementedError
