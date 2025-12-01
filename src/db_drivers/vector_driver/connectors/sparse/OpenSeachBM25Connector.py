@@ -87,10 +87,15 @@ class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
         pass
 
     def upsert(self, items: List[VectorDBInstance]) -> None:
-        # validation
+        # validating
         for item in items:
             if not isinstance(item.id, str):
                 raise ValueError
+            if item.embedding is not None:
+                raise ValueError
+            for k, v in item.metadata.items():
+                if v is None:
+                    raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
             raise ValueError

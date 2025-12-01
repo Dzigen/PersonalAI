@@ -1,22 +1,27 @@
 from typing import List, Tuple, Union, Dict
-from haystack_integrations.document_stores.elasticsearch import ElasticsearchDocumentStore
-from haystack_integrations.components.retrievers.elasticsearch import ElasticsearchEmbeddingRetriever
-import elasticsearch
-from haystack import Document
-import torch
-from haystack.document_stores.types import DuplicatePolicy
-import numpy as np
+from time import sleep
 from copy import deepcopy
+import torch
+import numpy as np
 
-from .configs import DEFAULT_ELASTICSEARCH_CONFIG
+from weaviate.exceptions import WeaviateInvalidInputError
+from haystack_integrations.document_stores.weaviate import WeaviateDocumentStore
+from haystack_integrations.document_stores.weaviate._filters import convert_filters
+from haystack_integrations.document_stores.weaviate.document_store import generate_uuid5
+from haystack_integrations.components.retrievers.weaviate import WeaviateEmbeddingRetriever
+from haystack.document_stores.types.filter_policy import apply_filter_policy
+from haystack.document_stores.types import DuplicatePolicy
+from haystack import Document
+
+from .configs import DEFAULT_WEAVIATE_CONFIG
 from ...embedders import EmbedderModel
 from ...utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
 from .....utils.errors import ReturnInfo
 
 
-class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
+class WeaviateVectorConnector(AbstractVectorDatabaseConnection):
 
-    def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_ELASTICSEARCH_CONFIG,
+    def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_WEAVIATE_CONFIG,
                  embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16) -> None:
         if isinstance(config, dict):
             config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
@@ -30,21 +35,21 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
         self.retriever = None
 
     def open_connection(self) -> ReturnInfo:
-        host = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
-        index = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
-        self.db_conn = ElasticsearchDocumentStore(
-            hosts=host, index=index, embedding_similarity_function='dot_product',
-            request_timeout=10, retry_on_timeout=10
-        )
-        self.retriever = ElasticsearchEmbeddingRetriever(document_store=self.db_conn)
+        url = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
+        collection_name = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
+        collection_settings = {'class': collection_name, "vectorIndexConfig": {"distance": "dot"}}
+        self.db_conn = WeaviateDocumentStore(url=url, collection_settings=collection_settings)
+        self.retriever = WeaviateEmbeddingRetriever(document_store=self.db_conn)
 
     def is_open(self) -> bool:
         # TODO
         pass
 
     def close_connection(self) -> ReturnInfo:
-        # TODO
-        pass
+        try:
+            self.db_conn._client.close()
+        except TypeError:
+            pass
 
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
         # validation
@@ -93,14 +98,14 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
             return []
 
         raw_output = self.db_conn.filter_documents(
-            filters={"field": "id", "operator": "in", "value": ids})
+            filters={"field": "_original_id", "operator": "in", "value": ids})
 
         formated_output = []
         for raw_item in raw_output:
             formated_item = VectorDBInstance(
                 id=raw_item.id,
                 document=raw_item.content if 'documents' in includes else None,
-                metadata=raw_item.meta if 'metadatas' in includes else None,
+                metadata={k: v for k, v in raw_item.meta.items() if v is not None} if 'metadatas' in includes else None,
                 embedding=raw_item.embedding if 'embeddings' in includes else None
             )
             formated_output.append(formated_item)
@@ -125,10 +130,8 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
         if len(items) != len(unique_ids):
             raise ValueError
 
-        for item in items:
-            if self.item_exist(item.id):
-                self.delete([item.id])
-            self.create([item])
+        self.db_conn.delete_documents(document_ids=list(map(lambda item: item.id, items)))
+        self.create(items)
 
     def delete(self, ids: List[str]) -> None:
         # validation
@@ -165,26 +168,44 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
             for doc_info, doc_emb in zip(items_wo_embeddings, new_doc_embeddings):
                 query_instances[doc_info[0]].embedding = doc_emb
 
-        filters = None
+        formate_filters = None
         if subset_ids is not None:
-            filters = {"field": "id", "operator": "in", "value": subset_ids}
+            filters = {"field": "_original_id", "operator": "in", "value": subset_ids}
+            formate_filters = apply_filter_policy(self.retriever._filter_policy, self.retriever._filters, filters)
 
         formated_outputs = []
         for query in query_instances:
             # Attention: Будут получены значения семантической близости [similarity], а не значения их расстояния [distance]
             # print("query: ", query.embedding)
             try:
-                raw_output = self.retriever.run(query_embedding=query.embedding, top_k=n_results, filters=filters)
-            except elasticsearch.BadRequestError as e:
+                properties = [p.name for p in self.db_conn.collection.config.get().properties]
+                raw_output = self.db_conn.collection.query.near_vector(
+                    near_vector=query.embedding,
+                    distance=None,
+                    certainty=None,
+                    include_vector=True,
+                    filters=convert_filters(formate_filters) if formate_filters else None,
+                    limit=n_results,
+                    return_properties=properties,
+                    return_metadata=["distance"],
+                )
+                formated_documents = [self.db_conn._to_document(doc) for doc in raw_output.objects]
+                for form_doc, raw_doc in zip(formated_documents, raw_output.objects):
+                    form_doc.score = -raw_doc.metadata.distance
+                    # print("raw doc: ", raw_doc)
+            except WeaviateInvalidInputError as e:
                 raise ValueError(str(e))
-            # print('output: ',raw_output)
+
+            # print('retrieved docs:',formated_documents)
+            # print("using distnace metric: ", self.db_conn.collection.config.get().vector_index_config)
 
             formated_output = []
-            for raw_item in raw_output["documents"]:
+            for raw_item in formated_documents:
+                # print(raw_item.score)
                 formated_item = VectorDBInstance(
                     id=raw_item.id,
                     document=raw_item.content if 'documents' in includes else None,
-                    metadata=raw_item.meta if 'metadatas' in includes else None,
+                    metadata={k: v for k, v in raw_item.meta.items() if v is not None} if 'metadatas' in includes else None,
                     embedding=raw_item.embedding if 'embeddings' in includes else None
                 )
                 formated_output.append((float(raw_item.score), formated_item))
@@ -201,14 +222,14 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
         if not isinstance(id, str):
             raise ValueError
 
-        res = self.db_conn.filter_documents(filters={"field": "id", "operator": "==", "value": id})
-
-        return bool(len(res))
+        uuid5 = generate_uuid5(id)
+        item_exists = self.db_conn.collection.data.exists(uuid5)
+        return item_exists
 
     def clear(self) -> None:
-        if self.db_conn._client is None:
-            self.count_items()
-
-        self.db_conn._client.indices.delete(index=self.db_conn._index)
-        self.db_conn._client.indices.create(index=self.db_conn._index)
-        self.db_conn._client.indices.forcemerge(index=self.db_conn._index, only_expunge_deletes=True)
+        if self.db_conn.collection is not None:
+            collection_name = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
+            self.db_conn.client.collections.delete(collection_name)
+            sleep(1)
+            self.db_conn._client.collections.create_from_dict(self.db_conn._collection_settings)
+            sleep(1)

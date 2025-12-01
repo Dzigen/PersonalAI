@@ -42,7 +42,7 @@ class OLlamaConnector(AbstractAgentConnector):
         try:
             del self.client
             gc.collect()
-        except (AttributeError, TypeError):
+        except (ResourceWarning, AttributeError, TypeError):
             pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,

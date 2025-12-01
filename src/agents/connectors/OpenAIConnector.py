@@ -26,7 +26,7 @@ class OpenAIConnector(AbstractAgentConnector):
         self.CONNECTOR_KW = 'openai'
 
         self.open_connection()
-    
+
     def open_connection(self):
         self.client = OpenAI(
             api_key=os.environ.get("OPENAI_API_KEY", self.config.credentials['token']),
@@ -40,7 +40,7 @@ class OpenAIConnector(AbstractAgentConnector):
     def close_connection(self):
         try:
             self.client.close()
-        except (AttributeError,TypeError):
+        except (AttributeError, TypeError):
             pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,

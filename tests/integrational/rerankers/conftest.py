@@ -34,12 +34,56 @@ def vector_composer(e5_small_embedder):
         conn={'path': f"{TEST_VOLUME_DIR}/chroma"}, db_info={'db': 'testing', 'table': 'testing'},
         params={"hnsw:space": "ip", "hnsw:M": 4096}, need_to_clear=True))
 
-    milvus_dense_config = VectorDriverConfig(db_vendor='milvus', db_config=VectorDBConnectionConfig(
-        conn={'host': 'localhost', 'port': 19520,
-              'user': 'root', 'pass': 'Milvus'},
-        db_info={'db': 'testing', 'table': 'testing'}, need_to_clear=True,
-        params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200,
-                'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}))
+    # milvus_dense_config = VectorDriverConfig(db_vendor='milvus', db_config=VectorDBConnectionConfig(
+    #     conn={'host': 'localhost', 'port': 19520,
+    #           'user': 'root', 'pass': 'Milvus'},
+    #     db_info={'db': 'testing', 'table': 'testing'}, need_to_clear=True,
+    #     params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200,
+    #             'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}))
+
+    qdrant_dense_condif = VectorDriverConfig(
+        db_vendor='qdrant',
+        db_config=VectorDBConnectionConfig(
+            conn={'host': 'localhost', 'port': 6333},
+            params={'vector_dim': 384, 'search_metric': 'Dot'}
+        )
+    )
+
+    weaviate_dense_config = VectorDriverConfig(
+        db_vendor='weaviate',
+        db_config=VectorDBConnectionConfig(
+            conn={'host': 'localhost', 'port': 8083}
+        )
+    )
+
+    opensearch_dense_config = VectorDriverConfig(
+        db_vendor='opensearch',
+        db_config=VectorDBConnectionConfig(
+            conn={'host': 'localhost', 'port': 9200, 'user': 'admin', 'pass': 'admin'},
+            params={'vector_dim': 384, 'search_metric': 'innerproduct'}
+        )
+    )
+
+    elasticsearch_dense_config = VectorDriverConfig(
+        db_vendor='elasticsearch',
+        db_config=VectorDBConnectionConfig(
+            conn={'host': 'localhost', 'port': 9201}
+        )
+    )
+
+    inmemory_dense_config = VectorDriverConfig(
+        db_vendor='inmemory',
+        db_config=VectorDBConnectionConfig(
+            params={
+                'store_dump_name': 'inmemory_dense',
+                'load_from_disk': False,
+                'load_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_dense",
+                'save_on_disk': False,
+                'save_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_dense",
+                'vector_dim': 384
+            }
+        )
+    )
 
     # sparse
     opensearch_bm25_config = VectorDriverConfig(
@@ -61,22 +105,43 @@ def vector_composer(e5_small_embedder):
         )
     )
 
+    weaviate_bm25_config = VectorDriverConfig(
+        db_vendor='weaviate', vector_category='sparse_bm25',
+        db_config=VectorDBConnectionConfig(
+            conn={'host': 'localhost', 'port': 8083}
+        )
+    )
+
     vdb_config_mapping = {
         'dense_chroma': chroma_dense_config,
-        'dense_milvus': milvus_dense_config,
+        #'dense_milvus': milvus_dense_config,
+        'dense_inmemory': inmemory_dense_config,
+        #'dense_opensearch': opensearch_dense_config,
+        'dense_elasticsearch': elasticsearch_dense_config,
+        'dense_weaviate': weaviate_dense_config,
+        'dense_qdrant': qdrant_dense_condif,
         'bm25_opensearch': opensearch_bm25_config,
         'bm25_elasticsearch': elasticsearch_bm25_config,
-        'bm25_inmemory': inmemory_bm25_config
+        'bm25_inmemory': inmemory_bm25_config,
+        'bm25_weaviate': weaviate_bm25_config
     }
 
     emb_mapping = {
         'dense_chroma': e5_small_embedder,
-        'dense_milvus': e5_small_embedder
+        #'dense_milvus': e5_small_embedder,
+        'dense_inmemory': e5_small_embedder,
+        #'dense_opensearch': e5_small_embedder,
+        'dense_elasticsearch': e5_small_embedder,
+        'dense_weaviate': e5_small_embedder,
+        'dense_qdrant': e5_small_embedder
     }
 
     composer = VectorComposer(vdb_config_mapping, emb_mapping)
     composer.clear()
     print("before: ",composer.count_items())
+
+    # print(composer.vdb_conn_mapping['dense_opensearch'].db_conn._get_default_mappings())
+    # print(composer.vdb_conn_mapping['dense_opensearch'].db_conn._embedding_dim)
 
     composer.create(items=ITEMS)
     print("after: ", composer.count_items())

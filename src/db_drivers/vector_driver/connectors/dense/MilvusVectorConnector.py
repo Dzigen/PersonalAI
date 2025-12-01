@@ -1,5 +1,5 @@
 from typing import List, Tuple, Union, Dict
-from pymilvus.exceptions import ConnectionNotExistException
+# from pymilvus.exceptions import ConnectionNotExistException
 from pymilvus import MilvusClient, DataType
 from time import sleep
 from copy import deepcopy
@@ -89,7 +89,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         try:
             load_state = self.client.get_load_state(
                 self.config.db_info['table'])['state'].value
-        except (TypeError, ConnectionNotExistException):
+        except (TypeError, ConnectionError):
             pass
         else:
             if load_state != 3:
@@ -104,7 +104,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         try:
             self.client.list_collections()
             return True
-        except ConnectionNotExistException as e:
+        except ConnectionError as e:
             return False
 
     def create(self, items: List[VectorDBInstance]) -> None:
@@ -114,6 +114,9 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
                 raise ValueError
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
                 raise ValueError
+            for k, v in item.metadata.items():
+                if v is None:
+                    raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
             raise ValueError
@@ -143,7 +146,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
 
         formated_data = list(map(lambda item: item.to_dict(), filtered_items))
 
-        out = self.client.insert(
+        self.client.insert(
             collection_name=self.config.db_info['table'],
             data=formated_data)
 
@@ -182,6 +185,11 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         for item in items:
             if not isinstance(item.id, str):
                 raise ValueError
+            if type(item.embedding) in [torch.Tensor, np.ndarray]:
+                raise ValueError
+            for k, v in item.metadata.items():
+                if v is None:
+                    raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
             raise ValueError

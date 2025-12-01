@@ -10,11 +10,11 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from src.db_drivers.vector_driver import VectorDBInstance
 
 # TO CHANGE
-AVAILABLE_VECTOR_DBS = ['chroma', 'milvus', 'inmemory', 'elasticsearch']  # 'chroma', 'milvus', 'inmemory', 'elasticsearch'
+AVAILABLE_VECTOR_DBS = ['weaviate']  # 'chroma', 'inmemory', 'opensearch', 'elasticsearch', 'opensearch', 'weaviate', 'qdrant' | 'milvus'
 
 ###############################################################################################
 
-VECTORS = np.random.rand(5, 130).tolist()
+VECTORS = [(vector / np.linalg.norm(vector)).tolist() for vector in np.random.rand(5, 130).tolist()]
 
 
 FULL_INSTANCE1 = VectorDBInstance(id='123', document='qwerty', embedding=VECTORS[0], metadata={'k1': 'v1'})
@@ -210,7 +210,9 @@ VECTORDB_RETRIEVE_TEST_CASES = [
     [[FULL_INSTANCE1, FULL_INSTANCE2], [INSTANCE_WITH_BAD_EMB2],
         2, None, {'exception': True, 'output_size': -1}],
     # 9. В векторной бд нуль объектов
-    [[], [FULL_INSTANCE1], 2, None, {'exception': False, 'output_size': 0}]
+    [[], [FULL_INSTANCE1], 2, None, {'exception': False, 'output_size': 0}],
+    # 10. Проверка: используется dot-product (в бд хранятся нормализованные вектора) + similarity
+    [[FULL_INSTANCE1, FULL_INSTANCE2], [FULL_INSTANCE1], 1, None, {'exception': False, 'output_size': 1, 'sim_check': True}]
 ]
 
 VECTORDB_POPULATED_RETRIEVE_TEST_CASES = []

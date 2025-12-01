@@ -5,11 +5,13 @@ from time import time, sleep
 from gigachat.models import Chat, Messages
 from httpx import ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout
 
+
 # https://github.com/VRSEN/agency-swarm/issues/99
 # https://github.com/ai-forever/gigachat/blob/main/src/gigachat/client.py#L182
 
 from .configs import DEFAULT_GIGACHAT_CONFIG
 from ..utils import AbstractAgentConnector, AgentConnectorConfig, LLMInferenceStat
+
 
 class GigaChatConnector(AbstractAgentConnector):
     def __init__(self, config: Union[Dict, AgentConnectorConfig] = DEFAULT_GIGACHAT_CONFIG) -> None:
@@ -18,7 +20,7 @@ class GigaChatConnector(AbstractAgentConnector):
         else:
             config.formate_fields()
         self.config: AgentConnectorConfig = config
-        
+
         # костыль
         if 'top_p' in self.config.gen_strategy:
             self.config.gen_strategy['top_p'] = float(self.config.gen_strategy['top_p'])

@@ -35,33 +35,33 @@ def embeddings_chroma_config():
     )
     return config
 
-@pytest.fixture(scope='package')
-def embeddings_milvus_config():
+# @pytest.fixture(scope='package')
+# def embeddings_milvus_config():
 
-    config = EmbeddingsModelConfig(
-        nodesdb_driver_configs_mapping={
-            'nodes_dense': VectorDriverConfig(
-                db_vendor='milvus', db_config=VectorDBConnectionConfig(
-                    conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
-                    db_info={'db': 'testing', 'table': 'vectorized_nodes'}, need_to_clear=True,
-                    params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200,
-                            'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
-                )
-            )
-        },
-        tripletsdb_driver_configs_mapping={
-            'triplets_dense': VectorDriverConfig(
-                db_vendor='milvus', db_config=VectorDBConnectionConfig(
-                    conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
-                    db_info={'db': 'testing', 'table': 'vectorized_triplets'}, need_to_clear=True,
-                    params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200,
-                            'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
-                )
-            )
-        }
-    )
+#     config = EmbeddingsModelConfig(
+#         nodesdb_driver_configs_mapping={
+#             'nodes_dense': VectorDriverConfig(
+#                 db_vendor='milvus', db_config=VectorDBConnectionConfig(
+#                     conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
+#                     db_info={'db': 'testing', 'table': 'vectorized_nodes'}, need_to_clear=True,
+#                     params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200,
+#                             'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
+#                 )
+#             )
+#         },
+#         tripletsdb_driver_configs_mapping={
+#             'triplets_dense': VectorDriverConfig(
+#                 db_vendor='milvus', db_config=VectorDBConnectionConfig(
+#                     conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
+#                     db_info={'db': 'testing', 'table': 'vectorized_triplets'}, need_to_clear=True,
+#                     params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200,
+#                             'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
+#                 )
+#             )
+#         }
+#     )
 
-    return config
+#     return config
 
 @pytest.fixture(scope='package')
 def embeddings_inmemory_config():
@@ -125,17 +125,91 @@ def embeddings_elasticsearch_config():
     )
     return config
 
+@pytest.fixture(scope='package')
+def embeddings_opensearch_config():
+    config = EmbeddingsModelConfig(
+        nodesdb_driver_configs_mapping={
+            'nodes_dense': VectorDriverConfig(
+                db_vendor='opensearch',
+                db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 9200, 'user': 'admin', 'pass': 'admin'},
+                    params={'vector_dim': 384, 'search_metric': 'innerproduct'}
+                )
+            )
+        },
+        tripletsdb_driver_configs_mapping={
+            'triplets_dense': VectorDriverConfig(
+                db_vendor='opensearch',
+                db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 9200, 'user': 'admin', 'pass': 'admin'},
+                    params={'vector_dim': 384, 'search_metric': 'innerproduct'}
+                )
+            )
+        }
+    )
+    return config
+
+@pytest.fixture(scope='package')
+def embeddings_qdrant_config():
+    config = EmbeddingsModelConfig(
+        nodesdb_driver_configs_mapping={
+            'nodes_dense': VectorDriverConfig(
+                db_vendor='qdrant',
+                db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 6333},
+                    params={'vector_dim': 384, 'search_metric': 'Dot'}
+                )
+            )
+        },
+        tripletsdb_driver_configs_mapping={
+            'triplets_dense': VectorDriverConfig(
+                db_vendor='qdrant',
+                db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 6333},
+                    params={'vector_dim': 384, 'search_metric': 'Dot'}
+                )
+            )
+        }
+    )
+    return config
+
+@pytest.fixture(scope='package')
+def embeddings_weaviate_config():
+    config = EmbeddingsModelConfig(
+        nodesdb_driver_configs_mapping={
+            'nodes_dense': VectorDriverConfig(
+                db_vendor='weaviate',
+                db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 8083}
+                )
+            )
+        },
+        tripletsdb_driver_configs_mapping={
+            'triplets_dense': VectorDriverConfig(
+                db_vendor='weaviate',
+                db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 8083}
+                )
+            )
+        }
+    )
+    return config
+
 # ------------------------------#
 
 @pytest.fixture(scope='package')
 def available_embedding_configs(
-    embeddings_chroma_config, embeddings_milvus_config, embeddings_inmemory_config, embeddings_elasticsearch_config
+    embeddings_chroma_config, embeddings_inmemory_config, embeddings_elasticsearch_config,
+    embeddings_opensearch_config, embeddings_qdrant_config, embeddings_weaviate_config #embeddings_milvus_config
 ):
     return {
         'chroma': embeddings_chroma_config,
-        'milvus': embeddings_milvus_config,
+        #'milvus': embeddings_milvus_config,
         'inmemory': embeddings_inmemory_config,
-        'elasticsearch': embeddings_elasticsearch_config
+        'elasticsearch': embeddings_elasticsearch_config,
+        'opensearch': embeddings_opensearch_config,
+        'qdrant': embeddings_qdrant_config,
+        'weaviate': embeddings_weaviate_config
     }
 
 @pytest.fixture(scope='module')

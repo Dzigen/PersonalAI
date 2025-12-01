@@ -30,15 +30,15 @@ def elasticsearch_bm25_conn():
     )
     return VectorDriver.connect(config)
 
-# @pytest.fixture(scope='package')
-# def weaviate_bm25_conn():
-#     config = VectorDriverConfig(
-#         db_vendor='weaviate', vector_category='sparse_bm25',
-#         db_config=VectorDBConnectionConfig(
-#             conn={'host': 'localhost', 'port': 8083}
-#         )
-#     )
-#     return VectorDriver.connect(config)
+@pytest.fixture(scope='package')
+def weaviate_bm25_conn():
+    config = VectorDriverConfig(
+        db_vendor='weaviate', vector_category='sparse_bm25',
+        db_config=VectorDBConnectionConfig(
+            conn={'host': 'localhost', 'port': 8083}
+        )
+    )
+    return VectorDriver.connect(config)
 
 @pytest.fixture(scope='package')
 def inmemory_bm25_conn():
@@ -59,10 +59,11 @@ def inmemory_bm25_conn():
 
 @pytest.fixture(scope='package')
 def available_sparsebm25_connections(
-        opensearch_bm25_conn, elasticsearch_bm25_conn, inmemory_bm25_conn):
+        opensearch_bm25_conn, elasticsearch_bm25_conn, inmemory_bm25_conn, weaviate_bm25_conn):
     return {
         'opensearch': opensearch_bm25_conn,
         'elasticsearch': elasticsearch_bm25_conn,
+        'weaviate': weaviate_bm25_conn,
         'inmemory': inmemory_bm25_conn
     }
 

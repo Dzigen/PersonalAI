@@ -7,6 +7,6 @@ KC_RERANKDRIVER_DEFAULT_CONFIG = RerankerDriverConfig(
     name='ensemble_fusion',
     strategy_config=EnsembleFusionRerankerConfig(
         vdb_names=['nodes_dense', 'nodes_sparse_bm25'],
-        weights=[0.2, 0.8]
+        weights=[0.4, 0.6]
     )
 )
