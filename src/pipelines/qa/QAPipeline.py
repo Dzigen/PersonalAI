@@ -26,9 +26,9 @@ class QAPipelineConfig(BaseComponentConfig, LanguageConfig):
 
     :param preprocessor_config: Конфигурация стадии по предобработке исходного user-вопроса. Значение по умолчанию QueryPreprocessorConfig().
     :type preprocessor_config: Union[QueryPreprocessorConfig, Dict], optional
-    :param reasoner_config: Конфигурация стадии по обходу/ризонингу на графе знаней с целью извлечения релевантой информации к user-вопросу. Значение по умолчанию KnowledgeGraphReasonerConfig().
+    :param reasoner_config: Конфигурация стадии по обходу/ризонингу на графе знаний с целью извлечения релевантой информации к user-вопросу. Значение по умолчанию KnowledgeGraphReasonerConfig().
     :type reasoner_config: Union[KnowledgeGraphReasonerConfig, Dict], optional
-    :param aggregator_config: Конфигурация стадии по аггрегации/резюмированию информации, полученной в резльтате ризонинга на графе знаний (памяти). Значение по умолчанию AnswersAggregatorConfig().
+    :param aggregator_config: Конфигурация стадии по аггрегации/резюмированию информации, полученной в результате ризонинга на графе знаний (памяти). Значение по умолчанию AnswersAggregatorConfig().
     :type aggregator_config: Union[AnswersAggregatorConfig, Dict], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QAPipeline-класса. Значение по умолчанию 'qa_pipeline_cache'.
     :type cache_table_name: str, optional
@@ -77,9 +77,9 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация QA-конвейера. Значение по умолчанию QAPipelineConfig().
     :type config: Union[QAPipelineConfig, Dict], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операций в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
@@ -110,6 +110,13 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
         self.verbose = config.verbose
 
     def preprocess_query(self, query: str) -> Tuple[QueryPreprocessingInfo, ReturnInfo]:
+        """Метод выполняет предобработку исходного user-вопроса. Оборачивает вызов компоненты QueryPreprocessor и логирует результат.
+
+        :param query: Исходный user-вопрос на естественном языке.
+        :type query: str
+        :return: Кортеж из двух объектов: (1) класс с информацией о предобработанном вопросе; (2) статус завершения операции с пояснительной информацией.
+        :rtype: Tuple[QueryPreprocessingInfo, ReturnInfo]
+        """
         query_info, rinfo = self.stages.query_preprocessor.perform(query)
         self.log(f"RESULT: {query_info}", verbose=self.verbose)
         if rinfo.status != ReturnStatus.success:
@@ -120,6 +127,12 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
         return query_info, rinfo
 
     def process_query(self, query_info: QueryPreprocessingInfo) -> Tuple[QueryReasoningInfo, ReturnInfo]:
+        """Метод предназначен для обхода графа знаний с целью извлечения релевантной информации по под-запросу.
+        :param query_info: Класс с информацией по предобработанному вопросу.
+        :type query_info: QueryPreprocessingInfo
+        :return: Кортеж из двух объектов: (1) класс с под-запросами и ответами на них; (2) статус завершения операции с пояснительной информацией.
+        :rtype: Tuple[QueryReasoningInfo, ReturnInfo]
+        """
         rinfo = ReturnInfo()
         sub_queries, sub_answers = query_info.processed_query, []
 
@@ -146,6 +159,15 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
         return subq_info, rinfo
 
     def postprocess_answer(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> Tuple[str, ReturnInfo]:
+        """Метод агрегирует ответы по под-запросам и формирует финальный ответ. Оборачивает вызов компоненты AnswersAggregator и логирует результат.
+
+        :param query_info: Класс с информацией о предобработанном исходном вопросе.
+        :type query_info: QueryPreprocessingInfo
+        :param subq_info: Класс с информацией о под-запросах и соответствующих им ответах из графа знаний.
+        :type subq_info: QueryReasoningInfo
+        :return: Кортеж из двух объектов: (1) агрегированный финальный ответ; (2) статус завершения операции с пояснительной информацией.
+        :rtype: Tuple[str, ReturnInfo]
+        """
         aggregated_answer, rinfo = self.stages.answers_aggregator.perform(
             query_info, subq_info)
         self.log(f"RESULT: {aggregated_answer}", verbose=self.verbose)

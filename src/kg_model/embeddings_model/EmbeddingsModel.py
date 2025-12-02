@@ -22,7 +22,7 @@ class EmbeddingsModelConfig(BaseComponentConfig):
 
     :param nodesdb_driver_configs_mapping: Словарь с именованными конфигурациями коннекторов к векторным базам данных, которые отвечают за хранение различных векторных представлений вершин из графовой структуры. Значение по умолчанию NODES_DB_DEFAULT_DRIVER_CONFIGS_MAPPING.
     :type nodesdb_driver_configs_mapping: Dict[str, Union[Dict,VectorDriverConfig]], optional
-    :param tripletsdb_driver_configs_mapping: Словарь с именованными конфигурациями коннекторов к векторным базам данных, которые отвечают за хранение различных векторных представлений триплетов из графовой структуры.  Значение по умолчанию TRIPLETS_DB_DEFAULT_DRIVER_CONFIGS_MAPPING.
+    :param tripletsdb_driver_configs_mapping: Словарь с именованными конфигурациями коннекторов к векторным базам данных, которые отвечают за хранение различных векторных представлений триплетов из графовой структуры. Значение по умолчанию TRIPLETS_DB_DEFAULT_DRIVER_CONFIGS_MAPPING.
     :type tripletsdb_driver_configs_mapping: Dict[str, Union[Dict,VectorDriverConfig]], optional
     """
     nodesdb_driver_configs_mapping: Dict[str, Union[Dict, VectorDriverConfig]] = field(
@@ -77,7 +77,7 @@ class EmbeddingsModel:
         self.triplets_vcomposer: VectorComposer = VectorComposer(
             self.config.tripletsdb_driver_configs_mapping, embedders_mapping)
 
-        # Создаём наборй векторных бд для вершины каждого типа в отдельности
+        # Создаём набор векторных бд для вершины каждого типа в отдельности
         self.nodes_vcomposers: Dict[NodeType, VectorComposer] = dict()
         nodes_types = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time]
         for node_type in nodes_types:
@@ -163,9 +163,9 @@ class EmbeddingsModel:
                                     grouped_nodes_info: Union[None, Dict[NodeType, List[VectorDBInstance]]] = None) -> None:
         """Метод предназначен для добавления строковых представлений триплетов/вершин в векторную структуру.
 
-        :param relations_info: Список кортежей с информацие о триплетах, которые будут добавляться в embeddings-модель. В каждый кортеж входит следующая информация: (1) идентификатор триплетов, с которым он будет сохранен, (2) строковое представление триплета и (3) метаданные.
+        :param relations_info: Список кортежей с информацией о триплетах, которые будут добавляться в embeddings-модель. В каждый кортеж входит следующая информация: (1) идентификатор триплетов, с которым он будет сохранен, (2) строковое представление триплета и (3) метаданные.
         :type relations_info: List[VectorDBInstance]
-        :param grouped_nodes_info: Сгруппированные (по типу вершин) списки кортежей с информацие о вершинах, которые будут добавляться в embeddings-модель. В каждый кортеж входит следующая информация: (1) идентификатор вершины, с которым она будет сохранена, (2) строковое представление вершины и (3) метаданные.
+        :param grouped_nodes_info: Сгруппированные (по типу вершин) списки кортежей с информацией о вершинах, которые будут добавляться в embeddings-модель. В каждый кортеж входит следующая информация: (1) идентификатор вершины, с которым она будет сохранена, (2) строковое представление вершины и (3) метаданные.
         :type grouped_nodes_info: Union[None,Dict[NodeType, List[VectorDBInstance]]], optional
         """
         if len(relations_info):

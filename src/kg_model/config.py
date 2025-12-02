@@ -10,7 +10,7 @@ DEFAULT_EMBEDDERS_CONFIG = {
 }
 
 DEFAULT_EMBEDDERS_MAP = KGEmbeddersMapping(
-    embeddings_model={'nodes_dense': 'm-e5-base', 'triplets_dense': 'm-e5-base'},
+    embeddings_model={'dense_nodes': 'm-e5-base', 'dense_triplets': 'm-e5-base'},
     nodestree_model={'leaf_dense_nodes': 'm-e5-base', 'summ_dense_nodes': 'm-e5-base'}
 )
 

@@ -99,6 +99,9 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
         for item in items:
             if not isinstance(item.id, str):
                 raise ValueError
+            for k, v in item.metadata.items():
+                if v is None:
+                    raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
                 raise ValueError
         unique_ids = set(map(lambda item: item.id, items))
@@ -131,8 +134,6 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
             if not item_exists:
                 item.metadata['id'] = item.id
                 filtered_items.append(item)
-
-        print(filtered_items)
 
         if len(filtered_items) > 0:
             self.structure.add_embeddings(
@@ -177,6 +178,11 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
         for item in items:
             if not isinstance(item.id, str):
                 raise ValueError
+            if type(item.embedding) in [torch.Tensor, np.ndarray]:
+                raise ValueError
+            for k, v in item.metadata.items():
+                if v is None:
+                    raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
             raise ValueError
@@ -242,8 +248,8 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
 
             if 'embeddings' in includes:
                 docstore_to_index_ids = {docstore_id: index_id for index_id, docstore_id in self.structure.index_to_docstore_id.items()}
-                for item in cur_fitmes:
-                    item.embedding = self.structure.index.reconstruct(docstore_to_index_ids[item.id]).astype(float)
+                for item_tuple in cur_fitmes:
+                    item_tuple[1].embedding = self.structure.index.reconstruct(docstore_to_index_ids[item_tuple[1].id]).astype(float)
 
             formated_items.append(cur_fitmes)
 

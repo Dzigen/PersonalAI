@@ -9,6 +9,15 @@ from .embedders import EmbedderModel
 
 @dataclass
 class VectorDriverConfig:
+    """Конфигурация драйвера векторного хранилища.
+
+    :param db_vendor: Идентификатор конкретного провайдера векторного хранилища (например, 'chroma', 'milvus', 'elasticsearch', 'inmemory').
+    :type db_vendor: str
+    :param vector_category: Категория векторного хранилища ('dense' для плотных эмбеддингов, 'sparse_bm25' для разреженных BM25-представлений).
+    :type vector_category: str
+    :param db_config: Конфигурация подключения к выбранному хранилищу, либо словарь с её параметрами.
+    :type db_config: VectorDBConnectionConfig
+    """
     db_vendor: str = 'chroma'
     vector_category: str = 'dense'  # 'dense' | 'sparse_bm25'
     db_config: VectorDBConnectionConfig = field(default_factory=lambda: DEFAULT_VECTORDB_CONFIGS['dense']['chroma'])
@@ -30,8 +39,18 @@ class VectorDriverConfig:
 
 
 class VectorDriver:
+    """Компонента для инициализации подключения к векторному хранилищу."""
     @staticmethod
     def connect(config: Union[Dict, VectorDriverConfig] = VectorDriverConfig(), embedder: Union[None, EmbedderModel] = None) -> AbstractVectorDatabaseConnection:
+        """Метод предназначен для создания и открытия подключения к векторному хранилищу.
+
+        :param config: Конфигурация драйвера (VectorDriverConfig), либо словарь с её параметрами.
+        :type config: Union[Dict, VectorDriverConfig]
+        :param embedder: Класс для получения эмбеддингов (EmbedderModel).
+        :type embedder: Union[None, EmbedderModel]
+        :return: Открытое соединение с векторным хранилищем, реализующее интерфейс AbstractVectorDatabaseConnection.
+        :rtype: AbstractVectorDatabaseConnection
+        """
         if isinstance(config, dict):
             config: VectorDriverConfig = VectorDriverConfig.from_dict(config)
         else:

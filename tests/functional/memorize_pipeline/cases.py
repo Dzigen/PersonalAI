@@ -9,13 +9,13 @@ from src.pipelines.memorize.extractor.utils import MemExtractorAgentTasksConfig
 from src.pipelines.memorize import MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
 
 # TO CHANGE
-AVAILABLE_GRAPH_MODELS = ['neo4j']  # 'inmemory_graph', 'neo4j', 'kuzu'
+AVAILABLE_GRAPH_MODELS = ['neo4j']  # 'neo4j', 'kuzu', 'inmemory_graph', 'blazegraph'
 
 # TO CHANGE
-AVAILABLE_EMBEDDING_MODELS = ['elasticsearch']  # 'chroma', 'milvus', 'inmemory', 'elasticsearch'
+AVAILABLE_EMBEDDING_MODELS = ['qdrant', 'opensearch']  # 'chroma', 'inmemory', 'opensearch', 'elasticsearch', 'weaviate', 'qdrant'
 
 # TO CHANGE
-AVAILABLE_NODESTREE_MODELS = ['None'] # 'milvus_kuzu', 'milvus_neo4j', 'chroma_kuzu', 'chroma_neo4j', 'None
+AVAILABLE_NODESTREE_MODELS = ['None'] # 'qdrant_kuzu', 'qdrant_neo4j', 'chroma_kuzu', 'chroma_neo4j', 'None
 
 RAW_TEXTS_RU = [
     "Проживающие в общежитии студенты имеют право rруглосуточного доступа к месту проживания.",

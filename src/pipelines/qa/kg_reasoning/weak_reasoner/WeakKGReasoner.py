@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Tuple, Union, List, Dict
 from copy import deepcopy
 
-from .config import WKGR_MAIN_LOG_PATH
+from .config import WKGR_MAIN_LOG_PATH, WEAK_KG_RETRIEVER_CONFIG
 from .utils import WeakKGReasonerStages
 from .query_parser import QueryLLMParser, QueryLLMParserConfig
 from .knowledge_comparator import KnowledgeComparator, KnowledgeComparatorConfig
@@ -25,7 +25,7 @@ class WeakKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, LanguageCo
     :type query_parser_config: Union[None,Dict,QueryLLMParserConfig], optional
     :param knowledge_comparator_config: Конфигурация второй стадии reasoner-конвейера: сопоставление (match) сущностей из user-вопроса с информацией в графе знаний. Значение по умолчанию KnowledgeComparatorConfig().
     :type knowledge_comparator_config: Union[None,Dict,KnowledgeComparatorConfig], optional
-    :param knowledge_retriever_config: Конфигурация третьей стадии reasoner-конвейера: извлечение релевантной информации из графа знаний для user-вопроса. Значение по умолчанию KnowledgeRetrieverConfig().
+    :param knowledge_retriever_config: Конфигурация третьей стадии reasoner-конвейера: извлечение релевантной информации из графа знаний для user-вопроса. Значение по умолчанию WEAK_KG_RETRIEVER_CONFIG.
     :type knowledge_retriever_config: Union[Dict,KnowledgeRetrieverConfig], optional
     :param answer_generator_config: Конфигурация четвёртой стадии reasoner-конвейера: условная генерация ответа на user-вопрос. Значение по умолчанию QALLMGeneratorConfig().
     :type answer_generator_config: Union[Dict,QALLMGeneratorConfig], optional
@@ -37,7 +37,7 @@ class WeakKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, LanguageCo
     knowledge_comparator_config: Union[None, Dict, KnowledgeComparatorConfig] = field(
         default_factory=lambda: KnowledgeComparatorConfig())
     knowledge_retriever_config: Union[Dict, KnowledgeRetrieverConfig] = field(
-        default_factory=lambda: KnowledgeRetrieverConfig())
+        default_factory=lambda: WEAK_KG_RETRIEVER_CONFIG)
     answer_generator_config: Union[Dict, QALLMGeneratorConfig] = field(
         default_factory=lambda: QALLMGeneratorConfig())
 
@@ -89,9 +89,9 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация WeakKGReasoner-пайплайна. Значение по умолчанию WeakKGReasonerConfig().
     :type config: Union[WeakKGReasonerConfig,Dict], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операций в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
@@ -129,6 +129,13 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         self.verbose = config.verbose
 
     def extract_entities(self, query_info: QueryInfo) -> Tuple[Union[None, List[str]], ReturnInfo]:
+        """Метод реализует извлечение сущностей из пользовательского запроса.
+
+        :param query_info: Структура с исходным запросом и дополнительными полями.
+        :type query_info: QueryInfo
+        :return: Кортеж из двух объектов: (1) список извлечённых сущностей или None; (2) статус завершения операции с пояснительной информацией.
+        :rtype: Tuple[Union[None, List[str]], ReturnInfo]
+        """
         entities, rinfo = None, ReturnInfo()
 
         if self.stages.query_parser is None:
@@ -144,6 +151,13 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         return entities, rinfo
 
     def match_entities_to_kgnodes(self, query_info: QueryInfo) -> Tuple[Union[None, List[object]], Union[None, List[object]], ReturnInfo]:
+        """Метод реализует сопоставление извлечённых сущностей с узлами графа знаний.
+
+        :param query_info: Структура с запросом и дополнительными полями.
+        :type query_info: QueryInfo
+        :return: Кортеж из двух объектов: (1) список найденных узлов или None; (2) статус завершения операции с пояснительной информацией.
+        :rtype: Tuple[Union[None, List[object]], Union[None, List[object]], ReturnInfo]
+        """
         linked_nodes, linked_nodes_by_entities, rinfo = None, None, ReturnInfo()
         if self.stages.query_parser is None:
             self.log("Stage #2 was omited!", verbose=self.verbose)
@@ -161,6 +175,13 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         return linked_nodes, linked_nodes_by_entities, rinfo
 
     def traverse_knowledge_graph(self, query_info: QueryInfo) -> Tuple[Union[None, List[Triplet]], ReturnInfo]:
+        """Метод реализует извлечение релевантных триплетов из графа знаний.
+
+        :param query_info: Структура с запросом и дополнительными полями.
+        :type query_info: QueryInfo
+        :return: Кортеж из двух объектов: (1) список релевантных триплетов или None; (2) статус завершения операции с пояснительной информацией.
+        :rtype: Tuple[Union[None, List[Triplet]], ReturnInfo]
+        """
         retrieved_triplets, rinfo = self.stages.knowledge_retriever.retrieve(query_info)
         if rinfo.status != ReturnStatus.success:
             self.log("Operation ended with error!", verbose=self.verbose)
@@ -173,6 +194,15 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         return retrieved_triplets, rinfo
 
     def generate_answer(self, query_info: QueryInfo, retrieved_triplets: List[Triplet]) -> Tuple[Union[None, str], ReturnInfo]:
+        """Метод формирует финальный ответ на основе извлечённых фактов.
+
+        :param query_info: Структура с исходным текстом запроса.
+        :type query_info: QueryInfo
+        :param retrieved_triplets: Список релевантных триплетов, извлечённых на предыдущей стадии.
+        :type retrieved_triplets: List[Triplet]
+        :return: Кортеж из двух объектов: (1) сгенерированный ответ или None; (2) статус завершения операции с пояснительной информацией.
+        :rtype: Tuple[Union[None, str], ReturnInfo]
+        """
         answer, rinfo = self.stages.answer_generator.generate(query_info.query, retrieved_triplets)
         if rinfo.status != ReturnStatus.success:
             self.log("Operation ended with error!", verbose=self.verbose)
@@ -183,6 +213,15 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         return answer, rinfo
 
     def get_cache_key(self, query: str) -> List[str]:
+        """Формирует ключ кэша для результата weak-reasoner пайплайна.
+
+        В ключ включается строковое представление конфигурации пайплайна, идентификатор и конфигурацию используемого LLM-агента, исходный текст запроса.
+
+        :param query: Пользовательский запрос.
+        :type query: str
+        :return: Список строк, используемый как составной ключ кеша.
+        :rtype: List[str]
+        """
         str_using_agent_config = f"{self.using_agent_info['kw']}:{self.using_agent_info['config'].to_str()}"
         return [self.config.to_str(), str_using_agent_config, query]
 
@@ -192,7 +231,7 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
 
         :param query: запрос на естественном языке.
         :type query: str
-        :return: Кортеж из двух объектов: (1) извлечённая/релевантная информация/ответа на запрос; (2) статус завершения операции с пояснительной информацией.
+        :return: Кортеж из двух объектов: (1) извлечённая/релевантная информация/ответ на запрос; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
         self.log("START WEAK KG-REASONING...", verbose=self.verbose)

@@ -19,10 +19,10 @@ from ....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperation
 class LLMExtractorConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация Extractor-стадии Memorize-конвейера.
 
-    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию MemExtractorAgentTasksConfig().
-    :type agent_tasks_config: Union[Dict,MemExtractorAgentTasksConfig], optional
+    :param agent_tasks_config: Конфигурации LLM-промптов для решения заданных задач с помощью LLM-агента. Значение по умолчанию MemExtractorAgentTasksConfig().
+    :type agent_tasks_config: Union[Dict, MemExtractorAgentTasksConfig], optional
     :param need_simple: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'simple', иначе False. Значение по умолчанию True.
     :type need_simple: bool, optional
     :param need_thesises: Если True, то из входного текста на первой стадии Mem-конвейера будет выполнено извлечение триплетов с типом связи 'hyper', иначе False. Значение по умолчанию True.
@@ -61,11 +61,11 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
     :type agent: AbstractAgentConnector
-    :param config: Конфигурация Exctrator-стадии. Значение по умолчанию LLMExtractorConfig().
-    :type config: Union[Dict,LLMExtractorConfig], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param config: Конфигурация Exctraсtor-стадии. Значение по умолчанию LLMExtractorConfig().
+    :type config: Union[Dict, LLMExtractorConfig], optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операций в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
@@ -97,9 +97,9 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
 
         :param text: Слабоструктурированный текст.
         :type text: str
-        :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, Значение по умолчанию None.
+        :param properties: Набор свойств, который должен быть сохранён в памяти вместе с извлечённой из текста информацией. Значение по умолчанию None.
         :type properties: Union[None, Dict], optional
-        :param time: Время, с которым ассоциированы события текста
+        :param time: Время, с которым ассоциированы события текста.
         :type time: str, optional
         :return: Кортеж из двух объектов: (1) список извлечённой из текста информации (в виде триплетов); (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[Triplet], ReturnInfo]

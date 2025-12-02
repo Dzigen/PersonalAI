@@ -5,6 +5,13 @@ from ......utils.data_structs import RelationType, Triplet, RelationCreator
 
 
 def ethesises_custom_formate(text: str, **kwargs) -> Dict[str, str]:
+    """Функция формирует словарь контекста для LLM-задачи по извлечению тезисов.
+
+    :param text: Исходный текст на естественном языке.
+    :type text: str
+    :return: Словарь с полем 'text', передаваемый в LLM-подзадачу.
+    :rtype: Dict[str, str]
+    """
     if len(text) < 1:
         raise ValueError
     return {'text': text}
@@ -12,6 +19,17 @@ def ethesises_custom_formate(text: str, **kwargs) -> Dict[str, str]:
 
 def ethesises_custom_postprocess(parsed_response: List[Tuple[str, List[str]]], node_prop: Dict[str, object] = dict(),
                                  rel_prop: Dict[str, object] = dict(), **kwargs) -> List[Triplet]:
+    """Функция предназначена для постобработки разобранного ответа LLM-агента в задаче извлечения тезисной информации.
+
+    :param parsed_response: Результат парсинга ответа LLM-агента, список пар (тезис, список связанных сущностей).
+    :type parsed_response: List[Tuple[str, List[str]]]
+    :param node_prop: Дополнительные свойства, которые будут добавлены к создаваемым вершинам. Значение по умолчанию dict().
+    :type node_prop: Dict[str, object], optional
+    :param rel_prop: Дополнительные свойства, которые будут добавлены к создаваемым рёбрам. Значение по умолчанию dict().
+    :type rel_prop: Dict[str, object], optional
+    :return: Список триплетов с типом связи 'hyper'.
+    :rtype: List[Triplet]
+    """
     formated_triplets = []
     for triplet in parsed_response:
         thesis, entities = triplet

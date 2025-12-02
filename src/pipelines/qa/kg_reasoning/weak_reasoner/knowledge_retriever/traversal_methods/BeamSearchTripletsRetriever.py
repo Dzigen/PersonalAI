@@ -44,34 +44,34 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
 
     :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию BSGS_RERANKDRIVER_DEFAULT_CONFIG.
     :type reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
-    :param vdbname_for_scores: ... . Значение по умолчанию 'triplets_dense'.
+    :param vdbname_for_scores: ... . Значение по умолчанию 'dense_triplets'.
     :type vdbname_for_scores: str, optional
     :param max_depth: Максимальная глубина построенных/пройденных путей. Значение по умолчанию 10.
     :type max_depth: int, optional
     :param max_paths: Максимальное количество построенных/пройденных путей. Значение по умолчанию 50.
     :type max_paths: int, optional
-    :param same_path_intersection_by_node: Если True, то пути могут пересекаться сами с собой по вершинам, иначе False. Значение по умолчанию True.
+    :param same_path_intersection_by_node: Если True, то пути могут пересекаться сами с собой по вершинам, иначе False. Значение по умолчанию False.
     :type same_path_intersection_by_node: bool, optional
-    :param diff_paths_intersection_by_node: Если True, то разные пути могут пересекаться по вершинам, иначе False. Значение по умолчанию True.
+    :param diff_paths_intersection_by_node: Если True, то разные пути могут пересекаться по вершинам, иначе False. Значение по умолчанию False.
     :type diff_paths_intersection_by_node: bool, optional
-    :param diff_paths_intersection_by_rel: Если True, то разные пути могут пересекаться по связям, иначе False. Значение по умолчанию True.
+    :param diff_paths_intersection_by_rel: Если True, то разные пути могут пересекаться по связям, иначе False. Значение по умолчанию False.
     :type diff_paths_intersection_by_rel: bool, optional
     :param mean_alpha: Гиперпараметр, отвечающий за учёт длины построенного пути при усреднении его ценности (релевантности). См. calculate_triplet_score- и calculate_path_score-методы. Значение по умолчанию 0.75.
     :type mean_alpha: float, optional
     :param accepted_node_types: Типы вершины, которые можно обходить во время построения путей. Значение по умолчанию [NodeType.object , NodeType.hyper, NodeType.episodic].
     :type accepted_node_types: List[NodeType], optional
-    :param final_sorting_mode: Способ финальной фильтрации полученного набора путей. В результате поиска будет сформировано два набора путей: (1) ended - пути, которые завершились до достижения заданного ограничения на глубину и (2) continious - пути, которые достигли заданного ограничения на глубину. У каждого такого пути есть оценка его суммарной релевантности. Если будет указано 'ended_first'-значение, то: ended-пути будут отсортированы по убыванию релевантности и выбраны первые 'max_paths'-путей. Если ended-путей меньше чем 'max_paths'-значения, то continious-пути будут отсортированы по релевантности и из них будут выбраны первые N недостающих путей. Если будет указано 'continuous_first'-значение, то пути будут выбираться по аналогии с 'ended_first'-значением, только сначала сортировка/выбор по continuous-путям, а потом по ended-путям. Если будет указано 'mixed'-значение, то ended- и continuous-пути будут объединены в один список, отсортированы по убыванию релевантности и из полученного списко будет выбрано первых 'max_paths'-путей.. Значение по умолчанию 'mixed'.
+    :param final_sorting_mode: Способ финальной фильтрации полученного набора путей. В результате поиска будет сформировано два набора путей: (1) ended - пути, которые завершились до достижения заданного ограничения на глубину и (2) continious - пути, которые достигли заданного ограничения на глубину. У каждого такого пути есть оценка его суммарной релевантности. Если будет указано 'ended_first'-значение, то: ended-пути будут отсортированы по убыванию релевантности и выбраны первые 'max_paths'-путей. Если ended-путей меньше чем 'max_paths'-значения, то continious-пути будут отсортированы по релевантности и из них будут выбраны первые N недостающих путей. Если будет указано 'continuous_first'-значение, то пути будут выбираться по аналогии с 'ended_first'-значением, только сначала сортировка/выбор по continuous-путям, а потом по ended-путям. Если будет указано 'mixed'-значение, то ended- и continuous-пути будут объединены в один список, отсортированы по убыванию релевантности и из полученного списко будет выбрано первых 'max_paths'-путей. Значение по умолчанию 'mixed'.
     :type final_sorting_mode: str, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveBFSTripletsRetriever-класса. Значение по умолчанию 'qa_beamsearch_t_retriever_cache'.
     :type cache_table_name: str, optional
     """
     reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(default_factory=lambda: BSGS_RERANKDRIVER_DEFAULT_CONFIG)
-    vdbname_for_scores: str = 'triplets_dense'
-    max_depth: int = 10
-    max_paths: int = 50
-    same_path_intersection_by_node: bool = True
-    diff_paths_intersection_by_node: bool = True
-    diff_paths_intersection_by_rel: bool = True
+    vdbname_for_scores: str = 'dense_triplets'
+    max_depth: int = 3
+    max_paths: int = 18
+    same_path_intersection_by_node: bool = False
+    diff_paths_intersection_by_node: bool = False
+    diff_paths_intersection_by_rel: bool = False
     mean_alpha: float = 0.75
     accepted_node_types: List[NodeType] = field(
         default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
@@ -114,7 +114,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     :type log: Logger
     :param search_config: Конфигурация BeamSearchTripletsRetriever-алгоритма. Значение по умолчанию GraphBeamSearchConfig().
     :type search_config: Union[GraphBeamSearchConfig, Dict], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional

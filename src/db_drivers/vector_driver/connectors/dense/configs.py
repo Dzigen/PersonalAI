@@ -25,3 +25,17 @@ DEFAULT_INMEMORY_CONFIG = VectorDBConnectionConfig(
 DEFAULT_ELASTICSEARCH_CONFIG = VectorDBConnectionConfig(
     conn={'host': 'localhost', 'port': 9201}
 )
+
+DEFAULT_WEAVIATE_CONFIG = VectorDBConnectionConfig(
+    conn={'host': 'localhost', 'port': 8083},
+)
+
+DEFAULT_OPENSEARCH_CONFIG = VectorDBConnectionConfig(
+    conn={'host': 'localhost', 'port': 9200, 'user': 'admin', 'pass': 'admin'},
+    params={'vector_dim': 1024, 'search_metric': 'innerproduct'}
+)
+
+DEFAULT_QDRANT_CONFIG = VectorDBConnectionConfig(
+    conn={'host': 'localhost', 'port': 6333},
+    params={'vector_dim': 1024, 'search_metric': 'Dot'}
+)

@@ -53,7 +53,7 @@ graphdb_config = GraphDBConnectionConfig(
 
 gmodel_config = GraphModelConfig(
     driver_config=GraphDriverConfig(
-        db_vendor='neo4j',
+        db_vendor='neo4j', # !!! PAY ATTENTION !!!
         db_config=graphdb_config))
 
 ####################################################
@@ -68,7 +68,7 @@ dense_nodesdb_config = VectorDBConnectionConfig(
     conn=DENSE_NODESDB_CONFIG['conn']
 )
 dense_ndbdriver_config = VectorDriverConfig(
-    db_vendor='milvus',
+    db_vendor='qdrant', # !!! PAY ATTENTION !!!
     vector_category='dense',
     db_config=dense_nodesdb_config
 )
@@ -79,7 +79,7 @@ sparse_nodesdb_config = VectorDBConnectionConfig(
     conn=SPARSE_NODESDB_CONFIG['conn']
 )
 sparse_ndbdriver_config = VectorDriverConfig(
-    db_vendor='opensearch',
+    db_vendor='opensearch', # !!! PAY ATTENTION !!!
     vector_category='sparse_bm25',
     db_config=sparse_nodesdb_config
 )
@@ -93,7 +93,7 @@ dense_tripletsdb_config = VectorDBConnectionConfig(
     conn=DENSE_TRIPLETSDB_CONFIG['conn']
 )
 dense_tdbdriver_config = VectorDriverConfig(
-    db_vendor='milvus',
+    db_vendor='qdrant', # !!! PAY ATTENTION !!!
     vector_category='dense',
     db_config=dense_tripletsdb_config
 )
@@ -104,7 +104,7 @@ sparse_tripletsdb_config = VectorDBConnectionConfig(
     conn=SPARSE_TRIPLETSDB_CONFIG['conn']
 )
 sparse_tdbdriver_config = VectorDriverConfig(
-    db_vendor='opensearch',
+    db_vendor='opensearch', # !!! PAY ATTENTION !!!
     vector_category='sparse_bm25',
     db_config=sparse_tripletsdb_config
 )

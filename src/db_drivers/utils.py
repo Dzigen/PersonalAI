@@ -10,7 +10,7 @@ from ..utils.data_structs import BaseConfigOperations
 class BaseDatabaseConfig(BaseConfigOperations):
     """Базовая конфигурация для подключения к базе данных.
 
-    :param db_info: Словарь, который должен хранить название базы данных и таблицы, к которой нужно подключиться. Значение по умолчанию {'db': 'personalaidb', 'table': 'personalaitable'}.
+    :param db_info: Словарь, который должен хранить название базы данных и таблицы, к которой нужно подключиться. Значение по умолчанию {'db': 'DefaultPersonalAIDB', 'table': 'DefaultPersonalAITable'}.
     :type db_info: Dict
     :param params: Набор дополнительных гиперпараметров, который необходим для подключения и настройки бд. Значения по умолчанию dict().
     :type params: Dict
@@ -30,6 +30,11 @@ class BaseDatabaseConfig(BaseConfigOperations):
 
 
 class AbstractDatabaseCRUD(ABC):
+    """Абстрактный интерфейс CRUD-операций над БД.
+
+    Определяет минимальный набор методов (create/read/update/delete),
+    который должен поддерживать любой конкретный драйвер базы данных.
+    """
     @abstractmethod
     def create(self, items: List[object]) -> None:
         """Метод предназначен для добавления новых объектов в бд. Уникальность добавляемых объектов определяется по полю id.
@@ -68,12 +73,13 @@ class AbstractDatabaseCRUD(ABC):
         не существует, то он будет пропущен.
 
         :param ids: Идентификаторы объектов, которые нужно удалить.
-        :type ids: List[object]
+        :type ids: List[str]
         """
         pass
 
 
 class AbstractDatabaseExtendedOpt(ABC):
+    """Абстрактный интерфейс расширенных операций над БД (подсчёт элементов, очистка, получение служебной информации)."""
     @abstractmethod
     def count_items(self) -> object:
         """Метод предназначен для получения суммарного количества элементов в таблице бд, к которой было выполнено подключение.
@@ -102,6 +108,7 @@ class AbstractDatabaseExtendedOpt(ABC):
 
 
 class AbstractDatabaseInit(ABC):
+    """Абстрактный интерфейс подключения к БД (открытие/закрытие соединения)."""
     @abstractmethod
     def open_connection(self) -> ReturnInfo:
         """Метод предназначен для подключения к бд.

@@ -92,7 +92,7 @@ def available_graph_configs(
 def embeddings_chroma_config():
     config = EmbeddingsModelConfig(
         nodesdb_driver_configs_mapping={
-            'nodes_dense': VectorDriverConfig(
+            'dense_nodes': VectorDriverConfig(
                 db_vendor='chroma', db_config=VectorDBConnectionConfig(
                     conn={'path': f'{TEST_VOLUME_DIR}/chroma'},
                     db_info={'db': 'testing', 'table': 'vectorized_nodes'},
@@ -101,7 +101,7 @@ def embeddings_chroma_config():
             )
         },
         tripletsdb_driver_configs_mapping={
-            'triplets_dense': VectorDriverConfig(
+            'dense_triplets': VectorDriverConfig(
                 db_vendor='chroma', db_config=VectorDBConnectionConfig(
                     conn={'path': f'{TEST_VOLUME_DIR}/chroma'},
                     db_info={'db': 'testing', 'table': 'vectorized_triplets'},
@@ -113,37 +113,37 @@ def embeddings_chroma_config():
     return config
 
 
-@pytest.fixture(scope='package')
-def embeddings_milvus_config():
+# @pytest.fixture(scope='package')
+# def embeddings_milvus_config():
 
-    config = EmbeddingsModelConfig(
-        nodesdb_driver_configs_mapping={
-            'nodes_dense': VectorDriverConfig(
-                db_vendor='milvus', db_config=VectorDBConnectionConfig(
-                    conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
-                    db_info={'db': 'testing', 'table': 'vectorized_nodes'}, need_to_clear=True,
-                    params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
-                )
-            )
-        },
-        tripletsdb_driver_configs_mapping={
-            'triplets_dense': VectorDriverConfig(
-                db_vendor='milvus', db_config=VectorDBConnectionConfig(
-                    conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
-                    db_info={'db': 'testing', 'table': 'vectorized_triplets'}, need_to_clear=True,
-                    params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
-                )
-            )
-        }
-    )
+#     config = EmbeddingsModelConfig(
+#         nodesdb_driver_configs_mapping={
+#             'dense_nodes': VectorDriverConfig(
+#                 db_vendor='milvus', db_config=VectorDBConnectionConfig(
+#                     conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
+#                     db_info={'db': 'testing', 'table': 'vectorized_nodes'}, need_to_clear=True,
+#                     params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
+#                 )
+#             )
+#         },
+#         tripletsdb_driver_configs_mapping={
+#             'dense_triplets': VectorDriverConfig(
+#                 db_vendor='milvus', db_config=VectorDBConnectionConfig(
+#                     conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
+#                     db_info={'db': 'testing', 'table': 'vectorized_triplets'}, need_to_clear=True,
+#                     params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
+#                 )
+#             )
+#         }
+#     )
 
-    return config
+#     return config
 
 @pytest.fixture(scope='package')
 def embeddings_inmemory_config():
     config = EmbeddingsModelConfig(
         nodesdb_driver_configs_mapping={
-            'nodes_dense': VectorDriverConfig(
+            'dense_nodes': VectorDriverConfig(
                 db_vendor='inmemory',
                 db_config=VectorDBConnectionConfig(
                     db_info={'db': 'testing', 'table': 'vectorized_nodes'},
@@ -159,7 +159,7 @@ def embeddings_inmemory_config():
             )
         },
         tripletsdb_driver_configs_mapping={
-            'triplets_dense': VectorDriverConfig(
+            'dense_triplets': VectorDriverConfig(
                 db_vendor='inmemory',
                 db_config=VectorDBConnectionConfig(
                     db_info={'db': 'testing', 'table': 'vectorized_triplets'},
@@ -181,7 +181,7 @@ def embeddings_inmemory_config():
 def embeddings_elasticsearch_config():
     config = EmbeddingsModelConfig(
         nodesdb_driver_configs_mapping={
-            'nodes_dense': VectorDriverConfig(
+            'dense_nodes': VectorDriverConfig(
                 db_vendor='elasticsearch',
                 db_config=VectorDBConnectionConfig(
                     db_info={'db': 'testing', 'table': 'vectorized_nodes'},
@@ -190,7 +190,7 @@ def embeddings_elasticsearch_config():
             )
         },
         tripletsdb_driver_configs_mapping={
-            'triplets_dense': VectorDriverConfig(
+            'dense_triplets': VectorDriverConfig(
                 db_vendor='elasticsearch',
                 db_config=VectorDBConnectionConfig(
                     db_info={'db': 'testing', 'table': 'vectorized_triplets'},
@@ -201,105 +201,179 @@ def embeddings_elasticsearch_config():
     )
     return config
 
+@pytest.fixture(scope='package')
+def embeddings_opensearch_config():
+    config = EmbeddingsModelConfig(
+        nodesdb_driver_configs_mapping={
+            'dense_nodes': VectorDriverConfig(
+                db_vendor='opensearch',
+                db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 9200, 'user': 'admin', 'pass': 'admin'},
+                    params={'vector_dim': 384, 'search_metric': 'innerproduct'}
+                )
+            )
+        },
+        tripletsdb_driver_configs_mapping={
+            'dense_triplets': VectorDriverConfig(
+                db_vendor='opensearch',
+                db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 9200, 'user': 'admin', 'pass': 'admin'},
+                    params={'vector_dim': 384, 'search_metric': 'innerproduct'}
+                )
+            )
+        }
+    )
+    return config
+
+@pytest.fixture(scope='package')
+def embeddings_qdrant_config():
+    config = EmbeddingsModelConfig(
+        nodesdb_driver_configs_mapping={
+            'dense_nodes': VectorDriverConfig(
+                db_vendor='qdrant',
+                db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 6333},
+                    params={'vector_dim': 384, 'search_metric': 'Dot'}
+                )
+            )
+        },
+        tripletsdb_driver_configs_mapping={
+            'dense_triplets': VectorDriverConfig(
+                db_vendor='qdrant',
+                db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 6333},
+                    params={'vector_dim': 384, 'search_metric': 'Dot'}
+                )
+            )
+        }
+    )
+    return config
+
+@pytest.fixture(scope='package')
+def embeddings_weaviate_config():
+    config = EmbeddingsModelConfig(
+        nodesdb_driver_configs_mapping={
+            'dense_nodes': VectorDriverConfig(
+                db_vendor='weaviate',
+                db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 8083}
+                )
+            )
+        },
+        tripletsdb_driver_configs_mapping={
+            'dense_triplets': VectorDriverConfig(
+                db_vendor='weaviate',
+                db_config=VectorDBConnectionConfig(
+                    conn={'host': 'localhost', 'port': 8083}
+                )
+            )
+        }
+    )
+    return config
+
 # ------------------------------#
 
 @pytest.fixture(scope='package')
 def available_embedding_configs(
-    embeddings_chroma_config, embeddings_milvus_config, embeddings_inmemory_config, embeddings_elasticsearch_config
+    embeddings_chroma_config, embeddings_inmemory_config, embeddings_elasticsearch_config,
+    embeddings_opensearch_config, embeddings_qdrant_config, embeddings_weaviate_config, #embeddings_milvus_config
 ):
     return {
         'chroma': embeddings_chroma_config,
-        'milvus': embeddings_milvus_config,
+        #'milvus': embeddings_milvus_config,
         'inmemory': embeddings_inmemory_config,
-        'elasticsearch': embeddings_elasticsearch_config
+        'elasticsearch': embeddings_elasticsearch_config,
+        'opensearch': embeddings_opensearch_config,
+        'weaviate': embeddings_weaviate_config,
+        'qdrant': embeddings_qdrant_config
     }
 
 
 #!!!AVAILABLE NODESTREE MODELS!!!#
 
-@pytest.fixture(scope='package')
-def nodestree_milvus_kuzu_config():
-    return NodesTreeModelConfig(
-        leafnodes_vdb_driver_configs_mapping={
-            'leaf_dense_nodes': VectorDriverConfig(
-                db_vendor='milvus', db_config=VectorDBConnectionConfig(
-                    conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
-                    db_info={'db': 'testing', 'table': 'leaf_object_nodes'}, need_to_clear=True,
-                    params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
-                )
-            )
-        },
-        summnodes_vdb_driver_configs_mapping={
-            'summ_dense_nodes': VectorDriverConfig(
-                db_vendor='milvus', db_config=VectorDBConnectionConfig(
-                    conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
-                    db_info={'db': 'testing', 'table': 'summ_nodes'}, need_to_clear=True,
-                    params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
-                )
-            )
-        },
-        treedb_config=TreeDriverConfig(
-            db_vendor='kuzu',
-            db_config=TreeDBConnectionConfig(
-                db_info={'db': 'Testing', 'table': 'NodesTree'},
-                params={'path': f"{TEST_VOLUME_DIR}/kuzu_tree", 'buffer_pool_size': 1024**3,
-                        'table_type_map': {
-                            'nodes': {'forward': {TreeNodeType.root.value: 'root', TreeNodeType.leaf.value: 'leaf', TreeNodeType.summarized.value: 'summarized'}}
-                        }
-                },
-                need_to_clear=True
-            )
-        ),
-        leafnodes_reranker_driver_config=RerankerDriverConfig(
-            name='single_step',
-            strategy_config=SingleStepRerankerConfig(vdb_name='leaf_dense_nodes')
-        ),
-        summnodes_reranker_driver_config=RerankerDriverConfig(
-            name='single_step',
-            strategy_config=SingleStepRerankerConfig(vdb_name='summ_dense_nodes')
-        ),
-    )
+# @pytest.fixture(scope='package')
+# def nodestree_milvus_kuzu_config():
+#     return NodesTreeModelConfig(
+#         leafnodes_vdb_driver_configs_mapping={
+#             'leaf_dense_nodes': VectorDriverConfig(
+#                 db_vendor='milvus', db_config=VectorDBConnectionConfig(
+#                     conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
+#                     db_info={'db': 'testing', 'table': 'leaf_object_nodes'}, need_to_clear=True,
+#                     params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
+#                 )
+#             )
+#         },
+#         summnodes_vdb_driver_configs_mapping={
+#             'summ_dense_nodes': VectorDriverConfig(
+#                 db_vendor='milvus', db_config=VectorDBConnectionConfig(
+#                     conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
+#                     db_info={'db': 'testing', 'table': 'summ_nodes'}, need_to_clear=True,
+#                     params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
+#                 )
+#             )
+#         },
+#         treedb_config=TreeDriverConfig(
+#             db_vendor='kuzu',
+#             db_config=TreeDBConnectionConfig(
+#                 db_info={'db': 'Testing', 'table': 'NodesTree'},
+#                 params={'path': f"{TEST_VOLUME_DIR}/kuzu_tree", 'buffer_pool_size': 1024**3,
+#                         'table_type_map': {
+#                             'nodes': {'forward': {TreeNodeType.root.value: 'root', TreeNodeType.leaf.value: 'leaf', TreeNodeType.summarized.value: 'summarized'}}
+#                         }
+#                 },
+#                 need_to_clear=True
+#             )
+#         ),
+#         leafnodes_reranker_driver_config=RerankerDriverConfig(
+#             name='single_step',
+#             strategy_config=SingleStepRerankerConfig(vdb_name='leaf_dense_nodes')
+#         ),
+#         summnodes_reranker_driver_config=RerankerDriverConfig(
+#             name='single_step',
+#             strategy_config=SingleStepRerankerConfig(vdb_name='summ_dense_nodes')
+#         ),
+#     )
 
 
-@pytest.fixture(scope='package')
-def nodestree_milvus_neo4j_config():
-    return NodesTreeModelConfig(
-        leafnodes_vdb_driver_configs_mapping={
-            'leaf_dense_nodes': VectorDriverConfig(
-                db_vendor='milvus', db_config=VectorDBConnectionConfig(
-                    conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
-                    db_info={'db': 'testing', 'table': 'leaf_nodes'}, need_to_clear=True,
-                    params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
-                )
-            )
-        },
-        summnodes_vdb_driver_configs_mapping={
-            'summ_dense_nodes': VectorDriverConfig(
-                db_vendor='milvus', db_config=VectorDBConnectionConfig(
-                    conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
-                    db_info={'db': 'testing', 'table': 'summ_nodes'}, need_to_clear=True,
-                    params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
-                )
-            )
-        },
-        treedb_config=TreeDriverConfig(
-            db_vendor='neo4j',
-            db_config=TreeDBConnectionConfig(
-                host="localhost", port="7680",
-                db_info={'db': 'Testing', 'table': 'NodesTree'},
-                params={'user': "neo4j", 'pwd': 'password'},
-                need_to_clear=True
-            )
-        ),
-        leafnodes_reranker_driver_config=RerankerDriverConfig(
-            name='single_step',
-            strategy_config=SingleStepRerankerConfig(vdb_name='leaf_dense_nodes')
-        ),
-        summnodes_reranker_driver_config=RerankerDriverConfig(
-            name='single_step',
-            strategy_config=SingleStepRerankerConfig(vdb_name='summ_dense_nodes')
-        ),
-    )
+# @pytest.fixture(scope='package')
+# def nodestree_milvus_neo4j_config():
+#     return NodesTreeModelConfig(
+#         leafnodes_vdb_driver_configs_mapping={
+#             'leaf_dense_nodes': VectorDriverConfig(
+#                 db_vendor='milvus', db_config=VectorDBConnectionConfig(
+#                     conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
+#                     db_info={'db': 'testing', 'table': 'leaf_nodes'}, need_to_clear=True,
+#                     params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
+#                 )
+#             )
+#         },
+#         summnodes_vdb_driver_configs_mapping={
+#             'summ_dense_nodes': VectorDriverConfig(
+#                 db_vendor='milvus', db_config=VectorDBConnectionConfig(
+#                     conn={'host': 'localhost', 'port': 19520, 'user': 'root', 'pass': 'Milvus'},
+#                     db_info={'db': 'testing', 'table': 'summ_nodes'}, need_to_clear=True,
+#                     params={'id_length': 32, 'vector_dim': 384, 'document_max_length': 51200, 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}
+#                 )
+#             )
+#         },
+#         treedb_config=TreeDriverConfig(
+#             db_vendor='neo4j',
+#             db_config=TreeDBConnectionConfig(
+#                 host="localhost", port="7680",
+#                 db_info={'db': 'Testing', 'table': 'NodesTree'},
+#                 params={'user': "neo4j", 'pwd': 'password'},
+#                 need_to_clear=True
+#             )
+#         ),
+#         leafnodes_reranker_driver_config=RerankerDriverConfig(
+#             name='single_step',
+#             strategy_config=SingleStepRerankerConfig(vdb_name='leaf_dense_nodes')
+#         ),
+#         summnodes_reranker_driver_config=RerankerDriverConfig(
+#             name='single_step',
+#             strategy_config=SingleStepRerankerConfig(vdb_name='summ_dense_nodes')
+#         ),
+#     )
 
 
 @pytest.fixture(scope='package')
@@ -390,12 +464,12 @@ def nodestree_chroma_neo4j_config():
 
 @pytest.fixture(scope='package')
 def available_nodestree_configs(
-    nodestree_milvus_kuzu_config, nodestree_milvus_neo4j_config,
+    #nodestree_milvus_kuzu_config, nodestree_milvus_neo4j_config,
     nodestree_chroma_kuzu_config, nodestree_chroma_neo4j_config
 ):
     return {
-        'milvus_kuzu': nodestree_milvus_kuzu_config,
-        'milvus_neo4j': nodestree_milvus_neo4j_config,
+        #'milvus_kuzu': nodestree_milvus_kuzu_config,
+        #'milvus_neo4j': nodestree_milvus_neo4j_config,
         'chroma_kuzu': nodestree_chroma_kuzu_config,
         'chroma_neo4j': nodestree_chroma_neo4j_config,
         'None': None
@@ -412,7 +486,7 @@ def available_kg_configs(
 
     e5small_config = EmbedderModelConfig(model_name_or_path=f'{PROJECT_BASE_DIR}models/intfloat/multilingual-e5-small', device='cuda')
     embedders_map = KGEmbeddersMapping(
-        embeddings_model={'nodes_dense': 'm-e5-small', 'triplets_dense': 'm-e5-small'},
+        embeddings_model={'dense_nodes': 'm-e5-small', 'dense_triplets': 'm-e5-small'},
         nodestree_model={'leaf_dense_nodes': 'm-e5-small', 'summ_dense_nodes': 'm-e5-small'}
     )
     embedders_configs = {'m-e5-small': e5small_config}

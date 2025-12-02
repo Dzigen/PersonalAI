@@ -22,9 +22,9 @@ from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperati
 class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация ClueQueriesGenerator-стадии MediumQA-ризонера.
 
-    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значения будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию ClueQueriesGeneratorAgentTasksConfig().
+    :param agent_tasks_config: Конфигурации LLM-промптов для решения заданных задач с помощью LLM-агента. Значение по умолчанию ClueQueriesGeneratorAgentTasksConfig().
     :type agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict], optional
     :param max_cqueries_amount: Максимальное количество clue-запросов, которое может быть сгенерировано. Значение по умолчанию 4.
     :type max_cqueries_amount: int, optional
@@ -33,7 +33,7 @@ class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict] = field(default_factory=lambda: ClueQueriesGeneratorAgentTasksConfig())
-    max_cqueries_amount: int = 4
+    max_cqueries_amount: int = 3
 
     cache_table_name: str = 'medreasn_cquerygen_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(CQGEN_MAIN_LOG_PATH))
@@ -106,13 +106,13 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         """Метод предназначен для генерации/формирования clue-запросов к заданному шагу поиска (в рамках текущего плана).
         Clue-запросы генерируются по следующему алгоритму:
         (1) На основе matched_kg_objects-словаря формируется линейная комбинация сопоставленных вершин из графа знаний. Каждый sample
-        представляет собой список конкретных вершин, который были сопоставлены (биекция / один к одному) сущностям из заданного базового запроса.
+        представляет собой список конкретных вершин, которые были сопоставлены (биекция / один к одному) сущностям из заданного базового запроса.
         (2) На основе базового запроса и каждого семпла с шага #1 (в отдельности) генерируются clue-запросы, которые заостряют внимание
         на поиск конкретной/детализированной (на сколько это возможно) информации.
 
         :param search_query: Базовый поисковый запрос на естественном языке (один из шагов поиска в рамках текущего плана).
         :type search_query: str
-        :param matched_kg_objects: Набор сущностей их заданного поискового запроса, сопоставленный с релевантными вершинами из графа знаний.
+        :param matched_kg_objects: Набор сущностей из заданного поискового запроса, сопоставленный с релевантными вершинами из графа знаний.
         :type matched_kg_objects: Dict[str, List[NodeInfo]]
         :return: Кортеж из двух объектов: (1) список сформированных clue-запросов; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[QueryInfo], ReturnInfo]
@@ -133,10 +133,10 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         if m_objects_amount < 1:
             raise ValueError
 
-        self.log(f"Получаем декартово произведение всех комбинаций объектов (по сущностям)...",verbose=self.verbose)
+        self.log(f"Получаем декартово произведение всех комбинаций объектов (по сущностям)...", verbose=self.verbose)
         base_entities = sorted(list(filter(lambda entitie: len(matched_kg_objects[entitie]) > 0, matched_kg_objects.keys())))
         objects_groups = list(product(*[matched_kg_objects[k] for k in base_entities]))[:self.config.max_cqueries_amount]
-        
+
         str_objectspermuts = ';'.join([f'[{k}] {len(v)}' for k, v in matched_kg_objects.items()])
         self.log(f"RESULT:\n- всего сущностей: {len(matched_kg_objects)}\n- после фильтрации: {len(base_entities)}\n- объектов для каждой сущности: {str_objectspermuts}\n- полученное количество комбинаций: {len(objects_groups)}", verbose=self.verbose)
 
@@ -156,13 +156,12 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
                 break
             else:
                 if cur_cluequery in unique_cqueries:
-                    self.log(
-                        "Сгенерированное clue-query уже было получено ранее. Отбрасываем.", verbose=self.verbose)
+                    self.log("Сгенерированное clue-query уже было получено ранее. Отбрасываем.", verbose=self.verbose)
                     continue
                 else:
-                    self.log(
-                        "Сгенерированое clue-query ещё получено не было. Сохраняем.", verbose=self.verbose)
+                    self.log("Сгенерированое clue-query ещё получено не было. Сохраняем.", verbose=self.verbose)
                     unique_cqueries.add(cur_cluequery)
+
                     clue_queries.append(QueryInfo(
                         query=cur_cluequery, entities=base_entities, linked_nodes=list(cur_group),
                         linked_nodes_by_entities=list(map(lambda pair: [base_entities[pair[0]], pair[1]], enumerate(formated_objects_group)))))

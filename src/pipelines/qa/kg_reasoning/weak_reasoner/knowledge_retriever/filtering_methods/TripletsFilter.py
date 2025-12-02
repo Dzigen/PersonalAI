@@ -20,9 +20,9 @@ class TripletsFilterConfig(BaseTripletsFilterConfig):
     """Конфигурация наивного алгоритма ранжирования/фильтрации триплетов.
 
     :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию KRFILTER_RERANKDRIVER_DEFAULT_CONFIG.
-    :type reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
-    :param accepted_triplets_types: Допустимые типы триплетов, которые не будут отфильтрованы (по типу). Значение по умолчанию [RelationType.hyper].
-    :type accepted_triplets_types: List[Union[str,RelationType]]
+    :type reranker_driver_config: Union[Dict, RerankerDriverConfig], optional
+    :param accepted_triplets_types: Допустимые типы триплетов, которые не будут отфильтрованы (по типу). Значение по умолчанию [RelationType.hyper, RelationType.simple].
+    :type accepted_triplets_types: List[Union[str, RelationType]]
     :param max_k: Первые k (по релевантности) триплетов, которые будут возвращены в результате операции ранжирования. Значение по умолчанию 50.
     :type max_k: int
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы TripletsFilter-класса. Значение по умолчанию 'qa_naive_t_filter_cache'.
@@ -91,6 +91,17 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
         self.verbose = verbose
 
     def get_cache_key(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[str]:
+        """Формирует ключ кэша для результатов фильтрации триплетов.
+
+        В ключ включается строковое представление конфигурации фильтра, сериализованное представление входного QueryInfo, хэш от отсортированного списка строковых представлений триплетов.
+
+        :param query_info: Структура с исходным запросом и дополнительными полями.
+        :type query_info: QueryInfo
+        :param triplets: Список триплетов перед фильтрацией.
+        :type triplets: List[Triplet]
+        :return: Список строк, используемый как составной ключ кеша.
+        :rtype: List[str]
+        """
         str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(triplet)[1] for triplet in triplets])).encode()).hexdigest()
         return [self.config.to_str(), query_info.to_str(), str_triplets]
 

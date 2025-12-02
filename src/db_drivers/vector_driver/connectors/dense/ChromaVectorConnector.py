@@ -68,6 +68,9 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
                 raise ValueError
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
                 raise ValueError
+            for k, v in item.metadata.items():
+                if v is None:
+                    raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
             raise ValueError
@@ -139,6 +142,11 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
         for item in items:
             if not isinstance(item.id, str):
                 raise ValueError
+            if type(item.embedding) in [torch.Tensor, np.ndarray]:
+                raise ValueError
+            for k, v in item.metadata.items():
+                if v is None:
+                    raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
             raise ValueError
@@ -195,7 +203,7 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
                 query_instances[doc_info[0]].embedding = doc_emb
 
         # Attention: в случае использования ip-метрики будут получены значения расстояний [distances] между векторами,
-        # а не значения их семантической блозости [similarity]
+        # а не значения их семантической близости [similarity]
         raw_retrieved_instances = self.collection.query(
             query_embeddings=[inst.embedding for inst in query_instances],
             include=includes + ['distances'], n_results=n_results, **filtering_expr)

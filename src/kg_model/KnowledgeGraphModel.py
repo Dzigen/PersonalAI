@@ -101,7 +101,7 @@ class KnowledgeGraphModel:
 
     :param config: Конфигурация памяти (граф знаний) ассистента. Значение по умолчанию KnowledgeGraphModelConfig().
     :type config: Union[Dict,KnowledgeGraphModelConfig], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежутчных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежутчных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
 
@@ -135,6 +135,12 @@ class KnowledgeGraphModel:
         self.verbose = config.verbose
 
     def check_consistency(self) -> bool:
+        """Метод проверяет согласованность внутренних представлений памяти (графовой, векторной и, при наличии, nodestree-модели).
+        В случае критичных несоответствий вызываются исключения (assert), а также пишутся подробные сообщения в лог.
+
+        :return: True, если проверка завершилась успешно и критичные несоответствия не были обнаружены.
+        :rtype: bool
+        """
         self.log("Checking KnowledgeGraph consistency...", verbose=self.verbose)
         self.graph_embeddings.check_consistency()
 
@@ -161,6 +167,15 @@ class KnowledgeGraphModel:
         return True
 
     def check_createinfo(self, triplets: List[Triplet], create_info: Dict[str, Dict[str, Union[Dict[Union[RelationType, NodeType], Set[str]], Set[str]]]]) -> None:
+        """Метод сопоставляет информацию из create_info с фактически добавленными объектами в графовой и векторной структурах.
+
+        :param triplets: Список триплетов, которые были добавлены в память.
+        :type triplets: List[Triplet]
+        :param create_info: Структура с информацией о созданных объектах в графовой и векторной частях памяти.
+        :type create_info: Dict[str, Dict[Union[RelationType, NodeType], Set[str]]]
+        :return: None
+        :rtype: None
+        """
         self.log("Checking CreateInfo...", verbose=self.verbose)
 
         # 0. created, but not existed objects in graph and embeddings structures
@@ -242,6 +257,8 @@ class KnowledgeGraphModel:
         :type triplets: List[Triplet]
         :param check_consistency: Если True, то после выполнения данной операции будет проверена консистентность памяти ассистента, иначе False. Значение по умолчанию False.
         :type check_consistency: bool, optional
+        :param check_createinfo: Если True, то после добавления информации в память выполняется дополнительная проверка структуры create_info на согласованность с переданными триплетами. Если False, проверка не выполняется. Значение по умолчанию False.
+        :type check_createinfo: bool, optional
         :param status_bar: Если True, то во время исполнения операции в stdout будет выводиться статус её исполнения, иначе False. Значение по умолчанию True.
         :type status_bar: bool, optional
         :return: Словарь с информацией о триплетах, которые были добавлены в память ассистента.
@@ -309,6 +326,13 @@ class KnowledgeGraphModel:
         return delete_info
 
     def count_items(self, detailed: bool = False) -> Dict[str, Dict[str, int]]:
+        """Возвращает агрегированную статистику по количеству объектов в памяти. Для каждой компоненты памяти вычисляется отдельная статистика.
+
+        :param detailed: Если True, возвращаются детализированные статистики по типам узлов и триплетов. Если False, может быть возвращено только общее количество объектов (в зависимости от реализации конкретных коннекторов).
+        :type detailed: bool, optional
+        :return: Словарь с ключами 'graph_info', 'embeddings_info', 'nodestree_info'  и соответствующими статистиками.
+        :rtype: Dict[str, Dict[str, int]]
+        """
         return {
             'graph_info': self.graph_struct.count_items(detailed),
             'embeddings_info': self.graph_embeddings.count_items(detailed),
@@ -324,6 +348,13 @@ class KnowledgeGraphModel:
             self.nodestree_model.clear()
 
     def clear_kv_caches(self, level: str = 'other') -> None:
+        """Очищает KV-кеши, связанные с моделью памяти, в зависимости от заданного уровня.
+
+        :param level: Режим очистки KV-кэшей: 'all', 'current' или 'other'.
+        :type level: str
+        :return: None
+        :rtype: None
+        """
         if not isinstance(level, str):
             raise TypeError(
                 f"Аргумент переменной 'level' должен иметь тип 'str'; сейчас аргумент имеет тип '{type(level)}'")

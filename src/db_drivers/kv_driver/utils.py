@@ -7,6 +7,15 @@ from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
 @dataclass
 class KVDBConnectionConfig(BaseDatabaseConfig):
+    """Конфигурация подключения к key-value-хранилищу.
+
+    :param db_info: Информация о базе и таблице/пространстве ключей. По умолчанию {'db': 'DefaultPersonalAIKVDB', 'table': 'DefaultPersonalAIKVTable'}.
+    :type db_info: Dict
+    :param host: Хост, на котором развернуто хранилище.
+    :type host: str
+    :param port: Порт, по которому производится подключение к хранилищу.
+    :type port: str
+    """
     db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAIKVDB', 'table': 'DefaultPersonalAIKVTable'})
     host: str = None
     port: str = None
@@ -33,10 +42,15 @@ class KeyValueDBInstance:
 
 
 class AbstractKVDatabaseConnection(AbstractDatabaseConnection):
+    """Абстрактный интерфейс для взаимодействия с key-value-хранилищем.
+
+    Расширяет базовый интерфейс AbstractDatabaseConnection и добавляет методы,
+    специфичные для ордер-сетов (Sorted Set) и счётчиков обращений.
+    """
     def update_item_scores(self, mapping: Dict[str, int]) -> None:
         """Метод предназначен для обновления оценок у хранящихся элементов в ордер-сете (Sorted Set).
 
-        :param mapping:
+        :param mapping: Словарь вида {идентификатор элемента: новая оценка}, по которому обновляются scores в ордер-сете.
         :type mapping: Dict[str, int]
         """
 

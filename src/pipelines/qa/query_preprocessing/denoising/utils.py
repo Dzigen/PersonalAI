@@ -9,6 +9,13 @@ from .....utils.task_solver import AgentTaskSolver, AgentTaskSolverConfig
 
 @dataclass
 class QueryDenoiserTaskSolvers(BaseTaskSolvers):
+    """Набор атомарных LLM-задач, осуществляемых в рамках QueryDenoiser.
+
+    :param swremoval_solver: Задача по удалению стоп-слов и лишней информации.
+    :type swremoval_solver: AgentTaskSolver
+    :param grammar_check_solver: Задача по грамматической проверке и исправлению запроса.
+    :type grammar_check_solver: AgentTaskSolver
+    """
     swremoval_solver: AgentTaskSolver
     grammar_check_solver: AgentTaskSolver
 
@@ -16,13 +23,13 @@ class QueryDenoiserTaskSolvers(BaseTaskSolvers):
 @dataclass
 class QueryDenoiserAgentTasksConfig(BaseAgentTasksConfig):
     """
-    :param swremoval: Конфигурация атомарной задачи для LLM-агента по удалению излишней/ненужной информации из запроса. Значение по умолчанию 'v1'.
+    :param swremoval: Конфигурация атомарной задачи для LLM-агента по удалению излишней/ненужной информации из запроса. Значение по умолчанию 'v2'.
     :type swremoval: AgentTaskSolverConfig, optional
-    :param grammarcheck: Конфигурация атомарной задачи для LLM-агента по корректировке/переформулированию запроса в соответствии с грамматикой и синтаксисом используемого естественного языка. Значение по умолчанию 'v1'.
+    :param grammarcheck: Конфигурация атомарной задачи для LLM-агента по корректировке/переформулированию запроса в соответствии с грамматикой и синтаксисом используемого естественного языка. Значение по умолчанию 'v2'.
     :type grammarcheck: AgentTaskSolverConfig, optional
     """
-    swremoval: Union[AgentTaskSolverConfig, str] = 'v1'
-    grammarcheck: Union[AgentTaskSolverConfig, str] = 'v1'
+    swremoval: Union[AgentTaskSolverConfig, str] = 'v2'
+    grammarcheck: Union[AgentTaskSolverConfig, str] = 'v2'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: QUERYDENOIS_AGENTASKS_SELECTORS_MAPPING)
 

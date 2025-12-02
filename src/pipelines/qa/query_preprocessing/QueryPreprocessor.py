@@ -23,7 +23,7 @@ class QueryPreprocessorConfig(BaseComponentConfig, LanguageConfig):
 
     :param denoising_config: Конфигурация шага предобработки user-вопроса, отвечающая за удаление лишних шумов/фрагментов информации. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию None.
     :type denoising_config: Union[None, Dict, QueryDenoiserConfig], optional
-    :param enhancing_config: Конфигурация шага предобработки user-вопроса, отвечающая за добавление дополнительных языковых конструкций и переформилирование user-вопроса, с целью упрощения процесса по распознаванию заложенного запроса/интента. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию None.
+    :param enhancing_config: Конфигурация шага предобработки user-вопроса, отвечающая за добавление дополнительных языковых конструкций и переформулирование user-вопроса, с целью упрощения процесса по распознаванию заложенного запроса/интента. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию None.
     :type enhancing_config: Union[None, Dict, QueryEnhancerConfig], optional
     :param decomposition_config: Конфигурация шага предобработки user-вопроса, отвечающая за разбиение сложных/составных user-вопрос на простые/независимые части (под-вопросы) для их параллельной обработки и ускорения процесса формирования финального ответа. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию QueryDecomposerConfig().
     :type decomposition_config: Union[None, Dict, QueryDecomposerConfig], optional
@@ -74,9 +74,9 @@ class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
     :type agent: AbstractAgentConnector
     :param config: Конфигурация QueryPreprocessor-стадии. Значение по умолчанию QueryPreprocessorConfig().
     :type config: Union[Dict,QueryPreprocessorConfig], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[None, KeyValueDriverConfig], optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операций в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
@@ -112,16 +112,24 @@ class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
         self.verbose = config.verbose
 
     def get_cache_key(self, query: str) -> List[str]:
+        """Метод формирует ключ кеша для результата предобработки вопроса.
+        В ключ включаются текст исходного запроса, строковое представление конфигурации и идентификатор используемого LLM-агента.
+
+        :param query: Исходный user-вопрос.
+        :type query: str
+        :return: Список строк, используемый как составной ключ кеша.
+        :rtype: List[str]
+        """
         str_using_agent_config = f"{self.using_agent_info['kw']}:{self.using_agent_info['config'].to_str()}"
         return [query, self.config.to_str(), str_using_agent_config]
 
     @CacheUtils.cache_method_output
     def perform(self, query: str) -> Tuple[QueryPreprocessingInfo, ReturnInfo]:
-        """Метод предназначен для предобработки (удаления шумов, повышения полноты, декомпозии) исходного user-вопроса.
+        """Метод предназначен для предобработки (удаления шумов, повышения полноты, декомпозиции) исходного user-вопроса.
 
         :param query: User-вопрос на естественном языке.
         :type query: str
-        :return: Кортеж из двух объектов: (1) Струкутра данных с предобработанным user-вопросом и результами промежуточных операций; (2) статус завершения операции с пояснительной информацией.
+        :return: Кортеж из двух объектов: (1) Структура данных с предобработанным user-вопросом и результатами промежуточных операций; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[QueryPreprocessingInfo, ReturnInfo]
         """
         self.log("START QUERY PREPROCESSING...", verbose=self.verbose)

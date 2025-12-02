@@ -23,9 +23,9 @@ class MemPipelineConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация Memorize-конвейера.
 
     :param extractor_config: Конфигурация первой стадии Memorize-конвейера: извлечение информации из текстовых данных и приведение их в triplet-формат. Значение по умолчанию LLMExtractorConfig().
-    :type extractor_config: Union[Dict,LLMExtractorConfig], optional
+    :type extractor_config: Union[Dict, LLMExtractorConfig], optional
     :param updator_config: Конфигурация второй стадии Memorize-конвейера: актуализация знаний в памяти ассистента. Значение по умолчанию LLMUpdatorConfig().
-    :type updator_config: Union[Dict,LLMUpdatorConfig], optional
+    :type updator_config: Union[Dict, LLMUpdatorConfig], optional
     """
     extractor_config: Union[Dict, LLMExtractorConfig] = field(
         default_factory=lambda: LLMExtractorConfig())
@@ -52,7 +52,7 @@ class MemPipelineConfig(BaseComponentConfig, LanguageConfig):
             self.extractor_config.formate_fields()
 
         if isinstance(self.updator_config, dict):
-            self.updator_config = LLMUpdatorConfig.from_dict(self.extractor_config)
+            self.updator_config = LLMUpdatorConfig.from_dict(self.updator_config)
         else:
             self.updator_config.formate_fields()
 
@@ -63,10 +63,10 @@ class MemPipeline(CacheOperations, AgentStatOperations):
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация Memorize-конвейера. Значение по умолчанию MemPipelineConfig().
-    :type config: Union[Dict,MemPipelineConfig], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :type config: Union[Dict, MemPipelineConfig], optional
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операций в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
@@ -94,11 +94,11 @@ class MemPipeline(CacheOperations, AgentStatOperations):
 
         :param text: Слабоструктурированный текст на естественном языке.
         :type text: str
-        :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшая информация из памяти (графа знаний) ассистента, инчае False. Значение по умолчанию False.
+        :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшая информация из памяти (графа знаний) ассистента, иначе False. Значение по умолчанию False.
         :type delete_obsolete_info: bool, optional
         :param time: Время, с которым ассоциированы события текста.
         :type time: str, optional
-        :param properties: Набор свойств, который должен быть сохранён в памяти вмести с извлечённой из текста информацией, Значение по умолчанию dict().
+        :param properties: Набор свойств, который должен быть сохранён в памяти вместе с извлечённой из текста информацией. Значение по умолчанию None.
         :type properties: Dict, optional
         :return: Кортеж из двух объектов: (1) список с извлечённой из текста информацией (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[Triplet], ReturnInfo]
@@ -118,7 +118,7 @@ class MemPipeline(CacheOperations, AgentStatOperations):
             self.log(f"* {triplet}", verbose=self.verbose)
 
         if info.status == ReturnStatus.success:
-            self.log("STAGE#2 - 'Обновление информации в памяти (графе знаний) асситента'",
+            self.log("STAGE#2 - 'Обновление информации в памяти (графе знаний) ассистента'",
                      verbose=self.verbose)
             self.log(
                 f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.verbose)

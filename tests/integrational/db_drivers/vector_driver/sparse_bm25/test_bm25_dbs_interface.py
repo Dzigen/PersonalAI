@@ -1,7 +1,7 @@
 import pytest
 from chromadb.errors import ChromaError
 from typing import Dict, List
-from pymilvus.exceptions import DataNotMatchException, ParamError, MilvusException
+#from pymilvus.exceptions import DataNotMatchException, ParamError, MilvusException
 import sys
 sys.path.insert(0, "../")
 
@@ -23,7 +23,7 @@ def test_create(input: List[List[VectorDBInstance]], expected: Dict[str, object]
     try:
         for inp in input:
             bm25_conn.create(inp)
-    except (ChromaError, ValueError, AssertionError, DataNotMatchException) as e:
+    except (ChromaError, ValueError, AssertionError) as e:
         print(str(e))
         assert expected['exception']
     else:
@@ -114,7 +114,7 @@ def test_retrieve(instances: List[VectorDBInstance], queries: List[str], n_resul
     try:
         output = bm25_conn.retrieve(
             queries, n_results=n_results, subset_ids=subset_ids)
-    except (ValueError, AssertionError, ParamError, MilvusException) as e:
+    except (ValueError, AssertionError) as e:
         print(str(e))
         assert expected['exception']
     else:
@@ -126,6 +126,9 @@ def test_retrieve(instances: List[VectorDBInstance], queries: List[str], n_resul
             real_scores = list(map(lambda item: item[0], query_output))
             sorted_scores = sorted(real_scores, reverse=True)
             assert real_scores == sorted_scores
+
+            for real_score in real_scores:
+                assert real_score < 1.0
 
 
 @pytest.mark.parametrize("instances, expected, bm25_conn",

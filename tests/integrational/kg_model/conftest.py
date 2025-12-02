@@ -12,7 +12,8 @@ from src.kg_model.graph_model import GraphModelConfig
 from src.kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig
 from src.kg_model.utils import KGEmbeddersMapping
 
-from .embeddings_model.conftest import available_embedding_configs, embeddings_chroma_config, embeddings_milvus_config, embeddings_inmemory_config, embeddings_elasticsearch_config
+from .embeddings_model.conftest import available_embedding_configs, embeddings_chroma_config, embeddings_inmemory_config, \
+    embeddings_elasticsearch_config, embeddings_qdrant_config, embeddings_weaviate_config, embeddings_opensearch_config  #,embeddings_milvus_config
 from .graph_model.conftest import available_graph_configs, graph_inmemory_config, graph_kuzu_config, graph_neo4j_config
 from .cases import AVAILABLE_GRAPH_MODELS, AVAILABLE_EMBEDDING_MODELS
 
@@ -26,7 +27,7 @@ def available_kg_models(
 
     e5small_config = EmbedderModelConfig(model_name_or_path=f'{PROJECT_BASE_DIR}models/intfloat/multilingual-e5-small', device='cuda')
     embedders_map = KGEmbeddersMapping(
-        embeddings_model={'nodes_dense': 'm-e5-small', 'triplets_dense': 'm-e5-small'},
+        embeddings_model={'dense_nodes': 'm-e5-small', 'dense_triplets': 'm-e5-small'},
         nodestree_model=None
     )
     embedders_configs = {'m-e5-small': e5small_config}

@@ -67,11 +67,13 @@ class NodesTreeModelConfig(BaseComponentConfig, LanguageConfig):
         default_factory=lambda: LEAFNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING)
     leafnodes_reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(
         default_factory=lambda: LNT_RERANKDRIVER_DEFAULT_CONFIG)
+    leafnodes_scores_vdbname: Union[str, None] = 'leaf_dense_nodes'
 
     summnodes_vdb_driver_configs_mapping: Dict[str, Union[Dict, VectorDriverConfig]] = field(
         default_factory=lambda: SUMMNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING)
     summnodes_reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(
         default_factory=lambda: SNT_RERANKDRIVER_DEFAULT_CONFIG)
+    summnodes_scores_vdbname: Union[str, None] = 'summ_dense_nodes'
 
     treedb_config: Union[Dict, TreeDriverConfig] = field(
         default_factory=lambda: TREE_DB_DEFAULT_DRIVER_CONFIG)
@@ -99,6 +101,7 @@ class NodesTreeModelConfig(BaseComponentConfig, LanguageConfig):
         return formated_config
 
     def formate_fields(self):
+        """Метод предназначен для рекурсивного приведения вложенных полей конфигурации NodesTree-модели к корректному формату."""
         for vdb_name, vdb_config in self.leafnodes_vdb_driver_configs_mapping.items():
             if isinstance(vdb_config, dict):
                 self.leafnodes_vdb_driver_configs_mapping[vdb_name] = VectorDriverConfig.from_dict(vdb_config)
@@ -134,7 +137,7 @@ class NodesTreeModelConfig(BaseComponentConfig, LanguageConfig):
 
 class NodesTreeModel(CacheOperations, AgentStatOperations):
     """Класс предназначен для представления object-вершин из графовой структуры данных в виде дерева с целью
-    повышения эффективности сопоставления имеющихся занний с сущностями/запросами из поступающих user-вопросов.
+    повышения эффективности сопоставления имеющихся знаний с сущностями/запросами из поступающих user-вопросов.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
     :type agent: AbstractAgentConnector
@@ -142,7 +145,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
     :type embedder: EmbedderModel
     :param config: Конфигурация NodesTree-модели. Значение по умолчанию NodesTreeModelConfig().
     :type config: Union[Dict,NodesTreeModelConfig], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
     :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
@@ -187,7 +190,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
             agents_cache_config = cache_kvdriver_config if cache_llm_inference else None
 
         self.tasks_solvers: NodesTreeModelTaskSolvers = NodesTreeModelTaskSolvers(
-            decompose_classifier_solver=AgentTaskSolver(
+            nodes_summarization_solver=AgentTaskSolver(
                 self.agent, self.config.agent_tasks_config.nodes_summarization,
                 agents_cache_config, inferencestat_config
             )
@@ -200,6 +203,15 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         self.verbose = self.config.verbose
 
     def check_consistency(self) -> bool:
+        """Метод предназначен для проверки согласованности данных между древовидной и векторными структурами.
+
+        Проверяется, что:
+         - количество leaf-вершин в векторной базе совпадает с количеством leaf-вершин в дереве;
+         - количество summarized-вершин в векторной базе совпадает с количеством соответствующих вершин в дереве.
+
+        :return: True, если данные согласованы, иначе - исключение AssertionError.
+        :rtype: bool
+        """
         self.treedb_conn.check_consistency()
         self.leafnodes_vcomposer.check_consistency()
         self.summnodes_vcomposer.check_consistency()
@@ -214,6 +226,13 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         return True
 
     def extract_unique_nodes(self, triplets: List[Triplet]) -> List[Node]:
+        """Метод предназначен для извлечения уникальных object-вершин из набора триплетов.
+
+        :param triplets: Набор триплетов.
+        :type triplets: List[Triplet]
+        :return: Список уникальных (по id) object-вершин.
+        :rtype: List[Node]
+        """
         unique_object_nodes = dict()
         for triplet in triplets:
             cur_node = triplet.start_node
@@ -227,7 +246,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         return object_nodes
 
     def expand_tree(self, triplets: List[Triplet], status_bar: bool = True) -> Dict[str, Set[str]]:
-        """Метод предназначен для добавления object-вершин из заданнного набора триплетов в древовидную модель.
+        """Метод предназначен для добавления object-вершин из заданного набора триплетов в древовидную модель.
 
         :param triplets: Набор триплетов, object-вершины из которых необходимо добавить в древовидную модель.
         :type triplets: List[Triplet]
@@ -313,13 +332,22 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         return status
 
     def get_leafnodes_sim_scores(self, anchor_vinstance: VectorDBInstance, leaf_nodes: List[TreeNode]) -> List[Tuple[float, str]]:
+        """Метод предназначен для вычисления значений семантической близости между anchor-текстом и leaf-узлами.
+
+        :param anchor_vinstance: Векторное представление текста-запроса.
+        :type anchor_vinstance: VectorDBInstance
+        :param leaf_nodes: Список leaf-узлов, для которых необходимо вычислить similarity-оценки.
+        :type leaf_nodes: List[TreeNode]
+        :return: Список пар (similarity, id_вершины) для leaf-узлов.
+        :rtype: List[Tuple[float, str]]
+        """
         strid2leafid_map = {node.props['str_id']: node.id for node in leaf_nodes}
         leafnodes_strids = list(strid2leafid_map.keys())
         if len(leafnodes_strids) > 0:
             # получаем значения семантической близости [similarity]
             scored_leafnodes = self.leafnodes_retriever.run(
                 query=anchor_vinstance.document, top_k=len(leafnodes_strids),
-                subset_ids=leafnodes_strids, return_with_scores=True, includes=[])
+                subset_ids=leafnodes_strids, return_with_scores=self.config.leafnodes_scores_vdbname, includes=[])
 
             leafnodes_info = list(map(lambda pair: (pair[0], strid2leafid_map[pair[1].id]), scored_leafnodes))
         else:
@@ -328,12 +356,21 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         return leafnodes_info
 
     def get_summnodes_sim_scores(self, anchor_vinstance: VectorDBInstance, summ_nodes: List[TreeNode]) -> List[Tuple[float, str]]:
+        """Метод предназначен для вычисления значений семантической близости между anchor-текстом и summarized-узлами.
+
+        :param anchor_vinstance: Векторное представление текста-запроса.
+        :type anchor_vinstance: VectorDBInstance
+        :param summ_nodes: Список summarized-узлов, для которых необходимо вычислить similarity-оценки.
+        :type summ_nodes: List[TreeNode]
+        :return: Список пар (similarity, id_вершины) для summarized-узлов.
+        :rtype: List[Tuple[float, str]]
+        """
         summ_nodes_ids = list(map(lambda node: node.id, summ_nodes))
         if len(summ_nodes_ids) > 0:
             # получаем значения семантической близости [similarity]
             scored_summnodes = self.summnodes_retriever.run(
                 query=anchor_vinstance.document, top_k=len(summ_nodes_ids),
-                subset_ids=summ_nodes_ids, return_with_scores=True, includes=[])
+                subset_ids=summ_nodes_ids, return_with_scores=self.config.summnodes_scores_vdbname, includes=[])
 
             summnodes_info = list(map(lambda pair: (pair[0], pair[1].id), scored_summnodes))
         else:
@@ -342,6 +379,13 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         return summnodes_info
 
     def calculate_adaptive_threshold(self, cur_depth: int) -> float:
+        """Метод предназначен для вычисления адаптивного порога similarity при обходе дерева.
+
+        :param cur_depth: Текущая глубина обхода дерева.
+        :type cur_depth: int
+        :return: Адаптивное значение порога similarity.
+        :rtype: float
+        """
         cur_maxdepth = self.treedb_conn.get_tree_maxdepth()
         adaptive_coeff = 1 if cur_maxdepth < 1 else np.exp(
             (self.config.depth_rate * cur_depth) / cur_maxdepth)
@@ -351,12 +395,12 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         return adaptive_threshold
 
     def traverse_tree(self, newnode_text: str) -> Tuple[List[str], TreeNode]:
-        """Метод предназначен для получения вершины в древодиной моделе, к которой будет прикреплена новая leaf-вершина
+        """Метод предназначен для получения вершины в древодиной модели, к которой будет прикреплена новая leaf-вершина
         с newnode_text-значением текстового поля.
 
         :param newnode_text: Значение текстового поля, представляющее leaf-вершину, которому необходимо найти релевантную parent-вершину в дереве для последующего прикрепления к ней.
         :type newnode_text: str
-        :return: Кортеж из двух объектов: (1) Путь (список идентификаторов вершин) в дереве от корня (корневой вершины) до вершины, к которой будет прикреплена новая leaf-вершина; (2) Структура данных с информацие по последней вершине в пройденном пути.
+        :return: Кортеж из двух объектов: (1) Путь (список идентификаторов вершин) в дереве от корня (корневой вершины) до вершины, к которой будет прикреплена новая leaf-вершина; (2) Структура данных с информацией по последней вершине в пройденном пути.
         :rtype: Tuple[List[str], TreeNode]
         """
         self.log("3. Старт алгоритма обхода дерева...", verbose=self.verbose)
@@ -422,11 +466,11 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         пройденных при поиске релевантной parent-вершины для прикрепления у ней новой leaf-вершины,
         c обуславливанием на newnode_text-значение новой вершины (предками которой они являются).
 
-        :param traversed_nodes_ids: Список индетификаторов пройденных вершин, начиная от корня дерева.
+        :param traversed_nodes_ids: Список идентификаторов пройденных вершин, начиная от корня дерева.
         :type traversed_nodes_ids: List[str]
         :param newnode_text: Значение текстового поля новой вершины, на которое нужно обуславиливаться при генерации более обобщённых текстовых значений у пройденных вершин в дереве.
         :type newnode_text: str
-        :return: Список прегенерированных/обобщённых значений тексовых полей у пройденных traversed_nodes_ids-вершин.
+        :return: Список прегенерированных/обобщённых значений текстовых полей у пройденных traversed_nodes_ids-вершин.
         :rtype: List[str]
         """
         self.log(f"4. Старт алгоритма по суммаризации текста...", verbose=self.verbose)
@@ -467,11 +511,11 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
             self.log(f"4.3. Новое значение text-поля для текущей вершины: {summ_text}", verbose=self.verbose)
             new_text_summaries.append(summ_text)
 
-        self.log("4.final | Сумаризаация текста выполнена успешно", verbose=self.verbose)
+        self.log("4.final | Суммаризация текста выполнена успешно", verbose=self.verbose)
         return new_text_summaries[::-1]
 
     def update_vectordb_info(self, vecdb_type: TreeNodeType, ids: List[str], new_texts: List[str]) -> None:
-        """Метод предназначен для добавления/обновления векторных предтавлений вершин из дерева в векторной базе данных.
+        """Метод предназначен для добавления/обновления векторных представлений вершин из дерева в векторной базе данных.
 
         :param vecdb_type: Тип вершин, по которым выполняется обновление информации в векторной бд.
         :type vecdb_type: TreeNodeType
@@ -493,13 +537,13 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         """Метод предназначен для обновления информации (значений текстовых полей) в вершинах дерева,
         пройденных в результате поиска релевантной parent-вершины для прикрепления новой new_node_strid-вершины к дереву.
 
-        :param ids: Идентификаторые вершин в дереве (включая parent-вершину для новой/добавляемой new_node_strid-вершины), у которых необходимо изменить значения тексовых полей.
+        :param ids: Идентификаторы вершин в дереве (включая parent-вершину для новой/добавляемой new_node_strid-вершины), у которых необходимо изменить значения текстовых полей.
         :type ids: List[str]
         :param texts: Новые значения текстовых полей для заданных ids-вершин.
         :type texts: List[str]
-        :param new_node_strid: Индентификатор новой вершины, которая в дальнейшей будет прикрепляться к parent_node-вершине.
+        :param new_node_strid: Идентификатор новой вершины, которая в дальнейшем будет прикрепляться к parent_node-вершине.
         :type new_node_strid: str
-        :param parent_node: Структура данных с информацией о последней пройденной parent-вершине в ids-списке, к которой в дальнейшем будет выполняться приелрепление ноаой new_node_strid-вершины.
+        :param parent_node: Структура данных с информацией о последней пройденной parent-вершине в ids-списке, к которой в дальнейшем будет выполняться прикрепление новой new_node_strid-вершины.
         :type parent_node: TreeNode
         """
         # У всех summarized-вершин обновляем значения text- и других-полей
@@ -547,9 +591,9 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
     def change_node_to_summarized(self, old_node: TreeNode, new_text: str) -> None:
         """Метод предназначен для изменения типа вершины в дереве на summarized.
 
-        :param old_node: Структура данных с исходной информации о вершину, тип которой необходимо изменить.
+        :param old_node: Структура данных с исходной информацией о вершине, тип которой необходимо изменить.
         :type old_node: TreeNode
-        :param new_text: Новое значение текстовго поля изменяемой вершины.
+        :param new_text: Новое значение текстового поля изменяемой вершины.
         :type new_text: str
         """
         # обновляем информацию в соответствующей графовой бд
@@ -565,9 +609,16 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         self.treedb_conn.update([summarized_node])
 
     def retrieve_relevant_leafnode(self, entitie_vinstance: VectorDBInstance) -> Union[None, Tuple[float, VectorDBInstance]]:
+        """Метод предназначен для поиска наиболее релевантной leaf-вершины по заданному векторному представлению сущности.
+
+        :param entitie_vinstance: Векторное представление сущности.
+        :type entitie_vinstance: VectorDBInstance
+        :return: Пара (similarity, векторное представление вершины) либо None, если подходящая вершина не найдена.
+        :rtype: Union[None, Tuple[float, VectorDBInstance]]
+        """
         raw_best_leafnode = self.leafnodes_retriever.run(
             query=entitie_vinstance.document, top_k=1,
-            includes=['documents', 'metadatas'], return_with_scores=True)
+            includes=['documents', 'metadatas'], return_with_scores=self.config.leafnodes_scores_vdbname)
 
         best_leafnode = None
         if len(raw_best_leafnode) > 0:
@@ -577,9 +628,16 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         return best_leafnode
 
     def retrieve_relevant_summnode(self, entitie_vinstance: VectorDBInstance) -> Union[None, Tuple[float, VectorDBInstance]]:
+        """Метод предназначен для поиска наиболее релевантной summarized-вершины по заданному векторному представлению сущности.
+
+        :param entitie_vinstance: Векторное представление сущности.
+        :type entitie_vinstance: VectorDBInstance
+        :return: Пара (similarity, векторное представление вершины) либо None, если подходящая вершина не найдена.
+        :rtype: Union[None, Tuple[float, VectorDBInstance]]
+        """
         raw_best_summnode = self.summnodes_retriever.run(
             query=entitie_vinstance.document, top_k=1,
-            includes=[], return_with_scores=True)
+            includes=[], return_with_scores=self.config.summnodes_scores_vdbname)
 
         best_summnode = None
         if len(raw_best_summnode) > 0:
@@ -589,6 +647,17 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         return best_summnode
 
     def get_leafdescendants_for_summnode(self, entitie_vinstance: VectorDBInstance, best_summnode_id: str, max_n: int) -> List[VectorDBInstance]:
+        """Метод предназначен для получения leaf-потомков заданной summarized-вершины с учётом их релевантности исходной сущности.
+
+        :param entitie_vinstance: Векторное представление сущности.
+        :type entitie_vinstance: VectorDBInstance
+        :param best_summnode_id: Идентификатор summarized-вершины в дереве.
+        :type best_summnode_id: str
+        :param max_n: Максимальное количество возвращаемых leaf-вершин. Если max_n <= 0, ограничение не применяется.
+        :type max_n: int
+        :return: Список векторных представлений отобранных leaf-вершин.
+        :rtype: List[VectorDBInstance]
+        """
         descendants_leaf_nodes = self.treedb_conn.get_leaf_descendants(
             best_summnode_id, id_type=TreeIdType.external)
         descendants_leaf_strids = list(map(lambda node: node.props['str_id'], descendants_leaf_nodes))
@@ -608,13 +677,13 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
     def match_entitie2objects(self, entitie: str, strategy: str = 'collapsed', max_n: int = 1) -> List[NodeInfo]:
         """Метод предназначен для сопоставления object-вершин (из построенного дерева) заданной сущности (на естественном языке).
 
-        :param entitie:
-        :type entitie: Сущность на естественном языке.
+        :param entitie: Сущность на естественном языке.
+        :type entitie: str
         :param strategy: Стратегия обхода дерева для формирования релевантного (сопоставляемого заданной сущности) набора object-вершин. Значение по умолчанию 'collapsed'.
         :type strategy: str, optional
         :param max_n: Максимальное количество object-вершин, которое может быть сопоставлено заданной сущности. Если указано отрицательное значение, то данное ограничение снимается. Значение по умолчанию 1.
         :type max_n: int, optional
-        :return: Список сопоставленных object-верщин (с их векторными представлениями).
+        :return: Список сопоставленных object-вершин (с их векторными представлениями).
         :rtype: List[VectorDBInstance]
         """
         self.log(f"Старт алгоритма по сопоставлению заданной '{entitie}'-сущности c вершинами из дерева",
@@ -660,6 +729,13 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         raise NotImplementedError
 
     def count_items(self, detailed: bool = False) -> Dict[str, int]:
+        """Метод предназначен для получения статистики по количеству вершин в дереве и в векторных структурах.
+
+        :param detailed: Если True, возвращается детализированная статистика по типам вершин, если False — суммарное количество для каждого хранилища.
+        :type detailed: bool, optional
+        :return: Словарь с количеством элементов в дереве и векторных базах.
+        :rtype: Dict[str, int]
+        """
         # self.check_consistency()
         vector_lnodes_count = self.leafnodes_vcomposer.count_items()
         if not detailed:

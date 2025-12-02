@@ -19,6 +19,15 @@ class CacheKV:
 
     @staticmethod
     def prepare_key(key: List[object] = None, key_hash: str = None) -> str:
+        """Метод предназначен для подготовки хеш-ключа для обращения к кешу.
+
+        :param key: Набор на основе которого будет вычислен хеш-ключ. Значение по умолчанию None.
+        :type key: List[object]
+        :param key_hash: Уже готовый хеш-ключ, если он был вычислен заранее. Значение по умолчанию None.
+        :type key_hash: str
+        :return: Строковый хеш-ключ для обращения к кешу.
+        :rtype: str
+        """
         # либо key- либо key_hash-значение должно быть указано,
         # инчае ошибка.
         if key is not None:
@@ -35,6 +44,13 @@ class CacheKV:
 
     @staticmethod
     def get_hash(key: List[str]) -> str:
+        """Метод предназначен для получения детерминированного хеш-ключа на основе списка строк.
+
+        :param key: Список строк, на основе которого будет вычислен хеш-ключ.
+        :type key: List[str]
+        :return: Строковый хеш (SHA1) от конкатенированных хешей элементов key.
+        :rtype: str
+        """
         if not CacheKV.is_key_valid(key):
             raise ValueError
 
@@ -48,6 +64,15 @@ class CacheKV:
         return len(key) > 0
 
     def load_value(self, key: Union[None, List[str]] = None, key_hash: Union[None, str] = None) -> Tuple[int, str, Union[str, object]]:
+        """Загружает значение из key-value-хранилища по ключу или хеш-ключу.
+
+        :param key: Набор на основе которого будет вычислен хеш. Значение по умолчанию None.
+        :type key: Union[None, List[str]]
+        :param key_hash: Уже готовый хеш-ключ, если он был вычислен заранее. Значение по умолчанию None.
+        :type key_hash: Union[None, str]
+        :return: Кортеж из трёх элементов: (1) статус операции: 0 — значение найдено, -1 — значение отсутствует; (2) использованный хеш-ключ; (3) загруженное значение или None, если значение не найдено.
+        :rtype: Tuple[int, str, Union[str, object]]
+        """
         key_hash = CacheKV.prepare_key(key, key_hash)
 
         output = self.kv_conn.read([key_hash])
@@ -61,6 +86,17 @@ class CacheKV:
         return (0, key_hash, formated_value)
 
     def save_value(self, value: object, key: Union[None, List[str]] = None, key_hash: Union[None, str] = None) -> str:
+        """Сохраняет значение в key-value-хранилище по ключу или хеш-ключу.
+
+        :param value: Сохраняемое значение.
+        :type value: object
+        :param key: Набор на основе которого будет вычислен хеш. Значение по умолчанию None.
+        :type key: Union[None, List[str]]
+        :param key_hash: Уже готовый хеш-ключ, если он был вычислен заранее. Значение по умолчанию None.
+        :type key_hash: Union[None, str]
+        :return: Использованный хеш-ключ, под которому сохранено значение.
+        :rtype: str
+        """
         key_hash = CacheKV.prepare_key(key, key_hash)
         if self.kv_conn.item_exist(key_hash):
             raise ValueError

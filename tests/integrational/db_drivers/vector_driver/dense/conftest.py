@@ -19,17 +19,6 @@ def chromadb_conn():
 
 
 @pytest.fixture(scope='package')
-def milvusdb_conn():
-    config = VectorDriverConfig(db_vendor='milvus', db_config=VectorDBConnectionConfig(
-        conn={'host': 'localhost', 'port': 19520,
-              'user': 'root', 'pass': 'Milvus'},
-        db_info={'db': 'testing', 'table': 'testing'}, need_to_clear=True,
-        params={'id_length': 32, 'vector_dim': 130, 'document_max_length': 51200,
-                'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}))
-    return VectorDriver.connect(config)
-
-
-@pytest.fixture(scope='package')
 def inmemory_conn():
     config = VectorDriverConfig(
         db_vendor='inmemory',
@@ -42,7 +31,8 @@ def inmemory_conn():
                 'save_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_dense",
                 'vector_dim': 130
             }
-        ))
+        )
+    )
     return VectorDriver.connect(config)
 
 @pytest.fixture(scope='package')
@@ -55,17 +45,63 @@ def elasticsearch_conn():
     )
     return VectorDriver.connect(config)
 
-# ------------------------------#
+@pytest.fixture(scope='package')
+def opensearch_conn():
+    config = VectorDriverConfig(
+        db_vendor='opensearch',
+        db_config=VectorDBConnectionConfig(
+            conn={'host': 'localhost', 'port': 9200, 'user': 'admin', 'pass': 'admin'},
+            params={'vector_dim': 130, 'search_metric': 'innerproduct'}
+        )
+    )
+    return VectorDriver.connect(config)
 
+@pytest.fixture(scope='package')
+def qdrant_conn():
+    config = VectorDriverConfig(
+        db_vendor='qdrant',
+        db_config=VectorDBConnectionConfig(
+            conn={'host': 'localhost', 'port': 6333},
+            params={'vector_dim': 130, 'search_metric': 'Dot'}
+        )
+    )
+    return VectorDriver.connect(config)
+
+@pytest.fixture(scope='package')
+def weaviate_conn():
+    config = VectorDriverConfig(
+        db_vendor='weaviate',
+        db_config=VectorDBConnectionConfig(
+            conn={'host': 'localhost', 'port': 8083}
+        )
+    )
+    return VectorDriver.connect(config)
+
+# @pytest.fixture(scope='package')
+# def milvusdb_conn():
+#     config = VectorDriverConfig(db_vendor='milvus', db_config=VectorDBConnectionConfig(
+#         conn={'host': 'localhost', 'port': 19520,
+#               'user': 'root', 'pass': 'Milvus'},
+#         db_info={'db': 'testing', 'table': 'testing'}, need_to_clear=True,
+#         params={'id_length': 32, 'vector_dim': 130, 'document_max_length': 51200,
+#                 'load': True, 'flush': True, 'create_sleep': 1, 'search_metric': 'IP'}))
+#     return VectorDriver.connect(config)
+
+# ------------------------------#
 
 @pytest.fixture(scope='package')
 def available_vector_connections(
-        chromadb_conn, milvusdb_conn, inmemory_conn, elasticsearch_conn):
+        chromadb_conn, inmemory_conn, elasticsearch_conn, opensearch_conn, qdrant_conn, weaviate_conn
+        #, milvusdb_conn
+    ):
     return {
         'chroma': chromadb_conn,
-        'milvus': milvusdb_conn,
+        #'milvus': milvusdb_conn,
         'inmemory': inmemory_conn,
-        'elasticsearch': elasticsearch_conn
+        'elasticsearch': elasticsearch_conn,
+        'opensearch': opensearch_conn,
+        'qdrant': qdrant_conn,
+        'weaviate': weaviate_conn
     }
 
 

@@ -55,6 +55,24 @@ services:
     ports:
       - ${MONGO_UI_EXTERNAL_PORT}:8081
 
+  qdrant:
+    container_name: ${QDRANT_CNTNAME}
+    image: qdrant/qdrant
+    hostname: ${QDRANT_HOST}
+    ports:
+      - ${QDRANT_EXTERNAL_PORT}:6333
+      - ${QDRANT_UI_EXTERNAL_PORT}:6334
+    volumes:
+        - ${QDRANT_LOCAL_VOLUME}:/qdrant/storage
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
   redis:
     image: redis:latest
     container_name: ${REDIS_CNTNAME}
@@ -86,40 +104,40 @@ services:
     ports:
       - ${REDIS_UI_EXTERNAL_PORT}:5540
 
-  milvus:
-    image: milvusdb/milvus:v2.5.8
-    container_name: ${MILVUS_CNTNAME}
-    hostname: ${MILVUS_HOST}
-    command: ["milvus", "run", "standalone"]
-    security_opt:
-      - seccomp:unconfined
-    environment:
-      - ETCD_USE_EMBED=true
-      - ETCD_DATA_DIR=/var/lib/milvus/etcd
-      - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
-      - COMMON_STORAGETYPE=local
-    ports:
-      - ${MILVUS_EXTERNAL_PORT1}:19530
-      - ${MILVUS_EXTERNAL_PORT2}:2379
-      - ${MILVUS_UI_EXTERNAL_PORT}:9091
-    volumes:
-      - ${MILVUS_LOCAL_VOLUME}/data:/var/lib/milvus
-      - ${MILVUS_CONFIG}/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
-      - ${MILVUS_CONFIG}/user.yaml:/milvus/configs/user.yaml
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
-      interval: 30s
-      start_period: 90s
-      timeout: 20s
-      retries: 3
-    deploy:
-      resources:
-        limits:
-          cpus: '8'
-          memory: 24G
-        reservations:
-          cpus: '4'
-          memory: 8G
+  # milvus:
+  #   image: milvusdb/milvus:v2.5.8
+  #   container_name: ${MILVUS_CNTNAME}
+  #   hostname: ${MILVUS_HOST}
+  #   command: ["milvus", "run", "standalone"]
+  #   security_opt:
+  #     - seccomp:unconfined
+  #   environment:
+  #     - ETCD_USE_EMBED=true
+  #     - ETCD_DATA_DIR=/var/lib/milvus/etcd
+  #     - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
+  #     - COMMON_STORAGETYPE=local
+  #   ports:
+  #     - ${MILVUS_EXTERNAL_PORT1}:19530
+  #     - ${MILVUS_EXTERNAL_PORT2}:2379
+  #     - ${MILVUS_UI_EXTERNAL_PORT}:9091
+  #   volumes:
+  #     - ${MILVUS_LOCAL_VOLUME}/data:/var/lib/milvus
+  #     - ${MILVUS_CONFIG}/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
+  #     - ${MILVUS_CONFIG}/user.yaml:/milvus/configs/user.yaml
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+  #     interval: 30s
+  #     start_period: 90s
+  #     timeout: 20s
+  #     retries: 3
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '8'
+  #         memory: 24G
+  #       reservations:
+  #         cpus: '4'
+  #         memory: 8G
 
   opensearch:
     container_name: ${OPENSEARCH_CNTNAME}
@@ -166,7 +184,7 @@ services:
               capabilities: [gpu]
 
   workspace:
-    image: m.menschikov/workspace:v4
+    image: m.menschikov/workspace:v5
     container_name: ${WORKSPACE_CNTNAME}
     hostname: ${WORKSPACE_HOST}
     network_mode: "host"
@@ -178,7 +196,7 @@ services:
       - ${EXTERNAL_MODELS_PATH}:${INTERNAL_MODELS_PATH}
     depends_on:
       - neo4j
-      - milvus
+      - qdrant
       - opensearch
       - mongo
       - redis

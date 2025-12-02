@@ -7,7 +7,7 @@ from .configs import KR_MAIN_LOG_PATH, AVAILABLE_TRIPLETS_FILTERS, AVAILABLE_TRI
     AVAILABLE_TFILTERS_CONFIGS, AVAILABLE_TRETRIEVERS_CONFIGS
 from .utils import BaseGraphSearchConfig, BaseTripletsFilterConfig, KnowledgeRetrieverStages
 from .filtering_methods.TripletsFilter import TripletsFilterConfig
-from .traversal_methods.BeamSearchTripletsRetriever import GraphBeamSearchConfig
+from .traversal_methods.MixturedTripletsRetriever import MixturedGraphSearchConfig
 from ......kg_model import KnowledgeGraphModel
 from ......utils import Logger, ReturnStatus, ReturnInfo
 from ......utils.errors import STATUS_MESSAGE
@@ -21,9 +21,9 @@ from ......utils.cache_kv.CacheOperations import CacheOperations
 class KnowledgeRetrieverConfig(BaseComponentConfig):
     """Конфигурация "Knowledge Retriever"-стадии.
 
-    :param retriever_method: Наименование алгоритма для обхода вершин/рёбер графовой структуры данных (графа знаний) и извлечения релевантной информации. Значение по умолчанию 'astar'.
+    :param retriever_method: Наименование алгоритма для обхода вершин/рёбер графовой структуры данных (графа знаний) и извлечения релевантной информации. Значение по умолчанию 'mixture'.
     :type retriever_method: str, optional
-    :param retriever_config: Конфигурация выбранного алгоритма обхода графа. Значение по умолчанию AStarGraphSearchConfig().
+    :param retriever_config: Конфигурация выбранного алгоритма обхода графа. Значение по умолчанию MixturedGraphSearchConfig().
     :type retriever_config: Union[BaseGraphSearchConfig, Dict], optional
     :param filter_method: Наименование алгоритма для фильтрации информации (триеплетов), извлечённой из графа знаний (в результате работы алгоритма обхода графа). Значение по умолчанию 'naive'.
     :type filter_method: Union[str, None], optional
@@ -32,8 +32,8 @@ class KnowledgeRetrieverConfig(BaseComponentConfig):
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы KnowledgeRetriever-класса. Значение по умолчанию 'qa_kretriever_stage_cache'.
     :type cache_table_name: str, optional
     """
-    retriever_method: str = 'beamsearch'
-    retriever_config: Union[Dict, BaseGraphSearchConfig] = field(default_factory=lambda: GraphBeamSearchConfig())
+    retriever_method: str = 'mixture'
+    retriever_config: Union[Dict, BaseGraphSearchConfig] = field(default_factory=lambda: MixturedGraphSearchConfig())
     filter_method: Union[None, str] = 'naive'
     filter_config: Union[BaseTripletsFilterConfig, Dict, None] = field(default_factory=lambda: TripletsFilterConfig())
 
@@ -72,7 +72,7 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация 'Knowledge Retriever'-стадии. Значение по умолчанию KnowledgeRetrieverConfig().
     :type config: Union[KnowledgeRetrieverConfig,Dict], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
 
@@ -124,6 +124,13 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         return valid_triplets
 
     def traverse_kg(self, query_info: QueryInfo) -> List[Triplet]:
+        """Метод реализует извлечение релевантных триплетов из графа знаний.
+
+        :param query_info: Структура с user-вопросом и дополнительными полями.
+        :type query_info: QueryInfo
+        :return: Список извлечённых триплетов.
+        :rtype: List[Triplet]
+        """
         triplets = self.stages.triplets_retriever.get_relevant_triplets(query_info)
         self.log(f"RESULT: {len(triplets)}", verbose=self.verbose)
         for triplet in triplets:
@@ -135,6 +142,15 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         return triplets
 
     def filter_triplets(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
+        """Метод фильтрует/ранжирует триплеты, извлечённые из графа.
+
+        :param query_info: Структура с user-вопросом и дополнительными полями.
+        :type query_info: QueryInfo
+        :param triplets: Список триплетов, подлежащих фильтрации/ранжированию.
+        :type triplets: List[Triplet]
+        :return: Отфильтрованный/ранжированный список триплетов.
+        :rtype: List[Triplet]
+        """
         filtered_triplets = None
         if self.stages.triplets_filter is not None:
             filtered_triplets = self.stages.triplets_filter.apply_filter(query_info, triplets)
@@ -150,6 +166,15 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         return filtered_triplets
 
     def get_cache_key(self, query_info: QueryInfo) -> List[str]:
+        """Формирует ключ кэша для для результатов извлечения/фильтрации.
+
+        В ключ включается метод и конфигурация извлечения триплетов, метод и конфигурацию фильтра, сериализованное представление входного QueryInfo.
+
+        :param query_info: Структура с исходным запросом и дополнительными полями.
+        :type query_info: QueryInfo
+        :return: Список строк, используемый как составной ключ кеша.
+        :rtype: List[str]
+        """
         str_tfilter_config = self.stages.triplets_filter.config.to_str() if self.stages.triplets_filter is not None else "None"
         return [self.config.retriever_method, self.stages.triplets_retriever.config.to_str(), str(self.config.filter_method),
                 str_tfilter_config, query_info.to_str()]
@@ -170,7 +195,7 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         rinfo = ReturnInfo()
         self.log("STAGE #3.1 - TRIPLETS EXTRACTION...", verbose=self.verbose)
         triplets = self.traverse_kg(query_info)
-        
+
         triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in triplets]))
         self.log(f"Респределение количества типов триплетов: {triplet_types_freq}", verbose=self.verbose)
 

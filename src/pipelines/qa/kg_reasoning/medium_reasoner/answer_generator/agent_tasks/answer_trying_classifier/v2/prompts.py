@@ -20,7 +20,7 @@ Input format:
 
 Output format
 [Chain of thoughts] - 2–5 points with a brief justification of the decision (which answers cover/do not cover the question, whether there are contradictions, whether there is <|NotEnoughtInfo|> for critical parts, etc.).
-[Answer] - True or False.
+[Answer] - ONLY and STRICTLY "True" or "False". Do not add any descriptions/explanations to your True/False-answer.
 
 
 Examples:
@@ -100,7 +100,7 @@ RU_ANSWCLS_SYSTEM_PROMPT = \
 
 Формат вывода
 [Chain of thoughts] - 2–5 пунктов с кратким обоснованием решения (какие ответы покрывают/не покрывают вопрос, есть ли противоречия, есть ли <|NotEnoughtInfo|> по критичным частям и так далее).
-[Answer] - True или False.
+[Answer] - ТОЛЬКО и СТРОГО "True" или "False". Не добавляйте каких-либо дополнительных пояснений к своему True/False-ответу.
 
 
 Примеры:

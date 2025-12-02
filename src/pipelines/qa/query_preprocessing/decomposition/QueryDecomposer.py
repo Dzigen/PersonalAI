@@ -19,9 +19,9 @@ from .....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperatio
 class QueryDecomposerConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация QueryDecomposer-операции.
 
-    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значения будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию QueryDecomposerAgentTasksConfig().
+    :param agent_tasks_config: Конфигурации LLM-промптов для решения заданных задач с помощью LLM-агента. Значение по умолчанию QueryDecomposerAgentTasksConfig().
     :type agent_tasks_config: Union[Dict,QueryDecomposerAgentTasksConfig], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryDecomposer-класса. Значение по умолчанию 'qp_decomposition_stage_cache'.
     :type cache_table_name: str, optional
@@ -53,9 +53,9 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
     :type agent: AbstractAgentConnector
     :param config: Конфигурация QueryDecomposer-операции. Значение по умолчанию QueryDecomposerConfig().
     :type config: Union[Dict,QueryDecomposerConfig], optional
-    :param cache_kvdriver_config:Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операций в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
@@ -92,6 +92,14 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
         self.verbose = self.config.verbose
 
     def get_cache_key(self, query_info: QueryPreprocessingInfo) -> List[str]:
+        """Формирует ключ кеша для результата декомпозиции.
+        В ключ включаются строковое представление входной структуры QueryPreprocessingInfo, строковое представление конфигурации и идентификатор используемого LLM-агента.
+
+        :param query_info: Класс с информацией о предобработанном запросе.
+        :type query_info: QueryPreprocessingInfo
+        :return: Список объектов, используемый как составной ключ кеша.
+        :rtype: List[str]
+        """
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [query_info.to_str(), self.config.to_str(), str_using_agent_info]
 
@@ -99,10 +107,10 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
     def perform(self, query_info: QueryPreprocessingInfo) -> Tuple[List[str], ReturnInfo]:
         """Метод предназначен для выполнения операции форматирования/предобработки user-вопроса: декомпозиции сложных/составных user-вопросов на независимые/простые под-вопросы.
 
-        :param query_info: Струкутра данных с результатами предыдущих операций предобратки/форматирования исходного user-вопроса.
+        :param query_info: Структура данных с результатами предыдущих операций предобработки/форматирования исходного user-вопроса.
         :type query_info: QueryPreprocessingInfo
         :return: Кортеж из двух объектов: (1) список простых под-вопросов для исходного/сложного user-вопроса; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[str, ReturnInfo]
+        :rtype: Tuple[List[str], ReturnInfo]
         """
         self.log("START QUERY DECOMPOSITION...", verbose=self.verbose)
         self.log(
@@ -119,7 +127,7 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             raise ValueError
 
-        self.log("Выполнение проверки на необходимость декомпозии вопроса с помощью LLM-агента...",
+        self.log("Выполнение проверки на необходимость декомпозиции вопроса с помощью LLM-агента...",
                  verbose=self.verbose)
         need_to_decompose, status = self.tasks_solvers.decompose_classifier_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,

@@ -16,13 +16,13 @@ class MediumAGeneratorTaskSolvers(BaseTaskSolvers):
 @dataclass
 class AnswerGeneratorAgentTasksConfig(BaseAgentTasksConfig):
     """
-    :param answer_classifier: Конфигурация атомарной задачи для LLM-агента по определению наличия необходимой информации для генерации релевантного ответа на вопрос. Значение по умолчанию 'v1'.
+    :param answer_classifier: Конфигурация атомарной задачи для LLM-агента по определению наличия необходимой информации для генерации релевантного ответа на вопрос. Значение по умолчанию 'v2'.
     :type answer_classifier: AgentTaskSolverConfig, optional
-    :param answer_generator: Конфигурация атомарной задачи для LLM-агента по выполнению условной генарции овтета на заданный user-вопрос. Значение по умолчанию 'v1'.
+    :param answer_generator: Конфигурация атомарной задачи для LLM-агента по выполнению условной генерации овтета на заданный user-вопрос. Значение по умолчанию 'v3'.
     :type answer_generator: AgentTaskSolverConfig, optional
     """
-    answer_classifier: Union[AgentTaskSolverConfig, str] = 'v1'
-    answer_generator: Union[AgentTaskSolverConfig, str] = 'v1'
+    answer_classifier: Union[AgentTaskSolverConfig, str] = 'v2'
+    answer_generator: Union[AgentTaskSolverConfig, str] = 'v3'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: ANSWGEN_AGENTASKS_SELECTORS_MAPPING)
 

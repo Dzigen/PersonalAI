@@ -7,7 +7,7 @@ torch #--index-url https://download.pytorch.org/whl/cu126 # (NVIDIA GeForce GTX 
 chromadb
 sentence_transformers
 pysqlite3
-pymilvus
+#pymilvus
 polyglot
 icu
 PyICU
@@ -29,3 +29,5 @@ torchmetrics
 evaluate
 levenshtein
 nltk
+#protobuf
+qdrant-client

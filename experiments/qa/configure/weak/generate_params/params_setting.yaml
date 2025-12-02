@@ -29,9 +29,9 @@ query_preprocessor: # TO CHANGE
 
   decomposition_config: # CAN BE null
     - null
-    - agent_tasks_config:
-        classify: 'v1'
-        decompose: 'v1'
+    # - agent_tasks_config:
+    #     classify: 'v1'
+    #     decompose: 'v1'
 
 # STAGE # 2
 kg_reasoner: # TO CHANGE
@@ -42,6 +42,19 @@ kg_reasoner: # TO CHANGE
           kw_extraction: 'v2'
 
     knowledge_comparator_config: # CAN BE null
+      - max_k: 1
+        k_compare: 5
+        reranker_driver_config:
+          name: 'ensemble_fusion' # DONT CHANGE
+          strategy_config:
+            vdb_names: ['dense_nodes', 'bm25_nodes']
+            retriever_configs:
+              - fetch_n: 20
+                threshold: 0.5
+              - fetch_n: 20
+                threshold: 0.5
+            weights: [0.2, 0.8]
+            c: 60
       - max_k: 2
         k_compare: 5
         reranker_driver_config:
@@ -55,64 +68,123 @@ kg_reasoner: # TO CHANGE
                 threshold: 0.5
             weights: [0.2, 0.8]
             c: 60
+      - max_k: 2
+        k_compare: 5
+        reranker_driver_config:
+          name: 'ensemble_fusion' # DONT CHANGE
+          strategy_config:
+            vdb_names: ['dense_nodes', 'bm25_nodes']
+            retriever_configs:
+              - fetch_n: 20
+                threshold: 0.5
+              - fetch_n: 20
+                threshold: 0.5
+            weights: [0.4, 0.6]
+            c: 60
+      - max_k: 1
+        k_compare: 5
+        reranker_driver_config:
+          name: 'ensemble_fusion' # DONT CHANGE
+          strategy_config:
+            vdb_names: ['dense_nodes', 'bm25_nodes']
+            retriever_configs:
+              - fetch_n: 20
+                threshold: 0.5
+              - fetch_n: 20
+                threshold: 0.5
+            weights: [0.4, 0.6]
+            c: 60
 
     knowledge_retriever_config:
       # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
       retriever_method:
-        - 'beamsearch'
-        - 'beamsearch'
-        - 'beamsearch'
+        - 'mixture'
+        - 'mixture'
+        - 'mixture'
 
       retriever_config:
-        - reranker_driver_config:
-            name: 'single_step'
-            strategy_config:
-              vdb_name: dense_triplets
-              threshold: 0.5
-              fetch_n: 50
-          max_depth: 5
-          max_paths: 10
-          same_path_intersection_by_node: False
-          diff_paths_intersection_by_node: False
-          diff_paths_intersection_by_rel: False
-          mean_alpha: 0.75
-          final_sorting_mode: 'mixed'
+        - retriever1_name: 'beamsearch'
+          retriever1_config:
+            reranker_driver_config:
+                name: 'single_step'
+                strategy_config:
+                  vdb_name: dense_triplets
+                  threshold: 0.5
+                  fetch_n: 25
+            max_depth: 5
+            max_paths: 10
+            same_path_intersection_by_node: False
+            diff_paths_intersection_by_node: False
+            diff_paths_intersection_by_rel: False
+            mean_alpha: 0.75
+            final_sorting_mode: 'mixed'
+          
+          retriever2_name: 'watercircles'
+          retriever2_config:
+            strict_filter: True
+            hyper_num: 15
+            episodic_num: 15
+            chain_triplets_num: 25
+            other_triplets_num: 6
+            do_text_pruning: False
 
           accepted_node_types:
             - 'hyper'
             - 'episodic'
 
-        - reranker_driver_config:
-            name: 'single_step'
-            strategy_config:
-              vdb_name: dense_triplets
-              threshold: 0.5
-              fetch_n: 50
-          max_depth: 5
-          max_paths: 10
-          same_path_intersection_by_node: False
-          diff_paths_intersection_by_node: False
-          diff_paths_intersection_by_rel: False
-          mean_alpha: 0.75
-          final_sorting_mode: 'mixed'
+        - retriever1_name: 'beamsearch'
+          retriever1_config:
+            reranker_driver_config:
+                name: 'single_step'
+                strategy_config:
+                  vdb_name: dense_triplets
+                  threshold: 0.5
+                  fetch_n: 25
+            max_depth: 5
+            max_paths: 10
+            same_path_intersection_by_node: False
+            diff_paths_intersection_by_node: False
+            diff_paths_intersection_by_rel: False
+            mean_alpha: 0.75
+            final_sorting_mode: 'mixed'
+          
+          retriever2_name: 'watercircles'
+          retriever2_config:
+            strict_filter: True
+            hyper_num: 15
+            episodic_num: 15
+            chain_triplets_num: 25
+            other_triplets_num: 6
+            do_text_pruning: False
 
           accepted_node_types:
             - 'object'
-            - 'episodic'
+            - 'hyper'
 
-        - reranker_driver_config:
-            name: 'single_step'
-            strategy_config:
-              vdb_name: dense_triplets
-              threshold: 0.5
-              fetch_n: 50
-          max_depth: 5
-          max_paths: 10
-          same_path_intersection_by_node: False
-          diff_paths_intersection_by_node: False
-          diff_paths_intersection_by_rel: False
-          mean_alpha: 0.75
-          final_sorting_mode: 'mixed'
+        - retriever1_name: 'beamsearch'
+          retriever1_config:
+            reranker_driver_config:
+                name: 'single_step'
+                strategy_config:
+                  vdb_name: dense_triplets
+                  threshold: 0.5
+                  fetch_n: 25
+            max_depth: 5
+            max_paths: 10
+            same_path_intersection_by_node: False
+            diff_paths_intersection_by_node: False
+            diff_paths_intersection_by_rel: False
+            mean_alpha: 0.75
+            final_sorting_mode: 'mixed'
+          
+          retriever2_name: 'watercircles'
+          retriever2_config:
+            strict_filter: True
+            hyper_num: 15
+            episodic_num: 15
+            chain_triplets_num: 25
+            other_triplets_num: 6
+            do_text_pruning: False
 
           accepted_node_types:
             - 'object'
@@ -133,7 +205,7 @@ kg_reasoner: # TO CHANGE
                   threshold: 0.5
                 - fetch_n: 50
                   threshold: 0.5
-              weights: [0.7, 0.3]
+              weights: [0.8, 0.2]
               c: 60
           accepted_triplets_types:
             - 'simple'
@@ -141,16 +213,11 @@ kg_reasoner: # TO CHANGE
             - 'episodic'
         - max_k: 50
           reranker_driver_config:
-            name: 'ensemble_fusion' # DONT CHANGE
+            name: 'single_step'
             strategy_config:
-              vdb_names: ['dense_triplets', 'bm25_triplets']
-              retriever_configs:
-                - fetch_n: 50
-                  threshold: 0.5
-                - fetch_n: 50
-                  threshold: 0.5
-              weights: [0.8, 0.2]
-              c: 60
+              vdb_name: dense_triplets
+              threshold: 0.5
+              fetch_n: 50
           accepted_triplets_types:
             - 'simple'
             - 'hyper'

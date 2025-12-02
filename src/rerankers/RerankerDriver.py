@@ -11,6 +11,13 @@ from ..utils.data_structs import BaseConfigOperations
 
 @dataclass
 class RerankerDriverConfig(BaseConfigOperations):
+    """Конфигурация драйвера переранжирования (reranker driver).
+
+    :param name: Имя стратегии, которая будет использована. Допустимые значения: 'single_step', 'multi_step', 'ensemble_fusion'.
+    :type name: str
+    :param strategy_config: Конфигурация выбранной стратегии ранжирования, либо словарь с её параметрами, который будет преобразован в конкретный подкласс BaseRerankerModuleConfig.
+    :type strategy_config: Union[Dict, BaseRerankerModuleConfig]
+    """
     name: str  # 'single_step' | 'multi_step' | 'ensemble_fusion'
     strategy_config: Union[Dict, BaseRerankerModuleConfig]
 
@@ -32,8 +39,21 @@ class RerankerDriverConfig(BaseConfigOperations):
 
 
 class RerankerDriver:
+    """Компонента для инициализации модуля переранжирования по заданной конфигурации.
+
+    Использует AVAILABLE_RETRIEVER_METHODS для выбора подходящего класса reranker'а и его конфигурации.
+    """
     @staticmethod
     def specify(config: Union[Dict, RerankerDriverConfig], vdb_composer: VectorComposer) -> AbstractRerankerModule:
+        """Создаёт и настраивает модуль переранжирования на основе заданной конфигурации.
+
+        :param config: Конфигурация драйвера (RerankerDriverConfig) либо словарь с её параметрами.
+        :type config: Union[Dict, RerankerDriverConfig]
+        :param vdb_composer: Компонента для работы с векторным хранилищем, которая будет передана в конструктор выбранного модуля переранжирования.
+        :type vdb_composer: VectorComposer
+        :return: Инициализированный модуль переранжирования, реализующий интерфейс AbstractRerankerModule.
+        :rtype: AbstractRerankerModule
+        """
         if isinstance(config, dict):
             config = RerankerDriverConfig.from_dict(config)
         else:

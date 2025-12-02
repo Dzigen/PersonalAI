@@ -9,6 +9,13 @@ from ....utils import AgentTaskSolver, AgentTaskSolverConfig
 
 @dataclass
 class MemUpdatorTaskSolvers(BaseTaskSolvers):
+    """Набор LLM-задач, осуществляемых в рамках Updator-стадии Memorize-конвейера.
+
+    :param replace_simple_solver: Задача по замене устаревших simple-триплетов в графе знаний.
+    :type replace_simple_solver: AgentTaskSolver
+    :param replace_hyper_solver: Задача по замене устаревших hyper-/thesis-триплетов в графе знаний.
+    :type replace_hyper_solver: AgentTaskSolver
+    """
     replace_simple_solver: AgentTaskSolver
     replace_hyper_solver: AgentTaskSolver
 

@@ -9,6 +9,13 @@ from .....utils.task_solver import AgentTaskSolver, AgentTaskSolverConfig
 
 @dataclass
 class QueryDecomposerTaskSolvers(BaseTaskSolvers):
+    """Набор атомарных LLM-задач, осуществляемых рамках в QueryDecomposer.
+
+    :param decompose_classifier_solver: Задача по классификации на предмет необходимости декомпозиции исходного вопроса.
+    :type decompose_classifier_solver: AgentTaskSolver
+    :param q_decomposition_solver: Задача по разбиению вопроса на независимые простые под-вопросы.
+    :type q_decomposition_solver: AgentTaskSolver
+    """
     decompose_classifier_solver: AgentTaskSolver
     q_decomposition_solver: AgentTaskSolver
 
@@ -16,13 +23,13 @@ class QueryDecomposerTaskSolvers(BaseTaskSolvers):
 @dataclass
 class QueryDecomposerAgentTasksConfig(BaseAgentTasksConfig):
     """
-    :param classify: Конфигурация атомарной задачи для LLM-агента по классификации наличия независимых запросов (составности/сложности) в user-вопросе. Значение по умолчанию 'v1'.
-    :type classify: AgentTaskSolverConfig, optional
-    :param decompose: Конфигурация атомарной задачи для LLM-агента по разбиению user-вопроса на независимые/простые под-вопросы. Значение по умолчанию 'v1'.
-    :type decompose: AgentTaskSolverConfig, optional
+    :param classify: Конфигурация атомарной задачи для LLM-агента по классификации наличия независимых запросов (составности/сложности) в user-вопросе. Значение по умолчанию 'v2'.
+    :type classify: Union[AgentTaskSolverConfig, str], optional
+    :param decompose: Конфигурация атомарной задачи для LLM-агента по разбиению user-вопроса на независимые/простые под-вопросы. Значение по умолчанию 'v2'.
+    :type decompose: Union[AgentTaskSolverConfig, str], optional
     """
-    classify: Union[AgentTaskSolverConfig, str] = 'v1'
-    decompose: Union[AgentTaskSolverConfig, str] = 'v1'
+    classify: Union[AgentTaskSolverConfig, str] = 'v2'
+    decompose: Union[AgentTaskSolverConfig, str] = 'v2'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: QUERYDECOMP_AGENTASKS_SELECTORS_MAPPING)
 

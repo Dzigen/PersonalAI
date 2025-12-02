@@ -1,0 +1,235 @@
+from typing import List, Tuple, Union, Dict
+from time import sleep
+from copy import deepcopy
+import torch
+import numpy as np
+
+from weaviate.exceptions import WeaviateInvalidInputError
+from haystack_integrations.document_stores.weaviate import WeaviateDocumentStore
+from haystack_integrations.document_stores.weaviate._filters import convert_filters
+from haystack_integrations.document_stores.weaviate.document_store import generate_uuid5
+from haystack_integrations.components.retrievers.weaviate import WeaviateEmbeddingRetriever
+from haystack.document_stores.types.filter_policy import apply_filter_policy
+from haystack.document_stores.types import DuplicatePolicy
+from haystack import Document
+
+from .configs import DEFAULT_WEAVIATE_CONFIG
+from ...embedders import EmbedderModel
+from ...utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
+from .....utils.errors import ReturnInfo
+
+
+class WeaviateVectorConnector(AbstractVectorDatabaseConnection):
+
+    def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_WEAVIATE_CONFIG,
+                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16) -> None:
+        if isinstance(config, dict):
+            config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
+        self.config = config
+
+        self.embedder = embedder
+        self.encode_batchsize = encode_batchsize
+        self.db_conn = None
+        self.retriever = None
+
+    def open_connection(self) -> ReturnInfo:
+        url = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
+        collection_name = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
+        collection_settings = {'class': collection_name, "vectorIndexConfig": {"distance": "dot"}}
+        self.db_conn = WeaviateDocumentStore(url=url, collection_settings=collection_settings)
+        self.retriever = WeaviateEmbeddingRetriever(document_store=self.db_conn)
+
+    def is_open(self) -> bool:
+        # TODO
+        pass
+
+    def close_connection(self) -> ReturnInfo:
+        try:
+            self.db_conn._client.close()
+        except TypeError:
+            pass
+
+    def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
+        # validation
+        for item in items:
+            if not isinstance(item.id, str):
+                raise ValueError
+            if type(item.embedding) in [torch.Tensor, np.ndarray]:
+                raise ValueError
+            for k, v in item.metadata.items():
+                if v is None:
+                    raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
+        unique_ids = set(map(lambda item: item.id, items))
+        if len(items) != len(unique_ids):
+            raise ValueError
+
+        # Если в классе указан embedder, то используем его
+        # для векторизации входящих документов
+        if self.embedder is not None:
+            for item in items:
+                if item.embedding is not None:
+                    raise ValueError
+
+            item_documents = list(map(lambda itm: itm.document, items))
+            document_embeddings = self.embedder.encode_passages(item_documents, batch_size=self.encode_batchsize)
+            updated_items = []
+            for i in range(len(items)):
+                updated_item = deepcopy(items[i])
+                updated_item.embedding = document_embeddings[i]
+                updated_items.append(updated_item)
+        else:
+            for item in items:
+                if item.embedding is None:
+                    raise ValueError
+            updated_items = items
+
+        formated_items = list(map(lambda item: Document(
+            id=item.id, content=item.document, meta=item.metadata, embedding=item.embedding), updated_items))
+        self.db_conn.write_documents(formated_items, policy=DuplicatePolicy.SKIP)
+
+    def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[VectorDBInstance]:
+        # validation
+        for id in ids:
+            if (id is None) or (not isinstance(id, str)):
+                raise ValueError
+        if len(ids) < 1:
+            return []
+
+        raw_output = self.db_conn.filter_documents(
+            filters={"field": "_original_id", "operator": "in", "value": ids})
+
+        formated_output = []
+        for raw_item in raw_output:
+            formated_item = VectorDBInstance(
+                id=raw_item.id,
+                document=raw_item.content if 'documents' in includes else None,
+                metadata={k: v for k, v in raw_item.meta.items() if v is not None} if 'metadatas' in includes else None,
+                embedding=raw_item.embedding if 'embeddings' in includes else None
+            )
+            formated_output.append(formated_item)
+
+        return formated_output
+
+    def update(self) -> ReturnInfo:
+        # TODO
+        pass
+
+    def upsert(self, items: List[VectorDBInstance]) -> None:
+        # validation
+        for item in items:
+            if not isinstance(item.id, str):
+                raise ValueError
+            if type(item.embedding) in [torch.Tensor, np.ndarray]:
+                raise ValueError
+            for k, v in item.metadata.items():
+                if v is None:
+                    raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
+        unique_ids = set(map(lambda item: item.id, items))
+        if len(items) != len(unique_ids):
+            raise ValueError
+
+        self.db_conn.delete_documents(document_ids=list(map(lambda item: item.id, items)))
+        self.create(items)
+
+    def delete(self, ids: List[str]) -> None:
+        # validation
+        for id in ids:
+            if not isinstance(id, str):
+                raise ValueError
+
+        if len(ids):
+            self.db_conn.delete_documents(document_ids=ids)
+
+    def retrieve(
+            self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
+            includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
+        self.validate_retrieve_arguments(query_instances, n_results, subset_ids, includes)
+        if subset_ids is not None and len(subset_ids) < 1:
+            return [[] * len(query_instances)]
+        if n_results < 1:
+            return [[] * len(query_instances)]
+        if self.count_items() < 1:
+            return [[] * len(query_instances)]
+
+        query_instances: List[VectorDBInstance] = deepcopy(query_instances)
+
+        # Если в классе указан embedder, то используем его
+        # для векторизации входящих запросов
+        if self.embedder is not None:
+            items_wo_embeddings: List[Tuple[str, str]] = list()
+            for idx, item in enumerate(query_instances):
+                if item.embedding is None:
+                    items_wo_embeddings.append((idx, item.document))
+
+            doc_wo_embeddings = list(map(lambda itm: itm[1], items_wo_embeddings))
+            new_doc_embeddings = self.embedder.encode_queries(doc_wo_embeddings, batch_size=self.encode_batchsize)
+            for doc_info, doc_emb in zip(items_wo_embeddings, new_doc_embeddings):
+                query_instances[doc_info[0]].embedding = doc_emb
+
+        formate_filters = None
+        if subset_ids is not None:
+            filters = {"field": "_original_id", "operator": "in", "value": subset_ids}
+            formate_filters = apply_filter_policy(self.retriever._filter_policy, self.retriever._filters, filters)
+
+        formated_outputs = []
+        for query in query_instances:
+            # Attention: Будут получены значения семантической близости [similarity], а не значения их расстояния [distance]
+            # print("query: ", query.embedding)
+            try:
+                properties = [p.name for p in self.db_conn.collection.config.get().properties]
+                raw_output = self.db_conn.collection.query.near_vector(
+                    near_vector=query.embedding,
+                    distance=None,
+                    certainty=None,
+                    include_vector=True,
+                    filters=convert_filters(formate_filters) if formate_filters else None,
+                    limit=n_results,
+                    return_properties=properties,
+                    return_metadata=["distance"],
+                )
+                formated_documents = [self.db_conn._to_document(doc) for doc in raw_output.objects]
+                for form_doc, raw_doc in zip(formated_documents, raw_output.objects):
+                    form_doc.score = -raw_doc.metadata.distance
+                    # print("raw doc: ", raw_doc)
+            except WeaviateInvalidInputError as e:
+                raise ValueError(str(e))
+
+            # print('retrieved docs:',formated_documents)
+            # print("using distnace metric: ", self.db_conn.collection.config.get().vector_index_config)
+
+            formated_output = []
+            for raw_item in formated_documents:
+                # print(raw_item.score)
+                formated_item = VectorDBInstance(
+                    id=raw_item.id,
+                    document=raw_item.content if 'documents' in includes else None,
+                    metadata={k: v for k, v in raw_item.meta.items() if v is not None} if 'metadatas' in includes else None,
+                    embedding=raw_item.embedding if 'embeddings' in includes else None
+                )
+                formated_output.append((float(raw_item.score), formated_item))
+
+            formated_outputs.append(formated_output)
+
+        return formated_outputs
+
+    def count_items(self) -> int:
+        return self.db_conn.count_documents()
+
+    def item_exist(self, id: str) -> bool:
+        # validation
+        if not isinstance(id, str):
+            raise ValueError
+
+        uuid5 = generate_uuid5(id)
+        item_exists = self.db_conn.collection.data.exists(uuid5)
+        return item_exists
+
+    def clear(self) -> None:
+        if self.db_conn.collection is not None:
+            collection_name = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
+            self.db_conn.client.collections.delete(collection_name)
+            sleep(1)
+            self.db_conn._client.collections.create_from_dict(self.db_conn._collection_settings)
+            sleep(1)

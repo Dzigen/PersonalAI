@@ -24,3 +24,6 @@ DEFAULT_KUZU_CONFIG = GraphDBConnectionConfig(
 
 DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(
     host='localhost', port=7687, params={'user': "neo4j", 'pwd': 'password'})
+
+
+DEFAULT_BLAZE_CONFIG = GraphDBConnectionConfig()  # TODO

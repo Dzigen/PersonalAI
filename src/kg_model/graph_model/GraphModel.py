@@ -63,14 +63,14 @@ class GraphModel:
     def create_triplets(self, triplets: List[Triplet], batch_size: int = 64, status_bar: bool = True) -> Dict[str, Dict[Union[RelationType, NodeType], Set[str]]]:
         """Метод предназначен для сохранения информации, представленной в виде списка триплетов, в графовую структуру.
 
-        :param triplets: Набора триплетов для добавления в графовую структуру.
+        :param triplets: Набор триплетов для добавления в графовую структуру.
         :type triplets: List[Triplet]
         :param batch_size: Количество триплетов, которое будет сохраняться за одну create-операцию. Значение по умолчанию 64.
         :type batch_size: int, optional
         :param status_bar: Если True, то во время исполнения операции в stdout будет выводиться статус её исполнения, иначе False. Значение по умолчанию True.
         :type status_bar: bool, optional
         :return: Словарь с информацией о триплетах, которые были добавлены в графовую структуру.
-        :rtype: Dict[str, Set[str]]
+        :rtype: Dict[str, Dict[Union[RelationType, NodeType], Set[str]]]
         """
         self.log("Adding triplets to graph-model...", verbose=self.verbose)
         def ntype_mapping(): return {n_type: set() for n_type in NODES_TYPES_MAP.values()}
@@ -151,12 +151,12 @@ class GraphModel:
     def delete_triplets(self, triplets: List[Triplet], status_bar: bool = False) -> Tuple[Dict[int, Dict[str, bool]], Dict[int, Dict[str, bool]]]:
         """Метод предназначен для удаления информации, представленной в виде списка триплетов, из графовой структуры.
 
-        :param triplets: Набор триплетов на удаления из графовой структуры.
+        :param triplets: Набор триплетов на удаление из графовой структуры.
         :type triplets: List[Triplet]
         :param status_bar: Если True, то во время исполнения операции в stdout будет выводиться статус её исполнения, иначе False. Значение по умолчанию True.
         :type status_bar: bool, optional
         :return: Информация для векторной структуры данных, чтобы удалить устаревшие вершины/триплеты и сохранить консистентность памяти ассистента.
-        :rtype: List[Dict[str,bool]]
+        :rtype: Tuple[Dict[int, Dict[str, bool]], Dict[int, Dict[str, bool]]]
         """
 
         vdb_delete_info, gdb_delete_info = dict(), dict()
@@ -180,7 +180,7 @@ class GraphModel:
                 graph_delete_info['e_node'] = True
                 vector_delete_info['e_node'] = True
 
-            # Если в графовой структуре данных содержиться только один триплет с таким-же строковым представлением (как у текущего triplet),
+            # Если в графовой структуре данных содержится только один триплет с таким же строковым представлением (как у текущего triplet),
             # то готовим его к удалению как из графовой, так и из векторной структур данных. Если триплетов с таким же
             # строковым представлением несколько (>=2), то готовим его к удалению только из графовой структуры.
             same_str_id_count = self.db_conn.count_items(triplet.relation.get_info(), id_type='relation')

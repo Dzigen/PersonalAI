@@ -13,13 +13,13 @@ class AbstractRerankerModule(ABC):
 
         :param query: Текст/запрос на естественном языке для извлечения релевантных элементов на его основе.
         :type query: str
-        :param top_k: Максимальное количество извлекаемых элементов. Значение по умочланию 1.
+        :param top_k: Максимальное количество извлекаемых элементов. Значение по умолчанию 1.
         :type top_k: int, optional
         :param subset_ids: Подмножество идентификаторов элементов, в рамках которого нужно искать релевантные элементы. Значение по умолчанию None.
         :type subset_ids: Union[None, List[str]], optional
         :param includes: Названия полей в возвращаемых релевантных элементах, которые должны быть заполнены. Значения по умолчанию ['documents', 'metadatas'].
         :type includes: List[str], optional
-        :param return_with_embeddings: Если True, то в структурах данных возвращаемых релевантных элементов будет содержаться их векторные представления. Значение по умолчанию False.
+        :param return_with_embeddings: Если True, то в структурах данных возвращаемых релевантных элементов будут содержаться их векторные представления. Значение по умолчанию False.
         :type return_with_embeddings: Union[str, bool], optional
         :param return_with_scores: Если True, то возвращаемым релевантным элементам будет сопоставлена их similarity-оценка к запросу, иначе False. Значение по умолчанию False.
         :type return_with_scores: Union[str, bool], optional

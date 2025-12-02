@@ -53,6 +53,9 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
                 raise ValueError
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
                 raise ValueError
+            for k, v in item.metadata.items():
+                if v is None:
+                    raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
             raise ValueError
@@ -77,13 +80,8 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
                     raise ValueError
             updated_items = items
 
-        filtered_items = []
-        for item in updated_items:
-            item_exists = self.item_exist(item.id)
-            if not item_exists:
-                filtered_items.append(item)
-
-        formated_items = list(map(lambda item: Document(id=item.id, content=item.document, meta=item.metadata, embedding=item.embedding), items))
+        formated_items = list(map(lambda item: Document(
+            id=item.id, content=item.document, meta=item.metadata, embedding=item.embedding), updated_items))
         self.db_conn.write_documents(formated_items, policy=DuplicatePolicy.SKIP)
 
     def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[VectorDBInstance]:
@@ -118,6 +116,11 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
         for item in items:
             if not isinstance(item.id, str):
                 raise ValueError
+            if type(item.embedding) in [torch.Tensor, np.ndarray]:
+                raise ValueError
+            for k, v in item.metadata.items():
+                if v is None:
+                    raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
             raise ValueError

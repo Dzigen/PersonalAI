@@ -1,7 +1,8 @@
 from ollama import Client
 from typing import Union, Dict, Tuple
 import gc
-from time import time
+from time import time, sleep
+from httpx import ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout
 
 from .configs import DEFAULT_OLLAMA_CONFIG
 from ..utils import AbstractAgentConnector, AgentConnectorConfig, LLMInferenceStat
@@ -25,6 +26,7 @@ class OLlamaConnector(AbstractAgentConnector):
             self.config.gen_strategy['top_p'] = float(self.config.gen_strategy['top_p'])
 
         self.CONNECTOR_KW = 'ollama'
+        self.trials = config.ext_params.get('trials', 5)
 
         self.open_connection()
 
@@ -40,7 +42,7 @@ class OLlamaConnector(AbstractAgentConnector):
         try:
             del self.client
             gc.collect()
-        except (AttributeError, TypeError):
+        except (ResourceWarning, AttributeError, TypeError):
             pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
@@ -52,11 +54,23 @@ class OLlamaConnector(AbstractAgentConnector):
         gen_strategy = self.config.gen_strategy if gen_strategy is None else gen_strategy
 
         ai_start_time = time()
-        raw_output = self.client.chat(
-            model=self.config.credentials['model'],
-            options=gen_strategy,
-            messages=msgs,
-            keep_alive=self.config.ext_params['keep_alive'])
+        flag, counter = True, 0
+        while flag:
+            try:
+                raw_output = self.client.chat(
+                    model=self.config.credentials['model'],
+                    options=gen_strategy, messages=msgs,
+                    keep_alive=self.config.ext_params['keep_alive']
+                )
+                flag = False
+            except (ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout) as e:
+                counter += 1
+                if counter > self.trials:
+                    raise ConnectError(str(e))
+                else:
+                    self.close_connection()
+                    sleep(1)
+                    self.open_connection()
         ai_end_time = time()
 
         inference_info = LLMInferenceStat(

@@ -9,6 +9,11 @@ from ......utils import AgentTaskSolver, AgentTaskSolverConfig
 
 @dataclass
 class WeakQueryParserTaskSolvers(BaseTaskSolvers):
+    """Контейнер атомарных LLM-задач для weak-парсера запроса.
+
+    Атрибуты:
+      kw_extraction_solver: Задача извлечения ключевых сущностей.
+    """
     kw_extraction_solver: AgentTaskSolver
 
 
@@ -16,7 +21,7 @@ class WeakQueryParserTaskSolvers(BaseTaskSolvers):
 class QueryLLMParserAgentTasksConfig(BaseAgentTasksConfig):
     """
     :param kw_extraction: Конфигурация атомарной задачи для LLM-агента по извлечению ключевых сущностей из текста. Значение по умолчанию 'v2'.
-    :type kw_extraction: AgentTaskSolverConfig, optional
+    :type kw_extraction: Union[AgentTaskSolverConfig, str], optional
     """
     kw_extraction: Union[AgentTaskSolverConfig, str] = 'v2'
 

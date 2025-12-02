@@ -19,11 +19,11 @@ from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 class QueryLLMParserConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация "Query Parser"-стадии QA-конвейера.
 
-    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значения будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию QueryLLMParserAgentTasksConfig().
+    :param agent_tasks_config: Конфигурации LLM-промптов для решения заданных задач с помощью LLM-агента. Значение по умолчанию QueryLLMParserAgentTasksConfig().
     :type agent_tasks_config: Union[QueryLLMParserAgentTasksConfig,Dict], optional
-    :param max_entities: Макимальное количество сущностей, которое может быть извлечено из заданного текста на естественном языке. Значение по кмолчанию 20.
+    :param max_entities: Максимальное количество сущностей, которое может быть извлечено из заданного текста на естественном языке. Значение по умолчанию 20.
     :type max_entities: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryLLMParser-класса. Значение по умолчанию 'qa_queryparser_stage_cache'.
     :type cache_table_name: str, optional
@@ -57,9 +57,9 @@ class QueryLLMParser(CacheUtils, CacheOperations, AgentStatOperations):
     :type agent: AbstractAgentConnector
     :param config: Конфигурация "Query Parser"-стадии. Значение по умолчанию QueryLLMParserConfig().
     :type config: Union[QueryLLMParserConfig,Dict], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операций в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
@@ -94,6 +94,15 @@ class QueryLLMParser(CacheUtils, CacheOperations, AgentStatOperations):
         self.verbose = config.verbose
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
+        """Формирует составной ключ кэша для результатов извлечения сущностей.
+
+        В ключ включается строковое представление конфигурации парсера запросов, идентификатор и конфигурация используемого LLM-агента, сериализованное представление входного QueryInfo.
+
+        :param query_info: Структура с исходным запросом и производными полями.
+        :type query_info: QueryInfo
+        :return: Список строк, используемый как составной ключ кеша.
+        :rtype: List[object]
+        """
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [self.config.to_str(), str_using_agent_info, query_info.to_str()]
 
@@ -101,10 +110,10 @@ class QueryLLMParser(CacheUtils, CacheOperations, AgentStatOperations):
     def extract_entities(self, query_info: QueryInfo) -> Tuple[List[str], ReturnInfo]:
         """Метод предназначен для извлечения ключевых сущностей из query-текста.
 
-        :param query_info: Структура данных с информацией об обрабатываемом запросе
+        :param query_info: Структура данных с информацией об обрабатываемом запросе.
         :type query_info: QueryInfo
         :return: Кортеж из двух объектов: (1) структура данных со списком извлечённых ключевых сущностей из query; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[QueryInfo, ReturnInfo]
+        :rtype: Tuple[List[str], ReturnInfo]
         """
 
         self.log("START KEY WORD EXTRACTION...", verbose=self.verbose)

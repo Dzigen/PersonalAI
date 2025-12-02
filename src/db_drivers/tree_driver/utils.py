@@ -12,7 +12,7 @@ class TreeNodeType(Enum):
     leaf = "leaf"
     #: Корневая вершина дерева.
     root = "root"
-    # Вершина, у которой есть минимум одна child- или descendants-вершина типа 'leaf'.
+    #: Вершина, у которой есть минимум одна child- или descendants-вершина типа 'leaf'.
     summarized = "summarized"
 
 
@@ -40,6 +40,15 @@ class TreeNode:
 
 @dataclass
 class TreeDBConnectionConfig(BaseDatabaseConfig):
+    """Конфигурация подключения к БД, в которой хранится дерево вершин.
+
+    :param db_info: Информация о БД и таблице, в которой хранится дерево. По умолчанию {'db': 'DefaultPersonalAITreeDB', 'table': 'DefaultPersonalAITreeTable'}.
+    :type db_info: Dict
+    :param host: Хост, на котором развернута БД.
+    :type host: str
+    :param port: Порт подключения к БД.
+    :type port: str
+    """
     db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAITreeDB', 'table': 'DefaultPersonalAITreeTable'})
     host: str = None
     port: str = None
@@ -58,7 +67,14 @@ class TreeDBConnectionConfig(BaseDatabaseConfig):
 
 
 class AbstractTreeDatabaseConnection(AbstractDatabaseConnection):
+    """Абстрактный интерфейс для работы с древовидной структурой в БД.
 
+    Определяет операции:
+     - создание/чтение/удаление вершин и поддеревьев;
+     - проверка согласованности дерева;
+     - получение потомков и детей по ancestor_id/parent_id;
+     - вычисление глубины дерева.
+    """
     root_node_id: str = "ROOT_NODE_ID"
 
     @abstractmethod
@@ -106,7 +122,7 @@ class AbstractTreeDatabaseConnection(AbstractDatabaseConnection):
         :type parent_id: str
         :param id_type: Тип идентификатора, по которому осуществляется поиск/выбор parent-вершины, Значение по умолчанию TreeIdType.external.
         :type id_type: str, optional
-        :return: Список child-вершин, принадлежаших заданной parent-вершине.
+        :return: Список child-вершин, принадлежащих заданной parent-вершине.
         :rtype: List[TreeNode]
         """
         pass

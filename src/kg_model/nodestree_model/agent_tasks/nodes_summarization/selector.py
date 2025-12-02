@@ -10,8 +10,17 @@ AVAILABLE_SUMMN_TCONFIGS = {
 
 
 class AgentSummNTaskConfigSelector:
+    """Класс предназначен для выбора и инициализации конфигураций задач по суммаризации узлов.
+
+    Используется для выбора версии промптов, парсеров и параметров кеширования/логгирования для задач суммаризации.
+    """
     @staticmethod
     def get_available_configs():
+        """Метод предназначен для получения доступных конфигураций задач суммаризации.
+
+        :return: Словарь с доступными конфигурациями по их идентификаторам версий.
+        :rtype: Dict[str, Dict[str, AgentTaskSuite]]
+        """
         return AVAILABLE_SUMMN_TCONFIGS
 
     @staticmethod

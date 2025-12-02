@@ -24,11 +24,11 @@ class AStarMetricsConfig(BaseConfigOperations):
 
     :param h_metric_name: Эвристическая метрика, которая будет использоваться для оценки расстояния между текущей и конечной вершинами. Данное поле может принимать следующие значения: (1) 'ip' - косинусное расстояние между эмбеддингами текущей и конечной вершин; (2) 'weight_with_short_path' - кратчайшее расстояние между текущей и конечной вершинами (полученное с помощью bfs-алгоритма), домноженное на 'ip'-метрику; (3) 'avg_weighted_with_short_path' - кратчайшее расстояние между текущей и конечной вершинами (полученное с помощью bfs-алгоритма), домноженное на усреднённое значение 'ip'-метрики между парами вершин в пути от начальной до текущей вершины + пара из текущей и конечной вершин. Значение по умолчанию 'ip'.
     :type h_metric_name: str, optional
-    :param nodes_vdb_name: ... . Значение по умолчанию 'nodes_dense'.
+    :param nodes_vdb_name: ... . Значение по умолчанию 'dense_nodes'.
     :type nodes_vdb_name: str, optional
     """
     h_metric_name: str = 'ip'
-    nodes_vdb_name: str = 'nodes_dense'
+    nodes_vdb_name: str = 'dense_nodes'
 
     def to_str(self):
         return f"{self.h_metric_name}"
@@ -357,7 +357,7 @@ class AStarGraphSearch:
     :type log: Logger
     :param search_config: Конфигурация A*-алгоритма поиска по графовому хранилищу триплетов. Значение по умолчанию AStarGraphSearchConfig().
     :type search_config: AStarGraphSearchConfig, optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
@@ -446,7 +446,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     :type search_config: Union[AStarGraphSearchConfig, Dict], optional
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
     :type log: Logger
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional

@@ -18,7 +18,7 @@ class PersonalAIConfig(BaseComponentConfig, LanguageConfig):
 
     :param kg_model_config: Конфигурация памяти ассистента. Значение по умолчанию KnowledgeGraphModelConfig().
     :type kg_model_config: Union[KnowledgeGraphModelConfig, Dict], optional
-    :param qa_pipeline_config: Конфигурация конвейера, который выполняет обработку входящих user-вопросов, поиск релевантной информации в памяти асситента и генерацию ответов. Значение по умолчанию QAPipelineConfig().
+    :param qa_pipeline_config: Конфигурация конвейера, который выполняет обработку входящих user-вопросов, поиск релевантной информации в памяти ассистента и генерацию ответов. Значение по умолчанию QAPipelineConfig().
     :type qa_pipeline_config: Union[QAPipelineConfig, Dict], optional
     :param mem_pipeline_config: Конфигурация конвейера, который выполняет изменение/обновление информации/знаний в памяти ассистента. Значение по умолчанию MemPipelineConfig().
     :type mem_pipeline_config: Union[MemPipelineConfig, Dict], optional
@@ -111,7 +111,7 @@ class PersonalAI:
         return answer, info
 
     def update_memory(self, text: str, text_properties: Union[None, Dict] = None) -> Tuple[List[Triplet], ReturnInfo]:
-        """Метод предназначен для добавления новой информации в память (граф знаний) и её актуализацию.
+        """Метод предназначен для добавления новой информации в память (граф знаний) и её актуализации.
 
         :param text: Слабоструктурированный текст на естественном языке.
         :type text: str

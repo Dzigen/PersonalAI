@@ -7,9 +7,9 @@ from .instances import SIMPLE_TRIPLET2, SIMPLE_TRIPLET1_2, SIMPLE_TRIPLET1, \
     SIMPLE_TRIPLET3, THESIS_TRIPLET1, THESIS_TRIPLET2
 
 # TO CHANGE
-AVAILABLE_GRAPH_MODELS = ['neo4j']  # 'inmemory_graph', 'neo4j', 'kuzu'
+AVAILABLE_GRAPH_MODELS = ['neo4j']  # 'neo4j', 'kuzu', 'inmemory_graph', 'blazegraph'
 
-AVAILABLE_EMBEDDING_MODELS = ['milvus']  # 'chroma', 'milvus', 'inmemory', 'elasticsearch'
+AVAILABLE_EMBEDDING_MODELS = ['opensearch', 'qdrant']  # 'chroma', 'inmemory', 'elasticsearch', 'opensearch', 'weaviate', 'qdrant' | 'milvus'
 
 
 ###############################################################################################

@@ -19,7 +19,7 @@ class KnowledgeComparatorConfig(BaseComponentConfig):
     """Конфигурация "Knowledge Comparator"-стадии QA-конвейера.
     :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию KC_RERANKDRIVER_DEFAULT_CONFIG.
     :type reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
-    :param max_K: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 1.
+    :param max_k: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 1.
     :type max_k: int, optional
     :param k_compare: Служебный гиперпараметр. Значение по умолчанию 5.
     :type k_compare: int, optional
@@ -57,7 +57,7 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация "Knowledge Comparator"-стадии. Значение по умолчанию KnowledgeComparatorConfig().
     :type config: Union[KnowledgeComparatorConfig,Dict], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
     """
 
@@ -82,6 +82,15 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
         self.verbose = self.config.verbose
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
+        """Формирует ключ кэша для результата сопоставления сущностей с узлами графа.
+
+        В ключ включается строковое представление конфигурации компаратора, сериализованное представление входного QueryInfo.
+
+        :param query_info: Структура с исходным запросом и дополнительными полями.
+        :type query_info: QueryInfo
+        :return: Список строк, используемый как составной ключ кеша.
+        :rtype: List[object]
+        """
         return [self.config.to_str(), query_info.to_str()]
 
     @CacheUtils.cache_method_output
@@ -90,8 +99,8 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
 
         :param query_structure: Структура данных, которая хранит user-вопрос и извлечённые из него сущности.
         :type query_structure: QueryInfo
-        :return: Статс завершения операции с пояснительной информацией.
-        :rtype: ReturnInfo
+        :return: Кортеж из двух объектов: (1) (список сопоставленных узлов, список имён/документов по сущностям); (2) статус завершения операции с пояснительной информацией.
+        :rtype: Tuple[List[NodeInfo], List[object], ReturnInfo]
         """
 
         self.log("START MATCHING KEY WORDS ...", verbose=self.verbose)

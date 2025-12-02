@@ -1,6 +1,7 @@
 from typing import List, Tuple, Union, Dict
 from time import sleep
 from haystack_integrations.document_stores.weaviate import WeaviateDocumentStore
+from haystack_integrations.document_stores.weaviate.document_store import generate_uuid5
 from haystack_integrations.components.retrievers.weaviate import WeaviateBM25Retriever
 from haystack.document_stores.types import DuplicatePolicy
 from haystack import Document
@@ -33,8 +34,10 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
         pass
 
     def close_connection(self) -> ReturnInfo:
-        # TODO
-        pass
+        try:
+            self.db_conn._client.close()
+        except TypeError:
+            pass
 
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
         # validating
@@ -43,6 +46,9 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
                 raise ValueError
             if item.embedding is not None:
                 raise ValueError
+            for k, v in item.metadata.items():
+                if v is None:
+                    raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
             raise ValueError
@@ -59,7 +65,7 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
             return []
 
         raw_output = self.db_conn.filter_documents(
-            filters={"field": "id", "operator": "in", "value": ids})
+            filters={"field": "_original_id", "operator": "in", "value": ids})
 
         formated_output = []
         for raw_item in raw_output:
@@ -67,7 +73,8 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
             if 'documents' in includes:
                 formated_item.document = raw_item.content
             if 'metadatas' in includes:
-                formated_item.metadata = raw_item.meta
+                formated_item.metadata = {k: v for k, v in raw_item.meta.items() if v is not None}
+
             formated_output.append(formated_item)
 
         return formated_output
@@ -77,10 +84,15 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
         pass
 
     def upsert(self, items: List[VectorDBInstance]) -> None:
-        # validation
+        # validating
         for item in items:
             if not isinstance(item.id, str):
                 raise ValueError
+            if item.embedding is not None:
+                raise ValueError
+            for k, v in item.metadata.items():
+                if v is None:
+                    raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
             raise ValueError
@@ -97,22 +109,25 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
         if len(ids):
             self.db_conn.delete_documents(document_ids=ids)
 
-    def retrieve(self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
-                 includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
+    def retrieve(
+            self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
+            includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
         self.validate_retrieve_arguments(query_instances, n_results, subset_ids, includes)
         if subset_ids is not None and len(subset_ids) < 1:
-            return [[] * len * query_instances]
+            return [[] * len(query_instances)]
         if n_results < 1:
             return [[] * len(query_instances)]
 
         filters = None
         if subset_ids is not None:
-            filters = {"field": "id", "operator": "in", "value": subset_ids}
+            filters = {"field": "_original_id", "operator": "in", "value": subset_ids}
 
         formated_outputs = []
         for query in query_instances:
             # Attention: Будут получены значения семантической близости [similarity], а не значения их расстояния [distance]
-            raw_output = self.retriever.run(query=query.document, top_k=n_results, filters=filters, scale_score=True)
+            # print("query: ", query)
+            raw_output = self.retriever.run(query=query.document, top_k=n_results, filters=filters)
+            # print('output: ',raw_output)
 
             formated_output = []
             for raw_item in raw_output["documents"]:
@@ -122,6 +137,17 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
                 if 'metadatas' in includes:
                     formated_item.metadata = raw_item.meta
                 formated_output.append((float(raw_item.score), formated_item))
+
+            if (subset_ids is not None) and (len(formated_output) < n_results):
+                containing_ids = set(map(lambda item: item[1].id, formated_output))
+                extended_ids = set()
+                for sub_id in subset_ids:
+                    if len(containing_ids) + len(extended_ids) >= n_results:
+                        break
+                    elif sub_id not in containing_ids:
+                        extended_ids.add(sub_id)
+                extended_output = self.read(list(extended_ids), includes=includes)
+                formated_output += [(0.5, item) for item in extended_output]
 
             formated_outputs.append(formated_output)
 
@@ -135,14 +161,14 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
         if not isinstance(id, str):
             raise ValueError
 
-        res = self.db_conn.filter_documents(filters={"field": "id", "operator": "==", "value": id})
-
-        return bool(len(res))
+        uuid5 = generate_uuid5(id)
+        item_exists = self.db_conn.collection.data.exists(uuid5)
+        return item_exists
 
     def clear(self) -> None:
         if self.db_conn.collection is not None:
             collection_name = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
-            self.db_conn.collection.delete(collection_name)
+            self.db_conn.client.collections.delete(collection_name)
             sleep(1)
-            self.db_conn.collection.create(collection_name)
+            self.db_conn._client.collections.create_from_dict(self.db_conn._collection_settings)
             sleep(1)
