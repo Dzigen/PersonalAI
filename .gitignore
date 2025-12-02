@@ -15,6 +15,7 @@ notebooks/download_models/.env
 
 experiments/qa/configuring_exp/weak/legacy
 docs/notebooks/**/log
+experiments/qa/**/log
 
 # experiments/qa/weak/results/**/tmp_answer_packs/
 # experiments/qa/weak/results/**/answer_packs/
