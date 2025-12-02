@@ -2,11 +2,13 @@ from .......utils import AgentTaskSolverConfig, Logger
 from ......utils import BaseAgentTaskConfigSelector
 from .general_parsers import qd_custom_formate, qd_custom_postprocess
 from .v1 import QD_SUITE_V1
+from .v2 import QD_SUITE_V2
 
 QD_LOG_PATH = "log/qa/query_preprocessing/decomposition/agent_tasks/query_decompsition"
 
 AVAILABLE_QD_TCONFIGS = {
-    'v1': QD_SUITE_V1
+    'v1': QD_SUITE_V1,
+    'v2': QD_SUITE_V2
 }
 
 
@@ -16,7 +18,7 @@ class AgentQueryDecompTaskConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_QD_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v1',
+    def select(base_config_version: str = 'v2',
                cache_table_name: str = "qp_qdecomp_agent_task_cache",
                inferencestat_table_name: str = "qp_qdecomp_agent_task_stat") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
