@@ -184,7 +184,7 @@ services:
               capabilities: [gpu]
 
   workspace:
-    image: m.menschikov/workspace:v4
+    image: m.menschikov/workspace:v5
     container_name: ${WORKSPACE_CNTNAME}
     hostname: ${WORKSPACE_HOST}
     network_mode: "host"
@@ -196,7 +196,7 @@ services:
       - ${EXTERNAL_MODELS_PATH}:${INTERNAL_MODELS_PATH}
     depends_on:
       - neo4j
-      - milvus
+      - qdrant
       - opensearch
       - mongo
       - redis

@@ -221,7 +221,7 @@ services:
 
 
   workspace:
-    image: m.menschikov/workspace:v4
+    image: m.menschikov/workspace:v5
     container_name: personalai_mmenschikov_workspace
     hostname: worksapceservice
     volumes:

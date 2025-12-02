@@ -105,7 +105,7 @@ qdrant_cnt_variables = {
     'QDRANT_CNTNAME': ADDITIONAL_DC_PARAMS['qdrant_cntname'],
     'QDRANT_HOST': ADDITIONAL_DC_PARAMS['qdrant_host'],
 
-    'QDRANT_EXTERNAL_PORT1': DENSE_CONNECTOR_PARAMS['conn']['port'],
+    'QDRANT_EXTERNAL_PORT': DENSE_CONNECTOR_PARAMS['conn']['port'],
     'QDRANT_UI_EXTERNAL_PORT': ADDITIONAL_DC_PARAMS['qdrant_ui_port'],
 
     'QDRANT_LOCAL_VOLUME': DENSE_DB_PATH

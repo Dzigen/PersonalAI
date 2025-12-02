@@ -68,7 +68,7 @@ dense_nodesdb_config = VectorDBConnectionConfig(
     conn=DENSE_NODESDB_CONFIG['conn']
 )
 dense_ndbdriver_config = VectorDriverConfig(
-    db_vendor='milvus', # !!! PAY ATTENTION !!!
+    db_vendor='qdrant', # !!! PAY ATTENTION !!!
     vector_category='dense',
     db_config=dense_nodesdb_config
 )
@@ -93,7 +93,7 @@ dense_tripletsdb_config = VectorDBConnectionConfig(
     conn=DENSE_TRIPLETSDB_CONFIG['conn']
 )
 dense_tdbdriver_config = VectorDriverConfig(
-    db_vendor='milvus', # !!! PAY ATTENTION !!!
+    db_vendor='qdrant', # !!! PAY ATTENTION !!!
     vector_category='dense',
     db_config=dense_tripletsdb_config
 )

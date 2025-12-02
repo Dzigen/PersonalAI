@@ -322,7 +322,7 @@ services:
           memory: 5G
 
   isolated_environment:
-    image: m.menschikov/workspace:v2
+    image: m.menschikov/workspace:v5
     container_name: personalai_test_isolated_env
     hostname: test_isolated_env
     network_mode: "host"
