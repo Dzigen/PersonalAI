@@ -116,7 +116,7 @@ def vector_composer(e5_small_embedder):
         'dense_chroma': chroma_dense_config,
         #'dense_milvus': milvus_dense_config,
         'dense_inmemory': inmemory_dense_config,
-        #'dense_opensearch': opensearch_dense_config,
+        #'dense_opensearch': opensearch_dense_config, # TO FIX
         'dense_elasticsearch': elasticsearch_dense_config,
         'dense_weaviate': weaviate_dense_config,
         'dense_qdrant': qdrant_dense_condif,
@@ -130,7 +130,7 @@ def vector_composer(e5_small_embedder):
         'dense_chroma': e5_small_embedder,
         #'dense_milvus': e5_small_embedder,
         'dense_inmemory': e5_small_embedder,
-        #'dense_opensearch': e5_small_embedder,
+        #'dense_opensearch': e5_small_embedder, # TO FIX
         'dense_elasticsearch': e5_small_embedder,
         'dense_weaviate': e5_small_embedder,
         'dense_qdrant': e5_small_embedder

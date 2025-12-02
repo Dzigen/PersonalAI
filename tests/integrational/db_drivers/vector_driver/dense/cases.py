@@ -10,7 +10,7 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from src.db_drivers.vector_driver import VectorDBInstance
 
 # TO CHANGE
-AVAILABLE_VECTOR_DBS = ['weaviate']  # 'chroma', 'inmemory', 'opensearch', 'elasticsearch', 'opensearch', 'weaviate', 'qdrant' | 'milvus'
+AVAILABLE_VECTOR_DBS = ['chroma', 'inmemory', 'opensearch', 'elasticsearch', 'weaviate', 'qdrant']  # 'chroma', 'inmemory', 'opensearch', 'elasticsearch', 'weaviate', 'qdrant' | 'milvus'
 
 ###############################################################################################
 

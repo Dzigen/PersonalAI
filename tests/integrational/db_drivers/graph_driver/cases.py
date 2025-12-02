@@ -7,7 +7,7 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from src.utils.data_structs import NodeCreator, Relation, RelationType, NodeType, TripletCreator, NodeInfo, RelationInfo
 
 # TO CHANGE
-AVAILABLE_GRAPH_DBS = ['neo4j'] # 'neo4j', 'kuzu', 'inmemory_graph', 'blazegraph'
+AVAILABLE_GRAPH_DBS = ['neo4j', 'kuzu', 'inmemory_graph'] # 'neo4j', 'kuzu', 'inmemory_graph', 'blazegraph'
 
 ###############################################################################################
 
