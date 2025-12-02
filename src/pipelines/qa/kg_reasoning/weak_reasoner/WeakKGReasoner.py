@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Tuple, Union, List, Dict
 from copy import deepcopy
 
-from .config import WKGR_MAIN_LOG_PATH
+from .config import WKGR_MAIN_LOG_PATH, WEAK_KG_RETRIEVER_CONFIG
 from .utils import WeakKGReasonerStages
 from .query_parser import QueryLLMParser, QueryLLMParserConfig
 from .knowledge_comparator import KnowledgeComparator, KnowledgeComparatorConfig
@@ -25,7 +25,7 @@ class WeakKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, LanguageCo
     :type query_parser_config: Union[None,Dict,QueryLLMParserConfig], optional
     :param knowledge_comparator_config: Конфигурация второй стадии reasoner-конвейера: сопоставление (match) сущностей из user-вопроса с информацией в графе знаний. Значение по умолчанию KnowledgeComparatorConfig().
     :type knowledge_comparator_config: Union[None,Dict,KnowledgeComparatorConfig], optional
-    :param knowledge_retriever_config: Конфигурация третьей стадии reasoner-конвейера: извлечение релевантной информации из графа знаний для user-вопроса. Значение по умолчанию KnowledgeRetrieverConfig().
+    :param knowledge_retriever_config: Конфигурация третьей стадии reasoner-конвейера: извлечение релевантной информации из графа знаний для user-вопроса. Значение по умолчанию WEAK_KG_RETRIEVER_CONFIG.
     :type knowledge_retriever_config: Union[Dict,KnowledgeRetrieverConfig], optional
     :param answer_generator_config: Конфигурация четвёртой стадии reasoner-конвейера: условная генерация ответа на user-вопрос. Значение по умолчанию QALLMGeneratorConfig().
     :type answer_generator_config: Union[Dict,QALLMGeneratorConfig], optional
@@ -37,7 +37,7 @@ class WeakKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, LanguageCo
     knowledge_comparator_config: Union[None, Dict, KnowledgeComparatorConfig] = field(
         default_factory=lambda: KnowledgeComparatorConfig())
     knowledge_retriever_config: Union[Dict, KnowledgeRetrieverConfig] = field(
-        default_factory=lambda: KnowledgeRetrieverConfig())
+        default_factory=lambda: WEAK_KG_RETRIEVER_CONFIG)
     answer_generator_config: Union[Dict, QALLMGeneratorConfig] = field(
         default_factory=lambda: QALLMGeneratorConfig())
 

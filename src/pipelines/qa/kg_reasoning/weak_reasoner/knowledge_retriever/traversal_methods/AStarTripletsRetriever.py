@@ -24,11 +24,11 @@ class AStarMetricsConfig(BaseConfigOperations):
 
     :param h_metric_name: Эвристическая метрика, которая будет использоваться для оценки расстояния между текущей и конечной вершинами. Данное поле может принимать следующие значения: (1) 'ip' - косинусное расстояние между эмбеддингами текущей и конечной вершин; (2) 'weight_with_short_path' - кратчайшее расстояние между текущей и конечной вершинами (полученное с помощью bfs-алгоритма), домноженное на 'ip'-метрику; (3) 'avg_weighted_with_short_path' - кратчайшее расстояние между текущей и конечной вершинами (полученное с помощью bfs-алгоритма), домноженное на усреднённое значение 'ip'-метрики между парами вершин в пути от начальной до текущей вершины + пара из текущей и конечной вершин. Значение по умолчанию 'ip'.
     :type h_metric_name: str, optional
-    :param nodes_vdb_name: ... . Значение по умолчанию 'nodes_dense'.
+    :param nodes_vdb_name: ... . Значение по умолчанию 'dense_nodes'.
     :type nodes_vdb_name: str, optional
     """
     h_metric_name: str = 'ip'
-    nodes_vdb_name: str = 'nodes_dense'
+    nodes_vdb_name: str = 'dense_nodes'
 
     def to_str(self):
         return f"{self.h_metric_name}"

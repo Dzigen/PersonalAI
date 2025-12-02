@@ -4,7 +4,7 @@ from .......rerankers.methods import EnsembleFusionRerankerConfig, RetrieverConf
 KRFILTER_RERANKDRIVER_DEFAULT_CONFIG = RerankerDriverConfig(
     name='ensemble_fusion',
     strategy_config=EnsembleFusionRerankerConfig(
-        vdb_names=['triplets_dense', 'triplets_sparse_bm25'],
+        vdb_names=['dense_triplets', 'bm25_triplets'],
         retriever_configs=[RetrieverConfig(fetch_n=50, threshold=0.5), RetrieverConfig(fetch_n=50, threshold=0.5)],
         weights=[0.7, 0.3]
     )

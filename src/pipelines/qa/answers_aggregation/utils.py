@@ -20,10 +20,10 @@ class AnswerAggregatorTaskSolvers(BaseTaskSolvers):
 @dataclass
 class AnswersAggregatorAgentTasksConfig(BaseAgentTasksConfig):
     """
-    :param suba_summarisation: Конфигурация атомарной задачи для LLM-агента по суммаризации/объединению независимых ответов на под-вопросы в один финальный ответ на исходный user-вопрос. Значение по умолчанию 'v1'.
+    :param suba_summarisation: Конфигурация атомарной задачи для LLM-агента по суммаризации/объединению независимых ответов на под-вопросы в один финальный ответ на исходный user-вопрос. Значение по умолчанию 'v2'.
     :type suba_summarisation: Union[AgentTaskSolverConfig, str], optional
     """
-    suba_summarisation: Union[AgentTaskSolverConfig, str] = 'v1'
+    suba_summarisation: Union[AgentTaskSolverConfig, str] = 'v2'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: ANSWAGGR_AGENTASKS_SELECTORS_MAPPING)
 

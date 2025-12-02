@@ -15,10 +15,10 @@ class MediumASummarizerTaskSolvers(BaseTaskSolvers):
 @dataclass
 class ClueAnswersSummarizerAgentTasksConfig(BaseAgentTasksConfig):
     """
-    :param canswers_summarisation: Конфигурация атомарной задачи для LLM-агента по резюмированию информации, извлечённой из графа знаний по заданному search_query-шагу поиска. Значение по умолчанию 'v1'.
+    :param canswers_summarisation: Конфигурация атомарной задачи для LLM-агента по резюмированию информации, извлечённой из графа знаний по заданному search_query-шагу поиска. Значение по умолчанию 'v3'.
     :type canswers_summarisation: AgentTaskSolverConfig, optional
     """
-    canswers_summarisation: Union[AgentTaskSolverConfig, str] = 'v1'
+    canswers_summarisation: Union[AgentTaskSolverConfig, str] = 'v3'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: CQSUMM_AGENTASKS_SELECTORS_MAPPING)
 

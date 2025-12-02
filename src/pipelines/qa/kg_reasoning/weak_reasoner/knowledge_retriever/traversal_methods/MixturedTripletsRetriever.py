@@ -19,9 +19,9 @@ from .......db_drivers.kv_driver import KeyValueDriverConfig
 class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     """Конфигурация смешанного алгоритма извлечения триплетов из графа знаний.
 
-    :param retriever1_name: Наименование одного из алгоритмов (#1), который будет использоваться в комбинированном режиме для обхода вершин/рёбер графовой структуры данных (графа знаний) и извлечения релевантной информации. Значение по умолчанию 'astar'.
+    :param retriever1_name: Наименование одного из алгоритмов (#1), который будет использоваться в комбинированном режиме для обхода вершин/рёбер графовой структуры данных (графа знаний) и извлечения релевантной информации. Значение по умолчанию 'beamsearch'.
     :type retriever1_name: str, optional
-    :param retriever1_config: Конфигурация выбранного алгоритма (#1) обхода графа. Значение по умолчанию AStarGraphSearchConfig().
+    :param retriever1_config: Конфигурация выбранного алгоритма (#1) обхода графа. Значение по умолчанию GraphBeamSearchConfig().
     :type retriever1_config: Union[BaseGraphSearchConfig, Dict], optional
     :param retriever2_name: Наименование одного из алгоритмов (#2), который будет использоваться в комбинированном режиме для обхода вершин/рёбер графовой структуры данных (графа знаний) и извлечения релевантной информации. Значение по умолчанию 'watercircles'.
     :type retriever2_name: str, optional
@@ -32,8 +32,8 @@ class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveBFSTripletsRetriever-класса. Значение по умолчанию 'qa_bfs_t_retriver_cache'.
     :type cache_table_name: str, optional
     """
-    retriever1_name: str = 'astar'
-    retriever1_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: AStarGraphSearchConfig())
+    retriever1_name: str = 'beamsearch'
+    retriever1_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: GraphBeamSearchConfig())
     retriever2_name: str = 'watercircles'
     retriever2_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: WaterCirclesSearchConfig())
     accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
@@ -131,8 +131,8 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     def get_traversal_cache(self) -> Dict[str, Union[None, Dict, int]]:
         return {
-            self.retriever1.__class__.__name__: self.retriever1.get_cache_stat(get_traversal_cache = True),
-            self.retriever2.__class__.__name__: self.retriever2.get_cache_stat(get_traversal_cache = True)
+            self.retriever1.__class__.__name__: self.retriever1.get_cache_stat(get_traversal_cache=True),
+            self.retriever2.__class__.__name__: self.retriever2.get_cache_stat(get_traversal_cache=True)
         }
 
     def get_cache_key(self, query_info: QueryInfo) -> List[str]:

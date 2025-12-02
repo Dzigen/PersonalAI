@@ -60,7 +60,7 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
 
     answer_generator_config: Union[AnswerGeneratorConfig, Dict] = field(default_factory=lambda: AnswerGeneratorConfig())
 
-    max_searchplan_steps: int = 3
+    max_searchplan_steps: int = 6
     answer_something: bool = True
 
     cache_table_name: str = 'qa_mediumreasoner_cache'
@@ -380,9 +380,10 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
             search_plan, usp_rinfo = self.update_searchplan(search_step, search_plan)
             update_rinfo(rinfo, usp_rinfo)
 
-            if search_step >= len(search_plan.search_steps):
-                self.log("No more search-steps in the plan!", verbose=self.verbose)
-                break
+            if rinfo.status == ReturnStatus.success:
+                if search_step >= len(search_plan.search_steps):
+                    self.log("No more search-steps in the plan!", verbose=self.verbose)
+                    break
 
             self.log("STAGE#2 - QUERIES PREPARATION FOR KG TRAVERSAL", verbose=self.verbose)
             if rinfo.status == ReturnStatus.success:

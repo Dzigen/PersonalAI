@@ -21,14 +21,14 @@ class Entities2NodesMatcherConfig(BaseComponentConfig):
     :type use_tree: str, optional
     :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию E2NM_RERANKDRIVER_DEFAULT_CONFIG.
     :type reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
-    :param max_n: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 3.
+    :param max_n: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 1.
     :type max_n: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы Entities2NodesMatcher-класса. Значение по умолчанию 'medreasn_e2nmatcher_main_stage_cache'.
     :type cache_table_name: str, optional
     """
     use_tree: bool = False
     reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(default_factory=lambda: E2NM_RERANKDRIVER_DEFAULT_CONFIG)
-    max_n: int = 3
+    max_n: int = 1
 
     cache_table_name: str = "medreasn_e2nmatcher_main_stage_cache"
     log: Logger = field(default_factory=lambda: Logger(E2NMATCHER_MAIN_LOG_PATH))

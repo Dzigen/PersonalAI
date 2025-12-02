@@ -22,7 +22,7 @@ class EmbedderModelConfig(BaseConfigOperations):
     :param normalize_embeddings: Флаг нормализации эмбеддингов.
     :type normalize_embeddings: bool
     """
-    model_name_or_path: str = '../models/intfloat/multilingual-e5-small'
+    model_name_or_path: str = '../models/intfloat/multilingual-e5-base'
     prompts: Union[None, Dict] = field(default_factory=lambda: {
         "query": "query: ", "passage": "passage: "})
     query_prompt_name: Union[None, str] = 'query'
@@ -51,6 +51,7 @@ class EmbedderModel(Embeddings):
     :param config: Конфигурация эмбеддера.
     :type config: EmbedderModelConfig
     """
+
     def __init__(self, config: Union[EmbedderModelConfig, Dict, None] = None) -> None:
         if isinstance(config, dict):
             config: EmbedderModelConfig = EmbedderModelConfig.from_dict(config)

@@ -6,7 +6,7 @@ E2NMATCHER_MAIN_LOG_PATH = "log/qa/kg_reasoner/medium/entities2nodes_matching/ma
 E2NM_RERANKDRIVER_DEFAULT_CONFIG = RerankerDriverConfig(
     name='ensemble_fusion',
     strategy_config=EnsembleFusionRerankerConfig(
-        vdb_names=['nodes_dense', 'nodes_sparse_bm25'],
+        vdb_names=['dense_nodes', 'bm25_nodes'],
         weights=[0.4, 0.6]
     )
 )

@@ -44,17 +44,17 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
 
     :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию BSGS_RERANKDRIVER_DEFAULT_CONFIG.
     :type reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
-    :param vdbname_for_scores: ... . Значение по умолчанию 'triplets_dense'.
+    :param vdbname_for_scores: ... . Значение по умолчанию 'dense_triplets'.
     :type vdbname_for_scores: str, optional
     :param max_depth: Максимальная глубина построенных/пройденных путей. Значение по умолчанию 10.
     :type max_depth: int, optional
     :param max_paths: Максимальное количество построенных/пройденных путей. Значение по умолчанию 50.
     :type max_paths: int, optional
-    :param same_path_intersection_by_node: Если True, то пути могут пересекаться сами с собой по вершинам, иначе False. Значение по умолчанию True.
+    :param same_path_intersection_by_node: Если True, то пути могут пересекаться сами с собой по вершинам, иначе False. Значение по умолчанию False.
     :type same_path_intersection_by_node: bool, optional
-    :param diff_paths_intersection_by_node: Если True, то разные пути могут пересекаться по вершинам, иначе False. Значение по умолчанию True.
+    :param diff_paths_intersection_by_node: Если True, то разные пути могут пересекаться по вершинам, иначе False. Значение по умолчанию False.
     :type diff_paths_intersection_by_node: bool, optional
-    :param diff_paths_intersection_by_rel: Если True, то разные пути могут пересекаться по связям, иначе False. Значение по умолчанию True.
+    :param diff_paths_intersection_by_rel: Если True, то разные пути могут пересекаться по связям, иначе False. Значение по умолчанию False.
     :type diff_paths_intersection_by_rel: bool, optional
     :param mean_alpha: Гиперпараметр, отвечающий за учёт длины построенного пути при усреднении его ценности (релевантности). См. calculate_triplet_score- и calculate_path_score-методы. Значение по умолчанию 0.75.
     :type mean_alpha: float, optional
@@ -66,12 +66,12 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     :type cache_table_name: str, optional
     """
     reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(default_factory=lambda: BSGS_RERANKDRIVER_DEFAULT_CONFIG)
-    vdbname_for_scores: str = 'triplets_dense'
-    max_depth: int = 10
-    max_paths: int = 50
-    same_path_intersection_by_node: bool = True
-    diff_paths_intersection_by_node: bool = True
-    diff_paths_intersection_by_rel: bool = True
+    vdbname_for_scores: str = 'dense_triplets'
+    max_depth: int = 3
+    max_paths: int = 18
+    same_path_intersection_by_node: bool = False
+    diff_paths_intersection_by_node: bool = False
+    diff_paths_intersection_by_rel: bool = False
     mean_alpha: float = 0.75
     accepted_node_types: List[NodeType] = field(
         default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])

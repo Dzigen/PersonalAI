@@ -17,7 +17,7 @@ Input format:
 
 Output format (two sections):
 [Chain of thoughts] - 2-5 concise bullet points with a short justification of the decision on whether the next search queries should be improved.
-[Answer] - True or False.
+[Answer] - ONLY and STRICTLY "True" or "False". Do not add any descriptions/explanations to your True/False-answer.
 
 Examples:
 [Question]
@@ -81,7 +81,7 @@ RU_ENHCLS_SYSTEM_PROMPT = \
 
 Формат вывода (две секции):
 [Chain of thoughts] - 2-5 лаконичных пунктов с кратким обоснованием решения: следует ли улучшить следующие поисковые запросы.
-[Answer] - True или False.
+[Answer] - ТОЛЬКО и СТРОГО "True" или "False". Не добавляйте каких-либо дополнительных пояснений к своему True/False-ответу.
 
 Примеры:
 [Question]

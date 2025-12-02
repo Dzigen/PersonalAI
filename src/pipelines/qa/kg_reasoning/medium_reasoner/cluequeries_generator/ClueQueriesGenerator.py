@@ -33,7 +33,7 @@ class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict] = field(default_factory=lambda: ClueQueriesGeneratorAgentTasksConfig())
-    max_cqueries_amount: int = 4
+    max_cqueries_amount: int = 3
 
     cache_table_name: str = 'medreasn_cquerygen_main_stage_cache'
     log: Logger = field(default_factory=lambda: Logger(CQGEN_MAIN_LOG_PATH))
@@ -133,10 +133,10 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         if m_objects_amount < 1:
             raise ValueError
 
-        self.log(f"Получаем декартово произведение всех комбинаций объектов (по сущностям)...",verbose=self.verbose)
+        self.log(f"Получаем декартово произведение всех комбинаций объектов (по сущностям)...", verbose=self.verbose)
         base_entities = sorted(list(filter(lambda entitie: len(matched_kg_objects[entitie]) > 0, matched_kg_objects.keys())))
         objects_groups = list(product(*[matched_kg_objects[k] for k in base_entities]))[:self.config.max_cqueries_amount]
-        
+
         str_objectspermuts = ';'.join([f'[{k}] {len(v)}' for k, v in matched_kg_objects.items()])
         self.log(f"RESULT:\n- всего сущностей: {len(matched_kg_objects)}\n- после фильтрации: {len(base_entities)}\n- объектов для каждой сущности: {str_objectspermuts}\n- полученное количество комбинаций: {len(objects_groups)}", verbose=self.verbose)
 
