@@ -11,6 +11,7 @@ from .denoising import QueryDenoiser
 
 @dataclass
 class QueryPreprocessingStages(BaseStages):
+    """Контейнер для основных стадий предобработки пользовательского вопроса."""
     denoiser: Union[None, QueryDenoiser] = None
     enhancer: Union[None, QueryEnhancer] = None
     decomposer: Union[None, QueryDecomposer] = None

@@ -22,9 +22,9 @@ class EntitiesExtractorConfig(BaseComponentConfig, LanguageConfig):
 
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию EntitiesExtractorAgentTasksConfig().
+    :param agent_tasks_config: Конфигурации LLM-промптов для решения заданных задач с помощью LLM-агента. Значение по умолчанию EntitiesExtractorAgentTasksConfig().
     :type agent_tasks_config: Union[EntitiesExtractorAgentTasksConfig, Dict], optional
-    :param max_entities: Макимальное количество сущностей, которое может быть извлечено из заданного текста на естественном языке. Значение по кмолчанию 20.
+    :param max_entities: Максимальное количество сущностей, которое может быть извлечено из заданного текста на естественном языке. Значение по кмолчанию 20.
     :type max_entities: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы EntitiesExtractor-класса. Значение по умолчанию 'medreasn_entextr_main_stage_cache'.
     :type cache_table_name: str, optional

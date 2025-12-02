@@ -9,6 +9,13 @@ from ....utils import AgentTaskSolver, AgentTaskSolverConfig
 
 @dataclass
 class MemExtractorTaskSolvers(BaseTaskSolvers):
+    """Набор LLM-задач, осуществляемых в рамках Extractor-стадии Memorize-конвейера.
+
+    :param triplets_extraction_solver: Задачи по извлечению триплетов из текста на естественном языке.
+    :type triplets_extraction_solver: AgentTaskSolver
+    :param thesises_extraction_solver: Задачи по извлечению тезисной информации из текста на естественном языке.
+    :type thesises_extraction_solver: AgentTaskSolver
+    """
     triplets_extraction_solver: AgentTaskSolver
     thesises_extraction_solver: AgentTaskSolver
 

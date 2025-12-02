@@ -54,11 +54,11 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
     :type agent: AbstractAgentConnector
     :param config: Конфигурация QueryDenoiser-операции. Значение по умолчанию QueryDenoiserConfig().
     :type config: QueryDenoiserConfig, optional
-    :param cache_kvdriver_config:Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[None, KeyValueDriverConfig], optional
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операций в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
@@ -95,16 +95,24 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
         self.verbose = self.config.verbose
 
     def get_cache_key(self, query_info: QueryPreprocessingInfo) -> List[object]:
+        """Формирует ключ кеша для результата денойзинга.
+        В ключ включаются: строковое представление входной структуры QueryPreprocessingInfo, строковое представление конфигурации и идентификатор используемого LLM-агента.
+
+        :param query_info: Класс с информацией о предобработанном запросе.
+        :type query_info: QueryPreprocessingInfo
+        :return: Список объектов, используемый как составной ключ кеша.
+        :rtype: List[object]
+        """
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [query_info.to_str(), self.config.to_str(), str_using_agent_info]
 
     @CacheUtils.cache_method_output
     def perform(self, query_info: QueryPreprocessingInfo) -> Tuple[str, ReturnInfo]:
-        """Метод предназначен для выполнения операции форматирования/предобработки user-вопроса: декомпозиции сложных/составных user-вопросов на независимые/простые под-вопросы.
+        """Метод предназначен для выполнения операции форматирования/предобработки user-вопроса: удаления стоп-слов и шумовой/ненужной информации.
 
-        :param query_info: Струкутра данных с результатами предыдущих операций предобратки/форматирования исходного user-вопроса.
+        :param query_info: Структура данных с результатами предыдущих операций предобработки/форматирования исходного user-вопроса.
         :type query_info: QueryPreprocessingInfo
-        :return: Кортеж из двух объектов: (1) модифицированный user-вопрос без информации, зашумляющий основной запрос/интент; (2) статус завершения операции с пояснительной информацией.
+        :return: Кортеж из двух объектов: (1) модифицированный user-вопрос без информации, зашумляющей основной запрос/интент; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
         self.log("START QUERY DENOISING...", verbose=self.verbose)

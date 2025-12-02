@@ -8,22 +8,60 @@ from ...pipelines.utils import BaseStages, BaseTaskSolvers
 
 
 class AbstractCacheOperations(ABC):
+    """Абстрактный базовый класс для операций с кешем.
+
+    Класс задаёт интерфейс для получения статистики по кешу
+    и очистки связанных key-value-хранилищ. Конкретные реализации
+    должны определять структуру stages и tasks_solvers.
+
+    :param tasks_solvers: Набор task-солверов, для которых может вестись кеширование результатов. Значение по умолчанию None.
+    :type tasks_solvers: Union[None, BaseTaskSolvers]
+    :param stages: Набор стадий пайплайна, каждая из которых может иметь собственный кеш.. Значение по умолчанию None.
+    :type stages: Union[None, BaseStages]
+    :param cachekv: Интерфейс для работы с основным key-value-кешем текущего объекта.. Значение по умолчанию None.
+    :type cachekv: Union[None, CacheKV]
+    """
     tasks_solvers: Union[None, BaseTaskSolvers] = None
     stages: Union[None, BaseStages] = None
     cachekv: Union[None, CacheKV] = None
 
     @abstractmethod
     def get_cache_stat(self) -> Dict[str, Union[None, Dict]]:
+        """Метод предназначен для получения статистической информации по кешу.
+
+        :return: Словарь, в котором ключи соответствуют названиям компонент/стадий, а значения содержат статистику по их кешу, либо None, если кеш отсутствует.
+        :rtype: Dict[str, Union[None, Dict]]
+        """
         pass
 
     @abstractmethod
     def clear_kv_caches(self, clear_traversal_cache: bool, clear_retrieval_cache: bool) -> None:
+        """Метод предназначен для очистки связанных key-value-кешей.
+
+        :param clear_traversal_cache: Флаг, указывающий, требуется ли дополнительно очистить кеш, связанный с traversal-методами.
+        :type clear_traversal_cache: bool
+        :param clear_retrieval_cache: Флаг, указывающий, требуется ли очистить кеш, связанный с retrieval-операциями.
+        :type clear_retrieval_cache: bool
+        """
         pass
 
 
 class CacheOperations(AbstractCacheOperations):
+    """Базовая реализация операций с кешем для компонент пайплайна.
+
+    Класс реализует общий механизм:
+    - получения статистики по кешам текущего объекта, его стадий и связанных task-солверов;
+    - каскадной очистки key-value-кешей.
+    """
 
     def get_cache_stat(self, get_traversal_cache: bool = True) -> Dict[str, Union[None, Dict]]:
+        """Метод предназначен для получения статистики по кешу текущей компоненты, а также кешей её стадий и task-солверов.
+
+        :param get_traversal_cache: Если True, то для стадий, реализующих TraversalMethodCacheOpearions, дополнительно будет запрошена статистика. Значение по умолчанию True.
+        :type get_traversal_cache: bool
+        :return: Словарь со статистикой по кешу. Ключ для текущего класса — имя класса; ключи для стадий и task-солверов — имена их полей в соответствующих dataclass-структурах.
+        :rtype: Dict[str, Union[None, Dict]]
+        """
         cache_info = dict()
         child_class_name = self.__class__.__name__
         cache_info[child_class_name] = None if self.cachekv is None else self.cachekv.count_items()
@@ -56,6 +94,13 @@ class CacheOperations(AbstractCacheOperations):
         return cache_info
 
     def clear_kv_caches(self, clear_traversal_cache: bool = False, clear_retrieval_cache: bool = False) -> None:
+        """Метод предназначен для каскадной очистки key-value-кешей текущей компоненты, а также связанных стадий и task-солверов.
+
+        :param clear_traversal_cache: Если True, то для стадий, реализующих TraversalMethodCacheOpearions, будет вызван метод clear_traversal_cache(). Значение по умолчанию False.
+        :type clear_traversal_cache: bool
+        :param clear_retrieval_cache: Если True, то для стадий, реализующих TraversalMethodCacheOpearions, дополнительно будет очищен retrieval-кеш. Значение по умолчанию False.
+        :type clear_retrieval_cache: bool
+        """
         if self.cachekv is not None:
             self.cachekv.clear()
 
@@ -82,11 +127,16 @@ class CacheOperations(AbstractCacheOperations):
 
 
 class TraversalMethodCacheOpearions(CacheOperations):
+    """Базовый класс для стадий, в которых помимо key-value-кеша используется дополнительный кеш, связанный с traversal-методами.
 
+    Наследуется от CacheOperations и расширяется интерфейс методами очистки и получения traversal-кеша.
+    """
     @abstractmethod
     def clear_traversal_cache(self):
+        """Метод предназначен для очистки кеша, связанного с traversal-методами."""
         pass
 
     @abstractmethod
     def get_traversal_cache(self):
+        """Метод предназначен для получения статистики по кешу, связанному с traversal-методами."""
         pass

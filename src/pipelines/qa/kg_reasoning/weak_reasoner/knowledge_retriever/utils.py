@@ -9,14 +9,14 @@ from ......utils.cache_kv.CacheOperations import CacheOperations, TraversalMetho
 
 def get_nodes_path(parent: Dict[str, NodeInfo], end_node: NodeInfo) -> List[NodeInfo]:
     """Метод предназначен для получения пути обхода графа, заканчивая заданной конечной end_node_id вершиной.
-    Путь должен быть ацикличным: есть стартовая вершин, у которой нет родителя.
+    Путь должен быть ацикличным: есть стартовая вершина, у которой нет родителя.
 
-    :param parent: Словарь с идентификаторами родительских вершин. Ключи - идентикиаторы вершин, которые были посещены; значения - идентификаторы вершины (родитель), из которой был выполнен переход в данную (ключ) вершину.
-    :type parent: Dict[str, str]
+    :param parent: Словарь с идентификаторами родительских вершин. Ключи - идентификаторы вершин, которые были посещены; значения - идентификаторы вершины (родитель), из которой был выполнен переход в данную (ключ) вершину.
+    :type parent: Dict[str, NodeInfo]
     :param end_node_id: Идентификатор последней посещённой вершины.
     :type end_node_id: str
     :return: Последовательность посещённых вершин: от конечной до стартовой (в обратном порядке).
-    :rtype: List[str]
+    :rtype: List[NodeInfo]
     """
     if not isinstance(end_node.id, str):
         raise ValueError(NOT_VALID_ID_ERROR_MSG)
@@ -48,7 +48,7 @@ class AbstractTriplesFilter(CacheOperations):
 
     @abstractmethod
     def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
-        """Метод предназначен для применения операциии ранжирования/фильтрации к набору триплетов на основе меры их релевантности к user-вопросу.
+        """Метод предназначен для применения операции ранжирования/фильтрации к набору триплетов на основе меры их релевантности к user-вопросу.
 
         :param query_info: Структура данных с user-вопросом.
         :type query_info: QueryInfo
@@ -85,5 +85,12 @@ class AbstractTripletsRetriever(TraversalMethodCacheOpearions):
 
 @dataclass
 class KnowledgeRetrieverStages:
+    """Контейнер стадий knowledge retriever пайплайна.
+
+    :param triplets_retriever: Реализация алгоритма извлечения триплетов.
+    :type triplets_retriever: QueryInfo
+    :param triplets_filter: Реализация алгоритма фильтрации/ранжирования триплетов. Значение по умолчанию None.
+    :type triplets_filter: Union[None, AbstractTriplesFilter], optional
+    """
     triplets_retriever: AbstractTripletsRetriever
     triplets_filter: Union[None, AbstractTriplesFilter] = None

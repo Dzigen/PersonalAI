@@ -36,15 +36,15 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
     :type cluequeries_generator_config: Union[ClueQueriesGeneratorConfig, Dict], optional
     :param knowledge_retriever_config: Конфигурация стадии #3.1.1 reasoner-конвейера: выполняется обход графа знаний, извлечение триплетов, релевантных к текущему clue-запросу, и их фильтрация для формирования концентрированного множества информации. Значение по умолчанию MEDIUM_KG_RETRIEVER_CONFIG.
     :type knowledge_retriever_config: Union[KnowledgeRetrieverConfig, Dict], optional
-    :param clueanswer_generator_config: Конфигурация стадии #3.1.2 reasoner-конвейера:выполняется резюмирование информации, найденной/извлечённой по каждому clue-запросу в отдельности. Значение по умолчанию ClueAnswerGeneratorConfig().
+    :param clueanswer_generator_config: Конфигурация стадии #3.1.2 reasoner-конвейера: выполняется резюмирование информации, найденной/извлечённой по каждому clue-запросу в отдельности. Значение по умолчанию ClueAnswerGeneratorConfig().
     :type clueanswer_generator_config: Union[ClueAnswerGeneratorConfig, Dict], optional
-    :param clueanswers_summarizer_config: Конфигурация стадии #3.2 reasoner-конвейера: выполняется резюмирование информации, полученной врамках обхода графа по clue-запросам, для текущего шага/запроса (в рамках плана) поиска. Значение по умолчанию ClueAnswersSummarizerConfig().
+    :param clueanswers_summarizer_config: Конфигурация стадии #3.2 reasoner-конвейера: выполняется резюмирование информации, полученной в рамках обхода графа по clue-запросам, для текущего шага/запроса (в рамках плана) поиска. Значение по умолчанию ClueAnswersSummarizerConfig().
     :type clueanswers_summarizer_config: Union[ClueAnswersSummarizerConfig, Dict], optional
     :param answer_generator_config: Конфигурация стадии #4 reasoner-конвейера: выполняется генерация ответа на исходный вопрос, на основании информации, извлечённой из графа знаний по шагам/запросам плана поиска. Значение по умолчанию AnswerGeneratorConfig().
     :type answer_generator_config: Union[AnswerGeneratorConfig, Dict], optional
     :param max_searchplan_steps: Максимальное количество шагов плана поиска, по которым может быть выполнен обход/излвечение информации из графа знаний. По достижению заданного предела поиск завершается. Значение по умолчанию 5.
     :type max_searchplan_steps: int, optional
-    :param answer_something: Если True, то по достижении предела по количеству выполненных шагов плана будет произведена принудительная генерация ответа на вопрос по извлечённому набору информации (даже если в неё не содержится релевантных материалов для получения правильного ответа); иначе (по достижению предела обработанных шагов поиска) в качества ответа будет сформировна/возвращена NoAnswer-заглушка в качества результата работы reasoner-пайплайна. Значение по умолчанию True.
+    :param answer_something: Если True, то по достижении предела по количеству выполненных шагов плана будет произведена принудительная генерация ответа на вопрос по извлечённому набору информации (даже если в нем не содержится релевантных материалов для получения правильного ответа); иначе (по достижению предела обработанных шагов поиска) в качества ответа будет сформировна/возвращена NoAnswer-заглушка в качества результата работы reasoner-пайплайна. Значение по умолчанию True.
     :type answer_something: bool, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы MediumKGReasoner-класса. Значение по умолчанию 'qa_mediumreasoner_cache'.
     :type cache_table_name: str, optional

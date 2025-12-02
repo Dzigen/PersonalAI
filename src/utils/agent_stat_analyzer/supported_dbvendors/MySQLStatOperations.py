@@ -85,7 +85,6 @@ class MySQLStatOperations(AbstractTableStatOperations):
 
             query = even_query
 
-        print(query)
         self.db_conn.cursor.execute(query)
         median_value = float(self.db_conn.cursor.fetchone()[0])
         return round(median_value, 3)

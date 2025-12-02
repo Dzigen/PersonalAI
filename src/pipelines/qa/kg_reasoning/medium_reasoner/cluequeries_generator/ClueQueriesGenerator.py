@@ -22,9 +22,9 @@ from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperati
 class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация ClueQueriesGenerator-стадии MediumQA-ризонера.
 
-    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значения будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию ClueQueriesGeneratorAgentTasksConfig().
+    :param agent_tasks_config: Конфигурации LLM-промптов для решения заданных задач с помощью LLM-агента. Значение по умолчанию ClueQueriesGeneratorAgentTasksConfig().
     :type agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict], optional
     :param max_cqueries_amount: Максимальное количество clue-запросов, которое может быть сгенерировано. Значение по умолчанию 4.
     :type max_cqueries_amount: int, optional
@@ -106,13 +106,13 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         """Метод предназначен для генерации/формирования clue-запросов к заданному шагу поиска (в рамках текущего плана).
         Clue-запросы генерируются по следующему алгоритму:
         (1) На основе matched_kg_objects-словаря формируется линейная комбинация сопоставленных вершин из графа знаний. Каждый sample
-        представляет собой список конкретных вершин, который были сопоставлены (биекция / один к одному) сущностям из заданного базового запроса.
+        представляет собой список конкретных вершин, которые были сопоставлены (биекция / один к одному) сущностям из заданного базового запроса.
         (2) На основе базового запроса и каждого семпла с шага #1 (в отдельности) генерируются clue-запросы, которые заостряют внимание
         на поиск конкретной/детализированной (на сколько это возможно) информации.
 
         :param search_query: Базовый поисковый запрос на естественном языке (один из шагов поиска в рамках текущего плана).
         :type search_query: str
-        :param matched_kg_objects: Набор сущностей их заданного поискового запроса, сопоставленный с релевантными вершинами из графа знаний.
+        :param matched_kg_objects: Набор сущностей из заданного поискового запроса, сопоставленный с релевантными вершинами из графа знаний.
         :type matched_kg_objects: Dict[str, List[NodeInfo]]
         :return: Кортеж из двух объектов: (1) список сформированных clue-запросов; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[QueryInfo], ReturnInfo]

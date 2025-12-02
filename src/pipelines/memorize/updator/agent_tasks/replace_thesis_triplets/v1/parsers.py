@@ -5,6 +5,13 @@ from .......utils.data_structs import create_id
 
 
 def rt_custom_parse(raw_response: str, **kwargs) -> Dict[str, object]:
+    """Функция парсит сырой ответ LLM-агента в задаче замены тезисных (hyper-) триплетов.
+
+    :param raw_response: Сырой ответ LLM-агента.
+    :type raw_response: str
+    :return: Словарь, в котором ключами являются идентификаторы новых тезисов, а значениями — множества идентификаторов тезисов, которые считаются устаревшими.
+    :rtype: Dict[str, object]
+    """
     if len(raw_response) < 1:
         raise ValueError(f"raw_response: '{raw_response}'")
 

@@ -2,7 +2,16 @@ from typing import List
 import re
 
 
-def summn_custom_parse(raw_response: str, **kwargs) -> List[str]:
+def summn_custom_parse(raw_response: str, **kwargs) -> str:
+    """Метод предназначен для парсинга сырого ответа LLM и извлечения текстового резюме.
+
+    Ожидается, что резюме следует за [Output Summary]. Если шаблон не найден, возвращается весь исходный ответ.
+
+    :param raw_response: Сырой текстовый ответ LLM.
+    :type raw_response: str
+    :return: Строка с итоговым резюме.
+    :rtype: str
+    """
     # Пустой ответ
     raw_response = raw_response.strip(' .')
     if len(raw_response) < 1:

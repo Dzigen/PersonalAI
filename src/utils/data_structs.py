@@ -98,7 +98,7 @@ class Node:
 
 @dataclass
 class Relation:
-    "Струкура данных связи."
+    "Структура данных связи."
     #: Главная смысловая информация.
     name: str
     # Тип связи.
@@ -219,8 +219,8 @@ class NodeCreator(BaseCreator):
     def stringify(node: Node) -> Tuple[str, str]:
         """Метод предназначен для приведения структуры данных вершины в её строковое представление.
 
-        :param triplet: Структура данных вершины.
-        :type triplet: Node
+        :param node: Структура данных вершины.
+        :type node: Node
         :return: Кортеж, состоящий из двух объектов: (1) идентификатор вершины; (2) строковое представление вершины.
         :rtype: Typle[str,str]
         """
@@ -382,7 +382,7 @@ class QueryInfo:
     :type entities: Union[None, List[str]]
     :param linked_nodes: Набор объектов (вершин) из памяти (графа знаний) ассистента, который был сопоставлен сущностям из user-вопроса. Значение по умолчанию None.
     :type linked_nodes: Union[None, List[NodeInfo]]
-    :param linked_nodes_by_entities: Значение по умолчанию None.
+    :param linked_nodes_by_entities: Набор сопоставленных вершин, сгруппированный по сущностям исходного user-вопроса. Значение по умолчанию None.
     :type linked_nodes_by_entities: Union[None, List[object]]
     """
     query: str
@@ -399,6 +399,16 @@ class QueryInfo:
 
 @dataclass
 class SearchPlanInfo:
+    """Класс предназначен для хранения информации о многошаговом поисковом плане
+    при ответе на user-вопрос.
+
+    :param base_query: Исходный user-вопрос.
+    :type base_query: str
+    :param search_steps: Набор промежуточных шагов/подзапросов, сформированных в рамках планирования поиска. Значение по умолчанию пустой список.
+    :type search_steps: List[str]
+    :param steps_answers: Набор промежуточных результатов по каждому шагу поиска. Значение по умолчанию пустой список.
+    :type steps_answers: List[str]
+    """
     base_query: str
     search_steps: List[str] = field(default_factory=lambda: list())
     steps_answers: List[str] = field(default_factory=lambda: list())
@@ -409,6 +419,19 @@ class SearchPlanInfo:
 
 @dataclass
 class QueryPreprocessingInfo:
+    """Класс предназначен для хранения информации о предобработке исходного user-вопроса.
+
+    :param base_query: Исходный user-вопрос.
+    :type base_query: str
+    :param denoised_query: Вопрос после очистки от шума. Значение по умолчанию None.
+    :type denoised_query: Union[str, None]
+    :param enchanced_query: Вопрос после обогащения/уточнения (enhanced query). Значение по умолчанию None.
+    :type enchanced_query: Union[str, None]
+    :param decomposed_query: Список подзапросов, полученных в результате декомпозиции исходного вопроса. Значение по умолчанию None.
+    :type decomposed_query: Union[List[str], None]
+    :param processed_query: Финальное представление вопроса, которое будет использоваться на дальнейших этапах пайплайна. Значение по умолчанию None.
+    :type processed_query: Union[List[str], None]
+    """
     base_query: str
     denoised_query: Union[str, None] = None
     enchanced_query: Union[str, None] = None
@@ -428,11 +451,23 @@ class QueryPreprocessingInfo:
 
 @dataclass
 class BaseConfigOperations:
-
+    """Базовый класс для конфигурационных объектов. Определяет типовые операции по созданию конфигураций из словаря
+    и рекурсивному приведению вложенных полей к корректному формату.
+    """
     def to_str(self) -> str:
+        """Метод предназначен для получения строкового представления конфигурационного объекта.
+
+        :return: Строковое представление конфигурации.
+        :rtype: str
+        """
         pass
 
     def formate_fields(self) -> None:
+        """Метод предназначен для рекурсивного приведения вложенных полей конфигурации к корректному формату.
+
+        Обходит все поля dataclass-объекта и вызывает метод formate_fields()
+        для тех полей, которые также являются экземплярами BaseConfigOperations.
+        """
         fields_iterator = fields(self)
         for field_object in fields_iterator:
             field_value = getattr(self, field_object.name)
@@ -442,13 +477,20 @@ class BaseConfigOperations:
 
     @staticmethod
     def from_dict(dict_config: Dict):
+        """Метод предназначен для создания экземпляра конфигурационного объекта из словаря параметров.
+
+        :param dict_config: Словарь с параметрами конфигурации.
+        :type dict_config: Dict
+        :return: Инициализированный объект конфигурации.
+        :rtype: BaseConfigOperations
+        """
         pass
 
 
 @dataclass
 class BaseComponentConfig(BaseConfigOperations):
     """
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой комопненты.
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
     :type log: Logger, optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
@@ -458,6 +500,13 @@ class BaseComponentConfig(BaseConfigOperations):
 
     @staticmethod
     def from_dict(dict_config: Dict):
+        """Метод предназначен для создания экземпляра конфигурации компоненты из словаря.
+
+        :param dict_config: Словарь с параметрами конфигурации.
+        :type dict_config: Dict
+        :return: Экземпляр конфигурационного объекта.
+        :rtype: BaseComponentConfig
+        """
         pass
 
 
@@ -470,6 +519,11 @@ class LanguageConfig:
     lang: str = 'auto'
 
     def synchronize_language(self, lang: Union[None, str] = None):
+        """Метод предназначен для синхронизации языковых настроек между вложенными конфигурациями.
+
+        :param lang: Язык, который необходимо установить принудительно. Если None, используется текущее значение self.lang.
+        :type lang: Union[None,str], optional
+        """
         if lang is not None:
             self.lang = lang
 

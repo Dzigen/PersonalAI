@@ -48,7 +48,7 @@ class AgentTaskSolverConfig:
     :type cache_table_name: str
     :param inferencestat_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться мета-информация/статистика по inference-операции.
     :type inferencestat_table_name: str
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты. Значение по умолчанию Logger(RKG_LOG_PATH).
+    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
     :type log: Logger
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
@@ -68,13 +68,13 @@ class AgentTaskSolverConfig:
 class AgentTaskSolver:
     """Класс-обёртка, предназначенный для решения атомарной задачи на базе inference-операции LLM-агента.
 
-    :param agent: интерфейс взаимодействия с LLM-агентом.
+    :param agent: Интерфейс взаимодействия с LLM-агентом.
     :type agent: AbstractAgentConnector
     :param config: Конфигурация решения конкретной атомарной задачи.
     :type config: AgentTaskSolverConfig
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования результатов inference-операции. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования результатов inference-операции. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[None, KeyValueDriverConfig], optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках заданной LLM-задачи. Значение по умолчанию None.
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операций в рамках заданной LLM-задачи. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
     cachekv: CacheKV
@@ -107,10 +107,10 @@ class AgentTaskSolver:
     def solve(self, lang: str = 'en', gen_strategy: Union[None, Dict[str, str]] = None, **kwargs) -> Tuple[object, ReturnStatus]:
         """Метод предназначен для запуска agent-солвера на заданных входных данных.
 
-        :param lang: Язык промптов, которые будут использоваться на этапе инференса LLM-агента. Значение по умолчанию 'auto'.
+        :param lang: Язык промптов, которые будут использоваться на этапе инференса LLM-агента. Значение по умолчанию 'en'.
         :type lang: str, optional
         :param gen_strategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
-        :type gen_strategy: Union[None,Dict[str, str]], optional
+        :type gen_strategy: Union[None, Dict[str, str]], optional
         :return: Кортеж из двух объектов: (1) результат работы agent-солвера; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[object, ReturnStatus]
         """
@@ -165,7 +165,7 @@ class AgentTaskSolver:
                 self.log("Статус: " +
                          STATUS_MESSAGE[status], verbose=self.verbose)
 
-        # Если удалось добавить дополнительную инофрмациб в user-prompt
+        # Если удалось добавить дополнительную инофрмацию в user-prompt
         if status == ReturnStatus.success:
             self.log("-" * 20, verbose=self.verbose)
             self.log("4. Генерация ответа с помощью LLM-агента.",
@@ -285,5 +285,14 @@ class AgentTaskSolver:
 
 @dataclass
 class AgentTaskBaseConfig:
+    """Базовый класс конфигурации для agent-солверов.
+
+    :param suites: Набор гиперпараметров для инференса и разбора ответа LLM-агента
+        по поддерживаемым языкам (ключ — код языка).
+    :type suites: Dict[str, AgentTaskSuite]
+    :param custom_formate: Кастомная функция, приводящая входные данные к формату,
+        ожидаемому конкретным task-конвейером.
+    :type custom_formate: object
+    """
     suites: Dict[str, AgentTaskSuite]
     custom_formate: object

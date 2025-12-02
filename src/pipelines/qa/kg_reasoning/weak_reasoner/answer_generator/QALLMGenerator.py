@@ -22,11 +22,11 @@ from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperati
 class QALLMGeneratorConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация "Question Answering"-стадии QA-конвейера.
 
-    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значения будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию QALLMGeneratorAgentTasksConfig().
+    :param agent_tasks_config: Конфигурации LLM-промптов для решения заданных задач с помощью LLM-агента. Значение по умолчанию QALLMGeneratorAgentTasksConfig().
     :type agent_tasks_config: Union[QALLMGeneratorAgentTasksConfig,Dict], optional
-    :param relation_type: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос. Значение по умолчанию [RelationType.hyper].
+    :param relation_type: Типы триплетов, которые могут присутствовать в контексте для генерации ответа на user-вопрос. Значение по умолчанию [RelationType.hyper, RelationType.simple].
     :type relation_type: List[RelationType], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QALLMGenerator-класса. Значение по умолчанию 'qa_agenerator_stage_cache'.
     :type cache_table_name: str, optional
@@ -68,9 +68,9 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     :type agent: AbstractAgentConnector
     :param config: Конфигурация "Answer-generation"-стадии. Значение по умолчанию QALLMGeneratorConfig().
     :type config: Union[QALLMGeneratorConfig,Dict], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операций в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
@@ -104,6 +104,17 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         self.verbose = self.config.verbose
 
     def get_cache_key(self, query: str, context_triplets: List[Triplet]) -> List[object]:
+        """Формирует ключ кэша для результата генерации ответа.
+
+        В ключ включается строковое представление конфигурации генератора, идентификатор и конфигурацию используемого LLM-агента, текст запроса, хэш от строкового представления триплетов.
+
+        :param query: Пользовательский запрос.
+        :type query: str
+        :param context_triplets: Триплеты контекста (факты), на основе которых генерируется ответ.
+        :type context_triplets: List[Triplet]
+        :return: Список строк, используемый как составной ключ кеша.
+        :rtype: List[object]
+        """
         str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(
             triplet)[1] for triplet in context_triplets])).encode()).hexdigest()
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
@@ -116,7 +127,7 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         :param query: Вопрос на естественном языке.
         :type query: str
         :param context: Ненумерованный список дополнительной информации на естественном языке для генерации ответа.
-        :type context: str
+        :type context: List[Triplet]
         :return: Кортеж из двух объектов: (1) сгенерированный ответ на вопрос; (2) статус выполнения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """

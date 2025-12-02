@@ -19,11 +19,11 @@ from ....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperation
 class LLMUpdatorConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация Updator-стадии Memorize-конвейера.
 
-    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значения будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]], optional
-    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию MemUpdatorAgentTasksConfig().
-    :type agent_tasks_config: Union[Dict,MemUpdatorAgentTasksConfig], optional
-    :param delete_obsolete_info: Если True, то перед добавлением заданной информации будет удалена устаревшие знания из памяти (графа знаний) ассистента, иначе False. Значение по умолчанию False.
+    :param agent_tasks_config: Конфигурации LLM-промптов для решения заданных задач с помощью LLM-агента. Значение по умолчанию MemUpdatorAgentTasksConfig().
+    :type agent_tasks_config: Union[Dict, MemUpdatorAgentTasksConfig], optional
+    :param delete_obsolete_info: Если True, то перед добавлением заданной информации будут удалены устаревшие знания из памяти (графа знаний) ассистента, иначе False. Значение по умолчанию False.
     :type delete_obsolete_info: bool, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
@@ -57,9 +57,9 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
     :type kg_model: KnowledgeGraphModel
     :param config: Конфигурация Updator-стадии. Значение по умолчанию LLMUpdatorConfig().
     :type config: Union[Dict,LLMUpdatorConfig], optional
-    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчению None.
+    :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[KeyValueDriverConfig, None], optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операций в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
@@ -97,7 +97,7 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
         """
         obsolete_triplet_ids = list()
 
-        # Формируем уникальный список триплетов, которые инциденты вершинам
+        # Формируем уникальный список триплетов, которые инцидентны вершинам
         # из текущего триплета (если такие вершины присутствуют в графе знаний)
         incident_triplets = dict()
         for base_node in [base_triplet.start_node, base_triplet.end_node]:
@@ -137,7 +137,7 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
         """
         obsolete_triplet_ids = list()
 
-        # Формируем уникальный список триплетов, которые инциденты вершинам
+        # Формируем уникальный список триплетов, которые инцидентны вершинам
         # из текущего триплета (если такие вершины присутствуют в графе знаний)
         incident_triplets = dict()
 
@@ -206,7 +206,7 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
 
                 shared_hyper_ids = object_adj_hyper_typedids.intersection(episodic_adj_hyper_typedids)
                 if len(shared_hyper_ids) < 1:
-                    # Если у данных object-вершины и episodic-вершины нет общей hyper-вершины, значит данный episodic-триплет устрел
+                    # Если у данных object-вершины и episodic-вершины нет общей hyper-вершины, значит данный episodic-триплет устарел
                     # и его нужно добавить в список на удаление
                     episodic_triplet = self.kg_model.graph_struct.db_conn.get_triplets(m_object_n.get_info(), episodic_node)
                     assert len(episodic_triplet) == 1
@@ -268,7 +268,7 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
             self.log(f"START SEARCH OF OBSOLETE TRIPLETS IN MEMORY...",
                      verbose=self.verbose)
             # Note: обрабатываем каждый триплет по отдельности, так как в пуле триплетов могут быть такие,
-            # которые заменяют одни и те же устаревшие триплеты. Соответсвенно, мы должны итеративно обновлять память и сохранить
+            # которые заменяют одни и те же устаревшие триплеты. Соответственно, мы должны итеративно обновлять память и сохранить
             # только последнюю актуальную информацию.
             process = tqdm(new_triplets) if status_bar else new_triplets
             for triplet in process:

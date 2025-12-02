@@ -18,9 +18,9 @@ from ......utils.cache_kv.CacheOperations import CacheOperations
 class ClueAnswersSummarizerConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация ClueQueriesGenerator-стадии MediumQA-ризонера.
 
-    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
+    :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значения будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
-    :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию ClueAnswersSummarizerAgentTasksConfig().
+    :param agent_tasks_config: Конфигурации LLM-промптов для решения заданных задач с помощью LLM-агента. Значение по умолчанию ClueAnswersSummarizerAgentTasksConfig().
     :type agent_tasks_config: Union[ClueAnswersSummarizerAgentTasksConfig, Dict], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы ClueAnswersSummarizer-класса. Значение по умолчанию 'medreasn_cquerysumm_main_stage_cache'.
     :type cache_table_name: str, optional
@@ -55,7 +55,7 @@ class ClueAnswersSummarizer(CacheUtils, AgentStatOperations, CacheOperations):
     :type config: Union[ClueAnswersSummarizerConfig, Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: KeyValueDriverConfig, optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию None.
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операций в рамках LLM-задач. Значение по умолчанию None.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     :param cache_llm_inference: Если True, то все результаты решения атомарных LLM-задач будут кешироваться, иначе False. Значение по умолчанию True.
     :type cache_llm_inference: bool, optional
@@ -100,11 +100,11 @@ class ClueAnswersSummarizer(CacheUtils, AgentStatOperations, CacheOperations):
 
         :param search_query: Базовый шаг поиска (в рамках текущего плана) на естественном языке.
         :type search_query: str
-        :param clue_queries: Список Clue-запросов на естественной языке.
+        :param clue_queries: Список Clue-запросов на естественном языке.
         :type clue_queries: List[str]
         :param clue_answers: Список Clue-ответов, которые были сформированы в рамках обхода/поиска графа знаний с помощью соответствующих clue-запросов.
         :type clue_answers: List[str]
-        :return: Кортеж из двух объектов: (1) резюмированный набор информации (в виде полносвязного текста на естественном языке), который является результатов поиска в графе знаний (памяти ассистента) по данному базовому шагу/запросу плана. (2) статус завершения операции с пояснительной информацией.
+        :return: Кортеж из двух объектов: (1) резюмированный набор информации (в виде полносвязного текста на естественном языке), который является результатом поиска в графе знаний (памяти ассистента) по данному базовому шагу/запросу плана. (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[str, ReturnInfo]
         """
         self.log("START CLUE-QUERIES SUMMARISATION...", verbose=self.verbose)

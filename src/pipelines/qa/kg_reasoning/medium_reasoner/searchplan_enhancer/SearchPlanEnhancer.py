@@ -110,7 +110,7 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         :type search_step: int
         :param search_plan: Структура данных, хранящая план поиска с промежуточными и доп. результатами.
         :type search_plan: SearchPlanInfo
-        :return: Кортеж из двух объектов: (1) Модифиицированный план поиска; (2) статус завершения операции с пояснительной информацией.
+        :return: Кортеж из двух объектов: (1) Модифицированный план поиска; (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[SearchPlanInfo, ReturnInfo]
         """
         self.log("START SEARCH-PLAN INITING/ENHANCING...", verbose=self.verbose)
