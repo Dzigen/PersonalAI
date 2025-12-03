@@ -180,13 +180,20 @@ class OpenSeachVectorConnector(AbstractVectorDatabaseConnection):
 
         filters = None
         if subset_ids is not None:
+            # print(subset_ids)
             filters = {"field": "id", "operator": "in", "value": subset_ids}
+
+            # костыль : Если количество элементов в subset_ids равно n_results,
+            # то при вызове run-метода у retriever-класса будет возвращено "n_results-1"-элементов
+            if n_results == len(subset_ids):
+                n_results += 1
 
         formated_outputs = []
         for query in query_instances:
             # Attention: Будут получены значения семантической близости [similarity], а не значения их расстояния [distance]
             # print("query: ", query.embedding)
             try:
+                # print(n_results, filters)
                 raw_output = self.retriever.run(query_embedding=query.embedding, top_k=n_results, filters=filters)
             except RequestError as e:
                 raise ValueError(str(e))
