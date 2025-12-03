@@ -165,10 +165,10 @@ class EnsembleFusionReranker(AbstractRerankerModule):
         doc_lists_ids = []
         for i, vdb_name in enumerate(self.config.vdb_names):
             fetch_n, threshold = self.config.retriever_configs[i].fetch_n, self.config.retriever_configs[i].threshold
-
+            # print(f"{i}/{vdb_name}:")
             instances = self.vdb_composer.vdb_conn_mapping[vdb_name].retrieve(
                 [q_instance], n_results=fetch_n, subset_ids=subset_ids, includes=[])[0]
-            # print(f"{i}. {instances}")
+            # print(instances)
 
             if threshold is not None:
                 filtered_instances = list(filter(lambda inst: inst[0] >= threshold, instances))
@@ -185,21 +185,25 @@ class EnsembleFusionReranker(AbstractRerankerModule):
 
         #
         include_fields = deepcopy(includes)
+        vdb_name = None
         if isinstance(return_with_embeddings, str):
             vdb_name = return_with_embeddings
             include_fields.append('embeddings')
-        else:
-            vdb_name = None
         filled_instances = self.vdb_composer.read(fused_ids, vdb_name=vdb_name, includes=include_fields)
-        id_to_finst = {inst.id: inst for inst in filled_instances}
-        filled_instances = [id_to_finst[inst_id] for inst_id in fused_ids]
-        # print(filled_instances)
+        assert len(fused_ids) == len(filled_instances)
+        # id_to_finst = {inst.id: inst for inst in filled_instances}
+        # filled_instances = [id_to_finst[inst_id] for inst_id in fused_ids]
+        # print(vdb_name, filled_instances)
 
         #
         if isinstance(return_with_scores, str):
             vdb_name = return_with_scores
             scored_instances = self.vdb_composer.vdb_conn_mapping[vdb_name].retrieve(
                 [q_instance], n_results=len(fused_ids), subset_ids=fused_ids, includes=[])[0]
+            # print(vdb_name, fused_ids, scored_instances)
+            # print(self.vdb_composer.count_items())
+            # print(len(scored_instances), len(fused_ids), set(fused_ids))
+            assert len(scored_instances) == len(fused_ids)
             id_to_score = {inst[1].id: inst[0] for inst in scored_instances}
             scored_instances = [(float(id_to_score[inst.id]), inst) for inst in filled_instances]
         else:

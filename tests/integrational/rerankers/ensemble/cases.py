@@ -8,7 +8,7 @@ from copy import deepcopy
 from src.rerankers.methods import EnsembleFusionRerankerConfig
 from src.rerankers.methods.EnsembleFusionReranker import RetrieverConfig
 
-AVAILABLE_DENSEDB_NAMES = ['dense_chroma', 'dense_inmemory', 'dense_elasticsearch', 'dense_weaviate', 'dense_qdrant'] # 'dense_opensearch',
+AVAILABLE_DENSEDB_NAMES = ['dense_chroma', 'dense_inmemory', 'dense_elasticsearch', 'dense_weaviate', 'dense_qdrant', 'dense_opensearch']
 AVAILABLE_SPARSEDB_NAMES = ['bm25_opensearch', 'bm25_elasticsearch', 'bm25_inmemory', 'bm25_weaviate']
 
 ENSEMBLE_RERANKER_CONFIGS = []
