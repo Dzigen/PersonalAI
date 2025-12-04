@@ -1,16 +1,17 @@
 DATASET_NAME: # TO CHANGE
   - 'hotpotqa_distractor_validation'
-  - 'rubq_dev'
+#  - 'rubq_dev'
 KNOWLEDGE_GRAPH_NAME: # TO CHANGE
-  - ['deepseek_231025_v2prompts', 'gigachatmax_051125_v2prompts', 'llama318b_221025_v2prompts', 'qwen38b_261025_v2prompts'] 
-  - ['gigachatmax_281025_v2prompts']
+  - ['llama318b_021225_v2prompts'] #['deepseek_231025_v2prompts', 'gigachatmax_051125_v2prompts', 'llama318b_221025_v2prompts', 'qwen38b_261025_v2prompts', 'llama318b_021225_v2prompts'] 
+#  - ['gigachatmax_281025_v2prompts']
+PERSONALAI_VERSION: 'v2.1.5' # TO CHANGE
 
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
   max_samples_per_pack: 100
   lang:
     - 'en'
-    - 'ru'
+#    - 'ru'
 
 # STAGE # 1
 query_preprocessor: # TO CHANGE
@@ -29,9 +30,9 @@ query_preprocessor: # TO CHANGE
 
   decomposition_config: # CAN BE null
     - null
-    # - agent_tasks_config:
-    #     classify: 'v1'
-    #     decompose: 'v1'
+    - agent_tasks_config:
+        classify: 'v2'
+        decompose: 'v2'
 
 # STAGE # 2
 kg_reasoner: # TO CHANGE
@@ -45,9 +46,9 @@ kg_reasoner: # TO CHANGE
 
     searchplan_enhancer_config:
       - agent_tasks_config:
-          plan_initing: 'v1'
-          enhance_classifier: 'v1'
-          plan_enhancing: 'v1'
+          plan_initing: 'v2'
+          enhance_classifier: 'v2'
+          plan_enhancing: 'v2'
 
     entities_extractor_config:
       - agent_tasks_config:
@@ -85,7 +86,7 @@ kg_reasoner: # TO CHANGE
         - 6
       agent_tasks_config:
         cquerie_generator: 
-          - 'v3'
+          - 'v4'
 
     knowledge_retriever_config:
       # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
@@ -204,14 +205,14 @@ kg_reasoner: # TO CHANGE
     clueanswers_summarizer_config:
       agent_tasks_config:
         canswers_summarisation:
-          - 'v2'
+          - 'v3'
 
     answer_generator_config:
       agent_tasks_config:
         answer_classifier:
           - 'v2'
         answer_generator:
-          - 'v2'
+          - 'v3'
 
 # STAGE # 3
 answer_aggregator:

@@ -14,7 +14,7 @@ CONFIGURE_BASE_DIR="$EXP_BASE_DIR/configure"
 
 # --------------------------------------------------------
 
-KNOWLEDGEGRAPH_NAME=gigachatmax_051125_v2prompts # TO CHANGE
+KNOWLEDGEGRAPH_NAME=llama318b_021225_v2prompts # TO CHANGE
 DATASET_NAME=hotpotqa_distractor_validation # TO CHANGE
 EXPDIR_PARAMS_PATH="$CONFIGURE_BASE_DIR/$PREPARED_PARAMS_NAME/hotpotqa_distractor_validation.yaml" # TO CHANGE
 EVAL_PARAMS_PATH="$EVALUATE_BASE_DIR/$PREPARED_PARAMS_NAME/hotpotqa.yaml" # TO CHANGE
