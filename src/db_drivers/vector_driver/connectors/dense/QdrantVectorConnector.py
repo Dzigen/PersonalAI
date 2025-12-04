@@ -231,7 +231,7 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
                 )
             except UnexpectedResponse as e:
                 raise ValueError(str(e))
-            print('output: ', raw_output)
+            #print('output: ', raw_output)
 
             formated_output = []
             for raw_item in raw_output.points:

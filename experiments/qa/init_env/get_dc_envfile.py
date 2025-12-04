@@ -99,20 +99,18 @@ redisui_cnt_variables = {
 }
 
 
-# параметры для milvus бд
+# параметры для qdrant бд
 DENSE_DB_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['embeddings_dir']['name']}/{KGENV_PARAMS['KG_DIR_STRUCT']['embeddings_dir']['dense_part']}"
 DENSE_CONNECTOR_PARAMS = KGCONN_PARAMS['KG_MODEL_CONNECTORS']['embeddings_struc_connection']['nodesdb_config']['dense_connector']
 
 milvus_cnt_variables = {
-    'MILVUS_CNTNAME': ADDITIONAL_DC_PARAMS['milvus_cntname'],
-    'MILVUS_HOST': ADDITIONAL_DC_PARAMS['milvus_host'],
+    'QDRANT_CNTNAME': ADDITIONAL_DC_PARAMS['milvus_cntname'],
+    'QDRANT_HOST': ADDITIONAL_DC_PARAMS['milvus_host'],
 
-    'MILVUS_EXTERNAL_PORT1': DENSE_CONNECTOR_PARAMS['conn']['port'],
-    'MILVUS_EXTERNAL_PORT2': ADDITIONAL_KGDC_PARAMS['milvus_port2'],
-    'MILVUS_UI_EXTERNAL_PORT': ADDITIONAL_KGDC_PARAMS['milvus_ui_port'],
+    'QDRANT_EXTERNAL_PORT': DENSE_CONNECTOR_PARAMS['conn']['port'],
+    'QDRANT_UI_EXTERNAL_PORT': ADDITIONAL_KGDC_PARAMS['qdrant_ui_port'],
 
-    'MILVUS_LOCAL_VOLUME': DENSE_DB_PATH,
-    'MILVUS_CONFIG': f"{QAENV_PARAMS['BASE_PERSONALAI_PATH']}/{KGENV_PARAMS['PERSONALAI_REPO_DIRS']['configs']}/{ADDITIONAL_KGDC_PARAMS['milvus_config_name']}"
+    'QDRANT_LOCAL_VOLUME': DENSE_DB_PATH,
 }
 
 # open search

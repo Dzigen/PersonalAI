@@ -1,3 +1,3 @@
 CRONTAB_DIR="/home/workspace/experiments/qa"
 
-14 18 23 11 * bash $CRONTAB_DIR/run_all_experiments3.sh >> $CRONTAB_DIR/crontab_log3.txt 2>&1
+41 01 04 12 * bash $CRONTAB_DIR/run_all_experiments.sh >> $CRONTAB_DIR/crontab_log.txt 2>&1

@@ -22,8 +22,8 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
         try:
             self._client.server_info()
             return True
-        except pymongo.errors.ServerSelectionTimeoutError as err:
-            print(str(err))
+        except (pymongo.errors.ServerSelectionTimeoutError, AttributeError) as err:
+            #print(str(err))
             return False
 
     def open_connection(self) -> None:
