@@ -1,5 +1,7 @@
 import pymongo
 from typing import List, Dict, Union
+import warnings
+import socket
 from collections import defaultdict
 import pickle
 
@@ -25,7 +27,10 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
             return False
 
     def open_connection(self) -> None:
-        self._client = pymongo.MongoClient(f'mongodb://{self.config.host}:{self.config.port}',
+        if self.is_open():
+            self.close_connection()
+
+        self._client = pymongo.MongoClient(f'mongodb://{self.config.host}:{self.config.port}', 
                                            username=self.config.params['username'], password=self.config.params['password'])
         self._collection = self._client[self.config.db_info['db']][self.config.db_info['table']]
 
@@ -34,8 +39,9 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
 
     def close_connection(self) -> None:
         try:
+            del self._collection
             self._client.close()
-        except TypeError:
+        except (AttributeError, TypeError):
             pass
 
     def create(self, items: List[KeyValueDBInstance]) -> None:
