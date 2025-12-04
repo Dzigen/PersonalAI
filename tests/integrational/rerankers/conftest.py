@@ -52,7 +52,8 @@ def vector_composer(e5_small_embedder):
     weaviate_dense_config = VectorDriverConfig(
         db_vendor='weaviate',
         db_config=VectorDBConnectionConfig(
-            conn={'host': 'localhost', 'port': 8083}
+            conn={'host': 'localhost', 'port': 8083},
+            db_info={ 'db': 'defaultpersonalaidensedb','table': 'defaultpersonalaidensetable'}
         )
     )
 
@@ -60,6 +61,7 @@ def vector_composer(e5_small_embedder):
         db_vendor='opensearch',
         db_config=VectorDBConnectionConfig(
             conn={'host': 'localhost', 'port': 9200, 'user': 'admin', 'pass': 'admin'},
+            db_info={ 'db': 'defaultpersonalaidensedb','table': 'defaultpersonalaidensetable'},
             params={'vector_dim': 384, 'search_metric': 'innerproduct'}
         )
     )
@@ -67,7 +69,8 @@ def vector_composer(e5_small_embedder):
     elasticsearch_dense_config = VectorDriverConfig(
         db_vendor='elasticsearch',
         db_config=VectorDBConnectionConfig(
-            conn={'host': 'localhost', 'port': 9201}
+            conn={'host': 'localhost', 'port': 9201},
+            db_info={ 'db': 'defaultpersonalaidensedb','table': 'defaultpersonalaidensetable'}
         )
     )
 
@@ -89,12 +92,14 @@ def vector_composer(e5_small_embedder):
     opensearch_bm25_config = VectorDriverConfig(
         db_vendor='opensearch', vector_category='sparse_bm25',
         db_config=VectorDBConnectionConfig(
+            db_info={ 'db': 'defaultpersonalaibm25db','table': 'defaultpersonalaibm25table'},
             conn={'host': 'localhost', 'port': 9200, 'user': 'admin', 'pass': 'admin'}))
 
     elasticsearch_bm25_config = VectorDriverConfig(
         db_vendor='elasticsearch', vector_category='sparse_bm25',
         db_config=VectorDBConnectionConfig(
-            conn={'host': 'localhost', 'port': 9201}))
+            conn={'host': 'localhost', 'port': 9201},
+            db_info={ 'db': 'defaultpersonalaibm25db','table': 'defaultpersonalaibm25table'}))
 
     inmemory_bm25_config = VectorDriverConfig(
         db_vendor='inmemory', vector_category='sparse_bm25',
@@ -108,7 +113,8 @@ def vector_composer(e5_small_embedder):
     weaviate_bm25_config = VectorDriverConfig(
         db_vendor='weaviate', vector_category='sparse_bm25',
         db_config=VectorDBConnectionConfig(
-            conn={'host': 'localhost', 'port': 8083}
+            conn={'host': 'localhost', 'port': 8083},
+            db_info={ 'db': 'defaultpersonalaibm25db','table': 'defaultpersonalaibm25table'}
         )
     )
 
@@ -116,7 +122,7 @@ def vector_composer(e5_small_embedder):
         'dense_chroma': chroma_dense_config,
         #'dense_milvus': milvus_dense_config,
         'dense_inmemory': inmemory_dense_config,
-        #'dense_opensearch': opensearch_dense_config, # TO FIX
+        'dense_opensearch': opensearch_dense_config, # TO FIX
         'dense_elasticsearch': elasticsearch_dense_config,
         'dense_weaviate': weaviate_dense_config,
         'dense_qdrant': qdrant_dense_condif,
@@ -130,7 +136,7 @@ def vector_composer(e5_small_embedder):
         'dense_chroma': e5_small_embedder,
         #'dense_milvus': e5_small_embedder,
         'dense_inmemory': e5_small_embedder,
-        #'dense_opensearch': e5_small_embedder, # TO FIX
+        'dense_opensearch': e5_small_embedder, # TO FIX
         'dense_elasticsearch': e5_small_embedder,
         'dense_weaviate': e5_small_embedder,
         'dense_qdrant': e5_small_embedder

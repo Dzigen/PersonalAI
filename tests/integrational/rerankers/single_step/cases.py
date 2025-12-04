@@ -10,7 +10,7 @@ from src.rerankers.methods import SingleStepRerankerConfig
 
 
 AVAILABLE_VECTORDB_NAMES = [
-    'dense_chroma', 'dense_inmemory', 'dense_elasticsearch', 'dense_weaviate', 'dense_qdrant', #'dense_opensearch',
+    'dense_chroma', 'dense_inmemory', 'dense_elasticsearch', 'dense_weaviate', 'dense_qdrant', 'dense_opensearch',
     'bm25_opensearch', 'bm25_elasticsearch', 'bm25_inmemory', 'bm25_weaviate'
 ]
 
