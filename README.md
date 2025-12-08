@@ -1,3 +1,7 @@
+#### Отчётные материалы
+- [НИР 2025](https://drive.google.com/file/d/1nyIQT04-U-FYk62zW8fX1YXudolp0S24/view?usp=sharing)
+- [PersonalAI: A Systematic Comparison of Knowledge Graph Storage and Retrieval Approaches for Personalized LLM agents](https://drive.google.com/file/d/1wcMtug5WRyAntgb-6hQ2IWzbyd3qEK8x/view?usp=sharing)
+
 #### Структура файловой системы:
 - debug/ - Директория с ноутбуками/скриптами для отладки кода из каталога "src".
 - experiments/ - Директория с реализациями проведённых экспериментов: дообучение/обучение моделей, подбор гиперпараметров модели и т.п. Каждый эксперимент в отдельной директории. Обязательно логирование в отдельном каталоге "logs" (для каждого каталога с экспериментом свой каталог с логами): пул гиперпарметров + полученные метрики.

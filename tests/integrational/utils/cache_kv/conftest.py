@@ -22,7 +22,7 @@ def inmemory_kv_cache_conn():
 
 @pytest.fixture(scope='package')
 def redis_cache_conn():
-    redis_config = KVDBConnectionConfig(host='localhost', port=6379, need_to_clear=True, db_info={'db': 0, 'table': 'test_cache_collection'},
+    redis_config = KVDBConnectionConfig(host='localhost', port=6370, need_to_clear=True, db_info={'db': 0, 'table': 'test_cache_collection'},
                                         params={'ss_name': 'sorted_node_pairs', 'hs_name': 'node_pairs', 'max_storage': 5e+8})
 
     kvdriver_config = KeyValueDriverConfig(
@@ -33,7 +33,7 @@ def redis_cache_conn():
 @pytest.fixture(scope='package')
 def mongo_cache_conn():
     mongo_config = KVDBConnectionConfig(
-        host='localhost', port=27017, db_info={'db': 'test_cache_db', 'table': 'test_cache_collection'},
+        host='localhost', port=27010, db_info={'db': 'test_cache_db', 'table': 'test_cache_collection'},
         params={'username': 'user', 'password': 'pass', 'max_storage': -1}, need_to_clear=True)
 
     kvdriver_config = KeyValueDriverConfig(
@@ -44,11 +44,11 @@ def mongo_cache_conn():
 @pytest.fixture(scope='package')
 def mixed_cache_conn():
     redis_config = KVDBConnectionConfig(
-        host='localhost', port=6379,
+        host='localhost', port=6370,
         params={'ss_name': 'sorted_node_pairs', 'hs_name': 'node_pairs', 'max_storage': 5e+8})
 
     mongo_config = KVDBConnectionConfig(
-        host='localhost', port=27017,
+        host='localhost', port=27010,
         params={'username': 'user', 'password': 'pass', 'max_storage': -1},
         need_to_clear=True)
 
