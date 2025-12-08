@@ -1,11 +1,3 @@
-С опозданием отправляю материалы для запуска экспериментов по оценке качества qa-пайплайна.
-
-У меня уже построены два графа знаний на DiaASQ-датасете (v1- и v2-версиями промптов; QWEN2.5). В качестве embedder-модели использовалась e5-large. Разархивируй их в каталог "data/knowledge_graphs/diaasqa" (пути указываются от корневой директории репозитория):
-* diaasq_qwen25_060325_v1prompts (https://drive.google.com/file/d/1_s8doUkZNRgj2DyvrCFr1Eon1z0r4lnt/view?usp=drive_link);
-* diaasq_qwen25_070325_v2prompts (https://drive.google.com/file/d/1AAbqyHAwAdPdHXhc3jC0lvBrzhetE-e7/view?usp=drive_link).
-
-Датасет разархивируй в каталог "data/qa_datasets/diaasqa": DiaASQ-датасет (https://drive.google.com/file/d/1tT6EbjvdxDQ9R5H9-eqgDcLArWEDCqaw/view?usp=drive_link). Конфигурации экспериментов нужно брать из этой таблицы (https://docs.google.com/spreadsheets/d/1pE2-fkUiS5FcGM-d--hxfjCoHgxIG0CTqxCsdKdu21A/edit?gid=1427098908#gid=1427098908). В неё же и вносить полученные значения метрик. Если есть замечания по конфигурациям, то сообщай.
-
 Скрипты для оценки качества qa-конфигураций лежат в каталоге "experiments/qa_kg" (https://github.com/zer0o0ne/Personal-AI/tree/dev/experiments/qa_kg). Последовательность запуска скриптов следующая:
 0. Указать конфигурацию эксперимента в params.yaml- (https://github.com/zer0o0ne/Personal-AI/blob/dev/experiments/qa_kg/params.yaml)файле.
 1. Запустить init_file_structure.py (https://github.com/zer0o0ne/Personal-AI/blob/dev/experiments/qa_kg/init_file_structure.py) с указанием пути до полученного params.yaml (с шага 0). В результате будет инициализирована директория, куда будут сохраняться сгенерированные ответы + метрики.
