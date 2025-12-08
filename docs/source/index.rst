@@ -11,12 +11,10 @@ Personal AI документация
    :maxdepth: 1
    :caption: Contents:
 
-   files/modules
+   pages/examples_page
+   pages/environment_page
 
-   .. pages/architecture_page
-   .. pages/components_page
-   .. pages/examples_page
-   .. pages/environment_page
+   files/modules
 
 Indices and tables
 ==================

@@ -10,6 +10,17 @@ Subpackages
    src.pipelines.memorize
    src.pipelines.qa
 
+Submodules
+----------
+
+src.pipelines.utils module
+--------------------------
+
+.. automodule:: src.pipelines.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

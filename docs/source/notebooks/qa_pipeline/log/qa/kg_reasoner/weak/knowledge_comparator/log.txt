@@ -1,0 +1,20 @@
+[2025-12-01 11:53:06.299384] Получем результат с нуля...
+[2025-12-01 11:53:06.299522] START MATCHING KEY WORDS ...
+[2025-12-01 11:53:06.299641] BASE_QUESTION ID: 3fab6399a62808dc9180ecd15b8b4619
+[2025-12-01 11:53:06.299727] BASE_QUESTION: Which of the following people walked along the highway: Sasha, Masha, Katya?
+[2025-12-01 11:53:06.299818] ENTITIES: ['Sasha', 'Masha', 'Katya', 'highway']
+[2025-12-01 11:53:06.376598] RESULT: 4
+[2025-12-01 11:53:06.376654] 0. NodeInfo(id='481f693417e9a74e783caea72063b606', type=<NodeType.object: 'object'>, text='sasha')
+[2025-12-01 11:53:06.376682] 1. NodeInfo(id='c3cc6e312d2bad42cf535aac3a259abd', type=<NodeType.object: 'object'>, text='masha')
+[2025-12-01 11:53:06.376706] 2. NodeInfo(id='481f693417e9a74e783caea72063b606', type=<NodeType.object: 'object'>, text='sasha')
+[2025-12-01 11:53:06.376728] 3. NodeInfo(id='d6b904031a80e4c15044733ce3efbf30', type=<NodeType.object: 'object'>, text='highway')
+[2025-12-01 11:53:06.376750] STATUS: Операция выполнена успешно.
+[2025-12-01 11:53:45.915726] Получем результат с нуля...
+[2025-12-01 11:53:45.915833] START MATCHING KEY WORDS ...
+[2025-12-01 11:53:45.915952] BASE_QUESTION ID: f0b1f7d0a52ecdf66ce1b04c42aedb76
+[2025-12-01 11:53:45.916040] BASE_QUESTION: Have motorboat was ever sailed through a water canal?
+[2025-12-01 11:53:45.916129] ENTITIES: ['motorboat', 'water canal']
+[2025-12-01 11:53:45.964141] RESULT: 2
+[2025-12-01 11:53:45.964214] 0. NodeInfo(id='668dad0b085703251ab4abcad8789cbd', type=<NodeType.object: 'object'>, text='motorboat')
+[2025-12-01 11:53:45.964243] 1. NodeInfo(id='97d06ea9652e10b2ef0a3d6d47bae47f', type=<NodeType.object: 'object'>, text='water canal')
+[2025-12-01 11:53:45.964267] STATUS: Операция выполнена успешно.

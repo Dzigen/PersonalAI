@@ -1,0 +1,20 @@
+[2025-12-01 11:52:09.938957] Adding triples to vector-model...
+[2025-12-01 11:52:09.939086] 	- Also adding triplet-nodes in vector-model
+[2025-12-01 11:52:15.325775] relations info (all/unique/existed count) - 6/3/3
+[2025-12-01 11:52:15.325901] nodes info (all/unique/existed count) - 12/{<NodeType.object: 'object'>: 2, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0}/{<NodeType.object: 'object'>: 2, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0}
+[2025-12-01 11:52:15.325946] Triples were successfully added to vector-model!
+[2025-12-01 11:52:21.209639] Adding triples to vector-model...
+[2025-12-01 11:52:21.209774] 	- Also adding triplet-nodes in vector-model
+[2025-12-01 11:52:26.064272] relations info (all/unique/existed count) - 10/4/4
+[2025-12-01 11:52:26.064540] nodes info (all/unique/existed count) - 20/{<NodeType.object: 'object'>: 3, <NodeType.hyper: 'hyper'>: 2, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0}/{<NodeType.object: 'object'>: 2, <NodeType.hyper: 'hyper'>: 2, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0}
+[2025-12-01 11:52:26.064647] Triples were successfully added to vector-model!
+[2025-12-01 11:52:34.077146] Adding triples to vector-model...
+[2025-12-01 11:52:34.077242] 	- Also adding triplet-nodes in vector-model
+[2025-12-01 11:52:39.276484] relations info (all/unique/existed count) - 8/4/4
+[2025-12-01 11:52:39.276745] nodes info (all/unique/existed count) - 16/{<NodeType.object: 'object'>: 3, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0}/{<NodeType.object: 'object'>: 3, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0}
+[2025-12-01 11:52:39.276854] Triples were successfully added to vector-model!
+[2025-12-01 11:52:46.993855] Adding triples to vector-model...
+[2025-12-01 11:52:46.993876] 	- Also adding triplet-nodes in vector-model
+[2025-12-01 11:52:51.872991] relations info (all/unique/existed count) - 7/3/3
+[2025-12-01 11:52:51.873254] nodes info (all/unique/existed count) - 14/{<NodeType.object: 'object'>: 3, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0}/{<NodeType.object: 'object'>: 3, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0}
+[2025-12-01 11:52:51.873361] Triples were successfully added to vector-model!

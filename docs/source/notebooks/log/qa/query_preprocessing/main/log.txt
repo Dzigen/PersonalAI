@@ -1,0 +1,51 @@
+[2025-12-02 09:52:53.965042] Поиск результата в кеше...
+[2025-12-02 09:52:53.965643] Результат по заданной конфигурации гиперпараметров уже был получен.
+[2025-12-02 09:52:53.965761] * CACHE_TABLE_NAME query_preprocessing_main_stage_cache
+[2025-12-02 09:52:53.965853] * CACHE_HASH_KEY: 446ed80071061cf4aead9bf0adccb3f39f15ee11.
+[2025-12-02 09:52:53.965961] * HASH_SEEDS: ['Какими помещениями разрешено пользоваться студентам, проживающим в общещитии МСГ?', 'None|None|None', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|host=localhost;model=llama3.1:8b;port=11437'].
+[2025-12-02 09:52:53.966140] * CACHED_VALUE: (QueryPreprocessingInfo(base_query='Какими помещениями разрешено пользоваться студентам, проживающим в общещитии МСГ?', denoised_query=None, enchanced_query=None, decomposed_query=None, processed_query=['Какими помещениями разрешено пользоваться студентам, проживающим в общещитии МСГ?']), ReturnInfo(occurred_warning=[], status=<ReturnStatus.success: 0>, message='')).
+[2025-12-02 09:53:06.609483] Поиск результата в кеше...
+[2025-12-02 09:53:06.609649] Результат по заданной конфигурации гиперпараметров уже был получен.
+[2025-12-02 09:53:06.609706] * CACHE_TABLE_NAME query_preprocessing_main_stage_cache
+[2025-12-02 09:53:06.609753] * CACHE_HASH_KEY: 2826efdceea6f4585a21a821efee991bfda714a1.
+[2025-12-02 09:53:06.609809] * HASH_SEEDS: ['Разрешено ли студентам, проживающим в общежитии МСГ, пользоваться бытовой техникой?', 'None|None|None', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|host=localhost;model=llama3.1:8b;port=11437'].
+[2025-12-02 09:53:06.609901] * CACHED_VALUE: (QueryPreprocessingInfo(base_query='Разрешено ли студентам, проживающим в общежитии МСГ, пользоваться бытовой техникой?', denoised_query=None, enchanced_query=None, decomposed_query=None, processed_query=['Разрешено ли студентам, проживающим в общежитии МСГ, пользоваться бытовой техникой?']), ReturnInfo(occurred_warning=[], status=<ReturnStatus.success: 0>, message='')).
+[2025-12-02 09:53:31.295472] Поиск результата в кеше...
+[2025-12-02 09:53:31.295511] Результата по заданной конфигурации гиперпараметров в кеше нет.
+[2025-12-02 09:53:31.295533] * CACHE_TABLE_NAME query_preprocessing_main_stage_cache
+[2025-12-02 09:53:31.295552] * CACHE_HASH_KEY: 2baf4cf8b96e6364088d31669429d12e32aec240.
+[2025-12-02 09:53:31.295575] * HASH_SEEDS: ['Могут ли проживающие в общежитии МСГ обращаться к администрации с вопросами?', 'None|None|None', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|host=localhost;model=llama3.1:8b;port=11437'].
+[2025-12-02 09:53:31.295595] Получем результат с нуля...
+[2025-12-02 09:53:31.295615] START QUERY PREPROCESSING...
+[2025-12-02 09:53:31.295638] BASE_QUESTION ID: ac30ac2f310a91a39892fcd9d53b8d11
+[2025-12-02 09:53:31.295657] BASE_QUESTION: Могут ли проживающие в общежитии МСГ обращаться к администрации с вопросами?
+[2025-12-02 09:53:31.295692] STATUS: ReturnStatus.success
+[2025-12-02 09:53:31.295715] Кешируем полученный результат.
+[2025-12-02 09:53:31.295734] * CACHE_TABLE_NAME query_preprocessing_main_stage_cache
+[2025-12-02 09:53:31.295752] * CACHE_HASH_KEY: 2baf4cf8b96e6364088d31669429d12e32aec240.
+[2025-12-02 09:59:13.798191] Поиск результата в кеше...
+[2025-12-02 09:59:13.798250] Результата по заданной конфигурации гиперпараметров в кеше нет.
+[2025-12-02 09:59:13.798292] * CACHE_TABLE_NAME query_preprocessing_main_stage_cache
+[2025-12-02 09:59:13.798323] * CACHE_HASH_KEY: dfe54f6c383e004c0089e086f74de8afec5d76c9.
+[2025-12-02 09:59:13.798358] * HASH_SEEDS: ['Что должны делать люди, проживающие в общежитии МСГ, если они обнаружили неисправный датчик?', 'None|None|None', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|host=localhost;model=llama3.1:8b;port=11437'].
+[2025-12-02 09:59:13.798391] Получем результат с нуля...
+[2025-12-02 09:59:13.798422] START QUERY PREPROCESSING...
+[2025-12-02 09:59:13.798458] BASE_QUESTION ID: 9522a6e89ad5098dc3f84b1823241fd7
+[2025-12-02 09:59:13.798488] BASE_QUESTION: Что должны делать люди, проживающие в общежитии МСГ, если они обнаружили неисправный датчик?
+[2025-12-02 09:59:13.798541] STATUS: ReturnStatus.success
+[2025-12-02 09:59:13.798578] Кешируем полученный результат.
+[2025-12-02 09:59:13.798609] * CACHE_TABLE_NAME query_preprocessing_main_stage_cache
+[2025-12-02 09:59:13.798639] * CACHE_HASH_KEY: dfe54f6c383e004c0089e086f74de8afec5d76c9.
+[2025-12-02 09:59:50.449161] Поиск результата в кеше...
+[2025-12-02 09:59:50.449340] Результата по заданной конфигурации гиперпараметров в кеше нет.
+[2025-12-02 09:59:50.449466] * CACHE_TABLE_NAME query_preprocessing_main_stage_cache
+[2025-12-02 09:59:50.449562] * CACHE_HASH_KEY: bf3f1d306714f3365e270952f05d49d44bc48645.
+[2025-12-02 09:59:50.449666] * HASH_SEEDS: ['Что должны делать люди, проживающие в общежитии МСГ, если они обнаружили неисправный датчик пожарной безопасности?', 'None|None|None', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|host=localhost;model=llama3.1:8b;port=11437'].
+[2025-12-02 09:59:50.449762] Получем результат с нуля...
+[2025-12-02 09:59:50.449854] START QUERY PREPROCESSING...
+[2025-12-02 09:59:50.449960] BASE_QUESTION ID: 0c4255a351db2a04a08a61124c7bf406
+[2025-12-02 09:59:50.450047] BASE_QUESTION: Что должны делать люди, проживающие в общежитии МСГ, если они обнаружили неисправный датчик пожарной безопасности?
+[2025-12-02 09:59:50.450198] STATUS: ReturnStatus.success
+[2025-12-02 09:59:50.450302] Кешируем полученный результат.
+[2025-12-02 09:59:50.450394] * CACHE_TABLE_NAME query_preprocessing_main_stage_cache
+[2025-12-02 09:59:50.450479] * CACHE_HASH_KEY: bf3f1d306714f3365e270952f05d49d44bc48645.

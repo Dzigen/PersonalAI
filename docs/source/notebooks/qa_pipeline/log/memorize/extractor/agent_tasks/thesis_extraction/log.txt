@@ -1,0 +1,151 @@
+[2025-12-01 11:52:04.269402] ====================
+[2025-12-01 11:52:04.269535] 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[2025-12-01 11:52:04.269752] Результат:
+{
+ "text": "Sasha was walking along the highway."
+}.
+[2025-12-01 11:52:04.269862] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:04.269956] --------------------
+[2025-12-01 11:52:04.270039] 2. Детекция используемого языка...
+[2025-12-01 11:52:04.294345] Результат:
+en.
+[2025-12-01 11:52:04.294455] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:04.294527] --------------------
+[2025-12-01 11:52:04.294591] 3. Добавление информации в user-prompt...
+[2025-12-01 11:52:04.294665] Результат:
+
+[Text]:
+Sasha was walking along the highway.
+
+[2025-12-01 11:52:04.294731] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:04.294794] --------------------
+[2025-12-01 11:52:04.294853] 4. Генерация ответа с помощью LLM-агента.
+[2025-12-01 11:52:04.295004] Выполняем инференс llm...
+[2025-12-01 11:52:09.429350] Результат:
+"Sasha walked along highway" | ['Sasha', 'highway'];
+
+Note: Since there are no other entities mentioned in the text, only one thesis is extracted. The verb "walking" is not included as it's a verb describing motion and does not depict a concept or entity.
+[2025-12-01 11:52:09.429453] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:09.429512] --------------------
+[2025-12-01 11:52:09.429562] 5. Разбор ответа, сгенерированного LLM-агентом.
+[2025-12-01 11:52:09.429712] Результат:
+[('"sasha walked along highway"', ['sasha', 'highway'])]
+[2025-12-01 11:52:09.429775] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:09.429825] --------------------
+[2025-12-01 11:52:09.429871] 6. Постобработка ответа от LLM-агента.
+[2025-12-01 11:52:09.430098] Результат:
+[Triplet(start_node=Node(name='sasha', type=<NodeType.object: 'object'>, prop={}, stringified='sasha', id='481f693417e9a74e783caea72063b606'), relation=Relation(name='hyper', type=<RelationType.hyper: 'hyper'>, prop={}, id='2165aab682c7bf7dd9b3466a4e94271a'), end_node=Node(name='"sasha walked along highway"', type=<NodeType.hyper: 'hyper'>, prop={}, stringified='"sasha walked along highway"', id='2165aab682c7bf7dd9b3466a4e94271a'), stringified='"sasha walked along highway"', id='a42299a84df7464a8903702898e2dbbe'), Triplet(start_node=Node(name='highway', type=<NodeType.object: 'object'>, prop={}, stringified='highway', id='d6b904031a80e4c15044733ce3efbf30'), relation=Relation(name='hyper', type=<RelationType.hyper: 'hyper'>, prop={}, id='2165aab682c7bf7dd9b3466a4e94271a'), end_node=Node(name='"sasha walked along highway"', type=<NodeType.hyper: 'hyper'>, prop={}, stringified='"sasha walked along highway"', id='2165aab682c7bf7dd9b3466a4e94271a'), stringified='"sasha walked along highway"', id='b7d5575d64bfdcf5e1bf21c2f2300787')]
+[2025-12-01 11:52:09.430161] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:17.058437] ====================
+[2025-12-01 11:52:17.058529] 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[2025-12-01 11:52:17.058714] Результат:
+{
+ "text": "Masha was walking along the highway."
+}.
+[2025-12-01 11:52:17.058812] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:17.058900] --------------------
+[2025-12-01 11:52:17.058981] 2. Детекция используемого языка...
+[2025-12-01 11:52:17.085931] Результат:
+en.
+[2025-12-01 11:52:17.086063] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:17.086137] --------------------
+[2025-12-01 11:52:17.086201] 3. Добавление информации в user-prompt...
+[2025-12-01 11:52:17.086301] Результат:
+
+[Text]:
+Masha was walking along the highway.
+
+[2025-12-01 11:52:17.086371] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:17.086437] --------------------
+[2025-12-01 11:52:17.086497] 4. Генерация ответа с помощью LLM-агента.
+[2025-12-01 11:52:17.086667] Выполняем инференс llm...
+[2025-12-01 11:52:20.433176] Результат:
+Masha was walking along highway | ['Masha', 'highway'];
+Highway is a road | ['highway', 'road'].
+[2025-12-01 11:52:20.433416] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:20.433526] --------------------
+[2025-12-01 11:52:20.433620] 5. Разбор ответа, сгенерированного LLM-агентом.
+[2025-12-01 11:52:20.433954] Результат:
+[('masha was walking along highway', ['masha', 'highway']), ('highway is a road', ['highway', 'road'])]
+[2025-12-01 11:52:20.434073] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:20.434169] --------------------
+[2025-12-01 11:52:20.434257] 6. Постобработка ответа от LLM-агента.
+[2025-12-01 11:52:20.434851] Результат:
+[Triplet(start_node=Node(name='masha', type=<NodeType.object: 'object'>, prop={}, stringified='masha', id='c3cc6e312d2bad42cf535aac3a259abd'), relation=Relation(name='hyper', type=<RelationType.hyper: 'hyper'>, prop={}, id='4b7852865dd7d3d5042c9b5570fe24a8'), end_node=Node(name='masha was walking along highway', type=<NodeType.hyper: 'hyper'>, prop={}, stringified='masha was walking along highway', id='4b7852865dd7d3d5042c9b5570fe24a8'), stringified='masha was walking along highway', id='af3f9859bfe35323a1989924355213db'), Triplet(start_node=Node(name='highway', type=<NodeType.object: 'object'>, prop={}, stringified='highway', id='d6b904031a80e4c15044733ce3efbf30'), relation=Relation(name='hyper', type=<RelationType.hyper: 'hyper'>, prop={}, id='4b7852865dd7d3d5042c9b5570fe24a8'), end_node=Node(name='masha was walking along highway', type=<NodeType.hyper: 'hyper'>, prop={}, stringified='masha was walking along highway', id='4b7852865dd7d3d5042c9b5570fe24a8'), stringified='masha was walking along highway', id='28f4037c8142fa9a0618ff2953c42277'), Triplet(start_node=Node(name='highway', type=<NodeType.object: 'object'>, prop={}, stringified='highway', id='d6b904031a80e4c15044733ce3efbf30'), relation=Relation(name='hyper', type=<RelationType.hyper: 'hyper'>, prop={}, id='da1a4da879fcb3222066208c41eb6001'), end_node=Node(name='highway is a road', type=<NodeType.hyper: 'hyper'>, prop={}, stringified='highway is a road', id='da1a4da879fcb3222066208c41eb6001'), stringified='highway is a road', id='042dc2b0f190483bb498a0734669a3b6'), Triplet(start_node=Node(name='road', type=<NodeType.object: 'object'>, prop={}, stringified='road', id='3c68cbe461787ba38509df85e731f1a6'), relation=Relation(name='hyper', type=<RelationType.hyper: 'hyper'>, prop={}, id='da1a4da879fcb3222066208c41eb6001'), end_node=Node(name='highway is a road', type=<NodeType.hyper: 'hyper'>, prop={}, stringified='highway is a road', id='da1a4da879fcb3222066208c41eb6001'), stringified='highway is a road', id='5bfc2d4051aa56428e3b97d6c68872a9')]
+[2025-12-01 11:52:20.434979] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:28.508701] ====================
+[2025-12-01 11:52:28.508788] 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[2025-12-01 11:52:28.508972] Результат:
+{
+ "text": "The ship was sailing along the water canal."
+}.
+[2025-12-01 11:52:28.509070] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:28.509161] --------------------
+[2025-12-01 11:52:28.509246] 2. Детекция используемого языка...
+[2025-12-01 11:52:28.520518] Результат:
+en.
+[2025-12-01 11:52:28.520672] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:28.520803] --------------------
+[2025-12-01 11:52:28.520900] 3. Добавление информации в user-prompt...
+[2025-12-01 11:52:28.521008] Результат:
+
+[Text]:
+The ship was sailing along the water canal.
+
+[2025-12-01 11:52:28.521105] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:28.521192] --------------------
+[2025-12-01 11:52:28.521276] 4. Генерация ответа с помощью LLM-агента.
+[2025-12-01 11:52:28.521486] Выполняем инференс llm...
+[2025-12-01 11:52:33.408808] Результат:
+"Ship was sailing along water canal | ['ship', 'water canal']"
+
+Note: I extracted a single thesis as it is more comprehensive and consistent to describe the situation in one sentence. The entities are "ship" (a real-world object) and "water canal" (a location).
+[2025-12-01 11:52:33.408880] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:33.408919] --------------------
+[2025-12-01 11:52:33.408951] 5. Разбор ответа, сгенерированного LLM-агентом.
+[2025-12-01 11:52:33.409045] Результат:
+[('"ship was sailing along water canal', ['ship', 'water canal'])]
+[2025-12-01 11:52:33.409083] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:33.409115] --------------------
+[2025-12-01 11:52:33.409146] 6. Постобработка ответа от LLM-агента.
+[2025-12-01 11:52:33.409305] Результат:
+[Triplet(start_node=Node(name='ship', type=<NodeType.object: 'object'>, prop={}, stringified='ship', id='2a3f1166b041928019e4e8718d628665'), relation=Relation(name='hyper', type=<RelationType.hyper: 'hyper'>, prop={}, id='114769d8c9841bc189254728bd59381e'), end_node=Node(name='"ship was sailing along water canal', type=<NodeType.hyper: 'hyper'>, prop={}, stringified='"ship was sailing along water canal', id='114769d8c9841bc189254728bd59381e'), stringified='"ship was sailing along water canal', id='5f8801e9d780a8118b9def057345bc97'), Triplet(start_node=Node(name='water canal', type=<NodeType.object: 'object'>, prop={}, stringified='water canal', id='97d06ea9652e10b2ef0a3d6d47bae47f'), relation=Relation(name='hyper', type=<RelationType.hyper: 'hyper'>, prop={}, id='114769d8c9841bc189254728bd59381e'), end_node=Node(name='"ship was sailing along water canal', type=<NodeType.hyper: 'hyper'>, prop={}, stringified='"ship was sailing along water canal', id='114769d8c9841bc189254728bd59381e'), stringified='"ship was sailing along water canal', id='f84213b8f842352970d726291a8799f4')]
+[2025-12-01 11:52:33.409346] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:41.278320] ====================
+[2025-12-01 11:52:41.278412] 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[2025-12-01 11:52:41.278600] Результат:
+{
+ "text": "The motorboat was sailing along the river."
+}.
+[2025-12-01 11:52:41.278702] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:41.278794] --------------------
+[2025-12-01 11:52:41.278884] 2. Детекция используемого языка...
+[2025-12-01 11:52:41.288183] Результат:
+en.
+[2025-12-01 11:52:41.288346] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:41.288446] --------------------
+[2025-12-01 11:52:41.288537] 3. Добавление информации в user-prompt...
+[2025-12-01 11:52:41.288643] Результат:
+
+[Text]:
+The motorboat was sailing along the river.
+
+[2025-12-01 11:52:41.288739] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:41.288830] --------------------
+[2025-12-01 11:52:41.288917] 4. Генерация ответа с помощью LLM-агента.
+[2025-12-01 11:52:41.289137] Выполняем инференс llm...
+[2025-12-01 11:52:46.581227] Результат:
+"Motorboat is on river | ['motorboat', 'river']".
+
+Note: I extracted only one thesis because it's a simple sentence and there's no need to split it into multiple parts. The entities are "motorboat" and "river", which are both concrete objects or concepts.
+[2025-12-01 11:52:46.581450] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:46.581567] --------------------
+[2025-12-01 11:52:46.581664] 5. Разбор ответа, сгенерированного LLM-агентом.
+[2025-12-01 11:52:46.581972] Результат:
+[('"motorboat is on river', ['motorboat', 'river'])]
+[2025-12-01 11:52:46.582087] Статус: Операция выполнена успешно.
+[2025-12-01 11:52:46.582184] --------------------
+[2025-12-01 11:52:46.582273] 6. Постобработка ответа от LLM-агента.
+[2025-12-01 11:52:46.582714] Результат:
+[Triplet(start_node=Node(name='motorboat', type=<NodeType.object: 'object'>, prop={}, stringified='motorboat', id='668dad0b085703251ab4abcad8789cbd'), relation=Relation(name='hyper', type=<RelationType.hyper: 'hyper'>, prop={}, id='fb70c75d03c0dfd7578445c9d1092a56'), end_node=Node(name='"motorboat is on river', type=<NodeType.hyper: 'hyper'>, prop={}, stringified='"motorboat is on river', id='fb70c75d03c0dfd7578445c9d1092a56'), stringified='"motorboat is on river', id='f1efc4c4f2a12994beeab02dc5c3aa1b'), Triplet(start_node=Node(name='river', type=<NodeType.object: 'object'>, prop={}, stringified='river', id='a5b03048ebe345c488e0ca30eff6ab0c'), relation=Relation(name='hyper', type=<RelationType.hyper: 'hyper'>, prop={}, id='fb70c75d03c0dfd7578445c9d1092a56'), end_node=Node(name='"motorboat is on river', type=<NodeType.hyper: 'hyper'>, prop={}, stringified='"motorboat is on river', id='fb70c75d03c0dfd7578445c9d1092a56'), stringified='"motorboat is on river', id='524dd41b2a01f3ec3a6d33cc1d6dd0c8')]
+[2025-12-01 11:52:46.582838] Статус: Операция выполнена успешно.

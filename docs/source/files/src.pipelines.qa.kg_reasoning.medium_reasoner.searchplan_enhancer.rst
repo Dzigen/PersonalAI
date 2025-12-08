@@ -28,6 +28,14 @@ src.pipelines.qa.kg\_reasoning.medium\_reasoner.searchplan\_enhancer.config modu
    :undoc-members:
    :show-inheritance:
 
+src.pipelines.qa.kg\_reasoning.medium\_reasoner.searchplan\_enhancer.utils module
+---------------------------------------------------------------------------------
+
+.. automodule:: src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

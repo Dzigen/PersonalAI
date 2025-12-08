@@ -20,10 +20,18 @@ src.pipelines.memorize.updator.LLMUpdator module
    :undoc-members:
    :show-inheritance:
 
-src.pipelines.memorize.updator.configs module
----------------------------------------------
+src.pipelines.memorize.updator.config module
+--------------------------------------------
 
-.. automodule:: src.pipelines.memorize.updator.configs
+.. automodule:: src.pipelines.memorize.updator.config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.pipelines.memorize.updator.utils module
+-------------------------------------------
+
+.. automodule:: src.pipelines.memorize.updator.utils
    :members:
    :undoc-members:
    :show-inheritance:

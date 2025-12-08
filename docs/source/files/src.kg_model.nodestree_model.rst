@@ -20,10 +20,10 @@ src.kg\_model.nodestree\_model.NodesTreeModel module
    :undoc-members:
    :show-inheritance:
 
-src.kg\_model.nodestree\_model.configs module
----------------------------------------------
+src.kg\_model.nodestree\_model.config module
+--------------------------------------------
 
-.. automodule:: src.kg_model.nodestree_model.configs
+.. automodule:: src.kg_model.nodestree_model.config
    :members:
    :undoc-members:
    :show-inheritance:

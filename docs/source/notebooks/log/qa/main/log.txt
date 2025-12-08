@@ -1,0 +1,117 @@
+[2025-12-02 09:52:53.963580] Поиск результата в кеше...
+[2025-12-02 09:52:53.963903] Результата по заданной конфигурации гиперпараметров в кеше нет.
+[2025-12-02 09:52:53.964034] * CACHE_TABLE_NAME qa_pipeline_cache
+[2025-12-02 09:52:53.964139] * CACHE_HASH_KEY: afc1f94640f255781bcc8d1da29b14e3f7bb307d.
+[2025-12-02 09:52:53.964278] * HASH_SEEDS: ['None|None|None', "medium|ru|None|plan_initing=v2;enhance_classifier=v2;plan_enhancing=v2|ru|None|20|entities_extraction=v1|False|1|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.4, 0.6]:60|ru|None|cquerie_generator=v4|3|mixture;beamsearch;1;20;0.75;episodic;hyper;time;mixed;False;False;False;dense_triplets;single_step:dense_triplets:0.5:25;watercircles;True|25;15;25;6|False|episodic;hyper;time;episodic;hyper;time;naive;50|[<RelationType.hyper: 'hyper'>, <RelationType.simple: 'simple'>]|ensemble_fusion:['dense_triplets', 'bm25_triplets']:['50:0.5', '50:0.5']:[0.7, 0.3]:60|ru|None|cquerie_generator=v4|3|ru|None|canswers_summarisation=v3|ru|None|answer_classifier=v2;answer_generator=v3|6|True", 'ru|None|suba_summarisation=v2', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|host=localhost;model=llama3.1:8b;port=11437', 'Какими помещениями разрешено пользоваться студентам, проживающим в общещитии МСГ?'].
+[2025-12-02 09:52:53.964389] Получем результат с нуля...
+[2025-12-02 09:52:53.964488] START QA-PIPELINE...
+[2025-12-02 09:52:53.964604] BASE_QUESTION ID: 5519817907005a383401b9d17f2b8b0f
+[2025-12-02 09:52:53.964700] BASE_QUESTION: Какими помещениями разрешено пользоваться студентам, проживающим в общещитии МСГ?
+[2025-12-02 09:52:53.964815] Preprocessing...
+[2025-12-02 09:52:53.966276] RESULT: QueryPreprocessingInfo(base_query='Какими помещениями разрешено пользоваться студентам, проживающим в общещитии МСГ?', denoised_query=None, enchanced_query=None, decomposed_query=None, processed_query=['Какими помещениями разрешено пользоваться студентам, проживающим в общещитии МСГ?'])
+[2025-12-02 09:52:53.966390] Operation ended successfully
+[2025-12-02 09:52:53.966523] Reasoning...
+[2025-12-02 09:52:53.966640] Processing sub_query #0: Какими помещениями разрешено пользоваться студентам, проживающим в общещитии МСГ?
+[2025-12-02 09:53:06.582379] RESULT: Помещениями, разрешенными для использования студентами в общежитии МСГ, являются помещения для культурно-бытового назначения и самостоятельных занятий.
+[2025-12-02 09:53:06.582507] Operation ended successfully
+[2025-12-02 09:53:06.582622] RESULT:
+- [Какими помещениями разрешено пользоваться студентам, проживающим в общещитии МСГ?] Помещениями, разрешенными для использования студентами в общежитии МСГ, являются помещения для культурно-бытового назначения и самостоятельных занятий.
+[2025-12-02 09:53:06.582773] Aggregation...
+[2025-12-02 09:53:06.584838] RESULT: Помещениями, разрешенными для использования студентами в общежитии МСГ, являются помещения для культурно-бытового назначения и самостоятельных занятий.
+[2025-12-02 09:53:06.584952] Operation ended successfully
+[2025-12-02 09:53:06.585094] STATUS: ReturnStatus.success
+[2025-12-02 09:53:06.585202] Кешируем полученный результат.
+[2025-12-02 09:53:06.585302] * CACHE_TABLE_NAME qa_pipeline_cache
+[2025-12-02 09:53:06.585438] * CACHE_HASH_KEY: afc1f94640f255781bcc8d1da29b14e3f7bb307d.
+[2025-12-02 09:53:06.608413] Поиск результата в кеше...
+[2025-12-02 09:53:06.608873] Результата по заданной конфигурации гиперпараметров в кеше нет.
+[2025-12-02 09:53:06.608959] * CACHE_TABLE_NAME qa_pipeline_cache
+[2025-12-02 09:53:06.609016] * CACHE_HASH_KEY: cf25aecf3bf92a46f9c29cc1a0a261e603fc3c68.
+[2025-12-02 09:53:06.609091] * HASH_SEEDS: ['None|None|None', "medium|ru|None|plan_initing=v2;enhance_classifier=v2;plan_enhancing=v2|ru|None|20|entities_extraction=v1|False|1|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.4, 0.6]:60|ru|None|cquerie_generator=v4|3|mixture;beamsearch;1;20;0.75;episodic;hyper;time;mixed;False;False;False;dense_triplets;single_step:dense_triplets:0.5:25;watercircles;True|25;15;25;6|False|episodic;hyper;time;episodic;hyper;time;naive;50|[<RelationType.hyper: 'hyper'>, <RelationType.simple: 'simple'>]|ensemble_fusion:['dense_triplets', 'bm25_triplets']:['50:0.5', '50:0.5']:[0.7, 0.3]:60|ru|None|cquerie_generator=v4|3|ru|None|canswers_summarisation=v3|ru|None|answer_classifier=v2;answer_generator=v3|6|True", 'ru|None|suba_summarisation=v2', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|host=localhost;model=llama3.1:8b;port=11437', 'Разрешено ли студентам, проживающим в общежитии МСГ, пользоваться бытовой техникой?'].
+[2025-12-02 09:53:06.609150] Получем результат с нуля...
+[2025-12-02 09:53:06.609204] START QA-PIPELINE...
+[2025-12-02 09:53:06.609265] BASE_QUESTION ID: 6fadf4c9a14f4f7ab56ce67ee5191a3b
+[2025-12-02 09:53:06.609314] BASE_QUESTION: Разрешено ли студентам, проживающим в общежитии МСГ, пользоваться бытовой техникой?
+[2025-12-02 09:53:06.609370] Preprocessing...
+[2025-12-02 09:53:06.609972] RESULT: QueryPreprocessingInfo(base_query='Разрешено ли студентам, проживающим в общежитии МСГ, пользоваться бытовой техникой?', denoised_query=None, enchanced_query=None, decomposed_query=None, processed_query=['Разрешено ли студентам, проживающим в общежитии МСГ, пользоваться бытовой техникой?'])
+[2025-12-02 09:53:06.610033] Operation ended successfully
+[2025-12-02 09:53:06.610105] Reasoning...
+[2025-12-02 09:53:06.610168] Processing sub_query #0: Разрешено ли студентам, проживающим в общежитии МСГ, пользоваться бытовой техникой?
+[2025-12-02 09:53:31.287939] RESULT: Разрешено ли студентам, проживающим в общежитии МСГ, пользоваться бытовой техникой?
+Нет четкого ответа.
+[2025-12-02 09:53:31.287965] Operation ended successfully
+[2025-12-02 09:53:31.287990] RESULT:
+- [Разрешено ли студентам, проживающим в общежитии МСГ, пользоваться бытовой техникой?] Разрешено ли студентам, проживающим в общежитии МСГ, пользоваться бытовой техникой?
+Нет четкого ответа.
+[2025-12-02 09:53:31.288022] Aggregation...
+[2025-12-02 09:53:31.288439] RESULT: Разрешено ли студентам, проживающим в общежитии МСГ, пользоваться бытовой техникой?
+Нет четкого ответа.
+[2025-12-02 09:53:31.288462] Operation ended successfully
+[2025-12-02 09:53:31.288492] STATUS: ReturnStatus.success
+[2025-12-02 09:53:31.288514] Кешируем полученный результат.
+[2025-12-02 09:53:31.288534] * CACHE_TABLE_NAME qa_pipeline_cache
+[2025-12-02 09:53:31.288552] * CACHE_HASH_KEY: cf25aecf3bf92a46f9c29cc1a0a261e603fc3c68.
+[2025-12-02 09:53:31.295173] Поиск результата в кеше...
+[2025-12-02 09:53:31.295235] Результата по заданной конфигурации гиперпараметров в кеше нет.
+[2025-12-02 09:53:31.295263] * CACHE_TABLE_NAME qa_pipeline_cache
+[2025-12-02 09:53:31.295283] * CACHE_HASH_KEY: 3c077b74429cfbe4b8b3f7ab4f62f97984e24587.
+[2025-12-02 09:53:31.295313] * HASH_SEEDS: ['None|None|None', "medium|ru|None|plan_initing=v2;enhance_classifier=v2;plan_enhancing=v2|ru|None|20|entities_extraction=v1|False|1|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.4, 0.6]:60|ru|None|cquerie_generator=v4|3|mixture;beamsearch;1;20;0.75;episodic;hyper;time;mixed;False;False;False;dense_triplets;single_step:dense_triplets:0.5:25;watercircles;True|25;15;25;6|False|episodic;hyper;time;episodic;hyper;time;naive;50|[<RelationType.hyper: 'hyper'>, <RelationType.simple: 'simple'>]|ensemble_fusion:['dense_triplets', 'bm25_triplets']:['50:0.5', '50:0.5']:[0.7, 0.3]:60|ru|None|cquerie_generator=v4|3|ru|None|canswers_summarisation=v3|ru|None|answer_classifier=v2;answer_generator=v3|6|True", 'ru|None|suba_summarisation=v2', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|host=localhost;model=llama3.1:8b;port=11437', 'Могут ли проживающие в общежитии МСГ обращаться к администрации с вопросами?'].
+[2025-12-02 09:53:31.295336] Получем результат с нуля...
+[2025-12-02 09:53:31.295359] START QA-PIPELINE...
+[2025-12-02 09:53:31.295384] BASE_QUESTION ID: ac30ac2f310a91a39892fcd9d53b8d11
+[2025-12-02 09:53:31.295407] BASE_QUESTION: Могут ли проживающие в общежитии МСГ обращаться к администрации с вопросами?
+[2025-12-02 09:53:31.295432] Preprocessing...
+[2025-12-02 09:53:31.295831] RESULT: QueryPreprocessingInfo(base_query='Могут ли проживающие в общежитии МСГ обращаться к администрации с вопросами?', denoised_query=None, enchanced_query=None, decomposed_query=None, processed_query=['Могут ли проживающие в общежитии МСГ обращаться к администрации с вопросами?'])
+[2025-12-02 09:53:31.295858] Operation ended successfully
+[2025-12-02 09:53:31.295888] Reasoning...
+[2025-12-02 09:53:31.295913] Processing sub_query #0: Могут ли проживающие в общежитии МСГ обращаться к администрации с вопросами?
+[2025-12-02 09:53:57.571312] RESULT: Могут.
+[2025-12-02 09:53:57.571427] Operation ended successfully
+[2025-12-02 09:53:57.571543] RESULT:
+- [Могут ли проживающие в общежитии МСГ обращаться к администрации с вопросами?] Могут.
+[2025-12-02 09:53:57.571642] Aggregation...
+[2025-12-02 09:53:57.572952] RESULT: Могут.
+[2025-12-02 09:53:57.573031] Operation ended successfully
+[2025-12-02 09:53:57.573128] STATUS: ReturnStatus.success
+[2025-12-02 09:53:57.573201] Кешируем полученный результат.
+[2025-12-02 09:53:57.573269] * CACHE_TABLE_NAME qa_pipeline_cache
+[2025-12-02 09:53:57.573333] * CACHE_HASH_KEY: 3c077b74429cfbe4b8b3f7ab4f62f97984e24587.
+[2025-12-02 09:59:13.797648] Поиск результата в кеше...
+[2025-12-02 09:59:13.797762] Результата по заданной конфигурации гиперпараметров в кеше нет.
+[2025-12-02 09:59:13.797814] * CACHE_TABLE_NAME qa_pipeline_cache
+[2025-12-02 09:59:13.797856] * CACHE_HASH_KEY: 5f657c135c17d7d822c7ababbc21a35e1c2ff5e2.
+[2025-12-02 09:59:13.797913] * HASH_SEEDS: ['None|None|None', "medium|ru|None|plan_initing=v2;enhance_classifier=v2;plan_enhancing=v2|ru|None|20|entities_extraction=v1|False|1|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.4, 0.6]:60|ru|None|cquerie_generator=v4|3|mixture;beamsearch;1;20;0.75;episodic;hyper;time;mixed;False;False;False;dense_triplets;single_step:dense_triplets:0.5:25;watercircles;True|25;15;25;6|False|episodic;hyper;time;episodic;hyper;time;naive;50|[<RelationType.hyper: 'hyper'>, <RelationType.simple: 'simple'>]|ensemble_fusion:['dense_triplets', 'bm25_triplets']:['50:0.5', '50:0.5']:[0.7, 0.3]:60|ru|None|cquerie_generator=v4|3|ru|None|canswers_summarisation=v3|ru|None|answer_classifier=v2;answer_generator=v3|6|True", 'ru|None|suba_summarisation=v2', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|host=localhost;model=llama3.1:8b;port=11437', 'Что должны делать люди, проживающие в общежитии МСГ, если они обнаружили неисправный датчик?'].
+[2025-12-02 09:59:13.797984] Получем результат с нуля...
+[2025-12-02 09:59:13.798020] START QA-PIPELINE...
+[2025-12-02 09:59:13.798060] BASE_QUESTION ID: 9522a6e89ad5098dc3f84b1823241fd7
+[2025-12-02 09:59:13.798092] BASE_QUESTION: Что должны делать люди, проживающие в общежитии МСГ, если они обнаружили неисправный датчик?
+[2025-12-02 09:59:13.798129] Preprocessing...
+[2025-12-02 09:59:13.798748] RESULT: QueryPreprocessingInfo(base_query='Что должны делать люди, проживающие в общежитии МСГ, если они обнаружили неисправный датчик?', denoised_query=None, enchanced_query=None, decomposed_query=None, processed_query=['Что должны делать люди, проживающие в общежитии МСГ, если они обнаружили неисправный датчик?'])
+[2025-12-02 09:59:13.798790] Operation ended successfully
+[2025-12-02 09:59:13.798837] Reasoning...
+[2025-12-02 09:59:13.798877] Processing sub_query #0: Что должны делать люди, проживающие в общежитии МСГ, если они обнаружили неисправный датчик?
+[2025-12-02 09:59:50.447816] Поиск результата в кеше...
+[2025-12-02 09:59:50.448073] Результата по заданной конфигурации гиперпараметров в кеше нет.
+[2025-12-02 09:59:50.448201] * CACHE_TABLE_NAME qa_pipeline_cache
+[2025-12-02 09:59:50.448306] * CACHE_HASH_KEY: 98e7e5d8bb4d9a92150a67a87bf67390c03608a3.
+[2025-12-02 09:59:50.448452] * HASH_SEEDS: ['None|None|None', "medium|ru|None|plan_initing=v2;enhance_classifier=v2;plan_enhancing=v2|ru|None|20|entities_extraction=v1|False|1|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.4, 0.6]:60|ru|None|cquerie_generator=v4|3|mixture;beamsearch;1;20;0.75;episodic;hyper;time;mixed;False;False;False;dense_triplets;single_step:dense_triplets:0.5:25;watercircles;True|25;15;25;6|False|episodic;hyper;time;episodic;hyper;time;naive;50|[<RelationType.hyper: 'hyper'>, <RelationType.simple: 'simple'>]|ensemble_fusion:['dense_triplets', 'bm25_triplets']:['50:0.5', '50:0.5']:[0.7, 0.3]:60|ru|None|cquerie_generator=v4|3|ru|None|canswers_summarisation=v3|ru|None|answer_classifier=v2;answer_generator=v3|6|True", 'ru|None|suba_summarisation=v2', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|host=localhost;model=llama3.1:8b;port=11437', 'Что должны делать люди, проживающие в общежитии МСГ, если они обнаружили неисправный датчик пожарной безопасности?'].
+[2025-12-02 09:59:50.448565] Получем результат с нуля...
+[2025-12-02 09:59:50.448666] START QA-PIPELINE...
+[2025-12-02 09:59:50.448784] BASE_QUESTION ID: 0c4255a351db2a04a08a61124c7bf406
+[2025-12-02 09:59:50.448880] BASE_QUESTION: Что должны делать люди, проживающие в общежитии МСГ, если они обнаружили неисправный датчик пожарной безопасности?
+[2025-12-02 09:59:50.448990] Preprocessing...
+[2025-12-02 09:59:50.450780] RESULT: QueryPreprocessingInfo(base_query='Что должны делать люди, проживающие в общежитии МСГ, если они обнаружили неисправный датчик пожарной безопасности?', denoised_query=None, enchanced_query=None, decomposed_query=None, processed_query=['Что должны делать люди, проживающие в общежитии МСГ, если они обнаружили неисправный датчик пожарной безопасности?'])
+[2025-12-02 09:59:50.450934] Operation ended successfully
+[2025-12-02 09:59:50.451069] Reasoning...
+[2025-12-02 09:59:50.451187] Processing sub_query #0: Что должны делать люди, проживающие в общежитии МСГ, если они обнаружили неисправный датчик пожарной безопасности?
+[2025-12-02 10:00:02.676037] RESULT: Люди, проживающие в общежитии МСГ, должны сообщить об обнаружении неисправного датчика пожарной безопасности администрации корпуса и ФГБУ «МСГ».
+[2025-12-02 10:00:02.676155] Operation ended successfully
+[2025-12-02 10:00:02.676266] RESULT:
+- [Что должны делать люди, проживающие в общежитии МСГ, если они обнаружили неисправный датчик пожарной безопасности?] Люди, проживающие в общежитии МСГ, должны сообщить об обнаружении неисправного датчика пожарной безопасности администрации корпуса и ФГБУ «МСГ».
+[2025-12-02 10:00:02.676409] Aggregation...
+[2025-12-02 10:00:02.678325] RESULT: Люди, проживающие в общежитии МСГ, должны сообщить об обнаружении неисправного датчика пожарной безопасности администрации корпуса и ФГБУ «МСГ».
+[2025-12-02 10:00:02.678436] Operation ended successfully
+[2025-12-02 10:00:02.678573] STATUS: ReturnStatus.success
+[2025-12-02 10:00:02.678675] Кешируем полученный результат.
+[2025-12-02 10:00:02.678770] * CACHE_TABLE_NAME qa_pipeline_cache
+[2025-12-02 10:00:02.678857] * CACHE_HASH_KEY: 98e7e5d8bb4d9a92150a67a87bf67390c03608a3.

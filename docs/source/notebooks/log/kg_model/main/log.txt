@@ -1,0 +1,4 @@
+[2025-12-02 09:52:49.978129] Checking KnowledgeGraph consistency...
+[2025-12-02 09:52:49.982466] GRAPH DB STATUS: {'triplets': {'simple': 123, 'hyper': 350, 'episodic': 488, 'time': 0}, 'nodes': {'object': 242, 'hyper': 112, 'episodic': 33, 'time': 0}}
+[2025-12-02 09:52:49.983663] VECTOR NODES DB STATUS: {'object': {'dense_nodes': 242, 'bm25_nodes': 242}, 'hyper': {'dense_nodes': 112, 'bm25_nodes': 112}, 'episodic': {'dense_nodes': 33, 'bm25_nodes': 33}, 'time': {'dense_nodes': 0, 'bm25_nodes': 0}}
+[2025-12-02 09:52:49.983703] VECTOR TRIPLETS DB STATUS: {'dense_triplets': 262, 'bm25_triplets': 262}
