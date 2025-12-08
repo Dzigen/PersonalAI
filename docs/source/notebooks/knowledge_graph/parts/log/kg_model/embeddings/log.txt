@@ -1,5 +1,0 @@
-[2025-12-02 10:03:51.090819] Adding triples to vector-model...
-[2025-12-02 10:03:51.090871] 	- Also adding triplet-nodes in vector-model
-[2025-12-02 10:03:53.727296] relations info (all/unique/existed count) - 4/4/4
-[2025-12-02 10:03:53.727563] nodes info (all/unique/existed count) - 8/{<NodeType.object: 'object'>: 5, <NodeType.hyper: 'hyper'>: 0, <NodeType.episodic: 'episodic'>: 0, <NodeType.time: 'time'>: 0}/{<NodeType.object: 'object'>: 5, <NodeType.hyper: 'hyper'>: 0, <NodeType.episodic: 'episodic'>: 0, <NodeType.time: 'time'>: 0}
-[2025-12-02 10:03:53.727681] Triples were successfully added to vector-model!
