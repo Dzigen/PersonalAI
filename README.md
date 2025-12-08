@@ -23,6 +23,11 @@
 
 ![alt text](https://github.com/zer0o0ne/Personal-AI/blob/dev/docs/branch_workflow.jpg)
 
+##### Рабочие скрипты
+* [Построение графа](notbooks/kg_building)
+* [Оценка эффективности конфигурации QA-пайплайна с использование построенного графа](experiments/qa)
+
+
 ##### Полезные материалы (структура ML-проекта):
 * https://drive.google.com/file/d/1g0tzALqKygFTtzA-C5l5ZOdC9tKiUTzc/view?usp=sharing
 
