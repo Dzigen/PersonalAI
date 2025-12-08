@@ -31,6 +31,14 @@ src.pipelines.qa.kg\_reasoning.weak\_reasoner.config module
    :undoc-members:
    :show-inheritance:
 
+src.pipelines.qa.kg\_reasoning.weak\_reasoner.utils module
+----------------------------------------------------------
+
+.. automodule:: src.pipelines.qa.kg_reasoning.weak_reasoner.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

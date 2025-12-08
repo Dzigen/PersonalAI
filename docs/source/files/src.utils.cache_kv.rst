@@ -12,6 +12,14 @@ src.utils.cache\_kv.CacheKV module
    :undoc-members:
    :show-inheritance:
 
+src.utils.cache\_kv.CacheOperations module
+------------------------------------------
+
+.. automodule:: src.utils.cache_kv.CacheOperations
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 src.utils.cache\_kv.CacheUtils module
 -------------------------------------
 

@@ -20,6 +20,14 @@ src.pipelines.qa.query\_preprocessing.decomposition.config module
    :undoc-members:
    :show-inheritance:
 
+src.pipelines.qa.query\_preprocessing.decomposition.utils module
+----------------------------------------------------------------
+
+.. automodule:: src.pipelines.qa.query_preprocessing.decomposition.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

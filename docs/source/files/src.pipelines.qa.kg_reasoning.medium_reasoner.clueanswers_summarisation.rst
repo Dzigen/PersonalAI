@@ -28,6 +28,14 @@ src.pipelines.qa.kg\_reasoning.medium\_reasoner.clueanswers\_summarisation.confi
    :undoc-members:
    :show-inheritance:
 
+src.pipelines.qa.kg\_reasoning.medium\_reasoner.clueanswers\_summarisation.utils module
+---------------------------------------------------------------------------------------
+
+.. automodule:: src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

@@ -20,6 +20,14 @@ src.utils.agent\_stat\_analyzer.AgentStatAnalyzer module
    :undoc-members:
    :show-inheritance:
 
+src.utils.agent\_stat\_analyzer.AgentStatOperations module
+----------------------------------------------------------
+
+.. automodule:: src.utils.agent_stat_analyzer.AgentStatOperations
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 src.utils.agent\_stat\_analyzer.configs module
 ----------------------------------------------
 

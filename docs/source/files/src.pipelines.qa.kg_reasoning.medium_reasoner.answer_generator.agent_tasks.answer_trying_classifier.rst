@@ -8,6 +8,7 @@ Subpackages
    :maxdepth: 4
 
    src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v1
+   src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v2
 
 Submodules
 ----------

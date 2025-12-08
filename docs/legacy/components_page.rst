@@ -7,10 +7,13 @@
 
    components/main
    components/knowledge_model
+
    components/qa_pipeline/qa_pipeline
    components/mem_pipeline/mem_pipeline
-   components/agents/agents
+
    components/db_drivers/db_drivers
+   components/rerankers/rerankers
+   components/agents/agents
 
 .. toctree::
    :maxdepth: 2

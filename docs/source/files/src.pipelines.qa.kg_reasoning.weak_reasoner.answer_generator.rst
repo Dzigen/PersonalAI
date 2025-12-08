@@ -28,6 +28,14 @@ src.pipelines.qa.kg\_reasoning.weak\_reasoner.answer\_generator.configs module
    :undoc-members:
    :show-inheritance:
 
+src.pipelines.qa.kg\_reasoning.weak\_reasoner.answer\_generator.utils module
+----------------------------------------------------------------------------
+
+.. automodule:: src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

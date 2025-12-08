@@ -20,6 +20,14 @@ src.pipelines.qa.answers\_aggregation.config module
    :undoc-members:
    :show-inheritance:
 
+src.pipelines.qa.answers\_aggregation.utils module
+--------------------------------------------------
+
+.. automodule:: src.pipelines.qa.answers_aggregation.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

@@ -28,6 +28,14 @@ src.pipelines.qa.kg\_reasoning.weak\_reasoner.query\_parser.configs module
    :undoc-members:
    :show-inheritance:
 
+src.pipelines.qa.kg\_reasoning.weak\_reasoner.query\_parser.utils module
+------------------------------------------------------------------------
+
+.. automodule:: src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

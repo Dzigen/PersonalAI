@@ -5,3 +5,9 @@
 
 .. literalinclude:: venv_setup.sh
   :language: bash
+
+Содержание "requirements.txt"-файла:
+
+.. literalinclude:: requirements.txt
+       :language: text
+       :encoding: utf-8
