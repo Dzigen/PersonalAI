@@ -30,6 +30,14 @@ src.pipelines.qa.configs module
    :undoc-members:
    :show-inheritance:
 
+src.pipelines.qa.utils module
+-----------------------------
+
+.. automodule:: src.pipelines.qa.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

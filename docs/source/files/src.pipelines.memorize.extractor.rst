@@ -20,10 +20,18 @@ src.pipelines.memorize.extractor.LLMExtractor module
    :undoc-members:
    :show-inheritance:
 
-src.pipelines.memorize.extractor.configs module
------------------------------------------------
+src.pipelines.memorize.extractor.config module
+----------------------------------------------
 
-.. automodule:: src.pipelines.memorize.extractor.configs
+.. automodule:: src.pipelines.memorize.extractor.config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.pipelines.memorize.extractor.utils module
+---------------------------------------------
+
+.. automodule:: src.pipelines.memorize.extractor.utils
    :members:
    :undoc-members:
    :show-inheritance:

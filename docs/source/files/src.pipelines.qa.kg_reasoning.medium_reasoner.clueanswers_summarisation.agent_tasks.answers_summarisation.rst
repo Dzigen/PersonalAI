@@ -8,6 +8,8 @@ Subpackages
    :maxdepth: 4
 
    src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v1
+   src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v2
+   src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v3
 
 Submodules
 ----------
