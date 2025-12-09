@@ -134,8 +134,7 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
                 new_triplets += tmp_triplets
 
         if self.config.need_thesises:
-            self.log("START HYPER-TRIPLETS EXTRACTION...",
-                     verbose=self.verbose)
+            self.log("START HYPER-TRIPLETS EXTRACTION...", verbose=self.verbose)
             tmp_triplets, status = self.tasks_solvers.thesises_extraction_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                 text=text, node_prop=props)
@@ -151,8 +150,7 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
                 new_triplets += tmp_triplets
 
         if self.config.need_episodic:
-            self.log("START EPISODIC-TRIPLETS BUILDING...",
-                     verbose=self.verbose)
+            self.log("START EPISODIC-TRIPLETS BUILDING...", verbose=self.verbose)
             tmp_triplets = self.get_episodic_relationships(
                 text, self.get_entities_from_triplets(new_triplets), node_prop=props)
 
@@ -190,20 +188,15 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
             entities[triplet.end_node.stringified] = triplet.end_node
         return list(entities.values())
 
-    def get_episodic_relationships(self, text: str, entities: List[Node], node_prop: Dict = {}, rel_prop: Dict = {}) -> List[Triplet]:
-        episodic_node = NodeCreator.create(
-            name=text, n_type=NodeType.episodic, prop={**node_prop})
-        episodic_rel = Relation(
-            name=RelationType.episodic.value, type=RelationType.episodic, prop={**rel_prop})
-        episodic_triplets = [TripletCreator.create(
-            entity, episodic_rel, episodic_node) for entity in entities]
+    def get_episodic_relationships(self, text: str, entities: List[Node], node_prop: Union[None, Dict] = None, rel_prop: Union[None, Dict] = None) -> List[Triplet]:
+        episodic_node = NodeCreator.create(name=text, n_type=NodeType.episodic, prop=dict() if node_prop is None else node_prop)
+        episodic_rel = Relation(name=RelationType.episodic.value, type=RelationType.episodic, prop=dict() if rel_prop is None else rel_prop)
+        episodic_triplets = [TripletCreator.create(entity, episodic_rel, episodic_node) for entity in entities]
         return episodic_triplets
 
     def get_time_triplets(self, triplets: List[Triplet], time: str) -> List[Triplet]:
-        time_node = NodeCreator.create(
-            name=time, n_type=NodeType.time, prop={})
-        time_rel = Relation(name=RelationType.time.value,
-                            type=RelationType.time, prop={})
+        time_node = NodeCreator.create(name=time, n_type=NodeType.time, prop={})
+        time_rel = Relation(name=RelationType.time.value, type=RelationType.time, prop={})
         start_nodes, picked_ids = [], set()
         for triplet in triplets:
             if (triplet.start_node.type == NodeType.episodic or triplet.start_node.type == NodeType.hyper) and triplet.start_node.id not in picked_ids:
@@ -212,6 +205,5 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
             if (triplet.end_node.type == NodeType.episodic or triplet.end_node.type == NodeType.hyper) and triplet.end_node.id not in picked_ids:
                 picked_ids.add(triplet.end_node.id)
                 start_nodes.append(triplet.end_node)
-        time_triplets = [TripletCreator.create(
-            time_node, time_rel, node) for node in start_nodes]
+        time_triplets = [TripletCreator.create(time_node, time_rel, node) for node in start_nodes]
         return time_triplets
