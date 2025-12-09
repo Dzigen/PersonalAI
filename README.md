@@ -23,7 +23,7 @@
 
 ![alt text](https://github.com/zer0o0ne/Personal-AI/blob/dev/docs/branch_workflow.jpg)
 
-##### Рабочие скрипты
+##### Рабочие скрипты:
 * [Построение графа](notebooks/kg_building)
 * [Оценка эффективности конфигурации QA-пайплайна с использование построенного графа](experiments/qa)
 
