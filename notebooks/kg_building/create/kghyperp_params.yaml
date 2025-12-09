@@ -1,5 +1,5 @@
-DATASET_NAME: 'hotpotqa_distractor_validation' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'llama318b_021225_v2prompts' # TO CHANGE
+DATASET_NAME: 'diaasq' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'gigachatmax_091225_v2prompts' # TO CHANGE
 
 KG_CONFIG:
   embedder_configs:
@@ -15,20 +15,19 @@ KG_CONFIG:
 
   agent_configs:
     default: # TO CHANGE
-      vendor: ollama
-      gen_strategy:
-        num_predict: 2048
-        seed: 42
-        top_k: 1
-        temperature: 0.0
       credentials:
-        model: 'llama3.1:8b'
-        host: 'localhost'
-        port: 11437
+        model: GigaChat-Max
+        scope: GIGACHAT_API_PERS
+        token: YzJkNmU4MmEtYTdhYi00ZmY3LTk3NTItMTgwNGFhYTM5MzAwOjcxYjI2YjQzLThjYWUtNGQ5NS04N2ZhLTUxYzE2NTE4NDUzZQ==
       ext_params:
         timeout: 560
-        keep_alive: -1
         trials: 5
+        verify_ssl_certs: false
+      gen_strategy:
+        temperature: 0
+        top_k: 1
+        top_p: 0
+      vendor: gigachat
 
   agents_mapping:
     qa_pipeline: default

@@ -309,7 +309,7 @@ class TripletCreator(BaseCreator):
                 triplet.end_node, str(triplet.end_node.name))
 
         elif rel_type == RelationType.time:
-            str_triplet += triplet.start_node.name + ": "
+            str_triplet = triplet.start_node.name + ": "
             str_triplet += TripletCreator.add_str_props(
                 triplet.end_node, str(triplet.end_node.name))
 

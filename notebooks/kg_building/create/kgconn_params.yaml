@@ -1,12 +1,12 @@
 GPUS_CONFIG:
     ollama_device_id: '0'
-    workspace_device_id: '2'
+    workspace_device_id: '1'
 
 KG_MODEL_CONNECTORS:
 
   graph_struc_connection: # neo4j vendor
     host: 'localhost'
-    port: 7712 # TO CHANGE
+    port: 7713 # TO CHANGE
     params:
       user: 'neo4j'
       pwd: 'password'
@@ -20,7 +20,7 @@ KG_MODEL_CONNECTORS:
         name: dense_nodes
         conn:
           host: 'localhost'
-          port: 6333 # TO CHANGE
+          port: 6334 # TO CHANGE
         db_info:
           db: 'personalaiembeddb'
           table: 'vectorized_nodes'
@@ -32,7 +32,7 @@ KG_MODEL_CONNECTORS:
         name: bm25_nodes
         conn:
           host: 'localhost'
-          port: 9208 # TO CHANGE
+          port: 9209 # TO CHANGE
           user: 'admin'
           pass: 'admin'
         db_info:
@@ -44,7 +44,7 @@ KG_MODEL_CONNECTORS:
         name: dense_triplets
         conn:
           host: 'localhost'
-          port: 6333 # TO CHANGE
+          port: 6334 # TO CHANGE
         db_info:
           db: 'personalaiembeddb'
           table: 'vectorized_triplets'
@@ -56,7 +56,7 @@ KG_MODEL_CONNECTORS:
         name: bm25_triplets
         conn:
           host: 'localhost'
-          port: 9208 # TO CHANGE
+          port: 9209 # TO CHANGE
           user: 'admin'
           pass: 'admin'
         db_info:
@@ -67,7 +67,7 @@ MEM_PIPELINE_CONNECTORS:
   kv_cache_connections:
     persistent_cache_config: # mongo vendor
       host: 'localhost'
-      port: 27042 # TO CHANGE
+      port: 27043 # TO CHANGE
       db_info:
           db: 'personalaikvdb'
           table: 'kvtable'
@@ -78,7 +78,7 @@ MEM_PIPELINE_CONNECTORS:
 
     ram_cache_config: # redis vendor
       host: 'localhost'
-      port: 6404 # TO CHANGE
+      port: 6405 # TO CHANGE
       db_info:
           db: 'personalaikvdb'
           table: 'kvtable'
@@ -105,7 +105,7 @@ CONTAINERS_ADDITIONAL_CONFIG:
 
   redis_ui_cntname: 'personalai_mmenschikov_kgbuild_redis_ui'
   redis_ui_host: 'personalai_mmenschikov_kgbuild_redis_ui'
-  redis_ui_port: 5565 # TO CHANGE
+  redis_ui_port: 5566 # TO CHANGE
   redis_config_name: 'redis'
 
   mongo_cntname: 'personalai_mmenschikov_kgbuild_mongo'
@@ -113,19 +113,19 @@ CONTAINERS_ADDITIONAL_CONFIG:
 
   mongo_ui_cntname: 'personalai_mmenschikov_kgbuild_mongo_ui'
   mongo_ui_host: 'personalai_mmenschikov_kgbuild_mongo_ui'
-  mongo_ui_port: 8106 # TO CHANGE
+  mongo_ui_port: 8107 # TO CHANGE
 
   qdrant_cntname: 'personalai_mmenschikov_kgbuild_qdrant'
   qdrant_host: 'localhost'
-  qdrant_ui_port: 6434 # TO CHANGE
+  qdrant_ui_port: 6435 # TO CHANGE
 
   opensearch_cntname: 'personalai_mmenschikov_kgbuild_opensearch'
   opensearch_host: 'localhost'
-  opensearch_port2: 9606 # TO CHANGE
+  opensearch_port2: 9607 # TO CHANGE
 
   neo4j_cntname: 'personalai_mmenschikov_kgbuild_neo4j'
   neo4j_host: 'localhost'
-  neo4j_ui_port: 7499 # TO CHANGE
+  neo4j_ui_port: 7500 # TO CHANGE
 
   ollama_cntname: 'personalai_mmenschikov_ollama'
   ollama_host: 'personalai_mmenschikov_ollama'
