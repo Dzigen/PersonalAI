@@ -5,9 +5,13 @@ TMP_DEPLOYMENT_COMPOSE_PATH="$TMP_BASE_DIR/deployment"
 TMP_CREATE_DIR="$TMP_BASE_DIR/notebooks/kg_building"
 TMP_KGCREATE_PATH="$TMP_BASE_DIR/notebooks/kg_building/create"
 
+# -----------------------------------------------------------
+
 DATASET_NAME=$1
 KG_NAME=$2
 USERNAME=m.menschikov
+
+# -----------------------------------------------------------
 
 ENV_FILE_PATH="/mnt/data/m.menschikov/personalai/knowledge_graphs/$DATASET_NAME/$KG_NAME/.env"
 
@@ -28,6 +32,8 @@ KGHYPERP_PARAMS_PATH="$CONTAINER_WORKSPACE_KG_PATH/settings/kghyperp_params.yaml
 
 PYTHON_CMD=/usr/bin/python3
 
+# -----------------------------------------------------------
+
 # поднять tmp workspace-контейнер
 cd $TMP_DEPLOYMENT_COMPOSE_PATH ; docker compose --env-file=".env_base" up -d workspace
 # инициализировать структуру графа
@@ -40,6 +46,8 @@ docker exec -u root $TMP_WORKSPACE_CNTNAME sh -c "chown -R 1000:1000 $SPARSE_DIR
 
 # удалить tmp-конейнер
 docker stop $TMP_WORKSPACE_CNTNAME ; docker rm $TMP_WORKSPACE_CNTNAME
+
+# -----------------------------------------------------------
 
 # создать окружение графа
 cd $TMP_CREATE_DIR ; docker compose --env-file=$ENV_FILE_PATH up -d workspace

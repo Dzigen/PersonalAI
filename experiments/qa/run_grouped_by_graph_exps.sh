@@ -14,8 +14,10 @@ ENV_SETTINGS_DIR="$INIT_ENV_DIR/env_settings"
 
 # ===============================================================
 
-DATASETS=("sberdialogues_conv-3")
-KNOWLEDGE_GRAPHS=("gigachatmax_111225_v2prompts")
+DATASETS=("sberdialogues_conv-3") # TO CHANGE
+KNOWLEDGE_GRAPHS=("gigachatmax_111225_v2prompts") # TO CHANGE
+EVAL_FNAMES=("sberdialogues.yaml") # TO CHANGE
+CONFIGURE_FNAMES=("sberdialogues.yaml") # TO CHANGE
 
 # ===============================================================
 
@@ -23,6 +25,8 @@ for ds_idx in "${!DATASETS[@]}";
 do  
     CURRENT_DATASET="${DATASETS[$ds_idx]}"
     CURRENT_KG="${KNOWLEDGE_GRAPHS[$ds_idx]}"
+    CURRENT_EVAL_FNAME="${EVAL_FNAMES[$ds_idx]}"
+    CURRENT_CONFIGURE_FNAME="${CONFIGURE_FNAMES[$ds_idx]}"
 
     echo "$CURRENT_DATASET $CURRENT_KG"
 
@@ -57,15 +61,29 @@ do
     cd $INIT_ENV_DIR ; docker compose --env-file="$SPEC_ENV_SETTINGS" up -d workspace
 
     # -----------------------------------------------------------
-    # 3. Сгенерировать/подготовить QA-конфиги
+    # 3. подготовить QA-конфиги
+    EXPENV_BASE_DIR=/home/workspace/experiments/qa
+    PARAMS_TO_RUN_DIR="$EXPENV_BASE_DIR/params_to_run/"
+    PREPARED_PARAMS_DIR="$EXPENV_BASE_DIR/configure/medium/prepared_params/$CURRENT_DATASET/$CURRENT_KG/"
+    WORKSPACE_EXP_CNTNAME=personalai_mmenschikov_qaexp_workspace_$CURRENT_DATASET\_$CURRENT_KG
+
+    echo $PARAMS_TO_RUN_DIR
+    echo $PREPARED_PARAMS_DIR
+    echo $WORKSPACE_EXP_CNTNAME
+
+    docker exec -u $USERNAME $WORKSPACE_EXP_CNTNAME bash -c "rm -rf $PARAMS_TO_RUN_DIR"
+    docker exec -u $USERNAME $WORKSPACE_EXP_CNTNAME bash -c "mkdir $PARAMS_TO_RUN_DIR"
+    docker exec -u $USERNAME $WORKSPACE_EXP_CNTNAME bash -c "cp $PREPARED_PARAMS_DIR/* $PARAMS_TO_RUN_DIR"
 
     # -----------------------------------------------------------
-    # 4. Сгенерировать/подготовить QA-эксперименты
-    
+    # 4. Запустить QA-эксперименты
+    docker exec -u $USERNAME $WORKSPACE_EXP_CNTNAME bash $EXPENV_BASE_DIR/crontab_job.sh $CURRENT_KG $CURRENT_DATASET $CURRENT_CONFIGURE_FNAME $CURRENT_EVAL_FNAME
+
     # -----------------------------------------------------------
     # 5. Удаление конкретного QA-окружения
-    cd $INIT_ENV_DIR ; bash rm_containers.sh "$CURRENT_DATASET\_$CURRENT_KG"
-
+    cd $INIT_ENV_DIR ; bash rm_containers.sh $CURRENT_DATASET\_$CURRENT_KG
 done
+
+# ===============================================================
 
 echo "=== Done (run_grouped_by_graph_exps.sh) ==="

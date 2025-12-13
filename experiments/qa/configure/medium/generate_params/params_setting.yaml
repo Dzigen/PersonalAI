@@ -1,5 +1,5 @@
 DATASET_NAME: # TO CHANGE
-  - 'sberdialogues_conv-10'
+  - 'sberdialogues_conv-3'
 #  - 'rubq_dev'
 KNOWLEDGE_GRAPH_NAME: # TO CHANGE
   - ['gigachatmax_111225_v2prompts'] #['deepseek_231025_v2prompts', 'gigachatmax_051125_v2prompts', 'llama318b_221025_v2prompts', 'qwen38b_261025_v2prompts', 'llama318b_021225_v2prompts'] 
@@ -149,26 +149,8 @@ kg_reasoner: # TO CHANGE
       filter_method: # CAN BE null
         - 'naive'
         - 'naive'
-        - 'naive'
         
       filter_config: # CAN BE null
-        - max_k: 50
-          reranker_driver_config:
-            name: 'ensemble_fusion' # DONT CHANGE
-            strategy_config:
-              vdb_names: ['dense_triplets', 'bm25_triplets']
-              retriever_configs:
-                - fetch_n: 50
-                  threshold: 0.5
-                - fetch_n: 50
-                  threshold: 0.5
-              weights: [0.7, 0.3]
-              c: 60
-          accepted_triplets_types:
-            - 'simple'
-            - 'hyper'
-            - 'episodic'
-
         - max_k: 50
           reranker_driver_config:
             name: 'ensemble_fusion' # DONT CHANGE
