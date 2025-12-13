@@ -24,7 +24,7 @@ KG_DIR_STRUCT:
     inference: llm_inference_volume
 
 PERSONALAI_REPO_DIRS:
-  qa_datasets: 'data/qa_datasets/' # TO CHANGE
+  qa_datasets: 'data/qa_datasets/sberdialogues' # TO CHANGE
   notebooks: 'notebooks'
   src: 'src'
   models: 'models'
@@ -33,7 +33,7 @@ PERSONALAI_REPO_DIRS:
 WORKSPACE_CONTAINER_DIRS:
   base_path: '/home/workspace'
   kg: 'data/knowledge_graphs'
-  qa_datasets: 'data/qa_datasets/' # TO CHANGE
+  qa_datasets: 'data/qa_datasets/sberdialogues' # TO CHANGE
   notebooks: 'notebooks'
   src: 'src'
   models: 'models'

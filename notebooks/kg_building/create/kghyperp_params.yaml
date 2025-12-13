@@ -1,5 +1,5 @@
-DATASET_NAME: 'diaasq' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'gigachatmax_091225_v2prompts' # TO CHANGE
+DATASET_NAME: 'sberdialogues_conv-10' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'gigachatmax_111225_v2prompts' # TO CHANGE
 
 KG_CONFIG:
   embedder_configs:
@@ -35,7 +35,7 @@ KG_CONFIG:
     kg_nodestree_model: default
 
 MEM_PIPELINE_CONFIG:
-  lang: 'en' # TO CHANGE
+  lang: 'ru' # TO CHANGE
 
   extractor_stage:
     extract_triplets:

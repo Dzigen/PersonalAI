@@ -160,3 +160,6 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
 
     def clear(self) -> None:
         self._collection.drop()
+
+    def __del__(self):
+        self.close_connection()

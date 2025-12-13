@@ -207,3 +207,6 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
                 start_nodes.append(triplet.end_node)
         time_triplets = [TripletCreator.create(time_node, time_rel, node) for node in start_nodes]
         return time_triplets
+
+    # def __del__(self):
+    #     pass

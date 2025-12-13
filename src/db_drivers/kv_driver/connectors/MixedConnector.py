@@ -105,4 +105,4 @@ class MixedKVConnector(AbstractKVDatabaseConnection):
         pass
 
     def __del__(self):
-        pass
+        self.close_connection()
