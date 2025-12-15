@@ -1,0 +1,26 @@
+import re
+
+from typing import List
+
+def same_ctx_cls_custom_formate(curr_text: str, prev_user_text: str) -> str:
+    if len(curr_text) < 1:
+        raise ValueError
+
+    return {'curr_text': curr_text, 'prev_user_text': prev_user_text}
+
+
+def same_ctx_cls_custom_postprocess(parsed_response:str, **kwargs) -> str:
+    if len(parsed_response) < 1:
+        raise ValueError(f"parsed_response: '{parsed_response}'")
+
+    true_matches = re.findall(r"[^\w]*True[^\w]*", parsed_response)
+    false_matches = re.findall(r"[^\w]*False[^\w]*", parsed_response)
+
+    if len(true_matches) > 0:
+        same_ctx_sign = True
+    elif len(false_matches) > 0:
+        same_ctx_sign = False
+    else:
+        raise ValueError(f"parsed_response: '{parsed_response}'")
+
+    return same_ctx_sign
