@@ -49,6 +49,18 @@ def kuzu_conn():
             need_to_clear=True))
     return GraphDriver.connect(config)
 
+
+@pytest.fixture(scope='package')
+def blazegraph_conn():
+    config = GraphDriverConfig(
+        db_vendor='blazegraph', db_config=GraphDBConnectionConfig(
+            host='localhost', port=9999,
+            params={'graph_uriprefix': 'http://personalai.org', 'namespace': 'testnamespace'},
+            db_info={'db': 'testdb', 'table': 'testtable'}, need_to_clear=True
+        )
+    )
+    return GraphDriver.connect(config)
+
 # ------------------------------#
 
 
@@ -56,12 +68,13 @@ def kuzu_conn():
 def available_graph_connections(
     inmemory_graph_conn,
     neo4j_conn,
-    kuzu_conn
+    kuzu_conn,
+    blazegraph_conn
 ):
     return {
         'neo4j': neo4j_conn,
         'inmemory_graph': inmemory_graph_conn,
-        'kuzu': kuzu_conn
+        'kuzu': kuzu_conn, 'blazegraph': blazegraph_conn
     }
 
 

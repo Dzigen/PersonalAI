@@ -26,6 +26,8 @@ DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(
     host='localhost', port=7687, params={'user': "neo4j", 'pwd': 'password'})
 
 
-DEFAULT_BLAZE_CONFIG = GraphDBConnectionConfig(
-    host='localhost', port=8889
+DEFAULT_BLAZEGRAPH_CONFIG = GraphDBConnectionConfig(
+    host='localhost', port=9999,
+    db_info={'db': 'defaultpersonalaigraphdb', 'table': 'defaultpersonalaigraphtable'},
+    params={'namespace': 'http://personalai.org', 'namespace': 'defaultpersonalainamespace'}
 )
