@@ -31,3 +31,5 @@ levenshtein
 nltk
 #protobuf
 qdrant-client
+SPARQLWrapper
+rdflib

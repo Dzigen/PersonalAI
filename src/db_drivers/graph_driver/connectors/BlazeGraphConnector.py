@@ -1,9 +1,11 @@
 from typing import List, Dict, Union
-from kuzu.query_result import QueryResult
+from SPARQLWrapper import SPARQLWrapper, JSON
+from rdflib import Dataset, URIRef, Literal, Namespace
+from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
 import json
 import os
 
-from .configs import DEFAULT_BLAZE_CONFIG
+from .configs import DEFAULT_BLAZEGRAPH_CONFIG
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils.errors import ReturnInfo
 from ....utils.data_structs import Node, NODES_TYPES_MAP, TripletCreator, Relation, RELATIONS_TYPES_MAP, \
@@ -13,17 +15,36 @@ from ....utils import Triplet, NodeType
 
 class BlazeGraphConnector(AbstractGraphDatabaseConnection):
 
-    def __init__(self, config: Union[Dict, GraphDBConnectionConfig] = DEFAULT_BLAZE_CONFIG) -> None:
-        # TODO
-        raise NotImplementedError
+    def __init__(self, config: Union[Dict, GraphDBConnectionConfig] = DEFAULT_BLAZEGRAPH_CONFIG) -> None:
+        if isinstance(config, dict):
+            config = GraphDBConnectionConfig.from_dict(config)
+        else:
+            config.formate_fields()
+        self.config: GraphDBConnectionConfig = config
 
     def open_connection(self) -> None:
-        # TODO
-        raise NotImplementedError
+        query_endpoint = f"http://{self.config.host}:{self.config.port}/bigdata/namespace/kb/sparql"
+        update_endpoint = query_endpoint
+
+        graph_name = f"{self.config.db_info['db']}{self.config.db_info['table']}"
+
+        self.namespace = Namespace(f"{self.config.params['namespace']}")
+        self.named_graph_uri = URIRef(f"{self.config.params['namespace']}/{graph_name}")
+
+        store = SPARQLUpdateStore(query_endpoint, update_endpoint)
+        g = Dataset(store=store)
+        self.graph = g.get_context(self.named_graph_uri)
+        self.graph.open(query_endpoint)
+        self.graph.bind('pai', self.namespace)
+
+        if self.config.need_to_clear:
+            self.clear()
 
     def close_connection(self) -> None:
-        # TODO
-        raise NotImplementedError
+        try:
+            self.graph.close()
+        except (AttributeError, TypeError):
+            pass
 
     def __del__(self):
         self.close_connection()
@@ -60,11 +81,11 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
         # TODO
         raise NotImplementedError
 
-    def parse_query_nodes_output(self, output: QueryResult) -> List[Node]:
+    def parse_query_nodes_output(self, output: object) -> List[Node]:
         # TODO
         raise NotImplementedError
 
-    def parse_query_triplets_output(self, output: QueryResult) -> List[Triplet]:
+    def parse_query_triplets_output(self, output: object) -> List[Triplet]:
         # TODO
         raise NotImplementedError
 
@@ -95,5 +116,5 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
         raise NotImplementedError
 
     def clear(self) -> None:
-        # TODO
-        raise NotImplementedError
+        sparql_query = "DELETE { ?s ?p ?o } WHERE { ?s ?p ?o }"
+        self.graph.update(sparql_query)

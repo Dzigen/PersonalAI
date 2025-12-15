@@ -4,6 +4,7 @@ import warnings
 import socket
 from collections import defaultdict
 import pickle
+import gc
 
 from .configs import DEFAULT_MONGOKV_CONFIG
 from ..utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
@@ -27,8 +28,7 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
             return False
 
     def open_connection(self) -> None:
-        if self.is_open():
-            self.close_connection()
+        self.close_connection()
 
         self._client = pymongo.MongoClient(f'mongodb://{self.config.host}:{self.config.port}', 
                                            username=self.config.params['username'], password=self.config.params['password'])
@@ -39,8 +39,10 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
 
     def close_connection(self) -> None:
         try:
-            del self._collection
             self._client.close()
+            del self._collection
+            del self._client
+            gc.collect()
         except (AttributeError, TypeError):
             pass
 
@@ -158,3 +160,6 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
 
     def clear(self) -> None:
         self._collection.drop()
+
+    def __del__(self):
+        self.close_connection()

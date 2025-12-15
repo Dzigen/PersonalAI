@@ -1,5 +1,6 @@
 from typing import List, Tuple, Union, Dict
 import torch
+from time import sleep
 import numpy as np
 from copy import deepcopy
 from qdrant_client import QdrantClient
@@ -41,12 +42,13 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         if not self.db_conn.collection_exists(collection_name=self.collection_name):
             self.db_conn._client.create_collection(
                 collection_name=self.collection_name,
-                vectors_config=vectors_config
+                vectors_config=vectors_config,
+                timeout=60
             )
 
     def open_connection(self) -> ReturnInfo:
         url = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
-        self.db_conn = QdrantClient(url=url)
+        self.db_conn = QdrantClient(url=url, timeout=30.0)
         self.create_collection()
 
     def is_open(self) -> bool:
@@ -269,5 +271,7 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
 
     def clear(self) -> None:
         if self.db_conn.collection_exists(collection_name=self.collection_name):
-            self.db_conn.delete_collection(collection_name=self.collection_name)
-            self.create_collection()
+            self.db_conn.delete_collection(collection_name=self.collection_name, timeout=120)
+            self.close_connection()
+            sleep(5)
+            self.open_connection()

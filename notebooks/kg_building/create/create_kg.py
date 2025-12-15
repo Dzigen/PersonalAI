@@ -3,6 +3,7 @@ import sys
 import json
 import joblib
 import gc
+import ast 
 
 import datetime
 from tqdm import tqdm
@@ -73,7 +74,7 @@ kg_model = KnowledgeGraphModel(kgmodel_config, kvdriver_config)
 print("before:")
 pprint(kg_model.count_items(detailed=True))
 
-NEED_TO_CLEAR_KG = False # !!! PAY Attention !!!
+NEED_TO_CLEAR_KG = True # !!! PAY Attention !!!
 if NEED_TO_CLEAR_KG:
     print("Cleaning KG-model")
     kg_model.clear()
@@ -151,6 +152,17 @@ def rubqdev_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
 
     return data_pair
 
+def sberdialogues_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
+    contexts_df = pd.read_csv(f"{dataset_path}/relevant_contexts.csv")
+
+    data_pair = []
+    for r_idx in range(contexts_df.shape[0]):
+        formated_context = contexts_df['context'][r_idx]
+        raw_properties = ast.literal_eval(contexts_df['properties'][r_idx])
+        session_time = list(filter(lambda p: p[0].endswith("date_time"), raw_properties.items()))[0][1]
+        data_pair.append((formated_context, session_time, dict()))
+
+    return data_pair
 
 CUSTOM_LOAD_FUNCS = {
     'diaasq': diaasq_cload,
@@ -158,6 +170,8 @@ CUSTOM_LOAD_FUNCS = {
     'hotpotqa_distractor_validation': hotpotqa_distractor_validation_cload,
     'trivia_qa_rcwikipedia_validation': triviaqa_rcwikipedia_validation_cload
 }
+CUSTOM_LOAD_FUNCS.update({f'sberdialogues_conv-{i}': sberdialogues_cload for i in range(1,36)})
+
 dataset = CUSTOM_LOAD_FUNCS[KGHYPERP_PARAMS['DATASET_NAME']](QA_DATASET_PATH)
 print(QA_DATASET_PATH)
 print(len(dataset))

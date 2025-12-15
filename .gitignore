@@ -66,9 +66,12 @@ experiments/qa/crontab4_log.txt
 
 experiments/qa/results
 experiments/qa/run_crontab.txt
-
+experiments/qa/grouped_run_crontab.txt
 
 notebooks/kg_building/cron_buildgraph.txt
+notebooks/kg_building/constructgraphs_crontablob.txt
+notebooks/kg_building/create/prepared_params/
+
 experiments/qa/init_env/env_settings
 
 experiments/qa/configure/weak/prepared_params

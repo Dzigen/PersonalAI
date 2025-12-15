@@ -36,7 +36,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
     def close_connection(self):
         try:
             self.conn.close()
-        except TypeError:
+        except (AttributeError, TypeError):
             pass
 
     def create(self, items: List[KeyValueDBInstance]):
@@ -169,3 +169,6 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
     def clear(self):
         self.conn.delete(self.config.params['hs_name'])
         self.conn.delete(self.config.params['ss_name'])
+
+    def __del__(self):
+        self.close_connection()

@@ -301,10 +301,15 @@ class TripletCreator(BaseCreator):
         :rtype: Tuple[str,str]
         """
         rel_type = triplet.relation.type
-        if (rel_type == RelationType.episodic) or (rel_type == RelationType.hyper) or (rel_type == RelationType.time):
+        if rel_type in [RelationType.episodic, RelationType.hyper]:
             str_triplet = ""
             if "time" in triplet.end_node.prop.keys():
                 str_triplet += triplet.end_node.prop["time"] + ": "
+            str_triplet += TripletCreator.add_str_props(
+                triplet.end_node, str(triplet.end_node.name))
+
+        elif rel_type == RelationType.time:
+            str_triplet = triplet.start_node.name + ": "
             str_triplet += TripletCreator.add_str_props(
                 triplet.end_node, str(triplet.end_node.name))
 
@@ -317,7 +322,8 @@ class TripletCreator(BaseCreator):
                     triplet.start_node, str(triplet.start_node.name)),
                 TripletCreator.add_str_props(
                     triplet.relation, str(triplet.relation.name)),
-                TripletCreator.add_str_props(triplet.end_node, str(triplet.end_node.name))])
+                TripletCreator.add_str_props(
+                    triplet.end_node, str(triplet.end_node.name))])
 
         else:
             raise KeyError
@@ -454,6 +460,7 @@ class BaseConfigOperations:
     """Базовый класс для конфигурационных объектов. Определяет типовые операции по созданию конфигураций из словаря
     и рекурсивному приведению вложенных полей к корректному формату.
     """
+
     def to_str(self) -> str:
         """Метод предназначен для получения строкового представления конфигурационного объекта.
 

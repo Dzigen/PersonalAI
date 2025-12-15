@@ -43,7 +43,7 @@ class GigaChatConnector(AbstractAgentConnector):
     def close_connection(self):
         try:
             self.giga_model.close()
-        except TypeError:
+        except (AttributeError,TypeError):
             pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,

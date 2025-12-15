@@ -1,16 +1,44 @@
 DATASET_NAME: # TO CHANGE
-  - 'hotpotqa_distractor_validation'
+  - 'sberdialogues_conv-11'
+  - 'sberdialogues_conv-12'
+  - 'sberdialogues_conv-13'
+  - 'sberdialogues_conv-14'
+  - 'sberdialogues_conv-15'
+  - 'sberdialogues_conv-16'
+  - 'sberdialogues_conv-17'
+  - 'sberdialogues_conv-18'
+  - 'sberdialogues_conv-19'
+  - 'sberdialogues_conv-20'
 #  - 'rubq_dev'
 KNOWLEDGE_GRAPH_NAME: # TO CHANGE
-  - ['llama318b_021225_v2prompts'] #['deepseek_231025_v2prompts', 'gigachatmax_051125_v2prompts', 'llama318b_221025_v2prompts', 'qwen38b_261025_v2prompts', 'llama318b_021225_v2prompts'] 
+  - ['gigachatmax_111225_v2prompts'] #['deepseek_231025_v2prompts', 'gigachatmax_051125_v2prompts', 'llama318b_221025_v2prompts', 'qwen38b_261025_v2prompts', 'llama318b_021225_v2prompts'] 
 #  - ['gigachatmax_281025_v2prompts']
-PERSONALAI_VERSION: 'v2.1.5' # TO CHANGE
+  - ['gigachatmax_111225_v2prompts']
+  - ['gigachatmax_111225_v2prompts']
+  - ['gigachatmax_111225_v2prompts']
+  - ['gigachatmax_111225_v2prompts']
+  - ['gigachatmax_111225_v2prompts']
+  - ['gigachatmax_111225_v2prompts']
+  - ['gigachatmax_111225_v2prompts']
+  - ['gigachatmax_111225_v2prompts']
+  - ['gigachatmax_111225_v2prompts']
+
+PERSONALAI_VERSION: 'v2.1.7' # TO CHANGE
 
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
   max_samples_per_pack: 100
   lang:
-    - 'en'
+    - 'ru'
+    - 'ru'
+    - 'ru'
+    - 'ru'
+    - 'ru'
+    - 'ru'
+    - 'ru'
+    - 'ru'
+    - 'ru'
+    - 'ru'
 #    - 'ru'
 
 # STAGE # 1
@@ -30,9 +58,9 @@ query_preprocessor: # TO CHANGE
 
   decomposition_config: # CAN BE null
     - null
-    - agent_tasks_config:
-        classify: 'v2'
-        decompose: 'v2'
+    # - agent_tasks_config:
+    #     classify: 'v2'
+    #     decompose: 'v2'
 
 # STAGE # 2
 kg_reasoner: # TO CHANGE
@@ -40,7 +68,6 @@ kg_reasoner: # TO CHANGE
   reasoner_config:
     max_searchplan_steps:
       - 6
-      - 9
     answer_something:
       - True
 
@@ -65,25 +92,12 @@ kg_reasoner: # TO CHANGE
                 threshold: 0.5
               - fetch_n: 20
                 threshold: 0.5
-            weights: [0.2, 0.8]
-            c: 60
-      - max_n: 2
-        reranker_driver_config:
-          name: 'ensemble_fusion' # DONT CHANGE
-          strategy_config:
-            vdb_names: ['dense_nodes', 'bm25_nodes']
-            retriever_configs:
-              - fetch_n: 20
-                threshold: 0.5
-              - fetch_n: 20
-                threshold: 0.5
             weights: [0.4, 0.6]
             c: 60
 
     cluequeries_generator_config:
       max_cqueries_amount: 
         - 3
-        - 6
       agent_tasks_config:
         cquerie_generator: 
           - 'v4'
@@ -157,29 +171,12 @@ kg_reasoner: # TO CHANGE
           accepted_node_types:
           - object
           - hyper
+          - episodic
 
       filter_method: # CAN BE null
         - 'naive'
-        - 'naive'
         
       filter_config: # CAN BE null
-        - max_k: 50
-          reranker_driver_config:
-            name: 'ensemble_fusion' # DONT CHANGE
-            strategy_config:
-              vdb_names: ['dense_triplets', 'bm25_triplets']
-              retriever_configs:
-                - fetch_n: 50
-                  threshold: 0.5
-                - fetch_n: 50
-                  threshold: 0.5
-              weights: [0.7, 0.3]
-              c: 60
-          accepted_triplets_types:
-            - 'simple'
-            - 'hyper'
-            - 'episodic'
-
         - max_k: 50
           reranker_driver_config:
             name: 'ensemble_fusion' # DONT CHANGE
@@ -195,7 +192,6 @@ kg_reasoner: # TO CHANGE
           accepted_triplets_types:
             - 'simple'
             - 'hyper'
-            - 'episodic'
 
     clueanswer_generator_config:
       agent_tasks_config:
