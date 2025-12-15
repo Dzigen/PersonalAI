@@ -74,7 +74,7 @@ kg_model = KnowledgeGraphModel(kgmodel_config, kvdriver_config)
 print("before:")
 pprint(kg_model.count_items(detailed=True))
 
-NEED_TO_CLEAR_KG = False # !!! PAY Attention !!!
+NEED_TO_CLEAR_KG = True # !!! PAY Attention !!!
 if NEED_TO_CLEAR_KG:
     print("Cleaning KG-model")
     kg_model.clear()

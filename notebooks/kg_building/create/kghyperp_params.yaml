@@ -1,4 +1,4 @@
-DATASET_NAME: 'sberdialogues_conv-10' # TO CHANGE
+DATASET_NAME: 'sberdialogues_conv-11' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'gigachatmax_111225_v2prompts' # TO CHANGE
 
 KG_CONFIG:
