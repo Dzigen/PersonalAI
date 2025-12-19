@@ -2,7 +2,8 @@
 echo "Запуск QA-пайплайна (генерация ответов на вопросы) в рамках заданной конфигурации"
 
 EXP_BASE_DIR=/home/workspace/experiments/qa
-PYTHON_CMD=/usr/bin/python3
+# PYTHON_CMD=/usr/bin/python3
+PYTHON_CMD=/opt/venv/bin/python
 
 # --------------------------------------------------------
 

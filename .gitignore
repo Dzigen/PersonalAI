@@ -90,3 +90,6 @@ experiments/qa/run_all_experiments3.sh
 experiments/qa/run_all_experiments4.sh
 
 configs/blazegraph/authoritieschildrensSubjects.nt
+
+src/dialogue_processing/
+src/question_answer_rephrasing/

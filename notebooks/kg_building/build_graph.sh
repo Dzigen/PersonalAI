@@ -5,7 +5,7 @@ KG_BASE_PATH=/home/workspace/data/knowledge_graphs
 
 # -----------------------------------------------------------
 
-PYTHON_CMD=/usr/bin/python3
+PYTHON_CMD=/opt/venv/bin/python
 SPEC_KG_RELNAME=$1
 
 # -----------------------------------------------------------

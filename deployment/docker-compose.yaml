@@ -221,7 +221,7 @@ services:
 
 
   workspace:
-    image: m.menschikov/workspace:v5
+    image: workspace:v5
     container_name: personalai_mmenschikov_workspace
     hostname: worksapceservice
     volumes:
@@ -229,23 +229,23 @@ services:
       - ../src:/home/m.menschikov/workspace/personal_ai/Personal-AI/src #/home/dzigen/Desktop/PersonalAI/Personal-AI/src | /home/m.menschikov/workspace/personal_ai/Personal-AI/src
       - ../experiments:/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments #/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments | /home/m.menschikov/workspace/personal_ai/Personal-AI/experiments
       - ../notebooks:/home/m.menschikov/workspace/personal_ai/Personal-AI/notebooks #/home/dzigen/Desktop/PersonalAI/Personal-AI/notebooks | /home/m.menschikov/workspace/personal_ai/Personal-AI/notebooks
-      - /mnt/data/m.menschikov/personalai/knowledge_graphs:/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs
-      - /mnt/data/m.menschikov/personalai/models:/home/m.menschikov/workspace/personal_ai/Personal-AI/models
+      - /Users/matthewiskornev/Documents/skoltech_work/personal_ai_v3/Personal-AI/data/knowledge_graphs:/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs
+      - /Users/matthewiskornev/Documents/skoltech_work/personal_ai_v3/Personal-AI/data/models:/home/m.menschikov/workspace/personal_ai/Personal-AI/models
     deploy:
       resources:
         limits:
-          cpus: '16'
+          cpus: '4'
           memory: 32G
         reservations:
-          cpus: '8'
+          cpus: '4'
           memory: 24G
-          devices:
-            - driver: nvidia
-              device_ids: ['0']
-              capabilities: [gpu]
+          # devices:
+          #   - driver: nvidia
+          #     device_ids: ['0']
+          #     capabilities: [gpu]
 
   empty_workspace:
-    image: m.menschikov/empty_workspace:v1
+    image: empty_workspace:v1
     container_name: ${EMPTY_WORKSPACE_CNTNAME}
     hostname: ${EMPTY_WORKSPACE_HOST}
     volumes:
@@ -267,7 +267,7 @@ services:
     environment:
       - OLLAMA_DEBUG=1
     volumes:
-      - /mnt/data/m.menschikov/ollama_volume:/root/.ollama
+      - /Users/matthewiskornev/Documents/skoltech_work/personal_ai_v2/ollama_volume:/root/.ollama
     deploy:
       resources:
         limits:
@@ -276,7 +276,7 @@ services:
         reservations:
           cpus: '2'
           memory: 4G
-          devices:
-            - driver: nvidia
-              device_ids: ['0']
-              capabilities: [gpu]
+          # devices:
+          #   - driver: nvidia
+          #     device_ids: ['0']
+          #     capabilities: [gpu]

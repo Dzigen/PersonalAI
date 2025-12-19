@@ -1,5 +1,5 @@
-DATASET_NAME: 'sberdialogues_conv-11' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'gigachatmax_111225_v2prompts' # TO CHANGE
+DATASET_NAME: 'test_dataset' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'deepseek_test_data_v0' # TO CHANGE
 
 KG_CONFIG:
   embedder_configs:
@@ -16,18 +16,17 @@ KG_CONFIG:
   agent_configs:
     default: # TO CHANGE
       credentials:
-        model: GigaChat-Max
-        scope: GIGACHAT_API_PERS
-        token: YzJkNmU4MmEtYTdhYi00ZmY3LTk3NTItMTgwNGFhYTM5MzAwOjcxYjI2YjQzLThjYWUtNGQ5NS04N2ZhLTUxYzE2NTE4NDUzZQ==
+        model: deepseek-chat
+        base_url: https://api.deepseek.com
+        token:
       ext_params:
         timeout: 560
         trials: 5
         verify_ssl_certs: false
       gen_strategy:
         temperature: 0
-        top_k: 1
-        top_p: 0
-      vendor: gigachat
+        top_p: 10e-16
+      vendor: openai
 
   agents_mapping:
     qa_pipeline: default

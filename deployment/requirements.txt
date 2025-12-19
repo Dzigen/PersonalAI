@@ -129,10 +129,12 @@ pyasn1_modules==0.4.2
 pybase64==1.4.2
 pycld2==0.42
 pycparser==2.23
-pydantic==2.12.1
-pydantic_core==2.41.3
+# pydantic==2.12.1
+# pydantic_core==2.41.3
+pydantic>=2.12.2,<3
+pydantic_core!=2.41.3
 Pygments==2.19.2
-pyicu==2.15.3
+# pyicu==2.15.3
 #pymilvus==2.6.2
 pymongo==4.15.3
 PyPika==0.48.9
@@ -171,7 +173,7 @@ tornado==6.5.2
 tqdm==4.67.1
 traitlets==5.14.3
 transformers==4.57.0
-triton==3.4.0
+triton==3.5.0
 typer==0.19.2
 typing-inspection==0.4.2
 typing_extensions==4.15.0

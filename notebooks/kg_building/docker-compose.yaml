@@ -14,7 +14,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '8'
+          cpus: '4'
           memory: 24G
         reservations:
           cpus: '4'
@@ -154,7 +154,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '8'
+          cpus: '4'
           memory: 24G
         reservations:
           cpus: '4'
@@ -178,13 +178,13 @@ services:
         reservations:
           cpus: '2'
           memory: 4G
-          devices:
-            - driver: nvidia
-              device_ids: ['${OLLAMA_DEVICE_ID}']
-              capabilities: [gpu]
+          # devices:
+          #   - driver: nvidia
+          #     device_ids: ['${OLLAMA_DEVICE_ID}']
+          #     capabilities: [gpu]
 
   workspace:
-    image: m.menschikov/workspace:v5
+    image: workspace:v5
     container_name: ${WORKSPACE_CNTNAME}
     hostname: ${WORKSPACE_HOST}
     network_mode: "host"
@@ -194,6 +194,7 @@ services:
       - ${EXTERNAL_NOTEBOOKS_PATH}:${INTERNAL_NOTEBOOKS_PATH}
       - ${EXTERNAL_SRC_PATH}:${INTERNAL_SRC_PATH}
       - ${EXTERNAL_MODELS_PATH}:${INTERNAL_MODELS_PATH}
+      - /Users/matthewiskornev/Documents/skoltech_work/personal_ai_v3/Personal-AI/experiments:/home/workspace/experiments
     depends_on:
       - neo4j
       - qdrant
@@ -204,12 +205,12 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '8'
+          cpus: '4'
           memory: 32G
         reservations:
           cpus: '4'
           memory: 24G
-          devices:
-            - driver: nvidia
-              device_ids: ['${WORKSPACE_DEVICE_ID}']
-              capabilities: [gpu]
+          # devices:
+          #   - driver: nvidia
+          #     device_ids: ['${WORKSPACE_DEVICE_ID}']
+          #     capabilities: [gpu]
