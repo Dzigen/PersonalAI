@@ -126,8 +126,7 @@ DEFAULT_EMBEDDER_CONFIG = KGHYPERP_PARAMS['KG_CONFIG']['embedder_configs']['defa
 embedders_configs = {
     'default': EmbedderModelConfig(
         model_name_or_path=DEFAULT_EMBEDDER_CONFIG['model_name_or_path'],
-        prompts=DEFAULT_EMBEDDER_CONFIG ['prompts'],
-        device='cpu'
+        prompts=DEFAULT_EMBEDDER_CONFIG ['prompts']
     )
 }
 embedders_map = KGEmbeddersMapping(**KGHYPERP_PARAMS['KG_CONFIG']['embedders_mapping'])

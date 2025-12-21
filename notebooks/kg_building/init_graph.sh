@@ -1,38 +1,38 @@
 #!/usr/bin/bash
 
-HOST_REPO_DIR="/Users/matthewiskornev/Documents/skoltech_work/personal_ai_v3/Personal-AI"
-TMP_DEPLOYMENT_COMPOSE_PATH="$HOST_REPO_DIR/deployment"
-TMP_CREATE_DIR="$HOST_REPO_DIR/notebooks/kg_building"
+TMP_BASE_DIR=/home/m.menschikov/workspace/personal_ai/Personal-AI
+TMP_DEPLOYMENT_COMPOSE_PATH="$TMP_BASE_DIR/deployment" 
+TMP_CREATE_DIR="$TMP_BASE_DIR/notebooks/kg_building"
+TMP_KGCREATE_PATH="$TMP_BASE_DIR/notebooks/kg_building/create"
 
 # -----------------------------------------------------------
 
 DATASET_NAME=$1
 KG_NAME=$2
-USERNAME=root
+USERNAME=m.menschikov
 
 # -----------------------------------------------------------
 
-ENV_FILE_PATH="/Users/matthewiskornev/Documents/skoltech_work/personal_ai_v3/Personal-AI/data/knowledge_graphs/$DATASET_NAME/$KG_NAME/.env"
+ENV_FILE_PATH="/mnt/data/m.menschikov/personalai/knowledge_graphs/$DATASET_NAME/$KG_NAME/.env"
 
 TMP_WORKSPACE_CNTNAME=personalai_mmenschikov_workspace
 MAIN_WORKSPACE_CNTNAME=personalai_mmenschikov_kgbuild_workspace\_$DATASET_NAME\_$KG_NAME
 
-TMP_CONTAINER_BASE="/home/m.menschikov/workspace/personal_ai/Personal-AI"
-TMP_KGCREATE_PATH="$TMP_CONTAINER_BASE/notebooks/kg_building/create"
-TMP_CONTAINER_WORKSPACE_KG_PATH="$TMP_CONTAINER_BASE/data/knowledge_graphs/$DATASET_NAME/$KG_NAME"
-BASE_CONTAINER_PATH="/home/workspace"
+BASE_CONTAINER_PATH=/home/workspace
 MAIN_KGCREATE_PATH="$BASE_CONTAINER_PATH/notebooks/kg_building/create"
 CONTAINER_WORKSPACE_KG_PATH="$BASE_CONTAINER_PATH/data/knowledge_graphs/$DATASET_NAME/$KG_NAME"
 
-TMP_KGCONN_PARAMS_PATH="$TMP_KGCREATE_PATH/kgconn_params.yaml"
-TMP_KGENV_PARAMS_PATH="$TMP_KGCREATE_PATH/kgenv_params.yaml"
-TMP_KGHYPERP_PARAMS_PATH="$TMP_KGCREATE_PATH/kghyperp_params.yaml"
+TMP_PREPARED_PARAMS_DIR="$TMP_KGCREATE_PATH/prepared_params"
+SPEC_KGPARAMS_DIR="$TMP_PREPARED_PARAMS_DIR/$DATASET_NAME/$KG_NAME"
+TMP_KGCONN_PARAMS_PATH="$SPEC_KGPARAMS_DIR/kgconn_params.yaml"
+TMP_KGENV_PARAMS_PATH="$SPEC_KGPARAMS_DIR/kgenv_params.yaml"
+TMP_KGHYPERP_PARAMS_PATH="$SPEC_KGPARAMS_DIR/kghyperp_params.yaml"
 
 KGCONN_PARAMS_PATH="$CONTAINER_WORKSPACE_KG_PATH/settings/kgconn_params.yaml"
 KGENV_PARAMS_PATH="$CONTAINER_WORKSPACE_KG_PATH/settings/kgenv_params.yaml"
 KGHYPERP_PARAMS_PATH="$CONTAINER_WORKSPACE_KG_PATH/settings/kghyperp_params.yaml"
 
-PYTHON_CMD=/opt/venv/bin/python
+PYTHON_CMD=/usr/bin/python3
 
 # -----------------------------------------------------------
 
@@ -43,7 +43,7 @@ docker exec -u $USERNAME $TMP_WORKSPACE_CNTNAME $PYTHON_CMD "$TMP_KGCREATE_PATH/
 # создать env-файл
 docker exec -u $USERNAME $TMP_WORKSPACE_CNTNAME $PYTHON_CMD "$TMP_KGCREATE_PATH/get_dc_envfile.py" $TMP_KGCONN_PARAMS_PATH $TMP_KGENV_PARAMS_PATH $TMP_KGHYPERP_PARAMS_PATH
 
-SPARSE_DIR_PATH="$TMP_CONTAINER_WORKSPACE_KG_PATH/embeddings_part/sparse_vectors_volume"
+SPARSE_DIR_PATH="$TMP_BASE_DIR/data/knowledge_graphs/$DATASET_NAME/$KG_NAME/embeddings_part/sparse_vectors_volume"
 docker exec -u root $TMP_WORKSPACE_CNTNAME sh -c "chown -R 1000:1000 $SPARSE_DIR_PATH"
 
 # удалить tmp-конейнер

@@ -1,6 +1,6 @@
 BASE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
-BASE_KG_PATH: '/Users/matthewiskornev/Documents/skoltech_work/personal_ai_v3/Personal-AI/data/knowledge_graphs' # TO CHANGE
-OLLAMA_MODELS_PATH: '/Users/matthewiskornev/Documents/skoltech_work/personal_ai_v3/Personal-AI/data/ollama_volume' # TO CHANGE
+BASE_KG_PATH: '/mnt/data/m.menschikov/personalai/knowledge_graphs' # TO CHANGE
+OLLAMA_MODELS_PATH: '/mnt/data/m.menschikov/ollama_volume' # TO CHANGE
 
 INIT_STRUCT: True # !!! PAY ATTENTION !!!
 
@@ -24,7 +24,7 @@ KG_DIR_STRUCT:
     inference: llm_inference_volume
 
 PERSONALAI_REPO_DIRS:
-  qa_datasets: 'data/qa_datasets/test_dataset' # TO CHANGE
+  qa_datasets: 'data/qa_datasets/sberdialogues' # TO CHANGE
   notebooks: 'notebooks'
   src: 'src'
   models: 'models'
@@ -33,7 +33,7 @@ PERSONALAI_REPO_DIRS:
 WORKSPACE_CONTAINER_DIRS:
   base_path: '/home/workspace'
   kg: 'data/knowledge_graphs'
-  qa_datasets: 'data/qa_datasets/test_dataset' # TO CHANGE
+  qa_datasets: 'data/qa_datasets/sberdialogues' # TO CHANGE
   notebooks: 'notebooks'
   src: 'src'
   models: 'models'

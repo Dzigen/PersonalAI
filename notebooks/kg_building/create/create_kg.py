@@ -164,22 +164,11 @@ def sberdialogues_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
 
     return data_pair
 
-def test_dataset_cload(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
-    contexts_df = pd.read_csv(f"{dataset_path}/relevant_contexts.csv")
-
-    data_pair = []
-    for r_idx in range(contexts_df.shape[0]):
-        formated_context = contexts_df['context'][r_idx]
-        data_pair.append((formated_context, None, dict()))
-
-    return data_pair
-
 CUSTOM_LOAD_FUNCS = {
     'diaasq': diaasq_cload,
     'rubq_dev': rubqdev_cload,
     'hotpotqa_distractor_validation': hotpotqa_distractor_validation_cload,
-    'trivia_qa_rcwikipedia_validation': triviaqa_rcwikipedia_validation_cload,
-    'test_dataset': test_dataset_cload
+    'trivia_qa_rcwikipedia_validation': triviaqa_rcwikipedia_validation_cload
 }
 CUSTOM_LOAD_FUNCS.update({f'sberdialogues_conv-{i}': sberdialogues_cload for i in range(1,36)})
 

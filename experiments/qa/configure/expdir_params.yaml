@@ -17,7 +17,7 @@ KG_SETTING_DIR:
 WORKSPACE_CONTAINER_DIRS:
   base_path: /home/workspace
   kg: data/knowledge_graphs
-  qa_datasets: data/qa_datasets/test_dataset # !!! PAY ATTENTION !!!
+  qa_datasets: data/qa_datasets/v2 # !!! PAY ATTENTION !!!
   models: models
   experiments: experiments/qa
   results: results

@@ -2,8 +2,7 @@
 echo "Создание директории (c необходимыми конфигурационными файлами) для конкретного эксперимента"
 
 EXP_BASE_DIR=/home/workspace/experiments/qa
-# PYTHON_CMD=/usr/bin/python3
-PYTHON_CMD=/opt/venv/bin/python
+PYTHON_CMD=/usr/bin/python3
 
 # --------------------------------------------------------
 
