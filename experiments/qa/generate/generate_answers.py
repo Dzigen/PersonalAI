@@ -295,4 +295,10 @@ with open(QA_ELAPSED_TIME_SPATH, 'w', encoding='utf-8') as fd:
 #     clear_retrieval_cache = False
 # )
 
+print("llmstat cache:")
+pprint(qa_pipeline.get_agent_tgen_stat())
+
+print("kv cache: ")
+pprint(qa_pipeline.get_cache_stat())
+
 print("############ DONE ############")

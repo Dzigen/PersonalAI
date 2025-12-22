@@ -1,7 +1,7 @@
 from typing import List, Dict, Union
-from SPARQLWrapper import SPARQLWrapper, JSON
-from rdflib import Dataset, URIRef, Literal, Namespace
-from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
+#from SPARQLWrapper import SPARQLWrapper, JSON
+#from rdflib import Dataset, URIRef, Literal, Namespace
+#from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
 import json
 import os
 

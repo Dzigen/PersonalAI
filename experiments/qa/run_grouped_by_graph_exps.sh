@@ -14,10 +14,10 @@ ENV_SETTINGS_DIR="$INIT_ENV_DIR/env_settings"
 
 # ===============================================================
 
-DATASETS=("sberdialogues_conv-11" "sberdialogues_conv-12" "sberdialogues_conv-13" "sberdialogues_conv-14" "sberdialogues_conv-15" "sberdialogues_conv-16" "sberdialogues_conv-17" "sberdialogues_conv-18" "sberdialogues_conv-19" "sberdialogues_conv-20") # TO CHANGE
-KNOWLEDGE_GRAPHS=("gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts") # TO CHANGE
-EVAL_FNAMES=("sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml") # TO CHANGE
-CONFIGURE_FNAMES=("sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml") # TO CHANGE
+DATASETS=("sberdialogues_conv-21" "sberdialogues_conv-22" "sberdialogues_conv-23" "sberdialogues_conv-24" "sberdialogues_conv-25" "sberdialogues_conv-26" "sberdialogues_conv-27" "sberdialogues_conv-28" "sberdialogues_conv-29" "sberdialogues_conv-30" "sberdialogues_conv-31" "sberdialogues_conv-32" "sberdialogues_conv-33" "sberdialogues_conv-34" "sberdialogues_conv-35") # TO CHANGE
+KNOWLEDGE_GRAPHS=("gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts") # TO CHANGE
+EVAL_FNAMES=("sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml") # TO CHANGE
+CONFIGURE_FNAMES=("sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml") # TO CHANGE
 
 # ===============================================================
 
