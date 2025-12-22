@@ -2,6 +2,7 @@ from typing import List, Dict, Union
 from SPARQLWrapper import SPARQLWrapper, JSON
 from rdflib import Dataset, URIRef, Literal, Namespace
 from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
+import requests
 import json
 import os
 
@@ -23,22 +24,27 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
         self.config: GraphDBConnectionConfig = config
 
     def open_connection(self) -> None:
-        query_endpoint = f"http://{self.config.host}:{self.config.port}/bigdata/namespace/kb/sparql"
+        self.create_namespace()
+
+        query_endpoint = f"http://{self.config.host}:{self.config.port}/bigdata/namespace/{self.config.db_info['db']}/sparql"
         update_endpoint = query_endpoint
 
-        graph_name = f"{self.config.db_info['db']}{self.config.db_info['table']}"
-
-        self.namespace = Namespace(f"{self.config.params['namespace']}")
-        self.named_graph_uri = URIRef(f"{self.config.params['namespace']}/{graph_name}")
+        self.namespace = Namespace(self.config.params['uri'])
+        graph_name = f"http://{self.config.db_info['table']}.org"
+        self.named_graph_uri = URIRef(graph_name)
 
         store = SPARQLUpdateStore(query_endpoint, update_endpoint)
-        g = Dataset(store=store)
-        self.graph = g.get_context(self.named_graph_uri)
+        self.dataset = Dataset(store=store)
+        self.graph = self.dataset.get_context(self.named_graph_uri)
         self.graph.open(query_endpoint)
-        self.graph.bind('pai', self.namespace)
 
         if self.config.need_to_clear:
             self.clear()
+
+    def create_namespace(self):
+        url = f'http://{self.config.host}:{self.config.port}/bigdata/namespace'
+        formated_ns_config="".join(self.config.params['namespace_configuration'].format(namespace_name=self.config.db_info['db']).split("\n"))
+        requests.post(url, data=formated_ns_config, headers={"Content-Type": "application/xml", 'Accept': 'application/xml'})
 
     def close_connection(self) -> None:
         try:
@@ -108,13 +114,76 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
 
     def count_items(self, item_id: Union[None, str, NodeInfo, RelationInfo] = None,
                     id_type: str = None, detailed: bool = False) -> Union[Dict[str, Dict[str, int]], Dict[str, int], int]:
-        # TODO
-        raise NotImplementedError
+        if id_type is None:
+            if detailed:
+                result = {
+                    'triplets': {'simple': 0, 'hyper': 0, 'episodic': 0, 'time': 0},
+                    'nodes': {'object': 0, 'hyper': 0, 'episodic': 0, 'time': 0}
+                }
+
+                cnodes_query = f'PREFIX pai: {self.namespace} ASK WHERE {{ GRAPH {self.named_graph_uri} {{'
+                n_output = self.execute_query(
+                    "MATCH (n) UNWIND labels(n) AS label RETURN label, count(n) AS nodeCount")
+                r_output = self.execute_query(
+                    "MATCH (a)-[rel]->(b) UNWIND type(rel) AS rel_type RETURN rel_type, count(rel) AS relCount")
+
+                result['triplets'].update({item['rel_type']: int(item['relCount']) for item in r_output})
+                result['nodes'].update({item['label']: int(item['nodeCount']) for item in n_output})
+
+            else:
+                n_output = self.execute_query(
+                    "MATCH (a) RETURN count(a) as n_count")[0]
+                r_output = self.execute_query(
+                    "MATCH (a)-[rel]->(b) RETURN count(rel) as r_count")[0]
+                result = {'triplets': r_output['r_count'],
+                          'nodes': n_output['n_count']}
+
+        elif id_type == 'node':
+            n_output = self.execute_query(
+                f'MATCH (a:{item_id.type.value}) WHERE a.str_id = "{item_id.id}" RETURN COUNT(a) as n_count')[0]
+            result = n_output['n_count']
+
+        elif id_type == 'relation':
+            r_output = self.execute_query(
+                f'MATCH (a)-[rel:{item_id.type.value}]->(b) WHERE rel.str_id = "{item_id.id}" RETURN COUNT(rel) as r_count')[0]
+            result = r_output['r_count']
+
+        elif id_type == 'triplet':
+            r_output = self.execute_query(
+                f'MATCH (a)-[rel]->(b) WHERE rel.t_id = "{item_id}" RETURN COUNT(rel) as r_count')[0]
+            result = r_output['r_count']
+
+        else:
+            raise ValueError
+
+        return result
 
     def item_exist(self, item_id: Union[str, NodeInfo, RelationInfo], id_type: str = 'triplet') -> bool:
-        # TODO
-        raise NotImplementedError
+        if not isinstance(item_id, str):
+            if type(item_id) in [NodeInfo, RelationInfo]:
+                if not isinstance(item_id.id, str):
+                    raise ValueError
+            else:
+                raise ValueError
+
+        query = None
+        prefix_query = f'PREFIX pai: {self.namespace} ASK WHERE {{ GRAPH {self.named_graph_uri} {{'
+
+        if id_type == 'node':
+            where_condition = f'pai:node pai:type pai:{item_id.type.value} ; pai:str_id "{item_id.id}" .'          
+        elif id_type == 'relation':
+            where_condition = f'pai:relation pai:type pai:{item_id.type.value} ; pai:str_id "{item_id.id}" .'  
+        elif id_type == 'triplet':
+            where_condition = f'pai:relation pai:t_id "{item_id}" .'
+        else:
+            raise ValueError
+        
+        query = f'{prefix_query} {where_condition} }} }}' 
+        output = self.graph.query(query)
+        formated_output = [row for row in output][0]
+
+        return formated_output 
 
     def clear(self) -> None:
-        sparql_query = "DELETE { ?s ?p ?o } WHERE { ?s ?p ?o }"
+        sparql_query = f"CLEAR GRAPH {self.named_graph_uri}"
         self.graph.update(sparql_query)

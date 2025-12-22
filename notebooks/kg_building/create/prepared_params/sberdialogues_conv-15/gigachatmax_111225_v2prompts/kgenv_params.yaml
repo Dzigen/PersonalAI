@@ -1,0 +1,59 @@
+BASE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
+BASE_KG_PATH: '/mnt/data/m.menschikov/personalai/knowledge_graphs' # TO CHANGE
+OLLAMA_MODELS_PATH: '/mnt/data/m.menschikov/ollama_volume' # TO CHANGE
+
+INIT_STRUCT: True # !!! PAY ATTENTION !!!
+
+KG_DIR_STRUCT:
+  embeddings_dir:
+    name: embeddings_part
+    dense_part: dense_vectors_volume
+    sparse_part: sparse_vectors_volume
+
+  graph_dir:
+    name: graph_part
+    volume_name: graph_volume
+
+  cache_dir:
+    name: kv_cache
+    persistant_part: persistent_volume
+    ram_part: ram_volume
+
+  stat_dir:
+    name: stat
+    inference: llm_inference_volume
+
+PERSONALAI_REPO_DIRS:
+  qa_datasets: 'data/qa_datasets/sberdialogues' # TO CHANGE
+  notebooks: 'notebooks'
+  src: 'src'
+  models: 'models'
+  configs: 'configs'
+
+WORKSPACE_CONTAINER_DIRS:
+  base_path: '/home/workspace'
+  kg: 'data/knowledge_graphs'
+  qa_datasets: 'data/qa_datasets/sberdialogues' # TO CHANGE
+  notebooks: 'notebooks'
+  src: 'src'
+  models: 'models'
+
+SAVE_CONFIGS_NAMES:
+  kg_config: kg_config
+  mem_pipeline_config: mem_pipeline_config
+  kvdriver_cache_config: kvdriver_cache_config
+  inference_stat_config: inference_stat_config
+  docker_compose_env: .env
+
+  kg_setting:
+    name: settings
+    kgconn: kgconn_params
+    kgenv: kgenv_params
+    kghyperp: kghyperp_params
+
+  tmp_extracted_triplets: tmp_extracted_triplets
+  extracted_triplets: extracted_triplets
+
+  graph_statistics_dir: graph_statistics
+  kg_stats: stats_info.json
+  kg_health_checks: health_checks.json

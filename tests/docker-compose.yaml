@@ -26,6 +26,7 @@ services:
     container_name: personalai_mmenschikov_test_blazegraph
     image: lyrasis/blazegraph:2.1.4
     hostname: localhost
+    user: "root:root"
     ports:
       - 8889:8080
       - 9999:9999
