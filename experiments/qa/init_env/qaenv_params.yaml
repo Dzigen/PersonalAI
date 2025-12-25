@@ -1,4 +1,4 @@
-DATASET_NAME: sberdialogues_conv-20
+DATASET_NAME: sberdialogues_conv-35
 KNOWLEDGE_GRAPH_NAME: gigachatmax_111225_v2prompts
 BASE_PERSONALAI_PATH: /home/m.menschikov/workspace/personal_ai/Personal-AI
 BASE_KG_PATH: /mnt/data/m.menschikov/personalai/knowledge_graphs
