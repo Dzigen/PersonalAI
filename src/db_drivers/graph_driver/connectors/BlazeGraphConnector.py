@@ -23,13 +23,67 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
             config.formate_fields()
         self.config: GraphDBConnectionConfig = config
 
+        # initing uri`s
+        base_uriprefix = self.config.params['uri_prefix']
+
+        self.custom_uries = {
+            'node': Namespace(base_uriprefix + '/node/internal_id#'),
+            'relation': Namespace(base_uriprefix + '/relation/internal_id#'),
+        }
+
+        self.general_uries = {
+            'elements': {
+                'node': Namespace(base_uriprefix + '/element/node'),
+                'relation': Namespace(base_uriprefix + '/element/relation')
+            },
+
+            'node': {
+                'prefix': Namespace(base_uriprefix + '/node/'),
+
+                'types': {
+                    'prefix': Namespace(base_uriprefix + '/node/type/'),
+
+                    'episodic': 'episodic',
+                    'hyper': 'thesis',
+                    'object': 'object',
+                    'time': 'time'
+                }
+            },
+
+            'relation': {
+                'prefix': Namespace(base_uriprefix + '/relation/'),
+
+                't_id': 't_id',
+                'snode_internalid': 'snode_internalid',
+                'enode_internalid': 'enode_internalid',
+
+                'types': {
+                    'prefix': Namespace(base_uriprefix + '/relation/type/'),
+
+                    'episodic': 'episodic',
+                    'hyper': 'hyper',
+                    'simple': 'simple',
+                    'time': 'time'
+                }
+            },
+
+            'general_fields': {
+                'prefix': Namespace(base_uriprefix + '/general_field/'),
+
+                'type': 'type',
+                'element': 'element',
+                'str_id': 'str_id',
+                'name': 'name',
+                'properties': 'properties'
+            }
+        }
+
     def open_connection(self) -> None:
         self.create_namespace()
 
         query_endpoint = f"http://{self.config.host}:{self.config.port}/bigdata/namespace/{self.config.db_info['db']}/sparql"
         update_endpoint = query_endpoint
 
-        self.namespace = Namespace(self.config.params['uri'])
         graph_name = f"http://{self.config.db_info['table']}.org"
         self.named_graph_uri = URIRef(graph_name)
 
@@ -43,7 +97,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
 
     def create_namespace(self):
         url = f'http://{self.config.host}:{self.config.port}/bigdata/namespace'
-        formated_ns_config="".join(self.config.params['namespace_configuration'].format(namespace_name=self.config.db_info['db']).split("\n"))
+        formated_ns_config = "".join(self.config.params['namespace_configuration'].format(namespace_name=self.config.db_info['db']).split("\n"))
         requests.post(url, data=formated_ns_config, headers={"Content-Type": "application/xml", 'Accept': 'application/xml'})
 
     def close_connection(self) -> None:
@@ -167,22 +221,23 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
                 raise ValueError
 
         query = None
-        prefix_query = f'PREFIX pai: {self.namespace} ASK WHERE {{ GRAPH {self.named_graph_uri} {{'
+        prefix_query, where_condition = None, None
 
         if id_type == 'node':
-            where_condition = f'pai:node pai:type pai:{item_id.type.value} ; pai:str_id "{item_id.id}" .'          
+            prefix_query = f'PREFIX pai: {self.namespace} ASK WHERE {{ GRAPH {self.named_graph_uri} {{'
+            where_condition = f'pai:node pai:type pai:{item_id.type.value} ; pai:str_id "{item_id.id}" .'
         elif id_type == 'relation':
-            where_condition = f'pai:relation pai:type pai:{item_id.type.value} ; pai:str_id "{item_id.id}" .'  
+            where_condition = f'pai:relation pai:type pai:{item_id.type.value} ; pai:str_id "{item_id.id}" .'
         elif id_type == 'triplet':
             where_condition = f'pai:relation pai:t_id "{item_id}" .'
         else:
             raise ValueError
-        
-        query = f'{prefix_query} {where_condition} }} }}' 
+
+        query = f'{prefix_query} {where_condition} }} }}'
         output = self.graph.query(query)
         formated_output = [row for row in output][0]
 
-        return formated_output 
+        return formated_output
 
     def clear(self) -> None:
         sparql_query = f"CLEAR GRAPH {self.named_graph_uri}"

@@ -45,5 +45,5 @@ BG_NAMESPACE_CONFIG_TEMPLATE = '''<?xml version="1.0" encoding="UTF-8" standalon
 DEFAULT_BLAZEGRAPH_CONFIG = GraphDBConnectionConfig(
     host='localhost', port=8889,
     db_info={'db': 'defaultpersonalaigraphdb', 'table': 'defaultpersonalaigraphtable'},
-    params={'uri': 'http://personalai.org/', 'namespace_configuration': BG_NAMESPACE_CONFIG_TEMPLATE}
+    params={'uri_prefix': 'http://personalai.org', 'namespace_configuration': BG_NAMESPACE_CONFIG_TEMPLATE}
 )

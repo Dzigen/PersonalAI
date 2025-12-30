@@ -1,6 +1,8 @@
-#### Отчётные материалы
-- [НИР 2025](https://drive.google.com/file/d/1nyIQT04-U-FYk62zW8fX1YXudolp0S24/view?usp=sharing)
-- [PersonalAI: A Systematic Comparison of Knowledge Graph Storage and Retrieval Approaches for Personalized LLM agents](https://drive.google.com/file/d/1wcMtug5WRyAntgb-6hQ2IWzbyd3qEK8x/view?usp=sharing)
+#### Материалы
+- [Отчёт 2025](docs/iteration_summary/2025/PersonalAI(Отчёт)(НИР)(Skoltech-Sber)(2025).pdf)
+- [Презентация работ 2025](docs/iteration_summary/2025/PersonalAI(ПриёмкаРабот)(НИР)(Skoltech-Sber)(2025).pdf)
+#### Статьи
+- [PersonalAI: A Systematic Comparison of Knowledge Graph Storage and Retrieval Approaches for Personalized LLM agents](docs/iteration_summary/2024/PersonalAI(Статья)(НИР)(Skoltech-Sber)(2024).pdf)
 
 #### Структура файловой системы:
 - debug/ - Директория с ноутбуками/скриптами для отладки кода из каталога "src".
