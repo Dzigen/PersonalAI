@@ -8,6 +8,9 @@ from ....utils.data_structs import Triplet, Node, TripletCreator, NodeCreator, \
     NodeType, RelationCreator, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP, \
     NodeInfo, RelationInfo
 
+# Useful Material: FalkorDB -- Ultra-fast, Multi-tenant Graph Database
+# https://github.com/FalkorDB/FalkorDB
+
 
 class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
 
