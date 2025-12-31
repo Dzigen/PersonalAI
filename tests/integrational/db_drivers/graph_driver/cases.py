@@ -7,7 +7,7 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from src.utils.data_structs import NodeCreator, Relation, RelationType, NodeType, TripletCreator, NodeInfo, RelationInfo
 
 # TO CHANGE
-AVAILABLE_GRAPH_DBS = ['blazegraph'] # 'neo4j', 'kuzu', 'inmemory_graph', 'blazegraph'
+AVAILABLE_GRAPH_DBS = ['falkordb'] # 'neo4j', 'kuzu', 'inmemory_graph', 'blazegraph', 'falkordb'
 
 ###############################################################################################
 
@@ -171,6 +171,7 @@ GRAPHDB_CREATE_TEST_CASES = [
     [[[SIMPLE_TRIPLET4, EPISODIC_TRIPLET1]], [{0: FULL_CREATION_INFO, 1: FULL_CREATION_INFO}], {
         'exception': False, 'triplets_count': 2, 'nodes_count': 4}],
     # 8. добавление нескольких связанных триплетов без creation info
+    # !!! PAY ATTENTION !!! (neo4j effect)
     [[[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2]], [{}], {
         'exception': False, 'triplets_count': 3, 'nodes_count': 4}]
 ]
@@ -274,6 +275,7 @@ GRAPHDB_COUNT_TEST_CASES = [
     # 2. один элемент
     [[SIMPLE_TRIPLET1], {}, {'triplets_count': 1, 'nodes_count': 2}, False],
     # 3. несколько элементов с creation_info = None
+    # !!! PAY ATTENTION !!! (neo4j effect)
     [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {}, {
         'triplets_count': 3, 'nodes_count': 4}, False],
     # 4. несколько элементов с меками объектов-дубликатов (creation_info != None)
@@ -338,7 +340,8 @@ GRAPHDB_CLEAR_TEST_CASES = [
     [[EPISODIC_TRIPLET1], {'triplets_count': 1, 'nodes_count': 2}],
     # 2.4. episodic with thesis
     [[EPISODIC_TRIPLET4], {'triplets_count': 1, 'nodes_count': 2}],
-    # 3. чиста бд с несколькими элементами
+    # 3. чистка бд с несколькими элементами
+    # !!! PAY ATTENTION !!! (neo4j effect)
     [[SIMPLE_TRIPLET1, THESIS_TRIPLET1, EPISODIC_TRIPLET1,
         EPISODIC_TRIPLET4], {'triplets_count': 7, 'nodes_count': 8}]
 ]

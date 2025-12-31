@@ -45,6 +45,28 @@ services:
           cpus: '1'
           memory: 4G
 
+  falkordb:
+    container_name: personalai_mmenschikov_test_falkordb
+    image: falkordb/falkordb:latest
+    hostname: localhost
+    # networks:
+    #   - tests_network
+    ports:
+      - 6379:6379
+      - 3000:3000
+    environment:
+      - FALKORDB_ARGS=THREAD_COUNT 8 TIMEOUT_MAX 30000
+    volumes:
+      - ./volumes/falkordb:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
   aerospike:
     container_name: personalai_mmenschikov_test_aerospike
     hostname: localhost

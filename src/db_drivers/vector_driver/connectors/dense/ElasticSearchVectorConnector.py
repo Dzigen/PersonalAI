@@ -7,6 +7,7 @@ import torch
 from haystack.document_stores.types import DuplicatePolicy
 import numpy as np
 from copy import deepcopy
+from time import time
 
 from .configs import DEFAULT_ELASTICSEARCH_CONFIG
 from ...embedders import EmbedderModel
@@ -34,9 +35,21 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
         index = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
         self.db_conn = ElasticsearchDocumentStore(
             hosts=host, index=index, embedding_similarity_function='dot_product',
-            request_timeout=10, retry_on_timeout=10
+            request_timeout=60, retry_on_timeout=60
         )
         self.retriever = ElasticsearchEmbeddingRetriever(document_store=self.db_conn)
+        self.create_index()
+
+    def create_index(self) -> None:
+        self.db_conn._ensure_initialized()
+        self.db_conn._client.info()
+        if self.db_conn._custom_mapping:
+            mappings = self.db_conn._custom_mapping
+        else:
+            mappings = self.db_conn._default_mappings
+        if not self.db_conn._client.indices.exists(index=self.db_conn._index):
+            self.db_conn._client.indices.create(index=self.db_conn._index, mappings=mappings)
+            time(5)
 
     def is_open(self) -> bool:
         # TODO
@@ -206,9 +219,12 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
         return bool(len(res))
 
     def clear(self) -> None:
-        if self.db_conn._client is None:
-            self.count_items()
+        self.db_conn._ensure_initialized()
+        self.db_conn._client.info()
 
-        self.db_conn._client.indices.delete(index=self.db_conn._index)
-        self.db_conn._client.indices.create(index=self.db_conn._index)
-        self.db_conn._client.indices.forcemerge(index=self.db_conn._index, only_expunge_deletes=True)
+        if self.db_conn._client.indices.exists(index=self.db_conn._index):
+            self.db_conn._client.indices.delete(index=self.db_conn._index)
+            time(5)
+            self.create_index()
+            self.db_conn._client.indices.forcemerge(index=self.db_conn._index, only_expunge_deletes=True)
+            time(5)

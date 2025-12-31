@@ -47,3 +47,7 @@ DEFAULT_BLAZEGRAPH_CONFIG = GraphDBConnectionConfig(
     db_info={'db': 'defaultpersonalaigraphdb', 'table': 'defaultpersonalaigraphtable'},
     params={'uri_prefix': 'http://personalai.org', 'namespace_configuration': BG_NAMESPACE_CONFIG_TEMPLATE}
 )
+
+
+DEFAULT_FALKORDB_CONFIG = GraphDBConnectionConfig(
+    host='localhost', port=6379)

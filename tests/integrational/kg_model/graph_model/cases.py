@@ -12,7 +12,7 @@ from ..instances import SIMPLE_TRIPLET1, THESIS_TRIPLET2, EPISODIC_TRIPLET1, \
 from src.utils.data_structs import RelationType, NodeType
 
 # TO CHANGE
-AVAILABLE_GRAPH_MODELS = ['inmemory_graph', 'neo4j', 'kuzu']  # 'inmemory_graph', 'neo4j', 'kuzu', 'blazegraph'
+AVAILABLE_GRAPH_MODELS = ['falkordb']  # 'inmemory_graph', 'neo4j', 'kuzu', 'blazegraph', 'falkordb'
 
 # graph-model tests
 # init_triplets, expected_init_count, expected_create_info
