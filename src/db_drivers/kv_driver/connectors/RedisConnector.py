@@ -52,7 +52,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
         if len(items) != len(unique_ids):
             raise ValueError
 
-        filtered_items = []
+        filtered_items: List[KeyValueDBInstance] = []
         for item in items:
             item_exists = self.conn.hexists(
                 self.config.params['hs_name'], item.id)
@@ -110,7 +110,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
             if item is None or item.id is None or item.value is None:
                 raise ValueError
 
-            if not isinstance(item.id, str) or type(item.value) not in [str, float, int]:
+            if not isinstance(item.id, str) or type(item.value) not in [str, float, int, list, dict, set]:
                 raise ValueError
 
         filtered_items = [item for item in items if self.conn.hexists(

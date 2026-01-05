@@ -47,8 +47,8 @@ def graph_kuzu_config():
                 db_info={'db': 'testing', 'table': 'testing'},
                 params={'path': f'{TEST_VOLUME_DIR}/kuzu', 'buffer_pool_size': 1024**3,
                         'table_type_map': {
-                            'relations': {'forward': {RelationType.simple.value: 'simple', RelationType.hyper.value: 'hyper_rel', RelationType.episodic.value: 'episodic_rel'}, },
-                            'nodes': {'forward': {NodeType.object.value: 'object', NodeType.hyper.value: 'hyper', NodeType.episodic.value: 'episodic'}}
+                            'relations': {'forward': {RelationType.simple.value: 'simple', RelationType.hyper.value: 'hyper_rel', RelationType.episodic.value: 'episodic_rel', RelationType.time.value: 'time_rel'}, },
+                            'nodes': {'forward': {NodeType.object.value: 'object', NodeType.hyper.value: 'hyper', NodeType.episodic.value: 'episodic', NodeType.time.value: 'time'}}
                         }
                 },
                 need_to_clear=True
@@ -87,7 +87,7 @@ def graph_blazegraph_config():
     return config
 
 @pytest.fixture(scope='package')
-def falkordb_conn():
+def graph_falkordb_config():
     config = GraphModelConfig(
         driver_config=GraphDriverConfig(
             db_vendor='falkordb', db_config=GraphDBConnectionConfig(
@@ -105,14 +105,14 @@ def available_graph_configs(
     graph_inmemory_config,
     graph_kuzu_config,
     graph_blazegraph_config,
-    falkordb_conn
+    graph_falkordb_config
 ):
     return {
         'neo4j': graph_neo4j_config,
         'inmemory_graph': graph_inmemory_config,
         'kuzu': graph_kuzu_config,
         'blazegraph': graph_blazegraph_config,
-        'falkordb': falkordb_conn
+        'falkordb': graph_falkordb_config
     }
 
 @pytest.fixture(scope='package')

@@ -38,7 +38,7 @@ class KVDBConnectionConfig(BaseDatabaseConfig):
 @dataclass
 class KeyValueDBInstance:
     id: str
-    value: Union[int, float, str, bytes]
+    value: Union[int, float, str, bytes, Dict]
 
 
 class AbstractKVDatabaseConnection(AbstractDatabaseConnection):
@@ -47,6 +47,7 @@ class AbstractKVDatabaseConnection(AbstractDatabaseConnection):
     Расширяет базовый интерфейс AbstractDatabaseConnection и добавляет методы,
     специфичные для ордер-сетов (Sorted Set) и счётчиков обращений.
     """
+
     def update_item_scores(self, mapping: Dict[str, int]) -> None:
         """Метод предназначен для обновления оценок у хранящихся элементов в ордер-сете (Sorted Set).
 

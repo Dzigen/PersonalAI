@@ -7,7 +7,7 @@ import torch
 from haystack.document_stores.types import DuplicatePolicy
 import numpy as np
 from copy import deepcopy
-from time import time
+from time import time, sleep
 
 from .configs import DEFAULT_ELASTICSEARCH_CONFIG
 from ...embedders import EmbedderModel
@@ -49,7 +49,7 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
             mappings = self.db_conn._default_mappings
         if not self.db_conn._client.indices.exists(index=self.db_conn._index):
             self.db_conn._client.indices.create(index=self.db_conn._index, mappings=mappings)
-            time(5)
+            sleep(2)
 
     def is_open(self) -> bool:
         # TODO
@@ -224,7 +224,6 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
 
         if self.db_conn._client.indices.exists(index=self.db_conn._index):
             self.db_conn._client.indices.delete(index=self.db_conn._index)
-            time(5)
             self.create_index()
             self.db_conn._client.indices.forcemerge(index=self.db_conn._index, only_expunge_deletes=True)
-            time(5)
+            sleep(2)

@@ -1,9 +1,17 @@
 from ...db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
 
+
 DEFAULT_CACHEKV_CONFIG = KeyValueDriverConfig(
-    db_vendor='mongo',
+    db_vendor='inmemory_kv',
     db_config=KVDBConnectionConfig(
-        db_info={'db': 'personalaidb_results_cache',
-                 'table': 'personalaitable_results_cache'},
-        host='localhost', port=27018, params={'username': 'user', 'password': 'pass', 'max_storage': -1},
-        need_to_clear=False))
+        host='localhost',
+        params={
+            'load_from_disk': True,
+            'load_dump_name': None,
+            'load_dump_dir': './personalai_tmp/cache/inmemory_kv',
+            'save_on_disk': True, 'save_dump_dir': './personalai_tmp/cache/inmemory_kv',
+            'max_storage': 5e+8
+        },
+        need_to_clear=False
+    ),
+)
