@@ -1,16 +1,16 @@
 services:
-  neo4j:
-    image: neo4j:5.21.0-enterprise
-    container_name: ${NEO4J_CNTNAME}
-    hostname: ${NEO4J_HOST}
+
+  falkordb:
+    container_name: ${FALKORDB_CNTNAME}
+    image: falkordb/falkordb:latest
+    hostname: ${FALKORDB_HOST}
     ports:
-      - ${NEO4J_UI_EXTERNAL_PORT}:7474
-      - ${NEO4J_EXTERNAL_PORT}:7687
+      - ${FALKORDB_UI_EXTERNAL_PORT}:3000
+      - ${FALKORDB_EXTERNAL_PORT}:6379
     environment:
-      - NEO4J_AUTH=${NEO4j_AUTH_USER}/${NEO4j_AUTH_PWD}
-      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+      - FALKORDB_ARGS=THREAD_COUNT 8 TIMEOUT_MAX 30000
     volumes:
-      - ${NEO4J_LOCAL_VOLUME}:/data
+      - ${FALKORDB_LOCAL_VOLUME}:/data
     deploy:
       resources:
         limits:
@@ -184,7 +184,7 @@ services:
               capabilities: [gpu]
 
   workspace:
-    image: m.menschikov/workspace:v5
+    image: m.menschikov/workspace:v6
     container_name: ${WORKSPACE_CNTNAME}
     hostname: ${WORKSPACE_HOST}
     network_mode: "host"
@@ -195,7 +195,7 @@ services:
       - ${EXTERNAL_SRC_PATH}:${INTERNAL_SRC_PATH}
       - ${EXTERNAL_MODELS_PATH}:${INTERNAL_MODELS_PATH}
     depends_on:
-      - neo4j
+      - falkordb
       - qdrant
       - opensearch
       - mongo

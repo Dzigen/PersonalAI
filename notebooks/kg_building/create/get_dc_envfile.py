@@ -37,19 +37,17 @@ SAVE_PARAMS_PATH = f"{CONTAINER_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kg
 ####################################################
 print("3. Setting dotenv variables")
 
-# параметры для графовой бд (neo4j)
+# параметры для графовой бд (falkordb)
 GRAPH_DB_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['graph_dir']['name']}/{KGENV_PARAMS['KG_DIR_STRUCT']['graph_dir']['volume_name']}"
 GRAPH_CONN_PARAMS = KGCONN_PARAMS['KG_MODEL_CONNECTORS']['graph_struc_connection']
-neo4j_cnt_variables = {
-    'NEO4J_CNTNAME': ADDITIONAL_DC_PARAMS['neo4j_cntname'],
-    'NEO4J_HOST': ADDITIONAL_DC_PARAMS['neo4j_host'],
-    'NEO4J_UI_EXTERNAL_PORT': ADDITIONAL_DC_PARAMS['neo4j_ui_port'],
+falkordb_cnt_variables = {
+    'FALKORDB_CNTNAME': ADDITIONAL_DC_PARAMS['falkordb_cntname'],
+    'FALKORDB_HOST': ADDITIONAL_DC_PARAMS['falkordb_host'],
+    'FALKORDB_UI_EXTERNAL_PORT': ADDITIONAL_DC_PARAMS['falkordb_ui_port'],
 
-    'NEO4J_EXTERNAL_PORT': GRAPH_CONN_PARAMS['port'],
-    'NEO4j_AUTH_USER': GRAPH_CONN_PARAMS['params']['user'],
-    'NEO4j_AUTH_PWD': GRAPH_CONN_PARAMS['params']['pwd'],
+    'FALKORDB_EXTERNAL_PORT': GRAPH_CONN_PARAMS['port'],
 
-    'NEO4J_LOCAL_VOLUME': GRAPH_DB_PATH
+    'FALKORDB_LOCAL_VOLUME': GRAPH_DB_PATH
 }
 
 # параметры для persistent бд + llm-stat (mongo)
@@ -175,7 +173,7 @@ def add_prefixes(dict_variables) -> None:
 
 
 env_variables = [
-    neo4j_cnt_variables, qdrant_cnt_variables, mongo_cnt_variables, mongoui_cnt_variables,
+    falkordb_cnt_variables, qdrant_cnt_variables, mongo_cnt_variables, mongoui_cnt_variables,
     redis_cnt_variables, redisui_cnt_variables, opensearch_cnt_variables, workspace_cnt_variables]
 for variables in env_variables:
     add_prefixes(variables)

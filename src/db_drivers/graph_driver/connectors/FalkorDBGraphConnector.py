@@ -1,5 +1,6 @@
 from falkordb import FalkorDB, Node, QueryResult, Edge
 from typing import List, Dict, Union
+import redis
 import json
 
 from .configs import DEFAULT_FALKORDB_CONFIG
@@ -361,33 +362,58 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
                     'nodes': {'object': 0, 'hyper': 0, 'episodic': 0, 'time': 0}
                 }
 
-                n_output = self.graph.ro_query(
-                    "MATCH (n) UNWIND labels(n) AS label RETURN label, count(n) AS nodeCount").result_set
-                r_output = self.graph.ro_query(
-                    "MATCH (a)-[rel]->(b) UNWIND type(rel) AS rel_type RETURN rel_type, count(rel) AS relCount").result_set
+                try:
+                    n_output = self.graph.ro_query(
+                        "MATCH (n) UNWIND labels(n) AS label RETURN label, count(n) AS nodeCount").result_set
+                    r_output = self.graph.ro_query(
+                        "MATCH (a)-[rel]->(b) UNWIND type(rel) AS rel_type RETURN rel_type, count(rel) AS relCount").result_set
 
-                result['triplets'].update({item[0]: int(item[1]) for item in r_output})
-                result['nodes'].update({item[0]: int(item[1]) for item in n_output})
+                    result['triplets'].update({item[0]: int(item[1]) for item in r_output})
+                    result['nodes'].update({item[0]: int(item[1]) for item in n_output})
+
+                # костыль: если граф только создан (пустой),
+                # то при отправке MATCH-запросов возникает ошибка - "redis.exceptions.ResponseError: Invalid graph operation on empty key"
+                except redis.exceptions.ResponseError:
+                    pass
 
             else:
-                n_output = self.graph.ro_query("MATCH (a) RETURN count(a) as n_count").result_set[0]
-                r_output = self.graph.ro_query("MATCH (a)-[rel]->(b) RETURN count(rel) as r_count").result_set[0]
-                result = {'triplets': r_output[0], 'nodes': n_output[0]}
+                try:
+                    n_output = self.graph.ro_query("MATCH (a) RETURN COUNT(a) as n_count").result_set[0]
+                    r_output = self.graph.ro_query("MATCH (a)-[rel]->(b) RETURN COUNT(rel) as r_count").result_set[0]
+                    result = {'triplets': r_output[0], 'nodes': n_output[0]}
+                # костыль: если граф только создан (пустой),
+                # то при отправке MATCH-запросов возникает ошибка - "redis.exceptions.ResponseError: Invalid graph operation on empty key"
+                except redis.exceptions.ResponseError:
+                    result = {'triplets': 0, 'nodes': 0}
 
         elif id_type == 'node':
-            n_output = self.graph.ro_query(
-                f'MATCH (a:{item_id.type.value}) WHERE a.str_id = "{item_id.id}" RETURN COUNT(a) as n_count').result_set[0]
-            result = n_output[0]
+            try:
+                n_output = self.graph.ro_query(
+                    f'MATCH (a:{item_id.type.value}) WHERE a.str_id = "{item_id.id}" RETURN COUNT(a) as n_count').result_set[0]
+                result = n_output[0]
+            # костыль: если граф только создан (пустой),
+            # то при отправке MATCH-запросов возникает ошибка - "redis.exceptions.ResponseError: Invalid graph operation on empty key"
+            except redis.exceptions.ResponseError:
+                result = 0
 
         elif id_type == 'relation':
-            r_output = self.graph.ro_query(
-                f'MATCH (a)-[rel:{item_id.type.value}]->(b) WHERE rel.str_id = "{item_id.id}" RETURN COUNT(rel) as r_count').result_set[0]
-            result = r_output[0]
+            try:
+                r_output = self.graph.ro_query(
+                    f'MATCH (a)-[rel:{item_id.type.value}]->(b) WHERE rel.str_id = "{item_id.id}" RETURN COUNT(rel) as r_count').result_set[0]
+                result = r_output[0]
+            # костыль: если граф только создан (пустой),
+            # то при отправке MATCH-запросов возникает ошибка - "redis.exceptions.ResponseError: Invalid graph operation on empty key"
+            except redis.exceptions.ResponseError:
+                result = 0
 
         elif id_type == 'triplet':
-            r_output = self.graph.ro_query(f'MATCH (a)-[rel]->(b) WHERE rel.t_id = "{item_id}" RETURN COUNT(rel) as r_count').result_set[0]
-            result = r_output[0]
-
+            try:
+                r_output = self.graph.ro_query(f'MATCH (a)-[rel]->(b) WHERE rel.t_id = "{item_id}" RETURN COUNT(rel) as r_count').result_set[0]
+                result = r_output[0]
+            # костыль: если граф только создан (пустой),
+            # то при отправке MATCH-запросов возникает ошибка - "redis.exceptions.ResponseError: Invalid graph operation on empty key"
+            except redis.exceptions.ResponseError:
+                result = 0
         else:
             raise ValueError
 
@@ -410,7 +436,13 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
         else:
             raise ValueError
 
-        output = self.graph.ro_query(query).result_set
+        try:
+            output = self.graph.ro_query(query).result_set
+        # костыль: если граф только создан (пустой),
+        # то при отправке MATCH-запросов возникает ошибка - "redis.exceptions.ResponseError: Invalid graph operation on empty key"
+        except redis.exceptions.ResponseError:
+            output = []
+            
         return len(output) > 0
 
     def clear(self) -> None:
