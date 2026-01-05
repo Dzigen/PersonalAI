@@ -73,9 +73,12 @@ notebooks/kg_building/constructgraphs_crontablob.txt
 notebooks/kg_building/create/prepared_params/
 
 experiments/qa/init_env/env_settings
+notebooks/kg_building/constructgraphs_crontablob.txt
+experiments/qa/grouped_run_crontab.txt
 
 experiments/qa/configure/weak/prepared_params
 experiments/qa/configure/weak/generate_params/tmp_params
+notebooks/kg_building/create/prepared_params
 
 experiments/qa/configure/medium/prepared_params
 experiments/qa/configure/medium/generate_params/tmp_params

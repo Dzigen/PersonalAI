@@ -1,7 +1,7 @@
 from dataclasses import dataclass, fields
 from abc import ABC, abstractmethod
 from typing import Union, Dict
-from ..utils import AgentTaskSolverConfig
+from ..utils import AgentTaskSolverConfig, AgentTaskSolver
 from ..utils.data_structs import BaseConfigOperations
 
 
@@ -12,7 +12,15 @@ class BaseStages:
 
 @dataclass
 class BaseTaskSolvers:
-    pass
+
+    def __del__(self):
+        fields_iterator = fields(self)
+        for llmtask_field in fields_iterator:
+            spec_agent: AgentTaskSolver = getattr(self, llmtask_field.name)
+            if spec_agent.cachekv is not None:
+                del spec_agent.cachekv
+            if spec_agent.inference_stat_cache is not None:
+                del spec_agent.inference_stat_cache
 
 
 class BaseAgentTaskConfigSelector(ABC):

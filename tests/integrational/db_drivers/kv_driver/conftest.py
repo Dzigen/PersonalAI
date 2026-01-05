@@ -17,7 +17,7 @@ def inmemory_kv_conn():
             'load_dump_name': 'inmemory_store',
             'load_from_disk': False,
             'max_storage': 5e+8,
-            'load_dump_dir': "{TEST_VOLUME_DIR}/inmemory_kv",
+            'load_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_kv",
             'save_on_disk': True,
             'save_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_kv"
         },
@@ -71,6 +71,7 @@ def mixed_conn():
         need_to_clear=True)
 
     mixed_config = KVDBConnectionConfig(
+        db_info={ 'db': 'DefaultPersonalAIKVDB','table': 'test_collection' },
         params={'mongo_config': mongo_config, 'redis_config': redis_config})
     driver_config = KeyValueDriverConfig(
         db_vendor='mixed_kv', db_config=mixed_config)

@@ -27,6 +27,8 @@ def personaai_ru():
     stat_config = AgentStatAnalyzerConfig()
     stat_config.table_driver_config.db_config.db_info['db'] += 'RU'
 
+    config.texttotriplets_store_config.db_config.db_info['db'] += 'RU'
+
     personal_ai = PersonalAI(config, kv_cache_config, stat_config)
     personal_ai.kg_model.clear()
     for text in RAW_TEXTS_RU:
@@ -57,6 +59,8 @@ def personaai_en():
 
     stat_config = AgentStatAnalyzerConfig()
     stat_config.table_driver_config.db_config.db_info['db'] += 'EN'
+
+    config.texttotriplets_store_config.db_config.db_info['db'] += 'EN'
 
     personal_ai = PersonalAI(config, kv_cache_config, stat_config)
     personal_ai.kg_model.clear()
