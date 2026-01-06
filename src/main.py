@@ -23,7 +23,7 @@ class PersonalAIConfig(BaseComponentConfig, LanguageConfig):
     :type qa_pipeline_config: Union[QAPipelineConfig, Dict], optional
     :param mem_pipeline_config: Конфигурация конвейера, который выполняет изменение/обновление информации/знаний в памяти ассистента. Значение по умолчанию MemPipelineConfig().
     :type mem_pipeline_config: Union[MemPipelineConfig, Dict], optional
-    :param textidstore_config: ... . Значение по умолчанию TextIdStoreConfig().
+    :param textidstore_config: Конфигурация хранилища отображений между исходными текстами (сохранёнными в модель памяти) и извлечёнными (из данных текстов) триплетами. Значение по умолчанию TextIdStoreConfig().
     :type textidstore_config: Union[TextIdStoreConfig, Dict], optional
     """
     kg_model_config: Union[KnowledgeGraphModelConfig, Dict] = field(default_factory=lambda: KnowledgeGraphModelConfig())

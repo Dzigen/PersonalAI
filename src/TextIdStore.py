@@ -10,11 +10,11 @@ from .config import DEFAULT_TEXTTOTRIPLETS_STORE_CONFIG, DEFAULT_TRIPLETTOTEXTS_
 
 @dataclass
 class TextIdStoreConfig(BaseComponentConfig):
-    """_summary_
+    """Конфигурация хранилища отображений между исходными текстами и извлечёнными (из данных текстов) триплетами.
 
     :param texttotriplets_store_config: Конфигурация хранилища пар: идентификатор исходного фрагмента текста, сохранённого в модель памяти; идентификторы триплетов, которые были извлечены из данного текста и добавлены в граф знаний. Значение по умолчанию DEFAULT_TEXTTOTRIPLETS_STORE_CONFIG.
     :type texttotriplets_store_config: Union[KeyValueDriverConfig, Dict], optional
-    :param triplettotexts_store_config: Конфигурация хранилища пар: идентификтор триплета, который был добавлен в граф знаний; идентификаторы исходных фрагментов текста, сохранённого в модель памяти, из которых данный триплет был извлечён. Значение по умолчанию DEFAULT_TRIPLETTOTEXT_STORE_CONFIG.
+    :param triplettotexts_store_config: Конфигурация хранилища пар: идентификатор триплета, который был добавлен в граф знаний; идентификаторы исходных фрагментов текста, сохранённого в модель памяти, из которых данный триплет был извлечён. Значение по умолчанию DEFAULT_TRIPLETTOTEXT_STORE_CONFIG.
     :type triplettotexts_store_config: Union[KeyValueDriverConfig, Dict], optional
     """
     texttotriplets_store_config: Union[KeyValueDriverConfig, Dict] = field(default_factory=lambda: DEFAULT_TEXTTOTRIPLETS_STORE_CONFIG)
@@ -45,9 +45,9 @@ class TextIdStoreConfig(BaseComponentConfig):
 
 
 class TextIdStore:
-    """_summary_
+    """Хранилище отображений между множеством исходных текстов (их идентификаторов), сохранённых в модель памяти, и множеством триплетов (их идентификаторов), которые представляют данные тексты в графе знаний.
 
-    :param config: ... . Значение по умолчанию TextIdStoreConfig().
+    :param config: Конфигурация хранилища. Значение по умолчанию TextIdStoreConfig().
     :type config: Union[Dict,TextIdStoreConfig], optional
     """
 
