@@ -1,8 +1,8 @@
 #### Материалы
-- [Отчёт 2025](docs/iteration_summary/2025/PersonalAI(Отчёт)(НИР)(Skoltech-Sber)(2025).pdf)
-- [Презентация работ 2025](docs/iteration_summary/2025/PersonalAI(ПриёмкаРабот)(НИР)(Skoltech-Sber)(2025).pdf)
+- [Отчёт 2025](docs/source/_static/iteration_summary/2025/PersonalAI(Отчёт)(НИР)(Skoltech-Sber)(2025).pdf)
+- [Презентация работ 2025](docs/source/_static/iteration_summary/2025/PersonalAI(ПриёмкаРабот)(НИР)(Skoltech-Sber)(2025).pdf)
 #### Статьи
-- [PersonalAI: A Systematic Comparison of Knowledge Graph Storage and Retrieval Approaches for Personalized LLM agents](docs/iteration_summary/2024/PersonalAI(Статья)(НИР)(Skoltech-Sber)(2024).pdf)
+- [PersonalAI: A Systematic Comparison of Knowledge Graph Storage and Retrieval Approaches for Personalized LLM agents](docs/source/_static/iteration_summary/2024/PersonalAI(Статья)(НИР)(Skoltech-Sber)(2024).pdf)
 
 #### Структура файловой системы:
 - debug/ - Директория с ноутбуками/скриптами для отладки кода из каталога "src".
@@ -26,8 +26,8 @@
 * [Оценка эффективности конфигурации QA-пайплайна с использование построенного графа](experiments/qa)
 
 ##### Полезные материалы
-* [MLOps](docs/useful_material/MLOps/)
-* [Организация научных исследований](docs/useful_material/ОрганизацияНаучныхИсследований/)
+* [MLOps](docs/source/_static/useful_material/MLOps/)
+* [Организация научных исследований](docs/source/_static/useful_material/ОрганизацияНаучныхИсследований/)
 
 ##### Команды для генерации документации:
 * find . -type d -name __pycache__ -exec rm -r {} \+
