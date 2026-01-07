@@ -201,5 +201,6 @@ protobuf==6.33.1
 qdrant-client==1.16.0
 SPARQLWrapper==2.0.0
 rdflib==7.5.0
-falkordb
-mlflow
+falkordb==1.2.2
+mlflow==3.8.1
+boto3==1.42.23

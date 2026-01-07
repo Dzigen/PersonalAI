@@ -35,3 +35,4 @@ SPARQLWrapper
 rdflib
 falkordb
 mlflow
+boto3

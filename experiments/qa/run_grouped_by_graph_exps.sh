@@ -4,6 +4,7 @@ BASE_DIR=/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa
 
 TMP_BASE_DIR=/home/m.menschikov/workspace/personal_ai/Personal-AI
 TMP_DEPLOYMENT_COMPOSE_PATH="$TMP_BASE_DIR/deployment"
+MLFLOW_DEPLOYMENT_COMPOSE_PATH="$TMP_DEPLOYMENT_COMPOSE_PATH/mlflow"
 TMP_WORKSPACE_CNTNAME=personalai_mmenschikov_workspace
 USERNAME=root
 
@@ -21,6 +22,8 @@ CONFIGURE_FNAMES=("diaasq.yaml") # TO CHANGE
 QA_PIPELINE_VERSION="medium" # TO CHANGE
 
 # ===============================================================
+
+#cd $MLFLOW_DEPLOYMENT_COMPOSE_PATH ; docker compose --env-file=".env" up -d mlflow 
 
 for ds_idx in "${!DATASETS[@]}";
 do  
