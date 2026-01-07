@@ -12,6 +12,14 @@ src.db\_drivers.graph\_driver.connectors.BlazeGraphConnector module
    :undoc-members:
    :show-inheritance:
 
+src.db\_drivers.graph\_driver.connectors.FalkorDBGraphConnector module
+----------------------------------------------------------------------
+
+.. automodule:: src.db_drivers.graph_driver.connectors.FalkorDBGraphConnector
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 src.db\_drivers.graph\_driver.connectors.InMemoryGraphConnector module
 ----------------------------------------------------------------------
 

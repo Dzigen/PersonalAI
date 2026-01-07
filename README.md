@@ -1,8 +1,8 @@
 #### Материалы
-- [Отчёт 2025](docs/iteration_summary/2025/PersonalAI(Отчёт)(НИР)(Skoltech-Sber)(2025).pdf)
-- [Презентация работ 2025](docs/iteration_summary/2025/PersonalAI(ПриёмкаРабот)(НИР)(Skoltech-Sber)(2025).pdf)
+- [Отчёт 2025](docs/source/_static/iteration_summary/2025/PersonalAI(Отчёт)(НИР)(Skoltech-Sber)(2025).pdf)
+- [Презентация работ 2025](docs/source/_static/iteration_summary/2025/PersonalAI(ПриёмкаРабот)(НИР)(Skoltech-Sber)(2025).pdf)
 #### Статьи
-- [PersonalAI: A Systematic Comparison of Knowledge Graph Storage and Retrieval Approaches for Personalized LLM agents](docs/iteration_summary/2024/PersonalAI(Статья)(НИР)(Skoltech-Sber)(2024).pdf)
+- [PersonalAI: A Systematic Comparison of Knowledge Graph Storage and Retrieval Approaches for Personalized LLM agents](docs/source/_static/iteration_summary/2024/PersonalAI(Статья)(НИР)(Skoltech-Sber)(2024).pdf)
 
 #### Структура файловой системы:
 - debug/ - Директория с ноутбуками/скриптами для отладки кода из каталога "src".
@@ -21,21 +21,13 @@
 - exp - Предназначена для проведения экспериментов. Для решения конкретной задачи в рамках "exp" нужно создать от неё отдельную ветку, реализовать решение и (после review от лида) смёржить в "exp" и удалить ветку из репозитория. Для проведения эксперимента необходимо создать отдельную директорию в каталоге "experiments"; название директории должно быть в следующем формате: "суть_эксперимента (#N)". Эксперименты могут быть вложенными: есть директория с общим названием эксперимента, в рамках которого прооводится несколько атомарных исследований.
 - task#N - Предназначеная для решения конкретной/атомарной задачи, проведения эксперимента, описанной в соответствующем issue на gitlab.
 
-Пример работы с описанной структурой веток:
-
-![alt text](https://github.com/zer0o0ne/Personal-AI/blob/dev/docs/branch_workflow.jpg)
-
 ##### Рабочие скрипты:
 * [Построение графа](notebooks/kg_building)
 * [Оценка эффективности конфигурации QA-пайплайна с использование построенного графа](experiments/qa)
 
-
-##### Полезные материалы (структура ML-проекта):
-* https://drive.google.com/file/d/1g0tzALqKygFTtzA-C5l5ZOdC9tKiUTzc/view?usp=sharing
-
-##### Команда для деплоя контейнеров:
-* docker build -t m.menschikov/agent_api:v2 .
-* docker run -d -p 45678:4567 -v ./models:/app/models -it  --name m.menschikov.agent_api_cntrn --memory=32g --memory-swap=32g --cpuset-cpus=0-4 --gpus '"device=1"' m.menschikov/agent_api:v2
+##### Полезные материалы
+* [MLOps](docs/source/_static/useful_material/MLOps/)
+* [Организация научных исследований](docs/source/_static/useful_material/ОрганизацияНаучныхИсследований/)
 
 ##### Команды для генерации документации:
 * find . -type d -name __pycache__ -exec rm -r {} \+
