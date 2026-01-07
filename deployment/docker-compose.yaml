@@ -302,3 +302,18 @@ services:
             - driver: nvidia
               device_ids: ['2']
               capabilities: [gpu]
+
+  # MLflow Tracking Server
+  mlflow:
+    # Use the official MLflow image from GitHub Container Registry
+    image: ghcr.io/mlflow/mlflow:latest
+    container_name: personalai_mmenschikov_mlflow
+    ports:
+      - 5000:5000 # MLflow UI port
+    # Command to start the MLflow server with the specified backend and artifact store
+    command: 
+      mlflow server 
+      --host 0.0.0.0
+      --port 5000
+    volumes:
+      - /mnt/data/m.menschikov/personalai/mlflow_volumes/mlflow:/mlruns # TO CHANGE

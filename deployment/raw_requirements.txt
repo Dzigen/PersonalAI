@@ -34,3 +34,4 @@ qdrant-client
 SPARQLWrapper
 rdflib
 falkordb
+mlflow
