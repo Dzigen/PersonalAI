@@ -16,11 +16,15 @@ class BaseTaskSolvers:
     def __del__(self):
         fields_iterator = fields(self)
         for llmtask_field in fields_iterator:
-            spec_agent: AgentTaskSolver = getattr(self, llmtask_field.name)
-            if spec_agent.cachekv is not None:
-                del spec_agent.cachekv
-            if spec_agent.inference_stat_cache is not None:
-                del spec_agent.inference_stat_cache
+            try:
+                spec_agent: AgentTaskSolver = getattr(self, llmtask_field.name)
+            except TypeError as e:
+                print(str(e), llmtask_field.name)
+            else:
+                if spec_agent.cachekv is not None:
+                    del spec_agent.cachekv
+                if spec_agent.inference_stat_cache is not None:
+                    del spec_agent.inference_stat_cache
 
 
 class BaseAgentTaskConfigSelector(ABC):

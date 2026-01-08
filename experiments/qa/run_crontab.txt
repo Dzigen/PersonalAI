@@ -8,3 +8,14 @@ CRONTAB_DIR="/home/workspace/experiments/qa"
 CRONTAB_DIR="/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa"
 
 59 16 13 12 * bash $CRONTAB_DIR/run_grouped_by_graph_exps.sh >> $CRONTAB_DIR/grouped_run_crontab.txt 2>&1
+
+==========
+
+CRONTAB_DIR="/home/workspace/experiments/qa"
+
+CURRENT_KG="llama318b_050126_v2prompts"
+CURRENT_DATASET="diaasq"
+CURRENT_CONFIGURE_FNAME="diaasq.yaml"
+CURRENT_EVAL_FNAME="diaasq.yaml"
+
+04 14 08 01 * cd $CRONTAB_DIR ; bash crontab_job.sh $CURRENT_KG $CURRENT_DATASET $CURRENT_CONFIGURE_FNAME $CURRENT_EVAL_FNAME >> $CRONTAB_DIR/crontab_log.txt 2>&1

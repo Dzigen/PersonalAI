@@ -1,1990 +1,0 @@
-sberdialogues_conv-4, gigachatmax_111225_v2prompts,
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-4,/gigachatmax_111225_v2prompts,
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 0s (868 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 1.3 MB/s eta 0:00:00
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-Traceback (most recent call last):
-  File "/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/get_dc_envfile.py", line 17, in <module>
-    with open(KGENV_FILE_PATH, 'r') as stream:
-FileNotFoundError: [Errno 2] No such file or directory: '/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs/sberdialogues_conv-4,/gigachatmax_111225_v2prompts,/settings/kgenv_params.yaml'
-sberdialogues_conv-4 gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-4/gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 0s (808 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 1.4 MB/s eta 0:00:00
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-2. Setting paths
-3. Setting dotenv variables
-4. Formating dotenv-file
-5. Saving dotenv-file
-6. Saving Used .yaml files
-############ DONE ############
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-4/gigachatmax_111225_v2prompts/.qaexp_env
- Network personalai_mmenshikov_sberdialogues_conv-4_gigachatmax_111225_v2prompts_default  Creating
- Network personalai_mmenshikov_sberdialogues_conv-4_gigachatmax_111225_v2prompts_default  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-4_gigachatmax_111225_v2prompts  Started
-/home/workspace/experiments/qa/params_to_run/
-/home/workspace/experiments/qa/configure/medium/prepared_params/sberdialogues_conv-4/gigachatmax_111225_v2prompts/
-personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-4_gigachatmax_111225_v2prompts
-dc9700f4539f 28b46414d0f5 8768ba4b461d 697c5c05559c 996c73ec5218 49eb5798ebce
-Stoping containers...
-dc9700f4539f
-28b46414d0f5
-8768ba4b461d
-697c5c05559c
-996c73ec5218
-49eb5798ebce
-Done.
-Removing containers...
-dc9700f4539f
-28b46414d0f5
-8768ba4b461d
-697c5c05559c
-996c73ec5218
-49eb5798ebce
-Done.
-sberdialogues_conv-5 gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-5/gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 1s (328 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 1.3 MB/s eta 0:00:00
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-2. Setting paths
-3. Setting dotenv variables
-4. Formating dotenv-file
-5. Saving dotenv-file
-6. Saving Used .yaml files
-############ DONE ############
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-5/gigachatmax_111225_v2prompts/.qaexp_env
- Network personalai_mmenshikov_sberdialogues_conv-5_gigachatmax_111225_v2prompts_default  Creating
- Network personalai_mmenshikov_sberdialogues_conv-5_gigachatmax_111225_v2prompts_default  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-5_gigachatmax_111225_v2prompts  Started
-/home/workspace/experiments/qa/params_to_run/
-/home/workspace/experiments/qa/configure/medium/prepared_params/sberdialogues_conv-5/gigachatmax_111225_v2prompts/
-personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-5_gigachatmax_111225_v2prompts
-fe8d930695a7 0065226a2955 bcc05b850b15 42a180be9489 10533841bda8 dbb47f45e067
-Stoping containers...
-fe8d930695a7
-0065226a2955
-bcc05b850b15
-42a180be9489
-10533841bda8
-dbb47f45e067
-Done.
-Removing containers...
-fe8d930695a7
-0065226a2955
-bcc05b850b15
-42a180be9489
-10533841bda8
-dbb47f45e067
-Done.
-sberdialogues_conv-6 gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-6/gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 0s (1730 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 1.6 MB/s eta 0:00:00
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-2. Setting paths
-3. Setting dotenv variables
-4. Formating dotenv-file
-5. Saving dotenv-file
-6. Saving Used .yaml files
-############ DONE ############
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-6/gigachatmax_111225_v2prompts/.qaexp_env
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-6_gigachatmax_111225_v2prompts  Started
-/home/workspace/experiments/qa/params_to_run/
-/home/workspace/experiments/qa/configure/medium/prepared_params/sberdialogues_conv-6/gigachatmax_111225_v2prompts/
-personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-6_gigachatmax_111225_v2prompts
-d8ad3a9155a3 ccc722bad990 2392aee89bf7 44bcb39f090a 665245556b99 3b3c319bd8a0
-Stoping containers...
-d8ad3a9155a3
-ccc722bad990
-2392aee89bf7
-44bcb39f090a
-665245556b99
-3b3c319bd8a0
-Done.
-Removing containers...
-d8ad3a9155a3
-ccc722bad990
-2392aee89bf7
-44bcb39f090a
-665245556b99
-3b3c319bd8a0
-Done.
-sberdialogues_conv-7 gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-7/gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 1s (328 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 1.4 MB/s eta 0:00:00
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-2. Setting paths
-3. Setting dotenv variables
-4. Formating dotenv-file
-5. Saving dotenv-file
-6. Saving Used .yaml files
-############ DONE ############
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-7/gigachatmax_111225_v2prompts/.qaexp_env
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-7_gigachatmax_111225_v2prompts  Started
-/home/workspace/experiments/qa/params_to_run/
-/home/workspace/experiments/qa/configure/medium/prepared_params/sberdialogues_conv-7/gigachatmax_111225_v2prompts/
-personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-7_gigachatmax_111225_v2prompts
-4c8f9f2f5412 f7125c847eaf e674a8e72645 bfa48729eb3d 8160d9bda070 fc17f803c97e
-Stoping containers...
-4c8f9f2f5412
-f7125c847eaf
-e674a8e72645
-bfa48729eb3d
-8160d9bda070
-fc17f803c97e
-Done.
-Removing containers...
-4c8f9f2f5412
-f7125c847eaf
-e674a8e72645
-bfa48729eb3d
-8160d9bda070
-fc17f803c97e
-Done.
-sberdialogues_conv-8 gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-8/gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 1s (369 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 1.5 MB/s eta 0:00:00
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-2. Setting paths
-3. Setting dotenv variables
-4. Formating dotenv-file
-5. Saving dotenv-file
-6. Saving Used .yaml files
-############ DONE ############
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-8/gigachatmax_111225_v2prompts/.qaexp_env
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-8_gigachatmax_111225_v2prompts  Started
-/home/workspace/experiments/qa/params_to_run/
-/home/workspace/experiments/qa/configure/medium/prepared_params/sberdialogues_conv-8/gigachatmax_111225_v2prompts/
-personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-8_gigachatmax_111225_v2prompts
-6785e429c106 62bb81b53eef f2e2ed3b6622 17093e1d5185 c068e8fc5399 2519b150611e
-Stoping containers...
-6785e429c106
-62bb81b53eef
-f2e2ed3b6622
-17093e1d5185
-c068e8fc5399
-2519b150611e
-Done.
-Removing containers...
-6785e429c106
-62bb81b53eef
-f2e2ed3b6622
-17093e1d5185
-c068e8fc5399
-2519b150611e
-Done.
-sberdialogues_conv-9 gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-9/gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 0s (1657 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 4.0 MB/s eta 0:00:00
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-2. Setting paths
-3. Setting dotenv variables
-4. Formating dotenv-file
-5. Saving dotenv-file
-6. Saving Used .yaml files
-############ DONE ############
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-9/gigachatmax_111225_v2prompts/.qaexp_env
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-9_gigachatmax_111225_v2prompts  Started
-/home/workspace/experiments/qa/params_to_run/
-/home/workspace/experiments/qa/configure/medium/prepared_params/sberdialogues_conv-9/gigachatmax_111225_v2prompts/
-personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-9_gigachatmax_111225_v2prompts
-4f55a7f918b4 cadd807d298d f63cc7fbb99b 246d1f95b016 1090a4dfe817 70f043046eed
-Stoping containers...
-4f55a7f918b4
-cadd807d298d
-f63cc7fbb99b
-246d1f95b016
-1090a4dfe817
-70f043046eed
-Done.
-Removing containers...
-4f55a7f918b4
-cadd807d298d
-f63cc7fbb99b
-246d1f95b016
-1090a4dfe817
-70f043046eed
-Done.
-sberdialogues_conv-10 gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-10/gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 1s (332 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 1.2 MB/s eta 0:00:00
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-2. Setting paths
-3. Setting dotenv variables
-4. Formating dotenv-file
-5. Saving dotenv-file
-6. Saving Used .yaml files
-############ DONE ############
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-10/gigachatmax_111225_v2prompts/.qaexp_env
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-10_gigachatmax_111225_v2prompts  Started
-/home/workspace/experiments/qa/params_to_run/
-/home/workspace/experiments/qa/configure/medium/prepared_params/sberdialogues_conv-10/gigachatmax_111225_v2prompts/
-personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-10_gigachatmax_111225_v2prompts
-caec3eab4841 cef780941d66 8a17b7b2e65c 24f288214ffb 98d2de923661 ebfcb59b32c1
-Stoping containers...
-caec3eab4841
-cef780941d66
-8a17b7b2e65c
-24f288214ffb
-98d2de923661
-ebfcb59b32c1
-Done.
-Removing containers...
-caec3eab4841
-cef780941d66
-8a17b7b2e65c
-24f288214ffb
-98d2de923661
-ebfcb59b32c1
-Done.
-=== Done (run_grouped_by_graph_exps.sh) ===
-sberdialogues_conv-11 gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-11/gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 1s (376 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 4.3 MB/s eta 0:00:00
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-2. Setting paths
-3. Setting dotenv variables
-4. Formating dotenv-file
-5. Saving dotenv-file
-6. Saving Used .yaml files
-############ DONE ############
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-11/gigachatmax_111225_v2prompts/.qaexp_env
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-11_gigachatmax_111225_v2prompts  Started
-/home/workspace/experiments/qa/params_to_run/
-/home/workspace/experiments/qa/configure/medium/prepared_params/sberdialogues_conv-11/gigachatmax_111225_v2prompts/
-personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-11_gigachatmax_111225_v2prompts
-9e0dc4aef0fc 2e8a5f3a1335 0444164bb149 734f2cb31530 5c1c1742cb6d 6f16aede4281
-Stoping containers...
-9e0dc4aef0fc
-2e8a5f3a1335
-0444164bb149
-734f2cb31530
-5c1c1742cb6d
-6f16aede4281
-Done.
-Removing containers...
-9e0dc4aef0fc
-2e8a5f3a1335
-0444164bb149
-734f2cb31530
-5c1c1742cb6d
-6f16aede4281
-Done.
-sberdialogues_conv-12 gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-12/gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 0s (867 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 3.7 MB/s eta 0:00:00
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-2. Setting paths
-3. Setting dotenv variables
-4. Formating dotenv-file
-5. Saving dotenv-file
-6. Saving Used .yaml files
-############ DONE ############
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-12/gigachatmax_111225_v2prompts/.qaexp_env
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-12_gigachatmax_111225_v2prompts  Started
-/home/workspace/experiments/qa/params_to_run/
-/home/workspace/experiments/qa/configure/medium/prepared_params/sberdialogues_conv-12/gigachatmax_111225_v2prompts/
-personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-12_gigachatmax_111225_v2prompts
-061971683fd9 d91cde472999 579725b7841a 249e2b221606 d75a1fd097bc 4bfc3a8bea7e
-Stoping containers...
-061971683fd9
-d91cde472999
-579725b7841a
-249e2b221606
-d75a1fd097bc
-4bfc3a8bea7e
-Done.
-Removing containers...
-061971683fd9
-d91cde472999
-579725b7841a
-249e2b221606
-d75a1fd097bc
-4bfc3a8bea7e
-Done.
-sberdialogues_conv-13 gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-13/gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 0s (1923 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 1.4 MB/s eta 0:00:00
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-2. Setting paths
-3. Setting dotenv variables
-4. Formating dotenv-file
-5. Saving dotenv-file
-6. Saving Used .yaml files
-############ DONE ############
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-13/gigachatmax_111225_v2prompts/.qaexp_env
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-13_gigachatmax_111225_v2prompts  Started
-/home/workspace/experiments/qa/params_to_run/
-/home/workspace/experiments/qa/configure/medium/prepared_params/sberdialogues_conv-13/gigachatmax_111225_v2prompts/
-personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-13_gigachatmax_111225_v2prompts
-989bf09cb77c 94294e7b48ff 8e4abdc25afb 11e4a93b2138 26522dc23ffe 936575ee5044
-Stoping containers...
-989bf09cb77c
-94294e7b48ff
-8e4abdc25afb
-11e4a93b2138
-26522dc23ffe
-936575ee5044
-Done.
-Removing containers...
-989bf09cb77c
-94294e7b48ff
-8e4abdc25afb
-11e4a93b2138
-26522dc23ffe
-936575ee5044
-Done.
-sberdialogues_conv-14 gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-14/gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 1s (386 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 1.7 MB/s eta 0:00:00
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-2. Setting paths
-3. Setting dotenv variables
-4. Formating dotenv-file
-5. Saving dotenv-file
-6. Saving Used .yaml files
-############ DONE ############
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-14/gigachatmax_111225_v2prompts/.qaexp_env
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-14_gigachatmax_111225_v2prompts  Started
-/home/workspace/experiments/qa/params_to_run/
-/home/workspace/experiments/qa/configure/medium/prepared_params/sberdialogues_conv-14/gigachatmax_111225_v2prompts/
-personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-14_gigachatmax_111225_v2prompts
-0c8d24f41bed 1126fc1ee5c8 a96368464ce2 7632d0713f0a 417d7bbb99ba 161a3bd6a6e3
-Stoping containers...
-0c8d24f41bed
-1126fc1ee5c8
-a96368464ce2
-7632d0713f0a
-417d7bbb99ba
-161a3bd6a6e3
-Done.
-Removing containers...
-0c8d24f41bed
-1126fc1ee5c8
-a96368464ce2
-7632d0713f0a
-417d7bbb99ba
-161a3bd6a6e3
-Done.
-sberdialogues_conv-15 gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-15/gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 1s (383 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 3.4 MB/s eta 0:00:00
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-2. Setting paths
-3. Setting dotenv variables
-4. Formating dotenv-file
-5. Saving dotenv-file
-6. Saving Used .yaml files
-############ DONE ############
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-15/gigachatmax_111225_v2prompts/.qaexp_env
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-15_gigachatmax_111225_v2prompts  Started
-/home/workspace/experiments/qa/params_to_run/
-/home/workspace/experiments/qa/configure/medium/prepared_params/sberdialogues_conv-15/gigachatmax_111225_v2prompts/
-personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-15_gigachatmax_111225_v2prompts
-cd8ed5f4d30e 7230655333a5 46b2a66b6541 ec2acd23ccd3 b1d87022d6e7 f974458945c9
-Stoping containers...
-cd8ed5f4d30e
-7230655333a5
-46b2a66b6541
-ec2acd23ccd3
-b1d87022d6e7
-f974458945c9
-Done.
-Removing containers...
-cd8ed5f4d30e
-7230655333a5
-46b2a66b6541
-ec2acd23ccd3
-b1d87022d6e7
-f974458945c9
-Done.
-sberdialogues_conv-16 gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-16/gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 1s (386 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 3.5 MB/s eta 0:00:00
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-2. Setting paths
-3. Setting dotenv variables
-4. Formating dotenv-file
-5. Saving dotenv-file
-6. Saving Used .yaml files
-############ DONE ############
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-16/gigachatmax_111225_v2prompts/.qaexp_env
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-16_gigachatmax_111225_v2prompts  Started
-/home/workspace/experiments/qa/params_to_run/
-/home/workspace/experiments/qa/configure/medium/prepared_params/sberdialogues_conv-16/gigachatmax_111225_v2prompts/
-personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-16_gigachatmax_111225_v2prompts
-dd804b554f52 c76e4b50cc45 3e1f37f85d71 393e561b5297 198f784646dd 56bf9756c471
-Stoping containers...
-dd804b554f52
-c76e4b50cc45
-3e1f37f85d71
-393e561b5297
-198f784646dd
-56bf9756c471
-Done.
-Removing containers...
-dd804b554f52
-c76e4b50cc45
-3e1f37f85d71
-393e561b5297
-198f784646dd
-56bf9756c471
-Done.
-sberdialogues_conv-17 gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-17/gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 0s (1444 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 4.0 MB/s eta 0:00:00
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-2. Setting paths
-3. Setting dotenv variables
-4. Formating dotenv-file
-5. Saving dotenv-file
-6. Saving Used .yaml files
-############ DONE ############
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-17/gigachatmax_111225_v2prompts/.qaexp_env
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-17_gigachatmax_111225_v2prompts  Started
-/home/workspace/experiments/qa/params_to_run/
-/home/workspace/experiments/qa/configure/medium/prepared_params/sberdialogues_conv-17/gigachatmax_111225_v2prompts/
-personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-17_gigachatmax_111225_v2prompts
-15a204c3f132 fac283754afc 9edb3fccfeb3 b1c258a726d7 64919e328827 ca908f86dc9f
-Stoping containers...
-15a204c3f132
-fac283754afc
-9edb3fccfeb3
-b1c258a726d7
-64919e328827
-ca908f86dc9f
-Done.
-Removing containers...
-15a204c3f132
-fac283754afc
-9edb3fccfeb3
-b1c258a726d7
-64919e328827
-ca908f86dc9f
-Done.
-sberdialogues_conv-18 gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-18/gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 0s (863 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 4.6 MB/s eta 0:00:00
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-2. Setting paths
-3. Setting dotenv variables
-4. Formating dotenv-file
-5. Saving dotenv-file
-6. Saving Used .yaml files
-############ DONE ############
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-18/gigachatmax_111225_v2prompts/.qaexp_env
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-18_gigachatmax_111225_v2prompts  Started
-/home/workspace/experiments/qa/params_to_run/
-/home/workspace/experiments/qa/configure/medium/prepared_params/sberdialogues_conv-18/gigachatmax_111225_v2prompts/
-personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-18_gigachatmax_111225_v2prompts
-a3e0b82fb8dc f9b977ed8a8c e6eaffd10229 ed74dc8420b4 baed70e1cad7 24dfb7abca54
-Stoping containers...
-a3e0b82fb8dc
-f9b977ed8a8c
-e6eaffd10229
-ed74dc8420b4
-baed70e1cad7
-24dfb7abca54
-Done.
-Removing containers...
-a3e0b82fb8dc
-f9b977ed8a8c
-e6eaffd10229
-ed74dc8420b4
-baed70e1cad7
-24dfb7abca54
-Done.
-sberdialogues_conv-19 gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-19/gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 0s (763 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 1.6 MB/s eta 0:00:00
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-2. Setting paths
-3. Setting dotenv variables
-4. Formating dotenv-file
-5. Saving dotenv-file
-6. Saving Used .yaml files
-############ DONE ############
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-19/gigachatmax_111225_v2prompts/.qaexp_env
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-19_gigachatmax_111225_v2prompts  Started
-/home/workspace/experiments/qa/params_to_run/
-/home/workspace/experiments/qa/configure/medium/prepared_params/sberdialogues_conv-19/gigachatmax_111225_v2prompts/
-personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-19_gigachatmax_111225_v2prompts
-6cc69f68a278 e73c7eb9ef80 7ef6f0126905 0fa26b89caca d870f84dbb47 30c0fdd0b9eb
-Stoping containers...
-6cc69f68a278
-e73c7eb9ef80
-7ef6f0126905
-0fa26b89caca
-d870f84dbb47
-30c0fdd0b9eb
-Done.
-Removing containers...
-6cc69f68a278
-e73c7eb9ef80
-7ef6f0126905
-0fa26b89caca
-d870f84dbb47
-30c0fdd0b9eb
-Done.
-sberdialogues_conv-20 gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-20/gigachatmax_111225_v2prompts
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/qaenv_params.yaml
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following additional packages will be installed:
-  libjq1 libonig5
-The following NEW packages will be installed:
-  jq libjq1 libonig5
-0 upgraded, 3 newly installed, 0 to remove and 2 not upgraded.
-Need to get 357 kB of archives.
-After this operation, 1087 kB of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libonig5 amd64 6.9.7.1-2build1 [172 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjq1 amd64 1.6-2.1ubuntu3.1 [133 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 jq amd64 1.6-2.1ubuntu3.1 [52.5 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 357 kB in 0s (1377 kB/s)
-Selecting previously unselected package libonig5:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18133 files and directories currently installed.)
-Preparing to unpack .../libonig5_6.9.7.1-2build1_amd64.deb ...
-Unpacking libonig5:amd64 (6.9.7.1-2build1) ...
-Selecting previously unselected package libjq1:amd64.
-Preparing to unpack .../libjq1_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Selecting previously unselected package jq.
-Preparing to unpack .../jq_1.6-2.1ubuntu3.1_amd64.deb ...
-Unpacking jq (1.6-2.1ubuntu3.1) ...
-Setting up libonig5:amd64 (6.9.7.1-2build1) ...
-Setting up libjq1:amd64 (1.6-2.1ubuntu3.1) ...
-Setting up jq (1.6-2.1ubuntu3.1) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
-Collecting yq
-  Downloading yq-3.4.3-py3-none-any.whl (18 kB)
-Requirement already satisfied: PyYAML>=5.3.1 in /usr/local/lib/python3.10/dist-packages (from yq) (6.0.3)
-Collecting argcomplete>=1.8.1
-  Downloading argcomplete-3.6.3-py3-none-any.whl (43 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.8/43.8 KB 653.3 kB/s eta 0:00:00
-Collecting xmltodict>=0.11.0
-  Downloading xmltodict-1.0.2-py3-none-any.whl (13 kB)
-Collecting tomlkit>=0.11.6
-  Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
-Installing collected packages: xmltodict, tomlkit, argcomplete, yq
-Successfully installed argcomplete-3.6.3 tomlkit-0.13.3 xmltodict-1.0.2 yq-3.4.3
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
- Container personalai_mmenschikov_workspace  Creating
- Container personalai_mmenschikov_workspace  Created
- Container personalai_mmenschikov_workspace  Starting
- Container personalai_mmenschikov_workspace  Started
-Creating dotenv file for docker-compose...
-1. Loading hyperparameters from .yaml files
-2. Setting paths
-3. Setting dotenv variables
-4. Formating dotenv-file
-5. Saving dotenv-file
-6. Saving Used .yaml files
-############ DONE ############
-personalai_mmenschikov_workspace
-personalai_mmenschikov_workspace
-/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa/init_env/env_settings/sberdialogues_conv-20/gigachatmax_111225_v2prompts/.qaexp_env
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Creating
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Created
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_mongo_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_opensearch_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_neo4j_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_qdrant_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_redis_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Started
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Starting
- Container personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-20_gigachatmax_111225_v2prompts  Started
-/home/workspace/experiments/qa/params_to_run/
-/home/workspace/experiments/qa/configure/medium/prepared_params/sberdialogues_conv-20/gigachatmax_111225_v2prompts/
-personalai_mmenschikov_qaexp_workspace_sberdialogues_conv-20_gigachatmax_111225_v2prompts
-c0e3eafd84fd db786d086731 b4eeda49accc d48a8f28671f 94915999dc6b 72fdac23f16f
-Stoping containers...
-c0e3eafd84fd
-db786d086731
-b4eeda49accc
-d48a8f28671f
-94915999dc6b
-72fdac23f16f
-Done.
-Removing containers...
-c0e3eafd84fd
-db786d086731
-b4eeda49accc
-d48a8f28671f
-94915999dc6b
-72fdac23f16f
-Done.
-=== Done (run_grouped_by_graph_exps.sh) ===

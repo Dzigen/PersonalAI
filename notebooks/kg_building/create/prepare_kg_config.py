@@ -52,7 +52,7 @@ graphdb_config = GraphDBConnectionConfig(
 
 gmodel_config = GraphModelConfig(
     driver_config=GraphDriverConfig(
-        db_vendor='falkordb', # !!! PAY ATTENTION !!!
+        db_vendor='neo4j', # !!! PAY ATTENTION !!!
         db_config=graphdb_config))
 
 ####################################################
