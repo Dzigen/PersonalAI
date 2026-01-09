@@ -1,4 +1,5 @@
 services:
+
   neo4j:
     image: neo4j:5.21.0-enterprise
     container_name: ${NEO4J_CNTNAME}
@@ -184,7 +185,7 @@ services:
               capabilities: [gpu]
 
   workspace:
-    image: m.menschikov/workspace:v5
+    image: m.menschikov/workspace:v7
     container_name: ${WORKSPACE_CNTNAME}
     hostname: ${WORKSPACE_HOST}
     network_mode: "host"

@@ -45,6 +45,28 @@ services:
           cpus: '1'
           memory: 4G
 
+  falkordb:
+    container_name: personalai_mmenschikov_falkordb
+    image: falkordb/falkordb:latest
+    hostname: localhost
+    # networks:
+    #   - tests_network
+    ports:
+      - 6379:6379
+      - 3000:3000
+    environment:
+      - FALKORDB_ARGS=THREAD_COUNT 8 TIMEOUT_MAX 30000
+    volumes:
+      - ../../personalai_volumes/falkordb:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+
   # milvus:
   #   image: milvusdb/milvus:v2.5.8
   #   container_name: personalai_mmenschikov_milvus
@@ -197,10 +219,10 @@ services:
 
   postgresql:
     image: postgres:16
-    container_name: personalai_mmenschikov_test_postgresql
+    container_name: personalai_mmenschikov_postgresql
     hostname: localhost
     environment:
-      POSTGRES_DB: personalai_test
+      POSTGRES_DB: personalai
       POSTGRES_USER: personalai
       POSTGRES_PASSWORD: personalai
     volumes:
@@ -218,12 +240,61 @@ services:
           cpus: '1'
           memory: 5G
 
+  mongo:
+    container_name: personalai_mmenschikov_mongo
+    image: mongo:7.0.9
+    hostname: localhost
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    ports:
+      - 27017:27017
+    volumes:
+      - ../../personalai_volumes/mongo:/data/db
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+    tty: true
+    stdin_open: true
 
+  redis:
+    container_name: personalai_mmenschikov_redis
+    image: redis:latest
+    hostname: localhost
+    command: redis-server /usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_PASSWORD=my_redis_password
+      - REDIS_USER=my_user
+      - REDIS_USER_PASSWORD=my_user_password
+    ports:
+      - 6380:6379
+    volumes:
+      - ../configs/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ../../personalai_volumes/redis:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 8G
+        reservations:
+          cpus: '1'
+          memory: 4G
+    tty: true
+    stdin_open: true
 
   workspace:
-    image: m.menschikov/workspace:v5
+    build:
+      context: .
+      dockerfile: workspace.Dockerfile
+    image: m.menschikov/workspace:v7
     container_name: personalai_mmenschikov_workspace
-    hostname: worksapceservice
+    hostname: workspaceservice
+    network_mode: "host"
     volumes:
       - ../data/qa_datasets:/home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets #/home/dzigen/Desktop/PersonalAI/Personal-AI/data/qa_datasets | /home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets
       - ../src:/home/m.menschikov/workspace/personal_ai/Personal-AI/src #/home/dzigen/Desktop/PersonalAI/Personal-AI/src | /home/m.menschikov/workspace/personal_ai/Personal-AI/src
@@ -231,6 +302,7 @@ services:
       - ../notebooks:/home/m.menschikov/workspace/personal_ai/Personal-AI/notebooks #/home/dzigen/Desktop/PersonalAI/Personal-AI/notebooks | /home/m.menschikov/workspace/personal_ai/Personal-AI/notebooks
       - /mnt/data/m.menschikov/personalai/knowledge_graphs:/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs
       - /mnt/data/m.menschikov/personalai/models:/home/m.menschikov/workspace/personal_ai/Personal-AI/models
+      - /mnt/data/m.menschikov/personalai/experiments:/home/m.menschikov/workspace/experiment_results
     deploy:
       resources:
         limits:
@@ -278,5 +350,5 @@ services:
           memory: 4G
           devices:
             - driver: nvidia
-              device_ids: ['0']
+              device_ids: ['2']
               capabilities: [gpu]

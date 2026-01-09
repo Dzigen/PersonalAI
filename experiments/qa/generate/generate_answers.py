@@ -302,3 +302,5 @@ print("kv cache: ")
 pprint(qa_pipeline.get_cache_stat())
 
 print("############ DONE ############")
+
+qa_pipeline.close_connections()

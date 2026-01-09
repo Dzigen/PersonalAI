@@ -24,13 +24,13 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
             self._client.server_info()
             return True
         except (pymongo.errors.ServerSelectionTimeoutError, AttributeError) as err:
-            #print(str(err))
+            # print(str(err))
             return False
 
     def open_connection(self) -> None:
         self.close_connection()
 
-        self._client = pymongo.MongoClient(f'mongodb://{self.config.host}:{self.config.port}', 
+        self._client = pymongo.MongoClient(f'mongodb://{self.config.host}:{self.config.port}',
                                            username=self.config.params['username'], password=self.config.params['password'])
         self._collection = self._client[self.config.db_info['db']][self.config.db_info['table']]
 
@@ -118,7 +118,7 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
             if item is None or item.id is None or item.value is None:
                 raise ValueError
 
-            if not isinstance(item.id, str) or type(item.value) not in [str, float, int]:
+            if not isinstance(item.id, str) or type(item.value) not in [str, float, int, list, dict, set]:
                 raise ValueError
 
         if len(items) < 1:

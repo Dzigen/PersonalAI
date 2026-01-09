@@ -369,20 +369,10 @@ class KnowledgeGraphModel:
             if self.nodestree_model is not None:
                 self.nodestree_model.clear_kv_caches()
 
-    def __del__(self):
-        try:
-            for a_name in self.AVAILABLE_AGENTS.keys():
-                self.AVAILABLE_AGENTS[a_name].close_connection()
-            gc.collect()
-        except (TypeError, AttributeError):
-            pass
-
-        try:
-            del self.graph_embeddings
-            del self.graph_struct
-            if self.nodestree_model is not None:
-                del self.nodestree_model
-            gc.collect()
-        except (TypeError, AttributeError):
-            pass
-
+    def close_connections(self):
+        for a_name in self.AVAILABLE_AGENTS.keys():
+            self.AVAILABLE_AGENTS[a_name].close_connection()
+        self.graph_embeddings.close_connections()
+        self.graph_struct.close_connections()
+        if self.nodestree_model is not None:
+            self.nodestree_model.close_connections()

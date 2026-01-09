@@ -4,6 +4,7 @@ BASE_DIR=/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa
 
 TMP_BASE_DIR=/home/m.menschikov/workspace/personal_ai/Personal-AI
 TMP_DEPLOYMENT_COMPOSE_PATH="$TMP_BASE_DIR/deployment"
+MLFLOW_DEPLOYMENT_COMPOSE_PATH="$TMP_DEPLOYMENT_COMPOSE_PATH/mlflow"
 TMP_WORKSPACE_CNTNAME=personalai_mmenschikov_workspace
 USERNAME=root
 
@@ -14,13 +15,15 @@ ENV_SETTINGS_DIR="$INIT_ENV_DIR/env_settings"
 
 # ===============================================================
 
-# 21 (sberdialogues_gigachatmax_medium_mixture(#f7ede21f)(v2.1.8); llm-as-a-judge) |
-DATASETS=("sberdialogues_conv-24" "sberdialogues_conv-25" "sberdialogues_conv-26" "sberdialogues_conv-27" "sberdialogues_conv-28" "sberdialogues_conv-29" "sberdialogues_conv-30" "sberdialogues_conv-31" "sberdialogues_conv-32" "sberdialogues_conv-33" "sberdialogues_conv-34" "sberdialogues_conv-35") # TO CHANGE
-KNOWLEDGE_GRAPHS=("gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts" "gigachatmax_111225_v2prompts") # TO CHANGE
-EVAL_FNAMES=("sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml") # TO CHANGE
-CONFIGURE_FNAMES=("sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml" "sberdialogues.yaml") # TO CHANGE
+DATASETS=("diaasq") # TO CHANGE
+KNOWLEDGE_GRAPHS=("llama318b_050126_v2prompts") # TO CHANGE
+EVAL_FNAMES=("diaasq.yaml") # TO CHANGE
+CONFIGURE_FNAMES=("diaasq.yaml") # TO CHANGE
+QA_PIPELINE_VERSION="medium" # TO CHANGE
 
 # ===============================================================
+
+#cd $MLFLOW_DEPLOYMENT_COMPOSE_PATH ; docker compose --env-file=".env" up -d mlflow 
 
 for ds_idx in "${!DATASETS[@]}";
 do  
@@ -65,7 +68,7 @@ do
     # 3. подготовить QA-конфиги
     EXPENV_BASE_DIR=/home/workspace/experiments/qa
     PARAMS_TO_RUN_DIR="$EXPENV_BASE_DIR/params_to_run/"
-    PREPARED_PARAMS_DIR="$EXPENV_BASE_DIR/configure/medium/prepared_params/$CURRENT_DATASET/$CURRENT_KG/"
+    PREPARED_PARAMS_DIR="$EXPENV_BASE_DIR/configure/$QA_PIPELINE_VERSION/prepared_params/$CURRENT_DATASET/$CURRENT_KG/"
     WORKSPACE_EXP_CNTNAME=personalai_mmenschikov_qaexp_workspace_$CURRENT_DATASET\_$CURRENT_KG
 
     echo $PARAMS_TO_RUN_DIR

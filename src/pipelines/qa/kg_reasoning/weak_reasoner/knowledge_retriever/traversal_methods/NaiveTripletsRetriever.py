@@ -82,6 +82,10 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log = log
         self.verbose = verbose
 
+    def close_connections(self):
+        if self.cachekv is not None:
+            self.cachekv.close_connection()
+
     def get_traversal_cache(self) -> None:
         return None
 

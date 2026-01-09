@@ -179,6 +179,10 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
         self.extract_triplets_rel_prop_template = \
             'MATCH (a:object)-[r]-(b:object) WHERE r.{prop_name}="{prop_value}" RETURN a, r, b'
 
+    def close_connections(self):
+        if self.cachekv is not None:
+            self.cachekv.close_connection()
+
     def clear_traversal_cache(self) -> None:
         return None
 

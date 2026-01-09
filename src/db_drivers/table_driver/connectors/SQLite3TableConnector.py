@@ -34,7 +34,7 @@ class SQLite3TableConnector(AbstractTableDatabaseConnection):
         try:
             self.cursor.close()
             self.conn.close()
-        except TypeError:
+        except (TypeError, sqlite3.ProgrammingError) as e:
             pass
 
     def create_table(self, query: str) -> None:

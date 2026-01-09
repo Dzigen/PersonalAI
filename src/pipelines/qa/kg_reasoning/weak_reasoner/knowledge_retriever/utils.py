@@ -59,6 +59,10 @@ class AbstractTriplesFilter(CacheOperations):
         """
         pass
 
+    @abstractmethod
+    def close_connections(self):
+        pass
+
 
 @dataclass
 class BaseGraphSearchConfig(BaseConfigOperations):
@@ -82,6 +86,10 @@ class AbstractTripletsRetriever(TraversalMethodCacheOpearions):
         """
         pass
 
+    @abstractmethod
+    def close_connections(self):
+        pass
+
 
 @dataclass
 class KnowledgeRetrieverStages:
@@ -94,3 +102,8 @@ class KnowledgeRetrieverStages:
     """
     triplets_retriever: AbstractTripletsRetriever
     triplets_filter: Union[None, AbstractTriplesFilter] = None
+
+    def close_connections(self):
+        self.triplets_retriever.close_connections()
+        if self.triplets_filter is not None:
+            self.triplets_filter.close_connections()

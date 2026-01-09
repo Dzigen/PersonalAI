@@ -47,8 +47,7 @@ GRAPHDB_CONFIG = KGCONN_PARAMS['KG_MODEL_CONNECTORS']['graph_struc_connection']
 graphdb_config = GraphDBConnectionConfig(
     host=GRAPHDB_CONFIG['host'],
     port=GRAPHDB_CONFIG['port'],
-    db_info=GRAPHDB_CONFIG['db_info'],
-    params=GRAPHDB_CONFIG['params']
+    db_info=GRAPHDB_CONFIG['db_info']
 )
 
 gmodel_config = GraphModelConfig(

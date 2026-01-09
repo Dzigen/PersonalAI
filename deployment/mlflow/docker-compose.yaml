@@ -1,0 +1,79 @@
+services:
+  mysql_mlflow:
+    image: mysql:latest
+    container_name: personalai_mmenschikov_mlflow_mysqlbackend
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - 3306:3306
+    volumes:
+      - ${MYSQL_LOCAL_VOLUME}:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  waitfordb:
+    image: busybox
+    depends_on:
+      - mysql_mlflow
+    command: sh -c "until nc -z mysql_mlflow 3306; do echo waiting for database; sleep 2; done;"
+
+  # Adminer (MySQL GUI)
+  adminer:
+    image: adminer
+    container_name: adminer_mysql
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql_mlflow
+
+  minio:
+    image: quay.io/minio/minio
+    container_name: personalai_mmenschikov_mlflow_minio
+    hostname: localhost
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    user: "${UID}:${GID}"
+    volumes:
+      - ${MINIO_LOCAL_VOLUME}:/data
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+
+  minio_mc:
+    image: minio/mc
+    depends_on:
+      - minio
+    user: "${UID}:${GID}"
+    volumes:
+      - ./setup_minio.sh:/setup_minio.sh 
+    entrypoint: /bin/sh -c "/setup_minio.sh"
+
+  mlflow:
+    build:
+      context: .
+      dockerfile: mlflow_server.Dockerfile
+    image: m.menschikov/mlflow
+    container_name: personalai_mmenschikov_mlflow_server
+    hostname: mlflowservice
+    network_mode: "host"
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      MLFLOW_S3_ENDPOINT_URL: http://localhost:9000
+    command: 
+      mlflow server 
+      --backend-store-uri 'sqlite:///mlflow.db' 
+      --default-artifact-root 's3://flow-bucket/' 
+      --host 0.0.0.0 
+      --port 5000
+    depends_on:
+      - minio
+    ports:
+      - "5000:5000"
+    volumes:
+      - ${MLFLOW_LOCAL_VOLUME}:/mlflow

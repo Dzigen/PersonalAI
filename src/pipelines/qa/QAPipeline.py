@@ -225,10 +225,7 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
 
         return final_answer, rinfo
 
-    def __del__(self):
-        # print("deleting QA-class")
-        try:
-            del self.stages
-            gc.collect()
-        except TypeError:
-            pass
+    def close_connections(self):
+        self.stages.close_connections()
+        if self.cachekv is not None:
+            self.cachekv.close_connection()

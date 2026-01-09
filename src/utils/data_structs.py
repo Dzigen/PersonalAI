@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field, fields
 from typing import List, Union, Tuple, Dict
+from time import time
 from enum import Enum
 import hashlib
 
@@ -247,7 +248,9 @@ def create_id_for_node_pair(node1_id: str, node2_id: str) -> str:
     return hashlib.md5((start_id + end_id).encode()).hexdigest()
 
 
-def create_id(seed: str) -> str:
+def create_id(seed: Union[None, str] = None) -> str:
+    if seed is None:
+        seed = f"{time()}"
     return hashlib.md5(seed.encode()).hexdigest()
 
 

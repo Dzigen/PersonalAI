@@ -1,6 +1,6 @@
 services:
   workspace:
-    image: m.menschikov/workspace:v5
+    image: m.menschikov/workspace:v6
     container_name: ${WORKSPACE_CNTNAME}
     hostname: ${WORKSPACE_HOST}
     network_mode: "host"

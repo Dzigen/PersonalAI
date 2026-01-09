@@ -40,6 +40,7 @@ class OLlamaConnector(AbstractAgentConnector):
 
     def close_connection(self):
         try:
+            self.client._client.close()
             del self.client
             gc.collect()
         except (ResourceWarning, AttributeError, TypeError):

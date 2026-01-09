@@ -125,6 +125,12 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log = log
         self.verbose = verbose
 
+    def close_connections(self):
+        if self.cachekv is not None:
+            self.cachekv.close_connection()
+        self.retriever1.close_connections()
+        self.retriever2.close_connections()
+
     def clear_traversal_cache(self) -> None:
         self.retriever1.clear_traversal_cache()
         self.retriever2.clear_traversal_cache()
