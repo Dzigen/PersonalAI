@@ -7,8 +7,8 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from src.utils.data_structs import Triplet, Node, Relation, NodeType, RelationType
 
 # TO CHANGE
-AVAILABLE_GRAPH_MODELS = ['neo4j', 'kuzu', 'inmemory_graph', 'blazegraph', 'falkordb']  # 'neo4j', 'kuzu', 'inmemory_graph', 'blazegraph', 'falkordb'
-AVAILABLE_EMBEDDING_MODELS = ['chroma', 'inmemory', 'elasticsearch', 'opensearch', 'weaviate', 'qdrant']  # 'chroma', 'inmemory', 'elasticsearch', 'opensearch', 'weaviate', 'qdrant'
+AVAILABLE_GRAPH_MODELS = ['neo4j']  # 'neo4j', 'kuzu', 'inmemory_graph', 'blazegraph', 'falkordb'
+AVAILABLE_EMBEDDING_MODELS = ['qdrant']  # 'chroma', 'inmemory', 'elasticsearch', 'opensearch', 'weaviate', 'qdrant'
 AVAILABLE_KVID_STORES = ['inmemory_kv', 'redis', 'mongo', 'mixed_kv'] # 'inmemory_kv', 'redis', 'mongo', 'mixed_kv'
 
 ###############################################################################################
