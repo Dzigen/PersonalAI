@@ -135,8 +135,22 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         pass
 
     def update(self, items: List[KeyValueDBInstance]) -> None:
-        # TODO
-        pass
+        for item in items:
+            if item is None or item.id is None or item.value is None:
+                raise ValueError
+            if not isinstance(item.id, str) or type(item.value) not in [str, float, int, list, dict, set]:
+                raise ValueError
+        if len(items) < 1:
+            return
+
+        for item in items:
+            if self.item_exist(item.id):
+                if isinstance(item.value, bytes):
+                    dumped_value = pickle.dumps((item.value, 'bytes'))
+                else:
+                    dumped_value = pickle.dumps((item.value, 'notbytes'))
+
+                self.kv_store[item.id] = dumped_value
 
     def delete(self, ids: List[str]):
         for id in ids:

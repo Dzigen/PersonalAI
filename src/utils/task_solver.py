@@ -282,12 +282,6 @@ class AgentTaskSolver:
 
         return task_result, status
 
-    def __del__(self):
-        if self.cachekv is not None:
-            try:
-                del self.cachekv
-            except AttributeError:
-                pass
 
 @dataclass
 class AgentTaskBaseConfig:

@@ -1,60 +1,15 @@
 DATASET_NAME: # TO CHANGE
-  - 'sberdialogues_conv-21'
-  # - 'sberdialogues_conv-22'
-  # - 'sberdialogues_conv-23'
-  # - 'sberdialogues_conv-24'
-  # - 'sberdialogues_conv-25'
-  # - 'sberdialogues_conv-26'
-  # - 'sberdialogues_conv-27'
-  # - 'sberdialogues_conv-28'
-  # - 'sberdialogues_conv-29'
-  # - 'sberdialogues_conv-30'
-  # - 'sberdialogues_conv-31'
-  # - 'sberdialogues_conv-32'
-  # - 'sberdialogues_conv-33'
-  # - 'sberdialogues_conv-34'
-  # - 'sberdialogues_conv-35'
-#  - 'rubq_dev'
+  - 'diaasq'
 KNOWLEDGE_GRAPH_NAME: # TO CHANGE
-  - ['gigachatmax_111225_v2prompts'] #['deepseek_231025_v2prompts', 'gigachatmax_051125_v2prompts', 'llama318b_221025_v2prompts', 'qwen38b_261025_v2prompts', 'llama318b_021225_v2prompts'] 
-#  - ['gigachatmax_281025_v2prompts']
-  # - ['gigachatmax_111225_v2prompts']
-  # - ['gigachatmax_111225_v2prompts']
-  # - ['gigachatmax_111225_v2prompts']
-  # - ['gigachatmax_111225_v2prompts']
-  # - ['gigachatmax_111225_v2prompts']
-  # - ['gigachatmax_111225_v2prompts']
-  # - ['gigachatmax_111225_v2prompts']
-  # - ['gigachatmax_111225_v2prompts']
-  # - ['gigachatmax_111225_v2prompts']
-  # - ['gigachatmax_111225_v2prompts']
-  # - ['gigachatmax_111225_v2prompts']
-  # - ['gigachatmax_111225_v2prompts']
-  # - ['gigachatmax_111225_v2prompts']
-  # - ['gigachatmax_111225_v2prompts']
+  - ['llama318b_050126_v2prompts']
 
-PERSONALAI_VERSION: 'v2.1.8' # TO CHANGE
+PERSONALAI_VERSION: 'v2.2.0' # TO CHANGE
 
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
   max_samples_per_pack: 100
   lang:
-    - 'ru'
-    # - 'ru'
-    # - 'ru'
-    # - 'ru'
-    # - 'ru'
-    # - 'ru'
-    # - 'ru'
-    # - 'ru'
-    # - 'ru'
-    # - 'ru'
-    # - 'ru'
-    # - 'ru'
-    # - 'ru'
-    # - 'ru'
-    # - 'ru'
-#    - 'ru'
+    - 'en'
 
 # STAGE # 1
 query_preprocessor: # TO CHANGE

@@ -28,6 +28,14 @@ src.db\_drivers.vector\_driver.connectors.dense.InMemoryVectorConnector module
    :undoc-members:
    :show-inheritance:
 
+src.db\_drivers.vector\_driver.connectors.dense.MilvusVectorConnector module
+----------------------------------------------------------------------------
+
+.. automodule:: src.db_drivers.vector_driver.connectors.dense.MilvusVectorConnector
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 src.db\_drivers.vector\_driver.connectors.dense.OpenSearchVectorConnector module
 --------------------------------------------------------------------------------
 

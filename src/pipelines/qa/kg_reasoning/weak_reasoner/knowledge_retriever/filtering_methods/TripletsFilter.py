@@ -90,6 +90,10 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
         self.log = log
         self.verbose = verbose
 
+    def close_connections(self):
+        if self.cachekv is not None:
+            self.cachekv.close_connection()
+
     def get_cache_key(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[str]:
         """Формирует ключ кэша для результатов фильтрации триплетов.
 
@@ -135,7 +139,7 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
             self.log(f"accepted ids: {accepted_relation_ids}", verbose=self.verbose)
 
             filtered_triplets = list(map(lambda rel_id: type_filtered_relations[rel_id], accepted_relation_ids))
-        
+
         triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in filtered_triplets]))
         self.log(f"Количество триплетов после фильтраций: {len(filtered_triplets)} | {triplet_types_freq}", verbose=self.verbose)
 

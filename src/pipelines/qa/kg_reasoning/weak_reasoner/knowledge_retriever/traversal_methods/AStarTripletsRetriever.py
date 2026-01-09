@@ -92,6 +92,11 @@ class AStarMetrics:
         self.log = log
         self.verbose = verbose
 
+    def close_connections(self):
+        if self.cache is not None:
+            for conn in self.cache.values():
+                conn.close_connection()
+
     def init_caches_stats(self) -> None:
         self.cache_info = {
             'dist': {'exist': 0, 'calc': 0},
@@ -374,6 +379,9 @@ class AStarGraphSearch:
         self.log = log
         self.verbose = verbose
 
+    def close_connections(self):
+        self.metrics.close_connections()
+
     def search_path(self, start_node: NodeInfo, end_node: NodeInfo) -> Tuple[List[str], List[NodeInfo], Dict[str, int], Dict[str, NodeInfo], NodeInfo]:
         """Реализация A*-алгоритма. Источник: https://www.redblobgames.com/pathfinding/a-star/implementation.html."""
         frontier: List[int, NodeInfo] = []
@@ -469,6 +477,11 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
         self.log = log
         self.verbose = verbose
+
+    def close_connections(self):
+        if self.cachekv is not None:
+            self.cachekv.close_connection()
+        self.graph_searcher.close_connections()
 
     def clear_traversal_cache(self) -> None:
         self.graph_searcher.metrics.clear_kv_caches()

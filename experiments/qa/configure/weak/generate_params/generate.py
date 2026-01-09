@@ -13,10 +13,9 @@ with open(SETTINGS_PARAMS_FILEP, 'r') as stream:
 
 #############################################################
 
-REPO_BASE_PATH = '/home/workspace'
+REPO_BASE_PATH = '/home/m.menschikov/workspace/personal_ai/Personal-AI' #'/home/workspace' # TO CHANGE
 GEN_PARAMS_PATH = f'{REPO_BASE_PATH}/experiments/qa/configure/weak/generate_params'
 SAVE_PARAMS_PATH = f'{GEN_PARAMS_PATH}/tmp_params'
-PERSONALAI_VERSION = 'v2.1.3'
 
 #############################################################
 
@@ -96,7 +95,7 @@ for ds_idx, dataset in enumerate(AVAILABLE_DATASET_NAMES):
             reasoner_kw = SETTINGS_PARAMS['kg_reasoner']['reasoner_name']
             retrmethod_name = ''.join(SPECIFIC_QA_PARAMS['kg_reasoner']['reasoner_config']['knowledge_retriever_config']['retriever_method'].split("_"))
             exp_id = hashlib.md5(str(SPECIFIC_QA_PARAMS).encode()).hexdigest()[:8]
-            SPECIFIC_QA_PARAMS['EXPERIMENT_NAME'] = f"{short_ds_name}_{short_kg_name}_{reasoner_kw}_{retrmethod_name}(#{exp_id})({PERSONALAI_VERSION})"
+            SPECIFIC_QA_PARAMS['EXPERIMENT_NAME'] = f"{short_ds_name}_{short_kg_name}_{reasoner_kw}_{retrmethod_name}(#{exp_id})({SETTINGS_PARAMS['PERSONALAI_VERSION']})"
 
             # saving generated params-config
             SPEC_PARAMS_SPATH = f"{SAVE_PARAMS_PATH}/{dataset}/{kg_name}/{SPECIFIC_QA_PARAMS['EXPERIMENT_NAME']}.yaml"

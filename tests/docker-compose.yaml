@@ -26,6 +26,7 @@ services:
     container_name: personalai_mmenschikov_test_blazegraph
     image: lyrasis/blazegraph:2.1.4
     hostname: localhost
+    user: "root:root"
     ports:
       - 8889:8080
       - 9999:9999
@@ -43,6 +44,28 @@ services:
         reservations:
           cpus: '1'
           memory: 4G
+
+  falkordb:
+    container_name: personalai_mmenschikov_test_falkordb
+    image: falkordb/falkordb:latest
+    hostname: localhost
+    # networks:
+    #   - tests_network
+    ports:
+      - 6379:6379
+      - 3000:3000
+    environment:
+      - FALKORDB_ARGS=THREAD_COUNT 8 TIMEOUT_MAX 30000
+    volumes:
+      - ./volumes/falkordb:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
 
   aerospike:
     container_name: personalai_mmenschikov_test_aerospike
@@ -322,7 +345,7 @@ services:
           memory: 5G
 
   isolated_environment:
-    image: m.menschikov/workspace:v5
+    image: m.menschikov/workspace:v7
     container_name: personalai_test_isolated_env
     hostname: test_isolated_env
     network_mode: "host"

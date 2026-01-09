@@ -160,8 +160,7 @@ class GraphModel:
         """
 
         vdb_delete_info, gdb_delete_info = dict(), dict()
-        process = tqdm(enumerate(triplets)
-                       ) if status_bar else enumerate(triplets)
+        process = tqdm(enumerate(triplets)) if status_bar else enumerate(triplets)
         for i, triplet in process:
             vector_delete_info = {'s_node': False, 'triplet': False, 'e_node': False}
             graph_delete_info = {'s_node': False, 'e_node': False}
@@ -201,10 +200,5 @@ class GraphModel:
         """Метод предназначен для удаления содержимого графовой структуры данных."""
         self.db_conn.clear()
 
-    def __del__(self):
-        try:
-            self.db_conn.close_connection()
-            del self.db_conn
-            gc.collect()
-        except (TypeError, AttributeError):
-            pass
+    def close_connections(self):
+        self.db_conn.close_connection()

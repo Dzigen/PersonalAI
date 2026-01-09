@@ -293,10 +293,7 @@ class EmbeddingsModel:
             self.nodes_vcomposers[n_type].clear()
         self.triplets_vcomposer.clear()
 
-    def __del__(self):
-        try:
-            del self.nodes_vcomposers
-            del self.triplets_vcomposer
-            gc.collect()
-        except (TypeError, AttributeError):
-            pass
+    def close_connections(self):
+        self.triplets_vcomposer.close_connection()
+        for n_vcomoposer in self.nodes_vcomposers.values():
+            n_vcomoposer.close_connection()

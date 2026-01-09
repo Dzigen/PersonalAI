@@ -55,6 +55,7 @@ class AgentStatAnalyzer:
      - расчёт агрегирующих метрик по заданным колонкам (calculate_stat);
      - очистку таблицы статистики (clear).
     """
+
     def __init__(self, config: Union[Dict, AgentStatAnalyzerConfig] = AgentStatAnalyzerConfig()):
         if isinstance(config, dict):
             config: AgentStatAnalyzerConfig = AgentStatAnalyzerConfig.from_dict(config)
@@ -99,3 +100,7 @@ class AgentStatAnalyzer:
 
     def clear(self) -> None:
         self.db_conn.clear()
+
+    def close_connection(self):
+        # print("closing astat-cache conn")
+        self.db_conn.close_connection()

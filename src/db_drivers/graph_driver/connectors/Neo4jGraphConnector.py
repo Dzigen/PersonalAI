@@ -276,6 +276,7 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
             node = NodeCreator.create(
                 n_type=NODES_TYPES_MAP[list(raw_node['n'].labels)[0]],
                 name=n_dict['name'], prop={**n_dict})
+            del node.prop['name']
 
             formated_nodes.append(node)
         return formated_nodes

@@ -6,9 +6,6 @@
 Personal AI документация
 =========================
 
-.. _Разработка методов и подходов к построению графа знаний как памяти для агентов LLM (НИР 2025): https://drive.google.com/file/d/1nyIQT04-U-FYk62zW8fX1YXudolp0S24/view?usp=sharing
-.. _PersonalAI. A Systematic Comparison of Knowledge Graph Storage and Retrieval Approaches for Personalized LLM agents: https://drive.google.com/file/d/1wcMtug5WRyAntgb-6hQ2IWzbyd3qEK8x/view?usp=sharing
-
 .. toctree::
    :maxdepth: 1
    :caption: Contents:
@@ -20,8 +17,12 @@ Personal AI документация
 
 Отчётные материалы:
 
-* `Разработка методов и подходов к построению графа знаний как памяти для агентов LLM (НИР 2025)`_
-* `PersonalAI. A Systematic Comparison of Knowledge Graph Storage and Retrieval Approaches for Personalized LLM agents`_
+* :download:`Разработка методов и подходов к построению графа знаний как памяти для агентов LLM (НИР 2025) <_static/iteration_summary/2025/PersonalAI(Отчёт)(НИР)(Skoltech-Sber)(2025).pdf>`.
+* :download:`Презентация работ (НИР 2025) <_static/iteration_summary/2025/PersonalAI(ПриёмкаРабот)(НИР)(Skoltech-Sber)(2025).pdf>`.
+
+Статьи:
+
+* :download:`PersonalAI: A Systematic Comparison of Knowledge Graph Storage and Retrieval Approaches for Personalized LLM agents <_static/iteration_summary/2024/PersonalAI(Статья)(НИР)(Skoltech-Sber)(2024).pdf>`.
 
 
 Indices and tables

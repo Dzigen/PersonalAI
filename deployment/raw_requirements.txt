@@ -33,3 +33,6 @@ nltk
 qdrant-client
 SPARQLWrapper
 rdflib
+falkordb
+mlflow
+boto3
