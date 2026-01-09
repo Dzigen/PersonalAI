@@ -185,7 +185,7 @@ services:
               capabilities: [gpu]
 
   workspace:
-    image: m.menschikov/workspace:v6
+    image: m.menschikov/workspace:v7
     container_name: ${WORKSPACE_CNTNAME}
     hostname: ${WORKSPACE_HOST}
     network_mode: "host"

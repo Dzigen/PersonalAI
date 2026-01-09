@@ -10,7 +10,6 @@ RUN apt-get --assume-yes upgrade
 
 RUN apt-get --assume-yes install pip
 RUN apt-get --assume-yes install curl
-RUN apt-get install -y --no-install-recommends git
 
 RUN apt-get --assume-yes install cron
 RUN apt-get --assume-yes install nano
@@ -24,6 +23,7 @@ WORKDIR /home/workspace
 
 RUN apt-get --assume-yes install python3.11
 RUN apt-get --assume-yes install libicu-dev python3-icu pkg-config libpq-dev libsqlite3-dev
+RUN apt-get install -y git
 RUN apt-get purge -y --auto-remove && rm -rf /var/lib/apt/lists/*
 
 RUN python3 --version
