@@ -759,13 +759,8 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         self.summnodes_vcomposer.clear()
         self.treedb_conn.clear()
 
-    def __del__(self):
-        try:
-            self.treedb_conn.close_connection()
-            del self.treedb_conn
-
-            del self.leafnodes_vcomposer
-            del self.summnodes_vcomposer
-            gc.collect()
-        except (TypeError, AttributeError):
-            pass
+    def close_connections(self):
+        self.treedb_conn.close_connection()
+        self.leafnodes_vcomposer.close_connection()
+        self.summnodes_vcomposer.close_connection()
+        self.tasks_solvers.close_connections()

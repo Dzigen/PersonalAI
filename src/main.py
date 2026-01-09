@@ -163,21 +163,10 @@ class PersonalAI:
 
         return delete_info
 
-    def __del__(self):
-        # print("deleting PersonalAI-class")
-        try:
-            del self.kg_model
-        except AttributeError:
-            pass
-        try:
-            del self.qa_pipeline
-        except AttributeError:
-            pass
-        try:
-            del self.mem_pipeline
-        except AttributeError:
-            pass
-        try:
-            del self.textid_store
-        except AttributeError:
-            pass
+    def close_connections(self):
+        self.kg_model.close_connections()
+        self.textid_store.close_connections()
+
+        self.mem_pipeline.close_connections()
+
+        self.qa_pipeline.close_connections()

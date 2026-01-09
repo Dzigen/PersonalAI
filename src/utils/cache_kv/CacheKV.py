@@ -14,7 +14,8 @@ class CacheKV:
     def __init__(self, kvdriver_config: KeyValueDriverConfig = DEFAULT_CACHEKV_CONFIG):
         self.kv_conn = KeyValueDriver.connect(kvdriver_config)
 
-    def __del__(self):
+    def close_connection(self):
+        # print("closing kv-cache conn")
         self.kv_conn.close_connection()
 
     @staticmethod

@@ -136,13 +136,13 @@ class AbstractDatabaseInit(ABC):
         """
         pass
 
-    def __del__(self):
-        try:
-            self.close_connection()
-        except AttributeError:
-            pass
-
 
 class AbstractDatabaseConnection(AbstractDatabaseCRUD, AbstractDatabaseExtendedOpt, AbstractDatabaseInit):
     """Интерфейс, который должен поддерживать класс взаимодействия с определённой базой данных."""
     pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close_connection()

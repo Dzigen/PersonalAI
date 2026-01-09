@@ -200,10 +200,5 @@ class GraphModel:
         """Метод предназначен для удаления содержимого графовой структуры данных."""
         self.db_conn.clear()
 
-    def __del__(self):
-        try:
-            self.db_conn.close_connection()
-            del self.db_conn
-            gc.collect()
-        except (TypeError, AttributeError):
-            pass
+    def close_connections(self):
+        self.db_conn.close_connection()

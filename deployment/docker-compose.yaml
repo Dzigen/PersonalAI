@@ -219,10 +219,10 @@ services:
 
   postgresql:
     image: postgres:16
-    container_name: personalai_mmenschikov_test_postgresql
+    container_name: personalai_mmenschikov_postgresql
     hostname: localhost
     environment:
-      POSTGRES_DB: personalai_test
+      POSTGRES_DB: personalai
       POSTGRES_USER: personalai
       POSTGRES_PASSWORD: personalai
     volumes:
@@ -240,7 +240,52 @@ services:
           cpus: '1'
           memory: 5G
 
+  mongo:
+    container_name: personalai_mmenschikov_mongo
+    image: mongo:7.0.9
+    hostname: localhost
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    ports:
+      - 27017:27017
+    volumes:
+      - ../../personalai_volumes/mongo:/data/db
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+    tty: true
+    stdin_open: true
 
+  redis:
+    container_name: personalai_mmenschikov_redis
+    image: redis:latest
+    hostname: localhost
+    command: redis-server /usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_PASSWORD=my_redis_password
+      - REDIS_USER=my_user
+      - REDIS_USER_PASSWORD=my_user_password
+    ports:
+      - 6380:6379
+    volumes:
+      - ../configs/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ../../personalai_volumes/redis:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 8G
+        reservations:
+          cpus: '1'
+          memory: 4G
+    tty: true
+    stdin_open: true
 
   workspace:
     build:

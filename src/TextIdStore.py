@@ -174,6 +174,6 @@ class TextIdStore:
         # TODO
         raise NotImplementedError
 
-    def __del__(self):
+    def close_connections(self):
         self.textid_to_tripletsid_store.close_connection()
         self.tripletid_to_textsid_store.close_connection()

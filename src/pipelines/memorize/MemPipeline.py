@@ -129,7 +129,5 @@ class MemPipeline(CacheOperations, AgentStatOperations):
 
         return new_triplets, info
 
-    def __del__(self):
-        # print("deleting Mem-class")
-        del self.stages.extractor
-        del self.stages.updator
+    def close_connections(self):
+        self.stages.close_connections()
