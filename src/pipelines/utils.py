@@ -1,6 +1,6 @@
 from dataclasses import dataclass, fields
 from abc import ABC, abstractmethod
-from typing import Union, Dict
+from typing import Union, Dict, List, Tuple
 from ..utils import AgentTaskSolverConfig, AgentTaskSolver
 from ..utils.data_structs import BaseConfigOperations
 

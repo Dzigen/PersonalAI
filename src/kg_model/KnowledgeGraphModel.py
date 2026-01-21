@@ -14,7 +14,7 @@ from .utils import AgentsMapping, KGEmbeddersMapping
 from ..db_drivers.kv_driver import KeyValueDriverConfig
 from ..db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
 from ..agents import AgentDriverConfig, AgentDriver
-from ..utils import Triplet, Logger
+from ..utils import Triplet, Logger, accumulate_step_info
 from ..utils.data_structs import RelationType, NodeType, NodeInfo, BaseComponentConfig
 
 
@@ -250,6 +250,7 @@ class KnowledgeGraphModel:
         # TODO
         pass
 
+    @accumulate_step_info
     def add_knowledge(self, triplets: List[Triplet], check_consistency: bool = True, check_createinfo: bool = False, status_bar: bool = False) -> Dict[str, Dict[str, Set[str]]]:
         """Метод предназначен для добавления информации в память ассистента в виде списка триплетов.
 
@@ -289,6 +290,7 @@ class KnowledgeGraphModel:
 
         return create_info
 
+    @accumulate_step_info
     def remove_knowledge(self, triplets: List[Triplet], check_consistency: bool = True, check_deleteinfo: bool = True) -> Dict[str, Dict[int, Dict[str, bool]]]:
         """Метод предназначен для удаления информации из памяти ассистента.
         Удаление производится по идентификаторам триплетов, в которых данная информация находилась

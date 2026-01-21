@@ -120,8 +120,7 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         :rtype: Tuple[str, ReturnInfo]
         """
         self.log("START QUERY ENHANCING...", verbose=self.verbose)
-        self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.verbose)
         self.log(f"QUERY INFO: {query_info}", verbose=self.verbose)
         enhanced_query, rinfo = None, ReturnInfo()
 
@@ -132,7 +131,7 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             raise ValueError
 
-        self.log("Выполнение добавление более понятных языковых конструкций в запрос с помощью LLM-агента...",
+        self.log("Выполнение добавления более понятных языковых конструкций в запрос с помощью LLM-агента...",
                  verbose=self.verbose)
         expanded_query, status = self.tasks_solvers.queryexpansion_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
@@ -142,7 +141,7 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
             self.log(f"RESULT: {expanded_query}", verbose=self.verbose)
 
         if status == ReturnStatus.success:
-            self.log("Выполнение замены слабоопределённых фраз в запросе на конкретную терминологии с помощью LLM-агента...",
+            self.log("Выполнение замены слабоопределённых фраз в запросе на конкретную терминологию с помощью LLM-агента...",
                      verbose=self.verbose)
             defined_query, status = self.tasks_solvers.termscheck_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
