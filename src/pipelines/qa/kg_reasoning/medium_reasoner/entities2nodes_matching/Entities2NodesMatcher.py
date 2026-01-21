@@ -4,7 +4,7 @@ from copy import deepcopy
 
 from .config import E2NMATCHER_MAIN_LOG_PATH, E2NM_RERANKDRIVER_DEFAULT_CONFIG
 from ......kg_model import KnowledgeGraphModel
-from ......utils import ReturnInfo, Logger
+from ......utils import ReturnInfo, Logger, accumulate_step_info
 from ......utils.errors import ReturnStatus
 from ......utils.data_structs import NodeType, BaseComponentConfig, NodeInfo
 from ......db_drivers.kv_driver import KeyValueDriverConfig
@@ -96,6 +96,7 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
 
         return matched_objects
 
+    @accumulate_step_info
     def perform(self, entities: List[str]) -> Tuple[Dict[str, List[NodeInfo]], ReturnInfo]:
         """Метод предназначен для сопоставления заданных сущностей (на естественном языке) с вершинами из графа знаний.
 

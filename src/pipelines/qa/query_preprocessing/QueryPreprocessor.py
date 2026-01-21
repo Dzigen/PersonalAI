@@ -7,7 +7,8 @@ from .config import QP_MAIN_LOG_PATH
 from .decomposition import QueryDecomposer, QueryDecomposerConfig
 from .denoising import QueryDenoiser, QueryDenoiserConfig
 from .enhancing import QueryEnhancer, QueryEnhancerConfig
-from ....utils import ReturnInfo, Logger, ReturnStatus, update_rinfo
+from ....utils import ReturnInfo, Logger, ReturnStatus, update_rinfo, \
+    accumulate_stage_info, CompositeModuleDetailedResult, ModuleType
 from ....utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv import CacheUtils
@@ -123,45 +124,41 @@ class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
         str_using_agent_config = f"{self.using_agent_info['kw']}:{self.using_agent_info['config'].to_str()}"
         return [query, self.config.to_str(), str_using_agent_config]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def perform(self, query: str) -> Tuple[QueryPreprocessingInfo, ReturnInfo]:
+    def perform(self, query: str) -> Tuple[QueryPreprocessingInfo, ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для предобработки (удаления шумов, повышения полноты, декомпозиции) исходного user-вопроса.
 
         :param query: User-вопрос на естественном языке.
         :type query: str
-        :return: Кортеж из двух объектов: (1) Структура данных с предобработанным user-вопросом и результатами промежуточных операций; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[QueryPreprocessingInfo, ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) Структура данных с предобработанным user-вопросом и результатами промежуточных операций; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[QueryPreprocessingInfo, ReturnInfo, CompositeModuleDetailedResult]
         """
         self.log("START QUERY PREPROCESSING...", verbose=self.verbose)
-        self.log(
-            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
         query_info = QueryPreprocessingInfo(base_query=query)
-        rinfo = ReturnInfo()
+        rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
 
         if self.stages.denoiser is not None:
             self.log("Удаление шума из запроса...", verbose=self.verbose)
-            query_info.denoised_query, den_rinfo = self.stages.denoiser.perform(
-                query_info)
-            self.log(f"RESULT: {query_info.denoised_query}",
-                     verbose=self.verbose)
+            query_info.denoised_query, den_rinfo, trace = self.stages.denoiser.perform(query_info)
+            self.log(f"RESULT: {query_info.denoised_query}", verbose=self.verbose)
+            module_trace.add("denoiser", ModuleType.stage, trace)
             update_rinfo(rinfo, den_rinfo)
 
         if (rinfo.status == ReturnStatus.success) and (self.stages.enhancer is not None):
             self.log("Корректировка формата запроса...", verbose=self.verbose)
-            query_info.enchanced_query, enh_rinfo = self.stages.enhancer.perform(
-                query_info)
-            self.log(f"RESULT: {query_info.enchanced_query}",
-                     verbose=self.verbose)
+            query_info.enchanced_query, enh_rinfo, trace = self.stages.enhancer.perform(query_info)
+            self.log(f"RESULT: {query_info.enchanced_query}", verbose=self.verbose)
+            module_trace.add("enhancer", ModuleType.stage, trace)
             update_rinfo(rinfo, enh_rinfo)
 
         if (rinfo.status == ReturnStatus.success) and (self.stages.decomposer is not None):
-            self.log(
-                "Разбиение запроса на независимые части (простые запросы)...", verbose=self.verbose)
-            query_info.decomposed_query, dec_rinfo = self.stages.decomposer.perform(
-                query_info)
-            self.log(f"RESULT: {query_info.decomposed_query}",
-                     verbose=self.verbose)
+            self.log("Разбиение запроса на независимые части (простые запросы)...", verbose=self.verbose)
+            query_info.decomposed_query, dec_rinfo, trace = self.stages.decomposer.perform(query_info)
+            self.log(f"RESULT: {query_info.decomposed_query}", verbose=self.verbose)
+            module_trace.add("decomposer", ModuleType.stage, trace)
             update_rinfo(rinfo, dec_rinfo)
 
         self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
@@ -177,4 +174,4 @@ class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             raise ValueError
 
-        return query_info, rinfo
+        return query_info, rinfo, module_trace

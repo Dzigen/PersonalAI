@@ -5,7 +5,8 @@ from copy import deepcopy
 from .config import AAGG_MAIN_LOG_PATH
 from .utils import AnswerAggregatorTaskSolvers, AnswersAggregatorAgentTasksConfig
 from ..kg_reasoning.utils import QueryReasoningInfo
-from ....utils import ReturnInfo, Logger, AgentTaskSolver
+from ....utils import ReturnInfo, Logger, AgentTaskSolver, \
+    accumulate_stage_info, CompositeModuleDetailedResult, ModuleType
 from ....agents.utils import AbstractAgentConnector
 from ....utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
 from ....db_drivers.kv_driver import KeyValueDriverConfig
@@ -104,23 +105,23 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [query_info.to_str(), subq_info.to_str(), self.config.to_str(), str_using_agent_info]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def perform(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> Tuple[str, ReturnInfo]:
+    def perform(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> Tuple[str, ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для выполнения операции аггрегации/резюмирования информации, полученной в результате ризонинга на графе знаний (памяти), и генерации финального ответа на user-вопрос.
 
         :param query_info: Структура данных с предобработанным user-вопросом и результатами промежуточных операций по его форматированию.
         :type query_info: QueryPreprocessingInfo
         :param subq_info: Структура данных с извлечённой из графа знаний информацией по предобработанному user-вопросу для генерации ответа.
         :type subq_info: QueryReasoningInfo
-        :return: Кортеж из двух объектов: (1) финальный ответ на user-вопрос; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[str, ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) финальный ответ на user-вопрос; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
         self.log("START ANSWERS AGGREGATION...", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.verbose)
         self.log(f"QUERY_INFO: {query_info}", verbose=self.verbose)
-        self.log(f"SUB_ANSWERS: {subq_info.sub_answers}",
-                 verbose=self.verbose)
-        final_answer, info = None, ReturnInfo()
+        self.log(f"SUB_ANSWERS: {subq_info.sub_answers}", verbose=self.verbose)
+        final_answer, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
 
         if len(subq_info.sub_answers) < 0:
             raise ValueError
@@ -140,15 +141,14 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
             if len(sub_queries) < 2 or len(subq_info.sub_answers) != len(sub_queries):
                 raise ValueError
 
-            self.log("Выполнение суммаризации ответов с помощью LLM-агента...",
-                     verbose=self.verbose)
-            final_answer, status = self.tasks_solvers.subanswers_summarisation_solver.solve(
+            self.log("Выполнение суммаризации ответов с помощью LLM-агента...", verbose=self.verbose)
+            final_answer, status, trace = self.tasks_solvers.subanswers_summarisation_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
-                query=query, sub_queries=sub_queries,
-                sub_answers=subq_info.sub_answers)
+                query=query, sub_queries=sub_queries, sub_answers=subq_info.sub_answers)
             self.log(f"RESULT: {final_answer}", verbose=self.verbose)
-            info.status = status
+            module_trace.add("subanswers_summarisation_solver", ModuleType.task_solver, trace)
+            rinfo.status = status
 
-        self.log(f"STATUS: {info.status}", verbose=self.verbose)
+        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
-        return final_answer, info
+        return final_answer, rinfo, module_trace

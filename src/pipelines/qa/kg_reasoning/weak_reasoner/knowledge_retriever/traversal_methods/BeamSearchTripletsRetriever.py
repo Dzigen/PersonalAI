@@ -17,7 +17,7 @@ from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......utils.data_structs import QueryInfo, Triplet, NodeType, NodeInfo, from_str_to_nodeinfo
 from .......kg_model import KnowledgeGraphModel
 from .......utils.data_structs import create_id, NODES_TYPES_MAP
-from .......utils import Logger
+from .......utils import Logger, accumulate_step_info
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 from .......rerankers import RerankerDriver, RerankerDriverConfig
@@ -403,6 +403,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         extracted_triplets = self.kg_model.graph_struct.db_conn.read(list(uniques_tids))
         return extracted_triplets
 
+    @accumulate_step_info
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log("RETRIEVER: BeamSearchTripletsRetriever", verbose=self.verbose)

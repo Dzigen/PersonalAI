@@ -3,7 +3,7 @@ from typing import List, Tuple, Dict, Union
 from copy import deepcopy
 
 from .configs import KC_MAIN_LOG_PATH, KC_RERANKDRIVER_DEFAULT_CONFIG
-from ......utils import Logger, ReturnStatus, ReturnInfo
+from ......utils import Logger, ReturnStatus, ReturnInfo, accumulate_step_info
 from ......utils.errors import STATUS_MESSAGE
 from ......utils.data_structs import QueryInfo, create_id, NodeType, BaseComponentConfig, NodeInfo
 from ......kg_model import KnowledgeGraphModel
@@ -93,6 +93,7 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
         """
         return [self.config.to_str(), query_info.to_str()]
 
+    @accumulate_step_info
     @CacheUtils.cache_method_output
     def link_kgnodes_to_query(self, query_info: QueryInfo) -> Tuple[List[NodeInfo], List[object], ReturnInfo]:
         """Метод предназначен для сопоставления (матчинга) сущностей, извлечённых из user-вопроса, с вершинами из графа знаний ассистента.
@@ -102,10 +103,8 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
         :return: Кортеж из двух объектов: (1) (список сопоставленных узлов, список имён/документов по сущностям); (2) статус завершения операции с пояснительной информацией.
         :rtype: Tuple[List[NodeInfo], List[object], ReturnInfo]
         """
-
         self.log("START MATCHING KEY WORDS ...", verbose=self.verbose)
-        self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
         self.log(f"ENTITIES: {query_info.entities}", verbose=self.verbose)
 

@@ -9,7 +9,8 @@ from .utils import BaseGraphSearchConfig, BaseTripletsFilterConfig, KnowledgeRet
 from .filtering_methods.TripletsFilter import TripletsFilterConfig
 from .traversal_methods.MixturedTripletsRetriever import MixturedGraphSearchConfig
 from ......kg_model import KnowledgeGraphModel
-from ......utils import Logger, ReturnStatus, ReturnInfo
+from ......utils import Logger, ReturnStatus, ReturnInfo, accumulate_stage_info, \
+    CompositeModuleDetailedResult, ModuleType, SimpleModuleResult
 from ......utils.errors import STATUS_MESSAGE
 from ......utils.data_structs import create_id, QueryInfo, Triplet, BaseComponentConfig
 from ......utils.cache_kv import CacheUtils
@@ -123,37 +124,37 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
 
         return valid_triplets
 
-    def traverse_kg(self, query_info: QueryInfo) -> List[Triplet]:
+    def traverse_kg(self, query_info: QueryInfo) -> Tuple[List[Triplet], SimpleModuleResult]:
         """Метод реализует извлечение релевантных триплетов из графа знаний.
 
         :param query_info: Структура с user-вопросом и дополнительными полями.
         :type query_info: QueryInfo
-        :return: Список извлечённых триплетов.
-        :rtype: List[Triplet]
+        :return: Кортеж из двух объектов: (1) cписок извлечённых триплетов; (2) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[List[Triplet], SimpleModuleResult]
         """
-        triplets = self.stages.triplets_retriever.get_relevant_triplets(query_info)
+        triplets, trace = self.stages.triplets_retriever.get_relevant_triplets(query_info)
         self.log(f"RESULT: {len(triplets)}", verbose=self.verbose)
         for triplet in triplets:
             self.log(f"*[{triplet.id}] {triplet}", verbose=self.verbose)
 
-        # косытль
+        # костыль
         # triplets = self.validate_tripelts(triplets)
 
-        return triplets
+        return triplets, trace
 
-    def filter_triplets(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
+    def filter_triplets(self, query_info: QueryInfo, triplets: List[Triplet]) -> Tuple[List[Triplet], SimpleModuleResult]:
         """Метод фильтрует/ранжирует триплеты, извлечённые из графа.
 
         :param query_info: Структура с user-вопросом и дополнительными полями.
         :type query_info: QueryInfo
         :param triplets: Список триплетов, подлежащих фильтрации/ранжированию.
         :type triplets: List[Triplet]
-        :return: Отфильтрованный/ранжированный список триплетов.
-        :rtype: List[Triplet]
+        :return: Кортеж из двух объектов: (1) отфильтрованный/ранжированный список триплетов; (2) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[List[Triplet], SimpleModuleResult]
         """
         filtered_triplets = None
         if self.stages.triplets_filter is not None:
-            filtered_triplets = self.stages.triplets_filter.apply_filter(query_info, triplets)
+            filtered_triplets, trace = self.stages.triplets_filter.apply_filter(query_info, triplets)
             self.log(f"RESULT: {len(filtered_triplets)}",
                      verbose=self.verbose)
             for triplet in filtered_triplets:
@@ -163,7 +164,7 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
             filtered_triplets = triplets
             self.log("Stage was omited!", verbose=self.verbose)
 
-        return filtered_triplets
+        return filtered_triplets, trace
 
     def get_cache_key(self, query_info: QueryInfo) -> List[str]:
         """Формирует ключ кэша для для результатов извлечения/фильтрации.
@@ -179,28 +180,31 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         return [self.config.retriever_method, self.stages.triplets_retriever.config.to_str(), str(self.config.filter_method),
                 str_tfilter_config, query_info.to_str()]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def retrieve(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo]:
+    def retrieve(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для извлечения релевантных к user-вопросу триплетов из графа знаний.
 
         :param query_info: Структура данных, которая хранит user-вопрос и связанную с ним информацию.
         :type query_info: QueryInfo
-        :return: Кортеж из двух объектов: (1) список релевантных user-вопросу триплетов; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[List[Triplet], ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) список релевантных user-вопросу триплетов; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[List[Triplet], ReturnInfo, CompositeModuleDetailedResult]
         """
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 
-        rinfo = ReturnInfo()
+        rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
         self.log("STAGE #3.1 - TRIPLETS EXTRACTION...", verbose=self.verbose)
-        triplets = self.traverse_kg(query_info)
+        triplets, trace = self.traverse_kg(query_info)
+        module_trace.add("traverse_kg", ModuleType.step, trace)
 
         triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in triplets]))
         self.log(f"Респределение количества типов триплетов: {triplet_types_freq}", verbose=self.verbose)
 
         self.log("STAGE #3.2 - TRIPLETS FILTERING...", verbose=self.verbose)
-        filtered_triplets = self.filter_triplets(query_info, triplets)
+        filtered_triplets, trace = self.filter_triplets(query_info, triplets)
+        module_trace.add("filter_triplets", ModuleType.step, trace)
 
         triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in filtered_triplets]))
         self.log(f"Респределение количества типов триплетов: {triplet_types_freq}", verbose=self.verbose)
@@ -211,4 +215,4 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
 
         self.log(f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.verbose)
 
-        return filtered_triplets, rinfo
+        return filtered_triplets, rinfo, module_trace

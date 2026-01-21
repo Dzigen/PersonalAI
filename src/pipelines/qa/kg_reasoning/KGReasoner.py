@@ -6,7 +6,7 @@ from .weak_reasoner import WeakKGReasonerConfig
 from .medium_reasoner import MediumKGReasonerConfig
 from .config import KGR_MAIN_LOG_PATH, AVAILABLE_KG_REASONERS, AVAILABLE_KGR_CONFIGS
 from .utils import BaseKGReasonerConfig, AbstractKGReasoner, KGReasonserStages
-from ....utils import ReturnInfo, Logger
+from ....utils import ReturnInfo, Logger, CompositeModuleResult
 from ....kg_model import KnowledgeGraphModel
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv import CacheUtils
@@ -98,15 +98,15 @@ class KnowledgeGraphReasoner(CacheUtils, AbstractKGReasoner, CacheOperations, Ag
         return [query, self.reasoner_name, self.config.to_str()]
 
     @CacheUtils.cache_method_output
-    def perform(self, query: str) -> Tuple[str, ReturnInfo]:
+    def perform(self, query: str) -> Tuple[str, ReturnInfo, CompositeModuleResult]:
         """Метод предназначен для генерации ответа на user-вопрос. Ответ обуславливается на информацию из имеющегося графа знаний.
 
         :param query: User-вопрос на естественном языке.
         :type query: str
-        :return: Кортеж из двух объектов: (1) cгенерированный ответ; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[str, ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) cгенерированный ответ; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[str, ReturnInfo, CompositeModuleResult]
         """
-        answer, rinfo = self.stages.reasoner.perform(query)
+        answer, rinfo, trace = self.stages.reasoner.perform(query)
         self.log(f"RESULT: {answer}", verbose=self.verbose)
         self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
-        return answer, rinfo
+        return answer, rinfo, trace

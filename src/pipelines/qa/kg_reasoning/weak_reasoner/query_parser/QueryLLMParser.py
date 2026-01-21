@@ -6,7 +6,8 @@ from .configs import QP_MAIN_LOG_PATH
 from .utils import WeakQueryParserTaskSolvers, QueryLLMParserAgentTasksConfig
 from ......utils.data_structs import QueryInfo, create_id, BaseComponentConfig, LanguageConfig
 from ......utils.errors import STATUS_MESSAGE
-from ......utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver
+from ......utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, accumulate_stage_info, \
+    CompositeModuleDetailedResult, ModuleType
 from ......agents.utils import AbstractAgentConnector
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
@@ -106,26 +107,25 @@ class QueryLLMParser(CacheUtils, CacheOperations, AgentStatOperations):
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [self.config.to_str(), str_using_agent_info, query_info.to_str()]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def extract_entities(self, query_info: QueryInfo) -> Tuple[List[str], ReturnInfo]:
+    def extract_entities(self, query_info: QueryInfo) -> Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для извлечения ключевых сущностей из query-текста.
 
         :param query_info: Структура данных с информацией об обрабатываемом запросе.
         :type query_info: QueryInfo
-        :return: Кортеж из двух объектов: (1) структура данных со списком извлечённых ключевых сущностей из query; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[List[str], ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) структура данных со списком извлечённых ключевых сущностей из query; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult]
         """
-
         self.log("START KEY WORD EXTRACTION...", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
-        rinfo = ReturnInfo()
+        rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
 
-        self.log("Выполнение извлечения ключевых сущностей из запроса с помощью LLM-агента...",
-                 verbose=self.verbose)
-        extracted_entities, status = self.tasks_solvers.kw_extraction_solver.solve(
-            lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
-            query=query_info.query)
+        self.log("Выполнение извлечения ключевых сущностей из запроса с помощью LLM-агента...", verbose=self.verbose)
+        extracted_entities, status, trace = self.tasks_solvers.kw_extraction_solver.solve(
+            lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query_info.query)
+        module_trace.add("kw_extraction_solver", ModuleType.task_solver, trace)
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
 
@@ -143,4 +143,4 @@ class QueryLLMParser(CacheUtils, CacheOperations, AgentStatOperations):
 
         self.log(f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.verbose)
 
-        return entities, rinfo
+        return entities, rinfo, module_trace

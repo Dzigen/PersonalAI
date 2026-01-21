@@ -8,7 +8,7 @@ from .configs import KRFILTER_RERANKDRIVER_DEFAULT_CONFIG
 from ..utils import AbstractTriplesFilter, BaseTripletsFilterConfig
 from .......utils.data_structs import Triplet, QueryInfo, create_id, \
     TripletCreator, RelationType, RELATIONS_TYPES_MAP
-from .......utils import Logger
+from .......utils import Logger, accumulate_step_info
 from .......kg_model import KnowledgeGraphModel
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
@@ -109,6 +109,7 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
         str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(triplet)[1] for triplet in triplets])).encode()).hexdigest()
         return [self.config.to_str(), query_info.to_str(), str_triplets]
 
+    @accumulate_step_info
     @CacheUtils.cache_method_output
     def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
         self.log("START KNOWLEDGE FILTERING...", verbose=self.verbose)

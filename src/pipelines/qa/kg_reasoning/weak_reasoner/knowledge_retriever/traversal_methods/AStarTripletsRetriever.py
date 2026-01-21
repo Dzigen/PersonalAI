@@ -12,7 +12,7 @@ from .......utils.data_structs import QueryInfo, Triplet, NodeType, create_id_fo
     NODES_TYPES_MAP, NodeInfo, from_str_to_nodeinfo, BaseConfigOperations
 from .......kg_model import KnowledgeGraphModel
 from .......db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver, KeyValueDBInstance
-from .......utils import Logger
+from .......utils import Logger, accumulate_step_info
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
 from .......db_drivers.vector_driver import VectorDBInstance
@@ -502,6 +502,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def search_path(self, start_node: NodeInfo, end_node: NodeInfo) -> Tuple[List[str], List[NodeInfo], Dict[str, int], Dict[str, NodeInfo], NodeInfo]:
         return self.graph_searcher.search_path(start_node, end_node)
 
+    @accumulate_step_info
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log("RETRIEVER: AStarTripletsRetriever", verbose=self.verbose)

@@ -8,7 +8,8 @@ from .config import CQGEN_MAIN_LOG_PATH
 from .utils import MediumCQGeneratorTaskSolvers, ClueQueriesGeneratorAgentTasksConfig
 from ......utils.data_structs import QueryInfo
 from ......utils.errors import ReturnStatus
-from ......utils import ReturnInfo, Logger, AgentTaskSolver
+from ......utils import ReturnInfo, Logger, AgentTaskSolver, accumulate_stage_info, \
+    CompositeModuleDetailedResult, ModuleType
 from ......agents.utils import AbstractAgentConnector
 from ......utils.data_structs import create_id, BaseComponentConfig, LanguageConfig, NodeInfo
 from ......db_drivers.kv_driver import KeyValueDriverConfig
@@ -101,8 +102,9 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [search_query, str_matchedobject, self.config.to_str(), str_using_agent_info]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def perform(self, search_query: str, matched_kg_objects: Dict[str, List[NodeInfo]]) -> Tuple[List[QueryInfo], ReturnInfo]:
+    def perform(self, search_query: str, matched_kg_objects: Dict[str, List[NodeInfo]]) -> Tuple[List[QueryInfo], ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для генерации/формирования clue-запросов к заданному шагу поиска (в рамках текущего плана).
         Clue-запросы генерируются по следующему алгоритму:
         (1) На основе matched_kg_objects-словаря формируется линейная комбинация сопоставленных вершин из графа знаний. Каждый sample
@@ -114,16 +116,15 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         :type search_query: str
         :param matched_kg_objects: Набор сущностей из заданного поискового запроса, сопоставленный с релевантными вершинами из графа знаний.
         :type matched_kg_objects: Dict[str, List[NodeInfo]]
-        :return: Кортеж из двух объектов: (1) список сформированных clue-запросов; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[List[QueryInfo], ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) список сформированных clue-запросов; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[List[QueryInfo], ReturnInfo, CompositeModuleDetailedResult]
         """
         self.log("START CLUE-QUERIES GENERATION...", verbose=self.verbose)
         self.log(f"SEARCH_QUERY ID: {create_id(search_query)}", verbose=self.verbose)
         self.log(f"SEARCH_QUERY: {search_query}", verbose=self.verbose)
-        str_matchedobjects = ';'.join(
-            [f'{k} - {[vv.text for vv in v]}' for k, v in matched_kg_objects.items()])
+        str_matchedobjects = ';'.join([f'{k} - {[vv.text for vv in v]}' for k, v in matched_kg_objects.items()])
         self.log(f"MATCHED_KG_OBJECT: {str_matchedobjects}", verbose=self.verbose)
-        clue_queries, info = [], ReturnInfo()
+        clue_queries, rinfo, module_trace = [], ReturnInfo(), CompositeModuleDetailedResult()
         unique_cqueries = set()
 
         if len(search_query) < 1 or len(matched_kg_objects) < 1:
@@ -146,13 +147,14 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
             formated_objects_group = list(map(lambda item: item.text, cur_group))
 
             self.log("Выполняем генерацию clue-query с помощью LLM-агента...", verbose=self.verbose)
-            cur_cluequery, status = self.tasks_solvers.cluequery_gen_solver.solve(
+            cur_cluequery, status, trace = self.tasks_solvers.cluequery_gen_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                 query=search_query, base_entities=base_entities, matched_objects=formated_objects_group)
+            module_trace.add("cluequery_gen_solver", ModuleType.task_solver, trace)
             self.log(f"RESULT: {cur_cluequery}", verbose=self.verbose)
 
             if status != ReturnStatus.success:
-                info.status = status
+                rinfo.status = status
                 break
             else:
                 if cur_cluequery in unique_cqueries:
@@ -166,8 +168,7 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
                         query=cur_cluequery, entities=base_entities, linked_nodes=list(cur_group),
                         linked_nodes_by_entities=list(map(lambda pair: [base_entities[pair[0]], pair[1]], enumerate(formated_objects_group)))))
 
-        self.log(
-            f"RESULT:\n- Количество clue-queries после фильтрации по строкоовму представлению: {len(clue_queries)}", verbose=self.verbose)
-        self.log(f"STATUS: {info.status}", verbose=self.verbose)
+        self.log(f"RESULT:\n- Количество clue-queries после фильтрации по строкоовму представлению: {len(clue_queries)}", verbose=self.verbose)
+        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
-        return clue_queries, info
+        return clue_queries, rinfo, module_trace
