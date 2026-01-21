@@ -114,8 +114,8 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
 
         :param base_triplet: Simple-триплет, на основе которого нужно искать устаревшие simple-триплеты в графе знаний.
         :type base_triplet: Triplet
-        :return: Кортеж из двух объектов: (1) идентификаторы устаревших simple-триплетов; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[List[str], ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) идентификаторы устаревших simple-триплетов; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult]
         """
         obsolete_triplet_ids: List[str] = list()
         rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
@@ -163,8 +163,8 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
 
         :param base_triplet: Hyper-триплет, на основе которого нужно искать устаревшие hyper-триплеты в графе знаний.
         :type base_triplet: Triplet
-        :return: Идентификаторы устаревших hyper-триплетов.
-        :rtype: List[str]
+        :return: Кортеж из трёх объектов: (1) идентификаторы устаревших hyper-триплетов; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult]
         """
         obsolete_triplet_ids: List[str] = list()
         rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
@@ -277,8 +277,8 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
         :type new_triplets: List[Triplet]
         :param status_bar: Если True, то в stdout будет записываться прогресс выполнения операции, иначе False. Значение по умолчанию False.
         :type status_bar: bool, optional
-        :return: Кортеж из двух объектов: (1) Кортеж с информацией о триплетах, удалённых их графа знаний в рамках операции по поиску устаревшей информации и триплетах, добавленных в граф; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[Dict[str, Dict[int, Dict[str, bool]]], Dict[str, Dict[str, Set[str]]]]
+        :return: Кортеж из трёх объектов: (1) кортеж с информацией о триплетах, удалённых их графа знаний в рамках операции по поиску устаревшей информации и триплетах, добавленных в граф; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[Tuple[Dict[str, Dict[int, Dict[str, bool]]], Dict[str, Dict[str, Set[str]]]], ReturnInfo, CompositeModuleDetailedResult]
         """
 
         self.log("START KNOWLEDGE UPDATING...", verbose=self.verbose)

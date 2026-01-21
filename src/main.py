@@ -108,8 +108,8 @@ class PersonalAI:
 
         :param question: User-вопрос на естественном языке.
         :type question: str
-        :return: Кортеж из двух объектов: (1) сгенерированный ответ; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[str, ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) сгенерированный ответ; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
         self.log("START ANSWER GENERATION...", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(question)}", verbose=self.verbose)
@@ -132,8 +132,8 @@ class PersonalAI:
         :type text_properties: Union[None, Dict], optional
         :param text_id: Идентификатор текста, сохраняемого в память.
         :type text_id: Union[None, str], optional
-        :return: Кортеж из трёх объектов: (1) идентификатор данного 'text'-значения; (2) список извлечённой из текста информации (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (3) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[str, List[Triplet], ReturnInfo]
+        :return: Кортеж из четырёх объектов: (1) идентификатор данного 'text'-значения; (2) список извлечённой из текста информации (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (3) статус завершения операции с пояснительной информацией; (4) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[str, List[Triplet], ReturnInfo, CompositeModuleDetailedResult]
         """
         self.log("START MEMORY_UPDATING ...", verbose=self.verbose)
         self.log(f"BASE_TEXT ID: {create_id(text)}", verbose=self.verbose)
@@ -161,8 +161,8 @@ class PersonalAI:
 
         :param text_id: Идентификатор, с которым соответствующий текст на естественном языке был добавлен/сохранён в модель памяти ассистента.
         :type text_id: str
-        :return: Словарь с информацией о триплетах (соответствуюих данному text_id), которые были удалены (значение True, иначе False) из памяти ассистента.
-        :rtype: Dict[str, Dict[int,Dict[str,bool]]]
+        :return: Кортеж из двух объектов: (1) словарь с информацией о триплетах (соответствуюих данному text_id), которые были удалены (значение True, иначе False) из памяти ассистента; (2) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[Dict[str, Dict[int,Dict[str,bool]]], CompositeModuleDetailedResult]
         """
         module_trace = CompositeModuleDetailedResult()
 

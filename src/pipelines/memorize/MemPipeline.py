@@ -102,8 +102,8 @@ class MemPipeline(CacheOperations, AgentStatOperations):
         :type time: str, optional
         :param properties: Набор свойств, который должен быть сохранён в памяти вместе с извлечённой из текста информацией. Значение по умолчанию None.
         :type properties: Dict, optional
-        :return: Кортеж из двух объектов: (1) список с извлечённой из текста информацией (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[List[Triplet], ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) список с извлечённой из текста информацией (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[List[Triplet], ReturnInfo, CompositeModuleDetailedResult]
         """
 
         self.log("START KNOWLEDGE REMEMBERING...", verbose=self.verbose)

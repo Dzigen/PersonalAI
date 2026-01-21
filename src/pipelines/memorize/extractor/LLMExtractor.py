@@ -103,8 +103,8 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
         :type properties: Union[None, Dict], optional
         :param time: Время, с которым ассоциированы события текста.
         :type time: str, optional
-        :return: Кортеж из двух объектов: (1) список извлечённой из текста информации (в виде триплетов); (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[List[Triplet], ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) список извлечённой из текста информации (в виде триплетов); (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[List[Triplet], ReturnInfo, CompositeModuleDetailedResult]
         """
         assert self.config.need_simple or self.config.need_thesises
         props = dict() if properties is None else deepcopy(properties)
