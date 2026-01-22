@@ -164,8 +164,9 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         if self.stages.query_parser is None:
             self.log("Stage #2 was omited!", verbose=self.verbose)
         else:
-            linked_nodes, linked_nodes_by_entities, rinfo, trace = \
+            linking_result, trace = \
                 self.stages.knowledge_comparator.link_kgnodes_to_query(query_info)
+            linked_nodes, linked_nodes_by_entities, rinfo = *linking_result[0], linking_result[1]
             if rinfo.status != ReturnStatus.success:
                 self.log("Operation ended with error!", verbose=self.verbose)
             else:

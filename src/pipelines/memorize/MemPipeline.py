@@ -123,11 +123,11 @@ class MemPipeline(CacheOperations, AgentStatOperations):
         if extract_rinfo.status == ReturnStatus.success:
             self.log("STAGE#2 - 'Обновление информации в памяти (графе знаний) ассистента'", verbose=self.verbose)
             self.log(f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.verbose)
-            delete_add_info, update_rinfo, trace = self.stages.updator.update_knowledge(new_triplets)
+            delete_add_info, updknwlg_rinfo, trace = self.stages.updator.update_knowledge(new_triplets)
 
-            self.log(f"STATUS: {update_rinfo.status}", verbose=self.verbose)
+            self.log(f"STATUS: {updknwlg_rinfo.status}", verbose=self.verbose)
             module_trace.add('update_knowledge', ModuleType.stage, trace)
-            update_rinfo(rinfo, update_rinfo)
+            update_rinfo(rinfo, updknwlg_rinfo)
             self.log(f"RESULT:", verbose=self.verbose)
             self.log(f"* triplets deletion info: {delete_add_info[0]}", verbose=self.verbose)
             self.log(f"* added triplet info: {delete_add_info[1]}", verbose=self.verbose)

@@ -110,7 +110,7 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
         props = dict() if properties is None else deepcopy(properties)
 
         assert 'time' not in props.keys()
-        new_triplets, info = [], ReturnInfo()
+        new_triplets, rinfo = [], ReturnInfo()
         module_trace = CompositeModuleDetailedResult()
 
         if time is not None:
@@ -128,7 +128,7 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
 
             if status != ReturnStatus.success:
                 self.log(f"RESULT: None", verbose=self.verbose)
-                info.occurred_warning.append(status)
+                rinfo.occurred_warning.append(status)
             else:
                 self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.verbose)
                 for triplet in tmp_triplets:
@@ -144,7 +144,7 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
 
             if status != ReturnStatus.success:
                 self.log(f"RESULT: None", verbose=self.verbose)
-                info.occurred_warning.append(status)
+                rinfo.occurred_warning.append(status)
             else:
                 self.log(f"RESULT: {len(tmp_triplets)}", verbose=self.verbose)
                 for triplet in tmp_triplets:
@@ -177,13 +177,12 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
             new_triplets += tmp_triplets
 
         if len(new_triplets) == 0:
-            info.status = ReturnStatus.zero_triplets
-            info.message = STATUS_MESSAGE[info.status]
+            rinfo.status = ReturnStatus.zero_triplets
+            rinfo.message = STATUS_MESSAGE[rinfo.status]
 
-        self.log(
-            f"FINAL STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.verbose)
+        self.log(f"FINAL STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.verbose)
 
-        return new_triplets, info
+        return new_triplets, rinfo, module_trace
 
     def get_entities_from_triplets(self, triplets: List[Triplet]) -> List[Node]:
         entities = {}

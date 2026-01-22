@@ -1,6 +1,7 @@
 from enum import Enum
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
+from copy import deepcopy
 from collections import defaultdict
 from typing import List, Tuple, Dict, Union
 from time import time
@@ -33,9 +34,8 @@ class CompositeModuleSummaryResult(ModuleResult):
 
 @dataclass
 class BaseCompositeModuleDetailedResult(ABC):
-    stages: Dict[str, List[object]] = field(default_factory=lambda: defaultdict(list))
-    steps: Dict[str, List[object]] = field(default_factory=lambda: defaultdict(list))
-    task_solvers: Dict[str, List[object]] = field(default_factory=lambda: defaultdict(list))
+    modules_categories: Dict[str, Dict[str, object]] = field(default_factory=lambda: {
+        ModuleType.stage: defaultdict(list), ModuleType.step: defaultdict(list), ModuleType.task_solver: defaultdict(list)})
     execution_sequence: List[Tuple[ModuleType, str]] = field(default_factory=lambda: list())
 
     @abstractmethod
@@ -55,11 +55,24 @@ class CompositeModuleResult:
 
 @dataclass
 class CompositeModuleDetailedResult(BaseCompositeModuleDetailedResult):
-    def get_results_sequence(self) -> List[Tuple[ModuleType, ModuleResult]]:
-        pass
+    def get_results_sequence(self) -> List[Tuple[ModuleType, str, ModuleResult]]:
+        sequence = []
+        categories_pointer = {ModuleType.stage: defaultdict(lambda: 0), ModuleType.step: defaultdict(lambda: 0), ModuleType.task_solver: defaultdict(lambda: 0)}
+        for module_info in self.execution_sequence:
+            cur_pointer = categories_pointer[module_info[0]][module_info[1]]
+
+            cur_trace = self.modules_categories[module_info[0]][module_info[1]][cur_pointer]
+            if isinstance(cur_trace, CompositeModuleResult):
+                cur_trace = cur_trace.summary
+
+            sequence.append((module_info[0], module_info[1], cur_trace))
+
+            categories_pointer[module_info[0]][module_info[1]] += 1
+        return sequence
 
     def add(self, module_name: str, module_type: ModuleType, module_result: Union[CompositeModuleResult, SimpleModuleResult]):
-        pass
+        self.execution_sequence.append((module_type, module_name))
+        self.modules_categories[module_type][module_name].append(deepcopy(module_result))
 
 
 def accumulate_tasksolver_info(func):
@@ -69,14 +82,14 @@ def accumulate_tasksolver_info(func):
         e_time = time()
 
         trace = SimpleModuleResult(
-            context=kwargs,
-            result=result,
+            context=deepcopy(kwargs),
+            result=deepcopy(result),
             status=status,
             elapsed_time=round(e_time - s_time, 5)
         )
-        trace.context['positional_arguments'] = args
+        trace.context['positional_arguments'] = deepcopy(args[1:])  # исключаем self
 
-        return result, trace
+        return result, status, trace
     return wrapper
 
 
@@ -87,11 +100,11 @@ def accumulate_step_info(func):
         e_time = time()
 
         trace = SimpleModuleResult(
-            context=kwargs,
-            result=result,
+            context=deepcopy(kwargs),
+            result=deepcopy(result),
             elapsed_time=round(e_time - s_time, 5)
         )
-        trace.context['positional_arguments'] = args
+        trace.context['positional_arguments'] = deepcopy(args[1:])  # исключаем self
 
         return result, trace
     return wrapper
@@ -104,13 +117,12 @@ def accumulate_stage_info(func):
         e_time = time()
 
         stage_summary = CompositeModuleSummaryResult(
-            context=kwargs,
-            result=result,
+            context=deepcopy(kwargs),
+            result=deepcopy(result),
             status=rinfo.status,
-            intermediate_results=intermediate_trace,
             elapsed_time=round(e_time - s_time, 5)
         )
-        stage_summary.context['positional_arguments'] = args
+        stage_summary.context['positional_arguments'] = deepcopy(args[1:])  # исключаем self
 
         trace = CompositeModuleResult(
             summary=stage_summary,

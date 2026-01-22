@@ -150,6 +150,12 @@ class TextIdStore:
         self.textid_to_tripletsid_store.clear()
         self.tripletid_to_textsid_store.clear()
 
+    def count_items(self) -> Dict[str, int]:
+        return {
+            'textid_to_tripletsid': self.textid_to_tripletsid_store.count_items(),
+            'tripletid_to_textsid': self.tripletid_to_textsid_store.count_items()
+        }
+
     def select_triplets_to_delete(self, text_id: str) -> List[Triplet]:
         formated_triplets = self.load_tripletsinfo_by_textid(text_id)
         # оставляем триплеты, на которые ссылается только один text_id (которые принадлежат только одному text_id)

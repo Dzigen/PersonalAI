@@ -193,7 +193,7 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
         :param query: User-вопрос на естественном языке.
         :type query: str
         :return: Кортеж из трёх объектов: (1) cгенерированный ответ; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
-        :rtype: Tuple[str, ReturnInfo]
+        :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
         self.log("START QA-PIPELINE...", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
@@ -213,8 +213,7 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
             module_trace.add('process_query', ModuleType.stage, trace)
             update_rinfo(rinfo, sq_info)
         else:
-            self.log("During previous steps error occurs.",
-                     verbose=self.verbose)
+            self.log("During previous steps error occurs.", verbose=self.verbose)
 
         self.log("Aggregation...", verbose=self.verbose)
         if rinfo.status == ReturnStatus.success:
@@ -226,7 +225,7 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
 
         self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
-        return final_answer, rinfo
+        return final_answer, rinfo, module_trace
 
     def close_connections(self):
         self.stages.close_connections()

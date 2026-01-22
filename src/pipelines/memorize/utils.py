@@ -3,7 +3,6 @@ from typing import Union
 from .extractor import LLMExtractor
 from .updator import LLMUpdator
 from ..utils import BaseStages
-from ...utils import BaseModulesResultTrace, ResultTrace
 
 
 @dataclass

@@ -284,6 +284,7 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
         self.log("START KNOWLEDGE UPDATING...", verbose=self.verbose)
         self.log(f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.verbose)
         rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
+        remove_info, add_info = dict(), dict()
 
         if self.config.delete_obsolete_info:
             obsolete_triplets_counter = 0

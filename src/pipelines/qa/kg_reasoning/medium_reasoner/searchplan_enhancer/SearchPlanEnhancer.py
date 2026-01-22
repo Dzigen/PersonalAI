@@ -146,7 +146,7 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
             if status == ReturnStatus.success:
                 if need_enhance:
                     self.log("Улучшаем следующие шаги поиска в плане...", verbose=self.verbose)
-                    enhanced_steps, status = self.tasks_solvers.plan_enhancing_solver.solve(
+                    enhanced_steps, status, trace = self.tasks_solvers.plan_enhancing_solver.solve(
                         lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=search_plan.base_query,
                         search_steps=search_plan.search_steps, steps_answers=search_plan.steps_answers[:search_step])
                     module_trace.add("plan_enhancing_solver", ModuleType.task_solver, trace)

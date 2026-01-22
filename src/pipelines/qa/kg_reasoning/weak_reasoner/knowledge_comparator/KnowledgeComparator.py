@@ -95,20 +95,20 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
 
     @accumulate_step_info
     @CacheUtils.cache_method_output
-    def link_kgnodes_to_query(self, query_info: QueryInfo) -> Tuple[List[NodeInfo], List[object], ReturnInfo]:
+    def link_kgnodes_to_query(self, query_info: QueryInfo) -> Tuple[Tuple[List[NodeInfo], List[object]], ReturnInfo]:
         """Метод предназначен для сопоставления (матчинга) сущностей, извлечённых из user-вопроса, с вершинами из графа знаний ассистента.
 
         :param query_structure: Структура данных, которая хранит user-вопрос и извлечённые из него сущности.
         :type query_structure: QueryInfo
         :return: Кортеж из двух объектов: (1) (список сопоставленных узлов, список имён/документов по сущностям); (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[List[NodeInfo], List[object], ReturnInfo]
+        :rtype: Tuple[Tuple[List[NodeInfo], List[object]], ReturnInfo]
         """
         self.log("START MATCHING KEY WORDS ...", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
         self.log(f"ENTITIES: {query_info.entities}", verbose=self.verbose)
 
-        info = ReturnInfo()
+        rinfo = ReturnInfo()
         linked_nodes: List[NodeInfo] = []
         linked_nodes_by_entities = []
 
@@ -129,13 +129,13 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
             linked_nodes_by_entities.append(cur_unique_names)
 
         if len(linked_nodes) == 0:
-            info.status = ReturnStatus.zero_linked_nodes
-            info.message = STATUS_MESSAGE[info.status]
+            rinfo.status = ReturnStatus.zero_linked_nodes
+            rinfo.message = STATUS_MESSAGE[rinfo.status]
         else:
             self.log(f"RESULT: {len(linked_nodes)}", verbose=self.verbose)
             for i, node in enumerate(linked_nodes):
                 self.log(f"{i}. {node}", verbose=self.verbose)
 
-        self.log(f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.verbose)
+        self.log(f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.verbose)
 
-        return linked_nodes, linked_nodes_by_entities, info
+        return (linked_nodes, linked_nodes_by_entities), rinfo

@@ -123,7 +123,7 @@ class PersonalAI:
 
     @accumulate_stage_info
     def update_memory(self, text: str, text_properties: Union[None, Dict] = None, text_id: Union[None, str] = None) \
-            -> Tuple[str, List[Triplet], ReturnInfo, CompositeModuleDetailedResult]:
+            -> Tuple[Tuple[str, List[Triplet]], ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для добавления новой информации в память (граф знаний) и её актуализации.
 
         :param text: Слабоструктурированный текст на естественном языке.
@@ -132,7 +132,7 @@ class PersonalAI:
         :type text_properties: Union[None, Dict], optional
         :param text_id: Идентификатор текста, сохраняемого в память.
         :type text_id: Union[None, str], optional
-        :return: Кортеж из четырёх объектов: (1) идентификатор данного 'text'-значения; (2) список извлечённой из текста информации (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (3) статус завершения операции с пояснительной информацией; (4) структура данных с промежуточными результатами реботы метода.
+        :return: Кортеж из трёх объектов: (1) идентификатор данного 'text'-значения и список извлечённой из текста информации (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
         :rtype: Tuple[str, List[Triplet], ReturnInfo, CompositeModuleDetailedResult]
         """
         self.log("START MEMORY_UPDATING ...", verbose=self.verbose)
@@ -152,7 +152,7 @@ class PersonalAI:
         self.textid_store.save_info(text_id, triplets)
         self.log(f"RESULT:\n* EXTRACTED_TRIPLETS AMOUNT - {len(triplets)}", verbose=self.verbose)
 
-        return text_id, triplets, rinfo, module_trace
+        return (text_id, triplets), rinfo, module_trace
 
     @accumulate_stage_info
     def clear_memory(self, text_id: str) -> Tuple[Dict[str, Dict[int, Dict[str, bool]]], CompositeModuleDetailedResult]:
@@ -161,10 +161,10 @@ class PersonalAI:
 
         :param text_id: Идентификатор, с которым соответствующий текст на естественном языке был добавлен/сохранён в модель памяти ассистента.
         :type text_id: str
-        :return: Кортеж из двух объектов: (1) словарь с информацией о триплетах (соответствуюих данному text_id), которые были удалены (значение True, иначе False) из памяти ассистента; (2) структура данных с промежуточными результатами реботы метода.
+        :return: Кортеж из трёх объектов: (1) словарь с информацией о триплетах (соответствуюих данному text_id), которые были удалены (значение True, иначе False) из памяти ассистента; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
         :rtype: Tuple[Dict[str, Dict[int,Dict[str,bool]]], CompositeModuleDetailedResult]
         """
-        module_trace = CompositeModuleDetailedResult()
+        rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
 
         # получаем triplets id из kv-database
         triplets = self.textid_store.select_triplets_to_delete(text_id)
@@ -174,7 +174,7 @@ class PersonalAI:
         # удаляем соответствующие записи из kv-database
         self.textid_store.clear_info(text_id)
 
-        return delete_info, module_trace
+        return delete_info, rinfo, module_trace
 
     def close_connections(self):
         self.kg_model.close_connections()
