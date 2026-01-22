@@ -94,7 +94,7 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
         self.verbose = self.config.verbose
 
     @accumulate_stage_info
-    def extract_knowledge(self, text: str, time: Union[None, str] = None, properties: Union[None, Dict] = None) -> Tuple[List[Triplet], ReturnInfo, CompositeModuleDetailedResult]:
+    def extract_knowledge(self, text: str, time: Union[None, str] = None, properties: Union[None, Dict] = None) -> Tuple[List[Triplet], ReturnInfo, CompositeModuleDetailedResult, bool]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста на естественном языке.
 
         :param text: Слабоструктурированный текст.
@@ -103,8 +103,8 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
         :type properties: Union[None, Dict], optional
         :param time: Время, с которым ассоциированы события текста.
         :type time: str, optional
-        :return: Кортеж из трёх объектов: (1) список извлечённой из текста информации (в виде триплетов); (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
-        :rtype: Tuple[List[Triplet], ReturnInfo, CompositeModuleDetailedResult]
+        :return: Кортеж из четырёх объектов: (1) список извлечённой из текста информации (в виде триплетов); (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода; (4) True, если результат был получен из кеша (cache hit), иначе False.
+        :rtype: Tuple[List[Triplet], ReturnInfo, CompositeModuleDetailedResult, bool]
         """
         assert self.config.need_simple or self.config.need_thesises
         props = dict() if properties is None else deepcopy(properties)
@@ -182,7 +182,7 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
 
         self.log(f"FINAL STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.verbose)
 
-        return new_triplets, rinfo, module_trace
+        return new_triplets, rinfo, module_trace, False
 
     def get_entities_from_triplets(self, triplets: List[Triplet]) -> List[Node]:
         entities = {}
@@ -196,7 +196,7 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
         episodic_node = NodeCreator.create(name=text, n_type=NodeType.episodic, prop=dict() if node_prop is None else node_prop)
         episodic_rel = Relation(name=RelationType.episodic.value, type=RelationType.episodic, prop=dict() if rel_prop is None else rel_prop)
         episodic_triplets = [TripletCreator.create(entity, episodic_rel, episodic_node) for entity in entities]
-        return episodic_triplets
+        return episodic_triplets, False
 
     @accumulate_step_info
     def get_time_triplets(self, triplets: List[Triplet], time: str) -> List[Triplet]:
@@ -211,4 +211,4 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
                 picked_ids.add(triplet.end_node.id)
                 start_nodes.append(triplet.end_node)
         time_triplets = [TripletCreator.create(time_node, time_rel, node) for node in start_nodes]
-        return time_triplets
+        return time_triplets, False

@@ -91,7 +91,7 @@ class MemPipeline(CacheOperations, AgentStatOperations):
         self.verbose = config.verbose
 
     @accumulate_stage_info
-    def remember(self, text: str, time: Union[None, str] = None, properties: Union[None, Dict] = None) -> Tuple[List[Triplet], ReturnInfo, CompositeModuleDetailedResult]:
+    def remember(self, text: str, time: Union[None, str] = None, properties: Union[None, Dict] = None) -> Tuple[List[Triplet], ReturnInfo, CompositeModuleDetailedResult, bool]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста и обновление/актуализацию знаний в памяти (графе знаний) ассистента.
 
         :param text: Слабоструктурированный текст на естественном языке.
@@ -102,8 +102,8 @@ class MemPipeline(CacheOperations, AgentStatOperations):
         :type time: str, optional
         :param properties: Набор свойств, который должен быть сохранён в памяти вместе с извлечённой из текста информацией. Значение по умолчанию None.
         :type properties: Dict, optional
-        :return: Кортеж из трёх объектов: (1) список с извлечённой из текста информацией (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
-        :rtype: Tuple[List[Triplet], ReturnInfo, CompositeModuleDetailedResult]
+        :return: Кортеж из четырёх объектов: (1) список с извлечённой из текста информацией (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода; (4) True, если результат был получен из кеша (cache hit), иначе False.
+        :rtype: Tuple[List[Triplet], ReturnInfo, CompositeModuleDetailedResult, bool]
         """
 
         self.log("START KNOWLEDGE REMEMBERING...", verbose=self.verbose)
@@ -132,7 +132,7 @@ class MemPipeline(CacheOperations, AgentStatOperations):
             self.log(f"* triplets deletion info: {delete_add_info[0]}", verbose=self.verbose)
             self.log(f"* added triplet info: {delete_add_info[1]}", verbose=self.verbose)
 
-        return new_triplets, rinfo, module_trace
+        return new_triplets, rinfo, module_trace, False
 
     def close_connections(self):
         self.stages.close_connections()

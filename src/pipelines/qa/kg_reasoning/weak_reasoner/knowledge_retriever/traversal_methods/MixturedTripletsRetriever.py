@@ -152,8 +152,8 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 
-        triplets1, _ = self.retriever1.get_relevant_triplets(query_info)
-        triplets2, _ = self.retriever2.get_relevant_triplets(query_info)
+        triplets1, _, _ = self.retriever1.get_relevant_triplets(query_info)
+        triplets2, _, _ = self.retriever2.get_relevant_triplets(query_info)
 
         self.log(f"Количество триплетов, извлечённых с помощью {self.config.retriever1_name}/{self.config.retriever2_name}: {len(triplets1)}/{len(triplets2)}",
                  verbose=self.verbose)

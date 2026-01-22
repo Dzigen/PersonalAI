@@ -1,4 +1,4 @@
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Tuple
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
@@ -76,13 +76,13 @@ class AbstractTripletsRetriever(TraversalMethodCacheOpearions):
     config: BaseGraphSearchConfig
 
     @abstractmethod
-    def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
+    def get_relevant_triplets(self, query_info: QueryInfo) -> Tuple[List[Triplet], bool]:
         """Метод предназначен для извлечения триплетов из графа знаний на основе информации из user-вопроса. Возвращаемый список триплетов не содержит дубликатов (по строковому представлению).
 
         :param query_info: Структура данных с информацией о user-вопросе.
         :type query_info: QueryInfo
-        :return: Набор триплетов, извлечённый из графа знаний.
-        :rtype: List[Triplet]
+        :return: Кортеж из двух объектов: (1) Набор триплетов, извлечённый из графа знаний; (2) True, если результат был получен из кеша (cache hit), иначе False.
+        :rtype: Tuple[List[Triplet], bool]
         """
         pass
 

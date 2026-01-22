@@ -288,7 +288,7 @@ class KnowledgeGraphModel:
         if check_consistency:
             self.check_consistency()
 
-        return create_info
+        return create_info, False
 
     @accumulate_step_info
     def remove_knowledge(self, triplets: List[Triplet], check_consistency: bool = True, check_deleteinfo: bool = True) -> Dict[str, Dict[int, Dict[str, bool]]]:
@@ -325,7 +325,7 @@ class KnowledgeGraphModel:
         if check_consistency:
             self.check_consistency()
 
-        return delete_info
+        return delete_info, False
 
     def count_items(self, detailed: bool = False) -> Dict[str, Dict[str, int]]:
         """Возвращает агрегированную статистику по количеству объектов в памяти. Для каждой компоненты памяти вычисляется отдельная статистика.

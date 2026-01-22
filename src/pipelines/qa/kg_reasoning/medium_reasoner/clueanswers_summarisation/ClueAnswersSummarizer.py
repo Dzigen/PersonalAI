@@ -95,6 +95,7 @@ class ClueAnswersSummarizer(CacheUtils, AgentStatOperations, CacheOperations):
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [search_query, str_cluequeries, str_clueanswers, str_using_agent_info]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
     def perform(self, search_query: str, clue_queries: List[str], clue_answers: List[str]) -> Tuple[str, ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для резюмирвоания информации, извлечённой из графа знаний (с помощью clue-запросов) для данного search_query-шага поиска (в рамках плана).

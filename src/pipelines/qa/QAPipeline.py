@@ -139,7 +139,8 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
 
         for i, sub_query in enumerate(query_info.processed_query):
             self.log(f"Processing sub_query #{i}: {sub_query}", verbose=self.verbose)
-            sub_answer, rinfo, trace = self.stages.kg_reasoner.perform(sub_query)
+            output, _ = self.stages.kg_reasoner.perform(sub_query)
+            sub_answer, rinfo, trace = output
             self.log(f"RESULT: {sub_answer}", verbose=self.verbose)
             if rinfo.status != ReturnStatus.success:
                 self.log("Operation ended with error!", verbose=self.verbose)

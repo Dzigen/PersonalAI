@@ -81,40 +81,42 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
         self.log = self.config.log
         self.verbose = self.config.verbose
 
-    def get_cache_key(self, entitie: str) -> List[object]:
-        return [entitie, self.config.to_str()]
+    def get_cache_key(self, entity: str) -> List[object]:
+        return [entity, self.config.to_str()]
 
     @CacheUtils.cache_method_output
-    def match_entitie2knowledge(self, entitie: str) -> List[NodeInfo]:
+    def match_entity2knowledge(self, entity: str) -> List[NodeInfo]:
         if self.config.use_tree:
-            matched_objects = self.kg_model.nodestree_model.match_entitie2objects(entitie, max_n=self.config.max_n)
+            matched_objects = self.kg_model.nodestree_model.match_entity2objects(entity, max_n=self.config.max_n)
         else:
             matched_objects = list(map(
                 lambda node: NodeInfo(id=node.id, text=node.document, type=NodeType.object),
-                self.retriever.run(entitie, top_k=self.config.max_n, includes=['documents'])
+                self.retriever.run(entity, top_k=self.config.max_n, includes=['documents'])
             ))
 
         return matched_objects
 
     @accumulate_step_info
-    def perform(self, entities: List[str]) -> Tuple[Dict[str, List[NodeInfo]], ReturnInfo]:
+    def perform(self, entities: List[str]) -> Tuple[Dict[str, List[NodeInfo]], ReturnInfo, bool]:
         """Метод предназначен для сопоставления заданных сущностей (на естественном языке) с вершинами из графа знаний.
 
         :param entities: Список сущностей.
         :type entities: List[str]
-        :rtype: Tuple[Dict[str,List[NodeInfo]], ReturnInfo]
+        :rtype: Tuple[Dict[str,List[NodeInfo]], ReturnInfo, bool]
         """
         self.log("START ENTITIES2NODES MATCHING...", verbose=self.verbose)
         self.log(f"ENTIITES: {entities}", verbose=self.verbose)
         if len(entities) < 1:
             raise ValueError
         rinfo = ReturnInfo()
+        cache_hits: List[bool] = []
 
         matched_kg_objects: Dict[str, List[NodeInfo]] = dict()
-        for i, entitie in enumerate(entities):
-            self.log(f"Текушая сушность #{i}: {entitie}", verbose=self.verbose)
-            matched_kg_objects[entitie] = self.match_entitie2knowledge(entitie)
-            str_matchedobjects = ', '.join(list(map(lambda obj: obj.text, matched_kg_objects[entitie])))
+        for i, entity in enumerate(entities):
+            self.log(f"Текушая сушность #{i}: {entity}", verbose=self.verbose)
+            matched_kg_objects[entity], cache_hit = self.match_entity2knowledge(entity)
+            cache_hits.append(cache_hit)
+            str_matchedobjects = ', '.join(list(map(lambda obj: obj.text, matched_kg_objects[entity])))
             self.log(f"RESULT: {str_matchedobjects}", verbose=self.verbose)
 
         m_objects_amount = sum(list(map(lambda m_objects: len(m_objects), matched_kg_objects.values())))
@@ -122,4 +124,6 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
             rinfo.status = ReturnStatus.empty_answer
         self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
-        return matched_kg_objects, rinfo
+        cachehit_summary = (sum(cache_hits) / len(cache_hits)) >= 0.5
+
+        return matched_kg_objects, rinfo, cachehit_summary

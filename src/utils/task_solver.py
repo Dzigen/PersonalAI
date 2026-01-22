@@ -107,17 +107,17 @@ class AgentTaskSolver:
         self.verbose = self.config.verbose
 
     @accumulate_tasksolver_info
-    def solve(self, lang: str = 'en', gen_strategy: Union[None, Dict[str, str]] = None, **kwargs) -> Tuple[object, ReturnStatus]:
+    def solve(self, lang: str = 'en', gen_strategy: Union[None, Dict[str, str]] = None, **kwargs) -> Tuple[object, ReturnStatus, bool]:
         """Метод предназначен для запуска agent-солвера на заданных входных данных.
 
         :param lang: Язык промптов, которые будут использоваться на этапе инференса LLM-агента. Значение по умолчанию 'en'.
         :type lang: str, optional
         :param gen_strategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
         :type gen_strategy: Union[None, Dict[str, str]], optional
-        :return: Кортеж из двух объектов: (1) результат работы agent-солвера; (2) статус завершения операции с пояснительной информацией.
+        :return: Кортеж из трёх объектов: (1) результат работы agent-солвера; (2) статус завершения операции с пояснительной информацией; (3) True, если результат генерации был получен из кеша (cache hit), иначе был выполнен инференс LLM-для решения задачи (cache miss).
         :rtype: Tuple[object, ReturnStatus]
         """
-        task_result, status = None, ReturnStatus.success
+        task_result, status, cache_hit = None, ReturnStatus.success, False
         self.log("=" * 20, verbose=self.verbose)
         self.log("1. Предобработка данных для их дальнейшней вставки в user-prompt...", verbose=self.verbose)
 
@@ -165,7 +165,6 @@ class AgentTaskSolver:
             self.log("4. Генерация ответа с помощью LLM-агента.", verbose=self.verbose)
 
             raw_answer = None
-            gen_flag = True
 
             # preparing cache key
             gen_strategy = self.agent.config.gen_strategy if gen_strategy is None else gen_strategy
@@ -195,7 +194,7 @@ class AgentTaskSolver:
                     formated_log_cachekey = '\n-'.join(cache_key)
                     self.log(f"* HASH_SEEDS:\n-{formated_log_cachekey}", verbose=self.verbose)
 
-                    gen_flag = False
+                    cache_hit = True
                     raw_answer = cached_result
                 else:
                     self.log("Результата по заданной конфигурации гиперпараметров в кеше нет.", verbose=self.verbose)
@@ -204,7 +203,7 @@ class AgentTaskSolver:
                     formated_log_cachekey = '\n-'.join(cache_key)
                     self.log(f"* HASH_SEEDS:\n-{formated_log_cachekey }", verbose=self.verbose)
 
-            if gen_flag:
+            if not cache_hit:
                 self.log("Выполняем инференс llm...", verbose=self.verbose)
 
                 raw_answer, inference_info = self.agent.generate(
@@ -254,7 +253,7 @@ class AgentTaskSolver:
             finally:
                 self.log(f"Статус: {STATUS_MESSAGE[status]}", verbose=self.verbose)
 
-        return task_result, status
+        return task_result, status, cache_hit
 
 
 @dataclass
