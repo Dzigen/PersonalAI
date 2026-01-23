@@ -20,6 +20,7 @@ class ModuleResult:
     result: object
     status: Union[None, ReturnStatus] = None
     elapsed_time: Union[None, float] = None  # seconds
+    cache_hit: Union[None, bool] = None
 
 
 @dataclass
@@ -78,14 +79,15 @@ class CompositeModuleDetailedResult(BaseCompositeModuleDetailedResult):
 def accumulate_tasksolver_info(func):
     def wrapper(*args, **kwargs) -> Tuple[object, ReturnStatus, SimpleModuleResult]:
         s_time = time()
-        result, status = func(*args, **kwargs)
+        result, status, cache_hit = func(*args, **kwargs)
         e_time = time()
 
         trace = SimpleModuleResult(
             context=deepcopy(kwargs),
             result=deepcopy(result),
             status=status,
-            elapsed_time=round(e_time - s_time, 5)
+            elapsed_time=round(e_time - s_time, 5),
+            cache_hit=cache_hit
         )
         trace.context['positional_arguments'] = deepcopy(args[1:])  # исключаем self
 
@@ -96,31 +98,34 @@ def accumulate_tasksolver_info(func):
 def accumulate_step_info(func):
     def wrapper(*args, **kwargs) -> Tuple[object, SimpleModuleResult]:
         s_time = time()
-        result = func(*args, **kwargs)
+        result, rinfo, cache_hit = func(*args, **kwargs)
         e_time = time()
 
         trace = SimpleModuleResult(
             context=deepcopy(kwargs),
             result=deepcopy(result),
-            elapsed_time=round(e_time - s_time, 5)
+            elapsed_time=round(e_time - s_time, 5),
+            cache_hit=cache_hit,
+            status=rinfo.status
         )
         trace.context['positional_arguments'] = deepcopy(args[1:])  # исключаем self
 
-        return result, trace
+        return result, rinfo, trace
     return wrapper
 
 
 def accumulate_stage_info(func):
     def wrapper(*args, **kwargs) -> Tuple[object, ReturnInfo, CompositeModuleResult]:
         s_time = time()
-        result, rinfo, intermediate_trace = func(*args, **kwargs)
+        result, rinfo, intermediate_trace, cache_hit = func(*args, **kwargs)
         e_time = time()
 
         stage_summary = CompositeModuleSummaryResult(
             context=deepcopy(kwargs),
             result=deepcopy(result),
             status=rinfo.status,
-            elapsed_time=round(e_time - s_time, 5)
+            elapsed_time=round(e_time - s_time, 5),
+            cache_hit=cache_hit
         )
         stage_summary.context['positional_arguments'] = deepcopy(args[1:])  # исключаем self
 

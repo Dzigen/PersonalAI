@@ -12,7 +12,7 @@ from .......utils.data_structs import QueryInfo, Triplet, NodeType, create_id_fo
     NODES_TYPES_MAP, NodeInfo, from_str_to_nodeinfo, BaseConfigOperations
 from .......kg_model import KnowledgeGraphModel
 from .......db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver, KeyValueDBInstance
-from .......utils import Logger, accumulate_step_info
+from .......utils import Logger, accumulate_step_info, ReturnInfo
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
 from .......db_drivers.vector_driver import VectorDBInstance
@@ -500,14 +500,18 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     @CacheUtils.cache_method_output
     def search_path(self, start_node: NodeInfo, end_node: NodeInfo) -> Tuple[List[str], List[NodeInfo], Dict[str, int], Dict[str, NodeInfo], NodeInfo]:
+        # PAY ATTENTION: tuple is needed to satisfy decorator interface
         return self.graph_searcher.search_path(start_node, end_node)
 
     @accumulate_step_info
-    def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
+    def get_relevant_triplets(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo, bool]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log("RETRIEVER: AStarTripletsRetriever", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
+
+        cache_hits: List[bool] = []
+        rinfo = ReturnInfo()
 
         #
         nodes: List[NodeInfo] = []
@@ -533,7 +537,8 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                     end_node = nodes[j]
 
                     s_time = time()
-                    _, _, _, parent, spare_closest_node = self.search_path(start_node, end_node)
+                    _, _, _, parent, spare_closest_node, cache_hit = self.search_path(start_node, end_node)
+                    cache_hits.append(cache_hit)
                     self.log(f"search elapsed_time: {time() - s_time}", verbose=self.verbose)
 
                     s_time = time()
@@ -562,4 +567,6 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log(f"foramting queries: {len(unique_nodes_pairs)}", verbose=self.verbose)
         self.log(f"formating elapsed_time: {time() - s_time}", verbose=self.verbose)
 
-        return unique_triplets
+        cachehit_summary = (sum(cache_hits) / len(cache_hits)) >= 0.5
+
+        return unique_triplets, rinfo, cachehit_summary

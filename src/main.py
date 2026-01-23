@@ -102,14 +102,14 @@ class PersonalAI:
         self.verbose = config.verbose
 
     @accumulate_stage_info
-    def answer_question(self, question: str) -> Tuple[str, ReturnInfo, CompositeModuleDetailedResult]:
+    def answer_question(self, question: str) -> Tuple[str, ReturnInfo, CompositeModuleDetailedResult, bool]:
         """Метод предназначен для контекстуального поиска и извлечения релевантной информации
         из памяти (графа знаний) ассистента для генерации ответа на user-вопрос.
 
         :param question: User-вопрос на естественном языке.
         :type question: str
-        :return: Кортеж из трёх объектов: (1) сгенерированный ответ; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
-        :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
+        :return: Кортеж из четырёх объектов: (1) сгенерированный ответ; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода; (4) True, если результат был получен из кеша (cache hit), иначе False.
+        :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult, bool]
         """
         self.log("START ANSWER GENERATION...", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(question)}", verbose=self.verbose)
@@ -119,11 +119,11 @@ class PersonalAI:
         answer, rinfo, trace = self.qa_pipeline.answer(question)
         module_trace.add('answer', ModuleType.stage, trace)
         self.log(f"RESULT:\n* FINAL ANSWER - {answer}", verbose=self.verbose)
-        return answer, rinfo, module_trace
+        return answer, rinfo, module_trace, False
 
     @accumulate_stage_info
     def update_memory(self, text: str, text_properties: Union[None, Dict] = None, text_id: Union[None, str] = None) \
-            -> Tuple[Tuple[str, List[Triplet]], ReturnInfo, CompositeModuleDetailedResult]:
+            -> Tuple[Tuple[str, List[Triplet]], ReturnInfo, CompositeModuleDetailedResult, bool]:
         """Метод предназначен для добавления новой информации в память (граф знаний) и её актуализации.
 
         :param text: Слабоструктурированный текст на естественном языке.
@@ -132,8 +132,8 @@ class PersonalAI:
         :type text_properties: Union[None, Dict], optional
         :param text_id: Идентификатор текста, сохраняемого в память.
         :type text_id: Union[None, str], optional
-        :return: Кортеж из трёх объектов: (1) идентификатор данного 'text'-значения и список извлечённой из текста информации (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
-        :rtype: Tuple[str, List[Triplet], ReturnInfo, CompositeModuleDetailedResult]
+        :return: Кортеж из четёрых объектов: (1) идентификатор данного 'text'-значения и список извлечённой из текста информации (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода; (4) True, если результат был получен из кеша (cache hit), иначе False.
+        :rtype: Tuple[str, List[Triplet], ReturnInfo, CompositeModuleDetailedResult, bool]
         """
         self.log("START MEMORY_UPDATING ...", verbose=self.verbose)
         self.log(f"BASE_TEXT ID: {create_id(text)}", verbose=self.verbose)
@@ -152,29 +152,29 @@ class PersonalAI:
         self.textid_store.save_info(text_id, triplets)
         self.log(f"RESULT:\n* EXTRACTED_TRIPLETS AMOUNT - {len(triplets)}", verbose=self.verbose)
 
-        return (text_id, triplets), rinfo, module_trace
+        return (text_id, triplets), rinfo, module_trace, False
 
     @accumulate_stage_info
-    def clear_memory(self, text_id: str) -> Tuple[Dict[str, Dict[int, Dict[str, bool]]], CompositeModuleDetailedResult]:
+    def clear_memory(self, text_id: str) -> Tuple[Dict[str, Dict[int, Dict[str, bool]]], CompositeModuleDetailedResult, bool]:
         """Метод предназначен для удаления информации (представленной в виде набор триплетов) из модели памяти ассистента
         по идентификатору исходного неструктурированного фрагмента текста, из которого она (информация / набор триплетов) была извлечена.
 
         :param text_id: Идентификатор, с которым соответствующий текст на естественном языке был добавлен/сохранён в модель памяти ассистента.
         :type text_id: str
-        :return: Кортеж из трёх объектов: (1) словарь с информацией о триплетах (соответствуюих данному text_id), которые были удалены (значение True, иначе False) из памяти ассистента; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
-        :rtype: Tuple[Dict[str, Dict[int,Dict[str,bool]]], CompositeModuleDetailedResult]
+        :return: Кортеж из четырёх объектов: (1) словарь с информацией о триплетах (соответствуюих данному text_id), которые были удалены (значение True, иначе False) из памяти ассистента; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода; (4) True, если результат был получен из кеша (cache hit), иначе False.
+        :rtype: Tuple[Dict[str, Dict[int,Dict[str,bool]]], CompositeModuleDetailedResult, bool]
         """
         rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
 
         # получаем triplets id из kv-database
         triplets = self.textid_store.select_triplets_to_delete(text_id)
         # вызываем remove_knowledge у модели графа знаний
-        delete_info, trace = self.kg_model.remove_knowledge(triplets)
+        delete_info, _, trace = self.kg_model.remove_knowledge(triplets)
         module_trace.add('remove_knowledge', ModuleType.step, trace)
         # удаляем соответствующие записи из kv-database
         self.textid_store.clear_info(text_id)
 
-        return delete_info, rinfo, module_trace
+        return delete_info, rinfo, module_trace, False
 
     def close_connections(self):
         self.kg_model.close_connections()

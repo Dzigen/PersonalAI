@@ -89,7 +89,8 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
         self.verbose = self.config.verbose
 
     @accumulate_step_info
-    def get_unique_incident_simple_triplets_to_simple_triplet(self, base_triplet: Triplet) -> List[Triplet]:
+    def get_unique_incident_simple_triplets_to_simple_triplet(self, base_triplet: Triplet) -> Tuple[List[Triplet], ReturnInfo, bool]:
+        rinfo = ReturnInfo()
         incident_triplets: Dict[str, Triplet] = dict()
         for base_node in [base_triplet.start_node, base_triplet.end_node]:
 
@@ -106,23 +107,23 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
                         m_node.get_info(), neighbour_node)
                     incident_triplets.update({item.id: item for item in shared_triplets})
 
-        return list(incident_triplets.values())
+        return list(incident_triplets.values()), rinfo, False
 
     @accumulate_stage_info
-    def find_simple_obsolete_triplet_ids(self, base_triplet: Triplet) -> Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult]:
+    def find_simple_obsolete_triplet_ids(self, base_triplet: Triplet) -> Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult, bool]:
         """Метод предназначен для поиска устаревших simple-триплетов в графе знаний по сравнению с указанным (base_triplet) simple-триплетом.
 
         :param base_triplet: Simple-триплет, на основе которого нужно искать устаревшие simple-триплеты в графе знаний.
         :type base_triplet: Triplet
-        :return: Кортеж из трёх объектов: (1) идентификаторы устаревших simple-триплетов; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
-        :rtype: Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult]
+        :return: Кортеж из четырёх объектов: (1) идентификаторы устаревших simple-триплетов; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода; (4) True, если результат был получен из кеша (cache hit), иначе False.
+        :rtype: Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult, bool]
         """
         obsolete_triplet_ids: List[str] = list()
         rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
 
         # Формируем список уникальных триплетов, которые инцидентны вершинам
         # из текущего триплета (если такие вершины присутствуют в графе знаний)
-        incident_triplets, trace = self.get_unique_incident_simple_triplets_to_simple_triplet(base_triplet)
+        incident_triplets, _, trace = self.get_unique_incident_simple_triplets_to_simple_triplet(base_triplet)
         module_trace.add("get_unique_incident_simple_triplets_to_simple_triplet", ModuleType.step, trace)
 
         # Выполняем поиск устаревших триплетов
@@ -135,10 +136,11 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
             obsolete_triplet_ids += tmp_obsolete_triplet_ids
         rinfo.status = status
 
-        return list(set(obsolete_triplet_ids)), rinfo, module_trace
+        return list(set(obsolete_triplet_ids)), rinfo, module_trace, False
 
     @accumulate_step_info
-    def get_unique_incident_hyper_triplets_to_hyper_triplet(self, base_triplet: Triplet) -> List[Triplet]:
+    def get_unique_incident_hyper_triplets_to_hyper_triplet(self, base_triplet: Triplet) -> Tuple[List[Triplet], ReturnInfo, bool]:
+        rinfo = ReturnInfo()
         incident_triplets: Dict[str, Triplet] = dict()
 
         # сопоставляем ноду из триплета нодам в графе знаний по полю name
@@ -155,23 +157,23 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
 
                 incident_triplets.update({item.id: item for item in shared_triplets})
 
-        return list(incident_triplets.values())
+        return list(incident_triplets.values()), rinfo, False
 
     @accumulate_stage_info
-    def find_hyper_obsolete_triplet_ids(self, base_triplet: Triplet) -> Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult]:
+    def find_hyper_obsolete_triplet_ids(self, base_triplet: Triplet) -> Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult, bool]:
         """Метод предназначен для поиска устаревших hyper-триплетов в графе знаний по сравнению с указанным (base_triplet) hyper-триплетом.
 
         :param base_triplet: Hyper-триплет, на основе которого нужно искать устаревшие hyper-триплеты в графе знаний.
         :type base_triplet: Triplet
-        :return: Кортеж из трёх объектов: (1) идентификаторы устаревших hyper-триплетов; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
-        :rtype: Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult]
+        :return: Кортеж из четырёх объектов: (1) идентификаторы устаревших hyper-триплетов; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода; (4) True, если результат был получен из кеша (cache hit), иначе False.
+        :rtype: Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult, bool]
         """
         obsolete_triplet_ids: List[str] = list()
         rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
 
         # Формируем список уникальных триплетов, которые инцидентны вершинам
         # из текущего триплета (если такие вершины присутствуют в графе знаний)
-        incident_triplets, trace = self.get_unique_incident_hyper_triplets_to_hyper_triplet(base_triplet)
+        incident_triplets, _, trace = self.get_unique_incident_hyper_triplets_to_hyper_triplet(base_triplet)
         module_trace.add('get_unique_incident_hyper_triplets_to_hyper_triplet', ModuleType.step, trace)
 
         # Выполняем поиск устаревших триплетов
@@ -184,17 +186,18 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
             obsolete_triplet_ids += tmp_obsolete_triplet_ids
         rinfo.status = status
 
-        return list(set(obsolete_triplet_ids)), rinfo, module_trace
+        return list(set(obsolete_triplet_ids)), rinfo, module_trace, False
 
     @accumulate_step_info
-    def find_episodic_o_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
+    def find_episodic_o_obsolete_triplet_ids(self, base_triplet: Triplet) -> Tuple[List[str], ReturnInfo, bool]:
         """Метод предназначен для поиска устаревших episodic-триплетов (с object-вершиной) в графе знаний по сравнению с указанным (base_triplet) episodic-триплетом.
 
         :param base_triplet: Episodic-триплет (с object-вершиной), на основе которого нужно искать устаревшие episodic-триплеты в графе знаний.
         :type base_triplet: Triplet
-        :return: Идентификаторы устаревших episodic-триплетов.
-        :rtype: List[str]
+        :return: Кортеж из трёх объектов: (1) идентификаторы устаревших episodic-триплетов; (2) статус завершения операции с пояснительной информацией; (3) True, если результат был получен из кеша (cache hit), иначе False.
+        :rtype: Tuple[List[str], ReturnInfo, bool]
         """
+        rinfo = ReturnInfo()
         obsolete_triplet_ids = list()
 
         # Сопоставляем object-сущность из триплета вершинам в графе знаний
@@ -234,16 +237,16 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
 
                     obsolete_triplet_ids.append(episodic_triplet[0].id)
 
-        return list(set(obsolete_triplet_ids))
+        return list(set(obsolete_triplet_ids)), rinfo, False
 
     @accumulate_step_info
-    def find_episodic_h_obsolete_triplet_ids(self, base_triplet: Triplet) -> List[str]:
+    def find_episodic_h_obsolete_triplet_ids(self, base_triplet: Triplet) -> Tuple[List[str], ReturnInfo, bool]:
         """Метод предназначен для поиска устаревших episodic-триплетов (c hyper-вершиной) в графе знаний по сравнению с указанным (base_triplet) episodic-триплетом.
 
         :param base_triplet: Episodic-триплет (с hyper-вершиной), на основе которого нужно искать устаревшие episodic-триплеты в графе знаний.
         :type base_triplet: Triplet
-        :return: Идентификаторы устаревших episodic-триплетов.
-        :rtype: List[str]
+        :return: Кортеж из двух объектов: (1) идентификаторы устаревших episodic-триплетов; (2) статус завершения операции с пояснительной информацией; (3) True, если результат был получен из кеша (cache hit), иначе False.
+        :rtype: Tuple[List[str], ReturnInfo, bool]
         """
         obsolete_triplet_ids = list()
 
@@ -266,18 +269,18 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
                     assert len(episodic_triplets) == 1
                     obsolete_triplet_ids.append(episodic_triplets[0].id)
 
-        return list(set(obsolete_triplet_ids))
+        return list(set(obsolete_triplet_ids)), rinfo, False
 
     @accumulate_stage_info
     def update_knowledge(self, new_triplets: List[Triplet], status_bar: bool = False) \
-            -> Tuple[Tuple[Dict[str, Dict[int, Dict[str, bool]]], Dict[str, Dict[str, Set[str]]]], ReturnInfo, CompositeModuleDetailedResult]:
+            -> Tuple[Tuple[Dict[str, Dict[int, Dict[str, bool]]], Dict[str, Dict[str, Set[str]]]], ReturnInfo, CompositeModuleDetailedResult, bool]:
         """Метод предназначен для изменения (удаления устаревшей / добавление новой информации) памяти (графа знаний) ассистента.
 
         :param new_triplets: Список триплетов с информацией для добавления в память (граф знаний) ассистента.
         :type new_triplets: List[Triplet]
         :param status_bar: Если True, то в stdout будет записываться прогресс выполнения операции, иначе False. Значение по умолчанию False.
         :type status_bar: bool, optional
-        :return: Кортеж из трёх объектов: (1) кортеж с информацией о триплетах, удалённых их графа знаний в рамках операции по поиску устаревшей информации и триплетах, добавленных в граф; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :return: Кортеж из четырёх объектов: (1) кортеж с информацией о триплетах, удалённых их графа знаний в рамках операции по поиску устаревшей информации и триплетах, добавленных в граф; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода; (4) True, если результат был получен из кеша (cache hit), иначе False.
         :rtype: Tuple[Tuple[Dict[str, Dict[int, Dict[str, bool]]], Dict[str, Dict[str, Set[str]]]], ReturnInfo, CompositeModuleDetailedResult]
         """
 
@@ -309,11 +312,11 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
                     update_rinfo(rinfo, findoht_rinfo)
 
                 elif (triplet.relation.type == RelationType.episodic) and (triplet.start_node.type == NodeType.object):
-                    obsolete_t_ids, trace = self.find_episodic_o_obsolete_triplet_ids(triplet)
+                    obsolete_t_ids, _, trace = self.find_episodic_o_obsolete_triplet_ids(triplet)
                     module_trace.add('find_episodic_o_obsolete_triplet_ids', ModuleType.step, trace)
 
                 elif (triplet.relation.type == RelationType.episodic) and (triplet.start_node.type == NodeType.hyper):
-                    obsolete_t_ids, trace = self.find_episodic_h_obsolete_triplet_ids(triplet)
+                    obsolete_t_ids, _, trace = self.find_episodic_h_obsolete_triplet_ids(triplet)
                     module_trace.add('find_episodic_h_obsolete_triplet_ids', ModuleType.step, trace)
 
                 else:
@@ -329,12 +332,12 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
                 self.log(f"TRIPLETS TO DELETE: {len(obsolete_triplets)}", verbose=self.verbose)
                 for obs_t in obsolete_triplets:
                     self.log(f"* [{obs_t.id}] {obs_t}", verbose=self.verbose)
-                remove_info, trace = self.kg_model.remove_knowledge(obsolete_triplets)
+                remove_info, _, trace = self.kg_model.remove_knowledge(obsolete_triplets)
                 module_trace.add('remove_knowledge', ModuleType.step, trace)
                 self.log(f"REMOVE INFO: {remove_info}", verbose=self.verbose)
 
                 self.log(f"ADDING NEW TRIPLET TO MEMORY...", verbose=self.verbose)
-                add_info, trace = self.kg_model.add_knowledge([triplet])
+                add_info, _, trace = self.kg_model.add_knowledge([triplet])
                 module_trace.add('add_knowledge', ModuleType.step, trace)
                 self.log(f"ADD INFO: {add_info}", verbose=self.verbose)
 
@@ -343,8 +346,8 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
 
         else:
             self.log(f"ADDING TRIPLETS TO MEMORY...", verbose=self.verbose)
-            add_info, trace = self.kg_model.add_knowledge(new_triplets, status_bar=status_bar)
+            add_info, _, trace = self.kg_model.add_knowledge(new_triplets, status_bar=status_bar)
             module_trace.add('add_knowledge', ModuleType.step, trace)
             self.log(f"ADD INFO: {add_info}", verbose=self.verbose)
 
-        return (remove_info, add_info), rinfo, module_trace
+        return (remove_info, add_info), rinfo, module_trace, False

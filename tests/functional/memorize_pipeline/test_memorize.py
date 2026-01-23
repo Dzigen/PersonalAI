@@ -50,7 +50,7 @@ def test_mem_pipeline(mem_config: MemPipelineConfig, raw_texts: List[str],
     mem_pipeline = MemPipeline(kg_model, mem_config, kv_cache_config)
 
     for text in tqdm(raw_texts):
-        _, status = mem_pipeline.remember(text)
+        _, status, _ = mem_pipeline.remember(text)
         assert status.status.value == 0
     kg_model.check_consistency()
 

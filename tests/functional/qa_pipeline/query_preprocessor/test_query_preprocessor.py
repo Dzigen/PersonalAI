@@ -25,7 +25,7 @@ def test_query_preprocessor(query: str, qp_config: QueryPreprocessorConfig, agen
     qp_stage.clear_agent_tgen_stat()
     qp_stage.clear_kv_caches()
 
-    _, info = qp_stage.perform(query)
+    _, info, _ = qp_stage.perform(query)
     assert info.status.value == 0
 
     qp_stage.clear_agent_tgen_stat()

@@ -192,7 +192,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         return search_plan, rinfo, trace
 
     @accumulate_stage_info
-    def match_searchstep_to_kg(self, search_query: str) -> Tuple[Dict[str, List[VectorDBInstance]], ReturnInfo, CompositeModuleDetailedResult]:
+    def match_searchstep_to_kg(self, search_query: str) -> Tuple[Dict[str, List[VectorDBInstance]], ReturnInfo, CompositeModuleDetailedResult, bool]:
         matched_kg_objects, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
         self.log("STAGE#2.1.1 - ENTITIES EXTRACTION", verbose=self.verbose)
         entities, ee_rinfo, trace = self.stages.entities_extractor.perform(search_query)
@@ -206,12 +206,11 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
 
         if rinfo.status == ReturnStatus.success:
             self.log("STAGE#2.1.2 - ENTITIES-TO-KGOBJECTS MATCHING", verbose=self.verbose)
-            matching_result, trace = self.stages.entities2nodes_matcher.perform(entities)
-            matched_kg_objects, e2nm_rinfo = matching_result
+            matched_kg_objects, e2nm_rinfo, trace = self.stages.entities2nodes_matcher.perform(entities)
             module_trace.add("entities2nodes_matcher", ModuleType.step, trace)
             if e2nm_rinfo.status == ReturnStatus.success:
                 self.log("Operation ended successfully", verbose=self.verbose)
-                str_matched_kgobject = '\n'.join([f'- [{entitie}][{len(objects)}] ' + ', '.join(list(map(lambda obj: obj.text, objects))) for entitie, objects in matched_kg_objects.items()])
+                str_matched_kgobject = '\n'.join([f'- [{entity}][{len(objects)}] ' + ', '.join(list(map(lambda obj: obj.text, objects))) for entity, objects in matched_kg_objects.items()])
                 self.log(f"RESULT:\n{str_matched_kgobject}", verbose=self.verbose)
             else:
                 self.log("Operation ended with error!", verbose=self.verbose)
@@ -219,7 +218,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         else:
             self.log("During previous steps error occurs.", verbose=self.verbose)
 
-        return matched_kg_objects, rinfo, module_trace
+        return matched_kg_objects, rinfo, module_trace, False
 
     def get_cluequeries(self, search_query: str, matched_kg_objects: Dict[str, List[NodeInfo]]) -> Tuple[List[QueryInfo], ReturnInfo, CompositeModuleResult]:
         cluequeries, rinfo, trace = self.stages.cluequeries_generator.perform(search_query, matched_kg_objects)
@@ -234,7 +233,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         return cluequeries, rinfo, trace
 
     @accumulate_stage_info
-    def search_clueanswers(self, search_query: str, cluequeries: List[QueryInfo]) -> Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult]:
+    def search_clueanswers(self, search_query: str, cluequeries: List[QueryInfo]) -> Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult, bool]:
         clueanswers, rinfo, module_trace = [], ReturnInfo(), CompositeModuleDetailedResult()
         for j, cur_cluequery in enumerate(cluequeries):
             self.log(f"Current clue-query ({j} / {len(cluequeries)}): {cur_cluequery.query}", verbose=self.verbose)
@@ -266,7 +265,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
 
             clueanswers.append(cur_clueanswer)
 
-        return clueanswers, rinfo, module_trace
+        return clueanswers, rinfo, module_trace, False
 
     def summarize_clueanswers(self, search_query: str, cluequeries: List[QueryInfo], clueanswers: List[str]) \
             -> Tuple[str, ReturnInfo, CompositeModuleResult]:
@@ -290,7 +289,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         return answer, rinfo, trace
 
     @accumulate_stage_info
-    def forced_answer_generation(self, search_plan: SearchPlanInfo) -> Tuple[Union[str, None], ReturnInfo, CompositeModuleDetailedResult]:
+    def forced_answer_generation(self, search_plan: SearchPlanInfo) -> Tuple[Union[str, None], ReturnInfo, CompositeModuleDetailedResult, bool]:
         answer, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
         if self.config.answer_something:
             self.log("Пытаемся сгенерировать ответа на основе имеющейся информации...", verbose=self.verbose)
@@ -306,10 +305,10 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         else:
             self.log("Operation ended with error!", verbose=self.verbose)
 
-        return answer, rinfo, module_trace
+        return answer, rinfo, module_trace, False
 
     @accumulate_stage_info
-    def prepare_searchqueries(self, search_query: str, search_step: int) -> Tuple[List[QueryInfo], ReturnInfo, CompositeModuleDetailedResult]:
+    def prepare_searchqueries(self, search_query: str, search_step: int) -> Tuple[List[QueryInfo], ReturnInfo, CompositeModuleDetailedResult, bool]:
         cluequeries, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
         self.log("STAGE#2.1 - SEARCH-STEP to KG MATCHING", verbose=self.verbose)
         self.log(f"Current step #{search_step}: {search_query}", verbose=self.verbose)
@@ -325,10 +324,10 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         else:
             self.log("During previous steps error occurs.", verbose=self.verbose)
 
-        return cluequeries, rinfo, module_trace
+        return cluequeries, rinfo, module_trace, False
 
     @accumulate_stage_info
-    def traverse_kg(self, search_query: str, cluequeries: List[QueryInfo]) -> Tuple[Union[str, None], ReturnInfo, CompositeModuleDetailedResult]:
+    def traverse_kg(self, search_query: str, cluequeries: List[QueryInfo]) -> Tuple[Union[str, None], ReturnInfo, CompositeModuleDetailedResult, bool]:
         search_step_answer, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
         self.log("STAGE#3.1 - RETRIEVING INFORMATION FROM KG BASED ON CLUE-QUERIES", verbose=self.verbose)
         clueanswers, cag_rinfo, trace = self.search_clueanswers(search_query, cluequeries)
@@ -343,7 +342,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         else:
             self.log("During previous steps error occurs.", verbose=self.verbose)
 
-        return search_step_answer, rinfo, module_trace
+        return search_step_answer, rinfo, module_trace, False
 
     def get_cache_key(self, query: str) -> List[str]:
         str_using_agent_config = f"{self.using_agent_info['kw']}:{self.using_agent_info['config'].to_str()}"

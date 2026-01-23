@@ -60,8 +60,7 @@ class ReturnInfo:
     :param  message: Пояснительное сообщение к статусу возврата.
     :type  message: str
     """
-    occurred_warning: List[ReturnStatus] = field(
-        default_factory=lambda: list())
+    occurred_warning: List[ReturnStatus] = field(default_factory=lambda: list())
     status: ReturnStatus = ReturnStatus.success
     message: str = ""
 

@@ -135,7 +135,7 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
             raise ValueError
 
         self.log(f"Получаем декартово произведение всех комбинаций объектов (по сущностям)...", verbose=self.verbose)
-        base_entities = sorted(list(filter(lambda entitie: len(matched_kg_objects[entitie]) > 0, matched_kg_objects.keys())))
+        base_entities = sorted(list(filter(lambda entity: len(matched_kg_objects[entity]) > 0, matched_kg_objects.keys())))
         objects_groups = list(product(*[matched_kg_objects[k] for k in base_entities]))[:self.config.max_cqueries_amount]
 
         str_objectspermuts = ';'.join([f'[{k}] {len(v)}' for k, v in matched_kg_objects.items()])

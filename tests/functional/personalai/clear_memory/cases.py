@@ -358,4 +358,4 @@ for vector_vendor in AVAILABLE_EMBEDDING_MODELS:
                 POPULATED_CLEARMEMORY_TEST_CASES.append(
                     CLEARMEMORY_TEST_CASES[i] + [f"{vector_vendor}/{graph_vendor}|{kvid_store}"])
 
-print("Количество порождённых тестов для CLEAR_MEMORY: ", len(POPULATED_CLEARMEMORY_TEST_CASES))
+#print("Количество порождённых тестов для CLEAR_MEMORY: ", len(POPULATED_CLEARMEMORY_TEST_CASES))

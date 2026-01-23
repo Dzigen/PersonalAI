@@ -132,7 +132,7 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         :return: Кортеж из двух объектов: (1) cписок извлечённых триплетов; (2) структура данных с промежуточными результатами реботы метода.
         :rtype: Tuple[List[Triplet], SimpleModuleResult]
         """
-        triplets, trace = self.stages.triplets_retriever.get_relevant_triplets(query_info)
+        triplets, _, trace = self.stages.triplets_retriever.get_relevant_triplets(query_info)
         self.log(f"RESULT: {len(triplets)}", verbose=self.verbose)
         for triplet in triplets:
             self.log(f"*[{triplet.id}] {triplet}", verbose=self.verbose)
@@ -152,9 +152,9 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         :return: Кортеж из двух объектов: (1) отфильтрованный/ранжированный список триплетов; (2) структура данных с промежуточными результатами реботы метода.
         :rtype: Tuple[List[Triplet], SimpleModuleResult]
         """
-        filtered_triplets = None
+        filtered_triplets, trace = None, None
         if self.stages.triplets_filter is not None:
-            filtered_triplets, trace = self.stages.triplets_filter.apply_filter(query_info, triplets)
+            filtered_triplets, _, trace = self.stages.triplets_filter.apply_filter(query_info, triplets)
             self.log(f"RESULT: {len(filtered_triplets)}",
                      verbose=self.verbose)
             for triplet in filtered_triplets:

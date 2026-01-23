@@ -1,9 +1,10 @@
-from langdetect import detect
+from lingua import LanguageDetectorBuilder
 from typing import Tuple
 
 from .errors import ReturnStatus
 
-SUPPORTED_LANGUAGES = {'ru', 'en'}
+SUPPORTED_LANGUAGES_MAP = {'RUSSIAN': 'ru', 'ENGLISH': 'en'}
+DETECTOR = LanguageDetectorBuilder.from_all_languages().with_preloaded_language_models().build()
 
 
 def detect_lang(text: str) -> Tuple[str, ReturnStatus]:
@@ -19,9 +20,10 @@ def detect_lang(text: str) -> Tuple[str, ReturnStatus]:
         status = ReturnStatus.empty_input_text
 
     if status == ReturnStatus.success:
-        lang = detect(text)
+        language = DETECTOR.detect_language_of(text).name
+        lang = SUPPORTED_LANGUAGES_MAP.get(language, None)
 
-    if (status == ReturnStatus.success) and (lang not in SUPPORTED_LANGUAGES):
-        lang, status = None, ReturnStatus.not_supported_lang
+    if (status == ReturnStatus.success) and (lang is None):
+        status = None, ReturnStatus.not_supported_lang
 
     return lang, status

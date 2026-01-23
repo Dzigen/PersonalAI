@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Tuple
 import collections
 from collections import Counter
 from copy import deepcopy
@@ -8,7 +8,7 @@ from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......utils.data_structs import QueryInfo, Triplet, NodeType
 from .......kg_model import KnowledgeGraphModel
 from .......utils.data_structs import create_id, NODES_TYPES_MAP, NodeInfo
-from .......utils import Logger, accumulate_step_info
+from .......utils import Logger, accumulate_step_info, ReturnInfo
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 
@@ -154,11 +154,13 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     @accumulate_step_info
     @CacheUtils.cache_method_output
-    def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
+    def get_relevant_triplets(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log("RETRIEVER: NaiveBFSTripletsRetriever", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
+
+        rinfo = ReturnInfo()
 
         nodes: List[NodeInfo] = []
         unique_ntypedids = set()
@@ -183,4 +185,4 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         relations_counter = Counter([triplet.relation.type for triplet in unique_triplets])
         self.log(f"Распределение типов связей в наборе извлечённых триплетов: {relations_counter}", verbose=self.verbose)
 
-        return unique_triplets
+        return unique_triplets, rinfo
