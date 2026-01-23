@@ -305,5 +305,5 @@ services:
           memory: 4G
           devices:
             - driver: nvidia
-              device_ids: ['2']
+              device_ids: ['0']
               capabilities: [gpu]
