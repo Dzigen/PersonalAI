@@ -189,7 +189,7 @@ process = tqdm(range(len(dataset)))
 for i in process:
     text, time, properties = dataset[i][0], dataset[i][1], dataset[i][2]
     try:
-        extracted_triplets, _ = mem_pipeline.remember(text, time, properties)
+        extracted_triplets, _, _ = mem_pipeline.remember(text, time, properties)
     except AssertionError:
         pprint(kg_model.count_items(detailed=True))
         print(f"end time: {datetime.datetime.now()}")

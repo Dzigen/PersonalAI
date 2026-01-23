@@ -291,7 +291,7 @@ services:
     build:
       context: .
       dockerfile: workspace.Dockerfile
-    image: m.menschikov/workspace:v7
+    image: m.menschikov/workspace:v8
     container_name: personalai_mmenschikov_workspace
     hostname: workspaceservice
     network_mode: "host"
@@ -350,5 +350,5 @@ services:
           memory: 4G
           devices:
             - driver: nvidia
-              device_ids: ['2']
+              device_ids: ['0']
               capabilities: [gpu]
