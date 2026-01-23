@@ -19,13 +19,9 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
         self.config: GraphDBConnectionConfig = config
 
     def open_connection(self) -> None:
-        self.driver = None
-        try:
-            self.driver = GraphDatabase.driver(
-                f"bolt://{self.config.host}:{self.config.port}",
-                auth=(self.config.params['user'], self.config.params['pwd']))
-        except Exception as e:
-            print("Failed to create the driver:", e)
+        self.driver = GraphDatabase.driver(
+            f"bolt://{self.config.host}:{self.config.port}",
+            auth=(self.config.params['user'], self.config.params['pwd']))
 
         #
         self.execute_query(
