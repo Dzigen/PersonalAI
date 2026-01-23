@@ -17,7 +17,7 @@ from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......utils.data_structs import QueryInfo, Triplet, NodeType, NodeInfo, from_str_to_nodeinfo
 from .......kg_model import KnowledgeGraphModel
 from .......utils.data_structs import create_id, NODES_TYPES_MAP
-from .......utils import Logger, accumulate_step_info
+from .......utils import Logger, accumulate_step_info, ReturnInfo
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 from .......rerankers import RerankerDriver, RerankerDriverConfig
@@ -389,7 +389,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         return [self.config.to_str(), query, node.to_str()]
 
     @CacheUtils.cache_method_output
-    def search(self, query: str, node: NodeInfo) -> List[Triplet]:
+    def search(self, query: str, node: NodeInfo) -> Tuple[List[Triplet]]:
         paths_info = self.graph_beamsearch(query, node)
 
         uniques_tids = set()
@@ -401,15 +401,17 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 uniques_tids.add(triplet_info[1])
 
         extracted_triplets = self.kg_model.graph_struct.db_conn.read(list(uniques_tids))
-        return extracted_triplets
+        # PAY ATTENTION: tuple is needed to satisfy decorator interface
+        return extracted_triplets,
 
     @accumulate_step_info
-    def get_relevant_triplets(self, query_info: QueryInfo) -> Tuple[List[Triplet], bool]:
+    def get_relevant_triplets(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo, bool]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log("RETRIEVER: BeamSearchTripletsRetriever", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 
+        rinfo = ReturnInfo()
         cache_hits: List[bool] = []
 
         nodes: List[NodeInfo] = []
@@ -437,4 +439,4 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log(f"Распределение типов связей в наборе извлечённых триплетов: {relations_counter}", verbose=self.verbose)
 
         cachehit_summary = (sum(cache_hits) / len(cache_hits)) >= 0.5
-        return unique_triplets, cachehit_summary
+        return unique_triplets, rinfo, cachehit_summary

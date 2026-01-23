@@ -15,5 +15,5 @@ from .cases import POPULATED_WEAK_REASONER_TEST_CASES
 def test_weak_reasoner(reasoner_config: WeakKGReasonerConfig, query: str, kg_model: KnowledgeGraphModel):
     reasoner = WeakKGReasoner(kg_model, reasoner_config, kg_model.cache_config)
 
-    _, info = reasoner.perform(query)
+    _, info, _ = reasoner.perform(query)
     assert info.status.value == 0

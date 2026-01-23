@@ -488,13 +488,13 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
             if self.config.nodes_aggregation_mechanism == 'sequencial':
                 prev_summ_text = newnode_text if len(
                     new_text_summaries) < 1 else new_text_summaries[-1]
-                summ_text, solve_status = self.tasks_solvers.nodes_summarization_solver.solve(
+                summ_text, solve_status, _ = self.tasks_solvers.nodes_summarization_solver.solve(
                     lang=self.config.lang,
                     current_content=parent_text, new_content=prev_summ_text,
                     n_descendants=str(parent_descendants_num))
 
             elif self.config.nodes_aggregation_mechanism == 'parallel':
-                summ_text, solve_status = self.tasks_solvers.nodes_summarization_solver.solve(
+                summ_text, solve_status, _ = self.tasks_solvers.nodes_summarization_solver.solve(
                     lang=self.config.lang,
                     current_content=parent_text, new_content=newnode_text,
                     n_descendants=str(parent_descendants_num))

@@ -85,7 +85,7 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
         return [entity, self.config.to_str()]
 
     @CacheUtils.cache_method_output
-    def match_entity2knowledge(self, entity: str) -> List[NodeInfo]:
+    def match_entity2knowledge(self, entity: str) -> Tuple[List[NodeInfo]]:
         if self.config.use_tree:
             matched_objects = self.kg_model.nodestree_model.match_entity2objects(entity, max_n=self.config.max_n)
         else:
@@ -94,7 +94,8 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
                 self.retriever.run(entity, top_k=self.config.max_n, includes=['documents'])
             ))
 
-        return matched_objects
+        # PAY ATTENTION: tuple is needed to satisfy decorator interface
+        return matched_objects,
 
     @accumulate_step_info
     def perform(self, entities: List[str]) -> Tuple[Dict[str, List[NodeInfo]], ReturnInfo, bool]:

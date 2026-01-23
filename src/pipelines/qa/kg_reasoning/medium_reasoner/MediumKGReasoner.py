@@ -206,8 +206,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
 
         if rinfo.status == ReturnStatus.success:
             self.log("STAGE#2.1.2 - ENTITIES-TO-KGOBJECTS MATCHING", verbose=self.verbose)
-            matching_result, trace = self.stages.entities2nodes_matcher.perform(entities)
-            matched_kg_objects, e2nm_rinfo = matching_result
+            matched_kg_objects, e2nm_rinfo, trace = self.stages.entities2nodes_matcher.perform(entities)
             module_trace.add("entities2nodes_matcher", ModuleType.step, trace)
             if e2nm_rinfo.status == ReturnStatus.success:
                 self.log("Operation ended successfully", verbose=self.verbose)

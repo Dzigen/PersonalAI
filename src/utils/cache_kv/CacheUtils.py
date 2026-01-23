@@ -84,5 +84,5 @@ class CacheUtils(AbstractCacheUtils):
                         f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
                     self.cachekv.save_value(value=output, key_hash=key_hash)
 
-            return output, cache_hit
+            return *output, cache_hit
         return wrapper

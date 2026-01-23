@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Union, Dict
+from typing import List, Union, Dict, Tuple
 from copy import deepcopy
 
 from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarTripletsRetriever
@@ -10,7 +10,7 @@ from .NaiveTripletsRetriever import NaiveTripletsRetriever, NaiveGraphSearchConf
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......utils.data_structs import QueryInfo, Triplet, create_id, NodeType, NODES_TYPES_MAP
 from .......kg_model import KnowledgeGraphModel
-from .......utils import Logger, accumulate_step_info
+from .......utils import Logger, accumulate_step_info, ReturnInfo
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 
@@ -146,12 +146,12 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     @accumulate_step_info
     @CacheUtils.cache_method_output
-    def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
+    def get_relevant_triplets(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log(f"RETRIEVER: MixturedTripletsRetriever ({self.config.retriever1_name} + {self.config.retriever2_name})", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
-
+        rinfo = ReturnInfo()
         triplets1, _, _ = self.retriever1.get_relevant_triplets(query_info)
         triplets2, _, _ = self.retriever2.get_relevant_triplets(query_info)
 
@@ -164,4 +164,4 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             unique_triplets_map[triplet.relation.get_typedid()] = deepcopy(triplet)
         unique_triplets: List[Triplet] = list(unique_triplets_map.values())
 
-        return unique_triplets
+        return unique_triplets, rinfo

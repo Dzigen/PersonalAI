@@ -11,5 +11,5 @@ from .cases import POPULATED_QUERIES_TEST_CASES
 
 @pytest.mark.parametrize("query, personal_ai", POPULATED_QUERIES_TEST_CASES, indirect=['personal_ai'])
 def test_personalai(query: str, personal_ai: PersonalAI):
-    _, info = personal_ai.answer_question(query)
+    _, info, _ = personal_ai.answer_question(query)
     assert info.status.value == 0

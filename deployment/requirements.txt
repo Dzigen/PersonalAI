@@ -204,3 +204,4 @@ rdflib==7.5.0
 falkordb==1.2.2
 mlflow==3.8.1
 boto3==1.42.23
+lingua-language-detector==2.1.1

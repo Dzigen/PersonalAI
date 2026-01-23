@@ -81,17 +81,15 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
         self.log = self.config.log
         self.verbose = self.config.verbose
 
-    def get_cache_key(self, query_info: QueryInfo) -> List[object]:
-        """Формирует ключ кэша для результата сопоставления сущностей с узлами графа.
+    def get_cache_key(self, entity: str) -> List[object]:
+        """Формирует ключ кэша для результата сопоставления сущности с узлами графа.
 
-        В ключ включается строковое представление конфигурации компаратора, сериализованное представление входного QueryInfo.
-
-        :param query_info: Структура с исходным запросом и дополнительными полями.
-        :type query_info: QueryInfo
+        :param entity: Именованная сущность.
+        :type entity: str
         :return: Список строк, используемый как составной ключ кеша.
         :rtype: List[object]
         """
-        return [self.config.to_str(), query_info.to_str()]
+        return [self.config.to_str(), entity]
 
     @CacheUtils.cache_method_output
     def match_entity2knowledge(self, entity: str) -> Tuple[List[NodeInfo], List[str]]:
@@ -100,7 +98,7 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
             self.retriever.run(entity, top_k=self.config.max_k, includes=['documents'])
         ))
 
-        cur_documents = list(map(lambda item: item.document, matched_objects))
+        cur_documents = list(map(lambda item: item.text, matched_objects))
         cur_documents_lower = list(map(lambda document: document.lower(), cur_documents))
         if entity.lower() in cur_documents_lower[:self.config.k_compare]:
             cur_unique_names = [entity]
@@ -129,8 +127,8 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
         cache_hits: List[bool] = []
 
         for entity in query_info.entities:
-            output, cache_hit = self.match_entity2knowledge(entity)
-            cur_linked_nodes, cur_unique_names = output
+            cur_linked_nodes, cur_unique_names, cache_hit = \
+                self.match_entity2knowledge(entity)
             cache_hits.append(cache_hit)
 
             linked_nodes += cur_linked_nodes

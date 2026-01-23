@@ -36,3 +36,4 @@ rdflib
 falkordb
 mlflow
 boto3
+lingua-language-detector

@@ -169,7 +169,7 @@ class PersonalAI:
         # получаем triplets id из kv-database
         triplets = self.textid_store.select_triplets_to_delete(text_id)
         # вызываем remove_knowledge у модели графа знаний
-        delete_info, trace = self.kg_model.remove_knowledge(triplets)
+        delete_info, _, trace = self.kg_model.remove_knowledge(triplets)
         module_trace.add('remove_knowledge', ModuleType.step, trace)
         # удаляем соответствующие записи из kv-database
         self.textid_store.clear_info(text_id)

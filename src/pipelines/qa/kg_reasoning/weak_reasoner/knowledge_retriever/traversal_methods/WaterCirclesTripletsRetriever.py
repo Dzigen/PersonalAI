@@ -7,7 +7,7 @@ from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......kg_model import KnowledgeGraphModel
 from .......utils.data_structs import QueryInfo, TripletCreator, create_id, Triplet, NodeCreator, \
     RelationCreator, NodeType, RelationType, NODES_TYPES_MAP
-from .......utils import Logger, accumulate_step_info
+from .......utils import Logger, accumulate_step_info, ReturnInfo
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 
@@ -357,13 +357,14 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
 
     @accumulate_step_info
     @CacheUtils.cache_method_output
-    def get_relevant_triplets(self, query_info: QueryInfo, depth: int = 1) -> List[Triplet]:
+    def get_relevant_triplets(self, query_info: QueryInfo, depth: int = 1) -> Tuple[List[Triplet], ReturnInfo]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log("RETRIEVER: WaterCirclesTripletsRetriever",
                  verbose=self.verbose)
-        self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
+        rinfo = ReturnInfo()
+
         seed_entities = []
         if hasattr(query_info, "entities_with_types"):
             entities_with_types = query_info.entities_with_types
@@ -513,7 +514,8 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
                 for triplet in f_triplets[:thres]:
                     formatted_triplet = format_triplet(triplet)
                     formatted_triplets.append(formatted_triplet)
-        return formatted_triplets
+
+        return formatted_triplets, rinfo
 
     def extract_thesis_for_entities(
         self,

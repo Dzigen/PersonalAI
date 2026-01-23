@@ -98,26 +98,26 @@ def accumulate_tasksolver_info(func):
 def accumulate_step_info(func):
     def wrapper(*args, **kwargs) -> Tuple[object, SimpleModuleResult]:
         s_time = time()
-        *result, cache_hit = func(*args, **kwargs)
+        result, rinfo, cache_hit = func(*args, **kwargs)
         e_time = time()
 
         trace = SimpleModuleResult(
             context=deepcopy(kwargs),
             result=deepcopy(result),
             elapsed_time=round(e_time - s_time, 5),
-            cache_hit=cache_hit
+            cache_hit=cache_hit,
+            status=rinfo.status
         )
         trace.context['positional_arguments'] = deepcopy(args[1:])  # исключаем self
 
-        return result, trace
+        return result, rinfo, trace
     return wrapper
 
 
 def accumulate_stage_info(func):
     def wrapper(*args, **kwargs) -> Tuple[object, ReturnInfo, CompositeModuleResult]:
         s_time = time()
-        *output, cache_hit = func(*args, **kwargs)
-        result, rinfo, intermediate_trace = output
+        result, rinfo, intermediate_trace, cache_hit = func(*args, **kwargs)
         e_time = time()
 
         stage_summary = CompositeModuleSummaryResult(
