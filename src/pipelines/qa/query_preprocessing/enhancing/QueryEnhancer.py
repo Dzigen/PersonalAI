@@ -4,6 +4,7 @@ from copy import deepcopy
 
 from .config import QE_MAIN_LOG_PATH
 from .utils import QueryEnhancerTaskSolvers, QueryEnhancerAgentTasksConfig
+from .....utils import accumulate_stage_info, CompositeModuleDetailedResult, ModuleType
 from .....utils.cache_kv import CacheUtils
 from .....utils.errors import STATUS_MESSAGE
 from .....utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
@@ -110,20 +111,21 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [query_info.to_str(), self.config.to_str(), str_using_agent_info]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def perform(self, query_info: QueryPreprocessingInfo) -> Tuple[str, ReturnInfo]:
+    def perform(self, query_info: QueryPreprocessingInfo) -> Tuple[str, ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для выполнения операции форматирования/предобработки user-вопроса: переформулирование user-вопроса для выделения запроса/интента.
 
         :param query_info: Структура данных с результатами предыдущих операций предобратки/форматирования исходного user-вопроса.
         :type query_info: QueryPreprocessingInfo
-        :return: Кортеж из двух объектов: (1) модифицированный user-вопрос с добавленными языковыми конструкциями для выделения запроса/интента; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[str, ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) модифицированный user-вопрос с добавленными языковыми конструкциями для выделения запроса/интента; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
         self.log("START QUERY ENHANCING...", verbose=self.verbose)
-        self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.verbose)
         self.log(f"QUERY INFO: {query_info}", verbose=self.verbose)
         enhanced_query, rinfo = None, ReturnInfo()
+        module_trace = CompositeModuleDetailedResult()
 
         if query_info.denoised_query is not None:
             query = query_info.denoised_query
@@ -132,37 +134,34 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             raise ValueError
 
-        self.log("Выполнение добавление более понятных языковых конструкций в запрос с помощью LLM-агента...",
-                 verbose=self.verbose)
-        expanded_query, status = self.tasks_solvers.queryexpansion_solver.solve(
+        self.log("Добавление более понятных языковых конструкций в запрос с помощью LLM-агента...", verbose=self.verbose)
+        expanded_query, status, trace = self.tasks_solvers.queryexpansion_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
+        module_trace.add("queryexpansion_solver", ModuleType.task_solver, trace)
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
         else:
             self.log(f"RESULT: {expanded_query}", verbose=self.verbose)
 
         if status == ReturnStatus.success:
-            self.log("Выполнение замены слабоопределённых фраз в запросе на конкретную терминологии с помощью LLM-агента...",
-                     verbose=self.verbose)
-            defined_query, status = self.tasks_solvers.termscheck_solver.solve(
-                lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
-                query=expanded_query)
+            self.log("Замена слабоопределённых фраз в запросе на конкретную терминологию с помощью LLM-агента...", verbose=self.verbose)
+            defined_query, status, trace = self.tasks_solvers.termscheck_solver.solve(
+                lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=expanded_query)
+            module_trace.add("termscheck_solver", ModuleType.task_solver, trace)
             if status != ReturnStatus.success:
                 rinfo.occurred_warning.append(status)
             else:
-                self.log(f"RESULT: {defined_query}",
-                         verbose=self.verbose)
+                self.log(f"RESULT: {defined_query}", verbose=self.verbose)
 
         if status == ReturnStatus.success:
-            self.log("Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.verbose)
-            reformulated_query, status = self.tasks_solvers.linguistcheck_solver.solve(
-                lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
-                query=defined_query)
+            self.log("Перефразирование запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.verbose)
+            reformulated_query, status, trace = self.tasks_solvers.linguistcheck_solver.solve(
+                lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=defined_query)
+            module_trace.add("linguistcheck_solver", ModuleType.task_solver, trace)
             if status != ReturnStatus.success:
                 rinfo.occurred_warning.append(status)
             else:
-                self.log(f"RESULT: {reformulated_query}",
-                         verbose=self.verbose)
+                self.log(f"RESULT: {reformulated_query}", verbose=self.verbose)
                 enhanced_query = reformulated_query
 
         if enhanced_query is None:
@@ -172,4 +171,4 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         self.log(f"RESULT: {enhanced_query}", verbose=self.verbose)
         self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
-        return enhanced_query, rinfo
+        return enhanced_query, rinfo, module_trace

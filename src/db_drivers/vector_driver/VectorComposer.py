@@ -18,6 +18,7 @@ class VectorComposer(AbstractVectorDatabaseComposer):
     :param embedders_mapping: Сопоставление имени хранилища и экземпляра EmbedderModel, который будет использоваться при подключении.
     :type embedders_mapping: Dict[str, EmbedderModel]
     """
+
     def __init__(self, vdb_config_mapping: Dict[str, Union[Dict, VectorDriverConfig]], embedders_mapping: Dict[str, EmbedderModel] = dict()) -> None:
         for vdb_name, vdb_config in vdb_config_mapping.items():
             if isinstance(vdb_config, dict):
@@ -143,10 +144,3 @@ class VectorComposer(AbstractVectorDatabaseComposer):
 
         if check_consistency:
             self.check_consistency()
-
-    def __del__(self):
-        for v_conn in self.vdb_conn_mapping.values():
-            try:
-                v_conn.close_connection()
-            except AttributeError:
-                pass

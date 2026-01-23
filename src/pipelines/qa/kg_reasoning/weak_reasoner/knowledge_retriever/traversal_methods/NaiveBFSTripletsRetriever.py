@@ -8,7 +8,7 @@ from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......utils.data_structs import QueryInfo, Triplet, NodeType
 from .......kg_model import KnowledgeGraphModel
 from .......utils.data_structs import create_id, NODES_TYPES_MAP, NodeInfo
-from .......utils import Logger
+from .......utils import Logger, accumulate_step_info
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 
@@ -82,6 +82,10 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log = log
         self.verbose = verbose
 
+    def close_connections(self):
+        if self.cachekv is not None:
+            self.cachekv.close_connection()
+
     def clear_traversal_cache(self) -> None:
         return None
 
@@ -148,6 +152,7 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def get_cache_key(self, query_info: QueryInfo) -> List[str]:
         return [self.config.to_str(), query_info.to_str()]
 
+    @accumulate_step_info
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)

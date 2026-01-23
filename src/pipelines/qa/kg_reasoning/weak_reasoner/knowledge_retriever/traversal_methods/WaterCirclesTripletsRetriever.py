@@ -7,7 +7,7 @@ from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......kg_model import KnowledgeGraphModel
 from .......utils.data_structs import QueryInfo, TripletCreator, create_id, Triplet, NodeCreator, \
     RelationCreator, NodeType, RelationType, NODES_TYPES_MAP
-from .......utils import Logger
+from .......utils import Logger, accumulate_step_info
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 
@@ -178,6 +178,10 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
             'MATCH (a:object)-[r]-(b:object) WHERE b.name="{name2}" RETURN a, r, b'
         self.extract_triplets_rel_prop_template = \
             'MATCH (a:object)-[r]-(b:object) WHERE r.{prop_name}="{prop_value}" RETURN a, r, b'
+
+    def close_connections(self):
+        if self.cachekv is not None:
+            self.cachekv.close_connection()
 
     def clear_traversal_cache(self) -> None:
         return None
@@ -351,6 +355,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
     def get_cache_key(self, query_info: QueryInfo, depth: int = 1) -> List[str]:
         return [self.config.to_str(), query_info.to_str(), str(depth)]
 
+    @accumulate_step_info
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo, depth: int = 1) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)

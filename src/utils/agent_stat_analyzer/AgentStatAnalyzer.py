@@ -101,5 +101,6 @@ class AgentStatAnalyzer:
     def clear(self) -> None:
         self.db_conn.clear()
 
-    def __del__(self):
+    def close_connection(self):
+        # print("closing astat-cache conn")
         self.db_conn.close_connection()

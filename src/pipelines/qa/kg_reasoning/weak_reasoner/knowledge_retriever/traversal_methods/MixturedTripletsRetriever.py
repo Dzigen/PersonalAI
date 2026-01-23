@@ -10,7 +10,7 @@ from .NaiveTripletsRetriever import NaiveTripletsRetriever, NaiveGraphSearchConf
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......utils.data_structs import QueryInfo, Triplet, create_id, NodeType, NODES_TYPES_MAP
 from .......kg_model import KnowledgeGraphModel
-from .......utils import Logger
+from .......utils import Logger, accumulate_step_info
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 
@@ -125,6 +125,12 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log = log
         self.verbose = verbose
 
+    def close_connections(self):
+        if self.cachekv is not None:
+            self.cachekv.close_connection()
+        self.retriever1.close_connections()
+        self.retriever2.close_connections()
+
     def clear_traversal_cache(self) -> None:
         self.retriever1.clear_traversal_cache()
         self.retriever2.clear_traversal_cache()
@@ -138,6 +144,7 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def get_cache_key(self, query_info: QueryInfo) -> List[str]:
         return [self.config.to_str(), query_info.to_str()]
 
+    @accumulate_step_info
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
@@ -145,8 +152,8 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
 
-        triplets1 = self.retriever1.get_relevant_triplets(query_info)
-        triplets2 = self.retriever2.get_relevant_triplets(query_info)
+        triplets1, _ = self.retriever1.get_relevant_triplets(query_info)
+        triplets2, _ = self.retriever2.get_relevant_triplets(query_info)
 
         self.log(f"Количество триплетов, извлечённых с помощью {self.config.retriever1_name}/{self.config.retriever2_name}: {len(triplets1)}/{len(triplets2)}",
                  verbose=self.verbose)

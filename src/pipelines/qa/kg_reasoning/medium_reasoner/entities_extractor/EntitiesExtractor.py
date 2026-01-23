@@ -4,8 +4,8 @@ from copy import deepcopy
 
 from .config import ENEXTR_MAIN_LOG_PATH
 from .utils import MediumEntitiesExtractorTaskSolvers, EntitiesExtractorAgentTasksConfig
-from ......utils import ReturnInfo, Logger, AgentTaskSolver
-from ......utils import ReturnStatus
+from ......utils import ReturnInfo, Logger, AgentTaskSolver, ReturnStatus, accumulate_stage_info, \
+    CompositeModuleDetailedResult, ModuleType
 from ......agents.utils import AbstractAgentConnector
 from ......utils.data_structs import create_id, BaseComponentConfig, LanguageConfig
 from ......utils.errors import STATUS_MESSAGE
@@ -97,23 +97,25 @@ class EntitiesExtractor(CacheUtils, CacheOperations, AgentStatOperations):
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [query, self.config.to_str(), str_using_agent_info]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def perform(self, query: str) -> Tuple[List[str], ReturnInfo]:
+    def perform(self, query: str) -> Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для извлечения сущностей из поискового запроса на естественном языке.
 
         :param query: Поисковый запрос на естественном языке.
         :type query: str
-        :return: Кортеж из двух объектов: (1) извлечённый список сущностей; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[List[str], ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) извлечённый список сущностей; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult]
         """
         self.log("START ENTITIES EXTRACTION...", verbose=self.verbose)
-        rinfo = ReturnInfo()
+        rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
         self.log(f"QUERY ID: {create_id(query)}", verbose=self.verbose)
         self.log(f"QUERY: {query}", verbose=self.verbose)
 
         self.log("Выполнение извлечения сущностей из запроса с помощью LLM-агента...", verbose=self.verbose)
-        extracted_entities, rinfo.status = self.tasks_solvers.entities_extractor_solver.solve(
+        extracted_entities, rinfo.status, trace = self.tasks_solvers.entities_extractor_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
+        module_trace.add("entities_extractor_solver", ModuleType.task_solver, trace)
 
         entities = []
         if extracted_entities is None or len(extracted_entities) == 0:
@@ -129,4 +131,4 @@ class EntitiesExtractor(CacheUtils, CacheOperations, AgentStatOperations):
 
         self.log(f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.verbose)
 
-        return entities, rinfo
+        return entities, rinfo, module_trace

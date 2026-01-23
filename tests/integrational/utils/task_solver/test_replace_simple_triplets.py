@@ -13,7 +13,7 @@ from src.utils import Triplet, ReturnStatus
 RU_MATCHED_OBOSLETE_TRIPELET_2 = '[["фыв, епи, ячс" -> "йцу, епи, фыв"]]'
 RU_MATCHED_OBSOLETE_TRIPLET_2AND3 = '[["фыв, епи, ячс" -> "йцу, епи, фыв"],["ячс, епи, йцу" -> "йцу, епи, фыв"]]'
 RU_ZERO_MATCHED_OBSOLETE_TRIPLETS = '[]'
-RU_BAD_REPONSE_TRIPLET_2AND3 = '[["фыв, епи, ячс" "йцу, епи, фыв"],["ячс, епи, йцу" "йцу, епи, фыв"]]'
+RU_BAD_RESPONSE_TRIPLET_2AND3 = '[["фыв, епи, ячс" "йцу, епи, фыв"],["ячс, епи, йцу" "йцу, епи, фыв"]]'
 
 EN_MATCHED_OBOSLETE_TRIPELET_2 = '[["asd, zxc, uio" -> "qwe, zxc, asd"]]'
 EN_MATCHED_OBSOLETE_TRIPLET_2AND3 = '[["asd, zxc, uio" -> "qwe, zxc, asd"],["uio, zxc, qwe" -> "qwe, zxc, asd"]]'
@@ -41,7 +41,7 @@ EN_BAD_REPONSE_TRIPLET_2AND3 = '[["asd, zxc, uio" "qwe, zxc, asd"],["uio, zxc, q
     # TODO
     # 1.5. ошибка в parser-функции
     ('ru', RU_VALID_SIMPLE_TRIPLET1, [RU_VALID_SIMPLE_TRIPLET2, RU_VALID_SIMPLE_TRIPLET3], [
-     RU_BAD_REPONSE_TRIPLET_2AND3], None, ReturnStatus.bad_parser),
+     RU_BAD_RESPONSE_TRIPLET_2AND3], None, ReturnStatus.bad_parser),
     # 1.6. ошибка в postprocessor-функции
     # TODO
     # 2. английский язык

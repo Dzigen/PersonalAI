@@ -12,7 +12,7 @@ from .......utils.data_structs import QueryInfo, Triplet, NodeType, create_id_fo
     NODES_TYPES_MAP, NodeInfo, from_str_to_nodeinfo, BaseConfigOperations
 from .......kg_model import KnowledgeGraphModel
 from .......db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver, KeyValueDBInstance
-from .......utils import Logger
+from .......utils import Logger, accumulate_step_info
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
 from .......db_drivers.vector_driver import VectorDBInstance
@@ -91,6 +91,11 @@ class AStarMetrics:
 
         self.log = log
         self.verbose = verbose
+
+    def close_connections(self):
+        if self.cache is not None:
+            for conn in self.cache.values():
+                conn.close_connection()
 
     def init_caches_stats(self) -> None:
         self.cache_info = {
@@ -374,6 +379,9 @@ class AStarGraphSearch:
         self.log = log
         self.verbose = verbose
 
+    def close_connections(self):
+        self.metrics.close_connections()
+
     def search_path(self, start_node: NodeInfo, end_node: NodeInfo) -> Tuple[List[str], List[NodeInfo], Dict[str, int], Dict[str, NodeInfo], NodeInfo]:
         """Реализация A*-алгоритма. Источник: https://www.redblobgames.com/pathfinding/a-star/implementation.html."""
         frontier: List[int, NodeInfo] = []
@@ -470,6 +478,11 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log = log
         self.verbose = verbose
 
+    def close_connections(self):
+        if self.cachekv is not None:
+            self.cachekv.close_connection()
+        self.graph_searcher.close_connections()
+
     def clear_traversal_cache(self) -> None:
         self.graph_searcher.metrics.clear_kv_caches()
 
@@ -489,6 +502,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def search_path(self, start_node: NodeInfo, end_node: NodeInfo) -> Tuple[List[str], List[NodeInfo], Dict[str, int], Dict[str, NodeInfo], NodeInfo]:
         return self.graph_searcher.search_path(start_node, end_node)
 
+    @accumulate_step_info
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log("RETRIEVER: AStarTripletsRetriever", verbose=self.verbose)

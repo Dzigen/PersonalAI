@@ -3,7 +3,7 @@ import sys
 import json
 import joblib
 import gc
-import ast 
+import ast
 
 import datetime
 from tqdm import tqdm
@@ -221,3 +221,5 @@ for t_file in tqdm(extracted_t_files):
 joblib.dump(accum_triplets, EXTRACTED_TRIPLETS_PATH)
 
 print("############ DONE ############")
+
+mem_pipeline.close_connections()

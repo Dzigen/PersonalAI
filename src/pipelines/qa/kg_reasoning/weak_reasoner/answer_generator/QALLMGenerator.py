@@ -10,7 +10,8 @@ from ......utils.data_structs import Triplet, RelationType, create_id, TripletCr
     BaseComponentConfig, LanguageConfig, RELATIONS_TYPES_MAP
 from ......utils.errors import STATUS_MESSAGE
 from ......agents.utils import AbstractAgentConnector
-from ......utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolver
+from ......utils import Logger, ReturnInfo, ReturnStatus, AgentTaskSolver, \
+    accumulate_stage_info, ModuleType, CompositeModuleDetailedResult
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
@@ -120,39 +121,39 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [self.config.to_str(), str_using_agent_info, query, str_triplets]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def generate(self, query: str, context_triplets: List[Triplet]) -> Tuple[str, ReturnInfo]:
+    def generate(self, query: str, context_triplets: List[Triplet]) -> Tuple[str, ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для условной генерации ответа на вопрос.
 
         :param query: Вопрос на естественном языке.
         :type query: str
         :param context: Ненумерованный список дополнительной информации на естественном языке для генерации ответа.
         :type context: List[Triplet]
-        :return: Кортеж из двух объектов: (1) сгенерированный ответ на вопрос; (2) статус выполнения операции с пояснительной информацией.
-        :rtype: Tuple[str, ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) сгенерированный ответ на вопрос; (2) статус выполнения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
-
-        rinfo = ReturnInfo()
+        rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
         self.log("START ANSWER GENERATION ...", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
-        
+
         triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in context_triplets]))
         self.log(f"Исходное количество триплетов: {len(context_triplets)} | {triplet_types_freq}", verbose=self.verbose)
-        
+
         filtered_triplets = [triplet for triplet in context_triplets if triplet.relation.type in self.config.relation_type]
         triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in filtered_triplets]))
         self.log(f"Количество оставшихся триплетов после фильтрации по типу: {len(filtered_triplets)} | {triplet_types_freq}", verbose=self.verbose)
-
 
         self.log(f"CONTEXT_TRIPLETS:", verbose=self.verbose)
         for triplet in filtered_triplets:
             self.log(f"*[{triplet.id}] {triplet}", verbose=self.verbose)
 
         self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...", verbose=self.verbose)
-        answer, status = self.tasks_solvers.answer_generator_solver.solve(
+        answer, status, trace = self.tasks_solvers.answer_generator_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             query=query, triplets=filtered_triplets)
+        module_trace.add("answer_generator_solver", ModuleType.task_solver, trace)
 
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
@@ -166,4 +167,4 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
 
         self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
-        return answer, rinfo
+        return answer, rinfo, module_trace

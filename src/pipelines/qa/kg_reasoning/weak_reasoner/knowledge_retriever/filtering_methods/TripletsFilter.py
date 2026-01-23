@@ -8,7 +8,7 @@ from .configs import KRFILTER_RERANKDRIVER_DEFAULT_CONFIG
 from ..utils import AbstractTriplesFilter, BaseTripletsFilterConfig
 from .......utils.data_structs import Triplet, QueryInfo, create_id, \
     TripletCreator, RelationType, RELATIONS_TYPES_MAP
-from .......utils import Logger
+from .......utils import Logger, accumulate_step_info
 from .......kg_model import KnowledgeGraphModel
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
@@ -90,6 +90,10 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
         self.log = log
         self.verbose = verbose
 
+    def close_connections(self):
+        if self.cachekv is not None:
+            self.cachekv.close_connection()
+
     def get_cache_key(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[str]:
         """Формирует ключ кэша для результатов фильтрации триплетов.
 
@@ -105,6 +109,7 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
         str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(triplet)[1] for triplet in triplets])).encode()).hexdigest()
         return [self.config.to_str(), query_info.to_str(), str_triplets]
 
+    @accumulate_step_info
     @CacheUtils.cache_method_output
     def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
         self.log("START KNOWLEDGE FILTERING...", verbose=self.verbose)
@@ -135,7 +140,7 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
             self.log(f"accepted ids: {accepted_relation_ids}", verbose=self.verbose)
 
             filtered_triplets = list(map(lambda rel_id: type_filtered_relations[rel_id], accepted_relation_ids))
-        
+
         triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in filtered_triplets]))
         self.log(f"Количество триплетов после фильтраций: {len(filtered_triplets)} | {triplet_types_freq}", verbose=self.verbose)
 

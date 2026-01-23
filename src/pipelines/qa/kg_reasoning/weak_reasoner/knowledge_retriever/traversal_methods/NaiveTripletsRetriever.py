@@ -7,7 +7,7 @@ from .configs import NGS_RERANKDRIVER_DEFAULT_CONFIG
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......db_drivers.vector_driver import VectorDBInstance
 from .......kg_model import KnowledgeGraphModel
-from .......utils import Logger
+from .......utils import Logger, accumulate_step_info
 from .......utils.data_structs import QueryInfo, Triplet, create_id
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
@@ -82,6 +82,10 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log = log
         self.verbose = verbose
 
+    def close_connections(self):
+        if self.cachekv is not None:
+            self.cachekv.close_connection()
+
     def get_traversal_cache(self) -> None:
         return None
 
@@ -91,6 +95,7 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
         return [self.config.to_str(), query_info.to_str()]
 
+    @accumulate_step_info
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
