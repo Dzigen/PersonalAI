@@ -54,6 +54,8 @@ QA_DATASET_PATH = f"{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{EX
 TMP_GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['tmp_gen_answers_name']}"
 GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['gen_answers_name']}"
 
+QA_TRACES_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['qa_traces_name']}"
+
 QA_ELAPSED_TIME_SPATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['elapsed_time']}"
 AGENT_STAT_SPATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['agent_stat']}"
 CACHE_STAT_SPATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['cache_stat']}"
@@ -215,21 +217,28 @@ print("7. Start inferencing")
 
 for pack_name, questions, _ in question_packs:
 
-    pack_tmp_dir = f"{TMP_GENERATED_ANSWERS_DIR}/{pack_name}"
-    if not os.path.exists(pack_tmp_dir):
-        os.mkdir(pack_tmp_dir)
+    pack_tmp_answers_dir = f"{TMP_GENERATED_ANSWERS_DIR}/{pack_name}"
+    if not os.path.exists(pack_tmp_answers_dir):
+        os.mkdir(pack_tmp_answers_dir)
+
+    pack_traces_dir = f"{QA_TRACES_DIR}/{pack_name}"
+    if not os.path.exists(pack_traces_dir):
+        os.mkdir(pack_traces_dir)
 
     process = tqdm(range(len(questions)))
     for i in process:
         process.set_postfix_str(pack_name)
 
         s_time = time()
-        answer, info = qa_pipeline.answer(questions[i])
+        answer, info, trace = qa_pipeline.answer(questions[i])
         e_time = time()
 
-        answer_dump_file = f"{pack_tmp_dir}/answer_{i}"
+        answer_dump_file = f"{pack_tmp_answers_dir}/answer_{i}"
         joblib.dump({'answer': answer, 'info': info,
                     'elapsed_time': e_time - s_time}, answer_dump_file)
+
+        trace_dump_file = f"{pack_traces_dir}/trace_{i}"
+        joblib.dump(trace, trace_dump_file)
 
 ####################################################
 print("8. Accumulating generated answers")
@@ -238,18 +247,18 @@ elapsed_times: Dict[str,Dict[str, float]] = dict()
 for pack_name, questions, gold_answers in question_packs:
     print(pack_name)
 
-    pack_tmp_dir = f"{TMP_GENERATED_ANSWERS_DIR}/{pack_name}"
+    pack_tmp_answers_dir = f"{TMP_GENERATED_ANSWERS_DIR}/{pack_name}"
 
-    if not os.path.exists(pack_tmp_dir):
+    if not os.path.exists(pack_tmp_answers_dir):
         print("Папки с ответами не сущестует: ", pack_name)
         continue
 
-    tmp_answer_dumps = os.listdir(pack_tmp_dir)
+    tmp_answer_dumps = os.listdir(pack_tmp_answers_dir)
 
     accum_answers: Dict[str,Dict[str, str]] = dict()
     elapsed_times[pack_name] = {'per_question': []}
     for tmp_dump in tqdm(tmp_answer_dumps):
-        answer_info = joblib.load(f"{pack_tmp_dir}/{tmp_dump}")
+        answer_info = joblib.load(f"{pack_tmp_answers_dir}/{tmp_dump}")
         answer_num = int(tmp_dump.split("_")[1])
         accum_answers[answer_num] = {
             'question': questions[answer_num],

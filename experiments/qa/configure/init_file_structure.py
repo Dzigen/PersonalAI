@@ -18,9 +18,16 @@ SPEC_EXPERIMENT_DIR = f"{EXP_KG_PATH}/{SPECEXP_PARAMS['EXPERIMENT_NAME']}"
 
 TMP_GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['tmp_gen_answers_name']}"
 GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['gen_answers_name']}"
+
 METRICS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['metrics_name']}"
+
 TMP_JUDGES_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['tmp_judges_name']}"
 JUDGES_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['judges_name']}"
+
+TMP_RAGAS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['tmp_ragas_name']}"
+RAGAS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['ragas_name']}"
+
+QATRACE_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['qa_traces_name']}"
 SETTINGS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['settings_name']}"
 CONFIGS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['configs_name']}"
 
@@ -48,10 +55,18 @@ if EXPDIR_PARAMS['INIT_STRUCT']:
         raise ValueError(f"Директории существует: {CONFIGS_DIR}")
 
     os.mkdir(SPEC_EXPERIMENT_DIR)
+
     os.mkdir(TMP_JUDGES_DIR)
     os.mkdir(JUDGES_DIR)
+
+    os.mkdir(TMP_RAGAS_DIR)
+    os.mkdir(RAGAS_DIR)
+
     os.mkdir(TMP_GENERATED_ANSWERS_DIR)
     os.mkdir(GENERATED_ANSWERS_DIR)
+
+    os.mkdir(QATRACE_DIR)
+
     os.mkdir(METRICS_DIR)
     os.mkdir(SETTINGS_DIR)
     os.mkdir(CONFIGS_DIR)
