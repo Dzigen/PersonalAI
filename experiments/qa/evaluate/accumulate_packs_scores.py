@@ -60,7 +60,12 @@ accumulated_base_metricnames = {
 
 accumulated_llm_metricnames = {'llm-as-a-judge': ['mean', 'median']}
 
-# TODO
+accumulated_ragas_metricnames = {
+    'response_groundedness': ['mean', 'median'],
+    'context_relevance': ['mean', 'median'],
+    'faithfulness': ['mean', 'median'],
+    'context_entity_recall': ['mean', 'median']
+}
 
 ####################################################
 print("3. Accumulating base scores")
@@ -95,7 +100,17 @@ for pack_name in llm_packs:
 ####################################################
 print("5. Accumulating RAGAS scores")
 
-# TODO
+ragas_packs = os.listdir(RAGAS_METRICS_DIR)
+for pack_name in ragas_packs:
+    metrics_info = load_json(f"{RAGAS_METRICS_DIR}/{pack_name}")
+
+    for m_name in accumulated_ragas_metricnames.keys():
+        if len(accumulated_ragas_metricnames[m_name]) == 0:
+            accumulated_scores[m_name].append(metrics_info[m_name])
+        else:
+            for sub_m_name in accumulated_ragas_metricnames[m_name]:
+                accumulated_scores[f"{m_name}_{sub_m_name}"].append(
+                    metrics_info[m_name][sub_m_name])
 
 ####################################################
 
