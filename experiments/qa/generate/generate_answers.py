@@ -313,3 +313,4 @@ pprint(qa_pipeline.get_cache_stat())
 print("############ DONE ############")
 
 qa_pipeline.close_connections()
+kg_model.close_connections()

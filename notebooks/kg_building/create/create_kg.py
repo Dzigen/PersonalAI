@@ -223,3 +223,4 @@ joblib.dump(accum_triplets, EXTRACTED_TRIPLETS_PATH)
 print("############ DONE ############")
 
 mem_pipeline.close_connections()
+kg_model.close_connections()

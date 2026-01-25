@@ -54,7 +54,7 @@ def save_json(data: Dict[str, object], save_path: str):
 accumulated_scores = defaultdict(list)
 accumulated_base_metricnames = {
     'BLEU1': [], 'BLEU2': [], 'METEOR': [],
-    'RougeL': [], 'ExactMatch': [], 'NoneScore': [], 'NoAnswerScore': []#,
+    'RougeL': [], 'ExactMatch': [], 'F1': [], 'NoneScore': [], 'NoAnswerScore': []#,
 #    'BertScore': ['f1', 'precision', 'recall']
 }
 
