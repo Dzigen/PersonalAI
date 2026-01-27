@@ -41,3 +41,4 @@ ragas
 rapidfuzz
 sacrebleu
 rouge_score
+yq

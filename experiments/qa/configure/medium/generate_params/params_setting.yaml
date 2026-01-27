@@ -3,7 +3,7 @@ DATASET_NAME: # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: # TO CHANGE
   - ['llama318b_050126_v2prompts']
 
-PERSONALAI_VERSION: 'v2.2.0' # TO CHANGE
+PERSONALAI_VERSION: 'v2.2.1' # TO CHANGE
 
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
@@ -62,12 +62,12 @@ kg_reasoner: # TO CHANGE
                 threshold: 0.5
               - fetch_n: 20
                 threshold: 0.5
-            weights: [0.4, 0.6]
+            weights: [0.2, 0.8]
             c: 60
 
     cluequeries_generator_config:
       max_cqueries_amount: 
-        - 3
+        - 6
       agent_tasks_config:
         cquerie_generator: 
           - 'v4'

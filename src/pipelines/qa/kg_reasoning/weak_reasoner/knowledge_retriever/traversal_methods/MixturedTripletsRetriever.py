@@ -111,16 +111,14 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, self.config.cache_table_name)
 
-        self.retriever1: AbstractTripletsRetriever = self.AVAILABLE_RETRIEVERS[search_config.retriever1_name](
-            kg_model, log, search_config.retriever1_config, cache_kvdriver_config, verbose)
-        self.retriever2: AbstractTripletsRetriever = self.AVAILABLE_RETRIEVERS[search_config.retriever2_name](
-            kg_model, log, search_config.retriever2_config, cache_kvdriver_config, verbose)
-
         # accepted nodes
-        self.retriever1.config.accepted_node_types = search_config.accepted_node_types
-        self.config.retriever1_config = self.retriever1.config
-        self.retriever2.config.accepted_node_types = search_config.accepted_node_types
-        self.config.retriever2_config = self.retriever2.config
+        self.config.retriever1_config.accepted_node_types = self.config.accepted_node_types
+        self.config.retriever2_config.accepted_node_types = self.config.accepted_node_types
+
+        self.retriever1: AbstractTripletsRetriever = self.AVAILABLE_RETRIEVERS[search_config.retriever1_name](
+            kg_model, log, self.config.retriever1_config, cache_kvdriver_config, verbose)
+        self.retriever2: AbstractTripletsRetriever = self.AVAILABLE_RETRIEVERS[search_config.retriever2_name](
+            kg_model, log, self.config.retriever2_config, cache_kvdriver_config, verbose)
 
         self.log = log
         self.verbose = verbose
@@ -132,8 +130,11 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.retriever2.close_connections()
 
     def clear_traversal_cache(self) -> None:
-        self.retriever1.clear_traversal_cache()
-        self.retriever2.clear_traversal_cache()
+        self.retriever1.clear_kv_caches(
+            clear_retrieval_cache=True, clear_traversal_cache=True)
+        self.retriever2.clear_kv_caches(
+            clear_retrieval_cache=True, clear_traversal_cache=True
+        )
 
     def get_traversal_cache(self) -> Dict[str, Union[None, Dict, int]]:
         return {

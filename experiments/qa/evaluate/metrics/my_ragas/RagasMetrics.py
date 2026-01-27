@@ -7,6 +7,7 @@ from src.utils import Logger, ReturnInfo
 from openai import AsyncOpenAI
 from dataclasses import dataclass, field
 from typing import Union
+from time import time
 from typing import List, Dict, Tuple
 import asyncio
 from ragas.llms import llm_factory
@@ -150,7 +151,7 @@ class RagasMetrics(CacheUtils):
         response = kwargs.get('response', None)
         retrieved_contexts = kwargs.get('retrieved_contexts', None)
         if retrieved_contexts is not None:
-            retrieved_contexts = sorted(retrieved_contexts, reverse=False)
+            retrieved_contexts = ';'.join(sorted(retrieved_contexts, reverse=False))
 
         return [metric_name, user_input, response, reference, retrieved_contexts, self.config.adriver_config.to_str()]
 
@@ -160,15 +161,24 @@ class RagasMetrics(CacheUtils):
         cache_key = self.get_cache_key(metric_name, **kwargs)
         cstatus, _, cached_result = self.cachekv.load_value(key=cache_key)
         if cstatus == 0:
+            self.log("Cache Hit!", verbose=self.verbose)
             output = cached_result
+            self.log(f"* METRIC_NAME: {metric_name}", verbose=self.verbose)
+            self.log(f"* USER_INPUT: {kwargs.get('user_input', None)}", verbose=self.verbose)
+            self.log(f"* REFERENCE: {kwargs.get('reference', None)}", verbose=self.verbose)
+            self.log(f"* RESPONSE: {kwargs.get('response', None)}",verbose=self.verbose)
+            self.log(f"* RETRIEVED_CONTEXTS: {kwargs.get('retrieved_contexts', None)}",verbose=self.verbose)
+            self.log(f'RESULT: metric: {metric_name}; score = {cached_result}; type = {type(cached_result)}.', verbose=self.verbose)
         else:
+            self.log("Cache Miss!", verbose=self.verbose)
             cache_hit = False
 
         return cache_hit, output
 
     def cache_score(self, metric_name, result, **kwargs) -> None:
+        self.log("Saving value to cache!", verbose=self.verbose)
         cache_key = self.get_cache_key(metric_name, **kwargs)
-        self.cachekv.save_value(value=result, key_hash=cache_key)
+        self.cachekv.save_value(value=result, key=cache_key)
 
     async def perform(self, metric_name, **kwargs) -> float:
         self.log("START Scoring...", verbose=self.verbose)
@@ -179,6 +189,7 @@ class RagasMetrics(CacheUtils):
         self.log(f"* RETRIEVED_CONTEXTS: {kwargs.get('retrieved_contexts', None)}",verbose=self.verbose)
 
         score = None
+        s_time = time()
         if metric_name == 'response_groundedness':
             score = await self.AVAILABLE_METRICS_MAP[metric_name](
                 response=kwargs['response'], retrieved_contexts=kwargs['retrieved_contexts'])
@@ -194,7 +205,8 @@ class RagasMetrics(CacheUtils):
                 reference=kwargs['reference'], retrieved_contexts=kwargs['retrieved_contexts'])
         else:
             raise ValueError
+        e_time = time()
 
-        self.log(f"RESULT: {score}", verbose=self.verbose)
+        self.log(f'RESULT: metric: {metric_name}; score = {score}; type = {type(score)}; elapsed_time = {round(e_time-s_time,5)}.', verbose=self.verbose)
 
         return score

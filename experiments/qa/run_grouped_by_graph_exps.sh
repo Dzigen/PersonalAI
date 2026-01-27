@@ -15,11 +15,11 @@ ENV_SETTINGS_DIR="$INIT_ENV_DIR/env_settings"
 
 # ===============================================================
 
-DATASETS=("diaasq") # TO CHANGE
-KNOWLEDGE_GRAPHS=("llama318b_050126_v2prompts") # TO CHANGE
-EVAL_FNAMES=("diaasq.yaml") # TO CHANGE
-CONFIGURE_FNAMES=("diaasq.yaml") # TO CHANGE
-QA_PIPELINE_VERSION="medium" # TO CHANGE
+DATASETS=("hotpotqa_distractor_validation") # TO CHANGE
+KNOWLEDGE_GRAPHS=("llama318b_230126_v2prompts") # TO CHANGE
+EVAL_FNAMES=("hotpotqa_distractor_validation.yaml") # TO CHANGE
+CONFIGURE_FNAMES=("hotpotqa_distractor_validation.yaml") # TO CHANGE
+QA_PIPELINE_VERSION="weak" # TO CHANGE
 
 # ===============================================================
 
@@ -43,16 +43,14 @@ do
 
     # 1.1 Запускаем TMP workspace-контейнер
     cd $TMP_DEPLOYMENT_COMPOSE_PATH ; docker compose --env-file=".env_base" up -d workspace
-    # 1.2 Устанавливаем нужную утилиту для редактирования yaml-файлов 
-    docker exec -u $USERNAME $TMP_WORKSPACE_CNTNAME bash -c "apt install -y jq; pip install yq"
-    # 1.3 Редактируем нужные значения в qaenv_params-файле
+    # 1.2 Редактируем нужные значения в qaenv_params-файле
     docker exec -u $USERNAME $TMP_WORKSPACE_CNTNAME yq -iy ".DATASET_NAME = \"$CURRENT_DATASET\"" $CREATE_ENVFILE_YAML
     docker exec -u $USERNAME $TMP_WORKSPACE_CNTNAME yq -iy ".KNOWLEDGE_GRAPH_NAME = \"$CURRENT_KG\"" $CREATE_ENVFILE_YAML
-    # 1.4 Выключаем TMP workspace-контейнер
+    # 1.3 Выключаем TMP workspace-контейнер
     docker stop $TMP_WORKSPACE_CNTNAME ; docker rm $TMP_WORKSPACE_CNTNAME
-    # 1.5 Создаём директорию для сохранения env-файла по конкретному графу знаний
+    # 1.4 Создаём директорию для сохранения env-файла по конкретному графу знаний
     mkdir -p $SPEC_ENV_SETTINGS_DIR
-    # 1.6 Генерируем env-файл
+    # 1.5 Генерируем env-файл
     cd $INIT_ENV_DIR && bash $CREATE_ENVFILE_SCRIPT $CREATE_ENVFILE_YAML
 
     # -----------------------------------------------------------

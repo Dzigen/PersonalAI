@@ -63,8 +63,7 @@ accumulated_llm_metricnames = {'llm-as-a-judge': ['mean', 'median']}
 accumulated_ragas_metricnames = {
     'response_groundedness': ['mean', 'median'],
     'context_relevance': ['mean', 'median'],
-    'faithfulness': ['mean', 'median'],
-    'context_entity_recall': ['mean', 'median']
+    'faithfulness': ['mean', 'median']
 }
 
 ####################################################
@@ -106,11 +105,11 @@ for pack_name in ragas_packs:
 
     for m_name in accumulated_ragas_metricnames.keys():
         if len(accumulated_ragas_metricnames[m_name]) == 0:
-            accumulated_scores[m_name].append(metrics_info[m_name])
+            accumulated_scores[m_name].append(metrics_info['ragas'][m_name])
         else:
             for sub_m_name in accumulated_ragas_metricnames[m_name]:
                 accumulated_scores[f"{m_name}_{sub_m_name}"].append(
-                    metrics_info[m_name][sub_m_name])
+                    metrics_info['ragas'][m_name][sub_m_name])
 
 ####################################################
 

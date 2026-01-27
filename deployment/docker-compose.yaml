@@ -291,7 +291,7 @@ services:
     build:
       context: .
       dockerfile: workspace.Dockerfile
-    image: m.menschikov/workspace:v8
+    image: m.menschikov/workspace:v10
     container_name: personalai_mmenschikov_workspace
     hostname: workspaceservice
     network_mode: "host"
@@ -343,10 +343,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '4'
+          cpus: '6'
           memory: 32G
         reservations:
-          cpus: '2'
+          cpus: '3'
           memory: 4G
           devices:
             - driver: nvidia

@@ -32,9 +32,14 @@ KGENV_FILE_PATH = f"{SPEC_ENV_PATH}/{EXPDIR_PARAMS['KG_SETTING_DIR']['kgenv']}.y
 with open(KGENV_FILE_PATH, 'r') as stream:
     KGENV_PARAMS = yaml.safe_load(stream)
 
+# Read YAML file (qaenv-file)
+QAENV_FILE_PATH = f"{SPEC_ENV_PATH}/{EXPDIR_PARAMS['QAENV']}"
+with open(QAENV_FILE_PATH, 'r') as stream:
+    QAENV_PARAMS = yaml.safe_load(stream)
+
 sys.path.insert(0, EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
 
-from src.kg_model import KnowledgeGraphModel
+from src.kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig
 from src.pipelines.qa import QAPipeline
 
 ####################################################
@@ -71,9 +76,13 @@ INFSTAT_CONFIG_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['infe
 ####################################################
 print("3. Loading configs")
 
-kgmodel_config = joblib.load(KG_MODEL_CONFIG_PATH)
+kgmodel_config: KnowledgeGraphModelConfig = joblib.load(KG_MODEL_CONFIG_PATH)
 kvdriver_config = joblib.load(CACHE_CONFIG_PATH)
 llmstat_config = joblib.load(INFSTAT_CONFIG_PATH)
+
+# костыль: меням порт к необходимому ollama-контейнеру
+if kgmodel_config.agents_configs['default'].name == 'ollama':
+    kgmodel_config.agents_configs['default'].agent_config.credentials['port'] = QAENV_PARAMS['OLLAMA_EXT_PORT']
 
 print("KG MODEL_CONFIG:")
 pprint(kgmodel_config)
@@ -100,8 +109,8 @@ qa_pipeline = QAPipeline(kg_model, qa_config, kvdriver_config, llmstat_config)
 
 # qa_pipeline.clear_agent_tgen_stat() # !!! PAY ATTENTION !!!
 # qa_pipeline.clear_kv_caches( # !!! PAY ATTENTION !!!
-#     clear_traversal_cache = False,
-#     clear_retrieval_cache = False
+#      clear_traversal_cache = True,
+#      clear_retrieval_cache = True
 # )
 
 print("llmstat cache:")

@@ -209,3 +209,4 @@ ragas==0.4.3
 rapidfuzz==3.14.3
 sacrebleu==2.6.0
 rouge_score==0.1.2
+yq==3.4.3

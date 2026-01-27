@@ -6,8 +6,8 @@ USERNAME=root
 
 # ===============================================================
 
-DATASETS=("hotpotqa_distractor_validation" "hotpotqa_distractor_validation" "hotpotqa_distractor_validation" "hotpotqa_distractor_validation") # TO CHANGE
-KNOWLEDGE_GRAPHS=("gemma29b_230126_v2prompts" "llama318b_230126_v2prompts" "mistral8b_230126_v2prompts" "qwen257b_230126_v2prompts") # TO CHANGE
+DATASETS=("hotpotqa_distractor_validation" "hotpotqa_distractor_validation") # TO CHANGE
+KNOWLEDGE_GRAPHS=("granite338b_230126_v2prompts" "qwen257b_230126_v2prompts") # TO CHANGE
 
 # ===============================================================
 
