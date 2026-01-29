@@ -13,7 +13,7 @@ with open(SETTINGS_PARAMS_FILEP, 'r') as stream:
 
 #############################################################
 
-REPO_BASE_PATH = '/home/m.menschikov/workspace/personal_ai/Personal-AI' #'/home/workspace' # TO CHANGE
+REPO_BASE_PATH = '/home/workspace' #'/home/m.menschikov/workspace/personal_ai/Personal-AI' | '/home/workspace' # TO CHANGE
 GEN_PARAMS_PATH = f'{REPO_BASE_PATH}/experiments/qa/configure/weak/generate_params'
 SAVE_PARAMS_PATH = f'{GEN_PARAMS_PATH}/tmp_params'
 

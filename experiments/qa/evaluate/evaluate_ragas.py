@@ -166,7 +166,7 @@ for pack_name in answers_pack_names:
             else:
                 raise TypeError
         #
-
+        
         scores = dict()
 
         s_time = time()

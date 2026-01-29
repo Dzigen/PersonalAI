@@ -82,6 +82,9 @@ class RagasMetrics(CacheUtils):
         }
 
     async def context_entity_recall(self, reference: str, retrieved_contexts: List[str]) -> float:
+        if len(retrieved_contexts) < 1:
+            return 0.0
+        
         output = await self.ContextEntitiesRecall.ascore(
             reference=reference, retrieved_contexts=retrieved_contexts
         )
@@ -97,6 +100,9 @@ class RagasMetrics(CacheUtils):
 
     async def faithfulness(self, user_input: str, response: str,
                      retrieved_contexts: List[str]) -> float:
+        if len(retrieved_contexts) < 1:
+            return 0.0
+        
         output = await self.Faithfulness.ascore(
             user_input=user_input, response=response,
             retrieved_contexts=retrieved_contexts
@@ -118,6 +124,9 @@ class RagasMetrics(CacheUtils):
         return round(output.value,5)
 
     async def response_groundedness(self, response: str, retrieved_contexts: List[str]) -> float:
+        if len(retrieved_contexts) < 1:
+            return 0.0
+        
         output = await self.ResponseGroundedness.ascore(
             response=response, retrieved_contexts=retrieved_contexts
         )
