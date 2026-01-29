@@ -211,11 +211,59 @@ def sberdialogues_qa_load(dataset_path: str) -> List[Tuple[str, List[str], List[
 
     return packs
 
+def musique_validation_qa_load(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
+    qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
+
+    questions = qa_df['question'].tolist()
+    answers = qa_df['answer'].tolist()
+
+    max_samples = SPECEXP_PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']
+    if (max_samples > 0):
+        questions = questions[:max_samples]
+        answers = answers[:max_samples]
+
+    packs = [['all', questions, answers]]
+
+    return packs
+
+def wiki2multihopqa_dev_qa_load(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
+    qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
+
+    questions = qa_df['question'].tolist()
+    answers = qa_df['answer'].tolist()
+
+    max_samples = SPECEXP_PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']
+    if (max_samples > 0):
+        questions = questions[:max_samples]
+        answers = answers[:max_samples]
+
+    packs = [['all', questions, answers]]
+
+    return packs
+
+def natural_questions_train_qa_load(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
+    qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
+
+    questions = qa_df['question'].tolist()
+    answers = qa_df['answer'].tolist()
+
+    max_samples = SPECEXP_PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']
+    if (max_samples > 0):
+        questions = questions[:max_samples]
+        answers = answers[:max_samples]
+
+    packs = [['all', questions, answers]]
+
+    return packs
+
 CUSTOM_LOAD_FUNCS = {
     'diaasq': diaasqa_qa_load,
     'rubq_dev': rubqdev_qa_load,
     'hotpotqa_distractor_validation': hotpotqa_distractor_validation_qa_load,
-    'trivia_qa_rcwikipedia_validation': trivia_qa_rcwikipedia_validation_qa_load
+    'trivia_qa_rcwikipedia_validation': trivia_qa_rcwikipedia_validation_qa_load,
+    'musique_validation': musique_validation_qa_load,
+    '2wikimultihopqa_dev': wiki2multihopqa_dev_qa_load,
+    'natural_questions_train': natural_questions_train_qa_load
 }
 CUSTOM_LOAD_FUNCS.update({f'sberdialogues_conv-{i}': sberdialogues_qa_load for i in range(1,36)})
 
