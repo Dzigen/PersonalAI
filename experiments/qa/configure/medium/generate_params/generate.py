@@ -142,7 +142,8 @@ for ds_idx, dataset in enumerate(AVAILABLE_DATASET_NAMES):
             # saving generated params-config
             SPEC_PARAMS_SPATH = f"{SAVE_PARAMS_PATH}/{dataset}/{kg_name}/{SPECIFIC_QA_PARAMS['EXPERIMENT_NAME']}.yaml"
             if os.path.exists(SPEC_PARAMS_SPATH):
-                raise ValueError(f"params-file already exists: {SPEC_PARAMS_SPATH}")
+                print(f"params-file already exists: {SPEC_PARAMS_SPATH}")
+                continue
 
             with open(SPEC_PARAMS_SPATH, 'w') as fd:
                 yaml.dump(

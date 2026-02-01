@@ -6,8 +6,8 @@ USERNAME=root
 
 # ===============================================================
 
-DATASETS=("hotpotqa_distractor_validation" "hotpotqa_distractor_validation") # TO CHANGE
-KNOWLEDGE_GRAPHS=("granite338b_230126_v2prompts" "qwen257b_230126_v2prompts") # TO CHANGE
+DATASETS=("trivia_qa_rcwikipedia_validation" "trivia_qa_rcwikipedia_validation" "trivia_qa_rcwikipedia_validation")  # TO CHANGE
+KNOWLEDGE_GRAPHS=("granite338b_290126_v2prompts" "llama318b_290126_v2prompts" "qwen257b_290126_v2prompts") # TO CHANGE
 
 # ===============================================================
 

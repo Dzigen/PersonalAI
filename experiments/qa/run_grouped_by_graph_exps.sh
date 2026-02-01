@@ -19,7 +19,7 @@ DATASETS=("hotpotqa_distractor_validation") # TO CHANGE
 KNOWLEDGE_GRAPHS=("llama318b_230126_v2prompts") # TO CHANGE
 EVAL_FNAMES=("hotpotqa_distractor_validation.yaml") # TO CHANGE
 CONFIGURE_FNAMES=("hotpotqa_distractor_validation.yaml") # TO CHANGE
-QA_PIPELINE_VERSION="weak" # TO CHANGE
+QA_PIPELINE_VERSION="medium" # TO CHANGE
 
 # ===============================================================
 
