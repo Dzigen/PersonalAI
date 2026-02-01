@@ -438,5 +438,5 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         relations_counter = Counter([triplet.relation.type for triplet in unique_triplets])
         self.log(f"Распределение типов связей в наборе извлечённых триплетов: {relations_counter}", verbose=self.verbose)
 
-        cachehit_summary = (sum(cache_hits) / len(cache_hits)) >= 0.5
+        cachehit_summary = (sum(cache_hits) / len(cache_hits)) >= 0.5 if len(cache_hits) > 0 else False
         return unique_triplets, rinfo, cachehit_summary

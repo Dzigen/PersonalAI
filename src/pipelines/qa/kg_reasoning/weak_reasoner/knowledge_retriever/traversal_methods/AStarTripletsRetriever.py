@@ -567,6 +567,6 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log(f"foramting queries: {len(unique_nodes_pairs)}", verbose=self.verbose)
         self.log(f"formating elapsed_time: {time() - s_time}", verbose=self.verbose)
 
-        cachehit_summary = (sum(cache_hits) / len(cache_hits)) >= 0.5
+        cachehit_summary = (sum(cache_hits) / len(cache_hits)) >= 0.5 if len(cache_hits) > 0 else False
 
         return unique_triplets, rinfo, cachehit_summary
