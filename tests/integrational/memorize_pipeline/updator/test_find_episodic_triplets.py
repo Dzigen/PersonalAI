@@ -29,7 +29,7 @@ def test_find_o_episodic(llm_updator: LLMUpdator, kg_triplets: List[Triplet],
     llm_updator.kg_model.add_knowledge(kg_triplets)
     llm_updator.kg_model.remove_knowledge(delete_tripelts)
 
-    real_obsolete_ids = llm_updator.find_episodic_o_obsolete_triplet_ids(
+    real_obsolete_ids, _, _ = llm_updator.find_episodic_o_obsolete_triplet_ids(
         base_triplet)
     assert len(real_obsolete_ids) == len(expected_obsolete_ids)
     assert expected_obsolete_ids == set(real_obsolete_ids)
@@ -56,7 +56,7 @@ def test_find_h_episodic(llm_updator: LLMUpdator, kg_triplets: List[Triplet],
     llm_updator.kg_model.add_knowledge(kg_triplets)
     llm_updator.kg_model.remove_knowledge(delete_tripelts)
 
-    real_obsolete_ids = llm_updator.find_episodic_h_obsolete_triplet_ids(
+    real_obsolete_ids, _, _ = llm_updator.find_episodic_h_obsolete_triplet_ids(
         base_triplet)
 
     assert len(real_obsolete_ids) == len(expected_obsolete_ids)

@@ -33,10 +33,11 @@ def test_knowledge_retriever(
     )
 
     q_info = QueryInfo(query=query, entities=entities)
-    linked_nodes, linked_nodes_by_entities, rinfo = comparator_stage.link_kgnodes_to_query(q_info)
+    linking_result, rinfo, _ = comparator_stage.perform(q_info)
+    linked_nodes, linked_nodes_by_entities = linking_result
     assert rinfo.status.value == 0
     q_info.linked_nodes = linked_nodes
     q_info.linked_nodes_by_entities = linked_nodes_by_entities
 
-    _, info = retriever_stage.retrieve(q_info)
+    _, info, _ = retriever_stage.retrieve(q_info)
     assert info.status.value == 0

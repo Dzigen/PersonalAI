@@ -1,8 +1,10 @@
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Tuple
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from .errors import NOT_VALID_ID_ERROR_MSG, NO_START_NODE_IN_PARENT_ERROR_MSG, EMPTY_PARENT_ERROR_MSG
+from .errors import NOT_VALID_ID_ERROR_MSG, NO_START_NODE_IN_PARENT_ERROR_MSG, \
+    EMPTY_PARENT_ERROR_MSG
+from ......utils import ReturnInfo
 from ......utils.data_structs import QueryInfo, Triplet, NodeInfo, BaseConfigOperations, NodeType
 from ......utils.cache_kv.CacheOperations import CacheOperations, TraversalMethodCacheOpearions
 
@@ -47,15 +49,15 @@ class AbstractTriplesFilter(CacheOperations):
     config: Union[None, BaseTripletsFilterConfig] = None
 
     @abstractmethod
-    def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[Triplet]:
+    def apply_filter(self, query_info: QueryInfo, triplets: List[Triplet]) -> Tuple[List[Triplet], ReturnInfo]:
         """Метод предназначен для применения операции ранжирования/фильтрации к набору триплетов на основе меры их релевантности к user-вопросу.
 
         :param query_info: Структура данных с user-вопросом.
         :type query_info: QueryInfo
         :param triplets: Набор триплетов для ранжирования/отбора.
         :type triplets: List[Triplet]
-        :return: Набор триплетов, релевантных данному user-вопросу.
-        :rtype: List[Triplet]
+        :return: Кортеж из двух объектов: (1) набор триплетов, релевантных данному user-вопросу; (2) статус завершения операции с пояснительной информацией.
+        :rtype: Tuple[List[Triplet], ReturnInfo]
         """
         pass
 
@@ -76,13 +78,13 @@ class AbstractTripletsRetriever(TraversalMethodCacheOpearions):
     config: BaseGraphSearchConfig
 
     @abstractmethod
-    def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
+    def get_relevant_triplets(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo, bool]:
         """Метод предназначен для извлечения триплетов из графа знаний на основе информации из user-вопроса. Возвращаемый список триплетов не содержит дубликатов (по строковому представлению).
 
         :param query_info: Структура данных с информацией о user-вопросе.
         :type query_info: QueryInfo
-        :return: Набор триплетов, извлечённый из графа знаний.
-        :rtype: List[Triplet]
+        :return: Кортеж из трёх объектов: (1) Набор триплетов, извлечённый из графа знаний; (2) статус завершения операции с пояснительной информацией; (3) True, если результат был получен из кеша (cache hit), иначе False.
+        :rtype: Tuple[List[Triplet], ReturnInfo, bool]
         """
         pass
 

@@ -133,7 +133,7 @@ for pack_name in answers_pack_names:
     for a_idx, a_info in process:
         process.set_postfix_str(pack_name)
         s_time = time()
-        score, info = judge.perform(
+        score, info, cache_hit = judge.perform(
             a_info['question'], a_info['gold_answer'], a_info['gen_answer'])
         e_time = time()
 

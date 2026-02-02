@@ -71,6 +71,7 @@ experiments/qa/grouped_run_crontab.txt
 notebooks/kg_building/cron_buildgraph.txt
 notebooks/kg_building/constructgraphs_crontablob.txt
 notebooks/kg_building/create/prepared_params/
+notebooks/kg_building/crontab_log.txt
 
 experiments/qa/init_env/env_settings
 notebooks/kg_building/constructgraphs_crontablob.txt
@@ -91,6 +92,8 @@ experiments/qa/params_to_run4
 experiments/qa/run_all_experiments2.sh
 experiments/qa/run_all_experiments3.sh
 experiments/qa/run_all_experiments4.sh
+experiments/qa/evaluate/metrics/qaeval_db/
+
 configs/blazegraph/authoritieschildrensSubjects.nt
 
 src/dialogue_processing/

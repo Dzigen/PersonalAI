@@ -488,13 +488,13 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
             if self.config.nodes_aggregation_mechanism == 'sequencial':
                 prev_summ_text = newnode_text if len(
                     new_text_summaries) < 1 else new_text_summaries[-1]
-                summ_text, solve_status = self.tasks_solvers.nodes_summarization_solver.solve(
+                summ_text, solve_status, _ = self.tasks_solvers.nodes_summarization_solver.solve(
                     lang=self.config.lang,
                     current_content=parent_text, new_content=prev_summ_text,
                     n_descendants=str(parent_descendants_num))
 
             elif self.config.nodes_aggregation_mechanism == 'parallel':
-                summ_text, solve_status = self.tasks_solvers.nodes_summarization_solver.solve(
+                summ_text, solve_status, _ = self.tasks_solvers.nodes_summarization_solver.solve(
                     lang=self.config.lang,
                     current_content=parent_text, new_content=newnode_text,
                     n_descendants=str(parent_descendants_num))
@@ -608,16 +608,16 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
 
         self.treedb_conn.update([summarized_node])
 
-    def retrieve_relevant_leafnode(self, entitie_vinstance: VectorDBInstance) -> Union[None, Tuple[float, VectorDBInstance]]:
+    def retrieve_relevant_leafnode(self, entity_vinstance: VectorDBInstance) -> Union[None, Tuple[float, VectorDBInstance]]:
         """Метод предназначен для поиска наиболее релевантной leaf-вершины по заданному векторному представлению сущности.
 
-        :param entitie_vinstance: Векторное представление сущности.
-        :type entitie_vinstance: VectorDBInstance
+        :param entity_vinstance: Векторное представление сущности.
+        :type entity_vinstance: VectorDBInstance
         :return: Пара (similarity, векторное представление вершины) либо None, если подходящая вершина не найдена.
         :rtype: Union[None, Tuple[float, VectorDBInstance]]
         """
         raw_best_leafnode = self.leafnodes_retriever.run(
-            query=entitie_vinstance.document, top_k=1,
+            query=entity_vinstance.document, top_k=1,
             includes=['documents', 'metadatas'], return_with_scores=self.config.leafnodes_scores_vdbname)
 
         best_leafnode = None
@@ -627,16 +627,16 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         self.log(f"Семантически-близкая [similarity] leaf-вершина: {best_leafnode}", verbose=self.verbose)
         return best_leafnode
 
-    def retrieve_relevant_summnode(self, entitie_vinstance: VectorDBInstance) -> Union[None, Tuple[float, VectorDBInstance]]:
+    def retrieve_relevant_summnode(self, entity_vinstance: VectorDBInstance) -> Union[None, Tuple[float, VectorDBInstance]]:
         """Метод предназначен для поиска наиболее релевантной summarized-вершины по заданному векторному представлению сущности.
 
-        :param entitie_vinstance: Векторное представление сущности.
-        :type entitie_vinstance: VectorDBInstance
+        :param entity_vinstance: Векторное представление сущности.
+        :type entity_vinstance: VectorDBInstance
         :return: Пара (similarity, векторное представление вершины) либо None, если подходящая вершина не найдена.
         :rtype: Union[None, Tuple[float, VectorDBInstance]]
         """
         raw_best_summnode = self.summnodes_retriever.run(
-            query=entitie_vinstance.document, top_k=1,
+            query=entity_vinstance.document, top_k=1,
             includes=[], return_with_scores=self.config.summnodes_scores_vdbname)
 
         best_summnode = None
@@ -646,11 +646,11 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         self.log(f"Семантически-близкая [similarity] summ-вершина: {best_summnode}", verbose=self.verbose)
         return best_summnode
 
-    def get_leafdescendants_for_summnode(self, entitie_vinstance: VectorDBInstance, best_summnode_id: str, max_n: int) -> List[VectorDBInstance]:
+    def get_leafdescendants_for_summnode(self, entity_vinstance: VectorDBInstance, best_summnode_id: str, max_n: int) -> List[VectorDBInstance]:
         """Метод предназначен для получения leaf-потомков заданной summarized-вершины с учётом их релевантности исходной сущности.
 
-        :param entitie_vinstance: Векторное представление сущности.
-        :type entitie_vinstance: VectorDBInstance
+        :param entity_vinstance: Векторное представление сущности.
+        :type entity_vinstance: VectorDBInstance
         :param best_summnode_id: Идентификатор summarized-вершины в дереве.
         :type best_summnode_id: str
         :param max_n: Максимальное количество возвращаемых leaf-вершин. Если max_n <= 0, ограничение не применяется.
@@ -666,7 +666,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         # которое может быть сопоставлено summarized-вершине
         if max_n > 0 and len(descendants_leaf_strids) > max_n:
             matched_leafnodes = self.leafnodes_retriever.run(
-                query=entitie_vinstance.document, top_k=max_n,
+                query=entity_vinstance.document, top_k=max_n,
                 subset_ids=descendants_leaf_strids, includes=[])
             descendants_leaf_strids = list(map(lambda item: item.id, matched_leafnodes))
 
@@ -674,11 +674,11 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
             descendants_leaf_strids, includes=["documents", "metadatas"])
         return matched_nodes
 
-    def match_entitie2objects(self, entitie: str, strategy: str = 'collapsed', max_n: int = 1) -> List[NodeInfo]:
+    def match_entity2objects(self, entity: str, strategy: str = 'collapsed', max_n: int = 1) -> List[NodeInfo]:
         """Метод предназначен для сопоставления object-вершин (из построенного дерева) заданной сущности (на естественном языке).
 
-        :param entitie: Сущность на естественном языке.
-        :type entitie: str
+        :param entity: Сущность на естественном языке.
+        :type entity: str
         :param strategy: Стратегия обхода дерева для формирования релевантного (сопоставляемого заданной сущности) набора object-вершин. Значение по умолчанию 'collapsed'.
         :type strategy: str, optional
         :param max_n: Максимальное количество object-вершин, которое может быть сопоставлено заданной сущности. Если указано отрицательное значение, то данное ограничение снимается. Значение по умолчанию 1.
@@ -686,27 +686,27 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         :return: Список сопоставленных object-вершин (с их векторными представлениями).
         :rtype: List[VectorDBInstance]
         """
-        self.log(f"Старт алгоритма по сопоставлению заданной '{entitie}'-сущности c вершинами из дерева",
+        self.log(f"Старт алгоритма по сопоставлению заданной '{entity}'-сущности c вершинами из дерева",
                  verbose=self.verbose)
         if strategy == 'collapsed':
-            entitie_vinstance = VectorDBInstance(document=entitie)
+            entity_vinstance = VectorDBInstance(document=entity)
 
-            self.log("Извлечение самых релевантных к entitie вершин из leaf-бд...", verbose=self.verbose)
-            best_leafnode = self.retrieve_relevant_leafnode(entitie_vinstance)
+            self.log("Извлечение самых релевантных к entity вершин из leaf-бд...", verbose=self.verbose)
+            best_leafnode = self.retrieve_relevant_leafnode(entity_vinstance)
 
-            self.log("Извлечение самых релевантных к entitie вершин из summarized-бд....", verbose=self.verbose)
-            best_summnode = self.retrieve_relevant_summnode(entitie_vinstance)
+            self.log("Извлечение самых релевантных к entity вершин из summarized-бд....", verbose=self.verbose)
+            best_summnode = self.retrieve_relevant_summnode(entity_vinstance)
             if best_leafnode is None and best_summnode is None:
                 raise ValueError
 
             # из них выбирается самая релевантная
             if (best_summnode is not None) and (best_summnode[0] < best_leafnode[0]):
-                # в случае, если summarized-вершина семантически ближе к entitie,
+                # в случае, если summarized-вершина семантически ближе к entity,
                 # то ей сопоставляются все её (leaf-вершины) вершиным-потомки
                 self.log(f"В качестве самой релевантной выбрана summarized-вершина: {best_summnode}", verbose=self.verbose)
                 matched_nodes = list(map(
                     lambda vnode: NodeInfo(id=vnode.id, type=NodeType.object, text=vnode.document),
-                    self.get_leafdescendants_for_summnode(entitie_vinstance, best_summnode[1].id, max_n)
+                    self.get_leafdescendants_for_summnode(entity_vinstance, best_summnode[1].id, max_n)
                 ))
                 self.log(f"Summarized-вершине соответствуют следующие leaf-вершины (потомки): количество - {len(matched_nodes)}", verbose=self.verbose)
                 for i in range(len(matched_nodes)):

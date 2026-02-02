@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Union, Dict
+from typing import List, Union, Dict, Tuple
 from copy import deepcopy
 
 from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarTripletsRetriever
@@ -10,7 +10,7 @@ from .NaiveTripletsRetriever import NaiveTripletsRetriever, NaiveGraphSearchConf
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......utils.data_structs import QueryInfo, Triplet, create_id, NodeType, NODES_TYPES_MAP
 from .......kg_model import KnowledgeGraphModel
-from .......utils import Logger
+from .......utils import Logger, accumulate_step_info, ReturnInfo
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 
@@ -111,16 +111,14 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, self.config.cache_table_name)
 
-        self.retriever1: AbstractTripletsRetriever = self.AVAILABLE_RETRIEVERS[search_config.retriever1_name](
-            kg_model, log, search_config.retriever1_config, cache_kvdriver_config, verbose)
-        self.retriever2: AbstractTripletsRetriever = self.AVAILABLE_RETRIEVERS[search_config.retriever2_name](
-            kg_model, log, search_config.retriever2_config, cache_kvdriver_config, verbose)
-
         # accepted nodes
-        self.retriever1.config.accepted_node_types = search_config.accepted_node_types
-        self.config.retriever1_config = self.retriever1.config
-        self.retriever2.config.accepted_node_types = search_config.accepted_node_types
-        self.config.retriever2_config = self.retriever2.config
+        self.config.retriever1_config.accepted_node_types = self.config.accepted_node_types
+        self.config.retriever2_config.accepted_node_types = self.config.accepted_node_types
+
+        self.retriever1: AbstractTripletsRetriever = self.AVAILABLE_RETRIEVERS[search_config.retriever1_name](
+            kg_model, log, self.config.retriever1_config, cache_kvdriver_config, verbose)
+        self.retriever2: AbstractTripletsRetriever = self.AVAILABLE_RETRIEVERS[search_config.retriever2_name](
+            kg_model, log, self.config.retriever2_config, cache_kvdriver_config, verbose)
 
         self.log = log
         self.verbose = verbose
@@ -132,8 +130,11 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.retriever2.close_connections()
 
     def clear_traversal_cache(self) -> None:
-        self.retriever1.clear_traversal_cache()
-        self.retriever2.clear_traversal_cache()
+        self.retriever1.clear_kv_caches(
+            clear_retrieval_cache=True, clear_traversal_cache=True)
+        self.retriever2.clear_kv_caches(
+            clear_retrieval_cache=True, clear_traversal_cache=True
+        )
 
     def get_traversal_cache(self) -> Dict[str, Union[None, Dict, int]]:
         return {
@@ -144,15 +145,16 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def get_cache_key(self, query_info: QueryInfo) -> List[str]:
         return [self.config.to_str(), query_info.to_str()]
 
+    @accumulate_step_info
     @CacheUtils.cache_method_output
-    def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
+    def get_relevant_triplets(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log(f"RETRIEVER: MixturedTripletsRetriever ({self.config.retriever1_name} + {self.config.retriever2_name})", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
-
-        triplets1 = self.retriever1.get_relevant_triplets(query_info)
-        triplets2 = self.retriever2.get_relevant_triplets(query_info)
+        rinfo = ReturnInfo()
+        triplets1, _, _ = self.retriever1.get_relevant_triplets(query_info)
+        triplets2, _, _ = self.retriever2.get_relevant_triplets(query_info)
 
         self.log(f"Количество триплетов, извлечённых с помощью {self.config.retriever1_name}/{self.config.retriever2_name}: {len(triplets1)}/{len(triplets2)}",
                  verbose=self.verbose)
@@ -163,4 +165,4 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             unique_triplets_map[triplet.relation.get_typedid()] = deepcopy(triplet)
         unique_triplets: List[Triplet] = list(unique_triplets_map.values())
 
-        return unique_triplets
+        return unique_triplets, rinfo

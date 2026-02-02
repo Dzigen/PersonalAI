@@ -12,6 +12,7 @@ class CacheUtils(AbstractCacheUtils):
     Класс предоставляет методы для инициализации кеша и декоратор
     для кеширования результатов методов.
     """
+
     def init_cachekv(self, cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None, cache_table_name: Union[None, str] = None) -> Union[None, CacheKV]:
         """Метод предназначен для создания базы данных с целью кеширования требуемых результатов.
 
@@ -38,7 +39,7 @@ class CacheUtils(AbstractCacheUtils):
         """
 
         def wrapper(self, *args, **kwargs):
-            cached_flag = False
+            cache_hit = False
             cache_key = self.get_cache_key(*args, **kwargs)
             key_hash = None
 
@@ -58,7 +59,7 @@ class CacheUtils(AbstractCacheUtils):
                     self.log(
                         f"* CACHED_VALUE: {cached_result}.", verbose=self.verbose)
 
-                    cached_flag = True
+                    cache_hit = True
                     output = cached_result
                 else:
                     self.log(
@@ -70,7 +71,7 @@ class CacheUtils(AbstractCacheUtils):
                     self.log(
                         f"* HASH_SEEDS: {cache_key}.", verbose=self.verbose)
 
-            if not cached_flag:
+            if not cache_hit:
                 self.log("Получем результат с нуля...", verbose=self.verbose)
                 output = function(self, *args, **kwargs)
 
@@ -83,5 +84,5 @@ class CacheUtils(AbstractCacheUtils):
                         f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
                     self.cachekv.save_value(value=output, key_hash=key_hash)
 
-            return output
+            return *output, cache_hit
         return wrapper

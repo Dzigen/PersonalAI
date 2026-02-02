@@ -1,4 +1,4 @@
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Tuple
 from dataclasses import dataclass, field
 from collections import Counter
 from copy import deepcopy
@@ -7,7 +7,7 @@ from .configs import NGS_RERANKDRIVER_DEFAULT_CONFIG
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......db_drivers.vector_driver import VectorDBInstance
 from .......kg_model import KnowledgeGraphModel
-from .......utils import Logger
+from .......utils import Logger, accumulate_step_info, ReturnInfo
 from .......utils.data_structs import QueryInfo, Triplet, create_id
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
@@ -95,12 +95,14 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
         return [self.config.to_str(), query_info.to_str()]
 
+    @accumulate_step_info
     @CacheUtils.cache_method_output
-    def get_relevant_triplets(self, query_info: QueryInfo) -> List[Triplet]:
+    def get_relevant_triplets(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo]:
         self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
         self.log("RETRIEVER: NaiveTripletsRetriever", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
+        rinfo = ReturnInfo()
 
         relevant_triplets: List[VectorDBInstance] = self.retriever.run(query_info.query, top_k=self.config.max_k)
         triplet_ids = list(map(lambda item: item.metadata['t_id'], relevant_triplets))
@@ -110,4 +112,4 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.log(f"Количество полученных трипелтов из графовой бд: {len(triplets)}", verbose=self.verbose)
         self.log(f"Распределение типов связей в наборе извлечённых триплетов: {Counter([triplet.relation.type for triplet in triplets])}", verbose=self.verbose)
 
-        return triplets
+        return triplets, rinfo

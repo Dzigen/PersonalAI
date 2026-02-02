@@ -10,7 +10,8 @@ from .knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
 from .answer_generator import QALLMGenerator, QALLMGeneratorConfig
 from ..utils import AbstractKGReasoner, BaseKGReasonerConfig
 from .....utils.data_structs import create_id, QueryInfo, Triplet, BaseComponentConfig, LanguageConfig
-from .....utils import Logger, ReturnInfo, ReturnStatus, update_rinfo
+from .....utils import Logger, ReturnInfo, ReturnStatus, update_rinfo, \
+    accumulate_stage_info, CompositeModuleDetailedResult, ModuleType, CompositeModuleResult, SimpleModuleResult
 from .....utils.cache_kv import CacheUtils
 from .....kg_model import KnowledgeGraphModel
 from .....db_drivers.kv_driver import KeyValueDriverConfig
@@ -128,42 +129,44 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         self.log = config.log
         self.verbose = config.verbose
 
-    def extract_entities(self, query_info: QueryInfo) -> Tuple[Union[None, List[str]], ReturnInfo]:
+    def extract_entities(self, query_info: QueryInfo) -> Tuple[Union[None, List[str]], ReturnInfo, CompositeModuleResult]:
         """Метод реализует извлечение сущностей из пользовательского запроса.
 
         :param query_info: Структура с исходным запросом и дополнительными полями.
         :type query_info: QueryInfo
-        :return: Кортеж из двух объектов: (1) список извлечённых сущностей или None; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[Union[None, List[str]], ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) список извлечённых сущностей или None; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[Union[None, List[str]], ReturnInfo, CompositeModuleResult]
         """
-        entities, rinfo = None, ReturnInfo()
+        entities, rinfo, trace = None, ReturnInfo(), None
 
         if self.stages.query_parser is None:
             self.log("Stage #1 was omited!", verbose=self.verbose)
         else:
-            entities, rinfo = self.stages.query_parser.extract_entities(query_info)
+            entities, rinfo, trace = self.stages.query_parser.extract_entities(query_info)
             if rinfo.status != ReturnStatus.success:
                 self.log("Operation ended with error!", verbose=self.verbose)
             else:
                 self.log("Operation ended successfully", verbose=self.verbose)
                 self.log(f"RESULT:\n* EXTRACTED ENTITIES AMOUNT - {len(entities)}\n* EXTRACTED ENTITIES - {entities}", verbose=self.verbose)
 
-        return entities, rinfo
+        return entities, rinfo, trace
 
-    def match_entities_to_kgnodes(self, query_info: QueryInfo) -> Tuple[Union[None, List[object]], Union[None, List[object]], ReturnInfo]:
+    def match_entities_to_kgnodes(self, query_info: QueryInfo) -> Tuple[Union[None, List[object]], Union[None, List[object]], ReturnInfo, SimpleModuleResult]:
         """Метод реализует сопоставление извлечённых сущностей с узлами графа знаний.
 
         :param query_info: Структура с запросом и дополнительными полями.
         :type query_info: QueryInfo
-        :return: Кортеж из двух объектов: (1) список найденных узлов или None; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[Union[None, List[object]], Union[None, List[object]], ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) список найденных узлов или None; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[Union[None, List[object]], Union[None, List[object]], ReturnInfo, SimpleModuleResult]
         """
-        linked_nodes, linked_nodes_by_entities, rinfo = None, None, ReturnInfo()
+        linked_nodes, linked_nodes_by_entities = None, None
+        rinfo, trace = ReturnInfo(), None
         if self.stages.query_parser is None:
             self.log("Stage #2 was omited!", verbose=self.verbose)
         else:
-            linked_nodes, linked_nodes_by_entities, rinfo = self.stages.knowledge_comparator.link_kgnodes_to_query(
-                query_info)
+            linking_result, rinfo, trace = \
+                self.stages.knowledge_comparator.perform(query_info)
+            linked_nodes, linked_nodes_by_entities = linking_result
             if rinfo.status != ReturnStatus.success:
                 self.log("Operation ended with error!", verbose=self.verbose)
             else:
@@ -172,17 +175,17 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
                 for node in linked_nodes:
                     self.log(f"*[{node.id}] {node.text}", verbose=self.verbose)
 
-        return linked_nodes, linked_nodes_by_entities, rinfo
+        return linked_nodes, linked_nodes_by_entities, rinfo, trace
 
-    def traverse_knowledge_graph(self, query_info: QueryInfo) -> Tuple[Union[None, List[Triplet]], ReturnInfo]:
+    def traverse_knowledge_graph(self, query_info: QueryInfo) -> Tuple[Union[None, List[Triplet]], ReturnInfo, CompositeModuleResult]:
         """Метод реализует извлечение релевантных триплетов из графа знаний.
 
         :param query_info: Структура с запросом и дополнительными полями.
         :type query_info: QueryInfo
-        :return: Кортеж из двух объектов: (1) список релевантных триплетов или None; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[Union[None, List[Triplet]], ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) список релевантных триплетов или None; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[Union[None, List[Triplet]], ReturnInfo, CompositeModuleResult]
         """
-        retrieved_triplets, rinfo = self.stages.knowledge_retriever.retrieve(query_info)
+        retrieved_triplets, rinfo, trace = self.stages.knowledge_retriever.retrieve(query_info)
         if rinfo.status != ReturnStatus.success:
             self.log("Operation ended with error!", verbose=self.verbose)
         else:
@@ -191,26 +194,26 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
             for triplet in retrieved_triplets:
                 self.log(f"* {triplet}", verbose=self.verbose)
 
-        return retrieved_triplets, rinfo
+        return retrieved_triplets, rinfo, trace
 
-    def generate_answer(self, query_info: QueryInfo, retrieved_triplets: List[Triplet]) -> Tuple[Union[None, str], ReturnInfo]:
+    def generate_answer(self, query_info: QueryInfo, retrieved_triplets: List[Triplet]) -> Tuple[Union[None, str], ReturnInfo, CompositeModuleResult]:
         """Метод формирует финальный ответ на основе извлечённых фактов.
 
         :param query_info: Структура с исходным текстом запроса.
         :type query_info: QueryInfo
         :param retrieved_triplets: Список релевантных триплетов, извлечённых на предыдущей стадии.
         :type retrieved_triplets: List[Triplet]
-        :return: Кортеж из двух объектов: (1) сгенерированный ответ или None; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[Union[None, str], ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) сгенерированный ответ или None; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[Union[None, str], ReturnInfo, CompositeModuleResult]
         """
-        answer, rinfo = self.stages.answer_generator.generate(query_info.query, retrieved_triplets)
+        answer, rinfo, trace = self.stages.answer_generator.generate(query_info.query, retrieved_triplets)
         if rinfo.status != ReturnStatus.success:
             self.log("Operation ended with error!", verbose=self.verbose)
         else:
             self.log("Operation ended successfully", verbose=self.verbose)
             self.log(f"RESULT:\n* ANSWER - {answer}", verbose=self.verbose)
 
-        return answer, rinfo
+        return answer, rinfo, trace
 
     def get_cache_key(self, query: str) -> List[str]:
         """Формирует ключ кэша для результата weak-reasoner пайплайна.
@@ -225,14 +228,15 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         str_using_agent_config = f"{self.using_agent_info['kw']}:{self.using_agent_info['config'].to_str()}"
         return [self.config.to_str(), str_using_agent_config, query]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def perform(self, query: str) -> Tuple[str, ReturnInfo]:
+    def perform(self, query: str) -> Tuple[str, ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для выполнения ризонинга на графе знаний с помощью указанного запроса с целью извлечения релевантной информации.
 
         :param query: запрос на естественном языке.
         :type query: str
-        :return: Кортеж из двух объектов: (1) извлечённая/релевантная информация/ответ на запрос; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[str, ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) извлечённая/релевантная информация/ответ на запрос; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
         self.log("START WEAK KG-REASONING...", verbose=self.verbose)
         self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
@@ -240,33 +244,38 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
 
         answer, rinfo = None, ReturnInfo()
         query_info = QueryInfo(query=query)
+        module_trace = CompositeModuleDetailedResult()
 
         self.log("STAGE#1 - KEY WORDS EXTRACTION", verbose=self.verbose)
-        query_info.entities, ee_rinfo = self.extract_entities(query_info)
+        query_info.entities, ee_rinfo, trace = self.extract_entities(query_info)
+        module_trace.add('extract_entities', ModuleType.stage, trace)
         update_rinfo(rinfo, ee_rinfo)
 
         self.log("STAGE#2 - MATCHING KEY WORDS TO KG-NODES", verbose=self.verbose)
         if rinfo.status == ReturnStatus.success:
-            query_info.linked_nodes, query_info.linked_nodes_by_entities, me_rinfo = \
+            query_info.linked_nodes, query_info.linked_nodes_by_entities, me_rinfo, trace = \
                 self.match_entities_to_kgnodes(query_info)
+            module_trace.add('match_entities_to_kgnodes', ModuleType.step, trace)
             update_rinfo(rinfo, me_rinfo)
         else:
             self.log("During previous steps error occurs.", verbose=self.verbose)
 
         self.log("STAGE#3 - RETRIEVING RELEVANT TRIPLETS FROM KG", verbose=self.verbose)
         if rinfo.status == ReturnStatus.success:
-            retrieved_triplets, tkg_rinfo = self.traverse_knowledge_graph(query_info)
+            retrieved_triplets, tkg_rinfo, trace = self.traverse_knowledge_graph(query_info)
+            module_trace.add('traverse_knowledge_graph', ModuleType.stage, trace)
             update_rinfo(rinfo, tkg_rinfo)
         else:
             self.log("During previous steps error occurs.", verbose=self.verbose)
 
         self.log("STAGE#4 - ANSWER GENERATION", verbose=self.verbose)
         if rinfo.status == ReturnStatus.success:
-            answer, ag_rinfo = self.generate_answer(query_info, retrieved_triplets)
+            answer, ag_rinfo, trace = self.generate_answer(query_info, retrieved_triplets)
+            module_trace.add('generate_answer', ModuleType.stage, trace)
             update_rinfo(rinfo, ag_rinfo)
         else:
             self.log("During previous steps error occurs.", verbose=self.verbose)
 
         self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
-        return answer, rinfo
+        return answer, rinfo, module_trace

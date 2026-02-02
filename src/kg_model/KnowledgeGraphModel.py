@@ -1,4 +1,4 @@
-from typing import List, Dict, Set, Union
+from typing import List, Dict, Set, Union, Tuple
 from dataclasses import dataclass, field
 import gc
 from copy import deepcopy
@@ -14,7 +14,7 @@ from .utils import AgentsMapping, KGEmbeddersMapping
 from ..db_drivers.kv_driver import KeyValueDriverConfig
 from ..db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
 from ..agents import AgentDriverConfig, AgentDriver
-from ..utils import Triplet, Logger
+from ..utils import Triplet, Logger, accumulate_step_info, ReturnInfo
 from ..utils.data_structs import RelationType, NodeType, NodeInfo, BaseComponentConfig
 
 
@@ -250,7 +250,8 @@ class KnowledgeGraphModel:
         # TODO
         pass
 
-    def add_knowledge(self, triplets: List[Triplet], check_consistency: bool = True, check_createinfo: bool = False, status_bar: bool = False) -> Dict[str, Dict[str, Set[str]]]:
+    @accumulate_step_info
+    def add_knowledge(self, triplets: List[Triplet], check_consistency: bool = True, check_createinfo: bool = False, status_bar: bool = False) -> Tuple[Dict[str, Dict[str, Set[str]]], ReturnInfo, bool]:
         """Метод предназначен для добавления информации в память ассистента в виде списка триплетов.
 
         :param triplets: Список триплетов с информацией для добавления в память ассистента.
@@ -261,9 +262,10 @@ class KnowledgeGraphModel:
         :type check_createinfo: bool, optional
         :param status_bar: Если True, то во время исполнения операции в stdout будет выводиться статус её исполнения, иначе False. Значение по умолчанию True.
         :type status_bar: bool, optional
-        :return: Словарь с информацией о триплетах, которые были добавлены в память ассистента.
-        :rtype: Dict[str, Dict[str,Set[str]]]
+        :return: Кортеж из трёх объектов: (1) словарь с информацией о триплетах, которые были добавлены в память ассистента; (2) статус завершения операции с пояснительной информацией; (3) True, если результат был получен из кеша (cache hit), иначе False.
+        :rtype: Tuple[Dict[str, Dict[str, Set[str]]], ReturnInfo, bool]
         """
+        rinfo = ReturnInfo()
         graph_create_info = self.graph_struct.create_triplets(triplets, status_bar=status_bar)
         embd_create_info = self.graph_embeddings.create_triplets(triplets, status_bar=status_bar)
 
@@ -287,9 +289,10 @@ class KnowledgeGraphModel:
         if check_consistency:
             self.check_consistency()
 
-        return create_info
+        return create_info, rinfo, False
 
-    def remove_knowledge(self, triplets: List[Triplet], check_consistency: bool = True, check_deleteinfo: bool = True) -> Dict[str, Dict[int, Dict[str, bool]]]:
+    @accumulate_step_info
+    def remove_knowledge(self, triplets: List[Triplet], check_consistency: bool = True, check_deleteinfo: bool = True) -> Tuple[Dict[str, Dict[int, Dict[str, bool]]], ReturnInfo, bool]:
         """Метод предназначен для удаления информации из памяти ассистента.
         Удаление производится по идентификаторам триплетов, в которых данная информация находилась
         при её добавлении в память с помощью соответствующего add_knowledge-метода.
@@ -298,9 +301,10 @@ class KnowledgeGraphModel:
         :type triplets: List[Triplet]
         :param check_consistency: Если True, то после выполнения данной операции будет проверена консистентность памяти ассистента, иначе False. Значение по умолчанию False.
         :type check_consistency: bool, optional
-        :return: Словарь с информацией о триплетах, которые были удалены (значение True, иначе False) из памяти ассистента.
-        :rtype: Dict[str, Dict[int,Dict[str,bool]]]
+        :return: Кортеж из трёх объектов: (1) словарь с информацией о триплетах, которые были удалены (значение True, иначе False) из памяти ассистента; (2) статус завершения операции с пояснительной информацией; (3) True, если результат был получен из кеша (cache hit), иначе False.
+        :rtype: Tuple[Dict[str, Dict[int, Dict[str, bool]]], ReturnInfo, bool]
         """
+        rinfo = ReturnInfo()
         graph_delete_info, embds_delete_info = self.graph_struct.delete_triplets(triplets)
         self.graph_embeddings.delete_triplets(triplets, delete_info=embds_delete_info)
 
@@ -323,7 +327,7 @@ class KnowledgeGraphModel:
         if check_consistency:
             self.check_consistency()
 
-        return delete_info
+        return delete_info, rinfo, False
 
     def count_items(self, detailed: bool = False) -> Dict[str, Dict[str, int]]:
         """Возвращает агрегированную статистику по количеству объектов в памяти. Для каждой компоненты памяти вычисляется отдельная статистика.

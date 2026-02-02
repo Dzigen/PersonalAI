@@ -13,5 +13,5 @@ from .cases import POPULATED_QAPIPELINE_TEST_CASES
 def test_qapipeline(qa_config: QAPipelineConfig, query: str, kg_model: KnowledgeGraphModel):
     qa_pipeline = QAPipeline(kg_model, qa_config, kg_model.cache_config)
 
-    _, info = qa_pipeline.answer(query)
+    _, info, _ = qa_pipeline.answer(query)
     assert info.status.value == 0

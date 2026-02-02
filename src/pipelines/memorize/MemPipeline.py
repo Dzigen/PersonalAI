@@ -9,9 +9,10 @@ from .extractor import LLMExtractorConfig
 from .updator import LLMUpdatorConfig
 from .utils import MemPipelineStages
 from ...kg_model import KnowledgeGraphModel
-from ...utils import Logger, Triplet, ReturnStatus, ReturnInfo
+from ...utils import Logger, Triplet, ReturnStatus, ReturnInfo, \
+    accumulate_stage_info, CompositeModuleDetailedResult, ModuleType
 from ...utils.data_structs import create_id, BaseComponentConfig, LanguageConfig
-from ...utils.errors import STATUS_MESSAGE
+from ...utils.errors import STATUS_MESSAGE, update_rinfo
 from ...db_drivers.kv_driver import KeyValueDriverConfig
 from ...utils.cache_kv.CacheOperations import CacheOperations
 from ...utils.agent_stat_analyzer import AgentStatAnalyzerConfig
@@ -89,7 +90,8 @@ class MemPipeline(CacheOperations, AgentStatOperations):
         self.log = config.log
         self.verbose = config.verbose
 
-    def remember(self, text: str, time: Union[None, str] = None, properties: Union[None, Dict] = None) -> Tuple[List[Triplet], ReturnInfo]:
+    @accumulate_stage_info
+    def remember(self, text: str, time: Union[None, str] = None, properties: Union[None, Dict] = None) -> Tuple[List[Triplet], ReturnInfo, CompositeModuleDetailedResult, bool]:
         """Метод предназначен для извлечения информации (в виде триплетов) из слабоструктурированного текста и обновление/актуализацию знаний в памяти (графе знаний) ассистента.
 
         :param text: Слабоструктурированный текст на естественном языке.
@@ -100,34 +102,37 @@ class MemPipeline(CacheOperations, AgentStatOperations):
         :type time: str, optional
         :param properties: Набор свойств, который должен быть сохранён в памяти вместе с извлечённой из текста информацией. Значение по умолчанию None.
         :type properties: Dict, optional
-        :return: Кортеж из двух объектов: (1) список с извлечённой из текста информацией (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[List[Triplet], ReturnInfo]
+        :return: Кортеж из четырёх объектов: (1) список с извлечённой из текста информацией (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода; (4) True, если результат был получен из кеша (cache hit), иначе False.
+        :rtype: Tuple[List[Triplet], ReturnInfo, CompositeModuleDetailedResult, bool]
         """
 
         self.log("START KNOWLEDGE REMEMBERING...", verbose=self.verbose)
-        self.log(f"BASE_TEXT ID: {create_id(text)}",
-                 verbose=self.verbose)
+        self.log(f"BASE_TEXT ID: {create_id(text)}", verbose=self.verbose)
+        rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
 
-        self.log("STAGE#1 - 'Извлечение информации (в структурированном формате) из текста'",
-                 verbose=self.verbose)
-        new_triplets, info = self.stages.extractor.extract_knowledge(
-            text, time, properties)
+        self.log("STAGE#1 - 'Извлечение информации (в структурированном формате) из текста'", verbose=self.verbose)
+        new_triplets, extract_rinfo, trace = self.stages.extractor.extract_knowledge(text, time, properties)
 
+        self.log(f"STATUS: {extract_rinfo.status}", verbose=self.verbose)
+        module_trace.add('extract_knowledge', ModuleType.stage, trace)
+        update_rinfo(rinfo, extract_rinfo)
         self.log(f"RESULT: {len(new_triplets)}", verbose=self.verbose)
         for triplet in new_triplets:
             self.log(f"* {triplet}", verbose=self.verbose)
 
-        if info.status == ReturnStatus.success:
-            self.log("STAGE#2 - 'Обновление информации в памяти (графе знаний) ассистента'",
-                     verbose=self.verbose)
-            self.log(
-                f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.verbose)
-            info = self.stages.updator.update_knowledge(new_triplets)
+        if extract_rinfo.status == ReturnStatus.success:
+            self.log("STAGE#2 - 'Обновление информации в памяти (графе знаний) ассистента'", verbose=self.verbose)
+            self.log(f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.verbose)
+            delete_add_info, updknwlg_rinfo, trace = self.stages.updator.update_knowledge(new_triplets)
 
-        self.log(
-            f"STATUS: {STATUS_MESSAGE[info.status]}", verbose=self.verbose)
+            self.log(f"STATUS: {updknwlg_rinfo.status}", verbose=self.verbose)
+            module_trace.add('update_knowledge', ModuleType.stage, trace)
+            update_rinfo(rinfo, updknwlg_rinfo)
+            self.log(f"RESULT:", verbose=self.verbose)
+            self.log(f"* triplets deletion info: {delete_add_info[0]}", verbose=self.verbose)
+            self.log(f"* added triplet info: {delete_add_info[1]}", verbose=self.verbose)
 
-        return new_triplets, info
+        return new_triplets, rinfo, module_trace, False
 
     def close_connections(self):
         self.stages.close_connections()

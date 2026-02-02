@@ -74,7 +74,7 @@ def test_replace_simple(replace_simple_solver: AgentTaskSolver, lang: str, base_
     replace_simple_solver.agent.looped_answers.clear()
     replace_simple_solver.agent.looped_answers += agent_stub_answers
 
-    real_triplet_ids, real_status = replace_simple_solver.solve(
+    real_triplet_ids, real_status, _ = replace_simple_solver.solve(
         lang=lang, base_triplet=base_triplet, incident_triplets=incident_triplets)
     assert expected_status == real_status
     assert expected_triplet_ids == real_triplet_ids

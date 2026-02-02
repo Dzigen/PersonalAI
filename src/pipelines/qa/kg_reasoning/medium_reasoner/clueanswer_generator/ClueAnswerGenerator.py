@@ -6,7 +6,8 @@ from copy import deepcopy
 from .config import CAGEN_MAIN_LOG_PATH
 from .utils import MediumCAGeneratorTaskSolvers, ClueAnswerGeneratorAgentTasksConfig
 from ......utils.errors import STATUS_MESSAGE
-from ......utils import ReturnInfo, Logger, AgentTaskSolver
+from ......utils import ReturnInfo, Logger, AgentTaskSolver, accumulate_stage_info, \
+    CompositeModuleDetailedResult, ModuleType
 from ......agents.utils import AbstractAgentConnector
 from ......utils.data_structs import create_id, Triplet, TripletCreator, BaseComponentConfig, LanguageConfig
 from ......db_drivers.kv_driver import KeyValueDriverConfig
@@ -99,42 +100,40 @@ class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [self.config.to_str(), query, str_triplets, str_using_agent_info]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def perform(self, query: str, context_triplets: List[Triplet]) -> Tuple[str, ReturnInfo]:
+    def perform(self, query: str, context_triplets: List[Triplet]) -> Tuple[str, ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для генерации clue-ответа на clue-запрос, на основе информации, извлечённой из графа знаний.
 
         :param query: Clue-запрос на естественном языке.
         :type query: str
         :param context_triplets: Набор релевантной информации (в виде триплетов), извлечённой по заданному clue-запросу.
         :type context_triplets: List[Triplet]
-        :return: Кортеж из двух объектов: (1) Резюмированный/сформированный ответ на clue-запрос; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[str, ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) Резюмированный/сформированный ответ на clue-запрос; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
-        self.log("START CLUE-ANSWER GENRATION ...",
-                 verbose=self.verbose)
-        self.log(
-            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
+        self.log("START CLUE-ANSWER GENRATION ...", verbose=self.verbose)
+        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
         self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
         self.log(f"CONTEXT_TRIPLETS:", verbose=self.verbose)
         for triplet in context_triplets:
             self.log(f"*[{triplet.id}] {triplet}", verbose=self.verbose)
-        info = ReturnInfo()
+        rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
 
-        self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...",
-                 verbose=self.verbose)
-        answer, status = self.tasks_solvers.cagen_solver.solve(
+        self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...", verbose=self.verbose)
+        answer, status, trace = self.tasks_solvers.cagen_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             query=query, triplets=context_triplets)
+        module_trace.add("cagen_solver", ModuleType.task_solver, trace)
 
         if status != ReturnStatus.success:
-            info.occurred_warning.append(status)
+            rinfo.occurred_warning.append(status)
 
         if answer is None or len(answer) == 0:
-            info.status = ReturnStatus.empty_answer
-            info.message = STATUS_MESSAGE[info.status]
+            rinfo.status = ReturnStatus.empty_answer
+            rinfo.message = STATUS_MESSAGE[rinfo.status]
 
-        self.log(
-            f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.verbose)
-        self.log(f"STATUS: {info.status}", verbose=self.verbose)
+        self.log(f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.verbose)
+        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
-        return answer, info
+        return answer, rinfo, module_trace

@@ -65,7 +65,7 @@ class AnswersJudge(CacheUtils):
         self.log(f"* PREDICTED: {predicted_response}",
                  verbose=self.verbose)
 
-        predicted_score, status = self.llmjudge_solver.solve(
+        predicted_score, status, _ = self.llmjudge_solver.solve(
             lang=self.config.lang, question=question,
             gold_answer=ground_truth, generated_answer=predicted_response)
 

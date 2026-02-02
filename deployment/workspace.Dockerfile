@@ -26,6 +26,10 @@ RUN apt-get --assume-yes install libicu-dev python3-icu pkg-config libpq-dev lib
 RUN apt-get install -y git
 RUN apt-get purge -y --auto-remove && rm -rf /var/lib/apt/lists/*
 
+RUN apt update
+RUN apt install -y jq
+RUN jq --version
+
 RUN python3 --version
 COPY requirements.txt .
 RUN python3 -m pip install -r requirements.txt

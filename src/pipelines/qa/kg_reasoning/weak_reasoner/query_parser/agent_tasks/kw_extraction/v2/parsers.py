@@ -19,8 +19,8 @@ def kwe_custom_parse(raw_response: str, **kwargs) -> List[str]:
         map(lambda item: item.strip(), raw_response.split('|')))
 
     # Ошибка в формате ответа
-    for entitie in extracted_entities:
-        if len(entitie) < 1:
+    for entity in extracted_entities:
+        if len(entity) < 1:
             raise ValueError(f"raw_response: '{raw_response}'")
 
     return extracted_entities
