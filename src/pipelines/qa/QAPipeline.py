@@ -127,19 +127,22 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
 
         return query_info, rinfo, trace
 
-    def process_query(self, query_info: QueryPreprocessingInfo) -> Tuple[QueryReasoningInfo, ReturnInfo, CompositeModuleResult]:
+    @accumulate_stage_info
+    def process_query(self, query_info: QueryPreprocessingInfo) -> Tuple[QueryReasoningInfo, ReturnInfo, CompositeModuleDetailedResult, bool]:
         """Метод предназначен для обхода графа знаний с целью извлечения релевантной информации по под-запросу.
         :param query_info: Класс с информацией по предобработанному вопросу.
         :type query_info: QueryPreprocessingInfo
-        :return: Кортеж из трёх объектов: (1) класс с под-запросами и ответами на них; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
-        :rtype: Tuple[QueryReasoningInfo, ReturnInfo, CompositeModuleResult]
+        :return: Кортеж из четырёх объектов: (1) класс с под-запросами и ответами на них; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода; (4) True, если результат был получен из кеша (cache hit), иначе False.
+        :rtype: Tuple[QueryReasoningInfo, ReturnInfo, CompositeModuleDetailedResult]
         """
         rinfo = ReturnInfo()
+        module_trace = CompositeModuleDetailedResult()
         sub_queries, sub_answers = query_info.processed_query, []
 
         for i, sub_query in enumerate(query_info.processed_query):
             self.log(f"Processing sub_query #{i}: {sub_query}", verbose=self.verbose)
             sub_answer, rinfo, trace = self.stages.kg_reasoner.perform(sub_query)
+            module_trace.add('perform', ModuleType.stage, trace)
             self.log(f"RESULT: {sub_answer}", verbose=self.verbose)
             if rinfo.status != ReturnStatus.success:
                 self.log("Operation ended with error!", verbose=self.verbose)
@@ -156,7 +159,7 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
         subq_info = QueryReasoningInfo(
             sub_queries=sub_queries, sub_answers=sub_answers)
 
-        return subq_info, rinfo, trace
+        return subq_info, rinfo, module_trace, False
 
     def postprocess_answer(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> Tuple[str, ReturnInfo, CompositeModuleResult]:
         """Метод агрегирует ответы по под-запросам и формирует финальный ответ. Оборачивает вызов компоненты AnswersAggregator и логирует результат.

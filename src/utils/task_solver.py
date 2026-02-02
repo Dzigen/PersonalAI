@@ -138,11 +138,11 @@ class AgentTaskSolver:
             self.log("2. Детекция используемого языка...", verbose=self.verbose)
             flatten_context = ', '.join(list(formated_context.values()))
 
-            detected_lang, status = detect_lang(
-                flatten_context) if lang == 'auto' else (lang, ReturnStatus.success)
+            detected_lang, raw_lang, status = detect_lang(
+                flatten_context) if lang == 'auto' else (lang, lang, ReturnStatus.success)
 
             self.log(f"Результат: {detected_lang}.", verbose=self.verbose)
-            self.log(f"Статус: {STATUS_MESSAGE[status]}", verbose=self.verbose)
+            self.log(f"Статус: {STATUS_MESSAGE[status]}, {raw_lang}", verbose=self.verbose)
 
         # Если удалось определить язык (распознанный язык находится в списке доступных)
         if status == ReturnStatus.success:

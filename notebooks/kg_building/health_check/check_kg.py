@@ -129,7 +129,7 @@ def graph_nodes_neighbours_counter(kg_model: KnowledgeGraphModel) -> Dict[str, o
             f"MATCH (a:{template[0]}){template[1]}[rel:{template[2]}]{template[3]}(b:{template[4]}) RETURN count(a), elementId(b)")
         node_neighbours_to_node_count = list(
             map(lambda item: item['count(a)'], node_neighbours_to_node_count))
-        
+
         cur_info_name = f'({template[0]})_neighbours_to_({template[4]})_via_[{template[2]}]'
         if len(node_neighbours_to_node_count) > 0:
             info[f'({template[0]})_neighbours_to_({template[4]})_via_[{template[2]}]'] = {
@@ -475,3 +475,5 @@ with open(GRAPH_HEALTH_CHECKS_PATH, 'w', encoding='utf-8') as fd:
 
 
 print("############ DONE ############")
+
+kg_model.close_connections()

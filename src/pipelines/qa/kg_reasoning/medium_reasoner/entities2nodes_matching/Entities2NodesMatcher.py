@@ -125,6 +125,6 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
             rinfo.status = ReturnStatus.empty_answer
         self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
 
-        cachehit_summary = (sum(cache_hits) / len(cache_hits)) >= 0.5
+        cachehit_summary = (sum(cache_hits) / len(cache_hits)) >= 0.5 if len(cache_hits) > 0 else False
 
         return matched_kg_objects, rinfo, cachehit_summary

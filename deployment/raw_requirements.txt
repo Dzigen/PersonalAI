@@ -37,3 +37,8 @@ falkordb
 mlflow
 boto3
 lingua-language-detector
+ragas
+rapidfuzz
+sacrebleu
+rouge_score
+yq

@@ -29,6 +29,7 @@ SPEC_EXPERIMENT_DIR = f"{EXP_KG_PATH}/{SPECEXP_PARAMS['EXPERIMENT_NAME']}"
 
 BASE_METRICS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['metrics_name']}"
 LLM_METRICS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['judges_name']}"
+RAGAS_METRICS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['ragas_name']}"
 ELAPSED_TIME_FILE_PATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['elapsed_time']}"
 
 ACCUMULATED_SCORES_SPATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['accumulated_scores']}"
@@ -51,13 +52,19 @@ def save_json(data: Dict[str, object], save_path: str):
 ####################################################
 
 accumulated_scores = defaultdict(list)
-accumulated_base_meticnames = {
+accumulated_base_metricnames = {
     'BLEU1': [], 'BLEU2': [], 'METEOR': [],
-    'RougeL': [], 'ExactMatch': [], 'NoneScore': [], 'NoAnswerScore': []#,
+    'RougeL': [], 'ExactMatch': [], 'F1': [], 'NoneScore': [], 'NoAnswerScore': []#,
 #    'BertScore': ['f1', 'precision', 'recall']
 }
 
-accumulated_llm_meticnames = {'llm-as-a-judge': ['mean', 'median']}
+accumulated_llm_metricnames = {'llm-as-a-judge': ['mean', 'median']}
+
+accumulated_ragas_metricnames = {
+    'response_groundedness': ['mean', 'median'],
+    'context_relevance': ['mean', 'median'],
+    'faithfulness': ['mean', 'median']
+}
 
 ####################################################
 print("3. Accumulating base scores")
@@ -66,11 +73,11 @@ base_packs = os.listdir(BASE_METRICS_DIR)
 for pack_name in base_packs:
     metrics_info = load_json(f"{BASE_METRICS_DIR}/{pack_name}")
 
-    for m_name in accumulated_base_meticnames.keys():
-        if len(accumulated_base_meticnames[m_name]) == 0:
+    for m_name in accumulated_base_metricnames.keys():
+        if len(accumulated_base_metricnames[m_name]) == 0:
             accumulated_scores[m_name].append(metrics_info[m_name])
         else:
-            for sub_m_name in accumulated_base_meticnames[m_name]:
+            for sub_m_name in accumulated_base_metricnames[m_name]:
                 accumulated_scores[f"{m_name}_{sub_m_name}"].append(
                     metrics_info[m_name][sub_m_name])
 
@@ -81,13 +88,28 @@ llm_packs = os.listdir(LLM_METRICS_DIR)
 for pack_name in llm_packs:
     metrics_info = load_json(f"{LLM_METRICS_DIR}/{pack_name}")
 
-    for m_name in accumulated_llm_meticnames.keys():
-        if len(accumulated_llm_meticnames[m_name]) == 0:
+    for m_name in accumulated_llm_metricnames.keys():
+        if len(accumulated_llm_metricnames[m_name]) == 0:
             accumulated_scores[m_name].append(metrics_info[m_name])
         else:
-            for sub_m_name in accumulated_llm_meticnames[m_name]:
+            for sub_m_name in accumulated_llm_metricnames[m_name]:
                 accumulated_scores[f"{m_name}_{sub_m_name}"].append(
                     metrics_info[m_name][sub_m_name])
+
+####################################################
+print("5. Accumulating RAGAS scores")
+
+ragas_packs = os.listdir(RAGAS_METRICS_DIR)
+for pack_name in ragas_packs:
+    metrics_info = load_json(f"{RAGAS_METRICS_DIR}/{pack_name}")
+
+    for m_name in accumulated_ragas_metricnames.keys():
+        if len(accumulated_ragas_metricnames[m_name]) == 0:
+            accumulated_scores[m_name].append(metrics_info['ragas'][m_name])
+        else:
+            for sub_m_name in accumulated_ragas_metricnames[m_name]:
+                accumulated_scores[f"{m_name}_{sub_m_name}"].append(
+                    metrics_info['ragas'][m_name][sub_m_name])
 
 ####################################################
 
@@ -95,7 +117,7 @@ for key in accumulated_scores.keys():
     accumulated_scores[key] = round5(np.mean(accumulated_scores[key]))
 
 ####################################################
-print("5. Saving accumulated scores")
+print("6. Saving accumulated scores")
 
 times_info = load_json(ELAPSED_TIME_FILE_PATH)
 for pack_name in times_info.keys():

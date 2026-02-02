@@ -5,16 +5,25 @@ INIT_STRUCT: True # !!! PAY ATTENTION !!!
 EXP_DIRS:
   tmp_gen_answers_name: tmp_answer_packs
   gen_answers_name: answer_packs
+
   metrics_name: metric_packs
+
   tmp_judges_name: tmp_judges_packs
   judges_name: judges_packs
+
+  tmp_ragas_name: tmp_ragas_packs
+  ragas_name: ragas_packs
+
   settings_name: settings
   configs_name: configs
+  qa_traces_name: qa_traces_packs
 
 KG_SETTING_DIR:
   name: settings
   kgconn: kgconn_params
   kgenv: kgenv_params
+
+QAENV: qaenv_params.yaml
 
 WORKSPACE_CONTAINER_DIRS:
   base_path: /home/workspace
@@ -24,6 +33,7 @@ WORKSPACE_CONTAINER_DIRS:
   experiments: experiments/qa
   results: results
   llmasajudge_kv_dir: evaluate/llmasajudge_cache
+  ragas_kv_dir: evaluate/ragas_cache
   kg_env_path: init_env/env_settings
 
 EXP_SAVE_FILES:

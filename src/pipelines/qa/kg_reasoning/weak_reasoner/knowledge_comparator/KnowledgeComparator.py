@@ -144,5 +144,5 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
 
         self.log(f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.verbose)
 
-        cachehit_summary = (sum(cache_hits) / len(cache_hits)) >= 0.5
+        cachehit_summary = (sum(cache_hits) / len(cache_hits)) >= 0.5 if len(cache_hits) > 0 else False
         return (linked_nodes, linked_nodes_by_entities), rinfo, cachehit_summary

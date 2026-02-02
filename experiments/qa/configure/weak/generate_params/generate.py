@@ -13,7 +13,7 @@ with open(SETTINGS_PARAMS_FILEP, 'r') as stream:
 
 #############################################################
 
-REPO_BASE_PATH = '/home/m.menschikov/workspace/personal_ai/Personal-AI' #'/home/workspace' # TO CHANGE
+REPO_BASE_PATH = '/home/m.menschikov/workspace/personal_ai/Personal-AI' #'/home/m.menschikov/workspace/personal_ai/Personal-AI' | '/home/workspace' # TO CHANGE
 GEN_PARAMS_PATH = f'{REPO_BASE_PATH}/experiments/qa/configure/weak/generate_params'
 SAVE_PARAMS_PATH = f'{GEN_PARAMS_PATH}/tmp_params'
 
@@ -100,7 +100,8 @@ for ds_idx, dataset in enumerate(AVAILABLE_DATASET_NAMES):
             # saving generated params-config
             SPEC_PARAMS_SPATH = f"{SAVE_PARAMS_PATH}/{dataset}/{kg_name}/{SPECIFIC_QA_PARAMS['EXPERIMENT_NAME']}.yaml"
             if os.path.exists(SPEC_PARAMS_SPATH):
-                raise ValueError(f"params-file already exists: {SPEC_PARAMS_SPATH}")
+                print(f"params-file already exists: {SPEC_PARAMS_SPATH}")
+                continue
 
             with open(SPEC_PARAMS_SPATH, 'w') as fd:
                 yaml.dump(
