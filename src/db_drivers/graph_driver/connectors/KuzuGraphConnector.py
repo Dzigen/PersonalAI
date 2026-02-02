@@ -7,8 +7,9 @@ import os
 from .configs import DEFAULT_KUZU_CONFIG
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils.errors import ReturnInfo
-from ....utils.data_structs import Node, NODES_TYPES_MAP, TripletCreator, Relation, RELATIONS_TYPES_MAP, \
-    RelationType, NodeInfo, RelationInfo, from_str_to_nodeinfo, from_str_to_relationinfo
+from ....utils.data_structs import Node, NODES_TYPES_MAP, \
+    TripletCreator, Relation, RELATIONS_TYPES_MAP, \
+    RelationType, NodeInfo, RelationInfo
 from ....utils import Triplet, NodeType
 
 
@@ -310,13 +311,15 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         formatted_triplets = []
         if subj_names:
             for subj_name in subj_names:
+                subj_dump = json.dumps(subj_name, ensure_ascii=False)
                 output = self.conn.execute(
-                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n1.name) = LOWER("{subj_name}") RETURN n1, rel, n2;')
+                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n1.name) = LOWER({subj_dump}) RETURN n1, rel, n2;')
                 formatted_triplets += self.parse_query_triplets_output(output)
         elif obj_names:
             for obj_name in obj_names:
+                obj_dump = json.dumps(obj_name, ensure_ascii=False)
                 output = self.conn.execute(
-                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n2.name) = LOWER("{obj_name}") RETURN n1, rel, n2;')
+                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n2.name) = LOWER({obj_dump}) RETURN n1, rel, n2;')
                 formatted_triplets += self.parse_query_triplets_output(output)
         else:
             output = self.conn.execute(

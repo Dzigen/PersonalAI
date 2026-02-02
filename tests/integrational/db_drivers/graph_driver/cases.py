@@ -23,6 +23,14 @@ OBJECT_NODE3 = NodeCreator.create(
     name='ghi', n_type=NodeType.object, prop={'k3': 'v3'})
 OBJECT_NODE4 = NodeCreator.create(
     name='yhn', n_type=NodeType.object, prop={'k13': 'v13'})
+OBJECT_NODE5_1 = NodeCreator.create(
+    name='asd "asdas" sdf', n_type=NodeType.object, prop={'k14': 'v14'})
+OBJECT_NODE5_2 = NodeCreator.create(
+    name="asd 'asdas' sdf", n_type=NodeType.object, prop={'k15': 'v15'})
+OBJECT_NODE5_3 = NodeCreator.create(
+    name='asd asfdas "asdas" sdf', n_type=NodeType.object, prop={'k20': 'v20'})
+OBJECT_NODE5_4 = NodeCreator.create(
+    name="asd grhnhdfg 'asdas' sdf", n_type=NodeType.object, prop={'k21': 'v21'})
 
 THESIS_NODE1 = NodeCreator.create(
     name='qwerty', n_type=NodeType.hyper, prop={'k4': 'v4'})
@@ -30,6 +38,10 @@ THESIS_NODE2 = NodeCreator.create(
     name='asdfgh', n_type=NodeType.hyper, prop={'k5': 'v5'})
 THESIS_NODE3 = NodeCreator.create(
     name='zxcvbn', n_type=NodeType.hyper, prop={'k6': 'v6'})
+THESIS_NODE4_1 = NodeCreator.create(
+    name='asdfgh "asdasdas" thrnrth', n_type=NodeType.hyper, prop={'k16': 'v16'})
+THESIS_NODE4_2 = NodeCreator.create(
+    name="asdfgh 'asdasdas' thrnrth", n_type=NodeType.hyper, prop={'k17': 'v17'})
 
 EPISODIC_NODE1 = NodeCreator.create(
     name='uiop', n_type=NodeType.episodic, prop={'k7': 'v7'})
@@ -40,16 +52,18 @@ EPISODIC_NODE2 = NodeCreator.create(
     name='jkl', n_type=NodeType.episodic, prop={'k8': 'v8'})
 EPISODIC_NODE3 = NodeCreator.create(
     name='mnbv', n_type=NodeType.episodic, prop={'k9': 'v9'})
+EPISODIC_NODE4_1 = NodeCreator.create(
+    name='asdfgh "asdasdas" thrnrth', n_type=NodeType.episodic, prop={'k18': 'v18'})
+EPISODIC_NODE4_2 = NodeCreator.create(
+    name="asdfgh 'asdasdas' thrnrth", n_type=NodeType.episodic, prop={'k19': 'v19'})
 
 # triplets
 SIMPLE_TRIPLET1 = TripletCreator.create(start_node=OBJECT_NODE1, relation=Relation(
     name='simple1', type=RelationType.simple, prop={'k10': 'v10'}), end_node=OBJECT_NODE2)
 SIMPLE_TRIPLET1_2 = TripletCreator.create(start_node=OBJECT_NODE1, relation=Relation(
     name='simple1_1', type=RelationType.simple, prop={'k16': 'v16'}), end_node=OBJECT_NODE2)
-
 SIMPLE_TRIPLET1_3 = TripletCreator.create(start_node=OBJECT_NODE1, relation=Relation(
     name='simple1_2', type=RelationType.simple, prop={'k16_2': 'v16_2'}), end_node=OBJECT_NODE1_2)
-
 
 SIMPLE_TRIPLET2 = TripletCreator.create(start_node=OBJECT_NODE2, relation=Relation(
     name='simple2', type=RelationType.simple, prop={'k11': 'v11'}), end_node=OBJECT_NODE3)
@@ -59,6 +73,33 @@ SIMPLE_TRIPLET4 = TripletCreator.create(start_node=OBJECT_NODE3, relation=Relati
     name='simple4', type=RelationType.simple, prop={'k14': 'v14'}), end_node=OBJECT_NODE4)
 SIMPLE_TRIPLET5 = TripletCreator.create(start_node=OBJECT_NODE1, relation=Relation(
     name='simple5', type=RelationType.simple, prop={'k15': 'v15'}), end_node=OBJECT_NODE1)
+
+SIMPLE_TRIPLET6_1 = TripletCreator.create(start_node=OBJECT_NODE5_1, relation=Relation(
+    name='simple6_1', type=RelationType.simple, prop={'k11': 'v11'}), end_node=OBJECT_NODE1)
+SIMPLE_TRIPLET6_2 = TripletCreator.create(start_node=OBJECT_NODE5_2, relation=Relation(
+    name='simple6_2', type=RelationType.simple, prop={'k11': 'v11'}), end_node=OBJECT_NODE2)
+SIMPLE_TRIPLET7 = TripletCreator.create(start_node=OBJECT_NODE5_1, relation=Relation(
+    name='simple7', type=RelationType.simple, prop={'k11': 'v11'}), end_node=OBJECT_NODE5_2)
+SIMPLE_TRIPLET8_1 = TripletCreator.create(start_node=OBJECT_NODE5_1, relation=Relation(
+    name='si"mpl"e8_1', type=RelationType.simple, prop={'k11': 'v11'}), end_node=OBJECT_NODE1)
+SIMPLE_TRIPLET8_2 = TripletCreator.create(start_node=OBJECT_NODE5_2, relation=Relation(
+    name="si'mp'le8_2", type=RelationType.simple, prop={'k11': 'v11'}), end_node=OBJECT_NODE2)
+SIMPLE_TRIPLET9_1 = TripletCreator.create(start_node=OBJECT_NODE5_1, relation=Relation(
+    name='si"mpl"e9_1', type=RelationType.simple, prop={'k11': 'v11'}), end_node=OBJECT_NODE5_2)
+SIMPLE_TRIPLET9_2 = TripletCreator.create(start_node=OBJECT_NODE5_3, relation=Relation(
+    name="si'mp'le9_2", type=RelationType.simple, prop={'k11': 'v11'}), end_node=OBJECT_NODE5_4)
+SIMPLE_TRIPLET10_1 = TripletCreator.create(start_node=OBJECT_NODE2, relation=Relation(
+    name='simple10_1', type=RelationType.simple, prop={'k11': 'v11'}), end_node=OBJECT_NODE5_1)
+SIMPLE_TRIPLET10_2 = TripletCreator.create(start_node=OBJECT_NODE1, relation=Relation(
+    name='simple10_2', type=RelationType.simple, prop={'k11': 'v11'}), end_node=OBJECT_NODE5_2)
+SIMPLE_TRIPLET10_3 = TripletCreator.create(start_node=OBJECT_NODE3, relation=Relation(
+    name='simple10_3', type=RelationType.simple, prop={'k11': 'v11'}), end_node=OBJECT_NODE5_1)
+SIMPLE_TRIPLET10_4 = TripletCreator.create(start_node=OBJECT_NODE4, relation=Relation(
+    name='simple10_4', type=RelationType.simple, prop={'k11': 'v11'}), end_node=OBJECT_NODE5_2)
+SIMPLE_TRIPLET11_1 = TripletCreator.create(start_node=OBJECT_NODE1, relation=Relation(
+    name='si"mpl"e11_1', type=RelationType.simple, prop={'k11': 'v11'}), end_node=OBJECT_NODE5_1)
+SIMPLE_TRIPLET11_2 = TripletCreator.create(start_node=OBJECT_NODE2, relation=Relation(
+    name="si'mp'le11_2", type=RelationType.simple, prop={'k11': 'v11'}), end_node=OBJECT_NODE5_2)
 
 THESIS_TRIPLET1 = TripletCreator.create(start_node=OBJECT_NODE1, relation=Relation(
     name='hyper', type=RelationType.hyper), end_node=THESIS_NODE1)
@@ -91,19 +132,19 @@ ALL_N_TYPES = [NodeType.object, NodeType.hyper, NodeType.episodic]
 
 GRAPHDB_CREATE_TEST_CASES = [
     # 1. пустой список
-    [[[]], [{}], {'exception': False, 'triplets_count': 0, 'nodes_count': 0}],
+    [[[]], [dict()], {'exception': False, 'triplets_count': 0, 'nodes_count': 0}],
     # 2. добавление одного триплета (полностью с creation_info None)
     # 2.1 simple
-    [[[SIMPLE_TRIPLET1]], [{}], {'exception': False,
+    [[[SIMPLE_TRIPLET1]], [dict()], {'exception': False,
                                  'triplets_count': 1, 'nodes_count': 2}],
     # 2.2 thesis
-    [[[THESIS_TRIPLET2]], [{}], {'exception': False,
+    [[[THESIS_TRIPLET2]], [dict()], {'exception': False,
                                  'triplets_count': 1, 'nodes_count': 2}],
     # 2.3 episodic with object
-    [[[EPISODIC_TRIPLET1]], [{}], {'exception': False,
+    [[[EPISODIC_TRIPLET1]], [dict()], {'exception': False,
                                    'triplets_count': 1, 'nodes_count': 2}],
     # 2.4 episodic with thesis
-    [[[EPISODIC_TRIPLET4]], [{}], {'exception': False,
+    [[[EPISODIC_TRIPLET4]], [dict()], {'exception': False,
                                    'triplets_count': 1, 'nodes_count': 2}],
     # 3. добавление одного триплета (полностью с creation_info не None)
     # 3.1 simple
@@ -172,8 +213,44 @@ GRAPHDB_CREATE_TEST_CASES = [
         'exception': False, 'triplets_count': 2, 'nodes_count': 4}],
     # 8. добавление нескольких связанных триплетов без creation info
     # !!! PAY ATTENTION !!! (neo4j effect)
-    [[[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2]], [{}], {
-        'exception': False, 'triplets_count': 3, 'nodes_count': 4}]
+    [[[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2]], [dict()], {
+        'exception': False, 'triplets_count': 3, 'nodes_count': 4}],
+    # 9. добавление триплетов со специальными символами (кавычками) в name-поле
+    # Обозначения:
+    # * () - вершина без специального символа в name-поле;
+    # * (") - вершина со специальным символом в name-поле;
+    # * --> - ребро без специального символа в name-поле;
+    # * -"-> - ребро со специальным символом в name-поле.
+    # 9.1.1. simple, (") --> ()
+    [[[SIMPLE_TRIPLET6_1],[SIMPLE_TRIPLET6_2]], [dict(),dict()], {'exception': False, 'triplets_count': 2, 'nodes_count': 4}],
+    # 9.1.2. simple, (") --> (")
+    [[[SIMPLE_TRIPLET7]], [dict()], {'exception': False, 'triplets_count': 1, 'nodes_count': 2}],
+    # 9.1.3. simple, (") -"-> ()
+    [[[SIMPLE_TRIPLET8_1],[SIMPLE_TRIPLET8_2]], [dict(),dict()], {'exception': False, 'triplets_count': 2, 'nodes_count': 4}],
+    # 9.1.4. simple, (") -"-> (")
+    [[[SIMPLE_TRIPLET9_1],[SIMPLE_TRIPLET9_2]], [dict(),dict()], {'exception': False, 'triplets_count': 2, 'nodes_count': 4}],
+    # 9.1.5. simple, () --> (")
+    [[[SIMPLE_TRIPLET10_1],[SIMPLE_TRIPLET10_2]], [dict(),dict()], {'exception': False, 'triplets_count': 2, 'nodes_count': 4}],
+    # 9.1.6. simple, () -"-> (")
+    [[[SIMPLE_TRIPLET11_1],[SIMPLE_TRIPLET11_2]], [dict(),dict()], {'exception': False, 'triplets_count': 2, 'nodes_count': 4}],
+    # 9.1.7. simple/simple, () --> (") --> ()
+    [[[SIMPLE_TRIPLET10_1, SIMPLE_TRIPLET6_1],[SIMPLE_TRIPLET10_2, SIMPLE_TRIPLET6_2]], [{0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO},{0: WO_SN_CREATION_INFO, 1: ONLY_REL_CREATION_INFO}], {'exception': False, 'triplets_count': 4, 'nodes_count': 4}],
+    # 9.1.8. simple/simple, () --> (") <-- ()
+    [[[SIMPLE_TRIPLET10_1, SIMPLE_TRIPLET10_3],[SIMPLE_TRIPLET10_2, SIMPLE_TRIPLET10_4]], [{0: FULL_CREATION_INFO, 1: WO_EN_CREATION_INFO},{0: FULL_CREATION_INFO, 1: WO_EN_CREATION_INFO}], {'exception': False, 'triplets_count': 4, 'nodes_count': 6}],
+    # # 9.2.1. hyper, (") --> ()
+    # [[[],[]], [dict(),dict()], {'exception': False, 'triplets_count': 2, 'nodes_count': 4}],
+    # # 9.2.2. hyper, (") --> (")
+    # [[[],[]], [dict(),dict()], {'exception': False, 'triplets_count': 2, 'nodes_count': 4}],
+    # # 9.2.3. hyper, () --> (")
+    # [[[],[]], [dict(),dict()], {'exception': False, 'triplets_count': 2, 'nodes_count': 4}],
+    # # 9.2.4. hyper/episodic, () --> (") --> ()
+    # [[[],[]], [dict(),dict()], {'exception': False, 'triplets_count': 4, 'nodes_count': 6}],
+    # # 9.2.5. hyper/hyper, () --> (") <-- ()
+    # [[[],[]], [dict(),dict()], {'exception': False, 'triplets_count': 4, 'nodes_count': 6}],
+    # # 9.3.1. episodic, () --> (")
+    # [[[],[]], [dict(),dict()], {'exception': False, 'triplets_count': 2, 'nodes_count': 4}],
+    # # 9.3.2. episodic/episodic, () --> (") <-- ()
+    # [[[],[]], [dict(),dict()], {'exception': False, 'triplets_count': 4, 'nodes_count': 6}]
 ]
 
 GRAPHDB_POPULATED_CREATE_TEST_CASES = []
@@ -271,18 +348,18 @@ for db_vendor in AVAILABLE_GRAPH_DBS:
 
 GRAPHDB_COUNT_TEST_CASES = [
     # 1. нуль элементов
-    [[], {}, {'triplets_count': 0, 'nodes_count': 0}, False],
+    [[], dict(), {'triplets_count': 0, 'nodes_count': 0}, False],
     # 2. один элемент
-    [[SIMPLE_TRIPLET1], {}, {'triplets_count': 1, 'nodes_count': 2}, False],
+    [[SIMPLE_TRIPLET1], dict(), {'triplets_count': 1, 'nodes_count': 2}, False],
     # 3. несколько элементов с creation_info = None
     # !!! PAY ATTENTION !!! (neo4j effect)
-    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {}, {
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], dict(), {
         'triplets_count': 3, 'nodes_count': 4}, False],
     # 4. несколько элементов с меками объектов-дубликатов (creation_info != None)
     [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, {
         'triplets_count': 2, 'nodes_count': 3}, False],
     # 5. детальный вывод (нуль элементов)
-    [[], {}, {'triplets_count': {'simple': 0, 'hyper': 0, 'episodic': 0, 'time': 0}, 'nodes_count': {'object': 0, 'hyper': 0, 'episodic': 0, 'time': 0}}, True],
+    [[], dict(), {'triplets_count': {'simple': 0, 'hyper': 0, 'episodic': 0, 'time': 0}, 'nodes_count': {'object': 0, 'hyper': 0, 'episodic': 0, 'time': 0}}, True],
     # 5. детальный вывод (несколько элементов)
     [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2, THESIS_TRIPLET1, EPISODIC_TRIPLET1], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO, 2: WO_SN_CREATION_INFO, 3: WO_SN_CREATION_INFO}, {
         'triplets_count': {'simple': 2, 'hyper': 1, 'episodic': 1, 'time': 0}, 'nodes_count': {'object': 3, 'hyper': 1, 'episodic': 1, 'time': 0}}, True]
@@ -538,7 +615,29 @@ GRAPHDB_READ_BY_NAME_TEST_CASES = [
     [[EPISODIC_TRIPLET2], {0: {'s_node': True, 'e_node': True}},
      {'triplets': 1, 'nodes': 2}, 123, RelationType.episodic, 'relation', None, True],
     [[EPISODIC_TRIPLET2], {0: {'s_node': True, 'e_node': True}},
-     {'triplets': 1, 'nodes': 2}, None, RelationType.episodic, 'relation', None, True]
+     {'triplets': 1, 'nodes': 2}, None, RelationType.episodic, 'relation', None, True],
+
+    # 7. Получение триплета/вершины, у которого в name-поле значение содержит специальный символ: кавычки.
+    # 7.1.1 node, object, вершины не существует
+    [[SIMPLE_TRIPLET10_1, SIMPLE_TRIPLET6_1], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, {'triplets': 2, 'nodes': 3}, 'not existed "node" name', NodeType.object, 'node', [], False],
+    [[SIMPLE_TRIPLET10_2, SIMPLE_TRIPLET6_2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, {'triplets': 2, 'nodes': 3}, "not existed 'node' name", NodeType.object, 'node', [], False],
+    # 7.1.2 node, object, вершина существует
+    [[SIMPLE_TRIPLET10_1, SIMPLE_TRIPLET6_1], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, {'triplets': 2, 'nodes': 3}, SIMPLE_TRIPLET10_1.end_node.name, NodeType.object, 'node', [SIMPLE_TRIPLET10_1.end_node], False],
+    [[SIMPLE_TRIPLET10_2, SIMPLE_TRIPLET6_2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, {'triplets': 2, 'nodes': 3}, SIMPLE_TRIPLET10_2.end_node.name, NodeType.object, 'node', [SIMPLE_TRIPLET10_2.end_node], False],
+    # # 7.1.3 node, hyper, вершины не существует
+    # [[...], {...}, {'triplets': ..., 'nodes': ...}, ..., NodeType.hyper, 'node', [...], False],
+    # # 7.1.4 node, hyper, вершина существует
+    # [[...], {...}, {'triplets': ..., 'nodes': ...}, ..., NodeType.hyper, 'node', [...], False],
+    # # 7.1.5 node, episodic, вершины не существует
+    # [[...], {...}, {'triplets': ..., 'nodes': ...}, ..., NodeType.episodic, 'node', [...], False],
+    # # 7.1.6 node, episodic, вершина существует
+    # [[...], {...}, {'triplets': ..., 'nodes': ...}, ..., NodeType.episodic, 'node', [...], False],
+    # 7.2.1 relation, simple, связи не существует
+    [[SIMPLE_TRIPLET10_1, SIMPLE_TRIPLET6_1], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, {'triplets': 2, 'nodes': 3}, 'not existed "relation" name', RelationType.simple, 'relation', [], False],
+    [[SIMPLE_TRIPLET10_1, SIMPLE_TRIPLET6_1], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, {'triplets': 2, 'nodes': 3}, "not existed 'relation' name", RelationType.simple, 'relation', [], False],
+    # 7.2.2 realation, simple, связь существует
+    [[SIMPLE_TRIPLET10_1, SIMPLE_TRIPLET6_1], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, {'triplets': 2, 'nodes': 3}, SIMPLE_TRIPLET10_1.relation.name, RelationType.simple, 'relation', [SIMPLE_TRIPLET10_1], False],
+    [[SIMPLE_TRIPLET10_2, SIMPLE_TRIPLET6_2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO}, {'triplets': 2, 'nodes': 3}, SIMPLE_TRIPLET10_2.relation.name, RelationType.simple, 'relation', [SIMPLE_TRIPLET10_2], False]
 ]
 
 GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES = []

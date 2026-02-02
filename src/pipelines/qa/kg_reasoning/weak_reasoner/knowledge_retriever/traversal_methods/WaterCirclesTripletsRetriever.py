@@ -582,7 +582,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
                                     else:
                                         found_same_common = True
                                 if ent.lower() in text_chunk.lower():
-                                    if ent[0].isupper() or ent[1].isupper() or ent[0].isdigit() or ent[1].isdigit():
+                                    if (ent[0].isupper() or ent[0].isdigit()) or (len(ent) > 1 and (ent[1].isupper() or ent[1].isdigit())):
                                         found_proper = True
                                     else:
                                         found_common = True

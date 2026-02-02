@@ -16,7 +16,7 @@ from src.utils.data_structs import Node, NodeInfo, RelationInfo
 from src.utils import Triplet, RelationType, NodeType
 
 @pytest.mark.parametrize("inputs, create_info, expected, graphdb_conn", GRAPHDB_POPULATED_CREATE_TEST_CASES, indirect=['graphdb_conn'])
-def test_create(inputs: List[Triplet], create_info: Dict, expected: Dict, graphdb_conn: AbstractGraphDatabaseConnection):
+def test_create(inputs: List[List[Triplet]], create_info: List[Dict], expected: Dict, graphdb_conn: AbstractGraphDatabaseConnection):
     graphdb_conn.clear()
 
     try:
