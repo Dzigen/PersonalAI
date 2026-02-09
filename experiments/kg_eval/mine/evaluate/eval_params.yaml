@@ -1,0 +1,14 @@
+judge_llm_config:
+  name: 'ollama' # DONT CHANGE
+  gen_strategy:
+    num_predict: 2048 # DONT CHANGE
+    seed: 42  # DONT CHANGE
+    top_k: 1  # DONT CHANGE
+    temperature: 0.0  # DONT CHANGE
+  credentials:
+    model: 'qwen2.5:7b'
+    host: 'localhost'
+    port: 11437
+  ext_params:
+    timeout: 560
+    keep_alive: 120

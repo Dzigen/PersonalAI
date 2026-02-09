@@ -15,7 +15,7 @@ class AbstractRerankerModule(ABC):
         :type query: str
         :param top_k: Максимальное количество извлекаемых элементов. Значение по умолчанию 1.
         :type top_k: int, optional
-        :param subset_ids: Подмножество идентификаторов элементов, в рамках которого нужно искать релевантные элементы. Значение по умолчанию None.
+        :param subset_ids: Подмножество идентификаторов элементов, в рамках которого нужно искать релевантные элементы. Значение по умолчанию 1.
         :type subset_ids: Union[None, List[str]], optional
         :param includes: Названия полей в возвращаемых релевантных элементах, которые должны быть заполнены. Значения по умолчанию ['documents', 'metadatas'].
         :type includes: List[str], optional
