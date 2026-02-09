@@ -21,7 +21,7 @@ from .....utils.errors import ReturnInfo
 class OpenSeachVectorConnector(AbstractVectorDatabaseConnection):
 
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_OPENSEARCH_CONFIG,
-                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16) -> None:
+                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 8) -> None:
         if isinstance(config, dict):
             config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
         else:

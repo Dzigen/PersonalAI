@@ -124,13 +124,15 @@ services:
 
   qdrant:
     container_name: ${QDRANT_CNTNAME}
-    image: qdrant/qdrant
+    image: qdrant/qdrant:gpu-nvidia-latest
     hostname: ${QDRANT_HOST}
     ports:
       - ${QDRANT_EXTERNAL_PORT}:6333
       - ${QDRANT_UI_EXTERNAL_PORT}:6334
     volumes:
         - ${QDRANT_LOCAL_VOLUME}:/qdrant/storage
+    environment:
+      - QDRANT__GPU__INDEXING=1
     deploy:
       resources:
         limits:
@@ -139,6 +141,10 @@ services:
         reservations:
           cpus: '1'
           memory: 5G
+          devices:
+            - driver: nvidia
+              device_ids: ['${WORKSPACE_DEVICE_ID}']
+              capabilities: [gpu]
 
   opensearch:
     container_name: ${OPENSEARCH_CNTNAME}

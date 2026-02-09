@@ -576,7 +576,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
                                 if ent.lower() in obj_props.values() or ent.lower() in rel_dict.values():
                                     found_inters2 = True
                                 if seed_entity.lower() in text_chunk.lower():
-                                    if seed_entity[0].isupper() or seed_entity[1].isupper() \
+                                    if seed_entity[0].isupper() or (len(seed_entity) > 1 and seed_entity[1].isupper()) \
                                             or any(symb.isdigit() for symb in seed_entity):
                                         found_same_proper = True
                                     else:
