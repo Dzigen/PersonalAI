@@ -7,6 +7,6 @@ E2NM_RERANKDRIVER_DEFAULT_CONFIG = RerankerDriverConfig(
     name='ensemble_fusion',
     strategy_config=EnsembleFusionRerankerConfig(
         vdb_names=['dense_nodes', 'bm25_nodes'],
-        weights=[0.4, 0.6]
+        weights=[0.3, 0.7]
     )
 )
