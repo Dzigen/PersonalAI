@@ -37,6 +37,7 @@ SPEC_EXPERIMENT_DIR = f"{EXP_KG_PATH}/{SPECEXP_PARAMS['EXPERIMENT_NAME']}"
 
 ACCUMULATED_SCORES_SPATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['accumulated_scores']}"
 ELAPSED_TIME_FILE_PATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['elapsed_time']}"
+MINE_PLOT_FILE_PATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['mine_accuracy_plot']}"
 
 ####################################################
 print("3. Flattening dict with parameters and metrics")
@@ -80,5 +81,6 @@ with mlflow.start_run(run_name=SPECEXP_PARAMS['EXPERIMENT_NAME']) as run_fd:
     mlflow.log_artifact(ACCUMULATED_SCORES_SPATH)
     mlflow.log_artifact(ELAPSED_TIME_FILE_PATH)
     mlflow.log_artifact(SPECEXP_PARAMS_FILEP)
+    mlflow.log_artifact(MINE_PLOT_FILE_PATH)
 
 print("############ DONE ############")
