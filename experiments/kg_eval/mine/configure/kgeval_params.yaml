@@ -4,8 +4,10 @@ KNOWLEDGE_GRAPH_NAME: 'llama318b_110226_v2prompts' # TO CHANGE
 
 RETRIEVE_SETTING: # TO CHANGE
   max_matched_nodes: 8
-  max_triples_per_node: 5
-  max_triples_in_total: 40
+  max_triples_per_node: 4
+  max_nodes_per_depth: 4
+  max_explore_depth: 2
+  max_triples_in_total: 64
   accepted_nodes_types:
     - episodic
     - hyper

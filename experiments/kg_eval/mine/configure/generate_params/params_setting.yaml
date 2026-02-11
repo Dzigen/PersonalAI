@@ -7,19 +7,25 @@ PERSONALAI_VERSION: 'v2.2.1' # TO CHANGE
 
 RETRIEVE_SETTING: # TO CHANGE
   max_matched_nodes:
-    - 4
+    #- 4
     - 8
   max_triples_per_node:
     - 4
     - 8
-    - -1
+    #- -1
+  max_nodes_per_depth:
+    - 4
+    #- -1
+  max_explore_depth:
+    - 1
+    - 2
   max_triples_in_total:
-    - 16
-    - 32
+    #- 16
+    #- 32
     - 64
   accepted_nodes_types:
-    - [episodic, hyper, object]
+    #- [episodic, hyper, object]
     - [hyper, object]
     - [episodic]
-    - [hyper]
-    - [object]
+    #- [hyper]
+    #- [object]

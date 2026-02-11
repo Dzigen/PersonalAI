@@ -21,14 +21,18 @@ SAVE_PARAMS_PATH = f'{GEN_PARAMS_PATH}/tmp_params'
 
 AVAIL_MAXMNODES = SETTINGS_PARAMS['RETRIEVE_SETTING']['max_matched_nodes']
 AVAIL_MAXTRIPLES_PERQUERY = SETTINGS_PARAMS['RETRIEVE_SETTING']['max_triples_per_node']
+AVAIL_MAXNODE_PERDEPTH = SETTINGS_PARAMS['RETRIEVE_SETTING']['max_nodes_per_depth']
+AVAIL_MAXEXPLORE_DEPTH = SETTINGS_PARAMS['RETRIEVE_SETTING']['max_explore_depth']
 AVAIL_MAXTRIPLES_INTOTAL = SETTINGS_PARAMS['RETRIEVE_SETTING']['max_triples_in_total']
 AVAIL_ACCEPTED_NTYPES = SETTINGS_PARAMS['RETRIEVE_SETTING']['accepted_nodes_types']
 
 GENERAL_CONFIGS = list(product(
     AVAIL_MAXMNODES, # 0
     AVAIL_MAXTRIPLES_PERQUERY, # 1
-    AVAIL_MAXTRIPLES_INTOTAL, # 2
-    AVAIL_ACCEPTED_NTYPES, # 3
+    AVAIL_MAXNODE_PERDEPTH, # 2
+    AVAIL_MAXEXPLORE_DEPTH, # 3
+    AVAIL_MAXTRIPLES_INTOTAL, # 4
+    AVAIL_ACCEPTED_NTYPES, # 5
 ))
 
 #############################################################
@@ -54,8 +58,10 @@ for ds_idx, dataset in enumerate(AVAILABLE_DATASET_NAMES):
 
             SETTINGS_PARAMS['RETRIEVE_SETTING']['max_matched_nodes'] = spec_raw_params[0]
             SETTINGS_PARAMS['RETRIEVE_SETTING']['max_triples_per_node'] = spec_raw_params[1]
-            SETTINGS_PARAMS['RETRIEVE_SETTING']['max_triples_in_total'] = spec_raw_params[2]
-            SETTINGS_PARAMS['RETRIEVE_SETTING']['accepted_nodes_types'] = spec_raw_params[3]
+            SETTINGS_PARAMS['RETRIEVE_SETTING']['max_nodes_per_depth'] = spec_raw_params[2]
+            SETTINGS_PARAMS['RETRIEVE_SETTING']['max_explore_depth'] = spec_raw_params[3]
+            SETTINGS_PARAMS['RETRIEVE_SETTING']['max_triples_in_total'] = spec_raw_params[4]
+            SETTINGS_PARAMS['RETRIEVE_SETTING']['accepted_nodes_types'] = spec_raw_params[5]
 
             # creating name for experiment
             short_ds_name = dataset.split('_')[0]
