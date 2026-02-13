@@ -4,6 +4,7 @@ from copy import deepcopy
 
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
+
 @dataclass
 class TableDBConnectionConfig(BaseDatabaseConfig):
     """Конфигурация подключения к табличной базе данных.

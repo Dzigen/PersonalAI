@@ -3,7 +3,6 @@ from typing import Tuple, Dict, Union
 import json
 from copy import deepcopy
 import hashlib
-from time import time
 
 from .logger import Logger
 from .language_detector import detect_lang

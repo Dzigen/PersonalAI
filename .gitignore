@@ -99,5 +99,4 @@ configs/blazegraph/authoritieschildrensSubjects.nt
 src/dialogue_processing/
 src/question_answer_rephrasing/
 
-experiments/analogues_eval/raptor/method_source
-experiments/analogues_eval/hipporag2/kg_building/outputs
+experiments/analogues_eval/available_methods_utils/raptor/method_source

@@ -1,0 +1,83 @@
+#!/usr/bin/bash
+
+DEPLOYMENT_DIR=deployment
+
+METHODS_EVAL_REL_PATH=experiments/analogues_eval
+METHODS_CUSTOM_UTILS_DIR=available_methods_utils
+METHOD_ENVSETTING_DIR=init_env
+
+PREPARED_PARAMS_REL_PATH=kg_building/prepared_params
+KGBUILD_CONFIGURE_REL_PATH=kg_building/configure
+
+METHODS_EVAL_KG_REL_PATH=data/knowledge_graphs/analogues_eval
+SPEC_KG_SETTINGS_DIR=settings
+
+KGCONN_PARAMS_NAME=kgconn_params.yaml
+KGENV_PARAMS_NAME=kgenv_params.yaml
+KGHYPERP_PARAMS_NAME=kghyperp_params.yaml
+ENVFILE_NAME=.env
+
+USERNAME=m.menschikov # TO CHANGE
+TMP_WORKSPACE_CNTNAME=personalai_mmenschikov_workspace
+PYTHON_CMD=/usr/bin/python3
+
+# -----------------------------------------------------------
+
+DATASET_NAME=$1
+KG_NAME=$2
+METHOD=$3
+
+# -----------------------------------------------------------
+
+TMP_BASE_DIR=/home/m.menschikov/workspace/personal_ai/Personal-AI # TO CHANGE
+
+TMP_DEPLOYMENT_COMPOSE_PATH="$TMP_BASE_DIR/$DEPLOYMENT_DIR"
+TMP_KGCONFIGURE_DIR="$TMP_BASE_DIR/$METHODS_EVAL_REL_PATH/$KGBUILD_CONFIGURE_REL_PATH"
+
+TMP_SPEC_KGPARAMS_DIR="$TMP_BASE_DIR/$METHODS_EVAL_REL_PATH/$PREPARED_PARAMS_REL_PATH/$METHOD/$DATASET_NAME/$KG_NAME"
+
+TMP_KGCONN_PARAMS_PATH="$TMP_SPEC_KGPARAMS_DIR/$KGCONN_PARAMS_NAME"
+TMP_KGENV_PARAMS_PATH="$TMP_SPEC_KGPARAMS_DIR/$KGENV_PARAMS_NAME"
+TMP_KGHYPERP_PARAMS_PATH="$TMP_SPEC_KGPARAMS_DIR/$KGHYPERP_PARAMS_NAME"
+
+# -----------------------------------------------------------
+
+WORKSPACE_BASE_PATH=/home/workspace
+
+WORKSPACE_KGCONFIGURE_DIR="$WORKSPACE_BASE_PATH/$METHODS_EVAL_REL_PATH/$KGBUILD_CONFIGURE_REL_PATH"
+
+WORKSPACE_SPEC_KG_PATH="$WORKSPACE_BASE_PATH/$METHODS_EVAL_KG_REL_PATH/$METHOD/$DATASET_NAME/$KG_NAME"
+
+WORKSPACE_KGCONN_PARAMS_PATH="$WORKSPACE_SPEC_KG_PATH/$SPEC_KG_SETTINGS_DIR/$KGCONN_PARAMS_NAME"
+WORKSPACE_KGENV_PARAMS_PATH="$WORKSPACE_SPEC_KG_PATH/$SPEC_KG_SETTINGS_DIR/$KGENV_PARAMS_NAME"
+WORKSPACE_KGHYPERP_PARAMS_PATH="$WORKSPACE_SPEC_KG_PATH/$SPEC_KG_SETTINGS_DIR/$KGHYPERP_PARAMS_NAME"
+
+WORKSPACE_CNTNAME=personalai_mmenschikov_analogies_kgbuild_workspace\_$METHOD\_$DATASET_NAME\_$KG_NAME
+
+# -----------------------------------------------------------
+
+LOCAL_BASE_PATH=/home/m.menschikov/workspace/personal_ai/Personal-AI # TO CHANGE
+
+LOCAL_METHOD_ENVFILE_PATH="$LOCAL_BASE_PATH/$METHODS_EVAL_KG_REL_PATH/$METHOD/$$DATASET_NAME/$KG_NAME/$ENVFILE_NAME"
+LOCAL_METHOD_ENVSETTINGS_PATH="$LOCAL_BASE_PATH/$METHODS_EVAL_REL_PATH/$METHODS_CUSTOM_UTILS_DIR/$METHOD/$METHOD_ENVSETTING_DIR"
+
+# -----------------------------------------------------------
+
+# поднять tmp workspace-контейнер
+cd $TMP_DEPLOYMENT_COMPOSE_PATH ; docker compose --env-file=".env_base" up -d workspace
+# инициализировать структуру графа
+docker exec -u $USERNAME $TMP_WORKSPACE_CNTNAME $PYTHON_CMD "$TMP_KGCONFIGURE_DIR/init_file_structure.py" $TMP_KGENV_PARAMS_PATH $TMP_KGHYPERP_PARAMS_PATH
+# создать env-файл
+docker exec -u $USERNAME $TMP_WORKSPACE_CNTNAME $PYTHON_CMD "$TMP_KGCONFIGURE_DIR/get_dc_envfile.py" $TMP_KGCONN_PARAMS_PATH $TMP_KGENV_PARAMS_PATH $TMP_KGHYPERP_PARAMS_PATH
+# удалить tmp-конейнер
+docker stop $TMP_WORKSPACE_CNTNAME ; docker rm $TMP_WORKSPACE_CNTNAME
+
+# -----------------------------------------------------------
+
+# создать окружение графа
+cd $LOCAL_METHOD_ENVSETTINGS_PATH ; docker compose --env-file=$LOCAL_METHOD_ENVFILE_PATH up -d workspace
+docker exec -u root $WORKSPACE_CNTNAME systemctl start cron
+# создать конфигурационный файл kg-модели
+docker exec -u root $WORKSPACE_CNTNAME $PYTHON_CMD "$WORKSPACE_KGCONFIGURE_DIR/prepare_config.py" $WORKSPACE_KGCONN_PARAMS_PATHH $WORKSPACE_KGENV_PARAMS_PATH $WORKSPACE_KGHYPERP_PARAMS_PATH
+
+echo "=== Done (init_graph.sh) ==="

@@ -1,7 +1,62 @@
+[project]
+name = "PersonalAI"
+version = "2.2.1"
+dynamic = ["dependencies"]
+authors = [
+  { name="Nikita Semenov" },
+  { name="Dmitry Evseev" },
+  { name="Matthew Iskornev" },
+]
+maintainers = [
+  {name="Mikhail Menschikov", email="m.menschikov@skoltech.ru" }
+]
+description = "Create working memory for LLM-agent based on knowledge graph from texts and perform QA about domain-specific topics with better answers-groundness and explainability"
+keywords = ["GraphRAG", "MultiAgency", "Memory Model", "Graph Reasoning", "Grounded Question Answering"]
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+]
+
+license = "Apache-2.0"
+license-files = ["LICEN[CS]E*"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["deployment/raw_requirements.txt"]}
+
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[project.urls]
+Homepage = "https://github.com/zer0o0ne/Personal-AI"
+Issues = "https://github.com/zer0o0ne/Personal-AI/issues"
+Documentation = "https://github.com/zer0o0ne/Personal-AI/tree/master/docs"
+
 [tool.autopep8]
 max_line_length = 320
 ignore = "E402"  # or ["E4026"]
 in-place = true
 recursive = true
 aggressive = 3
-exclude = "tests/*,notebooks/*,debug/*,experiments/*"
+exclude = "tests/*,notebooks/*,debug/*,experiments/*,data/*,debug/*"
+
+[tool.flake8]
+ignore = "E226,E302,E41"
+exclude = "experiments,notebooks,docs,tests,debug,data,deployment,configs"
+max-line-length = 320
+max-complexity = 10
+count = true
+
+[tool.mypy]
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = false # Useful for projects with untyped third-party libraries
+disallow_untyped_defs = true # Flag untyped function definitions

@@ -43,5 +43,5 @@ class Logger:
         try:
             with open(self.path + "/" + filename, "w") as file:
                 json.dump(obj, file)
-        except:
+        except BaseException:
             raise "Object isn't json serializible"
