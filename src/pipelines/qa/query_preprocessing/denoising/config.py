@@ -10,4 +10,3 @@ QUERYDENOIS_AGENTASKS_SELECTORS_MAPPING: Dict[str, BaseAgentTaskConfigSelector] 
     'swremoval': AgentStopWordsRemovingTaskConfigSelector,
     'grammarcheck': AgentQueryGrammarCheckConfigSelector
 }
-    

@@ -36,7 +36,7 @@ class LocalAgentConnector(AbstractAgentConnector):
         try:
             del self.pipeline
             gc.collect()
-        except (AttributeError,TypeError):
+        except (AttributeError, TypeError):
             pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,

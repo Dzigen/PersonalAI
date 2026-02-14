@@ -442,7 +442,7 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
         # то при отправке MATCH-запросов возникает ошибка - "redis.exceptions.ResponseError: Invalid graph operation on empty key"
         except redis.exceptions.ResponseError:
             output = []
-            
+
         return len(output) > 0
 
     def clear(self) -> None:

@@ -77,7 +77,7 @@ with mlflow.start_run(run_name=SPECEXP_PARAMS['EXPERIMENT_NAME']) as run_fd:
     mlflow.log_params(flattened_exp_hyperp)
     mlflow.log_metrics(flattened_exp_scores)
 
-    # TODO: артефакты должны передаваться в mlflow-контейнер и сохраняться в volume, который к нему примонтирован.
+    # артефакты должны передаваться в mlflow-контейнер и сохраняться в volume, который к нему примонтирован.
     mlflow.log_artifact(ACCUMULATED_SCORES_SPATH)
     mlflow.log_artifact(ELAPSED_TIME_FILE_PATH)
     mlflow.log_artifact(SPECEXP_PARAMS_FILEP)

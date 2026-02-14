@@ -6,6 +6,6 @@ KRFILTER_RERANKDRIVER_DEFAULT_CONFIG = RerankerDriverConfig(
     strategy_config=EnsembleFusionRerankerConfig(
         vdb_names=['dense_triplets', 'bm25_triplets'],
         retriever_configs=[RetrieverConfig(fetch_n=50, threshold=0.5), RetrieverConfig(fetch_n=50, threshold=0.5)],
-        weights=[0.7, 0.3]
+        weights=[0.9, 0.1]
     )
 )

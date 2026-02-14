@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+
+CRONTAB_DIR="/home/workspace/experiments/qa"
+
+CURRENT_KG=$1
+CURRENT_DATASET=$2
+CURRENT_CONFIGURE_FNAME=$3
+CURRENT_EVAL_FNAME=$4
+
+bash $CRONTAB_DIR/run_all_experiments.sh $CURRENT_KG $CURRENT_DATASET $CURRENT_CONFIGURE_FNAME $CURRENT_EVAL_FNAME >> $CRONTAB_DIR/crontab_log.txt 2>&1

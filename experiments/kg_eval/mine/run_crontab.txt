@@ -1,0 +1,21 @@
+CRONTAB_DIR="/home/workspace/experiments/qa"
+
+48 20 12 12 * bash $CRONTAB_DIR/run_all_experiments.sh >> $CRONTAB_DIR/crontab_log.txt 2>&1
+
+
+==========
+
+CRONTAB_DIR="/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa"
+
+59 16 13 12 * bash $CRONTAB_DIR/run_grouped_by_graph_exps.sh >> $CRONTAB_DIR/grouped_run_crontab.txt 2>&1
+
+==========
+
+CRONTAB_DIR="/home/workspace/experiments/qa"
+
+CURRENT_KG="llama318b_230126_v2prompts"
+CURRENT_DATASET="hotpotqa_distractor_validation"
+CURRENT_CONFIGURE_FNAME="hotpotqa_distractor_validation.yaml"
+CURRENT_EVAL_FNAME="hotpotqa_distractor_validation.yaml"
+
+04 08 01 02 * cd $CRONTAB_DIR ; bash crontab_job.sh $CURRENT_KG $CURRENT_DATASET $CURRENT_CONFIGURE_FNAME $CURRENT_EVAL_FNAME >> $CRONTAB_DIR/crontab_log.txt 2>&1

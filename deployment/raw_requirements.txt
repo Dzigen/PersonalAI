@@ -42,3 +42,5 @@ rapidfuzz
 sacrebleu
 rouge_score
 yq
+flake8
+mypy

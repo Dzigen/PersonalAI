@@ -210,3 +210,10 @@ rapidfuzz==3.14.3
 sacrebleu==2.6.0
 rouge_score==0.1.2
 yq==3.4.3
+flake8==7.3.0
+mccabe==0.7.0
+pycodestyle==2.14.0
+pyflakes==3.4.0
+librt==0.8.0
+mypy==1.19.1
+pathspec==1.0.4
