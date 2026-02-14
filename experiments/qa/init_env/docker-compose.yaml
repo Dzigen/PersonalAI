@@ -136,11 +136,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
-          memory: 10G
+          cpus: '8'
+          memory: 24G
         reservations:
-          cpus: '1'
-          memory: 5G
+          cpus: '4'
+          memory: 8G
           devices:
             - driver: nvidia
               device_ids: ['${WORKSPACE_DEVICE_ID}']

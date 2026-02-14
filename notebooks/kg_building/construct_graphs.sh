@@ -6,8 +6,8 @@ USERNAME=root
 
 # ===============================================================
 
-DATASETS=("trivia_qa_rcwikipedia_validation" "trivia_qa_rcwikipedia_validation" "trivia_qa_rcwikipedia_validation")  # TO CHANGE
-KNOWLEDGE_GRAPHS=("granite338b_290126_v2prompts" "llama318b_290126_v2prompts" "qwen257b_290126_v2prompts") # TO CHANGE
+DATASETS=("mine_train_kgeval" "mine_train_kgeval" "mine_train_kgeval" "mine_train_kgeval")  # TO CHANGE
+KNOWLEDGE_GRAPHS=("llama318b_110226_v2prompts" "qwen257b_110226_v2prompts" "gemma29b_110226_v2prompts" "granite338b_110226_v2prompts") # TO CHANGE
 
 # ===============================================================
 

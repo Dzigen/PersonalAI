@@ -18,4 +18,4 @@ CURRENT_DATASET="hotpotqa_distractor_validation"
 CURRENT_CONFIGURE_FNAME="hotpotqa_distractor_validation.yaml"
 CURRENT_EVAL_FNAME="hotpotqa_distractor_validation.yaml"
 
-04 08 01 02 * cd $CRONTAB_DIR ; bash crontab_job.sh $CURRENT_KG $CURRENT_DATASET $CURRENT_CONFIGURE_FNAME $CURRENT_EVAL_FNAME >> $CRONTAB_DIR/crontab_log.txt 2>&1
+09 00 11 02 * cd $CRONTAB_DIR ; bash crontab_job.sh $CURRENT_KG $CURRENT_DATASET $CURRENT_CONFIGURE_FNAME $CURRENT_EVAL_FNAME >> $CRONTAB_DIR/crontab_log.txt 2>&1

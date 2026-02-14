@@ -9,6 +9,7 @@ import datetime
 from tqdm import tqdm
 import yaml
 from pprint import pprint
+from datasets import load_from_disk
 import os
 from typing import List, Dict, Tuple
 import pandas as pd
@@ -194,6 +195,15 @@ def natural_questions_train_cload(dataset_path: str) -> List[Tuple[str, Dict[str
 
     return data_pair
 
+def mine_train_kgeval_cload(dataset_path: str) -> List[Tuple[str, List[str], List[str]]]:
+    original_dataset = load_from_disk(f"{dataset_path}/original") # 101
+    data_pair = []
+    for r_idx in range(len(original_dataset)):
+        formated_context = original_dataset['essay_content'][r_idx]
+        data_pair.append((formated_context, None, dict()))
+
+    return data_pair
+
 CUSTOM_LOAD_FUNCS = {
     'diaasq': diaasq_cload,
     'rubq_dev': rubqdev_cload,
@@ -201,7 +211,8 @@ CUSTOM_LOAD_FUNCS = {
     'trivia_qa_rcwikipedia_validation': triviaqa_rcwikipedia_validation_cload,
     'musique_validation': musique_validation_cload,
     '2wikimultihopqa_dev': wiki2multihopqa_dev_cload,
-    'natural_questions_train': natural_questions_train_cload
+    'natural_questions_train': natural_questions_train_cload,
+    'mine_train_kgeval': mine_train_kgeval_cload
 }
 CUSTOM_LOAD_FUNCS.update({f'sberdialogues_conv-{i}': sberdialogues_cload for i in range(1,36)})
 
@@ -215,7 +226,7 @@ print(f"start time: {datetime.datetime.now()}")
 
 # triviaqa | llama318b_290126_v2prompts | 835
 
-process = tqdm(range(835, len(dataset)))
+process = tqdm(range(len(dataset)))
 for i in process:
     text, time, properties = dataset[i][0], dataset[i][1], dataset[i][2]
     try:
