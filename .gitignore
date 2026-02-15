@@ -100,3 +100,8 @@ src/dialogue_processing/
 src/question_answer_rephrasing/
 
 experiments/analogues_eval/available_methods_utils/raptor/method_source
+
+experiments/kg_eval/mine/runexperiment_log.txt
+experiments/kg_eval/mine/configure/initdir_log.txt
+experiments/kg_eval/mine/crontab_log.txt
+experiments/kg_eval/mine/configure/generate_params/tmp_params
