@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 echo "Извлечение триплтетов, релевантных запросу, из построенного графа"
 
-EXP_BASE_DIR=/home/workspace/kg_eval/mine
+EXP_BASE_DIR=/home/workspace/experiments/kg_eval/mine
 PYTHON_CMD=/usr/bin/python3
 
 # --------------------------------------------------------
@@ -23,7 +23,7 @@ BASE_GENERATE_DIR="$EXP_BASE_DIR/perform"
 
 # --------------------------------------------------------
 
-RETRTRIPLES_SCRIPT="$BASE_GENERATE_DIR/perform.py"
+RETRTRIPLES_SCRIPT="$BASE_GENERATE_DIR/retrieve_triples.py"
 
 RETRTRIPLES_LOG_PATH="$SPEC_EXP_DIR/retrieving_log.txt"
 

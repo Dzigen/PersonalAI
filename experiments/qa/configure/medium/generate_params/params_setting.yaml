@@ -123,8 +123,8 @@ kg_reasoner: # TO CHANGE
             do_text_pruning: False
 
           accepted_node_types:
-            - 'object'
-            - 'hyper'
+            #- 'object'
+            #- 'hyper'
             - 'episodic'
             - 'time'
 
@@ -155,8 +155,8 @@ kg_reasoner: # TO CHANGE
                 fetch_n: 50
 
           accepted_node_types:
-            - 'object'
-            - 'hyper'
+            #- 'object'
+            #- 'hyper'
             - 'episodic'
             - 'time'
 
@@ -184,8 +184,8 @@ kg_reasoner: # TO CHANGE
             max_passed_nodes: 150
 
           accepted_node_types:
-            - 'object'
-            - 'hyper'
+            #- 'object'
+            #- 'hyper'
             - 'episodic'
             - 'time'
         
@@ -199,40 +199,24 @@ kg_reasoner: # TO CHANGE
 
       filter_method: # CAN BE null
         - 'naive'
-        - 'naive'
-        - 'naive'
+        #- 'naive'
 
       filter_config: # CAN BE null        
-        - max_k: 50
-          reranker_driver_config:
-            name: 'ensemble_fusion' # DONT CHANGE
-            strategy_config:
-              vdb_names: ['dense_triplets', 'bm25_triplets']
-              retriever_configs:
-                - fetch_n: 50
-                  threshold: 0.5
-                - fetch_n: 50
-                  threshold: 0.5
-              weights: [0.9, 0.1]
-              c: 60
-          accepted_triplets_types:
-            - 'simple'
-            - 'hyper'
-
-        - max_k: 50
-          reranker_driver_config:
-            name: 'ensemble_fusion' # DONT CHANGE
-            strategy_config:
-              vdb_names: ['dense_triplets', 'bm25_triplets']
-              retriever_configs:
-                - fetch_n: 50
-                  threshold: 0.5
-                - fetch_n: 50
-                  threshold: 0.5
-              weights: [0.9, 0.1]
-              c: 60
-          accepted_triplets_types:
-            - 'hyper'
+        # - max_k: 50
+        #   reranker_driver_config:
+        #     name: 'ensemble_fusion' # DONT CHANGE
+        #     strategy_config:
+        #       vdb_names: ['dense_triplets', 'bm25_triplets']
+        #       retriever_configs:
+        #         - fetch_n: 50
+        #           threshold: 0.5
+        #         - fetch_n: 50
+        #           threshold: 0.5
+        #       weights: [0.9, 0.1]
+        #       c: 60
+        #   accepted_triplets_types:
+        #     - 'simple'
+        #     - 'hyper'
 
         - max_k: 50
           reranker_driver_config:

@@ -25,8 +25,10 @@ BASE_EVALUATE_DIR="$EXP_BASE_DIR/evaluate"
 # --------------------------------------------------------
 
 LLMASJUDGE_EVALUATE_SCRIPT="$BASE_EVALUATE_DIR/evaluate_llmjudge.py"
-
 LLMASJUDGEEVALUATE_LOG_PATH="$SPEC_EXP_DIR/llmasajudgeeval_log.txt"
+
+ACCUMULATE_SCORES_SCRIPT="$BASE_EVALUATE_DIR/accumulate_packs_scores.py"
+ACCUMULATESCORES_LOG_PATH="$SPEC_EXP_DIR/accumulatescores_log.txt"
 
 # --------------------------------------------------------
 

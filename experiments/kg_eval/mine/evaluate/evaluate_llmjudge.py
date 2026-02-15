@@ -99,10 +99,11 @@ for pack_name in triples_pack_names:
     for t_idx, t_info in process:
         process.set_postfix_str(pack_name)
 
-        formated_context = "\n".join(list(lambda str_triple: f"- {str_triple}", t_info['retrieved_triples']))
+        formated_context = "\n".join(list(map(lambda str_triple: f"- {str_triple}", t_info['retrieved_triples'])))
 
         s_time = time()
         score = judge.perform(t_info['query'], formated_context)
+        score = 1 if score > 1 else score # костыль
         e_time = time()
 
         llmj_dump_file = f"{pack_tmp_dir}/judge_{t_idx}"

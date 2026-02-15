@@ -1,6 +1,7 @@
 from typing import List, Tuple, Dict
 import json
 import pandas as pd
+from datasets import load_from_disk
 import os
 
 
@@ -89,6 +90,18 @@ def natural_questions_train_cload(dataset_path: str) -> List[Tuple[str, Dict[str
 
     return data_pair
 
+def mine_train_kgeval_cload(dataset_path: str) -> List[Tuple[str, List[str], List[str]]]:
+    original_dataset = load_from_disk(f"{dataset_path}/original") # 101
+    data_pair = []
+    for r_idx in range(len(original_dataset)):
+        formated_context = original_dataset['essay_content'][r_idx]
+        if len(formated_context) < 1:
+            continue
+        else:
+            data_pair.append((formated_context, None, dict()))
+
+    return data_pair
+
 CUSTOM_LOAD_KGBUILD_DS_FUNCS = {
     'diaasq': diaasq_cload,
     'rubq_dev': rubqdev_cload,
@@ -96,6 +109,7 @@ CUSTOM_LOAD_KGBUILD_DS_FUNCS = {
     'trivia_qa_rcwikipedia_validation': triviaqa_rcwikipedia_validation_cload,
     'musique_validation': musique_validation_cload,
     '2wikimultihopqa_dev': wiki2multihopqa_dev_cload,
-    'natural_questions_train': natural_questions_train_cload
+    'natural_questions_train': natural_questions_train_cload,
+    'mine_train_kgeval': mine_train_kgeval_cload
 }
 CUSTOM_LOAD_KGBUILD_DS_FUNCS.update({f'sberdialogues_conv-{i}': sberdialogues_cload for i in range(1,36)})

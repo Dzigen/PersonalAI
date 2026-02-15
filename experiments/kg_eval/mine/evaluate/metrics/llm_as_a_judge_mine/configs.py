@@ -2,7 +2,7 @@ import dspy
 
 EVAL_MINEJUDGE_MAIN_LOG_PATH = 'log/kg_eval/mine/judge'
 
-DEFAULT_LLM_GENSTRATEGY = {"num_predict": 2048, "seed": 42, "top_k": 1, "temperature": 0.0}
+DEFAULT_LLM_GENSTRATEGY = {"num_predict": 512, "seed": 42, "top_k": 1, "temperature": 0.0}
 
 # Define DSPy signature for evaluation
 class EvaluateResponse(dspy.Signature):

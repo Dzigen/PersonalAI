@@ -22,7 +22,7 @@ echo "eval params-path: $EVAL_PARAMS_PATH"
 # --------------------------------------------------------
 
 CONFIGURE_SCRIPT="$EXP_BASE_DIR/configure/init_exp_environment.sh"
-GENERATE_SCRIPT="$EXP_BASE_DIR/generate/perform.sh"
+GENERATE_SCRIPT="$EXP_BASE_DIR/perform/perform.sh"
 EVALUATE_SCRIPT="$EXP_BASE_DIR/evaluate/evaluate.sh"
 ANALYZE_SCRIPT="$EXP_BASE_DIR/analyze/analyze.sh"
 COLLECT_SCRIPT="$EXP_BASE_DIR/collect/collect.sh"

@@ -4,7 +4,7 @@ INIT_STRUCT: True # !!! PAY ATTENTION !!!
 
 EXP_DIRS:
   tmp_retrieved_triples_name: tmp_triples_packs
-  triples_name: triples_packs
+  retrieved_triples_name: triples_packs
 
   metrics_name: metric_packs
 

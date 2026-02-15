@@ -1,3 +1,5 @@
+llm_as_a_judge_path: 'evaluate/metrics/llm_as_a_judge_mine'
+
 judge_llm_config:
   name: 'ollama' # DONT CHANGE
   gen_strategy:

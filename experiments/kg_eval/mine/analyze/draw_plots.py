@@ -59,12 +59,12 @@ for pack_name in llm_packs:
 percentages = [int(round(value * 100, 0)) for value in scores]
 
 groups_mapping = dict()
-groups_ranges = [5, 10, 10, 10, 10, 10, 10, 10, 10, 10, 5]
+groups_ranges = [5, 10, 10, 10, 10, 10, 10, 10, 10, 10, 6]
 cur_group = 0
 cur_num = 0
 for group_idx in range(len(groups_ranges)):
     for _ in range(groups_ranges[group_idx]):
-        groups_mapping[cur_num] = cur_group
+        groups_mapping[cur_num] = f"{cur_group}"
         cur_num += 1
     cur_group += 10
 
@@ -73,9 +73,9 @@ for percent in percentages:
     percent_group = groups_mapping[percent]
     scores_groups[percent_group].append(percent)
 
-cats = sorted(scores_groups.keys())
+cats = ['0','10','20','30','40','50','60','70','80','90','100']
 values = [len(scores_groups[cat]) for cat in cats]
-w,x = 8, sorted(scores_groups.keys())
+w,x = 8, [0,10,20,30,40,50,60,70,80,90,100]
 
 llm_model = SPECEXP_PARAMS['EXPERIMENT_NAME'].split("_")[1]
 

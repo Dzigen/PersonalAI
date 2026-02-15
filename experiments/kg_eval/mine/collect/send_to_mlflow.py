@@ -70,7 +70,7 @@ with mlflow.start_run(run_name=SPECEXP_PARAMS['EXPERIMENT_NAME']) as run_fd:
     mlflow.set_tags({
         'personalai_version': SPECEXP_PARAMS['PERSONALAI_VERSION'],
         'dataset': SPECEXP_PARAMS['DATASET_NAME'],
-        'llm': SPECEXP_PARAMS['EXPERIMENT_NAME'].split("_")[1], # костыль: в названии конкретного эксперимента должна содержаться информацие об использованной LLM-модели
+        'llm': SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME'].split("_")[0], # костыль: в названии конкретного эксперимента должна содержаться информацие об использованной LLM-модели
         'knowledge_graph': SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']
     })
 

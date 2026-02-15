@@ -44,3 +44,4 @@ rouge_score
 yq
 flake8
 mypy
+dspy

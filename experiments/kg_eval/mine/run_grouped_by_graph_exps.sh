@@ -16,7 +16,7 @@ ENV_SETTINGS_DIR="$INIT_ENV_DIR/env_settings"
 # ===============================================================
 
 DATASET="mine_train_kgeval" # TO CHANGE
-KNOWLEDGE_GRAPHS=("llama318b_110226_v2prompts" "qwen257b_110226_v2prompts" "granite338b_110226_v2prompts" "gemma29b_110226_v2prompts") # TO CHANGE
+KNOWLEDGE_GRAPHS=("llama318b_110226_v2prompts" "granite338b_110226_v2prompts" "gemma29b_110226_v2prompts") # TO CHANGE
 EVAL_FNAME="eval_params.yaml" # TO CHANGE
 CONFIGURE_FNAME="expdir_params.yaml" # TO CHANGE
 
@@ -26,7 +26,7 @@ CONFIGURE_FNAME="expdir_params.yaml" # TO CHANGE
 
 for kg_idx in "${!KNOWLEDGE_GRAPHS[@]}";
 do
-    CURRENT_KG="${KNOWLEDGE_GRAPHS[$ds_idx]}"
+    CURRENT_KG="${KNOWLEDGE_GRAPHS[$kg_idx]}"
 
     echo "$DATASET $CURRENT_KG"
 
@@ -72,13 +72,17 @@ do
     docker exec -u $USERNAME $WORKSPACE_EXP_CNTNAME bash -c "rm -rf $PARAMS_TO_RUN_DIR"
     docker exec -u $USERNAME $WORKSPACE_EXP_CNTNAME bash -c "mkdir $PARAMS_TO_RUN_DIR"
     docker exec -u $USERNAME $WORKSPACE_EXP_CNTNAME bash -c "cp $PREPARED_PARAMS_DIR/* $PARAMS_TO_RUN_DIR"
+    
+    # -----------------------------------------------------------
+    # 4. Скачиваем недостающие библиотеки
+    docker exec -u $USERNAME $WORKSPACE_EXP_CNTNAME bash -c "pip install dspy"
 
     # -----------------------------------------------------------
-    # 4. Запустить QA-эксперименты
+    # 5. Запустить QA-эксперименты
     docker exec -u $USERNAME $WORKSPACE_EXP_CNTNAME bash $EXPENV_BASE_DIR/crontab_job.sh $CURRENT_KG $DATASET $CONFIGURE_FNAME $EVAL_FNAME
 
     # -----------------------------------------------------------
-    # 5. Удаление конкретного QA-окружения
+    # 6. Удаление конкретного QA-окружения
     cd $INIT_ENV_DIR ; bash rm_containers.sh $DATASET\_$CURRENT_KG
 done
 

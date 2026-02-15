@@ -200,7 +200,10 @@ def mine_train_kgeval_cload(dataset_path: str) -> List[Tuple[str, List[str], Lis
     data_pair = []
     for r_idx in range(len(original_dataset)):
         formated_context = original_dataset['essay_content'][r_idx]
-        data_pair.append((formated_context, None, dict()))
+        if len(formated_context) < 1:
+            continue
+        else:
+            data_pair.append((formated_context, None, dict()))
 
     return data_pair
 

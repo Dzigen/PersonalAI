@@ -38,7 +38,7 @@ class MINEJudge():
         self.log(f"* QUERY: {query}", verbose=self.verbose)
         self.log(f"* RETRIEVED_CONTEXT: {retrieved_context}",verbose=self.verbose)
 
-        result = self.evaluator.forward(context=retrieved_context, correct_answer=query)
+        result = self.evaluator(context=retrieved_context, correct_answer=query)
         self.log(f"RESULT: {result.evaluation}", verbose=self.verbose)
 
         return result.evaluation
