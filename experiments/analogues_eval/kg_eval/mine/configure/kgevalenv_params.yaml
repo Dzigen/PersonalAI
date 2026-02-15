@@ -1,8 +1,9 @@
 DATASET_NAME: mine_train_kgeval
-KNOWLEDGE_GRAPH_NAME: llama318b_110226_v2prompts
-BASE_PERSONALAI_PATH: /home/m.menschikov/workspace/personal_ai/Personal-AI
-BASE_KG_PATH: /mnt/data/m.menschikov/personalai/kgeval/mine/personalai
-OLLAMA_MODELS_PATH: /mnt/data/m.menschikov/ollama_volume
+KNOWLEDGE_GRAPH_NAME: llama318b_110226_v2prompts # TO CHANGE
+METHOD: wikontic # TO CHANGE
+BASE_PERSONALAI_PATH: /home/m.menschikov/workspace/personal_ai/Personal-AI # TO CHANGE
+BASE_KG_PATH: /mnt/data/m.menschikov/personalai/analogues_eval/ # TO CHANGE
+OLLAMA_MODELS_PATH: /mnt/data/m.menschikov/ollama_volume # TO CHANGE
 OLLAMA_EXT_PORT: 11438
 KG_SETTING_DIR:
   name: settings
@@ -12,32 +13,17 @@ GPUS_CONFIG:
   ollama_device_id: '2'
   workspace_device_id: '1'
 PERSONALAI_REPO_DIRS:
-  experiments: experiments/kg_eval/mine
+  experiments: experiments/analogues_eval/kg_eval/mine
 WORKSPACE_CONTAINER_DIRS:
-  experiments: experiments/kg_eval/mine
-  kg: data/knowledge_graphs
+  experiments: experiments/analogues_eval/kg_eval/mine
+  kg: data/knowledge_graphs/analogues_eval
 SAVE_PARAMS_CONFIG:
-  base_path: init_env/env_settings
+  base_path: env_settings
   kgconn: kgconn_params.yaml
   kgenv: kgenv_params.yaml
   kgevalenv: kgevalenv_params.yaml
   env_file: .kgeval_env
 CONTAINERS_ADDITIONAL_CONFIG:
-  workspace_cntname: personalai_mmenschikov_kgeval_workspace
-  workspace_host: localhost
-  redis_cntname: personalai_mmenschikov_kgeval_redis
-  redis_host: localhost
-  redis_ui_cntname: personalai_mmenschikov_kgeval_redis_ui
-  redis_ui_host: personalai_mmenschikov_kgeval_redis_ui
-  mongo_cntname: personalai_mmenschikov_kgeval_mongo
-  mongo_host: localhost
-  mongo_ui_cntname: personalai_mmenschikov_kgeval_mongo_ui
-  mongo_ui_host: personalai_mmenschikov_kgeval_mongo_ui
-  qdrant_cntname: personalai_mmenschikov_kgeval_qdrant
-  qdrant_host: localhost
-  opensearch_cntname: personalai_mmenschikov_kgeval_opensearch
-  opensearch_host: localhost
-  neo4j_cntname: personalai_mmenschikov_kgeval_neo4j
-  neo4j_host: localhost
-  ollama_cntname: personalai_mmenschikov_ollama2
-  ollama_host: personalai_mmenschikov_ollama2
+  workspace_cntname: personalai_mmenschikov_analogues_kgeval_workspace
+  ollama_cntname: personalai_mmenschikov_ollama
+  ollama_host: personalai_mmenschikov_ollama

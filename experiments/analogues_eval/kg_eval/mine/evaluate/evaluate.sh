@@ -1,23 +1,24 @@
 #!/usr/bin/bash
 echo "Оценка качества построенного графа"
 
-EXP_BASE_DIR=/home/workspace/experiments/kg_eval/mine
+EXP_BASE_DIR=/home/workspace/experiments/analogues_eval/kg_eval/mine
 PYTHON_CMD=/usr/bin/python3
 
 # --------------------------------------------------------
 
-KNOWLEDGEGRAPH_NAME=$1
+METHOD_NAME=$1
 DATASET_NAME=$2
-EXP_NAME=$3
+KNOWLEDGEGRAPH_NAME=$3
+EXP_NAME=$4
 
-KGEVALHYPERP_PARAMS_PATH=$4
-EXPDIR_PARAMS_PATH=$5
-EVAL_PARAMS_PATH=$6
+KGEVALHYPERP_PARAMS_PATH=$5
+EXPDIR_PARAMS_PATH=$6
+EVAL_PARAMS_PATH=$7
 
 # --------------------------------------------------------
 
 BASE_RESULTS_DIR="$EXP_BASE_DIR/results"
-CUR_EXP_BASE_DIR="$BASE_RESULTS_DIR/$DATASET_NAME/$KNOWLEDGEGRAPH_NAME"
+CUR_EXP_BASE_DIR="$BASE_RESULTS_DIR/$METHOD_NAME/$DATASET_NAME/$KNOWLEDGEGRAPH_NAME"
 SPEC_EXP_DIR="$CUR_EXP_BASE_DIR/$EXP_NAME"
 
 BASE_EVALUATE_DIR="$EXP_BASE_DIR/evaluate"
@@ -25,8 +26,10 @@ BASE_EVALUATE_DIR="$EXP_BASE_DIR/evaluate"
 # --------------------------------------------------------
 
 LLMASJUDGE_EVALUATE_SCRIPT="$BASE_EVALUATE_DIR/evaluate_llmjudge.py"
-
 LLMASJUDGEEVALUATE_LOG_PATH="$SPEC_EXP_DIR/llmasajudgeeval_log.txt"
+
+ACCUMULATE_SCORES_SCRIPT="$BASE_EVALUATE_DIR/accumulate_packs_scores.py"
+ACCUMULATESCORES_LOG_PATH="$SPEC_EXP_DIR/accumulatescores_log.txt"
 
 # --------------------------------------------------------
 

@@ -18,18 +18,15 @@ KG_SETTING_DIR:
   name: settings
   kgconn: kgconn_params
   kgenv: kgenv_params
-  qaenv: qaenv_params
-
-QAENV: qaenv_params.yaml
 
 WORKSPACE_CONTAINER_DIRS:
   base_path: /home/workspace
-  kg: data/knowledge_graphs
+  kg: data/knowledge_graphs/analogues_eval
   datasets: data/kgeval_datasets # !!! PAY ATTENTION !!!
   models: models
-  experiments: experiments/kg_eval/mine
+  experiments: experiments/available_methods_utils/kg_eval/mine
   results: results
-  kg_env_path: init_env/env_settings
+  kg_env_path: env_settings
 
 EXP_SAVE_FILES:
   kghyperp: kghyperp_params.yaml

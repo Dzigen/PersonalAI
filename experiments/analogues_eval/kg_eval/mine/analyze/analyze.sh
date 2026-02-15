@@ -1,17 +1,18 @@
 #!/usr/bin/bash
 echo "Строим графики для анализа"
 
-EXP_BASE_DIR=/home/workspace/experiments/kg_eval/mine
+EXP_BASE_DIR=/home/workspace/experiments/analogues_eval/kg_eval/mine
 PYTHON_CMD=/usr/bin/python3
 
 # --------------------------------------------------------
 
-KNOWLEDGEGRAPH_NAME=$1
+METHOD_NAME=$1
 DATASET_NAME=$2
-EXP_NAME=$3
+KNOWLEDGEGRAPH_NAME=$3
+EXP_NAME=$4
 
-KGEVALHYPERP_PARAMS_PATH=$4
-EXPDIR_PARAMS_PATH=$5
+KGEVALHYPERP_PARAMS_PATH=$5
+EXPDIR_PARAMS_PATH=$6
 
 # --------------------------------------------------------
 

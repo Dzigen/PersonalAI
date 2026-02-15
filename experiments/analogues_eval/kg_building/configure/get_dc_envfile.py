@@ -2,7 +2,7 @@ print("Creating dotenv file for docker-compose...")
 import sys
 import yaml
 
-from ...available_methods_utils.config import AVAILABLE_GRAPHRAG_KGQA_METHODS
+from ...available_methods_utils.config import AVAILABLE_GRAPHRAG_BUILD_METHODS
 
 ####################################################
 print("1. Loading hyperparameters from .yaml files")
@@ -77,7 +77,7 @@ compose_variables = {
     'COMPOSE_PROJECT_NAME': f"personalai_mmenshikov_{CONTAINERS_NAME_POSTFIX}"
 }
 
-method_custom_env_variables = AVAILABLE_GRAPHRAG_KGQA_METHODS[KGHYPERP_PARAMS['ANALOGUE_NAME']].prepare_method_env_params(KGCONN_PARAMS, KGHYPERP_PARAMS)
+method_custom_env_variables = AVAILABLE_GRAPHRAG_BUILD_METHODS[KGHYPERP_PARAMS['ANALOGUE_NAME']].prepare_kgbuild_env_params(KGCONN_PARAMS, KGHYPERP_PARAMS)
 
 ####################################################
 print("4. Formating dotenv-file")

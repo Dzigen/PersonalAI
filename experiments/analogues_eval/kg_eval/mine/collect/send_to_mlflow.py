@@ -16,7 +16,7 @@ print("1. Loading hyperparameters from .yaml files")
 
 MLFLOW_HOST = 'localhost' # TO CHANGE
 MLFLOW_PORT = 5000 # TO CHANGE
-MLFLOW_EXPERIMENT_TITLE = "personalai_mine_kgeval(NIR2025)" # TO CHANGE
+MLFLOW_EXPERIMENT_TITLE = "analogues_mine_kgeval" # TO CHANGE
 
 # Read YAML file (specexp-params)
 SPECEXP_PARAMS_FILEP = sys.orig_argv[2]
@@ -71,7 +71,8 @@ with mlflow.start_run(run_name=SPECEXP_PARAMS['EXPERIMENT_NAME']) as run_fd:
         'personalai_version': SPECEXP_PARAMS['PERSONALAI_VERSION'],
         'dataset': SPECEXP_PARAMS['DATASET_NAME'],
         'llm': SPECEXP_PARAMS['EXPERIMENT_NAME'].split("_")[1], # костыль: в названии конкретного эксперимента должна содержаться информацие об использованной LLM-модели
-        'knowledge_graph': SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']
+        'knowledge_graph': SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME'],
+        'method': SPECEXP_PARAMS['METHOD_NAME']
     })
 
     mlflow.log_params(flattened_exp_hyperp)
