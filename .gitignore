@@ -105,3 +105,7 @@ experiments/kg_eval/mine/runexperiment_log.txt
 experiments/kg_eval/mine/configure/initdir_log.txt
 experiments/kg_eval/mine/crontab_log.txt
 experiments/kg_eval/mine/configure/generate_params/tmp_params
+experiments/kg_eval/mine/results/
+experiments/kg_eval/mine/params_to_run/
+experiments/kg_eval/mine/init_env/env_settings/
+experiments/kg_eval/mine/configure/prepared_params/
