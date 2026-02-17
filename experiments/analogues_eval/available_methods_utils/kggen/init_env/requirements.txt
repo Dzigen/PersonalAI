@@ -1,4 +1,6 @@
-hipporag
+solaar
+psutil
+kg-gen
 pandas
 numpy
 tqdm

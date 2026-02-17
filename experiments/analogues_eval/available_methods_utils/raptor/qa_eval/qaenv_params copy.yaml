@@ -1,4 +1,4 @@
-METHOD: hipporag2
+METHOD: raptor
 DATASET_NAME: hotpotqa_distractor_validation
 KNOWLEDGE_GRAPH_NAME: llama318b_230126_v2prompts
 BASE_PERSONALAI_PATH: /home/m.menschikov/workspace/personal_ai/Personal-AI

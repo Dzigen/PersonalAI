@@ -1,8 +1,8 @@
+METHOD_NAME: 'hipporag2'
 DATASET_NAME: 'sberdialogues_conv-11' # TO CHANGE
 KNOWLEDGE_GRAPH_NAME: 'gigachatmax_111225_v2prompts' # TO CHANGE
-ANALOGUE_NAME: 'hipporag2'
 
-NETHOD_CONFIG:
+METHOD_CONFIG:
   embedder_config:
     prompts:
       query: "query: "

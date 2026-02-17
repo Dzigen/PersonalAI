@@ -17,3 +17,4 @@ SAVE_CONFIGS_NAMES:
     name: settings
     kgenv: kgenv_params
     kghyperp: kghyperp_params
+    kgconn: kgconn_params
