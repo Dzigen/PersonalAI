@@ -32,11 +32,10 @@ RUN apt install -y jq
 RUN jq --version
 
 RUN python3 --version
-COPY requirements.txt .
-RUN python3 -m pip install -r requirements.txt
-
-RUN python3 -m pip install torch
-RUN python3 -c 'import torch'
+# COPY requirements.txt .
+# RUN python3 -m pip install -r requirements.txt
+# RUN python3 -m pip install torch
+# RUN python3 -c 'import torch'
 
 RUN useradd -rm -d /home/workspace -s /bin/bash -g root -G sudo -u 4200235 m.menschikov
 #RUN useradd -rm -d /home/workspace -s /bin/bash -g root -G sudo -u 1000 dzigen

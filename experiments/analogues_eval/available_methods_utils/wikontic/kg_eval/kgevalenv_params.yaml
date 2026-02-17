@@ -1,4 +1,4 @@
-METHOD: wikontic
+METHOD: kggen
 DATASET_NAME: mine_train_kgeval
 KNOWLEDGE_GRAPH_NAME: llama318b_110226_v2prompts # TO CHANGE
 

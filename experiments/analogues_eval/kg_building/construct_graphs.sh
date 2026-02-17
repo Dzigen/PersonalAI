@@ -5,9 +5,9 @@ USERNAME=root
 
 # ===============================================================
 
-DATASETS=("hotpotqa_distractor_validation" "hotpotqa_distractor_validation" "hotpotqa_distractor_validation" "hotpotqa_distractor_validation")  # TO CHANGE
-KNOWLEDGE_GRAPHS=("llama318b_120226" "qwen257b_120226" "granite338b_120226" "gemma29b_120226") # TO CHANGE
-METHODS=("hipporag2" "hipporag2" "hipporag2" "hipporag2") # TO CHANGE
+DATASETS=("mine_train_kgeval" "mine_train_kgeval" "mine_train_kgeval" "mine_train_kgeval")  # TO CHANGE
+KNOWLEDGE_GRAPHS=("llama318b_180226_mine_wikontic" "qwen257b_180226_mine_wikontic" "granite338b_180226_mine_wikontic" "gemma29b_180226_mine_wikontic") # TO CHANGE
+METHODS=("wikontic" "wikontic" "wikontic" "wikontic") # TO CHANGE
 
 # ===============================================================
 

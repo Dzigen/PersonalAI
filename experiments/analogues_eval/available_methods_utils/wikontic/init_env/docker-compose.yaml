@@ -23,10 +23,8 @@ services:
 
   mongo:
     container_name: ${MONGO_CNTNAME}
-    image: mongodb/mongodb-atlas-local:latest
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=user
-      - MONGO_INITDB_ROOT_PASSWORD=pass
+    hostname: ${MONGO_HOST}
+    image: mongodb/mongodb-atlas-local
     ports:
       - ${MONGO_EXTERNAL_PORT}:27017
     volumes:
@@ -34,17 +32,17 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
+          cpus: '4'
           memory: 10G
         reservations:
-          cpus: '1'
+          cpus: '2'
           memory: 5G
-    tty: true
-    stdin_open: true
 
   workspace:
-    image: m.menschikov/empty_workspace:v1
+    image: m.menschikov/wikontic_eval_workspace:v1
     container_name: ${WORKSPACE_CNTNAME}
+    hostname: ${WORKSPACE_HOST}
+    network_mode: "host"
     volumes:
       - ${EXTERNAL_SPEC_KG_PATH}:${INTERNAL_SPEC_KG_PATH}
       - ${EXTERNAL_SPEC_DS_PATH}:${INTERNAL_SPEC_DS_PATH}
@@ -58,11 +56,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '8'
-          memory: 32G
-        reservations:
           cpus: '4'
           memory: 24G
+        reservations:
+          cpus: '2'
+          memory: 16G
           devices:
             - driver: nvidia
               device_ids: ['${WORKSPACE_DEVICE_ID}']

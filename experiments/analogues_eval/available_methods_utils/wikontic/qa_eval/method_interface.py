@@ -1,4 +1,3 @@
-from hipporag import HippoRAG
 import yaml
 from typing import List, Dict
 from ...utils import GraphRAGQAOperations
@@ -65,12 +64,12 @@ if __name__ == "__main__":
     ]
 
     print("Generated env params:")
-    env_params = Hipporag2QAOperations.prepare_qaeval_env_params(
+    env_params = WikonticQAOperations.prepare_qaeval_env_params(
         example_kgconn_params, example_env_params)
     print(env_params)
 
     print("Generated qa config:")
-    qa_config = Hipporag2QAOperations.prepare_qa_config()
+    qa_config = WikonticQAOperations.prepare_qa_config()
     print(qa_config)
 
     queries = [
@@ -85,7 +84,7 @@ if __name__ == "__main__":
     ]
 
     print("Initializing method...")
-    method = Hipporag2QAOperations(example_memory_config, qa_config)
+    method = WikonticQAOperations(example_memory_config, qa_config)
     print("Builded graph info:")
     method.print_graph_info()
 

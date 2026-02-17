@@ -32,7 +32,7 @@ EXP_SAVE_FILES:
   expdir: expdir_params.yaml
   eval: eval_params.yaml
 
-  mine_accuracy_plot: mine_accuracy_plot.png
+  mine_accuracy_plot: mine_accuracy_histogram.pdf
 
   elapsed_time: elapsed_time.json
   accumulated_scores: 'accumulated_scores.json'

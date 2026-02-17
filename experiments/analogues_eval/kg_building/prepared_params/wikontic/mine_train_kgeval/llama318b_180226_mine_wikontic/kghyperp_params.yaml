@@ -1,6 +1,6 @@
-METHOD_NAME: 'hipporag2'
-DATASET_NAME: 'sberdialogues_conv-11' # TO CHANGE
-KNOWLEDGE_GRAPH_NAME: 'gigachatmax_111225_v2prompts' # TO CHANGE
+METHOD_NAME: 'wikontic'
+DATASET_NAME: 'mine_train_kgeval'
+KNOWLEDGE_GRAPH_NAME: 'llama318b_180226_mine_wikontic'
 
 METHOD_CONFIG:
   embedder_config:
@@ -14,7 +14,7 @@ METHOD_CONFIG:
       top_k: 1
       temperature: 0.0
     credentials:
-      model: gemma2:9b
+      model: llama3.1:8b
       host: localhost
       port: 11437
     ext_params:

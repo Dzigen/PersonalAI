@@ -1,19 +1,23 @@
 from typing import List, Dict
 import yaml
 from tqdm import tqdm
-from ...utils import GraphRAGBuildOperations
-from ..utils import CustomWikontic, create_id
+import sys
+
+EXPEROMETS_BASE_PATH="/home/workspace/experiments"
+sys.path.insert(0, EXPEROMETS_BASE_PATH)
+
+from analogues_eval.available_methods_utils.utils import GraphRAGBuildOperations
+from analogues_eval.available_methods_utils.wikontic.utils import CustomWikontic, create_id
 
 class WikonticBuildOperations(GraphRAGBuildOperations):
     def __init__(self, config: Dict):
-
         CustomWikontic.init_graph(config)
 
         self.method = CustomWikontic(config)
         self.config = config
 
     @staticmethod
-    def prepare_method_config(env_params: Dict, hyperp_params: Dict) -> Dict:
+    def prepare_method_config(conn_params: Dict, env_params: Dict, hyperp_params: Dict) -> Dict:
 
         llm_info = hyperp_params['METHOD_CONFIG']['agent_config']
         llm_base_url = f"http://{llm_info['credentials']['host']}:{llm_info['credentials']['port']}/v1"
@@ -23,10 +27,13 @@ class WikonticBuildOperations(GraphRAGBuildOperations):
         save_dir = f"{base_kg_path}/{hyperp_params['METHOD_NAME']}/{hyperp_params['DATASET_NAME']}/{hyperp_params['KNOWLEDGE_GRAPH_NAME']}"
 
         config = {
+            'mongo_uri': f"mongodb://{conn_params['KG_MODEL_CONNECTORS']['host']}:{conn_params['KG_MODEL_CONNECTORS']['port']}/?directConnection=true",
             'save_dir': save_dir,
             'llm_model_name': llm_info['credentials']['model'],
             'llm_base_url': llm_base_url,
-            'embedding_model_name': embedder_info['model_name_or_path']
+            'embedding_model_name': embedder_info['model_name_or_path'],
+            'wikidata_ontology_db': conn_params['KG_MODEL_CONNECTORS']['wikidata_ontology_db'],
+            'db_onto': conn_params['KG_MODEL_CONNECTORS']['db_onto']
         }
         return config
 
@@ -51,12 +58,17 @@ class WikonticBuildOperations(GraphRAGBuildOperations):
         mongo_cnt_variables = {
             'MONGO_CNTNAME': conn_params['CONTAINERS_ADDITIONAL_CONFIG']['mongo_cntname'],
             'MONGO_EXTERNAL_PORT': conn_params['KG_MODEL_CONNECTORS']['port'],
-            'MONGO_LOCAL_VOLUME': MONGO_VOLUME_PATH
+            'MONGO_LOCAL_VOLUME': MONGO_VOLUME_PATH,
+            'MONGO_HOST': conn_params['CONTAINERS_ADDITIONAL_CONFIG']['mongo_host']
         }
         return [mongo_cnt_variables]
 
 
 if __name__ == "__main__":
+
+    kgconnparams_path = "./debug/example/kgconn_params.yaml"  # TO CHANGE
+    with open(kgconnparams_path, 'r') as stream:
+        example_conn_params = yaml.safe_load(stream)
 
     envparams_path = "./debug/example/kgenv_params.yaml" # TO CHANGE
     with open(envparams_path, 'r') as stream:
@@ -65,10 +77,6 @@ if __name__ == "__main__":
     hyperpparams_path = "./debug/example/kghyperp_params.yaml"  # TO CHANGE
     with open(hyperpparams_path, 'r') as stream:
         example_hyperp_params = yaml.safe_load(stream)
-
-    kgconnparams_path = "./debug/example/kgconn_params.yaml"  # TO CHANGE
-    with open(kgconnparams_path, 'r') as stream:
-        example_conn_params = yaml.safe_load(stream)
 
     example_documents = [
         "Oliver Badman is a politician.",
@@ -89,7 +97,7 @@ if __name__ == "__main__":
 
     print("Generated config:")
     config = WikonticBuildOperations.prepare_method_config(
-        example_env_params, example_hyperp_params)
+        example_conn_params, example_env_params, example_hyperp_params)
     print(config)
 
     print("Initializing method...")

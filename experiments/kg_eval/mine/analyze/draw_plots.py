@@ -10,6 +10,12 @@ from scipy.interpolate import interp1d
 import os
 
 ####################################################
+
+METRICS_BASE_PATH='/home/workspace/experiments/metrics' # TO CHNAGE
+sys.path.insert(0, METRICS_BASE_PATH)
+from llm_as_a_judge_mine import plot_accuracy_histogram
+
+####################################################
 print("1. Loading hyperparameters from .yaml files")
 
 # Read YAML file (specexp-params)
@@ -58,42 +64,9 @@ for pack_name in llm_packs:
     scores.append(metrics_info['llm-as-a-judge']['mean'])
 percentages = [int(round(value * 100, 0)) for value in scores]
 
-groups_mapping = dict()
-groups_ranges = [5, 10, 10, 10, 10, 10, 10, 10, 10, 10, 6]
-cur_group = 0
-cur_num = 0
-for group_idx in range(len(groups_ranges)):
-    for _ in range(groups_ranges[group_idx]):
-        groups_mapping[cur_num] = f"{cur_group}"
-        cur_num += 1
-    cur_group += 10
+acc_dict = {f"PersonalAI, {SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']}": percentages}
+color_map = {f"PersonalAI, {SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']}": "#a1c78f"}
+plot_accuracy_histogram(acc_dict, color_map, MINE_PLOT_FILE_PATH)
 
-scores_groups = defaultdict(list)
-for percent in percentages:
-    percent_group = groups_mapping[percent]
-    scores_groups[percent_group].append(percent)
-
-cats = ['0','10','20','30','40','50','60','70','80','90','100']
-values = [len(scores_groups[cat]) for cat in cats]
-w,x = 8, [0,10,20,30,40,50,60,70,80,90,100]
-
-llm_model = SPECEXP_PARAMS['EXPERIMENT_NAME'].split("_")[1]
-
-a = plt.hist(percentages, bins=12, density=False, range=[-10,110])
-plt.close()
-xnew = np.linspace(-5, 105, num=1000, endpoint=True)
-f_cubic = interp1d(np.arange(-5,115, 10), a[0], kind='cubic')
-
-plt.bar(x, values, w, label=f'PersonalAI, {llm_model}')
-
-plt.plot(xnew,f_cubic(xnew), c='red', linewidth=2)
-plt.vlines(x=np.mean(percentages), ymin=0, ymax=max(values), color='black', linestyle='--', linewidth=2)
-
-plt.xticks(x, cats)
-plt.xlabel('Facts captured, %')
-plt.ylabel('Frequency (Articles)')
-plt.legend()
-plt.grid()
-plt.savefig(MINE_PLOT_FILE_PATH)
 
 print("############ DONE ############")

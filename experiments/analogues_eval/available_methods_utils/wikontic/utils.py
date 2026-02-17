@@ -1,6 +1,7 @@
 from typing import Dict, List, Union
 from pymongo.mongo_client import MongoClient
 from time import time
+import openai
 import hashlib
 
 from wikontic.create_wikidata_ontology_db import create_wikidata_ontology_database
@@ -28,11 +29,14 @@ class CustomWikontic:
         ontology_db = mongo_client.get_database("wikidata_ontology_test")
 
         self.aligner = Aligner(triplets_db=triplets_db, ontology_db=ontology_db)
-        self.extractor = LLMTripletExtractor(model="gpt-4o", api_key=api_key, proxy=proxy_url)
+        self.extractor = LLMTripletExtractor(api_key="ollama")
+        self.extractor.model = config['llm_model_name']
+        self.client = openai.OpenAI(api_key="ollama", base_url=config['llm_base_url'])
+
         self.inferer = StructuredInferenceWithDB(self.extractor, self.aligner, triplets_db)
 
     @staticmethod
-    def init_graph(self, config: Dict):
+    def init_graph(config: Dict):
         create_wikidata_ontology_database(
             mongo_uri=config['mongo_uri'],
             database=config['wikidata_ontology_db']
