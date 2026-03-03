@@ -3,7 +3,7 @@ import json
 import pandas as pd
 import os
 
-def diaasqa_qa_load(dataset_path: str, max_samples_per_pack: int) -> List[Tuple[str, List[str], List[str]]]:
+def diaasqa_qa_load(dataset_path: str, max_samples_per_pack: int = -1) -> List[Tuple[str, List[str], List[str]]]:
     eval_dir_path = f"{dataset_path}/qa_eval"
     pack_files = os.listdir(eval_dir_path)
     packs = []
@@ -25,7 +25,7 @@ def diaasqa_qa_load(dataset_path: str, max_samples_per_pack: int) -> List[Tuple[
 
     return packs
 
-def hotpotqa_distractor_validation_qa_load(dataset_path: str, max_samples_per_pack: int) -> List[Tuple[str, List[str], List[str]]]:
+def hotpotqa_distractor_validation_qa_load(dataset_path: str, max_samples_per_pack: int = -1) -> List[Tuple[str, List[str], List[str]]]:
     qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
 
     questions = qa_df['question'].tolist()
@@ -40,7 +40,7 @@ def hotpotqa_distractor_validation_qa_load(dataset_path: str, max_samples_per_pa
 
     return packs
 
-def trivia_qa_rcwikipedia_validation_qa_load(dataset_path: str, max_samples_per_pack: int) -> List[Tuple[str, List[str], List[str]]]:
+def trivia_qa_rcwikipedia_validation_qa_load(dataset_path: str, max_samples_per_pack: int = -1) -> List[Tuple[str, List[str], List[str]]]:
     qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
 
     questions = qa_df['question'].tolist()
@@ -55,7 +55,7 @@ def trivia_qa_rcwikipedia_validation_qa_load(dataset_path: str, max_samples_per_
 
     return packs
 
-def rubqdev_qa_load(dataset_path: str, max_samples_per_pack: int) -> List[Tuple[str, Dict[str, str]]]:
+def rubqdev_qa_load(dataset_path: str, max_samples_per_pack: int = -1) -> List[Tuple[str, Dict[str, str]]]:
     qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
 
     questions = qa_df['question'].tolist()
@@ -70,7 +70,7 @@ def rubqdev_qa_load(dataset_path: str, max_samples_per_pack: int) -> List[Tuple[
 
     return packs
 
-def sberdialogues_qa_load(dataset_path: str, max_samples_per_pack: int) -> List[Tuple[str, List[str], List[str]]]:
+def sberdialogues_qa_load(dataset_path: str, max_samples_per_pack: int = -1) -> List[Tuple[str, List[str], List[str]]]:
     eval_dir_path = f"{dataset_path}/qa_eval"
     pack_files = os.listdir(eval_dir_path)
     packs = []
@@ -92,7 +92,7 @@ def sberdialogues_qa_load(dataset_path: str, max_samples_per_pack: int) -> List[
 
     return packs
 
-def musique_validation_qa_load(dataset_path: str, max_samples_per_pack: int) -> List[Tuple[str, Dict[str, str]]]:
+def musique_validation_qa_load(dataset_path: str, max_samples_per_pack: int = -1) -> List[Tuple[str, Dict[str, str]]]:
     qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
 
     questions = qa_df['question'].tolist()
@@ -107,7 +107,7 @@ def musique_validation_qa_load(dataset_path: str, max_samples_per_pack: int) -> 
 
     return packs
 
-def wiki2multihopqa_dev_qa_load(dataset_path: str, max_samples_per_pack: int) -> List[Tuple[str, Dict[str, str]]]:
+def wiki2multihopqa_dev_qa_load(dataset_path: str, max_samples_per_pack: int = -1) -> List[Tuple[str, Dict[str, str]]]:
     qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
 
     questions = qa_df['question'].tolist()
@@ -122,7 +122,7 @@ def wiki2multihopqa_dev_qa_load(dataset_path: str, max_samples_per_pack: int) ->
 
     return packs
 
-def natural_questions_train_qa_load(dataset_path: str, max_samples_per_pack: int) -> List[Tuple[str, Dict[str, str]]]:
+def natural_questions_train_qa_load(dataset_path: str, max_samples_per_pack: int = -1) -> List[Tuple[str, Dict[str, str]]]:
     qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
 
     questions = qa_df['question'].tolist()

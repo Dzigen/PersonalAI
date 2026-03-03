@@ -1,1 +1,0 @@
-from .method_interface import Hipporag2QAOperations

@@ -1,9 +1,16 @@
 from typing import Dict, List
 import yaml
-from ...utils import GraphRAGMINEOperations
-from ..utils import CustomWikontic
+import sys
+import json
 
-class WikonticMINEOperations(GraphRAGMINEOperations):
+EXPEROMETS_BASE_PATH="/home/workspace/experiments"
+sys.path.insert(0, EXPEROMETS_BASE_PATH)
+
+from analogues_eval.available_methods_utils.utils import GraphRAGMINEOperations
+from analogues_eval.available_methods_utils.wikontic.utils import CustomWikontic
+from analogues_eval.available_methods_utils.wikontic.kg_building import WikonticBuildOperations
+
+class WikonticMINEOperations(GraphRAGMINEOperations, WikonticBuildOperations):
 
     def __init__(self, memory_config: Dict, mine_config: Dict) -> None:
         self.method = CustomWikontic(memory_config)
@@ -16,7 +23,11 @@ class WikonticMINEOperations(GraphRAGMINEOperations):
 
         triples = [f"{triple['subject']} {triple['relation']} {triple['object']}" for triple in supporting_triplets]
 
-        return triples
+        filtered_triples = list(triples)
+        if self.mine_config['triples_in_total'] > 0:
+            filtered_triples = filtered_triples[:self.mine_config['triples_in_total']]
+        
+        return filtered_triples
 
     @staticmethod
     def prepare_mine_config() -> Dict:
@@ -27,15 +38,20 @@ class WikonticMINEOperations(GraphRAGMINEOperations):
         }
 
     @staticmethod
-    def prepare_kgeval_mine_env_params(conn_params: Dict, env_params: Dict, hyperp_params: Dict) -> List[Dict[str,str]]:
-        DATASET_KGS_PATH = f"{env_params['BASE_KG_PATH']}/{env_params['METHOD_NAME']}/{env_params['DATASET_NAME']}"
+    def prepare_kgeval_mine_env_params(conn_params: Dict, env_params: Dict) -> List[Dict[str,str]]:
+        DATASET_KGS_PATH = f"{env_params['LOCAL_KG_PATH']}/{env_params['METHOD_NAME']}/{env_params['DATASET_NAME']}"
         SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{env_params['KNOWLEDGE_GRAPH_NAME']}"
-        MONGO_VOLUME_PATH = f"{SPEC_KG_PATH}/{env_params['KG_DIR_STRUCT']['storage']}"
+        MONGO_EXTERNAL_DB_VOLUME = f"{SPEC_KG_PATH}/{env_params['KG_DIR_STRUCT']['db_storage']}"
+        MONGO_EXTERNAL_CONFIGDB_VOLUME = f"{SPEC_KG_PATH}/{env_params['KG_DIR_STRUCT']['configdb_storage']}"
+        MONGO_EXTERNAL_MONGOT_VOLUME = f"{SPEC_KG_PATH}/{env_params['KG_DIR_STRUCT']['mongot_storage']}"
 
         mongo_cnt_variables = {
-            'MONGO_CNTNAME': conn_params['CONTAINERS_ADDITIONAL_CONFIG']['mongo_cntname'],
+            'MONGO_CNTNAME': env_params['CONTAINERS_ADDITIONAL_CONFIG']['mongo_cntname'],
+            'MONGO_HOST': conn_params['CONTAINERS_ADDITIONAL_CONFIG']['mongo_host'],
             'MONGO_EXTERNAL_PORT': conn_params['KG_MODEL_CONNECTORS']['port'],
-            'MONGO_LOCAL_VOLUME': MONGO_VOLUME_PATH
+            'MONGO_EXTERNAL_DB_VOLUME': MONGO_EXTERNAL_DB_VOLUME,
+            'MONGO_EXTERNAL_CONFIGDB_VOLUME': MONGO_EXTERNAL_CONFIGDB_VOLUME,
+            'MONGO_EXTERNAL_MONGOT_VOLUME': MONGO_EXTERNAL_MONGOT_VOLUME
         }
         return [mongo_cnt_variables]
 
@@ -49,10 +65,9 @@ if __name__ == "__main__":
     with open(envparams_path, 'r') as stream:
         example_env_params = yaml.safe_load(stream)
 
-    memoryconfig_path = "./debug/example/kg_config.yaml"  # TO CHANGE
-    with open(memoryconfig_path, 'r') as stream:
-        example_memory_config = yaml.safe_load(stream)
-
+    memoryconfig_path = "./debug/example/kg_config"  # TO CHANGE
+    with open(memoryconfig_path, 'r', encoding='utf-8') as fd:
+        example_memory_config = json.loads(fd.read())
 
     print("Generated env params:")
     env_params = WikonticMINEOperations.prepare_kgeval_mine_env_params(
@@ -71,7 +86,7 @@ if __name__ == "__main__":
     ]
 
     print("Initializing method...")
-    method = WikonticMINEOperations(example_memory_config, example_memory_config, mine_config)
+    method = WikonticMINEOperations(example_memory_config, mine_config)
     print("Builded graph info:")
     method.print_graph_info()
 

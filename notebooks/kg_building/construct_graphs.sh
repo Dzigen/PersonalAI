@@ -6,8 +6,8 @@ USERNAME=root
 
 # ===============================================================
 
-DATASETS=("mine_train_kgeval" "mine_train_kgeval" "mine_train_kgeval" "mine_train_kgeval")  # TO CHANGE
-KNOWLEDGE_GRAPHS=("llama318b_110226_v2prompts" "qwen257b_110226_v2prompts" "gemma29b_110226_v2prompts" "granite338b_110226_v2prompts") # TO CHANGE
+DATASETS=("2wikimultihopqa_dev" "natural_questions_train") #"mine_train_kgeval")  # TO CHANGE
+KNOWLEDGE_GRAPHS=("qwen257b_080226_v2prompts" "qwen257b_020226_v2prompts") #"qwen2514b_220226_v2prompts") # TO CHANGE
 
 # ===============================================================
 

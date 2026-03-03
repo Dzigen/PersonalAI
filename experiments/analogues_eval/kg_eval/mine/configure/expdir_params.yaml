@@ -16,7 +16,7 @@ KG_SETTING_DIR:
   name: settings
   kgconn: kgconn_params
   kgenv: kgenv_params
-  qaenv: qaenv_params
+  kgevalenv: kgevalenv_params
 
 WORKSPACE_CONTAINER_DIRS:
   base_path: /home/workspace
@@ -25,7 +25,7 @@ WORKSPACE_CONTAINER_DIRS:
   models: models
   experiments: experiments/analogues_eval/kg_eval/mine
   results: results
-  kg_env_path: init_env/env_settings
+  kg_env_path: env_settings
 
 EXP_SAVE_FILES:
   kghyperp: kghyperp_params.yaml

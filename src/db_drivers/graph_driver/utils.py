@@ -57,7 +57,7 @@ class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
         :param accepted_n_types: Допустимые типы соседних вершин.
         :type accepted_n_types: List[NodeType]
         :return: Список соседних вершин, удовлетворяющих заданным типам.
-        :rtype: List[Node]
+        :rtype: List[NodeInfo]
         """
         pass
 

@@ -99,7 +99,10 @@ for pack_name in triples_pack_names:
     for t_idx, t_info in process:
         process.set_postfix_str(pack_name)
 
-        formated_context = "\n".join(list(map(lambda str_triple: f"- {str_triple}", t_info['retrieved_triples'])))
+        if len(t_info['retrieved_triples']):
+            formated_context = "\n".join(list(map(lambda str_triple: f"- {str_triple}", t_info['retrieved_triples'])))
+        else:
+            formated_context = "No context given."
 
         s_time = time()
         score = judge.perform(t_info['query'], formated_context)

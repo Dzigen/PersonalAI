@@ -13,6 +13,7 @@ from time import time
 import datetime
 from tqdm import tqdm
 import json
+import tenacity
 
 import sys
 BASE_PATH = '/home/workspace/experiments/analogues_eval' # TO CHANGE
@@ -35,7 +36,7 @@ with open(EXPDIR_PARAMS_FILEP, 'r') as stream:
     EXPDIR_PARAMS = yaml.safe_load(stream)
 
 CONTAINER_ENV_PATH = f"{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg_env_path']}"
-SPEC_ENV_PATH = f"{CONTAINER_ENV_PATH}/{SPECEXP_PARAMS['DATASET_NAME']}/{SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+SPEC_ENV_PATH = f"{CONTAINER_ENV_PATH}/{SPECEXP_PARAMS['METHOD_NAME']}/{SPECEXP_PARAMS['DATASET_NAME']}/{SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
 # Read YAML file (kgenv-file)
 KGENV_FILE_PATH = f"{SPEC_ENV_PATH}/{EXPDIR_PARAMS['KG_SETTING_DIR']['kgenv']}.yaml"
@@ -61,32 +62,46 @@ ELAPSED_TIME_SPATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['e
 # KG PATHS
 DATASET_KGS_PATH = f"{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{SPECEXP_PARAMS['METHOD_NAME']}/{SPECEXP_PARAMS['DATASET_NAME']}"
 SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
-KG_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kg_config']}"
+KG_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['method_config']}"
+
+MINE_CONFIG_SAVE_PATH = f"{SPEC_EXPERIMENT_DIR}/mine_config"
 
 ####################################################
-print("3. Loading config")
+print("3. Loading configs")
 
-method_config = joblib.load(KG_MODEL_CONFIG_PATH)
+with open(KG_MODEL_CONFIG_PATH, 'r', encoding='utf-8') as fd:
+    method_config = json.loads(fd.read())
 
 print("KG MODEL_CONFIG:")
 pprint(method_config)
 
-####################################################
-print("4. Initializing method")
+mine_config = AVAILABLE_GRAPHRAG_MINE_METHOD[SPECEXP_PARAMS['METHOD_NAME']].prepare_mine_config()
+mine_config.update(SPECEXP_PARAMS['MINE_CONFIG'])
+print("MINE_CONFIG:")
+pprint(mine_config)
 
-method_main: GraphRAGMINEOperations = AVAILABLE_GRAPHRAG_MINE_METHOD[SPECEXP_PARAMS['METHOD_NAME']](method_config)
+with open(MINE_CONFIG_SAVE_PATH, 'w', encoding='utf-8') as fd:
+    fd.write(json.dumps(mine_config, indent=1, ensure_ascii=False))
+
+####################################################
+print("4. Loading MINE-dataset")
+
+queries_packs = CUSTOM_LOAD_KGEVAL_DS_FUNCS[SPECEXP_PARAMS['DATASET_NAME']](DATASET_PATH)
+print(DATASET_PATH)
+print(len(queries_packs))
+
+####################################################
+print("5. Initializing method")
+
+method_main: GraphRAGMINEOperations = AVAILABLE_GRAPHRAG_MINE_METHOD[SPECEXP_PARAMS['METHOD_NAME']](method_config, mine_config)
 method_main.print_graph_info()
 
 ####################################################
-print("6. Loading MINE-dataset")
-
-queries_packs = CUSTOM_LOAD_KGEVAL_DS_FUNCS[SPECEXP_PARAMS['DATASET_NAME']](DATASET_PATH)
-
-####################################################
-print("7. Start inferencing")
+print("6. Start inferencing")
 
 print(f"start time: {datetime.datetime.now()}")
 QUERIES_COUNTER = 0
+ERRORS_OCCURES = 0
 for pack_name, queries in tqdm(queries_packs):
 
     if len(queries) < 1:
@@ -102,9 +117,16 @@ for pack_name, queries in tqdm(queries_packs):
         s_time = time()
         print(f"==== QUERY #{pack_name}.{i}: {queries[i]}")
 
-        retrieved_triples: List[str] = method_main.get_neighbour_triples(queries[i])
+        try:
+            retrieved_triples: List[str] = method_main.get_neighbour_triples(queries[i])
+        except (TypeError, json.decoder.JSONDecodeError, tenacity.RetryError, KeyError) as e:
+           ERRORS_OCCURES += 1
+           retrieved_triples = []
+           print("Error occured!")
+
         formated_retrieved_triples = '\n'.join(retrieved_triples)
-        print(f"RETRIEVED TRIPLES IN TOTAL: {len(retrieved_triples)}\n{formated_retrieved_triples}")
+        print(f"RETRIEVED TRIPLES IN TOTAL: {len(retrieved_triples)}")
+        #print(f"RETRIEVED TRIPLES IN TOTAL: {len(retrieved_triples)}\n{formated_retrieved_triples}")
         e_time = time()
 
         triples_dump_file = f"{pack_tmp_triples_dir}/triples_{i}"
@@ -112,9 +134,10 @@ for pack_name, queries in tqdm(queries_packs):
 print(f"endtime time: {datetime.datetime.now()}")
 
 print(f"USED QUERIES IN TOTAL: {QUERIES_COUNTER}")
+print(f"OCCURED ERRORS STATISTIC: {ERRORS_OCCURES} / {QUERIES_COUNTER}")
 
 ####################################################
-print("8. Accumulating retrieved triples")
+print("7. Accumulating retrieved triples")
 
 elapsed_times: Dict[str,Dict[str, float]] = dict()
 for pack_name, queries in queries_packs:
@@ -159,4 +182,3 @@ with open(ELAPSED_TIME_SPATH, 'w', encoding='utf-8') as fd:
 
 print("############ DONE ############")
 
-kg_model.close_connections()

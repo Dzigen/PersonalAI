@@ -8,9 +8,9 @@ PREPARED_PARAMS_NAME=prepared_params
 # --------------------------------------------------------
 
 RUNEXP_LOG_PATH="$EXP_BASE_DIR/runexperiment_log.txt"
-EVALUATE_BASE_DIR="$EXP_BASE_DIR/evaluate"
+EVALUATE_BASE_DIR="$EXP_BASE_DIR/evaluate/prepared_params"
 PARAMSTORUN_DIR="$EXP_BASE_DIR/params_to_run"
-CONFIGURE_BASE_DIR="$EXP_BASE_DIR/configure"
+CONFIGURE_BASE_DIR="$EXP_BASE_DIR/configure/prepared_params"
 
 # --------------------------------------------------------
 
@@ -20,8 +20,8 @@ KNOWLEDGEGRAPH_NAME=$3
 CONFIGURE_FNAME=$4
 EVAL_FNAME=$5
 
-EXPDIR_PARAMS_PATH="$CONFIGURE_BASE_DIR/$PREPARED_PARAMS_NAME/$CONFIGURE_FNAME"
-EVAL_PARAMS_PATH="$EVALUATE_BASE_DIR/$PREPARED_PARAMS_NAME/$EVAL_FNAME"
+EXPDIR_PARAMS_PATH="$CONFIGURE_BASE_DIR/$CONFIGURE_FNAME"
+EVAL_PARAMS_PATH="$EVALUATE_BASE_DIR/$EVAL_FNAME"
 
 # --------------------------------------------------------
 
@@ -30,7 +30,7 @@ for exp_idx in "${!exp_hyperp[@]}";
 do
     HYPERP_FNAME="${exp_hyperp[$exp_idx]}"
     EXP_NAME=${HYPERP_FNAME%.yaml}
-    echo "$METHOD_NAME | $KNOWLEDGEGRAPH_NAME | $DATASET_NAME | $EXP_NAME"
+    echo "$METHOD_NAME | $DATASET_NAME | $KNOWLEDGEGRAPH_NAME | $EXP_NAME"
 
     QAHYPERP_PARAMS_PATH="$PARAMSTORUN_DIR/$HYPERP_FNAME"
     echo "qahyperp params-path: $QAHYPERP_PARAMS_PATH"

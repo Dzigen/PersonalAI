@@ -1,17 +1,18 @@
 DATASET_NAME: # TO CHANGE
   - 'hotpotqa_distractor_validation'
-  - 'trivia_qa_rcwikipedia_validation'
-  - 'diaasq'
-  - 'natural_questions_train'
-  - 'musique_validation'
-  - '2wikimultihopqa_dev'
+  # - 'trivia_qa_rcwikipedia_validation'
+  # - 'diaasq'
+  # - 'natural_questions_train'
+  # - 'musique_validation'
+  # - '2wikimultihopqa_dev'
 KNOWLEDGE_GRAPH_NAME: # TO CHANGE
-  - ['llama318b_230126_v2prompts', 'qwen257b_230126_v2prompts', 'granite338b_230126_v2prompts', 'gemma29b_230126_v2prompts']
-  - ['llama318b_290126_v2prompts', 'qwen257b_290126_v2prompts', 'granite338b_290126_v2prompts', 'gemma29b_290126_v2prompts']
-  - ['llama318b_260126_v2prompts', 'qwen257b_260126_v2prompts', 'granite338b_260126_v2prompts', 'gemma29b_260126_v2prompts']
-  - ['llama318b_020226_v2prompts', 'qwen257b_020226_v2prompts', 'granite338b_020226_v2prompts', 'gemma29b_020226_v2prompts']
-  - ['llama318b_050226_v2prompts', 'qwen257b_050226_v2prompts', 'granite338b_050226_v2prompts', 'gemma29b_050226_v2prompts']
-  - ['llama318b_080226_v2prompts', 'qwen257b_080226_v2prompts', 'granite338b_080226_v2prompts', 'gemma29b_080226_v2prompts']
+  - ['gemma312b_010326_v2prompts']
+  # - ['llama318b_230126_v2prompts', 'qwen257b_230126_v2prompts', 'granite338b_230126_v2prompts', 'gemma29b_230126_v2prompts', 'gemma312b_010326_v2prompts']
+  # - ['llama318b_290126_v2prompts', 'qwen257b_290126_v2prompts', 'granite338b_290126_v2prompts', 'gemma29b_290126_v2prompts', 'gemma312b_020326_v2prompts']
+  # - ['llama318b_260126_v2prompts', 'qwen257b_260126_v2prompts', 'granite338b_260126_v2prompts', 'gemma29b_260126_v2prompts', 'gemma312b_030326_v2prompts']
+  # - ['llama318b_020226_v2prompts', 'qwen257b_020226_v2prompts', 'granite338b_020226_v2prompts', 'gemma29b_020226_v2prompts', 'gemma312b_040326_v2prompts']
+  # - ['llama318b_050226_v2prompts', 'qwen257b_050226_v2prompts', 'granite338b_050226_v2prompts', 'gemma29b_050226_v2prompts', 'gemma312b_050326_v2prompts']
+  # - ['llama318b_080226_v2prompts', 'qwen257b_080226_v2prompts', 'granite338b_080226_v2prompts', 'gemma29b_080226_v2prompts', 'gemma312b_060326_v2prompts']
 
 
 PERSONALAI_VERSION: 'v2.2.1' # TO CHANGE
@@ -21,11 +22,11 @@ QA_DATASET_HYPERP:
   max_samples_per_pack: 100
   lang:
     - 'en'
-    - 'en'
-    - 'en'
-    - 'en'
-    - 'en'
-    - 'en'
+    # - 'en'
+    # - 'en'
+    # - 'en'
+    # - 'en'
+    # - 'en'
 
 # STAGE # 1
 query_preprocessor: # TO CHANGE
@@ -198,8 +199,8 @@ kg_reasoner: # TO CHANGE
               fetch_n: 50
 
       filter_method: # CAN BE null
-        - 'naive'
         #- 'naive'
+        - 'naive'
 
       filter_config: # CAN BE null        
         # - max_k: 50

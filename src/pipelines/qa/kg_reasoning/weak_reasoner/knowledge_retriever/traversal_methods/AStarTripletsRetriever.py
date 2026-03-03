@@ -1,7 +1,11 @@
 from dataclasses import dataclass, field
 from typing import Dict, List, Tuple, Union
 import numpy as np
+
 import heapq
+# IMPORTANT TO NOTE about tuples sorting: 
+# https://stackoverflow.com/questions/3954530/how-to-make-heapq-evaluate-the-heap-off-of-a-specific-attribute
+
 from time import time
 import collections
 from copy import deepcopy
@@ -382,10 +386,10 @@ class AStarGraphSearch:
     def close_connections(self):
         self.metrics.close_connections()
 
-    def search_path(self, start_node: NodeInfo, end_node: NodeInfo) -> Tuple[List[str], List[NodeInfo], Dict[str, int], Dict[str, NodeInfo], NodeInfo]:
+    def search_path(self, start_node: NodeInfo, end_node: NodeInfo) -> Tuple[List[str], List[Tuple[int, str, NodeInfo]], Dict[str, int], Dict[str, NodeInfo], NodeInfo]:
         """Реализация A*-алгоритма. Источник: https://www.redblobgames.com/pathfinding/a-star/implementation.html."""
-        frontier: List[int, NodeInfo] = []
-        heapq.heappush(frontier, (0, start_node))
+        frontier: List[Tuple[int, str, NodeInfo]] = []
+        heapq.heappush(frontier, (0, create_id(), start_node))
         parent: Dict[str, Union[None, NodeInfo]] = {start_node.to_str(): None}
         cost_so_far: Dict[str, int] = {start_node.to_str(): 0}
         D: Dict[str, int] = {start_node.to_str(): 0}
@@ -394,7 +398,7 @@ class AStarGraphSearch:
         spare_closest_node = start_node
         passed_nodes_counter = 0
         while len(frontier):
-            current_node: NodeInfo = heapq.heappop(frontier)[1]
+            current_node: NodeInfo = heapq.heappop(frontier)[2]
             current_node_typedid = current_node.to_str()
             passed_nodes_counter += 1
 
@@ -435,7 +439,7 @@ class AStarGraphSearch:
 
                     cost_so_far[adj_node_typedid] = new_cost
                     priority = new_cost + self.metrics.compute_h_metric(adj_node, end_node, parent)
-                    heapq.heappush(frontier, (priority, adj_node))
+                    heapq.heappush(frontier, (priority, create_id(), adj_node))
 
         if end_node_typedid not in parent:
             self.log(f"start-spare node path len: {D[spare_closest_node.to_str()]}", verbose=self.verbose)

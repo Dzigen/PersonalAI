@@ -21,9 +21,13 @@ RUN systemctl enable cron
 RUN systemctl start cron
 
 WORKDIR /home/workspace
-
 RUN apt-get --assume-yes install python3.11
+RUN apt-get  --assume-yes install python3-pip python3-setuptools python3-wheel ninja-build
+RUN pip install --upgrade pip setuptools
 RUN apt-get --assume-yes install libicu-dev python3-icu pkg-config libpq-dev libsqlite3-dev
+RUN apt-get purge meson -y
+RUN pip install meson==0.63.3
+RUN apt-get --assume-yes install libdbus-1-dev libcairo2-dev libglib2.0-dev girepository-2.0 gcc python3-dev gir1.2-gtk-4.0
 RUN apt-get install -y git
 RUN apt-get purge -y --auto-remove && rm -rf /var/lib/apt/lists/*
 
@@ -34,7 +38,6 @@ RUN jq --version
 RUN python3 --version
 COPY requirements.txt .
 RUN python3 -m pip install -r requirements.txt
-
 RUN python3 -m pip install torch
 RUN python3 -c 'import torch'
 

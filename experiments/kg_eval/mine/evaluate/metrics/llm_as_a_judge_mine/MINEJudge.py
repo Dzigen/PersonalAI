@@ -1,7 +1,7 @@
 from .configs import EVAL_MINEJUDGE_MAIN_LOG_PATH, DEFAULT_LLM_GENSTRATEGY, ResponseEvaluator
 
 import sys
-BASE_PATH = '../../'
+BASE_PATH = '/home/workspace' # TO CHANGE
 sys.path.insert(0, BASE_PATH)
 
 from src.utils import Logger

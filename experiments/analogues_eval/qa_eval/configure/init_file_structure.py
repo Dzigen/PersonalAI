@@ -31,6 +31,9 @@ QATRACE_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['qa_traces_name
 SETTINGS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['settings_name']}"
 CONFIGS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['configs_name']}"
 
+SPECEXP_PARAMS_SPATH = f"{SETTINGS_DIR }/{EXPDIR_PARAMS['EXP_SAVE_FILES']['qahyperp']}"
+EXPDIR_PARAMS_SPATH = f"{SETTINGS_DIR }/{EXPDIR_PARAMS['EXP_SAVE_FILES']['expdir']}"
+
 if EXPDIR_PARAMS['INIT_STRUCT']:
 
     print("Создаём директорию для сохранения результатов по эксперименту...")
@@ -71,4 +74,13 @@ if EXPDIR_PARAMS['INIT_STRUCT']:
     os.mkdir(SETTINGS_DIR)
     os.mkdir(CONFIGS_DIR)
 
-    print("############ DONE ############")
+####################################################
+print("2. Saving params")
+
+with open(SPECEXP_PARAMS_SPATH, 'w') as fd:
+    yaml.dump(SPECEXP_PARAMS, fd, default_flow_style=False, sort_keys=False)
+
+with open(EXPDIR_PARAMS_SPATH, 'w') as fd:
+    yaml.dump(EXPDIR_PARAMS, fd, default_flow_style=False, sort_keys=False)
+
+print("############ DONE ############")

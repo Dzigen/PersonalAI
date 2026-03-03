@@ -23,6 +23,8 @@ RUN systemctl start cron
 WORKDIR /home/workspace
 
 RUN apt-get --assume-yes install python3.11
+RUN apt-get  --assume-yes install python3-pip python3-setuptools python3-wheel ninja-build
+RUN pip install --upgrade pip setuptools
 RUN apt-get --assume-yes install libicu-dev python3-icu pkg-config libpq-dev libsqlite3-dev
 RUN apt-get install -y git
 RUN apt-get purge -y --auto-remove && rm -rf /var/lib/apt/lists/*
@@ -32,10 +34,10 @@ RUN apt install -y jq
 RUN jq --version
 
 RUN python3 --version
-# COPY requirements.txt .
-# RUN python3 -m pip install -r requirements.txt
-# RUN python3 -m pip install torch
-# RUN python3 -c 'import torch'
+COPY requirements.txt .
+RUN python3 -m pip install -r requirements.txt
+RUN python3 -m pip install torch
+RUN python3 -c 'import torch'
 
 RUN useradd -rm -d /home/workspace -s /bin/bash -g root -G sudo -u 4200235 m.menschikov
 #RUN useradd -rm -d /home/workspace -s /bin/bash -g root -G sudo -u 1000 dzigen

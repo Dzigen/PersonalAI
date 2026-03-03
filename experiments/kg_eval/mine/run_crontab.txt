@@ -18,4 +18,15 @@ CURRENT_DATASET="hotpotqa_distractor_validation"
 CURRENT_CONFIGURE_FNAME="hotpotqa_distractor_validation.yaml"
 CURRENT_EVAL_FNAME="hotpotqa_distractor_validation.yaml"
 
-04 08 01 02 * cd $CRONTAB_DIR ; bash crontab_job.sh $CURRENT_KG $CURRENT_DATASET $CURRENT_CONFIGURE_FNAME $CURRENT_EVAL_FNAME >> $CRONTAB_DIR/crontab_log.txt 2>&1
+34 13 17 02 * cd $CRONTAB_DIR ; bash crontab_job.sh $CURRENT_KG $CURRENT_DATASET $CURRENT_CONFIGURE_FNAME $CURRENT_EVAL_FNAME >> $CRONTAB_DIR/crontab_log.txt 2>&1
+
+==========
+
+CRONTAB_DIR="/home/workspace/experiments/kg_eval/mine"
+
+DATASET="mine_train_kgeval"
+CURRENT_KG="llama318b_110226_v2prompts"
+EVAL_FNAME="eval_params.yaml"
+CONFIGUE_FNAME="expdir_params.yaml"
+
+42 13 17 02 * bash $CRONTAB_DIR/crontab_job.sh $CURRENT_KG $DATASET $CONFIGURE_FNAME $EVAL_FNAME >> $CRONTAB_DIR/crontab_log.txt 2>&1

@@ -16,7 +16,7 @@ with open(SETTINGS_PARAMS_FILEP, 'r') as stream:
 # '/home/dzigen/Desktop/Projects/PersonalAI/Personal-AI'
 # '/home/m.menschikov/workspace/personal_ai/Personal-AI'
 # '/home/workspace'
-REPO_BASE_PATH = '/home/dzigen/Desktop/Projects/PersonalAI/Personal-AI' # TO CHANGE
+REPO_BASE_PATH = '/home/workspace' # TO CHANGE
 GEN_PARAMS_PATH = f'{REPO_BASE_PATH}/experiments/kg_eval/mine/configure/generate_params'
 SAVE_PARAMS_PATH = f'{GEN_PARAMS_PATH}/tmp_params'
 
@@ -59,19 +59,20 @@ for ds_idx, dataset in enumerate(AVAILABLE_DATASET_NAMES):
             SPECIFIC_PARAMS['DATASET_NAME'] = dataset
             SPECIFIC_PARAMS['KNOWLEDGE_GRAPH_NAME'] = kg_name
 
-            SETTINGS_PARAMS['RETRIEVE_SETTING']['max_matched_nodes'] = spec_raw_params[0]
-            SETTINGS_PARAMS['RETRIEVE_SETTING']['max_triples_per_node'] = spec_raw_params[1]
-            SETTINGS_PARAMS['RETRIEVE_SETTING']['max_nodes_per_depth'] = spec_raw_params[2]
-            SETTINGS_PARAMS['RETRIEVE_SETTING']['max_explore_depth'] = spec_raw_params[3]
-            SETTINGS_PARAMS['RETRIEVE_SETTING']['max_triples_in_total'] = spec_raw_params[4]
-            SETTINGS_PARAMS['RETRIEVE_SETTING']['accepted_nodes_types'] = spec_raw_params[5]
+            SPECIFIC_PARAMS['RETRIEVE_SETTING']['max_matched_nodes'] = spec_raw_params[0]
+            SPECIFIC_PARAMS['RETRIEVE_SETTING']['max_triples_per_node'] = spec_raw_params[1]
+            SPECIFIC_PARAMS['RETRIEVE_SETTING']['max_nodes_per_depth'] = spec_raw_params[2]
+            SPECIFIC_PARAMS['RETRIEVE_SETTING']['max_explore_depth'] = spec_raw_params[3]
+            SPECIFIC_PARAMS['RETRIEVE_SETTING']['max_triples_in_total'] = spec_raw_params[4]
+            SPECIFIC_PARAMS['RETRIEVE_SETTING']['accepted_nodes_types'] = spec_raw_params[5]
 
             # creating name for experiment
             short_ds_name = dataset.split('_')[0]
             short_kg_name = kg_name.split('_')[0]
+
             exp_id = hashlib.md5(str(SPECIFIC_PARAMS).encode()).hexdigest()[:8]
             prefix = f"N{spec_raw_params[0]}TPN{spec_raw_params[1]}NPD{spec_raw_params[2]}MD{spec_raw_params[3]}TIT{spec_raw_params[4]}ANT{''.join([str_ntype[0] for str_ntype in spec_raw_params[5]])}"
-            SPECIFIC_PARAMS['EXPERIMENT_NAME'] = f"{prefix}_{short_ds_name}_{short_kg_name}(#{exp_id})({SETTINGS_PARAMS['PERSONALAI_VERSION']})"
+            SPECIFIC_PARAMS['EXPERIMENT_NAME'] = f"{prefix}_{short_ds_name}_{short_kg_name}(#{exp_id})({SPECIFIC_PARAMS['PERSONALAI_VERSION']})"
 
             # saving generated params-config
             SPEC_PARAMS_SPATH = f"{SAVE_PARAMS_PATH}/{dataset}/{kg_name}/{SPECIFIC_PARAMS['EXPERIMENT_NAME']}.yaml"

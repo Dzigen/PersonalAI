@@ -2,6 +2,7 @@ from typing import List, Dict
 import yaml
 from tqdm import tqdm
 import sys
+import os
 
 EXPEROMETS_BASE_PATH="/home/workspace/experiments"
 sys.path.insert(0, EXPEROMETS_BASE_PATH)
@@ -11,7 +12,8 @@ from analogues_eval.available_methods_utils.wikontic.utils import CustomWikontic
 
 class WikonticBuildOperations(GraphRAGBuildOperations):
     def __init__(self, config: Dict):
-        CustomWikontic.init_graph(config)
+        if config['init_graph']:
+            CustomWikontic.init_graph(config)
 
         self.method = CustomWikontic(config)
         self.config = config
@@ -33,15 +35,22 @@ class WikonticBuildOperations(GraphRAGBuildOperations):
             'llm_base_url': llm_base_url,
             'embedding_model_name': embedder_info['model_name_or_path'],
             'wikidata_ontology_db': conn_params['KG_MODEL_CONNECTORS']['wikidata_ontology_db'],
-            'db_onto': conn_params['KG_MODEL_CONNECTORS']['db_onto']
+            'db_onto': conn_params['KG_MODEL_CONNECTORS']['db_onto'],
+            'init_graph': True
         }
         return config
 
-    def build_graph(self, documents: List[str]) -> None:
-        for document in tqdm(documents):
-            self.method.inferer.extract_triplets_with_ontology_filtering_and_add_to_db(
-                text=document, sample_id=create_id()
-            )
+    def build_graph(self, documents: List[str]) -> None: 
+        occured_error_counter = 0
+        for i, document in enumerate(tqdm(documents)):
+            try:
+                self.method.inferer.extract_triplets_with_ontology_filtering_and_add_to_db(
+                    text=document, sample_id=create_id()
+                )
+            except (TypeError, KeyError) as e:
+                print(f"error occurs during text storing to knowledge graph; text idx: {i}")
+                occured_error_counter += 1
+        print(f"Occurred errors statistic: {occured_error_counter} / {len(documents)}")
 
     def save_graph(self, env_params: Dict, hyperp_params: Dict) -> None:
         pass
@@ -53,15 +62,33 @@ class WikonticBuildOperations(GraphRAGBuildOperations):
     def prepare_kgbuild_env_params(conn_params: Dict, env_params: Dict, hyperp_params: Dict) -> List[Dict[str,str]]:
         DATASET_KGS_PATH = f"{env_params['LOCAL_KG_PATH']}/{hyperp_params['METHOD_NAME']}/{hyperp_params['DATASET_NAME']}"
         SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{hyperp_params['KNOWLEDGE_GRAPH_NAME']}"
-        MONGO_VOLUME_PATH = f"{SPEC_KG_PATH}/{env_params['KG_DIR_STRUCT']['storage']}"
+        MONGO_EXTERNAL_DB_VOLUME = f"{SPEC_KG_PATH}/{env_params['KG_DIR_STRUCT']['db_storage']}"
+        MONGO_EXTERNAL_CONFIGDB_VOLUME = f"{SPEC_KG_PATH}/{env_params['KG_DIR_STRUCT']['configdb_storage']}"
+        MONGO_EXTERNAL_MONGOT_VOLUME = f"{SPEC_KG_PATH}/{env_params['KG_DIR_STRUCT']['mongot_storage']}"
 
         mongo_cnt_variables = {
             'MONGO_CNTNAME': conn_params['CONTAINERS_ADDITIONAL_CONFIG']['mongo_cntname'],
+            'MONGO_HOST': conn_params['CONTAINERS_ADDITIONAL_CONFIG']['mongo_host'],
             'MONGO_EXTERNAL_PORT': conn_params['KG_MODEL_CONNECTORS']['port'],
-            'MONGO_LOCAL_VOLUME': MONGO_VOLUME_PATH,
-            'MONGO_HOST': conn_params['CONTAINERS_ADDITIONAL_CONFIG']['mongo_host']
+            'MONGO_EXTERNAL_DB_VOLUME': MONGO_EXTERNAL_DB_VOLUME,
+            'MONGO_EXTERNAL_CONFIGDB_VOLUME': MONGO_EXTERNAL_CONFIGDB_VOLUME,
+            'MONGO_EXTERNAL_MONGOT_VOLUME': MONGO_EXTERNAL_MONGOT_VOLUME
         }
         return [mongo_cnt_variables]
+    
+    @staticmethod
+    def create_kg_structure(env_params: Dict, hyperp_params: Dict) -> None:
+        ANALOGUES_KGS_BASE_PATH = f"{env_params['TMP_WORKSPACE_PERSONALAI_PATH']}/{env_params['WORKSPACE_CONTAINER_DIRS']['kg']}/{hyperp_params['METHOD_NAME']}"
+        DATASET_KGS_PATH = f"{ANALOGUES_KGS_BASE_PATH}/{hyperp_params['DATASET_NAME']}"
+        SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{hyperp_params['KNOWLEDGE_GRAPH_NAME']}"
+
+        DB_STORAGE_PATH = f"{SPEC_KG_PATH}/{env_params['KG_DIR_STRUCT']['db_storage']}"
+        CONFIGDB_STORAGE_PATH = f"{SPEC_KG_PATH}/{env_params['KG_DIR_STRUCT']['configdb_storage']}"
+        MONGOT_STORAGE_PATH = f"{SPEC_KG_PATH}/{env_params['KG_DIR_STRUCT']['mongot_storage']}"
+
+        os.makedirs(DB_STORAGE_PATH, exist_ok=True)
+        os.makedirs(CONFIGDB_STORAGE_PATH, exist_ok=True)
+        os.makedirs(MONGOT_STORAGE_PATH, exist_ok=True)
 
 
 if __name__ == "__main__":
@@ -100,6 +127,10 @@ if __name__ == "__main__":
         example_conn_params, example_env_params, example_hyperp_params)
     print(config)
 
+    print("Generating method-graph structure:")
+    WikonticBuildOperations.create_kg_structure(
+        example_env_params, example_hyperp_params)
+
     print("Initializing method...")
     method = WikonticBuildOperations(config)
     print("Building graph...")
@@ -108,5 +139,5 @@ if __name__ == "__main__":
     print("Builded graph info:")
     method.print_graph_info()
     print("Saving graph...")
-    method.save_graph()
+    method.save_graph(example_env_params, example_hyperp_params)
     print("Done!")

@@ -32,7 +32,7 @@ with open(EXPDIR_PARAMS_FILEP, 'r') as stream:
 print("2. Setting paths")
 
 EXP_RESULTS_DIR = f"{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['results']}"
-EXP_KG_PATH = f"{EXP_RESULTS_DIR}/{SPECEXP_PARAMS['DATASET_NAME']}/{SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+EXP_KG_PATH = f"{EXP_RESULTS_DIR}/{SPECEXP_PARAMS['METHOD_NAME']}/{SPECEXP_PARAMS['DATASET_NAME']}/{SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 SPEC_EXPERIMENT_DIR = f"{EXP_KG_PATH}/{SPECEXP_PARAMS['EXPERIMENT_NAME']}"
 
 ACCUMULATED_SCORES_SPATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['accumulated_scores']}"
@@ -67,9 +67,8 @@ mlflow.set_experiment(MLFLOW_EXPERIMENT_TITLE)
 print("sending files...")
 with mlflow.start_run(run_name=SPECEXP_PARAMS['EXPERIMENT_NAME']) as run_fd:
     mlflow.set_tags({
-        'personalai_version': SPECEXP_PARAMS['PERSONALAI_VERSION'],
         'dataset': SPECEXP_PARAMS['DATASET_NAME'],
-        'llm': SPECEXP_PARAMS['EXPERIMENT_NAME'].split("_")[1], # костыль: в названии конкретного эксперимента должна содержаться информацие об использованной LLM-модели
+        'llm': SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME'].split("_")[0], # костыль: в названии конкретного эксперимента должна содержаться информацие об использованной LLM-модели
         'knowledge_graph': SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME'],
         'method': SPECEXP_PARAMS['METHOD_NAME'],
     })

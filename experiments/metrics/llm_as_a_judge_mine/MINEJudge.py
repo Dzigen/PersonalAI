@@ -1,10 +1,5 @@
 from .configs import EVAL_MINEJUDGE_MAIN_LOG_PATH, DEFAULT_LLM_GENSTRATEGY, ResponseEvaluator
-
-import sys
-BASE_PATH = '../../'
-sys.path.insert(0, BASE_PATH)
-
-from src.utils import Logger
+from .utils import Logger
 from dataclasses import dataclass, field
 import dspy
 from typing import Union, Dict
@@ -38,7 +33,7 @@ class MINEJudge():
         self.log(f"* QUERY: {query}", verbose=self.verbose)
         self.log(f"* RETRIEVED_CONTEXT: {retrieved_context}",verbose=self.verbose)
 
-        result = self.evaluator.forward(context=retrieved_context, correct_answer=query)
+        result = self.evaluator(context=retrieved_context, correct_answer=query)
         self.log(f"RESULT: {result.evaluation}", verbose=self.verbose)
 
         return result.evaluation

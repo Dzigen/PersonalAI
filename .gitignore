@@ -124,5 +124,10 @@ experiments/analogues_eval/available_methods_utils/hipporag2/qa_eval/prepared_pa
 experiments/analogues_eval/available_methods_utils/raptor/kg_building/prepared_params/
 experiments/analogues_eval/available_methods_utils/kggen/kg_building/prepared_params/
 experiments/analogues_eval/available_methods_utils/hipporag2/kg_building/prepared_params/
+experiments/analogues_eval/available_methods_utils/wikontic/kg_building/prepared_params/
 
 experiments/analogues_eval/available_methods_utils/hipporag2/method_source/
+experiments/analogues_eval/qa_eval/params_to_run/
+experiments/analogues_eval/qa_eval/env_settings/
+experiments/analogues_eval/kg_eval/mine/env_settings/
+experiments/analogues_eval/kg_eval/mine/params_to_run/

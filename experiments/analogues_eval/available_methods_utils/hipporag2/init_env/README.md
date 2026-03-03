@@ -1,1 +1,1 @@
-docker build -t personalai_mmenschikov_hipporag2_eval_workspace -f workspace.Dockerfile .
+docker build --no-cache -t m.menschikov/hipporag2_eval_workspace:v1 -f workspace.Dockerfile .

@@ -12,6 +12,7 @@ EXP_NAME=$3
 
 KGEVALHYPERP_PARAMS_PATH=$4
 EXPDIR_PARAMS_PATH=$5
+EVAL_PARAMS_PATH=$6
 
 # --------------------------------------------------------
 
@@ -29,6 +30,6 @@ DRAWPLOTS_LOG_PATH="$SPEC_EXP_DIR/draw_plots_log.txt"
 
 # --------------------------------------------------------
 
-cd $SPEC_EXP_DIR ; $PYTHON_CMD $DRAWPLOTS_SCRIPT $KGEVALHYPERP_PARAMS_PATH $EXPDIR_PARAMS_PATH >> $DRAWPLOTS_LOG_PATH 2>&1
+cd $SPEC_EXP_DIR ; $PYTHON_CMD $DRAWPLOTS_SCRIPT $KGEVALHYPERP_PARAMS_PATH $EXPDIR_PARAMS_PATH $EVAL_PARAMS_PATH >> $DRAWPLOTS_LOG_PATH 2>&1
 
 echo "=== Done (analyze.sh) ==="
