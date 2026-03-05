@@ -23,3 +23,8 @@ transformers
 umap-learn
 urllib3
 lingua-language-detector
+pysqlite3
+redis
+pymongo
+ollama
+gigachat

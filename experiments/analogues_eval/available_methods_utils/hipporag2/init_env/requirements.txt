@@ -26,3 +26,9 @@ mlflow
 datasets
 dspy
 lingua-language-detector
+pysqlite3
+redis
+pymongo
+ollama
+sentence_transformers
+gigachat
