@@ -131,3 +131,5 @@ experiments/analogues_eval/qa_eval/params_to_run/
 experiments/analogues_eval/qa_eval/env_settings/
 experiments/analogues_eval/kg_eval/mine/env_settings/
 experiments/analogues_eval/kg_eval/mine/params_to_run/
+
+tests/manual/log
