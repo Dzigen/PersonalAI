@@ -35,12 +35,12 @@ with open(EVAL_PARAMS_FILEP, 'r') as stream:
 WORKSPACE_CONTAINER_PATH = EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']
 sys.path.insert(0, WORKSPACE_CONTAINER_PATH)
 
-LLMASAJUDGE_SOURCE_PATH = f"{WORKSPACE_CONTAINER_PATH}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/../../{EVAL_PARAMS['llm_as_a_judge_path']}/.."
+LLMASAJUDGE_SOURCE_PATH = f"{WORKSPACE_CONTAINER_PATH}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/../../{EVAL_PARAMS['llm_as_a_judge_path']}/../.."
 sys.path.insert(0, LLMASAJUDGE_SOURCE_PATH)
 
-from llm_as_a_judge import AgentLLMJudgeTaskConfigSelector
-from llm_as_a_judge.AnswersJudge import AnswersJudgeConfig, AnswersJudge
-from src.agents import AgentDriverConfig
+from metrics.llm_as_a_judge import AnswersJudgeConfig, AnswersJudge
+from metrics.llm_as_a_judge.configs import AgentLLMJudgeTaskConfigSelector
+from metrics.utils import AgentDriverConfig
 
 ####################################################
 print("2. Setting paths")

@@ -2,6 +2,7 @@
 bertscore_model_path: "google/electra-base-discriminator"
 meteor_path: 'metrics/meteor'
 exactmatch_path: 'metrics/exact_match'
+basemetrics_path: 'metrics/base_metrics'
 llm_as_a_judge_path: 'metrics/llm_as_a_judge'
 llmasajudge_kv_dir: metrics
 ragas_path: 'metrics/my_ragas'

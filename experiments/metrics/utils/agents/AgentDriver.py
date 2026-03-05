@@ -4,7 +4,7 @@ from copy import deepcopy
 
 from .utils import AgentConnectorConfig, AbstractAgentConnector
 from .configs import DEFAULT_AGENT_CONFIGS, AVAILABLE_AGENT_CONNECTORS
-from .utils import BaseConfigOperations
+from ..data_structs import BaseConfigOperations
 
 
 @dataclass

@@ -1,11 +1,6 @@
 from .v1 import LLMJUDGE_SUITE_V1
 from .general_parsers import llmjudge_custom_formate, llmjudge_custom_postprocess
-from src.utils.logger import Logger
-from src.utils.task_solver import AgentTaskSolverConfig
-import sys
-BASE_PATH = '../'  # TO CHANGE
-sys.path.insert(0, BASE_PATH)
-
+from ....utils import Logger, AgentTaskSolverConfig
 
 LLMJUDGE_LOG_PATH = 'log/qa_evaluation/agen_tasks/llm_as_a_judge'
 

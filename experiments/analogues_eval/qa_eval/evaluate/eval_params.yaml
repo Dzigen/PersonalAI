@@ -1,11 +1,12 @@
 
 bertscore_model_path: "google/electra-base-discriminator"
-meteor_path: 'evaluate/metrics/meteor'
-exactmatch_path: 'evaluate/metrics/exact_match'
-llm_as_a_judge_path: 'evaluate/metrics/llm_as_a_judge'
-llmasajudge_kv_dir: evaluate/metrics
-ragas_path: 'evaluate/metrics/my_ragas'
-ragas_kv_dir: evaluate/metrics
+meteor_path: 'metrics/meteor'
+exactmatch_path: 'metrics/exact_match'
+basemetrics_path: 'metrics/base_metrics'
+llm_as_a_judge_path: 'metrics/llm_as_a_judge'
+llmasajudge_kv_dir: metrics
+ragas_path: 'metrics/my_ragas'
+ragas_kv_dir: metrics
 no_answer: '<|NotEnoughtInfo|>'
 
 ragas_llm_config:

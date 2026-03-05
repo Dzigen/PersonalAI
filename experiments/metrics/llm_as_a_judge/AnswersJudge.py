@@ -1,14 +1,8 @@
 from .configs import DEFAULT_LLMJUDGE_TASK_CONFIG, EVAL_JUDGE_MAIN_LOG_PATH
-from .agents import AgentDriver, AgentDriverConfig
+from ..utils import AgentDriver, AgentDriverConfig, Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 from dataclasses import dataclass, field
 from typing import Union
 from copy import deepcopy
-import sys
-
-BASE_PATH = '../'
-sys.path.insert(0, BASE_PATH)
-
-from src.utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 
 @dataclass
 class AnswersJudgeConfig:
@@ -58,6 +52,8 @@ class AnswersJudge:
     def perform(self, question: str, ground_truth: str, predicted_response: str) -> Union[int, float]:
         info = ReturnInfo()
         self.log("START JUDGING...", verbose=self.verbose)
+        self.log(f"* QUESTION: {question}",
+                 verbose=self.verbose)
         self.log(f"* GROUND_TRUTH: {ground_truth}",
                  verbose=self.verbose)
         self.log(f"* PREDICTED: {predicted_response}",

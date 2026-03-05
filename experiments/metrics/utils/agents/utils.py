@@ -3,63 +3,8 @@ from dataclasses import dataclass, field
 from copy import deepcopy
 
 from typing import Dict, Union, Tuple
-
-@dataclass
-class LLMInferenceStat:
-    """Структура данных для хранения статистики одной inference-операции LLM.
-
-    :param prompt_tokens_amount: Количество токенов во входном промпте.
-    :type prompt_tokens_amount: int
-    :param generated_tokens_amount: Количество токенов, сгенерированных моделью.
-    :type generated_tokens_amount: int
-    :param inference_elapsed_time: Время инференса в секундах.
-    :type inference_elapsed_time: float
-    :param timestamp: Временная метка записи в БД.
-    :type timestamp: Union[None, str]
-    """
-    prompt_tokens_amount: int
-    generated_tokens_amount: int
-    inference_elapsed_time: float  # in seconds
-    timestamp: Union[None, str] = None
-
-
-@dataclass
-class BaseConfigOperations:
-    """Базовый класс для конфигурационных объектов. Определяет типовые операции по созданию конфигураций из словаря
-    и рекурсивному приведению вложенных полей к корректному формату.
-    """
-
-    def to_str(self) -> str:
-        """Метод предназначен для получения строкового представления конфигурационного объекта.
-
-        :return: Строковое представление конфигурации.
-        :rtype: str
-        """
-        pass
-
-    def formate_fields(self) -> None:
-        """Метод предназначен для рекурсивного приведения вложенных полей конфигурации к корректному формату.
-
-        Обходит все поля dataclass-объекта и вызывает метод formate_fields()
-        для тех полей, которые также являются экземплярами BaseConfigOperations.
-        """
-        fields_iterator = fields(self)
-        for field_object in fields_iterator:
-            field_value = getattr(self, field_object.name)
-
-            if isinstance(field_value, BaseConfigOperations):
-                field_value.formate_fields()
-
-    @staticmethod
-    def from_dict(dict_config: Dict):
-        """Метод предназначен для создания экземпляра конфигурационного объекта из словаря параметров.
-
-        :param dict_config: Словарь с параметрами конфигурации.
-        :type dict_config: Dict
-        :return: Инициализированный объект конфигурации.
-        :rtype: BaseConfigOperations
-        """
-        pass
+from ..agent_stat_analyzer.utils import LLMInferenceStat
+from ..data_structs import BaseConfigOperations
 
 
 @dataclass

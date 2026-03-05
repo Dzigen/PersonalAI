@@ -1,15 +1,11 @@
 from .configs import EVAL_RAGAS_MAIN_LOG_PATH
-from src.db_drivers.kv_driver import KeyValueDriverConfig
-from src.utils.cache_kv import CacheKV, CacheUtils
-from src.agents import AgentDriverConfig
-from src.utils import Logger, ReturnInfo
+from ..utils import KeyValueDriverConfig, Logger, AgentDriverConfig, CacheKV, CacheUtils
 
 from openai import AsyncOpenAI
 from dataclasses import dataclass, field
 from typing import Union
 from time import time
 from typing import List, Dict, Tuple
-import asyncio
 from ragas.llms import llm_factory
 from ragas.metrics.collections import DistanceMeasure
 from ragas.metrics.collections import RougeScore, CHRFScore, BleuScore, \
@@ -17,11 +13,6 @@ from ragas.metrics.collections import RougeScore, CHRFScore, BleuScore, \
         ContextRelevance, AnswerAccuracy, Faithfulness, \
             NoiseSensitivity, ContextEntityRecall
 from copy import deepcopy
-import sys
-
-BASE_PATH = '../'
-sys.path.insert(0, BASE_PATH)
-
 
 @dataclass
 class RagasMetricsConfig:
