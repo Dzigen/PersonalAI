@@ -1,5 +1,8 @@
 from .configs import DEFAULT_LLMJUDGE_TASK_CONFIG, EVAL_JUDGE_MAIN_LOG_PATH
-from ..utils import AgentDriver, AgentDriverConfig, Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
+from ..utils import AgentDriver, AgentDriverConfig, \
+    Logger, ReturnStatus, ReturnInfo, \
+        AgentTaskSolver, AgentTaskSolverConfig, \
+            CacheUtils
 from dataclasses import dataclass, field
 from typing import Union
 from copy import deepcopy
@@ -17,7 +20,7 @@ class AnswersJudgeConfig:
     cache_table_name: str = "qaeval_judge_cache"
 
 
-class AnswersJudge:
+class AnswersJudge(CacheUtils):
 
     def __init__(self, config: AnswersJudgeConfig = AnswersJudgeConfig(),
                  cache_kvdriver_config: object = None,
@@ -48,7 +51,7 @@ class AnswersJudge:
         return [question, ground_truth, str(predicted_response), self.config.adriver_config.to_str(),
                 self.config.llmjudge_task_config.version]
 
-    #@CacheUtils.cache_method_output
+    @CacheUtils.cache_method_output
     def perform(self, question: str, ground_truth: str, predicted_response: str) -> Union[int, float]:
         info = ReturnInfo()
         self.log("START JUDGING...", verbose=self.verbose)

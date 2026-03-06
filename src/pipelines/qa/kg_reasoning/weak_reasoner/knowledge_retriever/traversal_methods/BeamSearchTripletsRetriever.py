@@ -320,6 +320,10 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 prev_node, tail_node = cur_path_info.path[-1][0], cur_path_info.path[-1][2]
                 self.log(f"Информация по текущему пути:\n* номер: {i}\n* len: {len(cur_path_info.path)}\n* tail_node: {tail_node}\n* prev_node: {prev_node}", verbose=self.verbose)
 
+                # TODO:
+                # совместить get_available_nodes- и get_available_rinfo-методы
+                # для повышения производительности
+
                 adj_nodes = self.get_available_nodes(tail_node, i, traversing_paths, prev_node)
                 self.log(f"Смежные вершины: {len(adj_nodes)}\n", verbose=self.verbose)
 

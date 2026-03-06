@@ -12,11 +12,11 @@ USERNAME=root
 
 # ===============================================================
 
-DATASETS=("hotpotqa_distractor_validation" "musique_validation" "2wikimultihopqa_dev") # TO CHANGE
-KNOWLEDGE_GRAPHS=("gemma29b_230226" "gemma29b_240226" "gemma29b_250226") # TO CHANGE
-EVAL_FNAMES=("hotpotqa_distractor_validation.yaml" "musique_validation.yaml" "2wikimultihopqa_dev.yaml") # TO CHANGE
-CONFIGURE_FNAMES=("hotpotqa_distractor_validation.yaml" "musique_validation.yaml" "2wikimultihopqa_dev.yaml") # TO CHANGE
-METHOD_NAMES=("raptor" "raptor" "raptor") # TO CHANGE
+DATASETS=("2wikimultihopqa_dev") # TO CHANGE
+KNOWLEDGE_GRAPHS=("gemma312b_040326") # TO CHANGE
+EVAL_FNAMES=("2wikimultihopqa_dev.yaml") # TO CHANGE
+CONFIGURE_FNAMES=("2wikimultihopqa_dev.yaml") # TO CHANGE
+METHOD_NAMES=("raptor") # TO CHANGE
 
 # ===============================================================
 

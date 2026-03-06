@@ -423,6 +423,11 @@ class AStarGraphSearch:
                 current_node, self.config.accepted_node_types)
             # self.log(f"adjenced nodes: {len(adj_nodes)}", verbose=self.verbose)
 
+            # TODO:
+            # Выполнить предварительную фильтрацию adj_nodes-вершин 
+            # по current_node- или end_node-вершине 
+            # для повышения производительности
+
             for adj_node in adj_nodes:
 
                 parent_node_typedid = None if parent[current_node_typedid] is None else parent[current_node_typedid].to_str()

@@ -5,7 +5,7 @@ KNOWLEDGE_GRAPH_NAME: llama318b_230126_v2prompts # TO CHANGE
 LOCAL_PERSONALAI_PATH: /home/m.menschikov/workspace/personal_ai/Personal-AI
 LOCAL_KG_PATH: /mnt/data/m.menschikov/personalai/knowledge_graphs/analogues_eval
 OLLAMA_MODELS_PATH: /mnt/data/m.menschikov/ollama_volume
-OLLAMA_EXT_PORT: 11437 # TO CHANGE
+OLLAMA_EXT_PORT: 11439 # TO CHANGE
 
 KG_SETTING_DIR:
   name: settings
@@ -14,7 +14,7 @@ KG_SETTING_DIR:
 
 GPUS_CONFIG:
   ollama_device_id: '1' # TO CHANGE
-  workspace_device_id: '2' # TO CHANGE
+  workspace_device_id: '0' # TO CHANGE
 
 PERSONALAI_REPO_DIRS:
   experiments: experiments/analogues_eval/qa_eval

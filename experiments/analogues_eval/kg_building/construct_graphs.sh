@@ -6,9 +6,9 @@ USERNAME=root
 
 # ===============================================================
 
-DATASETS=("hotpotqa_distractor_validation" "musique_validation" "2wikimultihopqa_dev")  # TO CHANGE
-KNOWLEDGE_GRAPHS=("gemma29b_230226" "gemma29b_240226" "gemma29b_250226") # TO CHANGE
-METHODS=("hipporag2" "hipporag2" "hipporag2") # TO CHANGE
+DATASETS=("hotpotqa_distractor_validation" "musique_validation" "2wikimultihopqa_dev" "hotpotqa_distractor_validation" "musique_validation" "2wikimultihopqa_dev")  # TO CHANGE
+KNOWLEDGE_GRAPHS=("gemma312b_050326" "gemma312b_060326" "gemma312b_040326" "gemma312b_050326" "gemma312b_060326" "gemma312b_040326") # TO CHANGE
+METHODS=("raptor" "raptor" "raptor" "hipporag2" "hipporag2" "hipporag2") # TO CHANGE
 
 # ===============================================================
 

@@ -166,6 +166,7 @@ print("7. Saving eval params")
 with open(EVAL_PARAMS_SPATH, 'w') as fd:
     yaml.dump(EVAL_PARAMS, fd, default_flow_style=False, sort_keys=False)
 
-judge.cachekv.kv_conn.close_connection()
+if judge.cachekv is not None:
+    judge.cachekv.kv_conn.close_connection()
 
 print("############ DONE ############")
