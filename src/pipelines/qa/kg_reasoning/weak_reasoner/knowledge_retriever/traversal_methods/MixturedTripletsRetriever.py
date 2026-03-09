@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Union, Dict, Tuple
 from copy import deepcopy
 
+from .configs import MIXTURED_RETRIEVER_LOG_PATH
 from .AStarTripletsRetriever import AStarGraphSearchConfig, AStarTripletsRetriever
 from .WaterCirclesTripletsRetriever import WaterCirclesSearchConfig, WaterCirclesRetriever
 from .NaiveBFSTripletsRetriever import NaiveBFSTripletsRetriever, NaiveBFSGraphSearchConfig
@@ -37,7 +38,9 @@ class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     retriever2_name: str = 'watercircles'
     retriever2_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: WaterCirclesSearchConfig())
     accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
+
     cache_table_name: str = 'qa_mixture_t_retriever_cache'
+    log_path: str = MIXTURED_RETRIEVER_LOG_PATH
 
     AVAILABLE_RCONFIGS: Dict[str, BaseGraphSearchConfig] = field(default_factory=lambda: {
         'astar': AStarGraphSearchConfig,
@@ -83,14 +86,10 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
-    :type log: Logger
     :param search_config: Конфигурация MixturedTripletsRetriever-алгоритма. Значение по умолчанию MixturedGraphSearchConfig().
     :type search_config: Union[MixturedGraphSearchConfig, Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[None, KeyValueDriverConfig], optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
     AVAILABLE_RETRIEVERS: Dict[str, AbstractTripletsRetriever] = {
         'astar': AStarTripletsRetriever,
@@ -100,8 +99,8 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         'naive_retriever': NaiveTripletsRetriever
     }
 
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[MixturedGraphSearchConfig, Dict] = MixturedGraphSearchConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, search_config: Union[MixturedGraphSearchConfig, Dict] = MixturedGraphSearchConfig(),
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         if isinstance(search_config, dict):
             search_config = MixturedGraphSearchConfig.from_dict(search_config)
         else:
@@ -116,12 +115,13 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.config.retriever2_config.accepted_node_types = self.config.accepted_node_types
 
         self.retriever1: AbstractTripletsRetriever = self.AVAILABLE_RETRIEVERS[search_config.retriever1_name](
-            kg_model, log, self.config.retriever1_config, cache_kvdriver_config, verbose)
+            kg_model, self.config.retriever1_config, cache_kvdriver_config)
         self.retriever2: AbstractTripletsRetriever = self.AVAILABLE_RETRIEVERS[search_config.retriever2_name](
-            kg_model, log, self.config.retriever2_config, cache_kvdriver_config, verbose)
+            kg_model, self.config.retriever2_config, cache_kvdriver_config)
 
-        self.log = log
-        self.verbose = verbose
+        self.log = Logger(search_config.log_path)
+        self.verbose = search_config.verbose
+        self.log_level = search_config.log_level
 
     def close_connections(self):
         if self.cachekv is not None:
@@ -148,16 +148,18 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     @accumulate_step_info
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo]:
-        self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
-        self.log(f"RETRIEVER: MixturedTripletsRetriever ({self.config.retriever1_name} + {self.config.retriever2_name})", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
+        self.log.debug("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Retriever: MixturedTripletsRetriever (%s + %s)", self.config.retriever1_name, self.config.retriever2_name,
+                       verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", create_id(query_info.query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question: %s", query_info.query, verbose=self.verbose, log_level=self.log_level)
         rinfo = ReturnInfo()
         triplets1, _, _ = self.retriever1.get_relevant_triplets(query_info)
         triplets2, _, _ = self.retriever2.get_relevant_triplets(query_info)
 
-        self.log(f"Количество триплетов, извлечённых с помощью {self.config.retriever1_name}/{self.config.retriever2_name}: {len(triplets1)}/{len(triplets2)}",
-                 verbose=self.verbose)
+        self.log.debug(f"Количество триплетов, извлечённых с помощью %s/%s: %d/%d",
+                       self.config.retriever1_name, self.config.retriever2_name, len(triplets1), len(triplets2),
+                       verbose=self.verbose, log_level=self.log_level)
 
         # отбираем только уникальные триплеты (по их идентификаторам)
         unique_triplets_map: Dict[str, Triplet] = dict()

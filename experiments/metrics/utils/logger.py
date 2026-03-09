@@ -4,27 +4,17 @@ import json
 import logging
 import torch
 import datetime
+from dataclasses import dataclass
 
-LOGGER = logging.getLogger(__name__)
-
-
-def init_logger(args, stdout_only=False):
-    if torch.distributed.is_initialized():
-        torch.distributed.barrier()
-    stdout_handler = logging.StreamHandler(sys.stdout)
-    handlers = [stdout_handler]
-    if not stdout_only:
-        file_handler = logging.FileHandler(
-            filename=os.path.join(args.output_dir, "run.log"))
-        handlers.append(file_handler)
-    logging.basicConfig(
-        datefmt="%m/%d/%Y %H:%M:%S",
-        level=logging.INFO,
-        format="[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s",
-        handlers=handlers,
-    )
-    return LOGGER
-
+@dataclass
+class LogLevel:
+    NOTSET: int = 0
+    DEBUG: int = 10
+    INFO: int = 20
+    WARNING: int = 30
+    ERROR: int = 40
+    CRITICAL: int = 50
+    DISABLED: int = 51
 
 class Logger:
     def __init__(self, path):

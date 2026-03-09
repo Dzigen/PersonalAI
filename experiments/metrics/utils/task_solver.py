@@ -12,6 +12,7 @@ from .tracing import accumulate_tasksolver_info
 from .agent_stat_analyzer import AgentStatAnalyzerConfig, AgentStatAnalyzer
 from .agents.utils import AbstractAgentConnector
 from .db_drivers.kv_driver import KeyValueDriverConfig
+from .data_structs import LoggingConfig
 
 
 @dataclass
@@ -34,7 +35,7 @@ class AgentTaskSuite:
 
 
 @dataclass
-class AgentTaskSolverConfig:
+class AgentTaskSolverConfig(LoggingConfig):
     """Конфигурация agent-солвера.
 
     :param version: Версия набора промптов/парсеров для решения некоторой LLM-задачи.
@@ -49,10 +50,6 @@ class AgentTaskSolverConfig:
     :type cache_table_name: str
     :param inferencestat_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться мета-информация/статистика по inference-операции.
     :type inferencestat_table_name: str
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
-    :type log: Logger
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
     version: str
     suites: Dict[str, AgentTaskSuite]
@@ -61,9 +58,6 @@ class AgentTaskSolverConfig:
 
     cache_table_name: str
     inferencestat_table_name: str
-
-    log: Logger
-    verbose: bool = False
 
 
 class AgentTaskSolver:

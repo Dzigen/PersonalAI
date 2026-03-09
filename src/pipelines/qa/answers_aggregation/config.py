@@ -1,7 +1,7 @@
 from typing import Dict
 
 from .agent_tasks.answers_summarisation import AgentSubASummTaskConfigSelector
-from ...utils import BaseAgentTaskConfigSelector
+from ....utils import BaseAgentTaskConfigSelector
 
 AAGG_MAIN_LOG_PATH = "log/qa/answers_aggregation/main"
 

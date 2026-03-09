@@ -3,8 +3,8 @@ from typing import Dict, Union
 from copy import deepcopy
 
 from .config import QUERYDECOMP_AGENTASKS_SELECTORS_MAPPING
-from ....utils import BaseTaskSolvers, BaseAgentTasksConfig, BaseAgentTaskConfigSelector
-from .....utils.task_solver import AgentTaskSolver, AgentTaskSolverConfig
+from ....utils import BaseTaskSolvers
+from .....utils.task_solver import AgentTaskSolver, AgentTaskSolverConfig, BaseAgentTasksConfig, BaseAgentTaskConfigSelector
 
 
 @dataclass

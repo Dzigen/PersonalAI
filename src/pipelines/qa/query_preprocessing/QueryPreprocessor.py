@@ -36,7 +36,7 @@ class QueryPreprocessorConfig(BaseComponentConfig, LanguageConfig):
     decomposition_config: Union[None, Dict, QueryDecomposerConfig] = field(default_factory=lambda: QueryDecomposerConfig())
 
     cache_table_name: str = "query_preprocessing_main_stage_cache"
-    log: Logger = field(default_factory=lambda: Logger(QP_MAIN_LOG_PATH))
+    log_path: str = QP_MAIN_LOG_PATH
 
     def to_str(self):
         str_denois_config = self.denoising_config.to_str() if self.denoising_config is not None else 'None'
@@ -109,8 +109,9 @@ class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
-        self.log = config.log
+        self.log = Logger(config.log_path)
         self.verbose = config.verbose
+        self.log_level = config.log_level
 
     def get_cache_key(self, query: str) -> List[str]:
         """Метод формирует ключ кеша для результата предобработки вопроса.
@@ -134,34 +135,34 @@ class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
         :return: Кортеж из трёх объектов: (1) Структура данных с предобработанным user-вопросом и результатами промежуточных операций; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
         :rtype: Tuple[QueryPreprocessingInfo, ReturnInfo, CompositeModuleDetailedResult]
         """
-        self.log("START QUERY PREPROCESSING...", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
-        self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
+        self.log.debug("START QUERY PREPROCESSING...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", create_id(query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question: %s", query, verbose=self.verbose, log_level=self.log_level)
         query_info = QueryPreprocessingInfo(base_query=query)
         rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
 
         if self.stages.denoiser is not None:
-            self.log("Удаление шума из запроса...", verbose=self.verbose)
+            self.log.debug("Удаление шума из запроса...", verbose=self.verbose, log_level=self.log_level)
             query_info.denoised_query, den_rinfo, trace = self.stages.denoiser.perform(query_info)
-            self.log(f"RESULT: {query_info.denoised_query}", verbose=self.verbose)
+            self.log.debug("RESULT: %s", query_info.denoised_query, verbose=self.verbose, log_level=self.log_level)
             module_trace.add("denoiser", ModuleType.stage, trace)
             update_rinfo(rinfo, den_rinfo)
 
         if (rinfo.status == ReturnStatus.success) and (self.stages.enhancer is not None):
-            self.log("Корректировка формата запроса...", verbose=self.verbose)
+            self.log.debug("Корректировка формата запроса...", verbose=self.verbose, log_level=self.log_level)
             query_info.enchanced_query, enh_rinfo, trace = self.stages.enhancer.perform(query_info)
-            self.log(f"RESULT: {query_info.enchanced_query}", verbose=self.verbose)
+            self.log.debug("RESULT: %s", query_info.enchanced_query, verbose=self.verbose, log_level=self.log_level)
             module_trace.add("enhancer", ModuleType.stage, trace)
             update_rinfo(rinfo, enh_rinfo)
 
         if (rinfo.status == ReturnStatus.success) and (self.stages.decomposer is not None):
-            self.log("Разбиение запроса на независимые части (простые запросы)...", verbose=self.verbose)
+            self.log.debug("Разбиение запроса на независимые части (простые запросы)...", verbose=self.verbose, log_level=self.log_level)
             query_info.decomposed_query, dec_rinfo, trace = self.stages.decomposer.perform(query_info)
-            self.log(f"RESULT: {query_info.decomposed_query}", verbose=self.verbose)
+            self.log.debug("RESULT: %s", query_info.decomposed_query, verbose=self.verbose, log_level=self.log_level)
             module_trace.add("decomposer", ModuleType.stage, trace)
             update_rinfo(rinfo, dec_rinfo)
 
-        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
+        self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)
 
         if query_info.decomposed_query is not None:
             query_info.processed_query = copy(query_info.decomposed_query)

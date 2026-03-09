@@ -3,8 +3,8 @@ from typing import Dict, Union
 from copy import deepcopy
 
 from .config import CQSUMM_AGENTASKS_SELECTORS_MAPPING
-from .....utils import BaseTaskSolvers, BaseAgentTasksConfig, BaseAgentTaskConfigSelector
-from ......utils import AgentTaskSolver, AgentTaskSolverConfig
+from .....utils import BaseTaskSolvers
+from ......utils import AgentTaskSolver, AgentTaskSolverConfig, BaseAgentTasksConfig, BaseAgentTaskConfigSelector
 
 
 @dataclass

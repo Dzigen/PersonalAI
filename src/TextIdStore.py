@@ -20,7 +20,7 @@ class TextIdStoreConfig(BaseComponentConfig):
     texttotriplets_store_config: Union[KeyValueDriverConfig, Dict] = field(default_factory=lambda: DEFAULT_TEXTTOTRIPLETS_STORE_CONFIG)
     triplettotexts_store_config: Union[KeyValueDriverConfig, Dict] = field(default_factory=lambda: DEFAULT_TRIPLETTOTEXTS_STORE_CONFIG)
 
-    log: Logger = field(default_factory=lambda: Logger(TEXTIDSTORE_LOG_PATH))
+    log_path: str = TEXTIDSTORE_LOG_PATH
 
     def to_str(self):
         return f"{self.texttotriplets_store_config.to_str()}|{self.triplettotexts_store_config.to_str()}"

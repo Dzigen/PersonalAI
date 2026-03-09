@@ -45,3 +45,4 @@ yq
 flake8
 mypy
 dspy
+picologging

@@ -84,7 +84,7 @@ class RagasMetrics(CacheUtils):
     async def context_entity_recall(self, reference: str, retrieved_contexts: List[str]) -> float:
         if len(retrieved_contexts) < 1:
             return 0.0
-        
+
         output = await self.ContextEntitiesRecall.ascore(
             reference=reference, retrieved_contexts=retrieved_contexts
         )
@@ -102,7 +102,7 @@ class RagasMetrics(CacheUtils):
                      retrieved_contexts: List[str]) -> float:
         if len(retrieved_contexts) < 1:
             return 0.0
-        
+
         output = await self.Faithfulness.ascore(
             user_input=user_input, response=response,
             retrieved_contexts=retrieved_contexts
@@ -126,7 +126,7 @@ class RagasMetrics(CacheUtils):
     async def response_groundedness(self, response: str, retrieved_contexts: List[str]) -> float:
         if len(retrieved_contexts) < 1:
             return 0.0
-        
+
         output = await self.ResponseGroundedness.ascore(
             response=response, retrieved_contexts=retrieved_contexts
         )
@@ -170,32 +170,32 @@ class RagasMetrics(CacheUtils):
         cache_key = self.get_cache_key(metric_name, **kwargs)
         cstatus, _, cached_result = self.cachekv.load_value(key=cache_key)
         if cstatus == 0:
-            self.log("Cache Hit!", verbose=self.verbose)
+            self.log.debug("Cache Hit!", verbose=self.verbose)
             output = cached_result
-            self.log(f"* METRIC_NAME: {metric_name}", verbose=self.verbose)
-            self.log(f"* USER_INPUT: {kwargs.get('user_input', None)}", verbose=self.verbose)
-            self.log(f"* REFERENCE: {kwargs.get('reference', None)}", verbose=self.verbose)
-            self.log(f"* RESPONSE: {kwargs.get('response', None)}",verbose=self.verbose)
-            self.log(f"* RETRIEVED_CONTEXTS: {kwargs.get('retrieved_contexts', None)}",verbose=self.verbose)
-            self.log(f'RESULT: metric: {metric_name}; score = {cached_result}; type = {type(cached_result)}.', verbose=self.verbose)
+            self.log.debug(f"* METRIC_NAME: {metric_name}", verbose=self.verbose)
+            self.log.debug(f"* USER_INPUT: {kwargs.get('user_input', None)}", verbose=self.verbose)
+            self.log.debug(f"* REFERENCE: {kwargs.get('reference', None)}", verbose=self.verbose)
+            self.log.debug(f"* RESPONSE: {kwargs.get('response', None)}",verbose=self.verbose)
+            self.log.debug(f"* RETRIEVED_CONTEXTS: {kwargs.get('retrieved_contexts', None)}",verbose=self.verbose)
+            self.log.debug(f'RESULT: metric: {metric_name}; score = {cached_result}; type = {type(cached_result)}.', verbose=self.verbose)
         else:
-            self.log("Cache Miss!", verbose=self.verbose)
+            self.log.debug("Cache Miss!", verbose=self.verbose)
             cache_hit = False
 
         return cache_hit, output
 
     def cache_score(self, metric_name, result, **kwargs) -> None:
-        self.log("Saving value to cache!", verbose=self.verbose)
+        self.log.debug("Saving value to cache!", verbose=self.verbose)
         cache_key = self.get_cache_key(metric_name, **kwargs)
         self.cachekv.save_value(value=result, key=cache_key)
 
     async def perform(self, metric_name, **kwargs) -> float:
-        self.log("START Scoring...", verbose=self.verbose)
-        self.log(f"* METRIC_NAME: {metric_name}", verbose=self.verbose)
-        self.log(f"* USER_INPUT: {kwargs.get('user_input', None)}", verbose=self.verbose)
-        self.log(f"* REFERENCE: {kwargs.get('reference', None)}", verbose=self.verbose)
-        self.log(f"* RESPONSE: {kwargs.get('response', None)}",verbose=self.verbose)
-        self.log(f"* RETRIEVED_CONTEXTS: {kwargs.get('retrieved_contexts', None)}",verbose=self.verbose)
+        self.log.debug("START Scoring...", verbose=self.verbose)
+        self.log.debug(f"* METRIC_NAME: {metric_name}", verbose=self.verbose)
+        self.log.debug(f"* USER_INPUT: {kwargs.get('user_input', None)}", verbose=self.verbose)
+        self.log.debug(f"* REFERENCE: {kwargs.get('reference', None)}", verbose=self.verbose)
+        self.log.debug(f"* RESPONSE: {kwargs.get('response', None)}",verbose=self.verbose)
+        self.log.debug(f"* RETRIEVED_CONTEXTS: {kwargs.get('retrieved_contexts', None)}",verbose=self.verbose)
 
         score = None
         s_time = time()
@@ -216,6 +216,6 @@ class RagasMetrics(CacheUtils):
             raise ValueError
         e_time = time()
 
-        self.log(f'RESULT: metric: {metric_name}; score = {score}; type = {type(score)}; elapsed_time = {round(e_time-s_time,5)}.', verbose=self.verbose)
+        self.log.debug(f'RESULT: metric: {metric_name}; score = {score}; type = {type(score)}; elapsed_time = {round(e_time-s_time,5)}.', verbose=self.verbose)
 
         return score

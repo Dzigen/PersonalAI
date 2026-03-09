@@ -32,3 +32,4 @@ pymongo
 ollama
 sentence_transformers
 gigachat
+picologging

@@ -33,7 +33,7 @@ class MemPipelineConfig(BaseComponentConfig, LanguageConfig):
     updator_config: Union[Dict, LLMUpdatorConfig] = field(
         default_factory=lambda: LLMUpdatorConfig())
 
-    log: Logger = field(default_factory=lambda: Logger(MEMORIZE_MAIN_LOG_PATH))
+    log_path: str = MEMORIZE_MAIN_LOG_PATH
 
     def to_str(self):
         # TODO
@@ -87,8 +87,9 @@ class MemPipeline(CacheOperations, AgentStatOperations):
                 kg_model, config.updator_config, cache_kvdriver_config, inferencestat_config)
         )
 
-        self.log = config.log
+        self.log = Logger(config.log_path)
         self.verbose = config.verbose
+        self.log_level = config.log_level
 
     @accumulate_stage_info
     def remember(self, text: str, time: Union[None, str] = None, properties: Union[None, Dict] = None) -> Tuple[List[Triplet], ReturnInfo, CompositeModuleDetailedResult, bool]:
@@ -106,31 +107,32 @@ class MemPipeline(CacheOperations, AgentStatOperations):
         :rtype: Tuple[List[Triplet], ReturnInfo, CompositeModuleDetailedResult, bool]
         """
 
-        self.log("START KNOWLEDGE REMEMBERING...", verbose=self.verbose)
-        self.log(f"BASE_TEXT ID: {create_id(text)}", verbose=self.verbose)
+        self.log.info("START KNOWLEDGE REMEMBERING...", verbose=self.verbose, log_level=self.log_level)
+        self.log.info(f"* Text hash: %s", create_id(text), verbose=self.verbose, log_level=self.log_level)
         rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
 
-        self.log("STAGE#1 - 'Извлечение информации (в структурированном формате) из текста'", verbose=self.verbose)
+        self.log.info("STAGE#1 - 'Извлечение информации (в структурированном формате) из текста'", verbose=self.verbose, log_level=self.log_level)
         new_triplets, extract_rinfo, trace = self.stages.extractor.extract_knowledge(text, time, properties)
 
-        self.log(f"STATUS: {extract_rinfo.status}", verbose=self.verbose)
         module_trace.add('extract_knowledge', ModuleType.stage, trace)
         update_rinfo(rinfo, extract_rinfo)
-        self.log(f"RESULT: {len(new_triplets)}", verbose=self.verbose)
+        self.log.info("RESULT:", verbose=self.verbose, log_level=self.log_level)
+        self.log.info("* Extracted triples amount: %d", len(new_triplets), verbose=self.verbose, log_level=self.log_level)
+        self.log.info("* Status: %s", extract_rinfo.status, verbose=self.verbose, log_level=self.log_level)
         for triplet in new_triplets:
-            self.log(f"* {triplet}", verbose=self.verbose)
+            self.log.debug("* %s", triplet, verbose=self.verbose, log_level=self.log_level)
 
         if extract_rinfo.status == ReturnStatus.success:
-            self.log("STAGE#2 - 'Обновление информации в памяти (графе знаний) ассистента'", verbose=self.verbose)
-            self.log(f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.verbose)
+            self.log.info("STAGE#2 - 'Обновление информации в памяти (графе знаний) ассистента'", verbose=self.verbose, log_level=self.log_level)
+            # self.log.info("* Extracted triples hash: %s .", create_id(f'{new_triplets}'), verbose=self.verbose, log_level=self.log_level)
             delete_add_info, updknwlg_rinfo, trace = self.stages.updator.update_knowledge(new_triplets)
 
-            self.log(f"STATUS: {updknwlg_rinfo.status}", verbose=self.verbose)
             module_trace.add('update_knowledge', ModuleType.stage, trace)
             update_rinfo(rinfo, updknwlg_rinfo)
-            self.log(f"RESULT:", verbose=self.verbose)
-            self.log(f"* triplets deletion info: {delete_add_info[0]}", verbose=self.verbose)
-            self.log(f"* added triplet info: {delete_add_info[1]}", verbose=self.verbose)
+            self.log.info("RESULT:", verbose=self.verbose, log_level=self.log_level)
+            self.log.info("* Status: %s .", updknwlg_rinfo.status, verbose=self.verbose, log_level=self.log_level)
+            self.log.info("* Triples deletion info: %s .", delete_add_info[0], verbose=self.verbose, log_level=self.log_level)
+            self.log.info("* Added triples info: %s .", delete_add_info[1], verbose=self.verbose, log_level=self.log_level)
 
         return new_triplets, rinfo, module_trace, False
 

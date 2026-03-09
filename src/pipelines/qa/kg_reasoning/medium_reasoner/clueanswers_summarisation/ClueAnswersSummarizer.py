@@ -30,7 +30,7 @@ class ClueAnswersSummarizerConfig(BaseComponentConfig, LanguageConfig):
     agent_tasks_config: Union[ClueAnswersSummarizerAgentTasksConfig, Dict] = field(default_factory=lambda: ClueAnswersSummarizerAgentTasksConfig())
 
     cache_table_name: str = "medreasn_cquerysumm_main_stage_cache"
-    log: Logger = field(default_factory=lambda: Logger(CQSUMM_MAIN_LOG_PATH))
+    log_path: str = CQSUMM_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
@@ -71,7 +71,7 @@ class ClueAnswersSummarizer(CacheUtils, AgentStatOperations, CacheOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs()
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -86,8 +86,9 @@ class ClueAnswersSummarizer(CacheUtils, AgentStatOperations, CacheOperations):
                 self.agent, self.config.agent_tasks_config.canswers_summarisation, agents_cache_config, inferencestat_config)
         )
 
-        self.log = self.config.log
+        self.log = Logger(config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     def get_cache_key(self, search_query: str, clue_queries: List[str], clue_answers: List[str]) -> List[str]:
         str_cluequeries = ';'.join(clue_queries)
@@ -109,24 +110,24 @@ class ClueAnswersSummarizer(CacheUtils, AgentStatOperations, CacheOperations):
         :return: Кортеж из трёх объектов: (1) резюмированный набор информации (в виде полносвязного текста на естественном языке), который является результатом поиска в графе знаний (памяти ассистента) по данному базовому шагу/запросу плана; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
         :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
-        self.log("START CLUE-QUERIES SUMMARISATION...", verbose=self.verbose)
-        self.log(f"SEARCH_QUERY ID: {create_id(search_query)}", verbose=self.verbose)
-        self.log(f"SEARCH_QUERY: {search_query}", verbose=self.verbose)
-        self.log(f"CLUE-QUERIES: {clue_queries}", verbose=self.verbose)
-        self.log(f"CLUE-ANSWERS: {clue_answers}", verbose=self.verbose)
+        self.log.debug("START CLUE-QUERIES SUMMARISATION...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Search query hash: %s", create_id(search_query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Search query: %s", search_query, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Clue-queries: %s", clue_queries, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Clue-answers: %s", clue_answers, verbose=self.verbose, log_level=self.log_level)
         summ_answer, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
 
         if len(search_query) < 1 or len(clue_queries) < 1 or len(clue_answers) != len(clue_queries):
             raise ValueError
 
-        self.log("Выполненяем суммаризацию clue-answers с помощью LLM-агента...", verbose=self.verbose)
+        self.log.debug("Выполненяем суммаризацию clue-answers с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
         summ_answer, status, trace = self.tasks_solvers.clueanswers_summ_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, search_query=search_query,
             clues_queries=clue_queries, clue_answers=clue_answers)
         module_trace.add("clueanswers_summ_solver", ModuleType.task_solver, trace)
-        self.log(f"RESULT: {summ_answer}", verbose=self.verbose)
+        self.log.debug("RESULT: %s", summ_answer, verbose=self.verbose, log_level=self.log_level)
 
         rinfo.status = status
-        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
+        self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)
 
         return summ_answer, rinfo, module_trace

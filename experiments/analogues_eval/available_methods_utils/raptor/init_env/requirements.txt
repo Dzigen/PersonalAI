@@ -28,3 +28,4 @@ redis
 pymongo
 ollama
 gigachat
+picologging
