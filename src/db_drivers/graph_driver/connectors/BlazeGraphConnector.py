@@ -538,10 +538,13 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
 
     def get_incident_triples(self, base_node: NodeInfo,
                              accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time],
-                             accepted_r_types: List[RelationType] = [RelationType.simple, RelationType.hyper, RelationType.episodic, RelationType.time]) \
+                             accepted_r_types: Union[List[RelationType], None] = None) \
             -> List[TripletInfo]:
         if not isinstance(base_node.id, str):
             raise ValueError
+
+        if accepted_r_types is None:
+            accepted_r_types = [RelationType.simple, RelationType.hyper, RelationType.episodic, RelationType.time]
 
         select_inctriples_query = '''
         PREFIX element: <{element_uriprefix}>

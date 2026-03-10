@@ -74,7 +74,7 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     diff_paths_intersection_by_rel: bool = False
     mean_alpha: float = 0.75
     accepted_node_types: List[NodeType] = field(
-        default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
+        default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
     final_sorting_mode: str = 'mixed'  # 'ended_first' | 'mixed' | 'continuous_first'
 
     cache_table_name: str = 'qa_beamsearch_t_retriever_cache'

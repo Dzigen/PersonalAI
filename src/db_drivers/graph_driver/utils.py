@@ -64,16 +64,16 @@ class AbstractGraphDatabaseConnection(AbstractDatabaseConnection):
     @abstractmethod
     def get_incident_triples(self, base_node: NodeInfo,
                              accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time],
-                             accepted_r_types: List[RelationType] = [RelationType.simple, RelationType.hyper, RelationType.episodic, RelationType.time]) \
+                             accepted_r_types: Union[List[RelationType], None] = None) \
             -> List[TripletInfo]:
         """Метод предназначен для получения списка триплетов, ицидентных заданной вершине.
 
         :param base_node: Информация об исходной вершине (идентификатор, тип, текст).
         :type base_node: NodeInfo
-        :param accepted_n_types: Допустимые типы смежных вершин.
-        :type accepted_n_types: List[NodeType]
-        :param accepted_r_types: Допустимые типы ицидентных отношений.
-        :type accepted_r_types: List[RelationType]
+        :param accepted_n_types: Допустимые типы смежных вершин. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time].
+        :type accepted_n_types: List[NodeType], optional
+        :param accepted_r_types: Допустимые типы ицидентных отношений. Если указано None, то никаких ограничений на тип отношений у допустимых триплетов не накладывается. Значение по умолчанию None.
+        :type accepted_r_types: Union[List[RelationType], None], optional
         :return: Список инцидентных триплетов, удовлетворяющих заданным ограничениям.
         :rtype: List[TripletInfo]
         """

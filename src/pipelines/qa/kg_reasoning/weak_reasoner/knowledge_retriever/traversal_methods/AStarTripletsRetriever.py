@@ -322,22 +322,22 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     :type metrics_config: Union[Dict,AStarMetricsConfig]
     :param max_depth: Максимальная глубина обхода графа для поиска заданной вершины. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 10.
     :type max_depth: int
-    :param max_adjanced_nodes: ... . Значение по умолчанию 50.
+    :param max_passed_nodes: Максимальное количество вершин, которое можно обойти для поиска заданной вершины в графе. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 250.
+    :type max_passed_nodes: int
+    :param max_adjanced_nodes: ... . Значение по умолчанию 25.
     :type max_adjanced_nodes: int
     :param adjacent_nodes_filter_node: ... . Значение по умолчанию "end_node".
     :type adjacent_nodes_filter_node: str
-    :param max_passed_nodes: Максимальное количество вершин, которое можно обойти для поиска заданной вершины в графе. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 500.
-    :type max_passed_nodes: int
     :param accepted_node_types: Типы вершин, которые можно обходить во время поиска заданной вершины. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic].
     :type accepted_node_types: List[Union[str,NodeType]]
     """
     metrics_config: Union[Dict, AStarMetricsConfig] = field(default_factory=lambda: AStarMetricsConfig())
     max_depth: int = 10
-    max_passed_nodes: int = 500
-    max_adjanced_nodes: int = 50  # decimal natural number OR -1
+    max_passed_nodes: int = 250
+    max_adjanced_nodes: int = 25  # decimal natural number OR -1
     adjacent_nodes_filter_node: Union[None, str] = "end_node"  # "start_node" OR "end_node" OR None
     accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [
-        NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
+        NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
     cache_table_name: str = 'qa_astar_t_retriever_cache'
 
     def to_str(self):

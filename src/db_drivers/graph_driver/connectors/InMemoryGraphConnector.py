@@ -259,7 +259,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
     def get_incident_triples(self, base_node: NodeInfo,
                              accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time],
-                             accepted_r_types: List[RelationType] = [RelationType.simple, RelationType.hyper, RelationType.episodic, RelationType.time]) \
+                             accepted_r_types: Union[List[RelationType], None] = None) \
             -> List[TripletInfo]:
         if not isinstance(base_node.id, str):
             raise ValueError
@@ -271,7 +271,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
             for triple_index_id in triples_index_ids:
                 cur_triplet = self.strcuture.triplets[triple_index_id]
 
-                if cur_triplet.relation.type not in accepted_r_types:
+                if (accepted_r_types is not None) and (cur_triplet.relation.type not in accepted_r_types):
                     continue
                 if cur_triplet.start_node.get_typedid() != base_node.to_str():
                     if cur_triplet.start_node.type not in accepted_n_types:

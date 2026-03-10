@@ -213,15 +213,19 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
 
     def get_incident_triples(self, base_node: NodeInfo,
                              accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time],
-                             accepted_r_types: List[RelationType] = [RelationType.simple, RelationType.hyper, RelationType.episodic, RelationType.time]) \
+                             accepted_r_types: Union[List[RelationType], None] = None) \
             -> List[TripletInfo]:
         if not isinstance(base_node.id, str):
             raise ValueError
 
         str_accepted_nodes = ', '.join(list(map(lambda tpe: f'"{tpe.value}"', accepted_n_types)))
-        str_accepted_relations = '|'.join(list(map(lambda tpe: tpe.value, accepted_r_types)))
+
+        str_accepted_relations = ""
+        if accepted_r_types is not None:
+            str_accepted_relations = ":" + '|'.join(list(map(lambda tpe: tpe.value, accepted_r_types)))
+
         output = self.graph.ro_query(
-            f'MATCH (n1:{base_node.type.value})-[rel:{str_accepted_relations}]-(n2) WHERE n1.str_id = "{base_node.id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(n2)) RETURN n1,rel,n2')
+            f'MATCH (n1:{base_node.type.value})-[rel{str_accepted_relations}]-(n2) WHERE n1.str_id = "{base_node.id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(n2)) RETURN n1,rel,n2')
         formated_output = self.parse_query_triplets_output(output)
         triples_info = [triple.get_info() for triple in formated_output]
         return triples_info
