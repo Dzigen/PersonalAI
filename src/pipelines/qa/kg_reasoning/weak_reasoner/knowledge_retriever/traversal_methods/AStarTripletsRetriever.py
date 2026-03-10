@@ -1,16 +1,15 @@
 from dataclasses import dataclass, field
 from typing import Dict, List, Tuple, Union
+import asyncio
 import numpy as np
 
 import heapq
-# IMPORTANT TO NOTE about tuples sorting: 
+# IMPORTANT TO NOTE about tuples sorting:
 # https://stackoverflow.com/questions/3954530/how-to-make-heapq-evaluate-the-heap-off-of-a-specific-attribute
 
 from time import time
-import collections
 from copy import deepcopy
-from collections import Counter
-
+from collections import Counter, defaultdict, deque
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig, get_nodes_path, NodeInfo
 from .......utils.data_structs import QueryInfo, Triplet, NodeType, create_id_for_node_pair, create_id, \
     NODES_TYPES_MAP, NodeInfo, from_str_to_nodeinfo, BaseConfigOperations
@@ -19,7 +18,7 @@ from .......db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver, Ke
 from .......utils import Logger, accumulate_step_info, ReturnInfo
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
-from .......db_drivers.vector_driver import VectorDBInstance
+from .......db_drivers.vector_driver import VectorDBInstance, VectorRetriveComposer
 
 
 @dataclass
@@ -236,7 +235,7 @@ class AStarMetrics:
 
     def bfs(self, s_node: NodeInfo, e_node: NodeInfo) -> int:
         sn_typedid, en_typedid = s_node.to_str(), e_node.to_str()
-        visited, queue = set(), collections.deque([s_node])
+        visited, queue = set(), deque([s_node])
         visited.add(sn_typedid)
         D: Dict[str, int] = {sn_typedid: 0}
         parent: Dict[str, NodeInfo] = {sn_typedid: None}
@@ -247,7 +246,7 @@ class AStarMetrics:
             vertex = queue.popleft()
             vertex_typedid = vertex.to_str()
 
-            neighbours = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(
+            neighbours = self.kg_model.graph_struct.db_conn.get_adjacent_nodes(
                 vertex, self.accepted_node_types)
             graph_queries_counter += 1
             for neighbour in neighbours:
@@ -323,6 +322,10 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     :type metrics_config: Union[Dict,AStarMetricsConfig]
     :param max_depth: Максимальная глубина обхода графа для поиска заданной вершины. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 10.
     :type max_depth: int
+    :param max_adjanced_nodes: ... . Значение по умолчанию 50.
+    :type max_adjanced_nodes: int
+    :param adjacent_nodes_filter_node: ... . Значение по умолчанию "end_node".
+    :type adjacent_nodes_filter_node: str
     :param max_passed_nodes: Максимальное количество вершин, которое можно обойти для поиска заданной вершины в графе. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 500.
     :type max_passed_nodes: int
     :param accepted_node_types: Типы вершин, которые можно обходить во время поиска заданной вершины. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic].
@@ -331,13 +334,15 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     metrics_config: Union[Dict, AStarMetricsConfig] = field(default_factory=lambda: AStarMetricsConfig())
     max_depth: int = 10
     max_passed_nodes: int = 500
+    max_adjanced_nodes: int = 50  # decimal natural number OR -1
+    adjacent_nodes_filter_node: Union[None, str] = "end_node"  # "start_node" OR "end_node" OR None
     accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [
         NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
     cache_table_name: str = 'qa_astar_t_retriever_cache'
 
     def to_str(self):
         str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
-        return f"{self.metrics_config.to_str()}|{self.max_depth}|{self.max_passed_nodes}|{str_accepted_nodes}"
+        return f"{self.metrics_config.to_str()}|{self.max_depth}|{self.max_passed_nodes}|{str_accepted_nodes}|{self.max_adjanced_nodes}|{self.adjacent_nodes_filter_node}"
 
     @staticmethod
     def from_dict(dict_config: Dict):
@@ -386,6 +391,43 @@ class AStarGraphSearch:
     def close_connections(self):
         self.metrics.close_connections()
 
+    def filter_adjacent_nodes(self, adjacent_nodes: List[NodeInfo], start_node: NodeInfo, end_node: NodeInfo) -> List[NodeInfo]:
+        ntypes_freq = dict(Counter([node_info.type for node_info in adjacent_nodes]))
+        self.log(f"Frequency of adj_nodes-types before filtering: {ntypes_freq}", verbose=self.verbose)
+        self.log(f"start_node = {start_node}; end_node = {end_node}", verbose=self.verbose)
+
+        if self.config.max_adjanced_nodes > -1:
+            if self.config.adjacent_nodes_filter_node == 'start_node':
+                query_vinst = VectorDBInstance(document=start_node.text)
+            elif self.config.adjacent_nodes_filter_node == 'end_node':
+                query_vinst = VectorDBInstance(document=end_node.text)
+            else:
+                raise ValueError
+
+            composers_subset_ids: Dict[NodeType, List[str]] = defaultdict(list)
+            for adj_node in adjacent_nodes:
+                composers_subset_ids[adj_node.type].append(adj_node.id)
+            composers_subset_ids = dict(composers_subset_ids)
+
+            accpeted_nodes_types = list(set(self.config.accepted_node_types).intersection(set(composers_subset_ids.keys())))
+
+            filtered_nodes_vinstances = VectorRetriveComposer.perform(
+                vector_composers=self.kg_model.graph_embeddings.nodes_vcomposers,
+                accepted_composer_names=accpeted_nodes_types,
+                composers_vdb_name=self.config.metrics_config.nodes_vdb_name,
+                query_instance=query_vinst, n_results=self.config.max_adjanced_nodes,
+                subset_ids=composers_subset_ids, includes=[])
+
+            filtered_adjacent_nodes = [NodeInfo(id=n_vinst[2].id, type=n_vinst[1]) for n_vinst in filtered_nodes_vinstances]
+
+        else:
+            filtered_adjacent_nodes = adjacent_nodes
+
+        ntypes_freq = dict(Counter([node_info.type for node_info in filtered_adjacent_nodes]))
+        self.log(f"Frequency of adj_nodes-types after filtering: {ntypes_freq}", verbose=self.verbose)
+
+        return filtered_adjacent_nodes
+
     def search_path(self, start_node: NodeInfo, end_node: NodeInfo) -> Tuple[List[str], List[Tuple[int, str, NodeInfo]], Dict[str, int], Dict[str, NodeInfo], NodeInfo]:
         """Реализация A*-алгоритма. Источник: https://www.redblobgames.com/pathfinding/a-star/implementation.html."""
         frontier: List[Tuple[int, str, NodeInfo]] = []
@@ -419,16 +461,16 @@ class AStarGraphSearch:
                 self.log("FOUND END-NODE", verbose=self.verbose)
                 break
 
-            adj_nodes = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(
+            adj_nodes = self.kg_model.graph_struct.db_conn.get_adjacent_nodes(
                 current_node, self.config.accepted_node_types)
-            # self.log(f"adjenced nodes: {len(adj_nodes)}", verbose=self.verbose)
+            self.log(f"adjenced nodes amount: {len(adj_nodes)}", verbose=self.verbose)
 
-            # TODO:
-            # Выполнить предварительную фильтрацию adj_nodes-вершин 
-            # по current_node- или end_node-вершине 
-            # для повышения производительности
+            # Выполняем предварительную фильтрацию adj_nodes-вершин
+            # по current_node- или end_node-вершине (для повышения производительности алгоритма)
+            filtered_adjacent_nodes = self.filter_adjacent_nodes(adj_nodes, start_node, end_node)
+            self.log(f"adjenced nodes amount after filtering: {len(filtered_adjacent_nodes)}", verbose=self.verbose)
 
-            for adj_node in adj_nodes:
+            for adj_node in filtered_adjacent_nodes:
 
                 parent_node_typedid = None if parent[current_node_typedid] is None else parent[current_node_typedid].to_str()
                 adj_node_typedid = adj_node.to_str()

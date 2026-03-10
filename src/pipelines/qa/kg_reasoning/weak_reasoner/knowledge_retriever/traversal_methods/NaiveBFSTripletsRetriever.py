@@ -112,7 +112,7 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 # ограничиваем глубину обхода
                 continue
 
-            neighbours = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(
+            neighbours = self.kg_model.graph_struct.db_conn.get_adjacent_nodes(
                 vertex, self.config.accepted_node_types)
             graph_queries_counter += 1
 

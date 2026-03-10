@@ -9,8 +9,8 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 
 from .cases import GRAPHDB_POPULATED_CREATE_TEST_CASES, GRAPHDB_POPULATED_DELETE_TEST_CASES, \
     GRAPHDB_POPULATED_READ_TEST_CASES, GRAPHDB_POPULATED_COUNT_TEST_CASES, GRAPHDB_POPULATED_EXIST_TEST_CASES, \
-    GRAPHDB_POPULATED_CLEAR_TEST_CASES, GRAPHDB_POPULATED_GET_TRIPLETS_TEST_CASES, GRAPHDB_POPULATED_GET_ADJECENT_TEST_CASES, \
-    GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES, GRAPHDB_POPULATED_GET_NSHARED_IDS_TEST_CASES
+    GRAPHDB_POPULATED_CLEAR_TEST_CASES, GRAPHDB_POPULATED_GET_TRIPLETS_TEST_CASES, GRAPHDB_POPULATED_GET_ADJACENT_NODES_TEST_CASES, \
+    GRAPHDB_POPULATED_GET_ADJACENT_TRIPLES_TEST_CASES, GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES, GRAPHDB_POPULATED_GET_NSHARED_IDS_TEST_CASES
 from src.db_drivers.graph_driver.utils import AbstractGraphDatabaseConnection
 from src.utils.data_structs import Node, NodeInfo, RelationInfo
 from src.utils import Triplet, RelationType, NodeType
@@ -124,14 +124,15 @@ def test_clear(instances: List[Triplet], base_info: Dict, graphdb_conn: Abstract
     assert items_info['nodes'] == 0
 
 
-@pytest.mark.parametrize("instances, create_info, node, accepted_n_types, expected, graphdb_conn", GRAPHDB_POPULATED_GET_ADJECENT_TEST_CASES, indirect=['graphdb_conn'])
-def test_get_adjecent_nodes(instances: List[Triplet], create_info: Dict, node: NodeInfo, accepted_n_types: List[NodeType],
+@pytest.mark.parametrize("instances, create_info, node, accepted_n_types, expected, graphdb_conn",
+                         GRAPHDB_POPULATED_GET_ADJACENT_NODES_TEST_CASES, indirect=['graphdb_conn'])
+def test_get_adjacent_nodes(instances: List[Triplet], create_info: Dict, node: NodeInfo, accepted_n_types: List[NodeType],
                            expected: Dict, graphdb_conn: AbstractGraphDatabaseConnection):
     graphdb_conn.clear()
     graphdb_conn.create(instances, create_info)
 
     try:
-        output = graphdb_conn.get_adjecent_nodes(
+        output = graphdb_conn.get_adjacent_nodes(
             node, accepted_n_types=accepted_n_types)
     except ValueError as e:
         print(str(e))
@@ -139,6 +140,46 @@ def test_get_adjecent_nodes(instances: List[Triplet], create_info: Dict, node: N
     else:
         assert not expected['exception']
         assert expected['output_typedids'] == set(map(lambda item: item.to_str(), output))
+
+@pytest.mark.parametrize("instances, create_info, node, accepted_n_types, accepted_r_types, expected, graphdb_conn",
+                         GRAPHDB_POPULATED_GET_ADJACENT_TRIPLES_TEST_CASES, indirect=['graphdb_conn'])
+def test_get_incident_triples(instances: List[Triplet], create_info: Dict, node: NodeInfo, accepted_n_types: List[NodeType],
+                           accepted_r_types: List[RelationType], expected: Dict, graphdb_conn: AbstractGraphDatabaseConnection):
+    graphdb_conn.clear()
+    graphdb_conn.create(instances, create_info)
+
+    # print("added triples:")
+    # for triple in instances:
+    #     print("* ", triple)
+
+    try:
+        output = graphdb_conn.get_incident_triples(
+            node, accepted_n_types=accepted_n_types, accepted_r_types=accepted_r_types)
+
+        # print("selected triples info: ")
+        # print(expected['output_tids'])
+        # for t_info in output:
+        #     print("*", t_info)
+    except ValueError as e:
+        print(str(e))
+        assert expected['exception']
+    else:
+        assert not expected['exception']
+        assert expected['output_tids'] == set(map(lambda item: item.id, output))
+        assert len(output) == len(expected['output_tids'])
+
+        basenode_str = node.to_str()
+        for triple_info in output:
+            rel_str = triple_info.relation.to_str()
+            assert rel_str in expected['output_r_typedids']
+
+            snode_str, enode_str = triple_info.start_node.to_str(), triple_info.end_node.to_str()
+            if snode_str != basenode_str:
+                assert snode_str in expected['output_n_typedids']
+            elif enode_str != basenode_str:
+                assert enode_str in expected['output_n_typedids']
+            else:
+                assert False
 
 
 @pytest.mark.parametrize("instances, create_info, nodes, expected, graphdb_conn", GRAPHDB_POPULATED_GET_TRIPLETS_TEST_CASES, indirect=['graphdb_conn'])

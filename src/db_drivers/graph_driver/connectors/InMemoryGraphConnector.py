@@ -11,7 +11,7 @@ from .configs import DEFAULT_INMEMORYGRAPH_CONFIG
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils import Triplet, NodeType
 from ....utils.data_structs import RelationType, Node, \
-    NodeInfo, from_str_to_nodeinfo, RelationInfo, from_str_to_relationinfo
+    NodeInfo, RelationInfo, TripletInfo
 
 
 @dataclass
@@ -237,8 +237,8 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
 
         return formated_output
 
-    def get_adjecent_nodes(self, base_node: NodeInfo,
-                           accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[NodeInfo]:
+    def get_adjacent_nodes(self, base_node: NodeInfo,
+                           accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time]) -> List[NodeInfo]:
         if not isinstance(base_node.id, str):
             raise ValueError
 
@@ -256,6 +256,33 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
             filtered_nodes_ids
         ))
         return nodes
+
+    def get_incident_triples(self, base_node: NodeInfo,
+                             accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time],
+                             accepted_r_types: List[RelationType] = [RelationType.simple, RelationType.hyper, RelationType.episodic, RelationType.time]) \
+            -> List[TripletInfo]:
+        if not isinstance(base_node.id, str):
+            raise ValueError
+
+        node_ids = self.strcuture.typed_strid_node_index.get(base_node.to_str(), [])
+        accepted_incident_triples_info = []
+        for node_id in node_ids:
+            triples_index_ids = list(self.strcuture.edges[node_id])
+            for triple_index_id in triples_index_ids:
+                cur_triplet = self.strcuture.triplets[triple_index_id]
+
+                if cur_triplet.relation.type not in accepted_r_types:
+                    continue
+                if cur_triplet.start_node.get_typedid() != base_node.to_str():
+                    if cur_triplet.start_node.type not in accepted_n_types:
+                        continue
+                else:
+                    if cur_triplet.end_node.type not in accepted_n_types:
+                        continue
+
+                accepted_incident_triples_info.append(cur_triplet.get_info())
+
+        return accepted_incident_triples_info
 
     def get_nodes_shared_ids(self, node1: NodeInfo, node2: NodeInfo, id_type: str = 'both') -> List[Dict[str, str]]:
         if (not isinstance(node1.id, str)) or (not isinstance(node2.id, str)):
