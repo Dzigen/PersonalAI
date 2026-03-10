@@ -92,7 +92,7 @@ print("4. Loading QA-dataset")
 
 question_packs = CUSTOM_LOAD_QAEVAL_FUNCS[SPECEXP_PARAMS['DATASET_NAME']](QA_DATASET_PATH, SPECEXP_PARAMS['max_samples_per_pack'])
 print(QA_DATASET_PATH)
-print(len(question_packs))
+print(len(question_packs), len(question_packs[0][1]))
 
 ####################################################
 print("5. Initializing method")
