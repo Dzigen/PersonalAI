@@ -9,7 +9,7 @@ from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils.errors import ReturnInfo
 from ....utils.data_structs import Node, NODES_TYPES_MAP, \
     TripletCreator, Relation, RELATIONS_TYPES_MAP, \
-    RelationType, NodeInfo, RelationInfo
+    RelationType, NodeInfo, RelationInfo, TripletInfo
 from ....utils import Triplet, NodeType
 
 
@@ -254,13 +254,13 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
             formated_triplets.append(triplet)
         return formated_triplets
 
-    def get_adjecent_nodes(self, base_node: NodeInfo,
-                           accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[NodeInfo]:
+    def get_adjacent_nodes(self, base_node: NodeInfo,
+                           accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time]) -> List[NodeInfo]:
         if not isinstance(base_node.id, str):
             raise ValueError
 
         str_accepted_nodes = ''.join(
-            list(map(lambda tpe: f':{tpe.value}', accepted_n_types)))
+            list(map(lambda tpe: f':{self.config.params["table_type_map"]["nodes"]["forward"][tpe.value]}', accepted_n_types)))
 
         raw_nodes = self.conn.execute(
             f'MATCH (a:{base_node.type.value})-[r]-(b{str_accepted_nodes}) WHERE a.str_id = "{base_node.id}" RETURN b;')
@@ -274,6 +274,26 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
                 )
             )
         return formated_nodes
+
+    def get_incident_triples(self, base_node: NodeInfo,
+                             accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time],
+                             accepted_r_types: Union[List[RelationType], None] = None) \
+            -> List[TripletInfo]:
+        if not isinstance(base_node.id, str):
+            raise ValueError
+
+        str_accepted_nodes = ''.join(list(map(lambda tpe: f':{self.config.params["table_type_map"]["nodes"]["forward"][tpe.value]}', accepted_n_types)))
+        str_accepted_relations = ""
+        if accepted_r_types is not None:
+            str_accepted_relations = ":" + '|'.join(list(map(lambda tpe: self.config.params["table_type_map"]["relations"]["forward"][tpe.value], accepted_r_types)))
+        # print(str_accepted_relations)
+
+        output = self.conn.execute(
+            f'MATCH (n1:{base_node.type.value})-[rel{str_accepted_relations}]-(n2{str_accepted_nodes}) WHERE n1.str_id = "{base_node.id}" RETURN n1,rel,n2;')
+
+        formated_output = self.parse_query_triplets_output(output)
+        triples_info = [triple.get_info() for triple in formated_output]
+        return triples_info
 
     def get_nodes_shared_ids(self, node1: NodeInfo, node2: NodeInfo, id_type: str = 'both') -> List[Dict[str, str]]:
         if (not isinstance(node1.id, str)) or (not isinstance(node2.id, str)):

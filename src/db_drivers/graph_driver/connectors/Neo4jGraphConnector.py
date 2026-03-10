@@ -6,7 +6,7 @@ from .configs import DEFAULT_NEO4J_CONFIG
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils.data_structs import Triplet, Node, TripletCreator, NodeCreator, \
     NodeType, RelationCreator, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP, \
-    NodeInfo, RelationInfo
+    NodeInfo, RelationInfo, TripletInfo
 
 
 class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
@@ -210,8 +210,8 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
                 session.close()
         return response
 
-    def get_adjecent_nodes(self, base_node: NodeInfo,
-                           accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[NodeInfo]:
+    def get_adjacent_nodes(self, base_node: NodeInfo,
+                           accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time]) -> List[NodeInfo]:
         if not isinstance(base_node.id, str):
             raise ValueError
 
@@ -221,6 +221,21 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
             f'MATCH (a:{base_node.type.value})-[r]-(b) WHERE a.str_id = "{base_node.id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(b)) RETURN b')
         formated_nodes = [NodeInfo(id=node['b']['str_id'], type=NODES_TYPES_MAP[list(node['b'].labels)[0]]) for node in raw_nodes]
         return formated_nodes
+
+    def get_incident_triples(self, base_node: NodeInfo,
+                             accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time],
+                             accepted_r_types: Union[List[RelationType], None] = None) \
+            -> List[TripletInfo]:
+        if not isinstance(base_node.id, str):
+            raise ValueError
+
+        str_accepted_nodes = ', '.join(list(map(lambda tpe: f'"{tpe.value}"', accepted_n_types)))
+        str_accepted_relations = (":" + '|'.join(list(map(lambda tpe: tpe.value, accepted_r_types)))) if accepted_r_types is not None else ""
+        output = self.execute_query(
+            f'MATCH (n1:{base_node.type.value})-[rel{str_accepted_relations}]-(n2) WHERE n1.str_id = "{base_node.id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(n2)) RETURN n1, rel, n2')
+        formated_output = self.parse_query_triplets_output(output)
+        triples_info = [triple.get_info() for triple in formated_output]
+        return triples_info
 
     def get_nodes_shared_ids(self, node1: NodeInfo, node2: NodeInfo, id_type: str = 'both') -> List[Dict[str, str]]:
         if (not isinstance(node1.id, str)) or (not isinstance(node2.id, str)):

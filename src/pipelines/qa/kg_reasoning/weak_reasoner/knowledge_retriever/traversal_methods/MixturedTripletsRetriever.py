@@ -27,7 +27,7 @@ class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     :type retriever2_name: str, optional
     :param retriever2_config: Конфигурация выбранного алгоритма (#2) обхода графа. Значение по умолчанию WaterCirclesSearchConfig().
     :type retriever2_config: Union[BaseGraphSearchConfig, Dict], optional
-    :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извлечения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time].
+    :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извлечения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic].
     :type accepted_node_types: List[Union[str, NodeType]], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveBFSTripletsRetriever-класса. Значение по умолчанию 'qa_bfs_t_retriver_cache'.
     :type cache_table_name: str, optional
@@ -36,7 +36,7 @@ class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     retriever1_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: GraphBeamSearchConfig())
     retriever2_name: str = 'watercircles'
     retriever2_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: WaterCirclesSearchConfig())
-    accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
+    accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
     cache_table_name: str = 'qa_mixture_t_retriever_cache'
 
     AVAILABLE_RCONFIGS: Dict[str, BaseGraphSearchConfig] = field(default_factory=lambda: {

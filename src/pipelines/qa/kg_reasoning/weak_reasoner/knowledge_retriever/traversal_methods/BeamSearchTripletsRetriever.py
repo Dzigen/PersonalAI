@@ -14,7 +14,7 @@ import numpy as np
 
 from .configs import BSGS_RERANKDRIVER_DEFAULT_CONFIG
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
-from .......utils.data_structs import QueryInfo, Triplet, NodeType, NodeInfo, from_str_to_nodeinfo
+from .......utils.data_structs import QueryInfo, Triplet, NodeType, NodeInfo, TripletInfo, RelationInfo, from_str_to_nodeinfo
 from .......kg_model import KnowledgeGraphModel
 from .......utils.data_structs import create_id, NODES_TYPES_MAP
 from .......utils import Logger, accumulate_step_info, ReturnInfo
@@ -74,7 +74,7 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     diff_paths_intersection_by_rel: bool = False
     mean_alpha: float = 0.75
     accepted_node_types: List[NodeType] = field(
-        default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
+        default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
     final_sorting_mode: str = 'mixed'  # 'ended_first' | 'mixed' | 'continuous_first'
 
     cache_table_name: str = 'qa_beamsearch_t_retriever_cache'
@@ -176,12 +176,9 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
         return -np.log(1.0 - raw_score)
 
-    def get_available_nodes(self, base_node: NodeInfo, cur_path_idx: int,
-                            traversing_paths: List[TraversingPath], prev_node: Union[NodeInfo, None] = None) -> List[NodeInfo]:
-        adj_nodes_typedids = set(map(
-            lambda node: node.to_str(),
-            self.kg_model.graph_struct.db_conn.get_adjecent_nodes(base_node, self.config.accepted_node_types)
-        ))
+    def filter_nodes_typedids(self, adjacent_nodes_typedids: List[str], cur_path_idx: int,
+                              traversing_paths: List[TraversingPath], prev_node: Union[NodeInfo, None] = None) -> List[NodeInfo]:
+        adj_nodes_typedids: Set[str] = set(adjacent_nodes_typedids)
         if prev_node is not None:
             adj_nodes_typedids.discard(prev_node.to_str())
 
@@ -194,35 +191,76 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             # Удаляем вершины, которые есть в других путях из числа смежных для текущего пути
             for i in range(len(traversing_paths)):
                 if i != cur_path_idx:
-                    adj_nodes_typedids.difference_update(traversing_paths[i].unique_ntypedids)
-        filtered_adjenced_nodes = list(map(lambda n_typedid: from_str_to_nodeinfo(n_typedid), list(adj_nodes_typedids)))
-        return filtered_adjenced_nodes
+                    adj_nodes_typedids.difference_update(
+                        traversing_paths[i].unique_ntypedids)
+        filtered_adjacent_nodes = list(adj_nodes_typedids)
+        return filtered_adjacent_nodes
 
-    def get_available_rinfo(
-            self, base_node: NodeInfo, adj_nodes: List[NodeInfo], cur_path_idx: int,
-            traversing_paths: List[TraversingPath]) -> Tuple[Dict[str, NodeInfo], Dict[str, List[str]]]:
+    def filter_relations_tids(self, incid_relations_tids: List[str], cur_path_idx: int,
+                              traversing_paths: List[TraversingPath]) -> List[str]:
+        tids = set(incid_relations_tids)
+
+        # Удаляем связи, которые уже есть в текущем пути
+        filtered_tids: Set[str] = tids.difference(traversing_paths[cur_path_idx].unique_tids)
+
+        if not self.config.diff_paths_intersection_by_rel:
+            # Удаляем связи, которые уже есть в других путях
+            for i in range(len(traversing_paths)):
+                if i != cur_path_idx:
+                    filtered_tids.difference_update(traversing_paths[i].unique_tids)
+
+        return list(filtered_tids)
+
+    def get_available_triples_info(
+        self, base_node: NodeInfo, cur_path_idx: int,
+        traversing_paths: List[TraversingPath], prev_node: Union[NodeInfo, None] = None)\
+            -> Tuple[Union[None, Dict[str, NodeInfo]], Union[None, Dict[str, List[str]]], bool]:
 
         shared_t_info: Dict[str, NodeInfo] = dict()
-        rids_to_tids_map = defaultdict(list)
-        for adj_node in adj_nodes:
-            tmp_shared_ids = self.kg_model.graph_struct.db_conn.get_nodes_shared_ids(base_node, adj_node, id_type='both')
-            tmp_ids_map = {item['t_id']: item['r_id'] for item in tmp_shared_ids}
-            cur_tids = set(tmp_ids_map.keys())
+        rids_to_tids_map: Dict[str, List[str]] = defaultdict(list)
 
-            # Удаляем связи, которые уже есть в текущем пути
-            tmp_shared_ids: set = cur_tids.difference(traversing_paths[cur_path_idx].unique_tids)
+        incident_triples: List[TripletInfo] = \
+            self.kg_model.graph_struct.db_conn.get_incident_triples(
+                base_node, accepted_n_types=self.config.accepted_node_types)
+        self.log(f"Количество инцидентных триплетов к вершине {base_node}: {len(incident_triples)}", verbose=self.verbose)
 
-            if not self.config.diff_paths_intersection_by_rel:
-                # Удаляем связи, которые уже есть в других путях
-                for i in range(len(traversing_paths)):
-                    if i != cur_path_idx:
-                        tmp_shared_ids.difference_update(traversing_paths[i].unique_tids)
+        #
+        adjn_to_incidr_map: Dict[str, List[Tuple[str, RelationInfo]]] = defaultdict(list)
+        basenode_str = base_node.to_str()
+        for triple_info in incident_triples:
+            if triple_info.start_node.to_str() != basenode_str:
+                adjn_to_incidr_map[triple_info.start_node.to_str()].append(
+                    (triple_info.id, triple_info.relation))
+            else:
+                adjn_to_incidr_map[triple_info.end_node.to_str()].append(
+                    (triple_info.id, triple_info.relation))
+        adjn_to_incidr_map = dict(adjn_to_incidr_map)
 
-            for t_id in list(tmp_shared_ids):
-                shared_t_info[t_id] = adj_node
-                rids_to_tids_map[tmp_ids_map[t_id]].append(t_id)
+        filtered_adjacent_nodes_typedids: List[str] = self.filter_nodes_typedids(
+            list(adjn_to_incidr_map.keys()), cur_path_idx, traversing_paths, prev_node)
+        self.log(f"Количество смежных вершин к {base_node} после фильтрации: {len(filtered_adjacent_nodes_typedids)}", verbose=self.verbose)
 
-        return shared_t_info, rids_to_tids_map
+        if len(filtered_adjacent_nodes_typedids) < 1:
+            return shared_t_info, rids_to_tids_map, True
+
+        #
+        incidr_to_adjn_map: Dict[str, Tuple[str, NodeInfo]] = dict()
+        for node_typedid in filtered_adjacent_nodes_typedids:
+            cur_nodeinfo = from_str_to_nodeinfo(node_typedid)
+            for incident_relation in adjn_to_incidr_map[node_typedid]:
+                incidr_to_adjn_map[incident_relation[0]] = (incident_relation[1].id, cur_nodeinfo)
+
+        filtered_incident_relations_tids: List[str] = self.filter_relations_tids(
+            list(incidr_to_adjn_map.keys()), cur_path_idx, traversing_paths)
+        self.log(f"Количество инцидентных отношений к вершине {base_node} после фильтрации: {len(filtered_incident_relations_tids)}", verbose=self.verbose)
+
+        #
+        for t_id in filtered_incident_relations_tids:
+            shared_t_info[t_id] = incidr_to_adjn_map[t_id][1]
+            rids_to_tids_map[incidr_to_adjn_map[t_id][0]].append(t_id)
+        rids_to_tids_map = dict(rids_to_tids_map)
+
+        return shared_t_info, rids_to_tids_map, False
 
     def get_triplet_scores(self, query: str, shared_t_info: Dict[str, NodeInfo],
                            rids_to_tids_map: Dict[str, List[str]], batch_size: int = 512) -> List[Tuple[str, NodeInfo, float]]:
@@ -320,14 +358,10 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 prev_node, tail_node = cur_path_info.path[-1][0], cur_path_info.path[-1][2]
                 self.log(f"Информация по текущему пути:\n* номер: {i}\n* len: {len(cur_path_info.path)}\n* tail_node: {tail_node}\n* prev_node: {prev_node}", verbose=self.verbose)
 
-                # TODO:
-                # совместить get_available_nodes- и get_available_rinfo-методы
-                # для повышения производительности
+                shared_t_info, rids_to_tids_map, is_zeroadj_nodes = self.get_available_triples_info(
+                    tail_node, i, traversing_paths, prev_node)
 
-                adj_nodes = self.get_available_nodes(tail_node, i, traversing_paths, prev_node)
-                self.log(f"Смежные вершины: {len(adj_nodes)}\n", verbose=self.verbose)
-
-                if len(adj_nodes) < 1:
+                if is_zeroadj_nodes:
                     self.log("У tail-вершины нет смежных вершин. Считаем путь завершившимся.", verbose=self.verbose)
                     if len(cur_path_info.path) > 1:
                         ended_paths.append(
@@ -338,7 +372,6 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                         )
                     continue
 
-                shared_t_info, rids_to_tids_map = self.get_available_rinfo(tail_node, adj_nodes, i, traversing_paths)
                 if len(shared_t_info) < 1:
                     self.log(
                         "Нет доступных связей для соединения tail-вершины с новой вершиной, Считаем путь завершившимся.", verbose=self.verbose)

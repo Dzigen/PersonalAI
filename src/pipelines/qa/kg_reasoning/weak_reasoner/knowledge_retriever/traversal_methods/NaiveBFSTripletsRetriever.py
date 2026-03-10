@@ -23,7 +23,7 @@ class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):
     :type max_width: int, optional
     :param max_passed_nodes: Максимальное количество вершин, которое может быть пройдено в рамках работы BFS-алгоритма. Значение по умолчанию 1000.
     :type max_passed_nodes: int, optional
-    :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извлечения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time].
+    :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извлечения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic].
     :type accepted_node_types:List[Union[str, NodeType]], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveBFSTripletsRetriever-класса. Значение по умолчанию 'qa_bfs_t_retriver_cache'.
     :type cache_table_name: str, optional
@@ -31,7 +31,7 @@ class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):
     max_depth: int = 10
     max_width: int = 50
     max_passed_nodes: int = 1000
-    accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
+    accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
     cache_table_name: str = 'qa_bfs_t_retriver_cache'
 
     def to_str(self):
@@ -112,7 +112,7 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 # ограничиваем глубину обхода
                 continue
 
-            neighbours = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(
+            neighbours = self.kg_model.graph_struct.db_conn.get_adjacent_nodes(
                 vertex, self.config.accepted_node_types)
             graph_queries_counter += 1
 
