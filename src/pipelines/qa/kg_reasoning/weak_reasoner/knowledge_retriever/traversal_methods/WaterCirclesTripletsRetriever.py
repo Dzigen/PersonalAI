@@ -108,7 +108,7 @@ class WaterCirclesSearchConfig(BaseGraphSearchConfig):
     :type other_triplets_num: int, optional
     :param do_text_pruning: _description_. Значение по умолчанию False.
     :type do_text_pruning: bool, optional
-    :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извелчения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time].
+    :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извелчения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic].
     :type accepted_node_types: List[Union[str, NodeType]], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы WaterCirclesRetriever-класса. Значение по умолчанию 'qa_watercircles_t_retriever_cache'.
     :type cache_table_name: str, optional
@@ -119,7 +119,7 @@ class WaterCirclesSearchConfig(BaseGraphSearchConfig):
     chain_triplets_num: int = 25
     other_triplets_num: int = 6
     do_text_pruning: bool = False
-    accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
+    accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
 
     cache_table_name: str = 'qa_watercircles_t_retriever_cache'
     log_path: str = WATERCIRCLES_RETRIEVER_LOG_PATH

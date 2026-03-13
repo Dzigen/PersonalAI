@@ -66,6 +66,7 @@ RELATIONS_TYPES_MAP = {
 class RelationInfo:
     id: str
     type: RelationType
+    text: Union[None, str] = None
 
     def to_str(self):
         return f"{self.type.value}:{self.id}"
@@ -74,6 +75,27 @@ class RelationInfo:
 def from_str_to_relationinfo(str_relationinfo: str) -> RelationInfo:
     rtype, rid = str_relationinfo.split(":")
     return RelationInfo(id=rid, type=RELATIONS_TYPES_MAP[rtype])
+
+
+@dataclass
+class TripletInfo:
+    id: str
+    start_node: NodeInfo
+    relation: RelationInfo
+    end_node: NodeInfo
+
+    def to_str(self):
+        return f"{self.id}|{self.start_node.to_str()}|{self.relation.to_str()}|{self.end_node.to_str()}"
+
+
+def from_str_to_tripletinfo(str_tripletinfo: str) -> RelationInfo:
+    tid, snode_typed_strid, rel_typed_strid, enode_typed_strid = str_tripletinfo.split("|")
+    return TripletInfo(
+        id=tid,
+        start_node=from_str_to_nodeinfo(snode_typed_strid),
+        relation=from_str_to_relationinfo(rel_typed_strid),
+        end_node=from_str_to_nodeinfo(enode_typed_strid)
+    )
 
 
 @dataclass
@@ -131,6 +153,12 @@ class Triplet:
     #: Идентификатор триплета, полученный на основе идентификаторов его частей.
     #: Данное значение отличается от значения в поле id объекта класса Relation.
     id: str = None
+
+    def get_info(self):
+        return TripletInfo(
+            id=self.id, start_node=self.start_node.get_info(),
+            relation=self.relation.get_info(), end_node=self.end_node.get_info()
+        )
 
 
 class BaseCreator:

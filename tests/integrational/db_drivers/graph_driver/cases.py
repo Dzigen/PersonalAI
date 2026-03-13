@@ -107,6 +107,10 @@ THESIS_TRIPLET2 = TripletCreator.create(start_node=OBJECT_NODE2, relation=Relati
     name='hyper', type=RelationType.hyper), end_node=THESIS_NODE1)
 THESIS_TRIPLET3 = TripletCreator.create(start_node=OBJECT_NODE3, relation=Relation(
     name='hyper', type=RelationType.hyper), end_node=THESIS_NODE2)
+THESIS_TRIPLET4 = TripletCreator.create(start_node=OBJECT_NODE2, relation=Relation(
+    name='hyper', type=RelationType.hyper), end_node=THESIS_NODE2)
+THESIS_TRIPLET5 = TripletCreator.create(start_node=OBJECT_NODE2, relation=Relation(
+    name='hyper', type=RelationType.hyper), end_node=THESIS_NODE3)
 
 EPISODIC_TRIPLET1 = TripletCreator.create(start_node=OBJECT_NODE1, relation=Relation(
     name='episodic', type=RelationType.episodic), end_node=EPISODIC_NODE1)
@@ -119,6 +123,10 @@ EPISODIC_TRIPLET3 = TripletCreator.create(start_node=OBJECT_NODE3, relation=Rela
     name='episodic', type=RelationType.episodic), end_node=EPISODIC_NODE2)
 EPISODIC_TRIPLET4 = TripletCreator.create(start_node=THESIS_NODE2, relation=Relation(
     name='episodic', type=RelationType.episodic), end_node=EPISODIC_NODE2)
+EPISODIC_TRIPLET5 = TripletCreator.create(start_node=THESIS_NODE3, relation=Relation(
+    name='episodic', type=RelationType.episodic), end_node=EPISODIC_NODE2)
+EPISODIC_TRIPLET6 = TripletCreator.create(start_node=OBJECT_NODE2, relation=Relation(
+    name='episodic', type=RelationType.episodic), end_node=EPISODIC_NODE2)
 
 # creation info
 FULL_CREATION_INFO = {'s_node': True, 'e_node': True}
@@ -126,7 +134,9 @@ WO_SN_CREATION_INFO = {'s_node': False, 'e_node': True}
 WO_EN_CREATION_INFO = {'s_node': True, 'e_node': False}
 ONLY_REL_CREATION_INFO = {'s_node': False, 'e_node': False}
 
-ALL_N_TYPES = [NodeType.object, NodeType.hyper, NodeType.episodic]
+ALL_N_TYPES = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time]
+
+ALL_R_TYPES = [RelationType.simple, RelationType.hyper, RelationType.episodic, RelationType.time]
 
 ###############################################################################################
 
@@ -431,7 +441,7 @@ for db_vendor in AVAILABLE_GRAPH_DBS:
 
 ###############################################################################################
 
-GRAPHDB_GET_ADJECENT_TEST_CASES = [
+GRAPHDB_GET_ADJACENT_NODES_TEST_CASES = [
     # 1. одна смежная вершина
     [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO},
         OBJECT_NODE1.get_info(), ALL_N_TYPES, {'exception': False, 'output_typedids': {OBJECT_NODE2.get_typedid()}}],
@@ -452,11 +462,133 @@ GRAPHDB_GET_ADJECENT_TEST_CASES = [
      NodeInfo(id=None,type=NodeType.object), ALL_N_TYPES, {'exception': True, 'output_typedids': set()}]
 ]
 
-GRAPHDB_POPULATED_GET_ADJECENT_TEST_CASES = []
+GRAPHDB_POPULATED_GET_ADJACENT_NODES_TEST_CASES = []
 for db_vendor in AVAILABLE_GRAPH_DBS:
-    for i in range(len(GRAPHDB_GET_ADJECENT_TEST_CASES)):
-        GRAPHDB_POPULATED_GET_ADJECENT_TEST_CASES.append(
-            GRAPHDB_GET_ADJECENT_TEST_CASES[i] + [db_vendor])
+    for i in range(len(GRAPHDB_GET_ADJACENT_NODES_TEST_CASES)):
+        GRAPHDB_POPULATED_GET_ADJACENT_NODES_TEST_CASES.append(
+            GRAPHDB_GET_ADJACENT_NODES_TEST_CASES[i] + [db_vendor])
+
+###############################################################################################
+
+# instances: List[Triplet], create_info: Dict, node: NodeInfo, accepted_n_types: List[NodeType], accepted_r_types: List[RelationType], expected: Dict,
+GRAPHDB_GET_ADJACENT_TRIPLES_TEST_CASES = [
+    # 1. один инцидентный триплет
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO},
+        OBJECT_NODE1.get_info(), ALL_N_TYPES,  ALL_R_TYPES,
+        {'exception': False, 'output_tids': {SIMPLE_TRIPLET1.id},
+         'output_r_typedids': {SIMPLE_TRIPLET1.relation.get_typedid()},
+         'output_n_typedids': {SIMPLE_TRIPLET1.start_node.get_typedid(), SIMPLE_TRIPLET1.end_node.get_typedid()}}],
+    # 2. несколько инцидентных триплетов
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO},
+        OBJECT_NODE2.get_info(), ALL_N_TYPES, ALL_R_TYPES,
+        {'exception': False, 'output_tids': {SIMPLE_TRIPLET1.id, SIMPLE_TRIPLET2.id},
+         'output_r_typedids': {SIMPLE_TRIPLET1.relation.get_typedid(), SIMPLE_TRIPLET2.relation.get_typedid()},
+         'output_n_typedids': {SIMPLE_TRIPLET1.start_node.get_typedid(), SIMPLE_TRIPLET1.end_node.get_typedid(), SIMPLE_TRIPLET2.end_node.get_typedid()}}],
+    # 3. несуществующий идентифкатор
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO},
+        OBJECT_NODE4.get_info(), ALL_N_TYPES, ALL_R_TYPES, {
+            'exception': False, 'output_tids': set(), 'output_r_typedids': set(), 'output_r_typedids': set()}],
+    # 4. неверный формат идентификатора 1
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO},
+     NodeInfo(id=123,type=NodeType.object), ALL_N_TYPES, ALL_R_TYPES, {
+            'exception': True, 'output_tids': set(), 'output_r_typedids': set(), 'output_r_typedids': set()}],
+    # 5. неверный формат идентификатора 2
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO},
+     NodeInfo(id=True,type=NodeType.object), ALL_N_TYPES, ALL_R_TYPES, {
+            'exception': True, 'output_tids': set(), 'output_r_typedids': set(), 'output_r_typedids': set()}],
+    # 6. неверный формат идентификатора 3
+    [[SIMPLE_TRIPLET1, SIMPLE_TRIPLET2], {0: FULL_CREATION_INFO, 1: WO_SN_CREATION_INFO},
+     NodeInfo(id=None,type=NodeType.object), ALL_N_TYPES, ALL_R_TYPES, {
+            'exception': True, 'output_tids': set(), 'output_r_typedids': set(), 'output_r_typedids': set()}],
+    # 7. fixing accepted_r_types ; changing accepted_n_types
+    # 7.1. only object
+    [[EPISODIC_TRIPLET4, EPISODIC_TRIPLET6, EPISODIC_TRIPLET5, EPISODIC_TRIPLET3, THESIS_TRIPLET4, THESIS_TRIPLET5, SIMPLE_TRIPLET2],
+     {0: FULL_CREATION_INFO, 1: WO_EN_CREATION_INFO, 2: WO_EN_CREATION_INFO, 3: WO_EN_CREATION_INFO,
+      4: ONLY_REL_CREATION_INFO, 5: ONLY_REL_CREATION_INFO, 6: ONLY_REL_CREATION_INFO},
+     EPISODIC_NODE2.get_info(), [NodeType.object], ALL_R_TYPES, {
+         'exception': False, 'output_tids': {EPISODIC_TRIPLET6.id, EPISODIC_TRIPLET3.id},
+         'output_r_typedids': {EPISODIC_TRIPLET6.relation.get_typedid(), EPISODIC_TRIPLET3.relation.get_typedid()},
+         'output_n_typedids': {EPISODIC_TRIPLET6.start_node.get_typedid(), EPISODIC_TRIPLET3.start_node.get_typedid()}}
+    ],
+    # 7.2. only hyper
+    [[EPISODIC_TRIPLET4, EPISODIC_TRIPLET6, EPISODIC_TRIPLET5, EPISODIC_TRIPLET3, THESIS_TRIPLET4, THESIS_TRIPLET5, SIMPLE_TRIPLET2],
+     {0: FULL_CREATION_INFO, 1: WO_EN_CREATION_INFO, 2: WO_EN_CREATION_INFO, 3: WO_EN_CREATION_INFO,
+      4: ONLY_REL_CREATION_INFO, 5: ONLY_REL_CREATION_INFO, 6: ONLY_REL_CREATION_INFO},
+     EPISODIC_NODE2.get_info(), [NodeType.hyper], ALL_R_TYPES, {
+         'exception': False, 'output_tids': {EPISODIC_TRIPLET4.id, EPISODIC_TRIPLET5.id},
+         'output_r_typedids': {EPISODIC_TRIPLET4.relation.get_typedid(), EPISODIC_TRIPLET5.relation.get_typedid()},
+         'output_n_typedids': {EPISODIC_TRIPLET4.start_node.get_typedid(), EPISODIC_TRIPLET5.start_node.get_typedid()}}
+    ],
+    # 7.3. only episodic
+    # TODO
+    # 7.4. only time
+    # TODO
+    # 7.5. only object, hyper
+    [[EPISODIC_TRIPLET4, EPISODIC_TRIPLET6, EPISODIC_TRIPLET5, EPISODIC_TRIPLET3, THESIS_TRIPLET4, THESIS_TRIPLET5, SIMPLE_TRIPLET2],
+     {0: FULL_CREATION_INFO, 1: WO_EN_CREATION_INFO, 2: WO_EN_CREATION_INFO, 3: WO_EN_CREATION_INFO,
+      4: ONLY_REL_CREATION_INFO, 5: ONLY_REL_CREATION_INFO, 6: ONLY_REL_CREATION_INFO},
+     EPISODIC_NODE2.get_info(), [NodeType.hyper, NodeType.object], ALL_R_TYPES, {
+         'exception': False, 'output_tids': {EPISODIC_TRIPLET3.id, EPISODIC_TRIPLET4.id, EPISODIC_TRIPLET5.id, EPISODIC_TRIPLET6.id},
+         'output_r_typedids': {EPISODIC_TRIPLET3.relation.get_typedid(), EPISODIC_TRIPLET4.relation.get_typedid(), EPISODIC_TRIPLET5.relation.get_typedid(), EPISODIC_TRIPLET6.relation.get_typedid()},
+         'output_n_typedids': {EPISODIC_TRIPLET3.start_node.get_typedid(), EPISODIC_TRIPLET4.start_node.get_typedid(), EPISODIC_TRIPLET5.start_node.get_typedid(), EPISODIC_TRIPLET6.start_node.get_typedid()}}
+    ],
+    # 7.6. only object, hyper, episodic
+    # TODO
+    # 8. fixing accepted_n_types ; changing accepted_r_types
+    # 8.1. only simple
+    [[EPISODIC_TRIPLET4, EPISODIC_TRIPLET6, EPISODIC_TRIPLET5, EPISODIC_TRIPLET3, THESIS_TRIPLET4, THESIS_TRIPLET5, SIMPLE_TRIPLET2],
+     {0: FULL_CREATION_INFO, 1: WO_EN_CREATION_INFO, 2: WO_EN_CREATION_INFO, 3: WO_EN_CREATION_INFO,
+      4: ONLY_REL_CREATION_INFO, 5: ONLY_REL_CREATION_INFO, 6: ONLY_REL_CREATION_INFO},
+     OBJECT_NODE2.get_info(), ALL_N_TYPES, [RelationType.simple], {
+         'exception': False, 'output_tids': {SIMPLE_TRIPLET2.id},
+         'output_r_typedids': {SIMPLE_TRIPLET2.relation.get_typedid()},
+         'output_n_typedids': {SIMPLE_TRIPLET2.end_node.get_typedid()}}
+    ],
+    # 8.2. only hyper
+    [[EPISODIC_TRIPLET4, EPISODIC_TRIPLET6, EPISODIC_TRIPLET5, EPISODIC_TRIPLET3, THESIS_TRIPLET4, THESIS_TRIPLET5, SIMPLE_TRIPLET2],
+     {0: FULL_CREATION_INFO, 1: WO_EN_CREATION_INFO, 2: WO_EN_CREATION_INFO, 3: WO_EN_CREATION_INFO,
+      4: ONLY_REL_CREATION_INFO, 5: ONLY_REL_CREATION_INFO, 6: ONLY_REL_CREATION_INFO},
+     OBJECT_NODE2.get_info(), ALL_N_TYPES, [RelationType.hyper], {
+         'exception': False, 'output_tids': {THESIS_TRIPLET4.id, THESIS_TRIPLET5.id},
+         'output_r_typedids': {THESIS_TRIPLET3.relation.get_typedid(), THESIS_TRIPLET5.relation.get_typedid()},
+         'output_n_typedids': {THESIS_TRIPLET3.end_node.get_typedid(), THESIS_TRIPLET5.end_node.get_typedid()}}
+    ],
+    # 8.3. only episodic
+    [[EPISODIC_TRIPLET4, EPISODIC_TRIPLET6, EPISODIC_TRIPLET5, EPISODIC_TRIPLET3, THESIS_TRIPLET4, THESIS_TRIPLET5, SIMPLE_TRIPLET2],
+     {0: FULL_CREATION_INFO, 1: WO_EN_CREATION_INFO, 2: WO_EN_CREATION_INFO, 3: WO_EN_CREATION_INFO,
+      4: ONLY_REL_CREATION_INFO, 5: ONLY_REL_CREATION_INFO, 6: ONLY_REL_CREATION_INFO},
+     OBJECT_NODE2.get_info(), ALL_N_TYPES, [RelationType.episodic], {
+         'exception': False, 'output_tids': {EPISODIC_TRIPLET6.id},
+         'output_r_typedids': {EPISODIC_TRIPLET6.relation.get_typedid()},
+         'output_n_typedids': {EPISODIC_TRIPLET6.end_node.get_typedid()}}
+    ],
+    # 8.4. only time
+    # TODO
+    # 8.5. only simple, hyper
+    [[EPISODIC_TRIPLET4, EPISODIC_TRIPLET6, EPISODIC_TRIPLET5, EPISODIC_TRIPLET3, THESIS_TRIPLET4, THESIS_TRIPLET5, SIMPLE_TRIPLET2],
+     {0: FULL_CREATION_INFO, 1: WO_EN_CREATION_INFO, 2: WO_EN_CREATION_INFO, 3: WO_EN_CREATION_INFO,
+      4: ONLY_REL_CREATION_INFO, 5: ONLY_REL_CREATION_INFO, 6: ONLY_REL_CREATION_INFO},
+     OBJECT_NODE2.get_info(), ALL_N_TYPES, [RelationType.simple, RelationType.hyper], {
+         'exception': False, 'output_tids': {SIMPLE_TRIPLET2.id, THESIS_TRIPLET4.id, THESIS_TRIPLET5.id},
+         'output_r_typedids': {SIMPLE_TRIPLET2.relation.get_typedid(), THESIS_TRIPLET4.relation.get_typedid(), THESIS_TRIPLET5.relation.get_typedid()},
+         'output_n_typedids': {SIMPLE_TRIPLET2.end_node.get_typedid(), THESIS_TRIPLET4.end_node.get_typedid(), THESIS_TRIPLET5.end_node.get_typedid()}}
+    ],
+    # 8.6. only simple, hyper, episodic
+    [[EPISODIC_TRIPLET4, EPISODIC_TRIPLET6, EPISODIC_TRIPLET5, EPISODIC_TRIPLET3, THESIS_TRIPLET4, THESIS_TRIPLET5, SIMPLE_TRIPLET2],
+     {0: FULL_CREATION_INFO, 1: WO_EN_CREATION_INFO, 2: WO_EN_CREATION_INFO, 3: WO_EN_CREATION_INFO,
+      4: ONLY_REL_CREATION_INFO, 5: ONLY_REL_CREATION_INFO, 6: ONLY_REL_CREATION_INFO},
+     OBJECT_NODE2.get_info(), ALL_N_TYPES, [RelationType.simple, RelationType.hyper, RelationType.episodic], {
+         'exception': False, 'output_tids': {SIMPLE_TRIPLET2.id, THESIS_TRIPLET4.id, THESIS_TRIPLET5.id, EPISODIC_TRIPLET6.id},
+         'output_r_typedids': {SIMPLE_TRIPLET2.relation.get_typedid(), THESIS_TRIPLET4.relation.get_typedid(), THESIS_TRIPLET5.relation.get_typedid(), EPISODIC_TRIPLET6.relation.get_typedid()},
+         'output_n_typedids': {SIMPLE_TRIPLET2.end_node.get_typedid(), THESIS_TRIPLET4.end_node.get_typedid(), THESIS_TRIPLET5.end_node.get_typedid(), EPISODIC_TRIPLET6.end_node.get_typedid()}}
+    ],
+]
+
+GRAPHDB_POPULATED_GET_ADJACENT_TRIPLES_TEST_CASES = []
+for db_vendor in AVAILABLE_GRAPH_DBS:
+    for i in range(len(GRAPHDB_GET_ADJACENT_TRIPLES_TEST_CASES)):
+        GRAPHDB_POPULATED_GET_ADJACENT_TRIPLES_TEST_CASES.append(
+            GRAPHDB_GET_ADJACENT_TRIPLES_TEST_CASES[i] + [db_vendor])
 
 ###############################################################################################
 
