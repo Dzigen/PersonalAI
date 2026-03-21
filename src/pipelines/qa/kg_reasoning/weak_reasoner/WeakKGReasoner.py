@@ -43,7 +43,7 @@ class WeakKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, LanguageCo
         default_factory=lambda: QALLMGeneratorConfig())
 
     cache_table_name: str = 'qa_weakreasoner_cache'
-    log: Logger = field(default_factory=lambda: Logger(WKGR_MAIN_LOG_PATH))
+    log_path: str = WKGR_MAIN_LOG_PATH
 
     def to_str(self) -> str:
         str_qparser_config = self.query_parser_config.to_str() if self.query_parser_config is not None else "None"
@@ -126,8 +126,9 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
                 kg_model, self.config.knowledge_comparator_config,
                 cache_kvdriver_config)
 
-        self.log = config.log
+        self.log = Logger(config.log_path)
         self.verbose = config.verbose
+        self.log_level = config.log_level
 
     def extract_entities(self, query_info: QueryInfo) -> Tuple[Union[None, List[str]], ReturnInfo, CompositeModuleResult]:
         """Метод реализует извлечение сущностей из пользовательского запроса.
@@ -140,14 +141,14 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         entities, rinfo, trace = None, ReturnInfo(), None
 
         if self.stages.query_parser is None:
-            self.log("Stage #1 was omited!", verbose=self.verbose)
+            self.log.warning("Stage #1 was omited!", verbose=self.verbose, log_level=self.log_level)
         else:
             entities, rinfo, trace = self.stages.query_parser.extract_entities(query_info)
             if rinfo.status != ReturnStatus.success:
-                self.log("Operation ended with error!", verbose=self.verbose)
+                self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
             else:
-                self.log("Operation ended successfully", verbose=self.verbose)
-                self.log(f"RESULT:\n* EXTRACTED ENTITIES AMOUNT - {len(entities)}\n* EXTRACTED ENTITIES - {entities}", verbose=self.verbose)
+                self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
+                self.log.debug("RESULT:\n* Extracted entities amount: %d\n* Extracted entities: %s", len(entities), entities, verbose=self.verbose, log_level=self.log_level)
 
         return entities, rinfo, trace
 
@@ -162,18 +163,18 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         linked_nodes, linked_nodes_by_entities = None, None
         rinfo, trace = ReturnInfo(), None
         if self.stages.query_parser is None:
-            self.log("Stage #2 was omited!", verbose=self.verbose)
+            self.log.warning("Stage #2 was omited!", verbose=self.verbose, log_level=self.log_level)
         else:
             linking_result, rinfo, trace = \
                 self.stages.knowledge_comparator.perform(query_info)
             linked_nodes, linked_nodes_by_entities = linking_result
             if rinfo.status != ReturnStatus.success:
-                self.log("Operation ended with error!", verbose=self.verbose)
+                self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
             else:
-                self.log("Operation ended successfully", verbose=self.verbose)
-                self.log(f"RESULT: {len(linked_nodes)}", verbose=self.verbose)
+                self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
+                self.log.debug(f"RESULT: %d", len(linked_nodes), verbose=self.verbose, log_level=self.log_level)
                 for node in linked_nodes:
-                    self.log(f"*[{node.id}] {node.text}", verbose=self.verbose)
+                    self.log.debug("* [%s] %s", node.id, node.text, verbose=self.verbose, log_level=self.log_level)
 
         return linked_nodes, linked_nodes_by_entities, rinfo, trace
 
@@ -187,12 +188,12 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         """
         retrieved_triplets, rinfo, trace = self.stages.knowledge_retriever.retrieve(query_info)
         if rinfo.status != ReturnStatus.success:
-            self.log("Operation ended with error!", verbose=self.verbose)
+            self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
         else:
-            self.log("Operation ended successfully", verbose=self.verbose)
-            self.log(f"RESULT: {len(retrieved_triplets)}", verbose=self.verbose)
+            self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("RESULT: %d", len(retrieved_triplets), verbose=self.verbose, log_level=self.log_level)
             for triplet in retrieved_triplets:
-                self.log(f"* {triplet}", verbose=self.verbose)
+                self.log.debug("* %s", triplet, verbose=self.verbose, log_level=self.log_level)
 
         return retrieved_triplets, rinfo, trace
 
@@ -208,10 +209,10 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         """
         answer, rinfo, trace = self.stages.answer_generator.generate(query_info.query, retrieved_triplets)
         if rinfo.status != ReturnStatus.success:
-            self.log("Operation ended with error!", verbose=self.verbose)
+            self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
         else:
-            self.log("Operation ended successfully", verbose=self.verbose)
-            self.log(f"RESULT:\n* ANSWER - {answer}", verbose=self.verbose)
+            self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("RESULT:\n* Answer: %s", answer, verbose=self.verbose, log_level=self.log_level)
 
         return answer, rinfo, trace
 
@@ -238,44 +239,44 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
         :return: Кортеж из трёх объектов: (1) извлечённая/релевантная информация/ответ на запрос; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
         :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
-        self.log("START WEAK KG-REASONING...", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
-        self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
+        self.log.debug("START WEAK KG-REASONING...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", {create_id(query)}, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question: %s", query, verbose=self.verbose, log_level=self.log_level)
 
         answer, rinfo = None, ReturnInfo()
         query_info = QueryInfo(query=query)
         module_trace = CompositeModuleDetailedResult()
 
-        self.log("STAGE#1 - KEY WORDS EXTRACTION", verbose=self.verbose)
+        self.log.debug("STAGE#1 - KEY WORDS EXTRACTION", verbose=self.verbose, log_level=self.log_level)
         query_info.entities, ee_rinfo, trace = self.extract_entities(query_info)
         module_trace.add('extract_entities', ModuleType.stage, trace)
         update_rinfo(rinfo, ee_rinfo)
 
-        self.log("STAGE#2 - MATCHING KEY WORDS TO KG-NODES", verbose=self.verbose)
+        self.log.debug("STAGE#2 - MATCHING KEY WORDS TO KG-NODES", verbose=self.verbose, log_level=self.log_level)
         if rinfo.status == ReturnStatus.success:
             query_info.linked_nodes, query_info.linked_nodes_by_entities, me_rinfo, trace = \
                 self.match_entities_to_kgnodes(query_info)
             module_trace.add('match_entities_to_kgnodes', ModuleType.step, trace)
             update_rinfo(rinfo, me_rinfo)
         else:
-            self.log("During previous steps error occurs.", verbose=self.verbose)
+            self.log.warning("During previous steps error occurs.", verbose=self.verbose, log_level=self.log_level)
 
-        self.log("STAGE#3 - RETRIEVING RELEVANT TRIPLETS FROM KG", verbose=self.verbose)
+        self.log.debug("STAGE#3 - RETRIEVING RELEVANT TRIPLETS FROM KG", verbose=self.verbose, log_level=self.log_level)
         if rinfo.status == ReturnStatus.success:
             retrieved_triplets, tkg_rinfo, trace = self.traverse_knowledge_graph(query_info)
             module_trace.add('traverse_knowledge_graph', ModuleType.stage, trace)
             update_rinfo(rinfo, tkg_rinfo)
         else:
-            self.log("During previous steps error occurs.", verbose=self.verbose)
+            self.log.warning("During previous steps error occurs.", verbose=self.verbose, log_level=self.log_level)
 
-        self.log("STAGE#4 - ANSWER GENERATION", verbose=self.verbose)
+        self.log.debug("STAGE#4 - ANSWER GENERATION", verbose=self.verbose, log_level=self.log_level)
         if rinfo.status == ReturnStatus.success:
             answer, ag_rinfo, trace = self.generate_answer(query_info, retrieved_triplets)
             module_trace.add('generate_answer', ModuleType.stage, trace)
             update_rinfo(rinfo, ag_rinfo)
         else:
-            self.log("During previous steps error occurs.", verbose=self.verbose)
+            self.log.warning("During previous steps error occurs.", verbose=self.verbose, log_level=self.log_level)
 
-        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
+        self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)
 
         return answer, rinfo, module_trace

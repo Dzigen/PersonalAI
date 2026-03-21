@@ -10,12 +10,6 @@ from scipy.interpolate import interp1d
 import os
 
 ####################################################
-
-METRICS_BASE_PATH='/home/workspace/experiments/metrics' # TO CHNAGE
-sys.path.insert(0, METRICS_BASE_PATH)
-from llm_as_a_judge_mine import plot_accuracy_histogram
-
-####################################################
 print("1. Loading hyperparameters from .yaml files")
 
 # Read YAML file (specexp-params)
@@ -28,6 +22,11 @@ EXPDIR_PARAMS_FILEP = sys.orig_argv[3]
 with open(EXPDIR_PARAMS_FILEP, 'r') as stream:
     EXPDIR_PARAMS = yaml.safe_load(stream)
 
+# Read YAML file (eval-params)
+EVAL_PARAMS_FILEP = sys.orig_argv[4]
+with open(EVAL_PARAMS_FILEP, 'r') as stream:
+    EVAL_PARAMS = yaml.safe_load(stream)
+
 ####################################################
 print("2. Setting paths")
 
@@ -38,6 +37,13 @@ SPEC_EXPERIMENT_DIR = f"{EXP_KG_PATH}/{SPECEXP_PARAMS['EXPERIMENT_NAME']}"
 LLM_METRICS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['judges_name']}"
 
 MINE_PLOT_FILE_PATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['mine_accuracy_plot']}"
+
+####################################################
+
+WORKSPACE_CONTAINER_PATH = EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']
+LLMASAJUDGE_SOURCE_PATH = f"{WORKSPACE_CONTAINER_PATH}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['experiments']}/{EVAL_PARAMS['llm_as_a_judge_path']}/.."
+sys.path.insert(0, LLMASAJUDGE_SOURCE_PATH)
+from llm_as_a_judge_mine import plot_accuracy_histogram
 
 ####################################################
 

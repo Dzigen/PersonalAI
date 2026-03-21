@@ -2,10 +2,14 @@ TMP_WORKSPACE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Persona
 LOCAL_KG_PATH: '/mnt/data/m.menschikov/personalai/knowledge_graphs/analogues_eval' # TO CHANGE
 OLLAMA_MODELS_PATH: '/mnt/data/m.menschikov/ollama_volume' # TO CHANGE
 
+KG_DIR_STRUCT: None
+
 WORKSPACE_CONTAINER_DIRS:
   base_path: '/home/workspace'
   kg: 'data/knowledge_graphs/analogues_eval'
-  datasets: 'data/qa_datasets/' # TO CHANGE
+  datasets: 'data/qa_datasets' # TO CHANGE
+  notebooks: notebooks
+  experiments: experiments
   src: 'src'
   models: 'models'
 

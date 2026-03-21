@@ -1,17 +1,25 @@
 import sys
-sys.path.insert(0, "/home/workspace/experiments/analogues_eval/available_methods_utils/raptor/method_source")
-from raptor import RetrievalAugmentation, RetrievalAugmentationConfig, SBertEmbeddingModel
-
 import yaml
 from typing import List, Dict
-from ...utils import GraphRAGQAOperations
-from ..utils import CustomQAModel, CustomSummarizationModel
+import json
 
-from ..kg_building import RaptorBuildOperations
+EXPEROMETS_BASE_PATH="/home/workspace/experiments"
+sys.path.insert(0, EXPEROMETS_BASE_PATH)
+
+from analogues_eval.available_methods_utils.utils import GraphRAGQAOperations
+from analogues_eval.available_methods_utils.raptor.kg_building import RaptorBuildOperations
 
 class RaptorQAOperations(GraphRAGQAOperations, RaptorBuildOperations):
 
     def __init__(self, memory_config: Dict, qa_config: Dict) -> None:
+        # костыль
+        RAPTOR_SOURCE_PATH="/home/workspace/experiments/analogues_eval/available_methods_utils/raptor/method_source" # TO CHANGE
+        sys.path.insert(0, RAPTOR_SOURCE_PATH)
+        from raptor import RetrievalAugmentation, RetrievalAugmentationConfig, SBertEmbeddingModel
+        
+        UTILS_SOURCE_PATH="/home/workspace/experiments/analogues_eval/available_methods_utils/raptor"  # TO CHANGE
+        sys.path.insert(0, UTILS_SOURCE_PATH)
+        from utils import CustomQAModel, CustomSummarizationModel
 
         formated_config = RetrievalAugmentationConfig(
             summarization_model=CustomSummarizationModel(
@@ -24,12 +32,12 @@ class RaptorQAOperations(GraphRAGQAOperations, RaptorBuildOperations):
                 model_name=memory_config['embedding_model_name']
             )
         )
-        self.method = RetrievalAugmentation(config=formated_config, tree=memory_config['save_dir'])
+        self.method = RetrievalAugmentation(config=formated_config, tree=f"{memory_config['save_dir']}/storage")
         self.config = memory_config
         self.qa_config = qa_config
 
     @staticmethod
-    def prepare_qaeval_env_params(self, conn_params: Dict, env_params: Dict) -> List[Dict[str,str]]:
+    def prepare_qaeval_env_params(conn_params: Dict, env_params: Dict) -> List[Dict[str,str]]:
         return list()
 
     @staticmethod
@@ -45,17 +53,17 @@ class RaptorQAOperations(GraphRAGQAOperations, RaptorBuildOperations):
 
 if __name__ == "__main__":
 
+    kgconnparams_path = "./debug/example/kgconn_params.yaml"  # TO CHANGE
+    with open(kgconnparams_path, 'r') as stream:
+        example_kgconn_params = yaml.safe_load(stream)
+
     envparams_path = "./debug/example/qaenv_params.yaml" # TO CHANGE
     with open(envparams_path, 'r') as stream:
         example_env_params = yaml.safe_load(stream)
 
-    kgconnparams_path = "./debug/example/kgconn_params.yaml"  # TO CHANGE
-    with open(kgconnparams_path, 'r') as stream:
-        example_conn_params = yaml.safe_load(stream)
-
-    memoryconfig_path = "./debug/example/kg_config.yaml"  # TO CHANGE
-    with open(memoryconfig_path, 'r') as stream:
-        example_memory_config = yaml.safe_load(stream)
+    memoryconfig_path = "./debug/example/kg_config"  # TO CHANGE
+    with open(memoryconfig_path, 'r', encoding='utf-8') as fd:
+        example_memory_config = json.loads(fd.read())
 
     example_documents = [
         "Oliver Badman is a politician.",
@@ -71,7 +79,7 @@ if __name__ == "__main__":
 
     print("Generated env params:")
     env_params = RaptorQAOperations.prepare_qaeval_env_params(
-        example_conn_params, example_env_params)
+        example_kgconn_params, example_env_params)
     print(env_params)
 
     print("Generated qa config:")

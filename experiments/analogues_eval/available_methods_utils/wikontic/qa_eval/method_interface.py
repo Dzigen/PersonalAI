@@ -1,9 +1,14 @@
 import yaml
 from typing import List, Dict
-from ...utils import GraphRAGQAOperations
-from ..utils import CustomWikontic, create_id
+import json
+import sys
 
-from ..kg_building import WikonticBuildOperations
+EXPEROMETS_BASE_PATH="/home/workspace/experiments"
+sys.path.insert(0, EXPEROMETS_BASE_PATH)
+
+from analogues_eval.available_methods_utils.utils import GraphRAGQAOperations
+from analogues_eval.available_methods_utils.wikontic.utils import CustomWikontic, create_id
+from analogues_eval.available_methods_utils.wikontic.kg_building import WikonticBuildOperations
 
 class WikonticQAOperations(GraphRAGQAOperations, WikonticBuildOperations):
 
@@ -14,14 +19,19 @@ class WikonticQAOperations(GraphRAGQAOperations, WikonticBuildOperations):
 
     @staticmethod
     def prepare_qaeval_env_params(conn_params: Dict, env_params: Dict) -> List[Dict[str,str]]:
-        DATASET_KGS_PATH = f"{env_params['BASE_KG_PATH']}/{env_params['METHOD_NAME']}/{env_params['DATASET_NAME']}"
+        DATASET_KGS_PATH = f"{env_params['LOCAL_KG_PATH']}/{env_params['METHOD_NAME']}/{env_params['DATASET_NAME']}"
         SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{env_params['KNOWLEDGE_GRAPH_NAME']}"
-        MONGO_VOLUME_PATH = f"{SPEC_KG_PATH}/{env_params['KG_DIR_STRUCT']['storage']}"
+        MONGO_EXTERNAL_DB_VOLUME = f"{SPEC_KG_PATH}/{env_params['KG_DIR_STRUCT']['db_storage']}"
+        MONGO_EXTERNAL_CONFIGDB_VOLUME = f"{SPEC_KG_PATH}/{env_params['KG_DIR_STRUCT']['configdb_storage']}"
+        MONGO_EXTERNAL_MONGOT_VOLUME = f"{SPEC_KG_PATH}/{env_params['KG_DIR_STRUCT']['mongot_storage']}"
 
         mongo_cnt_variables = {
-            'MONGO_CNTNAME': conn_params['CONTAINERS_ADDITIONAL_CONFIG']['mongo_cntname'],
+            'MONGO_CNTNAME': env_params['CONTAINERS_ADDITIONAL_CONFIG']['mongo_cntname'],
+            'MONGO_HOST': conn_params['CONTAINERS_ADDITIONAL_CONFIG']['mongo_host'],
             'MONGO_EXTERNAL_PORT': conn_params['KG_MODEL_CONNECTORS']['port'],
-            'MONGO_LOCAL_VOLUME': MONGO_VOLUME_PATH
+            'MONGO_EXTERNAL_DB_VOLUME': MONGO_EXTERNAL_DB_VOLUME,
+            'MONGO_EXTERNAL_CONFIGDB_VOLUME': MONGO_EXTERNAL_CONFIGDB_VOLUME,
+            'MONGO_EXTERNAL_MONGOT_VOLUME': MONGO_EXTERNAL_MONGOT_VOLUME
         }
         return [mongo_cnt_variables]
 
@@ -39,17 +49,17 @@ class WikonticQAOperations(GraphRAGQAOperations, WikonticBuildOperations):
 
 if __name__ == "__main__":
 
-    envparams_path = "./debug/example/qaenv_params.yaml" # TO CHANGE
-    with open(envparams_path, 'r') as stream:
-        example_env_params = yaml.safe_load(stream)
-
     kgconnparams_path = "./debug/example/kgconn_params.yaml"  # TO CHANGE
     with open(kgconnparams_path, 'r') as stream:
         example_kgconn_params = yaml.safe_load(stream)
 
-    memoryconfig_path = "./debug/example/kg_config.yaml"  # TO CHANGE
-    with open(memoryconfig_path, 'r') as stream:
-        example_memory_config = yaml.safe_load(stream)
+    envparams_path = "./debug/example/qaenv_params.yaml" # TO CHANGE
+    with open(envparams_path, 'r') as stream:
+        example_env_params = yaml.safe_load(stream)
+
+    memoryconfig_path = "./debug/example/kg_config"  # TO CHANGE
+    with open(memoryconfig_path, 'r', encoding='utf-8') as fd:
+        example_memory_config = json.loads(fd.read())
 
     example_documents = [
         "Oliver Badman is a politician.",
@@ -78,9 +88,9 @@ if __name__ == "__main__":
         "What county is Erik Hort's birthplace a part of?"
     ]
     real_answers = [
-        ["Politician"],
-        ["By going to the ball."],
-        ["Rockland County"]
+        "Politician",
+        "By going to the ball.",
+        "Rockland County"
     ]
 
     print("Initializing method...")

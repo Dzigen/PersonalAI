@@ -56,7 +56,7 @@ SPEC_EXPERIMENT_DIR = f"{EXP_KG_PATH}/{SPECEXP_PARAMS['EXPERIMENT_NAME']}"
 CONFIGS_PATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['configs_name']}"
 QA_CONFIG_PATH = f"{CONFIGS_PATH}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['qa_config']}"
 
-QA_DATASET_PATH = f"{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['qa_datasets']}/{SPECEXP_PARAMS['DATASET_NAME']}"
+QA_DATASET_PATH = f"{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['datasets']}/{SPECEXP_PARAMS['DATASET_NAME']}"
 
 TMP_GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['tmp_gen_answers_name']}"
 GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['gen_answers_name']}"
@@ -67,23 +67,38 @@ QA_ELAPSED_TIME_SPATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']
 DATASET_KGS_PATH = f"{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{SPECEXP_PARAMS['METHOD_NAME']}/{SPECEXP_PARAMS['DATASET_NAME']}"
 SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
 
-KG_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['kg_config']}"
+KG_MODEL_CONFIG_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['method_config']}"
+
+QA_CONFIG_SAVE_PATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['qa_config']}"
 
 ####################################################
 print("3. Loading configs")
 
-method_config = joblib.load(KG_MODEL_CONFIG_PATH)
+with open(KG_MODEL_CONFIG_PATH, 'r', encoding='utf-8') as fd:
+    method_config = json.loads(fd.read())
+
+print("KG MODEL_CONFIG:")
+pprint(method_config)
+
+qa_config = AVAILABLE_GRAPHRAG_QA_METHOD[SPECEXP_PARAMS['METHOD_NAME']].prepare_qa_config()
+print("QA_CONFIG:")
+pprint(qa_config)
+
+with open(QA_CONFIG_SAVE_PATH, 'w', encoding='utf-8') as fd:
+    fd.write(json.dumps(qa_config, indent=1, ensure_ascii=False))
 
 ####################################################
-print("4. Initializing method")
+print("4. Loading QA-dataset")
 
-method_main: GraphRAGQAOperations = AVAILABLE_GRAPHRAG_QA_METHOD[SPECEXP_PARAMS['METHOD_NAME']](method_config)
-method_main.print_graph_info()
+question_packs = CUSTOM_LOAD_QAEVAL_FUNCS[SPECEXP_PARAMS['DATASET_NAME']](QA_DATASET_PATH, SPECEXP_PARAMS['max_samples_per_pack'])
+print(QA_DATASET_PATH)
+print(len(question_packs), len(question_packs[0][1]))
 
 ####################################################
-print("5. Loading QA-dataset")
+print("5. Initializing method")
 
-question_packs = CUSTOM_LOAD_QAEVAL_FUNCS[SPECEXP_PARAMS['DATASET_NAME']](QA_DATASET_PATH)
+method_main: GraphRAGQAOperations = AVAILABLE_GRAPHRAG_QA_METHOD[SPECEXP_PARAMS['METHOD_NAME']](method_config, qa_config)
+#method_main.print_graph_info()
 
 ####################################################
 print("6. Start inferencing")

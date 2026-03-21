@@ -30,7 +30,7 @@ for exp_idx in "${!exp_hyperp[@]}";
 do
     HYPERP_FNAME="${exp_hyperp[$exp_idx]}"
     EXP_NAME=${HYPERP_FNAME%.yaml}
-    echo "$KNOWLEDGEGRAPH_NAME | $DATASET_NAME | $EXP_NAME"
+    echo "$METHOD_NAME $KNOWLEDGEGRAPH_NAME | $DATASET_NAME | $EXP_NAME"
 
     KGEVALHYPERP_PARAMS_PATH="$PARAMSTORUN_DIR/$HYPERP_FNAME"
     echo "kgevalhyperp params-path: $KGEVALHYPERP_PARAMS_PATH"

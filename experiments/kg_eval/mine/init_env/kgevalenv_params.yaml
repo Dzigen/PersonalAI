@@ -1,5 +1,5 @@
 DATASET_NAME: mine_train_kgeval
-KNOWLEDGE_GRAPH_NAME: llama318b_110226_v2prompts
+KNOWLEDGE_GRAPH_NAME: qwen257b_110226_v2prompts
 BASE_PERSONALAI_PATH: /home/m.menschikov/workspace/personal_ai/Personal-AI
 BASE_KG_PATH: /mnt/data/m.menschikov/personalai/knowledge_graphs
 OLLAMA_MODELS_PATH: /mnt/data/m.menschikov/ollama_volume
@@ -10,7 +10,7 @@ KG_SETTING_DIR:
   kgenv: kgenv_params
 GPUS_CONFIG:
   ollama_device_id: '2'
-  workspace_device_id: '1'
+  workspace_device_id: '2'
 PERSONALAI_REPO_DIRS:
   experiments: experiments/kg_eval/mine
 WORKSPACE_CONTAINER_DIRS:

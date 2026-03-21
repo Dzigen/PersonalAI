@@ -22,8 +22,10 @@ services:
               capabilities: [gpu]
 
   workspace:
-    image: m.menschikov/empty_workspace:v1
+    image: m.menschikov/hipporag2_eval_workspace:v1
     container_name: ${WORKSPACE_CNTNAME}
+    hostname: ${WORKSPACE_HOST}
+    network_mode: "host"
     volumes:
       - ${EXTERNAL_SPEC_KG_PATH}:${INTERNAL_SPEC_KG_PATH}
       - ${EXTERNAL_SPEC_DS_PATH}:${INTERNAL_SPEC_DS_PATH}

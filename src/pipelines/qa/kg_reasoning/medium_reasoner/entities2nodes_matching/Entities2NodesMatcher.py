@@ -31,7 +31,7 @@ class Entities2NodesMatcherConfig(BaseComponentConfig):
     max_n: int = 1
 
     cache_table_name: str = "medreasn_e2nmatcher_main_stage_cache"
-    log: Logger = field(default_factory=lambda: Logger(E2NMATCHER_MAIN_LOG_PATH))
+    log_path: str = E2NMATCHER_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.use_tree}|{self.max_n}|{self.reranker_driver_config.to_str()}"
@@ -78,8 +78,9 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
             self.config.reranker_driver_config,
             kg_model.graph_embeddings.nodes_vcomposers[NodeType.object])
 
-        self.log = self.config.log
+        self.log = Logger(config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     def get_cache_key(self, entity: str) -> List[object]:
         return [entity, self.config.to_str()]
@@ -105,8 +106,8 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
         :type entities: List[str]
         :rtype: Tuple[Dict[str,List[NodeInfo]], ReturnInfo, bool]
         """
-        self.log("START ENTITIES2NODES MATCHING...", verbose=self.verbose)
-        self.log(f"ENTIITES: {entities}", verbose=self.verbose)
+        self.log.debug("START ENTITIES2NODES MATCHING...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Entities: %s", entities, verbose=self.verbose, log_level=self.log_level)
         if len(entities) < 1:
             raise ValueError
         rinfo = ReturnInfo()
@@ -114,16 +115,16 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
 
         matched_kg_objects: Dict[str, List[NodeInfo]] = dict()
         for i, entity in enumerate(entities):
-            self.log(f"Текушая сушность #{i}: {entity}", verbose=self.verbose)
+            self.log.debug("Текушая сушность #%d: %s", i, entity, verbose=self.verbose, log_level=self.log_level)
             matched_kg_objects[entity], cache_hit = self.match_entity2knowledge(entity)
             cache_hits.append(cache_hit)
             str_matchedobjects = ', '.join(list(map(lambda obj: obj.text, matched_kg_objects[entity])))
-            self.log(f"RESULT: {str_matchedobjects}", verbose=self.verbose)
+            self.log.debug("RESULT: %s", str_matchedobjects, verbose=self.verbose, log_level=self.log_level)
 
         m_objects_amount = sum(list(map(lambda m_objects: len(m_objects), matched_kg_objects.values())))
         if m_objects_amount < 1:
             rinfo.status = ReturnStatus.empty_answer
-        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
+        self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)
 
         cachehit_summary = (sum(cache_hits) / len(cache_hits)) >= 0.5 if len(cache_hits) > 0 else False
 

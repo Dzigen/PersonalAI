@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 echo "Создание директории (c необходимыми конфигурационными файлами) для конкретного эксперимента"
 
-BASE_DIR=/home/workspace/experiments/analogues_eval/kg_eval/mine
+EXP_BASE_DIR=/home/workspace/experiments/analogues_eval/kg_eval/mine
 PYTHON_CMD=/usr/bin/python3
 
 # --------------------------------------------------------

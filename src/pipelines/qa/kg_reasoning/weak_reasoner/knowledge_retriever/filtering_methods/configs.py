@@ -1,6 +1,8 @@
 from .......rerankers import RerankerDriverConfig
 from .......rerankers.methods import EnsembleFusionRerankerConfig, RetrieverConfig
 
+TFILTER_LOG_PATH = 'log/qa/kg_reasoner/weak/knowledge_retriever/triples_filter'
+
 KRFILTER_RERANKDRIVER_DEFAULT_CONFIG = RerankerDriverConfig(
     name='ensemble_fusion',
     strategy_config=EnsembleFusionRerankerConfig(

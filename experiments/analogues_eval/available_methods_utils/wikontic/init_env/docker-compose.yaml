@@ -28,15 +28,18 @@ services:
     ports:
       - ${MONGO_EXTERNAL_PORT}:27017
     volumes:
-      - ${MONGO_EXTERNAL_VOLUME}:/data/db
+      - ${MONGO_EXTERNAL_DB_VOLUME}:/data/db
+      - ${MONGO_EXTERNAL_CONFIGDB_VOLUME}:/data/configdb
+      - ${MONGO_EXTERNAL_MONGOT_VOLUME}:/data/mongot 
+    user: root
     deploy:
       resources:
         limits:
-          cpus: '4'
-          memory: 10G
+          cpus: '8'
+          memory: 32G
         reservations:
-          cpus: '2'
-          memory: 5G
+          cpus: '4'
+          memory: 16G
 
   workspace:
     image: m.menschikov/wikontic_eval_workspace:v1
@@ -56,11 +59,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '4'
-          memory: 24G
+          cpus: '16'
+          memory: 32G
         reservations:
-          cpus: '2'
-          memory: 16G
+          cpus: '8'
+          memory: 24G
           devices:
             - driver: nvidia
               device_ids: ['${WORKSPACE_DEVICE_ID}']

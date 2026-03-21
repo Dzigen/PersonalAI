@@ -63,8 +63,27 @@ for pack_name in llm_packs:
     scores.append(metrics_info['llm-as-a-judge']['mean'])
 percentages = [int(round(value * 100, 0)) for value in scores]
 
-acc_dict = {f"{SPECEXP_PARAMS['METHOD_NAME']}, {SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']}": percentages}
-color_map = {f"{SPECEXP_PARAMS['METHOD_NAME']}, {SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']}": "#a1c78f"}
-plot_accuracy_histogram(acc_dict, color_map, MINE_PLOT_FILE_PATH)
+print(percentages)
+
+EXP_LABEL = f"{SPECEXP_PARAMS['METHOD_NAME']}, {SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
+
+acc_dict = {EXP_LABEL: percentages}
+color_map = {EXP_LABEL: "#a1c78f"}
+
+try:
+    plot_accuracy_histogram(acc_dict, color_map, MINE_PLOT_FILE_PATH)
+except np.linalg.LinAlgError:
+    import matplotlib.pyplot as plt
+    plt.figure(figsize=(13, 6))
+    plt.hist(acc_dict[EXP_LABEL], width=5, label=EXP_LABEL, color=color_map[EXP_LABEL])
+    plt.xlabel("Facts captured, %", fontsize=16)
+    plt.ylabel("Frequency (Articles)", fontsize=16)
+    plt.xlim(0, 100)
+    plt.xticks(np.arange(0, 101, 10), fontsize=16)
+    plt.yticks(fontsize=16)
+    plt.legend(fontsize=16)
+    plt.grid()
+    # plt.show()
+    plt.savefig(MINE_PLOT_FILE_PATH, format="pdf")
 
 print("############ DONE ############")

@@ -16,7 +16,7 @@ ENV_SETTINGS_DIR="$INIT_ENV_DIR/env_settings"
 # ===============================================================
 
 DATASET="mine_train_kgeval" # TO CHANGE
-KNOWLEDGE_GRAPHS=("llama318b_110226_v2prompts" "granite338b_110226_v2prompts" "gemma29b_110226_v2prompts") # TO CHANGE
+KNOWLEDGE_GRAPHS=("qwen257b_110226_v2prompts") # TO CHANGE
 EVAL_FNAME="eval_params.yaml" # TO CHANGE
 CONFIGURE_FNAME="expdir_params.yaml" # TO CHANGE
 

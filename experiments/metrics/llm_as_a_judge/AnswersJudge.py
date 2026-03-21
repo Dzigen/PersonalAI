@@ -1,16 +1,11 @@
 from .configs import DEFAULT_LLMJUDGE_TASK_CONFIG, EVAL_JUDGE_MAIN_LOG_PATH
-from src.db_drivers.kv_driver import KeyValueDriverConfig
-from src.utils.cache_kv import CacheKV, CacheUtils
-from src.agents import AgentDriver, AgentDriverConfig
-from src.utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
+from ..utils import AgentDriver, AgentDriverConfig, \
+    Logger, ReturnStatus, ReturnInfo, \
+        AgentTaskSolver, AgentTaskSolverConfig, \
+            CacheUtils
 from dataclasses import dataclass, field
 from typing import Union
 from copy import deepcopy
-import sys
-
-BASE_PATH = '../'
-sys.path.insert(0, BASE_PATH)
-
 
 @dataclass
 class AnswersJudgeConfig:
@@ -28,7 +23,7 @@ class AnswersJudgeConfig:
 class AnswersJudge(CacheUtils):
 
     def __init__(self, config: AnswersJudgeConfig = AnswersJudgeConfig(),
-                 cache_kvdriver_config: KeyValueDriverConfig = None,
+                 cache_kvdriver_config: object = None,
                  cache_llm_inference: bool = False):
 
         self.log = config.log
@@ -38,7 +33,7 @@ class AnswersJudge(CacheUtils):
         if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
             cache_config = deepcopy(cache_kvdriver_config)
             cache_config.db_config.db_info['table'] = self.config.cache_table_name
-            self.cachekv = CacheKV(cache_config)
+            #self.cachekv = CacheKV(cache_config)
         else:
             self.cachekv = None
 
@@ -60,10 +55,9 @@ class AnswersJudge(CacheUtils):
     def perform(self, question: str, ground_truth: str, predicted_response: str) -> Union[int, float]:
         info = ReturnInfo()
         self.log("START JUDGING...", verbose=self.verbose)
-        self.log(f"* GROUND_TRUTH: {ground_truth}",
-                 verbose=self.verbose)
-        self.log(f"* PREDICTED: {predicted_response}",
-                 verbose=self.verbose)
+        self.log(f"* QUESTION: {question}",verbose=self.verbose)
+        self.log(f"* GROUND_TRUTH: {ground_truth}", verbose=self.verbose)
+        self.log(f"* PREDICTED: {predicted_response}", verbose=self.verbose)
 
         predicted_score, status, _ = self.llmjudge_solver.solve(
             lang=self.config.lang, question=question,

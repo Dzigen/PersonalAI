@@ -31,7 +31,7 @@ class KnowledgeComparatorConfig(BaseComponentConfig):
     k_compare: int = 5
 
     cache_table_name: str = 'qa_kcomparator_stage_cache'
-    log: Logger = field(default_factory=lambda: Logger(KC_MAIN_LOG_PATH))
+    log_path: str = KC_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.reranker_driver_config.to_str()};{self.max_k}:{self.k_compare}"
@@ -78,8 +78,9 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
             self.config.reranker_driver_config,
             kg_model.graph_embeddings.nodes_vcomposers[NodeType.object])
 
-        self.log = self.config.log
+        self.log = Logger(config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     def get_cache_key(self, entity: str) -> List[object]:
         """Формирует ключ кэша для результата сопоставления сущности с узлами графа.
@@ -116,10 +117,10 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
         :return: Кортеж из трёх объектов: (1) (список сопоставленных узлов, список имён/документов по сущностям); (2) статус завершения операции с пояснительной информацией; (3) True, если результат был получен из кеша (cache hit), иначе False.
         :rtype: Tuple[Tuple[List[NodeInfo], List[object]], ReturnInfo, bool]
         """
-        self.log("START MATCHING KEY WORDS ...", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
-        self.log(f"ENTITIES: {query_info.entities}", verbose=self.verbose)
+        self.log.debug("START MATCHING KEY WORDS ...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", create_id(query_info.query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question: %s", query_info.query, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Entities: %s", query_info.entities, verbose=self.verbose, log_level=self.log_level)
 
         rinfo = ReturnInfo()
         linked_nodes: List[NodeInfo] = []
@@ -138,11 +139,11 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
             rinfo.status = ReturnStatus.zero_linked_nodes
             rinfo.message = STATUS_MESSAGE[rinfo.status]
         else:
-            self.log(f"RESULT: {len(linked_nodes)}", verbose=self.verbose)
+            self.log.debug("RESULT: %s", len(linked_nodes), verbose=self.verbose, log_level=self.log_level)
             for i, node in enumerate(linked_nodes):
-                self.log(f"{i}. {node}", verbose=self.verbose)
+                self.log.debug("%d. %s", i, node, verbose=self.verbose, log_level=self.log_level)
 
-        self.log(f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.verbose)
+        self.log.debug("STATUS: %s", STATUS_MESSAGE[rinfo.status], verbose=self.verbose, log_level=self.log_level)
 
         cachehit_summary = (sum(cache_hits) / len(cache_hits)) >= 0.5 if len(cache_hits) > 0 else False
         return (linked_nodes, linked_nodes_by_entities), rinfo, cachehit_summary

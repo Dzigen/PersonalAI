@@ -1,1 +1,1 @@
-from method_inteface import KGGenBuildOperations
+from .method_inteface import KGGenBuildOperations

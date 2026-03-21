@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 CONTAINERS_POSTFIX=$1
 
-EXISTING_CONTAINERS=$(docker container ls -q --filter name="^personalai_mmenschikov_analogies_kgbuild.*$CONTAINERS_POSTFIX$")
+EXISTING_CONTAINERS=$(docker container ls -q --filter name="^personalai_mmenschikov_analogues_kgbuild.*$CONTAINERS_POSTFIX$")
 
 echo $EXISTING_CONTAINERS
 

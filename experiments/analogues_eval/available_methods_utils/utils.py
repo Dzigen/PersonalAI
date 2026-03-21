@@ -15,6 +15,11 @@ class GraphRAGBaseOperations:
     @abstractmethod
     def prepare_method_config(conn_params: Dict, env_params: Dict, hyperp_params: Dict) -> Dict:
         pass
+    
+    @staticmethod
+    @abstractmethod
+    def create_kg_structure(env_params: Dict, hyperp_params: Dict) -> None:
+        pass
 
 
 class GraphRAGBuildOperations(GraphRAGBaseOperations):

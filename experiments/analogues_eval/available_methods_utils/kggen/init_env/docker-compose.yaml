@@ -22,8 +22,10 @@ services:
               capabilities: [gpu]
 
   workspace:
-    image: m.menschikov/empty_workspace:v1
+    image: m.menschikov/kggen_eval_workspace:v1
     container_name: ${WORKSPACE_CNTNAME}
+    hostname: ${WORKSPACE_HOST}
+    network_mode: "host"
     volumes:
       - ${EXTERNAL_SPEC_KG_PATH}:${INTERNAL_SPEC_KG_PATH}
       - ${EXTERNAL_SPEC_DS_PATH}:${INTERNAL_SPEC_DS_PATH}
@@ -37,10 +39,10 @@ services:
       resources:
         limits:
           cpus: '8'
-          memory: 32G
+          memory: 64G
         reservations:
           cpus: '4'
-          memory: 24G
+          memory: 32G
           devices:
             - driver: nvidia
               device_ids: ['${WORKSPACE_DEVICE_ID}']

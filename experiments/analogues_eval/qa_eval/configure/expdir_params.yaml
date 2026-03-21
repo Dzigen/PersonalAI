@@ -16,7 +16,6 @@ EXP_DIRS:
 
   settings_name: settings
   configs_name: configs
-  qa_traces_name: qa_traces_packs
 
 KG_SETTING_DIR:
   name: settings
@@ -29,7 +28,7 @@ QAENV: qaenv_params.yaml
 WORKSPACE_CONTAINER_DIRS:
   base_path: /home/workspace
   kg: data/knowledge_graphs
-  qa_datasets: data/qa_datasets/v2 # !!! PAY ATTENTION !!!
+  datasets: data/qa_datasets/v2 # !!! PAY ATTENTION !!!
   models: models
   experiments: experiments/qa
   results: results
@@ -39,9 +38,6 @@ WORKSPACE_CONTAINER_DIRS:
 
 EXP_SAVE_FILES:
   qa_config: qa_config
-  qpreproc_config: qpreproc_config
-  kgreasoner_config: kgreasoner_config
-  aaggregator_config: aaggregator_config
 
   qahyperp: qahyperp_params.yaml
   expdir: expdir_params.yaml

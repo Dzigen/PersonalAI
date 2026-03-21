@@ -1,6 +1,0 @@
-outs:
-- md5: 3e21119bedad0fe2a717d45d43c4ce54.dir
-  size: 889259
-  nfiles: 12
-  hash: md5
-  path: qa_eval

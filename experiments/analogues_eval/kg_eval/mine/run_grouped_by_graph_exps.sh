@@ -13,7 +13,7 @@ USERNAME=root
 
 METHOD="wikontic" # TO CHANGE
 DATASET="mine_train_kgeval" # TO CHANGE
-KNOWLEDGE_GRAPHS=("llama318b_110226_v2prompts" "qwen257b_110226_v2prompts" "granite338b_110226_v2prompts" "gemma29b_110226_v2prompts") # TO CHANGE
+KNOWLEDGE_GRAPHS=("qwen2514b_190226_mine_wikontic") # TO CHANGE "qwen2514b_190226_mine_wikontic"
 EVAL_FNAME="eval_params.yaml" # TO CHANGE
 CONFIGURE_FNAME="expdir_params.yaml" # TO CHANGE
 
@@ -32,8 +32,6 @@ WORKSPACE_PERSONALAI_BASE_PATH=/home/workspace
 WORKSPACE_KGEVAL_BASE_DIR="$WORKSPACE_PERSONALAI_BASE_PATH/experiments/analogues_eval/kg_eval/mine"
 WORKSPACE_METHOD_KGEVAL_UTILS_DIR="$WORKSPACE_PERSONALAI_BASE_PATH/experiments/analogues_eval/available_methods_utils/$METHOD/kg_eval"
 
-SPEC_WORKSPACE_CNTNAME="personalai_mmenschikov_analogues_kgeval_workspace_$METHOD\_$DATASET\_$CURRENT_KG"
-
 # ===============================================================
 
 #cd $MLFLOW_DEPLOYMENT_COMPOSE_PATH ; docker compose --env-file=".env" up -d mlflow
@@ -43,6 +41,7 @@ do
     CURRENT_KG="${KNOWLEDGE_GRAPHS[$kg_idx]}"
 
     echo "$METHOD $DATASET $CURRENT_KG"
+    SPEC_WORKSPACE_CNTNAME=personalai_mmenschikov_analogues_kgeval_workspace_$METHOD\_$DATASET\_$CURRENT_KG
 
     # -----------------------------------------------------------
     # 1. Создание env-файла для exp-окружения
@@ -74,7 +73,7 @@ do
     # -----------------------------------------------------------
     # 3. подготовить KGEVAL-конфиги
     PARAMS_TO_RUN_DIR="$WORKSPACE_KGEVAL_BASE_DIR/params_to_run/"
-    PREPARED_PARAMS_DIR="$WORKSPACE_METHOD_KGEVAL_UTILS_DIR/prepared_params/$DATASET/$CURRENT_KG/"
+    PREPARED_PARAMS_DIR="$WORKSPACE_METHOD_KGEVAL_UTILS_DIR/prepared_params/$DATASET/$CURRENT_KG"
 
     echo $PARAMS_TO_RUN_DIR
     echo $PREPARED_PARAMS_DIR
@@ -86,7 +85,7 @@ do
 
     # -----------------------------------------------------------
     # 4. Запустить оценку построенных графов
-    docker exec -u $USERNAME $WORKSPACE_EXP_CNTNAME bash $WORKSPACE_KGEVAL_BASE_DIR/crontab_job.sh $METHOD $DATASET $CURRENT_KG $CONFIGURE_FNAME $EVAL_FNAME
+    docker exec -u $USERNAME $SPEC_WORKSPACE_CNTNAME bash $WORKSPACE_KGEVAL_BASE_DIR/crontab_job.sh $METHOD $DATASET $CURRENT_KG $CONFIGURE_FNAME $EVAL_FNAME
 
     # -----------------------------------------------------------
     # 5. Удаление конкретного QA-окружения

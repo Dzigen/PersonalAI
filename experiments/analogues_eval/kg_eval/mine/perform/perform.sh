@@ -22,11 +22,15 @@ SPEC_EXP_DIR="$CUR_EXP_BASE_DIR/$EXP_NAME"
 
 BASE_GENERATE_DIR="$EXP_BASE_DIR/perform"
 
+echo $SPEC_EXP_DIR
+
 # --------------------------------------------------------
 
 RETRTRIPLES_SCRIPT="$BASE_GENERATE_DIR/retrieve_triples.py"
-
 RETRTRIPLES_LOG_PATH="$SPEC_EXP_DIR/retrieving_log.txt"
+
+echo $RETRTRIPLES_SCRIPT
+echo $RETRTRIPLES_LOG_PATH
 
 # --------------------------------------------------------
 

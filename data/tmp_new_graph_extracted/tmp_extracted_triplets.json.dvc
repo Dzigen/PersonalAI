@@ -1,5 +1,0 @@
-outs:
-- md5: 98b5be39f1c3f04ed5db243d4a351d97
-  size: 22743951
-  hash: md5
-  path: tmp_extracted_triplets.json

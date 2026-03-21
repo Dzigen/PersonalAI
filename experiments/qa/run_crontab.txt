@@ -13,9 +13,9 @@ CRONTAB_DIR="/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments/qa
 
 CRONTAB_DIR="/home/workspace/experiments/qa"
 
-CURRENT_KG="llama318b_230126_v2prompts"
+CURRENT_KG="granite338b_230126_v2prompts"
 CURRENT_DATASET="hotpotqa_distractor_validation"
 CURRENT_CONFIGURE_FNAME="hotpotqa_distractor_validation.yaml"
 CURRENT_EVAL_FNAME="hotpotqa_distractor_validation.yaml"
 
-09 00 11 02 * cd $CRONTAB_DIR ; bash crontab_job.sh $CURRENT_KG $CURRENT_DATASET $CURRENT_CONFIGURE_FNAME $CURRENT_EVAL_FNAME >> $CRONTAB_DIR/crontab_log.txt 2>&1
+55 14 27 02 * cd $CRONTAB_DIR ; bash crontab_job.sh $CURRENT_KG $CURRENT_DATASET $CURRENT_CONFIGURE_FNAME $CURRENT_EVAL_FNAME >> $CRONTAB_DIR/crontab_log.txt 2>&1

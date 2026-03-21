@@ -1,7 +1,7 @@
 from .configs import EVAL_MINEJUDGE_MAIN_LOG_PATH, DEFAULT_LLM_GENSTRATEGY, ResponseEvaluator
 
 import sys
-BASE_PATH = '../../'
+BASE_PATH = '/home/workspace' # TO CHANGE
 sys.path.insert(0, BASE_PATH)
 
 from src.utils import Logger
@@ -34,11 +34,11 @@ class MINEJudge():
         self.evaluator = ResponseEvaluator()
 
     def perform(self, query: str, retrieved_context: str) -> int:
-        self.log("START JUDGING...", verbose=self.verbose)
-        self.log(f"* QUERY: {query}", verbose=self.verbose)
-        self.log(f"* RETRIEVED_CONTEXT: {retrieved_context}",verbose=self.verbose)
+        self.log.debug("START JUDGING...", verbose=self.verbose)
+        self.log.debug(f"* QUERY: {query}", verbose=self.verbose)
+        self.log.debug(f"* RETRIEVED_CONTEXT: {retrieved_context}",verbose=self.verbose)
 
         result = self.evaluator(context=retrieved_context, correct_answer=query)
-        self.log(f"RESULT: {result.evaluation}", verbose=self.verbose)
+        self.log.debug(f"RESULT: {result.evaluation}", verbose=self.verbose)
 
         return result.evaluation

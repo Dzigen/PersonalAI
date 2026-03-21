@@ -14,3 +14,5 @@ ragas
 openai
 datasets
 dspy
+boto3
+tenacity

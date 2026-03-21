@@ -141,10 +141,10 @@ def explore_neighbors(kg_model: KnowledgeGraphModel, query: str, current_node: N
         return
 
     # Получаем идентификаторы триплетов, инцедентных current_node-вершине
-    adjecent_nodes: List[NodeInfo] = kg_model.graph_struct.db_conn.get_adjecent_nodes(
+    adjacent_nodes: List[NodeInfo] = kg_model.graph_struct.db_conn.get_adjacent_nodes(
         current_node, FORMATED_ACCEPTED_N_TYPES)
     incident_triple_rids: Set[str] = set()
-    for neighbor in adjecent_nodes:
+    for neighbor in adjacent_nodes:
         if (prev_node is not None) and (neighbor.to_str() == prev_node.to_str()):
             continue
 

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from .errors import NOT_VALID_ID_ERROR_MSG, NO_START_NODE_IN_PARENT_ERROR_MSG, \
     EMPTY_PARENT_ERROR_MSG
 from ......utils import ReturnInfo
-from ......utils.data_structs import QueryInfo, Triplet, NodeInfo, BaseConfigOperations, NodeType
+from ......utils.data_structs import QueryInfo, Triplet, NodeInfo, BaseConfigOperations, NodeType, LoggingConfig
 from ......utils.cache_kv.CacheOperations import CacheOperations, TraversalMethodCacheOpearions
 
 
@@ -39,7 +39,7 @@ def get_nodes_path(parent: Dict[str, NodeInfo], end_node: NodeInfo) -> List[Node
 
 
 @dataclass
-class BaseTripletsFilterConfig(BaseConfigOperations):
+class BaseTripletsFilterConfig(BaseConfigOperations, LoggingConfig):
     """Базовая конфигурация алгоритмов по ранжированию/фильтрации триплетов."""
 
 
@@ -67,7 +67,7 @@ class AbstractTriplesFilter(CacheOperations):
 
 
 @dataclass
-class BaseGraphSearchConfig(BaseConfigOperations):
+class BaseGraphSearchConfig(BaseConfigOperations, LoggingConfig):
     """Базовая конфигурация алгоритмов по извлечению триплетов из графа знаний."""
     accepted_node_types: Union[List[NodeType], None] = None
 

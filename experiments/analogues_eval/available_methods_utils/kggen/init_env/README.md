@@ -1,1 +1,1 @@
-docker build -t personalai_mmenschikov_kggen_eval_workspace -f workspace.Dockerfile .
+docker build --no-cache -t m.menschikov/kggen_eval_workspace:v1 -f workspace.Dockerfile .

@@ -1,4 +1,3 @@
-
 bertscore_model_path: "google/electra-base-discriminator"
 meteor_path: 'evaluate/metrics/meteor'
 exactmatch_path: 'evaluate/metrics/exact_match'
@@ -26,10 +25,10 @@ ragas_llm_config:
       credentials:
         model: 'qwen2.5:7b'
         host: 'localhost'
-        port: 11438
+        port: 11437
       ext_params:
         timeout: 560
-        keep_alive: -1
+        keep_alive: 600
 
 judge_llm_config:
   caching: True # DONT CHANGE
@@ -55,4 +54,4 @@ judge_llm_config:
         port: 11438
       ext_params:
         timeout: 560
-        keep_alive: -1
+        keep_alive: 120
