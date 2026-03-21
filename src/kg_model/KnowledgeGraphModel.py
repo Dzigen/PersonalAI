@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from copy import deepcopy
 from collections import defaultdict
 from time import time
+import torch
 
 from .config import KG_MAIN_LOG_PATH, DEFAULT_AGENTS_MAP, DEFAULT_EMBEDDERS_MAP, \
     DEFAULT_AGENTS_CONFIG, DEFAULT_EMBEDDERS_CONFIG
@@ -404,3 +405,5 @@ class KnowledgeGraphModel:
         self.graph_struct.close_connections()
         if self.nodestree_model is not None:
             self.nodestree_model.close_connections()
+
+        torch.cuda.empty_cache()

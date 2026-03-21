@@ -27,14 +27,14 @@ class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param agent_tasks_config: Конфигурации LLM-промптов для решения заданных задач с помощью LLM-агента. Значение по умолчанию ClueQueriesGeneratorAgentTasksConfig().
     :type agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict], optional
-    :param max_cqueries_amount: Максимальное количество clue-запросов, которое может быть сгенерировано. Значение по умолчанию 4.
+    :param max_cqueries_amount: Максимальное количество clue-запросов, которое может быть сгенерировано. Значение по умолчанию 2.
     :type max_cqueries_amount: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы ClueQueriesGenerator-класса. Значение по умолчанию 'medreasn_cquerygen_main_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict] = field(default_factory=lambda: ClueQueriesGeneratorAgentTasksConfig())
-    max_cqueries_amount: int = 3
+    max_cqueries_amount: int = 2
 
     cache_table_name: str = 'medreasn_cquerygen_main_stage_cache'
     log_path: str = CQGEN_MAIN_LOG_PATH

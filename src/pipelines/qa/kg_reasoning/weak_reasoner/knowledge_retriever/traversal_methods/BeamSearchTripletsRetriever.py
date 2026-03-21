@@ -220,7 +220,8 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         incident_triples: List[TripletInfo] = \
             self.kg_model.graph_struct.db_conn.get_incident_triples(
                 base_node, accepted_n_types=self.config.accepted_node_types)
-        self.log(f"Количество инцидентных триплетов к вершине {base_node}: {len(incident_triples)}", verbose=self.verbose)
+        self.log.debug(f"Количество инцидентных триплетов к вершине {base_node}: {len(incident_triples)}",
+                       verbose=self.verbose, log_level=self.log_level)
 
         #
         adjn_to_incidr_map: Dict[str, List[Tuple[str, RelationInfo]]] = defaultdict(list)
@@ -236,7 +237,8 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
         filtered_adjacent_nodes_typedids: List[str] = self.filter_nodes_typedids(
             list(adjn_to_incidr_map.keys()), cur_path_idx, traversing_paths, prev_node)
-        self.log(f"Количество смежных вершин к {base_node} после фильтрации: {len(filtered_adjacent_nodes_typedids)}", verbose=self.verbose)
+        self.log.debug(f"Количество смежных вершин к {base_node} после фильтрации: {len(filtered_adjacent_nodes_typedids)}",
+                       verbose=self.verbose, log_level=self.log_level)
 
         if len(filtered_adjacent_nodes_typedids) < 1:
             return shared_t_info, rids_to_tids_map, True
@@ -250,7 +252,8 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
         filtered_incident_relations_tids: List[str] = self.filter_relations_tids(
             list(incidr_to_adjn_map.keys()), cur_path_idx, traversing_paths)
-        self.log(f"Количество инцидентных отношений к вершине {base_node} после фильтрации: {len(filtered_incident_relations_tids)}", verbose=self.verbose)
+        self.log.debug(f"Количество инцидентных отношений к вершине {base_node} после фильтрации: {len(filtered_incident_relations_tids)}",
+                       verbose=self.verbose, log_level=self.log_level)
 
         #
         for t_id in filtered_incident_relations_tids:

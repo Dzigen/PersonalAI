@@ -324,9 +324,9 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
 
     :param metrics_config: Конфигурация класса, выполняющая расчёт необходимых метрик для A*-алгоритма. Значение по умолчанию AStarMetricsConfig().
     :type metrics_config: Union[Dict,AStarMetricsConfig]
-    :param max_depth: Максимальная глубина обхода графа для поиска заданной вершины. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 10.
+    :param max_depth: Максимальная глубина обхода графа для поиска заданной вершины. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 5.
     :type max_depth: int
-    :param max_passed_nodes: Максимальное количество вершин, которое можно обойти для поиска заданной вершины в графе. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 250.
+    :param max_passed_nodes: Максимальное количество вершин, которое можно обойти для поиска заданной вершины в графе. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 50.
     :type max_passed_nodes: int
     :param max_adjanced_nodes: ... . Значение по умолчанию 25.
     :type max_adjanced_nodes: int
@@ -336,8 +336,8 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     :type accepted_node_types: List[Union[str,NodeType]]
     """
     metrics_config: Union[Dict, AStarMetricsConfig] = field(default_factory=lambda: AStarMetricsConfig())
-    max_depth: int = 10
-    max_passed_nodes: int = 250
+    max_depth: int = 5
+    max_passed_nodes: int = 50
     max_adjanced_nodes: int = 25  # decimal natural number OR -1
     adjacent_nodes_filter_node: Union[None, str] = "end_node"  # "start_node" OR "end_node" OR None
     accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [
@@ -399,8 +399,8 @@ class AStarGraphSearch:
 
     def filter_adjacent_nodes(self, adjacent_nodes: List[NodeInfo], start_node: NodeInfo, end_node: NodeInfo) -> List[NodeInfo]:
         ntypes_freq = dict(Counter([node_info.type for node_info in adjacent_nodes]))
-        self.log(f"Frequency of adj_nodes-types before filtering: {ntypes_freq}", verbose=self.verbose)
-        self.log(f"start_node = {start_node}; end_node = {end_node}", verbose=self.verbose)
+        self.log.debug(f"Frequency of adj_nodes-types before filtering: {ntypes_freq}", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug(f"start_node = {start_node}; end_node = {end_node}", verbose=self.verbose, log_level=self.log_level)
 
         if self.config.max_adjanced_nodes > -1:
             if self.config.adjacent_nodes_filter_node == 'start_node':
@@ -430,7 +430,7 @@ class AStarGraphSearch:
             filtered_adjacent_nodes = adjacent_nodes
 
         ntypes_freq = dict(Counter([node_info.type for node_info in filtered_adjacent_nodes]))
-        self.log(f"Frequency of adj_nodes-types after filtering: {ntypes_freq}", verbose=self.verbose)
+        self.log.debug(f"Frequency of adj_nodes-types after filtering: {ntypes_freq}", verbose=self.verbose, log_level=self.log_level)
 
         return filtered_adjacent_nodes
 
