@@ -6,9 +6,9 @@ USERNAME=root
 
 # ===============================================================
 
-DATASETS=("diaasq" "natural_questions_train" "trivia_qa_rcwikipedia_validation" "diaasq" "natural_questions_train" "trivia_qa_rcwikipedia_validation")  # TO CHANGE
-KNOWLEDGE_GRAPHS=("gemma29b_260226" "gemma29b_270226" "gemma29b_280226" "gemma312b_070326" "gemma312b_080326" "gemma312b_090326") # TO CHANGE
-METHODS=("hipporag2" "hipporag2" "hipporag2" "hipporag2" "hipporag2" "hipporag2") # TO CHANGE
+DATASETS=("2wikimultihopqa_dev" "diaasq" "hotpotqa_distractor_validation" "musique_validation" "natural_questions_train" "trivia_qa_rcwikipedia_validation")  # TO CHANGE
+KNOWLEDGE_GRAPHS=("qwen257b_170326" "qwen257b_180326" "qwen257b_190326" "qwen257b_200326" "qwen257b_210326" "qwen257b_220326") # TO CHANGE
+METHODS=("hipporag2" "hipporag2" "hipporag2" "hipporag2" "hipporag2" "hipporag2" ) # TO CHANGE
 
 # ===============================================================
 

@@ -1,6 +1,6 @@
 METHOD_NAME: raptor
-DATASET_NAME: trivia_qa_rcwikipedia_validation
-KNOWLEDGE_GRAPH_NAME: gemma312b_090326
+DATASET_NAME: diaasq
+KNOWLEDGE_GRAPH_NAME: qwen257b_180326
 LOCAL_PERSONALAI_PATH: /home/m.menschikov/workspace/personal_ai/Personal-AI
 LOCAL_KG_PATH: /mnt/data/m.menschikov/personalai/knowledge_graphs/analogues_eval
 OLLAMA_MODELS_PATH: /mnt/data/m.menschikov/ollama_volume

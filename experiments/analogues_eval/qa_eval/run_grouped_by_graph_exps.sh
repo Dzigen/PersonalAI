@@ -12,11 +12,11 @@ USERNAME=root
 
 # ===============================================================
 
-DATASETS=("diaasq" "natural_questions_train" "trivia_qa_rcwikipedia_validation" "diaasq" "natural_questions_train" "trivia_qa_rcwikipedia_validation") # TO CHANGE
-KNOWLEDGE_GRAPHS=("gemma29b_260226" "gemma29b_270226" "gemma29b_280226" "gemma312b_070326" "gemma312b_080326" "gemma312b_090326") # TO CHANGE
-EVAL_FNAMES=("diaasq.yaml" "natural_questions_train.yaml" "trivia_qa_rcwikipedia_validation.yaml" "diaasq.yaml" "natural_questions_train.yaml" "trivia_qa_rcwikipedia_validation.yaml") # TO CHANGE
-CONFIGURE_FNAMES=("diaasq.yaml" "natural_questions_train.yaml" "trivia_qa_rcwikipedia_validation.yaml" "diaasq.yaml" "natural_questions_train.yaml" "trivia_qa_rcwikipedia_validation.yaml") # TO CHANGE
-METHOD_NAMES=("hipporag2" "hipporag2" "hipporag2" "hipporag2" "hipporag2" "hipporag2") # TO CHANGE
+DATASETS=("diaasq") # TO CHANGE
+KNOWLEDGE_GRAPHS=("qwen257b_180326") # TO CHANGE
+EVAL_FNAMES=("diaasq.yaml") # TO CHANGE
+CONFIGURE_FNAMES=("diaasq.yaml") # TO CHANGE
+METHOD_NAMES=("raptor") # TO CHANGE
 
 # ===============================================================
 
