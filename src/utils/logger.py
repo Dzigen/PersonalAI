@@ -70,6 +70,15 @@ class Logger:
         listener.start()
         atexit.register(listener.stop)
 
+    def __del__(self):
+        try:
+            self.stream_handler.close() 
+            self.file_handler.close()
+            self.logger.removeHandler(self.stream_handler)
+            self.logger.removeHandler(self.file_handler)
+        except AttributeError:
+            pass
+
     def create_id(self, seed: Union[None, str] = None) -> str:
         if seed is None:
             seed = f"{time()}"

@@ -1,8 +1,4 @@
 from .configs import DEFAULT_LLMJUDGE_TASK_CONFIG, EVAL_JUDGE_MAIN_LOG_PATH
-from src.db_drivers.kv_driver import KeyValueDriverConfig
-from src.utils.cache_kv import CacheKV, CacheUtils
-from src.agents import AgentDriver, AgentDriverConfig
-from src.utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
 from dataclasses import dataclass, field
 from typing import Union
 from copy import deepcopy
@@ -11,6 +7,11 @@ import sys
 BASE_PATH = '../../'
 sys.path.insert(0, BASE_PATH)
 
+from src.db_drivers.kv_driver import KeyValueDriverConfig
+from src.utils.cache_kv import CacheKV, CacheUtils
+from src.agents import AgentDriver, AgentDriverConfig
+from src.utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, AgentTaskSolverConfig
+from src.utils.logger import LogLevel
 
 @dataclass
 class AnswersJudgeConfig:
@@ -19,8 +20,9 @@ class AnswersJudgeConfig:
     llmjudge_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_LLMJUDGE_TASK_CONFIG)
     cache_table_name: Union[str, None] = 'qaeval_judge_cache'
 
-    log: Logger = field(default_factory=lambda: Logger(EVAL_JUDGE_MAIN_LOG_PATH))
+    log_path: Logger = EVAL_JUDGE_MAIN_LOG_PATH
     verbose: bool = False
+    log_level: LogLevel = LogLevel.DEBUG
 
     cache_table_name: str = "qaeval_judge_cache"
 
@@ -31,8 +33,9 @@ class AnswersJudge(CacheUtils):
                  cache_kvdriver_config: KeyValueDriverConfig = None,
                  cache_llm_inference: bool = False):
 
-        self.log = config.log
+        self.log = Logger(config.log_path)
         self.verbose = config.verbose
+        self.log_level = config.log_level
         self.config = config
 
         if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
@@ -59,11 +62,12 @@ class AnswersJudge(CacheUtils):
     @CacheUtils.cache_method_output
     def perform(self, question: str, ground_truth: str, predicted_response: str) -> Union[int, float]:
         info = ReturnInfo()
-        self.log.info("START JUDGING...", verbose=self.verbose)
+        self.log.info("START JUDGING...", 
+                      verbose=self.verbose, log_level=self.log_level)
         self.log.info(f"* GROUND_TRUTH: {ground_truth}",
-                 verbose=self.verbose)
+                 verbose=self.verbose, log_level=self.log_level)
         self.log.info(f"* PREDICTED: {predicted_response}",
-                 verbose=self.verbose)
+                 verbose=self.verbose, log_level=self.log_level)
 
         predicted_score, status, _ = self.llmjudge_solver.solve(
             lang=self.config.lang, question=question,
@@ -71,6 +75,7 @@ class AnswersJudge(CacheUtils):
 
         if status != ReturnStatus.success:
             info.occurred_warning.append(status)
-        self.log.info(f"RESULT: {predicted_score}", verbose=self.verbose)
+        self.log.info(f"RESULT: {predicted_score}", 
+                      verbose=self.verbose, log_level=self.log_level)
 
         return predicted_score, info

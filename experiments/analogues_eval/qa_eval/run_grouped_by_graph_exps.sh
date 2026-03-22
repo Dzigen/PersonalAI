@@ -12,11 +12,11 @@ USERNAME=root
 
 # ===============================================================
 
-DATASETS=("diaasq") # TO CHANGE
-KNOWLEDGE_GRAPHS=("qwen257b_180326") # TO CHANGE
-EVAL_FNAMES=("diaasq.yaml") # TO CHANGE
-CONFIGURE_FNAMES=("diaasq.yaml") # TO CHANGE
-METHOD_NAMES=("raptor") # TO CHANGE
+DATASETS=("2wikimultihopqa_dev" "diaasq" "hotpotqa_distractor_validation" "musique_validation" "natural_questions_train" "trivia_qa_rcwikipedia_validation") # TO CHANGE
+KNOWLEDGE_GRAPHS=("qwen257b_170326" "qwen257b_180326" "qwen257b_190326" "qwen257b_200326" "qwen257b_210326" "qwen257b_220326") # TO CHANGE
+EVAL_FNAMES=("2wikimultihopqa_dev.yaml" "diaasq.yaml" "hotpotqa_distractor_validation.yaml" "musique_validation.yaml" "natural_questions_train.yaml" "trivia_qa_rcwikipedia_validation.yaml") # TO CHANGE
+CONFIGURE_FNAMES=("2wikimultihopqa_dev.yaml" "diaasq.yaml" "hotpotqa_distractor_validation.yaml" "musique_validation.yaml" "natural_questions_train.yaml" "trivia_qa_rcwikipedia_validation.yaml") # TO CHANGE
+METHOD_NAMES=("lightrag" "lightrag" "lightrag" "lightrag" "lightrag" "lightrag") # TO CHANGE
 
 # ===============================================================
 

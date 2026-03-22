@@ -27,7 +27,7 @@ class LightRAGBuildOperations(GraphRAGBuildOperations):
         from lightrag import LightRAG
         from lightrag.llm.openai import openai_complete_if_cache
         from lightrag.utils import EmbeddingFunc
-        setup_logger("lightrag", level="WARNING")
+        setup_logger("lightrag", level="INFO")
 
         async def ollama_complete_func(
                 prompt, system_prompt=None, history_messages=None, enable_cot: bool = False,
