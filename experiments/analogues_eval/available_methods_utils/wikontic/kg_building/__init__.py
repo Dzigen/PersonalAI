@@ -1,1 +1,1 @@
-from .method_inteface import WikonticBuildOperations
+from .method_interface import WikonticBuildOperations

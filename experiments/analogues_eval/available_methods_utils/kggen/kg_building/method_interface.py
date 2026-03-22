@@ -5,8 +5,8 @@ import os
 import json
 import sys
 
-EXPEROMETS_BASE_PATH="/home/workspace/experiments"
-sys.path.insert(0, EXPEROMETS_BASE_PATH)
+EXPERIMENTS_BASE_PATH="/home/workspace/experiments"
+sys.path.insert(0, EXPERIMENTS_BASE_PATH)
 
 from analogues_eval.available_methods_utils.utils import GraphRAGBuildOperations
 
@@ -98,7 +98,7 @@ class KGGenBuildOperations(GraphRAGBuildOperations):
     @staticmethod
     def prepare_kgbuild_env_params(conn_params: Dict, env_params: Dict, hyperp_params: Dict) -> List[Dict[str,str]]:
         return []
-    
+
     @staticmethod
     def create_kg_structure(env_params: Dict, hyperp_params: Dict) -> None:
         pass

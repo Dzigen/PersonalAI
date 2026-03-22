@@ -1,1 +1,1 @@
-from .method_inteface import LightRAGBuildOperations
+from .method_interface import LightRAGBuildOperations

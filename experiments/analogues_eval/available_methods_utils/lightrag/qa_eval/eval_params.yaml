@@ -1,0 +1,4 @@
+METHOD_NAME: 'lightrag'
+EXPERIMENT_NAME: "gemma29b(v2.2.1)(#1)" # TO CHANGE
+DATASET_NAME: 'mine_train_kgeval' # TO CHANGE
+KNOWLEDGE_GRAPH_NAME: 'gemma29b_180226_mine_wikontic' # TO CHANGE

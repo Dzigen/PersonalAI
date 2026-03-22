@@ -1,1 +1,1 @@
-from .method_inteface import Hipporag2BuildOperations
+from .method_interface import Hipporag2BuildOperations

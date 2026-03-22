@@ -1,25 +1,74 @@
+import os
+os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
+
 from typing import List, Dict
 import sys
 import yaml
-from tqdm import tqdm
+import os
+import asyncio
+import numpy as np
+from typing import List, Dict
+from sentence_transformers import SentenceTransformer
 
-EXPEROMETS_BASE_PATH="/home/workspace/experiments"
-sys.path.insert(0, EXPEROMETS_BASE_PATH)
+EXPERIMENTS_BASE_PATH="/home/workspace/experiments" # TO CHANGE
+sys.path.insert(0, EXPERIMENTS_BASE_PATH)
 
 from analogues_eval.available_methods_utils.utils import GraphRAGBuildOperations
 
+HF_TOKEN = None # TO CHANGE
 
 class LightRAGBuildOperations(GraphRAGBuildOperations):
     def __init__(self, config: Dict):
         # костыль
-        LIGHTRAG_SOURCE_PATH="/home/workspace/experiments/analogues_eval/available_methods_utils/lightrag/method_source/src"  # TO CHANGE
+        LIGHTRAG_SOURCE_PATH="/home/workspace/experiments/analogues_eval/available_methods_utils/lightrag/method_source"  # TO CHANGE
         sys.path.insert(0, LIGHTRAG_SOURCE_PATH)
 
-        raise NotImplementedError
+        from lightrag.utils import setup_logger
+        from lightrag import LightRAG
+        from lightrag.llm.openai import openai_complete_if_cache
+        from lightrag.utils import EmbeddingFunc
+        setup_logger("lightrag", level="WARNING")
 
-    @staticmethod
-    def prepare_method_config(conn_params: Dict, env_params: Dict, hyperp_params: Dict) -> Dict:
+        async def ollama_complete_func(
+                prompt, system_prompt=None, history_messages=None, enable_cot: bool = False,
+                keyword_extraction=False, **kwargs) -> str:
+            if history_messages is None:
+                history_messages = []
+            return await openai_complete_if_cache(
+                config['llm_model_name'],
+                prompt,
+                api_key='ollama',
+                system_prompt=system_prompt,
+                history_messages=history_messages,
+                enable_cot=enable_cot,
+                keyword_extraction=keyword_extraction,
+                **kwargs,
+            )
 
+        async def embedding_func(texts: list[str]) -> np.ndarray:
+            model = SentenceTransformer(config['embedding_model_name'], token=HF_TOKEN)
+            embeddings = model.encode(texts, convert_to_numpy=True)
+            return embeddings
+
+        if not os.path.exists(config['save_dir']):
+            os.mkdir(config['save_dir'])
+
+        self.method = LightRAG(
+            working_dir=config['save_dir'],
+            embedding_func=EmbeddingFunc(
+                embedding_dim=config['embedding_dim'],
+                max_token_size=config['embedding_max_token_size'],
+                func=embedding_func,
+            ),
+            llm_model_func=ollama_complete_func,
+            llm_model_kwargs={"base_url": config['llm_base_url'], "max_completion_tokens": 32768, 'timeout': 60},
+            llm_model_name=config['llm_model_name']
+        )
+        asyncio.run(self.method.initialize_storages())
+
+        self.config = config
+
+    def prepare_method_config(env_params: Dict, hyperp_params: Dict) -> Dict:
         llm_info = hyperp_params['METHOD_CONFIG']['agent_config']
         llm_base_url = f"http://{llm_info['credentials']['host']}:{llm_info['credentials']['port']}/v1"
         embedder_info = hyperp_params['METHOD_CONFIG']['embedder_config']
@@ -29,32 +78,27 @@ class LightRAGBuildOperations(GraphRAGBuildOperations):
 
         config = {
             'save_dir': save_dir,
+
             'llm_model_name': llm_info['credentials']['model'],
             'llm_base_url': llm_base_url,
-            'embedding_model_name': embedder_info['model_name_or_path']
+
+            'embedding_model_name': embedder_info['model_name_or_path'],
+            'embedding_dim': 768,
+            'embedding_max_token_size': 8192
         }
         return config
 
     def build_graph(self, documents: List[str]) -> None:
-        raise NotImplementedError
+        asyncio.run(self.method.ainsert(input=documents))
 
     def save_graph(self, env_params: Dict, hyperp_params: Dict) -> None:
-        raise NotImplementedError
-
-    def print_graph_info(self) -> None:
-        try:
-            print(self.method.get_graph_info())
-        except (ValueError, AttributeError):
-            pass
-
-    @staticmethod
-    def prepare_kgbuild_env_params(conn_params: Dict, env_params: Dict, hyperp_params: Dict) -> List[Dict[str,str]]:
-        return []
-
-    @staticmethod
-    def create_kg_structure(env_params: Dict, hyperp_params: Dict) -> None:
         pass
 
+    def print_graph_info(self) -> None:
+        pass
+
+    def prepare_kgbuild_env_params(self, conn_params: Dict, hyperp_params: Dict) -> List[Dict[str,str]]:
+        return []
 
 if __name__ == "__main__":
 

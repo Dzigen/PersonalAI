@@ -100,6 +100,8 @@ src/dialogue_processing/
 src/question_answer_rephrasing/
 
 experiments/analogues_eval/available_methods_utils/raptor/method_source
+experiments/analogues_eval/available_methods_utils/lightrag/method_source
+experiments/analogues_eval/available_methods_utils/hipporag2/method_source/
 
 experiments/kg_eval/mine/runexperiment_log.txt
 experiments/kg_eval/mine/configure/initdir_log.txt
@@ -121,12 +123,13 @@ experiments/analogues_eval/available_methods_utils/wikontic/kg_eval/prepared_par
 experiments/analogues_eval/available_methods_utils/kggen/kg_eval/prepared_params/
 experiments/analogues_eval/available_methods_utils/raptor/qa_eval/prepared_params/
 experiments/analogues_eval/available_methods_utils/hipporag2/qa_eval/prepared_params/
+experiments/analogues_eval/available_methods_utils/lightrag/qa_eval/prepared_params/
 experiments/analogues_eval/available_methods_utils/raptor/kg_building/prepared_params/
 experiments/analogues_eval/available_methods_utils/kggen/kg_building/prepared_params/
 experiments/analogues_eval/available_methods_utils/hipporag2/kg_building/prepared_params/
 experiments/analogues_eval/available_methods_utils/wikontic/kg_building/prepared_params/
+experiments/analogues_eval/available_methods_utils/lightrag/kg_building/prepared_params/
 
-experiments/analogues_eval/available_methods_utils/hipporag2/method_source/
 experiments/analogues_eval/qa_eval/params_to_run/
 experiments/analogues_eval/qa_eval/env_settings/
 experiments/analogues_eval/kg_eval/mine/env_settings/

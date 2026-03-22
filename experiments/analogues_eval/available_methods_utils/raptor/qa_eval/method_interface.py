@@ -3,8 +3,8 @@ import yaml
 from typing import List, Dict
 import json
 
-EXPEROMETS_BASE_PATH="/home/workspace/experiments"
-sys.path.insert(0, EXPEROMETS_BASE_PATH)
+EXPERIMENTS_BASE_PATH="/home/workspace/experiments"
+sys.path.insert(0, EXPERIMENTS_BASE_PATH)
 
 from analogues_eval.available_methods_utils.utils import GraphRAGQAOperations
 from analogues_eval.available_methods_utils.raptor.kg_building import RaptorBuildOperations
@@ -16,7 +16,7 @@ class RaptorQAOperations(GraphRAGQAOperations, RaptorBuildOperations):
         RAPTOR_SOURCE_PATH="/home/workspace/experiments/analogues_eval/available_methods_utils/raptor/method_source" # TO CHANGE
         sys.path.insert(0, RAPTOR_SOURCE_PATH)
         from raptor import RetrievalAugmentation, RetrievalAugmentationConfig, SBertEmbeddingModel
-        
+
         UTILS_SOURCE_PATH="/home/workspace/experiments/analogues_eval/available_methods_utils/raptor"  # TO CHANGE
         sys.path.insert(0, UTILS_SOURCE_PATH)
         from utils import CustomQAModel, CustomSummarizationModel

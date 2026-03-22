@@ -1,26 +1,77 @@
+import os
+os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 import yaml
 from typing import List, Dict
 import sys
 import json
+import yaml
+import asyncio
+import numpy as np
+from typing import List, Dict
+from sentence_transformers import SentenceTransformer
+
 
 EXPERIMENTS_BASE_PATH="/home/workspace/experiments"
 sys.path.insert(0, EXPERIMENTS_BASE_PATH)
 
 from analogues_eval.available_methods_utils.utils import GraphRAGQAOperations
-from analogues_eval.available_methods_utils.hipporag2.kg_building import Hipporag2BuildOperations
+from analogues_eval.available_methods_utils.lightrag.kg_building import LightRAGBuildOperations
 
-class Hipporag2QAOperations(GraphRAGQAOperations, Hipporag2BuildOperations):
+HF_TOKEN = None # TO CHANGE
 
-    def __init__(self, memory_config: Dict, qa_config: Dict) -> None:
+class LightRAGQAOperations(GraphRAGQAOperations, LightRAGBuildOperations):
+
+    def __init__(self, memory_config: Dict, qa_config: Dict):
         # костыль
-        HIPPORAG_SOURCE_PATH="/home/workspace/experiments/analogues_eval/available_methods_utils/hipporag2/method_source/src"  # TO CHANGE
-        sys.path.insert(0, HIPPORAG_SOURCE_PATH)
-        from hipporag import HippoRAG
+        LIGHTRAG_SOURCE_PATH="/home/workspace/experiments/analogues_eval/available_methods_utils/lightrag/method_source"  # TO CHANGE
+        sys.path.insert(0, LIGHTRAG_SOURCE_PATH)
 
-        self.method = HippoRAG(**memory_config)
-        self.method.global_config.save_openie = False # костыль
+        from lightrag.utils import setup_logger
+        from lightrag import LightRAG, QueryParam
+        from lightrag.llm.openai import openai_complete_if_cache
+        from lightrag.utils import EmbeddingFunc
+        setup_logger("lightrag", level="WARNING")
+
+        async def ollama_complete_func(
+                prompt, system_prompt=None, history_messages=None, enable_cot: bool = False,
+                keyword_extraction=False, **kwargs) -> str:
+            if history_messages is None:
+                history_messages = []
+            return await openai_complete_if_cache(
+                memory_config['llm_model_name'],
+                prompt,
+                api_key='ollama',
+                system_prompt=system_prompt,
+                history_messages=history_messages,
+                enable_cot=enable_cot,
+                keyword_extraction=keyword_extraction,
+                **kwargs,
+            )
+
+        async def embedding_func(texts: list[str]) -> np.ndarray:
+            model = SentenceTransformer(memory_config['embedding_model_name'], token=HF_TOKEN)
+            embeddings = model.encode(texts, convert_to_numpy=True)
+            return embeddings
+
+        if not os.path.exists(memory_config['save_dir']):
+            os.mkdir(memory_config['save_dir'])
+
+        self.method: LightRAG = LightRAG(
+            working_dir=memory_config['save_dir'],
+            embedding_func=EmbeddingFunc(
+                embedding_dim=memory_config['embedding_dim'],
+                max_token_size=memory_config['embedding_max_token_size'],
+                func=embedding_func,
+            ),
+            llm_model_func=ollama_complete_func,
+            llm_model_kwargs={"base_url": memory_config['llm_base_url'], "max_completion_tokens": 32768, 'timeout': 60},
+            llm_model_name=memory_config['llm_model_name']
+        )
+        asyncio.run(self.method.initialize_storages())
+
         self.config = memory_config
         self.qa_config = qa_config
+        self.method_params = QueryParam(mode="hybrid")
 
     @staticmethod
     def prepare_qaeval_env_params(conn_params: Dict, env_params: Dict) -> List[Dict[str,str]]:
@@ -31,8 +82,11 @@ class Hipporag2QAOperations(GraphRAGQAOperations, Hipporag2BuildOperations):
         return dict()
 
     def perform_qa(self, questions: List[str]) -> List[str]:
-        rag_results = self.method.rag_qa(queries=questions)
-        answers = [qa_result.answer for qa_result in rag_results[0]]
+        answers = []
+        for question in questions:
+            answer = asyncio.run(self.method.aquery(question,param=self.method_params))
+            answers.append(answer)
+
         return answers
 
 if __name__ == "__main__":

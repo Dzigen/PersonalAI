@@ -3,8 +3,9 @@ import yaml
 import sys
 import json
 
-EXPEROMETS_BASE_PATH="/home/workspace/experiments"
-sys.path.insert(0, EXPEROMETS_BASE_PATH)
+EXPERIMENTS_BASE_PATH="/home/workspace/experiments"
+sys.path.insert(0, EXPERIMENTS_BASE_PATH)
+
 from analogues_eval.available_methods_utils.utils import GraphRAGMINEOperations
 
 class KGGenMINEOperations(GraphRAGMINEOperations):
@@ -34,11 +35,11 @@ class KGGenMINEOperations(GraphRAGMINEOperations):
         _, context, _ = self.method.retrieve(
             question, self.node_embeddings, self.aggregated_nxgraph,
             k=self.mine_config['max_init_nodes'])
-        
+
         filtered_context = list(context)
         if self.mine_config['triples_in_total'] > 0:
             filtered_context = filtered_context[:self.mine_config['triples_in_total']]
-        
+
         return filtered_context
 
     @staticmethod
