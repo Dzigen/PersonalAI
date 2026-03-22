@@ -47,10 +47,11 @@ class LightRAGQAOperations(GraphRAGQAOperations, LightRAGBuildOperations):
                 keyword_extraction=keyword_extraction,
                 **kwargs,
             )
+        
+        self.embedder_model = SentenceTransformer(memory_config['embedding_model_name'], token=HF_TOKEN)
 
         async def embedding_func(texts: list[str]) -> np.ndarray:
-            model = SentenceTransformer(memory_config['embedding_model_name'], token=HF_TOKEN)
-            embeddings = model.encode(texts, convert_to_numpy=True)
+            embeddings = self.embedder_model.encode(texts, convert_to_numpy=True)
             return embeddings
 
         if not os.path.exists(memory_config['save_dir']):
@@ -84,7 +85,7 @@ class LightRAGQAOperations(GraphRAGQAOperations, LightRAGBuildOperations):
     def perform_qa(self, questions: List[str]) -> List[str]:
         answers = []
         for question in questions:
-            answer = asyncio.run(self.method.aquery(question,param=self.method_params))
+            answer = self.method.query(question,param=self.method_params)
             answers.append(answer)
 
         return answers
@@ -116,12 +117,12 @@ if __name__ == "__main__":
     ]
 
     print("Generated env params:")
-    env_params = Hipporag2QAOperations.prepare_qaeval_env_params(
+    env_params = LightRAGQAOperations.prepare_qaeval_env_params(
         example_kgconn_params, example_env_params)
     print(env_params)
 
     print("Generated qa config:")
-    qa_config = Hipporag2QAOperations.prepare_qa_config()
+    qa_config = LightRAGQAOperations.prepare_qa_config()
     print(qa_config)
 
     example_documents = [
@@ -147,7 +148,7 @@ if __name__ == "__main__":
     ]
 
     print("Initializing method...")
-    method = Hipporag2QAOperations(example_memory_config, qa_config)
+    method = LightRAGQAOperations(example_memory_config, qa_config)
     # method.build_graph(example_documents)
     # print("Builded graph info:")
     # method.print_graph_info()

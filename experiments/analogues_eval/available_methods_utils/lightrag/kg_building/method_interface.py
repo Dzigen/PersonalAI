@@ -45,9 +45,10 @@ class LightRAGBuildOperations(GraphRAGBuildOperations):
                 **kwargs,
             )
 
+        self.embedder_model = SentenceTransformer(config['embedding_model_name'], token=HF_TOKEN)
+
         async def embedding_func(texts: list[str]) -> np.ndarray:
-            model = SentenceTransformer(config['embedding_model_name'], token=HF_TOKEN)
-            embeddings = model.encode(texts, convert_to_numpy=True)
+            embeddings = self.embedder_model.encode(texts, convert_to_numpy=True)
             return embeddings
 
         if not os.path.exists(config['save_dir']):
@@ -68,7 +69,7 @@ class LightRAGBuildOperations(GraphRAGBuildOperations):
 
         self.config = config
 
-    def prepare_method_config(env_params: Dict, hyperp_params: Dict) -> Dict:
+    def prepare_method_config(conn_params: Dict, env_params: Dict, hyperp_params: Dict) -> Dict:
         llm_info = hyperp_params['METHOD_CONFIG']['agent_config']
         llm_base_url = f"http://{llm_info['credentials']['host']}:{llm_info['credentials']['port']}/v1"
         embedder_info = hyperp_params['METHOD_CONFIG']['embedder_config']
@@ -83,7 +84,7 @@ class LightRAGBuildOperations(GraphRAGBuildOperations):
             'llm_base_url': llm_base_url,
 
             'embedding_model_name': embedder_info['model_name_or_path'],
-            'embedding_dim': 768,
+            'embedding_dim': 1024,
             'embedding_max_token_size': 8192
         }
         return config
