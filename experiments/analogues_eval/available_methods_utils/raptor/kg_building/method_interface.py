@@ -1,23 +1,36 @@
-from typing import List, Dict
 import sys
 import yaml
 from tqdm import tqdm
+from typing import List, Dict
 
-EXPEROMETS_BASE_PATH="/home/workspace/experiments"
-sys.path.insert(0, EXPEROMETS_BASE_PATH)
+EXPERIMENTS_BASE_PATH="/home/workspace/experiments"
+sys.path.insert(0, EXPERIMENTS_BASE_PATH)
 
 from analogues_eval.available_methods_utils.utils import GraphRAGBuildOperations
 
-
-class Hipporag2BuildOperations(GraphRAGBuildOperations):
+class RaptorBuildOperations(GraphRAGBuildOperations):
     def __init__(self, config: Dict):
         # костыль
-        HIPPORAG_SOURCE_PATH="/home/workspace/experiments/analogues_eval/available_methods_utils/hipporag2/method_source/src"  # TO CHANGE
-        sys.path.insert(0, HIPPORAG_SOURCE_PATH)
-        from hipporag import HippoRAG
+        RAPTOR_SOURCE_PATH="/home/workspace/experiments/analogues_eval/available_methods_utils/raptor/method_source"  # TO CHANGE
+        sys.path.insert(0, RAPTOR_SOURCE_PATH)
+        from raptor import RetrievalAugmentation, RetrievalAugmentationConfig, SBertEmbeddingModel
 
-        self.method = HippoRAG(**config)
-        self.method.global_config.save_openie = False # костыль
+        UTILS_SOURCE_PATH="/home/workspace/experiments/analogues_eval/available_methods_utils/raptor"  # TO CHANGE
+        sys.path.insert(0, UTILS_SOURCE_PATH)
+        from utils import CustomQAModel, CustomSummarizationModel
+
+        formated_config = RetrievalAugmentationConfig(
+            summarization_model=CustomSummarizationModel(
+                model_name=config['llm_model_name'], base_url=config['llm_base_url']
+            ),
+            qa_model=CustomQAModel(
+                model_name=config['llm_model_name'], base_url=config['llm_base_url']
+            ),
+            embedding_model=SBertEmbeddingModel(
+                model_name=config['embedding_model_name']
+            )
+        )
+        self.method = RetrievalAugmentation(config=formated_config)
         self.config = config
 
     @staticmethod
@@ -39,16 +52,14 @@ class Hipporag2BuildOperations(GraphRAGBuildOperations):
         return config
 
     def build_graph(self, documents: List[str]) -> None:
-        self.method.index(docs=documents)
+        concated_documents = '\n\n'.join(documents)
+        self.method.add_documents(concated_documents)
 
     def save_graph(self, env_params: Dict, hyperp_params: Dict) -> None:
-        self.method.save_igraph()
+        self.method.save(f"{self.config['save_dir']}/storage")
 
     def print_graph_info(self) -> None:
-        try:
-            print(self.method.get_graph_info())
-        except (ValueError, AttributeError):
-            pass
+        pass
 
     @staticmethod
     def prepare_kgbuild_env_params(conn_params: Dict, env_params: Dict, hyperp_params: Dict) -> List[Dict[str,str]]:
@@ -57,7 +68,6 @@ class Hipporag2BuildOperations(GraphRAGBuildOperations):
     @staticmethod
     def create_kg_structure(env_params: Dict, hyperp_params: Dict) -> None:
         pass
-
 
 if __name__ == "__main__":
 
@@ -86,21 +96,21 @@ if __name__ == "__main__":
     ]
 
     print("Generated env params:")
-    env_params = Hipporag2BuildOperations.prepare_kgbuild_env_params(
+    env_params = RaptorBuildOperations.prepare_kgbuild_env_params(
         example_conn_params, example_env_params, example_hyperp_params)
     print(env_params)
 
     print("Generated config:")
-    config = Hipporag2BuildOperations.prepare_method_config(
+    config = RaptorBuildOperations.prepare_method_config(
         example_conn_params, example_env_params, example_hyperp_params)
     print(config)
 
     print("Generating method-graph structure:")
-    Hipporag2BuildOperations.create_kg_structure(
+    RaptorBuildOperations.create_kg_structure(
         example_env_params, example_hyperp_params)
 
     print("Initializing method...")
-    method = Hipporag2BuildOperations(config)
+    method = RaptorBuildOperations(config)
     print("Building graph...")
     method.build_graph(example_documents)
 

@@ -10,12 +10,15 @@ import heapq
 from time import time
 from copy import deepcopy
 from collections import Counter, defaultdict, deque
+
+from .configs import ASTAR_RETRIEVER_LOG_PATH
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig, get_nodes_path, NodeInfo
 from .......utils.data_structs import QueryInfo, Triplet, NodeType, create_id_for_node_pair, create_id, \
     NODES_TYPES_MAP, NodeInfo, from_str_to_nodeinfo, BaseConfigOperations
 from .......kg_model import KnowledgeGraphModel
 from .......db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver, KeyValueDBInstance
 from .......utils import Logger, accumulate_step_info, ReturnInfo
+from .......utils.logger import LogLevel
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
 from .......db_drivers.vector_driver import VectorDBInstance, VectorRetriveComposer
@@ -68,7 +71,7 @@ class AStarMetrics:
     def __init__(self, kg_model: KnowledgeGraphModel, accepted_node_types: List[NodeType], log: Logger,
                  config: Union[Dict, AStarMetricsConfig] = AStarMetricsConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
-                 verbose: bool = False):
+                 verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED):
         if isinstance(config, dict):
             config = AStarMetricsConfig.from_dict(config)
         else:
@@ -94,6 +97,7 @@ class AStarMetrics:
 
         self.log = log
         self.verbose = verbose
+        self.log_level = log_level
 
     def close_connections(self):
         if self.cache is not None:
@@ -278,9 +282,9 @@ class AStarMetrics:
                             self.cache_info['bfs_short_path']['calc'] += 1
 
                     if neighbour_typedid == en_typedid:
-                        self.log(f"bfs end-node found!", verbose=self.verbose)
-                        self.log(f"bfs graph-db queries: {graph_queries_counter}", verbose=self.verbose)
-                        self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.verbose)
+                        self.log.debug("bfs end-node found!", verbose=self.verbose, log_level=self.log_level)
+                        self.log.debug("bfs graph-db queries: %d", graph_queries_counter, verbose=self.verbose, log_level=self.log_level)
+                        self.log.debug("passed nodes: %d", passed_nodes_counter, verbose=self.verbose, log_level=self.log_level)
 
                         # костыль
                         self.cache_info['bfs_short_path']['calc'] -= 1
@@ -301,9 +305,9 @@ class AStarMetrics:
                     queue.append(neighbour)
 
         # между вершинами нет пути
-        self.log(f"bfs not found end-node", verbose=self.verbose)
-        self.log(f"bfs graph-db queries: {graph_queries_counter}", verbose=self.verbose)
-        self.log(f"passed nodes: {passed_nodes_counter}", verbose=self.verbose)
+        self.log.debug("bfs not found end-node", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("bfs graph-db queries: %d", graph_queries_counter, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("passed nodes: %d", passed_nodes_counter, verbose=self.verbose, log_level=self.log_level)
 
         INF_VALUE = 1000001  # специальное значение, которое говорит, что между вершинами нет пути
         if len(self.cache) > 0:
@@ -320,9 +324,9 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
 
     :param metrics_config: Конфигурация класса, выполняющая расчёт необходимых метрик для A*-алгоритма. Значение по умолчанию AStarMetricsConfig().
     :type metrics_config: Union[Dict,AStarMetricsConfig]
-    :param max_depth: Максимальная глубина обхода графа для поиска заданной вершины. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 10.
+    :param max_depth: Максимальная глубина обхода графа для поиска заданной вершины. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 5.
     :type max_depth: int
-    :param max_passed_nodes: Максимальное количество вершин, которое можно обойти для поиска заданной вершины в графе. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 250.
+    :param max_passed_nodes: Максимальное количество вершин, которое можно обойти для поиска заданной вершины в графе. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 50.
     :type max_passed_nodes: int
     :param max_adjanced_nodes: ... . Значение по умолчанию 25.
     :type max_adjanced_nodes: int
@@ -332,13 +336,14 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     :type accepted_node_types: List[Union[str,NodeType]]
     """
     metrics_config: Union[Dict, AStarMetricsConfig] = field(default_factory=lambda: AStarMetricsConfig())
-    max_depth: int = 10
-    max_passed_nodes: int = 250
+    max_depth: int = 5
+    max_passed_nodes: int = 50
     max_adjanced_nodes: int = 25  # decimal natural number OR -1
     adjacent_nodes_filter_node: Union[None, str] = "end_node"  # "start_node" OR "end_node" OR None
     accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [
         NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
     cache_table_name: str = 'qa_astar_t_retriever_cache'
+    log_path: str = ASTAR_RETRIEVER_LOG_PATH
 
     def to_str(self):
         str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
@@ -378,23 +383,24 @@ class AStarGraphSearch:
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> None:
         self.config = search_config
         self.kg_model = kg_model
         self.metrics = AStarMetrics(
             kg_model, self.config.accepted_node_types, log,
-            self.config.metrics_config, cache_kvdriver_config, verbose)
+            self.config.metrics_config, cache_kvdriver_config, verbose, log_level)
 
         self.log = log
         self.verbose = verbose
+        self.log_level = log_level
 
     def close_connections(self):
         self.metrics.close_connections()
 
     def filter_adjacent_nodes(self, adjacent_nodes: List[NodeInfo], start_node: NodeInfo, end_node: NodeInfo) -> List[NodeInfo]:
         ntypes_freq = dict(Counter([node_info.type for node_info in adjacent_nodes]))
-        self.log(f"Frequency of adj_nodes-types before filtering: {ntypes_freq}", verbose=self.verbose)
-        self.log(f"start_node = {start_node}; end_node = {end_node}", verbose=self.verbose)
+        self.log.debug(f"Frequency of adj_nodes-types before filtering: {ntypes_freq}", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug(f"start_node = {start_node}; end_node = {end_node}", verbose=self.verbose, log_level=self.log_level)
 
         if self.config.max_adjanced_nodes > -1:
             if self.config.adjacent_nodes_filter_node == 'start_node':
@@ -424,7 +430,7 @@ class AStarGraphSearch:
             filtered_adjacent_nodes = adjacent_nodes
 
         ntypes_freq = dict(Counter([node_info.type for node_info in filtered_adjacent_nodes]))
-        self.log(f"Frequency of adj_nodes-types after filtering: {ntypes_freq}", verbose=self.verbose)
+        self.log.debug(f"Frequency of adj_nodes-types after filtering: {ntypes_freq}", verbose=self.verbose, log_level=self.log_level)
 
         return filtered_adjacent_nodes
 
@@ -445,11 +451,11 @@ class AStarGraphSearch:
             passed_nodes_counter += 1
 
             if (self.config.max_passed_nodes >= 0) and (passed_nodes_counter >= self.config.max_passed_nodes):
-                self.log("PASSED LIMIT OF MAX NODES", verbose=self.verbose)
+                self.log.warning("PASSED LIMIT OF MAX NODES", verbose=self.verbose, log_level=self.log_level)
                 break
 
             if (self.config.max_depth >= 0) and (D[current_node_typedid] >= self.config.max_depth):
-                self.log("PASSED MAX DEPTH LIMIT", verbose=self.verbose)
+                self.log.warning("PASSED MAX DEPTH LIMIT", verbose=self.verbose, log_level=self.log_level)
                 continue
 
             # Сохраняем промежуточную вершину, до которой есть путь.
@@ -458,17 +464,19 @@ class AStarGraphSearch:
 
             #
             if current_node_typedid == end_node_typedid:
-                self.log("FOUND END-NODE", verbose=self.verbose)
+                self.log.debug("FOUND END-NODE", verbose=self.verbose, log_level=self.log_level)
                 break
 
             adj_nodes = self.kg_model.graph_struct.db_conn.get_adjacent_nodes(
                 current_node, self.config.accepted_node_types)
-            self.log(f"adjenced nodes amount: {len(adj_nodes)}", verbose=self.verbose)
+            self.log.debug(f"adjenced nodes amount: {len(adj_nodes)}",
+                           verbose=self.verbose, log_level=self.log_level)
 
             # Выполняем предварительную фильтрацию adj_nodes-вершин
             # по current_node- или end_node-вершине (для повышения производительности алгоритма)
             filtered_adjacent_nodes = self.filter_adjacent_nodes(adj_nodes, start_node, end_node)
-            self.log(f"adjenced nodes amount after filtering: {len(filtered_adjacent_nodes)}", verbose=self.verbose)
+            self.log.debug(f"adjenced nodes amount after filtering: {len(filtered_adjacent_nodes)}",
+                           verbose=self.verbose, log_level=self.log_level)
 
             for adj_node in filtered_adjacent_nodes:
 
@@ -489,10 +497,10 @@ class AStarGraphSearch:
                     heapq.heappush(frontier, (priority, create_id(), adj_node))
 
         if end_node_typedid not in parent:
-            self.log(f"start-spare node path len: {D[spare_closest_node.to_str()]}", verbose=self.verbose)
+            self.log.debug("start-spare node path len: %d", D[spare_closest_node.to_str()], verbose=self.verbose, log_level=self.log_level)
         else:
-            self.log(f"start-end node path len: {D[end_node_typedid]}", verbose=self.verbose)
-        self.log(f"astar queries: {passed_nodes_counter}", verbose=self.verbose)
+            self.log.debug("start-end node path len: %d", D[end_node_typedid], verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("astar queries: %d", passed_nodes_counter, verbose=self.verbose, log_level=self.log_level)
         return cost_so_far, frontier, D, parent, spare_closest_node
 
 
@@ -503,16 +511,12 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     :type kg_model: KnowledgeGraphModel
     :param search_config: Конфигурация A*-алгоритма поиска по графовому хранилищу триплетов. Значение по умолчанию AStarGraphSearchConfig().
     :type search_config: Union[AStarGraphSearchConfig, Dict], optional
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
-    :type log: Logger
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[AStarGraphSearchConfig, Dict] = AStarGraphSearchConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, search_config: Union[AStarGraphSearchConfig, Dict] = AStarGraphSearchConfig(),
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         if isinstance(search_config, dict):
             search_config = AStarGraphSearchConfig.from_dict(search_config)
         else:
@@ -520,14 +524,17 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.config: AStarGraphSearchConfig = search_config
 
         self.kg_model = kg_model
+        self.log = Logger(search_config.log_path)
 
-        self.graph_searcher = AStarGraphSearch(kg_model, log, search_config, cache_kvdriver_config, verbose)
+        self.graph_searcher = AStarGraphSearch(
+            kg_model, self.log, search_config, cache_kvdriver_config,
+            search_config.verbose, search_config.log_level)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, self.config.cache_table_name)
 
-        self.log = log
-        self.verbose = verbose
+        self.verbose = search_config.verbose
+        self.log_level = search_config.log_level
 
     def close_connections(self):
         if self.cachekv is not None:
@@ -556,10 +563,10 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     @accumulate_step_info
     def get_relevant_triplets(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo, bool]:
-        self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
-        self.log("RETRIEVER: AStarTripletsRetriever", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
+        self.log.debug("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Retriever: AStarTripletsRetriever", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Questions hash: %s", create_id(query_info.query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question: %s", query_info.query, verbose=self.verbose, log_level=self.log_level)
 
         cache_hits: List[bool] = []
         rinfo = ReturnInfo()
@@ -572,39 +579,39 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             if node_typedid not in unique_ntypedids:
                 unique_ntypedids.add(node_typedid)
                 nodes.append(node)
-        self.log(f"unique nodes: {nodes}", verbose=self.verbose)
+        self.log.debug("unique nodes: %s", nodes, verbose=self.verbose, log_level=self.log_level)
 
         #
         unique_nodes_pairs = set()
         all_pair_nodes_counter = sum(list(range(len(nodes))))
         pair_nodes_counter = 0
         if len(nodes) > 1:
-            self.log("pair nodes calculation...", verbose=self.verbose)
+            self.log.debug("pair nodes calculation...", verbose=self.verbose, log_level=self.log_level)
             for i in range(len(nodes) - 1):
                 start_node = nodes[i]
                 for j in range(i + 1, len(nodes)):
                     pair_nodes_counter += 1
-                    self.log(f"{all_pair_nodes_counter} / {pair_nodes_counter}", verbose=self.verbose)
+                    self.log.debug("%d / %d", all_pair_nodes_counter, pair_nodes_counter, verbose=self.verbose, log_level=self.log_level)
                     end_node = nodes[j]
 
                     s_time = time()
                     _, _, _, parent, spare_closest_node, cache_hit = self.search_path(start_node, end_node)
                     cache_hits.append(cache_hit)
-                    self.log(f"search elapsed_time: {time() - s_time}", verbose=self.verbose)
+                    self.log.debug("search elapsed_time: %.5f sec", time() - s_time, verbose=self.verbose, log_level=self.log_level)
 
                     s_time = time()
                     nodes_path = get_nodes_path(parent, spare_closest_node if end_node.to_str() not in parent else end_node)
-                    self.log(f"get_path elapsed_time: {time() - s_time}", verbose=self.verbose)
+                    self.log.debug("get_path elapsed_time: %.5f sec", time() - s_time, verbose=self.verbose, log_level=self.log_level)
 
                     # Сохраняем только уникальные пары вершин (по их идентификаторам)
                     s_time = time()
                     unique_nodes_pairs.update([(nodes_path[i].to_str(), nodes_path[i + 1].to_str()) for i in range(len(nodes_path) - 1)] if len(nodes_path) > 1 else [])
-                    self.log(f"saving_nodes elapsed_time: {time() - s_time}", verbose=self.verbose)
+                    self.log.debug("saving_nodes elapsed_time: %.5f", time() - s_time, verbose=self.verbose, log_level=self.log_level)
 
-                    self.log(self.graph_searcher.metrics.cache_info, verbose=self.verbose)
+                    self.log.debug(self.graph_searcher.metrics.cache_info, verbose=self.verbose, log_level=self.log_level)
 
         # Сохраняем только уникальные триплеты (по их строковым представлениям)
-        self.log("pair nodes formating...", verbose=self.verbose)
+        self.log.debug("pair nodes formating...", verbose=self.verbose, log_level=self.log_level)
         s_time = time()
         unique_triplets_map: Dict[str, Triplet] = dict()
         for raw_nodes_pair in unique_nodes_pairs:
@@ -614,9 +621,9 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 unique_triplets_map[triplet.relation.get_typedid()] = triplet
         unique_triplets: List[Triplet] = list(unique_triplets_map.values())
 
-        self.log(f"Распределение типов связей в наборе извлечённых триплетов: {Counter([triplet.relation.type for triplet in unique_triplets])}", verbose=self.verbose)
-        self.log(f"foramting queries: {len(unique_nodes_pairs)}", verbose=self.verbose)
-        self.log(f"formating elapsed_time: {time() - s_time}", verbose=self.verbose)
+        self.log.debug("Распределение типов связей в наборе извлечённых триплетов: %s", Counter([triplet.relation.type for triplet in unique_triplets]), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("foramting queries: %d", len(unique_nodes_pairs), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("formating elapsed_time: %.5f", time() - s_time, verbose=self.verbose, log_level=self.log_level)
 
         cachehit_summary = (sum(cache_hits) / len(cache_hits)) >= 0.5 if len(cache_hits) > 0 else False
 

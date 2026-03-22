@@ -11,7 +11,7 @@ from src.pipelines.qa.query_preprocessing.decomposition import QueryDecomposerCo
 from src.pipelines.qa.query_preprocessing.denoising import QueryDenoiserConfig
 from src.pipelines.qa.query_preprocessing.enhancing import QueryEnhancerConfig
 
-QUERIES = [
+QUERIES = [ # with mistakes
     "Кгда родился Алксандр Сергеевич Пушкин и как звли его родителей?",
     "Чем отличаются параметры от аргументов функций?",
     "When was Alexander Sergeevich Pushkin born and wht were his parnts names?",

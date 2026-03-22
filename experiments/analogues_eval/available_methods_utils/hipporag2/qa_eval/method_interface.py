@@ -3,8 +3,8 @@ from typing import List, Dict
 import sys
 import json
 
-EXPEROMETS_BASE_PATH="/home/workspace/experiments"
-sys.path.insert(0, EXPEROMETS_BASE_PATH)
+EXPERIMENTS_BASE_PATH="/home/workspace/experiments"
+sys.path.insert(0, EXPERIMENTS_BASE_PATH)
 
 from analogues_eval.available_methods_utils.utils import GraphRAGQAOperations
 from analogues_eval.available_methods_utils.hipporag2.kg_building import Hipporag2BuildOperations
@@ -16,7 +16,7 @@ class Hipporag2QAOperations(GraphRAGQAOperations, Hipporag2BuildOperations):
         HIPPORAG_SOURCE_PATH="/home/workspace/experiments/analogues_eval/available_methods_utils/hipporag2/method_source/src"  # TO CHANGE
         sys.path.insert(0, HIPPORAG_SOURCE_PATH)
         from hipporag import HippoRAG
-        
+
         self.method = HippoRAG(**memory_config)
         self.method.global_config.save_openie = False # костыль
         self.config = memory_config

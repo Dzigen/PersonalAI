@@ -4,8 +4,8 @@ from tqdm import tqdm
 import sys
 import os
 
-EXPEROMETS_BASE_PATH="/home/workspace/experiments"
-sys.path.insert(0, EXPEROMETS_BASE_PATH)
+EXPERIMENTS_BASE_PATH="/home/workspace/experiments"
+sys.path.insert(0, EXPERIMENTS_BASE_PATH)
 
 from analogues_eval.available_methods_utils.utils import GraphRAGBuildOperations
 from analogues_eval.available_methods_utils.wikontic.utils import CustomWikontic, create_id
@@ -40,7 +40,7 @@ class WikonticBuildOperations(GraphRAGBuildOperations):
         }
         return config
 
-    def build_graph(self, documents: List[str]) -> None: 
+    def build_graph(self, documents: List[str]) -> None:
         occured_error_counter = 0
         for i, document in enumerate(tqdm(documents)):
             try:
@@ -75,7 +75,7 @@ class WikonticBuildOperations(GraphRAGBuildOperations):
             'MONGO_EXTERNAL_MONGOT_VOLUME': MONGO_EXTERNAL_MONGOT_VOLUME
         }
         return [mongo_cnt_variables]
-    
+
     @staticmethod
     def create_kg_structure(env_params: Dict, hyperp_params: Dict) -> None:
         ANALOGUES_KGS_BASE_PATH = f"{env_params['TMP_WORKSPACE_PERSONALAI_PATH']}/{env_params['WORKSPACE_CONTAINER_DIRS']['kg']}/{hyperp_params['METHOD_NAME']}"

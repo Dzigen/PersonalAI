@@ -1,10 +1,10 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 from typing import Tuple, Dict, Union
 import json
 from copy import deepcopy
 import hashlib
+from abc import ABC, abstractmethod
 
-from .logger import Logger
 from .language_detector import detect_lang
 from .errors import ReturnStatus, STATUS_MESSAGE
 from .cache_kv import CacheKV
@@ -12,6 +12,8 @@ from .tracing import accumulate_tasksolver_info
 from .agent_stat_analyzer import AgentStatAnalyzerConfig, AgentStatAnalyzer
 from ..agents.utils import AbstractAgentConnector
 from ..db_drivers.kv_driver import KeyValueDriverConfig
+from .data_structs import BaseConfigOperations
+from .data_structs import LoggingConfig, LogLevel, Logger
 
 
 @dataclass
@@ -34,7 +36,7 @@ class AgentTaskSuite:
 
 
 @dataclass
-class AgentTaskSolverConfig:
+class AgentTaskSolverConfig(LoggingConfig):
     """Конфигурация agent-солвера.
 
     :param version: Версия набора промптов/парсеров для решения некоторой LLM-задачи.
@@ -49,10 +51,6 @@ class AgentTaskSolverConfig:
     :type cache_table_name: str
     :param inferencestat_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться мета-информация/статистика по inference-операции.
     :type inferencestat_table_name: str
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
-    :type log: Logger
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
     version: str
     suites: Dict[str, AgentTaskSuite]
@@ -61,9 +59,6 @@ class AgentTaskSolverConfig:
 
     cache_table_name: str
     inferencestat_table_name: str
-
-    log: Logger
-    verbose: bool = False
 
 
 class AgentTaskSolver:
@@ -102,8 +97,9 @@ class AgentTaskSolver:
         else:
             self.inference_stat_cache = None
 
-        self.log = self.config.log
+        self.log = Logger(self.config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     @accumulate_tasksolver_info
     def solve(self, lang: str = 'en', gen_strategy: Union[None, Dict[str, str]] = None, **kwargs) -> Tuple[object, ReturnStatus, bool]:
@@ -117,51 +113,51 @@ class AgentTaskSolver:
         :rtype: Tuple[object, ReturnStatus]
         """
         task_result, status, cache_hit = None, ReturnStatus.success, False
-        self.log("=" * 20, verbose=self.verbose)
-        self.log("1. Предобработка данных для их дальнейшней вставки в user-prompt...", verbose=self.verbose)
+        self.log.debug("=" * 20, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("1. Предобработка данных для их дальнейшней вставки в user-prompt...", verbose=self.verbose, log_level=self.log_level)
 
         try:
             formated_context = self.config.formate_context_func(**kwargs)
         except Exception as e:
-            self.log(str(e), verbose=self.verbose)
+            self.log.error(str(e), verbose=self.verbose, log_level=self.log_level)
             status = ReturnStatus.bad_formater
         else:
-            self.log(f"Результат:\n{json.dumps(formated_context, indent=1, ensure_ascii=False)}.", verbose=self.verbose)
+            self.log.debug("Результат:\n %s", json.dumps(formated_context, indent=1, ensure_ascii=False), verbose=self.verbose, log_level=self.log_level)
         finally:
-            self.log(f"Статус: {STATUS_MESSAGE[status]}", verbose=self.verbose)
+            self.log.debug(f"Статус: %s .", STATUS_MESSAGE[status], verbose=self.verbose, log_level=self.log_level)
 
         # Если удалось без ошибок привести данные в формат контекста
         # для вставки в user-prompt
         if status == ReturnStatus.success:
-            self.log("-" * 20, verbose=self.verbose)
-            self.log("2. Детекция используемого языка...", verbose=self.verbose)
+            self.log.debug("-" * 20, verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("2. Детекция используемого языка...", verbose=self.verbose, log_level=self.log_level)
             flatten_context = ', '.join(list(formated_context.values()))
 
             detected_lang, raw_lang, status = detect_lang(
                 flatten_context) if lang == 'auto' else (lang, lang, ReturnStatus.success)
 
-            self.log(f"Результат: {detected_lang}.", verbose=self.verbose)
-            self.log(f"Статус: {STATUS_MESSAGE[status]}, {raw_lang}", verbose=self.verbose)
+            self.log.debug("Результат: %s", detected_lang, verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("Статус: %s , %s .", STATUS_MESSAGE[status], raw_lang, verbose=self.verbose, log_level=self.log_level)
 
         # Если удалось определить язык (распознанный язык находится в списке доступных)
         if status == ReturnStatus.success:
-            self.log("-" * 20, verbose=self.verbose)
-            self.log("3. Добавление информации в user-prompt...", verbose=self.verbose)
+            self.log.debug("-" * 20, verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("3. Добавление информации в user-prompt...", verbose=self.verbose, log_level=self.log_level)
             try:
                 enriched_user_prompt = self.config.suites[detected_lang].user_prompt.format(
                     **formated_context)
             except Exception as e:
-                self.log(str(e), verbose=self.verbose)
+                self.log.error(str(e), verbose=self.verbose, log_level=self.log_level)
                 status = ReturnStatus.bad_user_prompt_maping
             else:
-                self.log(f"Результат:\n{enriched_user_prompt}", verbose=self.verbose)
+                self.log.debug("Результат:\n %s .", enriched_user_prompt, verbose=self.verbose, log_level=self.log_level)
             finally:
-                self.log(f"Статус: {STATUS_MESSAGE[status]}", verbose=self.verbose)
+                self.log.debug("Статус: %s", STATUS_MESSAGE[status], verbose=self.verbose, log_level=self.log_level)
 
         # Если удалось добавить дополнительную инофрмацию в user-prompt
         if status == ReturnStatus.success:
-            self.log("-" * 20, verbose=self.verbose)
-            self.log("4. Генерация ответа с помощью LLM-агента.", verbose=self.verbose)
+            self.log.debug("-" * 20, verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("4. Генерация ответа с помощью LLM-агента.", verbose=self.verbose, log_level=self.log_level)
 
             raw_answer = None
 
@@ -183,27 +179,27 @@ class AgentTaskSolver:
             key_hash = None
 
             if self.cachekv is not None:
-                self.log("Поиск ответа в кеше...", verbose=self.verbose)
+                self.log.debug("Поиск ответа в кеше...", verbose=self.verbose, log_level=self.log_level)
                 cstatus, key_hash, cached_result = self.cachekv.load_value(
                     key=cache_key)
                 if cstatus == 0:
-                    self.log("Результат по заданной конфигурации гиперпараметров уже был получен.", verbose=self.verbose)
-                    self.log(f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
-                    self.log(f"* CACHE_HASH_KEY: {key_hash}", verbose=self.verbose)
+                    self.log.debug("Результат по заданной конфигурации гиперпараметров уже был получен.", verbose=self.verbose, log_level=self.log_level)
+                    self.log.debug("* cache table_name: %s", self.cachekv.kv_conn.config.db_info['table'], verbose=self.verbose, log_level=self.log_level)
+                    self.log.debug("* cahce hash_key: %s .", key_hash, verbose=self.verbose, log_level=self.log_level)
                     formated_log_cachekey = '\n-'.join(cache_key)
-                    self.log(f"* HASH_SEEDS:\n-{formated_log_cachekey}", verbose=self.verbose)
+                    self.log.debug("* hash seed: %s .", formated_log_cachekey, verbose=self.verbose, log_level=self.log_level)
 
                     cache_hit = True
                     raw_answer = cached_result
                 else:
-                    self.log("Результата по заданной конфигурации гиперпараметров в кеше нет.", verbose=self.verbose)
-                    self.log(f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
-                    self.log(f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
+                    self.log.debug("Результата по заданной конфигурации гиперпараметров в кеше нет.", verbose=self.verbose, log_level=self.log_level)
+                    self.log.debug("* cache table_name: %s", self.cachekv.kv_conn.config.db_info['table'], verbose=self.verbose, log_level=self.log_level)
+                    self.log.debug("* cache hash_key: %s .", key_hash, verbose=self.verbose, log_level=self.log_level)
                     formated_log_cachekey = '\n-'.join(cache_key)
-                    self.log(f"* HASH_SEEDS:\n-{formated_log_cachekey }", verbose=self.verbose)
+                    self.log.debug("* hash seed: %s .", formated_log_cachekey, verbose=self.verbose, log_level=self.log_level)
 
             if not cache_hit:
-                self.log("Выполняем инференс llm...", verbose=self.verbose)
+                self.log.debug("Выполняем инференс llm...", verbose=self.verbose, log_level=self.log_level)
 
                 raw_answer, inference_info = self.agent.generate(
                     system_prompt=self.config.suites[detected_lang].system_prompt,
@@ -215,42 +211,42 @@ class AgentTaskSolver:
                     self.inference_stat_cache.add_values([inference_info])
 
                 if self.cachekv is not None:
-                    self.log("Кешируем полученный результат.", verbose=self.verbose)
+                    self.log.debug("Кешируем полученный результат.", verbose=self.verbose, log_level=self.log_level)
                     self.cachekv.save_value(value=raw_answer, key_hash=key_hash)
 
-            self.log(f"Результат:\n{raw_answer}", verbose=self.verbose)
-            self.log(f"Статус: {STATUS_MESSAGE[status]}", verbose=self.verbose)
+            self.log.debug("Результат:\n%s", raw_answer, verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("Статус: %s .", STATUS_MESSAGE[status], verbose=self.verbose, log_level=self.log_level)
 
         # Если сгенрированная raw-строка не является пустой
         if status == ReturnStatus.success:
-            self.log("-" * 20, verbose=self.verbose)
-            self.log("5. Разбор ответа, сгенерированного LLM-агентом.", verbose=self.verbose)
+            self.log.debug("-" * 20, verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("5. Разбор ответа, сгенерированного LLM-агентом.", verbose=self.verbose, log_level=self.log_level)
 
             try:
                 formated_answer = self.config.suites[detected_lang].parse_answer_func(
                     raw_answer, **kwargs)
             except (KeyError, ValueError) as e:
-                self.log(str(e), verbose=self.verbose)
+                self.log.error(str(e), verbose=self.verbose, log_level=self.log_level)
                 status = ReturnStatus.bad_parser
             else:
-                self.log(f"Результат:\n{formated_answer}", verbose=self.verbose)
+                self.log.debug("Результат:\n%s", formated_answer, verbose=self.verbose, log_level=self.log_level)
             finally:
-                self.log(f"Статус: {STATUS_MESSAGE[status]}", verbose=self.verbose)
+                self.log.debug("Статус: %s .", STATUS_MESSAGE[status], verbose=self.verbose, log_level=self.log_level)
 
         #  Если не было ошибок при разборе raw-строки
         if status == ReturnStatus.success:
-            self.log("-" * 20, verbose=self.verbose)
-            self.log("6. Постобработка ответа от LLM-агента.", verbose=self.verbose)
+            self.log.debug("-" * 20, verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("6. Постобработка ответа от LLM-агента.", verbose=self.verbose, log_level=self.log_level)
 
             try:
                 task_result = self.config.postprocess_answer_func(formated_answer, **kwargs)
             except Exception as e:
-                self.log(str(e), verbose=self.verbose)
+                self.log.error(str(e), verbose=self.verbose, log_level=self.log_level)
                 status = ReturnStatus.bad_postprocessor
             else:
-                self.log(f"Результат:\n{task_result}", verbose=self.verbose)
+                self.log.debug("Результат:\n%s", task_result, verbose=self.verbose, log_level=self.log_level)
             finally:
-                self.log(f"Статус: {STATUS_MESSAGE[status]}", verbose=self.verbose)
+                self.log.debug("Статус: %s .", STATUS_MESSAGE[status], verbose=self.verbose, log_level=self.log_level)
 
         return task_result, status, cache_hit
 
@@ -268,3 +264,57 @@ class AgentTaskBaseConfig:
     """
     suites: Dict[str, AgentTaskSuite]
     custom_formate: object
+
+
+class BaseAgentTaskConfigSelector(ABC):
+    @staticmethod
+    @abstractmethod
+    def get_available_configs() -> None:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def select(base_config_version: str, cache_table_name: str, inferencestat_table_name: str,
+               verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:
+        pass
+
+
+@dataclass
+class BaseAgentTasksConfig(BaseConfigOperations):
+    task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector]
+
+    @staticmethod
+    def from_dict(dict_config: Dict):
+        pass
+
+    def to_str(self):
+        stringified_config = []
+        fields_iterator = fields(self)
+        for field_object in fields_iterator:
+            if field_object.name == 'task_to_selector_mapping':
+                continue
+
+            field_value = getattr(self, field_object.name)
+
+            if isinstance(field_value, str):
+                stringified_config.append(f"{field_object.name}={field_value}")
+            elif isinstance(field_value, AgentTaskSolverConfig):
+                stringified_config.append(f"{field_object.name}={field_value.version}")
+            else:
+                raise TypeError
+
+        return ";".join(stringified_config)
+
+    def versions_to_configs(self, verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED):
+        fields_iterator = fields(self)
+        for field_object in fields_iterator:
+            if field_object.name == 'task_to_selector_mapping':
+                continue
+
+            field_value = getattr(self, field_object.name)
+
+            if isinstance(field_value, str):
+                task_config_version = field_value
+                agent_task_config = self.task_to_selector_mapping[field_object.name].select(
+                    base_config_version=task_config_version, verbose=verbose, log_level=log_level)
+                setattr(self, field_object.name, agent_task_config)

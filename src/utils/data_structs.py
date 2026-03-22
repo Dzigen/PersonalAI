@@ -4,7 +4,7 @@ from time import time
 from enum import Enum
 import hashlib
 
-from .logger import Logger
+from .logger import LogLevel, Logger
 
 
 class NodeType(Enum):
@@ -487,6 +487,31 @@ class QueryPreprocessingInfo:
 
 
 @dataclass
+class LanguageConfig:
+    """
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при решении задач LLM-агентом. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
+    :type lang: str, optional
+    """
+    lang: str = 'auto'
+
+    def synchronize_language(self, lang: Union[None, str] = None):
+        """Метод предназначен для синхронизации языковых настроек между вложенными конфигурациями.
+
+        :param lang: Язык, который необходимо установить принудительно. Если None, используется текущее значение self.lang.
+        :type lang: Union[None,str], optional
+        """
+        if lang is not None:
+            self.lang = lang
+
+        fields_iterator = fields(self)
+        for field_object in fields_iterator:
+            field_value = getattr(self, field_object.name)
+
+            if isinstance(field_value, LanguageConfig):
+                field_value.synchronize_language(self.lang)
+
+
+@dataclass
 class BaseConfigOperations:
     """Базовый класс для конфигурационных объектов. Определяет типовые операции по созданию конфигураций из словаря
     и рекурсивному приведению вложенных полей к корректному формату.
@@ -525,16 +550,45 @@ class BaseConfigOperations:
         pass
 
 
-@dataclass
-class BaseComponentConfig(BaseConfigOperations):
+@dataclass(kw_only=True)
+class LoggingConfig:
     """
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
-    :type log: Logger, optional
+    :param log_path: Путь до каталога для хранения журнала мониторинга/поведения инициализируемой компоненты.
+    :type log_path: str, optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
+    :param log_level: Уровень (равный и выше) логирумыех сообщений в файл журналирования. Значение по умолчанию LogLevel.DISABLED (логирование выключено).
+    :type log_level: LogLevel, optional
     """
-    log: Logger
+    log_path: str = "."
     verbose: bool = False
+    log_level: LogLevel = LogLevel.DEBUG
+
+    def synchronize_logging(self, log_level: Union[None, LogLevel] = None, verbose: Union[None, bool] = None):
+        """Метод предназначен для синхронизации настроек логированиями между вложенными конфигурациями.
+
+        :param log_level: Уровень логирования, который необходимо установить принудительно. Если None, используется текущее значение self.log_level. Значение по умолчанию None.
+        :type log_level: Union[None, LogLevel], optional
+        :param verbose: Флаг сохранения лога в stdout, который необходимо установить принудительно. Если None, используется текущее значение self.verbose. Значение по умолчанию None.
+        :type verbose: Union[None, bool], optional
+        """
+
+        if isinstance(self, LoggingConfig):
+            if log_level is not None:
+                self.log_level = log_level
+            if verbose is not None:
+                self.verbose = verbose
+
+        fields_iterator = fields(self)
+        for field_object in fields_iterator:
+            field_value = getattr(self, field_object.name)
+
+            if isinstance(field_value, LoggingConfig):
+                field_value.synchronize_logging(self.log_level, self.verbose)
+
+
+@dataclass
+class BaseComponentConfig(LoggingConfig, BaseConfigOperations):
 
     @staticmethod
     def from_dict(dict_config: Dict):
@@ -546,28 +600,3 @@ class BaseComponentConfig(BaseConfigOperations):
         :rtype: BaseComponentConfig
         """
         pass
-
-
-@dataclass
-class LanguageConfig:
-    """
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при решении задач LLM-агентом. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
-    :type lang: str, optional
-    """
-    lang: str = 'auto'
-
-    def synchronize_language(self, lang: Union[None, str] = None):
-        """Метод предназначен для синхронизации языковых настроек между вложенными конфигурациями.
-
-        :param lang: Язык, который необходимо установить принудительно. Если None, используется текущее значение self.lang.
-        :type lang: Union[None,str], optional
-        """
-        if lang is not None:
-            self.lang = lang
-
-        fields_iterator = fields(self)
-        for field_object in fields_iterator:
-            field_value = getattr(self, field_object.name)
-
-            if isinstance(field_value, LanguageConfig):
-                field_value.synchronize_language(self.lang)

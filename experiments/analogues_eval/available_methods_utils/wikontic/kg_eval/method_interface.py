@@ -3,8 +3,8 @@ import yaml
 import sys
 import json
 
-EXPEROMETS_BASE_PATH="/home/workspace/experiments"
-sys.path.insert(0, EXPEROMETS_BASE_PATH)
+EXPERIMENTS_BASE_PATH="/home/workspace/experiments"
+sys.path.insert(0, EXPERIMENTS_BASE_PATH)
 
 from analogues_eval.available_methods_utils.utils import GraphRAGMINEOperations
 from analogues_eval.available_methods_utils.wikontic.utils import CustomWikontic
@@ -26,7 +26,7 @@ class WikonticMINEOperations(GraphRAGMINEOperations, WikonticBuildOperations):
         filtered_triples = list(triples)
         if self.mine_config['triples_in_total'] > 0:
             filtered_triples = filtered_triples[:self.mine_config['triples_in_total']]
-        
+
         return filtered_triples
 
     @staticmethod

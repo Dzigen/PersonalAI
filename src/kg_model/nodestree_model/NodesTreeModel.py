@@ -86,8 +86,7 @@ class NodesTreeModelConfig(BaseComponentConfig, LanguageConfig):
     depth_rate: float = 0.4
     nodes_aggregation_mechanism: str = 'sequencial'  # "sequencial" | "parallel"
 
-    log: Logger = field(default_factory=lambda: Logger(NODESTREE_MODEL_LOG_PATH))
-    verbose: bool = False
+    log_path: str = NODESTREE_MODEL_LOG_PATH
 
     def to_str(self):
         # TODO
@@ -163,7 +162,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs()
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
 
         self.treedb_conn = TreeDriver.connect(self.config.treedb_config)
 
@@ -199,8 +198,9 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         self.stages = None
         self.cachekv = None
 
-        self.log = self.config.log
+        self.log = Logger(config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     def check_consistency(self) -> bool:
         """Метод предназначен для проверки согласованности данных между древовидной и векторными структурами.
@@ -255,13 +255,15 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         :return: Словарь с информацией об object-вершинах из заданных триплетов, которые были добавлены в деревовидной моделе и которые уже присутствовали в моделе (и повторно добавлены не были).
         :rtype: Dict[str, Set[str]]
         """
-        self.log("Старт операции по добавлению object-вершин из заданных триплетов в дерево...", verbose=self.verbose)
+        self.log.debug("Старт операции по добавлению object-вершин из заданных триплетов в дерево...", verbose=self.verbose, log_level=self.log_level)
 
-        self.log("1. Отбираем уникальные object-вершины...", verbose=self.verbose)
+        self.log.debug("1. Отбираем уникальные object-вершины...", verbose=self.verbose, log_level=self.log_level)
         object_nodes = self.extract_unique_nodes(triplets)
-        self.log(f"1.final | В {len(triplets)} триплетах (всего {len(triplets)*2} вершин) содержится {len(object_nodes)} уникальных (по строковому представлению) object-вершин.", verbose=self.verbose)
+        self.log.debug("1.final | В %d триплетах (всего %d вершин) содержится %d уникальных (по строковому представлению) object-вершин.",
+                       len(triplets), len(triplets) * 2, len(object_nodes), verbose=self.verbose, log_level=self.log_level)
 
-        self.log(f"2. Добавляем отобранные object-вершины в дерево ({len(object_nodes)})...", verbose=self.verbose)
+        self.log.debug("2. Добавляем отобранные object-вершины в дерево (%d)...",
+                       len(object_nodes), verbose=self.verbose, log_level=self.log_level)
         process = tqdm(object_nodes) if status_bar else object_nodes
         existed_node_ids, added_node_ids = [], []
         for node in process:
@@ -272,7 +274,9 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
             else:
                 added_node_ids.append(node.id)
 
-        self.log(f"final | all/unique/existed/added nodes - {len(triplets)*2}/{len(object_nodes)}/{len(existed_node_ids)}/{len(added_node_ids)}", verbose=self.verbose)
+        self.log.debug("final | all / unique / existed / added nodes: %d / %d / %d / %d .",
+                       len(triplets) * 2, len(object_nodes), len(existed_node_ids), len(added_node_ids),
+                       verbose=self.verbose, log_level=self.log_level)
         return {'existed_nodes': existed_node_ids, 'added_nodes': added_node_ids}
 
     def add_node(self, new_node_strid: str, new_node_text: str) -> ReturnStatus:
@@ -286,49 +290,53 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         :rtype: ReturnStatus
         """
         status = ReturnStatus.success
-        self.log(f"2.1. Информация по текущей вершине: (str_id) - {new_node_strid}; (node_text) - {new_node_text}",
-                 verbose=self.verbose)
+        self.log.debug("2.1. Информация по текущей вершине: (str_id) - %s; (node_text) - %s .",
+                       new_node_strid, new_node_text, verbose=self.verbose, log_level=self.log_level)
 
-        self.log(f"2.2. Проверка вершины на существование в дереве...", verbose=self.verbose)
+        self.log.debug("2.2. Проверка вершины на существование в дереве...",
+                       verbose=self.verbose, log_level=self.log_level)
         if self.treedb_conn.item_exist(new_node_strid, id_type=TreeIdType.str):
-            self.log("2.final | Текущая вершина в дереве существует. Завершение операции.", verbose=self.verbose)
+            self.log.debug("2.final | Текущая вершина в дереве существует. Завершение операции.",
+                           verbose=self.verbose, log_level=self.log_level)
             status = ReturnStatus.already_exist
             return status
-        self.log(f"2.2.1. Текущей вершины в дереве не существует. Продолжение операции...", verbose=self.verbose)
+        self.log.debug("2.2.1. Текущей вершины в дереве не существует. Продолжение операции...",
+                       verbose=self.verbose, log_level=self.log_level)
 
-        self.log("2.3. Поиск parent-вершины, к которой будет добавлена новая child-вершина...", verbose=self.verbose)
+        self.log.debug("2.3. Поиск parent-вершины, к которой будет добавлена новая child-вершина...",
+                       verbose=self.verbose, log_level=self.log_level)
         s_time = time()
         traversed_nodes_ids, parent_node = self.traverse_tree(new_node_text)
         e_time = time()
-        self.log(f"2.3.1. Идентификаторы пройденных вершин (internal_ids): {traversed_nodes_ids}", verbose=self.verbose)
-        self.log(f"2.3.2. Выбранная parent-вершина: {parent_node}", verbose=self.verbose)
-        self.log(f"2.3.3. Затраченное время: {e_time - s_time} секунд", verbose=self.verbose)
+        self.log.debug("2.3.1. Идентификаторы пройденных вершин (internal_ids): %s .", traversed_nodes_ids, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("2.3.2. Выбранная parent-вершина: %s .", parent_node, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("2.3.3. Затраченное время: %.5f секунд.", e_time - s_time, verbose=self.verbose, log_level=self.log_level)
 
-        self.log("2.4. Вызов llm для перегенерации text-полей у пройденных вершин в дереве...", verbose=self.verbose)
+        self.log.debug("2.4. Вызов llm для перегенерации text-полей у пройденных вершин в дереве...", verbose=self.verbose, log_level=self.log_level)
         s_time = time()
         new_text_summaries = self.summarize_path_nodes(traversed_nodes_ids, new_node_text)
         e_time = time()
-        self.log(f"2.4.1. Обновлённые варианты text-полей у пройдённых вершин: {new_text_summaries}", verbose=self.verbose)
-        self.log(f"2.4.2. Затраченное время: {e_time - s_time} секунд", verbose=self.verbose)
+        self.log.debug("2.4.1. Обновлённые варианты text-полей у пройдённых вершин: %s .", new_text_summaries, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("2.4.2. Затраченное время: %.5f секунд", e_time - s_time, verbose=self.verbose, log_level=self.log_level)
 
-        self.log("2.5. Обновление/добвавление summarize-вершин в векторной бд...", verbose=self.verbose)
+        self.log.debug("2.5. Обновление/добвавление summarize-вершин в векторной бд...", verbose=self.verbose, log_level=self.log_level)
         s_time = time()
         self.update_vectordb_info(TreeNodeType.summarized, traversed_nodes_ids, new_text_summaries)
         e_time = time()
-        self.log(f"2.5.1. Затраченное время: {e_time - s_time} секунд", verbose=self.verbose)
+        self.log.debug("2.5.1. Затраченное время: %.5f секунд", e_time - s_time, verbose=self.verbose, log_level=self.log_level)
 
-        self.log("2.6. Обновление информации в summarize-вершинах в графовой бд...", verbose=self.verbose)
+        self.log.debug("2.6. Обновление информации в summarize-вершинах в графовой бд...", verbose=self.verbose, log_level=self.log_level)
         s_time = time()
         self.update_treedb_info(traversed_nodes_ids, new_text_summaries, new_node_strid, parent_node)
         e_time = time()
-        self.log(f"2.6.1. Затраченное время: {e_time - s_time} секунд", verbose=self.verbose)
+        self.log.debug("2.6.1. Затраченное время: %.5f секунд", e_time - s_time, verbose=self.verbose, log_level=self.log_level)
 
-        self.log("2.7. Обновление/добвавление leaf-вершин в векторной бд...", verbose=self.verbose)
+        self.log.debug("2.7. Обновление/добвавление leaf-вершин в векторной бд...", verbose=self.verbose, log_level=self.log_level)
         self.update_vectordb_info(TreeNodeType.leaf, [new_node_strid], [new_node_text])
-        self.log("2.8. Прикрепление новой leaf-вершины к выбранной parent-вершине в дереве...", verbose=self.verbose)
+        self.log.debug("2.8. Прикрепление новой leaf-вершины к выбранной parent-вершине в дереве...", verbose=self.verbose, log_level=self.log_level)
         self.attach_node_to_tree(parent_node.id, new_node_text, {'str_id': new_node_strid, 'depth': len(traversed_nodes_ids) + 1})
 
-        self.log("2.final | Операция по добавлению новой вершины завершена успешно!", verbose=self.verbose)
+        self.log.debug("2.final | Операция по добавлению новой вершины завершена успешно!", verbose=self.verbose, log_level=self.log_level)
         return status
 
     def get_leafnodes_sim_scores(self, anchor_vinstance: VectorDBInstance, leaf_nodes: List[TreeNode]) -> List[Tuple[float, str]]:
@@ -403,7 +411,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         :return: Кортеж из двух объектов: (1) Путь (список идентификаторов вершин) в дереве от корня (корневой вершины) до вершины, к которой будет прикреплена новая leaf-вершина; (2) Структура данных с информацией по последней вершине в пройденном пути.
         :rtype: Tuple[List[str], TreeNode]
         """
-        self.log("3. Старт алгоритма обхода дерева...", verbose=self.verbose)
+        self.log.debug("3. Старт алгоритма обхода дерева...", verbose=self.verbose, log_level=self.log_level)
         parent_node, traversed_nodes_ids = None, []
         newnode_vinstance = VectorDBInstance(document=newnode_text)
         parent_node_id = self.treedb_conn.root_node_id
@@ -411,54 +419,58 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
 
         stop_flag = False
         while not stop_flag:
-            self.log(f"3.1. Идентификатор текущей parent-вершины (external_id): {parent_node_id}", verbose=self.verbose)
-            self.log(f"3.2. Текущая глубина: {cur_depth}", verbose=self.verbose)
+            self.log.debug("3.1. Идентификатор текущей parent-вершины (external_id): %s .", parent_node_id, verbose=self.verbose, log_level=self.log_level)
+            self.log.debug(f"3.2. Текущая глубина: %d . ", cur_depth, verbose=self.verbose, log_level=self.log_level)
             # Получаем child-вершины для текущей parent-вершины
             child_nodes = self.treedb_conn.get_child_nodes(parent_node_id)
-            self.log(f"3.3. Child-вершины для текущей parent-вершины:\n* количество: {len(child_nodes)}\n* вершины: {child_nodes}", verbose=self.verbose)
+            self.log.debug("3.3. Child-вершины для текущей parent-вершины:\n* количество: %d\n* вершины: %s",
+                           len(child_nodes), child_nodes, verbose=self.verbose, log_level=self.log_level)
 
             # Оцениваем семантическую близость [similarity] между child-вершинами (с типом leaf)
             # у текущей parent-вершины и newnode_text
             leaf_nodes = list(filter(lambda node: node.type == TreeNodeType.leaf, child_nodes))
             scored_leafnodes = self.get_leafnodes_sim_scores(newnode_vinstance, leaf_nodes)
-            self.log(f"3.4. Оценки семантической близости [similarity] для leaf-вершин:\n* количество: {len(scored_leafnodes)}\n* вершины: {scored_leafnodes}",
-                     verbose=self.verbose)
+            self.log.debug("3.4. Оценки семантической близости [similarity] для leaf-вершин:\n* количество: %d\n* вершины: %s",
+                           len(scored_leafnodes), scored_leafnodes, verbose=self.verbose, log_level=self.log_level)
 
             # Оцениваем семантическую близость [similarity] между child-вершинами (с типом summarized)
             # у текущей parent-вершины и newnode_text
             summ_nodes = list(filter(lambda node: node.type == TreeNodeType.summarized, child_nodes))
             scored_summnodes = self.get_summnodes_sim_scores(newnode_vinstance, summ_nodes)
-            self.log(f"3.5. Оценки семантической близости [similarity] для summarized-вершин:\n* количество: {len(scored_summnodes)}\n* вершины: {scored_summnodes}",
-                     verbose=self.verbose)
+            self.log.debug("3.5. Оценки семантической близости [similarity] для summarized-вершин:\n* количество: %d\n* вершины: %s",
+                           len(scored_summnodes), scored_summnodes, verbose=self.verbose, log_level=self.log_level)
 
             # Получем адаптивный порог для фильтрации child-вершин
             adaptive_threshold = self.calculate_adaptive_threshold(cur_depth)
-            self.log(f"3.6. Текущее значение адаптивного порогового значения: {adaptive_threshold}", verbose=self.verbose)
+            self.log.debug("3.6. Текущее значение адаптивного порогового значения: %f .",
+                           adaptive_threshold, verbose=self.verbose, log_level=self.log_level)
 
             # Выполняем фильтрацию child-вершин на основе их семантической близости к newnode_text
             # по адаптивному пороговому значению
             filtered_child_nodes = list(filter(lambda scored_node: scored_node[0] >= adaptive_threshold, scored_leafnodes + scored_summnodes))
-            self.log(f"3.7. Оставшиеся summarized- и leaf-вершины в результате фильтрации:\n* количество: {len(filtered_child_nodes)}\n* вершины: {filtered_child_nodes}", verbose=self.verbose)
+            self.log.debug("3.7. Оставшиеся summarized- и leaf-вершины в результате фильтрации:\n* количество: %d\n* вершины: %s",
+                           len(filtered_child_nodes), filtered_child_nodes, verbose=self.verbose, log_level=self.log_level)
 
             # Если после фильтрации не осталось ни одной вершины, в которую можно выполнить переход,
             # то завершаем обход дерева, иначе выбираем самую семантически-близкую [similarity] вершину в качестве
             # следующей parent-вершины.
             if len(filtered_child_nodes) < 1:
-                self.log("3.8. Больше некуда спускаться по дереву. Завершаем операцию.", verbose=self.verbose)
+                self.log.debug("3.8. Больше некуда спускаться по дереву. Завершаем операцию.",
+                               verbose=self.verbose, log_level=self.log_level)
                 parent_node = self.treedb_conn.read([parent_node_id])[0]
-                self.log(f"3.8.1 Последняя parent-вершина: {parent_node}", verbose=self.verbose)
+                self.log.debug("3.8.1 Последняя parent-вершина: %s", parent_node, verbose=self.verbose, log_level=self.log_level)
                 stop_flag = True
             else:
                 sorted_child_nodes = sorted(filtered_child_nodes, key=lambda p: p[0], reverse=True)
                 parent_node_id = sorted_child_nodes[0][1]
 
-                self.log("3.8. Спускаемся на вершину вниз по дереву.", verbose=self.verbose)
-                self.log(f"3.8.1 Отсортированные вершины: {sorted_child_nodes}.", verbose=self.verbose)
-                self.log(f"3.8.2 Идентификатор следующей parent-вершины: {parent_node_id}", verbose=self.verbose)
+                self.log.debug("3.8. Спускаемся на вершину вниз по дереву.", verbose=self.verbose, log_level=self.log_level)
+                self.log.debug("3.8.1 Отсортированные вершины: %s .", sorted_child_nodes, verbose=self.verbose, log_level=self.log_level)
+                self.log.debug("3.8.2 Идентификатор следующей parent-вершины: %s .", parent_node_id, verbose=self.verbose, log_level=self.log_level)
                 traversed_nodes_ids.append(parent_node_id)
                 cur_depth += 1
 
-        self.log("3.final | Обход дерева выполнен успешно.", verbose=self.verbose)
+        self.log.debug("3.final | Обход дерева выполнен успешно.", verbose=self.verbose, log_level=self.log_level)
         return traversed_nodes_ids, parent_node
 
     def summarize_path_nodes(self, traversed_nodes_ids: List[str], newnode_text: str) -> List[str]:
@@ -473,9 +485,9 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         :return: Список прегенерированных/обобщённых значений текстовых полей у пройденных traversed_nodes_ids-вершин.
         :rtype: List[str]
         """
-        self.log(f"4. Старт алгоритма по суммаризации текста...", verbose=self.verbose)
-        self.log(f"4.1.1. Количество текстов для обновления: {len(traversed_nodes_ids)}", verbose=self.verbose)
-        self.log(f"4.1.2. newnode_text: '{newnode_text}'", verbose=self.verbose)
+        self.log.debug("4. Старт алгоритма по суммаризации текста...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("4.1.1. Количество текстов для обновления: %d", len(traversed_nodes_ids), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("4.1.2. newnode_text: '%s'", newnode_text, verbose=self.verbose, log_level=self.log_level)
 
         new_text_summaries = []
         for node_id in traversed_nodes_ids[::-1]:
@@ -483,7 +495,8 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
                 [node_id], ids_type=TreeIdType.external)[0]
             parent_text = curparent_node.text
             parent_descendants_num = curparent_node.props.get('descendants_num', 0)
-            self.log(f"4.2. Текущая вершина для суммаризациии с newnode_text: {curparent_node}", verbose=self.verbose)
+            self.log.debug("4.2. Текущая вершина для суммаризациии с newnode_text: %s",
+                           curparent_node, verbose=self.verbose, log_level=self.log_level)
 
             if self.config.nodes_aggregation_mechanism == 'sequencial':
                 prev_summ_text = newnode_text if len(
@@ -505,13 +518,13 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
             # Если в процессе парсинга ответа llm-агента возникла ошибка,
             # то выполняем наивную суммаризацию
             if solve_status != ReturnStatus.success:
-                self.log("При решении задачи-суммаризации возникла ошибка!", verbose=self.verbose)
+                self.log.warning("При решении задачи-суммаризации возникла ошибка!", verbose=self.verbose, log_level=self.log_level)
                 summ_text = f"{parent_text}, {newnode_text}"
 
-            self.log(f"4.3. Новое значение text-поля для текущей вершины: {summ_text}", verbose=self.verbose)
+            self.log.debug("4.3. Новое значение text-поля для текущей вершины: %s .", summ_text, verbose=self.verbose, log_level=self.log_level)
             new_text_summaries.append(summ_text)
 
-        self.log("4.final | Суммаризация текста выполнена успешно", verbose=self.verbose)
+        self.log.debug("4.final | Суммаризация текста выполнена успешно", verbose=self.verbose, log_level=self.log_level)
         return new_text_summaries[::-1]
 
     def update_vectordb_info(self, vecdb_type: TreeNodeType, ids: List[str], new_texts: List[str]) -> None:
@@ -560,8 +573,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         # Исходную leaf-вершину перевешиваем на полученную summarized-вершину.
         if parent_node.type == TreeNodeType.leaf:
             self.change_node_to_summarized(parent_node, new_text=texts[-1])
-            self.log(
-                "Перевешиваем leaf-вершину, на переформатированную/последнюю summarized-вершину", verbose=self.verbose)
+            self.log.debug("Перевешиваем leaf-вершину, на переформатированную/последнюю summarized-вершину", verbose=self.verbose, log_level=self.log_level)
             updated_props = deepcopy(parent_node.props)
             updated_props['depth'] += 1
             self.attach_node_to_tree(ids[-1], parent_node.text, updated_props)
@@ -624,7 +636,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         if len(raw_best_leafnode) > 0:
             best_leafnode = raw_best_leafnode[0]
 
-        self.log(f"Семантически-близкая [similarity] leaf-вершина: {best_leafnode}", verbose=self.verbose)
+        self.log.debug("Семантически-близкая [similarity] leaf-вершина: %s .", best_leafnode, verbose=self.verbose, log_level=self.log_level)
         return best_leafnode
 
     def retrieve_relevant_summnode(self, entity_vinstance: VectorDBInstance) -> Union[None, Tuple[float, VectorDBInstance]]:
@@ -643,7 +655,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         if len(raw_best_summnode) > 0:
             best_summnode = raw_best_summnode[0]
 
-        self.log(f"Семантически-близкая [similarity] summ-вершина: {best_summnode}", verbose=self.verbose)
+        self.log.debug("Семантически-близкая [similarity] summ-вершина: %s", best_summnode, verbose=self.verbose, log_level=self.log_level)
         return best_summnode
 
     def get_leafdescendants_for_summnode(self, entity_vinstance: VectorDBInstance, best_summnode_id: str, max_n: int) -> List[VectorDBInstance]:
@@ -686,15 +698,15 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         :return: Список сопоставленных object-вершин (с их векторными представлениями).
         :rtype: List[VectorDBInstance]
         """
-        self.log(f"Старт алгоритма по сопоставлению заданной '{entity}'-сущности c вершинами из дерева",
-                 verbose=self.verbose)
+        self.log.debug("Старт алгоритма по сопоставлению заданной '%s'-сущности c вершинами из дерева",
+                       entity, verbose=self.verbose, log_level=self.log_level)
         if strategy == 'collapsed':
             entity_vinstance = VectorDBInstance(document=entity)
 
-            self.log("Извлечение самых релевантных к entity вершин из leaf-бд...", verbose=self.verbose)
+            self.log.debug("Извлечение самых релевантных к entity вершин из leaf-бд...", verbose=self.verbose, log_level=self.log_level)
             best_leafnode = self.retrieve_relevant_leafnode(entity_vinstance)
 
-            self.log("Извлечение самых релевантных к entity вершин из summarized-бд....", verbose=self.verbose)
+            self.log.debug("Извлечение самых релевантных к entity вершин из summarized-бд....", verbose=self.verbose, log_level=self.log_level)
             best_summnode = self.retrieve_relevant_summnode(entity_vinstance)
             if best_leafnode is None and best_summnode is None:
                 raise ValueError
@@ -703,18 +715,20 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
             if (best_summnode is not None) and (best_summnode[0] < best_leafnode[0]):
                 # в случае, если summarized-вершина семантически ближе к entity,
                 # то ей сопоставляются все её (leaf-вершины) вершиным-потомки
-                self.log(f"В качестве самой релевантной выбрана summarized-вершина: {best_summnode}", verbose=self.verbose)
+                self.log.debug("В качестве самой релевантной выбрана summarized-вершина: %s",
+                               best_summnode, verbose=self.verbose, log_level=self.log_level)
                 matched_nodes = list(map(
                     lambda vnode: NodeInfo(id=vnode.id, type=NodeType.object, text=vnode.document),
                     self.get_leafdescendants_for_summnode(entity_vinstance, best_summnode[1].id, max_n)
                 ))
-                self.log(f"Summarized-вершине соответствуют следующие leaf-вершины (потомки): количество - {len(matched_nodes)}", verbose=self.verbose)
+                self.log.debug("Summarized-вершине соответствуют следующие leaf-вершины (потомки): количество - %d .",
+                               len(matched_nodes), verbose=self.verbose, log_level=self.log_level)
                 for i in range(len(matched_nodes)):
-                    self.log(f"- {matched_nodes[i]}", verbose=self.verbose)
+                    self.log.debug("- %s", matched_nodes[i], verbose=self.verbose, log_level=self.log_level)
             else:
-                self.log(f"В качестве самой релевантной выбрана leaf-вершина: {best_leafnode}", verbose=self.verbose)
+                self.log.debug("В качестве самой релевантной выбрана leaf-вершина: %s .", best_leafnode, verbose=self.verbose, log_level=self.log_level)
                 matched_nodes: List[NodeInfo] = [NodeInfo(id=best_leafnode[1].id, type=NodeType.object, text=best_leafnode[1].document)]
-                self.log(f"- {matched_nodes}", verbose=self.verbose)
+                self.log.debug("- %s", matched_nodes, verbose=self.verbose, log_level=self.log_level)
 
         elif strategy == 'traversal':
             # TODO

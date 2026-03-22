@@ -3,8 +3,8 @@ from typing import List, Dict
 import json
 import sys
 
-EXPEROMETS_BASE_PATH="/home/workspace/experiments"
-sys.path.insert(0, EXPEROMETS_BASE_PATH)
+EXPERIMENTS_BASE_PATH="/home/workspace/experiments"
+sys.path.insert(0, EXPERIMENTS_BASE_PATH)
 
 from analogues_eval.available_methods_utils.utils import GraphRAGQAOperations
 from analogues_eval.available_methods_utils.wikontic.utils import CustomWikontic, create_id

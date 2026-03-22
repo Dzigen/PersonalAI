@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from collections import Counter
 from copy import deepcopy
 
-from .configs import NGS_RERANKDRIVER_DEFAULT_CONFIG
+from .configs import NGS_RERANKDRIVER_DEFAULT_CONFIG, NAIVE_RETRIEVER_LOG_PATH
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......db_drivers.vector_driver import VectorDBInstance
 from .......kg_model import KnowledgeGraphModel
@@ -27,7 +27,9 @@ class NaiveGraphSearchConfig(BaseGraphSearchConfig):
     """
     reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(default_factory=lambda: NGS_RERANKDRIVER_DEFAULT_CONFIG)
     max_k: int = 50
+
     cache_table_name: str = 'qa_naive_t_retriever_cache'
+    log_path: str = NAIVE_RETRIEVER_LOG_PATH
 
     def to_str(self):
         return f"{self.max_k};{self.reranker_driver_config.to_str()}"
@@ -51,18 +53,14 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
-    :type log: Logger
     :param search_config: Конфигурация WaterCirclesRetriever-алгоритма. Значение по умолчанию  NaiveGraphSearchConfig().
     :type search_config: Union[NaiveGraphSearchConfig,Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[None, KeyValueDriverConfig], optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[NaiveGraphSearchConfig, Dict] = NaiveGraphSearchConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, search_config: Union[NaiveGraphSearchConfig, Dict] = NaiveGraphSearchConfig(),
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         if isinstance(search_config, dict):
             search_config = NaiveGraphSearchConfig.from_dict(search_config)
         else:
@@ -79,8 +77,9 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             kg_model.graph_embeddings.triplets_vcomposer
         )
 
-        self.log = log
-        self.verbose = verbose
+        self.log = Logger(search_config.log_path)
+        self.verbose = search_config.verbose
+        self.log_level = search_config.log_level
 
     def close_connections(self):
         if self.cachekv is not None:
@@ -98,18 +97,19 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     @accumulate_step_info
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo]:
-        self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
-        self.log("RETRIEVER: NaiveTripletsRetriever", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
+        self.log.debug("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Retriever: NaiveTripletsRetriever", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", create_id(query_info.query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question: %s", query_info.query, verbose=self.verbose, log_level=self.log_level)
         rinfo = ReturnInfo()
 
         relevant_triplets: List[VectorDBInstance] = self.retriever.run(query_info.query, top_k=self.config.max_k)
         triplet_ids = list(map(lambda item: item.metadata['t_id'], relevant_triplets))
-        self.log(f"Количество извлечённых объектов из векторной бд (triplets): {len(triplet_ids)}", verbose=self.verbose)
+        self.log.debug("Количество извлечённых объектов из векторной бд (triplets): %d", len(triplet_ids), verbose=self.verbose, log_level=self.log_level)
 
         triplets: List[Triplet] = self.kg_model.graph_struct.db_conn.read(triplet_ids)
-        self.log(f"Количество полученных трипелтов из графовой бд: {len(triplets)}", verbose=self.verbose)
-        self.log(f"Распределение типов связей в наборе извлечённых триплетов: {Counter([triplet.relation.type for triplet in triplets])}", verbose=self.verbose)
+        self.log.debug("Количество полученных трипелтов из графовой бд: %d", len(triplets), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("Распределение типов связей в наборе извлечённых триплетов: %s",
+                       Counter([triplet.relation.type for triplet in triplets]), verbose=self.verbose, log_level=self.log_level)
 
         return triplets, rinfo

@@ -16,7 +16,7 @@ DEFAULT_EMBEDDERS_MAP = KGEmbeddersMapping(
 
 
 DEFAULT_AGENTS_CONFIG = {
-    'qwen2.5:7b': AgentDriverConfig()  # по умолчанию в AgentDriverConfig стоит коннектор к ollama-контейнеру с llama3.1:8b-моделью
+    'qwen2.5:7b': AgentDriverConfig()  # по умолчанию в AgentDriverConfig стоит коннектор к ollama-контейнеру с qwen2.5:7b-моделью
 }
 
 DEFAULT_AGENTS_MAP = AgentsMapping(

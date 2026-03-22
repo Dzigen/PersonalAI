@@ -1,9 +1,9 @@
 from typing import List, Dict, Set, Union, Tuple
 from dataclasses import dataclass, field
-import gc
-from copy import deepcopy
 from copy import deepcopy
 from collections import defaultdict
+from time import time
+import torch
 
 from .config import KG_MAIN_LOG_PATH, DEFAULT_AGENTS_MAP, DEFAULT_EMBEDDERS_MAP, \
     DEFAULT_AGENTS_CONFIG, DEFAULT_EMBEDDERS_CONFIG
@@ -47,8 +47,7 @@ class KnowledgeGraphModelConfig(BaseComponentConfig):
     agents_configs: Dict[str, Union[Dict, AgentDriverConfig]] = field(default_factory=lambda: DEFAULT_AGENTS_CONFIG)
     agents_map: Union[Dict, AgentsMapping] = field(default_factory=lambda: DEFAULT_AGENTS_MAP)
 
-    log: Logger = field(default_factory=lambda: Logger(KG_MAIN_LOG_PATH))
-    verbose: bool = False
+    log_path: str = KG_MAIN_LOG_PATH
 
     def to_str(self):
         # TODO
@@ -131,8 +130,9 @@ class KnowledgeGraphModel:
                 config.nodestree_config, cache_kvdriver_config)
 
         self.cache_config = cache_kvdriver_config
-        self.log = config.log
+        self.log = Logger(config.log_path)
         self.verbose = config.verbose
+        self.log_level = config.log_level
 
     def check_consistency(self) -> bool:
         """Метод проверяет согласованность внутренних представлений памяти (графовой, векторной и, при наличии, nodestree-модели).
@@ -141,18 +141,18 @@ class KnowledgeGraphModel:
         :return: True, если проверка завершилась успешно и критичные несоответствия не были обнаружены.
         :rtype: bool
         """
-        self.log("Checking KnowledgeGraph consistency...", verbose=self.verbose)
+        self.log.debug("CHECKING KNOWLEDGEGRAPH CONSISTENCY...", verbose=self.verbose, log_level=self.log_level)
         self.graph_embeddings.check_consistency()
 
         gdb_count = self.graph_struct.db_conn.count_items(detailed=True)
-        self.log(f"GRAPH DB STATUS: {gdb_count}", verbose=self.verbose)
+        self.log.debug("* Graph-db status: %s .", gdb_count, verbose=self.verbose, log_level=self.log_level)
 
         vdb_nodes_count: Dict[str, Dict[str, int]] = dict()
         for node_type, v_composer in self.graph_embeddings.nodes_vcomposers.items():
             vdb_nodes_count[node_type.value] = v_composer.count_items()
         vdb_triplets_count = self.graph_embeddings.triplets_vcomposer.count_items()
-        self.log(f"VECTOR NODES DB STATUS: {vdb_nodes_count}", verbose=self.verbose)
-        self.log(f"VECTOR TRIPLETS DB STATUS: {vdb_triplets_count}", verbose=self.verbose)
+        self.log.debug("* Vector nodes-db status: %s .", vdb_nodes_count, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Vector triples-db status: %s .", vdb_triplets_count, verbose=self.verbose, log_level=self.log_level)
 
         for n_type, graph_n_count in gdb_count['nodes'].items():
             for _, vector_n_count in vdb_nodes_count[n_type].items():
@@ -176,7 +176,7 @@ class KnowledgeGraphModel:
         :return: None
         :rtype: None
         """
-        self.log("Checking CreateInfo...", verbose=self.verbose)
+        self.log.debug("CHECKING CREATEINFO...", verbose=self.verbose, log_level=self.log_level)
 
         # 0. created, but not existed objects in graph and embeddings structures
         nexisted_graph_tids = defaultdict(set)
@@ -185,10 +185,10 @@ class KnowledgeGraphModel:
                 tid_exist = self.graph_struct.db_conn.item_exist(t_id, id_type='triplet')
                 if not tid_exist:
                     nexisted_graph_tids[t_type].add(t_id)
-        self.log(f"Created but not existed Triplets (Relations) in graph structure:", verbose=self.verbose)
+        self.log.debug("Created but not existed Triplets (Relations) in graph structure:", verbose=self.verbose, log_level=self.log_level)
         nexisted_gtids_count = {k: len(v) for k, v in nexisted_graph_tids.items()}
-        self.log(f"- count: {nexisted_gtids_count}", verbose=self.verbose)
-        self.log(f"- ids: {nexisted_graph_tids}", verbose=self.verbose)
+        self.log.debug("* Count: %s .", nexisted_gtids_count, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Ids: %s .", nexisted_graph_tids, verbose=self.verbose, log_level=self.log_level)
 
         nexisted_graph_nids = defaultdict(set)
         for n_type, n_ids in create_info['graph_info']['nodes'].items():
@@ -196,17 +196,19 @@ class KnowledgeGraphModel:
                 nid_exist = self.graph_struct.db_conn.item_exist(NodeInfo(id=n_id, type=n_type), id_type='node')
                 if not nid_exist:
                     nexisted_graph_nids[n_type].add(n_id)
-        self.log(f"Created but not existed Nodes in graph structure:", verbose=self.verbose)
+        self.log.debug("Created but not existed Nodes in graph structure:", verbose=self.verbose, log_level=self.log_level)
         nexisted_gnids_count = {k: len(v) for k, v in nexisted_graph_nids.items()}
-        self.log(f"- count: {nexisted_gnids_count}", verbose=self.verbose)
-        self.log(f"- ids: {nexisted_graph_nids}", verbose=self.verbose)
+        self.log.debug("* Count: %s .", nexisted_gnids_count, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* ids: %s .", nexisted_graph_nids, verbose=self.verbose, log_level=self.log_level)
 
         nexisted_embd_rids = set()
         for r_id in create_info['embeddings_info']['triplets']:
             rid_exist = self.graph_embeddings.triplets_vcomposer.item_exist(id=r_id)
             if not rid_exist:
                 nexisted_embd_rids.add(r_id)
-        self.log(f"Created but not existed Triplets in embeddings structure: [{len(nexisted_embd_rids)}] {nexisted_embd_rids}", verbose=self.verbose)
+        self.log.debug("Created but not existed Triplets in embeddings structure:", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Count: %d .", len(nexisted_embd_rids), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Ids: %s .", nexisted_embd_rids, verbose=self.verbose, log_level=self.log_level)
 
         nexisted_embd_nids = defaultdict(set)
         for n_type, n_ids in create_info['embeddings_info']['nodes'].items():
@@ -215,7 +217,9 @@ class KnowledgeGraphModel:
                 if not nid_exist:
                     nexisted_embd_nids[n_type].add(n_id)
         nexisted_embd_nids = dict(nexisted_embd_nids)
-        self.log(f"Created but not existed Nodes in embeddings structure: [{len(nexisted_embd_nids)}] {nexisted_embd_nids}", verbose=self.verbose)
+        self.log.debug("Created but not existed Nodes in embeddings structure:", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Count: %d .", len(nexisted_embd_nids), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Ids: %s .", nexisted_embd_nids, verbose=self.verbose, log_level=self.log_level)
 
         # 1. для каждой вершины, добавленной в графовую структуру, должен быть соответствующий ембеддинг, добавленный в векторную структуру
         lefted_graph_n_ids = deepcopy(create_info['graph_info']['nodes'])
@@ -226,8 +230,10 @@ class KnowledgeGraphModel:
 
             lefted_emb_n_ids[n_type] = lefted_emb_n_ids[n_type].difference(graph_n_typed_ids)
 
-        self.log(f"Graph Nodes without corresponding embeddings: {lefted_graph_n_ids}", verbose=self.verbose)
-        self.log(f"Nodes Embeddings without representation in graph structure: {lefted_emb_n_ids}", verbose=self.verbose)
+        self.log.debug("Graph Nodes without corresponding embeddings: %s .",
+                       lefted_graph_n_ids, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("Nodes Embeddings without representation in graph structure: %s .",
+                       lefted_emb_n_ids, verbose=self.verbose, log_level=self.log_level)
 
         # 2. если добавляется simple-связи в графовую структуру, то должен быть соответствующий ембеддинг, добавленный в векторную структуру
         embtid_to_graphtid = dict()
@@ -240,13 +246,15 @@ class KnowledgeGraphModel:
                 if triplet.relation.id in create_info['embeddings_info']['triplets']:
                     embtid_to_graphtid[triplet.relation.id] = triplet.id if triplet.id in create_info['graph_info']['triplets'][RelationType.simple] else None
 
-        lefted_emb_simple_t_ids = set(map(lambda pair: pair[0], filter(lambda pair: pair[1] is None, embtid_to_graphtid.items())))
         lefted_graph_simple_t_ids = set(map(lambda pair: pair[0], filter(lambda pair: pair[1] is None, graphtid_to_embtid.items())))
-        self.log(f"Graph Simple-triplets (Relations) without corresponding embeddings: {lefted_graph_simple_t_ids}", verbose=self.verbose)
-        self.log(f"Simple-triplet (Relation) Embeddings without representation in graph structure: {lefted_emb_simple_t_ids}", verbose=self.verbose)
+        lefted_emb_simple_t_ids = set(map(lambda pair: pair[0], filter(lambda pair: pair[1] is None, embtid_to_graphtid.items())))
+        self.log.debug("Graph Simple-triplets (Relations) without corresponding embeddings: %s .",
+                       lefted_graph_simple_t_ids, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("Simple-triplet (Relation) Embeddings without representation in graph structure: %s .",
+                       lefted_emb_simple_t_ids, verbose=self.verbose, log_level=self.log_level)
 
     def check_deleteinfo(self, triplets: List[Triplet], delete_info: Dict[str, Dict[str, Set[str]]]) -> None:
-        self.log("Checking DeleteInfo...", verbose=self.verbose)
+        self.log.debug("CHEKING DELETEINFO...", verbose=self.verbose, log_level=self.log_level)
         # TODO
         pass
 
@@ -265,24 +273,41 @@ class KnowledgeGraphModel:
         :return: Кортеж из трёх объектов: (1) словарь с информацией о триплетах, которые были добавлены в память ассистента; (2) статус завершения операции с пояснительной информацией; (3) True, если результат был получен из кеша (cache hit), иначе False.
         :rtype: Tuple[Dict[str, Dict[str, Set[str]]], ReturnInfo, bool]
         """
+        self.log.info("START ADDING KNOWLEDGE TO MEMORY...", verbose=self.verbose, log_level=self.log_level)
         rinfo = ReturnInfo()
+
+        gc_stime = time()
         graph_create_info = self.graph_struct.create_triplets(triplets, status_bar=status_bar)
+        gc_etime = time()
+
+        ec_stime = time()
         embd_create_info = self.graph_embeddings.create_triplets(triplets, status_bar=status_bar)
+        ec_etime = time()
 
         # embd_create_info['nodes'] = reduce(lambda acc, v: acc.union(v), list(embd_create_info['nodes'].values()), set())  # костыль
 
+        tc_stime = time()
         if self.nodestree_model is not None:
             tree_expand_info = self.nodestree_model.expand_tree(
                 triplets, status_bar=status_bar)
         else:
             tree_expand_info = None
+        tc_etime = time()
 
         create_info = {
             'graph_info': graph_create_info,
             'embeddings_info': embd_create_info,
             'tree_info': tree_expand_info
         }
-        self.log(f"CREATE INFO: {create_info}", verbose=self.verbose)
+
+        self.log.info("RESULT:", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Graph create_info: %s .", create_info['graph_info'], verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Embeddings create_info: %s .", create_info['embeddings_info'], verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Tree create_info: %s .", create_info['tree_info'], verbose=self.verbose, log_level=self.log_level)
+        self.log.info("* Add triples to graph-struct elapsed time: %.5f sec .", gc_etime - gc_stime, verbose=self.verbose, log_level=self.log_level)
+        self.log.info("* Add triples to embeddings-struct elapsed time: %.5f sec .", ec_etime - ec_stime, verbose=self.verbose, log_level=self.log_level)
+        self.log.info("* Add triples to tree-struct elapsed time: %.5f sec .", tc_etime - tc_stime, verbose=self.verbose, log_level=self.log_level)
+
         if check_createinfo:
             self.check_createinfo(triplets, create_info)
 
@@ -380,3 +405,5 @@ class KnowledgeGraphModel:
         self.graph_struct.close_connections()
         if self.nodestree_model is not None:
             self.nodestree_model.close_connections()
+
+        torch.cuda.empty_cache()

@@ -20,8 +20,7 @@ class GraphModelConfig(BaseComponentConfig):
     :type driver_config: Union[Dict,GraphDriverConfig], optional
     """
     driver_config: Union[Dict, GraphDriverConfig] = field(default_factory=lambda: GRAPH_DB_DEFAULT_DRIVER_CONFIG)
-    log: Logger = field(default_factory=lambda: Logger(GRAPH_MODEL_LOG_PATH))
-    verbose: bool = False
+    log_path: str = GRAPH_MODEL_LOG_PATH
 
     def to_str(self):
         # TODO
@@ -57,8 +56,9 @@ class GraphModel:
 
         self.db_conn = GraphDriver.connect(self.config.driver_config)
 
-        self.log = self.config.log
+        self.log = Logger(config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     def create_triplets(self, triplets: List[Triplet], batch_size: int = 64, status_bar: bool = True) -> Dict[str, Dict[Union[RelationType, NodeType], Set[str]]]:
         """Метод предназначен для сохранения информации, представленной в виде списка триплетов, в графовую структуру.
@@ -72,7 +72,7 @@ class GraphModel:
         :return: Словарь с информацией о триплетах, которые были добавлены в графовую структуру.
         :rtype: Dict[str, Dict[Union[RelationType, NodeType], Set[str]]]
         """
-        self.log("Adding triplets to graph-model...", verbose=self.verbose)
+        self.log.debug("ADDING TRIPLES TO GRAPH-STRUCT...", verbose=self.verbose, log_level=self.log_level)
         def ntype_mapping(): return {n_type: set() for n_type in NODES_TYPES_MAP.values()}
         def reltype_mapping(): return {r_type: set() for r_type in RELATIONS_TYPES_MAP.values()}
 
@@ -132,19 +132,19 @@ class GraphModel:
 
             self.db_conn.create(triplets_to_create, creation_info)
 
-        self.log(f"Triplets info (all - {len(triplets)}):", verbose=self.verbose)
+        self.log.debug("RESULT:", verbose=self.verbose, log_level=self.log_level)
+
         utriples_count = {k: len(v) for k, v in unique_triplet_ids.items()}
-        self.log(f"- unique ({utriples_count}): {unique_triplet_ids}", verbose=self.verbose)
         etriples_count = {k: len(v) for k, v in existed_triplet_ids.items()}
-        self.log(f"- existed ({etriples_count}): {existed_triplet_ids}", verbose=self.verbose)
+        self.log.debug("* Triplets info (all): %d .", len(triplets), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* unique: %s / %s .", utriples_count, unique_triplet_ids, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* existed: %s / %s .", etriples_count, existed_triplet_ids, verbose=self.verbose, log_level=self.log_level)
 
-        self.log(f"Nodes info (all - {len(triplets)*2}):", verbose=self.verbose)
         unode_count = {k: len(v) for k, v in unique_node_ids.items()}
-        self.log(f"- unique ({unode_count}): {unique_node_ids}", verbose=self.verbose)
         enode_count = {k: len(v) for k, v in existed_node_ids.items()}
-        self.log(f"- existed ({enode_count}): {existed_node_ids}", verbose=self.verbose)
-
-        self.log("Triplets added successfully!", verbose=self.verbose)
+        self.log.debug("Nodes info (all): %d .", len(triplets) * 2, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug(f"* unique: %s / %s .", unode_count, unique_node_ids, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug(f"* existed: %s / %s .", enode_count, existed_node_ids, verbose=self.verbose, log_level=self.log_level)
 
         return {'triplets': created_triplet_ids, 'nodes': created_node_ids}
 

@@ -38,7 +38,7 @@ class QALLMGeneratorConfig(BaseComponentConfig, LanguageConfig):
     relation_type: List[Union[str, RelationType]] = field(default_factory=lambda: [RelationType.hyper, RelationType.simple])
 
     cache_table_name: Union[str, None] = 'qa_agenerator_stage_cache'
-    log: Logger = field(default_factory=lambda: Logger(AG_MAIN_LOG_PATH))
+    log_path: str = AG_MAIN_LOG_PATH
 
     def to_str(self):
         str_relations = ";".join(
@@ -86,7 +86,7 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs()
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -101,8 +101,9 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
                 self.agent, self.config.agent_tasks_config.ag, ag_task_cache_config, inferencestat_config)
         )
 
-        self.log = self.config.log
+        self.log = Logger(config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     def get_cache_key(self, query: str, context_triplets: List[Triplet]) -> List[object]:
         """Формирует ключ кэша для результата генерации ответа.
@@ -134,22 +135,24 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
         rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
-        self.log("START ANSWER GENERATION ...", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
-        self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
+        self.log.debug("START ANSWER GENERATION ...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", create_id(query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question: %s", query, verbose=self.verbose, log_level=self.log_level)
 
         triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in context_triplets]))
-        self.log(f"Исходное количество триплетов: {len(context_triplets)} | {triplet_types_freq}", verbose=self.verbose)
+        self.log.debug("Исходное количество триплетов: %d | %s", len(context_triplets),
+                       triplet_types_freq, verbose=self.verbose, log_level=self.log_level)
 
         filtered_triplets = [triplet for triplet in context_triplets if triplet.relation.type in self.config.relation_type]
         triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in filtered_triplets]))
-        self.log(f"Количество оставшихся триплетов после фильтрации по типу: {len(filtered_triplets)} | {triplet_types_freq}", verbose=self.verbose)
+        self.log.debug("Количество оставшихся триплетов после фильтрации по типу: %d | %s",
+                       len(filtered_triplets), triplet_types_freq, verbose=self.verbose, log_level=self.log_level)
 
-        self.log(f"CONTEXT_TRIPLETS:", verbose=self.verbose)
+        self.log.debug("CONTEXT_TRIPLETS:", verbose=self.verbose, log_level=self.log_level)
         for triplet in filtered_triplets:
-            self.log(f"*[{triplet.id}] {triplet}", verbose=self.verbose)
+            self.log.debug("* [%s] %s", triplet.id, triplet, verbose=self.verbose, log_level=self.log_level)
 
-        self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...", verbose=self.verbose)
+        self.log.debug("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
         answer, status, trace = self.tasks_solvers.answer_generator_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             query=query, triplets=filtered_triplets)
@@ -162,9 +165,8 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
             rinfo.status = ReturnStatus.empty_answer
             rinfo.message = STATUS_MESSAGE[rinfo.status]
         else:
-            self.log(
-                f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.verbose)
+            self.log.debug("RESULT:\n* Generated answer: %s", answer, verbose=self.verbose, log_level=self.log_level)
 
-        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
+        self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)
 
         return answer, rinfo, module_trace

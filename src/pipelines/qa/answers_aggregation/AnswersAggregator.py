@@ -31,7 +31,7 @@ class AnswersAggregatorConfig(BaseComponentConfig, LanguageConfig):
     agent_tasks_config: Union[Dict, AnswersAggregatorAgentTasksConfig] = field(default_factory=lambda: AnswersAggregatorAgentTasksConfig())
 
     cache_table_name: str = 'answers_aggregation_main_stage_cache'
-    log: Logger = field(default_factory=lambda: Logger(AAGG_MAIN_LOG_PATH))
+    log_path: str = AAGG_MAIN_LOG_PATH
 
     def to_str(self) -> str:
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
@@ -71,7 +71,7 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs()
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -87,8 +87,9 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
             )
         )
 
-        self.log = self.config.log
+        self.log = Logger(config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     def get_cache_key(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> List[str]:
         """Формирует ключ кэша для результатов агрегации ответов.
@@ -117,10 +118,10 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
         :return: Кортеж из трёх объектов: (1) финальный ответ на user-вопрос; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
         :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
-        self.log("START ANSWERS AGGREGATION...", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.verbose)
-        self.log(f"QUERY_INFO: {query_info}", verbose=self.verbose)
-        self.log(f"SUB_ANSWERS: {subq_info.sub_answers}", verbose=self.verbose)
+        self.log.debug("START ANSWERS AGGREGATION...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", create_id(query_info.base_query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Query info: %s", query_info, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Sub-answers: %s", subq_info.sub_answers, verbose=self.verbose, log_level=self.log_level)
         final_answer, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
 
         if len(subq_info.sub_answers) < 0:
@@ -141,14 +142,14 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
             if len(sub_queries) < 2 or len(subq_info.sub_answers) != len(sub_queries):
                 raise ValueError
 
-            self.log("Выполнение суммаризации ответов с помощью LLM-агента...", verbose=self.verbose)
+            self.log.debug("Выполнение суммаризации ответов с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
             final_answer, status, trace = self.tasks_solvers.subanswers_summarisation_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                 query=query, sub_queries=sub_queries, sub_answers=subq_info.sub_answers)
-            self.log(f"RESULT: {final_answer}", verbose=self.verbose)
+            self.log.debug("RESULT: %s", final_answer, verbose=self.verbose, log_level=self.log_level)
             module_trace.add("subanswers_summarisation_solver", ModuleType.task_solver, trace)
             rinfo.status = status
 
-        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
+        self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)
 
         return final_answer, rinfo, module_trace

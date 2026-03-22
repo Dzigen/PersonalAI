@@ -31,7 +31,7 @@ class LLMUpdatorConfig(BaseComponentConfig, LanguageConfig):
     agent_tasks_config: Union[Dict, MemUpdatorAgentTasksConfig] = field(default_factory=lambda: MemUpdatorAgentTasksConfig())
     delete_obsolete_info: bool = False
 
-    log: Logger = field(default_factory=lambda: Logger(MEM_UPDATOR_MAIN_LOG_PATH))
+    log_path: str = MEM_UPDATOR_MAIN_LOG_PATH
 
     def to_str(self):
         # TODO
@@ -72,7 +72,7 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs()
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
 
         self.kg_model = kg_model
 
@@ -85,8 +85,9 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
                 self.config.agent_tasks_config.replace_thesis, cache_kvdriver_config, inferencestat_config)
         )
 
-        self.log = self.config.log
+        self.log = Logger(config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     @accumulate_step_info
     def get_unique_incident_simple_triplets_to_simple_triplet(self, base_triplet: Triplet) -> Tuple[List[Triplet], ReturnInfo, bool]:
@@ -248,6 +249,7 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
         :return: Кортеж из двух объектов: (1) идентификаторы устаревших episodic-триплетов; (2) статус завершения операции с пояснительной информацией; (3) True, если результат был получен из кеша (cache hit), иначе False.
         :rtype: Tuple[List[str], ReturnInfo, bool]
         """
+        rinfo = ReturnInfo()
         obsolete_triplet_ids = list()
 
         # Сопоставляем hyper-сущность из триплета вершинам в графе знаний
@@ -284,22 +286,22 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
         :rtype: Tuple[Tuple[Dict[str, Dict[int, Dict[str, bool]]], Dict[str, Dict[str, Set[str]]]], ReturnInfo, CompositeModuleDetailedResult]
         """
 
-        self.log("START KNOWLEDGE UPDATING...", verbose=self.verbose)
-        self.log(f"TRIPLETS_ID: {create_id(f'{new_triplets}')}", verbose=self.verbose)
+        self.log.debug("START KNOWLEDGE UPDATING...", verbose=self.verbose, log_level=self.log_level)
+        # self.log.debug("* triples hash: %s .", create_id(f'{new_triplets}'), verbose=self.verbose, log_level=self.log_level)
         rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
         remove_info, add_info = dict(), dict()
 
         if self.config.delete_obsolete_info:
             obsolete_triplets_counter = 0
 
-            self.log(f"START SEARCH OF OBSOLETE TRIPLETS IN MEMORY...", verbose=self.verbose)
+            self.log.debug("START SEARCH OF OBSOLETE TRIPLETS IN MEMORY...", verbose=self.verbose, log_level=self.log_level)
             # Note: обрабатываем каждый триплет по отдельности, так как в пуле триплетов могут быть такие,
             # которые заменяют одни и те же устаревшие триплеты. Соответственно, мы должны итеративно обновлять память и сохранить
             # только последнюю актуальную информацию.
             process = tqdm(new_triplets) if status_bar else new_triplets
             for triplet in process:
-                self.log(f"BASE_TRIPLET ID: {triplet.id}", verbose=self.verbose)
-                self.log(f"BASE_TRIPLET: {triplet}", verbose=self.verbose)
+                self.log.debug("CUR TRIPLE ID: %s .", triplet.id, verbose=self.verbose, log_level=self.log_level)
+                self.log.debug("CUR TRIPLE: %s", triplet, verbose=self.verbose, log_level=self.log_level)
 
                 if triplet.relation.type == RelationType.simple:
                     obsolete_t_ids, findost_rinfo, trace = self.find_simple_obsolete_triplet_ids(triplet)
@@ -322,32 +324,32 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
                 else:
                     raise ValueError
 
-                self.log("RESULT:", verbose=self.verbose)
-                self.log(f"* OBSOLETE TRIPELTS AMOUNT - {len(obsolete_t_ids)}", verbose=self.verbose)
-                self.log(f"* OBSOLETE TRIPLET IDS - {obsolete_t_ids}", verbose=self.verbose)
+                self.log.debug("RESULT:", verbose=self.verbose, log_level=self.log_level)
+                self.log.debug("* Obsolete triples amount: %d .", len(obsolete_t_ids), verbose=self.verbose, log_level=self.log_level)
+                self.log.debug("* Obsolete triple ids: %s", obsolete_t_ids, verbose=self.verbose, log_level=self.log_level)
                 obsolete_triplets_counter += len(obsolete_t_ids)
 
-                self.log(f"DELETING OBSOLETE TRIPLETS FROM MEMORY...", verbose=self.verbose)
+                self.log.debug("DELETING OBSOLETE TRIPLETS FROM MEMORY...", verbose=self.verbose, log_level=self.log_level)
                 obsolete_triplets = self.kg_model.graph_struct.db_conn.read(obsolete_t_ids)
-                self.log(f"TRIPLETS TO DELETE: {len(obsolete_triplets)}", verbose=self.verbose)
+                self.log.debug("TRIPLES TO DELETE: %d", len(obsolete_triplets), verbose=self.verbose, log_level=self.log_level)
                 for obs_t in obsolete_triplets:
-                    self.log(f"* [{obs_t.id}] {obs_t}", verbose=self.verbose)
+                    self.log.debug("* [%s] %s", obs_t.id, obs_t, verbose=self.verbose, log_level=self.log_level)
                 remove_info, _, trace = self.kg_model.remove_knowledge(obsolete_triplets)
                 module_trace.add('remove_knowledge', ModuleType.step, trace)
-                self.log(f"REMOVE INFO: {remove_info}", verbose=self.verbose)
+                self.log.debug("REMOVE INFO: %s .", remove_info, verbose=self.verbose, log_level=self.log_level)
 
-                self.log(f"ADDING NEW TRIPLET TO MEMORY...", verbose=self.verbose)
+                self.log.debug("ADDING NEW TRIPLET TO MEMORY...", verbose=self.verbose, log_level=self.log_level)
                 add_info, _, trace = self.kg_model.add_knowledge([triplet])
                 module_trace.add('add_knowledge', ModuleType.step, trace)
-                self.log(f"ADD INFO: {add_info}", verbose=self.verbose)
+                self.log.debug("ADD INFO: %s .", add_info, verbose=self.verbose, log_level=self.log_level)
 
-            self.log(f"FINAL RESULT:", verbose=self.verbose)
-            self.log(f"- SUM AMOUNT OF OBSOLETE TRIPELTS: {obsolete_triplets_counter}", verbose=self.verbose)
+            self.log.debug("FINAL RESULT:", verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("* Sum amount of obsolete triples: %s ", obsolete_triplets_counter, verbose=self.verbose, log_level=self.log_level)
 
         else:
-            self.log(f"ADDING TRIPLETS TO MEMORY...", verbose=self.verbose)
+            self.log.debug("ADDING TRIPLETS TO MEMORY...", verbose=self.verbose, log_level=self.log_level)
             add_info, _, trace = self.kg_model.add_knowledge(new_triplets, status_bar=status_bar)
             module_trace.add('add_knowledge', ModuleType.step, trace)
-            self.log(f"ADD INFO: {add_info}", verbose=self.verbose)
+            self.log.debug("* Add info: %s", add_info, verbose=self.verbose, log_level=self.log_level)
 
         return (remove_info, add_info), rinfo, module_trace, False
