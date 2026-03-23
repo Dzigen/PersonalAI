@@ -21,14 +21,17 @@ class Entities2NodesMatcherConfig(BaseComponentConfig):
     :type use_tree: str, optional
     :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию E2NM_RERANKDRIVER_DEFAULT_CONFIG.
     :type reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
-    :param max_n: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 1.
+    :param max_n: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 3.
     :type max_n: int, optional
+    :param discard_other_mnodes_if_exactmatch_found: Если True, то в случае наличия полного совпадения (в нижних регистрах) name-поля одной из object-вершин с данной сущностью, то другие сопоставленные object-вершины для неё (данной сущности) будут отброшены; иначе False. Значение по умолчанию True.
+    :type discard_other_mnodes_if_exactmatch_found: bool, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы Entities2NodesMatcher-класса. Значение по умолчанию 'medreasn_e2nmatcher_main_stage_cache'.
     :type cache_table_name: str, optional
     """
     use_tree: bool = False
     reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(default_factory=lambda: E2NM_RERANKDRIVER_DEFAULT_CONFIG)
-    max_n: int = 1
+    max_n: int = 3
+    discard_other_mnodes_if_exactmatch_found: bool = True
 
     cache_table_name: str = "medreasn_e2nmatcher_main_stage_cache"
     log_path: str = E2NMATCHER_MAIN_LOG_PATH
@@ -94,6 +97,21 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
                 lambda node: NodeInfo(id=node.id, text=node.document, type=NodeType.object),
                 self.retriever.run(entity, top_k=self.config.max_n, includes=['documents'])
             ))
+
+        if self.config.discard_other_mnodes_if_exactmatch_found:
+            em_objects = list(filter(lambda object: object.text.lower() == entity.lower(), matched_objects))
+            if len(em_objects) > 0:
+                self.log.debug('Найдены object-вершины, name-поля которых совпадают с данной entity "%s". Другие object-вершины отбрасываются.',
+                               entity, verbose=self.verbose, log_level=self.log_level)
+                self.log.debug('* Исходный набор сопоставленных object-вершин (%d): %s',
+                               len(matched_objects), matched_objects, verbose=self.verbose, log_level=self.log_level)
+                self.log.debug('* Совпадающие object-вершины (%d): %s',
+                               len(em_objects), em_objects, verbose=self.verbose, log_level=self.log_level)
+
+                matched_objects = em_objects
+            else:
+                self.log.debug('Для entity "%s" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.',
+                               entity, verbose=self.verbose, log_level=self.log_level)
 
         # PAY ATTENTION: tuple is needed to satisfy decorator interface
         return matched_objects,
