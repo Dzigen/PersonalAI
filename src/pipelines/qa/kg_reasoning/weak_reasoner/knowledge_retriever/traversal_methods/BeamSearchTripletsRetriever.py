@@ -12,9 +12,9 @@ from time import time
 from copy import deepcopy
 import numpy as np
 
-from .configs import BSGS_RERANKDRIVER_DEFAULT_CONFIG
+from .configs import BSGS_RERANKDRIVER_DEFAULT_CONFIG, BEAMSEARCH_RETRIEVER_LOG_PATH
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
-from .......utils.data_structs import QueryInfo, Triplet, NodeType, NodeInfo, from_str_to_nodeinfo
+from .......utils.data_structs import QueryInfo, Triplet, NodeType, NodeInfo, TripletInfo, RelationInfo, from_str_to_nodeinfo
 from .......kg_model import KnowledgeGraphModel
 from .......utils.data_structs import create_id, NODES_TYPES_MAP
 from .......utils import Logger, accumulate_step_info, ReturnInfo
@@ -74,10 +74,11 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     diff_paths_intersection_by_rel: bool = False
     mean_alpha: float = 0.75
     accepted_node_types: List[NodeType] = field(
-        default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
+        default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
     final_sorting_mode: str = 'mixed'  # 'ended_first' | 'mixed' | 'continuous_first'
 
     cache_table_name: str = 'qa_beamsearch_t_retriever_cache'
+    log_path: str = BEAMSEARCH_RETRIEVER_LOG_PATH
 
     def to_str(self):
         str_reranker = f"{self.vdbname_for_scores};{self.reranker_driver_config.to_str()}"
@@ -110,19 +111,15 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
-    :type log: Logger
     :param search_config: Конфигурация BeamSearchTripletsRetriever-алгоритма. Значение по умолчанию GraphBeamSearchConfig().
     :type search_config: Union[GraphBeamSearchConfig, Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger,
+    def __init__(self, kg_model: KnowledgeGraphModel,
                  search_config: Union[GraphBeamSearchConfig, Dict] = GraphBeamSearchConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         if isinstance(search_config, dict):
             search_config = GraphBeamSearchConfig.from_dict(search_config)
         else:
@@ -141,8 +138,9 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, self.config.cache_table_name)
 
-        self.log = log
-        self.verbose = verbose
+        self.log = Logger(search_config.log_path)
+        self.verbose = search_config.verbose
+        self.log_level = search_config.log_level
 
     def close_connections(self):
         if self.cachekv is not None:
@@ -176,12 +174,9 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
         return -np.log(1.0 - raw_score)
 
-    def get_available_nodes(self, base_node: NodeInfo, cur_path_idx: int,
-                            traversing_paths: List[TraversingPath], prev_node: Union[NodeInfo, None] = None) -> List[NodeInfo]:
-        adj_nodes_typedids = set(map(
-            lambda node: node.to_str(),
-            self.kg_model.graph_struct.db_conn.get_adjecent_nodes(base_node, self.config.accepted_node_types)
-        ))
+    def filter_nodes_typedids(self, adjacent_nodes_typedids: List[str], cur_path_idx: int,
+                              traversing_paths: List[TraversingPath], prev_node: Union[NodeInfo, None] = None) -> List[NodeInfo]:
+        adj_nodes_typedids: Set[str] = set(adjacent_nodes_typedids)
         if prev_node is not None:
             adj_nodes_typedids.discard(prev_node.to_str())
 
@@ -194,35 +189,79 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             # Удаляем вершины, которые есть в других путях из числа смежных для текущего пути
             for i in range(len(traversing_paths)):
                 if i != cur_path_idx:
-                    adj_nodes_typedids.difference_update(traversing_paths[i].unique_ntypedids)
-        filtered_adjenced_nodes = list(map(lambda n_typedid: from_str_to_nodeinfo(n_typedid), list(adj_nodes_typedids)))
-        return filtered_adjenced_nodes
+                    adj_nodes_typedids.difference_update(
+                        traversing_paths[i].unique_ntypedids)
+        filtered_adjacent_nodes = list(adj_nodes_typedids)
+        return filtered_adjacent_nodes
 
-    def get_available_rinfo(
-            self, base_node: NodeInfo, adj_nodes: List[NodeInfo], cur_path_idx: int,
-            traversing_paths: List[TraversingPath]) -> Tuple[Dict[str, NodeInfo], Dict[str, List[str]]]:
+    def filter_relations_tids(self, incid_relations_tids: List[str], cur_path_idx: int,
+                              traversing_paths: List[TraversingPath]) -> List[str]:
+        tids = set(incid_relations_tids)
+
+        # Удаляем связи, которые уже есть в текущем пути
+        filtered_tids: Set[str] = tids.difference(traversing_paths[cur_path_idx].unique_tids)
+
+        if not self.config.diff_paths_intersection_by_rel:
+            # Удаляем связи, которые уже есть в других путях
+            for i in range(len(traversing_paths)):
+                if i != cur_path_idx:
+                    filtered_tids.difference_update(traversing_paths[i].unique_tids)
+
+        return list(filtered_tids)
+
+    def get_available_triples_info(
+        self, base_node: NodeInfo, cur_path_idx: int,
+        traversing_paths: List[TraversingPath], prev_node: Union[NodeInfo, None] = None)\
+            -> Tuple[Union[None, Dict[str, NodeInfo]], Union[None, Dict[str, List[str]]], bool]:
 
         shared_t_info: Dict[str, NodeInfo] = dict()
-        rids_to_tids_map = defaultdict(list)
-        for adj_node in adj_nodes:
-            tmp_shared_ids = self.kg_model.graph_struct.db_conn.get_nodes_shared_ids(base_node, adj_node, id_type='both')
-            tmp_ids_map = {item['t_id']: item['r_id'] for item in tmp_shared_ids}
-            cur_tids = set(tmp_ids_map.keys())
+        rids_to_tids_map: Dict[str, List[str]] = defaultdict(list)
 
-            # Удаляем связи, которые уже есть в текущем пути
-            tmp_shared_ids: set = cur_tids.difference(traversing_paths[cur_path_idx].unique_tids)
+        incident_triples: List[TripletInfo] = \
+            self.kg_model.graph_struct.db_conn.get_incident_triples(
+                base_node, accepted_n_types=self.config.accepted_node_types)
+        self.log.debug(f"Количество инцидентных триплетов к вершине {base_node}: {len(incident_triples)}",
+                       verbose=self.verbose, log_level=self.log_level)
 
-            if not self.config.diff_paths_intersection_by_rel:
-                # Удаляем связи, которые уже есть в других путях
-                for i in range(len(traversing_paths)):
-                    if i != cur_path_idx:
-                        tmp_shared_ids.difference_update(traversing_paths[i].unique_tids)
+        #
+        adjn_to_incidr_map: Dict[str, List[Tuple[str, RelationInfo]]] = defaultdict(list)
+        basenode_str = base_node.to_str()
+        for triple_info in incident_triples:
+            if triple_info.start_node.to_str() != basenode_str:
+                adjn_to_incidr_map[triple_info.start_node.to_str()].append(
+                    (triple_info.id, triple_info.relation))
+            else:
+                adjn_to_incidr_map[triple_info.end_node.to_str()].append(
+                    (triple_info.id, triple_info.relation))
+        adjn_to_incidr_map = dict(adjn_to_incidr_map)
 
-            for t_id in list(tmp_shared_ids):
-                shared_t_info[t_id] = adj_node
-                rids_to_tids_map[tmp_ids_map[t_id]].append(t_id)
+        filtered_adjacent_nodes_typedids: List[str] = self.filter_nodes_typedids(
+            list(adjn_to_incidr_map.keys()), cur_path_idx, traversing_paths, prev_node)
+        self.log.debug(f"Количество смежных вершин к {base_node} после фильтрации: {len(filtered_adjacent_nodes_typedids)}",
+                       verbose=self.verbose, log_level=self.log_level)
 
-        return shared_t_info, rids_to_tids_map
+        if len(filtered_adjacent_nodes_typedids) < 1:
+            return shared_t_info, rids_to_tids_map, True
+
+        #
+        incidr_to_adjn_map: Dict[str, Tuple[str, NodeInfo]] = dict()
+        for node_typedid in filtered_adjacent_nodes_typedids:
+            cur_nodeinfo = from_str_to_nodeinfo(node_typedid)
+            for incident_relation in adjn_to_incidr_map[node_typedid]:
+                incidr_to_adjn_map[incident_relation[0]] = (incident_relation[1].id, cur_nodeinfo)
+
+        filtered_incident_relations_tids: List[str] = self.filter_relations_tids(
+            list(incidr_to_adjn_map.keys()), cur_path_idx, traversing_paths)
+        self.log.debug(f"Количество инцидентных отношений к вершине {base_node} после фильтрации: {len(filtered_incident_relations_tids)}",
+                       verbose=self.verbose, log_level=self.log_level)
+
+        #
+        for t_id in filtered_incident_relations_tids:
+            shared_t_info[t_id] = incidr_to_adjn_map[t_id][1]
+            rids_to_tids_map[incidr_to_adjn_map[t_id][0]].append(t_id)
+        rids_to_tids_map = dict(rids_to_tids_map)
+
+        return shared_t_info, rids_to_tids_map, False
 
     def get_triplet_scores(self, query: str, shared_t_info: Dict[str, NodeInfo],
                            rids_to_tids_map: Dict[str, List[str]], batch_size: int = 512) -> List[Tuple[str, NodeInfo, float]]:
@@ -304,13 +343,13 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         ended_paths = []
 
         for cur_depth in range(self.config.max_depth):
-            self.log(f"Текущая глубина обхода графа: {cur_depth}", verbose=self.verbose)
-            self.log(f"Имеющееся количество незавершившихся путей: {len(traversing_paths)}", verbose=self.verbose)
+            self.log.debug("Текущая глубина обхода графа: %d", cur_depth, verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("Имеющееся количество незавершившихся путей: %d", len(traversing_paths), verbose=self.verbose, log_level=self.log_level)
             path_candidates: List[TraversingPath] = list()
 
             if len(traversing_paths) < 1:
                 # прекращаем построение путей, так как больше некуда двигаться
-                self.log(f"Больше некуда двигаться. Прекращаем обход графа", verbose=self.verbose)
+                self.log.warning("Больше некуда двигаться. Прекращаем обход графа", verbose=self.verbose, log_level=self.log_level)
                 break
 
             opext_s_time = time()
@@ -318,13 +357,15 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 curp_s_time = time()
                 cur_path_info = traversing_paths[i]
                 prev_node, tail_node = cur_path_info.path[-1][0], cur_path_info.path[-1][2]
-                self.log(f"Информация по текущему пути:\n* номер: {i}\n* len: {len(cur_path_info.path)}\n* tail_node: {tail_node}\n* prev_node: {prev_node}", verbose=self.verbose)
+                self.log.debug("Информация по текущему пути:\n* номер: %d\n* len: %d\n* tail_node: %s\n* prev_node: %s",
+                               i, len(cur_path_info.path), tail_node, prev_node, verbose=self.verbose, log_level=self.log_level)
 
-                adj_nodes = self.get_available_nodes(tail_node, i, traversing_paths, prev_node)
-                self.log(f"Смежные вершины: {len(adj_nodes)}\n", verbose=self.verbose)
+                shared_t_info, rids_to_tids_map, is_zeroadj_nodes = self.get_available_triples_info(
+                    tail_node, i, traversing_paths, prev_node)
 
-                if len(adj_nodes) < 1:
-                    self.log("У tail-вершины нет смежных вершин. Считаем путь завершившимся.", verbose=self.verbose)
+                if is_zeroadj_nodes:
+                    self.log.debug("У tail-вершины нет смежных вершин. Считаем путь завершившимся.",
+                                   verbose=self.verbose, log_level=self.log_level)
                     if len(cur_path_info.path) > 1:
                         ended_paths.append(
                             TraversedPath(
@@ -334,10 +375,10 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                         )
                     continue
 
-                shared_t_info, rids_to_tids_map = self.get_available_rinfo(tail_node, adj_nodes, i, traversing_paths)
                 if len(shared_t_info) < 1:
-                    self.log(
-                        "Нет доступных связей для соединения tail-вершины с новой вершиной, Считаем путь завершившимся.", verbose=self.verbose)
+                    self.log.debug(
+                        "Нет доступных связей для соединения tail-вершины с новой вершиной, Считаем путь завершившимся.",
+                        verbose=self.verbose, log_level=self.log_level)
                     if len(cur_path_info.path) > 1:
                         ended_paths.append(
                             TraversedPath(
@@ -349,24 +390,24 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
                 triplet_scores = self.get_triplet_scores(query, shared_t_info, rids_to_tids_map)
                 new_tpaths = BeamSearchTripletsRetriever.extend_tpath(traversing_paths[i], triplet_scores)
-                self.log(f"Количество новых расширенных путей для текущего пути (до урезания): {len(new_tpaths)}", verbose=self.verbose)
+                self.log.debug("Количество новых расширенных путей для текущего пути (до урезания): %d", len(new_tpaths), verbose=self.verbose, log_level=self.log_level)
                 sorted_new_tpaths = sorted(new_tpaths, key=lambda pinfo: pinfo.accum_score)
                 path_candidates += sorted_new_tpaths[:self.config.max_paths]
-                self.log(f"Текущее количество путей-кандидатов: {len(path_candidates)}", verbose=self.verbose)
+                self.log.debug("Текущее количество путей-кандидатов: %d", len(path_candidates), verbose=self.verbose, log_level=self.log_level)
                 curp_e_time = time()
-                self.log(f"Затраченное время на расширение текущего пути: {curp_e_time - curp_s_time} сек.", verbose=self.verbose)
+                self.log.debug("Затраченное время на расширение текущего пути: %.5f сек", curp_e_time - curp_s_time, verbose=self.verbose, log_level=self.log_level)
 
             opext_e_time = time()
 
-            self.log(f"Количество найденных путей-кандидатов (до урезаний): {len(path_candidates)}", verbose=self.verbose)
-            self.log(f"Затраченное суммарное время на текущую итерацию: {opext_e_time-opext_s_time} сек.", verbose=self.verbose)
+            self.log.debug("Количество найденных путей-кандидатов (до урезаний): %d", len(path_candidates), verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("Затраченное суммарное время на текущую итерацию: %.5f сек", opext_e_time - opext_s_time, verbose=self.verbose, log_level=self.log_level)
 
             # Сортируем (по возрастанию) расширенный список путей
             # по их релевантности и выбираем 'max_paths' лучших
             ordered_candidates = sorted(path_candidates, key=lambda pinfo: pinfo.accum_score)
             traversing_paths = ordered_candidates[:self.config.max_paths]
 
-        self.log(f"Достигнут предел по глубине обхода графа: {self.config.max_depth}", verbose=self.verbose)
+        self.log.debug("Достигнут предел по глубине обхода графа: %d", self.config.max_depth, verbose=self.verbose, log_level=self.log_level)
 
         flt_s_time = time()
         continuous_paths = []
@@ -380,8 +421,8 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         filtered_paths = self.filter_paths(ended_paths, continuous_paths)
         flt_e_time = time()
 
-        self.log(f"Финальное количество найденных путей: {len(filtered_paths)}", verbose=self.verbose)
-        self.log(f"Затраченнное время на фильтрацию путей: {flt_e_time-flt_s_time} сек.", verbose=self.verbose)
+        self.log.debug("Финальное количество найденных путей: %d", len(filtered_paths), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("Затраченнное время на фильтрацию путей: %.5f сек", flt_e_time - flt_s_time, verbose=self.verbose, log_level=self.log_level)
 
         return filtered_paths
 
@@ -406,10 +447,10 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     @accumulate_step_info
     def get_relevant_triplets(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo, bool]:
-        self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
-        self.log("RETRIEVER: BeamSearchTripletsRetriever", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
+        self.log.debug("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Retriever: BeamSearchTripletsRetriever", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", create_id(query_info.query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question: %s", query_info.query, verbose=self.verbose, log_level=self.log_level)
 
         rinfo = ReturnInfo()
         cache_hits: List[bool] = []
@@ -421,22 +462,22 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             if node_typedid not in unique_ntypedids:
                 unique_ntypedids.add(node_typedid)
                 nodes.append(node)
-        self.log(f"Вершины, для которых будет запущейн BeamSearch: {nodes}", verbose=self.verbose)
+        self.log.debug("Вершины, для которых будет запущейн BeamSearch: %s", nodes, verbose=self.verbose, log_level=self.log_level)
 
         unique_triplets_map: Dict[str, Triplet] = dict()
         for node in nodes:
-            self.log(f"Запускаем BeamSearch по вершине: {node}", verbose=self.verbose)
+            self.log.debug("Запускаем BeamSearch по вершине: %s", node, verbose=self.verbose, log_level=self.log_level)
             tmp_triplets, cache_hit = self.search(query_info.query, node)
             cache_hits.append(cache_hit)
-            self.log(f"Количество извлечённых триплетов для данной вершины: {len(tmp_triplets)}", verbose=self.verbose)
+            self.log.debug("Количество извлечённых триплетов для данной вершины: %d", len(tmp_triplets), verbose=self.verbose, log_level=self.log_level)
 
             for triplet in tmp_triplets:
                 unique_triplets_map[triplet.relation.get_typedid()] = triplet
         unique_triplets: List[Triplet] = list(unique_triplets_map.values())
 
-        self.log(f"Суммарное количество уникальных (по строковому представлению) извлечённых триплетов: {len(unique_triplets)}", verbose=self.verbose)
+        self.log.debug("Суммарное количество уникальных (по строковому представлению) извлечённых триплетов: %d", len(unique_triplets), verbose=self.verbose, log_level=self.log_level)
         relations_counter = Counter([triplet.relation.type for triplet in unique_triplets])
-        self.log(f"Распределение типов связей в наборе извлечённых триплетов: {relations_counter}", verbose=self.verbose)
+        self.log.debug("Распределение типов связей в наборе извлечённых триплетов: %s", relations_counter, verbose=self.verbose, log_level=self.log_level)
 
         cachehit_summary = (sum(cache_hits) / len(cache_hits)) >= 0.5 if len(cache_hits) > 0 else False
         return unique_triplets, rinfo, cachehit_summary

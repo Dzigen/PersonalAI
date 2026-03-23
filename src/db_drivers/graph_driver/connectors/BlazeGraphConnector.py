@@ -11,7 +11,7 @@ from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils.data_structs import Triplet, Node, TripletCreator, NodeCreator, \
     NodeType, RelationCreator, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP, \
-    NodeInfo, RelationInfo, create_id
+    NodeInfo, RelationInfo, create_id, TripletInfo
 
 # Useful Material: "Графы знаний | Лекция 3 - SPARQL, Графовые хранилища"
 # https://www.youtube.com/watch?v=z7coG_7kzM8&list=LL&index=5
@@ -484,8 +484,8 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
 
         return formated_triplets
 
-    def get_adjecent_nodes(self, base_node: NodeInfo,
-                           accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[NodeInfo]:
+    def get_adjacent_nodes(self, base_node: NodeInfo,
+                           accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time]) -> List[NodeInfo]:
         if not isinstance(base_node.id, str):
             raise ValueError
 
@@ -503,8 +503,8 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
                             general_predicate:str_id "{root_strid}" .
                     ?p general_predicate:element element:relation .
                     ?o general_predicate:element element:node ;
-                    general_predicate:type ?node_type ;
-                    general_predicate:str_id ?node_strid .
+                            general_predicate:type ?node_type ;
+                            general_predicate:str_id ?node_strid .
                     FILTER(?node_type IN ({types_list}))
                 }}
                 UNION
@@ -515,8 +515,8 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
                             general_predicate:str_id "{root_strid}" .
                     ?p general_predicate:element element:relation .
                     ?s general_predicate:element element:node ;
-                    general_predicate:type ?node_type ;
-                    general_predicate:str_id ?node_strid .
+                        general_predicate:type ?node_type ;
+                        general_predicate:str_id ?node_strid .
                     FILTER(?node_type IN ({types_list}))
                 }}
             }}
@@ -535,6 +535,80 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
         raw_output = self.graph.query(formated_query)
         formated_nodes = [NodeInfo(id=str(node['node_strid']), type=NODES_TYPES_MAP[node['node_type'].split("#")[1]]) for node in raw_output]
         return formated_nodes
+
+    def get_incident_triples(self, base_node: NodeInfo,
+                             accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time],
+                             accepted_r_types: Union[List[RelationType], None] = None) \
+            -> List[TripletInfo]:
+        if not isinstance(base_node.id, str):
+            raise ValueError
+
+        if accepted_r_types is None:
+            accepted_r_types = [RelationType.simple, RelationType.hyper, RelationType.episodic, RelationType.time]
+
+        select_inctriples_query = '''
+        PREFIX element: <{element_uriprefix}>
+        PREFIX relation_predicate: <{relationpredicate_uriprefix}>
+        PREFIX general_predicate: <{generalpredicate_uriprefix}>
+        SELECT DISTINCT ?snode_strid ?snode_type ?rel_tid ?rel_strid ?rel_type ?enode_strid ?enode_type
+        FROM NAMED <{named_graph_uri}>
+        WHERE {{
+            GRAPH <{named_graph_uri}> {{
+                {{
+                    ?root_node ?p ?o .
+                    ?p general_predicate:element element:relation ;
+                            relation_predicate:t_id ?rel_tid ;
+                            general_predicate:str_id ?rel_strid ;
+                            general_predicate:type ?rel_type .
+                    ?root_node general_predicate:element element:node ;
+                            general_predicate:str_id ?snode_strid ;
+                            general_predicate:type ?snode_type .
+                    ?o general_predicate:element element:node ;
+                            general_predicate:str_id ?enode_strid ;
+                            general_predicate:type ?enode_type .
+                    FILTER(?snode_strid = "{root_strid}" && ?snode_type = {root_type} && ?enode_type IN ({ntypes_list}) && ?rel_type IN ({rtypes_list}))
+                }}
+                UNION
+                {{
+                    ?s ?p ?root_node .
+                    ?p general_predicate:element element:relation ;
+                            relation_predicate:t_id ?rel_tid ;
+                            general_predicate:str_id ?rel_strid ;
+                            general_predicate:type ?rel_type .
+                    ?s general_predicate:element element:node ;
+                            general_predicate:str_id ?snode_strid ;
+                            general_predicate:type ?snode_type .
+                    ?root_node general_predicate:element element:node ;
+                            general_predicate:str_id ?enode_strid ;
+                            general_predicate:type ?enode_type .
+                    FILTER(?enode_strid = "{root_strid}" && ?enode_type = {root_type} && ?snode_type IN ({ntypes_list}) && ?rel_type IN ({rtypes_list}))
+                }}
+            }}
+        }}
+        '''
+        accepted_tnodes = ', '.join(list(map(lambda tpe: f"<{self.general_uries['node']['type']['prefix']}{tpe.value}>", accepted_n_types)))
+        accepted_trelations = ', '.join(list(map(lambda tpe: f"<{self.general_uries['relation']['type']['prefix']}{tpe.value}>", accepted_r_types)))
+
+        formated_query = select_inctriples_query.format(
+            element_uriprefix=self.general_uries['element']['prefix'],
+            relationpredicate_uriprefix=self.general_uries['relation']['field_prefix'],
+            generalpredicate_uriprefix=self.general_uries['general_fields']['prefix'],
+            named_graph_uri=self.named_graph_uri,
+            root_type=f"<{self.general_uries['node']['type']['prefix']}{base_node.type.value}>",
+            root_strid=base_node.id,
+            ntypes_list=accepted_tnodes,
+            rtypes_list=accepted_trelations,
+        )
+        output = self.graph.query(formated_query)
+
+        triples_info = []
+        for triple in output:
+            snode_info = NodeInfo(id=str(triple['snode_strid']), type=NODES_TYPES_MAP[triple['snode_type'].split("#")[1]])
+            enode_info = NodeInfo(id=str(triple['enode_strid']), type=NODES_TYPES_MAP[triple['enode_type'].split("#")[1]])
+            rel_info = RelationInfo(id=str(triple['rel_strid']), type=RELATIONS_TYPES_MAP[triple['rel_type'].split("#")[1]])
+            triples_info.append(TripletInfo(id=str(triple['rel_tid']), start_node=snode_info, relation=rel_info, end_node=enode_info))
+
+        return triples_info
 
     def get_nodes_shared_ids(self, node1: NodeInfo, node2: NodeInfo, id_type: str = 'both') -> List[Dict[str, str]]:
         if (not isinstance(node1.id, str)) or (not isinstance(node2.id, str)):

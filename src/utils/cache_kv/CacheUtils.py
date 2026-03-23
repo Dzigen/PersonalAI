@@ -44,44 +44,32 @@ class CacheUtils(AbstractCacheUtils):
             key_hash = None
 
             if self.cachekv is not None:
-                self.log("Поиск результата в кеше...", verbose=self.verbose)
+                self.log.debug("Поиск результата в кеше...", verbose=self.verbose, log_level=self.log_level)
                 cstatus, key_hash, cached_result = self.cachekv.load_value(
                     key=cache_key)
                 if cstatus == 0:
-                    self.log(
-                        "Результат по заданной конфигурации гиперпараметров уже был получен.", verbose=self.verbose)
-                    self.log(
-                        f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
-                    self.log(
-                        f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
-                    self.log(
-                        f"* HASH_SEEDS: {cache_key}.", verbose=self.verbose)
-                    self.log(
-                        f"* CACHED_VALUE: {cached_result}.", verbose=self.verbose)
+                    self.log.debug("Результат по заданной конфигурации гиперпараметров уже был получен.", verbose=self.verbose, log_level=self.log_level)
+                    self.log.debug("* cache table_name: %s .", self.cachekv.kv_conn.config.db_info['table'], verbose=self.verbose, log_level=self.log_level)
+                    self.log.debug("* cache hash_key: %s .", key_hash, verbose=self.verbose, log_level=self.log_level)
+                    self.log.debug("* hash seed: %s .", cache_key, verbose=self.verbose, log_level=self.log_level)
+                    self.log.debug("* cached value: %s .", cached_result, verbose=self.verbose, log_level=self.log_level)
 
                     cache_hit = True
                     output = cached_result
                 else:
-                    self.log(
-                        "Результата по заданной конфигурации гиперпараметров в кеше нет.", verbose=self.verbose)
-                    self.log(
-                        f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
-                    self.log(
-                        f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
-                    self.log(
-                        f"* HASH_SEEDS: {cache_key}.", verbose=self.verbose)
+                    self.log.debug("Результата по заданной конфигурации гиперпараметров в кеше нет.", verbose=self.verbose, log_level=self.log_level)
+                    self.log.debug("* cache table_name: %s .", self.cachekv.kv_conn.config.db_info['table'], verbose=self.verbose, log_level=self.log_level)
+                    self.log.debug("* cache hash_key: %s.", key_hash, verbose=self.verbose, log_level=self.log_level)
+                    self.log.debug("* hash seed: %s .", cache_key, verbose=self.verbose, log_level=self.log_level)
 
             if not cache_hit:
-                self.log("Получем результат с нуля...", verbose=self.verbose)
+                self.log.debug("Получем результат с нуля...", verbose=self.verbose, log_level=self.log_level)
                 output = function(self, *args, **kwargs)
 
                 if self.cachekv is not None:
-                    self.log("Кешируем полученный результат.",
-                             verbose=self.verbose)
-                    self.log(
-                        f"* CACHE_TABLE_NAME {self.cachekv.kv_conn.config.db_info['table']}", verbose=self.verbose)
-                    self.log(
-                        f"* CACHE_HASH_KEY: {key_hash}.", verbose=self.verbose)
+                    self.log.debug("Кешируем полученный результат.", verbose=self.verbose, log_level=self.log_level)
+                    self.log.debug("* cache table_name: %s", self.cachekv.kv_conn.config.db_info['table'], verbose=self.verbose, log_level=self.log_level)
+                    self.log.debug(f"* cahce hash_key: %s .", key_hash, verbose=self.verbose, log_level=self.log_level)
                     self.cachekv.save_value(value=output, key_hash=key_hash)
 
             return *output, cache_hit

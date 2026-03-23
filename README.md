@@ -41,6 +41,12 @@
 * pytest --cov=src --cov-report=html ...
 * pygount src/ --suffix=py --format=summary
 
+##### Команды для проверки стиля кодовой базы
+* autopep8 src # formatter
+* pylint src # linter
+* flake8 src # linter
+* mypy src # linter
+
 pre-commit:
 * https://pre-commit.com/#pre-commit-configyaml---repos
 * https://www.laac.dev/blog/automating-convention-linting-formatting-python/

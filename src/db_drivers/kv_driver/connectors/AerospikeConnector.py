@@ -21,7 +21,7 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
         if 'ports' in self.config.params:
             for ext_port in self.config.params['ports']:
                 db_config['hosts'].append((self.config.host, ext_port))
-        print(db_config)
+        # print(db_config)
         self.client = aerospike.client(db_config).connect()
 
         if self.config.need_to_clear:

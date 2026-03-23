@@ -1,0 +1,27 @@
+TMP_WORKSPACE_PERSONALAI_PATH: '/home/m.menschikov/workspace/personal_ai/Personal-AI' # TO CHANGE
+LOCAL_KG_PATH: '/mnt/data/m.menschikov/personalai/knowledge_graphs/analogues_eval' # TO CHANGE
+OLLAMA_MODELS_PATH: '/mnt/data/m.menschikov/ollama_volume' # TO CHANGE
+
+KG_DIR_STRUCT:
+  db_storage: 'db'
+  configdb_storage: 'configdb'
+  mongot_storage: 'mongot'
+
+WORKSPACE_CONTAINER_DIRS:
+  base_path: '/home/workspace'
+  kg: 'data/knowledge_graphs/analogues_eval'
+  datasets: 'data/kgeval_datasets' # TO CHANGE
+  notebooks: notebooks
+  experiments: experiments
+  src: 'src'
+  models: 'models'
+
+SAVE_CONFIGS_NAMES:
+  method_config: method_config
+  docker_compose_env: .env
+
+  kg_setting:
+    name: settings
+    kgconn: kgconn_params
+    kgenv: kgenv_params
+    kghyperp: kghyperp_params

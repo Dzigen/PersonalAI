@@ -31,7 +31,7 @@ class AnswerGeneratorConfig(BaseComponentConfig, LanguageConfig):
     agent_tasks_config: Union[Dict, AnswerGeneratorAgentTasksConfig] = field(default_factory=lambda: AnswerGeneratorAgentTasksConfig())
 
     cache_table_name: str = 'medreasn_answgen_main_stage_cache'
-    log: Logger = field(default_factory=lambda: Logger(ANSWGEN_MAIN_LOG_PATH))
+    log_path: str = ANSWGEN_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
@@ -72,7 +72,7 @@ class AnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs()
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -89,8 +89,9 @@ class AnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
                 self.agent, self.config.agent_tasks_config.answer_generator, agents_cache_config, inferencestat_config)
         )
 
-        self.log = self.config.log
+        self.log = Logger(config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     def get_cache_key(self, search_plan: SearchPlanInfo) -> List[str]:
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
@@ -108,32 +109,32 @@ class AnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         :return: Кортеж из трёх объектов: (1) Ответ на user-вопрос; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
         :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
-        self.log("START ANSWER-TRYING...", verbose=self.verbose)
-        self.log(f"QUERY ID: {create_id(search_plan.base_query)}", verbose=self.verbose)
-        self.log(f"CURRENT PLAN: {search_plan}", verbose=self.verbose)
+        self.log.debug("START ANSWER-TRYING...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Query hash: %s", create_id(search_plan.base_query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Current plan: %s", search_plan, verbose=self.verbose, log_level=self.log_level)
         answer, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
 
-        self.log("Выполняем проверку на возможность генерации релевантного ответа...", verbose=self.verbose)
+        self.log.debug("Выполняем проверку на возможность генерации релевантного ответа...", verbose=self.verbose, log_level=self.log_level)
         can_answer, status, trace = self.tasks_solvers.answer_classify_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             search_plan=search_plan)
         module_trace.add("answer_classify_solver", ModuleType.task_solver, trace)
-        self.log(f"RESULT: {can_answer}", verbose=self.verbose)
+        self.log.debug("RESULT: %s", can_answer, verbose=self.verbose, log_level=self.log_level)
 
         if status == ReturnStatus.success:
             if can_answer:
-                self.log("Выполняем генерацию ответа...", verbose=self.verbose)
+                self.log.debug("Выполняем генерацию ответа...", verbose=self.verbose, log_level=self.log_level)
                 answer, status, trace = self.tasks_solvers.answer_gen_solver.solve(
                     lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
                     search_plan=search_plan)
                 module_trace.add("answer_gen_solver", ModuleType.task_solver, trace)
-                self.log(f"RESULT: {answer}", verbose=self.verbose)
+                self.log.debug("RESULT: %s", answer, verbose=self.verbose, log_level=self.log_level)
 
             else:
-                self.log(
-                    "На основании информации, полученной по текущему плану нельзя сгенерировать релевантный ответ.", verbose=self.verbose)
+                self.log.warning(
+                    "На основании информации, полученной по текущему плану нельзя сгенерировать релевантный ответ.", verbose=self.verbose, log_level=self.log_level)
 
         rinfo.status = status
-        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
+        self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)
 
         return answer, rinfo, module_trace

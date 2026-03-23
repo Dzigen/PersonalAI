@@ -21,7 +21,7 @@ QD_DISTANCE_KW_MAPPING = {
 class QdrantVectorConnector(AbstractVectorDatabaseConnection):
 
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_QDRANT_CONFIG,
-                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16) -> None:
+                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 8) -> None:
         if isinstance(config, dict):
             config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
         else:
@@ -233,7 +233,7 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
                 )
             except UnexpectedResponse as e:
                 raise ValueError(str(e))
-            #print('output: ', raw_output)
+            # print('output: ', raw_output)
 
             formated_output = []
             for raw_item in raw_output.points:

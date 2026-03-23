@@ -6,7 +6,7 @@ from ...db_drivers.tree_driver.utils import TreeNodeType
 from ...db_drivers.vector_driver import VectorDriverConfig, VectorDBConnectionConfig
 from ...rerankers import RerankerDriverConfig
 from ...rerankers.methods import EnsembleFusionRerankerConfig
-from ...pipelines.utils import BaseAgentTaskConfigSelector
+from ...utils import BaseAgentTaskConfigSelector
 
 NODESTREE_MODEL_LOG_PATH = 'log/kg_model/nodes_tree'
 

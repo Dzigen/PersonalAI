@@ -29,7 +29,7 @@ class KnowledgeGraphReasonerConfig(BaseComponentConfig, LanguageConfig):
     reasoner_name: str = 'weak'  # 'weak' | 'medium'
     reasoner_config: Union[Dict, BaseKGReasonerConfig] = field(default_factory=lambda: WeakKGReasonerConfig())  # WeakKGReasonerConfig() | MediumKGReasonerConfig()
 
-    log: Logger = field(default_factory=lambda: Logger(KGR_MAIN_LOG_PATH))
+    log_path: str = KGR_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.reasoner_name}|{self.reasoner_config.to_str()}"
@@ -76,8 +76,9 @@ class KnowledgeGraphReasoner(CacheUtils, AbstractKGReasoner, CacheOperations, Ag
             )
         )
 
-        self.log = config.log
+        self.log = Logger(config.log_path)
         self.verbose = config.verbose
+        self.log_level = config.log_level
 
     def get_cache_key(self, query: str) -> List[str]:
         """Формирует ключ кеша для результата работы стадии обхода графа знаний.
@@ -100,6 +101,6 @@ class KnowledgeGraphReasoner(CacheUtils, AbstractKGReasoner, CacheOperations, Ag
         :rtype: Tuple[str, ReturnInfo, CompositeModuleResult]
         """
         answer, rinfo, trace = self.stages.reasoner.perform(query)
-        self.log(f"RESULT: {answer}", verbose=self.verbose)
-        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
+        self.log.debug("RESULT: %s", answer, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)
         return answer, rinfo, trace

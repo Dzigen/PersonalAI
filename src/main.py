@@ -32,7 +32,7 @@ class PersonalAIConfig(BaseComponentConfig, LanguageConfig):
     mem_pipeline_config: Union[MemPipelineConfig, Dict] = field(default_factory=lambda: MemPipelineConfig())
     textidstore_config: Union[TextIdStoreConfig, Dict] = field(default_factory=lambda: TextIdStoreConfig())
 
-    log: Logger = field(default_factory=lambda: Logger(PAI_MAIN_LOG_PATH))
+    log_path: str = PAI_MAIN_LOG_PATH
 
     def to_str(self):
         # TODO
@@ -85,7 +85,9 @@ class PersonalAI:
             config: PersonalAIConfig = PersonalAIConfig.from_dict(config)
         else:
             config.formate_fields()
+
         config.synchronize_language()
+        config.synchronize_logging()
 
         self.kg_model = KnowledgeGraphModel(
             config.kg_model_config, cache_kvdriver_config)
@@ -98,8 +100,9 @@ class PersonalAI:
 
         self.textid_store = TextIdStore(config.textidstore_config)
 
-        self.log = config.log
+        self.log = Logger(config.log_path)
         self.verbose = config.verbose
+        self.log_level = config.log_level
 
     @accumulate_stage_info
     def answer_question(self, question: str) -> Tuple[str, ReturnInfo, CompositeModuleDetailedResult, bool]:
@@ -111,14 +114,16 @@ class PersonalAI:
         :return: Кортеж из четырёх объектов: (1) сгенерированный ответ; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода; (4) True, если результат был получен из кеша (cache hit), иначе False.
         :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult, bool]
         """
-        self.log("START ANSWER GENERATION...", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(question)}", verbose=self.verbose)
-        self.log(f"BASE_QUESTION: {question}", verbose=self.verbose)
+        self.log.info("START ANSWER GENERATION...", verbose=self.verbose, log_level=self.log_level)
+        self.log.info("* Question hash: %s .", create_id(question), verbose=self.verbose, log_level=self.log_level)
+        self.log.info("* Question: %s .", question, verbose=self.verbose, log_level=self.log_level)
         module_trace = CompositeModuleDetailedResult()
 
         answer, rinfo, trace = self.qa_pipeline.answer(question)
         module_trace.add('answer', ModuleType.stage, trace)
-        self.log(f"RESULT:\n* FINAL ANSWER - {answer}", verbose=self.verbose)
+        self.log.info("RESULT:", verbose=self.verbose, log_level=self.log_level)
+        self.log.info("* Answer: %s .", answer, verbose=self.verbose, log_level=self.log_level)
+        self.log.info("* Elapsed time: %.5f sec .", trace.summary.elapsed_time, verbose=self.verbose, log_level=self.log_level)
         return answer, rinfo, module_trace, False
 
     @accumulate_stage_info
@@ -135,22 +140,23 @@ class PersonalAI:
         :return: Кортеж из четёрых объектов: (1) идентификатор данного 'text'-значения и список извлечённой из текста информации (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода; (4) True, если результат был получен из кеша (cache hit), иначе False.
         :rtype: Tuple[str, List[Triplet], ReturnInfo, CompositeModuleDetailedResult, bool]
         """
-        self.log("START MEMORY_UPDATING ...", verbose=self.verbose)
-        self.log(f"BASE_TEXT ID: {create_id(text)}", verbose=self.verbose)
-        self.log(f"BASE_TEXT: {text}", verbose=self.verbose)
-        self.log(f"PROPERTIES: {text_properties}", verbose=self.verbose)
-
+        self.log.info("START MEMORY_UPDATING ...", verbose=self.verbose, log_level=self.log_level)
+        self.log.info("* Text hash: %s .", create_id(text), verbose=self.verbose, log_level=self.log_level)
+        self.log.info("* Text: %s .", text, verbose=self.verbose, log_level=self.log_level)
+        self.log.info("* Properties: %s .", text_properties, verbose=self.verbose, log_level=self.log_level)
         module_trace = CompositeModuleDetailedResult()
 
         text_id = create_id() if text_id is None else text_id
-        self.log(f"INTERNAL TEXT ID: {text_id}", verbose=self.verbose)
+        self.log.debug(f"* Internal text id: %s", text_id, verbose=self.verbose, log_level=self.log_level)
         if self.textid_store.textid_to_tripletsid_store.item_exist(text_id):
             raise ValueError("'text' with given 'text_id' already exists! Change 'text_id' value")
 
         triplets, rinfo, trace = self.mem_pipeline.remember(text, text_properties)
         module_trace.add('remember', ModuleType.stage, trace)
         self.textid_store.save_info(text_id, triplets)
-        self.log(f"RESULT:\n* EXTRACTED_TRIPLETS AMOUNT - {len(triplets)}", verbose=self.verbose)
+        self.log.info("RESULT:", verbose=self.verbose, log_level=self.log_level)
+        self.log.info("* Extracted triples amount: %d .", len(triplets), verbose=self.verbose, log_level=self.log_level)
+        self.log.info("* Elapsed time: %.5f sec .", trace.summary.elapsed_time, verbose=self.verbose, log_level=self.log_level)
 
         return (text_id, triplets), rinfo, module_trace, False
 
@@ -164,6 +170,8 @@ class PersonalAI:
         :return: Кортеж из четырёх объектов: (1) словарь с информацией о триплетах (соответствуюих данному text_id), которые были удалены (значение True, иначе False) из памяти ассистента; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода; (4) True, если результат был получен из кеша (cache hit), иначе False.
         :rtype: Tuple[Dict[str, Dict[int,Dict[str,bool]]], CompositeModuleDetailedResult, bool]
         """
+        self.log.info("START MEMORY CLEANING...", verbose=self.verbose, log_level=self.log_level)
+        self.log.info("* Text id: %s .", text_id, verbose=self.verbose, log_level=self.log_level)
         rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
 
         # получаем triplets id из kv-database
@@ -173,6 +181,10 @@ class PersonalAI:
         module_trace.add('remove_knowledge', ModuleType.step, trace)
         # удаляем соответствующие записи из kv-database
         self.textid_store.clear_info(text_id)
+
+        self.log.info("RESULT:", verbose=self.verbose, log_level=self.log_level)
+        self.log.info("* Triples to delete amount: %d .", len(triplets), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Triples delete_info: %s .", delete_info, verbose=self.verbose, log_level=self.log_level)
 
         return delete_info, rinfo, module_trace, False
 

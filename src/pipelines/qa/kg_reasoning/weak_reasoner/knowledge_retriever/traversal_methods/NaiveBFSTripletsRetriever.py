@@ -4,6 +4,7 @@ import collections
 from collections import Counter
 from copy import deepcopy
 
+from .configs import NAIVEBFS_RETRIEVER_LOG_PATH
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......utils.data_structs import QueryInfo, Triplet, NodeType
 from .......kg_model import KnowledgeGraphModel
@@ -23,7 +24,7 @@ class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):
     :type max_width: int, optional
     :param max_passed_nodes: Максимальное количество вершин, которое может быть пройдено в рамках работы BFS-алгоритма. Значение по умолчанию 1000.
     :type max_passed_nodes: int, optional
-    :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извлечения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time].
+    :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извлечения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic].
     :type accepted_node_types:List[Union[str, NodeType]], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveBFSTripletsRetriever-класса. Значение по умолчанию 'qa_bfs_t_retriver_cache'.
     :type cache_table_name: str, optional
@@ -31,8 +32,9 @@ class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):
     max_depth: int = 10
     max_width: int = 50
     max_passed_nodes: int = 1000
-    accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
+    accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
     cache_table_name: str = 'qa_bfs_t_retriver_cache'
+    log_path: str = NAIVEBFS_RETRIEVER_LOG_PATH
 
     def to_str(self):
         str_accepted_nodes = ";".join(
@@ -57,18 +59,14 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
-    :type log: Logger
     :param search_config: Конфигурация NaiveBFSTripletsRetriever-алгоритма. Значение по умолчанию  NaiveBFSGraphSearchConfig().
     :type search_config: Union[NaiveBFSGraphSearchConfig, Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[None, KeyValueDriverConfig], optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
 
-    def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: Union[NaiveBFSGraphSearchConfig, Dict] = NaiveBFSGraphSearchConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
+    def __init__(self, kg_model: KnowledgeGraphModel, search_config: Union[NaiveBFSGraphSearchConfig, Dict] = NaiveBFSGraphSearchConfig(),
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         if isinstance(search_config, dict):
             search_config = NaiveBFSGraphSearchConfig.from_dict(search_config)
         else:
@@ -79,8 +77,9 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
         self.cachekv = self.init_cachekv(cache_kvdriver_config, self.config.cache_table_name)
 
-        self.log = log
-        self.verbose = verbose
+        self.log = Logger(search_config.log_path)
+        self.verbose = search_config.verbose
+        self.log_level = search_config.log_level
 
     def close_connections(self):
         if self.cachekv is not None:
@@ -112,7 +111,7 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 # ограничиваем глубину обхода
                 continue
 
-            neighbours = self.kg_model.graph_struct.db_conn.get_adjecent_nodes(
+            neighbours = self.kg_model.graph_struct.db_conn.get_adjacent_nodes(
                 vertex, self.config.accepted_node_types)
             graph_queries_counter += 1
 
@@ -144,8 +143,8 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                     graph_queries_counter += 1
                     queue.append(neighbour)
 
-        self.log(f"bfs graph-db queries: {graph_queries_counter}", verbose=self.verbose)
-        self.log(f"passed nodes counter: {passed_nodes_counter}", verbose=self.verbose)
+        self.log.debug("bfs graph-db queries: %d", graph_queries_counter, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("passed nodes counter: %d", passed_nodes_counter, verbose=self.verbose, log_level=self.log_level)
 
         return traversed_triplets
 
@@ -155,10 +154,10 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
     @accumulate_step_info
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo) -> Tuple[List[Triplet], ReturnInfo]:
-        self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
-        self.log("RETRIEVER: NaiveBFSTripletsRetriever", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
+        self.log.debug("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Retriever: NaiveBFSTripletsRetriever", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", create_id(query_info.query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Questino: %s", query_info.query, verbose=self.verbose, log_level=self.log_level)
 
         rinfo = ReturnInfo()
 
@@ -169,20 +168,20 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             if node_typedid not in unique_ntypedids:
                 unique_ntypedids.add(node_typedid)
                 nodes.append(node)
-        self.log(f"Вершины, для которых будет запущен BFS: {nodes}", verbose=self.verbose)
+        self.log.debug("Вершины, для которых будет запущен BFS: %s", nodes, verbose=self.verbose, log_level=self.log_level)
 
         unique_triplets_map: Dict[str, Triplet] = dict()
         for node in nodes:
-            self.log(f"Запускаем BFS с вершины: {node}", verbose=self.verbose)
+            self.log.debug("Запускаем BFS с вершины: %s", node, verbose=self.verbose)
             tmp_triplets = self.search(node)
-            self.log(f"Количество извлечённых триплетов для данной вершины: {len(tmp_triplets)}", verbose=self.verbose)
+            self.log.debug("Количество извлечённых триплетов для данной вершины: %d", len(tmp_triplets), verbose=self.verbose, log_level=self.log_level)
 
             for triplet in tmp_triplets:
                 unique_triplets_map[triplet.relation.get_typedid()] = triplet
         unique_triplets: List[Triplet] = list(unique_triplets_map.values())
 
-        self.log(f"Суммарное количество уникальных (по строковому представлению) извлечённых триплетов: {len(unique_triplets)}", verbose=self.verbose)
+        self.log.debug("Суммарное количество уникальных (по строковому представлению) извлечённых триплетов: %s", len(unique_triplets), verbose=self.verbose, log_level=self.log_level)
         relations_counter = Counter([triplet.relation.type for triplet in unique_triplets])
-        self.log(f"Распределение типов связей в наборе извлечённых триплетов: {relations_counter}", verbose=self.verbose)
+        self.log.debug("Распределение типов связей в наборе извлечённых триплетов: %s", relations_counter, verbose=self.verbose, log_level=self.log_level)
 
         return unique_triplets, rinfo

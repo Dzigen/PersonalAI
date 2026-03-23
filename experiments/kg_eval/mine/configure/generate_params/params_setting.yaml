@@ -1,0 +1,30 @@
+DATASET_NAME: # TO CHANGE
+  - 'mine_train_kgeval'
+KNOWLEDGE_GRAPH_NAME: # TO CHANGE
+  - ["gemma312b_220226_v2prompts", "qwen2514b_220226_v2prompts", "gemma29b_110226_v2prompts", "granite338b_110226_v2prompts", "llama318b_110226_v2prompts", "qwen257b_110226_v2prompts"]
+
+PERSONALAI_VERSION: 'v2.2.1' # TO CHANGE
+
+RETRIEVE_SETTING: # TO CHANGE
+  max_matched_nodes:
+    #- 4
+    - 8
+  max_triples_per_node:
+    - 4
+    #- -1
+  max_nodes_per_depth:
+    - 4
+    #- -1
+  max_explore_depth:
+    - 1
+    - 2
+  max_triples_in_total:
+    #- 16
+    #- 32
+    - 64
+  accepted_nodes_types:
+    - [episodic, hyper, object]
+    #- [hyper, object]
+    #- [episodic]
+    - [hyper]
+    - [object]

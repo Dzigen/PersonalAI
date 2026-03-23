@@ -1,0 +1,20 @@
+GPUS_CONFIG:
+    ollama_device_id: '0'
+    workspace_device_id: '1'
+
+KG_MODEL_CONNECTORS: # mongo vendor
+  host: 'localhost'
+  port: 27075 # TO CHANGE
+  wikidata_ontology_db: "wikidata_ontology_test"
+  db_onto: "test_db_onto"
+
+CONTAINERS_ADDITIONAL_CONFIG:
+  workspace_cntname: 'personalai_mmenschikov_analogues_kgbuild_workspace'
+  workspace_host: 'localhost'
+
+  mongo_cntname: 'personalai_mmenschikov_analogues_kgbuild_mongo'
+  mongo_host: 'localhost'
+
+  ollama_cntname: 'personalai_mmenschikov_ollama'
+  ollama_host: 'personalai_mmenschikov_ollama'
+  ollama_port: 11437 # TO CHANGE

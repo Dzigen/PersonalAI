@@ -1,0 +1,59 @@
+
+bertscore_model_path: "google/electra-base-discriminator"
+meteor_path: 'metrics/meteor'
+exactmatch_path: 'metrics/exact_match'
+basemetrics_path: 'metrics/base_metrics'
+llm_as_a_judge_path: 'metrics/llm_as_a_judge'
+llmasajudge_kv_dir: metrics
+ragas_path: 'metrics/my_ragas'
+ragas_kv_dir: metrics
+no_answer: '<|NotEnoughtInfo|>'
+
+ragas_llm_config:
+  caching: True # DONT CHANGE
+  cache_need_to_clear: False # !!! PAY ATTENTION !!!
+  cache_db_info:
+    db: 'qaeval_db' # DONT CHANGE
+    table: 'ragasmetrics' # DONT CHANGE
+
+  agent_driver_config:
+    name: 'ollama' # DONT CHANGE
+    agent_config:
+      gen_strategy:
+        num_predict: 2048 # DONT CHANGE
+        seed: 42  # DONT CHANGE
+        top_k: 1  # DONT CHANGE
+        temperature: 0.0  # DONT CHANGE
+      credentials:
+        model: 'qwen2.5:7b'
+        host: 'localhost'
+        port: 11439
+      ext_params:
+        timeout: 560
+        keep_alive: 120
+
+judge_llm_config:
+  caching: True # DONT CHANGE
+  cache_need_to_clear: False # !!! PAY ATTENTION !!!
+  cache_db_info:
+    db: 'qaeval_db' # DONT CHANGE
+    table: 'llmasajudge' # DONT CHANGE
+
+  lang: 'ru' # 'en' | 'ru' # TO CHANGE
+  prompts_version: 'v1'
+
+  agent_driver_config:
+    name: 'ollama' # DONT CHANGE
+    agent_config:
+      gen_strategy:
+        num_predict: 2048 # DONT CHANGE
+        seed: 42  # DONT CHANGE
+        top_k: 1  # DONT CHANGE
+        temperature: 0.0  # DONT CHANGE
+      credentials:
+        model: 'qwen2.5:7b'
+        host: 'localhost'
+        port: 11439
+      ext_params:
+        timeout: 560
+        keep_alive: 600

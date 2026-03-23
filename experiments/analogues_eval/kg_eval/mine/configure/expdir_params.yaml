@@ -1,0 +1,38 @@
+INIT_STRUCT: True # !!! PAY ATTENTION !!!
+
+EXP_DIRS:
+  tmp_retrieved_triples_name: tmp_triples_packs
+  retrieved_triples_name: triples_packs
+
+  metrics_name: metric_packs
+
+  tmp_judges_name: tmp_judges_packs
+  judges_name: judges_packs
+
+  settings_name: settings
+  configs_name: configs
+
+KG_SETTING_DIR:
+  name: settings
+  kgconn: kgconn_params
+  kgenv: kgenv_params
+  kgevalenv: kgevalenv_params
+
+WORKSPACE_CONTAINER_DIRS:
+  base_path: /home/workspace
+  kg: data/knowledge_graphs
+  datasets: data/kgeval_datasets # !!! PAY ATTENTION !!!
+  models: models
+  experiments: experiments/analogues_eval/kg_eval/mine
+  results: results
+  kg_env_path: env_settings
+
+EXP_SAVE_FILES:
+  kghyperp: kghyperp_params.yaml
+  expdir: expdir_params.yaml
+  eval: eval_params.yaml
+
+  mine_accuracy_plot: mine_accuracy_histogram.pdf
+
+  elapsed_time: elapsed_time.json
+  accumulated_scores: 'accumulated_scores.json'

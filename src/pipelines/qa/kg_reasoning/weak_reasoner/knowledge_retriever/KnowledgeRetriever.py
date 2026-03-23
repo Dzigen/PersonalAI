@@ -39,7 +39,7 @@ class KnowledgeRetrieverConfig(BaseComponentConfig):
     filter_config: Union[BaseTripletsFilterConfig, Dict, None] = field(default_factory=lambda: TripletsFilterConfig())
 
     cache_table_name: Union[str, None] = 'qa_kretriever_stage_cache'
-    log: Logger = field(default_factory=lambda: Logger(KR_MAIN_LOG_PATH))
+    log_path: str = KR_MAIN_LOG_PATH
 
     def to_str(self) -> str:
         str_r_config = [f"{k}:{v}" for k, v in self.retriever_config.items()] if isinstance(self.retriever_config, dict) else self.retriever_config.to_str()
@@ -92,20 +92,21 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
 
         self.stages: KnowledgeRetrieverStages = KnowledgeRetrieverStages(
             triplets_retriever=AVAILABLE_TRIPLETS_RETRIEVERS[self.config.retriever_method](
-                kg_model, config.log, self.config.retriever_config, cache_kvdriver_config, self.config.verbose),
+                kg_model, self.config.retriever_config, cache_kvdriver_config),
         )
 
         if self.config.filter_method is not None:
             self.stages.triplets_filter = AVAILABLE_TRIPLETS_FILTERS[self.config.filter_method](
-                kg_model, config.log, self.config.filter_config, cache_kvdriver_config, self.config.verbose)
+                kg_model, self.config.filter_config, cache_kvdriver_config)
 
-        self.log = config.log
+        self.log = Logger(config.log_path)
         self.verbose = config.verbose
+        self.log_level = config.log_level
 
     def validate_tripelts(self, triplets: List[Triplet]) -> List[Triplet]:
-        self.log("Проверяем, что извлечённые триплеты являются валидными...",
-                 verbose=self.verbose)
-        self.log("Невалидные триплеты:", verbose=self.verbose)
+        self.log.debug("Проверяем, что извлечённые триплеты являются валидными...",
+                       verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("Невалидные триплеты:", verbose=self.verbose, log_level=self.log_level)
         valid_triplets = []
         for triplet in triplets:
             r_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(
@@ -114,13 +115,12 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
                 triplet.relation.id)
 
             if not (r_graph_exists and r_graph_exists):
-                self.log(
-                    f"* [graph - r:{r_graph_exists} | vector - r:{r_vector_exists}] {triplet}", verbose=self.verbose)
+                self.log.debug("* [graph - r:%s | vector - r:%s] %s",
+                               r_graph_exists, r_vector_exists, triplet, verbose=self.verbose, log_level=self.log_level)
             else:
                 valid_triplets.append(triplet)
 
-        self.log(
-            f"RESULT:\n* валидных - {len(valid_triplets)} \n* невалидных - {len(triplets) - len(valid_triplets)}", verbose=self.verbose)
+        self.log.debug("RESULT:\n* валидных: %d\n* невалидных: %d", len(valid_triplets), len(triplets) - len(valid_triplets), verbose=self.verbose, log_level=self.log_level)
 
         return valid_triplets
 
@@ -133,9 +133,9 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         :rtype: Tuple[List[Triplet], SimpleModuleResult]
         """
         triplets, _, trace = self.stages.triplets_retriever.get_relevant_triplets(query_info)
-        self.log(f"RESULT: {len(triplets)}", verbose=self.verbose)
+        self.log.debug("RESULT: %d", len(triplets), verbose=self.verbose, log_level=self.log_level)
         for triplet in triplets:
-            self.log(f"*[{triplet.id}] {triplet}", verbose=self.verbose)
+            self.log.debug("* [%s] %s", triplet.id, triplet, verbose=self.verbose, log_level=self.log_level)
 
         # костыль
         # triplets = self.validate_tripelts(triplets)
@@ -155,14 +155,14 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         filtered_triplets, trace = None, None
         if self.stages.triplets_filter is not None:
             filtered_triplets, _, trace = self.stages.triplets_filter.apply_filter(query_info, triplets)
-            self.log(f"RESULT: {len(filtered_triplets)}",
-                     verbose=self.verbose)
+            self.log.debug("RESULT: %d", len(filtered_triplets),
+                           verbose=self.verbose, log_level=self.log_level)
             for triplet in filtered_triplets:
-                self.log(f"*[{triplet.id}] {triplet}",
-                         verbose=self.verbose)
+                self.log.debug("* [%s] %s", triplet.id, triplet,
+                               verbose=self.verbose, log_level=self.log_level)
         else:
             filtered_triplets = triplets
-            self.log("Stage was omited!", verbose=self.verbose)
+            self.log.warning("Stage was omited!", verbose=self.verbose, log_level=self.log_level)
 
         return filtered_triplets, trace
 
@@ -190,29 +190,31 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         :return: Кортеж из трёх объектов: (1) список релевантных user-вопросу триплетов; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
         :rtype: Tuple[List[Triplet], ReturnInfo, CompositeModuleDetailedResult]
         """
-        self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
+        self.log.debug("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", create_id(query_info.query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question: %s", query_info.query, verbose=self.verbose, log_level=self.log_level)
 
         rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
-        self.log("STAGE #3.1 - TRIPLETS EXTRACTION...", verbose=self.verbose)
+        self.log.debug("STAGE #3.1 - TRIPLETS EXTRACTION...", verbose=self.verbose, log_level=self.log_level)
         triplets, trace = self.traverse_kg(query_info)
+        self.log.debug("EXTRACTION ELAPSED TIME: %.5f sec", trace.elapsed_time, verbose=self.verbose, log_level=self.log_level)
         module_trace.add("traverse_kg", ModuleType.step, trace)
 
         triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in triplets]))
-        self.log(f"Респределение количества типов триплетов: {triplet_types_freq}", verbose=self.verbose)
+        self.log.debug("Респределение количества типов триплетов: %s", triplet_types_freq, verbose=self.verbose, log_level=self.log_level)
 
-        self.log("STAGE #3.2 - TRIPLETS FILTERING...", verbose=self.verbose)
+        self.log.debug("STAGE #3.2 - TRIPLETS FILTERING...", verbose=self.verbose, log_level=self.log_level)
         filtered_triplets, trace = self.filter_triplets(query_info, triplets)
+        self.log.debug("FILTERING ELAPSED TIME: %.5f sec", trace.elapsed_time if trace is not None else 0.0, verbose=self.verbose, log_level=self.log_level)
         module_trace.add("filter_triplets", ModuleType.step, trace)
 
         triplet_types_freq = dict(Counter([triplet.relation.type.value for triplet in filtered_triplets]))
-        self.log(f"Респределение количества типов триплетов: {triplet_types_freq}", verbose=self.verbose)
+        self.log.debug("Респределение количества типов триплетов: %s", triplet_types_freq, verbose=self.verbose, log_level=self.log_level)
 
         if len(triplets) == 0:
             rinfo.status = ReturnStatus.zero_retrieved_triplets
             rinfo.message = STATUS_MESSAGE[rinfo.status]
 
-        self.log(f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.verbose)
+        self.log.debug("STATUS: %s", STATUS_MESSAGE[rinfo.status], verbose=self.verbose, log_level=self.log_level)
 
         return filtered_triplets, rinfo, module_trace

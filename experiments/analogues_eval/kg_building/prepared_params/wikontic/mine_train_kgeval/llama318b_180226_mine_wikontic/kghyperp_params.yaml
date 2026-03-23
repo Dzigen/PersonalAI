@@ -1,0 +1,23 @@
+METHOD_NAME: 'wikontic'
+DATASET_NAME: 'mine_train_kgeval'
+KNOWLEDGE_GRAPH_NAME: 'llama318b_180226_mine_wikontic'
+
+METHOD_CONFIG:
+  embedder_config:
+    model_name_or_path: 'facebook/contriever'
+
+  agent_config:
+    vendor: ollama
+    gen_strategy:
+      num_predict: 2048
+      seed: 42
+      top_k: 1
+      temperature: 0.0
+    credentials:
+      model: llama3.1:8b
+      host: localhost
+      port: 11437
+    ext_params:
+      timeout: 560
+      keep_alive: 120
+      trials: 5

@@ -15,10 +15,10 @@ ENV_SETTINGS_DIR="$INIT_ENV_DIR/env_settings"
 
 # ===============================================================
 
-DATASETS=("hotpotqa_distractor_validation") # TO CHANGE
-KNOWLEDGE_GRAPHS=("llama318b_230126_v2prompts") # TO CHANGE
-EVAL_FNAMES=("hotpotqa_distractor_validation.yaml") # TO CHANGE
-CONFIGURE_FNAMES=("hotpotqa_distractor_validation.yaml") # TO CHANGE
+DATASETS=("2wikimultihopqa_dev" "diaasq" "hotpotqa_distractor_validation" "musique_validation" "natural_questions_train" "trivia_qa_rcwikipedia_validation")  # TO CHANGE
+KNOWLEDGE_GRAPHS=("qwen257b_080226_v2prompts" "qwen257b_260126_v2prompts" "qwen257b_230126_v2prompts" "qwen257b_050226_v2prompts" "qwen257b_020226_v2prompts" "qwen257b_290126_v2prompts")  # TO CHANGE
+EVAL_FNAMES=("2wikimultihopqa_dev.yaml" "diaasq.yaml" "hotpotqa_distractor_validation.yaml" "musique_validation.yaml" "natural_questions_train.yaml" "trivia_qa_rcwikipedia_validation.yaml")  # TO CHANGE
+CONFIGURE_FNAMES=("2wikimultihopqa_dev.yaml" "diaasq.yaml" "hotpotqa_distractor_validation.yaml" "musique_validation.yaml" "natural_questions_train.yaml" "trivia_qa_rcwikipedia_validation.yaml") # TO CHANGE
 QA_PIPELINE_VERSION="medium" # TO CHANGE
 
 # ===============================================================

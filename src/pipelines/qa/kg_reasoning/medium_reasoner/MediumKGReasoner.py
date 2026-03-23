@@ -65,7 +65,7 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
     answer_something: bool = True
 
     cache_table_name: str = 'qa_mediumreasoner_cache'
-    log: Logger = field(default_factory=lambda: Logger(MDGR_MAIN_LOG_PATH))
+    log_path: str = MDGR_MAIN_LOG_PATH
 
     def to_str(self) -> str:
         str_spe_config = self.searchplan_enhancer_config.to_str()
@@ -174,49 +174,50 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
                 agent, self.config.answer_generator_config, cache_kvdriver_config, inferencestat_config)
         )
 
-        self.log = config.log
+        self.log = Logger(config.log_path)
         self.verbose = config.verbose
+        self.log_level = config.log_level
 
     def update_searchplan(self, search_step: int, search_plan: SearchPlanInfo) -> Tuple[SearchPlanInfo, ReturnInfo, CompositeModuleResult]:
-        self.log(f"CURRENT SEARCH STEP: {search_step} / {self.config.max_searchplan_steps}", verbose=self.verbose)
+        self.log.debug("CURRENT SEARCH STEP: %d / %d", search_step, self.config.max_searchplan_steps, verbose=self.verbose, log_level=self.log_level)
         search_plan, rinfo, trace = self.stages.searchplan_enhancer.perform(search_step, search_plan)
         if rinfo.status != ReturnStatus.success:
-            self.log("Operation ended with error!", verbose=self.verbose)
-            self.log(f"RESULT:\n- {rinfo.status}\n- {search_plan}", verbose=self.verbose)
+            self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("RESULT:\n* %s\n* %s", rinfo.status, search_plan, verbose=self.verbose, log_level=self.log_level)
         else:
-            self.log("Operation ended successfully", verbose=self.verbose)
+            self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
             str_searchsteps = '\n'.join(
                 [f'{i}. {step}' for i, step in enumerate(search_plan.search_steps)])
-            self.log(f"RESULT:\n{str_searchsteps}", verbose=self.verbose)
+            self.log.debug("RESULT:\n %s", str_searchsteps, verbose=self.verbose, log_level=self.log_level)
 
         return search_plan, rinfo, trace
 
     @accumulate_stage_info
     def match_searchstep_to_kg(self, search_query: str) -> Tuple[Dict[str, List[VectorDBInstance]], ReturnInfo, CompositeModuleDetailedResult, bool]:
         matched_kg_objects, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
-        self.log("STAGE#2.1.1 - ENTITIES EXTRACTION", verbose=self.verbose)
+        self.log.debug("STAGE#2.1.1 - ENTITIES EXTRACTION", verbose=self.verbose, log_level=self.log_level)
         entities, ee_rinfo, trace = self.stages.entities_extractor.perform(search_query)
         module_trace.add("entities_extractor", ModuleType.stage, trace)
         if ee_rinfo.status == ReturnStatus.success:
-            self.log("Operation ended successfully", verbose=self.verbose)
-            self.log(f"RESULT: {entities}", verbose=self.verbose)
+            self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("RESULT: %s .", entities, verbose=self.verbose, log_level=self.log_level)
         else:
-            self.log("Operation ended with error!", verbose=self.verbose)
+            self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
         update_rinfo(rinfo, ee_rinfo)
 
         if rinfo.status == ReturnStatus.success:
-            self.log("STAGE#2.1.2 - ENTITIES-TO-KGOBJECTS MATCHING", verbose=self.verbose)
+            self.log.debug("STAGE#2.1.2 - ENTITIES-TO-KGOBJECTS MATCHING", verbose=self.verbose, log_level=self.log_level)
             matched_kg_objects, e2nm_rinfo, trace = self.stages.entities2nodes_matcher.perform(entities)
             module_trace.add("entities2nodes_matcher", ModuleType.step, trace)
             if e2nm_rinfo.status == ReturnStatus.success:
-                self.log("Operation ended successfully", verbose=self.verbose)
+                self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
                 str_matched_kgobject = '\n'.join([f'- [{entity}][{len(objects)}] ' + ', '.join(list(map(lambda obj: obj.text, objects))) for entity, objects in matched_kg_objects.items()])
-                self.log(f"RESULT:\n{str_matched_kgobject}", verbose=self.verbose)
+                self.log.debug("RESULT:\n%s", str_matched_kgobject, verbose=self.verbose, log_level=self.log_level)
             else:
-                self.log("Operation ended with error!", verbose=self.verbose)
+                self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
             update_rinfo(rinfo, e2nm_rinfo)
         else:
-            self.log("During previous steps error occurs.", verbose=self.verbose)
+            self.log.warning("During previous steps error occurs.", verbose=self.verbose, log_level=self.log_level)
 
         return matched_kg_objects, rinfo, module_trace, False
 
@@ -225,10 +226,10 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         str_cluequeries = '\n'.join(
             [f'- [{list(map(lambda obj: obj.text, clueq.linked_nodes))}] {clueq.query}' for clueq in cluequeries])
         if rinfo.status == ReturnStatus.success:
-            self.log("Operation ended successfully", verbose=self.verbose)
-            self.log(f"RESULT: {len(cluequeries)}\n{str_cluequeries}", verbose=self.verbose)
+            self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("RESULT: %d\n%s", len(cluequeries), str_cluequeries, verbose=self.verbose, log_level=self.log_level)
         else:
-            self.log("Operation ended with error!", verbose=self.verbose)
+            self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
 
         return cluequeries, rinfo, trace
 
@@ -236,31 +237,31 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
     def search_clueanswers(self, search_query: str, cluequeries: List[QueryInfo]) -> Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult, bool]:
         clueanswers, rinfo, module_trace = [], ReturnInfo(), CompositeModuleDetailedResult()
         for j, cur_cluequery in enumerate(cluequeries):
-            self.log(f"Current clue-query ({j} / {len(cluequeries)}): {cur_cluequery.query}", verbose=self.verbose)
-            self.log(f"Current clue-query id: {create_id(cur_cluequery.query)}", verbose=self.verbose)
+            self.log.debug("Current clue-query (%d / %d): %s", j, len(cluequeries), cur_cluequery.query, verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("Current clue-query hash: %s", create_id(cur_cluequery.query), verbose=self.verbose, log_level=self.log_level)
 
-            self.log("STAGE#3.1.1 - KNOWLEDGE RETRIEVING", verbose=self.verbose)
+            self.log.debug("STAGE#3.1.1 - KNOWLEDGE RETRIEVING", verbose=self.verbose, log_level=self.log_level)
             retrieved_triplets, rk_rinfo, trace = self.stages.knowledge_retriever.retrieve(cur_cluequery)
             module_trace.add("knowledge_retriever", ModuleType.stage, trace)
             update_rinfo(rinfo, rk_rinfo)
             if rinfo.status == ReturnStatus.success:
-                self.log("Operation ended successfully", verbose=self.verbose)
-                self.log(f"RESULT: {len(retrieved_triplets)}", verbose=self.verbose)
+                self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
+                self.log.debug("RESULT: %d", len(retrieved_triplets), verbose=self.verbose, log_level=self.log_level)
                 for triplet in retrieved_triplets:
-                    self.log(f"* {triplet}", verbose=self.verbose)
+                    self.log.debug("* %s", triplet, verbose=self.verbose, log_level=self.log_level)
             else:
-                self.log("Operation ended with error!", verbose=self.verbose)
+                self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
                 break
 
-            self.log("STAGE#3.1.2 - CLUE-ANSWER GENERATION", verbose=self.verbose)
+            self.log.debug("STAGE#3.1.2 - CLUE-ANSWER GENERATION", verbose=self.verbose, log_level=self.log_level)
             cur_clueanswer, cag_rinfo, trace = self.stages.clueanswer_generator.perform(search_query, retrieved_triplets)
             module_trace.add("clueanswer_generator", ModuleType.stage, trace)
             update_rinfo(rinfo, cag_rinfo)
             if rinfo.status == ReturnStatus.success:
-                self.log("Operation ended successfully", verbose=self.verbose)
-                self.log(f"RESULT: {cur_clueanswer}", verbose=self.verbose)
+                self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
+                self.log.debug("RESULT: %s", cur_clueanswer, verbose=self.verbose, log_level=self.log_level)
             else:
-                self.log("Operation ended with error!", verbose=self.verbose)
+                self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
                 break
 
             clueanswers.append(cur_clueanswer)
@@ -272,19 +273,19 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         search_step_answer, rinfo, trace = self.stages.clueanswers_summarizer.perform(
             search_query, list(map(lambda cq_info: cq_info.query, cluequeries)), clueanswers)
         if rinfo.status == ReturnStatus.success:
-            self.log("Operation ended successfully", verbose=self.verbose)
+            self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
         else:
-            self.log("Operation ended with error!", verbose=self.verbose)
+            self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
 
         return search_step_answer, rinfo, trace
 
     def answer_generation_trying(self, search_plan: SearchPlanInfo) -> Tuple[Union[str, None], ReturnInfo, CompositeModuleResult]:
         answer, rinfo, trace = self.stages.answer_generator.perform(search_plan)
         if rinfo.status == ReturnStatus.success:
-            self.log("Operation ended successfully", verbose=self.verbose)
-            self.log(f"RESULT: {answer}", verbose=self.verbose)
+            self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("RESULT: %s", answer, verbose=self.verbose, log_level=self.log_level)
         else:
-            self.log("Operation ended with error!", verbose=self.verbose)
+            self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
 
         return answer, rinfo, trace
 
@@ -292,55 +293,55 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
     def forced_answer_generation(self, search_plan: SearchPlanInfo) -> Tuple[Union[str, None], ReturnInfo, CompositeModuleDetailedResult, bool]:
         answer, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
         if self.config.answer_something:
-            self.log("Пытаемся сгенерировать ответа на основе имеющейся информации...", verbose=self.verbose)
+            self.log.debug("Пытаемся сгенерировать ответа на основе имеющейся информации...", verbose=self.verbose, log_level=self.log_level)
             answer, rinfo.status, trace = self.stages.answer_generator.tasks_solvers.answer_gen_solver.solve(
                 lang=self.stages.answer_generator.config.lang, search_plan=search_plan)
             module_trace.add("answer_gen_solver", ModuleType.task_solver, trace)
         else:
-            self.log("В рамках заданных ограничений поиска не удалось сгенерировать релевантный ответ.", verbose=self.verbose)
+            self.log.warning("В рамках заданных ограничений поиска не удалось сгенерировать релевантный ответ.", verbose=self.verbose, log_level=self.log_level)
             answer = "<|NotEnoughtInfo|>"
 
         if rinfo.status == ReturnStatus.success:
-            self.log("Operation ended successfully", verbose=self.verbose)
+            self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
         else:
-            self.log("Operation ended with error!", verbose=self.verbose)
+            self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
 
         return answer, rinfo, module_trace, False
 
     @accumulate_stage_info
     def prepare_searchqueries(self, search_query: str, search_step: int) -> Tuple[List[QueryInfo], ReturnInfo, CompositeModuleDetailedResult, bool]:
         cluequeries, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
-        self.log("STAGE#2.1 - SEARCH-STEP to KG MATCHING", verbose=self.verbose)
-        self.log(f"Current step #{search_step}: {search_query}", verbose=self.verbose)
+        self.log.debug("STAGE#2.1 - SEARCH-STEP to KG MATCHING", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("Current step #%d: %s", search_step, search_query, verbose=self.verbose, log_level=self.log_level)
         matched_kg_objects, ssm_rinfo, trace = self.match_searchstep_to_kg(search_query)
         module_trace.add('match_searchstep_to_kg', ModuleType.stage, trace)
         update_rinfo(rinfo, ssm_rinfo)
 
-        self.log("STAGE#2.2 - CLUE-QUERIES GENERATION", verbose=self.verbose)
+        self.log.debug("STAGE#2.2 - CLUE-QUERIES GENERATION", verbose=self.verbose, log_level=self.log_level)
         if rinfo.status == ReturnStatus.success:
             cluequeries, cqg_rinfo, trace = self.get_cluequeries(search_query, matched_kg_objects)
             module_trace.add('get_cluequeries', ModuleType.stage, trace)
             update_rinfo(rinfo, cqg_rinfo)
         else:
-            self.log("During previous steps error occurs.", verbose=self.verbose)
+            self.log.warning("During previous steps error occurs.", verbose=self.verbose, log_level=self.log_level)
 
         return cluequeries, rinfo, module_trace, False
 
     @accumulate_stage_info
     def traverse_kg(self, search_query: str, cluequeries: List[QueryInfo]) -> Tuple[Union[str, None], ReturnInfo, CompositeModuleDetailedResult, bool]:
         search_step_answer, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
-        self.log("STAGE#3.1 - RETRIEVING INFORMATION FROM KG BASED ON CLUE-QUERIES", verbose=self.verbose)
+        self.log.debug("STAGE#3.1 - RETRIEVING INFORMATION FROM KG BASED ON CLUE-QUERIES", verbose=self.verbose, log_level=self.log_level)
         clueanswers, cag_rinfo, trace = self.search_clueanswers(search_query, cluequeries)
         module_trace.add("search_clueanswers", ModuleType.stage, trace)
         update_rinfo(rinfo, cag_rinfo)
 
-        self.log("STAGE#3.2 - CLUE-ANSWERS SUMMARISATION", verbose=self.verbose)
+        self.log.debug("STAGE#3.2 - CLUE-ANSWERS SUMMARISATION", verbose=self.verbose, log_level=self.log_level)
         if rinfo.status == ReturnStatus.success:
             search_step_answer, cas_rinfo, trace = self.summarize_clueanswers(search_query, cluequeries, clueanswers)
             module_trace.add("summarize_clueanswers", ModuleType.stage, trace)
             update_rinfo(rinfo, cas_rinfo)
         else:
-            self.log("During previous steps error occurs.", verbose=self.verbose)
+            self.log.warning("During previous steps error occurs.", verbose=self.verbose, log_level=self.log_level)
 
         return search_step_answer, rinfo, module_trace, False
 
@@ -358,36 +359,36 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         :return: Кортеж из трёх объектов: (1) извлечённая/релевантная информация/ответа на запрос; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
         :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
-        self.log("START MEDIUM KG-REASONING...", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
-        self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
+        self.log.debug("START MEDIUM KG-REASONING...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s .", create_id(query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question: %s .", query, verbose=self.verbose, log_level=self.log_level)
         answer, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
         search_plan = SearchPlanInfo(base_query=query)
 
-        self.log("Start iterative search...", verbose=self.verbose)
+        self.log.debug("Start iterative search...", verbose=self.verbose, log_level=self.log_level)
         for search_step in range(self.config.max_searchplan_steps):
 
-            self.log("STAGE#1 - SEARCH PLAN INITING/ENHANCING", verbose=self.verbose)
+            self.log.debug("STAGE#1 - SEARCH PLAN INITING/ENHANCING", verbose=self.verbose, log_level=self.log_level)
             search_plan, usp_rinfo, trace = self.update_searchplan(search_step, search_plan)
             module_trace.add("update_searchplan", ModuleType.stage, trace)
             update_rinfo(rinfo, usp_rinfo)
 
             if rinfo.status == ReturnStatus.success:
                 if search_step >= len(search_plan.search_steps):
-                    self.log("No more search-steps in the plan!", verbose=self.verbose)
+                    self.log.warning("No more search-steps in the plan!", verbose=self.verbose, log_level=self.log_level)
                     break
 
-            self.log("STAGE#2 - QUERIES PREPARATION FOR KG TRAVERSAL", verbose=self.verbose)
+            self.log.debug("STAGE#2 - QUERIES PREPARATION FOR KG TRAVERSAL", verbose=self.verbose, log_level=self.log_level)
             if rinfo.status == ReturnStatus.success:
                 search_query = search_plan.search_steps[search_step]
                 cluequeries, psq_rinfo, trace = self.prepare_searchqueries(search_query, search_step)
                 module_trace.add("prepare_searchqueries", ModuleType.stage, trace)
                 update_rinfo(rinfo, psq_rinfo)
             else:
-                self.log("During previous steps error occurs.", verbose=self.verbose)
+                self.log.warning("During previous steps error occurs.", verbose=self.verbose, log_level=self.log_level)
                 break
 
-            self.log("STAGE#3 - KG TRAVERSAL FOR RELEVANT KNOWLEDGE EXTRACTION", verbose=self.verbose)
+            self.log.debug("STAGE#3 - KG TRAVERSAL FOR RELEVANT KNOWLEDGE EXTRACTION", verbose=self.verbose, log_level=self.log_level)
             if rinfo.status == ReturnStatus.success:
                 search_step_answer, tkg_rinfo, trace = self.traverse_kg(search_query, cluequeries)
                 module_trace.add("traverse_kg", ModuleType.stage, trace)
@@ -396,32 +397,32 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
                 if rinfo.status == ReturnStatus.success:
                     search_plan.steps_answers.append(search_step_answer)
             else:
-                self.log("During previous steps error occurs.", verbose=self.verbose)
+                self.log.warning("During previous steps error occurs.", verbose=self.verbose, log_level=self.log_level)
                 break
 
-            self.log("STAGE#4 - ANSWER-GENERATION TRYING", verbose=self.verbose)
+            self.log.debug("STAGE#4 - ANSWER-GENERATION TRYING", verbose=self.verbose, log_level=self.log_level)
             if rinfo.status == ReturnStatus.success:
                 answer, agt_rinfo, trace = self.answer_generation_trying(search_plan)
                 module_trace.add("answer_generation_trying", ModuleType.stage, trace)
                 update_rinfo(rinfo, agt_rinfo)
 
                 if answer is not None:
-                    self.log(ANSWER_IS_GENERATED_MESSAGE, verbose=self.verbose)
+                    self.log.debug(ANSWER_IS_GENERATED_MESSAGE, verbose=self.verbose, log_level=self.log_level)
                     break
                 else:
-                    self.log(CONTINUE_SEARCH_MESSAGE, verbose=self.verbose)
+                    self.log.debug(CONTINUE_SEARCH_MESSAGE, verbose=self.verbose, log_level=self.log_level)
             else:
-                self.log("During previous steps error occurs.", verbose=self.verbose)
+                self.log.warning("During previous steps error occurs.", verbose=self.verbose, log_level=self.log_level)
                 break
 
-        self.log("Завершаем поиск.", verbose=self.verbose)
-        self.log(f"Информация по выполненному поиску: {search_plan}", verbose=self.verbose)
+        self.log.debug("Завершаем поиск.", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("Информация по выполненному поиску: %s", search_plan, verbose=self.verbose, log_level=self.log_level)
         if answer is None and rinfo.status == ReturnStatus.success:
             answer, fag_rinfo, trace = self.forced_answer_generation(search_plan)
             module_trace.add("forced_answer_generation", ModuleType.stage, trace)
             update_rinfo(rinfo, fag_rinfo)
 
-        self.log(f"RETURNED ANSWER: {answer}", verbose=self.verbose)
-        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
+        self.log.debug("RETURNED ANSWER: %s", answer, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)
 
         return answer, rinfo, module_trace

@@ -213,6 +213,8 @@ services:
       - 9200:9200
       - 9600:9600
     environment:
+      - OPENSEARCH_UID=1000
+      - OPENSEARCH_GID=1000
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
     volumes:

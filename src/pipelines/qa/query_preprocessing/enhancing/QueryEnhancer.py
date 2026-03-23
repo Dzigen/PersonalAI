@@ -31,7 +31,7 @@ class QueryEnhancerConfig(BaseComponentConfig, LanguageConfig):
     agent_tasks_config: Union[Dict, QueryEnhancerAgentTasksConfig] = field(default_factory=lambda: QueryEnhancerAgentTasksConfig())
 
     cache_table_name: str = 'qp_enhancing_stage_cache'
-    log: Logger = field(default_factory=lambda: Logger(QE_MAIN_LOG_PATH))
+    log_path: str = QE_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
@@ -72,7 +72,7 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs()
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
 
         self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
 
@@ -96,8 +96,9 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
             )
         )
 
-        self.log = self.config.log
+        self.log = Logger(self.config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     def get_cache_key(self, query_info: QueryPreprocessingInfo) -> List[str]:
         """Формирует ключ кеша для результата операции обогащения.
@@ -121,9 +122,9 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         :return: Кортеж из трёх объектов: (1) модифицированный user-вопрос с добавленными языковыми конструкциями для выделения запроса/интента; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
         :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
-        self.log("START QUERY ENHANCING...", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.verbose)
-        self.log(f"QUERY INFO: {query_info}", verbose=self.verbose)
+        self.log.debug("START QUERY ENHANCING...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", create_id(query_info.base_query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question info: %s", query_info, verbose=self.verbose, log_level=self.log_level)
         enhanced_query, rinfo = None, ReturnInfo()
         module_trace = CompositeModuleDetailedResult()
 
@@ -134,41 +135,41 @@ class QueryEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             raise ValueError
 
-        self.log("Добавление более понятных языковых конструкций в запрос с помощью LLM-агента...", verbose=self.verbose)
+        self.log.debug("Добавление более понятных языковых конструкций в запрос с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
         expanded_query, status, trace = self.tasks_solvers.queryexpansion_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
         module_trace.add("queryexpansion_solver", ModuleType.task_solver, trace)
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
         else:
-            self.log(f"RESULT: {expanded_query}", verbose=self.verbose)
+            self.log.debug("RESULT: %s", expanded_query, verbose=self.verbose, log_level=self.log_level)
 
         if status == ReturnStatus.success:
-            self.log("Замена слабоопределённых фраз в запросе на конкретную терминологию с помощью LLM-агента...", verbose=self.verbose)
+            self.log.debug("Замена слабоопределённых фраз в запросе на конкретную терминологию с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
             defined_query, status, trace = self.tasks_solvers.termscheck_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=expanded_query)
             module_trace.add("termscheck_solver", ModuleType.task_solver, trace)
             if status != ReturnStatus.success:
                 rinfo.occurred_warning.append(status)
             else:
-                self.log(f"RESULT: {defined_query}", verbose=self.verbose)
+                self.log.debug("RESULT: %s", defined_query, verbose=self.verbose, log_level=self.log_level)
 
         if status == ReturnStatus.success:
-            self.log("Перефразирование запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.verbose)
+            self.log.debug("Перефразирование запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
             reformulated_query, status, trace = self.tasks_solvers.linguistcheck_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=defined_query)
             module_trace.add("linguistcheck_solver", ModuleType.task_solver, trace)
             if status != ReturnStatus.success:
                 rinfo.occurred_warning.append(status)
             else:
-                self.log(f"RESULT: {reformulated_query}", verbose=self.verbose)
+                self.log.debug("RESULT: %s", reformulated_query, verbose=self.verbose, log_level=self.log_level)
                 enhanced_query = reformulated_query
 
         if enhanced_query is None:
             rinfo.status = ReturnStatus.empty_answer
             rinfo.message = STATUS_MESSAGE[rinfo.status]
 
-        self.log(f"RESULT: {enhanced_query}", verbose=self.verbose)
-        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
+        self.log.debug("RESULT: %s", enhanced_query, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)
 
         return enhanced_query, rinfo, module_trace

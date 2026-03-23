@@ -13,7 +13,7 @@ services:
       - NEO4J_AUTH=neo4j/password
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
     volumes:
-      - ../../personalai_volumes/neo4j:/data
+      - ${NEO4J_EXTRNAL_VOLUME}:/data
     deploy:
       resources:
         limits:
@@ -34,8 +34,8 @@ services:
       - Djetty.port=9999
       - ES_JAVA_OPTS=-server -Xmx4g
     volumes:
-      - ../configs/blazegraph/RWStore.properties:/RWStore.properties
-      - ../../personalai_volumes/blazegraph:/data
+      - ${BLAZEGRAPH_EXTERNAL_CONFIG_PATH}:/RWStore.properties
+      - ${BLAZEGRAPH_EXTERNAL_VOLUME}:/data
     deploy:
       resources:
         limits:
@@ -57,7 +57,7 @@ services:
     environment:
       - FALKORDB_ARGS=THREAD_COUNT 8 TIMEOUT_MAX 30000
     volumes:
-      - ../../personalai_volumes/falkordb:/data
+      - ${FALKORDB_EXTERNAL_VOLUME}:/data
     deploy:
       resources:
         limits:
@@ -113,7 +113,7 @@ services:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
     volumes:
-      - ../../personalai_volumes/opensearch:/usr/share/opensearch/data
+      - ${OPENSEARCH_EXTERNAL_VOLUME}:/usr/share/opensearch/data
     deploy:
       resources:
         limits:
@@ -134,7 +134,7 @@ services:
       - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
       - xpack.security.enabled=false
     volumes:
-      - ../../personalai_volumes/elasticsearch:/usr/share/elasticsearch/data
+      - ${ELASTICSEARCH_EXTERNAL_VOLUME}:/usr/share/elasticsearch/data
     deploy:
       resources:
         limits:
@@ -159,7 +159,7 @@ services:
       - --scheme
       - http
       volumes:
-        - ../../personalai_volumes/weaviate:/var/lib/weaviate
+        - ${WEAVIATE_EXTERNAL_VOLUME}:/var/lib/weaviate
       environment:
         QUERY_DEFAULTS_LIMIT: 25
         AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
@@ -184,7 +184,7 @@ services:
       - 6333:6333
       - 6334:6334
     volumes:
-        - ../../personalai_volumes/qdrant:/qdrant/storage
+        - ${QDRANT_EXTERNAL_VOLUME}:/qdrant/storage
     deploy:
       resources:
         limits:
@@ -204,8 +204,8 @@ services:
       MYSQL_USER: personalai
       MYSQL_PASSWORD: personalai
     volumes:
-      - ../../personalai_volumes/mysql:/var/lib/mysql
-      - ../configs/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ${MYSQL_EXTERNAL_VOLUME}:/var/lib/mysql
+      - ${MYSQL_EXTERNAL_CONFIG_PATH}:/docker-entrypoint-initdb.d/init.sql
     ports:
       - 3306:3306
     deploy:
@@ -226,8 +226,8 @@ services:
       POSTGRES_USER: personalai
       POSTGRES_PASSWORD: personalai
     volumes:
-      - ../../personalai_volumes/postgresql:/var/lib/postgresql/data # Mounts a host directory for persistent data storage
-      - ../configs/postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ${POSTGRESQL_EXTERNAL_VOLUME}:/var/lib/postgresql/data # Mounts a host directory for persistent data storage
+      - ${POSTGRESQL_EXTERNAL_CONFIG_PATH}:/docker-entrypoint-initdb.d/init.sql
     ports:
       - 5432:5432
     shm_size: 128mb
@@ -250,7 +250,7 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - ../../personalai_volumes/mongo:/data/db
+      - ${MONGO_EXTERNAL_VOLUME}:/data/db
     deploy:
       resources:
         limits:
@@ -274,8 +274,8 @@ services:
     ports:
       - 6380:6379
     volumes:
-      - ../configs/redis/redis.conf:/usr/local/etc/redis/redis.conf
-      - ../../personalai_volumes/redis:/data
+      - ${REDIS_EXTERNAL_CONFIG_PATH}:/usr/local/etc/redis/redis.conf
+      - ${REDIS_EXTERNAL_VOLUME}:/data
     deploy:
       resources:
         limits:
@@ -291,18 +291,18 @@ services:
     build:
       context: .
       dockerfile: workspace.Dockerfile
-    image: m.menschikov/workspace:v10
+    image: m.menschikov/workspace:v11
     container_name: personalai_mmenschikov_workspace
     hostname: workspaceservice
     network_mode: "host"
     volumes:
-      - ../data/qa_datasets:/home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets #/home/dzigen/Desktop/PersonalAI/Personal-AI/data/qa_datasets | /home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets
-      - ../src:/home/m.menschikov/workspace/personal_ai/Personal-AI/src #/home/dzigen/Desktop/PersonalAI/Personal-AI/src | /home/m.menschikov/workspace/personal_ai/Personal-AI/src
-      - ../experiments:/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments #/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments | /home/m.menschikov/workspace/personal_ai/Personal-AI/experiments
-      - ../notebooks:/home/m.menschikov/workspace/personal_ai/Personal-AI/notebooks #/home/dzigen/Desktop/PersonalAI/Personal-AI/notebooks | /home/m.menschikov/workspace/personal_ai/Personal-AI/notebooks
-      - /mnt/data/m.menschikov/personalai/knowledge_graphs:/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs
-      - /mnt/data/m.menschikov/personalai/models:/home/m.menschikov/workspace/personal_ai/Personal-AI/models
-      - /mnt/data/m.menschikov/personalai/experiments:/home/m.menschikov/workspace/experiment_results
+      - ${EXTERNAL_DATASETS_PATH}:${EXTERNAL_DATASETS_PATH}
+      - ${EXTERNAL_SRC_PATH}:${INTERNAL_SRC_PATH}
+      - ${EXTERNAL_EXPERIMENTS_PATH}:${INTERNAL_EXPERIMENTS_PATH}
+      - ${EXTRNAL_NOTEBOOKS_PATH}:${INTERNAL_NOTEBOOKS_PATH}
+      - ${EXTERNAL_KNOWLEDGE_GRAPHS_PATH}:${INTERNAL_KNOWLEDGE_GRAPHS_PATH}
+      - ${EXTERNAL_MODELS_PATH}:${INTERNAL_MODELS_PATH}
+      - ${EXTERNAL_EXPERIMENT_RESULTS_PATH}:${INTERNAL_EXPERIMENT_RESULTS_PATH}
     deploy:
       resources:
         limits:
@@ -313,7 +313,7 @@ services:
           memory: 24G
           devices:
             - driver: nvidia
-              device_ids: ['0']
+              device_ids: ['${WORKSPACE_DEVICE_ID}']
               capabilities: [gpu]
 
   empty_workspace:
@@ -339,7 +339,7 @@ services:
     environment:
       - OLLAMA_DEBUG=1
     volumes:
-      - /mnt/data/m.menschikov/ollama_volume:/root/.ollama
+      - ${OLLAMA_EXTERNAL_VOLUME_PATH}:/root/.ollama
     deploy:
       resources:
         limits:
@@ -350,5 +350,5 @@ services:
           memory: 4G
           devices:
             - driver: nvidia
-              device_ids: ['0']
+              device_ids: ['${OLLAMA_DEVICE_ID}']
               capabilities: [gpu]

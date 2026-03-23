@@ -22,7 +22,7 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
     # https://python.langchain.com/api_reference/community/vectorstores/langchain_community.vectorstores.faiss.FAISS.html#langchain_community.vectorstores.faiss.FAISS.delete
 
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_INMEMORY_CONFIG,
-                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16) -> None:
+                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 8) -> None:
         if isinstance(config, dict):
             config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
         else:

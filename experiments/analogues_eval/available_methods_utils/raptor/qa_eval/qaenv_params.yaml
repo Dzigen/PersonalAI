@@ -1,0 +1,30 @@
+METHOD_NAME: raptor
+DATASET_NAME: diaasq
+KNOWLEDGE_GRAPH_NAME: qwen257b_180326
+LOCAL_PERSONALAI_PATH: /home/m.menschikov/workspace/personal_ai/Personal-AI
+LOCAL_KG_PATH: /mnt/data/m.menschikov/personalai/knowledge_graphs/analogues_eval
+OLLAMA_MODELS_PATH: /mnt/data/m.menschikov/ollama_volume
+OLLAMA_EXT_PORT: 11439
+KG_SETTING_DIR:
+  name: settings
+  kgconn: kgconn_params
+  kgenv: kgenv_params
+GPUS_CONFIG:
+  ollama_device_id: '2'
+  workspace_device_id: '0'
+PERSONALAI_REPO_DIRS:
+  experiments: experiments
+WORKSPACE_CONTAINER_DIRS:
+  experiments: experiments
+  kg: data/knowledge_graphs/analogues_eval
+SAVE_PARAMS_CONFIG:
+  base_path: env_settings
+  kgconn: kgconn_params.yaml
+  kgenv: kgenv_params.yaml
+  qaenv: qaenv_params.yaml
+  env_file: .qaexp_env
+CONTAINERS_ADDITIONAL_CONFIG:
+  workspace_cntname: personalai_mmenschikov_analogues_qaexp_workspace
+  workspace_host: localhost
+  ollama_cntname: personalai_mmenschikov_ollama2
+  ollama_host: personalai_mmenschikov_ollama2

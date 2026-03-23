@@ -13,7 +13,7 @@ from ...utils import AbstractVectorDatabaseConnection, VectorDBInstance, VectorD
 
 class MilvusVectorConnector(AbstractVectorDatabaseConnection):
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_MILVUS_CONFIG,
-                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16):
+                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 8):
         if isinstance(config, dict):
             config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
         else:

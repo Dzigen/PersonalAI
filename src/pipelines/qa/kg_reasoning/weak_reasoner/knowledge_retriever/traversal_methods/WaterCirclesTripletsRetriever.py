@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Set, Tuple, Union
 from copy import deepcopy
 
+from .configs import WATERCIRCLES_RETRIEVER_LOG_PATH
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......kg_model import KnowledgeGraphModel
 from .......utils.data_structs import QueryInfo, TripletCreator, create_id, Triplet, NodeCreator, \
@@ -107,7 +108,7 @@ class WaterCirclesSearchConfig(BaseGraphSearchConfig):
     :type other_triplets_num: int, optional
     :param do_text_pruning: _description_. Значение по умолчанию False.
     :type do_text_pruning: bool, optional
-    :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извелчения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time].
+    :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извелчения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic].
     :type accepted_node_types: List[Union[str, NodeType]], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы WaterCirclesRetriever-класса. Значение по умолчанию 'qa_watercircles_t_retriever_cache'.
     :type cache_table_name: str, optional
@@ -118,9 +119,10 @@ class WaterCirclesSearchConfig(BaseGraphSearchConfig):
     chain_triplets_num: int = 25
     other_triplets_num: int = 6
     do_text_pruning: bool = False
-    accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time])
+    accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
 
     cache_table_name: str = 'qa_watercircles_t_retriever_cache'
+    log_path: str = WATERCIRCLES_RETRIEVER_LOG_PATH
 
     def to_str(self):
         str_values = f"{self.hyper_num};{self.episodic_num};{self.chain_triplets_num};{self.other_triplets_num}"
@@ -145,19 +147,15 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
     :type kg_model: KnowledgeGraphModel
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
-    :type log: Logger
     :param search_config: Конфигурация WaterCirclesRetriever-алгоритма. Значение по умолчанию WaterCirclesSearchConfig().
     :type search_config: Union[WaterCirclesSearchConfig, Dict], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования промежуточных результатов в рамках компонент данного класса. Значение по умолчанию None.
     :type cache_kvdriver_config: Union[None, KeyValueDriverConfig], optional
-    :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
-    :type verbose: bool, optional
     """
 
     def __init__(self, kg_model: KnowledgeGraphModel,
-                 log: Logger, search_config: Union[WaterCirclesSearchConfig, Dict] = WaterCirclesSearchConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False) -> None:
+                 search_config: Union[WaterCirclesSearchConfig, Dict] = WaterCirclesSearchConfig(),
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None) -> None:
         if isinstance(search_config, dict):
             search_config = WaterCirclesSearchConfig.from_dict(search_config)
         else:
@@ -169,8 +167,9 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, self.config.cache_table_name)
 
-        self.log = log
-        self.verbose = verbose
+        self.log = Logger(search_config.log_path)
+        self.verbose = search_config.verbose
+        self.log_level = search_config.log_level
 
         self.extract_triplets_name1_template = \
             'MATCH (a:object)-[r]-(b:object) WHERE a.name="{name1}" RETURN a, r, b'
@@ -358,11 +357,10 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
     @accumulate_step_info
     @CacheUtils.cache_method_output
     def get_relevant_triplets(self, query_info: QueryInfo, depth: int = 1) -> Tuple[List[Triplet], ReturnInfo]:
-        self.log("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose)
-        self.log("RETRIEVER: WaterCirclesTripletsRetriever",
-                 verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
+        self.log.debug("START KNOWLEDGE RETRIEVING ...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Retriever: WaterCirclesTripletsRetriever", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", create_id(query_info.query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question: %s", query_info.query, verbose=self.verbose, log_level=self.log_level)
         rinfo = ReturnInfo()
 
         seed_entities = []
@@ -576,7 +574,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
                                 if ent.lower() in obj_props.values() or ent.lower() in rel_dict.values():
                                     found_inters2 = True
                                 if seed_entity.lower() in text_chunk.lower():
-                                    if seed_entity[0].isupper() or seed_entity[1].isupper() \
+                                    if seed_entity[0].isupper() or (len(seed_entity) > 1 and seed_entity[1].isupper()) \
                                             or any(symb.isdigit() for symb in seed_entity):
                                         found_same_proper = True
                                     else:

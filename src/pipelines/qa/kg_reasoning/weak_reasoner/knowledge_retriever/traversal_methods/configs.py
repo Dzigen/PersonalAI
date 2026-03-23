@@ -1,6 +1,13 @@
 from .......rerankers import RerankerDriverConfig
 from .......rerankers.methods import EnsembleFusionRerankerConfig, RetrieverConfig, SingleStepRerankerConfig
 
+ASTAR_RETRIEVER_LOG_PATH = 'log/qa/kg_reasoner/weak/knowledge_retriever/astar_retriever'
+BEAMSEARCH_RETRIEVER_LOG_PATH = 'log/qa/kg_reasoner/weak/knowledge_retriever/beamsearch_retriever'
+WATERCIRCLES_RETRIEVER_LOG_PATH = 'log/qa/kg_reasoner/weak/knowledge_retriever/watercircles_retriever'
+NAIVEBFS_RETRIEVER_LOG_PATH = 'log/qa/kg_reasoner/weak/knowledge_retriever/naivebfs_retriever'
+NAIVE_RETRIEVER_LOG_PATH = 'log/qa/kg_reasoner/weak/knowledge_retriever/naive_retriever'
+MIXTURED_RETRIEVER_LOG_PATH = 'log/qa/kg_reasoner/weak/knowledge_retriever/mixtured_retriever'
+
 NGS_RERANKDRIVER_DEFAULT_CONFIG = RerankerDriverConfig(
     name='ensemble_fusion',
     strategy_config=EnsembleFusionRerankerConfig(
