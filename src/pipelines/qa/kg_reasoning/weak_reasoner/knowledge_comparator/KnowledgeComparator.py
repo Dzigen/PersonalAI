@@ -7,7 +7,6 @@ from ......utils import Logger, ReturnStatus, ReturnInfo, accumulate_step_info
 from ......utils.errors import STATUS_MESSAGE
 from ......utils.data_structs import QueryInfo, create_id, NodeType, BaseComponentConfig, NodeInfo
 from ......kg_model import KnowledgeGraphModel
-from ......db_drivers.vector_driver import VectorDBInstance
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......rerankers import RerankerDriver, RerankerDriverConfig
@@ -19,15 +18,18 @@ class KnowledgeComparatorConfig(BaseComponentConfig):
     """Конфигурация "Knowledge Comparator"-стадии QA-конвейера.
     :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию KC_RERANKDRIVER_DEFAULT_CONFIG.
     :type reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
-    :param max_k: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 1.
+    :param max_k: Максимальное количество вершин из графа знаний, которое может быть сопоставлено одной сущности. Значение по умолчанию 3.
     :type max_k: int, optional
+    :param discard_other_mnodes_if_exactmatch_found: Если True, то в случае наличия полного совпадения (в нижних регистрах) name-поля одной из object-вершин с данной сущностью, то другие сопоставленные object-вершины для неё (данной сущности) будут отброшены; иначе False. Значение по умолчанию True.
+    :type discard_other_mnodes_if_exactmatch_found: bool, optional
     :param k_compare: Служебный гиперпараметр. Значение по умолчанию 5.
     :type k_compare: int, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы KnowledgeComparator-класса. Значение по умолчанию 'qa_kcomparator_stage_cache'.
     :type cache_table_name: str, optional
     """
     reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(default_factory=lambda: KC_RERANKDRIVER_DEFAULT_CONFIG)
-    max_k: int = 1
+    max_k: int = 3
+    discard_other_mnodes_if_exactmatch_found: bool = True
     k_compare: int = 5
 
     cache_table_name: str = 'qa_kcomparator_stage_cache'
@@ -98,6 +100,21 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
             lambda node: NodeInfo(id=node.id, text=node.document, type=NodeType.object),
             self.retriever.run(entity, top_k=self.config.max_k, includes=['documents'])
         ))
+
+        if self.config.discard_other_mnodes_if_exactmatch_found:
+            em_objects = list(filter(lambda object: object.text.lower() == entity.lower(), matched_objects))
+            if len(em_objects) > 0:
+                self.log.debug('Найдены object-вершины, name-поля которых совпадают с данной entity "%s". Другие object-вершины отбрасываются.',
+                               entity, verbose=self.verbose, log_level=self.log_level)
+                self.log.debug('* Исходный набор сопоставленных object-вершин (%d): %s',
+                               len(matched_objects), matched_objects, verbose=self.verbose, log_level=self.log_level)
+                self.log.debug('* Совпадающие object-вершины (%d): %s',
+                               len(em_objects), em_objects, verbose=self.verbose, log_level=self.log_level)
+
+                matched_objects = em_objects
+            else:
+                self.log.debug('Для entity "%s" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.',
+                               entity, verbose=self.verbose, log_level=self.log_level)
 
         cur_documents = list(map(lambda item: item.text, matched_objects))
         cur_documents_lower = list(map(lambda document: document.lower(), cur_documents))
