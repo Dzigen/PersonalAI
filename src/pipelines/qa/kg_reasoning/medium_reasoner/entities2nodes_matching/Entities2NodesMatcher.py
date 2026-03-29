@@ -37,7 +37,7 @@ class Entities2NodesMatcherConfig(BaseComponentConfig):
     log_path: str = E2NMATCHER_MAIN_LOG_PATH
 
     def to_str(self):
-        return f"{self.use_tree}|{self.max_n}|{self.reranker_driver_config.to_str()}"
+        return f"{self.use_tree}|{self.max_n}|{self.reranker_driver_config.to_str()}|{self.discard_other_mnodes_if_exactmatch_found}"
 
     @staticmethod
     def from_dict(dict_config: Dict):

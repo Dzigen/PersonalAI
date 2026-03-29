@@ -36,7 +36,7 @@ class KnowledgeComparatorConfig(BaseComponentConfig):
     log_path: str = KC_MAIN_LOG_PATH
 
     def to_str(self):
-        return f"{self.reranker_driver_config.to_str()};{self.max_k}:{self.k_compare}"
+        return f"{self.reranker_driver_config.to_str()};{self.max_k}:{self.k_compare}:{self.discard_other_mnodes_if_exactmatch_found}"
 
     @staticmethod
     def from_dict(dict_config: Dict):
