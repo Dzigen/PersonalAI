@@ -29,18 +29,21 @@ class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
     :type agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict], optional
     :param max_cqueries_amount: Максимальное количество clue-запросов, которое может быть сгенерировано. Значение по умолчанию 2.
     :type max_cqueries_amount: int, optional
+    :param return_only_unique_cqueires: ... . Значение по умолчанию True.
+    :type return_only_unique_cqueires: bool, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы ClueQueriesGenerator-класса. Значение по умолчанию 'medreasn_cquerygen_main_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict] = field(default_factory=lambda: ClueQueriesGeneratorAgentTasksConfig())
     max_cqueries_amount: int = 2
+    return_only_unique_cqueires: bool = True
 
     cache_table_name: str = 'medreasn_cquerygen_main_stage_cache'
     log_path: str = CQGEN_MAIN_LOG_PATH
 
     def to_str(self):
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{self.max_cqueries_amount}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{self.max_cqueries_amount}|{self.return_only_unique_cqueires}"
 
     @staticmethod
     def from_dict(dict_config: Dict):
@@ -159,16 +162,17 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
                 rinfo.status = status
                 break
             else:
-                if cur_cluequery in unique_cqueries:
-                    self.log.debug("Сгенерированное clue-query уже было получено ранее. Отбрасываем.", verbose=self.verbose, log_level=self.log_level)
-                    continue
-                else:
-                    self.log.debug("Сгенерированое clue-query ещё получено не было. Сохраняем.", verbose=self.verbose, log_level=self.log_level)
-                    unique_cqueries.add(cur_cluequery)
+                if self.config.return_only_unique_cqueires:
+                    if cur_cluequery in unique_cqueries:
+                        self.log.debug("Сгенерированное clue-query уже было получено ранее. Отбрасываем.", verbose=self.verbose, log_level=self.log_level)
+                        continue
+                    else:
+                        self.log.debug("Сгенерированое clue-query ещё получено не было. Сохраняем.", verbose=self.verbose, log_level=self.log_level)
+                        unique_cqueries.add(cur_cluequery)
 
-                    clue_queries.append(QueryInfo(
-                        query=cur_cluequery, entities=base_entities, linked_nodes=list(cur_group),
-                        linked_nodes_by_entities=list(map(lambda pair: [base_entities[pair[0]], pair[1]], enumerate(formated_objects_group)))))
+                clue_queries.append(QueryInfo(
+                    query=cur_cluequery, entities=base_entities, linked_nodes=list(cur_group),
+                    linked_nodes_by_entities=list(map(lambda pair: [base_entities[pair[0]], pair[1]], enumerate(formated_objects_group)))))
 
         self.log.debug("RESULT:\n* Количество clue-queries после фильтрации по строкоовму представлению: %d",
                        len(clue_queries), verbose=self.verbose, log_level=self.log_level)
