@@ -25,7 +25,7 @@ ragas_llm_config:
       credentials:
         model: 'qwen2.5:7b'
         host: 'localhost'
-        port: 11439
+        port: 11437
       ext_params:
         timeout: 560
         keep_alive: 600
@@ -51,7 +51,7 @@ judge_llm_config:
       credentials:
         model: 'qwen2.5:7b'
         host: 'localhost'
-        port: 11439
+        port: 11437
       ext_params:
         timeout: 560
         keep_alive: 120
