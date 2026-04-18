@@ -2,7 +2,7 @@ import os
 from openai import OpenAI, APITimeoutError
 from typing import Dict, Union, Tuple
 from time import time, sleep
-from httpcore import ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout
+from httpcore import ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout, ReadError
 
 from .configs import DEEPSEEK_CONFIG, GPT4OMINI_CONFIG
 from ..utils import AbstractAgentConnector, AgentConnectorConfig, LLMInferenceStat
@@ -58,7 +58,7 @@ class OpenAIConnector(AbstractAgentConnector):
                 response = self.client.chat.completions.create(
                     model=self.config.credentials['model'], messages=msgs, **gen_strategy)
                 flag = False
-            except (ConnectError, RemoteProtocolError, ConnectTimeout, APITimeoutError, ReadTimeout) as e:
+            except (ConnectError, RemoteProtocolError, ConnectTimeout, APITimeoutError, ReadTimeout, ReadError) as e:
                 counter += 1
                 if counter > self.trials:
                     raise ConnectError(str(e))

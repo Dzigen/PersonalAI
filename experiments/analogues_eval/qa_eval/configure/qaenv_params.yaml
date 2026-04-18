@@ -11,7 +11,7 @@ KG_SETTING_DIR:
   kgconn: kgconn_params
   kgenv: kgenv_params
 GPUS_CONFIG:
-  ollama_device_id: '2'
+  ollama_device_id: '0'
   workspace_device_id: '0'
 PERSONALAI_REPO_DIRS:
   experiments: experiments/analogues_eval/qa_eval
@@ -27,5 +27,5 @@ SAVE_PARAMS_CONFIG:
 CONTAINERS_ADDITIONAL_CONFIG:
   workspace_cntname: personalai_mmenschikov_analogues_qaexp_workspace
   workspace_host: localhost
-  ollama_cntname: personalai_mmenschikov_ollama2
-  ollama_host: personalai_mmenschikov_ollama2
+  ollama_cntname: personalai_mmenschikov_ollama
+  ollama_host: personalai_mmenschikov_ollama
