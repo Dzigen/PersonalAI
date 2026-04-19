@@ -188,7 +188,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
             self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
             str_searchsteps = '\n'.join(
                 [f'{i}. {step}' for i, step in enumerate(search_plan.search_steps)])
-            self.log.debug("RESULT:\n %s", str_searchsteps, verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("RESULT:\n%s", str_searchsteps, verbose=self.verbose, log_level=self.log_level)
 
         return search_plan, rinfo, trace
 
@@ -224,7 +224,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
     def get_cluequeries(self, search_query: str, matched_kg_objects: Dict[str, List[NodeInfo]]) -> Tuple[List[QueryInfo], ReturnInfo, CompositeModuleResult]:
         cluequeries, rinfo, trace = self.stages.cluequeries_generator.perform(search_query, matched_kg_objects)
         str_cluequeries = '\n'.join(
-            [f'- [{list(map(lambda obj: obj.text, clueq.linked_nodes))}] {clueq.query}' for clueq in cluequeries])
+            [f'- {list(map(lambda obj: obj.text, clueq.linked_nodes))}:  {clueq.query}' for clueq in cluequeries])
         if rinfo.status == ReturnStatus.success:
             self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
             self.log.debug("RESULT: %d\n%s", len(cluequeries), str_cluequeries, verbose=self.verbose, log_level=self.log_level)
@@ -248,7 +248,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
                 self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
                 self.log.debug("RESULT: %d", len(retrieved_triplets), verbose=self.verbose, log_level=self.log_level)
                 for triplet in retrieved_triplets:
-                    self.log.debug("* %s", triplet, verbose=self.verbose, log_level=self.log_level)
+                    self.log.debug("* [%s | %s] %s", triplet.id, triplet.relation.type, triplet.stringified, verbose=self.verbose, log_level=self.log_level)
             else:
                 self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
                 break
@@ -274,6 +274,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
             search_query, list(map(lambda cq_info: cq_info.query, cluequeries)), clueanswers)
         if rinfo.status == ReturnStatus.success:
             self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("RESULT: %s", search_step_answer, verbose=self.verbose, log_level=self.log_level)
         else:
             self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
 

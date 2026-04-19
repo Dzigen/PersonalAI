@@ -136,7 +136,7 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
             self.log.debug("Текушая сушность #%d: %s", i, entity, verbose=self.verbose, log_level=self.log_level)
             matched_kg_objects[entity], cache_hit = self.match_entity2knowledge(entity)
             cache_hits.append(cache_hit)
-            str_matchedobjects = ', '.join(list(map(lambda obj: obj.text, matched_kg_objects[entity])))
+            str_matchedobjects = ' | '.join(list(map(lambda obj: f'"{obj.text}"', matched_kg_objects[entity])))
             self.log.debug("RESULT: %s", str_matchedobjects, verbose=self.verbose, log_level=self.log_level)
 
         m_objects_amount = sum(list(map(lambda m_objects: len(m_objects), matched_kg_objects.values())))
