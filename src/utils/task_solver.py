@@ -166,7 +166,7 @@ class AgentTaskSolver:
             str_genstrat = ";".join(list(map(lambda p: f"{p[0]}={p[1]}", sorted(
                 [(k, str(v)) for k, v in gen_strategy.items()], key=lambda p: p[0]))))
             str_creds = ";".join(list(map(lambda p: f"{p[0]}={p[1]}", sorted(
-                [(k, str(v)) for k, v in self.agent.config.credentials.items()], key=lambda p: p[0]))))
+                [(k, str(v)) for k, v in self.agent.config.credentials.items() if k not in ['token','host','port']], key=lambda p: p[0]))))
             sprompt_hash = hashlib.sha1(self.config.suites[detected_lang].system_prompt.encode()).hexdigest()
             uprompt_hash = hashlib.sha1(enriched_user_prompt.encode()).hexdigest()
             if self.config.suites[detected_lang].assistant_prompt is None:

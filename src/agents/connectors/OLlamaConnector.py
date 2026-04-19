@@ -2,7 +2,7 @@ from ollama import Client
 from typing import Union, Dict, Tuple
 import gc
 from time import time, sleep
-from httpx import ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout
+from httpx import ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout, ReadError
 
 from .configs import DEFAULT_OLLAMA_CONFIG
 from ..utils import AbstractAgentConnector, AgentConnectorConfig, LLMInferenceStat
@@ -64,7 +64,7 @@ class OLlamaConnector(AbstractAgentConnector):
                     keep_alive=self.config.ext_params['keep_alive']
                 )
                 flag = False
-            except (ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout) as e:
+            except (ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout, ReadError) as e:
                 counter += 1
                 if counter > self.trials:
                     raise ConnectError(str(e))

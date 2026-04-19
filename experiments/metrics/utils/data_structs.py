@@ -47,7 +47,7 @@ class BaseConfigOperations:
         """
         pass
 
-@dataclass
+@dataclass(kw_only=True)
 class LoggingConfig:
     """
     :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.

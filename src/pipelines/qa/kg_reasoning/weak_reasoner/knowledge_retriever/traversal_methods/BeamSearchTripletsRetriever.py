@@ -46,9 +46,9 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     :type reranker_driver_config: Union[Dict,RerankerDriverConfig], optional
     :param vdbname_for_scores: ... . Значение по умолчанию 'dense_triplets'.
     :type vdbname_for_scores: str, optional
-    :param max_depth: Максимальная глубина построенных/пройденных путей. Значение по умолчанию 10.
+    :param max_depth: Максимальная глубина построенных/пройденных путей. Значение по умолчанию 3.
     :type max_depth: int, optional
-    :param max_paths: Максимальное количество построенных/пройденных путей. Значение по умолчанию 50.
+    :param max_paths: Максимальное количество построенных/пройденных путей. Значение по умолчанию 18.
     :type max_paths: int, optional
     :param same_path_intersection_by_node: Если True, то пути могут пересекаться сами с собой по вершинам, иначе False. Значение по умолчанию False.
     :type same_path_intersection_by_node: bool, optional

@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Tuple, List, Dict, Union, Dict
+from typing import Tuple, List, Dict, Union, Dict, Set
 import json
 from itertools import product
 from copy import deepcopy
@@ -27,16 +27,16 @@ class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param agent_tasks_config: Конфигурации LLM-промптов для решения заданных задач с помощью LLM-агента. Значение по умолчанию ClueQueriesGeneratorAgentTasksConfig().
     :type agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict], optional
-    :param max_cqueries_amount: Максимальное количество clue-запросов, которое может быть сгенерировано. Значение по умолчанию 2.
+    :param max_cqueries_amount: Максимальное количество clue-запросов, которое может быть сгенерировано. Значение по умолчанию 6.
     :type max_cqueries_amount: int, optional
-    :param return_only_unique_cqueires: ... . Значение по умолчанию True.
+    :param return_only_unique_cqueires: Если True, то из набора сгенерированных clue-вопросов будут удалены дубликаты (по строковому представлению и без учёта вершин, по которым данные clue-вопросы были получены), иначе False. Значение по умолчанию True.
     :type return_only_unique_cqueires: bool, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы ClueQueriesGenerator-класса. Значение по умолчанию 'medreasn_cquerygen_main_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict] = field(default_factory=lambda: ClueQueriesGeneratorAgentTasksConfig())
-    max_cqueries_amount: int = 2
+    max_cqueries_amount: int = 6
     return_only_unique_cqueires: bool = True
 
     cache_table_name: str = 'medreasn_cquerygen_main_stage_cache'
@@ -129,7 +129,7 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         str_matchedobjects = ';'.join([f'{k} - {[vv.text for vv in v]}' for k, v in matched_kg_objects.items()])
         self.log.debug("* Matched kg-object: %s", str_matchedobjects, verbose=self.verbose, log_level=self.log_level)
         clue_queries, rinfo, module_trace = [], ReturnInfo(), CompositeModuleDetailedResult()
-        unique_cqueries = set()
+        unique_cqueries: Set[str] = set()
 
         if len(search_query) < 1 or len(matched_kg_objects) < 1:
             raise ValueError

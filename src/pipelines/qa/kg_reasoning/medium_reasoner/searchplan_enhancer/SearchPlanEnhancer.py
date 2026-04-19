@@ -20,6 +20,8 @@ from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperati
 class SearchPlanEnhancerConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация SearchPlanEnhancer-стадии MediumQA-ризонера.
 
+    :param plan_enhancment: Если True, то невыполненные шаги аходящего план поиска будут скорректированы (перегенерированы на основании информации, полученной с предыдущих шагов), иначе False (план возврашается без изменений). Значение по умолчанию True.
+    :type plan_enhancment: bool, optional
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию SearchPlanEnhancerAgentTasksConfig().
@@ -27,6 +29,7 @@ class SearchPlanEnhancerConfig(BaseComponentConfig, LanguageConfig):
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы SearchPlanEnhancer-класса. Значение по умолчанию 'medreasn_planenh_main_stage_cache'.
     :type cache_table_name: str, optional
     """
+    plan_enhancment: bool = True
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     agent_tasks_config: Union[SearchPlanEnhancerAgentTasksConfig, Dict] = field(default_factory=lambda: SearchPlanEnhancerAgentTasksConfig())
 
@@ -34,7 +37,7 @@ class SearchPlanEnhancerConfig(BaseComponentConfig, LanguageConfig):
     log_path: str = PLANENH_MAIN_LOG_PATH
 
     def to_str(self):
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{self.plan_enhancment}"
 
     @staticmethod
     def from_dict(dict_config: Dict):
@@ -136,7 +139,7 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
                 enhanced_search_plan = deepcopy(search_plan)
                 enhanced_search_plan.search_steps = new_search_steps
                 enhanced_search_plan.steps_answers = []
-        else:
+        elif self.config.plan_enhancment:
             self.log.debug("Выполняем проверку на необходимость улучшения следующих шагов поиска в плане...", verbose=self.verbose, log_level=self.log_level)
             need_enhance, status, trace = self.tasks_solvers.enhance_classify_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=search_plan.base_query,
@@ -163,6 +166,9 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
                 else:
                     self.log.debug("Улучшение шагов поиска не требуется...", verbose=self.verbose, log_level=self.log_level)
                     enhanced_search_plan = deepcopy(search_plan)
+        else:
+            self.log.debug("Оператор корректировки существующего плана поиска выключен. Возвращается исходный план.", verbose=self.verbose, log_level=self.log_level)
+            enhanced_search_plan = deepcopy(search_plan)
 
         rinfo.status = status
         self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)

@@ -72,7 +72,7 @@ class LightRAGQAOperations(GraphRAGQAOperations, LightRAGBuildOperations):
 
         self.config = memory_config
         self.qa_config = qa_config
-        self.method_params = QueryParam(mode="hybrid")
+        self.method_params = QueryParam(mode="mix", response_type="Single Paragraph")
 
     @staticmethod
     def prepare_qaeval_env_params(conn_params: Dict, env_params: Dict) -> List[Dict[str,str]]:

@@ -10,9 +10,9 @@ WEAK_KG_RETRIEVER_CONFIG = KnowledgeRetrieverConfig(
     retriever_config=MixturedGraphSearchConfig(
         retriever1_name='beamsearch',
         retriever1_config=GraphBeamSearchConfig(
-            max_depth=2,
-            max_paths=20,
+            max_depth=5,
+            max_paths=10,
         ),
-        accepted_node_types=[NodeType.hyper, NodeType.episodic, NodeType.time]
+        accepted_node_types=[NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time]
     )
 )

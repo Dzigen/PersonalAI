@@ -100,6 +100,7 @@ class KnowledgeGraphReasoner(CacheUtils, AbstractKGReasoner, CacheOperations, Ag
         :return: Кортеж из трёх объектов: (1) cгенерированный ответ; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
         :rtype: Tuple[str, ReturnInfo, CompositeModuleResult]
         """
+        self.log.debug("QUERY: %s", query, verbose=self.verbose, log_level=self.log_level)
         answer, rinfo, trace = self.stages.reasoner.perform(query)
         self.log.debug("RESULT: %s", answer, verbose=self.verbose, log_level=self.log_level)
         self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)

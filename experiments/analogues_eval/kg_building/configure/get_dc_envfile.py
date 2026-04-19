@@ -48,7 +48,7 @@ llmagents_cnt_variables = {
     'OLLAMA_CNTNAME': ADDITIONAL_DC_PARAMS['ollama_cntname'],
     'OLLAMA_HOST': ADDITIONAL_DC_PARAMS['ollama_host'],
 
-    'OLLAMA_EXTERNAL_PORT': KGHYPERP_PARAMS['METHOD_CONFIG']['agent_config']['ext_params'].get('port', 11437),
+    'OLLAMA_EXTERNAL_PORT': KGHYPERP_PARAMS['METHOD_CONFIG']['agent_config']['credentials'].get('port', 11437),
     'OLLAMA_DEVICE_ID': KGCONN_PARAMS['GPUS_CONFIG']['ollama_device_id'],
 
     'OLLAMA_LOCAL_VOLUME': KGENV_PARAMS['OLLAMA_MODELS_PATH']
