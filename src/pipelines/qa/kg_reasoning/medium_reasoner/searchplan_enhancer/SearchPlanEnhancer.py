@@ -169,6 +169,7 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             self.log.debug("Оператор корректировки существующего плана поиска выключен. Возвращается исходный план.", verbose=self.verbose, log_level=self.log_level)
             enhanced_search_plan = deepcopy(search_plan)
+            status = ReturnStatus.success
 
         rinfo.status = status
         self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)

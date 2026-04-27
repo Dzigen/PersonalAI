@@ -13,7 +13,7 @@ from .utils import MediumKGReasonerStages
 from .config import MDGR_MAIN_LOG_PATH, CONTINUE_SEARCH_MESSAGE, ANSWER_IS_GENERATED_MESSAGE, MEDIUM_KG_RETRIEVER_CONFIG
 from ..utils import AbstractKGReasoner, BaseKGReasonerConfig
 from ..weak_reasoner.knowledge_retriever import KnowledgeRetrieverConfig, KnowledgeRetriever
-from .....utils.data_structs import create_id, QueryInfo, SearchPlanInfo, BaseComponentConfig, LanguageConfig, NodeInfo
+from .....utils.data_structs import create_id, QueryInfo, SearchPlanInfo, BaseComponentConfig, LanguageConfig, NodeInfo, TripletCreator
 from .....utils import Logger, ReturnInfo, ReturnStatus, update_rinfo, accumulate_stage_info, \
     CompositeModuleDetailedResult, ModuleType, CompositeModuleResult
 from .....utils.cache_kv import CacheUtils
@@ -248,7 +248,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
                 self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
                 self.log.debug("RESULT: %d", len(retrieved_triplets), verbose=self.verbose, log_level=self.log_level)
                 for triplet in retrieved_triplets:
-                    self.log.debug("* [%s | %s] %s", triplet.id, triplet.relation.type, triplet.stringified, verbose=self.verbose, log_level=self.log_level)
+                    self.log.debug("* [%s | %s] %s", triplet.id, triplet.relation.type, TripletCreator.stringify(triplet)[1], verbose=self.verbose, log_level=self.log_level)
             else:
                 self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
                 break
