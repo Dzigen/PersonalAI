@@ -130,7 +130,8 @@ def compute_stats(numbers: List[int]) -> Dict[str, float]:
             'mean': round(float(np.mean(numbers)),5),
             'std': round(float(np.std(numbers)),5),
             'min': round(min(numbers),5),
-            'max': round(max(numbers),5)}
+            'max': round(max(numbers),5),
+            'count': len(numbers)}
 
 def calculate_dataset_stats(qapairs_df: pd.DataFrame, relevant_documents_df: pd.DataFrame) -> Dict:
     statistics = {
@@ -178,3 +179,45 @@ def check_dataset_consistency(
         assert set(expected_relevant_documents) == set(real_relevant_documents)
 
     return True
+
+
+def calculate_original_dataset_stats(dataset: object, custom_funcs: Dict[str, object]) -> Dict:
+    # количество вопросов
+    #    - с дублирование и без
+    #    - статистика по длине (в символах)
+    # количество ответов
+    #    - с дублирование и без
+    #    - статистика по длине (в символах)
+    # количество контекстов
+    #    - с дублирование и без
+    #    - статистика по длине (в символах)
+    #    - количество контекстов на вопрос
+
+    answers: List[str] = []
+    questions: List[str] = []
+    documents: List[Tuple[Union[str, None], str]] = []
+    docs_per_question: List[int] = []
+
+    for idx in tqdm(range(custom_funcs['get_dataset_len'](dataset))):
+        question, _, answer, relevant_documents = custom_funcs['get_qa_info'](dataset, idx)
+        tmp_documents = custom_funcs['get_question_documents'](dataset, idx)
+
+        answers.append(answer)
+        questions.append(question)
+        documents += tmp_documents
+        docs_per_question.append(len(relevant_documents))
+
+    print("Questions (with duplications):")
+    print(compute_stats(list(map(lambda v: len(v), questions))))
+    print("Questions (w/o duplications):")
+    print(compute_stats(list(map(lambda v: len(v), list(set(questions))))))
+
+    print("Answers (with duplications):")
+    print(compute_stats(list(map(lambda v: len(v), answers))))
+    print("Answers (w/o duplications):")
+    print(compute_stats(list(map(lambda v: len(v), list(set(answers))))))
+
+    print("Documents (with duplications): ", len(documents))
+    print("Documents (w/o duplications): ", len(set(documents)))
+    print("Documents per questions: ")
+    print(compute_stats(docs_per_question))
