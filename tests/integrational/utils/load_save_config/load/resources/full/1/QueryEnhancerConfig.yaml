@@ -1,0 +1,10 @@
+lang: auto
+log_path: log/qa/query_preprocessing/enhancing/main
+verbose: false
+log_level: 10
+agent_gen_stategy: null
+agent_tasks_config:
+  qexpan: v2
+  termscheck: v2
+  lingcheck: v1
+cache_table_name: qp_enhancing_stage_cache

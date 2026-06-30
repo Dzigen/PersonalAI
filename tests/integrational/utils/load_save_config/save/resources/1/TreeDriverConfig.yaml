@@ -1,0 +1,18 @@
+db_vendor: kuzu
+db_config:
+  db_info:
+    db: DefaultPersonalAITreeDB
+    table: DefaultPersonalAITreeTable
+  params:
+    path: ./personalai_tmp/volumes/kuzu_tree
+    buffer_pool_size: 1073741824
+    table_type_map:
+      nodes:
+        forward:
+          root: root
+          leaf: leaf
+          summarized: summarized
+  need_to_clear: false
+  create_index: false
+  host: null
+  port: null

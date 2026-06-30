@@ -1,0 +1,8 @@
+lang: auto
+log_path: log/qa/answers_aggregation/main
+verbose: false
+log_level: 10
+agent_gen_stategy: null
+agent_tasks_config:
+  suba_summarisation: v2
+cache_table_name: answers_aggregation_main_stage_cache

@@ -1,0 +1,22 @@
+log_path: log/qa/kg_reasoner/weak/knowledge_retriever/beamsearch_retriever
+verbose: false
+log_level: 10
+accepted_node_types:
+- object
+- hyper
+- episodic
+reranker_driver_config:
+  name: single_step
+  strategy_config:
+    vdb_name: dense_triplets
+    fetch_n: 25
+    threshold: 0.5
+vdbname_for_scores: dense_triplets
+max_depth: 3
+max_paths: 18
+same_path_intersection_by_node: false
+diff_paths_intersection_by_node: false
+diff_paths_intersection_by_rel: false
+mean_alpha: 0.75
+final_sorting_mode: mixed
+cache_table_name: qa_beamsearch_t_retriever_cache

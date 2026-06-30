@@ -1,0 +1,15 @@
+log_path: log/qa/kg_reasoner/weak/knowledge_retriever/astar_retriever
+verbose: false
+log_level: 10
+accepted_node_types:
+- object
+- hyper
+- episodic
+metrics_config:
+  h_metric_name: ip
+  nodes_vdb_name: dense_nodes
+max_depth: 5
+max_passed_nodes: 50
+max_adjanced_nodes: 25
+adjacent_nodes_filter_node: end_node
+cache_table_name: qa_astar_t_retriever_cache

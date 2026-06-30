@@ -1,0 +1,1584 @@
+@startuml packages
+set namespaceSeparator none
+package "src" as src {
+}
+package "src.TextIdStore" as src.TextIdStore {
+}
+package "src.agents" as src.agents {
+}
+package "src.agents.AgentDriver" as src.agents.AgentDriver {
+}
+package "src.agents.configs" as src.agents.configs {
+}
+package "src.agents.connectors" as src.agents.connectors {
+}
+package "src.agents.connectors.GigaChatConnector" as src.agents.connectors.GigaChatConnector {
+}
+package "src.agents.connectors.LocalAgentConnector" as src.agents.connectors.LocalAgentConnector {
+}
+package "src.agents.connectors.OLlamaConnector" as src.agents.connectors.OLlamaConnector {
+}
+package "src.agents.connectors.OpenAIConnector" as src.agents.connectors.OpenAIConnector {
+}
+package "src.agents.connectors.StubAgentConnector" as src.agents.connectors.StubAgentConnector {
+}
+package "src.agents.connectors.configs" as src.agents.connectors.configs {
+}
+package "src.agents.utils" as src.agents.utils {
+}
+package "src.config" as src.config {
+}
+package "src.db_drivers" as src.db_drivers {
+}
+package "src.db_drivers.graph_driver" as src.db_drivers.graph_driver {
+}
+package "src.db_drivers.graph_driver.GraphDriver" as src.db_drivers.graph_driver.GraphDriver {
+}
+package "src.db_drivers.graph_driver.configs" as src.db_drivers.graph_driver.configs {
+}
+package "src.db_drivers.graph_driver.connectors" as src.db_drivers.graph_driver.connectors {
+}
+package "src.db_drivers.graph_driver.connectors.BlazeGraphConnector" as src.db_drivers.graph_driver.connectors.BlazeGraphConnector {
+}
+package "src.db_drivers.graph_driver.connectors.FalkorDBGraphConnector" as src.db_drivers.graph_driver.connectors.FalkorDBGraphConnector {
+}
+package "src.db_drivers.graph_driver.connectors.InMemoryGraphConnector" as src.db_drivers.graph_driver.connectors.InMemoryGraphConnector {
+}
+package "src.db_drivers.graph_driver.connectors.KuzuGraphConnector" as src.db_drivers.graph_driver.connectors.KuzuGraphConnector {
+}
+package "src.db_drivers.graph_driver.connectors.Neo4jGraphConnector" as src.db_drivers.graph_driver.connectors.Neo4jGraphConnector {
+}
+package "src.db_drivers.graph_driver.connectors.configs" as src.db_drivers.graph_driver.connectors.configs {
+}
+package "src.db_drivers.graph_driver.utils" as src.db_drivers.graph_driver.utils {
+}
+package "src.db_drivers.kv_driver" as src.db_drivers.kv_driver {
+}
+package "src.db_drivers.kv_driver.KeyValueDriver" as src.db_drivers.kv_driver.KeyValueDriver {
+}
+package "src.db_drivers.kv_driver.configs" as src.db_drivers.kv_driver.configs {
+}
+package "src.db_drivers.kv_driver.connectors" as src.db_drivers.kv_driver.connectors {
+}
+package "src.db_drivers.kv_driver.connectors.AerospikeConnector" as src.db_drivers.kv_driver.connectors.AerospikeConnector {
+}
+package "src.db_drivers.kv_driver.connectors.InMemoryKVConnector" as src.db_drivers.kv_driver.connectors.InMemoryKVConnector {
+}
+package "src.db_drivers.kv_driver.connectors.MixedConnector" as src.db_drivers.kv_driver.connectors.MixedConnector {
+}
+package "src.db_drivers.kv_driver.connectors.MongoConnector" as src.db_drivers.kv_driver.connectors.MongoConnector {
+}
+package "src.db_drivers.kv_driver.connectors.RedisConnector" as src.db_drivers.kv_driver.connectors.RedisConnector {
+}
+package "src.db_drivers.kv_driver.connectors.configs" as src.db_drivers.kv_driver.connectors.configs {
+}
+package "src.db_drivers.kv_driver.utils" as src.db_drivers.kv_driver.utils {
+}
+package "src.db_drivers.table_driver" as src.db_drivers.table_driver {
+}
+package "src.db_drivers.table_driver.TableDriver" as src.db_drivers.table_driver.TableDriver {
+}
+package "src.db_drivers.table_driver.configs" as src.db_drivers.table_driver.configs {
+}
+package "src.db_drivers.table_driver.connectors" as src.db_drivers.table_driver.connectors {
+}
+package "src.db_drivers.table_driver.connectors.InMemoryTableConnector" as src.db_drivers.table_driver.connectors.InMemoryTableConnector {
+}
+package "src.db_drivers.table_driver.connectors.MongoTableConnector" as src.db_drivers.table_driver.connectors.MongoTableConnector {
+}
+package "src.db_drivers.table_driver.connectors.MySQLTableConnector" as src.db_drivers.table_driver.connectors.MySQLTableConnector {
+}
+package "src.db_drivers.table_driver.connectors.PostgreSQLTableConnector" as src.db_drivers.table_driver.connectors.PostgreSQLTableConnector {
+}
+package "src.db_drivers.table_driver.connectors.SQLite3TableConnector" as src.db_drivers.table_driver.connectors.SQLite3TableConnector {
+}
+package "src.db_drivers.table_driver.connectors.configs" as src.db_drivers.table_driver.connectors.configs {
+}
+package "src.db_drivers.table_driver.utils" as src.db_drivers.table_driver.utils {
+}
+package "src.db_drivers.tree_driver" as src.db_drivers.tree_driver {
+}
+package "src.db_drivers.tree_driver.TreeDriver" as src.db_drivers.tree_driver.TreeDriver {
+}
+package "src.db_drivers.tree_driver.configs" as src.db_drivers.tree_driver.configs {
+}
+package "src.db_drivers.tree_driver.connectors" as src.db_drivers.tree_driver.connectors {
+}
+package "src.db_drivers.tree_driver.connectors.KuzuTreeConnector" as src.db_drivers.tree_driver.connectors.KuzuTreeConnector {
+}
+package "src.db_drivers.tree_driver.connectors.Neo4jTreeConnector" as src.db_drivers.tree_driver.connectors.Neo4jTreeConnector {
+}
+package "src.db_drivers.tree_driver.connectors.configs" as src.db_drivers.tree_driver.connectors.configs {
+}
+package "src.db_drivers.tree_driver.utils" as src.db_drivers.tree_driver.utils {
+}
+package "src.db_drivers.utils" as src.db_drivers.utils {
+}
+package "src.db_drivers.vector_driver" as src.db_drivers.vector_driver {
+}
+package "src.db_drivers.vector_driver.VectorComposer" as src.db_drivers.vector_driver.VectorComposer {
+}
+package "src.db_drivers.vector_driver.VectorDriver" as src.db_drivers.vector_driver.VectorDriver {
+}
+package "src.db_drivers.vector_driver.configs" as src.db_drivers.vector_driver.configs {
+}
+package "src.db_drivers.vector_driver.connectors" as src.db_drivers.vector_driver.connectors {
+}
+package "src.db_drivers.vector_driver.connectors.dense" as src.db_drivers.vector_driver.connectors.dense {
+}
+package "src.db_drivers.vector_driver.connectors.dense.ChromaVectorConnector" as src.db_drivers.vector_driver.connectors.dense.ChromaVectorConnector {
+}
+package "src.db_drivers.vector_driver.connectors.dense.ElasticSearchVectorConnector" as src.db_drivers.vector_driver.connectors.dense.ElasticSearchVectorConnector {
+}
+package "src.db_drivers.vector_driver.connectors.dense.InMemoryVectorConnector" as src.db_drivers.vector_driver.connectors.dense.InMemoryVectorConnector {
+}
+package "src.db_drivers.vector_driver.connectors.dense.MilvusVectorConnector" as src.db_drivers.vector_driver.connectors.dense.MilvusVectorConnector {
+}
+package "src.db_drivers.vector_driver.connectors.dense.OpenSearchVectorConnector" as src.db_drivers.vector_driver.connectors.dense.OpenSearchVectorConnector {
+}
+package "src.db_drivers.vector_driver.connectors.dense.QdrantVectorConnector" as src.db_drivers.vector_driver.connectors.dense.QdrantVectorConnector {
+}
+package "src.db_drivers.vector_driver.connectors.dense.WeaviateVectorConnector" as src.db_drivers.vector_driver.connectors.dense.WeaviateVectorConnector {
+}
+package "src.db_drivers.vector_driver.connectors.dense.configs" as src.db_drivers.vector_driver.connectors.dense.configs {
+}
+package "src.db_drivers.vector_driver.connectors.sparse" as src.db_drivers.vector_driver.connectors.sparse {
+}
+package "src.db_drivers.vector_driver.connectors.sparse.ElasticSearchBM25Connector" as src.db_drivers.vector_driver.connectors.sparse.ElasticSearchBM25Connector {
+}
+package "src.db_drivers.vector_driver.connectors.sparse.InMemoryBM25Connector" as src.db_drivers.vector_driver.connectors.sparse.InMemoryBM25Connector {
+}
+package "src.db_drivers.vector_driver.connectors.sparse.OpenSeachBM25Connector" as src.db_drivers.vector_driver.connectors.sparse.OpenSeachBM25Connector {
+}
+package "src.db_drivers.vector_driver.connectors.sparse.WeaviateBM25Connector" as src.db_drivers.vector_driver.connectors.sparse.WeaviateBM25Connector {
+}
+package "src.db_drivers.vector_driver.connectors.sparse.configs" as src.db_drivers.vector_driver.connectors.sparse.configs {
+}
+package "src.db_drivers.vector_driver.embedders" as src.db_drivers.vector_driver.embedders {
+}
+package "src.db_drivers.vector_driver.utils" as src.db_drivers.vector_driver.utils {
+}
+package "src.kg_model" as src.kg_model {
+}
+package "src.kg_model.KnowledgeGraphModel" as src.kg_model.KnowledgeGraphModel {
+}
+package "src.kg_model.config" as src.kg_model.config {
+}
+package "src.kg_model.embeddings_model" as src.kg_model.embeddings_model {
+}
+package "src.kg_model.embeddings_model.EmbeddingsModel" as src.kg_model.embeddings_model.EmbeddingsModel {
+}
+package "src.kg_model.embeddings_model.config" as src.kg_model.embeddings_model.config {
+}
+package "src.kg_model.graph_model" as src.kg_model.graph_model {
+}
+package "src.kg_model.graph_model.GraphModel" as src.kg_model.graph_model.GraphModel {
+}
+package "src.kg_model.graph_model.config" as src.kg_model.graph_model.config {
+}
+package "src.kg_model.nodestree_model" as src.kg_model.nodestree_model {
+}
+package "src.kg_model.nodestree_model.NodesTreeModel" as src.kg_model.nodestree_model.NodesTreeModel {
+}
+package "src.kg_model.nodestree_model.agent_tasks" as src.kg_model.nodestree_model.agent_tasks {
+}
+package "src.kg_model.nodestree_model.agent_tasks.nodes_summarization" as src.kg_model.nodestree_model.agent_tasks.nodes_summarization {
+}
+package "src.kg_model.nodestree_model.agent_tasks.nodes_summarization.general_parsers" as src.kg_model.nodestree_model.agent_tasks.nodes_summarization.general_parsers {
+}
+package "src.kg_model.nodestree_model.agent_tasks.nodes_summarization.selector" as src.kg_model.nodestree_model.agent_tasks.nodes_summarization.selector {
+}
+package "src.kg_model.nodestree_model.agent_tasks.nodes_summarization.v1" as src.kg_model.nodestree_model.agent_tasks.nodes_summarization.v1 {
+}
+package "src.kg_model.nodestree_model.agent_tasks.nodes_summarization.v1.parsers" as src.kg_model.nodestree_model.agent_tasks.nodes_summarization.v1.parsers {
+}
+package "src.kg_model.nodestree_model.agent_tasks.nodes_summarization.v1.prompts" as src.kg_model.nodestree_model.agent_tasks.nodes_summarization.v1.prompts {
+}
+package "src.kg_model.nodestree_model.agent_tasks.nodes_summarization.v1.suite" as src.kg_model.nodestree_model.agent_tasks.nodes_summarization.v1.suite {
+}
+package "src.kg_model.nodestree_model.config" as src.kg_model.nodestree_model.config {
+}
+package "src.kg_model.nodestree_model.utils" as src.kg_model.nodestree_model.utils {
+}
+package "src.kg_model.utils" as src.kg_model.utils {
+}
+package "src.main" as src.main {
+}
+package "src.pipelines" as src.pipelines {
+}
+package "src.pipelines.memorize" as src.pipelines.memorize {
+}
+package "src.pipelines.memorize.MemPipeline" as src.pipelines.memorize.MemPipeline {
+}
+package "src.pipelines.memorize.configs" as src.pipelines.memorize.configs {
+}
+package "src.pipelines.memorize.extractor" as src.pipelines.memorize.extractor {
+}
+package "src.pipelines.memorize.extractor.LLMExtractor" as src.pipelines.memorize.extractor.LLMExtractor {
+}
+package "src.pipelines.memorize.extractor.agent_tasks" as src.pipelines.memorize.extractor.agent_tasks {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.thesis_extraction" as src.pipelines.memorize.extractor.agent_tasks.thesis_extraction {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.general_parsers" as src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.general_parsers {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.selector" as src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.selector {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v1" as src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v1 {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v1.parsers" as src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v1.parsers {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v1.prompts" as src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v1.prompts {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v1.suite" as src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v1.suite {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v2" as src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v2 {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v2.parsers" as src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v2.parsers {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v2.prompts" as src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v2.prompts {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v2.suite" as src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v2.suite {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.triplet_extraction" as src.pipelines.memorize.extractor.agent_tasks.triplet_extraction {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.general_parsers" as src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.general_parsers {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.selector" as src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.selector {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v1" as src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v1 {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v1.parsers" as src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v1.parsers {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v1.prompts" as src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v1.prompts {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v1.suite" as src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v1.suite {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v2" as src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v2 {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v2.parsers" as src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v2.parsers {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v2.prompts" as src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v2.prompts {
+}
+package "src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v2.suite" as src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v2.suite {
+}
+package "src.pipelines.memorize.extractor.config" as src.pipelines.memorize.extractor.config {
+}
+package "src.pipelines.memorize.extractor.utils" as src.pipelines.memorize.extractor.utils {
+}
+package "src.pipelines.memorize.updator" as src.pipelines.memorize.updator {
+}
+package "src.pipelines.memorize.updator.LLMUpdator" as src.pipelines.memorize.updator.LLMUpdator {
+}
+package "src.pipelines.memorize.updator.agent_tasks" as src.pipelines.memorize.updator.agent_tasks {
+}
+package "src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets" as src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets {
+}
+package "src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.general_parsers" as src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.general_parsers {
+}
+package "src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.selector" as src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.selector {
+}
+package "src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.v1" as src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.v1 {
+}
+package "src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.v1.parsers" as src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.v1.parsers {
+}
+package "src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.v1.prompts" as src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.v1.prompts {
+}
+package "src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.v1.suite" as src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.v1.suite {
+}
+package "src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets" as src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets {
+}
+package "src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.general_parsers" as src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.general_parsers {
+}
+package "src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.selector" as src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.selector {
+}
+package "src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.v1" as src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.v1 {
+}
+package "src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.v1.parsers" as src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.v1.parsers {
+}
+package "src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.v1.prompts" as src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.v1.prompts {
+}
+package "src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.v1.suite" as src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.v1.suite {
+}
+package "src.pipelines.memorize.updator.config" as src.pipelines.memorize.updator.config {
+}
+package "src.pipelines.memorize.updator.utils" as src.pipelines.memorize.updator.utils {
+}
+package "src.pipelines.memorize.utils" as src.pipelines.memorize.utils {
+}
+package "src.pipelines.qa" as src.pipelines.qa {
+}
+package "src.pipelines.qa.QAPipeline" as src.pipelines.qa.QAPipeline {
+}
+package "src.pipelines.qa.answers_aggregation" as src.pipelines.qa.answers_aggregation {
+}
+package "src.pipelines.qa.answers_aggregation.AnswersAggregator" as src.pipelines.qa.answers_aggregation.AnswersAggregator {
+}
+package "src.pipelines.qa.answers_aggregation.config" as src.pipelines.qa.answers_aggregation.config {
+}
+package "src.pipelines.qa.answers_aggregation.utils" as src.pipelines.qa.answers_aggregation.utils {
+}
+package "src.pipelines.qa.configs" as src.pipelines.qa.configs {
+}
+package "src.pipelines.qa.kg_reasoning" as src.pipelines.qa.kg_reasoning {
+}
+package "src.pipelines.qa.kg_reasoning.KGReasoner" as src.pipelines.qa.kg_reasoning.KGReasoner {
+}
+package "src.pipelines.qa.kg_reasoning.config" as src.pipelines.qa.kg_reasoning.config {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner" as src.pipelines.qa.kg_reasoning.medium_reasoner {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner" as src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.AnswerGenerator" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.AnswerGenerator {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.general_parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.general_parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.selector" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.selector {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v1" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v1 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v1.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v1.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v1.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v1.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v1.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v1.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v2" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v2 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v2.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v2.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v2.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v2.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v2.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v2.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v3" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v3 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v3.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v3.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v3.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v3.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v3.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v3.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.general_parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.general_parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.selector" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.selector {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v1" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v1 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v1.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v1.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v1.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v1.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v1.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v1.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v2" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v2 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v2.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v2.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v2.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v2.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v2.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v2.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.config" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.config {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.utils" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.utils {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.ClueAnswerGenerator" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.ClueAnswerGenerator {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.general_parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.general_parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.selector" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.selector {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v1" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v1 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v1.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v1.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v1.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v1.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v1.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v1.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v2" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v2 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v2.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v2.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v2.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v2.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v2.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v2.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v3" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v3 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v3.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v3.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v3.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v3.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v3.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v3.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.config" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.config {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.utils" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.utils {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.ClueAnswersSummarizer" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.ClueAnswersSummarizer {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.general_parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.general_parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.selector" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.selector {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v1" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v1 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v1.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v1.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v1.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v1.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v1.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v1.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v2" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v2 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v2.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v2.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v2.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v2.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v2.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v2.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v3" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v3 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v3.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v3.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v3.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v3.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v3.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v3.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.config" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.config {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.utils" as src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.utils {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.ClueQueriesGenerator" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.ClueQueriesGenerator {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.general_parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.general_parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.selector" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.selector {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v1" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v1 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v1.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v1.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v1.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v1.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v1.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v1.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v2" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v2 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v2.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v2.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v2.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v2.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v2.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v2.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v3" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v3 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v3.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v3.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v3.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v3.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v3.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v3.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v4" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v4 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v4.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v4.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v4.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v4.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v4.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v4.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.config" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.config {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.utils" as src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.utils {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.config" as src.pipelines.qa.kg_reasoning.medium_reasoner.config {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching" as src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching.Entities2NodesMatcher" as src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching.Entities2NodesMatcher {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching.config" as src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching.config {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor" as src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.EntitiesExtractor" as src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.EntitiesExtractor {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks" as src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor" as src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.general_parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.general_parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.selector" as src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.selector {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.v1" as src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.v1 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.v1.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.v1.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.v1.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.v1.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.v1.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.v1.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.config" as src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.config {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.utils" as src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.utils {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.SearchPlanEnhancer" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.SearchPlanEnhancer {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.general_parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.general_parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.selector" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.selector {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v1" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v1 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v1.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v1.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v1.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v1.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v1.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v1.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v2" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v2 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v2.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v2.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v2.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v2.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v2.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v2.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.general_parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.general_parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.selector" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.selector {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v1" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v1 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v1.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v1.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v1.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v1.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v1.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v1.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v2" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v2 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v2.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v2.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v2.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v2.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v2.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v2.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.general_parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.general_parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.selector" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.selector {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v1" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v1 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v1.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v1.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v1.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v1.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v1.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v1.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v2" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v2 {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v2.parsers" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v2.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v2.prompts" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v2.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v2.suite" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v2.suite {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.config" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.config {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.utils" as src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.utils {
+}
+package "src.pipelines.qa.kg_reasoning.medium_reasoner.utils" as src.pipelines.qa.kg_reasoning.medium_reasoner.utils {
+}
+package "src.pipelines.qa.kg_reasoning.utils" as src.pipelines.qa.kg_reasoning.utils {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner" as src.pipelines.qa.kg_reasoning.weak_reasoner {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner" as src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.QALLMGenerator" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.QALLMGenerator {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.general_parsers" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.general_parsers {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.selector" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.selector {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v1" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v1 {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v1.parsers" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v1.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v1.prompts" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v1.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v1.suite" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v1.suite {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v2" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v2 {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v2.parsers" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v2.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v2.prompts" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v2.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v2.suite" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v2.suite {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v3" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v3 {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v3.parsers" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v3.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v3.prompts" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v3.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v3.suite" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v3.suite {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.configs" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.configs {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.utils" as src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.utils {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.config" as src.pipelines.qa.kg_reasoning.weak_reasoner.config {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator.KnowledgeComparator" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator.KnowledgeComparator {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator.configs" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator.configs {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.KnowledgeRetriever" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.KnowledgeRetriever {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.configs" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.configs {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.errors" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.errors {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods.TripletsFilter" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods.TripletsFilter {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods.configs" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods.configs {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.AStarTripletsRetriever" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.AStarTripletsRetriever {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.MixturedTripletsRetriever" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.MixturedTripletsRetriever {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveBFSTripletsRetriever" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveBFSTripletsRetriever {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveTripletsRetriever" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveTripletsRetriever {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.WaterCirclesTripletsRetriever" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.WaterCirclesTripletsRetriever {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.configs" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.configs {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.utils" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.utils {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser" as src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.QueryLLMParser" as src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.QueryLLMParser {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks" as src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction" as src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.general_parsers" as src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.general_parsers {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.selector" as src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.selector {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v1" as src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v1 {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v1.parsers" as src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v1.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v1.prompts" as src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v1.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v1.suite" as src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v1.suite {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v2" as src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v2 {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v2.parsers" as src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v2.parsers {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v2.prompts" as src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v2.prompts {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v2.suite" as src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v2.suite {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.configs" as src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.configs {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.utils" as src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.utils {
+}
+package "src.pipelines.qa.kg_reasoning.weak_reasoner.utils" as src.pipelines.qa.kg_reasoning.weak_reasoner.utils {
+}
+package "src.pipelines.qa.query_preprocessing" as src.pipelines.qa.query_preprocessing {
+}
+package "src.pipelines.qa.query_preprocessing.QueryPreprocessor" as src.pipelines.qa.query_preprocessing.QueryPreprocessor {
+}
+package "src.pipelines.qa.query_preprocessing.config" as src.pipelines.qa.query_preprocessing.config {
+}
+package "src.pipelines.qa.query_preprocessing.decomposition" as src.pipelines.qa.query_preprocessing.decomposition {
+}
+package "src.pipelines.qa.query_preprocessing.decomposition.QueryDecomposer" as src.pipelines.qa.query_preprocessing.decomposition.QueryDecomposer {
+}
+package "src.pipelines.qa.query_preprocessing.decomposition.config" as src.pipelines.qa.query_preprocessing.decomposition.config {
+}
+package "src.pipelines.qa.query_preprocessing.decomposition.utils" as src.pipelines.qa.query_preprocessing.decomposition.utils {
+}
+package "src.pipelines.qa.query_preprocessing.denoising" as src.pipelines.qa.query_preprocessing.denoising {
+}
+package "src.pipelines.qa.query_preprocessing.denoising.QueryDenoiser" as src.pipelines.qa.query_preprocessing.denoising.QueryDenoiser {
+}
+package "src.pipelines.qa.query_preprocessing.denoising.config" as src.pipelines.qa.query_preprocessing.denoising.config {
+}
+package "src.pipelines.qa.query_preprocessing.denoising.utils" as src.pipelines.qa.query_preprocessing.denoising.utils {
+}
+package "src.pipelines.qa.query_preprocessing.enhancing" as src.pipelines.qa.query_preprocessing.enhancing {
+}
+package "src.pipelines.qa.query_preprocessing.enhancing.QueryEnhancer" as src.pipelines.qa.query_preprocessing.enhancing.QueryEnhancer {
+}
+package "src.pipelines.qa.query_preprocessing.enhancing.config" as src.pipelines.qa.query_preprocessing.enhancing.config {
+}
+package "src.pipelines.qa.query_preprocessing.enhancing.utils" as src.pipelines.qa.query_preprocessing.enhancing.utils {
+}
+package "src.pipelines.qa.query_preprocessing.utils" as src.pipelines.qa.query_preprocessing.utils {
+}
+package "src.pipelines.qa.utils" as src.pipelines.qa.utils {
+}
+package "src.pipelines.utils" as src.pipelines.utils {
+}
+package "src.rerankers" as src.rerankers {
+}
+package "src.rerankers.RerankerDriver" as src.rerankers.RerankerDriver {
+}
+package "src.rerankers.configs" as src.rerankers.configs {
+}
+package "src.rerankers.filters" as src.rerankers.filters {
+}
+package "src.rerankers.filters.configs" as src.rerankers.filters.configs {
+}
+package "src.rerankers.filters.llm_filter" as src.rerankers.filters.llm_filter {
+}
+package "src.rerankers.filters.llm_filter.LLMFilter" as src.rerankers.filters.llm_filter.LLMFilter {
+}
+package "src.rerankers.filters.llm_filter.configs" as src.rerankers.filters.llm_filter.configs {
+}
+package "src.rerankers.filters.llm_filter.utils" as src.rerankers.filters.llm_filter.utils {
+}
+package "src.rerankers.methods" as src.rerankers.methods {
+}
+package "src.rerankers.methods.EnsembleFusionReranker" as src.rerankers.methods.EnsembleFusionReranker {
+}
+package "src.rerankers.methods.MultiStepReranker" as src.rerankers.methods.MultiStepReranker {
+}
+package "src.rerankers.methods.SingleStepReranker" as src.rerankers.methods.SingleStepReranker {
+}
+package "src.rerankers.methods.utils" as src.rerankers.methods.utils {
+}
+package "src.rerankers.utils" as src.rerankers.utils {
+}
+package "src.utils" as src.utils {
+}
+package "src.utils.agent_stat_analyzer" as src.utils.agent_stat_analyzer {
+}
+package "src.utils.agent_stat_analyzer.AgentStatAnalyzer" as src.utils.agent_stat_analyzer.AgentStatAnalyzer {
+}
+package "src.utils.agent_stat_analyzer.AgentStatOperations" as src.utils.agent_stat_analyzer.AgentStatOperations {
+}
+package "src.utils.agent_stat_analyzer.configs" as src.utils.agent_stat_analyzer.configs {
+}
+package "src.utils.agent_stat_analyzer.supported_dbvendors" as src.utils.agent_stat_analyzer.supported_dbvendors {
+}
+package "src.utils.agent_stat_analyzer.supported_dbvendors.InMemoryStatOperations" as src.utils.agent_stat_analyzer.supported_dbvendors.InMemoryStatOperations {
+}
+package "src.utils.agent_stat_analyzer.supported_dbvendors.MongoStatOperations" as src.utils.agent_stat_analyzer.supported_dbvendors.MongoStatOperations {
+}
+package "src.utils.agent_stat_analyzer.supported_dbvendors.MySQLStatOperations" as src.utils.agent_stat_analyzer.supported_dbvendors.MySQLStatOperations {
+}
+package "src.utils.agent_stat_analyzer.supported_dbvendors.PostgreSQLStatOperations" as src.utils.agent_stat_analyzer.supported_dbvendors.PostgreSQLStatOperations {
+}
+package "src.utils.agent_stat_analyzer.supported_dbvendors.SQLite3StatOperations" as src.utils.agent_stat_analyzer.supported_dbvendors.SQLite3StatOperations {
+}
+package "src.utils.agent_stat_analyzer.supported_dbvendors.configs" as src.utils.agent_stat_analyzer.supported_dbvendors.configs {
+}
+package "src.utils.agent_stat_analyzer.supported_dbvendors.utils" as src.utils.agent_stat_analyzer.supported_dbvendors.utils {
+}
+package "src.utils.agent_stat_analyzer.utils" as src.utils.agent_stat_analyzer.utils {
+}
+package "src.utils.cache_kv" as src.utils.cache_kv {
+}
+package "src.utils.cache_kv.CacheKV" as src.utils.cache_kv.CacheKV {
+}
+package "src.utils.cache_kv.CacheOperations" as src.utils.cache_kv.CacheOperations {
+}
+package "src.utils.cache_kv.CacheUtils" as src.utils.cache_kv.CacheUtils {
+}
+package "src.utils.cache_kv.config" as src.utils.cache_kv.config {
+}
+package "src.utils.cache_kv.utils" as src.utils.cache_kv.utils {
+}
+package "src.utils.data_structs" as src.utils.data_structs {
+}
+package "src.utils.errors" as src.utils.errors {
+}
+package "src.utils.language_detector" as src.utils.language_detector {
+}
+package "src.utils.logger" as src.utils.logger {
+}
+package "src.utils.task_solver" as src.utils.task_solver {
+}
+package "src.utils.tracing" as src.utils.tracing {
+}
+src --> src.kg_model
+src --> src.main
+src --> src.pipelines.memorize
+src --> src.pipelines.qa
+src.TextIdStore --> src.config
+src.TextIdStore --> src.db_drivers.kv_driver
+src.TextIdStore --> src.db_drivers.kv_driver.KeyValueDriver
+src.TextIdStore --> src.utils
+src.TextIdStore --> src.utils.data_structs
+src.agents --> src.agents.AgentDriver
+src.agents.AgentDriver --> src.agents.configs
+src.agents.AgentDriver --> src.agents.utils
+src.agents.AgentDriver --> src.agents.utils
+src.agents.configs --> src.agents.connectors
+src.agents.configs --> src.agents.connectors.GigaChatConnector
+src.agents.configs --> src.agents.connectors.LocalAgentConnector
+src.agents.configs --> src.agents.connectors.OLlamaConnector
+src.agents.configs --> src.agents.connectors.OpenAIConnector
+src.agents.configs --> src.agents.connectors.StubAgentConnector
+src.agents.configs --> src.agents.connectors.configs
+src.agents.configs --> src.agents.utils
+src.agents.connectors --> src.agents.connectors.GigaChatConnector
+src.agents.connectors --> src.agents.connectors.LocalAgentConnector
+src.agents.connectors --> src.agents.connectors.OLlamaConnector
+src.agents.connectors --> src.agents.connectors.OpenAIConnector
+src.agents.connectors --> src.agents.connectors.StubAgentConnector
+src.agents.connectors.GigaChatConnector --> src.agents.connectors.configs
+src.agents.connectors.LocalAgentConnector --> src.agents.connectors.configs
+src.agents.connectors.OLlamaConnector --> src.agents.connectors.configs
+src.agents.connectors.OpenAIConnector --> src.agents.connectors.configs
+src.agents.connectors.StubAgentConnector --> src.agents.connectors.configs
+src.config --> src.db_drivers.kv_driver
+src.db_drivers --> src.db_drivers.graph_driver
+src.db_drivers --> src.db_drivers.kv_driver
+src.db_drivers --> src.db_drivers.tree_driver
+src.db_drivers --> src.db_drivers.vector_driver
+src.db_drivers.graph_driver --> src.db_drivers.graph_driver.GraphDriver
+src.db_drivers.graph_driver --> src.db_drivers.utils
+src.db_drivers.graph_driver.GraphDriver --> src.db_drivers.graph_driver.configs
+src.db_drivers.graph_driver.GraphDriver --> src.db_drivers.graph_driver.utils
+src.db_drivers.graph_driver.GraphDriver --> src.db_drivers.graph_driver.utils
+src.db_drivers.graph_driver.configs --> src.db_drivers.graph_driver.connectors
+src.db_drivers.graph_driver.configs --> src.db_drivers.graph_driver.connectors.BlazeGraphConnector
+src.db_drivers.graph_driver.configs --> src.db_drivers.graph_driver.connectors.FalkorDBGraphConnector
+src.db_drivers.graph_driver.configs --> src.db_drivers.graph_driver.connectors.InMemoryGraphConnector
+src.db_drivers.graph_driver.configs --> src.db_drivers.graph_driver.connectors.KuzuGraphConnector
+src.db_drivers.graph_driver.configs --> src.db_drivers.graph_driver.connectors.Neo4jGraphConnector
+src.db_drivers.graph_driver.configs --> src.db_drivers.graph_driver.connectors.configs
+src.db_drivers.graph_driver.configs --> src.db_drivers.graph_driver.utils
+src.db_drivers.graph_driver.connectors --> src.db_drivers.graph_driver.connectors.BlazeGraphConnector
+src.db_drivers.graph_driver.connectors --> src.db_drivers.graph_driver.connectors.FalkorDBGraphConnector
+src.db_drivers.graph_driver.connectors --> src.db_drivers.graph_driver.connectors.InMemoryGraphConnector
+src.db_drivers.graph_driver.connectors --> src.db_drivers.graph_driver.connectors.KuzuGraphConnector
+src.db_drivers.graph_driver.connectors --> src.db_drivers.graph_driver.connectors.Neo4jGraphConnector
+src.db_drivers.graph_driver.connectors.BlazeGraphConnector --> src.db_drivers.graph_driver.connectors.configs
+src.db_drivers.graph_driver.connectors.FalkorDBGraphConnector --> src.db_drivers.graph_driver.connectors.configs
+src.db_drivers.graph_driver.connectors.InMemoryGraphConnector --> src.db_drivers.graph_driver.connectors.configs
+src.db_drivers.graph_driver.connectors.KuzuGraphConnector --> src.db_drivers.graph_driver.connectors.configs
+src.db_drivers.graph_driver.connectors.Neo4jGraphConnector --> src.db_drivers.graph_driver.connectors.configs
+src.db_drivers.graph_driver.utils --> src.db_drivers.graph_driver.utils
+src.db_drivers.kv_driver --> src.db_drivers.kv_driver.KeyValueDriver
+src.db_drivers.kv_driver --> src.db_drivers.utils
+src.db_drivers.kv_driver.KeyValueDriver --> src.db_drivers.kv_driver.configs
+src.db_drivers.kv_driver.KeyValueDriver --> src.db_drivers.kv_driver.utils
+src.db_drivers.kv_driver.KeyValueDriver --> src.db_drivers.kv_driver.utils
+src.db_drivers.kv_driver.configs --> src.db_drivers.kv_driver.connectors
+src.db_drivers.kv_driver.configs --> src.db_drivers.kv_driver.connectors.InMemoryKVConnector
+src.db_drivers.kv_driver.configs --> src.db_drivers.kv_driver.connectors.configs
+src.db_drivers.kv_driver.configs --> src.db_drivers.kv_driver.utils
+src.db_drivers.kv_driver.connectors --> src.db_drivers.kv_driver.connectors.InMemoryKVConnector
+src.db_drivers.kv_driver.connectors --> src.db_drivers.kv_driver.connectors.MixedConnector
+src.db_drivers.kv_driver.connectors --> src.db_drivers.kv_driver.connectors.MongoConnector
+src.db_drivers.kv_driver.connectors --> src.db_drivers.kv_driver.connectors.RedisConnector
+src.db_drivers.kv_driver.connectors.AerospikeConnector --> src.db_drivers.kv_driver.connectors.configs
+src.db_drivers.kv_driver.connectors.InMemoryKVConnector --> src.db_drivers.kv_driver.connectors.configs
+src.db_drivers.kv_driver.connectors.MixedConnector --> src.db_drivers.kv_driver.connectors.MongoConnector
+src.db_drivers.kv_driver.connectors.MixedConnector --> src.db_drivers.kv_driver.connectors.RedisConnector
+src.db_drivers.kv_driver.connectors.MixedConnector --> src.db_drivers.kv_driver.connectors.configs
+src.db_drivers.kv_driver.connectors.MongoConnector --> src.db_drivers.kv_driver.connectors.configs
+src.db_drivers.kv_driver.connectors.RedisConnector --> src.db_drivers.kv_driver.connectors.configs
+src.db_drivers.kv_driver.utils --> src.db_drivers.kv_driver.utils
+src.db_drivers.table_driver --> src.db_drivers.table_driver.TableDriver
+src.db_drivers.table_driver --> src.db_drivers.utils
+src.db_drivers.table_driver.TableDriver --> src.db_drivers.table_driver.configs
+src.db_drivers.table_driver.TableDriver --> src.db_drivers.table_driver.utils
+src.db_drivers.table_driver.TableDriver --> src.db_drivers.table_driver.utils
+src.db_drivers.table_driver.configs --> src.db_drivers.table_driver.connectors
+src.db_drivers.table_driver.configs --> src.db_drivers.table_driver.connectors.InMemoryTableConnector
+src.db_drivers.table_driver.configs --> src.db_drivers.table_driver.connectors.MongoTableConnector
+src.db_drivers.table_driver.configs --> src.db_drivers.table_driver.connectors.MySQLTableConnector
+src.db_drivers.table_driver.configs --> src.db_drivers.table_driver.connectors.PostgreSQLTableConnector
+src.db_drivers.table_driver.configs --> src.db_drivers.table_driver.connectors.SQLite3TableConnector
+src.db_drivers.table_driver.configs --> src.db_drivers.table_driver.connectors.configs
+src.db_drivers.table_driver.configs --> src.db_drivers.table_driver.utils
+src.db_drivers.table_driver.connectors --> src.db_drivers.table_driver.connectors.InMemoryTableConnector
+src.db_drivers.table_driver.connectors --> src.db_drivers.table_driver.connectors.MongoTableConnector
+src.db_drivers.table_driver.connectors --> src.db_drivers.table_driver.connectors.MySQLTableConnector
+src.db_drivers.table_driver.connectors --> src.db_drivers.table_driver.connectors.PostgreSQLTableConnector
+src.db_drivers.table_driver.connectors --> src.db_drivers.table_driver.connectors.SQLite3TableConnector
+src.db_drivers.table_driver.connectors.InMemoryTableConnector --> src.db_drivers.table_driver.connectors.configs
+src.db_drivers.table_driver.connectors.MongoTableConnector --> src.db_drivers.table_driver.connectors.configs
+src.db_drivers.table_driver.connectors.MySQLTableConnector --> src.db_drivers.table_driver.connectors.configs
+src.db_drivers.table_driver.connectors.PostgreSQLTableConnector --> src.db_drivers.table_driver.connectors.configs
+src.db_drivers.table_driver.connectors.SQLite3TableConnector --> src.db_drivers.table_driver.connectors.configs
+src.db_drivers.table_driver.utils --> src.db_drivers.table_driver.utils
+src.db_drivers.tree_driver --> src.db_drivers.tree_driver.TreeDriver
+src.db_drivers.tree_driver --> src.db_drivers.utils
+src.db_drivers.tree_driver.TreeDriver --> src.db_drivers.tree_driver.configs
+src.db_drivers.tree_driver.TreeDriver --> src.db_drivers.tree_driver.utils
+src.db_drivers.tree_driver.configs --> src.db_drivers.tree_driver.connectors
+src.db_drivers.tree_driver.configs --> src.db_drivers.tree_driver.connectors.KuzuTreeConnector
+src.db_drivers.tree_driver.configs --> src.db_drivers.tree_driver.connectors.Neo4jTreeConnector
+src.db_drivers.tree_driver.configs --> src.db_drivers.tree_driver.connectors.configs
+src.db_drivers.tree_driver.configs --> src.db_drivers.tree_driver.utils
+src.db_drivers.tree_driver.connectors --> src.db_drivers.tree_driver.connectors.KuzuTreeConnector
+src.db_drivers.tree_driver.connectors --> src.db_drivers.tree_driver.connectors.Neo4jTreeConnector
+src.db_drivers.tree_driver.connectors.KuzuTreeConnector --> src.db_drivers.tree_driver.connectors.configs
+src.db_drivers.tree_driver.connectors.Neo4jTreeConnector --> src.db_drivers.tree_driver.connectors.configs
+src.db_drivers.tree_driver.utils --> src.db_drivers.tree_driver.utils
+src.db_drivers.vector_driver --> src.db_drivers.utils
+src.db_drivers.vector_driver --> src.db_drivers.vector_driver.VectorComposer
+src.db_drivers.vector_driver --> src.db_drivers.vector_driver.VectorDriver
+src.db_drivers.vector_driver --> src.db_drivers.vector_driver.embedders
+src.db_drivers.vector_driver.VectorComposer --> src.db_drivers.vector_driver.VectorDriver
+src.db_drivers.vector_driver.VectorComposer --> src.db_drivers.vector_driver.embedders
+src.db_drivers.vector_driver.VectorComposer --> src.db_drivers.vector_driver.utils
+src.db_drivers.vector_driver.VectorComposer --> src.db_drivers.vector_driver.utils
+src.db_drivers.vector_driver.VectorDriver --> src.db_drivers.vector_driver.configs
+src.db_drivers.vector_driver.VectorDriver --> src.db_drivers.vector_driver.embedders
+src.db_drivers.vector_driver.VectorDriver --> src.db_drivers.vector_driver.utils
+src.db_drivers.vector_driver.configs --> src.db_drivers.vector_driver.connectors.dense
+src.db_drivers.vector_driver.configs --> src.db_drivers.vector_driver.connectors.dense.ElasticSearchVectorConnector
+src.db_drivers.vector_driver.configs --> src.db_drivers.vector_driver.connectors.dense.InMemoryVectorConnector
+src.db_drivers.vector_driver.configs --> src.db_drivers.vector_driver.connectors.dense.QdrantVectorConnector
+src.db_drivers.vector_driver.configs --> src.db_drivers.vector_driver.connectors.dense.WeaviateVectorConnector
+src.db_drivers.vector_driver.configs --> src.db_drivers.vector_driver.connectors.dense.configs
+src.db_drivers.vector_driver.configs --> src.db_drivers.vector_driver.connectors.sparse
+src.db_drivers.vector_driver.configs --> src.db_drivers.vector_driver.connectors.sparse.ElasticSearchBM25Connector
+src.db_drivers.vector_driver.configs --> src.db_drivers.vector_driver.connectors.sparse.InMemoryBM25Connector
+src.db_drivers.vector_driver.configs --> src.db_drivers.vector_driver.connectors.sparse.OpenSeachBM25Connector
+src.db_drivers.vector_driver.configs --> src.db_drivers.vector_driver.connectors.sparse.WeaviateBM25Connector
+src.db_drivers.vector_driver.configs --> src.db_drivers.vector_driver.connectors.sparse.configs
+src.db_drivers.vector_driver.configs --> src.db_drivers.vector_driver.utils
+src.db_drivers.vector_driver.connectors.dense --> src.db_drivers.vector_driver.connectors.dense.ChromaVectorConnector
+src.db_drivers.vector_driver.connectors.dense --> src.db_drivers.vector_driver.connectors.dense.ElasticSearchVectorConnector
+src.db_drivers.vector_driver.connectors.dense --> src.db_drivers.vector_driver.connectors.dense.InMemoryVectorConnector
+src.db_drivers.vector_driver.connectors.dense --> src.db_drivers.vector_driver.connectors.dense.OpenSearchVectorConnector
+src.db_drivers.vector_driver.connectors.dense --> src.db_drivers.vector_driver.connectors.dense.QdrantVectorConnector
+src.db_drivers.vector_driver.connectors.dense --> src.db_drivers.vector_driver.connectors.dense.WeaviateVectorConnector
+src.db_drivers.vector_driver.connectors.dense.ChromaVectorConnector --> src.db_drivers.vector_driver.connectors.dense.configs
+src.db_drivers.vector_driver.connectors.dense.ElasticSearchVectorConnector --> src.db_drivers.vector_driver.connectors.dense.configs
+src.db_drivers.vector_driver.connectors.dense.InMemoryVectorConnector --> src.db_drivers.vector_driver.connectors.dense.configs
+src.db_drivers.vector_driver.connectors.dense.MilvusVectorConnector --> src.db_drivers.vector_driver.connectors.dense.configs
+src.db_drivers.vector_driver.connectors.dense.OpenSearchVectorConnector --> src.db_drivers.vector_driver.connectors.dense.configs
+src.db_drivers.vector_driver.connectors.dense.QdrantVectorConnector --> src.db_drivers.vector_driver.connectors.dense.configs
+src.db_drivers.vector_driver.connectors.dense.WeaviateVectorConnector --> src.db_drivers.vector_driver.connectors.dense.configs
+src.db_drivers.vector_driver.connectors.sparse --> src.db_drivers.vector_driver.connectors.sparse.ElasticSearchBM25Connector
+src.db_drivers.vector_driver.connectors.sparse --> src.db_drivers.vector_driver.connectors.sparse.InMemoryBM25Connector
+src.db_drivers.vector_driver.connectors.sparse --> src.db_drivers.vector_driver.connectors.sparse.OpenSeachBM25Connector
+src.db_drivers.vector_driver.connectors.sparse --> src.db_drivers.vector_driver.connectors.sparse.WeaviateBM25Connector
+src.db_drivers.vector_driver.connectors.sparse.ElasticSearchBM25Connector --> src.db_drivers.vector_driver.connectors.sparse.configs
+src.db_drivers.vector_driver.connectors.sparse.InMemoryBM25Connector --> src.db_drivers.vector_driver.connectors.sparse.configs
+src.db_drivers.vector_driver.connectors.sparse.OpenSeachBM25Connector --> src.db_drivers.vector_driver.connectors.sparse.configs
+src.db_drivers.vector_driver.connectors.sparse.WeaviateBM25Connector --> src.db_drivers.vector_driver.connectors.sparse.configs
+src.db_drivers.vector_driver.embedders --> src.db_drivers.vector_driver.utils
+src.db_drivers.vector_driver.utils --> src.db_drivers.vector_driver.utils
+src.kg_model --> src.db_drivers.vector_driver.embedders
+src.kg_model --> src.kg_model.KnowledgeGraphModel
+src.kg_model --> src.kg_model.embeddings_model.EmbeddingsModel
+src.kg_model --> src.kg_model.graph_model.GraphModel
+src.kg_model.KnowledgeGraphModel --> src.kg_model.config
+src.kg_model.KnowledgeGraphModel --> src.kg_model.embeddings_model.EmbeddingsModel
+src.kg_model.KnowledgeGraphModel --> src.kg_model.graph_model.GraphModel
+src.kg_model.KnowledgeGraphModel --> src.kg_model.nodestree_model
+src.kg_model.KnowledgeGraphModel --> src.kg_model.nodestree_model.NodesTreeModel
+src.kg_model.KnowledgeGraphModel --> src.kg_model.utils
+src.kg_model.KnowledgeGraphModel --> src.kg_model.utils
+src.kg_model.config --> src.kg_model.utils
+src.kg_model.embeddings_model --> src.kg_model.embeddings_model.EmbeddingsModel
+src.kg_model.embeddings_model.EmbeddingsModel --> src.kg_model.embeddings_model.config
+src.kg_model.graph_model --> src.kg_model.graph_model.GraphModel
+src.kg_model.graph_model.GraphModel --> src.kg_model.graph_model.config
+src.kg_model.nodestree_model --> src.kg_model.nodestree_model.NodesTreeModel
+src.kg_model.nodestree_model.NodesTreeModel --> src.kg_model.nodestree_model.config
+src.kg_model.nodestree_model.NodesTreeModel --> src.kg_model.nodestree_model.utils
+src.kg_model.nodestree_model.NodesTreeModel --> src.kg_model.nodestree_model.utils
+src.kg_model.nodestree_model.agent_tasks.nodes_summarization --> src.kg_model.nodestree_model.agent_tasks.nodes_summarization.selector
+src.kg_model.nodestree_model.agent_tasks.nodes_summarization.selector --> src.kg_model.nodestree_model.agent_tasks.nodes_summarization.general_parsers
+src.kg_model.nodestree_model.agent_tasks.nodes_summarization.selector --> src.kg_model.nodestree_model.agent_tasks.nodes_summarization.v1
+src.kg_model.nodestree_model.agent_tasks.nodes_summarization.v1 --> src.kg_model.nodestree_model.agent_tasks.nodes_summarization.v1.suite
+src.kg_model.nodestree_model.agent_tasks.nodes_summarization.v1.suite --> src.kg_model.nodestree_model.agent_tasks.nodes_summarization.v1.parsers
+src.kg_model.nodestree_model.agent_tasks.nodes_summarization.v1.suite --> src.kg_model.nodestree_model.agent_tasks.nodes_summarization.v1.prompts
+src.kg_model.nodestree_model.config --> src.kg_model.nodestree_model.agent_tasks.nodes_summarization
+src.kg_model.nodestree_model.config --> src.kg_model.nodestree_model.utils
+src.kg_model.nodestree_model.utils --> src.kg_model.nodestree_model.config
+src.kg_model.nodestree_model.utils --> src.kg_model.nodestree_model.utils
+src.main --> src.TextIdStore
+src.main --> src.config
+src.main --> src.db_drivers.kv_driver
+src.main --> src.kg_model
+src.main --> src.kg_model.KnowledgeGraphModel
+src.main --> src.pipelines.memorize
+src.main --> src.pipelines.memorize.MemPipeline
+src.main --> src.pipelines.qa
+src.main --> src.pipelines.qa.QAPipeline
+src.main --> src.utils
+src.main --> src.utils.agent_stat_analyzer
+src.main --> src.utils.data_structs
+src.pipelines.memorize --> src.pipelines.memorize.MemPipeline
+src.pipelines.memorize --> src.pipelines.memorize.extractor
+src.pipelines.memorize --> src.pipelines.memorize.updator
+src.pipelines.memorize.MemPipeline --> src.pipelines.memorize.configs
+src.pipelines.memorize.MemPipeline --> src.pipelines.memorize.extractor
+src.pipelines.memorize.MemPipeline --> src.pipelines.memorize.extractor.LLMExtractor
+src.pipelines.memorize.MemPipeline --> src.pipelines.memorize.updator
+src.pipelines.memorize.MemPipeline --> src.pipelines.memorize.updator.LLMUpdator
+src.pipelines.memorize.MemPipeline --> src.pipelines.memorize.utils
+src.pipelines.memorize.MemPipeline --> src.pipelines.memorize.utils
+src.pipelines.memorize.extractor --> src.pipelines.memorize.extractor.LLMExtractor
+src.pipelines.memorize.extractor.LLMExtractor --> src.pipelines.memorize.extractor.config
+src.pipelines.memorize.extractor.LLMExtractor --> src.pipelines.memorize.extractor.utils
+src.pipelines.memorize.extractor.LLMExtractor --> src.pipelines.memorize.extractor.utils
+src.pipelines.memorize.extractor.agent_tasks.thesis_extraction --> src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.selector
+src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.selector --> src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.general_parsers
+src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.selector --> src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v1
+src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.selector --> src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v2
+src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v1 --> src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v1.suite
+src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v1.suite --> src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v1.parsers
+src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v1.suite --> src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v1.prompts
+src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v2 --> src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v2.suite
+src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v2.suite --> src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v2.parsers
+src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v2.suite --> src.pipelines.memorize.extractor.agent_tasks.thesis_extraction.v2.prompts
+src.pipelines.memorize.extractor.agent_tasks.triplet_extraction --> src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.selector
+src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.selector --> src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.general_parsers
+src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.selector --> src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v1
+src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.selector --> src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v2
+src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v1 --> src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v1.suite
+src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v1.suite --> src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v1.parsers
+src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v1.suite --> src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v1.prompts
+src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v2 --> src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v2.suite
+src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v2.suite --> src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v2.parsers
+src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v2.suite --> src.pipelines.memorize.extractor.agent_tasks.triplet_extraction.v2.prompts
+src.pipelines.memorize.extractor.config --> src.pipelines.memorize.extractor.agent_tasks.thesis_extraction
+src.pipelines.memorize.extractor.config --> src.pipelines.memorize.extractor.agent_tasks.triplet_extraction
+src.pipelines.memorize.extractor.config --> src.pipelines.memorize.extractor.utils
+src.pipelines.memorize.extractor.utils --> src.pipelines.memorize.extractor.config
+src.pipelines.memorize.extractor.utils --> src.pipelines.memorize.extractor.utils
+src.pipelines.memorize.updator --> src.pipelines.memorize.updator.LLMUpdator
+src.pipelines.memorize.updator.LLMUpdator --> src.pipelines.memorize.updator.config
+src.pipelines.memorize.updator.LLMUpdator --> src.pipelines.memorize.updator.utils
+src.pipelines.memorize.updator.LLMUpdator --> src.pipelines.memorize.updator.utils
+src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets --> src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.selector
+src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.selector --> src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.general_parsers
+src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.selector --> src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.v1
+src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.v1 --> src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.v1.suite
+src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.v1.suite --> src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.v1.parsers
+src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.v1.suite --> src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets.v1.prompts
+src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets --> src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.selector
+src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.selector --> src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.general_parsers
+src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.selector --> src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.v1
+src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.v1 --> src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.v1.suite
+src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.v1.suite --> src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.v1.parsers
+src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.v1.suite --> src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets.v1.prompts
+src.pipelines.memorize.updator.config --> src.pipelines.memorize.updator.agent_tasks.replace_simple_triplets
+src.pipelines.memorize.updator.config --> src.pipelines.memorize.updator.agent_tasks.replace_thesis_triplets
+src.pipelines.memorize.updator.config --> src.pipelines.memorize.updator.utils
+src.pipelines.memorize.updator.utils --> src.pipelines.memorize.updator.config
+src.pipelines.memorize.updator.utils --> src.pipelines.memorize.updator.utils
+src.pipelines.memorize.utils --> src.pipelines.memorize.extractor
+src.pipelines.memorize.utils --> src.pipelines.memorize.extractor.LLMExtractor
+src.pipelines.memorize.utils --> src.pipelines.memorize.updator
+src.pipelines.memorize.utils --> src.pipelines.memorize.updator.LLMUpdator
+src.pipelines.memorize.utils --> src.pipelines.memorize.utils
+src.pipelines.qa --> src.pipelines.qa.QAPipeline
+src.pipelines.qa.QAPipeline --> src.pipelines.qa.answers_aggregation
+src.pipelines.qa.QAPipeline --> src.pipelines.qa.answers_aggregation.AnswersAggregator
+src.pipelines.qa.QAPipeline --> src.pipelines.qa.configs
+src.pipelines.qa.QAPipeline --> src.pipelines.qa.kg_reasoning
+src.pipelines.qa.QAPipeline --> src.pipelines.qa.kg_reasoning.utils
+src.pipelines.qa.QAPipeline --> src.pipelines.qa.query_preprocessing
+src.pipelines.qa.QAPipeline --> src.pipelines.qa.query_preprocessing.QueryPreprocessor
+src.pipelines.qa.QAPipeline --> src.pipelines.qa.utils
+src.pipelines.qa.QAPipeline --> src.pipelines.qa.utils
+src.pipelines.qa.answers_aggregation --> src.pipelines.qa.answers_aggregation.AnswersAggregator
+src.pipelines.qa.answers_aggregation.AnswersAggregator --> src.pipelines.qa.answers_aggregation.config
+src.pipelines.qa.answers_aggregation.AnswersAggregator --> src.pipelines.qa.answers_aggregation.utils
+src.pipelines.qa.answers_aggregation.AnswersAggregator --> src.pipelines.qa.answers_aggregation.utils
+src.pipelines.qa.answers_aggregation.config --> src.pipelines.qa.answers_aggregation.utils
+src.pipelines.qa.answers_aggregation.utils --> src.pipelines.qa.answers_aggregation.config
+src.pipelines.qa.answers_aggregation.utils --> src.pipelines.qa.answers_aggregation.utils
+src.pipelines.qa.kg_reasoning --> src.pipelines.qa.kg_reasoning.KGReasoner
+src.pipelines.qa.kg_reasoning.KGReasoner --> src.pipelines.qa.kg_reasoning.config
+src.pipelines.qa.kg_reasoning.KGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner
+src.pipelines.qa.kg_reasoning.KGReasoner --> src.pipelines.qa.kg_reasoning.utils
+src.pipelines.qa.kg_reasoning.KGReasoner --> src.pipelines.qa.kg_reasoning.utils
+src.pipelines.qa.kg_reasoning.KGReasoner --> src.pipelines.qa.kg_reasoning.weak_reasoner
+src.pipelines.qa.kg_reasoning.config --> src.pipelines.qa.kg_reasoning.medium_reasoner
+src.pipelines.qa.kg_reasoning.config --> src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner
+src.pipelines.qa.kg_reasoning.config --> src.pipelines.qa.kg_reasoning.utils
+src.pipelines.qa.kg_reasoning.config --> src.pipelines.qa.kg_reasoning.weak_reasoner
+src.pipelines.qa.kg_reasoning.config --> src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner
+src.pipelines.qa.kg_reasoning.medium_reasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner
+src.pipelines.qa.kg_reasoning.medium_reasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator
+src.pipelines.qa.kg_reasoning.medium_reasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator
+src.pipelines.qa.kg_reasoning.medium_reasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation
+src.pipelines.qa.kg_reasoning.medium_reasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator
+src.pipelines.qa.kg_reasoning.medium_reasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching
+src.pipelines.qa.kg_reasoning.medium_reasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor
+src.pipelines.qa.kg_reasoning.medium_reasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer
+src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator
+src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.AnswerGenerator
+src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator
+src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.ClueAnswerGenerator
+src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation
+src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.ClueAnswersSummarizer
+src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator
+src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.ClueQueriesGenerator
+src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.config
+src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching
+src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching.Entities2NodesMatcher
+src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor
+src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.EntitiesExtractor
+src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer
+src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.SearchPlanEnhancer
+src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner --> src.pipelines.qa.kg_reasoning.medium_reasoner.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.AnswerGenerator
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.AnswerGenerator --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.config
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.AnswerGenerator --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.AnswerGenerator --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.selector
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.general_parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v1
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v2
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v3
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v1 --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v1.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v1.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v1.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v2 --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v2.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v2.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v2.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v2.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v2.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v3 --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v3.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v3.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v3.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v3.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator.v3.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.selector
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.general_parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v1
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v2
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v1 --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v1.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v1.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v1.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v2 --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v2.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v2.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v2.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v2.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier.v2.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.config --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_generator
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.config --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.agent_tasks.answer_trying_classifier
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.config --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.config
+src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.ClueAnswerGenerator
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.ClueAnswerGenerator --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.config
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.ClueAnswerGenerator --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.ClueAnswerGenerator --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.selector
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.general_parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v1
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v2
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v3
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v1 --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v1.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v1.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v1.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v2 --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v2.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v2.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v2.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v2.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v2.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v3 --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v3.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v3.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v3.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v3.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation.v3.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.config --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.agent_tasks.clueanswer_generation
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.config --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.config
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.ClueAnswersSummarizer
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.ClueAnswersSummarizer --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.config
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.ClueAnswersSummarizer --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.ClueAnswersSummarizer --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.selector
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.general_parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v1
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v2
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v3
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v1 --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v1.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v1.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v1.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v2 --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v2.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v2.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v2.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v2.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v2.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v3 --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v3.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v3.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v3.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v3.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation.v3.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.config --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.agent_tasks.answers_summarisation
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.config --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.config
+src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.ClueQueriesGenerator
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.ClueQueriesGenerator --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.config
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.ClueQueriesGenerator --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.ClueQueriesGenerator --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.selector
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.general_parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v1
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v2
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v3
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v4
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v1 --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v1.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v1.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v1.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v2 --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v2.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v2.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v2.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v2.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v2.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v3 --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v3.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v3.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v3.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v3.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v3.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v4 --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v4.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v4.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v4.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v4.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator.v4.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.config --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.agent_tasks.query_generator
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.config --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.config
+src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.config --> src.pipelines.qa.kg_reasoning.medium_reasoner.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching.Entities2NodesMatcher
+src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching.Entities2NodesMatcher --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching.config
+src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.EntitiesExtractor
+src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.EntitiesExtractor --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.config
+src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.EntitiesExtractor --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.EntitiesExtractor --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.selector
+src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.general_parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.v1
+src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.v1 --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.v1.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.v1.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor.v1.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.config --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.agent_tasks.entities_extractor
+src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.config --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.config
+src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.SearchPlanEnhancer
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.SearchPlanEnhancer --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.config
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.SearchPlanEnhancer --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.SearchPlanEnhancer --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.selector
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.general_parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v1
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v2
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v1 --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v1.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v1.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v1.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v2 --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v2.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v2.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v2.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v2.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier.v2.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.selector
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.general_parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v1
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v2
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v1 --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v1.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v1.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v1.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v2 --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v2.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v2.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v2.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v2.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer.v2.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.selector
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.general_parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v1
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.selector --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v2
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v1 --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v1.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v1.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v1.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v1.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v2 --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v2.suite
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v2.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v2.parsers
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v2.suite --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v2.prompts
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.config --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.enhance_classifier
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.config --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_enhancer
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.config --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.config --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.config
+src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.utils
+src.pipelines.qa.kg_reasoning.medium_reasoner.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator
+src.pipelines.qa.kg_reasoning.medium_reasoner.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.AnswerGenerator
+src.pipelines.qa.kg_reasoning.medium_reasoner.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator
+src.pipelines.qa.kg_reasoning.medium_reasoner.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.ClueAnswerGenerator
+src.pipelines.qa.kg_reasoning.medium_reasoner.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation
+src.pipelines.qa.kg_reasoning.medium_reasoner.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.ClueAnswersSummarizer
+src.pipelines.qa.kg_reasoning.medium_reasoner.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator
+src.pipelines.qa.kg_reasoning.medium_reasoner.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.ClueQueriesGenerator
+src.pipelines.qa.kg_reasoning.medium_reasoner.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching
+src.pipelines.qa.kg_reasoning.medium_reasoner.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching.Entities2NodesMatcher
+src.pipelines.qa.kg_reasoning.medium_reasoner.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor
+src.pipelines.qa.kg_reasoning.medium_reasoner.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.EntitiesExtractor
+src.pipelines.qa.kg_reasoning.medium_reasoner.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer
+src.pipelines.qa.kg_reasoning.medium_reasoner.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.SearchPlanEnhancer
+src.pipelines.qa.kg_reasoning.medium_reasoner.utils --> src.pipelines.qa.kg_reasoning.medium_reasoner.utils
+src.pipelines.qa.kg_reasoning.utils --> src.pipelines.qa.kg_reasoning.utils
+src.pipelines.qa.kg_reasoning.weak_reasoner --> src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner
+src.pipelines.qa.kg_reasoning.weak_reasoner --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator
+src.pipelines.qa.kg_reasoning.weak_reasoner --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator
+src.pipelines.qa.kg_reasoning.weak_reasoner --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever
+src.pipelines.qa.kg_reasoning.weak_reasoner --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser
+src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator
+src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.QALLMGenerator
+src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner --> src.pipelines.qa.kg_reasoning.weak_reasoner.config
+src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator
+src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator.KnowledgeComparator
+src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.KnowledgeRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser
+src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.QueryLLMParser
+src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner --> src.pipelines.qa.kg_reasoning.weak_reasoner.utils
+src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner --> src.pipelines.qa.kg_reasoning.weak_reasoner.utils
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.QALLMGenerator
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.QALLMGenerator --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.configs
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.QALLMGenerator --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.utils
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.QALLMGenerator --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.utils
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.selector
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.selector --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.general_parsers
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.selector --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v1
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.selector --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v2
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.selector --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v3
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v1 --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v1.suite
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v1.suite --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v1.parsers
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v1.suite --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v1.prompts
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v2 --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v2.suite
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v2.suite --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v2.parsers
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v2.suite --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v2.prompts
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v3 --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v3.suite
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v3.suite --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v3.parsers
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v3.suite --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag.v3.prompts
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.configs --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.agent_tasks.ag
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.configs --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.utils
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.utils --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.configs
+src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.utils --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.utils
+src.pipelines.qa.kg_reasoning.weak_reasoner.config --> src.pipelines.qa.kg_reasoning.weak_reasoner.utils
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator.KnowledgeComparator
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator.KnowledgeComparator --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator.configs
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.KnowledgeRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods.TripletsFilter
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.AStarTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.MixturedTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveBFSTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.WaterCirclesTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.KnowledgeRetriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.configs
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.KnowledgeRetriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods.TripletsFilter
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.KnowledgeRetriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.MixturedTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.KnowledgeRetriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.utils
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.KnowledgeRetriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.utils
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.configs --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.configs --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods.TripletsFilter
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.configs --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.configs --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.AStarTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.configs --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.configs --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.MixturedTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.configs --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveBFSTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.configs --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.configs --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.utils
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods.TripletsFilter
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods.TripletsFilter --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods.configs
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.AStarTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.MixturedTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveBFSTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.WaterCirclesTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.AStarTripletsRetriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.configs
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.configs
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.MixturedTripletsRetriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.AStarTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.MixturedTripletsRetriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.MixturedTripletsRetriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveBFSTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.MixturedTripletsRetriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.MixturedTripletsRetriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.WaterCirclesTripletsRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.MixturedTripletsRetriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.configs
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveBFSTripletsRetriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.configs
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveTripletsRetriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.configs
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.WaterCirclesTripletsRetriever --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.configs
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.utils --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.errors
+src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.utils --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.utils
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.QueryLLMParser
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.QueryLLMParser --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.configs
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.QueryLLMParser --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.utils
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.QueryLLMParser --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.utils
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.selector
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.selector --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.general_parsers
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.selector --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v1
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.selector --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v2
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v1 --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v1.suite
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v1.suite --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v1.parsers
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v1.suite --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v1.prompts
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v2 --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v2.suite
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v2.suite --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v2.parsers
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v2.suite --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction.v2.prompts
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.configs --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.agent_tasks.kw_extraction
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.configs --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.utils
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.utils --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.configs
+src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.utils --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.utils
+src.pipelines.qa.kg_reasoning.weak_reasoner.utils --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator
+src.pipelines.qa.kg_reasoning.weak_reasoner.utils --> src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.QALLMGenerator
+src.pipelines.qa.kg_reasoning.weak_reasoner.utils --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator
+src.pipelines.qa.kg_reasoning.weak_reasoner.utils --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator.KnowledgeComparator
+src.pipelines.qa.kg_reasoning.weak_reasoner.utils --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.utils --> src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.KnowledgeRetriever
+src.pipelines.qa.kg_reasoning.weak_reasoner.utils --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser
+src.pipelines.qa.kg_reasoning.weak_reasoner.utils --> src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.QueryLLMParser
+src.pipelines.qa.kg_reasoning.weak_reasoner.utils --> src.pipelines.qa.kg_reasoning.weak_reasoner.utils
+src.pipelines.qa.query_preprocessing --> src.pipelines.qa.query_preprocessing.QueryPreprocessor
+src.pipelines.qa.query_preprocessing.QueryPreprocessor --> src.pipelines.qa.query_preprocessing.config
+src.pipelines.qa.query_preprocessing.QueryPreprocessor --> src.pipelines.qa.query_preprocessing.decomposition
+src.pipelines.qa.query_preprocessing.QueryPreprocessor --> src.pipelines.qa.query_preprocessing.decomposition.QueryDecomposer
+src.pipelines.qa.query_preprocessing.QueryPreprocessor --> src.pipelines.qa.query_preprocessing.denoising
+src.pipelines.qa.query_preprocessing.QueryPreprocessor --> src.pipelines.qa.query_preprocessing.denoising.QueryDenoiser
+src.pipelines.qa.query_preprocessing.QueryPreprocessor --> src.pipelines.qa.query_preprocessing.enhancing
+src.pipelines.qa.query_preprocessing.QueryPreprocessor --> src.pipelines.qa.query_preprocessing.enhancing.QueryEnhancer
+src.pipelines.qa.query_preprocessing.QueryPreprocessor --> src.pipelines.qa.query_preprocessing.utils
+src.pipelines.qa.query_preprocessing.QueryPreprocessor --> src.pipelines.qa.query_preprocessing.utils
+src.pipelines.qa.query_preprocessing.decomposition --> src.pipelines.qa.query_preprocessing.decomposition.QueryDecomposer
+src.pipelines.qa.query_preprocessing.decomposition.QueryDecomposer --> src.pipelines.qa.query_preprocessing.decomposition.config
+src.pipelines.qa.query_preprocessing.decomposition.QueryDecomposer --> src.pipelines.qa.query_preprocessing.decomposition.utils
+src.pipelines.qa.query_preprocessing.decomposition.QueryDecomposer --> src.pipelines.qa.query_preprocessing.decomposition.utils
+src.pipelines.qa.query_preprocessing.decomposition.config --> src.pipelines.qa.query_preprocessing.decomposition.utils
+src.pipelines.qa.query_preprocessing.decomposition.utils --> src.pipelines.qa.query_preprocessing.decomposition.config
+src.pipelines.qa.query_preprocessing.decomposition.utils --> src.pipelines.qa.query_preprocessing.decomposition.utils
+src.pipelines.qa.query_preprocessing.denoising --> src.pipelines.qa.query_preprocessing.denoising.QueryDenoiser
+src.pipelines.qa.query_preprocessing.denoising.QueryDenoiser --> src.pipelines.qa.query_preprocessing.denoising.config
+src.pipelines.qa.query_preprocessing.denoising.QueryDenoiser --> src.pipelines.qa.query_preprocessing.denoising.utils
+src.pipelines.qa.query_preprocessing.denoising.QueryDenoiser --> src.pipelines.qa.query_preprocessing.denoising.utils
+src.pipelines.qa.query_preprocessing.denoising.config --> src.pipelines.qa.query_preprocessing.denoising.utils
+src.pipelines.qa.query_preprocessing.denoising.utils --> src.pipelines.qa.query_preprocessing.denoising.config
+src.pipelines.qa.query_preprocessing.denoising.utils --> src.pipelines.qa.query_preprocessing.denoising.utils
+src.pipelines.qa.query_preprocessing.enhancing --> src.pipelines.qa.query_preprocessing.enhancing.QueryEnhancer
+src.pipelines.qa.query_preprocessing.enhancing.QueryEnhancer --> src.pipelines.qa.query_preprocessing.enhancing.config
+src.pipelines.qa.query_preprocessing.enhancing.QueryEnhancer --> src.pipelines.qa.query_preprocessing.enhancing.utils
+src.pipelines.qa.query_preprocessing.enhancing.QueryEnhancer --> src.pipelines.qa.query_preprocessing.enhancing.utils
+src.pipelines.qa.query_preprocessing.enhancing.config --> src.pipelines.qa.query_preprocessing.enhancing.utils
+src.pipelines.qa.query_preprocessing.enhancing.utils --> src.pipelines.qa.query_preprocessing.enhancing.config
+src.pipelines.qa.query_preprocessing.enhancing.utils --> src.pipelines.qa.query_preprocessing.enhancing.utils
+src.pipelines.qa.query_preprocessing.utils --> src.pipelines.qa.query_preprocessing.decomposition
+src.pipelines.qa.query_preprocessing.utils --> src.pipelines.qa.query_preprocessing.decomposition.QueryDecomposer
+src.pipelines.qa.query_preprocessing.utils --> src.pipelines.qa.query_preprocessing.denoising
+src.pipelines.qa.query_preprocessing.utils --> src.pipelines.qa.query_preprocessing.denoising.QueryDenoiser
+src.pipelines.qa.query_preprocessing.utils --> src.pipelines.qa.query_preprocessing.enhancing
+src.pipelines.qa.query_preprocessing.utils --> src.pipelines.qa.query_preprocessing.enhancing.QueryEnhancer
+src.pipelines.qa.query_preprocessing.utils --> src.pipelines.qa.query_preprocessing.utils
+src.pipelines.qa.utils --> src.pipelines.qa.answers_aggregation
+src.pipelines.qa.utils --> src.pipelines.qa.answers_aggregation.AnswersAggregator
+src.pipelines.qa.utils --> src.pipelines.qa.kg_reasoning
+src.pipelines.qa.utils --> src.pipelines.qa.query_preprocessing
+src.pipelines.qa.utils --> src.pipelines.qa.query_preprocessing.QueryPreprocessor
+src.pipelines.qa.utils --> src.pipelines.qa.utils
+src.pipelines.utils --> src.pipelines.utils
+src.rerankers --> src.rerankers.RerankerDriver
+src.rerankers.RerankerDriver --> src.rerankers.configs
+src.rerankers.RerankerDriver --> src.rerankers.methods.utils
+src.rerankers.RerankerDriver --> src.rerankers.utils
+src.rerankers.RerankerDriver --> src.rerankers.utils
+src.rerankers.configs --> src.rerankers.methods
+src.rerankers.configs --> src.rerankers.methods.EnsembleFusionReranker
+src.rerankers.configs --> src.rerankers.methods.MultiStepReranker
+src.rerankers.configs --> src.rerankers.methods.SingleStepReranker
+src.rerankers.configs --> src.rerankers.methods.utils
+src.rerankers.configs --> src.rerankers.utils
+src.rerankers.methods --> src.rerankers.methods.EnsembleFusionReranker
+src.rerankers.methods --> src.rerankers.methods.MultiStepReranker
+src.rerankers.methods --> src.rerankers.methods.SingleStepReranker
+src.rerankers.methods.EnsembleFusionReranker --> src.rerankers.methods.utils
+src.rerankers.methods.MultiStepReranker --> src.rerankers.methods.utils
+src.rerankers.methods.SingleStepReranker --> src.rerankers.methods.utils
+src.utils --> src.utils.data_structs
+src.utils --> src.utils.errors
+src.utils --> src.utils.language_detector
+src.utils --> src.utils.logger
+src.utils --> src.utils.task_solver
+src.utils --> src.utils.tracing
+src.utils.agent_stat_analyzer --> src.utils.agent_stat_analyzer.AgentStatAnalyzer
+src.utils.agent_stat_analyzer.AgentStatAnalyzer --> src.utils.agent_stat_analyzer.configs
+src.utils.agent_stat_analyzer.AgentStatAnalyzer --> src.utils.agent_stat_analyzer.supported_dbvendors
+src.utils.agent_stat_analyzer.AgentStatAnalyzer --> src.utils.agent_stat_analyzer.utils
+src.utils.agent_stat_analyzer.configs --> src.utils.agent_stat_analyzer.utils
+src.utils.agent_stat_analyzer.supported_dbvendors --> src.utils.agent_stat_analyzer.configs
+src.utils.agent_stat_analyzer.supported_dbvendors.InMemoryStatOperations --> src.utils.agent_stat_analyzer.supported_dbvendors.utils
+src.utils.agent_stat_analyzer.supported_dbvendors.MongoStatOperations --> src.utils.agent_stat_analyzer.supported_dbvendors.utils
+src.utils.agent_stat_analyzer.supported_dbvendors.MySQLStatOperations --> src.utils.agent_stat_analyzer.supported_dbvendors.utils
+src.utils.agent_stat_analyzer.supported_dbvendors.PostgreSQLStatOperations --> src.utils.agent_stat_analyzer.supported_dbvendors.utils
+src.utils.agent_stat_analyzer.supported_dbvendors.SQLite3StatOperations --> src.utils.agent_stat_analyzer.supported_dbvendors.utils
+src.utils.agent_stat_analyzer.supported_dbvendors.configs --> src.utils.agent_stat_analyzer.supported_dbvendors.InMemoryStatOperations
+src.utils.agent_stat_analyzer.supported_dbvendors.configs --> src.utils.agent_stat_analyzer.supported_dbvendors.MongoStatOperations
+src.utils.agent_stat_analyzer.supported_dbvendors.configs --> src.utils.agent_stat_analyzer.supported_dbvendors.MySQLStatOperations
+src.utils.agent_stat_analyzer.supported_dbvendors.configs --> src.utils.agent_stat_analyzer.supported_dbvendors.PostgreSQLStatOperations
+src.utils.agent_stat_analyzer.supported_dbvendors.configs --> src.utils.agent_stat_analyzer.supported_dbvendors.SQLite3StatOperations
+src.utils.cache_kv --> src.utils.cache_kv.CacheKV
+src.utils.cache_kv --> src.utils.cache_kv.CacheUtils
+src.utils.cache_kv.CacheKV --> src.utils.cache_kv.config
+src.utils.cache_kv.CacheOperations --> src.utils.cache_kv.CacheKV
+src.utils.cache_kv.CacheUtils --> src.utils.cache_kv.CacheKV
+src.utils.cache_kv.CacheUtils --> src.utils.cache_kv.utils
+src.utils.data_structs --> src.utils.logger
+src.utils.language_detector --> src.utils.errors
+src.utils.task_solver --> src.utils.agent_stat_analyzer
+src.utils.task_solver --> src.utils.agent_stat_analyzer.AgentStatAnalyzer
+src.utils.task_solver --> src.utils.cache_kv
+src.utils.task_solver --> src.utils.cache_kv.CacheKV
+src.utils.task_solver --> src.utils.data_structs
+src.utils.task_solver --> src.utils.errors
+src.utils.task_solver --> src.utils.language_detector
+src.utils.task_solver --> src.utils.tracing
+@enduml

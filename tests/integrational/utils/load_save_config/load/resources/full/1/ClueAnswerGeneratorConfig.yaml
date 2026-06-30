@@ -1,0 +1,8 @@
+lang: auto
+log_path: log/qa/kg_reasoner/medium/clueansw_generation/main
+verbose: false
+log_level: 10
+agent_gen_stategy: null
+agent_tasks_config:
+  cagen: v3
+cache_table_name: medreasn_cagen_main_stage_cache

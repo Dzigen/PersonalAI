@@ -1,0 +1,11 @@
+lang: auto
+log_path: log/qa/kg_reasoner/medium/plan_enhancer/main
+verbose: false
+log_level: 10
+plan_enhancment: true
+agent_gen_stategy: null
+agent_tasks_config:
+  plan_initing: v2
+  enhance_classifier: v2
+  plan_enhancing: v2
+cache_table_name: medreasn_planenh_main_stage_cache

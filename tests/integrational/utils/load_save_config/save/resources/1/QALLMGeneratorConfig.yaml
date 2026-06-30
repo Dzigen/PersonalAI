@@ -1,0 +1,11 @@
+lang: auto
+log_path: log/qa/kg_reasoner/weak/answer_generation/main
+verbose: false
+log_level: 10
+agent_gen_stategy: null
+agent_tasks_config:
+  ag: v3
+relation_type:
+- hyper
+- simple
+cache_table_name: qa_agenerator_stage_cache

@@ -1,0 +1,9 @@
+lang: auto
+log_path: log/qa/kg_reasoner/medium/entities_extractor/main
+verbose: false
+log_level: 10
+agent_gen_stategy: null
+agent_tasks_config:
+  entities_extraction: v1
+max_entities: 20
+cache_table_name: medreasn_entextr_main_stage_cache

@@ -1,0 +1,7 @@
+db_info:
+  db: defaultpersonalaivectordb
+  table: defaultpersonalaivectortable
+params: {}
+need_to_clear: false
+create_index: false
+conn: {}

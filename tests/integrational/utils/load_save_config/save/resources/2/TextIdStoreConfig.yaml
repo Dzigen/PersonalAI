@@ -1,0 +1,37 @@
+log_path: log/textid_store
+verbose: false
+log_level: 10
+texttotriplets_store_config:
+  db_vendor: inmemory_kv
+  db_config:
+    db_info:
+      db: DefaultPersonalAIKVDB
+      table: textidtotripletsidmaptable
+    params:
+      load_from_disk: true
+      load_dump_name: null
+      load_dump_dir: ./personalai_tmp/cache/inmemory_kv
+      save_on_disk: true
+      save_dump_dir: ./personalai_tmp/cache/inmemory_kv
+      max_storage: 500000000.0
+    need_to_clear: false
+    create_index: false
+    host: localhost
+    port: null
+triplettotexts_store_config:
+  db_vendor: inmemory_kv
+  db_config:
+    db_info:
+      db: DefaultPersonalAIKVDB
+      table: tripletidtotextsidmaptable
+    params:
+      load_from_disk: true
+      load_dump_name: null
+      load_dump_dir: ./personalai_tmp/cache/inmemory_kv
+      save_on_disk: true
+      save_dump_dir: ./personalai_tmp/cache/inmemory_kv
+      max_storage: 500000000.0
+    need_to_clear: false
+    create_index: false
+    host: localhost
+    port: null

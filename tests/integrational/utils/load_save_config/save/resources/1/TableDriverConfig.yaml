@@ -1,0 +1,11 @@
+db_vendor: sqlite3
+db_config:
+  db_info:
+    db: DefaultPersonalAITableDB
+    table: DefaultPersonalAITable
+  params:
+    database_path: ./personalai_tmp/volumes/sqlite3
+  need_to_clear: false
+  create_index: false
+  host: null
+  port: null
