@@ -1,10 +1,13 @@
 from enum import Enum
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from abc import ABC, abstractmethod
 from copy import deepcopy
+import os
 from collections import defaultdict
 from typing import List, Tuple, Dict, Union
 from time import time
+import json
+
 from ..utils.errors import ReturnInfo, ReturnStatus
 
 
@@ -35,7 +38,7 @@ class CompositeModuleSummaryResult(ModuleResult):
 
 @dataclass
 class BaseCompositeModuleDetailedResult(ABC):
-    modules_categories: Dict[str, Dict[str, object]] = field(default_factory=lambda: {
+    modules_categories: Dict[ModuleType, Dict[str, Union[SimpleModuleResult, object]]] = field(default_factory=lambda: {
         ModuleType.stage: defaultdict(list), ModuleType.step: defaultdict(list), ModuleType.task_solver: defaultdict(list)})
     execution_sequence: List[Tuple[ModuleType, str]] = field(default_factory=lambda: list())
 
