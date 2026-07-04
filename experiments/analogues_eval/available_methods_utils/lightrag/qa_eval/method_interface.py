@@ -28,7 +28,7 @@ class LightRAGQAOperations(GraphRAGQAOperations, LightRAGBuildOperations):
 
         from lightrag.utils import setup_logger
         from lightrag import LightRAG, QueryParam
-        from lightrag.llm.openai import openai_complete_if_cache
+        from lightrag.llm.ollama import ollama_model_complete
         from lightrag.utils import EmbeddingFunc
         setup_logger("lightrag", level="INFO")
 
@@ -64,8 +64,9 @@ class LightRAGQAOperations(GraphRAGQAOperations, LightRAGBuildOperations):
                 max_token_size=memory_config['embedding_max_token_size'],
                 func=embedding_func,
             ),
-            llm_model_func=ollama_complete_func,
-            llm_model_kwargs={"base_url": memory_config['llm_base_url'], "max_completion_tokens": 32768, 'timeout': 60},
+            llm_model_func=ollama_model_complete,
+            llm_model_kwargs={"host": memory_config['llm_base_url'], 'timeout': 60},
+            # "max_completion_tokens": 32768,
             llm_model_name=memory_config['llm_model_name']
         )
         asyncio.run(self.method.initialize_storages())

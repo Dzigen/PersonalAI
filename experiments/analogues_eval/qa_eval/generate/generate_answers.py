@@ -117,6 +117,9 @@ for pack_name, questions, _ in question_packs:
         answer = method_main.perform_qa([questions[i]])[0]
         e_time = time()
 
+        #print("Question: ", questions[i])
+        #print("Answer: ", answer)
+
         answer_dump_file = f"{pack_tmp_answers_dir}/answer_{i}"
         joblib.dump({'answer': answer, 'elapsed_time': e_time - s_time}, answer_dump_file)
 
