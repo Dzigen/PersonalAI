@@ -14,7 +14,7 @@ KNOWLEDGE_GRAPH_NAME: # TO CHANGE
   - ['llama318b_080226_v2prompts', 'qwen257b_080226_v2prompts', 'granite338b_080226_v2prompts', 'gemma29b_080226_v2prompts', 'gemma312b_060326_v2prompts']
 
 
-PERSONALAI_VERSION: 'v2.3.4' # TO CHANGE
+PERSONALAI_VERSION: 'v2.3.5' # TO CHANGE
 
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
@@ -58,7 +58,7 @@ kg_reasoner: # TO CHANGE
       - True
 
     searchplan_enhancer_config:
-      - plan_enhancment: False
+      - plan_enhancment: True
         agent_tasks_config:
           plan_initing: 'v2'
           enhance_classifier: 'v2'
@@ -92,42 +92,42 @@ kg_reasoner: # TO CHANGE
     knowledge_retriever_config:
       # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
       retriever_method:
-         - 'mixture'
          #- 'mixture'
          #- 'mixture'
-        #- 'naive_retriever'
+         #- 'mixture'
+         - 'naive_retriever'
 
       retriever_config:
-        - retriever1_name: 'beamsearch'
-          retriever1_config:
-            reranker_driver_config:
-                name: 'single_step'
-                strategy_config:
-                  vdb_name: dense_triplets
-                  threshold: 0.5
-                  fetch_n: 25
-            max_depth: 5
-            max_paths: 10
-            same_path_intersection_by_node: False
-            diff_paths_intersection_by_node: False
-            diff_paths_intersection_by_rel: False
-            mean_alpha: 0.75
-            final_sorting_mode: 'mixed'
+        # - retriever1_name: 'beamsearch'
+        #   retriever1_config:
+        #     reranker_driver_config:
+        #         name: 'single_step'
+        #         strategy_config:
+        #           vdb_name: dense_triplets
+        #           threshold: 0.5
+        #           fetch_n: 25
+        #     max_depth: 5
+        #     max_paths: 10
+        #     same_path_intersection_by_node: False
+        #     diff_paths_intersection_by_node: False
+        #     diff_paths_intersection_by_rel: False
+        #     mean_alpha: 0.75
+        #     final_sorting_mode: 'mixed'
           
-          retriever2_name: 'watercircles'
-          retriever2_config:
-            strict_filter: True
-            hyper_num: 15
-            episodic_num: 15
-            chain_triplets_num: 25
-            other_triplets_num: 6
-            do_text_pruning: False
+        #   retriever2_name: 'watercircles'
+        #   retriever2_config:
+        #     strict_filter: True
+        #     hyper_num: 15
+        #     episodic_num: 15
+        #     chain_triplets_num: 25
+        #     other_triplets_num: 6
+        #     do_text_pruning: False
 
-          accepted_node_types:
-            - 'object'
-            - 'hyper'
-            - 'episodic'
-            #- 'time'
+        #   accepted_node_types:
+        #     - 'object'
+        #     - 'hyper'
+        #     - 'episodic'
+        #     #- 'time'
 
         # - retriever1_name: 'beamsearch'
         #   retriever1_config:
@@ -222,18 +222,19 @@ kg_reasoner: # TO CHANGE
         #     - 'episodic'
         #     - 'time'
         
-        # - max_k: 50
-        #   reranker_driver_config:
-        #     name: single_step
-        #     strategy_config:
-        #       vdb_name: dense_triplets
-        #       threshold: 0.5
-        #       fetch_n: 50
+        - max_k: 50
+          reranker_driver_config:
+            name: single_step
+            strategy_config:
+              vdb_name: dense_triplets
+              threshold: 0.5
+              fetch_n: 50
 
       filter_method: # CAN BE null
         - 'naive'
-        # - 'naive'
-        # - 'naive'
+        - 'naive'
+        - 'naive'
+        - 'naive'
 
       filter_config: # CAN BE null
         - max_k: 50
@@ -252,35 +253,50 @@ kg_reasoner: # TO CHANGE
             - 'simple'
             - 'hyper'
 
-        # - max_k: 50
-        #   reranker_driver_config:
-        #     name: 'ensemble_fusion' # DONT CHANGE
-        #     strategy_config:
-        #       vdb_names: ['dense_triplets', 'bm25_triplets']
-        #       retriever_configs:
-        #         - fetch_n: 50
-        #           threshold: 0.5
-        #         - fetch_n: 50
-        #           threshold: 0.5
-        #       weights: [0.9, 0.1]
-        #       c: 60
-        #   accepted_triplets_types:
-        #     - 'hyper'
+        - max_k: 50
+          reranker_driver_config:
+            name: 'ensemble_fusion' # DONT CHANGE
+            strategy_config:
+              vdb_names: ['dense_triplets', 'bm25_triplets']
+              retriever_configs:
+                - fetch_n: 50
+                  threshold: 0.5
+                - fetch_n: 50
+                  threshold: 0.5
+              weights: [0.9, 0.1]
+              c: 60
+          accepted_triplets_types:
+            - 'simple'
 
-        # - max_k: 50
-        #   reranker_driver_config:
-        #     name: 'ensemble_fusion' # DONT CHANGE
-        #     strategy_config:
-        #       vdb_names: ['dense_triplets', 'bm25_triplets']
-        #       retriever_configs:
-        #         - fetch_n: 50
-        #           threshold: 0.5
-        #         - fetch_n: 50
-        #           threshold: 0.5
-        #       weights: [0.9, 0.1]
-        #       c: 60
-        #   accepted_triplets_types:
-        #     - 'episodic'
+        - max_k: 50
+          reranker_driver_config:
+            name: 'ensemble_fusion' # DONT CHANGE
+            strategy_config:
+              vdb_names: ['dense_triplets', 'bm25_triplets']
+              retriever_configs:
+                - fetch_n: 50
+                  threshold: 0.5
+                - fetch_n: 50
+                  threshold: 0.5
+              weights: [0.9, 0.1]
+              c: 60
+          accepted_triplets_types:
+            - 'hyper'
+
+        - max_k: 50
+          reranker_driver_config:
+            name: 'ensemble_fusion' # DONT CHANGE
+            strategy_config:
+              vdb_names: ['dense_triplets', 'bm25_triplets']
+              retriever_configs:
+                - fetch_n: 50
+                  threshold: 0.5
+                - fetch_n: 50
+                  threshold: 0.5
+              weights: [0.9, 0.1]
+              c: 60
+          accepted_triplets_types:
+            - 'episodic'
 
     clueanswer_generator_config:
       agent_tasks_config:
