@@ -4,21 +4,15 @@ from ..utils import KeyValueDriverConfig, Logger, AgentDriverConfig, CacheKV, Ca
 from openai import AsyncOpenAI
 from dataclasses import dataclass, field
 from typing import Union
+from datasets import Dataset
 from time import time
 from typing import List, Dict, Tuple
 from ragas.llms import llm_factory
-from ragas.metrics.collections import DistanceMeasure
-from ragas.metrics.collections import RougeScore, CHRFScore, BleuScore, \
-    NonLLMStringSimilarity, FactualCorrectness, ResponseGroundedness, \
+from ragas.metrics.collections import DistanceMeasure, RougeScore, CHRFScore, BleuScore, NonLLMStringSimilarity
+from ragas.metrics import FactualCorrectness, ResponseGroundedness, \
         ContextRelevance, AnswerAccuracy, Faithfulness, \
             NoiseSensitivity, ContextEntityRecall
 from ragas import evaluate
-from ragas.metrics import (
-    context_relevance,
-    faithfulness,
-    response_groundedness,
-    context_entity_recall
-)
 import pandas as pd
 from copy import deepcopy
 
@@ -81,11 +75,10 @@ class RagasMetrics(CacheUtils):
             'faithfulness': self.faithfulness,
             'context_entity_recall': self.context_entity_recall
         }
-
         self.AVAILABLE_EVAULATE_METRICS_MAP = {
-            'context_relevance': context_relevance,
-            'faithfulness': faithfulness,
-            'response_groundedness': response_groundedness,
+            'context_relevance': self.ContextRelevance,
+            'faithfulness': self.Faithfulness,
+            'response_groundedness': self.ResponseGroundedness,
         }
 
     async def context_entity_recall(self, reference: str, retrieved_contexts: List[str]) -> float:
@@ -228,23 +221,27 @@ class RagasMetrics(CacheUtils):
         return score
 
 
-    def evaluate(self, user_inputs: List[str], responses: List[str], references: List[str], 
-        retrieved_contexts: List[List[str]], selected_metrics: List[str] = DEFAULT_SELECTED_EVALUATE_METRICS) -> List[Dict[str, float]]:
+    def evaluate(self, user_input: List[str], response: List[str], reference: List[str],
+        retrieved_contexts: List[List[str]], selected_metrics: List[str] = DEFAULT_SELECTED_EVALUATE_METRICS) -> pd.DataFrame:
         dataset = {
-            "question": user_inputs,
-            "answer": responses,
+            "question": user_input,
+            "answer": response,
             "contexts": retrieved_contexts,
-            "ground_truth": references
+            "ground_truth": reference
         }
+        #print(dataset)
+        evaluation_dataset = Dataset.from_dict(dataset)
 
         selected_metrics_funcs = [self.AVAILABLE_EVAULATE_METRICS_MAP[metric_name] for metric_name in selected_metrics]
 
         results = evaluate(
-            dataset=dataset,
+            dataset=evaluation_dataset,
             metrics=selected_metrics_funcs,
-            llm=self.agent
+            llm=self.agent,
+            raise_exceptions=True
         )
 
         df = results.to_pandas()
-        formated_results = [{metric_name: df[metric_name][i] for metric_name in selected_metrics} for i in range(df.shape[0])]
-        return formated_results
+        #print(df.to_dict())
+        #formated_results = [{metric_name: df[metric_name][i] for metric_name in selected_metrics} for i in range(df.shape[0])]
+        return df
