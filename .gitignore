@@ -87,9 +87,7 @@ experiments/qa/run_all_experiments4.sh
 
 configs/blazegraph/authoritieschildrensSubjects.nt
 
-src/dialogue_processing/dialogue_processor.ipynb
 src/dialogue_processing/log
 src/dialogue_processing/diag_proc_tmp
-src/question_answer_rephrasing/question_processor.ipynb
 src/question_answer_rephrasing/log
 src/question_answer_rephrasing/quest_proc_tmp
