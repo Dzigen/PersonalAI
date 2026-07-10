@@ -226,3 +226,4 @@ litellm==1.81.11
 openai==2.21.0
 optuna==4.7.0
 picologging
+langchain-google-vertexai

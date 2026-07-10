@@ -31,8 +31,8 @@ RUN apt install -y jq
 RUN jq --version
 
 RUN python3 --version
-COPY requirements.txt .
-RUN python3 -m pip install -r requirements.txt
+COPY raw_requirements.txt .
+RUN python3 -m pip install -r raw_requirements.txt
 
 RUN python3 -m pip install torch
 RUN python3 -c 'import torch'

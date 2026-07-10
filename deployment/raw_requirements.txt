@@ -46,3 +46,4 @@ flake8
 mypy
 dspy
 picologging
+langchain-google-vertexai
