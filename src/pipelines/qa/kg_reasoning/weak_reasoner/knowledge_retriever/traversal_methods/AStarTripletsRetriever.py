@@ -23,6 +23,7 @@ from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
 from .......db_drivers.vector_driver import VectorDBInstance, VectorRetriveComposer
 
+# TODO: дописать комментариии к AStarGraphSearchConfig-датаклассу
 
 @dataclass
 class AStarMetricsConfig(BaseConfigOperations):

@@ -1,0 +1,1 @@
+docker build -t m.menschikov/workspace:v12 .

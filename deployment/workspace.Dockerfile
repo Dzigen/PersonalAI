@@ -8,7 +8,7 @@ RUN apt-get clean
 RUN apt-get --assume-yes update
 RUN apt-get --assume-yes upgrade
 
-RUN apt-get --assume-yes install pip
+RUN apt-get --assume-yes install pip --fix-missing
 RUN apt-get --assume-yes install curl
 
 RUN apt-get --assume-yes install cron
@@ -36,6 +36,7 @@ RUN python3 -m pip install -r requirements.txt
 
 RUN python3 -m pip install torch
 RUN python3 -c 'import torch'
+RUN python3 -m nltk.downloader punkt punkt_tab wordnet
 
 RUN useradd -rm -d /home/workspace -s /bin/bash -g root -G sudo -u 4200235 m.menschikov
 #RUN useradd -rm -d /home/workspace -s /bin/bash -g root -G sudo -u 1000 dzigen

@@ -11,12 +11,16 @@ TMP_WORKSPACE_CNTNAME=personalai_mmenschikov_workspace
 USERNAME=root
 
 # ===============================================================
-
+# 
 DATASETS=("trivia_qa_rcwikipedia_validation" "2wikimultihopqa_dev" "diaasq" "hotpotqa_distractor_validation" "musique_validation" "natural_questions_train") #TO CHANGE
+# 
 KNOWLEDGE_GRAPHS=("qwen257b_220326" "qwen257b_170326" "qwen257b_180326" "qwen257b_190326" "qwen257b_200326" "qwen257b_210326") #TO CHANGE
-EVAL_FNAMES=("trivia_qa_rcwikipedia_validation.yaml" "2wikimultihopqa_dev.yaml" "diaasq.yaml" "hotpotqa_distractor_validation.yaml" "musique_validation.yaml" "natural_questions_train.yaml") #TO CHANGE
-CONFIGURE_FNAMES=("trivia_qa_rcwikipedia_validation.yaml" "2wikimultihopqa_dev.yaml" "diaasq.yaml" "hotpotqa_distractor_validation.yaml" "musique_validation.yaml" "natural_questions_train.yaml") #TO CHANGE
-METHOD_NAMES=("lightrag" "lightrag" "lightrag" "lightrag" "lightrag" "lightrag") #TO CHANGE
+# 
+EVAL_FNAMES=("trivia_qa_rcwikipedia_validation.yaml" "2wikimultihopqa_dev.yaml" "diaasq.yaml" "hotpotqa_distractor_validation.yaml" "musique_validation.yaml"  "natural_questions_train.yaml") #TO CHANGE
+# 
+CONFIGURE_FNAMES=("trivia_qa_rcwikipedia_validation.yaml" "2wikimultihopqa_dev.yaml" "diaasq.yaml" "hotpotqa_distractor_validation.yaml" "musique_validation.yaml"  "natural_questions_train.yaml") #TO CHANGE
+#
+METHOD_NAMES=("hipporag2" "hipporag2" "hipporag2" "hipporag2" "hipporag2" "hipporag2") #TO CHANGE
 
 # ===============================================================
 

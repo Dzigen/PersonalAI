@@ -16,13 +16,6 @@ from ragas.metrics.collections import RougeScore, CHRFScore, BleuScore, \
     NonLLMStringSimilarity, FactualCorrectness, ResponseGroundedness, \
         ContextRelevance, AnswerAccuracy, Faithfulness, \
             NoiseSensitivity, ContextEntityRecall
-from ragas import evaluate
-from ragas.metrics import (
-    context_relevance,
-    faithfulness,
-    response_groundedness,
-    context_entity_recall
-)
 from copy import deepcopy
 import sys
 

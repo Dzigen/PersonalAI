@@ -291,7 +291,7 @@ services:
     build:
       context: .
       dockerfile: workspace.Dockerfile
-    image: m.menschikov/workspace:v11
+    image: m.menschikov/workspace:v12
     container_name: personalai_mmenschikov_workspace
     hostname: workspaceservice
     network_mode: "host"
@@ -338,6 +338,9 @@ services:
       - "11437:11434"
     environment:
       - OLLAMA_DEBUG=1
+      #- OLLAMA_NUM_PARALLEL=4      # Processes up to 4 requests at once per model
+      #- OLLAMA_MAX_LOADED_MODELS=2  # Keeps up to 2 different models in VRAM
+      #- OLLAMA_FLASH_ATTENTION=1    # Strongly recommended to save VRAM during parallel loads
     volumes:
       - ${OLLAMA_EXTERNAL_VOLUME_PATH}:/root/.ollama
     deploy:
