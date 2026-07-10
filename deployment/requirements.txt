@@ -192,7 +192,7 @@ ranx==0.3.21
 langdetect==1.0.9
 faiss-cpu==1.12.0
 langchain_community
-torchmetrics==1.8.2
+torchmetrics==1.8.2 --no-deps
 evaluate==0.4.6
 levenshtein==0.27.3
 nltk==3.9.2
