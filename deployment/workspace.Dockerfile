@@ -8,7 +8,7 @@ RUN apt-get clean
 RUN apt-get --assume-yes update
 RUN apt-get --assume-yes upgrade
 
-RUN apt-get --assume-yes install pip --fix-missing
+RUN apt-get --assume-yes install pip
 RUN apt-get --assume-yes install curl
 
 RUN apt-get --assume-yes install cron
@@ -31,8 +31,8 @@ RUN apt install -y jq
 RUN jq --version
 
 RUN python3 --version
-COPY raw_requirements.txt .
-RUN python3 -m pip install -r raw_requirements.txt
+COPY requirements.txt .
+RUN python3 -m pip install -r requirements.txt
 
 RUN python3 -m pip install torch
 RUN python3 -c 'import torch'
