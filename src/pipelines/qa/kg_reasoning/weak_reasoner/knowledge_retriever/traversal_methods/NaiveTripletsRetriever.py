@@ -8,7 +8,7 @@ from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
 from .......db_drivers.vector_driver import VectorDBInstance
 from .......kg_model import KnowledgeGraphModel
 from .......utils import Logger, accumulate_step_info, ReturnInfo
-from .......utils.data_structs import QueryInfo, Triplet, create_id
+from .......utils.data_structs import QueryInfo, Triplet, create_id, NodeType, NODES_TYPES_MAP
 from .......utils.cache_kv import CacheUtils
 from .......db_drivers.kv_driver import KeyValueDriverConfig
 from .......rerankers import RerankerDriver, RerankerDriverConfig
@@ -22,11 +22,14 @@ class NaiveGraphSearchConfig(BaseGraphSearchConfig):
     :type reranker_driver_config: Union[Dict, RerankerDriverConfig], optional
     :param max_k: Максимальное количество триплетов, которое может быть извлечено из графа. Значение по умолчанию 50.
     :type max_k: int, optional
+    :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извелчения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic].
+    :type accepted_node_types: List[Union[str, NodeType]], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveTripletsRetriever-класса. Значение по умолчанию 'qa_naive_t_retriever_cache'.
     :type cache_table_name: str, optional
     """
     reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(default_factory=lambda: NGS_RERANKDRIVER_DEFAULT_CONFIG)
     max_k: int = 50
+    accepted_node_types: List[NodeType] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
 
     cache_table_name: str = 'qa_naive_t_retriever_cache'
     log_path: str = NAIVE_RETRIEVER_LOG_PATH
@@ -42,6 +45,10 @@ class NaiveGraphSearchConfig(BaseGraphSearchConfig):
         return formated_config
 
     def formate_fields(self) -> None:
+        for i, node_type in enumerate(self.accepted_node_types):
+            if not isinstance(node_type, NodeType):
+                self.accepted_node_types[i] = NODES_TYPES_MAP[node_type]
+
         if isinstance(self.reranker_driver_config, dict):
             self.reranker_driver_config = RerankerDriverConfig.from_dict(self.reranker_driver_config)
         else:

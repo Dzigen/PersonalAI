@@ -2,6 +2,7 @@ from typing import Dict, Union, Tuple, List
 from dataclasses import dataclass, field
 from copy import deepcopy
 
+from .table_structures import AVAILABLE_TABLE_STRUCTURES, BaseTableStucture
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 
 
@@ -30,13 +31,14 @@ class TableDBConnectionConfig(BaseDatabaseConfig):
         dictconfig_copy = deepcopy(dict_config)
         formated_config = TableDBConnectionConfig(**dictconfig_copy)
         formated_config.formate_fields()
+
+        if 'table_info' in formated_config.db_info:
+            if isinstance(formated_config.db_info['table_info'], str):
+                formated_config.db_info['table_info'] = AVAILABLE_TABLE_STRUCTURES[formated_config.db_info['table_info']]
+            if not issubclass(formated_config.db_info['table_info'], BaseTableStucture):
+                raise TypeError
+
         return formated_config
-
-
-@dataclass
-class BaseTableStucture:
-    """Базовый класс для описания структуры записей, хранящихся в табличной БД."""
-    pass
 
 
 @dataclass

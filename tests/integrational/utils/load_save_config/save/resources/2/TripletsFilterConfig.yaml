@@ -1,0 +1,23 @@
+log_path: log/qa/kg_reasoner/weak/knowledge_retriever/triples_filter
+verbose: false
+log_level: 10
+reranker_driver_config:
+  name: ensemble_fusion
+  strategy_config:
+    vdb_names:
+    - dense_triplets
+    - bm25_triplets
+    retriever_configs:
+    - fetch_n: 50
+      threshold: 0.5
+    - fetch_n: 50
+      threshold: 0.5
+    weights:
+    - 0.9
+    - 0.1
+    c: 60
+accepted_triplets_types:
+- hyper
+- simple
+max_k: 50
+cache_table_name: qa_naive_t_filter_cache

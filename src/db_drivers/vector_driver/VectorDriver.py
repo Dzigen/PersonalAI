@@ -5,10 +5,11 @@ from copy import deepcopy
 from .utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection
 from .configs import DEFAULT_VECTORDB_CONFIGS, AVAILABLE_VECTORDB_CONNECTORS
 from .embedders import EmbedderModel
+from ...utils.data_structs import BaseConfigOperations
 
 
 @dataclass
-class VectorDriverConfig:
+class VectorDriverConfig(BaseConfigOperations):
     """Конфигурация драйвера векторного хранилища.
 
     :param db_vendor: Идентификатор конкретного провайдера векторного хранилища (например, 'chroma', 'milvus', 'elasticsearch', 'inmemory').

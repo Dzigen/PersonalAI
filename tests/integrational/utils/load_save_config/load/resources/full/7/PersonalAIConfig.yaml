@@ -1,0 +1,377 @@
+lang: auto
+log_path: log/main
+verbose: false
+log_level: 10
+kg_model_config:
+  log_path: log/kg_model/main
+  verbose: false
+  log_level: 10
+  graph_struct_config:
+    log_path: log/kg_model/graph
+    verbose: false
+    log_level: 10
+    driver_config:
+      db_vendor: kuzu
+      db_config:
+        db_info:
+          db: DefaultDB
+          table: KuzuGraph
+        params:
+          path: ./personalai_tmp/memory_parts/graph_model/kuzu
+          buffer_pool_size: 1073741824
+          table_type_map:
+            relations:
+              forward:
+                simple: simple
+                hyper: hyper_rel
+                episodic: episodic_rel
+                time: time_rel
+            nodes:
+              forward:
+                object: object
+                hyper: hyper
+                episodic: episodic
+                time: time
+        need_to_clear: false
+        create_index: false
+        host: null
+        port: null
+  graph_embeddings_config:
+    log_path: log/kg_model/embeddings
+    verbose: false
+    log_level: 10
+    nodesdb_driver_configs_mapping:
+      dense_nodes:
+        db_vendor: chroma
+        vector_category: dense
+        db_config:
+          db_info:
+            db: default_db
+            table: dense_nodes
+          params:
+            hnsw:space: ip
+            hnsw:M: 4096
+          need_to_clear: false
+          create_index: false
+          conn:
+            path: ./personalai_tmp/memory_parts/embeddings_model/vectorized_nodes/chroma
+      bm25_nodes:
+        db_vendor: inmemory
+        vector_category: sparse_bm25
+        db_config:
+          db_info:
+            db: default_db
+            table: sparsebm25_nodes
+          params:
+            store_dump_name: inmemory_bm25
+            load_from_disk: true
+            load_dump_name: null
+            load_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_nodes/inmemory_bm25
+            save_on_disk: true
+            save_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_nodes/inmemory_bm25
+          need_to_clear: false
+          create_index: false
+          conn: {}
+    tripletsdb_driver_configs_mapping:
+      dense_triplets:
+        db_vendor: chroma
+        vector_category: dense
+        db_config:
+          db_info:
+            db: default_db
+            table: vectorized_triplets
+          params:
+            hnsw:space: ip
+            hnsw:M: 4096
+          need_to_clear: false
+          create_index: false
+          conn:
+            path: ./personalai_tmp/memory_parts/embeddings_model/vectorized_triplets/chroma
+      bm25_triplets:
+        db_vendor: inmemory
+        vector_category: sparse_bm25
+        db_config:
+          db_info:
+            db: default_db
+            table: sparsebm25_triplets
+          params:
+            store_dump_name: inmemory_bm25
+            load_from_disk: true
+            load_dump_name: null
+            load_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_triplets/inmemory_bm25
+            save_on_disk: true
+            save_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_triplets/inmemory_bm25
+          need_to_clear: false
+          create_index: false
+          conn: {}
+  nodestree_config: null
+  embedders_configs:
+    m-e5-base:
+      model_name_or_path: ../models/intfloat/multilingual-e5-base
+      prompts:
+        query: 'query: '
+        passage: 'passage: '
+      query_prompt_name: query
+      passage_prompt_name: passage
+      device: cuda
+      normalize_embeddings: true
+  embedders_map:
+    embeddings_model:
+      dense_nodes: m-e5-base
+      dense_triplets: m-e5-base
+    nodestree_model:
+      leaf_dense_nodes: m-e5-base
+      summ_dense_nodes: m-e5-base
+  agents_configs:
+    qwen2.5:7b:
+      name: ollama
+      agent_config:
+        gen_strategy:
+          num_predict: 2048
+          seed: 42
+          top_k: 1
+          temperature: 0.0
+        credentials:
+          model: qwen2.5:7b
+          host: localhost
+          port: 11437
+        ext_params:
+          timeout: 560
+          keep_alive: 120
+          trials: 5
+  agents_map:
+    qa_pipeline: qwen2.5:7b
+    mem_pipeline: qwen2.5:7b
+    kg_nodestree_model: qwen2.5:7b
+qa_pipeline_config:
+  lang: auto
+  log_path: log/qa/main
+  verbose: false
+  log_level: 10
+  preprocessor_config:
+    lang: auto
+    log_path: log/qa/query_preprocessing/main
+    verbose: false
+    log_level: 10
+    denoising_config: null
+    enhancing_config: null
+    decomposition_config:
+      lang: auto
+      log_path: log/qa/query_preprocessing/decomposition/main
+      verbose: false
+      log_level: 10
+      agent_gen_stategy: null
+      agent_tasks_config:
+        classify: v2
+        decompose: v2
+      cache_table_name: qp_decomposition_stage_cache
+    cache_table_name: query_preprocessing_main_stage_cache
+  reasoner_config:
+    lang: auto
+    log_path: log/qa/kg_reasoner/main
+    verbose: false
+    log_level: 10
+    reasoner_name: weak
+    reasoner_config:
+      lang: auto
+      log_path: log/qa/kg_reasoner/weak/main
+      verbose: false
+      log_level: 10
+      query_parser_config:
+        lang: auto
+        log_path: log/qa/kg_reasoner/weak/query_parser/main
+        verbose: false
+        log_level: 10
+        agent_gen_stategy: null
+        agent_tasks_config:
+          kw_extraction: v2
+        max_entities: 20
+        cache_table_name: qa_queryparser_stage_cache
+      knowledge_comparator_config:
+        log_path: log/qa/kg_reasoner/weak/knowledge_comparator
+        verbose: false
+        log_level: 10
+        reranker_driver_config:
+          name: ensemble_fusion
+          strategy_config:
+            vdb_names:
+            - dense_nodes
+            - bm25_nodes
+            retriever_configs: null
+            weights:
+            - 0.3
+            - 0.7
+            c: 60
+        max_k: 3
+        discard_other_mnodes_if_exactmatch_found: true
+        k_compare: 5
+        cache_table_name: qa_kcomparator_stage_cache
+      knowledge_retriever_config:
+        log_path: log/qa/kg_reasoner/weak/knowledge_retriever/main
+        verbose: false
+        log_level: 10
+        retriever_method: mixture
+        retriever_config:
+          log_path: log/qa/kg_reasoner/weak/knowledge_retriever/mixtured_retriever
+          verbose: false
+          log_level: 10
+          accepted_node_types:
+          - object
+          - hyper
+          - episodic
+          - time
+          retriever1_name: beamsearch
+          retriever1_config:
+            log_path: log/qa/kg_reasoner/weak/knowledge_retriever/beamsearch_retriever
+            verbose: false
+            log_level: 10
+            accepted_node_types:
+            - object
+            - hyper
+            - episodic
+            reranker_driver_config:
+              name: single_step
+              strategy_config:
+                vdb_name: dense_triplets
+                fetch_n: 25
+                threshold: 0.5
+            vdbname_for_scores: dense_triplets
+            max_depth: 5
+            max_paths: 10
+            same_path_intersection_by_node: false
+            diff_paths_intersection_by_node: false
+            diff_paths_intersection_by_rel: false
+            mean_alpha: 0.75
+            final_sorting_mode: mixed
+            cache_table_name: qa_beamsearch_t_retriever_cache
+          retriever2_name: watercircles
+          retriever2_config:
+            log_path: log/qa/kg_reasoner/weak/knowledge_retriever/watercircles_retriever
+            verbose: false
+            log_level: 10
+            accepted_node_types:
+            - object
+            - hyper
+            - episodic
+            strict_filter: true
+            hyper_num: 25
+            episodic_num: 15
+            chain_triplets_num: 25
+            other_triplets_num: 6
+            do_text_pruning: false
+            cache_table_name: qa_watercircles_t_retriever_cache
+          cache_table_name: qa_mixture_t_retriever_cache
+        filter_method: naive
+        filter_config:
+          log_path: log/qa/kg_reasoner/weak/knowledge_retriever/triples_filter
+          verbose: false
+          log_level: 10
+          reranker_driver_config:
+            name: ensemble_fusion
+            strategy_config:
+              vdb_names:
+              - dense_triplets
+              - bm25_triplets
+              retriever_configs:
+              - fetch_n: 50
+                threshold: 0.5
+              - fetch_n: 50
+                threshold: 0.5
+              weights:
+              - 0.9
+              - 0.1
+              c: 60
+          accepted_triplets_types:
+          - hyper
+          - simple
+          max_k: 50
+          cache_table_name: qa_naive_t_filter_cache
+        cache_table_name: qa_kretriever_stage_cache
+      answer_generator_config:
+        lang: auto
+        log_path: log/qa/kg_reasoner/weak/answer_generation/main
+        verbose: false
+        log_level: 10
+        agent_gen_stategy: null
+        agent_tasks_config:
+          ag: v3
+        relation_type:
+        - hyper
+        - simple
+        cache_table_name: qa_agenerator_stage_cache
+      cache_table_name: qa_weakreasoner_cache
+  aggregator_config:
+    lang: auto
+    log_path: log/qa/answers_aggregation/main
+    verbose: false
+    log_level: 10
+    agent_gen_stategy: null
+    agent_tasks_config:
+      suba_summarisation: v2
+    cache_table_name: answers_aggregation_main_stage_cache
+  cache_table_name: qa_pipeline_cache
+mem_pipeline_config:
+  lang: auto
+  log_path: log/memorize/main
+  verbose: false
+  log_level: 10
+  extractor_config:
+    lang: auto
+    log_path: log/memorize/extractor/main
+    verbose: false
+    log_level: 10
+    agent_gen_stategy: null
+    agent_tasks_config:
+      triplets_extraction: v2
+      thesises_extraction: v2
+    need_simple: true
+    need_thesises: true
+    need_episodic: true
+  updator_config:
+    lang: auto
+    log_path: log/memorize/updator/main
+    verbose: false
+    log_level: 10
+    agent_gen_stategy: null
+    agent_tasks_config:
+      replace_simple: v1
+      replace_thesis: v1
+    delete_obsolete_info: false
+textidstore_config:
+  log_path: log/textid_store
+  verbose: false
+  log_level: 10
+  texttotriplets_store_config:
+    db_vendor: inmemory_kv
+    db_config:
+      db_info:
+        db: DefaultPersonalAIKVDB
+        table: textidtotripletsidmaptable
+      params:
+        load_from_disk: true
+        load_dump_name: null
+        load_dump_dir: ./personalai_tmp/cache/inmemory_kv
+        save_on_disk: true
+        save_dump_dir: ./personalai_tmp/cache/inmemory_kv
+        max_storage: 500000000.0
+      need_to_clear: false
+      create_index: false
+      host: localhost
+      port: null
+  triplettotexts_store_config:
+    db_vendor: inmemory_kv
+    db_config:
+      db_info:
+        db: DefaultPersonalAIKVDB
+        table: tripletidtotextsidmaptable
+      params:
+        load_from_disk: true
+        load_dump_name: null
+        load_dump_dir: ./personalai_tmp/cache/inmemory_kv
+        save_on_disk: true
+        save_dump_dir: ./personalai_tmp/cache/inmemory_kv
+        max_storage: 500000000.0
+      need_to_clear: false
+      create_index: false
+      host: localhost
+      port: null

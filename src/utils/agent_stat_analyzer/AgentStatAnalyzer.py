@@ -3,9 +3,10 @@ from typing import Dict, Union, List
 from copy import deepcopy
 
 from ...db_drivers.table_driver.utils import AbstractTableDatabaseConnection, TableDBInstance
+from ...db_drivers.table_driver.table_structures import LLMInferenceStat
 from ...db_drivers.table_driver import TableDriverConfig, TableDriver
 from .supported_dbvendors import SUPPORTED_VENDORS
-from .utils import AbstractTableStatOperations, LLMInferenceStat, CalculateMetrics
+from .utils import AbstractTableStatOperations, CalculateMetrics
 from .configs import DEFAULT_AGENTSTAT_TABLEDB_DRIVER_CONFIG
 from ..data_structs import BaseConfigOperations
 

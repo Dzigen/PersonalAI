@@ -1,0 +1,8 @@
+lang: auto
+log_path: log/qa/kg_reasoner/medium/clueanswers_summarisation/main
+verbose: false
+log_level: 10
+agent_gen_stategy: null
+agent_tasks_config:
+  canswers_summarisation: v3
+cache_table_name: medreasn_cquerysumm_main_stage_cache

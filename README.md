@@ -37,6 +37,9 @@
 * make singlehtml
 * make clean
 
+##### Генерация диаграммы классов
+* pyreverse -o puml -f ALL src/
+
 ##### Команды для тестироваания
 * pytest --cov=src --cov-report=html ...
 * pygount src/ --suffix=py --format=summary

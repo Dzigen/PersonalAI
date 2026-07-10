@@ -1,10 +1,19 @@
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field, fields, asdict
 from typing import List, Union, Tuple, Dict
 from time import time
 from enum import Enum
 import hashlib
+import yaml
+from copy import deepcopy
+import os
 
 from .logger import LogLevel, Logger
+
+
+@dataclass
+class BaseTableStucture:
+    """Базовый класс для описания структуры записей, хранящихся в табличной БД."""
+    pass
 
 
 class NodeType(Enum):
@@ -548,6 +557,75 @@ class BaseConfigOperations:
         :rtype: BaseConfigOperations
         """
         pass
+
+    @classmethod
+    def load(cls, file_path: str):
+        """Метод предназначен для загрузки конфигурации компоненты из yaml-файла и создания соответствующего структурированного объекта
+
+        :param file_path: Путь до файла с параметрами конфигурационного объекта
+        :type file_path: str
+        :return: Экземпляр конфигурационного объекта.
+        :rtype: BaseConfigOperations
+        """
+        with open(file_path, "r") as fd:
+            dict_config: Dict = yaml.safe_load(fd)
+        return cls.from_dict(dict_config)
+
+    def custom_formatter(self, data):
+        formatted_dict = dict()
+        for key, val in data:
+            # print(key, val, type(val))
+
+            if key in ["task_to_selector_mapping", "AVAILABLE_RCONFIGS"]:
+                continue
+
+            elif key == "accepted_node_types":
+                formatted_val = []
+                for n_type in val:
+                    if isinstance(n_type, str):
+                        formatted_val.append(n_type)
+                    elif isinstance(n_type, NodeType):
+                        formatted_val.append(n_type.value)
+                    else:
+                        raise ValueError
+                formatted_dict[key] = formatted_val
+
+            elif key in ["relation_type", "accepted_triplets_types"]:
+                formatted_val = []
+                for r_type in val:
+                    if isinstance(r_type, str):
+                        formatted_val.append(r_type)
+                    elif isinstance(r_type, RelationType):
+                        formatted_val.append(r_type.value)
+                    else:
+                        raise ValueError
+                formatted_dict[key] = formatted_val
+
+            elif (key == "db_info") and isinstance(val, dict) and ('table_info' in val.keys()):
+                if issubclass(val['table_info'], BaseTableStucture):
+                    val['table_info'] = val['table_info'].__name__
+                formatted_dict[key] = val
+
+            else:
+                formatted_dict[key] = val
+
+        return formatted_dict
+
+    def save(self, file_path: str, force_rewrite: bool = True) -> None:
+        """Метод предназначен для сохранения конфигурации объекта в yaml-файл
+
+        :param file_path: Путь и название файла для сохранения конфигурации.
+        :type file_path: str
+        :param force_rewrite: Если True, то в случае существования файла по заданному пути он будет перезаписан, иначе False. Значение по умолчанию True.
+        :type force_rewrite: bool, optional
+        :raises FileExistsError: Файл с таким именем уже существует/создан по заданному пути
+        """
+        dict_config: Dict = asdict(self, dict_factory=self.custom_formatter)
+        if not force_rewrite and os.path.isfile(file_path):
+            raise FileExistsError
+
+        with open(file_path, "w") as fd:
+            yaml.dump(dict_config, fd, default_flow_style=False, sort_keys=False)
 
 
 @dataclass(kw_only=True)

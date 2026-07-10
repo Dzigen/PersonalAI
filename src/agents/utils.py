@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from copy import deepcopy
 
 from typing import Dict, Union, Tuple
-from ..utils.agent_stat_analyzer.utils import LLMInferenceStat
+from ..db_drivers.table_driver.table_structures import LLMInferenceStat
 from ..utils.data_structs import BaseConfigOperations
 
 
@@ -18,9 +18,9 @@ class AgentConnectorConfig(BaseConfigOperations):
     :param ext_params: Прочие внешние параметры работы коннектора (таймауты, число ретраев и тд).
     :type ext_params: Dict
     """
-    gen_strategy: Dict = field(default_factory=lambda: dict())
-    credentials: Dict = field(default_factory=lambda: dict())
-    ext_params: Dict = field(default_factory=lambda: dict())
+    gen_strategy: Dict = field(default_factory=lambda: {'num_predict': 2048, 'seed': 42, 'top_k': 1, 'temperature': 0.0})
+    credentials: Dict = field(default_factory=lambda: {'model': 'qwen2.5:7b', 'host': 'localhost', 'port': 11437})
+    ext_params: Dict = field(default_factory=lambda: {'timeout': 560, 'keep_alive': 120, 'trials': 5})
 
     def to_str(self):
         """Формирует строковое представление конфигурации коннектора.

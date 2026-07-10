@@ -1,0 +1,25 @@
+db_vendor: kuzu
+db_config:
+  db_info:
+    db: DefaultPersonalAIGraphDB
+    table: DefaultPersonalAIGraphTable
+  params:
+    path: ./personalai_tmp/volumes/kuzu_graph
+    buffer_pool_size: 1073741824
+    table_type_map:
+      relations:
+        forward:
+          simple: simple
+          hyper: hyper_rel
+          episodic: episodic_rel
+          time: time_rel
+      nodes:
+        forward:
+          object: object
+          hyper: hyper
+          episodic: episodic
+          time: time
+  need_to_clear: false
+  create_index: false
+  host: null
+  port: null

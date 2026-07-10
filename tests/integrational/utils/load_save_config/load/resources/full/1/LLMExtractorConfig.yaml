@@ -1,0 +1,11 @@
+lang: auto
+log_path: log/memorize/extractor/main
+verbose: false
+log_level: 10
+agent_gen_stategy: null
+agent_tasks_config:
+  triplets_extraction: v2
+  thesises_extraction: v2
+need_simple: true
+need_thesises: true
+need_episodic: true

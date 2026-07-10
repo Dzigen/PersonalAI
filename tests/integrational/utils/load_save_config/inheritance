@@ -1,0 +1,104 @@
+============
+1hop inherit
+=============
+1. src.utils.data_structs.BaseComponentConfig
+
+2. src.rerankers.utils.BaseRerankerModuleConfig
+3. [X] src.rerankers.RerankerDriver.RerankerDriverConfig
+
+4. src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.utils.BaseTripletsFilterConfig
+5. src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.utils.BaseGraphSearchConfig
+6. [X] src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.AStarTripletsRetriever.AStarMetricsConfig
+7. src.pipelines.qa.kg_reasoning.utils.BaseKGReasonerConfig
+
+8.  [X] src.db_drivers.vector_driver.embedders.EmbedderModelConfig
+
+9. src.db_drivers.utils.BaseDatabaseConfig
+
+10. [X] src.db_drivers.table_driver.TableDriver.TableDriverConfig
+11. [X] src.db_drivers.kv_driver.KeyValueDriver.KeyValueDriverConfig
+12. [X] src.db_drivers.graph_driver.GraphDriver.GraphDriverConfig
+13. [X] src.db_drivers.vector_driver.VectorDriver.VectorDriverConfig
+14. [X] src.db_drivers.tree_driver.TreeDriver.TreeDriverConfig
+
+15. src.utils.task_solver.BaseAgentTasksConfig
+16. src.utils.agent_stat_analyzer.AgentStatAnalyzer.AgentStatAnalyzerConfig
+17. [X] src.agents.utils.AgentConnectorConfig
+18. [X] src.agents.AgentDriver.AgentDriverConfig
+============
+2hop inherit
+============
+1.1 src.pipelines.qa.query_preprocessing.enhancing.QueryEnhancer.QueryEnhancerConfig
+1.2 src.pipelines.qa.query_preprocessing.denoising.QueryDenoiser.QueryDenoiserConfig
+1.3 src.pipelines.qa.query_preprocessing.decomposition.QueryDecomposer.QueryDecomposerConfig
+1.4 src.pipelines.qa.query_preprocessing.QueryPreprocessor.QueryPreprocessorConfig
+1.5 src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.QueryLLMParser.QueryLLMParserConfig
+1.6 src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.KnowledgeRetriever.KnowledgeRetrieverConfig
+1.7 src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator.KnowledgeComparator.KnowledgeComparatorConfig
+1.8 src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.QALLMGenerator.QALLMGeneratorConfig
+1.9 src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner.WeakKGReasonerConfig
+1.10 src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.SearchPlanEnhancer.SearchPlanEnhancerConfig
+1.11 src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.EntitiesExtractor.EntitiesExtractorConfig
+1.12 src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching.Entities2NodesMatcher.Entities2NodesMatcherConfig
+1.13 src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.ClueQueriesGenerator.ClueQueriesGeneratorConfig
+1.14 src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.ClueAnswersSummarizer.ClueAnswersSummarizerConfig
+1.15 src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.ClueAnswerGenerator.ClueAnswerGeneratorConfig
+1.16 src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.AnswerGenerator.AnswerGeneratorConfig
+1.17 src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner.MediumKGReasonerConfig
+1.18 src.pipelines.qa.kg_reasoning.KGReasoner.KnowledgeGraphReasonerConfig
+1.19 src.pipelines.qa.answers_aggregation.AnswersAggregator.AnswersAggregatorConfig
+1.20 src.pipelines.qa.QAPipeline.QAPipelineConfig
+1.21 src.pipelines.memorize.updator.LLMUpdator.LLMUpdatorConfig
+1.22 src.pipelines.memorize.extractor.LLMExtractor.LLMExtractorConfig
+1.23 src.pipelines.memorize.MemPipeline.MemPipelineConfig
+1.24 src.main.PersonalAIConfig
+1.25 src.kg_model.nodestree_model.NodesTreeModel.NodesTreeModelConfig
+1.26 src.kg_model.graph_model.GraphModel.GraphModelConfig
+1.27 src.kg_model.embeddings_model.EmbeddingsModel.EmbeddingsModelConfig
+1.28 src.kg_model.KnowledgeGraphModel.KnowledgeGraphModelConfig
+1.29 src.TextIdStore.TextIdStoreConfig
+------(30)------
+2.1 src.rerankers.methods.EnsembleFusionReranker.EnsembleFusionRerankerConfig
+2.2 src.rerankers.methods.MultiStepReranker.MultiStepRerankerConfig
+2.3 src.rerankers.methods.SingleStepReranker.SingleStepRerankerConfig
+------(3)------
+4.1 src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods.TripletsFilter.TripletsFilterConfig
+------(1)------
+5.1 src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.AStarTripletsRetriever.AStarGraphSearchConfig
+5.2 src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever.GraphBeamSearchConfig
+5.3 src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.MixturedTripletsRetriever.MixturedGraphSearchConfig
+5.4 src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveBFSTripletsRetriever.NaiveBFSGraphSearchConfig
+5.5 src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveTripletsRetriever.NaiveGraphSearchConfig
+5.6 src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.WaterCirclesTripletsRetriever.WaterCirclesSearchConfig
+------(6)------
+7.1 src.pipelines.qa.kg_reasoning.medium_reasoner.MediumKGReasoner.MediumKGReasonerConfig
+7.2 src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner.WeakKGReasonerConfig
+------(2)------
+9.1 src.db_drivers.graph_driver.utils.GraphDBConnectionConfig
+9.2 src.db_drivers.kv_driver.utils.KVDBConnectionConfig
+9.3 src.db_drivers.table_driver.utils.TableDBConnectionConfig
+9.4 src.db_drivers.tree_driver.utils.TreeDBConnectionConfig
+9.5 src.db_drivers.vector_driver.utils.VectorDBConnectionConfig
+------(5)------
+15.1 src.kg_model.nodestree_model.utils.NodesTreeModelAgentTasksConfig
+15.2 src.pipelines.memorize.extractor.utils.MemExtractorAgentTasksConfig
+15.3 src.pipelines.memorize.updator.utils.MemUpdatorAgentTasksConfig
+15.4 src.pipelines.qa.answers_aggregation.utils.AnswersAggregatorAgentTasksConfig
+15.5 src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.utils.AnswerGeneratorAgentTasksConfig
+15.6 src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswer_generator.utils.ClueAnswerGeneratorAgentTasksConfig
+15.7 src.pipelines.qa.kg_reasoning.medium_reasoner.clueanswers_summarisation.utils.ClueAnswersSummarizerAgentTasksConfig
+15.8 src.pipelines.qa.kg_reasoning.medium_reasoner.cluequeries_generator.utils.ClueQueriesGeneratorAgentTasksConfig
+15.9 src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.utils.EntitiesExtractorAgentTasksConfig
+15.10 src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.utils.SearchPlanEnhancerAgentTasksConfig
+15.11 src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.utils.QALLMGeneratorAgentTasksConfig
+15.12 src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.utils.QueryLLMParserAgentTasksConfig
+15.13 src.pipelines.qa.query_preprocessing.decomposition.utils.QueryDecomposerAgentTasksConfig
+15.14 src.pipelines.qa.query_preprocessing.denoising.utils.QueryDenoiserAgentTasksConfig
+15.15 src.pipelines.qa.query_preprocessing.enhancing.utils.QueryEnhancerAgentTasksConfig
+------(15)------
+16.1 src.db_drivers.table_driver.TableDriver.TableDriverConfig
+16.2 src.utils.agent_stat_analyzer.utils.CalculateMetrics
+------(2| --*)------
+============
+3hop inherit
+============

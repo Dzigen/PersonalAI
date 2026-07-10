@@ -1,0 +1,168 @@
+lang: auto
+log_path: log/qa/kg_reasoner/medium/main
+verbose: false
+log_level: 10
+searchplan_enhancer_config:
+  lang: auto
+  log_path: log/qa/kg_reasoner/medium/plan_enhancer/main
+  verbose: false
+  log_level: 10
+  plan_enhancment: true
+  agent_gen_stategy: null
+  agent_tasks_config:
+    plan_initing: v2
+    enhance_classifier: v2
+    plan_enhancing: v2
+  cache_table_name: medreasn_planenh_main_stage_cache
+entities_extractor_config:
+  lang: auto
+  log_path: log/qa/kg_reasoner/medium/entities_extractor/main
+  verbose: false
+  log_level: 10
+  agent_gen_stategy: null
+  agent_tasks_config:
+    entities_extraction: v1
+  max_entities: 20
+  cache_table_name: medreasn_entextr_main_stage_cache
+e2n_matcher_config:
+  log_path: log/qa/kg_reasoner/medium/entities2nodes_matching/main
+  verbose: false
+  log_level: 10
+  use_tree: false
+  reranker_driver_config:
+    name: ensemble_fusion
+    strategy_config:
+      vdb_names:
+      - dense_nodes
+      - bm25_nodes
+      retriever_configs: null
+      weights:
+      - 0.3
+      - 0.7
+      c: 60
+  max_n: 3
+  discard_other_mnodes_if_exactmatch_found: true
+  cache_table_name: medreasn_e2nmatcher_main_stage_cache
+cluequeries_generator_config:
+  lang: auto
+  log_path: log/qa/kg_reasoner/medium/cluequeries_generator/main
+  verbose: false
+  log_level: 10
+  agent_gen_stategy: null
+  agent_tasks_config:
+    cquerie_generator: v4
+  max_cqueries_amount: 6
+  return_only_unique_cqueires: true
+  cache_table_name: medreasn_cquerygen_main_stage_cache
+knowledge_retriever_config:
+  log_path: log/qa/kg_reasoner/weak/knowledge_retriever/main
+  verbose: false
+  log_level: 10
+  retriever_method: mixture
+  retriever_config:
+    log_path: log/qa/kg_reasoner/weak/knowledge_retriever/mixtured_retriever
+    verbose: false
+    log_level: 10
+    accepted_node_types:
+    - object
+    - hyper
+    - episodic
+    - time
+    retriever1_name: beamsearch
+    retriever1_config:
+      log_path: log/qa/kg_reasoner/weak/knowledge_retriever/beamsearch_retriever
+      verbose: false
+      log_level: 10
+      accepted_node_types:
+      - object
+      - hyper
+      - episodic
+      reranker_driver_config:
+        name: single_step
+        strategy_config:
+          vdb_name: dense_triplets
+          fetch_n: 25
+          threshold: 0.5
+      vdbname_for_scores: dense_triplets
+      max_depth: 5
+      max_paths: 10
+      same_path_intersection_by_node: false
+      diff_paths_intersection_by_node: false
+      diff_paths_intersection_by_rel: false
+      mean_alpha: 0.75
+      final_sorting_mode: mixed
+      cache_table_name: qa_beamsearch_t_retriever_cache
+    retriever2_name: watercircles
+    retriever2_config:
+      log_path: log/qa/kg_reasoner/weak/knowledge_retriever/watercircles_retriever
+      verbose: false
+      log_level: 10
+      accepted_node_types:
+      - object
+      - hyper
+      - episodic
+      strict_filter: true
+      hyper_num: 25
+      episodic_num: 15
+      chain_triplets_num: 25
+      other_triplets_num: 6
+      do_text_pruning: false
+      cache_table_name: qa_watercircles_t_retriever_cache
+    cache_table_name: qa_mixture_t_retriever_cache
+  filter_method: naive
+  filter_config:
+    log_path: log/qa/kg_reasoner/weak/knowledge_retriever/triples_filter
+    verbose: false
+    log_level: 10
+    reranker_driver_config:
+      name: ensemble_fusion
+      strategy_config:
+        vdb_names:
+        - dense_triplets
+        - bm25_triplets
+        retriever_configs:
+        - fetch_n: 50
+          threshold: 0.5
+        - fetch_n: 50
+          threshold: 0.5
+        weights:
+        - 0.9
+        - 0.1
+        c: 60
+    accepted_triplets_types:
+    - hyper
+    - simple
+    max_k: 50
+    cache_table_name: qa_naive_t_filter_cache
+  cache_table_name: qa_kretriever_stage_cache
+clueanswer_generator_config:
+  lang: auto
+  log_path: log/qa/kg_reasoner/medium/clueansw_generation/main
+  verbose: false
+  log_level: 10
+  agent_gen_stategy: null
+  agent_tasks_config:
+    cagen: v3
+  cache_table_name: medreasn_cagen_main_stage_cache
+clueanswers_summarizer_config:
+  lang: auto
+  log_path: log/qa/kg_reasoner/medium/clueanswers_summarisation/main
+  verbose: false
+  log_level: 10
+  agent_gen_stategy: null
+  agent_tasks_config:
+    canswers_summarisation: v3
+  cache_table_name: medreasn_cquerysumm_main_stage_cache
+answer_generator_config:
+  lang: auto
+  log_path: log/qa/kg_reasoner/medium/answer_generation/main
+  verbose: false
+  log_level: 10
+  agent_gen_stategy: null
+  agent_tasks_config:
+    answer_classifier: v2
+    answer_generator: v3
+  cache_table_name: medreasn_answgen_main_stage_cache
+max_searchplan_steps: 6
+answer_something: true
+cache_table_name: qa_mediumreasoner_cache

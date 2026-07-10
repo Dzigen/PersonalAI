@@ -1,0 +1,67 @@
+log_path: log/kg_model/embeddings
+verbose: false
+log_level: 10
+nodesdb_driver_configs_mapping:
+  dense_nodes:
+    db_vendor: chroma
+    vector_category: dense
+    db_config:
+      db_info:
+        db: default_db
+        table: dense_nodes
+      params:
+        hnsw:space: ip
+        hnsw:M: 4096
+      need_to_clear: false
+      create_index: false
+      conn:
+        path: ./personalai_tmp/memory_parts/embeddings_model/vectorized_nodes/chroma
+  bm25_nodes:
+    db_vendor: inmemory
+    vector_category: sparse_bm25
+    db_config:
+      db_info:
+        db: default_db
+        table: sparsebm25_nodes
+      params:
+        store_dump_name: inmemory_bm25
+        load_from_disk: true
+        load_dump_name: null
+        load_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_nodes/inmemory_bm25
+        save_on_disk: true
+        save_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_nodes/inmemory_bm25
+      need_to_clear: false
+      create_index: false
+      conn: {}
+tripletsdb_driver_configs_mapping:
+  dense_triplets:
+    db_vendor: chroma
+    vector_category: dense
+    db_config:
+      db_info:
+        db: default_db
+        table: vectorized_triplets
+      params:
+        hnsw:space: ip
+        hnsw:M: 4096
+      need_to_clear: false
+      create_index: false
+      conn:
+        path: ./personalai_tmp/memory_parts/embeddings_model/vectorized_triplets/chroma
+  bm25_triplets:
+    db_vendor: inmemory
+    vector_category: sparse_bm25
+    db_config:
+      db_info:
+        db: default_db
+        table: sparsebm25_triplets
+      params:
+        store_dump_name: inmemory_bm25
+        load_from_disk: true
+        load_dump_name: null
+        load_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_triplets/inmemory_bm25
+        save_on_disk: true
+        save_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_triplets/inmemory_bm25
+      need_to_clear: false
+      create_index: false
+      conn: {}
