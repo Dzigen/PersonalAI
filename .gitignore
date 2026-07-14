@@ -12,6 +12,8 @@ personalai_tmp/
 tests/log
 docs/legacy/notebooks/log/
 notebooks/download_models/.env
+log
+personalai_tmp
 
 experiments/qa/configuring_exp/weak/legacy
 docs/notebooks/**/log
