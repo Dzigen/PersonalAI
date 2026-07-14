@@ -9,9 +9,9 @@ from torchmetrics.text.bert import BERTScore
 from Levenshtein import distance as levenshtain_distance
 import os
 import nltk
-nltk.download('wordnet')
-nltk.download('punkt')
-nltk.download('punkt_tab')
+# nltk.download('wordnet')
+# nltk.download('punkt')
+# nltk.download('punkt_tab')
 
 def calculate_f1_generation(hypothesis, reference):
     """
