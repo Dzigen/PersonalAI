@@ -12,11 +12,10 @@ personalai_tmp/
 tests/log
 docs/legacy/notebooks/log/
 notebooks/download_models/.env
-log
-personalai_tmp
 
 experiments/qa/configuring_exp/weak/legacy
 docs/notebooks/**/log
+docs/**/log
 experiments/qa/**/log
 
 # experiments/qa/weak/results/**/tmp_answer_packs/
@@ -67,13 +66,20 @@ experiments/qa/crontab4_log.txt
 
 experiments/qa/results
 experiments/qa/run_crontab.txt
-
+experiments/qa/grouped_run_crontab.txt
 
 notebooks/kg_building/cron_buildgraph.txt
+notebooks/kg_building/constructgraphs_crontablob.txt
+notebooks/kg_building/create/prepared_params/
+notebooks/kg_building/crontab_log.txt
+
 experiments/qa/init_env/env_settings
+notebooks/kg_building/constructgraphs_crontablob.txt
+experiments/qa/grouped_run_crontab.txt
 
 experiments/qa/configure/weak/prepared_params
 experiments/qa/configure/weak/generate_params/tmp_params
+notebooks/kg_building/create/prepared_params
 
 experiments/qa/configure/medium/prepared_params
 experiments/qa/configure/medium/generate_params/tmp_params
@@ -86,10 +92,49 @@ experiments/qa/params_to_run4
 experiments/qa/run_all_experiments2.sh
 experiments/qa/run_all_experiments3.sh
 experiments/qa/run_all_experiments4.sh
+experiments/qa/evaluate/metrics/qaeval_db/
 
 configs/blazegraph/authoritieschildrensSubjects.nt
 
-src/dialogue_processing/log
-src/dialogue_processing/diag_proc_tmp
-src/question_answer_rephrasing/log
-src/question_answer_rephrasing/quest_proc_tmp
+src/dialogue_processing/
+src/question_answer_rephrasing/
+
+experiments/analogues_eval/available_methods_utils/raptor/method_source
+experiments/analogues_eval/available_methods_utils/lightrag/method_source
+experiments/analogues_eval/available_methods_utils/hipporag2/method_source/
+
+experiments/kg_eval/mine/runexperiment_log.txt
+experiments/kg_eval/mine/configure/initdir_log.txt
+experiments/kg_eval/mine/crontab_log.txt
+experiments/kg_eval/mine/configure/generate_params/tmp_params
+experiments/kg_eval/mine/results/
+experiments/kg_eval/mine/params_to_run/
+experiments/kg_eval/mine/init_env/env_settings/
+experiments/kg_eval/mine/configure/prepared_params/
+
+experiments/analogues_eval/qa_eval/runexperiment_log.txt
+experiments/analogues_eval/qa_eval/configure/initdir_log.txt
+experiments/analogues_eval/kg_eval/mine/runexperiment_log.txt
+experiments/analogues_eval/kg_eval/mine/crontab_log.txt
+experiments/analogues_eval/kg_eval/mine/configure/initdir_log.txt
+experiments/analogues_eval/kg_building/prepared_params
+experiments/analogues_eval/kg_building/crontab_log.txt
+experiments/analogues_eval/available_methods_utils/wikontic/kg_eval/prepared_params/
+experiments/analogues_eval/available_methods_utils/kggen/kg_eval/prepared_params/
+experiments/analogues_eval/available_methods_utils/raptor/qa_eval/prepared_params/
+experiments/analogues_eval/available_methods_utils/hipporag2/qa_eval/prepared_params/
+experiments/analogues_eval/available_methods_utils/lightrag/qa_eval/prepared_params/
+experiments/analogues_eval/available_methods_utils/raptor/kg_building/prepared_params/
+experiments/analogues_eval/available_methods_utils/kggen/kg_building/prepared_params/
+experiments/analogues_eval/available_methods_utils/hipporag2/kg_building/prepared_params/
+experiments/analogues_eval/available_methods_utils/wikontic/kg_building/prepared_params/
+experiments/analogues_eval/available_methods_utils/lightrag/kg_building/prepared_params/
+
+experiments/analogues_eval/qa_eval/params_to_run/
+experiments/analogues_eval/qa_eval/env_settings/
+experiments/analogues_eval/kg_eval/mine/env_settings/
+experiments/analogues_eval/kg_eval/mine/params_to_run/
+
+tests/manual/log
+experiments/analogues_eval/qa_eval/results/
+tests/performance_load/logging/log
