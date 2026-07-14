@@ -1,6 +1,9 @@
 from .configs import EVAL_RAGAS_MAIN_LOG_PATH
 from ..utils import KeyValueDriverConfig, Logger, AgentDriverConfig, CacheKV, CacheUtils
 
+from langchain_ollama import OllamaLLM
+from ragas.llms import LangchainLLMWrapper
+
 from openai import AsyncOpenAI
 from dataclasses import dataclass, field
 from typing import Union
@@ -12,11 +15,11 @@ from ragas.metrics.collections import DistanceMeasure, RougeScore, CHRFScore, Bl
 from ragas.metrics import FactualCorrectness, ResponseGroundedness, \
         ContextRelevance, AnswerAccuracy, Faithfulness, \
             NoiseSensitivity, ContextEntityRecall
-from ragas import evaluate
+from ragas import evaluate, RunConfig
 import pandas as pd
 from copy import deepcopy
 
-DEFAULT_SELECTED_EVALUATE_METRICS = ['context_relevance', 'faithfulness', 'response_groundedness']
+DEFAULT_SELECTED_EVALUATE_METRICS = ['nv_context_relevance', 'faithfulness', 'nv_response_groundedness']
 
 @dataclass
 class RagasMetricsConfig:
@@ -49,12 +52,16 @@ class RagasMetrics(CacheUtils):
             raise ValueError
 
         agent_config = config.adriver_config.agent_config
-        base_url = f"http://{agent_config.credentials['host']}:{agent_config.credentials['port']}/v1"
-        self.client = AsyncOpenAI(api_key='ollama', base_url=base_url,
-                             timeout=agent_config.ext_params['timeout'])
+        base_url = f"http://{agent_config.credentials['host']}:{agent_config.credentials['port']}"
+        #self.client = AsyncOpenAI(api_key='ollama', base_url=base_url,
+        #                     timeout=agent_config.ext_params['timeout'])
 
+        self.client = OllamaLLM(
+            model=agent_config.credentials['model'], base_url=base_url,
+              keep_alive=-1, **agent_config.gen_strategy)
+        self.agent = LangchainLLMWrapper(self.client)
 
-        self.agent = llm_factory(agent_config.credentials['model'], client=self.client)
+        #self.agent = llm_factory(agent_config.credentials['model'], client=self.client)
 
         self.ContextEntitiesRecall = ContextEntityRecall(llm=self.agent)
         self.NoiseSensitivity = NoiseSensitivity(llm=self.agent)
@@ -76,9 +83,9 @@ class RagasMetrics(CacheUtils):
             'context_entity_recall': self.context_entity_recall
         }
         self.AVAILABLE_EVAULATE_METRICS_MAP = {
-            'context_relevance': self.ContextRelevance,
+            'nv_context_relevance': self.ContextRelevance,
             'faithfulness': self.Faithfulness,
-            'response_groundedness': self.ResponseGroundedness,
+            'nv_response_groundedness': self.ResponseGroundedness,
         }
 
     async def context_entity_recall(self, reference: str, retrieved_contexts: List[str]) -> float:
@@ -229,6 +236,13 @@ class RagasMetrics(CacheUtils):
             "contexts": retrieved_contexts,
             "ground_truth": reference
         }
+
+        config = RunConfig(
+            timeout=180,
+            max_retries=3,
+            max_workers=4
+        )
+
         #print(dataset)
         evaluation_dataset = Dataset.from_dict(dataset)
 
@@ -238,10 +252,12 @@ class RagasMetrics(CacheUtils):
             dataset=evaluation_dataset,
             metrics=selected_metrics_funcs,
             llm=self.agent,
-            raise_exceptions=True
+            raise_exceptions=True,
+            run_config=config,
+            batch_size=4
         )
 
         df = results.to_pandas()
-        #print(df.to_dict())
-        #formated_results = [{metric_name: df[metric_name][i] for metric_name in selected_metrics} for i in range(df.shape[0])]
+        print(df.to_dict())
+        formated_results = [{metric_name: df[metric_name][i] for metric_name in selected_metrics} for i in range(df.shape[0])]
         return df
