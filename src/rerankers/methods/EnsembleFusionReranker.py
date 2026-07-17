@@ -192,10 +192,8 @@ class EnsembleFusionReranker(AbstractRerankerModule):
         
         # !!! PAY ATTENTION : read-method returns items in non-deterministic order !!!
         tmp_filled_instances = self.vdb_composer.read(fused_ids, vdb_name=vdb_name, includes=include_fields)
-        id_to_idx = {inst_id: idx for idx, inst_id in enumerate(fused_ids)}
-        filled_instances = [None] * len(fused_ids)
-        for inst in tmp_filled_instances:
-            filled_instances[id_to_idx[inst.id]] = inst 
+        id_to_finst = {inst.id: inst for inst in tmp_filled_instances}
+        filled_instances = [id_to_finst[inst_id] for inst_id in fused_ids]
         
         assert len(fused_ids) == len(filled_instances)
         # id_to_finst = {inst.id: inst for inst in filled_instances}
