@@ -335,6 +335,8 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     :type adjacent_nodes_filter_node: str
     :param accepted_node_types: Типы вершин, которые можно обходить во время поиска заданной вершины. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic].
     :type accepted_node_types: List[Union[str,NodeType]]
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы AStarGraphSearch-класса. Значение по умолчанию 'qa_beamsearch_t_retriever_cache'.
+    :type cache_table_name: str, optional
     """
     metrics_config: Union[Dict, AStarMetricsConfig] = field(default_factory=lambda: AStarMetricsConfig())
     max_depth: int = 5

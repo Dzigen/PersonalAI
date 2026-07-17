@@ -64,7 +64,7 @@ class OLlamaConnector(AbstractAgentConnector):
                     keep_alive=self.config.ext_params['keep_alive']
                 )
                 flag = False
-            except (ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout, ReadError) as e:
+            except (ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout, ReadError, RuntimeError) as e:
                 counter += 1
                 if counter > self.trials:
                     raise ConnectError(str(e))

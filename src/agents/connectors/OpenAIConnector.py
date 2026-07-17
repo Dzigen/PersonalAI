@@ -58,7 +58,7 @@ class OpenAIConnector(AbstractAgentConnector):
                 response = self.client.chat.completions.create(
                     model=self.config.credentials['model'], messages=msgs, **gen_strategy)
                 flag = False
-            except (ConnectError, RemoteProtocolError, ConnectTimeout, APITimeoutError, ReadTimeout, ReadError) as e:
+            except (ConnectError, RemoteProtocolError, ConnectTimeout, APITimeoutError, ReadTimeout, ReadError, RuntimeError) as e:
                 counter += 1
                 if counter > self.trials:
                     raise ConnectError(str(e))

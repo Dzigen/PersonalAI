@@ -26,17 +26,17 @@ class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     :type retriever1_config: Union[BaseGraphSearchConfig, Dict], optional
     :param retriever2_name: Наименование одного из алгоритмов (#2), который будет использоваться в комбинированном режиме для обхода вершин/рёбер графовой структуры данных (графа знаний) и извлечения релевантной информации. Значение по умолчанию 'watercircles'.
     :type retriever2_name: str, optional
-    :param retriever2_config: Конфигурация выбранного алгоритма (#2) обхода графа. Значение по умолчанию WaterCirclesSearchConfig().
+    :param retriever2_config: Конфигурация выбранного алгоритма (#2) обхода графа. Значение по умолчанию NaiveGraphSearchConfig().
     :type retriever2_config: Union[BaseGraphSearchConfig, Dict], optional
     :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извлечения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic].
     :type accepted_node_types: List[Union[str, NodeType]], optional
-    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveBFSTripletsRetriever-класса. Значение по умолчанию 'qa_bfs_t_retriver_cache'.
+    :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы MixturedGraphSearchConfig-класса. Значение по умолчанию 'qa_bfs_t_retriver_cache'.
     :type cache_table_name: str, optional
     """
     retriever1_name: str = 'beamsearch'
     retriever1_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: GraphBeamSearchConfig())
-    retriever2_name: str = 'watercircles'
-    retriever2_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: WaterCirclesSearchConfig())
+    retriever2_name: str = 'naive_retriever'
+    retriever2_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: NaiveGraphSearchConfig())
     accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
     cache_table_name: str = 'qa_mixture_t_retriever_cache'
     log_path: str = MIXTURED_RETRIEVER_LOG_PATH

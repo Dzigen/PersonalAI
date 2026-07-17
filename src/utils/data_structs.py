@@ -625,7 +625,7 @@ class BaseConfigOperations:
             raise FileExistsError
 
         with open(file_path, "w") as fd:
-            yaml.dump(dict_config, fd, default_flow_style=False, sort_keys=False)
+            yaml.dump(dict_config, fd, default_flow_style=False, sort_keys=False, allow_unicode=True)
 
 
 @dataclass(kw_only=True)
