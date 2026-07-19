@@ -174,7 +174,7 @@ for pack_name in answers_pack_names:
             'user_input':a_info['question'], 'reference': a_info['gold_answer'],
             'response': a_info['gen_answer'], 'retrieved_contexts': retrieved_contexts
         }
-        ragas_metrics = ['response_groundedness', 'context_relevance', 'faithfulness']
+        ragas_metrics = ['context_relevance', 'faithfulness'] # 'response_groundedness', 
         for metric_name in ragas_metrics:
             cache_hit, output = ragas_evaluator.get_cached_score(metric_name, **eval_suite)
             if cache_hit:

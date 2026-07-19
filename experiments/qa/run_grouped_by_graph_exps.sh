@@ -16,13 +16,13 @@ ENV_SETTINGS_DIR="$INIT_ENV_DIR/env_settings"
 # ===============================================================
 
 # "2wikimultihopqa_dev"
-DATASETS=("diaasq") #"hotpotqa_distractor_validation" "musique_validation" "natural_questions_train" "trivia_qa_rcwikipedia_validation")  # TO CHANGE
+DATASETS=("diaasq" "hotpotqa_distractor_validation" "musique_validation" "natural_questions_train" "trivia_qa_rcwikipedia_validation")  # TO CHANGE
 # "qwen257b_080226_v2prompts"
-KNOWLEDGE_GRAPHS=("qwen257b_260126_v2prompts") #"qwen257b_230126_v2prompts" "qwen257b_050226_v2prompts" "qwen257b_020226_v2prompts"  "qwen257b_290126_v2prompts")  # TO CHANGE
+KNOWLEDGE_GRAPHS=("qwen257b_260126_v2prompts" "qwen257b_230126_v2prompts" "qwen257b_050226_v2prompts" "qwen257b_020226_v2prompts"  "qwen257b_290126_v2prompts")  # TO CHANGE
 # "2wikimultihopqa_dev.yaml"
-EVAL_FNAMES=("diaasq.yaml") #"hotpotqa_distractor_validation.yaml" "musique_validation.yaml" "natural_questions_train.yaml" "trivia_qa_rcwikipedia_validation.yaml")  # TO CHANGE
+EVAL_FNAMES=("diaasq.yaml" "hotpotqa_distractor_validation.yaml" "musique_validation.yaml" "natural_questions_train.yaml" "trivia_qa_rcwikipedia_validation.yaml")  # TO CHANGE
 # "2wikimultihopqa_dev.yaml"
-CONFIGURE_FNAMES=("diaasq.yaml") #"hotpotqa_distractor_validation.yaml" "musique_validation.yaml" "natural_questions_train.yaml"  "trivia_qa_rcwikipedia_validation.yaml") # TO CHANGE
+CONFIGURE_FNAMES=("diaasq.yaml" "hotpotqa_distractor_validation.yaml" "musique_validation.yaml" "natural_questions_train.yaml"  "trivia_qa_rcwikipedia_validation.yaml") # TO CHANGE
 QA_PIPELINE_VERSION="medium" # TO CHANGE
 
 # ===============================================================
