@@ -18,7 +18,7 @@ PERSONALAI_VERSION: 'v2.3.5' # TO CHANGE
 
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
-  max_samples_per_pack: 1000
+  max_samples_per_pack: 100
   lang:
     - 'en'
     - 'en'
@@ -70,6 +70,7 @@ kg_reasoner: # TO CHANGE
 
     e2n_matcher_config:
       - max_n: 2
+        discard_other_mnodes_if_exactmatch_found: False
         reranker_driver_config:
           name: 'ensemble_fusion' # DONT CHANGE
           strategy_config:
@@ -84,11 +85,11 @@ kg_reasoner: # TO CHANGE
 
     cluequeries_generator_config:
       max_cqueries_amount: 
-        #- 1
-        #- 2
+        - 1
+        - 2
         - 4
-        #- 6
-        #- 8
+        - 6
+        - 8
       agent_tasks_config:
         cquerie_generator: 
           - 'v4'

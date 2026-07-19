@@ -178,7 +178,7 @@ services:
       #- OLLAMA_NUM_PARALLEL=4     # Processes up to 4 requests at once per model
       #- OLLAMA_MAX_LOADED_MODELS=2  # Keeps up to 2 different models in VRAM
       #- OLLAMA_FLASH_ATTENTION=1    # Strongly recommended to save VRAM during parallel loads
-    vo#lumes:
+    volumes:
       - ${OLLAMA_LOCAL_VOLUME}:/root/.ollama
     deploy:
       resources:
