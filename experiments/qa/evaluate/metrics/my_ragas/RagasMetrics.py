@@ -10,6 +10,18 @@ from typing import Union
 from time import time
 from typing import List, Dict, Tuple
 import asyncio
+import sys
+import types
+
+# Create a fake module to trick the ragas importer
+if "langchain_community.chat_models.vertexai" not in sys.modules:
+    dummy_module = types.ModuleType("langchain_community.chat_models.vertexai")
+    class ChatVertexAI: 
+        pass
+    dummy_module.ChatVertexAI = ChatVertexAI
+    sys.modules["langchain_community.chat_models.vertexai"] = dummy_module
+
+
 from ragas.llms import llm_factory
 from ragas.metrics.collections import DistanceMeasure
 from ragas.metrics.collections import RougeScore, CHRFScore, BleuScore, \

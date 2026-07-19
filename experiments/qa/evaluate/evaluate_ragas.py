@@ -174,7 +174,7 @@ for pack_name in answers_pack_names:
             'user_input':a_info['question'], 'reference': a_info['gold_answer'],
             'response': a_info['gen_answer'], 'retrieved_contexts': retrieved_contexts
         }
-        ragas_metrics = ['context_relevance', 'faithfulness'] # 'response_groundedness', 
+        ragas_metrics = ['context_relevance', 'faithfulness', 'response_groundedness']
         for metric_name in ragas_metrics:
             cache_hit, output = ragas_evaluator.get_cached_score(metric_name, **eval_suite)
             if cache_hit:
@@ -234,7 +234,7 @@ for pack_name in ragas_pack_names:
     accum_score['elapsed_time']['median'] = np.median(
         list(accum_score['answer_time_map'].values()))
 
-    for ragas_metric_name in list(accum_score['ragas'].keys()):
+    for ragas_metric_name in ragas_metrics:
         spec_scores = list(map(lambda scores: scores[ragas_metric_name], accum_score['answer_score_map'].values()))
         filtered_scores = list(filter(lambda score: (score is not None) and (not np.isnan(score)), spec_scores))
         accum_score['ragas'][ragas_metric_name]['mean'] = np.mean(filtered_scores) if len(filtered_scores) > 0 else 0.0

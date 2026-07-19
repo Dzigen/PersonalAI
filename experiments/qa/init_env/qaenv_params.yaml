@@ -9,8 +9,8 @@ KG_SETTING_DIR:
   kgconn: kgconn_params
   kgenv: kgenv_params
 GPUS_CONFIG:
-  ollama_device_id: '1'
-  workspace_device_id: '1'
+  ollama_device_id: '2'
+  workspace_device_id: '2'
 PERSONALAI_REPO_DIRS:
   experiments: experiments/qa
 WORKSPACE_CONTAINER_DIRS:

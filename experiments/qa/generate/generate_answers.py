@@ -113,6 +113,16 @@ qa_pipeline = QAPipeline(kg_model, qa_config, kvdriver_config, llmstat_config)
 #      clear_retrieval_cache = True
 # )
 
+# !! PAY ATTENTION !!!
+# qa_pipeline.cachekv.clear()
+# qa_pipeline.stages.answers_aggregator.clear_kv_caches()
+# qa_pipeline.stages.query_preprocessor.clear_kv_caches()
+# qa_pipeline.stages.kg_reasoner.stages.reasoner.cachekv.clear()
+# qa_pipeline.stages.kg_reasoner.stages.reasoner.stages.entities2nodes_matcher.clear_kv_caches()
+# qa_pipeline.stages.kg_reasoner.stages.reasoner.stages.searchplan_enhancer.clear_kv_caches()
+
+START_SAMPLE_IDX = 897
+
 print("llmstat cache:")
 pprint(qa_pipeline.get_agent_tgen_stat())
 
@@ -282,7 +292,7 @@ for pack_name, questions, _ in question_packs:
     if not os.path.exists(pack_traces_dir):
         os.mkdir(pack_traces_dir)
 
-    process = tqdm(range(len(questions)))
+    process = tqdm(range(START_SAMPLE_IDX, len(questions)))
     for i in process:
         process.set_postfix_str(pack_name)
 

@@ -1,1 +1,1 @@
-docker build -t m.menschikov/workspace:v12 .
+docker build -t m.menschikov/workspace:v13 .

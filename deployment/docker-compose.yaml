@@ -291,7 +291,7 @@ services:
     build:
       context: .
       dockerfile: workspace.Dockerfile
-    image: m.menschikov/workspace:v12
+    image: m.menschikov/workspace:v13
     container_name: personalai_mmenschikov_workspace
     hostname: workspaceservice
     network_mode: "host"
