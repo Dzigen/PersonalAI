@@ -18,8 +18,9 @@ import torch
 import gc
 import os
 import nltk
-nltk.download('wordnet')
-nltk.download('punkt')
+# nltk.download('wordnet')
+# nltk.download('punkt')
+# nltk.download('punkt_tab')
 
 ####################################################
 print("1. Loading hyperparameters from .yaml files")

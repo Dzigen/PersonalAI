@@ -62,7 +62,7 @@ class GigaChatConnector(AbstractAgentConnector):
             try:
                 response = self.giga_model.chat(chat)
                 flag = False
-            except (ConnectError, RemoteProtocolError, ResponseError, ConnectTimeout, ReadTimeout, ReadError) as e:
+            except (ConnectError, RemoteProtocolError, ResponseError, ConnectTimeout, ReadTimeout, ReadError, RuntimeError) as e:
                 counter += 1
                 if counter > self.trials:
                     raise ConnectError
