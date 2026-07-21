@@ -3,6 +3,7 @@ from copy import deepcopy
 
 from .utils import AbstractCacheUtils
 from .CacheKV import CacheKV
+from ..errors import ReturnInfo, ReturnStatus
 from ...db_drivers.kv_driver import KeyValueDriverConfig
 
 
@@ -66,11 +67,27 @@ class CacheUtils(AbstractCacheUtils):
                 self.log.debug("Получем результат с нуля...", verbose=self.verbose, log_level=self.log_level)
                 output = function(self, *args, **kwargs)
 
+                # КОСТЫЛЬ: если во время выполнения функции/метода возникла ошибка, 
+                # то кеширование полученного результата выполнено не будет.
+                # Для детекции данного события функция/метод должна вернуть (в числе прочего) ReturnInfo-структуру.
+                is_caching_accepted: bool = True
+                if isinstance(output, tuple):
+                    for out_item in output:
+                        if isinstance(out_item, ReturnInfo):
+                            if out_item.status != ReturnStatus.success:
+                                is_caching_accepted = False
+                            else:
+                                break
+
                 if self.cachekv is not None:
-                    self.log.debug("Кешируем полученный результат.", verbose=self.verbose, log_level=self.log_level)
-                    self.log.debug("* cache table_name: %s", self.cachekv.kv_conn.config.db_info['table'], verbose=self.verbose, log_level=self.log_level)
-                    self.log.debug(f"* cahce hash_key: %s .", key_hash, verbose=self.verbose, log_level=self.log_level)
-                    self.cachekv.save_value(value=output, key_hash=key_hash)
+                    if is_caching_accepted:
+                        self.log.debug("Кешируем полученный результат.", verbose=self.verbose, log_level=self.log_level)
+                        self.log.debug("* cache table_name: %s", self.cachekv.kv_conn.config.db_info['table'], verbose=self.verbose, log_level=self.log_level)
+                        self.log.debug(f"* cahce hash_key: %s .", key_hash, verbose=self.verbose, log_level=self.log_level)
+                        self.cachekv.save_value(value=output, key_hash=key_hash)
+                    else:
+                        self.log.warning("Кеширования результата работы метода выполнено не будет, так как во время его выполнения возникла ошибка.", verbose=self.verbose, log_level=self.log_level)
+                    
 
             return *output, cache_hit
         return wrapper

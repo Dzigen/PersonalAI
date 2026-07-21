@@ -31,7 +31,7 @@ class AgentConnectorConfig(BaseConfigOperations):
         str_genstrat = ";".join(list(map(lambda p: f"{p[0]}={p[1]}", sorted(
             [(k, str(v)) for k, v in self.gen_strategy.items()], key=lambda p: p[0]))))
         str_creds = ";".join(list(map(lambda p: f"{p[0]}={p[1]}", sorted(
-            [(k, str(v)) for k, v in self.credentials.items()], key=lambda p: p[0]))))
+            [(k, str(v)) for k, v in self.credentials.items() if k not in ['host', 'port']], key=lambda p: p[0]))))
         return f"{str_genstrat}|{str_creds}"
 
     @staticmethod

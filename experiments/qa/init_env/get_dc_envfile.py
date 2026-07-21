@@ -180,10 +180,10 @@ def add_prefixes(dict_variables) -> None:
 
 env_variables = [
     neo4j_cnt_variables, qdrant_cnt_variables, mongo_cnt_variables, mongoui_cnt_variables,
-    redis_cnt_variables, redisui_cnt_variables, opensearch_cnt_variables, workspace_cnt_variables]
+    redis_cnt_variables, redisui_cnt_variables, opensearch_cnt_variables, workspace_cnt_variables, llmagents_cnt_variables]
 for variables in env_variables:
     add_prefixes(variables)
-env_variables += [llmagents_cnt_variables, compose_variables]
+env_variables += [compose_variables]
 
 env_variables = '\n'.join(
     list(map(lambda vars: dictvar_to_string(vars), env_variables)))

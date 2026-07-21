@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from typing import Union
 from abc import ABC, abstractmethod
 
+# костыль; в следующей версии закомментировать
+from ...db_drivers.table_driver.table_structures import LLMInferenceStat
 
 @dataclass
 class CalculateMetrics:
