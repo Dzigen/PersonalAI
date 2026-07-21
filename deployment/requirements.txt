@@ -163,7 +163,7 @@ tenacity==9.1.2
 threadpoolctl==3.6.0
 tokenizers==0.22.1
 tomli==2.3.0
-# torch #==2.8.0+cu126
+# torch==2.8.0+cu126
 # torchvision
 # torchaudio
 tornado==6.5.2
@@ -226,3 +226,4 @@ litellm==1.81.11
 openai==2.21.0
 optuna==4.7.0
 picologging
+langchain-google-vertexai

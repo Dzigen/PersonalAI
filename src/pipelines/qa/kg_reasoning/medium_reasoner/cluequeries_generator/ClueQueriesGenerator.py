@@ -29,7 +29,7 @@ class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
     :type agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict], optional
     :param max_cqueries_amount: Максимальное количество clue-запросов, которое может быть сгенерировано. Значение по умолчанию 6.
     :type max_cqueries_amount: int, optional
-    :param return_only_unique_cqueires: Если True, то из набора сгенерированных clue-вопросов будут удалены дубликаты (по строковому представлению и без учёта вершин, по которым данные clue-вопросы были получены), иначе False. Значение по умолчанию True.
+    :param return_only_unique_cqueires: Если True, то из набора сгенерированных clue-вопросов будут удалены дубликаты (по строковому представлению и без учёта вершин, по которым данные clue-вопросы были получены), иначе False. Значение по умолчанию False.
     :type return_only_unique_cqueires: bool, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы ClueQueriesGenerator-класса. Значение по умолчанию 'medreasn_cquerygen_main_stage_cache'.
     :type cache_table_name: str, optional
@@ -37,7 +37,7 @@ class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict] = field(default_factory=lambda: ClueQueriesGeneratorAgentTasksConfig())
     max_cqueries_amount: int = 6
-    return_only_unique_cqueires: bool = True
+    return_only_unique_cqueires: bool = False
 
     cache_table_name: str = 'medreasn_cquerygen_main_stage_cache'
     log_path: str = CQGEN_MAIN_LOG_PATH

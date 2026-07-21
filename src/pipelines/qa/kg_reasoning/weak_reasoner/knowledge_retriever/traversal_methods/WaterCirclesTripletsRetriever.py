@@ -2,6 +2,7 @@ import copy
 from dataclasses import dataclass, field
 from typing import Dict, List, Set, Tuple, Union
 from copy import deepcopy
+from collections import Counter
 
 from .configs import WATERCIRCLES_RETRIEVER_LOG_PATH
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
@@ -299,7 +300,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
                         (triplet_raw.start_node.name, "", "node"))
                 triplets_info.append([triplet, new_entities, new_chain])
         except Exception as e:
-            print(f"error in query execution: {e}")
+            self.log.error(f"error in query execution: {e}", verbose=self.verbose, log_level=self.log_level)
         return triplets_info, inters_chains1, inters_chains2
 
     def add_chains(
@@ -385,7 +386,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
             seed_entities, depth)
         output_texts_hyper, output_texts_episodic = self.extract_thesis(
             seed_entities, same_types)
-        # print("texts_hyper", len(output_texts_hyper), "texts_episodic", len(output_texts_episodic))
+        self.log.debug(f"texts_hyper: {len(output_texts_hyper)}; texts_episodic: {len(output_texts_episodic)}", verbose=self.verbose, log_level=self.log_level)
 
         thres = self.config.chain_triplets_num
         if len(inters_chains1) == 1:
@@ -513,7 +514,16 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
                     formatted_triplet = format_triplet(triplet)
                     formatted_triplets.append(formatted_triplet)
 
-        return formatted_triplets, rinfo
+        unique_triplets_map: Dict[str, Triplet] = dict()
+        for triplet in formatted_triplets:
+                unique_triplets_map[triplet.relation.get_typedid()] = triplet
+        unique_triplets: List[Triplet] = list(unique_triplets_map.values())
+
+        self.log.debug("Суммарное количество уникальных (по строковому представлению) извлечённых триплетов: %d", len(unique_triplets), verbose=self.verbose, log_level=self.log_level)
+        relations_counter = Counter([triplet.relation.type for triplet in unique_triplets])
+        self.log.debug("Распределение типов связей в наборе извлечённых триплетов: %s", relations_counter, verbose=self.verbose, log_level=self.log_level)
+
+        return unique_triplets, rinfo
 
     def extract_thesis_for_entities(
         self,
@@ -634,12 +644,16 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
         output_texts = {"hyper": [], "episodic": []}
         retr_texts = {ne: [] for ne in range(len(seed_entities))}
         for ne, entities_list in enumerate(seed_entities):
-            cur_texts1 = self.extract_thesis_for_entities(seed_entities, entities_list, "hyper")
-            cur_texts2 = self.extract_thesis_for_entities(seed_entities, entities_list, "episodic")
-            for text, seed_entity, subj_props, obj_props, rel_props, cnt, cnt2, e_id in cur_texts1:
-                retr_texts[ne].append([text, seed_entity, subj_props, obj_props, rel_props, cnt, cnt2, "hyper", e_id])
-            for text, seed_entity, subj_props, obj_props, rel_props, cnt, cnt2, e_id in cur_texts2:
-                retr_texts[ne].append([text, seed_entity, subj_props, obj_props, rel_props, cnt, cnt2, "episodic", e_id])
+
+            if NodeType.hyper in self.config.accepted_node_types:
+                cur_texts1 = self.extract_thesis_for_entities(seed_entities, entities_list, "hyper")
+                for text, seed_entity, subj_props, obj_props, rel_props, cnt, cnt2, e_id in cur_texts1:
+                    retr_texts[ne].append([text, seed_entity, subj_props, obj_props, rel_props, cnt, cnt2, "hyper", e_id])
+
+            if NodeType.episodic in self.config.accepted_node_types:
+                cur_texts2 = self.extract_thesis_for_entities(seed_entities, entities_list, "episodic")
+                for text, seed_entity, subj_props, obj_props, rel_props, cnt, cnt2, e_id in cur_texts2:
+                    retr_texts[ne].append([text, seed_entity, subj_props, obj_props, rel_props, cnt, cnt2, "episodic", e_id])
 
         for key in retr_texts:
             retr_texts[key] = sorted(retr_texts[key], key=lambda x: x[-4], reverse=True)

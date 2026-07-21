@@ -10,7 +10,7 @@ from .errors import ReturnStatus, STATUS_MESSAGE
 from .cache_kv import CacheKV
 from .tracing import accumulate_tasksolver_info
 from .agent_stat_analyzer import AgentStatAnalyzerConfig, AgentStatAnalyzer
-from ..agents.utils import AbstractAgentConnector
+from ..agents.utils import AbstractAgentConnector, LLMInferenceStat
 from ..db_drivers.kv_driver import KeyValueDriverConfig
 from .data_structs import BaseConfigOperations
 from .data_structs import LoggingConfig, LogLevel, Logger
@@ -154,12 +154,13 @@ class AgentTaskSolver:
             finally:
                 self.log.debug("Статус: %s", STATUS_MESSAGE[status], verbose=self.verbose, log_level=self.log_level)
 
-        # Если удалось добавить дополнительную инофрмацию в user-prompt
+        raw_answer: Union[None, str] = None
+        inference_info: Union[None, LLMInferenceStat] = None
+
+        # Если удалось добавить дополнительную информацию в user-prompt
         if status == ReturnStatus.success:
             self.log.debug("-" * 20, verbose=self.verbose, log_level=self.log_level)
             self.log.debug("4. Генерация ответа с помощью LLM-агента.", verbose=self.verbose, log_level=self.log_level)
-
-            raw_answer = None
 
             # preparing cache key
             gen_strategy = self.agent.config.gen_strategy if gen_strategy is None else gen_strategy
@@ -207,13 +208,6 @@ class AgentTaskSolver:
                     assistant_prompt=self.config.suites[detected_lang].assistant_prompt,
                     gen_strategy=gen_strategy)
 
-                if self.inference_stat_cache is not None:
-                    self.inference_stat_cache.add_values([inference_info])
-
-                if self.cachekv is not None:
-                    self.log.debug("Кешируем полученный результат.", verbose=self.verbose, log_level=self.log_level)
-                    self.cachekv.save_value(value=raw_answer, key_hash=key_hash)
-
             self.log.debug("Результат:\n%s", raw_answer, verbose=self.verbose, log_level=self.log_level)
             self.log.debug("Статус: %s .", STATUS_MESSAGE[status], verbose=self.verbose, log_level=self.log_level)
 
@@ -243,8 +237,17 @@ class AgentTaskSolver:
             except Exception as e:
                 self.log.error(str(e), verbose=self.verbose, log_level=self.log_level)
                 status = ReturnStatus.bad_postprocessor
+                if self.cachekv is not None:
+                    self.log.debug("Кеширование генерации LLM-модели выполнено не будет.", verbose=self.verbose, log_level=self.log_level)
             else:
+                if self.inference_stat_cache is not None:
+                    self.inference_stat_cache.add_values([inference_info])
+                if self.cachekv is not None:
+                    self.log.debug("Кешируем генерацию LLM-модели.", verbose=self.verbose, log_level=self.log_level)
+                    self.cachekv.save_value(value=raw_answer, key_hash=key_hash)
+
                 self.log.debug("Результат:\n%s", task_result, verbose=self.verbose, log_level=self.log_level)
+
             finally:
                 self.log.debug("Статус: %s .", STATUS_MESSAGE[status], verbose=self.verbose, log_level=self.log_level)
 

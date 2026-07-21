@@ -299,7 +299,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
                 lang=self.stages.answer_generator.config.lang, search_plan=search_plan)
             module_trace.add("answer_gen_solver", ModuleType.task_solver, trace)
         else:
-            self.log.warning("В рамках заданных ограничений поиска не удалось сгенерировать релевантный ответ.", verbose=self.verbose, log_level=self.log_level)
+            self.log.warning("В рамках заданных ограничений поиска не удалось найти/сгенерировать релевантный ответ.", verbose=self.verbose, log_level=self.log_level)
             answer = "<|NotEnoughtInfo|>"
 
         if rinfo.status == ReturnStatus.success:

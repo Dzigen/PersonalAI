@@ -28,7 +28,7 @@ ragas_llm_config:
         port: 11437
       ext_params:
         timeout: 560
-        keep_alive: 600
+        keep_alive: -1 #600
 
 judge_llm_config:
   caching: True # DONT CHANGE
