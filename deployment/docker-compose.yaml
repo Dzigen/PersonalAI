@@ -336,8 +336,9 @@ services:
     container_name: personalai_mmenschikov_ollama
     ports:
       - "11437:11434"
-    environment:
+    environment: # available variables: https://github.com/ollama/ollama/issues/2941
       - OLLAMA_DEBUG=1
+      - OLLAMA_NOHISTORY=0
       #- OLLAMA_NUM_PARALLEL=4      # Processes up to 4 requests at once per model
       #- OLLAMA_MAX_LOADED_MODELS=2  # Keeps up to 2 different models in VRAM
       #- OLLAMA_FLASH_ATTENTION=1    # Strongly recommended to save VRAM during parallel loads
