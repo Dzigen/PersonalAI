@@ -332,7 +332,7 @@ services:
           memory: 4G
 
   ollama_agent:
-    image: ollama/ollama:latest
+    image: ollama/ollama:0.24.0
     container_name: personalai_mmenschikov_ollama
     ports:
       - "11437:11434"
@@ -347,11 +347,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '6'
+          cpus: '8'
           memory: 32G
         reservations:
-          cpus: '3'
-          memory: 4G
+          cpus: '4'
+          memory: 16G
           devices:
             - driver: nvidia
               device_ids: ['${OLLAMA_DEVICE_ID}']
