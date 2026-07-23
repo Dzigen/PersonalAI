@@ -15,9 +15,9 @@ def summn_custom_formate(n_descendants: str, new_content: str,
     :rtype: Dict[str, str]
     """
     if len(new_content) < 1 or len(current_content) < 1:
-        raise ValueError
+        raise ValueError(f"* new_content: {new_content}\n* len(current_content): {len(current_content)}\n* current_content: {current_content}")
     if int(n_descendants) < 0:
-        raise ValueError
+        raise ValueError(f"n_descendants: {n_descendants}")
 
     return {'n_descendants': n_descendants, 'new_content': new_content,
             'current_content': current_content}

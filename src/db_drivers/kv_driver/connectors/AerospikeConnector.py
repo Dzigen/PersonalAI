@@ -36,10 +36,10 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
     def create(self, items: List[KeyValueDBInstance]) -> None:
         for item in items:
             if item is None or item.id is None or item.value is None:
-                raise ValueError
+                raise ValueError(f"item: {item}")
 
             if not isinstance(item.id, str) or type(item.value) not in [str, float, int]:
-                raise ValueError
+                raise ValueError(f"item: {item}")
 
         for item in items:
             key = (self.config.db_info['db'],
@@ -49,7 +49,7 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
         for id in ids:
             if (id is None) or (not isinstance(id, str)):
-                raise ValueError
+                raise ValueError(f"* bad id:{id}\n* ids: {ids}")
 
         keys = list(map(lambda id: (
             self.config.db_info['db'], self.config.db_info['table'], id), ids))
@@ -66,7 +66,7 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
     def delete(self, ids: List[str], durable_delete: bool = False) -> None:
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id:{id}\n* ids: {ids}")
 
         keys = list(map(lambda id: (
             self.config.db_info['db'], self.config.db_info['table'], id), ids))
@@ -79,7 +79,7 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
 
     def item_exist(self, id: str) -> bool:
         if not isinstance(id, str):
-            raise ValueError
+            raise ValueError(f"id: {id}")
 
         key = (self.config.db_info['db'], self.config.db_info['table'], id)
         _, meta = self.client.exists(key)

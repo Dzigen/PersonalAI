@@ -89,13 +89,13 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         # если вершина с таким id уже существует, то вызыватеся исключение
 
         if not isinstance(parent_id, str):
-            raise ValueError
+            raise ValueError(f"parent_id: {parent_id}")
         if not self.is_node_valid(new_node):
-            raise ValueError
+            raise ValueError(f"new_node: {new_node}")
         if not self.item_exist(parent_id, TreeIdType.external):
-            raise ValueError
+            raise ValueError(f"parent_id: {parent_id}")
         if self.item_exist(new_node.id, TreeIdType.external):
-            raise ValueError
+            raise ValueError(f"new_node: {new_node}")
 
         # добавляем новую вершину
         query_props = {}
@@ -119,10 +119,10 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
 
     def read(self, ids: List[str], ids_type: TreeIdType = TreeIdType.external) -> List[TreeNode]:
         if not isinstance(ids_type, TreeIdType):
-            raise ValueError
+            raise ValueError(f"ids_type: {ids_type}")
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         formated_ids = '[' + \
             ', '.join(list(map(lambda id: f'"{id}"', ids))) + ']'
@@ -138,9 +138,9 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         new_items_map = dict()
         for item in items:
             if not self.is_node_valid(item):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             if not self.item_exist(item.id):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             new_items_map[item.id] = item
 
         old_items = self.read(list(new_items_map.keys()))
@@ -178,15 +178,15 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
 
     def delete(self, ids: List[str], ids_type: TreeIdType = TreeIdType.external) -> None:
         if not isinstance(ids_type, TreeIdType):
-            raise ValueError
+            raise ValueError(f"ids_type: {ids_type}")
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
             # Проверка: у удаляемой вершины не должно быть детей
             if self.item_exist(id, id_type=ids_type):
                 childs_amount = len(self.get_child_nodes(id, id_type=ids_type))
                 if childs_amount > 0:
-                    raise ValueError
+                    raise ValueError(f"* id: {id}\n* childs_amount: {childs_amount}")
 
         for id in ids:
             self.execute_query(
@@ -206,25 +206,25 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
 
     def item_exist(self, id: str, id_type: TreeIdType = TreeIdType.external) -> bool:
         if not isinstance(id, str):
-            raise ValueError
+            raise ValueError(f"id: {id}")
 
         if id_type == TreeIdType.external:
             query = f'MATCH (n) WHERE n.external_id = "{id}" RETURN n;'
         elif id_type == TreeIdType.str:
             query = f'MATCH (n) WHERE n.str_id = "{id}" RETURN n;'
         else:
-            raise ValueError
+            raise ValueError(f"id_type: {id_type}")
 
         output = self.execute_query(query)
         return len(output) > 0
 
     def get_leaf_descendants(self, ancestor_id: str, id_type: TreeIdType = TreeIdType.external) -> List[TreeNode]:
         if not isinstance(ancestor_id, str):
-            raise ValueError
+            raise ValueError(f"ancestor_id: {ancestor_id}")
         if not isinstance(id_type, TreeIdType):
-            raise ValueError
+            raise ValueError(f"id_type: {id_type}")
         if not self.item_exist(ancestor_id, id_type=id_type):
-            raise ValueError
+            raise ValueError(f"* ancestor_id: {ancestor_id}\n* id_type: {id_type}")
 
         raw_output = self.execute_query(
             f'MATCH (parent)-[:relation*0..]->(n:leaf) WHERE parent.{id_type.value} = "{ancestor_id}" RETURN n;')
@@ -233,9 +233,9 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
 
     def get_child_nodes(self, parent_id: str, id_type: TreeIdType = TreeIdType.external) -> List[TreeNode]:
         if not isinstance(parent_id, str):
-            raise ValueError
+            raise ValueError(f"parent_id: {parent_id}")
         if not self.item_exist(parent_id, id_type=id_type):
-            raise ValueError
+            raise ValueError(f"* parent_id: {parent_id}\n* id_type: {id_type}")
 
         raw_nodes = self.execute_query(
             f'MATCH (parent)-[rel]->(n) WHERE parent.{id_type.value} = "{parent_id}" RETURN n;')
@@ -290,7 +290,7 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         for k, v in node.props.items():
             if (node.type == TreeNodeType.summarized and k == 'descendants_num') or k == 'depth':
                 if not isinstance(v, int):
-                    raise ValueError
+                    raise ValueError(f"node: {node}")
             else:
                 if not isinstance(v, str):
                     return False

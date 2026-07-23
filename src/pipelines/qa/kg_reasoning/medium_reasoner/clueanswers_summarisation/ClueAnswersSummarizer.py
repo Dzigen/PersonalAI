@@ -118,7 +118,7 @@ class ClueAnswersSummarizer(CacheUtils, AgentStatOperations, CacheOperations):
         summ_answer, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
 
         if len(search_query) < 1 or len(clue_queries) < 1 or len(clue_answers) != len(clue_queries):
-            raise ValueError
+            raise ValueError(f"* search_query: {search_query}\n* clue_queries: {clue_queries}\n* clue_answers: {clue_answers}")
 
         self.log.debug("Выполненяем суммаризацию clue-answers с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
         summ_answer, status, trace = self.tasks_solvers.clueanswers_summ_solver.solve(

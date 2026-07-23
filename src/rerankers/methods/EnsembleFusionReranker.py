@@ -89,7 +89,7 @@ class EnsembleFusionReranker(AbstractRerankerModule):
 
     def validate_config(self, vdb_composer: VectorComposer) -> bool:
         if not isinstance(self.config.vdb_names, list):
-            raise
+            raise TypeError(f"self.config.vdb_names: {self.config.vdb_names}")
         else:
             for vdb_name in self.config.vdb_names:
                 if vdb_name not in vdb_composer.vdb_conn_mapping.keys():
@@ -97,50 +97,50 @@ class EnsembleFusionReranker(AbstractRerankerModule):
 
         if self.config.weights is not None:
             if not isinstance(self.config.weights, list):
-                raise ValueError
+                raise ValueError(f"self.config.weights: {self.config.weights}")
             else:
                 if abs(1 - sum(self.config.weights)) > 1e-5:
-                    raise ValueError
+                    raise ValueError(f"self.config.weights: {self.config.weights}")
 
         if not isinstance(self.config.retriever_configs, list):
-            raise ValueError
+            raise ValueError(f"self.config.retriever_configs: {self.config.retriever_configs}")
         else:
             for r_config in self.config.retriever_configs:
                 if isinstance(r_config.threshold, float):
                     if r_config.threshold < 0 or r_config.threshold > 1:
-                        raise ValueError
+                        raise ValueError(f"r_config.threshold: {r_config.threshold}")
                 elif r_config.threshold is not None:
-                    raise ValueError
+                    raise ValueError(f"r_config.threshold: {r_config.threshold}")
                 if r_config.fetch_n < 0:
-                    raise ValueError
+                    raise ValueError(f"r_config.fetch_n: {r_config.fetch_n}")
 
         return True
 
     def validate_run_arguments(self, query: str, top_k: int, subset_ids: Union[None, List[str]], includes: List[str],
                                return_with_embeddings: Union[str, bool], return_with_scores: Union[bool, str]) -> bool:
         if not isinstance(query, str):
-            raise TypeError
+            raise TypeError(f"query: {query}")
         if len(query) < 1:
-            raise ValueError
+            raise ValueError(f"query: {query}")
 
         if not isinstance(top_k, int):
-            raise TypeError
+            raise TypeError(f"top_k: {top_k}")
         if top_k < 0:
-            raise ValueError
+            raise ValueError(f"top_k: {top_k}")
 
         if isinstance(return_with_embeddings, str):
             vdb_name = return_with_embeddings
             if vdb_name not in self.vdb_composer.vdb_conn_mapping.keys():
-                raise ValueError
+                raise ValueError(f"self.vdb_composer.vdb_conn_mapping: {self.vdb_composer.vdb_conn_mapping}")
         elif return_with_embeddings:
-            raise ValueError
+            raise ValueError(f"return_with_embeddings: {return_with_embeddings}")
 
         if isinstance(return_with_scores, str):
             vdb_name = return_with_scores
             if vdb_name not in self.vdb_composer.vdb_conn_mapping.keys():
-                raise ValueError
+                raise ValueError(f"self.vdb_composer.vdb_conn_mapping: {self.vdb_composer.vdb_conn_mapping}")
         elif return_with_scores:
-            raise ValueError
+            raise ValueError(f"return_with_scores: {return_with_scores}")
 
         if subset_ids is not None:
             for cur_id in subset_ids:
@@ -149,9 +149,9 @@ class EnsembleFusionReranker(AbstractRerankerModule):
         if isinstance(includes, list):
             for name in includes:
                 if not ((isinstance(name, str)) and (name in ['documents', 'metadatas'])):
-                    raise ValueError
+                    raise ValueError(f"includes: {includes}")
         else:
-            raise ValueError
+            raise ValueError(f"includes: {includes}")
 
         return True
 
@@ -189,12 +189,12 @@ class EnsembleFusionReranker(AbstractRerankerModule):
         if isinstance(return_with_embeddings, str):
             vdb_name = return_with_embeddings
             include_fields.append('embeddings')
-        
+
         # !!! PAY ATTENTION : read-method returns items in non-deterministic order !!!
         tmp_filled_instances = self.vdb_composer.read(fused_ids, vdb_name=vdb_name, includes=include_fields)
         id_to_finst = {inst.id: inst for inst in tmp_filled_instances}
         filled_instances = [id_to_finst[inst_id] for inst_id in fused_ids]
-        
+
         assert len(fused_ids) == len(filled_instances)
         # id_to_finst = {inst.id: inst for inst in filled_instances}
         # filled_instances = [id_to_finst[inst_id] for inst_id in fused_ids]
@@ -226,8 +226,7 @@ class EnsembleFusionReranker(AbstractRerankerModule):
         :rtype: List[str]
         """
         if len(doc_lists_ids) != len(self.config.weights):
-            msg = "Number of rank lists must be equal to the number of weights."
-            raise ValueError(msg)
+            raise ValueError("Number of rank lists must be equal to the number of weights.")
 
         # Associate each doc's content with its RRF score for later sorting by it
         # Duplicated contents across retrievers are collapsed & scored cumulatively

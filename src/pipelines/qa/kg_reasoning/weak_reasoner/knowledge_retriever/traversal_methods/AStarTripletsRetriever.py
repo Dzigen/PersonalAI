@@ -25,6 +25,7 @@ from .......db_drivers.vector_driver import VectorDBInstance, VectorRetriveCompo
 
 # TODO: дописать комментариии к AStarGraphSearchConfig-датаклассу
 
+
 @dataclass
 class AStarMetricsConfig(BaseConfigOperations):
     """Конфигурация класса для расчёта метрик, используемых в рамках A*-алгоритма.
@@ -157,8 +158,7 @@ class AStarMetrics:
             try:
                 dist = 1 - np.dot(instances[0].embedding, instances[1].embedding)
             except IndexError:
-                print(f"Error instances:\n- {instances[0]}\n- {instances[1]}")
-                raise IndexError
+                raise IndexError(f"Error instances:\n- {instances[0]}\n- {instances[1]}")
 
         return dist
 
@@ -411,7 +411,7 @@ class AStarGraphSearch:
             elif self.config.adjacent_nodes_filter_node == 'end_node':
                 query_vinst = VectorDBInstance(document=end_node.text)
             else:
-                raise ValueError
+                raise ValueError(f"self.config.adjacent_nodes_filter_node: {self.config.adjacent_nodes_filter_node}")
 
             composers_subset_ids: Dict[NodeType, List[str]] = defaultdict(list)
             for adj_node in adjacent_nodes:

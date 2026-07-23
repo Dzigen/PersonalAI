@@ -322,7 +322,7 @@ class LLMUpdator(CacheOperations, AgentStatOperations):
                     module_trace.add('find_episodic_h_obsolete_triplet_ids', ModuleType.step, trace)
 
                 else:
-                    raise ValueError
+                    raise ValueError(f"triplet: {triplet}")
 
                 self.log.debug("RESULT:", verbose=self.verbose, log_level=self.log_level)
                 self.log.debug("* Obsolete triples amount: %d .", len(obsolete_t_ids), verbose=self.verbose, log_level=self.log_level)

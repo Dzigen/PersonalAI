@@ -106,10 +106,10 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         # triplet-ids checking
         for triplet in triplets:
             if not isinstance(triplet.id, str):
-                raise ValueError
+                raise ValueError(f"* bad tripelt: {triplet}\n* triplets: {triplets}")
         unique_ids = set(map(lambda triplet: triplet.id, triplets))
         if len(triplets) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(unique_ids): {len(unique_ids)}\n* triplets: {triplets}")
 
         for i, triplet in enumerate(triplets):
             cur_info = creation_info.get(i, None)
@@ -129,7 +129,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
     def read(self, ids: List[str]) -> List[Triplet]:
         for t_id in ids:
             if not isinstance(t_id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {t_id}\n* ids: {ids}")
 
         str_ids = '[' + ', '.join(list(map(lambda id: f'"{id}"', ids))) + ']'
         query = f"MATCH (n1)-[rel]->(n2) WHERE rel.t_id IN {str_ids} RETURN n1, rel, n2;"
@@ -144,7 +144,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
     def delete(self, ids: List[str], delete_info: Dict[int, Dict[str, bool]] = dict()) -> None:
         for t_id in ids:
             if not isinstance(t_id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {t_id}\n* ids: {ids}")
 
         for i, t_id in enumerate(ids):
             cur_info = delete_info.get(i, None)
@@ -179,13 +179,13 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
 
     def read_by_name(self, name: str, object_type: Union[RelationType, NodeType], object: str = 'relation') -> List[Union[Triplet, Node]]:
         if type(object_type) not in [RelationType, NodeType]:
-            raise ValueError
+            raise ValueError(f"object_type: {object_type}")
 
         if not isinstance(name, str):
-            raise ValueError
+            raise ValueError(f"name: {name}")
 
         if len(name) < 1:
-            raise ValueError
+            raise ValueError(f"name: {name}")
 
         dump_name = json.dumps(name, ensure_ascii=False)
         if object == 'relation':
@@ -203,7 +203,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
 
             formated_output = self.parse_query_nodes_output(output)
         else:
-            raise ValueError
+            raise ValueError(f"object: {object}")
 
         return formated_output
 
@@ -257,7 +257,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
     def get_adjacent_nodes(self, base_node: NodeInfo,
                            accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time]) -> List[NodeInfo]:
         if not isinstance(base_node.id, str):
-            raise ValueError
+            raise ValueError(f"base_node: {base_node}")
 
         str_accepted_nodes = ''.join(
             list(map(lambda tpe: f':{self.config.params["table_type_map"]["nodes"]["forward"][tpe.value]}', accepted_n_types)))
@@ -280,7 +280,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
                              accepted_r_types: Union[List[RelationType], None] = None) \
             -> List[TripletInfo]:
         if not isinstance(base_node.id, str):
-            raise ValueError
+            raise ValueError(f"base_node: {base_node}")
 
         str_accepted_nodes = ''.join(list(map(lambda tpe: f':{self.config.params["table_type_map"]["nodes"]["forward"][tpe.value]}', accepted_n_types)))
         str_accepted_relations = ""
@@ -297,9 +297,9 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
 
     def get_nodes_shared_ids(self, node1: NodeInfo, node2: NodeInfo, id_type: str = 'both') -> List[Dict[str, str]]:
         if (not isinstance(node1.id, str)) or (not isinstance(node2.id, str)):
-            raise ValueError(node1.id, node2.id)
+            raise ValueError(f"* node1: {node1}\n* node2: {node2}")
         if not isinstance(id_type, str):
-            raise ValueError(id_type)
+            raise ValueError(f"* id_type: {id_type}")
 
         if id_type == 'triplet':
             str_return_info = 'r.t_id as t_id'
@@ -308,7 +308,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         elif id_type == 'both':
             str_return_info = 'r.t_id as t_id, r.str_id as r_id'
         else:
-            raise ValueError(id_type)
+            raise ValueError(f"id_type: {id_type}")
 
         raw_rels = self.conn.execute(
             f'MATCH (a:{node1.type.value})-[r]-(b:{node2.type.value}) WHERE a.str_id = "{node1.id}" AND b.str_id = "{node2.id}" RETURN {str_return_info};')
@@ -349,9 +349,9 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
 
     def get_triplets(self, node1: NodeInfo, node2: NodeInfo) -> List[Triplet]:
         if (not isinstance(node1.id, str)) or (not isinstance(node2.id, str)):
-            raise ValueError
+            raise ValueError(f"* node1: {node1}\n* node2: {node2}")
         if (not self.item_exist(node1, 'node')) or (not self.item_exist(node2, 'node')):
-            raise ValueError
+            raise ValueError(f"* node1: {node1}\n* node2: {node2}")
 
         output = self.conn.execute(
             f'MATCH (n1:{node1.type.value})-[rel]-(n2:{node2.type.value}) WHERE n1.str_id = "{node1.id}" AND n2.str_id = "{node2.id}" RETURN n1, rel, n2;')
@@ -404,7 +404,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
             result = int(r_output)
 
         else:
-            raise ValueError
+            raise ValueError(f"id_type: {id_type}")
 
         return result
 
@@ -412,9 +412,9 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         if not isinstance(item_id, str):
             if type(item_id) in [NodeInfo, RelationInfo]:
                 if not isinstance(item_id.id, str):
-                    raise ValueError
+                    raise ValueError(f"item_id: {item_id}")
             else:
-                raise ValueError
+                raise ValueError(f"item_id: {item_id}")
 
         if id_type == 'node':
             formated_node_type = self.config.params['table_type_map']['nodes']['forward'][item_id.type.value]
@@ -425,7 +425,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         elif id_type == 'triplet':
             query = f'MATCH (n1)-[rel]-(n2) WHERE rel.t_id = "{item_id}" RETURN rel;'
         else:
-            raise ValueError
+            raise ValueError(f"id_type: {id_type}")
 
         output = self.conn.execute(query)
         return output.get_as_df().shape[0] > 0

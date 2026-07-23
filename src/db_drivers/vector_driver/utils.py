@@ -109,24 +109,24 @@ class AbstractVectorDatabaseConnection(AbstractDatabaseConnection):
             return ValueError
 
         if not isinstance(n_results, int):
-            raise TypeError
+            raise TypeError(f"n_results: {n_results}")
         elif n_results < 0:
-            raise ValueError
+            raise ValueError(f"n_results: {n_results}")
 
         for inst in query_instances:
             if type(inst.embedding) in [torch.Tensor, np.ndarray]:
-                raise ValueError
+                raise ValueError(f"inst: {inst}")
 
         if isinstance(includes, list):
             for name in includes:
                 if not ((isinstance(name, str)) and (name in ['documents', 'metadatas', 'embeddings'])):
-                    raise ValueError
+                    raise ValueError(f"includes: {includes}")
 
         if isinstance(subset_ids, list):
             for cur_id in subset_ids:
                 assert isinstance(cur_id, str)
         elif subset_ids is not None:
-            raise ValueError
+            raise ValueError(f"subset_ids: {subset_ids}")
 
 
 class AbstractVectorDatabaseComposer(AbstractDatabaseConnection):

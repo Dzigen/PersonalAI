@@ -306,7 +306,7 @@ class BaseAgentTasksConfig(BaseConfigOperations):
             elif isinstance(field_value, AgentTaskSolverConfig):
                 stringified_config.append(f"{field_object.name}={field_value.version}")
             else:
-                raise TypeError
+                raise TypeError(f"field_value: {field_value}")
 
         return ";".join(stringified_config)
 

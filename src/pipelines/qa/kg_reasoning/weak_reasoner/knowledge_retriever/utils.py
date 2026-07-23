@@ -21,11 +21,11 @@ def get_nodes_path(parent: Dict[str, NodeInfo], end_node: NodeInfo) -> List[Node
     :rtype: List[NodeInfo]
     """
     if not isinstance(end_node.id, str):
-        raise ValueError(NOT_VALID_ID_ERROR_MSG)
+        raise ValueError(f"* end_node: {end_node}\n* {NOT_VALID_ID_ERROR_MSG}")
     if None not in parent.values():
-        raise ValueError(NO_START_NODE_IN_PARENT_ERROR_MSG)
+        raise ValueError(f"* parent: {parent}\n* {NO_START_NODE_IN_PARENT_ERROR_MSG}")
     if len(parent) == 0:
-        raise ValueError(EMPTY_PARENT_ERROR_MSG)
+        raise ValueError(f"* parent: {parent}\n* {EMPTY_PARENT_ERROR_MSG}")
 
     path, end_flag, cur_n = [end_node], False, end_node
     while not end_flag:
