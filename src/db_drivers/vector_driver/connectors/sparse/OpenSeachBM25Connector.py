@@ -50,12 +50,12 @@ class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
         # validating
         for item in items:
             if not isinstance(item.id, str):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             if item.embedding is not None:
-                raise ValueError
+                raise ValueError(f"item: {item}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(unique_ids): {len(unique_ids)}\n* len(items): {len(items)}")
 
         formated_items = list(map(lambda item: Document(id=item.id, content=item.document, meta=item.metadata), items))
         self.db_conn.write_documents(formated_items, policy=DuplicatePolicy.SKIP)
@@ -64,7 +64,7 @@ class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
         # validation
         for id in ids:
             if (id is None) or (not isinstance(id, str)):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
         if len(ids) < 1:
             return []
 
@@ -90,15 +90,15 @@ class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
         # validating
         for item in items:
             if not isinstance(item.id, str):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             if item.embedding is not None:
-                raise ValueError
+                raise ValueError(f"item: {item}")
             for k, v in item.metadata.items():
                 if v is None:
                     raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(unique_ids): {len(unique_ids)}\n* len(items): {len(items)}")
 
         self.db_conn.delete_documents(document_ids=list(map(lambda item: item.id, items)))
         self.create(items)
@@ -107,7 +107,7 @@ class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
         # validation
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         if len(ids):
             self.db_conn.delete_documents(document_ids=ids)
@@ -162,7 +162,7 @@ class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
     def item_exist(self, id: str) -> bool:
         # validation
         if not isinstance(id, str):
-            raise ValueError
+            raise ValueError(f"id: {id}")
 
         res = self.db_conn.filter_documents(filters={"field": "id", "operator": "==", "value": id})
 

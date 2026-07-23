@@ -42,7 +42,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
     def create(self, items: List[KeyValueDBInstance]):
         for item in items:
             if item is None or item.id is None or item.value is None:
-                raise ValueError
+                raise ValueError(f"item: {item}")
 
             if not isinstance(item.id, str):
                 raise ValueError(
@@ -50,7 +50,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
 
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(unique_ids): {len(unique_ids)}\n* items: {items}")
 
         filtered_items: List[KeyValueDBInstance] = []
         for item in items:
@@ -83,7 +83,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
     def read(self, ids: List[str]):
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
         if len(ids) < 1:
             return []
 
@@ -108,10 +108,10 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
     def update(self, items: List[KeyValueDBInstance]):
         for item in items:
             if item is None or item.id is None or item.value is None:
-                raise ValueError
+                raise ValueError(f"item: {item}")
 
             if not isinstance(item.id, str) or type(item.value) not in [str, float, int, list, dict, set]:
-                raise ValueError
+                raise ValueError(f"item: {item}")
 
         filtered_items = [item for item in items if self.conn.hexists(
             self.config.params['hs_name'], item.id)]
@@ -133,7 +133,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
     def delete(self, ids: List[str]):
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         filtered_ids = [id for id in ids if self.conn.hexists(
             self.config.params['hs_name'], id)]
@@ -163,7 +163,7 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
 
     def item_exist(self, id: str):
         if not isinstance(id, str):
-            raise ValueError
+            raise ValueError(f"id: {id}")
         return self.conn.hexists(self.config.params['hs_name'], id)
 
     def clear(self):

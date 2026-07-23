@@ -132,11 +132,11 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         unique_cqueries: Set[str] = set()
 
         if len(search_query) < 1 or len(matched_kg_objects) < 1:
-            raise ValueError
+            raise ValueError(f"* search_query: {search_query}\n* matched_kg_objects: {matched_kg_objects}")
         m_objects_amount = sum(
             list(map(lambda m_objects: len(m_objects), matched_kg_objects.values())))
         if m_objects_amount < 1:
-            raise ValueError
+            raise ValueError(f"m_objects_amount: {m_objects_amount}")
 
         self.log.debug("Получаем декартово произведение всех комбинаций объектов (по сущностям)...", verbose=self.verbose, log_level=self.log_level)
         base_entities = sorted(list(filter(lambda entity: len(matched_kg_objects[entity]) > 0, matched_kg_objects.keys())))

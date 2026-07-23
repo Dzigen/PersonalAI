@@ -173,6 +173,6 @@ class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
         elif query_info.base_query is not None:
             query_info.processed_query = [copy(query_info.base_query)]
         else:
-            raise ValueError
+            raise ValueError(f"query_info: {query_info}")
 
         return query_info, rinfo, module_trace

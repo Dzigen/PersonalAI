@@ -65,22 +65,22 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         # validation
         for item in items:
             if not isinstance(item.id, str):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
-                raise ValueError
+                raise ValueError(f"item: {item}")
             for k, v in item.metadata.items():
                 if v is None:
                     raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(unique_ids): {len(unique_ids)}\n* len(items): {len(items)}")
 
         # Если в классе указан embedder, то используем его
         # для векторизации входящих документов
         if self.embedder is not None:
             for item in items:
                 if item.embedding is not None:
-                    raise ValueError
+                    raise ValueError(f"item: {item}")
 
             item_documents = list(map(lambda itm: itm.document, items))
             document_embeddings = self.embedder.encode_passages(item_documents, batch_size=self.encode_batchsize)
@@ -92,7 +92,7 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         else:
             for item in items:
                 if item.embedding is None:
-                    raise ValueError
+                    raise ValueError(f"item: {item}")
             updated_items = items
 
         filtered_items: List[VectorDBInstance] = []
@@ -110,7 +110,7 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         # validation
         for id in ids:
             if (id is None) or (not isinstance(id, str)):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
         if len(ids) < 1:
             return []
 
@@ -145,15 +145,15 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         # validation
         for item in items:
             if not isinstance(item.id, str):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
-                raise ValueError
+                raise ValueError(f"item: {item}")
             for k, v in item.metadata.items():
                 if v is None:
                     raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(unique_ids): {len(unique_ids)}\n* len(items): {len(items)}")
 
         formated_ids = list(map(lambda item: generate_uuid5(item.id), items))
         self.db_conn.delete(
@@ -167,7 +167,7 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         # validation
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         if len(ids):
             formated_ids = list(map(generate_uuid5, ids))
@@ -189,10 +189,10 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
             return [[] * len(query_instances)]
         for q_inst in query_instances:
             if q_inst.embedding is None and self.embedder is None:
-                raise ValueError
+                raise ValueError(f"* q_inst: {q_inst}\n* self.embedder: {self.embedder}")
             elif q_inst.embedding is not None:
                 if (not isinstance(q_inst.embedding, list)) or (not isinstance(q_inst.embedding[0], float)):
-                    raise ValueError
+                    raise ValueError(f"q_inst: {q_inst}")
 
         query_instances: List[VectorDBInstance] = deepcopy(query_instances)
 
@@ -261,7 +261,7 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
     def item_exist(self, id: str) -> bool:
         # validation
         if not isinstance(id, str):
-            raise ValueError
+            raise ValueError(f"id: {id}")
 
         formated_id = generate_uuid5(id)
         retrieved_points = self.db_conn.retrieve(

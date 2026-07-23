@@ -128,7 +128,7 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
         elif query_info.base_query is not None:
             query = query_info.base_query
         else:
-            raise ValueError
+            raise ValueError(f"query_info: {query_info}")
 
         self.log.debug("Выполнение проверки на необходимость декомпозиции вопроса с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
         need_to_decompose, status, trace = self.tasks_solvers.decompose_classifier_solver.solve(

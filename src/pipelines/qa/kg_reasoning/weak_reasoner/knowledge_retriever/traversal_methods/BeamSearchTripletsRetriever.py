@@ -133,7 +133,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             kg_model.graph_embeddings.triplets_vcomposer
         )
         if not isinstance(self.scorer, SingleStepReranker):
-            raise TypeError
+            raise TypeError(f"self.scorer: {self.scorer}")
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, self.config.cache_table_name)
@@ -332,7 +332,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             filtered_paths = sorted(continuous_paths + ended_paths, key=lambda pinfo: pinfo.score)[:self.config.max_paths]
 
         else:
-            raise KeyError
+            raise KeyError(f"self.config.final_sorting_mode: {self.config.final_sorting_mode}")
 
         return filtered_paths
 

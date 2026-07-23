@@ -125,7 +125,7 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
         final_answer, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
 
         if len(subq_info.sub_answers) < 0:
-            raise ValueError
+            raise ValueError(f"subq_info: {subq_info}")
         elif len(subq_info.sub_answers) == 1:
             final_answer = subq_info.sub_answers[0]
         else:
@@ -136,11 +136,11 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
             elif query_info.base_query is not None:
                 query = query_info.base_query
             else:
-                raise ValueError
+                raise ValueError(f"query_info: {query_info}")
 
             sub_queries = query_info.decomposed_query
             if len(sub_queries) < 2 or len(subq_info.sub_answers) != len(sub_queries):
-                raise ValueError
+                raise ValueError(f"sub_queries: {sub_queries}")
 
             self.log.debug("Выполнение суммаризации ответов с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
             final_answer, status, trace = self.tasks_solvers.subanswers_summarisation_solver.solve(

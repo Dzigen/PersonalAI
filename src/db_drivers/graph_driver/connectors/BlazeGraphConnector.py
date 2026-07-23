@@ -213,10 +213,10 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
         # triplet-ids checking
         for triplet in triplets:
             if not isinstance(triplet.id, str):
-                raise ValueError
+                raise ValueError(f"* triplets: {triplets}\n* creation_info: {creation_info}")
         unique_ids = set(map(lambda triplet: triplet.id, triplets))
         if len(triplets) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* triplets: {triplets}")
 
         for i, triplet in enumerate(triplets):
             cur_info = creation_info.get(i, None)
@@ -236,7 +236,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
     def read(self, ids: List[str]) -> List[Triplet]:
         for t_id in ids:
             if not isinstance(t_id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {t_id}\n* ids: {ids}")
 
         select_triples_query = '''
         PREFIX element: <{element_uriprefix}>
@@ -287,7 +287,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
     def delete(self, ids: List[str], delete_info: Dict[int, Dict[str, bool]] = dict()) -> None:
         for t_id in ids:
             if not isinstance(t_id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {t_id}\n* ids: {ids}")
 
         #
         select_triplesuri_query = '''
@@ -360,13 +360,13 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
 
     def read_by_name(self, name: str, object_type: Union[RelationType, NodeType], object: str = 'relation') -> List[Union[Triplet, Node]]:
         if type(object_type) not in [RelationType, NodeType]:
-            raise ValueError
+            raise ValueError(f"object_type: {object_type}")
 
         if not isinstance(name, str):
-            raise ValueError
+            raise ValueError(f"name: {name}")
 
         if len(name) < 1:
-            raise ValueError
+            raise ValueError(f"name: {name}")
 
         dump_name = json.dumps(name, ensure_ascii=False)
         if object == 'relation':
@@ -438,7 +438,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
             formated_output = self.parse_query_nodes_output(raw_output)
 
         else:
-            raise ValueError
+            raise ValueError(f"object: {object}")
 
         return formated_output
 
@@ -487,7 +487,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
     def get_adjacent_nodes(self, base_node: NodeInfo,
                            accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time]) -> List[NodeInfo]:
         if not isinstance(base_node.id, str):
-            raise ValueError
+            raise ValueError(f"base_node: {base_node}")
 
         select_adjnodes_query = '''
         PREFIX element: <{element_uriprefix}>
@@ -541,7 +541,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
                              accepted_r_types: Union[List[RelationType], None] = None) \
             -> List[TripletInfo]:
         if not isinstance(base_node.id, str):
-            raise ValueError
+            raise ValueError(f"base_node: {base_node}")
 
         if accepted_r_types is None:
             accepted_r_types = [RelationType.simple, RelationType.hyper, RelationType.episodic, RelationType.time]
@@ -612,9 +612,9 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
 
     def get_nodes_shared_ids(self, node1: NodeInfo, node2: NodeInfo, id_type: str = 'both') -> List[Dict[str, str]]:
         if (not isinstance(node1.id, str)) or (not isinstance(node2.id, str)):
-            raise ValueError(node1, node2)
+            raise ValueError(f"* node1: {node1}\n* node2: {node2}")
         if not isinstance(id_type, str):
-            raise ValueError(id_type)
+            raise ValueError(f"id_type: {id_type}")
 
         if id_type == 'triplet':
             select_statement = '(?rel_tid AS ?t_id)'
@@ -623,7 +623,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
         elif id_type == 'both':
             select_statement = '(?rel_tid AS ?t_id) (?rel_strid AS ?r_id)'
         else:
-            raise ValueError(id_type)
+            raise ValueError(f"id_type: {id_type}")
 
         select_relationids_query = '''
         PREFIX element: <{element_uriprefix}>
@@ -804,9 +804,9 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
 
     def get_triplets(self, node1: NodeInfo, node2: NodeInfo) -> List[Triplet]:
         if (not isinstance(node1.id, str)) or (not isinstance(node2.id, str)):
-            raise ValueError
+            raise ValueError(f"* node1: {node1}\n* node2: {node2}")
         if (not self.item_exist(node1, 'node')) or (not self.item_exist(node2, 'node')):
-            raise ValueError
+            raise ValueError(f"* node1: {node1}\n* node2: {node2}")
 
         select_triplet_query = '''
         PREFIX element: <{element_uriprefix}>
@@ -1038,7 +1038,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
             result = [int(info['rels_count']) for info in raw_output][0]
 
         else:
-            raise ValueError
+            raise ValueError(f"id_type: {id_type}")
 
         return result
 
@@ -1046,9 +1046,9 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
         if not isinstance(item_id, str):
             if type(item_id) in [NodeInfo, RelationInfo]:
                 if not isinstance(item_id.id, str):
-                    raise ValueError
+                    raise ValueError(f"item_id: {item_id}")
             else:
-                raise ValueError
+                raise ValueError(f"item_id: {item_id}")
 
         formated_query = None
 
@@ -1116,7 +1116,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
             # print(formated_query)
 
         else:
-            raise ValueError
+            raise ValueError(f"id_type: {id_type}")
 
         output = self.graph.query(formated_query)
         formated_output = bool(output)

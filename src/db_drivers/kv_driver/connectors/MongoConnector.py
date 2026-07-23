@@ -49,14 +49,14 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
     def create(self, items: List[KeyValueDBInstance]) -> None:
         for item in items:
             if item is None or item.id is None or item.value is None:
-                raise ValueError
+                raise ValueError(f"item: {item}")
 
             if not isinstance(item.id, str):
                 raise ValueError(f"{item} {type(item.id)} {type(item.value)}")
 
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(unique_ids): {len(unique_ids)}\n* items: {items}")
 
         filtered_items = []
         for item in items:
@@ -85,7 +85,7 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
         for id in ids:
             if (id is None) or (not isinstance(id, str)):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         if len(ids) < 1:
             return []
@@ -116,10 +116,10 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
     def update(self, items: List[KeyValueDBInstance]) -> None:
         for item in items:
             if item is None or item.id is None or item.value is None:
-                raise ValueError
+                raise ValueError(f"item: {item}")
 
             if not isinstance(item.id, str) or type(item.value) not in [str, float, int, list, dict, set]:
-                raise ValueError
+                raise ValueError(f"item: {item}")
 
         if len(items) < 1:
             return
@@ -143,7 +143,7 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
     def delete(self, ids: List[str]) -> None:
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         if len(ids) > 0:
             self._collection.delete_many({'_id': {"$in": ids}})
@@ -153,7 +153,7 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
 
     def item_exist(self, id: str) -> bool:
         if not isinstance(id, str):
-            raise ValueError
+            raise ValueError(f"id: {id}")
 
         item = self._collection.find_one({'_id': id})
         return item is not None

@@ -111,22 +111,22 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         # validation
         for item in items:
             if not isinstance(item.id, str):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
-                raise ValueError
+                raise ValueError(f"item: {item}")
             for k, v in item.metadata.items():
                 if v is None:
                     raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"len(unique_ids): {len(unique_ids)}\n* len(items): {len(items)}")
 
         # Если в классе указан embedder, то используем его
         # для векторизации входящих документов
         if self.embedder is not None:
             for item in items:
                 if item.embedding is not None:
-                    raise ValueError
+                    raise ValueError(f"item: {item}")
 
             item_documents = list(map(lambda itm: itm.document, items))
             document_embeddings = self.embedder.encode_passages(item_documents, batch_size=self.encode_batchsize)
@@ -160,7 +160,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         # validation
         for id in ids:
             if (id is None) or (not isinstance(id, str)):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
         if len(ids) < 1:
             return []
 
@@ -184,22 +184,22 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         # validation
         for item in items:
             if not isinstance(item.id, str):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
-                raise ValueError
+                raise ValueError(f"item: {item}")
             for k, v in item.metadata.items():
                 if v is None:
                     raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(items): {len(items)}\n* len(unique_ids): {len(unique_ids)}")
 
         # Если в классе указан embedder, то используем его
         # для векторизации входящих документов
         if self.embedder is not None:
             for item in items:
                 if item.embedding is not None:
-                    raise ValueError
+                    raise ValueError(f"item: {item}")
 
             item_documents = list(map(lambda itm: itm.document, items))
             document_embeddings = self.embedder.encode_passages(
@@ -221,7 +221,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         # validation
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         if len(ids):
             filtered_ids = [id for id in ids if self.item_exist(id)]
@@ -293,7 +293,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
     def item_exist(self, id: str) -> bool:
         # validation
         if not isinstance(id, str):
-            raise ValueError
+            raise ValueError(f"id: {id}")
 
         #
         res = self.client.get(
