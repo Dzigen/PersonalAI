@@ -31,29 +31,33 @@ QA_DATASET_HYPERP:
 query_preprocessor: # TO CHANGE
   denoising_config: # CAN BE null
     - null
-    # - agent_tasks_config:
-    #    swremoval: 'v2'
-    #    grammarcheck: 'v2'
+    - agent_tasks_config:
+       swremoval: 'v3'
+       grammarcheck: 'v3'
 
   enhancing_config: # CAN BE null
     - null
-    # - agent_tasks_config:
-    #     qexpan: 'v2'
-    #     termscheck: 'v2'
-    #     lingcheck: 'v1'
+    - agent_tasks_config:
+        qexpan: 'v3'
+        termscheck: 'v3'
+        lingcheck: 'v1'
 
   decomposition_config: # CAN BE null
     - null
-    # - agent_tasks_config:
-    #     classify: 'v2'
-    #     decompose: 'v2'
+    - agent_tasks_config:
+        classify: 'v3'
+        decompose: 'v3'
 
 # STAGE # 2
 kg_reasoner: # TO CHANGE
   reasoner_name: "medium" # DONT CHANGE
   reasoner_config:
     max_searchplan_steps:
+      #- 2
+      #- 4
       - 6
+      #- 8
+      #- 10
     answer_something:
       - True
 
@@ -70,7 +74,7 @@ kg_reasoner: # TO CHANGE
 
     e2n_matcher_config:
       - max_n: 2
-        discard_other_mnodes_if_exactmatch_found: False
+        discard_other_mnodes_if_exactmatch_found: True
         reranker_driver_config:
           name: 'ensemble_fusion' # DONT CHANGE
           strategy_config:
@@ -85,11 +89,11 @@ kg_reasoner: # TO CHANGE
 
     cluequeries_generator_config:
       max_cqueries_amount: 
-        - 1
-        - 2
+        #- 1
+        #- 2
         - 4
-        - 6
-        - 8
+        #- 6
+        #- 8
       agent_tasks_config:
         cquerie_generator: 
           - 'v4'
@@ -356,4 +360,4 @@ kg_reasoner: # TO CHANGE
 answer_aggregator:
   agent_tasks_config:
     suba_summarisation:
-      - 'v2'
+      - 'v3'

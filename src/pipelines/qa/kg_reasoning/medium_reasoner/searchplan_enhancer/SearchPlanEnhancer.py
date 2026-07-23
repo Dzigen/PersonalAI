@@ -141,7 +141,7 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
                 enhanced_search_plan.search_steps = new_search_steps
                 enhanced_search_plan.steps_answers = []
             else:
-                self.log.debug("RESULT: -1\n%s", str_searchplan, verbose=self.verbose, log_level=self.log_level)
+                self.log.debug("RESULT: -1\n%s", new_search_steps, verbose=self.verbose, log_level=self.log_level)
 
         elif self.config.plan_enhancment:
             self.log.debug("Выполняем проверку на необходимость улучшения следующих шагов поиска в плане...", verbose=self.verbose, log_level=self.log_level)
