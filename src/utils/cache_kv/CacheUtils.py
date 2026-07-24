@@ -64,7 +64,7 @@ class CacheUtils(AbstractCacheUtils):
                     self.log.debug("* hash seed: %s .", cache_key, verbose=self.verbose, log_level=self.log_level)
 
             if not cache_hit:
-                self.log.debug("Получем результат с нуля...", verbose=self.verbose, log_level=self.log_level)
+                self.log.debug("Получаем результат с нуля...", verbose=self.verbose, log_level=self.log_level)
                 output = function(self, *args, **kwargs)
 
                 # КОСТЫЛЬ: если во время выполнения функции/метода возникла ошибка,

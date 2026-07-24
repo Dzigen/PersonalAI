@@ -107,7 +107,7 @@ pprint(qa_config)
 
 qa_pipeline = QAPipeline(kg_model, qa_config, kvdriver_config, llmstat_config)
 
-START_SAMPLE_IDX = 157
+START_SAMPLE_IDX = 0
 
 # qa_pipeline.clear_agent_tgen_stat() # !!! PAY ATTENTION !!!
 # qa_pipeline.clear_kv_caches( # !!! PAY ATTENTION !!!
@@ -123,6 +123,8 @@ START_SAMPLE_IDX = 157
 # qa_pipeline.stages.kg_reasoner.stages.reasoner.stages.entities2nodes_matcher.clear_kv_caches()
 # qa_pipeline.stages.kg_reasoner.stages.reasoner.stages.searchplan_enhancer.clear_kv_caches()
 #qa_pipeline.stages.kg_reasoner.stages.reasoner.stages.searchplan_enhancer.tasks_solvers.plan_enhancing_solver.cachekv.kv_conn.delete(["f833a1ae05d1168287df87e1b75cec47b0e7d4b7"])
+#qa_pipeline.stages.kg_reasoner.stages.reasoner.stages.searchplan_enhancer.tasks_solvers.plan_initialing_solver.cachekv.kv_conn.delete(["b2532beee411bff2f8b1bcf2f0924dc59b97e904"])
+
 
 print("llmstat cache:")
 pprint(qa_pipeline.get_agent_tgen_stat())
@@ -295,12 +297,16 @@ for pack_name, questions, _ in question_packs:
 
     process = tqdm(range(START_SAMPLE_IDX, len(questions)))
     for i in process:
-        
         s_time = time()
         answer, info, trace = qa_pipeline.answer(questions[i])
         e_time = time()
 
+        # # костыль
+        # kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.qa_pipeline].close_connection()
+        # kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.qa_pipeline].open_connection()
+
         process.set_postfix_str(f"pack: {pack_name}, status: {info.status}, elapsed_time (min): {round(int(e_time-s_time)/60,2)}, question: {questions[i]}")
+        process.set_postfix_str("")
 
         answer_dump_file = f"{pack_tmp_answers_dir}/answer_{i}"
         joblib.dump({'answer': answer, 'info': info,
