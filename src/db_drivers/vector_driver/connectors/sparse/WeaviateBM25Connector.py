@@ -8,6 +8,7 @@ from haystack import Document
 
 from .configs import DEFAULT_WEAVIATE_BM25_CONFIG
 from ...utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
+from ....utils import restore_connection, retry
 from .....utils.errors import ReturnInfo
 
 
@@ -23,6 +24,7 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
         self.db_conn = None
         self.retriever = None
 
+    @retry
     def open_connection(self) -> ReturnInfo:
         url = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
         collection_name = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
@@ -33,12 +35,14 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
         # TODO
         pass
 
+    @retry
     def close_connection(self) -> ReturnInfo:
         try:
             self.db_conn._client.close()
         except TypeError:
             pass
 
+    @restore_connection
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
         # validating
         for item in items:
@@ -56,6 +60,7 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
         formated_items = list(map(lambda item: Document(id=item.id, content=item.document, meta=item.metadata), items))
         self.db_conn.write_documents(formated_items, policy=DuplicatePolicy.SKIP)
 
+    @restore_connection
     def read(self, ids: List[str], includes: List[str] = ['documents', 'metadatas']) -> List[VectorDBInstance]:
         # validation
         for id in ids:
@@ -79,10 +84,12 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
 
         return formated_output
 
+    @restore_connection
     def update(self) -> ReturnInfo:
         # TODO
         pass
 
+    @restore_connection
     def upsert(self, items: List[VectorDBInstance]) -> None:
         # validating
         for item in items:
@@ -100,6 +107,7 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
         self.db_conn.delete_documents(document_ids=list(map(lambda item: item.id, items)))
         self.create(items)
 
+    @restore_connection
     def delete(self, ids: List[str]) -> None:
         # validation
         for id in ids:
@@ -109,6 +117,7 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
         if len(ids):
             self.db_conn.delete_documents(document_ids=ids)
 
+    @restore_connection
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
             includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
@@ -153,9 +162,11 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
 
         return formated_outputs
 
+    @restore_connection
     def count_items(self) -> int:
         return self.db_conn.count_documents()
 
+    @restore_connection
     def item_exist(self, id: str) -> bool:
         # validation
         if not isinstance(id, str):
@@ -165,6 +176,7 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
         item_exists = self.db_conn.collection.data.exists(uuid5)
         return item_exists
 
+    @restore_connection
     def clear(self) -> None:
         if self.db_conn.collection is not None:
             collection_name = f"{self.config.db_info['db']}_{self.config.db_info['table']}"

@@ -3,6 +3,7 @@ import aerospike
 
 from .configs import DEFAULT_AEROSPIKE_CONFIG
 from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection, KeyValueDBInstance
+from ...utils import restore_connection, retry
 
 # !!! AEROSPIKE IS NOT SUPPORTING DUE TO THE LACK OF DOCUMENTATION!!!
 
@@ -16,6 +17,7 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
             config.formate_fields()
         self.config: KVDBConnectionConfig = config
 
+    @retry
     def open_connection(self) -> None:
         db_config = {'hosts': [(self.config.host, self.config.port)]}
         if 'ports' in self.config.params:
@@ -30,9 +32,11 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
     def is_open(self) -> bool:
         return self.client.is_connected()
 
+    @retry
     def close_connection(self) -> None:
         self.client.close()
 
+    @restore_connection
     def create(self, items: List[KeyValueDBInstance]) -> None:
         for item in items:
             if item is None or item.id is None or item.value is None:
@@ -46,6 +50,7 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
                    self.config.db_info['table'], item.id)
             self.client.put(key, {'v': item.value})
 
+    @restore_connection
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
         for id in ids:
             if (id is None) or (not isinstance(id, str)):
@@ -59,10 +64,12 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
             id=record[0][2], value=record[2]['v']) for record in mixed_records]
         return records
 
+    @restore_connection
     def update(self, items: List[KeyValueDBInstance]) -> None:
         # TODO
         pass
 
+    @restore_connection
     def delete(self, ids: List[str], durable_delete: bool = False) -> None:
         for id in ids:
             if not isinstance(id, str):
@@ -73,10 +80,12 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
         self.client.batch_remove(keys, policy_batch_remove={
                                  'durable_delete': durable_delete})
 
+    @restore_connection
     def clear(self) -> None:
         # TODO
         pass
 
+    @restore_connection
     def item_exist(self, id: str) -> bool:
         if not isinstance(id, str):
             raise ValueError(f"id: {id}")
@@ -85,6 +94,7 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
         _, meta = self.client.exists(key)
         return False if meta is None else True
 
+    @restore_connection
     def count_items(self) -> int:
         info = self.client.info_all("sets")
         node_values = list(info.items())[0][1][1]

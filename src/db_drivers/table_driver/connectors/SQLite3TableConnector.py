@@ -5,6 +5,7 @@ import os
 
 from .configs import DEFAULT_SQLITE3TABLE_CONFIG
 from ..utils import AbstractTableDatabaseConnection, TableDBConnectionConfig, TableDBInstance, BaseTableStucture
+from ...utils import restore_connection, retry
 
 
 class SQLite3TableConnector(AbstractTableDatabaseConnection):
@@ -20,6 +21,7 @@ class SQLite3TableConnector(AbstractTableDatabaseConnection):
         # TODO
         raise NotImplementedError
 
+    @retry
     def open_connection(self) -> None:
         if self.config.params.get('database_path', None) is not None:
             os.makedirs(self.config.params['database_path'], exist_ok=True)
@@ -30,6 +32,7 @@ class SQLite3TableConnector(AbstractTableDatabaseConnection):
         if self.config.db_info.get('create_table_query', None) is not None:
             self.create_table(self.config.db_info['create_table_query'].format(table_name=self.config.db_info['table']))
 
+    @retry
     def close_connection(self) -> None:
         try:
             self.cursor.close()
@@ -42,6 +45,7 @@ class SQLite3TableConnector(AbstractTableDatabaseConnection):
         self.cursor.execute(query)
         self.conn.commit()
 
+    @restore_connection
     def create(self, items: List[TableDBInstance]) -> None:
         self.validate_items(items)
 
@@ -69,6 +73,7 @@ class SQLite3TableConnector(AbstractTableDatabaseConnection):
 
         self.conn.commit()
 
+    @restore_connection
     def read(self, ids: List[str]) -> List[Union[None, TableDBInstance]]:
         self.validate_ids(ids)
 
@@ -96,10 +101,12 @@ class SQLite3TableConnector(AbstractTableDatabaseConnection):
 
         return formated_items
 
+    @restore_connection
     def update(self, items: List[TableDBInstance]) -> None:
         # TODO
         raise NotImplementedError
 
+    @restore_connection
     def delete(self, ids: List[str]) -> None:
         self.validate_ids(ids)
 
@@ -109,12 +116,14 @@ class SQLite3TableConnector(AbstractTableDatabaseConnection):
         self.cursor.execute(query, formated_ids)
         self.conn.commit()
 
+    @restore_connection
     def count_items(self) -> int:
         query = f"SELECT COUNT(*) FROM {self.config.db_info['table']};"
         self.cursor.execute(query)
         row_count = self.cursor.fetchone()[0]
         return row_count
 
+    @restore_connection
     def item_exist(self, id: str) -> bool:
         self.validate_ids([id])
 
@@ -125,6 +134,7 @@ class SQLite3TableConnector(AbstractTableDatabaseConnection):
         data = self.cursor.fetchone()[0]
         return data > 0
 
+    @restore_connection
     def clear(self) -> None:
         query = f"DELETE FROM {self.config.db_info['table']};"
         self.cursor.execute(query)

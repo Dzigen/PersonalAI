@@ -1,6 +1,8 @@
+from time import sleep
 from typing import List, Dict
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+from httpx import ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout, ReadError
 
 from ..utils.errors import ReturnInfo
 from ..utils.data_structs import BaseConfigOperations
@@ -18,11 +20,17 @@ class BaseDatabaseConfig(BaseConfigOperations):
     :type need_to_clear: bool
     :param create_index: Если True, то для требуемых элементов в бд будет создан индекс с целью повышения производительности поиска, иначе False. Значения по умолчанию False.
     :type create_index: bool
+    :param timeout: ... . Значение по умолчанию 10.
+    :type timeout: int
+    :param trials: ... . Значение по умолчанию 5.
+    :type trials: int
     """
     db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAIDB', 'table': 'DefaultPersonalAITable'})
     params: Dict = field(default_factory=lambda: dict())
     need_to_clear: bool = False
     create_index: bool = False
+    timeout: int = 10
+    trials: int = 5
 
     @staticmethod
     def from_dict(dict_config: Dict):
@@ -109,6 +117,13 @@ class AbstractDatabaseExtendedOpt(ABC):
 
 class AbstractDatabaseInit(ABC):
     """Абстрактный интерфейс подключения к БД (открытие/закрытие соединения)."""
+
+    config: BaseDatabaseConfig
+    HANDLING_DB_EXCEPTIONS: List[Exception] = (
+        ConnectionError, ConnectError, RemoteProtocolError,
+        ConnectTimeout, ReadTimeout, ReadError, RuntimeError
+    )
+
     @abstractmethod
     def open_connection(self) -> ReturnInfo:
         """Метод предназначен для подключения к бд.
@@ -146,3 +161,45 @@ class AbstractDatabaseConnection(AbstractDatabaseCRUD, AbstractDatabaseExtendedO
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.close_connection()
+
+
+def restore_connection(function):
+    def wrapper(self: AbstractDatabaseInit, *args, **kwargs):
+        flag, counter = True, 0
+        while flag:
+            try:
+                output = function(self, *args, **kwargs)
+                flag = False
+            except self.HANDLING_DB_EXCEPTIONS as e:
+                # print(f"Exception occuered {counter} / {self.config.trials}: ", str(e))
+                counter += 1
+                if counter > self.config.trials:
+                    raise e
+                else:
+                    self.close_connection()
+                    # print(f"Timeout: {self.config.timeout} sec")
+                    sleep(self.config.timeout)
+                    self.open_connection()
+
+        return output
+    return wrapper
+
+
+def retry(function):
+    def wrapper(self: AbstractDatabaseInit, *args, **kwargs):
+        flag, counter = True, 0
+        while flag:
+            try:
+                output = function(self, *args, **kwargs)
+                flag = False
+            except self.HANDLING_DB_EXCEPTIONS as e:
+                # print(f"Exception occuered {counter} / {self.config.connection_trials}: ", str(e))
+                counter += 1
+                if counter > self.config.connection_trials:
+                    raise e
+                else:
+                   # print(f"Timeout: {self.config.timeout} sec")
+                    sleep(self.config.timeout)
+
+        return output
+    return wrapper

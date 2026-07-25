@@ -5,12 +5,14 @@ import numpy as np
 from copy import deepcopy
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct, PointIdsList, Filter, HasIdCondition
-from qdrant_client.http.exceptions import UnexpectedResponse
+from qdrant_client.http.exceptions import ResponseHandlingException, UnexpectedResponse
+
 from haystack_integrations.document_stores.weaviate.document_store import generate_uuid5
 
 from .configs import DEFAULT_QDRANT_CONFIG
 from ...embedders import EmbedderModel
 from ...utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
+from ....utils import restore_connection, retry
 from .....utils.errors import ReturnInfo
 
 QD_DISTANCE_KW_MAPPING = {
@@ -29,6 +31,8 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         self.config = config
         self.collection_name = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
 
+        self.HANDLING_DB_EXCEPTIONS += [ResponseHandlingException, UnexpectedResponse]
+
         self.embedder = embedder
         self.encode_batchsize = encode_batchsize
         self.db_conn = None
@@ -46,6 +50,7 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
                 timeout=60
             )
 
+    @retry
     def open_connection(self) -> ReturnInfo:
         url = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
         self.db_conn = QdrantClient(url=url, timeout=30.0)
@@ -55,12 +60,14 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         # TODO
         pass
 
+    @retry
     def close_connection(self) -> ReturnInfo:
         try:
             self.db_conn.close()
         except TypeError:
             pass
 
+    @restore_connection
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
         # validation
         for item in items:
@@ -106,6 +113,7 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
                 id=generate_uuid5(item.id), payload=item.metadata | {'_document': item.document, '_original_id': item.id}, vector=item.embedding), filtered_items))
             self.db_conn.upsert(collection_name=self.collection_name, points=formated_items)
 
+    @restore_connection
     def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[VectorDBInstance]:
         # validation
         for id in ids:
@@ -137,10 +145,12 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
 
         return formated_output
 
+    @restore_connection
     def update(self) -> ReturnInfo:
         # TODO
         pass
 
+    @restore_connection
     def upsert(self, items: List[VectorDBInstance]) -> None:
         # validation
         for item in items:
@@ -163,6 +173,7 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         )
         self.create(items)
 
+    @restore_connection
     def delete(self, ids: List[str]) -> None:
         # validation
         for id in ids:
@@ -177,6 +188,7 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
                 wait=True  # Optional: Wait for the operation to complete
             )
 
+    @restore_connection
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
             includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
@@ -222,17 +234,14 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         for query in query_instances:
             # Attention: Будут получены значения семантической близости [similarity], а не значения их расстояния [distance]
             # print("query: ", query.embedding)
-            try:
-                raw_output = self.db_conn.query_points(
-                    collection_name=self.collection_name,
-                    query=query.embedding,
-                    query_filter=filters,
-                    with_payload=True,
-                    with_vectors='embeddings' in includes,
-                    limit=n_results
-                )
-            except UnexpectedResponse as e:
-                raise ValueError(str(e))
+            raw_output = self.db_conn.query_points(
+                collection_name=self.collection_name,
+                query=query.embedding,
+                query_filter=filters,
+                with_payload=True,
+                with_vectors='embeddings' in includes,
+                limit=n_results
+            )
             # print('output: ', raw_output)
 
             formated_output = []
@@ -252,12 +261,14 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
 
         return formated_outputs
 
+    @restore_connection
     def count_items(self, exact: bool = True) -> int:
         raw_response = self.db_conn.count(
             collection_name=self.collection_name,
             exact=exact)
         return raw_response.count
 
+    @restore_connection
     def item_exist(self, id: str) -> bool:
         # validation
         if not isinstance(id, str):
@@ -269,6 +280,7 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
             ids=[formated_id], with_payload=False, with_vectors=False)
         return len(retrieved_points) > 0
 
+    @restore_connection
     def clear(self) -> None:
         if self.db_conn.collection_exists(collection_name=self.collection_name):
             self.db_conn.delete_collection(collection_name=self.collection_name, timeout=120)

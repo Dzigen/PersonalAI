@@ -217,6 +217,7 @@ services:
       - OPENSEARCH_GID=1000
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+      - cluster.routing.allocation.disk.threshold_enabled=false
     volumes:
       - ./volumes/opensearch/data:/usr/share/opensearch/data
     deploy:
@@ -239,6 +240,7 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+      - cluster.routing.allocation.disk.threshold_enabled=false
     volumes:
       - ./volumes/elasticsearch/data:/usr/share/elasticsearch/data
     deploy:

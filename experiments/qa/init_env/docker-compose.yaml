@@ -156,6 +156,7 @@ services:
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+      - cluster.routing.allocation.disk.threshold_enabled=false
     volumes:
       - ${OPENSEARCH_LOCAL_VOLUME}:/usr/share/opensearch/data
     deploy:

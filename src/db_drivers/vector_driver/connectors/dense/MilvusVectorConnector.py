@@ -9,6 +9,7 @@ import torch
 from .configs import DEFAULT_MILVUS_CONFIG
 from ...embedders import EmbedderModel
 from ...utils import AbstractVectorDatabaseConnection, VectorDBInstance, VectorDBConnectionConfig
+from ....utils import restore_connection, retry
 
 
 class MilvusVectorConnector(AbstractVectorDatabaseConnection):
@@ -66,6 +67,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
                 collection_name=self.config.db_info['table'],
                 index_params=index_params)
 
+    @retry
     def open_connection(self) -> None:
         uri = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
         auth = f"{self.config.conn['user']}:{self.config.conn['pass']}"
@@ -85,6 +87,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
                 collection_name=self.config.db_info['table'],
                 skip_load_dynamic_field=True)
 
+    @retry
     def close_connection(self) -> None:
         try:
             load_state = self.client.get_load_state(
@@ -107,6 +110,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         except ConnectionError as e:
             return False
 
+    @restore_connection
     def create(self, items: List[VectorDBInstance]) -> None:
         # validation
         for item in items:
@@ -156,6 +160,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         else:
             sleep(self.config.params['create_sleep'])
 
+    @restore_connection
     def read(self, ids: List[str], includes=["embeddings", "documents", "metadatas"]) -> List[VectorDBInstance]:
         # validation
         for id in ids:
@@ -176,10 +181,12 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
 
         return formated_output
 
+    @restore_connection
     def update(self, items: List[VectorDBInstance]) -> None:
         # TODO
         pass
 
+    @restore_connection
     def upsert(self, items: List[VectorDBInstance]) -> None:
         # validation
         for item in items:
@@ -217,6 +224,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         else:
             sleep(self.config.params['create_sleep'])
 
+    @restore_connection
     def delete(self, ids: List[str]) -> None:
         # validation
         for id in ids:
@@ -236,6 +244,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
                 else:
                     sleep(self.config.params['create_sleep'])
 
+    @restore_connection
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
             includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
@@ -285,11 +294,13 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
 
         return formated_output
 
+    @restore_connection
     def count_items(self) -> int:
         raw_output = self.client.query(
             self.config.db_info['table'], filter='', output_fields=['count(*)'])
         return raw_output[0]['count(*)']
 
+    @restore_connection
     def item_exist(self, id: str) -> bool:
         # validation
         if not isinstance(id, str):
@@ -302,6 +313,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
 
         return bool(len(res))
 
+    @restore_connection
     def clear(self) -> None:
         load_state = self.client.get_load_state(
             self.config.db_info['table'])['state'].value

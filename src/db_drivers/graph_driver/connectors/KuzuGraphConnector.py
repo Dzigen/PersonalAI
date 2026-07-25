@@ -6,6 +6,7 @@ import os
 
 from .configs import DEFAULT_KUZU_CONFIG
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
+from ...utils import restore_connection, retry
 from ....utils.errors import ReturnInfo
 from ....utils.data_structs import Node, NODES_TYPES_MAP, \
     TripletCreator, Relation, RELATIONS_TYPES_MAP, \
@@ -22,6 +23,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
             config.formate_fields()
         self.config: GraphDBConnectionConfig = config
 
+    @retry
     def open_connection(self) -> None:
         load_path = f"{self.config.params['path']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
         if not os.path.exists(load_path):
@@ -52,6 +54,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         self.config.params['table_type_map']['nodes']['inverse'] = {
             v: k for k, v in self.config.params['table_type_map']['nodes']['forward'].items()}
 
+    @retry
     def close_connection(self) -> None:
         try:
             self.conn.close()
@@ -64,6 +67,10 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
 
     def is_open(self) -> bool:
         return not self.conn.is_closed
+
+    @restore_connection
+    def execute(self, query: str) -> object:
+        return self.conn.execute(query)
 
     def create_node_query(self, node: Node) -> str:
         prop_keys, prop_values = [], []
@@ -116,15 +123,15 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
             if cur_info is None or cur_info['s_node']:
                 insert_subj_query = self.create_node_query(triplet.start_node)
                 # print(insert_subj_query)
-                self.conn.execute(insert_subj_query)
+                self.execute(insert_subj_query)
             if cur_info is None or cur_info['e_node']:
                 insert_obj_query = self.create_node_query(triplet.end_node)
                 # print(insert_obj_query)
-                self.conn.execute(insert_obj_query)
+                self.execute(insert_obj_query)
 
             insert_rel_query = self.create_rel_query(triplet)
             # print(insert_rel_query)
-            self.conn.execute(insert_rel_query)
+            self.execute(insert_rel_query)
 
     def read(self, ids: List[str]) -> List[Triplet]:
         for t_id in ids:
@@ -133,7 +140,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
 
         str_ids = '[' + ', '.join(list(map(lambda id: f'"{id}"', ids))) + ']'
         query = f"MATCH (n1)-[rel]->(n2) WHERE rel.t_id IN {str_ids} RETURN n1, rel, n2;"
-        raw_output = self.conn.execute(query)
+        raw_output = self.execute(query)
         triplets = self.parse_query_triplets_output(raw_output)
         return triplets
 
@@ -156,11 +163,11 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
             if cur_info is None or cur_info['e_node']:
                 nodes_to_delete.append('en')
 
-            output = self.conn.execute(
+            output = self.execute(
                 f'MATCH (s_node)-[rel]->(e_node) WHERE rel.t_id = "{t_id}" \
                 RETURN s_node.str_id AS sn_id, label(s_node) as sn_label, e_node.str_id AS en_id, label(e_node) as en_label;')
 
-            self.conn.execute(
+            self.execute(
                 f'MATCH (s_node)-[rel]->(e_node) WHERE rel.t_id = "{t_id}" DELETE rel;')
 
             output = output.get_as_df()
@@ -175,7 +182,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
                     where_statement.append(
                         f'(n.str_id = "{output[f"{n_name}_id"][0]}" and label(n) = "{output[f"{n_name}_label"][0]}")')
                 where_statement = ' or '.join(where_statement)
-                self.conn.execute(f'MATCH (n) WHERE {where_statement} DELETE n;')
+                self.execute(f'MATCH (n) WHERE {where_statement} DELETE n;')
 
     def read_by_name(self, name: str, object_type: Union[RelationType, NodeType], object: str = 'relation') -> List[Union[Triplet, Node]]:
         if type(object_type) not in [RelationType, NodeType]:
@@ -192,14 +199,14 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
             rel_t = self.config.params['table_type_map']['relations']['forward'][object_type.value]
 
             query = f"MATCH (n1)-[rel:{rel_t}]->(n2) WHERE rel.name = {dump_name} RETURN n1,rel,n2;"
-            output = self.conn.execute(query)
+            output = self.execute(query)
 
             formated_output = self.parse_query_triplets_output(output)
         elif object == 'node':
             node_t = self.config.params['table_type_map']['nodes']['forward'][object_type.value]
 
             query = f"MATCH (n:{node_t}) WHERE n.name = {dump_name} RETURN n;"
-            output = self.conn.execute(query)
+            output = self.execute(query)
 
             formated_output = self.parse_query_nodes_output(output)
         else:
@@ -262,7 +269,7 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         str_accepted_nodes = ''.join(
             list(map(lambda tpe: f':{self.config.params["table_type_map"]["nodes"]["forward"][tpe.value]}', accepted_n_types)))
 
-        raw_nodes = self.conn.execute(
+        raw_nodes = self.execute(
             f'MATCH (a:{base_node.type.value})-[r]-(b{str_accepted_nodes}) WHERE a.str_id = "{base_node.id}" RETURN b;')
 
         formated_nodes = []
@@ -288,8 +295,9 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
             str_accepted_relations = ":" + '|'.join(list(map(lambda tpe: self.config.params["table_type_map"]["relations"]["forward"][tpe.value], accepted_r_types)))
         # print(str_accepted_relations)
 
-        output = self.conn.execute(
-            f'MATCH (n1:{base_node.type.value})-[rel{str_accepted_relations}]-(n2{str_accepted_nodes}) WHERE n1.str_id = "{base_node.id}" RETURN n1,rel,n2;')
+        output = self.execute(
+            f'MATCH (n1:{base_node.type.value})-[rel{str_accepted_relations}]-(n2{str_accepted_nodes}) \
+                WHERE n1.str_id = "{base_node.id}" RETURN n1,rel,n2;')
 
         formated_output = self.parse_query_triplets_output(output)
         triples_info = [triple.get_info() for triple in formated_output]
@@ -310,8 +318,9 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         else:
             raise ValueError(f"id_type: {id_type}")
 
-        raw_rels = self.conn.execute(
-            f'MATCH (a:{node1.type.value})-[r]-(b:{node2.type.value}) WHERE a.str_id = "{node1.id}" AND b.str_id = "{node2.id}" RETURN {str_return_info};')
+        raw_rels = self.execute(
+            f'MATCH (a:{node1.type.value})-[r]-(b:{node2.type.value}) \
+                WHERE a.str_id = "{node1.id}" AND b.str_id = "{node2.id}" RETURN {str_return_info};')
 
         rinfo_df = raw_rels.get_as_df()
         formated_info = []
@@ -332,17 +341,17 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         if subj_names:
             for subj_name in subj_names:
                 subj_dump = json.dumps(subj_name, ensure_ascii=False)
-                output = self.conn.execute(
+                output = self.execute(
                     f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n1.name) = LOWER({subj_dump}) RETURN n1, rel, n2;')
                 formatted_triplets += self.parse_query_triplets_output(output)
         elif obj_names:
             for obj_name in obj_names:
                 obj_dump = json.dumps(obj_name, ensure_ascii=False)
-                output = self.conn.execute(
+                output = self.execute(
                     f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n2.name) = LOWER({obj_dump}) RETURN n1, rel, n2;')
                 formatted_triplets += self.parse_query_triplets_output(output)
         else:
-            output = self.conn.execute(
+            output = self.execute(
                 f'MATCH (n1:object)-[rel]-(n2:{obj_type}) RETURN n1, rel, n2;')
             formatted_triplets += self.parse_query_triplets_output(output)
         return formatted_triplets
@@ -353,8 +362,9 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         if (not self.item_exist(node1, 'node')) or (not self.item_exist(node2, 'node')):
             raise ValueError(f"* node1: {node1}\n* node2: {node2}")
 
-        output = self.conn.execute(
-            f'MATCH (n1:{node1.type.value})-[rel]-(n2:{node2.type.value}) WHERE n1.str_id = "{node1.id}" AND n2.str_id = "{node2.id}" RETURN n1, rel, n2;')
+        output = self.execute(
+            f'MATCH (n1:{node1.type.value})-[rel]-(n2:{node2.type.value}) \
+                WHERE n1.str_id = "{node1.id}" AND n2.str_id = "{node2.id}" RETURN n1, rel, n2;')
 
         formated_triplets = self.parse_query_triplets_output(output)
         unique_triplets = {
@@ -370,9 +380,9 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
                     'nodes': {n_type: 0 for n_type in self.config.params['table_type_map']['nodes']['forward'].keys()}
                 }
 
-                r_output = self.conn.execute(
+                r_output = self.execute(
                     "MATCH ()-[rel]->() RETURN LABEL(rel) AS rel_type, count(rel) AS relCount").get_as_df()
-                n_output = self.conn.execute(
+                n_output = self.execute(
                     "MATCH (n) RETURN LABEL(n) AS label, count(n) AS nodeCount").get_as_df()
 
                 result['triplets'].update({self.config.params['table_type_map']['relations']['inverse'][r_output['rel_type'][i]]: int(r_output['relCount'][i]) for i in range(r_output.shape[0])})
@@ -380,26 +390,26 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
 
                 # print(result)
             else:
-                n_output = self.conn.execute(
+                n_output = self.execute(
                     "MATCH (a) RETURN count(a) as n_count").get_as_df()['n_count'][0]
-                r_output = self.conn.execute(
+                r_output = self.execute(
                     "MATCH (a)-[rel]->(b) RETURN count(rel) as r_count").get_as_df()['r_count'][0]
                 result = {'triplets': int(r_output), 'nodes': int(n_output)}
 
         elif id_type == 'node':
             formated_node_type = self.config.params['table_type_map']['nodes']['forward'][item_id.type.value]
-            n_output = self.conn.execute(
+            n_output = self.execute(
                 f'MATCH (a:{formated_node_type}) WHERE a.str_id = "{item_id.id}" RETURN COUNT(a) as n_count').get_as_df()['n_count'][0]
             result = int(n_output)
 
         elif id_type == 'relation':
             formated_relation_type = self.config.params['table_type_map']['relations']['forward'][item_id.type.value]
-            r_output = self.conn.execute(
+            r_output = self.execute(
                 f'MATCH (a)-[rel:{formated_relation_type}]->(b) WHERE rel.str_id = "{item_id.id}" RETURN COUNT(rel) as r_count').get_as_df()['r_count'][0]
             result = int(r_output)
 
         elif id_type == 'triplet':
-            r_output = self.conn.execute(
+            r_output = self.execute(
                 f'MATCH (a)-[rel]->(b) WHERE rel.t_id = "{item_id}" RETURN COUNT(rel) as r_count').get_as_df()['r_count'][0]
             result = int(r_output)
 
@@ -427,9 +437,9 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         else:
             raise ValueError(f"id_type: {id_type}")
 
-        output = self.conn.execute(query)
+        output = self.execute(query)
         return output.get_as_df().shape[0] > 0
 
     def clear(self) -> None:
-        self.conn.execute("MATCH (n1)-[rel]->(n2) DELETE rel;")
-        self.conn.execute("MATCH (n) DELETE n;")
+        self.execute("MATCH (n1)-[rel]->(n2) DELETE rel;")
+        self.execute("MATCH (n) DELETE n;")
