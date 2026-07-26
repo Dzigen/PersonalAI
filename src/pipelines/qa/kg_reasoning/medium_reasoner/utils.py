@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from enum import Enum
 from ....utils import BaseStages
 
 from .answer_generator import AnswerGenerator
@@ -21,3 +22,14 @@ class MediumKGReasonerStages(BaseStages):
     clueanswer_generator: ClueAnswerGenerator
     clueanswers_summarizer: ClueAnswersSummarizer
     answer_generator: AnswerGenerator
+
+
+class RelInfoFoundBehaviour(Enum):
+    casual_answer = 'casual_answer'
+    strict_answer = 'strict_answer'
+
+
+class PlanLimitExceededBehaviour(Enum):
+    casual_answer = 'casual_answer'
+    strict_answer = 'strict_answer'
+    noanswer_stub = 'noanswer_stub'

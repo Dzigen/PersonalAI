@@ -4,6 +4,7 @@ from copy import deepcopy
 
 from .config import ANSWGEN_MAIN_LOG_PATH
 from .utils import MediumAGeneratorTaskSolvers, AnswerGeneratorAgentTasksConfig
+from ..utils import RelInfoFoundBehaviour
 from ......utils import ReturnInfo, Logger, AgentTaskSolver, accumulate_stage_info, \
     CompositeModuleDetailedResult, ModuleType
 from ......utils.errors import ReturnStatus
@@ -85,27 +86,31 @@ class AnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         self.tasks_solvers: MediumAGeneratorTaskSolvers = MediumAGeneratorTaskSolvers(
             answer_classify_solver=AgentTaskSolver(
                 self.agent, self.config.agent_tasks_config.answer_classifier, agents_cache_config, inferencestat_config),
-            answer_gen_solver=AgentTaskSolver(
-                self.agent, self.config.agent_tasks_config.answer_generator, agents_cache_config, inferencestat_config)
+            strict_answer_gen_solver=AgentTaskSolver(
+                self.agent, self.config.agent_tasks_config.strict_answer_generator, agents_cache_config, inferencestat_config),
+            casual_answer_gen_solver=AgentTaskSolver(
+                self.agent, self.config.agent_tasks_config.casual_answer_generator, agents_cache_config, inferencestat_config)
         )
 
         self.log = Logger(config.log_path)
         self.verbose = self.config.verbose
         self.log_level = self.config.log_level
 
-    def get_cache_key(self, search_plan: SearchPlanInfo) -> List[str]:
+    def get_cache_key(self, search_plan: SearchPlanInfo, relinfo_found_behaviour: RelInfoFoundBehaviour) -> List[str]:
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [search_plan.to_str(), self.config.to_str(), str_using_agent_info]
 
     @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def perform(self, search_plan: SearchPlanInfo) -> Tuple[Union[None, str], ReturnInfo, CompositeModuleDetailedResult]:
+    def perform(self, search_plan: SearchPlanInfo, relinfo_found_behaviour: RelInfoFoundBehaviour = RelInfoFoundBehaviour.casual_answer) -> Tuple[Union[None, str], ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для генерации ответа на user-вопрос на основе результатов (извлечённой из графа знаний информации),
         полученных в рамках выполненной последовательности поисковых запросов (шагов плана поиска). Если на основе имеющейся информации
         нельзя сгенерировать релевантный ответ на user-вопрос, то возвращается None.
 
         :param search_plan: Структура данных, хранящая план поиска с промежуточными и доп. результатами.
         :type search_plan: SearchPlanInfo
+        :param relinfo_found_behaviour: ... . Значение по умолчанию RelInfoFoundBehaviour.casual_answer.
+        :type relinfo_found_behaviour: RelInfoFoundBehaviour
         :return: Кортеж из трёх объектов: (1) Ответ на user-вопрос; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
         :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
@@ -124,10 +129,17 @@ class AnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         if status == ReturnStatus.success:
             if can_answer:
                 self.log.debug("Выполняем генерацию ответа...", verbose=self.verbose, log_level=self.log_level)
-                answer, status, trace = self.tasks_solvers.answer_gen_solver.solve(
-                    lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
-                    search_plan=search_plan)
-                module_trace.add("answer_gen_solver", ModuleType.task_solver, trace)
+                if relinfo_found_behaviour == RelInfoFoundBehaviour.casual_answer:
+                    answer, status, trace = self.tasks_solvers.casual_answer_gen_solver.solve(
+                        lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, search_plan=search_plan)
+                    module_trace.add("casual_answer_gen_solver", ModuleType.task_solver, trace)
+                elif relinfo_found_behaviour == RelInfoFoundBehaviour.strict_answer:
+                    answer, status, trace = self.tasks_solvers.strict_answer_gen_solver.solve(
+                        lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, search_plan=search_plan)
+                    module_trace.add("strict_answer_gen_solver", ModuleType.task_solver, trace)
+                else:
+                    raise ValueError(f"relinfo_found_behaviour: {relinfo_found_behaviour}")
+
                 self.log.debug("RESULT: %s", answer, verbose=self.verbose, log_level=self.log_level)
 
             else:

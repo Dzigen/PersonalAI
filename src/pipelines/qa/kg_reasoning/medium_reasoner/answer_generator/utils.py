@@ -10,7 +10,8 @@ from ......utils import AgentTaskSolver, AgentTaskSolverConfig, BaseAgentTasksCo
 @dataclass
 class MediumAGeneratorTaskSolvers(BaseTaskSolvers):
     answer_classify_solver: AgentTaskSolver
-    answer_gen_solver: AgentTaskSolver
+    strict_answer_gen_solver: AgentTaskSolver
+    casual_answer_gen_solver: AgentTaskSolver
 
 
 @dataclass
@@ -18,11 +19,14 @@ class AnswerGeneratorAgentTasksConfig(BaseAgentTasksConfig):
     """
     :param answer_classifier: Конфигурация атомарной задачи для LLM-агента по определению наличия необходимой информации для генерации релевантного ответа на вопрос. Значение по умолчанию 'v2'.
     :type answer_classifier: AgentTaskSolverConfig, optional
-    :param answer_generator: Конфигурация атомарной задачи для LLM-агента по выполнению условной генерации овтета на заданный user-вопрос. Значение по умолчанию 'v3'.
-    :type answer_generator: AgentTaskSolverConfig, optional
+    :param strict_answer_generator: Конфигурация атомарной задачи для LLM-агента по выполнению строгой условной генерации овтета (с возможностью генерации <|NotEnoughtInfo|> тега) на заданный user-вопрос. Значение по умолчанию 'v3'.
+    :type strict_answer_generator: AgentTaskSolverConfig, optional
+    :param casual_answer_generator: Конфигурация атомарной задачи для LLM-агента по выполнению нестрогой условной генерации овтета (без возможности генерации <|NotEnoughtInfo|> тега) на заданный user-вопрос. Значение по умолчанию 'v1'.
+    :type casual_answer_generator: AgentTaskSolverConfig, optional
     """
     answer_classifier: Union[AgentTaskSolverConfig, str] = 'v2'
-    answer_generator: Union[AgentTaskSolverConfig, str] = 'v3'
+    strict_answer_generator: Union[AgentTaskSolverConfig, str] = 'v3'
+    casual_answer_generator: Union[AgentTaskSolverConfig, str] = 'v1'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: ANSWGEN_AGENTASKS_SELECTORS_MAPPING)
 
