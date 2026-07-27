@@ -94,6 +94,9 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
                 agents_cache_config, inferencestat_config),
             plan_enhancing_solver=AgentTaskSolver(
                 self.agent, self.config.agent_tasks_config.plan_enhancing,
+                agents_cache_config, inferencestat_config),
+            searchstop_classify_solver=AgentTaskSolver(
+                self.agent, self.config.agent_tasks_config.searchstop_classifier,
                 agents_cache_config, inferencestat_config)
         )
 

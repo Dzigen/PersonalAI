@@ -387,7 +387,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         self.log.debug("Start iterative search...", verbose=self.verbose, log_level=self.log_level)
         for search_step in range(self.config.max_searchplan_steps):
 
-            self.log.debug("STAGE#1 - SEARCH PLAN INITING/ENHANCING", verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("STAGE#1.1 - SEARCH PLAN INITING/ENHANCING", verbose=self.verbose, log_level=self.log_level)
             search_plan, usp_rinfo, trace = self.update_searchplan(search_step, search_plan)
             module_trace.add("update_searchplan", ModuleType.stage, trace)
             update_rinfo(rinfo, usp_rinfo)
@@ -395,6 +395,14 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
             if rinfo.status == ReturnStatus.success:
                 if search_step >= len(search_plan.search_steps):
                     self.log.warning("No more search-steps in the plan!", verbose=self.verbose, log_level=self.log_level)
+                    break
+
+            self.log.debug("STAGE#1.2 - SEARCH STEPS RELEVANCE CHECK", verbose=self.verbose, log_level=self.log_level)
+            if rinfo.status == ReturnStatus.success:
+                is_continue_search, rinfo.status, trace = self.stages.searchplan_enhancer.tasks_solvers.searchstop_classify_solver(search_plan)
+                module_trace.add("searchstop_classify_solver", ModuleType.task_solver, trace)
+                if not is_continue_search:
+                    self.log.warning("Оставшиеся/непройденные шаги плана не позволят найти запрашиваемую/релевантную информацию для текущего/обрабатываемого вопроса.", verbose=self.verbose, log_level=self.log_level)
                     break
 
             self.log.debug("STAGE#2 - QUERIES PREPARATION FOR KG TRAVERSAL", verbose=self.verbose, log_level=self.log_level)

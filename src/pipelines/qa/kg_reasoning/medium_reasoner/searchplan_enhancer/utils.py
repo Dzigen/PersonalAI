@@ -12,6 +12,7 @@ class MediumPlanEnhancerTaskSolvers(BaseTaskSolvers):
     plan_initialing_solver: AgentTaskSolver
     enhance_classify_solver: AgentTaskSolver
     plan_enhancing_solver: AgentTaskSolver
+    searchstop_classify_solver: AgentTaskSolver
 
 
 @dataclass
@@ -23,10 +24,13 @@ class SearchPlanEnhancerAgentTasksConfig(BaseAgentTasksConfig):
     :type enhance_classifier: AgentTaskSolverConfig, optional
     :param plan_enhancing: Конфигурация атомарной задачи для LLM-агента по подификации/перегенерации не пройденных шагов поиска в рамках существующего плана. Значение по умолчанию 'v2'.
     :type plan_enhancing: AgentTaskSolverConfig, optional
+    :param searchstop_classifier: ... . Значение по умолчанию 'v1'.
+    :type searchstop_classifier: AgentTaskSolverConfig, optional
     """
     plan_initing: Union[AgentTaskSolverConfig, str] = 'v2'
     enhance_classifier: Union[AgentTaskSolverConfig, str] = 'v2'
     plan_enhancing: Union[AgentTaskSolverConfig, str] = 'v2'
+    searchstop_classifier: Union[AgentTaskSolverConfig, str] = 'v1'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: SPENH_AGENTASKS_SELECTORS_MAPPING)
 
