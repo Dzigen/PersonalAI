@@ -16,6 +16,8 @@ class SQLite3TableConnector(AbstractTableDatabaseConnection):
             config.formate_fields()
         self.config = config
 
+        # !!! PAY ATTENTION : single quite and double quote have different meaning during query-handling !!!
+
     def is_open(self) -> bool:
         # TODO
         raise NotImplementedError
