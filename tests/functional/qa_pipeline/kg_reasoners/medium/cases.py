@@ -7,7 +7,7 @@ TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
 from src.pipelines.qa.kg_reasoning.medium_reasoner import MediumKGReasonerConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever import KnowledgeRetrieverConfig
+from src.pipelines.qa.knowledge_retriever import KnowledgeRetrieverConfig
 
 from ...cases import QUESTIONS
 from ..knowledge_retriever.cases import KG_TRAVERSE_METHODS, FILTER_METHODS

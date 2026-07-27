@@ -6,13 +6,13 @@ from collections import Counter
 
 from .configs import KRFILTER_RERANKDRIVER_DEFAULT_CONFIG, TFILTER_LOG_PATH
 from ..utils import AbstractTriplesFilter, BaseTripletsFilterConfig
-from .......utils.data_structs import Triplet, QueryInfo, create_id, \
+from .....utils.data_structs import Triplet, QueryInfo, create_id, \
     TripletCreator, RelationType, RELATIONS_TYPES_MAP
-from .......utils import Logger, accumulate_step_info, ReturnInfo
-from .......kg_model import KnowledgeGraphModel
-from .......utils.cache_kv import CacheUtils
-from .......db_drivers.kv_driver import KeyValueDriverConfig
-from .......rerankers import RerankerDriver, RerankerDriverConfig
+from .....utils import Logger, accumulate_step_info, ReturnInfo
+from .....kg_model import KnowledgeGraphModel
+from .....utils.cache_kv import CacheUtils
+from .....db_drivers.kv_driver import KeyValueDriverConfig
+from .....rerankers import RerankerDriver, RerankerDriverConfig
 
 
 @dataclass
@@ -23,14 +23,14 @@ class TripletsFilterConfig(BaseTripletsFilterConfig):
     :type reranker_driver_config: Union[Dict, RerankerDriverConfig], optional
     :param accepted_triplets_types: Допустимые типы триплетов, которые не будут отфильтрованы (по типу). Значение по умолчанию [RelationType.hyper, RelationType.simple].
     :type accepted_triplets_types: List[Union[str, RelationType]]
-    :param max_k: Первые k (по релевантности) триплетов, которые будут возвращены в результате операции ранжирования. Значение по умолчанию 50.
+    :param max_k: Первые k (по релевантности) триплетов, которые будут возвращены в результате операции ранжирования. Значение по умолчанию 25.
     :type max_k: int
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы TripletsFilter-класса. Значение по умолчанию 'qa_naive_t_filter_cache'.
     :type cache_table_name: str
     """
     reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(default_factory=lambda: KRFILTER_RERANKDRIVER_DEFAULT_CONFIG)
     accepted_triplets_types: List[Union[str, RelationType]] = field(default_factory=lambda: [RelationType.hyper, RelationType.simple])
-    max_k: int = 50
+    max_k: int = 25
 
     cache_table_name: str = 'qa_naive_t_filter_cache'
     log_path: str = TFILTER_LOG_PATH

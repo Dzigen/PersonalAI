@@ -218,9 +218,8 @@ class AgentTaskSolver:
             self.log.debug("5. Разбор ответа, сгенерированного LLM-агентом.", verbose=self.verbose, log_level=self.log_level)
 
             try:
-                formated_answer = self.config.suites[detected_lang].parse_answer_func(
-                    raw_answer, **kwargs)
-            except (KeyError, ValueError) as e:
+                formated_answer = self.config.suites[detected_lang].parse_answer_func(raw_answer, **kwargs)
+            except (KeyError, ValueError, AttributeError, TypeError) as e:
                 self.log.error(str(e), verbose=self.verbose, log_level=self.log_level)
                 status = ReturnStatus.bad_parser
             else:
@@ -235,23 +234,23 @@ class AgentTaskSolver:
 
             try:
                 task_result = self.config.postprocess_answer_func(formated_answer, **kwargs)
-            except Exception as e:
+            except (KeyError, ValueError, AttributeError, TypeError) as e:
                 self.log.error(str(e), verbose=self.verbose, log_level=self.log_level)
                 status = ReturnStatus.bad_postprocessor
-                if self.cachekv is not None:
-                    self.log.debug("Кеширование генерации LLM-модели выполнено не будет.", verbose=self.verbose, log_level=self.log_level)
             else:
-                if not cache_hit:
-                    if self.inference_stat_cache is not None:
-                        self.inference_stat_cache.add_values([inference_info])
-                    if self.cachekv is not None:
-                        self.log.debug("Кешируем генерацию LLM-модели.", verbose=self.verbose, log_level=self.log_level)
-                        self.cachekv.save_value(value=raw_answer, key_hash=key_hash)
-
                 self.log.debug("Результат:\n%s", task_result, verbose=self.verbose, log_level=self.log_level)
-
             finally:
                 self.log.debug("Статус: %s .", STATUS_MESSAGE[status], verbose=self.verbose, log_level=self.log_level)
+
+        #
+        if (status == ReturnStatus.success) and (not cache_hit):
+            if self.inference_stat_cache is not None:
+                self.inference_stat_cache.add_values([inference_info])
+            if self.cachekv is not None:
+                self.log.debug("Кешируем генерацию LLM-модели.", verbose=self.verbose, log_level=self.log_level)
+                self.cachekv.save_value(value=raw_answer, key_hash=key_hash)
+        elif (status != ReturnStatus.success) and (self.cachekv is not None):
+            self.log.debug("Кеширование генерации LLM-модели выполнено не будет.", verbose=self.verbose, log_level=self.log_level)
 
         return task_result, status, cache_hit
 

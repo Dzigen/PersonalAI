@@ -9,7 +9,7 @@ from .traversal_methods import NaiveTripletsRetriever, NaiveGraphSearchConfig
 from .traversal_methods import BeamSearchTripletsRetriever, GraphBeamSearchConfig
 from .filtering_methods import TripletsFilter, TripletsFilterConfig
 
-KR_MAIN_LOG_PATH = 'log/qa/kg_reasoner/weak/knowledge_retriever/main'
+KR_MAIN_LOG_PATH = 'log/qa/knowledge_retriever/main'
 
 AVAILABLE_TRIPLETS_RETRIEVERS: Dict[str, AbstractTripletsRetriever] = {
     'astar': AStarTripletsRetriever,

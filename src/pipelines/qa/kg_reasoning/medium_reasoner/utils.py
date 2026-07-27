@@ -9,7 +9,7 @@ from .entities2nodes_matching import Entities2NodesMatcher
 from .entities_extractor import EntitiesExtractor
 from .searchplan_enhancer import SearchPlanEnhancer
 from .cluequeries_generator import ClueQueriesGenerator
-from ..weak_reasoner.knowledge_retriever import KnowledgeRetriever
+from ...knowledge_retriever import KnowledgeRetriever
 
 
 @dataclass

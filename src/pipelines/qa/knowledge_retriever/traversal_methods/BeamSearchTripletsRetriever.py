@@ -14,14 +14,14 @@ import numpy as np
 
 from .configs import BSGS_RERANKDRIVER_DEFAULT_CONFIG, BEAMSEARCH_RETRIEVER_LOG_PATH
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
-from .......utils.data_structs import QueryInfo, Triplet, NodeType, NodeInfo, TripletInfo, RelationInfo, from_str_to_nodeinfo
-from .......kg_model import KnowledgeGraphModel
-from .......utils.data_structs import create_id, NODES_TYPES_MAP
-from .......utils import Logger, accumulate_step_info, ReturnInfo
-from .......utils.cache_kv import CacheUtils
-from .......db_drivers.kv_driver import KeyValueDriverConfig
-from .......rerankers import RerankerDriver, RerankerDriverConfig
-from .......rerankers.methods import SingleStepReranker
+from .....utils.data_structs import QueryInfo, Triplet, NodeType, NodeInfo, TripletInfo, RelationInfo, from_str_to_nodeinfo
+from .....kg_model import KnowledgeGraphModel
+from .....utils.data_structs import create_id, NODES_TYPES_MAP
+from .....utils import Logger, accumulate_step_info, ReturnInfo
+from .....utils.cache_kv import CacheUtils
+from .....db_drivers.kv_driver import KeyValueDriverConfig
+from .....rerankers import RerankerDriver, RerankerDriverConfig
+from .....rerankers.methods import SingleStepReranker
 
 
 @dataclass
@@ -68,7 +68,7 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(default_factory=lambda: BSGS_RERANKDRIVER_DEFAULT_CONFIG)
     vdbname_for_scores: str = 'dense_triplets'
     max_depth: int = 3
-    max_paths: int = 18
+    max_paths: int = 10
     same_path_intersection_by_node: bool = False
     diff_paths_intersection_by_node: bool = False
     diff_paths_intersection_by_rel: bool = False

@@ -12,7 +12,7 @@ from .entities2nodes_matching import Entities2NodesMatcher, Entities2NodesMatche
 from .utils import MediumKGReasonerStages, RelInfoFoundBehaviour, PlanLimitExceededBehaviour
 from .config import MDGR_MAIN_LOG_PATH, CONTINUE_SEARCH_MESSAGE, ANSWER_IS_GENERATED_MESSAGE, MEDIUM_KG_RETRIEVER_CONFIG
 from ..utils import AbstractKGReasoner, BaseKGReasonerConfig
-from ..weak_reasoner.knowledge_retriever import KnowledgeRetrieverConfig, KnowledgeRetriever
+from ...knowledge_retriever import KnowledgeRetrieverConfig, KnowledgeRetriever
 from .....utils.data_structs import create_id, QueryInfo, SearchPlanInfo, BaseComponentConfig, LanguageConfig, NodeInfo, TripletCreator
 from .....utils import Logger, ReturnInfo, ReturnStatus, update_rinfo, accumulate_stage_info, \
     CompositeModuleDetailedResult, ModuleType, CompositeModuleResult
@@ -399,7 +399,9 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
 
             self.log.debug("STAGE#1.2 - SEARCH STEPS RELEVANCE CHECK", verbose=self.verbose, log_level=self.log_level)
             if rinfo.status == ReturnStatus.success:
-                is_continue_search, rinfo.status, trace = self.stages.searchplan_enhancer.tasks_solvers.searchstop_classify_solver(search_plan)
+                is_continue_search, rinfo.status, trace = self.stages.searchplan_enhancer.tasks_solvers.searchstop_classify_solver.solve(
+                    lang=self.stages.searchplan_enhancer.config.lang, gen_strategy=self.stages.searchplan_enhancer.config.agent_gen_stategy,
+                    query=search_plan.base_query, search_steps=search_plan.search_steps, steps_answers=search_plan.steps_answers[:search_step])
                 module_trace.add("searchstop_classify_solver", ModuleType.task_solver, trace)
                 if rinfo.status == ReturnStatus.success:
                     self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)

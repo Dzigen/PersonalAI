@@ -9,11 +9,11 @@ from .NaiveBFSTripletsRetriever import NaiveBFSTripletsRetriever, NaiveBFSGraphS
 from .BeamSearchTripletsRetriever import BeamSearchTripletsRetriever, GraphBeamSearchConfig
 from .NaiveTripletsRetriever import NaiveTripletsRetriever, NaiveGraphSearchConfig
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
-from .......utils.data_structs import QueryInfo, Triplet, create_id, NodeType, NODES_TYPES_MAP
-from .......kg_model import KnowledgeGraphModel
-from .......utils import Logger, accumulate_step_info, ReturnInfo
-from .......utils.cache_kv import CacheUtils
-from .......db_drivers.kv_driver import KeyValueDriverConfig
+from .....utils.data_structs import QueryInfo, Triplet, create_id, NodeType, NODES_TYPES_MAP
+from .....kg_model import KnowledgeGraphModel
+from .....utils import Logger, accumulate_step_info, ReturnInfo
+from .....utils.cache_kv import CacheUtils
+from .....db_drivers.kv_driver import KeyValueDriverConfig
 
 
 @dataclass

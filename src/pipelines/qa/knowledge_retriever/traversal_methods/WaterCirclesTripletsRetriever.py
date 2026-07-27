@@ -6,12 +6,12 @@ from collections import Counter
 
 from .configs import WATERCIRCLES_RETRIEVER_LOG_PATH
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
-from .......kg_model import KnowledgeGraphModel
-from .......utils.data_structs import QueryInfo, TripletCreator, create_id, Triplet, NodeCreator, \
+from .....kg_model import KnowledgeGraphModel
+from .....utils.data_structs import QueryInfo, TripletCreator, create_id, Triplet, NodeCreator, \
     RelationCreator, NodeType, RelationType, NODES_TYPES_MAP
-from .......utils import Logger, accumulate_step_info, ReturnInfo
-from .......utils.cache_kv import CacheUtils
-from .......db_drivers.kv_driver import KeyValueDriverConfig
+from .....utils import Logger, accumulate_step_info, ReturnInfo
+from .....utils.cache_kv import CacheUtils
+from .....db_drivers.kv_driver import KeyValueDriverConfig
 
 
 def process_chain(
@@ -516,7 +516,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
 
         unique_triplets_map: Dict[str, Triplet] = dict()
         for triplet in formatted_triplets:
-                unique_triplets_map[triplet.relation.get_typedid()] = triplet
+            unique_triplets_map[triplet.relation.get_typedid()] = triplet
         unique_triplets: List[Triplet] = list(unique_triplets_map.values())
 
         self.log.debug("Суммарное количество уникальных (по строковому представлению) извлечённых триплетов: %d", len(unique_triplets), verbose=self.verbose, log_level=self.log_level)

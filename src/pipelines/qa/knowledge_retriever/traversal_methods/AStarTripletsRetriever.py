@@ -13,15 +13,15 @@ from collections import Counter, defaultdict, deque
 
 from .configs import ASTAR_RETRIEVER_LOG_PATH
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig, get_nodes_path, NodeInfo
-from .......utils.data_structs import QueryInfo, Triplet, NodeType, create_id_for_node_pair, create_id, \
+from .....utils.data_structs import QueryInfo, Triplet, NodeType, create_id_for_node_pair, create_id, \
     NODES_TYPES_MAP, NodeInfo, from_str_to_nodeinfo, BaseConfigOperations
-from .......kg_model import KnowledgeGraphModel
-from .......db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver, KeyValueDBInstance
-from .......utils import Logger, accumulate_step_info, ReturnInfo
-from .......utils.logger import LogLevel
-from .......utils.cache_kv import CacheUtils
-from .......db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
-from .......db_drivers.vector_driver import VectorDBInstance, VectorRetriveComposer
+from .....kg_model import KnowledgeGraphModel
+from .....db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver, KeyValueDBInstance
+from .....utils import Logger, accumulate_step_info, ReturnInfo
+from .....utils.logger import LogLevel
+from .....utils.cache_kv import CacheUtils
+from .....db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
+from .....db_drivers.vector_driver import VectorDBInstance, VectorRetriveComposer
 
 # TODO: дописать комментариии к AStarGraphSearchConfig-датаклассу
 
@@ -327,7 +327,7 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     :type metrics_config: Union[Dict,AStarMetricsConfig]
     :param max_depth: Максимальная глубина обхода графа для поиска заданной вершины. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 5.
     :type max_depth: int
-    :param max_passed_nodes: Максимальное количество вершин, которое можно обойти для поиска заданной вершины в графе. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 50.
+    :param max_passed_nodes: Максимальное количество вершин, которое можно обойти для поиска заданной вершины в графе. Если указано значение -1, то данное ограничение выключается. Значение по умолчанию 25.
     :type max_passed_nodes: int
     :param max_adjanced_nodes: ... . Значение по умолчанию 25.
     :type max_adjanced_nodes: int
@@ -340,7 +340,7 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     """
     metrics_config: Union[Dict, AStarMetricsConfig] = field(default_factory=lambda: AStarMetricsConfig())
     max_depth: int = 5
-    max_passed_nodes: int = 50
+    max_passed_nodes: int = 25
     max_adjanced_nodes: int = 25  # decimal natural number OR -1
     adjacent_nodes_filter_node: Union[None, str] = "end_node"  # "start_node" OR "end_node" OR None
     accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [

@@ -6,32 +6,32 @@ from copy import deepcopy
 
 from .configs import NAIVEBFS_RETRIEVER_LOG_PATH
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
-from .......utils.data_structs import QueryInfo, Triplet, NodeType
-from .......kg_model import KnowledgeGraphModel
-from .......utils.data_structs import create_id, NODES_TYPES_MAP, NodeInfo
-from .......utils import Logger, accumulate_step_info, ReturnInfo
-from .......utils.cache_kv import CacheUtils
-from .......db_drivers.kv_driver import KeyValueDriverConfig
+from .....utils.data_structs import QueryInfo, Triplet, NodeType
+from .....kg_model import KnowledgeGraphModel
+from .....utils.data_structs import create_id, NODES_TYPES_MAP, NodeInfo
+from .....utils import Logger, accumulate_step_info, ReturnInfo
+from .....utils.cache_kv import CacheUtils
+from .....db_drivers.kv_driver import KeyValueDriverConfig
 
 
 @dataclass
 class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):
     """Конфигурация NaiveBFSTripletsRetriever-алгоритма обхода графа.
 
-    :param max_depth: Максимальная глубина обхода графа с помощью BFS-алгоритма. Значение по умолчанию 10.
+    :param max_depth: Максимальная глубина обхода графа с помощью BFS-алгоритма. Значение по умолчанию 3.
     :type max_depth: int, optional
-    :param max_width: Максимальная ширина обхода графа с помощью BFS-алгоритма. Значение по умолчанию 50.
+    :param max_width: Максимальная ширина обхода графа с помощью BFS-алгоритма. Значение по умолчанию 10.
     :type max_width: int, optional
-    :param max_passed_nodes: Максимальное количество вершин, которое может быть пройдено в рамках работы BFS-алгоритма. Значение по умолчанию 1000.
+    :param max_passed_nodes: Максимальное количество вершин, которое может быть пройдено в рамках работы BFS-алгоритма. Значение по умолчанию 50.
     :type max_passed_nodes: int, optional
     :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извлечения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic].
     :type accepted_node_types:List[Union[str, NodeType]], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы NaiveBFSTripletsRetriever-класса. Значение по умолчанию 'qa_bfs_t_retriver_cache'.
     :type cache_table_name: str, optional
     """
-    max_depth: int = 10
-    max_width: int = 50
-    max_passed_nodes: int = 1000
+    max_depth: int = 3
+    max_width: int = 10
+    max_passed_nodes: int = 50
     accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
     cache_table_name: str = 'qa_bfs_t_retriver_cache'
     log_path: str = NAIVEBFS_RETRIEVER_LOG_PATH

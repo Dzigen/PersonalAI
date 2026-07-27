@@ -29,24 +29,24 @@ class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
     :type agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict], optional
     :param max_cqueries_amount: Максимальное количество clue-запросов, которое может быть сгенерировано. Значение по умолчанию 6.
     :type max_cqueries_amount: int, optional
-    :param return_only_unique_cqueires: Если True, то из набора сгенерированных clue-вопросов будут удалены дубликаты (по строковому представлению и без учёта вершин, по которым данные clue-вопросы были получены), иначе False. Значение по умолчанию False.
-    :type return_only_unique_cqueires: bool, optional
-    :param use_basequery_as_cquery: Если True, то генерации уникальных clue-вопросов под каждую линейную комбинацию сопоставленных вершин выполнено не будет (в качестве clue-вопросов будет использован исходный search_query), иначе False. Значение по умолчанию False.
+    :param return_only_unique_cqueries: Если True, то из набора сгенерированных clue-вопросов будут удалены дубликаты (по строковому представлению и без учёта вершин, по которым данные clue-вопросы были получены), иначе False. Значение по умолчанию False.
+    :type return_only_unique_cqueries: bool, optional
+    :param use_basequery_as_cqueries: Если True, то генерации уникальных clue-вопросов под каждую линейную комбинацию сопоставленных вершин выполнено не будет (в качестве clue-вопросов будет использован исходный search_query), иначе False. Значение по умолчанию False.
     :type use_basequery_as_cqueries: bool, optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы ClueQueriesGenerator-класса. Значение по умолчанию 'medreasn_cquerygen_main_stage_cache'.
     :type cache_table_name: str, optional
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict] = field(default_factory=lambda: ClueQueriesGeneratorAgentTasksConfig())
-    max_cqueries_amount: int = 6
-    return_only_unique_cqueires: bool = False
-    use_basequery_as_cquery: bool = False
+    max_cqueries_amount: int = 4
+    return_only_unique_cqueries: bool = False
+    use_basequery_as_cqueries: bool = False
 
     cache_table_name: str = 'medreasn_cquerygen_main_stage_cache'
     log_path: str = CQGEN_MAIN_LOG_PATH
 
     def to_str(self):
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{self.max_cqueries_amount}|{self.return_only_unique_cqueires}{self.use_basequery_as_cqueries}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{self.max_cqueries_amount}|{self.return_only_unique_cqueries}{self.use_basequery_as_cqueries}"
 
     @staticmethod
     def from_dict(dict_config: Dict):
@@ -170,7 +170,7 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
                 rinfo.status = status
                 break
             else:
-                if self.config.return_only_unique_cqueires:
+                if self.config.return_only_unique_cqueries:
                     if cur_cluequery in unique_cqueries:
                         self.log.debug("Данный clue-query уже был получено ранее. Отбрасываем.", verbose=self.verbose, log_level=self.log_level)
                         continue

@@ -5,13 +5,13 @@ from copy import deepcopy
 
 from .configs import NGS_RERANKDRIVER_DEFAULT_CONFIG, NAIVE_RETRIEVER_LOG_PATH
 from ..utils import AbstractTripletsRetriever, BaseGraphSearchConfig
-from .......db_drivers.vector_driver import VectorDBInstance
-from .......kg_model import KnowledgeGraphModel
-from .......utils import Logger, accumulate_step_info, ReturnInfo
-from .......utils.data_structs import QueryInfo, Triplet, create_id, NodeType, NODES_TYPES_MAP
-from .......utils.cache_kv import CacheUtils
-from .......db_drivers.kv_driver import KeyValueDriverConfig
-from .......rerankers import RerankerDriver, RerankerDriverConfig
+from .....db_drivers.vector_driver import VectorDBInstance
+from .....kg_model import KnowledgeGraphModel
+from .....utils import Logger, accumulate_step_info, ReturnInfo
+from .....utils.data_structs import QueryInfo, Triplet, create_id, NodeType, NODES_TYPES_MAP
+from .....utils.cache_kv import CacheUtils
+from .....db_drivers.kv_driver import KeyValueDriverConfig
+from .....rerankers import RerankerDriver, RerankerDriverConfig
 
 
 @dataclass
@@ -20,7 +20,7 @@ class NaiveGraphSearchConfig(BaseGraphSearchConfig):
 
     :param reranker_driver_config: Конфигурация Retrieve/Rerank-оператора. Значение по умолчанию NGS_RERANKDRIVER_DEFAULT_CONFIG.
     :type reranker_driver_config: Union[Dict, RerankerDriverConfig], optional
-    :param max_k: Максимальное количество триплетов, которое может быть извлечено из графа. Значение по умолчанию 50.
+    :param max_k: Максимальное количество триплетов, которое может быть извлечено из графа. Значение по умолчанию 25.
     :type max_k: int, optional
     :param accepted_node_types: Типы вершин графа знаний, которые можно обходить в рамках запускаемых алгоритмов поиска/извелчения релевантной информации. Значение по умолчанию [NodeType.object, NodeType.hyper, NodeType.episodic].
     :type accepted_node_types: List[Union[str, NodeType]], optional
@@ -28,7 +28,7 @@ class NaiveGraphSearchConfig(BaseGraphSearchConfig):
     :type cache_table_name: str, optional
     """
     reranker_driver_config: Union[Dict, RerankerDriverConfig] = field(default_factory=lambda: NGS_RERANKDRIVER_DEFAULT_CONFIG)
-    max_k: int = 50
+    max_k: int = 25
     accepted_node_types: List[NodeType] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
 
     cache_table_name: str = 'qa_naive_t_retriever_cache'

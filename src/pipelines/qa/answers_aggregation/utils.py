@@ -29,7 +29,7 @@ class AnswersAggregatorAgentTasksConfig(BaseAgentTasksConfig):
     :param casual_suba_summarisation: Конфигурация атомарной задачи для LLM-агента по суммаризации/объединению независимых ответов на под-вопросы в один финальный ответ (без возможности генерации <|NotEnoughtInfo|> тега) на исходный user-вопрос. Значение по умолчанию 'v1'.
     :type casual_suba_summarisation: Union[AgentTaskSolverConfig, str], optional
     """
-    strict_suba_summarisation: Union[AgentTaskSolverConfig, str] = 'v2'
+    strict_suba_summarisation: Union[AgentTaskSolverConfig, str] = 'v3'
     casual_suba_summarisation: Union[AgentTaskSolverConfig, str] = 'v1'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: ANSWAGGR_AGENTASKS_SELECTORS_MAPPING)

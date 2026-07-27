@@ -8,14 +8,14 @@ from .configs import KR_MAIN_LOG_PATH, AVAILABLE_TRIPLETS_FILTERS, AVAILABLE_TRI
 from .utils import BaseGraphSearchConfig, BaseTripletsFilterConfig, KnowledgeRetrieverStages
 from .filtering_methods.TripletsFilter import TripletsFilterConfig
 from .traversal_methods.MixturedTripletsRetriever import MixturedGraphSearchConfig
-from ......kg_model import KnowledgeGraphModel
-from ......utils import Logger, ReturnStatus, ReturnInfo, accumulate_stage_info, \
+from ....kg_model import KnowledgeGraphModel
+from ....utils import Logger, ReturnStatus, ReturnInfo, accumulate_stage_info, \
     CompositeModuleDetailedResult, ModuleType, SimpleModuleResult
-from ......utils.errors import STATUS_MESSAGE
-from ......utils.data_structs import create_id, QueryInfo, Triplet, BaseComponentConfig
-from ......utils.cache_kv import CacheUtils
-from ......db_drivers.kv_driver import KeyValueDriverConfig
-from ......utils.cache_kv.CacheOperations import CacheOperations
+from ....utils.errors import STATUS_MESSAGE
+from ....utils.data_structs import create_id, QueryInfo, Triplet, BaseComponentConfig
+from ....utils.cache_kv import CacheUtils
+from ....db_drivers.kv_driver import KeyValueDriverConfig
+from ....utils.cache_kv.CacheOperations import CacheOperations
 
 
 @dataclass

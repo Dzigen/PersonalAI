@@ -4,9 +4,9 @@ from dataclasses import dataclass
 
 from .errors import NOT_VALID_ID_ERROR_MSG, NO_START_NODE_IN_PARENT_ERROR_MSG, \
     EMPTY_PARENT_ERROR_MSG
-from ......utils import ReturnInfo
-from ......utils.data_structs import QueryInfo, Triplet, NodeInfo, BaseConfigOperations, NodeType, LoggingConfig
-from ......utils.cache_kv.CacheOperations import CacheOperations, TraversalMethodCacheOpearions
+from ....utils import ReturnInfo
+from ....utils.data_structs import QueryInfo, Triplet, NodeInfo, BaseConfigOperations, NodeType, LoggingConfig
+from ....utils.cache_kv.CacheOperations import CacheOperations, TraversalMethodCacheOpearions
 
 
 def get_nodes_path(parent: Dict[str, NodeInfo], end_node: NodeInfo) -> List[NodeInfo]:
