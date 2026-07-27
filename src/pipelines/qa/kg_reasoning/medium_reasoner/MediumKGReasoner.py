@@ -401,9 +401,15 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
             if rinfo.status == ReturnStatus.success:
                 is_continue_search, rinfo.status, trace = self.stages.searchplan_enhancer.tasks_solvers.searchstop_classify_solver(search_plan)
                 module_trace.add("searchstop_classify_solver", ModuleType.task_solver, trace)
-                if not is_continue_search:
-                    self.log.warning("Оставшиеся/непройденные шаги плана не позволят найти запрашиваемую/релевантную информацию для текущего/обрабатываемого вопроса.", verbose=self.verbose, log_level=self.log_level)
-                    break
+                if rinfo.status == ReturnStatus.success:
+                    self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
+                    if not is_continue_search:
+                        self.log.warning("RESUTL: Оставшиеся/непройденные шаги плана не позволят найти запрашиваемую/релевантную информацию для текущего/обрабатываемого вопроса.", verbose=self.verbose, log_level=self.log_level)
+                        break
+                    else:
+                        self.log.debug("RESULT: Оставшиеся/непройденные шаги плана успешно прошли проверку на продолжение поиска.", verbose=self.verbose, log_level=self.log_level)
+                else:
+                    self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
 
             self.log.debug("STAGE#2 - QUERIES PREPARATION FOR KG TRAVERSAL", verbose=self.verbose, log_level=self.log_level)
             if rinfo.status == ReturnStatus.success:
