@@ -31,11 +31,12 @@ RUN apt install -y jq
 RUN jq --version
 
 RUN python3 --version
-COPY requirements.txt .
-RUN python3 -m pip install -r requirements.txt
+COPY raw_requirements.txt .
+RUN python3 -m pip install -r raw_requirements.txt
 
-RUN python3 -m pip install torch
+RUN python3 -m pip install torch --index-url https://download.pytorch.org/whl/cu121
 RUN python3 -c 'import torch'
+RUN python3 -m nltk.downloader punkt punkt_tab wordnet
 
 RUN useradd -rm -d /home/workspace -s /bin/bash -g root -G sudo -u 4200235 m.menschikov
 #RUN useradd -rm -d /home/workspace -s /bin/bash -g root -G sudo -u 1000 dzigen

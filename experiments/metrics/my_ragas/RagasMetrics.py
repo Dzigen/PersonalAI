@@ -1,18 +1,37 @@
 from .configs import EVAL_RAGAS_MAIN_LOG_PATH
 from ..utils import KeyValueDriverConfig, Logger, AgentDriverConfig, CacheKV, CacheUtils
 
+from langchain_ollama import OllamaLLM
+from ragas.llms import LangchainLLMWrapper
+
 from openai import AsyncOpenAI
 from dataclasses import dataclass, field
 from typing import Union
+from datasets import Dataset
 from time import time
 from typing import List, Dict, Tuple
+import sys
+import types
+
+# Create a fake module to trick the ragas importer
+if "langchain_community.chat_models.vertexai" not in sys.modules:
+    dummy_module = types.ModuleType("langchain_community.chat_models.vertexai")
+    class ChatVertexAI: 
+        pass
+    dummy_module.ChatVertexAI = ChatVertexAI
+    sys.modules["langchain_community.chat_models.vertexai"] = dummy_module
+
+
 from ragas.llms import llm_factory
-from ragas.metrics.collections import DistanceMeasure
-from ragas.metrics.collections import RougeScore, CHRFScore, BleuScore, \
-    NonLLMStringSimilarity, FactualCorrectness, ResponseGroundedness, \
+from ragas.metrics.collections import DistanceMeasure, RougeScore, CHRFScore, BleuScore, NonLLMStringSimilarity
+from ragas.metrics import FactualCorrectness, ResponseGroundedness, \
         ContextRelevance, AnswerAccuracy, Faithfulness, \
             NoiseSensitivity, ContextEntityRecall
+from ragas import evaluate, RunConfig
+import pandas as pd
 from copy import deepcopy
+
+DEFAULT_SELECTED_EVALUATE_METRICS = ['nv_context_relevance', 'faithfulness', 'nv_response_groundedness']
 
 @dataclass
 class RagasMetricsConfig:
@@ -45,12 +64,16 @@ class RagasMetrics(CacheUtils):
             raise ValueError
 
         agent_config = config.adriver_config.agent_config
-        base_url = f"http://{agent_config.credentials['host']}:{agent_config.credentials['port']}/v1"
-        self.client = AsyncOpenAI(api_key='ollama', base_url=base_url,
-                             timeout=agent_config.ext_params['timeout'])
+        base_url = f"http://{agent_config.credentials['host']}:{agent_config.credentials['port']}"
+        #self.client = AsyncOpenAI(api_key='ollama', base_url=base_url,
+        #                     timeout=agent_config.ext_params['timeout'])
 
+        self.client = OllamaLLM(
+            model=agent_config.credentials['model'], base_url=base_url,
+              keep_alive=-1, **agent_config.gen_strategy)
+        self.agent = LangchainLLMWrapper(self.client)
 
-        self.agent = llm_factory(agent_config.credentials['model'], client=self.client)
+        #self.agent = llm_factory(agent_config.credentials['model'], client=self.client)
 
         self.ContextEntitiesRecall = ContextEntityRecall(llm=self.agent)
         self.NoiseSensitivity = NoiseSensitivity(llm=self.agent)
@@ -70,6 +93,11 @@ class RagasMetrics(CacheUtils):
             'context_relevance': self.context_relevance,
             'faithfulness': self.faithfulness,
             'context_entity_recall': self.context_entity_recall
+        }
+        self.AVAILABLE_EVAULATE_METRICS_MAP = {
+            'nv_context_relevance': self.ContextRelevance,
+            'faithfulness': self.Faithfulness,
+            'nv_response_groundedness': self.ResponseGroundedness,
         }
 
     async def context_entity_recall(self, reference: str, retrieved_contexts: List[str]) -> float:
@@ -210,3 +238,38 @@ class RagasMetrics(CacheUtils):
         self.log(f'RESULT: metric: {metric_name}; score = {score}; type = {type(score)}; elapsed_time = {round(e_time-s_time,5)}.', verbose=self.verbose)
 
         return score
+
+
+    def evaluate(self, user_input: List[str], response: List[str], reference: List[str],
+        retrieved_contexts: List[List[str]], selected_metrics: List[str] = DEFAULT_SELECTED_EVALUATE_METRICS) -> pd.DataFrame:
+        dataset = {
+            "question": user_input,
+            "answer": response,
+            "contexts": retrieved_contexts,
+            "ground_truth": reference
+        }
+
+        config = RunConfig(
+            timeout=180,
+            max_retries=3,
+            max_workers=4
+        )
+
+        #print(dataset)
+        evaluation_dataset = Dataset.from_dict(dataset)
+
+        selected_metrics_funcs = [self.AVAILABLE_EVAULATE_METRICS_MAP[metric_name] for metric_name in selected_metrics]
+
+        results = evaluate(
+            dataset=evaluation_dataset,
+            metrics=selected_metrics_funcs,
+            llm=self.agent,
+            raise_exceptions=True,
+            run_config=config,
+            batch_size=4
+        )
+
+        df = results.to_pandas()
+        print(df.to_dict())
+        formated_results = [{metric_name: df[metric_name][i] for metric_name in selected_metrics} for i in range(df.shape[0])]
+        return df
