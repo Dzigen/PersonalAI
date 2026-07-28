@@ -62,6 +62,10 @@ dvc tutorial:
 pytest tutorial:
 * https://realpython.com/pytest-python-testing/#parametrization-combining-tests
 
+utils:
+* find . -maxdepth 4 -type d -name "tmp_*" -exec rm -rf {} +
+* git tag -a <tag-version> commit_id -m "comment"
+
 archive experiments:
 * tar -czvf  deepseek_231025_v2prompts.tar.gz --exclude="configs" --exclude="judge_packs" --exclude="metric_packs" --exclude="tmp_answer_packs" --exclude="tmp_judges_packs" --exclude="inference_log.txt"  deepseek_231025_v2prompts/
 

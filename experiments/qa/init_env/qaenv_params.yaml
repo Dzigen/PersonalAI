@@ -1,5 +1,5 @@
-DATASET_NAME: 2wikimultihopqa_dev
-KNOWLEDGE_GRAPH_NAME: qwen257b_080226_v2prompts
+DATASET_NAME: musique_validation
+KNOWLEDGE_GRAPH_NAME: qwen257b_050226_v2prompts
 BASE_PERSONALAI_PATH: /home/m.menschikov/workspace/personal_ai/Personal-AI
 BASE_KG_PATH: /mnt/data/m.menschikov/personalai/knowledge_graphs
 OLLAMA_MODELS_PATH: /mnt/data/m.menschikov/ollama_volume
