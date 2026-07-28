@@ -60,7 +60,7 @@ def agent_conn():
         name='ollama',
         agent_config=AgentConnectorConfig(
             gen_strategy={"num_predict": 2048, "seed": 42, "top_k": 1, "temperature": 0.0},
-            credentials={"model": 'llama3.1:8b', "host": 'localhost', "port": 11437},
+            credentials={"model": 'qwen2.5:7b', "host": 'localhost', "port": 11437},
             ext_params={"timeout": 560, "keep_alive": -1}))
 
     return AgentDriver.connect(config)

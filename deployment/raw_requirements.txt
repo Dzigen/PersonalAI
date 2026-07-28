@@ -47,3 +47,5 @@ flake8
 mypy
 dspy
 picologging
+flatdict
+pytest

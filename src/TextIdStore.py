@@ -5,6 +5,7 @@ from copy import deepcopy
 from .utils import Logger, Triplet
 from .utils.data_structs import BaseComponentConfig, Node, Relation, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
 from .db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver, KeyValueDBInstance
+from .db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
 from .config import DEFAULT_TEXTTOTRIPLETS_STORE_CONFIG, DEFAULT_TRIPLETTOTEXTS_STORE_CONFIG, TEXTIDSTORE_LOG_PATH
 
 
@@ -57,8 +58,8 @@ class TextIdStore:
         else:
             config.formate_fields()
 
-        self.textid_to_tripletsid_store = KeyValueDriver.connect(config.texttotriplets_store_config)
-        self.tripletid_to_textsid_store = KeyValueDriver.connect(config.triplettotexts_store_config)
+        self.textid_to_tripletsid_store: AbstractKVDatabaseConnection = KeyValueDriver.connect(config.texttotriplets_store_config)
+        self.tripletid_to_textsid_store: AbstractKVDatabaseConnection = KeyValueDriver.connect(config.triplettotexts_store_config)
 
     def save_info(self, text_id: str, triplets: List[Triplet]) -> None:
         self.save_tripletsinfo_by_textid(text_id, triplets)
@@ -66,13 +67,13 @@ class TextIdStore:
 
     def save_tripletsinfo_by_textid(self, text_id: str, triplets: List[Triplet]) -> None:
         if not (isinstance(text_id, str) or isinstance(triplets, list)):
-            raise TypeError
+            raise TypeError(f"* text_id: {text_id}\n* triplets: {triplets}")
         for triplet in triplets:
             if not isinstance(triplet, Triplet):
-                raise TypeError
+                raise TypeError(f"* bad triplet: {triplet}\n* triplets: {triplets}")
 
         if self.textid_to_tripletsid_store.item_exist(text_id):
-            raise ValueError
+            raise ValueError(f"text_id: {text_id}")
 
         # saving ids-mapping to kv-database
         filtered_triplets = {triplet.id: {
@@ -85,9 +86,9 @@ class TextIdStore:
 
     def load_tripletsinfo_by_textid(self, text_id: str) -> List[Triplet]:
         if not isinstance(text_id, str):
-            raise TypeError
+            raise TypeError(f"text_id: {text_id}")
         if not self.textid_to_tripletsid_store.item_exist(text_id):
-            raise ValueError
+            raise ValueError(f"text_id: {text_id}")
 
         textid_to_tripletsid_inst: KeyValueDBInstance = self.textid_to_tripletsid_store.read(ids=[text_id])[0]
         formated_triplets = [
@@ -103,10 +104,10 @@ class TextIdStore:
 
     def save_textinfo_by_triplets(self, text_id: str, triplets: List[Triplet]) -> None:
         if not (isinstance(text_id, str) and isinstance(triplets, list)):
-            raise TypeError
+            raise TypeError(f"* text_id: {text_id}\n* triplets: {triplets}")
         for triplet in triplets:
             if not isinstance(triplet, Triplet):
-                raise TypeError
+                raise TypeError(f"* bad triplet: {triplet}\n* triplets: {triplets}")
 
         for triplet in triplets:
             if not self.tripletid_to_textsid_store.item_exist(triplet.id):
@@ -119,16 +120,16 @@ class TextIdStore:
 
     def load_textsinfo_by_tripletid(self, triplet_id: str) -> Set[str]:
         if not isinstance(triplet_id, str):
-            raise TypeError
+            raise TypeError(f"triplet_id: {triplet_id}")
         if not self.tripletid_to_textsid_store.item_exist(triplet_id):
-            raise ValueError
+            raise ValueError(f"triplet_id: {triplet_id}")
 
         output: KeyValueDBInstance = self.tripletid_to_textsid_store.read([triplet_id])[0]
         return output.value
 
     def clear_info(self, text_id: str) -> Tuple[Set[str], Set[str]]:
         if not isinstance(text_id, str):
-            raise TypeError
+            raise TypeError(f"text_id: {text_id}")
 
         triplets = self.load_tripletsinfo_by_textid(text_id)
         self.textid_to_tripletsid_store.delete(ids=[text_id])
@@ -164,10 +165,10 @@ class TextIdStore:
 
     def filter_triplets_by_numrefs(self, triplets: List[Triplet], num_references: int = 1) -> List[Triplet]:
         if not isinstance(num_references, int):
-            raise TypeError
+            raise TypeError(f"num_references: {num_references}")
         for triplet in triplets:
             if not isinstance(triplet, Triplet):
-                raise TypeError
+                raise TypeError(f"* bad triplet: {triplet}\n* triplets: {triplets}")
 
         filtered_triplets: List[Triplet] = []
         for triplet in triplets:

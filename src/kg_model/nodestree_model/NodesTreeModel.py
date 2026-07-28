@@ -513,7 +513,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
                     n_descendants=str(parent_descendants_num))
 
             else:
-                raise ValueError
+                raise ValueError(f"self.config.nodes_aggregation_mechanism: {self.config.nodes_aggregation_mechanism}")
 
             # Если в процессе парсинга ответа llm-агента возникла ошибка,
             # то выполняем наивную суммаризацию
@@ -544,7 +544,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         elif vecdb_type == TreeNodeType.leaf:
             self.leafnodes_vcomposer.upsert(formated_instances)
         else:
-            raise KeyError
+            raise KeyError(f"vecdb_type: {vecdb_type}")
 
     def update_treedb_info(self, ids: List[str], texts: List[str], new_node_strid: str, parent_node: TreeNode) -> None:
         """Метод предназначен для обновления информации (значений текстовых полей) в вершинах дерева,
@@ -709,7 +709,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
             self.log.debug("Извлечение самых релевантных к entity вершин из summarized-бд....", verbose=self.verbose, log_level=self.log_level)
             best_summnode = self.retrieve_relevant_summnode(entity_vinstance)
             if best_leafnode is None and best_summnode is None:
-                raise ValueError
+                raise ValueError(f"* best_leafnode: {best_leafnode}\n* best_summnode: {best_summnode}")
 
             # из них выбирается самая релевантная
             if (best_summnode is not None) and (best_summnode[0] < best_leafnode[0]):
@@ -734,7 +734,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
             # TODO
             raise NotImplementedError
         else:
-            raise ValueError
+            raise ValueError(f"strategy: {strategy}")
 
         return matched_nodes
 

@@ -26,21 +26,21 @@ decomposition_config = QueryDecomposerConfig()
 # query, query preproc config,
 QUERY_PREPROC_TEST_CASES = [
     # all none
-    QueryPreprocessorConfig(denoising_config=None, enhancing_config=None, decomposition_config=None),
+    QueryPreprocessorConfig(lang='en', denoising_config=None, enhancing_config=None, decomposition_config=None),
     # only decomposer
-    QueryPreprocessorConfig(denoising_config=None, enhancing_config=None, decomposition_config=decomposition_config),
+    QueryPreprocessorConfig(lang='en', denoising_config=None, enhancing_config=None, decomposition_config=decomposition_config),
     # only enhancer
-    QueryPreprocessorConfig(denoising_config=None, enhancing_config=enhance_config, decomposition_config=None),
+    QueryPreprocessorConfig(lang='en', denoising_config=None, enhancing_config=enhance_config, decomposition_config=None),
     # only denoiser
-    QueryPreprocessorConfig(denoising_config=denoise_config, enhancing_config=None, decomposition_config=None),
+    QueryPreprocessorConfig(lang='en', denoising_config=denoise_config, enhancing_config=None, decomposition_config=None),
     # only decomposer + enhancer
-    QueryPreprocessorConfig(denoising_config=None, enhancing_config=enhance_config, decomposition_config=decomposition_config),
+    QueryPreprocessorConfig(lang='en', denoising_config=None, enhancing_config=enhance_config, decomposition_config=decomposition_config),
     # only decomposer + denoiser
-    QueryPreprocessorConfig(denoising_config=denoise_config, enhancing_config=None, decomposition_config=decomposition_config),
+    QueryPreprocessorConfig(lang='en', denoising_config=denoise_config, enhancing_config=None, decomposition_config=decomposition_config),
     # only denoiser + enhancer
-    QueryPreprocessorConfig(denoising_config=denoise_config, enhancing_config=enhance_config, decomposition_config=None),
+    QueryPreprocessorConfig(lang='en', denoising_config=denoise_config, enhancing_config=enhance_config, decomposition_config=None),
     # all not None
-    QueryPreprocessorConfig(denoising_config=denoise_config, enhancing_config=enhance_config, decomposition_config=decomposition_config),
+    QueryPreprocessorConfig(lang='en', denoising_config=denoise_config, enhancing_config=enhance_config, decomposition_config=decomposition_config),
 ]
 
 QP_POPULATED_TEST_CASES = []

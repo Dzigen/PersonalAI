@@ -81,18 +81,18 @@ class MixedKVConnector(AbstractKVDatabaseConnection):
         elif storage_type == 1:
             return self.redis_conn.count_items()
         else:
-            raise ValueError
+            raise ValueError(f"storage_type: {storage_type}")
 
     def item_exist(self, id: str, storage_type: int = 0) -> bool:
         if not isinstance(id, str):
-            raise ValueError
+            raise ValueError(f"id: {id}")
 
         if storage_type == 0:
             return self.mongo_conn.item_exist(id)
         elif storage_type == 1:
             return self.redis_conn.item_exist(id)
         else:
-            raise ValueError
+            raise ValueError(f"storage_type: {storage_type}")
 
     def clear(self) -> None:
         self.redis_conn.clear()

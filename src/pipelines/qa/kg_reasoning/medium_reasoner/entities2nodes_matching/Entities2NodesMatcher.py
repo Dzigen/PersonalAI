@@ -127,7 +127,7 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
         self.log.debug("START ENTITIES2NODES MATCHING...", verbose=self.verbose, log_level=self.log_level)
         self.log.debug("* Entities: %s", entities, verbose=self.verbose, log_level=self.log_level)
         if len(entities) < 1:
-            raise ValueError
+            raise ValueError(f"entities: {entities}")
         rinfo = ReturnInfo()
         cache_hits: List[bool] = []
 

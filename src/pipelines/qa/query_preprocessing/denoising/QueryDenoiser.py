@@ -127,7 +127,7 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
         if query_info.base_query is not None:
             query = query_info.base_query
         else:
-            raise ValueError
+            raise ValueError(f"query_info: {query_info}")
 
         self.log.debug("Выполнение удаление лишней информации/символов из запроса с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
         query_wo_stopwords, status, trace = self.tasks_solvers.swremoval_solver.solve(

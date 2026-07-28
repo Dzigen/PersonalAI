@@ -194,7 +194,7 @@ class EmbeddingsModel:
         elif db_type == 'relations':
             self.triplets_vcomposer.create(instances)
         else:
-            raise ValueError
+            raise ValueError(f"db_type: {db_type}")
 
     def delete_triplets(self, triplets: List[Triplet], delete_info: Dict[int, Dict[str, bool]] = dict()) -> None:
         """Метод предназначен для удаления информации, представленной в виде списка триплетов, из векторной структуры.
@@ -273,7 +273,7 @@ class EmbeddingsModel:
         elif db_type == 'triplets':
             instances = self.triplets_vcomposer.read(ids, includes=['embeddings'])
         else:
-            raise ValueError
+            raise ValueError(f"db_type: {db_type}")
 
         embeddings = list(map(lambda inst: inst.embedding, instances))
         return embeddings

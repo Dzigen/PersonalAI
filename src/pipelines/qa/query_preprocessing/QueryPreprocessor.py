@@ -22,17 +22,17 @@ from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 class QueryPreprocessorConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация QueryPreprocessor-стадии.
 
-    :param denoising_config: Конфигурация шага предобработки user-вопроса, отвечающая за удаление лишних шумов/фрагментов информации. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию None.
+    :param denoising_config: Конфигурация шага предобработки user-вопроса, отвечающая за удаление лишних шумов/фрагментов информации. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию QueryDenoiserConfig().
     :type denoising_config: Union[None, Dict, QueryDenoiserConfig], optional
-    :param enhancing_config: Конфигурация шага предобработки user-вопроса, отвечающая за добавление дополнительных языковых конструкций и переформулирование user-вопроса, с целью упрощения процесса по распознаванию заложенного запроса/интента. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию None.
+    :param enhancing_config: Конфигурация шага предобработки user-вопроса, отвечающая за добавление дополнительных языковых конструкций и переформулирование user-вопроса, с целью упрощения процесса по распознаванию заложенного запроса/интента. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию QueryEnhancerConfig().
     :type enhancing_config: Union[None, Dict, QueryEnhancerConfig], optional
     :param decomposition_config: Конфигурация шага предобработки user-вопроса, отвечающая за разбиение сложных/составных user-вопрос на простые/независимые части (под-вопросы) для их параллельной обработки и ускорения процесса формирования финального ответа. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию QueryDecomposerConfig().
     :type decomposition_config: Union[None, Dict, QueryDecomposerConfig], optional
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы QueryPreprocessor-класса. Значение по умолчанию "query_preprocessing_main_stage_cache".
     :type cache_table_name: str, optional
     """
-    denoising_config: Union[None, Dict, QueryDenoiserConfig] = None
-    enhancing_config: Union[None, Dict, QueryEnhancerConfig] = None
+    denoising_config: Union[None, Dict, QueryDenoiserConfig] = field(default_factory=lambda: QueryDenoiserConfig())
+    enhancing_config: Union[None, Dict, QueryEnhancerConfig] = field(default_factory=lambda: QueryEnhancerConfig())
     decomposition_config: Union[None, Dict, QueryDecomposerConfig] = field(default_factory=lambda: QueryDecomposerConfig())
 
     cache_table_name: str = "query_preprocessing_main_stage_cache"
@@ -173,6 +173,6 @@ class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
         elif query_info.base_query is not None:
             query_info.processed_query = [copy(query_info.base_query)]
         else:
-            raise ValueError
+            raise ValueError(f"query_info: {query_info}")
 
         return query_info, rinfo, module_trace

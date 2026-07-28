@@ -5,6 +5,7 @@ from dataclasses import fields, asdict
 
 from .configs import DEFAULT_MYSQLTABLE_CONFIG
 from ..utils import AbstractTableDatabaseConnection, TableDBConnectionConfig, TableDBInstance, BaseTableStucture
+from ...utils import retry, restore_connection
 
 
 class MySQLTableConnector(AbstractTableDatabaseConnection):
@@ -19,6 +20,7 @@ class MySQLTableConnector(AbstractTableDatabaseConnection):
     def is_open(self) -> bool:
         return self.conn.is_connected()
 
+    @retry
     def open_connection(self) -> None:
         self.conn = mysql.connector.connect(
             host=self.config.host,
@@ -44,6 +46,7 @@ class MySQLTableConnector(AbstractTableDatabaseConnection):
         self.cursor.execute(query)
         self.conn.commit()
 
+    @restore_connection
     def create(self, items: List[TableDBInstance]) -> None:
         self.validate_items(items)
 
@@ -76,6 +79,7 @@ class MySQLTableConnector(AbstractTableDatabaseConnection):
 
             self.conn.commit()
 
+    @restore_connection
     def read(self, ids: List[str]) -> List[Union[None, TableDBInstance]]:
         self.validate_ids(ids)
 
@@ -106,10 +110,12 @@ class MySQLTableConnector(AbstractTableDatabaseConnection):
 
         return formated_items
 
+    @restore_connection
     def update(self, items: List[TableDBInstance]) -> None:
         # TODO
         raise NotImplementedError
 
+    @restore_connection
     def delete(self, ids: List[str]) -> None:
         self.validate_ids(ids)
 
@@ -122,12 +128,14 @@ class MySQLTableConnector(AbstractTableDatabaseConnection):
         self.cursor.execute(query, formated_ids)
         self.conn.commit()
 
+    @restore_connection
     def count_items(self) -> int:
         query = f"SELECT COUNT(*) FROM {self.config.db_info['table']};"
         self.cursor.execute(query)
         row_count = self.cursor.fetchone()[0]
         return row_count
 
+    @restore_connection
     def item_exist(self, id: str) -> bool:
         self.validate_ids([id])
 
@@ -138,7 +146,11 @@ class MySQLTableConnector(AbstractTableDatabaseConnection):
         data = self.cursor.fetchone()[0]
         return data > 0
 
+    @restore_connection
     def clear(self) -> None:
         query = f"DELETE FROM {self.config.db_info['table']};"
         self.cursor.execute(query)
         self.conn.commit()
+
+    def __del__(self):
+        self.close_connection()

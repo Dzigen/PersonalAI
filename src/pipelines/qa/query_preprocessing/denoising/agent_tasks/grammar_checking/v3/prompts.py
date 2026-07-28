@@ -14,10 +14,8 @@ Rules:
 
 Input format:
 [Question] - the original wording of the question.
-
 Output format:
 [Corrected question] - the corrected version of the question.
-
 
 Examples:
 
@@ -44,7 +42,7 @@ Which famous American poet wrote poems about love, nature, and life in general w
 [Question #4]
 Where did Jane Austen lived during period she wrote Pride Prejudice novel that known today worldwide classic literature piece?
 [Corrected question #4]
-During which time period did Jane Austen live when writing her novel _Pride and Prejudice_, now recognized globally as a literary masterpiece?
+During which time period did Jane Austen live when writing her novel "Pride and Prejudice", now recognized globally as a literary masterpiece?
 '''
 
 EN_GRAMCHECK_USER_PROMPT = \
@@ -74,10 +72,8 @@ RU_GRAMCHECK_SYSTEM_PROMPT = \
 
 Формат ввода:
 [Question] - исходная формулировка вопроса.
-
 Формат вывода:
 [Corrected question] - исправленная версия вопроса.
-
 
 Примеры:
 

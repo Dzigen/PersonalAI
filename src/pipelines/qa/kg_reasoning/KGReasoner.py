@@ -21,13 +21,13 @@ class KnowledgeGraphReasonerConfig(BaseComponentConfig, LanguageConfig):
     """
     Конфигурация KnowledgeGraphReasoner-стадии.
 
-    :param reasoner_name: Название версии алгоритма по обходу/ризонинга графа знаний. Значение по умолчанию 'weak'.
+    :param reasoner_name: Название версии алгоритма по обходу/ризонинга графа знаний. Значение по умолчанию 'medium'.
     :type reasoner_name: str, optional
-    :param reasoner_config: Конфигурация определённой версии обхода/ризонинга графа знаний по извлечению релевантной информации к user-вопросу. Значение по умолчанию WeakKGReasonerConfig().
+    :param reasoner_config: Конфигурация определённой версии обхода/ризонинга графа знаний по извлечению релевантной информации к user-вопросу. Значение по умолчанию MediumKGReasonerConfig().
     :type reasoner_config: Union[Dict,BaseKGReasonerConfig], optional
     """
-    reasoner_name: str = 'weak'  # 'weak' | 'medium'
-    reasoner_config: Union[Dict, BaseKGReasonerConfig] = field(default_factory=lambda: WeakKGReasonerConfig())  # WeakKGReasonerConfig() | MediumKGReasonerConfig()
+    reasoner_name: str = 'medium'  # 'weak' | 'medium'
+    reasoner_config: Union[Dict, BaseKGReasonerConfig] = field(default_factory=lambda: MediumKGReasonerConfig())  # WeakKGReasonerConfig() | MediumKGReasonerConfig()
 
     log_path: str = KGR_MAIN_LOG_PATH
 

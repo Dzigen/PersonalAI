@@ -149,7 +149,7 @@ class PersonalAI:
         text_id = create_id() if text_id is None else text_id
         self.log.debug(f"* Internal text id: %s", text_id, verbose=self.verbose, log_level=self.log_level)
         if self.textid_store.textid_to_tripletsid_store.item_exist(text_id):
-            raise ValueError("'text' with given 'text_id' already exists! Change 'text_id' value")
+            raise ValueError(f"'text' with given 'text_id' already exists! Change 'text_id' value:\n* text: {text}\n* text_id: {text_id}")
 
         triplets, rinfo, trace = self.mem_pipeline.remember(text, text_properties)
         module_trace.add('remember', ModuleType.stage, trace)

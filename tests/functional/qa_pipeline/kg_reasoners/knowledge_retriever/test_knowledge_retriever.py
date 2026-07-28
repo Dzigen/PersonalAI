@@ -6,9 +6,9 @@ import sys
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
+from src.pipelines.qa.knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
 from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator import KnowledgeComparator
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.utils import AbstractTriplesFilter, AbstractTripletsRetriever
+from src.pipelines.qa.knowledge_retriever.utils import AbstractTriplesFilter, AbstractTripletsRetriever
 from src.kg_model import KnowledgeGraphModel
 from src.utils.data_structs import QueryInfo
 

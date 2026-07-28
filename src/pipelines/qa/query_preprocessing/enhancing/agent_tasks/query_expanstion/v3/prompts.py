@@ -13,10 +13,8 @@ Rules:
 
 Input format:
 [Question] - the original wording of the question.
-
 Output format:
 [Expanded question] - a rephrased, clear version of the question.
-
 
 Examples:
 
@@ -68,10 +66,8 @@ RU_QEXPAN_SYSTEM_PROMPT = \
 
 Формат ввода:
 [Question] - исходная формулировка вопроса.
-
 Формат вывода:
 [Expanded question] - переформулированная, понятная версия вопроса.
-
 
 Примеры:
 

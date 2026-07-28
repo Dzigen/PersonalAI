@@ -206,14 +206,14 @@ class RelationCreator(BaseCreator):
         if not isinstance(r_type, RelationType):
             formated_r_type = RELATIONS_TYPES_MAP.get(r_type, None)
             if formated_r_type is None:
-                raise ValueError
+                raise ValueError(f"formated_r_type: {formated_r_type}")
             else:
                 r_type = formated_r_type
 
         if r_type is not RelationType.simple:
             name = r_type.value
         elif name is None:
-            raise ValueError
+            raise ValueError(f"* r_type: {r_type}\n* name: {name}")
 
         prop = dict() if prop is None else prop
 
@@ -240,7 +240,7 @@ class NodeCreator(BaseCreator):
         if not isinstance(n_type, NodeType):
             formated_n_type = NODES_TYPES_MAP.get(n_type, None)
             if formated_n_type is None:
-                raise ValueError
+                raise ValueError(f"* n_type: {n_type}\n* formated_n_type: {formated_n_type}")
             else:
                 n_type = formated_n_type
 
@@ -366,7 +366,7 @@ class TripletCreator(BaseCreator):
                     triplet.end_node, str(triplet.end_node.name))])
 
         else:
-            raise KeyError
+            raise KeyError(f"rel_type: {rel_type}")
 
         return triplet.relation.id, str_triplet
 
@@ -587,7 +587,7 @@ class BaseConfigOperations:
                     elif isinstance(n_type, NodeType):
                         formatted_val.append(n_type.value)
                     else:
-                        raise ValueError
+                        raise ValueError(f"n_type: {n_type}")
                 formatted_dict[key] = formatted_val
 
             elif key in ["relation_type", "accepted_triplets_types"]:
@@ -598,7 +598,7 @@ class BaseConfigOperations:
                     elif isinstance(r_type, RelationType):
                         formatted_val.append(r_type.value)
                     else:
-                        raise ValueError
+                        raise ValueError(f"r_type: {r_type}")
                 formatted_dict[key] = formatted_val
 
             elif (key == "db_info") and isinstance(val, dict) and ('table_info' in val.keys()):
@@ -622,7 +622,7 @@ class BaseConfigOperations:
         """
         dict_config: Dict = asdict(self, dict_factory=self.custom_formatter)
         if not force_rewrite and os.path.isfile(file_path):
-            raise FileExistsError
+            raise FileExistsError(f"file_path: {file_path}")
 
         with open(file_path, "w") as fd:
             yaml.dump(dict_config, fd, default_flow_style=False, sort_keys=False, allow_unicode=True)
