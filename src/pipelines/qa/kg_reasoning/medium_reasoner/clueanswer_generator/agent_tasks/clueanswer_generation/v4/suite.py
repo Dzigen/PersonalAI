@@ -19,4 +19,4 @@ RU_CAGEN_SUITE = AgentTaskSuite(
     parse_answer_func=cagen_custom_parse
 )
 
-CAGEN_SUITE_V3 = {'ru': RU_CAGEN_SUITE, 'en': EN_CAGEN_SUITE}
+CAGEN_SUITE_V4 = {'ru': RU_CAGEN_SUITE, 'en': EN_CAGEN_SUITE}

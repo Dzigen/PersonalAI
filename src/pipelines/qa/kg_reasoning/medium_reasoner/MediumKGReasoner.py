@@ -45,6 +45,8 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
     :type answer_generator_config: Union[AnswerGeneratorConfig, Dict], optional
     :param max_searchplan_steps: Максимальное количество шагов плана поиска, по которым может быть выполнен обход/излвечение информации из графа знаний. По достижению заданного предела поиск завершается. Значение по умолчанию 5.
     :type max_searchplan_steps: int, optional
+    :param enable_searchplan_steps_check: ... . Значение по умолчанию True.
+    :type enable_searchplan_steps_check: bool, optional
     :param relinfo_found_behaviour: ... . Значение по умолчанию RelInfoFoundBehaviour.casual_answer
     :type relinfo_found_behaviour: RelInfoFoundBehaviour
     :param planlimit_exceeded_behaviour: ... . Значение по умолчанию PlanLimitExceededBehaviour.strict_answer
@@ -64,6 +66,7 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
     answer_generator_config: Union[AnswerGeneratorConfig, Dict] = field(default_factory=lambda: AnswerGeneratorConfig())
 
     max_searchplan_steps: int = 6
+    enable_searchplan_steps_check: bool = True
     relinfo_found_behaviour: RelInfoFoundBehaviour = RelInfoFoundBehaviour.casual_answer
     planlimit_exceeded_behaviour: PlanLimitExceededBehaviour = PlanLimitExceededBehaviour.strict_answer
 
@@ -76,13 +79,14 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
         str_e2nm_config = self.e2n_matcher_config.to_str()
         str_cqg_config = self.cluequeries_generator_config.to_str()
         str_kr_config = self.knowledge_retriever_config.to_str()
-        str_cag_config = self.cluequeries_generator_config.to_str()
+        str_cag_config = self.clueanswer_generator_config.to_str()
         str_cas_config = self.clueanswers_summarizer_config.to_str()
         str_ag_config = self.answer_generator_config.to_str()
 
         str_init_configs = f"{str_spe_config}|{str_ee_config}|{str_e2nm_config}"
         str_proc_configs = f"{str_cqg_config}|{str_kr_config}|{str_cag_config}|{str_cas_config}"
-        return f"{str_init_configs}|{str_proc_configs}|{str_ag_config}|{self.max_searchplan_steps}|{self.relinfo_found_behaviour}|{self.planlimit_exceeded_behaviour}"
+        str_answgen_configs = f"{self.relinfo_found_behaviour}|{self.planlimit_exceeded_behaviour}"
+        return f"{str_init_configs}|{str_proc_configs}|{str_ag_config}|{self.max_searchplan_steps}|{self.enable_searchplan_steps_check}|{str_answgen_configs}"
 
     @staticmethod
     def from_dict(dict_config: Dict):
@@ -398,20 +402,30 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
                     break
 
             self.log.debug("STAGE#1.2 - SEARCH STEPS RELEVANCE CHECK", verbose=self.verbose, log_level=self.log_level)
-            if rinfo.status == ReturnStatus.success:
-                is_continue_search, rinfo.status, trace = self.stages.searchplan_enhancer.tasks_solvers.searchstop_classify_solver.solve(
-                    lang=self.stages.searchplan_enhancer.config.lang, gen_strategy=self.stages.searchplan_enhancer.config.agent_gen_stategy,
-                    query=search_plan.base_query, search_steps=search_plan.search_steps, steps_answers=search_plan.steps_answers[:search_step])
-                module_trace.add("searchstop_classify_solver", ModuleType.task_solver, trace)
+            if self.config.enable_searchplan_steps_check:
                 if rinfo.status == ReturnStatus.success:
-                    self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
-                    if not is_continue_search:
-                        self.log.warning("RESUTL: Оставшиеся/непройденные шаги плана не позволят найти запрашиваемую/релевантную информацию для текущего/обрабатываемого вопроса.", verbose=self.verbose, log_level=self.log_level)
-                        break
+                    if search_step > 0:
+                        is_continue_search, rinfo.status, trace = self.stages.searchplan_enhancer.tasks_solvers.searchstop_classify_solver.solve(
+                            lang=self.stages.searchplan_enhancer.config.lang, gen_strategy=self.stages.searchplan_enhancer.config.agent_gen_stategy,
+                            query=search_plan.base_query, search_steps=search_plan.search_steps, steps_answers=search_plan.steps_answers[:search_step])
+                        module_trace.add("searchstop_classify_solver", ModuleType.task_solver, trace)
                     else:
-                        self.log.debug("RESULT: Оставшиеся/непройденные шаги плана успешно прошли проверку на продолжение поиска.", verbose=self.verbose, log_level=self.log_level)
+                        is_continue_search = True
+
+                    if rinfo.status == ReturnStatus.success:
+                        self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
+                        if not is_continue_search:
+                            self.log.warning("RESUTL: Оставшиеся/непройденные шаги плана не позволят найти запрашиваемую/релевантную информацию для текущего/обрабатываемого вопроса.", verbose=self.verbose, log_level=self.log_level)
+                            break
+                        else:
+                            self.log.debug("RESULT: Оставшиеся/непройденные шаги плана успешно прошли проверку на продолжение поиска.", verbose=self.verbose, log_level=self.log_level)
+                    else:
+                        self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
                 else:
-                    self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
+                    self.log.warning("During previous steps error occurs.", verbose=self.verbose, log_level=self.log_level)
+                    break
+            else:
+                self.log.warning("Current stage is disabled. Continue.", verbose=self.verbose, log_level=self.log_level)
 
             self.log.debug("STAGE#2 - QUERIES PREPARATION FOR KG TRAVERSAL", verbose=self.verbose, log_level=self.log_level)
             if rinfo.status == ReturnStatus.success:
