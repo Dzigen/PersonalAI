@@ -18,7 +18,7 @@ class MediumPlanEnhancerTaskSolvers(BaseTaskSolvers):
 @dataclass
 class SearchPlanEnhancerAgentTasksConfig(BaseAgentTasksConfig):
     """
-    :param plan_initing: Конфигурация атомарной задачи для LLM-агента по генерации базового/стартового плана поиска. Значение по умолчанию 'v2'.
+    :param plan_initing: Конфигурация атомарной задачи для LLM-агента по генерации базового/стартового плана поиска. Значение по умолчанию 'v3'.
     :type plan_initing: AgentTaskSolverConfig, optional
     :param enhance_classifier: Конфигурация атомарной задачи для LLM-агента по определению необходимости (бинарная классификация) модификации существующего плана поиска. Значение по умолчанию 'v3'.
     :type enhance_classifier: AgentTaskSolverConfig, optional
@@ -27,7 +27,7 @@ class SearchPlanEnhancerAgentTasksConfig(BaseAgentTasksConfig):
     :param searchstop_classifier: ... . Значение по умолчанию 'v1'.
     :type searchstop_classifier: AgentTaskSolverConfig, optional
     """
-    plan_initing: Union[AgentTaskSolverConfig, str] = 'v2'
+    plan_initing: Union[AgentTaskSolverConfig, str] = 'v3'
     enhance_classifier: Union[AgentTaskSolverConfig, str] = 'v3'
     plan_enhancing: Union[AgentTaskSolverConfig, str] = 'v3'
     searchstop_classifier: Union[AgentTaskSolverConfig, str] = 'v1'
