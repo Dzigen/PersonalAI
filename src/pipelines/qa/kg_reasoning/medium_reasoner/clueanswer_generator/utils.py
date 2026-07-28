@@ -15,10 +15,10 @@ class MediumCAGeneratorTaskSolvers(BaseTaskSolvers):
 @dataclass
 class ClueAnswerGeneratorAgentTasksConfig(BaseAgentTasksConfig):
     """
-    :param cagen: Конфигурация атомарной задачи для LLM-агента по резюмированию информации, извлечённой по заданному clue-заросу из графа знаний. Значение по умолчанию 'v3'.
+    :param cagen: Конфигурация атомарной задачи для LLM-агента по резюмированию информации, извлечённой по заданному clue-заросу из графа знаний. Значение по умолчанию 'v4'.
     :type cagen: AgentTaskSolverConfig, optional
     """
-    cagen: Union[AgentTaskSolverConfig, str] = 'v3'
+    cagen: Union[AgentTaskSolverConfig, str] = 'v4'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: CAGEN_AGENTASKS_SELECTORS_MAPPING)
 

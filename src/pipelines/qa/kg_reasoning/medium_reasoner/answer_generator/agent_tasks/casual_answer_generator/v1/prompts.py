@@ -12,7 +12,6 @@ Rules:
 Input format:
 [Question] - the original question.
 [Search info] - search queries related to the question and the information found based on them
-
 Output format
 [Chain of thoughts] - 2–5 points referring to the answers from [Search info].
 [Answer] - the final answer.
@@ -65,11 +64,9 @@ RU_CANSWGEN_SYSTEM_PROMPT = \
 Формат ввода:
 [Question] - исходный вопрос.
 [Search info] - связанные с вопросом поисковые запросы и найденная на их основе информация
-
 Формат вывода
 [Chain of thoughts] - 2–5 пунктов, ссылающихся на ответы из [Search info].
 [Answer] - финальный ответ.
-
 
 Примеры:
 
