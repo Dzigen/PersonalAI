@@ -27,7 +27,7 @@ class CacheUtils(AbstractCacheUtils):
         cachekv = None
         if cache_kvdriver_config is not None:
             if cache_table_name is None:
-                raise ValueError
+                raise ValueError(f"* cache_kvdriver_config: {cache_kvdriver_config}\n* cache_table_name: {cache_table_name}")
             cache_config = deepcopy(cache_kvdriver_config)
             cache_config.db_config.db_info['table'] = cache_table_name
             cachekv = CacheKV(cache_config)
@@ -64,10 +64,10 @@ class CacheUtils(AbstractCacheUtils):
                     self.log.debug("* hash seed: %s .", cache_key, verbose=self.verbose, log_level=self.log_level)
 
             if not cache_hit:
-                self.log.debug("Получем результат с нуля...", verbose=self.verbose, log_level=self.log_level)
+                self.log.debug("Получаем результат с нуля...", verbose=self.verbose, log_level=self.log_level)
                 output = function(self, *args, **kwargs)
 
-                # КОСТЫЛЬ: если во время выполнения функции/метода возникла ошибка, 
+                # КОСТЫЛЬ: если во время выполнения функции/метода возникла ошибка,
                 # то кеширование полученного результата выполнено не будет.
                 # Для детекции данного события функция/метод должна вернуть (в числе прочего) ReturnInfo-структуру.
                 is_caching_accepted: bool = True
@@ -87,7 +87,6 @@ class CacheUtils(AbstractCacheUtils):
                         self.cachekv.save_value(value=output, key_hash=key_hash)
                     else:
                         self.log.warning("Кеширования результата работы метода выполнено не будет, так как во время его выполнения возникла ошибка.", verbose=self.verbose, log_level=self.log_level)
-                    
 
             return *output, cache_hit
         return wrapper

@@ -156,6 +156,7 @@ services:
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+      - cluster.routing.allocation.disk.threshold_enabled=false
     volumes:
       - ${OPENSEARCH_LOCAL_VOLUME}:/usr/share/opensearch/data
     deploy:
@@ -168,7 +169,7 @@ services:
           memory: 8G
 
   ollama_agent:
-    image: ollama/ollama:latest
+    image: ollama/ollama:0.24.0
     container_name: ${OLLAMA_CNTNAME}
     hostname: ${OLLAMA_HOST}
     ports:
@@ -184,11 +185,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '3'
-          memory: 16G
+          cpus: '8'
+          memory: 32G
         reservations:
-          cpus: '2'
-          memory: 8G
+          cpus: '4'
+          memory: 16G
           devices:
             - driver: nvidia
               device_ids: ['${OLLAMA_DEVICE_ID}']

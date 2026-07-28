@@ -189,11 +189,9 @@ def test_get_triplets(instances: List[Triplet], create_info: Dict, nodes: List[N
     graphdb_conn.create(instances, create_info)
 
     if expected['exist'][0] is not None:
-        assert graphdb_conn.item_exist(
-            nodes[0], id_type='node') == expected['exist'][0]
+        assert graphdb_conn.item_exist(nodes[0], id_type='node') == expected['exist'][0]
     if expected['exist'][1] is not None:
-        assert graphdb_conn.item_exist(
-            nodes[1], id_type='node') == expected['exist'][1]
+        assert graphdb_conn.item_exist(nodes[1], id_type='node') == expected['exist'][1]
 
     try:
         output = graphdb_conn.get_triplets(*nodes)

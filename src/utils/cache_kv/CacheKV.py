@@ -32,13 +32,13 @@ class CacheKV:
         # инчае ошибка.
         if key is not None:
             if not CacheKV.is_key_valid(key):
-                raise ValueError
+                raise ValueError(f"key: {key}")
 
             key_hash = CacheKV.get_hash(key)
         elif key_hash is not None:
             pass
         else:
-            raise ValueError
+            raise ValueError(f"* key: {key}\n* key_hash: {key_hash}")
 
         return key_hash
 
@@ -52,7 +52,7 @@ class CacheKV:
         :rtype: str
         """
         if not CacheKV.is_key_valid(key):
-            raise ValueError
+            raise ValueError(f"key: {key}")
 
         hashes = list(map(lambda k: hashlib.sha1(k.encode()).hexdigest(), key))
         concated_hashes = ''.join(hashes)
@@ -99,7 +99,7 @@ class CacheKV:
         """
         key_hash = CacheKV.prepare_key(key, key_hash)
         if self.kv_conn.item_exist(key_hash):
-            raise ValueError
+            raise ValueError(f"key_hash: {key_hash}")
 
         new_item = KeyValueDBInstance(id=key_hash, value=pickle.dumps(value))
         self.kv_conn.create([new_item])

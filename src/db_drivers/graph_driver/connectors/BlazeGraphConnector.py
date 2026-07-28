@@ -8,10 +8,11 @@ import os
 
 from .configs import DEFAULT_BLAZEGRAPH_CONFIG
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
-from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
+from ...utils import restore_connection, retry
 from ....utils.data_structs import Triplet, Node, TripletCreator, NodeCreator, \
     NodeType, RelationCreator, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP, \
     NodeInfo, RelationInfo, create_id, TripletInfo
+
 
 # Useful Material: "Графы знаний | Лекция 3 - SPARQL, Графовые хранилища"
 # https://www.youtube.com/watch?v=z7coG_7kzM8&list=LL&index=5
@@ -81,6 +82,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
             }
         }
 
+    @retry
     def open_connection(self) -> None:
         self.create_namespace()
 
@@ -100,6 +102,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
         if self.config.need_to_clear:
             self.clear()
 
+    @retry
     def create_namespace(self):
         url = f'http://{self.config.host}:{self.config.port}/bigdata/namespace'
         formated_ns_config = "".join(self.config.params['namespace_configuration'].format(namespace_name=self.config.db_info['db']).split("\n"))
@@ -118,10 +121,18 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
         # TODO
         raise NotImplementedError
 
-    def execute_updatequery(self, query: str) -> object:
-        self.update_endpoint.setQuery(query)
-        self.update_endpoint.setMethod(POST)
-        return self.update_endpoint.query()
+    @restore_connection
+    def execute(self, query: str, mode: str = 'read') -> object:
+        output = None
+        if mode == 'read':
+            output = self.graph.query(query)
+        elif mode == 'write':
+            self.update_endpoint.setQuery(query)
+            self.update_endpoint.setMethod(POST)
+            output = self.update_endpoint.query()
+        else:
+            raise ValueError
+        return output
 
     def create_node_query(self, node: Node) -> Tuple[str, str]:
         insert_node_query = '''
@@ -213,30 +224,30 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
         # triplet-ids checking
         for triplet in triplets:
             if not isinstance(triplet.id, str):
-                raise ValueError
+                raise ValueError(f"* triplets: {triplets}\n* creation_info: {creation_info}")
         unique_ids = set(map(lambda triplet: triplet.id, triplets))
         if len(triplets) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* triplets: {triplets}")
 
         for i, triplet in enumerate(triplets):
             cur_info = creation_info.get(i, None)
             if cur_info is None or cur_info['s_node']:
                 insert_subj_query, _ = self.create_node_query(triplet.start_node)
                 # print(insert_subj_query)
-                self.execute_updatequery(insert_subj_query)
+                self.execute(insert_subj_query, 'write')
             if cur_info is None or cur_info['e_node']:
                 insert_obj_query, _ = self.create_node_query(triplet.end_node)
                 # print(insert_obj_query)
-                self.execute_updatequery(insert_obj_query)
+                self.execute(insert_obj_query, 'write')
 
             insert_rel_query, _ = self.create_rel_query(triplet)
             # print(insert_rel_query)
-            self.execute_updatequery(insert_rel_query)
+            self.execute(insert_rel_query, 'write')
 
     def read(self, ids: List[str]) -> List[Triplet]:
         for t_id in ids:
             if not isinstance(t_id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {t_id}\n* ids: {ids}")
 
         select_triples_query = '''
         PREFIX element: <{element_uriprefix}>
@@ -276,7 +287,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
             named_graph_uri=self.named_graph_uri,
             tids_list=t_ids)
         # print(formated_query)
-        raw_output = self.graph.query(formated_query)
+        raw_output = self.execute(formated_query)
         triplets = self.parse_query_triplets_output(raw_output)
         return triplets
 
@@ -287,7 +298,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
     def delete(self, ids: List[str], delete_info: Dict[int, Dict[str, bool]] = dict()) -> None:
         for t_id in ids:
             if not isinstance(t_id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {t_id}\n* ids: {ids}")
 
         #
         select_triplesuri_query = '''
@@ -315,7 +326,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
             tids_list=t_ids
         )
         # print(formated_query)
-        raw_output = self.graph.query(formated_query)
+        raw_output = self.execute(formated_query)
         formated_triplesuri = dict()
         for row in raw_output:
             formated_triplesuri[str(row['rel_tid'])] = {
@@ -343,7 +354,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
         formated_query = delete_object_query.format(
             named_graph_uri=self.named_graph_uri, uries_list=reluries_list)
         # print(formated_query)
-        self.execute_updatequery(formated_query)
+        self.execute(formated_query, 'write')
 
         nodeuries_list = []
         for i, t_id in enumerate(ids):
@@ -356,17 +367,17 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
         formated_query = delete_object_query.format(
             named_graph_uri=self.named_graph_uri, uries_list=nodeuries_list)
         # print(formated_query)
-        self.execute_updatequery(formated_query)
+        self.execute(formated_query, "write")
 
     def read_by_name(self, name: str, object_type: Union[RelationType, NodeType], object: str = 'relation') -> List[Union[Triplet, Node]]:
         if type(object_type) not in [RelationType, NodeType]:
-            raise ValueError
+            raise ValueError(f"object_type: {object_type}")
 
         if not isinstance(name, str):
-            raise ValueError
+            raise ValueError(f"name: {name}")
 
         if len(name) < 1:
-            raise ValueError
+            raise ValueError(f"name: {name}")
 
         dump_name = json.dumps(name, ensure_ascii=False)
         if object == 'relation':
@@ -407,7 +418,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
                 rel_name=dump_name,
                 rel_type=f"<{self.general_uries['relation']['type']['prefix']}{object_type.value}>")
             # print(formated_query)
-            raw_output = self.graph.query(formated_query)
+            raw_output = self.execute(formated_query)
             formated_output = self.parse_query_triplets_output(raw_output)
 
         elif object == 'node':
@@ -434,11 +445,11 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
                 name=dump_name, type=f"<{self.general_uries['node']['type']['prefix']}{object_type.value}>"
             )
             # print(formated_query)
-            raw_output = self.graph.query(formated_query)
+            raw_output = self.execute(formated_query)
             formated_output = self.parse_query_nodes_output(raw_output)
 
         else:
-            raise ValueError
+            raise ValueError(f"object: {object}")
 
         return formated_output
 
@@ -487,7 +498,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
     def get_adjacent_nodes(self, base_node: NodeInfo,
                            accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time]) -> List[NodeInfo]:
         if not isinstance(base_node.id, str):
-            raise ValueError
+            raise ValueError(f"base_node: {base_node}")
 
         select_adjnodes_query = '''
         PREFIX element: <{element_uriprefix}>
@@ -532,7 +543,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
             types_list=accepted_tnodes
         )
         # print(formated_query)
-        raw_output = self.graph.query(formated_query)
+        raw_output = self.execute(formated_query)
         formated_nodes = [NodeInfo(id=str(node['node_strid']), type=NODES_TYPES_MAP[node['node_type'].split("#")[1]]) for node in raw_output]
         return formated_nodes
 
@@ -541,7 +552,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
                              accepted_r_types: Union[List[RelationType], None] = None) \
             -> List[TripletInfo]:
         if not isinstance(base_node.id, str):
-            raise ValueError
+            raise ValueError(f"base_node: {base_node}")
 
         if accepted_r_types is None:
             accepted_r_types = [RelationType.simple, RelationType.hyper, RelationType.episodic, RelationType.time]
@@ -599,7 +610,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
             ntypes_list=accepted_tnodes,
             rtypes_list=accepted_trelations,
         )
-        output = self.graph.query(formated_query)
+        output = self.execute(formated_query)
 
         triples_info = []
         for triple in output:
@@ -612,9 +623,9 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
 
     def get_nodes_shared_ids(self, node1: NodeInfo, node2: NodeInfo, id_type: str = 'both') -> List[Dict[str, str]]:
         if (not isinstance(node1.id, str)) or (not isinstance(node2.id, str)):
-            raise ValueError(node1, node2)
+            raise ValueError(f"* node1: {node1}\n* node2: {node2}")
         if not isinstance(id_type, str):
-            raise ValueError(id_type)
+            raise ValueError(f"id_type: {id_type}")
 
         if id_type == 'triplet':
             select_statement = '(?rel_tid AS ?t_id)'
@@ -623,7 +634,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
         elif id_type == 'both':
             select_statement = '(?rel_tid AS ?t_id) (?rel_strid AS ?r_id)'
         else:
-            raise ValueError(id_type)
+            raise ValueError(f"id_type: {id_type}")
 
         select_relationids_query = '''
         PREFIX element: <{element_uriprefix}>
@@ -687,7 +698,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
             enode_strid=node2.id, enode_type=f"<{self.general_uries['node']['type']['prefix']}{node2.type.value}>"
         )
         # print(formated_query)
-        raw_output = self.graph.query(formated_query)
+        raw_output = self.execute(formated_query)
 
         formated_info = []
         for raw_rel in raw_output:
@@ -769,7 +780,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
                     named_graph_uri=self.named_graph_uri, filter_operator=filter_operator
                 )
                 # print(formated_query)
-                raw_output = self.graph.query(formated_query)
+                raw_output = self.execute(formated_query)
                 formated_triplets += self.parse_query_triplets_output(raw_output)
         elif obj_names:
             for obj_name in obj_names:
@@ -784,7 +795,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
                     named_graph_uri=self.named_graph_uri, filter_operator=filter_operator
                 )
                 # print(formated_query)
-                raw_output = self.graph.query(formated_query)
+                raw_output = self.execute(formated_query)
                 formated_triplets += self.parse_query_triplets_output(raw_output)
         else:
             snodetype_uri = f"<{self.general_uries['node']['type']['prefix']}object>"
@@ -797,16 +808,16 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
                 named_graph_uri=self.named_graph_uri, filter_operator=filter_operator
             )
             # print(formated_query)
-            raw_output = self.graph.query(formated_query)
+            raw_output = self.execute(formated_query)
             formated_triplets += self.parse_query_triplets_output(raw_output)
 
         return formated_triplets
 
     def get_triplets(self, node1: NodeInfo, node2: NodeInfo) -> List[Triplet]:
         if (not isinstance(node1.id, str)) or (not isinstance(node2.id, str)):
-            raise ValueError
+            raise ValueError(f"* node1: {node1}\n* node2: {node2}")
         if (not self.item_exist(node1, 'node')) or (not self.item_exist(node2, 'node')):
-            raise ValueError
+            raise ValueError(f"* node1: {node1}\n* node2: {node2}")
 
         select_triplet_query = '''
         PREFIX element: <{element_uriprefix}>
@@ -869,7 +880,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
             enode_strid=node2.id, enode_type=f"<{self.general_uries['node']['type']['prefix']}{node2.type.value}>"
         )
         # print(formated_query)
-        raw_output = self.graph.query(formated_query)
+        raw_output = self.execute(formated_query)
         formated_triplets = self.parse_query_triplets_output(raw_output)
         return formated_triplets
 
@@ -900,7 +911,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
                     named_graph_uri=self.named_graph_uri,
                 )
                 # print(formated_query)
-                raw_output = self.graph.query(formated_query)
+                raw_output = self.execute(formated_query)
                 result['nodes'].update({info['node_type'].split('#')[1]: int(info['count']) for info in raw_output})
 
                 count_rels_query = '''
@@ -921,7 +932,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
                     named_graph_uri=self.named_graph_uri,
                 )
                 # print(formated_query)
-                raw_output = self.graph.query(formated_query)
+                raw_output = self.execute(formated_query)
                 result['triplets'].update({info['rel_type'].split('#')[1]: int(info['count']) for info in raw_output})
 
             else:
@@ -943,7 +954,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
                     named_graph_uri=self.named_graph_uri,
                 )
                 # print(formated_query)
-                raw_output = self.graph.query(formated_query)
+                raw_output = self.execute(formated_query)
                 result['nodes'] = [int(info['nodes_count']) for info in raw_output][0]
 
                 count_rels_query = '''
@@ -963,7 +974,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
                     named_graph_uri=self.named_graph_uri,
                 )
                 # print(formated_query)
-                raw_output = self.graph.query(formated_query)
+                raw_output = self.execute(formated_query)
                 result['triplets'] = [int(info['rels_count']) for info in raw_output][0]
 
         elif id_type == 'node':
@@ -986,7 +997,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
                 str_id=item_id.id
             )
             # print(formated_query)
-            raw_output = self.graph.query(formated_query)
+            raw_output = self.execute(formated_query)
             result = [int(info['nodes_count']) for info in raw_output][0]
 
         elif id_type == 'relation':
@@ -1009,7 +1020,7 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
                 str_id=item_id.id
             )
             # print(formated_query)
-            raw_output = self.graph.query(formated_query)
+            raw_output = self.execute(formated_query)
             result = [int(info['rels_count']) for info in raw_output][0]
 
         elif id_type == 'triplet':
@@ -1034,21 +1045,22 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
                 t_id=item_id
             )
             # print(formated_query)
-            raw_output = self.graph.query(formated_query)
+            raw_output = self.execute(formated_query)
             result = [int(info['rels_count']) for info in raw_output][0]
 
         else:
-            raise ValueError
+            raise ValueError(f"id_type: {id_type}")
 
         return result
 
+    @restore_connection
     def item_exist(self, item_id: Union[str, NodeInfo, RelationInfo], id_type: str = 'triplet') -> bool:
         if not isinstance(item_id, str):
             if type(item_id) in [NodeInfo, RelationInfo]:
                 if not isinstance(item_id.id, str):
-                    raise ValueError
+                    raise ValueError(f"item_id: {item_id}")
             else:
-                raise ValueError
+                raise ValueError(f"item_id: {item_id}")
 
         formated_query = None
 
@@ -1116,14 +1128,15 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
             # print(formated_query)
 
         else:
-            raise ValueError
+            raise ValueError(f"id_type: {id_type}")
 
-        output = self.graph.query(formated_query)
+        output = self.execute(formated_query)
         formated_output = bool(output)
 
         return formated_output
 
+    @restore_connection
     def clear(self) -> None:
         sparql_query = f"CLEAR GRAPH <{self.named_graph_uri}>"
         # print(sparql_query)
-        self.execute_updatequery(sparql_query)
+        self.execute(sparql_query, 'write')

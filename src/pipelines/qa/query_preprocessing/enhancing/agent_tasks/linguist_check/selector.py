@@ -2,11 +2,13 @@ from .......utils import AgentTaskSolverConfig, BaseAgentTaskConfigSelector
 from .......utils.logger import LogLevel
 from .general_parsers import lcheck_custom_formate, lcheck_custom_postprocess
 from .v1 import LCHECK_SUITE_V1
+from .v2 import LCHECK_SUITE_V2
 
 LCHECK_LOG_PATH = "log/qa/query_preprocessing/enhancing/agent_tasks/linguist_checkk"
 
 AVAILABLE_LCHECK_TCONFIGS = {
-    'v1': LCHECK_SUITE_V1
+    'v1': LCHECK_SUITE_V1,
+    'v2': LCHECK_SUITE_V2
 }
 
 
@@ -16,7 +18,7 @@ class AgentQueryLinguistCheckConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_LCHECK_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v1',
+    def select(base_config_version: str = 'v2',
                cache_table_name: str = "qp_lcheck_agent_task_cache",
                inferencestat_table_name: str = "qp_lcheck_agent_task_stat",
                verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:

@@ -94,6 +94,9 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
                 agents_cache_config, inferencestat_config),
             plan_enhancing_solver=AgentTaskSolver(
                 self.agent, self.config.agent_tasks_config.plan_enhancing,
+                agents_cache_config, inferencestat_config),
+            searchstop_classify_solver=AgentTaskSolver(
+                self.agent, self.config.agent_tasks_config.searchstop_classifier,
                 agents_cache_config, inferencestat_config)
         )
 
@@ -125,14 +128,14 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         enhanced_search_plan, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
 
         if search_step < 0:
-            raise ValueError
+            raise ValueError(f"search_step: {search_step}")
 
         if search_step == 0:
             self.log.debug("Генерируем план поиска с нуля...", verbose=self.verbose, log_level=self.log_level)
             new_search_steps, status, trace = self.tasks_solvers.plan_initialing_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=search_plan.base_query)
             module_trace.add("plan_initialing_solver", ModuleType.task_solver, trace)
-            
+
             if status == ReturnStatus.success:
                 str_searchplan = "\n".join([f'{i}. {gen_step}' for i, gen_step in enumerate(new_search_steps)])
                 self.log.debug("RESULT: %d\n%s", len(new_search_steps), str_searchplan, verbose=self.verbose, log_level=self.log_level)
@@ -141,7 +144,7 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
                 enhanced_search_plan.search_steps = new_search_steps
                 enhanced_search_plan.steps_answers = []
             else:
-                self.log.debug("RESULT: -1\n%s", str_searchplan, verbose=self.verbose, log_level=self.log_level)
+                self.log.debug("RESULT: -1\n%s", new_search_steps, verbose=self.verbose, log_level=self.log_level)
 
         elif self.config.plan_enhancment:
             self.log.debug("Выполняем проверку на необходимость улучшения следующих шагов поиска в плане...", verbose=self.verbose, log_level=self.log_level)
@@ -158,7 +161,7 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
                         lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=search_plan.base_query,
                         search_steps=search_plan.search_steps, steps_answers=search_plan.steps_answers[:search_step])
                     module_trace.add("plan_enhancing_solver", ModuleType.task_solver, trace)
-                    
+
                     if status == ReturnStatus.success:
                         str_enhancedsteps = "\n".join([f'{i}. {gen_step}' for i, gen_step in enumerate(enhanced_steps)])
                         self.log.debug("RESULT: %d\n%s", len(enhanced_steps), str_enhancedsteps, verbose=self.verbose, log_level=self.log_level)

@@ -98,22 +98,22 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
         # validating
         for item in items:
             if not isinstance(item.id, str):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             for k, v in item.metadata.items():
                 if v is None:
                     raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
-                raise ValueError
+                raise ValueError(f"item: {item}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(unique_ids): {len(unique_ids)}\n* len(items): {len(items)}")
 
         # Если в классе указан embedder, то используем его
         # для векторизации входящих документов
         if self.embedder is not None:
             for item in items:
                 if item.embedding is not None:
-                    raise ValueError
+                    raise ValueError(f"item: {item}")
 
             item_documents = list(map(lambda itm: itm.document, items))
             document_embeddings = self.embedder.encode_passages(item_documents, batch_size=self.encode_batchsize)
@@ -125,7 +125,7 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
         else:
             for item in items:
                 if item.embedding is None:
-                    raise ValueError
+                    raise ValueError(f"item: {item}")
             updated_items = deepcopy(items)
 
         filtered_items: List[VectorDBInstance] = []
@@ -146,7 +146,7 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
         # validation
         for id in ids:
             if (id is None) or (not isinstance(id, str)):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
         if len(ids) < 1:
             return []
 
@@ -177,15 +177,15 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
         # validation
         for item in items:
             if not isinstance(item.id, str):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
-                raise ValueError
+                raise ValueError(f"item: {item}")
             for k, v in item.metadata.items():
                 if v is None:
                     raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(unique_ids): {len(unique_ids)}\n* len(items): {len(items)}")
 
         for item in items:
             if self.item_exist(item.id):
@@ -196,7 +196,7 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
         # validation
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         existed_ids = list(set(ids).intersection(self.structure.index_to_docstore_id.values()))
         if len(existed_ids) > 0:
@@ -261,7 +261,7 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
     def item_exist(self, id: str) -> bool:
         # validation
         if not isinstance(id, str):
-            raise ValueError
+            raise ValueError(f"id: {id}")
 
         return len(self.structure.get_by_ids([id])) > 0
 
@@ -274,3 +274,6 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
             distance_strategy=DistanceStrategy.DOT_PRODUCT,
             embedding_function=self.embedder
         )
+
+    def __del__(self):
+        self.close_connection()

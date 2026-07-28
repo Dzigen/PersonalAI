@@ -9,7 +9,7 @@ no_answer: '<|NotEnoughtInfo|>'
 
 ragas_llm_config:
   caching: True # DONT CHANGE
-  cache_need_to_clear: True # !!! PAY ATTENTION !!!
+  cache_need_to_clear: False # !!! PAY ATTENTION !!!
   cache_db_info:
     db: 'qaeval_db' # DONT CHANGE
     table: 'ragasmetrics' # DONT CHANGE
@@ -32,7 +32,7 @@ ragas_llm_config:
 
 judge_llm_config:
   caching: True # DONT CHANGE
-  cache_need_to_clear: True # !!! PAY ATTENTION !!!
+  cache_need_to_clear: False # !!! PAY ATTENTION !!!
   cache_db_info:
     db: 'qaeval_db' # DONT CHANGE
     table: 'llmasajudge' # DONT CHANGE

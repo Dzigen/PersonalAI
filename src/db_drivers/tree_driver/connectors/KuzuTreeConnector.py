@@ -8,6 +8,7 @@ from kuzu.query_result import QueryResult
 from .configs import DEFAULT_KUZUTREE_CONFIG
 from ..utils import AbstractTreeDatabaseConnection, TreeDBConnectionConfig, \
     TreeNode, TreeNodeType, TreeIdType, TREENODES_TYPES_MAP
+from ...utils import restore_connection, retry
 
 
 class KuzuTreeConnector(AbstractTreeDatabaseConnection):
@@ -19,6 +20,7 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
             config.formate_fields()
         self.config = config
 
+    @retry
     def open_connection(self) -> None:
         os.makedirs(self.config.params['path'], exist_ok=True)
         load_path = f"{self.config.params['path']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
@@ -77,9 +79,13 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
     def __del__(self):
         self.close_connection()
 
+    @restore_connection
+    def execute(self, query: str) -> object:
+        return self.conn.execute(query)
+
     def check_consistency(self) -> bool:
         # У всех leaf-вершин есть str_id-поле
-        raw_output = self.conn.execute(
+        raw_output = self.execute(
             "MATCH (n:leaf) WHERE n.str_id IS NULL RETURN COUNT(n) as badleafs;").get_as_df()
         leafs_wo_strid = raw_output['badleafs'][0]
         assert leafs_wo_strid < 1
@@ -89,11 +95,11 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
         # assert components_amount < 2
 
         # нет summarized-вершин без детей
-        summarized_wo_childs = self.conn.execute(
+        summarized_wo_childs = self.execute(
             "MATCH (parent:summarized) WHERE COUNT { MATCH (parent)-[rel:relation]->() } < 1 RETURN parent;").get_as_df()['parent']
         assert len(summarized_wo_childs) < 1
         # нет leaf-вершин c детьми
-        leafs_with_childs = self.conn.execute(
+        leafs_with_childs = self.execute(
             "MATCH (parent:leaf) WHERE COUNT { MATCH (parent)-[rel:relation]->() } > 1 RETURN parent;").get_as_df()['parent']
         assert len(leafs_with_childs) < 1
 
@@ -141,38 +147,38 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
         # если вершина с таким id уже существует, то вызыватеся исключение
 
         if not isinstance(parent_id, str):
-            raise ValueError
+            raise ValueError(f"parent_id: {parent_id}")
         if not self.is_node_valid(new_node):
-            raise ValueError
+            raise ValueError(f"new_node:{new_node}")
         if not self.item_exist(parent_id, TreeIdType.external):
-            raise ValueError
+            raise ValueError(f"parent_id: {parent_id}")
         if self.item_exist(new_node.id, TreeIdType.external):
-            raise ValueError
+            raise ValueError(f"new_node: {new_node}")
 
         # добавляем новую вершину
         node_query = self.create_node_query(new_node)
-        self.conn.execute(node_query)
+        self.execute(node_query)
 
         # добавляем связь между parent- и её новой child-вершиной
-        parent_type = self.conn.execute(
+        parent_type = self.execute(
             f'MATCH (n) WHERE n.external_id = "{parent_id}" RETURN LABEL(n) AS nodeType').get_as_df()['nodeType'][0]
         rel_query = self.create_rel_query(
             parent_id, parent_type, new_node.id, new_node.type.value)
-        self.conn.execute(rel_query)
+        self.execute(rel_query)
 
     def read(self, ids: List[str], ids_type: TreeIdType = TreeIdType.external) -> List[TreeNode]:
         if not isinstance(ids_type, TreeIdType):
-            raise ValueError
+            raise ValueError(f"ids_type: {ids_type}")
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         formated_ids = '[' + \
             ', '.join(list(map(lambda id: f'"{id}"', ids))) + ']'
         # print(formated_ids)
         query = f"MATCH (n) WHERE n.{ids_type.value} IN {formated_ids} RETURN n;"
         # print(query)
-        raw_nodes = self.conn.execute(query)
+        raw_nodes = self.execute(query)
 
         # Приводим информацию о полученных вершинах к нужному формату
         formated_nodes = self.formate_nodes_output(raw_nodes)
@@ -183,9 +189,9 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
         new_items_map = dict()
         for item in items:
             if not self.is_node_valid(item):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             if not self.item_exist(item.id):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             new_items_map[item.id] = item
 
         old_items = self.read(list(new_items_map.keys()))
@@ -201,7 +207,7 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
 
             # Получем идентификаторы вершин, с которыми смежна обновляемая вершина
             # parent-вершины
-            output = self.conn.execute(
+            output = self.execute(
                 f'MATCH (parent)-[rel:relation]->(child) WHERE child.external_id = "{cur_old_item.id}" RETURN parent.external_id as p_eid, LABEL(parent) as p_label;').get_as_df()
             pnodes_info = [(output['p_eid'][i], output['p_label'][i])
                            for i in range(len(output['p_eid']))]
@@ -212,7 +218,7 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
             if cur_old_item.type != TreeNodeType.root:
                 assert len(pnodes_info) == 1
             # child-вершины
-            output = self.conn.execute(
+            output = self.execute(
                 f'MATCH (parent)-[rel:relation]->(child) WHERE parent.external_id = "{cur_old_item.id}" RETURN child.external_id as c_eid, LABEL(child) as c_label;').get_as_df()
             cnodes_info = [(output['c_eid'][i], output['c_label'][i])
                            for i in range(len(output['c_eid']))]
@@ -222,17 +228,17 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
             # print("child_ids:", cnodes_info)
 
             # Удаляем все инцидентные связи у обновляемой вершины
-            self.conn.execute(
+            self.execute(
                 f'MATCH (parent)-[rel:relation]->(child) WHERE child.external_id = "{cur_old_item.id}" DELETE rel;')
-            self.conn.execute(
+            self.execute(
                 f'MATCH (parent)-[rel:relation]->(child) WHERE parent.external_id = "{cur_old_item.id}" DELETE rel;')
             # Удаляем старую версию обновляемой вершины
-            self.conn.execute(
+            self.execute(
                 f'MATCH (n) WHERE n.external_id = "{cur_old_item.id}" DELETE n;')
 
             # Добавляем обновлённую версию вершины
             node_query = self.create_node_query(cur_new_item)
-            self.conn.execute(node_query)
+            self.execute(node_query)
 
             # К новой версии вершины добавляем все связи, которые были у старой версии
             # parent-связи
@@ -241,26 +247,26 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
                     ', '.join(list(map(lambda id: f'"{id}"', p_ids))) + ']'
                 prel_query = f'MATCH (parent:{p_type}), (child:{cur_nnode_type}) WHERE child.external_id = "{cur_new_item.id}" AND parent.external_id IN {pformated_ids} '
                 prel_query += f'CREATE (parent)-[rel:relation]->(child);'
-                self.conn.execute(prel_query)
+                self.execute(prel_query)
             # child-связи
             for c_type, c_ids in grouped_cnodes.items():
                 cformated_ids = '[' + \
                     ', '.join(list(map(lambda id: f'"{id}"', c_ids))) + ']'
                 crel_query = f'MATCH (parent:{cur_nnode_type}), (child:{c_type}) WHERE parent.external_id = "{cur_new_item.id}" AND child.external_id IN {cformated_ids} '
                 crel_query += f'CREATE (parent)-[rel:relation]->(child);'
-                self.conn.execute(crel_query)
+                self.execute(crel_query)
 
     def delete(self, ids: List[str], ids_type: TreeIdType = TreeIdType.external) -> None:
         if not isinstance(ids_type, TreeIdType):
-            raise ValueError
+            raise ValueError(f"ids_type: {ids_type}")
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
             # Проверка: у удаляемой вершины не должно быть детей
             if self.item_exist(id, id_type=ids_type):
                 childs_amount = len(self.get_child_nodes(id, id_type=ids_type))
                 if childs_amount > 0:
-                    raise ValueError
+                    raise ValueError(f"* id: {id}\n* child_amount: {childs_amount}")
 
         for id in ids:
             self.conn.execute(
@@ -269,27 +275,27 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
                 f'MATCH (leaf) WHERE leaf.{ids_type.value} = "{id}" DELETE leaf;')
 
     def count_items(self) -> Dict[str, int]:
-        leafs_amount = self.conn.execute(
+        leafs_amount = self.execute(
             "MATCH (n:leaf) return COUNT(n) as l_amount;").get_as_df()['l_amount'][0]
-        summarized_amount = self.conn.execute(
+        summarized_amount = self.execute(
             "MATCH (n:summarized) return COUNT(n) as s_amount;").get_as_df()['s_amount'][0]
-        root_amount = self.conn.execute(
+        root_amount = self.execute(
             "MATCH (n:root) return COUNT(n) as r_amount;").get_as_df()['r_amount'][0]
 
         return {'leaf': int(leafs_amount), 'summarized': int(summarized_amount), 'root': int(root_amount)}
 
     def item_exist(self, id: str, id_type: str = TreeIdType.external) -> bool:
         if not isinstance(id, str):
-            raise ValueError
+            raise ValueError(f"id: {id}")
 
         if id_type == TreeIdType.external:
             query = f'MATCH (n) WHERE n.external_id = "{id}" RETURN n;'
         elif id_type == TreeIdType.str:
             query = f'MATCH (n) WHERE n.str_id = "{id}" RETURN n;'
         else:
-            raise ValueError
+            raise ValueError(f"id_type: {id_type}")
 
-        raw_output = self.conn.execute(query)
+        raw_output = self.execute(query)
         existed_items = raw_output.get_as_df()['n']
         return len(existed_items) > 0
 
@@ -315,7 +321,7 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
         for k, v in node.props.items():
             if (node.type == TreeNodeType.summarized and k == 'descendants_num') or k == 'depth':
                 if not isinstance(v, int):
-                    raise ValueError
+                    raise ValueError(f"node: {node}")
             else:
                 if not isinstance(v, str):
                     return False
@@ -356,37 +362,36 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
 
     def get_leaf_descendants(self, ancestor_id: str, id_type: TreeIdType = TreeIdType.external) -> List[TreeNode]:
         if not isinstance(ancestor_id, str):
-            raise ValueError
+            raise ValueError(f"ancestor_id: {ancestor_id}")
         if not isinstance(id_type, TreeIdType):
-            raise ValueError
+            raise ValueError(f"id_type: {id_type}")
         if not self.item_exist(ancestor_id, id_type=id_type):
-            raise ValueError
+            raise ValueError(f"* ancestor_id: {ancestor_id}\n* id_type: {id_type}")
 
-        raw_output = self.conn.execute(
+        raw_output = self.execute(
             f'MATCH (ancestor)-[:relation*0..]->(n:leaf) WHERE ancestor.{id_type.value} = "{ancestor_id}" RETURN n;')
         leaf_nodes = self.formate_nodes_output(raw_output)
         return leaf_nodes
 
     def get_child_nodes(self, parent_id: str, id_type: TreeIdType = TreeIdType.external) -> List[TreeNode]:
         if not isinstance(parent_id, str):
-            raise ValueError
+            raise ValueError(f"parent_id: {parent_id}")
         if not self.item_exist(parent_id, id_type=id_type):
-            raise ValueError
+            raise ValueError(f"* parent_id: {parent_id}\n* id_type: {id_type}")
 
-        raw_nodes = self.conn.execute(
+        raw_nodes = self.execute(
             f'MATCH (parent)-[rel:relation]->(n) WHERE parent.{id_type.value} = "{parent_id}" RETURN n;')
         formated_nodes = self.formate_nodes_output(raw_nodes)
         return formated_nodes
 
     def get_tree_maxdepth(self) -> int:
-        raw_output = self.conn.execute(
+        raw_output = self.execute(
             "MATCH (n) RETURN MAX(n.depth) as max_depth;")
         max_depth = int(raw_output.get_as_df()['max_depth'][0])
         return max_depth
 
     def clear(self) -> None:
-        self.conn.execute("MATCH (n1)-[rel]->(n2) DELETE rel;")
-        self.conn.execute("MATCH (n) DELETE n;")
+        self.execute("MATCH (n1)-[rel]->(n2) DELETE rel;")
+        self.execute("MATCH (n) DELETE n;")
         # Добавляем корневую вершину
-        self.conn.execute(
-            "CREATE (n:root {" + 'external_id: "' + self.root_node_id + '", depth: 0});')
+        self.execute("CREATE (n:root {" + 'external_id: "' + self.root_node_id + '", depth: 0});')

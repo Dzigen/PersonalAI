@@ -58,11 +58,11 @@ class SingleStepReranker(AbstractRerankerModule):
             raise ValueError(f"{self.config.vdb_name} not in {vdb_composer.vdb_conn_mapping.keys()}")
         if isinstance(self.config.threshold, float):
             if self.config.threshold < 0 or self.config.threshold > 1:
-                raise ValueError
+                raise ValueError(f"self.config: {self.config}")
         elif self.config.threshold is not None:
-            raise ValueError
+            raise ValueError(f"self.config: {self.config}")
         if self.config.fetch_n < 0:
-            raise ValueError
+            raise ValueError(f"self.config: {self.config}")
 
         return True
 
@@ -70,17 +70,17 @@ class SingleStepReranker(AbstractRerankerModule):
                                includes: List[str], return_with_embeddings: bool,
                                return_with_scores: bool) -> bool:
         if not isinstance(query, str):
-            raise TypeError
+            raise TypeError(f"query: {query}")
         if len(query) < 1:
-            raise ValueError
+            raise ValueError(f"query: {query}")
         if not isinstance(top_k, int):
-            raise TypeError
+            raise TypeError(f"top_k: {top_k}")
         if top_k < 0:
-            raise ValueError
+            raise ValueError(f"top_k: {top_k}")
         if not isinstance(return_with_embeddings, bool):
-            return TypeError
+            return TypeError(f"return_with_embeddings: {return_with_embeddings}")
         if not isinstance(return_with_scores, bool):
-            return TypeError
+            return TypeError(f"return_with_scores: {return_with_scores}")
         if subset_ids is not None:
             for cur_id in subset_ids:
                 assert isinstance(cur_id, str)
@@ -88,9 +88,9 @@ class SingleStepReranker(AbstractRerankerModule):
         if isinstance(includes, list):
             for name in includes:
                 if not ((isinstance(name, str)) and (name in ['documents', 'metadatas'])):
-                    raise ValueError
+                    raise ValueError(f"includes: {includes}")
         else:
-            raise ValueError
+            raise ValueError(f"includes: {includes}")
 
         return True
 

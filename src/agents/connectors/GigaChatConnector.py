@@ -65,7 +65,7 @@ class GigaChatConnector(AbstractAgentConnector):
             except (ConnectError, RemoteProtocolError, ResponseError, ConnectTimeout, ReadTimeout, ReadError, RuntimeError) as e:
                 counter += 1
                 if counter > self.trials:
-                    raise ConnectError
+                    raise ConnectError(str(e))
                 else:
                     self.close_connection()
                     sleep(1)
