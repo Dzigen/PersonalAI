@@ -15,7 +15,6 @@ Rules:
 Input format:
 [Question] - the original user question.
 [Search info] - sub-questions related to the question and the information found from them.
-
 Output format (two sections):
 [Chain of thoughts] - 2–5 concise points showing which facts from [Found Information] support the answer.
 [Answer] - the final answer or strictly <|NotEnoughtInfo|>.
@@ -92,11 +91,9 @@ RU_SSUBASUMM_SYSTEM_PROMPT = \
 Формат ввода:
 [Question] - исходный пользовательский вопрос.
 [Search info] - связанные с вопросом под-вопросы и найденная на их основе информация.
-
 Формат вывода (две секции):
 [Chain of thoughts] - 2–5 лаконичных пунктов, где вы показываете, какие факты из [Found Information] поддерживают ответ.
 [Answer] - финальный ответ или строго <|NotEnoughtInfo|>.
-
 
 Примеры:
 

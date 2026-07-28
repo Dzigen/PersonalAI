@@ -14,10 +14,8 @@ Rules:
 6. If the given [Base question] is simple (single-hop), then return False.
 7. Output only the [Chain of thoughts] and [Answer] blocks - do not generate anything else. In the [Answer] block, return only True or False.
 
-
 Input format:
 [Base question] - the original question.
-
 Output format (two sections):
 [Chain of thoughts] - 2-5 concise bullet points with a short justification of the decision on whether the question can be split into sub-questions.
 [Answer] - True or False.
@@ -81,7 +79,6 @@ RU_DC_SYSTEM_PROMPT = \
 
 Формат ввода:
 [Base question] - исходный вопрос.
-
 Формат вывода (две секции):
 [Chain of thoughts] - 2-5 лаконичных пунктов с кратким обоснованием решения: можно ли разбить вопрос на подвопросы.
 [Answer] - True или False.
