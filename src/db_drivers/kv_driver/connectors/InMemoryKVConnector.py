@@ -173,3 +173,6 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         if not isinstance(id, str):
             raise ValueError(f"id: {id}")
         return id in self.kv_store
+
+    def __del__(self):
+        self.close_connection()

@@ -69,7 +69,6 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
         # TODO
         pass
 
-    @retry
     def close_connection(self) -> None:
         try:
             self.conn.close()

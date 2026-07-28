@@ -50,13 +50,12 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
         if self.config.need_to_clear:
             self.clear()
 
-    @retry
     def close_connection(self) -> None:
         try:
             self._client.close()
+            gc.collect()
             del self._collection
             del self._client
-            gc.collect()
         except (AttributeError, TypeError):
             pass
 

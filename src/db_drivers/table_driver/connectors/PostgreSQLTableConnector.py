@@ -35,7 +35,6 @@ class PostgreSQLTableConnector(AbstractTableDatabaseConnection):
         if self.config.db_info.get('create_table_query', None) is not None:
             self.create_table(self.config.db_info['create_table_query'].format(table_name=self.config.db_info['table']))
 
-    @retry
     def close_connection(self) -> None:
         try:
             self.cursor.close()
@@ -151,3 +150,6 @@ class PostgreSQLTableConnector(AbstractTableDatabaseConnection):
         query = f"DELETE FROM {self.config.db_info['table']};"
         self.cursor.execute(query)
         self.conn.commit()
+
+    def __del__(self):
+        self.close_connection()

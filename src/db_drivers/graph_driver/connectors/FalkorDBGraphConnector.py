@@ -56,7 +56,6 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
         # TODO
         raise NotImplementedError
 
-    @retry
     def close_connection(self) -> None:
         # TODO
         pass

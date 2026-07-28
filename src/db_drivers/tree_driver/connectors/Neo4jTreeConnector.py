@@ -53,7 +53,6 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
         # TODO
         pass
 
-    @retry
     def close_connection(self) -> None:
         if self.driver is not None:
             self.driver.close()

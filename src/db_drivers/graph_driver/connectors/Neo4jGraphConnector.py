@@ -57,7 +57,6 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
         # TODO
         raise NotImplementedError
 
-    @retry
     def close_connection(self) -> None:
         try:
             self.driver.close()

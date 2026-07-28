@@ -87,7 +87,6 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
                 collection_name=self.config.db_info['table'],
                 skip_load_dynamic_field=True)
 
-    @retry
     def close_connection(self) -> None:
         try:
             load_state = self.client.get_load_state(
@@ -330,3 +329,6 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
             self.client.load_collection(
                 collection_name=self.config.db_info['table'],
                 skip_load_dynamic_field=True)
+
+    def __del__(self):
+        self.close_connection()

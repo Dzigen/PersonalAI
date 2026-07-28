@@ -23,7 +23,7 @@ class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
             config.formate_fields()
         self.config = config
 
-        self.HANDLING_DB_EXCEPTIONS += [TransportError, ConnectionError, ConnectionTimeout]
+        self.HANDLING_DB_EXCEPTIONS = tuple(set(list(self.HANDLING_DB_EXCEPTIONS) +[TransportError, ConnectionError, ConnectionTimeout]))
 
         self.db_conn = None
         self.retriever = None
@@ -45,7 +45,6 @@ class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
         # TODO
         pass
 
-    @retry
     def close_connection(self) -> None:
         try:
             self.db_conn._client.transport.close()
@@ -194,3 +193,6 @@ class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
         self.db_conn._client.indices.forcemerge(index=self.db_conn._index, only_expunge_deletes=True)
         # assert self.db_conn._client.indices.exists(index=self.db_conn._index)
         # self.db_conn._client.indices.refresh(index=self.db_conn._index)
+
+    def __del__(self):
+        self.close_connection()

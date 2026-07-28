@@ -57,7 +57,6 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
         # TODO
         pass
 
-    @retry
     def close_connection(self) -> ReturnInfo:
         # TODO
         pass
@@ -238,3 +237,6 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
             self.create_index()
             self.db_conn._client.indices.forcemerge(index=self.db_conn._index, only_expunge_deletes=True)
             sleep(2)
+
+    def __del__(self):
+        self.close_connection()

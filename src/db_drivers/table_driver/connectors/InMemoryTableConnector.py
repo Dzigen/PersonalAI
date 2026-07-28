@@ -110,3 +110,6 @@ class InMemoryTableConnector(AbstractTableDatabaseConnection):
     def clear(self) -> None:
         self.table_store: Dict[str, BaseTableStucture] = dict()
         gc.collect()
+
+    def __del__(self):
+        self.close_connection()

@@ -32,7 +32,6 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
     def is_open(self) -> bool:
         return self.client.is_connected()
 
-    @retry
     def close_connection(self) -> None:
         self.client.close()
 
@@ -100,3 +99,6 @@ class AerospikeKVConnector(AbstractKVDatabaseConnection):
         node_values = list(info.items())[0][1][1]
         n_objects = node_values.split(":")[2].split('=')[1]
         return int(n_objects)
+
+    def __del__(self):
+        self.close_connection()

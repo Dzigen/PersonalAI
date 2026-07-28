@@ -47,7 +47,6 @@ class WeaviateVectorConnector(AbstractVectorDatabaseConnection):
         # TODO
         pass
 
-    @retry
     def close_connection(self) -> ReturnInfo:
         try:
             self.db_conn._client.close()
@@ -245,3 +244,6 @@ class WeaviateVectorConnector(AbstractVectorDatabaseConnection):
             sleep(1)
             self.db_conn._client.collections.create_from_dict(self.db_conn._collection_settings)
             sleep(1)
+
+    def __del__(self):
+        self.close_connection()

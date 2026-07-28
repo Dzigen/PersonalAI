@@ -31,7 +31,7 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         self.config = config
         self.collection_name = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
 
-        self.HANDLING_DB_EXCEPTIONS += [ResponseHandlingException, UnexpectedResponse]
+        self.HANDLING_DB_EXCEPTIONS = tuple(set(list(self.HANDLING_DB_EXCEPTIONS)+[ResponseHandlingException, UnexpectedResponse]))
 
         self.embedder = embedder
         self.encode_batchsize = encode_batchsize
@@ -60,7 +60,6 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
         # TODO
         pass
 
-    @retry
     def close_connection(self) -> ReturnInfo:
         try:
             self.db_conn.close()
@@ -287,3 +286,6 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
             self.close_connection()
             sleep(5)
             self.open_connection()
+
+    def __del__(self):
+        self.close_connection()

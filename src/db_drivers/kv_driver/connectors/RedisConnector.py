@@ -48,7 +48,6 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
         except (redis.exceptions.ConnectionError, ConnectionRefusedError):
             return False
 
-    @retry
     def close_connection(self):
         try:
             self.conn.close()

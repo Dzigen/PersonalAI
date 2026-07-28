@@ -108,7 +108,6 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
         formated_ns_config = "".join(self.config.params['namespace_configuration'].format(namespace_name=self.config.db_info['db']).split("\n"))
         requests.post(url, data=formated_ns_config, headers={"Content-Type": "application/xml", 'Accept': 'application/xml'})
 
-    @retry
     def close_connection(self) -> None:
         try:
             self.graph.close()

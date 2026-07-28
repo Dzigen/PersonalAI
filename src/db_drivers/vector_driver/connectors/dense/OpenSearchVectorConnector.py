@@ -30,7 +30,7 @@ class OpenSeachVectorConnector(AbstractVectorDatabaseConnection):
             config.formate_fields()
         self.config = config
 
-        self.HANDLING_DB_EXCEPTIONS += [TransportError, ConnectionError, ConnectionTimeout]
+        self.HANDLING_DB_EXCEPTIONS = tuple(set(list(self.HANDLING_DB_EXCEPTIONS) + [TransportError, ConnectionError, ConnectionTimeout]))
 
         self.embedder = embedder
         self.encode_batchsize = encode_batchsize
@@ -58,7 +58,6 @@ class OpenSeachVectorConnector(AbstractVectorDatabaseConnection):
         # TODO
         pass
 
-    @retry
     def close_connection(self) -> None:
         try:
             self.db_conn._client.transport.close()
@@ -256,3 +255,6 @@ class OpenSeachVectorConnector(AbstractVectorDatabaseConnection):
 
         # assert self.db_conn._client.indices.exists(index=self.db_conn._index)
         # self.db_conn._client.indices.refresh(index=self.db_conn._index)
+
+    def __del__(self):
+        self.close_connection()

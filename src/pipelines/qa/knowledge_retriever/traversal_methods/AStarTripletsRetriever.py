@@ -417,6 +417,7 @@ class AStarGraphSearch:
             for adj_node in adjacent_nodes:
                 composers_subset_ids[adj_node.type].append(adj_node.id)
             composers_subset_ids = dict(composers_subset_ids)
+            self.log.debug("composers_subset_ids: %s", composers_subset_ids, verbose=self.verbose, log_level=self.log_level)
 
             accpeted_nodes_types = list(set(self.config.accepted_node_types).intersection(set(composers_subset_ids.keys())))
 
@@ -450,6 +451,7 @@ class AStarGraphSearch:
         passed_nodes_counter = 0
         while len(frontier):
             current_node: NodeInfo = heapq.heappop(frontier)[2]
+            self.log.debug("current node: %s", current_node, verbose=self.verbose, log_level=self.log_level)
             current_node_typedid = current_node.to_str()
             passed_nodes_counter += 1
 
@@ -472,8 +474,8 @@ class AStarGraphSearch:
 
             adj_nodes = self.kg_model.graph_struct.db_conn.get_adjacent_nodes(
                 current_node, self.config.accepted_node_types)
-            self.log.debug(f"adjenced nodes amount: {len(adj_nodes)}",
-                           verbose=self.verbose, log_level=self.log_level)
+            self.log.debug(f"adjenced nodes amount: {len(adj_nodes)}",verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("adjenced nodes: %s", adj_nodes, verbose=self.verbose, log_level=self.log_level)
 
             # Выполняем предварительную фильтрацию adj_nodes-вершин
             # по current_node- или end_node-вершине (для повышения производительности алгоритма)

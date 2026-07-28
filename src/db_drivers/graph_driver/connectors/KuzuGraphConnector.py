@@ -54,7 +54,6 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         self.config.params['table_type_map']['nodes']['inverse'] = {
             v: k for k, v in self.config.params['table_type_map']['nodes']['forward'].items()}
 
-    @retry
     def close_connection(self) -> None:
         try:
             self.conn.close()

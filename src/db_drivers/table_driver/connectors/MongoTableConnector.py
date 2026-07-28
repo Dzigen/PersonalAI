@@ -2,6 +2,7 @@ import pymongo
 from typing import List, Dict, Tuple, Union
 from dataclasses import asdict
 from time import time
+import gc
 
 from .configs import DEFAULT_MONGOTABLE_CONFIG
 from ..utils import AbstractTableDatabaseConnection, TableDBConnectionConfig, TableDBInstance, BaseTableStucture
@@ -35,11 +36,13 @@ class MongoTableConnector(AbstractTableDatabaseConnection):
         if self.config.need_to_clear:
             self.clear()
 
-    @retry
     def close_connection(self) -> None:
         try:
             self._client.close()
-        except TypeError:
+            gc.collect()
+            del self._collection
+            del self._client
+        except (AttributeError, TypeError):
             pass
 
     def create_table(self) -> None:
@@ -109,3 +112,6 @@ class MongoTableConnector(AbstractTableDatabaseConnection):
     @restore_connection
     def clear(self) -> None:
         self._collection.drop()
+
+    def __del__(self):
+        self.close_connection()
