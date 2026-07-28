@@ -400,3 +400,6 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         del self.strcuture
         self.strcuture = InMemoryGraphStructure()
         gc.collect()
+
+    def __del__(self):
+        self.close_connection()

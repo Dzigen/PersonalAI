@@ -191,3 +191,6 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
         gc.collect()
         self.db_conn = InMemoryDocumentStore()
         self.retriever = InMemoryBM25Retriever(document_store=self.db_conn)
+
+    def __del__(self):
+        self.close_connection()

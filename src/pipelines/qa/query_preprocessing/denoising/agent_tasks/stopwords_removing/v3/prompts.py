@@ -14,10 +14,8 @@ Rules
 
 Input format:
 [Question] - the original wording of the question.
-
 Output format:
 [Denoised question] - a cleaned and concise version of the question without noise.
-
 
 Examples:
 
@@ -69,10 +67,8 @@ RU_SWREMV_SYSTEM_PROMPT = \
 
 Формат ввода:
 [Question] - исходная формулировка вопроса.
-
 Формат вывода:
 [Denoised question] - очищенная и краткая версия вопроса без шума.
-
 
 Примеры:
 

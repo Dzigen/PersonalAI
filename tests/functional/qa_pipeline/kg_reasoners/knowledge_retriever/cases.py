@@ -6,11 +6,11 @@ PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods import \
+from src.pipelines.qa.knowledge_retriever.traversal_methods import \
     AStarGraphSearchConfig, GraphBeamSearchConfig, NaiveGraphSearchConfig, \
         WaterCirclesSearchConfig, MixturedGraphSearchConfig, NaiveBFSGraphSearchConfig
 
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods import TripletsFilterConfig
+from src.pipelines.qa.knowledge_retriever.filtering_methods import TripletsFilterConfig
 
 from ...cases import QUESTIONS
 from ..cases import KW_ENTITIES

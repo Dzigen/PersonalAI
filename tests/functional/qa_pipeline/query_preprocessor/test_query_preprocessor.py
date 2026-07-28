@@ -16,11 +16,13 @@ from .conftest import KV_CACHE_CONFIG, INFSTAT_CONFIG
 @pytest.mark.parametrize("query, qp_config", QP_POPULATED_TEST_CASES)
 def test_query_preprocessor(query: str, qp_config: QueryPreprocessorConfig, agent_conn: AbstractAgentConnector):
 
+    qp_config.synchronize_language()
     qp_stage = QueryPreprocessor(
         agent_conn,
         config=qp_config,
         cache_kvdriver_config=KV_CACHE_CONFIG,
         inferencestat_config=INFSTAT_CONFIG)
+    
 
     qp_stage.clear_agent_tgen_stat()
     qp_stage.clear_kv_caches()
@@ -30,3 +32,6 @@ def test_query_preprocessor(query: str, qp_config: QueryPreprocessorConfig, agen
 
     qp_stage.clear_agent_tgen_stat()
     qp_stage.clear_kv_caches()
+
+    qp_stage.stages.close_connections()
+    qp_stage.cachekv.close_connection()

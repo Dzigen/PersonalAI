@@ -274,3 +274,6 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
             distance_strategy=DistanceStrategy.DOT_PRODUCT,
             embedding_function=self.embedder
         )
+
+    def __del__(self):
+        self.close_connection()

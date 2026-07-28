@@ -5,6 +5,7 @@ import json
 
 from .configs import DEFAULT_FALKORDB_CONFIG
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
+from ...utils import restore_connection, retry
 from ....utils.data_structs import Triplet, Node, TripletCreator, NodeCreator, \
     NodeType, RelationCreator, RelationType, NODES_TYPES_MAP, RELATIONS_TYPES_MAP, \
     NodeInfo, RelationInfo, TripletInfo
@@ -22,6 +23,7 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
             config.formate_fields()
         self.config: GraphDBConnectionConfig = config
 
+    @retry
     def open_connection(self) -> None:
         self.db = FalkorDB(host=self.config.host, port=self.config.port)
         self.graph = self.db.select_graph(f"{self.config.db_info['db']}{self.config.db_info['table']}")
@@ -57,6 +59,17 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
     def close_connection(self) -> None:
         # TODO
         pass
+
+    @restore_connection
+    def execute(self, query: str, mode: str = 'read') -> Union[object, None]:
+        output = None
+        if mode == 'read':
+            output = self.graph.ro_query(query)
+        elif mode == 'write':
+            output = self.graph.query(query)
+        else:
+            raise ValueError
+        return output
 
     def __del__(self):
         self.close_connection()
@@ -113,13 +126,13 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
             cur_info = creation_info.get(i, None)
             if cur_info is None or cur_info['s_node']:
                 insert_subj_query = self.create_node_query(triplet.start_node)
-                self.graph.query(insert_subj_query)
+                self.execute(insert_subj_query, 'write')
             if cur_info is None or cur_info['e_node']:
                 insert_obj_query = self.create_node_query(triplet.end_node)
-                self.graph.query(insert_obj_query)
+                self.execute(insert_obj_query, 'write')
 
             insert_rel_query = self.create_rel_query(triplet)
-            self.graph.query(insert_rel_query)
+            self.execute(insert_rel_query, 'write')
 
     def read(self, ids: List[str]) -> List[Triplet]:
         for t_id in ids:
@@ -128,7 +141,7 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
 
         str_ids = '[' + ', '.join(list(map(lambda id: f'"{id}"', ids))) + ']'
         query = f"MATCH (n1)-[rel]->(n2) WHERE any(id IN {str_ids} WHERE rel.t_id = id) RETURN n1, rel, n2"
-        raw_output = self.graph.ro_query(query)
+        raw_output = self.execute(query)
         triplets = self.parse_query_triplets_output(raw_output)
         return triplets
 
@@ -151,9 +164,9 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
             if cur_info is None or cur_info['e_node']:
                 nodes_to_delete.append('en')
 
-            output = self.graph.query(
-                f'MATCH (s_node)-[rel]->(e_node) WHERE rel.t_id = "{t_id}" DELETE rel \
-                    RETURN ID(s_node) as sn_id, labels(s_node) as sn_labels, ID(e_node) as en_id, labels(e_node) as en_labels').result_set
+            query = f'MATCH (s_node)-[rel]->(e_node) WHERE rel.t_id = "{t_id}" DELETE rel \
+                RETURN ID(s_node) as sn_id, labels(s_node) as sn_labels, ID(e_node) as en_id, labels(e_node) as en_labels'
+            output = self.execute(query, 'write').result_set
             # print(output)
             if len(output) < 1:
                 continue
@@ -173,7 +186,7 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
 
                     where_statement.append(f'(ID(n) = {node_id} and n:{node_type})')
                 where_statement = ' or '.join(where_statement)
-                self.graph.query(f'MATCH (n) WHERE {where_statement} DELETE n')
+                self.execute(f'MATCH (n) WHERE {where_statement} DELETE n', 'write')
 
     def read_by_name(self, name: str, object_type: Union[RelationType, NodeType], object: str = 'relation') -> List[Union[Triplet, Node]]:
         if type(object_type) not in [RelationType, NodeType]:
@@ -187,11 +200,11 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
 
         dump_name = json.dumps(name, ensure_ascii=False)
         if object == 'relation':
-            output = self.graph.ro_query(
+            output = self.execute(
                 f'MATCH (n1)-[rel:{object_type.value}]->(n2) WHERE rel.name = {dump_name} RETURN n1,rel,n2;')
             formated_output = self.parse_query_triplets_output(output)
         elif object == 'node':
-            output = self.graph.ro_query(
+            output = self.execute(
                 f'MATCH (n:{object_type.value}) WHERE n.name = {dump_name} RETURN n;')
             formated_output = self.parse_query_nodes_output(output)
         else:
@@ -206,8 +219,9 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
 
         str_accepted_nodes = ', '.join(list(map(lambda tpe: f'"{tpe.value}"', accepted_n_types)))
 
-        raw_nodes = self.graph.ro_query(
-            f'MATCH (a:{base_node.type.value})-[r]-(b) WHERE a.str_id = "{base_node.id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(b)) RETURN b')
+        raw_nodes = self.execute(
+            f'MATCH (a:{base_node.type.value})-[r]-(b) WHERE a.str_id = "{base_node.id}" \
+                AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(b)) RETURN b')
         formated_nodes = [NodeInfo(id=node[0].properties['str_id'], type=NODES_TYPES_MAP[list(node[0].labels)[0]]) for node in raw_nodes.result_set]
         return formated_nodes
 
@@ -224,8 +238,9 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
         if accepted_r_types is not None:
             str_accepted_relations = ":" + '|'.join(list(map(lambda tpe: tpe.value, accepted_r_types)))
 
-        output = self.graph.ro_query(
-            f'MATCH (n1:{base_node.type.value})-[rel{str_accepted_relations}]-(n2) WHERE n1.str_id = "{base_node.id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(n2)) RETURN n1,rel,n2')
+        output = self.execute(
+            f'MATCH (n1:{base_node.type.value})-[rel{str_accepted_relations}]-(n2) \
+                WHERE n1.str_id = "{base_node.id}" AND ANY(lbl in [{str_accepted_nodes}] where lbl in labels(n2)) RETURN n1,rel,n2')
         formated_output = self.parse_query_triplets_output(output)
         triples_info = [triple.get_info() for triple in formated_output]
         return triples_info
@@ -245,8 +260,9 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
         else:
             raise ValueError(f"id_type: {id_type}")
 
-        raw_rels = self.graph.ro_query(
-            f'MATCH (a:{node1.type.value})-[r]-(b:{node2.type.value}) WHERE a.str_id = "{node1.id}" AND b.str_id = "{node2.id}" RETURN {str_return_info};')
+        raw_rels = self.execute(
+            f'MATCH (a:{node1.type.value})-[r]-(b:{node2.type.value}) \
+                WHERE a.str_id = "{node1.id}" AND b.str_id = "{node2.id}" RETURN {str_return_info};')
 
         formated_info = []
         for raw_rel in raw_rels.result_set:
@@ -345,8 +361,9 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
         if (not self.item_exist(node1, 'node')) or (not self.item_exist(node2, 'node')):
             raise ValueError(f"* node1: {node1}\n* node2: {node2}")
 
-        output = self.graph.ro_query(
-            f'MATCH (n1:{node1.type.value})-[rel]-(n2:{node2.type.value}) WHERE n1.str_id = "{node1.id}" AND n2.str_id = "{node2.id}" RETURN n1, rel, n2')
+        output = self.execute(
+            f'MATCH (n1:{node1.type.value})-[rel]-(n2:{node2.type.value}) \
+                WHERE n1.str_id = "{node1.id}" AND n2.str_id = "{node2.id}" RETURN n1, rel, n2')
 
         formated_triplets = self.parse_query_triplets_output(output)
         return formated_triplets
@@ -356,17 +373,19 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
         if subj_names:
             for subj_name in subj_names:
                 subj_dump = json.dumps(subj_name, ensure_ascii=False)
-                output = self.graph.ro_query(
-                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n1.name) = LOWER({subj_dump}) RETURN n1, rel, n2')
+                output = self.execute(
+                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) \
+                        WHERE LOWER(n1.name) = LOWER({subj_dump}) RETURN n1, rel, n2')
                 formated_triplets += self.parse_query_triplets_output(output)
         elif obj_names:
             for obj_name in obj_names:
                 obj_dump = json.dumps(obj_name, ensure_ascii=False)
-                output = self.graph.ro_query(
-                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) WHERE LOWER(n2.name) = LOWER({obj_dump}) RETURN n1, rel, n2')
+                output = self.execute(
+                    f'MATCH (n1:object)-[rel]-(n2:{obj_type}) \
+                        WHERE LOWER(n2.name) = LOWER({obj_dump}) RETURN n1, rel, n2')
                 formated_triplets += self.parse_query_triplets_output(output)
         else:
-            output = self.graph.ro_query(
+            output = self.execute(
                 f'MATCH (n1:object)-[rel]-(n2:{obj_type}) RETURN n1, rel, n2')
             formated_triplets += self.parse_query_triplets_output(output)
 
@@ -382,9 +401,9 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
                 }
 
                 try:
-                    n_output = self.graph.ro_query(
+                    n_output = self.execute(
                         "MATCH (n) UNWIND labels(n) AS label RETURN label, count(n) AS nodeCount").result_set
-                    r_output = self.graph.ro_query(
+                    r_output = self.execute(
                         "MATCH (a)-[rel]->(b) UNWIND type(rel) AS rel_type RETURN rel_type, count(rel) AS relCount").result_set
 
                     result['triplets'].update({item[0]: int(item[1]) for item in r_output})
@@ -397,8 +416,8 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
 
             else:
                 try:
-                    n_output = self.graph.ro_query("MATCH (a) RETURN COUNT(a) as n_count").result_set[0]
-                    r_output = self.graph.ro_query("MATCH (a)-[rel]->(b) RETURN COUNT(rel) as r_count").result_set[0]
+                    n_output = self.execute("MATCH (a) RETURN COUNT(a) as n_count").result_set[0]
+                    r_output = self.execute("MATCH (a)-[rel]->(b) RETURN COUNT(rel) as r_count").result_set[0]
                     result = {'triplets': r_output[0], 'nodes': n_output[0]}
                 # костыль: если граф только создан (пустой),
                 # то при отправке MATCH-запросов возникает ошибка - "redis.exceptions.ResponseError: Invalid graph operation on empty key"
@@ -407,7 +426,7 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
 
         elif id_type == 'node':
             try:
-                n_output = self.graph.ro_query(
+                n_output = self.execute(
                     f'MATCH (a:{item_id.type.value}) WHERE a.str_id = "{item_id.id}" RETURN COUNT(a) as n_count').result_set[0]
                 result = n_output[0]
             # костыль: если граф только создан (пустой),
@@ -417,7 +436,7 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
 
         elif id_type == 'relation':
             try:
-                r_output = self.graph.ro_query(
+                r_output = self.execute(
                     f'MATCH (a)-[rel:{item_id.type.value}]->(b) WHERE rel.str_id = "{item_id.id}" RETURN COUNT(rel) as r_count').result_set[0]
                 result = r_output[0]
             # костыль: если граф только создан (пустой),
@@ -427,7 +446,7 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
 
         elif id_type == 'triplet':
             try:
-                r_output = self.graph.ro_query(f'MATCH (a)-[rel]->(b) WHERE rel.t_id = "{item_id}" RETURN COUNT(rel) as r_count').result_set[0]
+                r_output = self.execute(f'MATCH (a)-[rel]->(b) WHERE rel.t_id = "{item_id}" RETURN COUNT(rel) as r_count').result_set[0]
                 result = r_output[0]
             # костыль: если граф только создан (пустой),
             # то при отправке MATCH-запросов возникает ошибка - "redis.exceptions.ResponseError: Invalid graph operation on empty key"
@@ -456,7 +475,7 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
             raise ValueError(f"id_type: {id_type}")
 
         try:
-            output = self.graph.ro_query(query).result_set
+            output = self.execute(query).result_set
         # костыль: если граф только создан (пустой),
         # то при отправке MATCH-запросов возникает ошибка - "redis.exceptions.ResponseError: Invalid graph operation on empty key"
         except redis.exceptions.ResponseError:
@@ -465,5 +484,5 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
         return len(output) > 0
 
     def clear(self) -> None:
-        self.graph.query("MATCH (n)-[rel]->() DELETE n,rel")
-        self.graph.query("MATCH (n) DELETE n")
+        self.execute("MATCH (n)-[rel]->() DELETE n,rel", 'write')
+        self.execute("MATCH (n) DELETE n", 'write')

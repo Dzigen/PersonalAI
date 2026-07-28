@@ -112,6 +112,7 @@ services:
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+      - cluster.routing.allocation.disk.threshold_enabled=false
     volumes:
       - ${OPENSEARCH_EXTERNAL_VOLUME}:/usr/share/opensearch/data
     deploy:
@@ -133,6 +134,7 @@ services:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
       - xpack.security.enabled=false
+      - cluster.routing.allocation.disk.threshold_enabled=false
     volumes:
       - ${ELASTICSEARCH_EXTERNAL_VOLUME}:/usr/share/elasticsearch/data
     deploy:

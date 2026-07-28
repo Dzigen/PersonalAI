@@ -13,7 +13,6 @@ Rules:
 
 Input format:
 [Base question] - the original question.
-
 Output format:
 [Decomposed questions] - a set of simple sub-questions in the following format:
 - <sub-question #1>
@@ -81,7 +80,6 @@ RU_QD_SYSTEM_PROMPT = \
 
 Формат ввода:
 [Base question] - исходный вопрос.
-
 Формат вывода:
 [Decomposed questions] - набор простых подвопросов в ​​следующем формате:
 - <под-вопрос #1>

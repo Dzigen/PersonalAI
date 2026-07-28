@@ -245,3 +245,6 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
         self.client.delete_collection(name=self.config.db_info['table'])
         self.collection = self.client.create_collection(
             name=self.config.db_info['table'], metadata=self.config.params)
+
+    def __del__(self):
+        self.close_connection()

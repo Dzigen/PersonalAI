@@ -6,8 +6,8 @@ from .config import WKGR_MAIN_LOG_PATH, WEAK_KG_RETRIEVER_CONFIG
 from .utils import WeakKGReasonerStages
 from .query_parser import QueryLLMParser, QueryLLMParserConfig
 from .knowledge_comparator import KnowledgeComparator, KnowledgeComparatorConfig
-from .knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
 from .answer_generator import QALLMGenerator, QALLMGeneratorConfig
+from ...knowledge_retriever import KnowledgeRetriever, KnowledgeRetrieverConfig
 from ..utils import AbstractKGReasoner, BaseKGReasonerConfig
 from .....utils.data_structs import create_id, QueryInfo, Triplet, BaseComponentConfig, LanguageConfig
 from .....utils import Logger, ReturnInfo, ReturnStatus, update_rinfo, \

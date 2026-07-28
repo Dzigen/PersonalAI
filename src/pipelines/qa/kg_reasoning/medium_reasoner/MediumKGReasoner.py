@@ -9,10 +9,10 @@ from .clueanswer_generator import ClueAnswerGenerator, ClueAnswerGeneratorConfig
 from .clueanswers_summarisation import ClueAnswersSummarizerConfig, ClueAnswersSummarizer
 from .answer_generator import AnswerGeneratorConfig, AnswerGenerator
 from .entities2nodes_matching import Entities2NodesMatcher, Entities2NodesMatcherConfig
-from .utils import MediumKGReasonerStages
+from .utils import MediumKGReasonerStages, RelInfoFoundBehaviour, PlanLimitExceededBehaviour
 from .config import MDGR_MAIN_LOG_PATH, CONTINUE_SEARCH_MESSAGE, ANSWER_IS_GENERATED_MESSAGE, MEDIUM_KG_RETRIEVER_CONFIG
 from ..utils import AbstractKGReasoner, BaseKGReasonerConfig
-from ..weak_reasoner.knowledge_retriever import KnowledgeRetrieverConfig, KnowledgeRetriever
+from ...knowledge_retriever import KnowledgeRetrieverConfig, KnowledgeRetriever
 from .....utils.data_structs import create_id, QueryInfo, SearchPlanInfo, BaseComponentConfig, LanguageConfig, NodeInfo, TripletCreator
 from .....utils import Logger, ReturnInfo, ReturnStatus, update_rinfo, accumulate_stage_info, \
     CompositeModuleDetailedResult, ModuleType, CompositeModuleResult
@@ -45,8 +45,12 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
     :type answer_generator_config: Union[AnswerGeneratorConfig, Dict], optional
     :param max_searchplan_steps: Максимальное количество шагов плана поиска, по которым может быть выполнен обход/излвечение информации из графа знаний. По достижению заданного предела поиск завершается. Значение по умолчанию 5.
     :type max_searchplan_steps: int, optional
-    :param answer_something: Если True, то по достижении предела по количеству выполненных шагов плана будет произведена принудительная генерация ответа на вопрос по извлечённому набору информации (даже если в нем не содержится релевантных материалов для получения правильного ответа); иначе (по достижению предела обработанных шагов поиска) в качества ответа будет сформировна/возвращена NoAnswer-заглушка в качества результата работы reasoner-пайплайна. Значение по умолчанию True.
-    :type answer_something: bool, optional
+    :param enable_searchplan_steps_check: ... . Значение по умолчанию True.
+    :type enable_searchplan_steps_check: bool, optional
+    :param relinfo_found_behaviour: ... . Значение по умолчанию RelInfoFoundBehaviour.casual_answer
+    :type relinfo_found_behaviour: RelInfoFoundBehaviour
+    :param planlimit_exceeded_behaviour: ... . Значение по умолчанию PlanLimitExceededBehaviour.strict_answer
+    :type planlimit_exceeded_behaviour: PlanLimitExceededBehaviour
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы MediumKGReasoner-класса. Значение по умолчанию 'qa_mediumreasoner_cache'.
     :type cache_table_name: str, optional
     """
@@ -62,7 +66,9 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
     answer_generator_config: Union[AnswerGeneratorConfig, Dict] = field(default_factory=lambda: AnswerGeneratorConfig())
 
     max_searchplan_steps: int = 6
-    answer_something: bool = True
+    enable_searchplan_steps_check: bool = True
+    relinfo_found_behaviour: RelInfoFoundBehaviour = RelInfoFoundBehaviour.casual_answer
+    planlimit_exceeded_behaviour: PlanLimitExceededBehaviour = PlanLimitExceededBehaviour.strict_answer
 
     cache_table_name: str = 'qa_mediumreasoner_cache'
     log_path: str = MDGR_MAIN_LOG_PATH
@@ -73,13 +79,14 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
         str_e2nm_config = self.e2n_matcher_config.to_str()
         str_cqg_config = self.cluequeries_generator_config.to_str()
         str_kr_config = self.knowledge_retriever_config.to_str()
-        str_cag_config = self.cluequeries_generator_config.to_str()
+        str_cag_config = self.clueanswer_generator_config.to_str()
         str_cas_config = self.clueanswers_summarizer_config.to_str()
         str_ag_config = self.answer_generator_config.to_str()
 
         str_init_configs = f"{str_spe_config}|{str_ee_config}|{str_e2nm_config}"
         str_proc_configs = f"{str_cqg_config}|{str_kr_config}|{str_cag_config}|{str_cas_config}"
-        return f"{str_init_configs}|{str_proc_configs}|{str_ag_config}|{self.max_searchplan_steps}|{self.answer_something}"
+        str_answgen_configs = f"{self.relinfo_found_behaviour}|{self.planlimit_exceeded_behaviour}"
+        return f"{str_init_configs}|{str_proc_configs}|{str_ag_config}|{self.max_searchplan_steps}|{self.enable_searchplan_steps_check}|{str_answgen_configs}"
 
     @staticmethod
     def from_dict(dict_config: Dict):
@@ -123,6 +130,11 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
             self.answer_generator_config = AnswerGeneratorConfig.from_dict(self.answer_generator_config)
         else:
             self.answer_generator_config.formate_fields()
+
+        if isinstance(self.relinfo_found_behaviour, str):
+            self.relinfo_found_behaviour = RelInfoFoundBehaviour[self.relinfo_found_behaviour]
+        if isinstance(self.planlimit_exceeded_behaviour, str):
+            self.planlimit_exceeded_behaviour = PlanLimitExceededBehaviour[self.planlimit_exceeded_behaviour]
 
 
 class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
@@ -280,8 +292,8 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
 
         return search_step_answer, rinfo, trace
 
-    def answer_generation_trying(self, search_plan: SearchPlanInfo) -> Tuple[Union[str, None], ReturnInfo, CompositeModuleResult]:
-        answer, rinfo, trace = self.stages.answer_generator.perform(search_plan)
+    def answer_generation_trying(self, search_plan: SearchPlanInfo, relinfo_found_behaviour: RelInfoFoundBehaviour = RelInfoFoundBehaviour.casual_answer) -> Tuple[Union[str, None], ReturnInfo, CompositeModuleResult]:
+        answer, rinfo, trace = self.stages.answer_generator.perform(search_plan, relinfo_found_behaviour)
         if rinfo.status == ReturnStatus.success:
             self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
             self.log.debug("RESULT: %s", answer, verbose=self.verbose, log_level=self.log_level)
@@ -293,14 +305,24 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
     @accumulate_stage_info
     def forced_answer_generation(self, search_plan: SearchPlanInfo) -> Tuple[Union[str, None], ReturnInfo, CompositeModuleDetailedResult, bool]:
         answer, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
-        if self.config.answer_something:
-            self.log.debug("Пытаемся сгенерировать ответа на основе имеющейся информации...", verbose=self.verbose, log_level=self.log_level)
-            answer, rinfo.status, trace = self.stages.answer_generator.tasks_solvers.answer_gen_solver.solve(
+        defined_behaviour = self.config.planlimit_exceeded_behaviour
+        if defined_behaviour == PlanLimitExceededBehaviour.strict_answer:
+            self.log.debug("Генерируем строгий ответ (с возможностью генерации <|NotEnoughtInfo|> тега) на основе имеющейся информации...", verbose=self.verbose, log_level=self.log_level)
+            answer, rinfo.status, trace = self.stages.answer_generator.tasks_solvers.strict_answer_gen_solver.solve(
                 lang=self.stages.answer_generator.config.lang, search_plan=search_plan)
-            module_trace.add("answer_gen_solver", ModuleType.task_solver, trace)
-        else:
-            self.log.warning("В рамках заданных ограничений поиска не удалось найти/сгенерировать релевантный ответ.", verbose=self.verbose, log_level=self.log_level)
+            module_trace.add("strictanswer_gen_solver", ModuleType.task_solver, trace)
+
+        elif defined_behaviour == PlanLimitExceededBehaviour.casual_answer:
+            self.log.debug("Генерируем нестрогий ответ (без возможности генерации <|NotEnoughtInfo|> тега) на основе имеющейся информации...", verbose=self.verbose, log_level=self.log_level)
+            answer, rinfo.status, trace = self.stages.answer_generator.tasks_solvers.casual_answer_gen_solver.solve(
+                lang=self.stages.answer_generator.config.lang, search_plan=search_plan)
+            module_trace.add("casualanswer_gen_solver", ModuleType.task_solver, trace)
+
+        elif defined_behaviour == PlanLimitExceededBehaviour.noanswer_stub:
+            self.log.warning("В рамках заданных ограничений поиска возвращаем <|NotEnoughtInfo|> тег в качестве результата работы.", verbose=self.verbose, log_level=self.log_level)
             answer = "<|NotEnoughtInfo|>"
+        else:
+            raise ValueError(f"defined_behaviour: {defined_behaviour}")
 
         if rinfo.status == ReturnStatus.success:
             self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
@@ -369,7 +391,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         self.log.debug("Start iterative search...", verbose=self.verbose, log_level=self.log_level)
         for search_step in range(self.config.max_searchplan_steps):
 
-            self.log.debug("STAGE#1 - SEARCH PLAN INITING/ENHANCING", verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("STAGE#1.1 - SEARCH PLAN INITING/ENHANCING", verbose=self.verbose, log_level=self.log_level)
             search_plan, usp_rinfo, trace = self.update_searchplan(search_step, search_plan)
             module_trace.add("update_searchplan", ModuleType.stage, trace)
             update_rinfo(rinfo, usp_rinfo)
@@ -378,6 +400,32 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
                 if search_step >= len(search_plan.search_steps):
                     self.log.warning("No more search-steps in the plan!", verbose=self.verbose, log_level=self.log_level)
                     break
+
+            self.log.debug("STAGE#1.2 - SEARCH STEPS RELEVANCE CHECK", verbose=self.verbose, log_level=self.log_level)
+            if self.config.enable_searchplan_steps_check:
+                if rinfo.status == ReturnStatus.success:
+                    if search_step > 0:
+                        is_continue_search, rinfo.status, trace = self.stages.searchplan_enhancer.tasks_solvers.searchstop_classify_solver.solve(
+                            lang=self.stages.searchplan_enhancer.config.lang, gen_strategy=self.stages.searchplan_enhancer.config.agent_gen_stategy,
+                            query=search_plan.base_query, search_steps=search_plan.search_steps, steps_answers=search_plan.steps_answers[:search_step])
+                        module_trace.add("searchstop_classify_solver", ModuleType.task_solver, trace)
+                    else:
+                        is_continue_search = True
+
+                    if rinfo.status == ReturnStatus.success:
+                        self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
+                        if not is_continue_search:
+                            self.log.warning("RESUTL: Оставшиеся/непройденные шаги плана не позволят найти запрашиваемую/релевантную информацию для текущего/обрабатываемого вопроса.", verbose=self.verbose, log_level=self.log_level)
+                            break
+                        else:
+                            self.log.debug("RESULT: Оставшиеся/непройденные шаги плана успешно прошли проверку на продолжение поиска.", verbose=self.verbose, log_level=self.log_level)
+                    else:
+                        self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
+                else:
+                    self.log.warning("During previous steps error occurs.", verbose=self.verbose, log_level=self.log_level)
+                    break
+            else:
+                self.log.warning("Current stage is disabled. Continue.", verbose=self.verbose, log_level=self.log_level)
 
             self.log.debug("STAGE#2 - QUERIES PREPARATION FOR KG TRAVERSAL", verbose=self.verbose, log_level=self.log_level)
             if rinfo.status == ReturnStatus.success:
@@ -403,7 +451,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
 
             self.log.debug("STAGE#4 - ANSWER-GENERATION TRYING", verbose=self.verbose, log_level=self.log_level)
             if rinfo.status == ReturnStatus.success:
-                answer, agt_rinfo, trace = self.answer_generation_trying(search_plan)
+                answer, agt_rinfo, trace = self.answer_generation_trying(search_plan, self.config.relinfo_found_behaviour)
                 module_trace.add("answer_generation_trying", ModuleType.stage, trace)
                 update_rinfo(rinfo, agt_rinfo)
 
