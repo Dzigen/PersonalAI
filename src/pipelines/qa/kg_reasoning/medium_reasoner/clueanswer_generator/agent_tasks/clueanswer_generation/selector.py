@@ -6,6 +6,7 @@ from .v2 import CAGEN_SUITE_V2
 from .v3 import CAGEN_SUITE_V3
 from .v4 import CAGEN_SUITE_V4
 from .v5 import CAGEN_SUITE_V5
+from .v6 import CAGEN_SUITE_V6
 
 CAGEN_LOG_PATH = "log/qa/kg_reasoner/medium/clueansw_generation/agent_tasks/canswer_generator"
 
@@ -14,7 +15,8 @@ AVAILABLE_CAGEN_TCONFIGS = {
     'v2': CAGEN_SUITE_V2,
     'v3': CAGEN_SUITE_V3,
     'v4': CAGEN_SUITE_V4,
-    'v5': CAGEN_SUITE_V5
+    'v5': CAGEN_SUITE_V5,
+    'v6': CAGEN_SUITE_V6
 }
 
 
@@ -24,7 +26,7 @@ class AgentClueAnswerGenTaskConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_CAGEN_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v5',
+    def select(base_config_version: str = 'v6',
                cache_table_name: str = "medreasn_cagen_agent_task_cache",
                inferencestat_table_name: str = "medreasn_cagen_agent_task_stat",
                verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:
