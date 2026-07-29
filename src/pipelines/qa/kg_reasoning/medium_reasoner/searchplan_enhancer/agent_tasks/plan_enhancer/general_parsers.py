@@ -9,7 +9,7 @@ def planenh_custom_formate(query: str, search_steps: List[str], steps_answers: L
         [f"Search Query: {cs_step}\nFinded information:\n{answ_step}" for cs_step, answ_step in zip(search_steps, steps_answers)])
     next_squeries = search_steps[len(steps_answers):]
     next_squeries = '\n'.join(list(map(lambda pair: f'{pair[0]}. {pair[1]}', enumerate(next_squeries)))) if len(
-        next_squeries) else "<|NoNextSearchSteps|>"
+        next_squeries) else "<|NoSearchSteps|>"
 
     return {'query': query, 'complited_squeries': complited_squeries, 'next_squeries': next_squeries}
 
