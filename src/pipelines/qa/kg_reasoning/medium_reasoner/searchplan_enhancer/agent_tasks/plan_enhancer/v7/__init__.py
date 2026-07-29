@@ -1,1 +1,1 @@
-from .suite import PLANENH_SUITE_V6
+from .suite import PLANENH_SUITE_V7
