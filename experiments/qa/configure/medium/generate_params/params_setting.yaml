@@ -32,21 +32,21 @@ query_preprocessor: # TO CHANGE
   denoising_config: # CAN BE null
     - null
     # - agent_tasks_config:
-    #    swremoval: 'v3'
-    #    grammarcheck: 'v3'
+    #    swremoval: 'v4'
+    #    grammarcheck: 'v4'
 
   enhancing_config: # CAN BE null
     - null
     # - agent_tasks_config:
-    #     qexpan: 'v3'
-    #     termscheck: 'v4'
-    #     lingcheck: 'v2'
+    #     qexpan: 'v4'
+    #     termscheck: 'v5'
+    #     lingcheck: 'v3'
 
   decomposition_config: # CAN BE null
     - null
     # - agent_tasks_config:
-    #     classify: 'v3'
-    #     decompose: 'v3'
+    #     classify: 'v4'
+    #     decompose: 'v4'
 
 # STAGE # 2
 kg_reasoner: # TO CHANGE
@@ -58,21 +58,20 @@ kg_reasoner: # TO CHANGE
       - 6
       # - 8
       # - 10
-    enable_searchplan_steps_check: True
-    relinfo_found_behaviour: 'casual_answer'
+    enable_searchplan_steps_check: False
     planlimit_exceeded_behaviour: 'strict_answer'
 
     searchplan_enhancer_config:
       plan_enhancment: True
       agent_tasks_config:
-        plan_initing: 'v3'
-        enhance_classifier: 'v3'
-        plan_enhancing: 'v3'
-        searchstop_classifier: 'v2'
+        plan_initing: 'v4'
+        enhance_classifier: 'v5'
+        plan_enhancing: 'v5'
+        searchstop_classifier: 'v4'
 
     entities_extractor_config:
       agent_tasks_config:
-        entities_extraction: 'v1'
+        entities_extraction: 'v2'
 
     e2n_matcher_config:
       - max_n: 2
@@ -99,7 +98,7 @@ kg_reasoner: # TO CHANGE
       return_only_unique_cqueries: False
       use_basequery_as_cqueries: False
       agent_tasks_config:
-        cquerie_generator: 'v4'
+        cquerie_generator: 'v5'
 
     knowledge_retriever_config:
       # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
@@ -151,7 +150,7 @@ kg_reasoner: # TO CHANGE
                   threshold: 0.5
                   fetch_n: 25
             max_depth: 3
-            max_paths: 10
+            max_paths: 18
             same_path_intersection_by_node: False
             diff_paths_intersection_by_node: False
             diff_paths_intersection_by_rel: False
@@ -160,13 +159,13 @@ kg_reasoner: # TO CHANGE
           
           retriever2_name: 'naive_retriever'
           retriever2_config:
-            max_k: 25
+            max_k: 50
             reranker_driver_config:
               name: single_step
               strategy_config:
                 vdb_name: dense_triplets
                 threshold: 0.5
-                fetch_n: 25
+                fetch_n: 50
 
           accepted_node_types:
             - 'object'
@@ -281,7 +280,7 @@ kg_reasoner: # TO CHANGE
         #- 'naive'
 
       filter_config: # CAN BE null
-        - max_k: 25
+        - max_k: 50
           reranker_driver_config:
             name: 'ensemble_fusion' # DONT CHANGE
             strategy_config:
@@ -344,21 +343,22 @@ kg_reasoner: # TO CHANGE
 
     clueanswer_generator_config:
       agent_tasks_config:
-        cagen: 'v4'
+        cagen: 'v6'
 
     clueanswers_summarizer_config:
       agent_tasks_config:
-        canswers_summarisation: 'v4'
+        canswers_summarisation: 'v5'
 
     answer_generator_config:
+      relinfo_found_behaviour: 'casual_answer'
       agent_tasks_config:
-        answer_classifier: 'v3'
-        strict_answer_generator: 'v3'
-        casual_answer_generator: 'v1'
+        answer_classifier: 'v4'
+        strict_answer_generator: 'v4'
+        casual_answer_generator: 'v2'
 
 # STAGE # 3
 answer_aggregator:
   answers_summ_behaviour: 'strict_answer'
   agent_tasks_config:
-    strict_suba_summarisation: 'v3'
-    casual_suba_summarisation: 'v1'
+    strict_suba_summarisation: 'v4'
+    casual_suba_summarisation: 'v2'

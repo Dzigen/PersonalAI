@@ -282,7 +282,7 @@ CUSTOM_LOAD_FUNCS.update({f'sberdialogues_conv-{i}': sberdialogues_qa_load for i
 
 question_packs = CUSTOM_LOAD_FUNCS[SPECEXP_PARAMS['DATASET_NAME']](QA_DATASET_PATH)
 
-####################################################
+# ####################################################
 print("7. Start inferencing")
 
 for pack_name, questions, _ in question_packs:
