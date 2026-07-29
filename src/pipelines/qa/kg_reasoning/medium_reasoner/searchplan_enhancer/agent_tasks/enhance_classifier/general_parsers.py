@@ -10,7 +10,7 @@ def enhcls_custom_formate(query: str, search_steps: List[str], steps_answers: Li
         [f"Search Query: {cs_step}\nFinded information:\n{answ_step}" for cs_step, answ_step in zip(search_steps, steps_answers)])
     next_squeries = search_steps[len(steps_answers):]
     next_squeries = '\n'.join(list(map(lambda pair: f'{pair[0]}. {pair[1]}', enumerate(next_squeries)))) if len(
-        next_squeries) else "Existing search-plan is complited. Next search-steps need to be planned."
+        next_squeries) else "<|NoNextSearchSteps|>"
 
     return {'query': query, 'complited_squeries': complited_squeries, 'next_squeries': next_squeries}
 
