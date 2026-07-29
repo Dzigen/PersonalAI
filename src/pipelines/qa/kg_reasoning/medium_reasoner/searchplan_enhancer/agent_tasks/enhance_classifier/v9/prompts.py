@@ -10,12 +10,13 @@ Rules:
 2. If "<|NoSearchSteps|>" in [Next search-plan queries at now], then return 'True' as [Answer].
 3. If [Next search-plan queries at now] have queries, which contains undefined/uncertain or relative key words (in squared brackets, for example), that can be clarified by the information from [Complited search-plan queries], then return 'True' as [Answer].
 4. Every individual query of the search plan in [Next search-plan queries at now] must be information-consistent and contains all required knowledge to be executed independently from the other plan queries and without internal intent/request distortion.
-5. First, return a brief justification in the [Chain of thoughts] block. Then return the final answer in the [Answer] block.
-6. The search queries must be independent in the sense that answering one query must not require knowing the contents of the other queries.
-7. If [Next search-plan queries at now] contains query what can not be executed independently from information in [Complited search-plan queries], then return 'True' as [Answer].
-8. If additional search step in plan must be generated to prepare relevant and/or accurate answer on [Question], then return 'True' as [Answer].
-9. Output only the [Chain of thoughts] and [Answer] blocks - do not generate anything else. In the [Answer] block, return only True or False.
-10. Return your response in english.
+5. The search queries must be independent in the sense that answering one query must not require knowing the contents of the other queries.
+6. If [Next search-plan queries at now] contains query what can not be executed independently from information in [Complited search-plan queries], then return 'True' as [Answer].
+7. If additional search step in plan must be generated to prepare relevant and/or accurate answer on [Question], then return 'True' as [Answer].
+8. If none of the rules #2, #3, #4, #5, #6, #7 are met, then return 'False'. In other cases return 'True'.
+9. First, return a brief justification in the [Chain of thoughts] block. Then return the final answer in the [Answer] block.
+10. Output only the [Chain of thoughts] and [Answer] blocks - do not generate anything else. In the [Answer] block, return only True or False.
+11. Return your response in english.
 
 Input format:
 [Question] - the original question.
@@ -124,12 +125,13 @@ RU_ENHCLS_SYSTEM_PROMPT = \
 2. Если "<|NoSearchSteps|>" в [Next search-plan queries at now], то верните 'True' в качестве [Answer].
 3. Если [Next search-plan queries at now] содержат запросы, включающие неопределенные ключевые слова или местоимения (в квадратных кавычка, например), которые можно уточнить с помощью информации из [Complited search-plan queries], то верните 'True' в качестве [Answer].
 4. Каждый отдельный запрос в плане поиска из [Next search-plan queries at now] должен быть информационно-согласованным и содержать все необходимые знания для независимого выполнения от других запросов плана и без искажения внутреннего намерения.
-5. Сначала верните краткое обоснование в блоке [Chain of thoughts]. Затем верните финальный ответ в блоке [Answer].
-6. Поисковые запросы должны быть независимы в том смысле, что для ответа на один запрос необязательно знать остальные запросы.
-7. Ecли [Next search-plan queries at now] содержит запросы, которые не могут быть выполнены независимо от информации из [Complited search-plan queries], то верните 'True' в качестве [Answer].
-8. Если для подготовки релевантного и/или точного ответа на [Question] необходимо добавить в план дополнительные шаги поиска, то верните 'True' в качестве [Answer].
-9. Выводите только блоки [Chain of thoughts] и [Answer] - ничего кроме этого не генерируйте. В блоке [Answer] верните только True или False.
-10. Верни свой ответ на русском языке.
+5. Поисковые запросы должны быть независимы в том смысле, что для ответа на один запрос необязательно знать остальные запросы.
+6. Ecли [Next search-plan queries at now] содержит запросы, которые не могут быть выполнены независимо от информации из [Complited search-plan queries], то верните 'True' в качестве [Answer].
+7. Если для подготовки релевантного и/или точного ответа на [Question] необходимо добавить в план дополнительные шаги поиска, то верните 'True' в качестве [Answer].
+8. Если ни одно из правил №2, №3, №4, №5, №6, №7 не выполняется, верните значение 'False'. В остальных случаях верните значение 'True'.
+9. Сначала верните краткое обоснование в блоке [Chain of thoughts]. Затем верните финальный ответ в блоке [Answer].
+10. Выводите только блоки [Chain of thoughts] и [Answer] - ничего кроме этого не генерируйте. В блоке [Answer] верните только True или False.
+11. Верни свой ответ на русском языке.
 
 Формат ввода:
 [Question] - исходный вопрос.
