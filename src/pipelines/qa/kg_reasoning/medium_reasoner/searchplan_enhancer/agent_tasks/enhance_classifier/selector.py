@@ -4,13 +4,15 @@ from .general_parsers import enhcls_custom_formate, enhcls_custom_postprocess
 from .v1 import ENHCLS_SUITE_V1
 from .v2 import ENHCLS_SUITE_V2
 from .v3 import ENHCLS_SUITE_V3
+from .v4 import ENHCLS_SUITE_V4
 
 ENHCLS_LOG_PATH = "log/qa/kg_reasoner/medium/plan_enhancer/agent_tasks/enhance_classifier"
 
 AVAILABLE_ENHCLS_TCONFIGS = {
     'v1': ENHCLS_SUITE_V1,
     'v2': ENHCLS_SUITE_V2,
-    'v3': ENHCLS_SUITE_V3
+    'v3': ENHCLS_SUITE_V3,
+    'v4': ENHCLS_SUITE_V4
 }
 
 
@@ -20,7 +22,7 @@ class AgentEnhanceClassifierTaskConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_ENHCLS_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v3',
+    def select(base_config_version: str = 'v4',
                cache_table_name: str = "medreasn_enhcls_agent_task_cache",
                inferencestat_table_name: str = "medreasn_enhcls_agent_task_stat",
                verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:

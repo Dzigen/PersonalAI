@@ -292,8 +292,8 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
 
         return search_step_answer, rinfo, trace
 
-    def answer_generation_trying(self, search_plan: SearchPlanInfo, relinfo_found_behaviour: RelInfoFoundBehaviour = RelInfoFoundBehaviour.casual_answer) -> Tuple[Union[str, None], ReturnInfo, CompositeModuleResult]:
-        answer, rinfo, trace = self.stages.answer_generator.perform(search_plan, relinfo_found_behaviour)
+    def answer_generation_trying(self, search_plan: SearchPlanInfo) -> Tuple[Union[str, None], ReturnInfo, CompositeModuleResult]:
+        answer, rinfo, trace = self.stages.answer_generator.perform(search_plan, self.config.relinfo_found_behaviour)
         if rinfo.status == ReturnStatus.success:
             self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
             self.log.debug("RESULT: %s", answer, verbose=self.verbose, log_level=self.log_level)
@@ -451,7 +451,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
 
             self.log.debug("STAGE#4 - ANSWER-GENERATION TRYING", verbose=self.verbose, log_level=self.log_level)
             if rinfo.status == ReturnStatus.success:
-                answer, agt_rinfo, trace = self.answer_generation_trying(search_plan, self.config.relinfo_found_behaviour)
+                answer, agt_rinfo, trace = self.answer_generation_trying(search_plan)
                 module_trace.add("answer_generation_trying", ModuleType.stage, trace)
                 update_rinfo(rinfo, agt_rinfo)
 

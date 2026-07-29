@@ -5,6 +5,7 @@ from .v1 import TCHECK_SUITE_V1
 from .v2 import TCHECK_SUITE_V2
 from .v3 import TCHECK_SUITE_V3
 from .v4 import TCHECK_SUITE_V4
+from .v5 import TCHECK_SUITE_V5
 
 TCHECK_LOG_PATH = "log/qa/query_preprocessing/enhancing/agent_tasks/terms_check"
 
@@ -12,7 +13,8 @@ AVAILABLE_TCHECK_TCONFIGS = {
     'v1': TCHECK_SUITE_V1,
     'v2': TCHECK_SUITE_V2,
     'v3': TCHECK_SUITE_V3,
-    'v4': TCHECK_SUITE_V4
+    'v4': TCHECK_SUITE_V4,
+    'v5': TCHECK_SUITE_V5
 }
 
 
@@ -22,7 +24,7 @@ class AgentQueryTermsCheckConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_TCHECK_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v4',
+    def select(base_config_version: str = 'v5',
                cache_table_name: str = "qp_tcheck_agent_task_cache",
                inferencestat_table_name: str = "qp_tcheck_agent_task_stat",
                verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:

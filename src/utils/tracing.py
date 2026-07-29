@@ -28,7 +28,13 @@ class ModuleResult:
 
 @dataclass
 class SimpleModuleResult(ModuleResult):
-    pass
+    def to_json(self):
+        # TODO
+        raise NotImplementedError
+
+    def save(self, path):
+        # TODO
+        raise NotImplementedError
 
 
 @dataclass
@@ -55,6 +61,14 @@ class BaseCompositeModuleDetailedResult(ABC):
 class CompositeModuleResult:
     summary: CompositeModuleSummaryResult
     detailed_result: BaseCompositeModuleDetailedResult
+
+    def to_json(self):
+        # TODO
+        raise NotImplementedError
+
+    def save(self, path):
+        # TODO
+        raise NotImplementedError
 
 
 @dataclass

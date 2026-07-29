@@ -18,19 +18,19 @@ class MediumPlanEnhancerTaskSolvers(BaseTaskSolvers):
 @dataclass
 class SearchPlanEnhancerAgentTasksConfig(BaseAgentTasksConfig):
     """
-    :param plan_initing: Конфигурация атомарной задачи для LLM-агента по генерации базового/стартового плана поиска. Значение по умолчанию 'v3'.
+    :param plan_initing: Конфигурация атомарной задачи для LLM-агента по генерации базового/стартового плана поиска. Значение по умолчанию 'v4'.
     :type plan_initing: AgentTaskSolverConfig, optional
-    :param enhance_classifier: Конфигурация атомарной задачи для LLM-агента по определению необходимости (бинарная классификация) модификации существующего плана поиска. Значение по умолчанию 'v3'.
+    :param enhance_classifier: Конфигурация атомарной задачи для LLM-агента по определению необходимости (бинарная классификация) модификации существующего плана поиска. Значение по умолчанию 'v4'.
     :type enhance_classifier: AgentTaskSolverConfig, optional
-    :param plan_enhancing: Конфигурация атомарной задачи для LLM-агента по подификации/перегенерации не пройденных шагов поиска в рамках существующего плана. Значение по умолчанию 'v3'.
+    :param plan_enhancing: Конфигурация атомарной задачи для LLM-агента по подификации/перегенерации не пройденных шагов поиска в рамках существующего плана. Значение по умолчанию 'v4'.
     :type plan_enhancing: AgentTaskSolverConfig, optional
-    :param searchstop_classifier: ... . Значение по умолчанию 'v2'.
+    :param searchstop_classifier: ... . Значение по умолчанию 'v3'.
     :type searchstop_classifier: AgentTaskSolverConfig, optional
     """
-    plan_initing: Union[AgentTaskSolverConfig, str] = 'v3'
-    enhance_classifier: Union[AgentTaskSolverConfig, str] = 'v3'
-    plan_enhancing: Union[AgentTaskSolverConfig, str] = 'v3'
-    searchstop_classifier: Union[AgentTaskSolverConfig, str] = 'v2'
+    plan_initing: Union[AgentTaskSolverConfig, str] = 'v4'
+    enhance_classifier: Union[AgentTaskSolverConfig, str] = 'v4'
+    plan_enhancing: Union[AgentTaskSolverConfig, str] = 'v4'
+    searchstop_classifier: Union[AgentTaskSolverConfig, str] = 'v3'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: SPENH_AGENTASKS_SELECTORS_MAPPING)
 

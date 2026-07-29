@@ -4,13 +4,15 @@ from .general_parsers import planinit_custom_formate, planinit_custom_postproces
 from .v1 import PLANINIT_SUITE_V1
 from .v2 import PLANINIT_SUITE_V2
 from .v3 import PLANINIT_SUITE_V3
+from .v4 import PLANINIT_SUITE_V4
 
 PLANINIT_LOG_PATH = "log/qa/kg_reasoner/medium/plan_enhancer/agent_tasks/plan_initialisation"
 
 AVAILABLE_PLANINIT_TCONFIGS = {
     'v1': PLANINIT_SUITE_V1,
     'v2': PLANINIT_SUITE_V2,
-    'v3': PLANINIT_SUITE_V3
+    'v3': PLANINIT_SUITE_V3,
+    'v4': PLANINIT_SUITE_V4
 }
 
 
@@ -20,7 +22,7 @@ class AgentPlanInitTaskConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_PLANINIT_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v3',
+    def select(base_config_version: str = 'v4',
                cache_table_name: str = "medreasn_planinit_agent_task_cache",
                inferencestat_table_name: str = "medreasn_planinit_agent_task_stat",
                verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:

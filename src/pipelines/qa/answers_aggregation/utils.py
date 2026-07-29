@@ -24,13 +24,13 @@ class AnswerAggregatorTaskSolvers(BaseTaskSolvers):
 @dataclass
 class AnswersAggregatorAgentTasksConfig(BaseAgentTasksConfig):
     """
-    :param strict_suba_summarisation: Конфигурация атомарной задачи для LLM-агента по суммаризации/объединению независимых ответов на под-вопросы в один финальный ответ (c возможностью генерации <|NotEnoughtInfo|> тега) на исходный user-вопрос. Значение по умолчанию 'v2'.
+    :param strict_suba_summarisation: Конфигурация атомарной задачи для LLM-агента по суммаризации/объединению независимых ответов на под-вопросы в один финальный ответ (c возможностью генерации <|NotEnoughtInfo|> тега) на исходный user-вопрос. Значение по умолчанию 'v4'.
     :type strict_suba_summarisation: Union[AgentTaskSolverConfig, str], optional
-    :param casual_suba_summarisation: Конфигурация атомарной задачи для LLM-агента по суммаризации/объединению независимых ответов на под-вопросы в один финальный ответ (без возможности генерации <|NotEnoughtInfo|> тега) на исходный user-вопрос. Значение по умолчанию 'v1'.
+    :param casual_suba_summarisation: Конфигурация атомарной задачи для LLM-агента по суммаризации/объединению независимых ответов на под-вопросы в один финальный ответ (без возможности генерации <|NotEnoughtInfo|> тега) на исходный user-вопрос. Значение по умолчанию 'v2'.
     :type casual_suba_summarisation: Union[AgentTaskSolverConfig, str], optional
     """
-    strict_suba_summarisation: Union[AgentTaskSolverConfig, str] = 'v3'
-    casual_suba_summarisation: Union[AgentTaskSolverConfig, str] = 'v1'
+    strict_suba_summarisation: Union[AgentTaskSolverConfig, str] = 'v4'
+    casual_suba_summarisation: Union[AgentTaskSolverConfig, str] = 'v2'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: ANSWAGGR_AGENTASKS_SELECTORS_MAPPING)
 

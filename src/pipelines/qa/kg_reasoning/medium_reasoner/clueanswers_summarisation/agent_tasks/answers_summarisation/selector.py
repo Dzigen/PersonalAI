@@ -5,6 +5,7 @@ from .v1 import CASUMM_SUITE_V1
 from .v2 import CASUMM_SUITE_V2
 from .v3 import CASUMM_SUITE_V3
 from .v4 import CASUMM_SUITE_V4
+from .v5 import CASUMM_SUITE_V5
 
 CASUMM_LOG_PATH = "log/qa/kg_reasoner/medium/clueanswers_summarisation/agent_tasks/answers_summarisation"
 
@@ -12,7 +13,8 @@ AVAILABLE_CASUMM_TCONFIGS = {
     'v1': CASUMM_SUITE_V1,
     'v2': CASUMM_SUITE_V2,
     'v3': CASUMM_SUITE_V3,
-    'v4': CASUMM_SUITE_V4
+    'v4': CASUMM_SUITE_V4,
+    'v5': CASUMM_SUITE_V5
 }
 
 
@@ -22,7 +24,7 @@ class AgentClueAnswersSummTaskConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_CASUMM_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v4',
+    def select(base_config_version: str = 'v5',
                cache_table_name: str = "medreasn_casumm_agent_task_cache",
                inferencestat_table_name: str = "medreasn_casumm_agent_task_stat",
                verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:

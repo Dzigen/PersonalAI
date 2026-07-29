@@ -172,8 +172,7 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
         :return: Кортеж из трёх объектов: (1) агрегированный финальный ответ; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
         :rtype: Tuple[str, ReturnInfo, CompositeModuleResult]
         """
-        aggregated_answer, rinfo, trace = self.stages.answers_aggregator.perform(
-            query_info, subq_info)
+        aggregated_answer, rinfo, trace = self.stages.answers_aggregator.perform(query_info, subq_info)
         self.log.debug("RESULT: %s", aggregated_answer, verbose=self.verbose, log_level=self.log_level)
         if rinfo.status != ReturnStatus.success:
             self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
