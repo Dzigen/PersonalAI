@@ -113,7 +113,7 @@ RU_PLANENH_SYSTEM_PROMPT = \
 7. Если в [Next search-plan queries at now] содержится запрос, который не может быть выполнен независимо от информации в [Complited search-plan queries], то уточните/обновите его.
 8. Если ответ на запрос из [Complited search-plan queries] не дал релевантной информации для [Question], попробуйте разложить этот запрос на простые одношаговые запросы и добавить их в [Enhanced next search-plan queries].
 9. Если для подготовки релевантного и/или точного ответа на [Question] необходимо выполнить дополнительные шаги поиска, то сгенерируйте их и добавьте в [Enhanced next search-plan queries].
-10. Если "Existing search-plan is complited. Next search-steps need to be planned." в [Next search-plan queries at now], то сгенерируйте новые шаги поиска, которые необходимо выполнить для получения информации для генерации точного ответа на заданный [Question], и добавьте их в [Enhanced next search-plan queries].
+10. Если <|NoNextSearchSteps|> в [Next search-plan queries at now], то сгенерируйте новые шаги поиска, которые необходимо выполнить для получения информации для генерации точного ответа на заданный [Question], и добавьте их в [Enhanced next search-plan queries].
 11. Сохраняйте точные числа, единицы измерения и даты.
 12. Верни свой ответ на русском языке.
 
