@@ -12,8 +12,9 @@ Rules:
 4. First, return a brief justification in the [Chain of thoughts] block. Then return the final answer in the [Answer] block.
 5. The search queries must be independent in the sense that answering one query must not require knowing the contents of the other queries.
 6. If [Next search-plan queries at now] contains query what can not be executed independently from information in [Complited search-plan queries], then return 'True' as [Answer].
-7. Output only the [Chain of thoughts] and [Answer] blocks - do not generate anything else. In the [Answer] block, return only True or False.
-8. Return your response in english.
+7. If additional search step in plan must be generated to prepare relevant and/or accurate answer on [Question], then return 'True' as [Answer].
+8. Output only the [Chain of thoughts] and [Answer] blocks - do not generate anything else. In the [Answer] block, return only True or False.
+9. Return your response in english.
 
 Input format:
 [Question] - the original question.
@@ -112,8 +113,9 @@ RU_ENHCLS_SYSTEM_PROMPT = \
 4. Сначала верните краткое обоснование в блоке [Chain of thoughts]. Затем верните финальный ответ в блоке [Answer].
 5. Поисковые запросы должны быть независимы в том смысле, что для ответа на один запрос необязательно знать остальные запросы.
 6. Ecли [Next search-plan queries at now] содержит запросы, которые не могут быть выполнены независимо от информации из [Complited search-plan queries], то верните 'True' в качестве [Answer].
-7. Выводите только блоки [Chain of thoughts] и [Answer] - ничего кроме этого не генерируйте. В блоке [Answer] верните только True или False.
-8. Верни свой ответ на русском языке.
+7. Если для подготовки релевантного и/или точного ответа на [Question] необходимо добавить в план дополнительные шаги поиска, верните 'True' в качестве [Answer].
+8. Выводите только блоки [Chain of thoughts] и [Answer] - ничего кроме этого не генерируйте. В блоке [Answer] верните только True или False.
+9. Верни свой ответ на русском языке.
 
 Формат ввода:
 [Question] - исходный вопрос.

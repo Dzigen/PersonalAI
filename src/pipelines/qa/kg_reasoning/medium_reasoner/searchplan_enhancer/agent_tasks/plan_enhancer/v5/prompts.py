@@ -12,9 +12,10 @@ Rules:
 5. Do not use any external knowledge. Rely only on the provided information.
 6. If [Next search-plan queries at now] have queries, which contains undefined/uncertain or relative key words (in squared brackets, for example), that can be clarified by the information from [Complited search-plan queries], then enhance/update/clarify them.
 7. If [Next search-plan queries at now] contains query, which can not be executed independently from information in [Complited search-plan queries], then clarify/update it.
-8. If answer for query from [Complited search-plan queries] did not give relevant information for [Question], then try to decompose that query on simple, single-hop ones and add to [Enhanced next search-plan queries].
-9. Preserve exact numbers, units of measurement, and dates.
-10. Return your response in english.
+8. If answer for query from [Complited search-plan queries] did not give relevant information for [Question], then try to decompose that query on simple, single-hop ones and add them to [Enhanced next search-plan queries].
+9. If additional search step in plan must be generated to prepare relevant and/or accurate answer on [Question], then generate them and add them to [Enhanced next search-plan queries].
+10. Preserve exact numbers, units of measurement, and dates.
+11. Return your response in english.
 
 Input format:
 [Question] - the original question.
@@ -97,10 +98,10 @@ RU_PLANENH_SYSTEM_PROMPT = \
 5. Не используйте внешние знания. Опирайтесь только на предоставленную информацию.
 6. Если [Next search-plan queries at now] содержат запросы, включающие неопределенные (в квадратных скобках, например) ключевые слова или местоимения, которые можно уточнить с помощью информации из [Complited search-plan queries], то улучшите/переформулируйте их.
 7. Если в [Next search-plan queries at now] содержится запрос, который не может быть выполнен независимо от информации в [Complited search-plan queries], то уточните/обновите его.
-
 8. Если ответ на запрос из [Complited search-plan queries] не дал релевантной информации для [Question], попробуйте разложить этот запрос на простые одношаговые запросы и добавить их в [Enhanced next search-plan queries].
-9. Сохраняйте точные числа, единицы измерения и даты.
-10. Верни свой ответ на русском языке.
+9. Если для подготовки релевантного и/или точного ответа на [Question] необходимо выполнить дополнительные шаги поиска, то сгенерируйте их и добавьте в [Enhanced next search-plan queries].
+10. Сохраняйте точные числа, единицы измерения и даты.
+11. Верни свой ответ на русском языке.
 
 Формат ввода:
 [Question] - исходный вопрос.
