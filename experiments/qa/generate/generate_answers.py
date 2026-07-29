@@ -109,7 +109,7 @@ qa_pipeline = QAPipeline(kg_model, qa_config, kvdriver_config, llmstat_config)
 
 START_SAMPLE_IDX = 0
 
-# qa_pipeline.clear_agent_tgen_stat() # !!! PAY ATTENTION !!!
+#qa_pipeline.clear_agent_tgen_stat() # !!! PAY ATTENTION !!!
 # qa_pipeline.clear_kv_caches( # !!! PAY ATTENTION !!!
 #      clear_traversal_cache = True,
 #      clear_retrieval_cache = True
@@ -305,7 +305,7 @@ for pack_name, questions, _ in question_packs:
         # kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.qa_pipeline].close_connection()
         # kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.qa_pipeline].open_connection()
 
-        process.set_postfix_str(f"pack: {pack_name}, status: {info.status}, elapsed_time (min): {round(int(e_time-s_time)/60,2)}, question: {questions[i]}")
+        process.set_postfix_str(f"pack: {pack_name}, status: {info.status}, elapsed_time (min): {round(int(e_time-s_time)/60,2)}, question: {questions[i]}, answer: {answer}")
         process.set_postfix_str("")
 
         answer_dump_file = f"{pack_tmp_answers_dir}/answer_{i}"
