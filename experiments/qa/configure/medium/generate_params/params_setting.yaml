@@ -65,8 +65,8 @@ kg_reasoner: # TO CHANGE
       plan_enhancment: True
       agent_tasks_config:
         plan_initing: 'v4'
-        enhance_classifier: 'v7'
-        plan_enhancing: 'v7'
+        enhance_classifier: 'v8'
+        plan_enhancing: 'v8'
         searchstop_classifier: 'v4'
 
     entities_extractor_config:
