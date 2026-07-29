@@ -86,11 +86,9 @@ True
 What is the award that the director of film Wearing Velvet Slippers Under A Golden Umbrella won?
 [Complited search-plan queries #6]
 Search Query: Who directed the film "Wearing Velvet Slippers Under A Golden Umbrella"?
-Finded information:
-Maung Wunna directed the film "Wearing Velvet Slippers Under A Golden Umbrella".
+Finded information: Maung Wunna directed the film "Wearing Velvet Slippers Under A Golden Umbrella".
 Search Query: What awards has Maung Wunna won?
-Finded information:
-Maung Wunna has won two Myanmar Motion Picture Academy Awards.
+Finded information: Maung Wunna has won two Myanmar Motion Picture Academy Awards.
 [Next search-plan queries at now #6]
 <|NoNextSearchSteps|>
 [Answer #6]
