@@ -47,8 +47,6 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
     :type max_searchplan_steps: int, optional
     :param enable_searchplan_steps_check: ... . Значение по умолчанию True.
     :type enable_searchplan_steps_check: bool, optional
-    :param relinfo_found_behaviour: ... . Значение по умолчанию RelInfoFoundBehaviour.casual_answer
-    :type relinfo_found_behaviour: RelInfoFoundBehaviour
     :param planlimit_exceeded_behaviour: ... . Значение по умолчанию PlanLimitExceededBehaviour.strict_answer
     :type planlimit_exceeded_behaviour: PlanLimitExceededBehaviour
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы MediumKGReasoner-класса. Значение по умолчанию 'qa_mediumreasoner_cache'.
@@ -67,7 +65,6 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
 
     max_searchplan_steps: int = 6
     enable_searchplan_steps_check: bool = True
-    relinfo_found_behaviour: RelInfoFoundBehaviour = RelInfoFoundBehaviour.casual_answer
     planlimit_exceeded_behaviour: PlanLimitExceededBehaviour = PlanLimitExceededBehaviour.strict_answer
 
     cache_table_name: str = 'qa_mediumreasoner_cache'
@@ -85,8 +82,7 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
 
         str_init_configs = f"{str_spe_config}|{str_ee_config}|{str_e2nm_config}"
         str_proc_configs = f"{str_cqg_config}|{str_kr_config}|{str_cag_config}|{str_cas_config}"
-        str_answgen_configs = f"{self.relinfo_found_behaviour}|{self.planlimit_exceeded_behaviour}"
-        return f"{str_init_configs}|{str_proc_configs}|{str_ag_config}|{self.max_searchplan_steps}|{self.enable_searchplan_steps_check}|{str_answgen_configs}"
+        return f"{str_init_configs}|{str_proc_configs}|{str_ag_config}|{self.max_searchplan_steps}|{self.enable_searchplan_steps_check}|{self.planlimit_exceeded_behaviour}"
 
     @staticmethod
     def from_dict(dict_config: Dict):
@@ -131,8 +127,6 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
         else:
             self.answer_generator_config.formate_fields()
 
-        if isinstance(self.relinfo_found_behaviour, str):
-            self.relinfo_found_behaviour = RelInfoFoundBehaviour[self.relinfo_found_behaviour]
         if isinstance(self.planlimit_exceeded_behaviour, str):
             self.planlimit_exceeded_behaviour = PlanLimitExceededBehaviour[self.planlimit_exceeded_behaviour]
 
@@ -293,7 +287,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
         return search_step_answer, rinfo, trace
 
     def answer_generation_trying(self, search_plan: SearchPlanInfo) -> Tuple[Union[str, None], ReturnInfo, CompositeModuleResult]:
-        answer, rinfo, trace = self.stages.answer_generator.perform(search_plan, self.config.relinfo_found_behaviour)
+        answer, rinfo, trace = self.stages.answer_generator.perform(search_plan)
         if rinfo.status == ReturnStatus.success:
             self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
             self.log.debug("RESULT: %s", answer, verbose=self.verbose, log_level=self.log_level)
