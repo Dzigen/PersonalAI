@@ -6,6 +6,7 @@ from .v2 import PLANENH_SUITE_V2
 from .v3 import PLANENH_SUITE_V3
 from .v4 import PLANENH_SUITE_V4
 from .v5 import PLANENH_SUITE_V5
+from .v6 import PLANENH_SUITE_V6
 
 PLANENH_LOG_PATH = "log/qa/kg_reasoner/medium/plan_enhancer/agent_tasks/plan_enhancing"
 
@@ -14,7 +15,8 @@ AVAILABLE_PLANENH_TCONFIGS = {
     'v2': PLANENH_SUITE_V2,
     'v3': PLANENH_SUITE_V3,
     'v4': PLANENH_SUITE_V4,
-    'v5': PLANENH_SUITE_V5
+    'v5': PLANENH_SUITE_V5,
+    'v6': PLANENH_SUITE_V6
 }
 
 
@@ -24,7 +26,7 @@ class AgentPlanEnhancingTaskConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_PLANENH_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v5',
+    def select(base_config_version: str = 'v6',
                cache_table_name: str = "medreasn_planenh_agent_task_cache",
                inferencestat_table_name: str = 'medreasn_planenh_agent_task_stat',
                verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:
