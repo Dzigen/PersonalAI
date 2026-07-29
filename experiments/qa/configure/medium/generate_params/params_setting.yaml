@@ -55,8 +55,8 @@ kg_reasoner: # TO CHANGE
     max_searchplan_steps:
       # - 2
       # - 4
-      - 6
-      # - 8
+      #- 6
+      - 8
       # - 10
     enable_searchplan_steps_check: False
     planlimit_exceeded_behaviour: 'strict_answer'
@@ -65,8 +65,8 @@ kg_reasoner: # TO CHANGE
       plan_enhancment: True
       agent_tasks_config:
         plan_initing: 'v4'
-        enhance_classifier: 'v5'
-        plan_enhancing: 'v5'
+        enhance_classifier: 'v7'
+        plan_enhancing: 'v7'
         searchstop_classifier: 'v4'
 
     entities_extractor_config:
