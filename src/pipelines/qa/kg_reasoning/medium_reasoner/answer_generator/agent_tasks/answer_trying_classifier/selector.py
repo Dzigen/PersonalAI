@@ -4,13 +4,15 @@ from .general_parsers import answcls_custom_formate, answcls_custom_postprocess
 from .v1 import ANSWCLS_SUITE_V1
 from .v2 import ANSWCLS_SUITE_V2
 from .v3 import ANSWCLS_SUITE_V3
+from .v4 import ANSWCLS_SUITE_V4
 
 ANSWCLS_LOG_PATH = "log/qa/kg_reasoner/medium/answer_generation//agent_tasks/answer_classifier"
 
 AVAILABLE_ANSWCLS_TCONFIGS = {
     'v1': ANSWCLS_SUITE_V1,
     'v2': ANSWCLS_SUITE_V2,
-    'v3': ANSWCLS_SUITE_V3
+    'v3': ANSWCLS_SUITE_V3,
+    'v4': ANSWCLS_SUITE_V4
 }
 
 
@@ -20,7 +22,7 @@ class AgentAnswerClassifierTaskConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_ANSWCLS_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v3',
+    def select(base_config_version: str = 'v4',
                cache_table_name: str = "medreasn_answcls_agent_task_cache",
                inferencestat_table_name: str = "medreasn_answcls_agent_task_stat",
                verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:

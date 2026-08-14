@@ -5,6 +5,7 @@ from .v1 import CQGEN_SUITE_V1
 from .v2 import CQGEN_SUITE_V2
 from .v3 import CQGEN_SUITE_V3
 from .v4 import CQGEN_SUITE_V4
+from .v5 import CQGEN_SUITE_V5
 
 CQGEN_LOG_PATH = "log/qa/kg_reasoner/medium/cluequeries_generator/agent_tasks/cquery_generator"
 
@@ -12,7 +13,8 @@ AVAILABLE_CQGEN_TCONFIGS = {
     'v1': CQGEN_SUITE_V1,
     'v2': CQGEN_SUITE_V2,
     'v3': CQGEN_SUITE_V3,
-    'v4': CQGEN_SUITE_V4
+    'v4': CQGEN_SUITE_V4,
+    'v5': CQGEN_SUITE_V5
 }
 
 
@@ -22,7 +24,7 @@ class AgentCQueryGenTaskConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_CQGEN_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v4',
+    def select(base_config_version: str = 'v5',
                cache_table_name: str = "medreasn_cqgen_agent_task_cache",
                inferencestat_table_name: str = "medreasn_cqgen_agent_task_stat",
                verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:

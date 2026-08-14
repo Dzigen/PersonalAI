@@ -120,6 +120,7 @@ class PersonalAI:
         module_trace = CompositeModuleDetailedResult()
 
         answer, rinfo, trace = self.qa_pipeline.answer(question)
+
         module_trace.add('answer', ModuleType.stage, trace)
         self.log.info("RESULT:", verbose=self.verbose, log_level=self.log_level)
         self.log.info("* Answer: %s .", answer, verbose=self.verbose, log_level=self.log_level)

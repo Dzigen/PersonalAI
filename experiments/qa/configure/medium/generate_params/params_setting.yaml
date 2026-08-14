@@ -14,7 +14,7 @@ KNOWLEDGE_GRAPH_NAME: # TO CHANGE
   - ['llama318b_080226_v2prompts', 'qwen257b_080226_v2prompts', 'granite338b_080226_v2prompts', 'gemma29b_080226_v2prompts', 'gemma312b_060326_v2prompts']
 
 
-PERSONALAI_VERSION: 'v2.3.5' # TO CHANGE
+PERSONALAI_VERSION: 'v2.3.7' # TO CHANGE
 
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
@@ -31,46 +31,47 @@ QA_DATASET_HYPERP:
 query_preprocessor: # TO CHANGE
   denoising_config: # CAN BE null
     - null
-    - agent_tasks_config:
-       swremoval: 'v3'
-       grammarcheck: 'v3'
+    # - agent_tasks_config:
+    #    swremoval: 'v4'
+    #    grammarcheck: 'v4'
 
   enhancing_config: # CAN BE null
     - null
-    - agent_tasks_config:
-        qexpan: 'v3'
-        termscheck: 'v3'
-        lingcheck: 'v1'
+    # - agent_tasks_config:
+    #     qexpan: 'v4'
+    #     termscheck: 'v5'
+    #     lingcheck: 'v3'
 
   decomposition_config: # CAN BE null
     - null
-    - agent_tasks_config:
-        classify: 'v3'
-        decompose: 'v3'
+    # - agent_tasks_config:
+    #     classify: 'v4'
+    #     decompose: 'v4'
 
 # STAGE # 2
 kg_reasoner: # TO CHANGE
   reasoner_name: "medium" # DONT CHANGE
   reasoner_config:
     max_searchplan_steps:
-      #- 2
-      #- 4
-      - 6
-      #- 8
-      #- 10
-    answer_something:
-      - True
+      # - 2
+      # - 4
+      #- 6
+      - 8
+      # - 10
+    enable_searchplan_steps_check: False
+    planlimit_exceeded_behaviour: 'strict_answer'
 
     searchplan_enhancer_config:
-      - plan_enhancment: True
-        agent_tasks_config:
-          plan_initing: 'v2'
-          enhance_classifier: 'v2'
-          plan_enhancing: 'v2'
+      plan_enhancment: True
+      agent_tasks_config:
+        plan_initing: 'v4'
+        enhance_classifier: 'v8'
+        plan_enhancing: 'v8'
+        searchstop_classifier: 'v4'
 
     entities_extractor_config:
-      - agent_tasks_config:
-          entities_extraction: 'v1'
+      agent_tasks_config:
+        entities_extraction: 'v2'
 
     e2n_matcher_config:
       - max_n: 2
@@ -89,14 +90,15 @@ kg_reasoner: # TO CHANGE
 
     cluequeries_generator_config:
       max_cqueries_amount: 
-        #- 1
-        #- 2
+        - 1
+        - 2
         - 4
-        #- 6
-        #- 8
+        - 6
+        - 8
+      return_only_unique_cqueries: False
+      use_basequery_as_cqueries: False
       agent_tasks_config:
-        cquerie_generator: 
-          - 'v4'
+        cquerie_generator: 'v5'
 
     knowledge_retriever_config:
       # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
@@ -147,8 +149,8 @@ kg_reasoner: # TO CHANGE
                   vdb_name: dense_triplets
                   threshold: 0.5
                   fetch_n: 25
-            max_depth: 5
-            max_paths: 10
+            max_depth: 3
+            max_paths: 18
             same_path_intersection_by_node: False
             diff_paths_intersection_by_node: False
             diff_paths_intersection_by_rel: False
@@ -341,23 +343,22 @@ kg_reasoner: # TO CHANGE
 
     clueanswer_generator_config:
       agent_tasks_config:
-        cagen:
-          - 'v3'
+        cagen: 'v6'
 
     clueanswers_summarizer_config:
       agent_tasks_config:
-        canswers_summarisation:
-          - 'v3'
+        canswers_summarisation: 'v5'
 
     answer_generator_config:
+      relinfo_found_behaviour: 'casual_answer'
       agent_tasks_config:
-        answer_classifier:
-          - 'v2'
-        answer_generator:
-          - 'v3'
+        answer_classifier: 'v4'
+        strict_answer_generator: 'v4'
+        casual_answer_generator: 'v2'
 
 # STAGE # 3
 answer_aggregator:
+  answers_summ_behaviour: 'strict_answer'
   agent_tasks_config:
-    suba_summarisation:
-      - 'v3'
+    strict_suba_summarisation: 'v4'
+    casual_suba_summarisation: 'v2'

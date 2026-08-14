@@ -4,13 +4,15 @@ from .general_parsers import ssubasumm_custom_formate, ssubasumm_custom_postproc
 from .v1 import SSUBASUMM_SUITE_V1
 from .v2 import SSUBASUMM_SUITE_V2
 from .v3 import SSUBASUMM_SUITE_V3
+from .v4 import SSUBASUMM_SUITE_V4
 
 SSUBASUMM_LOG_PATH = "log/qa/answers_aggregation/agent_tasks/strict_answers_summarisation"
 
 AVAILABLE_SSUBASUMM_TCONFIGS = {
     'v1': SSUBASUMM_SUITE_V1,
     'v2': SSUBASUMM_SUITE_V2,
-    'v3': SSUBASUMM_SUITE_V3
+    'v3': SSUBASUMM_SUITE_V3,
+    'v4': SSUBASUMM_SUITE_V4
 }
 
 
@@ -20,7 +22,7 @@ class AgentStrictSubASummTaskConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_SSUBASUMM_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v3',
+    def select(base_config_version: str = 'v4',
                cache_table_name: str = "aagg_ssubasumm_agent_task_cache",
                inferencestat_table_name: str = "aagg_ssubasumm_agent_task_stat",
                verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:

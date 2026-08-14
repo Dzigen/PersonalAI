@@ -133,7 +133,7 @@ for pack_name in answers_pack_names:
     process = tqdm(answers_info.items())
     for a_idx, a_info in process:
         process.set_postfix_str(f"pack: {pack_name}; idx: {a_idx}, is_genanswer_none - {a_info['gen_answer'] is None}")
-        
+
         if a_info['gen_answer'] is None:
             continue
 
@@ -164,9 +164,9 @@ for pack_name in answers_pack_names:
                 for triplet in answer_generation_input_trace:
                     retrieved_contexts.append(TripletCreator.stringify(triplet)[1])
             else:
-                raise TypeError
+                raise TypeError(f"answer_generation_input_trace: {answer_generation_input_trace}")
         #
-        
+
         scores = dict()
 
         s_time = time()

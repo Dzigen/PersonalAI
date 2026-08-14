@@ -26,16 +26,16 @@ class QueryEnhancerTaskSolvers(BaseTaskSolvers):
 @dataclass
 class QueryEnhancerAgentTasksConfig(BaseAgentTasksConfig):
     """
-    :param qexpan: Конфигурация атомарной задачи для LLM-агента по добавлению более понятных языковых конструкций в запрос. Значение по умолчанию 'v3'.
+    :param qexpan: Конфигурация атомарной задачи для LLM-агента по добавлению более понятных языковых конструкций в запрос. Значение по умолчанию 'v4'.
     :type qexpan: Union[AgentTaskSolverConfig, str], optional
-    :param termscheck: Конфигурация атомарной задачи для LLM-агента по замене слабоопределённых фраз в запросе на конкретные термины. Значение по умолчанию 'v4'.
+    :param termscheck: Конфигурация атомарной задачи для LLM-агента по замене слабоопределённых фраз в запросе на конкретные термины. Значение по умолчанию 'v5'.
     :type termscheck: Union[AgentTaskSolverConfig, str], optional
-    :param lingcheck: Конфигурация атомарной задачи для LLM-агента по перефразированию запроса с соблюдением грамматики и синтаксиса используемого естественного языка. Значение по умолчанию 'v2'.
+    :param lingcheck: Конфигурация атомарной задачи для LLM-агента по перефразированию запроса с соблюдением грамматики и синтаксиса используемого естественного языка. Значение по умолчанию 'v3'.
     :type lingcheck: Union[AgentTaskSolverConfig, str], optional
     """
-    qexpan: Union[AgentTaskSolverConfig, str] = 'v3'
-    termscheck: Union[AgentTaskSolverConfig, str] = 'v4'
-    lingcheck: Union[AgentTaskSolverConfig, str] = 'v2'
+    qexpan: Union[AgentTaskSolverConfig, str] = 'v4'
+    termscheck: Union[AgentTaskSolverConfig, str] = 'v5'
+    lingcheck: Union[AgentTaskSolverConfig, str] = 'v3'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: QUERYENH_AGENTASKS_SELECTORS_MAPPING)
 

@@ -4,13 +4,25 @@ from .general_parsers import enhcls_custom_formate, enhcls_custom_postprocess
 from .v1 import ENHCLS_SUITE_V1
 from .v2 import ENHCLS_SUITE_V2
 from .v3 import ENHCLS_SUITE_V3
+from .v4 import ENHCLS_SUITE_V4
+from .v5 import ENHCLS_SUITE_V5
+from .v6 import ENHCLS_SUITE_V6
+from .v7 import ENHCLS_SUITE_V7
+from .v8 import ENHCLS_SUITE_V8
+from .v9 import ENHCLS_SUITE_V9
 
 ENHCLS_LOG_PATH = "log/qa/kg_reasoner/medium/plan_enhancer/agent_tasks/enhance_classifier"
 
 AVAILABLE_ENHCLS_TCONFIGS = {
     'v1': ENHCLS_SUITE_V1,
     'v2': ENHCLS_SUITE_V2,
-    'v3': ENHCLS_SUITE_V3
+    'v3': ENHCLS_SUITE_V3,
+    'v4': ENHCLS_SUITE_V4,
+    'v5': ENHCLS_SUITE_V5,
+    'v6': ENHCLS_SUITE_V6,
+    'v7': ENHCLS_SUITE_V7,
+    'v8': ENHCLS_SUITE_V8,
+    'v9': ENHCLS_SUITE_V9
 }
 
 
@@ -20,7 +32,7 @@ class AgentEnhanceClassifierTaskConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_ENHCLS_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v3',
+    def select(base_config_version: str = 'v9',
                cache_table_name: str = "medreasn_enhcls_agent_task_cache",
                inferencestat_table_name: str = "medreasn_enhcls_agent_task_stat",
                verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:

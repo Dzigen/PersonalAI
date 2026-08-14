@@ -2,11 +2,13 @@ from ......utils import AgentTaskSolverConfig, BaseAgentTaskConfigSelector
 from ......utils.logger import LogLevel
 from .general_parsers import csubasumm_custom_formate, csubasumm_custom_postprocess
 from .v1 import CSUBASUMM_SUITE_V1
+from .v2 import CSUBASUMM_SUITE_V2
 
 CSUBASUMM_LOG_PATH = "log/qa/answers_aggregation/agent_tasks/casual_answers_summarisation"
 
 AVAILABLE_CSUBASUMM_TCONFIGS = {
-    'v1': CSUBASUMM_SUITE_V1
+    'v1': CSUBASUMM_SUITE_V1,
+    'v2': CSUBASUMM_SUITE_V2
 }
 
 
@@ -16,7 +18,7 @@ class AgentCasualSubASummTaskConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_CSUBASUMM_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v1',
+    def select(base_config_version: str = 'v2',
                cache_table_name: str = "aagg_csubasumm_agent_task_cache",
                inferencestat_table_name: str = "aagg_csubasumm_agent_task_stat",
                verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:

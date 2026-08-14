@@ -2,11 +2,13 @@ from ........utils import AgentTaskSolverConfig, BaseAgentTaskConfigSelector
 from ........utils.logger import LogLevel
 from .general_parsers import canswgen_custom_formate, canswgen_custom_postprocess
 from .v1 import CANSWGEN_SUITE_V1
+from .v2 import CANSWGEN_SUITE_V2
 
 CANSWGEN_LOG_PATH = "log/qa/kg_reasoner/medium/answer_generation/agent_tasks/casual_answer_generator"
 
 AVAILABLE_CANSWGEN_TCONFIGS = {
-    'v1': CANSWGEN_SUITE_V1
+    'v1': CANSWGEN_SUITE_V1,
+    'v2': CANSWGEN_SUITE_V2
 }
 
 
@@ -16,7 +18,7 @@ class AgentCasualAnswerGeneratorTaskConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_CANSWGEN_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v1',
+    def select(base_config_version: str = 'v2',
                cache_table_name: str = "medreasn_canswgen_agent_task_cache",
                inferencestat_table_name: str = "medreasn_canswgen_agent_task_stat",
                verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:

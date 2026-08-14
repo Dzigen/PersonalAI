@@ -23,13 +23,13 @@ class QueryDenoiserTaskSolvers(BaseTaskSolvers):
 @dataclass
 class QueryDenoiserAgentTasksConfig(BaseAgentTasksConfig):
     """
-    :param swremoval: Конфигурация атомарной задачи для LLM-агента по удалению излишней/ненужной информации из запроса. Значение по умолчанию 'v3'.
+    :param swremoval: Конфигурация атомарной задачи для LLM-агента по удалению излишней/ненужной информации из запроса. Значение по умолчанию 'v4'.
     :type swremoval: AgentTaskSolverConfig, optional
-    :param grammarcheck: Конфигурация атомарной задачи для LLM-агента по корректировке/переформулированию запроса в соответствии с грамматикой и синтаксисом используемого естественного языка. Значение по умолчанию 'v3'.
+    :param grammarcheck: Конфигурация атомарной задачи для LLM-агента по корректировке/переформулированию запроса в соответствии с грамматикой и синтаксисом используемого естественного языка. Значение по умолчанию 'v4'.
     :type grammarcheck: AgentTaskSolverConfig, optional
     """
-    swremoval: Union[AgentTaskSolverConfig, str] = 'v3'
-    grammarcheck: Union[AgentTaskSolverConfig, str] = 'v3'
+    swremoval: Union[AgentTaskSolverConfig, str] = 'v4'
+    grammarcheck: Union[AgentTaskSolverConfig, str] = 'v4'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: QUERYDENOIS_AGENTASKS_SELECTORS_MAPPING)
 

@@ -23,13 +23,13 @@ class QueryDecomposerTaskSolvers(BaseTaskSolvers):
 @dataclass
 class QueryDecomposerAgentTasksConfig(BaseAgentTasksConfig):
     """
-    :param classify: Конфигурация атомарной задачи для LLM-агента по классификации наличия независимых запросов (составности/сложности) в user-вопросе. Значение по умолчанию 'v3'.
+    :param classify: Конфигурация атомарной задачи для LLM-агента по классификации наличия независимых запросов (составности/сложности) в user-вопросе. Значение по умолчанию 'v4'.
     :type classify: Union[AgentTaskSolverConfig, str], optional
-    :param decompose: Конфигурация атомарной задачи для LLM-агента по разбиению user-вопроса на независимые/простые под-вопросы. Значение по умолчанию 'v3'.
+    :param decompose: Конфигурация атомарной задачи для LLM-агента по разбиению user-вопроса на независимые/простые под-вопросы. Значение по умолчанию 'v4'.
     :type decompose: Union[AgentTaskSolverConfig, str], optional
     """
-    classify: Union[AgentTaskSolverConfig, str] = 'v3'
-    decompose: Union[AgentTaskSolverConfig, str] = 'v3'
+    classify: Union[AgentTaskSolverConfig, str] = 'v4'
+    decompose: Union[AgentTaskSolverConfig, str] = 'v4'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: QUERYDECOMP_AGENTASKS_SELECTORS_MAPPING)
 

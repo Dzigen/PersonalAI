@@ -4,13 +4,15 @@ from .general_parsers import dc_custom_formate, dc_custom_postprocess
 from .v1 import DC_SUITE_V1
 from .v2 import DC_SUITE_V2
 from .v3 import DC_SUITE_V3
+from .v4 import DC_SUITE_V4
 
 DC_LOG_PATH = "log/qa/query_preprocessing/decomposition/agent_tasks/decompose_classification"
 
 AVAILABLE_DC_TCONFIGS = {
     'v1': DC_SUITE_V1,
     'v2': DC_SUITE_V2,
-    'v3': DC_SUITE_V3
+    'v3': DC_SUITE_V3,
+    'v4': DC_SUITE_V4
 }
 
 
@@ -20,7 +22,7 @@ class AgentDecompClsTaskConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_DC_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v3',
+    def select(base_config_version: str = 'v4',
                cache_table_name: str = "qp_decompcls_agent_task_cache",
                inferencestat_table_name: str = "qp_decompcls_agent_task_stat",
                verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:
