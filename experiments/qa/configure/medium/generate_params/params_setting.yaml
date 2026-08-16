@@ -18,7 +18,7 @@ PERSONALAI_VERSION: 'v2.3.7' # TO CHANGE
 
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
-  max_samples_per_pack: 100
+  max_samples_per_pack: 1000
   lang:
     - 'en'
     - 'en'
@@ -65,8 +65,8 @@ kg_reasoner: # TO CHANGE
       plan_enhancment: True
       agent_tasks_config:
         plan_initing: 'v4'
-        enhance_classifier: 'v8'
-        plan_enhancing: 'v8'
+        enhance_classifier: 'v9'
+        plan_enhancing: 'v9'
         searchstop_classifier: 'v4'
 
     entities_extractor_config:
@@ -75,7 +75,7 @@ kg_reasoner: # TO CHANGE
 
     e2n_matcher_config:
       - max_n: 2
-        discard_other_mnodes_if_exactmatch_found: True
+        discard_other_mnodes_if_exactmatch_found: False
         reranker_driver_config:
           name: 'ensemble_fusion' # DONT CHANGE
           strategy_config:
@@ -90,10 +90,10 @@ kg_reasoner: # TO CHANGE
 
     cluequeries_generator_config:
       max_cqueries_amount: 
-        - 1
-        - 2
-        - 4
-        - 6
+        # - 1
+        # - 2
+        # - 4
+        # - 6
         - 8
       return_only_unique_cqueries: False
       use_basequery_as_cqueries: False
@@ -103,10 +103,10 @@ kg_reasoner: # TO CHANGE
     knowledge_retriever_config:
       # NEED TO SPECIFY RETRIEVER HYPERP-KEY/VALUES BY YOUR OWN
       retriever_method:
-         #- 'mixture'
-         #- 'mixture'
-         #- 'mixture'
          - 'mixture'
+         #- 'mixture'
+         #- 'mixture'
+         #- 'mixture'
          #- 'naive_retriever'
 
       retriever_config:
@@ -118,8 +118,8 @@ kg_reasoner: # TO CHANGE
         #           vdb_name: dense_triplets
         #           threshold: 0.5
         #           fetch_n: 25
-        #     max_depth: 5
-        #     max_paths: 10
+        #     max_depth: 3
+        #     max_paths: 18
         #     same_path_intersection_by_node: False
         #     diff_paths_intersection_by_node: False
         #     diff_paths_intersection_by_rel: False
@@ -181,8 +181,8 @@ kg_reasoner: # TO CHANGE
         #           vdb_name: dense_triplets
         #           threshold: 0.5
         #           fetch_n: 25
-        #     max_depth: 5
-        #     max_paths: 10
+        #     max_depth: 3
+        #     max_paths: 18
         #     same_path_intersection_by_node: False
         #     diff_paths_intersection_by_node: False
         #     diff_paths_intersection_by_rel: False
@@ -244,8 +244,8 @@ kg_reasoner: # TO CHANGE
         #           vdb_name: dense_triplets
         #           threshold: 0.5
         #           fetch_n: 25
-        #     max_depth: 5
-        #     max_paths: 10
+        #     max_depth: 3
+        #     max_paths: 18
         #     same_path_intersection_by_node: False
         #     diff_paths_intersection_by_node: False
         #     diff_paths_intersection_by_rel: False
@@ -256,8 +256,8 @@ kg_reasoner: # TO CHANGE
         #   retriever2_config:
         #     metrics_config:
         #       h_metric_name: 'ip'
-        #     max_depth: 10
-        #     max_passed_nodes: 150
+        #     max_depth: 5
+        #     max_passed_nodes: 25
 
         #   accepted_node_types:
         #     #- 'object'
@@ -275,9 +275,9 @@ kg_reasoner: # TO CHANGE
 
       filter_method: # CAN BE null
         - 'naive'
-        #- 'naive'
-        #- 'naive'
-        #- 'naive'
+        # - 'naive'
+        # - 'naive'
+        # - 'naive'
 
       filter_config: # CAN BE null
         - max_k: 50

@@ -193,9 +193,9 @@ def retry(function):
                 output = function(self, *args, **kwargs)
                 flag = False
             except self.HANDLING_DB_EXCEPTIONS as e:
-                # print(f"Exception occuered {counter} / {self.config.connection_trials}: ", str(e))
+                # print(f"Exception occuered {counter} / {self.config.trials}: ", str(e))
                 counter += 1
-                if counter > self.config.connection_trials:
+                if counter > self.config.trials:
                     raise e
                 else:
                    # print(f"Timeout: {self.config.timeout} sec")
