@@ -138,3 +138,5 @@ experiments/analogues_eval/kg_eval/mine/params_to_run/
 tests/manual/log
 experiments/analogues_eval/qa_eval/results/
 tests/performance_load/logging/log
+
+notebooks/parse_exp_logs/trace_[0-9]*
