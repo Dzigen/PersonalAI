@@ -3,6 +3,7 @@ from copy import deepcopy
 
 from .utils import AbstractCacheUtils
 from .CacheKV import CacheKV
+from ..tracing import CompositeModuleDetailedResult
 from ..errors import ReturnInfo, ReturnStatus
 from ...db_drivers.kv_driver import KeyValueDriverConfig
 
@@ -14,13 +15,16 @@ class CacheUtils(AbstractCacheUtils):
     для кеширования результатов методов.
     """
 
-    def init_cachekv(self, cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None, cache_table_name: Union[None, str] = None) -> Union[None, CacheKV]:
+    def init_cachekv(self, cache_kvdriver_config: Union[KeyValueDriverConfig, None] = None,
+                     cache_table_name: Union[None, str] = None, trace_caching: bool = False) -> Union[None, CacheKV]:
         """Метод предназначен для создания базы данных с целью кеширования требуемых результатов.
 
         :param cache_kvdriver_config: Конфигурация базы данных для хранения кешируемых результатов. Значение по умолчанию None.
         :type cache_kvdriver_config: Union[KeyValueDriverConfig, None]
         :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) результаты. Значение по умолачанию None.
         :type cache_table_name: Union[None,str], optional
+        :param trace_caching: ... . Значение по умолачанию False.
+        :type trace_caching: bool, optional
         :return: Если cache_kvdriver_config равен None, то будет возвращен None, иначе будет возвращен интерфейс взаимодействия с созданным кешем.
         :rtype: Union[None, CacheKV]
         """
@@ -31,6 +35,7 @@ class CacheUtils(AbstractCacheUtils):
             cache_config = deepcopy(cache_kvdriver_config)
             cache_config.db_config.db_info['table'] = cache_table_name
             cachekv = CacheKV(cache_config)
+            self.trace_caching = trace_caching
 
         return cachekv
 
@@ -82,9 +87,23 @@ class CacheUtils(AbstractCacheUtils):
                 if self.cachekv is not None:
                     if is_caching_accepted:
                         self.log.debug("Кешируем полученный результат.", verbose=self.verbose, log_level=self.log_level)
+                        self.log.debug("* Trace Caching: %s.", self.trace_caching, verbose=self.verbose, log_level=self.log_level)
                         self.log.debug("* cache table_name: %s", self.cachekv.kv_conn.config.db_info['table'], verbose=self.verbose, log_level=self.log_level)
-                        self.log.debug(f"* cahce hash_key: %s .", key_hash, verbose=self.verbose, log_level=self.log_level)
-                        self.cachekv.save_value(value=output, key_hash=key_hash)
+                        self.log.debug("* cahce hash_key: %s .", key_hash, verbose=self.verbose, log_level=self.log_level)
+
+                        # КОСТЫЛЬ: ...
+                        if (not self.trace_caching) and isinstance(output, tuple):
+                            save_output = list()
+                            for out_item in output:
+                                if isinstance(out_item, CompositeModuleDetailedResult):
+                                    save_output.append(CompositeModuleDetailedResult())
+                                else:
+                                    save_output.append(out_item)
+                            save_output = tuple(save_output)
+                        else:
+                            save_output = output
+
+                        self.cachekv.save_value(value=save_output, key_hash=key_hash)
                     else:
                         self.log.warning("Кеширования результата работы метода выполнено не будет, так как во время его выполнения возникла ошибка.", verbose=self.verbose, log_level=self.log_level)
 
