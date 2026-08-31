@@ -15,14 +15,14 @@ ENV_SETTINGS_DIR="$INIT_ENV_DIR/env_settings"
 
 # ===============================================================
 
-# "diaasq"
-DATASETS=("musique_validation" "natural_questions_train" "trivia_qa_rcwikipedia_validation" "2wikimultihopqa_dev" "hotpotqa_distractor_validation")  # TO CHANGE
-#  "qwen257b_260126_v2prompts"
-KNOWLEDGE_GRAPHS=("qwen257b_050226_v2prompts" "qwen257b_020226_v2prompts" "qwen257b_290126_v2prompts" "qwen257b_080226_v2prompts" "qwen257b_230126_v2prompts")  # TO CHANGE
-# "diaasq.yaml"
-EVAL_FNAMES=("musique_validation.yaml" "natural_questions_train.yaml" "trivia_qa_rcwikipedia_validation.yaml" "2wikimultihopqa_dev.yaml" "hotpotqa_distractor_validation.yaml" )  # TO CHANGE
-# "diaasq.yaml"
-CONFIGURE_FNAMES=("musique_validation.yaml" "natural_questions_train.yaml" "trivia_qa_rcwikipedia_validation.yaml" "2wikimultihopqa_dev.yaml" "hotpotqa_distractor_validation.yaml") # TO CHANGE
+# "diaasq" "musique_validation" "natural_questions_train" "trivia_qa_rcwikipedia_validation" 
+DATASETS=("2wikimultihopqa_dev" "hotpotqa_distractor_validation")  # TO CHANGE
+#  "qwen257b_260126_v2prompts" "qwen257b_050226_v2prompts" "qwen257b_020226_v2prompts" "qwen257b_290126_v2prompts"
+KNOWLEDGE_GRAPHS=("qwen257b_080226_v2prompts" "qwen257b_230126_v2prompts")  # TO CHANGE
+# "diaasq.yaml" "musique_validation.yaml" "natural_questions_train.yaml" "trivia_qa_rcwikipedia_validation.yaml"
+EVAL_FNAMES=("2wikimultihopqa_dev.yaml" "hotpotqa_distractor_validation.yaml" )  # TO CHANGE
+# "diaasq.yaml" "musique_validation.yaml" "natural_questions_train.yaml" "trivia_qa_rcwikipedia_validation.yaml" 
+CONFIGURE_FNAMES=("2wikimultihopqa_dev.yaml" "hotpotqa_distractor_validation.yaml") # TO CHANGE
 # "weak" "medium"
 QA_PIPELINE_VERSION="medium" # TO CHANGE
 

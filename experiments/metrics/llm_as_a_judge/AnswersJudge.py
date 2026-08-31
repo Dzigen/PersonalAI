@@ -30,13 +30,7 @@ class AnswersJudge(CacheUtils):
         self.verbose = config.verbose
         self.config = config
 
-        if cache_kvdriver_config is not None and self.config.cache_table_name is not None:
-            cache_config = deepcopy(cache_kvdriver_config)
-            cache_config.db_config.db_info['table'] = self.config.cache_table_name
-            #self.cachekv = CacheKV(cache_config)
-        else:
-            self.cachekv = None
-
+        self.cachekv = self.init_cachekv(cache_kvdriver_config, self.config.cache_table_name)
         self.agent = AgentDriver.connect(config.adriver_config)
 
         llmjudge_task_cache_config = None
