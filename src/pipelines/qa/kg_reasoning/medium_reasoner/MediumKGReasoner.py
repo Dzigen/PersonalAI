@@ -43,7 +43,7 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
     :type clueanswers_summarizer_config: Union[ClueAnswersSummarizerConfig, Dict], optional
     :param answer_generator_config: Конфигурация стадии #4 reasoner-конвейера: выполняется генерация ответа на исходный вопрос, на основании информации, извлечённой из графа знаний по шагам/запросам плана поиска. Значение по умолчанию AnswerGeneratorConfig().
     :type answer_generator_config: Union[AnswerGeneratorConfig, Dict], optional
-    :param max_searchplan_steps: Максимальное количество шагов плана поиска, по которым может быть выполнен обход/излвечение информации из графа знаний. По достижению заданного предела поиск завершается. Значение по умолчанию 5.
+    :param max_searchplan_steps: Максимальное количество шагов плана поиска, по которым может быть выполнен обход/излвечение информации из графа знаний. По достижению заданного предела поиск завершается. Значение по умолчанию 8.
     :type max_searchplan_steps: int, optional
     :param enable_searchplan_steps_check: ... . Значение по умолчанию True.
     :type enable_searchplan_steps_check: bool, optional
@@ -63,7 +63,7 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
 
     answer_generator_config: Union[AnswerGeneratorConfig, Dict] = field(default_factory=lambda: AnswerGeneratorConfig())
 
-    max_searchplan_steps: int = 6
+    max_searchplan_steps: int = 8
     enable_searchplan_steps_check: bool = True
     planlimit_exceeded_behaviour: PlanLimitExceededBehaviour = PlanLimitExceededBehaviour.strict_answer
 

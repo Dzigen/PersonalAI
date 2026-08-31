@@ -24,7 +24,7 @@ class QueryPreprocessorConfig(BaseComponentConfig, LanguageConfig):
 
     :param denoising_config: Конфигурация шага предобработки user-вопроса, отвечающая за удаление лишних шумов/фрагментов информации. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию QueryDenoiserConfig().
     :type denoising_config: Union[None, Dict, QueryDenoiserConfig], optional
-    :param enhancing_config: Конфигурация шага предобработки user-вопроса, отвечающая за добавление дополнительных языковых конструкций и переформулирование user-вопроса, с целью упрощения процесса по распознаванию заложенного запроса/интента. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию QueryEnhancerConfig().
+    :param enhancing_config: Конфигурация шага предобработки user-вопроса, отвечающая за добавление дополнительных языковых конструкций и переформулирование user-вопроса, с целью упрощения процесса по распознаванию заложенного запроса/интента. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию None.
     :type enhancing_config: Union[None, Dict, QueryEnhancerConfig], optional
     :param decomposition_config: Конфигурация шага предобработки user-вопроса, отвечающая за разбиение сложных/составных user-вопрос на простые/независимые части (под-вопросы) для их параллельной обработки и ускорения процесса формирования финального ответа. Если переменная принимает значение None, то данный шаг пропускается. Значение по умолчанию QueryDecomposerConfig().
     :type decomposition_config: Union[None, Dict, QueryDecomposerConfig], optional
@@ -32,7 +32,7 @@ class QueryPreprocessorConfig(BaseComponentConfig, LanguageConfig):
     :type cache_table_name: str, optional
     """
     denoising_config: Union[None, Dict, QueryDenoiserConfig] = field(default_factory=lambda: QueryDenoiserConfig())
-    enhancing_config: Union[None, Dict, QueryEnhancerConfig] = field(default_factory=lambda: QueryEnhancerConfig())
+    enhancing_config: Union[None, Dict, QueryEnhancerConfig] = None
     decomposition_config: Union[None, Dict, QueryDecomposerConfig] = field(default_factory=lambda: QueryDecomposerConfig())
 
     cache_table_name: str = "query_preprocessing_main_stage_cache"

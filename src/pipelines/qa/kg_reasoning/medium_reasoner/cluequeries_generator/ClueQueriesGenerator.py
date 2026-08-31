@@ -27,7 +27,7 @@ class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param agent_tasks_config: Конфигурации LLM-промптов для решения заданных задач с помощью LLM-агента. Значение по умолчанию ClueQueriesGeneratorAgentTasksConfig().
     :type agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict], optional
-    :param max_cqueries_amount: Максимальное количество clue-запросов, которое может быть сгенерировано. Значение по умолчанию 6.
+    :param max_cqueries_amount: Максимальное количество clue-запросов, которое может быть сгенерировано. Значение по умолчанию 8.
     :type max_cqueries_amount: int, optional
     :param return_only_unique_cqueries: Если True, то из набора сгенерированных clue-вопросов будут удалены дубликаты (по строковому представлению и без учёта вершин, по которым данные clue-вопросы были получены), иначе False. Значение по умолчанию False.
     :type return_only_unique_cqueries: bool, optional
@@ -38,7 +38,7 @@ class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict] = field(default_factory=lambda: ClueQueriesGeneratorAgentTasksConfig())
-    max_cqueries_amount: int = 4
+    max_cqueries_amount: int = 8
     return_only_unique_cqueries: bool = False
     use_basequery_as_cqueries: bool = False
 
