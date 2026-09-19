@@ -1,7 +1,8 @@
 from dataclasses import dataclass
-from ..utils import BaseStages
+from typing import Union
 from .extractor import LLMExtractor
 from .updator import LLMUpdator
+from ..utils import BaseStages
 
 
 @dataclass

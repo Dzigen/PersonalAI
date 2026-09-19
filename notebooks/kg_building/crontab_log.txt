@@ -1,2 +1,10 @@
 /home/workspace/notebooks/kg_building/build_graph.sh: line 25:   459 Killed                  $PYTHON_CMD $CREATE_SCRIPT $KGCONN_PARAMS_PATH $KGENV_PARAMS_PATH $KGHYPERP_PARAMS_PATH >> create_log.txt 2>&1
 /home/workspace/notebooks/kg_building/build_graph.sh: line 26:   643 Killed                  $PYTHON_CMD $HEALTH_SCRIPT $KGCONN_PARAMS_PATH $KGENV_PARAMS_PATH $KGHYPERP_PARAMS_PATH >> health_log.txt 2>&1
+/home/workspace/notebooks/kg_building/build_graph.sh: line 31: cd: /home/workspace/data/knowledge_graphs/$CURRENT_DATASET/$CURRENT_KG: No such file or directory
+/home/workspace/notebooks/kg_building/build_graph.sh: line 32: cd: /home/workspace/data/knowledge_graphs/$CURRENT_DATASET/$CURRENT_KG: No such file or directory
+/home/workspace/notebooks/kg_building/build_graph.sh: line 31: cd: /home/workspace/data/knowledge_graphs/$CURRENT_DATASET/$CURRENT_KG: No such file or directory
+/home/workspace/notebooks/kg_building/build_graph.sh: line 32: cd: /home/workspace/data/knowledge_graphs/$CURRENT_DATASET/$CURRENT_KG: No such file or directory
+/home/workspace/notebooks/kg_building/build_graph.sh: line 31:   489 Killed                  $PYTHON_CMD $CREATE_SCRIPT $KGCONN_PARAMS_PATH $KGENV_PARAMS_PATH $KGHYPERP_PARAMS_PATH >> create_log.txt 2>&1
+/home/workspace/notebooks/kg_building/build_graph.sh: line 32:   693 Killed                  $PYTHON_CMD $HEALTH_SCRIPT $KGCONN_PARAMS_PATH $KGENV_PARAMS_PATH $KGHYPERP_PARAMS_PATH >> health_log.txt 2>&1
+/home/workspace/notebooks/kg_building/build_graph.sh: line 31:   489 Killed                  $PYTHON_CMD $CREATE_SCRIPT $KGCONN_PARAMS_PATH $KGENV_PARAMS_PATH $KGHYPERP_PARAMS_PATH >> create_log.txt 2>&1
+/home/workspace/notebooks/kg_building/build_graph.sh: line 32:   671 Killed                  $PYTHON_CMD $HEALTH_SCRIPT $KGCONN_PARAMS_PATH $KGENV_PARAMS_PATH $KGHYPERP_PARAMS_PATH >> health_log.txt 2>&1

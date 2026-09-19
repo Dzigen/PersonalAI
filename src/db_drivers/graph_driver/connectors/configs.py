@@ -26,4 +26,28 @@ DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(
     host='localhost', port=7687, params={'user': "neo4j", 'pwd': 'password'})
 
 
-DEFAULT_BLAZE_CONFIG = GraphDBConnectionConfig()  # TODO
+BG_NAMESPACE_CONFIG_TEMPLATE = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<entry key="com.bigdata.namespace.qqqqw.spo.com.bigdata.btree.BTree.branchingFactor">1024</entry>
+<entry key="com.bigdata.rdf.store.AbstractTripleStore.textIndex">false</entry>
+<entry key="com.bigdata.rdf.store.AbstractTripleStore.axiomsClass">com.bigdata.rdf.axioms.NoAxioms</entry>
+<entry key="com.bigdata.rdf.sail.isolatableIndices">false</entry>
+<entry key="com.bigdata.rdf.sail.truthMaintenance">false</entry>
+<entry key="com.bigdata.rdf.store.AbstractTripleStore.justify">false</entry>
+<entry key="com.bigdata.rdf.sail.namespace">{namespace_name}</entry>
+<entry key="com.bigdata.rdf.store.AbstractTripleStore.quads">true</entry>
+<entry key="com.bigdata.namespace.qqqqw.lex.com.bigdata.btree.BTree.branchingFactor">400</entry>
+<entry key="com.bigdata.rdf.store.AbstractTripleStore.geoSpatial">false</entry>
+<entry key="com.bigdata.rdf.store.AbstractTripleStore.statementIdentifiers">false</entry>
+</properties>'''
+
+DEFAULT_BLAZEGRAPH_CONFIG = GraphDBConnectionConfig(
+    host='localhost', port=8889,
+    db_info={'db': 'defaultpersonalaigraphdb', 'table': 'defaultpersonalaigraphtable'},
+    params={'uri_prefix': 'http://personalai.org', 'namespace_configuration': BG_NAMESPACE_CONFIG_TEMPLATE}
+)
+
+
+DEFAULT_FALKORDB_CONFIG = GraphDBConnectionConfig(
+    host='localhost', port=6379)

@@ -13,7 +13,7 @@ services:
       - NEO4J_AUTH=neo4j/password
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
     volumes:
-      - ../../personalai_volumes/neo4j:/data
+      - ${NEO4J_EXTRNAL_VOLUME}:/data
     deploy:
       resources:
         limits:
@@ -34,8 +34,8 @@ services:
       - Djetty.port=9999
       - ES_JAVA_OPTS=-server -Xmx4g
     volumes:
-      - ../configs/blazegraph/RWStore.properties:/RWStore.properties
-      - ../../personalai_volumes/blazegraph:/data
+      - ${BLAZEGRAPH_EXTERNAL_CONFIG_PATH}:/RWStore.properties
+      - ${BLAZEGRAPH_EXTERNAL_VOLUME}:/data
     deploy:
       resources:
         limits:
@@ -45,32 +45,19 @@ services:
           cpus: '1'
           memory: 4G
 
-  milvus:
-    image: milvusdb/milvus:v2.5.8
-    container_name: personalai_mmenschikov_milvus
+  falkordb:
+    container_name: personalai_mmenschikov_falkordb
+    image: falkordb/falkordb:latest
     hostname: localhost
-    command: ["milvus", "run", "standalone"]
-    security_opt:
-      - seccomp:unconfined
-    environment:
-      - ETCD_USE_EMBED=true
-      - ETCD_DATA_DIR=/var/lib/milvus/etcd
-      - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
-      - COMMON_STORAGETYPE=local
+    # networks:
+    #   - tests_network
     ports:
-      - 19530:19530
-      - 2379:2379
-      - 9091:9091
+      - 6379:6379
+      - 3000:3000
+    environment:
+      - FALKORDB_ARGS=THREAD_COUNT 8 TIMEOUT_MAX 30000
     volumes:
-      - ../../personalai_volumes/milvus:/var/lib/milvus
-      - ../configs/milvus/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
-      - ../configs/milvus/user.yaml:/milvus/configs/user.yaml
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
-      interval: 30s
-      start_period: 90s
-      timeout: 20s
-      retries: 3
+      - ${FALKORDB_EXTERNAL_VOLUME}:/data
     deploy:
       resources:
         limits:
@@ -79,6 +66,41 @@ services:
         reservations:
           cpus: '1'
           memory: 5G
+
+  # milvus:
+  #   image: milvusdb/milvus:v2.5.8
+  #   container_name: personalai_mmenschikov_milvus
+  #   hostname: localhost
+  #   command: ["milvus", "run", "standalone"]
+  #   security_opt:
+  #     - seccomp:unconfined
+  #   environment:
+  #     - ETCD_USE_EMBED=true
+  #     - ETCD_DATA_DIR=/var/lib/milvus/etcd
+  #     - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
+  #     - COMMON_STORAGETYPE=local
+  #   ports:
+  #     - 19530:19530
+  #     - 2379:2379
+  #     - 9091:9091
+  #   volumes:
+  #     - ../../personalai_volumes/milvus:/var/lib/milvus
+  #     - ../configs/milvus/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
+  #     - ../configs/milvus/user.yaml:/milvus/configs/user.yaml
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+  #     interval: 30s
+  #     start_period: 90s
+  #     timeout: 20s
+  #     retries: 3
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '2'
+  #         memory: 10G
+  #       reservations:
+  #         cpus: '1'
+  #         memory: 5G
 
   opensearch:
     container_name: personalai_mmenschikov_opensearch
@@ -90,8 +112,9 @@ services:
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+      - cluster.routing.allocation.disk.threshold_enabled=false
     volumes:
-      - ../../personalai_volumes/opensearch:/usr/share/opensearch/data
+      - ${OPENSEARCH_EXTERNAL_VOLUME}:/usr/share/opensearch/data
     deploy:
       resources:
         limits:
@@ -111,8 +134,9 @@ services:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
       - xpack.security.enabled=false
+      - cluster.routing.allocation.disk.threshold_enabled=false
     volumes:
-      - ../../personalai_volumes/elasticsearch:/usr/share/elasticsearch/data
+      - ${ELASTICSEARCH_EXTERNAL_VOLUME}:/usr/share/elasticsearch/data
     deploy:
       resources:
         limits:
@@ -137,7 +161,7 @@ services:
       - --scheme
       - http
       volumes:
-        - ../../personalai_volumes/weaviate:/var/lib/weaviate
+        - ${WEAVIATE_EXTERNAL_VOLUME}:/var/lib/weaviate
       environment:
         QUERY_DEFAULTS_LIMIT: 25
         AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
@@ -162,7 +186,7 @@ services:
       - 6333:6333
       - 6334:6334
     volumes:
-        - ../../personalai_volumes/qdrant:/qdrant/storage
+        - ${QDRANT_EXTERNAL_VOLUME}:/qdrant/storage
     deploy:
       resources:
         limits:
@@ -182,8 +206,8 @@ services:
       MYSQL_USER: personalai
       MYSQL_PASSWORD: personalai
     volumes:
-      - ../../personalai_volumes/mysql:/var/lib/mysql
-      - ../configs/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ${MYSQL_EXTERNAL_VOLUME}:/var/lib/mysql
+      - ${MYSQL_EXTERNAL_CONFIG_PATH}:/docker-entrypoint-initdb.d/init.sql
     ports:
       - 3306:3306
     deploy:
@@ -197,15 +221,15 @@ services:
 
   postgresql:
     image: postgres:16
-    container_name: personalai_mmenschikov_test_postgresql
+    container_name: personalai_mmenschikov_postgresql
     hostname: localhost
     environment:
-      POSTGRES_DB: personalai_test
+      POSTGRES_DB: personalai
       POSTGRES_USER: personalai
       POSTGRES_PASSWORD: personalai
     volumes:
-      - ../../personalai_volumes/postgresql:/var/lib/postgresql/data # Mounts a host directory for persistent data storage
-      - ../configs/postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ${POSTGRESQL_EXTERNAL_VOLUME}:/var/lib/postgresql/data # Mounts a host directory for persistent data storage
+      - ${POSTGRESQL_EXTERNAL_CONFIG_PATH}:/docker-entrypoint-initdb.d/init.sql
     ports:
       - 5432:5432
     shm_size: 128mb
@@ -218,19 +242,69 @@ services:
           cpus: '1'
           memory: 5G
 
+  mongo:
+    container_name: personalai_mmenschikov_mongo
+    image: mongo:7.0.9
+    hostname: localhost
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    ports:
+      - 27017:27017
+    volumes:
+      - ${MONGO_EXTERNAL_VOLUME}:/data/db
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
+    tty: true
+    stdin_open: true
 
+  redis:
+    container_name: personalai_mmenschikov_redis
+    image: redis:latest
+    hostname: localhost
+    command: redis-server /usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_PASSWORD=my_redis_password
+      - REDIS_USER=my_user
+      - REDIS_USER_PASSWORD=my_user_password
+    ports:
+      - 6380:6379
+    volumes:
+      - ${REDIS_EXTERNAL_CONFIG_PATH}:/usr/local/etc/redis/redis.conf
+      - ${REDIS_EXTERNAL_VOLUME}:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 8G
+        reservations:
+          cpus: '1'
+          memory: 4G
+    tty: true
+    stdin_open: true
 
   workspace:
-    image: m.menschikov/workspace:v5
+    build:
+      context: .
+      dockerfile: workspace.Dockerfile
+    image: m.menschikov/workspace:v13
     container_name: personalai_mmenschikov_workspace
-    hostname: worksapceservice
+    hostname: workspaceservice
+    network_mode: "host"
     volumes:
-      - ../data/qa_datasets:/home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets #/home/dzigen/Desktop/PersonalAI/Personal-AI/data/qa_datasets | /home/m.menschikov/workspace/personal_ai/Personal-AI/data/qa_datasets
-      - ../src:/home/m.menschikov/workspace/personal_ai/Personal-AI/src #/home/dzigen/Desktop/PersonalAI/Personal-AI/src | /home/m.menschikov/workspace/personal_ai/Personal-AI/src
-      - ../experiments:/home/m.menschikov/workspace/personal_ai/Personal-AI/experiments #/home/dzigen/Desktop/PersonalAI/Personal-AI/experiments | /home/m.menschikov/workspace/personal_ai/Personal-AI/experiments
-      - ../notebooks:/home/m.menschikov/workspace/personal_ai/Personal-AI/notebooks #/home/dzigen/Desktop/PersonalAI/Personal-AI/notebooks | /home/m.menschikov/workspace/personal_ai/Personal-AI/notebooks
-      - /mnt/data/m.menschikov/personalai/knowledge_graphs:/home/m.menschikov/workspace/personal_ai/Personal-AI/data/knowledge_graphs
-      - /mnt/data/m.menschikov/personalai/models:/home/m.menschikov/workspace/personal_ai/Personal-AI/models
+      - ${EXTERNAL_DATASETS_PATH}:${EXTERNAL_DATASETS_PATH}
+      - ${EXTERNAL_SRC_PATH}:${INTERNAL_SRC_PATH}
+      - ${EXTERNAL_EXPERIMENTS_PATH}:${INTERNAL_EXPERIMENTS_PATH}
+      - ${EXTRNAL_NOTEBOOKS_PATH}:${INTERNAL_NOTEBOOKS_PATH}
+      - ${EXTERNAL_KNOWLEDGE_GRAPHS_PATH}:${INTERNAL_KNOWLEDGE_GRAPHS_PATH}
+      - ${EXTERNAL_MODELS_PATH}:${INTERNAL_MODELS_PATH}
+      - ${EXTERNAL_EXPERIMENT_RESULTS_PATH}:${INTERNAL_EXPERIMENT_RESULTS_PATH}
     deploy:
       resources:
         limits:
@@ -241,7 +315,7 @@ services:
           memory: 24G
           devices:
             - driver: nvidia
-              device_ids: ['0']
+              device_ids: ['${WORKSPACE_DEVICE_ID}']
               capabilities: [gpu]
 
   empty_workspace:
@@ -260,23 +334,27 @@ services:
           memory: 4G
 
   ollama_agent:
-    image: ollama/ollama:latest
+    image: ollama/ollama:0.24.0
     container_name: personalai_mmenschikov_ollama
     ports:
       - "11437:11434"
-    environment:
+    environment: # available variables: https://github.com/ollama/ollama/issues/2941
       - OLLAMA_DEBUG=1
+      - OLLAMA_NOHISTORY=0
+      #- OLLAMA_NUM_PARALLEL=4      # Processes up to 4 requests at once per model
+      #- OLLAMA_MAX_LOADED_MODELS=2  # Keeps up to 2 different models in VRAM
+      #- OLLAMA_FLASH_ATTENTION=1    # Strongly recommended to save VRAM during parallel loads
     volumes:
-      - /mnt/data/m.menschikov/ollama_volume:/root/.ollama
+      - ${OLLAMA_EXTERNAL_VOLUME_PATH}:/root/.ollama
     deploy:
       resources:
         limits:
-          cpus: '4'
+          cpus: '8'
           memory: 32G
         reservations:
-          cpus: '2'
-          memory: 4G
+          cpus: '4'
+          memory: 16G
           devices:
             - driver: nvidia
-              device_ids: ['0']
+              device_ids: ['${OLLAMA_DEVICE_ID}']
               capabilities: [gpu]

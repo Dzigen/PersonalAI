@@ -28,4 +28,4 @@ class AgentLLMJudgeTaskConfigSelector:
             postprocess_answer_func=llmjudge_custom_postprocess,
             cache_table_name=cache_table_name,
             inferencestat_table_name=inferencestat_table_name,
-            log=Logger(LLMJUDGE_LOG_PATH))
+            log_path=LLMJUDGE_LOG_PATH)

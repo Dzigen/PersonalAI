@@ -1,3 +1,9 @@
+0#### Материалы
+- [Отчёт 2025](docs/source/_static/iteration_summary/2025/PersonalAI(Отчёт)(НИР)(Skoltech-Sber)(2025).pdf)
+- [Презентация работ 2025](docs/source/_static/iteration_summary/2025/PersonalAI(ПриёмкаРабот)(НИР)(Skoltech-Sber)(2025).pdf)
+#### Статьи
+- [PersonalAI: A Systematic Comparison of Knowledge Graph Storage and Retrieval Approaches for Personalized LLM agents](docs/source/_static/iteration_summary/2024/PersonalAI(Статья)(НИР)(Skoltech-Sber)(2024).pdf)
+
 #### Структура файловой системы:
 - debug/ - Директория с ноутбуками/скриптами для отладки кода из каталога "src".
 - experiments/ - Директория с реализациями проведённых экспериментов: дообучение/обучение моделей, подбор гиперпараметров модели и т.п. Каждый эксперимент в отдельной директории. Обязательно логирование в отдельном каталоге "logs" (для каждого каталога с экспериментом свой каталог с логами): пул гиперпарметров + полученные метрики.
@@ -15,16 +21,13 @@
 - exp - Предназначена для проведения экспериментов. Для решения конкретной задачи в рамках "exp" нужно создать от неё отдельную ветку, реализовать решение и (после review от лида) смёржить в "exp" и удалить ветку из репозитория. Для проведения эксперимента необходимо создать отдельную директорию в каталоге "experiments"; название директории должно быть в следующем формате: "суть_эксперимента (#N)". Эксперименты могут быть вложенными: есть директория с общим названием эксперимента, в рамках которого прооводится несколько атомарных исследований.
 - task#N - Предназначеная для решения конкретной/атомарной задачи, проведения эксперимента, описанной в соответствующем issue на gitlab.
 
-Пример работы с описанной структурой веток:
+##### Рабочие скрипты:
+* [Построение графа](notebooks/kg_building)
+* [Оценка эффективности конфигурации QA-пайплайна с использование построенного графа](experiments/qa)
 
-![alt text](https://github.com/zer0o0ne/Personal-AI/blob/dev/docs/branch_workflow.jpg)
-
-##### Полезные материалы (структура ML-проекта):
-* https://drive.google.com/file/d/1g0tzALqKygFTtzA-C5l5ZOdC9tKiUTzc/view?usp=sharing
-
-##### Команда для деплоя контейнеров:
-* docker build -t m.menschikov/agent_api:v2 .
-* docker run -d -p 45678:4567 -v ./models:/app/models -it  --name m.menschikov.agent_api_cntrn --memory=32g --memory-swap=32g --cpuset-cpus=0-4 --gpus '"device=1"' m.menschikov/agent_api:v2
+##### Полезные материалы
+* [MLOps](docs/source/_static/useful_material/MLOps/)
+* [Организация научных исследований](docs/source/_static/useful_material/ОрганизацияНаучныхИсследований/)
 
 ##### Команды для генерации документации:
 * find . -type d -name __pycache__ -exec rm -r {} \+
@@ -34,9 +37,18 @@
 * make singlehtml
 * make clean
 
+##### Генерация диаграммы классов
+* pyreverse -o puml -f ALL src/
+
 ##### Команды для тестироваания
 * pytest --cov=src --cov-report=html ...
 * pygount src/ --suffix=py --format=summary
+
+##### Команды для проверки стиля кодовой базы
+* autopep8 src # formatter
+* pylint src # linter
+* flake8 src # linter
+* mypy src # linter
 
 pre-commit:
 * https://pre-commit.com/#pre-commit-configyaml---repos
@@ -49,6 +61,10 @@ dvc tutorial:
 
 pytest tutorial:
 * https://realpython.com/pytest-python-testing/#parametrization-combining-tests
+
+utils:
+* find . -maxdepth 4 -type d -name "tmp_*" -exec rm -rf {} +
+* git tag -a <tag-version> commit_id -m "comment"
 
 archive experiments:
 * tar -czvf  deepseek_231025_v2prompts.tar.gz --exclude="configs" --exclude="judge_packs" --exclude="metric_packs" --exclude="tmp_answer_packs" --exclude="tmp_judges_packs" --exclude="inference_log.txt"  deepseek_231025_v2prompts/

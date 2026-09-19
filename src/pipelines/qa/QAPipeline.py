@@ -10,7 +10,8 @@ from .kg_reasoning import KnowledgeGraphReasonerConfig, KnowledgeGraphReasoner
 from .query_preprocessing import QueryPreprocessor, QueryPreprocessorConfig
 from .answers_aggregation import AnswersAggregator, AnswersAggregatorConfig
 from ...kg_model import KnowledgeGraphModel
-from ...utils import Logger, ReturnStatus, ReturnInfo, update_rinfo
+from ...utils import Logger, ReturnStatus, ReturnInfo, update_rinfo, \
+    accumulate_stage_info, CompositeModuleDetailedResult, ModuleType, CompositeModuleResult
 from ...utils.cache_kv import CacheUtils
 from ...utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
 from ...db_drivers.kv_driver import KeyValueDriverConfig
@@ -41,7 +42,7 @@ class QAPipelineConfig(BaseComponentConfig, LanguageConfig):
         default_factory=lambda: AnswersAggregatorConfig())
 
     cache_table_name: str = 'qa_pipeline_cache'
-    log: Logger = field(default_factory=lambda: Logger(QA_MAIN_LOG_PATH))
+    log_path: str = QA_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.preprocessor_config.to_str()}|{self.reasoner_config.to_str()}|{self.aggregator_config.to_str()}"
@@ -106,77 +107,79 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
-        self.log = config.log
+        self.log = Logger(config.log_path)
         self.verbose = config.verbose
+        self.log_level = config.log_level
 
-    def preprocess_query(self, query: str) -> Tuple[QueryPreprocessingInfo, ReturnInfo]:
+    def preprocess_query(self, query: str) -> Tuple[QueryPreprocessingInfo, ReturnInfo, CompositeModuleResult]:
         """Метод выполняет предобработку исходного user-вопроса. Оборачивает вызов компоненты QueryPreprocessor и логирует результат.
 
         :param query: Исходный user-вопрос на естественном языке.
         :type query: str
-        :return: Кортеж из двух объектов: (1) класс с информацией о предобработанном вопросе; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[QueryPreprocessingInfo, ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) класс с информацией о предобработанном вопросе; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[QueryPreprocessingInfo, ReturnInfo, CompositeModuleResult]
         """
-        query_info, rinfo = self.stages.query_preprocessor.perform(query)
-        self.log(f"RESULT: {query_info}", verbose=self.verbose)
+        query_info, rinfo, trace = self.stages.query_preprocessor.perform(query)
+        self.log.debug("RESULT: %s .", query_info, verbose=self.verbose, log_level=self.log_level)
         if rinfo.status != ReturnStatus.success:
-            self.log("Operation ended with error!", verbose=self.verbose)
+            self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
         else:
-            self.log("Operation ended successfully", verbose=self.verbose)
+            self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
 
-        return query_info, rinfo
+        return query_info, rinfo, trace
 
-    def process_query(self, query_info: QueryPreprocessingInfo) -> Tuple[QueryReasoningInfo, ReturnInfo]:
+    @accumulate_stage_info
+    def process_query(self, query_info: QueryPreprocessingInfo) -> Tuple[QueryReasoningInfo, ReturnInfo, CompositeModuleDetailedResult, bool]:
         """Метод предназначен для обхода графа знаний с целью извлечения релевантной информации по под-запросу.
         :param query_info: Класс с информацией по предобработанному вопросу.
         :type query_info: QueryPreprocessingInfo
-        :return: Кортеж из двух объектов: (1) класс с под-запросами и ответами на них; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[QueryReasoningInfo, ReturnInfo]
+        :return: Кортеж из четырёх объектов: (1) класс с под-запросами и ответами на них; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода; (4) True, если результат был получен из кеша (cache hit), иначе False.
+        :rtype: Tuple[QueryReasoningInfo, ReturnInfo, CompositeModuleDetailedResult]
         """
         rinfo = ReturnInfo()
+        module_trace = CompositeModuleDetailedResult()
         sub_queries, sub_answers = query_info.processed_query, []
 
         for i, sub_query in enumerate(query_info.processed_query):
-            self.log(
-                f"Processing sub_query #{i}: {sub_query}", verbose=self.verbose)
-            sub_answer, rinfo = self.stages.kg_reasoner.perform(sub_query)
-            self.log(f"RESULT: {sub_answer}", verbose=self.verbose)
+            self.log.debug("Processing sub_query #%d: %s", i, sub_query, verbose=self.verbose, log_level=self.log_level)
+            sub_answer, rinfo, trace = self.stages.kg_reasoner.perform(sub_query)
+            module_trace.add('perform', ModuleType.stage, trace)
+            self.log.debug("RESULT: %s .", sub_answer, verbose=self.verbose, log_level=self.log_level)
             if rinfo.status != ReturnStatus.success:
-                self.log("Operation ended with error!", verbose=self.verbose)
+                self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
                 rinfo = rinfo
                 break
             else:
-                self.log("Operation ended successfully", verbose=self.verbose)
+                self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
                 rinfo.occurred_warning.append(rinfo.occurred_warning)
                 sub_answers.append(sub_answer)
 
         str_subqa = "\n".join(
             [f"- [{q}] {a}" for q, a in zip(sub_queries, sub_answers)])
-        self.log(f"RESULT:\n{str_subqa}", verbose=self.verbose)
+        self.log.debug("RESULT:\n%s", str_subqa, verbose=self.verbose, log_level=self.log_level)
         subq_info = QueryReasoningInfo(
             sub_queries=sub_queries, sub_answers=sub_answers)
 
-        return subq_info, rinfo
+        return subq_info, rinfo, module_trace, False
 
-    def postprocess_answer(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> Tuple[str, ReturnInfo]:
+    def postprocess_answer(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> Tuple[str, ReturnInfo, CompositeModuleResult]:
         """Метод агрегирует ответы по под-запросам и формирует финальный ответ. Оборачивает вызов компоненты AnswersAggregator и логирует результат.
 
         :param query_info: Класс с информацией о предобработанном исходном вопросе.
         :type query_info: QueryPreprocessingInfo
         :param subq_info: Класс с информацией о под-запросах и соответствующих им ответах из графа знаний.
         :type subq_info: QueryReasoningInfo
-        :return: Кортеж из двух объектов: (1) агрегированный финальный ответ; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[str, ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) агрегированный финальный ответ; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[str, ReturnInfo, CompositeModuleResult]
         """
-        aggregated_answer, rinfo = self.stages.answers_aggregator.perform(
-            query_info, subq_info)
-        self.log(f"RESULT: {aggregated_answer}", verbose=self.verbose)
+        aggregated_answer, rinfo, trace = self.stages.answers_aggregator.perform(query_info, subq_info)
+        self.log.debug("RESULT: %s", aggregated_answer, verbose=self.verbose, log_level=self.log_level)
         if rinfo.status != ReturnStatus.success:
-            self.log("Operation ended with error!", verbose=self.verbose)
+            self.log.warning("Operation ended with error!", verbose=self.verbose, log_level=self.log_level)
         else:
-            self.log("Operation ended successfully", verbose=self.verbose)
+            self.log.debug("Operation ended successfully", verbose=self.verbose, log_level=self.log_level)
 
-        return aggregated_answer, rinfo
+        return aggregated_answer, rinfo, trace
 
     def get_cache_key(self, query: str) -> List[str]:
         str_using_agent_config = f"{self.using_agent_info['kw']}:{self.using_agent_info['config'].to_str()}"
@@ -185,50 +188,49 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
         str_aaggr_config = self.stages.answers_aggregator.config.to_str()
         return [str_qprep_config, str_qreas_config, str_aaggr_config, str_using_agent_config, query]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def answer(self, query: str) -> Tuple[str, ReturnInfo]:
+    def answer(self, query: str) -> Tuple[str, ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для генерации ответа на user-вопрос. Ответ обуславливается на информацию из имеющегося графа знаний.
 
         :param query: User-вопрос на естественном языке.
         :type query: str
-        :return: Кортеж из двух объектов: (1) cгенерированный ответ; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[str, ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) cгенерированный ответ; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
-        self.log("START QA-PIPELINE...", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
-        self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
+        self.log.debug("START QA-PIPELINE...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", create_id(query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question: %s", query, verbose=self.verbose, log_level=self.log_level)
 
         final_answer, rinfo = None, ReturnInfo()
+        module_trace = CompositeModuleDetailedResult()
 
-        self.log("Preprocessing...", verbose=self.verbose)
-        query_info, q_rinfo = self.preprocess_query(query)
+        self.log.debug("Preprocessing...", verbose=self.verbose, log_level=self.log_level)
+        query_info, q_rinfo, trace = self.preprocess_query(query)
+        module_trace.add('preprocess_query', ModuleType.stage, trace)
         update_rinfo(rinfo, q_rinfo)
 
-        self.log("Reasoning...", verbose=self.verbose)
+        self.log.debug("Reasoning...", verbose=self.verbose, log_level=self.log_level)
         if rinfo.status == ReturnStatus.success:
-            subq_info, sq_info = self.process_query(query_info)
+            subq_info, sq_info, trace = self.process_query(query_info)
+            module_trace.add('process_query', ModuleType.stage, trace)
             update_rinfo(rinfo, sq_info)
         else:
-            self.log("During previous steps error occurs.",
-                     verbose=self.verbose)
+            self.log.warning("During previous steps error occurs.", verbose=self.verbose, log_level=self.log_level)
 
-        self.log("Aggregation...", verbose=self.verbose)
+        self.log.debug("Aggregation...", verbose=self.verbose, log_level=self.log_level)
         if rinfo.status == ReturnStatus.success:
-            final_answer, ag_info = self.postprocess_answer(
-                query_info, subq_info)
+            final_answer, ag_info, trace = self.postprocess_answer(query_info, subq_info)
+            module_trace.add('postprocess_answer', ModuleType.stage, trace)
             update_rinfo(rinfo, ag_info)
         else:
-            self.log("During previous steps error occurs.",
-                     verbose=self.verbose)
+            self.log.warning("During previous steps error occurs.", verbose=self.verbose, log_level=self.log_level)
 
-        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
+        self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)
 
-        return final_answer, rinfo
+        return final_answer, rinfo, module_trace
 
-    def __del__(self):
-        # print("deleting QA-class")
-        try:
-            del self.stages
-            gc.collect()
-        except TypeError:
-            pass
+    def close_connections(self):
+        self.stages.close_connections()
+        if self.cachekv is not None:
+            self.cachekv.close_connection()

@@ -3,8 +3,8 @@ from typing import Dict, Union
 from copy import deepcopy
 
 from .config import NODESTREEM_AGENTASKS_SELECTORS_MAPPING
-from ...pipelines.utils import BaseTaskSolvers, BaseAgentTasksConfig, BaseAgentTaskConfigSelector
-from ...utils.task_solver import AgentTaskSolver, AgentTaskSolverConfig
+from ...pipelines.utils import BaseTaskSolvers
+from ...utils import BaseAgentTasksConfig, BaseAgentTaskConfigSelector, AgentTaskSolver, AgentTaskSolverConfig
 
 
 @dataclass

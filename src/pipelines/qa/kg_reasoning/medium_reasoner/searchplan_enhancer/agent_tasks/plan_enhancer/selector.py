@@ -1,14 +1,28 @@
-from ........utils import AgentTaskSolverConfig, Logger
-from .......utils import BaseAgentTaskConfigSelector
+from ........utils import AgentTaskSolverConfig, BaseAgentTaskConfigSelector
+from ........utils.logger import LogLevel
 from .general_parsers import planenh_custom_formate, planenh_custom_postprocess
 from .v1 import PLANENH_SUITE_V1
 from .v2 import PLANENH_SUITE_V2
+from .v3 import PLANENH_SUITE_V3
+from .v4 import PLANENH_SUITE_V4
+from .v5 import PLANENH_SUITE_V5
+from .v6 import PLANENH_SUITE_V6
+from .v7 import PLANENH_SUITE_V7
+from .v8 import PLANENH_SUITE_V8
+from .v9 import PLANENH_SUITE_V9
 
 PLANENH_LOG_PATH = "log/qa/kg_reasoner/medium/plan_enhancer/agent_tasks/plan_enhancing"
 
 AVAILABLE_PLANENH_TCONFIGS = {
     'v1': PLANENH_SUITE_V1,
-    'v2': PLANENH_SUITE_V2
+    'v2': PLANENH_SUITE_V2,
+    'v3': PLANENH_SUITE_V3,
+    'v4': PLANENH_SUITE_V4,
+    'v5': PLANENH_SUITE_V5,
+    'v6': PLANENH_SUITE_V6,
+    'v7': PLANENH_SUITE_V7,
+    'v8': PLANENH_SUITE_V8,
+    'v9': PLANENH_SUITE_V9
 }
 
 
@@ -18,13 +32,15 @@ class AgentPlanEnhancingTaskConfigSelector(BaseAgentTaskConfigSelector):
         return AVAILABLE_PLANENH_TCONFIGS
 
     @staticmethod
-    def select(base_config_version: str = 'v2',
+    def select(base_config_version: str = 'v9',
                cache_table_name: str = "medreasn_planenh_agent_task_cache",
-               inferencestat_table_name: str = 'medreasn_planenh_agent_task_stat') -> AgentTaskSolverConfig:
+               inferencestat_table_name: str = 'medreasn_planenh_agent_task_stat',
+               verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
             suites=AVAILABLE_PLANENH_TCONFIGS[base_config_version],
             formate_context_func=planenh_custom_formate, postprocess_answer_func=planenh_custom_postprocess,
             cache_table_name=cache_table_name,
             inferencestat_table_name=inferencestat_table_name,
-            log=Logger(PLANENH_LOG_PATH))
+            log_path=PLANENH_LOG_PATH,
+            verbose=verbose, log_level=log_level)

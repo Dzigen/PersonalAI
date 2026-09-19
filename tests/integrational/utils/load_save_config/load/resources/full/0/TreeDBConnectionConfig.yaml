@@ -1,0 +1,8 @@
+db_info:
+  db: DefaultPersonalAITreeDB
+  table: DefaultPersonalAITreeTable
+params: {}
+need_to_clear: false
+create_index: false
+host: null
+port: null

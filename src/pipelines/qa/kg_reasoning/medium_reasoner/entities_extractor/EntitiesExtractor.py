@@ -4,8 +4,8 @@ from copy import deepcopy
 
 from .config import ENEXTR_MAIN_LOG_PATH
 from .utils import MediumEntitiesExtractorTaskSolvers, EntitiesExtractorAgentTasksConfig
-from ......utils import ReturnInfo, Logger, AgentTaskSolver
-from ......utils import ReturnStatus
+from ......utils import ReturnInfo, Logger, AgentTaskSolver, ReturnStatus, accumulate_stage_info, \
+    CompositeModuleDetailedResult, ModuleType
 from ......agents.utils import AbstractAgentConnector
 from ......utils.data_structs import create_id, BaseComponentConfig, LanguageConfig
 from ......utils.errors import STATUS_MESSAGE
@@ -34,7 +34,7 @@ class EntitiesExtractorConfig(BaseComponentConfig, LanguageConfig):
     max_entities: int = 20
 
     cache_table_name: str = "medreasn_entextr_main_stage_cache"
-    log: Logger = field(default_factory=lambda: Logger(ENEXTR_MAIN_LOG_PATH))
+    log_path: str = ENEXTR_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.max_entities}|{self.agent_tasks_config.to_str()}"
@@ -75,7 +75,7 @@ class EntitiesExtractor(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs()
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -90,43 +90,46 @@ class EntitiesExtractor(CacheUtils, CacheOperations, AgentStatOperations):
                 self.agent, self.config.agent_tasks_config.entities_extraction, agents_cache_config, inferencestat_config)
         )
 
-        self.log = self.config.log
+        self.log = Logger(config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     def get_cache_key(self, query: str) -> List[str]:
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [query, self.config.to_str(), str_using_agent_info]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def perform(self, query: str) -> Tuple[List[str], ReturnInfo]:
+    def perform(self, query: str) -> Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для извлечения сущностей из поискового запроса на естественном языке.
 
         :param query: Поисковый запрос на естественном языке.
         :type query: str
-        :return: Кортеж из двух объектов: (1) извлечённый список сущностей; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[List[str], ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) извлечённый список сущностей; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult]
         """
-        self.log("START ENTITIES EXTRACTION...", verbose=self.verbose)
-        rinfo = ReturnInfo()
-        self.log(f"QUERY ID: {create_id(query)}", verbose=self.verbose)
-        self.log(f"QUERY: {query}", verbose=self.verbose)
+        self.log.debug("START ENTITIES EXTRACTION...", verbose=self.verbose, log_level=self.log_level)
+        rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
+        self.log.debug("* Query hash: %s", create_id(query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Query: %s", query, verbose=self.verbose, log_level=self.log_level)
 
-        self.log("Выполнение извлечения сущностей из запроса с помощью LLM-агента...", verbose=self.verbose)
-        extracted_entities, rinfo.status = self.tasks_solvers.entities_extractor_solver.solve(
+        self.log.debug("Выполнение извлечения сущностей из запроса с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
+        extracted_entities, rinfo.status, trace = self.tasks_solvers.entities_extractor_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
+        module_trace.add("entities_extractor_solver", ModuleType.task_solver, trace)
 
         entities = []
         if extracted_entities is None or len(extracted_entities) == 0:
             rinfo.status = ReturnStatus.zero_entities
             rinfo.message = STATUS_MESSAGE[rinfo.status]
         else:
-            self.log(f"Количество извлечённых сущностей, до урезания: {len(extracted_entities)}", verbose=self.verbose)
-            self.log(f"TMP_RESULT: {extracted_entities}", verbose=self.verbose)
+            self.log.debug("Количество извлечённых сущностей, до урезания: %d", len(extracted_entities), verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("TMP_RESULT: %s", extracted_entities, verbose=self.verbose, log_level=self.log_level)
             entities = extracted_entities[:self.config.max_entities]
-            self.log(f"RESULT: {len(entities)}", verbose=self.verbose)
+            self.log.debug("RESULT: %s", len(entities), verbose=self.verbose, log_level=self.log_level)
             for entity in entities:
-                self.log(f"* {entity}", verbose=self.verbose)
+                self.log.debug("* %s", entity, verbose=self.verbose, log_level=self.log_level)
 
-        self.log(f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.verbose)
+        self.log.debug("STATUS: %s", STATUS_MESSAGE[rinfo.status], verbose=self.verbose, log_level=self.log_level)
 
-        return entities, rinfo
+        return entities, rinfo, module_trace

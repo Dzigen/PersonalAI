@@ -1,0 +1,14 @@
+log_path: log/qa/kg_reasoner/weak/knowledge_retriever/watercircles_retriever
+verbose: false
+log_level: 10
+accepted_node_types:
+- object
+- hyper
+- episodic
+strict_filter: true
+hyper_num: 25
+episodic_num: 15
+chain_triplets_num: 25
+other_triplets_num: 6
+do_text_pruning: false
+cache_table_name: qa_watercircles_t_retriever_cache

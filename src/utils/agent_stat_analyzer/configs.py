@@ -1,5 +1,5 @@
 from ...db_drivers.table_driver import TableDBConnectionConfig, TableDriverConfig
-from .utils import LLMInferenceStat
+from ...db_drivers.table_driver.table_structures import LLMInferenceStat
 
 CREATE_TABLE_SQLQUERY = '''
 CREATE TABLE IF NOT EXISTS {table_name} (

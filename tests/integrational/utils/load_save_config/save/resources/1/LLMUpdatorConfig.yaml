@@ -1,0 +1,9 @@
+lang: auto
+log_path: log/memorize/updator/main
+verbose: false
+log_level: 10
+agent_gen_stategy: null
+agent_tasks_config:
+  replace_simple: v1
+  replace_thesis: v1
+delete_obsolete_info: false

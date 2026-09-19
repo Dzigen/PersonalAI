@@ -1,4 +1,4 @@
-print("Creating MemPipeline config file...")
+print("Creating Cache config file...")
 import sys
 import joblib
 import yaml

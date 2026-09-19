@@ -4,9 +4,11 @@ import warnings
 import socket
 from collections import defaultdict
 import pickle
+import gc
 
 from .configs import DEFAULT_MONGOKV_CONFIG
 from ..utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValueDBInstance
+from ...utils import restore_connection, retry
 
 
 class MongoKVConnector(AbstractKVDatabaseConnection):
@@ -18,47 +20,65 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
             config.formate_fields()
         self.config: KVDBConnectionConfig = config
 
+    @restore_connection
     def is_open(self) -> bool:
         try:
             self._client.server_info()
             return True
         except (pymongo.errors.ServerSelectionTimeoutError, AttributeError) as err:
-            #print(str(err))
+            # print(str(err))
             return False
 
+    @retry
     def open_connection(self) -> None:
-        if self.is_open():
-            self.close_connection()
+        self.close_connection()
 
-        self._client = pymongo.MongoClient(f'mongodb://{self.config.host}:{self.config.port}', 
+        self._client = pymongo.MongoClient(f'mongodb://{self.config.host}:{self.config.port}',
                                            username=self.config.params['username'], password=self.config.params['password'])
         self._collection = self._client[self.config.db_info['db']][self.config.db_info['table']]
+
+        self.operators: Dict = {
+            'find_one': self._collection.find_one,
+            'insert_many': self._collection.insert_many,
+            'find': self._collection.find,
+            'update_one': self._collection.update_one,
+            'delete_many': self._collection.delete_many,
+            'count_documents': self._collection.count_documents,
+            'drop': self._collection.drop
+        }
 
         if self.config.need_to_clear:
             self.clear()
 
     def close_connection(self) -> None:
         try:
-            del self._collection
             self._client.close()
+            gc.collect()
+            del self._collection
+            del self._client
         except (AttributeError, TypeError):
             pass
+
+    @restore_connection
+    def execute(self, mode: str, *args, **kwargs) -> Union[object, None]:
+        output = self.operators[mode](*args, **kwargs)
+        return output
 
     def create(self, items: List[KeyValueDBInstance]) -> None:
         for item in items:
             if item is None or item.id is None or item.value is None:
-                raise ValueError
+                raise ValueError(f"item: {item}")
 
             if not isinstance(item.id, str):
                 raise ValueError(f"{item} {type(item.id)} {type(item.value)}")
 
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(unique_ids): {len(unique_ids)}\n* items: {items}")
 
         filtered_items = []
         for item in items:
-            if self._collection.find_one({'_id': item.id}) is None:
+            if self.execute("find_one", {'_id': item.id}) is None:
                 if isinstance(item.value, bytes):
                     dumped_value = pickle.dumps((item.value, 'bytes'))
                 else:
@@ -74,7 +94,7 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
                 self.delete_rare_items(n_items_to_delete)
 
         if len(filtered_items) > 0:
-            self._collection.insert_many(filtered_items)
+            self.execute("insert_many", filtered_items)
 
     def delete_rare_items(self, num: int) -> None:
         # TODO
@@ -83,12 +103,12 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
         for id in ids:
             if (id is None) or (not isinstance(id, str)):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         if len(ids) < 1:
             return []
 
-        items = self._collection.find({"_id": {"$in": ids}})
+        items = self.execute("find", {"_id": {"$in": ids}})
         items_dict = {item['_id']: item for item in items}
 
         sorted_items = []
@@ -114,16 +134,15 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
     def update(self, items: List[KeyValueDBInstance]) -> None:
         for item in items:
             if item is None or item.id is None or item.value is None:
-                raise ValueError
+                raise ValueError(f"item: {item}")
 
-            if not isinstance(item.id, str) or type(item.value) not in [str, float, int]:
-                raise ValueError
+            if not isinstance(item.id, str) or type(item.value) not in [str, float, int, list, dict, set]:
+                raise ValueError(f"item: {item}")
 
         if len(items) < 1:
             return
 
-        existig_items = self._collection.find(
-            {"_id": {"$in": [item.id for item in items]}})
+        existig_items = self.execute("find", {"_id": {"$in": [item.id for item in items]}})
         items_dict = {item.id: item for item in items}
 
         for exist_item in existig_items:
@@ -135,26 +154,28 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
                 else:
                     dumped_value = pickle.dumps((cur_item.value, 'notbytes'))
 
-                self._collection.update_one({'_id': cur_item.id}, {
-                                            "$set": {"value": dumped_value}})
+                self.execute("update_one", {'_id': cur_item.id}, {"$set": {"value": dumped_value}})
 
     def delete(self, ids: List[str]) -> None:
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         if len(ids) > 0:
-            self._collection.delete_many({'_id': {"$in": ids}})
+            self.execute("delete_many", {'_id': {"$in": ids}})
 
     def count_items(self) -> int:
-        return self._collection.count_documents({})
+        return self.execute('count_documents', {})
 
     def item_exist(self, id: str) -> bool:
         if not isinstance(id, str):
-            raise ValueError
+            raise ValueError(f"id: {id}")
 
-        item = self._collection.find_one({'_id': id})
+        item = self.execute("find_one", {'_id': id})
         return item is not None
 
     def clear(self) -> None:
-        self._collection.drop()
+        self.execute('drop')
+
+    def __del__(self):
+        self.close_connection()

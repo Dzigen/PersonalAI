@@ -6,7 +6,8 @@ from .configs import QP_MAIN_LOG_PATH
 from .utils import WeakQueryParserTaskSolvers, QueryLLMParserAgentTasksConfig
 from ......utils.data_structs import QueryInfo, create_id, BaseComponentConfig, LanguageConfig
 from ......utils.errors import STATUS_MESSAGE
-from ......utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver
+from ......utils import Logger, ReturnStatus, ReturnInfo, AgentTaskSolver, accumulate_stage_info, \
+    CompositeModuleDetailedResult, ModuleType
 from ......agents.utils import AbstractAgentConnector
 from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
@@ -33,7 +34,7 @@ class QueryLLMParserConfig(BaseComponentConfig, LanguageConfig):
     max_entities: int = 20
 
     cache_table_name: str = 'qa_queryparser_stage_cache'
-    log: Logger = field(default_factory=lambda: Logger(QP_MAIN_LOG_PATH))
+    log_path: str = QP_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{self.max_entities}|{self.lang}"
@@ -74,7 +75,7 @@ class QueryLLMParser(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs()
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -90,8 +91,9 @@ class QueryLLMParser(CacheUtils, CacheOperations, AgentStatOperations):
                 kwe_task_cache_config, inferencestat_config)
         )
 
-        self.log = config.log
+        self.log = Logger(config.log_path)
         self.verbose = config.verbose
+        self.log_level = config.log_level
 
     def get_cache_key(self, query_info: QueryInfo) -> List[object]:
         """Формирует составной ключ кэша для результатов извлечения сущностей.
@@ -106,26 +108,25 @@ class QueryLLMParser(CacheUtils, CacheOperations, AgentStatOperations):
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [self.config.to_str(), str_using_agent_info, query_info.to_str()]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def extract_entities(self, query_info: QueryInfo) -> Tuple[List[str], ReturnInfo]:
+    def extract_entities(self, query_info: QueryInfo) -> Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для извлечения ключевых сущностей из query-текста.
 
         :param query_info: Структура данных с информацией об обрабатываемом запросе.
         :type query_info: QueryInfo
-        :return: Кортеж из двух объектов: (1) структура данных со списком извлечённых ключевых сущностей из query; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[List[str], ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) структура данных со списком извлечённых ключевых сущностей из query; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult]
         """
+        self.log.debug("START KEY WORD EXTRACTION...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", create_id(query_info.query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question: %s", query_info.query, verbose=self.verbose, log_level=self.log_level)
+        rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
 
-        self.log("START KEY WORD EXTRACTION...", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.query)}", verbose=self.verbose)
-        self.log(f"BASE_QUESTION: {query_info.query}", verbose=self.verbose)
-        rinfo = ReturnInfo()
-
-        self.log("Выполнение извлечения ключевых сущностей из запроса с помощью LLM-агента...",
-                 verbose=self.verbose)
-        extracted_entities, status = self.tasks_solvers.kw_extraction_solver.solve(
-            lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
-            query=query_info.query)
+        self.log.debug("Выполнение извлечения ключевых сущностей из запроса с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
+        extracted_entities, status, trace = self.tasks_solvers.kw_extraction_solver.solve(
+            lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query_info.query)
+        module_trace.add("kw_extraction_solver", ModuleType.task_solver, trace)
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
 
@@ -134,13 +135,13 @@ class QueryLLMParser(CacheUtils, CacheOperations, AgentStatOperations):
             rinfo.status = ReturnStatus.zero_entities
             rinfo.message = STATUS_MESSAGE[rinfo.status]
         else:
-            self.log(f"Количество извлечённых сущностей, до урезания: {len(extracted_entities)}", verbose=self.verbose)
-            self.log(f"TMP_RESULT: {extracted_entities}", verbose=self.verbose)
+            self.log.debug("Количество извлечённых сущностей, до урезания: %d", len(extracted_entities), verbose=self.verbose, log_level=self.log_level)
+            self.log.debug("TMP_RESULT: %s", extracted_entities, verbose=self.verbose, log_level=self.log_level)
             entities = extracted_entities[:self.config.max_entities]
-            self.log(f"RESULT: {len(entities)}", verbose=self.verbose)
+            self.log.debug("RESULT: %d", len(entities), verbose=self.verbose, log_level=self.log_level)
             for entity in entities:
-                self.log(f"* {entity}", verbose=self.verbose)
+                self.log.debug("* %s", entity, verbose=self.verbose, log_level=self.log_level)
 
-        self.log(f"STATUS: {STATUS_MESSAGE[rinfo.status]}", verbose=self.verbose)
+        self.log.debug("STATUS: %s", STATUS_MESSAGE[rinfo.status], verbose=self.verbose, log_level=self.log_level)
 
-        return entities, rinfo
+        return entities, rinfo, module_trace

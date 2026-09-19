@@ -4,7 +4,8 @@ from copy import deepcopy
 
 from .config import PLANENH_MAIN_LOG_PATH
 from .utils import MediumPlanEnhancerTaskSolvers, SearchPlanEnhancerAgentTasksConfig
-from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver
+from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver, accumulate_stage_info, \
+    CompositeModuleDetailedResult, ModuleType, CompositeModuleResult
 from ......utils.errors import ReturnStatus
 from ......agents.utils import AbstractAgentConnector
 from ......utils.data_structs import create_id, SearchPlanInfo, BaseComponentConfig, LanguageConfig
@@ -19,6 +20,10 @@ from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperati
 class SearchPlanEnhancerConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация SearchPlanEnhancer-стадии MediumQA-ризонера.
 
+    :param plan_enhancment: Если True, то невыполненные шаги аходящего план поиска будут скорректированы (перегенерированы на основании информации, полученной с предыдущих шагов), иначе False (план возврашается без изменений). Значение по умолчанию True.
+    :type plan_enhancment: bool, optional
+    :param enable_enhance_classifier: ... . Значение по умолчанию False.
+    :type enable_enhance_classifier: bool, optional
     :param agent_gen_stategy: Стратегия генерации текста для используемого LLM-агента. В случае None-значение будет использоваться стратегия по умолчанию. Значение по умолчанию None.
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param agent_tasks_config: Конфигурации LLM-промптом для решения заданных задач с помощью LLM-агента. Значение по умолчанию SearchPlanEnhancerAgentTasksConfig().
@@ -26,14 +31,16 @@ class SearchPlanEnhancerConfig(BaseComponentConfig, LanguageConfig):
     :param cache_table_name: Название таблицы в структуре (базе) данных, куда будут сохраняться (кешироваться) основные результаты работы SearchPlanEnhancer-класса. Значение по умолчанию 'medreasn_planenh_main_stage_cache'.
     :type cache_table_name: str, optional
     """
+    plan_enhancment: bool = True
+    enable_enhance_classifier: bool = False
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     agent_tasks_config: Union[SearchPlanEnhancerAgentTasksConfig, Dict] = field(default_factory=lambda: SearchPlanEnhancerAgentTasksConfig())
 
     cache_table_name: str = 'medreasn_planenh_main_stage_cache'
-    log: Logger = field(default_factory=lambda: Logger(PLANENH_MAIN_LOG_PATH))
+    log_path: str = PLANENH_MAIN_LOG_PATH
 
     def to_str(self):
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{self.plan_enhancment}|{self.enable_enhance_classifier}"
 
     @staticmethod
     def from_dict(dict_config: Dict):
@@ -71,7 +78,7 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs()
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -90,18 +97,23 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
                 agents_cache_config, inferencestat_config),
             plan_enhancing_solver=AgentTaskSolver(
                 self.agent, self.config.agent_tasks_config.plan_enhancing,
+                agents_cache_config, inferencestat_config),
+            searchstop_classify_solver=AgentTaskSolver(
+                self.agent, self.config.agent_tasks_config.searchstop_classifier,
                 agents_cache_config, inferencestat_config)
         )
 
-        self.log = self.config.log
+        self.log = Logger(config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     def get_cache_key(self, search_step: int, search_plan: SearchPlanInfo) -> List[str]:
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [str(search_step), search_plan.to_str(), self.config.to_str(), str_using_agent_info]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def perform(self, search_step: int, search_plan: SearchPlanInfo) -> Tuple[SearchPlanInfo, ReturnInfo]:
+    def perform(self, search_step: int, search_plan: SearchPlanInfo) -> Tuple[SearchPlanInfo, ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для генерации/модификации плана поиска. Если шаг поиска равен нулю, то план генерируется с нуля,
         иначе выполняется проверка: необходимо перегенерировать не пройденные шаги или нет. Если перегенерация необходима,
         то выполняется соответствеющая операция, иначе план оставляется без изменений.
@@ -110,63 +122,71 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         :type search_step: int
         :param search_plan: Структура данных, хранящая план поиска с промежуточными и доп. результатами.
         :type search_plan: SearchPlanInfo
-        :return: Кортеж из двух объектов: (1) Модифицированный план поиска; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[SearchPlanInfo, ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) Модифицированный план поиска; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[SearchPlanInfo, ReturnInfo, CompositeModuleDetailedResult]
         """
-        self.log("START SEARCH-PLAN INITING/ENHANCING...", verbose=self.verbose)
-        self.log(f"QUERY ID: {create_id(search_plan.base_query)}", verbose=self.verbose)
-        self.log(f"CURRENT PLAN: {search_plan}", verbose=self.verbose)
-        enhanced_search_plan, rinfo = None, ReturnInfo()
+        self.log.debug("START SEARCH-PLAN INITING/ENHANCING...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Query hash: %s", create_id(search_plan.base_query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Current plan: %s", search_plan, verbose=self.verbose, log_level=self.log_level)
+        enhanced_search_plan, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
 
         if search_step < 0:
-            raise ValueError
+            raise ValueError(f"search_step: {search_step}")
 
         if search_step == 0:
-            self.log("Генерируем план поиска с нуля...", verbose=self.verbose)
-            new_search_steps, status = self.tasks_solvers.plan_initialing_solver.solve(
+            self.log.debug("Генерируем план поиска с нуля...", verbose=self.verbose, log_level=self.log_level)
+            new_search_steps, rinfo.status, trace = self.tasks_solvers.plan_initialing_solver.solve(
                 lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=search_plan.base_query)
-            str_searchplan = "\n".join(
-                [f'{i}. {gen_step}' for i, gen_step in enumerate(new_search_steps)])
-            self.log(
-                f"RESULT: {len(new_search_steps)}\n{str_searchplan}", verbose=self.verbose)
+            module_trace.add("plan_initialing_solver", ModuleType.task_solver, trace)
 
-            if status == ReturnStatus.success:
+            if rinfo.status == ReturnStatus.success:
+                str_searchplan = "\n".join([f'{i}. {gen_step}' for i, gen_step in enumerate(new_search_steps)])
+                self.log.debug("RESULT: %d\n%s", len(new_search_steps), str_searchplan, verbose=self.verbose, log_level=self.log_level)
+
                 enhanced_search_plan = deepcopy(search_plan)
                 enhanced_search_plan.search_steps = new_search_steps
                 enhanced_search_plan.steps_answers = []
-        else:
-            self.log(
-                "Выполняем проверку на необходимость улучшения следующих шагов поиска в плане...", verbose=self.verbose)
-            need_enhance, status = self.tasks_solvers.enhance_classify_solver.solve(
-                lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=search_plan.base_query,
-                search_steps=search_plan.search_steps, steps_answers=search_plan.steps_answers[:search_step])
-            self.log(f"RESULT: {need_enhance}", verbose=self.verbose)
+            else:
+                self.log.debug("RESULT: -1\n%s", new_search_steps, verbose=self.verbose, log_level=self.log_level)
 
-            if status == ReturnStatus.success:
+        elif self.config.plan_enhancment:
+            self.log.debug("Выполняем проверку на необходимость улучшения следующих шагов поиска в плане...", verbose=self.verbose, log_level=self.log_level)
+            if self.config.enable_enhance_classifier:
+                need_enhance, rinfo.status, trace = self.tasks_solvers.enhance_classify_solver.solve(
+                    lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=search_plan.base_query,
+                    search_steps=search_plan.search_steps, steps_answers=search_plan.steps_answers[:search_step])
+                module_trace.add("enhance_classify_solver", ModuleType.task_solver, trace)
+                self.log.debug("RESULT: %s", need_enhance, verbose=self.verbose, log_level=self.log_level)
+            else:
+                self.log.warning("Current step is disabled. Continue.", verbose=self.verbose, log_level=self.log_level)
+                need_enhance = True
+
+            if rinfo.status == ReturnStatus.success:
                 if need_enhance:
-                    self.log("Улучшаем следующие шаги поиска в плане...",
-                             verbose=self.verbose)
-                    enhanced_steps, status = self.tasks_solvers.plan_enhancing_solver.solve(
+                    self.log.debug("Улучшаем следующие шаги поиска в плане...", verbose=self.verbose, log_level=self.log_level)
+                    enhanced_steps, rinfo.status, trace = self.tasks_solvers.plan_enhancing_solver.solve(
                         lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=search_plan.base_query,
-                        search_steps=search_plan.search_steps,
-                        steps_answers=search_plan.steps_answers[:search_step])
-                    str_enhancedsteps = "\n".join(
-                        [f'{i}. {gen_step}' for i, gen_step in enumerate(enhanced_steps)])
-                    self.log(
-                        f"RESULT: {len(enhanced_steps)}\n{str_enhancedsteps}", verbose=self.verbose)
+                        search_steps=search_plan.search_steps, steps_answers=search_plan.steps_answers[:search_step])
+                    module_trace.add("plan_enhancing_solver", ModuleType.task_solver, trace)
 
-                    if status == ReturnStatus.success:
+                    if rinfo.status == ReturnStatus.success:
+                        str_enhancedsteps = "\n".join([f'{i}. {gen_step}' for i, gen_step in enumerate(enhanced_steps)])
+                        self.log.debug("RESULT: %d\n%s", len(enhanced_steps), str_enhancedsteps, verbose=self.verbose, log_level=self.log_level)
+
                         enhanced_search_plan = deepcopy(search_plan)
-                        enhanced_search_plan.search_steps = search_plan.search_steps[
-                            :search_step] + enhanced_steps
+                        enhanced_search_plan.search_steps = search_plan.search_steps[:search_step] + enhanced_steps
                         enhanced_search_plan.steps_answers = search_plan.steps_answers[:search_step]
+                    else:
+                        self.log.warning("RESULT: -1\n%s", enhanced_steps, verbose=self.verbose, log_level=self.log_level)
 
                 else:
-                    self.log("Улучшение шагов поиска не требуется...",
-                             verbose=self.verbose)
+                    self.log.debug("Улучшение шагов поиска не требуется...", verbose=self.verbose, log_level=self.log_level)
                     enhanced_search_plan = deepcopy(search_plan)
+        else:
+            self.log.debug("Оператор корректировки существующего плана поиска выключен. Возвращается исходный план.", verbose=self.verbose, log_level=self.log_level)
+            enhanced_search_plan = deepcopy(search_plan)
+            rinfo.status = ReturnStatus.success
 
-        rinfo.status = status
-        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
+        self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)
 
-        return enhanced_search_plan, rinfo
+        return enhanced_search_plan, rinfo, module_trace

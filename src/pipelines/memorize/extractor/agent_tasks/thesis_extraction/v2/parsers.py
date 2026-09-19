@@ -30,6 +30,9 @@ def ethesises_custom_parse(raw_response: str, **kwargs) -> List[Tuple[str, List[
             continue
             # raise ValueError
 
+        #
+        entities = list(map(lambda v: str(v), entities))
+
         raw_thesises.append((thesis, entities))
 
     return raw_thesises

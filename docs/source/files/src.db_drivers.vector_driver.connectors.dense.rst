@@ -12,10 +12,50 @@ src.db\_drivers.vector\_driver.connectors.dense.ChromaVectorConnector module
    :undoc-members:
    :show-inheritance:
 
+src.db\_drivers.vector\_driver.connectors.dense.ElasticSearchVectorConnector module
+-----------------------------------------------------------------------------------
+
+.. automodule:: src.db_drivers.vector_driver.connectors.dense.ElasticSearchVectorConnector
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.db\_drivers.vector\_driver.connectors.dense.InMemoryVectorConnector module
+------------------------------------------------------------------------------
+
+.. automodule:: src.db_drivers.vector_driver.connectors.dense.InMemoryVectorConnector
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 src.db\_drivers.vector\_driver.connectors.dense.MilvusVectorConnector module
 ----------------------------------------------------------------------------
 
 .. automodule:: src.db_drivers.vector_driver.connectors.dense.MilvusVectorConnector
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.db\_drivers.vector\_driver.connectors.dense.OpenSearchVectorConnector module
+--------------------------------------------------------------------------------
+
+.. automodule:: src.db_drivers.vector_driver.connectors.dense.OpenSearchVectorConnector
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.db\_drivers.vector\_driver.connectors.dense.QdrantVectorConnector module
+----------------------------------------------------------------------------
+
+.. automodule:: src.db_drivers.vector_driver.connectors.dense.QdrantVectorConnector
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.db\_drivers.vector\_driver.connectors.dense.WeaviateVectorConnector module
+------------------------------------------------------------------------------
+
+.. automodule:: src.db_drivers.vector_driver.connectors.dense.WeaviateVectorConnector
    :members:
    :undoc-members:
    :show-inheritance:

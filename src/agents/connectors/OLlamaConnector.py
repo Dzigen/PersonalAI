@@ -2,7 +2,7 @@ from ollama import Client
 from typing import Union, Dict, Tuple
 import gc
 from time import time, sleep
-from httpx import ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout
+from httpx import ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout, ReadError
 
 from .configs import DEFAULT_OLLAMA_CONFIG
 from ..utils import AbstractAgentConnector, AgentConnectorConfig, LLMInferenceStat
@@ -40,6 +40,7 @@ class OLlamaConnector(AbstractAgentConnector):
 
     def close_connection(self):
         try:
+            self.client._client.close()
             del self.client
             gc.collect()
         except (ResourceWarning, AttributeError, TypeError):
@@ -63,7 +64,7 @@ class OLlamaConnector(AbstractAgentConnector):
                     keep_alive=self.config.ext_params['keep_alive']
                 )
                 flag = False
-            except (ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout) as e:
+            except (ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout, ReadError, RuntimeError) as e:
                 counter += 1
                 if counter > self.trials:
                     raise ConnectError(str(e))
@@ -74,10 +75,14 @@ class OLlamaConnector(AbstractAgentConnector):
         ai_end_time = time()
 
         inference_info = LLMInferenceStat(
-            prompt_tokens_amount=raw_output['prompt_eval_count'],
-            generated_tokens_amount=raw_output['eval_count'],
+            prompt_tokens_amount=raw_output.get('prompt_eval_count', 0), # !!! PAY ATTENTION !!!
+            generated_tokens_amount=raw_output.get('eval_count', 0),
             inference_elapsed_time=round(ai_end_time - ai_start_time, 2)
         )
+
+        # if raw_output.get('prompt_eval_duration', None) is None:
+        #     # prompt was cached
+        #     pass
 
         response = raw_output['message']['content']
         return response, inference_info

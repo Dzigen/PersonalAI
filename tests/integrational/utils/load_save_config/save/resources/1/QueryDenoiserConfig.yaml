@@ -1,0 +1,9 @@
+lang: auto
+log_path: log/qa/query_preprocessing/denoising/main
+verbose: false
+log_level: 10
+agent_gen_stategy: null
+agent_tasks_config:
+  swremoval: v2
+  grammarcheck: v2
+cache_table_name: qp_denoising_stage_cache

@@ -38,6 +38,7 @@ class AgentStatOperations(AbstractAgentStatOperations):
      - task-солверы (tasks_solvers) с настроенным кешем статистики inference,
     и делегирует им расчёт/очистку статистики.
     """
+
     def get_agent_tgen_stat(self) -> Dict[str, Union[None, Dict]]:
         """Метод предназначен для получения статистической информации по генерации по дочерним стадиям и task-солверам.
 

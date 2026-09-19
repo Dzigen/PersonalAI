@@ -1,0 +1,9 @@
+lang: auto
+log_path: log/qa/kg_reasoner/weak/query_parser/main
+verbose: false
+log_level: 10
+agent_gen_stategy: null
+agent_tasks_config:
+  kw_extraction: v2
+max_entities: 20
+cache_table_name: qa_queryparser_stage_cache

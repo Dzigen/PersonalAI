@@ -102,12 +102,12 @@ class MultiStepReranker(AbstractRerankerModule):
 
     def validate_config(self, vdb_composer: VectorComposer) -> bool:
         if not isinstance(self.config.reranking_sequence, list):
-            raise ValueError
+            raise ValueError(f"self.config.reranking_sequence: {self.config.reranking_sequence}")
 
         else:
             for r_config in self.config.reranking_sequence:
                 if not isinstance(r_config.type, RerankingType):
-                    raise ValueError
+                    raise ValueError(f"r_config: {r_config}")
 
                 if r_config.type == RerankingType.retriever:
                     if r_config.name not in vdb_composer.vdb_conn_mapping.keys():
@@ -115,44 +115,44 @@ class MultiStepReranker(AbstractRerankerModule):
                     if r_config.extended_params is not None:
                         if ('threshold' in r_config.extended_params) and (isinstance(r_config.extended_params['threshold'], float)):
                             if r_config.extended_params['threshold'] < 0 or r_config.extended_params['threshold'] > 1:
-                                raise ValueError
+                                raise ValueError(f"r_config.extended_params: {r_config.extended_params}")
                         elif r_config.extended_params['threshold'] is not None:
-                            raise ValueError
+                            raise ValueError(f"r_config.extended_params: {r_config.extended_params}")
 
                 elif r_config.type == RerankingType.filter:
                     if r_config.name not in AVAILABLE_FILTER_METHODS:
-                        raise ValueError
+                        raise ValueError(f"r_config: {r_config}")
 
                 if r_config.fetch_n < 0:
-                    raise ValueError
+                    raise ValueError(f"r_config: {r_config}")
 
         return True
 
     def validate_run_arguments(self, query: str, top_k: int, subset_ids: Union[None, List[str]], includes: List[str],
                                return_with_embeddings: Union[str, bool], return_with_scores: Union[str, bool]) -> bool:
         if not isinstance(query, str):
-            raise TypeError
+            raise TypeError(f"query: {query}")
         if len(query) < 1:
-            raise ValueError
+            raise ValueError(f"query: {query}")
 
         if not isinstance(top_k, int):
-            raise TypeError
+            raise TypeError(f"top_k: {top_k}")
         if top_k < 0:
-            raise ValueError
+            raise ValueError(f"top_k: {top_k}")
 
         if isinstance(return_with_embeddings, str):
             vdb_name = return_with_embeddings
             if vdb_name not in self.vdb_composer.vdb_conn_mapping.keys():
-                raise ValueError
+                raise ValueError(f"self.vdb_composer.vdb_conn_mapping: {self.vdb_composer.vdb_conn_mapping}")
         elif return_with_embeddings:
-            raise ValueError
+            raise ValueError(f"return_with_embeddings: {return_with_embeddings}")
 
         if isinstance(return_with_scores, str):
             vdb_name = return_with_scores
             if vdb_name not in self.vdb_composer.vdb_conn_mapping.keys():
-                raise ValueError
+                raise ValueError(f"self.vdb_composer.vdb_conn_mapping: {self.vdb_composer.vdb_conn_mapping}")
         elif return_with_scores:
-            raise ValueError
+            raise ValueError(f"return_with_scores: {return_with_scores}")
 
         if subset_ids is not None:
             for cur_id in subset_ids:
@@ -161,9 +161,9 @@ class MultiStepReranker(AbstractRerankerModule):
         if isinstance(includes, list):
             for name in includes:
                 if not ((isinstance(name, str)) and (name in ['documents', 'metadatas'])):
-                    raise ValueError
+                    raise ValueError(f"includes: {includes}")
         else:
-            raise ValueError
+            raise ValueError(f"includes: {includes}")
 
         return True
 
@@ -202,7 +202,7 @@ class MultiStepReranker(AbstractRerankerModule):
                 # TODO
                 raise NotImplementedError
             else:
-                raise ValueError
+                raise ValueError(f"r_config: {r_config}")
 
         sorted_subset_ids = sorted_subset_ids[:top_k]
 

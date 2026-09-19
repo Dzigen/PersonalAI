@@ -3,9 +3,10 @@ from typing import Tuple, Union, List, Dict
 from copy import deepcopy
 
 from .config import AAGG_MAIN_LOG_PATH
-from .utils import AnswerAggregatorTaskSolvers, AnswersAggregatorAgentTasksConfig
+from .utils import AnswerAggregatorTaskSolvers, AnswersAggregatorAgentTasksConfig, AnswersSummBehaviour
 from ..kg_reasoning.utils import QueryReasoningInfo
-from ....utils import ReturnInfo, Logger, AgentTaskSolver
+from ....utils import ReturnInfo, Logger, AgentTaskSolver, \
+    accumulate_stage_info, CompositeModuleDetailedResult, ModuleType
 from ....agents.utils import AbstractAgentConnector
 from ....utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
 from ....db_drivers.kv_driver import KeyValueDriverConfig
@@ -29,11 +30,12 @@ class AnswersAggregatorConfig(BaseComponentConfig, LanguageConfig):
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     agent_tasks_config: Union[Dict, AnswersAggregatorAgentTasksConfig] = field(default_factory=lambda: AnswersAggregatorAgentTasksConfig())
 
+    answers_summ_behaviour: AnswersSummBehaviour = AnswersSummBehaviour.strict_answer
     cache_table_name: str = 'answers_aggregation_main_stage_cache'
-    log: Logger = field(default_factory=lambda: Logger(AAGG_MAIN_LOG_PATH))
+    log_path: str = AAGG_MAIN_LOG_PATH
 
     def to_str(self) -> str:
-        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
+        return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{self.answers_summ_behaviour}"
 
     @staticmethod
     def from_dict(dict_config: Dict):
@@ -45,6 +47,8 @@ class AnswersAggregatorConfig(BaseComponentConfig, LanguageConfig):
     def formate_fields(self):
         if isinstance(self.agent_tasks_config, dict):
             self.agent_tasks_config = AnswersAggregatorAgentTasksConfig.from_dict(self.agent_tasks_config)
+        if isinstance(self.answers_summ_behaviour, str):
+            self.answers_summ_behaviour = AnswersSummBehaviour[self.answers_summ_behaviour]
 
 
 class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
@@ -70,7 +74,7 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs()
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -81,13 +85,17 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
             agents_cache_config = cache_kvdriver_config
 
         self.tasks_solvers: AnswerAggregatorTaskSolvers = AnswerAggregatorTaskSolvers(
-            subanswers_summarisation_solver=AgentTaskSolver(
-                self.agent, self.config.agent_tasks_config.suba_summarisation, agents_cache_config, inferencestat_config
+            strict_subanswers_summarisation_solver=AgentTaskSolver(
+                self.agent, self.config.agent_tasks_config.strict_suba_summarisation, agents_cache_config, inferencestat_config
+            ),
+            casual_subanswers_summarisation_solver=AgentTaskSolver(
+                self.agent, self.config.agent_tasks_config.casual_suba_summarisation, agents_cache_config, inferencestat_config
             )
         )
 
-        self.log = self.config.log
+        self.log = Logger(config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     def get_cache_key(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> List[str]:
         """Формирует ключ кэша для результатов агрегации ответов.
@@ -104,26 +112,26 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [query_info.to_str(), subq_info.to_str(), self.config.to_str(), str_using_agent_info]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def perform(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> Tuple[str, ReturnInfo]:
+    def perform(self, query_info: QueryPreprocessingInfo, subq_info: QueryReasoningInfo) -> Tuple[str, ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для выполнения операции аггрегации/резюмирования информации, полученной в результате ризонинга на графе знаний (памяти), и генерации финального ответа на user-вопрос.
 
         :param query_info: Структура данных с предобработанным user-вопросом и результатами промежуточных операций по его форматированию.
         :type query_info: QueryPreprocessingInfo
         :param subq_info: Структура данных с извлечённой из графа знаний информацией по предобработанному user-вопросу для генерации ответа.
         :type subq_info: QueryReasoningInfo
-        :return: Кортеж из двух объектов: (1) финальный ответ на user-вопрос; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[str, ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) финальный ответ на user-вопрос; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
-        self.log("START ANSWERS AGGREGATION...", verbose=self.verbose)
-        self.log(f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.verbose)
-        self.log(f"QUERY_INFO: {query_info}", verbose=self.verbose)
-        self.log(f"SUB_ANSWERS: {subq_info.sub_answers}",
-                 verbose=self.verbose)
-        final_answer, info = None, ReturnInfo()
+        self.log.debug("START ANSWERS AGGREGATION...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", create_id(query_info.base_query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Query info: %s", query_info, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Sub-answers: %s", subq_info.sub_answers, verbose=self.verbose, log_level=self.log_level)
+        final_answer, rinfo, module_trace = None, ReturnInfo(), CompositeModuleDetailedResult()
 
         if len(subq_info.sub_answers) < 0:
-            raise ValueError
+            raise ValueError(f"subq_info: {subq_info}")
         elif len(subq_info.sub_answers) == 1:
             final_answer = subq_info.sub_answers[0]
         else:
@@ -134,21 +142,31 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
             elif query_info.base_query is not None:
                 query = query_info.base_query
             else:
-                raise ValueError
+                raise ValueError(f"query_info: {query_info}")
 
             sub_queries = query_info.decomposed_query
             if len(sub_queries) < 2 or len(subq_info.sub_answers) != len(sub_queries):
-                raise ValueError
+                raise ValueError(f"sub_queries: {sub_queries}")
 
-            self.log("Выполнение суммаризации ответов с помощью LLM-агента...",
-                     verbose=self.verbose)
-            final_answer, status = self.tasks_solvers.subanswers_summarisation_solver.solve(
-                lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
-                query=query, sub_queries=sub_queries,
-                sub_answers=subq_info.sub_answers)
-            self.log(f"RESULT: {final_answer}", verbose=self.verbose)
-            info.status = status
+            self.log.debug("Выполнение суммаризации ответов с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
+            if self.config.answers_summ_behaviour == AnswersSummBehaviour.strict_answer:
+                final_answer, status, trace = self.tasks_solvers.strict_subanswers_summarisation_solver.solve(
+                    lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
+                    query=query, sub_queries=sub_queries, sub_answers=subq_info.sub_answers)
+                module_trace.add("strict_subanswers_summarisation_solver", ModuleType.task_solver, trace)
 
-        self.log(f"STATUS: {info.status}", verbose=self.verbose)
+            elif self.config.answers_summ_behaviour == AnswersSummBehaviour.casual_answer:
+                final_answer, status, trace = self.tasks_solvers.casual_subanswers_summarisation_solver.solve(
+                    lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
+                    query=query, sub_queries=sub_queries, sub_answers=subq_info.sub_answers)
+                module_trace.add("casual_subanswers_summarisation_solver", ModuleType.task_solver, trace)
 
-        return final_answer, info
+            else:
+                raise ValueError(f"self.config.answers_summ_behaviour: {self.config.answers_summ_behaviour}")
+
+            self.log.debug("RESULT: %s", final_answer, verbose=self.verbose, log_level=self.log_level)
+            rinfo.status = status
+
+        self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)
+
+        return final_answer, rinfo, module_trace

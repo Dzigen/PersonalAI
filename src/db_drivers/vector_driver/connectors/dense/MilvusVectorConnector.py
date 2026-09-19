@@ -9,11 +9,12 @@ import torch
 from .configs import DEFAULT_MILVUS_CONFIG
 from ...embedders import EmbedderModel
 from ...utils import AbstractVectorDatabaseConnection, VectorDBInstance, VectorDBConnectionConfig
+from ....utils import restore_connection, retry
 
 
 class MilvusVectorConnector(AbstractVectorDatabaseConnection):
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_MILVUS_CONFIG,
-                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16):
+                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 8):
         if isinstance(config, dict):
             config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
         else:
@@ -66,6 +67,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
                 collection_name=self.config.db_info['table'],
                 index_params=index_params)
 
+    @retry
     def open_connection(self) -> None:
         uri = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
         auth = f"{self.config.conn['user']}:{self.config.conn['pass']}"
@@ -107,26 +109,27 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         except ConnectionError as e:
             return False
 
+    @restore_connection
     def create(self, items: List[VectorDBInstance]) -> None:
         # validation
         for item in items:
             if not isinstance(item.id, str):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
-                raise ValueError
+                raise ValueError(f"item: {item}")
             for k, v in item.metadata.items():
                 if v is None:
                     raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"len(unique_ids): {len(unique_ids)}\n* len(items): {len(items)}")
 
         # Если в классе указан embedder, то используем его
         # для векторизации входящих документов
         if self.embedder is not None:
             for item in items:
                 if item.embedding is not None:
-                    raise ValueError
+                    raise ValueError(f"item: {item}")
 
             item_documents = list(map(lambda itm: itm.document, items))
             document_embeddings = self.embedder.encode_passages(item_documents, batch_size=self.encode_batchsize)
@@ -156,11 +159,12 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         else:
             sleep(self.config.params['create_sleep'])
 
+    @restore_connection
     def read(self, ids: List[str], includes=["embeddings", "documents", "metadatas"]) -> List[VectorDBInstance]:
         # validation
         for id in ids:
             if (id is None) or (not isinstance(id, str)):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
         if len(ids) < 1:
             return []
 
@@ -176,30 +180,32 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
 
         return formated_output
 
+    @restore_connection
     def update(self, items: List[VectorDBInstance]) -> None:
         # TODO
         pass
 
+    @restore_connection
     def upsert(self, items: List[VectorDBInstance]) -> None:
         # validation
         for item in items:
             if not isinstance(item.id, str):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
-                raise ValueError
+                raise ValueError(f"item: {item}")
             for k, v in item.metadata.items():
                 if v is None:
                     raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(items): {len(items)}\n* len(unique_ids): {len(unique_ids)}")
 
         # Если в классе указан embedder, то используем его
         # для векторизации входящих документов
         if self.embedder is not None:
             for item in items:
                 if item.embedding is not None:
-                    raise ValueError
+                    raise ValueError(f"item: {item}")
 
             item_documents = list(map(lambda itm: itm.document, items))
             document_embeddings = self.embedder.encode_passages(
@@ -217,11 +223,12 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         else:
             sleep(self.config.params['create_sleep'])
 
+    @restore_connection
     def delete(self, ids: List[str]) -> None:
         # validation
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         if len(ids):
             filtered_ids = [id for id in ids if self.item_exist(id)]
@@ -236,6 +243,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
                 else:
                     sleep(self.config.params['create_sleep'])
 
+    @restore_connection
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
             includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
@@ -285,15 +293,17 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
 
         return formated_output
 
+    @restore_connection
     def count_items(self) -> int:
         raw_output = self.client.query(
             self.config.db_info['table'], filter='', output_fields=['count(*)'])
         return raw_output[0]['count(*)']
 
+    @restore_connection
     def item_exist(self, id: str) -> bool:
         # validation
         if not isinstance(id, str):
-            raise ValueError
+            raise ValueError(f"id: {id}")
 
         #
         res = self.client.get(
@@ -302,6 +312,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
 
         return bool(len(res))
 
+    @restore_connection
     def clear(self) -> None:
         load_state = self.client.get_load_state(
             self.config.db_info['table'])['state'].value
@@ -318,3 +329,6 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
             self.client.load_collection(
                 collection_name=self.config.db_info['table'],
                 skip_load_dynamic_field=True)
+
+    def __del__(self):
+        self.close_connection()

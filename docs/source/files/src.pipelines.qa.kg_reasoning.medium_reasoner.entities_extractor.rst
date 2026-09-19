@@ -28,6 +28,14 @@ src.pipelines.qa.kg\_reasoning.medium\_reasoner.entities\_extractor.config modul
    :undoc-members:
    :show-inheritance:
 
+src.pipelines.qa.kg\_reasoning.medium\_reasoner.entities\_extractor.utils module
+--------------------------------------------------------------------------------
+
+.. automodule:: src.pipelines.qa.kg_reasoning.medium_reasoner.entities_extractor.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

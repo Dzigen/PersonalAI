@@ -1,9 +1,19 @@
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field, fields, asdict
 from typing import List, Union, Tuple, Dict
+from time import time
 from enum import Enum
 import hashlib
+import yaml
+from copy import deepcopy
+import os
 
-from .logger import Logger
+from .logger import LogLevel, Logger
+
+
+@dataclass
+class BaseTableStucture:
+    """Базовый класс для описания структуры записей, хранящихся в табличной БД."""
+    pass
 
 
 class NodeType(Enum):
@@ -65,6 +75,7 @@ RELATIONS_TYPES_MAP = {
 class RelationInfo:
     id: str
     type: RelationType
+    text: Union[None, str] = None
 
     def to_str(self):
         return f"{self.type.value}:{self.id}"
@@ -73,6 +84,27 @@ class RelationInfo:
 def from_str_to_relationinfo(str_relationinfo: str) -> RelationInfo:
     rtype, rid = str_relationinfo.split(":")
     return RelationInfo(id=rid, type=RELATIONS_TYPES_MAP[rtype])
+
+
+@dataclass
+class TripletInfo:
+    id: str
+    start_node: NodeInfo
+    relation: RelationInfo
+    end_node: NodeInfo
+
+    def to_str(self):
+        return f"{self.id}|{self.start_node.to_str()}|{self.relation.to_str()}|{self.end_node.to_str()}"
+
+
+def from_str_to_tripletinfo(str_tripletinfo: str) -> RelationInfo:
+    tid, snode_typed_strid, rel_typed_strid, enode_typed_strid = str_tripletinfo.split("|")
+    return TripletInfo(
+        id=tid,
+        start_node=from_str_to_nodeinfo(snode_typed_strid),
+        relation=from_str_to_relationinfo(rel_typed_strid),
+        end_node=from_str_to_nodeinfo(enode_typed_strid)
+    )
 
 
 @dataclass
@@ -131,6 +163,12 @@ class Triplet:
     #: Данное значение отличается от значения в поле id объекта класса Relation.
     id: str = None
 
+    def get_info(self):
+        return TripletInfo(
+            id=self.id, start_node=self.start_node.get_info(),
+            relation=self.relation.get_info(), end_node=self.end_node.get_info()
+        )
+
 
 class BaseCreator:
     @staticmethod
@@ -168,14 +206,14 @@ class RelationCreator(BaseCreator):
         if not isinstance(r_type, RelationType):
             formated_r_type = RELATIONS_TYPES_MAP.get(r_type, None)
             if formated_r_type is None:
-                raise ValueError
+                raise ValueError(f"formated_r_type: {formated_r_type}")
             else:
                 r_type = formated_r_type
 
         if r_type is not RelationType.simple:
             name = r_type.value
         elif name is None:
-            raise ValueError
+            raise ValueError(f"* r_type: {r_type}\n* name: {name}")
 
         prop = dict() if prop is None else prop
 
@@ -202,7 +240,7 @@ class NodeCreator(BaseCreator):
         if not isinstance(n_type, NodeType):
             formated_n_type = NODES_TYPES_MAP.get(n_type, None)
             if formated_n_type is None:
-                raise ValueError
+                raise ValueError(f"* n_type: {n_type}\n* formated_n_type: {formated_n_type}")
             else:
                 n_type = formated_n_type
 
@@ -247,7 +285,9 @@ def create_id_for_node_pair(node1_id: str, node2_id: str) -> str:
     return hashlib.md5((start_id + end_id).encode()).hexdigest()
 
 
-def create_id(seed: str) -> str:
+def create_id(seed: Union[None, str] = None) -> str:
+    if seed is None:
+        seed = f"{time()}"
     return hashlib.md5(seed.encode()).hexdigest()
 
 
@@ -301,10 +341,15 @@ class TripletCreator(BaseCreator):
         :rtype: Tuple[str,str]
         """
         rel_type = triplet.relation.type
-        if (rel_type == RelationType.episodic) or (rel_type == RelationType.hyper) or (rel_type == RelationType.time):
+        if rel_type in [RelationType.episodic, RelationType.hyper]:
             str_triplet = ""
             if "time" in triplet.end_node.prop.keys():
                 str_triplet += triplet.end_node.prop["time"] + ": "
+            str_triplet += TripletCreator.add_str_props(
+                triplet.end_node, str(triplet.end_node.name))
+
+        elif rel_type == RelationType.time:
+            str_triplet = triplet.start_node.name + ": "
             str_triplet += TripletCreator.add_str_props(
                 triplet.end_node, str(triplet.end_node.name))
 
@@ -317,10 +362,11 @@ class TripletCreator(BaseCreator):
                     triplet.start_node, str(triplet.start_node.name)),
                 TripletCreator.add_str_props(
                     triplet.relation, str(triplet.relation.name)),
-                TripletCreator.add_str_props(triplet.end_node, str(triplet.end_node.name))])
+                TripletCreator.add_str_props(
+                    triplet.end_node, str(triplet.end_node.name))])
 
         else:
-            raise KeyError
+            raise KeyError(f"rel_type: {rel_type}")
 
         return triplet.relation.id, str_triplet
 
@@ -450,10 +496,36 @@ class QueryPreprocessingInfo:
 
 
 @dataclass
+class LanguageConfig:
+    """
+    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при решении задач LLM-агентом. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
+    :type lang: str, optional
+    """
+    lang: str = 'auto'
+
+    def synchronize_language(self, lang: Union[None, str] = None):
+        """Метод предназначен для синхронизации языковых настроек между вложенными конфигурациями.
+
+        :param lang: Язык, который необходимо установить принудительно. Если None, используется текущее значение self.lang.
+        :type lang: Union[None,str], optional
+        """
+        if lang is not None:
+            self.lang = lang
+
+        fields_iterator = fields(self)
+        for field_object in fields_iterator:
+            field_value = getattr(self, field_object.name)
+
+            if isinstance(field_value, LanguageConfig):
+                field_value.synchronize_language(self.lang)
+
+
+@dataclass
 class BaseConfigOperations:
     """Базовый класс для конфигурационных объектов. Определяет типовые операции по созданию конфигураций из словаря
     и рекурсивному приведению вложенных полей к корректному формату.
     """
+
     def to_str(self) -> str:
         """Метод предназначен для получения строкового представления конфигурационного объекта.
 
@@ -486,17 +558,115 @@ class BaseConfigOperations:
         """
         pass
 
+    @classmethod
+    def load(cls, file_path: str):
+        """Метод предназначен для загрузки конфигурации компоненты из yaml-файла и создания соответствующего структурированного объекта
 
-@dataclass
-class BaseComponentConfig(BaseConfigOperations):
+        :param file_path: Путь до файла с параметрами конфигурационного объекта
+        :type file_path: str
+        :return: Экземпляр конфигурационного объекта.
+        :rtype: BaseConfigOperations
+        """
+        with open(file_path, "r") as fd:
+            dict_config: Dict = yaml.safe_load(fd)
+        return cls.from_dict(dict_config)
+
+    def custom_formatter(self, data):
+        formatted_dict = dict()
+        for key, val in data:
+            # print(key, val, type(val))
+
+            if key in ["task_to_selector_mapping", "AVAILABLE_RCONFIGS"]:
+                continue
+
+            elif key == "accepted_node_types":
+                formatted_val = []
+                for n_type in val:
+                    if isinstance(n_type, str):
+                        formatted_val.append(n_type)
+                    elif isinstance(n_type, NodeType):
+                        formatted_val.append(n_type.value)
+                    else:
+                        raise ValueError(f"n_type: {n_type}")
+                formatted_dict[key] = formatted_val
+
+            elif key in ["relation_type", "accepted_triplets_types"]:
+                formatted_val = []
+                for r_type in val:
+                    if isinstance(r_type, str):
+                        formatted_val.append(r_type)
+                    elif isinstance(r_type, RelationType):
+                        formatted_val.append(r_type.value)
+                    else:
+                        raise ValueError(f"r_type: {r_type}")
+                formatted_dict[key] = formatted_val
+
+            elif (key == "db_info") and isinstance(val, dict) and ('table_info' in val.keys()):
+                if issubclass(val['table_info'], BaseTableStucture):
+                    val['table_info'] = val['table_info'].__name__
+                formatted_dict[key] = val
+
+            else:
+                formatted_dict[key] = val
+
+        return formatted_dict
+
+    def save(self, file_path: str, force_rewrite: bool = True) -> None:
+        """Метод предназначен для сохранения конфигурации объекта в yaml-файл
+
+        :param file_path: Путь и название файла для сохранения конфигурации.
+        :type file_path: str
+        :param force_rewrite: Если True, то в случае существования файла по заданному пути он будет перезаписан, иначе False. Значение по умолчанию True.
+        :type force_rewrite: bool, optional
+        :raises FileExistsError: Файл с таким именем уже существует/создан по заданному пути
+        """
+        dict_config: Dict = asdict(self, dict_factory=self.custom_formatter)
+        if not force_rewrite and os.path.isfile(file_path):
+            raise FileExistsError(f"file_path: {file_path}")
+
+        with open(file_path, "w") as fd:
+            yaml.dump(dict_config, fd, default_flow_style=False, sort_keys=False, allow_unicode=True)
+
+
+@dataclass(kw_only=True)
+class LoggingConfig:
     """
-    :param log: Отладочный класс для журналирования/мониторинга поведения инициализируемой компоненты.
-    :type log: Logger, optional
+    :param log_path: Путь до каталога для хранения журнала мониторинга/поведения инициализируемой компоненты.
+    :type log_path: str, optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
+    :param log_level: Уровень (равный и выше) логирумыех сообщений в файл журналирования. Значение по умолчанию LogLevel.DISABLED (логирование выключено).
+    :type log_level: LogLevel, optional
     """
-    log: Logger
+    log_path: str = "."
     verbose: bool = False
+    log_level: LogLevel = LogLevel.DEBUG
+
+    def synchronize_logging(self, log_level: Union[None, LogLevel] = None, verbose: Union[None, bool] = None):
+        """Метод предназначен для синхронизации настроек логированиями между вложенными конфигурациями.
+
+        :param log_level: Уровень логирования, который необходимо установить принудительно. Если None, используется текущее значение self.log_level. Значение по умолчанию None.
+        :type log_level: Union[None, LogLevel], optional
+        :param verbose: Флаг сохранения лога в stdout, который необходимо установить принудительно. Если None, используется текущее значение self.verbose. Значение по умолчанию None.
+        :type verbose: Union[None, bool], optional
+        """
+
+        if isinstance(self, LoggingConfig):
+            if log_level is not None:
+                self.log_level = log_level
+            if verbose is not None:
+                self.verbose = verbose
+
+        fields_iterator = fields(self)
+        for field_object in fields_iterator:
+            field_value = getattr(self, field_object.name)
+
+            if isinstance(field_value, LoggingConfig):
+                field_value.synchronize_logging(self.log_level, self.verbose)
+
+
+@dataclass
+class BaseComponentConfig(LoggingConfig, BaseConfigOperations):
 
     @staticmethod
     def from_dict(dict_config: Dict):
@@ -508,28 +678,3 @@ class BaseComponentConfig(BaseConfigOperations):
         :rtype: BaseComponentConfig
         """
         pass
-
-
-@dataclass
-class LanguageConfig:
-    """
-    :param lang: Язык, который будет использоваться в подаваемом на вход тексте. На основании выбранного языка будут использоваться соответствующие промпты при решении задач LLM-агентом. Если 'auto', то язык определяется автоматически. Значение по умолчанию 'auto'.
-    :type lang: str, optional
-    """
-    lang: str = 'auto'
-
-    def synchronize_language(self, lang: Union[None, str] = None):
-        """Метод предназначен для синхронизации языковых настроек между вложенными конфигурациями.
-
-        :param lang: Язык, который необходимо установить принудительно. Если None, используется текущее значение self.lang.
-        :type lang: Union[None,str], optional
-        """
-        if lang is not None:
-            self.lang = lang
-
-        fields_iterator = fields(self)
-        for field_object in fields_iterator:
-            field_value = getattr(self, field_object.name)
-
-            if isinstance(field_value, LanguageConfig):
-                field_value.synchronize_language(self.lang)

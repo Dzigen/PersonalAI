@@ -103,9 +103,9 @@ redisui_cnt_variables = {
 DENSE_DB_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['KG_DIR_STRUCT']['embeddings_dir']['name']}/{KGENV_PARAMS['KG_DIR_STRUCT']['embeddings_dir']['dense_part']}"
 DENSE_CONNECTOR_PARAMS = KGCONN_PARAMS['KG_MODEL_CONNECTORS']['embeddings_struc_connection']['nodesdb_config']['dense_connector']
 
-milvus_cnt_variables = {
-    'QDRANT_CNTNAME': ADDITIONAL_DC_PARAMS['milvus_cntname'],
-    'QDRANT_HOST': ADDITIONAL_DC_PARAMS['milvus_host'],
+qdrant_cnt_variables = {
+    'QDRANT_CNTNAME': ADDITIONAL_DC_PARAMS['qdrant_cntname'],
+    'QDRANT_HOST': ADDITIONAL_DC_PARAMS['qdrant_host'],
 
     'QDRANT_EXTERNAL_PORT': DENSE_CONNECTOR_PARAMS['conn']['port'],
     'QDRANT_UI_EXTERNAL_PORT': ADDITIONAL_KGDC_PARAMS['qdrant_ui_port'],
@@ -179,11 +179,11 @@ def add_prefixes(dict_variables) -> None:
 
 
 env_variables = [
-    neo4j_cnt_variables, milvus_cnt_variables, mongo_cnt_variables, mongoui_cnt_variables,
-    redis_cnt_variables, redisui_cnt_variables, opensearch_cnt_variables, workspace_cnt_variables]
+    neo4j_cnt_variables, qdrant_cnt_variables, mongo_cnt_variables, mongoui_cnt_variables,
+    redis_cnt_variables, redisui_cnt_variables, opensearch_cnt_variables, workspace_cnt_variables, llmagents_cnt_variables]
 for variables in env_variables:
     add_prefixes(variables)
-env_variables += [llmagents_cnt_variables, compose_variables]
+env_variables += [compose_variables]
 
 env_variables = '\n'.join(
     list(map(lambda vars: dictvar_to_string(vars), env_variables)))

@@ -9,6 +9,7 @@ urllib3.disable_warnings()
 
 from .configs import DEFAULT_ELASTICSEARCH_BM25_CONFIG
 from ...utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
+from ....utils import restore_connection, retry
 from .....utils.errors import ReturnInfo
 
 
@@ -24,6 +25,7 @@ class ElasticSearchBM25Connector(AbstractVectorDatabaseConnection):
         self.db_conn = None
         self.retriever = None
 
+    @retry
     def open_connection(self) -> ReturnInfo:
         host = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
         index = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
@@ -38,25 +40,27 @@ class ElasticSearchBM25Connector(AbstractVectorDatabaseConnection):
         # TODO
         pass
 
+    @restore_connection
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
         # validating
         for item in items:
             if not isinstance(item.id, str):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             if item.embedding is not None:
-                raise ValueError
+                raise ValueError(f"item: {item}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(unique_ids): {len(unique_ids)}\n* len(items): {len(items)}")
 
         formated_items = list(map(lambda item: Document(id=item.id, content=item.document, meta=item.metadata), items))
         self.db_conn.write_documents(formated_items, policy=DuplicatePolicy.SKIP)
 
+    @restore_connection
     def read(self, ids: List[str], includes: List[str] = ['documents', 'metadatas']) -> List[VectorDBInstance]:
         # validation
         for id in ids:
             if (id is None) or (not isinstance(id, str)):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
         if len(ids) < 1:
             return []
 
@@ -74,36 +78,40 @@ class ElasticSearchBM25Connector(AbstractVectorDatabaseConnection):
 
         return formated_output
 
+    @restore_connection
     def update(self) -> ReturnInfo:
         # TODO
         pass
 
+    @restore_connection
     def upsert(self, items: List[VectorDBInstance]) -> None:
         # validating
         for item in items:
             if not isinstance(item.id, str):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             if item.embedding is not None:
-                raise ValueError
+                raise ValueError(f"item: {item}")
             for k, v in item.metadata.items():
                 if v is None:
                     raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(unique_ids): {len(unique_ids)}\n* len(items): {len(items)}")
 
         self.db_conn.delete_documents(document_ids=list(map(lambda item: item.id, items)))
         self.create(items)
 
+    @restore_connection
     def delete(self, ids: List[str]) -> None:
         # validation
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         if len(ids):
             self.db_conn.delete_documents(document_ids=ids)
 
+    @restore_connection
     def retrieve(self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
                  includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
         self.validate_retrieve_arguments(query_instances, n_results, subset_ids, includes)
@@ -149,18 +157,21 @@ class ElasticSearchBM25Connector(AbstractVectorDatabaseConnection):
 
         return formated_outputs
 
+    @restore_connection
     def count_items(self) -> int:
         return self.db_conn.count_documents()
 
+    @restore_connection
     def item_exist(self, id: str) -> bool:
         # validation
         if not isinstance(id, str):
-            raise ValueError
+            raise ValueError(f"id: {id}")
 
         res = self.db_conn.filter_documents(filters={"field": "id", "operator": "==", "value": id})
 
         return bool(len(res))
 
+    @restore_connection
     def clear(self) -> None:
         if self.db_conn._client is None:
             self.count_items()
@@ -168,3 +179,6 @@ class ElasticSearchBM25Connector(AbstractVectorDatabaseConnection):
         self.db_conn._client.indices.delete(index=self.db_conn._index)
         self.db_conn._client.indices.create(index=self.db_conn._index)
         self.db_conn._client.indices.forcemerge(index=self.db_conn._index, only_expunge_deletes=True)
+
+    def __del__(self):
+        self.close_connection()

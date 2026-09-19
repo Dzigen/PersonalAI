@@ -1,0 +1,31 @@
+METHOD: raptor
+DATASET_NAME: hotpotqa_distractor_validation
+KNOWLEDGE_GRAPH_NAME: llama318b_230126_v2prompts
+
+LOCAL_PERSONALAI_PATH: /home/m.menschikov/workspace/personal_ai/Personal-AI
+LOCAL_KG_PATH: /mnt/data/m.menschikov/personalai/knowledge_graphs/analogues_eval
+OLLAMA_MODELS_PATH: /mnt/data/m.menschikov/ollama_volume
+OLLAMA_EXT_PORT: 11437
+KG_SETTING_DIR:
+  name: settings
+  kgconn: kgconn_params
+  kgenv: kgenv_params
+GPUS_CONFIG:
+  ollama_device_id: '2'
+  workspace_device_id: '2'
+PERSONALAI_REPO_DIRS:
+  experiments: experiments/analogues_eval/qa_eval
+WORKSPACE_CONTAINER_DIRS:
+  experiments: experiments/analogues_eval/qa_eval
+  kg: data/knowledge_graphs/analogues_eval
+SAVE_PARAMS_CONFIG:
+  base_path: env_settings
+  kgconn: kgconn_params.yaml
+  kgenv: kgenv_params.yaml
+  qaenv: qaenv_params.yaml
+  env_file: .qaexp_env
+CONTAINERS_ADDITIONAL_CONFIG:
+  workspace_cntname: personalai_mmenschikov_analogues_qaexp_workspace
+  workspace_host: localhost
+  ollama_cntname: personalai_mmenschikov_ollama
+  ollama_host: personalai_mmenschikov_ollama

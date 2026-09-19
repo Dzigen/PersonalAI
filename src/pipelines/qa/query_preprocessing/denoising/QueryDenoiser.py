@@ -4,6 +4,7 @@ from copy import deepcopy
 
 from .config import QD_MAIN_LOG_PATH
 from .utils import QueryDenoiserTaskSolvers, QueryDenoiserAgentTasksConfig
+from .....utils import accumulate_stage_info, CompositeModuleDetailedResult, ModuleType
 from .....utils.cache_kv import CacheUtils
 from .....utils.errors import STATUS_MESSAGE
 from .....utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
@@ -30,7 +31,7 @@ class QueryDenoiserConfig(BaseComponentConfig, LanguageConfig):
     agent_tasks_config: Union[Dict, QueryDenoiserAgentTasksConfig] = field(default_factory=lambda: QueryDenoiserAgentTasksConfig())
 
     cache_table_name: str = 'qp_denoising_stage_cache'
-    log: Logger = field(default_factory=lambda: Logger(QD_MAIN_LOG_PATH))
+    log_path: str = QD_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
@@ -71,7 +72,7 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs()
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
 
         self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
 
@@ -91,8 +92,9 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
             )
         )
 
-        self.log = self.config.log
+        self.log = Logger(self.config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     def get_cache_key(self, query_info: QueryPreprocessingInfo) -> List[object]:
         """Формирует ключ кеша для результата денойзинга.
@@ -106,53 +108,52 @@ class QueryDenoiser(CacheUtils, CacheOperations, AgentStatOperations):
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [query_info.to_str(), self.config.to_str(), str_using_agent_info]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def perform(self, query_info: QueryPreprocessingInfo) -> Tuple[str, ReturnInfo]:
+    def perform(self, query_info: QueryPreprocessingInfo) -> Tuple[str, ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для выполнения операции форматирования/предобработки user-вопроса: удаления стоп-слов и шумовой/ненужной информации.
 
         :param query_info: Структура данных с результатами предыдущих операций предобработки/форматирования исходного user-вопроса.
         :type query_info: QueryPreprocessingInfo
-        :return: Кортеж из двух объектов: (1) модифицированный user-вопрос без информации, зашумляющей основной запрос/интент; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[str, ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) модифицированный user-вопрос без информации, зашумляющей основной запрос/интент; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
-        self.log("START QUERY DENOISING...", verbose=self.verbose)
-        self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.verbose)
-        self.log(f"QUERY INFO: {query_info}", verbose=self.verbose)
+        self.log.debug("START QUERY DENOISING...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", create_id(query_info.base_query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Query info: %s", query_info, verbose=self.verbose, log_level=self.log_level)
         denoised_query, rinfo = None, ReturnInfo()
+        module_trace = CompositeModuleDetailedResult()
 
         if query_info.base_query is not None:
             query = query_info.base_query
         else:
-            raise ValueError
+            raise ValueError(f"query_info: {query_info}")
 
-        self.log("Выполнение удаление лишней информации/символов из запроса с помощью LLM-агента...",
-                 verbose=self.verbose)
-        query_wo_stopwords, status = self.tasks_solvers.swremoval_solver.solve(
+        self.log.debug("Выполнение удаление лишней информации/символов из запроса с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
+        query_wo_stopwords, status, trace = self.tasks_solvers.swremoval_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
+        module_trace.add("swremoval_solver", ModuleType.task_solver, trace)
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
         else:
-            self.log(f"RESULT: {query_wo_stopwords}",
-                     verbose=self.verbose)
+            self.log.debug("RESULT: %s", query_wo_stopwords, verbose=self.verbose, log_level=self.log_level)
 
         if status == ReturnStatus.success:
-            self.log("Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.verbose)
-            reformulated_query, status = self.tasks_solvers.grammar_check_solver.solve(
-                lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
-                query=query_wo_stopwords)
+            self.log.debug("Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
+            reformulated_query, status, trace = self.tasks_solvers.grammar_check_solver.solve(
+                lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query_wo_stopwords)
+            module_trace.add("grammar_check_solver", ModuleType.task_solver, trace)
             if status != ReturnStatus.success:
                 rinfo.occurred_warning.append(status)
             else:
-                self.log(f"RESULT: {reformulated_query}",
-                         verbose=self.verbose)
+                self.log.debug("RESULT: %s", reformulated_query, verbose=self.verbose, log_level=self.log_level)
                 denoised_query = reformulated_query
 
         if denoised_query is None:
             rinfo.status = ReturnStatus.empty_answer
             rinfo.message = STATUS_MESSAGE[rinfo.status]
 
-        self.log(f"RESULT: {denoised_query}", verbose=self.verbose)
-        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
+        self.log.debug("RESULT: %s", denoised_query, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)
 
-        return denoised_query, rinfo
+        return denoised_query, rinfo, module_trace

@@ -1,0 +1,34 @@
+METHOD_NAME: kggen
+DATASET_NAME: mine_train_kgeval
+KNOWLEDGE_GRAPH_NAME: gemma312b_190226_mine_kggen
+LOCAL_PERSONALAI_PATH: /home/m.menschikov/workspace/personal_ai/Personal-AI
+LOCAL_KG_PATH: /mnt/data/m.menschikov/personalai/knowledge_graphs/analogues_eval
+LOCAL_OLLAMA_MODELS_PATH: /mnt/data/m.menschikov/ollama_volume
+OLLAMA_EXT_PORT: 11437
+KG_DIR_STRUCT:
+  db_storage: db
+  configdb_storage: configdb
+  mongot_storage: mongot
+KG_SETTING_DIR:
+  name: settings
+  kgconn: kgconn_params
+  kgenv: kgenv_params
+GPUS_CONFIG:
+  ollama_device_id: '0'
+  workspace_device_id: '1'
+PERSONALAI_REPO_DIRS:
+  experiments: experiments
+WORKSPACE_CONTAINER_DIRS:
+  experiments: experiments
+  kg: data/knowledge_graphs/analogues_eval
+SAVE_PARAMS_CONFIG:
+  base_path: env_settings
+  kgconn: kgconn_params.yaml
+  kgenv: kgenv_params.yaml
+  kgevalenv: kgevalenv_params.yaml
+  env_file: .kgeval_env
+CONTAINERS_ADDITIONAL_CONFIG:
+  workspace_cntname: personalai_mmenschikov_analogues_kgeval_workspace
+  workspace_host: localhost
+  ollama_cntname: personalai_mmenschikov_ollama
+  ollama_host: personalai_mmenschikov_ollama

@@ -11,28 +11,33 @@ from haystack_integrations.components.retrievers.opensearch import OpenSearchEmb
 from haystack_integrations.document_stores.opensearch import OpenSearchDocumentStore
 from haystack.document_stores.types import DuplicatePolicy
 from haystack import Document
+from opensearchpy.exceptions import TransportError, ConnectionError, ConnectionTimeout
 
 from .configs import DEFAULT_OPENSEARCH_CONFIG
 from ...embedders import EmbedderModel
 from ...utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
+from ....utils import restore_connection, retry
 from .....utils.errors import ReturnInfo
 
 
 class OpenSeachVectorConnector(AbstractVectorDatabaseConnection):
 
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_OPENSEARCH_CONFIG,
-                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16) -> None:
+                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 8) -> None:
         if isinstance(config, dict):
             config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
         else:
             config.formate_fields()
         self.config = config
 
+        self.HANDLING_DB_EXCEPTIONS = tuple(set(list(self.HANDLING_DB_EXCEPTIONS) + [TransportError, ConnectionError, ConnectionTimeout]))
+
         self.embedder = embedder
         self.encode_batchsize = encode_batchsize
         self.db_conn = None
         self.retriever = None
 
+    @retry
     def open_connection(self) -> ReturnInfo:
         host = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
         http_auth = (self.config.conn['user'], self.config.conn['pass'])
@@ -59,26 +64,27 @@ class OpenSeachVectorConnector(AbstractVectorDatabaseConnection):
         except TypeError:
             pass
 
+    @restore_connection
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
         # validation
         for item in items:
             if not isinstance(item.id, str):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
-                raise ValueError
+                raise ValueError(f"item: {item}")
             for k, v in item.metadata.items():
                 if v is None:
                     raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(unique_ids): {len(unique_ids)}\n* len(items): {len(items)}")
 
         # Если в классе указан embedder, то используем его
         # для векторизации входящих документов
         if self.embedder is not None:
             for item in items:
                 if item.embedding is not None:
-                    raise ValueError
+                    raise ValueError(f"item: {item}")
 
             item_documents = list(map(lambda itm: itm.document, items))
             document_embeddings = self.embedder.encode_passages(item_documents, batch_size=self.encode_batchsize)
@@ -90,18 +96,19 @@ class OpenSeachVectorConnector(AbstractVectorDatabaseConnection):
         else:
             for item in items:
                 if item.embedding is None:
-                    raise ValueError
+                    raise ValueError(f"item: {item}")
             updated_items = items
 
         formated_items = list(map(lambda item: Document(
             id=item.id, content=item.document, meta=item.metadata, embedding=item.embedding), updated_items))
         self.db_conn.write_documents(formated_items, policy=DuplicatePolicy.SKIP)
 
+    @restore_connection
     def read(self, ids: List[str], includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[VectorDBInstance]:
         # validation
         for id in ids:
             if (id is None) or (not isinstance(id, str)):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
         if len(ids) < 1:
             return []
 
@@ -120,6 +127,7 @@ class OpenSeachVectorConnector(AbstractVectorDatabaseConnection):
 
         return formated_output
 
+    @restore_connection
     def update(self) -> ReturnInfo:
         # TODO
         pass
@@ -128,30 +136,32 @@ class OpenSeachVectorConnector(AbstractVectorDatabaseConnection):
         # validation
         for item in items:
             if not isinstance(item.id, str):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
-                raise ValueError
+                raise ValueError(f"item: {item}")
             for k, v in item.metadata.items():
                 if v is None:
                     raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(unique_ids): {len(unique_ids)}\n* len(items): {len(items)}")
 
         for item in items:
             if self.item_exist(item.id):
                 self.delete([item.id])
             self.create([item])
 
+    @restore_connection
     def delete(self, ids: List[str]) -> None:
         # validation
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         if len(ids):
             self.db_conn.delete_documents(document_ids=ids)
 
+    @restore_connection
     def retrieve(
             self, query_instances: List[VectorDBInstance], n_results: int = 50, subset_ids: Union[None, List[str]] = None,
             includes: List[str] = ['documents', 'metadatas']) -> List[List[Tuple[float, VectorDBInstance]]]:
@@ -213,18 +223,21 @@ class OpenSeachVectorConnector(AbstractVectorDatabaseConnection):
 
         return formated_outputs
 
+    @restore_connection
     def count_items(self) -> int:
         return self.db_conn.count_documents()
 
+    @restore_connection
     def item_exist(self, id: str) -> bool:
         # validation
         if not isinstance(id, str):
-            raise ValueError
+            raise ValueError(f"id: {id}")
 
         res = self.db_conn.filter_documents(filters={"field": "id", "operator": "==", "value": id})
 
         return bool(len(res))
 
+    @restore_connection
     def clear(self) -> None:
         if self.db_conn._client is None:
             self.count_items()
@@ -242,3 +255,6 @@ class OpenSeachVectorConnector(AbstractVectorDatabaseConnection):
 
         # assert self.db_conn._client.indices.exists(index=self.db_conn._index)
         # self.db_conn._client.indices.refresh(index=self.db_conn._index)
+
+    def __del__(self):
+        self.close_connection()

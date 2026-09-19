@@ -18,7 +18,9 @@ import torch
 import gc
 import os
 import nltk
-nltk.download('wordnet')
+# nltk.download('wordnet')
+# nltk.download('punkt')
+# nltk.download('punkt_tab')
 
 ####################################################
 print("1. Loading hyperparameters from .yaml files")
@@ -58,6 +60,33 @@ EVAL_PARAMS_SPATH = f"{SETTINGS_PATH}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['eval']}"
 
 ####################################################
 print("3. Declaring Metrics-class")
+
+def calculate_f1_generation(hypothesis, reference):
+    """
+    Calculates F1 score for a single reference and hypothesis pair
+    based on word overlap (often used in generation tasks like summarization/translation eval).
+    """
+    # Tokenize the sentences into words
+    reference_tokens = nltk.word_tokenize(reference)
+    hypothesis_tokens = nltk.word_tokenize(hypothesis)
+
+    # Calculate precision and recall based on set overlap
+    common_tokens = set(reference_tokens) & set(hypothesis_tokens)
+    num_common = len(common_tokens)
+    num_hyp = len(hypothesis_tokens)
+    num_ref = len(reference_tokens)
+
+    # Handle edge cases for division by zero
+    precision = num_common / num_hyp if num_hyp > 0 else 0
+    recall = num_common / num_ref if num_ref > 0 else 0
+
+    # Calculate F1 score (harmonic mean)
+    if precision + recall == 0:
+        f1 = 0
+    else:
+        f1 = 2 * (precision * recall) / (precision + recall)
+
+    return f1
 
 class ReaderMetrics:
     # Source: https://amitness.com/2020/08/information-retrieval-evaluation/
@@ -120,6 +149,9 @@ class ReaderMetrics:
 
     def levenshtain_score(self, predicted: List[str], targets: List[str]):
         return list(map(lambda pair: levenshtain_distance(pair[1], pair[0]), zip(predicted, targets)))
+
+    def f1(self, predicted: List[str], targets: List[str]):
+        return list(map(lambda pair: calculate_f1_generation(pair[1], pair[0]), zip(predicted, targets)))
 
 ####################################################
 print("4. Setting Metrics-class")
@@ -187,6 +219,10 @@ for pack_name in gen_pack_names:
         em_scores = round5(np.mean(METRICS.exact_match(
             generated_answers, filtered_target_answers)))
 
+        print("Calculating F1...")
+        f1_scores = round5(np.mean(METRICS.f1(
+            generated_answers, filtered_target_answers)))
+
         # print("Calculating BertScore...")
         # bs_scores = METRICS.bertscore(
         #     generated_answers, filtered_target_answers)
@@ -196,7 +232,7 @@ for pack_name in gen_pack_names:
         ) == EVAL_PARAMS['no_answer'], generated_answers))) / len(generated_answers)
 
     else:
-        b1_scores, b2_scores, rl_scores, m_scores, em_scores, bs_scores, noansw_scores = 0, 0, 0, 0, 0, 0, 0
+        b1_scores, b2_scores, rl_scores, m_scores, em_scores, f1_scores, bs_scores, noansw_scores = 0, 0, 0, 0, 0, 0, 0, 0
 
     none_score = round5(none_answers / len(generated_pack))
 
@@ -206,6 +242,7 @@ for pack_name in gen_pack_names:
         'METEOR': float(m_scores),
         'RougeL': float(rl_scores),
         'ExactMatch': float(em_scores),
+        'F1': float(f1_scores),
         #'BertScore': bs_scores,
         'NoneScore': float(none_score),
         'NoAnswerScore': float(noansw_scores)

@@ -15,5 +15,5 @@ from .cases import POPULATED_MEDIUM_REASONER_TEST_CASES
 def test_medium_reasoner(reasoner_config: MediumKGReasonerConfig, query: str, kg_model: KnowledgeGraphModel):
     reasoner = MediumKGReasoner(kg_model, reasoner_config, kg_model.cache_config)
 
-    _, info = reasoner.perform(query)
+    _, info, _ = reasoner.perform(query)
     assert info.status.value == 0

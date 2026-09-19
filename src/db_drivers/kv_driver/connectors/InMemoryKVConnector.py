@@ -78,7 +78,7 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
     def create(self, items: List[KeyValueDBInstance]) -> None:
         for item in items:
             if item is None or item.id is None or item.value is None:
-                raise ValueError
+                raise ValueError(f"item: {item}")
 
             if not isinstance(item.id, str):
                 raise ValueError(
@@ -86,7 +86,7 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
 
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(unique_ids): {len(unique_ids)}\n* items: {items}")
 
         filtered_items = [
             item for item in items if not self.item_exist(item.id)]
@@ -113,7 +113,7 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
     def read(self, ids: List[str]) -> List[KeyValueDBInstance]:
         for id in ids:
             if (id is None) or (not isinstance(id, str)):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         items = []
         item_scores = defaultdict(lambda: 0)
@@ -135,13 +135,27 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         pass
 
     def update(self, items: List[KeyValueDBInstance]) -> None:
-        # TODO
-        pass
+        for item in items:
+            if item is None or item.id is None or item.value is None:
+                raise ValueError(f"item: {item}")
+            if not isinstance(item.id, str) or type(item.value) not in [str, float, int, list, dict, set]:
+                raise ValueError(f"item: {item}")
+        if len(items) < 1:
+            return
+
+        for item in items:
+            if self.item_exist(item.id):
+                if isinstance(item.value, bytes):
+                    dumped_value = pickle.dumps((item.value, 'bytes'))
+                else:
+                    dumped_value = pickle.dumps((item.value, 'notbytes'))
+
+                self.kv_store[item.id] = dumped_value
 
     def delete(self, ids: List[str]):
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         for id in ids:
             if self.item_exist(id):
@@ -157,5 +171,8 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
 
     def item_exist(self, id: str):
         if not isinstance(id, str):
-            raise ValueError
+            raise ValueError(f"id: {id}")
         return id in self.kv_store
+
+    def __del__(self):
+        self.close_connection()

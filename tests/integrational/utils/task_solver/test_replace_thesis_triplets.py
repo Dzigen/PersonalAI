@@ -74,7 +74,7 @@ def test_replace_thesis(replace_thesis_solver: AgentTaskSolver, lang: str, base_
     replace_thesis_solver.agent.looped_answers.clear()
     replace_thesis_solver.agent.looped_answers += agent_stub_answers
 
-    real_triplet_ids, real_status = replace_thesis_solver.solve(
+    real_triplet_ids, real_status, _ = replace_thesis_solver.solve(
         lang=lang, base_triplet=base_thesis, incident_triplets=incident_thesises)
     assert expected_status == real_status
     assert expected_thesis_ids == real_triplet_ids

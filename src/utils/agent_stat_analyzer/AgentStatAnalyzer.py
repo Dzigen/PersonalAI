@@ -3,9 +3,10 @@ from typing import Dict, Union, List
 from copy import deepcopy
 
 from ...db_drivers.table_driver.utils import AbstractTableDatabaseConnection, TableDBInstance
+from ...db_drivers.table_driver.table_structures import LLMInferenceStat
 from ...db_drivers.table_driver import TableDriverConfig, TableDriver
 from .supported_dbvendors import SUPPORTED_VENDORS
-from .utils import AbstractTableStatOperations, LLMInferenceStat, CalculateMetrics
+from .utils import AbstractTableStatOperations, CalculateMetrics
 from .configs import DEFAULT_AGENTSTAT_TABLEDB_DRIVER_CONFIG
 from ..data_structs import BaseConfigOperations
 
@@ -55,6 +56,7 @@ class AgentStatAnalyzer:
      - расчёт агрегирующих метрик по заданным колонкам (calculate_stat);
      - очистку таблицы статистики (clear).
     """
+
     def __init__(self, config: Union[Dict, AgentStatAnalyzerConfig] = AgentStatAnalyzerConfig()):
         if isinstance(config, dict):
             config: AgentStatAnalyzerConfig = AgentStatAnalyzerConfig.from_dict(config)
@@ -99,3 +101,7 @@ class AgentStatAnalyzer:
 
     def clear(self) -> None:
         self.db_conn.clear()
+
+    def close_connection(self):
+        # print("closing astat-cache conn")
+        self.db_conn.close_connection()

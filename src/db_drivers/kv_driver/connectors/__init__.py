@@ -1,4 +1,4 @@
-from .AerospikeConnector import AerospikeKVConnector
+#from .AerospikeConnector import AerospikeKVConnector
 from .InMemoryKVConnector import InMemoryKVConnector
 from .RedisConnector import RedisKVConnector
 from .MongoConnector import MongoKVConnector

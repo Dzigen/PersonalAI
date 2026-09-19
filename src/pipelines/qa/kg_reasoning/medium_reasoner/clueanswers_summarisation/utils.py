@@ -3,8 +3,8 @@ from typing import Dict, Union
 from copy import deepcopy
 
 from .config import CQSUMM_AGENTASKS_SELECTORS_MAPPING
-from .....utils import BaseTaskSolvers, BaseAgentTasksConfig, BaseAgentTaskConfigSelector
-from ......utils import AgentTaskSolver, AgentTaskSolverConfig
+from .....utils import BaseTaskSolvers
+from ......utils import AgentTaskSolver, AgentTaskSolverConfig, BaseAgentTasksConfig, BaseAgentTaskConfigSelector
 
 
 @dataclass
@@ -15,10 +15,10 @@ class MediumASummarizerTaskSolvers(BaseTaskSolvers):
 @dataclass
 class ClueAnswersSummarizerAgentTasksConfig(BaseAgentTasksConfig):
     """
-    :param canswers_summarisation: Конфигурация атомарной задачи для LLM-агента по резюмированию информации, извлечённой из графа знаний по заданному search_query-шагу поиска. Значение по умолчанию 'v3'.
+    :param canswers_summarisation: Конфигурация атомарной задачи для LLM-агента по резюмированию информации, извлечённой из графа знаний по заданному search_query-шагу поиска. Значение по умолчанию 'v5'.
     :type canswers_summarisation: AgentTaskSolverConfig, optional
     """
-    canswers_summarisation: Union[AgentTaskSolverConfig, str] = 'v3'
+    canswers_summarisation: Union[AgentTaskSolverConfig, str] = 'v5'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: CQSUMM_AGENTASKS_SELECTORS_MAPPING)
 

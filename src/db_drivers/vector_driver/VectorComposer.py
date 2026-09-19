@@ -1,9 +1,11 @@
 from time import sleep
+import asyncio
 
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Tuple
 from .utils import AbstractVectorDatabaseComposer, AbstractVectorDatabaseConnection, VectorDBInstance
 from .VectorDriver import VectorDriverConfig, VectorDriver
 from .embedders import EmbedderModel
+from ...utils.data_structs import NodeType
 
 
 class VectorComposer(AbstractVectorDatabaseComposer):
@@ -18,6 +20,7 @@ class VectorComposer(AbstractVectorDatabaseComposer):
     :param embedders_mapping: Сопоставление имени хранилища и экземпляра EmbedderModel, который будет использоваться при подключении.
     :type embedders_mapping: Dict[str, EmbedderModel]
     """
+
     def __init__(self, vdb_config_mapping: Dict[str, Union[Dict, VectorDriverConfig]], embedders_mapping: Dict[str, EmbedderModel] = dict()) -> None:
         for vdb_name, vdb_config in vdb_config_mapping.items():
             if isinstance(vdb_config, dict):
@@ -49,7 +52,7 @@ class VectorComposer(AbstractVectorDatabaseComposer):
         sizes_info = self.count_items()
         unique_values = set(list(sizes_info.values()))
         if len(unique_values) > 1:
-            raise AssertionError(f"vcomposer-db sizes: {sizes_info}")
+            raise AssertionError(f"* vcomposer-db sizes: {sizes_info}\n* len(unique_values): {len(unique_values)}")
 
         return True
 
@@ -144,9 +147,32 @@ class VectorComposer(AbstractVectorDatabaseComposer):
         if check_consistency:
             self.check_consistency()
 
-    def __del__(self):
-        for v_conn in self.vdb_conn_mapping.values():
-            try:
-                v_conn.close_connection()
-            except AttributeError:
-                pass
+
+class VectorRetriveComposer:
+
+    @staticmethod
+    def search_collection(vdb_conn: AbstractVectorDatabaseConnection, query_instance: VectorDBInstance,
+                          n_results: int = 50, subset_ids: Union[List[str], None] = None, includes=['documents', 'metadatas']) \
+            -> List[Tuple[float, VectorDBInstance]]:
+
+        results = vdb_conn.retrieve(
+            query_instances=[query_instance], n_results=n_results, subset_ids=subset_ids, includes=includes
+        )[0]
+
+        return results
+
+    @staticmethod
+    def perform(vector_composers: Dict[Union[str, NodeType], VectorComposer], accepted_composer_names: Union[List[str], List[NodeType]],
+                composers_vdb_name: str, query_instance: VectorDBInstance, n_results: int = 50, subset_ids: Union[None, Dict[Union[str, NodeType], List[str]]] = None,
+                includes: List[str] = ['embeddings', 'documents', 'metadatas']) -> List[Tuple[float, Union[str, NodeType], VectorDBInstance]]:
+        tasks = [
+            VectorRetriveComposer.search_collection(
+                vdb_conn=vector_composers[composer_name].vdb_conn_mapping[composers_vdb_name], query_instance=query_instance,
+                n_results=n_results, subset_ids=subset_ids.get(composer_name, None), includes=includes)
+            for composer_name in accepted_composer_names
+        ]
+        combined_results_lists = tasks
+        combined_results = [(item[0], composer_name, item[1]) for composer_name, sublist in zip(accepted_composer_names, combined_results_lists) for item in sublist]
+        combined_results.sort(key=lambda item: item[0], reverse=True)
+
+        return combined_results[:n_results]

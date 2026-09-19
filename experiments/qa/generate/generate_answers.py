@@ -32,9 +32,14 @@ KGENV_FILE_PATH = f"{SPEC_ENV_PATH}/{EXPDIR_PARAMS['KG_SETTING_DIR']['kgenv']}.y
 with open(KGENV_FILE_PATH, 'r') as stream:
     KGENV_PARAMS = yaml.safe_load(stream)
 
+# Read YAML file (qaenv-file)
+QAENV_FILE_PATH = f"{SPEC_ENV_PATH}/{EXPDIR_PARAMS['QAENV']}"
+with open(QAENV_FILE_PATH, 'r') as stream:
+    QAENV_PARAMS = yaml.safe_load(stream)
+
 sys.path.insert(0, EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path'])
 
-from src.kg_model import KnowledgeGraphModel
+from src.kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig
 from src.pipelines.qa import QAPipeline
 
 ####################################################
@@ -54,6 +59,8 @@ QA_DATASET_PATH = f"{EXPDIR_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{EX
 TMP_GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['tmp_gen_answers_name']}"
 GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['gen_answers_name']}"
 
+QA_TRACES_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['qa_traces_name']}"
+
 QA_ELAPSED_TIME_SPATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['elapsed_time']}"
 AGENT_STAT_SPATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['agent_stat']}"
 CACHE_STAT_SPATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['cache_stat']}"
@@ -69,9 +76,13 @@ INFSTAT_CONFIG_PATH = f"{SPEC_KG_PATH}/{KGENV_PARAMS['SAVE_CONFIGS_NAMES']['infe
 ####################################################
 print("3. Loading configs")
 
-kgmodel_config = joblib.load(KG_MODEL_CONFIG_PATH)
+kgmodel_config: KnowledgeGraphModelConfig = joblib.load(KG_MODEL_CONFIG_PATH)
 kvdriver_config = joblib.load(CACHE_CONFIG_PATH)
 llmstat_config = joblib.load(INFSTAT_CONFIG_PATH)
+
+# костыль: меням порт к необходимому ollama-контейнеру
+if kgmodel_config.agents_configs['default'].name == 'ollama':
+    kgmodel_config.agents_configs['default'].agent_config.credentials['port'] = QAENV_PARAMS['OLLAMA_EXT_PORT']
 
 print("KG MODEL_CONFIG:")
 pprint(kgmodel_config)
@@ -96,11 +107,24 @@ pprint(qa_config)
 
 qa_pipeline = QAPipeline(kg_model, qa_config, kvdriver_config, llmstat_config)
 
-# qa_pipeline.clear_agent_tgen_stat() # !!! PAY ATTENTION !!!
+START_SAMPLE_IDX = 0
+
+#qa_pipeline.clear_agent_tgen_stat() # !!! PAY ATTENTION !!!
 # qa_pipeline.clear_kv_caches( # !!! PAY ATTENTION !!!
-#     clear_traversal_cache = False,
-#     clear_retrieval_cache = False
+#      clear_traversal_cache = True,
+#      clear_retrieval_cache = True
 # )
+
+# !! PAY ATTENTION !!!
+# qa_pipeline.cachekv.clear()
+# qa_pipeline.stages.answers_aggregator.clear_kv_caches()
+# qa_pipeline.stages.query_preprocessor.clear_kv_caches()
+# qa_pipeline.stages.kg_reasoner.stages.reasoner.cachekv.clear()
+# qa_pipeline.stages.kg_reasoner.stages.reasoner.stages.entities2nodes_matcher.clear_kv_caches()
+# qa_pipeline.stages.kg_reasoner.stages.reasoner.stages.searchplan_enhancer.clear_kv_caches()
+#qa_pipeline.stages.kg_reasoner.stages.reasoner.stages.searchplan_enhancer.tasks_solvers.plan_enhancing_solver.cachekv.kv_conn.delete(["f833a1ae05d1168287df87e1b75cec47b0e7d4b7"])
+#qa_pipeline.stages.kg_reasoner.stages.reasoner.stages.searchplan_enhancer.tasks_solvers.plan_initialing_solver.cachekv.kv_conn.delete(["b2532beee411bff2f8b1bcf2f0924dc59b97e904"])
+
 
 print("llmstat cache:")
 pprint(qa_pipeline.get_agent_tgen_stat())
@@ -178,35 +202,118 @@ def rubqdev_qa_load(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
 
     return packs
 
+def sberdialogues_qa_load(dataset_path: str) -> List[Tuple[str, List[str], List[str]]]:
+    eval_dir_path = f"{dataset_path}/qa_eval"
+    pack_files = os.listdir(eval_dir_path)
+    packs = []
+
+    for pack_f in pack_files:
+        with open(f"{eval_dir_path}/{pack_f}", 'r', encoding='utf-8') as fd:
+            data = json.loads(fd.read())
+
+        pack_name = '.'.join(pack_f.split('.')[:-1])
+        questions = list(map(lambda item: item['question'], data))
+        answers = list(map(lambda item: item['answer'], data))
+
+        max_samples = SPECEXP_PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']
+        if (max_samples > 0):
+            questions = questions[:max_samples]
+            answers = answers[:max_samples]
+
+        packs.append((pack_name, questions, answers))
+
+    return packs
+
+def musique_validation_qa_load(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
+    qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
+
+    questions = qa_df['question'].tolist()
+    answers = qa_df['answer'].tolist()
+
+    max_samples = SPECEXP_PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']
+    if (max_samples > 0):
+        questions = questions[:max_samples]
+        answers = answers[:max_samples]
+
+    packs = [['all', questions, answers]]
+
+    return packs
+
+def wiki2multihopqa_dev_qa_load(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
+    qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
+
+    questions = qa_df['question'].tolist()
+    answers = qa_df['answer'].tolist()
+
+    max_samples = SPECEXP_PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']
+    if (max_samples > 0):
+        questions = questions[:max_samples]
+        answers = answers[:max_samples]
+
+    packs = [['all', questions, answers]]
+
+    return packs
+
+def natural_questions_train_qa_load(dataset_path: str) -> List[Tuple[str, Dict[str, str]]]:
+    qa_df = pd.read_csv(f"{dataset_path}/qa_pairs.csv")
+
+    questions = qa_df['question'].tolist()
+    answers = qa_df['answer'].tolist()
+
+    max_samples = SPECEXP_PARAMS['QA_DATASET_HYPERP']['max_samples_per_pack']
+    if (max_samples > 0):
+        questions = questions[:max_samples]
+        answers = answers[:max_samples]
+
+    packs = [['all', questions, answers]]
+
+    return packs
+
 CUSTOM_LOAD_FUNCS = {
     'diaasq': diaasqa_qa_load,
     'rubq_dev': rubqdev_qa_load,
     'hotpotqa_distractor_validation': hotpotqa_distractor_validation_qa_load,
-    'trivia_qa_rcwikipedia_validation': trivia_qa_rcwikipedia_validation_qa_load
+    'trivia_qa_rcwikipedia_validation': trivia_qa_rcwikipedia_validation_qa_load,
+    'musique_validation': musique_validation_qa_load,
+    '2wikimultihopqa_dev': wiki2multihopqa_dev_qa_load,
+    'natural_questions_train': natural_questions_train_qa_load
 }
+CUSTOM_LOAD_FUNCS.update({f'sberdialogues_conv-{i}': sberdialogues_qa_load for i in range(1,36)})
 
 question_packs = CUSTOM_LOAD_FUNCS[SPECEXP_PARAMS['DATASET_NAME']](QA_DATASET_PATH)
 
-####################################################
+# ####################################################
 print("7. Start inferencing")
 
 for pack_name, questions, _ in question_packs:
 
-    pack_tmp_dir = f"{TMP_GENERATED_ANSWERS_DIR}/{pack_name}"
-    if not os.path.exists(pack_tmp_dir):
-        os.mkdir(pack_tmp_dir)
+    pack_tmp_answers_dir = f"{TMP_GENERATED_ANSWERS_DIR}/{pack_name}"
+    if not os.path.exists(pack_tmp_answers_dir):
+        os.mkdir(pack_tmp_answers_dir)
 
-    process = tqdm(range(len(questions)))
+    pack_traces_dir = f"{QA_TRACES_DIR}/{pack_name}"
+    if not os.path.exists(pack_traces_dir):
+        os.mkdir(pack_traces_dir)
+
+    process = tqdm(range(START_SAMPLE_IDX, len(questions)))
     for i in process:
-        process.set_postfix_str(pack_name)
-
         s_time = time()
-        answer, info = qa_pipeline.answer(questions[i])
+        answer, info, trace = qa_pipeline.answer(questions[i])
         e_time = time()
 
-        answer_dump_file = f"{pack_tmp_dir}/answer_{i}"
+        # # костыль
+        # kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.qa_pipeline].close_connection()
+        # kg_model.AVAILABLE_AGENTS[kg_model.AGENTS_MAP.qa_pipeline].open_connection()
+
+        process.set_postfix_str(f"pack: {pack_name}, status: {info.status}, elapsed_time (min): {round(int(e_time-s_time)/60,2)}, question: {questions[i]}, answer: {answer}")
+        process.set_postfix_str("")
+
+        answer_dump_file = f"{pack_tmp_answers_dir}/answer_{i}"
         joblib.dump({'answer': answer, 'info': info,
                     'elapsed_time': e_time - s_time}, answer_dump_file)
+
+        trace_dump_file = f"{pack_traces_dir}/trace_{i}"
+        joblib.dump(trace, trace_dump_file)
 
 ####################################################
 print("8. Accumulating generated answers")
@@ -215,18 +322,18 @@ elapsed_times: Dict[str,Dict[str, float]] = dict()
 for pack_name, questions, gold_answers in question_packs:
     print(pack_name)
 
-    pack_tmp_dir = f"{TMP_GENERATED_ANSWERS_DIR}/{pack_name}"
+    pack_tmp_answers_dir = f"{TMP_GENERATED_ANSWERS_DIR}/{pack_name}"
 
-    if not os.path.exists(pack_tmp_dir):
+    if not os.path.exists(pack_tmp_answers_dir):
         print("Папки с ответами не сущестует: ", pack_name)
         continue
 
-    tmp_answer_dumps = os.listdir(pack_tmp_dir)
+    tmp_answer_dumps = os.listdir(pack_tmp_answers_dir)
 
     accum_answers: Dict[str,Dict[str, str]] = dict()
     elapsed_times[pack_name] = {'per_question': []}
     for tmp_dump in tqdm(tmp_answer_dumps):
-        answer_info = joblib.load(f"{pack_tmp_dir}/{tmp_dump}")
+        answer_info = joblib.load(f"{pack_tmp_answers_dir}/{tmp_dump}")
         answer_num = int(tmp_dump.split("_")[1])
         accum_answers[answer_num] = {
             'question': questions[answer_num],
@@ -272,4 +379,13 @@ with open(QA_ELAPSED_TIME_SPATH, 'w', encoding='utf-8') as fd:
 #     clear_retrieval_cache = False
 # )
 
+print("llmstat cache:")
+pprint(qa_pipeline.get_agent_tgen_stat())
+
+print("kv cache: ")
+pprint(qa_pipeline.get_cache_stat())
+
 print("############ DONE ############")
+
+qa_pipeline.close_connections()
+kg_model.close_connections()

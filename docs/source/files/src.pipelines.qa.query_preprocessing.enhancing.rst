@@ -20,6 +20,14 @@ src.pipelines.qa.query\_preprocessing.enhancing.config module
    :undoc-members:
    :show-inheritance:
 
+src.pipelines.qa.query\_preprocessing.enhancing.utils module
+------------------------------------------------------------
+
+.. automodule:: src.pipelines.qa.query_preprocessing.enhancing.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

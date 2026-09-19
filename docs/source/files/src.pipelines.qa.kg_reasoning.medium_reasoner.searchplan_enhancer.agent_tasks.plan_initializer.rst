@@ -8,6 +8,7 @@ Subpackages
    :maxdepth: 4
 
    src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v1
+   src.pipelines.qa.kg_reasoning.medium_reasoner.searchplan_enhancer.agent_tasks.plan_initializer.v2
 
 Submodules
 ----------

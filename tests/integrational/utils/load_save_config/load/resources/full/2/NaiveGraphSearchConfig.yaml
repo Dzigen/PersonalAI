@@ -1,0 +1,24 @@
+log_path: log/qa/kg_reasoner/weak/knowledge_retriever/naive_retriever
+verbose: false
+log_level: 10
+accepted_node_types:
+- object
+- hyper
+- episodic
+reranker_driver_config:
+  name: ensemble_fusion
+  strategy_config:
+    vdb_names:
+    - dense_triplets
+    - bm25_triplets
+    retriever_configs:
+    - fetch_n: 50
+      threshold: null
+    - fetch_n: 50
+      threshold: null
+    weights:
+    - 0.7
+    - 0.3
+    c: 60
+max_k: 50
+cache_table_name: qa_naive_t_retriever_cache

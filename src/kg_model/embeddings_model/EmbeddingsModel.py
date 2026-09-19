@@ -30,8 +30,7 @@ class EmbeddingsModelConfig(BaseComponentConfig):
     tripletsdb_driver_configs_mapping: Dict[str, Union[Dict, VectorDriverConfig]] = field(
         default_factory=lambda: TRIPLETS_DB_DEFAULT_DRIVER_CONFIGS_MAPPING)
 
-    log: Logger = field(default_factory=lambda: Logger(EMBEDDINGS_MODEL_LOG_PATH))
-    verbose: bool = False
+    log_path: str = EMBEDDINGS_MODEL_LOG_PATH
 
     def to_str(self):
         # TODO
@@ -86,8 +85,9 @@ class EmbeddingsModel:
                 m_config.db_config.db_info['table'] += f"_{node_type.value}"
             self.nodes_vcomposers[node_type] = VectorComposer(modified_configs, embedders_mapping)
 
-        self.log = self.config.log
+        self.log = Logger(config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     def check_consistency(self) -> bool:
         for v_composer in self.nodes_vcomposers.values():
@@ -108,8 +108,8 @@ class EmbeddingsModel:
         :param status_bar: Если True, то в stdout будет записываться прогресс операции (количество обработанных триплетов), иначе False. Значение по умолчанию True.
         :type status_bar: boll, optional
         """
-        self.log("Adding triples to vector-model...", verbose=self.verbose)
-        self.log("\t- Also adding triplet-nodes in vector-model", verbose=self.verbose)
+        self.log.debug("ADDING TRIPLES TO EMBEDDINGS-STRUCT...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Also adding triplet-nodes.", verbose=self.verbose, log_level=self.log_level)
         unique_relation_ids, unique_node_ids = set(), {n_type: set() for n_type in NODES_TYPES_MAP.values()}
         existed_relation_ids, existed_node_ids = set(), {n_type: set() for n_type in NODES_TYPES_MAP.values()}
 
@@ -152,11 +152,15 @@ class EmbeddingsModel:
 
             self.create_stringified_triplets(relations_info, grouped_nodes_info)
 
-        self.log(f"relations info (all/unique/existed count) - {len(triplets)}/{len(unique_relation_ids)}/{len(existed_relation_ids)}", verbose=self.verbose)
+        self.log.debug("RESULT:", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Relations info (all / unique / existed count): %d / %d / %d .",
+                       len(triplets), len(unique_relation_ids), len(existed_relation_ids),
+                       verbose=self.verbose, log_level=self.log_level)
         unique_nodes_count = {k: len(v) for k, v in unique_node_ids.items()}
         existed_nodes_count = {k: len(v) for k, v in existed_node_ids.items()}
-        self.log(f"nodes info (all/unique/existed count) - {len(triplets)*2}/{unique_nodes_count}/{existed_nodes_count}", verbose=self.verbose)
-        self.log("Triples were successfully added to vector-model!", verbose=self.verbose)
+        self.log.debug("* Nodes info ( all / unique / existed count): %d / %s / %s .",
+                       len(triplets) * 2, unique_nodes_count, existed_nodes_count,
+                       verbose=self.verbose, log_level=self.log_level)
         return {'nodes': existed_node_ids, 'triplets': existed_relation_ids}
 
     def create_stringified_triplets(self, relations_info: List[VectorDBInstance],
@@ -190,7 +194,7 @@ class EmbeddingsModel:
         elif db_type == 'relations':
             self.triplets_vcomposer.create(instances)
         else:
-            raise ValueError
+            raise ValueError(f"db_type: {db_type}")
 
     def delete_triplets(self, triplets: List[Triplet], delete_info: Dict[int, Dict[str, bool]] = dict()) -> None:
         """Метод предназначен для удаления информации, представленной в виде списка триплетов, из векторной структуры.
@@ -269,7 +273,7 @@ class EmbeddingsModel:
         elif db_type == 'triplets':
             instances = self.triplets_vcomposer.read(ids, includes=['embeddings'])
         else:
-            raise ValueError
+            raise ValueError(f"db_type: {db_type}")
 
         embeddings = list(map(lambda inst: inst.embedding, instances))
         return embeddings
@@ -293,10 +297,7 @@ class EmbeddingsModel:
             self.nodes_vcomposers[n_type].clear()
         self.triplets_vcomposer.clear()
 
-    def __del__(self):
-        try:
-            del self.nodes_vcomposers
-            del self.triplets_vcomposer
-            gc.collect()
-        except (TypeError, AttributeError):
-            pass
+    def close_connections(self):
+        self.triplets_vcomposer.close_connection()
+        for n_vcomoposer in self.nodes_vcomposers.values():
+            n_vcomoposer.close_connection()

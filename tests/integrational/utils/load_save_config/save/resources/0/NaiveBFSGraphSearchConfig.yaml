@@ -1,0 +1,11 @@
+log_path: log/qa/kg_reasoner/weak/knowledge_retriever/naivebfs_retriever
+verbose: false
+log_level: 10
+accepted_node_types:
+- object
+- hyper
+- episodic
+max_depth: 10
+max_width: 50
+max_passed_nodes: 1000
+cache_table_name: qa_bfs_t_retriver_cache

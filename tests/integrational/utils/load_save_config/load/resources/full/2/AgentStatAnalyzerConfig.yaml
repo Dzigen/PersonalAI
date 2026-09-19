@@ -1,0 +1,30 @@
+table_driver_config:
+  db_vendor: sqlite3
+  db_config:
+    db_info:
+      db: default_llmstatdb
+      table: default_llmstattable
+      table_info: LLMInferenceStat
+      create_table_query: "\nCREATE TABLE IF NOT EXISTS {table_name} (\n    id SERIAL\
+        \ PRIMARY KEY,\n    prompt_tokens_amount INT NULL,\n    generated_tokens_amount\
+        \ INT NULL,\n    preparation_elapsed_time REAL NULL,\n    inference_elapsed_time\
+        \ REAL NULL,\n    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP);\n"
+    params:
+      database_path: ./personalai_tmp/stat/agent/sqlite3
+    need_to_clear: false
+    create_index: false
+    host: null
+    port: null
+metrics_info:
+  count: true
+  count_not_null: true
+  min: true
+  max: true
+  median: true
+  mean: true
+  std: true
+  sum: true
+column_info:
+- prompt_tokens_amount
+- generated_tokens_amount
+- inference_elapsed_time

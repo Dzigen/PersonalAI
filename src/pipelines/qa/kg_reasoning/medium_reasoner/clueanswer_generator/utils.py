@@ -3,8 +3,8 @@ from typing import Dict, Union
 from copy import deepcopy
 
 from .config import CAGEN_AGENTASKS_SELECTORS_MAPPING
-from .....utils import BaseTaskSolvers, BaseAgentTasksConfig, BaseAgentTaskConfigSelector
-from ......utils import AgentTaskSolver, AgentTaskSolverConfig
+from .....utils import BaseTaskSolvers
+from ......utils import AgentTaskSolver, AgentTaskSolverConfig, BaseAgentTasksConfig, BaseAgentTaskConfigSelector
 
 
 @dataclass
@@ -15,10 +15,10 @@ class MediumCAGeneratorTaskSolvers(BaseTaskSolvers):
 @dataclass
 class ClueAnswerGeneratorAgentTasksConfig(BaseAgentTasksConfig):
     """
-    :param cagen: Конфигурация атомарной задачи для LLM-агента по резюмированию информации, извлечённой по заданному clue-заросу из графа знаний. Значение по умолчанию 'v3'.
+    :param cagen: Конфигурация атомарной задачи для LLM-агента по резюмированию информации, извлечённой по заданному clue-заросу из графа знаний. Значение по умолчанию 'v6'.
     :type cagen: AgentTaskSolverConfig, optional
     """
-    cagen: Union[AgentTaskSolverConfig, str] = 'v3'
+    cagen: Union[AgentTaskSolverConfig, str] = 'v6'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: CAGEN_AGENTASKS_SELECTORS_MAPPING)
 

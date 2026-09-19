@@ -1,0 +1,10 @@
+lang: auto
+log_path: log/qa/kg_reasoner/medium/cluequeries_generator/main
+verbose: false
+log_level: 10
+agent_gen_stategy: null
+agent_tasks_config:
+  cquerie_generator: v4
+max_cqueries_amount: 6
+return_only_unique_cqueires: true
+cache_table_name: medreasn_cquerygen_main_stage_cache

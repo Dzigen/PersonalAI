@@ -6,7 +6,8 @@ from copy import deepcopy
 from .config import CAGEN_MAIN_LOG_PATH
 from .utils import MediumCAGeneratorTaskSolvers, ClueAnswerGeneratorAgentTasksConfig
 from ......utils.errors import STATUS_MESSAGE
-from ......utils import ReturnInfo, Logger, AgentTaskSolver
+from ......utils import ReturnInfo, Logger, AgentTaskSolver, accumulate_stage_info, \
+    CompositeModuleDetailedResult, ModuleType
 from ......agents.utils import AbstractAgentConnector
 from ......utils.data_structs import create_id, Triplet, TripletCreator, BaseComponentConfig, LanguageConfig
 from ......db_drivers.kv_driver import KeyValueDriverConfig
@@ -33,8 +34,7 @@ class ClueAnswerGeneratorConfig(BaseComponentConfig, LanguageConfig):
     agent_tasks_config: Union[ClueAnswerGeneratorAgentTasksConfig, Dict] = field(default_factory=lambda: ClueAnswerGeneratorAgentTasksConfig())
 
     cache_table_name: str = 'medreasn_cagen_main_stage_cache'
-    log: Logger = field(default_factory=lambda: Logger(CAGEN_MAIN_LOG_PATH))
-    verbose: bool = False
+    log_path: str = CAGEN_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
@@ -75,7 +75,7 @@ class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs()
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -90,8 +90,9 @@ class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
                 self.agent, self.config.agent_tasks_config.cagen, agents_cache_config, inferencestat_config)
         )
 
-        self.log = self.config.log
+        self.log = Logger(config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     def get_cache_key(self, query: str, context_triplets: List[Triplet]) -> List[str]:
         str_triplets = hashlib.sha1("\n".join(sorted([TripletCreator.stringify(
@@ -99,42 +100,41 @@ class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [self.config.to_str(), query, str_triplets, str_using_agent_info]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def perform(self, query: str, context_triplets: List[Triplet]) -> Tuple[str, ReturnInfo]:
+    def perform(self, query: str, context_triplets: List[Triplet]) -> Tuple[str, ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для генерации clue-ответа на clue-запрос, на основе информации, извлечённой из графа знаний.
 
         :param query: Clue-запрос на естественном языке.
         :type query: str
         :param context_triplets: Набор релевантной информации (в виде триплетов), извлечённой по заданному clue-запросу.
         :type context_triplets: List[Triplet]
-        :return: Кортеж из двух объектов: (1) Резюмированный/сформированный ответ на clue-запрос; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[str, ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) Резюмированный/сформированный ответ на clue-запрос; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[str, ReturnInfo, CompositeModuleDetailedResult]
         """
-        self.log("START CLUE-ANSWER GENRATION ...",
-                 verbose=self.verbose)
-        self.log(
-            f"BASE_QUESTION ID: {create_id(query)}", verbose=self.verbose)
-        self.log(f"BASE_QUESTION: {query}", verbose=self.verbose)
-        self.log(f"CONTEXT_TRIPLETS:", verbose=self.verbose)
-        for triplet in context_triplets:
-            self.log(f"*[{triplet.id}] {triplet}", verbose=self.verbose)
-        info = ReturnInfo()
+        self.log.debug("START CLUE-ANSWER GENRATION ...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", create_id(query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question: %s", query, verbose=self.verbose, log_level=self.log_level)
 
-        self.log("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...",
-                 verbose=self.verbose)
-        answer, status = self.tasks_solvers.cagen_solver.solve(
+        self.log.debug("CONTEXT TRIPLES: %s", verbose=self.verbose, log_level=self.log_level)
+        for triplet in context_triplets:
+            self.log.debug("* [%s] %s", triplet.id, triplet, verbose=self.verbose, log_level=self.log_level)
+        rinfo, module_trace = ReturnInfo(), CompositeModuleDetailedResult()
+
+        self.log.debug("Выполнение условной генерации ответа на вопрос с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
+        answer, status, trace = self.tasks_solvers.cagen_solver.solve(
             lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
             query=query, triplets=context_triplets)
+        module_trace.add("cagen_solver", ModuleType.task_solver, trace)
 
         if status != ReturnStatus.success:
-            info.occurred_warning.append(status)
+            rinfo.occurred_warning.append(status)
 
         if answer is None or len(answer) == 0:
-            info.status = ReturnStatus.empty_answer
-            info.message = STATUS_MESSAGE[info.status]
+            rinfo.status = ReturnStatus.empty_answer
+            rinfo.message = STATUS_MESSAGE[rinfo.status]
 
-        self.log(
-            f"RESULT:\n* GENERATED ANSWER - {answer}", verbose=self.verbose)
-        self.log(f"STATUS: {info.status}", verbose=self.verbose)
+        self.log.debug("RESULT:\n* Generated answer: %s", answer, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)
 
-        return answer, info
+        return answer, rinfo, module_trace

@@ -27,7 +27,7 @@ settings = Settings(
 class ChromaVectorConnection(AbstractVectorDatabaseConnection):
 
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_CHROMA_CONFIG,
-                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 16) -> None:
+                 embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 8) -> None:
         if isinstance(config, dict):
             config: VectorDBConnectionConfig = VectorDBConnectionConfig.from_dict(config)
         else:
@@ -65,22 +65,22 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
         # validating
         for item in items:
             if not isinstance(item.id, str):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
-                raise ValueError
+                raise ValueError(f"item: {item}")
             for k, v in item.metadata.items():
                 if v is None:
                     raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(unique_ids): {len(unique_ids)}\n* items: {items}")
 
         # Если в классе указан embedder, то используем его
         # для векторизации входящих документов
         if self.embedder is not None:
             for item in items:
                 if item.embedding is not None:
-                    raise ValueError
+                    raise ValueError(f"item: {item}")
 
             item_documents = list(map(lambda itm: itm.document, items))
             document_embeddings = self.embedder.encode_passages(item_documents, batch_size=self.encode_batchsize)
@@ -141,15 +141,15 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
         # validation
         for item in items:
             if not isinstance(item.id, str):
-                raise ValueError
+                raise ValueError(f"item: {item}")
             if type(item.embedding) in [torch.Tensor, np.ndarray]:
-                raise ValueError
+                raise ValueError(f"item: {item}")
             for k, v in item.metadata.items():
                 if v is None:
                     raise ValueError(f"Значение поля не должно быть None: id={item.id} | {k} = {v}")
         unique_ids = set(map(lambda item: item.id, items))
         if len(items) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"* len(unique_ids): {len(unique_ids)}\n* len(items): {len(items)}")
 
         for item in items:
             if self.item_exist(item.id):
@@ -160,7 +160,7 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
         # validation
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         if len(ids):
             self.collection.delete(ids=ids)
@@ -236,7 +236,7 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
     def item_exist(self, id: str) -> bool:
         # validation
         if not isinstance(id, str):
-            raise ValueError
+            raise ValueError(f"id: {id}")
 
         output = self.collection.get(ids=[id])
         return len(output['ids']) > 0
@@ -245,3 +245,6 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
         self.client.delete_collection(name=self.config.db_info['table'])
         self.collection = self.client.create_collection(
             name=self.config.db_info['table'], metadata=self.config.params)
+
+    def __del__(self):
+        self.close_connection()

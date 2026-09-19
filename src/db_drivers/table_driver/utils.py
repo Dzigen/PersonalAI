@@ -2,7 +2,9 @@ from typing import Dict, Union, Tuple, List
 from dataclasses import dataclass, field
 from copy import deepcopy
 
+from .table_structures import AVAILABLE_TABLE_STRUCTURES, BaseTableStucture
 from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
+
 
 @dataclass
 class TableDBConnectionConfig(BaseDatabaseConfig):
@@ -29,13 +31,14 @@ class TableDBConnectionConfig(BaseDatabaseConfig):
         dictconfig_copy = deepcopy(dict_config)
         formated_config = TableDBConnectionConfig(**dictconfig_copy)
         formated_config.formate_fields()
+
+        if 'table_info' in formated_config.db_info:
+            if isinstance(formated_config.db_info['table_info'], str):
+                formated_config.db_info['table_info'] = AVAILABLE_TABLE_STRUCTURES[formated_config.db_info['table_info']]
+            if not issubclass(formated_config.db_info['table_info'], BaseTableStucture):
+                raise TypeError(f"formated_config.db_info['table_info']: {formated_config.db_info['table_info']}")
+
         return formated_config
-
-
-@dataclass
-class BaseTableStucture:
-    """Базовый класс для описания структуры записей, хранящихся в табличной БД."""
-    pass
 
 
 @dataclass
@@ -77,17 +80,17 @@ class AbstractTableDatabaseConnection(AbstractDatabaseConnection):
         :rtype: bool
         """
         if self.TABLE_STRUCTURE is None:
-            raise ValueError
+            raise ValueError(f"self.TABLE_STRUCTURE: {self.TABLE_STRUCTURE}")
         for item in items:
             if not isinstance(item.values, self.TABLE_STRUCTURE):
-                raise TypeError
+                raise TypeError(f"item: {item}")
             if item.id is not None and not isinstance(item.id, str):
-                raise TypeError
+                raise TypeError(f"item: {item}")
 
         not_null_ids = [item.id for item in items if item.id is not None]
         unique_ids_wo_null = set(not_null_ids)
         if len(not_null_ids) != len(unique_ids_wo_null):
-            raise ValueError
+            raise ValueError(f"* len(not_null_ids): {len(not_null_ids)}\n* len(unique_ids_wo_null): {len(unique_ids_wo_null)}\n* items: {items}")
 
         return True
 
@@ -100,6 +103,6 @@ class AbstractTableDatabaseConnection(AbstractDatabaseConnection):
         """
         for id in ids:
             if (id is None) or (not isinstance(id, str)):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         return True

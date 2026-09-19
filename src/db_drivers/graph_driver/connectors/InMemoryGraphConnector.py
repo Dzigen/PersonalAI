@@ -11,7 +11,7 @@ from .configs import DEFAULT_INMEMORYGRAPH_CONFIG
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ....utils import Triplet, NodeType
 from ....utils.data_structs import RelationType, Node, \
-    NodeInfo, from_str_to_nodeinfo, RelationInfo, from_str_to_relationinfo
+    NodeInfo, RelationInfo, TripletInfo
 
 
 @dataclass
@@ -99,10 +99,10 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         # triplet-ids checking
         for triplet in triplets:
             if not isinstance(triplet.id, str):
-                raise ValueError
+                raise ValueError(f"* bad triplet: {triplet}\n* triplets: {triplets}")
         unique_ids = set(map(lambda triplet: triplet.id, triplets))
         if len(triplets) != len(unique_ids):
-            raise ValueError
+            raise ValueError(f"triplets: {triplets}")
 
         for i, triplet in enumerate(triplets):
             cur_info = creation_info.get(i, None)
@@ -150,7 +150,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         triplets = []
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
             t_ids = self.strcuture.tid_triplets_index[id]
             triplets += list(
                 map(lambda t_id: self.strcuture.triplets[t_id], list(t_ids)))
@@ -163,7 +163,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
     def delete(self, ids: List[str], delete_info: Dict[int, Dict[str, bool]] = dict()) -> None:
         for id in ids:
             if not isinstance(id, str):
-                raise ValueError
+                raise ValueError(f"* bad id: {id}\n* ids: {ids}")
 
         for i, t_id in enumerate(ids):
             cur_info = delete_info.get(i, None)
@@ -218,13 +218,13 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         # (алгоритмическая сложность O(n), где n - количество триплетов/вершин в графе)
 
         if type(object_type) not in [RelationType, NodeType]:
-            raise ValueError
+            raise ValueError(f"object_type: {object_type}")
 
         if not isinstance(name, str):
-            raise ValueError
+            raise ValueError(f"name: {name}")
 
         if len(name) < 1:
-            raise ValueError
+            raise ValueError(f"name: {name}")
 
         if object == 'relation':
             formated_output = [triplet for triplet in self.strcuture.triplets.values(
@@ -233,14 +233,14 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
             formated_output = [node for node in self.strcuture.nodes.values(
             ) if node.type == object_type and node.name == name]
         else:
-            raise ValueError
+            raise ValueError(f"object: {object}")
 
         return formated_output
 
-    def get_adjecent_nodes(self, base_node: NodeInfo,
-                           accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic]) -> List[NodeInfo]:
+    def get_adjacent_nodes(self, base_node: NodeInfo,
+                           accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time]) -> List[NodeInfo]:
         if not isinstance(base_node.id, str):
-            raise ValueError
+            raise ValueError(f"base_node: {base_node}")
 
         node_ids = self.strcuture.typed_strid_node_index.get(base_node.to_str(), [])
         adjanced_nodes_ids = []
@@ -257,11 +257,38 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         ))
         return nodes
 
+    def get_incident_triples(self, base_node: NodeInfo,
+                             accepted_n_types: List[NodeType] = [NodeType.object, NodeType.hyper, NodeType.episodic, NodeType.time],
+                             accepted_r_types: Union[List[RelationType], None] = None) \
+            -> List[TripletInfo]:
+        if not isinstance(base_node.id, str):
+            raise ValueError(f"base_node: {base_node}")
+
+        node_ids = self.strcuture.typed_strid_node_index.get(base_node.to_str(), [])
+        accepted_incident_triples_info = []
+        for node_id in node_ids:
+            triples_index_ids = list(self.strcuture.edges[node_id])
+            for triple_index_id in triples_index_ids:
+                cur_triplet = self.strcuture.triplets[triple_index_id]
+
+                if (accepted_r_types is not None) and (cur_triplet.relation.type not in accepted_r_types):
+                    continue
+                if cur_triplet.start_node.get_typedid() != base_node.to_str():
+                    if cur_triplet.start_node.type not in accepted_n_types:
+                        continue
+                else:
+                    if cur_triplet.end_node.type not in accepted_n_types:
+                        continue
+
+                accepted_incident_triples_info.append(cur_triplet.get_info())
+
+        return accepted_incident_triples_info
+
     def get_nodes_shared_ids(self, node1: NodeInfo, node2: NodeInfo, id_type: str = 'both') -> List[Dict[str, str]]:
         if (not isinstance(node1.id, str)) or (not isinstance(node2.id, str)):
-            raise ValueError(node1.id, node2.id)
+            raise ValueError(f"* node1: {node1}\n* node2: {node2}")
         if not isinstance(id_type, str) or id_type not in ['triplet', 'relation', 'both']:
-            raise ValueError(id_type)
+            raise ValueError(f"id_type: {id_type}")
 
         formated_info = []
 
@@ -283,24 +310,24 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
                         formated_info.append({'t_id': self.strcuture.triplets[internal_tid].id,
                                               'r_id': self.strcuture.triplets[internal_tid].relation.id})
                     else:
-                        raise ValueError(id_type)
+                        raise ValueError(f"id_type: {id_type}")
 
         return formated_info
 
     def get_triplets(self, node1: NodeInfo, node2: NodeInfo) -> List[Triplet]:
         if (not isinstance(node1.id, str)) or (not isinstance(node2.id, str)):
-            raise ValueError
+            raise ValueError(f"* node1: {node1}\n* node2: {node2}")
 
         start_n_db_ids = self.strcuture.typed_strid_node_index[node1.to_str()]
         if len(start_n_db_ids) < 1:
-            raise ValueError
+            raise ValueError(f"* node1: {node1}\n* start_n_db_ids: {start_n_db_ids}")
         start_n_edges = set()
         for n_db_id in start_n_db_ids:
             start_n_edges.update(self.strcuture.edges[n_db_id])
 
         end_n_db_ids = self.strcuture.typed_strid_node_index[node2.to_str()]
         if len(end_n_db_ids) < 1:
-            raise ValueError
+            raise ValueError(f"* node2: {node2}\n* end_n_db_ids: {end_n_db_ids}")
         end_n_edges = set()
         for n_db_id in end_n_db_ids:
             end_n_edges.update(self.strcuture.edges[n_db_id])
@@ -345,7 +372,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
             result = len(self.strcuture.tid_triplets_index[item_id])
 
         else:
-            raise ValueError
+            raise ValueError(f"id_type: {id_type}")
 
         return result
 
@@ -353,9 +380,9 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         if not isinstance(item_id, str):
             if type(item_id) in [NodeInfo, RelationInfo]:
                 if not isinstance(item_id.id, str):
-                    raise ValueError
+                    raise ValueError(f"item_id: {item_id}")
             else:
-                raise ValueError
+                raise ValueError(f"item_id: {item_id}")
 
         output = None
         if id_type == 'node':
@@ -365,7 +392,7 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         elif id_type == 'triplet':
             output = self.strcuture.tid_triplets_index[item_id]
         else:
-            raise ValueError
+            raise ValueError(f"id_type: {id_type}")
 
         return len(output) > 0
 
@@ -373,3 +400,6 @@ class InMemoryGraphConnector(AbstractGraphDatabaseConnection):
         del self.strcuture
         self.strcuture = InMemoryGraphStructure()
         gc.collect()
+
+    def __del__(self):
+        self.close_connection()

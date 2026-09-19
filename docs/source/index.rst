@@ -6,17 +6,24 @@
 Personal AI документация
 =========================
 
-
 .. toctree::
    :maxdepth: 1
    :caption: Contents:
 
+   pages/examples_page
+   pages/environment_page
+
    files/modules
 
-   .. pages/architecture_page
-   .. pages/components_page
-   .. pages/examples_page
-   .. pages/environment_page
+Отчётные материалы:
+
+* :download:`Разработка методов и подходов к построению графа знаний как памяти для агентов LLM (НИР 2025) <_static/iteration_summary/2025/PersonalAI(Отчёт)(НИР)(Skoltech-Sber)(2025).pdf>`.
+* :download:`Презентация работ (НИР 2025) <_static/iteration_summary/2025/PersonalAI(ПриёмкаРабот)(НИР)(Skoltech-Sber)(2025).pdf>`.
+
+Статьи:
+
+* :download:`PersonalAI: A Systematic Comparison of Knowledge Graph Storage and Retrieval Approaches for Personalized LLM agents <_static/iteration_summary/2024/PersonalAI(Статья)(НИР)(Skoltech-Sber)(2024).pdf>`.
+
 
 Indices and tables
 ==================

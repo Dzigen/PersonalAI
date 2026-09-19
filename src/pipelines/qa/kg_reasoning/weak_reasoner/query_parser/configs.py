@@ -1,7 +1,7 @@
 from typing import Dict
 
 from .agent_tasks.kw_extraction import AgentKWETaskConfigSelector
-from .....utils import BaseAgentTaskConfigSelector
+from ......utils import BaseAgentTaskConfigSelector
 
 QP_MAIN_LOG_PATH = 'log/qa/kg_reasoner/weak/query_parser/main'
 

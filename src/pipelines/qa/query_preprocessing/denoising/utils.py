@@ -3,8 +3,8 @@ from typing import Dict, Union
 from copy import deepcopy
 
 from .config import QUERYDENOIS_AGENTASKS_SELECTORS_MAPPING
-from ....utils import BaseTaskSolvers, BaseAgentTasksConfig, BaseAgentTaskConfigSelector
-from .....utils.task_solver import AgentTaskSolver, AgentTaskSolverConfig
+from ....utils import BaseTaskSolvers
+from .....utils.task_solver import AgentTaskSolver, AgentTaskSolverConfig, BaseAgentTasksConfig, BaseAgentTaskConfigSelector
 
 
 @dataclass
@@ -23,13 +23,13 @@ class QueryDenoiserTaskSolvers(BaseTaskSolvers):
 @dataclass
 class QueryDenoiserAgentTasksConfig(BaseAgentTasksConfig):
     """
-    :param swremoval: Конфигурация атомарной задачи для LLM-агента по удалению излишней/ненужной информации из запроса. Значение по умолчанию 'v2'.
+    :param swremoval: Конфигурация атомарной задачи для LLM-агента по удалению излишней/ненужной информации из запроса. Значение по умолчанию 'v4'.
     :type swremoval: AgentTaskSolverConfig, optional
-    :param grammarcheck: Конфигурация атомарной задачи для LLM-агента по корректировке/переформулированию запроса в соответствии с грамматикой и синтаксисом используемого естественного языка. Значение по умолчанию 'v2'.
+    :param grammarcheck: Конфигурация атомарной задачи для LLM-агента по корректировке/переформулированию запроса в соответствии с грамматикой и синтаксисом используемого естественного языка. Значение по умолчанию 'v4'.
     :type grammarcheck: AgentTaskSolverConfig, optional
     """
-    swremoval: Union[AgentTaskSolverConfig, str] = 'v2'
-    grammarcheck: Union[AgentTaskSolverConfig, str] = 'v2'
+    swremoval: Union[AgentTaskSolverConfig, str] = 'v4'
+    grammarcheck: Union[AgentTaskSolverConfig, str] = 'v4'
 
     task_to_selector_mapping: Dict[str, BaseAgentTaskConfigSelector] = field(default_factory=lambda: QUERYDENOIS_AGENTASKS_SELECTORS_MAPPING)
 

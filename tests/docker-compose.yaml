@@ -26,6 +26,7 @@ services:
     container_name: personalai_mmenschikov_test_blazegraph
     image: lyrasis/blazegraph:2.1.4
     hostname: localhost
+    user: "root:root"
     ports:
       - 8889:8080
       - 9999:9999
@@ -43,6 +44,28 @@ services:
         reservations:
           cpus: '1'
           memory: 4G
+
+  falkordb:
+    container_name: personalai_mmenschikov_test_falkordb
+    image: falkordb/falkordb:latest
+    hostname: localhost
+    # networks:
+    #   - tests_network
+    ports:
+      - 6379:6379
+      - 3000:3000
+    environment:
+      - FALKORDB_ARGS=THREAD_COUNT 8 TIMEOUT_MAX 30000
+    volumes:
+      - ./volumes/falkordb:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 10G
+        reservations:
+          cpus: '1'
+          memory: 5G
 
   aerospike:
     container_name: personalai_mmenschikov_test_aerospike
@@ -145,42 +168,42 @@ services:
     ports:
       - "5540:5540"
 
-  milvus:
-    image: milvusdb/milvus:v2.5.8
-    container_name: personalai_mmenschikov_test_milvus
-    hostname: localhost
-    # networks:
-    #   - tests_network
-    command: ["milvus", "run", "standalone"]
-    security_opt:
-      - seccomp:unconfined
-    environment:
-      - ETCD_USE_EMBED=true
-      - ETCD_DATA_DIR=/var/lib/milvus/etcd
-      - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
-      - COMMON_STORAGETYPE=local
-    ports:
-      - 19520:19530
-      - 2370:2379
-      - 9080:9091
-    volumes:
-      - ./volumes/milvus/data:/var/lib/milvus
-      - ../configs/milvus/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
-      - ../configs/milvus/user.yaml:/milvus/configs/user.yaml
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
-      interval: 30s
-      start_period: 90s
-      timeout: 20s
-      retries: 3
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 10G
-        reservations:
-          cpus: '1'
-          memory: 5G
+  # milvus:
+  #   image: milvusdb/milvus:v2.5.8
+  #   container_name: personalai_mmenschikov_test_milvus
+  #   hostname: localhost
+  #   # networks:
+  #   #   - tests_network
+  #   command: ["milvus", "run", "standalone"]
+  #   security_opt:
+  #     - seccomp:unconfined
+  #   environment:
+  #     - ETCD_USE_EMBED=true
+  #     - ETCD_DATA_DIR=/var/lib/milvus/etcd
+  #     - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
+  #     - COMMON_STORAGETYPE=local
+  #   ports:
+  #     - 19520:19530
+  #     - 2370:2379
+  #     - 9080:9091
+  #   volumes:
+  #     - ./volumes/milvus/data:/var/lib/milvus
+  #     - ../configs/milvus/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
+  #     - ../configs/milvus/user.yaml:/milvus/configs/user.yaml
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+  #     interval: 30s
+  #     start_period: 90s
+  #     timeout: 20s
+  #     retries: 3
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '2'
+  #         memory: 10G
+  #       reservations:
+  #         cpus: '1'
+  #         memory: 5G
 
   opensearch:
     container_name: personalai_mmenschikov_test_opensearch
@@ -190,8 +213,11 @@ services:
       - 9200:9200
       - 9600:9600
     environment:
+      - OPENSEARCH_UID=1000
+      - OPENSEARCH_GID=1000
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+      - cluster.routing.allocation.disk.threshold_enabled=false
     volumes:
       - ./volumes/opensearch/data:/usr/share/opensearch/data
     deploy:
@@ -214,6 +240,7 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+      - cluster.routing.allocation.disk.threshold_enabled=false
     volumes:
       - ./volumes/elasticsearch/data:/usr/share/elasticsearch/data
     deploy:
@@ -322,7 +349,7 @@ services:
           memory: 5G
 
   isolated_environment:
-    image: m.menschikov/workspace:v5
+    image: m.menschikov/workspace:v7
     container_name: personalai_test_isolated_env
     hostname: test_isolated_env
     network_mode: "host"
@@ -339,7 +366,7 @@ services:
       - neo4j
       - redis
       - mongo
-      - milvus
+      #- milvus
     deploy:
       resources:
         limits:

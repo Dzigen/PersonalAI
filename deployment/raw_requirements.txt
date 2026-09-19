@@ -1,16 +1,16 @@
-ipykernal
+ipykernel
 haystack-ai
 opensearch-haystack
 elasticsearch-haystack
 weaviate-haystack
-torch #--index-url https://download.pytorch.org/whl/cu126 # (NVIDIA GeForce GTX 1050 Ti)
+torch --index-url https://download.pytorch.org/whl/cu121 # (NVIDIA GeForce GTX 1050 Ti)
 chromadb
 sentence_transformers
 pysqlite3
 #pymilvus
 polyglot
 icu
-PyICU
+PyICU # need to install additional components via apt-get; see workspace.Dockerfile
 pycld2
 aerospike
 kuzu
@@ -31,3 +31,21 @@ levenshtein
 nltk
 #protobuf
 qdrant-client
+SPARQLWrapper
+rdflib
+falkordb
+mlflow
+boto3
+lingua-language-detector
+langchain-google-vertexai
+ragas
+rapidfuzz
+sacrebleu
+rouge_score
+yq
+flake8
+mypy
+dspy
+picologging
+flatdict
+pytest

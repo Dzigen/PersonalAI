@@ -1,0 +1,13 @@
+db_vendor: chroma
+vector_category: dense
+db_config:
+  db_info:
+    db: defaultpersonalaivectordb
+    table: defaultpersonalaivectortable
+  params:
+    hnsw:space: ip
+    hnsw:M: 4096
+  need_to_clear: false
+  create_index: false
+  conn:
+    path: ./personalai_tmp/volumes/chroma

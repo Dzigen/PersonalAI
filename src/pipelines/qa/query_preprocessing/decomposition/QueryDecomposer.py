@@ -4,6 +4,7 @@ from copy import deepcopy
 
 from .config import QD_MAIN_LOG_PATH
 from .utils import QueryDecomposerTaskSolvers, QueryDecomposerAgentTasksConfig
+from .....utils import accumulate_stage_info, CompositeModuleDetailedResult, ModuleType
 from .....utils.cache_kv import CacheUtils
 from .....utils.errors import STATUS_MESSAGE
 from .....utils.data_structs import create_id, QueryPreprocessingInfo, BaseComponentConfig, LanguageConfig
@@ -29,7 +30,7 @@ class QueryDecomposerConfig(BaseComponentConfig, LanguageConfig):
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     agent_tasks_config: Union[Dict, QueryDecomposerAgentTasksConfig] = field(default_factory=lambda: QueryDecomposerAgentTasksConfig())
     cache_table_name: str = 'qp_decomposition_stage_cache'
-    log: Logger = field(default_factory=lambda: Logger(QD_MAIN_LOG_PATH))
+    log_path: str = QD_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
@@ -70,7 +71,7 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs()
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
 
         self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
 
@@ -88,8 +89,9 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
             )
         )
 
-        self.log = self.config.log
+        self.log = Logger(self.config.log_path)
         self.verbose = self.config.verbose
+        self.log_level = self.config.log_level
 
     def get_cache_key(self, query_info: QueryPreprocessingInfo) -> List[str]:
         """Формирует ключ кеша для результата декомпозиции.
@@ -103,20 +105,21 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
         str_using_agent_info = f"{self.agent.CONNECTOR_KW}:{self.agent.config.to_str()}"
         return [query_info.to_str(), self.config.to_str(), str_using_agent_info]
 
+    @accumulate_stage_info
     @CacheUtils.cache_method_output
-    def perform(self, query_info: QueryPreprocessingInfo) -> Tuple[List[str], ReturnInfo]:
+    def perform(self, query_info: QueryPreprocessingInfo) -> Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult]:
         """Метод предназначен для выполнения операции форматирования/предобработки user-вопроса: декомпозиции сложных/составных user-вопросов на независимые/простые под-вопросы.
 
         :param query_info: Структура данных с результатами предыдущих операций предобработки/форматирования исходного user-вопроса.
         :type query_info: QueryPreprocessingInfo
-        :return: Кортеж из двух объектов: (1) список простых под-вопросов для исходного/сложного user-вопроса; (2) статус завершения операции с пояснительной информацией.
-        :rtype: Tuple[List[str], ReturnInfo]
+        :return: Кортеж из трёх объектов: (1) список простых под-вопросов для исходного/сложного user-вопроса; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода.
+        :rtype: Tuple[List[str], ReturnInfo, CompositeModuleDetailedResult]
         """
-        self.log("START QUERY DECOMPOSITION...", verbose=self.verbose)
-        self.log(
-            f"BASE_QUESTION ID: {create_id(query_info.base_query)}", verbose=self.verbose)
-        self.log(f"QUERY INFO: {query_info}", verbose=self.verbose)
+        self.log.debug("START QUERY DECOMPOSITION...", verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Question hash: %s", create_id(query_info.base_query), verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("* Query info: %s", query_info, verbose=self.verbose, log_level=self.log_level)
         decomposed_query, rinfo = None, ReturnInfo()
+        module_trace = CompositeModuleDetailedResult()
 
         if query_info.enchanced_query is not None:
             query = query_info.enchanced_query
@@ -125,27 +128,25 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
         elif query_info.base_query is not None:
             query = query_info.base_query
         else:
-            raise ValueError
+            raise ValueError(f"query_info: {query_info}")
 
-        self.log("Выполнение проверки на необходимость декомпозиции вопроса с помощью LLM-агента...",
-                 verbose=self.verbose)
-        need_to_decompose, status = self.tasks_solvers.decompose_classifier_solver.solve(
-            lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy,
-            query=query)
+        self.log.debug("Выполнение проверки на необходимость декомпозиции вопроса с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
+        need_to_decompose, status, trace = self.tasks_solvers.decompose_classifier_solver.solve(
+            lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
+        module_trace.add("decompose_classifier_solver", ModuleType.task_solver, trace)
         if status != ReturnStatus.success:
             rinfo.occurred_warning.append(status)
 
         if status == ReturnStatus.success:
             if need_to_decompose:
-                self.log("Выполнение разбиения вопроса на независимые под-вопросы с помощью LLM-агента...",
-                         verbose=self.verbose)
-                decomposed_query, status = self.tasks_solvers.q_decomposition_solver.solve(
+                self.log.debug("Выполнение разбиения вопроса на независимые под-вопросы с помощью LLM-агента...", verbose=self.verbose, log_level=self.log_level)
+                decomposed_query, status, trace = self.tasks_solvers.q_decomposition_solver.solve(
                     lang=self.config.lang, gen_strategy=self.config.agent_gen_stategy, query=query)
+                module_trace.add("q_decomposition_solver", ModuleType.task_solver, trace)
                 if status != ReturnStatus.success:
                     rinfo.occurred_warning.append(status)
             else:
-                self.log("Выполнение декомпозиции вопроса не требуется",
-                         verbose=self.verbose)
+                self.log.debug("Выполнение декомпозиции вопроса не требуется", verbose=self.verbose, log_level=self.log_level)
                 rinfo.occurred_warning.append(ReturnStatus.decompose_noneed)
                 decomposed_query = [query]
 
@@ -153,7 +154,7 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
             rinfo.status = ReturnStatus.empty_answer
             rinfo.message = STATUS_MESSAGE[rinfo.status]
 
-        self.log(f"RESULT: {decomposed_query}", verbose=self.verbose)
-        self.log(f"STATUS: {rinfo.status}", verbose=self.verbose)
+        self.log.debug("RESULT: %s", decomposed_query, verbose=self.verbose, log_level=self.log_level)
+        self.log.debug("STATUS: %s", rinfo.status, verbose=self.verbose, log_level=self.log_level)
 
-        return decomposed_query, rinfo
+        return decomposed_query, rinfo, module_trace

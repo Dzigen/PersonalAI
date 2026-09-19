@@ -17,6 +17,14 @@ Subpackages
 Submodules
 ----------
 
+src.TextIdStore module
+----------------------
+
+.. automodule:: src.TextIdStore
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 src.config module
 -----------------
 
@@ -25,10 +33,10 @@ src.config module
    :undoc-members:
    :show-inheritance:
 
-src.personalai\_main module
----------------------------
+src.main module
+---------------
 
-.. automodule:: src.personalai_main
+.. automodule:: src.main
    :members:
    :undoc-members:
    :show-inheritance:

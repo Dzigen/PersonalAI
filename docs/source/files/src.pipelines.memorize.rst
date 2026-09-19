@@ -29,6 +29,14 @@ src.pipelines.memorize.configs module
    :undoc-members:
    :show-inheritance:
 
+src.pipelines.memorize.utils module
+-----------------------------------
+
+.. automodule:: src.pipelines.memorize.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

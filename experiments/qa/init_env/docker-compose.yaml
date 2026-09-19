@@ -124,21 +124,27 @@ services:
 
   qdrant:
     container_name: ${QDRANT_CNTNAME}
-    image: qdrant/qdrant
+    image: qdrant/qdrant:gpu-nvidia-latest
     hostname: ${QDRANT_HOST}
     ports:
       - ${QDRANT_EXTERNAL_PORT}:6333
       - ${QDRANT_UI_EXTERNAL_PORT}:6334
     volumes:
         - ${QDRANT_LOCAL_VOLUME}:/qdrant/storage
+    environment:
+      - QDRANT__GPU__INDEXING=1
     deploy:
       resources:
         limits:
-          cpus: '2'
-          memory: 10G
+          cpus: '8'
+          memory: 24G
         reservations:
-          cpus: '1'
-          memory: 5G
+          cpus: '4'
+          memory: 8G
+          devices:
+            - driver: nvidia
+              device_ids: ['${WORKSPACE_DEVICE_ID}']
+              capabilities: [gpu]
 
   opensearch:
     container_name: ${OPENSEARCH_CNTNAME}
@@ -150,6 +156,7 @@ services:
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+      - cluster.routing.allocation.disk.threshold_enabled=false
     volumes:
       - ${OPENSEARCH_LOCAL_VOLUME}:/usr/share/opensearch/data
     deploy:
@@ -162,30 +169,34 @@ services:
           memory: 8G
 
   ollama_agent:
-    image: ollama/ollama:latest
+    image: ollama/ollama:0.24.0
     container_name: ${OLLAMA_CNTNAME}
     hostname: ${OLLAMA_HOST}
     ports:
       - "${OLLAMA_EXTERNAL_PORT}:11434"
-    environment:
+    environment: # available variables: https://github.com/ollama/ollama/issues/2941
       - OLLAMA_DEBUG=1
+      - OLLAMA_NOHISTORY=0
+      #- OLLAMA_NUM_PARALLEL=4     # Processes up to 4 requests at once per model
+      #- OLLAMA_MAX_LOADED_MODELS=2  # Keeps up to 2 different models in VRAM
+      #- OLLAMA_FLASH_ATTENTION=1    # Strongly recommended to save VRAM during parallel loads
     volumes:
       - ${OLLAMA_LOCAL_VOLUME}:/root/.ollama
     deploy:
       resources:
         limits:
-          cpus: '2'
-          memory: 8G
+          cpus: '8'
+          memory: 32G
         reservations:
-          cpus: '1'
-          memory: 4G
+          cpus: '4'
+          memory: 16G
           devices:
             - driver: nvidia
               device_ids: ['${OLLAMA_DEVICE_ID}']
               capabilities: [gpu]
 
   workspace:
-    image: m.menschikov/workspace:v5
+    image: m.menschikov/workspace:v13
     container_name: ${WORKSPACE_CNTNAME}
     hostname: ${WORKSPACE_HOST}
     network_mode: "host"
@@ -197,6 +208,7 @@ services:
       - ${EXTERNAL_SRC_PATH}:${INTERNAL_SRC_PATH}
       - ${EXTERNAL_MODELS_PATH}:${INTERNAL_MODELS_PATH}
     depends_on:
+      - ollama_agent
       - neo4j
       - mongo_cache
       - redis_cache

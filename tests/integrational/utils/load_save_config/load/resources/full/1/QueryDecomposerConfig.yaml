@@ -1,0 +1,9 @@
+lang: auto
+log_path: log/qa/query_preprocessing/decomposition/main
+verbose: false
+log_level: 10
+agent_gen_stategy: null
+agent_tasks_config:
+  classify: v2
+  decompose: v2
+cache_table_name: qp_decomposition_stage_cache

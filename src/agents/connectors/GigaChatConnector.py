@@ -3,7 +3,7 @@ from gigachat import GigaChat
 from gigachat.exceptions import ResponseError
 from time import time, sleep
 from gigachat.models import Chat, Messages
-from httpx import ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout
+from httpx import ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout, ReadError
 
 
 # https://github.com/VRSEN/agency-swarm/issues/99
@@ -43,7 +43,7 @@ class GigaChatConnector(AbstractAgentConnector):
     def close_connection(self):
         try:
             self.giga_model.close()
-        except TypeError:
+        except (AttributeError, TypeError):
             pass
 
     def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
@@ -62,10 +62,10 @@ class GigaChatConnector(AbstractAgentConnector):
             try:
                 response = self.giga_model.chat(chat)
                 flag = False
-            except (ConnectError, RemoteProtocolError, ResponseError, ConnectTimeout, ReadTimeout) as e:
+            except (ConnectError, RemoteProtocolError, ResponseError, ConnectTimeout, ReadTimeout, ReadError, RuntimeError) as e:
                 counter += 1
                 if counter > self.trials:
-                    raise ConnectError
+                    raise ConnectError(str(e))
                 else:
                     self.close_connection()
                     sleep(1)
