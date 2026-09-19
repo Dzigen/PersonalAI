@@ -1,8 +1,9 @@
+### About
+---
+
 #### Материалы
 - [Отчёт 2025](docs/source/_static/iteration_summary/2025/PersonalAI(Отчёт)(НИР)(Skoltech-Sber)(2025).pdf)
 - [Презентация работ 2025](docs/source/_static/iteration_summary/2025/PersonalAI(ПриёмкаРабот)(НИР)(Skoltech-Sber)(2025).pdf)
-#### Статьи
-- [PersonalAI: A Systematic Comparison of Knowledge Graph Storage and Retrieval Approaches for Personalized LLM agents](docs/source/_static/iteration_summary/2024/PersonalAI(Статья)(НИР)(Skoltech-Sber)(2024).pdf)
 
 #### Структура файловой системы:
 - debug/ - Директория с ноутбуками/скриптами для отладки кода из каталога "src".
@@ -25,11 +26,14 @@
 * [Построение графа](notebooks/kg_building)
 * [Оценка эффективности конфигурации QA-пайплайна с использование построенного графа](experiments/qa)
 
-##### Полезные материалы
+### Utils
+---
+
+#### Полезные материалы
 * [MLOps](docs/source/_static/useful_material/MLOps/)
 * [Организация научных исследований](docs/source/_static/useful_material/ОрганизацияНаучныхИсследований/)
 
-##### Команды для генерации документации:
+#### Команды для генерации документации:
 * find . -type d -name __pycache__ -exec rm -r {} \+
 * sphinx-apidoc -o ../docs/tmp/ .
 * make html
@@ -37,14 +41,14 @@
 * make singlehtml
 * make clean
 
-##### Генерация диаграммы классов
+#### Генерация диаграммы классов
 * pyreverse -o puml -f ALL src/
 
-##### Команды для тестироваания
+#### Команды для тестироваания
 * pytest --cov=src --cov-report=html ...
 * pygount src/ --suffix=py --format=summary
 
-##### Команды для проверки стиля кодовой базы
+#### Команды для проверки стиля кодовой базы
 * autopep8 src # formatter
 * pylint src # linter
 * flake8 src # linter
@@ -69,6 +73,33 @@ utils:
 archive experiments:
 * tar -czvf  deepseek_231025_v2prompts.tar.gz --exclude="configs" --exclude="judge_packs" --exclude="metric_packs" --exclude="tmp_answer_packs" --exclude="tmp_judges_packs" --exclude="inference_log.txt"  deepseek_231025_v2prompts/
 
---------------------------------
+### Citation
+---
+```
+@article{11479299,
+  author={Menschikov, Mikhail and Evseev, Dmitry and Dochkina, Victoria and Kostoev, Ruslan and Perepechkin, Ilia and Anokhin, Petr and Semenov, Nikita and Burnaev, Evgeny},
+  journal={IEEE Access}, 
+  title={PersonalAI: A Systematic Comparison of Knowledge Graph Storage and Retrieval Approaches for Personalized LLM Agents}, 
+  year={2026},
+  volume={14},
+  number={},
+  pages={58262-58281},
+  keywords={Filtering;Filters;Circuits and systems;Communication systems;Computer networks;IP networks;Mobile handsets;Telecommunications;Large language models;Artificial intelligence;GraphRAG;graph traversal approaches;knowledge graphs generation;multiagency;question answering},
+  doi={10.1109/ACCESS.2026.3682941}}
+```
+```
+@misc{menschikov2026personalai20enhancingknowledge,
+      title={PersonalAI 2.0: Enhancing knowledge graph traversal/retrieval with planning mechanism for Personalized LLM Agents}, 
+      author={Mikhail Menschikov and Matvey Iskornev and Alexander Kharitonov and Alina Bogdanova and Mikhail Belkin and Ekaterina Lisitsyna and Artyom Sosedka and Victoria Dochkina and Ruslan Kostoev and Ilia Perepechkin and Evgeny Burnaev},
+      year={2026},
+      eprint={2605.13481},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2605.13481}, 
+}
+```
 
-Тех. поддержка: [Telegram](https://t.me/mmenscshikov), <m.menschikov@skoltech.ru>
+### Technical Support
+---
+* [Telegram](https://t.me/mmenscshikov)
+* [Mail](m.menschikov@skoltech.ru)
