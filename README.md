@@ -1,4 +1,4 @@
-### About
+### ✨ About
 ---
 
 #### Материалы
@@ -26,7 +26,19 @@
 * [Построение графа](notebooks/kg_building)
 * [Оценка эффективности конфигурации QA-пайплайна с использование построенного графа](experiments/qa)
 
-### Utils
+### 🚀 Quick Start
+---
+TODO
+
+### 📊 Benchmarks
+---
+TODO
+
+### 📚 Documentation
+---
+TODO
+
+### 🛠️ Utils
 ---
 
 #### Полезные материалы
@@ -73,7 +85,11 @@ utils:
 archive experiments:
 * tar -czvf  deepseek_231025_v2prompts.tar.gz --exclude="configs" --exclude="judge_packs" --exclude="metric_packs" --exclude="tmp_answer_packs" --exclude="tmp_judges_packs" --exclude="inference_log.txt"  deepseek_231025_v2prompts/
 
-### Citation
+### 🤝 Community and Contributing
+---
+TODO
+
+### 📄 Citation
 ---
 ```
 @article{11479299,
@@ -99,7 +115,7 @@ archive experiments:
 }
 ```
 
-### Technical Support
+### 📬 Technical Support
 ---
 * [Telegram](https://t.me/mmenscshikov)
 * [Mail](m.menschikov@skoltech.ru)
