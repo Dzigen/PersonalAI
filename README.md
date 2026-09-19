@@ -120,7 +120,7 @@ TODO
 If this project inspires or assists you, please consider:
 * ⭐ Starring the repository
 * 🧵 Opening discussions or issues
-* 📚 Citing the relevant paper(s)
+* 📄 Citing the relevant paper(s)
 
 Let’s build memory-aware LLM agents together!
 
