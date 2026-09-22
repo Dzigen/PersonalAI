@@ -1,3 +1,6 @@
+**NB:**
+Hey everyone! We apologize for the insufficient comments and documentation in the repository (​we know that can be a pain). Recognizing the importance of clear, maintainable code, we are prioritizing comprehensive documentation and expect the repository to be fully commented and documented within the next 1-2 months. Thank you for your understanding.
+
 ### ✨ About
 ---
 TODO
