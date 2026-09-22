@@ -39,15 +39,14 @@ class LocalAgentConnector(AbstractAgentConnector):
         except (AttributeError, TypeError):
             pass
 
-    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
+    def generate(self, system_prompt: str, user_prompt: Union[None, str] = None, assistant_prompt: Union[None, str] = None,
                  gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}]
+        messages = [{"role": "system", "content": system_prompt}]
 
+        if user_prompt is not None:
+            messages.append({"role": "user", "content": user_prompt})
         if assistant_prompt is not None:
-            messages.insert(
-                1, {"role": "assistant", "content": assistant_prompt})
+            messages.append({"role": "assistant", "content": assistant_prompt})
 
         prompt = self.pipeline.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True)

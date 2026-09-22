@@ -46,10 +46,11 @@ class OLlamaConnector(AbstractAgentConnector):
         except (ResourceWarning, AttributeError, TypeError):
             pass
 
-    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
+    def generate(self, system_prompt: str, user_prompt: Union[None, str] = None, assistant_prompt: Union[None, str] = None,
                  gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
-        msgs = [{'role': 'system', 'content': system_prompt},
-                {'role': 'user', 'content': user_prompt}]
+        msgs = [{'role': 'system', 'content': system_prompt}]
+        if user_prompt is not None:
+            msgs.append({'role': 'user', 'content': user_prompt})
         if assistant_prompt is not None:
             msgs.append({'role': 'assistant', 'content': assistant_prompt})
         gen_strategy = self.config.gen_strategy if gen_strategy is None else gen_strategy
@@ -75,7 +76,7 @@ class OLlamaConnector(AbstractAgentConnector):
         ai_end_time = time()
 
         inference_info = LLMInferenceStat(
-            prompt_tokens_amount=raw_output.get('prompt_eval_count', 0), # !!! PAY ATTENTION !!!
+            prompt_tokens_amount=raw_output.get('prompt_eval_count', 0),  # !!! PAY ATTENTION !!!
             generated_tokens_amount=raw_output.get('eval_count', 0),
             inference_elapsed_time=round(ai_end_time - ai_start_time, 2)
         )

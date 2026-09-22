@@ -46,10 +46,12 @@ class GigaChatConnector(AbstractAgentConnector):
         except (AttributeError, TypeError):
             pass
 
-    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
+    def generate(self, system_prompt: str, user_prompt: Union[None, str] = None, assistant_prompt: Union[None, str] = None,
                  gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
-        msgs = [Messages(role='system', content=system_prompt),
-                Messages(role='user', content=user_prompt)]
+        msgs = [Messages(role='system', content=system_prompt)]
+
+        if user_prompt is not None:
+            msgs.append(Messages(role='user', content=user_prompt))
         if assistant_prompt is not None:
             msgs.append(Messages(role='assistant', content=assistant_prompt))
 

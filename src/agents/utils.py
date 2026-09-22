@@ -69,18 +69,18 @@ class AbstractAgentConnector:
         pass
 
     @abstractmethod
-    def generate(self, system_prompt: str, user_prompt: str, assistant_prompt: str = None,
+    def generate(self, system_prompt: str, user_prompt: str = None, assistant_prompt: str = None,
                  gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
         """Выполняет один вызов LLM-агента.
 
         :param system_prompt: System-промпт для LLM-агента.
         :type system_prompt: str
-        :param user_prompt: Основной user-промпт с постановкой задачи.
-        :type user_prompt: str
+        :param user_prompt: Основной user-промпт с постановкой задачи. Значение по умолчанию None.
+        :type user_prompt: Union[None, str], optional
         :param assistant_prompt: Дополнительный контекст для уточнения задачи. Значение по умолчанию None.
-        :type assistant_prompt: str
+        :type assistant_prompt: Union[None, str], optional
         :param gen_strategy: Переопределение стратегии генерации для конкретного вызова. Если None, используются настройки из config.gen_strategy.
-        :type gen_strategy: Union[None, Dict[str, str]]
+        :type gen_strategy: Union[None, Dict[str, str]], optional
         :return: Кортеж из сгенерированного текста и объекта со статистикой инференса.
         :rtype: Tuple[str, LLMInferenceStat]
         """
