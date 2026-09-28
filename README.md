@@ -32,6 +32,8 @@ TODO
 ---
 TODO
 
+Notebooks with examples: https://github.com/Dzigen/PersonalAI/tree/master/docs/source/notebooks
+
 ### 📊 Benchmarks
 ---
 TODO
