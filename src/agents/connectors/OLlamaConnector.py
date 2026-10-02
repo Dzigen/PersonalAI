@@ -47,7 +47,7 @@ class OLlamaConnector(AbstractAgentConnector):
             pass
 
     def generate(self, system_prompt: str, user_prompt: Union[None, str] = None, assistant_prompt: Union[None, str] = None,
-                 gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
+                 gen_strategy: Union[None, Dict[str, str]] = None, content_fname: str = "content") -> Tuple[str, LLMInferenceStat]:
         msgs = [{'role': 'system', 'content': system_prompt}]
         if user_prompt is not None:
             msgs.append({'role': 'user', 'content': user_prompt})
@@ -64,6 +64,7 @@ class OLlamaConnector(AbstractAgentConnector):
                     options=gen_strategy, messages=msgs,
                     keep_alive=self.config.ext_params['keep_alive']
                 )
+                # print(raw_output)
                 flag = False
             except (ConnectError, RemoteProtocolError, ConnectTimeout, ReadTimeout, ReadError, RuntimeError) as e:
                 counter += 1
@@ -85,7 +86,7 @@ class OLlamaConnector(AbstractAgentConnector):
         #     # prompt was cached
         #     pass
 
-        response = raw_output['message']['content']
+        response = raw_output['message'][content_fname]
         return response, inference_info
 
     def __del__(self):

@@ -44,7 +44,7 @@ class OpenAIConnector(AbstractAgentConnector):
             pass
 
     def generate(self, system_prompt: str, user_prompt: Union[None, str] = None, assistant_prompt: Union[None, str] = None,
-                 gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
+                 gen_strategy: Union[None, Dict[str, str]] = None, content_fname: str = "content") -> Tuple[str, LLMInferenceStat]:
         msgs = [{"role": "system", "content": system_prompt}]
         if user_prompt is not None:
             msgs.append({"role": "user", "content": user_prompt})
@@ -58,6 +58,7 @@ class OpenAIConnector(AbstractAgentConnector):
             try:
                 response = self.client.chat.completions.create(
                     model=self.config.credentials['model'], messages=msgs, **gen_strategy)
+                # print(response)
                 flag = False
             except (ConnectError, RemoteProtocolError, ConnectTimeout, APITimeoutError, ReadTimeout, ReadError, RuntimeError) as e:
                 counter += 1
@@ -75,7 +76,8 @@ class OpenAIConnector(AbstractAgentConnector):
             inference_elapsed_time=round(ai_end_time - ai_start_time, 2)
         )
 
-        return response.choices[0].message.content, inference_info
+        content = getattr(response.choices[0].message, content_fname)
+        return content, inference_info
 
     def __del__(self):
         self.close_connection()

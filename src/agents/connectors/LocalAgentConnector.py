@@ -40,7 +40,11 @@ class LocalAgentConnector(AbstractAgentConnector):
             pass
 
     def generate(self, system_prompt: str, user_prompt: Union[None, str] = None, assistant_prompt: Union[None, str] = None,
-                 gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
+                 gen_strategy: Union[None, Dict[str, str]] = None, content_fname: str = "generated_text") -> Tuple[str, LLMInferenceStat]:
+        if content_fname != "generated_text":
+            # TODO
+            raise NotImplementedError
+
         messages = [{"role": "system", "content": system_prompt}]
 
         if user_prompt is not None:
@@ -65,15 +69,16 @@ class LocalAgentConnector(AbstractAgentConnector):
             return_full_text=False,
             **gen_strategy
         )
+        # print(outputs)
         ai_end_time = time()
 
         inference_info = LLMInferenceStat(
             prompt_tokens_amount=len(self.pipeline.tokenizer.tokenize(prompt)),
-            generated_tokens_amount=len(self.pipeline.tokenizer.tokenize(outputs[0]["generated_text"])),
+            generated_tokens_amount=len(self.pipeline.tokenizer.tokenize(outputs[0][content_fname])),
             inference_elapsed_time=round(ai_end_time - ai_start_time, 2)
         )
 
-        return outputs[0]["generated_text"], inference_info
+        return outputs[0][content_fname], inference_info
 
     def __del__(self):
         self.close_connection()

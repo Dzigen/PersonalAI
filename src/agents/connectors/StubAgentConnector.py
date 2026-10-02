@@ -24,7 +24,7 @@ class StubAgentConnector(AbstractAgentConnector):
         pass
 
     def generate(self, system_prompt: str, user_prompt: Union[None, str] = None, assistant_prompt: Union[None, str] = None,
-                 gen_strategy: Union[None, Dict[str, str]] = None) -> Tuple[str, LLMInferenceStat]:
+                 gen_strategy: Union[None, Dict[str, str]] = None, content_fname: str = "content") -> Tuple[str, LLMInferenceStat]:
         answer = ''
         if len(self.looped_answers):
             answer = self.looped_answers.popleft()
