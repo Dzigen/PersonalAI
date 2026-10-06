@@ -140,3 +140,7 @@ experiments/analogues_eval/qa_eval/results/
 tests/performance_load/logging/log
 
 notebooks/parse_exp_logs/trace_[0-9]*
+
+
+experiments/experiences_extraction/general_extraction(iteration#1)/artifacts
+experiments/experiences_extraction/general_extraction(iteration#1)/prepared_params

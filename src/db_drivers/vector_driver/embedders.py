@@ -78,7 +78,7 @@ class EmbedderModel(Embeddings):
         """
         output = self.model.encode(
             text, normalize_embeddings=self.config.normalize_embeddings, **kwargs)
-        return [list(obj.astype(float)) for obj in output]
+        return output.tolist()
 
     def encode_queries(self, queries: List[str], **kwargs) -> List[List[float]]:
         """Метод предназначен для кодирования текстовых запросов в векторные представления.
@@ -90,7 +90,7 @@ class EmbedderModel(Embeddings):
         """
         output = self.model.encode(queries, prompt_name=self.config.query_prompt_name,
                                    normalize_embeddings=self.config.normalize_embeddings, **kwargs)
-        return [list(obj.astype(float)) for obj in output]
+        return output.tolist()
 
     def embed_query(self, text: str) -> List[float]:
         """Метод предназначен для получения эмбеддинга одного запроса.
@@ -113,7 +113,7 @@ class EmbedderModel(Embeddings):
         output = self.model.encode(passages, prompt_name=self.config.passage_prompt_name,
                                    normalize_embeddings=self.config.normalize_embeddings,
                                    **kwargs)
-        return [list(obj.astype(float)) for obj in output]
+        return output.tolist()
 
     def embed_documents(self, texts: list[str]) -> List[List[float]]:
         return self.encode_passages(texts)
