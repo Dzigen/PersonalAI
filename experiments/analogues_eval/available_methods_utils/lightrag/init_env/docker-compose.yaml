@@ -1,4 +1,22 @@
 services:
+  ollama_metrics_proxy:
+    # https://github.com/elliotfehr/ollama-metrics-proxy/tree/main
+    image: m.menschikov/ollama_metrics_proxy:v1
+    container_name: personalai_mmenschikov_ollama_metrics_proxy
+    hostname: ollamametricsproxy
+    network_mode: "host"
+    # ports:
+    #   - ":11435" # proxy port to ollama 
+    #   - ":9836" # metrics port
+    deploy:
+      resources:
+        limits:
+          cpus: '3'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+
   ollama_agent:
     image: ollama/ollama:latest
     container_name: ${OLLAMA_CNTNAME}
@@ -8,6 +26,8 @@ services:
       - OLLAMA_DEBUG=1
     volumes:
       - ${OLLAMA_LOCAL_VOLUME}:/root/.ollama
+    depends_on:
+      - ollama_metrics_proxy
     deploy:
       resources:
         limits:
@@ -22,7 +42,10 @@ services:
               capabilities: [gpu]
 
   workspace:
-    image: m.menschikov/lightrag_eval_workspace:v1
+    build:
+      context: .
+      dockerfile: workspace.Dockerfile
+    image: m.menschikov/lightrag_eval_workspace:v2
     container_name: ${WORKSPACE_CNTNAME}
     hostname: ${WORKSPACE_HOST}
     network_mode: "host"

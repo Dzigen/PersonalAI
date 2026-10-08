@@ -1,4 +1,5 @@
 faiss-cpu
+litellm
 pandas
 tqdm
 joblib
@@ -29,3 +30,4 @@ pymongo
 ollama
 gigachat
 picologging
+prometheus_client

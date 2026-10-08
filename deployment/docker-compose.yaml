@@ -319,6 +319,9 @@ services:
               capabilities: [gpu]
 
   empty_workspace:
+    build:
+        context: .
+        dockerfile: empty_workspace.Dockerfile
     image: m.menschikov/empty_workspace:v1
     container_name: ${EMPTY_WORKSPACE_CNTNAME}
     hostname: ${EMPTY_WORKSPACE_HOST}

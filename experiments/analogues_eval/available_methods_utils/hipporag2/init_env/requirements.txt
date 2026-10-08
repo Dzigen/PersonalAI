@@ -33,3 +33,4 @@ ollama
 sentence_transformers
 gigachat
 picologging
+prometheus_client

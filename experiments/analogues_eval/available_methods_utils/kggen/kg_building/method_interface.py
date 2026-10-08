@@ -39,6 +39,7 @@ class KGGenBuildOperations(GraphRAGBuildOperations):
             'save_dir': save_dir,
             'llm_model_name': f"{llm_info['vendor']}/{llm_info['credentials']['model']}",
             'llm_base_url': llm_base_url,
+            'endpoint': '/v1/chat/completions',
             'embedding_model_name': embedder_info['model_name_or_path'],
             'temperature': 0.0,
             'reasoning_effort':None,
