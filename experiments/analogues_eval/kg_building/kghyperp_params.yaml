@@ -4,7 +4,10 @@ KNOWLEDGE_GRAPH_NAME: 'gigachatmax_111225_v2prompts' # TO CHANGE
 
 METHOD_CONFIG:
   embedder_config:
-    model_name_or_path: 'facebook/contriever'
+    prompts:
+      query: "query: "
+      passage: "passage: "
+    model_name_or_path: 'intfloat/multilingual-e5-large'
 
   agent_config:
     vendor: ollama
@@ -14,9 +17,9 @@ METHOD_CONFIG:
       top_k: 1
       temperature: 0.0
     credentials:
-      model: gemma2:9b
+      model: qwen2.5:7b
       host: localhost
-      port: 11437
+      port: 11435
     ext_params:
       timeout: 560
       keep_alive: -1

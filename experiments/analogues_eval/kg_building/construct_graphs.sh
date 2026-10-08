@@ -6,9 +6,9 @@ USERNAME=root
 
 # ===============================================================
 
-DATASETS=("musique_validation" "natural_questions_train" "trivia_qa_rcwikipedia_validation")  # TO CHANGE
-KNOWLEDGE_GRAPHS=("qwen257b_200326" "qwen257b_210326" "qwen257b_220326") # TO CHANGE
-METHODS=("lightrag" "lightrag" "lightrag" ) # TO CHANGE
+DATASETS=("natural_questions_train" "trivia_qa_rcwikipedia_validation" "2wikimultihopqa_dev" "hotpotqa_distractor_validation" "musique_validation")  # TO CHANGE
+KNOWLEDGE_GRAPHS=("qwen257b_081026" "qwen257b_081026" "qwen257b_081026") # TO CHANGE
+METHODS=("hipporag2" "hipporag2" "hipporag2" "hipporag2" "hipporag2" ) # TO CHANGE
 
 # ===============================================================
 
