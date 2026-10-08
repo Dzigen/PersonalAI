@@ -49,3 +49,4 @@ dspy
 picologging
 flatdict
 pytest
+prometheus_client
