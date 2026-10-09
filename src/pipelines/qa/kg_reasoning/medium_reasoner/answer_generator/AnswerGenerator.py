@@ -71,8 +71,9 @@ class AnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
     """
 
     def __init__(self, agent: AbstractAgentConnector, config: Union[AnswerGeneratorConfig, Dict] = AnswerGeneratorConfig(),
-                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, cache_llm_inference: bool = True,
-                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None):
+                 cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None,
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = None,
+                 cache_llm_inference: bool = True):
         if isinstance(config, dict):
             config: AnswerGeneratorConfig = AnswerGeneratorConfig.from_dict(config)
         else:
