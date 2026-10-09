@@ -351,7 +351,7 @@ for setting_fname, prepared_setting in tqdm(zip(settings_filnames, prepared_sett
         # for top_experience in sorted_queries[:SETTING['top_k']]:
         #     print(top_experience[1])
 
-        formatted_queries = '\n'.join([f"* {query_info[1][2]}" for query_info in sorted_queries[:SETTING['top_k']]])
+        formatted_queries = '\n'.join([f"* {query_info[1][1]}" for query_info in sorted_queries[:SETTING['top_k']]])
         response, stat = agent.generate(
             system_prompt=SETTING['queries_summarisation_task']['system_prompt'].format(queries=formatted_queries),
             assistant_prompt=SETTING['queries_summarisation_task']['assistant_prompt']
