@@ -86,8 +86,9 @@ utils:
 * find . -maxdepth 4 -type d -name "tmp_*" -exec rm -rf {} +
 * git tag -a <tag-version> commit_id -m "comment"
 
-archive experiments:
-* tar -czvf  deepseek_231025_v2prompts.tar.gz --exclude="configs" --exclude="judge_packs" --exclude="metric_packs" --exclude="tmp_answer_packs" --exclude="tmp_judges_packs" --exclude="inference_log.txt"  deepseek_231025_v2prompts/
+archive experiments and constructed memory-graphs:
+1. tar -czvf  deepseek_231025_v2prompts.tar.gz --exclude="configs" --exclude="judge_packs" --exclude="metric_packs" --exclude="tmp_answer_packs" --exclude="tmp_judges_packs" --exclude="inference_log.txt"  deepseek_231025_v2prompts/
+2. tar -czvf 2wiki_qwen257b_080226_v2prompts.tar.gz --exclude="embeddings_part" --exclude="graph_part" --exclude="kv_cache" --exclude="stat" --exclude="tmp_extracted_triplets" --exclude="extracted_triplets" qwen257b_080226_v2prompts/
 
 ### 🤝 Community and Contributing
 ---
