@@ -1,0 +1,101 @@
+{
+  "summary": {
+    "count": 501,
+    "max": 168,
+    "mean": 30.874,
+    "median": 21.0,
+    "min": 9,
+    "std": 35.463,
+    "sum": 15468
+  },
+  "answer_classify_solver": {
+    "count": 501,
+    "max": 8,
+    "mean": 1.828,
+    "median": 1.0,
+    "min": 1,
+    "std": 1.95,
+    "sum": 916
+  },
+  "casual_answer_gen_solver": {
+    "count": 501,
+    "max": 1,
+    "mean": 0.924,
+    "median": 1.0,
+    "min": 0,
+    "std": 0.265,
+    "sum": 463
+  },
+  "strict_answer_gen_solver": {
+    "count": 501,
+    "max": 1,
+    "mean": 0.076,
+    "median": 0.0,
+    "min": 0,
+    "std": 0.265,
+    "sum": 38
+  },
+  "clueanswers_summarizer_solver": {
+    "count": 501,
+    "max": 8,
+    "mean": 1.828,
+    "median": 1.0,
+    "min": 1,
+    "std": 1.95,
+    "sum": 916
+  },
+  "clueanswer_generator_solver": {
+    "count": 501,
+    "max": 64,
+    "mean": 10.866,
+    "median": 8.0,
+    "min": 2,
+    "std": 13.056,
+    "sum": 5444
+  },
+  "cluequeries_generator_solver": {
+    "count": 501,
+    "max": 64,
+    "mean": 10.866,
+    "median": 8.0,
+    "min": 2,
+    "std": 13.056,
+    "sum": 5444
+  },
+  "entities_extractor_solver": {
+    "count": 501,
+    "max": 8,
+    "mean": 1.828,
+    "median": 1.0,
+    "min": 1,
+    "std": 1.95,
+    "sum": 916
+  },
+  "searchplan_enhance_classify_solver": {
+    "count": 501,
+    "max": 7,
+    "mean": 0.828,
+    "median": 0.0,
+    "min": 0,
+    "std": 1.95,
+    "sum": 415
+  },
+  "plan_enhancing_solver": {
+    "count": 501,
+    "max": 7,
+    "mean": 0.828,
+    "median": 0.0,
+    "min": 0,
+    "std": 1.95,
+    "sum": 415
+  },
+  "plan_initialing_solver": {
+    "count": 501,
+    "max": 1,
+    "mean": 1.0,
+    "median": 1.0,
+    "min": 1,
+    "std": 0.0,
+    "sum": 501
+  }
+}

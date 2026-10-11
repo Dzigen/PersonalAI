@@ -1,0 +1,302 @@
+{
+   "summary": {
+      "count": {
+         "generated": 801,
+         "prompt": 801
+      },
+      "max": {
+         "generated": 5155,
+         "prompt": 152577
+      },
+      "mean": {
+         "generated": 1416.044,
+         "prompt": 38765.282
+      },
+      "median": {
+         "generated": 1080.0,
+         "prompt": 29876.0
+      },
+      "min": {
+         "generated": 339,
+         "prompt": 6991
+      },
+      "std": {
+         "generated": 1140.18,
+         "prompt": 32232.302
+      },
+      "sum": {
+         "generated": 1134251,
+         "prompt": 31050991
+      }
+   },
+   "answer_classify_solver": {
+      "min": {
+         "generated": 63,
+         "prompt": 770
+      },
+      "mean": {
+         "generated": 169.344,
+         "prompt": 2069.76
+      },
+      "median": {
+         "generated": 126.0,
+         "prompt": 1540.0
+      },
+      "max": {
+         "generated": 504,
+         "prompt": 6160
+      },
+      "std": {
+         "generated": 131.607,
+         "prompt": 1608.53
+      },
+      "sum": {
+         "generated": 135639,
+         "prompt": 1657810
+      },
+      "count": 801
+   },
+   "casual_answer_gen_solver": {
+      "min": {
+         "generated": 0,
+         "prompt": 0
+      },
+      "mean": {
+         "generated": 71.1,
+         "prompt": 528.3
+      },
+      "median": {
+         "generated": 79.0,
+         "prompt": 587.0
+      },
+      "max": {
+         "generated": 79,
+         "prompt": 587
+      },
+      "std": {
+         "generated": 23.7,
+         "prompt": 176.1
+      },
+      "sum": {
+         "generated": 56959,
+         "prompt": 423227
+      },
+      "count": 801
+   },
+   "strict_answer_gen_solver": {
+      "min": {
+         "generated": 0,
+         "prompt": 0
+      },
+      "mean": {
+         "generated": 9.2,
+         "prompt": 113.8
+      },
+      "median": {
+         "generated": 0.0,
+         "prompt": 0.0
+      },
+      "max": {
+         "generated": 92,
+         "prompt": 1138
+      },
+      "std": {
+         "generated": 27.6,
+         "prompt": 341.4
+      },
+      "sum": {
+         "generated": 7360,
+         "prompt": 91040
+      },
+      "count": 801
+   },
+   "clueanswers_summarizer_solver": {
+      "min": {
+         "generated": 65,
+         "prompt": 995
+      },
+      "mean": {
+         "generated": 174.72,
+         "prompt": 2674.56
+      },
+      "median": {
+         "generated": 130.0,
+         "prompt": 1990.0
+      },
+      "max": {
+         "generated": 520,
+         "prompt": 7960
+      },
+      "std": {
+         "generated": 135.785,
+         "prompt": 2078.555
+      },
+      "sum": {
+         "generated": 139945,
+         "prompt": 2142235
+      },
+      "count": 801
+   },
+   "clueanswer_generator_solver": {
+      "min": {
+         "generated": 60,
+         "prompt": 2556
+      },
+      "mean": {
+         "generated": 456.99,
+         "prompt": 19467.774
+      },
+      "median": {
+         "generated": 360.0,
+         "prompt": 15336.0
+      },
+      "max": {
+         "generated": 1920,
+         "prompt": 81792
+      },
+      "std": {
+         "generated": 387.51,
+         "prompt": 16507.926
+      },
+      "sum": {
+         "generated": 366060,
+         "prompt": 15594156
+      },
+      "count": 801
+   },
+   "cluequeries_generator_solver": {
+      "min": {
+         "generated": 36,
+         "prompt": 1234
+      },
+      "mean": {
+         "generated": 274.194,
+         "prompt": 9398.761
+      },
+      "median": {
+         "generated": 216.0,
+         "prompt": 7404.0
+      },
+      "max": {
+         "generated": 1152,
+         "prompt": 39488
+      },
+      "std": {
+         "generated": 232.506,
+         "prompt": 7969.789
+      },
+      "sum": {
+         "generated": 219636,
+         "prompt": 7528634
+      },
+      "count": 801
+   },
+   "entities_extractor_solver": {
+      "min": {
+         "generated": 10,
+         "prompt": 247
+      },
+      "mean": {
+         "generated": 26.88,
+         "prompt": 663.936
+      },
+      "median": {
+         "generated": 20.0,
+         "prompt": 494.0
+      },
+      "max": {
+         "generated": 80,
+         "prompt": 1976
+      },
+      "std": {
+         "generated": 20.89,
+         "prompt": 515.983
+      },
+      "sum": {
+         "generated": 21530,
+         "prompt": 531791
+      },
+      "count": 801
+   },
+   "searchplan_enhance_classify_solver": {
+      "min": {
+         "generated": 0,
+         "prompt": 0
+      },
+      "mean": {
+         "generated": 150.232,
+         "prompt": 1314.952
+      },
+      "median": {
+         "generated": 89.0,
+         "prompt": 779.0
+      },
+      "max": {
+         "generated": 623,
+         "prompt": 5453
+      },
+      "std": {
+         "generated": 185.921,
+         "prompt": 1627.331
+      },
+      "sum": {
+         "generated": 120328,
+         "prompt": 1053208
+      },
+      "count": 801
+   },
+   "plan_enhancing_solver": {
+      "min": {
+         "generated": 0,
+         "prompt": 0
+      },
+      "mean": {
+         "generated": 57.392,
+         "prompt": 1931.072
+      },
+      "median": {
+         "generated": 34.0,
+         "prompt": 1144.0
+      },
+      "max": {
+         "generated": 238,
+         "prompt": 8008
+      },
+      "std": {
+         "generated": 71.026,
+         "prompt": 2389.816
+      },
+      "sum": {
+         "generated": 45968,
+         "prompt": 1546688
+      },
+      "count": 801
+   },
+   "plan_initialing_solver": {
+      "min": {
+         "generated": 26,
+         "prompt": 602
+      },
+      "mean": {
+         "generated": 26.0,
+         "prompt": 602.0
+      },
+      "median": {
+         "generated": 26.0,
+         "prompt": 602.0
+      },
+      "max": {
+         "generated": 26,
+         "prompt": 602
+      },
+      "std": {
+         "generated": 0.0,
+         "prompt": 0.0
+      },
+      "sum": {
+         "generated": 20826,
+         "prompt": 482202
+      },
+      "count": 801
+   }
+}
