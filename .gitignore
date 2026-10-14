@@ -144,3 +144,4 @@ notebooks/parse_exp_logs/trace_[0-9]*
 
 experiments/experiences_extraction/general_extraction(iteration#1)/artifacts
 experiments/experiences_extraction/general_extraction(iteration#1)/prepared_params
+experiments/qa/analysis/artifacts

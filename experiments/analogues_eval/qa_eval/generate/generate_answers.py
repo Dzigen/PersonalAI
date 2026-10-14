@@ -74,7 +74,7 @@ GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['gen_
 
 QA_ELAPSED_TIME_SPATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['elapsed_time']}"
 
-QA_LLMCALLS_AND_TOKENS_SPATH = f"{SPEC_EXPERIMENT_DIR}/llmcall_and_tokens.json"
+QA_LLMCALLS_AND_TOKENS_SPATH = f"{SPEC_EXPERIMENT_DIR}/llmcall_and_tokens.json" # !!! PAY ATTENTION !!!
 
 # KG PATHS
 DATASET_KGS_PATH = f"{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{SPECEXP_PARAMS['METHOD_NAME']}/{SPECEXP_PARAMS['DATASET_NAME']}"
@@ -141,7 +141,6 @@ for pack_name, questions, _ in question_packs:
 
     process = tqdm(range(len(questions)))
     for i in process:
-        process.set_postfix_str(pack_name)
 
         ollama_stats = OllamaProxyMetrics()
         ollama_qstart_metrics = {
@@ -170,14 +169,19 @@ for pack_name, questions, _ in question_packs:
         #print("Question: ", questions[i])
         #print("Answer: ", answer)
 
-        answer_dump_file = f"{pack_tmp_answers_dir}/answer_{i}"
-        joblib.dump({
+        tmp_qa_info = {
             'answer': answer, 
             'elapsed_time': e_time - s_time, 
             'ollama_requests': ollama_qend_metrics['ollama_requests']-ollama_qstart_metrics['ollama_requests'],
             'ollama_prompt_tokens': ollama_qend_metrics['ollama_prompt_tokens']-ollama_qstart_metrics['ollama_prompt_tokens'],
             'ollama_completion_toknes': ollama_qend_metrics['ollama_completion_toknes']-ollama_qstart_metrics['ollama_completion_toknes']
-        }, answer_dump_file)
+        }
+
+        process.set_postfix_str(f"pack: {pack_name} | {tmp_qa_info['elapsed_time']}, {tmp_qa_info['ollama_requests']}, {tmp_qa_info['ollama_prompt_tokens']}, {tmp_qa_info['ollama_completion_toknes']}")
+        process.set_postfix_str("")
+
+        answer_dump_file = f"{pack_tmp_answers_dir}/answer_{i}"
+        joblib.dump(tmp_qa_info, answer_dump_file)
 
 ####################################################
 print("6.1. Ollama metrics after run (pay attention: require separate container with ollama-proxy)")
@@ -203,15 +207,15 @@ for k in ollama_metrics_before_run.keys():
 ####################################################
 print("7. Accumulating generated answers")
 
-def calculate_statistics(values: List[float, int]) -> Dict[str, Union[float, int]]:
+def calculate_statistics(values: List[Union[float, int]]) -> Dict[str, Union[float, int]]:
     return {
         'count': len(values),
-        'max': min(values),
+        'max': round(max(values),3),
         'mean': round(float(np.mean(values)), 3),
         'median': round(float(np.median(values)), 3),
-        'min': min(values),
+        'min': round(min(values),3),
         'std': round(float(np.std(values)), 3),
-        'sum': sum(values)
+        'sum': round(sum(values),3)
     }
 
 elapsed_times: Dict[str,Dict[str, float]] = dict()
