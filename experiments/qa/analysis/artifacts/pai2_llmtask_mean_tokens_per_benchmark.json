@@ -1,0 +1,222 @@
+{
+    "2wiki": {
+        "answer_classify_solver": {
+            "generated": 61,
+            "prompt": 779
+        },
+        "casual_answer_gen_solver": {
+            "generated": 84,
+            "prompt": 594
+        },
+        "strict_answer_gen_solver": {
+            "generated": 82,
+            "prompt": 1098
+        },
+
+        "clueanswers_summarizer_solver": {
+            "generated": 57,
+            "prompt": 965
+        },
+        "clueanswer_generator_solver": {
+            "generated": 26,
+            "prompt": 1298
+        },
+        "cluequeries_generator_solver": {
+            "generated": 15,
+            "prompt": 610
+        },
+        "entities_extractor_solver": {
+            "generated": 10,
+            "prompt": 243
+        },
+
+        "searchplan_enhance_classify_solver": {
+            "generated": 86,
+            "prompt": 775
+        },
+        "plan_enhancing_solver": {
+            "generated": 28,
+            "prompt": 939
+        },
+        "plan_initialing_solver": {
+            "generated": 27,
+            "prompt": 589
+        }
+    },
+    "hotpotqa": {
+        "answer_classify_solver": {
+            "generated": 63,
+            "prompt": 770
+        },
+        "casual_answer_gen_solver": {
+            "generated": 79,
+            "prompt": 587
+        },
+        "strict_answer_gen_solver": {
+            "generated": 92,
+            "prompt": 1138
+        },
+        
+        "clueanswers_summarizer_solver": {
+            "generated": 65,
+            "prompt": 995
+        },
+        "clueanswer_generator_solver": {
+            "generated": 30,
+            "prompt": 1278
+        },
+        "cluequeries_generator_solver": {
+            "generated": 18,
+            "prompt": 617
+        },
+        "entities_extractor_solver": {
+            "generated": 10,
+            "prompt": 247
+        },
+
+        "searchplan_enhance_classify_solver": {
+            "generated": 89,
+            "prompt": 779
+        },
+        "plan_enhancing_solver": {
+            "generated": 34,
+            "prompt": 1144
+        },
+        "plan_initialing_solver": {
+            "generated": 26,
+            "prompt": 602
+        }
+    },
+    "musique": {
+        "answer_classify_solver": {
+            "generated": 62,
+            "prompt": 782
+        },
+        "casual_answer_gen_solver": {
+            "generated": 77,
+            "prompt": 585
+        },
+        "strict_answer_gen_solver": {
+            "generated": 83,
+            "prompt": 1135
+        },
+        
+        "clueanswers_summarizer_solver": {
+            "generated": 62,
+            "prompt": 967
+        },
+        "clueanswer_generator_solver": {
+            "generated": 29,
+            "prompt": 1266
+        },
+        "cluequeries_generator_solver": {
+            "generated": 16,
+            "prompt": 612
+        },
+        "entities_extractor_solver": {
+            "generated": 9,
+            "prompt": 245
+        },
+
+        "searchplan_enhance_classify_solver": {
+            "generated": 84,
+            "prompt": 779
+        },
+        "plan_enhancing_solver": {
+            "generated": 29,
+            "prompt": 1144
+        },
+        "plan_initialing_solver": {
+            "generated": 24,
+            "prompt": 598
+        }
+    },
+    "nq": {
+        "answer_classify_solver": {
+            "generated": 54,
+            "prompt": 755
+        },
+        "casual_answer_gen_solver": {
+            "generated": 66,
+            "prompt": 546
+        },
+        "strict_answer_gen_solver": {
+            "generated": 80,
+            "prompt": 1170
+        },
+        
+        "clueanswers_summarizer_solver": {
+            "generated": 74,
+            "prompt": 1005
+        },
+        "clueanswer_generator_solver": {
+            "generated": 37,
+            "prompt": 1308
+        },
+        "cluequeries_generator_solver": {
+            "generated": 17,
+            "prompt": 613
+        },
+        "entities_extractor_solver": {
+            "generated": 10,
+            "prompt": 246
+        },
+
+        "searchplan_enhance_classify_solver": {
+            "generated": 83,
+            "prompt": 792
+        },
+        "plan_enhancing_solver": {
+            "generated": 41,
+            "prompt": 1121
+        },
+        "plan_initialing_solver": {
+            "generated": 22,
+            "prompt": 596
+        }
+    },
+    "triviaqa": {
+        "answer_classify_solver": {
+            "generated": 63,
+            "prompt": 793
+        },
+        "casual_answer_gen_solver": {
+            "generated": 64,
+            "prompt": 562
+        },
+        "strict_answer_gen_solver": {
+            "generated": 106,
+            "prompt": 1246
+        },
+        
+        "clueanswers_summarizer_solver": {
+            "generated": 68,
+            "prompt": 1006
+        },
+        "clueanswer_generator_solver": {
+            "generated": 36,
+            "prompt": 1479
+        },
+        "cluequeries_generator_solver": {
+            "generated": 19,
+            "prompt": 615
+        },
+        "entities_extractor_solver": {
+            "generated": 10,
+            "prompt": 246
+        },
+
+        "searchplan_enhance_classify_solver": {
+            "generated": 86,
+            "prompt": 786
+        },
+        "plan_enhancing_solver": {
+            "generated": 36,
+            "prompt": 1066
+        },
+        "plan_initialing_solver": {
+            "generated": 23,
+            "prompt": 598
+        }
+    }
+}
