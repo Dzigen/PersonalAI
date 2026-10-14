@@ -18,6 +18,17 @@ sys.path.insert(0, BASE_PATH)
 from available_methods_utils.config import AVAILABLE_GRAPHRAG_QA_METHOD, GraphRAGQAOperations
 from load_dataset.qaeval_datasets import CUSTOM_LOAD_QAEVAL_FUNCS
 
+BASE_PATH2 = '/home/workspace/experiments' # TO CHANGE
+sys.path.insert(0, BASE_PATH2)
+
+from ollama_proxy import OllamaProxyMetrics
+
+OLLAMA_ENDPOINTS = {
+    'hipporag2': '/v1/chat/completions',
+    'lightrag': '/v1/chat/completions',
+    'raptor': '/v1/chat/completions'
+}
+
 ####################################################
 print("1. Loading hyperparameters from .yaml files")
 
@@ -101,6 +112,23 @@ method_main: GraphRAGQAOperations = AVAILABLE_GRAPHRAG_QA_METHOD[SPECEXP_PARAMS[
 #method_main.print_graph_info()
 
 ####################################################
+
+print("5.1. Ollama metrics before run (pay attention: require separate container with ollama-proxy)")
+print(f"- endpoint: {OLLAMA_ENDPOINTS[SPECEXP_PARAMS['METHOD_NAME']]}")
+
+ollama_stats = OllamaProxyMetrics()
+ollama_metrics_before_run = {
+    'ollama_requests_total': ollama_stats.get(
+        "ollama_requests_total", "counter", {"endpoint": OLLAMA_ENDPOINTS[SPECEXP_PARAMS['METHOD_NAME']],"model": method_config['llm_model_name']}),
+    'ollama_prompt_tokens_total': ollama_stats.get(
+        "ollama_prompt_tokens_total", "counter", {'model': method_config['llm_model_name']}),
+    'ollama_completion_tokens_total': ollama_stats.get(
+        "ollama_completion_tokens_total", "counter", {'model': method_config['llm_model_name']})
+}
+for k, v in ollama_metrics_before_run.items():
+    print(f"- {k}: {v}")
+
+####################################################
 print("6. Start inferencing")
 
 for pack_name, questions, _ in question_packs:
@@ -122,6 +150,27 @@ for pack_name, questions, _ in question_packs:
 
         answer_dump_file = f"{pack_tmp_answers_dir}/answer_{i}"
         joblib.dump({'answer': answer, 'elapsed_time': e_time - s_time}, answer_dump_file)
+
+####################################################
+print("6.1. Ollama metrics after run (pay attention: require separate container with ollama-proxy)")
+print(f"- endpoint: {OLLAMA_ENDPOINTS[SPECEXP_PARAMS['METHOD_NAME']]}")
+ollama_stats = OllamaProxyMetrics()
+ollama_metrics_after_run = {
+    'ollama_requests_total': ollama_stats.get(
+        "ollama_requests_total", "counter", {"endpoint": OLLAMA_ENDPOINTS[SPECEXP_PARAMS['METHOD_NAME']], "model": method_config['llm_model_name']}),
+    'ollama_prompt_tokens_total': ollama_stats.get(
+        "ollama_prompt_tokens_total", "counter", {'model': method_config['llm_model_name']}),
+    'ollama_completion_tokens_total': ollama_stats.get(
+        "ollama_completion_tokens_total", "counter", {'model': method_config['llm_model_name']})
+}
+for k, v in ollama_metrics_after_run.items():
+    print(f"- {k}: {v}")
+
+####################################################
+print("6.2. Ollama metrics diff")
+for k in ollama_metrics_before_run.keys():
+    print(f"- {k}: {ollama_metrics_after_run[k]-ollama_metrics_before_run[k]}")
+
 
 ####################################################
 print("7. Accumulating generated answers")
