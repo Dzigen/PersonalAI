@@ -140,6 +140,7 @@ for pack_name, questions, _ in question_packs:
         os.mkdir(pack_tmp_answers_dir)
 
     process = tqdm(range(len(questions)))
+    #process = tqdm(range(5)) # !!! TESTING: PAY ATTENTION !!!
     for i in process:
 
         ollama_stats = OllamaProxyMetrics()
@@ -174,10 +175,10 @@ for pack_name, questions, _ in question_packs:
             'elapsed_time': e_time - s_time, 
             'ollama_requests': ollama_qend_metrics['ollama_requests']-ollama_qstart_metrics['ollama_requests'],
             'ollama_prompt_tokens': ollama_qend_metrics['ollama_prompt_tokens']-ollama_qstart_metrics['ollama_prompt_tokens'],
-            'ollama_completion_toknes': ollama_qend_metrics['ollama_completion_toknes']-ollama_qstart_metrics['ollama_completion_toknes']
+            'ollama_completion_tokens': ollama_qend_metrics['ollama_completion_tokens']-ollama_qstart_metrics['ollama_completion_tokens']
         }
 
-        process.set_postfix_str(f"pack: {pack_name} | {tmp_qa_info['elapsed_time']}, {tmp_qa_info['ollama_requests']}, {tmp_qa_info['ollama_prompt_tokens']}, {tmp_qa_info['ollama_completion_toknes']}")
+        process.set_postfix_str(f"pack: {pack_name} | {tmp_qa_info['elapsed_time']}, {tmp_qa_info['ollama_requests']}, {tmp_qa_info['ollama_prompt_tokens']}, {tmp_qa_info['ollama_completion_tokens']}")
         process.set_postfix_str("")
 
         answer_dump_file = f"{pack_tmp_answers_dir}/answer_{i}"
@@ -248,7 +249,7 @@ for pack_name, questions, gold_answers in question_packs:
         llmcalls_and_tokens[pack_name]['per_question'].append({
             'ollama_requests': answer_info['ollama_requests'],
             'ollama_prompt_tokens': answer_info['ollama_prompt_tokens'],
-            'ollama_completion_toknes': answer_info['ollama_completion_toknes']
+            'ollama_completion_tokens': answer_info['ollama_completion_tokens']
         })
 
     elapsed_times[pack_name]['stats'] = calculate_statistics(elapsed_times[pack_name]['per_question'])
@@ -257,8 +258,8 @@ for pack_name, questions, gold_answers in question_packs:
         [item['ollama_requests'] for item in llmcalls_and_tokens[pack_name]['per_question']])
     llmcalls_and_tokens[pack_name]['stats_ollama_prompt_tokens'] = calculate_statistics(
             [item['ollama_prompt_tokens'] for item in llmcalls_and_tokens[pack_name]['per_question']])
-    llmcalls_and_tokens[pack_name]['stats_ollama_completion_toknes'] = calculate_statistics(
-            [item['ollama_completion_toknes'] for item in llmcalls_and_tokens[pack_name]['per_question']])
+    llmcalls_and_tokens[pack_name]['stats_ollama_completion_tokens'] = calculate_statistics(
+            [item['ollama_completion_tokens'] for item in llmcalls_and_tokens[pack_name]['per_question']])
         
 
     answers_pack_path = f"{GENERATED_ANSWERS_DIR}/{pack_name}.json"

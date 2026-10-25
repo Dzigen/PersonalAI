@@ -10,6 +10,7 @@ torchmetrics
 levenshtein
 evaluate
 mlflow
+langchain-community==0.3.31
 ragas
 datasets
 dspy
@@ -31,3 +32,4 @@ ollama
 gigachat
 picologging
 prometheus_client
+langchain-ollama

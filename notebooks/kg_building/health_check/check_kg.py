@@ -82,7 +82,7 @@ def graph_relations_counter(kg_model: KnowledgeGraphModel) -> Dict[str, object]:
         spec_rels_count = kg_model.graph_struct.db_conn.execute_query(
             f"MATCH (a)-[rel:{rel_tpe}]->(b) RETURN count(a) as count_rels")[0]['count_rels']
         info[f'{rel_tpe}_rels_count'] = spec_rels_count
-
+    
     epi_rels_with_objec_nodes_count = kg_model.graph_struct.db_conn.execute_query(
         "MATCH (a:object)-[rel:episodic]->(b) RETURN count(a) as count_rels")[0]['count_rels']
     epi_rels_with_hyper_nodes_count = kg_model.graph_struct.db_conn.execute_query(

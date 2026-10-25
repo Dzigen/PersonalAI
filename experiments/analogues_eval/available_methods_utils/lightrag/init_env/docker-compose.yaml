@@ -45,7 +45,7 @@ services:
     build:
       context: .
       dockerfile: workspace.Dockerfile
-    image: m.menschikov/lightrag_eval_workspace:v2
+    image: m.menschikov/lightrag_eval_workspace:v4
     container_name: ${WORKSPACE_CNTNAME}
     hostname: ${WORKSPACE_HOST}
     network_mode: "host"

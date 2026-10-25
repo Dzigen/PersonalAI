@@ -40,6 +40,7 @@ redis>=5.0.0,<8.0.0
 voyageai>=0.2.0,<1.0.0
 zhipuai>=2.0.0,<3.0.0
 lightrag-hku
+langchain-community==0.3.31
 ragas
 pandas
 tqdm
@@ -61,3 +62,4 @@ sentence_transformers
 gigachat
 picologging
 prometheus_client
+langchain-ollama

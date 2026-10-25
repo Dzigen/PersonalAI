@@ -99,7 +99,7 @@ print("5. Saving accumulated scores")
 
 times_info = load_json(ELAPSED_TIME_FILE_PATH)
 for pack_name in times_info.keys():
-    accumulated_scores['elapsed_time'].append(times_info[pack_name]['sum'])
+    accumulated_scores['elapsed_time'].append(times_info[pack_name]['stats']['sum'])
 accumulated_scores['elapsed_time'] = sum(accumulated_scores['elapsed_time'])
 
 accumulated_scores = dict(accumulated_scores)
