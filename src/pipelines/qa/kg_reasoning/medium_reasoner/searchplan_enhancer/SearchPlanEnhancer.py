@@ -20,7 +20,7 @@ from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperati
 class SearchPlanEnhancerConfig(BaseComponentConfig, LanguageConfig):
     """Конфигурация SearchPlanEnhancer-стадии MediumQA-ризонера.
 
-    :param plan_enhancment: Если True, то невыполненные шаги аходящего план поиска будут скорректированы (перегенерированы на основании информации, полученной с предыдущих шагов), иначе False (план возврашается без изменений). Значение по умолчанию True.
+    :param plan_enhancment: Если True, то невыполненные шаги текущего план поиска будут скорректированы (перегенерированы на основании информации, полученной с предыдущих шагов), иначе False (план возврашается без изменений). Значение по умолчанию True.
     :type plan_enhancment: bool, optional
     :param enable_enhance_classifier: ... . Значение по умолчанию False.
     :type enable_enhance_classifier: bool, optional

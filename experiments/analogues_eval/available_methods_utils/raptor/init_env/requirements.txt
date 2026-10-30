@@ -1,4 +1,5 @@
 faiss-cpu
+litellm
 pandas
 tqdm
 joblib
@@ -9,6 +10,7 @@ torchmetrics
 levenshtein
 evaluate
 mlflow
+langchain-community==0.3.31
 ragas
 datasets
 dspy
@@ -29,3 +31,5 @@ pymongo
 ollama
 gigachat
 picologging
+prometheus_client
+langchain-ollama

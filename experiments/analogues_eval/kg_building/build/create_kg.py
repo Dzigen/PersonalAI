@@ -3,11 +3,20 @@ import sys
 import json
 import datetime
 import yaml
+from time import time
 
 EXPERIMETS_BASE_PATH="/home/workspace/experiments"
 sys.path.insert(0, EXPERIMETS_BASE_PATH)
 from analogues_eval.available_methods_utils.config import AVAILABLE_GRAPHRAG_BUILD_METHODS, GraphRAGBuildOperations
 from analogues_eval.load_dataset.kgbuild_datasets import CUSTOM_LOAD_KGBUILD_DS_FUNCS
+
+from ollama_proxy import OllamaProxyMetrics
+
+OLLAMA_ENDPOINTS = {
+    'hipporag2': '/v1/chat/completions',
+    'lightrag': '/v1/chat/completions',
+    'raptor': '/v1/chat/completions'
+}
 
 ####################################################
 print("1. Loading hyperparameters from .yaml files")
@@ -57,16 +66,59 @@ print("graph info:")
 method_main.print_graph_info()
 
 ####################################################
+
+print("5.1. Ollama metrics before run (pay attention: require separate container with ollama-proxy)")
+print(f"- endpoint: {OLLAMA_ENDPOINTS[KGHYPERP_PARAMS['METHOD_NAME']]}")
+
+ollama_stats = OllamaProxyMetrics()
+ollama_metrics_before_run = {
+    'ollama_requests_total': ollama_stats.get(
+        "ollama_requests_total", "counter", {"endpoint": OLLAMA_ENDPOINTS[KGHYPERP_PARAMS['METHOD_NAME']],"model": method_config['llm_model_name']}),
+    'ollama_prompt_tokens_total': ollama_stats.get(
+        "ollama_prompt_tokens_total", "counter", {'model': method_config['llm_model_name']}),
+    'ollama_completion_tokens_total': ollama_stats.get(
+        "ollama_completion_tokens_total", "counter", {'model': method_config['llm_model_name']})
+}
+for k, v in ollama_metrics_before_run.items():
+    print(f"- {k}: {v}")
+
+####################################################
+
 print("6. Run KG build process")
+start_time = time()
 print(f"start time: {datetime.datetime.now()}")
 
 docs = [doc_info[0] for doc_info in dataset]
 method_main.build_graph(docs)
 
+end_time = time()
 print(f"end time: {datetime.datetime.now()}")
+elapsed_time_seconds = round(end_time - start_time, 3)
+print(f"Elapsed time: {round(elapsed_time_seconds / 60, 2)} minutes | {round((elapsed_time_seconds / 60) / 60, 2)} hours")
+
 
 print("graph info:")
 method_main.print_graph_info()
+
+####################################################
+print("6.1. Ollama metrics after run (pay attention: require separate container with ollama-proxy)")
+print(f"- endpoint: {OLLAMA_ENDPOINTS[KGHYPERP_PARAMS['METHOD_NAME']]}")
+ollama_stats = OllamaProxyMetrics()
+ollama_metrics_after_run = {
+    'ollama_requests_total': ollama_stats.get(
+        "ollama_requests_total", "counter", {"endpoint": OLLAMA_ENDPOINTS[KGHYPERP_PARAMS['METHOD_NAME']], "model": method_config['llm_model_name']}),
+    'ollama_prompt_tokens_total': ollama_stats.get(
+        "ollama_prompt_tokens_total", "counter", {'model': method_config['llm_model_name']}),
+    'ollama_completion_tokens_total': ollama_stats.get(
+        "ollama_completion_tokens_total", "counter", {'model': method_config['llm_model_name']})
+}
+for k, v in ollama_metrics_after_run.items():
+    print(f"- {k}: {v}")
+
+####################################################
+print("6.2. Ollama metrics diff")
+for k in ollama_metrics_before_run.keys():
+    print(f"- {k}: {ollama_metrics_after_run[k]-ollama_metrics_before_run[k]}")
 
 ####################################################
 print("7. Saving graph")

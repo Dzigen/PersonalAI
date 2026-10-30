@@ -13,6 +13,7 @@ scipy
 tqdm
 einops
 boto3
+langchain-community==0.3.31
 ragas
 pandas
 tqdm
@@ -33,3 +34,5 @@ ollama
 sentence_transformers
 gigachat
 picologging
+prometheus_client
+langchain-ollama

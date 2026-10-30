@@ -31,7 +31,7 @@ class OllamaProxyMetrics:
 
     def get(self, field_name: str, field_type: str, labels: Dict = None) -> Union[float, str]:
         field_family = None
-        for family_name in self.formatted_metrics[field_type].keys():
+        for family_name in self.formatted_metrics.keys():
             if field_name.startswith(family_name):
                 field_family = family_name
                 break

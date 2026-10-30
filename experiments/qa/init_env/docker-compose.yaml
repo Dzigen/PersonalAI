@@ -208,7 +208,7 @@ services:
       - ${EXTERNAL_SRC_PATH}:${INTERNAL_SRC_PATH}
       - ${EXTERNAL_MODELS_PATH}:${INTERNAL_MODELS_PATH}
     depends_on:
-      - ollama_agent
+      #- ollama_agent
       - neo4j
       - mongo_cache
       - redis_cache

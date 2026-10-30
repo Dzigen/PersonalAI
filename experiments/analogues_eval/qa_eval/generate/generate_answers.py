@@ -2,7 +2,7 @@ print("Start QA-pipeline inferencing...")
 import sys
 import yaml
 import joblib
-from typing import List, Tuple, Dict
+from typing import List, Tuple, Dict, Union
 from pprint import pprint
 import os
 import numpy as np
@@ -17,6 +17,17 @@ sys.path.insert(0, BASE_PATH)
 
 from available_methods_utils.config import AVAILABLE_GRAPHRAG_QA_METHOD, GraphRAGQAOperations
 from load_dataset.qaeval_datasets import CUSTOM_LOAD_QAEVAL_FUNCS
+
+BASE_PATH2 = '/home/workspace/experiments' # TO CHANGE
+sys.path.insert(0, BASE_PATH2)
+
+from ollama_proxy import OllamaProxyMetrics
+
+OLLAMA_ENDPOINTS = {
+    'hipporag2': '/v1/chat/completions',
+    'lightrag': '/v1/chat/completions',
+    'raptor': '/v1/chat/completions'
+}
 
 ####################################################
 print("1. Loading hyperparameters from .yaml files")
@@ -63,6 +74,8 @@ GENERATED_ANSWERS_DIR = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_DIRS']['gen_
 
 QA_ELAPSED_TIME_SPATH = f"{SPEC_EXPERIMENT_DIR}/{EXPDIR_PARAMS['EXP_SAVE_FILES']['elapsed_time']}"
 
+QA_LLMCALLS_AND_TOKENS_SPATH = f"{SPEC_EXPERIMENT_DIR}/llmcall_and_tokens.json" # !!! PAY ATTENTION !!!
+
 # KG PATHS
 DATASET_KGS_PATH = f"{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['base_path']}/{KGENV_PARAMS['WORKSPACE_CONTAINER_DIRS']['kg']}/{SPECEXP_PARAMS['METHOD_NAME']}/{SPECEXP_PARAMS['DATASET_NAME']}"
 SPEC_KG_PATH = f"{DATASET_KGS_PATH}/{SPECEXP_PARAMS['KNOWLEDGE_GRAPH_NAME']}"
@@ -101,6 +114,23 @@ method_main: GraphRAGQAOperations = AVAILABLE_GRAPHRAG_QA_METHOD[SPECEXP_PARAMS[
 #method_main.print_graph_info()
 
 ####################################################
+
+print("5.1. Ollama metrics before run (pay attention: require separate container with ollama-proxy)")
+print(f"- endpoint: {OLLAMA_ENDPOINTS[SPECEXP_PARAMS['METHOD_NAME']]}")
+
+ollama_stats = OllamaProxyMetrics()
+ollama_metrics_before_run = {
+    'ollama_requests_total': ollama_stats.get(
+        "ollama_requests_total", "counter", {"endpoint": OLLAMA_ENDPOINTS[SPECEXP_PARAMS['METHOD_NAME']],"model": method_config['llm_model_name']}),
+    'ollama_prompt_tokens_total': ollama_stats.get(
+        "ollama_prompt_tokens_total", "counter", {'model': method_config['llm_model_name']}),
+    'ollama_completion_tokens_total': ollama_stats.get(
+        "ollama_completion_tokens_total", "counter", {'model': method_config['llm_model_name']})
+}
+for k, v in ollama_metrics_before_run.items():
+    print(f"- {k}: {v}")
+
+####################################################
 print("6. Start inferencing")
 
 for pack_name, questions, _ in question_packs:
@@ -110,23 +140,87 @@ for pack_name, questions, _ in question_packs:
         os.mkdir(pack_tmp_answers_dir)
 
     process = tqdm(range(len(questions)))
+    #process = tqdm(range(5)) # !!! TESTING: PAY ATTENTION !!!
     for i in process:
-        process.set_postfix_str(pack_name)
+
+        ollama_stats = OllamaProxyMetrics()
+        ollama_qstart_metrics = {
+            'ollama_requests': ollama_stats.get(
+                "ollama_requests_total", "counter", {"endpoint": OLLAMA_ENDPOINTS[SPECEXP_PARAMS['METHOD_NAME']], "model": method_config['llm_model_name']}),
+            'ollama_prompt_tokens': ollama_stats.get(
+                "ollama_prompt_tokens_total", "counter", {'model': method_config['llm_model_name']}),
+            'ollama_completion_tokens': ollama_stats.get(
+                "ollama_completion_tokens_total", "counter", {'model': method_config['llm_model_name']})
+        }
 
         s_time = time()
         answer = method_main.perform_qa([questions[i]])[0]
         e_time = time()
 
+        ollama_stats = OllamaProxyMetrics()
+        ollama_qend_metrics = {
+            'ollama_requests': ollama_stats.get(
+                "ollama_requests_total", "counter", {"endpoint": OLLAMA_ENDPOINTS[SPECEXP_PARAMS['METHOD_NAME']], "model": method_config['llm_model_name']}),
+            'ollama_prompt_tokens': ollama_stats.get(
+                "ollama_prompt_tokens_total", "counter", {'model': method_config['llm_model_name']}),
+            'ollama_completion_tokens': ollama_stats.get(
+                "ollama_completion_tokens_total", "counter", {'model': method_config['llm_model_name']})
+        }       
+
         #print("Question: ", questions[i])
         #print("Answer: ", answer)
 
+        tmp_qa_info = {
+            'answer': answer, 
+            'elapsed_time': e_time - s_time, 
+            'ollama_requests': ollama_qend_metrics['ollama_requests']-ollama_qstart_metrics['ollama_requests'],
+            'ollama_prompt_tokens': ollama_qend_metrics['ollama_prompt_tokens']-ollama_qstart_metrics['ollama_prompt_tokens'],
+            'ollama_completion_tokens': ollama_qend_metrics['ollama_completion_tokens']-ollama_qstart_metrics['ollama_completion_tokens']
+        }
+
+        process.set_postfix_str(f"pack: {pack_name} | {tmp_qa_info['elapsed_time']}, {tmp_qa_info['ollama_requests']}, {tmp_qa_info['ollama_prompt_tokens']}, {tmp_qa_info['ollama_completion_tokens']}")
+        process.set_postfix_str("")
+
         answer_dump_file = f"{pack_tmp_answers_dir}/answer_{i}"
-        joblib.dump({'answer': answer, 'elapsed_time': e_time - s_time}, answer_dump_file)
+        joblib.dump(tmp_qa_info, answer_dump_file)
+
+####################################################
+print("6.1. Ollama metrics after run (pay attention: require separate container with ollama-proxy)")
+print(f"- endpoint: {OLLAMA_ENDPOINTS[SPECEXP_PARAMS['METHOD_NAME']]}")
+ollama_stats = OllamaProxyMetrics()
+ollama_metrics_after_run = {
+    'ollama_requests_total': ollama_stats.get(
+        "ollama_requests_total", "counter", {"endpoint": OLLAMA_ENDPOINTS[SPECEXP_PARAMS['METHOD_NAME']], "model": method_config['llm_model_name']}),
+    'ollama_prompt_tokens_total': ollama_stats.get(
+        "ollama_prompt_tokens_total", "counter", {'model': method_config['llm_model_name']}),
+    'ollama_completion_tokens_total': ollama_stats.get(
+        "ollama_completion_tokens_total", "counter", {'model': method_config['llm_model_name']})
+}
+for k, v in ollama_metrics_after_run.items():
+    print(f"- {k}: {v}")
+
+####################################################
+print("6.2. Ollama metrics diff")
+for k in ollama_metrics_before_run.keys():
+    print(f"- {k}: {ollama_metrics_after_run[k]-ollama_metrics_before_run[k]}")
+
 
 ####################################################
 print("7. Accumulating generated answers")
 
+def calculate_statistics(values: List[Union[float, int]]) -> Dict[str, Union[float, int]]:
+    return {
+        'count': len(values),
+        'max': round(max(values),3),
+        'mean': round(float(np.mean(values)), 3),
+        'median': round(float(np.median(values)), 3),
+        'min': round(min(values),3),
+        'std': round(float(np.std(values)), 3),
+        'sum': round(sum(values),3)
+    }
+
 elapsed_times: Dict[str,Dict[str, float]] = dict()
+llmcalls_and_tokens: Dict[str,Dict] = dict()
 for pack_name, questions, gold_answers in question_packs:
     print(pack_name)
 
@@ -140,6 +234,7 @@ for pack_name, questions, gold_answers in question_packs:
 
     accum_answers: Dict[str,Dict[str, str]] = dict()
     elapsed_times[pack_name] = {'per_question': []}
+    llmcalls_and_tokens[pack_name] = {'per_question': []}
     for tmp_dump in tqdm(tmp_answer_dumps):
         answer_info = joblib.load(f"{pack_tmp_answers_dir}/{tmp_dump}")
         answer_num = int(tmp_dump.split("_")[1])
@@ -151,13 +246,21 @@ for pack_name, questions, gold_answers in question_packs:
 
         elapsed_times[pack_name]['per_question'].append(
             answer_info['elapsed_time'])
+        llmcalls_and_tokens[pack_name]['per_question'].append({
+            'ollama_requests': answer_info['ollama_requests'],
+            'ollama_prompt_tokens': answer_info['ollama_prompt_tokens'],
+            'ollama_completion_tokens': answer_info['ollama_completion_tokens']
+        })
 
-    elapsed_times[pack_name]['sum'] = sum(
-        elapsed_times[pack_name]['per_question'])
-    elapsed_times[pack_name]['mean'] = np.mean(
-        elapsed_times[pack_name]['per_question'])
-    elapsed_times[pack_name]['median'] = np.median(
-        elapsed_times[pack_name]['per_question'])
+    elapsed_times[pack_name]['stats'] = calculate_statistics(elapsed_times[pack_name]['per_question'])
+    
+    llmcalls_and_tokens[pack_name]['stats_ollama_requests'] = calculate_statistics(
+        [item['ollama_requests'] for item in llmcalls_and_tokens[pack_name]['per_question']])
+    llmcalls_and_tokens[pack_name]['stats_ollama_prompt_tokens'] = calculate_statistics(
+            [item['ollama_prompt_tokens'] for item in llmcalls_and_tokens[pack_name]['per_question']])
+    llmcalls_and_tokens[pack_name]['stats_ollama_completion_tokens'] = calculate_statistics(
+            [item['ollama_completion_tokens'] for item in llmcalls_and_tokens[pack_name]['per_question']])
+        
 
     answers_pack_path = f"{GENERATED_ANSWERS_DIR}/{pack_name}.json"
     with open(answers_pack_path, 'w', encoding='utf-8') as fd:
@@ -165,5 +268,9 @@ for pack_name, questions, gold_answers in question_packs:
 
 with open(QA_ELAPSED_TIME_SPATH, 'w', encoding='utf-8') as fd:
     fd.write(json.dumps(elapsed_times, indent=1, ensure_ascii=False))
+
+with open(QA_LLMCALLS_AND_TOKENS_SPATH, 'w', encoding='utf-8') as fd:
+    fd.write(json.dumps(llmcalls_and_tokens, indent=1, ensure_ascii=False))
+
 
 print("############ DONE ############")

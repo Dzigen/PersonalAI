@@ -18,7 +18,7 @@ PERSONALAI_VERSION: 'v2.3.7' # TO CHANGE
 
 QA_DATASET_HYPERP:
   # NEED TO SPECIFY DATASET HYPERP-KEY/VALUES BY YOUR OWN
-  max_samples_per_pack: 1000
+  max_samples_per_pack: 100
   lang:
     - 'en'
     - 'en'
@@ -53,11 +53,10 @@ kg_reasoner: # TO CHANGE
   reasoner_name: "medium" # DONT CHANGE
   reasoner_config:
     max_searchplan_steps:
-      # - 2
-      # - 4
-      #- 6
-      - 8
-      # - 10
+      - 2
+      - 4
+      - 12
+      - 16
     enable_searchplan_steps_check: False
     planlimit_exceeded_behaviour: 'strict_answer'
 
