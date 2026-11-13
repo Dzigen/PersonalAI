@@ -1,9 +1,11 @@
+# PersonalAI: Memory Model for Personalized LLM-agents
+
+**NB:**
+Hey everyone! We apologize for the insufficient comments and documentation in the repository (​we know that can be a pain). Recognizing the importance of clear, maintainable code, we are prioritizing comprehensive documentation and expect the repository to be fully commented and documented within the next 1-2 months. Thank you for your understanding.
+
 ### ✨ About
 ---
-
-#### Материалы
-- [Отчёт 2025](docs/source/_static/iteration_summary/2025/PersonalAI(Отчёт)(НИР)(Skoltech-Sber)(2025).pdf)
-- [Презентация работ 2025](docs/source/_static/iteration_summary/2025/PersonalAI(ПриёмкаРабот)(НИР)(Skoltech-Sber)(2025).pdf)
+TODO
 
 #### Структура файловой системы:
 - debug/ - Директория с ноутбуками/скриптами для отладки кода из каталога "src".
@@ -29,6 +31,8 @@
 ### 🚀 Quick Start
 ---
 TODO
+
+Notebooks with examples: https://github.com/Dzigen/PersonalAI/tree/master/docs/source/notebooks
 
 ### 📊 Benchmarks
 ---
@@ -82,8 +86,9 @@ utils:
 * find . -maxdepth 4 -type d -name "tmp_*" -exec rm -rf {} +
 * git tag -a <tag-version> commit_id -m "comment"
 
-archive experiments:
-* tar -czvf  deepseek_231025_v2prompts.tar.gz --exclude="configs" --exclude="judge_packs" --exclude="metric_packs" --exclude="tmp_answer_packs" --exclude="tmp_judges_packs" --exclude="inference_log.txt"  deepseek_231025_v2prompts/
+archive experiments and constructed memory-graphs:
+1. tar -czvf  deepseek_231025_v2prompts.tar.gz --exclude="configs" --exclude="judge_packs" --exclude="metric_packs" --exclude="tmp_answer_packs" --exclude="tmp_judges_packs" --exclude="inference_log.txt"  deepseek_231025_v2prompts/
+2. tar -czvf 2wiki_qwen257b_080226_v2prompts.tar.gz --exclude="embeddings_part" --exclude="graph_part" --exclude="kv_cache" --exclude="stat" --exclude="tmp_extracted_triplets" --exclude="extracted_triplets" qwen257b_080226_v2prompts/
 
 ### 🤝 Community and Contributing
 ---
@@ -114,6 +119,15 @@ TODO
       url={https://arxiv.org/abs/2605.13481}, 
 }
 ```
+
+### 🌟 Star, Cite, Collaborate
+---
+If this project inspires or assists you, please consider:
+* ⭐ Starring the repository
+* 🧵 Opening discussions or issues
+* 📄 Citing the relevant paper(s)
+
+Let’s build memory-aware LLM agents together!
 
 ### 📬 Technical Support
 ---
